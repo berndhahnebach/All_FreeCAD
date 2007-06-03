@@ -229,8 +229,7 @@ bool PythonView::canClose(void)
  */
 bool PythonView::saveAs(void)
 {
-    QString fn = FileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", 
-                                               this, QObject::tr("Save Macro"));
+    QString fn = FileDialog::getSaveFileName(this, QObject::tr("Save Macro"), QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)" );
     if (fn.isEmpty())
         return false;
     setCurrentFileName(fn);

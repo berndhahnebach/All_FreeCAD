@@ -50,14 +50,14 @@ CmdImageOpen::CmdImageOpen()
 void CmdImageOpen::activated(int iMsg)
 {
   // Reading an image
-  QString s = QFileDialog::getOpenFileName(QString::null, QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"), 
-                                           0, QObject::tr("Open image file dialog"), QObject::tr("Choose an image file to open"));
+  QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
+                                           QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
   if (s.isEmpty() == false)
   {
     try{
       // load the file with the module
       Command::doCommand(Command::Gui, "import Image, ImageGui");
-      Command::doCommand(Command::Gui, "ImageGui.open(\"%s\")", s.latin1());
+      Command::doCommand(Command::Gui, "ImageGui.open(\"%s\")", (const char*)s.toAscii());
     } catch (const Base::PyException& e){
       // Usually thrown if the file is invalid somehow
       e.ReportException();

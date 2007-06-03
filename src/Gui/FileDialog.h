@@ -42,33 +42,26 @@ namespace Gui {
  * The FileDialog class provides dialogs that allow users to select files or directories.
  * \author Werner Mayer
  */
-class GuiExport FileDialog : public Q3FileDialog
+class GuiExport FileDialog : public QFileDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  static QString getOpenFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
-                                   QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null,
-                                   QString* selectedFilter = 0, bool resolveSymlinks = true, 
-                                   const QString& buttonText = QString::null, bool * ok = 0 );
-  static QString getSaveFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
-                                   QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null, 
-                                   QString * selectedFilter = 0, bool resolveSymlinks = true, 
-                                   const QString& buttonText = QString::null, bool * ok = 0 );
-  static QString getExistingDirectory( const QString & dir = QString::null, QWidget *parent = 0, 
-                                       const char* name = 0, const QString& caption = QString::null, 
-                                       bool dirOnly = true, bool resolveSymlinks = true, bool * ok = 0 );
-  static QStringList getOpenFileNames ( const QString & filter = QString::null, const QString & dir = QString::null, 
-                                        QWidget * parent = 0, const char * name = 0, const QString & caption = QString::null, 
-                                        QString * selectedFilter = 0, bool resolveSymlinks = true, 
-                                        const QString& buttonText = QString::null, bool * ok = 0 );
-  static QString getWorkingDirectory();
-  static void setWorkingDirectory( const QString& );
+    static QString getOpenFileName( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(), 
+                                    const QString & filter = QString(), QString * selectedFilter = 0, Options options = 0 );
+    static QString getSaveFileName( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(), 
+                                    const QString & filter = QString(), QString * selectedFilter = 0, Options options = 0 );
+    static QString getExistingDirectory( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(), 
+                                         Options options = ShowDirsOnly );
+    static QStringList getOpenFileNames( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(),
+                                         const QString & filter = QString(), QString * selectedFilter = 0, Options options = 0 );
+    static QString getWorkingDirectory();
+    static void setWorkingDirectory( const QString& );
 
 public:
-  FileDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
-  FileDialog ( const QString& dirName, const QString& filter = QString::null, 
-               QWidget* parent = 0, const char* name = 0, bool modal = false );
+  FileDialog ( QWidget * parent, Qt::WFlags flags );
+  FileDialog ( QWidget * parent = 0, const QString & caption = QString(), const QString & directory = QString(), 
+               const QString & filter = QString() );
   virtual ~FileDialog();
 
 protected:
@@ -114,7 +107,7 @@ private:
 };
 
 // ======================================================================
-
+#if 0
 /**
  * The ImagePreview class draws a pixmap on an area.
  * \author Werner Mayer
@@ -150,20 +143,22 @@ private:
   ImagePreview* _preview;
   QCheckBox* _cbview;
 };
-
+#endif
 // ======================================================================
 
 /**
  * The FileIconProvider class provides icons for FileDialog to use.
  * \author Werner Mayer
  */
-class FileIconProvider : public Q3FileIconProvider
+class FileIconProvider : public QFileIconProvider
 {
 public:
-  FileIconProvider( QObject * parent = 0, const char * name = 0 );
-  ~FileIconProvider();
+    FileIconProvider();
+    ~FileIconProvider();
 
-  const QPixmap * pixmap ( const QFileInfo & info );
+    QIcon icon ( IconType type ) const;
+    QIcon icon ( const QFileInfo & info ) const;
+    QString type ( const QFileInfo & info ) const;
 };
 
 // ======================================================================

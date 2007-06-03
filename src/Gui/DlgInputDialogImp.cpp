@@ -131,19 +131,16 @@ DlgInputDialogImp::Type DlgInputDialogImp::type() const
   return inputtype;
 }
 
-Gui::SpinBox *DlgInputDialogImp::getSpinBox() const
+QSpinBox *DlgInputDialogImp::getSpinBox() const
 {
   return spinBox;
 }
 
-//Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
-Gui::SpinBox *DlgInputDialogImp::getUIntBox() const
+Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
 {
-  //TODO Reimplement UIntSpinBox
   return uIntSpinBox;
 }
 
-//Gui::FloatSpinBox *DlgInputDialogImp::getFloatSpinBox() const
 QDoubleSpinBox *DlgInputDialogImp::getFloatSpinBox() const
 {
   return floatSpinBox;

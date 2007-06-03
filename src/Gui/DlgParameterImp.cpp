@@ -326,10 +326,8 @@ void ParameterGroup::onCreateSubgroup()
 
 void ParameterGroup::onExportToFile()
 {
-  bool ok;
-  QString file = FileDialog::getSaveFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
-                                              tr("Export parameter to file"), 0, true, tr("Export"), &ok);
-  if ( ok )
+  QString file = FileDialog::getSaveFileName( this, tr("Export parameter to file"), QString::null, "XML (*.FCParam)");
+  if ( !file.isEmpty() )
   {
     Q3ListViewItem* item = selectedItem();
     if ( item && item->rtti() == 2000 )
@@ -343,10 +341,8 @@ void ParameterGroup::onExportToFile()
 
 void ParameterGroup::onImportFromFile()
 {
-  bool ok;
-  QString file = FileDialog::getOpenFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
-                                              tr("Import parameter from file"), 0, true, tr("Import"), &ok);
-  if ( ok )
+  QString file = FileDialog::getOpenFileName( this, tr("Import parameter from file"), QString::null, "XML (*.FCParam)");
+  if ( !file.isEmpty() )
   {
     QFileInfo fi(file);
     Q3ListViewItem* item = selectedItem();
@@ -569,7 +565,6 @@ void ParameterValue::onCreateIntItem()
 
 void ParameterValue::onCreateUIntItem()
 {
-#if 0 //TODO Port class UIntSpinBox
   bool ok;
   QString name = QInputDialog::getText(QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
@@ -584,7 +579,7 @@ void ParameterValue::onCreateUIntItem()
     return;
   }
 
-  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, "Input", true, DlgInputDialogImp::UIntBox);
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, true, DlgInputDialogImp::UIntBox);
   dlg.setCaption(QObject::tr("New unsigned item"));
   UIntSpinBox* edit = dlg.getUIntBox();
   edit->setRange(0,UINT_MAX);
@@ -599,7 +594,6 @@ void ParameterValue::onCreateUIntItem()
       pcItem->appendToGroup();
     }
   }
-#endif
 }
 
 void ParameterValue::onCreateFloatItem()
@@ -908,11 +902,10 @@ ParameterUInt::~ParameterUInt()
 
 void ParameterUInt::changeValue()
 {
-#if 0 //TODO Port class UIntSpinBox
   const char* name = text(0).latin1();
   bool ok;
 
-  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),listView(), "Input", true, DlgInputDialogImp::UIntBox);
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),listView(), true, DlgInputDialogImp::UIntBox);
   dlg.setCaption(QObject::tr("Change value"));
   UIntSpinBox* edit = dlg.getUIntBox();
   edit->setRange(0,UINT_MAX);
@@ -928,7 +921,6 @@ void ParameterUInt::changeValue()
       _hcGrp->SetUnsigned(name, (unsigned long)num);
     }
   }
-#endif
 }
 
 void ParameterUInt::removeFromGroup ()

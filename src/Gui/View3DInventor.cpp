@@ -72,8 +72,8 @@ using namespace Gui;
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
-View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags )
-    :MDIView( pcDocument,parent, name, wflags),_pcViwer3DPy(0)
+View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags )
+    :MDIView( pcDocument,parent, wflags),_pcViwer3DPy(0)
 {
   // important for highlighting 
   setMouseTracking(true);

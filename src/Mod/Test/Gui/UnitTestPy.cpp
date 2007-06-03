@@ -202,7 +202,7 @@ PYFUNCIMP_D(UnitTestPy,getUnitTest)
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
   PY_TRY {
-    return Py_BuildValue("s", UnitTestDialog::instance()->getUnitTest().latin1());
+    return Py_BuildValue("s", (const char*)UnitTestDialog::instance()->getUnitTest().toAscii());
   }PY_CATCH;
 }
 

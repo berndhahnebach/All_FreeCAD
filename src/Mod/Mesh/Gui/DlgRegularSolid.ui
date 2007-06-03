@@ -296,7 +296,7 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="Gui::SpinBox" name="cylinderCount" >
+             <widget class="QSpinBox" name="cylinderCount" >
               <property name="value" >
                <number>50</number>
               </property>
@@ -449,7 +449,7 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="Gui::SpinBox" name="coneCount" >
+             <widget class="QSpinBox" name="coneCount" >
               <property name="value" >
                <number>50</number>
               </property>
@@ -540,7 +540,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Gui::SpinBox" name="sphereCount" >
+             <widget class="QSpinBox" name="sphereCount" >
               <property name="value" >
                <number>50</number>
               </property>
@@ -638,7 +638,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Gui::SpinBox" name="ellipsoidCount" >
+             <widget class="QSpinBox" name="ellipsoidCount" >
               <property name="value" >
                <number>50</number>
               </property>
@@ -736,7 +736,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Gui::SpinBox" name="toroidCount" >
+             <widget class="QSpinBox" name="toroidCount" >
               <property name="value" >
                <number>50</number>
               </property>
@@ -771,15 +771,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Gui::SpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>Gui/SpinBox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>comboBox1</tabstop>
   <tabstop>boxLength</tabstop>

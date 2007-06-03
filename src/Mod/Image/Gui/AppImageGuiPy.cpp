@@ -67,9 +67,9 @@ open(PyObject *self, PyObject *args)
         Py_Error(PyExc_Exception,"Could not load image");
 
       // Displaying the image in a view
-      ImageView* iView = new ImageView(Gui::getMainWindow(), "Image");
-      iView->setIcon( Gui::BitmapFactory().pixmap("colors") );
-      iView->setCaption(QObject::tr("Image viewer"));
+      ImageView* iView = new ImageView(Gui::getMainWindow());
+      iView->setWindowIcon( Gui::BitmapFactory().pixmap("colors") );
+      iView->setWindowTitle(QObject::tr("Image viewer"));
       iView->resize( 400, 300 );
       Gui::getMainWindow()->addWindow( iView );
       iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);

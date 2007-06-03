@@ -235,6 +235,11 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
     sb->setRange((double)INT_MIN, (double)INT_MAX);
     sb->setValue(data.toDouble());
+    const std::vector<App::Property*>& prop = getProperty();
+    if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
+        sb->setSuffix(" °");
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
+        sb->setSuffix(" mm");
 }
 
 QVariant PropertyFloatItem::editorData(QWidget *editor) const
@@ -414,7 +419,7 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  SpinBox* editor = new SpinBox( parent, "IntEditorItem::spin" );
+  QSpinBox* editor = new QSpinBox( parent/*, "IntEditorItem::spin"*/ );
   editor->setRange(INT_MIN, INT_MAX);
   editor->setValue( overrideValue().toInt() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
@@ -508,7 +513,7 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
 {
   if ( column == 0 )
     return 0;
-
+/*
   FloatSpinBox* editor = new FloatSpinBox( parent, "FloatEditorItem::spin" );
   editor->QSpinBox::setRange(INT_MIN/10, INT_MAX/10);
   editor->setRange(editor->minValue(), editor->maxValue(), 0.01, 2);
@@ -521,27 +526,28 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   else if ( prop->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()) )
     editor->setSuffix(" °");
   
-  return editor;
+  return editor;*/
+  return 0;
 }
 
 void FloatEditorItem::stopEdit( int column )
-{
+{/*
   FloatSpinBox* editor = (FloatSpinBox*)getEditor();
   QString txt = QString("%1").arg( overrideValue().toDouble() );
   txt += editor->suffix();
-  setText( column, txt );
+  setText( column, txt );*/
 }
 
 void FloatEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  FloatSpinBox* spin = dynamic_cast<FloatSpinBox*>(editor);
-  spin->setValue( (float)value().toDouble() );
+  //FloatSpinBox* spin = dynamic_cast<FloatSpinBox*>(editor);
+  //spin->setValue( (float)value().toDouble() );
 }
 
 QVariant FloatEditorItem::currentEditorValue( QWidget* editor ) const
 {
   QVariant var;
-  var.asDouble() = dynamic_cast<FloatSpinBox*>(editor)->value();
+//  var.asDouble() = dynamic_cast<FloatSpinBox*>(editor)->value();
   return var;
 }
 
@@ -579,19 +585,20 @@ FloatConstraintEditorItem::FloatConstraintEditorItem()
 
 QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
 {
-  FloatSpinBox* editor = (FloatSpinBox*)FloatEditorItem::createEditor( column, parent );
-  if ( editor == 0 )
+  //FloatSpinBox* editor = (FloatSpinBox*)FloatEditorItem::createEditor( column, parent );
+  //if ( editor == 0 )
+  //  return 0;
+
+  //App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)_prop.front();
+  //const App::PropertyFloatConstraint::Constraints*  range = prop->getConstraints();
+  //if ( range ) {
+  //  editor->setMaxValue( range->UpperBound );
+  //  editor->setMinValue( range->LowerBound );
+  //  editor->setLineStep( range->StepSize );
+  //}
+
+  //return editor;
     return 0;
-
-  App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)_prop.front();
-  const App::PropertyFloatConstraint::Constraints*  range = prop->getConstraints();
-  if ( range ) {
-    editor->setMaxValue( range->UpperBound );
-    editor->setMinValue( range->LowerBound );
-    editor->setLineStep( range->StepSize );
-  }
-
-  return editor;
 }
 
 #include "moc_propertyeditorinput.cpp"

@@ -71,7 +71,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
   try {
     QString cmd; std::string name;
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if ( comboBox1->currentItem() == 0 ) {         // cube
+    if ( comboBox1->currentIndex() == 0 ) {         // cube
       name = doc->getUniqueObjectName("Cube");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cube\",\"%s\")\n"
@@ -81,7 +81,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
           ,name.c_str(),name.c_str(),boxLength->value(),
            name.c_str(),boxWidth->value(),
            name.c_str(),boxHeight->value());
-    } else if ( comboBox1->currentItem() == 1 ) {  // cylinder
+    } else if ( comboBox1->currentIndex() == 1 ) {  // cylinder
       name = doc->getUniqueObjectName("Cylinder");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cylinder\",\"%s\")\n"
@@ -95,7 +95,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
            name.c_str(),cylinderEdgeLength->value(),
            name.c_str(),(cylinderClosed->isChecked()?"True":"False"),
            name.c_str(),cylinderCount->value());
-    } else if ( comboBox1->currentItem() == 2 ) {  // cone
+    } else if ( comboBox1->currentIndex() == 2 ) {  // cone
       name = doc->getUniqueObjectName("Cone");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cone\",\"%s\")\n"
@@ -111,7 +111,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
            name.c_str(),coneEdgeLength->value(),
            name.c_str(),(coneClosed->isChecked()?"True":"False"),
            name.c_str(),coneCount->value());
-    } else if ( comboBox1->currentItem() == 3 ) {  // sphere
+    } else if ( comboBox1->currentIndex() == 3 ) {  // sphere
       name = doc->getUniqueObjectName("Sphere");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Sphere\",\"%s\")\n"
@@ -119,7 +119,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
           "App.activeDocument().%s.Sampling=%d\n"
           ,name.c_str(),name.c_str(),sphereRadius->value(),
            name.c_str(),sphereCount->value());
-    } else if ( comboBox1->currentItem() == 4 ) {  // ellipsoid
+    } else if ( comboBox1->currentIndex() == 4 ) {  // ellipsoid
       name = doc->getUniqueObjectName("Ellipsoid");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Ellipsoid\",\"%s\")\n"
@@ -129,7 +129,7 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
           ,name.c_str(),name.c_str(),ellipsoidRadius1->value(),
            name.c_str(),ellipsoidRadius2->value(),
            name.c_str(),ellipsoidCount->value());
-    } else if ( comboBox1->currentItem() == 5 ) {  // toroid
+    } else if ( comboBox1->currentIndex() == 5 ) {  // toroid
       name = doc->getUniqueObjectName("Torus");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Torus\",\"%s\")\n"
@@ -143,8 +143,8 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
 
     // Execute the Python block
     QString solid = QString("Create %1").arg(comboBox1->currentText());
-    Gui::Application::Instance->activeDocument()->openCommand( solid.ascii() );
-    Gui::Command::doCommand(Gui::Command::Doc, cmd.ascii());
+    Gui::Application::Instance->activeDocument()->openCommand( (const char*)solid.toAscii() );
+    Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
     Gui::Application::Instance->activeDocument()->commitCommand();
     Gui::Application::Instance->activeDocument()->getDocument()->recompute();
     Gui::Application::Instance->sendMsgToActiveView("ViewFit");
@@ -162,7 +162,8 @@ SingleDlgRegularSolidImp* SingleDlgRegularSolidImp::instance()
   // not initialized?
   if(!_instance)
   {
-    _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow(), Qt::WDestructiveClose);
+    _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow());
+    _instance->setAttribute(Qt::WA_DeleteOnClose);
   }
 
   return _instance;

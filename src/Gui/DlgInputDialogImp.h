@@ -49,8 +49,8 @@ public:
   void setType( Type t );
   Type type() const;
 
-  Gui::SpinBox *getSpinBox() const;
-  Gui::SpinBox *getUIntBox() const;
+  QSpinBox *getSpinBox() const;
+  Gui::UIntSpinBox *getUIntBox() const;
   QDoubleSpinBox *getFloatSpinBox() const;
   QLineEdit *getLineEdit() const;
   QComboBox *getComboBox() const;

@@ -27,8 +27,8 @@ using namespace ImageGui;
 
 /* TRANSLATOR ImageGui::ImageView */
 
-ImageView::ImageView(QWidget* parent, const char* name)
-  : MDIView(0, parent, name, Qt::WDestructiveClose)
+ImageView::ImageView(QWidget* parent)
+  : MDIView(0, parent)
 {
   // enable mouse tracking when moving even if no buttons are pressed
   setMouseTracking(true);
@@ -40,7 +40,7 @@ ImageView::ImageView(QWidget* parent, const char* name)
   EnableStatusBar(true);
 
   // Create an OpenGL widget for displaying images
-  _pGLImageBox = new GLImageBox(this, "ImageView glimagebox");
+  _pGLImageBox = new GLImageBox(this);
   setCentralWidget(_pGLImageBox);
 
   _currMode = nothing;
@@ -129,7 +129,7 @@ void ImageView::EnableStatusBar(bool Enable)
     // Create the default status bar for displaying messages and disable the gripper
     _statusBarEnabled = true;
     statusBar()->setSizeGripEnabled( false );
-    statusBar()->message(tr("Ready..."));
+    statusBar()->showMessage(tr("Ready..."));
   }
   else
   {
@@ -178,7 +178,7 @@ void ImageView::EnableColorActions(bool Enable)
   {
     _pShowOrigAct->setVisible(true);
     _pShowBrightAct->setVisible(true);
-    if (_pShowBrightAct->isOn() == true)
+    if (_pShowBrightAct->isChecked() == true)
       showBrightened();
     else
       showOriginalColors();
@@ -255,7 +255,7 @@ void ImageView::showBrightened()
 void ImageView::sliderValueAdjusted(int NewValue)
 {
     _sliderBrightAdjVal = NewValue;
-    if (_pShowBrightAct->isOn() == true)
+    if (_pShowBrightAct->isChecked() == true)
         showBrightened();
 }
 
@@ -354,7 +354,7 @@ void ImageView::clearImage()
 int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode)
 {
     int ret = _pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, numSigBitsPerSample, displayMode);
-    if (_pShowBrightAct->isOn() == true)
+    if (_pShowBrightAct->isChecked() == true)
         showBrightened();
     else
         showOriginalColors();
@@ -380,7 +380,7 @@ int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigne
 int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode)
 {
     int ret = _pGLImageBox->pointImageTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership, displayMode);
-    if (_pShowBrightAct->isOn() == true)
+    if (_pShowBrightAct->isChecked() == true)
         showBrightened();
     else
         showOriginalColors();
@@ -399,7 +399,7 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
       int box_y = cEvent->y() - offset.y();
       _currX = box_x;
       _currY = box_y;
-      switch(cEvent->stateAfter())
+      switch(cEvent->buttons())
       {
           case Qt::MidButton:
               _currMode = panning;
@@ -409,10 +409,10 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
           //    _currMode = zooming;
           //    break;
           case Qt::LeftButton:
-              _currMode = selection;
-              break;
-          case Qt::LeftButton | Qt::ShiftButton:
-              _currMode = addselection;
+              if (cEvent->modifiers() & Qt::ShiftModifier)
+                  _currMode = addselection;
+              else
+                _currMode = selection;
               break;
           case Qt::RightButton:
                _pContextMenu->exec(cEvent->globalPos());
@@ -449,7 +449,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
 // Mouse move event
 void ImageView::mouseMoveEvent(QMouseEvent* cEvent)
 {
-    QApplication::flushX();
+    QApplication::flush();
 
    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
    // Get current cursor position relative to top-left of image box
@@ -538,7 +538,7 @@ void ImageView::updateStatusBar()
         QString txt = createStatusBarText();
 
         // Update status bar with new text
-        statusBar()->message(txt);
+        statusBar()->showMessage(txt);
 	}
 }
 
@@ -565,9 +565,9 @@ QString ImageView::createStatusBarText()
         double grey_value;
         if (_pGLImageBox->getImageSample(pixX, pixY, 0, grey_value) == 0)
             txt.sprintf("x,y = %0.2lf,%0.2lf  |  %s = %d  |  %s = %0.1lf", 
-                        icX, icY, tr("grey").latin1(), (int)grey_value, tr("zoom").latin1(), zoomFactor);
+                        icX, icY, (const char*)tr("grey").toAscii(), (int)grey_value, (const char*)tr("zoom").toAscii(), zoomFactor);
         else
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
+            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
     }
     else if ((colorFormat == IB_CF_RGB24) || 
              (colorFormat == IB_CF_RGB48))
@@ -576,10 +576,10 @@ QString ImageView::createStatusBarText()
         if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
+            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
         else
             txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgb = %d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, tr("zoom").latin1(), zoomFactor);
+                        icX, icY, (int)red, (int)green, (int)blue, (const char*)tr("zoom").toAscii(), zoomFactor);
     }
     else if ((colorFormat == IB_CF_BGR24) || 
              (colorFormat == IB_CF_BGR48))
@@ -588,10 +588,10 @@ QString ImageView::createStatusBarText()
         if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
+            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
         else
             txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgb = %d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, tr("zoom").latin1(), zoomFactor);
+                        icX, icY, (int)red, (int)green, (int)blue, (const char*)tr("zoom").toAscii(), zoomFactor);
     }
     else if ((colorFormat == IB_CF_RGBA32) || 
              (colorFormat == IB_CF_RGBA64))
@@ -601,10 +601,10 @@ QString ImageView::createStatusBarText()
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
+            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
         else
             txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgba = %d,%d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, tr("zoom").latin1(), zoomFactor);
+                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, (const char*)tr("zoom").toAscii(), zoomFactor);
     }
     else if ((colorFormat == IB_CF_BGRA32) || 
              (colorFormat == IB_CF_BGRA64))
@@ -614,10 +614,10 @@ QString ImageView::createStatusBarText()
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
+            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
         else
             txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgba = %d,%d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, tr("zoom").latin1(), zoomFactor);
+                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, (const char*)tr("zoom").toAscii(), zoomFactor);
     }
 
     return txt;

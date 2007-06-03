@@ -56,7 +56,7 @@
         <number>6</number>
        </property>
        <item row="0" column="0" >
-        <widget class="Gui::SpinBox" name="spinBox" />
+        <widget class="QSpinBox" name="spinBox" />
        </item>
       </layout>
      </widget>
@@ -95,7 +95,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="Gui::SpinBox" name="uIntSpinBox" />
+        <widget class="Gui::UIntSpinBox" name="uIntSpinBox" />
        </item>
       </layout>
      </widget>
@@ -156,7 +156,7 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::SpinBox</class>
+   <class>Gui::UIntSpinBox</class>
    <extends>QSpinBox</extends>
    <header>Gui/SpinBox.h</header>
    <container>0</container>

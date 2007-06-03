@@ -40,7 +40,7 @@ class View3DInventorViewer;
 class GuiExport SplitView3DInventor : public MDIView,public ParameterGrp::ObserverType
 {
 public:
-  SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags=Qt::WDestructiveClose );
+  SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
   ~SplitView3DInventor();
 
   virtual const char *getName(void) const;

@@ -67,7 +67,7 @@ CmdPointsImport::CmdPointsImport()
 void CmdPointsImport::activated(int iMsg)
 {
   QString dir = Gui::FileDialog::getWorkingDirectory();
-  QString fn = Gui::FileDialog::getOpenFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
+  QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString::null, dir, "Ascii Points (*.asc);;All Files (*.*)");
   if ( fn.isEmpty() )
     return;
 
@@ -77,8 +77,8 @@ void CmdPointsImport::activated(int iMsg)
     fi.setFile(fn);
 
     openCommand("Points Import Create");
-    doCommand(Doc,"f = App.document().addObject(\"Points::ImportAscii\",\"%s\")", fi.baseName().latin1());
-    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Points::ImportAscii\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     commitCommand();
  
     updateActive();
@@ -111,7 +111,7 @@ CmdPointsExport::CmdPointsExport()
 void CmdPointsExport::activated(int iMsg)
 {
   QString dir = Gui::FileDialog::getWorkingDirectory();
-  QString fn = Gui::FileDialog::getSaveFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString::null, dir, "Ascii Points (*.asc);;All Files (*.*)");
   if ( fn.isEmpty() )
     return;
 
@@ -122,8 +122,8 @@ void CmdPointsExport::activated(int iMsg)
   
     openCommand("Export Points");
     std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
-    doCommand(Doc,"f = App.document().addObject(\"Points::Export\",\"%s\")", fi.baseName().latin1());
-    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Points::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     doCommand(Doc,"l=list()");
     
     for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )

@@ -35,7 +35,7 @@ class ImageGuiExport ImageView : public Gui::MDIView
     Q_OBJECT
 
 public:
-    ImageView(QWidget* parent, const char* name);
+    ImageView(QWidget* parent);
     virtual ~ImageView();
 
     const char *getName(void) const {return "ImageView";}

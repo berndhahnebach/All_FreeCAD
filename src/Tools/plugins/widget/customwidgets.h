@@ -162,70 +162,47 @@ Q_SIGNALS:
 
 // -------------------------------------------------------------
 
-class SpinBoxPrivate;
-class SpinBox : public QSpinBox
-{
-  Q_OBJECT
-
-public:
-  SpinBox ( QWidget* parent );
-  virtual ~SpinBox();
-
-protected:
-  void mouseMoveEvent    ( QMouseEvent* e );
-  void mousePressEvent   ( QMouseEvent* e );
-  void mouseReleaseEvent ( QMouseEvent* e );
-  void wheelEvent        ( QWheelEvent* e );
-  void focusOutEvent     ( QFocusEvent* e );
-  bool eventFilter       ( QObject* o, QEvent* e );
-
-private:
-  SpinBoxPrivate* d;
-};
-
-// -------------------------------------------------------------
-/*
 class UIntSpinBoxPrivate;
-class QT_WIDGET_PLUGIN_EXPORT UIntSpinBox : public SpinBox
+class UIntSpinBox : public QSpinBox
 {
-  Q_OBJECT
-  Q_OVERRIDE( uint maxValue READ maxValue WRITE setMaxValue )
-  Q_OVERRIDE( uint minValue READ minValue WRITE setMinValue )
-  Q_OVERRIDE( uint value READ value WRITE setValue )
+    Q_OBJECT
+    Q_OVERRIDE( uint maximum READ maximum WRITE setMaximum )
+    Q_OVERRIDE( uint minimum READ minimum WRITE setMinimum )
+    Q_OVERRIDE( uint value READ value WRITE setValue )
 
 public:
-  UIntSpinBox ( QWidget* parent, const char* name = 0 );
-  virtual ~UIntSpinBox();
+    UIntSpinBox ( QWidget* parent );
+    virtual ~UIntSpinBox();
 
-  void setRange( uint minVal, uint maxVal );
-  uint value() const;
-  uint minValue() const;
-  void setMinValue( uint value );
-  uint maxValue() const;
-  void setMaxValue( uint value );
+    void setRange( uint minVal, uint maxVal );
+    uint value() const;
+    virtual QValidator::State validate ( QString & input, int & pos ) const;
+    uint minimum() const;
+    void setMinimum( uint value );
+    uint maximum() const;
+    void setMaximum( uint value );
 
-  void setValidator( const QValidator * );
+Q_SIGNALS:
+    void valueChanged( uint value );
 
-signals:
-  void valueChanged( uint value );
+public Q_SLOTS:
+    void setValue( uint value );
 
-public slots:
-  void setValue( uint value );
+private Q_SLOTS:
+    void valueChange( int value );
 
 protected:
-  QString mapValueToText( int v );
-  int mapTextToValue ( bool * ok );
-  void valueChange();
-  void rangeChange();
+    virtual QString textFromValue ( int v ) const;
+    virtual int valueFromText ( const QString & text ) const;
 
 private:
-  void updateValidator();
-  UIntSpinBoxPrivate * d;
+    void updateValidator();
+    UIntSpinBoxPrivate * d;
 };
-*/
+
 // -------------------------------------------------------------
 
-class PrefSpinBox : public SpinBox
+class PrefSpinBox : public QSpinBox
 {
   Q_OBJECT
 

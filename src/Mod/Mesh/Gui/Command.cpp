@@ -322,15 +322,15 @@ void CmdMeshImport::activated(int iMsg)
   filter << "All Files (*.*)";
 
   // Allow multi selection
-  QStringList fn = Gui::FileDialog::getOpenFileNames( filter.join(";;"), dir, Gui::getMainWindow(), 0, QObject::tr("Import mesh") );
+  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(), QObject::tr("Import mesh"), dir, filter.join(";;"));
   for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it )
   {
     QFileInfo fi;
     fi.setFile(*it);
 
     openCommand("Import Mesh");
-    doCommand(Doc,"f = App.document().addObject(\"Mesh::Import\",\"%s\")", fi.baseName().latin1());
-    doCommand(Doc,"f.FileName = \"%s\"",(*it).ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toAscii());
     commitCommand();
     updateActive();
 
@@ -380,8 +380,7 @@ void CmdMeshExport::activated(int iMsg)
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Inventor V2.1 ascii (*.iv);;"
                    "VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;Nastran (*.nas *.bdf);;All Files (*.*)";
   QString format;
-  QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
-                                                 QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export mesh"), dir, filter);
 
   if (! fn.isEmpty() )
   {
@@ -392,9 +391,9 @@ void CmdMeshExport::activated(int iMsg)
 
     QFileInfo fi; fi.setFile(fn);
     openCommand("Mesh ExportSTL Create");
-    doCommand(Doc,"f = App.document().addObject(\"Mesh::Export\",\"%s\")", fi.baseName().ascii());
-    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
-    doCommand(Doc,"f.Format = \"%s\"",format.ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
+    doCommand(Doc,"f.Format = \"%s\"",(const char*)format.toAscii());
     doCommand(Doc,"f.Source = App.document().%s",docObj->name.getValue());
     commitCommand();
     updateActive();
@@ -950,8 +949,8 @@ void CmdMeshFillupHoles::activated(int iMsg)
 {
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   bool ok;
-  int FillupHolesOfLength = QInputDialog::getInteger( QObject::tr("Fill holes"), QObject::tr("Fill holes with maximum number of edges:"), 
-                                                      3, 3, 10000, 1, &ok, Gui::getMainWindow() );
+  int FillupHolesOfLength = QInputDialog::getInteger( Gui::getMainWindow(), QObject::tr("Fill holes"), QObject::tr("Fill holes with maximum number of edges:"), 
+                                                      3, 3, 10000, 1, &ok  );
   if (!ok) return;
 
   openCommand("Fill up holes");
@@ -992,8 +991,8 @@ void CmdMeshRemoveComponents::activated(int iMsg)
 {
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   bool ok;
-  int RemoveCompOfSize = QInputDialog::getInteger( QObject::tr("Remove components"), QObject::tr("Removes components up to a maximum number of triangles:"), 
-                                                      3, 1, 10000000, 1, &ok, Gui::getMainWindow() );
+  int RemoveCompOfSize = QInputDialog::getInteger( Gui::getMainWindow(), QObject::tr("Remove components"), QObject::tr("Removes components up to a maximum number of triangles:"), 
+                                                      3, 1, 10000000, 1, &ok );
   if (!ok) return;
 
   openCommand("Remove components");

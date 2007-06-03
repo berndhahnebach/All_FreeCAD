@@ -200,11 +200,11 @@ void UnitTestDialog::addUnitTest( const QString& unit )
 {
   int ct = this->comboTests->count();
   for ( int i=0; i<ct; i++ ) {
-    if ( this->comboTests->text(i) == unit )
+    if ( this->comboTests->itemText(i) == unit )
       return;
   }
 
-  this->comboTests->insertItem( unit );
+  this->comboTests->addItem( unit );
 }
 
 /**
@@ -213,7 +213,12 @@ void UnitTestDialog::addUnitTest( const QString& unit )
 void UnitTestDialog::setUnitTest( const QString& unit )
 {
   addUnitTest(unit);
-  this->comboTests->setCurrentText( unit );
+  for (int i=0; i<this->comboTests->count(); i++) {
+      if (this->comboTests->itemText(i) == unit) {
+          this->comboTests->setCurrentIndex(i);
+          break;
+      }
+  }
 }
 
 /**

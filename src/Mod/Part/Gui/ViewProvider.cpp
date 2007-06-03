@@ -67,7 +67,6 @@
 #include <App/Feature.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
-#include <Gui/Tree.h>
 
 
 #include "ViewProvider.h"

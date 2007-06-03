@@ -397,16 +397,16 @@ static char *spinbox_pixmap[]={
 ".badd............dda#.",
 "...#aaaaaaaaaaaaaa#..."};
 
-class SpinBoxPlugin : public QDesignerCustomWidgetInterface
+class UIntSpinBoxPlugin : public QDesignerCustomWidgetInterface
 {
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    SpinBoxPlugin()
+    UIntSpinBoxPlugin()
     {
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::SpinBox(parent);
+      return new Gui::UIntSpinBox(parent);
     }
     QString group() const
     {
@@ -422,7 +422,7 @@ public:
     }
     QString toolTip() const
     {
-      return QLatin1String("Spin Box");
+      return QLatin1String("Unsigned Spin Box");
     }
     QString whatsThis() const
     {
@@ -434,7 +434,7 @@ public:
     }
     QString name() const
     {
-      return QLatin1String("Gui::SpinBox");
+      return QLatin1String("Gui::UIntSpinBox");
     }
 };
 
@@ -1009,7 +1009,7 @@ QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () con
   cw.append(new FileChooserPlugin);
   cw.append(new AccelLineEditPlugin);
   cw.append(new CommandIconViewPlugin);
-  cw.append(new SpinBoxPlugin);
+  cw.append(new UIntSpinBoxPlugin);
   cw.append(new ColorButtonPlugin);
   cw.append(new PrefFileChooserPlugin);
   cw.append(new PrefSpinBoxPlugin);
