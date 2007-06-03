@@ -53,55 +53,49 @@ DEF_STD_CMD(StdCmdOpen);
 StdCmdOpen::StdCmdOpen()
   : Command("Std_Open")
 {
-  // seting the
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("&Open...");
-  sToolTipText  = QT_TR_NOOP("Open a document or import files");
-  sWhatsThis    = QT_TR_NOOP("Open a document or import files");
-  sStatusTip    = QT_TR_NOOP("Open a document or import files");
-  sPixmap       = "Open";
-  iAccel        = Qt::CTRL+Qt::Key_O;
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Open...");
+    sToolTipText  = QT_TR_NOOP("Open a document or import files");
+    sWhatsThis    = QT_TR_NOOP("Open a document or import files");
+    sStatusTip    = QT_TR_NOOP("Open a document or import files");
+    sPixmap       = "Open";
+    iAccel        = Qt::CTRL+Qt::Key_O;
 }
 
 void StdCmdOpen::activated(int iMsg)
 {
-  // fill the list of registered endings
-  QString formatList;
-  const char* supported = QT_TR_NOOP("Supported formats");
-  const char* allFiles = QT_TR_NOOP("All files (*.*)");
-  formatList = QObject::tr(supported);
-  formatList += " (";
-  
-  std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
-  std::map<std::string,std::string>::const_iterator It;
-  for(It=EndingMap.begin();It != EndingMap.end();It++)
-  {
-    formatList += " *.";
-    formatList += It->first.c_str();
-  }
+    // fill the list of registered endings
+    QString formatList;
+    const char* supported = QT_TR_NOOP("Supported formats");
+    const char* allFiles = QT_TR_NOOP("All files (*.*)");
+    formatList = QObject::tr(supported);
+    formatList += " (";
 
-  formatList += ");;";
+    std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
+    std::map<std::string,std::string>::const_iterator It;
+    for(It=EndingMap.begin();It != EndingMap.end();It++)
+    {
+        formatList += " *.";
+        formatList += It->first.c_str();
+    }
 
-  std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
-  std::vector<std::string>::const_iterator Jt;
-  for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
-  {
-    formatList += (*Jt).c_str();
-    formatList += ";;";
-  }
-  formatList += QObject::tr(allFiles);
+    formatList += ");;";
 
-  QString dir = FileDialog::getWorkingDirectory();
-  QStringList FileList = QFileDialog::getOpenFileNames( formatList,dir, getMainWindow() );
+    std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
+    std::vector<std::string>::const_iterator Jt;
+    for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
+    {
+        formatList += (*Jt).c_str();
+        formatList += ";;";
+    }
+    formatList += QObject::tr(allFiles);
 
-  int n=0;
-  for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
-    getGuiApplication()->open((*it).latin1());
-		if (n == 0) {
-      FileDialog::setWorkingDirectory(*it);
-			n++;
-		}
-  }
+    QStringList FileList = QFileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QDir::currentDirPath(), formatList );
+
+    for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
+        getGuiApplication()->open((*it).latin1());
+    }
 }
 
 //===========================================================================

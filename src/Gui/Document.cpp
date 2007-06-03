@@ -455,8 +455,7 @@ bool Document::saveAs(void)
 {
   getMainWindow()->statusBar()->message(QObject::tr("Save document under new filename..."));
 
-  QString dir = Gui::FileDialog::getWorkingDirectory();
-  QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), dir, QObject::tr("FreeCAD document (*.FCStd)") );
+  QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), QDir::currentDirPath(), QObject::tr("FreeCAD document (*.FCStd)") );
   if (!fn.isEmpty())
   {
     if ( !fn.endsWith(".FCStd"))
@@ -469,7 +468,6 @@ bool Document::saveAs(void)
     Gui::WaitCursor wc;
     Command::doCommand(Command::Doc,"App.saveAs(\"%s\",\"%s\")", _pcDocument->getName(), fn.latin1());
 
-    Gui::FileDialog::setWorkingDirectory(fn);
     getMainWindow()->appendRecentFile( fi.filePath().latin1() );
     return true;
   }

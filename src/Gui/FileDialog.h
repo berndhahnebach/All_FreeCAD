@@ -55,23 +55,22 @@ public:
                                          Options options = ShowDirsOnly );
     static QStringList getOpenFileNames( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(),
                                          const QString & filter = QString(), QString * selectedFilter = 0, Options options = 0 );
-    static QString getWorkingDirectory();
-    static void setWorkingDirectory( const QString& );
 
 public:
-  FileDialog ( QWidget * parent, Qt::WFlags flags );
-  FileDialog ( QWidget * parent = 0, const QString & caption = QString(), const QString & directory = QString(), 
-               const QString & filter = QString() );
-  virtual ~FileDialog();
+    FileDialog ( QWidget * parent, Qt::WFlags flags );
+    FileDialog ( QWidget * parent = 0, const QString & caption = QString(), const QString & directory = QString(), 
+                 const QString & filter = QString() );
+    virtual ~FileDialog();
 
 protected:
-  QString selectedFileName();
+    QString selectedFileName();
 
-protected Q_SLOTS:
-  virtual void accept();
+private:
+    static QString getWorkingDirectory();
+    static void setWorkingDirectory( const QString& );
 };
 
-// ======================================================================
+// ----------------------------------------------------------------------
 
 /**
  * The FileOptionsDialog class provides an extensible file dialog with an additonal widget either at the right 
@@ -80,33 +79,33 @@ protected Q_SLOTS:
  */
 class GuiExport FileOptionsDialog : public QFileDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  enum ExtensionPosition {
-      ExtensionRight    = 0,
-      ExtensionBottom   = 1
-  };
+    enum ExtensionPosition {
+        ExtensionRight    = 0,
+        ExtensionBottom   = 1
+    };
 
-  FileOptionsDialog ( QWidget* parent, Qt::WFlags );
-  virtual ~FileOptionsDialog();
+    FileOptionsDialog ( QWidget* parent, Qt::WFlags );
+    virtual ~FileOptionsDialog();
 
-  void accept();
+    void accept();
 
-  void setOptionsWidget( ExtensionPosition pos , QWidget*, bool show = false );
-  QWidget* getOptionsWidget() const;
+    void setOptionsWidget( ExtensionPosition pos , QWidget*, bool show = false );
+    QWidget* getOptionsWidget() const;
 
 protected Q_SLOTS:
-  void toggleExtension();
+    void toggleExtension();
 
 Q_SIGNALS:
-  void filterSelected(const QString&);
+    void filterSelected(const QString&);
 
 private:
-  QPushButton* extensionButton;
+    QPushButton* extensionButton;
 };
 
-// ======================================================================
+// ----------------------------------------------------------------------
 #if 0
 /**
  * The ImagePreview class draws a pixmap on an area.
@@ -124,7 +123,7 @@ private:
   QPixmap _pixmap;
 };
 
-// ======================================================================
+// ----------------------------------------------------------------------
 
 /**
  * The PreviewLabel class is a preview widget that can be used with FileDialogs.
@@ -144,7 +143,7 @@ private:
   QCheckBox* _cbview;
 };
 #endif
-// ======================================================================
+// ----------------------------------------------------------------------
 
 /**
  * The FileIconProvider class provides icons for FileDialog to use.
@@ -161,7 +160,7 @@ public:
     QString type ( const QFileInfo & info ) const;
 };
 
-// ======================================================================
+// ----------------------------------------------------------------------
 
 /**
  * The FileChooser class provides a lineedit with a button on the right side
@@ -170,59 +169,59 @@ public:
  */
 class GuiExport FileChooser : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_ENUMS( Mode )
-  Q_PROPERTY( Mode mode READ mode WRITE setMode )
-  Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
-  Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
-  Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
+    Q_ENUMS( Mode )
+    Q_PROPERTY( Mode mode READ mode WRITE setMode )
+    Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
+    Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
+    Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
 
 public:
-  enum Mode { File, Directory };
+    enum Mode { File, Directory };
 
-  FileChooser ( QWidget * parent = 0 );
-  virtual ~FileChooser();
+    FileChooser ( QWidget * parent = 0 );
+    virtual ~FileChooser();
 
-  /** 
-   * Returns the set filter.
-   */
-  QString filter() const;
+    /** 
+    * Returns the set filter.
+    */
+    QString filter() const;
 
-  /** 
-   * Returns the filename.
-   */
-  QString fileName() const;
+    /** 
+    * Returns the filename.
+    */
+    QString fileName() const;
 
-  /**
-   * Returns true if this widgets is set to choose a file, if it is
-   * set to choose false is returned.
-   */
-  Mode mode() const;
+    /**
+    * Returns true if this widgets is set to choose a file, if it is
+    * set to choose false is returned.
+    */
+    Mode mode() const;
 
-  /**
-   * Returns the button's text.
-   */
-  QString buttonText() const;
+    /**
+    * Returns the button's text.
+    */
+    QString buttonText() const;
 
 public Q_SLOTS:
-  virtual void setFileName( const QString &fn );
-  virtual void setMode( Mode m );
-  virtual void setFilter ( const QString & );
-  virtual void setButtonText ( const QString & );
+    virtual void setFileName( const QString &fn );
+    virtual void setMode( Mode m );
+    virtual void setFilter ( const QString & );
+    virtual void setButtonText ( const QString & );
 
 Q_SIGNALS:
-  void fileNameChanged( const QString & );
-  void fileNameSelected( const QString & );
+    void fileNameChanged( const QString & );
+    void fileNameSelected( const QString & );
 
 private Q_SLOTS:
-  void chooseFile();
+    void chooseFile();
 
 private:
-  QLineEdit *lineEdit;
-  QPushButton *button;
-  Mode md;
-  QString _filter;
+    QLineEdit *lineEdit;
+    QPushButton *button;
+    Mode md;
+    QString _filter;
 };
 
 } // namespace Gui
