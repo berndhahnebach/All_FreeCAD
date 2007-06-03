@@ -38,17 +38,16 @@ using namespace Gui;
  * This is a convenience static function that returns an existing file selected by the user. 
  * If the user pressed Cancel, it returns a null string.
  */
-QString FileDialog::getOpenFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, QString* selectedFilter,
-                                      bool resolveSymlinks, const QString& buttonText, bool * ok )
+QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, const QString & dir, 
+                                     const QString & filter, QString * selectedFilter, Options options )
 {
   // The string 'startWith' can also contain the file name that is shown in the lineedit.
-  QString dirName = startWith;
+  QString dirName = dir;
   QString selName = QString::null;
-  if ( !startWith.isEmpty() ) {
-    Q3UrlOperator u( startWith );
+  if ( !dir.isEmpty() ) {
+    Q3UrlOperator u( dir );
     if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
-      dirName = startWith;
+      dirName = dir;
     } else {
       if ( u.isLocalFile() ) {
         QFileInfo fi( u.dirPath() );
@@ -63,30 +62,26 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
     }
   }
 
-  FileDialog fd( dirName, filter, parent, name, true );
+  FileDialog fd(parent, caption, dirName, filter);
 
   fd.setMode( ExistingFile );
   if ( !caption.isNull() )
     fd.setCaption( caption );
   else
     fd.setCaption( FileDialog::tr( "Open" ) );
-  if ( !selName.isEmpty() )
-    fd.setSelection( selName );
+//  if ( !selName.isEmpty() )
+//    fd.setSelection( selName );
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
-  if ( buttonText != QString::null )
-  {
-    // search for the OK button to change its text
-    QObject* btn = fd.child( "OK", "QPushButton", true );
-    if ( btn )
-      static_cast<QPushButton*>(btn)->setText( buttonText );
-  }
+  //if ( buttonText != QString::null )
+  //{
+  //  // search for the OK button to change its text
+  //  QObject* btn = fd.child( "OK", "QPushButton", true );
+  //  if ( btn )
+  //    static_cast<QPushButton*>(btn)->setText( buttonText );
+  //}
 
-  bool ok_ = false;
-  ok_ = ( fd.exec() == QDialog::Accepted );
-  if ( ok )
-  	*ok = ok_;
-  if ( ok_ )
+  if ( fd.exec() == QDialog::Accepted )
   {
     if ( selectedFilter )
       *selectedFilter = fd.selectedFilter();
@@ -99,17 +94,16 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
 /**
  * This is a convenience static function that will return a file name selected by the user. The file does not have to exist.
  */
-QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, QString * selectedFilter,
-                                      bool resolveSymlinks, const QString& buttonText, bool * ok  )
+QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption, const QString & dir, 
+                                      const QString & filter, QString * selectedFilter, Options options )
 {
   // The string 'startWith' can also contain the file name that is shown in the lineedit.
-  QString dirName = startWith;
+  QString dirName = dir;
   QString selName = QString::null;
-  if ( !startWith.isEmpty() ) {
-    Q3UrlOperator u( startWith );
+  if ( !dir.isEmpty() ) {
+    Q3UrlOperator u( dir );
     if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
-      dirName = startWith;
+      dirName = dir;
     } else {
       if ( u.isLocalFile() ) {
         QFileInfo fi( u.dirPath() );
@@ -124,30 +118,26 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
     }
   }
 
-  FileDialog fd( dirName, filter, parent, name, true );
+  FileDialog fd(parent, caption, dirName, filter);
 
   fd.setMode( AnyFile );
   if ( !caption.isNull() )
     fd.setCaption( caption );
   else
     fd.setCaption( FileDialog::tr( "Save as" ) );
-  if ( !selName.isEmpty() )
-    fd.setSelection( selName );
+//  if ( !selName.isEmpty() )
+//    fd.setSelection( selName );
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
-  if ( buttonText != QString::null )
-  {
-    // search for the OK button to change its text
-    QObject* btn = fd.child( "OK", "QPushButton", true );
-    if ( btn )
-      static_cast<QPushButton*>(btn)->setText( buttonText );
-  }
+  //if ( buttonText != QString::null )
+  //{
+  //  // search for the OK button to change its text
+  //  QObject* btn = fd.child( "OK", "QPushButton", true );
+  //  if ( btn )
+  //    static_cast<QPushButton*>(btn)->setText( buttonText );
+  //}
 
-  bool ok_ = false;
-  ok_ = ( fd.exec() == QDialog::Accepted );
-  if ( ok )
-  	*ok = ok_;
-  if ( ok_ )
+  if ( fd.exec() == QDialog::Accepted )
   {
     if ( selectedFilter )
       *selectedFilter = fd.selectedFilter();
@@ -160,11 +150,9 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
 /**
  * This is a convenience static function that will return an existing directory selected by the user.
  */
-QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, const char* name,
-                                          const QString& caption, bool dirOnly, bool resolveSymlinks,
-                                          bool * ok )
+QString FileDialog::getExistingDirectory( QWidget * parent, const QString & caption, const QString & dir, Options options )
 {
-  QString path = Q3FileDialog::getExistingDirectory( dir, parent, name, caption, dirOnly, resolveSymlinks );
+  QString path = QFileDialog::getExistingDirectory(parent, caption, dir, options);
   // valid path was selected
   if ( !path.isEmpty() )
   {
@@ -172,38 +160,30 @@ QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, 
     path = d.path(); // get path in Qt manner
   }
 
-  if ( ok )
-  	*ok = !path.isEmpty();
-
   return path;
 }
 
 /**
  * This is a convenience static function that will return one or more existing files selected by the user.
  */
-QStringList FileDialog::getOpenFileNames ( const QString & filter, const QString & dir, QWidget * parent, 
-                                           const char * name, const QString & caption, QString * selectedFilter, 
-                                           bool resolveSymlinks, const QString& buttonText, bool * ok )
+QStringList FileDialog::getOpenFileNames ( QWidget * parent, const QString & caption, const QString & dir,
+                                           const QString & filter, QString * selectedFilter, Options options )
 {
-  FileDialog fd( dir, filter, parent, name, true );
+  FileDialog fd(parent, caption, dir, filter);
   fd.setMode( ExistingFiles );
   fd.setCaption(caption);
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
-  if ( buttonText != QString::null )
-  {
-    // search for the OK button to change its text
-    QObject* btn = fd.child( "OK", "QPushButton", true );
-    if ( btn )
-      static_cast<QPushButton*>(btn)->setText( buttonText );
-  }
+  //if ( buttonText != QString::null )
+  //{
+  //  // search for the OK button to change its text
+  //  QObject* btn = fd.child( "OK", "QPushButton", true );
+  //  if ( btn )
+  //    static_cast<QPushButton*>(btn)->setText( buttonText );
+  //}
 
-  bool ok_ = false;
   QStringList lst;
-  ok_ = ( fd.exec() == QDialog::Accepted );
-  if ( ok )
-  	*ok = ok_;
-  if ( ok_ )
+  if ( fd.exec() == QDialog::Accepted )
   {
     if ( selectedFilter )
       *selectedFilter = fd.selectedFilter();
@@ -259,8 +239,8 @@ void FileDialog::setWorkingDirectory( const QString& dir )
  * Constructs a file dialog called \a name and with the parent \a parent. 
  * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
  */
-FileDialog::FileDialog ( QWidget* parent, const char* name, bool modal)
-    : Q3FileDialog(parent, name, modal )
+FileDialog::FileDialog ( QWidget* parent, Qt::WFlags f)
+    : QFileDialog(parent, f )
 {
 }
 
@@ -272,9 +252,8 @@ FileDialog::FileDialog ( QWidget* parent, const char* name, bool modal)
  * it will be the directory that is shown when the dialog appears. If \a filter is specified
  * it will be used as the dialog's file filter.
  */
-FileDialog::FileDialog ( const QString& dirName, const QString& filter,
-                        QWidget* parent, const char* name, bool modal)
-    : Q3FileDialog(dirName, filter, parent, name, modal )
+FileDialog::FileDialog ( QWidget* parent, const QString& caption, const QString& dirName, const QString& filter )
+    : QFileDialog(parent, caption, dirName, filter)
 {
 }
 
@@ -300,10 +279,10 @@ void FileDialog::accept()
         return;
     }
 
-    setSelection( fn );
+//    setSelection( fn );
   }
 
-  Q3FileDialog::accept();
+  QFileDialog::accept();
 }
 
 /**
@@ -442,7 +421,7 @@ QWidget* FileOptionsDialog::getOptionsWidget() const
 }
 
 // ======================================================================
-
+#if 0
 /**
  * Constructs a image preview widget called \a name with the parent \a parent.
  */
@@ -519,52 +498,33 @@ void PreviewLabel::previewUrl( const Q3Url &u )
   else
     _preview->setPixmap( QPixmap() );
 }
-
+#endif
 // ======================================================================
 
 /**
  * Constructs an empty file icon provider called \a name, with the parent \a parent.
  */
-FileIconProvider::FileIconProvider( QObject * parent, const char * name )
-  : Q3FileIconProvider( parent, name )
+FileIconProvider::FileIconProvider()
 {
-  Q3FileDialog::setIconProvider( this );
 }
 
 FileIconProvider::~FileIconProvider()
 {
-  Q3FileDialog::setIconProvider( 0L );
 }
 
-/**
- * Returns a pointer to a pixmap that should be used to signify the file with the information \a info.
- * If pixmap() returns 0, QFileDialog draws the default pixmap.
- */
-const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
+QIcon FileIconProvider::icon ( IconType type ) const
 {
-  QString fn = info.filePath();
-  bool b=info.exists();
-  b=info.isFile();
-  if ( info.exists() && info.isFile() )
-  {
-    // TODO Not sure what happens here...
-    //const char* ext = QPixmap::imageFormat( fn );
-    //
-    //// seems to be valid image file
-    //if ( ext )
-    //{
-    //  return BitmapFactory().fileFormat( "image_xpm" );
-    //}
-    //else // other file formats 
-    //{
-    //  QString ext = info.extension().upper();
-    //  QPixmap* px = BitmapFactory().fileFormat( ext.latin1() );
-    //  if ( px )
-    //    return px;
-    //}
-  }
+    return QFileIconProvider::icon(type);
+}
 
-  return Q3FileIconProvider::pixmap( info );
+QIcon FileIconProvider::icon ( const QFileInfo & info ) const
+{
+    return QFileIconProvider::icon(info);
+}
+
+QString FileIconProvider::type ( const QFileInfo & info ) const
+{
+    return QFileIconProvider::type(info);
 }
 
 // --------------------------------------------------------------------

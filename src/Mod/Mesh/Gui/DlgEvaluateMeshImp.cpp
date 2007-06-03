@@ -45,7 +45,7 @@ using namespace Mesh;
 using namespace MeshGui;
 
 CleanupHandler::CleanupHandler()
- : QObject(qApp, "CleanupHandler")
+ : QObject(qApp)
 {
   // connect to lstWindowClosed signal
   connect( qApp, SIGNAL(lastWindowClosed()), this, SLOT(cleanup()) );
@@ -77,8 +77,8 @@ void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Docum
     }
 
     meshNameButton->clear();
-    meshNameButton->insertItem(tr("No selection"));
-    meshNameButton->insertStringList(items);
+    meshNameButton->insertItem(0, tr("No selection"));
+    meshNameButton->insertItems(1, items);
     meshNameButton->setDisabled(items.empty());
     cleanInformation();
 
@@ -150,8 +150,8 @@ void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
 
   int ct = meshNameButton->count();
   for (int i=1; i<ct; i++) {
-    if ( meshNameButton->text(i) == _meshFeature->name.getValue() ) {
-      meshNameButton->setCurrentItem(i);
+    if ( meshNameButton->itemText(i) == _meshFeature->name.getValue() ) {
+      meshNameButton->setCurrentIndex(i);
       on_meshNameButton_activated(i);
       break;
     }
@@ -204,7 +204,7 @@ void DlgEvaluateMeshImp::removeViewProviders()
 
 void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
 {
-  QString item = meshNameButton->text(i);
+  QString item = meshNameButton->itemText(i);
 
   _meshFeature = 0;
   std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
@@ -284,8 +284,8 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
   }
 
   meshNameButton->clear();
-  meshNameButton->insertItem(tr("No selection"));
-  meshNameButton->insertStringList(items);
+  meshNameButton->insertItem(0, tr("No selection"));
+  meshNameButton->insertItems(1, items);
   meshNameButton->setDisabled(items.empty());
   cleanInformation();
 }

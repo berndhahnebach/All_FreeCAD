@@ -63,7 +63,7 @@ void DlgPartImportStepImp::OnApply()
 
 void DlgPartImportStepImp::onChooseFileName()
 {
-    QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::getMainWindow() );
+    QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString::null, QString::null, "STEP (*.stp *.step);;All Files (*.*)");
     if (! fn.isEmpty() )
     {
         FileName->setText(fn);

@@ -308,23 +308,11 @@ void CommandIconView::onSelectionChanged(QListWidgetItem * item, QListWidgetItem
 
 namespace Gui {
 
-class SpinBoxPrivate
-{
-public:
-  SpinBoxPrivate();
-  bool pressed;
-  int nY, nStep;
-};
-
-SpinBoxPrivate::SpinBoxPrivate()
-{
-  pressed = false;
-}
-
 class UnsignedValidator : public QValidator
 {
 public:
   UnsignedValidator( QObject * parent );
+  UnsignedValidator( uint minimum, uint maximum, QObject * parent );
   ~UnsignedValidator();
 
   QValidator::State validate( QString &, int & ) const;
@@ -345,6 +333,13 @@ UnsignedValidator::UnsignedValidator( QObject * parent )
 {
   b =  0;
   t =  UINT_MAX;
+}
+
+UnsignedValidator::UnsignedValidator( uint minimum, uint maximum, QObject * parent )
+  : QValidator( parent )
+{
+    b = minimum;
+    t = maximum;
 }
 
 UnsignedValidator::~UnsignedValidator()
@@ -425,235 +420,110 @@ public:
 
 } // namespace Gui
 
-//FIXME: Port to Qt4
-SpinBox::SpinBox ( QWidget* parent )
+// -------------------------------------------------------------
+
+UIntSpinBox::UIntSpinBox ( QWidget* parent )
   : QSpinBox (parent)
 {
-  setMouseTracking(true);
-  d = new SpinBoxPrivate;
-}
-
-SpinBox::~SpinBox()
-{
-  delete d;
-  d = 0L;
-}
-
-void SpinBox::mouseMoveEvent ( QMouseEvent* e )
-{
-  if (QWidget::mouseGrabber() == 0 && !rect().contains(e->pos()) && d->pressed )
-    grabMouse( QCursor(Qt::IBeamCursor) );
-
-  if (QWidget::mouseGrabber() == this)
-  {
-    // get "speed" of mouse move
-    int val = value();
-    int step = (d->nY - e->y()) * d->nStep;
-    if ( wrapping() ) {
-      setValue( val + step );
-    } else {
-      // avoid overflow of integer
-      int diff=INT_MAX;
-      if ( val < 0 )
-        diff = INT_MIN - val;
-      else if ( val > 0 )
-        diff = INT_MAX - val;
-      // only allowed if no overflow occurs
-      if ( !( ( val > 0 && step > diff ) || ( val < 0 && step < diff) ) )
-        setValue( val + step );
-    }
-
-    d->nY = e->y();
-  }
-  else
-    QSpinBox::mouseMoveEvent(e);
-}
-
-void SpinBox::mousePressEvent   ( QMouseEvent* e )
-{
-  d->pressed = true;
-
-  int nMax = maximum();
-  int nMin = minimum();
-
-  if (nMax == INT_MAX || nMin == INT_MIN)
-  {
-    d->nStep = 100;
-  }
-  else
-  {
-    int nRange = nMax - nMin;
-    int nHeight = QApplication::desktop()->height();
-    if (nRange > nHeight)
-      d->nStep = int(nRange / nHeight);
-    else
-      d->nStep = 1;
-  }
-
-  d->nY = e->y();
-}
-
-void SpinBox::mouseReleaseEvent ( QMouseEvent* )
-{
-  if (QWidget::mouseGrabber() == this)
-    releaseMouse();
-  d->pressed = false;
-}
-
-void SpinBox::focusOutEvent ( QFocusEvent* )
-{
-  if (QWidget::mouseGrabber() == this)
-    releaseMouse();
-}
-
-void SpinBox::wheelEvent ( QWheelEvent* e )
-{
-  if (isEnabled())
-    QSpinBox::wheelEvent(e);
-}
-
-bool SpinBox::eventFilter ( QObject* o, QEvent* e )
-{
-  if ( o == lineEdit() )
-  {
-    // get the editor's mouse events
-    switch (e->type())
-    {
-      // redirect the events to spin box (itself)
-    case QEvent::MouseButtonPress:
-      mousePressEvent ((QMouseEvent*)e);
-      break;
-
-    case QEvent::MouseButtonRelease:
-      mouseReleaseEvent ((QMouseEvent*)e);
-      break;
-
-    case QEvent::MouseMove:
-      mouseMoveEvent ((QMouseEvent*)e);
-      break;
-
-    case QEvent::FocusOut:
-      focusOutEvent ((QFocusEvent*)e);
-      break;
-
-    default:
-      break;
-    }
-  }
-
-  return QSpinBox::eventFilter(o, e);
-}
-
-// -------------------------------------------------------------
-/*
-UIntSpinBox::UIntSpinBox ( QWidget* parent, const char* name )
-  : SpinBox (INT_MIN,INT_MAX,1,parent, name)
-{
-  d = new UIntSpinBoxPrivate;
-  setRange(0, 99);
-  setValue(0);
-  updateValidator();
+    d = new UIntSpinBoxPrivate;
+    connect(this, SIGNAL(valueChanged(int)), this, SLOT(valueChange(int)));
+    setRange(0, 99);
+    setValue(0);
+    updateValidator();
 }
 
 UIntSpinBox::~UIntSpinBox()
 {
-  delete d; d = 0;
+    delete d; d = 0;
 }
 
 void UIntSpinBox::setRange( uint minVal, uint maxVal )
 {
-  int iminVal = d->mapToInt(minVal);
-  int imaxVal = d->mapToInt(maxVal);
-  QSpinBox::setRange( iminVal, imaxVal );
+    int iminVal = d->mapToInt(minVal);
+    int imaxVal = d->mapToInt(maxVal);
+    QSpinBox::setRange( iminVal, imaxVal );
+    updateValidator();
+}
+
+QValidator::State UIntSpinBox::validate ( QString & input, int & pos ) const
+{
+    return d->mValidator->validate(input, pos);
 }
 
 uint UIntSpinBox::value() const
 {
-  return d->mapToUInt( QSpinBox::value() );
+    return d->mapToUInt( QSpinBox::value() );
 }
 
 void UIntSpinBox::setValue( uint value )
 {
-  QSpinBox::setValue( d->mapToInt( value ) );
+    QSpinBox::setValue( d->mapToInt( value ) );
 }
 
-uint UIntSpinBox::minValue() const
+void UIntSpinBox::valueChange( int value )
 {
-  return d->mapToUInt( QSpinBox::minValue() );
+    valueChanged( d->mapToUInt(value) );
 }
 
-void UIntSpinBox::setMinValue( uint minVal )
+uint UIntSpinBox::minimum() const
 {
-  uint maxVal = maxValue();
-  if ( maxVal < minVal )
-    maxVal = minVal;
-  setRange( minVal, maxVal );
+    return d->mapToUInt( QSpinBox::minimum() );
 }
 
-uint UIntSpinBox::maxValue() const
+void UIntSpinBox::setMinimum( uint minVal )
 {
-  return d->mapToUInt( QSpinBox::maxValue() );
+    uint maxVal = maximum();
+    if ( maxVal < minVal )
+        maxVal = minVal;
+    setRange( minVal, maxVal );
 }
 
-void UIntSpinBox::setMaxValue( uint maxVal )
+uint UIntSpinBox::maximum() const
 {
-  uint minVal = minValue();
-  if ( minVal > maxVal )
-    minVal = maxVal;
-  setRange( minVal, maxVal );
+    return d->mapToUInt( QSpinBox::maximum() );
 }
 
-void UIntSpinBox::setValidator( const QValidator * )
+void UIntSpinBox::setMaximum( uint maxVal )
 {
+    uint minVal = minimum();
+    if ( minVal > maxVal )
+        minVal = maxVal;
+    setRange( minVal, maxVal );
 }
 
-void UIntSpinBox::valueChange()
+QString UIntSpinBox::textFromValue ( int v ) const
 {
-  QSpinBox::valueChange();
-  emit valueChanged( d->mapToUInt( QSpinBox::value() ) );
+    uint val = d->mapToUInt( v );
+    QString s;
+    s.setNum(val);
+    return s;
 }
 
-void UIntSpinBox::rangeChange()
+int UIntSpinBox::valueFromText ( const QString & text ) const
 {
-  QSpinBox::rangeChange();
-  updateValidator();
-}
+    bool ok;
+    QString s = text;
+    uint newVal = s.toUInt( &ok );
+    if ( !ok && !( prefix().isEmpty() && suffix().isEmpty() ) ) {
+        s = cleanText();
+        newVal = s.toUInt( &ok );
+    }
 
-QString UIntSpinBox::mapValueToText( int v )
-{
-  uint val = d->mapToUInt( v );
-  QString s;
-  s.setNum(val);
-  return s;
-}
-
-int UIntSpinBox::mapTextToValue ( bool * ok )
-{
-  QString s = text();
-  uint newVal = s.toUInt( ok );
-  if ( !(*ok) && !( !prefix() && !suffix() ) ) {
-    s = cleanText();
-    newVal = s.toUInt( ok );
-  }
- 
-  return d->mapToInt( newVal );
+    return d->mapToInt( newVal );
 }
 
 void UIntSpinBox::updateValidator() 
 {
-  if ( !d->mValidator ) 
-  {
-    d->mValidator =  new UnsignedValidator( this->minValue(), this->maxValue(), this, "d->mValidator" );
-    QSpinBox::setValidator( d->mValidator );
-  } 
-  else
-    d->mValidator->setRange( this->minValue(), this->maxValue() );
+    if ( !d->mValidator ) 
+        d->mValidator =  new UnsignedValidator( this->minimum(), this->maximum(), this );
+    else
+        d->mValidator->setRange( this->minimum(), this->maximum() );
 }
-*/
+
 // --------------------------------------------------------------------
 
 PrefSpinBox::PrefSpinBox ( QWidget * parent )
-  : SpinBox(parent)
+  : QSpinBox(parent)
 {
 }
 

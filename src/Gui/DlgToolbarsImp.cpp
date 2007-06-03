@@ -412,14 +412,15 @@ void DlgCustomToolbars::on_createToolbarButton_clicked()
 void DlgCustomToolbars::on_deleteToolbarButton_clicked()
 {
   if ( !_toolBars ) return;
-  Q3ValueList<CheckListItem> items;
+  QList<CheckListItem> items;
   QList<ToolBarItem*> bars = _toolBars->getItems();
   for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
     items.append( qMakePair( (*bar)->command(), true ) );
   }
 
-  CheckListDialog checklists(this, "", true) ;
+  CheckListDialog checklists(this);
+  checklists.setModal(true);
   checklists.setCaption( tr("Delete selected bars") );
   checklists.setCheckableItems( items );
   if (checklists.exec())

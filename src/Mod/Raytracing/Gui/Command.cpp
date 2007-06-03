@@ -38,7 +38,6 @@
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/View.h>
-#include <Gui/ProgressBar.h>
 
 #include <Mod/Part/App/PartFeature.h>
   

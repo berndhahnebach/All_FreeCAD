@@ -29,8 +29,8 @@ using namespace ImageGui;
 /* TRANSLATOR ImageGui::GLImageBox */
 
 // Constructor
-GLImageBox::GLImageBox(QWidget* parent, const char* name, const QGLWidget* shareWidget )
-    : QGLWidget( parent, name, shareWidget )
+GLImageBox::GLImageBox(QWidget * parent, const QGLWidget * shareWidget, Qt::WFlags f)
+    : QGLWidget(parent, shareWidget, f)
 {
     // uses default display format for the OpenGL rendering context
     // (double buffering is enabled)

@@ -1,7 +1,7 @@
 #ifndef __PRECOMPILED_GUI__
 #define __PRECOMPILED_GUI__
 
-#include "../../../FCConfig.h"
+#include <FCConfig.h>
 
 // Importing of App classes
 #ifdef FC_OS_WIN32

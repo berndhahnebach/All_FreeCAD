@@ -44,7 +44,6 @@
 #include "propertyeditorlist.h"
 #include "propertyeditorinput.h"
 
-using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 
 
@@ -133,17 +132,17 @@ QVariant FileEditorItem::currentEditorValue( QWidget* editor ) const
 
 void FileEditorItem::onChangeFile()
 {
-  QPushButton* btn = (QPushButton*)sender();
+  //QPushButton* btn = (QPushButton*)sender();
 
-  if ( btn )
-  {
-    QString url = FileDialog::getOpenFileName(QString::null, QString::null, listView(), tr("Choose a file"));
-    if ( !url.isEmpty() )
-    {
-      onValueChanged();
-      btn->setText( url );
-    }
-  }
+  //if ( btn )
+  //{
+  //  QString url = FileDialog::getOpenFileName(QString::null, QString::null, listView(), tr("Choose a file"));
+  //  if ( !url.isEmpty() )
+  //  {
+  //    onValueChanged();
+  //    btn->setText( url );
+  //  }
+  //}
 }
 
 QVariant FileEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
@@ -239,34 +238,34 @@ QVariant PixmapEditorItem::currentEditorValue( QWidget* editor ) const
 
 void PixmapEditorItem::onChangePixmap()
 {
-  QPushButton* btn = (QPushButton*)sender();
+  //QPushButton* btn = (QPushButton*)sender();
 
-  if ( btn )
-  {
-    PreviewLabel* p = new PreviewLabel;
+  //if ( btn )
+  //{
+  //  PreviewLabel* p = new PreviewLabel;
 
-    Q3FileDialog dlg( QString::null, QString("*.png *.xpm *.bmp *.jpg Pixmap Files"), listView(), 0, true );
-    dlg.setContentsPreviewEnabled( true );
-    dlg.setContentsPreview( p, p );
-    dlg.setViewMode( Q3FileDialog::List );
-    dlg.setPreviewMode( Q3FileDialog::Contents );
-    dlg.setCaption( tr( "Choose a Pixmap..." ) );
+  //  Q3FileDialog dlg( QString::null, QString("*.png *.xpm *.bmp *.jpg Pixmap Files"), listView(), 0, true );
+  //  dlg.setContentsPreviewEnabled( true );
+  //  dlg.setContentsPreview( p, p );
+  //  dlg.setViewMode( Q3FileDialog::List );
+  //  dlg.setPreviewMode( Q3FileDialog::Contents );
+  //  dlg.setCaption( tr( "Choose a Pixmap..." ) );
 
-    if ( dlg.exec() == QDialog::Accepted )
-    {
-      QString url = dlg.selectedFile();
-      if ( !url.isEmpty() )
-      {
-        onValueChanged();
-        QPixmap p;
-        p.load(url);
-        int w = QMIN(p.width(), height());
-        int h = QMIN(p.height(), height());
-        p.resize(w, h);
-        btn->setPixmap( p );
-      }
-    }
-  }
+  //  if ( dlg.exec() == QDialog::Accepted )
+  //  {
+  //    QString url = dlg.selectedFile();
+  //    if ( !url.isEmpty() )
+  //    {
+  //      onValueChanged();
+  //      QPixmap p;
+  //      p.load(url);
+  //      int w = QMIN(p.width(), height());
+  //      int h = QMIN(p.height(), height());
+  //      p.resize(w, h);
+  //      btn->setPixmap( p );
+  //    }
+  //  }
+  //}
 }
 
 QVariant PixmapEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)

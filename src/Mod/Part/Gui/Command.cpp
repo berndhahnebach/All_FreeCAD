@@ -301,14 +301,14 @@ void CmdPartImport::activated(int iMsg)
 {
   QString dir = Gui::FileDialog::getWorkingDirectory();
   QString filter = "STEP (*.stp *.step);;IGES (*.igs *.iges);;BREP (*.brp *.brep *.BREP);;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
+  QString fn = Gui::FileDialog::getOpenFileName( Gui::getMainWindow(), QString::null ,dir, filter );
   if (! fn.isEmpty() )
   {
     App::Document* pDoc = getDocument();
     if ( !pDoc ) return; // no document
     openCommand("Part Import Create");
     doCommand(Doc, "import Part");
-    doCommand(Doc, "Part.insert(\"%s\",\"%s\")", fn.latin1(), pDoc->getName());
+    doCommand(Doc, "Part.insert(\"%s\",\"%s\")", (const char*)fn.toAscii(), pDoc->getName());
     commitCommand();
 
     Gui::FileDialog::setWorkingDirectory(fn);
@@ -345,13 +345,13 @@ void CmdPartImportCurveNet::activated(int iMsg)
 {
   QString dir = Gui::FileDialog::getWorkingDirectory();
   QString filter = "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
+  QString fn = Gui::FileDialog::getOpenFileName( Gui::getMainWindow(), QString::null, dir, filter );
   if (! fn.isEmpty() )
   {
     QFileInfo fi; fi.setFile(fn);
     openCommand("Part Import Curve Net");
-    doCommand(Doc,"f = App.document().addObject(\"Part::CurveNet\",\"%s\")", fi.baseName().latin1());
-    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Part::CurveNet\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     commitCommand();
     updateActive();
 

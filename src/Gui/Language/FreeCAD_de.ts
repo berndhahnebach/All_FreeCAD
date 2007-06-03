@@ -2339,12 +2339,12 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation></translation>
     </message>
     <message>
-        <source>Save views</source>
-        <translation>Ansichten speichern</translation>
+        <source>Save views...</source>
+        <translation>Ansichten speichern...</translation>
     </message>
     <message>
-        <source>Restore views</source>
-        <translation>Ansichten wiederherstellen</translation>
+        <source>Restore views...</source>
+        <translation>Ansichten wiederherstellen...</translation>
     </message>
     <message>
         <source>Freeze view</source>

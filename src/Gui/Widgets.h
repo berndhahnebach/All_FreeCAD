@@ -32,6 +32,8 @@
 # include "Qt3All.h"
 #endif
 
+#include "ui_DlgTreeWidget.h"
+
 namespace Gui {
 class PrefCheckBox;
 class CommandViewItemPrivate;
@@ -40,7 +42,7 @@ class CommandViewItemPrivate;
  * The CheckMessageBox class provides an additional QCheckBox to check if
  * the message should appear in future or not.
  * \author Werner Mayer
- */
+ *//*
 class GuiExport CheckMessageBox : public QMessageBox
 {
   Q_OBJECT
@@ -83,7 +85,7 @@ private:
 
   Gui::PrefCheckBox* checkBox;
   Q3GridLayout* layout;
-};
+};*/
 
 // ------------------------------------------------------------------------------
 
@@ -145,25 +147,18 @@ class GuiExport CheckListDialog : public QDialog
   Q_OBJECT
 
 public:
-  CheckListDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+  CheckListDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~CheckListDialog();
 
   void setCheckableItems( const QStringList& items );
-  void setCheckableItems( const Q3ValueList<CheckListItem>& items );
+  void setCheckableItems( const QList<CheckListItem>& items );
   QStringList getCheckedItems() const;
 
   void accept ();
 
 private:
   QStringList checked;
-
-  QPushButton* buttonOk;
-  QPushButton* buttonCancel;
-  Q3GroupBox* GroupBox1;
-  Q3ListView* ListView;
-  Q3GridLayout* CheckListDialogLayout;
-  Q3HBoxLayout* Layout2;
-  Q3GridLayout* GroupBox1Layout;
+  Ui_DlgTreeWidget ui;
 };
 
 // ------------------------------------------------------------------------------

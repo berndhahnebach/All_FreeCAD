@@ -613,7 +613,7 @@ void Document::createView(const char* sType)
   MDIView* pcView3D=0;
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
-    pcView3D = new Gui::View3DInventor(this,getMainWindow(),"View3DIv");
+    pcView3D = new Gui::View3DInventor(this,getMainWindow());
 
     // add the selction node of the document
     //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);

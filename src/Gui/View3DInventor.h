@@ -70,7 +70,7 @@ class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType
   TYPESYSTEM_HEADER();
 
 public:
-  View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags=Qt::WDestructiveClose );
+  View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
   ~View3DInventor();
 
   /// Mesage handler

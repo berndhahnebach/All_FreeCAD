@@ -78,7 +78,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new WidgetProducer<PrefSpinBox>;
   new WidgetProducer<PrefLineEdit>;
   new WidgetProducer<PrefComboBox>;
-  new WidgetProducer<PrefListBox>;
+  //new WidgetProducer<PrefListBox>;
   new WidgetProducer<PrefCheckBox>;
   new WidgetProducer<PrefRadioButton>;
   new WidgetProducer<PrefSlider>;

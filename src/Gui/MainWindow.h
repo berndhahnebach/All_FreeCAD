@@ -65,7 +65,7 @@ public:
    * Constructs an empty main window. For default \a parent is 0, as there usually is
    * no toplevel window there.
    */
-  MainWindow( QWidget * parent = 0, Qt::WFlags f = Qt::WType_TopLevel );
+  MainWindow( QWidget * parent = 0, Qt::WFlags f = Qt::Window );
   /** Destroys the object and frees any allocated resources. */
   ~MainWindow();
   /**

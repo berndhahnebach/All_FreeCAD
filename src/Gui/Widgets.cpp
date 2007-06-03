@@ -33,7 +33,7 @@
 using namespace Gui;
 
 /* TRANSLATOR Gui::CheckMessageBox */
-
+#if 0
 /**
  * Constructs a message box with no text and a button with the label "OK".
  * If \a parent is 0, the message box becomes an application-global modal dialog box. 
@@ -217,7 +217,7 @@ int CheckMessageBox::_msg( Icon icon, QWidget * parent, const QString & caption,
     return -1;
   }
 }
-
+#endif
 // ------------------------------------------------------------------------------
 
 /**
@@ -373,56 +373,10 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-CheckListDialog::CheckListDialog( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
-    : QDialog( parent, name, modal, fl )
+CheckListDialog::CheckListDialog( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  if ( !name )
-    setName( "CheckListDialog" );
-  resize( 402, 270 );
-  setProperty( "sizeGripEnabled", QVariant( (int) 0 ) );
-  CheckListDialogLayout = new Q3GridLayout( this );
-  CheckListDialogLayout->setSpacing( 6 );
-  CheckListDialogLayout->setMargin( 11 );
-
-  Layout2 = new Q3HBoxLayout;
-  Layout2->setSpacing( 6 );
-  Layout2->setMargin( 0 );
-
-  buttonOk = new QPushButton( this, "buttonOk" );
-  buttonOk->setProperty( "text", tr( "&OK" ) );
-  buttonOk->setProperty( "autoDefault", QVariant((int) 0 ) );
-  buttonOk->setProperty( "default", QVariant( (int) 0 ) );
-  Layout2->addWidget( buttonOk );
-  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-  Layout2->addItem( spacer );
-
-  buttonCancel = new QPushButton( this, "buttonCancel" );
-  buttonCancel->setProperty( "text", tr( "&Cancel" ) );
-  buttonCancel->setProperty( "autoDefault", QVariant( (int) 0 ) );
-  Layout2->addWidget( buttonCancel );
-
-  CheckListDialogLayout->addLayout( Layout2, 1, 0 );
-
-  GroupBox1 = new Q3GroupBox( this, "GroupBox1" );
-  GroupBox1->setColumnLayout(0, Qt::Vertical );
-  GroupBox1->layout()->setSpacing( 0 );
-  GroupBox1->layout()->setMargin( 0 );
-  GroupBox1Layout = new Q3GridLayout( GroupBox1->layout() );
-  GroupBox1Layout->setAlignment( Qt::AlignTop );
-  GroupBox1Layout->setSpacing( 6 );
-  GroupBox1Layout->setMargin( 11 );
-
-  ListView = new Q3ListView( GroupBox1, "ListView" );
-  ListView->addColumn( "Items" );
-  ListView->setRootIsDecorated( TRUE );
-
-  GroupBox1Layout->addWidget( ListView, 0, 0 );
-
-  CheckListDialogLayout->addWidget( GroupBox1, 0, 0 );
-
-  // signals and slots connections
-  connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
-  connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+    ui.setupUi(this);
 }
 
 /**
@@ -430,7 +384,7 @@ CheckListDialog::CheckListDialog( QWidget* parent,  const char* name, bool modal
  */
 CheckListDialog::~CheckListDialog()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -438,24 +392,24 @@ CheckListDialog::~CheckListDialog()
  */
 void CheckListDialog::setCheckableItems( const QStringList& items )
 {
-  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-  {
-    Q3CheckListItem* item = new Q3CheckListItem( ListView, *it, Q3CheckListItem::CheckBox );
-    item->setEnabled( false );
-  }
+    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it ) {
+        QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+        item->setText(0, *it);
+        item->setCheckState(0, Qt::Unchecked);
+    }
 }
 
 /**
  * Sets the items to the dialog's list view. If the boolean type of a CheckListItem
  * is set to false the item is not checkable any more.
  */
-void CheckListDialog::setCheckableItems( const Q3ValueList<CheckListItem>& items )
+void CheckListDialog::setCheckableItems( const QList<CheckListItem>& items )
 {
-  for ( Q3ValueList<CheckListItem>::ConstIterator it = items.begin(); it!=items.end(); ++it )
-  {
-    Q3CheckListItem* item = new Q3CheckListItem( ListView, (*it).first, Q3CheckListItem::CheckBox );
-    item->setEnabled( (*it).second );
-  }
+    for ( QList<CheckListItem>::ConstIterator it = items.begin(); it != items.end(); ++it ) {
+        QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+        item->setText(0, (*it).first);
+        item->setCheckState(0, ( (*it).second ? Qt::Checked : Qt::Unchecked));
+    }
 }
 
 /**
@@ -463,7 +417,7 @@ void CheckListDialog::setCheckableItems( const Q3ValueList<CheckListItem>& items
  */
 QStringList CheckListDialog::getCheckedItems() const
 {
-  return checked;
+    return checked;
 }
 
 /**
@@ -471,17 +425,13 @@ QStringList CheckListDialog::getCheckedItems() const
  */
 void CheckListDialog::accept ()
 {
-  Q3ListViewItemIterator it = ListView->firstChild();
-
-  for ( ; it.current(); it++)
-  {
-    if ( ((Q3CheckListItem*)it.current())->isOn() )
-    {
-      checked.push_back(((Q3CheckListItem*)it.current())->text().latin1());
+    QTreeWidgetItemIterator it(ui.treeWidget, QTreeWidgetItemIterator::Checked);
+    while (*it) {
+        checked.push_back((*it)->text(0));
+        ++it;
     }
-  }
 
-  QDialog::accept();
+    QDialog::accept();
 }
 
 // ------------------------------------------------------------------------------

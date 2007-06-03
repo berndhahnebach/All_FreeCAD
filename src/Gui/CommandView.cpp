@@ -163,8 +163,8 @@ Action * StdCmdFreezeViews::createAction(void)
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
   
   // add the action items
-  saveView = pcAction->addAction(QObject::tr("Save views"));
-  pcAction->addAction(QObject::tr("Restore views"));
+  saveView = pcAction->addAction(QObject::tr("Save views..."));
+  pcAction->addAction(QObject::tr("Restore views..."));
   pcAction->addAction("")->setSeparator(true);
   freezeView = pcAction->addAction(QObject::tr("Freeze view"));
   freezeView->setShortcut(iAccel);
@@ -187,7 +187,9 @@ void StdCmdFreezeViews::activated(int iMsg)
   if ( iMsg == 0 ) {
     // Save the views to an XML file
     QString dir = FileDialog::getWorkingDirectory();
-    QString file = FileDialog::getSaveFileName(dir, QObject::tr("Frozen views (*.cam)"), getMainWindow(),0,QObject::tr("Save frozen views"));
+    QString file = FileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save frozen views"), dir, QObject::tr("Frozen views (*.cam)"));
+    if (file.isEmpty())
+        return;
     std::ofstream str( file.latin1(), std::ios::out );
     if ( str && str.is_open() )
     {
@@ -229,7 +231,9 @@ void StdCmdFreezeViews::activated(int iMsg)
 
     // Restore the views from an XML file
     QString dir = FileDialog::getWorkingDirectory();
-    QString file = FileDialog::getOpenFileName(dir, QObject::tr("Frozen views (*.cam)"), getMainWindow(),0,QObject::tr("Save frozen views"));
+    QString file = FileDialog::getOpenFileName(getMainWindow(), QObject::tr("Restore frozen views"), dir, QObject::tr("Frozen views (*.cam)"));
+    if (file.isEmpty())
+        return;
     std::ifstream str( file.latin1(), std::ios::in | std::ios::binary );
     Base::XMLReader xmlReader(file.latin1(), str);
     xmlReader.readElement("FrozenViews");
@@ -327,8 +331,8 @@ void StdCmdFreezeViews::languageChange()
     return;
   ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
   QList<QAction*> acts = pcAction->actions();
-  acts[0]->setText(QObject::tr("Save views"));
-  acts[1]->setText(QObject::tr("Restore views"));
+  acts[0]->setText(QObject::tr("Save views..."));
+  acts[1]->setText(QObject::tr("Restore views..."));
   acts[3]->setText(QObject::tr("Freeze view"));
   acts[4]->setText(QObject::tr("Clear views"));
   int index=1;

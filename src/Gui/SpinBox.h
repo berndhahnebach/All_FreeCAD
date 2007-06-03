@@ -28,18 +28,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-//#include <qspinbox.h>
-//#include <qvalidator.h>
-////Added by qt3to4:
-//#include <QtGui/QWheelEvent>
-//#include <QtCore/QEvent>
-//#include <QtGui/QMouseEvent>
-//#include <QtGui/QFocusEvent>
-
 namespace Gui {
 
 /**
@@ -48,56 +36,26 @@ namespace Gui {
  */
 class GuiExport UnsignedValidator : public QValidator
 {
-  Q_OBJECT
-  Q_PROPERTY( uint bottom READ bottom WRITE setBottom )
-  Q_PROPERTY( uint top READ top WRITE setTop )
+    Q_OBJECT
+    Q_PROPERTY( uint bottom READ bottom WRITE setBottom )
+    Q_PROPERTY( uint top READ top WRITE setTop )
 
 public:
-  UnsignedValidator( QObject * parent, const char *name = 0 );
-  UnsignedValidator( uint bottom, uint top, QObject * parent, const char *name = 0 );
-  ~UnsignedValidator();
+    UnsignedValidator( QObject * parent );
+    UnsignedValidator( uint bottom, uint top, QObject * parent );
+    ~UnsignedValidator();
 
-  QValidator::State validate( QString &, int & ) const;
+    QValidator::State validate( QString &, int & ) const;
 
-  void setBottom( uint );
-  void setTop( uint );
-  virtual void setRange( uint bottom, uint top );
+    void setBottom( uint );
+    void setTop( uint );
+    virtual void setRange( uint bottom, uint top );
 
-  uint bottom() const { return b; }
-  uint top() const { return t; }
-
-private:
-  uint b, t;
-};
-
-/**
- * A special spin box: augmenting or diminishing its value by moving up or down
- * keeping the left mouse button pressed.
- * \author Werner Mayer
- */
-class SpinBoxPrivate;
-class GuiExport SpinBox : public QSpinBox
-{
-  Q_OBJECT // this is important for the inherited classes
-
-public:
-  SpinBox ( QWidget* parent, const char* name = 0 );
-  SpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
-  virtual ~SpinBox();
-
-  void stepUp();
-  void stepDown();
-
-protected:
-  void mouseMoveEvent    ( QMouseEvent* e );
-  void mousePressEvent   ( QMouseEvent* e );
-  void mouseReleaseEvent ( QMouseEvent* e );
-  void wheelEvent        ( QWheelEvent* e );
-  void focusOutEvent     ( QFocusEvent* e );
-  bool eventFilter       ( QObject* o, QEvent* e );
+    uint bottom() const { return b; }
+    uint top() const { return t; }
 
 private:
-  SpinBoxPrivate* d;
+    uint b, t;
 };
 
 class UIntSpinBoxPrivate;
@@ -107,102 +65,41 @@ class UIntSpinBoxPrivate;
  * This allows to use numbers in the range of [0, UINT_MAX]
  * @author Werner Mayer
  */
-class GuiExport UIntSpinBox : public SpinBox
+class GuiExport UIntSpinBox : public QSpinBox
 {
-  Q_OBJECT
-  Q_OVERRIDE( uint maxValue READ maxValue WRITE setMaxValue )
-  Q_OVERRIDE( uint minValue READ minValue WRITE setMinValue )
-  Q_OVERRIDE( uint value READ value WRITE setValue )
+    Q_OBJECT
+    Q_OVERRIDE( uint maximum READ maximum WRITE setMaximum )
+    Q_OVERRIDE( uint minimum READ minimum WRITE setMinimum )
+    Q_OVERRIDE( uint value READ value WRITE setValue )
 
 public:
-  UIntSpinBox ( QWidget* parent, const char* name = 0 );
-  virtual ~UIntSpinBox();
+    UIntSpinBox ( QWidget* parent );
+    virtual ~UIntSpinBox();
 
-  void setRange( uint minVal, uint maxVal );
-  uint value() const;
-  uint minValue() const;
-  void setMinValue( uint value );
-  uint maxValue() const;
-  void setMaxValue( uint value );
-
-  void setValidator( const QValidator * );
-
-Q_SIGNALS:
-  void valueChanged( uint value );
-
-public Q_SLOTS:
-  void setValue( uint value );
-
-protected:
-  QString mapValueToText( int v );
-  int mapTextToValue ( bool * ok );
-  void valueChange();
-  void rangeChange();
-
-private:
-  void updateValidator();
-  UIntSpinBoxPrivate * d;
-};
-
-/** 
- * The FloatSpinBox class provides a spin box working with floating point numbers.
- * The code is taken in part from KDoubleSpinBox implementation of the KDE library.
- * Furthermore some bugs are fixed, such as:
- * \li setting value, precision or linestep after min./max. value are set without loosing accuracy
- * \li stability factor added to make conversion between double <-> int more robust
- * \author Werner Mayer
- */
-class FloatSpinBoxPrivate;
-class GuiExport FloatSpinBox : public SpinBox 
-{
-  Q_OBJECT
-  Q_OVERRIDE( double maxValue READ maxValue WRITE setMaxValue )
-  Q_OVERRIDE( double minValue READ minValue WRITE setMinValue )
-  Q_OVERRIDE( double lineStep READ lineStep WRITE setLineStep )
-  Q_OVERRIDE( double value READ value WRITE setValue )
-  Q_PROPERTY( uint precision READ precision WRITE setPrecision )
-
-public:
-  FloatSpinBox( QWidget * parent=0, const char * name=0 );
-  FloatSpinBox( double minValue, double maxValue, double step, double value,
-                uint precision=2, QWidget * parent=0, const char * name=0 );
-  virtual ~FloatSpinBox();
-
-  void setRange( double lower, double upper, double step=0.01, uint precision=2 );
-
-  uint precision() const;
-  void setPrecision( uint precision );
-  virtual void setPrecision( uint precision, bool force );
-
-  double value() const;
-  double minValue() const;
-  void setMinValue( double value );
-  double maxValue() const;
-  void setMaxValue( double value );
-
-  double lineStep() const;
-  void setLineStep( double step );
-
-  void setValidator( const QValidator * );
+    void setRange( uint minVal, uint maxVal );
+    uint value() const;
+    virtual QValidator::State validate ( QString & input, int & pos ) const;
+    uint minimum() const;
+    void setMinimum( uint value );
+    uint maximum() const;
+    void setMaximum( uint value );
 
 Q_SIGNALS:
-  /** Emitted whenever @ref QSpinBox::valueChanged( int ) is emitted. */
-  void valueChanged( double value );
+    void valueChanged( uint value );
 
 public Q_SLOTS:
-  virtual void setValue( double value );
+    void setValue( uint value );
+
+private Q_SLOTS:
+    void valueChange( int value );
 
 protected:
-  virtual void valueChange();
-  virtual void stepChange();
-  virtual QString mapValueToText(int);
-  virtual int mapTextToValue(bool*);
+    virtual QString textFromValue ( int v ) const;
+    virtual int valueFromText ( const QString & text ) const;
 
 private:
-  void updateValidator();
-  uint maxPrecision() const;
-
-  FloatSpinBoxPrivate * d;
+    void updateValidator();
+    UIntSpinBoxPrivate * d;
 };
 
 } // namespace Gui

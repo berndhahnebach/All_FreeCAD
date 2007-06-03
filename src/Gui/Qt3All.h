@@ -2,6 +2,7 @@
 #define __Qt3All__
 
 
+#ifdef QT3_SUPPORT
 // elswile commented out, will be removed from time to time
 #include <q3accel.h>
 #include <q3buttongroup.h>
@@ -47,4 +48,7 @@
 #include <Q3HBoxLayout>
 #include <Q3CString>
 
-#endif
+#endif // QT3_SUPPORT
+
+
+#endif // __Qt3All__

@@ -146,7 +146,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="Gui::SpinBox" name="shininess" >
+         <widget class="QSpinBox" name="shininess" >
           <property name="suffix" >
            <string>%</string>
           </property>
@@ -173,13 +173,6 @@
    <class>Gui::ColorButton</class>
    <extends>QPushButton</extends>
    <header>Gui/Widgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::SpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>Gui/SpinBox.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>

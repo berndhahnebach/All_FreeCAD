@@ -38,6 +38,7 @@
 #include <qevent.h>
 #include <QtDesigner/QFormBuilder>
 #include <QFileDialog>
+#include <QFileIconProvider>
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
 #include <qimage.h>
