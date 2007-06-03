@@ -32,7 +32,7 @@
 # include "Qt3All.h"
 #endif
 
-#include "ui_DlgTreeWidget.h"
+#include <Gui/ui_DlgTreeWidget.h>
 
 namespace Gui {
 class PrefCheckBox;

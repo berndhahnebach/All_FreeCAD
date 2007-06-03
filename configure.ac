@@ -565,7 +565,7 @@ dnl **************************************************************************
 
 dnl Define DISTCHECK_CONFIGURE_FLAGS
 dnl **************************************************************************
-DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS --with-occ-lib=$fc_occ_libs --with-occ-include=$fc_occ_incs --with-wm3-include=$fc_wm3_incs --with-wm3-lib=$fc_wm3_libs  LDFLAGS=\"-Wl,-z,defs\""
+DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS --with-occ-lib=$fc_occ_libs --with-occ-include=$fc_occ_incs LDFLAGS=\"-Wl,-z,defs\""
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 CXX=g++
