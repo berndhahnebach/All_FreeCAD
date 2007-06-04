@@ -49,6 +49,8 @@ template<> const double Math<double>::INV_LN_2 = 1.0/Math<double>::LN_2;
 template<> const double Math<double>::INV_LN_10 = 1.0/Math<double>::LN_10;
 
 //----------------------------------------------------------------------------
+//Does not compile with gcc 4.1.2
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 template <>
 float Math<float>::FastInvSqrt (float fValue)
 {
@@ -60,8 +62,6 @@ float Math<float>::FastInvSqrt (float fValue)
     return fValue;
 }
 //----------------------------------------------------------------------------
-//Does not compile with gcc 4.1.2
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 template <>
 double Math<double>::FastInvSqrt (double dValue)
 {
