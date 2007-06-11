@@ -376,14 +376,14 @@ void ObjectItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, i
 
    if ( bHighlight )
      _cg.setColor( QColorGroup::Base , HighlightColor);
-   else 
-     _cg.setColor( QColorGroup::Base , BaseColor);
+   //else 
+   //  _cg.setColor( QColorGroup::Base , BaseColor);
 
-   _cg.setColor( QColorGroup::Text , TextColor);
+   //_cg.setColor( QColorGroup::Text , TextColor);
    
    Q3ListViewItem::paintCell( p, _cg, column, width, align );
 
-   _cg.setColor( QColorGroup::Text, c );
+   //_cg.setColor( QColorGroup::Text, c );
 
 }
 
