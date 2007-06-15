@@ -70,7 +70,7 @@ def getArticle(Name):
 	Article = urlFile.readlines()
 	file = open(BasePath + Name.replace(" ","_") + ".htm","w")
 	for i in Article:
-		temp = i.replace("/FreeCAD/Docu/skins/common/commonPrint.css","Test.css")
+		i = i.replace("/FreeCAD/Docu/skins/common/commonPrint.css","test.css")
 		file.write(i)
 	file.close()
 
