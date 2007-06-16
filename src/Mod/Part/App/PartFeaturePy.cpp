@@ -99,11 +99,6 @@ PyTypeObject PartFeaturePy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PartFeaturePy::Methods[] = {
-// PyObjectBase
-//  PYMETHODEDEF(isA)
-// FeaturePy 
-	PYMETHODEDEF(setModified)
-	PYMETHODEDEF(isValid)
 // PartFeaturePy
 	PYMETHODEDEF(getShape)
 	PYMETHODEDEF(setShape)

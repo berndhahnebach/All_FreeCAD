@@ -107,6 +107,21 @@ using namespace zipios ;
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 
+void Document::setDependency(DocumentObject* from, DocumentObject* to)
+{
+  add_edge(_DepConMap[from],_DepConMap[to],_DepList);
+  //add_edge(from,to,_DepList);
+}
+void Document::remDependency(DocumentObject* from, DocumentObject* to)
+{
+  remove_edge(_DepConMap[from],_DepConMap[to],_DepList);
+}
+
+void Document::setChanged(DocumentObject* change)
+{
+  _ChangeSet.insert(change);
+}
+
 bool Document::undo(void)					
 {
   if(_iUndoMode)
@@ -928,8 +943,8 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     ObjectMap[ObjectName] = pcObject;
     // insert in the vector
     ObjectArray.push_back(pcObject);
-    // insert in the adjacence list
-    add_vertex(pcObject,_DepList);
+    // insert in the adjacence list and referenc through the ConectionMap
+    _DepConMap[pcObject] = add_vertex(_DepList);
 
     pcObject->name.setValue( ObjectName );
 	
@@ -1029,6 +1044,9 @@ void Document::remObject(const char* sName)
       break;
     }
   }
+  // remove from adjancy list
+  remove_vertex(_DepConMap[pos->second],_DepList);
+  _DepConMap.erase(pos->second);
   ObjectMap.erase(pos);
 }
 

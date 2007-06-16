@@ -99,12 +99,6 @@ PyTypeObject MeshFeaturePy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef MeshFeaturePy::Methods[] = {
-// PyObjectBase
-//  PYMETHODEDEF(isA)
-// FeaturePy 
-	PYMETHODEDEF(setModified)
-	PYMETHODEDEF(setModifiedView)
-	PYMETHODEDEF(isValid)
 // MeshFeaturePy
   PYMETHODEDEF(countPoints)
   PYMETHODEDEF(countFacets)

@@ -103,13 +103,6 @@ PyTypeObject App::FeaturePythonPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef App::FeaturePythonPy::Methods[] = {
-// PyObjectBase
-//  PYMETHODEDEF(isA)
-// DocumentObjectPy
-// FeaturePy 
-	PYMETHODEDEF(setModified)
-	PYMETHODEDEF(setModifiedView)
-	PYMETHODEDEF(isValid)
 // FeaturePythonPy 
 	PYMETHODEDEF(addProperty)
 	PYMETHODEDEF(setClass)
@@ -171,21 +164,21 @@ PyObject *FeaturePythonPy::_getattr(char *attr)				// __getattr__ function: note
 	  if (Base::streq(attr, "__dict__")){
       PyObject* dict = FeaturePy::_getattr(attr);
       if (dict){
-        const std::map<std::string,Property*>& Map = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties;
+        const std::map<std::string,Property*>& Map = reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties;
         for ( std::map<std::string,App::Property*>::const_iterator it = Map.begin(); it != Map.end(); ++it )
           PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
       }
       return dict;
     }
      // search in object PropertyList
-    std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.find(attr);
+    std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties.find(attr);
 
-    if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.end())
+    if (pos == reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties.end())
     {
       _getattr_up(FeaturePy); 						
     }else
     {
-      Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties[attr];
+      Property *prop = reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties[attr];
       return prop->getPyObject();
     }
 
@@ -224,13 +217,13 @@ int FeaturePythonPy::_setattr(char *attr, PyObject *value) 	// __setattr__ funct
   }
 
   // search in object PropertyList
-  std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.find(attr);
+  std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties.find(attr);
 
-  if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.end())
+  if (pos == reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties.end())
     return FeaturePy::_setattr(attr, value); 						
   else
   {
-    Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties[attr];
+    Property *prop = reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->objectProperties[attr];
 
     try {
       prop->setPyObject(value);
@@ -259,7 +252,7 @@ PYFUNCIMP_D(FeaturePythonPy,addProperty)
  
  
   PY_TRY {
-	  reinterpret_cast<FeaturePython*>(_pcFeature)->addDynamicProperty(sType,sName);
+	  reinterpret_cast<FeaturePython*>(getAbstractFeatureObject())->addDynamicProperty(sType,sName);
   }PY_CATCH;
 
   Py_Return;

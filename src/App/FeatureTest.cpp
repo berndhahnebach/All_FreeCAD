@@ -62,19 +62,35 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(IntegerList,(4711)  );
   ADD_PROPERTY(FloatList  ,(47.11f) );
   
-  ADD_PROPERTY(Link   ,(0));
+  ADD_PROPERTY(Link     ,(0));
+  ADD_PROPERTY(LinkList ,(0));
 
   ADD_PROPERTY(Vector ,(1.0,2.0,3.0));
   ADD_PROPERTY(Matrix ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
   
-  // Why do we add this property twice? (Werner)
-  ADD_PROPERTY(String ,("empty"));
+  // properties for recompute testing
+  ADD_PROPERTY(Source1       ,(0));
+  ADD_PROPERTY(Source2       ,(0));
+  ADD_PROPERTY(SourceN       ,(0));
+  ADD_PROPERTY(ExecResult    ,("empty"));
+  ADD_PROPERTY(ExceptionType ,(0));
+  ADD_PROPERTY(ExecCount     ,(0));
 }
 
 
 int FeatureTest::execute(void)
 {
 
+
+  switch(ExceptionType.getValue()) 
+  {
+    case 0: break;
+    case 1: throw "Test Exeption";
+    case 2: throw Base::Exception("FeatureTestException::execute(): Testexception");
+  }
+  ExecCount.setValue(ExecCount.getValue() + 1);
+
+  ExecResult.setValue("Exec");
 
   return 0;
 }

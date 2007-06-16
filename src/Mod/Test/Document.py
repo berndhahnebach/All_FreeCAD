@@ -47,6 +47,13 @@ class DocumentBasicCases(unittest.TestCase):
     self.Doc.UndoMode
     self.Doc.UndoRedoMemSize
     self.Doc.UndoCount
+    # test read only mechanismus
+    try:
+      self.Doc.UndoCount = 3
+    except:
+      FreeCAD.PrintLog("   exception thrown, OK\n")
+    else:
+      self.fail("no exeption thrown")
     self.Doc.RedoCount
     self.Doc.UndoNames
     self.Doc.RedoNames
@@ -54,7 +61,7 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.Integer == 4711)
     self.failUnless(L1.Float-47.11<0.001)
     self.failUnless(L1.Bool    == True)
-    self.failUnless(L1.String  == "empty")
+    self.failUnless(L1.String  == "4711")
     #temporarily not checked because of strange behavior of boost::fielesystem JR
     #self.failUnless(L1.Path  == "c:/temp")
     self.failUnless(L1.Angle-3.0<0.001)
@@ -111,13 +118,12 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.TempPath = os.getenv('TEMP')
     if self.TempPath == None:
         self.TempPath = "/tmp";
-    print '  Using temp path: ' + self.TempPath + '\n'
+    FreeCAD.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
     
   def testSaveAndRestore(self):
     # saving and restoring
     SaveName = self.TempPath + os.sep + "Test1.FCStd"
     self.Doc.FileName = SaveName
-    print "   Save and Open the document to: " + SaveName + "\n"
     self.Doc.save()
     FreeCAD.closeDocument("SaveRestoreTests")
     self.Doc = FreeCAD.openDocument(SaveName)
@@ -141,8 +147,24 @@ class DocumentSaveRestoreCases(unittest.TestCase):
   def tearDown(self):
     #closing doc
     FreeCAD.closeDocument("SaveRestoreTests")
-    print "TesrDown"
 
+class DocumentRecomputeCases(unittest.TestCase):
+  def setUp(self):
+    self.Doc = FreeCAD.newDocument("RecomputeTests")
+    self.L1 = self.Doc.addObject("App::FeatureTest","Label_1")
+    self.L2 = self.Doc.addObject("App::FeatureTest","Label_2")   
+    self.L3 = self.Doc.addObject("App::FeatureTest","Label_3")   
+    
+  def testDescent(self):
+    # testing the up and downstream stuff
+    FreeCAD.PrintLog("def testDescent(self):Testcase not implemented\n")
+    self.L1.Link = self.L2
+    self.L2.Link = self.L3
+    
+
+  def tearDown(self):
+    #closing doc
+    FreeCAD.closeDocument("RecomputeTests")
 
 class UndoRedoCases(unittest.TestCase):
   def setUp(self):

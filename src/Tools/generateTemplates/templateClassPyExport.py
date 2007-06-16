@@ -125,7 +125,6 @@ public:
 #include <Base/Exception.h>
 #include <Base/PyCXX/Objects.hxx>
 
-#include "@self.export.Twin@.h"
 #include "@self.export.Name@.h"
 #define new DEBUG_CLIENTBLOCK
 

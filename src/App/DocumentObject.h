@@ -75,6 +75,13 @@ public:
   Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
 	//@}
 
+  /** Called in case of losing a link
+   * Get called by the document when a object got deleted a link property of this 
+   * object ist pointing to. The standard behaivour of the DocumentObject implementation 
+   * is to reset the links to nothing. You may overide this methode to implement 
+   *additional or different behavior.
+   */
+  virtual void onLoseLinkToObject(DocumentObject*);
 	virtual PyObject *getPyObject(void);
 
 protected:

@@ -63,6 +63,11 @@ DocumentObject::~DocumentObject(void)
   }
 }
 
+void DocumentObject::onLoseLinkToObject(DocumentObject*)
+{
+
+}
+
 App::Document &DocumentObject::getDocument(void) const
 {
   return *_pDoc;

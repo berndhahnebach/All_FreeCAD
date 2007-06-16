@@ -77,6 +77,11 @@ PropertyLink::~PropertyLink()
 
 void PropertyLink::setValue(App::DocumentObject * lValue)
 {
+  aboutToSetValue();
+  if(lValue) 
+    dynamic_cast<DocumentObject*>(getContainer())->getDocument().setDependency((DocumentObject*)getContainer(), lValue);
+  if(_pcLink)
+    dynamic_cast<DocumentObject*>(getContainer())->getDocument().remDependency((DocumentObject*)getContainer(), _pcLink);
 	_pcLink=lValue;
   hasSetValue();
 }
@@ -106,13 +111,19 @@ PyObject *PropertyLink::getPyObject(void)
 
 void PropertyLink::setPyObject(PyObject *value)
 { 
-  if( PyObject_TypeCheck(value, &(FeaturePy::Type)) )
+  if( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) )
   {
-   	FeaturePy  *pcObject = (FeaturePy*)value;
-    _pcLink = pcObject->getFeature();
-    hasSetValue();
+   	DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
+    setValue(pcObject->getDocumentObjectObject());
+  }else if(PyInt_Check( value) ){
+    if(PyInt_AsLong(value)== 0)
+      setValue(0);
+    else
+      throw Base::Exception("Not allowed type used (document object expected)...");
+  }else if(Py_None == value) {
+      setValue(0);
   }else
-    throw Base::Exception("Not allowed type used (Feature expected)...");
+    throw Base::Exception("Not allowed type used (document object expected)...");
 }
 
 void PropertyLink::Save (Writer &writer) const
@@ -176,10 +187,12 @@ PropertyLinkList::~PropertyLinkList()
 
 void PropertyLinkList::setValue(DocumentObject* lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+  if(lValue){
+    aboutToSetValue();
+    _lValueList.resize(1);
+	  _lValueList[0]=lValue;
+    hasSetValue();
+  }
 }
 
 void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
@@ -214,7 +227,7 @@ void PropertyLinkList::setPyObject(PyObject *value)
       if ( PyObject_TypeCheck(item, &(FeaturePy::Type)) )
       {
    	    FeaturePy  *pcObject = (FeaturePy*)item;
-        _lValueList[i] = pcObject->getFeature();
+        _lValueList[i] = pcObject->getAbstractFeatureObject();
         hasSetValue();
       }
       else
@@ -231,7 +244,7 @@ void PropertyLinkList::setPyObject(PyObject *value)
   {
     aboutToSetValue();
    	FeaturePy  *pcObject = (FeaturePy*)value;
-    setValue( pcObject->getFeature() );
+    setValue( pcObject->getAbstractFeatureObject() );
   }
   else
   {
