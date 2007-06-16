@@ -98,11 +98,6 @@ PyTypeObject PointsFeaturePy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PointsFeaturePy::Methods[] = {
-// PyObjectBase
-//  PYMETHODEDEF(isA)
-// FeaturePy 
-	PYMETHODEDEF(setModified)
-	PYMETHODEDEF(isValid)
 // PointsFeaturePy
   {NULL, NULL}    /* Sentinel */
 };

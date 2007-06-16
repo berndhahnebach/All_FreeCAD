@@ -63,13 +63,20 @@ public:
   App::PropertyFloatList   FloatList;
 
   // Standard Properties (PropertyLinks.h)
-  App::PropertyLink    Link;
+  App::PropertyLink     Link;
+  App::PropertyLinkList LinkList;
 
   // Standard Properties (PropertyGeo.h)
   App::PropertyMatrix  Matrix;
   App::PropertyVector  Vector;
 
-  App::PropertyString  ExecResult;
+  // Properties to test the Document::recompute()
+  App::PropertyLink     Source1;
+  App::PropertyLink     Source2;
+  App::PropertyLinkList SourceN;
+  App::PropertyString   ExecResult;
+  App::PropertyInteger  ExceptionType;
+  App::PropertyInteger  ExecCount;
   
   
   /** @name methods overide Feature */

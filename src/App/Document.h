@@ -133,19 +133,6 @@ public:
   boost::signal<void (App::DocumentObject&)> signalRenamedObject;
   //@}
 
-  typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
-
-  typedef boost::adjacency_list <
-   boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
-   boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
-   boost::directedS,      // class DirectedS     : This is a directed graph
-   VertexProperty,        // class VertexProperty: 
-   boost::no_property,    // class EdgeProperty: 
-   boost::no_property,    // class GraphProperty:
-   boost::listS           // class EdgeListS:
-  > DependencyList;
-
-
  	/** @name File handling of the document */
 	//@{
 	/// Save the Document under a new Name
@@ -253,6 +240,14 @@ public:
 	//@}
 
 
+  // set a dependency
+  void setDependency(DocumentObject* from, DocumentObject* to);
+  // remove a dependency
+  void remDependency(DocumentObject* from, DocumentObject* to);
+  // set Changed
+  void setChanged(DocumentObject* change);
+
+
 	virtual PyObject *getPyObject(void);
 
 
@@ -272,7 +267,31 @@ protected:
   /// Construction
 	Document(void);
 
+  typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+
+  typedef boost::adjacency_list <
+   boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
+   boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
+   boost::directedS,      // class DirectedS     : This is a directed graph
+   boost::no_property,    // class VertexProperty: 
+   boost::no_property,    // class EdgeProperty: 
+   boost::no_property,    // class GraphProperty:
+   boost::listS           // class EdgeListS:
+  > DependencyList;
+
+
+  // List of the object dependensys
   DependencyList _DepList;
+  // conector
+  typedef boost::graph_traits<DependencyList> Traits;
+  typedef Traits::vertex_descriptor Vertex;
+  typedef Traits::edge_descriptor Edge;
+
+  std::map<DocumentObject*,Vertex> _DepConMap;
+  // set of changed objects
+  std::set<DocumentObject*> _ChangeSet;
+
+
 
   void _remObject(DocumentObject* pcObject);
   void _addObject(DocumentObject* pcObject, const char* pObjectName);
