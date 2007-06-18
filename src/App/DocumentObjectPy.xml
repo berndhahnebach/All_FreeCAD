@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport Father="PropertyContainerPy" Name="DocumentObjectPy" Twin="DocumentObject" Namespace="App" FatherInclude="PropertyContainerPy.h" FatherNamespace="App">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <UserDocu>This is the father of all classes handled by the document</UserDocu>
+    </Documentation>
+   <Methode Name="touch">
+      <Documentation>
+        <UserDocu>Marke the object as changed (touched)</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="State" ReadOnly="true">
+      <Documentation>
+        <UserDocu>State of the object in the document</UserDocu>
+      </Documentation>
+      <Parameter Name="State" Type="List"/>
+    </Attribute>
+    <CustomAttributes />
+  </PythonExport>
+</GenerateModel>
