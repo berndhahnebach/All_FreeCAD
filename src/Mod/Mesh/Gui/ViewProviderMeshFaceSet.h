@@ -59,6 +59,7 @@ public:
   App::PropertyFloatConstraint LineWidth;
   App::PropertyFloatConstraint PointSize;
   App::PropertyBool OpenEdges;
+  App::PropertyBool BoundingBox;
   App::PropertyEnumeration Lighting;
 
   void attach(App::DocumentObject *pcFeat);
@@ -83,6 +84,7 @@ protected:
   /// get called by the container whenever a proptery has been changed
   void onChanged(const App::Property* prop);
   void showOpenEdges( bool );
+  void showBoundingBox( bool );
   void setOpenEdgeColorFrom( const App::Color& col );
   virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
@@ -90,6 +92,7 @@ protected:
   SoDrawStyle    * pcLineStyle;
   SoDrawStyle    * pcPointStyle;
   SoSeparator    * pcOpenEdge;
+  SoSeparator    * pBoundingBox;
   SoBaseColor    * pOpenColor;
   SoShapeHints   * pShapeHints;
 

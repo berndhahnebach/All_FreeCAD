@@ -2577,6 +2577,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SoFCBoundingBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoFCBoundingBox.h"
+				>
+			</File>
+			<File
 				RelativePath="SoFCColorBar.cpp"
 				>
 				<FileConfiguration

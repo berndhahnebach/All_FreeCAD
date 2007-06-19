@@ -46,6 +46,7 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
+#include <Gui/SoFCBoundingBox.h>
 #include <Gui/MainWindow.h>
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
@@ -77,13 +78,14 @@ const char* ViewProviderMeshFaceSet::LightingEnums[]= {"One side","Two side",NUL
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 
-ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
+ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), pBoundingBox(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
   LineWidth.setConstraints(&floatRange);
   ADD_PROPERTY(PointSize,(2.0f));
   PointSize.setConstraints(&floatRange);
   ADD_PROPERTY(OpenEdges,(false));
+  ADD_PROPERTY(BoundingBox,(false));
   ADD_PROPERTY(Lighting,(1));
   Lighting.setEnums(LightingEnums);
 
@@ -134,6 +136,8 @@ void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
     pcPointStyle->pointSize = PointSize.getValue();
   } else if ( prop == &OpenEdges ) {
     showOpenEdges( OpenEdges.getValue() );
+  } else if ( prop == &BoundingBox ) {
+    showBoundingBox( BoundingBox.getValue() );
   } else if ( prop == &Lighting ) {
     if ( Lighting.getValue() == 0 )
       pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
@@ -323,6 +327,12 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
 
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 {
+  if (pcOpenEdge) {
+    // remove the node and destroy the data
+    pcHighlight->removeChild(pcOpenEdge);
+    pcOpenEdge = 0;
+  }
+
   if ( show ) {
     pcOpenEdge = new SoSeparator();
     pcOpenEdge->addChild(pcLineStyle);
@@ -333,10 +343,34 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 
     // add to the highlight node
     pcHighlight->addChild(pcOpenEdge);
-  } else if (pcOpenEdge) {
+  }
+}
+
+void ViewProviderMeshFaceSet::showBoundingBox(bool show)
+{
+  if (pBoundingBox) {
     // remove the node and destroy the data
-    pcHighlight->removeChild(pcOpenEdge);
-    pcOpenEdge = 0;
+    pcHighlight->removeChild(pBoundingBox);
+    pBoundingBox = 0;
+  }
+
+  if ( show ) {
+    pBoundingBox = new SoSeparator();
+    pBoundingBox->addChild(pcLineStyle);
+    SoBaseColor* color = new SoBaseColor();
+    color->rgb.setValue(1.0f, 1.0f, 1.0f);
+    pBoundingBox->addChild(color);
+
+    Gui::SoFCBoundingBox* bbox = new Gui::SoFCBoundingBox;
+    pBoundingBox->addChild(bbox);
+    const Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+    Base::BoundBox3f box = meshProp.getValue().GetBoundBox();
+    bbox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
+    bbox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
+    bbox->textOn.setValue(false);
+
+    // add to the highlight node
+    pcHighlight->addChild(pBoundingBox);
   }
 }
 
@@ -372,6 +406,7 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
   // notify the mesh shape node
   pcFaceSet->touch();
   Viewer.render();
+  showBoundingBox(BoundingBox.getValue());
   
   if ( !ok ) // note: the mouse grabbing needs to be released
 //      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");

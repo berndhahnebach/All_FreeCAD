@@ -238,6 +238,8 @@ libFreeCADGui_la_SOURCES=\
 		Selection.h \
 		SoFCBackgroundGradient.cpp \
 		SoFCBackgroundGradient.h \
+		SoFCBoundingBox.cpp \
+		SoFCBoundingBox.h \
 		SoFCColorBar.cpp \
 		SoFCColorBar.h \
 		SoFCColorGradient.cpp \

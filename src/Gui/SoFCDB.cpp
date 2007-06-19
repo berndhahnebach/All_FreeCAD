@@ -29,6 +29,7 @@
 #include "SoFCColorGradient.h"
 #include "SoFCSelection.h"
 #include "SoFCBackgroundGradient.h"
+#include "SoFCBoundingBox.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCInteractiveElement.h"
@@ -50,6 +51,7 @@ void Gui::SoFCDB::init()
     SoFCColorLegend                 ::initClass();
     SoFCColorGradient               ::initClass();
     SoFCBackgroundGradient          ::initClass();
+    SoFCBoundingBox                 ::initClass();
     SoInteraction                   ::init();
     SoFCSelection                   ::initClass();
     SoFCSelectionAction             ::initClass();
@@ -106,6 +108,7 @@ void Gui::SoFCDB::finish()
     SoFCColorLegend                 ::finish();
     SoFCColorGradient               ::finish();
     SoFCBackgroundGradient          ::finish();
+    SoFCBoundingBox                 ::finish();
     SoFCSelection                   ::finish();
     SoFCSelectionAction             ::finish();
     SoFCDocumentAction              ::finish();

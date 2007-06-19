@@ -1,0 +1,191 @@
+/***************************************************************************
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+#endif
+
+#include <Inventor/SbBox.h>
+#include <Inventor/SoPrimitiveVertex.h>
+#include <Inventor/actions/SoGLRenderAction.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
+#include <Inventor/elements/SoGLTextureCoordinateElement.h>
+#include <Inventor/elements/SoGLTextureEnabledElement.h>
+#include <Inventor/elements/SoLightModelElement.h>
+#include <Inventor/elements/SoMaterialBindingElement.h>
+#include <Inventor/elements/SoModelMatrixElement.h>
+#include <Inventor/misc/SoState.h>
+#include <string.h>
+
+#include <iostream>
+
+#include "SoFCBoundingBox.h"
+
+using namespace Gui;
+
+SO_NODE_SOURCE(SoFCBoundingBox);
+
+// vertices used to create a box
+static const int32_t bBoxVerts[8][3] =
+{
+    {0, 0, 0},
+    {1, 0, 0},
+    {1, 1, 0},
+    {0, 1, 0},
+    {0, 0, 1},
+    {1, 0, 1},
+    {1, 1, 1},
+    {0, 1, 1}
+};
+
+// indexes used to create the edges
+static const int32_t bBoxEdges[36] =
+{
+    0,1,-1, 1,2,-1, 2,3,-1, 3,0,-1,
+    4,5,-1, 5,6,-1, 6,7,-1, 7,4,-1,
+    0,4,-1, 1,5,-1, 2,6,-1, 3,7,-1
+};
+
+void SoFCBoundingBox::initClass ()
+{
+    SO_NODE_INIT_CLASS(SoFCBoundingBox, SoShape, "Shape");
+}
+
+SoFCBoundingBox::SoFCBoundingBox ()
+{
+    SO_NODE_CONSTRUCTOR(SoFCBoundingBox);
+
+    SO_NODE_ADD_FIELD(minBounds, (-1.0, -1.0, -1.0));
+    SO_NODE_ADD_FIELD(maxBounds, ( 1.0,  1.0,  1.0));
+    SO_NODE_ADD_FIELD(textOn, (TRUE));
+
+    root = new SoSeparator();
+    SoSeparator *bboxSep = new SoSeparator();
+
+    bboxCoords = new SoCoordinate3();
+    bboxCoords->point.setNum(8);
+    bboxSep->addChild(bboxCoords);
+    root->addChild(bboxSep);
+
+    // the lines of the box
+    bboxLines  = new SoIndexedLineSet();
+    bboxLines->coordIndex.setNum(36);
+    bboxLines->coordIndex.setValues(0, 36, bBoxEdges);
+    bboxSep->addChild(bboxLines);
+  
+
+    // create the text nodes, including a transform for each vertice offset
+    textSep = new SoSeparator();
+    for (int i = 0; i < 8; i++) {
+        SoSeparator *temp = new SoSeparator();
+        SoTransform *trans = new SoTransform();
+        temp->addChild(trans);
+        SoText2* text = new SoText2();
+        text->justification.setValue(SoText2::CENTER);
+        temp->addChild(text);
+        textSep->addChild(temp);
+    }
+
+    root->addChild(textSep);
+    root->ref();
+}
+
+SoFCBoundingBox::~SoFCBoundingBox ()
+{
+    root->unref();
+}
+
+void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
+{
+    SbVec3f corner[2], ctr, offset, *vptr;
+    bool text;
+    char str[50], buf[10];
+
+    // grab the current state
+    SoState *state = action->getState();
+
+    if (!shouldGLRender(action))
+        return;
+
+    // get the latest values from the fields
+    corner[0] = minBounds.getValue();
+    corner[1] = maxBounds.getValue();
+    text      = textOn.getValue();
+
+    // set the coordinates for the LineSet to point to
+    vptr = bboxCoords->point.startEditing();
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 3; j++) {
+            vptr[i][j] = corner[bBoxVerts[i][j]][j];
+        }
+    }
+
+    // if text is true then set the text nodes
+    if (text) {
+        ctr = (corner[1] - corner[0]) / 2.0f;
+        for (int i = 0; i < 8; i++) {
+            // create the string for the text
+            strcpy(str, "(");
+            sprintf(buf, "%6.2f", vptr[i][0]);
+            strcat(str, buf);
+            strcat(str, ",");
+            sprintf(buf, "%6.2f", vptr[i][1]);
+            strcat(str, buf);
+            strcat(str, ",");
+            sprintf(buf, "%6.2f", vptr[i][2]);
+            strcat(str, buf);
+            strcat(str, ")");
+
+            SoSeparator *sep   = (SoSeparator *)textSep->getChild(i);
+            SoTransform *trans = (SoTransform *)sep->getChild(0);
+
+            offset = vptr[i] - ctr;
+            trans->translation.setValue(vptr[i].getValue());
+            SoText2* t = (SoText2 *)sep->getChild(1);
+            t->string.setValue(str);
+        }
+
+        textSep->ref();
+        if (root->findChild(textSep) < 0)
+            root->addChild(textSep);
+    } else {
+        if (root->findChild(textSep) >= 0)
+            root->removeChild(textSep);
+    }
+  
+    bboxCoords->point.finishEditing();
+    root->GLRender(action);
+}
+
+void SoFCBoundingBox::generatePrimitives (SoAction *action)
+{
+}
+
+void SoFCBoundingBox::computeBBox (SoAction *action, SbBox3f &box, SbVec3f &center)
+{
+    center = (minBounds.getValue() + maxBounds.getValue()) / 2.0f;
+    box.setBounds(minBounds.getValue(), maxBounds.getValue());
+}
+
+void SoFCBoundingBox::finish()
+{
+  atexit_cleanup();
+}
