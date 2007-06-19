@@ -2,13 +2,17 @@
 lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
+		DocumentObjectPy.cpp \
 		DocumentPy.cpp \
+		FeaturePy.cpp \
 		PropertyContainerPy.cpp \
 		InitScript.h \
 		TestScript.h
 
 libFreeCADApp_la_BUILT=\
+		DocumentObjectPy.h \
 		DocumentPy.h \
+		FeaturePy.h \
 		PropertyContainerPy.h
 
 libFreeCADApp_la_SOURCES=\
@@ -25,14 +29,12 @@ libFreeCADApp_la_SOURCES=\
 		DocumentObjectGroup.h \
 		DocumentObjectGroupPy.cpp \
 		DocumentObjectGroupPy.h \
-		DocumentObjectPy.cpp \
-		DocumentObjectPy.h \
+		DocumentObjectPyImp.cpp \
 		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		Feature.cpp \
 		Feature.h \
-		FeaturePy.cpp \
-		FeaturePy.h \
+		FeaturePyImp.cpp \
 		FeaturePython.cpp \
 		FeaturePython.h \
 		FeaturePythonPy.cpp \
@@ -93,7 +95,9 @@ AM_CPPFLAGS=-DFCApp
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 
 EXTRA_DIST = \
+		DocumentObjectPy.xml \
 		DocumentPy.xml \
+		FeaturePy.xml \
 		PropertyContainerPy.xml \
 		FreeCADDoc.vcproj \
 		FreeCADInit.py \
