@@ -45,6 +45,7 @@ WikiBaseUrl = ""
 TocPageName = ""
 FetchedArticels =[]
 BasePath = ""
+Wget = "wget"
 
 hhcHeader = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
@@ -58,6 +59,21 @@ hhcFooter="""</UL>
 </BODY></HTML>
 """
 
+def runWget():
+	cmdLine = Wget + " "
+	cmdLine += "-k -r "    # konvert to local links and do recursive
+	cmdLine += "-P tmp "   # write in this subdir
+	cmdLine += "-nd "      # flat (no subdirs)
+	cmdLine += '-R "*action=*" '      # Reject all action links
+	cmdLine += '-R "*title=Special*" '# Reject all special pages
+	cmdLine += '-R "*title=Talk*" '   # Reject all Talk pages
+	cmdLine += '-R "*oldid=*" '       # Reject all history pages
+	cmdLine += '-R "*printable=yes*" '# Reject all print pages
+	cmdLine += 'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc '
+	
+	result = os.popen(cmdLine).read()
+	print result
+	
 
 def getArticle(Name):
 	global proxies,WikiBaseUrl,TocPageName,BasePath
@@ -185,6 +201,7 @@ def main():
 	else:
 		WikiBaseUrl = args[0]
 		TocPageName = args[1]
+		runWget()
 		readToc()
 		
 
