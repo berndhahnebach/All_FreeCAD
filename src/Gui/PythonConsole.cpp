@@ -413,7 +413,12 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
             cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
             QString text = cursor.selectedText();
             TextEdit::keyPressEvent(e);
-            d->callTipsList->showTips(text);
+            //FIXME: 
+            // from PyQt4 import QtGui
+            // w=QTGui.QDialog()
+            //w.show()
+            //TypeError: CXX: type error.
+            //d->callTipsList->showTips(text);
         }   break;
     default: 
         {
