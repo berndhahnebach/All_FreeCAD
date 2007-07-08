@@ -36,6 +36,7 @@ namespace App
 {
   class Property;
   class PropertyContainer;
+  class DocumentObject;
 
 struct AppExport PropertyData
 {
@@ -46,6 +47,7 @@ struct AppExport PropertyData
   const char* getName(const PropertyContainer *container,const Property* prop) const;
   Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
   void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
+  void getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const;
 
 };
 
@@ -78,8 +80,13 @@ public:
   virtual Property *getPropertyByName(const char* name) const;
   /// get the name of a property
   virtual const char* getName(const Property* prop) const;
-  /// get all properties of the class (including parent)
+  /// get all properties of the class (including properies of the parent)
   virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
+  /// get all properties of the class (including properies of the parent)
+  virtual void getPropertyList(std::vector<Property*> &List) const;
+
+  /// returns a list of objects this object is pointing to by Links
+  std::vector<DocumentObject*> getOutList(void);
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);

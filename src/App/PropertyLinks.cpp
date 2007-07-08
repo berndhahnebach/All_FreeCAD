@@ -78,10 +78,6 @@ PropertyLink::~PropertyLink()
 void PropertyLink::setValue(App::DocumentObject * lValue)
 {
   aboutToSetValue();
-  if(lValue) 
-    dynamic_cast<DocumentObject*>(getContainer())->getDocument().setDependency((DocumentObject*)getContainer(), lValue);
-  if(_pcLink)
-    dynamic_cast<DocumentObject*>(getContainer())->getDocument().remDependency((DocumentObject*)getContainer(), _pcLink);
 	_pcLink=lValue;
   hasSetValue();
 }

@@ -107,43 +107,39 @@ using namespace zipios ;
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 
-void Document::setDependency(DocumentObject* from, DocumentObject* to)
-{
-  add_edge(_DepConMap[from],_DepConMap[to],_DepList);
-  //add_edge(from,to,_DepList);
-}
-void Document::remDependency(DocumentObject* from, DocumentObject* to)
-{
-  remove_edge(_DepConMap[from],_DepConMap[to],_DepList);
-}
 
 void Document::writeDependencyGraphViz(std::ostream &out)
 {
+  //  // caching vertex to DocObject
+  //std::map<Vertex,DocumentObject*> VertexMap;
+  //for(std::map<DocumentObject*,Vertex>::const_iterator It1= _DepConMap.begin();It1 != _DepConMap.end(); ++It1)
+  //  VertexMap[It1->second] = It1->first;
+
   out << "digraph G {" << endl;
   out << "\tordering=out;" << endl;
   out << "\tnode [shape = box];" << endl;
 
   for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
   { 
-    out << "\t" << It->first << ";" << endl;
+    out << "\t" << It->first << ";" <<endl;
+    std::vector<DocumentObject*> OutList = It->second->getOutList();
+    for(std::vector<DocumentObject*>::const_iterator It2=OutList.begin();It2!=OutList.end();++It2)
+      if(*It2)
+        out << "\t" << It->first << "->" << (*It2)->getNameInDocument() << ";" <<endl;
   }
 
+  /*
   graph_traits<DependencyList>::edge_iterator ei, ei_end;
   for (tie(ei,ei_end) = edges(_DepList); ei != ei_end; ++ei)
-  {
-    // get the vertexes the edge is inbetween
-    int src = source(*ei, _DepList);
-    int trg = target(*ei, _DepList);
-    // search for the DocObjects with this vertex index
-    std::map<DocumentObject*,Vertex>::const_iterator It1,It2;
-    for(It1= _DepConMap.begin();It1 != _DepConMap.end() && It1->second != src ; ++It1);
-    for(It2= _DepConMap.begin();It2 != _DepConMap.end() && It2->second != trg ; ++It2);
-    // write the dependency edge
-    out << "\t" << It1->first->getNameInDocument() << " -> "<< It2->first->getNameInDocument() << ";" << endl;
-  }
-
+    out << "\t" 
+        << VertexMap[source(*ei, _DepList)]->getNameInDocument() 
+        << " -> "
+        << VertexMap[target(*ei, _DepList)]->getNameInDocument() 
+        << ";" << endl;
+*/
   out << "}" << endl;
 }
+
 
 //bool _has_cycle_dfs(const DependencyList & g, vertex_t u, default_color_type * color)
 //{
@@ -170,11 +166,6 @@ bool Document::checkOnCycle(void)
   return false;
 }
 
-
-void Document::setChanged(DocumentObject* change)
-{
-  _ChangeSet.insert(change);
-}
 
 bool Document::undo(void)					
 {
@@ -808,6 +799,8 @@ void Document::update(const char *name)
 }
 
 
+
+#if 1
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::recompute()
 {
@@ -888,22 +881,93 @@ void Document::recompute()
                       DocChange.ErrorFeatures.size());
   
 }
-
-void Document::recomputeFeature(AbstractFeature* Feat)
+// call the recompute of the Feature and handle the exceptions and errors.
+void Document::_recomputeFeature(AbstractFeature* Feat)
 {
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Recompute;
+  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
 
-  _recomputeFeature(Feat);
+  Feat->status.setValue(AbstractFeature::Recompute);
+  int  succes;
+  try{
+    succes = Feat->execute();
+  }catch(Base::AbortException &e){
+    e.ReportException();
+    succes = 4;
+  }catch(const Base::MemoryException& e){
+    if ( !e.isHandled() )
+      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+    else
+      Base::Console().Log("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+    Feat->setError(e.what());
+    succes = 4; // Must not rerun twice
+  }catch(Base::Exception &e){
+    e.ReportException();
+    succes = 3;
+  }catch(std::exception &e){
+    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
+    Feat->setError(e.what());
+    succes = 3;
+  }
+#ifndef FC_DEBUG
+  catch(...){
+    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->name.getValue());
+    succes = 3;
+  }
+#endif
 
-  if(Feat->getStatus() == AbstractFeature::Error)
-    DocChange.ErrorFeatures.insert(Feat);
+  // special error code to avoid to execute a feature twice
+  if (succes == 4){
+    Feat->status.setValue(AbstractFeature::Inactive);
+  }else if(succes > 0){
+    Feat->status.setValue(AbstractFeature::Error);
+  }else {
+    // set the time of change
+    Feat->status.setValue(AbstractFeature::Valid);
 
-  if(Feat->getStatus() == AbstractFeature::Valid)
-    DocChange.UpdatedObjects.insert(Feat);
+    Feat->touchTime.setToActual();
+    Feat->setModified(false);
+  }
+}
+#else
+void Document::recompute()
+{
+  DependencyList DepList;
+  std::map<DocumentObject*,Vertex> VertexObjectList;
 
-  Notify(DocChange);
+  // Filling up the adjacency List 
+  for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
+    // add the object as Vertex and remember the index
+    VertexObjectList[It->second] = add_vertex(DepList);
 
+  for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
+  {
+    std::vector<DocumentObject*> OutList = It->second->getOutList();
+    for(std::vector<DocumentObject*>::const_iterator It2=OutList.begin();It2!=OutList.end();++It2)
+      if(*It2)
+        add_edge(VertexObjectList[It->second],VertexObjectList[*It2],DepList);
+  }
+
+  std::list<Vertex> make_order;
+  DependencyList::out_edge_iterator j, jend;
+  boost::topological_sort(DepList, std::front_inserter(make_order));
+ 
+  // caching vertex to DocObject
+  std::map<Vertex,DocumentObject*> VertexMap;
+  for(std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
+    VertexMap[It1->second] = It1->first;
+
+
+  std::cout << "make ordering: " << endl;
+  for (std::list<Vertex>::reverse_iterator i = make_order.rbegin();i != make_order.rend(); ++i)
+  {
+    std::cout << VertexMap[*i]->getNameInDocument() << " dep on: " ;
+    for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j)
+       std::cout << VertexMap[target(*j, DepList)]->getNameInDocument() << ", " ;
+      
+    std::cout << endl;
+  }
+
+  
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
@@ -929,7 +993,7 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     e.ReportException();
     succes = 3;
   }catch(std::exception &e){
-    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
+    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
     Feat->setError(e.what());
     succes = 3;
   }
@@ -953,6 +1017,27 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     Feat->setModified(false);
   }
 }
+#endif
+
+
+void Document::recomputeFeature(AbstractFeature* Feat)
+{
+  DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
+
+  _recomputeFeature(Feat);
+
+  if(Feat->getStatus() == AbstractFeature::Error)
+    DocChange.ErrorFeatures.insert(Feat);
+
+  if(Feat->getStatus() == AbstractFeature::Valid)
+    DocChange.UpdatedObjects.insert(Feat);
+
+  Notify(DocChange);
+
+}
+
+
 
 
 
@@ -998,7 +1083,7 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     // insert in the vector
     ObjectArray.push_back(pcObject);
     // insert in the adjacence list and referenc through the ConectionMap
-    _DepConMap[pcObject] = add_vertex(_DepList);
+    //_DepConMap[pcObject] = add_vertex(_DepList);
 
     pcObject->name.setValue( ObjectName );
 	
@@ -1099,8 +1184,8 @@ void Document::remObject(const char* sName)
     }
   }
   // remove from adjancy list
-  remove_vertex(_DepConMap[pos->second],_DepList);
-  _DepConMap.erase(pos->second);
+  //remove_vertex(_DepConMap[pos->second],_DepList);
+  //_DepConMap.erase(pos->second);
   ObjectMap.erase(pos);
 }
 
