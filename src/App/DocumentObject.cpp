@@ -63,6 +63,13 @@ DocumentObject::~DocumentObject(void)
   }
 }
 
+const std::string &DocumentObject::getNameInDocument(void) const
+{
+  std::map<std::string,DocumentObject*>::const_iterator It = _pDoc->ObjectMap.begin();
+  while(It != _pDoc->ObjectMap.end() && It->second!= this) ++It;
+  return It->first;
+}
+
 void DocumentObject::onLoseLinkToObject(DocumentObject*)
 {
 

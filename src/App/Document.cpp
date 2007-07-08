@@ -117,6 +117,60 @@ void Document::remDependency(DocumentObject* from, DocumentObject* to)
   remove_edge(_DepConMap[from],_DepConMap[to],_DepList);
 }
 
+void Document::writeDependencyGraphViz(std::ostream &out)
+{
+  out << "digraph G {" << endl;
+  out << "\tordering=out;" << endl;
+  out << "\tnode [shape = box];" << endl;
+
+  for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
+  { 
+    out << "\t" << It->first << ";" << endl;
+  }
+
+  graph_traits<DependencyList>::edge_iterator ei, ei_end;
+  for (tie(ei,ei_end) = edges(_DepList); ei != ei_end; ++ei)
+  {
+    // get the vertexes the edge is inbetween
+    int src = source(*ei, _DepList);
+    int trg = target(*ei, _DepList);
+    // search for the DocObjects with this vertex index
+    std::map<DocumentObject*,Vertex>::const_iterator It1,It2;
+    for(It1= _DepConMap.begin();It1 != _DepConMap.end() && It1->second != src ; ++It1);
+    for(It2= _DepConMap.begin();It2 != _DepConMap.end() && It2->second != trg ; ++It2);
+    // write the dependency edge
+    out << "\t" << It1->first->getNameInDocument() << " -> "<< It2->first->getNameInDocument() << ";" << endl;
+  }
+
+  out << "}" << endl;
+}
+
+//bool _has_cycle_dfs(const DependencyList & g, vertex_t u, default_color_type * color)
+//{
+//  color[u] = gray_color;
+//  graph_traits < DependencyList >::adjacency_iterator vi, vi_end;
+//  for (tie(vi, vi_end) = adjacent_vertices(u, g); vi != vi_end; ++vi)
+//    if (color[*vi] == white_color)
+//      if (has_cycle_dfs(g, *vi, color))
+//        return true;            // cycle detected, return immediately
+//      else if (color[*vi] == gray_color)        // *vi is an ancestor!
+//        return true;
+//  color[u] = black_color;
+//  return false;
+//}
+
+bool Document::checkOnCycle(void)
+{/*
+  std::vector < default_color_type > color(num_vertices(_DepList), white_color);
+  graph_traits < DependencyList >::vertex_iterator vi, vi_end;
+  for (tie(vi, vi_end) = vertices(_DepList); vi != vi_end; ++vi)
+    if (color[*vi] == white_color)
+      if (_has_cycle_dfs(_DepList, *vi, &color[0]))
+        return true; */
+  return false;
+}
+
+
 void Document::setChanged(DocumentObject* change)
 {
   _ChangeSet.insert(change);

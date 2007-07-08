@@ -59,6 +59,8 @@ public:
   App::Document &getDocument(void) const;
   void setDocument(App::Document* doc);
 
+  /// returns the name which is set in the document for this object (not the Name propertie!)
+  const std::string &getNameInDocument(void) const;
 
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *
