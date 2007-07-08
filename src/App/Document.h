@@ -241,20 +241,11 @@ public:
 
 	/** @name dependency stuff */
 	//@{
-
-  /** set a dependency
-   *   set dependency between two DocumentObjects.
-   */
-  void setDependency(DocumentObject* from, DocumentObject* to);
-  /** remove a dependency
-   *   remove dependency between two DocumentObjects.
-   */
-  void remDependency(DocumentObject* from, DocumentObject* to);
   /// write GraphViz file
   void writeDependencyGraphViz(std::ostream &out);
   bool checkOnCycle(void);
   // set Changed
-  void setChanged(DocumentObject* change);
+  //void setChanged(DocumentObject* change);
   //@}
 
 	virtual PyObject *getPyObject(void);
@@ -286,7 +277,6 @@ protected:
   /// helper which Recompute only this feature
   void _recomputeFeature(AbstractFeature* Feat);
 
-
   // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   int _iTransactionMode;
@@ -308,7 +298,7 @@ protected:
   std::vector<DocumentObject*> ObjectArray;
   Base::Persistance* pDocumentHook;
 
-    typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+  // typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
 
   typedef boost::adjacency_list <
    boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
@@ -319,19 +309,9 @@ protected:
    boost::no_property,    // class GraphProperty:
    boost::listS           // class EdgeListS:
   > DependencyList;
-
-
-  // List of the object dependensys
-  DependencyList _DepList;
-  // conector
   typedef boost::graph_traits<DependencyList> Traits;
   typedef Traits::vertex_descriptor Vertex;
   typedef Traits::edge_descriptor Edge;
-
-  std::map<DocumentObject*,Vertex> _DepConMap;
-  // set of changed objects
-  std::set<DocumentObject*> _ChangeSet;
-
 
 
 	// pointer to the python class

@@ -31,6 +31,7 @@
 #include <stack>
 #include <queue>
 #include <memory>
+#include <bitset>
 
 //streams
 #include <iostream>

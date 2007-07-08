@@ -31,8 +31,9 @@
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 
-#include "PropertyContainer.h"
 #include "Property.h"
+#include "PropertyContainer.h"
+#include "PropertyLinks.h"
 
 using namespace App;
 using namespace Base;
@@ -75,11 +76,30 @@ void PropertyContainer::getPropertyMap(std::map<std::string,Property*> &Map) con
   getPropertyData().getPropertyMap(this,Map);
 }
 
+void PropertyContainer::getPropertyList(std::vector<Property*> &List) const
+{
+  getPropertyData().getPropertyList(this,List);
+}
+
 const char* PropertyContainer::getName(const Property* prop)const
 {
   return getPropertyData().getName(this,prop);
 }
 
+std::vector<DocumentObject*> PropertyContainer::getOutList(void)
+{
+  std::vector<Property*> List;
+  std::vector<DocumentObject*> ret;
+  getPropertyList(List);
+  for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
+  {
+    if((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
+    {
+      ret.push_back(dynamic_cast<PropertyLink*>(*It)->getValue() );
+    }
+  }
+  return ret;
+}
 
 const PropertyData * PropertyContainer::getPropertyDataPtr(void){return &propertyData;} 
 const PropertyData & PropertyContainer::getPropertyData(void) const{return propertyData;} 
@@ -184,6 +204,19 @@ void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<st
   }
   if(parentPropertyData)
     parentPropertyData->getPropertyMap(container,Map);
+
+}
+
+void PropertyData::getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const
+{
+  std::map<std::string,int>::const_iterator pos;
+
+  for(pos = propertyData.begin();pos != propertyData.end();++pos)
+  {
+    List.push_back((Property *) (pos->second + (char *)container) );
+  }
+  if(parentPropertyData)
+    parentPropertyData->getPropertyList(container,List);
 
 }
 

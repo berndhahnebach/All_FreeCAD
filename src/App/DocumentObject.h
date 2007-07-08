@@ -86,6 +86,8 @@ public:
   virtual void onLoseLinkToObject(DocumentObject*);
 	virtual PyObject *getPyObject(void);
 
+  std::bitset<32> Status;
+
 protected:
   /// get called befor the value is changed
   virtual void onBevorChange(const Property* prop);

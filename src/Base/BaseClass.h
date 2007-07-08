@@ -82,6 +82,8 @@ class BaseExport BaseClass
 public: 
   static Type getClassTypeId(void); 
   virtual Type getTypeId(void) const; 
+  bool isDerivedFrom(const Type type) const {return getTypeId().isDerivedFrom(type);}
+
   static void init(void);
 
   virtual PyObject *getPyObject(void);
