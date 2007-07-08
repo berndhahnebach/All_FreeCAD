@@ -194,6 +194,14 @@ Py::List DocumentPy::getRedoNames(void) const
     return res;
 }
 
+Py::String  DocumentPy::getDependencyGraph(void) const
+{
+  std::stringstream out;
+  getDocumentObject()->writeDependencyGraphViz(out);
+  return Py::String(out.str());
+}
+
+
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
     //// FIXME: This method should only be called if attr is a property

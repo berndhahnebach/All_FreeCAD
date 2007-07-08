@@ -239,14 +239,23 @@ public:
 	bool redo() ;
 	//@}
 
+	/** @name dependency stuff */
+	//@{
 
-  // set a dependency
+  /** set a dependency
+   *   set dependency between two DocumentObjects.
+   */
   void setDependency(DocumentObject* from, DocumentObject* to);
-  // remove a dependency
+  /** remove a dependency
+   *   remove dependency between two DocumentObjects.
+   */
   void remDependency(DocumentObject* from, DocumentObject* to);
+  /// write GraphViz file
+  void writeDependencyGraphViz(std::ostream &out);
+  bool checkOnCycle(void);
   // set Changed
   void setChanged(DocumentObject* change);
-
+  //@}
 
 	virtual PyObject *getPyObject(void);
 
@@ -267,7 +276,39 @@ protected:
   /// Construction
 	Document(void);
 
-  typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+  void _remObject(DocumentObject* pcObject);
+  void _addObject(DocumentObject* pcObject, const char* pObjectName);
+
+  /// callback from the Document objects bevor property will be changed
+  void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+  /// callback from the Document objects after property was changed
+  void onChangedProperty(const DocumentObject *Who, const Property *What);
+  /// helper which Recompute only this feature
+  void _recomputeFeature(AbstractFeature* Feat);
+
+
+  // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  int _iTransactionMode;
+  int iTransactionCount;
+  std::map<int,Transaction*> mTransactions;
+  Transaction *activTransaction;
+  bool bRollback;
+
+  int _iUndoMode;
+  std::list<Transaction*> mUndoTransactions;
+  std::list<Transaction*> mRedoTransactions;
+  Transaction *activUndoTransaction;
+  void _clearRedos();
+
+
+  DocumentObject* pActiveObject;
+  std::map<std::string,DocumentObject*> ObjectMap;
+  // Array to preserve the creation order of created objects
+  std::vector<DocumentObject*> ObjectArray;
+  Base::Persistance* pDocumentHook;
+
+    typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
 
   typedef boost::adjacency_list <
    boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
@@ -292,35 +333,6 @@ protected:
   std::set<DocumentObject*> _ChangeSet;
 
 
-
-  void _remObject(DocumentObject* pcObject);
-  void _addObject(DocumentObject* pcObject, const char* pObjectName);
-
-  /// callback from the Document objects bevor property will be changed
-  void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
-  /// callback from the Document objects after property was changed
-  void onChangedProperty(const DocumentObject *Who, const Property *What);
-  /// helper which Recompute only this feature
-  void _recomputeFeature(AbstractFeature* Feat);
-
-  int _iTransactionMode;
-  int iTransactionCount;
-  std::map<int,Transaction*> mTransactions;
-  Transaction *activTransaction;
-  bool bRollback;
-
-  int _iUndoMode;
-  std::list<Transaction*> mUndoTransactions;
-  std::list<Transaction*> mRedoTransactions;
-  Transaction *activUndoTransaction;
-  void _clearRedos();
-
-
-  DocumentObject* pActiveObject;
-  std::map<std::string,DocumentObject*> ObjectMap;
-  // Array to preserve the creation order of created objects
-  std::vector<DocumentObject*> ObjectArray;
-  Base::Persistance* pDocumentHook;
 
 	// pointer to the python class
   Py::Object DocumentPythonObject;
