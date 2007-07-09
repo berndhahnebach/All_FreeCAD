@@ -36,7 +36,9 @@
 #include <set>
 #include <algorithm>
 #include <stack>
-#include <queue> 
+#include <queue>
+#include <bitset>
+
 #ifdef FC_OS_WIN32
 # include <windows.h>
 #endif

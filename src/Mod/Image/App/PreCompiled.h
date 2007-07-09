@@ -27,6 +27,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <bitset>
 
 #include <Python.h>
 #include <xercesc/util/XercesDefs.hpp>

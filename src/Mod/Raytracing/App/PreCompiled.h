@@ -48,7 +48,7 @@
 #include <stack>
 #include <string>
 #include <vector>
-
+#include <bitset>
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 

@@ -34,6 +34,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <bitset>
 
 #ifdef FC_OS_WIN32
 # include <windows.h>

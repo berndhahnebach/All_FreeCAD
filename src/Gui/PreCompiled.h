@@ -50,6 +50,7 @@
 #include <stack>
 #include <queue>
 #include <sstream>
+#include <bitset>
 
 // Boost
 #include <boost/signals.hpp>
