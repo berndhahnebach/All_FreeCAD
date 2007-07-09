@@ -40,6 +40,7 @@
 #include <algorithm>
 #include <stack>
 #include <queue>
+#include <bitset>
 
 #include <Python.h>
 

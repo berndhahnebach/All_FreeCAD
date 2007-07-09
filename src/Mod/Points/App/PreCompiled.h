@@ -36,7 +36,7 @@
 #include <stack>
 #include <string>
 #include <vector>
-
+#include <bitset>
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>

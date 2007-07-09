@@ -35,7 +35,7 @@
 #include <list>
 #include <set>
 #include <map>
-
+#include <bitset>
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
