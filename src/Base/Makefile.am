@@ -141,7 +141,11 @@ libFreeCADBase_la_SOURCES=\
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
-libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
+libFreeCADBase_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lboost_filesystem \
+		-lxerces-c \
+		-lz
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src

@@ -32,6 +32,8 @@
 #include <Base/TimeInfo.h>
 #include <Base/PyCXX/Objects.hxx>
 
+#include <bitset>
+
 
 namespace App
 {
