@@ -93,6 +93,9 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::
   else
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
 
+  // check whether the simple or the Full Mouse model is used
+  _viewer->setMouseModel(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View/MouseModel")->GetInt("currentItem",1));
+ 
   // Do not show the Inventor viewer here because it flickers when we change its size
   //_viewer->show();
 

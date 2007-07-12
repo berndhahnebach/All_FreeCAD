@@ -177,6 +177,8 @@ public:
   void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
   void setEnabledFPSCounter(bool b);
 
+  void setMouseModel(int i){_iMouseModel = i;}
+
 protected:
   unsigned long             currMod;
   std::stack<unsigned long> ModStack;
@@ -192,6 +194,8 @@ protected:
   virtual void afterRealizeHook(void);
   virtual void processEvent(QEvent * event);
   virtual SbBool processSoEvent(const SoEvent * const ev);
+  virtual SbBool processSoEvent1(const SoEvent * const ev);
+  virtual SbBool processSoEvent2(const SoEvent * const ev);
 
   void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
   void printDimension();
@@ -236,7 +240,9 @@ private:
   SbSphereSheetProjector * spinprojector;
 
   SbRotation spinRotation;
-
+  bool _bSpining;
+  int _iMouseModel;
+  QCursor _oldCursor;
   SbBool axiscrossEnabled;
   int axiscrossSize;
 
