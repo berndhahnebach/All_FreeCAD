@@ -15,158 +15,185 @@
   <property name="windowTitle" >
    <string>3D View</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="3" column="0" >
-    <widget class="QGroupBox" name="groupBoxColor" >
+   <item>
+    <widget class="QGroupBox" name="GroupBox12" >
      <property name="title" >
-      <string>Background color</string>
+      <string>3DView settings</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QVBoxLayout" >
       <property name="margin" >
        <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="2" column="1" >
-       <widget class="Gui::PrefColorButton" name="backgroundColorTo" >
+      <item>
+       <widget class="Gui::PrefCheckBox" name="CheckBox_CornerCoordSystem" >
         <property name="text" >
-         <string/>
-        </property>
-        <property name="color" >
-         <color>
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
-         </color>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor3</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="Gui::PrefColorButton" name="backgroundColorFrom" >
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="color" >
-         <color>
-          <red>127</red>
-          <green>127</green>
-          <blue>205</blue>
-         </color>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor2</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="Gui::PrefRadioButton" name="radioButtonGradient" >
-        <property name="text" >
-         <string>Color gradient</string>
+         <string>Show coordinate system in the corner</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
         </property>
         <property name="prefEntry" stdset="0" >
-         <cstring>Gradient</cstring>
+         <cstring>CornerCoordSystem</cstring>
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>View</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="Gui::PrefColorButton" name="SelectionColor_Background" >
+      <item>
+       <widget class="Gui::PrefCheckBox" name="CheckBox_ShowFPS" >
+        <property name="text" >
+         <string>Show counter of frames per second</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>ShowFPS</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefCheckBox" name="CheckBox_UseAutoRotation" >
         <property name="enabled" >
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text" >
-         <string/>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="Gui::PrefRadioButton" name="radioButtonSimple" >
-        <property name="text" >
-         <string>Simple color</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Simple</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="groupBoxCamera" >
-     <property name="title" >
-      <string>Camera type</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="1" >
-       <widget class="Gui::PrefRadioButton" name="radioOrthographic" >
-        <property name="text" >
-         <string>Orthographic rendering</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Orthographic</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="Gui::PrefRadioButton" name="radioPerspective" >
-        <property name="text" >
-         <string>Perspective rendering</string>
+         <string>Use spin rotation</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
         </property>
         <property name="prefEntry" stdset="0" >
-         <cstring>Perspective</cstring>
+         <cstring>UseAutoRotation</cstring>
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>View</cstring>
         </property>
        </widget>
       </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1_3" >
+          <property name="text" >
+           <string>3D Mouse Model</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefComboBox" name="gui::prefcombobox" >
+          <property name="currentIndex" >
+           <number>1</number>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>MouseModel</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>View</cstring>
+          </property>
+          <item>
+           <property name="text" >
+            <string>Simple model</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Full model</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox8" >
+        <property name="text" >
+         <string>Enable antialiasing (slower)</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>UseAntialiasing</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line1" >
+        <property name="frameShape" >
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+           <string>Eye to eye distance for stereo modes:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefDoubleSpinBox" name="FloatSpinBox_EyeDistance" >
+          <property name="decimals" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <double>1000</double>
+          </property>
+          <property name="minimum" >
+           <double>0.1</double>
+          </property>
+          <property name="singleStep" >
+           <double>2</double>
+          </property>
+          <property name="value" >
+           <double>65</double>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>EyeDistance</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>View</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item>
     <widget class="QGroupBox" name="groupBoxSelection" >
      <property name="title" >
       <string>Selection</string>
@@ -281,128 +308,141 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBox12" >
+   <item>
+    <widget class="QGroupBox" name="groupBoxCamera" >
      <property name="title" >
-      <string>3DView settings</string>
+      <string>Camera type</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="0" >
-       <widget class="Gui::PrefCheckBox" name="CheckBox_ShowFPS" >
+      <item row="0" column="1" >
+       <widget class="Gui::PrefRadioButton" name="radioOrthographic" >
         <property name="text" >
-         <string>Show counter of frames per second</string>
+         <string>Orthographic rendering</string>
         </property>
         <property name="prefEntry" stdset="0" >
-         <cstring>ShowFPS</cstring>
+         <cstring>Orthographic</cstring>
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>View</cstring>
         </property>
        </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="Gui::PrefCheckBox" name="prefCheckBox8" >
-        <property name="text" >
-         <string>Enable antialiasing (slower)</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>UseAntialiasing</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <widget class="Line" name="line1" >
-        <property name="frameShape" >
-         <enum>QFrame::HLine</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="textLabel1" >
-          <property name="text" >
-           <string>Eye to eye distance for stereo modes:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Gui::PrefDoubleSpinBox" name="FloatSpinBox_EyeDistance" >
-          <property name="decimals" >
-           <number>1</number>
-          </property>
-          <property name="maximum" >
-           <double>1000</double>
-          </property>
-          <property name="minimum" >
-           <double>0.1</double>
-          </property>
-          <property name="singleStep" >
-           <double>2</double>
-          </property>
-          <property name="value" >
-           <double>65</double>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>EyeDistance</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
       <item row="0" column="0" >
-       <widget class="Gui::PrefCheckBox" name="CheckBox_CornerCoordSystem" >
+       <widget class="Gui::PrefRadioButton" name="radioPerspective" >
         <property name="text" >
-         <string>Show coordinate system in the corner</string>
+         <string>Perspective rendering</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
         </property>
         <property name="prefEntry" stdset="0" >
-         <cstring>CornerCoordSystem</cstring>
+         <cstring>Perspective</cstring>
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>View</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="Gui::PrefCheckBox" name="CheckBox_UseAutoRotation" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxColor" >
+     <property name="title" >
+      <string>Background color</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="2" column="1" >
+       <widget class="Gui::PrefColorButton" name="backgroundColorTo" >
         <property name="text" >
-         <string>Use spin rotation</string>
+         <string/>
+        </property>
+        <property name="color" >
+         <color>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
+         </color>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>BackgroundColor3</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="Gui::PrefColorButton" name="backgroundColorFrom" >
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="color" >
+         <color>
+          <red>127</red>
+          <green>127</green>
+          <blue>205</blue>
+         </color>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>BackgroundColor2</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="Gui::PrefRadioButton" name="radioButtonGradient" >
+        <property name="text" >
+         <string>Color gradient</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
         </property>
         <property name="prefEntry" stdset="0" >
-         <cstring>UseAutoRotation</cstring>
+         <cstring>Gradient</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="Gui::PrefColorButton" name="SelectionColor_Background" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>BackgroundColor</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>View</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="Gui::PrefRadioButton" name="radioButtonSimple" >
+        <property name="text" >
+         <string>Simple color</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>Simple</cstring>
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>View</cstring>
@@ -425,8 +465,8 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>
@@ -439,8 +479,15 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefColorButton</class>
-   <extends>Gui::ColorButton</extends>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefComboBox</class>
+   <extends>QComboBox</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>

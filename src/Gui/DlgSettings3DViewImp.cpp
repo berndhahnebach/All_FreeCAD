@@ -65,6 +65,7 @@ void DlgSettings3DViewImp::saveSettings()
   checkBoxSelection->onSave();
   HighlightColor->onSave();
   SelectionColor->onSave();
+  gui__prefcombobox->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -85,6 +86,7 @@ void DlgSettings3DViewImp::loadSettings()
   checkBoxSelection->onRestore();
   HighlightColor->onRestore();
   SelectionColor->onRestore();
+  gui__prefcombobox->onRestore();
 }
 
 /**

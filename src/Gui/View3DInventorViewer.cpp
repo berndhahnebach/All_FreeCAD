@@ -156,7 +156,7 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0), editing(FALSE)
+  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0), editing(FALSE),_iMouseModel(1)
 {
   Gui::Selection().Attach(this);
 
@@ -664,6 +664,17 @@ void View3DInventorViewer::processEvent(QEvent * event)
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
+  switch(_iMouseModel)
+  {
+    case 0:return processSoEvent2(ev);break;
+    case 1:return processSoEvent1(ev);break;
+    default:return processSoEvent1(ev);
+  }
+}
+
+
+SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
+{
   // If we're in picking mode then all events must be redirected to the
   // appropriate mouse model.
   if (pcMouseModel) {
@@ -945,6 +956,314 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   return FALSE;
+}
+
+SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
+{
+  //Base::Console().Log("Evnt: %s\n",ev->getTypeId().getName().getString());
+  bool processed = false;
+  if ( !isSeekMode() && isViewing() )
+    setViewing( false ); // by default disable viewing mode to render the scene
+
+  // Keybooard handling
+  if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+    switch (ke->getKey()) {
+    case SoKeyboardEvent::LEFT_ALT:
+    case SoKeyboardEvent::RIGHT_ALT:
+    case SoKeyboardEvent::LEFT_CONTROL:
+    case SoKeyboardEvent::RIGHT_CONTROL:
+    case SoKeyboardEvent::LEFT_SHIFT:
+    case SoKeyboardEvent::RIGHT_SHIFT:
+      break;
+    case SoKeyboardEvent::H:
+      this->saveHomePosition();
+      processed = true;
+      break;
+    case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
+      processed = true;
+      break;
+    case SoKeyboardEvent::S:
+      // processSoEvent() of the base class sets the seekMode() if needed
+    case SoKeyboardEvent::HOME:
+    case SoKeyboardEvent::LEFT_ARROW:
+    case SoKeyboardEvent::UP_ARROW:
+    case SoKeyboardEvent::RIGHT_ARROW:
+    case SoKeyboardEvent::DOWN_ARROW:
+      if (!isViewing())
+        setViewing( true );
+      break;
+    default:
+      break;
+    }
+  }
+
+  static bool MoveMode=false;
+  static bool ZoomMode=false;
+  static bool RotMode =false;
+  static bool dCliBut3=false;
+
+  const SbVec2s size(this->getGLSize());
+  const SbVec2f prevnormalized = lastmouseposition;
+  const SbVec2s pos(ev->getPosition());
+  const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
+                     (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
+//  SbVec2s MovePos;
+  lastmouseposition = posn;
+
+  // switching the mouse modes
+  if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+
+    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+    const int button = event->getButton();
+    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+    // SoDebugError::postInfo("processSoEvent", "button = %d", button);
+    switch (button) {
+    case SoMouseButtonEvent::BUTTON1:
+      if(press)
+      {
+        _bRejectSelection = false;
+        if(MoveMode)
+        {
+          RotMode = true;
+          ZoomMode = false;
+          MoveTime = ev->getTime();
+
+        // Set up initial projection point for the projector object when
+        // first starting a drag operation.
+          spinprojector->project(lastmouseposition);
+          //interactiveCountInc();
+          clearLog();
+
+          getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
+          processed = true;
+        }
+      }
+      else
+      {
+        // if you come out of rotation dont deselect anything
+        if(_bRejectSelection || MoveMode)
+        {
+          _bRejectSelection=false;
+          processed = true;
+        }
+        if(MoveMode){
+          RotMode = false; 
+
+          SbTime tmp = (ev->getTime() - MoveTime);
+          float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+          if (tmp.getValue() < dci/*0.300*/)
+          {
+            ZoomMode = true;
+            getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
+          }else{
+       
+            ZoomMode = false;
+            getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
+
+            SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+            panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+       
+            // check on start spining
+            SbTime stoptime = (ev->getTime() - log.time[0]);
+            if (bAllowSpining && stoptime.getValue() < 0.100) {
+              const SbVec2s glsize(this->getGLSize());
+              SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                            float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+              SbVec3f to = spinprojector->project(posn);
+              SbRotation rot = spinprojector->getRotation(from, to);
+
+              SbTime delta = (log.time[0] - log.time[2]);
+              double deltatime = delta.getValue();
+              rot.invert();
+              rot.scaleAngle(float(0.200 / deltatime));
+
+              SbVec3f axis;
+              float radians;
+              rot.getValue(axis, radians);
+              float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+              if ((radians > 0.01f) && (deltatime < dci/*0.300*/)) {
+                _bSpining = true;
+                spinRotation = rot;
+                MoveMode = false;
+                // restore the previous cursor
+                getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
+              }
+            }
+          }
+          processed = true;
+        }
+      }
+      break;
+    case SoMouseButtonEvent::BUTTON2:
+      break;
+    case SoMouseButtonEvent::BUTTON3:
+      if(press)
+      {
+        // check on double click
+        SbTime tmp = (ev->getTime() - CenterTime);
+        float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+        if (tmp.getValue() < dci/*0.300*/)
+        {
+          dCliBut3 = true;
+          if(!seekToPoint(pos))
+            panToCenter(panningplane, posn);
+        }else{
+          CenterTime = ev->getTime();
+          MoveMode = true;
+          _bSpining = false;
+          dCliBut3 = false;
+          SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+          panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+          // save the current cursor before overriding
+          _oldCursor = getWidget()->cursor();
+          getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
+        }
+      }else{
+        MoveMode = false;
+        RotMode = false;
+        ZoomMode = false;
+        // restore the previous cursor
+        getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
+        _bRejectSelection = true;
+      }
+      processed = true;
+      break;
+    case SoMouseButtonEvent::BUTTON4:
+      if (press) 
+        View3DInventorViewer::zoom(getCamera(), 0.05f);
+
+      processed = true;
+      break;
+    case SoMouseButtonEvent::BUTTON5:
+      if (press) 
+        View3DInventorViewer::zoom(getCamera(), -0.05f);
+
+      processed = true;
+      break;
+    default:
+      break;
+    }
+  }
+
+  // Mouse Movement handling
+  if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+//    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
+
+    if(MoveMode && ZoomMode){
+      zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
+      processed = true;
+    }else if(MoveMode && RotMode) {
+      addToLog(ev->getPosition(), ev->getTime());
+      spin(posn);
+
+      processed = true;
+    }else if(MoveMode) {
+      pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
+      processed = true;
+
+    }else if(_bSpining) {
+      processed = true;
+    }
+  }
+
+  // Spaceball & Joystick handling
+  if (ev->getTypeId().isDerivedFrom(SoMotion3Event::getClassTypeId())) {
+    SoMotion3Event * const event = (SoMotion3Event *) ev;
+    SoCamera * const camera = this->getCamera();
+    if (camera) {
+      SbVec3f dir = event->getTranslation();
+      camera->orientation.getValue().multVec(dir,dir);
+      camera->position = camera->position.getValue() + dir;
+      camera->orientation = 
+        event->getRotation() * camera->orientation.getValue();
+      processed = TRUE;
+    }
+  }
+
+  // give the viewprovider the chance to handle the event
+  if(!processed && !MoveMode && !RotMode)
+  {
+    if (pcMouseModel) {
+      int hd=pcMouseModel->handleEvent(ev,this->getViewportRegion());
+      if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
+        processed = true;
+      } else if (hd==AbstractMouseModel::Finish) {
+        pcPolygon = pcMouseModel->getPolygon();
+        delete pcMouseModel; pcMouseModel = 0;
+      } else if (hd==AbstractMouseModel::Cancel) {
+        pcPolygon.clear();
+        delete pcMouseModel; pcMouseModel = 0;
+      }
+    }
+    if (!processed) {
+      std::set<ViewProvider*>::iterator It;
+      for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+        processed = (*It)->handleEvent(ev,*this);
+    }
+  }
+
+  // give the nodes in the foreground root the chance to handle events (e.g color bar)
+  // Note: this must be done _before_ ceding to the viewer  
+  if ( !processed )
+  {
+    SoHandleEventAction action(getViewportRegion());
+    action.setEvent(ev);
+    action.apply(foregroundroot);
+    processed = action.isHandled();
+  }
+
+  // right mouse button pressed
+  if (!processed && !MoveMode && !RotMode)
+  {
+    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
+      if ((e->getButton() == SoMouseButtonEvent::BUTTON2) && e->getState() == SoButtonEvent::UP) {
+        if (this->isPopupMenuEnabled()) {
+          if (e->getState() == SoButtonEvent::UP) {
+            this->openPopupMenu(e->getPosition());
+          }
+
+          // Steal all RMB-events if the viewer uses the popup-menu.
+          processed = TRUE;
+        }
+      }
+    }
+  }
+
+  // invokes the appropriate callback function when user interaction has started or finished
+  bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
+  if (bInteraction && getInteractiveCount()==0)
+    interactiveCountInc();
+  // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
+  else if (!bInteraction&&!dCliBut3&&getInteractiveCount()>0&&!isSeekMode())
+    interactiveCountDec();
+
+
+  bool baseProcessed;
+  if(!processed)
+    baseProcessed = inherited::processSoEvent(ev);
+  else 
+    return true;
+
+
+  // check for left click without selecting something
+  if (!baseProcessed)
+  {
+    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
+      if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+        //Base::Console().Log("unhandled left button click!");
+        Gui::Selection().clearSelection();
+      }
+      
+    }
+    
+  }
+  
+
+  return false;
 }
 
 void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
