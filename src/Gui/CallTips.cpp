@@ -186,8 +186,9 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
             }
             tips[str] = tip;
         }
-    } catch (const Py::Exception& ) {
+    } catch (Py::Exception& e) {
         // Just do nothing
+        e.clear();
     }
 
     return tips;
