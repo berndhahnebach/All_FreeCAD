@@ -35,7 +35,7 @@
 #include <list>
 #include <set>
 #include <map>
-#include <bitset>
+
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
@@ -46,8 +46,8 @@
 #include <Standard_AbortiveTransaction.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_AncestorIterator.hxx>
-#include <Standard_BasicMap.hxx>
-#include <Standard_BasicMapIterator.hxx>
+//#include <Standard_BasicMap.hxx>
+//#include <Standard_BasicMapIterator.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Byte.hxx>
 #include <Standard_Character.hxx>
@@ -65,7 +65,7 @@
 #include <Standard_ExtCharacter.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_ForMapOfTypes.hxx>
+//#include <Standard_ForMapOfTypes.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
 #include <Standard_Integer.hxx>
@@ -75,11 +75,11 @@
 #include <Standard_LicenseError.hxx>
 #include <Standard_LicenseNotFound.hxx>
 #include <Standard_Macro.hxx>
-#include <Standard_MapOfTypes.hxx>
+//#include <Standard_MapOfTypes.hxx>
 #include <Standard_math.hxx>
 #include <Standard_MultiplyDefined.hxx>
-#include <Standard_MyMapOfStringsHasher.hxx>
-#include <Standard_MyMapOfTypes.hxx>
+//#include <Standard_MyMapOfStringsHasher.hxx>
+//#include <Standard_MyMapOfTypes.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
@@ -94,7 +94,7 @@
 #include <Standard_Overflow.hxx>
 #include <Standard_Persistent.hxx>
 #include <Standard_Persistent_proto.hxx>
-#include <Standard_PForMapOfTypes.hxx>
+//#include <Standard_PForMapOfTypes.hxx>
 #include <Standard_PrimitiveTypes.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
@@ -105,7 +105,7 @@
 #include <Standard_Storable.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_String.hxx>
-#include <Standard_theForMapOfTypes.hxx>
+//#include <Standard_theForMapOfTypes.hxx>
 #include <Standard_TooManyUsers.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Transient_proto.hxx>
