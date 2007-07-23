@@ -55,8 +55,6 @@ class DOMDocument;
 XERCES_CPP_NAMESPACE_END
 
 class ParameterManager;
-typedef struct _object PyObject;
-typedef unsigned short XMLCh;
 
 
 /** The parameter container class
