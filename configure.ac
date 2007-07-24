@@ -6,7 +6,7 @@ dnl **************************************************************************
 dnl release version number info
 m4_define([FREECAD_MAJOR], [0])
 m4_define([FREECAD_MINOR], [7])
-m4_define([FREECAD_MICRO], [514])
+m4_define([FREECAD_MICRO], [645])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
