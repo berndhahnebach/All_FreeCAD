@@ -45,7 +45,7 @@
 #endif
 #include <map>
 #include <vector>
-
+#include <Python.h>
 #include <xercesc/util/XercesDefs.hpp>
 
 XERCES_CPP_NAMESPACE_BEGIN
