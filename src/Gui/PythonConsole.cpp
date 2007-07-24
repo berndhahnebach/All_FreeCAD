@@ -279,7 +279,7 @@ PythonConsole::PythonConsole(QWidget *parent)
     d->callTipsList->hide();
 
 #ifdef FC_OS_LINUX
-    QFont serifFont( "Courier", 15, QFont::Normal );
+    QFont serifFont( "Courier", 12, QFont::Normal );
 #else
     QFont serifFont( "Courier", 10, QFont::Normal );
 #endif

@@ -221,7 +221,7 @@ void ReportOutput::restoreFont()
   QFont _font(  font() );
   _font.setFamily( "Courier" );
 #ifdef FC_OS_LINUX
-  _font.setPointSize( 15 );
+  _font.setPointSize( 12 );
 #else
   _font.setPointSize( 10 );
 #endif
