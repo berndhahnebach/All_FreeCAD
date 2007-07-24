@@ -1,6 +1,7 @@
-freecad (0.5.472-1) unstable; urgency=low
+freecad (0.7.645-1) unstable; urgency=low
 
   * Initial Release.
+  * Qt4 port.
 
- -- Werner Mayer <werner.wm.mayer@gmx.de>  Tue, 26 Sep 2006 16:55:15 +0200
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 26 Sep 2006 16:55:15 +0200
 

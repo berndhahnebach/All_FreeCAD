@@ -85,7 +85,7 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog.txt
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install debian/freecad.desktop usr/share/applications
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
@@ -96,7 +96,7 @@ binary-arch: build install
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
-	dh_installman
+	dh_installman debian/freecad.1
 	dh_link
 	install -m777 $(SOURCEOCCDIR)/libTKernel.so $(DESTOCCDIR)
 	install -m777 $(SOURCEOCCDIR)/libTKMath.so $(DESTOCCDIR)
