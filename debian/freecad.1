@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH FREECAD 1 "Januar  8, 2006"
+.TH FREECAD 1 "July  25, 2007" freecad "Linux User's Manual"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -16,45 +16,58 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .SH NAME
-freecad \- program to do something
+freecad \- An extensible Open Source CAx program for Unix/X11
 .SH SYNOPSIS
 .B freecad
-.RI [ options ] " files" ...
+.RI [ options ] " files"
 .br
-.B bar
-.RI [ options ] " files" ...
+.B freecadcmd
+.RI [ options ] " files"
 .SH DESCRIPTION
-This manual page documents briefly the
-.B freecad
-and
-.B bar
-commands.
-This manual page was written for the Debian distribution
-because the original program does not have a manual page.
-Instead, it has documentation in the GNU Info format; see below.
-.PP
+.B FreeCAD
+is an Open Source CAx RAD based on OpenCasCade, Qt and Python. It features 
+some key concepts like macro recording, workbenches, ability to run as a 
+server and dynamically loadable application extensions and it is designed 
+to be platform independent.
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
 .\" respectively.
-\fBfreecad\fP is a program that...
+.SH USAGE
+\fBfreecad\fR starts with a GUI while \fBfreecadcmd\fR is only a pure command line version that starts a Python interpreter.
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
-A summary of options is included below.
-For a complete description, see the Info files.
+A summary of the options supported by \fBfreecad\fR is included below.
+.SS "Generic options"
 .TP
-.B \-h, \-\-help
+\fB\-h, \-\-help\fR
 Show summary of options.
 .TP
-.B \-v, \-\-version
+\fB\-v, \-\-version\fR
 Show version of program.
+.TP
+\fB\-c, \-\-console\fR
+Start in console mode.
+.TP
+\fB\-\-response\-file\fR \fIarg\fR
+Can be specified with '@name', too.
+
+.SS "Configuration"
+.TP
+\fB\-l, \-\-write\-log\fR
+Write a log file.
+.TP
+\fB\-t, \-\-run\-test\fR \fIarg\fR
+Test level.
+.TP
+\fB\-M, \-\-module\-path\fR \fIarg\fR
+Additional module path.
+.TP
+\fB\-P, \-\-python\-path\fR \fIarg\fR
+Additional Python path.
 .SH SEE ALSO
-.BR bar (1),
-.BR baz (1).
-.br
-The programs are documented fully by
-.IR "The Rise and Fall of a Fooish Bar" ,
-available via the Info system.
+To get more information about \fBFreeCAD\fR, please visit \fIhttp://juergen\-riegel.net/FreeCAD/Docu/index.php/Main_Page\fR
+.SH BUGS
+To report a bug, please visit \fIhttp://free-cad.sf.net/\fR
 .SH AUTHOR
-This manual page was written by Werner Mayer <werner.wm.mayer@gmx.de>,
-for the Debian project (but may be used by others).
+This manual page was written by Werner Mayer.
