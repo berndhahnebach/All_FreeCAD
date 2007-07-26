@@ -512,15 +512,16 @@ void RecentFilesAction::restore()
         // we want at least 20 items but we do only show the number of files
         // that is defined in user parameters
         this->visibleItems = hGrp->GetInt("RecentFiles", this->visibleItems);
-        int count = std::max<int>(this->maximumItems, this->visibleItems);
-        for (int i=0; i<count; i++)
-            _group->addAction("")->setVisible(false);
-        std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-        QStringList files;
-        for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
-            files.append(it->c_str());
-        setFiles(files);
     }
+
+    int count = std::max<int>(this->maximumItems, this->visibleItems);
+    for (int i=0; i<count; i++)
+        _group->addAction("")->setVisible(false);
+    std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
+    QStringList files;
+    for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
+        files.append(it->c_str());
+    setFiles(files);
 }
 
 /** Saves all recent files to the preferences. */
@@ -528,7 +529,7 @@ void RecentFilesAction::save()
 {
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                 ->GetGroup("Preferences")->GetGroup("RecentFiles");
-    int count = hGrp->GetInt("RecentFiles"); // save number of files
+    int count = hGrp->GetInt("RecentFiles", this->visibleItems); // save number of files
     hGrp->Clear();
     hGrp->SetInt("RecentFiles", count); // restore
 

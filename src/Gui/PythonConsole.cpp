@@ -654,6 +654,11 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
     if (!source)
         return;
 
+    // When inserting a text block we must run it as a whole and not breaking down
+    // into several lines and run each single line. This is very important as it is 
+    // possible that a block contains a definition of a method or class that may
+    // contain several empty lines which confuses the interpreter and leads to error
+    // messages (almost indentation errors) later on.
     QString text = source->text();
     if (!text.isNull()) {
         QStringList lines = text.split('\n');
@@ -663,12 +668,15 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
             cursor.movePosition(QTextCursor::End);
             cursor.insertText( *it );
             cursor.movePosition(QTextCursor::End);
+            printPrompt(true);
             // put statement to the history
-            if ( (*it).length() > 0 )
+            if ( (*it).length() > 0 ) {
                 d->history.append(*it);
-            // evaluate and run the command
-            runSource(*it);
+            }
         }
+
+        // evaluate and run the command
+        runSource(text);
     }
 
     ensureCursorVisible();
