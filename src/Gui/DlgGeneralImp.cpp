@@ -63,8 +63,7 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
   }
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
   // it, if it is set by the user
-  Workbench* curWb = WorkbenchManager::instance()->active();
-  QString curWbName = curWb ? curWb->name() : "<none>";
+  QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
   AutoloadModuleCombo->setCurrentText( curWbName );
 
   // do not save the content but the current item only
