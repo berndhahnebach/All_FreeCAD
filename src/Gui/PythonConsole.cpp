@@ -149,6 +149,40 @@ PyObject* InteractiveInterpreter::compile(const char* source) const
 }
 
 /**
+ * Compile a command and determine whether it is incomplete.
+ * 
+ * The source string may contain \n characters.
+ * Return value:
+ * \item Return  1 if the command is incomplete
+ * \item Return  0 if the command is complete and valid
+ * \item Return -1 if the command is a syntax error 
+ * (OverflowError and ValueError can be produced by
+ * malformed literals).
+ */
+int InteractiveInterpreter::compileCommand(const char* source) const
+{
+    PyObject* func = PyObject_GetAttrString(d->interpreter, "compile");
+    PyObject* args = Py_BuildValue("(s)", source);
+    PyObject* eval = PyEval_CallObject(func,args);  // must decref later
+
+    Py_DECREF(args);
+    Py_DECREF(func);
+
+    int ret = 0;
+    if (eval){
+        if (PyObject_TypeCheck(Py_None, eval->ob_type))
+            ret = 1; // incomplete
+        else
+            ret = 0; // complete
+        Py_DECREF(eval);
+    } else {
+        ret = -1;    // invalid
+    }
+
+    return ret;
+}
+
+/**
  * Compile and run some source in the interpreter.
  *
  * One several things can happen:
@@ -495,12 +529,12 @@ void PythonConsole::printPrompt(bool incomplete)
  */
 void PythonConsole::runSource(const QString& line)
 {
-    bool complete = false;
+    bool incomplete = false;
     PySys_SetObject("stdout", d->_stdoutPy);
     PySys_SetObject("stderr", d->_stderrPy);
     try {
         // launch the command now
-        complete = d->interpreter->push(line.toAscii());
+        incomplete = d->interpreter->push(line.toAscii());
         setFocus(); // if focus was lost
     } catch (const Base::SystemExitException&) {
         int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
@@ -520,7 +554,23 @@ void PythonConsole::runSource(const QString& line)
 
     PySys_SetObject("stdout", d->_stdout);
     PySys_SetObject("stderr", d->_stderr);
-    printPrompt(complete);
+    printPrompt(incomplete);
+}
+
+bool PythonConsole::isComment(const QString& source) const
+{
+    if (source.isEmpty())
+        return false;
+    int i=0;
+    while (i < source.length()) {
+        QChar ch = source.at(i++);
+        if (ch.isSpace())
+            continue;
+        if (ch == '#')
+            return true;
+    }
+
+    return false;
 }
 
 /**
@@ -654,29 +704,68 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
     if (!source)
         return;
 
-    // When inserting a text block we must run it as a whole and not breaking down
-    // into several lines and run each single line. This is very important as it is 
-    // possible that a block contains a definition of a method or class that may
-    // contain several empty lines which confuses the interpreter and leads to error
-    // messages (almost indentation errors) later on.
+    // When inserting a big text block we must break it down into several command
+    // blocks instead of processing the text block as a whole or each single line.
+    // If we processed the complete block as a whole only the first valid Python
+    // command would be executed and the rest would be ignored. However, if we 
+    // processed each line separately the interpreter might be confused that a block 
+    // is complete but it might be not. This is for instance, if a class or method 
+    // definition contains several empty lines which leads to error messages (almost
+    // indentation errors) later on.
     QString text = source->text();
     if (!text.isNull()) {
+#if defined (Q_OS_LINUX) 
+        // Need to convert CRLF to LF
+        text.replace( "\r\n", "\n" );
+#elif defined(Q_OS_MAC)
+        //need to convert CR to LF
+        text.replace( '\r', '\n' );
+#endif
         QStringList lines = text.split('\n');
         QTextCursor cursor = textCursor();
-        for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it) {
-            // go to the end before inserting new text 
-            cursor.movePosition(QTextCursor::End);
+        QStringList buffer;
+        int countNewlines = lines.count() - 1, i = 0;
+        for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it, ++i) {
             cursor.insertText( *it );
-            cursor.movePosition(QTextCursor::End);
-            printPrompt(true);
-            // put statement to the history
-            if ( (*it).length() > 0 ) {
-                d->history.append(*it);
+            if (i < countNewlines) {
+                // put statement to the history
+                if ( (*it).length() > 0 ) {
+                    d->history.append(*it);
+                }
+
+                buffer.append(*it);
+                int ret = d->interpreter->compileCommand(buffer.join("\n").toAscii());
+                if (ret == 1) { // incomplete
+                    printPrompt(true);
+                } else if (ret == 0) { // complete
+                    // check if the following lines belong to the previous block
+                    int k=i+1;
+                    QString nextline = lines[k];
+                    while ((nextline.isEmpty() || isComment(nextline)) && k < countNewlines) {
+                        k++;
+                        nextline = lines[k];
+                    }
+                    
+                    int ret = d->interpreter->compileCommand(nextline.toAscii());
+
+                    // If the line is valid, i.e. complete or incomplete the previous block
+                    // is finished
+                    if (ret == -1) {
+                        // the command is not finished yet
+                        printPrompt(true);
+                    } else {
+                        runSource(buffer.join("\n"));
+                        buffer.clear();
+                    }
+                } else { // invalid
+                    runSource(buffer.join("\n"));
+                    break;
+                }
             }
         }
 
-        // evaluate and run the command
-        runSource(text);
+        if (!buffer.isEmpty())
+            runSource(buffer.join("\n"));
     }
 
     ensureCursorVisible();

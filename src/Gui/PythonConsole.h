@@ -49,6 +49,7 @@ public:
     ~InteractiveInterpreter();
 
     bool push(const char*);
+    int compileCommand(const char*) const;
 
 private:
     bool runSource(const char*) const;
@@ -123,6 +124,7 @@ protected:
 
 private:
     void runSource(const QString&);
+    bool isComment(const QString&) const;
     void printPrompt(bool);
     void insertPythonOutput( const QString& );
     void insertPythonError ( const QString& );
