@@ -73,6 +73,7 @@ PyMethodDef Application::Methods[] = {
   {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
 
   {"open",   (PyCFunction) Application::sOpenDocument,   1},
+  {"openDocument",   (PyCFunction) Application::sOpenDocument,   1},
 //  {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
 //  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
   {"newDocument",    (PyCFunction) Application::sNewDocument,    1, App_newDocument_doc},
@@ -278,16 +279,16 @@ PYFUNCIMP_S(Application,sSaveDocumentAs)
 */
 PYFUNCIMP_S(Application,sActiveDocument)
 {
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
 
-  Document* doc = GetApplication().getActiveDocument();
-  if (doc) {
-	  return doc->getPyObject();
-  }else{
-  	PyErr_SetString(PyExc_Exception, "No active document");
-	  return 0L;
-  }
+    Document* doc = GetApplication().getActiveDocument();
+    if (doc) {
+	    return doc->getPyObject();
+    } else {
+        Py_INCREF(Py_None); 
+        return Py_None;
+    }
 }
 
 PYFUNCIMP_S(Application,sGetDocument)

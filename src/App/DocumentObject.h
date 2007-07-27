@@ -70,7 +70,7 @@ public:
 	//@{
 	//void TouchProperty(const char *Name);
   /// set this feature touched (cause recomputation on depndend features)
-  bool isTouched(void){return StatusBits.test(0);}
+  bool isTouched(void) const {return StatusBits.test(0);}
   /// set this feature touched (cause recomputation on depndend features)
 	void purgeTouched(void){StatusBits.reset(0);}
   /// set this feature touched (cause recomputation on depndend features)
@@ -84,7 +84,7 @@ public:
 	//@}
 
   /// set this feature to error 
-  bool isError(void){return StatusBits.test(1);}
+  bool isError(void) const {return StatusBits.test(1);}
   /// remove the error from the object
 	void purgeError(void){StatusBits.reset(2);}
 

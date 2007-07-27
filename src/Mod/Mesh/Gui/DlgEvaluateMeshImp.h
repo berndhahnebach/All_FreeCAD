@@ -46,76 +46,73 @@ class ViewProviderMeshDefects;
  */
 class CleanupHandler : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-   CleanupHandler();
+    CleanupHandler();
 
 public slots:
-   void cleanup();
+    void cleanup();
 };
 
 /**
  * \author Werner Mayer
  */
-class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh//, public App::Document::ObserverType, public App::Application::ObserverType
+class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgEvaluateMeshImp();
+    DlgEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgEvaluateMeshImp();
 
-  /// Checks if the current feature is about to be removed
-  //void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
-  /// Checks if the current document is about to be closed
-  //void OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason);
+    void setMesh( Mesh::Feature* );
 
-  void setMesh( Mesh::Feature* );
-
-  void slotDeletedDocument(App::Document& Doc);
-  void slotDeletedObject(App::DocumentObject& Obj);
+    /// Checks if the given object is about to be removed
+    void slotDeletedDocument(App::Document& Doc);
+    /// Checks if the given document is about to be closed
+    void slotDeletedObject(App::DocumentObject& Obj);
 
 protected Q_SLOTS:
-  void on_checkOrientationButton_clicked();
-  void on_analyzeOrientationButton_clicked();
-  void on_repairOrientationButton_clicked();
+    void on_checkOrientationButton_clicked();
+    void on_analyzeOrientationButton_clicked();
+    void on_repairOrientationButton_clicked();
 
-  void on_checkDuplicatedFacesButton_clicked();
-  void on_analyzeDuplicatedFacesButton_clicked();
-  void on_repairDuplicatedFacesButton_clicked();
+    void on_checkDuplicatedFacesButton_clicked();
+    void on_analyzeDuplicatedFacesButton_clicked();
+    void on_repairDuplicatedFacesButton_clicked();
 
-  void on_checkDuplicatedPointsButton_clicked();
-  void on_analyzeDuplicatedPointsButton_clicked();
-  void on_repairDuplicatedPointsButton_clicked();
+    void on_checkDuplicatedPointsButton_clicked();
+    void on_analyzeDuplicatedPointsButton_clicked();
+    void on_repairDuplicatedPointsButton_clicked();
 
-  void on_checkNonmanifoldsButton_clicked();
-  void on_analyzeNonmanifoldsButton_clicked();
-  void on_repairNonmanifoldsButton_clicked();
+    void on_checkNonmanifoldsButton_clicked();
+    void on_analyzeNonmanifoldsButton_clicked();
+    void on_repairNonmanifoldsButton_clicked();
 
-  void on_checkDegenerationButton_clicked();
-  void on_analyzeDegeneratedButton_clicked();
-  void on_repairDegeneratedButton_clicked();
+    void on_checkDegenerationButton_clicked();
+    void on_analyzeDegeneratedButton_clicked();
+    void on_repairDegeneratedButton_clicked();
 
-  void on_checkIndicesButton_clicked();
-  void on_analyzeIndicesButton_clicked();
-  void on_repairIndicesButton_clicked();
+    void on_checkIndicesButton_clicked();
+    void on_analyzeIndicesButton_clicked();
+    void on_repairIndicesButton_clicked();
 
-  void on_refreshButton_clicked();
-  void on_meshNameButton_activated(int);
+    void on_refreshButton_clicked();
+    void on_meshNameButton_activated(int);
 
 protected:
-  void cleanInformation();
-  void setFixedMesh();
-  void addViewProvider( const char* vp );
-  void removeViewProvider( const char* vp );
-  void removeViewProviders();
+    void cleanInformation();
+    void setFixedMesh();
+    void addViewProvider( const char* vp );
+    void removeViewProvider( const char* vp );
+    void removeViewProviders();
 
 private:
-  std::map<std::string, ViewProviderMeshDefects*> _vp;
-  Mesh::Feature* _meshFeature;
-  Gui::View3DInventorViewer* _viewer;
-  App::Document* _pDoc;
+    std::map<std::string, ViewProviderMeshDefects*> _vp;
+    Mesh::Feature* _meshFeature;
+    Gui::View3DInventorViewer* _viewer;
+    App::Document* _pDoc;
 };
 
 /**
@@ -124,23 +121,23 @@ private:
  */
 class DockEvaluateMeshImp : public DlgEvaluateMeshImp
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 protected:
-  DockEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DockEvaluateMeshImp();
-  void closeEvent(QCloseEvent* e);
+    DockEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DockEvaluateMeshImp();
+    void closeEvent(QCloseEvent* e);
 
 public:
-  static DockEvaluateMeshImp* instance();
-  static void destruct();
-  static bool hasInstance();
+    static DockEvaluateMeshImp* instance();
+    static void destruct();
+    static bool hasInstance();
   
-  QSize sizeHint () const;
+    QSize sizeHint () const;
 
 private:
-  static DockEvaluateMeshImp* _instance;
-  QByteArray state;
+    static DockEvaluateMeshImp* _instance;
+    QByteArray state;
 };
 
 } // namespace MeshGui

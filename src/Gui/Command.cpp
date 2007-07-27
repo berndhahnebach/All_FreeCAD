@@ -636,13 +636,14 @@ const char* PythonCommand::getResource(const char* sName) const
 
 void PythonCommand::activated(int iMsg)
 {
-  try{
-    Interpreter().runMethodVoid(_pcPyCommand, "Activated");
-  }catch ( const Base::PyException& e){
-    Base::Console().Error("Running the Python command '%s' failed:\n%s",sName, e.getStackTrace().c_str());
-  }catch ( const Base::Exception&){
-    Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
-  }
+    try{
+        Interpreter().runMethodVoid(_pcPyCommand, "Activated");
+    }catch ( const Base::PyException& e){
+        Base::Console().Error("Running the Python command '%s' failed:\n%s\n%s",
+            sName, e.getStackTrace().c_str(), e.what());
+    }catch ( const Base::Exception&){
+        Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
+    }
 }
 
 bool PythonCommand::isActive(void)
