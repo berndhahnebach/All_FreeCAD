@@ -538,7 +538,7 @@ void StdCmdRefresh::activated(int iMsg)
 
 bool StdCmdRefresh::isActive(void)
 {
-  return getActiveGuiDocument() ? true : false;
+  return this->getDocument() && this->getDocument()->isTouched();
 }
 
 

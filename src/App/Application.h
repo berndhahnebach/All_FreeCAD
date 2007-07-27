@@ -45,32 +45,16 @@ namespace App
 
   
 class Document;
+class DocumentObject;
 class ApplicationObserver;
 
-
-
-/** transport the changes of the Application
- *  This class transport closer information what was changed in the
- *  application. 
- *@see Application
- *@see Observer
-*/
-class AppExport AppChanges
-{
-public:
-  enum {
-    New,
-    Del
-  } Why;
-  App::Document* Doc;
-};
 
 
 /** The Application
  *  The root of the whole application
  *  @see App::Document
  */
-class AppExport Application : public Base::Subject<const AppChanges&>
+class AppExport Application //: public Base::Subject<const AppChanges&>
 {
 
 public:
@@ -114,11 +98,28 @@ public:
   /** @name Signals of the Application */
 	//@{
   /// signal on new Document
-  boost::signal<void (const Document&)> signalNewDocument;
+  boost::signal<void (Document&)> signalNewDocument;
   /// signal on deleted Document
-  boost::signal<void (const Document&)> signalDeletedDocument;
+  boost::signal<void (Document&)> signalDeletedDocument;
   /// signal on renaming Document
-  boost::signal<void (const Document&)> signalRenameDocument;
+  boost::signal<void (Document&)> signalRenameDocument;
+  //@}
+
+  
+  /** @name Signals of the document
+    * This signals are an agregation of all document. If you only 
+    * the signal of a special document connect to the document itself
+    */
+	//@{
+  /// signal on new Object
+  boost::signal<void (App::DocumentObject&)> signalNewObject;
+  //boost::signal<void (const App::DocumentObject&)>     m_sig;
+  /// signal on deleted Object
+  boost::signal<void (App::DocumentObject&)> signalDeletedObject;
+  /// signal on changed Object
+  boost::signal<void (App::DocumentObject&)> signalChangedObject;
+  /// signal on renamed Object
+  boost::signal<void (App::DocumentObject&)> signalRenamedObject;
   //@}
 
 
@@ -190,6 +191,16 @@ protected:
   /// get called by the document when the name is changing
   void renameDocument(const char *OldName, const char *NewName);
 
+   	/** @name I/O of the document 
+      * This slot get connected to all App::Documents created
+      */
+	//@{
+  
+  void slotNewObject(App::DocumentObject&);
+  void slotDeletedObject(App::DocumentObject&);
+  void slotChangedObject(App::DocumentObject&);
+  void slotRenamedObject(App::DocumentObject&);
+  //@}
 
 private:
 

@@ -58,7 +58,7 @@ public slots:
 /**
  * \author Werner Mayer
  */
-class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh, public App::Document::ObserverType, public App::Application::ObserverType
+class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh//, public App::Document::ObserverType, public App::Application::ObserverType
 { 
   Q_OBJECT
 
@@ -67,11 +67,14 @@ public:
   ~DlgEvaluateMeshImp();
 
   /// Checks if the current feature is about to be removed
-  void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+  //void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
   /// Checks if the current document is about to be closed
-  void OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason);
+  //void OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason);
 
   void setMesh( Mesh::Feature* );
+
+  void slotDeletedDocument(App::Document& Doc);
+  void slotDeletedObject(App::DocumentObject& Obj);
 
 protected Q_SLOTS:
   void on_checkOrientationButton_clicked();

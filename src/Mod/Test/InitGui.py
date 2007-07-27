@@ -55,6 +55,11 @@ class TestWorkbench ( Workbench ):
 				list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
 				w.appendCommandbar("TestToolsMenu",list)
 				w.appendMenu(menu,list)
+				
+				menu = ["Test &Commands","TestFeatureMenu"]
+				list = ["Test_InsertFeature"]
+				w.appendCommandbar("TestFeature",list)
+				w.appendMenu(menu,list)
 
 				menu = ["Test &Commands","Progress bar"]
 				list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]

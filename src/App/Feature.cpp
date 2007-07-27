@@ -91,9 +91,10 @@ void AbstractFeature::onChanged(const Property* prop)
   else if ( prop == &name )
     return;
   touchPropertyTime.setToActual();
-  setModified(true);
+  //setModified(true);
 }
 
+/*
 void AbstractFeature::setModified(bool b)
 {
   _execute = b;
@@ -103,7 +104,7 @@ bool AbstractFeature::isModified() const
 {
   return _execute;
 }
-
+*/
 bool AbstractFeature::mustExecute(void)
 {
   // If the object's label is modified:

@@ -96,6 +96,8 @@ void DocumentObject::onChanged(const Property* prop)
 {
   if(_pDoc)
     _pDoc->onChangedProperty(this,prop);
+  // set object touched
+  StatusBits.set(0);
 }
 
 PyObject *DocumentObject::getPyObject(void)
@@ -107,9 +109,10 @@ PyObject *DocumentObject::getPyObject(void)
   return Py::new_reference_to(PythonObject); 
 }
 
-void DocumentObject::Touch(void)
+void DocumentObject::touch(void)
 {
   touchTime.setToActual();
+  StatusBits.set(0);
 }
 
 void DocumentObject::TouchView(void)

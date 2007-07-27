@@ -219,11 +219,11 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
+			RelativePathToProject="..\Base\FreeCADBase.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
-			RelativePathToProject=".\src\App\FreeCADDoc.vcproj"
+			RelativePathToProject="..\App\FreeCADDoc.vcproj"
 		/>
 	</References>
 	<Files>

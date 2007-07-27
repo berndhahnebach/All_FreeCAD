@@ -34,10 +34,6 @@
 #include <QCloseEvent>
 #endif
 
-//gcc
-#include <boost/bind.hpp>
-
-
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Matrix.h>
@@ -75,7 +71,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   _iDocId = (++_iDocCount);
 
 
-  _pcDocument->Attach(this);
+  //_pcDocument->Attach(this);
   _pcDocument->installDocumentHook(this);
   // connect signal
 
@@ -85,6 +81,8 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   //App::Document::connection_t  m_connection;
   //m_connection = pcDocument->connect(boost::bind(&Document::slotNewObject, this, _1));
   pcDocument->signalNewObject.connect(boost::bind(&Gui::Document::slotNewObject, this, _1));
+  pcDocument->signalDeletedObject.connect(boost::bind(&Gui::Document::slotDeletedObject, this, _1));
+  pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1));
   //pcDocument->signalNewObject.connect(&(this->slotNewObject));
   
   // pointer to the python class
@@ -108,10 +106,6 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   createView("View3DIv");
 }
 
-void Document::slotNewObject(/*const App::Document&,*/const App::DocumentObject&)
-{
-  Base::Console().Log("Document::slotNewObject() called");
-}
 
 Document::~Document()
 {
@@ -151,7 +145,7 @@ Document::~Document()
   // remove from the tree
 
   //delete (pcTreeItem);
-  _pcDocument->Detach(this);
+  //_pcDocument->Detach(this);
   _pcDocument->removeDocumentHook();
 
   // remove the reference from the object
@@ -294,7 +288,92 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 // Document
 //*****************************************************************************************************
+void Document::slotNewObject(App::DocumentObject& Obj)
+{
+  Base::Console().Log("Document::slotNewObject() called\n");
+  std::string cName = Obj.getViewProviderName();
+  if (cName.empty()) {
+    // handle document object with no view provider specified
+    Base::Console().Log("%s has no view provider specified\n", Obj.getTypeId().getName());
+    return;
+  }
+  setModified(true);
+  ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
+  if ( pcProvider )
+  {
+    // type not derived from ViewProviderDocumentObject!!!
+    assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
+    _ViewProviderMap[&Obj] = pcProvider;
 
+    try{
+      // if succesfully created set the right name and calculate the view
+      pcProvider->attach(&Obj);
+      pcProvider->setActiveMode();
+    }catch(const Base::MemoryException& e){
+      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Obj.name.getValue(),e.what());
+    }catch(Base::Exception &e){
+      e.ReportException();
+    }
+#ifndef FC_DEBUG
+    catch(...){
+      Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Obj.name.getValue());
+    }
+#endif
+    std::list<Gui::BaseView*>::iterator VIt;
+    // cycling to all views of the document
+    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+    {
+      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+      if(pcIvView)
+        pcIvView->getViewer()->addViewProvider(pcProvider);
+    }
+
+    // adding to the tree
+    pcTreeItem->addViewProviderDocumentObject(pcProvider);
+
+  }else{
+    Base::Console().Warning("Gui::Document::slotNewObject() no view provider for the object %s found\n",cName.c_str());
+  }
+
+}
+void Document::slotDeletedObject(App::DocumentObject& Obj)
+{
+  std::list<Gui::BaseView*>::iterator VIt;
+  setModified(true);
+  Base::Console().Log("Document::slotDeleteObject() called\n");
+  // cycling to all views of the document
+  ViewProvider* vpInv = getViewProvider( &Obj );
+  for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+  {
+    View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+    if(pcIvView && vpInv)
+    {
+      pcIvView->getViewer()->removeViewProvider( vpInv );
+    }
+  }
+
+  if ( vpInv )
+  {
+    // removing from tree
+    pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
+
+    //delete vpInv;
+    //DocChange.ViewProviders.insert(vpInv);
+    _ViewProviderMap.erase(&Obj);
+  }
+
+ 
+}
+void Document::slotChangedObject(App::DocumentObject& Obj)
+{
+  Base::Console().Log("Document::slotChangedObject() called\n");
+  ViewProvider* vpInv = getViewProvider( &Obj );
+  if ( vpInv )
+    vpInv->update();
+
+}
+
+/*
 void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
 #ifdef FC_LOGUPDATECHAIN
@@ -413,6 +492,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   
   onUpdate();
 }
+*/
 
 void Document::setModified(bool b)
 {
@@ -464,11 +544,14 @@ bool Document::saveAs(void)
     QFileInfo fi;
     fi.setFile(fn);
 
+    const char * DocName = App::GetApplication().getDocumentName(getDocument());
+
     // save as new file name
     Gui::WaitCursor wc;
-    Command::doCommand(Command::Doc,"App.saveAs(\"%s\",\"%s\")", _pcDocument->getName(), fn.latin1());
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, fn.latin1());
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()", DocName );
 
-    getMainWindow()->appendRecentFile( fi.filePath().latin1() );
+    getMainWindow()->appendRecentFile( fi.filePath().latin1());
     return true;
   }
   else

@@ -107,6 +107,21 @@ using namespace zipios ;
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 
+// typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+typedef boost::adjacency_list <
+ boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
+ boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
+ boost::directedS,      // class DirectedS     : This is a directed graph
+ boost::no_property,    // class VertexProperty: 
+ boost::no_property,    // class EdgeProperty: 
+ boost::no_property,    // class GraphProperty:
+ boost::listS           // class EdgeListS:
+> DependencyList;
+typedef boost::graph_traits<DependencyList> Traits;
+typedef Traits::vertex_descriptor Vertex;
+typedef Traits::edge_descriptor Edge;
+
+
 
 void Document::writeDependencyGraphViz(std::ostream &out)
 {
@@ -194,7 +209,7 @@ bool Document::undo(void)
     mUndoTransactions.pop_back();
 
     // notify all the listeners (e.g. GuiDocument)
-    Notify(DocChange);
+    //Notify(DocChange);
   }
 
   return false; 
@@ -225,7 +240,7 @@ bool Document::redo(void)
     mRedoTransactions.pop_back();
 
     // notiefy all the listeners (e.g. GuiDocument)
-    Notify(DocChange);
+    //Notify(DocChange);
   }
 
   return false; 
@@ -723,29 +738,24 @@ void Document::restore (void)
     Name.setValue(NewUniqueName);
     // Notify the application and all observers
     GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
-    DocChanges DocChange;
-    DocChange.Why = DocChanges::Rename;
-    Notify(DocChange);
   }
 
   reader.readFiles(zipstream);
 
   // notify all as new
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Recompute;
-  DocChange.NewObjects = ObjectArray;
   for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
     if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
     {
       AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
       feat->touchTime.setToActual();
-      feat->setModified(false);
-      if ( feat->status.getValue() == AbstractFeature::New )
-        feat->status.setValue( AbstractFeature::Valid );
+      //feat->setModified(false);
+      //if ( feat->status.getValue() == AbstractFeature::New )
+      //  feat->status.setValue( AbstractFeature::Valid );
     }
+    signalNewObject(*(It->second));
   }
 
-  Notify(DocChange);
+  //Notify(DocChange);
 
   // Special handling for Gui document, the view representations must already
   // exist, what is done in Notify().
@@ -777,30 +787,32 @@ bool Document::isSaved() const
 
 
 /// Remove all modifications. After this call The document becomesagain Valid.
-void Document::PurgeModified()
+void Document::purgeTouched()
 {
-  //_hDoc->PurgeModified(); 
+  for(std::vector<DocumentObject*>::iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    (*It)->purgeTouched();
+}
+bool Document::isTouched() const
+{
+  for(std::vector<DocumentObject*>::const_iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    if((*It)->isTouched())
+      return true;
+  return false;
 }
 
-void Document::update(DocumentObject* obj)
+vector<DocumentObject*> Document::getTouched(void) const
 {
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Recompute;
-  DocChange.UpdatedObjects.insert(obj);
-  Notify(DocChange);
-  signalChangedObject(*obj);
-}
+  vector<DocumentObject*> result;
 
-void Document::update(const char *name)
-{
-  std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(name);
-  if(pos != ObjectMap.end())
-    update(pos->second);
+  for(std::vector<DocumentObject*>::const_iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    if((*It)->isTouched())
+      result.push_back(*It);
+
+  return result;
 }
 
 
-
-#if 1
+/*
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::recompute()
 {
@@ -928,7 +940,7 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     Feat->setModified(false);
   }
 }
-#else
+*/
 void Document::recompute()
 {
   DependencyList DepList;
@@ -938,7 +950,7 @@ void Document::recompute()
   for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
     // add the object as Vertex and remember the index
     VertexObjectList[It->second] = add_vertex(DepList);
-
+  // add the edges
   for(std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
   {
     std::vector<DocumentObject*> OutList = It->second->getOutList();
@@ -949,6 +961,7 @@ void Document::recompute()
 
   std::list<Vertex> make_order;
   DependencyList::out_edge_iterator j, jend;
+  // this sort gives the execute 
   boost::topological_sort(DepList, std::front_inserter(make_order));
  
   // caching vertex to DocObject
@@ -960,14 +973,46 @@ void Document::recompute()
   std::cout << "make ordering: " << endl;
   for (std::list<Vertex>::reverse_iterator i = make_order.rbegin();i != make_order.rend(); ++i)
   {
-    std::cout << VertexMap[*i]->getNameInDocument() << " dep on: " ;
-    for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j)
-       std::cout << VertexMap[target(*j, DepList)]->getNameInDocument() << ", " ;
-      
-    std::cout << endl;
-  }
+    DocumentObject* Cur = VertexMap[*i];
+    std::cout << Cur->getNameInDocument() << " dep on: " ;
 
-  
+    // test if a feature
+    if(!Cur->isDerivedFrom(AbstractFeature::getClassTypeId())) 
+      break;
+
+    // check if one of the dependencies is touched
+    bool NeedUpdate = false;
+
+    // Update if the object self is touched
+    if(Cur->StatusBits.test(0))
+      NeedUpdate = true;
+    else
+      // update if one of the dependencies is touched
+      for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j)
+      {
+        DocumentObject* Test = VertexMap[target(*j, DepList)];
+        std::cout << Test->getNameInDocument() << ", " ;
+        if(Test->StatusBits.test(0))
+        {
+          NeedUpdate = true;
+          break;
+        }
+      }
+      std::cout << endl;
+    // if one touched recompute
+    if(NeedUpdate)
+    {
+      std::cout << "Recompute" << endl;
+      _recomputeFeature(dynamic_cast<AbstractFeature*>(Cur));
+      // signal the change
+      signalChangedObject(*Cur);
+    }
+
+  }
+  // reset all touched
+  for(std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
+    It1->first->StatusBits.reset(0);
+
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
@@ -979,9 +1024,9 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
   int  succes;
   try{
     succes = Feat->execute();
-  }catch(Base::AbortException &e){
-    e.ReportException();
-    succes = 4;
+  //}catch(Base::AbortException &e){
+  //  e.ReportException();
+  //  succes = 4;
   }catch(const Base::MemoryException& e){
     if ( !e.isHandled() )
       Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
@@ -1004,20 +1049,19 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
   }
 #endif
 
-  // special error code to avoid to execute a feature twice
-  if (succes == 4){
-    Feat->status.setValue(AbstractFeature::Inactive);
-  }else if(succes > 0){
+  // error code 
+  if(succes > 0){
     Feat->status.setValue(AbstractFeature::Error);
+    Feat->StatusBits.set(1);
   }else {
     // set the time of change
     Feat->status.setValue(AbstractFeature::Valid);
-
+    Feat->StatusBits.set(0);
     Feat->touchTime.setToActual();
-    Feat->setModified(false);
+    //Feat->setModified(false);
   }
 }
-#endif
+
 
 
 void Document::recomputeFeature(AbstractFeature* Feat)
@@ -1033,7 +1077,8 @@ void Document::recomputeFeature(AbstractFeature* Feat)
   if(Feat->getStatus() == AbstractFeature::Valid)
     DocChange.UpdatedObjects.insert(Feat);
 
-  Notify(DocChange);
+  signalChangedObject(*Feat);
+  //Notify(DocChange);
 
 }
 
@@ -1050,9 +1095,6 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
 	if(pcObject)
 	{
-    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()));
-    // Note: A simple assert() is not sufficient since the user is able to create a wrong
-    // object e.g. from the Python console and the application crashes in Release mode.
     if (!pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()))
     {
       delete pcObject;
@@ -1086,6 +1128,9 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     //_DepConMap[pcObject] = add_vertex(_DepList);
 
     pcObject->name.setValue( ObjectName );
+
+    // send the signal
+    signalNewObject(*pcObject);
 	
     // return the Object
 		return pcObject;
@@ -1108,6 +1153,9 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
   if(activUndoTransaction)
     activUndoTransaction->addObjectDel(pcObject);
 
+  // send the signal
+  signalNewObject(*pcObject);
+
 
 }
 
@@ -1128,7 +1176,7 @@ void Document::remObject(const char* sName)
   if(pActiveObject == pos->second)
     pActiveObject = 0;
 
-  Notify(DocChange);
+  //Notify(DocChange);
   signalDeletedObject(*(pos->second));
 
   // Before deleting we must nullify all dependant objects
@@ -1210,6 +1258,7 @@ void Document::_remObject(DocumentObject* pcObject)
       break;
     }
   }
+  signalDeletedObject(*pcObject);
 
 }
 

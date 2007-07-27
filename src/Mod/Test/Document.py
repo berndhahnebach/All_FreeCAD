@@ -126,7 +126,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.Doc.FileName = SaveName
     self.Doc.save()
     FreeCAD.closeDocument("SaveRestoreTests")
-    self.Doc = FreeCAD.openDocument(SaveName)
+    self.Doc = FreeCAD.open(SaveName)
     self.failUnless(self.Doc.Label_1.Integer == 4711)
     self.failUnless(self.Doc.Label_2.Integer == 4711)
 

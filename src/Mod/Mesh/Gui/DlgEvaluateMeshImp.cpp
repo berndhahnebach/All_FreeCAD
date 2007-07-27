@@ -25,6 +25,9 @@
 
 #include "DlgEvaluateMeshImp.h"
 
+#include <boost/signals.hpp>
+#include <boost/bind.hpp>
+
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
@@ -61,7 +64,7 @@ void CleanupHandler::cleanup()
 // -------------------------------------------------------------
 
 /* TRANSLATOR MeshGui::DlgEvaluateMeshImp */
-
+/*
 void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
   if ( std::find(Reason.DeletedObjects.begin(), Reason.DeletedObjects.end(), _meshFeature) != Reason.DeletedObjects.end() )
@@ -85,7 +88,33 @@ void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Docum
     _meshFeature = 0;
   }
 }
+*/
+void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
+{
 
+  if ( &Obj == _meshFeature) 
+  {
+    removeViewProviders();
+
+    QStringList items;
+    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for ( std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt )
+    {
+      if ( _meshFeature != *jt )
+        items.push_back( (*jt)->name.getValue() );
+    }
+
+    meshNameButton->clear();
+    meshNameButton->insertItem(0, tr("No selection"));
+    meshNameButton->insertItems(1, items);
+    meshNameButton->setDisabled(items.empty());
+    cleanInformation();
+
+    _meshFeature = 0;
+  }
+ 
+}
+/*
 void DlgEvaluateMeshImp::OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason)
 {
   if ( rcReason.Why == App::AppChanges::Del && rcReason.Doc == _pDoc)
@@ -103,6 +132,23 @@ void DlgEvaluateMeshImp::OnChange(App::Application::SubjectType &rCaller, App::A
     on_refreshButton_clicked();
   }
 }
+*/
+void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
+{
+    // the view is already destroyed
+    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
+      delete it->second;
+    }
+
+    _vp.clear();    
+    
+    //_pDoc->Detach(this);
+    _pDoc = 0;
+    _viewer = 0;
+    on_refreshButton_clicked();
+ 
+}
+
 
 /**
  *  Constructs a DlgEvaluateMeshImp which is a child of 'parent', with the 
@@ -117,11 +163,14 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   this->setupUi(this);
   connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
 
-  App::GetApplication().Attach(this);
+  //App::GetApplication().Attach(this);
   Gui::Document* pGui = Gui::Application::Instance->activeDocument();
   _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
   _pDoc = pGui->getDocument();
-  _pDoc->Attach(this);
+  //_pDoc->Attach(this);
+
+  _pDoc->signalDeletedObject.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
+  App::GetApplication().signalDeletedDocument.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
 }
 
 /**
@@ -137,9 +186,9 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
 
   _vp.clear();
 
-  App::GetApplication().Detach(this);
-  if ( _pDoc )
-    _pDoc->Detach(this);
+  //App::GetApplication().Detach(this);
+  //if ( _pDoc )
+  //  _pDoc->Detach(this);
 }
 
 void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
@@ -267,9 +316,10 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
   // switch to the active document
   if (doc && doc != _pDoc) {
     if ( _pDoc )
-      _pDoc->Detach(this);
+      //_pDoc->Detach(this)
+      ;
     _pDoc = doc;
-    _pDoc->Attach(this);
+    //_pDoc->Attach(this);
     removeViewProviders();
     Gui::Document* pGui = Gui::Application::Instance->activeDocument();
     _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();

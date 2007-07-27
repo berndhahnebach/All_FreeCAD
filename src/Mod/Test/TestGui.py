@@ -162,6 +162,16 @@ class TestDeleteMenuCmd:
                 'MenuText': 'Remove menu',
                 'ToolTip' : 'Test the menu stuff of FreeCAD'}
 
+class TestInsertFeatureCmd:
+    "Base test commando object"
+    def Activated(self):
+        App.activeDocument().addObject("App::FeatureTest")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1',
+                'MenuText': 'Insert a TestFeauture',
+                'ToolTip' : 'Insert a TestFeature in the active Document'}
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
@@ -175,4 +185,5 @@ FreeCADGui.AddCommand('Test_TestBase'    ,TestBaseCmd())
 FreeCADGui.AddCommand('Test_TestWork'    ,TestWorkbenchCmd())
 FreeCADGui.AddCommand('Test_TestCreateMenu'    ,TestCreateMenuCmd())
 FreeCADGui.AddCommand('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
+FreeCADGui.AddCommand('Test_InsertFeature'    ,TestInsertFeatureCmd())
 

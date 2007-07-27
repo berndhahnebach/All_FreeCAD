@@ -124,6 +124,7 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
         // get also the properties of the associated view provider
         Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
         ViewProvider* vp = doc->getViewProvider((*it).pObject);
+        if(!vp) continue;
         vp->getPropertyMap(viewMap);
       }
       else if ( (*it).pDoc ) {

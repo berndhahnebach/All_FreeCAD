@@ -429,5 +429,5 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
 
   // unset the modified flag because we don't need the features' execute() to be called
   Gui::Application::Instance->activeDocument()->commitCommand();
-  fea->setModified(false);
+  fea->purgeTouched();
 }
