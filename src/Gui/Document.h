@@ -93,7 +93,7 @@ public:
  *  @see MDIView
  *  @author Jürgen Riegel
  */
-class GuiExport Document : /*public QObject, */public App::Document::ObserverType, public Base::Subject<const DocChanges&>, public Base::Persistance
+class GuiExport Document : /*public QObject,public App::Document::ObserverType, */ public Base::Subject<const DocChanges&>, public Base::Persistance
 {
 public:
   Document(App::Document* pcDocument, Application * app, const char * name=0);
@@ -102,8 +102,10 @@ public:
  	/** @name I/O of the document */
 	//@{
   /// This slot is connected to the App::Document::signalNewObject(...)
-  void slotNewObject(const App::DocumentObject&);
-  virtual void refresh(const App::DocumentObject&) const {};
+  void slotNewObject(App::DocumentObject&);
+  void slotDeletedObject(App::DocumentObject&);
+  void slotChangedObject(App::DocumentObject&);
+  virtual void refresh(App::DocumentObject&) const {};
   //@}
 
  	/** @name I/O of the document */
@@ -123,7 +125,7 @@ public:
   //@}
 
   /// Observer message from the App doc
-  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+  //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
   void setModified(bool);
   bool isModified() const { return _isModified; }
 

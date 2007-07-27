@@ -72,7 +72,7 @@ PyMethodDef Application::Methods[] = {
   {"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
   {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
 
-  {"openDocument",   (PyCFunction) Application::sOpenDocument,   1},
+  {"open",   (PyCFunction) Application::sOpenDocument,   1},
 //  {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
 //  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
   {"newDocument",    (PyCFunction) Application::sNewDocument,    1, App_newDocument_doc},

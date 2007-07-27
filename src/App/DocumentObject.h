@@ -70,7 +70,11 @@ public:
 	//@{
 	//void TouchProperty(const char *Name);
   /// set this feature touched (cause recomputation on depndend features)
-	void Touch(void);
+  bool isTouched(void){return StatusBits.test(0);}
+  /// set this feature touched (cause recomputation on depndend features)
+	void purgeTouched(void){StatusBits.reset(0);}
+  /// set this feature touched (cause recomputation on depndend features)
+	void touch(void);
   /// set the view parameter of this feature touched (cause recomputation of representation)
 	void TouchView(void);
   /// get the touch time
@@ -78,6 +82,12 @@ public:
   /// get the view touch time
   Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
 	//@}
+
+  /// set this feature to error 
+  bool isError(void){return StatusBits.test(1);}
+  /// remove the error from the object
+	void purgeError(void){StatusBits.reset(2);}
+
 
   /** Called in case of losing a link
    * Get called by the document when a object got deleted a link property of this 
@@ -88,7 +98,7 @@ public:
   virtual void onLoseLinkToObject(DocumentObject*);
 	virtual PyObject *getPyObject(void);
 
-  std::bitset<32> Status;
+  std::bitset<16> StatusBits;
 
 protected:
   /// get called befor the value is changed

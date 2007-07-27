@@ -106,7 +106,10 @@ struct ApplicationP
 
 Application::Application()
 {
-  App::GetApplication().Attach(this);
+  //App::GetApplication().Attach(this);
+  App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
+  App::GetApplication().signalDeletedDocument.connect(boost::bind(&Gui::Application::slotDeletedDocument, this, _1));
+
 
   // install the last active language
   ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
@@ -152,7 +155,7 @@ Application::~Application()
 
   // save macros
   MacroCommand::save();
-  App::GetApplication().Detach(this);
+  //App::GetApplication().Detach(this);
 
   delete d;
   Instance = 0;
@@ -260,6 +263,7 @@ void Application::createStandardOperations()
   Gui::CreateTestCommands();
 }
 
+/*
 void Application::OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason)
 {
   switch(Reason.Why){
@@ -271,39 +275,23 @@ void Application::OnChange(App::Application::SubjectType &rCaller,App::Applicati
     break;
   }
 }
-
-void Application::OnDocNew(App::Document* pcDoc)
+*/
+void Application::slotNewDocument(App::Document& Doc)
 {
 #ifdef FC_DEBUG
-  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pcDoc);
+  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
   assert(it==d->lpcDocuments.end());
 #endif
-  d->lpcDocuments[pcDoc] = new Gui::Document(pcDoc,this);
-  AppChanges AppChange;
-  AppChange.Why = AppChanges::New;
-  AppChange.Doc = d->lpcDocuments[pcDoc];
-
-  // Let the selection participate when App::Dcoument chnages
-  pcDoc->Attach(&Selection());
-
-  Notify(AppChange);
+  d->lpcDocuments[&Doc] = new Gui::Document(&Doc,this);
 }
 
-void Application::OnDocDelete(App::Document* pcDoc)
+void Application::slotDeletedDocument(App::Document& Doc)
 {
-  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(pcDoc);
+  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
   assert(doc!=d->lpcDocuments.end());
 #endif
   
-  AppChanges AppChange;
-  AppChange.Why = AppChanges::Del;
-  AppChange.Doc = doc->second;
-
-  // Remove the selection from notification
-  pcDoc->Detach(&Selection());
-
-  Notify(AppChange);
 
   // We must clear the selection here to notify all observers
   Gui::Selection().clearSelection(doc->second->getDocument()->getName());

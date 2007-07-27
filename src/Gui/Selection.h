@@ -98,7 +98,7 @@ namespace Gui
 
 /** The Selection singleton class
  */
-class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>, public App::Document::ObserverType
+class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>//, public App::Document::ObserverType
 {
 public:
 
@@ -179,7 +179,11 @@ protected:
   virtual ~SelectionSingleton();
 
   /// Observer message from the App doc
-  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+  void slotRenamedObject(App::DocumentObject&);
+  void slotDeletedObject(App::DocumentObject&);
+
+  /// Observer message from the App doc
+  //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
 
 
   /// helper to retrieve document by name

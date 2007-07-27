@@ -401,7 +401,7 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
   Gui::Application::Instance->activeDocument()->openCommand("Cut");
   meshProp.deleteFacetIndices( indices );
   Gui::Application::Instance->activeDocument()->commitCommand();
-  ((Mesh::Feature*)pcObject)->setModified(false);
+  ((Mesh::Feature*)pcObject)->purgeTouched();
 
   // notify the mesh shape node
   pcFaceSet->touch();

@@ -380,17 +380,19 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
 
   return false;
 }
-
-void SelectionSingleton::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
+void SelectionSingleton::slotDeletedObject(App::DocumentObject& Obj)
 {
-  if(Reason.Why == App::DocChanges::Rename)
-  {
-    // compare internals with the document and change them if needed
-    App::Document* pDoc = dynamic_cast<App::Document*>(&rCaller);
-    for ( std::list<_SelObj>::iterator it = _SelList.begin(); it != _SelList.end(); ++it ) {
-      if ( it->pDoc == pDoc ) {
-        it->DocName = pDoc->getName();
-      }
+ // remove also from the selection, if selected
+  Selection().rmvSelection( Obj.getDocument().getName(), Obj.name.getValue() );
+}
+
+void SelectionSingleton::slotRenamedObject(App::DocumentObject& Obj)
+{
+  // compare internals with the document and change them if needed
+  App::Document& pDoc = Obj.getDocument();
+  for ( std::list<_SelObj>::iterator it = _SelList.begin(); it != _SelList.end(); ++it ) {
+    if ( it->pDoc == &pDoc ) {
+      it->DocName = pDoc.getName();
     }
   }
 }
@@ -405,6 +407,8 @@ void SelectionSingleton::OnChange(App::Document::SubjectType &rCaller,App::Docum
  */
 SelectionSingleton::SelectionSingleton()
 {
+  App::GetApplication().signalDeletedObject.connect(boost::bind(&Gui::SelectionSingleton::slotDeletedObject, this, _1));
+  App::GetApplication().signalRenamedObject.connect(boost::bind(&Gui::SelectionSingleton::slotRenamedObject, this, _1));
 }
 
 /**

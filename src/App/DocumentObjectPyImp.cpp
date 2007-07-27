@@ -12,7 +12,8 @@ using namespace App;
 
 PyObject*  DocumentObjectPy::touch(PyObject *args)
 {
-	return 0;
+  getDocumentObjectObject()->touch();
+	Py_Return;
 }
 
 Py::List DocumentObjectPy::getState(void) const

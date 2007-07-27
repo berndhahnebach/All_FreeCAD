@@ -225,10 +225,17 @@ Document* Application::newDocument(const char * Name, const char * UserName)
 	DocMap[name] = newDoc.release(); // now owned by the Application
 	_pActiveDoc = DocMap[name];
 
-  AppChanges Reason;
-  Reason.Doc = _pActiveDoc;
-  Reason.Why = AppChanges::New;
-  Notify(Reason);
+  // conect the signals to the application for the new document
+  _pActiveDoc->signalNewObject.connect(boost::bind(&App::Application::slotNewObject, this, _1));
+  _pActiveDoc->signalDeletedObject.connect(boost::bind(&App::Application::slotDeletedObject, this, _1));
+  _pActiveDoc->signalChangedObject.connect(boost::bind(&App::Application::slotChangedObject, this, _1));
+  _pActiveDoc->signalRenamedObject.connect(boost::bind(&App::Application::slotRenamedObject, this, _1));
+
+
+  //AppChanges Reason;
+  //Reason.Doc = _pActiveDoc;
+  //Reason.Why = AppChanges::New;
+  //Notify(Reason);
   signalNewDocument(*_pActiveDoc);
 
   return _pActiveDoc;
@@ -242,10 +249,10 @@ bool Application::closeDocument(const char* name)
 
   // Trigger observers before removing the document from the internal map.
   // Some observers might rely on that this document is still there.
-  AppChanges Reason;
+  /*AppChanges Reason;
   Reason.Doc = pos->second;
   Reason.Why = AppChanges::Del;
-  Notify(Reason);
+  Notify(Reason);*/
   signalDeletedDocument(*pos->second);
 
   // For exception-safety use a smart pointer
@@ -579,6 +586,29 @@ std::vector<std::string> Application::getOpenFilter(void) const
 
   return filter;
 }
+
+//**************************************************************************
+// signaling
+void Application::slotNewObject(App::DocumentObject&O)
+{
+  this->signalNewObject(O);
+}
+
+void Application::slotDeletedObject(App::DocumentObject&O)
+{
+  this->signalDeletedObject(O);
+}
+
+void Application::slotChangedObject(App::DocumentObject&O)
+{
+  this->signalChangedObject(O);
+}
+
+void Application::slotRenamedObject(App::DocumentObject&O)
+{
+  this->signalRenamedObject(O);
+}
+
 
 //**************************************************************************
 // Init, Destruct and singelton

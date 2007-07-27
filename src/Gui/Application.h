@@ -53,21 +53,21 @@ class MenuItem;
  *@see Application
  *@see Observer
 */
-class GuiExport AppChanges
-{
-public:
-  enum {
-    New,
-    Del
-  } Why;
-  Gui::Document* Doc;
-};
+//class GuiExport AppChanges
+//{
+//public:
+//  enum {
+//    New,
+//    Del
+//  } Why;
+//  Gui::Document* Doc;
+//};
 
 /** The Applcation main class
  * This is the central class of the GUI 
  * @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport Application :public App::Application::ObserverType, public Base::Subject<const AppChanges&>
+class GuiExport Application /*:public App::Application::ObserverType,public Base::Subject<const AppChanges&>*/ 
 {
 public:
   /// construction
@@ -105,9 +105,9 @@ public:
   /** @name methods for Document handling */
   //@{
   /// Observer message from the Application
-  virtual void OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason);
-  void OnDocNew(App::Document* pcDoc);
-  void OnDocDelete(App::Document* pcDoc);
+  //virtual void OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason);
+  void slotNewDocument(App::Document&);
+  void slotDeletedDocument(App::Document&);
   /// message when a GuiDocument is about to vanish
   void onLastWindowClosed(Gui::Document* pcDoc);
   /// Getter for the active document

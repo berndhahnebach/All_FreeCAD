@@ -98,11 +98,11 @@ public:
   std::set<AbstractFeature*> ErrorFeatures;
   std::set<DocumentObject*>   DeletedObjects;
 };
-
+//
 
 
 /// The document class
-class AppExport Document :public App::PropertyContainer, public Base::Subject<const DocChanges&>
+class AppExport Document :public App::PropertyContainer//, public Base::Subject<const DocChanges&>
 {
   PROPERTY_HEADER(App::Document);
 
@@ -131,6 +131,12 @@ public:
   boost::signal<void (App::DocumentObject&)> signalChangedObject;
   /// signal on renamed Object
   boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+  /** signal on save document
+    * this signal is given when the document get streamt.
+    * you can use this hook to write additional information in 
+    * the file (like the Gui::Document does).
+    */
+  boost::signal<void (Base::Writer &)> signalSaveDocument;
   //@}
 
  	/** @name File handling of the document */
@@ -193,14 +199,14 @@ public:
 	//@{
 
 	/// Remove all modifications. After this call The document becomes again Valid.
-	void PurgeModified();
-	/// Recompute if the document was  not valid and propagate the reccorded modification.
+	void purgeTouched();
+  /// check if there is any touched object in this document
+  bool isTouched(void) const;
+  /// returns all touched objects
+  std::vector<App::DocumentObject *> getTouched(void) const;
+	/// Recompute all touched features
 	void recompute();
-  /// signal a DocObject as updated
-  void update(DocumentObject*);
-  void update(const char *name);
-
-  /// Recompute only this feature
+  /// Recompute only one feature
   void recomputeFeature(AbstractFeature* Feat);
 	//@}
 
@@ -297,22 +303,6 @@ protected:
   // Array to preserve the creation order of created objects
   std::vector<DocumentObject*> ObjectArray;
   Base::Persistance* pDocumentHook;
-
-  // typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
-
-  typedef boost::adjacency_list <
-   boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
-   boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
-   boost::directedS,      // class DirectedS     : This is a directed graph
-   boost::no_property,    // class VertexProperty: 
-   boost::no_property,    // class EdgeProperty: 
-   boost::no_property,    // class GraphProperty:
-   boost::listS           // class EdgeListS:
-  > DependencyList;
-  typedef boost::graph_traits<DependencyList> Traits;
-  typedef Traits::vertex_descriptor Vertex;
-  typedef Traits::edge_descriptor Edge;
-
 
 	// pointer to the python class
   Py::Object DocumentPythonObject;
