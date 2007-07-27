@@ -114,39 +114,21 @@ void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
   }
  
 }
-/*
-void DlgEvaluateMeshImp::OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason)
-{
-  if ( rcReason.Why == App::AppChanges::Del && rcReason.Doc == _pDoc)
-  {
-    // the view is already destroyed
-    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
-      delete it->second;
-    }
 
-    _vp.clear();    
-    
-    _pDoc->Detach(this);
-    _pDoc = 0;
-    _viewer = 0;
-    on_refreshButton_clicked();
-  }
-}
-*/
 void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
 {
-    // the view is already destroyed
-    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
-      delete it->second;
-    }
+    if (&Doc == _pDoc) {
+        // the view is already destroyed
+        for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
+            delete it->second;
+        }
 
-    _vp.clear();    
+        _vp.clear();    
     
-    //_pDoc->Detach(this);
-    _pDoc = 0;
-    _viewer = 0;
-    on_refreshButton_clicked();
- 
+        _pDoc = 0;
+        _viewer = 0;
+        on_refreshButton_clicked();
+    }
 }
 
 
@@ -163,12 +145,9 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   this->setupUi(this);
   connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
 
-  //App::GetApplication().Attach(this);
   Gui::Document* pGui = Gui::Application::Instance->activeDocument();
   _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
   _pDoc = pGui->getDocument();
-  //_pDoc->Attach(this);
-
   _pDoc->signalDeletedObject.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
   App::GetApplication().signalDeletedDocument.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
 }
@@ -185,10 +164,6 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
   }
 
   _vp.clear();
-
-  //App::GetApplication().Detach(this);
-  //if ( _pDoc )
-  //  _pDoc->Detach(this);
 }
 
 void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
@@ -315,11 +290,7 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
 
   // switch to the active document
   if (doc && doc != _pDoc) {
-    if ( _pDoc )
-      //_pDoc->Detach(this)
-      ;
     _pDoc = doc;
-    //_pDoc->Attach(this);
     removeViewProviders();
     Gui::Document* pGui = Gui::Application::Instance->activeDocument();
     _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
