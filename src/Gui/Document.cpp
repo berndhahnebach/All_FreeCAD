@@ -29,9 +29,8 @@
 # include <qfileinfo.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QCloseEvent>
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 #endif
 
 #include <Base/Console.h>
