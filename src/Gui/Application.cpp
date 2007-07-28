@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include "InventorAll.h"
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 #endif
 
 // FreeCAD Base header

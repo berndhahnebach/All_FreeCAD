@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <string>
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
