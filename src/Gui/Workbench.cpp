@@ -25,6 +25,7 @@
 
 #include "Workbench.h"
 #include "WorkbenchPy.h"
+#include "PythonWorkbenchPy.h"
 #include "MenuManager.h"
 #include "ToolBarManager.h"
 #include "DockWindowManager.h"

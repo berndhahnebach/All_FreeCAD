@@ -351,12 +351,16 @@ ConsoleSingelton & ConsoleSingelton::Instance(void)
 
 // ConsoleSingelton Methods						// Methods structure
 PyMethodDef ConsoleSingelton::Methods[] = {
-	{"PrintMessage",         (PyCFunction) ConsoleSingelton::sPyMessage,         1},
-	{"PrintLog",             (PyCFunction) ConsoleSingelton::sPyLog,             1},
-	{"PrintError"  ,         (PyCFunction) ConsoleSingelton::sPyError,           1},
-	{"PrintWarning",         (PyCFunction) ConsoleSingelton::sPyWarning,         1},
-	{"SetStatus",            (PyCFunction) ConsoleSingelton::sPySetStatus,       1},
-	{"GetStatus",            (PyCFunction) ConsoleSingelton::sPyGetStatus,       1},
+	{"PrintMessage",         (PyCFunction) ConsoleSingelton::sPyMessage, 1, 
+     "PrintMessage(string) -- Print a message to the output"},
+	{"PrintLog",             (PyCFunction) ConsoleSingelton::sPyLog, 1,
+     "PrintLog(string) -- Print a log message to the output"},
+	{"PrintError"  ,         (PyCFunction) ConsoleSingelton::sPyError, 1,
+     "PrintError(string) -- Print an error message to the output"},
+	{"PrintWarning",         (PyCFunction) ConsoleSingelton::sPyWarning, 1,
+     "PrintWarning -- Print a warning to the output"},
+	{"SetStatus",            (PyCFunction) ConsoleSingelton::sPySetStatus, 1},
+	{"GetStatus",            (PyCFunction) ConsoleSingelton::sPyGetStatus, 1},
 
   {NULL, NULL}		/* Sentinel */
 };

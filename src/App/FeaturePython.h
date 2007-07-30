@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FEATUREPYTHON_H__
-#define __FEATUREPYTHON_H__
+#ifndef APP_FEATUREPYTHON_H
+#define APP_FEATUREPYTHON_H
 
 
 #include "Feature.h"
@@ -35,39 +35,40 @@ class FeaturePythonPy;
 
 class FeaturePython :public AbstractFeature
 {
-  PROPERTY_HEADER(App::FeaturePython);
+    PROPERTY_HEADER(App::FeaturePython);
 
 public:
-  FeaturePython();  
+    FeaturePython();  
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "Gui::ViewProviderPythonFeature";
-  }
-  /// get all properties of the class (including parent)
-  virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
-  /// find a property by its name
-  virtual Property *getPropertyByName(const char* name) const;
-  /// get the name of a property
-  virtual const char* getName(const Property* prop) const;
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual int execute(void);
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "Gui::ViewProviderPythonFeature";
+    }
+    /// get all properties of the class (including parent)
+    virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
+    /// find a property by its name
+    virtual Property *getPropertyByName(const char* name) const;
+    /// get the name of a property
+    virtual const char* getName(const Property* prop) const;
+    //@}
 
-  void addDynamicProperty(const char* type, const char* name=0);
+    void addDynamicProperty(const char* type, const char* name=0);
 
-  std::string getUniquePropertyName(const char *Name) const;
+    std::string getUniquePropertyName(const char *Name) const;
 
-	virtual PyObject *getPyObject(void);
+    virtual PyObject *getPyObject(void);
 
-  friend class FeaturePythonPy;
+    friend class FeaturePythonPy;
 
 private:
-  std::map<std::string,Property*> objectProperties;
+    std::map<std::string,Property*> objectProperties;
+    Py::Object executeMethod;
 };
 
 } //namespace App
 
-#endif // __FeaturePython_H__
+#endif // APP_FEATUREPYTHON_H

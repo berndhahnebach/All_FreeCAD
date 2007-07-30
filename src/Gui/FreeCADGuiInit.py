@@ -38,11 +38,15 @@ Gui = FreeCADGui
 
 # Important definitions
 class Workbench:
+	"""The workbench base class."""
 	def Activate(self):
+		"""Activate this workbench."""
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
 	def GetClassName(self):
+		"""Return the name of the associated C++ class."""
 		Wrn("Init: "+ str(self) + ": Workbench.GetClassName() not implemented!")
 	def GetIcon(self):
+		"""Return a list of icons in XPM format."""
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
 			"static const char *FCIcon[]={\n"
@@ -70,19 +74,25 @@ class Workbench:
 
 
 class StandardWorkbench ( Workbench ):
-	"Standard workbench object"
+	"""A workbench defines the tool bars, command bars, menus, 
+context menu and dockable windows of the main window.
+	"""
 	def Activate(self):
+		"""Activate this workbench."""
 		# load the module
 		Log ('Init: Loading FreeCAD GUI')
 	def GetClassName(self):
+		"""Return the name of the associated C++ class."""
 		return "Gui::StdWorkbench"
 
 class NoneWorkbench ( Workbench ):
-	"Standard workbench object"
+	"""An empty workbench."""
 	def Activate(self):
+		"""Activate this workbench."""
 		# load the module
 		Log ('Init: Loading FreeCAD GUI')
 	def GetClassName(self):
+		"""Return the name of the associated C++ class."""
 		return "Gui::NoneWorkbench"
 
 def InitApplications():

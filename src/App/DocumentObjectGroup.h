@@ -24,8 +24,7 @@
 #ifndef APP_DOCUMENTOBJECTGROUP_H
 #define APP_DOCUMENTOBJECTGROUP_H
 
-//#include "DocumentObject.h"
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "PropertyLinks.h"
 #include <vector>
 
@@ -34,69 +33,62 @@ namespace App
 {
 class DocumentObjectGroupPy;
 
-//class AppExport DocumentObjectGroup : public DocumentObject
-// Allow to be added to the tree view
-class AppExport DocumentObjectGroup : public AbstractFeature
+class AppExport DocumentObjectGroup : public DocumentObject
 {
-  PROPERTY_HEADER(App::DocumentObjectGroup);
+    PROPERTY_HEADER(App::DocumentObjectGroup);
 
 public:
-	/// Constructor
-	DocumentObjectGroup(void);
-  virtual ~DocumentObjectGroup();
+    /// Constructor
+    DocumentObjectGroup(void);
+    virtual ~DocumentObjectGroup();
 
-  int execute() // dummy implementation
-  { return 0; }
+    /** @name Object handling  */
+    //@{
+    /** Adds an object of \a sType with \a pObjectName to the document this group belongs to and 
+     * append it to this group as well.
+     */
+    DocumentObject *addObject(const char* sType, const char* pObjectName=0);
+    /** Removes an object from this group and the document this group belongs to.
+     */
+    void removeObject(const char* sName);
+    /** Returns the object of this group with \a Name. If the group doesn't have such an object 0 is returned.
+     * @note This method might return 0 even if the document this group belongs to contains an object with this name.
+     */
+    DocumentObject *getObject(const char *Name) const;
+    /**
+     * Checks whether the object \a obj is part of this group.
+     */
+    bool hasObject(DocumentObject* obj) const;
+    /** Returns a list of all objects this group does have.
+     */
+    std::vector<DocumentObject*> getObjects() const;
+    /** Returns a list of all objects of \a typeId this group does have.
+     */
+    std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
+    /** Returns the number of objects of \a typeId this group does have.
+     */
+    int countObjectsOfType(const Base::Type& typeId) const;
+    /** Returns the object group of the document which the given object \a obj is part of.
+     * In case this object is not part of a group 0 is returned.
+     */
+    static DocumentObjectGroup* getGroupOfObject(DocumentObject* obj);
+    //@}
 
-  /** @name Object handling  */
-	//@{
-  /** Adds an object of \a sType with \a pObjectName to the document this group belongs to and 
-   * append it to this group as well.
-   */
-	DocumentObject *addObject(const char* sType, const char* pObjectName=0);
-  /** Removes an object from this group and the document this group belongs to.
-   */
-	void removeObject(const char* sName);
-  /** Returns the object of this group with \a Name. If the group doesn't have such an object 0 is returned.
-   * @note This method might return 0 even if the document this group belongs to contains an object with this name.
-   */
-	DocumentObject *getObject(const char *Name) const;
-  /**
-   * Checks whether the object \a obj is part of this group.
-   */
-  bool hasObject(DocumentObject* obj) const;
-  /** Returns a list of all objects this group does have.
-   */
-  std::vector<DocumentObject*> getObjects() const;
-  /** Returns a list of all objects of \a typeId this group does have.
-   */
-  std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
-  /** Returns the number of objects of \a typeId this group does have.
-   */
-  int countObjectsOfType(const Base::Type& typeId) const;
-  /** Returns the object group of the document which the given object \a obj is part of.
-   * In case this object is not part of a group 0 is returned.
-   */
-  static DocumentObjectGroup* getGroupOfObject(DocumentObject* obj);
-	//@}
-
-  //int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "Gui::ViewProviderDocumentObjectGroup";
-  }
-  virtual PyObject *getPyObject(void);
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "Gui::ViewProviderDocumentObjectGroup";
+    }
+    virtual PyObject *getPyObject(void);
 
 protected:
-  PropertyLinkList Group;
-  /* Adds the object \a obj to this group. 
-   */
-  void addObject(DocumentObject* obj);
-  /**
-   * Removes the object \a obj from this group.
-   */
-  void removeObject(DocumentObject* obj);
-
+    PropertyLinkList Group;
+    /* Adds the object \a obj to this group. 
+     */
+    void addObject(DocumentObject* obj);
+    /**
+     * Removes the object \a obj from this group.
+     */
+    void removeObject(DocumentObject* obj);
 };
 
 } //namespace App

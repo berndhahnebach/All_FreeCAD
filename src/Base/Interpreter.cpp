@@ -26,8 +26,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <Python.h>
-# include <sstream>
+#   include <Python.h>
+#   include <sstream>
 #endif
 
 #include "Console.h"
@@ -433,40 +433,4 @@ PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::strin
   return Dict;
 
 }
-
-/*
-
-PythonException::PythonException(void)
-{
-  ErrMsg = "Unknown Python error";
-}
-
-PythonException::PythonException(const PythonException &inst)
-{
-  *this = inst;
-
-}
-
-
-PythonException::PythonException(const char * sErrorType,const char * sErrorInfo,const char * sErrorTraceback)
-: ErrorType(sErrorType),ErrorInfo(sErrorInfo),ErrorTraceback(sErrorTraceback)
-{
-  ErrMsg = ErrorType + ErrorInfo + ErrorTraceback;
-}
-
-
-PythonException &PythonException::operator=(const PythonException &inst)
-{
-  ErrMsg         = inst.ErrMsg;
-  ErrorType      = inst.ErrorType;
-  ErrorInfo      = inst.ErrorInfo;
-  ErrorTraceback = inst.ErrorTraceback;
-  return *this;
-}
-
-const char* PythonException::what(void) const throw()
-{
-	return ErrMsg.c_str();
-}
-*/
 

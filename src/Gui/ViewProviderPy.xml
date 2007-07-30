@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport Father="PropertyContainerPy" Name="ViewProviderPy" Twin="ViewProvider" Namespace="Gui" FatherInclude="../App/PropertyContainerPy.h" FatherNamespace="App">
+    <Documentation>
+      <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+      <UserDocu>This is the ViewProvider base class</UserDocu>
+    </Documentation>
+   <Methode Name="show">
+      <Documentation>
+        <UserDocu>Set the material</UserDocu>
+      </Documentation>
+    </Methode>
+   <Methode Name="hide">
+      <Documentation>
+        <UserDocu>Set the material</UserDocu>
+      </Documentation>
+    </Methode>
+   <Methode Name="isVisible">
+      <Documentation>
+        <UserDocu>Set the material</UserDocu>
+      </Documentation>
+    </Methode>
+   <Methode Name="update">
+      <Documentation>
+        <UserDocu>Set the material</UserDocu>
+      </Documentation>
+    </Methode>
+   <Methode Name="listDisplayModes">
+      <Documentation>
+        <UserDocu>Set the material</UserDocu>
+      </Documentation>
+    </Methode>
+  </PythonExport>
+</GenerateModel>

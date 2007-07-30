@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Base_H__
-#define __Base_H__
+#ifndef BASE_BASECLASS_H
+#define BASE_BASECLASS_H
 
 #include "Type.h"
 
@@ -109,5 +109,5 @@ public:
 
 } //namespace Base
 
-#endif // __FILETEMPLATE_H__
+#endif // BASE_BASECLASS_H
 

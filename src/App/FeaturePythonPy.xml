@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport Father="FeaturePy" Name="FeaturePythonPy" Twin="FeaturePython" Namespace="App" FatherInclude="FeaturePy.h" FatherNamespace="App">
+    <Documentation>
+      <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+      <UserDocu>This is the father of all Feature classes</UserDocu>
+    </Documentation>
+   <Methode Name="addProperty">
+      <Documentation>
+        <UserDocu>addProperty(string, string) -- Add a generic property.\n"
+		"The first argument specifies the type, the second the\n"
+		"name of the property.</UserDocu>
+      </Documentation>
+    </Methode>
+   <Methode Name="execute">
+      <Documentation>
+        <UserDocu>Execute a callable Python object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Execute" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Pointer to a callable Python object</UserDocu>
+      </Documentation>
+      <Parameter Name="Execute" Type="Object"/>
+    </Attribute>
+  </PythonExport>
+</GenerateModel>

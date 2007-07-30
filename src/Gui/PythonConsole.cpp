@@ -717,6 +717,9 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
 #if defined (Q_OS_LINUX) 
         // Need to convert CRLF to LF
         text.replace( "\r\n", "\n" );
+#elif defined(Q_OS_WIN32)
+        // Need to convert CRLF to LF
+        text.replace( "\r\n", "\n" );
 #elif defined(Q_OS_MAC)
         //need to convert CR to LF
         text.replace( '\r', '\n' );
@@ -759,6 +762,7 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
                     }
                 } else { // invalid
                     runSource(buffer.join("\n"));
+                    buffer.clear();
                     break;
                 }
             }

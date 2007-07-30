@@ -221,13 +221,6 @@ private:
   //---------------------------------------------------------------------
 
   // static python wrapper of the exported functions
-  PYFUNCDEF_S(sOpen);             // deprecated
-  PYFUNCDEF_S(sNew);              // deprecated
-  PYFUNCDEF_S(sClose);            // deprecated
-  PYFUNCDEF_S(sImport);           // deprecated (not implemented)
-  PYFUNCDEF_S(sSave);             // deprecated
-  PYFUNCDEF_S(sSaveAs);           // deprecated
-  PYFUNCDEF_S(sDocument);         // deprecated
   PYFUNCDEF_S(sGetParam);
   PYFUNCDEF_S(sGetVersion);
   PYFUNCDEF_S(sGetConfig);
