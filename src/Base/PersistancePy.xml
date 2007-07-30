@@ -4,7 +4,7 @@
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <DeveloperDocu>This is the Persistance class</DeveloperDocu>
-      <UserDocu>This is a persitance class</UserDocu>
+      <UserDocu>This is a persistance class</UserDocu>
     </Documentation>
     <Attribute Name="Content" ReadOnly="false">
       <Documentation>

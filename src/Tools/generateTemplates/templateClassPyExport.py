@@ -157,7 +157,7 @@ PyTypeObject @self.export.Name@::Type = {
 	0,                                                /* tp_as_buffer */
 	/* --- Flags to define presence of optional/expanded features */
 	Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-	"About @self.export.Twin@",                       /*tp_doc */
+	"@self.export.Documentation.UserDocu@",           /*tp_doc */
 	0,                                                /*tp_traverse */
 	0,                                                /*tp_clear */
 	0,                                                /*tp_richcompare */
@@ -200,10 +200,10 @@ PyMethodDef @self.export.Name@::Methods[] = {
 PyGetSetDef @self.export.Name@::GetterSetter[] = {
 + for i in self.export.Attribute:
 	{"@i.Name@",
-	  (getter) staticCallback_get@i.Name@,
-    (setter) staticCallback_set@i.Name@, 
-    "@i.Documentation.UserDocu@",
-		NULL
+	(getter) staticCallback_get@i.Name@,
+	(setter) staticCallback_set@i.Name@, 
+	"@i.Documentation.UserDocu@",
+	NULL
 	},
 -
 	{NULL, NULL}		/* Sentinel */
@@ -445,48 +445,6 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 {
 	return dynamic_cast<@self.export.Twin@ *>(_pcBaseClass);
 }
-
-#if 0
-/* from here on the methods you have to implement, but NOT in this module. Implement in @self.export.Name@Imp.cpp! This prototypes 
-    are just for convenience! */
-		
-
-+ for i in self.export.Methode:
-PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
-{
-
-}
--
-+ for i in self.export.Attribute:
-
-Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
-{
-	return Py::@i.Parameter.Type@();
-}
-
-+ if (i.ReadOnly):
-// no setter method,  @i.Name@ is read-only!
-= else:
-void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
-{
-
-}
--
--
-+ if(self.export.CustomAttributes != None):
-
-PyObject *@self.export.Name@::getCustomAttributes(const char* attr) const
-{
-	return 0;
-}
-
-int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
-{
-	return 0; 
-}
--
-
-#endif
 
 	
 """	

@@ -7,7 +7,7 @@
     </Documentation>
    <Methode Name="recompute">
       <Documentation>
-        <UserDocu>Recomputes only this Feature</UserDocu>
+        <UserDocu>Recompute only this Feature</UserDocu>
       </Documentation>
     </Methode>
     <Attribute Name="Valid" ReadOnly="true">

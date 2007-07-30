@@ -217,7 +217,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject="..\Base\FreeCADBase.vcproj"
+			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
 		/>
 	</References>
 	<Files>
@@ -463,29 +463,29 @@
 				>
 			</File>
 			<File
-				RelativePath="DocumentObjectGroupPy.cpp"
+				RelativePath=".\DocumentObjectGroupPy.xml"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="DocumentObjectGroupPy.h"
+				RelativePath=".\DocumentObjectGroupPyImp.cpp"
 				>
 			</File>
 			<File
@@ -496,7 +496,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentObjectPy.xml"
+						CommandLine="python ../Tools/generate.py DocumentObjectPy.xml&#x0D;&#x0A;"
 						Outputs="DocumentObjectPy.cpp;DocumentObjectPy.h"
 					/>
 				</FileConfiguration>
@@ -565,7 +565,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py FeaturePy.xml"
+						CommandLine="python ../Tools/generate.py FeaturePy.xml&#x0D;&#x0A;"
 						Outputs="FeaturePy.cpp;FeaturePy.h"
 					/>
 				</FileConfiguration>
@@ -601,29 +601,29 @@
 				>
 			</File>
 			<File
-				RelativePath="FeaturePythonPy.cpp"
+				RelativePath=".\FeaturePythonPy.xml"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="FeaturePythonPy.h"
+				RelativePath=".\FeaturePythonPyImp.cpp"
 				>
 			</File>
 			<File

@@ -12,32 +12,32 @@
     </Methode>
     <Methode Name="restore">
       <Documentation>
-        <UserDocu>Restore the document from dics</UserDocu>
+        <UserDocu>Restore the document from disc</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="openTransaction">
       <Documentation>
-        <UserDocu>Opens a new Undo/Redo transaction.</UserDocu>
+        <UserDocu>Open a new Undo/Redo transaction.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="abortTransaction">
       <Documentation>
-        <UserDocu>Abort a Undo/Redo transaction (rollback)</UserDocu>
+        <UserDocu>Abort an Undo/Redo transaction (rollback)</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="commitTransaction">
       <Documentation>
-        <UserDocu>Commit a Undo/Redo transaction</UserDocu>
+        <UserDocu>Commit an Undo/Redo transaction</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="addObject">
       <Documentation>
-        <UserDocu>Add a object with given type and name to the document</UserDocu>
+        <UserDocu>Add an object with given type and name to the document</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="removeObject">
       <Documentation>
-        <UserDocu>Removes a object</UserDocu>
+        <UserDocu>Remove an object from the document</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="undo">
@@ -47,27 +47,27 @@
     </Methode>
     <Methode Name="redo">
       <Documentation>
-        <UserDocu>Redo a previos undoed transaction</UserDocu>
+        <UserDocu>Redo a previosly undid transaction</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="clearUndos">
       <Documentation>
-        <UserDocu>Clears the undo stack of the document</UserDocu>
+        <UserDocu>Clear the undo stack of the document</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="recompute">
       <Documentation>
-        <UserDocu>Recompute the document.</UserDocu>
+        <UserDocu>Recompute the document</UserDocu>
       </Documentation>
     </Methode>
 	  <Methode Name="getObject">
 		  <Documentation>
-			  <UserDocu>Return the object with the given name.</UserDocu>
+			  <UserDocu>Return the object with the given name</UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Attribute Name="DependencyGraph" ReadOnly="true">
 		  <Documentation>
-			  <UserDocu>the depency graph as GraphViz text</UserDocu>
+			  <UserDocu>The dependency graph as GraphViz text</UserDocu>
 		  </Documentation>
 		  <Parameter Name="DependencyGraph" Type="String" />
 	  </Attribute>

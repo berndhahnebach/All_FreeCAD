@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,55 @@
  ***************************************************************************/
 
 
-#ifndef GUI_VIEWPROVIDER_PY_H
-#define GUI_VIEWPROVIDER_PY_H
+#include "PreCompiled.h"
 
-#include <Base/PyObjectBase.h>
+#include "Workbench.h"
+#include "WorkbenchManager.h"
 
-namespace Gui {
-class ViewProvider;
+// inclusion of the generated files (generated out of WorkbenchPy.xml)
+#include "WorkbenchPy.h"
+#include "WorkbenchPy.cpp"
 
-class GuiExport ViewProviderPy : public Base::PyObjectBase
+using namespace Gui;
+
+/** @class WorkbenchPy
+ * The workbench Python base class doesn't allow you to manipulate the C++ workbench class behind.
+ * You're only allowed either to activate the workbench class or get its name.
+ * The WorkbenchPy class is associated to all C++ workbench classes except of PythonWorkbench.
+ * @see Workbench
+ * @see PythonWorkbench
+ * @see PythonWorkbenchPy
+ * @author Werner Mayer
+ */
+
+/** Retrieves the workbench name */
+PyObject*  WorkbenchPy::name(PyObject *args)
 {
-	/// always start with Py_Header
-	Py_Header;
+    PY_TRY {
+        QString name = getWorkbenchObject()->name(); 
+        PyObject* pyName = PyString_FromString( name.latin1() );
+        return pyName;
+    }PY_CATCH;
+}
 
-public:
-  /// constructor.
-  ViewProviderPy(ViewProvider *pcViewProvider, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-  /// destructor.
-  virtual ~ViewProviderPy();
-  void setInvalid();
+/** Activates the workbench object */
+PyObject*  WorkbenchPy::activate(PyObject *args)
+{
+    PY_TRY {
+        QString name = getWorkbenchObject()->name(); 
+        WorkbenchManager::instance()->activate( name, getWorkbenchObject()->getTypeId().getName() );
+        Py_Return; 
+    }PY_CATCH;
+}
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+PyObject *WorkbenchPy::getCustomAttributes(const char* attr) const
+{
+    return 0;
+}
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(ViewProviderPy,hide)
-	PYFUNCDEF_D(ViewProviderPy,show)
-	PYFUNCDEF_D(ViewProviderPy,isVisible)
-	PYFUNCDEF_D(ViewProviderPy,update)
-	PYFUNCDEF_D(ViewProviderPy,listDisplayModes)
+int WorkbenchPy::setCustomAttributes(const char* attr, PyObject *obj)
+{
+    return 0; 
+}
 
-  //---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-  ViewProvider *getViewProvider(void) const {return _pcViewProvider;}
-
-private:
-  ViewProvider *_pcViewProvider;
-};
-
-} // namespace Gui
-
-#endif // GUI_VIEWPROVIDER_PY_H
 

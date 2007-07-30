@@ -219,11 +219,11 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject="..\Base\FreeCADBase.vcproj"
+			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
-			RelativePathToProject="..\App\FreeCADDoc.vcproj"
+			RelativePathToProject=".\src\App\FreeCADDoc.vcproj"
 		/>
 	</References>
 	<Files>
@@ -4069,6 +4069,32 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PythonWorkbenchPy.xml"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\PythonWorkbenchPyImp.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ToolBarManager.cpp"
 				>
 				<FileConfiguration
@@ -4173,29 +4199,29 @@
 				>
 			</File>
 			<File
-				RelativePath="WorkbenchPy.cpp"
+				RelativePath=".\WorkbenchPy.xml"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="WorkbenchPy.h"
+				RelativePath=".\WorkbenchPyImp.cpp"
 				>
 			</File>
 		</Filter>
@@ -4433,29 +4459,28 @@
 				>
 			</File>
 			<File
-				RelativePath="ViewProviderPy.cpp"
+				RelativePath=".\ViewProviderPy.xml"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ViewProviderPy.h"
+				RelativePath=".\ViewProviderPyImp.cpp"
 				>
 			</File>
 			<File

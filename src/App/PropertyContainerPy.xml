@@ -7,7 +7,7 @@
     </Documentation>
     <Attribute Name="PropertiesList" ReadOnly="true">
       <Documentation>
-        <UserDocu>A List of all Properties names</UserDocu>
+        <UserDocu>A List of all property names</UserDocu>
       </Documentation>
       <Parameter Name="PropertiesList" Type="List"/>
     </Attribute>

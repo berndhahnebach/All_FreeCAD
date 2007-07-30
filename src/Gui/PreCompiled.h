@@ -59,6 +59,9 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/utility.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
 
 #include "InventorAll.h"
 #include "Qt4All.h"

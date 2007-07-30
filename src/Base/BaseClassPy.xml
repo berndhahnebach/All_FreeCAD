@@ -4,7 +4,7 @@
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <DeveloperDocu>This is the BaseClass class</DeveloperDocu>
-      <UserDocu>This is a persitance class</UserDocu>
+      <UserDocu>This is the base class</UserDocu>
     </Documentation>
     <Methode Name="isDerivedFrom">
       <Documentation>

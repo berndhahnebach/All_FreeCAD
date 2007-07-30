@@ -7,7 +7,7 @@
     </Documentation>
    <Methode Name="touch">
       <Documentation>
-        <UserDocu>Marke the object as changed (touched)</UserDocu>
+        <UserDocu>Mark the object as changed (touched)</UserDocu>
       </Documentation>
     </Methode>
     <Attribute Name="State" ReadOnly="true">

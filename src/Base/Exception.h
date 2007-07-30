@@ -44,20 +44,6 @@ public:
   virtual ~Exception() throw() {}
 
   Exception &operator=(const Exception &inst);
-
-  /** Exception handling
-   * This is useful if an exception should be handled directly where it occurs e.g. by showing an error 
-   * message and the receiving instance of the forwarded exception should not report a message again.
-   */
-  //@{
-  /// Returns true if this exception was already handled, false otherwise.
-  bool isHandled() const
-  { return _handled; }
-  /// Sets the exception as handled.
-  void setHandled()
-  { _handled = true; }
-  //@}
-
   virtual const char* what(void) const throw();
   void ReportException (void) const;
   inline void setMessage(const char * sMessage);
