@@ -4715,29 +4715,29 @@
 			>
 		</File>
 		<File
-			RelativePath="DocumentPy.cpp"
+			RelativePath=".\DocumentPy.xml"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="DocumentPy.h"
+			RelativePath=".\DocumentPyImp.cpp"
 			>
 		</File>
 		<File

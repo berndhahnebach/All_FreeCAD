@@ -120,7 +120,15 @@ Application::Application()
   GetWidgetFactorySupplier();
 
   // setting up Python binding
-  (void) Py_InitModule("FreeCADGui", Application::Methods);
+  (void) Py_InitModule3("FreeCADGui", Application::Methods,
+    "The functions in the FreeCADGui module allow working with GUI documents,\n"
+    "view providers, views, workbenches and much more.\n\n"
+    "The FreeCADGui instance provides a list of references of GUI documents which\n"
+    "can be addressed by a string. These documents contain the view providers for\n"
+    "objects in the associated App document. An App and GUI document can be\n"
+    "accessed with the same name.\n\n"
+    "The FreeCADGui module also provides a set of functions to work with so called\n"
+    "workbenches.");
 
   d = new ApplicationP;
 

@@ -30,24 +30,24 @@ import FreeCAD, FreeCADGui, os, unittest
 
 class WorkbenchTestCase(unittest.TestCase):
     def setUp(self):
-        self.Active = FreeCADGui.ActiveWorkbench()
-        FreeCAD.PrintLog(FreeCADGui.ActiveWorkbench().name())
+        self.Active = FreeCADGui.activeWorkbench()
+        FreeCAD.PrintLog(FreeCADGui.activeWorkbench().name())
         
     def testActivate(self):
-        list=FreeCADGui.ListWorkbenchHandlers()
+        list=FreeCADGui.listWorkbenchHandlers()
         for i in list:
-            FreeCADGui.ActivateWorkbench(i)
-            FreeCADGui.UpdateGui()
-            FreeCAD.PrintLog("Currently: "+i+ " Should be: "+FreeCADGui.ActiveWorkbench().name())
-            self.failUnless(FreeCADGui.ActiveWorkbench().name()==i, "Test on activating workbench failed")
+            FreeCADGui.activateWorkbench(i)
+            FreeCADGui.updateGui()
+            FreeCAD.PrintLog("Currently: "+i+ " Should be: "+FreeCADGui.activeWorkbench().name())
+            self.failUnless(FreeCADGui.activeWorkbench().name()==i, "Test on activating workbench failed")
         
 # Need a method to delete a workbench
 #    def testWorkbench(self):
-#        self.failUnless(FreeCADGui.HasWorkbench("TestWb")==False, "TestWb was not expected to be in the list")
-#        self.failUnless(FreeCADGui.CreateWorkbench("TestWb")!=None, "Creation of TestWb failed")
-#        self.failUnless(FreeCADGui.HasWorkbench("TestWb")==True, "TestWb was not expected to be in the list")
-#        self.failUnless(FreeCADGui.GetWorkbench("TestWb")!=None, "Retrieval of TestWb failed")
-#        list=FreeCADGui.ListWorkbenches()
+#        self.failUnless(FreeCADGui.hasWorkbench("TestWb")==False, "TestWb was not expected to be in the list")
+#        self.failUnless(FreeCADGui.createWorkbench("TestWb")!=None, "Creation of TestWb failed")
+#        self.failUnless(FreeCADGui.hasWorkbench("TestWb")==True, "TestWb was not expected to be in the list")
+#        self.failUnless(FreeCADGui.getWorkbench("TestWb")!=None, "Retrieval of TestWb failed")
+#        list=FreeCADGui.listWorkbenches()
 #        fnd = False
 #        for i in list: 
 #            if (i == "TestWb"): 
@@ -59,8 +59,8 @@ class WorkbenchTestCase(unittest.TestCase):
         class UnitWorkbench:
             def Activate(self):
                 try:
-                    if FreeCADGui.HasWorkbench('Unittest') == False:
-                        w = FreeCADGui.CreateWorkbench('Unittest')
+                    if FreeCADGui.hasWorkbench('Unittest') == False:
+                        w = FreeCADGui.createWorkbench('Unittest')
                         list = ["Test_Test"]
                         w.appendToolbar("My Unittest",list)
                 except:
@@ -93,16 +93,16 @@ class WorkbenchTestCase(unittest.TestCase):
                     "\"......bbbb......\",\n"
                     "\"................\"};\n"]
 
-        FreeCADGui.AddWorkbenchHandler("Unittest",UnitWorkbench())
-        list=FreeCADGui.ListWorkbenchHandlers()
+        FreeCADGui.addWorkbenchHandler("Unittest",UnitWorkbench())
+        list=FreeCADGui.listWorkbenchHandlers()
         self.failUnless(list.has_key("Unittest")==True, "Test on adding workbench handler failed")
-        FreeCADGui.ActivateWorkbench("Unittest")
-        FreeCADGui.UpdateGui()
-        self.failUnless(FreeCADGui.ActiveWorkbench().name()=="Unittest", "Test on loading workbench 'Unittest' failed")
-        FreeCADGui.RemoveWorkbenchHandler("Unittest")
-        list=FreeCADGui.ListWorkbenchHandlers()
+        FreeCADGui.activateWorkbench("Unittest")
+        FreeCADGui.updateGui()
+        self.failUnless(FreeCADGui.activeWorkbench().name()=="Unittest", "Test on loading workbench 'Unittest' failed")
+        FreeCADGui.removeWorkbenchHandler("Unittest")
+        list=FreeCADGui.listWorkbenchHandlers()
         self.failUnless(list.has_key("Unittest")==False, "Test on removing workbench handler failed")
 
     def tearDown(self):
-        FreeCADGui.ActivateWorkbench(self.Active.name())
+        FreeCADGui.activateWorkbench(self.Active.name())
         FreeCAD.PrintLog(self.Active.name())

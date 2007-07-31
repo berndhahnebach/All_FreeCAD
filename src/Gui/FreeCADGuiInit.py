@@ -130,13 +130,13 @@ Log ('Init: Running FreeCADGuiInit.py start script...\n')
 App.GuiUp = 1
 App.Gui = FreeCADGui
 
-Gui.AddWorkbenchHandler("<none>",NoneWorkbench())
+Gui.addWorkbenchHandler("<none>",NoneWorkbench())
 
 # init modules
 InitApplications()
 
 # set standard workbench (needed as fallback)
-Gui.ActivateWorkbench("<none>")
+Gui.activateWorkbench("<none>")
 
 # Register .py, .FCScript and .FCMacro
 FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")

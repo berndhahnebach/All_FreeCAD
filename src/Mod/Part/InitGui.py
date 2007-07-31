@@ -69,4 +69,4 @@ class PartWorkbench ( Workbench ):
 			"\".########.......\",\n"
 			"\"................\"};\n"]
 
-Gui.AddWorkbenchHandler("Part design",PartWorkbench())
+Gui.addWorkbenchHandler("Part design",PartWorkbench())

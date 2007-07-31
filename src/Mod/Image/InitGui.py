@@ -199,7 +199,7 @@ class ImageWorkbench ( Workbench ):
 			"\"QtQtQtQtQtQtQtQtQt#zabacad#yQtQt\",\n"
 			"\"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt\"};\n"]
 
-Gui.AddWorkbenchHandler("Image",ImageWorkbench())
+Gui.addWorkbenchHandler("Image",ImageWorkbench())
 
 # Append the open handler
 FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","ImageGui")

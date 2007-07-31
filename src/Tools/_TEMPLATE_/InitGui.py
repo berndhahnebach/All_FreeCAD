@@ -44,4 +44,4 @@ class _TEMPLATE_Workbench ( Workbench ):
 	def GetClassName(self):
 		return "_TEMPLATE_Gui::Workbench"
 
-Gui.AddWorkbenchHandler("_TEMPLATE_ design",_TEMPLATE_Workbench())
+Gui.addWorkbenchHandler("_TEMPLATE_ design",_TEMPLATE_Workbench())

@@ -7,27 +7,27 @@
     </Documentation>
    <Methode Name="show">
       <Documentation>
-        <UserDocu>Set the material</UserDocu>
+        <UserDocu>Show the object</UserDocu>
       </Documentation>
     </Methode>
    <Methode Name="hide">
       <Documentation>
-        <UserDocu>Set the material</UserDocu>
+        <UserDocu>Hide the object</UserDocu>
       </Documentation>
     </Methode>
    <Methode Name="isVisible">
       <Documentation>
-        <UserDocu>Set the material</UserDocu>
+        <UserDocu>Check if the object is visible</UserDocu>
       </Documentation>
     </Methode>
    <Methode Name="update">
       <Documentation>
-        <UserDocu>Set the material</UserDocu>
+        <UserDocu>Update the view representation of the object</UserDocu>
       </Documentation>
     </Methode>
    <Methode Name="listDisplayModes">
       <Documentation>
-        <UserDocu>Set the material</UserDocu>
+        <UserDocu>Show a list of all display modes</UserDocu>
       </Documentation>
     </Methode>
   </PythonExport>

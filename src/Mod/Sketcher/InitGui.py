@@ -44,4 +44,4 @@ class SketcherWorkbench ( Workbench ):
 		Log ('   Stoping part workbench...\n')
 
 
-Gui.AddWorkbenchHandler("Sketcher",SketcherWorkbench())
+Gui.addWorkbenchHandler("Sketcher",SketcherWorkbench())

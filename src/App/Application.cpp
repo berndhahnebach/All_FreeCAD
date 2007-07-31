@@ -123,8 +123,8 @@ PyDoc_STRVAR(FreeCAD_doc,
 "The FreeCAD instance provides a list of references of documents which\n"
 "can be addressed by a string. Hence the document name must be unique.\n"
 "\n"
-"The document has the read-only attribute FileName which points to the file the document should\n"
-"be stored to.\n"
+"The document has the read-only attribute FileName which points to the\n"
+"file the document should be stored to.\n"
 );
 
 Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)

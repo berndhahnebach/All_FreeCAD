@@ -271,7 +271,7 @@ void ViewProviderMeshFaceSet::setDisplayMode(const char* ModeName)
     setDisplayMaskMode("Flat");
   else if ( strcmp("Points",ModeName)==0 )
     setDisplayMaskMode("Point");
-  else if ( strcmp("Shaded+Wireframe",ModeName)==0 )
+  else if ( strcmp("Flat Lines",ModeName)==0 )
     setDisplayMaskMode("FlatWireframe");
   else if ( strcmp("Wireframe",ModeName)==0 )
     setDisplayMaskMode("Wireframe");
@@ -286,7 +286,7 @@ std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
   // add your own modes
   StrList.push_back("Shaded");
   StrList.push_back("Wireframe");
-  StrList.push_back("Shaded+Wireframe");
+  StrList.push_back("Flat Lines");
   StrList.push_back("Points");
 
   return StrList;
