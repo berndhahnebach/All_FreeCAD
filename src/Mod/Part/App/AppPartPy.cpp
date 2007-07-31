@@ -46,6 +46,13 @@
 #include "FeaturePartImportBrep.h"
 #include "PartAlgos.h"
 
+#include <Geom_BSplineSurface.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+
 using Base::Console;
 using namespace Part;
 using namespace std;
@@ -179,6 +186,39 @@ read(PyObject *self, PyObject *args)
   } PY_CATCH;
 }
 
+/* BREP test function */
+static PyObject *                        
+createTestBSPLINE(PyObject *self, PyObject *args)
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    TColgp_Array2OfPnt Poles(1,4,1,4);
+    TColStd_Array1OfReal UKnots(1,4);
+    TColStd_Array1OfReal VKnots(1,4);
+    TColStd_Array1OfInteger 	UMults(1,4);
+    TColStd_Array1OfInteger 	VMults(1,4);
+
+    // 
+    Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
+                                      Poles,        // const TColgp_Array2OfPnt &  	 Poles,
+	                                    UKnots,       // const TColStd_Array1OfReal &  	UKnots,
+	                                    VKnots,       // const TColStd_Array1OfReal &  	VKnots,
+	                                    UMults,       // const TColStd_Array1OfInteger &  	UMults,
+	                                    VMults,       // const TColStd_Array1OfInteger &  	VMults,
+	                                    3,            // const Standard_Integer  	UDegree,
+	                                    3             // const Standard_Integer  	VDegree,
+	                                                  // const Standard_Boolean  	UPeriodic = Standard_False,
+	                                                  // const Standard_Boolean  	VPeriodic = Standard_False*/
+	                          );  
+
+    BRepBuilderAPI_MakeFace 	Face(Surface);
+
+    return new TopoShapePy(Face.Face()); 
+  } PY_CATCH;
+}
 
 
 /* registration table  */
@@ -186,6 +226,7 @@ struct PyMethodDef Part_methods[] = {
     {"open"   , open,    1},       
     {"insert" , insert,  1},       
     {"read"   , read,  1},       
+    {"createTestBSPLINE"   , createTestBSPLINE,  1},       
     {NULL     , NULL      }        /* end of table marker */
 };
 
