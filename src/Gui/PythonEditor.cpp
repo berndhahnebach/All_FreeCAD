@@ -155,7 +155,6 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
         // spaces from each selected block
         ParameterGrp::handle hPrefGrp = getWindowParameter();
         int indent = hPrefGrp->GetInt( "IndentSize", 4 );
-        bool space = hPrefGrp->GetBool( "Spaces", false );
 
         int selStart = cursor.selectionStart();
         int selEnd = cursor.selectionEnd();

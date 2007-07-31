@@ -29,6 +29,7 @@
 
 class SoNode;
 class SoMaterial;
+class SoInput;
 
 namespace App
 {
