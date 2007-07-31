@@ -156,11 +156,11 @@ using namespace Gui;
  * Python and C++. This method must return the name of the associated C++ including namespace. In this case it must the string "ModuleGui::MyWorkbench".
  * At the end you can change the line from
  * \code
- * Gui.AddWorkbenchHandler("MODULE design",MODULEWorkbench())
+ * Gui.addWorkbenchHandler("MODULE design",MODULEWorkbench())
  * \endcode
  * to
  * \code
- * Gui.AddWorkbenchHandler("My workbench",MODULEWorkbench())
+ * Gui.addWorkbenchHandler("My workbench",MODULEWorkbench())
  * \endcode
  * or whatever you want.
  * \note You must make sure to choose a unique name for your workbench (in this example "My workbench"). Since FreeCAD doesn't provide a mechanism for
@@ -189,7 +189,7 @@ using namespace Gui;
  * list = ["Std_Test1", "Std_Test2", "Std_Test3"]             # creates a list of new functions
  * w.AppendMenu("Test functions", list)                       # creates a new menu with these functions
  * w.AppendToolbar("Test", list)                              # ... and also a new toolbar
- * FreeCADGui.AddWorkbenchHandler("My workbench", 0)          # Creates an item for our workbenmch now, the second argument can be 0 as we don't
+ * FreeCADGui.addWorkbenchHandler("My workbench", 0)          # Creates an item for our workbenmch now, the second argument can be 0 as we don't
  *                                                            # need our own workbench handler.
  * \endcode
  */

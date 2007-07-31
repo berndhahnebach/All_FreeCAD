@@ -125,17 +125,17 @@ class TestWorkbenchCmd:
     def Activated(self):
         i=0
         while (i<20):
-            FreeCADGui.ActivateWorkbench("Mesh design")
-            FreeCADGui.UpdateGui()
-            FreeCADGui.ActivateWorkbench("<none>")
-            FreeCADGui.UpdateGui()
-            FreeCADGui.ActivateWorkbench("Part design")
-            FreeCADGui.UpdateGui()
-            FreeCADGui.ActivateWorkbench("Raytracing")
-            FreeCADGui.UpdateGui()
+            FreeCADGui.activateWorkbench("Mesh design")
+            FreeCADGui.updateGui()
+            FreeCADGui.activateWorkbench("<none>")
+            FreeCADGui.updateGui()
+            FreeCADGui.activateWorkbench("Part design")
+            FreeCADGui.updateGui()
+            FreeCADGui.activateWorkbench("Raytracing")
+            FreeCADGui.updateGui()
             print i
             i=i+1
-        FreeCADGui.ActivateWorkbench("Test framework")
+        FreeCADGui.activateWorkbench("Test framework")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
@@ -178,15 +178,15 @@ class TestInsertFeatureCmd:
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-FreeCADGui.AddCommand('Test_Test'        ,TestCmd())
-FreeCADGui.AddCommand('Test_TestAllText' ,TestAllTextCmd())
-FreeCADGui.AddCommand('Test_TestDocText' ,TestDocTextCmd())
-FreeCADGui.AddCommand('Test_TestBaseText',TestBaseTextCmd())
-FreeCADGui.AddCommand('Test_TestAll'     ,TestAllCmd())
-FreeCADGui.AddCommand('Test_TestDoc'     ,TestDocCmd())
-FreeCADGui.AddCommand('Test_TestBase'    ,TestBaseCmd())
-FreeCADGui.AddCommand('Test_TestWork'    ,TestWorkbenchCmd())
-FreeCADGui.AddCommand('Test_TestCreateMenu'    ,TestCreateMenuCmd())
-FreeCADGui.AddCommand('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
-FreeCADGui.AddCommand('Test_InsertFeature'    ,TestInsertFeatureCmd())
+FreeCADGui.addCommand('Test_Test'        ,TestCmd())
+FreeCADGui.addCommand('Test_TestAllText' ,TestAllTextCmd())
+FreeCADGui.addCommand('Test_TestDocText' ,TestDocTextCmd())
+FreeCADGui.addCommand('Test_TestBaseText',TestBaseTextCmd())
+FreeCADGui.addCommand('Test_TestAll'     ,TestAllCmd())
+FreeCADGui.addCommand('Test_TestDoc'     ,TestDocCmd())
+FreeCADGui.addCommand('Test_TestBase'    ,TestBaseCmd())
+FreeCADGui.addCommand('Test_TestWork'    ,TestWorkbenchCmd())
+FreeCADGui.addCommand('Test_TestCreateMenu'    ,TestCreateMenuCmd())
+FreeCADGui.addCommand('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
+FreeCADGui.addCommand('Test_InsertFeature'    ,TestInsertFeatureCmd())
 

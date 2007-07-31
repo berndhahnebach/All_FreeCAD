@@ -35,8 +35,8 @@ class TestWorkbench ( Workbench ):
 			Log ('Loading GUI of Test module...\n')
 			import TestGui
 			w=0
-			if Gui.HasWorkbench('Test framework') == False:
-				w = Gui.CreateWorkbench('Test framework')
+			if Gui.hasWorkbench('Test framework') == False:
+				w = Gui.createWorkbench('Test framework')
 
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
 				w.appendToolbar("TestTools",list)
@@ -101,4 +101,4 @@ class TestWorkbench ( Workbench ):
 			"\"................\",\n"
 			"\"................\"};\n"]
 
-Gui.AddWorkbenchHandler("Test framework",TestWorkbench())
+Gui.addWorkbenchHandler("Test framework",TestWorkbench())

@@ -189,7 +189,6 @@ public:
   PYFUNCDEF_S(sopen);                     // open Python scripts
   PYFUNCDEF_S(sinsert);                   // open Python scripts
 
-  PYFUNCDEF_S(sdocument);                 // deprecated (use activeDocument or getDocument(<string>) instead)
   PYFUNCDEF_S(sActiveDocument);
   PYFUNCDEF_S(sGetDocument);
 

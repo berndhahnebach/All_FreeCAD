@@ -46,59 +46,109 @@ using namespace Gui;
 
 // FCApplication Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-  {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1},
-  {"RemoveWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1},
-  {"GetWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1},
-  {"ListWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1},
-  {"CreateWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1},
-  {"ActiveWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1},
-  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1},
-  {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1},
-  {"GetWorkbench",            (PyCFunction) Application::sGetWorkbench,            1},
-  {"HasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1},
-  {"addIconPath",             (PyCFunction) Application::sAddIconPath,             1},
-  {"UpdateGui",               (PyCFunction) Application::sUpdateGui,               1},
-  {"CreateDialog",            (PyCFunction) Application::sCreateDialog,            1},
-  {"AddCommand",              (PyCFunction) Application::sAddCommand,              1},
-  {"RunCommand",              (PyCFunction) Application::sRunCommand,              1},
-  {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1},
-  {"hide",                    (PyCFunction) Application::shide,                    1},
-  {"show",                    (PyCFunction) Application::sshow,                    1},
-  {"open",                    (PyCFunction) Application::sopen,                    1},
-  {"insert",                  (PyCFunction) Application::sinsert,                  1},
-  {"document",                (PyCFunction) Application::sdocument,                1},
-  {"activeDocument",          (PyCFunction) Application::sActiveDocument,          1},
-  {"getDocument",             (PyCFunction) Application::sGetDocument,             1},
+  {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
+   "deprecated -- use addWorkbenchHandler"},
+  {"addWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
+   "addWorkbenchHandler(string, object) -> None\n\n"
+   "Add a workbench handler under a defined name."},
+  {"RemoveWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1,
+   "deprecated -- use RemoveWorkbenchHandler"},
+  {"removeWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1,
+   "removeWorkbenchHandler(string) -> None\n\n"
+   "Remove the workbench handler with name"},
+  {"GetWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
+   "deprecated -- use getWorkbenchHandler"},
+  {"getWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
+   "getWorkbenchHandler(string) -> object\n\n"
+   "Get the workbench handler by its name"},
+  {"ListWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1,
+   "deprecated -- use listWorkbenchHandlers"},
+  {"listWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1,
+   "listWorkbenchHandlers() -> list\n\n"
+   "Show a list of all workbench handlers"},
+  {"CreateWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1,
+   "deprecated -- use createWorkbench"},
+  {"createWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1,
+   "createWorkbench(string, [string]) -> object\n\n"
+   "Create a workbench with name of type"},
+  {"ActiveWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1,
+   "deprecated -- use activeWorkbench"},
+  {"activeWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1,
+   "activeWorkbench() -> object\n\n"
+   "Return the active workbench object"},
+  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1,
+   "deprecated -- activateWorkbench"},
+  {"activateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1,
+   "activateWorkbench(string) -> None\n\n"
+   "Activate the workbench with name"},
+  {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
+   "deprecated -- use listWorkbenches"},
+  {"listWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
+   "listWorkbenches() -> list\n\n"
+   "Show a list of all workbenches"},
+  {"GetWorkbench",            (PyCFunction) Application::sGetWorkbench,            1,
+   "deprecated -- use getWorkbench"},
+  {"getWorkbench",            (PyCFunction) Application::sGetWorkbench,            1,
+   "getWorkbench(string) -> object\n\n"
+   "Get a workbench by its name"},
+  {"HasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1,
+   "deprecated -- use hasWorkbench"},
+  {"hasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1,
+   "hasWorkbench(string) -> bool\n\n"
+   "Check if the workbench with name exists"},
+  {"addIconPath",             (PyCFunction) Application::sAddIconPath,             1,
+   "addIconPath(string) -> None\n\n"
+   "Add a new path to the system where to find icon files"},
+  {"UpdateGui",               (PyCFunction) Application::sUpdateGui,               1,
+   "deprecated -- use updateGui"},
+  {"updateGui",               (PyCFunction) Application::sUpdateGui,               1,
+   "updateGui() -> None\n\n"
+   "Update the main window and all its windows"},
+  {"CreateDialog",            (PyCFunction) Application::sCreateDialog,            1,
+   "deprecated -- use createDialog"},
+  {"createDialog",            (PyCFunction) Application::sCreateDialog,            1,
+   "createDialog(string) -- Open a UI file"},
+  {"AddCommand",              (PyCFunction) Application::sAddCommand,              1,
+   "deprecated -- use addCommand"},
+  {"addCommand",              (PyCFunction) Application::sAddCommand,              1,
+   "addCommand(string, object) -> None\n\n"
+   "Add a command object"},
+  {"RunCommand",              (PyCFunction) Application::sRunCommand,              1,
+   "deprecated -- use runCommand"},
+  {"runCommand",              (PyCFunction) Application::sRunCommand,              1,
+   "runCommand(string) -> None\n\n"
+   "Run command with name"},
+  {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1,
+   "deprecated -- use class View"},
+  {"hide",                    (PyCFunction) Application::shide,                    1,
+   "deprecated"},
+  {"show",                    (PyCFunction) Application::sshow,                    1,
+   "deprecated"},
+  {"open",                    (PyCFunction) Application::sopen,                    1,
+   "Open a macro, Inventor or VRML file"},
+  {"insert",                  (PyCFunction) Application::sinsert,                  1,
+   "Open a macro, Inventor or VRML file"},
+  {"activeDocument",          (PyCFunction) Application::sActiveDocument,          1,
+   "activeDocument() -> object or None\n\n"
+   "Return the active document or None if no one exists"},
+  {"getDocument",             (PyCFunction) Application::sGetDocument,             1,
+   "getDocument(string) -> object\n\n"
+   "Get a document by its name"},
 
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(Application,sdocument)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  Document *pcDoc =  Instance->activeDocument();
-  if (pcDoc)
-  {
-    return pcDoc->getPyObject();
-  }
-    
-  Py_Return;
-} 
-
 PYFUNCIMP_S(Application,sActiveDocument)
 {
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
 
-  Document *pcDoc =  Instance->activeDocument();
-  if (pcDoc) {
-	  return pcDoc->getPyObject();
-  }else{
-  	PyErr_SetString(PyExc_Exception, "No active document");
-	  return 0L;
-  }
+    Document *pcDoc =  Instance->activeDocument();
+    if (pcDoc) {
+	    return pcDoc->getPyObject();
+    } else {
+        Py_Return;
+    }
 } 
 
 PYFUNCIMP_S(Application,sGetDocument)

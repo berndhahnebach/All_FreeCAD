@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport Father="PyObjectBase" Name="DocumentPy" Twin="Document" Namespace="Gui" FatherInclude="../Base/PyObjectBase.h" FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <UserDocu>This is a Document class</UserDocu>
+    </Documentation>
+    <Methode Name="show">
+      <Documentation>
+        <UserDocu>Show the object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="hide">
+      <Documentation>
+        <UserDocu>Hide the object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="setPos">
+      <Documentation>
+        <UserDocu>Set the position</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="addAnnotation">
+      <Documentation>
+        <UserDocu>Add an Inventor object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="update">
+      <Documentation>
+        <UserDocu>Update the view representations of all objects</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="activeObject">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="getObject">
+      <Documentation>
+        <UserDocu>Return the object with the given name</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="activeView">
+      <Documentation>
+        <UserDocu>Get the acive view</UserDocu>
+      </Documentation>
+    </Methode>
+  </PythonExport>
+</GenerateModel>

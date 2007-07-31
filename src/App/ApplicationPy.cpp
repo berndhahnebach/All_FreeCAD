@@ -54,7 +54,7 @@ using namespace App;
 PyMethodDef Application::Methods[] = {
   {"ParamGet",       (PyCFunction) Application::sGetParam,       1},
   {"Version",        (PyCFunction) Application::sGetVersion,     1,
-   "Print the version into the output."},
+   "Print the version to the output."},
   {"ConfigGet",      (PyCFunction) Application::sGetConfig,      1,
    "ConfigGet([string]) -- Get the value for the given key.\n"
    "If no key is given the complete configuration is dumped to\n"
@@ -69,8 +69,8 @@ PyMethodDef Application::Methods[] = {
 
   {"open",   (PyCFunction) Application::sOpenDocument,   1},
   {"openDocument",   (PyCFunction) Application::sOpenDocument,   1,
-   "openDocument(string) -- Create a document and load the project file into\n"
-   "the document.\n"
+   "openDocument(string) -> object\n\n"
+   "Create a document and load the project file into the document.\n"
    "The string argument must point to an existing file. If the file doesn't exist\n"
    "or the file cannot be loaded an I/O exception is thrown. In this case the\n"
    "document is kept alive."},
@@ -78,18 +78,25 @@ PyMethodDef Application::Methods[] = {
 //   "saveDocument(string) -- Save the document to a file."},
 //  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
   {"newDocument",    (PyCFunction) Application::sNewDocument,    1, 
-   "newDocument([string]) -- Create a new document with a given name.\n"
-   "The document name must be unique which is checked automatically"},
+   "newDocument([string]) -> object\n\n"
+   "Create a new document with a given name.\n"
+   "The document name must be unique which\n"
+   "is checked automatically."},
   {"closeDocument",  (PyCFunction) Application::sCloseDocument,  1,
-   "closeDocument(string) -- Close the document with a given name."},
+  "closeDocument(string) -> None\n\n"
+  "Close the document with a given name."},
   {"activeDocument", (PyCFunction) Application::sActiveDocument, 1,
-   "Return or the active document or None if there is no one."},
+   "activeDocument() -> object or None\n\n"
+   "Return the active document or None if there is no one."},
   {"setActiveDocument",(PyCFunction) Application::sSetActiveDocument, 1,
-   "setActiveDocement(string) -- Set the active document by its name."},
+   "setActiveDocement(string) -> None\n\n"
+   "Set the active document by its name."},
   {"getDocument",    (PyCFunction) Application::sGetDocument,    1,
-   "getDocument(string) -- Get a document by its name or raise an exception\n"
+   "getDocument(string) -> object\n\n"
+   "Get a document by its name or raise an exception\n"
    "if there is no document with the given name."},
   {"listDocuments",  (PyCFunction) Application::sListDocuments  ,1,
+   "listDocuments() -> list\n\n"
    "Return a list of names of all documents."},
 
   {NULL, NULL}		/* Sentinel */

@@ -85,8 +85,8 @@ void CmdMeshTransform::activated(int iMsg)
   std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.document().addObject(\"Mesh::Transform\",\"%s\")",fName.c_str());
-  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Transform\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   commitCommand(); 
  
@@ -126,8 +126,8 @@ void CmdMeshDemolding::activated(int iMsg)
   std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.document().addObject(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
-  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.activeDocument().addObject(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   commitCommand(); 
  
@@ -176,9 +176,9 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
     "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mb.scale(100.0)\n"
-    "App.document().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
-    "App.document().MeshBox.Mesh=mb\n"
-    "App.document().recompute()" );
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
+    "App.activeDocument().MeshBox.Mesh=mb\n"
+    "App.activeDocument().recompute()" );
 
   doCommand(Gui,"Gui.activeDocument().activeView().fitAll()");
   commitCommand();
@@ -229,8 +229,8 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
-    "App.document().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
-    "App.document().MeshTool.Mesh=mt\n");
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
+    "App.activeDocument().MeshTool.Mesh=mt\n");
 
   commitCommand();
  
@@ -266,12 +266,12 @@ void CmdMeshExMakeUnion::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m1 = App.document().MeshBox.Mesh\n"
-    "m2 = App.document().MeshTool.Mesh\n"
+    "m1 = App.activeDocument().MeshBox.Mesh\n"
+    "m2 = App.activeDocument().MeshTool.Mesh\n"
     "m3 = m1.copy()\n"
     "m3.unite(m2)\n"
-    "App.document().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
-    "App.document().MeshUnion.Mesh=m3\n");
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
+    "App.activeDocument().MeshUnion.Mesh=m3\n");
  
   updateActive();
 
@@ -327,7 +327,7 @@ void CmdMeshImport::activated(int iMsg)
     fi.setFile(*it);
 
     openCommand("Import Mesh");
-    doCommand(Doc,"f = App.document().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toAscii());
     commitCommand();
     updateActive();
@@ -386,10 +386,10 @@ void CmdMeshExport::activated(int iMsg)
 
     QFileInfo fi; fi.setFile(fn);
     openCommand("Mesh ExportSTL Create");
-    doCommand(Doc,"f = App.document().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     doCommand(Doc,"f.Format = \"%s\"",(const char*)format.toAscii());
-    doCommand(Doc,"f.Source = App.document().%s",docObj->name.getValue());
+    doCommand(Doc,"f.Source = App.activeDocument().%s",docObj->name.getValue());
     commitCommand();
     updateActive();
   }
@@ -542,9 +542,9 @@ void CmdMeshToolMesh::activated(int iMsg)
     doCommand(Doc, "import Mesh");
     doCommand(Gui, "import MeshGui");
     doCommand(Doc,
-      "App.document().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
-      "App.document().%s.Source = App.document().%s\n"
-      "App.document().%s.Tool = App.document().%s\n",
+      "App.activeDocument().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
+      "App.activeDocument().%s.Source = App.activeDocument().%s\n"
+      "App.activeDocument().%s.Tool = App.activeDocument().%s\n",
       fName.c_str(), fName.c_str(),  mesh->name.getValue(), fName.c_str(), tool->name.getValue() );
 
     commitCommand();
@@ -660,7 +660,7 @@ void CmdMeshHarmonizeNormals::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -697,7 +697,7 @@ void CmdMeshFlipNormals::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Flip Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -734,7 +734,7 @@ void CmdMeshFixDegenerations::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -771,7 +771,7 @@ void CmdMeshFixDuplicateFaces::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -808,7 +808,7 @@ void CmdMeshFixDuplicatePoints::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Remove duplicated points");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -845,7 +845,7 @@ void CmdMeshFixIndices::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -953,7 +953,7 @@ void CmdMeshFillupHoles::activated(int iMsg)
     fName += "_fill";
     fName = getUniqueObjectName(fName.c_str());
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FillHoles\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.FillupHolesOfLength = %d",fName.c_str(), FillupHolesOfLength);
   }
   commitCommand();
@@ -995,7 +995,7 @@ void CmdMeshRemoveComponents::activated(int iMsg)
     fName += "_rem_comps";
     fName = getUniqueObjectName(fName.c_str());
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::RemoveComponents\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.RemoveCompOfSize = %d",fName.c_str(), RemoveCompOfSize);
   }
   commitCommand();
