@@ -61,7 +61,7 @@ public:
 
 using namespace @self.module.Name@;
 
-PROPERTY_SOURCE(@self.module.Name@::Box, App::Feature)
+PROPERTY_SOURCE(@self.module.Name@::@self.feature.Name@, App::Feature)
 
 @self.feature.Name@::@self.feature.Name@()
 {

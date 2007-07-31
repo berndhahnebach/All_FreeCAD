@@ -49,6 +49,7 @@ libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $
 libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 
 libMeshGui_la_LIBADD   = \
+		-lboost_signals \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \

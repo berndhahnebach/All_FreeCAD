@@ -79,6 +79,10 @@ BUILT_SOURCES=\
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
+		DocumentPy.cpp \
+		PythonWorkbenchPy.cpp \
+		WorkbenchPy.cpp \
+		ViewProviderPy.cpp \
 		GuiInitScript.h
 
 libFreeCADGui_la_UI=\
@@ -109,6 +113,12 @@ libFreeCADGui_la_UI=\
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
 		DlgTreeWidget.ui
+
+libFreeCADGui_la_BUILT=\
+		DocumentPy.h \
+		PythonWorkbenchPy.h \
+		ViewProviderPy.h \
+		WorkbenchPy.h 
 
 libFreeCADGui_la_SOURCES=\
 		Action.cpp \
@@ -188,8 +198,7 @@ libFreeCADGui_la_SOURCES=\
 		DockWindowManager.h \
 		Document.cpp \
 		Document.h \
-		DocumentPy.cpp \
-		DocumentPy.h \
+		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		FileDialog.cpp \
 		FileDialog.h \
@@ -231,6 +240,7 @@ libFreeCADGui_la_SOURCES=\
 		PythonEditor.h \
 		PythonView.cpp \
 		PythonView.h \
+		PythonWorkbenchPyImp.cpp \
 		ReportView.cpp \
 		ReportView.h \
 		resource.cpp \
@@ -294,8 +304,7 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderFeature.h \
 		ViewProviderGeometryObject.cpp \
 		ViewProviderGeometryObject.h \
-		ViewProviderPy.cpp \
-		ViewProviderPy.h \
+		ViewProviderPyImp.cpp \
 		ViewProviderPythonFeature.cpp \
 		ViewProviderPythonFeature.h \
 		WaitCursor.cpp \
@@ -314,8 +323,7 @@ libFreeCADGui_la_SOURCES=\
 		WorkbenchFactory.h \
 		WorkbenchManager.cpp \
 		WorkbenchManager.h \
-		WorkbenchPy.cpp \
-		WorkbenchPy.h
+		WorkbenchPyImp.cpp 
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
@@ -323,6 +331,10 @@ EXTRA_DIST = \
 		Qt4All.h \
 		InventorAll.h \
 		FreeCADGuiInit.py \
+		DocumentPy.xml \
+		PythonWorkbenchPy.xml \
+		WorkbenchPy.xml \
+		ViewProviderPy.xml \
 		FreeCADGui.vcproj
 
 # the library search path.
@@ -334,6 +346,7 @@ libFreeCADGui_la_LIBADD   =\
 		propertyeditor/libpropertyeditor.la \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lboost_filesystem \
 		-lboost_signals \
 		-lFreeCADBase \
 		-lFreeCADApp
@@ -357,6 +370,9 @@ qrc_%.cpp: %.qrc
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $< $@
 
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
+
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
@@ -364,4 +380,5 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAG
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(libFreeCADGui_la_BUILT)
+

@@ -837,7 +837,7 @@ void MeshTopoAlgorithm::SplitNeighbourFacet(unsigned long ulFacetPos, unsigned s
 
   unsigned short uNSide = rclN.Side(rclF);
 
-  unsigned long uPtCnt = _rclMesh._aclPointArray.size();
+  //unsigned long uPtCnt = _rclMesh._aclPointArray.size();
   unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rPoint);
   unsigned long ulSize = _rclMesh._aclFacetArray.size();
 
