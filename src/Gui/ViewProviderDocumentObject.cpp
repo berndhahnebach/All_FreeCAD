@@ -344,21 +344,11 @@ bool ViewProviderDocumentObject::ifMaterialNewer(void) const
 
 void ViewProviderDocumentObject::update(void)
 {
-  //FIXME: Leads to problems when using time stamps. It's basically the same problem as desribed in 
-  //       AbstractFeature::mustExecute().
-  updateData();
-//  if(ifDataNewer())
-//  {
-//    updateData();
-//    
-//    calcData.setToActual();
-//  }
-//
-//  if(ifMaterialNewer())
-//  {
-////    setMatFromObject();
-//    calcMaterial.setToActual();
-//  }
+    // Hide the object temporarily to speed up the update
+    bool vis = this->isShow();
+    if (vis) hide();
+    updateData();
+    if (vis) show();
 }
 
 const char* ViewProviderDocumentObject::getDefaultDisplayMode() const

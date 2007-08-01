@@ -130,7 +130,7 @@ Document::~Document()
     delete _LpcViews.front();
 #endif
 
-  std::map<App::DocumentObject*,ViewProvider*>::iterator it;
+  std::map<App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
   std::map<std::string,ViewProvider*>::iterator it2;
@@ -159,12 +159,14 @@ Document::~Document()
 
 void Document::update(void)
 {
-  for(std::map<App::DocumentObject*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
-    It1->second->update();
-  for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
-    It2->second->update();
+    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
+    for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+         It1->second->update();
+    std::map<std::string,ViewProvider*>::const_iterator It2;
+    for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+         It2->second->update();
 
-  onUpdate();
+    onUpdate();
 }
 
 void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvider)
@@ -216,31 +218,33 @@ void Document::rmvAnotationViewProvider(const char* name)
 
 ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
 {
-  std::map<App::DocumentObject*,ViewProvider*>::const_iterator it = _ViewProviderMap.find( Feat );
-  return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
+    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
+    it = _ViewProviderMap.find( Feat );
+    return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
 
 ViewProvider *Document::getViewProviderByName(const char* name) const
 {
-  // first check on feature name
-  App::DocumentObject *pcFeat = getDocument()->getObject(name);
+    // first check on feature name
+    App::DocumentObject *pcFeat = getDocument()->getObject(name);
 
-  if(pcFeat)
-  {
-    std::map<App::DocumentObject*,ViewProvider*>::const_iterator it = _ViewProviderMap.find( pcFeat );
+    if (pcFeat)
+    {
+        std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
+        it = _ViewProviderMap.find( pcFeat );
 
-    if(it != _ViewProviderMap.end())
-      return it->second;
-  }else {
-    // then try annotation name
-    std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnotation.find( name );
+        if (it != _ViewProviderMap.end())
+            return it->second;
+    } else {
+        // then try annotation name
+        std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnotation.find( name );
 
-    if(it2 != _ViewProviderMapAnotation.end())
-      return it2->second;
-  }
+        if (it2 != _ViewProviderMapAnotation.end())
+            return it2->second;
+    }
 
-  return 0;
+    return 0;
 }
 
 
@@ -307,7 +311,6 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     try{
       // if succesfully created set the right name and calculate the view
       pcProvider->attach(&Obj);
-      pcProvider->setActiveMode();
     }catch(const Base::MemoryException& e){
       Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Obj.name.getValue(),e.what());
     }catch(Base::Exception &e){
@@ -365,11 +368,18 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
 }
 void Document::slotChangedObject(App::DocumentObject& Obj)
 {
-  Base::Console().Log("Document::slotChangedObject() called\n");
-  ViewProvider* vpInv = getViewProvider( &Obj );
-  if ( vpInv )
-    vpInv->update();
-
+    Base::Console().Log("Document::slotChangedObject() called\n");
+    ViewProvider* pcProvider = getViewProvider( &Obj );
+    if ( pcProvider ) {
+        pcProvider->update();
+        // The call of setActiveMode() must be delayed to wait until the associated
+        // document object is fully built, otherwise we run into strange effects
+        if (Obj.StatusBits.test(2)) {
+            Obj.StatusBits.reset(2);
+            if (pcProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+                dynamic_cast<ViewProviderDocumentObject*>(pcProvider)->setActiveMode();
+        }
+    }
 }
 
 /*
@@ -644,7 +654,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
   writer.Stream() << "<Document SchemaVersion=\"1\">" << endl;
 
-  std::map<App::DocumentObject*,ViewProvider*>::const_iterator it;
+  std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
   
   // writing the view provider names itself
   writer.incInd(); // indention for 'ViewProviderData Count'
@@ -689,38 +699,39 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
 void Document::createView(const char* sType) 
 {
-  QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
-  MDIView* pcView3D=0;
-  if(strcmp(sType,"View3DIv") == 0){
-//    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
-    pcView3D = new Gui::View3DInventor(this,getMainWindow());
+    QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
+    MDIView* pcView3D=0;
+    if (strcmp(sType,"View3DIv") == 0){
+        pcView3D = new Gui::View3DInventor(this,getMainWindow());
 
-    // add the selction node of the document
-    //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
+        // add the selction node of the document
+        //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
     
-    // attach the viewprovider
-    for(std::map<App::DocumentObject*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
-      ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
-    for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
-      ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
+        // attach the viewprovider
+        std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
+        for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+            ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
+        std::map<std::string,ViewProvider*>::const_iterator It2;
+        for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+            ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
 
-  }else /* if(strcmp(sType,"View3DOCC") == 0){
-    pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
-  }else*/
-  {
-    Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
-    return;
-  }
+    } else /* if(strcmp(sType,"View3DOCC") == 0){
+        pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
+    }else*/
+    {
+        Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
+        return;
+    }
 
-  const char* name = getDocument()->getName();
+    const char* name = getDocument()->getName();
 
-  QString aName = QString("%1 : %3").arg(name).arg(_iWinCount++);
+    QString aName = QString("%1 : %3").arg(name).arg(_iWinCount++);
 
 
-  pcView3D->setCaption(aName);
-  pcView3D->setIcon( FCIcon );
-  pcView3D->resize( 400, 300 );
-  getMainWindow()->addWindow(pcView3D);
+    pcView3D->setCaption(aName);
+    pcView3D->setIcon( FCIcon );
+    pcView3D->resize( 400, 300 );
+    getMainWindow()->addWindow(pcView3D);
 }
 
 void Document::attachView(Gui::BaseView* pcView, bool bPassiv)
