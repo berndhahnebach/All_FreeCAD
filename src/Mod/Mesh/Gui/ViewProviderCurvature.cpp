@@ -43,11 +43,14 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Feature.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCColorBar.h>
 #include <Gui/View3DInventorViewer.h>
+#include <Gui/ViewProviderFeature.h>
 
 #include <Mod/Mesh/App/Mesh.h>
 
@@ -59,7 +62,7 @@ using namespace MeshGui;
 using namespace std;
 
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, MeshGui::ViewProviderMesh)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, Gui::ViewProviderDocumentObject)
 
 ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 {
@@ -181,7 +184,6 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcHighlight);
 
   addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
 }
@@ -205,33 +207,29 @@ void ViewProviderMeshCurvature::updateData(void)
             pcColorBar->unref();
             pcColorBar = pcBar;
         }
-    }
 
-    // search for a linked object with a mesh property
-    std::map<std::string, App::Property*> Map;
-    App::PropertyLink* linkObject;
-    pcObject->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(App::PropertyLink::getClassTypeId())) {
-            linkObject = (App::PropertyLink*)it->second;
-            break;
+        // search for a linked object with a mesh property
+        std::map<std::string, App::Property*> Map;
+        App::PropertyLink* linkObject;
+        pcObject->getPropertyMap(Map);
+        for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+            if (it->second->getTypeId().isDerivedFrom(App::PropertyLink::getClassTypeId())) {
+                linkObject = (App::PropertyLink*)it->second;
+                break;
+            }
         }
+
+        assert(linkObject && linkObject->getValue());
+
+        // get the view provider of the associated mesh feature
+        App::Document& rDoc = pcObject->getDocument();
+        Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
+        Gui::ViewProviderFeature* view = (Gui::ViewProviderFeature*)pDoc->getViewProvider(linkObject->getValue());
+        SoGroup* sep = this->getRoot();
+        sep = (SoGroup*)sep->getChild(1); // an SoSwitch
+        sep = (SoGroup*)sep->getChild(0); // an SoGroup
+        sep->addChild(view->getHighlightNode());
     }
-
-    assert(linkObject && linkObject->getValue());
-
-    // search for a mesh property in the linked object
-    Mesh::PropertyMeshKernel* kernel=0;
-    linkObject->getValue()->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyMeshKernel::getClassTypeId())) {
-            kernel = (Mesh::PropertyMeshKernel*)it->second;
-            break;
-        }
-    }
-
-    assert(kernel);
-    createMesh(kernel->getValue());
 }
 
 SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const
@@ -362,6 +360,7 @@ bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3D
 {
   // handle mouse press events only
   bool ret = false;
+#if 0
   if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
     const int button = event->getButton();
@@ -437,6 +436,7 @@ bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3D
         Gui::getMainWindow()->setPaneText(1,"");
     }
   }
+#endif
 
   return ret;
 }

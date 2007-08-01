@@ -529,7 +529,7 @@ PyObject *TopoShapePy::exportIGES(PyObject *args)
 #endif
 
     // write iges file
-    //IGESControl_Controller::Init();
+    IGESControl_Controller::Init();
     IGESControl_Writer aWriter;
 
 #if 0

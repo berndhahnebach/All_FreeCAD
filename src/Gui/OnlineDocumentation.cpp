@@ -78,9 +78,9 @@ public:
 protected:
 	virtual int_type overflow(int_type v)
 	{
-    //does a re-allocation if needed
-    buffer.append((char)v);
-		return v;
+        //does a re-allocation if needed
+        buffer.append((char)v);
+        return v;
 	}
 
 private:
@@ -89,14 +89,16 @@ private:
 
 OnlineDocumentation::OnlineDocumentation()
 {
-  // store the listed files in a stringlist
-  std::string path = App::GetApplication().GetHomePath();
-  path += "/doc/docs.zip";
-  zipios::ZipFile zip(path);
-  zipios::ConstEntries entries = zip.entries();
-  for (zipios::ConstEntries::iterator it = entries.begin(); it != entries.end(); ++it) {
-    this->files.push_back((*it)->getFileName().c_str());
-  }
+    // store the listed files in a stringlist
+    std::string path = App::GetApplication().GetHomePath();
+    path += "/doc/docs.zip";
+    zipios::ZipFile zip(path);
+    if (zip.isValid()) {
+        zipios::ConstEntries entries = zip.entries();
+        for (zipios::ConstEntries::iterator it = entries.begin(); it != entries.end(); ++it) {
+            this->files.push_back((*it)->getFileName().c_str());
+        }
+    }
 }
 
 OnlineDocumentation::~OnlineDocumentation()

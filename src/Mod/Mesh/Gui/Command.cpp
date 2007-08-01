@@ -430,11 +430,10 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     else
       doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
   }
 
+  commitCommand();
+  updateActive();
   getSelection().clearSelection();
 }
 

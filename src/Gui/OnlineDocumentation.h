@@ -38,18 +38,18 @@ namespace Gui {
  * the client to be displayed.
  * @author Werner Mayer
  */
-  class OnlineDocumentation : public QObject
+class OnlineDocumentation : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  OnlineDocumentation();
-  ~OnlineDocumentation();
+    OnlineDocumentation();
+    ~OnlineDocumentation();
 
-  QByteArray loadResource(const QString& filename) const;
+    QByteArray loadResource(const QString& filename) const;
 
 private:
-  QStringList files;
+    QStringList files;
 };
 
 /** 
@@ -60,19 +60,19 @@ class HttpServer : public QTcpServer
     Q_OBJECT
 
 public:
-  HttpServer(QObject* parent = 0);
+    HttpServer(QObject* parent = 0);
 
-  void incomingConnection(int socket);
-  void pause();
-  void resume();
+    void incomingConnection(int socket);
+    void pause();
+    void resume();
 
 private slots:
-  void readClient();
-  void discardClient();
+    void readClient();
+    void discardClient();
 
 private:
-  OnlineDocumentation help;
-  bool disabled;
+    OnlineDocumentation help;
+    bool disabled;
 };
 
 // --------------------------------------------------------------------
@@ -80,14 +80,14 @@ private:
 class StdCmdPythonHelp : public Command
 {
 public:
-  StdCmdPythonHelp();
-  ~StdCmdPythonHelp();
+    StdCmdPythonHelp();
+    ~StdCmdPythonHelp();
 
 protected:
-  void activated(int iMsg);
+    void activated(int iMsg);
 
 private:
-  HttpServer* server;
+    HttpServer* server;
 };
 
 // --------------------------------------------------------------------
