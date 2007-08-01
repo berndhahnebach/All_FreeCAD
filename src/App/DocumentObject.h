@@ -23,8 +23,8 @@
 
 
 
-#ifndef _DocumentObject_h_
-#define _DocumentObject_h_
+#ifndef APP_DOCUMENTOBJECT_H
+#define APP_DOCUMENTOBJECT_H
 
 #include <App/PropertyContainer.h>
 #include <App/PropertyStandard.h>
@@ -37,8 +37,8 @@
 
 namespace App
 {
-  class Document;
-  class DocumentObjectPy;
+class Document;
+class DocumentObjectPy;
 
 /** Base class of all Classes handled in the Document
  */
@@ -48,76 +48,72 @@ class AppExport DocumentObject: public App::PropertyContainer
 
 public:
 
-  PropertyString name;
+    PropertyString name;
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "";
-  }
-	/// Constructor
-	DocumentObject(void);
-  virtual ~DocumentObject();
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "";
+    }
+    /// Constructor
+    DocumentObject(void);
+    virtual ~DocumentObject();
 
-  App::Document &getDocument(void) const;
-  void setDocument(App::Document* doc);
+    App::Document &getDocument(void) const;
+    void setDocument(App::Document* doc);
 
-  /// returns the name which is set in the document for this object (not the Name propertie!)
-  const std::string &getNameInDocument(void) const;
+    /// returns the name which is set in the document for this object (not the Name propertie!)
+    const std::string &getNameInDocument(void) const;
 
-  /** Set the property touched -> changed, cause recomputation in Update()
-	 *
-	 */
-	//@{
-	//void TouchProperty(const char *Name);
-  /// set this feature touched (cause recomputation on depndend features)
-  bool isTouched(void) const {return StatusBits.test(0);}
-  /// set this feature touched (cause recomputation on depndend features)
-	void purgeTouched(void){StatusBits.reset(0);}
-  /// set this feature touched (cause recomputation on depndend features)
-	void touch(void);
-  /// set the view parameter of this feature touched (cause recomputation of representation)
-	void TouchView(void);
-  /// get the touch time
-  Base::TimeInfo getTouchTime(void) const {return touchTime;}
-  /// get the view touch time
-  Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
-	//@}
+    /** Set the property touched -> changed, cause recomputation in Update()
+     */
+    //@{
+    /// set this feature touched (cause recomputation on depndend features)
+    bool isTouched(void) const {return StatusBits.test(0);}
+    /// set this feature touched (cause recomputation on depndend features)
+    void purgeTouched(void){StatusBits.reset(0);}
+    /// set this feature touched (cause recomputation on depndend features)
+    void touch(void);
+    /// set the view parameter of this feature touched (cause recomputation of representation)
+    void TouchView(void);
+    /// get the touch time
+    Base::TimeInfo getTouchTime(void) const {return touchTime;}
+    /// get the view touch time
+    Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
+    //@}
 
-  /// set this feature to error 
-  bool isError(void) const {return StatusBits.test(1);}
-  /// remove the error from the object
-	void purgeError(void){StatusBits.reset(2);}
+    /// set this feature to error 
+    bool isError(void) const {return StatusBits.test(1);}
+    /// remove the error from the object
+    void purgeError(void){StatusBits.reset(1);}
 
 
-  /** Called in case of losing a link
-   * Get called by the document when a object got deleted a link property of this 
-   * object ist pointing to. The standard behaivour of the DocumentObject implementation 
-   * is to reset the links to nothing. You may overide this methode to implement 
-   *additional or different behavior.
-   */
-  virtual void onLoseLinkToObject(DocumentObject*);
-	virtual PyObject *getPyObject(void);
+    /** Called in case of losing a link
+     * Get called by the document when a object got deleted a link property of this 
+     * object ist pointing to. The standard behaivour of the DocumentObject implementation 
+     * is to reset the links to nothing. You may overide this methode to implement 
+     *additional or different behavior.
+     */
+    virtual void onLoseLinkToObject(DocumentObject*);
+    virtual PyObject *getPyObject(void);
 
-  std::bitset<16> StatusBits;
+    std::bitset<16> StatusBits;
 
 protected:
-  /// get called befor the value is changed
-  virtual void onBevorChange(const Property* prop);
-  /// get called by the container when a Proptery was changed
-  virtual void onChanged(const Property* prop);
+    /// get called befor the value is changed
+    virtual void onBevorChange(const Property* prop);
+    /// get called by the container when a Proptery was changed
+    virtual void onChanged(const Property* prop);
 
 
-  Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
+    Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
 
-  /// python object of this class and all descendend
-  Py::Object PythonObject;
-  /// pointer to the document this object belongs to
-  App::Document* _pDoc;
+    /// python object of this class and all descendend
+    Py::Object PythonObject;
+    /// pointer to the document this object belongs to
+    App::Document* _pDoc;
 };
-
 
 } //namespace App
 
 
-
-#endif
+#endif // APP_DOCUMENTOBJECT_H

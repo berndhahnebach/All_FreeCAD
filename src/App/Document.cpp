@@ -1079,43 +1079,37 @@ void Document::recomputeFeature(AbstractFeature* Feat)
 
 }
 
-
-
-
-
 DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 {
-  App::DocumentObject* pcObject = (App::DocumentObject*) Base::Type::createInstanceByName(sType,true);
+    App::DocumentObject* pcObject = (App::DocumentObject*) Base::Type::createInstanceByName(sType,true);
 
-
-  string ObjectName;
-
-	if(pcObject)
-	{
+    string ObjectName;
+    if (!pcObject)
+        return 0;
     if (!pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()))
     {
-      delete pcObject;
-      char szBuf[200];
-      snprintf(szBuf, 200, "'%s' is not a document object type", sType);
-      throw Base::Exception(szBuf);
+        delete pcObject;
+        char szBuf[200];
+        snprintf(szBuf, 200, "'%s' is not a document object type", sType);
+        throw Base::Exception(szBuf);
     }
 
     pcObject->setDocument(this);
-     
+
     // Transaction stuff
     if(activTransaction)
-      activTransaction->addObjectNew(pcObject);
+        activTransaction->addObjectNew(pcObject);
     // Undo stuff
     if(activUndoTransaction)
-      activUndoTransaction->addObjectDel(pcObject);
+        activUndoTransaction->addObjectDel(pcObject);
 
     // get Unique name
     if(pObjectName)
-      ObjectName = getUniqueObjectName(pObjectName);
+        ObjectName = getUniqueObjectName(pObjectName);
     else
-      ObjectName = getUniqueObjectName(sType);
+        ObjectName = getUniqueObjectName(sType);
 
-		pActiveObject = pcObject;
+    pActiveObject = pcObject;
 
     // insert in the name map
     ObjectMap[ObjectName] = pcObject;
@@ -1126,15 +1120,12 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
     pcObject->name.setValue( ObjectName );
 
-    // send the signal
+    // mark the object as new (i.e. set status bit 2) and send the signal
+    pcObject->StatusBits.set(2);
     signalNewObject(*pcObject);
-	
+
     // return the Object
-		return pcObject;
-
-	}else 
-    return 0;
-
+    return pcObject;
 }
 
 void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)

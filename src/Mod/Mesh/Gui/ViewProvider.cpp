@@ -71,17 +71,14 @@
 
 
 using namespace MeshGui;
-using Mesh::Feature;
 
-using MeshCore::MeshAlgorithm;
+using Mesh::Feature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshPointIterator;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
-using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
-using MeshCore::MeshEvalSolid;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
@@ -280,7 +277,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
   {
     pcMeshCoord->point.set1Value( cPIt.Position(), cPIt->x, cPIt->y, cPIt->z );
   }
-  // enable notofication again
+  // enable notification again
   pcMeshCoord->enableNotify(true);
 
   // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
@@ -301,7 +298,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     pcMeshFaces->coordIndex.set1Value(4*j+3, SO_END_FACE_INDEX);
     Base::Sequencer().next( false ); // don't allow to cancel
   }
-  // enable notofication again
+  // enable notification again
   pcMeshFaces->coordIndex.enableNotify(true);
 
   pcMeshCoord->touch();
@@ -369,9 +366,6 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   pcHiddenLineRoot->addChild(wirehints);
   pcHiddenLineRoot->addChild(pcWireRoot);
   addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
-
-  // create the mesh core nodes
-  updateData();
 }
 
 void ViewProviderMesh::updateData(void)

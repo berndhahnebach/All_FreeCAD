@@ -164,7 +164,6 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 {
   // creats the satandard viewing modes
   inherited::attach(pcFeat);
-  init( pcFeat ); // init color bar
 
   SoShapeHints * flathints = new SoShapeHints;
   flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
@@ -185,27 +184,29 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   pcColorShadedRoot->addChild(pcHighlight);
 
   addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
-
-  // Check for an already existing color bar
-  Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
-  if ( pcBar )
-  {
-    float fMin = pcColorBar->getMinValue();
-    float fMax = pcColorBar->getMaxValue();
-    
-    // Attach to the foreign color bar and delete our own bar
-    pcBar->Attach(this);
-    pcBar->ref();
-    pcBar->setRange(fMin, fMax, 3);
-    pcBar->Notify(0);
-    pcColorBar->Detach(this);
-    pcColorBar->unref();
-    pcColorBar = pcBar;
-  }
 }
 
 void ViewProviderMeshCurvature::updateData(void)
 {
+    if (pcObject->StatusBits.test(2)) {
+        init( pcObject ); // init color bar
+        // Check for an already existing color bar
+        Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
+        if ( pcBar ) {
+            float fMin = pcColorBar->getMinValue();
+            float fMax = pcColorBar->getMaxValue();
+    
+            // Attach to the foreign color bar and delete our own bar
+            pcBar->Attach(this);
+            pcBar->ref();
+            pcBar->setRange(fMin, fMax, 3);
+            pcBar->Notify(0);
+            pcColorBar->Detach(this);
+            pcColorBar->unref();
+            pcColorBar = pcBar;
+        }
+    }
+
     // search for a linked object with a mesh property
     std::map<std::string, App::Property*> Map;
     App::PropertyLink* linkObject;
