@@ -88,6 +88,8 @@ public:
 	PYFUNCDEF_D (TopoShapePy,importBREP);
 	PYFUNCDEF_D (TopoShapePy,exportBREP);
 	PYFUNCDEF_D (TopoShapePy,exportSTL);
+	PYFUNCDEF_D (TopoShapePy,offset);
+	PYFUNCDEF_D (TopoShapePy,cut);
 
   TopoDS_Shape &getShape(void){return _cTopoShape;}
 

@@ -234,7 +234,7 @@ createTestBSPLINE(PyObject *self, PyObject *args)
     VMults.SetValue(2,4);
 
 
-    // 
+    // Creating the BSpline Surface
     Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
                                       Poles,        // const TColgp_Array2OfPnt &  	 Poles,
 	                                    UKnots,       // const TColStd_Array1OfReal &  	UKnots,

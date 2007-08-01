@@ -48,6 +48,9 @@
 #include <Base/Sequencer.h>
 #include "TopologyPy.h"
 
+# include <BRepOffsetAPI_MakeOffsetShape.hxx>
+# include <BRepAlgoAPI_Cut.hxx>
+
 using Base::Console;
 
 using namespace Part;
@@ -128,6 +131,8 @@ PyMethodDef TopoShapePy::Methods[] = {
   {"importBREP",       (PyCFunction) simportBREP,       Py_NEWARGS},
   {"exportBREP",       (PyCFunction) sexportBREP,       Py_NEWARGS},
   {"exportSTL",        (PyCFunction) sexportSTL,        Py_NEWARGS},
+  {"offset",           (PyCFunction) soffset,           Py_NEWARGS},
+  {"cut"   ,           (PyCFunction) scut,              Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -704,4 +709,47 @@ PyObject *TopoShapePy::exportSTL(PyObject *args)
   } PY_CATCH;
 
   Py_Return; 
+}
+
+PyObject *TopoShapePy::offset(PyObject *args)
+{
+  float offset;
+  if (!PyArg_ParseTuple(args, "f", &offset ))
+    return NULL;
+
+  PY_TRY {
+    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (_cTopoShape,offset,0.001,BRepOffset_Skin );
+
+    if(MakeOffsetShape.IsDone())
+      return new TopoShapePy(MakeOffsetShape.Shape());
+    else {
+      PyErr_SetString(PyExc_Exception,"Offset failed");
+      return NULL;
+    }
+
+	  
+  } PY_CATCH;
+
+}
+
+PyObject *TopoShapePy::cut(PyObject *args)
+{
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj);
+
+  PY_TRY {
+   	// Let's call for algorithm computing a cut operation:
+  	BRepAlgoAPI_Cut mkCut(_cTopoShape, pcShape->getShape());
+	  // Let's check if the Cut has been successfull:
+	  if (!mkCut.IsDone()) {
+      PyErr_SetString(PyExc_Exception,"Cut failed");
+      return NULL;
+    } else
+      return new TopoShapePy( mkCut.Shape());
+	  
+  } PY_CATCH;
+
 }
