@@ -190,16 +190,49 @@ read(PyObject *self, PyObject *args)
 static PyObject *                        
 createTestBSPLINE(PyObject *self, PyObject *args)
 {
-  const char* Name;
+  //const char* Name;
   if (! PyArg_ParseTuple(args, ""))			 
     return NULL;                         
 
   PY_TRY {
     TColgp_Array2OfPnt Poles(1,4,1,4);
-    TColStd_Array1OfReal UKnots(1,4);
-    TColStd_Array1OfReal VKnots(1,4);
-    TColStd_Array1OfInteger 	UMults(1,4);
-    TColStd_Array1OfInteger 	VMults(1,4);
+    // [0,0,0, 1,0,0, 2,0,0, 3,0,0,
+    //  0,1,0, 1,1,2, 2,1,2, 3,1,0,
+    //  0,2,0, 1,2,2, 2,2,2, 3,2,0,
+    //  0,3,0, 1,3,0, 2,3,0, 3,3,0],
+    Poles.SetValue(1,1,gp_Pnt(0,0,0));
+    Poles.SetValue(2,1,gp_Pnt(1,0,0));
+    Poles.SetValue(3,1,gp_Pnt(2,0,0));
+    Poles.SetValue(4,1,gp_Pnt(3,0,0));
+    Poles.SetValue(1,2,gp_Pnt(0,1,0));
+    Poles.SetValue(2,2,gp_Pnt(1,1,2));
+    Poles.SetValue(3,2,gp_Pnt(2,1,2));
+    Poles.SetValue(4,2,gp_Pnt(3,1,0));
+    Poles.SetValue(1,3,gp_Pnt(0,2,0));
+    Poles.SetValue(2,3,gp_Pnt(1,2,2));
+    Poles.SetValue(3,3,gp_Pnt(2,2,2));
+    Poles.SetValue(4,3,gp_Pnt(3,2,0));
+    Poles.SetValue(1,4,gp_Pnt(0,3,0));
+    Poles.SetValue(2,4,gp_Pnt(1,3,0));
+    Poles.SetValue(3,4,gp_Pnt(2,3,0));
+    Poles.SetValue(4,4,gp_Pnt(3,3,0));
+
+    TColStd_Array1OfReal UKnots(1,2);
+    UKnots.SetValue(1,0);
+    UKnots.SetValue(2,1);
+
+    TColStd_Array1OfReal VKnots(1,2);
+    VKnots.SetValue(1,0);
+    VKnots.SetValue(2,1);
+
+    TColStd_Array1OfInteger 	UMults(1,2);
+    UMults.SetValue(1,4);
+    UMults.SetValue(2,4);
+
+    TColStd_Array1OfInteger 	VMults(1,2);
+    VMults.SetValue(1,4);
+    VMults.SetValue(2,4);
+
 
     // 
     Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
