@@ -189,7 +189,7 @@ void StdCmdFreezeViews::activated(int iMsg)
     QString file = FileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save frozen views"), QString(), QObject::tr("Frozen views (*.cam)"));
     if (file.isEmpty())
         return;
-    std::ofstream str( file.latin1(), std::ios::out );
+    std::ofstream str( file.toLatin1(), std::ios::out );
     if ( str && str.is_open() )
     {
       QList<QAction*> acts = pcAction->actions();      
@@ -205,14 +205,14 @@ void StdCmdFreezeViews::activated(int iMsg)
         // remove the first line because it's a comment like '#Inventor V2.1 ascii'
         QString viewPos="";
         if ( !data.isEmpty() ) {
-          QStringList lines = QStringList::split("\n", data);
+          QStringList lines = data.split("\n");
           if ( lines.size() > 1 ) {
             lines.pop_front();
             viewPos = lines.join(" ");
           }
         }
 
-        str << "    <Camera settings=\"" << viewPos.latin1() << "\"/>" << std::endl;
+        str << "    <Camera settings=\"" << (const char*)viewPos.toLatin1() << "\"/>" << std::endl;
       }
 
       str << "  </Views>" << std::endl;
@@ -232,8 +232,8 @@ void StdCmdFreezeViews::activated(int iMsg)
     QString file = FileDialog::getOpenFileName(getMainWindow(), QObject::tr("Restore frozen views"), QString(), QObject::tr("Frozen views (*.cam)"));
     if (file.isEmpty())
         return;
-    std::ifstream str( file.latin1(), std::ios::in | std::ios::binary );
-    Base::XMLReader xmlReader(file.latin1(), str);
+    std::ifstream str( file.toLatin1(), std::ios::in | std::ios::binary );
+    Base::XMLReader xmlReader(file.toLatin1(), str);
     xmlReader.readElement("FrozenViews");
     long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
     // SchemeVersion "1"
@@ -301,7 +301,7 @@ void StdCmdFreezeViews::activated(int iMsg)
     QList<QAction*> acts = pcAction->actions();
     QString data = acts[iMsg]->toolTip();
     QString send = QString("SetCamera %1").arg(data);
-    getGuiApplication()->sendMsgToActiveView(send.latin1());
+    getGuiApplication()->sendMsgToActiveView(send.toLatin1());
   }
 }
 
@@ -763,13 +763,13 @@ void StdViewScreenShot::activated(int iMsg)
     QString selFilter;
     for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
     {
-      filter << QString("%1 %2 (*.%3)").arg( (*it).upper() ).arg( QObject::tr("files") ).arg( (*it).lower() );
+      filter << QString("%1 %2 (*.%3)").arg((*it).toUpper()).arg(QObject::tr("files")).arg((*it).toLower());
     }
 
     FileOptionsDialog fd(getMainWindow(), 0);
     fd.setFileMode( QFileDialog::AnyFile );
     fd.setAcceptMode( QFileDialog::AcceptSave );
-    fd.setCaption( QObject::tr("Save picture") );
+    fd.setWindowTitle( QObject::tr("Save picture") );
     fd.setFilters( filter );
 
     // create the image options widget
@@ -784,7 +784,7 @@ void StdViewScreenShot::activated(int iMsg)
     if ( fd.exec() == QDialog::Accepted )
     {
       selFilter = fd.selectedFilter();
-      QString fn = fd.selectedFile();
+      QString fn = fd.selectedFiles().front();
       // We must convert '\' path separators to '/' before otherwise Python would interpret them as escape sequences.
       fn.replace('\\', '/');
 
@@ -798,7 +798,7 @@ void StdViewScreenShot::activated(int iMsg)
       QString format = formats.front(); // take the first as default
       for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
       {
-        if ( selFilter.startsWith( (*it).upper() ) )
+        if (selFilter.startsWith((*it).toUpper()))
         {
           format = *it;
           break;
@@ -820,11 +820,11 @@ void StdViewScreenShot::activated(int iMsg)
       {
         // Replace newline escape sequence trough '\\n' string to build one big string, otherwise Python would interpret it as an invalid command. 
         // Python does the decoding for us.
-        QStringList lines = QStringList::split("\n", comment, true );
+        QStringList lines = comment.split("\n", QString::KeepEmptyParts );
         QString text = lines.join("\\n");
-        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s','%s')",fn.latin1(),w,h,background,text.latin1());
+        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s','%s')",fn.toLatin1(),w,h,background,text.toLatin1());
       }else{
-        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s')",fn.latin1(),w,h,background);
+        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s')",fn.toLatin1(),w,h,background);
       }
     }
   }

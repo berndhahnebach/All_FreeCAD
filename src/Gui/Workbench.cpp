@@ -217,7 +217,7 @@ void Workbench::setName( const QString& name )
 
 ToolBarItem* Workbench::importCustomBars( const char* node ) const
 {
-  const char* szName = this->name().latin1();
+  const char* szName = (const char*)this->name().toLatin1();
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
   
   ToolBarItem* root = new ToolBarItem;
@@ -236,13 +236,13 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
       QString cmd = it2->first.c_str(); // command name
       cmd = cmd.mid(2);
       const char* mod = it2->second.c_str(); // module name
-      Command* pCmd = rMgr.getCommandByName( cmd );
+      Command* pCmd = rMgr.getCommandByName( (const char*)cmd.toAscii() );
       if ( !pCmd ) // unknown command
       {
         // try to find out the appropriate module name
         QString pyMod = QString("%1Gui").arg(mod);
         try{
-          Base::Interpreter().loadModule( pyMod.latin1() );
+          Base::Interpreter().loadModule((const char*)pyMod.toLatin1());
         }
         catch( const Base::Exception& ) {
         }
@@ -257,7 +257,7 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
 
 void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 {
-  const char* szName = this->name().latin1();
+  const char* szName = (const char*)this->name().toLatin1();
   CommandManager& rMgr = Application::Instance->commandManager();
 
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
@@ -267,18 +267,18 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 
   for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
   {
-    ParameterGrp::handle hSubGrp = hGrp->GetGroup( (*item)->command().latin1() );
+    ParameterGrp::handle hSubGrp = hGrp->GetGroup((const char*)(*item)->command().toLatin1());
     QList<ToolBarItem*> subitems = (*item)->getItems();
 
     int pos = 0;
     for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
     {
-      Command* pCmd = rMgr.getCommandByName( (*subitem)->command().latin1() );
+      Command* pCmd = rMgr.getCommandByName((const char*)(*subitem)->command().toLatin1());
       QString mod = "unknown";
       if ( pCmd )
         mod = pCmd->getAppModuleName();
-      QString key; key.sprintf("%.2d%s", pos++, (*subitem)->command().latin1() );
-      hSubGrp->SetASCII( key.latin1(), mod.latin1() );
+      QString key; key.sprintf("%.2d%s", pos++, (const char*)((*subitem)->command().toLatin1()));
+      hSubGrp->SetASCII((const char*)key.toLatin1(), (const char*)mod.toLatin1());
     }
   }
 }

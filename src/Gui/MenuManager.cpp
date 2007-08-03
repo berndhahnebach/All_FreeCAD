@@ -105,10 +105,10 @@ void MenuItem::appendItem( MenuItem* item )
 
 bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
 {
-  QList<MenuItem*>::Iterator it = _items.find( before );
-  if ( it != _items.end() )
+  int pos = _items.indexOf(before);
+  if (pos != -1)
   {
-    _items.insert( it, item );
+    _items.insert(pos, item);
     return true;
   }
   else
@@ -117,9 +117,9 @@ bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
 
 void MenuItem::removeItem( MenuItem* item )
 {
-  QList<MenuItem*>::Iterator it = _items.find( item );
-  if ( it != _items.end() )
-    _items.erase( it );
+  int pos = _items.indexOf(item);
+  if (pos != -1)
+    _items.removeAt(pos);
 }
 
 void MenuItem::clear()
@@ -195,7 +195,7 @@ void MenuManager::setup( MenuItem* menuBar ) const
     if ( (*it)->command() == "Separator" ) {
       bar->addSeparator();
     } else {
-      QMenu* menu = bar->addMenu(QObject::tr((*it)->command()));
+      QMenu* menu = bar->addMenu(QObject::tr((const char*)(*it)->command().toLatin1()));
       menu->setObjectName((*it)->command());
       setup(*it, menu);
     }
@@ -214,7 +214,7 @@ void MenuManager::setup( MenuItem* item, QMenu* menu ) const
   {
     if ( (*it)->hasItems() )
     {
-      QMenu* submenu = menu->addMenu(QObject::tr((*it)->command()));
+      QMenu* submenu = menu->addMenu(QObject::tr((const char*)(*it)->command().toLatin1()));
       submenu->setObjectName((*it)->command());
       setup( (*it), submenu );
     }
@@ -223,7 +223,7 @@ void MenuManager::setup( MenuItem* item, QMenu* menu ) const
       if ( (*it)->command() == "Separator" )
         menu->addSeparator();
       else
-        mgr.addTo( (*it)->command().latin1(), menu );
+        mgr.addTo((const char*)(*it)->command().toLatin1(), menu);
     }
   }
 }

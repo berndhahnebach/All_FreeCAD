@@ -82,7 +82,7 @@ void StdCmdDescription::setSource( const QString& src )
 void StdCmdDescription::enterDescriptionMode()
 {
   _descrMode = true;
-  QApplication::setOverrideCursor( Qt::WhatsThisCursor, false );
+  QApplication::setOverrideCursor(Qt::WhatsThisCursor);
 }
 
 void StdCmdDescription::leaveDescriptionMode()

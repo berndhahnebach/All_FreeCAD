@@ -200,7 +200,7 @@ void ActionGroup::addTo(QWidget *w)
   if ( _dropDown ) {
     if (w->inherits("QMenu")) {
       QMenu* menu = qobject_cast<QMenu*>(w);
-      menu = menu->addMenu(_action->menuText());
+      menu = menu->addMenu(_action->text());
       menu->addActions(_group->actions());
     } else if (w->inherits("QToolBar")) {
       w->addAction(_action);
@@ -336,7 +336,7 @@ void WorkbenchComboBox::onActivated(int i)
 
 void WorkbenchComboBox::onActivated(QAction* a)
 {
-  setCurrentItem(a->data().toInt());
+  setCurrentIndex(a->data().toInt());
 }
 
 WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
@@ -370,7 +370,7 @@ void WorkbenchGroup::addTo(QWidget *w)
   else if (w->inherits("QMenu"))
   {
     QMenu* menu = qobject_cast<QMenu*>(w);
-    menu = menu->addMenu(_action->menuText());
+    menu = menu->addMenu(_action->text());
     menu->addActions(_group->actions());
   }
 }

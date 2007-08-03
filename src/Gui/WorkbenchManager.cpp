@@ -57,7 +57,7 @@ WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
 WorkbenchManager::~WorkbenchManager()
 {
   for ( QMap<QString, Workbench*>::Iterator it = _workbenches.begin(); it != _workbenches.end(); ++it ) {
-    Workbench* wb = it.data();
+    Workbench* wb = it.value();
     delete wb;
   }
 
@@ -74,21 +74,22 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
   if ( !wb )
   {
     // try to create an instance now
-    wb = (Workbench*) Base::Type::createInstanceByName(className.latin1(),false);
+    wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toLatin1(),false);
     if ( wb )
     {
       if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId()))
       {
         delete wb;
         char szBuf[200];
-        snprintf(szBuf, 200, "'%s' is not a workbench type", className.latin1());
+        snprintf(szBuf, 200, "'%s' is not a workbench type", (const char*)className.toLatin1());
         throw Base::Exception(szBuf);
       }
 
       wb->setName( name );
       _workbenches[ name ] = wb;
     }else
-      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create Workbench instance with type: %s\n",className.latin1());
+      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "
+      "Workbench instance with type: %s\n",(const char*)className.toLatin1());
   }
   
   return wb;
@@ -102,7 +103,7 @@ Workbench* WorkbenchManager::getWorkbench ( const QString& name )
   if ( it != _workbenches.end() )
   {
     // returns the already created object
-    wb = it.data();
+    wb = it.value();
   }
   
   return wb;

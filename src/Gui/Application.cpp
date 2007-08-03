@@ -550,10 +550,10 @@ bool Application::activateWorkbench( const char* name )
       QRegExp rx;
       // ignore '<type 'exceptions.ImportError'>' prefixes
       rx.setPattern("^\\s*<type 'exceptions.ImportError'>:\\s*");
-      int pos = rx.search(msg);
+      int pos = rx.indexIn(msg);
       while ( pos != -1 ) {
         msg = msg.mid(rx.matchedLength());
-        pos = rx.search(msg);
+        pos = rx.indexIn(msg);
       }
 
       wc.restoreCursor();
@@ -649,13 +649,13 @@ QStringList Application::workbenches(void) const
   QStringList hidden, extra;
   if (ht != config.end()) { 
     QString items = ht->second.c_str();
-    hidden = QStringList::split(';', items, false);
+    hidden = items.split(';', QString::SkipEmptyParts);
     if (hidden.isEmpty())
       hidden.push_back("");
   }
   if (et != config.end()) { 
     QString items = et->second.c_str();
-    extra = QStringList::split(';', items, false);
+    extra = items.split(';', QString::SkipEmptyParts);
     if (extra.isEmpty())
       extra.push_back("");
   }
@@ -670,10 +670,10 @@ QStringList Application::workbenches(void) const
     // add only allowed workbenches
     bool ok = true;
     if (!extra.isEmpty()&&ok) {
-      ok = (extra.find(wbName) != extra.end());
+      ok = (extra.indexOf(wbName) != -1);
     }
     if (!hidden.isEmpty()&&ok) {
-      ok = (hidden.find(wbName) == hidden.end());
+      ok = (hidden.indexOf(wbName) == -1);
     }
     
     // okay the item is visible
@@ -881,7 +881,7 @@ void Application::runApplication(void)
                            GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str());
 
   // in case the user defined workbench is hidden then we take the default StartWorkbench 
-  if (visible.find(defWb.c_str()) == visible.end())
+  if (visible.indexOf(defWb.c_str()) == -1)
     defWb = start;
   app.activateWorkbench( defWb.c_str() );
 

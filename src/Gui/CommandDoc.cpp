@@ -91,10 +91,10 @@ void StdCmdOpen::activated(int iMsg)
     }
     formatList += QObject::tr(allFiles);
 
-    QStringList FileList = QFileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QDir::currentDirPath(), formatList );
+    QStringList FileList = QFileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QDir::currentPath(), formatList );
 
     for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
-        getGuiApplication()->open((*it).latin1());
+        getGuiApplication()->open((*it).toLatin1());
     }
 }
 
@@ -237,7 +237,7 @@ void StdCmdPrint::activated(int iMsg)
 {
   if ( getMainWindow()->activeWindow() )
   {
-    getMainWindow()->statusBar()->message("Printing...");
+    getMainWindow()->statusBar()->showMessage("Printing...");
     getMainWindow()->activeWindow()->print();
   }
 }
@@ -266,7 +266,7 @@ void StdCmdPrintPdf::activated(int iMsg)
 {
   if ( getMainWindow()->activeWindow() )
   {
-    getMainWindow()->statusBar()->message("Exporting PDF...");
+    getMainWindow()->statusBar()->showMessage("Exporting PDF...");
     getMainWindow()->activeWindow()->printPdf();
   }
 }

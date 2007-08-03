@@ -46,7 +46,7 @@ using namespace Gui::Dialog;
 DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent )
   : DlgCustomToolbars(parent)
 {
-  setCaption( tr( "Commandbars" ) );
+  setWindowTitle( tr( "Commandbars" ) );
   if ( WorkbenchManager::instance()->active() )
     _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Commandbars"); 
   refreshToolBarList();

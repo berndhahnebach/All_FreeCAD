@@ -38,8 +38,8 @@ DlgSettingsImageImp::DlgSettingsImageImp( QWidget* parent )
 {
   this->setupUi(this);
   SbVec2s res = SoOffscreenRenderer::getMaximumResolution();
-  spinWidth->setMaxValue((int)res[0]);
-  spinHeight->setMaxValue((int)res[1]);
+  spinWidth->setMaximum((int)res[0]);
+  spinHeight->setMaximum((int)res[1]);
 
   _width = width();
   _height = height();
@@ -115,12 +115,12 @@ QString DlgSettingsImageImp::comment() const
   if ( !textEditComment->isEnabled() )
     return QString::null;
   else
-    return textEditComment->text();
+    return textEditComment->toPlainText();
 }
 
 int DlgSettingsImageImp::backgroundType() const
 {
-  return comboBackground->currentItem();
+  return comboBackground->currentIndex();
 }
 
 void DlgSettingsImageImp::onSelectedFilter( const QString& filter )

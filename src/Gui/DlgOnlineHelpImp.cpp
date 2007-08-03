@@ -64,7 +64,7 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
     QString path = App::GetApplication().GetHomePath();
     path += "/doc/";
     QDir dir(path);
-    lineEditDownload->setFileName( dir.absPath() );
+    lineEditDownload->setFileName( dir.absolutePath() );
   }
 }
 

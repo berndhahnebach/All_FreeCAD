@@ -208,7 +208,7 @@ PYFUNCIMP_S(Application,sopen)
   PY_TRY {
     QFileInfo fi;
     fi.setFile(Name);
-    QString ext = fi.extension().lower();
+    QString ext = fi.completeSuffix().toLower();
     MDIView* view = getMainWindow()->getWindowWithCaption( Name );
     if ( view ) {
       view->setFocus();
@@ -216,8 +216,8 @@ PYFUNCIMP_S(Application,sopen)
     else if ( ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz" ) {
       if ( !Application::Instance->activeDocument() )
         App::GetApplication().newDocument();
-      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
-      Base::Interpreter().runString( cmd.ascii() );
+      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+      Base::Interpreter().runString( cmd.toAscii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
@@ -240,10 +240,10 @@ PYFUNCIMP_S(Application,sinsert)
   PY_TRY {
     QFileInfo fi;
     fi.setFile(Name);
-    QString ext = fi.extension().lower();
+    QString ext = fi.completeSuffix().toLower();
     if ( ext == "iv" || ext == "wrl" ) {
-      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
-      Base::Interpreter().runString( cmd.ascii() );
+      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+      Base::Interpreter().runString( cmd.toAscii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
@@ -410,7 +410,7 @@ PYFUNCIMP_S(Application,sListWorkbenches)
   int i=0;
   for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
   {
-    PyObject* str = PyString_FromString((*it).latin1());
+    PyObject* str = PyString_FromString((const char*)(*it).toLatin1());
     PyList_SetItem(pyList, i++, str);
   }
 

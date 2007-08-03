@@ -118,10 +118,9 @@ PyObject*  PythonWorkbenchPy::listMenus(PyObject *args)
         PyObject* pyList = PyList_New(menus.count());
         int i=0;
         for ( QStringList::Iterator it = menus.begin(); it != menus.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString( (*it).latin1() );
+            PyObject* str = PyString_FromString((const char*)(*it).toLatin1());
             PyList_SetItem(pyList, i, str);
         }
-    
         return pyList; 
     } PY_CATCH;
 }
@@ -219,7 +218,7 @@ PyObject*  PythonWorkbenchPy::listToolbars(PyObject *args)
         PyObject* pyList = PyList_New(bars.count());
         int i=0;
         for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString( (*it).latin1() );
+            PyObject* str = PyString_FromString((const char*)(*it).toLatin1());
             PyList_SetItem(pyList, i, str);
         }
         return pyList; 
@@ -277,7 +276,7 @@ PyObject*  PythonWorkbenchPy::listCommandbars(PyObject *args)
         PyObject* pyList = PyList_New(bars.count());
         int i=0;
         for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString( (*it).latin1() );
+            PyObject* str = PyString_FromString((const char*)(*it).toLatin1());
             PyList_SetItem(pyList, i, str);
         }
         return pyList; 

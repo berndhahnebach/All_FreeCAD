@@ -104,10 +104,10 @@ void ToolBarItem::appendItem( ToolBarItem* item )
 
 bool ToolBarItem::insertItem( ToolBarItem* before, ToolBarItem* item)
 {
-  QList<ToolBarItem*>::Iterator it = _items.find( before );
-  if ( it != _items.end() )
+  int pos = _items.indexOf(before);
+  if (pos != -1)
   {
-    _items.insert( it, item );
+    _items.insert(pos, item);
     return true;
   }
   else
@@ -116,9 +116,9 @@ bool ToolBarItem::insertItem( ToolBarItem* before, ToolBarItem* item)
 
 void ToolBarItem::removeItem( ToolBarItem* item )
 {
-  QList<ToolBarItem*>::Iterator it = _items.find( item );
-  if ( it != _items.end() )
-    _items.erase( it );
+  int pos = _items.indexOf(item);
+  if (pos != -1)
+    _items.removeAt(pos);
 }
 
 void ToolBarItem::clear()
@@ -192,7 +192,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
 
   for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) 
   {
-    QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((*item)->command())); // i18n
+    QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toLatin1()))); // i18n
     bar->setObjectName((*item)->command());
 
     QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -200,7 +200,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
       if ( (*subitem)->command() == "Separator" )
         bar->addSeparator();
       else
-        mgr.addTo( (*subitem)->command().latin1(), bar );
+        mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
     }
   }
   

@@ -57,26 +57,26 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
   layout->setSpacing( 6 );
   layout->setMargin( 0 );
 
-  buttonHelp = new QPushButton( this, "buttonHelp" );
+  buttonHelp = new QPushButton( this );
   buttonHelp->setText( tr( "&Help" ) );
   layout->addWidget( buttonHelp );
 
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   layout->addItem( spacer );
 
-  buttonClose = new QPushButton( this, "buttonCancel" );
+  buttonClose = new QPushButton( this );
   buttonClose->setText( tr( "&Close" ) );
   layout->addWidget( buttonClose );
 
   customLayout->addLayout( layout, 1, 0 );
 
-  tabWidget = new QTabWidget( this, "tabWidget" );
+  tabWidget = new QTabWidget( this );
 
   // make sure that pages are ready to create
   GetWidgetFactorySupplier();
   for ( QStringList::Iterator it = _pages.begin(); it!=_pages.end(); ++it )
   {
-    addPage( WidgetFactory().createWidget( *it ) );
+    addPage( WidgetFactory().createWidget( (*it).toLatin1() ) );
   }
 
   customLayout->addWidget( tabWidget, 0, 0 );
