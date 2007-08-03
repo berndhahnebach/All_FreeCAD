@@ -45,7 +45,8 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
   
   // paints for active and inactive the same color
   QPalette pal = listBoxCategory->palette();
-  pal.setInactive( pal.active() );
+  pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
+  pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
   listBoxCategory->setPalette( pal );
 
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
@@ -57,7 +58,7 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
   for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
     QString natv = it->second->getGroupName();
-    QString lang = QObject::tr(natv);
+    QString lang = QObject::tr(natv.toUtf8());
     if ( _cmdGroups.find( lang ) == _cmdGroups.end() )
       _cmdGroups[ lang ] = natv;
   }
@@ -65,10 +66,10 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
   // do a special sort before adding to the combobox
   QStringList items, tmp; tmp << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
   for ( QStringList::Iterator It = tmp.begin(); It != tmp.end(); ++It )
-    items << QObject::tr( *It );
+    items << QObject::tr( (*It).toUtf8() );
   for ( QMap<QString, QString>::Iterator it2 = _cmdGroups.begin(); it2 != _cmdGroups.end(); ++it2)
   {
-    if ( items.find( it2.key() ) == items.end() )
+    if ( !items.contains( it2.key() ) )
       items << it2.key();
   }
 
@@ -98,7 +99,7 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
   if ( It != _cmdGroups.end() )
   {
     CommandManager & cCmdMgr = Application::Instance->commandManager();
-    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
+    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.value().toLatin1() );
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
       QPixmap pix;

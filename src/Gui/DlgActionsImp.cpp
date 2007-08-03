@@ -60,7 +60,7 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent )
     GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().GetHomePath());
 
   QDir d(cMacroPath.c_str(),"*.FCMacro");
-  actionMacros->insertStringList(d.entryList());
+  actionMacros->insertItems(0, d.entryList());
 
   showActions();
 }
@@ -141,7 +141,7 @@ void DlgCustomActionsImp::on_listBoxActions_highlighted( Q3ListBoxItem *i )
   // search for the command in the manager and if necessary in the temporary created ones
   QString actionName = i->text();
   CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName(actionName.latin1());
+  Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
   MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
 
   // if valid command
@@ -150,10 +150,10 @@ void DlgCustomActionsImp::on_listBoxActions_highlighted( Q3ListBoxItem *i )
     bool bFound = false;
     for (int i = 0; i<actionMacros->count(); i++)
     {
-      if (actionMacros->text(i).startsWith(pScript->getScriptName()))
+      if (actionMacros->itemText(i).startsWith(pScript->getScriptName(), Qt::CaseSensitive))
       {
         bFound = true;
-        actionMacros->setCurrentItem(i);
+        actionMacros->setCurrentIndex(i);
         break;
       }
     }
@@ -168,7 +168,8 @@ void DlgCustomActionsImp::on_listBoxActions_highlighted( Q3ListBoxItem *i )
     actionMenu      -> setText( pScript->getMenuText() );
     actionToolTip   -> setText( pScript->getToolTipText() );
     actionStatus    -> setText( pScript->getStatusTip() );
-    actionAccel     -> setText( Q3Accel::keyToString(pScript->getAccel()) );
+    QKeySequence shortcut(pScript->getAccel());
+    actionAccel     -> setText( shortcut.toString() );
     pixmapLabel->clear();
     m_sPixmap = QString::null;
     const char* name = pScript->getPixmap();
@@ -198,7 +199,7 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
   // search for the command in the manager
   QString actionName = newActionName();
   CommandManager& rclMan = Application::Instance->commandManager();
-  MacroCommand* macro = new MacroCommand(actionName.latin1());
+  MacroCommand* macro = new MacroCommand(actionName.toLatin1());
   rclMan.addCommand( macro );
 
   // add new action
@@ -213,31 +214,36 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
   }
 
   if ( !actionWhatsThis->text().isEmpty() )
-    macro->setWhatsThis( actionWhatsThis->text() );
+    macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
   actionWhatsThis->clear();
   
   if ( !actionMacros-> currentText().isEmpty() )
     macro->setScriptName( actionMacros-> currentText() );
   
   if ( !actionMenu->text().isEmpty() )
-    macro->setMenuText( actionMenu->text() );
+    macro->setMenuText( actionMenu->text().toLatin1() );
   actionMenu->clear();
 
   if ( !actionToolTip->text().isEmpty() )
-    macro->setToolTipText( actionToolTip->text() );
+    macro->setToolTipText( actionToolTip->text().toLatin1() );
   actionToolTip->clear();
 
   if ( !actionStatus->text().isEmpty() )
-    macro->setStatusTip( actionStatus->text() );
+    macro->setStatusTip( actionStatus->text().toLatin1() );
   actionStatus->clear();
 
   if ( !m_sPixmap.isEmpty() )
-    macro->setPixmap( m_sPixmap );
+    macro->setPixmap( m_sPixmap.toLatin1() );
   pixmapLabel->clear();
   m_sPixmap = QString::null;
 
-  if ( !actionAccel->text().isEmpty() )
-    macro->setAccel( Q3Accel::stringToKey( actionAccel->text() ) );
+  if ( !actionAccel->text().isEmpty() ) {
+    QKeySequence shortcut(actionAccel->text());
+    int key=0;
+    for (uint i=0; i<shortcut.count(); i++)
+        key += shortcut[i];
+    macro->setAccel(key);
+  }
   actionAccel->clear();
 
   // check whether the macro is already in use
@@ -274,35 +280,40 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
   // search for the command in the manager
   QString actionName = item->text();
   CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName(actionName.latin1());
+  Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
   MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
 
   if ( !actionWhatsThis->text().isEmpty() )
-    macro->setWhatsThis( actionWhatsThis->text() );
+    macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
   actionWhatsThis->clear();
   
   if ( !actionMacros-> currentText().isEmpty() )
     macro->setScriptName( actionMacros-> currentText() );
   
   if ( !actionMenu->text().isEmpty() )
-    macro->setMenuText( actionMenu->text() );
+    macro->setMenuText( actionMenu->text().toLatin1() );
   actionMenu->clear();
 
   if ( !actionToolTip->text().isEmpty() )
-    macro->setToolTipText( actionToolTip->text() );
+    macro->setToolTipText( actionToolTip->text().toLatin1() );
   actionToolTip->clear();
 
   if ( !actionStatus->text().isEmpty() )
-    macro->setStatusTip( actionStatus->text() );
+    macro->setStatusTip( actionStatus->text().toLatin1() );
   actionStatus->clear();
 
   if ( !m_sPixmap.isEmpty() )
-    macro->setPixmap( m_sPixmap );
+    macro->setPixmap( m_sPixmap.toLatin1() );
   pixmapLabel->clear();
   m_sPixmap = QString::null;
 
-  if ( !actionAccel->text().isEmpty() )
-    macro->setAccel( Q3Accel::stringToKey( actionAccel->text() ) );
+  if ( !actionAccel->text().isEmpty() ) {
+    QKeySequence shortcut(actionAccel->text());
+    int key=0;
+    for (uint i=0; i<shortcut.count(); i++)
+        key += shortcut[i];
+    macro->setAccel(key);
+  }
   actionAccel->clear();
 
   // check whether the macro is already in use
@@ -354,7 +365,8 @@ void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
 {
   // create a dialog showing all pixmaps
   Gui::Dialog::Ui_DlgChooseIcon ui;
-  QDialog dlg(this, "Dialog", true);
+  QDialog dlg(this);
+  dlg.setModal(true);
   ui.setupUi(&dlg);
   // signals and slots connections
   connect( ui.iconView, SIGNAL( clicked ( Q3IconViewItem * ) ), &dlg, SLOT( accept() ) );
@@ -364,7 +376,7 @@ void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
   for ( QStringList::Iterator it = names.begin(); it != names.end(); ++it )
   {
     item = new Q3IconViewItem( ui.iconView );
-    item->setPixmap( BitmapFactory().pixmap( (*it).latin1() ) );
+    item->setPixmap( BitmapFactory().pixmap( (*it).toLatin1() ) );
     item->setText( *it );
   }
 

@@ -86,7 +86,8 @@ void BitmapFactoryInst::addPath(const char* sPath)
 
 void BitmapFactoryInst::removePath(const char* sPath)
 {
-    d->paths.erase( d->paths.find( sPath ) );
+    int pos = d->paths.indexOf(sPath);
+    if (pos != -1) d->paths.removeAt(pos);
 }
 
 void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
@@ -137,7 +138,7 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName) const
                 break;
             } else {
                 for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
-                    QString path = fileName + "." + QString((*fm).lower().data());
+                    QString path = fileName + "." + QString((*fm).toLower().data());
                     if (QFile(path).exists()) {
                         icon.load(path);
                         break;

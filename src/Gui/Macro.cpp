@@ -82,13 +82,12 @@ void MacroManager::open(MacroType eType,const char *sName)
 
   _sMacroInProgress = "";
   _sName = sName;
-  unsigned int pos = _sName.find(".FCMacro");
-  if(pos == std::string::npos)
+  if(!_sName.endsWith(".FCMacro"))
     _sName += ".FCMacro";
 
   _bIsOpen = true;
 
-  Base::Console().Log("CmdM: Open macro: %s\n",_sName.latin1());
+  Base::Console().Log("CmdM: Open macro: %s\n",(const char*)_sName.toLatin1());
 }
 
 //void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
@@ -100,10 +99,10 @@ void MacroManager::open(MacroType eType,const char *sName)
 /// close (and save) the recording sassion
 void MacroManager::commit(void)
 {
-  std::ofstream file(_sName.latin1());
+  std::ofstream file((const char*)_sName.toLatin1());
 
   // sort import lines and avoid duplicates
-  QStringList lines = QStringList::split('\n', _sMacroInProgress);
+  QStringList lines = _sMacroInProgress.split('\n');
   QStringList import; import << "import FreeCAD\n";
   QStringList body;
 
@@ -112,7 +111,7 @@ void MacroManager::commit(void)
   {
     if ( (*it).startsWith("import ") || (*it).startsWith("#import ") )
     {
-      if ( import.find( *it + '\n' ) == import.end() )
+      if (import.indexOf( *it + '\n' ) == -1)
         import.push_back( *it + '\n' );
     }
     else
@@ -129,15 +128,15 @@ void MacroManager::commit(void)
   footer += _sName;
   footer += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
-  file << header.latin1();
+  file << (const char*)header.toLatin1();
   for ( it = import.begin(); it != import.end(); ++it )
-    file << (*it).latin1();
+    file << (const char*)(*it).toLatin1();
   file << '\n';
   for ( it = body.begin(); it != body.end(); ++it )
-    file << (*it).latin1();
-  file << footer.latin1();
+    file << (const char*)(*it).toLatin1();
+  file << (const char*)footer.toLatin1();
 
-  Base::Console().Log("CmdM: Commit macro: %s\n",_sName.latin1());
+  Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)_sName.toLatin1());
 
   _sMacroInProgress = "";
   _sName = "";
@@ -147,7 +146,7 @@ void MacroManager::commit(void)
 /// cancels the recording sassion
 void MacroManager::cancel(void)
 {
-  Base::Console().Log("CmdM: Cancel macro: %s\n",_sName.latin1());
+  Base::Console().Log("CmdM: Cancel macro: %s\n",(const char*)_sName.toLatin1());
   _sMacroInProgress = "";
   _sName = "";
   _bIsOpen = false;

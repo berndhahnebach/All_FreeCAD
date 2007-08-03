@@ -83,7 +83,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     bar->setOrientation(Qt::Vertical);
     bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    bar->setWindowTitle( QObject::tr( (*item)->command() ) ); // i18n
+    bar->setWindowTitle(QObject::tr((const char*)(*item)->command().toLatin1())); // i18n
     _toolBox->addItem( bar, bar->windowTitle() );
 
     QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -92,7 +92,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
       if ( (*subitem)->command() == "Separator" ) {
         //bar->addSeparator();
       } else {
-        mgr.addTo( (*subitem)->command().latin1(), bar );
+        mgr.addTo( (const char*)((*subitem)->command().toLatin1()), bar );
       }
     }
 
@@ -138,7 +138,7 @@ void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
     bar->setOrientation(Qt::Vertical);
     bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    bar->setWindowTitle( QObject::tr( (*item)->command() ) ); // i18n
+    bar->setWindowTitle( QObject::tr( (const char*)(*item)->command().toLatin1() ) ); // i18n
     _toolBox->addItem( bar, bar->windowTitle() );
 
     QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -147,7 +147,7 @@ void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
       if ( (*subitem)->command() == "Separator" )
         bar->addSeparator();
       else
-        mgr.addTo( (*subitem)->command().latin1(), bar );
+        mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
     }
   }
 }

@@ -47,7 +47,7 @@ PyObject*  WorkbenchPy::name(PyObject *args)
 {
     PY_TRY {
         QString name = getWorkbenchObject()->name(); 
-        PyObject* pyName = PyString_FromString( name.latin1() );
+        PyObject* pyName = PyString_FromString( name.toLatin1() );
         return pyName;
     }PY_CATCH;
 }

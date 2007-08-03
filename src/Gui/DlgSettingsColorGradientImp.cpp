@@ -56,23 +56,23 @@ void DlgSettingsColorGradientImp::setColorModel( App::ColorGradient::TColorModel
   switch (tModel)
   {
   case App::ColorGradient::TRIA:
-    comboBoxModel->setCurrentItem(0);
+    comboBoxModel->setCurrentIndex(0);
     break;
   case App::ColorGradient::INVERSE_TRIA:
-    comboBoxModel->setCurrentItem(1);
+    comboBoxModel->setCurrentIndex(1);
     break;
   case App::ColorGradient::GRAY:
-    comboBoxModel->setCurrentItem(2);
+    comboBoxModel->setCurrentIndex(2);
     break;
   case App::ColorGradient::INVERSE_GRAY:
-    comboBoxModel->setCurrentItem(3);
+    comboBoxModel->setCurrentIndex(3);
     break;
   }
 }
 
 App::ColorGradient::TColorModel DlgSettingsColorGradientImp::colorModel() const
 {
-  int item = comboBoxModel->currentItem();
+  int item = comboBoxModel->currentIndex();
   if ( item == 0 )
     return App::ColorGradient::TRIA;
   else if ( item == 1 )

@@ -158,12 +158,12 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
       //"pydoc</strong> by Ka-Ping Yee &lt;ping@lfw.org&gt;</font>"
       "</body></html>");
     res.append(header);
-  } else if (this->files.find(fn) != this->files.end()) {
+  } else if (this->files.contains(fn)) {
     // load the requested page from zip 
     std::string path = App::GetApplication().GetHomePath();
     path += "/doc/docs.zip";
     zipios::ZipFile zip(path);
-    zipios::ConstEntryPointer entry = zip.getEntry(fn.latin1());
+    zipios::ConstEntryPointer entry = zip.getEntry((const char*)fn.toLatin1());
     std::istream* str = zip.getInputStream(entry);
 
     // set size of the array so that no re-allocation is needed when reading from the stream
@@ -285,7 +285,7 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
 
         Py_DECREF(dict);
     } else {
-        std::string name = fn.left(fn.length()-5);
+        std::string name = (const char*)fn.left(fn.length()-5).toLatin1();
         PyObject* main = PyImport_AddModule("__main__");
         PyObject* dict = PyModule_GetDict(main);
         dict = PyDict_Copy(dict);

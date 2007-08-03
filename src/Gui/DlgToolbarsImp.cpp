@@ -89,7 +89,7 @@ void DlgCustomToolbars::refreshFullActionList()
   QStringList items; items << "Help" << "Window" << "Tools" << "Standard-View" << "View" << "Edit" << "File" << "Macros";
   for (std::map<std::string, std::vector<Command*> >::iterator it2 = alCmdGroups.begin(); it2 != alCmdGroups.end(); ++it2)
   {
-    if ( items.find( it2->first.c_str() ) == items.end() )
+    if ( !items.contains( it2->first.c_str() ) )
       items.prepend(it2->first.c_str());
   }
 
