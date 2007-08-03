@@ -33,6 +33,7 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_Result.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+# include <IGESControl_Controller.hxx>
 # include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
 # include <STEPControl_Writer.hxx>
