@@ -239,7 +239,7 @@ PyObject *TopoShapePy::isNull(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
-  return Py_BuildValue("O", (_cTopoShape.IsNull() ? Py_False : Py_True));
+  return Py_BuildValue("O", (_cTopoShape.IsNull() ? Py_True : Py_False));
 }
 
 PyObject *TopoShapePy::isValid(PyObject *args)
