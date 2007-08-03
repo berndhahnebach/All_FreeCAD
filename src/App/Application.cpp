@@ -151,7 +151,7 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
   if (PyType_Ready(&App::VectorPy::Type) < 0) return;
   PyModule_AddObject(_pcAppModule, "Vector", pyVecType);
   PyObject* pyMatType = (PyObject *)&App::MatrixPy::Type;
-  if(PyType_Ready(&App::MatrixPy::Type) < 0) return;;
+  if(PyType_Ready(&App::MatrixPy::Type) < 0) return;
   PyModule_AddObject(_pcAppModule, "Matrix", pyMatType);
 
 

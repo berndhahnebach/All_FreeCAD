@@ -97,6 +97,7 @@
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/nodes/SoTransparencyType.h>
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
 #include <Inventor/projectors/SbSphereSheetProjector.h>
 #include <Inventor/VRMLnodes/SoVRMLGroup.h>

@@ -52,6 +52,23 @@ private:
     QStringList files;
 };
 
+/**
+ * Returns the content of an HTML page which gets sent to 
+ * the client to be displayed.
+ * @author Werner Mayer
+ */
+class PythonOnlineHelp : public QObject
+{
+    Q_OBJECT
+
+public:
+    PythonOnlineHelp();
+    ~PythonOnlineHelp();
+
+    QByteArray loadResource(const QString& filename) const;
+    QByteArray fileNotFound() const;
+};
+
 /** 
  * The HttpServer class implements a simple HTTP server.
  */
@@ -71,7 +88,7 @@ private slots:
     void discardClient();
 
 private:
-    OnlineDocumentation help;
+    PythonOnlineHelp help;
     bool disabled;
 };
 

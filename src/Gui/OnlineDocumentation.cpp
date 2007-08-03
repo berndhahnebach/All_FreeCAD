@@ -25,6 +25,7 @@
 
 #include <strstream>
 #include <Base/zipios/zipfile.h>
+#include <Base/PyCXX/Objects.hxx>
 #include <App/Application.h>
 
 #include "MainWindow.h"
@@ -193,6 +194,147 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
   }
 
   return res;
+}
+
+PythonOnlineHelp::PythonOnlineHelp()
+{
+}
+
+PythonOnlineHelp::~PythonOnlineHelp()
+{
+}
+
+QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
+{
+    QString fn = filename;
+    fn = filename.mid(1);
+    QByteArray res;
+
+    if (fn == "favicon.ico") {
+        // Return an resource icon in ico format
+        res.reserve(navicon_data_len);
+        for (int i=0; i<(int)navicon_data_len;i++) {
+            res[i] = navicon_data[i];
+        }
+    } else if (filename == "/") {
+        PyObject* main = PyImport_AddModule("__main__");
+        PyObject* dict = PyModule_GetDict(main);
+        dict = PyDict_Copy(dict);
+
+        std::string cmd =
+            "import string, os, sys, pydoc, pkgutil\n"
+            "\n"
+            "class FreeCADDoc(pydoc.HTMLDoc):\n"
+            "    def index(self, dir, shadowed=None):\n"
+            "        \"\"\"Generate an HTML index for a directory of modules.\"\"\"\n"
+            "        modpkgs = []\n"
+            "        if shadowed is None: shadowed = {}\n"
+            "        for importer, name, ispkg in pkgutil.iter_modules([dir]):\n"
+            "            if name == 'Init': continue\n"
+            "            if name == 'InitGui': continue\n"
+            "            if name[-2:] == '_d': continue\n"
+            "            modpkgs.append((name, '', ispkg, name in shadowed))\n"
+            "            shadowed[name] = 1\n"
+            "\n"
+            "        if len(modpkgs) == 0: return None\n"
+            "        modpkgs.sort()\n"
+            "        contents = self.multicolumn(modpkgs, self.modpkglink)\n"
+            "        return self.bigsection(dir, '#ffffff', '#ee77aa', contents)\n"
+            "\n"
+            "pydoc.html=FreeCADDoc()\n"
+            "\n"
+            "heading = pydoc.html.heading(\n"
+            "'<big><big><strong>Python: Index of Modules</strong></big></big>',\n"
+            "'#ffffff', '#7799ee')\n"
+            "def bltinlink(name):\n"
+            "    return '<a href=\"%s.html\">%s</a>' % (name, name)\n"
+            "names = filter(lambda x: x != '__main__',\n"
+            "               sys.builtin_module_names)\n"
+            "contents = pydoc.html.multicolumn(names, bltinlink)\n"
+            "indices = ['<p>' + pydoc.html.bigsection(\n"
+            "    'Built-in Modules', '#ffffff', '#ee77aa', contents)]\n"
+            "\n"
+            "names = ['FreeCAD', 'FreeCADGui']\n"
+            "contents = pydoc.html.multicolumn(names, bltinlink)\n"
+            "indices.append('<p>' + pydoc.html.bigsection(\n"
+            "    'Built-in FreeCAD Modules', '#ffffff', '#ee77aa', contents))\n"
+            "\n"
+            "seen = {}\n"
+            "for dir in sys.path:\n"
+            "    dir = os.path.realpath(dir)\n"
+            "    ret = pydoc.html.index(dir, seen)\n"
+            "    if ret != None:\n"
+            "        indices.append(ret)\n"
+            "contents = heading + string.join(indices) + '''<p align=right>\n"
+            "<font color=\"#909090\" face=\"helvetica, arial\"><strong>\n"
+            "pydoc</strong> by Ka-Ping Yee &lt;ping@lfw.org&gt;</font>'''\n";
+
+        PyObject* result = PyRun_String(cmd.c_str(), Py_file_input, dict, dict);
+        std::string text;
+        if (result) {
+            Py_DECREF(result);
+            result = PyDict_GetItemString(dict, "contents");
+            const char* contents = PyString_AsString(result);
+            res.append(contents);
+            return res;
+        } else {
+            // load the error page
+            PyErr_Clear();
+            res = fileNotFound();
+        }
+
+        Py_DECREF(dict);
+    } else {
+        std::string name = fn.left(fn.length()-5);
+        PyObject* main = PyImport_AddModule("__main__");
+        PyObject* dict = PyModule_GetDict(main);
+        dict = PyDict_Copy(dict);
+        std::string cmd = 
+            "import pydoc\n"
+            "object, name = pydoc.resolve(\"";
+        cmd += name.c_str();
+        cmd += "\")\npage = pydoc.html.page(pydoc.describe(object), pydoc.html.document(object, name))\n";
+        PyObject* result = PyRun_String(cmd.c_str(), Py_file_input, dict, dict);
+        if (result) {
+            Py_DECREF(result);
+            result = PyDict_GetItemString(dict, "page");
+            const char* page = PyString_AsString(result);
+            res.append(page);
+        } else {
+            // load the error page
+            PyErr_Clear();
+            res = fileNotFound();
+        }
+
+        Py_DECREF(dict);
+    }
+
+    return res;
+}
+
+QByteArray PythonOnlineHelp::fileNotFound() const
+{
+    QByteArray res;
+    QHttpResponseHeader header(404, "File not found");
+    header.setContentType("text/html\r\n"
+        "\r\n"
+        "<html><head><title>Error</title></head>"
+        "<body bgcolor=\"#f0f0f8\">"
+        "<table width=\"100%\" cellspacing=0 cellpadding=2 border=0 summary=\"heading\">"
+        "<tr bgcolor=\"#7799ee\">"
+        "<td valign=bottom>&nbsp;<br>"
+        "<font color=\"#ffffff\" face=\"helvetica, arial\">&nbsp;<br><big><big><strong>FreeCAD Documentation</strong></big></big></font></td>"
+        "<td align=right valign=bottom>"
+        "<font color=\"#ffffff\" face=\"helvetica, arial\">&nbsp;</font></td></tr></table>"
+        "<p><p>"
+        "<h1>404 - File not found</h1>"
+        "<div><p><strong>The requested URL was not found on this server."
+        "</strong></p>"
+        "</div></body>"
+        "</html>"
+        "\r\n");
+    res.append(header.toString());
+    return res;
 }
 
 HttpServer::HttpServer(QObject* parent)
