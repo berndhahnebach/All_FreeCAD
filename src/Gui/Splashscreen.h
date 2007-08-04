@@ -54,7 +54,6 @@ protected:
   void drawContents ( QPainter * painter );
 
 private:
-  Q3ProgressBar* progBar;
   SplashObserver* messages;
 };
 

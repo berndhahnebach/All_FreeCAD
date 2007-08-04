@@ -64,7 +64,7 @@ protected:
 
 
 
-
+#if 0
 /**
  * Select a file.url.
  * \author Werner Mayer
@@ -141,6 +141,7 @@ protected:
 private:
   ChildrenEditorItem();
 };
+#endif
 
 } //namespace PropertyEditor
 } //namespace Gui

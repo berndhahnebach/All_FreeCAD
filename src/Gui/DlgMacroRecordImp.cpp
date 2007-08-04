@@ -90,7 +90,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
   }
 
   // search in the macro path first for an already existing macro
-  QString fn = (_cMacroPath + lineEditPath->text().latin1()).c_str();
+  QString fn = (_cMacroPath + lineEditPath->text().toStdString()).c_str();
   if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
   QFileInfo fi(fn);
   if ( fi.isFile() && fi.exists() )
@@ -101,7 +101,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
   }
 
   // open the macro recording
-  _pcMacroMngr->open(MacroManager::File,(_cMacroPath + lineEditPath->text().latin1()).c_str());
+  _pcMacroMngr->open(MacroManager::File,(_cMacroPath + lineEditPath->text().toStdString()).c_str());
   accept();
 }
 

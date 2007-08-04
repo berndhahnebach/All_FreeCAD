@@ -55,7 +55,7 @@ protected:
 
 
 
-
+#if 0
 /**
  * Change a font property.
  * \author Werner Mayer
@@ -113,7 +113,7 @@ private:
 private:
   QColor _color;
 };
-
+#endif
 } //namespace PropertyEditor
 } //namespace Gui
 

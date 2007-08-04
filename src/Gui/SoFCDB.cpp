@@ -77,7 +77,7 @@ void Gui::SoFCDB::init()
     PropertyFileItem                ::init();
     PropertyPathItem                ::init();
 
-
+#if 0
     // deprecated ...
     EditableItem                    ::init();
     TimeEditorItem                  ::init();
@@ -97,6 +97,7 @@ void Gui::SoFCDB::init()
     ListEditorItem                  ::init();
     ComboEditorItem                 ::init();
     CursorEditorItem                ::init();
+#endif
 }
 
 void Gui::SoFCDB::finish()

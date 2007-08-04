@@ -84,6 +84,8 @@ public:
   bool SaveAsciiSTL (std::ostream &rstrOut) const;
   /** Saves the mesh object into a binary STL file. */
   bool SaveBinarySTL (std::ostream &rstrOut) const;
+  /** Saves the mesh object into an OBJ file. */
+  bool SaveOBJ (std::ostream &rstrOut) const;
   /** Saves the mesh object into an XML file. */
   void SaveXML (Base::Writer &writer) const;
   /** Writes an OpenInventor file. */

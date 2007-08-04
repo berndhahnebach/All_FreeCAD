@@ -37,7 +37,8 @@ CallTipsList::CallTipsList(QTextEdit* parent)
 {
     // make the user assume that the widget is active
     QPalette pal = parent->palette();
-    pal.setInactive( pal.active() );
+    pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
+    pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
     parent->setPalette( pal );
 
     connect(this, SIGNAL(itemActivated(QListWidgetItem *)), 
@@ -205,9 +206,9 @@ void CallTipsList::showTips(const QString& context)
     for (QMap<QString, CallTip>::Iterator it = tips.begin(); it != tips.end(); ++it) {
         addItem(it.key());
         QListWidgetItem *item = this->item(this->count()-1);
-        item->setData(Qt::ToolTipRole, QVariant(it.data().description));
-        item->setData(Qt::UserRole, QVariant(it.data().parameter));
-        switch (it.data().type)
+        item->setData(Qt::ToolTipRole, QVariant(it.value().description));
+        item->setData(Qt::UserRole, QVariant(it.value().parameter));
+        switch (it.value().type)
         {
         case CallTip::Class:
             {

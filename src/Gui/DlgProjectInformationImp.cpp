@@ -52,9 +52,10 @@ DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget*
 
   // When saving the text to XML the newlines get lost. So we store also the newlines as '\n'.
   // See also accept().
-  QStringList lines = QStringList::split( "\\n", doc->Comment.getValue(), true );
+  QString comment = doc->Comment.getValue();
+  QStringList lines = comment.split("\\n", QString::KeepEmptyParts);
   QString text = lines.join("\n");
-  textEditComment->setText( text );
+  textEditComment->setPlainText( text );
 }
 
 /**
@@ -70,14 +71,14 @@ DlgProjectInformationImp::~DlgProjectInformationImp()
  */
 void DlgProjectInformationImp::accept()
 {
-  _doc->CreatedBy.setValue( lineEditCreator->text().latin1() );
-  _doc->LastModifiedBy.setValue( lineEditCreator->text().latin1() );
-  _doc->Company.setValue( lineEditCompany->text().latin1() );
+  _doc->CreatedBy.setValue( lineEditCreator->text().toLatin1() );
+  _doc->LastModifiedBy.setValue( lineEditCreator->text().toLatin1() );
+  _doc->Company.setValue( lineEditCompany->text().toLatin1() );
 
   // Replace newline escape sequence trough '\\n' string
-  QStringList lines = QStringList::split("\n", textEditComment->text(), true );
+  QStringList lines = textEditComment->toPlainText().split("\n", QString::KeepEmptyParts);
   QString text = lines.join("\\n");
-  _doc->Comment.setValue( text.isEmpty() ? "" : text.latin1() );
+  _doc->Comment.setValue( text.isEmpty() ? "" : text.toLatin1() );
   
   QDialog::accept();
 }

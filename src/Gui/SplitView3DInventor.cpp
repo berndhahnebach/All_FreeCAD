@@ -52,15 +52,15 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
   QSplitter* mainSplitter=0;
 
   if ( views <= 3 ) {
-    mainSplitter = new QSplitter( Qt::Horizontal, this, "main" );
+    mainSplitter = new QSplitter(Qt::Horizontal, this);
     _viewer.push_back(new View3DInventorViewer(mainSplitter));
     _viewer.push_back(new View3DInventorViewer(mainSplitter));
     if (views==3)
       _viewer.push_back(new View3DInventorViewer(mainSplitter));
   } else {
-    mainSplitter = new QSplitter( Qt::Vertical, this , "main" );
-    QSplitter *topSplitter = new QSplitter( Qt::Horizontal, mainSplitter, "top" );
-    QSplitter *botSplitter = new QSplitter( Qt::Horizontal, mainSplitter, "bottom" );
+    mainSplitter = new QSplitter(Qt::Vertical, this);
+    QSplitter *topSplitter = new QSplitter(Qt::Horizontal, mainSplitter);
+    QSplitter *botSplitter = new QSplitter(Qt::Horizontal, mainSplitter);
     _viewer.push_back(new View3DInventorViewer(topSplitter));
     _viewer.push_back(new View3DInventorViewer(topSplitter));
     for (int i=2;i<views;i++)

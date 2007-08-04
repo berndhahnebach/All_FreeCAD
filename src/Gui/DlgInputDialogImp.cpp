@@ -57,7 +57,7 @@ DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, 
 
   QSize sh = sizeHint();
   setType( type );
-  resize( QMAX( sh.width(), 400 ), 1 );
+  resize( qMax( sh.width(), 400 ), 1 );
 
   connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(tryAccept()));
   connect(lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&)));

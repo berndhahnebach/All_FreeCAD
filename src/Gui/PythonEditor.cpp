@@ -210,7 +210,7 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
     } else {
         QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
         if (it != d->colormap.end()) {
-            QColor color = it.data();
+            QColor color = it.value();
             unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
             col = hPrefGrp->GetUnsigned( sReason, col);
             color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);

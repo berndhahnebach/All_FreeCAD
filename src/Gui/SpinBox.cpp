@@ -52,7 +52,7 @@ UnsignedValidator::~UnsignedValidator()
 
 QValidator::State UnsignedValidator::validate( QString & input, int & ) const
 {
-    QString stripped = input.stripWhiteSpace();
+    QString stripped = input.trimmed();
     if ( stripped.isEmpty() )
         return Intermediate;
     bool ok;

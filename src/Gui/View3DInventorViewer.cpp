@@ -433,9 +433,9 @@ bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
   QFileInfo fi( filename );
 
   // Write VRML V2.0
-  if ( fi.extension() == "wrl" || fi.extension() == "vrml" || fi.extension() == "wrz" ) {
+  if ( fi.completeSuffix() == "wrl" || fi.completeSuffix() == "vrml" || fi.completeSuffix() == "wrz" ) {
     // If 'wrz' is set then force compression
-    if ( fi.extension() == "wrz" )
+    if ( fi.completeSuffix() == "wrz" )
       binary = true;
     
     SoToVRML2Action tovrml2;

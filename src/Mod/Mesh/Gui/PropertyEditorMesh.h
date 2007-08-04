@@ -54,7 +54,7 @@ protected:
 
 
 
-
+#if 0
 /**
  * Change a text property.
  * \author Werner Mayer
@@ -73,7 +73,7 @@ protected:
 private:
   PropertyEditorMesh();
 };
-
+#endif
 } // namespace MeshGui
 
 

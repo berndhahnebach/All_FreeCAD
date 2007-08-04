@@ -68,7 +68,7 @@ ReportView::ReportView( QWidget* parent )
   {
     if ( tabWidget->tabText(i) == txt.c_str() )
     {
-      tabWidget->setCurrentPage( i );
+      tabWidget->setCurrentIndex( i );
       break;
     }
   }
@@ -308,13 +308,13 @@ void ReportOutput::onSaveAs()
   if (!fn.isEmpty())
   {
     QFileInfo fi(fn);
-    if (fi.extension().isEmpty())
+    if (fi.completeSuffix().isEmpty())
       fn += ".log";
     QFile f(fn);
     if (f.open(QIODevice::WriteOnly))
     {
       QTextStream t (&f);
-      t << text();
+      t << toPlainText();
       f.close();
     }
   }

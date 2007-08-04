@@ -99,18 +99,18 @@ public:
     QRegExp rx;
     // ignore 'Init:' and 'Mod:' prefixes
     rx.setPattern("^\\s*(Init:|Mod:)\\s*");
-    int pos = rx.search(msg);
+    int pos = rx.indexIn(msg);
     if ( pos != -1 ) {
       msg = msg.mid(rx.matchedLength());
     } else {
       // ignore activation of commands
       rx.setPattern("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*");
-      pos = rx.search(msg);
+      pos = rx.indexIn(msg);
       if ( pos == 0 )
         return;
     }
 
-    splash->message( msg.replace(QString("\n"), QString()), alignment, textColor );
+    splash->showMessage( msg.replace(QString("\n"), QString()), alignment, textColor );
     QMutex mutex;
     mutex.lock();
     QWaitCondition().wait(&mutex, 50);
@@ -129,27 +129,16 @@ private:
  * Constructs a splash screen that will display the pixmap.
  */
 SplashScreen::SplashScreen(  const QPixmap & pixmap , Qt::WFlags f )
-    : QSplashScreen( pixmap, f), progBar(0L)
+    : QSplashScreen( pixmap, f)
 {
   // write the messages to splasher
   messages = new SplashObserver(this);
-/*
-  // append also a progressbar for visual feedback
-  progBar = new Q3ProgressBar( this, "SplasherProgress" );
-  progBar->setProperty( "progress", 0 );
-  progBar->setStyle(QStyleFactory::create("motif"));
-  progBar->setFixedSize(width()-6, 15);
-
-  // make the splasher a bit higher
-  resize(width(), height()+progBar->height());
-  progBar->move(3, height()-(progBar->height()));*/
 }
 
 /** Destruction. */
 SplashScreen::~SplashScreen()
 {
   delete messages;
-  delete progBar;
 }
 
 /** 
@@ -158,8 +147,6 @@ SplashScreen::~SplashScreen()
  */
 void SplashScreen::drawContents ( QPainter * painter )
 {
-  if (progBar)
-    progBar->setProgress(progBar->progress() + 6);
   QSplashScreen::drawContents(painter);
 }
 
@@ -174,8 +161,9 @@ void SplashScreen::drawContents ( QPainter * painter )
  *  The dialog will be modal.
  */
 AboutDialog::AboutDialog( QWidget* parent )
-  : QDialog(parent, Qt::WStyle_Customize|Qt::WStyle_NoBorder|Qt::WType_Dialog|Qt::WShowModal)
+  : QDialog(parent, Qt::FramelessWindowHint)
 {
+  setModal(true);
   ui.setupUi(this);
   // Example of how Qt's resource framework can be used
   //ui.labelSplashPicture->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/SplashScreen.xpm")));
@@ -195,7 +183,7 @@ void AboutDialog::setupLabels()
 {
   QString exeName = App::Application::Config()["ExeName"].c_str();
   QString banner  = App::Application::Config()["ConsoleBanner"].c_str();
-  banner = banner.left( banner.find('\n') );
+  banner = banner.left( banner.indexOf('\n') );
   QString major  = App::Application::Config()["BuildVersionMajor"].c_str();
   QString minor  = App::Application::Config()["BuildVersionMinor"].c_str();
   QString build  = App::Application::Config()["BuildRevision"].c_str();

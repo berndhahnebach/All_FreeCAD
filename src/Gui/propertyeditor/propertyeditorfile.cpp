@@ -83,7 +83,7 @@ void PropertyPathItem::setValue(const QVariant& value)
 }
 
 
-
+#if 0
 /* TRANSLATOR Gui::PropertyEditor::FileEditorItem */
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FileEditorItem, Gui::PropertyEditor::EditableItem);
@@ -371,7 +371,7 @@ QVariant ChildrenEditorItem::convertFromProperty(const std::vector<App::Property
 void ChildrenEditorItem::convertToProperty(const QVariant&)
 {
 }
-
+#endif
 #include "moc_propertyeditorfile.cpp"
 
 // --------------------------------------------------------------------

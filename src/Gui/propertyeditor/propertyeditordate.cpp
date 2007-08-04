@@ -29,7 +29,7 @@
 #include "propertyeditordate.h"
 
 using namespace Gui::PropertyEditor;
-
+#if 0
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TimeEditorItem, Gui::PropertyEditor::EditableItem);
 
 TimeEditorItem::TimeEditorItem()
@@ -189,3 +189,4 @@ QVariant DateTimeEditorItem::convertFromProperty(const std::vector<App::Property
 void DateTimeEditorItem::convertToProperty(const QVariant&)
 {
 }
+#endif

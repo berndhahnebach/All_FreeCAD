@@ -8,6 +8,7 @@
 #include <qfile.h>
 #include <QMutex>
 #include <qnamespace.h>
+#include <QPointer>
 #include <qrect.h>
 #include <qregexp.h>
 #include <QSet>

@@ -143,7 +143,7 @@ protected:
 
 
 
-
+#if 0
 /**
  * Change a text property.
  * \author Werner Mayer
@@ -245,7 +245,7 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   FloatConstraintEditorItem();
 };
-
+#endif
 } // namespace PropertyEditor
 } // namespace Gui
 

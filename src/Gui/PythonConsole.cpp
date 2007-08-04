@@ -373,7 +373,7 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
     } else {
         QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
         if (it != d->colormap.end()) {
-            QColor color = it.data();
+            QColor color = it.value();
             unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
             col = hPrefGrp->GetUnsigned( sReason, col);
             color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
@@ -580,7 +580,7 @@ bool PythonConsole::isComment(const QString& source) const
 bool PythonConsole::printStatement( const QString& cmd )
 {
     QTextCursor cursor = textCursor();
-    QStringList statements = QStringList::split( "\n", cmd );
+    QStringList statements = cmd.split("\n");
     for (QStringList::Iterator it = statements.begin(); it != statements.end(); ++it) {
         // go to the end before inserting new text 
         cursor.movePosition(QTextCursor::End);
@@ -831,7 +831,7 @@ void PythonConsole::onSaveHistoryAs()
     QString cMacroPath = getDefaultParameter()->GetGroup( "Macro" )->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
     QString fn = FileDialog::getSaveFileName(this, tr("Save History"), cMacroPath,"Macro Files (*.FCMacro *.py)");
     if (!fn.isEmpty()) {
-        int dot = fn.find('.');
+        int dot = fn.indexOf('.');
         if (dot != -1) {
             QFile f(fn);
             if (f.open(QIODevice::WriteOnly)) {

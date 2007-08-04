@@ -233,7 +233,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                                       ,pp->getPoint()[1]
                                                       ,pp->getPoint()[2]);
 
-      getMainWindow()->statusBar()->message(buf,3000);
+      getMainWindow()->statusBar()->showMessage(buf,3000);
     }
     else {
       if (highlighted) {

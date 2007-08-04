@@ -226,41 +226,41 @@ void ParameterGrp::copyTo(FCHandle<ParameterGrp> Grp)
 
 void ParameterGrp::insertTo(FCHandle<ParameterGrp> Grp)
 {
-  // copy group
-  std::vector<FCHandle<ParameterGrp> > Grps = GetGroups();
-  std::vector<FCHandle<ParameterGrp> >::iterator It1;
-  for(It1 = Grps.begin();It1 != Grps.end();++It1)
-    (*It1)->insertTo(Grp->GetGroup((*It1)->GetGroupName()));
-  
-  // copy strings
-	std::map<std::string,std::string> StringMap = GetASCIIMap();
-  std::map<std::string,std::string>::iterator It2;
-  for(It2 = StringMap.begin();It2 != StringMap.end();++It2)
-    Grp->SetASCII(It2->first.c_str(),It2->second.c_str());
+    // copy group
+    std::vector<FCHandle<ParameterGrp> > Grps = GetGroups();
+    std::vector<FCHandle<ParameterGrp> >::iterator It1;
+    for(It1 = Grps.begin();It1 != Grps.end();++It1)
+        (*It1)->insertTo(Grp->GetGroup((*It1)->GetGroupName()));
 
-  // copy bool
-	std::map<std::string,bool> BoolMap = GetBoolMap();
-  std::map<std::string,bool>::iterator It3;
-  for(It3 = BoolMap.begin();It3 != BoolMap.end();++It3)
-    Grp->SetBool(It3->first.c_str(),It3->second);
+    // copy strings
+    std::vector<std::pair<std::string,std::string> > StringMap = GetASCIIMap();
+    std::vector<std::pair<std::string,std::string> >::iterator It2;
+    for(It2 = StringMap.begin();It2 != StringMap.end();++It2)
+        Grp->SetASCII(It2->first.c_str(),It2->second.c_str());
 
-  // copy int
-	std::map<std::string,long> IntMap = GetIntMap();
-  std::map<std::string,long>::iterator It4;
-  for(It4 = IntMap.begin();It4 != IntMap.end();++It4)
-    Grp->SetInt(It4->first.c_str(),It4->second);
+    // copy bool
+    std::vector<std::pair<std::string,bool> > BoolMap = GetBoolMap();
+    std::vector<std::pair<std::string,bool> >::iterator It3;
+    for(It3 = BoolMap.begin();It3 != BoolMap.end();++It3)
+        Grp->SetBool(It3->first.c_str(),It3->second);
 
-  // copy float
-	std::map<std::string,double> FloatMap = GetFloatMap();
-  std::map<std::string,double>::iterator It5;
-  for(It5 = FloatMap.begin();It5 != FloatMap.end();++It5)
-    Grp->SetFloat(It5->first.c_str(),It5->second);
+    // copy int
+    std::vector<std::pair<std::string,long> > IntMap = GetIntMap();
+    std::vector<std::pair<std::string,long> >::iterator It4;
+    for(It4 = IntMap.begin();It4 != IntMap.end();++It4)
+        Grp->SetInt(It4->first.c_str(),It4->second);
 
-  // copy uint
-	std::map<std::string,unsigned long> UIntMap = GetUnsignedMap();
-  std::map<std::string,unsigned long>::iterator It6;
-  for(It6 = UIntMap.begin();It6 != UIntMap.end();++It6)
-    Grp->SetUnsigned(It6->first.c_str(),It6->second);
+    // copy float
+    std::vector<std::pair<std::string,double> > FloatMap = GetFloatMap();
+    std::vector<std::pair<std::string,double> >::iterator It5;
+    for(It5 = FloatMap.begin();It5 != FloatMap.end();++It5)
+        Grp->SetFloat(It5->first.c_str(),It5->second);
+
+    // copy uint
+    std::vector<std::pair<std::string,unsigned long> > UIntMap = GetUnsignedMap();
+    std::vector<std::pair<std::string,unsigned long> >::iterator It6;
+    for(It6 = UIntMap.begin();It6 != UIntMap.end();++It6)
+        Grp->SetUnsigned(It6->first.c_str(),It6->second);
 }
 
 void ParameterGrp::exportTo(const char* FileName)
@@ -458,9 +458,9 @@ std::vector<bool> ParameterGrp::GetBools(const char * sFilter) const
 	return vrValues;
 }
 
-std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter) const
+std::vector<std::pair<std::string,bool> > ParameterGrp::GetBoolMap(const char * sFilter) const
 {
-	std::map<std::string,bool>  vrValues;
+	std::vector<std::pair<std::string,bool> >  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -472,9 +472,9 @@ std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter) const
 		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
-				vrValues[Name] = (false);
+				vrValues.push_back(std::make_pair<std::string, bool>(Name, false));
 			else
-				vrValues[Name] = (true);	
+				vrValues.push_back(std::make_pair<std::string, bool>(Name, true));	
 		}
 		pcTemp = FindNextElement(pcTemp,"FCBool");
 	}
@@ -525,9 +525,9 @@ std::vector<long> ParameterGrp::GetInts(const char * sFilter) const
 	return vrValues;
 }
 
-std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter) const
+std::vector<std::pair<std::string,long> > ParameterGrp::GetIntMap(const char * sFilter) const
 {
-	std::map<std::string,long>  vrValues;
+	std::vector<std::pair<std::string,long> > vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -538,7 +538,8 @@ std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter) const
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
-			vrValues[Name] = ( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
+			vrValues.push_back(std::make_pair<std::string, long>(Name,
+				( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()))));
 		}
 		pcTemp = FindNextElement(pcTemp,"FCInt") ;
 	}
@@ -589,9 +590,9 @@ std::vector<unsigned long> ParameterGrp::GetUnsigneds(const char * sFilter) cons
 	return vrValues;
 }
 
-std::map<std::string,unsigned long> ParameterGrp::GetUnsignedMap(const char * sFilter) const
+std::vector<std::pair<std::string,unsigned long> > ParameterGrp::GetUnsignedMap(const char * sFilter) const
 {
-	std::map<std::string,unsigned long>  vrValues;
+	std::vector<std::pair<std::string,unsigned long> > vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -602,7 +603,8 @@ std::map<std::string,unsigned long> ParameterGrp::GetUnsignedMap(const char * sF
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
-			vrValues[Name] = ( strtoul (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),0,10) );
+			vrValues.push_back(std::make_pair<std::string, unsigned long>(Name, 
+				( strtoul (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),0,10) )));
 		}
 		pcTemp = FindNextElement(pcTemp,"FCUInt");
 	}
@@ -653,9 +655,9 @@ std::vector<double> ParameterGrp::GetFloats(const char * sFilter) const
 	return vrValues;
 }
 
-std::map<std::string,double> ParameterGrp::GetFloatMap(const char * sFilter) const
+std::vector<std::pair<std::string,double> > ParameterGrp::GetFloatMap(const char * sFilter) const
 {
-	std::map<std::string,double>  vrValues;
+	std::vector<std::pair<std::string,double> > vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -666,7 +668,8 @@ std::map<std::string,double> ParameterGrp::GetFloatMap(const char * sFilter) con
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
-			vrValues[Name] = ( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
+			vrValues.push_back(std::make_pair<std::string, double>(Name,
+				( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()))));
 		}
 		pcTemp = FindNextElement(pcTemp,"FCFloat");
 	}
@@ -771,9 +774,9 @@ std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter) const
 	return vrValues;
 }
 
-std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter) const
+std::vector<std::pair<std::string,std::string> > ParameterGrp::GetASCIIMap(const char * sFilter) const
 {
-	std::map<std::string,std::string>  vrValues;
+	std::vector<std::pair<std::string,std::string> >  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -787,7 +790,7 @@ std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter
 			// retrive the text element
 			DOMNode *pcElem2 = pcTemp->getFirstChild();
 			if (pcElem2)
-				vrValues[Name] = std::string(StrX(pcElem2->getNodeValue()).c_str()) ;
+				vrValues.push_back(std::make_pair<std::string, std::string>(Name, std::string(StrX(pcElem2->getNodeValue()).c_str())));
 		}
 		pcTemp = FindNextElement(pcTemp,"FCText");
 	}
@@ -998,30 +1001,30 @@ DOMElement *ParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Typ
 
 void ParameterGrp::NotifyAll()
 {
-  // get all ints and notify
-  std::map<std::string,long>        IntMap    = GetIntMap();
-  for (std::map<std::string,long>::iterator It1= IntMap.begin(); It1 != IntMap.end(); It1++)
-    Notify(It1->first.c_str());
+    // get all ints and notify
+    std::vector<std::pair<std::string,long> > IntMap = GetIntMap();
+    for (std::vector<std::pair<std::string,long> >::iterator It1= IntMap.begin(); It1 != IntMap.end(); It1++)
+        Notify(It1->first.c_str());
 
-  // get all booleans and notify
-  std::map<std::string,bool>        BoolMap    = GetBoolMap();
-  for (std::map<std::string,bool>::iterator It2= BoolMap.begin(); It2 != BoolMap.end(); It2++)
-    Notify(It2->first.c_str());
+    // get all booleans and notify
+    std::vector<std::pair<std::string,bool> > BoolMap = GetBoolMap();
+    for (std::vector<std::pair<std::string,bool> >::iterator It2= BoolMap.begin(); It2 != BoolMap.end(); It2++)
+        Notify(It2->first.c_str());
 
-  // get all Floats and notify
-  std::map<std::string,double>      FloatMap  = GetFloatMap();
-  for (std::map<std::string,double>::iterator It3= FloatMap.begin(); It3 != FloatMap.end(); It3++)
-    Notify(It3->first.c_str());
+    // get all Floats and notify
+    std::vector<std::pair<std::string,double> > FloatMap  = GetFloatMap();
+    for (std::vector<std::pair<std::string,double> >::iterator It3= FloatMap.begin(); It3 != FloatMap.end(); It3++)
+        Notify(It3->first.c_str());
 
-  // get all strings and notify
-  std::map<std::string,std::string> StringMap = GetASCIIMap();
-  for (std::map<std::string,std::string>::iterator It4= StringMap.begin(); It4 != StringMap.end(); It4++)
-    Notify(It4->first.c_str());
+    // get all strings and notify
+    std::vector<std::pair<std::string,std::string> > StringMap = GetASCIIMap();
+    for (std::vector<std::pair<std::string,std::string> >::iterator It4= StringMap.begin(); It4 != StringMap.end(); It4++)
+        Notify(It4->first.c_str());
 
-  // get all uints and notify
-  std::map<std::string,unsigned long> UIntMap    = GetUnsignedMap();
-  for (std::map<std::string,unsigned long>::iterator It5= UIntMap.begin(); It5 != UIntMap.end(); It5++)
-    Notify(It5->first.c_str());
+    // get all uints and notify
+    std::vector<std::pair<std::string,unsigned long> > UIntMap = GetUnsignedMap();
+    for (std::vector<std::pair<std::string,unsigned long> >::iterator It5= UIntMap.begin(); It5 != UIntMap.end(); It5++)
+        Notify(It5->first.c_str());
 }
 
 //**************************************************************************

@@ -58,21 +58,21 @@ void MDIView::onRename(Gui::Document *pDoc)
   if(!bIsPassive)
   {
     // Try to separate document name and view number if there is one
-    QString cap = caption();
+    QString cap = windowTitle();
     // Either with dirty flag ...
     QRegExp rx("(\\s\\:\\s\\d+\\s\\*)$");
-    int pos = rx.searchRev(cap);
+    int pos = rx.lastIndexIn(cap);
     if ( pos == -1 ) {
       // ... or not
       rx.setPattern("(\\s\\:\\s\\d+)$");
-      pos = rx.searchRev(cap);
+      pos = rx.lastIndexIn(cap);
     }
     if ( pos != -1 ) {
       cap = QString(pDoc->getDocument()->getName());
       cap += rx.cap();
-      setCaption(cap);
+      setWindowTitle(cap);
     } else {
-      setCaption(QString(pDoc->getDocument()->getName()));
+      setWindowTitle(QString(pDoc->getDocument()->getName()));
     }
   }
 }
@@ -155,6 +155,7 @@ void MDIView::windowActivationChange ( bool oldActive )
 
 void MDIView::setCurrentViewMode( ViewMode b )
 {
+#if 0
   // set fullscreen mode
   if ( b == Normal )
   {
@@ -253,6 +254,7 @@ void MDIView::setCurrentViewMode( ViewMode b )
     releaseKeyboard();
   }
   */
+#endif
 }
 
 void MDIView::changeEvent( QEvent *e )

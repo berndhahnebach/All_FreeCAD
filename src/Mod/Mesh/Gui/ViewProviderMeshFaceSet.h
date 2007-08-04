@@ -88,6 +88,8 @@ protected:
   void setOpenEdgeColorFrom( const App::Color& col );
   virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
+  SoFCMeshVertex * pcVertexNode;
+  SoFCMeshFacet  * pcFacetNode;
   SoFCMeshFaceSet* pcFaceSet;
   SoDrawStyle    * pcLineStyle;
   SoDrawStyle    * pcPointStyle;

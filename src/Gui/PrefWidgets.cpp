@@ -271,7 +271,8 @@ void PrefLineEdit::restorePreferences()
     return;
   }
 
-  std::string txt = getWindowParameter()->GetASCII( entryName(), text().latin1() );
+  std::string txt = text().toStdString();
+  txt = getWindowParameter()->GetASCII( entryName(), txt.c_str() );
   setText(txt.c_str());
 }
 
@@ -283,7 +284,7 @@ void PrefLineEdit::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII( entryName(), text().latin1() );
+  getWindowParameter()->SetASCII( entryName(), text().toAscii() );
 }
 
 QByteArray PrefLineEdit::entryName () const
@@ -325,7 +326,7 @@ void PrefFileChooser::restorePreferences()
     return;
   }
 
-  std::string txt = getWindowParameter()->GetASCII( entryName(), fileName().latin1() );
+  std::string txt = getWindowParameter()->GetASCII( entryName(), fileName().toAscii() );
   setFileName(txt.c_str());
 }
 
@@ -337,7 +338,7 @@ void PrefFileChooser::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII( entryName(), fileName().latin1() );
+  getWindowParameter()->SetASCII( entryName(), fileName().toAscii() );
 }
 
 QByteArray PrefFileChooser::entryName () const
@@ -363,7 +364,7 @@ void PrefFileChooser::setParamGrpPath ( const QByteArray& name )
 // --------------------------------------------------------------------
 
 PrefComboBox::PrefComboBox ( QWidget * parent )
-  : QComboBox(false, parent), PrefWidget()
+  : QComboBox(parent), PrefWidget()
 {
 }
 
@@ -389,21 +390,21 @@ void PrefComboBox::restorePreferences()
       clear();
 
     for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-      insertItem(it->c_str());
+      addItem(it->c_str());
 
-    int item = hPGrp->GetInt("currentItem", currentItem());
-    setCurrentItem(item);
+    int item = hPGrp->GetInt("currentItem", currentIndex());
+    setCurrentIndex(item);
   }
   else
   {
     // due to i18n we must make sure that 'txt' is an item of the combobox
     // otherwise we'll override the text of the current item
-    QString txt = hPGrp->GetASCII("currentText", currentText().latin1() ).c_str();
+    QString txt = hPGrp->GetASCII("currentText", currentText().toAscii() ).c_str();
     for ( int i = 0; i < count(); i++ )
     {
-  	  if ( text( i ) == txt )
+  	  if ( itemText( i ) == txt )
       {
-	      setCurrentItem( i );
+	      setCurrentIndex( i );
   	    break;
       }
     }
@@ -428,14 +429,14 @@ void PrefComboBox::savePreferences()
     {
       char szBuf[200];
       sprintf(szBuf, "Item%d", i);
-      hPGrp->SetASCII(szBuf, text(i).latin1());
+      hPGrp->SetASCII(szBuf, itemText(i).toAscii());
     }
 
-    hPGrp->SetInt("currentItem", currentItem());
+    hPGrp->SetInt("currentItem", currentIndex());
   }
   else
   {
-    hPGrp->SetASCII("currentText", currentText().latin1());
+    hPGrp->SetASCII("currentText", currentText().toAscii());
   }
 }
 
@@ -663,11 +664,11 @@ void PrefSlider::restorePreferences()
   ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
-  int min = hPrefs->GetInt("MinValue", minValue());
-  int max = hPrefs->GetInt("MaxValue", maxValue());
+  int min = hPrefs->GetInt("MinValue", minimum());
+  int max = hPrefs->GetInt("MaxValue", maximum());
   int val = hPrefs->GetInt("Value", value());
-  setMinValue(min);
-  setMaxValue(max);
+  setMinimum(min);
+  setMaximum(max);
   setValue(val);
 }
 
@@ -681,8 +682,8 @@ void PrefSlider::savePreferences()
 
   ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   hPrefs->SetInt("Orientation", int(orientation()));
-  hPrefs->SetInt("MinValue", minValue());
-  hPrefs->SetInt("MaxValue", maxValue());
+  hPrefs->SetInt("MinValue", minimum());
+  hPrefs->SetInt("MaxValue", maximum());
   hPrefs->SetInt("Value", value());
 }
 

@@ -246,7 +246,7 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
 }
 
 
-
+#if 0
 EditableListView::EditableListView( QWidget* parent )
   :Q3ListView( parent ), _editingItem( 0 )
 {
@@ -390,6 +390,6 @@ void EditableListView::updateItem()
   if (_editingItem)
     _editingItem->update();
 }
-
+#endif
 
 #include "moc_propertyeditor.cpp"

@@ -364,6 +364,7 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
 
   return true;
 }
+
 /** Loads an ASCII STL file. */
 bool MeshInput::LoadAsciiSTL (std::istream &rstrIn)
 {
@@ -1028,6 +1029,32 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
 
     ++clIter;
     Base::Sequencer().next( true ); // allow to cancel
+  }
+
+  return true;
+}
+
+/** Loads an OBJ file. */
+bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
+{
+  const MeshPointArray& rPoints = _rclMesh.GetPoints();
+  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+
+  if ( !rstrOut || rstrOut.bad() == true )
+    return false;
+
+  Base::SequencerLauncher seq("saving...", _rclMesh.CountPoints() + _rclMesh.CountFacets());  
+
+  for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+      rstrOut << "V " << it->x << " " << it->y << " " << it->z << std::endl;
+      Base::Sequencer().next( true ); // allow to cancel
+  }
+
+  for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+      rstrOut << "F " << it->_aulPoints[0]+1 << "/" << it->_aulPoints[0]+1 << " "
+                      << it->_aulPoints[1]+1 << "/" << it->_aulPoints[1]+1 << " "
+                      << it->_aulPoints[2]+1 << "/" << it->_aulPoints[2]+1 << std::endl;
+      Base::Sequencer().next( true ); // allow to cancel
   }
 
   return true;

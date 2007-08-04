@@ -212,7 +212,7 @@ void StdCmdFreezeViews::activated(int iMsg)
           }
         }
 
-        str << "    <Camera settings=\"" << (const char*)viewPos.toLatin1() << "\"/>" << std::endl;
+        str << "    <Camera settings=\"" << viewPos.toStdString() << "\"/>" << std::endl;
       }
 
       str << "  </Views>" << std::endl;
@@ -816,15 +816,19 @@ void StdViewScreenShot::activated(int iMsg)
       }
 
       QString comment = opt->comment();
+      std::string file = fn.toStdString();
       if ( !comment.isEmpty())
       {
         // Replace newline escape sequence trough '\\n' string to build one big string, otherwise Python would interpret it as an invalid command. 
         // Python does the decoding for us.
         QStringList lines = comment.split("\n", QString::KeepEmptyParts );
         QString text = lines.join("\\n");
-        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s','%s')",fn.toLatin1(),w,h,background,text.toLatin1());
+        std::string comment = text.toStdString();
+        doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
+            file.c_str(),w,h,background,comment.c_str());
       }else{
-        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s')",fn.toLatin1(),w,h,background);
+        doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s')",
+            file.c_str(),w,h,background);
       }
     }
   }

@@ -82,6 +82,15 @@ int Export::execute(void)
             setError("Export of STL mesh to file '%s' failed",FileName.getValue());
             return 1;
         }
+    } else if ( fi.hasExtension("obj")  ) {
+        std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+        MeshCore::MeshOutput aWriter(pcFeat->Mesh.getValue());
+
+        // write file
+        if ( !aWriter.SaveOBJ(str) ) {
+            setError("Export of OBJ mesh to file '%s' failed",FileName.getValue());
+            return 1;
+        }
     } else if ( fi.hasExtension("iv")  ) {
         std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
         MeshCore::MeshOutput aWriter(pcFeat->Mesh.getValue());
