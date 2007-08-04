@@ -83,6 +83,8 @@ QVariant PropertyMeshKernelItem::editorData(QWidget *editor) const
 }
 
 
+
+#if 0
 TYPESYSTEM_SOURCE(MeshGui::PropertyEditorMesh, Gui::PropertyEditor::EditableItem);
 
 PropertyEditorMesh::PropertyEditorMesh()
@@ -154,3 +156,4 @@ void PropertyEditorMesh::convertToProperty(const QVariant&)
 }
 
 // --------------------------------------------------------------------
+#endif

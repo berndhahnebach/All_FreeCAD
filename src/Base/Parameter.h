@@ -117,7 +117,7 @@ public:
 	/// get a vector of all bool values in this group
 	std::vector<bool> GetBools(const char * sFilter = NULL) const;
 	/// get a map with all bool values and the keys of this group
-	std::map<std::string,bool> GetBoolMap(const char * sFilter = NULL) const;
+    std::vector<std::pair<std::string,bool> > GetBoolMap(const char * sFilter = NULL) const;
 	/// remove a bool value from this group
 	void RemoveBool(const char* Name);
 	//@}
@@ -131,7 +131,7 @@ public:
 	/// get a vector of all int values in this group
 	std::vector<long> GetInts(const char * sFilter = NULL) const;
 	/// get a map with all int values and the keys of this group
-	std::map<std::string,long> GetIntMap(const char * sFilter = NULL) const;
+    std::vector<std::pair<std::string,long> > GetIntMap(const char * sFilter = NULL) const;
 	/// remove a int value from this group
 	void RemoveInt(const char* Name);
 	//@}
@@ -145,7 +145,7 @@ public:
 	/// get a vector of all uint values in this group
 	std::vector<unsigned long> GetUnsigneds(const char * sFilter = NULL) const;
 	/// get a map with all uint values and the keys of this group
-	std::map<std::string,unsigned long> GetUnsignedMap(const char * sFilter = NULL) const;
+    std::vector<std::pair<std::string,unsigned long> > GetUnsignedMap(const char * sFilter = NULL) const;
 	/// remove a uint value from this group
 	void RemoveUnsigned(const char* Name);
 	//@}
@@ -160,7 +160,7 @@ public:
 	/// get a vector of all float values in this group
 	std::vector<double> GetFloats(const char * sFilter = NULL) const;
 	/// get a map with all float values and the keys of this group
-	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL) const;
+    std::vector<std::pair<std::string,double> > GetFloatMap(const char * sFilter = NULL) const;
 	/// remove a float value from this group
 	void RemoveFloat(const char* Name);
 	//@}
@@ -195,7 +195,7 @@ public:
 	 */
 	std::vector<std::string> GetASCIIs(const char * sFilter = NULL) const;
 	/// Same as GetASCIIs() but with key,value map
-	std::map<std::string,std::string> GetASCIIMap(const char * sFilter = NULL) const;
+    std::vector<std::pair<std::string,std::string> > GetASCIIMap(const char * sFilter = NULL) const;
 	//@}
 
 	static void Init(void);

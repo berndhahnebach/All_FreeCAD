@@ -129,7 +129,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
           } else {
             QStringList modeList;
             for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it ) {
-              if ( commonModeList.find(it->c_str()) != commonModeList.end() )
+              if ( commonModeList.contains(it->c_str()) )
                 modeList << it->c_str();
             }
 
@@ -222,8 +222,8 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
   if ( !bDisplay ) {
     changeMode->setDisabled(true);
   } else {
-    changeMode->insertStringList(commonModeList);
-    changeMode->setCurrentText(activeMode);
+    changeMode->insertItems(0, commonModeList);
+    changeMode->setItemText(changeMode->currentIndex(), activeMode);
   }
 
   if ( !bTransparency ) {
@@ -291,13 +291,13 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
 
     QStringList material = Materials.keys();
     material.sort();
-    changeMaterial->insertItem("Default");
-    changeMaterial->insertStringList(material);
+    changeMaterial->insertItem(0, "Default");
+    changeMaterial->insertItems(1, material);
     Materials["Default"]       = App::Material::DEFAULT;
     for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
     {
-      if (it.data() == cMatType) {
-        changeMaterial->setCurrentText(it.key());
+      if (it.value() == cMatType) {
+        changeMaterial->setItemText(changeMaterial->currentIndex(), it.key());
         break;
       }
     }
@@ -361,14 +361,14 @@ void DlgDisplayPropertiesImp::on_changeMode_activated(const QString& s)
     if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
     {
       App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
-      Display->setValue(s.latin1());
+      Display->setValue(s.toLatin1());
     }
   }
 }
 
 void DlgDisplayPropertiesImp::on_changePlot_activated(const QString&s)
 {
-  Base::Console().Log("Plot = %s\n",s.latin1());
+  Base::Console().Log("Plot = %s\n",s.toLatin1());
 }
 
 /**

@@ -90,17 +90,17 @@ void TextEdit::complete()
     if (wordPrefix.isEmpty())
         return;
     
-    QStringList list = QStringList::split(QRegExp("\\W+"), text());
+    QStringList list = toPlainText().split(QRegExp("\\W+"));
     QMap<QString, QString> map;
     QStringList::Iterator it = list.begin();
     while (it != list.end()) {
         if ((*it).startsWith(wordPrefix) && (*it).length() > wordPrefix.length())
-            map[(*it).lower()] = *it;
+            map[(*it).toLower()] = *it;
         ++it;
     }
     
     if (map.count() == 1) {
-        insert((*map.begin()).mid(wordPrefix.length()));
+        insertPlainText((*map.begin()).mid(wordPrefix.length()));
     } else if (map.count() > 1) {
         if (!listBox)
             createListBox();
@@ -172,7 +172,8 @@ CompletionList::CompletionList(QTextEdit* parent)
 {
     // make the user assume that the widget is active
     QPalette pal = parent->palette();
-    pal.setInactive( pal.active() );
+    pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
+    pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
     parent->setPalette( pal );
 
     connect(this, SIGNAL(itemActivated(QListWidgetItem *)), 

@@ -332,7 +332,7 @@ static const char * resetproperty_xpm[] = {
       "@@+.+@@",
       "@+.@.+@",
       "+.@@@.+"};
-
+#if 0
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 
 Q3ListView* EditableItem::parentView = 0;
@@ -558,7 +558,7 @@ void EditableItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int
   p->drawLine( width - 1, 0, width - 1, height() );
   p->restore();
 }
-
+#endif
 
 #include "moc_propertyeditoritem.cpp"
 

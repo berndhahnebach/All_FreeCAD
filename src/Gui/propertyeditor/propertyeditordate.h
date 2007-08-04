@@ -29,7 +29,7 @@
 
 namespace Gui {
 namespace PropertyEditor {
-
+#if 0
 /**
  * Change a time property.
  * \author Werner Mayer
@@ -98,7 +98,7 @@ protected:
 private:
   DateTimeEditorItem();
 };
-
+#endif
 } //namespace PropertyEditor
 } //namespace Gui
 

@@ -94,7 +94,7 @@ private:
 
 
 
-
+#if 0
 /** Implementation of a property editor similar to this one of Qt designer.
  *
  * EditableListView contains all EditableItem objects with an editor inside.
@@ -141,6 +141,7 @@ protected:
 private:
   EditableItem* _editingItem;
 };
+#endif
 
 } //namespace PropertyEditor
 } //namespace Gui

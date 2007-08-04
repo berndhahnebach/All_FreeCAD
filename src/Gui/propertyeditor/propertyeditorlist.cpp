@@ -74,7 +74,7 @@ QWidget* PropertyBoolItem::createEditor(QWidget* parent, const QObject* receiver
 void PropertyBoolItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    cb->setCurrentText(data.toString());
+    cb->setItemText(cb->currentIndex(), data.toString());
 }
 
 QVariant PropertyBoolItem::editorData(QWidget *editor) const
@@ -132,7 +132,7 @@ void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) cons
         cb->addItem(it->c_str());
     }
 
-    cb->setCurrentText(data.toString());
+    cb->setItemText(cb->currentIndex(), data.toString());
 }
 
 QVariant PropertyEnumItem::editorData(QWidget *editor) const
@@ -204,7 +204,7 @@ void PropertyStringListItem::setValue(const QVariant& value)
 
 
 
-
+#if 0
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::BoolEditorItem, Gui::PropertyEditor::EditableItem);
 
 BoolEditorItem::BoolEditorItem()
@@ -720,3 +720,4 @@ void CursorEditorItem::convertToProperty(const QVariant&)
 {
 }
 
+#endif

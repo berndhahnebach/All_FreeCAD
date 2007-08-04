@@ -39,9 +39,6 @@
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 
-class QPushButton;
-class Q3GridLayout;
-
 namespace Gui {
   namespace Dialog{
     class PreferencePage;
@@ -212,7 +209,7 @@ public:
   QPushButton* buttonCancel; /**< The cancel button. */
 
 private:
-  Q3GridLayout* MyDialogLayout;
+  QGridLayout* MyDialogLayout;
 };
 
 // ----------------------------------------------------

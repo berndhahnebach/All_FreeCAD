@@ -60,15 +60,13 @@ SoFCOffscreenRenderer::~SoFCOffscreenRenderer()
 
 void SoFCOffscreenRenderer::writeToImage (QImage& img) const
 {
-	const unsigned char * bytes = getBuffer();
+  const unsigned char * bytes = getBuffer();
   SbVec2s size = getViewportRegion().getViewportSizePixels();
   int numcomponents = (int) this->getComponents();
   int width  = (int)size[0];
   int height = (int)size[1];
 
-  QImage image(width, height, 32);
-  if (numcomponents == 2 || numcomponents == 4) image.setAlphaBuffer(TRUE);
-  else image.setAlphaBuffer(FALSE);
+  QImage image(width, height, QImage::Format_RGB32);
   QRgb * bits = (QRgb*) image.bits();
   
   for (int y = 0; y < height; y++) {
@@ -231,8 +229,8 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
     for (int j=0; j < extlist.getLength(); j++)
     {
       QString ext = (const char*) extlist[j];
-      if ( formats.findIndex( ext.upper() ) == -1 )
-        formats << ext.upper();
+      if ( formats.indexOf( ext.toUpper() ) == -1 )
+        formats << ext.toUpper();
     }
   }
 
@@ -241,14 +239,14 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
   for ( QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
   {
     // not supported? then append
-    if ( isWriteSupported( (*it).data() ) == false && formats.findIndex(*it) == -1 )
+    if ( isWriteSupported( (*it).data() ) == false && formats.indexOf(*it) == -1 )
       formats << *it;
   }
 
   // now add PostScript and SGI RGB
-  if ( formats.findIndex("EPS") == -1 )
+  if ( formats.indexOf("EPS") == -1 )
     formats << "EPS";
-  else if ( formats.findIndex("SGI") == -1 )
+  else if ( formats.indexOf("SGI") == -1 )
     formats << "SGI";
 
   formats.sort();

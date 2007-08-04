@@ -132,7 +132,7 @@ void Translator::findQmFiles()
     QString absName = dir.filePath(*it);
     if (translator.load(absName)) {
       // use the context of this class name
-      QString lang = translator.translate(this->className(), QT_TR_NOOP("English"));
+      QString lang = translator.translate(this->metaObject()->className(), QT_TR_NOOP("English"));
       if (!lang.isEmpty())
         languages[lang] = absName;
     }
@@ -152,7 +152,7 @@ void Translator::installLanguage ( const QString& lang )
   if (it != languages.end()) {
     this->language = lang;
     QDir dir(":/translations");
-    QString suffix = it.data().right(6);
+    QString suffix = it.value().right(6);
     suffix.prepend('*');
     QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
@@ -183,7 +183,7 @@ void Translator::reinstallLanguage()
   QMap<QString, QString>::ConstIterator it = languages.find(this->language);
   if (it != languages.end()) {
     QDir dir(":/translations");
-    QString suffix = it.data().right(6);
+    QString suffix = it.value().right(6);
     suffix.prepend('*');
     QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){

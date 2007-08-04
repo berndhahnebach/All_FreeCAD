@@ -169,15 +169,15 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   // only one selection node for the mesh
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
 
-  SoFCMeshVertex* vertex = new SoFCMeshVertex;
+  pcVertexNode = new SoFCMeshVertex;
   const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
-  vertex->point.setValue(rPAry);
-  pcHighlight->addChild(vertex);
+  pcVertexNode->point.setValue(rPAry);
+  pcHighlight->addChild(pcVertexNode);
 
-  SoFCMeshFacet* facet = new SoFCMeshFacet;
+  pcFacetNode = new SoFCMeshFacet;
   const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
-  facet->coordIndex.setValue(rFAry);
-  pcHighlight->addChild(facet);
+  pcFacetNode->coordIndex.setValue(rFAry);
+  pcHighlight->addChild(pcFacetNode);
 
   pcFaceSet = new SoFCMeshFaceSet;
   pcHighlight->addChild(pcFaceSet);
@@ -329,7 +329,7 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 {
   if (pcOpenEdge) {
     // remove the node and destroy the data
-    pcHighlight->removeChild(pcOpenEdge);
+    pcRoot->removeChild(pcOpenEdge);
     pcOpenEdge = 0;
   }
 
@@ -338,11 +338,12 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
     pcOpenEdge->addChild(pcLineStyle);
     pcOpenEdge->addChild(pOpenColor);
 
-    SoFCMeshOpenEdgeSet* openEdges = new SoFCMeshOpenEdgeSet;
-    pcOpenEdge->addChild(openEdges);
+    pcOpenEdge->addChild(pcVertexNode);
+    pcOpenEdge->addChild(pcFacetNode);
+    pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
 
     // add to the highlight node
-    pcHighlight->addChild(pcOpenEdge);
+    pcRoot->addChild(pcOpenEdge);
   }
 }
 
@@ -350,7 +351,7 @@ void ViewProviderMeshFaceSet::showBoundingBox(bool show)
 {
   if (pBoundingBox) {
     // remove the node and destroy the data
-    pcHighlight->removeChild(pBoundingBox);
+    pcRoot->removeChild(pBoundingBox);
     pBoundingBox = 0;
   }
 
@@ -370,7 +371,7 @@ void ViewProviderMeshFaceSet::showBoundingBox(bool show)
     bbox->textOn.setValue(false);
 
     // add to the highlight node
-    pcHighlight->addChild(pBoundingBox);
+    pcRoot->addChild(pBoundingBox);
   }
 }
 

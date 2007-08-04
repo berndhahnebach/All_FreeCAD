@@ -322,7 +322,7 @@ QVariant PropertyFloatConstraintItem::editorData(QWidget *editor) const
 
 
 
-
+#if 0
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TextEditorItem, Gui::PropertyEditor::EditableItem);
 
 TextEditorItem::TextEditorItem()
@@ -600,7 +600,7 @@ QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
   //return editor;
     return 0;
 }
-
+#endif
 #include "moc_propertyeditorinput.cpp"
 
 // --------------------------------------------------------------------

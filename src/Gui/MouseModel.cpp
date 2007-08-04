@@ -296,12 +296,12 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
         _pcView3D->getWidget()->setCursor(m_cPrevCursor);
 //        _pcView3D->getGLWidget()->releaseMouse();
       
-        Q3PopupMenu menu;
-        int fi = menu.insertItem("Finish");
-        int ca = menu.insertItem("Cancel");
+        QMenu menu;
+        QAction* fi = menu.addAction("Finish");
+        QAction* ca = menu.addAction("Cancel");
         if ( getPolygon().size() < 3 )
-          menu.setItemEnabled(fi,false);
-        int id = menu.exec(QCursor::pos());
+            fi->setEnabled(false);
+        QAction* id = menu.exec(QCursor::pos());
         
 //        _pcView3D->getGLWidget()->grabMouse();
     
@@ -577,10 +577,10 @@ int CirclePickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e
         QCursor cur = _pcView3D->getWidget()->cursor();
         _pcView3D->getWidget()->setCursor(m_cPrevCursor);
       
-        Q3PopupMenu menu;
-        int fi = menu.insertItem("Finish");
-        int ca = menu.insertItem("Cancel");
-        int id = menu.exec(QCursor::pos());
+        QMenu menu;
+        QAction* fi = menu.addAction("Finish");
+        QAction* ca = menu.addAction("Cancel");
+        QAction* id = menu.exec(QCursor::pos());
     
         if ( id == fi )
         {

@@ -87,7 +87,7 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
   try
   {
 #ifdef FC_DEBUG
-    const char* cName = dynamic_cast<QWidget*>(w)->className();
+    const char* cName = dynamic_cast<QWidget*>(w)->metaObject()->className();
     Console().Log("Widget of type '%s' created.\n", cName);
 #endif
   }
@@ -104,7 +104,7 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
 
   // set the parent to the widget
   if (parent)
-    w->reparent(parent, QPoint(0,0));
+    w->setParent(parent);
 
   return w;
 }
@@ -131,7 +131,7 @@ Gui::Dialog::PreferencePage* WidgetFactoryInst::createPreferencePage (const char
 
   if ( qobject_cast<Gui::Dialog::PreferencePage*>(w) ) {
 #ifdef FC_DEBUG
-    Console().Log("Preference page of type '%s' created.\n", w->className());
+    Console().Log("Preference page of type '%s' created.\n", w->metaObject()->className());
 #endif
   } else {
 #ifdef FC_DEBUG
@@ -163,7 +163,7 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
     return 0; // no valid QWidget object
 
   // set the parent to the widget
-  w->reparent(parent, QPoint(0,0));
+  w->setParent(parent);
 
   try
   {
@@ -173,7 +173,7 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from \"PrefWidget\"\n", w->className());
+    Console().Error("%s does not inherit from \"PrefWidget\"\n", w->metaObject()->className());
 #endif
     delete w;
     return 0;
@@ -218,15 +218,17 @@ void WidgetFactorySupplier::destruct()
  *  The dialog will be modal.
  */
 ContainerDialog::ContainerDialog( QWidget* templChild )
-  : QDialog( QApplication::activeWindow(), 0L, true, 0 )
+  : QDialog( QApplication::activeWindow())
 {
-  setCaption( templChild->name() );
-  setName( templChild->name() );
+  setModal(true);
+  setWindowTitle( templChild->objectName() );
+  setObjectName( templChild->objectName() );
 
   setSizeGripEnabled( TRUE );
-  MyDialogLayout = new Q3GridLayout( this, 1, 1, 11, 6, "MyDialogLayout");
+  MyDialogLayout = new QGridLayout(this);
 
-  buttonOk = new QPushButton( this, "buttonOk" );
+  buttonOk = new QPushButton(this);
+  buttonOk->setObjectName("buttonOK");
   buttonOk->setText( tr( "&OK" ) );
   buttonOk->setAutoDefault( TRUE );
   buttonOk->setDefault( TRUE );
@@ -235,15 +237,16 @@ ContainerDialog::ContainerDialog( QWidget* templChild )
   QSpacerItem* spacer = new QSpacerItem( 210, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   MyDialogLayout->addItem( spacer, 1, 1 );
 
-  buttonCancel = new QPushButton( this, "buttonCancel" );
+  buttonCancel = new QPushButton(this);
+  buttonCancel->setObjectName("buttonCancel");
   buttonCancel->setText( tr( "&Cancel" ) );
   buttonCancel->setAutoDefault( TRUE );
 
   MyDialogLayout->addWidget( buttonCancel, 1, 2 );
 
-  templChild->reparent(this, QPoint());
+  templChild->setParent(this);
 
-  MyDialogLayout->addMultiCellWidget( templChild, 0, 0, 0, 2 );
+  MyDialogLayout->addWidget( templChild, 0, 0, 0, 2 );
   resize( QSize(307, 197).expandedTo(minimumSizeHint()) );
 
   // signals and slots connections
@@ -354,7 +357,7 @@ void PyResource::load( const char* name )
   // checks whether it's a relative path
   if ( fi.isRelative() )
   {
-    QString cwd = QDir::currentDirPath ();
+    QString cwd = QDir::currentPath ();
     QString home= QDir(App::GetApplication().GetHomePath()).path();
 
     // search in cwd and home path for the file
@@ -364,7 +367,8 @@ void PyResource::load( const char* name )
     {
       if ( cwd == home )
       {
-        throw Base::Exception(QString("Cannot find file %1").arg( fi.absFilePath() ));
+        QString what = QString("Cannot find file %1").arg(fi.absoluteFilePath());
+        throw Base::Exception(what.toStdString());
       }
       else
       {
@@ -372,20 +376,22 @@ void PyResource::load( const char* name )
 
         if ( !fi.exists() )
         {
-          throw Base::Exception(QString("Cannot find file %1 neither in %2 nor in %3").
-                      arg( fn ).arg( cwd ).arg( home ) );
+          QString what = QString("Cannot find file %1 neither in %2 nor in %3").arg(fn).arg(cwd).arg(home);
+          throw Base::Exception(what.toStdString());
         }
         else
         {
-          fn = fi.absFilePath(); // file resides in FreeCAD's home directory
+          fn = fi.absoluteFilePath(); // file resides in FreeCAD's home directory
         }
       }
     }
   }
   else
   {
-    if ( !fi.exists() )
-      throw Base::Exception(QString("Cannot find file %1").arg( fn ));
+    if ( !fi.exists() ) {
+      QString what = QString("Cannot find file %1").arg(fn);
+      throw Base::Exception(what.toStdString());
+    }
   }
 
   QWidget* w=0;
@@ -421,15 +427,15 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
     return false;
 
   QObject* objS=0L;
-  QObjectList l = myDlg->queryList( "QWidget" );
-  QObjectList::const_iterator  it=l.begin() ;
+  QList<QWidget*> list = myDlg->findChildren<QWidget*>();
+  QList<QWidget*>::const_iterator it = list.begin();
   QObject *obj;
   QString sigStr = QString("2%1").arg(signal);
 
-  while ( it != l.end() ) {
+  while ( it != list.end() ) {
     obj = *it;
     ++it;
-    if (strcmp(obj->name(), sender) == 0)
+    if (obj->objectName() == sender)
     {
       objS = obj;
       break;
@@ -440,7 +446,7 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
   {
     SignalConnect* sc = new SignalConnect(this, cb, objS);
     mySingals.push_back(sc);
-    return QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
+    return QObject::connect(objS, sigStr.toAscii(), sc, SLOT ( onExecute() )  );
   }
   else
     qWarning( "'%s' does not exist.\n", sender );
@@ -527,15 +533,15 @@ PyObject *PyResource::value(PyObject *args)
   QVariant v;
   if (myDlg)
   {
-    QObjectList l = myDlg->queryList( "QWidget" );
-    QObjectList::const_iterator it = l.begin( );
+    QList<QWidget*> list = myDlg->findChildren<QWidget*>();
+    QList<QWidget*>::const_iterator it = list.begin();
     QObject *obj;
 
     bool fnd = false;
-    while ( it != l.end() ) {
+    while ( it != list.end() ) {
       obj = *it;
       ++it;
-      if (strcmp(obj->name(), psName) == 0)
+      if (obj->objectName() == psName)
       {
         fnd = true;
         v = obj->property(psProperty);
@@ -557,14 +563,14 @@ PyObject *PyResource::value(PyObject *args)
       PyObject* slist = PyList_New(nSize);
       for (int i=0; i<nSize;++i)
       {
-        PyObject* item = PyString_FromString(str[i].latin1());
+        PyObject* item = PyString_FromString(str[i].toAscii());
         PyList_SetItem(slist, i, item);
       }
     } break;
-  case QVariant::CString:
+  case QVariant::ByteArray:
     break;
   case QVariant::String:
-    pItem = PyString_FromString(v.toString().latin1());
+    pItem = PyString_FromString(v.toString().toAscii());
     break;
   case QVariant::Double:
     pItem = PyFloat_FromDouble(v.toDouble());
@@ -643,15 +649,15 @@ PyObject *PyResource::setValue(PyObject *args)
 
   if (myDlg)
   {
-    QObjectList l = myDlg->queryList( "QWidget" );
-    QObjectList::const_iterator it = l.begin( );
+    QList<QWidget*> list = myDlg->findChildren<QWidget*>();
+    QList<QWidget*>::const_iterator it = list.begin();
     QObject *obj;
 
     bool fnd = false;
-    while ( it != l.end() ) {
+    while ( it != list.end() ) {
       obj = *it;
       ++it;
-      if (strcmp(obj->name(), psName) == 0)
+      if (obj->objectName() == psName)
       {
         fnd = true;
         obj->setProperty(psProperty, v);

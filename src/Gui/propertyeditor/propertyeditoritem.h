@@ -125,7 +125,7 @@ public Q_SLOTS:
 
 
 
-
+#if 0
 /** Implementation of a property editor similar to this one of Qt designer.
  *
  * EditableItem is an abstract base class for all items with an editor inside.
@@ -254,6 +254,7 @@ private:
   QWidget* _editor; /**< A pointer to the actual editor widget. */
   QPushButton* _apply;
 };
+#endif
 
 } // namespace PropertyEditor
 } // namespace Gui

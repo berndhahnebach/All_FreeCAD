@@ -55,9 +55,9 @@ QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, 
 
     FileDialog fd(parent, caption, dirName, filter);
     fd.setAcceptMode(QFileDialog::AcceptOpen);
-    fd.setMode( ExistingFile );
+    fd.setFileMode( ExistingFile );
     if ( caption.isEmpty() )
-        fd.setCaption( FileDialog::tr( "Open" ) );
+        fd.setWindowTitle( FileDialog::tr( "Open" ) );
     if ( !selName.isEmpty() )
         fd.selectFile( selName );
     if ( selectedFilter )
@@ -68,7 +68,7 @@ QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, 
     if ( fd.exec() == QDialog::Accepted ) {
         if ( selectedFilter )
             *selectedFilter = fd.selectedFilter();
-        QString file = fd.selectedFile();
+        QString file = fd.selectedFiles().front();
         setWorkingDirectory(file);
         return file;
     } else
@@ -95,9 +95,9 @@ QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption,
 
     FileDialog fd(parent, caption, dirName, filter);
     fd.setAcceptMode(QFileDialog::AcceptSave);
-    fd.setMode( AnyFile );
+    fd.setFileMode( AnyFile );
     if ( caption.isEmpty() )
-        fd.setCaption( FileDialog::tr( "Save as" ) );
+        fd.setWindowTitle( FileDialog::tr( "Save as" ) );
     if ( !selName.isEmpty() )
         fd.selectFile( selName );
     if ( selectedFilter )
@@ -108,7 +108,7 @@ QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption,
     if ( fd.exec() == QDialog::Accepted ) {
         if ( selectedFilter )
             *selectedFilter = fd.selectedFilter();
-        QString file = fd.selectedFile();
+        QString file = fd.selectedFiles().front();
         setWorkingDirectory(file);
         return file;
     } else
@@ -139,8 +139,8 @@ QStringList FileDialog::getOpenFileNames ( QWidget * parent, const QString & cap
     QString dirName = dir.isEmpty() ? getWorkingDirectory() : dir;
     FileDialog fd(parent, caption, dirName, filter);
     fd.setAcceptMode(QFileDialog::AcceptOpen);
-    fd.setMode( ExistingFiles );
-    fd.setCaption(caption);
+    fd.setFileMode( ExistingFiles );
+    fd.setWindowTitle(caption);
     if ( selectedFilter )
         fd.setFilter( *selectedFilter );
   //if ( buttonText != QString::null )
@@ -189,7 +189,7 @@ void FileDialog::setWorkingDirectory( const QString& dir )
 
     FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-    hPath->SetASCII("FileOpenSavePath", dirName.latin1());
+    hPath->SetASCII("FileOpenSavePath", dirName.toAscii());
 }
 
 /**
@@ -223,7 +223,7 @@ FileDialog::~FileDialog()
  */
 QString FileDialog::selectedFileName()
 {
-  QString fn = selectedFile();
+  QString fn = selectedFiles().front();
 
   // if empty do nothing
   if (fn.isEmpty())
@@ -236,14 +236,14 @@ QString FileDialog::selectedFileName()
     return QString::null;
 
   // search for extension
-  int pos = fi.fileName().findRev('.');
+  int pos = fi.fileName().lastIndexOf('.');
   if (pos == -1)
   {
     // try to figure out the selected filter
     QString filt = selectedFilter();
-    int dot = filt.find('*');
-    int blank = filt.find(' ', dot);
-    int brack = filt.find(')', dot);
+    int dot = filt.indexOf('*');
+    int blank = filt.indexOf(' ', dot);
+    int brack = filt.indexOf(')', dot);
     if (dot != -1 && blank != -1)
     {
       QString sub = filt.mid(dot+1, blank-dot-1);

@@ -293,7 +293,6 @@ int PythonStdinPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStdinPy,readline)
 {
-  QString txt = QInputDialog::getText ( "Python Input Dialog", "Input for Python:", QLineEdit::Normal, QString::null, 0, 
-                                        pyConsole, "PyInput" );
-  return Py_BuildValue("s", txt.latin1());
+  QString txt = QInputDialog::getText(pyConsole, "Python Input Dialog", "Input for Python:", QLineEdit::Normal);
+  return Py_BuildValue("s", txt.toLatin1());
 } 

@@ -164,7 +164,9 @@ void SoFCColorLegend::setRange( float fMin, float fMax, int prec )
   for (int j=0; j<9; j++)
   {
     float fValue = (1.0f-0.125f*(float)j)*fMax + (0.125f*(float)j)*fMin;
-    label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
+    s.setNum(fValue, 'f', prec);
+    std::string val = s.toStdString();
+    label.set1Value(j, val.c_str() );
   }
 
   setMarkerLabel( label );

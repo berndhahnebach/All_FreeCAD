@@ -100,7 +100,7 @@ DockWindowManager::DockWindowManager()
 DockWindowManager::~DockWindowManager()
 {
   for (QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.begin(); it != d->_dockWindows.end(); ++it) {
-    QWidget* dw = it.data();
+    QWidget* dw = it.value();
     if (dw) {
       delete dw;
     }
@@ -130,7 +130,7 @@ void DockWindowManager::addDockWindow( const QString& name, QWidget* widget, Qt:
 
   // set object name and window title needed for i18n stuff
   dw->setObjectName(name);
-  dw->setWindowTitle(QDockWidget::tr(name));
+  dw->setWindowTitle(QDockWidget::tr(name.toUtf8()));
   dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
   d->_dockedWindows.push_back(dw);
@@ -240,7 +240,7 @@ void DockWindowManager::hideDockWindows( const QStringList& dw )
 void DockWindowManager::languageChanged()
 {
   for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
-    (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName()));
+    (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toUtf8()));
   }
 }
 
@@ -292,8 +292,8 @@ void DockWindowManager::setup( DockWindowItems* items)
   for (QList<DockWindowItem>::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
     QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find((*it).first);
     if (jt != d->_dockWindows.end()) {
-      addDockWindow(jt.data()->windowTitle(), jt.data(), (*it).second);
-      jt.data()->show();
+      addDockWindow(jt.value()->windowTitle(), jt.value(), (*it).second);
+      jt.value()->show();
     }
   }
 

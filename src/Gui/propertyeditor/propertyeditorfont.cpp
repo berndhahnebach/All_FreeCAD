@@ -122,7 +122,7 @@ QVariant PropertyColorItem::editorData(QWidget *editor) const
 
 
 
-
+#if 0
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FontEditorItem, Gui::PropertyEditor::EditableItem);
 
 FontEditorItem::FontEditorItem()
@@ -300,7 +300,7 @@ void ColorEditorItem::convertToProperty(const QVariant& val)
     pPropColor->setValue( (float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f );
   }
 }
-
+#endif
 #include "moc_propertyeditorfont.cpp"
 
 

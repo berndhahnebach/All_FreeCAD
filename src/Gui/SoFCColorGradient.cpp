@@ -182,7 +182,9 @@ void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
         float fValue = *it;
         if ( fabs(fValue*fFac) < 1.0 )
             fValue = 0.0f;
-        label.set1Value(i++, s.setNum(fValue, 'f', prec).latin1() );
+        s.setNum(fValue, 'f', prec);
+        std::string val = s.toStdString();
+        label.set1Value(i++, val.c_str() );
     }
 
     setMarkerLabel( label );

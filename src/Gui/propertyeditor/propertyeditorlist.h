@@ -92,7 +92,7 @@ protected:
 
 
 
-
+#if 0
 /**
  * Edit properties of boolean type. 
  * \author Werner Mayer
@@ -188,7 +188,7 @@ private:
 private:
   QMap<Qt::CursorShape, QString> _lst;
 };
-
+#endif
 } //namespace PropertyEditor
 } //namespace Gui
 

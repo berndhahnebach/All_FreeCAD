@@ -533,7 +533,8 @@ void View3DInventor::showActiveView( MDIView* view )
       // do a sinlge shot event (maybe insert a checkbox in viewer settings)
       int msecs = hGrp->GetInt("stopAnimatingIfDeactivated", 3000);
       if (msecs >= 0) // if < 0 do not stop rotation
-        stopSpinTimer->start(msecs, true);
+        stopSpinTimer->setSingleShot(true);
+        stopSpinTimer->start(msecs);
     } else if ( stopSpinTimer->isActive() ) {
       // If the active is not maximized anymore we can also stop the timer
       stopSpinTimer->stop();
@@ -568,11 +569,11 @@ void View3DInventor::dropEvent ( QDropEvent * e )
         if ( info.exists() && info.isFile() )
         {
           // First check the complete extension
-          if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
-            Application::Instance->import(info.absFilePath().latin1(), pDoc->getName());
+          if ( App::GetApplication().hasOpenType(info.completeSuffix().toLatin1() ) )
+            Application::Instance->import(info.absoluteFilePath().toLatin1(), pDoc->getName());
           // Don't get the complete extension
-          else if ( App::GetApplication().hasOpenType( info.extension(false).latin1() ) )
-            Application::Instance->import(info.absFilePath().latin1(), pDoc->getName());
+          else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
+            Application::Instance->import(info.absoluteFilePath().toLatin1(), pDoc->getName());
         }
       }
     }

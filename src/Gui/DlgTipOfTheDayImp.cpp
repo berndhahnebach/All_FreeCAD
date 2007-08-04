@@ -34,7 +34,7 @@
 #include "DlgTipOfTheDayImp.h"
 #include "Application.h"
 
-#include "../Base/Parameter.h"
+#include <Base/Parameter.h>
 
 using namespace Gui::Dialog;
 
@@ -46,7 +46,7 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, Qt::WFlags fl )
-  : QDialog( parent, fl | Qt::WStyle_Customize | Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu ),
+  : QDialog( parent, fl | Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
   WindowParameter("General")
 {
   setupUi(this);
@@ -57,7 +57,7 @@ DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, Qt::WFlags fl )
   // Since the resize mode of DlgTipOfTheDayBase does not
   // work properly so set this by hand 
   setMinimumSize(QSize(320, 250));
-  layout()->setResizeMode( QLayout::SetNoConstraint );
+  layout()->setSizeConstraint( QLayout::SetNoConstraint );
 
   reload();
   on_buttonNextTip_clicked();

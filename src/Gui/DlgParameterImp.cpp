@@ -125,36 +125,36 @@ void DlgParameterImp::onGroupSelected( Q3ListViewItem * item )
     reinterpret_cast<ParameterValue*>(ParamVal)->setCurrentGroup( _hcGrp );
 
     // filling up Text nodes
-    std::map<std::string,std::string> mcTextMap = _hcGrp->GetASCIIMap();
-    for(std::map<std::string,std::string>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
+    std::vector<std::pair<std::string,std::string> > mcTextMap = _hcGrp->GetASCIIMap();
+    for(std::vector<std::pair<std::string,std::string> >::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
     {
       (void)new ParameterText(ParamVal,It2->first.c_str(),It2->second.c_str(), _hcGrp);
     }
 
     // filling up Int nodes
-    std::map<std::string,long> mcIntMap = _hcGrp->GetIntMap();
-    for(std::map<std::string,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
+    std::vector<std::pair<std::string,long> > mcIntMap = _hcGrp->GetIntMap();
+    for(std::vector<std::pair<std::string,long> >::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
     {
       (void)new ParameterInt(ParamVal,It3->first.c_str(),It3->second, _hcGrp);
     }
 
     // filling up Float nodes
-    std::map<std::string,double> mcFloatMap = _hcGrp->GetFloatMap();
-    for(std::map<std::string,double>::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
+    std::vector<std::pair<std::string,double> > mcFloatMap = _hcGrp->GetFloatMap();
+    for(std::vector<std::pair<std::string,double> >::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
     {
       (void)new ParameterFloat(ParamVal,It4->first.c_str(),It4->second, _hcGrp);
     }
 
     // filling up bool nodes
-    std::map<std::string,bool> mcBoolMap = _hcGrp->GetBoolMap();
-    for(std::map<std::string,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
+    std::vector<std::pair<std::string,bool> > mcBoolMap = _hcGrp->GetBoolMap();
+    for(std::vector<std::pair<std::string,bool> >::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
     {
       (void)new ParameterBool(ParamVal,It5->first.c_str(),It5->second, _hcGrp);
     }
 
     // filling up UInt nodes
-    std::map<std::string,unsigned long> mcUIntMap = _hcGrp->GetUnsignedMap();
-    for(std::map<std::string,unsigned long>::iterator It6=mcUIntMap.begin();It6!=mcUIntMap.end();It6++)
+    std::vector<std::pair<std::string,unsigned long> > mcUIntMap = _hcGrp->GetUnsignedMap();
+    for(std::vector<std::pair<std::string,unsigned long> >::iterator It6=mcUIntMap.begin();It6!=mcUIntMap.end();It6++)
     {
       (void)new ParameterUInt(ParamVal,It6->first.c_str(),It6->second, _hcGrp);
     }
@@ -512,141 +512,151 @@ void ParameterValue::onRenameSelectedItem()
 
 void ParameterValue::onCreateTextItem()
 {
-  bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter the name:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( !ok || name.isEmpty() )
-    return;
+    bool ok;
+    QString name = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter the name:"), 
+                                        QLineEdit::Normal, QString::null, &ok, this);
+    if ( !ok || name.isEmpty() )
+        return;
 
-  std::map<std::string,std::string> smap = _hcGrp->GetASCIIMap();
-  if ( smap.find( name.latin1() ) != smap.end() )
-  {
-    QMessageBox::critical( this, tr("Existing item"),
-      tr("The item '%1' already exists.").arg( name ) );
-    return;
-  }
+    std::vector<std::pair<std::string,std::string> > smap = _hcGrp->GetASCIIMap();
+    for (std::vector<std::pair<std::string,std::string> >::iterator it = smap.begin(); it != smap.end(); ++it) {
+        if ( it->first == name.toStdString() )
+        {
+            QMessageBox::critical( this, tr("Existing item"),
+                tr("The item '%1' already exists.").arg( name ) );
+            return;
+        }
+    }
 
-  QString val = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter your text:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( ok && !val.isEmpty() )
-  {
-    ParameterValueItem *pcItem;
-    pcItem = new ParameterText(this,name,val, _hcGrp);
-    pcItem->appendToGroup();
-  }
+    QString val = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter your text:"), 
+                                        QLineEdit::Normal, QString::null, &ok, this);
+    if ( ok && !val.isEmpty() )
+    {
+        ParameterValueItem *pcItem;
+        pcItem = new ParameterText(this,name,val, _hcGrp);
+        pcItem->appendToGroup();
+    }
 }
 
 void ParameterValue::onCreateIntItem()
 {
-  bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New integer item"), QObject::tr("Enter the name:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( !ok || name.isEmpty() )
-    return;
+    bool ok;
+    QString name = QInputDialog::getText(QObject::tr("New integer item"), QObject::tr("Enter the name:"), 
+                                         QLineEdit::Normal, QString::null, &ok, this);
+    if ( !ok || name.isEmpty() )
+        return;
 
-  std::map<std::string,long> lmap = _hcGrp->GetIntMap();
-  if ( lmap.find( name.latin1() ) != lmap.end() )
-  {
-    QMessageBox::critical( this, tr("Existing item"),
-      tr("The item '%1' already exists.").arg( name ) );
-    return;
-  }
+    std::vector<std::pair<std::string,long> > lmap = _hcGrp->GetIntMap();
+    for (std::vector<std::pair<std::string,long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
+        if (it->first == name.toStdString())
+        {
+            QMessageBox::critical( this, tr("Existing item"),
+                tr("The item '%1' already exists.").arg( name ) );
+            return;
+        }
+    }
 
-  int val = QInputDialog::getInteger(QObject::tr("New integer item"), QObject::tr("Enter your number:"), 
-                                     0, -2147483647, 2147483647, 1, &ok, this);
+    int val = QInputDialog::getInteger(QObject::tr("New integer item"), QObject::tr("Enter your number:"), 
+                                       0, -2147483647, 2147483647, 1, &ok, this);
 
-  if ( ok )
-  {
-    ParameterValueItem *pcItem;
-    pcItem = new ParameterInt(this,name,(long)val, _hcGrp);
-    pcItem->appendToGroup();
-  }
+    if ( ok )
+    {
+        ParameterValueItem *pcItem;
+        pcItem = new ParameterInt(this,name,(long)val, _hcGrp);
+        pcItem->appendToGroup();
+    }
 }
 
 void ParameterValue::onCreateUIntItem()
 {
-  bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( !ok || name.isEmpty() )
-    return;
+    bool ok;
+    QString name = QInputDialog::getText(QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
+                                         QLineEdit::Normal, QString::null, &ok, this);
+    if ( !ok || name.isEmpty() )
+        return;
 
-  std::map<std::string,unsigned long> lmap = _hcGrp->GetUnsignedMap();
-  if ( lmap.find( name.latin1() ) != lmap.end() )
-  {
-    QMessageBox::critical( this, tr("Existing item"),
-      tr("The item '%1' already exists.").arg( name ) );
-    return;
-  }
-
-  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, true, DlgInputDialogImp::UIntBox);
-  dlg.setCaption(QObject::tr("New unsigned item"));
-  UIntSpinBox* edit = dlg.getUIntBox();
-  edit->setRange(0,UINT_MAX);
-  if (dlg.exec() == QDialog::Accepted ) {
-    QString value = edit->text();
-    unsigned long val = value.toULong(&ok);
-
-    if ( ok )
-    {
-      ParameterValueItem *pcItem;
-      pcItem = new ParameterUInt(this,name, val, _hcGrp);
-      pcItem->appendToGroup();
+    std::vector<std::pair<std::string,unsigned long> > lmap = _hcGrp->GetUnsignedMap();
+    for (std::vector<std::pair<std::string,unsigned long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
+        if (it->first == name.toStdString())
+        {
+            QMessageBox::critical( this, tr("Existing item"),
+                tr("The item '%1' already exists.").arg( name ) );
+            return;
+        }
     }
-  }
+
+    DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, true, DlgInputDialogImp::UIntBox);
+    dlg.setCaption(QObject::tr("New unsigned item"));
+    UIntSpinBox* edit = dlg.getUIntBox();
+    edit->setRange(0,UINT_MAX);
+    if (dlg.exec() == QDialog::Accepted ) {
+        QString value = edit->text();
+        unsigned long val = value.toULong(&ok);
+
+        if ( ok )
+        {
+            ParameterValueItem *pcItem;
+            pcItem = new ParameterUInt(this,name, val, _hcGrp);
+            pcItem->appendToGroup();
+        }
+    }
 }
 
 void ParameterValue::onCreateFloatItem()
 {
-  bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New float item"), QObject::tr("Enter the name:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( !ok || name.isEmpty() )
-    return;
+    bool ok;
+    QString name = QInputDialog::getText(QObject::tr("New float item"), QObject::tr("Enter the name:"), 
+                                         QLineEdit::Normal, QString::null, &ok, this);
+    if ( !ok || name.isEmpty() )
+        return;
 
-  std::map<std::string,double> fmap = _hcGrp->GetFloatMap();
-  if ( fmap.find( name.latin1() ) != fmap.end() )
-  {
-    QMessageBox::critical( this, tr("Existing item"),
-      tr("The item '%1' already exists.").arg( name ) );
-    return;
-  }
-
-  double val = QInputDialog::getDouble(QObject::tr("New float item"), QObject::tr("Enter your number:"), 
-                                       0, -2147483647, 2147483647, 12, &ok, this);
-  if ( ok )
-  {
-    ParameterValueItem *pcItem;
-    pcItem = new ParameterFloat(this,name,val, _hcGrp);
-    pcItem->appendToGroup();
-  }
+    std::vector<std::pair<std::string,double> > fmap = _hcGrp->GetFloatMap();
+    for (std::vector<std::pair<std::string,double> >::iterator it = fmap.begin(); it != fmap.end(); ++it) {
+        if (it->first == name.toStdString())
+        {
+            QMessageBox::critical( this, tr("Existing item"),
+                tr("The item '%1' already exists.").arg( name ) );
+            return;
+        }
+    }
+  
+    double val = QInputDialog::getDouble(QObject::tr("New float item"), QObject::tr("Enter your number:"), 
+                                         0, -2147483647, 2147483647, 12, &ok, this);
+    if ( ok )
+    {
+        ParameterValueItem *pcItem;
+        pcItem = new ParameterFloat(this,name,val, _hcGrp);
+        pcItem->appendToGroup();
+    }
 }
 
 void ParameterValue::onCreateBoolItem()
 {
-  bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New boolean item"), QObject::tr("Enter the name:"), 
-                                      QLineEdit::Normal, QString::null, &ok, this);
-  if ( !ok || name.isEmpty() )
-    return;
+    bool ok;
+    QString name = QInputDialog::getText(QObject::tr("New boolean item"), QObject::tr("Enter the name:"), 
+                                         QLineEdit::Normal, QString::null, &ok, this);
+    if ( !ok || name.isEmpty() )
+        return;
 
-  std::map<std::string,bool> bmap = _hcGrp->GetBoolMap();
-  if ( bmap.find( name.latin1() ) != bmap.end() )
-  {
-    QMessageBox::critical( this, tr("Existing item"),
-      tr("The item '%1' already exists.").arg( name ) );
-    return;
-  }
+    std::vector<std::pair<std::string,bool> > bmap = _hcGrp->GetBoolMap();
+    for (std::vector<std::pair<std::string,bool> >::iterator it = bmap.begin(); it != bmap.end(); ++it) {
+        if ( it->first == name.toStdString() )
+        {
+            QMessageBox::critical( this, tr("Existing item"),
+                tr("The item '%1' already exists.").arg( name ) );
+            return;
+        }
+    }
 
-  QStringList list; list << "true" << "false";
-  QString val = QInputDialog::getItem (QObject::tr("New boolean item"), QObject::tr("Choose an item:"),
-                                       list, 0, false, &ok, this);
-  if ( ok )
-  {
-    ParameterValueItem *pcItem;
-    pcItem = new ParameterBool(this,name,(val == list[0] ? true : false), _hcGrp);
-    pcItem->appendToGroup();
-  }
+    QStringList list; list << "true" << "false";
+    QString val = QInputDialog::getItem (QObject::tr("New boolean item"), QObject::tr("Choose an item:"),
+                                         list, 0, false, &ok, this);
+    if ( ok )
+    {
+        ParameterValueItem *pcItem;
+        pcItem = new ParameterBool(this,name,(val == list[0] ? true : false), _hcGrp);
+        pcItem->appendToGroup();
+    }
 }
 
 // ---------------------------------------------------------------------------

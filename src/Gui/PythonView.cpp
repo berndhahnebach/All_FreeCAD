@@ -74,7 +74,7 @@ PythonView::PythonView(QWidget* parent)
     setCurrentFileName(QString());
     d->textEdit->setFocus();
 
-    setIcon( Gui::BitmapFactory().pixmap("python_small") );
+    setWindowIcon( Gui::BitmapFactory().pixmap("python_small") );
 
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     hPrefGrp->Attach( this );
@@ -127,7 +127,8 @@ void PythonView::checkTimestamp()
         }
     }
 
-    d->activityTimer->start( 3000, true );
+    d->activityTimer->setSingleShot(true);
+    d->activityTimer->start(3000);
 }
 
 /**
@@ -181,9 +182,9 @@ bool PythonView::onHasMsg(const char* pMsg) const
         return d->textEdit->document()->isModified();
     } else if (strcmp(pMsg,"Cut")==0) {
         bool canWrite = !d->textEdit->isReadOnly();
-        return (canWrite && (d->textEdit->hasSelectedText()));
+        return (canWrite && (d->textEdit->textCursor().hasSelection()));
     } else if (strcmp(pMsg,"Copy")==0) {
-        return ( d->textEdit->hasSelectedText() );
+        return ( d->textEdit->textCursor().hasSelection() );
     } else if (strcmp(pMsg,"Paste")==0) {
         QClipboard *cb = QApplication::clipboard();
         QString text;
@@ -194,9 +195,9 @@ bool PythonView::onHasMsg(const char* pMsg) const
         bool canWrite = !d->textEdit->isReadOnly();
         return ( !text.isEmpty() && canWrite );
     } else if (strcmp(pMsg,"Undo")==0) {
-        return d->textEdit->isUndoAvailable ();
+        return d->textEdit->document()->isUndoAvailable ();
     } else if (strcmp(pMsg,"Redo")==0) {
-        return d->textEdit->isRedoAvailable ();
+        return d->textEdit->document()->isRedoAvailable ();
     }
 
     return false;
@@ -252,7 +253,8 @@ bool PythonView::open(const QString& fileName)
 
     QFileInfo fi(fileName);
     d->timeStamp =  fi.lastModified().toTime_t();
-    d->activityTimer->start( 3000, true );	
+    d->activityTimer->setSingleShot(true);
+    d->activityTimer->start(3000);	
 
     setCurrentFileName(fileName);
     return true;
@@ -263,7 +265,7 @@ bool PythonView::open(const QString& fileName)
  */
 void PythonView::run(void)
 {
-    Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.latin1());
+    Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.toLatin1());
 }
 
 /**
@@ -298,7 +300,7 @@ void PythonView::paste(void)
  */
 void PythonView::undo(void)
 {
-    d->textEdit->undo();
+    d->textEdit->document()->undo();
 }
 
 /**
@@ -307,7 +309,7 @@ void PythonView::undo(void)
  */
 void PythonView::redo(void)
 {
-    d->textEdit->redo();
+    d->textEdit->document()->redo();
 }
 
 /**
