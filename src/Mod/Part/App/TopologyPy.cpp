@@ -1,3 +1,4 @@
+<<<<<<< .mine
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
@@ -33,7 +34,6 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_Result.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-# include <IGESControl_Controller.hxx>
 # include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
 # include <STEPControl_Writer.hxx>
@@ -51,6 +51,8 @@
 
 # include <BRepOffsetAPI_MakeOffsetShape.hxx>
 # include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+# include <GeomAPI_IntSS.hxx>
 
 using Base::Console;
 
@@ -240,6 +242,7 @@ PyObject *TopoShapePy::isNull(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
+
   return Py_BuildValue("O", (_cTopoShape.IsNull() ? Py_True : Py_False));
 }
 
@@ -733,6 +736,10 @@ PyObject *TopoShapePy::offset(PyObject *args)
 
 }
 
+
+
+
+
 PyObject *TopoShapePy::cut(PyObject *args)
 {
   PyObject *pcObj;
@@ -743,8 +750,13 @@ PyObject *TopoShapePy::cut(PyObject *args)
 
   PY_TRY {
    	// Let's call for algorithm computing a cut operation:
-  	BRepAlgoAPI_Cut mkCut(_cTopoShape, pcShape->getShape());
-	  // Let's check if the Cut has been successfull:
+  	BRepAlgoAPI_Section mkCut(_cTopoShape, pcShape->getShape(),Standard_False);
+	  
+	mkCut.ComputePCurveOn1(Standard_True);
+	mkCut.ComputePCurveOn2(Standard_True);
+	mkCut.Approximation (Standard_True);
+	mkCut.Build();
+		// Let's check if the Cut has been successfull:
 	  if (!mkCut.IsDone()) {
       PyErr_SetString(PyExc_Exception,"Cut failed");
       return NULL;
@@ -754,3 +766,4 @@ PyObject *TopoShapePy::cut(PyObject *args)
   } PY_CATCH;
 
 }
+
