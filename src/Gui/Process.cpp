@@ -35,20 +35,8 @@
 
 using namespace Gui;
 
-Process::Process( QObject *parent, const char *name)
-: Q3Process( parent, name )
-{
-  init();
-}
-
-Process::Process( const QString& arg0, QObject *parent, const char *name )
-: Q3Process( arg0, parent, name )
-{
-  init();
-}
-
-Process::Process( const QStringList& args, QObject *parent, const char *name )
-: Q3Process( args, parent, name )
+Process::Process(QObject *parent)
+: QProcess(parent)
 {
   init();
 }
@@ -59,8 +47,8 @@ Process::~Process()
 
 void Process::init()
 {
-  connect(this, SIGNAL(readyReadStdout()), this, SLOT(onNotifyReadyReadStdout()));
-  connect(this, SIGNAL(readyReadStderr()), this, SLOT(onNotifyReadyReadStderr()));
+  connect(this, SIGNAL(readyReadStandardOutput()), this, SLOT(onNotifyReadyReadStdout()));
+  connect(this, SIGNAL(readyReadStandardError()), this, SLOT(onNotifyReadyReadStderr()));
   connect(this, SIGNAL(processExited  ()), this, SLOT(onNotifyProcessExited  ()));
   connect(this, SIGNAL(wroteToStdin   ()), this, SLOT(onNotifyWroteToStdin   ()));
   connect(this, SIGNAL(launchFinished ()), this, SLOT(onNotifyLaunchFinished ()));
@@ -119,32 +107,7 @@ QString Process::systemWarning( int code, const char* pMsg)
   return "Error";
 #endif
 }
-
-bool Process::setExecutable( const QString& proc )
-{
-  if ( isRunning() || proc.isEmpty() ) 
-    return false;
-
-  clearArguments();
-  addArgument(proc);
-
-  return true;
-}
-
-QString Process::executable () const
-{
-  if ( arguments().size() > 0 )
-    return (arguments()[0]);
-  else
-    return QString::null;
-}
-
-Process& Process::operator<<(const QString& arg)
-{
-  addArgument(arg);
-  return *this;
-}
-
+/*
 bool Process::start( QStringList *e )
 {
   if (e)
@@ -152,12 +115,12 @@ bool Process::start( QStringList *e )
     clearEnvironment();
     for ( QStringList::Iterator it = e->begin(); it!=e->end(); ++it )
     {
-      int pos = (*it).find('=');
-      if ( pos )
+      int pos = (*it).indexOf('=');
+      if (pos != -1) 
       {
         QString var = (*it).left(pos);
         QString val = (*it).right( (*it).length() - pos - 1 );
-        setEnvironment(var.latin1(), val.latin1());
+        setEnvironment(var, val);
       }
     }
   }
@@ -165,7 +128,7 @@ bool Process::start( QStringList *e )
   if (env.size() > 0)
     setupEnvironment();
 
-  if ( Q3Process::start() )
+  if ( QProcess::start() )
   {
     Notify( Process::processStarted );
     return true;
@@ -176,7 +139,7 @@ bool Process::start( QStringList *e )
     return false;
   }
 }
-
+*/
 QString Process::message() const
 {
   return data;
@@ -206,9 +169,9 @@ void Process::onNotifyReadyReadStderr()
 
 void Process::onNotifyProcessExited()
 {
-  if (!isRunning())
+  if (state() == QProcess::NotRunning)
   {
-    if (normalExit())
+    if (exitStatus() == QProcess::NormalExit)
       Notify( Process::processExited );
     else
       Notify( Process::processKilled );
@@ -231,7 +194,7 @@ bool Process::appendToPath (const QString& path)
   if (env.find("PATH") != env.end())
   {
 #ifdef FC_OS_WIN32
-    sprintf(szPath, "%s;%s", env["PATH"].latin1(), path.latin1());
+    sprintf(szPath, "%s;%s", env["PATH"].toAscii(), path.toAscii());
 #elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", env["PATH"].latin1(), path.latin1());
 #else
@@ -242,7 +205,7 @@ bool Process::appendToPath (const QString& path)
   else
   {
 #ifdef FC_OS_WIN32
-    sprintf(szPath, "%s;%s", getenv("PATH"), path.latin1());
+    sprintf(szPath, "%s;%s", getenv("PATH"), path.toAscii());
 #elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path.latin1());
 #else
@@ -275,7 +238,7 @@ void Process::setupEnvironment()
   for (it = env.begin(); it != env.end(); ++it)
   {
 #ifdef FC_OS_WIN32
-    ::SetEnvironmentVariable (it.key().latin1(), it.data().latin1());
+    ::SetEnvironmentVariable (it.key().toAscii(), it.value().toAscii());
 #elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     setenv(it.key().latin1(), it.data().latin1(), 1);
 #else

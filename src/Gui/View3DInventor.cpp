@@ -555,19 +555,14 @@ void View3DInventor::stopAnimating()
  */
 void View3DInventor::dropEvent ( QDropEvent * e )
 {
-  if ( Q3UriDrag::canDecode(e) )
-  {
-    QStringList fn;
-    Q3UriDrag::decodeLocalFiles(e, fn);
-
+  const QMimeData* data = e->mimeData();
+  if ( data->hasUrls() ) {
+    QList<QUrl> uri = data->urls();
     App::Document* pDoc = getAppDocument();
-    if ( pDoc ) 
-    {
-      for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
-
-        QFileInfo info(*it);
-        if ( info.exists() && info.isFile() )
-        {
+    if ( pDoc ) {
+      for ( QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it ) {
+        QFileInfo info((*it).toLocalFile());
+        if ( info.exists() && info.isFile() ) {
           // First check the complete extension
           if ( App::GetApplication().hasOpenType(info.completeSuffix().toLatin1() ) )
             Application::Instance->import(info.absoluteFilePath().toLatin1(), pDoc->getName());
@@ -577,14 +572,16 @@ void View3DInventor::dropEvent ( QDropEvent * e )
         }
       }
     }
-  }else
+  } else {
     MDIView::dropEvent(e);
+  }
 }
 
 void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 {
   // Here we must allow uri drafs and check them in dropEvent
-  if ( Q3UriDrag::canDecode(e) )
+  const QMimeData* data = e->mimeData();
+  if ( data->hasUrls() )
     e->accept();
   else
     e->ignore();

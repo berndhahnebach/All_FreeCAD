@@ -97,10 +97,10 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent )
   unsigned long lPyError = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
   d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Python error"), lPyError));
   for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
-    this->ListBox1->insertItem(trUtf8((*it).first.toUtf8()));
+    this->ListBox1->addItem(trUtf8((*it).first.toUtf8()));
   pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 
-  connect(ListBox1, SIGNAL(highlighted ( int )), this, SLOT( onDisplayColor( int ) ));
+  connect(ListBox1, SIGNAL(currentRowChanged ( int )), this, SLOT( onDisplayColor( int ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
 }
 
@@ -129,7 +129,7 @@ void DlgSettingsEditorImp::onChosenColor()
   QColor col = ColorBtn->color();
   unsigned long lcol = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
   
-  int index = ListBox1->currentItem();
+  int index = ListBox1->currentRow();
   d->colormap[index].second = lcol;
   pythonSyntax->setColor( d->colormap[index].first, col );
 }
@@ -185,10 +185,6 @@ void DlgSettingsEditorImp::loadSettings()
 
   // fill up font styles
   //
-  QFontDatabase fdb;
-  QStringList familyNames = fdb.families( QFontDatabase::Any );
-  fontFamily->insertStringList( familyNames );
-
 #ifdef FC_OS_LINUX
   fontSize->setValue(15);
 #else
@@ -196,10 +192,15 @@ void DlgSettingsEditorImp::loadSettings()
 #endif
 
   fontSize->setValue( hGrp->GetInt("FontSize", fontSize->value()) );
-  fontFamily->setItemText(fontFamily->currentIndex(), hGrp->GetASCII( "Font", "Courier" ).c_str() );
+
+  QFontDatabase fdb;
+  QStringList familyNames = fdb.families( QFontDatabase::Any );
+  fontFamily->addItems(familyNames);
+  int index = familyNames.indexOf(hGrp->GetASCII("Font", "Courier").c_str());
+  fontFamily->setCurrentIndex(index);
   on_fontFamily_activated();
 
-  ListBox1->setCurrentItem(0);
+  ListBox1->setCurrentRow(0);
 }
 
 /**
@@ -210,7 +211,7 @@ void DlgSettingsEditorImp::changeEvent(QEvent *e)
   if (e->type() == QEvent::LanguageChange) {
     int index = 0;
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
-      this->ListBox1->changeItem(trUtf8((*it).first.toUtf8()), index++);
+      this->ListBox1->item(index++)->setText(trUtf8((*it).first.toUtf8()));
   } else {
     QWidget::changeEvent(e);
   }

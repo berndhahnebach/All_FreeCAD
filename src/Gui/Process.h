@@ -28,11 +28,7 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-#include "../Base/Observer.h"
+#include <Base/Observer.h>
 
 namespace Gui {
 
@@ -41,7 +37,7 @@ namespace Gui {
  * For further information refer to the documentation of QProcess.
  * \author Werner Mayer
  */
-class Process : public Q3Process, public Base::Subject <int>
+class Process : public QProcess, public Base::Subject <int>
 {
   Q_OBJECT
 
@@ -66,11 +62,7 @@ public:
   static QString systemWarning( int code, const char* msg=0 );
 
   /** Construction */
-  Process( QObject *parent=0, const char *name=0 );
-  /** Construction */
-  Process( const QString& arg0, QObject *parent=0, const char *name=0 );
-  /** Construction */
-  Process( const QStringList& args, QObject *parent=0, const char *name=0 );
+  Process(QObject *parent=0);
   /** Destruction */
   virtual ~Process();
 
@@ -79,15 +71,6 @@ public:
    * error output.
    */
   QString message() const;
-
-  /** Sets the executable name to \a proc. */
-  virtual bool setExecutable( const QString& proc );
-  /** Returns the current executable name. */
-  QString executable () const;
-  /** Adds the argument \a arg to the argument lit. */
-  Process& operator<< ( const QString& arg );
-  /** Starts the process. */
-  virtual bool start( QStringList *env=0 );
 
   /** Append \a path to the PATH environenment of this process. */
   bool appendToPath ( const QString& path );

@@ -223,7 +223,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     changeMode->setDisabled(true);
   } else {
     changeMode->insertItems(0, commonModeList);
-    changeMode->setItemText(changeMode->currentIndex(), activeMode);
+    changeMode->setCurrentIndex(changeMode->findText(activeMode));
   }
 
   if ( !bTransparency ) {
@@ -297,7 +297,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
     {
       if (it.value() == cMatType) {
-        changeMaterial->setItemText(changeMaterial->currentIndex(), it.key());
+        changeMaterial->setCurrentIndex(changeMaterial->findText(it.key()));
         break;
       }
     }

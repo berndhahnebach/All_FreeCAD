@@ -24,11 +24,9 @@
 #include "PreCompiled.h"
 
 #include "HelpView.h"
-#include "Process.h"
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "FileDialog.h"
-#include "Process.h"
 #include "WhatsThis.h"
 #include "Action.h"
 #include "Command.h"
@@ -330,7 +328,7 @@ void TextBrowser::done( bool /*err*/ )
   // if we need to download further resources start a http request
   if (!d->resources.isEmpty()) {
     TextBrowserResources res = d->resources.front();
-    d->http->get(res.url);
+    d->http->get(res.url.toString());
   } else {
     stateChanged(d->source.toString());
   }
@@ -453,7 +451,7 @@ void TextBrowser::dropEvent(QDropEvent  * e)
     dataStream >> action;
 
     CommandManager& rclMan = Application::Instance->commandManager();
-    Command* pCmd = rclMan.getCommandByName(action.latin1());
+    Command* pCmd = rclMan.getCommandByName(action.toAscii());
     if ( pCmd ) {
       QString info = pCmd->getAction()->whatsThis();
       if ( !info.isEmpty() ) {
@@ -545,27 +543,27 @@ HelpView::HelpView( const QString& start,  QWidget* parent )
 
   // the 'Backward' button
   QToolButton* back = new QToolButton( groupBox );
-  back->setPixmap( Gui::BitmapFactory().pixmap("back_pixmap") );
+  back->setIcon( Gui::BitmapFactory().pixmap("back_pixmap") );
   back->setAutoRaise(true);
-  QToolTip::add(back, tr("Previous"));
+  back->setToolTip(tr("Previous"));
 
   // the 'Forward' button
   QToolButton* forward = new QToolButton( groupBox );
-  forward->setPixmap( Gui::BitmapFactory().pixmap("forward_pixmap") );
+  forward->setIcon( Gui::BitmapFactory().pixmap("forward_pixmap") );
   forward->setAutoRaise(true);
-  QToolTip::add( forward, tr("Next"));
+  forward->setToolTip(tr("Next"));
 
   // the 'Home' button
   QToolButton* home = new QToolButton( groupBox );
-  home->setPixmap( Gui::BitmapFactory().pixmap("home_pixmap") );
+  home->setIcon( Gui::BitmapFactory().pixmap("home_pixmap") );
   home->setAutoRaise(true);
-  QToolTip::add( home, tr("Home"));
+  home->setToolTip(tr("Home"));
 
   // the 'Open' button
   QToolButton* open = new QToolButton( groupBox );
-  open->setPixmap( Gui::BitmapFactory().pixmap("helpopen") );
+  open->setIcon( Gui::BitmapFactory().pixmap("helpopen") );
   open->setAutoRaise(true);
-  QToolTip::add( open, tr("Open"));
+  open->setToolTip(tr("Open"));
 
   QGridLayout* formLayout = new QGridLayout( this );
   formLayout->setSpacing( 1 );
@@ -649,11 +647,10 @@ void HelpView::startExternalBrowser( const QString& url )
   }
 
   // create the command to execute
-  Gui::Process program;
-  program.setExecutable( browser );
-  program << url;
-
-  if ( !program.start() )
+  QStringList arguments;
+  arguments << url;
+  
+  if (!QProcess::startDetached(browser, arguments))
   {
     QMessageBox::critical( this, tr("External browser"), tr("Starting of %1 failed").arg( browser ) );
   }

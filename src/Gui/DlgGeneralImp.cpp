@@ -57,14 +57,14 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
   {
     QPixmap px = Application::Instance->workbenchIcon( *it );
     if ( px.isNull() )
-      AutoloadModuleCombo->insertItem( *it );
+      AutoloadModuleCombo->addItem( *it );
     else
-      AutoloadModuleCombo->insertItem( px, *it );
+      AutoloadModuleCombo->addItem( px, *it );
   }
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
   // it, if it is set by the user
   QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
-  AutoloadModuleCombo->setCurrentText( curWbName );
+  AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findText(curWbName));
 
   // do not save the content but the current item only
   AutoloadTabCombo->setKeepPreference( true );
@@ -75,7 +75,7 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
     if ( watched )
     {
       for (int i=0; i<watched->count(); i++)
-        AutoloadTabCombo->insertItem( watched->label(i) );
+        AutoloadTabCombo->addItem( watched->tabText(i) );
       watched->installEventFilter(this);
     }
   }
@@ -120,7 +120,7 @@ void DlgGeneralImp::saveSettings()
   QString language = hGrp->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
-    hGrp->SetASCII("Language", Languages->currentText().latin1());
+    hGrp->SetASCII("Language", Languages->currentText().toAscii());
     Translator::instance()->installLanguage( Languages->currentText() );
   }
 }
@@ -132,8 +132,8 @@ void DlgGeneralImp::loadSettings()
   QString curWbName = AutoloadModuleCombo->currentText();
   AutoloadModuleCombo->onRestore();
   QString newWbName = AutoloadModuleCombo->currentText();
-  if (work.find(newWbName) == work.end())
-    AutoloadModuleCombo->setCurrentText( curWbName );
+  if (!work.contains(newWbName))
+    AutoloadModuleCombo->setItemText(AutoloadModuleCombo->currentIndex(), curWbName);
   AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
@@ -142,7 +142,7 @@ void DlgGeneralImp::loadSettings()
   // fill up styles
   //
   QStringList styles = QStyleFactory::keys();
-  WindowStyle->insertStringList( styles );
+  WindowStyle->addItems(styles);
   QString style = QApplication::style()->objectName().toLower();
   int i=0;
   for (QStringList::ConstIterator it = styles.begin(); it != styles.end(); ++it, i++) {
@@ -159,7 +159,7 @@ void DlgGeneralImp::loadSettings()
   Languages->addItems(Translator::instance()->supportedLanguages());
   int ct=Languages->count();
   for (int i=0; i<ct; i++) {
-    if (Languages->text(i) == language) {
+    if (Languages->itemText(i) == language) {
       Languages->setCurrentIndex(i);
       break;
     }

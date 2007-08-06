@@ -27,61 +27,210 @@
 #include "MainWindow.h"
 #include "WaitCursor.h"
 
-
 using namespace Gui;
 
 
 namespace Gui {
-struct ProgressBarPrivate
+struct SequencerPrivate
 {
+    ProgressBar* bar;
+    WaitCursor* waitCursor;
     QTime measureTime;
     QTime progressTime;
-    QTime updateTime;
-    QTimer* forceTimer;
+    QString text;
+};
+
+struct ProgressBarPrivate
+{
+    QTimer* delayShowTimer;
     int minimumDuration;
-    bool oneStep;
-    WaitCursor* waitCursor;
     int observeEventFilter;
 };
 }
 
-/* TRANSLATOR Gui::ProgressBar */
+Sequencer* Sequencer::_pclSingleton = 0L;
 
-ProgressBar* ProgressBar::_pclSingleton = 0L;
-
-ProgressBar* ProgressBar::instance()
+Sequencer* Sequencer::instance()
 {
     // not initialized?
     if ( !_pclSingleton )
     {
-        _pclSingleton = new ProgressBar(getMainWindow()->statusBar(), "Sequencer");
+        _pclSingleton = new Sequencer();
     }
 
     return _pclSingleton;
 }
 
-ProgressBar::ProgressBar ( QWidget * parent, const char * name, Qt::WFlags f )
-    : Q3ProgressBar (parent, name, f), SequencerBase()
+Sequencer::Sequencer ()
+{
+    d = new SequencerPrivate;
+    d->bar = 0;
+    d->waitCursor = 0;
+}
+
+Sequencer::~Sequencer ()
+{
+    delete d;
+}
+
+void Sequencer::pause()
+{
+    // allow key handling of dialog and restore cursor
+    d->bar->leaveControlEvents();
+    d->waitCursor->restoreCursor();
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
+}
+
+void Sequencer::resume()
+{
+    QApplication::restoreOverrideCursor();
+    d->waitCursor->setWaitCursor();
+    // must be called as last to get control before WaitCursor
+    d->bar->enterControlEvents(); // grab again
+}
+
+void Sequencer::startStep()
+{
+    d->bar->setRange(0, nTotalSteps);
+    if ( nTotalSteps == 0 ) {
+        d->progressTime.start();
+    }
+
+    if ( pendingOperations() == 1 ) {
+        d->measureTime.start();
+        d->waitCursor = new Gui::WaitCursor;
+        d->bar->enterControlEvents();
+        d->bar->aboutToShow();
+    }
+}
+
+void Sequencer::nextStep(bool canAbort)
+{
+    if (wasCanceled() && canAbort) {
+        // restore cursor
+        pause();
+        bool ok = d->bar->canAbort();
+        // continue and show up wait cursor if needed
+        resume();
+
+        // force to abort the operation
+        if ( ok ) {
+            abort();
+        } else {
+            rejectCancel();
+            setProgress(nProgress+1);
+        }
+    } else {
+        setProgress(nProgress+1);
+    }
+}
+
+void Sequencer::setProgress(int step)
+{
+    // if number of total steps is unknown then incrementy only by one
+    if ( nTotalSteps == 0 ) {
+        int elapsed = d->progressTime.elapsed();
+        // allow an update every 200 milliseconds only
+        if ( elapsed > 200 ) {
+            d->progressTime.restart();
+            d->bar->setValue(d->bar->value()+1);
+            qApp->processEvents();
+        }
+    } else {
+        d->bar->setValue(step);
+        showRemainingTime();
+        d->bar->resetObserveEventFilter();
+        qApp->processEvents();
+    }
+}
+
+void Sequencer::showRemainingTime()
+{
+    if (!d->bar->isVisible())
+        return;
+    int elapsed = d->measureTime.elapsed();
+    int progress = d->bar->value();
+    int totalSteps = d->bar->maximum() - d->bar->minimum();
+
+    QString txt = d->text;
+    // More than 5 percent complete or more than 5 secs have elapsed.
+    if ( progress * 20 > totalSteps || elapsed > 5000 ) {
+        int rest = (int) ( (double) totalSteps/progress * elapsed ) - elapsed;
+
+        // more than 1 secs have elapsed and at least 100 ms are remaining
+        if ( elapsed > 1000 && rest > 100 ) {
+            QTime time( 0,0, 0);
+            time = time.addSecs( rest/1000 );
+            QString remain = ProgressBar::tr("Remaining: %1").arg( time.toString() );
+            QString status = QString("%1\t[%2]").arg(txt).arg(remain);
+            getMainWindow()->statusBar()->showMessage(status);
+        }
+    }
+}
+
+void Sequencer::resetData()
+{
+    d->bar->reset();
+    // Note: Under Qt 4.1.4 this forces to run QWindowsStyle::eventFilter() twice 
+    // handling the same event thus a warning is printed. Possibly, this is a bug
+    // in Qt. The message is QEventDispatcherUNIX::unregisterTimer: invalid argument.
+    d->bar->hide();
+    delete d->waitCursor;
+    d->waitCursor = 0;
+    d->bar->leaveControlEvents();
+    getMainWindow()->setPaneText(1, "");
+    getMainWindow()->statusBar()->showMessage("");
+
+    SequencerBase::resetData();
+}
+
+void Sequencer::abort()
+{
+    //resets
+    resetData();
+    Base::AbortException exc("Aborting...");
+    throw exc;
+}
+
+void Sequencer::setText ( const char* pszTxt )
+{
+    // print message to the statusbar
+    d->text = pszTxt ? pszTxt : "";
+    getMainWindow()->statusBar()->showMessage(d->text);
+}
+
+QProgressBar* Sequencer::getProgressBar(QWidget* parent)
+{
+    if (!d->bar)
+        d->bar = new ProgressBar(this, parent);
+    return d->bar;
+}
+
+// -------------------------------------------------------
+
+/* TRANSLATOR Gui::ProgressBar */
+
+ProgressBar::ProgressBar (Sequencer* s, QWidget * parent)
+    : QProgressBar(parent), sequencer(s)
 {
     d = new Gui::ProgressBarPrivate;
-    d->waitCursor = 0L;
     d->minimumDuration = 2000; // 2 seconds
-    d->forceTimer = new QTimer(this);
-    connect( d->forceTimer, SIGNAL(timeout()), this, SLOT(forceShow()) );
+    d->delayShowTimer = new QTimer(this);
+    d->delayShowTimer->setSingleShot(true);
+    connect( d->delayShowTimer, SIGNAL(timeout()), this, SLOT(delayedShow()) );
+    d->observeEventFilter = 0;
 
     setFixedWidth(120);
 
     // write percentage to the center
-    // TODO not there anymore
-    //setIndicatorFollowsStyle(false);
-    setCenterIndicator(true);
+    setAlignment(Qt::AlignHCenter);
     hide();
 }
 
 ProgressBar::~ProgressBar ()
 {
-    disconnect( d->forceTimer, SIGNAL(timeout()), this, SLOT(forceShow()) );
-    delete d->forceTimer;
+    disconnect( d->delayShowTimer, SIGNAL(timeout()), this, SLOT(delayedShow()) );
+    delete d->delayShowTimer;
     delete d;
 }
 
@@ -92,25 +241,51 @@ int ProgressBar::minimumDuration() const
 
 void ProgressBar::setMinimumDuration ( int ms )
 {
-    if ( progress() == 0 )
+    if ( value() == 0 )
     {
-        d->forceTimer->stop();
-        d->forceTimer->start( ms );
+        d->delayShowTimer->stop();
+        d->delayShowTimer->start( ms );
     }
 
     d->minimumDuration = ms;
 }
 
-void ProgressBar::forceShow()
+void ProgressBar::aboutToShow()
 {
-    if ( !isVisible() && !wasCanceled() )
+    // delay showing the bar
+    d->delayShowTimer->start( d->minimumDuration );
+}
+
+void ProgressBar::delayedShow()
+{
+    if (!isVisible() && !sequencer->wasCanceled() && sequencer->isRunning())
         show();
+}
+
+bool ProgressBar::canAbort() const
+{
+    int ret = QMessageBox::question(getMainWindow(),tr("Aborting"),
+    tr("Do you really want to abort the operation?"),  QMessageBox::Yes, 
+    QMessageBox::No|QMessageBox::Default);
+
+    return (ret == QMessageBox::Yes) ? true : false;
 }
 
 void ProgressBar::showEvent( QShowEvent* e )
 {
-    Q3ProgressBar::showEvent( e );
-    d->forceTimer->stop();
+    QProgressBar::showEvent( e );
+    d->delayShowTimer->stop();
+}
+
+void ProgressBar::hideEvent( QHideEvent* e )
+{
+    QProgressBar::hideEvent( e );
+    d->delayShowTimer->stop();
+}
+
+void ProgressBar::resetObserveEventFilter()
+{
+    d->observeEventFilter = 0;
 }
 
 void ProgressBar::enterControlEvents()
@@ -132,7 +307,7 @@ void ProgressBar::leaveControlEvents()
 
 bool ProgressBar::eventFilter(QObject* o, QEvent* e)
 {
-    if (isRunning() && e != 0L) {
+    if (sequencer->isRunning() && e != 0L) {
         switch ( e->type() )
         {
         // check for ESC
@@ -143,14 +318,14 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
                     // eventFilter() was called from the application 50 times without performing a new step (app could hang)
                     if ( d->observeEventFilter > 50 ) {
                         // tries to unlock the application if it hangs (propably due to incorrect usage of Base::Sequencer)
-                        if (ke->state() & ( Qt::ControlModifier | Qt::AltModifier ) ) {
-                            resetData();
+                        if (ke->modifiers() & ( Qt::ControlModifier | Qt::AltModifier ) ) {
+                            sequencer->resetData();
                             return true;
                         }
                     }
 
                     // cancel the operation
-                    tryToCancel();
+                    sequencer->tryToCancel();
                 }
 
                 return true;
@@ -192,154 +367,8 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
         d->observeEventFilter++;
     }
 
-    return Q3ProgressBar::eventFilter(o, e);
+    return QProgressBar::eventFilter(o, e);
 }
 
-void ProgressBar::pause()
-{
-    // allow key handling of dialog and restore cursor
-    leaveControlEvents();
-    d->waitCursor->restoreCursor();
-    QApplication::setOverrideCursor(Qt::ArrowCursor);
-}
-
-void ProgressBar::resume()
-{
-    QApplication::restoreOverrideCursor();
-    d->waitCursor->setWaitCursor();
-    // must be called as last to get control before WaitCursor
-    enterControlEvents(); // grab again
-}
-
-void ProgressBar::setProgress( int progr )
-{
-    // if number of total steps is unknown then incrementy only by one
-    if ( nTotalSteps == 0 ) {
-        if ( d->oneStep ) {
-            d->oneStep = false;
-            Q3ProgressBar::setProgress(progress()+1);
-        }
-    } else {
-        Q3ProgressBar::setProgress(progr);
-    }
-}
-
-void ProgressBar::startStep()
-{
-    setTotalSteps(nTotalSteps);
-    if ( nTotalSteps == 0 ) {
-        d->progressTime.start();
-        d->updateTime.start();
-    }
-
-    if ( pendingOperations() == 1 ) {
-        d->waitCursor = new Gui::WaitCursor;
-        enterControlEvents();
-        // delay showing the bar
-        d->forceTimer->start( d->minimumDuration );
-        // starting
-        d->measureTime.start();
-    }
-}
-
-void ProgressBar::nextStep(bool canAbort)
-{
-    if (wasCanceled() && canAbort) {
-        // restore cursor
-        pause();
-
-        int ret = QMessageBox::question(getMainWindow(),tr("Aborting"),
-        tr("Do you really want to abort the operation?"),  QMessageBox::Yes, 
-        QMessageBox::No|QMessageBox::Default);
-        // continue and show up wait cursor if needed
-        resume();
-
-        // force to abort the operation
-        if ( ret == QMessageBox::Yes ) {
-            abort();
-        } else {
-            rejectCancel();
-            setProgress(nProgress+1);
-        }
-    } else {
-        setProgress(nProgress+1);
-    }
-
-    if ( nTotalSteps == 0 ) {
-        int elapsed = d->progressTime.elapsed();
-        if ( elapsed > 50 ) {
-            d->progressTime.restart();
-            d->oneStep = true;
-            elapsed = d->updateTime.elapsed();
-            if ( elapsed > 2000 ) { // allow an update every 2 seconds only
-                d->updateTime.restart();
-                qApp->processEvents();
-            }
-        }
-    } else {
-        d->observeEventFilter = 0;
-        qApp->processEvents();
-    }
-}
-
-void ProgressBar::resetData()
-{
-    reset();
-    setTotalSteps(0);
-    setProgress(-1);
-    hide();
-    delete d->waitCursor;
-    d->waitCursor = 0L;
-    d->forceTimer->stop();
-    leaveControlEvents();
-    getMainWindow()->setPaneText( 1, "" );
-
-    SequencerBase::resetData();
-}
-
-void ProgressBar::abort()
-{
-    //resets
-    resetData();
-    Base::AbortException exc("Aborting...");
-    throw exc;
-}
-
-void ProgressBar::setText ( const char* pszTxt )
-{
-    // print message to the statusbar
-    QString txt = pszTxt ? pszTxt : "";
-    getMainWindow()->statusBar()->message(txt);
-}
-
-bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
-{
-    int elapsed = d->measureTime.elapsed();
-
-    if ( totalSteps == 0 ) {
-        indicator = "";
-        return true;
-    }
-
-    QString txt = QString::null;
-    if ( progress * 20 < totalSteps && elapsed < 5000 ) {
-        // Less than 5 percent complete and less than 5 secs have elapsed.
-        txt = tr("Measuring...");
-    } else {
-        int rest = (int) ( (double) totalSteps/progress * elapsed ) - elapsed;
-
-        // more than 1 secs have elapsed and at least 100 ms are remaining
-        if ( elapsed > 1000 && rest > 100 ) {
-            QTime time( 0,0, 0);
-            time = time.addSecs( rest/1000 );
-            txt = tr("Remaining: %1").arg( time.toString() );
-        }
-    }
-
-    if ( isVisible() )
-        getMainWindow()->setPaneText( 1, txt );
-
-    return Q3ProgressBar::setIndicator ( indicator, progress, totalSteps );
-}
 
 #include "moc_ProgressBar.cpp"
