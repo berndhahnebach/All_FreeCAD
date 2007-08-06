@@ -53,15 +53,19 @@ ReportView::ReportView( QWidget* parent )
   tabWidget->setTabShape(QTabWidget::Rounded);
   tabLayout->addWidget( tabWidget, 0, 0 );
 
+
+  // create the output window
   tabOutput = new ReportOutput();
   int output = tabWidget->addTab(tabOutput, trUtf8("Output"));
   tabWidget->setTabIcon(output, BitmapFactory().pixmap("MacroEditor"));
 
+  // create the python console
   tabPython = new PythonConsole();
   int python = tabWidget->addTab(tabPython, trUtf8("Python console"));
   tabWidget->setTabIcon(python, BitmapFactory().pixmap("python_small"));
   tabWidget->setCurrentIndex(0);
 
+  // raise the tap set in the preferences
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General")->GetGroup("AutoloadTab");
   std::string txt = hGrp->GetASCII("currentText");
   for (int i=0; i<tabWidget->count(); i++)
