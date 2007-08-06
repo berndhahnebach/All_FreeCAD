@@ -9,6 +9,7 @@
 #include <QMutex>
 #include <qnamespace.h>
 #include <QPointer>
+#include <QProcess>
 #include <qrect.h>
 #include <qregexp.h>
 #include <QSet>
@@ -42,6 +43,7 @@
 #include <QFileIconProvider>
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
+#include <QGroupBox>
 #include <qimage.h>
 #include <QImageWriter>
 #include <qinputdialog.h>
@@ -88,6 +90,7 @@
 #include <QTreeView>
 #include <QTreeWidget>
 #include <qvalidator.h>
+#include <QWhatsThis>
 #include <QWhatsThisClickedEvent>
 #include <qwidget.h>
 #include <qworkspace.h>

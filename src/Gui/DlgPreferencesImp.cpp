@@ -69,7 +69,8 @@ PrefGroupItem::PrefGroupItem( Q3ListBox * parent, const QPixmap &p1, const QPixm
 {
   setText( name );
   QPalette pal = parent->palette();
-  pal.setInactive( pal.active() );
+  pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
+  pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
   parent->setPalette( pal );
 }
 
@@ -119,7 +120,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent, Qt::WFlags fl )
     int pos;
     QString s(*it);
 
-    if ( (pos=s.find("|")) > -1 )
+    if ( (pos=s.indexOf("|")) > -1 )
     {
       QString group = s.left( pos );
       QString className = s.mid( pos+1 );
@@ -130,7 +131,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent, Qt::WFlags fl )
         addPreferenceGroup( group, "PrefTree_GroupOpen", "PrefTree_GroupClosed" );
       }
 
-      addPreferencePage( WidgetFactory().createPreferencePage( className ) );
+      addPreferencePage( WidgetFactory().createPreferencePage( className.toAscii() ) );
     }
   }
 
@@ -170,8 +171,8 @@ void DlgPreferencesImp::activatePageOfGroup( int pos, const char* groupName )
   QMap<QString, int>::ConstIterator it = _mGroupIDs.find( groupName );
   if ( it != _mGroupIDs.end() )
   {
-    QTabWidget* tab = getPreferenceGroup( it.data() );
-    listBox->setCurrentItem( it.data() );
+    QTabWidget* tab = getPreferenceGroup( it.value() );
+    listBox->setCurrentItem( it.value() );
     tab->setCurrentIndex( pos );
   }
 }
@@ -247,19 +248,19 @@ void DlgPreferencesImp::on_buttonApply_clicked()
     // check for valid input first
     for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
     {
-      QTabWidget* tab = getPreferenceGroup( it.data() );
+      QTabWidget* tab = getPreferenceGroup( it.value() );
       int ct = tab->count();
 
       for ( int i=0; i<ct; i++ )
       {
-        QWidget* page = tab->page( i );
+        QWidget* page = tab->widget( i );
   		  int index = page->metaObject()->indexOfMethod( "checkSettings()" );
         try{
 	  	  if ( index >= 0 )
           page->qt_metacall( QMetaObject::InvokeMetaMethod, index, 0 );
         } catch ( const Base::Exception& e ) {
-          listBox->setCurrentItem( it.data() );
-          tab->setCurrentPage( i );
+          listBox->setCurrentItem( it.value() );
+          tab->setCurrentIndex( i );
           QMessageBox::warning( this, tr("Wrong parameter"), e.what() );
           throw;
         }
@@ -272,7 +273,7 @@ void DlgPreferencesImp::on_buttonApply_clicked()
 
   for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
   {
-    QTabWidget* tab = getPreferenceGroup( it.data() );
+    QTabWidget* tab = getPreferenceGroup( it.value() );
     int ct = tab->count();
 
     for ( int i=0; i<ct; i++ )
@@ -290,7 +291,7 @@ void DlgPreferencesImp::changeEvent(QEvent *e)
     retranslateUi(this);
     // update the widget's tabs
     for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it ) {
-      QTabWidget* tab = getPreferenceGroup( it.data() );
+      QTabWidget* tab = getPreferenceGroup( it.value() );
       int ct = tab->count();
       for ( int i=0; i<ct; i++ ) {
         QWidget* page = tab->widget( i );

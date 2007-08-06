@@ -21,21 +21,18 @@
  ***************************************************************************/
 
 
-#ifndef PROGRESS_BAR_H
-#define PROGRESS_BAR_H
+#ifndef GUI_PROGRESSBAR_H
+#define GUI_PROGRESSBAR_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
-#endif
-
-#ifndef __Qt3All__
-# include "Qt3All.h"
 #endif
 
 #include <Base/Sequencer.h>
 
 namespace Gui {
 
+struct SequencerPrivate;
 struct ProgressBarPrivate;
 
 /**
@@ -92,25 +89,13 @@ struct ProgressBarPrivate;
  *
  * If the total number of steps cannot be determined before, use 0 instead of to show
  * just a busy indicator instead of percentage steps.
- * \author Werner Mayer
+ * @author Werner Mayer
  */
-class ProgressBar : public Q3ProgressBar, public Base::SequencerBase
+class Sequencer : public Base::SequencerBase
 {
-  Q_OBJECT
-
 public:
     /** Returns the sequencer object. */
-    static ProgressBar* instance();
-    /** Sets the progress to \a progress. */
-    //TODO: Port to Qt4
-    void setProgress( int progress );
-    /** Handles all incoming events while the progress bar is running. All key and mouse
-    * events are ignored to block user input.
-    */
-    bool eventFilter(QObject* o, QEvent* e);
-    /** Returns the time in milliseconds that must pass before the progress bar appears.
-    */
-    int minimumDuration() const;
+    static Sequencer* instance();
     /** This restores the last overridden cursor and release the keyboard while the progress bar 
     * is running. This is useful e.g. if a modal dialog appears while a long operation is performed
     * to indicate that the user can click on the dialog. Every pause() must eventually be followed 
@@ -119,55 +104,87 @@ public:
     void pause();
     /** This sets the wait cursor again and grabs the keyboard. @see pause() */
     void resume();
+    /** Resets the sequencer */
+    void resetData();
+    /** Returns an instance of the progress bar. It creates an if needed. */
+    QProgressBar* getProgressBar(QWidget* parent=0);
+
+protected:
+    /** Construction */
+    Sequencer ();
+    /** Destruction */
+    ~Sequencer ();
+
+    /** Puts text to the status bar */
+    void setText (const char* pszTxt);
+    /** Starts the progress bar */
+    void startStep();
+    /** Increase the progress bar. */
+    void nextStep(bool canAbort);
+    void showRemainingTime();
+
+private:
+    /** @name for internal use only */
+    //@{
+    void setProgress(int step);
+    /** Throws an exception to stop the pending operation. */
+    void abort();
+    //@}
+    SequencerPrivate* d;
+    static Sequencer* _pclSingleton;
+};
+
+class ProgressBar : public QProgressBar
+{
+    Q_OBJECT
+
+public:
+    /** Construction */
+    ProgressBar (Sequencer* s, QWidget * parent=0);
+    /** Destruction */
+    ~ProgressBar ();
+
+    /** Handles all incoming events while the progress bar is running. All key and mouse
+    * events are ignored to block user input.
+    */
+    bool eventFilter(QObject* o, QEvent* e);
+    /** Returns the time in milliseconds that must pass before the progress bar appears.
+    */
+    int minimumDuration() const;
 
 public Q_SLOTS:
     /** Sets the time that must pass before the progress bar appears to \a ms.
     */
     void setMinimumDuration ( int ms );
 
+    bool canAbort() const;
+
 protected:
-    /** Starts the progress bar */
-    void startStep();
-    /** Increase the progress bar. */
-    void nextStep(bool canAbort);
     void showEvent( QShowEvent* );
+    void hideEvent( QHideEvent* );
 
 protected Q_SLOTS:
     /* Shows the progress bar if it is still hidden after the operation has been started
     * and minimumDuration milliseconds have passed.
     */
-    void forceShow();
-
-protected:
-    /** Construction */
-    ProgressBar ( QWidget * parent=0, const char * name=0, Qt::WFlags f=0 );
-    /** Destruction */
-    ~ProgressBar ();
+    void delayedShow();
 
 private:
     /** @name for internal use only */
     //@{
-    /** Puts text to the status bar */
-    //TODO:
-    void setText (const char* pszTxt);
+    void resetObserveEventFilter();
     /** Gets the events under control */
     void enterControlEvents();
     /** Loses the control over incoming events*/
     void leaveControlEvents();
-    /** Throws an exception to stop the pending operation. */
-    void abort();
-    /** Resets the sequencer */
-    void resetData();
-    /** Draws the content of the progress bar */
-    //    void drawContents( QPainter *p );
-    /** Reimplemented */
-    //TODO:
-    bool setIndicator ( QString & indicator, int progress, int totalSteps );
+    void aboutToShow();
     //@}
     ProgressBarPrivate* d;
-    static ProgressBar* _pclSingleton;
+    Sequencer* sequencer;
+
+    friend class Sequencer;
 };
 
 } // namespace Gui
 
-#endif // PROGRESS_BAR_H
+#endif // GUI_PROGRESSBAR_H

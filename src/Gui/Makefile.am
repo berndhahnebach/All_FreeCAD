@@ -224,8 +224,6 @@ libFreeCADGui_la_SOURCES=\
 		PreCompiled.h \
 		PrefWidgets.cpp \
 		PrefWidgets.h \
-		Process.cpp \
-		Process.h \
 		ProgressBar.cpp \
 		ProgressBar.h \
 		PropertyPage.cpp \

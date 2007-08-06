@@ -217,7 +217,7 @@
        </widget>
       </item>
       <item rowspan="4" row="0" column="0" >
-       <widget class="Q3ListBox" name="ListBox1" />
+       <widget class="QListWidget" name="ListBox1" />
       </item>
       <item row="4" column="0" >
        <widget class="Gui::ColorButton" name="ColorBtn" >
@@ -292,6 +292,13 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Gui::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header>Gui/Widgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
@@ -299,23 +306,9 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Gui::PrefSpinBox</class>
-   <extends>Gui::SpinBox</extends>
+   <extends>QSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header>Gui/Widgets.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>

@@ -24,7 +24,10 @@
 #ifndef GUI_NETWORKRETRIEVER_H
 #define GUI_NETWORKRETRIEVER_H
 
-#include "Process.h"
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
 #include "Command.h"
 
 
@@ -36,68 +39,67 @@ namespace Gui {
  * file structure from a server.
  * \author Werner Mayer
  */
-class NetworkRetriever : public QObject, Process::ObserverType  
+class NetworkRetriever : public QObject  
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-	NetworkRetriever( QObject * parent = 0, const char * name = 0 );
-	virtual ~NetworkRetriever();
+    NetworkRetriever( QObject * parent = 0 );
+    virtual ~NetworkRetriever();
 
-  void setNumberOfTries( int );
-  void setOutputFile( const QString& );
-  void setEnableTimestamp(bool);
-  void setProxy( const QString&, const QString& = QString::null, const QString& = QString::null );
-  void setEnableRecursive( bool, int = 0 );
-  void setFollowRelative( bool );
-  void setEnableConvert( bool );
-  void setFetchImages( bool );
-  void setEnableHTMLExtension( bool );
-  void setNoParent( bool );
+    void setNumberOfTries( int );
+    void setOutputFile( const QString& );
+    void setEnableTimestamp(bool);
+    void setProxy( const QString&, const QString& = QString::null, const QString& = QString::null );
+    void setEnableRecursive( bool, int = 0 );
+    void setFollowRelative( bool );
+    void setEnableConvert( bool );
+    void setFetchImages( bool );
+    void setEnableHTMLExtension( bool );
+    void setNoParent( bool );
 
-  void setOutputDirectory( const QString& );
-  bool startDownload( const QString& );
-  bool isDownloading() const;
-  void abort();
+    void setOutputDirectory( const QString& );
+    bool startDownload( const QString& );
+    bool isDownloading() const;
+    void abort();
 
-  virtual void OnChange (Base::Subject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
-
-  static bool testWget();
+    static bool testWget();
 
 Q_SIGNALS:
-  void wgetExited();
+    void wgetExited();
 
 private Q_SLOTS:
-  void testFailure();
+    void testFailure();
+    void wgetFinished(int, QProcess::ExitStatus);
 
 private:
-  Process* wget;
-  struct NetworkRetrieverP* d;
+    QProcess* wget;
+    struct NetworkRetrieverP* d;
 };
 
 // --------------------------------------------------------------------
 
 class StdCmdDownloadOnlineHelp : public QObject, public Command
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  StdCmdDownloadOnlineHelp( QObject * parent = 0, const char * name = 0 );
-  virtual ~StdCmdDownloadOnlineHelp();
-  /** i18n stuff of the command. */
-  virtual void languageChange();
+    StdCmdDownloadOnlineHelp(QObject * parent = 0);
+    virtual ~StdCmdDownloadOnlineHelp();
+    /** i18n stuff of the command. */
+    virtual void languageChange();
 
 protected:
-  virtual void activated(int iMsg);
+    virtual void activated(int iMsg);
 
-  /** Creates the action object. */
-  virtual Action* createAction();
+    /** Creates the action object. */
+    virtual Action* createAction();
 
 private Q_SLOTS:
-  void wgetExit();
+    void wgetFinished();
 
 private:
-  NetworkRetriever* wget;
+    NetworkRetriever* wget;
 };
 
 } // namespace Gui

@@ -113,11 +113,11 @@ protected:
     if ( tabRect(currentIndex()).contains(e->pos()) )
       cMgr.getCommandByName("Std_CloseActiveWindow")->addTo(menu);
     cMgr.getCommandByName("Std_CloseAllWindows")->addTo(menu);
-    menu->insertSeparator();
+    menu->addSeparator();
     cMgr.getCommandByName("Std_CascadeWindows")->addTo(menu);
     cMgr.getCommandByName("Std_ArrangeIcons")->addTo(menu);
     cMgr.getCommandByName("Std_TileWindows")->addTo(menu);
-    menu->insertSeparator();
+    menu->addSeparator();
     cMgr.getCommandByName("Std_Windows")->addTo(menu);
     menu->popup(e->globalPos());
   }
@@ -160,7 +160,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 
   // window title and icon of the main window
   setWindowTitle( App::Application::Config()["ExeName"].c_str() );
-  setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
+  setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
 
   // labels and progressbar
   d->status = new StatusBarObserver();
@@ -168,9 +168,10 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   d->actionLabel->setMinimumWidth(120);
   d->sizeLabel = new QLabel(tr("Dimension"), statusBar());
   d->sizeLabel->setMinimumWidth(120);
-  statusBar()->addWidget(d->actionLabel,0 , false);
-  statusBar()->addWidget(ProgressBar::instance(), 0, true);
-  statusBar()->addWidget(d->sizeLabel, 0, true);
+  statusBar()->addWidget(d->actionLabel, 0);
+  QProgressBar* progressBar = Gui::Sequencer::instance()->getProgressBar(statusBar());
+  statusBar()->addPermanentWidget(progressBar, 0);
+  statusBar()->addPermanentWidget(d->sizeLabel, 0);
 
   // clears the action label
   d->actionTimer = new QTimer( this );
@@ -179,7 +180,8 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   // update gui timer
   d->activityTimer = new QTimer( this );
   connect( d->activityTimer, SIGNAL(timeout()),this, SLOT(updateActions()) );
-  d->activityTimer->start( 300, TRUE );
+  d->activityTimer->setSingleShot(true);
+  d->activityTimer->start(300);
 
   d->windowMapper = new QSignalMapper(this);
 
@@ -229,7 +231,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent
   setAcceptDrops(true);
-  statusBar()->message( tr("Ready"), 2001 );
+  statusBar()->showMessage( tr("Ready"), 2001 );
 }
 
 MainWindow::~MainWindow()
@@ -349,11 +351,8 @@ void MainWindow::addWindow( MDIView* view )
 
   // add a new tab to our tabbar
   int index=-1;
-  if ( view->icon() )
-    index = d->tabs->addTab(*view->icon(), view->caption());
-  else
-    index = d->tabs->addTab(view->caption());
-  d->tabs->setTabToolTip( index, view->caption() );
+  index = d->tabs->addTab(view->windowIcon(), view->windowTitle());
+  d->tabs->setTabToolTip( index, view->windowTitle() );
   QVariant var; var.setValue<QWidget*>(view);
   d->tabs->setTabData( index, var);
 
@@ -390,9 +389,9 @@ void MainWindow::tabChanged( MDIView* view )
         if ( d->tabs->tabData(i).value<QWidget*>() == view ) {
             // remove file separators
             QString cap = view->windowTitle();
-            int pos = cap.findRev('/');
+            int pos = cap.lastIndexOf('/');
             cap = cap.mid( pos+1 );
-            pos = cap.findRev('\\');
+            pos = cap.lastIndexOf('\\');
             cap = cap.mid( pos+1 );
 
             QString placeHolder(QLatin1String("[*]"));
@@ -478,7 +477,7 @@ void MainWindow::onWindowActivated( QWidget* w )
     if ( d->tabs->tabData(i).value<QWidget*>() == view )
     {
       d->tabs->blockSignals( true );
-      d->tabs->setCurrentTab( i );
+      d->tabs->setCurrentIndex( i );
       d->tabs->blockSignals( false );
       break;
     }
@@ -539,7 +538,8 @@ void MainWindow::setPaneText(int i, QString text)
 {
   if (i==1) {
     d->actionLabel->setText(text);
-    d->actionTimer->start(5000, true);
+    d->actionTimer->setSingleShot(true);
+    d->actionTimer->start(5000);
   } else if (i==2) {
     d->sizeLabel->setText(text);
   }
@@ -624,7 +624,8 @@ void MainWindow::updateActions()
     cLastCall.start();
   }
 
-  d->activityTimer->start( 300, true );	
+  d->activityTimer->setSingleShot(true);
+  d->activityTimer->start(300);	
 }
 
 void MainWindow::switchToTopLevelMode()
@@ -703,7 +704,7 @@ void MainWindow::loadLayoutSettings()
   }
 
   QString hidden = App::Application::Config()["HiddenDockWindow"].c_str();
-  QStringList hiddenDW = QStringList::split ( ';', hidden, false );
+  QStringList hiddenDW = hidden.split(";");
   DockWindowManager::instance()->hideDockWindows( hiddenDW );
 
   restoreState(state);
