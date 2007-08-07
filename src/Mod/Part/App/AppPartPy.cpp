@@ -2869,10 +2869,10 @@ VMults.SetValue(46,4);
 static PyObject *                        
 createPlane(PyObject *self, PyObject *args)
 {
-		float z_level;
+		double z_level;
 
   //const char* Name;
-  if (! PyArg_ParseTuple(args, "f", &z_level))			 
+  if (! PyArg_ParseTuple(args, "d", &z_level))			 
     return NULL;                         
 
   
