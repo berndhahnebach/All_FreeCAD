@@ -65,6 +65,11 @@ void PropertyItem::setParent(PropertyItem* parent)
     parentItem = parent;
 }
 
+PropertyItem *PropertyItem::parent() const
+{
+    return parentItem;
+}
+
 void PropertyItem::appendChild(PropertyItem *item)
 {
     childItems.append(item);
@@ -194,11 +199,6 @@ Qt::ItemFlags PropertyItem::flags(int column) const
         return basicFlags | Qt::ItemIsEditable;
     else
         return basicFlags;
-}
-
-PropertyItem *PropertyItem::parent()
-{
-    return parentItem;
 }
 
 int PropertyItem::row() const

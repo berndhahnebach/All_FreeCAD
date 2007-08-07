@@ -413,6 +413,231 @@ void ParameterGroup::changeEvent(QEvent *e)
   }
 }
 
+/* TRANSLATOR Gui::Dialog::ParameterGroup */
+
+ParameterGroup2::ParameterGroup2( QWidget * parent )
+  : QTreeWidget(parent)
+{
+#ifdef FC_OS_WIN32
+  QPalette pal = palette();
+  const QColor& bg = pal.color( QPalette::Inactive, QColorGroup::Base );
+  pal.setColor( QPalette::Inactive, QColorGroup::Highlight, bg );
+  const QColor& ht = pal.color( QPalette::Inactive, QColorGroup::Text );
+  pal.setColor( QPalette::Inactive, QColorGroup::HighlightedText, ht );
+  setPalette( pal );
+#endif
+
+  menuEdit = new QMenu(this);
+
+  expandAct = menuEdit->addAction(tr("Expand"), this, SLOT(onToggleSelectedItem()));
+  menuEdit->addSeparator();
+  subGrpAct = menuEdit->addAction(tr("Add sub-group"), this, SLOT(onCreateSubgroup()));
+  removeAct = menuEdit->addAction(tr("Remove group"), this, SLOT(onDeleteSelectedItem()));
+  renameAct = menuEdit->addAction(tr("Rename group"), this, SLOT(onRenameSelectedItem()));
+  menuEdit->addSeparator();
+  exportAct = menuEdit->addAction(tr("Export parameter"), this, SLOT(onExportToFile()));
+  importAct = menuEdit->addAction(tr("Import parameter"), this, SLOT(onImportFromFile()));
+  menuEdit->setDefaultAction(expandAct);
+}
+
+ParameterGroup2::~ParameterGroup2()
+{
+}
+
+void ParameterGroup2::contentsContextMenuEvent ( QContextMenuEvent* event )
+{
+    QTreeWidgetItem* item = currentItem();
+    if (isItemSelected(item))
+    {
+        expandAct->setEnabled(item->childCount() > 0);
+        // do not allow to import parameters from a non-empty parameter group
+        importAct->setEnabled(item->childCount() == 0);
+
+        if ( isItemExpanded(item) )
+            expandAct->setText( tr("Collapse") );
+        else
+        expandAct->setText( tr("Expand") );
+        menuEdit->popup(event->globalPos());
+    }
+}
+
+void ParameterGroup2::keyPressEvent (QKeyEvent* event)
+{
+    switch ( tolower(event->key()) ) 
+    {
+    case Qt::Key_Delete:
+        {
+            onDeleteSelectedItem();
+        }   break;
+    default:
+            QTreeWidget::keyPressEvent(event);
+  }
+}
+
+void ParameterGroup2::onDeleteSelectedItem()
+{
+#if 0
+    QTreeWidgetItem* sel = currentItem();
+    if (isItemSelected(sel) && sel->parent())
+    {
+        Q3ListViewItem* item = sel->itemBelow();
+        if ( !item || item->parent() != sel->parent() )
+            item = sel->itemAbove();
+        if ( !item )
+            item = sel->parent();
+
+        if ( QMessageBox::question(this, tr("Remove group"), tr("Do really want to remove this parameter group?"),
+                               QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) == 
+                               QMessageBox::Yes )
+        {
+            QTreeWidgetItem* parent = sel->parent();
+            parent->takeItem( sel );
+            setSelected( item, true );
+            delete sel;
+            if ( parent->childCount() == 0 )
+                parent->setOpen( false );
+        }
+    }
+#endif
+}
+
+void ParameterGroup2::onToggleSelectedItem()
+{
+    QTreeWidgetItem* sel = currentItem();
+    if (isItemSelected(sel))
+    {
+        if ( isItemExpanded(sel) )
+            setItemExpanded(sel, false);
+        else if ( sel->childCount() > 0 )
+            setItemExpanded(sel, true);
+    }
+}
+
+void ParameterGroup2::onCreateSubgroup()
+{
+#if 0
+  bool ok;
+  QString name = QInputDialog::getText(QObject::tr("New sub-group"), QObject::tr("Enter the name:"),
+                                      QLineEdit::Normal, QString::null, &ok, this);
+
+  if ( ok && !name.isEmpty() )
+  {
+    Q3ListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+
+      if ( hGrp->HasGroup( name.latin1() ) )
+      {
+        QMessageBox::critical( this, tr("Existing sub-group"),
+          tr("The sub-group '%1' already exists.").arg( name ) );
+        return;
+      }
+
+      hGrp = hGrp->GetGroup( name.latin1() );
+      (void)new ParameterGroupItem(para,hGrp);
+      para->setOpen( true );
+    }
+  }
+#endif
+}
+
+void ParameterGroup2::onExportToFile()
+{
+#if 0
+  QString file = FileDialog::getSaveFileName( this, tr("Export parameter to file"), QString::null, "XML (*.FCParam)");
+  if ( !file.isEmpty() )
+  {
+    Q3ListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+      hGrp->exportTo( file.latin1() );
+    }
+  }
+#endif
+}
+
+void ParameterGroup2::onImportFromFile()
+{
+#if 0
+  QString file = FileDialog::getOpenFileName( this, tr("Import parameter from file"), QString::null, "XML (*.FCParam)");
+  if ( !file.isEmpty() )
+  {
+    QFileInfo fi(file);
+    Q3ListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+
+      Q3ListViewItem* child;
+      Q3PtrList<Q3ListViewItem> remChild;
+      if ( (child=para->firstChild()) != 0 )
+      {
+        remChild.append( child );
+        child = child->nextSibling();
+        while ( child )
+        {
+          remChild.append( child );
+          child = child->nextSibling();
+        }
+      }
+
+      // remove the items and internal parameter values
+      for ( child = remChild.first(); child; child = remChild.next() )
+      {
+        para->takeItem( child );
+        delete child;
+      }
+
+      try
+      {
+        hGrp->importFrom( file.latin1() );
+        std::vector<FCHandle<ParameterGrp> > cSubGrps = hGrp->GetGroups();
+        for ( std::vector<FCHandle<ParameterGrp> >::iterator it = cSubGrps.begin(); it != cSubGrps.end(); ++it )
+        {
+          new ParameterGroupItem(para,*it);
+        }
+
+        para->setOpen( para->childCount() > 0 );
+      }
+      catch( const Base::Exception& )
+      {
+        QMessageBox::critical(this, tr("Import Error"),tr("Reading of '%1' failed.").arg( file ));
+      }
+    }
+  }
+#endif
+}
+
+void ParameterGroup2::onRenameSelectedItem()
+{
+#if 0
+  Q3ListViewItem* sel = selectedItem();
+  if ( sel && sel->rtti() == 2000 )
+  {
+     sel->startRename(0);
+  }
+#endif
+}
+
+void ParameterGroup2::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        expandAct->setText(tr("Expand"));
+        subGrpAct->setText(tr("Add sub-group"));
+        removeAct->setText(tr("Remove group"));
+        renameAct->setText(tr("Rename group"));
+        exportAct->setText(tr("Export parameter"));
+        importAct->setText(tr("Import parameter"));
+    } else {
+        QTreeWidget::changeEvent(e);
+    }
+}
+
 // --------------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::ParameterValue */

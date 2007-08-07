@@ -124,6 +124,56 @@ private:
   QAction* importAct;
 };
 
+/**
+ * The ParameterGroup class represents the tree structure of the parameters.
+ * The leaves represented by ParameterValueItem are displayed in ParameterValue.
+ * @author Werner Mayer
+ */
+class ParameterGroup2 : public QTreeWidget
+{
+  Q_OBJECT
+
+public:
+  ParameterGroup2( QWidget * parent = 0 );
+  virtual ~ParameterGroup2();
+
+protected:
+  /** Shows the context menu. */
+  void contentsContextMenuEvent ( QContextMenuEvent* event );
+  /** Triggers the "Del" key. */
+  void keyPressEvent (QKeyEvent* event);
+
+protected Q_SLOTS:
+  /** Removes the underlying parameter group and its sub-groups from the
+   * parameter tree structure.
+   */
+  void onDeleteSelectedItem();
+  /** Creates a sub-group to the current selected parameter group. */
+  void onCreateSubgroup();
+  /** Expands or closes the selected item. If it is open it will be closed and the
+   * other way round.
+   */
+  void onToggleSelectedItem();
+  /** Exports the current selected parameter with all sub-groups to a file. */
+  void onExportToFile();
+  /** Imports a file and inserts the parameter to the current selected parameter node. */
+  void onImportFromFile();
+  /** Changes the name of the leaf of the selected item. */
+  void onRenameSelectedItem();
+
+protected:
+  void changeEvent(QEvent *e);
+
+private:
+  QMenu* menuEdit;
+  QAction* expandAct;
+  QAction* subGrpAct;
+  QAction* removeAct;
+  QAction* renameAct;
+  QAction* exportAct;
+  QAction* importAct;
+};
+
 // --------------------------------------------------------------------
 
 /**

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __TREE_H_
-#define __TREE_H_
+#ifndef GUI_TREE_H
+#define GUI_TREE_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -39,12 +39,108 @@
 #include "Selection.h"
 #include "DockWindow.h"
 
-/// Forwards
-class FCLabel; 
+namespace Gui {
 
-using namespace std;
+/**
+ * The TreeModelItem class represents the documents with their objects in a tree hierarchy.
+ * @author Werner Mayer
+ */
+class TreeModelItem
+{
+public:
+    TreeModelItem(const QString& name, Base::BaseClass* obj=0);
+    ~TreeModelItem();
+
+    void setParent(TreeModelItem* parent);
+    TreeModelItem *parent() const;
+    void appendChild(TreeModelItem *child);
+    void removeChild(TreeModelItem *child);
+    TreeModelItem *child(int row);
+
+    int row() const;
+    int childCount() const;
+    int columnCount() const;
+
+    bool hasObject(Base::BaseClass*) const;
+    void setIcon(const QPixmap&);
+    QVariant data(int role) const;
+    bool setData (const QVariant& value);
+    Qt::ItemFlags flags() const;
+
+private:
+    TreeModelItem *parentItem;
+    Base::BaseClass* object;
+    QString name;
+    QPixmap icon;
+    QList<TreeModelItem*> childItems;
+};
+
+/**
+ * The Model View Controler class for the tree view.
+ * @author Werner Mayer
+ */
+class TreeModel : public QAbstractItemModel
+{
+public:
+    TreeModel(QObject* parent=0);
+    virtual ~TreeModel();
+
+    QModelIndex newDocument(App::Document*);
+    void deleteDocument(App::Document*);
+    QModelIndex newObject(App::DocumentObject*);
+    void deleteObject(App::DocumentObject*);
+    void changeObject(App::DocumentObject*);
+    
+    int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    Qt::ItemFlags flags ( const QModelIndex & index ) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    bool setHeaderData ( int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole );
+    QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+    QModelIndex parent ( const QModelIndex & index ) const;
+    int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+
+private:
+    TreeModelItem* rootItem;
+    static QPixmap* documentPixmap;
+};
+
+/**
+ * The dock window containing the tree view.
+ * @author Werner Mayer
+ */
+class TreeWidget : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+{
+    Q_OBJECT
+
+public:
+    TreeWidget(Gui::Document*  pcDocument,QWidget *parent=0);
+    ~TreeWidget();
+
+    const char *getName(void) const {return "TreeView";}
+    void slotNewDocument(App::Document&);
+    void slotDeletedDocument(App::Document&);
+    void slotNewObject(App::DocumentObject&);
+    void slotDeletedObject(App::DocumentObject&);
+    void slotChangedObject(App::DocumentObject&);
+
+    /// Observer message from the Selection
+    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
+
+protected:
+    void contextMenuEvent ( QContextMenuEvent * e );
+    void changeEvent(QEvent *e);
+
+private:
+    QTreeView* treeView;
+    TreeModel* treeModel;
+};
+
+}
 
 namespace Gui {
+
 class Document;
 class TreeView;
 class ViewProviderDocumentObject;
@@ -234,7 +330,7 @@ protected:
 
   static QPixmap *pcDocumentPixmap;
 
-  map<Gui::Document*,DocItem*> DocMap;
+  std::map<Gui::Document*,DocItem*> DocMap;
 
   bool bFromOutside;
 
@@ -244,5 +340,5 @@ private:
 
 } // namespace Gui
 
-#endif // __TREE_H_
+#endif // GUI_TREE_H
 

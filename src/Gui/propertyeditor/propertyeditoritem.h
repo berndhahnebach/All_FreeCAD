@@ -57,6 +57,7 @@ public:
     virtual QVariant editorData(QWidget *editor) const;
 
     void setParent(PropertyItem* parent);
+    PropertyItem *parent() const;
     void appendChild(PropertyItem *child);
 
     void setReadOnly(bool);
@@ -71,7 +72,6 @@ public:
     bool setData (const QVariant& value);
     Qt::ItemFlags flags(int column) const;
     int row() const;
-    PropertyItem *parent();
     void reset();
 
 protected:

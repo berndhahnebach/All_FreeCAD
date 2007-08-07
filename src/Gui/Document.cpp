@@ -612,7 +612,7 @@ void Document::RestoreDocFile(Base::Reader &reader)
     for(i=0 ;i<Cnt ;i++)
     {
       xmlReader.readElement("ViewProvider");
-      string name = xmlReader.getAttribute("name");
+      std::string name = xmlReader.getAttribute("name");
       ViewProvider* pObj = getViewProviderByName(name.c_str());
       if(pObj) // check if this feature has been registered
       {
