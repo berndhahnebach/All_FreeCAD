@@ -49,10 +49,373 @@
 #include "MainWindow.h"
 
 
-using Base::Console;
-
 using namespace Gui;
 
+TreeModelItem::TreeModelItem(const QString& s, Base::BaseClass* obj)
+    : name(s), parentItem(0), object(obj)
+{
+}
+
+TreeModelItem::~TreeModelItem()
+{
+    qDeleteAll(childItems);
+}
+
+void TreeModelItem::setParent(TreeModelItem* parent)
+{
+    parentItem = parent;
+}
+
+TreeModelItem *TreeModelItem::parent() const
+{
+    return parentItem;
+}
+
+void TreeModelItem::appendChild(TreeModelItem *item)
+{
+    childItems.append(item);
+}
+
+void TreeModelItem::removeChild(TreeModelItem *item)
+{
+    childItems.removeAll(item);
+}
+
+TreeModelItem *TreeModelItem::child(int row)
+{
+    return childItems.value(row);
+}
+
+int TreeModelItem::childCount() const
+{
+    return childItems.count();
+}
+
+int TreeModelItem::columnCount() const
+{
+    return 1;
+}
+
+QVariant TreeModelItem::data(int role) const
+{
+    if (role == Qt::DisplayRole) {
+        return QVariant(name);
+    } else if (role == Qt::DecorationRole) {
+        return QVariant(icon);
+    }
+
+    return QVariant();
+}
+
+Qt::ItemFlags TreeModelItem::flags() const
+{
+    Qt::ItemFlags basicFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (!parentItem) // the root
+        return basicFlags;
+
+    // Allow drag for objects and drop for documents
+    if (object->isDerivedFrom(App::Document::getClassTypeId())) {
+        basicFlags |= Qt::ItemIsDropEnabled;
+    } else if (object->isDerivedFrom(App::DocumentObject::getClassTypeId())) {
+        basicFlags |= Qt::ItemIsDragEnabled;
+    }
+
+    return basicFlags;
+}
+
+int TreeModelItem::row() const
+{
+    if (parentItem)
+        return parentItem->childItems.indexOf(const_cast<TreeModelItem*>(this));
+
+    return 0;
+}
+
+void TreeModelItem::setIcon(const QPixmap& icon)
+{
+    this->icon = icon;
+}
+
+bool TreeModelItem::hasObject(Base::BaseClass* obj) const
+{
+    return this->object == obj;
+}
+
+// ----------------------------------------------------------------------------
+
+/* TRANSLATOR Gui::TreeModel */
+
+QPixmap* TreeModel::documentPixmap = 0;
+
+TreeModel::TreeModel(QObject* parent)
+{
+    // The Application item
+    rootItem = new TreeModelItem(tr("Application"));
+    documentPixmap = new QPixmap(Gui::BitmapFactory().pixmap("Document"));
+}
+
+TreeModel::~TreeModel()
+{
+    delete rootItem;
+}
+
+int TreeModel::columnCount ( const QModelIndex & parent ) const
+{
+    return rootItem->columnCount();
+}
+
+QVariant TreeModel::data ( const QModelIndex & index, int role ) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    TreeModelItem *item = static_cast<TreeModelItem*>(index.internalPointer());
+    return item->data(role);
+}
+
+bool TreeModel::setData(const QModelIndex& index, const QVariant & value, int role)
+{
+    if (!index.isValid())
+        return false;
+
+    return false;
+}
+
+Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+{
+    TreeModelItem *item = static_cast<TreeModelItem*>(index.internalPointer());
+    return item->flags();
+}
+
+QModelIndex TreeModel::index ( int row, int column, const QModelIndex & parent ) const
+{
+    // The Application root item
+    if (!parent.isValid()) {
+        return createIndex(row, column, rootItem);
+    }
+
+    TreeModelItem *parentItem = static_cast<TreeModelItem*>(parent.internalPointer());
+    TreeModelItem *childItem = parentItem->child(row);
+    if (childItem)
+        return createIndex(row, column, childItem);
+    else
+        return QModelIndex();
+}
+
+QModelIndex TreeModel::parent ( const QModelIndex & index ) const
+{
+    if (!index.isValid() || !index.internalPointer() || index.internalPointer() == rootItem)
+        return QModelIndex();
+
+    TreeModelItem *child = static_cast<TreeModelItem*>(index.internalPointer());
+    TreeModelItem *parent = child->parent();
+    if (!parent)
+        return QModelIndex();
+    return createIndex(parent->row(), 0, parent);
+}
+
+int TreeModel::rowCount ( const QModelIndex & parent ) const
+{
+    // One children for the Application item
+    if (!parent.isValid())
+        return 1;
+
+    TreeModelItem *parentItem = static_cast<TreeModelItem*>(parent.internalPointer());
+    return parentItem->childCount();
+}
+
+QVariant TreeModel::headerData ( int section, Qt::Orientation orientation, int role ) const
+{
+    if (orientation == Qt::Horizontal) {
+        if (role == Qt::DisplayRole)
+            return tr("Labels & Attributes");
+    }
+
+    return QVariant();
+}
+
+bool TreeModel::setHeaderData ( int section, Qt::Orientation orientation, const QVariant & value, int role )
+{
+    return false;
+}
+
+QModelIndex TreeModel::newDocument(App::Document* doc)
+{
+    TreeModelItem* child = new TreeModelItem(doc->getName(), doc);
+    child->setParent(rootItem);
+    rootItem->appendChild(child);
+    child->setIcon(*documentPixmap);
+
+    QModelIndex root = this->index(0, 0);
+    int row = rootItem->childCount()-1;
+    beginInsertRows(root, row, row);
+    endInsertRows();
+    return this->index(row, 0, root);
+}
+
+void TreeModel::deleteDocument(App::Document* doc)
+{
+    int count = rootItem->childCount();
+    for (int i=0; i<count; i++) {
+        TreeModelItem* item = rootItem->child(i);
+        if (item->hasObject(doc)) {
+            rootItem->removeChild(item);
+            QModelIndex root = this->index(0, 0);
+            beginRemoveRows(root, i, i);
+            endRemoveRows();
+            delete item;
+            break;
+        }
+    }
+}
+
+QModelIndex TreeModel::newObject(App::DocumentObject* obj)
+{
+    int count = rootItem->childCount();
+    for (int i=0; i<count; i++) {
+        TreeModelItem* item = rootItem->child(i);
+        if (item->hasObject(&obj->getDocument())) {
+            TreeModelItem* child = new TreeModelItem(obj->name.getValue(), obj);
+            child->setParent(item);
+            item->appendChild(child);
+
+            Gui::Document* doc = Application::Instance->getDocument(&obj->getDocument());
+            Gui::ViewProvider* view = doc->getViewProvider(obj);
+            child->setIcon(view->getIcon());
+
+            QModelIndex root = this->index(0, 0);
+            QModelIndex index = this->index(i, 0, root);
+            int row = item->childCount()-1;
+            beginInsertRows(index, row, row);
+            endInsertRows();
+            return this->index(row, 0, index);
+        }
+    }
+
+    return QModelIndex();
+}
+
+void TreeModel::deleteObject(App::DocumentObject* obj)
+{
+    QModelIndex index;
+    TreeModelItem* document = 0;
+    int count = rootItem->childCount();
+    for (int i=0; i<count; i++) {
+        TreeModelItem* child = rootItem->child(i);
+        if (child->hasObject(&obj->getDocument())) {
+            document = child;
+            QModelIndex root = this->index(0, 0);
+            index = this->index(i, 0, root);
+            break;
+        }
+    }
+
+    if (document) {
+        int count = document->childCount();
+        for (int i=0; i<count; i++) {
+            TreeModelItem* child = document->child(i);
+            if (child->hasObject(obj)) {
+                document->removeChild(child);
+                beginRemoveRows(index, i, i);
+                endRemoveRows();
+                delete child;
+            }
+        }
+    }
+}
+
+void TreeModel::changeObject(App::DocumentObject*)
+{
+}
+
+// ----------------------------------------------------------------------------
+
+TreeWidget::TreeWidget(Gui::Document* pcDocument,QWidget *parent)
+  : DockWindow(pcDocument,parent)
+{
+    setWindowTitle( tr("Tree view" ) );
+
+    this->treeView = new QTreeView(this);
+    this->treeModel = new TreeModel(this);
+    this->treeView->setModel(this->treeModel);
+    this->treeView->setRootIsDecorated(false);
+    this->treeView->setExpanded(this->treeModel->index(0, 0), true);
+
+    Gui::Selection().Attach(this);
+    App::GetApplication().signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
+    App::GetApplication().signalDeletedDocument.connect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
+
+    QGridLayout* pLayout = new QGridLayout(this); 
+    pLayout->setSpacing(0);
+    pLayout->setMargin (0);
+    pLayout->addWidget( this->treeView, 0, 0 );
+}
+
+TreeWidget::~TreeWidget()
+{
+    App::GetApplication().signalNewDocument.disconnect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
+    App::GetApplication().signalDeletedDocument.disconnect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
+    Gui::Selection().Detach(this);
+}
+
+void TreeWidget::slotNewDocument(App::Document& Doc)
+{
+    QModelIndex item = treeModel->newDocument(&Doc);
+    treeView->setExpanded(item, true);
+    Doc.signalNewObject.connect(boost::bind(&TreeWidget::slotNewObject, this, _1));
+    Doc.signalDeletedObject.connect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
+    Doc.signalChangedObject.connect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
+}
+
+void TreeWidget::slotDeletedDocument(App::Document& Doc)
+{
+    Doc.signalNewObject.disconnect(boost::bind(&TreeWidget::slotNewObject, this, _1));
+    Doc.signalDeletedObject.disconnect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
+    Doc.signalChangedObject.disconnect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
+    treeModel->deleteDocument(&Doc);
+}
+
+void TreeWidget::slotNewObject(App::DocumentObject& obj)
+{
+    QModelIndex item = treeModel->newObject(&obj);
+    treeView->setExpanded(item, true);
+}
+
+void TreeWidget::slotDeletedObject(App::DocumentObject& obj)
+{
+    treeModel->deleteObject(&obj);
+}
+
+void TreeWidget::slotChangedObject(App::DocumentObject& obj)
+{
+    treeModel->changeObject(&obj);
+}
+
+void TreeWidget::contextMenuEvent ( QContextMenuEvent * e )
+{
+    // ask workbenches and view provider, ...
+    MenuItem* view = new MenuItem;
+    Gui::Application::Instance->setupContextMenu("Tree", view);
+
+    QMenu ContextMenu;
+    MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
+    delete view;
+    ContextMenu.exec( QCursor::pos() );
+}
+
+void TreeWidget::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+    }
+
+    DockWindow::changeEvent(e);
+}
+
+void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
+{
+}
+
+// ----------------------------------------------------------------------------
 
 //**************************************************************************
 // DocItem
@@ -87,7 +450,7 @@ bool DocItem::testStatus(void)
 {
   bool bChanged = false;
 
-  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<std::string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     if(pos->second->testStatus())
       bChanged = true;
@@ -98,7 +461,7 @@ bool DocItem::testStatus(void)
 
 void DocItem::highlightFeature(const char* name, bool bOn)
 {
-  std::map<string,ObjectItem*>::iterator pos;
+  std::map<std::string,ObjectItem*>::iterator pos;
   pos = FeatMap.find(name);
   
   if(pos != FeatMap.end())
@@ -112,7 +475,7 @@ void DocItem::highlightFeature(const char* name, bool bOn)
 
 void DocItem::selectFeature(const char* name, bool bOn)
 {
-  std::map<string,ObjectItem*>::iterator pos;
+  std::map<std::string,ObjectItem*>::iterator pos;
   pos = FeatMap.find(name);
   
   if(pos != FeatMap.end())
@@ -123,7 +486,7 @@ void DocItem::selectFeature(const char* name, bool bOn)
 
 void DocItem::clearSelection(void)
 {
-  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<std::string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     pos->second->selectFeature(false);
   }
@@ -131,7 +494,7 @@ void DocItem::clearSelection(void)
 
 void DocItem::isSelectionUptodate(void)
 {
-  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<std::string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     if(pos->second->bSelected != pos->second->isSelected())
     {
@@ -528,7 +891,7 @@ void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Selec
   if(Reason.Type != SelectionChanges::ClearSelection)
   {
     Gui::Document* pDoc = Application::Instance->getDocument( Reason.pDocName );
-    map<Gui::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
+    std::map<Gui::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
 
     if(it!= DocMap.end())
     {
