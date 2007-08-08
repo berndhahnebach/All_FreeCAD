@@ -492,12 +492,21 @@
 				RelativePath=".\DocumentObjectPy.xml"
 				>
 				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentObjectPy.xml&#x0D;&#x0A;"
-						Outputs="DocumentObjectPy.cpp;DocumentObjectPy.h"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
@@ -561,12 +570,21 @@
 				RelativePath=".\FeaturePy.xml"
 				>
 				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py FeaturePy.xml&#x0D;&#x0A;"
-						Outputs="FeaturePy.cpp;FeaturePy.h"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
