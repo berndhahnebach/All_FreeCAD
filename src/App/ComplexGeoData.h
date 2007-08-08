@@ -28,21 +28,10 @@
 
 #include <Base/Placement.h>
 #include <Base/Persistance.h>
-//#include <Base/PyExport.h>
-//#include <Base/TimeInfo.h>
-//#include <Base/Vector3D.h>
 
 
-namespace Base
-{
-//  class Vector3D;
-  //class Matrix4D;
-}
 
-//using Base::Vector3D;
-//using Base::Matrix4D;
-
-namespace App
+namespace Data
 {
 
 
@@ -51,6 +40,8 @@ namespace App
  */
 class AppExport ComplexGeoData: public Base::Persistance
 {
+
+  TYPESYSTEM_HEADER();
  
 public:
 

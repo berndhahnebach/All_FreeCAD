@@ -72,10 +72,10 @@ writePartFile(PyObject *self, PyObject *args)
 #if 1
     PyObject *ShapeObject;
     const char *FileName,*PartName;
-    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePy::Type), &ShapeObject)) 
+    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePyOld::Type), &ShapeObject)) 
         return NULL;                             
 
-    TopoDS_Shape &aShape = ((Part::TopoShapePy *)ShapeObject)->getShape();
+    TopoDS_Shape &aShape = ((Part::TopoShapePyOld *)ShapeObject)->getShape();
     
     PovTools::writeShape(FileName,PartName,aShape,(float)0.1);
 #else
@@ -92,10 +92,10 @@ writePartFileCSV(PyObject *self, PyObject *args)
     PyObject *ShapeObject;
     const char *FileName;
     float Acur,Length;
-    if (! PyArg_ParseTuple(args, "O!sff",&(Part::TopoShapePy::Type), &ShapeObject,&FileName,&Acur,&Length  )) 
+    if (! PyArg_ParseTuple(args, "O!sff",&(Part::TopoShapePyOld::Type), &ShapeObject,&FileName,&Acur,&Length  )) 
         return NULL;                             
 
-    TopoDS_Shape &aShape = ((Part::TopoShapePy *)ShapeObject)->getShape();
+    TopoDS_Shape &aShape = ((Part::TopoShapePyOld *)ShapeObject)->getShape();
     
     PovTools::writeShapeCSV(FileName,aShape,Acur,Length );
 

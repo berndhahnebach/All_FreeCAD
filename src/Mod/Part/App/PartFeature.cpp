@@ -94,13 +94,13 @@ TopoDS_Shape PropertyPartShape::getValue(void)const
 
 PyObject *PropertyPartShape::getPyObject(void)
 {
-  return new TopoShapePy(_Shape);
+  return new TopoShapePyOld(_Shape);
 }
 
 void PropertyPartShape::setPyObject(PyObject *value)
 {
-  if( PyObject_TypeCheck(value, &(TopoShapePy::Type)) ) {
-   	TopoShapePy  *pcObject = (TopoShapePy*)value;
+  if( PyObject_TypeCheck(value, &(TopoShapePyOld::Type)) ) {
+   	TopoShapePyOld  *pcObject = (TopoShapePyOld*)value;
     setValue(pcObject->getTopoShape());
   }
 }

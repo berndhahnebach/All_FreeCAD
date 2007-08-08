@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
-  <PythonExport Father="WorkbenchPy" Name="PythonWorkbenchPy" Twin="PythonWorkbench" Namespace="Gui" FatherInclude="WorkbenchPy.h" FatherNamespace="Gui">
+  <PythonExport 
+    Father="WorkbenchPy" 
+    Name="PythonWorkbenchPy" 
+    Twin="PythonWorkbench" 
+    Namespace="Gui" 
+    FatherInclude="Gui/WorkbenchPy.h" 
+    FatherNamespace="Gui">
     <Documentation>
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>This class handles document objects in group</UserDocu>

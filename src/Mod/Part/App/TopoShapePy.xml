@@ -1,30 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
-  <PythonExport Father="DocumentObjectPy" Name="DocumentObjectGroupPy" Twin="DocumentObjectGroup" Namespace="App" FatherInclude="DocumentObjectPy.h" FatherNamespace="App">
+  <PythonExport 
+      Father="ComplexGeoDataPy" 
+      Name="TopoShapePy" 
+      Twin="TopoShape" 
+      Namespace="Part" 
+      FatherInclude="App/ComplexGeoDataPy.h" 
+      FatherNamespace="Data">
     <Documentation>
-      <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
-      <UserDocu>This class handles document objects in group</UserDocu>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
+      <UserDocu>TopoShape is the OpenCasCade topological shape wrapper</UserDocu>
     </Documentation>
-    <Methode Name="addObject">
+    <Methode Name="exportIges">
       <Documentation>
-        <UserDocu>Add an object with given type and name to the group</UserDocu>
+        <UserDocu>Export the content of this shape to an IGES file.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="removeObject">
+    <Methode Name="exportStep">
       <Documentation>
-        <UserDocu>Remove an object from the group</UserDocu>
+        <UserDocu>Export the content of this shape to an STEP file.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="getObject">
+    <Methode Name="exportBrep">
       <Documentation>
-        <UserDocu>Return the object with the given name</UserDocu>
+        <UserDocu>Export the content of this shape to an BREP file. BREP is a CasCade native format.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="hasObject">
+    <Methode Name="exportStl">
       <Documentation>
-        <UserDocu>Checks if the group has an object with the given name</UserDocu>
+        <UserDocu>Export the content of this shape to an STL mesh file.</UserDocu>
       </Documentation>
     </Methode>
-    <CustomAttributes />
+    <Methode Name="check">
+      <Documentation>
+        <UserDocu>Checks the shape and report errors in the shape structure.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Valid" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Shows if the Shape is valid. That mean not null, empty or corupted.</UserDocu>
+      </Documentation>
+      <Parameter Name="Valid" Type="Int"/>
+    </Attribute>
+    <Attribute Name="Faces" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of faces in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Faces" Type="List"/>
+    </Attribute>
+    <Attribute Name="Vertexes" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of vertexes in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Vertexes" Type="List"/>
+    </Attribute>
+    <Attribute Name="Shapes" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of subsequent shapes in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Shapes" Type="List"/>
+    </Attribute>
+    <Attribute Name="Edges" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of Edges in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Edges" Type="List"/>
+    </Attribute>
+    <Attribute Name="Wires" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of wires in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Wires" Type="List"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

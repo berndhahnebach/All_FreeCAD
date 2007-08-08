@@ -10,6 +10,12 @@
 
 using namespace Base;
 
+// returns a string which represent the object e.g. when printed in python
+const char *PersistancePy::representation(void)
+{
+	return "PersistancePy";
+}
+
 
 Py::String PersistancePy::getContent(void) const
 {

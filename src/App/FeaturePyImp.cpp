@@ -9,6 +9,12 @@
 
 using namespace App;
 
+// returns a string which represent the object e.g. when printed in python
+const char *FeaturePy::representation(void)
+{
+	return "FeaturePy";
+}
+
 
 PyObject*  FeaturePy::recompute(PyObject *args)
 {
