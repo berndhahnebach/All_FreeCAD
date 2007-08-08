@@ -42,10 +42,12 @@ class AppPartExport TopoShape : public Data::ComplexGeoData
   TYPESYSTEM_HEADER();
 
 public:
+	TopoShape(TopoDS_Shape&);
 	TopoShape();
 	~TopoShape();
 
- 
+  static TopoDS_Shape read(const char *FileName);
+
   TopoDS_Shape _Shape;
 };
 

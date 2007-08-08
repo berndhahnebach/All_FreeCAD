@@ -39,12 +39,13 @@
 #include <App/Document.h>
 
 #include "TopologyPy.h"
+#include "TopoShape.h"
+#include "TopoShapePy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
-#include "PartAlgos.h"
 
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -184,7 +185,7 @@ read(PyObject *self, PyObject *args)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
-    return new TopoShapePyOld(PartAlgos::Load(Name)); 
+    return new TopoShapePyOld(TopoShape::read(Name)); 
   } PY_CATCH;
 }
 
@@ -2866,8 +2867,7 @@ VMults.SetValue(46,4);
 }
 
 
-static PyObject *                        
-createPlane(PyObject *self, PyObject *args)
+static PyObject * createPlane(PyObject *self, PyObject *args)
 {
 		double z_level;
 
@@ -2887,6 +2887,24 @@ createPlane(PyObject *self, PyObject *args)
   } PY_CATCH;
 }
 
+static PyObject * createBox(PyObject *self, PyObject *args)
+{
+		double X, Y, Z , L, H, W ;
+
+  //const char* Name;
+  if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))			 
+    return NULL;                         
+
+  
+  PY_TRY {
+  	// Build a box using the dimension and position attributes
+	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
+
+    TopoDS_Shape ResultShape = mkBox.Shape();
+
+    return new TopoShapePy(new TopoShape(ResultShape)); 
+  } PY_CATCH;
+}
 
 
 
@@ -2897,8 +2915,9 @@ struct PyMethodDef Part_methods[] = {
     {"insert" , insert,  1},       
     {"read"   , read,  1},       
     {"createTestBSPLINE"   , createTestBSPLINE,  1}, 
-	{"createTestApproximate" , createTestApproximate, 1},
-	{"createPlane" , createPlane, 1},
+	  {"createTestApproximate" , createTestApproximate, 1},
+	  {"createPlane" , createPlane, 1},
+	  {"createBox" , createBox, 1},
     {NULL     , NULL      }        /* end of table marker */
 };
 
