@@ -23,115 +23,32 @@
  
 
 
-#ifndef _PartFeature_h_
-#define _PartFeature_h_
+#ifndef _TopoShape_h_
+#define _TopoShape_h_
 
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
 #include <TopoDS_Shape.hxx>
-#include <App/Feature.h>
-
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
+#include <App/ComplexGeoData.h>
 
 namespace Part
 {
 
-class Property;
-class PartFeaturePy;
 
 /** The part shape property
  */
-class AppPartExport PropertyPartShape : public App::Property
+class AppPartExport TopoShape : public Data::ComplexGeoData
 {
   TYPESYSTEM_HEADER();
 
 public:
-	PropertyPartShape();
-	~PropertyPartShape();
+	TopoShape();
+	~TopoShape();
 
-  /** @name Getter/setter */
-  //@{
-  /// set the part shape
-  void setValue( TopoDS_Shape );
-  /// get the part shape
-  TopoDS_Shape getValue(void) const;
-  //@}
-
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
-
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
-
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
-
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
-  
-  virtual unsigned int getMemSize (void) const;
-
-  //@}
-
-private:
-  /** Recursive counting of multiple referenced shape elements. */
-  unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
+ 
   TopoDS_Shape _Shape;
 };
 
-/** Base class of all Feature classes in FreeCAD
- */
-class AppPartExport Feature: public App::AbstractFeature
-{
-  PROPERTY_HEADER(Part::Feature);
-
-public:
-	/// Constructor
-	Feature(void);
-  virtual ~Feature();
-
-  PropertyPartShape Shape;
-
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  //@}
-
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "PartGui::ViewProviderPart";
-  }
-
-
-	/** @name methods for handling the result shape */
-	//@{
-	/** Set the result shape
-	 *
-	 */
-  void setShape(const TopoDS_Shape &Shape);
-
-	/** Get the actual result shape
-	 *
-	 */
-  TopoDS_Shape getShape(void);
-
-	//@}
-
-
-  virtual PyObject* getPyObject(void);
-
-};
 
 
 } //namespace Part

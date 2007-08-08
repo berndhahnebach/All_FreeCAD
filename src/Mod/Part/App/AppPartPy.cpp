@@ -184,7 +184,7 @@ read(PyObject *self, PyObject *args)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
-    return new TopoShapePy(PartAlgos::Load(Name)); 
+    return new TopoShapePyOld(PartAlgos::Load(Name)); 
   } PY_CATCH;
 }
 
@@ -258,7 +258,7 @@ Handle_Geom_BSplineSurface aSurface = aPTBS.Surface();
 
 		   BRepBuilderAPI_MakeFace 	Face(Final_Approx);
 
-		   return new TopoShapePy(Face.Face()); 
+		   return new TopoShapePyOld(Face.Face()); 
   } PY_CATCH;
 }
 /* BREP test function */
@@ -2861,7 +2861,7 @@ VMults.SetValue(46,4);
 
     BRepBuilderAPI_MakeFace 	Face(Surface);
 
-    return new TopoShapePy(Face.Face()); 
+    return new TopoShapePyOld(Face.Face()); 
   } PY_CATCH;
 }
 
@@ -2883,7 +2883,7 @@ createPlane(PyObject *self, PyObject *args)
   Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
   BRepBuilderAPI_MakeFace 	Face(aPlane);
 
-    return new TopoShapePy(Face.Face()); 
+    return new TopoShapePyOld(Face.Face()); 
   } PY_CATCH;
 }
 

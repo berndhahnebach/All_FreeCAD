@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
-  <PythonExport Father="PersistancePy" Name="PropertyContainerPy" Twin="PropertyContainer" Namespace="App" FatherInclude="../Base/PersistancePy.h" FatherNamespace="Base">
+  <PythonExport 
+    Father="PersistancePy" 
+    Name="PropertyContainerPy" 
+    Twin="PropertyContainer" 
+    Namespace="App" 
+    FatherInclude="Base/PersistancePy.h" 
+    FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>This is a persistance class</UserDocu>

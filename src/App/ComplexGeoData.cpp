@@ -29,14 +29,12 @@
 
 #include "ComplexGeoData.h"
 
-using namespace App;
+using namespace Data;
 
 
+TYPESYSTEM_SOURCE(Data::ComplexGeoData , Base::Persistance);
 
 
-//===========================================================================
-// Feature
-//===========================================================================
 
 ComplexGeoData::ComplexGeoData(void)
 {

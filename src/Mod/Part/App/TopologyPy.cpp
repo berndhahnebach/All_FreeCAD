@@ -60,18 +60,18 @@ using namespace Part;
 
 
 //===========================================================================
-// TopoShapePy - Warpper for the TopoDS classes
+// TopoShapePyOld - Warpper for the TopoDS classes
 //===========================================================================
 
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject TopoShapePy::Type = {
+PyTypeObject TopoShapePyOld::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
 	"Part.Shape",				/*tp_name*/
-	sizeof(TopoShapePy),	/*tp_basicsize*/
+	sizeof(TopoShapePyOld),	/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -99,7 +99,7 @@ PyTypeObject TopoShapePy::Type = {
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  TopoShapePy::Methods,                             /*tp_methods */
+  TopoShapePyOld::Methods,                             /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &Base::PyObjectBase::Type,                        /*tp_base */
@@ -122,7 +122,7 @@ PyTypeObject TopoShapePy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef TopoShapePy::Methods[] = {
+PyMethodDef TopoShapePyOld::Methods[] = {
   {"hasChild",         (PyCFunction) shasChild,         Py_NEWARGS},
   {"isNull",           (PyCFunction) sisNull,           Py_NEWARGS},
   {"isValid",          (PyCFunction) sisValid,          Py_NEWARGS},
@@ -140,21 +140,21 @@ PyMethodDef TopoShapePy::Methods[] = {
   {NULL, NULL}		/* Sentinel */
 };
 
-PyObject *TopoShapePy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)  // Python wrapper
+PyObject *TopoShapePyOld::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)  // Python wrapper
 {
-  return new TopoShapePy();
+  return new TopoShapePyOld();
 }
 
-int TopoShapePy::PyInit(PyObject* self, PyObject* args, PyObject*)
+int TopoShapePyOld::PyInit(PyObject* self, PyObject* args, PyObject*)
 {
   PyObject *pcObj=0;
-  if (!PyArg_ParseTuple(args, "|O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "|O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
     return -1;                             // NULL triggers exception 
 
   if ( pcObj )
   {
-    TopoShapePy* pcShape = (TopoShapePy*)pcObj;
-    ((TopoShapePy*)self)->_cTopoShape = pcShape->_cTopoShape;
+    TopoShapePyOld* pcShape = (TopoShapePyOld*)pcObj;
+    ((TopoShapePyOld*)self)->_cTopoShape = pcShape->_cTopoShape;
   }
 
   return 0;
@@ -163,35 +163,35 @@ int TopoShapePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject TopoShapePy::Parents[] = {&Base::PyObjectBase::Type,&TopoShapePy::Type, NULL};     
+PyParentObject TopoShapePyOld::Parents[] = {&Base::PyObjectBase::Type,&TopoShapePyOld::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-TopoShapePy::TopoShapePy(PyTypeObject *T)
+TopoShapePyOld::TopoShapePyOld(PyTypeObject *T)
 : Base::PyObjectBase(0,T)
 {
   Base::Console().Log("Create TopoShape: %p \n",this);
 }
 
-TopoShapePy::TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T) 
+TopoShapePyOld::TopoShapePyOld(const TopoDS_Shape &cShape, PyTypeObject *T) 
  : PyObjectBase( 0,T), _cTopoShape(cShape)
 {
 	Console().Log("Create TopoShape %p\n",this);
 }
 
 //--------------------------------------------------------------------------
-//  TopoShapePy destructor 
+//  TopoShapePyOld destructor 
 //--------------------------------------------------------------------------
-TopoShapePy::~TopoShapePy()						// Everything handled in parent
+TopoShapePyOld::~TopoShapePyOld()						// Everything handled in parent
 {
 	Console().Log("Destroy TopoShape %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
-// TopoShapePy Attributes
+// TopoShapePyOld Attributes
 //--------------------------------------------------------------------------
-PyObject *TopoShapePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *TopoShapePyOld::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	try{
 		// Access the number of attributes at this label
@@ -201,12 +201,12 @@ PyObject *TopoShapePy::_getattr(char *attr)				// __getattr__ function: note onl
 		}else
 			_getattr_up(PyObjectBase); 						// send to parent
 	}catch(...){
-		Console().Log("Exception in TopoShapePy::_getattr()\n");
+		Console().Log("Exception in TopoShapePyOld::_getattr()\n");
 		return 0;
 	}
 } 
 
-int TopoShapePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int TopoShapePyOld::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
 	if (Base::streq(attr, "Real"))						// settable new state
 		; 
@@ -218,7 +218,7 @@ int TopoShapePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 //--------------------------------------------------------------------------
 // PartFeaturePy representation
 //--------------------------------------------------------------------------
-PyObject *TopoShapePy::_repr(void)
+PyObject *TopoShapePyOld::_repr(void)
 {
   std::stringstream a;
   a << "TopoShape: [ ";
@@ -231,14 +231,14 @@ PyObject *TopoShapePy::_repr(void)
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *TopoShapePy::hasChild(PyObject *args)
+PyObject *TopoShapePyOld::hasChild(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;                      
 	Py_Return; 
 }
 
-PyObject *TopoShapePy::isNull(PyObject *args)
+PyObject *TopoShapePyOld::isNull(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
@@ -246,7 +246,7 @@ PyObject *TopoShapePy::isNull(PyObject *args)
   return Py_BuildValue("O", (_cTopoShape.IsNull() ? Py_True : Py_False));
 }
 
-PyObject *TopoShapePy::isValid(PyObject *args)
+PyObject *TopoShapePyOld::isValid(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
@@ -259,7 +259,7 @@ PyObject *TopoShapePy::isValid(PyObject *args)
   return Py_BuildValue("O", Py_False); 
 }
 
-PyObject *TopoShapePy::analyze(PyObject *args)
+PyObject *TopoShapePyOld::analyze(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
@@ -450,7 +450,7 @@ public:
 };
 #endif
 
-PyObject *TopoShapePy::importIGES(PyObject *args)
+PyObject *TopoShapePyOld::importIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -514,7 +514,7 @@ PyObject *TopoShapePy::importIGES(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::exportIGES(PyObject *args)
+PyObject *TopoShapePyOld::exportIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -561,7 +561,7 @@ PyObject *TopoShapePy::exportIGES(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::importSTEP(PyObject *args)
+PyObject *TopoShapePyOld::importSTEP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -631,7 +631,7 @@ PyObject *TopoShapePy::importSTEP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::exportSTEP(PyObject *args)
+PyObject *TopoShapePyOld::exportSTEP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -658,7 +658,7 @@ PyObject *TopoShapePy::exportSTEP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::importBREP(PyObject *args)
+PyObject *TopoShapePyOld::importBREP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -683,7 +683,7 @@ PyObject *TopoShapePy::importBREP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::exportBREP(PyObject *args)
+PyObject *TopoShapePyOld::exportBREP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))
@@ -700,7 +700,7 @@ PyObject *TopoShapePy::exportBREP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::exportSTL(PyObject *args)
+PyObject *TopoShapePyOld::exportSTL(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))
@@ -715,7 +715,7 @@ PyObject *TopoShapePy::exportSTL(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::offset(PyObject *args)
+PyObject *TopoShapePyOld::offset(PyObject *args)
 {
   float offset;
   if (!PyArg_ParseTuple(args, "f", &offset ))
@@ -725,7 +725,7 @@ PyObject *TopoShapePy::offset(PyObject *args)
     BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (_cTopoShape,offset,0.001,BRepOffset_Skin );
 
     if(MakeOffsetShape.IsDone())
-      return new TopoShapePy(MakeOffsetShape.Shape());
+      return new TopoShapePyOld(MakeOffsetShape.Shape());
     else {
       PyErr_SetString(PyExc_Exception,"Offset failed");
       return NULL;
@@ -740,13 +740,13 @@ PyObject *TopoShapePy::offset(PyObject *args)
 
 
 
-PyObject *TopoShapePy::cut(PyObject *args)
+PyObject *TopoShapePyOld::cut(PyObject *args)
 {
   PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj);
+  TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj);
 
   PY_TRY {
    	// Let's call for algorithm computing a cut operation:
@@ -761,7 +761,7 @@ PyObject *TopoShapePy::cut(PyObject *args)
       PyErr_SetString(PyExc_Exception,"Cut failed");
       return NULL;
     } else
-      return new TopoShapePy( mkCut.Shape());
+      return new TopoShapePyOld( mkCut.Shape());
 	  
   } PY_CATCH;
 

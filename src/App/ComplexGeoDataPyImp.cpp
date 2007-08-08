@@ -7,8 +7,13 @@
 #include "ComplexGeoDataPy.h"
 #include "ComplexGeoDataPy.cpp"
 
-using namespace App;
+using namespace Data;
 
+// returns a string which represent the object e.g. when printed in python
+const char *ComplexGeoDataPy::representation(void)
+{
+	return "ComplexGeoDataPy";
+}
 
 PyObject*  ComplexGeoDataPy::setPlacement(PyObject *args)
 {

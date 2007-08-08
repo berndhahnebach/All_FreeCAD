@@ -264,8 +264,10 @@
 #if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
 #	ifdef FCApp
 #		define AppExport  __declspec(dllexport)
+#		define DataExport  __declspec(dllexport)
 #	else
 #		define AppExport  __declspec(dllimport)
+#		define DataExport  __declspec(dllimport)
 #	endif
 #	ifdef FCBase
 #		define BaseExport  __declspec(dllexport)

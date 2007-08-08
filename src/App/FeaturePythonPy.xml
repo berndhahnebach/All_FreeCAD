@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
-  <PythonExport Father="FeaturePy" Name="FeaturePythonPy" Twin="FeaturePython" Namespace="App" FatherInclude="FeaturePy.h" FatherNamespace="App">
+  <PythonExport 
+    Father="FeaturePy" 
+    Name="FeaturePythonPy" 
+    Twin="FeaturePython" 
+    Namespace="App" 
+    FatherInclude="App/FeaturePy.h" 
+    FatherNamespace="App">
     <Documentation>
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>This is the father of all Feature classes</UserDocu>

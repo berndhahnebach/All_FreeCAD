@@ -31,6 +31,11 @@
 
 using namespace Gui;
 
+// returns a string which represent the object e.g. when printed in python
+const char *ViewProviderPy::representation(void)
+{
+	return "ViewProviderPy";
+}
 
 PyObject*  ViewProviderPy::show(PyObject *args)
 {

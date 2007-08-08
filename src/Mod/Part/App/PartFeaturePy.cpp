@@ -171,18 +171,18 @@ int PartFeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
 PYFUNCIMP_D(PartFeaturePy,getShape)
 {
   PY_TRY {
-    return new TopoShapePy(_pcFeature->getShape());
+    return new TopoShapePyOld(_pcFeature->getShape());
   } PY_CATCH;
 }
 
 PYFUNCIMP_D(PartFeaturePy,setShape)
 {
-  TopoShapePy   *pcObject;
+  TopoShapePyOld   *pcObject;
   PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  pcObject = (TopoShapePy*)pcObj;
+  pcObject = (TopoShapePyOld*)pcObj;
   PY_TRY {
 
     // copy in the Feature Mesh

@@ -41,6 +41,9 @@
 
 namespace Gui {
 
+// because of stupid moc.exe!
+typedef boost::signals::connection ConDef;
+
 /**
  * The TreeModelItem class represents the documents with their objects in a tree hierarchy.
  * @author Werner Mayer
@@ -73,7 +76,8 @@ private:
     QString name;
     QPixmap icon;
     QList<TreeModelItem*> childItems;
-};
+
+ };
 
 /**
  * The Model View Controler class for the tree view.
@@ -135,6 +139,11 @@ protected:
 private:
     QTreeView* treeView;
     TreeModel* treeModel;
+
+    // tracker of the connections
+    ConDef connectionApplicationNewDocument;
+    ConDef connectionApplicationDeletedDocument;
+
 };
 
 }

@@ -41,20 +41,20 @@ namespace Part
  *  strictly after the OCC rules. It includes also a lot algorithems from oter
  *  packages like BRepTools and BRepBuilder. Also iterators and so on.
  */
-class AppPartExport TopoShapePy :public Base::PyObjectBase
+class AppPartExport TopoShapePyOld :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;
 
 protected:
 	/// Destruction 
-	~TopoShapePy();
+	~TopoShapePyOld();
 
 public:
 
 	/// Constructer 
-  TopoShapePy(PyTypeObject *T = &Type);
-  TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T = &TopoShapePy::Type);
+  TopoShapePyOld(PyTypeObject *T = &Type);
+  TopoShapePyOld(const TopoDS_Shape &cShape, PyTypeObject *T = &TopoShapePyOld::Type);
 	/// for Construction in python 
   static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
   static int PyInit(PyObject*, PyObject*, PyObject*);
@@ -77,19 +77,19 @@ public:
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 
 	// methods
-	PYFUNCDEF_D (TopoShapePy,hasChild);
-	PYFUNCDEF_D (TopoShapePy,isNull);
-	PYFUNCDEF_D (TopoShapePy,isValid);
-	PYFUNCDEF_D (TopoShapePy,analyze);
-	PYFUNCDEF_D (TopoShapePy,importIGES);
-	PYFUNCDEF_D (TopoShapePy,exportIGES);
-	PYFUNCDEF_D (TopoShapePy,importSTEP);
-	PYFUNCDEF_D (TopoShapePy,exportSTEP);
-	PYFUNCDEF_D (TopoShapePy,importBREP);
-	PYFUNCDEF_D (TopoShapePy,exportBREP);
-	PYFUNCDEF_D (TopoShapePy,exportSTL);
-	PYFUNCDEF_D (TopoShapePy,offset);
-	PYFUNCDEF_D (TopoShapePy,cut);
+	PYFUNCDEF_D (TopoShapePyOld,hasChild);
+	PYFUNCDEF_D (TopoShapePyOld,isNull);
+	PYFUNCDEF_D (TopoShapePyOld,isValid);
+	PYFUNCDEF_D (TopoShapePyOld,analyze);
+	PYFUNCDEF_D (TopoShapePyOld,importIGES);
+	PYFUNCDEF_D (TopoShapePyOld,exportIGES);
+	PYFUNCDEF_D (TopoShapePyOld,importSTEP);
+	PYFUNCDEF_D (TopoShapePyOld,exportSTEP);
+	PYFUNCDEF_D (TopoShapePyOld,importBREP);
+	PYFUNCDEF_D (TopoShapePyOld,exportBREP);
+	PYFUNCDEF_D (TopoShapePyOld,exportSTL);
+	PYFUNCDEF_D (TopoShapePyOld,offset);
+	PYFUNCDEF_D (TopoShapePyOld,cut);
 
   TopoDS_Shape &getShape(void){return _cTopoShape;}
 

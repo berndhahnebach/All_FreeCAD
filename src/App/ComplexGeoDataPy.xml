@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
-  <PythonExport Father="PersistancePy" Name="ComplexGeoDataPy" Twin="ComplexGeoData" Namespace="App" FatherInclude="../Base/PersistancePy.h" FatherNamespace="Base">
+  <PythonExport 
+      Father="PersistancePy" 
+      Name="ComplexGeoDataPy" 
+      Twin="ComplexGeoData" 
+      Namespace="Data" 
+      FatherInclude="Base/PersistancePy.h" 
+      FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Father of all complex geometric data types</UserDocu>

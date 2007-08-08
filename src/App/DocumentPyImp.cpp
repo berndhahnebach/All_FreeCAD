@@ -12,6 +12,13 @@
 
 using namespace App;
 
+// returns a string which represent the object e.g. when printed in python
+const char *DocumentPy::representation(void)
+{
+	return "DocumentPy";
+}
+
+
 PyObject*  DocumentPy::save(PyObject *args)
 {
     getDocumentObject()->save();

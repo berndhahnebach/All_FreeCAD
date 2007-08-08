@@ -42,6 +42,12 @@ using namespace Gui;
  * @author Werner Mayer
  */
 
+// returns a string which represent the object e.g. when printed in python
+const char *WorkbenchPy::representation(void)
+{
+	return "WorkbenchPy";
+}
+
 /** Retrieves the workbench name */
 PyObject*  WorkbenchPy::name(PyObject *args)
 {

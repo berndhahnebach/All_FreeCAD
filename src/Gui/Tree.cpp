@@ -342,8 +342,8 @@ TreeWidget::TreeWidget(Gui::Document* pcDocument,QWidget *parent)
     this->treeView->setExpanded(this->treeModel->index(0, 0), true);
 
     Gui::Selection().Attach(this);
-    App::GetApplication().signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
-    App::GetApplication().signalDeletedDocument.connect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
+    connectionApplicationNewDocument = App::GetApplication().signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
+    connectionApplicationDeletedDocument = App::GetApplication().signalDeletedDocument.connect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
 
     QGridLayout* pLayout = new QGridLayout(this); 
     pLayout->setSpacing(0);
@@ -353,8 +353,8 @@ TreeWidget::TreeWidget(Gui::Document* pcDocument,QWidget *parent)
 
 TreeWidget::~TreeWidget()
 {
-    //App::GetApplication().signalNewDocument.disconnect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
-    //App::GetApplication().signalDeletedDocument.disconnect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
+    connectionApplicationNewDocument.disconnect();
+    connectionApplicationDeletedDocument.disconnect();
     Gui::Selection().Detach(this);
 }
 
@@ -362,14 +362,15 @@ void TreeWidget::slotNewDocument(App::Document& Doc)
 {
     QModelIndex item = treeModel->newDocument(&Doc);
     treeView->setExpanded(item, true);
-    //Doc.signalNewObject.connect(boost::bind(&TreeWidget::slotNewObject, this, _1));
-    //Doc.signalDeletedObject.connect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
+    Doc.signalNewObject.connect(boost::bind(&TreeWidget::slotNewObject, this, _1));
+    Doc.signalDeletedObject.connect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
     
-    //Doc.signalChangedObject.connect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
+    Doc.signalChangedObject.connect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
 }
 
 void TreeWidget::slotDeletedDocument(App::Document& Doc)
 {
+    // FIXME This whont work that way....
     //Doc.signalNewObject.disconnect(boost::bind(&TreeWidget::slotNewObject, this, _1));
     //Doc.signalDeletedObject.disconnect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
     //Doc.signalChangedObject.disconnect(boost::bind(&TreeWidget::slotChangedObject, this, _1));

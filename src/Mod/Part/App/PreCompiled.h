@@ -7,8 +7,10 @@
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 # define AppPartExport __declspec(dllexport)
+# define PartExport    __declspec(dllexport)
 #else // for Linux
 # define AppPartExport
+# define PartExport
 #endif
 
 
@@ -38,6 +40,22 @@
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
+
+// Boost
+#include <boost/signals.hpp>
+#include <boost/bind.hpp>
+
+#include <boost/tuple/tuple.hpp>
+#include <boost/utility.hpp>
+#include <boost/graph/adjacency_list.hpp>
+
+#include <boost/program_options.hpp>
+//namespace po = boost::program_options;
+
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
+
 
 // OpenCasCade =====================================================================================
 // Base

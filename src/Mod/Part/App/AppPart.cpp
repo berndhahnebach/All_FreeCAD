@@ -46,8 +46,8 @@ void AppPartExport initPart() {
   // NOTE: To finish the initialization of our own type objects we must
   // call PyType_Ready, otherwise we run into a segmentation fault, later on.
   // This function is responsible for adding inherited slots from a type's base class.
-  PyObject* pyPartType = (PyObject *)&Part::TopoShapePy::Type;
-  if(PyType_Ready(&Part::TopoShapePy::Type) < 0) return;
+  PyObject* pyPartType = (PyObject *)&Part::TopoShapePyOld::Type;
+  if(PyType_Ready(&Part::TopoShapePyOld::Type) < 0) return;
   PyModule_AddObject(partModule, "shape", pyPartType);
   // Append line() method
   PyObject* pyLineType = (PyObject *)&Part::LinePy::Type;

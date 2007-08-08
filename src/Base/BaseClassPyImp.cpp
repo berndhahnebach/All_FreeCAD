@@ -9,6 +9,12 @@
 
 using namespace Base;
 
+// returns a string which represent the object e.g. when printed in python
+const char *BaseClassPy::representation(void)
+{
+	return "BaseClassPy";
+}
+
 
 PyObject*  BaseClassPy::isDerivedFrom(PyObject *args)
 {
