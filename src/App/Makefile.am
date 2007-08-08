@@ -2,6 +2,7 @@
 lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
+		ComplexGeoDataPy.cpp \
 		DocumentObjectGroupPy.cpp \
 		DocumentObjectPy.cpp \
 		DocumentPy.cpp \
@@ -12,6 +13,7 @@ BUILT_SOURCES=\
 		TestScript.h
 
 libFreeCADApp_la_BUILT=\
+		ComplexGeoDataPy.h \
 		DocumentObjectGroupPy.h \
 		DocumentObjectPy.h \
 		DocumentPy.h \
@@ -25,6 +27,9 @@ libFreeCADApp_la_SOURCES=\
 		ApplicationPy.cpp \
 		ColorModel.cpp \
 		ColorModel.h \
+		ComplexGeoData.cpp \
+		ComplexGeoData.h \
+		ComplexGeoDataPyImp.cpp \
 		Document.cpp \
 		Document.h \
 		DocumentObject.cpp \
@@ -97,6 +102,7 @@ AM_CPPFLAGS=-DFCApp
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 
 EXTRA_DIST = \
+		ComplexGeoDataPy.xml \
 		DocumentObjectGroupPy.xml \
 		DocumentObjectPy.xml \
 		DocumentPy.xml \

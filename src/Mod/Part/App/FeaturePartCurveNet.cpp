@@ -29,7 +29,6 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include "FeaturePartCurveNet.h"
-#include "PartAlgos.h"
 
 
 using namespace Part;
