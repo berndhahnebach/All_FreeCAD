@@ -29,6 +29,7 @@
 #include <qaction.h>
 #include <QActionGroup>
 #include <qapplication.h>
+#include <QBitmap>
 #include <qcheckbox.h>
 #include <qclipboard.h>
 #include <qcolordialog.h>
@@ -44,6 +45,7 @@
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
 #include <QGroupBox>
+#include <QHeaderView>
 #include <qimage.h>
 #include <QImageWriter>
 #include <qinputdialog.h>

@@ -28,23 +28,11 @@
 #include <Base/Exception.h>
 
 
-//#ifndef _PreComp_
-//# include <qapplication.h>
-//# include <qdir.h>
-//# include <qfileinfo.h>
-//# include <qlayout.h>
-//# include <qobject.h>
-//# include <qpushbutton.h>
-////Added by qt3to4:
-//#include <Q3GridLayout>
-//#endif
-
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 #include "PropertyPage.h"
 
 
-using Base::Console;
 using namespace Gui;
 
 
@@ -77,9 +65,9 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
   if (!w)
   {
 #ifdef FC_DEBUG
-    Console().Warning("\"%s\" is not registered\n", sName);
+    Base::Console().Warning("\"%s\" is not registered\n", sName);
 #else
-    Console().Log("\"%s\" is not registered\n", sName);
+    Base::Console().Log("\"%s\" is not registered\n", sName);
 #endif
     return 0;
   }
@@ -88,15 +76,15 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
   {
 #ifdef FC_DEBUG
     const char* cName = dynamic_cast<QWidget*>(w)->metaObject()->className();
-    Console().Log("Widget of type '%s' created.\n", cName);
+    Base::Console().Log("Widget of type '%s' created.\n", cName);
 #endif
   }
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from \"QWidget\"\n", sName);
+    Base::Console().Error("%s does not inherit from \"QWidget\"\n", sName);
 #else
-    Console().Log("%s does not inherit from \"QWidget\"\n", sName);
+    Base::Console().Log("%s does not inherit from \"QWidget\"\n", sName);
 #endif
     delete w;
     return 0;
@@ -122,20 +110,20 @@ Gui::Dialog::PreferencePage* WidgetFactoryInst::createPreferencePage (const char
   if (!w)
   {
 #ifdef FC_DEBUG
-    Console().Warning("\"%s\" is not registered\n", sName);
+    Base::Console().Warning("\"%s\" is not registered\n", sName);
 #else
-    Console().Log("\"%s\" is not registered\n", sName);
+    Base::Console().Log("\"%s\" is not registered\n", sName);
 #endif
     return 0;
   }
 
   if ( qobject_cast<Gui::Dialog::PreferencePage*>(w) ) {
 #ifdef FC_DEBUG
-    Console().Log("Preference page of type '%s' created.\n", w->metaObject()->className());
+    Base::Console().Log("Preference page of type '%s' created.\n", w->metaObject()->className());
 #endif
   } else {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from 'Gui::Dialog::PreferencePage'\n", sName);
+    Base::Console().Error("%s does not inherit from 'Gui::Dialog::PreferencePage'\n", sName);
 #endif
     delete w;
     return 0;
@@ -173,7 +161,7 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from \"PrefWidget\"\n", w->metaObject()->className());
+    Base::Console().Error("%s does not inherit from \"PrefWidget\"\n", w->metaObject()->className());
 #endif
     delete w;
     return 0;

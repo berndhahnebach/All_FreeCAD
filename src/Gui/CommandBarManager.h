@@ -32,8 +32,6 @@
 # include "Qt3All.h"
 #endif
 
-class Q3ToolBar;
-
 namespace Gui {
 
 class ToolBarItem;

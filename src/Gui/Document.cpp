@@ -312,7 +312,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
       // if succesfully created set the right name and calculate the view
       pcProvider->attach(&Obj);
     }catch(const Base::MemoryException& e){
-      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Obj.name.getValue(),e.what());
+      Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.name.getValue(),e.what());
     }catch(Base::Exception &e){
       e.ReportException();
     }
@@ -371,7 +371,15 @@ void Document::slotChangedObject(App::DocumentObject& Obj)
     Base::Console().Log("Document::slotChangedObject() called\n");
     ViewProvider* pcProvider = getViewProvider( &Obj );
     if ( pcProvider ) {
-        pcProvider->update();
+        try {
+            pcProvider->update();
+        } catch(const Base::MemoryException& e) {
+            Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.name.getValue(),e.what());
+        } catch(Base::Exception &e){
+            e.ReportException();
+        } catch (...) {
+            Base::Console().Error("Cannot update representation for '%s'.\n", Obj.name.getValue());
+        }
         // The call of setActiveMode() must be delayed to wait until the associated
         // document object is fully built, otherwise we run into strange effects
         if (Obj.StatusBits.test(2)) {

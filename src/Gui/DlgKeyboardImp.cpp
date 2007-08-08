@@ -56,7 +56,7 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
   for (std::map<std::string,Command*>::const_iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
     QString natv = it->second->getGroupName();
-    QString lang = QObject::tr(natv);
+    QString lang = QObject::tr(natv.toAscii());
     if ( _cmdGroups.find( lang ) == _cmdGroups.end() )
       _cmdGroups[ lang ] = natv;
 
@@ -82,14 +82,14 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
   // do a special sort before adding to the combobox
   QStringList items, tmp; tmp << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
   for ( QStringList::Iterator It = tmp.begin(); It != tmp.end(); ++It )
-    items << QObject::tr( *It );
+    items << QObject::tr((*It).toAscii());
   for ( QMap<QString, QString>::Iterator it2 = _cmdGroups.begin(); it2 != _cmdGroups.end(); ++it2)
   {
-    if ( items.find( it2.key() ) == items.end() )
+    if (!items.contains(it2.key()))
       items << it2.key();
   }
 
-  comboBoxCategory->insertStringList( items );
+  comboBoxCategory->addItems( items );
 
   on_comboBoxCategory_activated( comboBoxCategory->currentText() );
 }
@@ -106,12 +106,12 @@ void DlgCustomKeyboardImp::on_listBoxCommands_highlighted(const QString& txt)
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
   if ( It != _cmdGroups.end() )
   {
-    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.data() );
+    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.value() );
     if ( ci != _groupCommands.end() )
     {
-      QMap<QString, CommandBase*>::ConstIterator e = ci.data().find( txt );
-      if ( e != ci.data().end() )
-        cmd = e.data();
+      QMap<QString, CommandBase*>::ConstIterator e = ci.value().find( txt );
+      if ( e != ci.value().end() )
+        cmd = e.value();
     }
   }
 
@@ -175,13 +175,13 @@ void DlgCustomKeyboardImp::on_comboBoxCategory_activated(const QString & group)
 
   if ( It != _cmdGroups.end() )
   {
-    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.data() );
+    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.value() );
     if ( ci != _groupCommands.end() )
     {
-      const QMap<QString, CommandBase*>& items = ci.data();
+      const QMap<QString, CommandBase*>& items = ci.value();
       for ( QMap<QString, CommandBase*>::ConstIterator it = items.begin(); it != items.end(); ++it)
       {
-        QPixmap px = (it.data()->getPixmap() ? BitmapFactory().pixmap( it.data()->getPixmap() ) : QPixmap() );
+        QPixmap px = (it.value()->getPixmap() ? BitmapFactory().pixmap( it.value()->getPixmap() ) : QPixmap() );
         listBoxCommands->insertItem( Tools::fillUp(24,24,px), it.key() );
       }
     }
@@ -196,12 +196,12 @@ void DlgCustomKeyboardImp::on_buttonAssign_clicked()
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
   if ( It != _cmdGroups.end() )
   {
-    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.data() );
+    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.value() );
     if ( ci != _groupCommands.end() )
     {
-      QMap<QString, CommandBase*>::ConstIterator e = ci.data().find( listBoxCommands->currentText() );
-      if ( e != ci.data().end() )
-        cmd = e.data();
+      QMap<QString, CommandBase*>::ConstIterator e = ci.value().find( listBoxCommands->currentText() );
+      if ( e != ci.value().end() )
+        cmd = e.value();
     }
   }
 
@@ -211,9 +211,9 @@ void DlgCustomKeyboardImp::on_buttonAssign_clicked()
     cmd->getAction()->setShortcut( shortcut );
     accelLineEditShortcut->setText( editShortcut->text() );
 
-    const char* curText = listBoxCommands->currentText().latin1();
+    const char* curText = listBoxCommands->currentText().toAscii();
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
-    hGrp->SetASCII( curText, editShortcut->text().latin1() );
+    hGrp->SetASCII( curText, editShortcut->text().toAscii() );
 
     buttonReset->setEnabled( true );
   }
@@ -226,12 +226,12 @@ void DlgCustomKeyboardImp::on_buttonReset_clicked()
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
   if ( It != _cmdGroups.end() )
   {
-    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.data() );
+    QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.value() );
     if ( ci != _groupCommands.end() )
     {
-      QMap<QString, CommandBase*>::ConstIterator e = ci.data().find( listBoxCommands->currentText() );
-      if ( e != ci.data().end() )
-        cmd = e.data();
+      QMap<QString, CommandBase*>::ConstIterator e = ci.value().find( listBoxCommands->currentText() );
+      if ( e != ci.value().end() )
+        cmd = e.value();
     }
   }
 
@@ -241,7 +241,7 @@ void DlgCustomKeyboardImp::on_buttonReset_clicked()
     QString txt = cmd->getAction()->shortcut();
     accelLineEditShortcut->setText( (txt.isEmpty() ? tr("Not defined") : txt) );
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
-    const char* curText = listBoxCommands->currentText().latin1();
+    const char* curText = listBoxCommands->currentText().toAscii();
     hGrp->RemoveASCII( curText );
   }
 
@@ -253,12 +253,12 @@ void DlgCustomKeyboardImp::on_buttonResetAll_clicked()
 {
   for ( QMap<QString, QMap<QString, CommandBase*> >::ConstIterator it = _groupCommands.begin(); it != _groupCommands.end(); ++it )
   {
-    const QMap<QString, CommandBase*>& items = it.data();
+    const QMap<QString, CommandBase*>& items = it.value();
     for ( QMap<QString, CommandBase*>::ConstIterator ci = items.begin(); ci != items.end(); ++ci )
     {
-      if ( ci.data()->getAction() )
+      if ( ci.value()->getAction() )
       {
-        ci.data()->getAction()->setShortcut( ci.data()->getAccel() );
+        ci.value()->getAction()->setShortcut( ci.value()->getAccel() );
       }
     }
   }
@@ -280,10 +280,10 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged( const QString& sc )
     buttonAssign->setEnabled( true );
     for ( QMap<QString, QMap<QString, CommandBase*> >::ConstIterator it = _groupCommands.begin(); it != _groupCommands.end(); ++it )
     {
-      const QMap<QString, CommandBase*>& items = it.data();
+      const QMap<QString, CommandBase*>& items = it.value();
       for ( QMap<QString, CommandBase*>::ConstIterator ci = items.begin(); ci != items.end(); ++ci )
       {
-        if ( ci.data()->getAction() && ci.data()->getAction()->shortcut() == ks )
+        if ( ci.value()->getAction() && ci.value()->getAction()->shortcut() == ks )
         {
           i++;
           cmdName = ci.key(); // store the last one
@@ -311,13 +311,13 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged( const QString& sc )
       QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
       if ( It != _cmdGroups.end() )
       {
-        QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.data() );
+        QMap<QString, QMap<QString, CommandBase*> >::ConstIterator ci = _groupCommands.find( It.value() );
         if ( ci != _groupCommands.end() )
         {
-          QMap<QString, CommandBase*>::ConstIterator e = ci.data().find( listBoxCommands->currentText() );
-          if ( e != ci.data().end() )
+          QMap<QString, CommandBase*>::ConstIterator e = ci.value().find( listBoxCommands->currentText() );
+          if ( e != ci.value().end() )
           {
-            CommandBase* cmd = e.data();
+            CommandBase* cmd = e.value();
             if ( cmd && cmd->getAction() && cmd->getAction()->shortcut() == ks )
               buttonAssign->setEnabled( false );
           }
@@ -332,14 +332,14 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged( const QString& sc )
 void DlgCustomKeyboardImp::onAddMacroAction(const QString& item)
 {
   const CommandManager& cCmdMgr = Application::Instance->commandManager();
-  Command* cmd = cCmdMgr.getCommandByName( item.ascii() );
+  Command* cmd = cCmdMgr.getCommandByName( item.toAscii() );
   _groupCommands[cmd->getGroupName()][cmd->getName()] = cmd;
 }
 
 void DlgCustomKeyboardImp::onRemoveMacroAction(const QString& item)
 {
   const CommandManager& cCmdMgr = Application::Instance->commandManager();
-  Command* cmd = cCmdMgr.getCommandByName( item.ascii() );
+  Command* cmd = cCmdMgr.getCommandByName( item.toAscii() );
   _groupCommands[cmd->getGroupName()].remove(cmd->getName());
 }
 

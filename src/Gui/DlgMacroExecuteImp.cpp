@@ -122,7 +122,7 @@ void DlgMacroExecuteImp::on_executeButton_clicked()
 
     QDir d( _cMacroPath.c_str() );
     QFileInfo fi( d, LineEditMacroName->text() );
-    Application::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
+    Application::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).toAscii());
     // after macro run recalculate the document
     if ( Application::Instance->activeDocument() )
       Application::Instance->activeDocument()->getDocument()->recompute();
@@ -137,8 +137,8 @@ void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
   if (!fn.isEmpty())
   {
     // save the path in the parameters
-    _cMacroPath = fn.latin1();
-    getWindowParameter()->SetASCII("MacroPath",fn.latin1());
+    _cMacroPath = fn.toStdString();
+    getWindowParameter()->SetASCII("MacroPath",fn.toAscii());
     // fill the list box
     fillUpList();
   }
@@ -153,9 +153,9 @@ void DlgMacroExecuteImp::on_editButton_clicked()
   if (item<0) return;
 
   QDir dir(_cMacroPath.c_str());
-  QString file = QString("%1/%2").arg(dir.absPath()).arg(macroListBox->text(item));
+  QString file = QString("%1/%2").arg(dir.absolutePath()).arg(macroListBox->text(item));
 
-  Application::Instance->open( file );
+  Application::Instance->open( file.toAscii() );
   accept();
 }
 
@@ -163,8 +163,8 @@ void DlgMacroExecuteImp::on_editButton_clicked()
 void DlgMacroExecuteImp::on_createButton_clicked()
 {
   // query file name
-  QString fn = QInputDialog::getText( tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
-                                      QString::null, 0, this, "Macro file");
+  QString fn = QInputDialog::getText(this, tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
+                                      QString::null, 0);
   if ( !fn.isEmpty() )
   {
     if ( !fn.endsWith(".FCMacro") )
@@ -177,7 +177,7 @@ void DlgMacroExecuteImp::on_createButton_clicked()
     }
     else
     {
-      QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
+      QString file = QString("%1/%2").arg(dir.absolutePath()).arg( fn );
       PythonView* edit = new PythonView(getMainWindow());
       edit->open(file);
       edit->setWindowTitle( fn );

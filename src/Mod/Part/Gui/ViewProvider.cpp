@@ -289,20 +289,20 @@ void ViewProviderPart::updateData(void)
   FaceRoot->removeAllChildren();
   VertexRoot->removeAllChildren();
 
-  // creating the mesh on the data structure
-  BRepMesh::Mesh(cShape,fMeshDeviation);
-  //	BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
-	//BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
-
   try{
+    // creating the mesh on the data structure
+    BRepMesh::Mesh(cShape,fMeshDeviation);
+    //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
+    //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
     computeFaces   (FaceRoot,cShape);
     computeEdges   (EdgeRoot,cShape);
     computeVertices(VertexRoot,cShape);
+    BRepTools::Clean(cShape); // remove triangulation
   } catch (...){
-    Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the current shape");
+    Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
+                          pcObject->name.getValue());
   }
 
-  BRepTools::Clean(cShape); // remove triangulation
 }
 
 
