@@ -353,8 +353,8 @@ TreeWidget::TreeWidget(Gui::Document* pcDocument,QWidget *parent)
 
 TreeWidget::~TreeWidget()
 {
-    App::GetApplication().signalNewDocument.disconnect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
-    App::GetApplication().signalDeletedDocument.disconnect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
+    //App::GetApplication().signalNewDocument.disconnect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
+    //App::GetApplication().signalDeletedDocument.disconnect(boost::bind(&TreeWidget::slotDeletedDocument, this, _1));
     Gui::Selection().Detach(this);
 }
 
@@ -362,16 +362,17 @@ void TreeWidget::slotNewDocument(App::Document& Doc)
 {
     QModelIndex item = treeModel->newDocument(&Doc);
     treeView->setExpanded(item, true);
-    Doc.signalNewObject.connect(boost::bind(&TreeWidget::slotNewObject, this, _1));
-    Doc.signalDeletedObject.connect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
-    Doc.signalChangedObject.connect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
+    //Doc.signalNewObject.connect(boost::bind(&TreeWidget::slotNewObject, this, _1));
+    //Doc.signalDeletedObject.connect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
+    
+    //Doc.signalChangedObject.connect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
 }
 
 void TreeWidget::slotDeletedDocument(App::Document& Doc)
 {
-    Doc.signalNewObject.disconnect(boost::bind(&TreeWidget::slotNewObject, this, _1));
-    Doc.signalDeletedObject.disconnect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
-    Doc.signalChangedObject.disconnect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
+    //Doc.signalNewObject.disconnect(boost::bind(&TreeWidget::slotNewObject, this, _1));
+    //Doc.signalDeletedObject.disconnect(boost::bind(&TreeWidget::slotDeletedObject, this, _1));
+    //Doc.signalChangedObject.disconnect(boost::bind(&TreeWidget::slotChangedObject, this, _1));
     treeModel->deleteDocument(&Doc);
 }
 
