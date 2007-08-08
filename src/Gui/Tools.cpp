@@ -30,8 +30,7 @@
 # include <qimage.h>
 # include <qpainter.h>
 # include <qpalette.h>
-//Added by qt3to4:
-#include <QPixmap>
+# include <QPixmap>
 #endif
 
 // gcc
@@ -43,6 +42,7 @@
 
 using namespace Gui;
 
+//TODO: Move all functions to BitmapFactory
 QPixmap Tools::resize(int w, int h, const QPixmap& p)
 {
   QPixmap pix = p;
@@ -51,17 +51,22 @@ QPixmap Tools::resize(int w, int h, const QPixmap& p)
     return pix; // do not resize a null pixmap
 
   QPalette pal = qApp->palette();
-  QColorGroup g = pal.disabled();
+  //QColorGroup g = pal.disabled();
+  QColor dl = pal.color(QPalette::Disabled, QPalette::Light);
+  QColor dt = pal.color(QPalette::Disabled, QPalette::Text);
 
   QPixmap pm = pix;
-  pm.resize(w,h);
-  pm.fill(g.light());
+  pm = QPixmap(w,h);
+  //pm.fill(g.light());
+  pm.fill(dl);
 
   QPainter pt;
   pt.begin( &pm );
-  pt.setPen( g.light() );
+  //pt.setPen( g.light() );
+  pt.setPen( dl );
   pt.drawPixmap(1, 1, pix);
-  pt.setPen( g.text() );
+  //pt.setPen( g.text() );
+  pt.setPen( dt );
   pt.drawPixmap(0, 0, pix);
   pt.end();
   return pm;
@@ -87,7 +92,9 @@ QPixmap Tools::fillUp(int w, int h, const QPixmap& p)
   if (!bm.isNull())
   {
     //TODO Search for the Qt4 counterpart
-    bitBlt(&mask, x, y, &bm, 0, 0, pix.width(), pix.height(), /*Qt::CopyROP,*/ false);
+    QPainter painter(&mask);
+    painter.drawPixmap(QPoint(x, y), bm, QRect(0, 0, pix.width(), pix.height()));
+    //bitBlt(&mask, x, y, &bm, 0, 0, pix.width(), pix.height(), /*Qt::CopyROP,*/ false);
     pm.setMask(mask);
   }
   else
@@ -152,14 +159,14 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   if ( vertical )
   {
     y = p1.height();
-    width  = QMAX( p1.width(), p2.width() );
+    width  = qMax( p1.width(), p2.width() );
     height = p1.height() + p2.height();
   }
   else
   {
     x = p1.width();
     width  = p1.width() + p2.width();
-    height = QMAX( p1.height(), p2.height() );
+    height = qMax( p1.height(), p2.height() );
   }
 
   QPixmap res( width, height );
@@ -168,11 +175,17 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   QBitmap mask2 = p2.mask();
   mask.fill( Qt::color0 );
 
-  bitBlt( &res,  0, 0, &p1 );
-  bitBlt( &mask, 0, 0, &mask1 );
+  QPainter pt1(&res);
+  pt1.drawPixmap(0, 0, p1);
+  pt1.drawPixmap(x, y, p2);
+  //bitBlt( &res,  0, 0, &p1 );
+  //bitBlt( &res,  x, y, &p2 );
 
-  bitBlt( &res,  x, y, &p2 );
-  bitBlt( &mask, x, y, &mask2 );
+  QPainter pt2(&mask);
+  pt2.drawPixmap(0, 0, mask1);
+  pt2.drawPixmap(x, y, mask2);
+  //bitBlt( &mask, 0, 0, &mask1 );
+  //bitBlt( &mask, x, y, &mask2 );
 
   res.setMask( mask );
   return res;
@@ -183,40 +196,6 @@ QPixmap Tools::disabled( const QPixmap& p )
   QStyleOption opt;
   opt.palette = QApplication::palette();
   return QApplication::style()->generatedIconPixmap(QIcon::Disabled, p, &opt);
-#if 0
-  QBitmap mask = p.mask();
-  QImage img = p.convertToImage();
-
-  // create the mask if needed
-  if ( p.isNull() )
-    return QPixmap();
-
-  if ( mask.isNull() ) {
-    mask.convertFromImage( img.createHeuristicMask(), Qt::MonoOnly | Qt::ThresholdDither );
-  }
-
-  // copy the opaque part of the pixmap
-  QPixmap res( p.width(), p.height() );
-  bitBlt( &res,  0, 0, &p );
-
-  // replace each RGB color by a 65% brighter color
-  QPainter painter;
-  painter.begin(&res);
-  for (int y = 0; y < img.height(); y++) {
-    for (int x = 0; x < img.width(); x++) {
-      QRgb rgb = img.pixel(x,y);
-      QColor col(rgb);
-      painter.setPen(col.light( 165 ));
-      painter.drawPoint(x,y);
-    }
-  }
-
-  painter.end();
-
-  res.setMask( mask );
-
-  return res;
-#endif
 }
 
 void Tools::convert( const QImage& p, SoSFImage& img )
@@ -284,15 +263,9 @@ void Tools::convert( const SoSFImage& p, QImage& img )
   int width  = (int)size[0];
   int height = (int)size[1];
 
-  img.create(width, height, 32);
-
-  if (numcomponents == 2 || numcomponents == 4) 
-    img.setAlphaBuffer(TRUE);
-  else 
-    img.setAlphaBuffer(FALSE);
+  img = QImage(width, height, QImage::Format_RGB32);
 
   QRgb * bits = (QRgb*) img.bits();
-
   for (int y = 0; y < height; y++) 
   {
     const unsigned char * line = 

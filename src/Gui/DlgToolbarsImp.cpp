@@ -96,9 +96,9 @@ void DlgCustomToolbars::refreshFullActionList()
   availableActions->clear();
   for (QStringList::Iterator it3 = items.begin(); it3 != items.end(); ++it3)
   {
-    Q3ListViewItem* itemNode = new Q3ListViewItem(availableActions, QObject::tr(*it3));
+    Q3ListViewItem* itemNode = new Q3ListViewItem(availableActions, QObject::tr((*it3).toAscii()));
     itemNode->setOpen(true);
-    const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).latin1() ];
+    const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).toStdString() ];
     for (std::vector<Command*>::const_iterator it4 = rCmds.begin(); it4 != rCmds.end(); ++it4)
     {
       Q3ListViewItem* item = new Q3ListViewItem(itemNode,availableActions->lastItem(), (*it4)->getName());
@@ -145,12 +145,12 @@ void DlgCustomToolbars::refreshToolBarList()
   QList<ToolBarItem*> bars = _toolBars->getItems();
   for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
-    toolbarsCombobox->insertItem( (*bar)->command() );
+    toolbarsCombobox->addItem( (*bar)->command() );
   }
 
   if (toolbarsCombobox->count() > 0)
   {
-    on_toolbarsCombobox_activated( toolbarsCombobox->text( 0 ) );
+    on_toolbarsCombobox_activated( toolbarsCombobox->itemText( 0 ) );
   }
   else
   {
@@ -217,7 +217,7 @@ void DlgCustomToolbars::on_toolbarsCombobox_activated(const QString & name)
           toolbarActions->insertItem(new Q3ListViewItem(toolbarActions,toolbarActions->lastItem(), "<Separator>"));
         else
         {
-          Command* pCom = cCmdMgr.getCommandByName( (*item)->command().latin1() );
+          Command* pCom = cCmdMgr.getCommandByName( (*item)->command().toAscii() );
           if (pCom)
           {
             Q3ListViewItem* item = new Q3ListViewItem(toolbarActions,toolbarActions->lastItem(), pCom->getName());
@@ -377,27 +377,27 @@ void DlgCustomToolbars::on_createToolbarButton_clicked()
   Workbench* cur = WorkbenchManager::instance()->active();
   QString baseName = cur ? cur->name() : "Base"; 
   QString def = QString("%1_custom_bar_%2").arg(baseName).arg(_toolBars->count()+1);
-  QString text = QInputDialog::getText(tr("New custom bar"), tr("Specify the name of the new custom bar, please."),
-                                      QLineEdit::Normal, def, 0, this);
+  QString text = QInputDialog::getText(this, tr("New custom bar"), tr("Specify the name of the new custom bar, please."),
+                                       QLineEdit::Normal, def, 0);
 
   if (!text.isNull() && !text.isEmpty())
   {
     int ct = toolbarsCombobox->count(), pos = -1;
     for (int i=0; i<ct; i++)
     {
-      if ( toolbarsCombobox->text(i) == text )
+      if ( toolbarsCombobox->itemText(i) == text )
         pos = i;
     }
 
     if ( pos != -1 )
     {
-      toolbarsCombobox->setCurrentItem(pos);
+      toolbarsCombobox->setCurrentIndex(pos);
       on_toolbarsCombobox_activated(toolbarsCombobox->currentText());
     }
     else
     {
-      toolbarsCombobox->insertItem(text);
-      toolbarsCombobox->setCurrentItem( toolbarsCombobox->count()-1 );
+      toolbarsCombobox->addItem(text);
+      toolbarsCombobox->setCurrentIndex( toolbarsCombobox->count()-1 );
       ToolBarItem* bar = new ToolBarItem(_toolBars);
       bar->setCommand( text );
       on_toolbarsCombobox_activated(toolbarsCombobox->currentText());
@@ -421,7 +421,7 @@ void DlgCustomToolbars::on_deleteToolbarButton_clicked()
 
   CheckListDialog checklists(this);
   checklists.setModal(true);
-  checklists.setCaption( tr("Delete selected bars") );
+  checklists.setWindowTitle( tr("Delete selected bars") );
   checklists.setCheckableItems( items );
   if (checklists.exec())
   {

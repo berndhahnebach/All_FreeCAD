@@ -80,13 +80,13 @@ void StdCmdWorkbench::activated(int iMsg)
 {
   try {
     QList<QAction*> items = ((WorkbenchGroup*)_pcAction)->actions();
-    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", items[iMsg]->text().latin1());
+    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", items[iMsg]->text().toAscii());
   } catch(const Base::PyException& e) {
     QString msg(e.what());
     // ignore '<type 'exceptions.*Error'>' prefixes
     QRegExp rx;
     rx.setPattern("^\\s*<type 'exceptions.\\w*'>:\\s*");
-    int pos = rx.search(msg);
+    int pos = rx.indexIn(msg);
     if ( pos != -1 )
       msg = msg.mid(rx.matchedLength());
     QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), msg); 
