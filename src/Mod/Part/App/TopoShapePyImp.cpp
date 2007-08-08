@@ -1,6 +1,8 @@
 
 #include "PreCompiled.h"
 
+
+#include <Base/PyCXX/Objects.hxx>
 #include "TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapePy.xml)
@@ -18,17 +20,60 @@ const char *TopoShapePy::representation(void)
 
 PyObject*  TopoShapePy::exportIges(PyObject *args)
 {
-	return 0;
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))   
+    return NULL;
+  // write iges file
+  IGESControl_Controller::Init();
+  IGESControl_Writer aWriter;
+  aWriter.AddShape(getTopoShapeObject()->_Shape);
+
+  if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+    PyErr_SetString(PyExc_Exception,"Writing IGES failed");
+    return NULL;
+  }
+
+  Py_Return; 
 }
 
 PyObject*  TopoShapePy::exportStep(PyObject *args)
 {
-	return 0;
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))   
+    return NULL;
+
+  // write step file
+  STEPControl_Writer aWriter;
+
+  //FIXME: Does not work this way!!!
+  if (aWriter.Transfer(getTopoShapeObject()->_Shape, STEPControl_AsIs)) {
+    PyErr_SetString(PyExc_Exception,"Transferring STEP failed");
+    return NULL;
+  }
+
+  if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+    PyErr_SetString(PyExc_Exception,"Writing STEP failed");
+    return NULL;
+  }
+      
+  Py_Return; 
+
 }
 
 PyObject*  TopoShapePy::exportBrep(PyObject *args)
 {
-	return 0;
+	  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))
+    return NULL;
+
+  // read brep file
+  if (!BRepTools::Write(getTopoShapeObject()->_Shape,(const Standard_CString)filename)) {
+    PyErr_SetString(PyExc_Exception,"Writing BREP failed");
+    return NULL;
+  }
+ 
+  Py_Return; 
+
 }
 
 PyObject*  TopoShapePy::exportStl(PyObject *args)
@@ -38,7 +83,142 @@ PyObject*  TopoShapePy::exportStl(PyObject *args)
 
 PyObject*  TopoShapePy::check(PyObject *args)
 {
-	return 0;
+	  if (!PyArg_ParseTuple(args, "" ))   
+    return NULL;
+  if ( !getTopoShapeObject()->_Shape.IsNull() )
+  {
+    BRepCheck_Analyzer aChecker(getTopoShapeObject()->_Shape);
+    if (!aChecker.IsValid())
+    {
+      TopoDS_Iterator it(getTopoShapeObject()->_Shape);
+      for (;it.More(); it.Next())
+      {
+        if (!aChecker.IsValid(it.Value()))
+        {
+          const Handle_BRepCheck_Result& result = aChecker.Result(it.Value());
+          const BRepCheck_ListOfStatus& status = result->StatusOnShape(it.Value());
+
+          BRepCheck_ListIteratorOfListOfStatus it(status);
+          while ( it.More() )
+          {
+            BRepCheck_Status& val = it.Value();
+            switch (val)
+            {
+            case BRepCheck_NoError:
+              PyErr_SetString(PyExc_StandardError, "No error");
+              break;
+            case BRepCheck_InvalidPointOnCurve:
+              PyErr_SetString(PyExc_StandardError, "Invalid point on curve");
+              break;
+            case BRepCheck_InvalidPointOnCurveOnSurface:
+              PyErr_SetString(PyExc_StandardError, "Invalid point on curve on surface");
+              break;
+            case BRepCheck_InvalidPointOnSurface:
+              PyErr_SetString(PyExc_StandardError, "Invalid point on surface");
+              break;
+            case BRepCheck_No3DCurve:
+              PyErr_SetString(PyExc_StandardError, "No 3D curve");
+              break;
+            case BRepCheck_Multiple3DCurve:
+              PyErr_SetString(PyExc_StandardError, "Multiple 3D curve");
+              break;
+            case BRepCheck_Invalid3DCurve:
+              PyErr_SetString(PyExc_StandardError, "Invalid 3D curve");
+              break;
+            case BRepCheck_NoCurveOnSurface:
+              PyErr_SetString(PyExc_StandardError, "No curve on surface");
+              break;
+            case BRepCheck_InvalidCurveOnSurface:
+              PyErr_SetString(PyExc_StandardError, "Invalid curve on surface");
+              break;
+            case BRepCheck_InvalidCurveOnClosedSurface:
+              PyErr_SetString(PyExc_StandardError, "Invalid curve on closed surface");
+              break;
+            case BRepCheck_InvalidSameRangeFlag:
+              PyErr_SetString(PyExc_StandardError, "Invalid same-range flag");
+              break;
+            case BRepCheck_InvalidSameParameterFlag:
+              PyErr_SetString(PyExc_StandardError, "Invalid same-parameter flag");
+              break;
+            case BRepCheck_InvalidDegeneratedFlag:
+              PyErr_SetString(PyExc_StandardError, "Invalid degenerated flag");
+              break;
+            case BRepCheck_FreeEdge:
+              PyErr_SetString(PyExc_StandardError, "Free edge");
+              break;
+            case BRepCheck_InvalidMultiConnexity:
+              PyErr_SetString(PyExc_StandardError, "Invalid multi-connexity");
+              break;
+            case BRepCheck_InvalidRange:
+              PyErr_SetString(PyExc_StandardError, "Invalid range");
+              break;
+            case BRepCheck_EmptyWire:
+              PyErr_SetString(PyExc_StandardError, "Empty wire");
+              break;
+            case BRepCheck_RedundantEdge:
+              PyErr_SetString(PyExc_StandardError, "Redundant edge");
+              break;
+            case BRepCheck_SelfIntersectingWire:
+              PyErr_SetString(PyExc_StandardError, "Self-intersecting wire");
+              break;
+            case BRepCheck_NoSurface:
+              PyErr_SetString(PyExc_StandardError, "No surface");
+              break;
+            case BRepCheck_InvalidWire:
+              PyErr_SetString(PyExc_StandardError, "Invalid wires");
+              break;
+            case BRepCheck_RedundantWire:
+              PyErr_SetString(PyExc_StandardError, "Redundant wires");
+              break;
+            case BRepCheck_IntersectingWires:
+              PyErr_SetString(PyExc_StandardError, "Intersecting wires");
+              break;
+            case BRepCheck_InvalidImbricationOfWires:
+              PyErr_SetString(PyExc_StandardError, "Invalid imbrication of wires");
+              break;
+            case BRepCheck_EmptyShell:
+              PyErr_SetString(PyExc_StandardError, "Empty shell");
+              break;
+            case BRepCheck_RedundantFace:
+              PyErr_SetString(PyExc_StandardError, "Redundant face");
+              break;
+            case BRepCheck_UnorientableShape:
+              PyErr_SetString(PyExc_StandardError, "Unorientable shape");
+              break;
+            case BRepCheck_NotClosed:
+              PyErr_SetString(PyExc_StandardError, "Not closed");
+              break;
+            case BRepCheck_NotConnected:
+              PyErr_SetString(PyExc_StandardError, "Not connected");
+              break;
+            case BRepCheck_SubshapeNotInShape:
+              PyErr_SetString(PyExc_StandardError, "Sub-shape not in shape");
+              break;
+            case BRepCheck_BadOrientation:
+              PyErr_SetString(PyExc_StandardError, "Bad orientation");
+              break;
+            case BRepCheck_BadOrientationOfSubshape:
+              PyErr_SetString(PyExc_StandardError, "Bad orientation of sub-shape");
+              break;
+            case BRepCheck_InvalidToleranceValue:
+              PyErr_SetString(PyExc_StandardError, "Invalid tolerance value");
+              break;
+            case BRepCheck_CheckFail:
+              PyErr_SetString(PyExc_StandardError, "Check failed");
+              break;
+            }
+
+            if (PyErr_Occurred())
+              PyErr_Print();
+            it.Next();
+          }
+        }
+      }
+    }
+  }
+
+  Py_Return; 
+
 }
 
 Py::Int TopoShapePy::getValid(void) const
@@ -53,6 +233,17 @@ Py::List TopoShapePy::getFaces(void) const
 
 Py::List TopoShapePy::getVertexes(void) const
 {
+	Py::List ret;
+
+  TopExp_Explorer Ex(getTopoShapeObject()->_Shape,TopAbs_VERTEX);
+  while (Ex.More()) {
+    //BRepBuilderAPI_Copy copy(Ex.Current());
+    //TopoDS_Shape shape = copy.Shape();
+    TopoDS_Shape shape = Ex.Current();
+    ret.append(Py::Object(new TopoShapePy(new TopoShape(shape)),true));
+    Ex.Next();
+  }
+
 	return Py::List();
 }
 

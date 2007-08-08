@@ -26,12 +26,20 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/FileInfo.h>
+#include <Base/Exception.h>
 
 #include "TopoShape.h"
 
 using namespace Part;
 
 TYPESYSTEM_SOURCE(Part::TopoShape , App::ComplexGeoData);
+
+TopoShape::TopoShape(TopoDS_Shape& shape)
+: _Shape(shape)
+{
+
+}
 
 TopoShape::TopoShape()
 {
@@ -44,3 +52,72 @@ TopoShape::~TopoShape()
 
 
 
+TopoDS_Shape TopoShape::read(const char *FileName)
+{
+  Base::FileInfo File(FileName);
+  
+  // checking on the file
+  if(!File.isReadable())
+    throw Base::Exception("File to load not existing or not readable");
+    
+  TopoDS_Shape aShape;
+
+  if(File.extension() == "igs" ||File.extension() == "IGS" ||File.extension() == "iges" ||File.extension() == "IGES" )
+  {
+  
+    IGESControl_Reader aReader;
+
+      // read iges-file
+    if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
+      throw Base::Exception("Error in reading IGES");
+  
+    // make brep
+    aReader.TransferRoots();
+    // one shape, who contain's all subshapes
+    aShape = aReader.OneShape();
+
+  }else if(File.extension() == "stp" ||File.extension() == "STP" ||File.extension() == "step" ||File.extension() == "STEP" )
+  {
+    STEPControl_Reader aReader;
+
+    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
+    if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
+      throw Base::Exception("Error in reading STEP");
+  
+
+  
+    // Root transfers
+    Standard_Integer nbr = aReader.NbRootsForTransfer();
+    //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
+    for ( Standard_Integer n = 1; n<= nbr; n++)
+    {
+      printf("STEP: Transfering Root %d\n",n);
+      /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
+      // Collecting resulting entities
+      Standard_Integer nbs = aReader.NbShapes();
+      if (nbs == 0) {
+        aHSequenceOfShape.Nullify();
+        throw Base::Exception("nothing to read");
+      } else {
+        for (Standard_Integer i =1; i<=nbs; i++) 
+        {
+          printf("STEP:   Transfering Shape %d\n",n);
+          aShape=aReader.Shape(i);
+          aHSequenceOfShape->Append(aShape);
+        }
+      }
+    }
+
+  }else if(File.extension() == "brp" ||File.extension() == "BRP" ||File.extension() == "brep" ||File.extension() == "BREP" )
+  {
+    BRep_Builder aBuilder;
+
+    // read brep-file
+    BRepTools::Read(aShape,(const Standard_CString)File.filePath().c_str(),aBuilder);
+
+  }else{
+    throw Base::Exception("Unknown ending");
+  }
+  
+  return aShape; 
+}

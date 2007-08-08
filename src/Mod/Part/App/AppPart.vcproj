@@ -610,32 +610,6 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="PartAlgos.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PartAlgos.h"
-			>
-		</File>
-		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
@@ -679,7 +653,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
@@ -688,7 +662,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
