@@ -264,7 +264,7 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
         {
             if ( dir.mkdir( d->dir ) == false)
             {
-                Base::Console().Error("Directory '%s' could not be created.", d->dir.toAscii());
+                Base::Console().Error("Directory '%s' could not be created.", (const char*)d->dir.toAscii());
                 return true; // please, no error message
             }
         }

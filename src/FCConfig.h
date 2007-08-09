@@ -289,6 +289,9 @@
 #	ifndef AppExport
 #		define AppExport
 #	endif
+#	ifndef DataExport
+#		define DataExport
+#	endif
 #endif
 
 

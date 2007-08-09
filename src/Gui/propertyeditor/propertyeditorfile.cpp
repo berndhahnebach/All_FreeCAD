@@ -372,6 +372,6 @@ void ChildrenEditorItem::convertToProperty(const QVariant&)
 {
 }
 #endif
-#include "moc_propertyeditorfile.cpp"
+//#include "moc_propertyeditorfile.cpp"
 
 // --------------------------------------------------------------------

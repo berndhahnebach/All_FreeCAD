@@ -301,7 +301,7 @@ void ColorEditorItem::convertToProperty(const QVariant& val)
   }
 }
 #endif
-#include "moc_propertyeditorfont.cpp"
+//#include "moc_propertyeditorfont.cpp"
 
 
 // --------------------------------------------------------------------

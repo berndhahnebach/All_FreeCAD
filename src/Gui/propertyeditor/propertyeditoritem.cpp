@@ -319,19 +319,19 @@ void PropertyItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
 //"..............",
 //".............."};
  
-/* XPM */
-static const char * resetproperty_xpm[] = {
-      "7 6 4 1",
-      "   c None",
-      ".  c #C00000",
-      "+  c #FF0000",
-      "@  c None",
-      ".+@@@+.",
-      "@.+@+.@",
-      "@@.+.@@",
-      "@@+.+@@",
-      "@+.@.+@",
-      "+.@@@.+"};
+///* XPM */
+//static const char * resetproperty_xpm[] = {
+//      "7 6 4 1",
+//      "   c None",
+//      ".  c #C00000",
+//      "+  c #FF0000",
+//      "@  c None",
+//      ".+@@@+.",
+//      "@.+@+.@",
+//      "@@.+.@@",
+//      "@@+.+@@",
+//      "@+.@.+@",
+//      "+.@@@.+"};
 #if 0
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 

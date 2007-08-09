@@ -80,7 +80,7 @@ void StdCmdWorkbench::activated(int iMsg)
 {
   try {
     QList<QAction*> items = ((WorkbenchGroup*)_pcAction)->actions();
-    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", items[iMsg]->text().toAscii());
+    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", (const char*)items[iMsg]->text().toAscii());
   } catch(const Base::PyException& e) {
     QString msg(e.what());
     // ignore '<type 'exceptions.*Error'>' prefixes

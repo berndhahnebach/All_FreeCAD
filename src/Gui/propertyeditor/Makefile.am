@@ -2,9 +2,6 @@ noinst_LTLIBRARIES=libpropertyeditor.la
 
 BUILT_SOURCES=\
 		moc_propertyeditor.cpp \
-		moc_propertyeditorfile.cpp \
-		moc_propertyeditorfont.cpp \
-		moc_propertyeditorinput.cpp \
 		moc_propertyeditoritem.cpp 
 
 libpropertyeditor_la_SOURCES=\

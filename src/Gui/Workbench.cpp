@@ -272,7 +272,6 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
         ParameterGrp::handle hSubGrp = hGrp->GetGroup(bar.c_str());
         QList<ToolBarItem*> subitems = (*item)->getItems();
 
-        int pos = 0;
         for (QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem) {
             std::string command = (*subitem)->command().toStdString();
             Command* pCmd = rMgr.getCommandByName(command.c_str());
