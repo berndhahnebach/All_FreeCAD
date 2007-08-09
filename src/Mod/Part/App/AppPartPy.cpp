@@ -22,6 +22,10 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <TopoDS_Face.hxx>
+# include <Geom_Plane.hxx>
+# include <Handle_Geom_Plane.hxx>
 #endif
 
 #include <stdio.h>

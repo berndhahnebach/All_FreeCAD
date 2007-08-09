@@ -721,3 +721,4 @@ void CursorEditorItem::convertToProperty(const QVariant&)
 }
 
 #endif
+

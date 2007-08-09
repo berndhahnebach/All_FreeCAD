@@ -35,7 +35,6 @@ BUILT_SOURCES=\
 		moc_NetworkRetriever.cpp \
 		moc_OnlineDocumentation.cpp \
 		moc_PrefWidgets.cpp \
-		moc_Process.cpp \
 		moc_ProgressBar.cpp \
 		moc_PropertyPage.cpp \
 		moc_PropertyView.cpp \

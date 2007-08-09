@@ -2,6 +2,12 @@ if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libPart.la Part.la
 
+BUILT_SOURCES=\
+		TopoShapePy.cpp
+
+libPart_la_BUILT=\
+		TopoShapePy.h
+
 libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		CirclePy.cpp \
@@ -28,8 +34,6 @@ libPart_la_SOURCES=\
 		FeaturePartPolygon.h \
 		LinePy.cpp \
 		LinePy.h \
-		PartAlgos.cpp \
-		PartAlgos.h \
 		PartFeature.cpp \
 		PartFeature.h \
 		PartFeaturePy.cpp \
@@ -40,6 +44,9 @@ libPart_la_SOURCES=\
 		PropertyCircle.h \
 		PropertyLine.cpp \
 		PropertyLine.h \
+		TopoShape.cpp \
+		TopoShape.h \
+		TopoShapePyImp.cpp \
 		TopologyPy.cpp \
 		TopologyPy.h
 
@@ -49,6 +56,7 @@ libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
 		-lxerces-c \
+		-lboost_filesystem \
 		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
@@ -67,7 +75,12 @@ libPart_la_LIBADD   = \
 		-lTKBRep \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
 		-lTKPrim
+
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 #--------------------------------------------------------------------------------------
 # Loader of libPart
@@ -92,5 +105,8 @@ endif
 
 libdir = $(prefix)/Mod/Part
 
+CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)
+
 EXTRA_DIST = \
+		TopoShapePy.xml \
 		AppPart.vcproj

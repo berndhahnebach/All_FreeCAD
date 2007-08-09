@@ -1,5 +1,16 @@
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <IGESControl_Controller.hxx>
+# include <IGESControl_Writer.hxx>
+# include <STEPControl_Writer.hxx>
+# include <BRepTools.hxx>
+# include <BRepCheck_Analyzer.hxx>
+# include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+# include <BRepCheck_Result.hxx>
+# include <TopExp_Explorer.hxx>
+# include <TopoDS_Iterator.hxx>
+#endif
 
 
 #include <Base/PyCXX/Objects.hxx>

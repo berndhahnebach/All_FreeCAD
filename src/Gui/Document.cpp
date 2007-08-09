@@ -655,18 +655,18 @@ void Document::RestoreDocFile(Base::Reader &reader)
  */
 void Document::SaveDocFile (Base::Writer &writer) const
 {
-  writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl
-         << "<!--" << endl
-         << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
-         << "-->" << endl;
+  writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << std::endl
+         << "<!--" << std::endl
+         << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << std::endl
+         << "-->" << std::endl;
 
-  writer.Stream() << "<Document SchemaVersion=\"1\">" << endl;
+  writer.Stream() << "<Document SchemaVersion=\"1\">" << std::endl;
 
   std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
   
   // writing the view provider names itself
   writer.incInd(); // indention for 'ViewProviderData Count'
-  writer.Stream() << writer.ind() << "<ViewProviderData Count=\"" << _ViewProviderMap.size() <<"\">" << endl;
+  writer.Stream() << writer.ind() << "<ViewProviderData Count=\"" << _ViewProviderMap.size() <<"\">" << std::endl;
 
   bool xml = writer.isForceXML();
   writer.setForceXML(true);
@@ -675,14 +675,14 @@ void Document::SaveDocFile (Base::Writer &writer) const
   {
     App::DocumentObject* doc = it->first;
     ViewProvider* obj = it->second;
-    writer.Stream() << writer.ind() << "<ViewProvider name=\"" << doc->name.getValue() << "\">" << endl;   
+    writer.Stream() << writer.ind() << "<ViewProvider name=\"" << doc->name.getValue() << "\">" << std::endl;   
     obj->Save(writer);
-    writer.Stream() << writer.ind() << "</ViewProvider>" << endl;
+    writer.Stream() << writer.ind() << "</ViewProvider>" << std::endl;
   }
   writer.setForceXML(xml);
 
   writer.decInd(); // indention for 'ViewProvider name'
-  writer.Stream() << writer.ind() << "</ViewProviderData>" << endl;
+  writer.Stream() << writer.ind() << "</ViewProviderData>" << std::endl;
   writer.decInd();  // indention for 'ViewProviderData Count'
 
   // set camera settings
@@ -700,9 +700,9 @@ void Document::SaveDocFile (Base::Writer &writer) const
   }
 
   writer.incInd(); // indention for camera settings
-  writer.Stream() << writer.ind() << "<Camera settings=\"" <<  viewPos.latin1() <<"\"/>" << endl;
+  writer.Stream() << writer.ind() << "<Camera settings=\"" <<  viewPos.latin1() <<"\"/>" << std::endl;
   writer.decInd(); // indention for camera settings
-  writer.Stream() << "</Document>" << endl;
+  writer.Stream() << "</Document>" << std::endl;
 }
 
 void Document::createView(const char* sType) 

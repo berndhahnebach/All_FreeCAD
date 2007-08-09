@@ -24,8 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 # include <qcursor.h>
-#	include <q3header.h>
+# include <q3header.h>
 # include <qlayout.h>
 # include <q3popupmenu.h>
 # include <qstatusbar.h>
@@ -52,7 +54,7 @@
 using namespace Gui;
 
 TreeModelItem::TreeModelItem(const QString& s, Base::BaseClass* obj)
-    : name(s), parentItem(0), object(obj)
+    : parentItem(0), object(obj), name(s)
 {
 }
 

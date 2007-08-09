@@ -601,6 +601,6 @@ QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
     return 0;
 }
 #endif
-#include "moc_propertyeditorinput.cpp"
+//#include "moc_propertyeditorinput.cpp"
 
 // --------------------------------------------------------------------

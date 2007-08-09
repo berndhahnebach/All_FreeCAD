@@ -361,14 +361,14 @@ void DlgDisplayPropertiesImp::on_changeMode_activated(const QString& s)
     if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
     {
       App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
-      Display->setValue(s.toLatin1());
+      Display->setValue((const char*)s.toAscii());
     }
   }
 }
 
 void DlgDisplayPropertiesImp::on_changePlot_activated(const QString&s)
 {
-  Base::Console().Log("Plot = %s\n",s.toLatin1());
+  Base::Console().Log("Plot = %s\n",(const char*)s.toAscii());
 }
 
 /**

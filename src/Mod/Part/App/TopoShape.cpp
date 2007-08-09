@@ -24,6 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <BRep_Builder.hxx>
+# include <BRepTools.hxx>
+# include <IGESControl_Reader.hxx>
+# include <STEPControl_Reader.hxx>
+# include <Handle_TopTools_HSequenceOfShape.hxx>
+# include <TopTools_HSequenceOfShape.hxx>
 #endif
 
 #include <Base/FileInfo.h>
