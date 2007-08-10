@@ -43,7 +43,7 @@ PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 DocumentObject::DocumentObject(void)
 :_pDoc(0)
 {
-  ADD_PROPERTY(name,("Unnamed"));
+  ADD_PROPERTY_TYPE(name,("Unnamed"),"Base",Prop_None);
   touchTime.setToActual();
   touchViewTime.setToActual();
 

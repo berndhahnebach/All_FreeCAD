@@ -69,12 +69,13 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Matrix ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
   
   // properties for recompute testing
-  ADD_PROPERTY(Source1       ,(0));
-  ADD_PROPERTY(Source2       ,(0));
-  ADD_PROPERTY(SourceN       ,(0));
-  ADD_PROPERTY(ExecResult    ,("empty"));
-  ADD_PROPERTY(ExceptionType ,(0));
-  ADD_PROPERTY(ExecCount     ,(0));
+  static const char* group = "Feature Test";
+  ADD_PROPERTY_TYPE(Source1       ,(0),group,Prop_None);
+  ADD_PROPERTY_TYPE(Source2       ,(0),group,Prop_None);
+  ADD_PROPERTY_TYPE(SourceN       ,(0),group,Prop_None);
+  ADD_PROPERTY_TYPE(ExecResult    ,("empty"),group,Prop_None);
+  ADD_PROPERTY_TYPE(ExceptionType ,(0),group,Prop_None);
+  ADD_PROPERTY_TYPE(ExecCount     ,(0),group,Prop_None);
 }
 
 
