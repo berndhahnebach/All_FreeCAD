@@ -38,12 +38,23 @@ namespace App
   class PropertyContainer;
   class DocumentObject;
 
+enum AppExport PropertyType 
+{
+  Prop_None     = 0,
+  Prop_ReadOnly = 1
+};
+
 struct AppExport PropertyData
 {
-  std::map<std::string,int> propertyData;
+  struct PropertySpec
+  {
+    short Offset,Type;
+    const char * Group;
+  };
+  std::map<std::string,PropertySpec> propertyData;
   const PropertyData *parentPropertyData;
 
-  void addProperty(PropertyContainer *container,const char* PropName, Property *Prop);
+  void addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup= 0, PropertyType = Prop_None );
   const char* getName(const PropertyContainer *container,const Property* prop) const;
   Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
   void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
@@ -109,12 +120,19 @@ private:
 
 };
 
-
+/// Property define 
 #define ADD_PROPERTY(_prop_, _defaultval_) \
   do { \
     this->_prop_.setValue _defaultval_;\
     this->_prop_.setContainer(this); \
     propertyData.addProperty(this, #_prop_, &this->_prop_); \
+  } while (0)
+
+#define ADD_PROPERTY_TYPE(_prop_, _defaultval_, _group_,_type_) \
+  do { \
+    this->_prop_.setValue _defaultval_;\
+    this->_prop_.setContainer(this); \
+    propertyData.addProperty(this, #_prop_, &this->_prop_, (_group_),(_type_)); \
   } while (0)
 
 

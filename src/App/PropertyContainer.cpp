@@ -153,13 +153,18 @@ void PropertyContainer::Restore(Base::XMLReader &reader)
 
 
 
-void PropertyData::addProperty(PropertyContainer *container,const char* PropName, Property *Prop)
+void PropertyData::addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup , PropertyType Type)
 {
-  std::map<std::string,int>::const_iterator pos = propertyData.find(PropName);
+  std::map<std::string,PropertySpec>::const_iterator pos = propertyData.find(PropName);
 
   if(pos == propertyData.end())
   {
-    propertyData[PropName] = (int) ((char*)Prop - (char*)container);
+    PropertySpec temp;
+    temp.Offset = (short) ((char*)Prop - (char*)container);
+    temp.Group  = PropertyGroup;
+    temp.Type   = Type;
+    propertyData[PropName] = temp;
+    //propertyData[PropName] = (int) ((char*)Prop - (char*)container);
   }
 }
 
@@ -167,8 +172,8 @@ const char* PropertyData::getName(const PropertyContainer *container,const Prope
 {
   const int diff = (int) ((char*)prop - (char*)container);
 
-  for(std::map<std::string,int>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
-    if(pos->second == diff)
+  for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
+    if(pos->second.Offset == diff)
       return pos->first.c_str();
 
   if(parentPropertyData)
@@ -180,12 +185,12 @@ const char* PropertyData::getName(const PropertyContainer *container,const Prope
 
 Property *PropertyData::getPropertyByName(const PropertyContainer *container,const char* name) const 
 {
-  std::map<std::string,int>::const_iterator pos = propertyData.find(name);
+  std::map<std::string,PropertySpec>::const_iterator pos = propertyData.find(name);
 
   if(pos != propertyData.end())
   {
     // calculate propterty by offset
-    return (Property *) (pos->second + (char *)container);
+    return (Property *) (pos->second.Offset + (char *)container);
   }else{
     if(parentPropertyData)
       return parentPropertyData->getPropertyByName(container,name);
@@ -196,11 +201,11 @@ Property *PropertyData::getPropertyByName(const PropertyContainer *container,con
 
 void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const
 {
-  std::map<std::string,int>::const_iterator pos;
+  std::map<std::string,PropertySpec>::const_iterator pos;
 
   for(pos = propertyData.begin();pos != propertyData.end();++pos)
   {
-    Map[pos->first] = (Property *) (pos->second + (char *)container);
+    Map[pos->first] = (Property *) (pos->second.Offset + (char *)container);
   }
   if(parentPropertyData)
     parentPropertyData->getPropertyMap(container,Map);
@@ -209,11 +214,11 @@ void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<st
 
 void PropertyData::getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const
 {
-  std::map<std::string,int>::const_iterator pos;
+  std::map<std::string,PropertySpec>::const_iterator pos;
 
   for(pos = propertyData.begin();pos != propertyData.end();++pos)
   {
-    List.push_back((Property *) (pos->second + (char *)container) );
+    List.push_back((Property *) (pos->second.Offset + (char *)container) );
   }
   if(parentPropertyData)
     parentPropertyData->getPropertyList(container,List);
