@@ -102,12 +102,23 @@ public:
   void updateActive(void);
   //@}
 
+  /** @name Signals of the Application */
+  //@{
+  /// signal on new Document
+  boost::signal<void (Gui::Document&)> signalNewDocument;
+  /// signal on deleted Document
+  boost::signal<void (Gui::Document&)> signalDeletedDocument;
+  /// signal on renaming Document
+  boost::signal<void (Gui::Document&)> signalRenameDocument;
+  //@}
+
   /** @name methods for Document handling */
   //@{
   /// Observer message from the Application
   //virtual void OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason);
   void slotNewDocument(App::Document&);
   void slotDeletedDocument(App::Document&);
+  void slotRenameDocument(App::Document&);
   /// message when a GuiDocument is about to vanish
   void onLastWindowClosed(Gui::Document* pcDoc);
   /// Getter for the active document

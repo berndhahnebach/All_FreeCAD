@@ -100,7 +100,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcSelection->addDeselectionCallback( Document::sUnmadeSelection, this );
 */
   //pcTreeItem = new DocItem(Gui::getMainWindow()->getTreeView()->getMainItem(),this);
-  pcTreeItem = Gui::getMainWindow()->getTreeView()->NewDoc(this);
+  //pcTreeItem = Gui::getMainWindow()->getTreeView()->NewDoc(this);
   // open at least one viewer
   createView("View3DIv");
 }
@@ -138,8 +138,8 @@ Document::~Document()
     delete it2->second;
 
 //  pcSelection->unref();
-    Gui::getMainWindow()->getTreeView()->DeleteDoc(this);
-    pcTreeItem = 0;
+    //Gui::getMainWindow()->getTreeView()->DeleteDoc(this);
+    //pcTreeItem = 0;
 
   // remove from the tree
 
@@ -331,7 +331,8 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     }
 
     // adding to the tree
-    pcTreeItem->addViewProviderDocumentObject(pcProvider);
+    signalNewObject(*pcProvider);
+    //pcTreeItem->addViewProviderDocumentObject(pcProvider);
 
   }else{
     Base::Console().Warning("Gui::Document::slotNewObject() no view provider for the object %s found\n",cName.c_str());
@@ -357,7 +358,8 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
   if ( vpInv )
   {
     // removing from tree
-    pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
+    signalDeletedObject(*(dynamic_cast<ViewProviderDocumentObject*>(vpInv)));
+    //pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
 
     //delete vpInv;
     //DocChange.ViewProviders.insert(vpInv);
@@ -366,6 +368,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
 
  
 }
+
 void Document::slotChangedObject(App::DocumentObject& Obj)
 {
     Base::Console().Log("Document::slotChangedObject() called\n");
@@ -517,16 +520,16 @@ void Document::setModified(bool b)
   std::list<MDIView*> mdis = getMDIViews();
   for ( std::list<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it )
   {
-    QString cap = (*it)->caption();
+    QString cap = (*it)->windowTitle();
     if ( b && !cap.endsWith(" *") )
     {
       cap += " *";
-      (*it)->setCaption(cap);
+      (*it)->setWindowTitle(cap);
     }
     else if ( !b && cap.endsWith(" *") )
     {
       cap = cap.left(cap.length()-2);
-      (*it)->setCaption(cap);
+      (*it)->setWindowTitle(cap);
     }
   }
 }
@@ -550,9 +553,10 @@ bool Document::save(void)
 /// Save the document under a new file name
 bool Document::saveAs(void)
 {
-  getMainWindow()->statusBar()->message(QObject::tr("Save document under new filename..."));
+  getMainWindow()->statusBar()->showMessage(QObject::tr("Save document under new filename..."));
 
-  QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), QDir::currentDirPath(), QObject::tr("FreeCAD document (*.FCStd)") );
+  QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), 
+               QDir::currentPath(), QObject::tr("FreeCAD document (*.FCStd)") );
   if (!fn.isEmpty())
   {
     if ( !fn.endsWith(".FCStd"))
@@ -565,15 +569,15 @@ bool Document::saveAs(void)
 
     // save as new file name
     Gui::WaitCursor wc;
-    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, fn.latin1());
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, (const char*)fn.toAscii());
     Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()", DocName );
 
-    getMainWindow()->appendRecentFile( fi.filePath().latin1());
+    getMainWindow()->appendRecentFile( fi.filePath().toAscii());
     return true;
   }
   else
   {
-    getMainWindow()->statusBar()->message(QObject::tr("Saving aborted"), 2000);
+    getMainWindow()->statusBar()->showMessage(QObject::tr("Saving aborted"), 2000);
     return false;
   }
 }
@@ -692,7 +696,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
     _pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
   
     // remove the first line because it's a comment like '#Inventor V2.1 ascii'
-    QStringList lines = QStringList::split("\n", ppReturn);
+    QStringList lines = QString(ppReturn).split("\n");
     if ( lines.size() > 1 ) {
       lines.pop_front();
       viewPos = lines.join(" ");
@@ -700,7 +704,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
   }
 
   writer.incInd(); // indention for camera settings
-  writer.Stream() << writer.ind() << "<Camera settings=\"" <<  viewPos.latin1() <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<Camera settings=\"" <<  (const char*)viewPos.toAscii() <<"\"/>" << std::endl;
   writer.decInd(); // indention for camera settings
   writer.Stream() << "</Document>" << std::endl;
 }
@@ -736,8 +740,8 @@ void Document::createView(const char* sType)
     QString aName = QString("%1 : %3").arg(name).arg(_iWinCount++);
 
 
-    pcView3D->setCaption(aName);
-    pcView3D->setIcon( FCIcon );
+    pcView3D->setWindowTitle(aName);
+    pcView3D->setWindowIcon( FCIcon );
     pcView3D->resize( 400, 300 );
     getMainWindow()->addWindow(pcView3D);
 }

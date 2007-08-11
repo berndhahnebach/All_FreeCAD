@@ -111,6 +111,7 @@ Application::Application()
   //App::GetApplication().Attach(this);
   App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
   App::GetApplication().signalDeletedDocument.connect(boost::bind(&Gui::Application::slotDeletedDocument, this, _1));
+  App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
 
 
   // install the last active language
@@ -292,7 +293,9 @@ void Application::slotNewDocument(App::Document& Doc)
   std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
   assert(it==d->lpcDocuments.end());
 #endif
-  d->lpcDocuments[&Doc] = new Gui::Document(&Doc,this);
+  Gui::Document* pDoc = new Gui::Document(&Doc,this);
+  d->lpcDocuments[&Doc] = pDoc;
+  signalNewDocument(*pDoc);
 }
 
 void Application::slotDeletedDocument(App::Document& Doc)
@@ -305,6 +308,7 @@ void Application::slotDeletedDocument(App::Document& Doc)
 
   // We must clear the selection here to notify all observers
   Gui::Selection().clearSelection(doc->second->getDocument()->getName());
+  signalDeletedDocument(*doc->second);
 
   // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
   // view that becomes active sets the active document again. So, we needn't worry about this.
@@ -313,6 +317,16 @@ void Application::slotDeletedDocument(App::Document& Doc)
 
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);
+}
+
+void Application::slotRenameDocument(App::Document& Doc)
+{
+  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+#ifdef FC_DEBUG
+  assert(doc!=d->lpcDocuments.end());
+#endif
+
+  signalRenameDocument(*doc->second);
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)

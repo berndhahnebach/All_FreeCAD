@@ -41,8 +41,8 @@
 
 namespace Gui {
 
-// because of stupid moc.exe!
-typedef boost::signals::connection ConDef;
+class ViewProviderDocumentObject;
+class DocumentObjectItem;
 
 /**
  * The TreeModelItem class represents the documents with their objects in a tree hierarchy.
@@ -110,44 +110,108 @@ private:
     static QPixmap* documentPixmap;
 };
 
-/**
- * The dock window containing the tree view.
- * @author Werner Mayer
- */
-class TreeWidget : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class TreeWidget : public QTreeWidget
 {
     Q_OBJECT
 
 public:
-    TreeWidget(Gui::Document*  pcDocument,QWidget *parent=0);
+    TreeWidget(QWidget* parent=0);
     ~TreeWidget();
+};
+
+class DocumentItem : public QTreeWidgetItem
+{
+public:
+    DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent);
+    ~DocumentItem();
+
+    /** Adds a view provider to the document item.
+     * If this view provider is already added nothing happens.
+     */
+    void slotNewObject(Gui::ViewProviderDocumentObject&);
+    /** Removes a view provider from the document item.
+     * If this view provider is not added nothing happens.
+     */
+    void slotDeletedObject(Gui::ViewProviderDocumentObject&);
+    void slotChangedObject(Gui::ViewProviderDocumentObject&);
+    void slotRenamedObject(Gui::ViewProviderDocumentObject&);
+
+    void setObjectHighlighted(const char*, bool);
+    void setObjectSelected(const char*, bool);
+    void clearSelection(void);
+    void updateSelection(void);
+    void testStatus(void);
+
+private:
+    Gui::Document* pDocument;
+    std::map<std::string,DocumentObjectItem*> ObjectMap;
+};
+
+class DocumentObjectItem : public QTreeWidgetItem
+{
+public:
+    DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewProvider, QTreeWidgetItem * parent);
+    ~DocumentObjectItem();
+
+    Gui::ViewProviderDocumentObject* object() const;
+    void testStatus();
+    void displayStatusInfo();
+
+private:
+    int previousStatus;
+    Gui::ViewProviderDocumentObject* viewObject;
+};
+
+/**
+ * The dock window containing the tree view.
+ * @author Werner Mayer
+ */
+class TreeDockWidget : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+{
+    Q_OBJECT
+
+public:
+    TreeDockWidget(Gui::Document*  pcDocument,QWidget *parent=0);
+    ~TreeDockWidget();
 
     const char *getName(void) const {return "TreeView";}
-    void slotNewDocument(App::Document&);
-    void slotDeletedDocument(App::Document&);
-    void slotNewObject(App::DocumentObject&);
-    void slotDeletedObject(App::DocumentObject&);
-    void slotChangedObject(App::DocumentObject&);
+    void slotNewDocument(Gui::Document&);
+    void slotDeletedDocument(Gui::Document&);
+    void slotRenameDocument(Gui::Document&);
+
+    void slotNewObject(Gui::ViewProviderDocumentObject&);
+    void slotDeletedObject(Gui::ViewProviderDocumentObject&);
+    void slotChangedObject(Gui::ViewProviderDocumentObject&);
+    void slotRenamedObject(Gui::ViewProviderDocumentObject&);
 
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
+
+public Q_SLOTS:
+    void onItemSelectionChanged(void);
+    void onItemEntered(QTreeWidgetItem * item);
+    void onTestStatus(void);
 
 protected:
     void contextMenuEvent ( QContextMenuEvent * e );
     void changeEvent(QEvent *e);
 
 private:
+#if 0
     QTreeView* treeView;
     TreeModel* treeModel;
-
-    // tracker of the connections
-    ConDef connectionApplicationNewDocument;
-    ConDef connectionApplicationDeletedDocument;
-
+#else
+    QTreeWidgetItem* rootItem;
+    QTreeWidget* treeWidget;
+    QTimer* statusTimer;
+    static QPixmap* documentPixmap;
+    std::map<Gui::Document*,DocumentItem*> DocumentMap;
+    bool fromOutside;
+#endif
 };
 
 }
-
+#if 0
 namespace Gui {
 
 class Document;
@@ -348,6 +412,6 @@ private:
 };
 
 } // namespace Gui
-
+#endif
 #endif // GUI_TREE_H
 
