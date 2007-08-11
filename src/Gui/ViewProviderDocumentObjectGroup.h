@@ -49,7 +49,7 @@ public:
   virtual ~ViewProviderDocumentObjectGroup();
 
   virtual void attach(App::DocumentObject *pcObject);
-  virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
+  //virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
   virtual QPixmap getOpenedGroupIcon() const;
   virtual QPixmap getClosedGroupIcon() const;
   /// returns a list of all possible modes

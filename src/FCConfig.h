@@ -174,7 +174,7 @@
 
 //**************************************************************************
 // Qt
-#define QT3_SUPPORT
+#undef  QT3_SUPPORT
 #define QT_NO_KEYWORDS
 
 #if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)

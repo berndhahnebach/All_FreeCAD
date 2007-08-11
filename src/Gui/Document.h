@@ -98,6 +98,17 @@ public:
     void slotChangedObject(App::DocumentObject&);
     virtual void refresh(App::DocumentObject&) const {};
     //@}
+    /** @name Signals of the document */
+    //@{
+    /// signal on new Object
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalNewObject;
+    /// signal on deleted Object
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalDeletedObject;
+    /// signal on changed Object
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalChangedObject;
+    /// signal on renamed Object
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalRenamedObject;
+    //@}
 
     /** @name I/O of the document */
     //@{
@@ -222,7 +233,7 @@ private:
     /// List of all registered views
     std::list<Gui::BaseView*> _LpcPassivViews;
     /// root of the document in the tree
-    DocItem *pcTreeItem;
+    //DocItem *pcTreeItem;
 
     // the doc/Document
     App::Document*  _pcDocument;

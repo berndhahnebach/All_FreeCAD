@@ -72,8 +72,8 @@ public:
   App::PropertyMaterial ShapeMaterial;
 
   // Returns the tree label
-  virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
-  ObjectItem* getTreeItem(Q3ListViewItem* parent);
+  //virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
+  //ObjectItem* getTreeItem(Q3ListViewItem* parent);
 
   virtual void attach(App::DocumentObject *pcObject);
   /// get the default display mode
@@ -98,7 +98,7 @@ public:
   }
   
   /// freqently called by the framework to check status changes in the data
-  virtual bool testStatus(void);
+  //virtual bool testStatus(void);
 
   App::DocumentObject *getObject(void) const {return pcObject;}
 

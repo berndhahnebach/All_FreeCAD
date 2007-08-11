@@ -39,7 +39,6 @@
 
 namespace Gui {
 
-class TreeView;
 class BaseView;
 class CommandManager;
 class Document;
@@ -140,7 +139,7 @@ public:
   void saveLayoutSettings();
   //@}
 
-  TreeView* getTreeView(void) const {return pcTree;}
+  //TreeView* getTreeView(void) const {return pcTree;}
 
 public Q_SLOTS:
   /**
@@ -231,7 +230,7 @@ private:
   /// some kind of singleton
   static MainWindow* instance;
   struct MainWindowP* d;
-  TreeView* pcTree;
+  //TreeView* pcTree;
 };
 
 inline GuiExport MainWindow* getMainWindow()

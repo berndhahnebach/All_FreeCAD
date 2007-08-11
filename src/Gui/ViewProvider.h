@@ -38,7 +38,6 @@
 
 class SoNode;
 class SoPath;
-class Q3ListViewItem;
 class SoSeparator;
 class SoEvent;
 class SoSwitch;

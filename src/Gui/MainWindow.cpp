@@ -188,7 +188,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   // connection between workspace, window menu and tab bar
   connect( d->windowMapper, SIGNAL( mapped(QWidget *) ), d->workspace, SLOT( setActiveWindow( QWidget* ) ) );
   connect( d->workspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
-  connect( d->tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
+  connect( d->tabs, SIGNAL( currentChanged( int) ), this, SLOT( onTabSelected(int) ) );
 
   DockWindowManager* pDockMgr = DockWindowManager::instance();
 
@@ -213,13 +213,17 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   //pDockMgr->registerDockWindow("Std_HelpView", pcHelpView);
 
   // Tree view
+  TreeDockWidget* tree = new TreeDockWidget(0, this);
+  tree->setWindowTitle("Tree view");
+  tree->setMinimumWidth(210);
+  pDockMgr->registerDockWindow("Std_TreeView", tree);
+/*
+  // Tree view
   pcTree = new TreeView(0,this);
   pcTree->setWindowTitle("Tree view");
   pcTree->setMinimumWidth(210);
-  //TreeWidget* tree = new TreeWidget(0, this);
-  //tree->setMinimumWidth(210);
   pDockMgr->registerDockWindow("Std_TreeView", pcTree);
-
+*/
   // Property view
   PropertyView* pcPropView = new PropertyView(0, this);
   pcPropView->setWindowTitle("Property view");
@@ -330,7 +334,7 @@ void MainWindow::addWindow( MDIView* view )
 {
   // make workspace parent of view
   d->workspace->addWindow(view);
-  connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
+  connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( showMessage(const QString&, int )) );
   connect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
 
   // listen to the incoming events of the view
@@ -621,7 +625,7 @@ void MainWindow::updateActions()
   if ( cLastCall.elapsed() > 250 && isVisible() )
   {
     Application::Instance->commandManager().testActive();
-    pcTree->testStatus();
+    //pcTree->testStatus();
     // remember last call
     cLastCall.start();
   }
@@ -800,11 +804,11 @@ void MainWindow::dropEvent ( QDropEvent* e )
       QFileInfo info((*it).toLocalFile());
       if ( info.exists() && info.isFile() ) {
         // First check the complete extension
-        if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
-          Application::Instance->open(info.absFilePath().latin1());
+        if ( App::GetApplication().hasOpenType( info.completeSuffix().toAscii() ) )
+          Application::Instance->open(info.absoluteFilePath().toAscii());
         // Don't get the complete extension
-        else if ( App::GetApplication().hasOpenType( info.extension(false).latin1() ) )
-          Application::Instance->open(info.absFilePath().latin1());
+        else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
+          Application::Instance->open(info.absoluteFilePath().toAscii());
       }
     }
   } else {
@@ -876,7 +880,8 @@ void MainWindow::customEvent( QEvent* e )
   if (e->type() == QEvent::User) {
     Gui::CustomMessageEvent* ce = (Gui::CustomMessageEvent*)e;
     d->actionLabel->setText(ce->message());
-    d->actionTimer->start(5000, true);
+    d->actionTimer->setSingleShot(true);
+    d->actionTimer->start(5000);
   }
 }
 

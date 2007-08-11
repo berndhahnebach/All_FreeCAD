@@ -121,7 +121,7 @@ void ViewProviderDocumentObjectGroup::getViewProviders(std::vector<ViewProviderD
     }
   }
 }
-
+/*
 class GroupItem : public ObjectItem
 {
 public:
@@ -150,7 +150,7 @@ public:
 private:
   QPixmap openPix, closePix;
 };
-
+*/
 /**
  * Returns the pixmap for the opened list item.
  */
@@ -166,13 +166,13 @@ QPixmap ViewProviderDocumentObjectGroup::getClosedGroupIcon() const
 {
   return Gui::BitmapFactory().pixmap("PrefTree_GroupClosed");
 }
-
-/**
- * Returns a newly created list item for an object group.
- */
-ObjectItem* ViewProviderDocumentObjectGroup::createTreeItem(Q3ListViewItem* parent)
-{
-  GroupItem* item = new GroupItem(parent,this, getOpenedGroupIcon(), getClosedGroupIcon());
-  item->setText(0,QString(pcObject->name.getValue()));
-  return item;
-}
+//
+///**
+// * Returns a newly created list item for an object group.
+// */
+//ObjectItem* ViewProviderDocumentObjectGroup::createTreeItem(Q3ListViewItem* parent)
+//{
+//  GroupItem* item = new GroupItem(parent,this, getOpenedGroupIcon(), getClosedGroupIcon());
+//  item->setText(0,QString(pcObject->name.getValue()));
+//  return item;
+//}

@@ -39,7 +39,6 @@
 #include "Document.h"
 #include "Selection.h"
 #include "ViewProviderDocumentObject.h"
-#include "Tree.h"
 #include "Tools.h"
 
 
@@ -197,22 +196,22 @@ void ViewProviderDocumentObject::setActiveMode()
   if ( !Visibility.getValue() )
     ViewProvider::hide();
 }
-
-ObjectItem* ViewProviderDocumentObject::getTreeItem(Q3ListViewItem* parent)
-{
-  if ( !pcObjItem )
-    pcObjItem = createTreeItem(parent);
-  return pcObjItem;
-}
-
-ObjectItem* ViewProviderDocumentObject::createTreeItem(Q3ListViewItem* parent)
-{
-  ObjectItem* item = new ObjectItem(parent,this);
-  item->setPixmap(0, this->getIcon());
-  item->setText(0, QString(pcObject->name.getValue()));
-  return item;
-}
-
+//
+//ObjectItem* ViewProviderDocumentObject::getTreeItem(Q3ListViewItem* parent)
+//{
+//  if ( !pcObjItem )
+//    pcObjItem = createTreeItem(parent);
+//  return pcObjItem;
+//}
+//
+//ObjectItem* ViewProviderDocumentObject::createTreeItem(Q3ListViewItem* parent)
+//{
+//  ObjectItem* item = new ObjectItem(parent,this);
+//  item->setPixmap(0, this->getIcon());
+//  item->setText(0, QString(pcObject->name.getValue()));
+//  return item;
+//}
+/*
 bool ViewProviderDocumentObject::testStatus(void)
 {
   assert(pcObject);
@@ -325,7 +324,7 @@ bool ViewProviderDocumentObject::testStatus(void)
 
   return true;
 }
-
+*/
 bool ViewProviderDocumentObject::ifDataNewer(void) const
 {
   // first do attach

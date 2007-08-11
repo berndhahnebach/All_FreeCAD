@@ -175,15 +175,17 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   QBitmap mask2 = p2.mask();
   mask.fill( Qt::color0 );
 
-  QPainter pt1(&res);
-  pt1.drawPixmap(0, 0, p1);
-  pt1.drawPixmap(x, y, p2);
+  QPainter* pt1 = new QPainter(&res);
+  pt1->drawPixmap(0, 0, p1);
+  pt1->drawPixmap(x, y, p2);
+  delete pt1;
   //bitBlt( &res,  0, 0, &p1 );
   //bitBlt( &res,  x, y, &p2 );
 
-  QPainter pt2(&mask);
-  pt2.drawPixmap(0, 0, mask1);
-  pt2.drawPixmap(x, y, mask2);
+  QPainter* pt2 = new QPainter(&mask);
+  pt2->drawPixmap(0, 0, mask1);
+  pt2->drawPixmap(x, y, mask2);
+  delete pt2;
   //bitBlt( &mask, 0, 0, &mask1 );
   //bitBlt( &mask, x, y, &mask2 );
 
