@@ -325,6 +325,13 @@ void CallTipsList::showTips(const QString& context)
  */
 bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
 {
+    // This is a dirty hack to avoid to hide the tooltip window after the defined time span
+    if (watched->inherits("QLabel")) {
+        QLabel* label = qobject_cast<QLabel*>(watched);
+        // Ignore the timer events to prevent from being closed
+        if (label->windowFlags() == Qt::ToolTip && event->type() == QEvent::Timer)
+            return true;
+    }
     if (isVisible() && watched == textEdit->viewport()) {
         if (event->type() == QEvent::MouseButtonPress)
             hide();
@@ -343,7 +350,7 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
             } else if (this->hideKeys.indexOf(ke->key()) > -1) {
                 hide();
                 return false;
-            } else if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+            } else if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Tab) {
                 itemActivated(currentItem());
                 return true;
             } else if (this->compKeys.indexOf(ke->key()) > -1) {
@@ -360,6 +367,8 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
                     QString text = items.front()->toolTip();
                     if (!text.isEmpty()){
                         QToolTip::showText(mapToGlobal(p), text);
+                        // install this object to filter timer events for the tooltip label
+                        qApp->installEventFilter(this);
                     }
                 }
                 return true;
