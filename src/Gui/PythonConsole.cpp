@@ -51,6 +51,8 @@ struct PythonConsoleP
     CallTipsList* callTipsList;
     ConsoleHistory history;
     QString output, error;
+    QStringList statements;
+    bool interactive;
     QMap<QString, QColor> colormap; // Color map
     PythonConsoleP()
     {
@@ -291,6 +293,7 @@ PythonConsole::PythonConsole(QWidget *parent)
   : TextEdit(parent), WindowParameter( "Editor" )
 {
     d = new PythonConsoleP();
+    d->interactive = false;
 
     // create an instance of InteractiveInterpreter
     try { 
@@ -449,6 +452,26 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
             TextEdit::keyPressEvent(e);
             d->callTipsList->showTips(text);
         }   break;
+    case Qt::Key_Home:
+        {
+            if (e->modifiers() & Qt::ControlModifier) {
+                TextEdit::keyPressEvent(e);
+            } else {
+                QTextCursor::MoveMode mode = e->modifiers() & Qt::ShiftModifier
+                     ? QTextCursor::KeepAnchor
+                     : QTextCursor::MoveAnchor;
+                QTextCursor::MoveOperation op = QTextCursor::StartOfLine;
+                QTextCursor cursor = textCursor();
+                QTextBlock block = cursor.block();
+                QString text = block.text();
+                int cursorPos = block.position();
+                if (text.startsWith(">>> ") || text.startsWith("... "))
+                    cursorPos += 4;
+                cursor.setPosition(cursorPos, mode);
+                setTextCursor(cursor);
+                ensureCursorVisible();
+            }
+        }   break;
     default: 
         {
             TextEdit::keyPressEvent(e);
@@ -532,6 +555,8 @@ void PythonConsole::runSource(const QString& line)
     bool incomplete = false;
     PySys_SetObject("stdout", d->_stdoutPy);
     PySys_SetObject("stderr", d->_stderrPy);
+    d->interactive = true;
+    
     try {
         // launch the command now
         incomplete = d->interpreter->push(line.toAscii());
@@ -555,6 +580,10 @@ void PythonConsole::runSource(const QString& line)
     PySys_SetObject("stdout", d->_stdout);
     PySys_SetObject("stderr", d->_stderr);
     printPrompt(incomplete);
+    d->interactive = false;
+    for (QStringList::Iterator it = d->statements.begin(); it != d->statements.end(); ++it)
+        printStatement(*it);
+    d->statements.clear();
 }
 
 bool PythonConsole::isComment(const QString& source) const
@@ -577,8 +606,15 @@ bool PythonConsole::isComment(const QString& source) const
  * Prints the Python statement cmd to the console.
  * @note The statement gets only printed and added to the history but not invoked.
  */
-bool PythonConsole::printStatement( const QString& cmd )
+void PythonConsole::printStatement( const QString& cmd )
 {
+    // If we are in interactive mode we have to wait until the command is finished,
+    // afterwards we can print the statements.
+    if (d->interactive) {
+        d->statements << cmd;
+        return;
+    }
+
     QTextCursor cursor = textCursor();
     QStringList statements = cmd.split("\n");
     for (QStringList::Iterator it = statements.begin(); it != statements.end(); ++it) {
@@ -588,8 +624,6 @@ bool PythonConsole::printStatement( const QString& cmd )
         d->history.append( *it );
         printPrompt(false);
     }
-
-    return true;
 }
 
 /**

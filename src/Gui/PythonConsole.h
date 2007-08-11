@@ -99,7 +99,7 @@ public:
     ~PythonConsole();
 
     void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
-    bool printStatement( const QString& cmd );
+    void printStatement( const QString& cmd );
 
 public Q_SLOTS:
     void onSaveHistoryAs();
