@@ -31,10 +31,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 namespace Gui {
 class Command;
 namespace Dialog {
@@ -51,17 +47,14 @@ class DlgCustomCommandsImp : public CustomizeActionPage, public Ui_DlgCustomComm
   Q_OBJECT
 
 public:
-  DlgCustomCommandsImp( QWidget* parent = 0 );
-  ~DlgCustomCommandsImp();
+    DlgCustomCommandsImp( QWidget* parent = 0 );
+    ~DlgCustomCommandsImp();
 
 protected Q_SLOTS:
-  void onDescription( const QString& );
-  void onGroupSelected( const QString& );
-  void onAddMacroAction(const QString&);
-  void onRemoveMacroAction(const QString&);
-
-private:
-  QMap<QString, QString> _cmdGroups;
+    void onGroupActivated( QTreeWidgetItem *i);
+    void onDescription( const QString& );
+    void onAddMacroAction(const QString&);
+    void onRemoveMacroAction(const QString&);
 };
 
 } // namespace Dialog

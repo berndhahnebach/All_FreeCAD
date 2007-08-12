@@ -58,7 +58,7 @@ protected:
 
 protected Q_SLOTS:
   /** Enables/disables buttons for deletion */
-  void on_listBoxActions_highlighted( Q3ListBoxItem *i );
+  void on_actionListWidget_itemActivated( QTreeWidgetItem *i );
   /** Opens a iconview to select a pixmap */
   void on_buttonChoosePixmap_clicked();
   /** Adds a custom action */

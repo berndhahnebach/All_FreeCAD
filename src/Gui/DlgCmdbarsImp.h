@@ -44,11 +44,11 @@ namespace Dialog {
  */
 class DlgCustomCmdbarsImp : public DlgCustomToolbars
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgCustomCmdbarsImp( QWidget* parent = 0 );
-  ~DlgCustomCmdbarsImp();
+    DlgCustomCmdbarsImp( QWidget* parent = 0 );
+    ~DlgCustomCmdbarsImp();
 };
 
 } // namespace Dialog

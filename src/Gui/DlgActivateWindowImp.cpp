@@ -27,10 +27,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 #include "DlgActivateWindowImp.h"
 #include "MainWindow.h"
 #include "MDIView.h"
@@ -47,29 +43,32 @@ using namespace Gui::Dialog;
 DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl )
 {
-  // create widgets
-  setupUi(this);
+    // create widgets
+    setupUi(this);
 
-  QList<QWidget*> windows = getMainWindow()->windows();
-  if (windows.isEmpty())
-  {
-    this->buttonOk->setDisabled(true);
-    return;
-  }
+    QList<QWidget*> windows = getMainWindow()->windows();
+    if (windows.isEmpty())
+    {
+        this->buttonOk->setDisabled(true);
+        return;
+    }
 
-  QWidget* activeWnd = getMainWindow()->activeWindow();
+    QWidget* activeWnd = getMainWindow()->activeWindow();
 
-  int active=-1, i=0;
-  for (QList<QWidget*>::ConstIterator it = windows.begin(); it != windows.end(); ++it, ++i) {
-    listBox->insertItem((*it)->windowTitle());
-    if ( *it == activeWnd )
-      active = i;
-  }
+    QTreeWidgetItem* active=0;
+    QStringList labels; labels << "Windows";
+    treeWidget->setHeaderLabels(labels);
+    treeWidget->header()->hide();
+    for (QList<QWidget*>::ConstIterator it = windows.begin(); it != windows.end(); ++it) {
+        QTreeWidgetItem* item = new QTreeWidgetItem(treeWidget);
+        item->setText(0, (*it)->windowTitle());
+        if ( *it == activeWnd )
+            active = item;
+    }
 
-  if ( active != -1 )
-    listBox->setCurrentItem( active );
-
-  listBox->setFocus();
+    if (active)
+        treeWidget->setCurrentItem( active );
+    treeWidget->setFocus();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -82,11 +81,13 @@ DlgActivateWindowImp::~DlgActivateWindowImp()
  */
 void DlgActivateWindowImp::accept()
 {
-  int item = listBox->currentItem ();
-  QList<QWidget*> windows = getMainWindow()->windows();
+    QTreeWidgetItem* item = treeWidget->currentItem();
+    QList<QWidget*> windows = getMainWindow()->windows();
 
-  if (item != -1 && item < windows.size())
-    getMainWindow()->setActiveWindow((MDIView*)windows.at(item));
+    if (item) {
+        int index = treeWidget->indexOfTopLevelItem(item);
+        getMainWindow()->setActiveWindow((MDIView*)windows.at(index));
+    }
 
-  QDialog::accept();
+    QDialog::accept();
 }

@@ -27,10 +27,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 #include "DlgMacroExecuteImp.h"
 #include "Application.h"
 #include "MainWindow.h"
@@ -57,13 +53,16 @@ using namespace Gui::Dialog;
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl ), WindowParameter( "Macro" )
 {
-  this->setupUi(this);
-  // retrieve the macro path from parameter or use the home path as default
-  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
-  fileChooser->setFileName(_cMacroPath.c_str());
+    this->setupUi(this);
+    // retrieve the macro path from parameter or use the home path as default
+    _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
+    fileChooser->setFileName(_cMacroPath.c_str());
 
-  // Fill the List box
-  fillUpList();
+    // Fill the List box
+    QStringList labels; labels << "Macros";
+    macroListBox->setHeaderLabels(labels);
+    macroListBox->header()->hide();
+    fillUpList();
 }
 
 /** 
@@ -71,7 +70,7 @@ DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
  */
 DlgMacroExecuteImp::~DlgMacroExecuteImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -79,54 +78,43 @@ DlgMacroExecuteImp::~DlgMacroExecuteImp()
  */
 void DlgMacroExecuteImp::fillUpList(void)
 {
-  // lists all files in macro path
-  QDir d( _cMacroPath.c_str(),"*.FCMacro" );
-
-  // clean old entries
-  macroListBox->clear();
+    // lists all files in macro path
+    QDir d( _cMacroPath.c_str(),"*.FCMacro" );
   
-  // fill up with the directory
-  for (unsigned int i=0; i<d.count(); i++ )
-    macroListBox->insertItem(d[i]);
+    // fill up with the directory
+    macroListBox->clear();
+    for (unsigned int i=0; i<d.count(); i++ ) {
+        QTreeWidgetItem* item = new QTreeWidgetItem(macroListBox);
+        item->setText(0, d[i]);
+    }
 }
 
 /** 
  * Selects a macro file in the list view.
  */
-void DlgMacroExecuteImp::on_macroListBox_selectionChanged(Q3ListBoxItem* pcListViewItem)
+void DlgMacroExecuteImp::on_macroListBox_currentItemChanged(QTreeWidgetItem* item)
 {
-  LineEditMacroName->setText(pcListViewItem->text());
-
-  executeButton->setEnabled(true);
-  editButton->setEnabled(true);
-  deleteButton->setEnabled(true);
+    LineEditMacroName->setText(item->text(0));
+    executeButton->setEnabled(true);
+    editButton->setEnabled(true);
+    deleteButton->setEnabled(true);
 }
 
 /**
  * Executes the selected macro file.
  */
-void DlgMacroExecuteImp::on_macroListBox_doubleClicked(Q3ListBoxItem* pcListViewItem)
+void DlgMacroExecuteImp::accept()
 {
-  LineEditMacroName->setText(pcListViewItem->text());
-  on_executeButton_clicked();
-}
-
-/**
- * Executes the selected macro file.
- */
-void DlgMacroExecuteImp::on_executeButton_clicked()
-{
-  if(!(LineEditMacroName->text().isEmpty() ) )
-  {
-    accept();
-
-    QDir d( _cMacroPath.c_str() );
-    QFileInfo fi( d, LineEditMacroName->text() );
-    Application::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).toAscii());
+    QTreeWidgetItem* item = macroListBox->currentItem();
+    if (!item) return;
+    
+    QDialog::accept();
+    QDir dir(_cMacroPath.c_str());
+    QFileInfo fi(dir, item->text(0));
+    Application::Instance->macroManager()->run(Gui::MacroManager::File, fi.filePath().toAscii());
     // after macro run recalculate the document
     if ( Application::Instance->activeDocument() )
-      Application::Instance->activeDocument()->getDocument()->recompute();
-  }
+        Application::Instance->activeDocument()->getDocument()->recompute();
 }
 
 /**
@@ -134,14 +122,14 @@ void DlgMacroExecuteImp::on_executeButton_clicked()
  */
 void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
 {
-  if (!fn.isEmpty())
-  {
-    // save the path in the parameters
-    _cMacroPath = fn.toStdString();
-    getWindowParameter()->SetASCII("MacroPath",fn.toAscii());
-    // fill the list box
-    fillUpList();
-  }
+    if (!fn.isEmpty())
+    {
+        // save the path in the parameters
+        _cMacroPath = fn.toStdString();
+        getWindowParameter()->SetASCII("MacroPath",fn.toAscii());
+        // fill the list box
+        fillUpList();
+    }
 }
 
 /** 
@@ -149,61 +137,62 @@ void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
  */
 void DlgMacroExecuteImp::on_editButton_clicked()
 {
-  int item = macroListBox->currentItem();
-  if (item<0) return;
+    QTreeWidgetItem* item = macroListBox->currentItem();
+    if (!item) return;
 
-  QDir dir(_cMacroPath.c_str());
-  QString file = QString("%1/%2").arg(dir.absolutePath()).arg(macroListBox->text(item));
+    QDir dir(_cMacroPath.c_str());
+    QString file = QString("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
 
-  Application::Instance->open( file.toAscii() );
-  accept();
+    Application::Instance->open( file.toAscii() );
+    close();
 }
 
 /** Creates a new macro file. */
 void DlgMacroExecuteImp::on_createButton_clicked()
 {
-  // query file name
-  QString fn = QInputDialog::getText(this, tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
-                                      QString::null, 0);
-  if ( !fn.isEmpty() )
-  {
-    if ( !fn.endsWith(".FCMacro") )
-      fn += ".FCMacro";
-    QDir dir(_cMacroPath.c_str());
-    QFileInfo fi( dir, fn );
-    if ( fi.exists() && fi.isFile() )
+    // query file name
+    QString fn = QInputDialog::getText(this, tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
+                                       QString::null, 0);
+    if ( !fn.isEmpty() )
     {
-      QMessageBox::warning( this, tr("Existing file"), tr("'%1'.\nThis file already exists.").arg( fi.fileName() ) );
+        if ( !fn.endsWith(".FCMacro") )
+            fn += ".FCMacro";
+        QDir dir(_cMacroPath.c_str());
+        QFileInfo fi( dir, fn );
+        if ( fi.exists() && fi.isFile() )
+        {
+            QMessageBox::warning( this, tr("Existing file"), tr("'%1'.\nThis file already exists.").arg( fi.fileName() ) );
+        }
+        else
+        {
+            QString file = QString("%1/%2").arg(dir.absolutePath()).arg( fn );
+            PythonView* edit = new PythonView(getMainWindow());
+            edit->open(file);
+            edit->setWindowTitle( fn );
+            edit->resize( 400, 300 );
+            getMainWindow()->addWindow( edit );
+            close();
+        }
     }
-    else
-    {
-      QString file = QString("%1/%2").arg(dir.absolutePath()).arg( fn );
-      PythonView* edit = new PythonView(getMainWindow());
-      edit->open(file);
-      edit->setWindowTitle( fn );
-      edit->resize( 400, 300 );
-      getMainWindow()->addWindow( edit );
-  
-      accept();
-    }
-  }
 }
 
 /** Deletes the selected macro file from your harddisc. */
 void DlgMacroExecuteImp::on_deleteButton_clicked()
 {
-  int item = macroListBox->currentItem();
-  if (item<0) return;
+    QTreeWidgetItem* item = macroListBox->currentItem();
+    if (!item) return;
 
-  QString fn = macroListBox->text(item);
-  int ret = QMessageBox::question( this, tr("Delete macro"), tr("Do you really want to delete the macro '%1'?").arg( fn ), 
-                                   QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
-  if ( ret == QMessageBox::Yes )
-  {
-    QDir dir(_cMacroPath.c_str());
-    dir.remove( fn );
-    macroListBox->takeItem( macroListBox->item(item) );
-  }
+    QString fn = item->text(0);
+    int ret = QMessageBox::question(this, tr("Delete macro"), tr("Do you really want to delete the macro '%1'?").arg( fn ), 
+                                    QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
+    if ( ret == QMessageBox::Yes )
+    {
+        QDir dir(_cMacroPath.c_str());
+        dir.remove( fn );
+        int index = macroListBox->indexOfTopLevelItem(item);
+        macroListBox->takeTopLevelItem(index);
+        delete item;
+    }
 }
 
 #include "moc_DlgMacroExecuteImp.cpp"

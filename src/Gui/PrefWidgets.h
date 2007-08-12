@@ -238,35 +238,6 @@ protected:
 };
 
 /**
- * The PrefListBox class.
- * \author Werner Mayer
- */
-//class GuiExport PrefListBox : public Q3ListBox, public PrefWidget
-//{
-//  Q_OBJECT
-//
-//  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-//  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-//
-//public:
-//  PrefListBox ( QWidget * parent = 0 );
-//  virtual ~PrefListBox();
-//
-//  // PROPERTIES
-//  // getters
-//  QByteArray entryName    () const;
-//  QByteArray paramGrpPath () const;
-//  // setters
-//  void  setEntryName     ( const QByteArray& name );
-//  void  setParamGrpPath  ( const QByteArray& name );
-//
-//protected:
-//  // restore from/save to parameters
-//  void restorePreferences();
-//  void savePreferences();
-//};
-
-/**
  * The PrefCheckBox class.
  * \author Werner Mayer
  */

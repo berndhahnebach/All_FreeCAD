@@ -41,7 +41,6 @@ class QSplitter;
 class QWidget;
 class QPushButton;
 class QTabBar;
-class Q3VBox;
 class SoQtViewer;
 
 class SoSeparator;

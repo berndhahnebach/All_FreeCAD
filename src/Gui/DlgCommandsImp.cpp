@@ -41,41 +41,39 @@ using namespace Gui::Dialog;
 DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
   : CustomizeActionPage(parent)
 {
-  this->setupUi(this);
+    this->setupUi(this);
   
-  // paints for active and inactive the same color
-  QPalette pal = listBoxCategory->palette();
-  pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
-  pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
-  listBoxCategory->setPalette( pal );
+    // paints for active and inactive the same color
+    QPalette pal = categoryTreeWidget->palette();
+    pal.setColor(QPalette::Inactive, QPalette::Highlight, pal.color(QPalette::Active, QPalette::Highlight));
+    pal.setColor(QPalette::Inactive, QPalette::HighlightedText, pal.color(QPalette::Active, QPalette::HighlightedText));
+    categoryTreeWidget->setPalette( pal );
 
-  connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
-  connect(listBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
+    connect(iconView, SIGNAL(emitSelectionChanged(const QString &)), 
+            this, SLOT(onDescription(const QString &)));
+    connect(categoryTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), 
+            this, SLOT(onGroupActivated(QTreeWidgetItem*)));
 
-  CommandManager & cCmdMgr = Application::Instance->commandManager();
-  std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
+    CommandManager & cCmdMgr = Application::Instance->commandManager();
+    std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
-  for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
-  {
-    QString natv = it->second->getGroupName();
-    QString lang = QObject::tr(natv.toUtf8());
-    if ( _cmdGroups.find( lang ) == _cmdGroups.end() )
-      _cmdGroups[ lang ] = natv;
-  }
+    // do a special sort before adding to the tree view
+    QStringList items; items << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
+        QString group = it->second->getGroupName();
+        if (!items.contains(group))
+            items << group;
+    }
 
-  // do a special sort before adding to the combobox
-  QStringList items, tmp; tmp << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
-  for ( QStringList::Iterator It = tmp.begin(); It != tmp.end(); ++It )
-    items << QObject::tr( (*It).toUtf8() );
-  for ( QMap<QString, QString>::Iterator it2 = _cmdGroups.begin(); it2 != _cmdGroups.end(); ++it2)
-  {
-    if ( !items.contains( it2.key() ) )
-      items << it2.key();
-  }
+    QStringList labels; labels << tr("Category");
+    categoryTreeWidget->setHeaderLabels(labels);
+    for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It ) {
+        QTreeWidgetItem* item = new QTreeWidgetItem(categoryTreeWidget);
+        item->setText(0, QObject::tr((*It).toAscii()));
+        item->setData(0, Qt::UserRole, QVariant(*It));
+    }
 
-  for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It )
-    listBoxCategory->insertItem(*It);
-  listBoxCategory->setCurrentItem( 0 );
+    categoryTreeWidget->setCurrentItem(categoryTreeWidget->topLevelItem(0));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -86,82 +84,77 @@ DlgCustomCommandsImp::~DlgCustomCommandsImp()
 /** Shows the description for the corresponding command */
 void DlgCustomCommandsImp::onDescription(const QString& txt)
 {
-  TextLabel->setText( txt );
+    textLabel->setText( txt );
 }
 
 /** Shows all commands of this category */
-void DlgCustomCommandsImp::onGroupSelected(const QString & group)
+void DlgCustomCommandsImp::onGroupActivated( QTreeWidgetItem* item)
 {
-  IconView1->clear();
+    if (!item) 
+        return;
 
-  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( group );
+    QVariant data = item->data(0, Qt::UserRole);
+    QString group = data.toString();
+    iconView->clear();
 
-  if ( It != _cmdGroups.end() )
-  {
     CommandManager & cCmdMgr = Application::Instance->commandManager();
-    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.value().toLatin1() );
-    for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
-    {
-      QPixmap pix;
-      if ( (*it)->getPixmap() )
-        pix = BitmapFactory().pixmap( (*it)->getPixmap() );
-      else 
-        pix = BitmapFactory().pixmap( "px" );
-      QListWidgetItem* item = new QListWidgetItem(IconView1);
-      item->setText((*it)->getName());
-      item->setToolTip(QObject::tr((*it)->getToolTipText()));
-      item->setIcon(pix);
-      //IconView1->addItem(item);
+    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.toAscii() );
+    for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it) {
+        QPixmap pix;
+        if ( (*it)->getPixmap() )
+            pix = BitmapFactory().pixmap( (*it)->getPixmap() );
+        else 
+            pix = BitmapFactory().pixmap( "px" );
+        QListWidgetItem* item = new QListWidgetItem(iconView);
+        item->setText((*it)->getName());
+        item->setToolTip(QObject::tr((*it)->getToolTipText()));
+        item->setIcon(pix);
     }
-  }
 }
 
-void DlgCustomCommandsImp::onAddMacroAction(const QString& item)
+void DlgCustomCommandsImp::onAddMacroAction(const QString& macro)
 {
-  onGroupSelected(listBoxCategory->currentText());
-#if 0 //TODO
-  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( "Macros" );
-  int index = listBoxCategory->currentItem();
-  QString current = listBoxCategory->text(index);
-  if ( It == _cmdGroups.end() || It.data() != current )
-    return;
-  CommandManager & cCmdMgr = Application::Instance->commandManager();
-  Command* pCmd = cCmdMgr.getCommandByName(item.ascii());
-  QPixmap pix;
-  if ( pCmd->getPixmap() )
-    pix = BitmapFactory().pixmap( pCmd->getPixmap() );
-  else 
-    pix = BitmapFactory().pixmap( "px" );
-  QListWidgetItem* viewItem = new QListWidgetItem(IconView1);
-  viewItem->setText(pCmd->getName());
-  viewItem->setToolTip(QObject::tr(pCmd->getToolTipText()));
-  viewItem->setIcon(pix);
-  IconView1->sortItems();
-//  (void) new Gui::CommandViewItem(IconView1, item, QObject::tr( pCmd->getToolTipText() ), pix);
-//  IconView1->sort();
-#endif
+    QTreeWidgetItem* item = categoryTreeWidget->currentItem();
+    if (!item)
+        return;
+
+    QVariant data = item->data(0, Qt::UserRole);
+    QString group = data.toString();
+    if (group == "Macros")
+    {
+        CommandManager & cCmdMgr = Application::Instance->commandManager();
+        Command* pCmd = cCmdMgr.getCommandByName(macro.toAscii());
+        QPixmap pix;
+        if ( pCmd->getPixmap() )
+            pix = BitmapFactory().pixmap( pCmd->getPixmap() );
+        else 
+            pix = BitmapFactory().pixmap( "px" );
+        QListWidgetItem* viewItem = new QListWidgetItem(iconView);
+        viewItem->setText(pCmd->getName());
+        viewItem->setToolTip(QObject::tr(pCmd->getToolTipText()));
+        viewItem->setIcon(pix);
+        iconView->sortItems();
+    }
 }
 
-void DlgCustomCommandsImp::onRemoveMacroAction(const QString& item)
+void DlgCustomCommandsImp::onRemoveMacroAction(const QString& macro)
 {
-  onGroupSelected(listBoxCategory->currentText());
-#if 0
-  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( "Macros" );
-  int index = listBoxCategory->currentItem();
-  QString current = listBoxCategory->text(index);
-  if ( It.data() != current )
-    return;
-  //Q3IconViewItem* icon = IconView1->firstItem();
-  //while (icon) {
-  //  if (icon->Q3IconViewItem::text() == item) {
-  //    IconView1->takeItem(icon);
-  //    IconView1->sort();
-  //    break;
-  //  } else {
-  //    icon = icon->nextItem();
-  //  }
-  //}
-#endif
+    QTreeWidgetItem* item = categoryTreeWidget->currentItem();
+    if (!item)
+        return;
+
+    QVariant data = item->data(0, Qt::UserRole);
+    QString group = data.toString();
+    if (group == "Macros")
+    {
+        QList<QListWidgetItem*> items = iconView->findItems(macro, Qt::MatchExactly);
+        for (QList<QListWidgetItem*>::iterator it = items.begin(); it != items.end(); ++it) {
+            int row = iconView->row(*it);
+            iconView->takeItem(row);
+            delete *it;
+        }
+        iconView->sortItems();
+    }
 }
 
 #include "moc_DlgCommandsImp.cpp"

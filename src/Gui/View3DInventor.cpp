@@ -24,15 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
-# include <q3dragobject.h>
-# include <qfileinfo.h>
-# include <q3vbox.h>
-//Added by qt3to4:
-#include <QDropEvent>
-#include <QKeyEvent>
-#include <QEvent>
-#include <QDragEnterEvent>
+# include <QApplication>
+# include <QFileInfo>
+# include <QKeyEvent>
+# include <QEvent>
+# include <QDropEvent>
+# include <QDragEnterEvent>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
 # include <Inventor/nodes/SoMaterial.h>

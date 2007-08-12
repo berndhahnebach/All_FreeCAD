@@ -23,21 +23,18 @@
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3IconView" name="iconView" >
-     <property name="gridX" >
-      <number>50</number>
+    <widget class="QListWidget" name="listWidget" >
+     <property name="gridSize" >
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
      </property>
-     <property name="gridY" >
-      <number>50</number>
+     <property name="viewMode" >
+      <enum>QListView::IconMode</enum>
      </property>
-     <property name="resizeMode" >
-      <enum>Q3IconView::Adjust</enum>
-     </property>
-     <property name="itemsMovable" >
-      <bool>false</bool>
-     </property>
-     <property name="wordWrapIconText" >
-      <bool>false</bool>
+     <property name="uniformItemSizes" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -84,15 +81,6 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3IconView</class>
-   <extends>Q3Frame</extends>
-   <header>q3iconview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

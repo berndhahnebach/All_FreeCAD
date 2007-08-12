@@ -43,33 +43,31 @@ namespace Dialog {
 struct DlgSettingsEditorP;
 class DlgSettingsEditorImp : public PreferencePage, public Ui_DlgEditorSettings
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgSettingsEditorImp( QWidget* parent = 0 );
-  ~DlgSettingsEditorImp();
-
-public Q_SLOTS:
-  void onDisplayColor(int);
-  void onChosenColor();
+    DlgSettingsEditorImp( QWidget* parent = 0 );
+    ~DlgSettingsEditorImp();
 
 public:
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
 protected Q_SLOTS:
-  void on_fontFamily_activated();
-  void on_fontSize_valueChanged();
+    void on_displayItems_currentItemChanged(QTreeWidgetItem *i);
+    void on_colorButton_changed();
+    void on_fontFamily_activated();
+    void on_fontSize_valueChanged();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 private:
-  DlgSettingsEditorP* d;
-  Gui::PythonSyntaxHighlighter* pythonSyntax;
+    DlgSettingsEditorP* d;
+    Gui::PythonSyntaxHighlighter* pythonSyntax;
 
-  DlgSettingsEditorImp( const DlgSettingsEditorImp & );
-  DlgSettingsEditorImp& operator=( const DlgSettingsEditorImp & );
+    DlgSettingsEditorImp( const DlgSettingsEditorImp & );
+    DlgSettingsEditorImp& operator=( const DlgSettingsEditorImp & );
 };
 
 } // namespace Dialog
