@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <q3dragobject.h>
 # include <qfileinfo.h>
 # include <qsplitter.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>

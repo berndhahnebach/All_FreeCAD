@@ -27,10 +27,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 #include "DlgActionsImp.h"
 #include "Action.h"
 #include "Application.h"
@@ -54,15 +50,18 @@ using namespace Gui::Dialog;
 DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent )
   : CustomizeActionPage(parent), bShown( false )
 {
-  this->setupUi(this);
-  // search for all macros
-  std::string cMacroPath = App::GetApplication().
-    GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().GetHomePath());
+    this->setupUi(this);
+    // search for all macros
+    std::string cMacroPath = App::GetApplication().
+        GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().GetHomePath());
 
-  QDir d(cMacroPath.c_str(),"*.FCMacro");
-  actionMacros->insertItems(0, d.entryList());
+    QDir d(cMacroPath.c_str(),"*.FCMacro");
+    actionMacros->insertItems(0, d.entryList());
 
-  showActions();
+    QStringList labels; labels << "Macros";
+    actionListWidget->setHeaderLabels(labels);
+    actionListWidget->header()->hide();
+    showActions();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -76,39 +75,43 @@ DlgCustomActionsImp::~DlgCustomActionsImp()
  */
 void DlgCustomActionsImp::showEvent(QShowEvent* e)
 {
-  QWidget::showEvent(e);
-  if (actionMacros->count() == 0 && bShown == false)
-  {
-    bShown = true;
-    QMessageBox::warning(this, tr("No macro"),tr("No macros found."));
-  }
+    QWidget::showEvent(e);
+    if (actionMacros->count() == 0 && bShown == false)
+    {
+        bShown = true;
+        QMessageBox::warning(this, tr("No macro"),tr("No macros found."));
+    }
 }
 
 bool DlgCustomActionsImp::event(QEvent* e)
 {
-  bool ok = QWidget::event(e);
+    bool ok = QWidget::event(e);
 
-  if (e->type() == QEvent::ParentChange || e->type() == QEvent::ParentAboutToChange)
-  {
-    QWidget* topLevel = this->parentWidget();
-    while (topLevel && !topLevel->inherits("QDialog"))
-      topLevel = topLevel->parentWidget();
-    if ( topLevel )
+    if (e->type() == QEvent::ParentChange || e->type() == QEvent::ParentAboutToChange)
     {
-      int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QString&)") );
-      if ( index >= 0 ) {
-        if ( e->type() == QEvent::ParentChange ) {
-          connect(this, SIGNAL(addMacroAction( const QString& )), topLevel, SIGNAL(addMacroAction( const QString& )));
-          connect(this, SIGNAL(removeMacroAction( const QString& )), topLevel, SIGNAL(removeMacroAction( const QString& )));
-        } else {
-          disconnect(this, SIGNAL(addMacroAction( const QString& )), topLevel, SIGNAL(addMacroAction( const QString& )));
-          disconnect(this, SIGNAL(removeMacroAction( const QString& )), topLevel, SIGNAL(removeMacroAction( const QString& )));
+        QWidget* topLevel = this->parentWidget();
+        while (topLevel && !topLevel->inherits("QDialog"))
+            topLevel = topLevel->parentWidget();
+        if ( topLevel )
+        {
+            int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QString&)") );
+            if ( index >= 0 ) {
+                if ( e->type() == QEvent::ParentChange ) {
+                    connect(this, SIGNAL(addMacroAction( const QString& )), 
+                            topLevel, SIGNAL(addMacroAction( const QString& )));
+                    connect(this, SIGNAL(removeMacroAction( const QString& )), 
+                            topLevel, SIGNAL(removeMacroAction( const QString& )));
+                } else {
+                    disconnect(this, SIGNAL(addMacroAction( const QString& )), 
+                               topLevel, SIGNAL(addMacroAction( const QString& )));
+                    disconnect(this, SIGNAL(removeMacroAction( const QString& )), 
+                               topLevel, SIGNAL(removeMacroAction( const QString& )));
+                }
+            }
         }
-      }
     }
-  }
 
-  return ok;
+    return ok;
 }
 
 void DlgCustomActionsImp::onAddMacroAction(const QString&)
@@ -123,306 +126,308 @@ void DlgCustomActionsImp::onRemoveMacroAction(const QString&)
 
 void DlgCustomActionsImp::showActions()
 {
-  CommandManager& rclMan = Application::Instance->commandManager();
-  std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
-  for (std::vector<Command*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
-  {
-    if ( (*it)->getPixmap() )
-      listBoxActions->insertItem(BitmapFactory().pixmap((*it)->getPixmap()), (*it)->getName());
-    else
-      listBoxActions->insertItem((*it)->getName());
-  }
+    CommandManager& rclMan = Application::Instance->commandManager();
+    std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
+    for (std::vector<Command*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem(actionListWidget);
+        item->setText(0, (*it)->getName());
+        if ( (*it)->getPixmap() )
+            item->setIcon(0, BitmapFactory().pixmap((*it)->getPixmap()));
+    }
 }
 
-void DlgCustomActionsImp::on_listBoxActions_highlighted( Q3ListBoxItem *i )
+void DlgCustomActionsImp::on_actionListWidget_itemActivated( QTreeWidgetItem *i )
 {
-  if ( !i ) return; // no valid item
+    if (!i) 
+        return; // no valid item
 
-  // search for the command in the manager and if necessary in the temporary created ones
-  QString actionName = i->text();
-  CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
-  MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
+    // search for the command in the manager and if necessary in the temporary created ones
+    QString actionName = i->text(0);
+    CommandManager& rclMan = Application::Instance->commandManager();
+    Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
+    MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
 
-  // if valid command
-  if ( pScript )
-  {
-    bool bFound = false;
-    for (int i = 0; i<actionMacros->count(); i++)
+    // if valid command
+    if ( pScript )
     {
-      if (actionMacros->itemText(i).startsWith(pScript->getScriptName(), Qt::CaseSensitive))
-      {
-        bFound = true;
-        actionMacros->setCurrentIndex(i);
-        break;
-      }
-    }
+        bool bFound = false;
+        for (int i = 0; i<actionMacros->count(); i++)
+        {
+            if (actionMacros->itemText(i).startsWith(pScript->getScriptName(), Qt::CaseSensitive))
+            {
+                bFound = true;
+                actionMacros->setCurrentIndex(i);
+                break;
+            }
+        }
 
-    if (!bFound)
-    {
-      QMessageBox::critical(this, tr("Macro not found"), tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName()));
-    }
+        if (!bFound)
+        {
+            QMessageBox::critical(this, tr("Macro not found"), 
+                    tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName()));
+        }
 
-    // fill up labels with the command's data
-    actionWhatsThis -> setText( pScript->getWhatsThis() );
-    actionMenu      -> setText( pScript->getMenuText() );
-    actionToolTip   -> setText( pScript->getToolTipText() );
-    actionStatus    -> setText( pScript->getStatusTip() );
-    QKeySequence shortcut(pScript->getAccel());
-    actionAccel     -> setText( shortcut.toString() );
-    pixmapLabel->clear();
-    m_sPixmap = QString::null;
-    const char* name = pScript->getPixmap();
-    if ( name && strlen(name) > 2)
-    {
-      QPixmap p = Gui::BitmapFactory().pixmap( pScript->getPixmap() );
-      pixmapLabel->setPixmap(p);
-      m_sPixmap = name;
+        // fill up labels with the command's data
+        actionWhatsThis -> setText( pScript->getWhatsThis() );
+        actionMenu      -> setText( pScript->getMenuText() );
+        actionToolTip   -> setText( pScript->getToolTipText() );
+        actionStatus    -> setText( pScript->getStatusTip() );
+        QKeySequence shortcut(pScript->getAccel());
+        actionAccel     -> setText( shortcut.toString() );
+        pixmapLabel->clear();
+        m_sPixmap = QString::null;
+        const char* name = pScript->getPixmap();
+        if ( name && strlen(name) > 2)
+        {
+            QPixmap p = Gui::BitmapFactory().pixmap( pScript->getPixmap() );
+            pixmapLabel->setPixmap(p);
+            m_sPixmap = name;
+        }
     }
-  }
 }
 
 void DlgCustomActionsImp::on_buttonAddAction_clicked()
 {
-  if (actionMacros-> currentText().isEmpty())
-  {
-    QMessageBox::warning(this, tr("Empty macro"),tr("Please specify the macro first."));
-    return;
-  }
+    if (actionMacros-> currentText().isEmpty())
+    {
+        QMessageBox::warning(this, tr("Empty macro"),tr("Please specify the macro first."));
+        return;
+    }
 
-  if (actionMenu->text().isEmpty())
-  {
-    QMessageBox::warning(this, tr("Empty text"),tr("Please specify the menu text first."));
-    return;
-  }
+    if (actionMenu->text().isEmpty())
+    {
+        QMessageBox::warning(this, tr("Empty text"),tr("Please specify the menu text first."));
+        return;
+    }
 
-  // search for the command in the manager
-  QString actionName = newActionName();
-  CommandManager& rclMan = Application::Instance->commandManager();
-  MacroCommand* macro = new MacroCommand(actionName.toLatin1());
-  rclMan.addCommand( macro );
+    // search for the command in the manager
+    QString actionName = newActionName();
+    CommandManager& rclMan = Application::Instance->commandManager();
+    MacroCommand* macro = new MacroCommand(actionName.toLatin1());
+    rclMan.addCommand( macro );
 
-  // add new action
-  if ( pixmapLabel->pixmap() )
-  {
-    QPixmap p = *pixmapLabel->pixmap();
-    listBoxActions->insertItem(Tools::fillUp(24,24,p), actionName);
-  }
-  else
-  {
-    listBoxActions->insertItem(actionName);
-  }
+    // add new action
+    QTreeWidgetItem* item = new QTreeWidgetItem(actionListWidget);
+    item->setText(0, actionName);
+    if (pixmapLabel->pixmap())
+    {
+        QPixmap p = *pixmapLabel->pixmap();
+        item->setIcon(0, Tools::fillUp(24,24,p));
+    }
 
-  if ( !actionWhatsThis->text().isEmpty() )
-    macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
-  actionWhatsThis->clear();
+    if ( !actionWhatsThis->text().isEmpty() )
+        macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
+    actionWhatsThis->clear();
   
-  if ( !actionMacros-> currentText().isEmpty() )
-    macro->setScriptName( actionMacros-> currentText() );
+    if ( !actionMacros-> currentText().isEmpty() )
+        macro->setScriptName( actionMacros-> currentText() );
   
-  if ( !actionMenu->text().isEmpty() )
-    macro->setMenuText( actionMenu->text().toLatin1() );
-  actionMenu->clear();
+    if ( !actionMenu->text().isEmpty() )
+        macro->setMenuText( actionMenu->text().toLatin1() );
+    actionMenu->clear();
 
-  if ( !actionToolTip->text().isEmpty() )
-    macro->setToolTipText( actionToolTip->text().toLatin1() );
-  actionToolTip->clear();
+    if ( !actionToolTip->text().isEmpty() )
+        macro->setToolTipText( actionToolTip->text().toLatin1() );
+    actionToolTip->clear();
 
-  if ( !actionStatus->text().isEmpty() )
-    macro->setStatusTip( actionStatus->text().toLatin1() );
-  actionStatus->clear();
+    if ( !actionStatus->text().isEmpty() )
+        macro->setStatusTip( actionStatus->text().toLatin1() );
+    actionStatus->clear();
 
-  if ( !m_sPixmap.isEmpty() )
-    macro->setPixmap( m_sPixmap.toLatin1() );
-  pixmapLabel->clear();
-  m_sPixmap = QString::null;
+    if ( !m_sPixmap.isEmpty() )
+        macro->setPixmap( m_sPixmap.toLatin1() );
+    pixmapLabel->clear();
+    m_sPixmap = QString::null;
 
-  if ( !actionAccel->text().isEmpty() ) {
-    QKeySequence shortcut(actionAccel->text());
-    int key=0;
-    for (uint i=0; i<shortcut.count(); i++)
-        key += shortcut[i];
-    macro->setAccel(key);
-  }
-  actionAccel->clear();
+    if ( !actionAccel->text().isEmpty() ) {
+        QKeySequence shortcut(actionAccel->text());
+        int key=0;
+        for (uint i=0; i<shortcut.count(); i++)
+            key += shortcut[i];
+        macro->setAccel(key);
+    }
+    actionAccel->clear();
 
-  // check whether the macro is already in use
-  Action* action = macro->getAction();
-  if ( action )
-  {
-    // does all the text related stuff
-    macro->languageChange();
-    if( macro->getPixmap() )
-      action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
-    action->setShortcut(macro->getAccel());
-  }
+    // check whether the macro is already in use
+    Action* action = macro->getAction();
+    if ( action )
+    {
+        // does all the text related stuff
+        macro->languageChange();
+        if( macro->getPixmap() )
+          action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
+        action->setShortcut(macro->getAccel());
+    }
 
-  // emit signal to notify the container widget
-  addMacroAction( actionName );
+    // emit signal to notify the container widget
+    addMacroAction( actionName );
 }
 
 void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
 {
-  int index = listBoxActions->currentItem();
-  Q3ListBoxItem* item = listBoxActions->item(index);
-  if (!item)
-  {
-    QMessageBox::warning(this, tr("No item selected"),tr("Please select a macro item first."));
-    return;
-  }
+    QTreeWidgetItem* item = actionListWidget->currentItem();
+    if (!item)
+    {
+        QMessageBox::warning(this, tr("No item selected"),tr("Please select a macro item first."));
+        return;
+    }
 
-  if (actionMenu->text().isEmpty())
-  {
-    QMessageBox::warning(this, tr("Empty text"),tr("Please specify the menu text first."));
-    return;
-  }
+    if (actionMenu->text().isEmpty())
+    {
+        QMessageBox::warning(this, tr("Empty text"),tr("Please specify the menu text first."));
+        return;
+    }
 
-  // search for the command in the manager
-  QString actionName = item->text();
-  CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
-  MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
+    // search for the command in the manager
+    QString actionName = item->text(0);
+    CommandManager& rclMan = Application::Instance->commandManager();
+    Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
+    MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
 
-  if ( !actionWhatsThis->text().isEmpty() )
-    macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
-  actionWhatsThis->clear();
+    if ( !actionWhatsThis->text().isEmpty() )
+        macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
+    actionWhatsThis->clear();
   
-  if ( !actionMacros-> currentText().isEmpty() )
-    macro->setScriptName( actionMacros-> currentText() );
+    if ( !actionMacros-> currentText().isEmpty() )
+        macro->setScriptName( actionMacros-> currentText() );
   
-  if ( !actionMenu->text().isEmpty() )
-    macro->setMenuText( actionMenu->text().toLatin1() );
-  actionMenu->clear();
+    if ( !actionMenu->text().isEmpty() )
+        macro->setMenuText( actionMenu->text().toLatin1() );
+    actionMenu->clear();
 
-  if ( !actionToolTip->text().isEmpty() )
-    macro->setToolTipText( actionToolTip->text().toLatin1() );
-  actionToolTip->clear();
+    if ( !actionToolTip->text().isEmpty() )
+        macro->setToolTipText( actionToolTip->text().toLatin1() );
+    actionToolTip->clear();
 
-  if ( !actionStatus->text().isEmpty() )
-    macro->setStatusTip( actionStatus->text().toLatin1() );
-  actionStatus->clear();
+    if ( !actionStatus->text().isEmpty() )
+        macro->setStatusTip( actionStatus->text().toLatin1() );
+    actionStatus->clear();
 
-  if ( !m_sPixmap.isEmpty() )
-    macro->setPixmap( m_sPixmap.toLatin1() );
-  pixmapLabel->clear();
-  m_sPixmap = QString::null;
+    if ( !m_sPixmap.isEmpty() )
+        macro->setPixmap( m_sPixmap.toLatin1() );
+    pixmapLabel->clear();
+    m_sPixmap = QString::null;
 
-  if ( !actionAccel->text().isEmpty() ) {
-    QKeySequence shortcut(actionAccel->text());
-    int key=0;
-    for (uint i=0; i<shortcut.count(); i++)
-        key += shortcut[i];
-    macro->setAccel(key);
-  }
-  actionAccel->clear();
+    if ( !actionAccel->text().isEmpty() ) {
+        QKeySequence shortcut(actionAccel->text());
+        int key=0;
+        for (uint i=0; i<shortcut.count(); i++)
+            key += shortcut[i];
+        macro->setAccel(key);
+    }
+    actionAccel->clear();
 
-  // check whether the macro is already in use
-  Action* action = macro->getAction();
-  if ( action )
-  {
-    // does all the text related stuff
-    macro->languageChange();
-    if( macro->getPixmap() )
-      action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
-    action->setShortcut(macro->getAccel());
-  }
+    // check whether the macro is already in use
+    Action* action = macro->getAction();
+    if ( action )
+    {
+        // does all the text related stuff
+        macro->languageChange();
+        if( macro->getPixmap() )
+            action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
+        action->setShortcut(macro->getAccel());
+    }
 
-  // emit signal to notify the container widget
-  replaceMacroAction( actionName );
-  
-  // call this at the end because it internally invokes the highlight method
-  if ( macro->getPixmap() )
-  {
-    QPixmap p = Gui::BitmapFactory().pixmap( macro->getPixmap() );
-    listBoxActions->changeItem(Tools::fillUp(24,24,p), listBoxActions->text(index), index);
-  }
+    // emit signal to notify the container widget
+    replaceMacroAction( actionName );
+
+    // call this at the end because it internally invokes the highlight method
+    if ( macro->getPixmap() )
+    {
+        QPixmap p = Gui::BitmapFactory().pixmap( macro->getPixmap() );
+        item->setIcon(0, Tools::fillUp(24,24,p));
+    }
 }
 
 void DlgCustomActionsImp::on_buttonRemoveAction_clicked()
 {
-  // remove item from list view
-  int current = listBoxActions->currentItem();
-  QString itemText = listBoxActions->text(current);
-  listBoxActions->removeItem(current);
+    // remove item from list view
+    QTreeWidgetItem* item = actionListWidget->currentItem();
+    if (!item) 
+        return;
+    int current = actionListWidget->indexOfTopLevelItem(item);
+    actionListWidget->takeTopLevelItem(current);
+    QString itemText = item->text(0);
+    delete item;
 
-  // if the command is registered in the manager just remove it
-  CommandManager& rclMan = Application::Instance->commandManager();
-  std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
-  for (std::vector<Command*>::iterator it2 = aclCurMacros.begin(); it2!= aclCurMacros.end(); ++it2)
-  {
-    if ( itemText == (*it2)->getName() )
+    // if the command is registered in the manager just remove it
+    CommandManager& rclMan = Application::Instance->commandManager();
+    std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
+    for (std::vector<Command*>::iterator it2 = aclCurMacros.begin(); it2!= aclCurMacros.end(); ++it2)
     {
-      // emit signal to notify the container widget
-      removeMacroAction( itemText );
-      // remove from manager and delete it immediately
-      rclMan.removeCommand( *it2 );
-      break;
+        if ( itemText == (*it2)->getName() )
+        {
+            // emit signal to notify the container widget
+            removeMacroAction( itemText );
+            // remove from manager and delete it immediately
+            rclMan.removeCommand( *it2 );
+            break;
+        }
     }
-  }
 }
 
 void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
 {
-  // create a dialog showing all pixmaps
-  Gui::Dialog::Ui_DlgChooseIcon ui;
-  QDialog dlg(this);
-  dlg.setModal(true);
-  ui.setupUi(&dlg);
-  // signals and slots connections
-  connect( ui.iconView, SIGNAL( clicked ( Q3IconViewItem * ) ), &dlg, SLOT( accept() ) );
+    // create a dialog showing all pixmaps
+    Gui::Dialog::Ui_DlgChooseIcon ui;
+    QDialog dlg(this);
+    dlg.setModal(true);
+    ui.setupUi(&dlg);
+    // signals and slots connections
+    connect( ui.listWidget, SIGNAL( itemClicked ( QListWidgetItem * ) ), &dlg, SLOT( accept() ) );
 
-  Q3IconViewItem* item;
-  QStringList names = BitmapFactory().pixmapNames();
-  for ( QStringList::Iterator it = names.begin(); it != names.end(); ++it )
-  {
-    item = new Q3IconViewItem( ui.iconView );
-    item->setPixmap( BitmapFactory().pixmap( (*it).toLatin1() ) );
-    item->setText( *it );
-  }
-
-  dlg.exec();
-
-  pixmapLabel->clear();
-  m_sPixmap = QString::null;
-  if ( dlg.result() == QDialog::Accepted )
-  {
-    Q3IconViewItem* item = ui.iconView->currentItem();
-
-    if ( item )
+    QListWidgetItem* item;
+    QStringList names = BitmapFactory().pixmapNames();
+    for ( QStringList::Iterator it = names.begin(); it != names.end(); ++it )
     {
-      m_sPixmap = item->text();
-      pixmapLabel->setPixmap( *item->pixmap() );
+        item = new QListWidgetItem( ui.listWidget );
+        item->setIcon( BitmapFactory().pixmap( (*it).toLatin1() ) );
+        item->setText( *it );
     }
-  }
+
+    dlg.exec();
+
+    pixmapLabel->clear();
+    m_sPixmap = QString::null;
+    if ( dlg.result() == QDialog::Accepted )
+    {
+        QListWidgetItem* item = ui.listWidget->currentItem();
+
+        if ( item )
+        {
+            m_sPixmap = item->text();
+            pixmapLabel->setPixmap( item->icon().pixmap(QSize(32,32)) );
+        }
+    }
 }
 
 QString DlgCustomActionsImp::newActionName()
 {
-  int id = 0;
-  QString sName;
-  bool bUsed;
+    int id = 0;
+    QString sName;
+    bool bUsed;
 
-  CommandManager& rclMan = Application::Instance->commandManager();
-  std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
+    CommandManager& rclMan = Application::Instance->commandManager();
+    std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
 
-  do
-  {
-    bUsed = false;
-    sName = QString("Std_Macro_%1").arg( id++ );
-
-    std::vector<Command*>::iterator it;
-    for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
+    do
     {
-      if ( sName == (*it)->getName() )
-      {
-        bUsed = true;
-        break;
-      }
-    }
-  }
-  while ( bUsed );
+        bUsed = false;
+        sName = QString("Std_Macro_%1").arg( id++ );
 
-  return sName;
+        std::vector<Command*>::iterator it;
+        for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
+        {
+            if ( sName == (*it)->getName() )
+            {
+                bUsed = true;
+                break;
+            }
+        }
+    } while ( bUsed );
+
+    return sName;
 }
 
 

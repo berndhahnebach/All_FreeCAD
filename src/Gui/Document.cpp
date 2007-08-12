@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <qdir.h>
-# include <q3filedialog.h>
 # include <qfileinfo.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>

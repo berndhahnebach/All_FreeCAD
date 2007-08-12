@@ -183,7 +183,7 @@
       </sizepolicy>
      </property>
      <property name="title" >
-      <string>Syntax Highlighting</string>
+      <string>Display Items</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -217,10 +217,14 @@
        </widget>
       </item>
       <item rowspan="4" row="0" column="0" >
-       <widget class="QListWidget" name="ListBox1" />
+       <widget class="QTreeWidget" name="displayItems" >
+        <property name="rootIsDecorated" >
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0" >
-       <widget class="Gui::ColorButton" name="ColorBtn" >
+       <widget class="Gui::ColorButton" name="colorButton" >
         <property name="minimumSize" >
          <size>
           <width>140</width>
@@ -326,7 +330,7 @@
   <tabstop>EnableFolding</tabstop>
   <tabstop>tabSize</tabstop>
   <tabstop>indentSize</tabstop>
-  <tabstop>ColorBtn</tabstop>
+  <tabstop>colorButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -40,25 +40,25 @@ class DlgMacroExecuteImp : public QDialog, public Ui_DlgMacroExecute, public Gui
     Q_OBJECT
 
 public:
-  DlgMacroExecuteImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgMacroExecuteImp();
+    DlgMacroExecuteImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgMacroExecuteImp();
+
+    void accept();
 
 public Q_SLOTS:
-  void on_executeButton_clicked();
-  void on_fileChooser_fileNameChanged(const QString&);
-  void on_createButton_clicked();
-  void on_deleteButton_clicked();
-  void on_editButton_clicked();
+    void on_fileChooser_fileNameChanged(const QString&);
+    void on_createButton_clicked();
+    void on_deleteButton_clicked();
+    void on_editButton_clicked();
 
 protected Q_SLOTS:
-  void on_macroListBox_doubleClicked( Q3ListBoxItem* );
-  void on_macroListBox_selectionChanged( Q3ListBoxItem* );
+    void on_macroListBox_currentItemChanged(QTreeWidgetItem*);
 
 protected:
-  void fillUpList(void);
+    void fillUpList(void);
 
 protected:
-  std::string _cMacroPath;
+    std::string _cMacroPath;
 };
 
 } // namespace Dialog
