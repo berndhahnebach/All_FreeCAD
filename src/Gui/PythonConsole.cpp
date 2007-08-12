@@ -460,7 +460,6 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
                 QTextCursor::MoveMode mode = e->modifiers() & Qt::ShiftModifier
                      ? QTextCursor::KeepAnchor
                      : QTextCursor::MoveAnchor;
-                QTextCursor::MoveOperation op = QTextCursor::StartOfLine;
                 QTextCursor cursor = textCursor();
                 QTextBlock block = cursor.block();
                 QString text = block.text();

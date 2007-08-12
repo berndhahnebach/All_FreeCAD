@@ -60,6 +60,8 @@ public:
 
 protected:
     bool eventFilter(QObject *, QEvent *);
+    void showEvent(QShowEvent*);
+    void hideEvent(QHideEvent*);
 
 private Q_SLOTS:
     void callTipItemActivated(QListWidgetItem *item);

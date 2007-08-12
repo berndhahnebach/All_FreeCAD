@@ -27,14 +27,10 @@
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
 # include <qcursor.h>
-# include <q3header.h>
 # include <qlayout.h>
-# include <q3popupmenu.h>
 # include <qstatusbar.h>
-//Added by qt3to4:
-#include <QContextMenuEvent>
-#include <Q3GridLayout>
-#include <QPixmap>
+# include <QContextMenuEvent>
+# include <QPixmap>
 #endif
 
 #include <Base/Console.h>

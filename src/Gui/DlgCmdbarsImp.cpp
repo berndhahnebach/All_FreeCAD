@@ -22,7 +22,7 @@
 
 
 #include "PreCompiled.h"
-
+#define QT3_SUPPORT
 #include "DlgCmdbarsImp.h"
 #include "Application.h"
 #include "Command.h"

@@ -128,10 +128,10 @@ UIntSpinBox::UIntSpinBox ( QWidget* parent )
   : QSpinBox (parent)
 {
     d = new UIntSpinBoxPrivate;
+    updateValidator();
     connect(this, SIGNAL(valueChanged(int)), this, SLOT(valueChange(int)));
     setRange(0, 99);
     setValue(0);
-    updateValidator();
 }
 
 UIntSpinBox::~UIntSpinBox()
