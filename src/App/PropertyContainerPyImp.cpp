@@ -16,10 +16,47 @@ const char *PropertyContainerPy::representation(void)
 	return "PropertyContainerPy";
 }
 
+PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)
+{
+  Py::List ret;
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  Property *prop = getPropertyContainerObject()->getPropertyByName(pstr);
+  short Type =  getPropertyContainerObject()->getPropertyType(prop);
+
+  if(Type & Prop_Hidden) 
+    ret.append(Py::String("Hidden"));
+
+  return Py::new_reference_to(ret);
+}
+
+PyObject*  PropertyContainerPy::getGroupOfProperty(PyObject *args)
+{
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  Property *prop = getPropertyContainerObject()->getPropertyByName(pstr);
+  const char* Group = getPropertyContainerObject()->getPropertyGroup(prop);
+  if(Group)
+    return Py::new_reference_to(Py::String(Group));
+  else
+    return Py::new_reference_to(Py::String(""));
+}
 
 Py::List PropertyContainerPy::getPropertiesList(void) const
 {
-	return Py::List();
+  Py::List ret;
+  std::map<std::string,Property*> Map;
+
+  getPropertyContainerObject()->getPropertyMap(Map);
+
+  for(std::map<std::string,Property*>::const_iterator It=Map.begin();It!=Map.end();++It)
+    ret.append(Py::String(It->first));
+
+  return ret;
 }
 
 

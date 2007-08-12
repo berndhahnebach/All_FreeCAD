@@ -182,6 +182,34 @@ const char* PropertyData::getName(const PropertyContainer *container,const Prope
   return 0;
 }
 
+short PropertyData::getType(const PropertyContainer *container,const Property* prop) const
+{
+  const int diff = (int) ((char*)prop - (char*)container);
+
+  for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
+    if(pos->second.Offset == diff)
+      return pos->second.Type;
+
+  if(parentPropertyData)
+    return parentPropertyData->getType(container,prop);
+
+  return 0;
+}
+
+const char* PropertyData::getGroup(const PropertyContainer *container,const Property* prop) const
+{
+  const int diff = (int) ((char*)prop - (char*)container);
+
+  for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
+    if(pos->second.Offset == diff)
+      return pos->second.Group;
+
+  if(parentPropertyData)
+    return parentPropertyData->getGroup(container,prop);
+
+  return 0;
+}
+
 
 Property *PropertyData::getPropertyByName(const PropertyContainer *container,const char* name) const 
 {
