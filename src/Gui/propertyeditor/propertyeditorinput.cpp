@@ -28,7 +28,6 @@
 # include <qlineedit.h>
 # include <qvalidator.h>
 # include <qinputdialog.h>
-# include <q3popupmenu.h>
 # include <qcursor.h>
 #endif
 

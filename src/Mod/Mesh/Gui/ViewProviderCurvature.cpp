@@ -210,7 +210,7 @@ void ViewProviderMeshCurvature::updateData(void)
 
         // search for a linked object with a mesh property
         std::map<std::string, App::Property*> Map;
-        App::PropertyLink* linkObject;
+        App::PropertyLink* linkObject=0;
         pcObject->getPropertyMap(Map);
         for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
             if (it->second->getTypeId().isDerivedFrom(App::PropertyLink::getClassTypeId())) {

@@ -319,17 +319,31 @@ void CallTipsList::showTips(const QString& context)
     show();
 }
 
+void CallTipsList::showEvent(QShowEvent* e)
+{
+    QListWidget::showEvent(e);
+    // install this object to filter timer events for the tooltip label
+    qApp->installEventFilter(this);
+}
+
+void CallTipsList::hideEvent(QHideEvent* e)
+{
+    QListWidget::hideEvent(e);
+    qApp->removeEventFilter(this);
+}
+
 /** 
  * Get all incoming events of the text edit and redirect some of them, like key up and
  * down, mouse press events, ... to the widget itself.
  */
 bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
 {
-    // This is a dirty hack to avoid to hide the tooltip window after the defined time span
+    // This is a trick to avoid to hide the tooltip window after the defined time span
+    // of 10 seconds. We just filter out all timer events to keep the label visible.
     if (watched->inherits("QLabel")) {
         QLabel* label = qobject_cast<QLabel*>(watched);
         // Ignore the timer events to prevent from being closed
-        if (label->windowFlags() == Qt::ToolTip && event->type() == QEvent::Timer)
+        if (label->windowFlags() & Qt::ToolTip && event->type() == QEvent::Timer)
             return true;
     }
     if (isVisible() && watched == textEdit->viewport()) {
@@ -367,8 +381,8 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
                     QString text = items.front()->toolTip();
                     if (!text.isEmpty()){
                         QToolTip::showText(mapToGlobal(p), text);
-                        // install this object to filter timer events for the tooltip label
-                        qApp->installEventFilter(this);
+                    } else {
+                        QToolTip::showText(p, QString());
                     }
                 }
                 return true;
