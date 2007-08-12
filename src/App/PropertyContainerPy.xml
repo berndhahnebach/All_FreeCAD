@@ -11,7 +11,17 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>This is a persistance class</UserDocu>
     </Documentation>
-    <Attribute Name="PropertiesList" ReadOnly="true">
+	  <Methode Name="getTypeOfProperty">
+		  <Documentation>
+			  <UserDocu>returns the Type of a nemed property. This can be (Hidden,ReadOnly,Output) or any combination. </UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="getGroupOfProperty">
+		  <Documentation>
+			  <UserDocu>returns the name of the group which the property belongs to in this class. The Properties sorted in differnt named groups for convinians.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Attribute Name="PropertiesList" ReadOnly="true">
       <Documentation>
         <UserDocu>A List of all property names</UserDocu>
       </Documentation>

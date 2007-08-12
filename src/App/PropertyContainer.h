@@ -41,7 +41,9 @@ namespace App
 enum AppExport PropertyType 
 {
   Prop_None     = 0,
-  Prop_ReadOnly = 1
+  Prop_ReadOnly = 1,
+  Prop_Output   = 2,
+  Prop_Hidden   = 4
 };
 
 struct AppExport PropertyData
@@ -56,6 +58,8 @@ struct AppExport PropertyData
 
   void addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup= 0, PropertyType = Prop_None );
   const char* getName(const PropertyContainer *container,const Property* prop) const;
+  short getType(const PropertyContainer *container,const Property* prop) const;
+  const char* getGroup(const PropertyContainer *container,const Property* prop) const;
   Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
   void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
   void getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const;
@@ -96,6 +100,13 @@ public:
   /// get all properties of the class (including properies of the parent)
   virtual void getPropertyList(std::vector<Property*> &List) const;
 
+  /// get the Type of a Property
+  short getPropertyType(const Property* prop) const 
+  {return propertyData.getType(this,prop);}
+  /// get the Group of a Property
+  const char* getPropertyGroup(const Property* prop) const
+  {return propertyData.getGroup(this,prop);}
+
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void);
 
@@ -115,7 +126,8 @@ protected:
   //void hasChanged(Propterty* prop);
   static const  PropertyData * getPropertyDataPtr(void); 
   virtual const PropertyData& getPropertyData(void) const; 
-private: 
+
+ private: 
   static PropertyData propertyData; 
 
 };

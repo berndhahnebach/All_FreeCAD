@@ -1,0 +1,70 @@
+if OCC_LIBRARY_FILES
+
+lib_LTLIBRARIES=libCam.la Cam.la
+
+
+libCam_la_SOURCES=\
+		AppCamPy.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h 
+
+# the library search path.
+libCam_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libCam_la_CPPFLAGS = -DAppCamExport=
+
+libCam_la_LIBADD   = \
+		-lxerces-c \
+		-lboost_filesystem \
+		-l@PYTHON_LIB@ \
+		-lFreeCADBase \
+		-lFreeCADApp \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKService \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKSTL \
+		-lTKShHealing \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim
+
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
+
+#--------------------------------------------------------------------------------------
+# Loader of libCam
+
+Cam_la_SOURCES=\
+		AppCam.cpp
+
+# the library search path.
+Cam_la_LDFLAGS = $(libCam_la_LDFLAGS) -module -avoid-version
+Cam_la_CPPFLAGS = $(libCam_la_CPPFLAGS)
+
+Cam_la_LIBADD   = \
+		$(libCam_la_LIBADD) \
+		-lCam
+
+#--------------------------------------------------------------------------------------
+
+# set the include path found by configure
+INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+
+endif
+
+libdir = $(prefix)/Mod/Cam
+
+CLEANFILES = $(BUILT_SOURCES) $(libCam_la_BUILT)
+
+EXTRA_DIST = \
+		TopoShapePy.xml \
+		AppCam.vcproj

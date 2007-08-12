@@ -80,6 +80,13 @@ public:
   /// Get the class name of the associated property editor item
   virtual const char* getEditorName(void) const { return ""; }
 
+  /// Get the type of the porperty in the container
+  short getType(void) const; 
+
+  /// Get the group of this Property
+  const char* getGroup(void) const;
+  
+
   /// is called by the framework to set the Father (Container)
   void setContainer(PropertyContainer *Father);
 
