@@ -37,7 +37,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="Q3ListBox" name="listBox" >
+      <widget class="QListWidget" name="listBox" >
        <property name="sizePolicy" >
         <sizepolicy>
          <hsizetype>0</hsizetype>
@@ -52,11 +52,29 @@
          <height>0</height>
         </size>
        </property>
+       <property name="maximumSize" >
+        <size>
+         <width>128</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="frameShape" >
         <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow" >
         <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>75</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="spacing" >
+        <number>12</number>
+       </property>
+       <property name="viewMode" >
+        <enum>QListView::IconMode</enum>
        </property>
       </widget>
      </item>
@@ -150,15 +168,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>listBox</tabstop>
   <tabstop>buttonHelp</tabstop>

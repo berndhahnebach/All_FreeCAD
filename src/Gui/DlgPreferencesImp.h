@@ -109,39 +109,34 @@ class PreferencePage;
  * \author Werner Mayer, Jürgen Riegel
  */
 class GuiExport DlgPreferencesImp : public QDialog,public Ui_DlgPreferences
-{ 
-Q_OBJECT
+{
+    Q_OBJECT
 
 public:
-  static void addPage( const QString& className, const QString& group );
+    static void addPage( const QString& className, const QString& group );
 
-  DlgPreferencesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgPreferencesImp();
+    DlgPreferencesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgPreferencesImp();
 
-  void activatePageOfGroup( int pos, const char* groupName );
+    void accept();
+    //void activatePageOfGroup( int pos, const char* groupName );
 
 protected:
-  void accept();
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 protected Q_SLOTS:
-  void on_listBox_highlighted(int item );
-  void on_buttonApply_clicked();
+    void changeGroup(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_buttonApply_clicked();
 
 private:
-  /** @name for internal use only */
-  //@{
-  void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-  void addPreferencePage( PreferencePage* page );
-  QTabWidget* getPreferenceGroup(int id);
-  QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-  //@}
+    /** @name for internal use only */
+    //@{
+    void setupPages();
+    //@}
 
 private:
-  QMap<QString, int> _mGroupIDs; /**< Name of preference page with its ID */
-  QTabWidget*        _pCurTab;   /**< Tab widget */
-  static QStringList _pages; /**< Name of all registered preference pages */
-  bool               _invalidParameter;
+    static QList<QPair<QString, QStringList> > _pages; /**< Name of all registered preference pages */
+    bool invalidParameter;
 };
 
 } // namespace Dialog
