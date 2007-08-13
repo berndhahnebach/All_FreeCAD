@@ -271,9 +271,9 @@ void PrefLineEdit::restorePreferences()
     return;
   }
 
-  std::string txt = text().toStdString();
-  txt = getWindowParameter()->GetASCII( entryName(), txt.c_str() );
-  setText(txt.c_str());
+  QString text = this->text();
+  text = getWindowParameter()->GetASCII(entryName(), text.toAscii()).c_str();
+  setText(text);
 }
 
 void PrefLineEdit::savePreferences()

@@ -58,7 +58,7 @@ protected:
     void fillUpList(void);
 
 protected:
-    std::string _cMacroPath;
+    QString macroPath;
 };
 
 } // namespace Dialog

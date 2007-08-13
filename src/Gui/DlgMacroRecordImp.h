@@ -41,18 +41,18 @@ class DlgMacroRecordImp : public QDialog, public Ui_DlgMacroRecord, public Gui::
     Q_OBJECT
 
 public:
-  DlgMacroRecordImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  virtual ~DlgMacroRecordImp();
+    DlgMacroRecordImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    virtual ~DlgMacroRecordImp();
 
 protected Q_SLOTS:
-  void on_buttonStart_clicked();
-  void on_buttonStop_clicked();
-  void on_buttonCancel_clicked();
+    void on_buttonStart_clicked();
+    void on_buttonStop_clicked();
+    void on_buttonCancel_clicked();
 
 protected:
-  /// conviniance pointer
-  MacroManager* _pcMacroMngr; 
-  std::string _cMacroPath; // Macro file to save in
+    /// conviniance pointer
+    MacroManager* macroManager; 
+    QString macroPath; // Macro file to save in
 };
 
 } // namespace Dialog

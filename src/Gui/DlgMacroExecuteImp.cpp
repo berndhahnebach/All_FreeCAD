@@ -55,8 +55,8 @@ DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
 {
     this->setupUi(this);
     // retrieve the macro path from parameter or use the home path as default
-    _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
-    fileChooser->setFileName(_cMacroPath.c_str());
+    this->macroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+    fileChooser->setFileName(this->macroPath);
 
     // Fill the List box
     QStringList labels; labels << "Macros";
@@ -79,13 +79,13 @@ DlgMacroExecuteImp::~DlgMacroExecuteImp()
 void DlgMacroExecuteImp::fillUpList(void)
 {
     // lists all files in macro path
-    QDir d( _cMacroPath.c_str(),"*.FCMacro" );
+    QDir dir(this->macroPath, "*.FCMacro");
   
     // fill up with the directory
     macroListBox->clear();
-    for (unsigned int i=0; i<d.count(); i++ ) {
+    for (unsigned int i=0; i<dir.count(); i++ ) {
         QTreeWidgetItem* item = new QTreeWidgetItem(macroListBox);
-        item->setText(0, d[i]);
+        item->setText(0, dir[i]);
     }
 }
 
@@ -109,7 +109,7 @@ void DlgMacroExecuteImp::accept()
     if (!item) return;
     
     QDialog::accept();
-    QDir dir(_cMacroPath.c_str());
+    QDir dir(this->macroPath);
     QFileInfo fi(dir, item->text(0));
     Application::Instance->macroManager()->run(Gui::MacroManager::File, fi.filePath().toAscii());
     // after macro run recalculate the document
@@ -125,7 +125,7 @@ void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
     if (!fn.isEmpty())
     {
         // save the path in the parameters
-        _cMacroPath = fn.toStdString();
+        this->macroPath = fn;
         getWindowParameter()->SetASCII("MacroPath",fn.toAscii());
         // fill the list box
         fillUpList();
@@ -140,7 +140,7 @@ void DlgMacroExecuteImp::on_editButton_clicked()
     QTreeWidgetItem* item = macroListBox->currentItem();
     if (!item) return;
 
-    QDir dir(_cMacroPath.c_str());
+    QDir dir(this->macroPath);
     QString file = QString("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
 
     Application::Instance->open( file.toAscii() );
@@ -157,7 +157,7 @@ void DlgMacroExecuteImp::on_createButton_clicked()
     {
         if ( !fn.endsWith(".FCMacro") )
             fn += ".FCMacro";
-        QDir dir(_cMacroPath.c_str());
+        QDir dir(this->macroPath);
         QFileInfo fi( dir, fn );
         if ( fi.exists() && fi.isFile() )
         {
@@ -187,7 +187,7 @@ void DlgMacroExecuteImp::on_deleteButton_clicked()
                                     QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
     if ( ret == QMessageBox::Yes )
     {
-        QDir dir(_cMacroPath.c_str());
+        QDir dir(this->macroPath);
         dir.remove( fn );
         int index = macroListBox->indexOfTopLevelItem(item);
         macroListBox->takeTopLevelItem(index);

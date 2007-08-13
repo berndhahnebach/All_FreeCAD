@@ -27,10 +27,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 #include "Macro.h"
 #include "Application.h"
 #include "MainWindow.h"
@@ -52,20 +48,19 @@ using namespace Gui::Dialog;
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl ), WindowParameter("Macro")
 {
-  this->setupUi(this);
-  // get the macro home path
-  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
-  // check on PATHSEP at the end
-  std::string::iterator It = _cMacroPath.end();
-  It--;
-  if(*It != PATHSEP)
-    _cMacroPath += PATHSEP;
+    this->setupUi(this);
 
-  // get a pointer to the macro manager
-  _pcMacroMngr = Application::Instance->macroManager();
+    // get the macro home path
+    this->macroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+    // check on PATHSEP at the end
+    if (this->macroPath.at(this->macroPath.length()-1) != PATHSEP)
+        this->macroPath += PATHSEP;
 
-  // check if a macro recording is in progress
-  _pcMacroMngr->isOpen() ? buttonStart->setEnabled(false) : buttonStop->setEnabled(false);
+    // get a pointer to the macro manager
+    this->macroManager = Application::Instance->macroManager();
+
+    // check if a macro recording is in progress
+    this->macroManager->isOpen() ? buttonStart->setEnabled(false) : buttonStop->setEnabled(false);
 }
 
 /** 
@@ -73,7 +68,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
  */
 DlgMacroRecordImp::~DlgMacroRecordImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -81,28 +76,27 @@ DlgMacroRecordImp::~DlgMacroRecordImp()
  */
 void DlgMacroRecordImp::on_buttonStart_clicked()
 {
-  // test if the path already set
-  if(lineEditPath->text().isEmpty())
-  {
-    QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"),
-                                         tr("Specify first a place to save."));
-    return;
-  }
+    // test if the path already set
+    if(lineEditPath->text().isEmpty())
+    {
+        QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"), tr("Specify first a place to save."));
+        return;
+    }
 
-  // search in the macro path first for an already existing macro
-  QString fn = (_cMacroPath + lineEditPath->text().toStdString()).c_str();
-  if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
-  QFileInfo fi(fn);
-  if ( fi.isFile() && fi.exists() )
-  {
-    if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
-                                QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
-    return;
-  }
+    // search in the macro path first for an already existing macro
+    QString fn = this->macroPath + lineEditPath->text();
+    if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
+    QFileInfo fi(fn);
+    if ( fi.isFile() && fi.exists() )
+    {
+        if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
+                                    QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
+        return;
+    }
 
-  // open the macro recording
-  _pcMacroMngr->open(MacroManager::File,(_cMacroPath + lineEditPath->text().toStdString()).c_str());
-  accept();
+    // open the macro recording
+    this->macroManager->open(MacroManager::File, fn.toAscii().constData());
+    accept();
 }
 
 /**
@@ -110,26 +104,26 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
  */
 void DlgMacroRecordImp::on_buttonCancel_clicked()
 {
-  if(_pcMacroMngr->isOpen())
-  {
-    _pcMacroMngr->cancel();
-  }
+    if(this->macroManager->isOpen())
+    {
+        this->macroManager->cancel();
+    }
   
-  QDialog::reject();
+    QDialog::reject();
 }
 
 /**
- * Stops the record of the macro.and save to the file.
+ * Stops the record of the macro and save to the file.
  */
 void DlgMacroRecordImp::on_buttonStop_clicked()
 {
-  if(_pcMacroMngr->isOpen())
-  {
-    // ends the macrorecording and save the file...
-    _pcMacroMngr->commit();
-  }
+    if(this->macroManager->isOpen())
+    {
+        // ends the macrorecording and save the file...
+        this->macroManager->commit();
+    }
 
-  QDialog::accept();
+    QDialog::accept();
 }
 
 #include "moc_DlgMacroRecordImp.cpp"

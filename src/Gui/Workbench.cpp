@@ -217,9 +217,9 @@ void Workbench::setName( const QString& name )
 
 ToolBarItem* Workbench::importCustomBars( const char* node ) const
 {
-    std::string name = this->name().toStdString();
+    QByteArray name = this->name().toAscii();
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
-        ->GetGroup("Workbench")->GetGroup(name.c_str())->GetGroup(node);
+        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(node);
   
     ToolBarItem* root = new ToolBarItem;
     std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
@@ -258,27 +258,27 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
 
 void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 {
-    std::string name = this->name().toStdString();
+    QByteArray name = this->name().toAscii();
     CommandManager& rMgr = Application::Instance->commandManager();
 
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
-        ->GetGroup("Workbench")->GetGroup(name.c_str())->GetGroup(node);
+        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(node);
     hGrp->Clear();
 
     QList<ToolBarItem*> items = toolBar->getItems();
 
     for (QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item) {
-        std::string bar = (*item)->command().toStdString();
-        ParameterGrp::handle hSubGrp = hGrp->GetGroup(bar.c_str());
+        QByteArray bar = (*item)->command().toAscii();
+        ParameterGrp::handle hSubGrp = hGrp->GetGroup(bar.constData());
         QList<ToolBarItem*> subitems = (*item)->getItems();
 
         for (QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem) {
-            std::string command = (*subitem)->command().toStdString();
-            Command* pCmd = rMgr.getCommandByName(command.c_str());
+            QByteArray command = (*subitem)->command().toAscii();
+            Command* pCmd = rMgr.getCommandByName(command.constData());
             std::string module = "unknown";
             if (pCmd)
                 module = pCmd->getAppModuleName();
-            hSubGrp->SetASCII(command.c_str(), module.c_str());
+            hSubGrp->SetASCII(command.constData(), module.c_str());
         }
     }
 }

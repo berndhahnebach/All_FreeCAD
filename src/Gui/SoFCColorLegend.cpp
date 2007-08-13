@@ -160,13 +160,14 @@ void SoFCColorLegend::setViewportSize( const SbVec2s& size )
 void SoFCColorLegend::setRange( float fMin, float fMax, int prec )
 {
   SoMFString label;
-  QString s;
   for (int j=0; j<9; j++)
   {
+    std::stringstream s;
+    s.precision(prec);
+    s.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
     float fValue = (1.0f-0.125f*(float)j)*fMax + (0.125f*(float)j)*fMin;
-    s.setNum(fValue, 'f', prec);
-    std::string val = s.toStdString();
-    label.set1Value(j, val.c_str() );
+    s << fValue;
+    label.set1Value(j, s.str().c_str());
   }
 
   setMarkerLabel( label );
