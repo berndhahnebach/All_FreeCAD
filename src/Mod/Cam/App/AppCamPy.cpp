@@ -2882,17 +2882,31 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
   Py_Return;
 }
 
+//PyDoc_STRVAR(open_doc,
+//"open(string) -- Not implemnted for this Module so far.");
+//
+//PyDoc_STRVAR(inst_doc,
+//"insert(string, string) -- Not implemnted for this Module so far.");
+//
+//PyDoc_STRVAR(loft_doc,
+//"Creates a TopoShape with a test BSPLINE");
+//
+//PyDoc_STRVAR(useMesh,"useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module.");
 
 
 /* registration table  */
 struct PyMethodDef Cam_methods[] = {
-    {"open"   , open,    1},       
-    {"insert" , insert,  1},       
+    {"open"   , open,   Py_NEWARGS,
+       "open(string) -- Not implemnted for this Module so far."},       
+    {"insert" , insert, Py_NEWARGS, 
+       "insert(string, string) -- Not implemnted for this Module so far."},       
     {"read"   , read,  1},       
-    {"createTestBSPLINE"   , createTestBSPLINE,  1}, 
+    {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS,"Creates a TopoShape with a test BSPLINE"}, 
 	  {"createTestApproximate" , createTestApproximate, 1},
 	  {"createPlane" , createPlane, 1},
 	  {"createBox" , createBox, 1},
+	  {"useMesh" , useMesh, Py_NEWARGS,
+       "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
     {NULL     , NULL      }        /* end of table marker */
 };
 
