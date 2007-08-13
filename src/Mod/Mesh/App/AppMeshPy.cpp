@@ -36,15 +36,86 @@
 #include <Mod/Part/App/TopologyPy.h>
 
 #include "Core/MeshKernel.h"
+#include "Core/MeshIO.h"
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
 #include "FeatureMeshImport.h"
 
 using namespace Mesh;
+using namespace MeshCore;
 
 
 /* module functions */
+static PyObject * read(PyObject *self, PyObject *args)     
+{                                        
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+    
+  PY_TRY {
+
+    //Base::Console().Log("Open in Mesh with %s",Name);
+    Base::FileInfo file(Name);
+
+	  if ( !file.exists() || !file.isFile() || !file.isReadable() )
+      Py_Error(PyExc_Exception,"No read permission for file");
+
+    std::ifstream str( Name, std::ios::in | std::ios::binary );
+    
+    MeshCore::MeshKernel *pcKernel=0;
+    if ( file.hasExtension("bms") )
+    {
+      try {
+        MeshKernel kernel;
+        kernel.Read( str );
+        return new MeshPy(kernel);
+      } catch( const Base::MemoryException&) {
+        delete pcKernel;
+        Py_Error(PyExc_Exception,"Invalid mesh file");
+      }
+    }
+    else 
+    {
+      MeshKernel Kernel;
+      MeshInput aReader( Kernel );
+      
+      try {
+        // read file
+        bool ok = false;
+        if ( file.hasExtension("stl") || file.hasExtension("ast") ) {
+          ok = aReader.LoadSTL( str );
+        } else if ( file.hasExtension("iv") ) {
+          ok = aReader.LoadInventor( str );
+          if ( ok && pcKernel->CountFacets() == 0 )
+            Base::Console().Warning("No usable mesh found in file '%s'", Name);
+        } else if ( file.hasExtension("nas") || file.hasExtension("bdf") ) {
+          ok = aReader.LoadNastran( str );
+        } else if ( file.hasExtension("obj") ) {
+          ok = aReader.LoadOBJ( str );
+        } else {
+          delete pcKernel;
+          Py_Error(PyExc_Exception,"File format not supported");
+        }
+
+        // Check whether load process succeeded
+        if ( !ok ) 
+          Py_Error(PyExc_Exception,"Import of file failed");
+ 
+
+        // Mesh is okay
+        return new MeshPy(Kernel);
+
+      }catch ( Base::AbortException& e ){
+         Py_Error(PyExc_Exception, "Import of file aborted.");
+      }
+    }
+
+  } PY_CATCH;
+
+	Py_Return;    
+}
+
 static PyObject *                        
 open(PyObject *self, PyObject *args)     
 {                                        
@@ -193,6 +264,7 @@ PyDoc_STRVAR(loft_doc,
 struct PyMethodDef Mesh_Import_methods[] = { 
     {"open"       ,open ,       METH_VARARGS, open_doc},				
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
+    {"read"       ,read,        Py_NEWARGS,   "Read a Mesh from a file and returns a Mesh object."},
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };
