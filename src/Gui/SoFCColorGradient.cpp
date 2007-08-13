@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 # include <Inventor/nodes/SoTransparencyType.h>
 #endif
 
