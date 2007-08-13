@@ -484,7 +484,7 @@ void ParameterValue::onCreateTextItem()
 
     std::vector<std::pair<std::string,std::string> > smap = _hcGrp->GetASCIIMap();
     for (std::vector<std::pair<std::string,std::string> >::iterator it = smap.begin(); it != smap.end(); ++it) {
-        if ( it->first == name.toStdString() )
+        if (name == it->first.c_str())
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -512,7 +512,7 @@ void ParameterValue::onCreateIntItem()
 
     std::vector<std::pair<std::string,long> > lmap = _hcGrp->GetIntMap();
     for (std::vector<std::pair<std::string,long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
-        if (it->first == name.toStdString())
+        if (name == it->first.c_str())
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -541,7 +541,7 @@ void ParameterValue::onCreateUIntItem()
 
     std::vector<std::pair<std::string,unsigned long> > lmap = _hcGrp->GetUnsignedMap();
     for (std::vector<std::pair<std::string,unsigned long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
-        if (it->first == name.toStdString())
+        if (name == it->first.c_str())
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -576,7 +576,7 @@ void ParameterValue::onCreateFloatItem()
 
     std::vector<std::pair<std::string,double> > fmap = _hcGrp->GetFloatMap();
     for (std::vector<std::pair<std::string,double> >::iterator it = fmap.begin(); it != fmap.end(); ++it) {
-        if (it->first == name.toStdString())
+        if (name == it->first.c_str())
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -604,7 +604,7 @@ void ParameterValue::onCreateBoolItem()
 
     std::vector<std::pair<std::string,bool> > bmap = _hcGrp->GetBoolMap();
     for (std::vector<std::pair<std::string,bool> >::iterator it = bmap.begin(); it != bmap.end(); ++it) {
-        if ( it->first == name.toStdString() )
+        if (name == it->first.c_str())
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );

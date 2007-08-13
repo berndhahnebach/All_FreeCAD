@@ -98,7 +98,7 @@ void DlgCustomToolbars::refreshFullActionList()
   {
     Q3ListViewItem* itemNode = new Q3ListViewItem(availableActions, QObject::tr((*it3).toAscii()));
     itemNode->setOpen(true);
-    const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).toStdString() ];
+    const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).toAscii().constData() ];
     for (std::vector<Command*>::const_iterator it4 = rCmds.begin(); it4 != rCmds.end(); ++it4)
     {
       Q3ListViewItem* item = new Q3ListViewItem(itemNode,availableActions->lastItem(), (*it4)->getName());

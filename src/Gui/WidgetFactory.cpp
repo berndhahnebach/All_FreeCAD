@@ -356,7 +356,7 @@ void PyResource::load( const char* name )
       if ( cwd == home )
       {
         QString what = QString("Cannot find file %1").arg(fi.absoluteFilePath());
-        throw Base::Exception(what.toStdString());
+        throw Base::Exception(what.toAscii().constData());
       }
       else
       {
@@ -365,7 +365,7 @@ void PyResource::load( const char* name )
         if ( !fi.exists() )
         {
           QString what = QString("Cannot find file %1 neither in %2 nor in %3").arg(fn).arg(cwd).arg(home);
-          throw Base::Exception(what.toStdString());
+          throw Base::Exception(what.toAscii().constData());
         }
         else
         {
@@ -378,7 +378,7 @@ void PyResource::load( const char* name )
   {
     if ( !fi.exists() ) {
       QString what = QString("Cannot find file %1").arg(fn);
-      throw Base::Exception(what.toStdString());
+      throw Base::Exception(what.toAscii().constData());
     }
   }
 

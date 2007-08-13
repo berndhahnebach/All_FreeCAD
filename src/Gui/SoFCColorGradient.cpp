@@ -171,7 +171,6 @@ void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
     _cColGrad.setRange(fMin, fMax);
 
     SoMFString label;
-    QString s;
 
     float fFac = (float)pow(10.0, (double)prec);
 
@@ -179,12 +178,14 @@ void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
     std::vector<float> marks = getMarkerValues(fMin, fMax, _cColGrad.getCountColors());
     for ( std::vector<float>::iterator it = marks.begin(); it != marks.end(); ++it )
     {
+        std::stringstream s;
+        s.precision(prec);
+        s.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
         float fValue = *it;
         if ( fabs(fValue*fFac) < 1.0 )
             fValue = 0.0f;
-        s.setNum(fValue, 'f', prec);
-        std::string val = s.toStdString();
-        label.set1Value(i++, val.c_str() );
+        s << fValue;
+        label.set1Value(i++, s.str().c_str());
     }
 
     setMarkerLabel( label );
