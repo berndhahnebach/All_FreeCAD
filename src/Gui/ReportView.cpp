@@ -65,7 +65,7 @@ ReportView::ReportView( QWidget* parent )
   tabWidget->setTabIcon(python, BitmapFactory().pixmap("python_small"));
   tabWidget->setCurrentIndex(0);
 
-  // raise the tap set in the preferences
+  // raise the tab page set in the preferences
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General")->GetGroup("AutoloadTab");
   std::string txt = hGrp->GetASCII("currentText");
   for (int i=0; i<tabWidget->count(); i++)

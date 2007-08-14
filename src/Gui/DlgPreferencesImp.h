@@ -103,7 +103,7 @@ class PreferencePage;
  * \endcode
  *
  * \li Now you have to make the widget factory to know your class by adding the line
- * new PrefPageProducer<MyPrefPageImp>  ( QObject::tr( "My category"  ) );
+ * new PrefPageProducer<MyPrefPageImp> (QT_TR_NOOP("My category"));
  *
  * \see PrefWidget
  * \author Werner Mayer, Jürgen Riegel

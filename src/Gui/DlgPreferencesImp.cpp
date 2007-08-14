@@ -75,11 +75,12 @@ void DlgPreferencesImp::setupPages()
         QTabWidget* tabWidget = new QTabWidget;
         this->tabWidgetStack->addWidget(tabWidget);
         
-        QPixmap pixSel   = Gui::BitmapFactory().pixmap("px");
+        QByteArray group = it->first.toAscii();
         QListWidgetItem *item = new QListWidgetItem(listBox);
-        item->setIcon(pixSel);
-        //item->setText(tr("Configuration"));
-        item->setText(it->first);
+        item->setData(Qt::UserRole, QVariant(group));
+        item->setText(QObject::tr(group.constData()));
+        QPixmap icon = Gui::BitmapFactory().pixmap("px");
+        item->setIcon(icon);
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         for (QStringList::Iterator jt = it->second.begin(); jt != it->second.end(); ++jt) {

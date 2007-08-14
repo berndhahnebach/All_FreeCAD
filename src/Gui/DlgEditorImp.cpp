@@ -201,6 +201,7 @@ void DlgSettingsEditorImp::loadSettings()
     QStringList familyNames = fdb.families( QFontDatabase::Any );
     fontFamily->addItems(familyNames);
     int index = familyNames.indexOf(hGrp->GetASCII("Font", "Courier").c_str());
+    if (index < 0) index = 0;
     fontFamily->setCurrentIndex(index);
     on_fontFamily_activated();
 
