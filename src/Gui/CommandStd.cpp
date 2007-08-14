@@ -451,20 +451,22 @@ DEF_STD_CMD(StdCmdDlgCustomize);
 StdCmdDlgCustomize::StdCmdDlgCustomize()
   :Command("Std_DlgCustomize")
 {
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Cu&stomize...");
-  sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
-  sWhatsThis    = QT_TR_NOOP("Customize toolbars and commandbars");
-  sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
-  //sPixmap     = "customize";
-  iAccel        = 0;
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("Cu&stomize...");
+    sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
+    sWhatsThis    = QT_TR_NOOP("Customize toolbars and commandbars");
+    sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
+    //sPixmap     = "customize";
+    iAccel        = 0;
 }
 
 void StdCmdDlgCustomize::activated(int iMsg)
 {
-  Gui::Dialog::DlgCustomizeImp* cDlg = new Gui::Dialog::DlgCustomizeImp(getMainWindow() );
-  cDlg->setAttribute(Qt::WA_DeleteOnClose);
-  cDlg->show();
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new Gui::Dialog::DlgCustomizeImp(getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }
 
 //===========================================================================

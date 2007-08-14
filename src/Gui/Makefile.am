@@ -6,7 +6,6 @@ BUILT_SOURCES=\
 		moc_Action.cpp \
 		moc_CallTips.cpp \
 		moc_DlgActionsImp.cpp \
-		moc_DlgCmdbarsImp.cpp \
 		moc_DlgCommandsImp.cpp \
 		moc_DlgCustomizeImp.cpp \
 		moc_DlgDisplayPropertiesImp.cpp \
@@ -143,8 +142,6 @@ libFreeCADGui_la_SOURCES=\
 		DlgActionsImp.h \
 		DlgActivateWindowImp.cpp \
 		DlgActivateWindowImp.h \
-		DlgCmdbarsImp.cpp \
-		DlgCmdbarsImp.h \
 		DlgCommandsImp.cpp \
 		DlgCommandsImp.h \
 		DlgCustomizeImp.cpp \

@@ -268,10 +268,10 @@
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgCustomCmdbarsImp</name>
+    <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
     <message>
-        <source>Commandbars</source>
-        <translation>Befehlsleisten</translation>
+        <source>Toolbox bars</source>
+        <translation>Werkzeugleisten</translation>
     </message>
 </context>
 <context>
