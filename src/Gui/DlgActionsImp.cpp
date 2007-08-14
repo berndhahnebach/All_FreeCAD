@@ -30,7 +30,6 @@
 #include "DlgActionsImp.h"
 #include "Action.h"
 #include "Application.h"
-#include "Tools.h"
 #include "Command.h"
 #include "BitmapFactory.h"
 #include "Widgets.h"
@@ -58,7 +57,7 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent )
     QDir d(cMacroPath.c_str(),"*.FCMacro");
     actionMacros->insertItems(0, d.entryList());
 
-    QStringList labels; labels << "Macros";
+    QStringList labels; labels << "Icons" << "Macros";
     actionListWidget->setHeaderLabels(labels);
     actionListWidget->header()->hide();
     showActions();
@@ -131,10 +130,16 @@ void DlgCustomActionsImp::showActions()
     for (std::vector<Command*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(actionListWidget);
-        item->setText(0, (*it)->getName());
+        QString actionName = (*it)->getName();
+        item->setData(1, Qt::UserRole, actionName);
+        item->setText(1, (*it)->getMenuText());
+        item->setSizeHint(0, QSize(32, 32));
+        item->setBackgroundColor(0, Qt::lightGray);
         if ( (*it)->getPixmap() )
             item->setIcon(0, BitmapFactory().pixmap((*it)->getPixmap()));
     }
+
+    actionListWidget->resizeColumnToContents(0);
 }
 
 void DlgCustomActionsImp::on_actionListWidget_itemActivated( QTreeWidgetItem *i )
@@ -143,7 +148,7 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated( QTreeWidgetItem *i 
         return; // no valid item
 
     // search for the command in the manager and if necessary in the temporary created ones
-    QString actionName = i->text(0);
+    QString actionName = i->data(1, Qt::UserRole).toString();
     CommandManager& rclMan = Application::Instance->commandManager();
     Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
     MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
@@ -209,12 +214,12 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
 
     // add new action
     QTreeWidgetItem* item = new QTreeWidgetItem(actionListWidget);
-    item->setText(0, actionName);
+    item->setData(1, Qt::UserRole, actionName);
+    item->setText(1, actionMenu->text());
+    item->setSizeHint(0, QSize(32, 32));
+    item->setBackgroundColor(0, Qt::lightGray);
     if (pixmapLabel->pixmap())
-    {
-        QPixmap p = *pixmapLabel->pixmap();
-        item->setIcon(0, Tools::fillUp(24,24,p));
-    }
+        item->setIcon(0, *pixmapLabel->pixmap());
 
     if ( !actionWhatsThis->text().isEmpty() )
         macro->setWhatsThis( actionWhatsThis->text().toLatin1() );
@@ -280,7 +285,8 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     }
 
     // search for the command in the manager
-    QString actionName = item->text(0);
+    QString actionName = item->data(1, Qt::UserRole).toString();
+    item->setText(1, actionMenu->text());
     CommandManager& rclMan = Application::Instance->commandManager();
     Command* pCmd = rclMan.getCommandByName(actionName.toLatin1());
     MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
@@ -333,11 +339,8 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     replaceMacroAction( actionName );
 
     // call this at the end because it internally invokes the highlight method
-    if ( macro->getPixmap() )
-    {
-        QPixmap p = Gui::BitmapFactory().pixmap( macro->getPixmap() );
-        item->setIcon(0, Tools::fillUp(24,24,p));
-    }
+    if (macro->getPixmap())
+        item->setIcon(0, Gui::BitmapFactory().pixmap(macro->getPixmap()));
 }
 
 void DlgCustomActionsImp::on_buttonRemoveAction_clicked()

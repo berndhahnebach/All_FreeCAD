@@ -47,12 +47,12 @@ class DlgCustomCommandsImp : public CustomizeActionPage, public Ui_DlgCustomComm
   Q_OBJECT
 
 public:
-    DlgCustomCommandsImp( QWidget* parent = 0 );
+    DlgCustomCommandsImp(QWidget* parent = 0);
     ~DlgCustomCommandsImp();
 
 protected Q_SLOTS:
-    void onGroupActivated( QTreeWidgetItem *i);
-    void onDescription( const QString& );
+    void onGroupActivated(QTreeWidgetItem *i);
+    void onDescription(QTreeWidgetItem *i);
     void onAddMacroAction(const QString&);
     void onRemoveMacroAction(const QString&);
 };

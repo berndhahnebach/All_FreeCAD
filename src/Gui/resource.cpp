@@ -52,16 +52,16 @@ using namespace Gui::Dialog;
  */
 WidgetFactorySupplier::WidgetFactorySupplier()
 {
-  // ADD YOUR PREFERENCFE PAGES HERE
+  // ADD YOUR PREFERENCE PAGES HERE
   //
   //
-  new PrefPageProducer<DlgGeneralImp>         ( "FreeCAD" );
-  new PrefPageProducer<DlgSettingsDocumentImp>( "FreeCAD" );
-  new PrefPageProducer<DlgSettingsEditorImp>  ( "FreeCAD" );
-  new PrefPageProducer<DlgReportViewImp>      ( "FreeCAD" );
-  new PrefPageProducer<DlgSettingsMacroImp>   ( "FreeCAD" );
-  new PrefPageProducer<DlgOnlineHelpImp>      ( "FreeCAD" );
-  new PrefPageProducer<DlgSettings3DViewImp>  ( "Viewer"  );
+  new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
+  new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Viewer")  );
 
   // ADD YOUR CUSTOMIZE PAGES HERE
   //
