@@ -752,7 +752,7 @@ void Document::restore (void)
       //if ( feat->status.getValue() == AbstractFeature::New )
       //  feat->status.setValue( AbstractFeature::Valid );
     }
-    signalNewObject(*(It->second));
+    //signalNewObject(*(It->second));
   }
 
   //Notify(DocChange);

@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>331</height>
+    <width>576</width>
+    <height>285</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,282 +22,255 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBox30_2" >
+   <item rowspan="6" row="0" column="3" >
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newButton" >
+       <property name="text" >
+        <string>New...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="renameButton" >
+       <property name="text" >
+        <string>Rename...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteButton" >
+       <property name="text" >
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>152</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item rowspan="6" row="0" column="2" >
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="workbenchBox" />
+     </item>
+     <item>
+      <widget class="QTreeWidget" name="toolbarTreeWidget" >
+       <property name="columnCount" >
+        <number>1</number>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Custom Toolbars</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item rowspan="6" row="0" column="0" >
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="categoryBox" />
+     </item>
+     <item>
+      <widget class="QTreeWidget" name="commandTreeWidget" >
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QPushButton" name="moveActionUpButton" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
      <property name="minimumSize" >
       <size>
-       <width>0</width>
-       <height>0</height>
+       <width>30</width>
+       <height>30</height>
       </size>
      </property>
-     <property name="maximumSize" >
+     <property name="toolTip" >
+      <string>Move up</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;b>Move the selected item up.&lt;/b>&lt;p>The item will be moved within the hierarchy level.&lt;/p></string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_up.xpm</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QPushButton" name="moveActionDownButton" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize" >
       <size>
-       <width>32767</width>
-       <height>32767</height>
+       <width>30</width>
+       <height>30</height>
       </size>
      </property>
-     <property name="title" >
-      <string>Setup Toolbar</string>
+     <property name="toolTip" >
+      <string>Move down</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item rowspan="2" row="0" column="2" >
-       <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="Q3ListView" name="toolbarActions" />
-        </item>
-        <item>
-         <widget class="QComboBox" name="toolbarsCombobox" >
-          <property name="minimumSize" >
-           <size>
-            <width>140</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item rowspan="2" row="0" column="0" >
-       <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="Q3ListView" name="availableActions" />
-        </item>
-        <item>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="createToolbarButton" >
-            <property name="text" >
-             <string>Create</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="deleteToolbarButton" >
-            <property name="text" >
-             <string>Delete</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="1" >
-       <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="moveActionRightButton" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize" >
-           <size>
-            <width>30</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>Move right</string>
-          </property>
-          <property name="whatsThis" >
-           <string>&lt;b>Move the selected item one level down.&lt;/b>&lt;p>This will also change the level of the parent item.&lt;/p></string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="icon" >
-           <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_right.xpm</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="moveActionLeftButton" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize" >
-           <size>
-            <width>30</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>Move left</string>
-          </property>
-          <property name="whatsThis" >
-           <string>&lt;b>Move the selected item one level up.&lt;/b>&lt;p>This will also change the level of the parent item.&lt;/p></string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="icon" >
-           <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_left.xpm</iconset>
-          </property>
-          <property name="autoDefault" >
-           <bool>true</bool>
-          </property>
-          <property name="default" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="moveActionUpButton" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize" >
-           <size>
-            <width>30</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>Move up</string>
-          </property>
-          <property name="whatsThis" >
-           <string>&lt;b>Move the selected item up.&lt;/b>&lt;p>The item will be moved within the hierarchy level.&lt;/p></string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="icon" >
-           <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_up.xpm</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="moveActionDownButton" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize" >
-           <size>
-            <width>30</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>Move down</string>
-          </property>
-          <property name="whatsThis" >
-           <string>&lt;b>Move the selected item down.&lt;/b>&lt;p>The item will be moved within the hierarchy level.&lt;/p></string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="icon" >
-           <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_down.xpm</iconset>
-          </property>
-          <property name="autoDefault" >
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
+     <property name="whatsThis" >
+      <string>&lt;b>Move the selected item down.&lt;/b>&lt;p>The item will be moved within the hierarchy level.&lt;/p></string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_down.xpm</iconset>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="moveActionLeftButton" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Move left</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;b>Move the selected item one level up.&lt;/b>&lt;p>This will also change the level of the parent item.&lt;/p></string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_left.xpm</iconset>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+     <property name="default" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>33</width>
+       <height>58</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>33</width>
+       <height>57</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="moveActionRightButton" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Move right</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;b>Move the selected item one level down.&lt;/b>&lt;p>This will also change the level of the parent item.&lt;/p></string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="Icons/resource.qrc" >:/new/prefix1/button_right.xpm</iconset>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
- <tabstops>
-  <tabstop>createToolbarButton</tabstop>
-  <tabstop>deleteToolbarButton</tabstop>
-  <tabstop>moveActionRightButton</tabstop>
-  <tabstop>moveActionLeftButton</tabstop>
-  <tabstop>moveActionUpButton</tabstop>
-  <tabstop>moveActionDownButton</tabstop>
-  <tabstop>toolbarsCombobox</tabstop>
- </tabstops>
  <resources>
   <include location="Icons/resource.qrc" />
  </resources>

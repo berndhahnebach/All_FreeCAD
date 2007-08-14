@@ -62,7 +62,12 @@ DEF_STD_CMD_AC(StdCameraType);
 StdCameraType::StdCameraType()
   : Command("Std_CameraType")
 {
-  sGroup = QT_TR_NOOP("Standard-View");
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Toggle view mode");
+  sToolTipText  = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
+  sWhatsThis    = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
+  sStatusTip    = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
+  iAccel        = 0;
 }
 
 void StdCameraType::activated(int iMsg)

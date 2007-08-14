@@ -49,25 +49,25 @@ namespace Dialog {
  */
 class DlgCustomKeyboardImp : public CustomizeActionPage, public Ui_DlgCustomKeyboard
 {
-  Q_OBJECT;
+    Q_OBJECT;
 
 public:
-  DlgCustomKeyboardImp( QWidget* parent = 0 );
-  ~DlgCustomKeyboardImp();
+    DlgCustomKeyboardImp( QWidget* parent = 0 );
+    ~DlgCustomKeyboardImp();
 
 protected Q_SLOTS:
-  void on_comboBoxCategory_activated( const QString& );
-  void on_listBoxCommands_highlighted( const QString& );
-  void on_buttonAssign_clicked();
-  void on_buttonReset_clicked();
-  void on_buttonResetAll_clicked();
-  void on_editShortcut_textChanged(const QString&);
-  void onAddMacroAction(const QString&);
-  void onRemoveMacroAction(const QString&);
+    void on_categoryBox_activated(int index);
+    //void on_listBoxCommands_highlighted( const QString& );
+    void on_buttonAssign_clicked();
+    void on_buttonReset_clicked();
+    void on_buttonResetAll_clicked();
+    void on_editShortcut_textChanged(const QString&);
+    void onAddMacroAction(const QString&);
+    void onRemoveMacroAction(const QString&);
 
 private:
-  QMap<QString, QString> _cmdGroups;
-  QMap<QString, QMap<QString, CommandBase*> > _groupCommands;
+    //QMap<QString, QString> _cmdGroups;
+    //QMap<QString, QMap<QString, CommandBase*> > _groupCommands;
 };
 
 } // namespace Dialog

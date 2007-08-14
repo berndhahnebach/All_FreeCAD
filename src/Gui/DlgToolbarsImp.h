@@ -44,36 +44,42 @@ namespace Dialog {
  */
 class DlgCustomToolbars : public CustomizeActionPage, public Ui_DlgCustomToolbars
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 protected:
-  DlgCustomToolbars( QWidget* parent = 0 );
-  virtual ~DlgCustomToolbars();
+    DlgCustomToolbars( QWidget* parent = 0 );
+    virtual ~DlgCustomToolbars();
 
 protected:
-  virtual void refreshActionList();
-  virtual void refreshToolBarList();
+    virtual void refreshActionList();
+    virtual void refreshToolBarList();
 
 protected Q_SLOTS:
-  void on_toolbarsCombobox_activated(const QString &);
-  void on_availableActions_doubleClicked(Q3ListViewItem*);
-  void on_moveActionRightButton_clicked();
-  void on_moveActionLeftButton_clicked();
-  void on_moveActionUpButton_clicked();
-  void on_moveActionDownButton_clicked();
-  void on_toolbarActions_clicked( Q3ListViewItem *i );
-  void on_availableActions_clicked( Q3ListViewItem *i );
-  void on_createToolbarButton_clicked();
-  void on_deleteToolbarButton_clicked();
-  void onAddMacroAction(const QString&);
-  void onRemoveMacroAction(const QString&);
+    void on_categoryBox_activated(int index);
+    void on_workbenchBox_activated(const QString&);
+
+
+
+//    void on_toolbarsCombobox_activated(const QString &);
+//    void on_availableActions_doubleClicked(Q3ListViewItem*);
+    void on_moveActionRightButton_clicked();
+    void on_moveActionLeftButton_clicked();
+    void on_moveActionUpButton_clicked();
+    void on_moveActionDownButton_clicked();
+//    void on_toolbarActions_clicked( Q3ListViewItem *i );
+//    void on_availableActions_clicked( Q3ListViewItem *i );
+    void on_newButton_clicked();
+    void on_renameButton_clicked();
+    void on_deleteButton_clicked();
+    void onAddMacroAction(const QString&);
+    void onRemoveMacroAction(const QString&);
 
 private:
-  void refreshFullActionList();
+    void refreshFullActionList();
 
 protected:
-  /** List of all toolbars */
-  ToolBarItem* _toolBars;
+    /** List of all toolbars */
+    ToolBarItem* _toolBars;
 };
 
 /** This class implements the creation of user defined toolbars.
@@ -83,11 +89,29 @@ protected:
  */
 class DlgCustomToolbarsImp : public DlgCustomToolbars
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgCustomToolbarsImp( QWidget* parent = 0 );
-  ~DlgCustomToolbarsImp();
+    DlgCustomToolbarsImp( QWidget* parent = 0 );
+    ~DlgCustomToolbarsImp();
+};
+
+/** This class implements the creation of user defined toolbox bars.
+ * A toolbox bar is the same as a toolbar - a collection of several 
+ * action objects - unless a toolbox bar is placed in a toolbox,
+ * while a toolbar is placed in the dock areas of the main window.
+ * So toolbox bars are predestinated to save place on your desktop.
+ * @see DlgCustomToolbars
+ * @see DlgCustomToolbarsImp
+ * \author Werner Mayer
+ */
+class DlgCustomToolBoxbarsImp : public DlgCustomToolbars
+{ 
+    Q_OBJECT
+
+public:
+    DlgCustomToolBoxbarsImp( QWidget* parent = 0 );
+    ~DlgCustomToolBoxbarsImp();
 };
 
 } // namespace Dialog

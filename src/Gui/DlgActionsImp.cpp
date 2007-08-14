@@ -351,7 +351,7 @@ void DlgCustomActionsImp::on_buttonRemoveAction_clicked()
         return;
     int current = actionListWidget->indexOfTopLevelItem(item);
     actionListWidget->takeTopLevelItem(current);
-    QString itemText = item->text(0);
+    QString itemText = item->data(1, Qt::UserRole).toString();
     delete item;
 
     // if the command is registered in the manager just remove it

@@ -40,7 +40,6 @@
 
 #include "DlgToolbarsImp.h"
 #include "DlgActionsImp.h"
-#include "DlgCmdbarsImp.h"
 #include "DlgCommandsImp.h"
 #include "DlgKeyboardImp.h"
 
@@ -69,7 +68,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new CustomPageProducer<DlgCustomCommandsImp>;
   new CustomPageProducer<DlgCustomKeyboardImp>;
   new CustomPageProducer<DlgCustomToolbarsImp>;
-  new CustomPageProducer<DlgCustomCmdbarsImp>;
+  new CustomPageProducer<DlgCustomToolBoxbarsImp>;
   new CustomPageProducer<DlgCustomActionsImp>;
 
   // ADD YOUR PREFERENCE WIDGETS HERE
