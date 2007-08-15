@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef BOUNDBOX_H
-#define BOUNDBOX_H
+#ifndef BASE_BOUNDBOX_H
+#define BASE_BOUNDBOX_H
 
 #include "Vector3D.h"
 #include "Matrix.h"
@@ -62,7 +62,7 @@ public:
   /** Defines a bounding box around the center \a rcCnt with the 
    * distances \a fDistance in each coordinate.
    */
-  BoundBox3 (Vector3<_Precision> &rcCnt, _Precision fDistance);
+  BoundBox3 (const Vector3<_Precision> &rcCnt, _Precision fDistance);
   ~BoundBox3 ();
  
   /// Assignment operator 
@@ -77,11 +77,11 @@ public:
   /** Computes the intersection between two bounding boxes.
    * The result is also a bounding box.
    */
-  BoundBox3<_Precision> operator & (BoundBox3<_Precision> &rcBB) const;
+  BoundBox3<_Precision> operator & (const BoundBox3<_Precision> &rcBB) const;
   /** Appends the point to the box. The box can grow but not shrink. */
   inline  BoundBox3<_Precision>& operator &= (const Vector3<_Precision> &rclVect);
   /** The union of two bounding boxes. */
-  BoundBox3<_Precision> operator | (BoundBox3<_Precision> &rcBB) const;
+  BoundBox3<_Precision> operator | (const BoundBox3<_Precision> &rcBB) const;
   //@}
  
   /** Test methods */
@@ -93,12 +93,12 @@ public:
   /** Checks if this 2D box lies inside the box. */
   inline bool IsInBox (const BoundBox2D &rcbb) const;
   /** Checks whether the bounding box is valid. */
-  bool IsValid (void);
+  bool IsValid (void) const;
   //@}
 
   enum OCTANT {OCT_LDB = 0, OCT_RDB, OCT_LUB, OCT_RUB,
                OCT_LDF,     OCT_RDF, OCT_LUF, OCT_RUF};
-  bool GetOctantFromVector (Vector3<_Precision> &rclVct, OCTANT &rclOctant) const;
+  bool GetOctantFromVector (const Vector3<_Precision> &rclVct, OCTANT &rclOctant) const;
   BoundBox3<_Precision> CalcOctant (typename BoundBox3<_Precision>::OCTANT Octant) const;
 
   enum SIDE { LEFT =0, RIGHT=1, TOP=2, BOTTOM=3, FRONT=4, BACK=5, INVALID=255 };
@@ -182,7 +182,7 @@ public:
 
 
 template <class _Precision>
-inline BoundBox3<_Precision>::BoundBox3 (Vector3<_Precision> &rcVector, _Precision fDistance)
+inline BoundBox3<_Precision>::BoundBox3 (const Vector3<_Precision> &rcVector, _Precision fDistance)
 {
   MinX = rcVector.x - fDistance; 
   MaxX = rcVector.x + fDistance;
@@ -198,7 +198,7 @@ inline BoundBox3<_Precision>::~BoundBox3 ()
 }
 
 template <class _Precision>
-inline BoundBox3<_Precision> BoundBox3<_Precision>::operator & (BoundBox3<_Precision> &rcBB) const
+inline BoundBox3<_Precision> BoundBox3<_Precision>::operator & (const BoundBox3<_Precision> &rcBB) const
 {
   BoundBox3<_Precision> cBBRes;
 
@@ -213,7 +213,7 @@ inline BoundBox3<_Precision> BoundBox3<_Precision>::operator & (BoundBox3<_Preci
 }
 
 template <class _Precision>
-inline BoundBox3<_Precision> BoundBox3<_Precision>::operator | (BoundBox3<_Precision> &rcBB) const
+inline BoundBox3<_Precision> BoundBox3<_Precision>::operator | (const BoundBox3<_Precision> &rcBB) const
 {
   BoundBox3<_Precision> cBBRes;
 
@@ -283,7 +283,7 @@ inline bool BoundBox3<_Precision>::IsCutLine ( const Vector3<_Precision>& rcBase
 } 
 
 template <class _Precision>
-inline bool BoundBox3<_Precision>::IsValid (void)
+inline bool BoundBox3<_Precision>::IsValid (void) const
 {
   return ((MinX <= MaxX) && (MinY <= MaxY) && (MinZ <= MaxZ));
 }
@@ -291,7 +291,7 @@ inline bool BoundBox3<_Precision>::IsValid (void)
 #define HALF(A,B)  ((A)+((B-A)/2))
 
 template <class _Precision>
-inline bool BoundBox3<_Precision>::GetOctantFromVector (Vector3<_Precision> &rclVct, OCTANT &rclOctant) const
+inline bool BoundBox3<_Precision>::GetOctantFromVector (const Vector3<_Precision> &rclVct, OCTANT &rclOctant) const
 {
   if (!IsInBox (rclVct))
     return false;
@@ -952,8 +952,5 @@ typedef BoundBox3<double> BoundBox3d;
 } // namespace Base
 
 
-
-
-
-#endif  // BOUNDBOX_H
+#endif  // BASE_BOUNDBOX_H
 

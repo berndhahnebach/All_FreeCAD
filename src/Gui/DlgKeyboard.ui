@@ -151,7 +151,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QTreeWidget" name="listBoxAssigned" >
+      <widget class="QTreeWidget" name="assignedTreeWidget" >
        <property name="enabled" >
         <bool>false</bool>
        </property>

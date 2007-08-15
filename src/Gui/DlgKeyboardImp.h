@@ -31,13 +31,7 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 namespace Gui {
-class Command;
-class CommandBase;
 namespace Dialog {
 
 /** Shows an overview of all available commands of all groups and modules.
@@ -55,9 +49,12 @@ public:
     DlgCustomKeyboardImp( QWidget* parent = 0 );
     ~DlgCustomKeyboardImp();
 
+protected:
+    void showEvent(QShowEvent* e);
+
 protected Q_SLOTS:
     void on_categoryBox_activated(int index);
-    //void on_listBoxCommands_highlighted( const QString& );
+    void on_commandTreeWidget_currentItemChanged(QTreeWidgetItem*);
     void on_buttonAssign_clicked();
     void on_buttonReset_clicked();
     void on_buttonResetAll_clicked();
@@ -66,8 +63,7 @@ protected Q_SLOTS:
     void onRemoveMacroAction(const QString&);
 
 private:
-    //QMap<QString, QString> _cmdGroups;
-    //QMap<QString, QMap<QString, CommandBase*> > _groupCommands;
+    bool firstShow;
 };
 
 } // namespace Dialog
