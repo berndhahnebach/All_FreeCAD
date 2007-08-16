@@ -249,7 +249,7 @@ void DrawingView::wheelEvent(QWheelEvent * cEvent)
 
        // Zoom around centrally displayed Drawing point
        int numTicks = cEvent->delta() / 120;
-       int ICx, ICy;
+       //int ICx, ICy;
        //_pGLDrawingBox->getCentrePoint(ICx, ICy);
        //_pGLDrawingBox->setZoomFactor(_pGLDrawingBox->getZoomFactor() / pow(2.0, (double)numTicks), true, ICx, ICy);
        //_pGLDrawingBox->redraw();
@@ -372,7 +372,7 @@ void DrawingView::zoom(int prevX, int prevY, int currX, int currY)
     if (abs(dy) > abs(dx))
     {
         // Get centrally displayed Drawing point
-        int ICx, ICy;
+        //int ICx, ICy;
         //_pGLDrawingBox->getCentrePoint(ICx, ICy);
 
         // Compute zoom factor multiplier

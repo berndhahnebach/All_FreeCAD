@@ -4838,10 +4838,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Qt3All.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Qt4All.h"
 			>
 		</File>

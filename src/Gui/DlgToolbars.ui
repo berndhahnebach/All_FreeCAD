@@ -96,13 +96,8 @@
      <item>
       <widget class="QTreeWidget" name="toolbarTreeWidget" >
        <property name="columnCount" >
-        <number>1</number>
+        <number>0</number>
        </property>
-       <column>
-        <property name="text" >
-         <string>Custom Toolbars</string>
-        </property>
-       </column>
       </widget>
      </item>
     </layout>

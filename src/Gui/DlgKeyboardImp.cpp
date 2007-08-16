@@ -82,6 +82,8 @@ DlgCustomKeyboardImp::~DlgCustomKeyboardImp()
 
 void DlgCustomKeyboardImp::showEvent(QShowEvent* e)
 {
+    // If we did this already in the constructor we wouldn't get the vertical scrollbar if needed.
+    // The problem was noticed with Qt 4.1.4 but may arise with any later version.
     if (firstShow) {
         on_categoryBox_activated(categoryBox->currentIndex());
         firstShow = false;
