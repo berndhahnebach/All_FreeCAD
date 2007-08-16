@@ -33,30 +33,30 @@ namespace Gui {
 class GuiExport ToolBarItem
 {
 public:
-  ToolBarItem();
-  ToolBarItem( ToolBarItem* );
-  ~ToolBarItem();
+    ToolBarItem();
+    ToolBarItem( ToolBarItem* );
+    ~ToolBarItem();
 
-  void setCommand( const QString& );
-  QString command() const;
+    void setCommand( const QString& );
+    QString command() const;
 
-  bool hasItems() const;
-  ToolBarItem* findItem( const QString& );
-  ToolBarItem* copy() const;
-  uint count() const;
+    bool hasItems() const;
+    ToolBarItem* findItem( const QString& );
+    ToolBarItem* copy() const;
+    uint count() const;
 
-  void appendItem( ToolBarItem* );
-  bool insertItem( ToolBarItem*, ToolBarItem* );
-  void removeItem( ToolBarItem* );
-  void clear();
+    void appendItem( ToolBarItem* );
+    bool insertItem( ToolBarItem*, ToolBarItem* );
+    void removeItem( ToolBarItem* );
+    void clear();
 
-  ToolBarItem& operator<< ( ToolBarItem* item );
-  ToolBarItem& operator<< ( const QString& command );
-  QList<ToolBarItem*> getItems() const;
+    ToolBarItem& operator<< ( ToolBarItem* item );
+    ToolBarItem& operator<< ( const QString& command );
+    QList<ToolBarItem*> getItems() const;
 
 private:
-  QString _name;
-  QList<ToolBarItem*> _items;
+    QString _name;
+    QList<ToolBarItem*> _items;
 };
 
 /**
@@ -69,22 +69,20 @@ private:
 class GuiExport ToolBarManager
 {
 public:
-  /// The one and only instance.
-  static ToolBarManager* getInstance();
-  static void destruct();
-  /** Sets up the toolbars of a given workbench. */
-  void setup( ToolBarItem* ) const;
-  /** Sets up the custom toolbars defined by the user of a given workbench. */
-  void customSetup( ToolBarItem* ) const;
-  /** Returns a list of all currently existing toolbars. */
-  QList<QToolBar*> toolBars() const;
+    /// The one and only instance.
+    static ToolBarManager* getInstance();
+    static void destruct();
+    /** Sets up the toolbars of a given workbench. */
+    void setup( ToolBarItem* ) const;
+    /** Returns a list of all currently existing toolbars. */
+    QList<QToolBar*> toolBars() const;
 
 protected:
-  ToolBarManager();
-  ~ToolBarManager();
+    ToolBarManager();
+    ~ToolBarManager();
 
 private:
-  static ToolBarManager* _instance;
+    static ToolBarManager* _instance;
 };
 
 } // namespace Gui
