@@ -47,6 +47,7 @@
 #include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 // Things from the Mesh module
 #include <Mod/Mesh/App/Core/MeshKernel.h>
@@ -118,7 +119,7 @@ read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-/*PyObject *TopoShapePyOld::makeToolPath(PyObject *args)
+static PyObject * makeToolPath(PyObject *args)
 {
 	Py::List AllCuts = Py::List();
 	
@@ -132,7 +133,7 @@ read(PyObject *self, PyObject *args)
 
     PY_TRY
     {
-        Base::Builder3D log3D;
+        //Base::Builder3D log3D;
 
         TopExp_Explorer Ex;
 
@@ -140,12 +141,12 @@ read(PyObject *self, PyObject *args)
 
 		TopoDS_Edge aTopoEdge;
 		TopoDS_Compound aCompound;
-		BRepBuilderAPI_MakeWire ConnectedEdges;
+		
 
         if (!Ex.More())
         {
-            log3D.addText(0.0,0.0 ,0.0,"Keine Surface gefunden");
-            log3D.saveToFile("c:/test.iv");
+            //log3D.addText(0.0,0.0 ,0.0,"Keine Surface gefunden");
+           // log3D.saveToFile("c:/test.iv");
             return NULL;
         }
 
