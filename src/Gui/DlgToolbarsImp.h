@@ -28,10 +28,6 @@
 #include "PropertyPage.h"
 
 namespace Gui {
-class Command;
-class CustomToolBar;
-class ToolBarItem;
-
 namespace Dialog {
 
 /** This class implements the creation of user defined toolbars.
@@ -47,27 +43,20 @@ class DlgCustomToolbars : public CustomizeActionPage, public Ui_DlgCustomToolbar
     Q_OBJECT
 
 protected:
-    DlgCustomToolbars( QWidget* parent = 0 );
+    enum Type { Toolbar, Toolboxbar };
+    
+    DlgCustomToolbars(Type, QWidget* parent = 0);
     virtual ~DlgCustomToolbars();
-
-protected:
-    virtual void refreshActionList();
-    virtual void refreshToolBarList();
 
 protected Q_SLOTS:
     void on_categoryBox_activated(int index);
-    void on_workbenchBox_activated(const QString&);
-
-
-
-//    void on_toolbarsCombobox_activated(const QString &);
-//    void on_availableActions_doubleClicked(Q3ListViewItem*);
+    void on_workbenchBox_activated(int index);
+    void on_commandTreeWidget_currentItemChanged(QTreeWidgetItem*);
+    void on_toolbarTreeWidget_currentItemChanged(QTreeWidgetItem*);
     void on_moveActionRightButton_clicked();
     void on_moveActionLeftButton_clicked();
     void on_moveActionUpButton_clicked();
     void on_moveActionDownButton_clicked();
-//    void on_toolbarActions_clicked( Q3ListViewItem *i );
-//    void on_availableActions_clicked( Q3ListViewItem *i );
     void on_newButton_clicked();
     void on_renameButton_clicked();
     void on_deleteButton_clicked();
@@ -75,11 +64,11 @@ protected Q_SLOTS:
     void onRemoveMacroAction(const QString&);
 
 private:
-    void refreshFullActionList();
+    void importCustomToolbars(const QByteArray&);
+    void exportCustomToolbars(const QByteArray&);
 
-protected:
-    /** List of all toolbars */
-    ToolBarItem* _toolBars;
+private:
+    Type type;
 };
 
 /** This class implements the creation of user defined toolbars.
@@ -92,7 +81,7 @@ class DlgCustomToolbarsImp : public DlgCustomToolbars
     Q_OBJECT
 
 public:
-    DlgCustomToolbarsImp( QWidget* parent = 0 );
+    DlgCustomToolbarsImp(QWidget* parent = 0);
     ~DlgCustomToolbarsImp();
 };
 
@@ -110,7 +99,7 @@ class DlgCustomToolBoxbarsImp : public DlgCustomToolbars
     Q_OBJECT
 
 public:
-    DlgCustomToolBoxbarsImp( QWidget* parent = 0 );
+    DlgCustomToolBoxbarsImp(QWidget* parent = 0);
     ~DlgCustomToolBoxbarsImp();
 };
 
