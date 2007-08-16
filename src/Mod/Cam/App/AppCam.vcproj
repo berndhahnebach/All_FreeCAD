@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="M:\ATLAS\lib\importlib_atlas.lib M:\ATLAS\lib\importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
 				OutputFile="Debug\Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -264,6 +264,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\Approx.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Approx.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
@@ -289,6 +297,14 @@
 		</File>
 		<File
 			RelativePath="PreCompiled.h"
+			>
+		</File>
+		<File
+			RelativePath=".\routine.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\routine.h"
 			>
 		</File>
 	</Files>

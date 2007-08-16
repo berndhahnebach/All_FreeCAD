@@ -29,6 +29,7 @@
 #endif
 
 #include <stdio.h>
+#include "Approx.h"
 
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
@@ -2846,7 +2847,22 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
   PY_TRY {
     const MeshKernel& m = pcObject->getMesh();
     //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
-  
+	MeshKernel copy = m;
+	MeshCore::MeshAlgorithm algo(copy);
+	std::vector<double> Control;
+	std::vector<double> KntU;
+	std::vector<double> KntV;
+	int OrdU;
+	int OrdV;
+	Approximate approx(copy,Control,KntU,KntV,OrdU,OrdV,1.0);
+	std::list< std::vector <unsigned long> > BoundariesIndex;
+	std::list< std::vector <unsigned long> > ::iterator bin_it;
+	std::list< std::vector <Base::Vector3f> > BoundariesPoints;
+	algo.GetMeshBorders(BoundariesIndex);
+	algo.GetMeshBorders(BoundariesPoints);
+	Base::BoundBox3f BoundBox = copy.GetBoundBox();
+	
+
     // Count of edges
     m.CountEdges();
     // Count of vertices
