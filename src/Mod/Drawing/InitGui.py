@@ -1,4 +1,4 @@
-# Image gui init module
+# Drawing gui init module
 # (c) 2003 Juergen Riegel
 #
 # Gathering all the information to start FreeCAD
@@ -31,18 +31,18 @@
 
 
 
-class ImageWorkbench ( Workbench ):
-	"Image workbench object"
+class DrawingWorkbench ( Workbench ):
+	"Drawing workbench object"
 	def Activate(self):
 		# load the module
 		try:
-			Log ('Loading GUI of Image module...')
-			import ImageGui
+			Log ('Loading GUI of Drawing module...')
+			import DrawingGui
 		except:
-			Err('Cannot load ImageGui')
+			Err('Cannot load DrawingGui')
 			raise
 	def GetClassName(self):
-		return "ImageGui::Workbench"
+		return "DrawingGui::Workbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
@@ -199,7 +199,7 @@ class ImageWorkbench ( Workbench ):
 			"\"QtQtQtQtQtQtQtQtQt#zabacad#yQtQt\",\n"
 			"\"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt\"};\n"]
 
-Gui.addWorkbenchHandler("Image",ImageWorkbench())
+Gui.addWorkbenchHandler("Drawing",DrawingWorkbench())
 
 # Append the open handler
-FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","ImageGui")
+#FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","DrawingGui")

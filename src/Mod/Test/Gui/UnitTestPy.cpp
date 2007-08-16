@@ -23,10 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef __Qt3All__
-# include <Gui/Qt3All.h>
-#endif
-
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/Console.h>

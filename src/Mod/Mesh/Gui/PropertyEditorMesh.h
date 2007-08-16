@@ -23,10 +23,6 @@
 #ifndef MESHGUI_PROPERTYEDITOR_MESH_H
 #define MESHGUI_PROPERTYEDITOR_MESH_H
 
-#ifndef __Qt3All__
-# include <Gui/Qt3All.h>
-#endif
-
 #include <Gui/propertyeditor/propertyeditorinput.h>
 
 namespace MeshGui {

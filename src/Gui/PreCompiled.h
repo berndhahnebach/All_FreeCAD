@@ -65,7 +65,6 @@
 
 #include "InventorAll.h"
 #include "Qt4All.h"
-#include "Qt3All.h"
 
 
 #endif //_PreComp_
