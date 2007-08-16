@@ -69,16 +69,6 @@ public:
    * The default implementation returns an instance of @ref WorkbenchPy.
    */
   PyObject* getPyObject();
-  /**
-   * The method imports the user defined toolbars or command bars and creates
-   * a ToolBarItem tree structure.
-   */
-  ToolBarItem* importCustomBars( const char* node ) const;
-  /**
-   * The method exports the user defined ToolBarItem tree structure into the parameter
-   * settings.
-   */
-  void exportCustomBars( ToolBarItem*, const char* node ) const;
   /** Sets up the contextmenu for this workbench. 
    * The default implementation does nothing.
    */
@@ -97,6 +87,13 @@ protected:
   virtual ToolBarItem* setupCommandBars() const=0;
   /** Returns a DockWindowItems structure of dock windows this workbench. */
   virtual DockWindowItems* setupDockWindows() const=0;
+
+private:
+  /**
+   * The method imports the user defined toolbars or toolbox bars and creates
+   * a ToolBarItem tree structure.
+   */
+  void importCustomToolbars(ToolBarItem* root, const char* toolbar) const;
 
 private:
   QString _name;

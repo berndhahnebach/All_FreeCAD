@@ -215,16 +215,18 @@ void Workbench::setName( const QString& name )
     _name = name;
 }
 
-ToolBarItem* Workbench::importCustomBars( const char* node ) const
+void Workbench::importCustomToolbars(ToolBarItem* root, const char* toolbar) const
 {
     QByteArray name = this->name().toAscii();
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
-        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(node);
+        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(toolbar);
   
-    ToolBarItem* root = new ToolBarItem;
     std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
     CommandManager& rMgr = Application::Instance->commandManager();
     for (std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it) {
+        bool active = (*it)->GetBool("Active", true);
+        if (!active) // ignore this toolbar
+            continue;
         ToolBarItem* bar = new ToolBarItem(root);
         bar->setCommand((*it)->GetGroupName());
    
@@ -250,35 +252,6 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
                 QString cmd = it2->first.c_str(); // command name
                 *bar << cmd;
             }
-        }
-    }
-
-    return root;
-}
-
-void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
-{
-    QByteArray name = this->name().toAscii();
-    CommandManager& rMgr = Application::Instance->commandManager();
-
-    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
-        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(node);
-    hGrp->Clear();
-
-    QList<ToolBarItem*> items = toolBar->getItems();
-
-    for (QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item) {
-        QByteArray bar = (*item)->command().toAscii();
-        ParameterGrp::handle hSubGrp = hGrp->GetGroup(bar.constData());
-        QList<ToolBarItem*> subitems = (*item)->getItems();
-
-        for (QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem) {
-            QByteArray command = (*subitem)->command().toAscii();
-            Command* pCmd = rMgr.getCommandByName(command.constData());
-            std::string module = "unknown";
-            if (pCmd)
-                module = pCmd->getAppModuleName();
-            hSubGrp->SetASCII(command.constData(), module.c_str());
         }
     }
 }
@@ -333,18 +306,14 @@ bool Workbench::activate()
     }
 
     ToolBarItem* tb = setupToolBars();
+    importCustomToolbars(tb, "Toolbar");
     ToolBarManager::getInstance()->setup( tb );
     delete tb;
-    ToolBarItem* cw = importCustomBars("Toolbars");
-    ToolBarManager::getInstance()->customSetup(cw);
-    delete cw;
 
     ToolBarItem* cb = setupCommandBars();
+    importCustomToolbars(cb, "Toolboxbar");
     CommandBarManager::getInstance()->setup( cb );
     delete cb;
-    ToolBarItem* cc = importCustomBars("Commandbars");
-    CommandBarManager::getInstance()->customSetup(cc);
-    delete cc;
 
     DockWindowItems* dw = setupDockWindows();
     DockWindowManager::instance()->setup( dw );

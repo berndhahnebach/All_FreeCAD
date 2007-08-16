@@ -770,9 +770,7 @@ void ParameterText::replace( const QString& oldName, const QString& newName )
 
 void ParameterText::appendToGroup()
 {
-    const char* name = text(0).toAscii();
-    const char* val =  text(2).toAscii();
-    _hcGrp->SetASCII(name, val );
+    _hcGrp->SetASCII(text(0).toAscii(), text(2).toAscii());
 }
 
 // --------------------------------------------------------------------
@@ -818,9 +816,7 @@ void ParameterInt::replace( const QString& oldName, const QString& newName )
 
 void ParameterInt::appendToGroup()
 {
-    const char* name = text(0).toAscii();
-    long val =  text(2).toLong();
-    _hcGrp->SetInt(name, val );
+    _hcGrp->SetInt(text(0).toAscii(), text(2).toLong());
 }
 
 // --------------------------------------------------------------------
@@ -875,9 +871,7 @@ void ParameterUInt::replace( const QString& oldName, const QString& newName )
 
 void ParameterUInt::appendToGroup()
 {
-    const char* name = text(0).toAscii();
-    unsigned long val =  text(2).toULong();
-    _hcGrp->SetUnsigned(name, val );
+    _hcGrp->SetUnsigned(text(0).toAscii(), text(2).toULong());
 }
 
 // --------------------------------------------------------------------
@@ -923,9 +917,7 @@ void ParameterFloat::replace( const QString& oldName, const QString& newName )
 
 void ParameterFloat::appendToGroup()
 {
-    const char* name = text(0).toAscii();
-    double val =  text(2).toDouble();
-    _hcGrp->SetFloat(name, val );
+    _hcGrp->SetFloat(text(0).toAscii(), text(2).toDouble());
 }
 
 // --------------------------------------------------------------------
@@ -974,9 +966,8 @@ void ParameterBool::replace( const QString& oldName, const QString& newName )
 
 void ParameterBool::appendToGroup()
 {
-    const char* name = text(0).toAscii();
     bool val = (text(2) == "true" ? true : false);
-    _hcGrp->SetBool(name, val );
+    _hcGrp->SetBool(text(0).toAscii(), val);
 }
 
 #include "moc_DlgParameterImp.cpp"

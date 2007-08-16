@@ -37,115 +37,110 @@ ToolBarItem::ToolBarItem()
 
 ToolBarItem::ToolBarItem( ToolBarItem* item )
 {
-  if ( item )
-    item->appendItem( this );
+    if ( item )
+        item->appendItem( this );
 }
 
 ToolBarItem::~ToolBarItem()
 {
-  clear();
+    clear();
 }
 
 void ToolBarItem::setCommand( const QString& name )
 {
-  _name = name;
+    _name = name;
 }
 
 QString ToolBarItem::command() const
 {
-  return _name;
+    return _name;
 }
 
 bool ToolBarItem::hasItems() const
 {
-  return _items.count() > 0;
+    return _items.count() > 0;
 }
 
 ToolBarItem* ToolBarItem::findItem( const QString& name )
 {
-  if ( _name == name )
-  {
-    return this;
-  }
-  else
-  {
-    for ( QList<ToolBarItem*>::ConstIterator it = _items.begin(); it != _items.end(); ++it ) {
-      if ( (*it)->_name == name ) {
-        return *it;
-      }
+    if ( _name == name ) {
+        return this;
+    } else {
+        for ( QList<ToolBarItem*>::ConstIterator it = _items.begin(); it != _items.end(); ++it ) {
+            if ( (*it)->_name == name ) {
+                return *it;
+            }
+        }
     }
-  }
 
-  return 0;
+    return 0;
 }
 
 ToolBarItem* ToolBarItem::copy() const
 {
-  ToolBarItem* root = new ToolBarItem;
-  root->setCommand( command() );
+    ToolBarItem* root = new ToolBarItem;
+    root->setCommand( command() );
 
-  QList<ToolBarItem*> items = getItems();
-  for ( QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it ) {
-    root->appendItem( (*it)->copy() );
-  }
+    QList<ToolBarItem*> items = getItems();
+    for ( QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it ) {
+        root->appendItem( (*it)->copy() );
+    }
 
-  return root;
+    return root;
 }
 
 uint ToolBarItem::count() const
 {
-  return _items.count();
+    return _items.count();
 }
 
 void ToolBarItem::appendItem( ToolBarItem* item )
 {
-  _items.push_back( item );
+    _items.push_back( item );
 }
 
 bool ToolBarItem::insertItem( ToolBarItem* before, ToolBarItem* item)
 {
-  int pos = _items.indexOf(before);
-  if (pos != -1)
-  {
-    _items.insert(pos, item);
-    return true;
-  }
-  else
-    return false;
+    int pos = _items.indexOf(before);
+    if (pos != -1) {
+        _items.insert(pos, item);
+        return true;
+    } else
+        return false;
 }
 
 void ToolBarItem::removeItem( ToolBarItem* item )
 {
-  int pos = _items.indexOf(item);
-  if (pos != -1)
-    _items.removeAt(pos);
+    int pos = _items.indexOf(item);
+    if (pos != -1)
+        _items.removeAt(pos);
 }
 
 void ToolBarItem::clear()
 {
-  for ( QList<ToolBarItem*>::Iterator it = _items.begin(); it != _items.end(); ++it ) {
-    delete *it;
-  }
+    for ( QList<ToolBarItem*>::Iterator it = _items.begin(); it != _items.end(); ++it ) {
+        delete *it;
+    }
 
-  _items.clear();
+    _items.clear();
 }
 
 ToolBarItem& ToolBarItem::operator<< ( ToolBarItem* item )
 {
-  appendItem(item);
-  return *this;
+    appendItem(item);
+    return *this;
 }
 
 ToolBarItem& ToolBarItem::operator<< ( const QString& command )
 {
-  ToolBarItem* item = new ToolBarItem(this);
-  item->setCommand( command );;
-  return *this;
+    ToolBarItem* item = new ToolBarItem(this);
+    item->setCommand( command );;
+    return *this;
 }
 
 QList<ToolBarItem*> ToolBarItem::getItems() const
 {
-  return _items;
+    return _items;
 }
 
 // -----------------------------------------------------------
@@ -154,15 +149,15 @@ ToolBarManager* ToolBarManager::_instance=0;
 
 ToolBarManager* ToolBarManager::getInstance()
 {
-  if ( !_instance )
-    _instance = new ToolBarManager;
-  return _instance;
+    if ( !_instance )
+        _instance = new ToolBarManager;
+    return _instance;
 }
 
 void ToolBarManager::destruct()
 {
-  delete _instance;
-  _instance = 0;
+    delete _instance;
+    _instance = 0;
 }
 
 ToolBarManager::ToolBarManager()
@@ -175,54 +170,46 @@ ToolBarManager::~ToolBarManager()
 
 void ToolBarManager::setup( ToolBarItem* toolBar ) const
 {
-  if ( !toolBar )
-    return; // empty menu bar
+    if ( !toolBar )
+        return; // empty menu bar
 
-  // switch updates off to avoid flickering
-  getMainWindow()->setUpdatesEnabled(false);
-  QList<QToolBar*> tbs = toolBars();
-  for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it )
-  {
-    getMainWindow()->removeToolBar( *it );
-    delete *it;
-  }
-
-  CommandManager& mgr = Application::Instance->commandManager();
-  QList<ToolBarItem*> items = toolBar->getItems();
-
-  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) 
-  {
-    QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toLatin1()))); // i18n
-    bar->setObjectName((*item)->command());
-
-    QList<ToolBarItem*> subitems = (*item)->getItems();
-    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem ) {
-      if ( (*subitem)->command() == "Separator" )
-        bar->addSeparator();
-      else
-        mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
+    // switch updates off to avoid flickering
+    getMainWindow()->setUpdatesEnabled(false);
+    QList<QToolBar*> tbs = toolBars();
+    for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it ) {
+        getMainWindow()->removeToolBar( *it );
+        delete *it;
     }
-  }
-  
-  // switch on updates
-  getMainWindow()->setUpdatesEnabled(true);
-}
 
-void ToolBarManager::customSetup( ToolBarItem* toolBar ) const
-{
-#if 0 //TODO
-#endif
+    CommandManager& mgr = Application::Instance->commandManager();
+    QList<ToolBarItem*> items = toolBar->getItems();
+
+    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) {
+        QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toLatin1()))); // i18n
+        bar->setObjectName((*item)->command());
+
+        QList<ToolBarItem*> subitems = (*item)->getItems();
+        for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem ) {
+            if ( (*subitem)->command() == "Separator" )
+                bar->addSeparator();
+            else
+                mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
+        }
+    }
+  
+    // switch on updates
+    getMainWindow()->setUpdatesEnabled(true);
 }
 
 QList<QToolBar*> ToolBarManager::toolBars() const
 {
-  QWidget* mw = getMainWindow();
-  QList<QToolBar*> tb;
-  QList<QToolBar*> bars = getMainWindow()->findChildren<QToolBar*>();
-  for (QList<QToolBar*>::ConstIterator it = bars.begin(); it != bars.end(); ++it) {
-    if ((*it)->parentWidget() == mw)
-      tb.push_back(*it);
-  }
+    QWidget* mw = getMainWindow();
+    QList<QToolBar*> tb;
+    QList<QToolBar*> bars = getMainWindow()->findChildren<QToolBar*>();
+    for (QList<QToolBar*>::ConstIterator it = bars.begin(); it != bars.end(); ++it) {
+        if ((*it)->parentWidget() == mw)
+            tb.push_back(*it);
+    }
 
-  return tb;
+    return tb;
 }
