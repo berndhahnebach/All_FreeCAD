@@ -29,7 +29,7 @@
 #endif
 
 #include <stdio.h>
-#include "Approx.h"
+//#include "Approx.h"
 
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
@@ -117,6 +117,214 @@ read(PyObject *self, PyObject *args)
   } PY_CATCH;
   Py_Return;
 }
+
+/*PyObject *TopoShapePyOld::makeToolPath(PyObject *args)
+{
+	Py::List AllCuts = Py::List();
+	
+    PyObject *pcObj;
+	//double offset_value;
+
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Cut-Curve wird hier übergeben
+
+    PY_TRY
+    {
+        Base::Builder3D log3D;
+
+        TopExp_Explorer Ex;
+
+        Ex.Init(_cTopoShape,TopAbs_FACE);
+
+		TopoDS_Edge aTopoEdge;
+		TopoDS_Compound aCompound;
+		BRepBuilderAPI_MakeWire ConnectedEdges;
+
+        if (!Ex.More())
+        {
+            log3D.addText(0.0,0.0 ,0.0,"Keine Surface gefunden");
+            log3D.saveToFile("c:/test.iv");
+            return NULL;
+        }
+
+        Handle_Geom_Surface geom_surface;
+
+        for (; Ex.More(); Ex.Next())
+        {
+            const TopoDS_Face &atopo_surface =  TopoDS::Face (Ex.Current());
+            geom_surface= BRep_Tool::Surface(atopo_surface);
+        }
+
+        Ex.Init(pcShape->getShape(),TopAbs_EDGE);
+        Standard_Real d_tmin,d_tmax;
+        int numberofpoints;
+        for (; Ex.More(); Ex.Next())
+        {
+            const TopoDS_Edge &edge =  TopoDS::Edge (Ex.Current());
+            //gp_Pnt aPoint = BRep_Tool::Edge( Edge );
+            //Handle(Geom_Curve) po_segment = BRep_Tool::Curve (edge,d_tmin, d_tmax);
+
+            BRepAdaptor_Curve edge_adaptor;
+            edge_adaptor.Initialize(edge);
+            d_tmin=edge_adaptor.FirstParameter();
+            d_tmax=edge_adaptor.LastParameter();
+            GCPnts_UniformAbscissa evaluate_points(edge_adaptor, 2.0, d_tmin,d_tmax);
+            if (!evaluate_points.IsDone())
+                PyExc_Exception;
+            numberofpoints = evaluate_points.NbPoints();
+
+			if (numberofpoints < 5)
+				PyExc_Exception;
+			Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, numberofpoints);
+            for (int i=1;i<=numberofpoints;++i)
+            {
+                //Project Points onto Surface and Offset Them and generate a new BSpline Offset Curve
+                gp_Pnt currentPoint = edge_adaptor.Value(evaluate_points.Parameter(i));
+                GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface);
+                Standard_Real U,V;
+                aPPS.LowerDistanceParameters (U,V);
+                gp_Pnt projectedSurfacePoint;
+                gp_Pnt Zero(0,0,0);
+                geom_surface->D0(U,V,projectedSurfacePoint);
+                GeomLProp_SLProps aLProps (geom_surface, U,V,2, 0.001);
+                gp_Dir Normal_direction;
+                if (aLProps.IsNormalDefined())
+                {
+                    Normal_direction = aLProps.Normal();
+                }
+                gp_Vec NormalVector(Normal_direction);
+                gp_Vec projectedSurfacePoint_Vector(Zero,projectedSurfacePoint);
+                gp_Pnt OffsetPoint ((projectedSurfacePoint_Vector + (NormalVector*10)).XYZ());
+				aPnts->SetValue(i,OffsetPoint);
+			}
+				
+				  Standard_Boolean isPeriodic = Standard_False;
+				  GeomAPI_Interpolate aNoPeriodInterpolate(aPnts, isPeriodic, Precision::Confusion());
+				  aNoPeriodInterpolate.Perform();
+				  // check results
+				  if (!aNoPeriodInterpolate.IsDone()) return NULL;
+				  
+				  Handle_Geom_BSplineCurve anInterpolationCurve = aNoPeriodInterpolate.Curve();
+				  
+				  BRep_Builder aBuilder;
+				  
+				  aBuilder.MakeEdge(aTopoEdge,anInterpolationCurve,0.001);
+			
+		
+        }
+		return new TopoShapePyOld( aTopoEdge);
+    } PY_CATCH;
+}
+
+
+
+PyObject *TopoShapePyOld::offset(PyObject *args)
+{
+  float offset;
+  if (!PyArg_ParseTuple(args, "f", &offset ))
+    return NULL;
+
+  PY_TRY {
+
+    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (_cTopoShape,offset,0.001,BRepOffset_Skin);
+
+    if(MakeOffsetShape.IsDone())
+      return new TopoShapePyOld(MakeOffsetShape.Shape());
+    else {
+      PyErr_SetString(PyExc_Exception,"Offset failed");
+      return NULL;
+    }
+
+	  
+  } PY_CATCH;
+
+}
+
+
+
+
+
+PyObject *TopoShapePyOld::cut(PyObject *args)
+{
+	
+
+
+	PyObject *pcObj;
+	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj);
+
+	PY_TRY 
+	{
+   			// Let's call for algorithm computing a cut operation:
+  			BRepAlgo_Section mkCut(_cTopoShape, pcShape->getShape(),Standard_False); 
+			mkCut.ComputePCurveOn1(Standard_True);
+			mkCut.Approximation (Standard_True);
+			mkCut.Build();
+			
+			
+			// Let's check if the Cut has been successfull:
+			if (!mkCut.IsDone()) 
+			{
+			  PyErr_SetString(PyExc_Exception,"Cut failed");
+			  return NULL;
+			} 
+
+
+			//Verify that there is a Wire available or only one edge that represents the sectioning
+			TopExp_Explorer Ex,Ex1;
+
+			Ex.Init(mkCut.Shape(),TopAbs_WIRE);
+
+			TopoDS_Wire aTopoWire;
+
+			if (!Ex.More())
+			{
+				//log3D.addText(0.0,0.0 ,0.0,"Keine Wire gefunden");
+				//log3D.saveToFile("c:/test.iv");
+				
+				Ex1.Init(mkCut.Shape(),TopAbs_EDGE);
+
+				TopoDS_Edge aTopoEdge;
+
+				if (!Ex1.More())
+				{
+					//log3D.addText(0.0,0.0 ,0.0,"Auch keine Edge gefunden");
+					//log3D.saveToFile("c:/test.iv");
+					return NULL;
+				}
+			
+				int i=0;
+				for (; Ex1.More(); Ex1.Next())
+				{
+					i++;
+				}
+
+				if(i>1) //Wenn mehr als eine Edge da ist und keine Wire vorhanden ist, stimmt was nicht.
+					return NULL;
+				
+			}
+
+			
+
+			return new TopoShapePyOld( mkCut.Shape());
+		
+	  
+	} PY_CATCH;
+
+}
+
+
+
+
+*/
+
+
+
+
 
 /* Approximate test function */
 
@@ -2854,6 +3062,7 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 	std::vector<double> KntV;
 	int OrdU;
 	int OrdV;
+	/*
 	Approximate approx(copy,Control,KntU,KntV,OrdU,OrdV,1.0);
 	std::list< std::vector <unsigned long> > BoundariesIndex;
 	std::list< std::vector <unsigned long> > ::iterator bin_it;
@@ -2890,7 +3099,7 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
     {
       ++It;
     }
-
+*/
     // most of the algoristhms are under src/Mod/Mesh/App/Core!
 
   } PY_CATCH;
