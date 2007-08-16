@@ -27,10 +27,6 @@
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 #include "DlgOnlineHelpImp.h"
 #include "PrefWidgets.h"
 

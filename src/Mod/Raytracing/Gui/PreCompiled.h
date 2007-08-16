@@ -109,10 +109,6 @@
 # include <Gui/Qt4All.h>
 #endif
 
-#ifndef __Qt3All__
-# include <Gui/Qt3All.h>
-#endif
-
 // Inventor
 #ifndef __InventorAll__
 # include <Gui/InventorAll.h>

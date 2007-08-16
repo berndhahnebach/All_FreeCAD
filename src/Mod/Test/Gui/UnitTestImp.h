@@ -33,9 +33,6 @@
 # include <Gui/Qt4All.h>
 #endif
 
-#ifndef __Qt3All__
-# include <Gui/Qt3All.h>
-#endif
 namespace TestGui {
 
 class UnitTestDialog : public QDialog, public Ui_UnitTest

@@ -23,11 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include "DlgParameterImp.h"
 #include "DlgInputDialogImp.h"
 #include "BitmapFactory.h"
