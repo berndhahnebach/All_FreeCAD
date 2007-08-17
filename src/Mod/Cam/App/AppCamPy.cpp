@@ -57,6 +57,11 @@
 #include <Mod/Mesh/App/MeshAlgos.h>
 
 
+# include <BRepOffsetAPI_MakeOffsetShape.hxx>
+# include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+# include <GeomAPI_IntSS.hxx>
+
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
@@ -65,6 +70,18 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <BRepOffset.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
+#include <BRepAlgo_Section.hxx>
+
+
+
 
 
 using Base::Console;
@@ -119,7 +136,7 @@ read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-static PyObject * makeToolPath(PyObject *args)
+static PyObject * makeToolPath(PyObject *self, PyObject *args)
 {
 	Py::List AllCuts = Py::List();
 	
@@ -137,7 +154,7 @@ static PyObject * makeToolPath(PyObject *args)
 
         TopExp_Explorer Ex;
 
-        Ex.Init(_cTopoShape,TopAbs_FACE);
+        Ex.Init(pcShape->getShape(),TopAbs_FACE);
 
 		TopoDS_Edge aTopoEdge;
 		TopoDS_Compound aCompound;
@@ -221,15 +238,19 @@ static PyObject * makeToolPath(PyObject *args)
 
 
 
-PyObject * offset(PyObject *args)
+PyObject * offset(PyObject *self,PyObject *args)
 {
   float offset;
-  if (!PyArg_ParseTuple(args, "f", &offset ))
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePyOld::Type), &pcObj, &offset ))
     return NULL;
+
+  TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Cut-Curve wird hier übergeben
 
   PY_TRY {
 
-    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (_cTopoShape,offset,0.001,BRepOffset_Skin);
+
+    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getShape(),offset,0.001,BRepOffset_Skin);
 
     if(MakeOffsetShape.IsDone())
       return new TopoShapePyOld(MakeOffsetShape.Shape());
@@ -243,18 +264,20 @@ PyObject * offset(PyObject *args)
 
 }
 
-PyObject * cut(PyObject *args)
+PyObject * cut(PyObject *self, PyObject *args)
 {
 	PyObject *pcObj;
-	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
+	PyObject *pcObj2;
+	if (!PyArg_ParseTuple(args, "O!O!", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj);
+	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2);
 
 	PY_TRY 
 	{
    			// Let's call for algorithm computing a cut operation:
-  			BRepAlgo_Section mkCut(_cTopoShape, pcShape->getShape(),Standard_False); 
+  			BRepAlgo_Section mkCut(pcShape->getShape(), pcShape2->getShape(),Standard_False); 
 			mkCut.ComputePCurveOn1(Standard_True);
 			mkCut.Approximation (Standard_True);
 			mkCut.Build();
@@ -3036,9 +3059,9 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Cam_methods[] = {
 	{"open"   , open,   Py_NEWARGS, "open(string) -- Not implemnted for this Module so far."},       
-    {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
-    {"read"   , read,  1},       
-    {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
+  {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
+  {"read"   , read,  1},       
+  {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
 	{"createTestApproximate" , createTestApproximate, 1},
 	{"makeToolPath", makeToolPath, 1},
 	{"offset", offset, 1},
