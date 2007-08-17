@@ -162,7 +162,7 @@ void MacroManager::addLine(LineType Type, const char* sLine)
             this->pyConsole = Gui::getMainWindow()->findChild<Gui::PythonConsole*>();
         // Python console found?
         if (this->pyConsole)
-            this->pyConsole->printStatement(sLine);
+            this->pyConsole->printStatement(QString::fromUtf8(sLine));
     }
 }
 

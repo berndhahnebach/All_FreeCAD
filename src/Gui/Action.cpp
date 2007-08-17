@@ -520,7 +520,7 @@ void RecentFilesAction::restore()
     std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
     QStringList files;
     for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
-        files.append(it->c_str());
+        files.append(QString::fromUtf8(it->c_str()));
     setFiles(files);
 }
 
@@ -540,7 +540,7 @@ void RecentFilesAction::save()
         QString value = recentFiles[index]->toolTip();
         if (value.isEmpty())
             break;
-        hGrp->SetASCII(key.toAscii(), value.toAscii());
+        hGrp->SetASCII(key.toAscii(), value.toUtf8());
     }
 }
 

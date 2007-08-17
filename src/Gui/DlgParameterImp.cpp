@@ -492,7 +492,7 @@ void ParameterValue::onCreateTextItem()
     if ( ok && !val.isEmpty() )
     {
         ParameterValueItem *pcItem;
-        pcItem = new ParameterText(this,name,val, _hcGrp);
+        pcItem = new ParameterText(this, name, val.toUtf8(), _hcGrp);
         pcItem->appendToGroup();
     }
 }
@@ -729,13 +729,13 @@ void ParameterValueItem::setData ( int column, int role, const QVariant & value 
 
 // --------------------------------------------------------------------
 
-ParameterText::ParameterText ( QTreeWidget * parent, QString label, QString value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterText::ParameterText ( QTreeWidget * parent, QString label, const char* value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_Text") );
     setText(0, label);
     setText(1, "Text");
-    setText(2, value);
+    setText(2, QString::fromUtf8(value));
 }
 
 ParameterText::~ParameterText()
@@ -752,7 +752,7 @@ void ParameterText::changeValue()
     if ( ok )
     {
         setText( 2, txt );
-        _hcGrp->SetASCII(name, txt.toAscii() );
+        _hcGrp->SetASCII(name, txt.toUtf8());
     }
 }
 

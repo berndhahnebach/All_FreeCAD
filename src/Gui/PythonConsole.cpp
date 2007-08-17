@@ -266,6 +266,7 @@ bool InteractiveInterpreter::push(const char* line)
     d->buffer.append(line);
     QString source = d->buffer.join("\n");
     try {
+        // Source is already UTF-8, so we can use toAscii()
         bool more = runSource(source.toAscii());
         if (!more)
             d->buffer.clear();
@@ -558,7 +559,7 @@ void PythonConsole::runSource(const QString& line)
     
     try {
         // launch the command now
-        incomplete = d->interpreter->push(line.toAscii());
+        incomplete = d->interpreter->push(line.toUtf8());
         setFocus(); // if focus was lost
     } catch (const Base::SystemExitException&) {
         int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
@@ -770,7 +771,7 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
                 }
 
                 buffer.append(*it);
-                int ret = d->interpreter->compileCommand(buffer.join("\n").toAscii());
+                int ret = d->interpreter->compileCommand(buffer.join("\n").toUtf8());
                 if (ret == 1) { // incomplete
                     printPrompt(true);
                 } else if (ret == 0) { // complete
@@ -782,7 +783,7 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
                         nextline = lines[k];
                     }
                     
-                    int ret = d->interpreter->compileCommand(nextline.toAscii());
+                    int ret = d->interpreter->compileCommand(nextline.toUtf8());
 
                     // If the line is valid, i.e. complete or incomplete the previous block
                     // is finished
