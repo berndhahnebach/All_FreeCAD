@@ -108,8 +108,7 @@ open(PyObject *self, PyObject *args)
 
 
 /* module functions */
-static PyObject *                        
-insert(PyObject *self, PyObject *args)     
+static PyObject * insert(PyObject *self, PyObject *args)     
 {                                        
   const char* Name;
   const char* DocName;
@@ -124,8 +123,7 @@ insert(PyObject *self, PyObject *args)
 }
 
 /* module functions */
-static PyObject *                        
-read(PyObject *self, PyObject *args)
+static PyObject * read(PyObject *self, PyObject *args)
 {
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
@@ -238,17 +236,16 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 
 
 
-PyObject * offset(PyObject *self,PyObject *args)
+static PyObject * offset(PyObject *self,PyObject *args)
 {
   float offset;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePyOld::Type), &pcObj, &offset ))
     return NULL;
 
-  TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Cut-Curve wird hier übergeben
+  TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Original-Shape wird hier übergeben
 
   PY_TRY {
-
 
     BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getShape(),offset,0.001,BRepOffset_Skin);
 
@@ -264,15 +261,15 @@ PyObject * offset(PyObject *self,PyObject *args)
 
 }
 
-PyObject * cut(PyObject *self, PyObject *args)
+static PyObject * cut(PyObject *self, PyObject *args)
 {
 	PyObject *pcObj;
 	PyObject *pcObj2;
 	if (!PyArg_ParseTuple(args, "O!O!", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-	TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj);
-	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2);
+	TopoShapePyOld *pcShape =  static_cast<TopoShapePyOld*>(pcObj); //Surface to cut
+	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cutting Plane
 
 	PY_TRY 
 	{
@@ -289,8 +286,9 @@ PyObject * cut(PyObject *self, PyObject *args)
 			  return NULL;
 			} 
 
-			//Verify that there is a Wire available or only one edge that represents the sectioning
+			//Verify that there is a Wire available or just one edge that represents the sectio cut
 			TopExp_Explorer Ex,Ex1;
+			Py_Return;
 			Ex.Init(mkCut.Shape(),TopAbs_WIRE);
 			TopoDS_Wire aTopoWire;
 			if (!Ex.More())
@@ -304,7 +302,7 @@ PyObject * cut(PyObject *self, PyObject *args)
 				{
 					//log3D.addText(0.0,0.0 ,0.0,"Auch keine Edge gefunden");
 					//log3D.saveToFile("c:/test.iv");
-					return NULL;
+					Py_Return;
 				}
 				int i=0;
 				for (; Ex1.More(); Ex1.Next())
@@ -312,8 +310,8 @@ PyObject * cut(PyObject *self, PyObject *args)
 					i++;
 				}
 
-				if(i>1) //Wenn mehr als eine Edge da ist und keine Wire vorhanden ist, stimmt was nicht.
-					return NULL;
+				if(i>1) //If there is more then one edge and no wire -> change the cutting plane z-level!!
+					Py_Return;
 				
 			}
 
@@ -325,18 +323,9 @@ PyObject * cut(PyObject *self, PyObject *args)
 }
 
 
-
-
-
-
-
-
-
-
 /* Approximate test function */
 
-static PyObject *
-createTestApproximate(PyObject *self, PyObject *args)
+static PyObject * createTestApproximate(PyObject *self, PyObject *args)
 {
 	if (! PyArg_ParseTuple(args, ""))			 
     return NULL;
