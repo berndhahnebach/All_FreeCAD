@@ -244,7 +244,7 @@ class ParameterText : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterText ( QTreeWidget * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterText ( QTreeWidget * parent, QString label1, const char* value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterText();
 
   void changeValue();

@@ -481,7 +481,7 @@ void MacroCommand::activated(int iMsg)
     App::GetApplication().GetHomePath());
 
   QDir d( cMacroPath.c_str() );
-  QFileInfo fi( d, scriptName );
+  QFileInfo fi(d, QString::fromUtf8(sScriptName));
   Application::Instance->macroManager()->run(MacroManager::File, fi.filePath().toUtf8());
   // after macro run recalculate the document
   if ( Application::Instance->activeDocument() )
@@ -547,6 +547,15 @@ void MacroCommand::setPixmap( const char* s )
 #endif
 }
 
+void MacroCommand::setScriptName( const char* s )
+{
+#if defined (_MSC_VER)
+  this->sScriptName = _strdup( s );
+#else
+  this->sScriptName = strdup( s );
+#endif
+}
+
 void MacroCommand::setAccel(int i)
 {
   iAccel = i;
@@ -588,7 +597,7 @@ void MacroCommand::save()
     {
       MacroCommand* macro = (MacroCommand*)(*it);
       ParameterGrp::handle hMacro = hGrp->GetGroup(macro->getName());
-      hMacro->SetASCII( "Script",    macro->getScriptName ().toUtf8() );
+      hMacro->SetASCII( "Script",    macro->getScriptName () );
       hMacro->SetASCII( "Menu",      macro->getMenuText   () );
       hMacro->SetASCII( "Tooltip",   macro->getToolTipText() );
       hMacro->SetASCII( "WhatsThis", macro->getWhatsThis  () );

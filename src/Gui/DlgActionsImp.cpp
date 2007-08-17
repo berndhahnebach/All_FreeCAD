@@ -157,9 +157,10 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated(QTreeWidgetItem *ite
     if ( pScript )
     {
         bool bFound = false;
+        QString scriptName = QString::fromUtf8(pScript->getScriptName());
         for (int i = 0; i<actionMacros->count(); i++)
         {
-            if (actionMacros->itemText(i).startsWith(pScript->getScriptName(), Qt::CaseSensitive))
+            if (actionMacros->itemText(i).startsWith(scriptName, Qt::CaseSensitive))
             {
                 bFound = true;
                 actionMacros->setCurrentIndex(i);
@@ -170,7 +171,7 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated(QTreeWidgetItem *ite
         if (!bFound)
         {
             QMessageBox::critical(this, tr("Macro not found"), 
-                    tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName()));
+                    tr("Sorry, couldn't find macro file '%1'.").arg(scriptName));
         }
 
         // fill up labels with the command's data
@@ -227,7 +228,7 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
     actionWhatsThis->clear();
   
     if (!actionMacros-> currentText().isEmpty())
-        macro->setScriptName(actionMacros->currentText());
+        macro->setScriptName(actionMacros->currentText().toUtf8());
   
     if (!actionMenu->text().isEmpty())
         macro->setMenuText(actionMenu->text().toUtf8());
@@ -296,7 +297,7 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     actionWhatsThis->clear();
   
     if (!actionMacros-> currentText().isEmpty())
-        macro->setScriptName(actionMacros->currentText());
+        macro->setScriptName(actionMacros->currentText().toUtf8());
   
     if (!actionMenu->text().isEmpty())
         macro->setMenuText(actionMenu->text().toUtf8());

@@ -343,14 +343,14 @@ protected:
 
 public:
   /// Returns the script name
-  QString getScriptName () const { return scriptName;   }
-  /// Sets the script name
-  void setScriptName ( const QString& s ) { scriptName = s; }
+  const char* getScriptName () const { return sScriptName; }
   /// Ignore when language has changed. 
   void languageChange() {}
  
   /** @name Methods to set the properties of the Script Command */
   //@{
+  /// Sets the script name
+  void setScriptName ( const char* );
   void setWhatsThis  ( const char* );
   void setMenuText   ( const char* );
   void setToolTipText( const char* );
@@ -368,14 +368,7 @@ public:
   //@}
 
 protected:
-  /** @name Attributes 
-   *  set by the inherited constructor to set up the most important propertys 
-   *  of the command. In the Command constructor are set default values! 
-   *  The real values should be set with the Seter.
-   */
-  //@{
-  QString scriptName;
-  //@}
+  const char* sScriptName;
 };
 
 /** The CommandManager class
