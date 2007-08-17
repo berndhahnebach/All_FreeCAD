@@ -265,7 +265,7 @@ bool PythonView::open(const QString& fileName)
  */
 void PythonView::run(void)
 {
-    Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.toLatin1());
+    Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.toUtf8());
 }
 
 /**

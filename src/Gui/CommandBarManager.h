@@ -53,8 +53,6 @@ public:
   static void destruct();
   /** Sets up the command bars of a given workbench. */
   void setup( ToolBarItem* ) const;
-  /** Sets up the custom command bars defined by the user of a given workbench. */
-  void customSetup( ToolBarItem* ) const;
   void setToolBox( DockWnd::ToolBox* );
 
 protected:

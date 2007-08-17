@@ -206,10 +206,11 @@ PYFUNCIMP_S(Application,sopen)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
+    QString fileName = QString::fromUtf8(Name);
     QFileInfo fi;
-    fi.setFile(Name);
+    fi.setFile(fileName);
     QString ext = fi.completeSuffix().toLower();
-    MDIView* view = getMainWindow()->getWindowWithCaption( Name );
+    MDIView* view = getMainWindow()->getWindowWithCaption(fileName);
     if ( view ) {
       view->setFocus();
     }
@@ -221,7 +222,7 @@ PYFUNCIMP_S(Application,sopen)
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
-      edit->open(Name);
+      edit->open(fileName);
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }
@@ -238,8 +239,9 @@ PYFUNCIMP_S(Application,sinsert)
     return NULL;                         
 
   PY_TRY {
+    QString fileName = QString::fromUtf8(Name);
     QFileInfo fi;
-    fi.setFile(Name);
+    fi.setFile(fileName);
     QString ext = fi.completeSuffix().toLower();
     if ( ext == "iv" || ext == "wrl" ) {
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
@@ -247,7 +249,7 @@ PYFUNCIMP_S(Application,sinsert)
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
-      edit->open(Name);
+      edit->open(fileName);
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }
@@ -410,7 +412,7 @@ PYFUNCIMP_S(Application,sListWorkbenches)
   int i=0;
   for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
   {
-    PyObject* str = PyString_FromString((const char*)(*it).toLatin1());
+    PyObject* str = PyString_FromString((const char*)(*it).toAscii());
     PyList_SetItem(pyList, i++, str);
   }
 

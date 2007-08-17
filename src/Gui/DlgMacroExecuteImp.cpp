@@ -111,7 +111,7 @@ void DlgMacroExecuteImp::accept()
     QDialog::accept();
     QDir dir(this->macroPath);
     QFileInfo fi(dir, item->text(0));
-    Application::Instance->macroManager()->run(Gui::MacroManager::File, fi.filePath().toAscii());
+    Application::Instance->macroManager()->run(Gui::MacroManager::File, fi.filePath().toUtf8());
     // after macro run recalculate the document
     if ( Application::Instance->activeDocument() )
         Application::Instance->activeDocument()->getDocument()->recompute();
@@ -143,7 +143,7 @@ void DlgMacroExecuteImp::on_editButton_clicked()
     QDir dir(this->macroPath);
     QString file = QString("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
 
-    Application::Instance->open( file.toAscii() );
+    Application::Instance->open(file.toUtf8());
     close();
 }
 

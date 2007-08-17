@@ -561,11 +561,11 @@ void View3DInventor::dropEvent ( QDropEvent * e )
         QFileInfo info((*it).toLocalFile());
         if ( info.exists() && info.isFile() ) {
           // First check the complete extension
-          if ( App::GetApplication().hasOpenType(info.completeSuffix().toLatin1() ) )
-            Application::Instance->import(info.absoluteFilePath().toLatin1(), pDoc->getName());
+          if ( App::GetApplication().hasOpenType(info.completeSuffix().toUtf8() ) )
+            Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
           // Don't get the complete extension
           else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
-            Application::Instance->import(info.absoluteFilePath().toLatin1(), pDoc->getName());
+            Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
         }
       }
     }

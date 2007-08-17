@@ -83,7 +83,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     bar->setOrientation(Qt::Vertical);
     bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    bar->setWindowTitle(QObject::tr((const char*)(*item)->command().toLatin1())); // i18n
+    bar->setWindowTitle(QObject::tr((const char*)(*item)->command().toAscii())); // i18n
     _toolBox->addItem( bar, bar->windowTitle() );
 
     QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -92,7 +92,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
       if ( (*subitem)->command() == "Separator" ) {
         //bar->addSeparator();
       } else {
-        mgr.addTo( (const char*)((*subitem)->command().toLatin1()), bar );
+        mgr.addTo( (const char*)((*subitem)->command().toAscii()), bar );
       }
     }
 
@@ -111,43 +111,6 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
         p.fill(Qt::transparent);
         (*it)->setIcon(p);
       }
-    }
-  }
-}
-
-void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
-{return;
-  if ( !toolBar || !_toolBox )
-    return; // empty menu bar
-
-  int ct = _toolBox->count();
-  for ( int i=0; i<ct; i++ )
-  {
-    // get always the first item widget
-    QWidget* w = _toolBox->widget(0);
-    _toolBox->removeItem(0);
-    delete w;
-  }
-
-  CommandManager& mgr = Application::Instance->commandManager();
-  QList<ToolBarItem*> items = toolBar->getItems();
-
-  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
-  {
-    QToolBar* bar = new QToolBar();
-    bar->setOrientation(Qt::Vertical);
-    bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-    bar->setWindowTitle( QObject::tr( (const char*)(*item)->command().toLatin1() ) ); // i18n
-    _toolBox->addItem( bar, bar->windowTitle() );
-
-    QList<ToolBarItem*> subitems = (*item)->getItems();
-    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
-    {
-      if ( (*subitem)->command() == "Separator" )
-        bar->addSeparator();
-      else
-        mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
     }
   }
 }

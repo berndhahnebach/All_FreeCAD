@@ -482,7 +482,7 @@ void MacroCommand::activated(int iMsg)
 
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );
-  Application::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).toLatin1());
+  Application::Instance->macroManager()->run(MacroManager::File, fi.filePath().toUtf8());
   // after macro run recalculate the document
   if ( Application::Instance->activeDocument() )
     Application::Instance->activeDocument()->getDocument()->recompute();
@@ -490,16 +490,16 @@ void MacroCommand::activated(int iMsg)
 
 Action * MacroCommand::createAction(void)
 {
-  Action *pcAction;
-  pcAction = new Action(this,getMainWindow());
-  pcAction->setText     ( sMenuText    );
-  pcAction->setToolTip  ( sToolTipText );
-  pcAction->setStatusTip( sStatusTip   );
-  pcAction->setWhatsThis( sWhatsThis   );
-  if( sPixmap )
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
-  return pcAction;
+    Action *pcAction;
+    pcAction = new Action(this,getMainWindow());
+    pcAction->setText(QString::fromUtf8(sMenuText));
+    pcAction->setToolTip(QString::fromUtf8(sToolTipText));
+    pcAction->setStatusTip(QString::fromUtf8(sStatusTip));
+    pcAction->setWhatsThis(QString::fromUtf8(sWhatsThis));
+    if( sPixmap )
+        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setShortcut(iAccel);
+    return pcAction;
 }
 
 void MacroCommand::setMenuText( const char* s )
@@ -588,7 +588,7 @@ void MacroCommand::save()
     {
       MacroCommand* macro = (MacroCommand*)(*it);
       ParameterGrp::handle hMacro = hGrp->GetGroup(macro->getName());
-      hMacro->SetASCII( "Script",    macro->getScriptName ().toLatin1() );
+      hMacro->SetASCII( "Script",    macro->getScriptName ().toUtf8() );
       hMacro->SetASCII( "Menu",      macro->getMenuText   () );
       hMacro->SetASCII( "Tooltip",   macro->getToolTipText() );
       hMacro->SetASCII( "WhatsThis", macro->getWhatsThis  () );

@@ -903,7 +903,7 @@ StatusBarObserver::~StatusBarObserver()
 void StatusBarObserver::Message(const char * m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-  QString msg = QString("<font color=\"#000000\">%1</font>").arg(m);
+    QString msg = QString("<font color=\"#000000\">%1</font>").arg(QString::fromUtf8(m));
   CustomMessageEvent* ev = new CustomMessageEvent(msg);
   QApplication::postEvent(getMainWindow(), ev);
 }
@@ -914,7 +914,7 @@ void StatusBarObserver::Message(const char * m)
 void StatusBarObserver::Warning(const char *m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-  QString msg = QString("<font color=\"#ffaa00\">%1</font>").arg(m);
+  QString msg = QString("<font color=\"#ffaa00\">%1</font>").arg(QString::fromUtf8(m));
   CustomMessageEvent* ev = new CustomMessageEvent(msg);
   QApplication::postEvent(getMainWindow(), ev);
 }
@@ -925,7 +925,7 @@ void StatusBarObserver::Warning(const char *m)
 void StatusBarObserver::Error  (const char *m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-  QString msg = QString("<font color=\"#ff0000\">%1</font>").arg(m);
+  QString msg = QString("<font color=\"#ff0000\">%1</font>").arg(QString::fromUtf8(m));
   CustomMessageEvent* ev = new CustomMessageEvent(msg);
   QApplication::postEvent(getMainWindow(), ev);
 }

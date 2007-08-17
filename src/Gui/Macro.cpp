@@ -26,8 +26,6 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <stdio.h>
-# include <qglobal.h>
-# include <qstringlist.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -44,159 +42,165 @@
 
 using namespace Gui;
 
-//**************************************************************************
-// Construction/Destruction
 
-// here the implemataion! description should take place in the header file!
 MacroManager::MacroManager()
-:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true),_bScriptToPyConsole(false),_pyc(0)
+  : openMacro(false), recordGui(true), guiAsComment(true),scriptToPyConsole(false),pyConsole(0)
 {
-  // Attach to the Parametergroup regarding macros
-  Params = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro");
-  Params->Attach( this );
-  Params->NotifyAll();
+    // Attach to the Parametergroup regarding macros
+    this->params = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro");
+    this->params->Attach(this);
+    this->params->NotifyAll();
 }
 
 MacroManager::~MacroManager()
 {
-  Params->Detach( this );
+    this->params->Detach(this);
 }
 
 void MacroManager::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
-  //Params->GetASCII("MacroPath",
-  _bRecordGui         = Params->GetBool("RecordGui", true);
-  _bGuiAsComment      = Params->GetBool("GuiAsComment", true);
-  _bScriptToPyConsole = Params->GetBool("ScriptToPyConsole", false);
+    this->recordGui         = this->params->GetBool("RecordGui", true);
+    this->guiAsComment      = this->params->GetBool("GuiAsComment", true);
+    this->scriptToPyConsole = this->params->GetBool("ScriptToPyConsole", false);
 }
-
-
-//**************************************************************************
-// separator for other implemetation aspects
 
 void MacroManager::open(MacroType eType,const char *sName)
 {
-  // check 
-  assert(!_bIsOpen);
-  assert(eType == File);
+    // check 
+    assert(!this->openMacro);
+    assert(eType == File);
 
-  _sMacroInProgress = "";
-  _sName = sName;
-  if(!_sName.endsWith(".FCMacro"))
-    _sName += ".FCMacro";
+    // Convert from Utf-8
+    this->macroName = QString::fromUtf8(sName);
+    if (!this->macroName.endsWith(".FCMacro"))
+        this->macroName += ".FCMacro";
 
-  _bIsOpen = true;
+    this->macroInProgress = "";
+    this->openMacro = true;
 
-  Base::Console().Log("CmdM: Open macro: %s\n",(const char*)_sName.toLatin1());
+    Base::Console().Log("CmdM: Open macro: %s\n", sName);
 }
 
-//void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
-//{
-//  _bRecordGui = bRecord;
-//  _bGuiAsComment = bAsComment;
-//}
-
-/// close (and save) the recording sassion
 void MacroManager::commit(void)
 {
-  std::ofstream file((const char*)_sName.toLatin1());
-
-  // sort import lines and avoid duplicates
-  QStringList lines = _sMacroInProgress.split('\n');
-  QStringList import; import << "import FreeCAD\n";
-  QStringList body;
-
-  QStringList::Iterator it;
-  for ( it = lines.begin(); it != lines.end(); ++it )
-  {
-    if ( (*it).startsWith("import ") || (*it).startsWith("#import ") )
+    QFile file(this->macroName);
+    if (file.open(QFile::WriteOnly)) 
     {
-      if (import.indexOf( *it + '\n' ) == -1)
-        import.push_back( *it + '\n' );
+        // sort import lines and avoid duplicates
+        QTextStream str(&file);
+        QStringList lines = this->macroInProgress.split('\n');
+        QStringList import; import << "import FreeCAD\n";
+        QStringList body;
+
+        QStringList::Iterator it;
+        for ( it = lines.begin(); it != lines.end(); ++it )
+        {
+            if ( (*it).startsWith("import ") || (*it).startsWith("#import ") )
+            {
+                if (import.indexOf( *it + '\n' ) == -1)
+                    import.push_back( *it + '\n' );
+            }
+            else
+            {
+                body.push_back( *it + '\n' );
+            }
+        }
+
+        QString header = "# Macro Begin: ";
+        header += this->macroName;
+        header += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+        QString footer = "# Macro End: ";
+        footer += this->macroName;
+        footer += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+        // write the data to the text file
+        str << header;
+        for ( it = import.begin(); it != import.end(); ++it )
+            str << (*it);
+        str << '\n';
+        for ( it = body.begin(); it != body.end(); ++it )
+            str << (*it);
+        str << footer;
     }
-    else
-    {
-      body.push_back( *it + '\n' );
-    }
-  }
 
-  QString header = "# Macro Begin: ";
-  header += _sName;
-  header += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+    Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)this->macroName.toUtf8());
 
-  QString footer = "# Macro End: ";
-  footer += _sName;
-  footer += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
-
-  file << (const char*)header.toLatin1();
-  for ( it = import.begin(); it != import.end(); ++it )
-    file << (const char*)(*it).toLatin1();
-  file << '\n';
-  for ( it = body.begin(); it != body.end(); ++it )
-    file << (const char*)(*it).toLatin1();
-  file << (const char*)footer.toLatin1();
-
-  Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)_sName.toLatin1());
-
-  _sMacroInProgress = "";
-  _sName = "";
-  _bIsOpen = false;
+    this->macroInProgress = "";
+    this->macroName = "";
+    this->openMacro = false;
 }
 
-/// cancels the recording sassion
 void MacroManager::cancel(void)
 {
-  Base::Console().Log("CmdM: Cancel macro: %s\n",(const char*)_sName.toLatin1());
-  _sMacroInProgress = "";
-  _sName = "";
-  _bIsOpen = false;
+    Base::Console().Log("CmdM: Cancel macro: %s\n",(const char*)this->macroName.toUtf8());
+
+    this->macroInProgress = "";
+    this->macroName = "";
+    this->openMacro = false;
 }
 
-void MacroManager::addLine(LineType Type,const char* sLine)
+void MacroManager::addLine(LineType Type, const char* sLine)
 {
-  if(_bIsOpen)
-  {
-    //sMacroInProgress += "\t" + sLine + "\n";
-    if(Type == Gui)
+    if (this->openMacro)
     {
-      if (_bRecordGui&&_bGuiAsComment)
-        _sMacroInProgress += "#";
-      else if (!_bRecordGui)
-        return; // ignore Gui commands
+        if(Type == Gui)
+        {
+            if (this->recordGui && this->guiAsComment)
+                this->macroInProgress += "#";
+            else if (!this->recordGui)
+                return; // ignore Gui commands
+        }
+
+        this->macroInProgress += sLine;
+        this->macroInProgress += "\n";
     }
 
-    _sMacroInProgress += sLine;
-    _sMacroInProgress += "\n";
-  }
-
-  if (_bScriptToPyConsole) {
-    // search for the Python console
-    if (!_pyc)
-      _pyc = Gui::getMainWindow()->findChild<Gui::PythonConsole*>();
-    // Python console found?
-    if (_pyc)
-      _pyc->printStatement(sLine);
-  }
+    if (this->scriptToPyConsole) {
+        // search for the Python console
+        if (!this->pyConsole)
+            this->pyConsole = Gui::getMainWindow()->findChild<Gui::PythonConsole*>();
+        // Python console found?
+        if (this->pyConsole)
+            this->pyConsole->printStatement(sLine);
+    }
 }
 
 void MacroManager::setModule(const char* sModule)
 {
-  if(_bIsOpen && sModule && *sModule != '\0')
-  {
-    _sMacroInProgress += "import ";
-    _sMacroInProgress += sModule;
-    _sMacroInProgress += "\n";
-  }
+    if (this->openMacro && sModule && *sModule != '\0')
+    {
+        this->macroInProgress += "import ";
+        this->macroInProgress += sModule;
+        this->macroInProgress += "\n";
+    }
 }
 
 void MacroManager::run(MacroType eType,const char *sName)
 {
-  try
-  {
-    Base::Interpreter().runFile( sName );
-  }
-  catch ( const Base::Exception& e )
-  {
-    qWarning( e.what() );
-  }
+    try
+    {
+        //FIXME: The given path name is expected to be Utf-8 but std::ifstream isn't able to open
+        //the file if contains non-ASCII characters. So, we open it with QFile which works reliably.
+        //Base::Interpreter().runFile(sName);
+        QString fileName = QString::fromUtf8(sName);
+        QFile file(fileName);
+        if (file.open(QFile::ReadOnly))
+        {
+            QTextStream str(&file);
+            QString content = str.readAll();
+            Base::Interpreter().runString(content.toAscii());
+        }
+        else
+        {
+            std::string err = "Unknown file: ";
+            err += sName;
+            err += "\n";
+            throw Base::Exception(err);
+        }
+    }
+    catch (const Base::Exception& e)
+    {
+        qWarning(e.what());
+    }
 }

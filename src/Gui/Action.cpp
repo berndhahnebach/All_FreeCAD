@@ -489,7 +489,7 @@ void RecentFilesAction::activateFile(int id)
         setFiles(files);
     } else {
         // invokes appendFile()
-        Application::Instance->open(filename.toAscii());
+        Application::Instance->open(filename.toUtf8());
     }
 }
 

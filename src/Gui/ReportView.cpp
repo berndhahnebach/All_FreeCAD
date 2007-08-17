@@ -235,28 +235,28 @@ void ReportOutput::restoreFont()
 void ReportOutput::Warning(const char * s)
 {
   // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Warning, s);
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Warning, QString::fromUtf8(s));
   QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Message(const char * s)
 {
   // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Message, s);
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Message, QString::fromUtf8(s));
   QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Error  (const char * s)
 {
   // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Error, s);
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Error, QString::fromUtf8(s));
   QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Log (const char * s)
 {
   // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, s);
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
   QApplication::postEvent(this, ev);
 }
 

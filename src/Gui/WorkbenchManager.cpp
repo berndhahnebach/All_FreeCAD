@@ -74,14 +74,14 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
   if ( !wb )
   {
     // try to create an instance now
-    wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toLatin1(),false);
+    wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toAscii(),false);
     if ( wb )
     {
       if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId()))
       {
         delete wb;
         char szBuf[200];
-        snprintf(szBuf, 200, "'%s' is not a workbench type", (const char*)className.toLatin1());
+        snprintf(szBuf, 200, "'%s' is not a workbench type", (const char*)className.toAscii());
         throw Base::Exception(szBuf);
       }
 
@@ -89,7 +89,7 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
       _workbenches[ name ] = wb;
     }else
       Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "
-      "Workbench instance with type: %s\n",(const char*)className.toLatin1());
+      "Workbench instance with type: %s\n",(const char*)className.toAscii());
   }
   
   return wb;

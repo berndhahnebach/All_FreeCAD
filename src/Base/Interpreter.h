@@ -75,6 +75,23 @@ public:
     virtual ~SystemExitException() throw() {}
 };
 
+// Helper class to lock/unlock the global interpreter lock
+class BaseExport PyGILStateLocker
+{
+public:
+    PyGILStateLocker()
+    {
+        gstate = PyGILState_Ensure();
+    }
+    ~PyGILStateLocker()
+    {
+        PyGILState_Release(gstate);
+    }
+
+private:
+    PyGILState_STATE gstate;
+};
+
 
 /** The Interpreter class
  *  This class manage the python interpreter and hold a lot 
