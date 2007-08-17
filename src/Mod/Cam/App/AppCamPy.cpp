@@ -47,7 +47,6 @@
 #include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
-#include <Mod/Part/App/TopologyPy.h>
 
 // Things from the Mesh module
 #include <Mod/Mesh/App/Core/MeshKernel.h>
@@ -66,6 +65,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+
 
 using Base::Console;
 using namespace Part;
@@ -221,7 +221,7 @@ static PyObject * makeToolPath(PyObject *args)
 
 
 
-PyObject *TopoShapePyOld::offset(PyObject *args)
+PyObject * offset(PyObject *args)
 {
   float offset;
   if (!PyArg_ParseTuple(args, "f", &offset ))
@@ -243,15 +243,8 @@ PyObject *TopoShapePyOld::offset(PyObject *args)
 
 }
 
-
-
-
-
-PyObject *TopoShapePyOld::cut(PyObject *args)
+PyObject * cut(PyObject *args)
 {
-	
-
-
 	PyObject *pcObj;
 	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
@@ -265,8 +258,7 @@ PyObject *TopoShapePyOld::cut(PyObject *args)
 			mkCut.ComputePCurveOn1(Standard_True);
 			mkCut.Approximation (Standard_True);
 			mkCut.Build();
-			
-			
+						
 			// Let's check if the Cut has been successfull:
 			if (!mkCut.IsDone()) 
 			{
@@ -274,30 +266,23 @@ PyObject *TopoShapePyOld::cut(PyObject *args)
 			  return NULL;
 			} 
 
-
 			//Verify that there is a Wire available or only one edge that represents the sectioning
 			TopExp_Explorer Ex,Ex1;
-
 			Ex.Init(mkCut.Shape(),TopAbs_WIRE);
-
 			TopoDS_Wire aTopoWire;
-
 			if (!Ex.More())
 			{
 				//log3D.addText(0.0,0.0 ,0.0,"Keine Wire gefunden");
 				//log3D.saveToFile("c:/test.iv");
 				
 				Ex1.Init(mkCut.Shape(),TopAbs_EDGE);
-
 				TopoDS_Edge aTopoEdge;
-
 				if (!Ex1.More())
 				{
 					//log3D.addText(0.0,0.0 ,0.0,"Auch keine Edge gefunden");
 					//log3D.saveToFile("c:/test.iv");
 					return NULL;
 				}
-			
 				int i=0;
 				for (; Ex1.More(); Ex1.Next())
 				{
@@ -309,8 +294,6 @@ PyObject *TopoShapePyOld::cut(PyObject *args)
 				
 			}
 
-			
-
 			return new TopoShapePyOld( mkCut.Shape());
 		
 	  
@@ -321,7 +304,7 @@ PyObject *TopoShapePyOld::cut(PyObject *args)
 
 
 
-*/
+
 
 
 
@@ -336,8 +319,6 @@ createTestApproximate(PyObject *self, PyObject *args)
     return NULL;
 
 	PY_TRY {
-
-
 
 /////////////////////////////////////////////////////////////////
 // Approximation of surface.
@@ -410,72 +391,7 @@ createTestBSPLINE(PyObject *self, PyObject *args)
 
   PY_TRY {
     TColgp_Array2OfPnt Poles(1,48,1,48);
-    // [0,0,0, 1,0,0, 2,0,0, 3,0,0,
-    //  0,1,0, 1,1,2, 2,1,2, 3,1,0,
-    //  0,2,0, 1,2,2, 2,2,2, 3,2,0,
-    //  0,3,0, 1,3,0, 2,3,0, 3,3,0],
-	/*
-	
-    Poles.SetValue(1,1,gp_Pnt(0,0,0));
-	Poles.SetValue(1,2,gp_Pnt(1,0,0));
-	Poles.SetValue(1,3,gp_Pnt(2,0,0));
-	Poles.SetValue(1,4,gp_Pnt(3,0,0));
 
-    Poles.SetValue(2,1,gp_Pnt(0,1,0));
-	Poles.SetValue(2,2,gp_Pnt(1,1,0));
-	Poles.SetValue(2,3,gp_Pnt(2,1,0));
-	Poles.SetValue(2,4,gp_Pnt(3,1,0));
-
-    Poles.SetValue(3,1,gp_Pnt(0,2,0));
-	Poles.SetValue(3,2,gp_Pnt(1,2,0));
-	Poles.SetValue(3,3,gp_Pnt(2,2,0));
-	Poles.SetValue(3,4,gp_Pnt(3,2,0));
-
-    Poles.SetValue(4,1,gp_Pnt(0,3,0));
-    Poles.SetValue(4,2,gp_Pnt(1,3,0));
-    Poles.SetValue(4,3,gp_Pnt(2,3,0));
-    Poles.SetValue(4,4,gp_Pnt(3,3,0));
-
-    TColStd_Array1OfReal UKnots(1,2);
-    UKnots.SetValue(1,0);
-    UKnots.SetValue(2,1);
-
-    TColStd_Array1OfReal VKnots(1,2);
-    VKnots.SetValue(1,0);
-    VKnots.SetValue(2,1);
-
-    TColStd_Array1OfInteger 	UMults(1,2);
-    UMults.SetValue(1,4);
-    UMults.SetValue(2,4);
-
-    TColStd_Array1OfInteger 	VMults(1,2);
-    VMults.SetValue(1,4);
-    VMults.SetValue(2,4);
-
-	
-
-
-
-
-
-	TColStd_Array1OfReal UKnots(1,2);
-    UKnots.SetValue(1,0);
-    UKnots.SetValue(2,1);
-
-    TColStd_Array1OfReal VKnots(1,2);
-    VKnots.SetValue(1,0);
-    VKnots.SetValue(2,1);
-
-    TColStd_Array1OfInteger 	UMults(1,2);
-    UMults.SetValue(1,4);
-    UMults.SetValue(2,4);
-
-    TColStd_Array1OfInteger 	VMults(1,2);
-    VMults.SetValue(1,4);
-    VMults.SetValue(2,4);
-
-
-*/
 
 Poles.SetValue(1,1,gp_Pnt(-150.004,-150.032,0.000561847));
 Poles.SetValue(1,2,gp_Pnt(-150.002,-142.327,-0.00168953));
@@ -2881,7 +2797,7 @@ VKnots.SetValue(44,0.846154);
 VKnots.SetValue(45,0.923077);
 VKnots.SetValue(46,1);
 
-  TColStd_Array1OfInteger 	UMults(1,46);
+TColStd_Array1OfInteger UMults(1,46);
 UMults.SetValue(1,4);
 UMults.SetValue(2,1);
 UMults.SetValue(3,1);
@@ -2929,7 +2845,7 @@ UMults.SetValue(44,1);
 UMults.SetValue(45,1);
 UMults.SetValue(46,4);
 
-    TColStd_Array1OfInteger 	VMults(1,46);
+TColStd_Array1OfInteger 	VMults(1,46);
 VMults.SetValue(1,4);
 VMults.SetValue(2,1);
 VMults.SetValue(3,1);
@@ -2977,10 +2893,6 @@ VMults.SetValue(44,1);
 VMults.SetValue(45,1);
 VMults.SetValue(46,4);
 
-
-
-
-
     // Creating the BSpline Surface
     Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
                                       Poles,        // const TColgp_Array2OfPnt &  	 Poles,
@@ -3007,7 +2919,8 @@ VMults.SetValue(46,4);
 
 static PyObject * createPlane(PyObject *self, PyObject *args)
 {
-		double z_level;
+	
+	double z_level;
 
   //const char* Name;
   if (! PyArg_ParseTuple(args, "d", &z_level))			 
@@ -3016,12 +2929,12 @@ static PyObject * createPlane(PyObject *self, PyObject *args)
   
   PY_TRY {
   
-  gp_Pnt aPlanePnt(0,0,z_level);
-  gp_Dir aPlaneDir(0,0,1);
-  Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
-  BRepBuilderAPI_MakeFace 	Face(aPlane);
+	 gp_Pnt aPlanePnt(0,0,z_level);
+	 gp_Dir aPlaneDir(0,0,1);
+	 Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+	 BRepBuilderAPI_MakeFace 	Face(aPlane);
 
-    return new TopoShapePyOld(Face.Face()); 
+	 return new TopoShapePyOld(Face.Face()); 
   } PY_CATCH;
 }
 
@@ -3047,11 +2960,11 @@ static PyObject * createBox(PyObject *self, PyObject *args)
 static PyObject * useMesh(PyObject *self, PyObject *args)
 {
  	MeshPy   *pcObject;
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!; Need exatly one Mesh object", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
+	PyObject *pcObj;
+	if (!PyArg_ParseTuple(args, "O!; Need exatly one Mesh object", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
 
-  pcObject = (MeshPy*)pcObj;
+	pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
     const MeshKernel& m = pcObject->getMesh();
@@ -3122,17 +3035,17 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 
 /* registration table  */
 struct PyMethodDef Cam_methods[] = {
-    {"open"   , open,   Py_NEWARGS,
-       "open(string) -- Not implemnted for this Module so far."},       
-    {"insert" , insert, Py_NEWARGS, 
-       "insert(string, string) -- Not implemnted for this Module so far."},       
+	{"open"   , open,   Py_NEWARGS, "open(string) -- Not implemnted for this Module so far."},       
+    {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
     {"read"   , read,  1},       
-    {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS,"Creates a TopoShape with a test BSPLINE"}, 
-	  {"createTestApproximate" , createTestApproximate, 1},
-	  {"createPlane" , createPlane, 1},
-	  {"createBox" , createBox, 1},
-	  {"useMesh" , useMesh, Py_NEWARGS,
-       "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
+    {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
+	{"createTestApproximate" , createTestApproximate, 1},
+	{"makeToolPath", makeToolPath, 1},
+	{"offset", offset, 1},
+	{"cut", cut, 1},
+	{"createPlane" , createPlane, 1},
+	{"createBox" , createBox, 1},
+	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
     {NULL     , NULL      }        /* end of table marker */
 };
 
