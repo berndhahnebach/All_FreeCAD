@@ -76,7 +76,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
   GetWidgetFactorySupplier();
   for ( QStringList::Iterator it = _pages.begin(); it!=_pages.end(); ++it )
   {
-    addPage( WidgetFactory().createWidget( (*it).toLatin1() ) );
+    addPage( WidgetFactory().createWidget( (*it).toAscii() ) );
   }
 
   customLayout->addWidget( tabWidget, 0, 0 );

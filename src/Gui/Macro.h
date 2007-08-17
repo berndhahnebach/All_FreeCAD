@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __MACRO_H__
-#define __MACRO_H__
+#ifndef GUI_MACRO_H
+#define GUI_MACRO_H
 
 // Std. configurations
 
@@ -31,7 +31,7 @@
 #endif
 
 #include <Base/Observer.h>
-#include "../Base/Parameter.h"
+#include <Base/Parameter.h>
 
 
 namespace Gui {
@@ -39,102 +39,73 @@ struct ApplicationP;
 class PythonConsole;
 
 /** Macro recording and play back management
- * The purpos of this class is to handle record 
- * function calls from a Command and save it in
- * a macro file (so far). 
+ * The purpos of this class is to handle record function calls from a command and save it in
+ * a macro file (so far).
  * \author Jürgen Riegel
  */
 class GuiExport MacroManager: public Base::Observer<const char*> 
 {
 protected:
-  /**
-   * A constructor.
-   */
-  MacroManager();
-
-  /**
-   * A destructor.
-   */
-  ~MacroManager();
+    MacroManager();
+    ~MacroManager();
 
 public:
 
-  /** Macro type enumeration  */
-  enum MacroType { 
-    File, /**< The macro will be saved in a file */  
-    App,  /**< The macro belongs to the Application and will be saved in the UserParameter */  
-    Doc   /**< Teh macro belongs to the Document and will be saved and restored with the Document */  
-   }; 
+    /** Macro type enumeration  */
+    enum MacroType { 
+        File, /**< The macro will be saved in a file */  
+        App,  /**< The macro belongs to the Application and will be saved in the UserParameter */  
+        Doc   /**< Teh macro belongs to the Document and will be saved and restored with the Document */  
+    }; 
 
-  /** Line type enumeration  */
-  enum LineType { 
-    Base,  /**< The line effects only the document and Application (FreeCAD) */  
-    Gui,   /**< The line effects the Gui (FreeCADGui) */
-   }; 
+    /** Line type enumeration  */
+    enum LineType { 
+        Base,  /**< The line effects only the document and Application (FreeCAD) */  
+        Gui,   /**< The line effects the Gui (FreeCADGui) */
+    }; 
 
-
-  /** Opens a new Macro recording sassion
-   * Starts a sassion with the Type and the Name of the Macro.
-   * All user interactions will be recorded as long as the commit() or
-   * cancel() is called. 
-   * There is only one recording sassion possible. To open a second one
-   * cause a exception:
-   * @param eType Type of the macro
-   * @param sName Name or Path of the Macro
-   * @see commit()
-   * @see cancel()
-   */
-  void open(MacroType eType,const char *sName);
-
-  /// Sets how to handle Gui commands
-  //void setRecordGuiCommands(bool bRecord, bool bAsComment);
-
-  /// close (and save) the recording session
-  void commit(void);
-
-  /// cancels the recording session
-  void cancel(void);
-
-  /// indicates if a macro recording in in progress
-  bool isOpen(void){return _bIsOpen;}
-
-  /// insert a new line in the macro
-  void addLine(LineType Type,const char* sLine);
-
-  /** Set the active module 
-   * This is normaly done by the workbench switch. It sets
-   * the actually active application module so when the macro
-   * gets started the right import can be issued.
-   */
-  void setModule(const char* sModule);
-
-  void run(MacroType eType,const char *sName);
-
-  friend struct ApplicationP;
-
-  /** Observes its parameter group. */
-  void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
-
+    /** Opens a new Macro recording sassion
+     * Starts a sassion with the Type and the Name of the Macro.
+     * All user interactions will be recorded as long as the commit() or cancel() is called. 
+     * There is only one recording sassion possible. To open a second one cause a exception:
+     * @param eType Type of the macro
+     * @param sName Name or Path of the Macro
+     * @see commit()
+     * @see cancel()
+     */
+    void open(MacroType eType,const char *sName);
+    /// close (and save) the recording session
+    void commit(void);
+    /// cancels the recording session
+    void cancel(void);
+    /// indicates if a macro recording in in progress
+    bool isOpen(void){return openMacro;}
+    /// insert a new line in the macro
+    void addLine(LineType Type,const char* sLine);
+    /** Set the active module 
+     * This is normaly done by the workbench switch. It sets
+     * the actually active application module so when the macro
+     * gets started the right import can be issued.
+     */
+    void setModule(const char* sModule);
+    void run(MacroType eType,const char *sName);
+    /** Observes its parameter group. */
+    void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
 protected:
-  /** Container for the macro */
-  QString _sMacroInProgress;
-  /// name of the macro
-  QString _sName;
-  bool _bIsOpen;
+    QString macroInProgress;        /**< Container for the macro */
+    QString macroName;              /**< name of the macro */
+    bool openMacro;
+    bool recordGui;
+    bool guiAsComment;
+    bool scriptToPyConsole;
+    PythonConsole* pyConsole;       // link to the python console
+    FCHandle<ParameterGrp> params;  // link to the Macro parameter group
 
-  // settings
-  bool _bRecordGui;
-  bool _bGuiAsComment;
-  bool _bScriptToPyConsole;
-
-  // link to the python console
-  PythonConsole* _pyc;
-  // link to the Macro parameter group
-  FCHandle<ParameterGrp> Params;
+    friend struct ApplicationP;
 };
 
 } // namespace Gui
 
 
-#endif // __MACRO_H__
+#endif // GUI_MACRO_H

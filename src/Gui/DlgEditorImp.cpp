@@ -102,7 +102,7 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent )
     this->displayItems->header()->hide();
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(this->displayItems);
-        item->setText(0, trUtf8((*it).first.toUtf8()));
+        item->setText(0, trUtf8((*it).first.toAscii()));
     }
     pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 }
@@ -150,7 +150,7 @@ void DlgSettingsEditorImp::saveSettings()
     // Saves the color map
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
-        hGrp->SetUnsigned((*it).first.toLatin1(), (*it).second);
+        hGrp->SetUnsigned((*it).first.toAscii(), (*it).second);
 
     hGrp->SetInt( "FontSize", fontSize->value() );
     hGrp->SetASCII( "Font", fontFamily->currentText().toAscii() );
@@ -216,7 +216,7 @@ void DlgSettingsEditorImp::changeEvent(QEvent *e)
     if (e->type() == QEvent::LanguageChange) {
         int index = 0;
         for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
-            this->displayItems->topLevelItem(index++)->setText(0, trUtf8((*it).first.toUtf8()));
+            this->displayItems->topLevelItem(index++)->setText(0, trUtf8((*it).first.toAscii()));
     } else {
         QWidget::changeEvent(e);
     }

@@ -41,12 +41,12 @@ namespace Dialog {
 class DlgProjectInformationImp : public QDialog, public Ui_DlgProjectInformation
 {
 public:
-  DlgProjectInformationImp( App::Document* doc, QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgProjectInformationImp();
+    DlgProjectInformationImp( App::Document* doc, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgProjectInformationImp();
 
 protected:
-  void accept();
-  App::Document* _doc;
+    void accept();
+    App::Document* _doc;
 };
 
 } // namespace Dialog

@@ -130,7 +130,7 @@ void DockWindowManager::addDockWindow( const QString& name, QWidget* widget, Qt:
 
   // set object name and window title needed for i18n stuff
   dw->setObjectName(name);
-  dw->setWindowTitle(QDockWidget::tr(name.toUtf8()));
+  dw->setWindowTitle(QDockWidget::tr(name.toAscii()));
   dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
   d->_dockedWindows.push_back(dw);
@@ -240,7 +240,7 @@ void DockWindowManager::hideDockWindows( const QStringList& dw )
 void DockWindowManager::languageChanged()
 {
   for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
-    (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toUtf8()));
+    (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toAscii()));
   }
 }
 

@@ -195,7 +195,7 @@ void MenuManager::setup( MenuItem* menuBar ) const
     if ( (*it)->command() == "Separator" ) {
       bar->addSeparator();
     } else {
-      QMenu* menu = bar->addMenu(QObject::tr((const char*)(*it)->command().toLatin1()));
+      QMenu* menu = bar->addMenu(QObject::tr((const char*)(*it)->command().toAscii()));
       menu->setObjectName((*it)->command());
       setup(*it, menu);
     }
@@ -214,7 +214,7 @@ void MenuManager::setup( MenuItem* item, QMenu* menu ) const
   {
     if ( (*it)->hasItems() )
     {
-      QMenu* submenu = menu->addMenu(QObject::tr((const char*)(*it)->command().toLatin1()));
+      QMenu* submenu = menu->addMenu(QObject::tr((const char*)(*it)->command().toAscii()));
       submenu->setObjectName((*it)->command());
       setup( (*it), submenu );
     }
@@ -223,7 +223,7 @@ void MenuManager::setup( MenuItem* item, QMenu* menu ) const
       if ( (*it)->command() == "Separator" )
         menu->addSeparator();
       else
-        mgr.addTo((const char*)(*it)->command().toLatin1(), menu);
+        mgr.addTo((const char*)(*it)->command().toAscii(), menu);
     }
   }
 }

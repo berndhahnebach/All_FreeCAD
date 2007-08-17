@@ -94,7 +94,7 @@ void StdCmdOpen::activated(int iMsg)
     QStringList FileList = QFileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QDir::currentPath(), formatList );
 
     for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
-        getGuiApplication()->open((*it).toLatin1());
+        getGuiApplication()->open((*it).toUtf8());
     }
 }
 

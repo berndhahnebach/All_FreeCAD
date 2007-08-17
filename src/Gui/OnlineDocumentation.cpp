@@ -26,6 +26,7 @@
 #include <strstream>
 #include <Base/zipios/zipfile.h>
 #include <Base/PyCXX/Objects.hxx>
+#include <Base/Interpreter.h>
 #include <App/Application.h>
 
 #include "MainWindow.h"
@@ -163,7 +164,7 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
     std::string path = App::GetApplication().GetHomePath();
     path += "/doc/docs.zip";
     zipios::ZipFile zip(path);
-    zipios::ConstEntryPointer entry = zip.getEntry((const char*)fn.toLatin1());
+    zipios::ConstEntryPointer entry = zip.getEntry((const char*)fn.toAscii());
     std::istream* str = zip.getInputStream(entry);
 
     // set size of the array so that no re-allocation is needed when reading from the stream
@@ -217,11 +218,14 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
             res[i] = navicon_data[i];
         }
     } else if (filename == "/") {
+        // get the global interpreter lock otherwise the app may crash with the error
+        // 'PyThreadState_Get: no current thread' (see pystate.c)
+        Base::PyGILStateLocker lock;
         PyObject* main = PyImport_AddModule("__main__");
         PyObject* dict = PyModule_GetDict(main);
         dict = PyDict_Copy(dict);
 
-        std::string cmd =
+        QByteArray cmd =
             "import string, os, sys, pydoc, pkgutil\n"
             "\n"
             "class FreeCADDoc(pydoc.HTMLDoc):\n"
@@ -269,8 +273,7 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
             "<font color=\"#909090\" face=\"helvetica, arial\"><strong>\n"
             "pydoc</strong> by Ka-Ping Yee &lt;ping@lfw.org&gt;</font>'''\n";
 
-        PyObject* result = PyRun_String(cmd.c_str(), Py_file_input, dict, dict);
-        std::string text;
+        PyObject* result = PyRun_String(cmd.constData(), Py_file_input, dict, dict);
         if (result) {
             Py_DECREF(result);
             result = PyDict_GetItemString(dict, "contents");
@@ -285,16 +288,19 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
 
         Py_DECREF(dict);
     } else {
-        std::string name = (const char*)fn.left(fn.length()-5).toLatin1();
+        // get the global interpreter lock otherwise the app may crash with the error
+        // 'PyThreadState_Get: no current thread' (see pystate.c)
+        Base::PyGILStateLocker lock;
+        QString name = fn.left(fn.length()-5);
         PyObject* main = PyImport_AddModule("__main__");
         PyObject* dict = PyModule_GetDict(main);
         dict = PyDict_Copy(dict);
-        std::string cmd = 
+        QByteArray cmd = 
             "import pydoc\n"
             "object, name = pydoc.resolve(\"";
-        cmd += name.c_str();
+        cmd += name.toUtf8();
         cmd += "\")\npage = pydoc.html.page(pydoc.describe(object), pydoc.html.document(object, name))\n";
-        PyObject* result = PyRun_String(cmd.c_str(), Py_file_input, dict, dict);
+        PyObject* result = PyRun_String(cmd.constData(), Py_file_input, dict, dict);
         if (result) {
             Py_DECREF(result);
             result = PyDict_GetItemString(dict, "page");

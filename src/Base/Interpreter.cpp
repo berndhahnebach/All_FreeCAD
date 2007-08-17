@@ -216,8 +216,12 @@ void InterpreterSingleton::runFile(const char*pxFileName)
     file.close();
     
     runString(buf.str().c_str());
-  }else
-    throw Exception("Unknown file!");
+  }else{
+    std::string err = "Unknown file: ";
+    err += pxFileName;
+    err += "\n";
+    throw Exception(err);
+  }
 }
 
 bool InterpreterSingleton::loadModule(const char* psModName)

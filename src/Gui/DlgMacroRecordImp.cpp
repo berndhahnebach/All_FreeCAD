@@ -95,7 +95,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
     }
 
     // open the macro recording
-    this->macroManager->open(MacroManager::File, fn.toAscii().constData());
+    this->macroManager->open(MacroManager::File, fn.toUtf8().constData());
     accept();
 }
 

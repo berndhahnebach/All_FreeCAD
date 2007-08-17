@@ -41,21 +41,21 @@ using namespace Gui::Dialog;
 DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl ), _doc(doc)
 {
-  this->setupUi(this);
-  lineEditName->setText( doc->Name.getValue() );
-  lineEditPath->setText( doc->FileName.getValue() );
-  lineEditCreator->setText( doc->CreatedBy.getValue() );
-  lineEditDate->setText( doc->CreationDate.getValue() );
-  lineEditLastMod->setText( doc->LastModifiedBy.getValue() );
-  lineEditLastModDate->setText( doc->LastModifiedDate.getValue() );
-  lineEditCompany->setText( doc->Company.getValue() );
+    this->setupUi(this);
+    lineEditName->setText(QString::fromUtf8(doc->Name.getValue()));
+    lineEditPath->setText(QString::fromUtf8(doc->FileName.getValue()));
+    lineEditCreator->setText(QString::fromUtf8(doc->CreatedBy.getValue()));
+    lineEditDate->setText(QString::fromUtf8(doc->CreationDate.getValue()));
+    lineEditLastMod->setText(QString::fromUtf8(doc->LastModifiedBy.getValue()));
+    lineEditLastModDate->setText(QString::fromUtf8(doc->LastModifiedDate.getValue()));
+    lineEditCompany->setText(QString::fromUtf8(doc->Company.getValue()));
 
-  // When saving the text to XML the newlines get lost. So we store also the newlines as '\n'.
-  // See also accept().
-  QString comment = doc->Comment.getValue();
-  QStringList lines = comment.split("\\n", QString::KeepEmptyParts);
-  QString text = lines.join("\n");
-  textEditComment->setPlainText( text );
+    // When saving the text to XML the newlines get lost. So we store also the newlines as '\n'.
+    // See also accept().
+    QString comment = QString::fromUtf8(doc->Comment.getValue());
+    QStringList lines = comment.split("\\n", QString::KeepEmptyParts);
+    QString text = lines.join("\n");
+    textEditComment->setPlainText( text );
 }
 
 /**
@@ -71,15 +71,15 @@ DlgProjectInformationImp::~DlgProjectInformationImp()
  */
 void DlgProjectInformationImp::accept()
 {
-  _doc->CreatedBy.setValue( lineEditCreator->text().toLatin1() );
-  _doc->LastModifiedBy.setValue( lineEditCreator->text().toLatin1() );
-  _doc->Company.setValue( lineEditCompany->text().toLatin1() );
+    _doc->CreatedBy.setValue(lineEditCreator->text().toUtf8());
+    _doc->LastModifiedBy.setValue(lineEditCreator->text().toUtf8());
+    _doc->Company.setValue(lineEditCompany->text().toUtf8());
 
-  // Replace newline escape sequence trough '\\n' string
-  QStringList lines = textEditComment->toPlainText().split("\n", QString::KeepEmptyParts);
-  QString text = lines.join("\\n");
-  _doc->Comment.setValue( text.isEmpty() ? "" : text.toLatin1() );
-  
-  QDialog::accept();
+    // Replace newline escape sequence trough '\\n' string
+    QStringList lines = textEditComment->toPlainText().split("\n", QString::KeepEmptyParts);
+    QString text = lines.join("\\n");
+    _doc->Comment.setValue(text.isEmpty() ? "" : text.toUtf8());
+
+    QDialog::accept();
 }
 

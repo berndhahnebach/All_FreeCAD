@@ -185,7 +185,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
     QList<ToolBarItem*> items = toolBar->getItems();
 
     for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) {
-        QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toLatin1()))); // i18n
+        QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toAscii()))); // i18n
         bar->setObjectName((*item)->command());
 
         QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -193,7 +193,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
             if ( (*subitem)->command() == "Separator" )
                 bar->addSeparator();
             else
-                mgr.addTo((const char*)(*subitem)->command().toLatin1(), bar);
+                mgr.addTo((const char*)(*subitem)->command().toAscii(), bar);
         }
     }
   
