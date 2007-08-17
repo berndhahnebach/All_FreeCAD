@@ -53,8 +53,9 @@ public:
 protected Q_SLOTS:
     void onGroupActivated(QTreeWidgetItem *i);
     void onDescription(QTreeWidgetItem *i);
-    void onAddMacroAction(const QString&);
-    void onRemoveMacroAction(const QString&);
+    void onAddMacroAction(const QByteArray&);
+    void onRemoveMacroAction(const QByteArray&);
+    void onModifyMacroAction(const QByteArray&);
 };
 
 } // namespace Dialog

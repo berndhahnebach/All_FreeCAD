@@ -59,8 +59,9 @@ protected Q_SLOTS:
     void on_buttonReset_clicked();
     void on_buttonResetAll_clicked();
     void on_editShortcut_textChanged(const QString&);
-    void onAddMacroAction(const QString&);
-    void onRemoveMacroAction(const QString&);
+    void onAddMacroAction(const QByteArray&);
+    void onRemoveMacroAction(const QByteArray&);
+    void onModifyMacroAction(const QByteArray&);
 
 private:
     bool firstShow;

@@ -125,14 +125,16 @@ bool CustomizeActionPage::event(QEvent* e)
       topLevel = topLevel->parentWidget();
     if ( topLevel )
     {
-      int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QString&)") );
+      int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QByteArray&)") );
       if ( index >= 0 ) {
         if ( e->type() == QEvent::ParentChange ) {
-          connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
-          connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+          connect(topLevel, SIGNAL(addMacroAction( const QByteArray& )), this, SLOT(onAddMacroAction( const QByteArray& )));
+          connect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )), this, SLOT(onRemoveMacroAction( const QByteArray& )));
+          connect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )), this, SLOT(onModifyMacroAction( const QByteArray& )));
         } else {
-          disconnect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
-          disconnect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+          disconnect(topLevel, SIGNAL(addMacroAction( const QByteArray& )), this, SLOT(onAddMacroAction( const QByteArray& )));
+          disconnect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )), this, SLOT(onRemoveMacroAction( const QByteArray& )));
+          disconnect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )), this, SLOT(onModifyMacroAction( const QByteArray& )));
         }
       }
     }

@@ -93,18 +93,22 @@ bool DlgCustomActionsImp::event(QEvent* e)
             topLevel = topLevel->parentWidget();
         if ( topLevel )
         {
-            int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QString&)") );
+            int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QByteArray&)") );
             if ( index >= 0 ) {
                 if ( e->type() == QEvent::ParentChange ) {
-                    connect(this, SIGNAL(addMacroAction( const QString& )), 
-                            topLevel, SIGNAL(addMacroAction( const QString& )));
-                    connect(this, SIGNAL(removeMacroAction( const QString& )), 
-                            topLevel, SIGNAL(removeMacroAction( const QString& )));
+                    connect(this, SIGNAL(addMacroAction( const QByteArray& )), 
+                            topLevel, SIGNAL(addMacroAction( const QByteArray& )));
+                    connect(this, SIGNAL(removeMacroAction( const QByteArray& )), 
+                            topLevel, SIGNAL(removeMacroAction( const QByteArray& )));
+                    connect(this, SIGNAL(modifyMacroAction( const QByteArray& )), 
+                            topLevel, SIGNAL(modifyMacroAction( const QByteArray& )));
                 } else {
-                    disconnect(this, SIGNAL(addMacroAction( const QString& )), 
-                               topLevel, SIGNAL(addMacroAction( const QString& )));
-                    disconnect(this, SIGNAL(removeMacroAction( const QString& )), 
-                               topLevel, SIGNAL(removeMacroAction( const QString& )));
+                    disconnect(this, SIGNAL(addMacroAction( const QByteArray& )), 
+                               topLevel, SIGNAL(addMacroAction( const QByteArray& )));
+                    disconnect(this, SIGNAL(removeMacroAction( const QByteArray& )), 
+                               topLevel, SIGNAL(removeMacroAction( const QByteArray& )));
+                    disconnect(this, SIGNAL(modifyMacroAction( const QByteArray& )), 
+                               topLevel, SIGNAL(modifyMacroAction( const QByteArray& )));
                 }
             }
         }
@@ -113,12 +117,17 @@ bool DlgCustomActionsImp::event(QEvent* e)
     return ok;
 }
 
-void DlgCustomActionsImp::onAddMacroAction(const QString&)
+void DlgCustomActionsImp::onAddMacroAction(const QByteArray&)
 {
   // does nothing
 }
 
-void DlgCustomActionsImp::onRemoveMacroAction(const QString&)
+void DlgCustomActionsImp::onRemoveMacroAction(const QByteArray&)
+{
+  // does nothing
+}
+
+void DlgCustomActionsImp::onModifyMacroAction(const QByteArray&)
 {
   // does nothing
 }
@@ -208,14 +217,14 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
     }
 
     // search for the command in the manager
-    QString actionName = newActionName();
+    QByteArray actionName = newActionName().toAscii();
     CommandManager& rclMan = Application::Instance->commandManager();
-    MacroCommand* macro = new MacroCommand(actionName.toAscii());
+    MacroCommand* macro = new MacroCommand(actionName);
     rclMan.addCommand( macro );
 
     // add new action
     QTreeWidgetItem* item = new QTreeWidgetItem(actionListWidget);
-    item->setData(1, Qt::UserRole, actionName.toAscii());
+    item->setData(1, Qt::UserRole, actionName);
     item->setText(1, actionMenu->text());
     item->setSizeHint(0, QSize(32, 32));
     item->setBackgroundColor(0, Qt::lightGray);
@@ -336,7 +345,7 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     }
 
     // emit signal to notify the container widget
-    replaceMacroAction(actionName);
+    modifyMacroAction(actionName);
 
     // call this at the end because it internally invokes the highlight method
     if (macro->getPixmap())

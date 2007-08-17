@@ -58,16 +58,16 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList items; items << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
         QString group = it->second->getGroupName();
-        if (!items.contains(group))
-            items << group;
+        if (!groups.contains(group))
+            groups << group;
     }
 
     QStringList labels; labels << tr("Category");
     categoryTreeWidget->setHeaderLabels(labels);
-    for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It ) {
+    for ( QStringList::Iterator It = groups.begin(); It != groups.end(); ++It ) {
         QTreeWidgetItem* item = new QTreeWidgetItem(categoryTreeWidget);
         item->setText(0, QObject::tr((*It).toAscii()));
         item->setData(0, Qt::UserRole, QVariant(*It));
@@ -91,10 +91,12 @@ void DlgCustomCommandsImp::onDescription(QTreeWidgetItem *item)
 {
     if (item)
         textLabel->setText(item->toolTip(1));
+    else
+        textLabel->setText(QString());
 }
 
 /** Shows all commands of this category */
-void DlgCustomCommandsImp::onGroupActivated( QTreeWidgetItem* item)
+void DlgCustomCommandsImp::onGroupActivated(QTreeWidgetItem* item)
 {
     if (!item) 
         return;
@@ -104,22 +106,23 @@ void DlgCustomCommandsImp::onGroupActivated( QTreeWidgetItem* item)
     commandTreeWidget->clear();
 
     CommandManager & cCmdMgr = Application::Instance->commandManager();
-    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.toAscii() );
+    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands(group.toAscii());
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, QObject::tr((*it)->getMenuText()));
-        item->setToolTip(1, QObject::tr((*it)->getToolTipText()));
-        item->setData(1, Qt::UserRole, QString((*it)->getName()));
+        item->setText(1, QObject::trUtf8((*it)->getMenuText()));
+        item->setToolTip(1, QObject::trUtf8((*it)->getToolTipText()));
+        item->setData(1, Qt::UserRole, QByteArray((*it)->getName()));
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
         if ((*it)->getPixmap())
             item->setIcon(0, BitmapFactory().pixmap((*it)->getPixmap()));
     }
 
+    textLabel->setText(QString());
     commandTreeWidget->resizeColumnToContents(0);
 }
 
-void DlgCustomCommandsImp::onAddMacroAction(const QString& macro)
+void DlgCustomCommandsImp::onAddMacroAction(const QByteArray& macro)
 {
     QTreeWidgetItem* item = categoryTreeWidget->currentItem();
     if (!item)
@@ -130,12 +133,12 @@ void DlgCustomCommandsImp::onAddMacroAction(const QString& macro)
     if (group == "Macros")
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
-        Command* pCmd = cCmdMgr.getCommandByName(macro.toAscii());
+        Command* pCmd = cCmdMgr.getCommandByName(macro);
 
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, pCmd->getMenuText());
-        item->setToolTip(1, pCmd->getToolTipText());
-        item->setData(1, Qt::UserRole, QString(pCmd->getName()));
+        item->setText(1, QString::fromUtf8(pCmd->getMenuText()));
+        item->setToolTip(1, QString::fromUtf8(pCmd->getToolTipText()));
+        item->setData(1, Qt::UserRole, macro);
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
         if (pCmd->getPixmap())
@@ -143,7 +146,7 @@ void DlgCustomCommandsImp::onAddMacroAction(const QString& macro)
     }
 }
 
-void DlgCustomCommandsImp::onRemoveMacroAction(const QString& macro)
+void DlgCustomCommandsImp::onRemoveMacroAction(const QByteArray& macro)
 {
     QTreeWidgetItem* item = categoryTreeWidget->currentItem();
     if (!item)
@@ -155,10 +158,41 @@ void DlgCustomCommandsImp::onRemoveMacroAction(const QString& macro)
     {
         for (int i=0; i<commandTreeWidget->topLevelItemCount(); i++) {
             QTreeWidgetItem* item = commandTreeWidget->topLevelItem(i);
-            QString command = item->data(1, Qt::UserRole).toString();
+            QByteArray command = item->data(1, Qt::UserRole).toByteArray();
             if (command == macro) {
                 commandTreeWidget->takeTopLevelItem(i);
                 delete item;
+                break;
+            }
+        }
+    }
+}
+
+void DlgCustomCommandsImp::onModifyMacroAction(const QByteArray& macro)
+{
+    QTreeWidgetItem* item = categoryTreeWidget->currentItem();
+    if (!item)
+        return;
+
+    QVariant data = item->data(0, Qt::UserRole);
+    QString group = data.toString();
+    if (group == "Macros")
+    {
+        CommandManager & cCmdMgr = Application::Instance->commandManager();
+        Command* pCmd = cCmdMgr.getCommandByName(macro);
+        for (int i=0; i<commandTreeWidget->topLevelItemCount(); i++) {
+            QTreeWidgetItem* item = commandTreeWidget->topLevelItem(i);
+            QByteArray command = item->data(1, Qt::UserRole).toByteArray();
+            if (command == macro) {
+                item->setText(1, QString::fromUtf8(pCmd->getMenuText()));
+                item->setToolTip(1, QString::fromUtf8(pCmd->getToolTipText()));
+                item->setData(1, Qt::UserRole, macro);
+                item->setSizeHint(0, QSize(32, 32));
+                item->setBackgroundColor(0, Qt::lightGray);
+                if (pCmd->getPixmap())
+                    item->setIcon(0, BitmapFactory().pixmap(pCmd->getPixmap()));
+                if (commandTreeWidget->isItemSelected(item))
+                    onDescription(item);
                 break;
             }
         }
