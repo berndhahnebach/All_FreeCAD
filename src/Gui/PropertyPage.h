@@ -36,29 +36,29 @@ namespace Dialog {
  */
 class GuiExport PropertyPage : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PropertyPage(QWidget* parent = 0);
-  virtual ~PropertyPage();
+    PropertyPage(QWidget* parent = 0);
+    virtual ~PropertyPage();
 
-  bool isModified();
-  void setModified(bool b);
-  void onApply();
-  void onCancel();
-  void onReset();
+    bool isModified();
+    void setModified(bool b);
+    void onApply();
+    void onCancel();
+    void onReset();
 
 protected:
-  virtual void apply();
-  virtual void cancel();
-  virtual void reset();
+    virtual void apply();
+    virtual void cancel();
+    virtual void reset();
 
 private:
-  bool bChanged; /**< for internal use only */
+    bool bChanged; /**< for internal use only */
 
 protected Q_SLOTS:
-  virtual void loadSettings()=0;
-  virtual void saveSettings()=0;
+    virtual void loadSettings()=0;
+    virtual void saveSettings()=0;
 };
 
 /** Base class for preferences pages.
@@ -66,15 +66,15 @@ protected Q_SLOTS:
  */
 class GuiExport PreferencePage : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PreferencePage(QWidget* parent = 0);
-  virtual ~PreferencePage();
+    PreferencePage(QWidget* parent = 0);
+    virtual ~PreferencePage();
 
 public Q_SLOTS:
-  virtual void loadSettings()=0;
-  virtual void saveSettings()=0;
+    virtual void loadSettings()=0;
+    virtual void saveSettings()=0;
 };
 
 /** Base class for custom pages.
@@ -82,18 +82,19 @@ public Q_SLOTS:
  */
 class GuiExport CustomizeActionPage : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  CustomizeActionPage(QWidget* parent = 0);
-  virtual ~CustomizeActionPage();
+    CustomizeActionPage(QWidget* parent = 0);
+    virtual ~CustomizeActionPage();
 
 protected:
-  bool event(QEvent* e);
+    bool event(QEvent* e);
 
 protected Q_SLOTS:
-  virtual void onAddMacroAction(const QString&)=0;
-  virtual void onRemoveMacroAction(const QString&)=0;
+    virtual void onAddMacroAction(const QByteArray&)=0;
+    virtual void onRemoveMacroAction(const QByteArray&)=0;
+    virtual void onModifyMacroAction(const QByteArray&)=0;
 };
 
 } // namespace Dialog

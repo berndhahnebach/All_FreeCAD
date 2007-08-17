@@ -725,6 +725,12 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
 {
+    for (std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+        if (it->second->object() == &obj) {
+            it->second->setText(0, QString::fromUtf8(obj.getObject()->name.getValue()));
+            break;
+        }
+    }
 }
 
 void DocumentItem::testStatus(void)

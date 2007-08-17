@@ -43,53 +43,53 @@ QStringList DlgCustomizeImp::_pages;
 DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl )
 {
-  setModal(false);
-  resize( 434, 365 ); 
+    setModal(false);
+    resize( 434, 365 ); 
 
-  setWindowTitle( tr( "Customize" ) );
-  setSizeGripEnabled( true );
+    setWindowTitle( tr( "Customize" ) );
+    setSizeGripEnabled( true );
 
-  customLayout = new QGridLayout( this ); 
-  customLayout->setSpacing( 6 );
-  customLayout->setMargin( 11 );
+    customLayout = new QGridLayout( this ); 
+    customLayout->setSpacing( 6 );
+    customLayout->setMargin( 11 );
 
-  layout = new QHBoxLayout; 
-  layout->setSpacing( 6 );
-  layout->setMargin( 0 );
+    layout = new QHBoxLayout; 
+    layout->setSpacing( 6 );
+    layout->setMargin( 0 );
 
-  buttonHelp = new QPushButton( this );
-  buttonHelp->setText( tr( "&Help" ) );
-  layout->addWidget( buttonHelp );
+    buttonHelp = new QPushButton( this );
+    buttonHelp->setText( tr( "&Help" ) );
+    layout->addWidget( buttonHelp );
 
-  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-  layout->addItem( spacer );
+    QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    layout->addItem( spacer );
 
-  buttonClose = new QPushButton( this );
-  buttonClose->setText( tr( "&Close" ) );
-  layout->addWidget( buttonClose );
+    buttonClose = new QPushButton( this );
+    buttonClose->setText( tr( "&Close" ) );
+    layout->addWidget( buttonClose );
 
-  customLayout->addLayout( layout, 1, 0 );
+    customLayout->addLayout( layout, 1, 0 );
 
-  tabWidget = new QTabWidget( this );
+    tabWidget = new QTabWidget( this );
 
-  // make sure that pages are ready to create
-  GetWidgetFactorySupplier();
-  for ( QStringList::Iterator it = _pages.begin(); it!=_pages.end(); ++it )
-  {
-    addPage( WidgetFactory().createWidget( (*it).toAscii() ) );
-  }
+    // make sure that pages are ready to create
+    GetWidgetFactorySupplier();
+    for ( QStringList::Iterator it = _pages.begin(); it!=_pages.end(); ++it )
+    {
+        addPage( WidgetFactory().createWidget( (*it).toAscii() ) );
+    }
 
-  customLayout->addWidget( tabWidget, 0, 0 );
+    customLayout->addWidget( tabWidget, 0, 0 );
 
 
-  // tab order
-  setTabOrder( tabWidget, buttonClose );
-  setTabOrder( buttonClose, buttonHelp );
+    // tab order
+    setTabOrder( tabWidget, buttonClose );
+    setTabOrder( buttonClose, buttonHelp );
 
-  // connections
-  //
-  connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
-  connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( close() ) );
+    // connections
+    //
+    connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
+    connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( close() ) );
 }
 
 /**
@@ -97,7 +97,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
  */
 DlgCustomizeImp::~DlgCustomizeImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -108,13 +108,13 @@ DlgCustomizeImp::~DlgCustomizeImp()
  */
 void DlgCustomizeImp::addPage( const QString& className )
 {
-  _pages.push_back( className );
+    _pages.push_back( className );
 }
 
 /** Inserts a new tab page with its caption */
 void DlgCustomizeImp::addPage ( QWidget* w )
 {
-  tabWidget->addTab( w, w->windowTitle() );
+    tabWidget->addTab( w, w->windowTitle() );
 }
 
 #include "moc_DlgCustomizeImp.cpp"

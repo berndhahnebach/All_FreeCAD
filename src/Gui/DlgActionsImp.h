@@ -40,45 +40,46 @@ namespace Dialog {
  */
 class DlgCustomActionsImp : public CustomizeActionPage, public Ui_DlgCustomActions
 { 
-Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgCustomActionsImp( QWidget* parent = 0 );
-  ~DlgCustomActionsImp();
+    DlgCustomActionsImp( QWidget* parent = 0 );
+    ~DlgCustomActionsImp();
 
 Q_SIGNALS:
-  void addMacroAction( const QString& );
-  void removeMacroAction( const QString& );
-  void replaceMacroAction( const QString& );
+    void addMacroAction( const QByteArray& );
+    void removeMacroAction( const QByteArray& );
+    void modifyMacroAction( const QByteArray& );
 
 protected:
-  /** Trigger for reparent event. */
-  bool event(QEvent* e);
-  void showEvent(QShowEvent* e);
+    /** Trigger for reparent event. */
+    bool event(QEvent* e);
+    void showEvent(QShowEvent* e);
 
 protected Q_SLOTS:
-  /** Enables/disables buttons for deletion */
-  void on_actionListWidget_itemActivated( QTreeWidgetItem *i );
-  /** Opens a iconview to select a pixmap */
-  void on_buttonChoosePixmap_clicked();
-  /** Adds a custom action */
-  void on_buttonAddAction_clicked();
-  /** Deletes a custom action */
-  void on_buttonRemoveAction_clicked();
-  /** Shows the setup of the action */
-  void on_buttonReplaceAction_clicked();
-  void onAddMacroAction(const QString&);
-  void onRemoveMacroAction(const QString&);
+    /** Enables/disables buttons for deletion */
+    void on_actionListWidget_itemActivated( QTreeWidgetItem *i );
+    /** Opens a iconview to select a pixmap */
+    void on_buttonChoosePixmap_clicked();
+    /** Adds a custom action */
+    void on_buttonAddAction_clicked();
+    /** Deletes a custom action */
+    void on_buttonRemoveAction_clicked();
+    /** Shows the setup of the action */
+    void on_buttonReplaceAction_clicked();
+    void onAddMacroAction(const QByteArray&);
+    void onRemoveMacroAction(const QByteArray&);
+    void onModifyMacroAction(const QByteArray&);
 
 private:
-  /** Shows all actions and their pixmaps if available  */
-  void showActions();
-   /** Name for the new created action */
-  QString newActionName();
+    /** Shows all actions and their pixmaps if available  */
+    void showActions();
+    /** Name for the new created action */
+    QString newActionName();
 
 private:
-  bool bShown; /**< For internal use only*/
-  QString m_sPixmap; /**< Name of the specified pixmap */
+    bool bShown; /**< For internal use only*/
+    QString m_sPixmap; /**< Name of the specified pixmap */
 };
 
 } // namespace Dialog

@@ -60,8 +60,9 @@ protected Q_SLOTS:
     void on_newButton_clicked();
     void on_renameButton_clicked();
     void on_deleteButton_clicked();
-    void onAddMacroAction(const QString&);
-    void onRemoveMacroAction(const QString&);
+    void onAddMacroAction(const QByteArray&);
+    void onRemoveMacroAction(const QByteArray&);
+    void onModifyMacroAction(const QByteArray&);
 
 private:
     void importCustomToolbars(const QByteArray&);

@@ -189,6 +189,8 @@ void MacroManager::run(MacroType eType,const char *sName)
         {
             QTextStream str(&file);
             QString content = str.readAll();
+            // Need to convert CRLF to LF
+            content.replace( "\r\n", "\n" );
             Base::Interpreter().runString(content.toAscii());
         }
         else
