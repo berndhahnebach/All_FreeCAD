@@ -135,8 +135,6 @@ PyMethodDef TopoShapePyOld::Methods[] = {
   {"importBREP",       (PyCFunction) simportBREP,       Py_NEWARGS},
   {"exportBREP",       (PyCFunction) sexportBREP,       Py_NEWARGS},
   {"exportSTL",        (PyCFunction) sexportSTL,        Py_NEWARGS},
-  {"offset",           (PyCFunction) soffset,           Py_NEWARGS},
-  {"cut"   ,           (PyCFunction) scut,              Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -714,57 +712,5 @@ PyObject *TopoShapePyOld::exportSTL(PyObject *args)
   } PY_CATCH;
 
   Py_Return; 
-}
-
-PyObject *TopoShapePyOld::offset(PyObject *args)
-{
-  float offset;
-  if (!PyArg_ParseTuple(args, "f", &offset ))
-    return NULL;
-
-  PY_TRY {
-    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (_cTopoShape,offset,0.001,BRepOffset_Skin );
-
-    if(MakeOffsetShape.IsDone())
-      return new TopoShapePyOld(MakeOffsetShape.Shape());
-    else {
-      PyErr_SetString(PyExc_Exception,"Offset failed");
-      return NULL;
-    }
-
-	  
-  } PY_CATCH;
-
-}
-
-
-
-
-
-PyObject *TopoShapePyOld::cut(PyObject *args)
-{
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj);
-
-  PY_TRY {
-   	// Let's call for algorithm computing a cut operation:
-  	BRepAlgoAPI_Section mkCut(_cTopoShape, pcShape->getShape(),Standard_False);
-	  
-	mkCut.ComputePCurveOn1(Standard_True);
-	mkCut.ComputePCurveOn2(Standard_True);
-	mkCut.Approximation (Standard_True);
-	mkCut.Build();
-		// Let's check if the Cut has been successfull:
-	  if (!mkCut.IsDone()) {
-      PyErr_SetString(PyExc_Exception,"Cut failed");
-      return NULL;
-    } else
-      return new TopoShapePyOld( mkCut.Shape());
-	  
-  } PY_CATCH;
-
 }
 
