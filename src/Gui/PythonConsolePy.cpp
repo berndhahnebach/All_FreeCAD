@@ -115,7 +115,7 @@ PYFUNCIMP_D(PythonStdoutPy,write)
   char *output;
   if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
       return Py_None;                            // Do not provok error messages 
-  pyConsole->insertPythonOutput(QString::fromUtf8(output));
+  pyConsole->insertPythonOutput(output);
   return Py_None;
 } 
 
@@ -206,7 +206,7 @@ PYFUNCIMP_D(PythonStderrPy,write)
   char *output;
   if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
       return Py_None;                            // Do not provok error messages 
-  pyConsole->insertPythonError(QString::fromUtf8(output));
+  pyConsole->insertPythonError(output);
   return Py_None;
 } 
 

@@ -45,7 +45,7 @@ public:
   virtual ~ViewProviderDocumentObjectGroup();
 
   virtual void attach(App::DocumentObject *pcObject);
-  //virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
+  //FIXME: getIcon(Icon) enum Icon {Active, Disabled, Open, Closed, ...} 
   virtual QPixmap getOpenedGroupIcon() const;
   virtual QPixmap getClosedGroupIcon() const;
   /// returns a list of all possible modes

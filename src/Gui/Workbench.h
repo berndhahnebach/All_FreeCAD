@@ -93,7 +93,8 @@ private:
    * The method imports the user defined toolbars or toolbox bars and creates
    * a ToolBarItem tree structure.
    */
-  void importCustomToolbars(ToolBarItem* root, const char* toolbar) const;
+  void setupCustomToolbars(ToolBarItem* root, const char* toolbar) const;
+  void setupCustomShortcuts() const;
 
 private:
   QString _name;

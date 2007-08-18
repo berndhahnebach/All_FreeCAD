@@ -174,7 +174,7 @@ void DlgCustomKeyboardImp::on_buttonAssign_clicked()
         editShortcut->clear();
 
         ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
-        hGrp->SetASCII(name.constData(), editShortcut->text().toAscii());
+        hGrp->SetASCII(name.constData(), accelLineEditShortcut->text().toAscii());
         buttonAssign->setEnabled(false);
         buttonReset->setEnabled(true);
     }

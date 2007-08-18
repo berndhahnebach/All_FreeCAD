@@ -110,7 +110,7 @@ NetworkRetriever::~NetworkRetriever()
  * \note This test is necessary since \a wget writes all its output on stderr and we cannot determine surely 
  * if an error occurred or not.
  *
- * \todo There is still a problem that is not solved so far. If wget requires the proxy settings and if these 
+ * There is still a problem that is not solved so far. If wget requires the proxy settings and if these 
  * are not set, wget could take more than 5 seconds without downloading anything. 
  */
 void NetworkRetriever::testFailure()

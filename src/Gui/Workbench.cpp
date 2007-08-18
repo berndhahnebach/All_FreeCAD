@@ -215,7 +215,7 @@ void Workbench::setName( const QString& name )
     _name = name;
 }
 
-void Workbench::importCustomToolbars(ToolBarItem* root, const char* toolbar) const
+void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) const
 {
     QByteArray name = this->name().toAscii();
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
@@ -256,62 +256,41 @@ void Workbench::importCustomToolbars(ToolBarItem* root, const char* toolbar) con
     }
 }
 
+void Workbench::setupCustomShortcuts() const
+{
+    // Assigns user defined accelerators
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter();
+    if ( hGrp->HasGroup("Shortcut") ) {
+        hGrp = hGrp->GetGroup("Shortcut");
+        // Get all user defined shortcuts
+        const CommandManager& cCmdMgr = Application::Instance->commandManager();
+        std::vector<std::pair<std::string,std::string> > items = hGrp->GetASCIIMap();
+        for ( std::vector<std::pair<std::string,std::string> >::iterator it = items.begin(); it != items.end(); ++it )
+        {
+            Command* cmd = cCmdMgr.getCommandByName(it->first.c_str());
+            if (cmd && cmd->getAction())
+            {
+                QString str = it->second.c_str();
+                QKeySequence shortcut = str;
+                cmd->getAction()->setShortcut(shortcut);
+            }
+        }
+    }
+}
+
 void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
 }
 
 bool Workbench::activate()
 {
-    // Assigns user defined accelerators
-    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter();
-    if ( hGrp->HasGroup("Shortcut") ) {
-        hGrp = hGrp->GetGroup("Shortcut");
-        std::vector<std::pair<std::string,std::string> > items = hGrp->GetASCIIMap();
-
-        QMap<QString, CommandBase*> nameCommands;
-        const CommandManager& cCmdMgr = Application::Instance->commandManager();
-        const std::map<std::string,Command*>& sCommands = cCmdMgr.getCommands();
-
-        for (std::map<std::string,Command*>::const_iterator ci = sCommands.begin(); ci != sCommands.end(); ++ci)
-        {
-#if 0       // TODO Reimplement
-            CommandGroup* cmdGrp = dynamic_cast<CommandGroup*>(ci->second);
-            if ( cmdGrp )
-            {
-                int i=0;
-                std::vector<CommandItem*> items = cmdGrp->getItems();
-                for ( std::vector<CommandItem*>::const_iterator e = items.begin(); e != items.end(); ++e )
-                {
-                    QString sName = QString("%1_%2").arg(ci->second->getName()).arg(i++);
-                    nameCommands[sName] = *e;
-                }
-            }
-            else
-#endif
-            {
-                nameCommands[ci->second->getName()] = ci->second;
-            }
-        }
-
-        for ( std::vector<std::pair<std::string,std::string> >::iterator it = items.begin(); it != items.end(); ++it )
-        {
-            CommandBase* cmd = nameCommands[ it->first.c_str() ];
-            if ( cmd && cmd->getAction() )
-            {
-                QString str = it->second.c_str();
-                QKeySequence shortcut = str;
-                cmd->getAction()->setShortcut( shortcut );
-            }
-        }
-    }
-
     ToolBarItem* tb = setupToolBars();
-    importCustomToolbars(tb, "Toolbar");
+    setupCustomToolbars(tb, "Toolbar");
     ToolBarManager::getInstance()->setup( tb );
     delete tb;
 
     ToolBarItem* cb = setupCommandBars();
-    importCustomToolbars(cb, "Toolboxbar");
+    setupCustomToolbars(cb, "Toolboxbar");
     CommandBarManager::getInstance()->setup( cb );
     delete cb;
 
@@ -322,6 +301,8 @@ bool Workbench::activate()
     MenuItem* mb = setupMenuBar();
     MenuManager::getInstance()->setup( mb );
     delete mb;
+
+    setupCustomShortcuts();
 
     return true;
 }
