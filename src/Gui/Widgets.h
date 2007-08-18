@@ -35,57 +35,6 @@ class PrefCheckBox;
 class CommandViewItemPrivate;
 
 /**
- * The CheckMessageBox class provides an additional QCheckBox to check if
- * the message should appear in future or not.
- * \author Werner Mayer
- *//*
-class GuiExport CheckMessageBox : public QMessageBox
-{
-  Q_OBJECT
-
-public:
-  CheckMessageBox(QWidget * parent=0, const char * name=0);
-  ~CheckMessageBox();
-
-  static int information ( QWidget * parent, const QString & caption, const QString & text,
-                           int button0, int button1=0, int button2=0);
-  static int information ( QWidget * parent, const QString & caption, const QString & text,
-                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-  static int question    ( QWidget * parent, const QString & caption, const QString & text,
-                           int button0, int button1=0, int button2=0);
-  static int question    ( QWidget * parent, const QString & caption, const QString & text,
-                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-  static int warning     ( QWidget * parent, const QString & caption, const QString & text,
-                           int button0, int button1, int button2=0 );
-  static int warning     ( QWidget * parent, const QString & caption, const QString & text,
-                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
-  static int critical    ( QWidget * parent, const QString & caption, const QString & text,
-                           int button0, int button1, int button2=0 );
-  static int critical    ( QWidget * parent, const QString & caption, const QString & text,
-                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
-
-protected:
-
-  // protected constructor
-  CheckMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
-               int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, Qt::WFlags f=Qt::WStyle_DialogBorder);
-
-private:
-  static int _msg( Icon icon, QWidget * parent, const QString & caption, const QString & text,
-                   const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                   const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-
-  Gui::PrefCheckBox* checkBox;
-  Q3GridLayout* layout;
-};*/
-
-// ------------------------------------------------------------------------------
-
-/**
  * This class allows to drag one or more items which
  * correspond to a Command object. The dragged items you
  * can drop onto a @ref Gui::CustomToolBar object

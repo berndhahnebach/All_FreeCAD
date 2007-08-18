@@ -102,44 +102,6 @@ private:
 };
 
 // ----------------------------------------------------------------------
-#if 0
-/**
- * The ImagePreview class draws a pixmap on an area.
- * \author Werner Mayer
- */
-class ImagePreview : public Q3ScrollView
-{
-public:
-  ImagePreview( QWidget *parent=0, const char* name=0 );
-
-  void setPixmap( const QPixmap &pix );
-  void drawContents( QPainter *p, int clipx, int clipy, int clipw, int cliph );
-
-private:
-  QPixmap _pixmap;
-};
-
-// ----------------------------------------------------------------------
-
-/**
- * The PreviewLabel class is a preview widget that can be used with FileDialogs.
- * \author Werner Mayer
- */
-class PreviewLabel : public QWidget, public Q3FilePreview
-{
-  Q_OBJECT
-
-public:
-  PreviewLabel( QWidget *parent=0, const char* name =0 );
-
-  void previewUrl( const Q3Url &u );
-
-private:
-  ImagePreview* _preview;
-  QCheckBox* _cbview;
-};
-#endif
-// ----------------------------------------------------------------------
 
 /**
  * The FileIconProvider class provides icons for FileDialog to use.

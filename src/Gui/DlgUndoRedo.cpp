@@ -27,7 +27,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "Document.h"
-#include "PythonEditor.h"
+#include "PythonView.h"
 
 using namespace Gui::Dialog;
 
@@ -40,7 +40,7 @@ using namespace Gui::Dialog;
 UndoDialog::UndoDialog( QWidget* parent )
   : QMenu( parent )
 {
-  connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
+    connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
 }
 
 /** 
@@ -48,7 +48,7 @@ UndoDialog::UndoDialog( QWidget* parent )
  */
 UndoDialog::~UndoDialog()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /** 
@@ -57,26 +57,35 @@ UndoDialog::~UndoDialog()
  */
 void UndoDialog::onFetchInfo() 
 {
-  clear(); // Remove first all items
-  Gui::Document* pcDoc = Application::Instance->activeDocument();
-  if ( pcDoc )
-  {
-    std::vector<std::string> vecUndos = pcDoc->getUndoVector();
-    for (std::vector<std::string>::iterator i=vecUndos.begin(); i!=vecUndos.end(); i++)
-      addAction((*i).c_str(), this, SLOT(onSelected()));
-  }
+    clear(); // Remove first all items
+    Gui::Document* pcDoc = Application::Instance->activeDocument();
+    if (pcDoc)
+    {
+        std::vector<std::string> vecUndos = pcDoc->getUndoVector();
+        for (std::vector<std::string>::iterator i=vecUndos.begin(); i!=vecUndos.end(); i++)
+            addAction((*i).c_str(), this, SLOT(onSelected()));
+    }
+    else
+    {
+        PythonView* view = qobject_cast<PythonView*>(getMainWindow()->activeWindow());
+        if (view) {
+            QStringList vecUndos = view->undoActions();
+            for (QStringList::Iterator i=vecUndos.begin(); i!=vecUndos.end(); i++)
+                addAction(*i, this, SLOT(onSelected()));
+        }
+    }
 }
 
 /** Closes the dialog and emits the @ref clickedListBox() signal. */
 void UndoDialog::onSelected()
 {
-  QAction* a = (QAction*)sender();
-  QList<QAction*> acts = this->actions();
-  for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
-    Gui::Application::Instance->sendMsgToActiveView("Undo");
-    if ( *it == a )
-      break;
-  }
+    QAction* a = (QAction*)sender();
+    QList<QAction*> acts = this->actions();
+    for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+        Gui::Application::Instance->sendMsgToActiveView("Undo");
+        if ( *it == a )
+            break;
+    }
 }
 
 /* TRANSLATOR Gui::Dialog::RedoDialog */
@@ -88,7 +97,7 @@ void UndoDialog::onSelected()
 RedoDialog::RedoDialog( QWidget* parent )
   : QMenu( parent )
 {
-  connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
+    connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
 }
 
 /** 
@@ -96,7 +105,7 @@ RedoDialog::RedoDialog( QWidget* parent )
  */
 RedoDialog::~RedoDialog()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /** 
@@ -105,26 +114,35 @@ RedoDialog::~RedoDialog()
  */
 void RedoDialog::onFetchInfo() 
 {
-  clear(); // Remove first all items
-  Gui::Document* pcDoc = Application::Instance->activeDocument();
-  if ( pcDoc )
-  {
-    std::vector<std::string> vecRedos = pcDoc->getRedoVector();
-    for (std::vector<std::string>::iterator i=vecRedos.begin(); i!=vecRedos.end(); i++)
-      addAction((*i).c_str(), this, SLOT(onSelected()));
-  }
+    clear(); // Remove first all items
+    Gui::Document* pcDoc = Application::Instance->activeDocument();
+    if ( pcDoc )
+    {
+        std::vector<std::string> vecRedos = pcDoc->getRedoVector();
+        for (std::vector<std::string>::iterator i=vecRedos.begin(); i!=vecRedos.end(); i++)
+            addAction((*i).c_str(), this, SLOT(onSelected()));
+    }
+    else
+    {
+        PythonView* view = qobject_cast<PythonView*>(getMainWindow()->activeWindow());
+        if (view) {
+            QStringList vecRedos = view->redoActions();
+            for (QStringList::Iterator i=vecRedos.begin(); i!=vecRedos.end(); i++)
+                addAction(*i, this, SLOT(onSelected()));
+        }
+    }
 }
 
 /** Closes the dialog and emits the @ref clickedListBox() signal. */
 void RedoDialog::onSelected()
 {
-  QAction* a = (QAction*)sender();
-  QList<QAction*> acts = this->actions();
-  for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
-    Gui::Application::Instance->sendMsgToActiveView("Redo");
-    if ( *it == a )
-      break;
-  }
+    QAction* a = (QAction*)sender();
+    QList<QAction*> acts = this->actions();
+    for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+        Gui::Application::Instance->sendMsgToActiveView("Redo");
+        if ( *it == a )
+            break;
+    }
 }
 
 #include "moc_DlgUndoRedo.cpp"

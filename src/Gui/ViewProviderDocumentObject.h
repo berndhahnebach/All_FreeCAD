@@ -71,10 +71,6 @@ public:
   App::PropertyBool Visibility;
   App::PropertyMaterial ShapeMaterial;
 
-  // Returns the tree label
-  //virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
-  //ObjectItem* getTreeItem(Q3ListViewItem* parent);
-
   virtual void attach(App::DocumentObject *pcObject);
   /// get the default display mode
   virtual const char* getDefaultDisplayMode() const;
@@ -96,9 +92,6 @@ public:
     assert(pcObject && pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
     return dynamic_cast<App::AbstractFeature *>(pcObject);
   }
-  
-  /// freqently called by the framework to check status changes in the data
-  //virtual bool testStatus(void);
 
   App::DocumentObject *getObject(void) const {return pcObject;}
 

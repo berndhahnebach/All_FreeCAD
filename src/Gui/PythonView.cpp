@@ -41,6 +41,9 @@ public:
     QString fileName;
     QTimer*  activityTimer;
     uint timeStamp;
+    bool lock;
+    QStringList undos;
+    QStringList redos;
 };
 }
 
@@ -54,6 +57,7 @@ PythonView::PythonView(QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Editor" )
 {
     d = new PythonViewP;
+    d->lock = false;
 
     // create the editor first
     d->textEdit = new PythonEditor();
@@ -85,6 +89,12 @@ PythonView::PythonView(QWidget* parent)
             this, SLOT(checkTimestamp()) );
     connect(d->textEdit->document(), SIGNAL(modificationChanged(bool)),
             this, SLOT(setWindowModified(bool)));
+    connect(d->textEdit->document(), SIGNAL(undoAvailable(bool)),
+            this, SLOT(undoAvailable(bool)));
+    connect(d->textEdit->document(), SIGNAL(redoAvailable(bool)),
+            this, SLOT(redoAvailable(bool)));
+    connect(d->textEdit->document(), SIGNAL(contentsChange(int, int, int)),
+            this, SLOT(contentsChange(int, int, int)));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -248,7 +258,11 @@ bool PythonView::open(const QString& fileName)
     if (!file.open(QFile::ReadOnly))
         return false;
 
+    d->lock = true;
     d->textEdit->setPlainText(file.readAll());
+    d->lock = false;
+    d->undos.clear();
+    d->redos.clear();
     file.close();
 
     QFileInfo fi(fileName);
@@ -300,7 +314,13 @@ void PythonView::paste(void)
  */
 void PythonView::undo(void)
 {
+    d->lock = true;
+    if (!d->undos.isEmpty()) {
+        d->redos << d->undos.back();
+        d->undos.pop_back();
+    }
     d->textEdit->document()->undo();
+    d->lock = false;
 }
 
 /**
@@ -309,7 +329,13 @@ void PythonView::undo(void)
  */
 void PythonView::redo(void)
 {
+    d->lock = true;
+    if (!d->redos.isEmpty()) {
+        d->undos << d->redos.back();
+        d->redos.pop_back();
+    }
     d->textEdit->document()->redo();
+    d->lock = false;
 }
 
 /**
@@ -375,20 +401,47 @@ bool PythonView::saveFile()
     return true;
 }
 
-/**
- * \Todo: Get the undo history.
- */
-QStringList PythonView::undoActions() const
+void PythonView::undoAvailable(bool undo)
 {
-    return QStringList();
+    if (!undo)
+        d->undos.clear();
+}
+
+void PythonView::redoAvailable(bool redo)
+{
+    if (!redo)
+        d->redos.clear();
+}
+
+void PythonView::contentsChange(int position, int charsRemoved, int charsAdded)
+{
+    if (d->lock)
+        return;
+    if (charsRemoved > 0 && charsAdded > 0)
+        return; // syntax highlighting
+    else if (charsRemoved > 0)
+        d->undos << tr("%1 chars removed").arg(charsRemoved);
+    else if (charsAdded > 0)
+        d->undos << tr("%1 chars added").arg(charsAdded);
+    else
+        d->undos << tr("Formatted");
+    d->redos.clear();
 }
 
 /**
- * \Todo: Get the redo history.
+ * Get the undo history.
+ */
+QStringList PythonView::undoActions() const
+{
+    return d->undos;
+}
+
+/**
+ * Get the redo history.
  */
 QStringList PythonView::redoActions() const
 {
-    return QStringList();
+    return d->redos;;
 }
 
 // ---------------------------------------------------------

@@ -94,6 +94,9 @@ public:
 
 private Q_SLOTS:
     void checkTimestamp();
+    void contentsChange(int position, int charsRemoved, int charsAdded);
+    void undoAvailable(bool);
+    void redoAvailable(bool);
 
 private:
     void setCurrentFileName(const QString &fileName);
