@@ -38,32 +38,32 @@ DockWindowItems::~DockWindowItems()
 
 void DockWindowItems::addDockWidget(const QString& name, Qt::DockWidgetArea pos)
 {
-  _items.push_back(qMakePair<QString, Qt::DockWidgetArea>(name, pos));
+    _items.push_back(qMakePair<QString, Qt::DockWidgetArea>(name, pos));
 }
 
 const QList<DockWindowItem>& DockWindowItems::dockWidgets() const
 {
-  return this->_items;
+    return this->_items;
 }
 
 bool DockWindowItems::operator == (const DockWindowItems& that) const
 {
-  if (this->_items.size() != that._items.size())
-    return false;
-  QList<QPair<QString, Qt::DockWidgetArea> >::const_iterator it, jt;
+    if (this->_items.size() != that._items.size())
+        return false;
+    QList<QPair<QString, Qt::DockWidgetArea> >::const_iterator it, jt;
 
-  it = this->_items.begin();
-  jt = that._items.begin();
+    it = this->_items.begin();
+    jt = that._items.begin();
 
-  // all items must be equal
-  while (it != this->_items.end()) {
-    if ((*it).first != (*jt).first || (*it).second != (*jt).second)
-      return false;
-    ++it;
-    ++jt;
-  }
+    // all items must be equal
+    while (it != this->_items.end()) {
+        if ((*it).first != (*jt).first || (*it).second != (*jt).second)
+            return false;
+        ++it;
+        ++jt;
+    }
 
-  return true;
+    return true;
 }
 
 // -----------------------------------------------------------
@@ -71,9 +71,9 @@ bool DockWindowItems::operator == (const DockWindowItems& that) const
 namespace Gui {
 struct DockWindowManagerP
 {
-  QList<QDockWidget*> _dockedWindows;
-  QMap<QString, QPointer<QWidget> > _dockWindows;
-  DockWindowItems _dockWindowItems;
+    QList<QDockWidget*> _dockedWindows;
+    QMap<QString, QPointer<QWidget> > _dockWindows;
+    DockWindowItems _dockWindowItems;
 };
 } // namespace Gui
 
@@ -81,33 +81,33 @@ DockWindowManager* DockWindowManager::_instance = 0;
 
 DockWindowManager* DockWindowManager::instance()
 {
-  if ( _instance == 0 )
-    _instance = new DockWindowManager;
-  return _instance;
+    if ( _instance == 0 )
+        _instance = new DockWindowManager;
+    return _instance;
 }
 
 void DockWindowManager::destruct()
 {
-  delete _instance;
-  _instance = 0;
+    delete _instance;
+    _instance = 0;
 }
 
 DockWindowManager::DockWindowManager()
 {
-  d = new DockWindowManagerP;
+    d = new DockWindowManagerP;
 }
 
 DockWindowManager::~DockWindowManager()
 {
-  for (QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.begin(); it != d->_dockWindows.end(); ++it) {
-    QWidget* dw = it.value();
-    if (dw) {
-      delete dw;
+    for (QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.begin(); it != d->_dockWindows.end(); ++it) {
+        QWidget* dw = it.value();
+        if (dw) {
+            delete dw;
+        }
     }
-  }
 
-  d->_dockedWindows.clear();
-  delete d;
+    d->_dockedWindows.clear();
+    delete d;
 }
 
 /**
@@ -115,25 +115,25 @@ DockWindowManager::~DockWindowManager()
  */
 void DockWindowManager::addDockWindow( const QString& name, QWidget* widget, Qt::DockWidgetArea pos )
 {
-  // creates the dock widget as container to embed this widget
-  MainWindow* mw = getMainWindow();
-  QDockWidget* dw = new QDockWidget(mw);
-  // Note: By default all dock widgets are hidden but the user can show them manually in the view menu.
-  // First, hide immediately the dock widget to avoid flickering, after setting up the dock widgets
-  // MainWindow::loadLayoutSettings() is called to restore the layout.
-  dw->hide();
-  mw->addDockWidget(pos, dw);
+    // creates the dock widget as container to embed this widget
+    MainWindow* mw = getMainWindow();
+    QDockWidget* dw = new QDockWidget(mw);
+    // Note: By default all dock widgets are hidden but the user can show them manually in the view menu.
+    // First, hide immediately the dock widget to avoid flickering, after setting up the dock widgets
+    // MainWindow::loadLayoutSettings() is called to restore the layout.
+    dw->hide();
+    mw->addDockWidget(pos, dw);
 
-  // add the widget to the dock widget
-  widget->setParent(dw);
-  dw->setWidget(widget);
+    // add the widget to the dock widget
+    widget->setParent(dw);
+    dw->setWidget(widget);
 
-  // set object name and window title needed for i18n stuff
-  dw->setObjectName(name);
-  dw->setWindowTitle(QDockWidget::tr(name.toAscii()));
-  dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    // set object name and window title needed for i18n stuff
+    dw->setObjectName(name);
+    dw->setWindowTitle(QDockWidget::tr(name.toAscii()));
+    dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-  d->_dockedWindows.push_back(dw);
+    d->_dockedWindows.push_back(dw);
 }
 
 /**
@@ -142,12 +142,12 @@ void DockWindowManager::addDockWindow( const QString& name, QWidget* widget, Qt:
  */
 QWidget* DockWindowManager::getDockWindow( const QString& name ) const
 {
-  for (QList<QDockWidget*>::ConstIterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+    for (QList<QDockWidget*>::ConstIterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
     if ((*it)->objectName() == name)
-      return (*it)->widget();
-  }
+        return (*it)->widget();
+    }
 
-  return 0;
+    return 0;
 }
 
 /**
@@ -155,10 +155,10 @@ QWidget* DockWindowManager::getDockWindow( const QString& name ) const
  */
 QList<QWidget*> DockWindowManager::getDockWindows() const
 {
-  QList<QWidget*> docked;
-  for (QList<QDockWidget*>::ConstIterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it)
-    docked.push_back((*it)->widget());
-  return docked;
+    QList<QWidget*> docked;
+    for (QList<QDockWidget*>::ConstIterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it)
+        docked.push_back((*it)->widget());
+    return docked;
 }
 
 /**
@@ -166,22 +166,22 @@ QList<QWidget*> DockWindowManager::getDockWindows() const
  */
 QWidget* DockWindowManager::removeDockWindow( const QString& name )
 {
-  QWidget* widget=0;
-  for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
-    if ((*it)->objectName() == name) {
-      QDockWidget* dw = *it;
-      d->_dockedWindows.erase(it);
-      getMainWindow()->removeDockWidget(dw);
-      // avoid to destruct the embedded widget
-      widget = dw->widget();
-      widget->setParent(0);
-      dw->setWidget(0);
-      delete dw; // destruct the QDockWidget, i.e. the parent of the widget
-      break;
+    QWidget* widget=0;
+    for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        if ((*it)->objectName() == name) {
+            QDockWidget* dw = *it;
+            d->_dockedWindows.erase(it);
+            getMainWindow()->removeDockWidget(dw);
+            // avoid to destruct the embedded widget
+            widget = dw->widget();
+            widget->setParent(0);
+            dw->setWidget(0);
+            delete dw; // destruct the QDockWidget, i.e. the parent of the widget
+            break;
+        }
     }
-  }
 
-  return widget;
+    return widget;
 }
 
 /**
@@ -190,18 +190,18 @@ QWidget* DockWindowManager::removeDockWindow( const QString& name )
  */
 void DockWindowManager::removeDockWindow( QWidget* widget )
 {
-  for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
-    if ((*it)->widget() == widget) {
-      QDockWidget* dw = *it;
-      d->_dockedWindows.erase(it);
-      getMainWindow()->removeDockWidget(dw);
-      // avoid to destruct the embedded widget
-      widget->setParent(0);
-      dw->setWidget(0);
-      delete dw; // destruct the QDockWidget, i.e. the parent of the widget
-      break;
+    for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        if ((*it)->widget() == widget) {
+            QDockWidget* dw = *it;
+            d->_dockedWindows.erase(it);
+            getMainWindow()->removeDockWidget(dw);
+            // avoid to destruct the embedded widget
+            widget->setParent(0);
+            dw->setWidget(0);
+            delete dw; // destruct the QDockWidget, i.e. the parent of the widget
+            break;
+        }
     }
-  }
 }
 
 /**
@@ -209,14 +209,14 @@ void DockWindowManager::removeDockWindow( QWidget* widget )
  */
 void DockWindowManager::showDockWindows( const QStringList& dw )
 {
-  for (QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
-    for (QList<QDockWidget*>::Iterator jt = d->_dockedWindows.begin(); jt != d->_dockedWindows.end(); ++jt) {
-      if ((*jt)->objectName() == *it) {
-        (*jt)->show();
-        break;
-      }
+    for (QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
+        for (QList<QDockWidget*>::Iterator jt = d->_dockedWindows.begin(); jt != d->_dockedWindows.end(); ++jt) {
+            if ((*jt)->objectName() == *it) {
+                (*jt)->show();
+                break;
+            }
+        }
     }
-  }
 }
 
 /**
@@ -224,14 +224,14 @@ void DockWindowManager::showDockWindows( const QStringList& dw )
  */
 void DockWindowManager::hideDockWindows( const QStringList& dw )
 {
-  for (QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
-    for (QList<QDockWidget*>::Iterator jt = d->_dockedWindows.begin(); jt != d->_dockedWindows.end(); ++jt) {
-      if ((*jt)->objectName() == *it) {
-        (*jt)->hide();
-        break;
-      }
+    for (QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
+        for (QList<QDockWidget*>::Iterator jt = d->_dockedWindows.begin(); jt != d->_dockedWindows.end(); ++jt) {
+            if ((*jt)->objectName() == *it) {
+                (*jt)->hide();
+                break;
+            }
+        }
     }
-  }
 }
 
 /**
@@ -239,9 +239,9 @@ void DockWindowManager::hideDockWindows( const QStringList& dw )
  */
 void DockWindowManager::languageChanged()
 {
-  for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
-    (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toAscii()));
-  }
+    for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toAscii()));
+    }
 }
 
 /**
@@ -263,39 +263,39 @@ void DockWindowManager::languageChanged()
  */
 bool DockWindowManager::registerDockWindow(const QString& name, QWidget* widget)
 {
-  QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.find(name);
-  if (it != d->_dockWindows.end() || !widget)
-    return false;
-  d->_dockWindows[name] = widget;
-  widget->hide(); // hide the widget if not used
-  return true;
+    QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.find(name);
+    if (it != d->_dockWindows.end() || !widget)
+        return false;
+    d->_dockWindows[name] = widget;
+    widget->hide(); // hide the widget if not used
+    return true;
 }
 
 /** Sets up the dock windows of the activated workbench. */
 void DockWindowManager::setup( DockWindowItems* items)
 {
-  // if this configuration is already setup
-  if (!items || d->_dockWindowItems == *items) {
-    languageChanged();
-    return;
-  }
-
-  // remove all dock windows
-  QList<QDockWidget*> docked = d->_dockedWindows;
-  for (QList<QDockWidget*>::Iterator it = docked.begin(); it != docked.end(); ++it) {
-    QWidget* w = (*it)->widget();
-    removeDockWindow(w);
-    w->hide();
-  }
-
-  const QList<DockWindowItem>& dw = items->dockWidgets();
-  for (QList<DockWindowItem>::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
-    QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find((*it).first);
-    if (jt != d->_dockWindows.end()) {
-      addDockWindow(jt.value()->windowTitle(), jt.value(), (*it).second);
-      jt.value()->show();
+    // if this configuration is already setup
+    if (!items || d->_dockWindowItems == *items) {
+        languageChanged();
+        return;
     }
-  }
 
-  d->_dockWindowItems = *items;
+    // remove all dock windows
+    QList<QDockWidget*> docked = d->_dockedWindows;
+    for (QList<QDockWidget*>::Iterator it = docked.begin(); it != docked.end(); ++it) {
+        QWidget* w = (*it)->widget();
+        removeDockWindow(w);
+        w->hide();
+    }
+
+    const QList<DockWindowItem>& dw = items->dockWidgets();
+    for (QList<DockWindowItem>::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
+        QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find((*it).first);
+        if (jt != d->_dockWindows.end()) {
+            addDockWindow(jt.value()->windowTitle(), jt.value(), (*it).second);
+            jt.value()->show();
+        }
+    }
+
+    d->_dockWindowItems = *items;
 }

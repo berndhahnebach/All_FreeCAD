@@ -37,114 +37,114 @@ MenuItem::MenuItem()
 
 MenuItem::MenuItem( MenuItem* item )
 {
-  if ( item )
-    item->appendItem( this );
+    if ( item )
+        item->appendItem( this );
 }
 
 MenuItem::~MenuItem()
 {
-  clear();
+    clear();
 }
 
 void MenuItem::setCommand( const QString& name )
 {
-  _name = name;
+    _name = name;
 }
 
 QString MenuItem::command() const
 {
-  return _name;
+    return _name;
 }
 
 bool MenuItem::hasItems() const
 {
-  return _items.count() > 0;
+    return _items.count() > 0;
 }
 
 MenuItem* MenuItem::findItem( const QString& name )
 {
-  if ( _name == name )
-  {
-    return this;
-  }
-  else
-  {
-    for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+    if ( _name == name )
     {
-      if ( (*it)->_name == name )
-        return *it;
+        return this;
     }
-  }
+    else
+    {
+        for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+        {
+            if ( (*it)->_name == name )
+                return *it;
+        }
+    }
 
-  return 0;
+    return 0;
 }
 
 MenuItem* MenuItem::copy() const
 {
-  MenuItem* root = new MenuItem;
-  root->setCommand( command() );
+    MenuItem* root = new MenuItem;
+    root->setCommand( command() );
 
-  QList<MenuItem*> items = getItems();
-  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
-  {
-    root->appendItem( (*it)->copy() );
-  }
+    QList<MenuItem*> items = getItems();
+    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    {
+        root->appendItem( (*it)->copy() );
+    }
 
-  return root;
+    return root;
 }
 
 uint MenuItem::count() const
 {
-  return _items.count();
+    return _items.count();
 }
 
 void MenuItem::appendItem( MenuItem* item )
 {
-  _items.push_back( item );
+    _items.push_back( item );
 }
 
 bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
 {
-  int pos = _items.indexOf(before);
-  if (pos != -1)
-  {
-    _items.insert(pos, item);
-    return true;
-  }
-  else
-    return false;
+    int pos = _items.indexOf(before);
+    if (pos != -1)
+    {
+        _items.insert(pos, item);
+        return true;
+    }
+    else
+        return false;
 }
 
 void MenuItem::removeItem( MenuItem* item )
 {
-  int pos = _items.indexOf(item);
-  if (pos != -1)
-    _items.removeAt(pos);
+    int pos = _items.indexOf(item);
+    if (pos != -1)
+        _items.removeAt(pos);
 }
 
 void MenuItem::clear()
 {
-  for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
-    delete *it;
-  _items.clear();
+    for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+        delete *it;
+    _items.clear();
 }
 
 MenuItem& MenuItem::operator<< ( const QString& command )
 {
-  MenuItem* item = new MenuItem(this);
-  item->setCommand( command );
-  return *this;
+    MenuItem* item = new MenuItem(this);
+    item->setCommand( command );
+    return *this;
 }
 
 MenuItem& MenuItem::operator<< ( MenuItem* item )
 {
-  appendItem(item);
-  return *this;
+    appendItem(item);
+    return *this;
 }
 
 QList<MenuItem*> MenuItem::getItems() const
 {
-  return _items;
+    return _items;
 }
 
 // -----------------------------------------------------------
@@ -153,15 +153,15 @@ MenuManager* MenuManager::_instance=0;
 
 MenuManager* MenuManager::getInstance()
 {
-  if ( !_instance )
-    _instance = new MenuManager;
-  return _instance;
+    if ( !_instance )
+        _instance = new MenuManager;
+    return _instance;
 }
 
 void MenuManager::destruct()
 {
-  delete _instance;
-  _instance = 0;
+    delete _instance;
+    _instance = 0;
 }
 
 MenuManager::MenuManager()
@@ -174,61 +174,63 @@ MenuManager::~MenuManager()
 
 void MenuManager::setup( MenuItem* menuBar ) const
 {
-  if ( !menuBar )
-    return; // empty menu bar
+    if ( !menuBar )
+        return; // empty menu bar
 
-  // create a new menu bar and disable update to avoid flickering when building up
-  // the menus
-  // Note: To free immediately the acquired memory by the menu bar we must destruct it rather than
-  // clear its menus, otherwise we free this memory not before the application exits
-  QMenuBar* bar = new QMenuBar(getMainWindow());
-  bar->setUpdatesEnabled(false);
+    // create a new menu bar and disable update to avoid flickering when building up
+    // the menus
+    // Note: To free immediately the acquired memory by the menu bar we must destruct it rather than
+    // clear its menus, otherwise we free this memory not before the application exits
+    QMenuBar* bar = new QMenuBar(getMainWindow());
+    bar->setUpdatesEnabled(false);
 
-  // set the new menu bar and destroy the old one
-  QMenuBar* old = getMainWindow()->menuBar();
-  getMainWindow()->layout()->setMenuBar(bar);
-  delete old;
+    // set the new menu bar and destroy the old one
+    QMenuBar* old = getMainWindow()->menuBar();
+    getMainWindow()->layout()->setMenuBar(bar);
+    delete old;
 
-  QList<MenuItem*> items = menuBar->getItems();
-  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
-  {
-    if ( (*it)->command() == "Separator" ) {
-      bar->addSeparator();
-    } else {
-      QMenu* menu = bar->addMenu(QObject::tr((const char*)(*it)->command().toAscii()));
-      menu->setObjectName((*it)->command());
-      setup(*it, menu);
+    QList<MenuItem*> items = menuBar->getItems();
+    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    {
+        if ( (*it)->command() == "Separator" ) {
+            bar->addSeparator();
+        } else {
+            QByteArray menuName = (*it)->command().toUtf8();
+            QMenu* menu = bar->addMenu(QObject::trUtf8((const char*)menuName));
+            menu->setObjectName((*it)->command());
+            setup(*it, menu);
+        }
     }
-  }
 
-  // enable update again
-  bar->setUpdatesEnabled(true);
+    // enable update again
+    bar->setUpdatesEnabled(true);
 }
 
 void MenuManager::setup( MenuItem* item, QMenu* menu ) const
 {
-  CommandManager& mgr = Application::Instance->commandManager();
+    CommandManager& mgr = Application::Instance->commandManager();
 
-  QList<MenuItem*> items = item->getItems();
-  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
-  {
-    if ( (*it)->hasItems() )
+    QList<MenuItem*> items = item->getItems();
+    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
     {
-      QMenu* submenu = menu->addMenu(QObject::tr((const char*)(*it)->command().toAscii()));
-      submenu->setObjectName((*it)->command());
-      setup( (*it), submenu );
+        if ( (*it)->hasItems() )
+        {
+            QByteArray menuName = (*it)->command().toUtf8();
+            QMenu* submenu = menu->addMenu(QObject::tr((const char*)menuName));
+            submenu->setObjectName((*it)->command());
+            setup( (*it), submenu );
+        }
+        else
+        {
+            if ( (*it)->command() == "Separator" )
+                menu->addSeparator();
+            else
+                mgr.addTo((const char*)(*it)->command().toAscii(), menu);
+        }
     }
-    else
-    {
-      if ( (*it)->command() == "Separator" )
-        menu->addSeparator();
-      else
-        mgr.addTo((const char*)(*it)->command().toAscii(), menu);
-    }
-  }
 }
 
 void MenuManager::setupContextMenu( MenuItem* item, QMenu &menu ) const
 {
-  setup(item, &menu);
+    setup(item, &menu);
 }

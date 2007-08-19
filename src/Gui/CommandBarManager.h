@@ -34,9 +34,7 @@ class ToolBarItem;
 
 
 namespace DockWnd 
-{
-class ToolBox;
-}
+{ class ToolBox;}
 
 /**
  * The CommandBarManager class is responsible for the creation of command bars and appending them
@@ -48,20 +46,20 @@ class ToolBox;
 class GuiExport CommandBarManager
 {
 public:
-  /// The one and only instance.
-  static CommandBarManager* getInstance();
-  static void destruct();
-  /** Sets up the command bars of a given workbench. */
-  void setup( ToolBarItem* ) const;
-  void setToolBox( DockWnd::ToolBox* );
+    /// The one and only instance.
+    static CommandBarManager* getInstance();
+    static void destruct();
+    /** Sets up the command bars of a given workbench. */
+    void setup(ToolBarItem*) const;
+    void setToolBox(DockWnd::ToolBox*);
 
 protected:
-  CommandBarManager();
-  ~CommandBarManager();
+    CommandBarManager();
+    ~CommandBarManager();
 
 private:
-  DockWnd::ToolBox* _toolBox;
-  static CommandBarManager* _instance;
+    DockWnd::ToolBox* _toolBox;
+    static CommandBarManager* _instance;
 };
 
 } // namespace Gui

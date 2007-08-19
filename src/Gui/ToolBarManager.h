@@ -34,24 +34,24 @@ class GuiExport ToolBarItem
 {
 public:
     ToolBarItem();
-    ToolBarItem( ToolBarItem* );
+    ToolBarItem(ToolBarItem* item);
     ~ToolBarItem();
 
-    void setCommand( const QString& );
+    void setCommand(const QString&);
     QString command() const;
 
     bool hasItems() const;
-    ToolBarItem* findItem( const QString& );
+    ToolBarItem* findItem(const QString&);
     ToolBarItem* copy() const;
     uint count() const;
 
-    void appendItem( ToolBarItem* );
-    bool insertItem( ToolBarItem*, ToolBarItem* );
-    void removeItem( ToolBarItem* );
+    void appendItem(ToolBarItem* item);
+    bool insertItem(ToolBarItem*, ToolBarItem* item);
+    void removeItem(ToolBarItem* item);
     void clear();
 
-    ToolBarItem& operator<< ( ToolBarItem* item );
-    ToolBarItem& operator<< ( const QString& command );
+    ToolBarItem& operator << (ToolBarItem* item);
+    ToolBarItem& operator << (const QString& command);
     QList<ToolBarItem*> getItems() const;
 
 private:

@@ -35,30 +35,30 @@ class MainWindow;
 class GuiExport MenuItem
 {
 public:
-  MenuItem();
-  MenuItem( MenuItem* );
-  ~MenuItem();
+    MenuItem();
+    MenuItem(MenuItem*);
+    ~MenuItem();
 
-  void setCommand( const QString& );
-  QString command() const;
+    void setCommand(const QString&);
+    QString command() const;
 
-  bool hasItems() const;
-  MenuItem* findItem( const QString& );
-  MenuItem* copy() const;
-  uint count() const;
+    bool hasItems() const;
+    MenuItem* findItem(const QString&);
+    MenuItem* copy() const;
+    uint count() const;
 
-  void appendItem( MenuItem* );
-  bool insertItem( MenuItem*, MenuItem* );
-  void removeItem( MenuItem* );
-  void clear();
+    void appendItem(MenuItem*);
+    bool insertItem(MenuItem*, MenuItem*);
+    void removeItem(MenuItem*);
+    void clear();
 
-  MenuItem& operator<< ( MenuItem* item );
-  MenuItem& operator<< ( const QString& command );
-  QList<MenuItem*> getItems() const;
+    MenuItem& operator << (MenuItem* item);
+    MenuItem& operator << (const QString& command);
+    QList<MenuItem*> getItems() const;
 
 private:
-  QString _name;
-  QList<MenuItem*> _items;
+    QString _name;
+    QList<MenuItem*> _items;
 };
 
 /**
@@ -71,26 +71,26 @@ private:
 class GuiExport MenuManager
 {
 public:
-  /** Sets up the menus of a given workbench. */
-  void setup( MenuItem* ) const;
-  /// sets up a context menu out of item
-  void setupContextMenu( MenuItem* item, QMenu &menu ) const;
+    /** Sets up the menus of a given workbench. */
+    void setup(MenuItem*) const;
+    /// sets up a context menu out of item
+    void setupContextMenu(MenuItem* item, QMenu &menu) const;
 
-  /// The one and only instance.
-  static MenuManager* getInstance();
-  static void destruct();
+    /// The one and only instance.
+    static MenuManager* getInstance();
+    static void destruct();
 
 protected:
-  MenuManager();
-  ~MenuManager();
+    MenuManager();
+    ~MenuManager();
 
 private:
-  void setup( MenuItem*, QMenu* ) const;
+    void setup(MenuItem*, QMenu*) const;
 
 private:
-  static MenuManager* _instance;
+    static MenuManager* _instance;
 
-  friend class MainWindow;
+    friend class MainWindow;
 };
 
 } // namespace Gui

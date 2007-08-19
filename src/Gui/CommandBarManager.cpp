@@ -36,15 +36,15 @@ CommandBarManager* CommandBarManager::_instance=0;
 
 CommandBarManager* CommandBarManager::getInstance()
 {
-  if ( !_instance )
-    _instance = new CommandBarManager;
-  return _instance;
+    if ( !_instance )
+        _instance = new CommandBarManager;
+    return _instance;
 }
 
 void CommandBarManager::destruct()
 {
-  delete _instance;
-  _instance = 0;
+    delete _instance;
+    _instance = 0;
 }
 
 CommandBarManager::CommandBarManager() : _toolBox(0L)
@@ -57,60 +57,60 @@ CommandBarManager::~CommandBarManager()
 
 void CommandBarManager::setToolBox( DockWnd::ToolBox* tb )
 {
-  _toolBox = tb;
+    _toolBox = tb;
 }
 
 void CommandBarManager::setup( ToolBarItem* toolBar ) const
 {
-  if ( !toolBar || !_toolBox )
-    return; // empty tool bar
+    if ( !toolBar || !_toolBox )
+        return; // empty tool bar
 
-  int ct = _toolBox->count();
-  for ( int i=0; i<ct; i++ )
-  {
-    // get always the first item widget
-    QWidget* w = _toolBox->widget(0);
-    _toolBox->removeItem(0);
-    delete w;
-  }
-
-  CommandManager& mgr = Application::Instance->commandManager();
-  QList<ToolBarItem*> items = toolBar->getItems();
-
-  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
-  {
-    QToolBar* bar = new QToolBar();
-    bar->setOrientation(Qt::Vertical);
-    bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-    bar->setWindowTitle(QObject::tr((const char*)(*item)->command().toAscii())); // i18n
-    _toolBox->addItem( bar, bar->windowTitle() );
-
-    QList<ToolBarItem*> subitems = (*item)->getItems();
-    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
+    int ct = _toolBox->count();
+    for ( int i=0; i<ct; i++ )
     {
-      if ( (*subitem)->command() == "Separator" ) {
-        //bar->addSeparator();
-      } else {
-        mgr.addTo( (const char*)((*subitem)->command().toAscii()), bar );
-      }
+        // get always the first item widget
+        QWidget* w = _toolBox->widget(0);
+        _toolBox->removeItem(0);
+        delete w;
     }
 
-    // Now set the right size policy for each tool button
-    QList<QToolButton*> tool = bar->findChildren<QToolButton*>();
-    for (QList<QToolButton*>::Iterator it = tool.begin(); it != tool.end(); ++it) {
-      (*it)->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-      // When setting the horizontal size policy but no icon is set we use the following trick
-      // to make the button text left aligned.
-      QIcon icon = (*it)->icon();
-      if (icon.isNull())
-      {
-        // Create an icon filled with the button color
-        int size = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
-        QPixmap p(size, size);
-        p.fill(Qt::transparent);
-        (*it)->setIcon(p);
-      }
+    CommandManager& mgr = Application::Instance->commandManager();
+    QList<ToolBarItem*> items = toolBar->getItems();
+
+    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
+    {
+        QToolBar* bar = new QToolBar();
+        bar->setOrientation(Qt::Vertical);
+        bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        QByteArray toolbarName = (*item)->command().toUtf8();
+        bar->setWindowTitle(QObject::trUtf8((const char*)toolbarName)); // i18n
+        _toolBox->addItem( bar, bar->windowTitle() );
+
+        QList<ToolBarItem*> subitems = (*item)->getItems();
+        for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
+        {
+            if ( (*subitem)->command() == "Separator" ) {
+                //bar->addSeparator();
+            } else {
+                mgr.addTo( (const char*)((*subitem)->command().toAscii()), bar );
+            }
+        }
+
+        // Now set the right size policy for each tool button
+        QList<QToolButton*> tool = bar->findChildren<QToolButton*>();
+        for (QList<QToolButton*>::Iterator it = tool.begin(); it != tool.end(); ++it) {
+            (*it)->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            // When setting the horizontal size policy but no icon is set we use the following trick
+            // to make the button text left aligned.
+            QIcon icon = (*it)->icon();
+            if (icon.isNull())
+            {
+                // Create an icon filled with the button color
+                int size = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
+                QPixmap p(size, size);
+                p.fill(Qt::transparent);
+                (*it)->setIcon(p);
+            }
+        }
     }
-  }
 }

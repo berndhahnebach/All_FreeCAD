@@ -631,7 +631,7 @@
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation>Netz Werkzeuge</translation>
+        <translation>Netz-Werkzeuge</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

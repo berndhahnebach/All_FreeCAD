@@ -79,7 +79,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
     // test if the path already set
     if(lineEditPath->text().isEmpty())
     {
-        QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"), tr("Specify first a place to save."));
+        QMessageBox::information( getMainWindow(), tr("Macro recorder"), tr("Specify first a place to save."));
         return;
     }
 

@@ -35,15 +35,15 @@ typedef QPair<QString, Qt::DockWidgetArea> DockWindowItem;
 class GuiExport DockWindowItems
 {
 public:
-  DockWindowItems();
-  ~DockWindowItems();
+    DockWindowItems();
+    ~DockWindowItems();
 
-  void addDockWidget(const QString& name, Qt::DockWidgetArea pos);
-  const QList<DockWindowItem>& dockWidgets() const; 
-  bool operator == (const DockWindowItems& items) const;
+    void addDockWidget(const QString& name, Qt::DockWidgetArea pos);
+    const QList<DockWindowItem>& dockWidgets() const; 
+    bool operator == (const DockWindowItems& items) const;
 
 private:
-  QList<DockWindowItem> _items;
+    QList<DockWindowItem> _items;
 };
 
 /**
@@ -53,28 +53,28 @@ private:
 class GuiExport DockWindowManager
 {
 public:
-  /** Creates the only instance of the DockWindowManager. */
-  static DockWindowManager* instance();
-  static void destruct();
+    /** Creates the only instance of the DockWindowManager. */
+    static DockWindowManager* instance();
+    static void destruct();
 
-  bool registerDockWindow(const QString& name, QWidget* widget);
-  void setup( DockWindowItems* );
+    bool registerDockWindow(const QString& name, QWidget* widget);
+    void setup(DockWindowItems*);
 
-  void addDockWindow( const QString& name, QWidget* widget,  Qt::DockWidgetArea pos = Qt::AllDockWidgetAreas );
-  QWidget* removeDockWindow( const QString& name );
-  void removeDockWindow( QWidget* dock );
-  QWidget* getDockWindow( const QString& name ) const;
-  QList<QWidget*> getDockWindows() const;
+    void addDockWindow(const QString& name, QWidget* widget,  Qt::DockWidgetArea pos = Qt::AllDockWidgetAreas);
+    QWidget* removeDockWindow(const QString& name);
+    void removeDockWindow(QWidget* dock);
+    QWidget* getDockWindow(const QString& name) const;
+    QList<QWidget*> getDockWindows() const;
 
-  void showDockWindows( const QStringList& );
-  void hideDockWindows( const QStringList& );
-  void languageChanged();
+    void showDockWindows(const QStringList&);
+    void hideDockWindows(const QStringList&);
+    void languageChanged();
 
 private:
-  DockWindowManager();
-  ~DockWindowManager();
-  static DockWindowManager* _instance;
-  struct DockWindowManagerP* d;
+    DockWindowManager();
+    ~DockWindowManager();
+    static DockWindowManager* _instance;
+    struct DockWindowManagerP* d;
 };
 
 } // namespace Gui
