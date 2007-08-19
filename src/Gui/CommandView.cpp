@@ -858,10 +858,10 @@ void StdViewScreenShot::activated(int iMsg)
         QStringList lines = comment.split("\n", QString::KeepEmptyParts );
         comment = lines.join("\\n");
         doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
-            fn.toAscii().constData(),w,h,background,comment.toAscii().constData());
+            fn.toUtf8().constData(),w,h,background,comment.toUtf8().constData());
       }else{
         doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s')",
-            fn.toAscii().constData(),w,h,background);
+            fn.toUtf8().constData(),w,h,background);
       }
     }
   }

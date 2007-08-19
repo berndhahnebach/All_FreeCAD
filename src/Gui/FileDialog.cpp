@@ -34,85 +34,49 @@ using namespace Gui;
 
 /* TRANSLATOR Gui::FileDialog */
 
-/** 
- * This is a convenience static function that returns an existing file selected by the user. 
- * If the user pressed Cancel, it returns a null string.
- */
-QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, const QString & dir, 
-                                     const QString & filter, QString * selectedFilter, Options options )
-{
-    QString dirName = dir;
-    QString selName = QString::null;
-    if (!dir.isEmpty()) {
-        QFileInfo info(dir);
-        if (info.isFile() && info.exists()) {
-            selName = info.fileName();
-            dirName = info.absolutePath();
-        }
-    } else {
-        dirName = getWorkingDirectory();
-    }
-
-    FileDialog fd(parent, caption, dirName, filter);
-    fd.setAcceptMode(QFileDialog::AcceptOpen);
-    fd.setFileMode( ExistingFile );
-    if ( caption.isEmpty() )
-        fd.setWindowTitle( FileDialog::tr( "Open" ) );
-    if ( !selName.isEmpty() )
-        fd.selectFile( selName );
-    if ( selectedFilter )
-        fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //  fd.setLabelText(QFileDialog::Accept, buttonText);
-
-    if ( fd.exec() == QDialog::Accepted ) {
-        if ( selectedFilter )
-            *selectedFilter = fd.selectedFilter();
-        QString file = fd.selectedFiles().front();
-        setWorkingDirectory(file);
-        return file;
-    } else
-        return QString::null;
-}
-
 /**
  * This is a convenience static function that will return a file name selected by the user. The file does not have to exist.
  */
-QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption, const QString & dir, 
-                                      const QString & filter, QString * selectedFilter, Options options )
+QString FileDialog::getSaveFileName (QWidget * parent, const QString & caption, const QString & dir, 
+                                     const QString & filter, QString * selectedFilter, Options options)
 {
     QString dirName = dir;
-    QString selName = QString::null;
-    if (!dir.isEmpty()) {
-        QFileInfo info(dir);
-        if (!info.isDir()) {
-            selName = info.fileName();
-            dirName = info.absolutePath();
-        }
-    } else {
+    if (dirName.isEmpty()) {
         dirName = getWorkingDirectory();
+    } else {
+        QFileInfo fi(dir);
+        if (fi.isRelative()) {
+            dirName = getWorkingDirectory();
+            dirName += "/";
+            dirName += fi.fileName();
+        }
+    
+        // get the suffix for the filter
+        QRegExp rx;
+        rx.setPattern("\\s(\\(\\*\\.\\w{1,})\\W");
+        int index = rx.indexIn(filter);
+        if (index != -1) {
+            // get the suffix with the leading dot
+            QString suffix = filter.mid(index+3, rx.matchedLength()-4);
+            if (fi.suffix().isEmpty())
+                dirName += suffix;
+        }
     }
 
-    FileDialog fd(parent, caption, dirName, filter);
-    fd.setAcceptMode(QFileDialog::AcceptSave);
-    fd.setFileMode( AnyFile );
-    if ( caption.isEmpty() )
-        fd.setWindowTitle( FileDialog::tr( "Save as" ) );
-    if ( !selName.isEmpty() )
-        fd.selectFile( selName );
-    if ( selectedFilter )
-        fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //  fd.setLabelText(QFileDialog::Accept, buttonText);
-
-    if ( fd.exec() == QDialog::Accepted ) {
-        if ( selectedFilter )
-            *selectedFilter = fd.selectedFilter();
-        QString file = fd.selectedFiles().front();
+    QString windowTitle = caption;
+    if (windowTitle.isEmpty())
+        windowTitle = FileDialog::tr("Save as");
+    
+    // NOTE: We must not change the specified file name afterwards as we may return the name of an already
+    // existing file. Hence we must extract the first matching suffix from the filter list and append it 
+    // before showing the file dialog.
+    QString file = QFileDialog::getSaveFileName(parent, windowTitle, dirName, filter, selectedFilter, options);
+    if (!file.isEmpty()) {
         setWorkingDirectory(file);
         return file;
-    } else
+    } else {
         return QString::null;
+    }
 }
 
 /**
@@ -130,32 +94,49 @@ QString FileDialog::getExistingDirectory( QWidget * parent, const QString & capt
     return path;
 }
 
+/** 
+ * This is a convenience static function that returns an existing file selected by the user. 
+ * If the user pressed Cancel, it returns a null string.
+ */
+QString FileDialog::getOpenFileName(QWidget * parent, const QString & caption, const QString & dir, 
+                                    const QString & filter, QString * selectedFilter, Options options)
+{
+    QString dirName = dir;
+    if (dirName.isEmpty()) {
+        dirName = getWorkingDirectory();
+    }
+
+    QString windowTitle = caption;
+    if (windowTitle.isEmpty())
+        windowTitle = FileDialog::tr("Open");
+    QString file = QFileDialog::getOpenFileName(parent, windowTitle, dirName, filter, selectedFilter, options);
+    if (!file.isEmpty()) {
+        setWorkingDirectory(file);
+        return file;
+    } else {
+        return QString::null;
+    }
+}
+
 /**
  * This is a convenience static function that will return one or more existing files selected by the user.
  */
-QStringList FileDialog::getOpenFileNames ( QWidget * parent, const QString & caption, const QString & dir,
-                                           const QString & filter, QString * selectedFilter, Options options )
+QStringList FileDialog::getOpenFileNames (QWidget * parent, const QString & caption, const QString & dir,
+                                          const QString & filter, QString * selectedFilter, Options options)
 {
-    QString dirName = dir.isEmpty() ? getWorkingDirectory() : dir;
-    FileDialog fd(parent, caption, dirName, filter);
-    fd.setAcceptMode(QFileDialog::AcceptOpen);
-    fd.setFileMode( ExistingFiles );
-    fd.setWindowTitle(caption);
-    if ( selectedFilter )
-        fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //  fd.setLabelText(QFileDialog::Accept, buttonText);
-
-    QStringList files;
-    if ( fd.exec() == QDialog::Accepted ) {
-        if ( selectedFilter )
-            *selectedFilter = fd.selectedFilter();
-        files = fd.selectedFiles();
-        if (!files.isEmpty()) {
-            setWorkingDirectory(files.front());
-        }
+    QString dirName = dir;
+    if (dirName.isEmpty()) {
+        dirName = getWorkingDirectory();
     }
 
+    QString windowTitle = caption;
+    if (windowTitle.isEmpty())
+        windowTitle = FileDialog::tr("Open");
+    QStringList files = QFileDialog::getOpenFileNames(parent, windowTitle, dirName, filter, selectedFilter, options);
+    if (!files.isEmpty()) {
+        setWorkingDirectory(files.front());
+    }
+    
     return files;
 }
 
@@ -169,7 +150,8 @@ QString FileDialog::getWorkingDirectory()
     std::string path = App::GetApplication().Config()["UserHomePath"];
     FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-    return hPath->GetASCII("FileOpenSavePath", path.c_str()).c_str();
+    path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+    return QString::fromUtf8(path.c_str());
 }
 
 /**
@@ -182,81 +164,12 @@ void FileDialog::setWorkingDirectory( const QString& dir )
     QString dirName = dir;
     if (!dir.isEmpty()) {
         QFileInfo info(dir);
-        if (info.isFile()) {
-            dirName = info.absolutePath();
-        }
+        dirName = info.absolutePath();
     }
 
     FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-    hPath->SetASCII("FileOpenSavePath", dirName.toAscii());
-}
-
-/**
- * Constructs a file dialog called \a name and with the parent \a parent. 
- * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
- */
-FileDialog::FileDialog ( QWidget* parent, Qt::WFlags f)
-    : QFileDialog(parent, f )
-{
-}
-
-/**
- * Constructs a file dialog called \a name and with the parent \a parent.
- * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
- *
- * If \a dirName is specified then it will be used as the dialog's working directory, i.e. 
- * it will be the directory that is shown when the dialog appears. If \a filter is specified
- * it will be used as the dialog's file filter.
- */
-FileDialog::FileDialog ( QWidget* parent, const QString& caption, const QString& dirName, const QString& filter )
-    : QFileDialog(parent, caption, dirName, filter)
-{
-}
-
-FileDialog::~FileDialog()
-{
-}
-
-/**
- * Returns the name of the selected file with file extension.
- */
-QString FileDialog::selectedFileName()
-{
-  QString fn = selectedFiles().front();
-
-  // if empty do nothing
-  if (fn.isEmpty())
-    return QString::null;
-
-  // check if fn is a directory, because Qt 3.2.1 returns a non-emtpy
-  // string even if cancel was pressed
-  QFileInfo fi( fn );
-  if ( fi.isDir() )
-    return QString::null;
-
-  // search for extension
-  int pos = fi.fileName().lastIndexOf('.');
-  if (pos == -1)
-  {
-    // try to figure out the selected filter
-    QString filt = selectedFilter();
-    int dot = filt.indexOf('*');
-    int blank = filt.indexOf(' ', dot);
-    int brack = filt.indexOf(')', dot);
-    if (dot != -1 && blank != -1)
-    {
-      QString sub = filt.mid(dot+1, blank-dot-1);
-      fn = fn + sub;
-    }
-    else if (dot != -1 && brack != -1)
-    {
-      QString sub = filt.mid(dot+1, brack-dot-1);
-      fn = fn + sub;
-    }
-  }
-
-  return fn;
+    hPath->SetASCII("FileOpenSavePath", dirName.toUtf8());
 }
 
 // ======================================================================
@@ -266,18 +179,18 @@ QString FileDialog::selectedFileName()
 FileOptionsDialog::FileOptionsDialog( QWidget* parent, Qt::WFlags fl )
   : QFileDialog( parent, fl )
 {
-  extensionButton = new QPushButton( this );
-  extensionButton->setText( tr( "Extended" ) );
+    extensionButton = new QPushButton( this );
+    extensionButton->setText( tr( "Extended" ) );
 
-  //search for the grid layout and add the new button
-  QGridLayout* grid = this->findChild<QGridLayout*>();
-  grid->addWidget(extensionButton, 4, 5, Qt::AlignLeft);
+    //search for the grid layout and add the new button
+    QGridLayout* grid = this->findChild<QGridLayout*>();
+    grid->addWidget(extensionButton, 4, 5, Qt::AlignLeft);
 
-  connect(extensionButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
+    connect(extensionButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
 
-  // get the filter combobox to connect its activated() signal with our filterSelected() signal
-  QComboBox* box = this->findChildren<QComboBox*>().last();
-  connect(box, SIGNAL(activated(const QString&)), this, SIGNAL(filterSelected(const QString&)));
+    // get the filter combobox to connect its activated() signal with our filterSelected() signal
+    QComboBox* box = this->findChildren<QComboBox*>().last();
+    connect(box, SIGNAL(activated(const QString&)), this, SIGNAL(filterSelected(const QString&)));
 }
 
 FileOptionsDialog::~FileOptionsDialog()
@@ -286,71 +199,68 @@ FileOptionsDialog::~FileOptionsDialog()
 
 void FileOptionsDialog::accept()
 {
-  // Fixes a bug of the default implementation when entering an asterik
-  QLineEdit* filename = this->findChild<QLineEdit*>();
-  QString filter = filename->text();
-  if (filter.contains('*')) {
-    QFileInfo fi(filter);
-    QString ext = fi.suffix();
-    ext.prepend("*.");
-    QStringList filters = this->filters();
-    bool ok=false;
-    // Compare the given suffix with the suffixes of all filters
-    for (QStringList::ConstIterator it = filters.begin(); it != filters.end(); ++it) {
-      if ((*it).contains(ext)) {
-        filter = *it;
-        ok = true;
-        break;
-      }
+    // Fixes a bug of the default implementation when entering an asterik
+    QLineEdit* filename = this->findChild<QLineEdit*>();
+    QString filter = filename->text();
+    if (filter.contains('*')) {
+        QFileInfo fi(filter);
+        QString ext = fi.suffix();
+        ext.prepend("*.");
+        QStringList filters = this->filters();
+        bool ok=false;
+        // Compare the given suffix with the suffixes of all filters
+        for (QStringList::ConstIterator it = filters.begin(); it != filters.end(); ++it) {
+            if ((*it).contains(ext)) {
+                filter = *it;
+                ok = true;
+                break;
+            }
+        }
+
+        // if no appropriate filter was found the add the 'All files' filter
+        if (!ok) {
+            filter = tr("All files (*.*)");
+            filters << filter;
+            setFilters(filters);
+        }
+
+        // empty the line edit
+        filename->blockSignals(true);
+        filename->clear();
+        filename->blockSignals(false);
+        selectFilter(filter);
+
+        return;
     }
 
-    // if no appropriate filter was found the add the 'All files' filter
-    if (!ok) {
-      filter = tr("All files (*.*)");
-      filters << filter;
-      setFilters(filters);
-    }
-
-    // empty the line edit
-    filename->blockSignals(true);
-    filename->clear();
-    filename->blockSignals(false);
-    selectFilter(filter);
-
-    return;
-  }
-
-  QFileDialog::accept();
+    QFileDialog::accept();
 }
 
 void FileOptionsDialog::toggleExtension()
 {
-  QWidget* w = extension();
-  if (w)
-    showExtension(!w->isVisible());
+    QWidget* w = extension();
+    if (w)
+        showExtension(!w->isVisible());
 }
 
 void FileOptionsDialog::setOptionsWidget( FileOptionsDialog::ExtensionPosition pos, QWidget* w, bool show )
 {
-  if ( pos == ExtensionRight )
-  {
-    setExtension( w );
-    setOrientation( Qt::Horizontal );
-  }
-  else if ( pos == ExtensionBottom )
-  {
-    setExtension( w );
-    setOrientation( Qt::Vertical );
-  }
+    if (pos == ExtensionRight) {
+        setExtension(w);
+        setOrientation( Qt::Horizontal );
+    } else if (pos == ExtensionBottom) {
+        setExtension(w);
+        setOrientation(Qt::Vertical);
+    }
 
-  w->hide();
-  if ( show )
-    toggleExtension();
+    w->hide();
+    if (show)
+        toggleExtension();
 }
 
 QWidget* FileOptionsDialog::getOptionsWidget() const
 {
-  return this->extension();
+    return this->extension();
 }
 
 // ======================================================================
@@ -391,23 +301,23 @@ QString FileIconProvider::type ( const QFileInfo & info ) const
 FileChooser::FileChooser ( QWidget * parent )
   : QWidget(parent), md( File ), _filter( QString::null )
 {
-  QHBoxLayout *layout = new QHBoxLayout( this );
-  layout->setMargin( 0 );
-  layout->setSpacing( 6 );
+    QHBoxLayout *layout = new QHBoxLayout( this );
+    layout->setMargin( 0 );
+    layout->setSpacing( 6 );
 
-  lineEdit = new QLineEdit( this );
-  layout->addWidget( lineEdit );
+        lineEdit = new QLineEdit( this );
+        layout->addWidget( lineEdit );
 
-  connect( lineEdit, SIGNAL( textChanged( const QString & ) ),
-	     this, SIGNAL( fileNameChanged( const QString & ) ) );
+    connect(lineEdit, SIGNAL(textChanged(const QString &)),
+            this, SIGNAL(fileNameChanged(const QString &)));
 
-  button = new QPushButton( "...", this );
-  button->setFixedWidth( 2*button->fontMetrics().width( " ... " ) );
-  layout->addWidget( button );
+    button = new QPushButton("...", this);
+    button->setFixedWidth(2*button->fontMetrics().width( " ... " ));
+    layout->addWidget(button);
 
-  connect( button, SIGNAL( clicked() ), this, SLOT( chooseFile() ) );
+    connect( button, SIGNAL(clicked()), this, SLOT(chooseFile()));
 
-  setFocusProxy( lineEdit );
+    setFocusProxy(lineEdit);
 }
 
 FileChooser::~FileChooser()
@@ -424,7 +334,7 @@ FileChooser::~FileChooser()
  */
 QString FileChooser::fileName() const
 {
-  return lineEdit->text();
+    return lineEdit->text();
 }
 
 /** 
@@ -432,7 +342,7 @@ QString FileChooser::fileName() const
  */
 void FileChooser::setFileName( const QString& s )
 {
-  lineEdit->setText( s );
+    lineEdit->setText( s );
 }
 
 /**
@@ -441,17 +351,16 @@ void FileChooser::setFileName( const QString& s )
  */
 void FileChooser::chooseFile()
 {
-  QString fn;
-  if ( mode() == File )
-  	fn = QFileDialog::getOpenFileName( this, tr( "Select a file" ), lineEdit->text(), _filter );
-  else
-  	fn = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), lineEdit->text() );
+    QString fn;
+    if ( mode() == File )
+        fn = QFileDialog::getOpenFileName( this, tr( "Select a file" ), lineEdit->text(), _filter );
+    else
+        fn = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), lineEdit->text() );
 
-  if ( !fn.isEmpty() ) 
-  {
-  	lineEdit->setText( fn );
-	  fileNameSelected( fn );
-  }
+    if ( !fn.isEmpty() ) {
+        lineEdit->setText( fn );
+        fileNameSelected( fn );
+    }
 }
 
 /**
@@ -464,7 +373,7 @@ void FileChooser::chooseFile()
  */
 FileChooser::Mode FileChooser::mode() const
 {
-  return md;
+    return md;
 }
 
 /**
@@ -473,7 +382,7 @@ FileChooser::Mode FileChooser::mode() const
  */
 void FileChooser::setMode( FileChooser::Mode m )
 {
-  md = m;
+    md = m;
 }
 
 /**
@@ -486,7 +395,7 @@ void FileChooser::setMode( FileChooser::Mode m )
  */
 QString FileChooser::filter() const
 {
-  return _filter;
+    return _filter;
 }
 
 /**
@@ -494,7 +403,7 @@ QString FileChooser::filter() const
  */
 void FileChooser::setFilter ( const QString& filter )
 {
-  _filter = filter;
+    _filter = filter;
 }
 
 /**
@@ -502,10 +411,10 @@ void FileChooser::setFilter ( const QString& filter )
  */
 void FileChooser::setButtonText( const QString& txt )
 {
-  button->setText( txt );
-  int w1 = 2*button->fontMetrics().width( txt );
-  int w2 = 2*button->fontMetrics().width( " ... " );
-  button->setFixedWidth( (w1 > w2 ? w1 : w2) );
+    button->setText( txt );
+    int w1 = 2*button->fontMetrics().width( txt );
+    int w2 = 2*button->fontMetrics().width( " ... " );
+    button->setFixedWidth( (w1 > w2 ? w1 : w2) );
 }
 
 /**
@@ -513,7 +422,8 @@ void FileChooser::setButtonText( const QString& txt )
  */
 QString FileChooser::buttonText() const
 {
-  return button->text();
+    return button->text();
 }
 
 #include "moc_FileDialog.cpp"
+

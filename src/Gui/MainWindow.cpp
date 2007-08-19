@@ -805,10 +805,10 @@ void MainWindow::dropEvent ( QDropEvent* e )
       if ( info.exists() && info.isFile() ) {
         // First check the complete extension
         if ( App::GetApplication().hasOpenType( info.completeSuffix().toAscii() ) )
-          Application::Instance->open(info.absoluteFilePath().toAscii());
+          Application::Instance->open(info.absoluteFilePath().toUtf8());
         // Don't get the complete extension
         else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
-          Application::Instance->open(info.absoluteFilePath().toAscii());
+          Application::Instance->open(info.absoluteFilePath().toUtf8());
       }
     }
   } else {

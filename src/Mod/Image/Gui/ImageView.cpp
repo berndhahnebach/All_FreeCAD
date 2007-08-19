@@ -564,10 +564,13 @@ QString ImageView::createStatusBarText()
     {
         double grey_value;
         if (_pGLImageBox->getImageSample(pixX, pixY, 0, grey_value) == 0)
-            txt.sprintf("x,y = %0.2lf,%0.2lf  |  %s = %d  |  %s = %0.1lf", 
-                        icX, icY, (const char*)tr("grey").toAscii(), (int)grey_value, (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1,%2  |  %3 = %4  |  %5 = %6")
+                  .arg(icX,0,'f',2).arg(icY,0,'f',2)
+                  .arg(tr("grey")).arg((int)grey_value)
+                  .arg(tr("zoom")).arg(zoomFactor,0,'f',1);
         else
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1  |  %2 = %3")
+                  .arg(tr("outside image")).arg(tr("zoom")).arg(zoomFactor,0,'f',1);
     }
     else if ((colorFormat == IB_CF_RGB24) || 
              (colorFormat == IB_CF_RGB48))
@@ -576,10 +579,13 @@ QString ImageView::createStatusBarText()
         if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1  |  %2 = %3")
+                  .arg(tr("outside image")).arg(tr("zoom")).arg(zoomFactor,0,'f',1);
         else
-            txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgb = %d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1,%2  |  rgb = %3,%4,%5  |  %6 = %7")
+                  .arg(icX,0,'f',2).arg(icY,0,'f',2)
+                  .arg((int)red).arg((int)green).arg((int)blue)
+                  .arg(tr("zoom")).arg(zoomFactor,0,'f',1);
     }
     else if ((colorFormat == IB_CF_BGR24) || 
              (colorFormat == IB_CF_BGR48))
@@ -588,10 +594,13 @@ QString ImageView::createStatusBarText()
         if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1  |  %2 = %3")
+                  .arg(tr("outside image")).arg(tr("zoom")).arg(zoomFactor,0,'f',1);
         else
-            txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgb = %d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1,%2  |  rgb = %3,%4,%5  |  %6 = %7")
+                  .arg(icX,0,'f',2).arg(icY,0,'f',2)
+                  .arg((int)red).arg((int)green).arg((int)blue)
+                  .arg(tr("zoom")).arg(zoomFactor,0,'f',1);
     }
     else if ((colorFormat == IB_CF_RGBA32) || 
              (colorFormat == IB_CF_RGBA64))
@@ -601,10 +610,13 @@ QString ImageView::createStatusBarText()
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1  |  %2 = %3")
+                  .arg(tr("outside image")).arg(tr("zoom")).arg(zoomFactor,0,'f',1);
         else
-            txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgba = %d,%d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1,%2  |  rgba = %3,%4,%5,%6  |  %7 = %8")
+                  .arg(icX,0,'f',2).arg(icY,0,'f',2)
+                  .arg((int)red).arg((int)green).arg((int)blue).arg((int)alpha)
+                  .arg(tr("zoom")).arg(zoomFactor,0,'f',1);
     }
     else if ((colorFormat == IB_CF_BGRA32) || 
              (colorFormat == IB_CF_BGRA64))
@@ -614,10 +626,13 @@ QString ImageView::createStatusBarText()
             (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
-            txt.sprintf("x,y = %s  |  %s = %0.1lf", (const char*)tr("outside image").toAscii(), (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1  |  %2 = %3")
+                  .arg(tr("outside image")).arg(tr("zoom")).arg(zoomFactor,0,'f',1);
         else
-            txt.sprintf("x,y = %0.2lf,%0.2lf  |  rgba = %d,%d,%d,%d  |  %s = %0.1lf", 
-                        icX, icY, (int)red, (int)green, (int)blue, (int)alpha, (const char*)tr("zoom").toAscii(), zoomFactor);
+            txt = QString("x,y = %1,%2  |  rgba = %3,%4,%5,%6  |  %7 = %8")
+                  .arg(icX,0,'f',2).arg(icY,0,'f',2)
+                  .arg((int)red).arg((int)green).arg((int)blue).arg((int)alpha)
+                  .arg(tr("zoom")).arg(zoomFactor,0,'f',1);
     }
 
     return txt;

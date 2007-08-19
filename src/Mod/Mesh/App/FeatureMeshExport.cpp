@@ -73,9 +73,9 @@ int Export::execute(void)
 
         // write file
         bool ok = false;
-        if ( std::string(Format.getValue()) == "ASCII STL" )
+        if ( std::string(Format.getValue()) == "stl" )
             ok = aWriter.SaveAsciiSTL( str );
-        else // "Binary STL"
+        else // "ast"
             ok = aWriter.SaveBinarySTL( str );
 
         if ( !ok ) {

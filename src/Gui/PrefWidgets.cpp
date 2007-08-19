@@ -34,7 +34,7 @@ using namespace Gui;
 /** Constructs a preference widget. 
  */
 PrefWidget::PrefWidget()
- : WindowParameter(""), m_bKeepPref(false)
+ : WindowParameter("")
 {
 }
 
@@ -125,23 +125,6 @@ void PrefWidget::onRestore()
     qWarning( "No parameter group specified!" );
 #endif
   restorePreferences();
-}
-
-/**
- * If \a b is true the preferences that are set to this widget will be kept, if \a b
- * is false the preferences are lost after calling the onRestore() method.
- */
-void PrefWidget::setKeepPreference( bool b )
-{
-  m_bKeepPref = b;
-}
-
-/**
- * Returns true if the preferences are kept, false otherwise.
- */
-bool PrefWidget::isKeepPreference() const
-{
-  return m_bKeepPref;
 }
 
 // --------------------------------------------------------------------
@@ -272,7 +255,7 @@ void PrefLineEdit::restorePreferences()
   }
 
   QString text = this->text();
-  text = getWindowParameter()->GetASCII(entryName(), text.toAscii()).c_str();
+  text = QString::fromUtf8(getWindowParameter()->GetASCII(entryName(), text.toUtf8()).c_str());
   setText(text);
 }
 
@@ -284,7 +267,7 @@ void PrefLineEdit::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII( entryName(), text().toAscii() );
+  getWindowParameter()->SetASCII(entryName(), text().toUtf8());
 }
 
 QByteArray PrefLineEdit::entryName () const
@@ -326,8 +309,8 @@ void PrefFileChooser::restorePreferences()
     return;
   }
 
-  std::string txt = getWindowParameter()->GetASCII( entryName(), fileName().toAscii() );
-  setFileName(txt.c_str());
+  QString txt = QString::fromUtf8(getWindowParameter()->GetASCII(entryName(), fileName().toUtf8()).c_str());
+  setFileName(txt);
 }
 
 void PrefFileChooser::savePreferences()
@@ -338,7 +321,7 @@ void PrefFileChooser::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII( entryName(), fileName().toAscii() );
+  getWindowParameter()->SetASCII(entryName(), fileName().toUtf8());
 }
 
 QByteArray PrefFileChooser::entryName () const
@@ -380,35 +363,8 @@ void PrefComboBox::restorePreferences()
     return;
   }
 
-  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
-
-  if ( !isKeepPreference() )
-  {
-    std::vector<std::string> items = hPGrp->GetASCIIs("Item");
-
-    if (items.size() > 0)
-      clear();
-
-    for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-      addItem(it->c_str());
-
-    int item = hPGrp->GetInt("currentItem", currentIndex());
-    setCurrentIndex(item);
-  }
-  else
-  {
-    // due to i18n we must make sure that 'txt' is an item of the combobox
-    // otherwise we'll override the text of the current item
-    QString txt = hPGrp->GetASCII("currentText", currentText().toAscii() ).c_str();
-    for ( int i = 0; i < count(); i++ )
-    {
-  	  if ( itemText( i ) == txt )
-      {
-	      setCurrentIndex( i );
-  	    break;
-      }
-    }
-  }
+  int index = getWindowParameter()->GetInt(entryName(), currentIndex());
+  setCurrentIndex(index);
 }
 
 void PrefComboBox::savePreferences()
@@ -419,25 +375,7 @@ void PrefComboBox::savePreferences()
     return;
   }
 
-  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
-  hPGrp->Clear();
-
-  if ( !isKeepPreference() )
-  {
-    int size = int(count());
-    for (int i = 0; i < size; i++)
-    {
-      char szBuf[200];
-      sprintf(szBuf, "Item%d", i);
-      hPGrp->SetASCII(szBuf, itemText(i).toAscii());
-    }
-
-    hPGrp->SetInt("currentItem", currentIndex());
-  }
-  else
-  {
-    hPGrp->SetASCII("currentText", currentText().toAscii());
-  }
+  getWindowParameter()->SetInt(entryName() , currentIndex());
 }
 
 QByteArray PrefComboBox::entryName () const

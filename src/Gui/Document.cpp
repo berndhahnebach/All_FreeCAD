@@ -539,7 +539,7 @@ bool Document::save(void)
   if(_pcDocument->isSaved())
   {
     Gui::WaitCursor wc;
-    Command::doCommand(Command::Doc,"App.save(\"%s\")", _pcDocument->getName());
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()", _pcDocument->getName());
     setModified(false);
     return true;
   }
@@ -568,10 +568,11 @@ bool Document::saveAs(void)
 
     // save as new file name
     Gui::WaitCursor wc;
-    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, (const char*)fn.toAscii());
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, (const char*)fn.toUtf8());
     Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()", DocName );
+    setModified(false);
 
-    getMainWindow()->appendRecentFile( fi.filePath().toAscii());
+    getMainWindow()->appendRecentFile(fi.filePath());
     return true;
   }
   else

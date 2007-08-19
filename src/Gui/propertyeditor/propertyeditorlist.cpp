@@ -97,7 +97,7 @@ QVariant PropertyEnumItem::value(const App::Property* prop) const
 
     const std::vector<std::string>& value = ((App::PropertyEnumeration*)prop)->getEnumVector();
     long currentItem = ((App::PropertyEnumeration*)prop)->getValue();
-    return QVariant(QString(value[currentItem].c_str()));
+    return QVariant(QString::fromUtf8(value[currentItem].c_str()));
 }
 
 void PropertyEnumItem::setValue(const QVariant& value)
@@ -108,7 +108,7 @@ void PropertyEnumItem::setValue(const QVariant& value)
         const std::vector<App::Property*>& items = getProperty();
         for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
             assert((*it)->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()));
-            ((App::PropertyEnumeration*)*it)->setValue((const char*)value.toAscii());
+            ((App::PropertyEnumeration*)*it)->setValue((const char*)value.toUtf8());
         }
     }
 }

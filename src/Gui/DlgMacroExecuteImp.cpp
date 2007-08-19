@@ -55,7 +55,8 @@ DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
 {
     this->setupUi(this);
     // retrieve the macro path from parameter or use the home path as default
-    this->macroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+    std::string path = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
+    this->macroPath = QString::fromUtf8(path.c_str());
     fileChooser->setFileName(this->macroPath);
 
     // Fill the List box
@@ -126,7 +127,7 @@ void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
     {
         // save the path in the parameters
         this->macroPath = fn;
-        getWindowParameter()->SetASCII("MacroPath",fn.toAscii());
+        getWindowParameter()->SetASCII("MacroPath",fn.toUtf8());
         // fill the list box
         fillUpList();
     }

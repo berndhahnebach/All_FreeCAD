@@ -142,8 +142,8 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
     }
 
     // Execute the Python block
-    QString solid = QString("Create %1").arg(comboBox1->currentText());
-    Gui::Application::Instance->activeDocument()->openCommand( (const char*)solid.toAscii() );
+    QString solid = tr("Create %1").arg(comboBox1->currentText());
+    Gui::Application::Instance->activeDocument()->openCommand(solid.toUtf8());
     Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
     Gui::Application::Instance->activeDocument()->commitCommand();
     Gui::Application::Instance->activeDocument()->getDocument()->recompute();

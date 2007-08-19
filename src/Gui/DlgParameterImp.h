@@ -35,9 +35,6 @@
 namespace Gui {
 namespace Dialog {
 
-class CustomMenuItem;
-class ParameterGroupItem;
-
 /**
  * The DlgParameterImp class implements a dialog showing all parameters in a list view.
  * \author Jürgen Riegel
@@ -47,22 +44,22 @@ class DlgParameterImp : public QDialog, public Ui_DlgParameter
     Q_OBJECT
 
 public:
-  DlgParameterImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgParameterImp();
+    DlgParameterImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgParameterImp();
 
 public Q_SLOTS:
-  void onParameterSetChange(const QString& rcString);
-  void on_buttonSaveToDisk_clicked();
+    void onParameterSetChange(const QString& rcString);
+    void on_buttonSaveToDisk_clicked();
 
 protected Q_SLOTS:
-  void onGroupSelected(QTreeWidgetItem *);
+    void onGroupSelected(QTreeWidgetItem *);
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 protected:
-  QTreeWidget* paramGroup;
-  QTreeWidget* paramValue;
+    QTreeWidget* paramGroup;
+    QTreeWidget* paramValue;
 };
 
 // --------------------------------------------------------------------
@@ -74,47 +71,47 @@ protected:
  */
 class ParameterGroup : public QTreeWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ParameterGroup( QWidget * parent = 0 );
-  virtual ~ParameterGroup();
+    ParameterGroup( QWidget * parent = 0 );
+    virtual ~ParameterGroup();
 
 protected:
-  /** Shows the context menu. */
-  void contextMenuEvent ( QContextMenuEvent* event );
-  /** Triggers the "Del" key. */
-  void keyPressEvent (QKeyEvent* event);
+    /** Shows the context menu. */
+    void contextMenuEvent ( QContextMenuEvent* event );
+    /** Triggers the "Del" key. */
+    void keyPressEvent (QKeyEvent* event);
 
 protected Q_SLOTS:
-  /** Removes the underlying parameter group and its sub-groups from the
-   * parameter tree structure.
-   */
-  void onDeleteSelectedItem();
-  /** Creates a sub-group to the current selected parameter group. */
-  void onCreateSubgroup();
-  /** Expands or closes the selected item. If it is open it will be closed and the
-   * other way round.
-   */
-  void onToggleSelectedItem();
-  /** Exports the current selected parameter with all sub-groups to a file. */
-  void onExportToFile();
-  /** Imports a file and inserts the parameter to the current selected parameter node. */
-  void onImportFromFile();
-  /** Changes the name of the leaf of the selected item. */
-  void onRenameSelectedItem();
+    /** Removes the underlying parameter group and its sub-groups from the
+     * parameter tree structure.
+     */
+    void onDeleteSelectedItem();
+    /** Creates a sub-group to the current selected parameter group. */
+    void onCreateSubgroup();
+    /** Expands or closes the selected item. If it is open it will be closed and the
+     * other way round.
+     */
+    void onToggleSelectedItem();
+    /** Exports the current selected parameter with all sub-groups to a file. */
+    void onExportToFile();
+    /** Imports a file and inserts the parameter to the current selected parameter node. */
+    void onImportFromFile();
+    /** Changes the name of the leaf of the selected item. */
+    void onRenameSelectedItem();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 private:
-  QMenu* menuEdit;
-  QAction* expandAct;
-  QAction* subGrpAct;
-  QAction* removeAct;
-  QAction* renameAct;
-  QAction* exportAct;
-  QAction* importAct;
+    QMenu* menuEdit;
+    QAction* expandAct;
+    QAction* subGrpAct;
+    QAction* removeAct;
+    QAction* renameAct;
+    QAction* exportAct;
+    QAction* importAct;
 };
 
 // --------------------------------------------------------------------
@@ -126,59 +123,59 @@ private:
  */
 class ParameterValue : public QTreeWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ParameterValue( QWidget * parent = 0 );
-  virtual ~ParameterValue();
-  
-  /** Sets the current parameter group that is displayed. */
-  void setCurrentGroup( const FCHandle<ParameterGrp>& _hcGrp );
+    ParameterValue( QWidget * parent = 0 );
+    virtual ~ParameterValue();
+
+    /** Sets the current parameter group that is displayed. */
+    void setCurrentGroup( const FCHandle<ParameterGrp>& _hcGrp );
 
 protected:
-  /** Shows the context menu. */
-  void contextMenuEvent ( QContextMenuEvent* event );
-  /** Invokes onDeleteSelectedItem() if the "Del" key was pressed. */
-  void keyPressEvent (QKeyEvent* event);
+    /** Shows the context menu. */
+    void contextMenuEvent ( QContextMenuEvent* event );
+    /** Invokes onDeleteSelectedItem() if the "Del" key was pressed. */
+    void keyPressEvent (QKeyEvent* event);
 
 protected Q_SLOTS:
-  /** Changes the value of the leaf of the selected item. */
-  void onChangeSelectedItem(QTreeWidgetItem*, int);
-  void onChangeSelectedItem();
-  /** Remove the underlying leaf from the parameter group. The selected item is also
-   * removed and destroyed.
-   */
-  void onDeleteSelectedItem();
-  /** Changes the name of the leaf of the selected item. */
-  void onRenameSelectedItem();
-  /** Creates and appends a new "text" leaf. */
-  void onCreateTextItem();
-  /** Creates and appends a new "integer" leaf. */
-  void onCreateIntItem();
-  /** Creates and appends a new "unsigned integer" leaf. */
-  void onCreateUIntItem();
-  /** Creates and appends a new "float" leaf. */
-  void onCreateFloatItem();
-  /** Creates and appends a new "boolean" leaf. */
-  void onCreateBoolItem();
-  /** Defines that the first column is editable. 
-   * @note We need to reimplement this method as QTreeWidgetItem::flags()
-   * doesn't have an int paramater.
-   */
-  bool edit ( const QModelIndex & index, EditTrigger trigger, QEvent * event );
+    /** Changes the value of the leaf of the selected item. */
+    void onChangeSelectedItem(QTreeWidgetItem*, int);
+    void onChangeSelectedItem();
+    /** Remove the underlying leaf from the parameter group. The selected item is also
+     * removed and destroyed.
+     */
+    void onDeleteSelectedItem();
+    /** Changes the name of the leaf of the selected item. */
+    void onRenameSelectedItem();
+    /** Creates and appends a new "text" leaf. */
+    void onCreateTextItem();
+    /** Creates and appends a new "integer" leaf. */
+    void onCreateIntItem();
+    /** Creates and appends a new "unsigned integer" leaf. */
+    void onCreateUIntItem();
+    /** Creates and appends a new "float" leaf. */
+    void onCreateFloatItem();
+    /** Creates and appends a new "boolean" leaf. */
+    void onCreateBoolItem();
+    /** Defines that the first column is editable. 
+     * @note We need to reimplement this method as QTreeWidgetItem::flags()
+     * doesn't have an int paramater.
+     */
+    bool edit ( const QModelIndex & index, EditTrigger trigger, QEvent * event );
 
 private:
-  QMenu* menuEdit;
-  QMenu* menuNew;
-  QAction* changeAct;
-  QAction* removeAct;
-  QAction* renameAct;
-  QAction* newStrAct;
-  QAction* newFltAct;
-  QAction* newIntAct;
-  QAction* newUlgAct;
-  QAction* newBlnAct;
-  FCHandle<ParameterGrp> _hcGrp;
+    QMenu* menuEdit;
+    QMenu* menuNew;
+    QAction* changeAct;
+    QAction* removeAct;
+    QAction* renameAct;
+    QAction* newStrAct;
+    QAction* newFltAct;
+    QAction* newIntAct;
+    QAction* newUlgAct;
+    QAction* newBlnAct;
+    FCHandle<ParameterGrp> _hcGrp;
 };
 
 /** The link between the Tree and the shown Label.
@@ -191,16 +188,16 @@ private:
 class ParameterGroupItem : public QTreeWidgetItem
 {
 public:
-  /// Constructor
-  ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp );
-  ParameterGroupItem( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterGroupItem();
+    /// Constructor
+    ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp );
+    ParameterGroupItem( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterGroupItem();
 
-  void setData ( int column, int role, const QVariant & value );
-  QVariant data ( int column, int role ) const;
+    void setData ( int column, int role, const QVariant & value );
+    QVariant data ( int column, int role ) const;
 
-  void fillUp(void);
-  FCHandle<ParameterGrp> _hcGrp;
+    void fillUp(void);
+    FCHandle<ParameterGrp> _hcGrp;
 };
 
 // --------------------------------------------------------------------
@@ -215,25 +212,25 @@ public:
 class ParameterValueItem : public QTreeWidgetItem
 {
 public:
-  /// Constructor
-  ParameterValueItem ( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
-  virtual ~ParameterValueItem();
+    /// Constructor
+    ParameterValueItem ( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
+    virtual ~ParameterValueItem();
 
-  /** If the name of the item has changed replace() is invoked. */
-  virtual void setData ( int column, int role, const QVariant & value );
-  /** Opens an input dialog to change the value. */
-  virtual void changeValue() = 0;
-  /** Append this item as leaf to the parameter group. */
-  virtual void appendToGroup() = 0;
-  /** Remove the leaf from the parameter group. */
-  virtual void removeFromGroup() = 0;
-
-protected:
-  /** Replaces the name of the leaf from \a oldName to \a newName. */
-  virtual void replace( const QString& oldName, const QString& newName ) = 0;
+    /** If the name of the item has changed replace() is invoked. */
+    virtual void setData ( int column, int role, const QVariant & value );
+    /** Opens an input dialog to change the value. */
+    virtual void changeValue() = 0;
+    /** Append this item as leaf to the parameter group. */
+    virtual void appendToGroup() = 0;
+    /** Remove the leaf from the parameter group. */
+    virtual void removeFromGroup() = 0;
 
 protected:
-  FCHandle<ParameterGrp> _hcGrp;
+    /** Replaces the name of the leaf from \a oldName to \a newName. */
+    virtual void replace( const QString& oldName, const QString& newName ) = 0;
+
+protected:
+    FCHandle<ParameterGrp> _hcGrp;
 };
 
 /**
@@ -243,16 +240,16 @@ protected:
 class ParameterText : public ParameterValueItem
 {
 public:
-  /// Constructor
-  ParameterText ( QTreeWidget * parent, QString label1, const char* value, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterText();
+    /// Constructor
+    ParameterText ( QTreeWidget * parent, QString label1, const char* value, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterText();
 
-  void changeValue();
-  void appendToGroup();
-  void removeFromGroup();
+    void changeValue();
+    void appendToGroup();
+    void removeFromGroup();
 
 protected:
-  void replace( const QString& oldName, const QString& newName );
+    void replace( const QString& oldName, const QString& newName );
 };
 
 /**
@@ -262,16 +259,16 @@ protected:
 class ParameterInt : public ParameterValueItem
 {
 public:
-  /// Constructor
-  ParameterInt ( QTreeWidget * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterInt();
+    /// Constructor
+    ParameterInt ( QTreeWidget * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterInt();
 
-  void changeValue();
-  void appendToGroup();
-  void removeFromGroup();
+    void changeValue();
+    void appendToGroup();
+    void removeFromGroup();
 
 protected:
-  void replace( const QString& oldName, const QString& newName );
+    void replace( const QString& oldName, const QString& newName );
 };
 
 /**
@@ -281,16 +278,16 @@ protected:
 class ParameterUInt : public ParameterValueItem
 {
 public:
-  /// Constructor
-  ParameterUInt ( QTreeWidget * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterUInt();
+    /// Constructor
+    ParameterUInt ( QTreeWidget * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterUInt();
 
-  void changeValue();
-  void appendToGroup();
-  void removeFromGroup();
+    void changeValue();
+    void appendToGroup();
+    void removeFromGroup();
 
 protected:
-  void replace( const QString& oldName, const QString& newName );
+    void replace( const QString& oldName, const QString& newName );
 };
 
 /**
@@ -300,16 +297,16 @@ protected:
 class ParameterFloat : public ParameterValueItem
 {
 public:
-  /// Constructor
-  ParameterFloat ( QTreeWidget * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterFloat();
+    /// Constructor
+    ParameterFloat ( QTreeWidget * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterFloat();
 
-  void changeValue();
-  void appendToGroup();
-  void removeFromGroup();
+    void changeValue();
+    void appendToGroup();
+    void removeFromGroup();
 
 protected:
-  void replace( const QString& oldName, const QString& newName );
+    void replace( const QString& oldName, const QString& newName );
 };
 
 /**
@@ -319,16 +316,16 @@ protected:
 class ParameterBool : public ParameterValueItem
 {
 public:
-  /// Constructor
-  ParameterBool ( QTreeWidget * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
-  ~ParameterBool();
+    /// Constructor
+    ParameterBool ( QTreeWidget * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
+    ~ParameterBool();
 
-  void changeValue();
-  void appendToGroup();
-  void removeFromGroup();
+    void changeValue();
+    void appendToGroup();
+    void removeFromGroup();
 
 protected:
-  void replace( const QString& oldName, const QString& newName );
+    void replace( const QString& oldName, const QString& newName );
 };
 
 } // namespace Dialog

@@ -184,6 +184,25 @@ void DlgParameterImp::on_buttonSaveToDisk_clicked()
     }
 }
 
+namespace Gui {
+bool validateInput(QWidget* parent, const QString& input)
+{
+    if (input.isEmpty())
+        return false;
+    for (int i=0; i<input.size(); i++) {
+        const char c = input.at(i).toAscii();
+        if ((c < 48 || c > 57) &&  // Numbers
+            (c < 65 || c > 90) &&  // Uppercase letters
+            (c < 97 || c > 122)){  // Lowercase letters
+            QMessageBox::warning(parent, DlgParameterImp::tr("Invalid input"), 
+                                         DlgParameterImp::tr("Invalid key name '%1'").arg(input));
+            return false;
+        }
+    }
+    return true;
+}
+}
+
 // --------------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::ParameterGroup */
@@ -274,7 +293,7 @@ void ParameterGroup::onCreateSubgroup()
     QString name = QInputDialog::getText(this, QObject::tr("New sub-group"), QObject::tr("Enter the name:"),
                                          QLineEdit::Normal, QString::null, &ok );
 
-    if ( ok && !name.isEmpty() )
+    if (ok && Gui::validateInput(this, name))
     {
         QTreeWidgetItem* item = currentItem();
         if (isItemSelected(item))
@@ -306,7 +325,7 @@ void ParameterGroup::onExportToFile()
         {
             ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
             FCHandle<ParameterGrp> hGrp = para->_hcGrp;
-            hGrp->exportTo( file.toAscii() );
+            hGrp->exportTo( file.toUtf8() );
         }
     }
 }
@@ -332,7 +351,7 @@ void ParameterGroup::onImportFromFile()
 
             try
             {
-                hGrp->importFrom( file.toAscii() );
+                hGrp->importFrom( file.toUtf8() );
                 std::vector<FCHandle<ParameterGrp> > cSubGrps = hGrp->GetGroups();
                 for ( std::vector<FCHandle<ParameterGrp> >::iterator it = cSubGrps.begin(); it != cSubGrps.end(); ++it )
                 {
@@ -343,7 +362,7 @@ void ParameterGroup::onImportFromFile()
             }
             catch( const Base::Exception& )
             {
-                QMessageBox::critical(this, tr("Import Error"),tr("Reading of '%1' failed.").arg( file ));
+                QMessageBox::critical(this, tr("Import Error"),tr("Reading from '%1' failed.").arg( file ));
             }
         }
     }
@@ -474,7 +493,8 @@ void ParameterValue::onCreateTextItem()
     bool ok;
     QString name = QInputDialog::getText(this, QObject::tr("New text item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
-    if ( !ok || name.isEmpty() )
+
+    if (!ok || !Gui::validateInput(this, name))
         return;
 
     std::vector<std::pair<std::string,std::string> > smap = _hcGrp->GetASCIIMap();
@@ -502,7 +522,8 @@ void ParameterValue::onCreateIntItem()
     bool ok;
     QString name = QInputDialog::getText(this, QObject::tr("New integer item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
-    if ( !ok || name.isEmpty() )
+
+    if (!ok || !Gui::validateInput(this, name))
         return;
 
     std::vector<std::pair<std::string,long> > lmap = _hcGrp->GetIntMap();
@@ -531,7 +552,8 @@ void ParameterValue::onCreateUIntItem()
     bool ok;
     QString name = QInputDialog::getText(this, QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
-    if ( !ok || name.isEmpty() )
+
+    if (!ok || !Gui::validateInput(this, name))
         return;
 
     std::vector<std::pair<std::string,unsigned long> > lmap = _hcGrp->GetUnsignedMap();
@@ -566,7 +588,8 @@ void ParameterValue::onCreateFloatItem()
     bool ok;
     QString name = QInputDialog::getText(this, QObject::tr("New float item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
-    if ( !ok || name.isEmpty() )
+
+    if (!ok || !Gui::validateInput(this, name))
         return;
 
     std::vector<std::pair<std::string,double> > fmap = _hcGrp->GetFloatMap();
@@ -594,7 +617,8 @@ void ParameterValue::onCreateBoolItem()
     bool ok;
     QString name = QInputDialog::getText(this, QObject::tr("New boolean item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
-    if ( !ok || name.isEmpty() )
+
+    if (!ok || !Gui::validateInput(this, name))
         return;
 
     std::vector<std::pair<std::string,bool> > bmap = _hcGrp->GetBoolMap();
@@ -660,6 +684,9 @@ void ParameterGroupItem::setData ( int column, int role, const QVariant & value 
         if (newName.isEmpty() || oldName == newName)
             return;
 
+        if (!Gui::validateInput(treeWidget(), newName))
+            return;
+
         // first check if there is already a group with name "newName"
         ParameterGroupItem* item = reinterpret_cast<ParameterGroupItem*>(parent());
         if ( !item )
@@ -721,6 +748,9 @@ void ParameterValueItem::setData ( int column, int role, const QVariant & value 
         if (newName.isEmpty() || oldName == newName)
             return;
 
+        if (!Gui::validateInput(treeWidget(), newName))
+            return;
+
         replace( oldName, newName );
     }
 
@@ -744,15 +774,13 @@ ParameterText::~ParameterText()
 
 void ParameterText::changeValue()
 {
-    const char* name = text(0).toAscii();
     bool ok;
-
     QString txt = QInputDialog::getText(treeWidget(), QObject::tr("Change value"), QObject::tr("Enter your text:"), 
                                         QLineEdit::Normal, text(2), &ok);
     if ( ok )
     {
         setText( 2, txt );
-        _hcGrp->SetASCII(name, txt.toUtf8());
+        _hcGrp->SetASCII(text(0).toAscii(), txt.toUtf8());
     }
 }
 
@@ -763,14 +791,14 @@ void ParameterText::removeFromGroup ()
 
 void ParameterText::replace( const QString& oldName, const QString& newName )
 {
-    std::string val = _hcGrp->GetASCII( oldName.toAscii() );
-    _hcGrp->RemoveASCII( oldName.toAscii() );
-    _hcGrp->SetASCII( newName.toAscii(), val.c_str() );
+    std::string val = _hcGrp->GetASCII(oldName.toAscii());
+    _hcGrp->RemoveASCII(oldName.toAscii());
+    _hcGrp->SetASCII(newName.toAscii(), val.c_str());
 }
 
 void ParameterText::appendToGroup()
 {
-    _hcGrp->SetASCII(text(0).toAscii(), text(2).toAscii());
+    _hcGrp->SetASCII(text(0).toAscii(), text(2).toUtf8());
 }
 
 // --------------------------------------------------------------------
@@ -790,15 +818,13 @@ ParameterInt::~ParameterInt()
 
 void ParameterInt::changeValue()
 {
-    const char* name = text(0).toAscii();
     bool ok;
-
     int num = QInputDialog::getInteger(treeWidget(), QObject::tr("Change value"), QObject::tr("Enter your number:"), 
                                        text(2).toInt(), -2147483647, 2147483647, 1, &ok);
     if ( ok )
     {
         setText(2, QString("%1").arg(num));
-        _hcGrp->SetInt(name, (long)num);
+        _hcGrp->SetInt(text(0).toAscii(), (long)num);
     }
 }
 
@@ -809,9 +835,9 @@ void ParameterInt::removeFromGroup ()
 
 void ParameterInt::replace( const QString& oldName, const QString& newName )
 {
-    long val = _hcGrp->GetInt( oldName.toAscii() );
-    _hcGrp->RemoveInt( oldName.toAscii() );
-    _hcGrp->SetInt( newName.toAscii(), val );
+    long val = _hcGrp->GetInt(oldName.toAscii());
+    _hcGrp->RemoveInt(oldName.toAscii());
+    _hcGrp->SetInt(newName.toAscii(), val);
 }
 
 void ParameterInt::appendToGroup()
@@ -836,9 +862,7 @@ ParameterUInt::~ParameterUInt()
 
 void ParameterUInt::changeValue()
 {
-    const char* name = text(0).toAscii();
     bool ok;
-
     DlgInputDialogImp dlg(QObject::tr("Enter your number:"),treeWidget(), true, DlgInputDialogImp::UIntBox);
     dlg.setWindowTitle(QObject::tr("Change value"));
     UIntSpinBox* edit = dlg.getUIntBox();
@@ -852,7 +876,7 @@ void ParameterUInt::changeValue()
         if ( ok )
         {
             setText(2, QString("%1").arg(num));
-            _hcGrp->SetUnsigned(name, (unsigned long)num);
+            _hcGrp->SetUnsigned(text(0).toAscii(), (unsigned long)num);
         }
     }
 }
@@ -864,9 +888,9 @@ void ParameterUInt::removeFromGroup ()
 
 void ParameterUInt::replace( const QString& oldName, const QString& newName )
 {
-    unsigned long val = _hcGrp->GetUnsigned( oldName.toAscii() );
-    _hcGrp->RemoveUnsigned( oldName.toAscii() );
-    _hcGrp->SetUnsigned( newName.toAscii(), val );
+    unsigned long val = _hcGrp->GetUnsigned(oldName.toAscii());
+    _hcGrp->RemoveUnsigned(oldName.toAscii());
+    _hcGrp->SetUnsigned(newName.toAscii(), val);
 }
 
 void ParameterUInt::appendToGroup()
@@ -891,15 +915,13 @@ ParameterFloat::~ParameterFloat()
 
 void ParameterFloat::changeValue()
 {
-    const char* name = text(0).toAscii();
     bool ok;
-
     double num = QInputDialog::getDouble(treeWidget(), QObject::tr("Change value"), QObject::tr("Enter your number:"), 
                                          text(2).toDouble(), -2147483647, 2147483647, 12, &ok);
     if ( ok )
     {
         setText(2, QString("%1").arg(num));
-        _hcGrp->SetFloat(name, num);
+        _hcGrp->SetFloat(text(0).toAscii(), num);
     }
 }
 
@@ -910,9 +932,9 @@ void ParameterFloat::removeFromGroup ()
 
 void ParameterFloat::replace( const QString& oldName, const QString& newName )
 {
-    double val = _hcGrp->GetFloat( oldName.toAscii() );
-    _hcGrp->RemoveFloat( oldName.toAscii() );
-    _hcGrp->SetFloat( newName.toAscii(), val );
+    double val = _hcGrp->GetFloat(oldName.toAscii());
+    _hcGrp->RemoveFloat(oldName.toAscii());
+    _hcGrp->SetFloat(newName.toAscii(), val);
 }
 
 void ParameterFloat::appendToGroup()
@@ -937,9 +959,7 @@ ParameterBool::~ParameterBool()
 
 void ParameterBool::changeValue()
 {
-    const char* name = text(0).toAscii();
     bool ok;
-
     QStringList list; list << "true" << "false";
     int pos = (text(2) == list[0] ? 0 : 1);
 
@@ -948,7 +968,7 @@ void ParameterBool::changeValue()
     if ( ok )
     {
         setText( 2, txt );
-        _hcGrp->SetBool(name, (txt == list[0] ? true : false) );
+        _hcGrp->SetBool(text(0).toAscii(), (txt == list[0] ? true : false) );
     }
 }
 
@@ -959,9 +979,9 @@ void ParameterBool::removeFromGroup ()
 
 void ParameterBool::replace( const QString& oldName, const QString& newName )
 {
-    bool val = _hcGrp->GetBool( oldName.toAscii() );
-    _hcGrp->RemoveBool( oldName.toAscii() );
-    _hcGrp->SetBool( newName.toAscii(), val );
+    bool val = _hcGrp->GetBool(oldName.toAscii());
+    _hcGrp->RemoveBool(oldName.toAscii());
+    _hcGrp->SetBool(newName.toAscii(), val);
 }
 
 void ParameterBool::appendToGroup()

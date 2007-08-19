@@ -218,7 +218,7 @@ PYFUNCIMP_S(Application,sopen)
       if ( !Application::Instance->activeDocument() )
         App::GetApplication().newDocument();
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-      Base::Interpreter().runString( cmd.toAscii() );
+      Base::Interpreter().runString(cmd.toAscii());
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
@@ -245,7 +245,7 @@ PYFUNCIMP_S(Application,sinsert)
     QString ext = fi.completeSuffix().toLower();
     if ( ext == "iv" || ext == "wrl" ) {
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-      Base::Interpreter().runString( cmd.toAscii() );
+      Base::Interpreter().runString(cmd.toAscii());
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonView* edit = new PythonView(getMainWindow());
@@ -412,7 +412,7 @@ PYFUNCIMP_S(Application,sListWorkbenches)
   int i=0;
   for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
   {
-    PyObject* str = PyString_FromString((const char*)(*it).toAscii());
+    PyObject* str = PyString_FromString((*it).toAscii());
     PyList_SetItem(pyList, i++, str);
   }
 

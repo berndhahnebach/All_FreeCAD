@@ -51,8 +51,6 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
   // fills the combo box with all available workbenches
   QStringList work = Application::Instance->workbenches();
   work.sort();
-  // do not save the content but the current item only
-  AutoloadModuleCombo->setKeepPreference( true );
   for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it )
   {
     QPixmap px = Application::Instance->workbenchIcon( *it );
@@ -61,13 +59,13 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
     else
       AutoloadModuleCombo->addItem( px, *it );
   }
+  
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
   // it, if it is set by the user
   QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
   AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findText(curWbName));
 
   // do not save the content but the current item only
-  AutoloadTabCombo->setKeepPreference( true );
   QWidget* dw = DockWindowManager::instance()->getDockWindow("Report view");
   if ( dw )
   {
@@ -120,20 +118,15 @@ void DlgGeneralImp::saveSettings()
   QString language = hGrp->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
-    hGrp->SetASCII("Language", Languages->currentText().toAscii());
-    Translator::instance()->installLanguage( Languages->currentText() );
+    hGrp->SetASCII("Language", Languages->currentText().toUtf8());
+    Translator::instance()->installLanguage(Languages->currentText());
   }
 }
 
 void DlgGeneralImp::loadSettings()
 {
   // in case the user defined workbench is hidden
-  QStringList work = Application::Instance->workbenches();
-  QString curWbName = AutoloadModuleCombo->currentText();
   AutoloadModuleCombo->onRestore();
-  QString newWbName = AutoloadModuleCombo->currentText();
-  if (!work.contains(newWbName))
-    AutoloadModuleCombo->setItemText(AutoloadModuleCombo->currentIndex(), curWbName);
   AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
@@ -154,7 +147,7 @@ void DlgGeneralImp::loadSettings()
 
   // search for the language files
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  QString language = hGrp->GetASCII("Language", "English").c_str();
+  QString language = QString::fromUtf8(hGrp->GetASCII("Language", "English").c_str());
   Languages->addItem("English"); 
   Languages->addItems(Translator::instance()->supportedLanguages());
   int ct=Languages->count();
