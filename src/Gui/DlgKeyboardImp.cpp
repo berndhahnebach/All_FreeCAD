@@ -54,15 +54,15 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList items; items << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
         QString group = it->second->getGroupName();
-        if (!items.contains(group))
-            items << group;
+        if (!groups.contains(group))
+            groups << group;
     }
 
     int index = 0;
-    for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It, ++index ) {
+    for ( QStringList::Iterator It = groups.begin(); It != groups.end(); ++It, ++index ) {
         categoryBox->addItem(QObject::tr((*It).toAscii()));
         categoryBox->setItemData(index, QVariant(*It), Qt::UserRole);
     }

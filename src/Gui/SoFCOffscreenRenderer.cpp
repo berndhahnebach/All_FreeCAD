@@ -172,7 +172,7 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
         img.setText("Software", App::Application::Config()["ExeName"].c_str());
       }
 
-      QFile f(filename);
+      QFile f(QString::fromUtf8(filename));
       if (f.open(QFile::WriteOnly)) {
         if (img.save(&f, format.data())) {
           f.close();

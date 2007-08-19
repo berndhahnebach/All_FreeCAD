@@ -28,10 +28,6 @@
 # include "Qt4All.h"
 #endif
 
-class QCheckBox;
-class QLineEdit;
-class QPushButton;
-
 namespace Gui {
 
 /**
@@ -51,15 +47,6 @@ public:
                                          Options options = ShowDirsOnly );
     static QStringList getOpenFileNames( QWidget * parent = 0, const QString & caption = QString(), const QString & dir = QString(),
                                          const QString & filter = QString(), QString * selectedFilter = 0, Options options = 0 );
-
-public:
-    FileDialog ( QWidget * parent, Qt::WFlags flags );
-    FileDialog ( QWidget * parent = 0, const QString & caption = QString(), const QString & directory = QString(), 
-                 const QString & filter = QString() );
-    virtual ~FileDialog();
-
-protected:
-    QString selectedFileName();
 
 private:
     static QString getWorkingDirectory();

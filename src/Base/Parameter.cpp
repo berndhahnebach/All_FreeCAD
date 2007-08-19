@@ -1199,7 +1199,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 
     catch (const XMLException& e)
     {
-		std::cerr << "An error occurred during parsing\n   Message: "
+        std::cerr << "An error occurred during parsing\n   Message: "
              << StrX(e.getMessage()) << std::endl;
         errorsOccured = true;
     }
@@ -1217,21 +1217,23 @@ int  ParameterManager::LoadDocument(const char* sFileName)
         errorsOccured = true;
     }
 
-	if(errorsOccured) 
-    return 0;
+    if(errorsOccured) 
+        return 0;
 
-	_pDocument = parser->getDocument();
-	DOMElement* rootElem = _pDocument->getDocumentElement();
+    _pDocument = parser->getDocument();
+    if(!_pDocument) 
+        throw Exception("Malformed Parameter document: Invalid document");
+    
+    DOMElement* rootElem = _pDocument->getDocumentElement();
+    if(!rootElem) 
+        throw Exception("Malformed Parameter document: Root group not found");
 
-  if(!rootElem) 
-    throw Exception("Malformed Parameter document: Root group not found");
+    _pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
 
-	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
+    if(!_pGroupNode) 
+        throw Exception("Malformed Parameter document: Root group not found");
 
-	if(!_pGroupNode) 
-    throw Exception("Malformed Parameter document: Root group not found");
-	
-	return 1;
+    return 1;
 }
 
 void  ParameterManager::SaveDocument(const char* sFileName) const

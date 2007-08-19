@@ -41,44 +41,45 @@ using namespace ImageGui;
 static PyObject * 
 open(PyObject *self, PyObject *args) 
 {
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))
-    return NULL; 
+    const char* Name;
+    if (! PyArg_ParseTuple(args, "s",&Name))
+        return NULL; 
     
-  PY_TRY {
-    Base::FileInfo file(Name);
+    PY_TRY {
+        QString fileName = QString::fromUtf8(Name);
+        Base::FileInfo file(Name);
+        if (file.hasExtension("png") || file.hasExtension("xpm") || 
+            file.hasExtension("jpg") || file.hasExtension("bmp"))
+        {
+            QImage imageq(fileName);
+            int format;
+            if (imageq.isNull() == false)
+            {
+                if ((imageq.depth() == 8) && (imageq.isGrayscale() == true))
+                    format = IB_CF_GREY8;
+                else if ((imageq.depth() == 16) && (imageq.isGrayscale() == true))
+                    format = IB_CF_GREY16;
+                else if ((imageq.depth() == 32) && (imageq.isGrayscale() == false))
+                    format = IB_CF_BGRA32;
+                else
+                    Py_Error(PyExc_Exception,"Unsupported image format");
+            }
+            else
+                Py_Error(PyExc_Exception,"Could not load image");
 
-    if(file.hasExtension("png") || file.hasExtension("xpm") || file.hasExtension("jpg") || file.hasExtension("bmp"))
-    {
-      QImage imageq( Name );
-      int format;
-      if (imageq.isNull() == false)
-      {
-        if ((imageq.depth() == 8) && (imageq.isGrayscale() == true))
-          format = IB_CF_GREY8;
-        else if ((imageq.depth() == 16) && (imageq.isGrayscale() == true))
-          format = IB_CF_GREY16;
-        else if ((imageq.depth() == 32) && (imageq.isGrayscale() == false))
-          format = IB_CF_BGRA32;
+            // Displaying the image in a view
+            ImageView* iView = new ImageView(Gui::getMainWindow());
+            iView->setWindowIcon( Gui::BitmapFactory().pixmap("colors") );
+            iView->setWindowTitle(QObject::tr("Image viewer"));
+            iView->resize( 400, 300 );
+            Gui::getMainWindow()->addWindow( iView );
+            iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
+        }
         else
-          Py_Error(PyExc_Exception,"Unsupported image format");
-      }
-      else
-        Py_Error(PyExc_Exception,"Could not load image");
+            Py_Error(PyExc_Exception,"unknown file ending");
+    } PY_CATCH;
 
-      // Displaying the image in a view
-      ImageView* iView = new ImageView(Gui::getMainWindow());
-      iView->setWindowIcon( Gui::BitmapFactory().pixmap("colors") );
-      iView->setWindowTitle(QObject::tr("Image viewer"));
-      iView->resize( 400, 300 );
-      Gui::getMainWindow()->addWindow( iView );
-      iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
-    }
-    else
-      Py_Error(PyExc_Exception,"unknown file ending");
-  } PY_CATCH;
-
-	Py_Return; 
+    Py_Return; 
 }
 
 

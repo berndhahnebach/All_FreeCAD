@@ -328,7 +328,7 @@ void CmdMeshImport::activated(int iMsg)
 
     openCommand("Import Mesh");
     doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
-    doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toUtf8());
     commitCommand();
     updateActive();
   }
@@ -368,27 +368,23 @@ void CmdMeshExport::activated(int iMsg)
 
   App::DocumentObject* docObj = docObjs.front();
 
-  QString dir = QDir::currentPath();
-  dir += "/";
-  dir += docObj->name.getValue();
-
+  QString dir = docObj->name.getValue();
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Alias Mesh (*.obj);;"
                    "Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;"
                    "Nastran (*.nas *.bdf);;All Files (*.*)";
+
   QString format;
-  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export mesh"), dir, filter);
-
-  if (! fn.isEmpty() )
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export mesh"), dir, filter, &format);
+  if (!fn.isEmpty())
   {
-    if ( format.startsWith("Binary STL") )
-      format = "Binary STL";
-    else if ( format.startsWith("ASCII STL") )
-      format = "ASCII STL";
-
-    QFileInfo fi; fi.setFile(fn);
-    openCommand("Mesh ExportSTL Create");
+    QFileInfo fi(fn);
+    if (format == QString("ASCII STL (*.stl)"))
+        format = "ast";
+    else
+        format = fi.suffix();
+    openCommand("Export Mesh");
     doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
-    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
+    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toUtf8());
     doCommand(Doc,"f.Format = \"%s\"",(const char*)format.toAscii());
     doCommand(Doc,"f.Source = App.activeDocument().%s",docObj->name.getValue());
     commitCommand();

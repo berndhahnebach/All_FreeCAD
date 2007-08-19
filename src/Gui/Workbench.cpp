@@ -228,7 +228,8 @@ void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) cons
         if (!active) // ignore this toolbar
             continue;
         ToolBarItem* bar = new ToolBarItem(root);
-        bar->setCommand((*it)->GetGroupName());
+        QString toolbarName = QString::fromUtf8((*it)->GetASCII("Name", "Custom").c_str());
+        bar->setCommand(toolbarName);
    
         // get the elements of the subgroups
         std::vector<std::pair<std::string,std::string> > items = hGrp->GetGroup((*it)->GetGroupName())->GetASCIIMap();

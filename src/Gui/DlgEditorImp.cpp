@@ -102,7 +102,7 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent )
     this->displayItems->header()->hide();
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(this->displayItems);
-        item->setText(0, trUtf8((*it).first.toAscii()));
+        item->setText(0, tr((*it).first.toAscii()));
     }
     pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 }
@@ -216,7 +216,7 @@ void DlgSettingsEditorImp::changeEvent(QEvent *e)
     if (e->type() == QEvent::LanguageChange) {
         int index = 0;
         for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
-            this->displayItems->topLevelItem(index++)->setText(0, trUtf8((*it).first.toAscii()));
+            this->displayItems->topLevelItem(index++)->setText(0, tr((*it).first.toAscii()));
     } else {
         QWidget::changeEvent(e);
     }

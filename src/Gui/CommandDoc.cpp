@@ -91,8 +91,7 @@ void StdCmdOpen::activated(int iMsg)
     }
     formatList += QObject::tr(allFiles);
 
-    QStringList FileList = QFileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QDir::currentPath(), formatList );
-
+    QStringList FileList = FileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Open document"), QString(), formatList);
     for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
         getGuiApplication()->open((*it).toUtf8());
     }

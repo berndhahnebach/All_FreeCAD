@@ -2211,6 +2211,14 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>QObject</name>
     <message>
+        <source>General</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <source>Viewer</source>
+        <translation>Anzeige</translation>
+    </message>
+    <message>
         <source>Save Report Output</source>
         <translation>Ausgabe speichern</translation>
     </message>

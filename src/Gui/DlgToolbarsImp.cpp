@@ -57,24 +57,24 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList items; items << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
         QString group = it->second->getGroupName();
-        if (!items.contains(group))
-            items << group;
+        if (!groups.contains(group))
+            groups << group;
     }
 
     int index = 0;
-    for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It, ++index ) {
+    for ( QStringList::Iterator It = groups.begin(); It != groups.end(); ++It, ++index ) {
         categoryBox->addItem(QObject::tr((*It).toAscii()));
         categoryBox->setItemData(index, QVariant(*It), Qt::UserRole);
     }
 
     // fills the combo box with all available workbenches
-    QStringList work = Application::Instance->workbenches();
-    work.sort();
+    QStringList workbenches = Application::Instance->workbenches();
+    workbenches.sort();
     index = 0;
-    for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it, ++index ) {
+    for ( QStringList::Iterator it = workbenches.begin(); it != workbenches.end(); ++it, ++index ) {
         QPixmap px = Application::Instance->workbenchIcon( *it );
         if ( px.isNull() )
             workbenchBox->addItem( *it );
@@ -125,14 +125,14 @@ void DlgCustomToolbars::on_categoryBox_activated(int index)
 void DlgCustomToolbars::on_workbenchBox_activated(int index)
 {
     QVariant data = workbenchBox->itemData(index, Qt::UserRole);
-    QString group = data.toString();
+    QString workbench = data.toString();
     toolbarTreeWidget->clear();
 
     renameButton->setEnabled(false);
     deleteButton->setEnabled(false);
 
-    QByteArray name = group.toAscii();
-    importCustomToolbars(name);
+    QByteArray workbenchname = workbench.toAscii();
+    importCustomToolbars(workbenchname);
 }
 
 void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
@@ -146,12 +146,13 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
     for (std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it) {
         // create a toplevel item
         QTreeWidgetItem* toplevel = new QTreeWidgetItem(toolbarTreeWidget);
-        toplevel->setText(0, (*it)->GetGroupName());
-        bool active = hGrp->GetGroup((*it)->GetGroupName())->GetBool("Active", true);
+        QString toolbarName = QString::fromUtf8((*it)->GetASCII("Name", "Custom").c_str());
+        toplevel->setText(0, toolbarName);
+        bool active = (*it)->GetBool("Active", true);
         toplevel->setCheckState(0, (active ? Qt::Checked : Qt::Unchecked));
 
         // get the elements of the subgroups
-        std::vector<std::pair<std::string,std::string> > items = hGrp->GetGroup((*it)->GetGroupName())->GetASCIIMap();
+        std::vector<std::pair<std::string,std::string> > items = (*it)->GetASCIIMap();
         for (std::vector<std::pair<std::string,std::string> >::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
             Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
             if (pCmd) {
@@ -167,18 +168,20 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
     }
 }
 
-void DlgCustomToolbars::exportCustomToolbars(const QByteArray& name)
+void DlgCustomToolbars::exportCustomToolbars(const QByteArray& workbench)
 {
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench");
     const char* subgroup = (type == Toolbar ? "Toolbar" : "Toolboxbar");
-    hGrp = hGrp->GetGroup(name.constData())->GetGroup(subgroup);
+    hGrp = hGrp->GetGroup(workbench.constData())->GetGroup(subgroup);
     hGrp->Clear();
 
     CommandManager& rMgr = Application::Instance->commandManager();
     for (int i=0; i<toolbarTreeWidget->topLevelItemCount(); i++) {
         QTreeWidgetItem* toplevel = toolbarTreeWidget->topLevelItem(i);
-        QByteArray groupName = toplevel->text(0).toAscii();
-        ParameterGrp::handle hToolGrp = hGrp->GetGroup(groupName.constData());
+        QString groupName = QString("Custom_%1").arg(i+1);
+        QByteArray toolbarName = toplevel->text(0).toUtf8();
+        ParameterGrp::handle hToolGrp = hGrp->GetGroup(groupName.toAscii());
+        hToolGrp->SetASCII("Name", toolbarName.constData());
         hToolGrp->SetBool("Active", toplevel->checkState(0) == Qt::Checked);
         for (int j=0; j<toplevel->childCount(); j++) {
             QTreeWidgetItem* child = toplevel->child(j);
@@ -258,8 +261,8 @@ void DlgCustomToolbars::on_moveActionRightButton_clicked()
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-    QString group = data.toString();
-    exportCustomToolbars(group.toAscii());
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
 }
 
 /** Removes an action */
@@ -274,8 +277,8 @@ void DlgCustomToolbars::on_moveActionLeftButton_clicked()
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-    QString group = data.toString();
-    exportCustomToolbars(group.toAscii());
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
 }
 
 /** Noves up an action */
@@ -291,8 +294,8 @@ void DlgCustomToolbars::on_moveActionUpButton_clicked()
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-    QString group = data.toString();
-    exportCustomToolbars(group.toAscii());
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
 }
 
 /** Moves down an action */
@@ -308,8 +311,8 @@ void DlgCustomToolbars::on_moveActionDownButton_clicked()
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-    QString group = data.toString();
-    exportCustomToolbars(group.toAscii());
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
 }
 
 void DlgCustomToolbars::on_newButton_clicked()
@@ -334,8 +337,8 @@ void DlgCustomToolbars::on_newButton_clicked()
         toolbarTreeWidget->setItemExpanded(item, true);
 
         QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-        QString group = data.toString();
-        exportCustomToolbars(group.toAscii());
+        QString workbench = data.toString();
+        exportCustomToolbars(workbench.toAscii());
     }
 }
 
@@ -349,8 +352,8 @@ void DlgCustomToolbars::on_deleteButton_clicked()
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-    QString group = data.toString();
-    exportCustomToolbars(group.toAscii());
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
 }
 
 void DlgCustomToolbars::on_renameButton_clicked()
@@ -379,8 +382,8 @@ void DlgCustomToolbars::on_renameButton_clicked()
 
     if (renamed) {
         QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
-        QString group = data.toString();
-        exportCustomToolbars(group.toAscii());
+        QString workbench = data.toString();
+        exportCustomToolbars(workbench.toAscii());
     }
 }
 

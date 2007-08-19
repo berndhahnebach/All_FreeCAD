@@ -50,7 +50,7 @@ QVariant PropertyStringItem::value(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
 
     std::string value = ((App::PropertyString*)prop)->getValue();
-    return QVariant(QString(value.c_str()));
+    return QVariant(QString::fromUtf8(value.c_str()));
 }
 
 void PropertyStringItem::setValue(const QVariant& value)
@@ -59,7 +59,7 @@ void PropertyStringItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
-        ((App::PropertyString*)*it)->setValue(val.toAscii());
+        ((App::PropertyString*)*it)->setValue(val.toUtf8());
     }
 }
 
