@@ -2,7 +2,6 @@
 lib_LTLIBRARIES=libDrawingGui.la DrawingGui.la
 
 BUILT_SOURCES=\
-		moc_GLDrawingBox.cpp \
 		moc_DrawingView.cpp \
 		qrc_Drawing.cpp 
 
