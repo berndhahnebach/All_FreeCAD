@@ -798,8 +798,8 @@ Diese Datei ist bereits vorhanden.</translation>
 <context>
     <name>Gui::Dialog::DlgMacroRecordImp</name>
     <message>
-        <source>FreeCAD - Macro recorder</source>
-        <translation>FreeCAD - Makroaufzeichnung</translation>
+        <source>Macro recorder</source>
+        <translation>Makroaufzeichnung</translation>
     </message>
     <message>
         <source>Specify first a place to save.</source>

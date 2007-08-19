@@ -45,48 +45,36 @@ Workbench::~Workbench()
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Points tools" ),
-  };
-
-  Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-  Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( toolItems[0] );
-  *pnt << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
-  return root;
+    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+    Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
+    pnt->setCommand(QT_TR_NOOP("Points tools"));
+    *pnt << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Points tools" ),
-  };
-
-  // point tools
-  Gui::ToolBarItem* root = new Gui::ToolBarItem;
-  Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( toolItems[0] );
-  *pnt << "Points_Import" << "Points_Export";
-  return root;
+    // point tools
+    Gui::ToolBarItem* root = new Gui::ToolBarItem;
+    Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
+    pnt->setCommand(QT_TR_NOOP("Points tools"));
+    *pnt << "Points_Import" << "Points_Export";
+    return root;
 }
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
-  static const char* menuItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "&Points" ),
-  };
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+    Gui::MenuItem* pnts = new Gui::MenuItem;
+    root->insertItem(item, pnts);
 
-  Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-  Gui::MenuItem* item = root->findItem( "&Windows" );
-  Gui::MenuItem* pnts = new Gui::MenuItem;
-  root->insertItem( item, pnts );
-
-  Gui::MenuItem* test = new Gui::MenuItem;
-  test->setCommand( "Test" );
-  *test << "Points_Transform";
+    Gui::MenuItem* test = new Gui::MenuItem;
+    test->setCommand("Test");
+    *test << "Points_Transform";
  
-  pnts->setCommand( menuItems[0] );
-  *pnts << test << "Separator" << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
-  return root;
+    pnts->setCommand(QT_TR_NOOP("&Points"));
+    *pnts << test << "Separator" << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
+    return root;
 }
 

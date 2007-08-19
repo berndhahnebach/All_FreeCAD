@@ -45,51 +45,37 @@ Workbench::~Workbench()
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
-  static const char* menuItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "&Part" )
-  };
-
-  Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-  Gui::MenuItem* item = root->findItem( "&Windows" );
-  Gui::MenuItem* part = new Gui::MenuItem;
-  root->insertItem( item, part );
-  part->setCommand( menuItems[0] );
-  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
-  return root;
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+    Gui::MenuItem* part = new Gui::MenuItem;
+    root->insertItem(item, part);
+    part->setCommand(QT_TR_NOOP("&Part"));
+    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Part tools" ),
-  };
-
-  Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-  Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
-  part->setCommand( toolItems[0] );
-  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
-  return root;
+    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+    Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
+    part->setCommand(QT_TR_NOOP("Part tools"));
+    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Import" ),
-    QT_TRANSLATE_NOOP( "QObject", "Boolean Operators" ),
-    QT_TRANSLATE_NOOP( "QObject", "Testing" ),
-  };
+    // Part tools
+    Gui::ToolBarItem* root = new Gui::ToolBarItem;
 
-  // Part tools
-  Gui::ToolBarItem* root = new Gui::ToolBarItem;
+    Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
+    imp->setCommand(QT_TR_NOOP("Import"));
+    *imp << "Part_Import" << "Part_ImportCurveNet";
 
-  Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
-  imp->setCommand( toolItems[0] );
-  *imp << "Part_Import" << "Part_ImportCurveNet";
-
-  Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
-  bol->setCommand( toolItems[1] );
-  *bol << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+    Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
+    bol->setCommand(QT_TR_NOOP("Boolean Operators"));
+    *bol << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
   
-  return root;
+    return root;
 }
 

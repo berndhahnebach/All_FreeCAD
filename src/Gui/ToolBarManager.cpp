@@ -35,10 +35,10 @@ ToolBarItem::ToolBarItem()
 {
 }
 
-ToolBarItem::ToolBarItem( ToolBarItem* item )
+ToolBarItem::ToolBarItem(ToolBarItem* item)
 {
     if ( item )
-        item->appendItem( this );
+        item->appendItem(this);
 }
 
 ToolBarItem::~ToolBarItem()
@@ -46,7 +46,7 @@ ToolBarItem::~ToolBarItem()
     clear();
 }
 
-void ToolBarItem::setCommand( const QString& name )
+void ToolBarItem::setCommand(const QString& name)
 {
     _name = name;
 }
@@ -61,7 +61,7 @@ bool ToolBarItem::hasItems() const
     return _items.count() > 0;
 }
 
-ToolBarItem* ToolBarItem::findItem( const QString& name )
+ToolBarItem* ToolBarItem::findItem(const QString& name)
 {
     if ( _name == name ) {
         return this;
@@ -94,7 +94,7 @@ uint ToolBarItem::count() const
     return _items.count();
 }
 
-void ToolBarItem::appendItem( ToolBarItem* item )
+void ToolBarItem::appendItem(ToolBarItem* item)
 {
     _items.push_back( item );
 }
@@ -109,7 +109,7 @@ bool ToolBarItem::insertItem( ToolBarItem* before, ToolBarItem* item)
         return false;
 }
 
-void ToolBarItem::removeItem( ToolBarItem* item )
+void ToolBarItem::removeItem(ToolBarItem* item)
 {
     int pos = _items.indexOf(item);
     if (pos != -1)
@@ -125,16 +125,16 @@ void ToolBarItem::clear()
     _items.clear();
 }
 
-ToolBarItem& ToolBarItem::operator<< ( ToolBarItem* item )
+ToolBarItem& ToolBarItem::operator << (ToolBarItem* item)
 {
     appendItem(item);
     return *this;
 }
 
-ToolBarItem& ToolBarItem::operator<< ( const QString& command )
+ToolBarItem& ToolBarItem::operator << (const QString& command)
 {
     ToolBarItem* item = new ToolBarItem(this);
-    item->setCommand( command );;
+    item->setCommand(command);
     return *this;
 }
 
@@ -168,7 +168,7 @@ ToolBarManager::~ToolBarManager()
 {
 }
 
-void ToolBarManager::setup( ToolBarItem* toolBar ) const
+void ToolBarManager::setup(ToolBarItem* toolBar) const
 {
     if ( !toolBar )
         return; // empty menu bar
@@ -185,7 +185,8 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
     QList<ToolBarItem*> items = toolBar->getItems();
 
     for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) {
-        QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((const char*)((*item)->command().toAscii()))); // i18n
+        QByteArray toolbarName = (*item)->command().toUtf8();
+        QToolBar* bar = getMainWindow()->addToolBar(QObject::trUtf8((const char*)toolbarName)); // i18n
         bar->setObjectName((*item)->command());
 
         QList<ToolBarItem*> subitems = (*item)->getItems();

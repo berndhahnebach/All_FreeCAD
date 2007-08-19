@@ -44,20 +44,20 @@ Workbench::~Workbench()
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
-  Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-  Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
-  part->setCommand( "Drawing" );
-  *part << "Drawing_Open";
-  return root;
+    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
+    part->setCommand(QT_TR_NOOP("Drawing"));
+    *part << "Drawing_Open";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-  // Part tools
-  Gui::ToolBarItem* root = new Gui::ToolBarItem;
-  Gui::ToolBarItem* img = new Gui::ToolBarItem( root );
-  img->setCommand( "Drawing" );
-  *img << "Drawing_Open";
-  return root;
+    // Part tools
+    Gui::ToolBarItem* root = new Gui::ToolBarItem;
+    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
+    img->setCommand(QT_TR_NOOP("Drawing"));
+    *img << "Drawing_Open";
+    return root;
 }
 

@@ -48,71 +48,59 @@ Workbench::~Workbench()
 
 void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
 {
-  StdWorkbench::setupContextMenu( recipient, item );
-  if ( Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0 )
-  {
-    *item << "Separator" << "Mesh_Import" << "Mesh_Export" << "Mesh_VertexCurvature";
-  }
+    StdWorkbench::setupContextMenu( recipient, item );
+    if (Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0)
+    {
+        *item << "Separator" << "Mesh_Import" << "Mesh_Export" << "Mesh_VertexCurvature";
+    }
 }
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
-  static const char* menuItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "&Meshes" ),
-    QT_TRANSLATE_NOOP( "QObject", "Analyze" ),
-  };
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+    Gui::MenuItem* mesh = new Gui::MenuItem;
+    root->insertItem( item, mesh );
 
-  Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-  Gui::MenuItem* item = root->findItem( "&Windows" );
-  Gui::MenuItem* mesh = new Gui::MenuItem;
-  root->insertItem( item, mesh );
-
-  // analyze
-  Gui::MenuItem* analyze = new Gui::MenuItem;
-  analyze->setCommand( menuItems[1] );
-  *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+    // analyze
+    Gui::MenuItem* analyze = new Gui::MenuItem;
+    analyze->setCommand(QT_TR_NOOP("Analyze"));
+    *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
  
-  mesh->setCommand( menuItems[0] );
-  *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" << "Mesh_FillupHoles" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" << "Separator" 
-        << "Mesh_Import" << "Mesh_Export" << "Separator" 
-        << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
-  return root;
+    mesh->setCommand(QT_TR_NOOP("&Meshes"));
+    *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
+          << "Mesh_FillupHoles" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" 
+          << "Separator" << "Mesh_Import" << "Mesh_Export" << "Separator" 
+          << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" 
+          << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Mesh tools" ),
-  };
-
-  Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-  Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
-  mesh->setCommand( toolItems[0] );
-  *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyCut" << "Mesh_VertexCurvature" << "Separator"
-        << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
-  return root;
+    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+    Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
+    mesh->setCommand(QT_TR_NOOP("Mesh tools"));
+    *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyCut" << "Mesh_VertexCurvature" 
+          << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-  static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "QObject", "Mesh tools" ),
-    QT_TRANSLATE_NOOP( "QObject", "Mesh test suite" ),
-  };
+    // Mesh tools
+    Gui::ToolBarItem* root = new Gui::ToolBarItem;
+    Gui::ToolBarItem* mesh;
 
-  // Mesh tools
-  Gui::ToolBarItem* root = new Gui::ToolBarItem;
-  Gui::ToolBarItem* mesh;
+    mesh = new Gui::ToolBarItem( root );
+    mesh->setCommand(QT_TR_NOOP("Mesh tools"));
+    *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyCut" << "Separator" << "Mesh_ExMakeMesh" 
+          << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
 
-  mesh = new Gui::ToolBarItem( root );
-  mesh->setCommand( toolItems[0] );
-  *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyCut" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
-        << "Mesh_ExMakeUnion";
+    mesh = new Gui::ToolBarItem( root );
+    mesh->setCommand(QT_TR_NOOP("Mesh test suite"));
+    *mesh << "Mesh_Demolding" << "Mesh_Transform" << "Separator" ;
 
-  mesh = new Gui::ToolBarItem( root );
-  mesh->setCommand( toolItems[1] );
-  *mesh << "Mesh_Demolding" << "Mesh_Transform" << "Separator" ;
-
-  return root;
+    return root;
 }
 
