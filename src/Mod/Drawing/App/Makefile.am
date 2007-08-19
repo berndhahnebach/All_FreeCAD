@@ -1,43 +1,64 @@
+if OCC_LIBRARY_FILES
 
-lib_LTLIBRARIES=libImage.la Image.la
+lib_LTLIBRARIES=libDrawing.la Drawing.la
 
-libImage_la_SOURCES=\
-		ImageBase.cpp \
-		ImageBase.h \
+libDrawing_la_SOURCES=\
+                AppDrawingPy.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 
 # the library search path.
-libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libImage_la_CPPFLAGS = -DImageAppExport=
+libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libDrawing_la_CPPFLAGS = -DDrawingAppExport=
 
-libImage_la_LIBADD   = \
+libDrawing_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+                -lPart \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKService \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKSTL \
+		-lTKShHealing \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim
 
 #--------------------------------------------------------------------------------------
-# Loader of libImage
+# Loader of libDrawing
 
-Image_la_SOURCES=\
-		AppImage.cpp
+Drawing_la_SOURCES=\
+		AppDrawing.cpp
 
 # the library search path.
-Image_la_LDFLAGS = $(libImage_la_LDFLAGS) -module -avoid-version
-Image_la_CPPFLAGS = $(libImage_la_CPPFLAGS)
+Drawing_la_LDFLAGS = $(libDrawing_la_LDFLAGS) -module -avoid-version
+Drawing_la_CPPFLAGS = $(libDrawing_la_CPPFLAGS)
 
-Image_la_LIBADD   = \
-		$(libImage_la_LIBADD) \
-		-lImage
+Drawing_la_LIBADD   = \
+		$(libDrawing_la_LIBADD) \
+		-lDrawing
 
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
-libdir = $(prefix)/Mod/Image
+endif
+
+libdir = $(prefix)/Mod/Drawing
 
 EXTRA_DIST = \
-		AppImage.vcproj
+		AppDrawing.vcproj

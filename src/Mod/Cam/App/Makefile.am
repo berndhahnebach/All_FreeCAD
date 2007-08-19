@@ -1,4 +1,5 @@
 if OCC_LIBRARY_FILES
+if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libCam.la Cam.la
 
@@ -9,7 +10,7 @@ libCam_la_SOURCES=\
 		PreCompiled.h 
 
 # the library search path.
-libCam_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libCam_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App -L/usr/X11R6/lib -L$(OCC_LIB) $(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libCam_la_CPPFLAGS = -DAppCamExport=
 
 libCam_la_LIBADD   = \
@@ -18,6 +19,8 @@ libCam_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
+                -lPart \
+                -lMesh \
 		-lTKernel \
 		-lTKG2d \
 		-lTKG3d \
@@ -57,8 +60,9 @@ Cam_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
+endif
 endif
 
 libdir = $(prefix)/Mod/Cam
@@ -66,5 +70,4 @@ libdir = $(prefix)/Mod/Cam
 CLEANFILES = $(BUILT_SOURCES) $(libCam_la_BUILT)
 
 EXTRA_DIST = \
-		TopoShapePy.xml \
 		AppCam.vcproj

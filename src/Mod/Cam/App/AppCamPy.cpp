@@ -22,10 +22,14 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepAdaptor_Curve.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <TopoDS_Face.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <TopExp_Explorer.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Compound.hxx>
 #endif
 
 #include <stdio.h>
@@ -188,11 +192,17 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
             d_tmax=edge_adaptor.LastParameter();
             GCPnts_UniformAbscissa evaluate_points(edge_adaptor, 2.0, d_tmin,d_tmax);
             if (!evaluate_points.IsDone())
-                PyExc_Exception;
+            {
+                PyErr_SetString(PyExc_Exception, "Sampling of curve failed");
+                return NULL;
+            }
             numberofpoints = evaluate_points.NbPoints();
 
-			if (numberofpoints < 5)
-				PyExc_Exception;
+            if (numberofpoints < 5) 
+            {
+                PyErr_SetString(PyExc_Exception, "Sampling of curve returned too less points");
+                return NULL;
+            }
 			Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, numberofpoints);
             for (int i=1;i<=numberofpoints;++i)
             {
@@ -2986,8 +2996,8 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 	std::vector<double> Control;
 	std::vector<double> KntU;
 	std::vector<double> KntV;
-	int OrdU;
-	int OrdV;
+	//int OrdU;
+	//int OrdV;
 	/*
 	Approximate approx(copy,Control,KntU,KntV,OrdU,OrdV,1.0);
 	std::list< std::vector <unsigned long> > BoundariesIndex;
