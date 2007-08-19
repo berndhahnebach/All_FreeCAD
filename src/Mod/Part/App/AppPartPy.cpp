@@ -239,7 +239,6 @@ static PyObject * createBox(PyObject *self, PyObject *args)
 
 
 
-
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"open"   , open,    1},       

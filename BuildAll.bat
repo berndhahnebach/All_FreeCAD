@@ -1,6 +1,7 @@
-# Build script, uses vcbuild to completetly build FreeCAD
+@echo off
+rem   Build script, uses vcbuild to completetly build FreeCAD
 
-# set the aprobiated Variables here or outside in the system
+rem  set the aprobiated Variables here or outside in the system
 if NOT DEFINED QMAKESPEC set QMAKESPEC=win32-msvc2005
 if NOT DEFINED QTDIR set QTDIR=D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
 if NOT DEFINED FREECADLIB set FREECADLIB=D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
@@ -9,9 +10,12 @@ set PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem
 set INCLUDE=
 set LIB=
 
+rem Register VS Build programms
 call "%PROGRAMFILES%\Microsoft Visual Studio 8\VC\vcvarsall.bat"
+rem QT stuff
 set PATH=%QTDIR%\bin;%FREECADLIB%\bin;%FREECADLIB%\dll;%PATH%
 
+rem Set Standard include paths
 set INCLUDE=%INCLUDE%;%FrameworkSDKDir%\include
 set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft Platform SDK\Include
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include
@@ -39,12 +43,17 @@ set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtTest
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtUITools
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtXml
 
+rem Set lib Pathes
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK\Lib
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Visual Studio\VC98\Lib
 set LIB=%LIB%;%QTDIR%\lib
 set LIB=%LIB%;%FREECADLIB%\lib
 
-START /LOW vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv /rebuild
+rem Start the Visuall Studio build process
+vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv 
+
+@pause
+
 
 rem call "C:\Programme\Microsoft Visual Studio 8\VC\vcvarsall.bat"
 rem MSBuild.exe FreeCAD.sln /p:Configuration=RELEASE

@@ -104,6 +104,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 
+
 // Qt Toolkit
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>

@@ -217,6 +217,9 @@
 # endif
 #endif
 
+// stopps includion of the QT 3 header through the SoQT header...
+#define __Qt3All__
+
 #ifdef _MSC_VER
 #	ifdef FC_DEBUG
 #		define SOQTLIBNAME "soqt1.lib" // should be soqt1d.lib

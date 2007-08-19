@@ -46,15 +46,17 @@
 # include <windows.h>
 #endif
 
-// Inventor
-#ifndef __InventorAll__
-# include <Gui/InventorAll.h>
-#endif
- 
+
 // Qt Toolkit
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>
 #endif
+
+// Inventor
+#ifndef __InventorAll__
+# include <Gui/InventorAll.h>
+#endif
+
 
 #endif  //_PreComp_
 
