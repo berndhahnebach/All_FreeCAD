@@ -234,24 +234,27 @@ void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) cons
         // get the elements of the subgroups
         std::vector<std::pair<std::string,std::string> > items = hGrp->GetGroup((*it)->GetGroupName())->GetASCIIMap();
         for (std::vector<std::pair<std::string,std::string> >::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
-            // to save the order a number is prepended
-            Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
-            if (!pCmd) { // unknown command
-                // try to find out the appropriate module name
-                std::string pyMod = it2->second + "Gui";
-                try {
-                    Base::Interpreter().loadModule(pyMod.c_str());
-                }
-                catch(const Base::Exception&) {
+            if (it2->first == "Separator") {
+                *bar << "Separator";
+            } else {
+                Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
+                if (!pCmd) { // unknown command
+                    // try to find out the appropriate module name
+                    std::string pyMod = it2->second + "Gui";
+                    try {
+                        Base::Interpreter().loadModule(pyMod.c_str());
+                    }
+                    catch(const Base::Exception&) {
+                    }
+
+                    // Try again
+                    pCmd = rMgr.getCommandByName(it2->first.c_str());
                 }
 
-                // Try again
-                pCmd = rMgr.getCommandByName(it2->first.c_str());
-            }
-
-            if (pCmd) {
-                QString cmd = it2->first.c_str(); // command name
-                *bar << cmd;
+                if (pCmd) {
+                    QString cmd = it2->first.c_str(); // command name
+                    *bar << cmd;
+                }
             }
         }
     }

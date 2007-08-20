@@ -100,6 +100,15 @@ DlgCustomToolbars::~DlgCustomToolbars()
 {
 }
 
+void DlgCustomToolbars::hideEvent(QHideEvent * event)
+{
+    QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
+    QString workbench = data.toString();
+    exportCustomToolbars(workbench.toAscii());
+
+    CustomizeActionPage::hideEvent(event);
+}
+
 void DlgCustomToolbars::on_categoryBox_activated(int index)
 {
     QVariant data = categoryBox->itemData(index, Qt::UserRole);
@@ -108,6 +117,13 @@ void DlgCustomToolbars::on_categoryBox_activated(int index)
 
     CommandManager & cCmdMgr = Application::Instance->commandManager();
     std::vector<Command*> aCmds = cCmdMgr.getGroupCommands(group.toAscii());
+
+    // Create a separator item
+    QTreeWidgetItem* sepitem = new QTreeWidgetItem(commandTreeWidget);
+    sepitem->setText(1, tr("<Separator>"));
+    sepitem->setData(1, Qt::UserRole, QByteArray("Separator"));
+    sepitem->setSizeHint(0, QSize(32, 32));
+    sepitem->setBackgroundColor(0, Qt::lightGray);
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
         item->setText(1, QObject::trUtf8((*it)->getMenuText()));
@@ -154,15 +170,22 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
         // get the elements of the subgroups
         std::vector<std::pair<std::string,std::string> > items = (*it)->GetASCIIMap();
         for (std::vector<std::pair<std::string,std::string> >::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
-            Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
-            if (pCmd) {
-                QString cmd = it2->first.c_str(); // command name
+            if (it2->first == "Separator") {
                 QTreeWidgetItem* item = new QTreeWidgetItem(toplevel);
-                item->setText(0, QObject::trUtf8(pCmd->getMenuText()));
-                item->setData(0, Qt::UserRole, QByteArray(it2->first.c_str()));
-                if (pCmd->getPixmap())
-                    item->setIcon(0, BitmapFactory().pixmap(pCmd->getPixmap()));
+                item->setText(0, tr("<Separator>"));
+                item->setData(0, Qt::UserRole, QByteArray("Separator"));
                 item->setSizeHint(0, QSize(32, 32));
+            } else {
+                Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
+                if (pCmd) {
+                    QString cmd = it2->first.c_str(); // command name
+                    QTreeWidgetItem* item = new QTreeWidgetItem(toplevel);
+                    item->setText(0, QObject::trUtf8(pCmd->getMenuText()));
+                    item->setData(0, Qt::UserRole, QByteArray(it2->first.c_str()));
+                    if (pCmd->getPixmap())
+                        item->setIcon(0, BitmapFactory().pixmap(pCmd->getPixmap()));
+                    item->setSizeHint(0, QSize(32, 32));
+                }
             }
         }
     }
@@ -186,9 +209,13 @@ void DlgCustomToolbars::exportCustomToolbars(const QByteArray& workbench)
         for (int j=0; j<toplevel->childCount(); j++) {
             QTreeWidgetItem* child = toplevel->child(j);
             QByteArray commandName = child->data(0, Qt::UserRole).toByteArray();
-            Command* pCmd = rMgr.getCommandByName(commandName);
-            if (pCmd) {
-                hToolGrp->SetASCII(pCmd->getName(), pCmd->getAppModuleName());
+            if (commandName == "Separator") {
+                hToolGrp->SetASCII(commandName, commandName);
+            } else {
+                Command* pCmd = rMgr.getCommandByName(commandName);
+                if (pCmd) {
+                    hToolGrp->SetASCII(pCmd->getName(), pCmd->getAppModuleName());
+                }
             }
         }
     }

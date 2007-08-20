@@ -64,6 +64,9 @@ protected Q_SLOTS:
     void onRemoveMacroAction(const QByteArray&);
     void onModifyMacroAction(const QByteArray&);
 
+protected:
+    void hideEvent(QHideEvent * event);
+
 private:
     void importCustomToolbars(const QByteArray&);
     void exportCustomToolbars(const QByteArray&);
