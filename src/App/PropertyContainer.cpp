@@ -151,8 +151,6 @@ void PropertyContainer::Restore(Base::XMLReader &reader)
 }
 
 
-
-
 void PropertyData::addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup , PropertyType Type)
 {
   std::map<std::string,PropertySpec>::const_iterator pos = propertyData.find(PropName);

@@ -102,10 +102,10 @@ public:
 
   /// get the Type of a Property
   short getPropertyType(const Property* prop) const 
-  {return propertyData.getType(this,prop);}
+  {return getPropertyData().getType(this,prop);}
   /// get the Group of a Property
   const char* getPropertyGroup(const Property* prop) const
-  {return propertyData.getGroup(this,prop);}
+  {return getPropertyData().getGroup(this,prop);}
 
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void);
