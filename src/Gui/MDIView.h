@@ -47,71 +47,70 @@ class Document;
  */
 class GuiExport MDIView : public QMainWindow, public BaseView
 {
-  Q_OBJECT;
+    Q_OBJECT;
 
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 
 public:
-  /** View constructor
-   * Atach the view to the given document. If the document is NULL
-   * the view will attach to the active document. Be aware! there isn't
-   * allways a active document!
-   */
-  MDIView( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
-  /** View destructor
-   * Detach the view from the document, if Atached!
-   */
-  ~MDIView();
+    /** View constructor
+     * Atach the view to the given document. If the document is NULL
+     * the view will attach to the active document. Be aware! there isn't
+     * allways a active document!
+     */
+    MDIView( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
+    /** View destructor
+     * Detach the view from the document, if Atached!
+     */
+    ~MDIView();
 
-  /// get called when the document is updated
-  virtual void onUpdate(void)=0;
-  /// get called when the document is updated
-  virtual void onRename(Gui::Document *pDoc);
+    /// get called when the document is updated
+    virtual void onUpdate(void)=0;
+    /// get called when the document is updated
+    virtual void onRename(Gui::Document *pDoc);
 
-  /// Mesage handler
-  virtual bool onMsg(const char* pMsg,const char** ppReturn);
-  /// Mesage handler test
-  virtual bool onHasMsg(const char* pMsg) const;
-  /// overvrit when checking on close state
-  virtual bool canClose(void){return true;}
-  /// print function of the view
-  virtual void print();
-  virtual void printPdf();
+    /// Mesage handler
+    virtual bool onMsg(const char* pMsg,const char** ppReturn);
+    /// Mesage handler test
+    virtual bool onHasMsg(const char* pMsg) const;
+    /// overvrit when checking on close state
+    virtual bool canClose(void){return true;}
+    /// print function of the view
+    virtual void print();
+    virtual void printPdf();
 
-  QSize minimumSizeHint () const;
+    QSize minimumSizeHint () const;
 
-  /// MDI view mode enum
-  enum ViewMode {
-    Normal,     /**< Normal viewing, view is docked inside the MDI application window */  
-    TopLevel,   /**< The view becomes a top level window and can be moved outsinde the application window */  
-    FullScreen  /**< The view goes to full screen viewing */
-  };
-  /**
-   * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
-   * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
-   * as tabbed window. For more hints refer to the Qt documentation to
-   * QWidget::showFullScreen ().
-   */
-  virtual void setCurrentViewMode( ViewMode b );
-  ViewMode currentViewMode() const { return _actualMode; }
+    /// MDI view mode enum
+    enum ViewMode {
+        Child,      /**< Child viewing, view is docked inside the MDI application window */  
+        TopLevel,   /**< The view becomes a top level window and can be moved outsinde the application window */  
+        FullScreen  /**< The view goes to full screen viewing */
+    };
+    /**
+     * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
+     * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
+     * as tabbed window. For more hints refer to the Qt documentation to
+     * QWidget::showFullScreen ().
+     */
+    virtual void setCurrentViewMode( ViewMode b );
+    ViewMode currentViewMode() const { return currentMode; }
 
 Q_SIGNALS:
-  void message(const QString&, int );
+    void message(const QString&, int );
 
 public Q_SLOTS:
-  void setActiveView();
+    void setActiveView();
 
 protected Q_SLOTS:
-  virtual void showActiveView( MDIView* );
+    virtual void showActiveView( MDIView* );
 
 protected:
-  void windowActivationChange( bool oldActive );
-  void closeEvent    ( QCloseEvent *e );
-  /** \internal */
-  void changeEvent( QEvent *e );
+    void closeEvent    ( QCloseEvent *e );
+    /** \internal */
+    void changeEvent( QEvent *e );
 
-  ViewMode _actualMode;
+    ViewMode currentMode;
 };
 
 } // namespace Gui

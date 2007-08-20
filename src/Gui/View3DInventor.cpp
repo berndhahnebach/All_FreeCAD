@@ -91,7 +91,7 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
 
   // check whether the simple or the Full Mouse model is used
-  _viewer->setMouseModel(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View/MouseModel")->GetInt("currentItem",1));
+  _viewer->setMouseModel(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetInt("MouseModel",1));
  
   // Do not show the Inventor viewer here because it flickers when we change its size
   //_viewer->show();
@@ -586,23 +586,23 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 
 void View3DInventor::setCurrentViewMode( ViewMode b )
 {
-  ViewMode curmode = _actualMode;
+  ViewMode curmode = this->currentMode;
   MDIView::setCurrentViewMode( b );
 
   // This widget becomes the focus proxy of the embedded GL widget.if we leave 
-  // the 'Normal' mode. If we reenter 'Normal' mode the focus proxy is reset to 0.
+  // the 'Child' mode. If we reenter 'Child' mode the focus proxy is reset to 0.
   // If we change from 'TopLevel' mode to 'Fullscreen' mode or vice versa nothing
   // happens.
-  // Grabbing keyboard when leaving 'Normal' mode (as done in a recent version) should
+  // Grabbing keyboard when leaving 'Child' mode (as done in a recent version) should
   // be avoided because when two or more windows are either in 'TopLevel' or 'Fullscreen'
   // mode only the last window gets all key event even if it is not the active one.
   //
   // It is important to set the focus proxy to get all key events otherwise we would loose
   // control after redirecting the first key event to the GL widget.
   // We redirect these events in keyPressEvent() and keyReleaseEvent().
-  if ( curmode == Normal ) {
+  if ( curmode == Child ) {
     _viewer->getGLWidget()->setFocusProxy(this);
-  } else if ( b == Normal ) {
+  } else if ( b == Child ) {
     _viewer->getGLWidget()->setFocusProxy(0);
   }
 }
@@ -612,7 +612,7 @@ bool View3DInventor::eventFilter(QObject* o, QEvent* e)
   // As long as this widget is a top-level widget (either 'TopLevel' or 'Fullscrenn' mode) we 
   // redirect any accel event to the main window that handles such events.
   // In case the event isn't handled by any widget we receive it again as a key event.
-  if ( _actualMode != Normal && o == this && e->type() == QEvent::Shortcut ) {
+  if ( this->currentMode != Child && o == this && e->type() == QEvent::Shortcut ) {
     QApplication::sendEvent(getMainWindow(),e);
     return true;
   } else {
@@ -622,13 +622,13 @@ bool View3DInventor::eventFilter(QObject* o, QEvent* e)
 
 void View3DInventor::keyPressEvent ( QKeyEvent* e )
 {
-  if ( _actualMode != Normal )
+  if ( this->currentMode != Child )
   {
     // If the widget is in fullscreen mode then we can return to normal mode either
     // by pressing the matching accelerator or ESC. 
     if ( e->key() == Qt::Key_Escape )
     {
-      setCurrentViewMode(Normal);
+      setCurrentViewMode(Child);
     }
     else
     {
@@ -648,7 +648,7 @@ void View3DInventor::keyPressEvent ( QKeyEvent* e )
 
 void View3DInventor::keyReleaseEvent ( QKeyEvent* e )
 {
-  if ( _actualMode != Normal )
+  if ( this->currentMode != Child )
   {
     // send the event to the GL widget that converts to and handles an SoEvent
     QWidget* w = _viewer->getGLWidget();

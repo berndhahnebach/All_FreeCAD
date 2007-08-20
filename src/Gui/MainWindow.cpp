@@ -601,8 +601,8 @@ void MainWindow::closeEvent ( QCloseEvent * e )
     for ( int i = 0; i < d->tabs->count(); i++ )
     {
       MDIView* view = qobject_cast<MDIView*>(d->tabs->tabData(i).value<QWidget*>());
-      if ( view->currentViewMode() != MDIView::Normal )
-        view ->setCurrentViewMode(MDIView::Normal);
+      if ( view->currentViewMode() != MDIView::Child )
+        view ->setCurrentViewMode(MDIView::Child);
     }
 
     d->activityTimer->stop();

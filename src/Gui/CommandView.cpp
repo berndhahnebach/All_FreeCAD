@@ -365,7 +365,7 @@ void StdCmdFreezeViews::languageChange()
   ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
   QList<QAction*> acts = pcAction->actions();
   acts[0]->setText(QObject::tr("Save views..."));
-  acts[1]->setText(QObject::tr("Restore views..."));
+  acts[1]->setText(QObject::tr("Load views..."));
   acts[3]->setText(QObject::tr("Freeze view"));
   acts[4]->setText(QObject::tr("Clear views"));
   int index=1;
@@ -730,7 +730,7 @@ void StdViewDockUndockFullscreen::activated(int iMsg)
 
   if (iMsg==0)
   {
-    view->setCurrentViewMode( MDIView::Normal );
+    view->setCurrentViewMode( MDIView::Child );
   }
   else if (iMsg==1)
   {
