@@ -265,16 +265,6 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
     }
     actionAccel->clear();
 
-    // check whether the macro is already in use
-    Action* action = macro->getAction();
-    if (action)
-    {
-        // does all the text related stuff
-        if (macro->getPixmap())
-            action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
-        action->setShortcut(macro->getAccel());
-    }
-
     // emit signal to notify the container widget
     addMacroAction(actionName);
 }
@@ -339,6 +329,10 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     if (action)
     {
         // does all the text related stuff
+        action->setText(QString::fromUtf8(macro->getMenuText()));
+        action->setToolTip(QString::fromUtf8(macro->getToolTipText()));
+        action->setWhatsThis(QString::fromUtf8(macro->getWhatsThis()));
+        action->setStatusTip(QString::fromUtf8(macro->getStatusTip()));
         if( macro->getPixmap() )
             action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
         action->setShortcut(macro->getAccel());
