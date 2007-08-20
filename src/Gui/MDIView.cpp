@@ -44,7 +44,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::MDIView,Gui::BaseView);
 
 
 MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, Qt::WFlags wflags )
-  : QMainWindow(parent, wflags), BaseView(pcDocument),_actualMode(Normal)
+  : QMainWindow(parent, wflags), BaseView(pcDocument),currentMode(Child)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 }
@@ -116,7 +116,7 @@ void MDIView::closeEvent(QCloseEvent *e)
 
 void MDIView::setActiveView()
 {
-  Application::Instance->viewActivated(this);
+    Application::Instance->viewActivated(this);
 }
 
 void MDIView::showActiveView( MDIView* )
@@ -125,119 +125,102 @@ void MDIView::showActiveView( MDIView* )
 
 void MDIView::print()
 {
-  // print command specified but print method not overriden!
-  assert(0);
+    // print command specified but print method not overriden!
+    assert(0);
 }
 
 void MDIView::printPdf()
 {
-  // print command specified but print method not overriden!
-  assert(0);
+    // print command specified but print method not overriden!
+    assert(0);
 }
 
 QSize MDIView::minimumSizeHint () const
 {
-  return QSize(400, 300);
+    return QSize(400, 300);
 }
 
-/**
- * Reimplemented from QWidget.
- * Forces this window to be the active view of the main window.
- */
-void MDIView::windowActivationChange ( bool oldActive )
+void MDIView::changeEvent( QEvent *e )
 {
-  QMainWindow::windowActivationChange(oldActive);
-  if ( isActiveWindow() ) {
-    if ( getMainWindow()->activeWindow() != this )
-      getMainWindow()->setActiveWindow( this );
-  }
+    switch (e->type()) {
+        case QEvent::ActivationChange:
+            {
+                // Forces this window to be the active view of the main window.
+                if (isActiveWindow()) {
+                    if (getMainWindow()->activeWindow() != this)
+                        getMainWindow()->setActiveWindow(this);
+                }
+            }   break;
+        case QEvent::WindowTitleChange:
+        case QEvent::ModifiedChange:
+            {
+                // sets the appropriate tab of the tabbar
+                getMainWindow()->tabChanged( this );
+            }   break;
+        default:
+            {
+                QMainWindow::changeEvent(e);
+            }   break;
+    }
 }
 
-void MDIView::setCurrentViewMode( ViewMode b )
+void MDIView::setCurrentViewMode(ViewMode mode)
 {
-#if 0
-  // set fullscreen mode
-  if ( b == Normal )
-  {
-    if(_actualMode == FullScreen)
-    {
-      showNormal();
-      //TODO setWindowFlags()
-      setWindowFlags( windowFlags() & ~Qt::WType_TopLevel );
-      //clearWFlags ( Qt::WType_TopLevel );
-      getMainWindow()->addWindow( this );
-    }else if(_actualMode == TopLevel)
-    {/*
-      WFlags f = getWFlags();
-      setWFlags( f | WType_TopLevel );
-    reparent( 0, WType_TopLevel | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize |
-	      // preserve some widget flags
-	      (getWFlags() & 0xffff0000),
-	      mapToGlobal( QPoint( 0, 0) ));
-    const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
-    //move( screen.topLeft() );
-    //resize( screen.size() );
-    raise();
-    show();
-    QEvent e( QEvent::ShowNormal );
-    QApplication::sendEvent( this, &e );
+    switch (mode) {
+        // go to normal mode
+        case Child:
+            {
+                if (this->currentMode == FullScreen) {
+                    showNormal();
+                    setWindowFlags(windowFlags() & ~Qt::Window);
+                    getMainWindow()->addWindow(this);
+                } else if (this->currentMode == TopLevel) {
+                    setWindowFlags( windowFlags() & ~Qt::Window );
+                    getMainWindow()->addWindow(this);
+                }
+
+                this->currentMode = Child;
+                update();
+            }   break;
+        // go to top-level mode
+        case TopLevel:
+            {
+                if (this->currentMode == Child) {
+                    setWindowFlags(windowFlags() | Qt::Window);
+                    setParent(0, Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | 
+                                 Qt::WindowMinMaxButtonsHint);
+                    show();
+
 #if defined(Q_WS_X11)
-    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
-    qt_wait_for_window_manager( this );
+                    extern void qt_x11_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+                    qt_x11_wait_for_window_manager(this);
 #endif
-
-    setActiveWindow();*/
-      //TODO setWindowFlags()
-      setWindowFlags( windowFlags() & ~Qt::WType_TopLevel );
-      //clearWFlags ( Qt::WType_TopLevel );
-      getMainWindow()->addWindow( this );
+                    activateWindow();
+                } else if (this->currentMode == FullScreen) {
+                    showNormal();
+                }
+            
+                this->currentMode = TopLevel;
+                update();
+            }   break;
+        // go to fullscreen mode
+        case FullScreen:
+            {
+                if (this->currentMode == Child) {
+                    setWindowFlags(windowFlags() | Qt::Window);
+                    setParent(0, Qt::Window);
+                    showFullScreen();
+                } else if (this->currentMode == TopLevel) {
+                    showFullScreen();
+                }
+                
+                this->currentMode = FullScreen;
+                update();
+            }   break;
     }
-    _actualMode = Normal;
-    update();
-  }else if ( b == FullScreen ){
-    if(_actualMode == Normal)
-    {
-      setWindowFlags( windowFlags() | Qt::WType_TopLevel );
-      showFullScreen();
-    }else if(_actualMode == TopLevel)
-    {
-      showFullScreen();
-    }
-    _actualMode = FullScreen;
-    update();
-  }else if ( b == TopLevel ){
-    if(_actualMode == FullScreen)
-    {
-      showNormal();
-    }else if(_actualMode == Normal)
-    {
-      setWindowFlags( windowFlags() | Qt::WType_TopLevel );
-    reparent( 0, Qt::WType_TopLevel | Qt::WStyle_Customize | Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu | Qt::WStyle_Minimize | Qt::WStyle_Maximize |
-	      // preserve some widget flags
-	      (windowFlags() & 0xffff0000),
-	      mapToGlobal( QPoint( 0, 0) ));
-    //const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
-    //move( screen.topLeft() );
-    //resize( screen.size() );
-    raise();
-    show();
-    //TODO What kind of event is this now? Try QEvent::Show
-    QEvent e( QEvent::Show );
-    //QEvent e( QEvent::ShowNormal );
-    QApplication::sendEvent( this, &e );
-//#if defined(Q_WS_X11)
-//    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
-//    qt_wait_for_window_manager( this );
-//#endif
-
-    setActiveWindow();
-    }
-    _actualMode = TopLevel;
-    update();
-  }
-
+#if 0
   /*
-  if ( b = Normal )
+  if ( b == Normal )
   {
     WFlags f = getWFlags();
     setWFlags( f | WType_TopLevel );
@@ -255,22 +238,6 @@ void MDIView::setCurrentViewMode( ViewMode b )
   }
   */
 #endif
-}
-
-void MDIView::changeEvent( QEvent *e )
-{
-    switch (e->type()) {
-        case QEvent::WindowTitleChange:
-        case QEvent::ModifiedChange:
-            {
-                // sets the appropriate tab of the tabbar
-                getMainWindow()->tabChanged( this );
-            }   break;
-        default:
-            {
-                QMainWindow::changeEvent(e);
-            }   break;
-    }
 }
 
 #include "moc_MDIView.cpp"
