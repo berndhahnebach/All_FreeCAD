@@ -78,6 +78,10 @@ public:
   App::PropertyInteger  ExceptionType;
   App::PropertyInteger  ExecCount;
   
+  App::PropertyInteger   TypeHidden;
+  App::PropertyInteger   TypeReadOnly;
+  App::PropertyInteger   TypeOutput;
+  App::PropertyInteger   TypeAll;
   
   /** @name methods overide Feature */
   //@{

@@ -76,6 +76,13 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY_TYPE(ExecResult    ,("empty"),group,Prop_None);
   ADD_PROPERTY_TYPE(ExceptionType ,(0),group,Prop_None);
   ADD_PROPERTY_TYPE(ExecCount     ,(0),group,Prop_None);
+  
+  // properties with types
+  ADD_PROPERTY_TYPE(TypeHidden  ,(4711),group,Prop_Hidden  );
+  ADD_PROPERTY_TYPE(TypeReadOnly,(4711),group,Prop_ReadOnly  );
+  ADD_PROPERTY_TYPE(TypeOutput  ,(4711),group,Prop_Output  );
+  ADD_PROPERTY_TYPE(TypeAll     ,(4711),group,(App::PropertyType) (Prop_Output|Prop_ReadOnly |Prop_Hidden ));
+ 
 }
 
 

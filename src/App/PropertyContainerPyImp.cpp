@@ -28,6 +28,10 @@ PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)
 
   if(Type & Prop_Hidden) 
     ret.append(Py::String("Hidden"));
+  if(Type & Prop_ReadOnly) 
+    ret.append(Py::String("ReadOnly"));
+  if(Type & Prop_Output) 
+    ret.append(Py::String("Output"));
 
   return Py::new_reference_to(ret);
 }
