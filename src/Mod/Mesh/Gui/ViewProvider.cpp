@@ -63,6 +63,7 @@
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
+#include <Mod/Mesh/App/Core/Triangulation.h>
 #include <Mod/Mesh/App/Core/Visitor.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>

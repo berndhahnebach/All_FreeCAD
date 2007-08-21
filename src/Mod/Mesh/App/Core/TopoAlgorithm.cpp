@@ -35,8 +35,8 @@
 #include "MeshKernel.h"
 #include "Algorithm.h"
 #include "Evaluation.h"
-#include "triangle.h"
-
+#include "Triangulation.h"
+#include <Base/Console.h>
 
 using namespace MeshCore;
 
@@ -977,68 +977,6 @@ void MeshTopoAlgorithm::RemoveCorruptedFacet(unsigned long index)
   }
 }
 
-void MeshTopoAlgorithm::SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders )
-{
-  // Count the number of open edges for each point
-  std::map<unsigned long, int> openPointDegree;
-  for ( MeshFacetArray::_TConstIterator jt = _rclMesh._aclFacetArray.begin(); jt != _rclMesh._aclFacetArray.end(); ++jt ) 
-  {
-    for ( int i=0; i<3; i++ ) {
-      if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
-        openPointDegree[jt->_aulPoints[i]]++;
-        openPointDegree[jt->_aulPoints[(i+1)%3]]++;
-      }
-    }
-  }
-
-  // go through all boundaries and split them if needed
-  std::list<std::vector<unsigned long> > aSplitBorders;
-  for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
-  {
-    bool split=false;
-    for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
-    {
-      // two (ore more) boundaries meet in one non-manifold point
-      if ( openPointDegree[*jt] > 2) {
-        split = true;
-        break;
-      }
-    }
-
-    if ( !split )
-      aSplitBorders.push_back( *it );
-    else
-      SplitBoundaryLoops( *it, aSplitBorders );
-  }
-
-  aBorders = aSplitBorders;
-}
-
-void MeshTopoAlgorithm::SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders )
-{
-  std::map<unsigned long, int> aPtDegree;
-  std::vector<unsigned long> cBound;
-  for ( std::vector<unsigned long>::const_iterator it = rBound.begin(); it != rBound.end(); ++it )
-  {
-    int deg = (aPtDegree[*it]++);
-    if ( deg > 0 ) {
-      for ( std::vector<unsigned long>::iterator jt = cBound.begin(); jt != cBound.end(); ++jt ) {
-        if ( *jt == *it ) {
-          std::vector<unsigned long> cBoundLoop;
-          cBoundLoop.insert(cBoundLoop.end(), jt, cBound.end());
-          cBoundLoop.push_back( *it );
-          cBound.erase(jt, cBound.end());
-          aBorders.push_back( cBoundLoop );
-          (aPtDegree[*it]--);
-          break;
-        }
-      }
-    }
-
-    cBound.push_back( *it );
-  }
-}
-
 void MeshTopoAlgorithm::FillupHoles(unsigned long length)
 {
   // get the mesh boundaries as an array of point indices
@@ -1047,7 +985,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
   cAlgo.GetMeshBorders(aBorders);
 
   // split boundaries if needed
-  SplitBoundaryLoops(aBorders);
+  cAlgo.SplitBoundaryLoops(aBorders);
 
   // get the facets to a point
   MeshRefPointToFacets cPt2Fac(_rclMesh);
@@ -1075,7 +1013,8 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
       cTria.SetPolygon( polygon );
       // Get the plane normal as result of the fit. The normal might be flipped so we adjust it to
       // a reference triangle (which might have quite the same normal)
-      Base::Vector3f cPlaneNormal = cTria.TransformToFitPlane();
+      Base::Matrix4D matrix;
+      Base::Vector3f cPlaneNormal = cTria.TransformToFitPlane(matrix);
       if ( rTriangle.GetNormal() * cPlaneNormal < 0.0f )
         cPlaneNormal *= -1.0f;
       if ( cTria.ComputeQuasiDelaunay() )
@@ -1089,10 +1028,10 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
             triangle._aclPoints[0] = polygon[kt->_aulPoints[0]];
             triangle._aclPoints[1] = polygon[kt->_aulPoints[1]];
             triangle._aclPoints[2] = polygon[kt->_aulPoints[2]];
-            // do not any of these triangles
+            // do not use any of these triangles
             if ( triangle.GetNormal() * cPlaneNormal <= 0.0f )
               break;
-            // Special case handling for a hole with tree edges: the resulting facet might be coincident with the 
+            // Special case handling for a hole with three edges: the resulting facet might be coincident with the 
             // reference facet
             else if (faces.size()==1){
               MeshFacet first;
@@ -1113,7 +1052,55 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
     }
   }
 
-  _rclMesh.AddFacet(newFacets);
+  _rclMesh.AddFacets(newFacets);
+}
+
+void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea)
+{
+    // get the mesh boundaries as an array of point indices
+    std::list<std::vector<unsigned long> > aBorders;
+    MeshAlgorithm cAlgo(_rclMesh);
+    cAlgo.GetMeshBorders(aBorders);
+
+    // split boundary loops if needed
+    cAlgo.SplitBoundaryLoops(aBorders);
+
+    // get the facets to a point
+    MeshRefPointToFacets cPt2Fac(_rclMesh);
+
+    MeshFacetArray newFacets;
+    MeshPointArray newPoints;
+    unsigned long numberOfOldPoints = _rclMesh._aclPointArray.size();
+    for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it ) {
+        if ( it->size()-1 > length )
+            continue; // boundary with too many edges
+        MeshFacetArray cFacets;
+        MeshPointArray cPoints;
+        if (cAlgo.FillupHole(*it, fMaxArea, cFacets, cPoints, &cPt2Fac)) {
+            if (it->front() == it->back())
+                it->pop_back();
+            // the triangulation may produce additional points which we must take into account when appending to the mesh
+            unsigned long countBoundaryPoints = it->size();
+            unsigned long countDifference = cPoints.size() - countBoundaryPoints;
+            if (countDifference > 0) {
+                MeshPointArray::_TIterator pt = cPoints.begin() + countBoundaryPoints;
+                for (unsigned long i=0; i<countDifference; i++, pt++) {
+                    it->push_back(numberOfOldPoints++);
+                    newPoints.push_back(*pt);
+                }
+            }
+            for (MeshFacetArray::_TIterator kt = cFacets.begin(); kt != cFacets.end(); ++kt ) {
+                kt->_aulPoints[0] = (*it)[kt->_aulPoints[0]];
+                kt->_aulPoints[1] = (*it)[kt->_aulPoints[1]];
+                kt->_aulPoints[2] = (*it)[kt->_aulPoints[2]];
+                newFacets.push_back(*kt);
+            }
+        }
+    }
+
+    // insert new points and faces into the mesh structure
+    _rclMesh._aclPointArray.insert(_rclMesh._aclPointArray.end(), newPoints.begin(), newPoints.end());
+    _rclMesh.AddFacets(newFacets);
 }
 
 void MeshTopoAlgorithm::RemoveComponents(unsigned long count)

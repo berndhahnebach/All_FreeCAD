@@ -34,8 +34,9 @@
 #include "Elements.h"
 #include "Iterator.h"
 #include "Grid.h"
-#include "triangle.h"
+#include "Triangulation.h"
 
+#include <Base/Console.h>
 #include <Base/Sequencer.h>
 
 using namespace MeshCore;
@@ -494,6 +495,277 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
       }
     }
   }
+}
+
+void MeshAlgorithm::GetMeshBorder(unsigned long uFacet, std::list<unsigned long>& rBorder) const
+{
+    const MeshFacetArray &rFAry = _rclMesh._aclFacetArray;
+    std::list<std::pair<unsigned long, unsigned long> >  openEdges;
+    if (uFacet >= rFAry.size())
+        return;
+    // add the open edge to the beginning of the list
+    MeshFacetArray::_TConstIterator face = rFAry.begin() + uFacet;
+    for (int i = 0; i < 3; i++)
+    {
+        if (face->_aulNeighbours[i] == ULONG_MAX)
+            openEdges.push_back(face->GetEdge(i));
+    }
+
+    if (openEdges.empty())
+        return; // facet is not a border facet
+    
+    for (MeshFacetArray::_TConstIterator it = rFAry.begin(); it != rFAry.end(); ++it)
+    {
+        if (it == face)
+            continue;
+        for (int i = 0; i < 3; i++)
+        {
+            if (it->_aulNeighbours[i] == ULONG_MAX)
+                openEdges.push_back(it->GetEdge(i));
+        }
+    }
+
+    // Start with the edge that is associated to uFacet
+    unsigned long ulFirst = openEdges.begin()->first;
+    unsigned long ulLast  = openEdges.begin()->second;
+
+    openEdges.erase(openEdges.begin());
+    rBorder.push_back(ulFirst);
+    rBorder.push_back(ulLast);
+
+    while (ulLast != ulFirst)
+    {
+        // find adjacent edge
+        std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
+        for (pEI = openEdges.begin(); pEI != openEdges.end(); pEI++)
+        {
+            if (pEI->first == ulLast)
+            {
+                ulLast = pEI->second;
+                rBorder.push_back(ulLast);
+                openEdges.erase(pEI);
+                break;
+            }
+            else if (pEI->second == ulFirst)
+            {
+                ulFirst = pEI->first;
+                rBorder.push_front(ulFirst);
+                openEdges.erase(pEI);
+                break;
+            }
+        }
+
+        // cannot close the border
+        if (pEI == openEdges.end())
+            break;
+    }
+}
+
+void MeshAlgorithm::SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders )
+{
+  // Count the number of open edges for each point
+  std::map<unsigned long, int> openPointDegree;
+  for ( MeshFacetArray::_TConstIterator jt = _rclMesh._aclFacetArray.begin(); jt != _rclMesh._aclFacetArray.end(); ++jt ) 
+  {
+    for ( int i=0; i<3; i++ ) {
+      if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
+        openPointDegree[jt->_aulPoints[i]]++;
+        openPointDegree[jt->_aulPoints[(i+1)%3]]++;
+      }
+    }
+  }
+
+  // go through all boundaries and split them if needed
+  std::list<std::vector<unsigned long> > aSplitBorders;
+  for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
+  {
+    bool split=false;
+    for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
+    {
+      // two (ore more) boundaries meet in one non-manifold point
+      if ( openPointDegree[*jt] > 2) {
+        split = true;
+        break;
+      }
+    }
+
+    if ( !split )
+      aSplitBorders.push_back( *it );
+    else
+      SplitBoundaryLoops( *it, aSplitBorders );
+  }
+
+  aBorders = aSplitBorders;
+}
+
+void MeshAlgorithm::SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders )
+{
+  std::map<unsigned long, int> aPtDegree;
+  std::vector<unsigned long> cBound;
+  for ( std::vector<unsigned long>::const_iterator it = rBound.begin(); it != rBound.end(); ++it )
+  {
+    int deg = (aPtDegree[*it]++);
+    if ( deg > 0 ) {
+      for ( std::vector<unsigned long>::iterator jt = cBound.begin(); jt != cBound.end(); ++jt ) {
+        if ( *jt == *it ) {
+          std::vector<unsigned long> cBoundLoop;
+          cBoundLoop.insert(cBoundLoop.end(), jt, cBound.end());
+          cBoundLoop.push_back( *it );
+          cBound.erase(jt, cBound.end());
+          aBorders.push_back( cBoundLoop );
+          (aPtDegree[*it]--);
+          break;
+        }
+      }
+    }
+
+    cBound.push_back( *it );
+  }
+}
+
+bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, 
+                               MeshPointArray& rPoints, const MeshRefPointToFacets* pP2FStructure) const
+{
+    // first and last vertex are identical
+    if ( boundary.size() < 4 )
+        return false; // something strange
+
+    // Get a facet as reference coordinate system
+    MeshGeomFacet rTriangle;
+    MeshFacet rFace;
+    unsigned long refPoint0 = *(boundary.begin());
+    unsigned long refPoint1 = *(boundary.begin()+1);
+    if (pP2FStructure) {
+        std::set<MeshFacetArray::_TConstIterator> ring = (*pP2FStructure)[refPoint0];
+        bool found = false;
+        for (std::set<MeshFacetArray::_TConstIterator>::iterator it = ring.begin(); it != ring.end() && !found; ++it) {
+            for (int i=0; i<3; i++) {
+                if ((*it)->_aulPoints[i] == refPoint1) {
+                    rFace = **it;
+                    rTriangle = _rclMesh.GetFacet(rFace);
+                    found = true;
+                    break;
+                }
+            }
+        }
+    } else {
+        bool ready = false;
+        for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); ++it) {
+            for (int i=0; i<3; i++) {
+                if ((it->_aulPoints[i] == refPoint0) && (it->_aulPoints[(i+1)%3] == refPoint1)) {
+                    rFace = *it;
+                    rTriangle = _rclMesh.GetFacet(*it);
+                    ready = true;
+                    break;
+                }
+            }
+
+            if (ready)
+                break;
+        }
+    }
+
+    // add points to the polygon
+    std::vector<Base::Vector3f> polygon;
+    for ( std::vector<unsigned long>::const_iterator jt = boundary.begin(); jt != boundary.end(); ++jt ) {
+        polygon.push_back( _rclMesh._aclPointArray[*jt] );
+        rPoints.push_back( _rclMesh._aclPointArray[*jt] );
+    }
+
+    // remove the last added point if it is duplicated
+    if (boundary.front() == boundary.back())
+        rPoints.pop_back();
+
+    // There is no easy way to check whether the boundary is interior (a hole) or a exterior before performing the triangulation.
+    // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
+    // If the scalar product is positive it was a hole, otherwise not.
+    MeshPolygonTriangulation cTria;
+    cTria.SetPolygon( polygon );
+
+    // Get the inverse transformation to project back to world coordinates
+    Base::Matrix4D inverse;
+    cTria.TransformToFitPlane(inverse);
+
+    std::vector<Base::Vector3f> newVertices;
+    if ( cTria.ComputeConstrainedDelaunay(fMaxArea, newVertices) ) {
+        // get te facets and add the additional points to the array
+        rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
+        for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt) {
+            rPoints.push_back(inverse * (*pt));
+        }
+
+        // Unfortunately, the CDT algorithm does not care about the orientation of the polygon so we cannot rely on the normal
+        // criterion to decide whether it's a hole or not.
+        //
+        std::vector<MeshFacet> faces = cTria.GetFacets();
+        
+        // Special case handling for a hole with three edges: the resulting facet might be coincident with the 
+        // reference facet
+        if (faces.size()==1){
+            MeshFacet first;
+            first._aulPoints[0] = boundary[faces.front()._aulPoints[0]];
+            first._aulPoints[1] = boundary[faces.front()._aulPoints[1]];
+            first._aulPoints[2] = boundary[faces.front()._aulPoints[2]];
+            if ( first.IsEqual(rFace) ) {
+                rFaces.clear();
+                rPoints.clear();
+                return false;
+            }
+        }
+
+        // Get the new neighbour to our reference facet
+        MeshFacet facet;
+        unsigned short ref_side = rFace.Side(refPoint0, refPoint1);
+        unsigned short tri_side = USHRT_MAX;
+        if (ref_side < USHRT_MAX) {
+            for (std::vector<MeshFacet>::iterator it = faces.begin(); it != faces.end(); ++it) {
+                tri_side = it->Side(0, 1);
+                if (tri_side < USHRT_MAX) {
+                    facet = *it;
+                    break;
+                }
+            }
+        }
+
+        // in case the reference facet has not an open edge print a log message 
+        if (ref_side == USHRT_MAX || tri_side == USHRT_MAX) {
+            Base::Console().Log("MeshAlgorithm::FillupHole: Expected open edge for facet <%d, %d, %d>\n", 
+                rFace._aulPoints[0], rFace._aulPoints[1], rFace._aulPoints[2]);
+            rFaces.clear();
+            rPoints.clear();
+            return false;
+        }
+
+        MeshGeomFacet triangle;
+        triangle._aclPoints[0] = rPoints[facet._aulPoints[0]];
+        triangle._aclPoints[1] = rPoints[facet._aulPoints[1]];
+        triangle._aclPoints[2] = rPoints[facet._aulPoints[2]];
+
+        // Now we have two adjacent triangles which we check for overlaps.
+        // Therefore we build a separation plane that must separate the two diametrically opposed points.
+        Base::Vector3f planeNormal = rTriangle.GetNormal() % (rTriangle._aclPoints[(ref_side+1)%3]-rTriangle._aclPoints[ref_side]);
+        Base::Vector3f planeBase = rTriangle._aclPoints[ref_side];
+        Base::Vector3f ref_point = rTriangle._aclPoints[(ref_side+2)%3];
+        Base::Vector3f tri_point = triangle._aclPoints[(tri_side+2)%3];
+
+        float ref_dist = (ref_point - planeBase) * planeNormal;
+        float tri_dist = (tri_point - planeBase) * planeNormal;
+        if (ref_dist * tri_dist > 0.0f) {
+            rFaces.clear();
+            rPoints.clear();
+            return false;
+        }
+
+        // we know to have filled a polygon, now check for the orientation
+        if ( triangle.GetNormal() * rTriangle.GetNormal() <= 0.0f ) {
+            for (MeshFacetArray::_TIterator it = rFaces.begin(); it != rFaces.end(); ++it)
+                it->FlipNormal();
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 void MeshAlgorithm::SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps) const
@@ -1540,375 +1812,4 @@ void MeshRefPointToPoints::Rebuild (void)
     operator[](ulP2).insert(pBegin + ulP0);
     operator[](ulP2).insert(pBegin + ulP1);
   }
-}
-
-//----------------------------------------------------------------------------
-
-float MeshPolygonTriangulation::Triangulate::Area(const std::vector<Base::Vector3f> &contour)
-{
-  int n = contour.size();
-
-  float A=0.0f;
-
-  for(int p=n-1,q=0; q<n; p=q++)
-  {
-    A+= contour[p].x*contour[q].y - contour[q].x*contour[p].y;
-  }
-  return A*0.5f;
-}
-
-/*
-  InsideTriangle decides if a point P is Inside of the triangle
-  defined by A, B, C.
-*/
-bool MeshPolygonTriangulation::Triangulate::InsideTriangle(float Ax, float Ay, float Bx, float By, float Cx, float Cy, float Px, float Py)
-{
-  float ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
-  float cCROSSap, bCROSScp, aCROSSbp;
-
-  ax = Cx - Bx;  ay = Cy - By;
-  bx = Ax - Cx;  by = Ay - Cy;
-  cx = Bx - Ax;  cy = By - Ay;
-  apx= Px - Ax;  apy= Py - Ay;
-  bpx= Px - Bx;  bpy= Py - By;
-  cpx= Px - Cx;  cpy= Py - Cy;
-
-  aCROSSbp = ax*bpy - ay*bpx;
-  cCROSSap = cx*apy - cy*apx;
-  bCROSScp = bx*cpy - by*cpx;
-
-  return ((aCROSSbp >= FLOAT_EPS) && (bCROSScp >= FLOAT_EPS) && (cCROSSap >= FLOAT_EPS));
-}
-
-bool MeshPolygonTriangulation::Triangulate::Snip(const std::vector<Base::Vector3f> &contour,int u,int v,int w,int n,int *V)
-{
-  int p;
-  float Ax, Ay, Bx, By, Cx, Cy, Px, Py;
-
-  Ax = contour[V[u]].x;
-  Ay = contour[V[u]].y;
-
-  Bx = contour[V[v]].x;
-  By = contour[V[v]].y;
-
-  Cx = contour[V[w]].x;
-  Cy = contour[V[w]].y;
-
-  if ( FLOAT_EPS > (((Bx-Ax)*(Cy-Ay)) - ((By-Ay)*(Cx-Ax))) ) return false;
-
-  for (p=0;p<n;p++)
-  {
-    if( (p == u) || (p == v) || (p == w) ) continue;
-    Px = contour[V[p]].x;
-    Py = contour[V[p]].y;
-    if (InsideTriangle(Ax,Ay,Bx,By,Cx,Cy,Px,Py)) return false;
-  }
-
-  return true;
-}
-
-bool MeshPolygonTriangulation::Triangulate::_invert = false;
-
-bool MeshPolygonTriangulation::Triangulate::Process(const std::vector<Base::Vector3f> &contour, std::vector<unsigned long> &result)
-{
-  /* allocate and initialize list of Vertices in polygon */
-
-  int n = contour.size();
-  if ( n < 3 ) return false;
-
-  int *V = new int[n];
-
-  /* we want a counter-clockwise polygon in V */
-
-  if ( 0.0f < Area(contour) )
-  {
-    for (int v=0; v<n; v++) V[v] = v;
-    _invert = true;
-  }
-//    for(int v=0; v<n; v++) V[v] = (n-1)-v;
-  else
-  {
-    for(int v=0; v<n; v++) V[v] = (n-1)-v;
-    _invert = false;
-  }
-
-  int nv = n;
-
-  /*  remove nv-2 Vertices, creating 1 triangle every time */
-  int count = 2*nv;   /* error detection */
-
-  for(int m=0, v=nv-1; nv>2; )
-  {
-    /* if we loop, it is probably a non-simple polygon */
-    if (0 >= (count--))
-    {
-      //** Triangulate: ERROR - probable bad polygon!
-      return false;
-    }
-
-    /* three consecutive vertices in current polygon, <u,v,w> */
-    int u = v  ; if (nv <= u) u = 0;     /* previous */
-    v = u+1; if (nv <= v) v = 0;     /* new v    */
-    int w = v+1; if (nv <= w) w = 0;     /* next     */
-
-    if ( Snip(contour,u,v,w,nv,V) )
-    {
-      int a,b,c,s,t;
-
-      /* true names of the vertices */
-      a = V[u]; b = V[v]; c = V[w];
-
-      /* output Triangle */
-      result.push_back( a );
-      result.push_back( b );
-      result.push_back( c );
-
-      m++;
-
-      /* remove v from remaining polygon */
-      for(s=v,t=v+1;t<nv;s++,t++) V[s] = V[t]; nv--;
-
-      /* resest error detection counter */
-      count = 2*nv;
-    }
-  }
-
-  delete V;
-
-  return true;
-}
-
-MeshPolygonTriangulation::MeshPolygonTriangulation()
-{
-}
-
-MeshPolygonTriangulation::MeshPolygonTriangulation(const std::vector<Base::Vector3f>& raclPoints)
-  : _aclPoints(raclPoints)
-{
-}
-
-MeshPolygonTriangulation::~MeshPolygonTriangulation()
-{
-}
-
-bool MeshPolygonTriangulation::Compute()
-{
-  _aclFacets.clear();
-  _aclTriangles.clear();
-
-  std::vector<Base::Vector3f> pts;
-  std::vector<unsigned long> result;
-  for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it != _aclPoints.end(); ++it)
-  {
-    pts.push_back(*it);
-  }
-
-  //  Invoke the triangulator to triangulate this polygon.
-  Triangulate::Process(pts,result);
-
-  // print out the results.
-  unsigned long tcount = result.size()/3;
-
-  bool ok = tcount+2 == _aclPoints.size();
-  if  ( tcount > _aclPoints.size() )
-    return false; // no valid triangulation
-
-  MeshGeomFacet clFacet;
-  MeshFacet clTopFacet;
-  for (unsigned long i=0; i<tcount; i++)
-  {
-    if ( Triangulate::_invert )
-    {
-      clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
-      clFacet._aclPoints[2] = _aclPoints[result[i*3+1]];
-      clFacet._aclPoints[1] = _aclPoints[result[i*3+2]];
-      clTopFacet._aulPoints[0] = result[i*3+0];
-      clTopFacet._aulPoints[2] = result[i*3+1];
-      clTopFacet._aulPoints[1] = result[i*3+2];
-    }
-    else
-    {
-      clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
-      clFacet._aclPoints[1] = _aclPoints[result[i*3+1]];
-      clFacet._aclPoints[2] = _aclPoints[result[i*3+2]];
-      clTopFacet._aulPoints[0] = result[i*3+0];
-      clTopFacet._aulPoints[1] = result[i*3+1];
-      clTopFacet._aulPoints[2] = result[i*3+2];
-    }
-
-    _aclTriangles.push_back(clFacet);
-    _aclFacets.push_back(clTopFacet);
-  }
-
-  return ok;
-}
-
-bool MeshPolygonTriangulation::ComputeQuasiDelaunay()
-{
-  if ( Compute() == false )
-    return false; // no valid triangulation
-
-  // For each internal edge get the adjacent facets. When doing an edge swap we must update
-  // this structure.
-  std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> > aEdge2Face;
-  for (std::vector<MeshFacet>::iterator pI = _aclFacets.begin(); pI != _aclFacets.end(); pI++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      // ignore borderlines of the polygon
-      if ( (ulPt1-ulPt0)%(_aclPoints.size()-1) > 1 )
-        aEdge2Face[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_back(pI - _aclFacets.begin());
-    }
-  }
-
-  // fill up this list with all internal edges and perform swap edges until this list is empty
-  std::list<std::pair<unsigned long, unsigned long> > aEdgeList;
-  std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator pE;
-  for (pE = aEdge2Face.begin(); pE != aEdge2Face.end(); ++pE)
-    aEdgeList.push_back(pE->first);
-
-  // to be sure to avoid an endless loop
-  unsigned long uMaxIter = 5 * aEdge2Face.size();
-
-  // Perform a swap edge where needed
-  while ( !aEdgeList.empty() && uMaxIter > 0 ) {
-    // get the first edge and remove it from the list
-    std::pair<unsigned long, unsigned long> aEdge = aEdgeList.front();
-    aEdgeList.pop_front();
-    uMaxIter--;
-
-    // get the adjacent facets to this edge
-    pE = aEdge2Face.find( aEdge );
-
-    // this edge has been removed some iterations before
-    if( pE == aEdge2Face.end() )
-      continue;
-
-    MeshFacet& rF1 = _aclFacets[pE->second[0]];
-    MeshFacet& rF2 = _aclFacets[pE->second[1]];
-    unsigned short side1 = rF1.Side(aEdge.first, aEdge.second);
-
-    Base::Vector3f cP1 = _aclPoints[rF1._aulPoints[side1]];
-    Base::Vector3f cP2 = _aclPoints[rF1._aulPoints[(side1+1)%3]];
-    Base::Vector3f cP3 = _aclPoints[rF1._aulPoints[(side1+2)%3]];
-
-    unsigned short side2 = rF2.Side(aEdge.first, aEdge.second);
-    Base::Vector3f cP4 = _aclPoints[rF2._aulPoints[(side2+2)%3]];
-
-    MeshGeomFacet cT1(cP1, cP2, cP3); float fMax1 = cT1.MaximumAngle();
-    MeshGeomFacet cT2(cP2, cP1, cP4); float fMax2 = cT2.MaximumAngle();
-    MeshGeomFacet cT3(cP4, cP3, cP1); float fMax3 = cT3.MaximumAngle();
-    MeshGeomFacet cT4(cP3, cP4, cP2); float fMax4 = cT4.MaximumAngle();
-
-    float fMax12 = std::max<float>(fMax1, fMax2);
-    float fMax34 = std::max<float>(fMax3, fMax4);
-
-    // We must make sure that the two adjacent triangles builds a convex polygon, otherwise 
-    // the swap edge operation is illegal
-    Base::Vector3f cU = cP2-cP1;
-    Base::Vector3f cV = cP4-cP3;
-    // build a helper plane through cP1 that must separate cP3 and cP4
-    Base::Vector3f cN1 = (cU % cV) % cU;
-    if ( ((cP3-cP1)*cN1)*((cP4-cP1)*cN1) >= 0.0f )
-      continue; // not convex
-    // build a helper plane through cP3 that must separate cP1 and cP2
-    Base::Vector3f cN2 = (cU % cV) % cV;
-    if ( ((cP1-cP3)*cN2)*((cP2-cP3)*cN2) >= 0.0f )
-      continue; // not convex
-
-    // ok, here we should perform a swap edge to minimize the maximum angle
-    if ( fMax12 > fMax34 ) {
-      rF1._aulPoints[(side1+1)%3] = rF2._aulPoints[(side2+2)%3];
-      rF2._aulPoints[(side2+1)%3] = rF1._aulPoints[(side1+2)%3];
-
-      // adjust the edge list
-      for ( int i=0; i<3; i++ ) {
-        std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator it;
-        // first facet
-        unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
-        unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
-        it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
-        if ( it != aEdge2Face.end() ) {
-          if ( it->second[0] == pE->second[1] )
-            it->second[0] = pE->second[0];
-          else if ( it->second[1] == pE->second[1] )
-            it->second[1] = pE->second[0];
-          aEdgeList.push_back( it->first );
-        }
-
-        // second facet
-        ulPt0 = std::min<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
-        ulPt1 = std::max<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
-        it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
-        if ( it != aEdge2Face.end() ) {
-          if ( it->second[0] == pE->second[0] )
-            it->second[0] = pE->second[1];
-          else if ( it->second[1] == pE->second[0] )
-            it->second[1] = pE->second[1];
-          aEdgeList.push_back( it->first );
-        }
-      }
-
-      // Now we must remove the edge and replace it through the new edge
-      unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[(side1+1)%3], rF2._aulPoints[(side2+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[(side1+1)%3], rF2._aulPoints[(side2+1)%3]);
-      std::pair<unsigned long, unsigned long> aNewEdge = std::make_pair(ulPt0, ulPt1);
-      aEdge2Face[aNewEdge] = pE->second;
-      aEdge2Face.erase(pE);
-    }
-  }
-
-  return true;
-}
-
-void MeshPolygonTriangulation::SetPolygon(const std::vector<Base::Vector3f>& raclPoints)
-{
-  _aclPoints = raclPoints;
-  if (_aclPoints.size() > 0)
-  {
-    if (_aclPoints.front() == _aclPoints.back())
-      _aclPoints.pop_back();
-  }
-}
-
-Base::Vector3f MeshPolygonTriangulation::TransformToFitPlane()
-{
-  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
-  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
-
-  for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it!=_aclPoints.end(); ++it)
-  {
-    sxx += it->x * it->x; sxy += it->x * it->y;
-    sxz += it->x * it->z; syy += it->y * it->y;
-    syz += it->y * it->z; szz += it->z * it->z;
-    mx += it->x; my += it->y; mz += it->z;
-  }
-
-  unsigned int nSize = _aclPoints.size();
-  sxx = sxx - mx*mx/((float)nSize);
-  sxy = sxy - mx*my/((float)nSize);
-  sxz = sxz - mx*mz/((float)nSize);
-  syy = syy - my*my/((float)nSize);
-  syz = syz - my*mz/((float)nSize);
-  szz = szz - mz*mz/((float)nSize);
-
-  // Kovarianzmatrix
-  Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-  Wm4::Matrix3<float> rkRot, rkDiag;
-  akMat.EigenDecomposition(rkRot, rkDiag);
-
-  Wm4::Vector3<float> U = rkRot.GetColumn(1);
-  Wm4::Vector3<float> V = rkRot.GetColumn(2);
-  Wm4::Vector3<float> W = rkRot.GetColumn(0);
-
-  Base::Vector3f base(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
-  Base::Vector3f ex(U.X(), U.Y(), U.Z());
-  Base::Vector3f ey(V.X(), V.Y(), V.Z());
-
-  for ( std::vector<Base::Vector3f>::iterator jt = _aclPoints.begin(); jt!=_aclPoints.end(); ++jt )
-    jt->TransformToCoordinateSystem(base, ex, ey);
-
-  return Base::Vector3f(W.X(), W.Y(), W.Z());
 }

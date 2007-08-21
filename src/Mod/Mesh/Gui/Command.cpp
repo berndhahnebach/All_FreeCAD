@@ -53,14 +53,11 @@
 
 #include "DlgEvaluateMeshImp.h"
 #include "DlgRegularSolidImp.h"
+#include "ViewProviderMeshFaceSet.h"
 
 using namespace Mesh;
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//===========================================================================
-// Mesh transform
-//===========================================================================
 DEF_STD_CMD_A(CmdMeshTransform);
 
 CmdMeshTransform::CmdMeshTransform()
@@ -99,9 +96,8 @@ bool CmdMeshTransform::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
-//===========================================================================
-// Mesh demolding
-//===========================================================================
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshDemolding);
 
 CmdMeshDemolding::CmdMeshDemolding()
@@ -139,9 +135,9 @@ bool CmdMeshDemolding::isActive(void)
   //return true;
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
-//===========================================================================
-// Example MakeMesh
-//===========================================================================
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshExMakeMesh);
 
 CmdMeshExMakeMesh::CmdMeshExMakeMesh()
@@ -191,9 +187,9 @@ bool CmdMeshExMakeMesh::isActive(void)
   return hasActiveDocument() && !hasObject("MeshBox");
 }
 
-//===========================================================================
-// Example MakeTool
-//===========================================================================
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshExMakeTool);
 
 CmdMeshExMakeTool::CmdMeshExMakeTool()
@@ -242,10 +238,8 @@ bool CmdMeshExMakeTool::isActive(void)
   return hasObject("MeshBox") && !hasObject("MeshTool");
 }
 
+//--------------------------------------------------------------------------------------
 
-//===========================================================================
-// Example MakeUnion
-//===========================================================================
 DEF_STD_CMD_A(CmdMeshExMakeUnion);
 
 CmdMeshExMakeUnion::CmdMeshExMakeUnion()
@@ -286,11 +280,8 @@ bool CmdMeshExMakeUnion::isActive(void)
   return hasObject("MeshTool") && !hasObject("MeshUnion");
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//--------------------------------------------------------------------------------------
 
-//===========================================================================
-// CmdMeshImport
-//===========================================================================
 DEF_STD_CMD_A(CmdMeshImport);
 
 CmdMeshImport::CmdMeshImport()
@@ -342,9 +333,9 @@ bool CmdMeshImport::isActive(void)
     return false;
 }
 
-//===========================================================================
-// CmdMeshExport
-//===========================================================================
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshExport);
 
 CmdMeshExport::CmdMeshExport()
@@ -397,6 +388,8 @@ bool CmdMeshExport::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
 
 CmdMeshVertexCurvature::CmdMeshVertexCurvature()
@@ -439,6 +432,8 @@ bool CmdMeshVertexCurvature::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshPolyPick);
 
 CmdMeshPolyPick::CmdMeshPolyPick()
@@ -468,6 +463,8 @@ bool CmdMeshPolyPick::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshPolyCut);
 
@@ -509,6 +506,8 @@ bool CmdMeshPolyCut::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshToolMesh);
 
@@ -563,6 +562,8 @@ bool CmdMeshToolMesh::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshEvaluation);
 
 CmdMeshEvaluation::CmdMeshEvaluation()
@@ -595,6 +596,38 @@ bool CmdMeshEvaluation::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
 }
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshEvaluateFacet);
+
+CmdMeshEvaluateFacet::CmdMeshEvaluateFacet()
+  :Command("Mesh_EvaluateFacet")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Face info");
+    sToolTipText  = QT_TR_NOOP("Information about face");
+    sWhatsThis    = QT_TR_NOOP("Information about face");
+    sStatusTip    = QT_TR_NOOP("Information about face");
+}
+
+void CmdMeshEvaluateFacet::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    if ( fea.size() == 1 ) {
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
+        ((MeshGui::ViewProviderMeshFaceSet*)pVP)->addFaceInfoCallback();
+    }
+}
+
+bool CmdMeshEvaluateFacet::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshEvaluateSolid);
 
@@ -630,6 +663,8 @@ bool CmdMeshEvaluateSolid::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshHarmonizeNormals);
 
@@ -668,6 +703,8 @@ bool CmdMeshHarmonizeNormals::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshFlipNormals);
 
 CmdMeshFlipNormals::CmdMeshFlipNormals()
@@ -704,6 +741,8 @@ bool CmdMeshFlipNormals::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshFixDegenerations);
 
@@ -742,6 +781,8 @@ bool CmdMeshFixDegenerations::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshFixDuplicateFaces);
 
 CmdMeshFixDuplicateFaces::CmdMeshFixDuplicateFaces()
@@ -778,6 +819,8 @@ bool CmdMeshFixDuplicateFaces::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshFixDuplicatePoints);
 
@@ -816,6 +859,8 @@ bool CmdMeshFixDuplicatePoints::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshFixIndices);
 
 CmdMeshFixIndices::CmdMeshFixIndices()
@@ -852,6 +897,8 @@ bool CmdMeshFixIndices::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshBoundingBox);
 
@@ -894,6 +941,8 @@ bool CmdMeshBoundingBox::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshBuildRegularSolid);
 
 CmdMeshBuildRegularSolid::CmdMeshBuildRegularSolid()
@@ -918,6 +967,8 @@ bool CmdMeshBuildRegularSolid::isActive(void)
   // Check for the selected mesh feature (all Mesh types)
   return (!MeshGui::SingleDlgRegularSolidImp::hasInstance())&&hasActiveDocument();
 }
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshFillupHoles);
 
@@ -961,6 +1012,8 @@ bool CmdMeshFillupHoles::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshRemoveComponents);
 
 CmdMeshRemoveComponents::CmdMeshRemoveComponents()
@@ -1003,6 +1056,36 @@ bool CmdMeshRemoveComponents::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshFillInteractiveHole);
+
+CmdMeshFillInteractiveHole::CmdMeshFillInteractiveHole()
+  :Command("Mesh_FillInteractiveHole")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Close hole");
+    sToolTipText  = QT_TR_NOOP("Close holes interactively");
+    sWhatsThis    = QT_TR_NOOP("Close holes interactively");
+    sStatusTip    = QT_TR_NOOP("Close holes interactively");
+}
+
+void CmdMeshFillInteractiveHole::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    if ( fea.size() == 1 ) {
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
+        ((MeshGui::ViewProviderMeshFaceSet*)pVP)->addFillHoleCallback();
+    }
+}
+
+bool CmdMeshFillInteractiveHole::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -1018,6 +1101,7 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshToolMesh());
   rcCmdMgr.addCommand(new CmdMeshTransform());
   rcCmdMgr.addCommand(new CmdMeshEvaluation());
+  rcCmdMgr.addCommand(new CmdMeshEvaluateFacet());
   rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
   rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
   rcCmdMgr.addCommand(new CmdMeshFlipNormals());
@@ -1029,4 +1113,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
   rcCmdMgr.addCommand(new CmdMeshFillupHoles());
   rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
+  rcCmdMgr.addCommand(new CmdMeshFillInteractiveHole());
 }

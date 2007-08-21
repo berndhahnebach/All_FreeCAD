@@ -507,21 +507,21 @@ ConsoleObserverFile::~ConsoleObserverFile()
 
 void ConsoleObserverFile::Warning(const char *sWarn)
 {
-	cFileStream << sWarn;
+    cFileStream << "Wrn: " << sWarn;
 }
 void ConsoleObserverFile::Message(const char *sMsg)
 {
-	cFileStream << sMsg;
+    cFileStream << "Msg: " << sMsg;
 }
 
 void ConsoleObserverFile::Error  (const char *sErr)
 {
-	cFileStream << sErr;
+    cFileStream << "Err: " << sErr;
 }
 
 void ConsoleObserverFile::Log    (const char *sLog)
 {
-	cFileStream << sLog;
+    cFileStream << "Log: " << sLog;
 }
 
 

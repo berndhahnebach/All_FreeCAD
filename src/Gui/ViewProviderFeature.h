@@ -29,6 +29,7 @@
 
 class SoPickedPointList;
 class SbVec2s;
+class SoEventCallback;
 
 namespace Gui {
 
@@ -64,8 +65,18 @@ public:
    * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
    */
   SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
+  /**
+   * Set up a callback function \a f which will be invoked for the given eventtype. 
+   * \a userdata will be given as the first argument to the function. 
+   */
+  void addEventCallback(SoType eventtype, SoEventCallbackCB * f, void *  userdata = NULL);
+  /**
+   * Unregister the given callback function \a f.
+   */
+  void removeEventCallback(SoType eventtype, SoEventCallbackCB * f, void *  userdata = NULL);
 
 protected:
+  SoEventCallback* pEventCallback;
   SoFCSelection* pcHighlight;
 };
 

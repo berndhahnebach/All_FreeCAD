@@ -165,6 +165,12 @@ public:
    */
   void FillupHoles(unsigned long length);
   /**
+   * Fills up holes with maximum \a length vertices. In contrast to the first algorithm this method uses an algorithm to create a 
+   * constrained Delaunay triangulation (CDT) where high quality triangles with a maximum area of \a fMaxArea are created.
+   * This may introduce new vertices into the mesh. 
+   */
+  void FillupHoles(unsigned long length, float fMaxArea);
+  /**
    * Removes topologic indepentent components with maximum \a count facets.
    */
   void RemoveComponents(unsigned long count);
@@ -178,15 +184,6 @@ public:
   void FlipNormals (void);
 
 private:
-  /**
-   * Boundaries that consist of several loops must be splitted in several independant boundaries
-   * to perfoom e.g. a polygon triangulation algorithm on them.
-   */
-  void SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders );
-  /** 
-   * Splits the boundary \a rBound in several loops and append this loops to the list of borders.
-   */
-  void SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders );
   /**
    * Splits the neighbour facet of \a ulFacetPos on side \a uSide.
    */

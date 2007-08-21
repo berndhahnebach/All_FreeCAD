@@ -90,166 +90,134 @@ bool MeshFixInvalids::Fixup()
 
 // ----------------------------------------------------------------------
 
+namespace MeshCore {
+
+typedef MeshPointArray::_TConstIterator VertexIterator;
 /*
  * When building up a mesh then usually the class MeshBuilder is used. This class uses internally a std::set<MeshPoint> 
  * which uses the '<' operator of MeshPoint to sort the points. Thus to be consistent (and avoid using the '==' operator of MeshPoint) 
  * we use the same operator when comparing the points in the function object.
  */
-struct MeshPoint_EqualTo  : public std::binary_function<const MeshPoint&, const MeshPoint&, bool>
+struct Vertex_EqualTo  : public std::binary_function<const VertexIterator&, const VertexIterator&, bool>
 {
-  bool operator()(const MeshPoint& x, const MeshPoint& y) const
-  {
-    if ( x < y )
-      return false;
-    else if ( y < x )
-      return false;
-    return true;
-  }
+    bool operator()(const VertexIterator& x, const VertexIterator& y) const
+    {
+        if ( (*x) < (*y) )
+            return false;
+        else if ( (*y) < (*x) )
+            return false;
+        return true;
+    }
 };
+
+struct Vertex_Less  : public std::binary_function<const VertexIterator&, const VertexIterator&, bool>
+{
+    bool operator()(const VertexIterator& x, const VertexIterator& y) const
+    {
+        return (*x) < (*y);
+    }
+};
+
+}
 
 bool MeshEvalDuplicatePoints::Evaluate()
 {
-  // make a copy of the point list
-  MeshPointArray aPoints = _rclMesh.GetPoints();
+    // get an const iterator to each vertex and sort them in ascending order by
+    // their (x,y,z) coordinates
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    std::vector<VertexIterator> vertices;
+    vertices.reserve(rPoints.size());
+    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+        vertices.push_back(it);
+    }
 
-  // sort the points ascending x,y or z coordinates
-  std::sort(aPoints.begin(), aPoints.end());
-  // if there are two adjacent points whose distance is less then an epsilon
-  if (std::adjacent_find(aPoints.begin(), aPoints.end(), MeshPoint_EqualTo()) < aPoints.end() )
-    return false;
-  return true;
+    // if there are two adjacent vertices which have the same coordinates
+    std::sort(vertices.begin(), vertices.end(), Vertex_Less());
+    if (std::adjacent_find(vertices.begin(), vertices.end(), Vertex_EqualTo()) < vertices.end() )
+        return false;
+    return true;
 }
 
 std::vector<unsigned long> MeshEvalDuplicatePoints::GetIndices() const
 {
-  std::vector<unsigned long> aInds;
-  const MeshPointArray& rPoints = _rclMesh.GetPoints();
-  unsigned long ind=0;
-
-  // get all points
-  std::map<MeshPoint, std::vector<unsigned long> > aFIndsMap;
-  for ( MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it, ind++ )
-    aFIndsMap[*it].push_back(ind);
-
-  // get all duplicated points
-  for (std::map<MeshPoint, std::vector<unsigned long> >::iterator it2 = aFIndsMap.begin(); it2 != aFIndsMap.end(); ++it2) {
-    const std::vector<unsigned long>& idx = it2->second;
-    if (idx.size() > 1) {
-      for (std::vector<unsigned long>::const_iterator it3 = idx.begin(); it3 != idx.end(); ++it3)
-        aInds.push_back(*it3);
+    //Note: We must neither use map or set to get duplicated indices because
+    //the sort algorithms deliver different results compared to std::sort of
+    //a vector.
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    std::vector<VertexIterator> vertices;
+    vertices.reserve(rPoints.size());
+    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+        vertices.push_back(it);
     }
-  }
 
-  return aInds;
+    // if there are two adjacent vertices which have the same coordinates
+    std::vector<unsigned long> aInds;
+    Vertex_EqualTo pred;
+    std::sort(vertices.begin(), vertices.end(), Vertex_Less());
+
+    std::vector<VertexIterator>::iterator vt = vertices.begin();
+    while (vt < vertices.end()) {
+        // get first item which adjacent element has the same vertex
+        vt = std::adjacent_find(vt, vertices.end(), pred);
+        if (vt < vertices.end()) {
+            vt++;
+            aInds.push_back(*vt - rPoints.begin());
+        }
+    }
+
+    return aInds;
 }
 
 bool MeshFixDuplicatePoints::Fixup()
-{/*
-  MeshPointArray &rclPAry = _rclMesh._aclPointArray;
-  rclPAry.ResetFlag(MeshPoint::MARKED);
-
-  // merge only points in open edges =>
-  // mark all other points to skip them
-  if ( open )
-  {
-    // set all points as MARKED
-    rclPAry.SetFlag(MeshPoint::MARKED);
-    MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
-    for (MeshFacetArray::_TIterator it = rclFAry.begin(); it != rclFAry.end(); ++it)
-    {
-      for (int i=0; i<3; i++)
-      {
-        // open edge
-        if (it->_aulNeighbours[i] == ULONG_MAX)
-        {
-          // and reset the open edge points
-          rclPAry[it->_aulPoints[i]].ResetFlag(MeshPoint::MARKED);
-          rclPAry[it->_aulPoints[(i+1)%3]].ResetFlag(MeshPoint::MARKED);
-        }
-      }
+{
+    //Note: We must neither use map or set to get duplicated indices because
+    //the sort algorithms deliver different results compared to std::sort of
+    //a vector.
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    std::vector<VertexIterator> vertices;
+    vertices.reserve(rPoints.size());
+    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+        vertices.push_back(it);
     }
-  }
 
-  MeshPointGrid clGrid(_rclMesh);
+    // get the indices of adjacent vertices which have the same coordinates
+    std::vector<unsigned long> aInds;
+    std::sort(vertices.begin(), vertices.end(), Vertex_Less());
 
-  // take square distance
-  fMinDistance = fMinDistance * fMinDistance;
-  std::vector<std::pair<unsigned long, std::vector<unsigned long> > > aulMergePts;
-  
-  MeshGridIterator clGridIter(clGrid);
-  std::vector<unsigned long> aulPoints;
-  for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
-  {
-    aulPoints.clear();
-    clGridIter.GetElements(aulPoints);
-
-    // compare all points in each grid
-    for (std::vector<unsigned long>::iterator it1 = aulPoints.begin(); it1 != aulPoints.end(); ++it1)
-    {
-      MeshPoint& rclPt1 = rclPAry[*it1];
-      if (rclPt1.IsFlag(MeshPoint::MARKED))
-        continue; // already merged with another point
-
-      rclPt1.SetFlag(MeshPoint::MARKED);
-      std::pair<unsigned long, std::vector<unsigned long> > aMergePt;
-      aMergePt.first = *it1;
-
-      for (std::vector<unsigned long>::iterator it2 = it1; it2 != aulPoints.end(); ++it2)
-      {
-        if (it2 == it1 || (*it2) == (*it1))
-          continue;
-
-        MeshPoint& rclPt2 = rclPAry[*it2];
-        if (rclPt2.IsFlag(MeshPoint::MARKED))
-          continue; // already merged with another point
-
-        if (Base::DistanceP2(rclPt1, rclPt2) < fMinDistance)
-        {
-          rclPt2.SetFlag(MeshPoint::MARKED);
-          aMergePt.second.push_back(*it2);
+    Vertex_EqualTo pred;
+    std::vector<VertexIterator>::iterator next = vertices.begin();
+    std::map<unsigned long, unsigned long> mapPointIndex;
+    std::vector<unsigned long> pointIndices;
+    while (next < vertices.end()) {
+        next = std::adjacent_find(next, vertices.end(), pred);
+        if (next < vertices.end()) {
+            std::vector<VertexIterator>::iterator first = next;
+            unsigned long first_index = *first - rPoints.begin();
+            next++;
+            while (pred(*first, *next)) {
+                unsigned long next_index = *next - rPoints.begin();
+                mapPointIndex[next_index] = first_index;
+                pointIndices.push_back(next_index);
+                next++;
+            }
         }
-      }
-
-      // point cluster to merge
-      if (aMergePt.second.size() > 0)
-        aulMergePts.push_back(aMergePt);
     }
-  }
 
-  // adjust the corresponding facets
-  MeshRefPointToFacets  clPt2Facets(_rclMesh);
-  unsigned long ulCt = 0;
-  for (std::vector<std::pair<unsigned long, std::vector<unsigned long> > >::iterator it = aulMergePts.begin(); it != aulMergePts.end(); ++it)
-  {
-    unsigned long ulPos = it->first;
-    std::vector<unsigned long>& aMergePt = it->second;
-    for (std::vector<unsigned long>::iterator it2 = aMergePt.begin(); it2 != aMergePt.end(); ++it2)
-    {
-      ulCt++;
-      rclPAry[*it2].SetInvalid();
-      std::set<MeshFacetArray::_TConstIterator>& aulFacs = clPt2Facets[*it2];
-      for (std::set<MeshFacetArray::_TConstIterator>::iterator itF = aulFacs.begin(); itF != aulFacs.end(); ++itF)
-      {
-        for (int i=0; i<3; i++)
-        {
-          if ((*itF)->_aulPoints[i] == *it2)
-          {
-//            (*itF)->_aulPoints[i] = ulPos;
-          }
+    // now set all facets to the correct index
+    MeshFacetArray& rFacets = _rclMesh._aclFacetArray;
+    for (MeshFacetArray::_TIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+        for (int i=0; i<3; i++) {
+            std::map<unsigned long, unsigned long>::iterator pt = mapPointIndex.find(it->_aulPoints[i]);
+            if (pt != mapPointIndex.end())
+                it->_aulPoints[i] = pt->second;
         }
-      }
     }
-  }
 
-  unsigned long ulCtPts = _rclMesh.CountPoints();
-  _rclMesh.RemoveInvalids();
-  unsigned long ulDiff = ulCtPts - _rclMesh.CountPoints();
-
-  // falls Dreiecke zusammenklappen => entfernen
-  RemoveDegeneratedFacets();
-
-  return ulDiff;*/
-  return false;
+    // remove invalid indices
+    _rclMesh.DeletePoints(pointIndices);
+    _rclMesh.RebuildNeighbours();
+    
+    return true;
 }
 
 // ----------------------------------------------------------------------

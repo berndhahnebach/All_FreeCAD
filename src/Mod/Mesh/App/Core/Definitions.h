@@ -25,7 +25,7 @@
 #define MESH_DEFINITIONS_H
 
 // default values
-#define MESH_MIN_PT_DIST           1.0e-5f
+#define MESH_MIN_PT_DIST           1.0e-6f
 #define MESH_MIN_EDGE_LEN          1.0e-3f
 #define MESH_MIN_EDGE_ANGLE        float(RAD(2.0))
 #define MESH_REMOVE_MIN_LEN        true

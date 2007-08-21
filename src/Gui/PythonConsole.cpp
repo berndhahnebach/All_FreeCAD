@@ -245,6 +245,7 @@ void InteractiveInterpreter::runCode(PyCodeObject* code) const
     if (dict == NULL) 
         throw Base::PyException();                 /* not incref'd */
 
+    // It seems that the return value is always 'None' or Null
     presult = PyEval_EvalCode(code, dict, dict); /* run compiled bytecode */
     Py_XDECREF(code);                            /* decref the code object */
     if (!presult) {
@@ -254,6 +255,8 @@ void InteractiveInterpreter::runCode(PyCodeObject* code) const
         }
         if ( PyErr_Occurred() )                    /* get latest python exception information */
             PyErr_Print();                           /* and print the error to the error output */
+    } else {
+        Py_DECREF(presult);
     }
 }
 
