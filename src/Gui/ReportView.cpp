@@ -66,16 +66,9 @@ ReportView::ReportView( QWidget* parent )
   tabWidget->setCurrentIndex(0);
 
   // raise the tab page set in the preferences
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General")->GetGroup("AutoloadTab");
-  std::string txt = hGrp->GetASCII("currentText");
-  for (int i=0; i<tabWidget->count(); i++)
-  {
-    if ( tabWidget->tabText(i) == txt.c_str() )
-    {
-      tabWidget->setCurrentIndex( i );
-      break;
-    }
-  }
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+  int index = hGrp->GetInt("AutoloadTab", 0);
+  tabWidget->setCurrentIndex(index);
 }
 
 /**

@@ -370,6 +370,11 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
             } else if (this->compKeys.indexOf(ke->key()) > -1) {
                 itemActivated(currentItem());
                 return false;
+            } else if (ke->key() == Qt::Key_Shift || ke->key() == Qt::Key_Control || 
+                       ke->key() == Qt::Key_Meta || ke->key() == Qt::Key_Alt || 
+                       ke->key() == Qt::Key_AltGr) {
+                // filter these meta keys to avoid to call keyboardSearch()
+                return true;
             }
         } else if (event->type() == QEvent::KeyRelease) {
             QKeyEvent* ke = (QKeyEvent*)event;

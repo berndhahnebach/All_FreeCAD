@@ -108,7 +108,6 @@ void DlgGeneralImp::saveSettings()
   AutoloadTabCombo->onSave();
   RecentFiles->onSave();
   SplashScreen->onSave();
-  AllowDragMenu->onSave();
 
   // set new user defined style
   (void)QApplication::setStyle(WindowStyle->currentText());
@@ -130,7 +129,6 @@ void DlgGeneralImp::loadSettings()
   AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
-  AllowDragMenu->onRestore();
 
   // fill up styles
   //
