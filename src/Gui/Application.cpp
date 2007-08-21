@@ -890,14 +890,15 @@ void Application::runApplication(void)
   // Activate the correct workbench
   Base::Console().Log("Init: Activating default workbench\n");
   QStringList visible = Instance->workbenches();
-  const char* start = App::Application::Config()["StartWorkbench"].c_str();
-  std::string defWb = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->
-                           GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str());
+  visible.sort();
+  QString start = App::Application::Config()["StartWorkbench"].c_str();
+  int index = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                           GetInt("AutoloadModule", visible.indexOf(start));
 
   // in case the user defined workbench is hidden then we take the default StartWorkbench 
-  if (visible.indexOf(defWb.c_str()) == -1)
-    defWb = start;
-  app.activateWorkbench( defWb.c_str() );
+  if (index >= 0 && index < visible.size())
+    start = visible.at(index);
+  app.activateWorkbench(start.toAscii());
 
   // show the main window
   Base::Console().Log("Init: Showing main window\n");
