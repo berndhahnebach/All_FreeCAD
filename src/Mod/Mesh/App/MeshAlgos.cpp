@@ -584,7 +584,7 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
     }
   }
 
-  ResultMesh.AddFacet(cVAry);
+  ResultMesh.AddFacets(cVAry);
 
 }
 

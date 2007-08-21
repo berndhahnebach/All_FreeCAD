@@ -32,12 +32,15 @@
 class SbViewVolume;
 class SoBaseColor;
 class SoShapeHints;
+class SoEventCallback;
 
 namespace Gui {
   class SoFCSelection;
   class AbstractMouseModel;
 }
 namespace MeshGui {
+class SoFCMeshVertex;
+class SoFCMeshFacet;
 class SoFCMeshFaceSet;
 
 /**
@@ -76,6 +79,10 @@ public:
   void setEdit(void);
   /// Unsets the edit mode
   void unsetEdit(void);
+  void addFaceInfoCallback();
+  void removeFaceInfoCallback();
+  void addFillHoleCallback();
+  void removeFillHoleCallback();
   /// Returns the edit mode
   const char* getEditModeName(void);
 	//@}
@@ -97,6 +104,10 @@ protected:
   SoSeparator    * pBoundingBox;
   SoBaseColor    * pOpenColor;
   SoShapeHints   * pShapeHints;
+
+private:
+  static void faceInfoCallback(void * ud, SoEventCallback * n);
+  static void fillHoleCallback(void * ud, SoEventCallback * n);
 
 private:
   bool m_bEdit;

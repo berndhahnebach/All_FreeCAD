@@ -27,8 +27,6 @@
 # include <algorithm>
 #endif
 
-#include <Base/Sequencer.h>
-
 #include "Grid.h"
 #include "Iterator.h"
 
@@ -708,8 +706,6 @@ void MeshFacetGrid::RebuildGrid (void)
 {
   _ulCtElements = _pclMesh->CountFacets();
 
-  Base::SequencerLauncher seq("Building grid structure...", _ulCtElements);
-
   InitGrid();
  
   // Daten-Struktur fuellen
@@ -720,7 +716,6 @@ void MeshFacetGrid::RebuildGrid (void)
   {
 //    AddFacet(*clFIter, i++, 2.0f);
     AddFacet(*clFIter, i++);
-    Base::Sequencer().next();
   }
 
 }
@@ -1022,8 +1017,6 @@ void MeshPointGrid::RebuildGrid (void)
 {
   _ulCtElements = _pclMesh->CountPoints();
 
-  Base::SequencerLauncher seq("Building grid structure...", _ulCtElements);
-
   InitGrid();
  
   // Daten-Struktur fuellen
@@ -1034,7 +1027,6 @@ void MeshPointGrid::RebuildGrid (void)
   for (cPIter.Init(); cPIter.More(); cPIter.Next())
   {
     AddPoint(*cPIter, i++);
-    Base::Sequencer().next();
   }
 }
 

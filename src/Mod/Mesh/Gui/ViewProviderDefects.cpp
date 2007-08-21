@@ -69,22 +69,22 @@ ViewProviderMeshDefects::ViewProviderMeshDefects()
 
   pcCoords = new SoCoordinate3();
   pcCoords->ref();
-  pcLineStyle = new SoDrawStyle();
-  pcLineStyle->ref();
-  pcLineStyle->style = SoDrawStyle::LINES;
-  pcLineStyle->lineWidth = LineWidth.getValue();
+  pcDrawStyle = new SoDrawStyle();
+  pcDrawStyle->ref();
+  pcDrawStyle->style = SoDrawStyle::LINES;
+  pcDrawStyle->lineWidth = LineWidth.getValue();
 }
 
 ViewProviderMeshDefects::~ViewProviderMeshDefects()
 {
   pcCoords->unref();
-  pcLineStyle->unref();
+  pcDrawStyle->unref();
 }
 
 void ViewProviderMeshDefects::onChanged(const App::Property* prop)
 {
   if ( prop == &LineWidth ) {
-    pcLineStyle->lineWidth = LineWidth.getValue();
+    pcDrawStyle->lineWidth = LineWidth.getValue();
   } else {
     ViewProviderDocumentObject::onChanged(prop);
   }
@@ -184,8 +184,8 @@ void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
   ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcLineRoot = new SoGroup();
-  pcLineStyle->lineWidth = 3;
-  pcLineRoot->addChild(pcLineStyle);
+  pcDrawStyle->lineWidth = 3;
+  pcLineRoot->addChild(pcDrawStyle);
 
   // Draw lines
   SoSeparator* linesep = new SoSeparator;
@@ -311,18 +311,61 @@ void ViewProviderMeshDuplicatedFaces::showDefects()
 
 ViewProviderMeshDuplicatedPoints::ViewProviderMeshDuplicatedPoints()
 {
+  pcPoints = new SoPointSet;
+  pcPoints->ref();
 }
 
 ViewProviderMeshDuplicatedPoints::~ViewProviderMeshDuplicatedPoints()
 {
+  pcPoints->unref();
 }
 
 void ViewProviderMeshDuplicatedPoints::attach(App::DocumentObject* pcFeat)
 {
+  ViewProviderDocumentObject::attach( pcFeat );
+
+  SoGroup* pcPointRoot = new SoGroup();
+  pcDrawStyle->pointSize = 3;
+  pcPointRoot->addChild(pcDrawStyle);
+
+  // Draw points
+  SoSeparator* pointsep = new SoSeparator;
+  SoBaseColor * basecol = new SoBaseColor;
+  basecol->rgb.setValue( 1.0f, 0.5f, 0.0f );
+  pointsep->addChild(basecol);
+  pointsep->addChild(pcCoords);
+  pointsep->addChild(pcPoints);
+  pcPointRoot->addChild(pointsep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  pointsep->addChild(markcol);
+  pointsep->addChild(marker);
+
+  addDisplayMaskMode(pcPointRoot, "Point");
 }
 
 void ViewProviderMeshDuplicatedPoints::showDefects()
 {
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  MeshCore::MeshEvalDuplicatePoints eval(rMesh);
+  
+  std::vector<unsigned long> inds = eval.GetIndices();
+
+  pcCoords->point.deleteValues(0);
+  pcCoords->point.setNum(inds.size());
+  MeshCore::MeshPointIterator cP(rMesh);
+  unsigned long i = 0;
+  for ( std::vector<unsigned long>::iterator it = inds.begin(); it != inds.end(); ++it ) {
+    cP.Set(*it);
+    pcCoords->point.set1Value(i++,cP->x,cP->y,cP->z);
+  }
+
+  setDisplayMaskMode("Point");
 }
 
 // ----------------------------------------------------------------------
@@ -343,8 +386,8 @@ void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
   ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcLineRoot = new SoGroup();
-  pcLineStyle->lineWidth = 3;
-  pcLineRoot->addChild(pcLineStyle);
+  pcDrawStyle->lineWidth = 3;
+  pcLineRoot->addChild(pcDrawStyle);
 
   // Draw lines
   SoSeparator* linesep = new SoSeparator;

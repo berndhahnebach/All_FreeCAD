@@ -175,7 +175,7 @@ bool MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
   return true;
 }
 
-bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
+bool MeshKernel::AddFacets(const std::vector<MeshGeomFacet> &rclVAry)
 {
   // operator += gehtnicht da dann das Mesh neu angelegt wird und somit alle props geloescht werden
   //
@@ -187,8 +187,148 @@ bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
   return true;
 }
 
-unsigned long MeshKernel::AddFacet(const std::vector<MeshFacet> &rclVAry)
+unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
 {
+    // Build map of edges of the referencing facets we want to append
+#ifdef FC_DEBUG
+    unsigned long countPoints = CountPoints();
+#endif
+    this->_aclPointArray.ResetInvalid();
+    unsigned long k = CountFacets();
+    std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > edgeMap;
+    for (std::vector<MeshFacet>::const_iterator pF = rclVAry.begin(); pF != rclVAry.end(); pF++, k++) {
+        // reset INVALID flag for all candidates
+        pF->ResetFlag(MeshFacet::INVALID);
+        for (int i=0; i<3; i++) {
+#ifdef FC_DEBUG
+            assert( pF->_aulPoints[i] < countPoints );
+#endif
+            this->_aclPointArray[pF->_aulPoints[i]].SetFlag(MeshPoint::INVALID);
+            unsigned long ulT0 = pF->_aulPoints[i];
+            unsigned long ulT1 = pF->_aulPoints[(i+1)%3];
+            unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
+            unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
+            edgeMap[std::make_pair<unsigned long, unsigned long>(ulP0, ulP1)].push_front(k);
+        }
+    }
+
+    // Check for the above edges in the current facet array
+    k=0;
+    for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, k++) {
+        // if none of the points references one of the edges ignore the facet
+        if (!this->_aclPointArray[pF->_aulPoints[0]].IsFlag(MeshPoint::INVALID) &&
+            !this->_aclPointArray[pF->_aulPoints[1]].IsFlag(MeshPoint::INVALID) &&
+            !this->_aclPointArray[pF->_aulPoints[2]].IsFlag(MeshPoint::INVALID))
+            continue;
+        for (int i=0; i<3; i++) {
+            unsigned long ulT0 = pF->_aulPoints[i];
+            unsigned long ulT1 = pF->_aulPoints[(i+1)%3];
+            unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
+            unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
+            std::pair<unsigned long, unsigned long> edge = std::make_pair<unsigned long, unsigned long>(ulP0, ulP1);
+            std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI = edgeMap.find(edge);
+            // Does the current facet share the same edge?
+            if (pI != edgeMap.end()) {
+                pI->second.push_front(k);
+            }
+        }
+    }
+
+    this->_aclPointArray.ResetInvalid();
+
+    // Now let's see for which edges we might get manifolds, if so we don't add the corresponding candidates
+    unsigned long countFacets = CountFacets();
+    std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pE;
+    for (pE = edgeMap.begin(); pE != edgeMap.end(); ++pE)
+    {
+        if (pE->second.size() > 2)
+        {
+            for (std::list<unsigned long>::iterator it = pE->second.begin(); it != pE->second.end(); ++it)
+            {
+                if (*it >= countFacets) {
+                    // this is a candidate
+                    unsigned long index = *it - countFacets;
+                    rclVAry[index].SetFlag(MeshFacet::INVALID);
+                }
+            }
+        }
+    }
+
+    // Do not insert directly to the data structure because we should get the correct size of new facets,
+    // otherwise std::vector reallocates too much memory which can't be freed so easily
+    unsigned long countValid = std::count_if(rclVAry.begin(), rclVAry.end(), std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::INVALID));
+    _aclFacetArray.reserve( _aclFacetArray.size() + countValid );
+    // now start inserting the facets to the data structure and set the correct neighbourhood as well
+    unsigned long startIndex = CountFacets();
+    for (std::vector<MeshFacet>::const_iterator pF = rclVAry.begin(); pF != rclVAry.end(); pF++) {
+        if (!pF->IsFlag(MeshFacet::INVALID)) {
+            _aclFacetArray.push_back(*pF);
+            pF->SetProperty(startIndex++);
+        }
+    }
+
+    // resolve neighbours
+    for (pE = edgeMap.begin(); pE != edgeMap.end(); pE++)
+    {
+        unsigned long ulP0 = pE->first.first;
+        unsigned long ulP1 = pE->first.second;
+        if (pE->second.size() == 1)  // border facet
+        {
+            unsigned long ulF0 = pE->second.front();
+            if (ulF0 >= countFacets) {
+                ulF0 -= countFacets;
+                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF0;
+                if (!pF->IsFlag(MeshFacet::INVALID))
+                    ulF0 = pF->_ulProp;
+                else
+                    ulF0 = ULONG_MAX;
+            }
+
+            if (ulF0 != ULONG_MAX) {
+                unsigned short usSide =  _aclFacetArray[ulF0].Side(ulP0, ulP1);
+                assert(usSide != USHRT_MAX);
+                _aclFacetArray[ulF0]._aulNeighbours[usSide] = ULONG_MAX;
+            }
+        }
+        else if (pE->second.size() == 2)  // normal facet with neighbour
+        {
+            // we must check if both facets are part of the mesh now 
+            unsigned long ulF0 = pE->second.front();
+            if (ulF0 >= countFacets) {
+                ulF0 -= countFacets;
+                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF0;
+                if (!pF->IsFlag(MeshFacet::INVALID))
+                    ulF0 = pF->_ulProp;
+                else
+                    ulF0 = ULONG_MAX;
+            }
+            unsigned long ulF1 = pE->second.back();
+            if (ulF1 >= countFacets) {
+                ulF1 -= countFacets;
+                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF1;
+                if (!pF->IsFlag(MeshFacet::INVALID))
+                    ulF1 = pF->_ulProp;
+                else
+                    ulF1 = ULONG_MAX;
+            }
+            
+            if (ulF0 != ULONG_MAX) {
+                unsigned short usSide = _aclFacetArray[ulF0].Side(ulP0, ulP1);
+                assert(usSide != USHRT_MAX);
+                _aclFacetArray[ulF0]._aulNeighbours[usSide] = ulF1;
+            }
+
+            if (ulF1 != ULONG_MAX) {
+                unsigned short usSide = _aclFacetArray[ulF1].Side(ulP0, ulP1);
+                assert(usSide != USHRT_MAX);
+                _aclFacetArray[ulF1]._aulNeighbours[usSide] = ulF0;
+            }
+        }
+    }
+
+    return _aclFacetArray.size();
+
+#if 0 // old implementation
   // Build map of edges to the referencing facets
   unsigned long k = 0;
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclEdgeMap;
@@ -281,6 +421,13 @@ unsigned long MeshKernel::AddFacet(const std::vector<MeshFacet> &rclVAry)
   }
 
   return _aclFacetArray.size();
+#endif
+}
+
+unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry, const std::vector<Base::Vector3f>& rclPAry)
+{
+    this->_aclPointArray.insert(this->_aclPointArray.end(), rclPAry.begin(), rclPAry.end());
+    return this->AddFacets(rclVAry);
 }
 
 void MeshKernel::Merge( const MeshPointArray& rPoints, const MeshFacetArray& rFaces )

@@ -46,6 +46,7 @@ class MeshGeomEdge;
 class MeshKernel;
 class MeshFacetGrid;
 class MeshFacetArray;
+class MeshRefPointToFacets;
 
 /**
  * The MeshAlgorithm class provides algorithms base on meshes.
@@ -122,6 +123,30 @@ public:
    * that it returns the point indices of the boundaries.
    */
   void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders) const;
+  /**
+   * Returns the boundary of the mesh to the facet \a uFacet. If this facet does not have an open edge the returned
+   * boundary is empty.
+   */
+  void GetMeshBorder(unsigned long uFacet, std::list<unsigned long>& rBorder) const;
+  /**
+   * Boundaries that consist of several loops must be splitted in several independant boundaries
+   * to perfoom e.g. a polygon triangulation algorithm on them.
+   */
+  void SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders );
+  /**
+   * Fills up the single boundary if it is a hole with high quality triangles and a maximum area of \a fMaxArea.
+   * The triangulation information is stored in \a rFaces and \a rPoints.
+   * To speed up the calculations the optional parameter \a pStructure can be specified that holds a facet-to-points
+   * structure of the underlying mesh.
+   * If the boundary is not a hole or the algorithm failed false is returned, otherwise true.
+   * @note \a boundary contains the point indices of the mesh data structure. The first and last index must therefore be equal.
+   * @note \a rPoints contains the geometric points of the triangulation. The number of points can be the same as or exceed
+   * the number of boundary indices but it cannot be lower. 
+   * @note If the number of geometric points exceeds the number of boundary indices then the triangulation algorithm has 
+   * introduced new points which are added to the end of \a rPoints.
+   */
+  bool FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, MeshPointArray& rPoints,
+                  const MeshRefPointToFacets* pP2FStructure=0) const;
   /** Sets to all facets in \a raulInds the properties in raulProps. 
    * \note Both arrays must have the same size.
    */
@@ -248,6 +273,10 @@ protected:
   /** Searches the nearest facet in \a raulFacets to the ray (\a rclPt, \a rclDir). */
   bool RayNearestField (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, const std::vector<unsigned long> &raulFacets,
                         Base::Vector3f &rclRes, unsigned long &rulFacet, float fMaxAngle = F_PI) const;
+  /** 
+   * Splits the boundary \a rBound in several loops and append this loops to the list of borders.
+   */
+  void SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders );
 
 protected:
   const MeshKernel      &_rclMesh; /**< The mesh kernel. */
@@ -343,74 +372,6 @@ public:
 protected:
   const MeshKernel  &_rclMesh; /**< The mesh kernel. */
 };
-
-/**
- * The MeshPolygonTriangulation embeds an efficient algorithm to triangulate polygons taken from
- * http://www.flipcode.com/files/code/triangulate.cpp.
- */
-class AppMeshExport MeshPolygonTriangulation
-{
-public:
-  MeshPolygonTriangulation();
-  MeshPolygonTriangulation(const std::vector<Base::Vector3f>& raclPoints);
-  virtual ~MeshPolygonTriangulation();
-
-  /** Computes the triangulation of a polygon. The resulting facets can be get with
-   * GetTriangles() or GetFacets().
-   */
-  bool Compute();
-  /** The Compute() method returns a valid triangulation of a polygon though it might produce
-   * sometimes degenerated triangles. So this method performs several "swap edge" operations to 
-   * the output of Compute() to get more regular triangles.
-   */
-  bool ComputeQuasiDelaunay();
-  /** If the points of the polygon set by SetPolygon() doesn't lie in a plane this method
-   * can be used to project the points in a common plane. This method must be called directly 
-   * after SetPolygon() and before Compute() or ComputeQuasiDelaunay(). The method returns
-   * the normal of the fitted plane.
-   */
-  Base::Vector3f TransformToFitPlane();
-  /** Sets the polygon to be triangulated. */
-  void SetPolygon(const std::vector<Base::Vector3f>& raclPoints);
-  /** Returns the geometric triangles of the polygon. */
-  const std::vector<MeshGeomFacet>& GetTriangles() const { return _aclTriangles;}
-  /** Returns the topologic facets of the polygon. */
-  const std::vector<MeshFacet>& GetFacets() const { return _aclFacets;}
-
-private:
-  std::vector<Base::Vector3f>        _aclPoints;
-  std::vector<MeshGeomFacet> _aclTriangles;
-  std::vector<MeshFacet> _aclFacets;
-
-  /**
-   * Static class to triangulate any contour/polygon (without holes) efficiently.
-   * The original code snippet was submitted to FlipCode.com by John W. Ratcliff 
-   * (jratcliff@verant.com) on July 22, 2000.
-   * The original vector of 2d points is replaced by a vector of 3d points where the
-   * z-ccordinate is ignored. This is because the algorithm is often used for 3d points 
-   * projected to a common plane. The result vector of 2d points is replaced by an 
-   * array of indices to the points of the polygon.
-   */
-  class Triangulate
-  {
-  public:
-    // triangulate a contour/polygon, places results in STL vector
-    // as series of triangles.indicating the points
-    static bool Process(const std::vector<Base::Vector3f> &contour, std::vector<unsigned long> &result);
-
-    // compute area of a contour/polygon
-    static float Area(const std::vector<Base::Vector3f> &contour);
-
-    // decide if point Px/Py is inside triangle defined by
-    // (Ax,Ay) (Bx,By) (Cx,Cy)
-    static bool InsideTriangle(float Ax, float Ay, float Bx, float By, float Cx, float Cy, float Px, float Py);
-
-    static bool _invert;
-  private:
-    static bool Snip(const std::vector<Base::Vector3f> &contour,int u,int v,int w,int n,int *V);
-  };
-};
-
 
 }; // namespace MeshCore 
 

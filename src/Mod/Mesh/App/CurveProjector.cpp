@@ -576,7 +576,7 @@ void CurveProjectorWithToolMesh::Do(void)
 
   }
 
-  ToolMesh.AddFacet(cVAry);
+  ToolMesh.AddFacets(cVAry);
 
 }
 

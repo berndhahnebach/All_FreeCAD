@@ -75,7 +75,8 @@ SoFCBoundingBox::SoFCBoundingBox ()
 
     SO_NODE_ADD_FIELD(minBounds, (-1.0, -1.0, -1.0));
     SO_NODE_ADD_FIELD(maxBounds, ( 1.0,  1.0,  1.0));
-    SO_NODE_ADD_FIELD(textOn, (TRUE));
+    SO_NODE_ADD_FIELD(coordsOn, (TRUE));
+    SO_NODE_ADD_FIELD(dimensionsOn, (TRUE));
 
     root = new SoSeparator();
     SoSeparator *bboxSep = new SoSeparator();
@@ -104,7 +105,20 @@ SoFCBoundingBox::SoFCBoundingBox ()
         textSep->addChild(temp);
     }
 
+    // create the text nodes, including a transform for each dimension
+    dimSep = new SoSeparator();
+    for (int i = 0; i < 3; i++) {
+        SoSeparator *temp = new SoSeparator();
+        SoTransform *trans = new SoTransform();
+        temp->addChild(trans);
+        SoText2* text = new SoText2();
+        text->justification.setValue(SoText2::CENTER);
+        temp->addChild(text);
+        dimSep->addChild(temp);
+    }
+
     root->addChild(textSep);
+    root->addChild(dimSep);
     root->ref();
 }
 
@@ -115,18 +129,21 @@ SoFCBoundingBox::~SoFCBoundingBox ()
 
 void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
 {
-    SbVec3f corner[2], ctr, offset, *vptr;
-    bool text;
+    SbVec3f corner[2], ctr, *vptr;
+    bool coord, dimension;
     char str[50], buf[10];
 
     // grab the current state
+    SoState *state = action->getState();
+
     if (!shouldGLRender(action))
         return;
 
     // get the latest values from the fields
     corner[0] = minBounds.getValue();
     corner[1] = maxBounds.getValue();
-    text      = textOn.getValue();
+    coord     = coordsOn.getValue();
+    dimension = dimensionsOn.getValue();
 
     // set the coordinates for the LineSet to point to
     vptr = bboxCoords->point.startEditing();
@@ -136,8 +153,8 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
         }
     }
 
-    // if text is true then set the text nodes
-    if (text) {
+    // if coord is true then set the text nodes
+    if (coord) {
         ctr = (corner[1] - corner[0]) / 2.0f;
         for (int i = 0; i < 8; i++) {
             // create the string for the text
@@ -155,7 +172,6 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
             SoSeparator *sep   = (SoSeparator *)textSep->getChild(i);
             SoTransform *trans = (SoTransform *)sep->getChild(0);
 
-            offset = vptr[i] - ctr;
             trans->translation.setValue(vptr[i].getValue());
             SoText2* t = (SoText2 *)sep->getChild(1);
             t->string.setValue(str);
@@ -168,7 +184,32 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
         if (root->findChild(textSep) >= 0)
             root->removeChild(textSep);
     }
-  
+
+    // if dimension is true then set the text nodes
+    if (dimension) {
+        ctr = (corner[1] - corner[0]) / 2.0f;
+        for (int i = 0; i < 3; i++) {
+            // create the string for the text
+            sprintf(str, "%6.2f", 2.0f * ctr[i]);
+
+            SoSeparator *sep   = (SoSeparator *)dimSep->getChild(i);
+            SoTransform *trans = (SoTransform *)sep->getChild(0);
+
+            SbVec3f point = corner[0];
+            point[i] += ctr[i];
+            trans->translation.setValue(point.getValue());
+            SoText2* t = (SoText2 *)sep->getChild(1);
+            t->string.setValue(str);
+        }
+
+        dimSep->ref();
+        if (root->findChild(dimSep) < 0)
+            root->addChild(dimSep);
+    } else {
+        if (root->findChild(dimSep) >= 0)
+            root->removeChild(dimSep);
+    }
+
     bboxCoords->point.finishEditing();
     root->GLRender(action);
 }

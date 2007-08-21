@@ -54,6 +54,8 @@
 # include <Inventor/errors/SoReadError.h>
 #endif
 
+#include <Base/Console.h>
+#include <Base/Exception.h>
 #include <Gui/SoFCInteractiveElement.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Grid.h>
@@ -433,7 +435,7 @@ void SoFCMeshFaceSet::notify(SoNotList * node)
 }
 
 /**
- * Creates a rough mesh model from the original data attached to a grid in case \a simplest is false. The number of grids 
+ * Creates a rough proxy mesh model from the original data attached to a grid in case \a simplest is false. The number of grids 
  * in each direction doesn't exceed 50.
  * If \a simplest is true then the model is built from the bounding box instead.
  *
@@ -444,7 +446,7 @@ void SoFCMeshFaceSet::notify(SoNotList * node)
  * @note The usage of the proxy might be confusing a little bit due to the fact that some details get lost. So it'll be possible
  * to pick the data set where no data seem to be.
  */
-void SoFCMeshFaceSet::createRoughModel(const MeshCore::MeshPointArray* rPoints, const MeshCore::MeshFacetArray* rFaces, SbBool simplest)
+void SoFCMeshFaceSet::createProxyModel(const MeshCore::MeshPointArray* rPoints, const MeshCore::MeshFacetArray* rFaces, SbBool simplest)
 {
   Base::BoundBox3f cBox;
   for ( MeshCore::MeshPointArray::_TConstIterator it = rPoints->begin(); it != rPoints->end(); ++it )
@@ -843,33 +845,50 @@ void SoFCMeshFaceSet::generatePrimitives(SoAction* action)
     // We notify this shape when the data has changed because just counting the number of triangles won't always work.
     // 
     if ( meshChanged ) {
-      meshChanged = false;
-      createRoughModel(rPoints, rFacets, FALSE);
+      try {
+        createProxyModel(rPoints, rFacets, FALSE);
+        meshChanged = false;
+      } catch (const Base::MemoryException&) {
+          Base::Console().Log("Not enough memory to create a proxy model, use its bounding box instead\n");
+          try {
+            // try to create a triangulation of the bbox instead
+            createProxyModel(rPoints, rFacets, TRUE);
+            meshChanged = false;
+          } catch (const Base::MemoryException&) {
+              Base::Console().Log("Not enough memory to make the object pickable\n");
+              return;
+          }
+      }
     }
     SoPrimitiveVertex vertex;
     beginShape(action, TRIANGLES, 0);
-    int i=0;
-    while ( i<coordIndex.getNum() )
+    try 
     {
-      const SbVec3f& v0 = point[coordIndex[i++]]; 
-      const SbVec3f& v1 = point[coordIndex[i++]]; 
-      const SbVec3f& v2 = point[coordIndex[i++]]; 
+        int i=0;
+        while ( i<coordIndex.getNum() )
+        {
+          const SbVec3f& v0 = point[coordIndex[i++]]; 
+          const SbVec3f& v1 = point[coordIndex[i++]]; 
+          const SbVec3f& v2 = point[coordIndex[i++]]; 
 
-      // Calculate the normal n = (v1-v0)x(v2-v0)
-      SbVec3f n;
-      n[0] = (v1[1]-v0[1])*(v2[2]-v0[2])-(v1[2]-v0[2])*(v2[1]-v0[1]);
-      n[1] = (v1[2]-v0[2])*(v2[0]-v0[0])-(v1[0]-v0[0])*(v2[2]-v0[2]);
-      n[2] = (v1[0]-v0[0])*(v2[1]-v0[1])-(v1[1]-v0[1])*(v2[0]-v0[0]);
+          // Calculate the normal n = (v1-v0)x(v2-v0)
+          SbVec3f n;
+          n[0] = (v1[1]-v0[1])*(v2[2]-v0[2])-(v1[2]-v0[2])*(v2[1]-v0[1]);
+          n[1] = (v1[2]-v0[2])*(v2[0]-v0[0])-(v1[0]-v0[0])*(v2[2]-v0[2]);
+          n[2] = (v1[0]-v0[0])*(v2[1]-v0[1])-(v1[1]-v0[1])*(v2[0]-v0[0]);
 
-      // Set the normal
-      vertex.setNormal(n);
+          // Set the normal
+          vertex.setNormal(n);
 
-      vertex.setPoint( v0 );
-      shapeVertex(&vertex);
-      vertex.setPoint( v1 );
-      shapeVertex(&vertex);
-      vertex.setPoint( v2 );
-      shapeVertex(&vertex);
+          vertex.setPoint( v0 );
+          shapeVertex(&vertex);
+          vertex.setPoint( v1 );
+          shapeVertex(&vertex);
+          vertex.setPoint( v2 );
+          shapeVertex(&vertex);
+        }
+    } catch (const Base::MemoryException&) {
+        Base::Console().Log("Not enough memory to generate primitives from the proxy model\n");
     }
     endShape();
   } else {
@@ -884,50 +903,55 @@ void SoFCMeshFaceSet::generatePrimitives(SoAction* action)
     vertex.setDetail(&pointDetail);
 
     beginShape(action, TRIANGLES, &faceDetail);
-    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it )
+    try 
     {
-      const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
-      const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
-      const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
+        for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it )
+        {
+          const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
+          const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
+          const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
 
-      // Calculate the normal n = (v1-v0)x(v2-v0)
-      SbVec3f n;
-      n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
-      n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
-      n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+          // Calculate the normal n = (v1-v0)x(v2-v0)
+          SbVec3f n;
+          n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+          n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+          n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
 
-      // Set the normal
-      vertex.setNormal(n);
+          // Set the normal
+          vertex.setNormal(n);
 
-      // Vertex 0
-      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
-        pointDetail.setMaterialIndex(it->_aulPoints[0]);
-        vertex.setMaterialIndex(it->_aulPoints[0]);
-      }
-      pointDetail.setCoordinateIndex(it->_aulPoints[0]);
-      vertex.setPoint(sbvec3f(v0));
-      shapeVertex(&vertex);
+          // Vertex 0
+          if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+            pointDetail.setMaterialIndex(it->_aulPoints[0]);
+            vertex.setMaterialIndex(it->_aulPoints[0]);
+          }
+          pointDetail.setCoordinateIndex(it->_aulPoints[0]);
+          vertex.setPoint(sbvec3f(v0));
+          shapeVertex(&vertex);
 
-      // Vertex 1
-      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
-        pointDetail.setMaterialIndex(it->_aulPoints[1]);
-        vertex.setMaterialIndex(it->_aulPoints[1]);
-      }
-      pointDetail.setCoordinateIndex(it->_aulPoints[1]);
-      vertex.setPoint(sbvec3f(v1));
-      shapeVertex(&vertex);
+          // Vertex 1
+          if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+            pointDetail.setMaterialIndex(it->_aulPoints[1]);
+            vertex.setMaterialIndex(it->_aulPoints[1]);
+          }
+          pointDetail.setCoordinateIndex(it->_aulPoints[1]);
+          vertex.setPoint(sbvec3f(v1));
+          shapeVertex(&vertex);
 
-      // Vertex 2
-      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
-        pointDetail.setMaterialIndex(it->_aulPoints[2]);
-        vertex.setMaterialIndex(it->_aulPoints[2]);
-      }
-      pointDetail.setCoordinateIndex(it->_aulPoints[2]);
-      vertex.setPoint(sbvec3f(v2));
-      shapeVertex(&vertex);
+          // Vertex 2
+          if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+            pointDetail.setMaterialIndex(it->_aulPoints[2]);
+            vertex.setMaterialIndex(it->_aulPoints[2]);
+          }
+          pointDetail.setCoordinateIndex(it->_aulPoints[2]);
+          vertex.setPoint(sbvec3f(v2));
+          shapeVertex(&vertex);
 
-      // Increment for the next face
-      faceDetail.incFaceIndex();
+          // Increment for the next face
+          faceDetail.incFaceIndex();
+        }
+    } catch (const Base::MemoryException&) {
+        Base::Console().Log("Not enough memory to generate primitives\n");
     }
 
     endShape();

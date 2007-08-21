@@ -310,7 +310,7 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 unsigned int PropertyMeshKernel::getMemSize (void) const
 {
   unsigned int size = 0;
-  size += _pcMesh->getMemSize();
+  size += _pcMesh->GetMemSize();
   
   return size;
 }
@@ -343,6 +343,13 @@ void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned l
   aboutToSetValue();
   for (std::vector<std::pair<unsigned long, Base::Vector3f> >::const_iterator it = inds.begin(); it != inds.end(); ++it)
     _pcMesh->SetPoint(it->first, it->second);
+  hasSetValue();
+}
+
+void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints)
+{
+  aboutToSetValue();
+  _pcMesh->AddFacets(rFaces, rPoints);
   hasSetValue();
 }
 

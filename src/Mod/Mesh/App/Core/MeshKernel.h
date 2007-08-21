@@ -92,9 +92,9 @@ public:
   unsigned long CountPoints (void) const
   { return (unsigned long)(_aclPointArray.size()); }
 
-  unsigned int getMemSize (void) const
-    { return _aclPointArray.size() * sizeof(MeshPoint) +
-             _aclFacetArray.size() * sizeof(MeshFacet); }
+  unsigned int GetMemSize (void) const
+  { return _aclPointArray.size() * sizeof(MeshPoint) +
+           _aclFacetArray.size() * sizeof(MeshFacet); }
   /// Determines the bounding box
   const Base::BoundBox3f& GetBoundBox (void) const
   { return _clBoundBox; }
@@ -146,7 +146,6 @@ public:
    *  Notice: The Edgelist will be temporary generated. Changes on the mesh structure does not affect the Edgelist
    */
   void GetEdges (std::vector<MeshGeomEdge>&) const;
-
   //@}
 
   /** @name Evaluation */
@@ -259,7 +258,7 @@ public:
    * set properties and flags. If these flags are not important to keep then the += operator should
    * be used.
    */
-  bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
+  bool AddFacets(const std::vector<MeshGeomFacet> &rclVAry);
   /**
    * Adds an array of topologic facets to the data structure without inserting new points.
    * Facets which would create non-manifolds are not inserted.
@@ -268,7 +267,13 @@ public:
    * This method might be useful to close gaps or fill up holes in a mesh.
    * @note This method is quite expensive and should be rarely used.
    */
-  unsigned long AddFacet(const std::vector<MeshFacet> &rclVAry);
+  unsigned long AddFacets(const std::vector<MeshFacet> &rclVAry);
+  /**
+   * Adds new points and facets to the data structure. The client programmer must make sure
+   * that the new facets reference all new points. The indices of the new points start with
+   * the number of points before adding them to the data structure.
+   */
+  unsigned long AddFacets(const std::vector<MeshFacet> &rclVAry, const std::vector<Base::Vector3f>& rclPAry);
   /**
    * Adds all facets and referenced points to the underlying mesh structure. The client programmer
    * must be sure that both meshes doesn't have geometric overlaps, otherwise the resulting mesh might
@@ -388,6 +393,7 @@ protected:
   friend class MeshFixSingleFacet;
   friend class MeshFixInvalids;
   friend class MeshFixDegeneratedFacets;
+  friend class MeshFixDuplicatePoints;
   friend class MeshBuilder;
 };
 

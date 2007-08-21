@@ -26,6 +26,7 @@
 #include "ViewProvider.h"
 
 class SoCoordinate3;
+class SoPointSet;
 class SoLineSet;
 class SoFaceSet;
 
@@ -56,7 +57,7 @@ protected:
   void onChanged(const App::Property* prop);
 
   SoCoordinate3 * pcCoords;
-  SoDrawStyle   * pcLineStyle;
+  SoDrawStyle   * pcDrawStyle;
 };
 
 /** The ViewProviderMeshOrientation class displays wrong oriented facets (i.e. flipped normals) in orange. 
@@ -141,6 +142,9 @@ public:
 
   void attach(App::DocumentObject* pcFeature);
   void showDefects();
+
+protected:
+  SoPointSet* pcPoints;
 };
 
 class GuiMeshExport ViewProviderMeshIndices : public ViewProviderMeshDefects

@@ -81,6 +81,8 @@ public:
   inline double*    operator[] (unsigned short usNdx);
   /// Index operator
   inline const double*    operator[] (unsigned short usNdx) const;
+  /// Compute the determinant of the matrix
+  double determinant() const;
 
   // friend
   inline friend Vector3f& operator*= (Vector3f& rclVect, const Matrix4D& rclMtrx);

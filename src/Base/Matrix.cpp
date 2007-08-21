@@ -69,6 +69,24 @@ void Matrix4D::unity (void)
   dMtrx4D[3][0] = 0.0; dMtrx4D[3][1] = 0.0; dMtrx4D[3][2] = 0.0; dMtrx4D[3][3] = 1.0;
 }
 
+double Matrix4D::determinant() const
+{
+    double fA0 = dMtrx4D[0][0]*dMtrx4D[1][1] - dMtrx4D[0][1]*dMtrx4D[1][0];
+    double fA1 = dMtrx4D[0][0]*dMtrx4D[1][2] - dMtrx4D[0][2]*dMtrx4D[1][0];
+    double fA2 = dMtrx4D[0][0]*dMtrx4D[1][3] - dMtrx4D[0][3]*dMtrx4D[1][0];
+    double fA3 = dMtrx4D[0][1]*dMtrx4D[1][2] - dMtrx4D[0][2]*dMtrx4D[1][1];
+    double fA4 = dMtrx4D[0][1]*dMtrx4D[1][3] - dMtrx4D[0][3]*dMtrx4D[1][1];
+    double fA5 = dMtrx4D[0][2]*dMtrx4D[1][3] - dMtrx4D[0][3]*dMtrx4D[1][2];
+    double fB0 = dMtrx4D[2][0]*dMtrx4D[3][1] - dMtrx4D[2][1]*dMtrx4D[3][0];
+    double fB1 = dMtrx4D[2][0]*dMtrx4D[3][2] - dMtrx4D[2][2]*dMtrx4D[3][0];
+    double fB2 = dMtrx4D[2][0]*dMtrx4D[3][3] - dMtrx4D[2][3]*dMtrx4D[3][0];
+    double fB3 = dMtrx4D[2][1]*dMtrx4D[3][2] - dMtrx4D[2][2]*dMtrx4D[3][1];
+    double fB4 = dMtrx4D[2][1]*dMtrx4D[3][3] - dMtrx4D[2][3]*dMtrx4D[3][1];
+    double fB5 = dMtrx4D[2][2]*dMtrx4D[3][3] - dMtrx4D[2][3]*dMtrx4D[3][2];
+    double fDet = fA0*fB5-fA1*fB4+fA2*fB3+fA3*fB2-fA4*fB1+fA5*fB0;
+    return fDet;
+}
+
 /*
 void Matrix4D::setMoveX (float fMove)
 {

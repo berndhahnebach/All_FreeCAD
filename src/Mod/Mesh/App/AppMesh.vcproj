@@ -648,6 +648,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Triangulation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Triangulation.h"
+				>
+			</File>
+			<File
 				RelativePath="Core\tritritest.h"
 				>
 			</File>

@@ -192,131 +192,179 @@ void SoFCSelection::doAction( SoAction *action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
-  static char buf[512];
-  HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
-
-  const SoEvent * event = action->getEvent();
-  if (event->isOfType(SoLocation2Event::getClassTypeId())) {
-    const SoPickedPoint * pp = action->getPickedPoint();
-    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-      if (!highlighted) {
-        if (mymode == AUTO) {
-          if(Gui::Selection().setPreselect(documentName.getValue().getString()
+    static char buf[512];
+    HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
+    const SoEvent * event = action->getEvent();
+  
+    // mouse move events for preselection
+    if (event->isOfType(SoLocation2Event::getClassTypeId())) {
+#if 1
+        // NOTE: If preselection is off then we do not check for a picked point because otherwise this search may slow
+        // down extremely the system on really big data sets. In this case we just check for a picked point if the data
+        // set has been selected.
+        if (mymode == AUTO || mymode == ON) {
+            const SoPickedPoint * pp = action->getPickedPoint();
+            if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+                if (!highlighted) {
+                    if (Gui::Selection().setPreselect(documentName.getValue().getString()
                                            ,objectName.getValue().getString()
                                            ,subElementName.getValue().getString()
                                            ,pp->getPoint()[0]
                                            ,pp->getPoint()[1]
                                            ,pp->getPoint()[2])){
-            SoFCSelection::turnoffcurrent(action);
-            SoFCSelection::currenthighlight = (SoFullPath*)
-              action->getCurPath()->copy();
-            SoFCSelection::currenthighlight->ref();
-            highlighted = TRUE;
-            this->touch(); // force scene redraw
-            this->redrawHighlighted(action, TRUE);
-          }
-        } else {
-         // preselection in the viewer is disabled but we must inform all observers anyway
-         if (Gui::Selection().setPreselect(documentName.getValue().getString()
+                        SoFCSelection::turnoffcurrent(action);
+                        SoFCSelection::currenthighlight = (SoFullPath*)action->getCurPath()->copy();
+                        SoFCSelection::currenthighlight->ref();
+                        highlighted = TRUE;
+                        this->touch(); // force scene redraw
+                        this->redrawHighlighted(action, TRUE);
+                    }
+                }
+                
+                snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                           ,objectName.getValue().getString()
+                                           ,subElementName.getValue().getString()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2]);
+
+                getMainWindow()->statusBar()->showMessage(buf,3000);
+            } else { // picked point
+                if (highlighted) {
+                    if (mymode == AUTO)
+                        SoFCSelection::turnoffcurrent(action);
+                    //FIXME: I think we should set 'highlighted' to false whenever no point is picked
+                    //else
+                    highlighted = FALSE;
+                    Gui::Selection().rmvPreselect();
+                }
+            }
+        }
+#else
+        const SoPickedPoint * pp = action->getPickedPoint();
+        if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+            if (!highlighted) {
+                if (mymode == AUTO || mymode == ON) {
+                    if (Gui::Selection().setPreselect(documentName.getValue().getString()
+                                           ,objectName.getValue().getString()
+                                           ,subElementName.getValue().getString()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2])){
+                        SoFCSelection::turnoffcurrent(action);
+                        SoFCSelection::currenthighlight = (SoFullPath*)action->getCurPath()->copy();
+                        SoFCSelection::currenthighlight->ref();
+                        highlighted = TRUE;
+                        this->touch(); // force scene redraw
+                        this->redrawHighlighted(action, TRUE);
+                    }
+                } else { // mymode
+                    // preselection in the viewer is disabled but we must inform all observers anyway
+                    if (Gui::Selection().setPreselect(documentName.getValue().getString()
                                            ,objectName.getValue().getString()
                                            ,subElementName.getValue().getString()
                                            ,pp->getPoint()[0]
                                            ,pp->getPoint()[1]
                                            ,pp->getPoint()[2]))
-           highlighted = TRUE;
+                        highlighted = TRUE;
+                }
+            } // highlight
+            snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                           ,objectName.getValue().getString()
+                                           ,subElementName.getValue().getString()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2]);
+
+            getMainWindow()->statusBar()->message(buf,3000);
+        } else { // picked point
+            if (highlighted) {
+                if (mymode == AUTO)
+                    SoFCSelection::turnoffcurrent(action);
+                //FIXME: I think we should set 'highlighted' to false whenever no point is picked
+                //else
+                highlighted = FALSE;
+                Gui::Selection().rmvPreselect();
+            }
         }
-      }
-      snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-                                                      ,objectName.getValue().getString()
-                                                      ,subElementName.getValue().getString()
-                                                      ,pp->getPoint()[0]
-                                                      ,pp->getPoint()[1]
-                                                      ,pp->getPoint()[2]);
+#endif
+    // key press events
+    } else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
+        SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
+        if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT)     ||
+            SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)     )
+            bShift = true;
+        if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT)   ||
+            SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+            bShift = false;
+        if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL)   ||
+            SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+            bCtrl = true;
+        if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+            SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
+            bCtrl = false;
 
-      getMainWindow()->statusBar()->showMessage(buf,3000);
-    }
-    else {
-      if (highlighted) {
-        if (mymode == AUTO)
-          SoFCSelection::turnoffcurrent(action);
-        //FIXME: I think we should set 'highlighted' to false whenever no point is picked
-//        else
-          highlighted = FALSE;
-        Gui::Selection().rmvPreselect();
-      }
-    }
-  }else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
-    //const SoPickedPoint * pp = action->getPickedPoint();
-    SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
-
-    if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
-        SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
-        bShift = true;
-    if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
-        SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
-        bShift = false;
-
-    if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
-        SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
-        bCtrl = true;
-    if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
-        SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
-        bCtrl = false;
-
-     
-  }else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
-    const SoPickedPoint * pp = action->getPickedPoint();
-    SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
-
-    //FIXME: Shouldn't we remove the preselection for newly selected objects?
-    //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
-    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-      if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-        if(bCtrl)
-        {
-          if(Gui::Selection().isSelected(documentName.getValue().getString()
+    // mouse press events for (de)selection
+    } else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+        SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+        if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+            //FIXME: Shouldn't we remove the preselection for newly selected objects?
+            //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
+            const SoPickedPoint * pp = action->getPickedPoint();
+            if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+                if (bCtrl) {
+                    if (Gui::Selection().isSelected(documentName.getValue().getString()
                                          ,objectName.getValue().getString()
-                                         ,subElementName.getValue().getString()))
-          {
-            Gui::Selection().rmvSelection(documentName.getValue().getString()
+                                         ,subElementName.getValue().getString())) {
+                        Gui::Selection().rmvSelection(documentName.getValue().getString()
                                           ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString());
-          }else{
-            Gui::Selection().addSelection(documentName.getValue().getString()
+                    } else {
+                        Gui::Selection().addSelection(documentName.getValue().getString()
                                           ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString()
                                           ,pp->getPoint()[0]
                                           ,pp->getPoint()[1]
                                           ,pp->getPoint()[2]);
-          }
-        }else{
-          Gui::Selection().clearSelection(documentName.getValue().getString());
-          Gui::Selection().addSelection(documentName.getValue().getString()
+
+                        if (mymode == OFF) {
+                            snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                       ,objectName.getValue().getString()
+                                                       ,subElementName.getValue().getString()
+                                                       ,pp->getPoint()[0]
+                                                       ,pp->getPoint()[1]
+                                                       ,pp->getPoint()[2]);
+
+                            getMainWindow()->statusBar()->showMessage(buf,3000);
+                        }
+                    }
+                } else { // Ctrl
+                    Gui::Selection().clearSelection(documentName.getValue().getString());
+                    Gui::Selection().addSelection(documentName.getValue().getString()
                                           ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString()
                                           ,pp->getPoint()[0]
                                           ,pp->getPoint()[1]
                                           ,pp->getPoint()[2]);
-        }
+ 
+                    if (mymode == OFF) {
+                        snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                   ,objectName.getValue().getString()
+                                                   ,subElementName.getValue().getString()
+                                                   ,pp->getPoint()[0]
+                                                   ,pp->getPoint()[1]
+                                                   ,pp->getPoint()[2]);
 
+                        getMainWindow()->statusBar()->showMessage(buf,3000);
+                    }
+                }
 
-        action->setHandled(); 
-      }
-    
+                action->setHandled(); 
+            } // picked point
+        } // mouse release
     }
-  }else if (event->isOfType(SoFCDocumentObjectEvent::getClassTypeId())) {
-    const SoPickedPoint * pp = action->getPickedPoint();
-    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-      SoFCDocumentObjectEvent* e = (SoFCDocumentObjectEvent*)event;
-      e->setDocumentName(documentName.getValue());
-      e->setObjectName(objectName.getValue());
-      e->setComponentName(subElementName.getValue());
-      e->setPoint(pp->getPoint());
-      action->setHandled();
-    }
-  }
 
-  inherited::handleEvent(action);
+    inherited::handleEvent(action);
 }
 
 // doc from parent

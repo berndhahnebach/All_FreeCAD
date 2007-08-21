@@ -65,11 +65,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // analyze
     Gui::MenuItem* analyze = new Gui::MenuItem;
     analyze->setCommand(QT_TR_NOOP("Analyze"));
-    *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+    *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
  
     mesh->setCommand(QT_TR_NOOP("&Meshes"));
     *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
-          << "Mesh_FillupHoles" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" 
+          << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" 
           << "Separator" << "Mesh_Import" << "Mesh_Export" << "Separator" 
           << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" 
           << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
