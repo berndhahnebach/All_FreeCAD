@@ -89,10 +89,10 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::
     _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
   else
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
-
-  // check whether the simple or the Full Mouse model is used
-  _viewer->setMouseModel(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetInt("MouseModel",1));
  
+  // check whether the simple or the Full Mouse model is used
+  _viewer->setMouseModel(hGrp->GetInt("MouseModel",1));
+
   // Do not show the Inventor viewer here because it flickers when we change its size
   //_viewer->show();
 
@@ -201,6 +201,11 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
     SoSFColor col; col.setValue(selectionColor);
     SoFCSelectionColorAction cAct( col );
     cAct.apply(_viewer->getSceneGraph());
+  } else if ( strcmp(Reason,"MouseModel") == 0 ) {
+    // check whether the simple or the Full Mouse model is used
+    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    int model = rclGrp.GetInt("MouseModel",1);
+    _viewer->setMouseModel(model);
   } else {
     setViewerDefaults();
   }

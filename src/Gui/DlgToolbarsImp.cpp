@@ -162,8 +162,6 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
     for (std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it) {
         // create a toplevel item
         QTreeWidgetItem* toplevel = new QTreeWidgetItem(toolbarTreeWidget);
-        QString toolbarName = QString::fromUtf8((*it)->GetASCII("Name", "Custom").c_str());
-        toplevel->setText(0, toolbarName);
         bool active = (*it)->GetBool("Active", true);
         toplevel->setCheckState(0, (active ? Qt::Checked : Qt::Unchecked));
 
@@ -175,6 +173,9 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
                 item->setText(0, tr("<Separator>"));
                 item->setData(0, Qt::UserRole, QByteArray("Separator"));
                 item->setSizeHint(0, QSize(32, 32));
+            } else if (it2->first == "Name") {
+                QString toolbarName = QString::fromUtf8(it2->second.c_str());
+                toplevel->setText(0, toolbarName);
             } else {
                 Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
                 if (pCmd) {

@@ -228,14 +228,16 @@ void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) cons
         if (!active) // ignore this toolbar
             continue;
         ToolBarItem* bar = new ToolBarItem(root);
-        QString toolbarName = QString::fromUtf8((*it)->GetASCII("Name", "Custom").c_str());
-        bar->setCommand(toolbarName);
+        bar->setCommand("Custom");
    
         // get the elements of the subgroups
         std::vector<std::pair<std::string,std::string> > items = hGrp->GetGroup((*it)->GetGroupName())->GetASCIIMap();
         for (std::vector<std::pair<std::string,std::string> >::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
             if (it2->first == "Separator") {
                 *bar << "Separator";
+            } else if (it2->first == "Name") {
+                QString toolbarName = QString::fromUtf8(it2->second.c_str());
+                bar->setCommand(toolbarName);
             } else {
                 Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
                 if (!pCmd) { // unknown command
