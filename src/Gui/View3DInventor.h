@@ -21,124 +21,98 @@
  ***************************************************************************/
 
 
-#ifndef __VIEW3DINVENTOR__
-#define __VIEW3DINVENTOR__
+#ifndef GUI_VIEW3DINVENTOR_H
+#define GUI_VIEW3DINVENTOR_H
 
 #include "MDIView.h"
 
-#include "Inventor/Qt/viewers/SoQtViewer.h"
-
 #include <Base/Parameter.h>
-//Added by qt3to4:
-#include <QtCore/QEvent>
-#include <QtGui/QDragEnterEvent>
-#include <QtGui/QDropEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QKeyEvent>
-
-class QMouseEvent;
-class QSplitter;
-class QWidget;
-class QPushButton;
-class QTabBar;
-class SoQtViewer;
-
-class SoSeparator;
-class SoShapeHints;
-class SoMaterial;
-
 
 namespace Gui {
+
 class Document;
-class TreeView;
-class View3DInventor;
 class View3DInventorViewer;
-class MyView3DInventor;
-class ViewProviderFeature;
 class View3DPy;
 
 
-/** The 3D View Window
- *  It consist out of the 3DView 
+/** The 3D view window
+ *  It consists out of the 3D view 
  *  \author Jürgen Riegel
  */
-class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType
+class GuiExport View3DInventor : public MDIView, public ParameterGrp::ObserverType
 {
-  Q_OBJECT;
+    Q_OBJECT;
 
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
-  ~View3DInventor();
+    View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0);
+    ~View3DInventor();
 
-  /// Mesage handler
-  virtual bool onMsg(const char* pMsg, const char** ppReturn);
-  virtual bool onHasMsg(const char* pMsg) const;
+    /// Mesage handler
+    virtual bool onMsg(const char* pMsg, const char** ppReturn);
+    virtual bool onHasMsg(const char* pMsg) const;
+    /// Observer message from the ParameterGrp
+    virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
+    /// get called when the document is updated
+    virtual void onRename(Gui::Document *pDoc);
+    virtual void onUpdate(void);
+    virtual const char *getName(void) const;
 
-  /// Observer message from the ParameterGrp
-  virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
-  /// get called when the document is updated
-  virtual void onRename(Gui::Document *pDoc);
+    /// handle dropped files on this document
+    void import(const char* FileName);
 
-  /// handle dropt files on this document
-  void import(const char* FileName);
+    virtual PyObject *getPyObject(void);
 
-  virtual PyObject *getPyObject(void);
+    void updatePrefs(void);
+    void setViewerDefaults(void);
+    /**
+     * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
+     * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
+     * as tabbed window. 
+     * This method is reimplemented from MDIView to set the this widget as the proxy of the embedded
+     * GL widget to get all key events in \a TopLevel or \a Fullscreen mode.
+     */
+    void setCurrentViewMode(ViewMode b);
+    bool setCamera(const char* pCamera);
+    void toggleClippingPlane();
+    bool hasClippingPlane() const;
 
-  virtual const char *getName(void) const;
+    /// helper to apply a SoWriteAction to a node and write it to a string
+    static const std::string& writeNodesToString(SoNode * root);
 
-  virtual void onUpdate(void);
-
-  void updatePrefs(void);
-
-  void setViewerDefaults(void);
-  /**
-   * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
-   * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
-   * as tabbed window. 
-   * This method is reimplemented from MDIView to set the this widget as the proxy of the embedded
-   * GL widget to get all key events in \a TopLevel or \a Fullscreen mode.
-   */
-  virtual void setCurrentViewMode( ViewMode b );
-  bool eventFilter(QObject* o, QEvent* e);
-
-  bool setCamera(const char* pCamera);
-  void toggleClippingPlane();
-  bool hasClippingPlane() const;
-
-  /// helper to apply a SoWriteAction to a node and write it to a string
-  static const std::string& writeNodesToString(SoNode * root);
-
-  View3DInventorViewer *getViewer(void) const {return _viewer;}
+    View3DInventorViewer *getViewer(void) const {return _viewer;}
   
 public Q_SLOTS:
-  void setCursor(const QCursor&);
-  void dump(const char* filename);
+    void setCursor(const QCursor&);
+    void dump(const char* filename);
 
 protected Q_SLOTS:
-  void stopAnimating();
+    void stopAnimating();
+
+public:
+    bool eventFilter(QObject*, QEvent* );
 
 protected:
-  void showActiveView( MDIView* );
-  void dropEvent        ( QDropEvent      * e );
-  void dragEnterEvent   ( QDragEnterEvent * e );
-  void keyPressEvent    ( QKeyEvent       * e );
-  void keyReleaseEvent  ( QKeyEvent       * e );
+    void showActiveView   (MDIView*           );
+    void dropEvent        (QDropEvent      * e);
+    void dragEnterEvent   (QDragEnterEvent * e);
+    void keyPressEvent    (QKeyEvent       * e);
+    void keyReleaseEvent  (QKeyEvent       * e);
 
-  /// handle to the viewer parameter group
-  ParameterGrp::handle hGrp;
+    /// handle to the viewer parameter group
+    ParameterGrp::handle hGrp;
 
 private:
-  View3DInventorViewer * _viewer;
-  View3DPy *_pcViwer3DPy;
-  QTimer * stopSpinTimer;
+    View3DInventorViewer * _viewer;
+    View3DPy *_viewerPy;
+    QTimer * stopSpinTimer;
 
-  // friends
-  friend class View3DPy;
+    // friends
+    friend class View3DPy;
 };
 
 } // namespace Gui
 
-#endif  //__VIEW3DINVENTOR__
+#endif  // GUI_VIEW3DINVENTOR_H
 

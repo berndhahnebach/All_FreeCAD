@@ -69,169 +69,162 @@ using namespace Gui;
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
-View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags )
-    :MDIView( pcDocument,parent, wflags),_pcViwer3DPy(0)
+View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags)
+    : MDIView(pcDocument, parent, wflags), _viewerPy(0)
 {
-  // important for highlighting 
-  setMouseTracking(true);
-  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
-  setAcceptDrops(true);
+    // important for highlighting 
+    setMouseTracking(true);
+    // accept drops on the window, get handled in dropEvent, dragEnterEvent   
+    setAcceptDrops(true);
   
-  // attache Parameter Observer
-  hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
-  hGrp->Attach(this);
+    // attache Parameter Observer
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+    hGrp->Attach(this);
 
-  // create the inventor widget and set the defaults
-  _viewer = new View3DInventorViewer(this);
-  setViewerDefaults();
-  // check whether a perspective or orthogrphic camera should be set
-  if ( hGrp->GetBool("Orthographic", false) )
-    _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
-  else
-    _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
+    // create the inventor widget and set the defaults
+    _viewer = new View3DInventorViewer(this);
+    setViewerDefaults();
+    // check whether a perspective or orthogrphic camera should be set
+    if ( hGrp->GetBool("Orthographic", false) )
+        _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+    else
+        _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
  
-  // check whether the simple or the Full Mouse model is used
-  _viewer->setMouseModel(hGrp->GetInt("MouseModel",1));
+    // check whether the simple or the Full Mouse model is used
+    _viewer->setMouseModel(hGrp->GetInt("MouseModel",1));
 
-  // Do not show the Inventor viewer here because it flickers when we change its size
-  //_viewer->show();
-
-  stopSpinTimer = new QTimer(this);
-  connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
+    stopSpinTimer = new QTimer(this);
+    connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
 }
 
 View3DInventor::~View3DInventor()
 {
-  hGrp->Detach(this);
+    hGrp->Detach(this);
 
-  //FIXME: This workaround can be removed after we have done the redesign with BaseView.
-  //If we destroy this viewer by calling 'delete' directly the focus proxy widget which is defined 
-  //by a widget in SoQtViewer isn't resetted. This widget becomes to a dangling pointer and makes
-  //the application crash. (Probably it's better to destroy this viewer by calling close().)
-  //See also Gui::Document::~Document().
-  QWidget* foc = qApp->focusWidget();
-  if (foc) {
-    QWidget* par = foc->parentWidget();
-    while ( par ) {
-      if ( par == this ) { 
-        foc->setFocusProxy(0); foc->clearFocus(); break;
-      } else {
-        par = par->parentWidget();
-      }
+    //FIXME: This workaround can be removed after we have done the redesign with BaseView.
+    //If we destroy this viewer by calling 'delete' directly the focus proxy widget which is defined 
+    //by a widget in SoQtViewer isn't resetted. This widget becomes to a dangling pointer and makes
+    //the application crash. (Probably it's better to destroy this viewer by calling close().)
+    //See also Gui::Document::~Document().
+    QWidget* foc = qApp->focusWidget();
+    if (foc) {
+        QWidget* par = foc->parentWidget();
+        while ( par ) {
+            if ( par == this ) { 
+                foc->setFocusProxy(0); foc->clearFocus(); break;
+            } else {
+                par = par->parentWidget();
+            }
+        }
     }
-  }
 
-  if(_pcViwer3DPy) {
-    _pcViwer3DPy->setInvalid();
-    Py_DECREF(_pcViwer3DPy);
-  }
+    if (_viewerPy) {
+        _viewerPy->setInvalid();
+        Py_DECREF(_viewerPy);
+    }
 
   delete _viewer;
 }
 
 PyObject *View3DInventor::getPyObject(void)
 {
-  if(!_pcViwer3DPy)
-  {
-    _pcViwer3DPy = new View3DPy(this);
-  }
+    if (!_viewerPy)
+        _viewerPy = new View3DPy(this);
 
-  Py_INCREF(_pcViwer3DPy);
-  return _pcViwer3DPy;
+    Py_INCREF(_viewerPy);
+    return _viewerPy;
 }
-
 
 void View3DInventor::setViewerDefaults(void)
 {
-  Base::Console().Log("Act: View3DInventor::setViewerDefaults()\n");
+    Base::Console().Log("Act: View3DInventor::setViewerDefaults()\n");
 
-  _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
-  _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
-  _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
-  _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
-  unsigned long col = hGrp->GetUnsigned("BackgroundColor",0);
-  float r,g,b;
-  r = ((col >> 24) & 0xff) / 255.0; g = ((col >> 16) & 0xff) / 255.0; b = ((col >> 8) & 0xff) / 255.0;
-  _viewer->setBackgroundColor(SbColor(r, g, b));
+    _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
+    _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
+    _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
+    _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
+    unsigned long col = hGrp->GetUnsigned("BackgroundColor",0);
+    float r,g,b;
+    r = ((col >> 24) & 0xff) / 255.0; g = ((col >> 16) & 0xff) / 255.0; b = ((col >> 8) & 0xff) / 255.0;
+    _viewer->setBackgroundColor(SbColor(r, g, b));
 
-  unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (lila)
-  unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
-  float r2,g2,b2,r3,g3,b3;
-  r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
-  r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
-  _viewer->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
+    unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (lila)
+    unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
+    float r2,g2,b2,r3,g3,b3;
+    r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
+    r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
+    _viewer->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
 
-  if(hGrp->GetBool("UseAntialiasing"  ,false))
-    _viewer->getGLRenderAction()->setSmoothing(true);
-  else
-    _viewer->getGLRenderAction()->setSmoothing(false);
-  _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
+    if (hGrp->GetBool("UseAntialiasing"  ,false))
+        _viewer->getGLRenderAction()->setSmoothing(true);
+    else
+        _viewer->getGLRenderAction()->setSmoothing(false);
+    _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
 }
 
-/// Observer message from the ParameterGrp
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
-  if ( strcmp(Reason,"DisablePreselection") == 0 ) {
-    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-    SoFCEnableHighlightAction cAct( !rclGrp.GetBool("DisablePreselection", false) );
-    cAct.apply(_viewer->getSceneGraph());
-  } else if ( strcmp(Reason,"DisableSelection") == 0) {
-    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-    SoFCEnableSelectionAction cAct( !rclGrp.GetBool("DisableSelection", false) );
-    cAct.apply(_viewer->getSceneGraph());
-  } else if ( strcmp(Reason,"HighlightColor") == 0) {
-    float transparency;
-    SbColor highlightColor(0.1f, 0.1f, 0.8f);
-    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-    int a = (highlight)&0xff;
-    highlight = hGrp->GetUnsigned("HighlightColor", highlight);
-    highlight += a;
-    highlightColor.setPackedValue((uint32_t)highlight, transparency);
-    SoSFColor col; col.setValue(highlightColor);
-    SoFCHighlightColorAction cAct( col );
-    cAct.apply(_viewer->getSceneGraph());
-  } else if ( strcmp(Reason,"SelectionColor") == 0) {
-    float transparency;
-    SbColor selectionColor(0.1f, 0.5f, 0.1f);
-    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-    int a = (selection)&0xff;
-    selection = hGrp->GetUnsigned("SelectionColor", selection);
-    selection += a;
-    selectionColor.setPackedValue((uint32_t)selection, transparency);
-    SoSFColor col; col.setValue(selectionColor);
-    SoFCSelectionColorAction cAct( col );
-    cAct.apply(_viewer->getSceneGraph());
-  } else if ( strcmp(Reason,"MouseModel") == 0 ) {
-    // check whether the simple or the Full Mouse model is used
-    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-    int model = rclGrp.GetInt("MouseModel",1);
-    _viewer->setMouseModel(model);
-  } else {
-    setViewerDefaults();
-  }
+    if ( strcmp(Reason,"DisablePreselection") == 0 ) {
+        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+        SoFCEnableHighlightAction cAct( !rclGrp.GetBool("DisablePreselection", false) );
+        cAct.apply(_viewer->getSceneGraph());
+    } else if ( strcmp(Reason,"DisableSelection") == 0) {
+        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+        SoFCEnableSelectionAction cAct( !rclGrp.GetBool("DisableSelection", false) );
+        cAct.apply(_viewer->getSceneGraph());
+    } else if ( strcmp(Reason,"HighlightColor") == 0) {
+        float transparency;
+        SbColor highlightColor(0.1f, 0.1f, 0.8f);
+        unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
+        int a = (highlight)&0xff;
+        highlight = hGrp->GetUnsigned("HighlightColor", highlight);
+        highlight += a;
+        highlightColor.setPackedValue((uint32_t)highlight, transparency);
+        SoSFColor col; col.setValue(highlightColor);
+        SoFCHighlightColorAction cAct( col );
+        cAct.apply(_viewer->getSceneGraph());
+    } else if ( strcmp(Reason,"SelectionColor") == 0) {
+        float transparency;
+        SbColor selectionColor(0.1f, 0.5f, 0.1f);
+        unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
+        int a = (selection)&0xff;
+        selection = hGrp->GetUnsigned("SelectionColor", selection);
+        selection += a;
+        selectionColor.setPackedValue((uint32_t)selection, transparency);
+        SoSFColor col; col.setValue(selectionColor);
+        SoFCSelectionColorAction cAct( col );
+        cAct.apply(_viewer->getSceneGraph());
+    } else if ( strcmp(Reason,"MouseModel") == 0 ) {
+        // check whether the simple or the Full Mouse model is used
+        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+        int model = rclGrp.GetInt("MouseModel",1);
+        _viewer->setMouseModel(model);
+    } else {
+        setViewerDefaults();
+    }
 }
 
 void View3DInventor::onRename(Gui::Document *pDoc)
 {
-  MDIView::onRename(pDoc);
-  SoSFString name;
-  name.setValue(pDoc->getDocument()->getName());
-  SoFCDocumentAction cAct(name);
-  cAct.apply(_viewer->getSceneGraph());
+    MDIView::onRename(pDoc);
+    SoSFString name;
+    name.setValue(pDoc->getDocument()->getName());
+    SoFCDocumentAction cAct(name);
+    cAct.apply(_viewer->getSceneGraph());
 }
 
 void View3DInventor::onUpdate(void)
 {
 #ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
+    Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
 #endif
-  update();  
-  _viewer->render();
+    update();  
+    _viewer->render();
 }
 
 const char *View3DInventor::getName(void) const
 {
-  return "View3DInventor";
+    return "View3DInventor";
 }
 
 // buffer acrobatics for inventor ****************************************************
@@ -242,24 +235,24 @@ static std::string cReturnString;
 static void *
 buffer_realloc(void * bufptr, size_t size)
 {
-  buffer = (char *)realloc(bufptr, size);
-  buffer_size = size;
-  return buffer;
+    buffer = (char *)realloc(bufptr, size);
+    buffer_size = size;
+    return buffer;
 }
 
 const std::string &View3DInventor::writeNodesToString(SoNode * root)
 {
-  SoOutput out;
-  buffer = (char *)malloc(1024);
-  buffer_size = 1024;
-  out.setBuffer(buffer, buffer_size, buffer_realloc);
+    SoOutput out;
+    buffer = (char *)malloc(1024);
+    buffer_size = 1024;
+    out.setBuffer(buffer, buffer_size, buffer_realloc);
 
-  SoWriteAction wa(&out);
-  wa.apply(root);
+    SoWriteAction wa(&out);
+    wa.apply(root);
 
-  cReturnString =buffer;
-  free(buffer);
-  return cReturnString;
+    cReturnString =buffer;
+    free(buffer);
+    return cReturnString;
 }
 
 // **********************************************************************************
@@ -433,238 +426,246 @@ bool View3DInventor::onHasMsg(const char* pMsg) const
 
 bool View3DInventor::setCamera(const char* pCamera)
 {
-  SoCamera * CamViewer = _viewer->getCamera();
-  if(!CamViewer) {
-    throw Base::Exception("No camera set so far...");
-    //Base::Console().Warning("No camera set so far...");
-    //return false;
-  }
-
-  SoInput in;
-  in.setBuffer((void*)pCamera,strlen(pCamera));
-
-  SoNode * Cam;
-  SoDB::read(&in,(SoNode*&)Cam);
-
-  if (!Cam){
-    throw Base::Exception("Camera settings failed to read");
-//    Base::Console().Error("Camera settings failed to read: %s\n",pCamera);
-//    return false;
-  }
-
-  // toogle between persepective and orthographic camera
-  if (Cam->getTypeId() != CamViewer->getTypeId())
-  {
-    _viewer->setCameraType(Cam->getTypeId());
-    CamViewer = _viewer->getCamera();
-  }
-
-  SoPerspectiveCamera  * CamViewerP = 0;
-  SoOrthographicCamera * CamViewerO = 0;
-
-  if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
-    CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
-  }else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
-    CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
-  }
-
-  if (Cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
-    if(CamViewerP){
-      CamViewerP->position      = ((SoPerspectiveCamera *)Cam)->position;
-      CamViewerP->orientation   = ((SoPerspectiveCamera *)Cam)->orientation;
-      CamViewerP->nearDistance  = ((SoPerspectiveCamera *)Cam)->nearDistance;
-      CamViewerP->farDistance   = ((SoPerspectiveCamera *)Cam)->farDistance;
-      CamViewerP->focalDistance = ((SoPerspectiveCamera *)Cam)->focalDistance;
+    SoCamera * CamViewer = _viewer->getCamera();
+    if (!CamViewer) {
+        throw Base::Exception("No camera set so far...");
     }
-    else {
-      throw Base::Exception("Camera type mismatch");
-      //Base::Console().Error("Camera type mismatch");
-    }
-  }else if (Cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
-    if(CamViewerO){
-      CamViewerO->viewportMapping  = ((SoOrthographicCamera *)Cam)->viewportMapping;
-      CamViewerO->position         = ((SoOrthographicCamera *)Cam)->position;
-      CamViewerO->orientation      = ((SoOrthographicCamera *)Cam)->orientation;
-      CamViewerO->nearDistance     = ((SoOrthographicCamera *)Cam)->nearDistance;
-      CamViewerO->farDistance      = ((SoOrthographicCamera *)Cam)->farDistance;
-      CamViewerO->focalDistance    = ((SoOrthographicCamera *)Cam)->focalDistance;
-      CamViewerO->aspectRatio      = ((SoOrthographicCamera *)Cam)->aspectRatio ;
-      CamViewerO->height           = ((SoOrthographicCamera *)Cam)->height;
-    }
-    else {
-      throw Base::Exception("Camera type mismatch");
-      //Base::Console().Error("Camera type mismatch");
-    }
-  }
 
-  return true;
+    SoInput in;
+    in.setBuffer((void*)pCamera,strlen(pCamera));
+
+    SoNode * Cam;
+    SoDB::read(&in,(SoNode*&)Cam);
+
+    if (!Cam){
+        throw Base::Exception("Camera settings failed to read");
+    }
+
+    // toogle between persepective and orthographic camera
+    if (Cam->getTypeId() != CamViewer->getTypeId())
+    {
+        _viewer->setCameraType(Cam->getTypeId());
+        CamViewer = _viewer->getCamera();
+    }
+
+    SoPerspectiveCamera  * CamViewerP = 0;
+    SoOrthographicCamera * CamViewerO = 0;
+
+    if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
+    } else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
+    }
+
+    if (Cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        if (CamViewerP){
+            CamViewerP->position      = ((SoPerspectiveCamera *)Cam)->position;
+            CamViewerP->orientation   = ((SoPerspectiveCamera *)Cam)->orientation;
+            CamViewerP->nearDistance  = ((SoPerspectiveCamera *)Cam)->nearDistance;
+            CamViewerP->farDistance   = ((SoPerspectiveCamera *)Cam)->farDistance;
+            CamViewerP->focalDistance = ((SoPerspectiveCamera *)Cam)->focalDistance;
+        } else {
+            throw Base::Exception("Camera type mismatch");
+        }
+    } else if (Cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        if (CamViewerO){
+            CamViewerO->viewportMapping  = ((SoOrthographicCamera *)Cam)->viewportMapping;
+            CamViewerO->position         = ((SoOrthographicCamera *)Cam)->position;
+            CamViewerO->orientation      = ((SoOrthographicCamera *)Cam)->orientation;
+            CamViewerO->nearDistance     = ((SoOrthographicCamera *)Cam)->nearDistance;
+            CamViewerO->farDistance      = ((SoOrthographicCamera *)Cam)->farDistance;
+            CamViewerO->focalDistance    = ((SoOrthographicCamera *)Cam)->focalDistance;
+            CamViewerO->aspectRatio      = ((SoOrthographicCamera *)Cam)->aspectRatio ;
+            CamViewerO->height           = ((SoOrthographicCamera *)Cam)->height;
+        } else {
+            throw Base::Exception("Camera type mismatch");
+        }
+    }
+
+    return true;
 }
 
 void View3DInventor::toggleClippingPlane()
 {
-  _viewer->toggleClippingPlane();
+    _viewer->toggleClippingPlane();
 }
 
 bool View3DInventor::hasClippingPlane() const
 {
-  return _viewer->hasClippingPlane();
+    return _viewer->hasClippingPlane();
 }
 
 void View3DInventor::setCursor(const QCursor& aCursor)
 {
-  _viewer->getWidget()->setCursor(aCursor);
+    _viewer->getWidget()->setCursor(aCursor);
 }
 
 void View3DInventor::dump(const char* filename)
 {
-  SoGetPrimitiveCountAction action;
-  action.setCanApproximate(true);
-  action.apply(_viewer->getSceneGraph());
+    SoGetPrimitiveCountAction action;
+    action.setCanApproximate(true);
+    action.apply(_viewer->getSceneGraph());
 
-  if ( action.getTriangleCount() > 100000 || action.getPointCount() > 30000 || action.getLineCount() > 10000 )
-    _viewer->dumpToFile(filename,true);
-  else
-    _viewer->dumpToFile(filename,false);
+    if ( action.getTriangleCount() > 100000 || action.getPointCount() > 30000 || action.getLineCount() > 10000 )
+        _viewer->dumpToFile(filename,true);
+    else
+        _viewer->dumpToFile(filename,false);
 }
 
-void View3DInventor::showActiveView( MDIView* view )
+void View3DInventor::showActiveView(MDIView* view)
 {
-  if ( view != this ) {
-    bool canStartTimer = (!isTopLevel() && (view->isMaximized() || view->isFullScreen()));
-    if ( canStartTimer ) {
-      // do a sinlge shot event (maybe insert a checkbox in viewer settings)
-      int msecs = hGrp->GetInt("stopAnimatingIfDeactivated", 3000);
-      if (msecs >= 0) // if < 0 do not stop rotation
-        stopSpinTimer->setSingleShot(true);
-        stopSpinTimer->start(msecs);
-    } else if ( stopSpinTimer->isActive() ) {
-      // If the active is not maximized anymore we can also stop the timer
-      stopSpinTimer->stop();
+    bool canStartTimer = false;
+    if (this != view) {
+        // If both views are child widgets of the workspace and view is maximized this view 
+        // must be hidden, hence we can start the timer.
+        // Note: If view is top-level and fullscreen it doesn't necessarily hide the other view
+        // e.g. if it is on a second monitor.
+        canStartTimer = (!this->isTopLevel() && !view->isTopLevel() && view->isMaximized());
+    } else if (isMinimized()) {
+        // I am the active view but minimized
+        canStartTimer = true;
     }
-  } else if ( stopSpinTimer->isActive() ) {
-    // if the window becomes active before the timeout event is emitted we stop the timer
-    stopSpinTimer->stop();
-  }
+
+    if (canStartTimer) {
+        // do a single shot event (maybe insert a checkbox in viewer settings)
+        int msecs = hGrp->GetInt("stopAnimatingIfDeactivated", 3000);
+        if (!stopSpinTimer->isActive() && msecs >= 0) { // if < 0 do not stop rotation
+            stopSpinTimer->setSingleShot(true);
+            stopSpinTimer->start(msecs);
+        }
+    } else if (stopSpinTimer->isActive()) {
+        // If the active is not maximized anymore we can also stop the timer
+        stopSpinTimer->stop();
+    }
 }
 
 void View3DInventor::stopAnimating()
 {
-  _viewer->stopAnimating();
+    _viewer->stopAnimating();
 }
 
 /**
  * Drops the event \a e and writes the right Python command.
  */
-void View3DInventor::dropEvent ( QDropEvent * e )
+void View3DInventor::dropEvent (QDropEvent * e)
 {
-  const QMimeData* data = e->mimeData();
-  if ( data->hasUrls() ) {
-    QList<QUrl> uri = data->urls();
-    App::Document* pDoc = getAppDocument();
-    if ( pDoc ) {
-      for ( QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it ) {
-        QFileInfo info((*it).toLocalFile());
-        if ( info.exists() && info.isFile() ) {
-          // First check the complete extension
-          if ( App::GetApplication().hasOpenType(info.completeSuffix().toAscii() ) )
-            Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
-          // Don't get the complete extension
-          else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
-            Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+    const QMimeData* data = e->mimeData();
+    if (data->hasUrls()) {
+        QList<QUrl> uri = data->urls();
+        App::Document* pDoc = getAppDocument();
+        if (pDoc) {
+            for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
+                QFileInfo info((*it).toLocalFile());
+                if ( info.exists() && info.isFile() ) {
+                    // First check the complete extension
+                    if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
+                        Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                    // Don't get the complete extension
+                    else if (App::GetApplication().hasOpenType( info.suffix().toAscii()))
+                        Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                }
+            }
         }
-      }
+    } else {
+        MDIView::dropEvent(e);
     }
-  } else {
-    MDIView::dropEvent(e);
-  }
 }
 
-void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
+void View3DInventor::dragEnterEvent (QDragEnterEvent * e)
 {
-  // Here we must allow uri drafs and check them in dropEvent
-  const QMimeData* data = e->mimeData();
-  if ( data->hasUrls() )
-    e->accept();
-  else
-    e->ignore();
-}
-
-void View3DInventor::setCurrentViewMode( ViewMode b )
-{
-  ViewMode curmode = this->currentMode;
-  MDIView::setCurrentViewMode( b );
-
-  // This widget becomes the focus proxy of the embedded GL widget.if we leave 
-  // the 'Child' mode. If we reenter 'Child' mode the focus proxy is reset to 0.
-  // If we change from 'TopLevel' mode to 'Fullscreen' mode or vice versa nothing
-  // happens.
-  // Grabbing keyboard when leaving 'Child' mode (as done in a recent version) should
-  // be avoided because when two or more windows are either in 'TopLevel' or 'Fullscreen'
-  // mode only the last window gets all key event even if it is not the active one.
-  //
-  // It is important to set the focus proxy to get all key events otherwise we would loose
-  // control after redirecting the first key event to the GL widget.
-  // We redirect these events in keyPressEvent() and keyReleaseEvent().
-  if ( curmode == Child ) {
-    _viewer->getGLWidget()->setFocusProxy(this);
-  } else if ( b == Child ) {
-    _viewer->getGLWidget()->setFocusProxy(0);
-  }
-}
-
-bool View3DInventor::eventFilter(QObject* o, QEvent* e)
-{
-  // As long as this widget is a top-level widget (either 'TopLevel' or 'Fullscrenn' mode) we 
-  // redirect any accel event to the main window that handles such events.
-  // In case the event isn't handled by any widget we receive it again as a key event.
-  if ( this->currentMode != Child && o == this && e->type() == QEvent::Shortcut ) {
-    QApplication::sendEvent(getMainWindow(),e);
-    return true;
-  } else {
-    return MDIView::eventFilter(o,e);
-  }
-}
-
-void View3DInventor::keyPressEvent ( QKeyEvent* e )
-{
-  if ( this->currentMode != Child )
-  {
-    // If the widget is in fullscreen mode then we can return to normal mode either
-    // by pressing the matching accelerator or ESC. 
-    if ( e->key() == Qt::Key_Escape )
-    {
-      setCurrentViewMode(Child);
-    }
+    // Here we must allow uri drafs and check them in dropEvent
+    const QMimeData* data = e->mimeData();
+    if ( data->hasUrls() )
+        e->accept();
     else
-    {
-      // Note: The key events should be redirected directly to the GL widget and not the main window
-      // otherwise the first redirected key event always disappears in hyperspace.
-      //
-      // send the event to the GL widget that converts to and handles an SoEvent
-      QWidget* w = _viewer->getGLWidget();
-      QApplication::sendEvent(w,e);
-    }
-  }
-  else // the occupied key events F,D and U are are "eaten" by the main window
-  {
-    QMainWindow::keyPressEvent( e );
-  }
+        e->ignore();
 }
 
-void View3DInventor::keyReleaseEvent ( QKeyEvent* e )
+void View3DInventor::setCurrentViewMode(ViewMode newmode)
 {
-  if ( this->currentMode != Child )
-  {
-    // send the event to the GL widget that converts to and handles an SoEvent
-    QWidget* w = _viewer->getGLWidget();
-    QApplication::sendEvent(w,e);
-  }
-  else
-  {
-    QMainWindow::keyReleaseEvent( e );
-  }
+    ViewMode oldmode = this->currentMode;
+    MDIView::setCurrentViewMode(newmode);
+
+    // This widget becomes the focus proxy of the embedded GL widget if we leave 
+    // the 'Child' mode. If we reenter 'Child' mode the focus proxy is reset to 0.
+    // If we change from 'TopLevel' mode to 'Fullscreen' mode or vice versa nothing
+    // happens.
+    // Grabbing keyboard when leaving 'Child' mode (as done in a recent version) should
+    // be avoided because when two or more windows are either in 'TopLevel' or 'Fullscreen'
+    // mode only the last window gets all key event even if it is not the active one.
+    //
+    // It is important to set the focus proxy to get all key events otherwise we would loose
+    // control after redirecting the first key event to the GL widget.
+    // We redirect these events in keyPressEvent() and keyReleaseEvent().
+    if (oldmode == Child) {
+        // To make a global shortcut working from this window we need to add
+        // all existing actions from the mainwindow and its sub-widgets 
+        QList<QAction*> acts = getMainWindow()->findChildren<QAction*>();
+        this->addActions(acts);
+        _viewer->getGLWidget()->setFocusProxy(this);
+        // To be notfified for new actions
+        qApp->installEventFilter(this);
+    } else if (newmode == Child) {
+        _viewer->getGLWidget()->setFocusProxy(0);
+        _viewer->getGLWidget()->setFocus();
+        qApp->removeEventFilter(this);
+        QList<QAction*> acts = this->actions();
+        for (QList<QAction*>::Iterator it = acts.begin(); it != acts.end(); ++it)
+            this->removeAction(*it);
+    }
 }
 
+bool View3DInventor::eventFilter(QObject* watched, QEvent* e)
+{
+    // As long as this widget is a top-level window (either in 'TopLevel' or 'FullScreen' mode) we
+    // need to be notified when an action is added to a widget. This action must also be added to 
+    // this window to allow to make use of its shortcut (if defined).
+    // Note: We don't need to care about removing an action if its parent widget gets destroyed.
+    // This does the action itself for us.
+    if (watched != this && e->type() == QEvent::ActionAdded) {
+        QActionEvent* a = reinterpret_cast<QActionEvent*>(e);
+        QAction* action = a->action();
+
+        if (!action->isSeparator()) {
+            QList<QAction*> actions = this->actions();
+            if (!actions.contains(action))
+                this->addAction(action);
+        }
+    }
+
+    return false;
+}
+
+void View3DInventor::keyPressEvent (QKeyEvent* e)
+{
+    if (this->currentMode != Child) {
+        // If the widget is in fullscreen mode then we can return to normal mode either
+        // by pressing the matching accelerator or ESC. 
+        if (e->key() == Qt::Key_Escape) {
+            setCurrentViewMode(Child);
+        } else {
+            // Note: The key events should be redirected directly to the GL widget and not to the main window
+            // otherwise the first redirected key event always disappears in hyperspace.
+            //
+            // send the event to the GL widget that converts to and handles an SoEvent
+            QWidget* w = _viewer->getGLWidget();
+            QApplication::sendEvent(w,e);
+        }
+    } else {
+        QMainWindow::keyPressEvent(e);
+    }
+}
+
+void View3DInventor::keyReleaseEvent (QKeyEvent* e)
+{
+    if (this->currentMode != Child) {
+        // send the event to the GL widget that converts to and handles an SoEvent
+        QWidget* w = _viewer->getGLWidget();
+        QApplication::sendEvent(w,e);
+    } else {
+        QMainWindow::keyReleaseEvent(e);
+    }
+}
 
 
 #include "moc_View3DInventor.cpp"
