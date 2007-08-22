@@ -33,7 +33,7 @@
 #endif
 
 #include <stdio.h>
-//#include "Approx.h"
+#include "Approx.h"
 
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
@@ -2993,13 +2993,6 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
     //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
 	MeshKernel copy = m;
 	MeshCore::MeshAlgorithm algo(copy);
-	std::vector<double> Control;
-	std::vector<double> KntU;
-	std::vector<double> KntV;
-	//int OrdU;
-	//int OrdV;
-	/*
-	Approximate approx(copy,Control,KntU,KntV,OrdU,OrdV,1.0);
 	std::list< std::vector <unsigned long> > BoundariesIndex;
 	std::list< std::vector <unsigned long> > ::iterator bin_it;
 	std::list< std::vector <Base::Vector3f> > BoundariesPoints;
@@ -3035,14 +3028,106 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
     {
       ++It;
     }
-*/
+
     // most of the algoristhms are under src/Mod/Mesh/App/Core!
 
   } PY_CATCH;
 
   Py_Return;
 }
+static PyObject * MyApprox(PyObject *self, PyObject *args)
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  double tolerance;
+  if (!PyArg_ParseTuple(args, "O!d; Usage:- MyApprox(meshobject, tolerance)", &(MeshPy::Type), &pcObj, &tolerance))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
+  pcObject = (MeshPy*)pcObj;
+
+  PY_TRY {
+    const MeshKernel& m = pcObject->getMesh();
+    //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
+	//MeshKernel copy = m;
+	
+	std::vector<double> Control;
+	std::vector<double> KntU;
+	std::vector<double> KntV;
+	int OrdU;
+	int OrdV;
+	Approximate approx((MeshKernel &)m,Control,KntU,KntV,OrdU,OrdV,tolerance);
+	int maxCntrlU = KntU.size() - OrdU;
+	int maxCntrlV = KntU.size() - OrdV;
+	//Load Control Pnts
+	TColgp_Array2OfPnt Poles(1,maxCntrlU,1,maxCntrlV);
+	for(int u = 0; u < maxCntrlU; u++)
+	{
+		for(int v = 0; v < maxCntrlV; v++)
+			Poles.SetValue(u+1,v+1,gp_Pnt(Control[(u*3)+(3*maxCntrlU*v)],Control[(u*3)+(3*maxCntrlU*v)+1],
+			Control[(u*3)+(3*maxCntrlU*v)+2]));
+	}
+	//Load U-Knot Vector
+	TColStd_Array1OfReal UKnots(1,KntU.size() - 6);
+	TColStd_Array1OfInteger UMults(1,KntU.size() - 6);
+	UKnots.SetValue(1,KntU[0]);
+	for(unsigned int i = 1, j = 1; i < KntU.size(); i++)
+	{
+		if(KntU[i] == KntU[i-1])
+			continue;
+		else
+		{
+			UKnots.SetValue(j+1,KntU[i]);
+			j++;
+		}
+
+	}
+	UMults.SetValue(1,4);
+	UMults.SetValue(KntU.size() - 6,4);
+	for(int i = 1; i < KntU.size() - 7; i++)
+		UMults.SetValue(i+1,1);
+	//Load V-Knot Vector
+	TColStd_Array1OfReal VKnots(1,KntU.size() - 6);
+	TColStd_Array1OfInteger VMults(1,KntU.size() - 6);
+	VKnots.SetValue(1,KntV[0]);
+	for(unsigned int i = 1, j = 1; i < KntV.size(); i++)
+	{
+		if(KntV[i] == KntV[i-1])
+			continue;
+		else
+		{
+			VKnots.SetValue(j+1,KntV[i]);
+			j++;
+		}
+
+	}
+	VMults.SetValue(1,4);
+	VMults.SetValue(KntV.size() - 6,4);
+	for(int i = 1; i < KntV.size() - 7; i++)
+		VMults.SetValue(i+1,1);
+
+	Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
+                                      Poles,        // const TColgp_Array2OfPnt &  	 Poles,
+	                                    UKnots,       // const TColStd_Array1OfReal &  	UKnots,
+	                                    VKnots,       // const TColStd_Array1OfReal &  	VKnots,
+	                                    UMults,       // const TColStd_Array1OfInteger &  	UMults,
+	                                    VMults,       // const TColStd_Array1OfInteger &  	VMults,
+	                                    3,            // const Standard_Integer  	UDegree,
+	                                    3             // const Standard_Integer  	VDegree,
+	                                                  // const Standard_Boolean  	UPeriodic = Standard_False,
+	                                                  // const Standard_Boolean  	VPeriodic = Standard_False*/
+	                          );  
+
+
+	
+
+
+    BRepBuilderAPI_MakeFace 	Face(Surface);
+
+    return new TopoShapePyOld(Face.Face()); 
+  } PY_CATCH;
+
+  Py_Return;
+}
 //PyDoc_STRVAR(open_doc,
 //"open(string) -- Not implemnted for this Module so far.");
 //
@@ -3068,6 +3153,8 @@ struct PyMethodDef Cam_methods[] = {
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
+	   {"MyApprox" , MyApprox, Py_NEWARGS,
+       "MyApprox(MeshObject) -- My test approximate." },
     {NULL     , NULL      }        /* end of table marker */
 };
 
