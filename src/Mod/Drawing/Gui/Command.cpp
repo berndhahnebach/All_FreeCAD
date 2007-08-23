@@ -11,24 +11,14 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
-# include <qfiledialog.h>
-# include <qimage.h>
-# include <qmessagebox.h>
 #endif
 
-#include <Base/Exception.h>
-#include <Base/Interpreter.h>
-#include <App/Document.h>
 #include <Gui/Application.h>
-#include <Gui/MainWindow.h>
 #include <Gui/Command.h>
-#include <Gui/BitmapFactory.h>
+#include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
 
 #include "DrawingView.h"
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 using namespace DrawingGui;
 
@@ -37,14 +27,13 @@ DEF_STD_CMD(CmdDrawingOpen);
 CmdDrawingOpen::CmdDrawingOpen()
 	:Command("Drawing_Open")
 {
-	sAppModule		= "Drawing";
-	sGroup			  = QT_TR_NOOP("Drawing");
-	sMenuText		  = QT_TR_NOOP("Open");
-	sToolTipText	= QT_TR_NOOP("Drawing open image view function");
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			  = "Open";
-	iAccel			  = Qt::CTRL+Qt::Key_O;
+    sAppModule      = "Drawing";
+    sGroup          = QT_TR_NOOP("Drawing");
+    sMenuText       = QT_TR_NOOP("Open");
+    sToolTipText    = QT_TR_NOOP("Drawing open image view function");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Open";
 }
 
 

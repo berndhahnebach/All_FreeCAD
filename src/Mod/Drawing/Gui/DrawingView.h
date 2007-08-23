@@ -105,6 +105,7 @@ protected:
     int _currY;
     int dragStartWCx;
     int dragStartWCy;
+    float aspectRatio; /**< This is the ratio of width and height of the SVG. */
 
     // Action groups
     QActionGroup* _pShowColActGrp;

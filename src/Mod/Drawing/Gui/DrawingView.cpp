@@ -21,6 +21,22 @@
 
 using namespace DrawingGui;
 
+class DrawingScrollArea : public QScrollArea
+{
+public:
+    DrawingScrollArea(QWidget* parent)
+        : QScrollArea(parent)
+    {
+    }
+
+    ~DrawingScrollArea()
+    {
+    }
+protected:
+    void wheelEvent(QWheelEvent* e)
+    {
+    }
+};
 
 /* TRANSLATOR DrawingGui::DrawingView */
 
@@ -38,10 +54,12 @@ DrawingView::DrawingView(QWidget* parent)
 
   // Create an OpenGL widget for displaying Drawings
   //_pGLDrawingBox = new GLDrawingBox(this);
-  QScrollArea* scroll = new QScrollArea(this);
+  QScrollArea* scroll = new DrawingScrollArea(this);
   _drawingView = new QSvgWidget(scroll);
   _drawingView->setBackgroundRole(QPalette::Base);
-  _drawingView->setFocusProxy(scroll);
+  //this->_drawingView->setFocus();
+  //scroll->setFocusProxy(_drawingView);
+//  _drawingView->setFocusProxy(scroll);
   scroll->setWidget(_drawingView);
   //_drawingView->resize(20, 20);
   setCentralWidget(scroll);
@@ -67,6 +85,9 @@ DrawingView::~DrawingView()
 void DrawingView::load (const QString & file)
 {
     this->_drawingView->load(file);
+    QSize size = this->_drawingView->renderer()->defaultSize();
+    this->aspectRatio = (float)size.width() / (float)size.height();
+    this->_drawingView->resize(size);
 }
 
 // Create the action groups, actions, menus and toolbars
@@ -260,10 +281,13 @@ void DrawingView::wheelEvent(QWheelEvent * cEvent)
        int box_y = cEvent->y() - offset.y();
 
        // Zoom around centrally displayed Drawing point
-       int numTicks = cEvent->delta() / 120;
+       float numTicks = (float)(-cEvent->delta())/240.0;
+       float factor = pow(2.0f, numTicks);
        QSize size = this->_drawingView->size();
-       size.setWidth (numTicks * size.width());
-       size.setHeight(numTicks * size.height());
+       float height = std::max<float>(factor * (float)size.height(),10.0f);
+       float width = this->aspectRatio * height;
+       size.setWidth ((int)width);
+       size.setHeight((int)height);
        this->_drawingView->resize(size);
        //int ICx, ICy;
        //_pGLDrawingBox->getCentrePoint(ICx, ICy);
