@@ -34,9 +34,10 @@ class DrawingGuiExport DrawingView : public Gui::MDIView
     Q_OBJECT
 
 public:
-    DrawingView(QWidget* parent);
+    DrawingView(QWidget* parent = 0);
     virtual ~DrawingView();
 
+    void load (const QString & file);
     const char *getName(void) const {return "DrawingView";}
     void onUpdate(void){};
 
@@ -96,6 +97,8 @@ protected:
         selection,
         addselection
     } _currMode;
+
+    QSvgWidget* _drawingView;
 
  
     int _currX;

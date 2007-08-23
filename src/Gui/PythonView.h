@@ -92,6 +92,9 @@ public:
     QStringList undoActions() const;
     QStringList redoActions() const;
 
+protected:
+    void focusInEvent(QFocusEvent* e);
+
 private Q_SLOTS:
     void checkTimestamp();
     void contentsChange(int position, int charsRemoved, int charsAdded);

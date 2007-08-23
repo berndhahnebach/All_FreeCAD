@@ -38,6 +38,13 @@ DrawingView::DrawingView(QWidget* parent)
 
   // Create an OpenGL widget for displaying Drawings
   //_pGLDrawingBox = new GLDrawingBox(this);
+  QScrollArea* scroll = new QScrollArea(this);
+  _drawingView = new QSvgWidget(scroll);
+  _drawingView->setBackgroundRole(QPalette::Base);
+  _drawingView->setFocusProxy(scroll);
+  scroll->setWidget(_drawingView);
+  //_drawingView->resize(20, 20);
+  setCentralWidget(scroll);
 
   //setCentralWidget(_pGLDrawingBox);
 
@@ -55,6 +62,11 @@ DrawingView::DrawingView(QWidget* parent)
 DrawingView::~DrawingView()
 {
   // No need to delete _pGLDrawingBox or other widgets as this gets done automatically by QT
+}
+
+void DrawingView::load (const QString & file)
+{
+    this->_drawingView->load(file);
 }
 
 // Create the action groups, actions, menus and toolbars
@@ -249,6 +261,10 @@ void DrawingView::wheelEvent(QWheelEvent * cEvent)
 
        // Zoom around centrally displayed Drawing point
        int numTicks = cEvent->delta() / 120;
+       QSize size = this->_drawingView->size();
+       size.setWidth (numTicks * size.width());
+       size.setHeight(numTicks * size.height());
+       this->_drawingView->resize(size);
        //int ICx, ICy;
        //_pGLDrawingBox->getCentrePoint(ICx, ICy);
        //_pGLDrawingBox->setZoomFactor(_pGLDrawingBox->getZoomFactor() / pow(2.0, (double)numTicks), true, ICx, ICy);

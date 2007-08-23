@@ -69,6 +69,7 @@
 #include <QProgressBar>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <QScrollArea>
 #include <qscrollbar.h>
 #include <QShortcut>
 #include <qslider.h>
@@ -105,5 +106,8 @@
 #include <QTcpSocket>
 // QtOpenGL
 #include <qgl.h>
+// QtSvg
+#include <QSvgWidget>
+
 
 #endif
