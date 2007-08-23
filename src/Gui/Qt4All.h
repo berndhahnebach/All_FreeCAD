@@ -107,6 +107,7 @@
 // QtOpenGL
 #include <qgl.h>
 // QtSvg
+#include <QSvgRenderer>
 #include <QSvgWidget>
 
 
