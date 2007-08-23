@@ -444,6 +444,11 @@ QStringList PythonView::redoActions() const
     return d->redos;;
 }
 
+void PythonView::focusInEvent (QFocusEvent * e)
+{
+    d->textEdit->setFocus();
+}
+
 // ---------------------------------------------------------
 
 LineMarker::LineMarker(QWidget* parent)

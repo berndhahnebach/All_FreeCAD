@@ -518,7 +518,7 @@ void View3DInventor::showActiveView(MDIView* view)
     if (this != view) {
         // If both views are child widgets of the workspace and view is maximized this view 
         // must be hidden, hence we can start the timer.
-        // Note: If view is top-level and fullscreen it doesn't necessarily hide the other view
+        // Note: If view is top-level or fullscreen it doesn't necessarily hide the other view
         // e.g. if it is on a second monitor.
         canStartTimer = (!this->isTopLevel() && !view->isTopLevel() && view->isMaximized());
     } else if (isMinimized()) {
@@ -534,7 +534,7 @@ void View3DInventor::showActiveView(MDIView* view)
             stopSpinTimer->start(msecs);
         }
     } else if (stopSpinTimer->isActive()) {
-        // If the active is not maximized anymore we can also stop the timer
+        // If this view may be visible again we can stop the timer
         stopSpinTimer->stop();
     }
 }
@@ -607,7 +607,6 @@ void View3DInventor::setCurrentViewMode(ViewMode newmode)
         qApp->installEventFilter(this);
     } else if (newmode == Child) {
         _viewer->getGLWidget()->setFocusProxy(0);
-        _viewer->getGLWidget()->setFocus();
         qApp->removeEventFilter(this);
         QList<QAction*> acts = this->actions();
         for (QList<QAction*>::Iterator it = acts.begin(); it != acts.end(); ++it)
@@ -667,5 +666,9 @@ void View3DInventor::keyReleaseEvent (QKeyEvent* e)
     }
 }
 
+void View3DInventor::focusInEvent (QFocusEvent * e)
+{
+    _viewer->getGLWidget()->setFocus();
+}
 
 #include "moc_View3DInventor.cpp"

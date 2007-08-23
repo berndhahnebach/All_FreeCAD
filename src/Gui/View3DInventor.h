@@ -99,6 +99,7 @@ protected:
     void dragEnterEvent   (QDragEnterEvent * e);
     void keyPressEvent    (QKeyEvent       * e);
     void keyReleaseEvent  (QKeyEvent       * e);
+    void focusInEvent     (QFocusEvent     * e);
 
     /// handle to the viewer parameter group
     ParameterGrp::handle hGrp;

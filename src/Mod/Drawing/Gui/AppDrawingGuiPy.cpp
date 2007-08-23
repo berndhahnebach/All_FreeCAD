@@ -41,42 +41,26 @@ using namespace DrawingGui;
 static PyObject * 
 open(PyObject *self, PyObject *args) 
 {
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))
-    return NULL; 
+    const char* Name;
+    if (! PyArg_ParseTuple(args, "s",&Name))
+        return NULL; 
     
-  PY_TRY {
-    Base::FileInfo file(Name);
-
-    //if(file.hasExtension("png") || file.hasExtension("xpm") || file.hasExtension("jpg") || file.hasExtension("bmp"))
-    //{
-    //  QDrawing imageq( Name );
-    //  int format;
-    //  if (imageq.isNull() == false)
-    //  {
-    //    if ((imageq.depth() == 8) && (imageq.isGrayscale() == true))
-    //      format = IB_CF_GREY8;
-    //    else if ((imageq.depth() == 16) && (imageq.isGrayscale() == true))
-    //      format = IB_CF_GREY16;
-    //    else if ((imageq.depth() == 32) && (imageq.isGrayscale() == false))
-    //      format = IB_CF_BGRA32;
-    //    else
-    //      Py_Error(PyExc_Exception,"Unsupported image format");
-    //  }
-    //  else
-    //    Py_Error(PyExc_Exception,"Could not load image");
-
-    //  // Displaying the image in a view
-    //  DrawingView* iView = new DrawingView(Gui::getMainWindow());
-    //  iView->setWindowIcon( Gui::BitmapFactory().pixmap("colors") );
-    //  iView->setWindowTitle(QObject::tr("Drawing viewer"));
-    //  iView->resize( 400, 300 );
-    //  Gui::getMainWindow()->addWindow( iView );
-    //  iView->createDrawingCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
-    //}
-    //else
-    //  Py_Error(PyExc_Exception,"unknown file ending");
-  } PY_CATCH;
+    PY_TRY {
+        Base::FileInfo file(Name);
+        if (file.hasExtension("svg")) {
+            QString fileName = QString::fromUtf8(Name);
+            // Displaying the image in a view
+            DrawingView* view = new DrawingView(Gui::getMainWindow());
+            view->load(fileName);
+            view->setWindowIcon(Gui::BitmapFactory().pixmap("colors"));
+            view->setWindowTitle(QObject::tr("Drawing viewer"));
+            view->resize( 400, 300 );
+            Gui::getMainWindow()->addWindow(view);
+        } else {
+            PyErr_SetString(PyExc_Exception, "unknown file type");
+            return NULL;
+        }
+    } PY_CATCH;
 
 	Py_Return; 
 }

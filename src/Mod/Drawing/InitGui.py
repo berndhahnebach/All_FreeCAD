@@ -202,4 +202,4 @@ class DrawingWorkbench ( Workbench ):
 Gui.addWorkbenchHandler("Drawing",DrawingWorkbench())
 
 # Append the open handler
-#FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","DrawingGui")
+FreeCAD.EndingAdd("Image formats (*.svg)","DrawingGui")

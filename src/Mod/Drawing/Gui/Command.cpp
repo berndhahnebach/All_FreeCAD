@@ -24,6 +24,7 @@
 #include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/FileDialog.h>
 
 #include "DrawingView.h"
 
@@ -49,25 +50,19 @@ CmdDrawingOpen::CmdDrawingOpen()
 
 void CmdDrawingOpen::activated(int iMsg)
 {
-  // Reading an image
-  QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
-                                           QObject::tr("Drawings (*.png *.xpm *.jpg *.bmp)"));
-  if (s.isEmpty() == false)
-  {
-    try{
-      // load the file with the module
-      Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
-      Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)s.toAscii());
-    } catch (const Base::PyException& e){
-      // Usually thrown if the file is invalid somehow
-      e.ReportException();
+    // Reading an image
+    QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
+                                           QObject::tr("Scalable Vector Graphics (*.svg)"));
+    if (!filename.isEmpty())
+    {
+        // load the file with the module
+        Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
+        Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
     }
-  }
 }
 
 void CreateDrawingCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-
-	rcCmdMgr.addCommand(new CmdDrawingOpen());
+    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+    rcCmdMgr.addCommand(new CmdDrawingOpen());
 }
