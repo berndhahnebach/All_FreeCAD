@@ -450,11 +450,11 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Period:
         {
             QTextCursor cursor = textCursor();
-            cursor.movePosition(QTextCursor::StartOfWord);
-            cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-            QString text = cursor.selectedText();
+            QTextBlock block = cursor.block();
+            QString text = block.text();
+            int length = cursor.position() - block.position();
             TextEdit::keyPressEvent(e);
-            d->callTipsList->showTips(text);
+            d->callTipsList->showTips(text.left(length));
         }   break;
     case Qt::Key_Home:
         {

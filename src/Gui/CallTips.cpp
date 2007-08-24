@@ -28,6 +28,7 @@
 
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/PyObjectBase.h>
+#include <App/PropertyContainerPy.h>
 #include "CallTips.h"
 
 using namespace Gui;
@@ -123,19 +124,50 @@ void CallTipsList::validateCursor()
     }
 }
 
+QString CallTipsList::extractContext(const QString& line) const
+{
+    int len = line.size();
+    int index = len-1;
+    for (int i=0; i<len; i++) {
+        int pos = len-1-i;
+        const char ch = line.at(pos).toAscii();
+        if ((ch >= 48 && ch <= 57)  ||  // Numbers
+            (ch >= 65 && ch <= 90)  ||  // Uppercase letters
+            (ch >= 97 && ch <= 122) ||  // Lowercase letters
+            (ch == '.') || (ch == '_'))
+            index = pos;
+        else 
+            break;
+    }
+
+    return line.mid(index);
+}
+
 QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
 {
     QMap<QString, CallTip> tips;
+    if (context.isEmpty())
+        return tips;
 
     try {
-        // search for the given object in the dict of the main module
+        QStringList items = context.split('.');
         Py::Module module("__main__");
         Py::Dict dict = module.getDict();
-        if (!dict.hasKey(std::string(context.toAscii())))
+        QString modname = items.front();
+        items.pop_front();
+        if (!dict.hasKey(std::string(modname.toAscii())))
             return tips; // unknown object
 
         // get the Python object we need
-        Py::Object obj = dict.getItem(std::string(context.toAscii()));
+        Py::Object obj = dict.getItem(std::string(modname.toAscii()));
+        while (!items.isEmpty()) {
+            std::string attr = items.front().toAscii();
+            items.pop_front();
+            if (obj.hasAttr(attr))
+                obj = obj.getAttr(attr);
+            else
+                return tips;
+        }
         
         // Checks whether the type is a subclass of PyObjectBase because to get the doc string
         // of a member we must get it by its type instead of its instance otherwise we get the
@@ -145,10 +177,35 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // the used type object to.
         //Py::Object type = obj.type();
         Py::Object type(PyObject_Type(obj.ptr()), true);
+        Py::Object inst = obj; // the object instance 
         bool subclass = PyObject_IsSubclass(type.ptr(), (PyObject*)(&Base::PyObjectBase::Type));
         if (subclass)
             obj = type;
         Py::List list(PyObject_Dir(obj.ptr()), true);
+
+        // If we derive from PropertyContainerPy we can search for the properties in the
+        // C++ twin class.
+        if (PyObject_IsSubclass(type.ptr(), (PyObject*)(&App::PropertyContainerPy::Type))) {
+            App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(inst.ptr());
+            Py::List prop = cont->getPropertiesList();
+            // These are the attributes of the instance itself which are NOT accessible by
+            // its type object
+            extractTipsFromObject(inst, prop, tips);
+        }
+
+        // These are the attributes from the type object
+        extractTipsFromObject(obj, list, tips);
+    } catch (Py::Exception& e) {
+        // Just clear the Python exception
+        e.clear();
+    }
+
+    return tips;
+}
+
+void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<QString, CallTip>& tips) const
+{
+    try {
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             Py::String attrname(*it);
             Py::Object attr = obj.getAttr(attrname.as_string());
@@ -195,12 +252,11 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // Just clear the Python exception
         e.clear();
     }
-
-    return tips;
 }
 
-void CallTipsList::showTips(const QString& context)
+void CallTipsList::showTips(const QString& line)
 {
+    QString context = extractContext(line);
     QMap<QString, CallTip> tips = extractTips(context);
     clear();
     for (QMap<QString, CallTip>::Iterator it = tips.begin(); it != tips.end(); ++it) {

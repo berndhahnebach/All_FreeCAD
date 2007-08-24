@@ -28,6 +28,10 @@
 # include "Qt4All.h"
 #endif
 
+namespace Py {
+class Object;
+class List;
+}
 namespace Gui {
 
 class CallTip
@@ -67,7 +71,9 @@ private Q_SLOTS:
     void callTipItemActivated(QListWidgetItem *item);
 
 private:
+    QString extractContext(const QString&) const;
     QMap<QString, CallTip> extractTips(const QString&) const;
+    void extractTipsFromObject(Py::Object&, Py::List&, QMap<QString, CallTip>&) const;
 
 private:
     QTextEdit* textEdit;
