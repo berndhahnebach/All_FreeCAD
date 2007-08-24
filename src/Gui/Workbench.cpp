@@ -542,7 +542,7 @@ ToolBarItem* NoneWorkbench::setupToolBars() const
 
     // File
     ToolBarItem* file = new ToolBarItem( root );
-    file->setCommand(QT_TR_NOOP("&File"));
+    file->setCommand(QT_TR_NOOP("File"));
     *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
           << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
           << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
