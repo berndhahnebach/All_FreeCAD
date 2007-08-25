@@ -668,12 +668,14 @@ StdCmdViewFitAll::StdCmdViewFitAll()
 
 void StdCmdViewFitAll::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
+  //doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
+   doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool StdCmdViewFitAll::isActive(void)
 {
-  return isViewOfType(Gui::View3DInventor::getClassTypeId());
+  //return isViewOfType(Gui::View3DInventor::getClassTypeId());
+  return getGuiApplication()->sendHasMsgToActiveView("ViewFit");
 }
 
 //===========================================================================

@@ -41,8 +41,8 @@ public:
     const char *getName(void) const {return "DrawingView";}
     void onUpdate(void){};
 
-    bool onMsg(const char* pMsg,const char** ppReturn){ return true; }
-    bool onHasMsg(const char* pMsg) const { return false; }
+    bool onMsg(const char* pMsg,const char** ppReturn);
+    bool onHasMsg(const char* pMsg) const ;
 
     //virtual void clearDrawing();
     //virtual int createDrawingCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
@@ -99,6 +99,7 @@ protected:
     } _currMode;
 
     QSvgWidget* _drawingView;
+    QScrollArea* _scroll;
 
  
     int _currX;

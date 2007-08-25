@@ -54,15 +54,15 @@ DrawingView::DrawingView(QWidget* parent)
 
   // Create an OpenGL widget for displaying Drawings
   //_pGLDrawingBox = new GLDrawingBox(this);
-  QScrollArea* scroll = new DrawingScrollArea(this);
-  _drawingView = new QSvgWidget(scroll);
+  _scroll = new DrawingScrollArea(this);
+  _drawingView = new QSvgWidget(_scroll);
   _drawingView->setBackgroundRole(QPalette::Base);
   //this->_drawingView->setFocus();
   //scroll->setFocusProxy(_drawingView);
 //  _drawingView->setFocusProxy(scroll);
-  scroll->setWidget(_drawingView);
+  _scroll->setWidget(_drawingView);
   //_drawingView->resize(20, 20);
-  setCentralWidget(scroll);
+  setCentralWidget(_scroll);
 
   //setCentralWidget(_pGLDrawingBox);
 
@@ -81,6 +81,142 @@ DrawingView::~DrawingView()
 {
   // No need to delete _pGLDrawingBox or other widgets as this gets done automatically by QT
 }
+
+bool DrawingView::onMsg(const char* pMsg, const char** ppReturn)
+{
+  if(strcmp("ViewFit",pMsg) == 0 ){
+    fitDrawing();
+    return true;
+// comment out on older Inventor
+  } /*else if(strcmp("Example1",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;
+    Texture3D(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;
+    LightManip(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;
+    AnimationTexture(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
+    SoCamera * Cam = _viewer->getCamera();
+    *ppReturn = writeNodesToString(Cam).c_str();
+    return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
+    return setCamera(pMsg+10);
+  }else if(strncmp("Dump",pMsg,4) == 0 ){
+    dump(pMsg+5);
+    return true;
+  }else if(strcmp("ViewBottom",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-1, 0, 0, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-root, 0, 0, -root);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, root, root, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, 0, 0, 1);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    float root = (float)(sqrt(3.0)/4.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("OrthographicCamera",pMsg) == 0 ){
+    _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+    return true;
+  }else if(strcmp("PerspectiveCamera",pMsg) == 0 ){
+    _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
+    return true;
+  }else  if(strcmp("Undo",pMsg) == 0 ){
+    getGuiDocument()->undo(1);
+    return true;
+  }else  if(strcmp("Redo",pMsg) == 0 ){
+    getGuiDocument()->redo(1);
+    return true;
+  }else */
+
+  return false;
+}
+
+
+bool DrawingView::onHasMsg(const char* pMsg) const
+{
+  if(strcmp("ViewFit",pMsg) == 0 ){
+    return true;
+  }/*else if(strcmp("Redo",pMsg) == 0 ){
+    return getAppDocument()->getAvailableRedos() > 0; 
+  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example1",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Undo",pMsg) == 0 ){
+    return getAppDocument()->getAvailableUndos() > 0;
+  }else if(strcmp("ViewBottom",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
+    return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
+    return true;
+  }else if(strncmp("Dump",pMsg,4) == 0 ){
+    return true;
+  }*/
+  return false;
+}
+
+
 
 void DrawingView::load (const QString & file)
 {
@@ -105,6 +241,28 @@ void DrawingView::createActions()
 // Slot function to fit (stretch/shrink) the Drawing to the view size
 void DrawingView::fitDrawing()
 {
+       QSize DrawSize = this->_drawingView->size();
+       QSize ScrollSize = this->_scroll->size();
+       float ratio = DrawSize.width()/float(DrawSize.height());
+       if(ratio < ScrollSize.width()/float(ScrollSize.height()))
+       {
+         float height = ScrollSize.height() - 2.0;
+         float width = ratio * height;
+         DrawSize.setWidth ((int)width);
+         DrawSize.setHeight((int)height);
+       }else{
+         float width = ScrollSize.width()- 2.0;
+         float height = width / ratio;
+         DrawSize.setWidth ((int)width);
+         DrawSize.setHeight((int)height);
+       }
+
+       //float height = std::max<float>(factor * (float)size.height(),10.0f);
+       //float width = this->aspectRatio * height;
+       //size.setWidth ((int)width);
+       //size.setHeight((int)height);
+       this->_drawingView->resize(DrawSize);
+
 }
 
 
@@ -180,7 +338,7 @@ void DrawingView::mousePressEvent(QMouseEvent* cEvent)
                 _currMode = selection;
               break;
           case Qt::RightButton:
-               _pContextMenu->exec(cEvent->globalPos());
+              // _pContextMenu->exec(cEvent->globalPos());
               break;
           default:
               _currMode = nothing;
