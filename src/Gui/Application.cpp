@@ -845,7 +845,7 @@ void messageHandlerSoQt( const SbString errmsg, SoQt::FatalErrors errcode, void 
 
 /**
  * This method gets called for Coin internal processes that take a long time.
- * Unfortunately, this framework doesn't seem to work why this method is uncommented at the moment.
+ * Unfortunately, this framework doesn't seem to work why this method is commented out at the moment.
  */
 /*
 SbBool progressCallbackHandler(const SbName & itemid, float fraction, SbBool interruptible, void * userdata)

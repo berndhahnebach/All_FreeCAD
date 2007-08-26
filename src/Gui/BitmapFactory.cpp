@@ -27,7 +27,6 @@
 #include <App/Application.h>
 
 #include "BitmapFactory.h"
-#include "Tools.h"
 #include "Icons/images.cpp"
 #include "Icons/Feature.xpm"
 #include "Icons/Icons.h"
@@ -53,7 +52,7 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
     if (_pcSingleton == NULL)
     {
         _pcSingleton = new BitmapFactoryInst;
-        _pcSingleton->addPath("../Icons");
+        _pcSingleton->addPath(":/new/prefix1/");
         _pcSingleton->addPath(App::GetApplication().GetHomePath());
 
         RegisterIcons();
@@ -79,25 +78,25 @@ BitmapFactoryInst::~BitmapFactoryInst()
     delete d;
 }
 
-void BitmapFactoryInst::addPath(const char* sPath)
+void BitmapFactoryInst::addPath(const QString& path)
 {
-    d->paths.push_back( sPath );
+    d->paths.push_back(path);
 }
 
-void BitmapFactoryInst::removePath(const char* sPath)
+void BitmapFactoryInst::removePath(const QString& path)
 {
-    int pos = d->paths.indexOf(sPath);
+    int pos = d->paths.indexOf(path);
     if (pos != -1) d->paths.removeAt(pos);
 }
 
-void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
+void BitmapFactoryInst::addXPM(const QString& name, const char** pXPM)
 {
-    d->xpmMap[sName] = pXPM;
+    d->xpmMap[name] = pXPM;
 }
 
-void BitmapFactoryInst::addPixmapToCache(const QString& name, const QPixmap& pXPM)
+void BitmapFactoryInst::addPixmapToCache(const QString& name, const QPixmap& icon)
 {
-    d->xpmCache[name] = pXPM;
+    d->xpmCache[name] = icon;
 }
 
 bool BitmapFactoryInst::findPixmapInCache(const QString& name, QPixmap& px) const
@@ -110,37 +109,40 @@ bool BitmapFactoryInst::findPixmapInCache(const QString& name, QPixmap& px) cons
     return false;
 }
 
-QPixmap BitmapFactoryInst::pixmap(const char* sName) const
+QPixmap BitmapFactoryInst::pixmap(const QString& name) const
 {
     // as very first test check whether the pixmap is in the cache
-    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(sName);
+    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(name);
     if (it != d->xpmCache.end())
         return it.value();
 
     // now try to find it in the built-in XPM
     QPixmap icon;
-    QMap<QString,const char**>::ConstIterator It = d->xpmMap.find(sName);
+    QMap<QString,const char**>::ConstIterator It = d->xpmMap.find(name);
     if (It != d->xpmMap.end())
         icon = QPixmap(It.value());
 
     // If an absolute path is given
-    if (icon.isNull() && QFile(sName).exists())
-        icon.load(sName);
+    if (icon.isNull() && QFile(name).exists())
+        icon.load(name);
 
     // try to find it in the given directories
     if (icon.isNull()) {
+        bool found = false;
         QList<QByteArray> formats = QImageReader::supportedImageFormats();
-        for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end(); ++pt) {
+        for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end() && !found; ++pt) {
             QDir d(*pt);
-            QString fileName = d.path() + QDir::separator() + sName;
+            QString fileName = d.path() + QString("/") + name;
             if (QFile(fileName).exists()) {
                 icon.load(fileName);
+                found = true;
                 break;
             } else {
                 for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
-                    QString path = fileName + "." + QString((*fm).toLower().data());
+                    QString path = fileName + "." + QString((*fm).toLower().constData());
                     if (QFile(path).exists()) {
                         icon.load(path);
+                        found = true;
                         break;
                     }
                 }
@@ -148,20 +150,201 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName) const
         }
     }
 
+    // as last possibility check if it's an SVG
+    if (icon.isNull()) {
+        icon = pixmapFromSvg(name, QSize(24,24));
+    }
+
     if (!icon.isNull()) {
-        d->xpmCache[sName] = icon;
+        d->xpmCache[name] = icon;
         return icon;
     }
 
-    Base::Console().Warning("Can't find Pixmap:%s\n",sName);
+    Base::Console().Warning("Can't find Pixmap:%s\n", name.toUtf8());
     return QPixmap(px);
 }
 
-QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position pos) const
+QPixmap BitmapFactoryInst::pixmapFromSvg(const QString& name, const QSize& size) const
 {
-    QPixmap p1 = pixmap(sName);
-    QPixmap p2 = pixmap(sMask);
+    // If an absolute path is given
+    QPixmap icon;
+    QString iconPath;
+    if (QFile(name).exists())
+        iconPath = name;
 
+    // try to find it in the given directories
+    if (iconPath.isEmpty()) {
+        for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end(); ++pt) {
+            QDir d(*pt);
+            QString fileName = d.path() + QString("/") + name;
+            if (QFile(fileName).exists()) {
+                iconPath = fileName;
+                break;
+            }
+        }
+    }
+
+    if (!iconPath.isEmpty()) {
+        QFile file(iconPath);
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            QByteArray content = file.readAll();
+            icon = pixmapFromSvg(content, size);
+        }
+    }
+
+    return icon;
+}
+
+QPixmap BitmapFactoryInst::pixmapFromSvg(const QByteArray& contents, const QSize& size) const
+{
+    QSvgRenderer* svg = new QSvgRenderer(contents);
+    QPixmap icon(size);
+    QPainter* painter = new QPainter;
+    painter->begin(&icon);
+    svg->render(painter);
+    painter->end();
+    delete svg;
+    delete painter;
+
+    return icon;
+}
+
+QStringList BitmapFactoryInst::pixmapNames() const
+{
+    QStringList names;
+    for (QMap<QString,const char**>::ConstIterator It = d->xpmMap.begin(); It != d->xpmMap.end(); ++It)
+        names << It.key();
+    for (QMap<QString, QPixmap>::ConstIterator It = d->xpmCache.begin(); It != d->xpmCache.end(); ++It) {
+        if (!names.contains(It.key()))
+            names << It.key();
+    }
+    return names;
+}
+
+QPixmap BitmapFactoryInst::resize(int w, int h, const QPixmap& p, Qt::BGMode bgmode) const
+{
+    if (bgmode == Qt::TransparentMode) {
+        if (p.width() == 0 || p.height() == 0)
+            w = 1;
+
+        QPixmap pix = p;
+        int x = pix.width () > w ? 0 : (w - pix.width ())/2;
+        int y = pix.height() > h ? 0 : (h - pix.height())/2;
+
+        if (x == 0 && y == 0)
+            return pix;
+
+        QPixmap pm (w,h);
+        QBitmap mask (w,h);
+        mask.fill(Qt::color0);
+
+        QBitmap bm = pix.mask();
+        if (!bm.isNull())
+        {
+            QPainter painter(&mask);
+            painter.drawPixmap(QPoint(x, y), bm, QRect(0, 0, pix.width(), pix.height()));
+            pm.setMask(mask);
+        }
+        else
+        {
+            pm.setMask(mask);
+            pm = fillRect(x, y, pix.width(), pix.height(), pm, Qt::OpaqueMode);
+        }
+
+        QPainter pt;
+        pt.begin( &pm );
+        pt.drawPixmap(x, y, pix);
+        pt.end();
+        return pm;
+    } else { // Qt::OpaqueMode
+        QPixmap pix = p;
+
+        if (pix.width() == 0 || pix.height() == 0)
+            return pix; // do not resize a null pixmap
+
+        QPalette pal = qApp->palette();
+        QColor dl = pal.color(QPalette::Disabled, QPalette::Light);
+        QColor dt = pal.color(QPalette::Disabled, QPalette::Text);
+
+        QPixmap pm = pix;
+        pm = QPixmap(w,h);
+        pm.fill(dl);
+
+        QPainter pt;
+        pt.begin( &pm );
+        pt.setPen( dl );
+        pt.drawPixmap(1, 1, pix);
+        pt.setPen( dt );
+        pt.drawPixmap(0, 0, pix);
+        pt.end();
+        return pm;
+    }
+}
+
+QPixmap BitmapFactoryInst::fillRect(int x, int y, int w, int h, const QPixmap& p, Qt::BGMode bgmode) const
+{
+    QBitmap b = p.mask();
+    if (b.isNull())
+        return p; // sorry, but cannot do anything
+
+    QPixmap pix = p;
+
+    // modify the mask
+    QPainter pt;
+    pt.begin(&b);
+    if (bgmode == Qt::OpaqueMode)
+        pt.fillRect(x, y, w, h, Qt::color1); // make opaque
+    else // Qt::TransparentMode
+        pt.fillRect(x, y, w, h, Qt::color0); // make transparent
+    pt.end();
+
+    pix.setMask(b);
+
+    return pix;
+}
+
+QPixmap BitmapFactoryInst::merge(const QPixmap& p1, const QPixmap& p2, bool vertical) const
+{
+    int width = 0;
+    int height = 0;
+
+    int x = 0;
+    int y = 0;
+
+    // get the size for the new pixmap
+    if (vertical) {
+        y = p1.height();
+        width  = qMax( p1.width(), p2.width() );
+        height = p1.height() + p2.height();
+    } else {
+        x = p1.width();
+        width  = p1.width() + p2.width();
+        height = qMax( p1.height(), p2.height() );
+    }
+
+    QPixmap res( width, height );
+    QBitmap mask( width, height );
+    QBitmap mask1 = p1.mask();
+    QBitmap mask2 = p2.mask();
+    mask.fill( Qt::color0 );
+
+    QPainter* pt1 = new QPainter(&res);
+    pt1->drawPixmap(0, 0, p1);
+    pt1->drawPixmap(x, y, p2);
+    delete pt1;
+
+    QPainter* pt2 = new QPainter(&mask);
+    pt2->drawPixmap(0, 0, mask1);
+    pt2->drawPixmap(x, y, mask2);
+    delete pt2;
+
+    res.setMask(mask);
+    return res;
+}
+
+QPixmap BitmapFactoryInst::merge(const QPixmap& p1, const QPixmap& p2, Position pos) const
+{
+    // does the similar as the method above except that this method does not resize the resulting pixmap
     int x = 0, y = 0;
 
     switch (pos)
@@ -181,7 +364,7 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position
     }
 
     QPixmap p = p1;
-    p = Tools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
+    p = fillRect(x, y, p2.width(), p2.height(), p, Qt::OpaqueMode);
 
     QPainter pt;
     pt.begin( &p );
@@ -193,10 +376,104 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position
     return p;
 }
 
-QStringList BitmapFactoryInst::pixmapNames() const
+QPixmap BitmapFactoryInst::disabled(const QPixmap& p) const
 {
-    QStringList names;
-    for ( QMap<QString,const char**>::ConstIterator It = d->xpmMap.begin(); It != d->xpmMap.end(); ++It )
-        names << It.key();
-    return names;
+    QStyleOption opt;
+    opt.palette = QApplication::palette();
+    return QApplication::style()->generatedIconPixmap(QIcon::Disabled, p, &opt);
 }
+
+void BitmapFactoryInst::convert(const QImage& p, SoSFImage& img) const
+{
+    SbVec2s size;
+    size[0] = p.width();
+    size[1] = p.height();
+
+    int buffersize = p.numBytes();
+    int numcomponents = buffersize / ( size[0] * size[1] );
+
+    // allocate image data
+    img.setValue(size, numcomponents, NULL);
+
+    unsigned char * bytes = img.startEditing(size, numcomponents);
+
+    int width  = (int)size[0];
+    int height = (int)size[1];
+
+    for (int y = 0; y < height; y++) 
+    {
+        unsigned char * line = &bytes[width*numcomponents*(height-(y+1))];
+        for (int x = 0; x < width; x++) 
+        {
+            QRgb rgb = p.pixel(x,y);
+            switch (numcomponents) 
+            {
+            default:
+                break;
+            case 1:
+                line[0] = qGray( rgb );
+                break;
+            case 2:
+                line[0] = qGray( rgb );
+                line[1] = qAlpha( rgb );
+                break;
+            case 3:
+                line[0] = qRed( rgb );
+                line[1] = qGreen( rgb );
+                line[2] = qBlue( rgb );
+                break;
+            case 4:
+                line[0] = qRed( rgb );
+                line[1] = qGreen( rgb );
+                line[2] = qBlue( rgb );
+                line[3] = qAlpha( rgb );
+                break;
+            }
+
+            line += numcomponents;
+        }
+    }
+
+    img.finishEditing();
+}
+
+void BitmapFactoryInst::convert(const SoSFImage& p, QImage& img) const
+{
+    SbVec2s size;
+    int numcomponents;
+
+    const unsigned char * bytes = p.getValue(size, numcomponents);
+
+    int width  = (int)size[0];
+    int height = (int)size[1];
+
+    img = QImage(width, height, QImage::Format_RGB32);
+    QRgb * bits = (QRgb*) img.bits();
+    
+    for (int y = 0; y < height; y++) 
+    {
+        const unsigned char * line = &bytes[width*numcomponents*(height-(y+1))];
+        for (int x = 0; x < width; x++) 
+        {
+            switch (numcomponents) 
+            {
+            default:
+            case 1:
+                *bits++ = qRgb(line[0], line[0], line[0]);
+                break;
+            case 2:
+                *bits++ = qRgba(line[0], line[0], line[0], line[1]);
+                break;
+            case 3:
+                *bits++ = qRgb(line[0], line[1], line[2]);
+                break;
+            case 4:
+                *bits++ = qRgba(line[0], line[1], line[2], line[3]);
+                break;
+            }
+
+            line += numcomponents;
+        }
+    }
+}
+

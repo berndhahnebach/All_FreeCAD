@@ -272,8 +272,6 @@ libFreeCADGui_la_SOURCES=\
 		ToolBarManager.h \
 		ToolBox.cpp \
 		ToolBox.h \
-		Tools.cpp \
-		Tools.h \
 		Tree.cpp \
 		Tree.h \
 		View.cpp \

@@ -45,7 +45,6 @@
 #include "MenuManager.h"
 #include "Application.h"
 #include "MainWindow.h"
-#include "Tools.h"
 
 
 using namespace Gui;
@@ -522,16 +521,16 @@ void DocumentObjectItem::testStatus()
 
     if (!viewObject->isShow()) {
         this->setTextColor(0, Qt::gray);
-        QPixmap hidden = Tools::disabled(viewObject->getIcon());
+        QPixmap hidden = BitmapFactory().disabled(viewObject->getIcon());
         if (px) {
-            this->setIcon(0, Tools::merge(hidden,*px,false));
+            this->setIcon(0, BitmapFactory().merge(hidden,*px,false));
         } else {
             this->setIcon(0, hidden);
         }
     } else { // visible
         this->setTextColor(0, QColor());
         if (px) {
-            this->setIcon(0, Tools::merge(viewObject->getIcon(),*px,false));
+            this->setIcon(0, BitmapFactory().merge(viewObject->getIcon(),*px,false));
         } else {
             this->setIcon(0, viewObject->getIcon());
         }

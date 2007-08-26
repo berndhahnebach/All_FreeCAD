@@ -38,7 +38,6 @@
 #include "Document.h"
 #include "Selection.h"
 #include "ViewProviderDocumentObject.h"
-#include "Tools.h"
 
 
 

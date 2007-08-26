@@ -524,14 +524,14 @@ PYFUNCIMP_S(Application,sAddIconPath)
   char* filePath;
   if (!PyArg_ParseTuple(args, "s", &filePath))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
-  std::string path(filePath);
-  if (QDir::isRelativePath(filePath)) {
+  QString path = QString::fromUtf8(filePath);
+  if (QDir::isRelativePath(path)) {
     // Home path ends with '/'
-    path = App::GetApplication().GetHomePath();
-    path += filePath;
+    QString home = QString::fromUtf8(App::GetApplication().GetHomePath());
+    path = home + path;
   }
 
-  BitmapFactory().addPath(path.c_str());  
+  BitmapFactory().addPath(path);  
   Py_INCREF(Py_None);
   return Py_None;
 }
