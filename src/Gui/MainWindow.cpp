@@ -193,17 +193,10 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   DockWindowManager* pDockMgr = DockWindowManager::instance();
 
   // Show all dockable windows over the workbench facility
-  static const char* dockWindows[] = {
-    QT_TRANSLATE_NOOP( "QDockWidget", "Toolbox" ),
-    QT_TRANSLATE_NOOP( "QDockWidget", "Help view" ),
-    QT_TRANSLATE_NOOP( "QDockWidget", "Tree view" ),
-    QT_TRANSLATE_NOOP( "QDockWidget", "Property view" ),
-    QT_TRANSLATE_NOOP( "QDockWidget", "Report View" )
-  };
-
+  //
   // Toolbox
   ToolBox* toolBox = new ToolBox(this);
-  toolBox->setWindowTitle("Toolbox");
+  toolBox->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Toolbox"));
   pDockMgr->registerDockWindow("Std_ToolBox", toolBox);
   CommandBarManager::getInstance()->setToolBox( toolBox );
 
@@ -214,25 +207,19 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 
   // Tree view
   TreeDockWidget* tree = new TreeDockWidget(0, this);
-  tree->setWindowTitle("Tree view");
+  tree->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Tree view"));
   tree->setMinimumWidth(210);
   pDockMgr->registerDockWindow("Std_TreeView", tree);
-/*
-  // Tree view
-  pcTree = new TreeView(0,this);
-  pcTree->setWindowTitle("Tree view");
-  pcTree->setMinimumWidth(210);
-  pDockMgr->registerDockWindow("Std_TreeView", pcTree);
-*/
+
   // Property view
   PropertyView* pcPropView = new PropertyView(0, this);
-  pcPropView->setWindowTitle("Property view");
+  pcPropView->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Property view"));
   pcPropView->setMinimumWidth(210);
   pDockMgr->registerDockWindow("Std_PropertyView", pcPropView);
 
   // Report view
   Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
-  pcReport->setWindowTitle("Report view");
+  pcReport->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Report view"));
   pDockMgr->registerDockWindow("Std_ReportView", pcReport);
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent

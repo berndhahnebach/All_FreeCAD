@@ -80,7 +80,6 @@
 #include <Base/gzstream.h>
 
 #include "View3DInventorViewer.h"
-#include "Tools.h"
 #include "SoFCBackgroundGradient.h"
 #include "SoFCColorBar.h"
 #include "SoFCColorLegend.h"

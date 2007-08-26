@@ -30,7 +30,6 @@
 #include "DlgToolbarsImp.h"
 #include "Application.h"
 #include "BitmapFactory.h"
-#include "Tools.h"
 #include "Command.h"
 #include "ToolBarManager.h"
 #include "Widgets.h"

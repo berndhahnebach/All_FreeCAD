@@ -33,6 +33,7 @@
 #include <App/Application.h>
 
 #include "SoFCOffscreenRenderer.h"
+#include "BitmapFactory.h"
 
 using namespace Gui;
 using namespace std;
@@ -60,39 +61,13 @@ SoFCOffscreenRenderer::~SoFCOffscreenRenderer()
 
 void SoFCOffscreenRenderer::writeToImage (QImage& img) const
 {
-  const unsigned char * bytes = getBuffer();
-  SbVec2s size = getViewportRegion().getViewportSizePixels();
-  int numcomponents = (int) this->getComponents();
-  int width  = (int)size[0];
-  int height = (int)size[1];
+    const unsigned char * bytes = getBuffer();
+    SbVec2s size = getViewportRegion().getViewportSizePixels();
+    int numcomponents = (int) this->getComponents();
 
-  QImage image(width, height, QImage::Format_RGB32);
-  QRgb * bits = (QRgb*) image.bits();
-  
-  for (int y = 0; y < height; y++) {
-    const unsigned char * line = 
-      &bytes[width*numcomponents*(height-(y+1))];
-    for (int x = 0; x < width; x++) {
-      switch (numcomponents) {
-      default:
-      case 1:
-        *bits++ = qRgb(line[0], line[0], line[0]);
-        break;
-      case 2:
-        *bits++ = qRgba(line[0], line[0], line[0], line[1]);
-        break;
-      case 3:
-        *bits++ = qRgb(line[0], line[1], line[2]);
-        break;
-      case 4:
-        *bits++ = qRgba(line[0], line[1], line[2], line[3]);
-        break;
-      }
-      line += numcomponents;
-    }
-  }
-
-	img=image;
+    SoSFImage image;
+    image.setValue(size, numcomponents, bytes, SoSFImage::NO_COPY);
+    BitmapFactory().convert(image, img);
 }
 
 SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName& filetypeextension) const

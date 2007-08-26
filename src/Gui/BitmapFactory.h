@@ -25,6 +25,7 @@
 #define GUI_BITMAPFACTORY_H
 
 #include <Base/Factory.h>
+#include <Inventor/fields/SoSFImage.h>
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -54,26 +55,69 @@ public:
     static void destruct (void);
 
     /// Adds a path where pixmaps can be found
-    void addPath(const char* sPath);
+    void addPath(const QString& path);
     /// Removes a path from the list of pixmap paths
-    void removePath(const char* sPath);
+    void removePath(const QString& path);
     /// Adds a build in XPM pixmap under a given name
-    void addXPM(const char* sName, const char** pXPM);
+    void addXPM(const QString& name, const char** pXPM);
     /// Adds a build in XPM pixmap under a given name
-    void addPixmapToCache(const QString& name, const QPixmap& px);
+    void addPixmapToCache(const QString& name, const QPixmap& icon);
     /// Checks whether the pixmap is already registered.
-    bool findPixmapInCache(const QString& name, QPixmap& px) const;
+    bool findPixmapInCache(const QString& name, QPixmap& icon) const;
     /// Retrieves a pixmap by name
-    QPixmap pixmap(const char* sName) const;
-    /** Retrieves a pixmap by name
-    * specifying also the name and possition of a smaller pixmap.
-    * The the smaller pixmap is drawn into the bigger pixmap.
-    */
-    QPixmap pixmap(const char* sName, const char* sMask, Position pos = BitmapFactoryInst::BottomLeft) const;
+    QPixmap pixmap(const QString& name) const;
+    /** Retrieves a pixmap by name and size created by an
+     * scalable vector graphics (SVG).
+     */
+    QPixmap pixmapFromSvg(const QString& name, const QSize& size) const;
+    /** This method is provided for convenience and does the same
+     * as the method above except that it creates the pixmap from
+     * a byte array.
+     */
+    QPixmap pixmapFromSvg(const QByteArray& contents, const QSize& size) const;
     /** Returns the names of all registered pixmaps.
     * To get the appropriate pixmaps call pixmap() for each name.
     */
     QStringList pixmapNames() const;
+    /** Resizes the area of a pixmap
+     * If the new size is greater than the old one the pixmap
+     * will be placed in the center. The border area will be made
+     * depending on \a bgmode transparent or opaque. 
+     */
+    QPixmap resize(int w, int h, const QPixmap& p, Qt::BGMode bgmode) const;
+    /** Creates an opaque or transparent area in a pixmap
+     * If the background mode is opaque then this method can
+     * be used for drawing a smaller pixmap into pixmap \a p. 
+     * Note: To draw a smaller pixmap into another one the
+     * area in the resulting pixmap for the small pixmapmust 
+     * be opaque in every pixel, otherwise the drawing may fail. 
+     *
+     * If the background mode is transparent then this method can
+     * be used for resizing the pixmap \a p and make the new space
+     * transparent.
+     */
+    QPixmap fillRect(int x, int y, int w, int h, const QPixmap& p, Qt::BGMode) const;
+    /** Merges the two pixmaps  \a p1 and \a p2 to one pixmap in
+     * vertical order if \a vertical is true, in horizontal order 
+     * otherwise. The method resizes the resulting pixmap.
+     */
+    QPixmap merge(const QPixmap& p1, const QPixmap& p2, bool vertical) const;
+    /** Merges the two pixmaps  \a p1 and \a p2 to one pixmap.
+     * The position of the smaller pimxap \a p2 is drawn into the given
+     * position \a pos of the bigger pixmap \a p1. This method does not
+     * resize the resulting pixmap.
+     */
+    QPixmap merge(const QPixmap& p1, const QPixmap& p2, Position pos = BitmapFactoryInst::BottomLeft) const;
+    /** Creates a disabled pixmap of the given pixmap \a p by changing the brightness 
+     * of all opaque pixels to a higher value.
+     */
+    QPixmap disabled(const QPixmap& p) const;
+    /** Converts a QImage into a SoSFImage to use it inside a SoImage node.
+     */
+    void convert(const QImage& img, SoSFImage& out) const;
+    /** Converts a SoSFImage into a QImage.
+     */
+    void convert(const SoSFImage& img, QImage& out) const;
 
 private:
     static BitmapFactoryInst* _pcSingleton;

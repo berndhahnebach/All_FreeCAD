@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "Command.h"
-#include "Tools.h"
 #include "Widgets.h"
 #include "Window.h"
 
