@@ -44,7 +44,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::MDIView,Gui::BaseView);
 
 
 MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, Qt::WFlags wflags )
-  : QMainWindow(parent, wflags), BaseView(pcDocument),currentMode(Child)
+  : QMainWindow(parent, wflags), BaseView(pcDocument),currentMode(Child), wstate(Qt::WindowNoState)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 }
@@ -114,12 +114,7 @@ void MDIView::closeEvent(QCloseEvent *e)
   }
 }
 
-void MDIView::setActiveView()
-{
-    Application::Instance->viewActivated(this);
-}
-
-void MDIView::showActiveView( MDIView* )
+void MDIView::windowStateChanged( MDIView* )
 {
 }
 
@@ -140,12 +135,12 @@ QSize MDIView::minimumSizeHint () const
     return QSize(400, 300);
 }
 
-void MDIView::changeEvent( QEvent *e )
+void MDIView::changeEvent(QEvent *e)
 {
     switch (e->type()) {
         case QEvent::ActivationChange:
             {
-                // Forces this window to be the active view of the main window.
+                // Forces this top-level window to be the active view of the main window
                 if (isActiveWindow()) {
                     if (getMainWindow()->activeWindow() != this)
                         getMainWindow()->setActiveWindow(this);
@@ -175,6 +170,7 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                     setWindowFlags(windowFlags() & ~Qt::Window);
                     getMainWindow()->addWindow(this);
                 } else if (this->currentMode == TopLevel) {
+                    this->wstate = windowState();
                     setWindowFlags( windowFlags() & ~Qt::Window );
                     getMainWindow()->addWindow(this);
                 }
@@ -186,10 +182,14 @@ void MDIView::setCurrentViewMode(ViewMode mode)
         case TopLevel:
             {
                 if (this->currentMode == Child) {
+                    getMainWindow()->removeWindow(this);
                     setWindowFlags(windowFlags() | Qt::Window);
                     setParent(0, Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | 
                                  Qt::WindowMinMaxButtonsHint);
-                    show();
+                    if (this->wstate & Qt::WindowMaximized)
+                        showMaximized();
+                    else
+                        showNormal();
 
 #if defined(Q_WS_X11)
                     extern void qt_x11_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
@@ -197,7 +197,10 @@ void MDIView::setCurrentViewMode(ViewMode mode)
 #endif
                     activateWindow();
                 } else if (this->currentMode == FullScreen) {
-                    showNormal();
+                    if (this->wstate & Qt::WindowMaximized)
+                        showMaximized();
+                    else
+                        showNormal();
                 }
             
                 this->currentMode = TopLevel;
@@ -207,10 +210,12 @@ void MDIView::setCurrentViewMode(ViewMode mode)
         case FullScreen:
             {
                 if (this->currentMode == Child) {
+                    getMainWindow()->removeWindow(this);
                     setWindowFlags(windowFlags() | Qt::Window);
                     setParent(0, Qt::Window);
                     showFullScreen();
                 } else if (this->currentMode == TopLevel) {
+                    this->wstate = windowState();
                     showFullScreen();
                 }
                 
@@ -218,26 +223,6 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                 update();
             }   break;
     }
-#if 0
-  /*
-  if ( b == Normal )
-  {
-    WFlags f = getWFlags();
-    setWFlags( f | WType_TopLevel );
-    showFullScreen();
-
-    grabKeyboard();
-  }
-  else
-  {
-    showNormal();
-    clearWFlags ( WType_TopLevel );
-    getMainWindow()->addWindow( this );
-
-    releaseKeyboard();
-  }
-  */
-#endif
 }
 
 #include "moc_MDIView.cpp"

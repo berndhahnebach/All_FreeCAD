@@ -58,7 +58,7 @@ public:
      * the view will attach to the active document. Be aware! there isn't
      * allways a active document!
      */
-    MDIView( Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
+    MDIView(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0);
     /** View destructor
      * Detach the view from the document, if Atached!
      */
@@ -93,24 +93,27 @@ public:
      * as tabbed window. For more hints refer to the Qt documentation to
      * QWidget::showFullScreen ().
      */
-    virtual void setCurrentViewMode( ViewMode b );
+    virtual void setCurrentViewMode(ViewMode mode);
     ViewMode currentViewMode() const { return currentMode; }
 
 Q_SIGNALS:
-    void message(const QString&, int );
-
-public Q_SLOTS:
-    void setActiveView();
+    void message(const QString&, int);
 
 protected Q_SLOTS:
-    virtual void showActiveView( MDIView* );
+    /** This method gets called from the main window this view is attached to
+     * whenever the window state of the active view changes.
+     * The default implementation does nothing.
+     */
+    virtual void windowStateChanged(MDIView*);
 
 protected:
-    void closeEvent    ( QCloseEvent *e );
+    void closeEvent(QCloseEvent *e);
     /** \internal */
-    void changeEvent( QEvent *e );
+    void changeEvent(QEvent *e);
 
+private:
     ViewMode currentMode;
+    Qt::WindowStates wstate;
 };
 
 } // namespace Gui
