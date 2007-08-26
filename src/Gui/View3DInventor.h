@@ -59,9 +59,6 @@ public:
     virtual void onUpdate(void);
     virtual const char *getName(void) const;
 
-    /// handle dropped files on this document
-    void import(const char* FileName);
-
     virtual PyObject *getPyObject(void);
 
     void updatePrefs(void);
@@ -94,7 +91,7 @@ public:
     bool eventFilter(QObject*, QEvent* );
 
 protected:
-    void showActiveView   (MDIView*           );
+    void windowStateChanged(MDIView* );
     void dropEvent        (QDropEvent      * e);
     void dragEnterEvent   (QDragEnterEvent * e);
     void keyPressEvent    (QKeyEvent       * e);

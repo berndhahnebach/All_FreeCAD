@@ -135,8 +135,6 @@ public:
   void saveLayoutSettings();
   //@}
 
-  //TreeView* getTreeView(void) const {return pcTree;}
-
 public Q_SLOTS:
   /**
    * Arranges all child windows in a horizontal tile pattern.
@@ -220,13 +218,12 @@ private Q_SLOTS:
 
 Q_SIGNALS:
   void timeEvent();
-  void showActiveView( MDIView* );
+  void windowStateChanged(MDIView*);
 
 private:
   /// some kind of singleton
   static MainWindow* instance;
   struct MainWindowP* d;
-  //TreeView* pcTree;
 };
 
 inline GuiExport MainWindow* getMainWindow()

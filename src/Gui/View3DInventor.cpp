@@ -512,7 +512,7 @@ void View3DInventor::dump(const char* filename)
         _viewer->dumpToFile(filename,false);
 }
 
-void View3DInventor::showActiveView(MDIView* view)
+void View3DInventor::windowStateChanged(MDIView* view)
 {
     bool canStartTimer = false;
     if (this != view) {
@@ -583,7 +583,7 @@ void View3DInventor::dragEnterEvent (QDragEnterEvent * e)
 
 void View3DInventor::setCurrentViewMode(ViewMode newmode)
 {
-    ViewMode oldmode = this->currentMode;
+    ViewMode oldmode = MDIView::currentViewMode();
     MDIView::setCurrentViewMode(newmode);
 
     // This widget becomes the focus proxy of the embedded GL widget if we leave 
@@ -637,7 +637,8 @@ bool View3DInventor::eventFilter(QObject* watched, QEvent* e)
 
 void View3DInventor::keyPressEvent (QKeyEvent* e)
 {
-    if (this->currentMode != Child) {
+    ViewMode mode = MDIView::currentViewMode();
+    if (mode != Child) {
         // If the widget is in fullscreen mode then we can return to normal mode either
         // by pressing the matching accelerator or ESC. 
         if (e->key() == Qt::Key_Escape) {
@@ -657,7 +658,8 @@ void View3DInventor::keyPressEvent (QKeyEvent* e)
 
 void View3DInventor::keyReleaseEvent (QKeyEvent* e)
 {
-    if (this->currentMode != Child) {
+    ViewMode mode = MDIView::currentViewMode();
+    if (mode != Child) {
         // send the event to the GL widget that converts to and handles an SoEvent
         QWidget* w = _viewer->getGLWidget();
         QApplication::sendEvent(w,e);

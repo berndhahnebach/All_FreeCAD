@@ -201,7 +201,8 @@ void Application::open(const char* FileName)
         activeDocument()->setModified(false);
       // ViewFit
       if ( !File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit") )
-          Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
+        //Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
+          Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
       // the original file name is required
       getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
     } catch (const Base::PyException& e){

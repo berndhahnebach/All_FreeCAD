@@ -82,6 +82,7 @@ struct MainWindowP
   QTimer* activityTimer; 
   QWorkspace* workspace;
   QTabBar* tabs;
+  QPointer<MDIView> activeView;
   QSignalMapper* windowMapper;
   QSplashScreen* splashscreen;
   StatusBarObserver* status;
@@ -136,6 +137,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 {
   d = new MainWindowP;
   d->splashscreen = 0;
+  d->activeView = 0;
 
   // global access 
   instance = this;
@@ -292,29 +294,23 @@ void MainWindow::whatsThis()
   QWhatsThis::enterWhatsThisMode();
 }
 
-bool MainWindow::eventFilter ( QObject* o, QEvent* e )
+bool MainWindow::eventFilter(QObject* o, QEvent* e)
 {
-  if ( o != this ) {
-    if ( e->type() == QEvent::WindowStateChange ) {
-      // notify all mdi views when the active view receives a show normal, show minimized or show maximized event 
-      MDIView * view = (MDIView*)o->qt_metacast("Gui::MDIView");
-      if ( view )
-        showActiveView( view );
+    if (o != this) {
+        if (e->type() == QEvent::WindowStateChange) {
+            // notify all mdi views when the active view receives a show normal, show minimized 
+            // or show maximized event 
+            MDIView * view = qobject_cast<MDIView*>(o);
+            if (view) { // emit this signal
+                Qt::WindowStates oldstate = reinterpret_cast<QWindowStateChangeEvent*>(e)->oldState();
+                Qt::WindowStates newstate = view->windowState();
+                if (oldstate != newstate)
+                    windowStateChanged(view);
+            }
+        }
     }
-  }
-#if 0 //TODO Check eventFilter
-  if ( o != this ) {
-    if ( e->type() == QEvent::ShowMaximized || e->type() == QEvent::ShowMinimized || e->type() == QEvent::ShowNormal || e->type() == QEvent::ShowFullScreen ) {
-      MDIView * view = (MDIView*)o->qt_metacast("Gui::MDIView");
 
-      // notify all mdi views when the active view receives a show normal, show minimized or show maximized event 
-      if ( view )
-        emit showActiveView( view );
-    }
-  }
-#endif
-
-  return QMainWindow::eventFilter( o, e );
+    return QMainWindow::eventFilter(o, e);
 }
 
 void MainWindow::addWindow( MDIView* view )
@@ -322,7 +318,7 @@ void MainWindow::addWindow( MDIView* view )
   // make workspace parent of view
   d->workspace->addWindow(view);
   connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( showMessage(const QString&, int )) );
-  connect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
+  connect( this, SIGNAL( windowStateChanged(MDIView*) ), view, SLOT( windowStateChanged(MDIView*) ) );
 
   // listen to the incoming events of the view
   view->installEventFilter(this);
@@ -360,7 +356,7 @@ void MainWindow::removeWindow( Gui::MDIView* view )
 {
   // free all connections
   disconnect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
-  disconnect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
+  disconnect( this, SIGNAL( windowStateChanged(MDIView*) ), view, SLOT( windowStateChanged(MDIView*) ) );
   view->removeEventFilter(this);
 
   for ( int i = 0; i < d->tabs->count(); i++ ) {
@@ -462,7 +458,8 @@ void MainWindow::onWindowActivated( QWidget* w )
     return; // either no MDIView or no valid object or no top-level window
 
   // set active the appropriate window (it needs not to be part of mdiIds, e.g. directly after creation)
-  view->setActiveView();
+  d->activeView = view;
+  Application::Instance->viewActivated(view);
 
   // set the appropriate tab to the new active window
   for ( int i = 0; i < d->tabs->count(); i++ )
@@ -538,43 +535,17 @@ void MainWindow::setPaneText(int i, QString text)
   }
 }
 
-//TODO Redo the active window stuff
 MDIView* MainWindow::activeWindow(void) const
-{/*
-  // redirect all meesages to the view in fullscreen mode, if so
-  MDIView* pView = 0;
-  MDIView* pTmp = 0;
-  for ( QMap<int, MDIView*>::Iterator it = d->mdiIds.begin(); it != d->mdiIds.end(); it++ )
-  {
-    if ( it.data()->isFullScreen() )
-    {
-      // store this in case we have a non-acitve view in fullscreen (e.g. opened dialog that is active)
-      pTmp = it.data(); 
-      if ( it.data()->isActiveWindow() )
-        pView = it.data();
-      break;
-    }
-  }
-  // if no fullscreen window then look in workspace
-  if ( !pView )
-  {
-    pView = reinterpret_cast <MDIView *> ( d->workspace->activeWindow() );
-    if ( !pView && pTmp )
-      pView = pTmp;
-  }
-
-  return pView;*/
-
-  // the corresponding window to the current tab is active
-  int id = d->tabs->currentIndex();
-  if ( id < 0 )
-    return 0;
-  return qobject_cast<MDIView*>(d->tabs->tabData(id).value<QWidget*>());
+{
+    // each activated window notifies this main window when it is activated
+    return d->activeView;
 }
 
-void MainWindow::setActiveWindow( MDIView* view )
+void MainWindow::setActiveWindow(MDIView* view)
 {
-  d->workspace->setActiveWindow(view);
+    d->workspace->setActiveWindow(view);
+    d->activeView = view;
+    Application::Instance->viewActivated(view);
 }
 
 void MainWindow::closeEvent ( QCloseEvent * e )
