@@ -52,7 +52,7 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
     if (_pcSingleton == NULL)
     {
         _pcSingleton = new BitmapFactoryInst;
-        _pcSingleton->addPath(":/new/prefix1/");
+        _pcSingleton->addPath(":/icons/");
         _pcSingleton->addPath(App::GetApplication().GetHomePath());
 
         RegisterIcons();
@@ -180,6 +180,12 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const QString& name, const QSize& size)
             if (QFile(fileName).exists()) {
                 iconPath = fileName;
                 break;
+            } else {
+                fileName += ".svg";
+                if (QFile(fileName).exists()) {
+                    iconPath = fileName;
+                    break;
+                }
             }
         }
     }

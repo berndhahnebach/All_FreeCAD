@@ -1,8 +1,8 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource> 
-<file>.\Page.svg</file>
-<file>.\Pages.svg</file>
-<file>.\View.svg</file>
-
-</qresource>
+<RCC version="1.0">
+	<qresource prefix="/"> 
+		<file>icons/address-book-old.svg</file>
+		<file>./Page.svg</file>
+		<file>./Pages.svg</file>
+		<file>./View.svg</file>
+	</qresource>
 </RCC> 
