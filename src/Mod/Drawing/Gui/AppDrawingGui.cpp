@@ -19,7 +19,7 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
-#include "qrc_Drawing.cpp"
+#include "resources/qrc_resources.cpp"
 
 // use a different name to CreateCommand()
 void CreateDrawingCommands(void);
@@ -27,7 +27,7 @@ void CreateDrawingCommands(void);
 void loadDrawingResource()
 {
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Drawing);
+  Q_INIT_RESOURCE(resources);
   Gui::Translator::instance()->reinstallLanguage();
 }
 

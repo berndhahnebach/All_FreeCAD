@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/new/prefix1" >
+    <qresource prefix="/icons" >
         <file>SplashScreen.xpm</file>
         <file>bulb.xpm</file>
         <file>button_down.xpm</file>
