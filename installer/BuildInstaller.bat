@@ -10,7 +10,5 @@ D:\Develop\Libs\wix_30\candle.exe -out FreeCAD.wxobj        FreeCAD.wxs
 
 D:\Develop\Libs\wix_30\light.exe -ext WixUIExtension -cultures:en-us -out FreeCAD.msi *.wxobj
 
-mkdir ..\Install
-copy FreeCAD.msi ..\Install
-
-readline 
+C:\Programme\TortoiseSVN\bin\SubWCRev.exe .. CopyRelease.bat.in CopyRelease.bat
+call CopyRelease.bat

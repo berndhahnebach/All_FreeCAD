@@ -1,0 +1,3 @@
+
+
+copy FreeCAD.msi FreeCAD_0.7.$WCREV$_setup.msi
