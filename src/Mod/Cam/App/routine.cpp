@@ -9,23 +9,23 @@
 	i.e: Intergral[i] == Intergral(WithRespectTo[i]);
 	Also, it is assumed that WithRespectTo are evenly spaced with it's stepWidth
 */
-double Routines::TrapezoidIntergration(const std::vector<double> &WithRespectTo, const std::vector<double> &Intergral)
+double Routines::TrapezoidIntergration(const std::vector<double> &WithRespectTo, const std::vector<double> &Integral)
 {
-	double h = 0;
-	double result = 0;
-	int N = Intergral.size();
-	if(N==1)   // trapzf(x,y) returns zero for a scalar x
+	m_h = 0;
+	m_result = 0;
+	m_N = Integral.size();
+	if(m_N==1)   // trapzf(x,y) returns zero for a scalar x
 	{
-		result = 0;
-		return result;
+		m_result = 0;
+		return m_result;
 	}
 
-	h = WithRespectTo[1] - WithRespectTo[0]; /* the integration stepsize */ 
-	for(int i=1; i< N - 1; i++)
-		result = result + Intergral[i];
+	m_h = WithRespectTo[1] - WithRespectTo[0]; /* the integration stepsize */ 
+	for(int i=1; i< m_N - 1; i++)
+		m_result = m_result + Integral[i];
  
-	result = h/2 * (Intergral[0] + 2*(result) + Intergral[N -1]);
-	return result;
+	m_result = m_h/2 * (Integral[0] + 2*(m_result) + Integral[m_N -1]);
+	return m_result;
 }
 
 /*! \brief Cramer-Rule Solver
@@ -504,7 +504,7 @@ void Routines::ExtendKnot(double ErrPnt, int NurbDegree, int MaxCntrl, std::vect
 	if(KnotSequence.size()>40)
 		tol_knot = 0.015;
 
-	for(int i = NurbDegree; i < KnotSequence.size() - NurbDegree; i++)
+	for(int i = NurbDegree; i < (KnotSequence.size() - NurbDegree); i++)
 	{
 		if((KnotSequence[i] > ErrPnt) && (ErrPnt >= KnotSequence[i-1]))
 		{
