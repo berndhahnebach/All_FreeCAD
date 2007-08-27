@@ -33,7 +33,6 @@
 #endif
 
 #include <stdio.h>
-#include "Approx.h"
 
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
@@ -84,7 +83,8 @@
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
 
-
+#include "Approx.h"
+#include "ConvertDyna.h"
 
 
 
@@ -3083,7 +3083,7 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 	}
 	UMults.SetValue(1,4);
 	UMults.SetValue(KntU.size() - 6,4);
-	for(int i = 1; i < KntU.size() - 7; i++)
+	for(unsigned int i = 1; i < KntU.size() - 7; i++)
 		UMults.SetValue(i+1,1);
 	//Load V-Knot Vector
 	TColStd_Array1OfReal VKnots(1,KntU.size() - 6);
@@ -3102,7 +3102,7 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 	}
 	VMults.SetValue(1,4);
 	VMults.SetValue(KntV.size() - 6,4);
-	for(int i = 1; i < KntV.size() - 7; i++)
+	for(unsigned int i = 1; i < KntV.size() - 7; i++)
 		VMults.SetValue(i+1,1);
 
 	Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
@@ -3127,6 +3127,22 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
   } PY_CATCH;
 
   Py_Return;
+}
+static PyObject * openDYNA(PyObject *self, PyObject *args)
+{
+	const char* filename;
+	if (! PyArg_ParseTuple(args, "s;Usage:- openDYNA(filename)", &filename))			 
+		return NULL;  
+	PY_TRY
+	{
+		MeshCore::MeshKernel mesh;
+		ReadDyna parse(mesh,filename);
+		return new MeshPy(mesh);
+	}
+	PY_CATCH;
+
+	Py_Return;
+
 }
 //PyDoc_STRVAR(open_doc,
 //"open(string) -- Not implemnted for this Module so far.");
@@ -3153,8 +3169,9 @@ struct PyMethodDef Cam_methods[] = {
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
-	   {"MyApprox" , MyApprox, Py_NEWARGS,
+	{"MyApprox" , MyApprox, Py_NEWARGS,
        "MyApprox(MeshObject) -- My test approximate." },
+	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
     {NULL     , NULL      }        /* end of table marker */
 };
 

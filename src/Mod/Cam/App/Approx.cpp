@@ -46,11 +46,6 @@
 /*****NAMESPACE**/
 using namespace boost::numeric::bindings;
 
-
-/*Constructor
-Input:- Mesh and Tolerance
-Output:- Control Array, Knot Vectors and Order of the NURB
-Control = One Dimensional, where u_stride = 3, v_stride = max_u*3*/
 Approximate::Approximate(MeshCore::MeshKernel &m,std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
 						 int &_OrderU, int &_OrderV, double tol)
 {
@@ -78,7 +73,7 @@ Approximate::Approximate(MeshCore::MeshKernel &m,std::vector<double> &_Cntrl, st
 	
 
 }
-/*! \brief Main Approximation Program
+/*! \brief Main Approximation Program.
 */
 void Approximate::ApproxMain()
 {
@@ -1123,7 +1118,7 @@ void Approximate::Reparam()
 
 /*! \brief Extend the Nurb
 
-    Once error is computed and the generated nurb is stil not satisfactory, this function will extend
+    Once error is computed and the generated nurb is stil not satisfactory (i.e max_err > tolerance), this function will extend
 	the given Nurb by extending the Knot vectors by 2 and, because the degree is held constant, the control points
 */
 void Approximate::ExtendNurb(double c2, int h)
@@ -1145,7 +1140,7 @@ void Approximate::ExtendNurb(double c2, int h)
 
 	 This function will reorder the list in one-direction. Clockwise or counter clockwise is depending on the 
 	 facet list and will not be checked by this function. (i.e the third vertex i.e vertex in first facet that 
-	 is not the CurIndex or the first neighbour in pnt) 
+	 is not the CurIndex or the first neighbour in pnt[Ok, I am also lost with this..., just debug and step to see what I mean...]) 
 */
 void Approximate::ReorderNeighbourList(std::set<MeshCore::MeshPointArray::_TConstIterator> &pnt, 
 		std::set<MeshCore::MeshFacetArray::_TConstIterator> &face, std::vector<unsigned long> &nei, unsigned long CurInd)

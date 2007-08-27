@@ -22,10 +22,14 @@ using namespace boost::numeric;
 /*! \class Approximate 
 	\brief The main class for the approximate routine
 	
-	Entry point. Inheriting the Routines class defined in Routines.h.
-	Takes an OpenMesh mesh and tolerance level as it's input parameter.
-	As output it gives out The following NURBS info.
-	Control Points, Knot U, Knot V, Order U, Order V.
+	Inheriting the Routines class defined in Routines.h,it takes a mesh structure and tolerance level as it's input parameter.
+	
+	As output, it gives out the following NURBS info:-
+		Control Points, Knot U, Knot V, Order U, Order V
+	
+	where Control Points, Knot U, Knot V are of type std::vectors, Order U and Order V of type int
+
+	In this program, it will be directly converted into a topo surface from the given information
  */
 class Approximate : protected Routines
 {
