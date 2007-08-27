@@ -2,6 +2,7 @@
 /// Version Number
 #define FCVersionMajor "0"
 #define FCVersionMinor "7"
+#define FCVersionName  "Bespin"
 
 #define FCRevision      "$WCREV$"      //Highest committed revision number
 #define FCRevisionDate  "$WCDATE$"     //Date of highest committed revision

@@ -52,7 +52,6 @@ set LIB=%LIB%;%FREECADLIB%\lib
 rem Start the Visuall Studio build process
 vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv 
 
-@pause
 
 
 rem call "C:\Programme\Microsoft Visual Studio 8\VC\vcvarsall.bat"

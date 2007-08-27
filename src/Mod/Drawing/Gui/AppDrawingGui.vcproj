@@ -384,6 +384,50 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\..\Gui\Icons\qrc_resource.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\..\..\Gui\Icons\resource.qrc"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="Workbench.cpp"
 			>
 			<FileConfiguration
