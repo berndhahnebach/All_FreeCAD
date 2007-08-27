@@ -3055,7 +3055,10 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 	std::vector<double> KntV;
 	int OrdU;
 	int OrdV;
-	Approximate approx((MeshKernel &)m,Control,KntU,KntV,OrdU,OrdV,tolerance);
+	try {
+		Approximate approx((MeshKernel &)m,Control,KntU,KntV,OrdU,OrdV,tolerance);
+	}
+	catch(const char *errstr) { std::cerr << errstr << std::endl; }
 	int maxCntrlU = KntU.size() - OrdU;
 	int maxCntrlV = KntU.size() - OrdV;
 	//Load Control Pnts

@@ -315,14 +315,6 @@
 			RelativePath=".\routine.h"
 			>
 		</File>
-		<File
-			RelativePath=".\ConvertDyna.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ConvertDyna.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

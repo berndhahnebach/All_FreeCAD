@@ -9,18 +9,18 @@ ReadDyna::ReadDyna(MeshCore::MeshKernel &m, const char* &inputname)
 	std::ifstream inputfile;
 	inputfile.open(inputname);
 	std::string line;
-	if(!inputfile.is_open())
+	if(!inputfile.is_open())   //Exists...?
 	{
 		std::cerr << "File not found. Exiting..." << std::endl;
 		return;
 	}
 	getline(inputfile,line);
-	if(line.find("*KEYWORD") == std::string::npos)
+	if(line.find("*KEYWORD") == std::string::npos)   //Really a DYNA file...?
 	{
-		std::cerr << "NOT A DYNA FILE\a" << std::endl;
+		std::cerr << "NOT A DYNA FILE\a" << std::endl;    
 		return;
 	}
-	while(inputfile)  //First find *NODE Keyword for initializing the list
+	while(inputfile)  //First find *NODE Keyword to initialize the VERTICES list (it's the main list)
 	{
 		getline(inputfile,line);
 		if(line.find("*NODE") != std::string::npos)
@@ -119,7 +119,7 @@ void ReadDyna::ReadNode(std::ifstream &inputfile)
 
 	Inside *ELEMENT_SHELL_THICKNESS there's the information about which points makes up a face. All other infos are ignored.
 	
-	´Maybe it is in other keywords there is such infos, but I dunno...
+	Maybe it is in other keywords there is such infos, but I dunno...
 */
 void ReadDyna::ReadShellThickness(std::ifstream &inputfile)
 {
@@ -275,7 +275,7 @@ void ReadDyna::Convert()
 					if((constrainter_it = find(CurFace.PointIndex.begin(),CurFace.PointIndex.end(),
 						(*constraint_it).second.PointIndex)) != CurFace.PointIndex.end())  //...does the constraint point also a part of the current face?
 					{
-						continue;
+						continue; //Yes, so skip it.
 					}
 					unsigned int ver = (*constraint_it).second.ConstrainedBy[0];  //No, so...
 					if(ver == CurFace.PointIndex[i]) //...the point is current point?
@@ -328,9 +328,14 @@ void ReadDyna::Convert()
 		{   //Houston, we have some constraints...
 			switch(AdditionalPoint.size())   //"How much" asks Houston
 			{
-				case 1: //1 constrain
+				case 1: //1 constrain is the reply
 				{
-					/* Blergh... Can't draw with ASCII to save my life ><
+					/* ____
+					   | /|
+					   |/ |
+					   |\ |
+					   | \|
+					   ----
 					*/
 					STLINDEX Temp;   
 					int checker;
@@ -416,9 +421,9 @@ void ReadDyna::Convert()
 					break;
 				}
 
-				case 2:  //2 Constraints
+				case 2:  //2 Constraints is the reply
 				{
-						/* Blergh... Can't draw with ASCII to save my life ><
+						/* This one i can't draw... sorry
 						*/
 						STLINDEX temp;
 						if(Doubler != 0 && Doubler != 3)
@@ -541,7 +546,7 @@ void ReadDyna::Convert()
 					std::cout << "4 Constraints" << std::endl;
 					break;
 				}
-				default:
+				default: //Have constraints, but no constraining points, or more than 5...? BUGSPAWN
 				{
 					std::cout << AdditionalPoint.size() << std::endl;
 					std::cout << "Blah...?" << std::endl;
@@ -552,7 +557,7 @@ void ReadDyna::Convert()
 	}
 }
 
-/*! \brief Load'em into Mesh Function...
+/*! \brief Loading into Mesh Function...
 */
 void ReadDyna::PutInMesh(MeshCore::MeshKernel &mesh)
 {
