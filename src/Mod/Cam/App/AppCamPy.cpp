@@ -62,7 +62,7 @@
 
 # include <BRepOffsetAPI_MakeOffsetShape.hxx>
 # include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Section.hxx>
+#include  <BRepAlgoAPI_Section.hxx>
 # include <GeomAPI_IntSS.hxx>
 
 #include <Geom_BSplineSurface.hxx>
@@ -75,6 +75,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRep_Tool.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <GeomAPI_Interpolate.hxx>
@@ -82,6 +83,7 @@
 #include <BRepOffset.hxx>
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
+#include <GeomAdaptor_Curve.hxx>
 
 #include "Approx.h"
 #include "ConvertDyna.h"
@@ -141,15 +143,14 @@ static PyObject * read(PyObject *self, PyObject *args)
 static PyObject * makeToolPath(PyObject *self, PyObject *args)
 {
 	Py::List AllCuts = Py::List();
-	
-    PyObject *pcObj;
-	//double offset_value;
 
-    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C
-        return NULL;                             // NULL triggers exception
+	PyObject *pcObj;
+	PyObject *pcObj2;
+	if (!PyArg_ParseTuple(args, "O!O!", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Cut-Curve wird hier übergeben
-
+    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
+	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cut-Curve
     PY_TRY
     {
         //Base::Builder3D log3D;
@@ -177,7 +178,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
             geom_surface= BRep_Tool::Surface(atopo_surface);
         }
 
-        Ex.Init(pcShape->getShape(),TopAbs_EDGE);
+        Ex.Init(pcShape2->getShape(),TopAbs_EDGE);
         Standard_Real d_tmin,d_tmax;
         int numberofpoints;
         for (; Ex.More(); Ex.Next())
@@ -190,7 +191,8 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
             edge_adaptor.Initialize(edge);
             d_tmin=edge_adaptor.FirstParameter();
             d_tmax=edge_adaptor.LastParameter();
-            GCPnts_UniformAbscissa evaluate_points(edge_adaptor, 2.0, d_tmin,d_tmax);
+            //GCPnts_UniformAbscissa evaluate_points(edge_adaptor, 2.0, d_tmin,d_tmax);
+			GCPnts_QuasiUniformDeflection evaluate_points(edge_adaptor,0.001);
             if (!evaluate_points.IsDone())
             {
                 PyErr_SetString(PyExc_Exception, "Sampling of curve failed");
@@ -222,7 +224,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
                 }
                 gp_Vec NormalVector(Normal_direction);
                 gp_Vec projectedSurfacePoint_Vector(Zero,projectedSurfacePoint);
-                gp_Pnt OffsetPoint ((projectedSurfacePoint_Vector + (NormalVector*10)).XYZ());
+                gp_Pnt OffsetPoint ((projectedSurfacePoint_Vector + (NormalVector*(-22))).XYZ());
 				aPnts->SetValue(i,OffsetPoint);
 			}
 				
@@ -233,6 +235,37 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 				  if (!aNoPeriodInterpolate.IsDone()) return NULL;
 				  
 				  Handle_Geom_BSplineCurve anInterpolationCurve = aNoPeriodInterpolate.Curve();
+
+				  GeomAdaptor_Curve offsetCurveAdaptor;
+				  offsetCurveAdaptor.Load(anInterpolationCurve);
+				  GCPnts_QuasiUniformDeflection evaluate_points_OffsetCurve(offsetCurveAdaptor,0.001);
+				  ofstream outfile;
+				  outfile.open("c:/testfile.out");
+				  int numberofpointsOffset = evaluate_points_OffsetCurve.NbPoints();
+				  gp_Pnt currentOffsetPoint;
+				  gp_Vec firstderivativeVector,secondderivativeVector;
+					for (int i=1;i<=numberofpointsOffset;++i)
+					{
+						
+						//offsetCurveAdaptor.D1(evaluate_points_OffsetCurve.Parameter(i),currentOffsetPoint,firstderivativeVector);
+						offsetCurveAdaptor.D2(evaluate_points_OffsetCurve.Parameter(i),currentOffsetPoint,firstderivativeVector,secondderivativeVector);
+						firstderivativeVector.Normalize();
+						//secondderivativeVector.Normalize();
+						outfile << currentOffsetPoint.X() << "," \
+								<< currentOffsetPoint.Y()<< "," \
+								<< currentOffsetPoint.Z() << "," \
+								<< firstderivativeVector.X() << "," \
+								<< firstderivativeVector.Y() << "," \
+								<< firstderivativeVector.Z() << "," \
+								<< secondderivativeVector.X()<< "," \
+								<< secondderivativeVector.Y()<< "," \
+								<< secondderivativeVector.Z()<< endl;
+					}
+					outfile.close();
+
+
+					 
+
 				  
 				  BRep_Builder aBuilder;
 				  
@@ -250,7 +283,7 @@ static PyObject * offset(PyObject *self,PyObject *args)
 {
   float offset;
   PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePyOld::Type), &pcObj, &offset ))
+  if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePyOld::Type), &pcObj,&offset ))
     return NULL;
 
   TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Original-Shape wird hier übergeben
@@ -285,7 +318,7 @@ static PyObject * cut(PyObject *self, PyObject *args)
 	{
    			// Let's call for algorithm computing a cut operation:
   			BRepAlgo_Section mkCut(pcShape->getShape(), pcShape2->getShape(),Standard_False); 
-			mkCut.ComputePCurveOn1(Standard_True);
+			//mkCut.ComputePCurveOn1(Standard_True);
 			mkCut.Approximation (Standard_True);
 			mkCut.Build();
 						
@@ -298,7 +331,6 @@ static PyObject * cut(PyObject *self, PyObject *args)
 
 			//Verify that there is a Wire available or just one edge that represents the sectio cut
 			TopExp_Explorer Ex,Ex1;
-			Py_Return;
 			Ex.Init(mkCut.Shape(),TopAbs_WIRE);
 			TopoDS_Wire aTopoWire;
 			if (!Ex.More())
@@ -321,7 +353,9 @@ static PyObject * cut(PyObject *self, PyObject *args)
 				}
 
 				if(i>1) //If there is more then one edge and no wire -> change the cutting plane z-level!!
-					Py_Return;
+				{
+				Py_Return;
+				}
 				
 			}
 

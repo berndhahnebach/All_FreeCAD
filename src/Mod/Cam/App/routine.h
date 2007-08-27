@@ -74,7 +74,10 @@ protected:
 	void GenerateUniformKnot(int MaxCntrl, int NurbDegree, std::vector<double> &KnotSequence);
 	unsigned long FindCorner(float ParamX, float ParamY, std::vector<unsigned long> &v_neighbour, std::vector <Base::Vector3f> &v_pnts);
 
-	
+private:
+	//Variables in Use by Routine TrapezoidIntegration
+	double m_h, m_result;
+	int m_N;
 	
 
 };

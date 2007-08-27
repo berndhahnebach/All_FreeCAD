@@ -7,7 +7,7 @@
 #ifndef APPROX_H
 #define APPROX_H
 
-#ifndef NDEBUG //This is for faster matrix operations
+#ifndef NDEBUG //This is for faster matrix operations. In fact, some checks are turned off in the uBlas functions
 #define NDEBUG   
 #endif
 /*******MAIN INCLUDE*********/
@@ -34,7 +34,7 @@ using namespace boost::numeric;
 class Approximate : protected Routines
 {
 public:
-	Approximate(MeshCore::MeshKernel &m, std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
+	Approximate(const MeshCore::MeshKernel &m, std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
 		 int &_OrderU, int &_OrderV, double tol);
 
 protected:

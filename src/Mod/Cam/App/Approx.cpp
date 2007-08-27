@@ -46,7 +46,7 @@
 /*****NAMESPACE**/
 using namespace boost::numeric::bindings;
 
-Approximate::Approximate(MeshCore::MeshKernel &m,std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
+Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
 						 int &_OrderU, int &_OrderV, double tol)
 {
 	MinX = 0, MinY = 0, MaxX = 0; MaxY = 0;
@@ -798,7 +798,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 		
 	}
 	
-	
+	double A,B,C,result; //Needed Variables for the Trapezoid-Integration
 	//Now lets fill up the E
 	for(int a = 0; a < MainNurb.MaxV+1; a++)
 	{
@@ -820,17 +820,17 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 						C_2.push_back(N_v2[w][a]*N_v2[w][c]);
 					}
 					//SehnenTrapezRegel
-					double A = TrapezoidIntergration(U, A_1);
+					A = TrapezoidIntergration(U, A_1);
 					A *= TrapezoidIntergration(U, A_2);
 					
-					double B = TrapezoidIntergration(U, B_1);
+					B = TrapezoidIntergration(U, B_1);
 					B *= TrapezoidIntergration(U, B_2);
 
-					double C = TrapezoidIntergration(U, C_1);
+					C = TrapezoidIntergration(U, C_1);
 					C *= TrapezoidIntergration(U, C_2);
 
-					double result = A + 2*B + C;
-					E_Matrix((a*(MainNurb.MaxU+1))+b,(c*(MainNurb.MaxV+1))+d) = result;
+					//result = A + 2*B + C;
+					E_Matrix((a*(MainNurb.MaxU+1))+b,(c*(MainNurb.MaxV+1))+d) = A + 2*B +C;
 
 					A_1.clear();
 					A_2.clear();
