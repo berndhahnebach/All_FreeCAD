@@ -168,14 +168,14 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                 if (this->currentMode == FullScreen) {
                     showNormal();
                     setWindowFlags(windowFlags() & ~Qt::Window);
-                    getMainWindow()->addWindow(this);
                 } else if (this->currentMode == TopLevel) {
                     this->wstate = windowState();
                     setWindowFlags( windowFlags() & ~Qt::Window );
-                    getMainWindow()->addWindow(this);
                 }
 
                 this->currentMode = Child;
+                getMainWindow()->addWindow(this);
+                getMainWindow()->activateWindow();
                 update();
             }   break;
         // go to top-level mode
