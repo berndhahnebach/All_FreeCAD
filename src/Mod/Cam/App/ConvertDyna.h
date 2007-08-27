@@ -21,14 +21,14 @@ typedef struct
 	std::vector<unsigned int> Constraining;
 	std::vector<unsigned int> FacetRef;
 
-}VERTICES;   /*!< VERTEX struct, contains Constraint info too...*/
+}VERTICES;   /*!< VERTICES struct. Contains coordinates, index, face reference, and constraining informations*/
 
 typedef struct
 {
 	unsigned int FaceIndex;
 	std::vector<unsigned int> PointIndex;
 	
-}FACE; /*!< FACE struct, contains the indexes that the Face consists of*/
+}FACE; /*!< FACE struct. Contains the face index, and the reference to the point*/
 
 
 
@@ -43,11 +43,16 @@ typedef struct
 	*NODE, *CONSTRAINTS_ADAPTIVITY, and *ELEMENT_SHELL_THICKNESS (for the third, only first line will be parsed)
 
 	From *NODE the coordinates and vertex index will be parsed. From *ELEMENT_SHELL_THICKNESS only the face nodal
-	will be parsed, and from *CONSTRAINTS_ADAPTIVITY the constraints point (denoted by Constrain and Constrained) will
+	will be parsed, and from *CONSTRAINTS_ADAPTIVITY the constraints point (flagged by Constrain and Constrained) will
 	be parsed.
 
-	As output, a mesh~
-	TODO:- Maybe consider the PIDs too for multiple Part dyna...?
+	As output, a mesh.
+	
+	TODO:- 
+	1. A face might consists of 2 opposite constraint points, 3 constraint points or 4 constraint points in it's
+	edges. These are not implemented yet.
+	2. Some other keyword might contain the face information other than *ELEMENT_SHELL_THICKNESS
+	3. Multiple-PIDS DYNA files is not yet implemented. This program still assumes that it's only a single PID DYNA
 */
 class ReadDyna
 {

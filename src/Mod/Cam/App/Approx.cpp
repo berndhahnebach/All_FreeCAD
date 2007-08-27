@@ -322,17 +322,17 @@ void Approximate::ParameterBoundary()
 	MeshCore::MeshPointIterator v_it(LocalMesh);
 	a = 0;
 	int b = 0;
-	for(v_it.Begin(); !v_it.EndReached(); ++v_it)
+	for(v_it.Begin(); !v_it.EndReached(); ++v_it)  //For all points...
 	{
-		if((vec_it = find(nei_tmp.begin(), nei_tmp.end(), v_it.Position())) != nei_tmp.end())
-		{
+		if((vec_it = find(nei_tmp.begin(), nei_tmp.end(), v_it.Position())) != nei_tmp.end())  //...is it boundary?
+		{  //Yes
 			ParameterX[count] = pnts_tmp[int(vec_it-nei_tmp.begin())][0];
 			ParameterY[count] = pnts_tmp[int(vec_it-nei_tmp.begin())][1];
 			mapper[v_it.Position()] = a+NumOfInnerPoints;
 			a++, count++;
 		}
 		else 
-		{
+		{   //No
 			mapper[v_it.Position()] = b;
 			b++;
 		}
@@ -519,8 +519,7 @@ void Approximate::ParameterInnerPoints()
 			}
 			else   //Can an inside point have less than 3 neighbours...?
 			{
-				std::cout << "Something's wrong here" << std::endl;
-				getchar();
+				throw "Something's wrong here. Less than 3 Neighbour";
 			}
 		}
 	}				
@@ -892,6 +891,8 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 			
 			atlas::gemm(CblasTrans, CblasTrans, 1.0, JacPoint,EvalMat,0.0,Holder);
 			double lam = ublas::norm_frobenius(JacPoint) * ublas::norm_frobenius(EvalMat);
+			if(lam == 0)
+				throw "Division by Zero in ComputeError function";
 			lam = fabs(Holder(0,0) / lam);
 			error.push_back(lam);
 		}
@@ -1002,6 +1003,8 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 			
 				atlas::gemm(CblasTrans, CblasTrans, 1.0, JacPoint,EvalMat,0.0,Holder);
 				double lam = ublas::norm_frobenius(JacPoint) * ublas::norm_frobenius(EvalMat);
+				if(lam == 0)
+					throw "Division by Zero in ComputeError function";
 				lam = fabs(Holder(0,0) / lam);
 				error.push_back(lam);
 			}
