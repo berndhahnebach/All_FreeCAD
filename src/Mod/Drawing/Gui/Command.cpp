@@ -33,7 +33,7 @@ CmdDrawingOpen::CmdDrawingOpen()
     sToolTipText    = QT_TR_NOOP("Drawing open image view function");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Open";
+    sPixmap         = "Page";
 }
 
 
