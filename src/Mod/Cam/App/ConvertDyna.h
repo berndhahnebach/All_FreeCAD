@@ -1,9 +1,39 @@
+/***************************************************************************
+ *   Copyright (c) 2007                                                    *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
+ *	 Human Rezai <human.rezai@eads.net>                                    * 
+ *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+/******CONVERTDYNA.H******/
 #ifndef CONVERTDYNA_H
 #define CONVERTDYNA_H
+
+/******MAIN INCLUDES******/
 #include <fstream>
 #include <vector>
 #include <map>
 #include <string>
+
+/******MESH INCLUDES******/
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
@@ -11,6 +41,8 @@
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
 
+/******STRUCTS******/
+//This structure will be used internally in this routine without any affects of outside variable
 typedef struct
 {
 	unsigned int PointIndex;
@@ -70,4 +102,4 @@ private:
 	std::vector<STLINDEX> Stllist;
 
 };
-#endif
+#endif  /*CONVERTDYNA_H DEFINED*/
