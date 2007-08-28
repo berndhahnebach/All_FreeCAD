@@ -591,7 +591,8 @@ void ReadDyna::PutInMesh(MeshCore::MeshKernel &mesh)
 {
 	std::map<unsigned int,VERTICES>::iterator pnt_it(Pointlist.begin());
 	Base::Vector3f Points[3];
-	
+	MeshCore::MeshBuilder builder(mesh);
+	builder.Initialize(Stllist.size());
 	for(unsigned int i = 0; i < Stllist.size();i++)
 	{
 		for(unsigned int j = 0; j < 3; j++)
@@ -601,7 +602,9 @@ void ReadDyna::PutInMesh(MeshCore::MeshKernel &mesh)
 			Points[j] = Temp;
 		}
 		MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
-		mesh += Face;
+		Face.CalcNormal();
+		builder.AddFacet(Face);
 	}
+	builder.Finish();
 }
 			
