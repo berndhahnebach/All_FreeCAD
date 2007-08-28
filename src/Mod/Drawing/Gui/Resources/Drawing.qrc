@@ -3,6 +3,8 @@
 <file>icons/Page.svg</file>
 <file>icons/Pages.svg</file>
 <file>icons/View.svg</file>
+<file>icons/actions/document-new.png</file>
+<file>icons/actions/document-new.svg</file>
 <file>translations/Drawing_de.qm</file>
 
 </qresource>
