@@ -65,8 +65,8 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
 	//Initialize the NURB
 	MainNurb.DegreeU = 3;
 	MainNurb.DegreeV = 3;
-	MainNurb.MaxU = 50;
-	MainNurb.MaxV = 50;
+	MainNurb.MaxU = 10;
+	MainNurb.MaxV = 10;
 	tolerance = tol;
 	GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
 	GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
