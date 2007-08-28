@@ -65,8 +65,8 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
 	//Initialize the NURB
 	MainNurb.DegreeU = 3;
 	MainNurb.DegreeV = 3;
-	MainNurb.MaxU = 10;
-	MainNurb.MaxV = 10;
+	MainNurb.MaxU = 50;
+	MainNurb.MaxV = 50;
 	tolerance = tol;
 	GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
 	GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
@@ -1026,9 +1026,6 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 		if(norm_frobenius(EvalMat) > max_error && c < 1000)
 		{
 			max_error = norm_frobenius(EvalMat);
-			
-			if(max_error > tolerance) //break the error computation if one point over tolerance is found
-				break;
 			h = i;
 		}
 		if(norm_frobenius(EvalMat) > tolerance) 
