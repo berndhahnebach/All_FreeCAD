@@ -1,5 +1,9 @@
-<RCC>
-    <qresource prefix="/translations" >
-        <file>Drawing_de.qm</file>
-    </qresource>
-</RCC>
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource> 
+<file>/icons/Page.svg</file>
+<file>/icons/Pages.svg</file>
+<file>/icons/View.svg</file>
+<file>/translations/Drawing_de.qm</file>
+
+</qresource>
+</RCC> 
