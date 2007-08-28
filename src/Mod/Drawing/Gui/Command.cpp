@@ -29,8 +29,8 @@ CmdDrawingOpen::CmdDrawingOpen()
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
-    sMenuText       = QT_TR_NOOP("Open");
-    sToolTipText    = QT_TR_NOOP("Drawing open image view function");
+    sMenuText       = QT_TR_NOOP("Open SVG...");
+    sToolTipText    = QT_TR_NOOP("Open a scalable vector graphic");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/document-new";
