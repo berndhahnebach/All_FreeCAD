@@ -1,79 +1,17 @@
-<!DOCTYPE TS><TS>
+﻿<!DOCTYPE TS><TS>
 <context>
-    <name>CmdImageOpen</name>
+    <name>CmdDrawingOpen</name>
     <message>
-        <source>Image</source>
-        <translation>Bild</translation>
+        <source>Drawing</source>
+        <translation>Zeichnung</translation>
     </message>
     <message>
-        <source>Open</source>
-        <translation>Öffnen</translation>
+        <source>Open SVG...</source>
+        <translation>SVG öffnen...</translation>
     </message>
     <message>
-        <source>Image open image view function</source>
-        <translation>Funktion zum Öffnen einer Bilddatei</translation>
-    </message>
-</context>
-<context>
-    <name>ImageGui::GLImageBox</name>
-    <message>
-        <source>Undefined type of colour space for image viewing</source>
-        <translation>Unbekannter Farbraumtyp</translation>
-    </message>
-</context>
-<context>
-    <name>ImageGui::ImageView</name>
-    <message>
-        <source>&amp;Fit image</source>
-        <translation>Bild ein&amp;passen</translation>
-    </message>
-    <message>
-        <source>Stretch the image to fit the view</source>
-        <translation>Bild auf Größe des Fensters skalieren</translation>
-    </message>
-    <message>
-        <source>&amp;1:1 scale</source>
-        <translation>&amp;1:1 Skalierung</translation>
-    </message>
-    <message>
-        <source>Display the image at a 1:1 scale</source>
-        <translation>Bild im Verhältnis 1:1 anzeigen</translation>
-    </message>
-    <message>
-        <source>&amp;Original color</source>
-        <translation>&amp;Originalfarbe</translation>
-    </message>
-    <message>
-        <source>Display the image with its original color(s)</source>
-        <translation>Bild in seinen Originalfarben anzeigen</translation>
-    </message>
-    <message>
-        <source>&amp;Brightened color</source>
-        <translation>Farben auf&amp;hellen</translation>
-    </message>
-    <message>
-        <source>Display the image with brightened color(s)</source>
-        <translation>Bild mit aufgeheltten Farben anzeigen</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation>Standard</translation>
-    </message>
-    <message>
-        <source>Ready...</source>
-        <translation>Bereit...</translation>
-    </message>
-    <message>
-        <source>grey</source>
-        <translation>Grau</translation>
-    </message>
-    <message>
-        <source>zoom</source>
-        <translation>Zoom</translation>
-    </message>
-    <message>
-        <source>outside image</source>
-        <translation>Außerhalb des Bildes</translation>
+        <source>Open a scalable vector graphic</source>
+        <translation>Öffnen einer Vektorgraphik</translation>
     </message>
 </context>
 <context>
@@ -91,8 +29,12 @@
         <translation>Dialog zum Öffnen einer Bilddatei</translation>
     </message>
     <message>
-        <source>Choose an image file to open</source>
-        <translation>Bilddatei zum Öffnen auswählen</translation>
+        <source>Choose an SVG file to open</source>
+        <translation>Vektorgraphik zum Öffnen auswählen</translation>
+    </message>
+    <message>
+        <source>Scalable Vector Graphics (*.svg)</source>
+        <translation>Skalierbare Vektorgraphik (*.svg)</translation>
     </message>
 </context>
 </TS>
