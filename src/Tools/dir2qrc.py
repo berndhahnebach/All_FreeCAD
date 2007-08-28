@@ -44,7 +44,7 @@ hhcFooter="""</qresource>
 </RCC> 
 """
 
-EndingList = ['.xpm','.svg']
+EndingList = ['.xpm','.svg','.qm','.png']
 
 def main():
 	global Verbose,Dir,Output
@@ -74,9 +74,12 @@ def main():
 	for root, dirs, files in os.walk(Dir):
 		for name in files:
 			if( (1 in [c in name for c in EndingList]) and not ('.svn' in root) ):
-				if Verbose:
-					print join(root,name)
-				file.write('<file>' + join(root,name) + '</file>\n')
+				FilePathOrg = join(root,name)
+				FilePath = FilePathOrg.replace('.\\','')
+				FilePath = FilePath.replace('\\','/')
+				if Verbose: print FilePathOrg + ' -> ' + FilePath 
+				
+				file.write('<file>' + FilePath + '</file>\n')
 
 
 	file.write("\n")

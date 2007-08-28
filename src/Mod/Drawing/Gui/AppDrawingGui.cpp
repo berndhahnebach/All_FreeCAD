@@ -19,7 +19,7 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
-#include "resources/qrc_Drawing.cpp"
+//#include "resources/qrc_Drawing.cpp"
 
 // use a different name to CreateCommand()
 void CreateDrawingCommands(void);
