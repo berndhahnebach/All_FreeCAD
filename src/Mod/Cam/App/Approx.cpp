@@ -528,7 +528,7 @@ void Approximate::ParameterInnerPoints()
 	//Using the compressed matrix class from boost
 	std::cout << "Splitting the lambdas..." << std::endl;
 	ublas::compressed_matrix<double, ublas::column_major, 0, ublas::unbounded_array<int>, ublas::unbounded_array<double> > 
-		UpperTerm(NumOfInnerPoints, NumOfInnerPoints);
+    UpperTerm(NumOfInnerPoints, NumOfInnerPoints);
 	ublas::compressed_matrix<double, ublas::column_major> OutLambda(NumOfInnerPoints, NumOfOuterPoints);
 	//We need to extract this columnwise, and (i,j) is a row-major style of numbering...
 	//Also, later we need to I - Upperterm, I := IdentityMatrix, this will also be done in this step
@@ -1015,6 +1015,9 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 		if(norm_frobenius(EvalMat) > max_error && c < 1000)
 		{
 			max_error = norm_frobenius(EvalMat);
+			
+			if(max_error > tolerance) //break the error computation if one point over tolerance is found
+				break;
 			h = i;
 		}
 		if(norm_frobenius(EvalMat) > tolerance) 
