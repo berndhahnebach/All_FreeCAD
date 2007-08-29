@@ -250,45 +250,22 @@ void StdCmdWindows::activated(int iMsg)
 //===========================================================================
 // Std_UserInterface
 //===========================================================================
-DEF_STD_CMD_C(StdCmdUserInterface);
+DEF_STD_CMD(StdCmdUserInterface);
 
 StdCmdUserInterface::StdCmdUserInterface()
   : Command("Std_UserInterface")
 {
   sGroup        = QT_TR_NOOP("View");
-  sMenuText     = QT_TR_NOOP("User interface mode");
-  sToolTipText  = QT_TR_NOOP("Switches between tabbed and docked mode");
-  sWhatsThis    = QT_TR_NOOP("Switches between tabbed and docked mode");
-  sStatusTip    = QT_TR_NOOP("Switches between tabbed and docked mode");
+  sMenuText     = QT_TR_NOOP("Dock views");
+  sToolTipText  = QT_TR_NOOP("Dock all top-level views");
+  sWhatsThis    = QT_TR_NOOP("Dock all top-level views");
+  sStatusTip    = QT_TR_NOOP("Dock all top-level views");
   iAccel        = 0;
 }
 
-Action * StdCmdUserInterface::createAction(void)
+void StdCmdUserInterface::activated(int)
 {
-  const char* topLevMode = QT_TR_NOOP("Multiple top-level windows");
-  const char* dockedMode = QT_TR_NOOP("Docked window");
-  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
-  QAction* topLev = pcAction->addAction(QObject::tr(topLevMode));
-  topLev->setToolTip(QObject::tr(sToolTipText));
-  topLev->setWhatsThis(QObject::tr(sWhatsThis));
-  topLev->setStatusTip(QObject::tr(sStatusTip));
-  topLev->setCheckable(true);
-  QAction* docked = pcAction->addAction(QObject::tr(dockedMode));
-  docked->setToolTip(QObject::tr(sToolTipText));
-  docked->setWhatsThis(QObject::tr(sWhatsThis));
-  docked->setStatusTip(QObject::tr(sStatusTip));
-  docked->setCheckable(true);
-  docked->setChecked(true);
-  return pcAction;
-}
-
-void StdCmdUserInterface::activated(int iMsg)
-{
-  if (iMsg==0) {
-    getMainWindow()->switchToTopLevelMode();
-  } else {
     getMainWindow()->switchToDockedMode();
-  }
 }
 
 //===========================================================================

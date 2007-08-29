@@ -35,10 +35,10 @@ MenuItem::MenuItem()
 {
 }
 
-MenuItem::MenuItem( MenuItem* item )
+MenuItem::MenuItem(MenuItem* item)
 {
-    if ( item )
-        item->appendItem( this );
+    if (item)
+        item->appendItem(this);
 }
 
 MenuItem::~MenuItem()
@@ -46,7 +46,7 @@ MenuItem::~MenuItem()
     clear();
 }
 
-void MenuItem::setCommand( const QString& name )
+void MenuItem::setCommand(const QString& name)
 {
     _name = name;
 }
@@ -61,17 +61,17 @@ bool MenuItem::hasItems() const
     return _items.count() > 0;
 }
 
-MenuItem* MenuItem::findItem( const QString& name )
+MenuItem* MenuItem::findItem(const QString& name)
 {
-    if ( _name == name )
+    if (_name == name)
     {
         return this;
     }
     else
     {
-        for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+        for (QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it)
         {
-            if ( (*it)->_name == name )
+            if ((*it)->_name == name)
                 return *it;
         }
     }
@@ -82,12 +82,12 @@ MenuItem* MenuItem::findItem( const QString& name )
 MenuItem* MenuItem::copy() const
 {
     MenuItem* root = new MenuItem;
-    root->setCommand( command() );
+    root->setCommand(command());
 
     QList<MenuItem*> items = getItems();
-    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it)
     {
-        root->appendItem( (*it)->copy() );
+        root->appendItem((*it)->copy());
     }
 
     return root;
@@ -98,12 +98,12 @@ uint MenuItem::count() const
     return _items.count();
 }
 
-void MenuItem::appendItem( MenuItem* item )
+void MenuItem::appendItem(MenuItem* item)
 {
-    _items.push_back( item );
+    _items.push_back(item);
 }
 
-bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
+bool MenuItem::insertItem(MenuItem* before, MenuItem* item)
 {
     int pos = _items.indexOf(before);
     if (pos != -1)
@@ -115,7 +115,7 @@ bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
         return false;
 }
 
-void MenuItem::removeItem( MenuItem* item )
+void MenuItem::removeItem(MenuItem* item)
 {
     int pos = _items.indexOf(item);
     if (pos != -1)
@@ -124,19 +124,19 @@ void MenuItem::removeItem( MenuItem* item )
 
 void MenuItem::clear()
 {
-    for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+    for (QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it)
         delete *it;
     _items.clear();
 }
 
-MenuItem& MenuItem::operator<< ( const QString& command )
+MenuItem& MenuItem::operator << (const QString& command)
 {
     MenuItem* item = new MenuItem(this);
-    item->setCommand( command );
+    item->setCommand(command);
     return *this;
 }
 
-MenuItem& MenuItem::operator<< ( MenuItem* item )
+MenuItem& MenuItem::operator << (MenuItem* item)
 {
     appendItem(item);
     return *this;
@@ -172,65 +172,114 @@ MenuManager::~MenuManager()
 {
 }
 
-void MenuManager::setup( MenuItem* menuBar ) const
+void MenuManager::setup(MenuItem* menuItems) const
 {
-    if ( !menuBar )
+    if (!menuItems)
         return; // empty menu bar
 
-    // create a new menu bar and disable update to avoid flickering when building up
-    // the menus
-    // Note: To free immediately the acquired memory by the menu bar we must destruct it rather than
-    // clear its menus, otherwise we free this memory not before the application exits
-    QMenuBar* bar = new QMenuBar(getMainWindow());
-    bar->setUpdatesEnabled(false);
-
-    // set the new menu bar and destroy the old one
-    QMenuBar* old = getMainWindow()->menuBar();
-    getMainWindow()->layout()->setMenuBar(bar);
-    delete old;
-
-    QList<MenuItem*> items = menuBar->getItems();
-    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    QMenuBar* menuBar = getMainWindow()->menuBar();
+    //menuBar->setUpdatesEnabled(false);
+    
+    QList<MenuItem*> items = menuItems->getItems();
+    QList<QAction*> actions = menuBar->actions();
+    for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it)
     {
-        if ( (*it)->command() == "Separator" ) {
-            bar->addSeparator();
+        // search for the menu action
+        QAction* action = findAction(actions, (*it)->command());
+        if (!action) {
+            // There must be not more than one separator in the menu bar, so
+            // we can safely remove it if available and append it at the end
+            if ((*it)->command() == "Separator") {
+                action = menuBar->addSeparator();
+            } else {
+                // create a new menu
+                QByteArray menuName = (*it)->command().toUtf8();
+                QMenu* menu = menuBar->addMenu(QObject::trUtf8((const char*)menuName));
+                action = menu->menuAction();
+            }
+
+            // set the menu user data
+            action->setData((*it)->command());
         } else {
-            QByteArray menuName = (*it)->command().toUtf8();
-            QMenu* menu = bar->addMenu(QObject::trUtf8((const char*)menuName));
-            menu->setObjectName((*it)->command());
-            setup(*it, menu);
+            // put the menu at the ende
+            menuBar->removeAction(action);
+            menuBar->addAction(action);
+            action->setVisible(true);
+            int index = actions.indexOf(action);
+            actions.removeAt(index);
         }
+
+        // flll up the menu
+        if (!action->isSeparator())
+            setup(*it, action->menu());
+    }
+
+    // hide all menus which we don't need for the moment
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+        (*it)->setVisible(false);
     }
 
     // enable update again
-    bar->setUpdatesEnabled(true);
+    //menuBar->setUpdatesEnabled(true);
 }
 
-void MenuManager::setup( MenuItem* item, QMenu* menu ) const
+void MenuManager::setup(MenuItem* item, QMenu* menu) const
 {
     CommandManager& mgr = Application::Instance->commandManager();
-
     QList<MenuItem*> items = item->getItems();
-    for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    QList<QAction*> actions = menu->actions();
+    for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it)
     {
-        if ( (*it)->hasItems() )
-        {
-            QByteArray menuName = (*it)->command().toUtf8();
-            QMenu* submenu = menu->addMenu(QObject::tr((const char*)menuName));
-            submenu->setObjectName((*it)->command());
-            setup( (*it), submenu );
+        // search for the menu item
+        QAction* action = findAction(actions, (*it)->command());
+        if (!action) {
+            if ((*it)->command() == "Separator") {
+                action = menu->addSeparator();
+            } else {
+                if ((*it)->hasItems()) {
+                    // Creste a submenu
+                    QByteArray menuName = (*it)->command().toUtf8();
+                    action = menu->addAction(QObject::trUtf8((const char*)menuName));
+                    action->setMenu(new QMenu);
+                } else {
+                    // Check if action was added successfully
+                    if (mgr.addTo((const char*)(*it)->command().toAscii(), menu))
+                        action = menu->actions().last();
+                }
+            }
+
+            // set the menu user data
+            if (action) action->setData((*it)->command());
+        } else {
+            // put the menu item at the ende
+            menu->removeAction(action);
+            menu->addAction(action);
+            int index = actions.indexOf(action);
+            actions.removeAt(index);
         }
-        else
-        {
-            if ( (*it)->command() == "Separator" )
-                menu->addSeparator();
-            else
-                mgr.addTo((const char*)(*it)->command().toAscii(), menu);
-        }
+
+        // fill up the submenu
+        if ((*it)->hasItems())
+            setup(*it, action->menu());
+    }
+
+    // remove all menu items which we don't need for the moment
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+        menu->removeAction(*it);
     }
 }
 
-void MenuManager::setupContextMenu( MenuItem* item, QMenu &menu ) const
+QAction* MenuManager::findAction(const QList<QAction*>& acts, const QString& item) const
+{
+    for (QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it) {
+        if ((*it)->data().toString() == item)
+            return *it;
+    }
+
+    return 0; // no item with the user data found
+}
+
+void MenuManager::setupContextMenu(MenuItem* item, QMenu &menu) const
 {
     setup(item, &menu);
 }

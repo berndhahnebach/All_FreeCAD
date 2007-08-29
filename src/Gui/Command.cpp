@@ -764,7 +764,7 @@ void CommandManager::clearCommands()
   _sCommands.clear();
 }
 
-void CommandManager::addTo(const char* Name,QWidget *pcWidget)
+bool CommandManager::addTo(const char* Name,QWidget *pcWidget)
 {
   if (_sCommands.find(Name) == _sCommands.end())
   {
@@ -774,11 +774,13 @@ void CommandManager::addTo(const char* Name,QWidget *pcWidget)
 #else
     Base::Console().Log("CommandManager::addTo() try to add an unknown command (%s) to a widget!\n",Name);
 #endif
+    return false;
   }
   else
   {
     Command* pCom = _sCommands[Name];
     pCom->addTo(pcWidget);
+    return true;
   }
 }
 

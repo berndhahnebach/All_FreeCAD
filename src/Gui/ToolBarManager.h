@@ -73,11 +73,14 @@ public:
     static ToolBarManager* getInstance();
     static void destruct();
     /** Sets up the toolbars of a given workbench. */
-    void setup( ToolBarItem* ) const;
-    /** Returns a list of all currently existing toolbars. */
-    QList<QToolBar*> toolBars() const;
+    void setup(ToolBarItem*) const;
 
 protected:
+    void setup(ToolBarItem*, QToolBar*) const;
+    /** Returns a list of all currently existing toolbars. */
+    QList<QToolBar*> toolBars() const;
+    QToolBar* findToolBar(const QList<QToolBar*>&, const QString&) const;
+    QAction* findAction(const QList<QAction*>&, const QString&) const;
     ToolBarManager();
     ~ToolBarManager();
 

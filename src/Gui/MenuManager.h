@@ -86,6 +86,7 @@ protected:
 
 private:
     void setup(MenuItem*, QMenu*) const;
+    QAction* findAction(const QList<QAction*>&, const QString&) const;
 
 private:
     static MenuManager* _instance;

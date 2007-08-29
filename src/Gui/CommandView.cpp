@@ -58,46 +58,38 @@ void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comme
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//===========================================================================
-// Std_CameraType
-//===========================================================================
-DEF_STD_CMD_AC(StdCameraType);
+DEF_STD_CMD_AC(StdOrthographicCamera);
 
-StdCameraType::StdCameraType()
-  : Command("Std_CameraType")
+StdOrthographicCamera::StdOrthographicCamera()
+  : Command("Std_OrthographicCamera")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Toggle view mode");
-  sToolTipText  = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
-  sWhatsThis    = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
-  sStatusTip    = QT_TR_NOOP("Toggle between perspective and orthographic view mode");
-  iAccel        = 0;
+  sMenuText     = QT_TR_NOOP("Orthographic view");
+  sToolTipText  = QT_TR_NOOP("Switches to orthographic view mode");
+  sWhatsThis    = QT_TR_NOOP("Switches to orthographic view mode");
+  sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
+  iAccel        = Qt::Key_O;
 }
 
-void StdCameraType::activated(int iMsg)
+void StdOrthographicCamera::activated(int iMsg)
 {
-  if (iMsg == 0)
-    doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Orthographic\")");
-  else if (iMsg == 1)
-    doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Perspective\")");
+    if (iMsg == 1) {
+        View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+        if (view->getViewer()->getCameraType() != SoOrthographicCamera::getClassTypeId())
+            doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Orthographic\")");
+    }
 }
 
-bool StdCameraType::isActive(void)
+bool StdOrthographicCamera::isActive(void)
 {
   View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view )
   {
     // update the action group if needed
-    ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
-    if ( pActGrp )
-    {
-      int index = pActGrp->checkedAction();
-      int type = (view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId() ? 0 : 1);
-      // mark the appropriate menu item but do not invoke the command 
-      if ( type != index ) {
-        pActGrp->setCheckedAction( type );
-      }
-    }
+    bool check = _pcAction->isChecked();
+    bool mode = view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId();
+    if (mode != check)
+        _pcAction->setChecked(mode);
 
     return true;
   }
@@ -105,26 +97,56 @@ bool StdCameraType::isActive(void)
   return false;
 }
 
-Action * StdCameraType::createAction(void)
+Action * StdOrthographicCamera::createAction(void)
 {
-  const char* orthograph = QT_TR_NOOP("Orthographic view");
-  const char* perspectiv = QT_TR_NOOP("Perspective view");
-  const char* orthoInfo = QT_TR_NOOP("Switches to orthographic view mode");
-  const char* perspInfo = QT_TR_NOOP("Switches to perspective view mode");
-  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
-  QAction* ortho = pcAction->addAction(QObject::tr(orthograph));
-  ortho->setToolTip(QObject::tr(orthoInfo));
-  ortho->setStatusTip(QObject::tr(orthoInfo));
-  ortho->setWhatsThis(QObject::tr(orthoInfo));
-  ortho->setShortcut(Qt::Key_O);
-  ortho->setCheckable(true);
-  QAction* persp = pcAction->addAction(QObject::tr(perspectiv));
-  persp->setToolTip(QObject::tr(perspInfo));
-  persp->setStatusTip(QObject::tr(perspInfo));
-  persp->setWhatsThis(QObject::tr(perspInfo));
-  persp->setShortcut(Qt::Key_P);
-  persp->setCheckable(true);
-  persp->setChecked(true);
+  Action *pcAction = Command::createAction();
+  pcAction->setCheckable( true );
+  return pcAction;
+}
+
+DEF_STD_CMD_AC(StdPerspectiveCamera);
+
+StdPerspectiveCamera::StdPerspectiveCamera()
+  : Command("Std_PerspectiveCamera")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Perspective view");
+  sToolTipText  = QT_TR_NOOP("Switches to perspective view mode");
+  sWhatsThis    = QT_TR_NOOP("Switches to perspective view mode");
+  sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
+  iAccel        = Qt::Key_P;
+}
+
+void StdPerspectiveCamera::activated(int iMsg)
+{
+    if (iMsg == 1) {
+        View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+        if (view->getViewer()->getCameraType() != SoPerspectiveCamera::getClassTypeId())
+            doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Perspective\")");
+    }
+}
+
+bool StdPerspectiveCamera::isActive(void)
+{
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if ( view )
+  {
+    // update the action group if needed
+    bool check = _pcAction->isChecked();
+    bool mode = view->getViewer()->getCameraType() == SoPerspectiveCamera::getClassTypeId();
+    if (mode != check)
+        _pcAction->setChecked(mode);
+
+    return true;
+  }
+
+  return false;
+}
+
+Action * StdPerspectiveCamera::createAction(void)
+{
+  Action *pcAction = Command::createAction();
+  pcAction->setCheckable( true );
   return pcAction;
 }
 
@@ -1332,7 +1354,8 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
-  rcCmdMgr.addCommand(new StdCameraType());
+  rcCmdMgr.addCommand(new StdOrthographicCamera());
+  rcCmdMgr.addCommand(new StdPerspectiveCamera());
   rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
   rcCmdMgr.addCommand(new StdCmdFreezeViews());
   rcCmdMgr.addCommand(new StdViewZoomIn());

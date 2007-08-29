@@ -168,38 +168,88 @@ ToolBarManager::~ToolBarManager()
 {
 }
 
-void ToolBarManager::setup(ToolBarItem* toolBar) const
+void ToolBarManager::setup(ToolBarItem* toolBarItems) const
 {
-    if ( !toolBar )
+    if (!toolBarItems)
         return; // empty menu bar
 
-    // switch updates off to avoid flickering
-    getMainWindow()->setUpdatesEnabled(false);
-    QList<QToolBar*> tbs = toolBars();
-    for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it ) {
-        getMainWindow()->removeToolBar( *it );
+    QList<ToolBarItem*> items = toolBarItems->getItems();
+    QList<QToolBar*> toolbars = toolBars();
+    for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
+        // search for the toolbar
+        QToolBar* toolbar = findToolBar(toolbars, (*it)->command());
+        if (!toolbar) {
+            QByteArray toolbarName = (*it)->command().toUtf8();
+            toolbar = getMainWindow()->addToolBar(QObject::trUtf8((const char*)toolbarName)); // i18n
+            toolbar->setObjectName((*it)->command());
+        } else {
+            int index = toolbars.indexOf(toolbar);
+            toolbars.removeAt(index);
+        }
+
+        // setup the toolbar
+        setup(*it, toolbar);
+    }
+
+    // remove and destroy all unneeded toolbars
+    for (QList<QToolBar*>::Iterator it = toolbars.begin(); it != toolbars.end(); ++it) {
+        getMainWindow()->removeToolBar(*it);
         delete *it;
     }
+}
 
+void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
+{
     CommandManager& mgr = Application::Instance->commandManager();
-    QList<ToolBarItem*> items = toolBar->getItems();
+    QList<ToolBarItem*> items = item->getItems();
+    QList<QAction*> actions = toolbar->actions();
+    for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
+        // search for the action item
+        QAction* action = findAction(actions, (*it)->command());
+        if (!action) {
+            if ((*it)->command() == "Separator") {
+                action = toolbar->addSeparator();
+            } else {
+                // Check if action was added successfully
+                if (mgr.addTo((const char*)(*it)->command().toAscii(), toolbar))
+                    action = toolbar->actions().last();
+            }
 
-    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) {
-        QByteArray toolbarName = (*item)->command().toUtf8();
-        QToolBar* bar = getMainWindow()->addToolBar(QObject::trUtf8((const char*)toolbarName)); // i18n
-        bar->setObjectName((*item)->command());
-
-        QList<ToolBarItem*> subitems = (*item)->getItems();
-        for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem ) {
-            if ( (*subitem)->command() == "Separator" )
-                bar->addSeparator();
-            else
-                mgr.addTo((const char*)(*subitem)->command().toAscii(), bar);
+            // set the tool button user data
+            if (action) action->setData((*it)->command());
+        } else {
+            // Note: For toolbars we do not remove and readd the actions
+            // because this causes flicker effects. So, it could happen that the order of 
+            // buttons doesn't match with the order of commands in the workbench.
+            int index = actions.indexOf(action);
+            actions.removeAt(index);
         }
     }
-  
-    // switch on updates
-    getMainWindow()->setUpdatesEnabled(true);
+
+    // remove all tool buttons which we don't need for the moment
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+        toolbar->removeAction(*it);
+    }
+}
+
+QToolBar* ToolBarManager::findToolBar(const QList<QToolBar*>& toolbars, const QString& item) const
+{
+    for (QList<QToolBar*>::ConstIterator it = toolbars.begin(); it != toolbars.end(); ++it) {
+        if ((*it)->objectName() == item)
+            return *it;
+    }
+
+    return 0; // no item with the user data found
+}
+
+QAction* ToolBarManager::findAction(const QList<QAction*>& acts, const QString& item) const
+{
+    for (QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it) {
+        if ((*it)->data().toString() == item)
+            return *it;
+    }
+
+    return 0; // no item with the user data found
 }
 
 QList<QToolBar*> ToolBarManager::toolBars() const
