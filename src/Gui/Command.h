@@ -393,7 +393,7 @@ public:
   void removeCommand(Command* pCom);
 
   /// Adds the given command to a given widget
-  void addTo(const char* Name,QWidget *pcWidget);
+  bool addTo(const char* Name,QWidget *pcWidget);
 
   /** Returns all commands of a special App Module
    *  delivers a vector of all comands in the given application module. When no 

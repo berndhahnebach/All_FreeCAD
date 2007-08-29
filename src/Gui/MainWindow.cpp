@@ -794,7 +794,7 @@ void MainWindow::changeEvent(QEvent *e)
     for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
       (*it)->languageChange();
 
-    // reload current workbench to retranslate all actions and winow titles
+    // reload current workbench to retranslate all actions and window titles
     Workbench* wb = WorkbenchManager::instance()->active();
     if (wb) {
       this->saveLayoutSettings();
