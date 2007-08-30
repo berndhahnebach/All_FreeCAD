@@ -1,14 +1,17 @@
 
-set FREECADLIB=D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
+set FREECADLIB    = D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
 
-C:\Programme\TortoiseSVN\bin\SubWCRev.exe .. Version.wxi.in Version.wxi
+SubWCRev .. Version.wxi.in Version.wxi
 
-D:\Develop\Libs\wix_30\candle.exe -out FreeCADBase.wxobj    FreeCADBase.wxs
-#D:\Develop\Libs\wix_30\candle.exe -out FreeCADDoc.wxobj     FreeCADDoc.wxs
-D:\Develop\Libs\wix_30\candle.exe -out FreeCADModules.wxobj FreeCADModules.wxs
-D:\Develop\Libs\wix_30\candle.exe -out FreeCAD.wxobj        FreeCAD.wxs
+candle -out FreeCADBase.wxobj    FreeCADBase.wxs
+candle -out LibPack4.wxobj       LibPack4.wxs
+rem candle -out FreeCADDoc.wxobj     FreeCADDoc.wxs
+candle -out FreeCADModules.wxobj FreeCADModules.wxs
+candle -out FreeCAD.wxobj        FreeCAD.wxs
 
-D:\Develop\Libs\wix_30\light.exe -ext WixUIExtension -cultures:en-us -out FreeCAD.msi *.wxobj
+light  -ext WixUIExtension -cultures:en-us -out FreeCAD.msi *.wxobj
 
-C:\Programme\TortoiseSVN\bin\SubWCRev.exe .. CopyRelease.bat.in CopyRelease.bat
+SubWCRev .. CopyRelease.bat.in CopyRelease.bat
 call CopyRelease.bat
+del *.wxobj CopyRelease.bat Version.wxi FreeCAD.msi
+
