@@ -65,8 +65,8 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
 	//Initialize the NURB
 	MainNurb.DegreeU = 3;
 	MainNurb.DegreeV = 3;
-	MainNurb.MaxU = 10;
-	MainNurb.MaxV = 10;
+	MainNurb.MaxU = 60;
+	MainNurb.MaxV = 60;
 	tolerance = tol;
 	GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
 	GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
@@ -640,7 +640,9 @@ void Approximate::ErrorApprox()
 	int h = 0;
 	int test = 0;
 	double av = 0, c2 = 0;
+	std::cout << "Constructing" << std::endl;
 	ublas::matrix<double> C_Temp(NumOfPoints,3);
+	std::cout << "C_Temp succesfully constructed" << std::endl;
 	//Time saving... C_Temp matrix is constant for all time
 	for(unsigned int i = 0; i < UnparamX.size(); ++i)
 	{
@@ -650,13 +652,12 @@ void Approximate::ErrorApprox()
 			C_Temp(i,2) = UnparamZ[i];
 			
 	}
+
 	while(ErrThere)
 	{
 		int count = 0;
 		ublas::matrix<double> B_Matrix(NumOfPoints,(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-		ublas::compressed_matrix<double> E_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1), (MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-		std::cout << "Smoothing..." << std::endl;
-		eFair2(E_Matrix);
+		std::cout << "B_Matrix succesfully constructed" << std::endl;
 		std::cout << "Preparing B-Matrix..." << std::endl;
 		for(int i = 0; i < NumOfPoints; i++)
 		{
@@ -685,31 +686,43 @@ void Approximate::ErrorApprox()
 				}
 			}
 		}
-		std::cout << "Preparing the A_Matrix" << std::endl;
 		ublas::matrix<double> G_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-		ublas::compressed_matrix<double, ublas::column_major, 0, ublas::unbounded_array<int>, ublas::unbounded_array<double> > 
-			A_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-		
-		std::cout << "Multiply..." << std::endl;
+		ublas::matrix<double> C_Tempo((MainNurb.MaxU+1)*(MainNurb.MaxV+1),3);
+		atlas::gemm(CblasTrans, CblasNoTrans, 1.0, B_Matrix,C_Temp,0.0,C_Tempo);
 		atlas::gemm(CblasTrans,CblasNoTrans,1.0,B_Matrix,B_Matrix,0.0,G_Matrix);  //Multiplication with Boost bindings 
 																				 //to ATLAS's bindings to LAPACK
+		B_Matrix.resize(1,1,false);
+		B_Matrix.clear();
+		//Destroying
+		//B_Matrix.resize(1,1, false);
+		//B_Matrix.clear();
+		std::cout << "Preparing the A_Matrix" << std::endl;
+		//ublas::matrix<double> G_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
+		ublas::compressed_matrix<double, ublas::column_major, 0, ublas::unbounded_array<int>, ublas::unbounded_array<double> > 
+	    A_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
+		std::cout << "Multiply..." << std::endl;
+		
+		
 		std::cout << "Euclidean Norm" << std::endl;
-		double lam = (ublas::norm_frobenius(G_Matrix) / ublas::norm_frobenius(E_Matrix)); 
-		A_Matrix = G_Matrix + (E_Matrix*lam);
-		//Destroying the unneeded matrix
-		G_Matrix.resize(1,1,false);
+		A_Matrix = G_Matrix;
+		double lam = ublas::norm_frobenius(G_Matrix);
+		G_Matrix.resize(1,1, false);
 		G_Matrix.clear();
+		ublas::compressed_matrix<double> E_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1), (MainNurb.MaxU+1)*(MainNurb.MaxV+1));
+		std::cout << "E_Matrix succesfully constructed" << std::endl;
+		std::cout << "Smoothing..." << std::endl;
+		eFair2(E_Matrix);
+		lam = lam / ublas::norm_frobenius(E_Matrix); 
+		A_Matrix = A_Matrix + (E_Matrix*lam);
+		//Destroying the unneeded matrix
 		E_Matrix.resize(1,1,false);
 		E_Matrix.clear();
 		std::cout << "Preparing the C_Matrix" << std::endl;
 		std::vector< std::vector<double> > Solver;
 		std::vector<double> TempoSolv((MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-		ublas::matrix<double> C_Tempo((MainNurb.MaxU+1)*(MainNurb.MaxV+1),3);
 		std::vector<double> TempoB;
-		atlas::gemm(CblasTrans, CblasNoTrans, 1.0, B_Matrix,C_Temp,0.0,C_Tempo);
-		//Destroying
-		B_Matrix.resize(1,1, false);
-		B_Matrix.clear();
+		
+		
 		std::cout << "Solving" << std::endl;
 		for(unsigned int i = 0; i < 3; i++)  //Since umfpack can only solve Ax = B, where x and B are vectors 
 											 //instead of matrices...
@@ -738,13 +751,20 @@ void Approximate::ErrorApprox()
 		std::cout << "Average error: " << av << std::endl;
 		std::cout << "Average points in error: " << c2 << std::endl;
 		
-		if(max_err > tolerance)// && test < 1) //Error still biegger than our tolerance?
+		if(max_err > tolerance)// && test < 1) //Error still bigger than our tolerance?
 		{
 			Reparam();   //Reparameterize
-			ExtendNurb(c2,h);  //Extend ze NURB
+		    MainNurb.MaxU += 2;
+	        MainNurb.MaxV += 2;
+	        MainNurb.MaxKnotU += 2;
+	        MainNurb.MaxKnotV += 2;
+			GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+	        GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+			//ExtendNurb(c2,h);  //Extend ze NURB
 		}
 		else ErrThere = false;
 		test++;	
+
 		
 	}
 }
@@ -777,13 +797,13 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 	std::vector< std::vector<double> > N_v1(precision, std::vector<double>(mu-1-l,0.0));
 	std::vector< std::vector<double> > N_v2(precision, std::vector<double>(mu-1-l,0.0));
 
-	std::vector<double> A_1;
-	std::vector<double> B_1;
-	std::vector<double> C_1;
-	std::vector<double> A_2;
-	std::vector<double> B_2;
-	std::vector<double> C_2;
-
+	std::vector<double> A_1(precision,0.0);
+	std::vector<double> B_1(precision,0.0);
+	std::vector<double> C_1(precision,0.0);
+	std::vector<double> A_2(precision,0.0);
+	std::vector<double> B_2(precision,0.0);
+	std::vector<double> C_2(precision,0.0);
+	std::cout << "A_1:- " << A_1.size() << std::endl;
 	//Filling up the first six matrices
 	for(int i = 0; i < precision; i++)
 	{
@@ -813,23 +833,28 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 	//Now lets fill up the E
 	for(int a = 0; a < MainNurb.MaxV+1; a++)
 	{
+		std::cout << "percent: " << 100.0*((double) a/(double) MainNurb.MaxV) << std::endl;
 		for(int b = 0; b < MainNurb.MaxU+1; b++)
 		{
 			for(int c = 0; c < MainNurb.MaxV+1; c++)
 			{
+				
 				for(int d = 0; d < MainNurb.MaxU+1; d++)
-				{
+				{	
 					for(int w = 0; w < precision; w++)   //Fill up the last 6 Matrices from the first matrix
 					{
-						A_1.push_back(N_u2[w][b]*N_u2[w][d]);
-						A_2.push_back(N_v0[w][a]*N_v0[w][c]);
+						A_1[w] = (N_u2[w][b]*N_u2[w][d]);
+						A_2[w] = (N_v0[w][a]*N_v0[w][c]);
 
-						B_1.push_back(N_u1[w][b]*N_u1[w][d]);
-						B_2.push_back(N_v1[w][a]*N_v1[w][c]);
+						B_1[w] = (N_u1[w][b]*N_u1[w][d]);
+						B_2[w] = (N_v1[w][a]*N_v1[w][c]);
 
-						C_1.push_back(N_u0[w][b]*N_u0[w][d]);
-						C_2.push_back(N_v2[w][a]*N_v2[w][c]);
+						C_1[w] = (N_u0[w][b]*N_u0[w][d]);
+						C_2[w] = (N_v2[w][a]*N_v2[w][c]);
 					}
+
+					
+
 					//SehnenTrapezRegel
 					A = TrapezoidIntergration(U, A_1);
 					A *= TrapezoidIntergration(U, A_2);
@@ -843,12 +868,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 					//result = A + 2*B + C;
 					E_Matrix((a*(MainNurb.MaxU+1))+b,(c*(MainNurb.MaxV+1))+d) = A + 2*B +C;
 
-					A_1.clear();
-					A_2.clear();
-					B_1.clear();
-					B_2.clear();
-					C_1.clear();
-					C_2.clear();
+					
 					
 					
 				}
@@ -862,12 +882,13 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_error, 
 							  double &av, double &c2)
 {
-	std::cout << "Computing Error...";
+	std::cout << "Computing Error..." << std::endl;
 	av = 0;
 	c2 = 0;
 	max_error = 0;
 	for(int i = 0; i < NumOfPoints; i++)   //For all points
 	{
+
 		std::vector<NURBS> DerivNurb;
 		std::vector<NURBS> DerivUNurb;
 		std::vector<NURBS> DerivVNurb;
@@ -1033,6 +1054,7 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 	}
 	c2 /= NumOfPoints;
 	av /= NumOfPoints;
+
 	std::cout << " DONE" << std::endl;
 }
 
