@@ -599,8 +599,7 @@ src/Mod/Image/Gui/Makefile
 src/Mod/Drawing/Makefile
 src/Mod/Drawing/App/Makefile
 src/Mod/Drawing/Gui/Makefile
-src/Mod/Cam/Makefile
-src/Mod/Cam/App/Makefile
+src/Mod/Drawing/Gui/Resources/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
 src/Tools/Makefile

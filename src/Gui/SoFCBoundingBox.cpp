@@ -134,7 +134,7 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
     char str[50], buf[10];
 
     // grab the current state
-    SoState *state = action->getState();
+    //SoState *state = action->getState();
 
     if (!shouldGLRender(action))
         return;

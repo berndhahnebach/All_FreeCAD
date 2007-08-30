@@ -15,3 +15,4 @@
 
 #define FCScrClean      "$WCMODS?Src modified:Src not modified$"     //True if local modifications found
 #define FCScrMixed      "$WCMIXED?Src mixed:Src not mixed$"          //True if mixed update revisions found
+
