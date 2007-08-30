@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
@@ -24,8 +24,15 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <?include Version.wxi ?>
-    <Product Id="0C6EC504-2794-4992-BE14-2F57378C1183" UpgradeCode="D898BEFD-CFFA-4163-A624-AB36B2C7A710" Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" Language="1033" Version="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
-        <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" Comments="for details about FreeCAD see http://free-cad.sourceforge.net" InstallerVersion="100" Compressed="yes" />
+    <Product Id="0C6EC504-2794-4992-BE14-2F57378C1183" 
+		         UpgradeCode="D898BEFD-CFFA-4163-A624-AB36B2C7A710" 
+						 Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
+						 Language="1033" Version="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" 
+						 Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
+        <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" 
+				         Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
+								 InstallerVersion="100" 
+								 Compressed="yes" />
 
         <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
 
@@ -39,7 +46,17 @@
 
 
         <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFilesFolder" Name="PFiles">
+ 					<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
+					<Merge  Id="CRT"
+                    Language="0"
+                    SourceFile='$(env.CommonProgramFiles)\MergeModules\Microsoft_VC80_CRT_x86.msm' 
+										DiskId="1"/>
+          <Merge  Id="CRT Policy"
+                    Language="0"
+                    SourceFile='$(env.CommonProgramFiles)\MergeModules\Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
+										DiskId="1"/>
+          <!-- End of Visual C++ 8.0 Runtime Libraries -->
+          <Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
                     <Directory Id="BinDir" Name="bin" />
                     <Directory Id="ModDir" Name="Mod" />
@@ -47,14 +64,15 @@
                 </Directory>
             </Directory>
             <Directory Id="ProgramMenuFolder">
-                <Directory Id="MenuDir" ShortName="FC03" Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" />
+                <Directory Id="MenuDir" Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" />
             </Directory>
             <Directory Id="DesktopFolder" Name="Desktop" />
         </Directory>
         <Feature Id="Complete" Title="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" Description="The Base system and standard modules" Display="expand" Level="1" Absent="disallow" ConfigurableDirectory="INSTALLDIR">
             <ComponentRef Id="Base" />
-            <ComponentRef Id="CompModMesh" />
+            <ComponentRef Id="LibPack4Binaries" />
             <ComponentRef Id="CompModPart" />
+            <ComponentRef Id="CompModMesh" />
             <ComponentRef Id="CompModPoints" />
             <Feature Id="FeatModImage" Title="The Image module" Description="Module to handle pictures" Level="1">
                 <ComponentRef Id="CompModImage" />
