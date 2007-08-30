@@ -164,7 +164,7 @@ void SoFCBackgroundGradient::setColorGradient( const SbColor& fromColor, const S
     const float* rgb1 = fromColor.getValue();
     const float* rgb2 = toColor.getValue();
     SbColor mid( 0.5f*(rgb1[0]+rgb2[0]), 0.5f*(rgb1[1]+rgb2[1]), 0.5f*(rgb1[2]+rgb2[2]) );
-    SoMaterial* mat = reinterpret_cast<SoMaterial*>(child);
+    SoMaterial* mat = static_cast<SoMaterial*>(child);
     mat->diffuseColor.set1Value( 0, fromColor );
     mat->diffuseColor.set1Value( 1, fromColor );
     mat->diffuseColor.set1Value( 2, fromColor );

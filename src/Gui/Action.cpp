@@ -289,6 +289,8 @@ private:
 WorkbenchComboBox::WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent) : QComboBox(parent), group(wb)
 {
   connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
+  connect(getMainWindow(), SIGNAL(workbenchActivated(const QString&)), 
+          this, SLOT(onWorkbenchActivated(const QString&)));
 }
 
 WorkbenchComboBox::~WorkbenchComboBox()
@@ -337,6 +339,11 @@ void WorkbenchComboBox::onActivated(int i)
 void WorkbenchComboBox::onActivated(QAction* a)
 {
   setCurrentIndex(a->data().toInt());
+}
+
+void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
+{
+    setCurrentIndex(findText(name));
 }
 
 WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
@@ -646,21 +653,13 @@ DockWidgetAction::~DockWidgetAction()
 
 void DockWidgetAction::addTo ( QWidget * w )
 {
-  if (!_menu) {
-    _menu = new QMenu();
-    _action->setMenu(_menu);
-  }
-
-  w->addAction(_action);
-
-  QList<QDockWidget*> dock = getMainWindow()->findChildren<QDockWidget*>();
-  for (QList<QDockWidget*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
-    QAction* action = (*it)->toggleViewAction();
-    action->setToolTip(tr("Toogles this dockable window"));
-    action->setStatusTip(tr("Toogles this dockable window"));
-    action->setWhatsThis(tr("Toogles this dockable window"));
-    _menu->addAction(action);
-  }
+    if (!_menu) {
+      _menu = new QMenu();
+      _action->setMenu(_menu);
+      connect(_menu, SIGNAL(aboutToShow()), getMainWindow(), SLOT(onDockWindowMenuAboutToShow()));
+    }
+    
+    w->addAction(_action);
 }
 
 // --------------------------------------------------------------------
@@ -677,24 +676,13 @@ ToolBarAction::~ToolBarAction()
 
 void ToolBarAction::addTo ( QWidget * w )
 {
-  if (!_menu) {
-    _menu = new QMenu();
-    _action->setMenu(_menu);
-  }
-
-  w->addAction(_action);
-
-  QWidget* mw = getMainWindow();
-  QList<QToolBar*> dock = mw->findChildren<QToolBar*>();
-  for (QList<QToolBar*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
-    if ((*it)->parentWidget() == mw) {
-      QAction* action = (*it)->toggleViewAction();
-      action->setToolTip(tr("Toogles this toolbar"));
-      action->setStatusTip(tr("Toogles this toolbar"));
-      action->setWhatsThis(tr("Toogles this toolbar"));
-      _menu->addAction(action);
+    if (!_menu) {
+      _menu = new QMenu();
+      _action->setMenu(_menu);
+      connect(_menu, SIGNAL(aboutToShow()), getMainWindow(), SLOT(onToolBarMenuAboutToShow()));
     }
-  }
+    
+    w->addAction(_action);
 }
 
 // --------------------------------------------------------------------

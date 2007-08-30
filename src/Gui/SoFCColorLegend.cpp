@@ -140,11 +140,11 @@ void SoFCColorLegend::setViewportSize( const SbVec2s& size )
         if ( first )
         {
           first = false;
-          reinterpret_cast<SoTransform*>(labels->getChild(j))->translation.setValue(fMaxX+0.1f,fMaxY-0.05f+fStep,0.0f);
+          static_cast<SoTransform*>(labels->getChild(j))->translation.setValue(fMaxX+0.1f,fMaxY-0.05f+fStep,0.0f);
         }
         else
         {
-          reinterpret_cast<SoTransform*>(labels->getChild(j))->translation.setValue(0,-fStep,0.0f);
+          static_cast<SoTransform*>(labels->getChild(j))->translation.setValue(0,-fStep,0.0f);
         }
       }
     }

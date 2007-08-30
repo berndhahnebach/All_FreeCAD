@@ -107,16 +107,16 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
 
       _clPoly.push_back( pos );
 
-      ret = mouseButtonEvent(reinterpret_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
+      ret = mouseButtonEvent(static_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
     }
     else
     {
-      ret = mouseButtonEvent(reinterpret_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
+      ret = mouseButtonEvent(static_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
     }
   }
   else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId()))
   {
-    ret = locationEvent(reinterpret_cast<const SoLocation2Event*>(ev), QPoint(x,y));
+    ret = locationEvent(static_cast<const SoLocation2Event*>(ev), QPoint(x,y));
   }
   else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId()))
   {
@@ -128,7 +128,7 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
       ret = Cancel;
       break;
     default:
-      ret = keyboardEvent(reinterpret_cast<const SoKeyboardEvent*>(ev));
+      ret = keyboardEvent(static_cast<const SoKeyboardEvent*>(ev));
       break;
     }
   }

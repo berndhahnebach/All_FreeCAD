@@ -289,6 +289,12 @@ void MainWindow::activatePreviousWindow ()
   d->workspace->activatePreviousWindow();
 }
 
+void MainWindow::activateWorkbench(const QString& name)
+{
+    // emit this signal
+    workbenchActivated(name);
+}
+
 void MainWindow::whatsThis()
 {
   QWhatsThis::enterWhatsThisMode();
@@ -302,7 +308,7 @@ bool MainWindow::eventFilter(QObject* o, QEvent* e)
             // or show maximized event 
             MDIView * view = qobject_cast<MDIView*>(o);
             if (view) { // emit this signal
-                Qt::WindowStates oldstate = reinterpret_cast<QWindowStateChangeEvent*>(e)->oldState();
+                Qt::WindowStates oldstate = static_cast<QWindowStateChangeEvent*>(e)->oldState();
                 Qt::WindowStates newstate = view->windowState();
                 if (oldstate != newstate)
                     windowStateChanged(view);
@@ -516,6 +522,36 @@ void MainWindow::onWindowsMenuAboutToShow()
   // show the separator
   if ( numWindows > 0 )
     actions.last()->setVisible(true);
+}
+
+void MainWindow::onToolBarMenuAboutToShow()
+{
+  QMenu* menu = static_cast<QMenu*>(sender());
+  menu->clear();
+  QList<QToolBar*> dock = this->findChildren<QToolBar*>();
+  for (QList<QToolBar*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
+    if ((*it)->parentWidget() == this) {
+      QAction* action = (*it)->toggleViewAction();
+      action->setToolTip(tr("Toogles this toolbar"));
+      action->setStatusTip(tr("Toogles this toolbar"));
+      action->setWhatsThis(tr("Toogles this toolbar"));
+      menu->addAction(action);
+    }
+  }
+}
+
+void MainWindow::onDockWindowMenuAboutToShow()
+{
+  QMenu* menu = static_cast<QMenu*>(sender());
+  menu->clear();
+  QList<QDockWidget*> dock = this->findChildren<QDockWidget*>();
+  for (QList<QDockWidget*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
+    QAction* action = (*it)->toggleViewAction();
+    action->setToolTip(tr("Toogles this dockable window"));
+    action->setStatusTip(tr("Toogles this dockable window"));
+    action->setWhatsThis(tr("Toogles this dockable window"));
+    menu->addAction(action);
+  }
 }
 
 QList<QWidget*> MainWindow::windows( QWorkspace::WindowOrder order ) const
