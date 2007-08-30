@@ -51,6 +51,7 @@ EXTRA_DIST = \
 		RegExp/regexpdialog.h \
 		RegExp/regexpdialogbase.ui \
 		ConvertUi.py \
+		dir2qrc.py \
 		DistTools.py \
 		fcbt.py \
 		FCFileTools.py \

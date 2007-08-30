@@ -405,7 +405,7 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     // build up point list
     int i = 0, j = 0, k = 0;
     int mod = _points.size();
-    for (std::vector<Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
         in->pointlist[i++] = it->x;
         in->pointlist[i++] = it->y;
         in->segmentlist[j++] = k;

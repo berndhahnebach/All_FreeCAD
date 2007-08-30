@@ -25,6 +25,7 @@
 #define GUI_VIEWPROVIDER_FEATURE_H
 
 #include <Inventor/lists/SoPickedPointList.h> 
+#include <Inventor/nodes/SoEventCallback.h> 
 #include "ViewProviderDocumentObject.h"
 
 class SoPickedPointList;

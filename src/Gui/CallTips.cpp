@@ -161,7 +161,8 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // get the Python object we need
         Py::Object obj = dict.getItem(std::string(modname.toAscii()));
         while (!items.isEmpty()) {
-            std::string attr = items.front().toAscii();
+            QByteArray name = items.front().toAscii();
+            std::string attr = name.constData();
             items.pop_front();
             if (obj.hasAttr(attr))
                 obj = obj.getAttr(attr);

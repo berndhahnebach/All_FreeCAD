@@ -24,11 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <qmessagebox.h>
 #endif
 

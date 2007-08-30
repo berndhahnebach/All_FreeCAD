@@ -2,6 +2,8 @@ SUBDIRS=src debian
 
 EXTRA_DIST = \
 		installer/BuildInstaller.bat \
+		installer/BuildRelease.bat \
+		installer/CopyRelease.bat.in \
 		installer/FreeCAD.wxs \
 		installer/FreeCADBase.wxs \
 		installer/FreeCADDoc.wxs \
