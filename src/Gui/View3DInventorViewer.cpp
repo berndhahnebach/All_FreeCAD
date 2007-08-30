@@ -602,7 +602,7 @@ void View3DInventorViewer::printDimension()
     const SbVec2s& size = vp.getWindowSize();
     short dimX, dimY; size.getValue(dimX, dimY);
 
-    float fHeight = reinterpret_cast<SoOrthographicCamera*>(getCamera())->height.getValue();
+    float fHeight = static_cast<SoOrthographicCamera*>(getCamera())->height.getValue();
     float fWidth = fHeight;
     if ( dimX > dimY )
     {

@@ -432,7 +432,7 @@ void ViewProviderMeshFaceSet::removeFaceInfoCallback()
 
 void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
 {
-    ViewProviderMeshFaceSet* that = reinterpret_cast<ViewProviderMeshFaceSet*>(ud);
+    ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(ud);
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
 
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -446,7 +446,7 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
         }
 
         n->setHandled();
-        Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(that->getObject());
+        Mesh::Feature* fea = static_cast<Mesh::Feature*>(that->getObject());
         const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
 
         // By specifying the indexed mesh node 'pcMeshFaces' we make sure that the picked point is
@@ -482,7 +482,7 @@ void ViewProviderMeshFaceSet::removeFillHoleCallback()
 
 void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
 {
-    ViewProviderMeshFaceSet* that = reinterpret_cast<ViewProviderMeshFaceSet*>(ud);
+    ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(ud);
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
 
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -496,7 +496,7 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
         }
 
         n->setHandled();
-        Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(that->getObject());
+        Mesh::Feature* fea = static_cast<Mesh::Feature*>(that->getObject());
         const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
 
         // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is

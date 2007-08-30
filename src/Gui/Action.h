@@ -126,6 +126,9 @@ public Q_SLOTS:
   void onActivated(int);
   void onActivated(QAction*);
 
+protected Q_SLOTS:
+  void onWorkbenchActivated(const QString&);
+
 protected:
   void actionEvent ( QActionEvent* );
 

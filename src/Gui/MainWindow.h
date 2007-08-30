@@ -166,6 +166,10 @@ public Q_SLOTS:
    */
   void activatePreviousWindow ();
   /**
+   * Just emits the workbenchActivated() signal to notify all receivers.
+   */
+  void activateWorkbench(const QString&);
+  /**
    * Starts the what's this mode.
    */
   void whatsThis();
@@ -208,6 +212,14 @@ private Q_SLOTS:
    */
   void onWindowsMenuAboutToShow();
   /**
+   * Fills up the menu with the current toolbars.
+   */
+  void onToolBarMenuAboutToShow();
+  /**
+   * Fills up the menu with the current dock windows.
+   */
+  void onDockWindowMenuAboutToShow();
+  /**
    * Removes the associated tab to the window when it gets destroyed from outside.
    */
   void onWindowDestroyed();
@@ -219,6 +231,7 @@ private Q_SLOTS:
 Q_SIGNALS:
   void timeEvent();
   void windowStateChanged(MDIView*);
+  void workbenchActivated(const QString&);
 
 private:
   /// some kind of singleton

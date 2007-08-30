@@ -147,7 +147,7 @@ void TreeDockWidget::onItemEntered(QTreeWidgetItem * item)
 {
     // object item selected
     if ( item && item->type() == QTreeWidgetItem::UserType + 1 ) {
-        DocumentObjectItem* obj = reinterpret_cast<DocumentObjectItem*>(item);
+        DocumentObjectItem* obj = static_cast<DocumentObjectItem*>(item);
         obj->displayStatusInfo();
     }
 }

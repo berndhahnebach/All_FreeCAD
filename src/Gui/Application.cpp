@@ -600,8 +600,10 @@ bool Application::activateWorkbench( const char* name )
   if ( newWb && newWb->name() == name )
     ok = true; // already active
   // now try to create and activate the matching workbench object
-  else if ( WorkbenchManager::instance()->activate( name, className ) )
+  else if ( WorkbenchManager::instance()->activate( name, className ) ) {
+    getMainWindow()->activateWorkbench(QString(name));
     ok = true;
+  }
 
   return ok;
 }
@@ -816,7 +818,7 @@ void messageHandlerCoin( const SoError * error, void * userdata )
 {
   if ( error && error->getTypeId() == SoDebugError::getClassTypeId() )
   {
-    const SoDebugError* dbg = reinterpret_cast<const SoDebugError*>(error);
+    const SoDebugError* dbg = static_cast<const SoDebugError*>(error);
     const char* msg = error->getDebugString().getString();
     switch ( dbg->getSeverity() )
     {

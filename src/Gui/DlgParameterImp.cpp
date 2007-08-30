@@ -114,8 +114,8 @@ void DlgParameterImp::onGroupSelected( QTreeWidgetItem * item )
     if ( item && item->type() == QTreeWidgetItem::UserType + 1 )
     {
         paramValue->clear();
-        FCHandle<ParameterGrp> _hcGrp = reinterpret_cast<ParameterGroupItem*>(item)->_hcGrp;
-        reinterpret_cast<ParameterValue*>(paramValue)->setCurrentGroup( _hcGrp );
+        FCHandle<ParameterGrp> _hcGrp = static_cast<ParameterGroupItem*>(item)->_hcGrp;
+        static_cast<ParameterValue*>(paramValue)->setCurrentGroup( _hcGrp );
 
         // filling up Text nodes
         std::vector<std::pair<std::string,std::string> > mcTextMap = _hcGrp->GetASCIIMap();
@@ -268,7 +268,7 @@ void ParameterGroup::onDeleteSelectedItem()
             QTreeWidgetItem* parent = sel->parent();
             int index = parent->indexOfChild(sel);
             parent->takeChild(index);
-            ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(parent);
+            ParameterGroupItem* para = static_cast<ParameterGroupItem*>(parent);
             para->_hcGrp->RemoveGrp(sel->text(0).toAscii());
             delete sel;
         }
@@ -298,7 +298,7 @@ void ParameterGroup::onCreateSubgroup()
         QTreeWidgetItem* item = currentItem();
         if (isItemSelected(item))
         {
-            ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+            ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
             FCHandle<ParameterGrp> hGrp = para->_hcGrp;
 
             if ( hGrp->HasGroup( name.toAscii() ) )
@@ -323,7 +323,7 @@ void ParameterGroup::onExportToFile()
         QTreeWidgetItem* item = currentItem();
         if (isItemSelected(item))
         {
-            ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+            ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
             FCHandle<ParameterGrp> hGrp = para->_hcGrp;
             hGrp->exportTo( file.toUtf8() );
         }
@@ -339,7 +339,7 @@ void ParameterGroup::onImportFromFile()
         QTreeWidgetItem* item = currentItem();
         if (isItemSelected(item))
         {
-            ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+            ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
             FCHandle<ParameterGrp> hGrp = para->_hcGrp;
 
             // remove the items and internal parameter values
@@ -459,7 +459,7 @@ void ParameterValue::onChangeSelectedItem(QTreeWidgetItem* item, int col)
 {
     if (isItemSelected(item) && col > 0)
     {
-        reinterpret_cast<ParameterValueItem*>(item)->changeValue();
+        static_cast<ParameterValueItem*>(item)->changeValue();
     }
 }
 
@@ -474,7 +474,7 @@ void ParameterValue::onDeleteSelectedItem()
     if (isItemSelected(sel))
     {
         takeTopLevelItem(indexOfTopLevelItem(sel));
-        reinterpret_cast<ParameterValueItem*>(sel)->removeFromGroup();
+        static_cast<ParameterValueItem*>(sel)->removeFromGroup();
         delete sel;
     }
 }
@@ -688,7 +688,7 @@ void ParameterGroupItem::setData ( int column, int role, const QVariant & value 
             return;
 
         // first check if there is already a group with name "newName"
-        ParameterGroupItem* item = reinterpret_cast<ParameterGroupItem*>(parent());
+        ParameterGroupItem* item = static_cast<ParameterGroupItem*>(parent());
         if ( !item )
         {
             QMessageBox::critical( treeWidget(), QObject::tr("Rename group"),

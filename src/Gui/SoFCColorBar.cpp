@@ -176,7 +176,7 @@ void SoFCColorBar::eventCallback(void * userdata, SoEventCallback * node)
 {
   const SoEvent * event = node->getEvent();
   if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    const SoMouseButtonEvent*  e = reinterpret_cast<const SoMouseButtonEvent*>(event);
+    const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
     if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
       if (e->getState() == SoButtonEvent::UP) {
       }
@@ -190,7 +190,7 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
 
   // check for mouse button events
   if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    const SoMouseButtonEvent*  e = reinterpret_cast<const SoMouseButtonEvent*>(event);
+    const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
 
     // calculate the mouse position relative to the colorbar
     //

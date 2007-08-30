@@ -622,7 +622,7 @@ bool View3DInventor::eventFilter(QObject* watched, QEvent* e)
     // Note: We don't need to care about removing an action if its parent widget gets destroyed.
     // This does the action itself for us.
     if (watched != this && e->type() == QEvent::ActionAdded) {
-        QActionEvent* a = reinterpret_cast<QActionEvent*>(e);
+        QActionEvent* a = static_cast<QActionEvent*>(e);
         QAction* action = a->action();
 
         if (!action->isSeparator()) {

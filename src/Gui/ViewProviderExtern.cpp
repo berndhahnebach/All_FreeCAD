@@ -114,7 +114,7 @@ void ViewProviderExtern::adjustDocumentName(const char* docname)
 void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* docname)
 {
   if ( child->getTypeId().isDerivedFrom( SoFCSelection::getClassTypeId() ) ) {
-    reinterpret_cast<SoFCSelection*>(child)->documentName = docname;
+    static_cast<SoFCSelection*>(child)->documentName = docname;
   } else if ( child->getTypeId().isDerivedFrom( SoGroup::getClassTypeId() ) ) {
     SoGroup* group = (SoGroup*)child;
     for ( int i=0; i<group->getNumChildren(); i++ ) {
