@@ -15,3 +15,4 @@
 
 #define FCScrClean      "Src modified"     //True if local modifications found
 #define FCScrMixed      "Src mixed"          //True if mixed update revisions found
+

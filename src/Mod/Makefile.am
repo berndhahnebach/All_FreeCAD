@@ -1,4 +1,4 @@
-SUBDIRS=Part Cam Mesh Points Raytracing Image Drawing Test
+SUBDIRS=Part Mesh Points Raytracing Image Drawing Test
 
 
 EXTRA_DIST = \

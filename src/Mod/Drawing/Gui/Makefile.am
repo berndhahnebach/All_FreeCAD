@@ -1,9 +1,9 @@
+SUBDIRS=Resources
 
 lib_LTLIBRARIES=libDrawingGui.la DrawingGui.la
 
 BUILT_SOURCES=\
-		moc_DrawingView.cpp \
-		qrc_Drawing.cpp 
+		moc_DrawingView.cpp
 
 libDrawingGui_la_SOURCES=\
 		AppDrawingGuiPy.cpp \
@@ -39,6 +39,7 @@ DrawingGui_la_CPPFLAGS = $(libDrawingGui_la_CPPFLAGS)
 
 DrawingGui_la_LIBADD   = \
 		$(libDrawingGui_la_LIBADD) \
+		Resources/libResources.la \
 		-lDrawingGui
 
 #--------------------------------------------------------------------------------------
@@ -67,8 +68,5 @@ libdir = $(prefix)/Mod/Drawing
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppDrawingGui.vcproj \
-		Drawing.qrc \
-		Drawing_de.qm \
-		Drawing_de.ts \
-		XpmDrawings.h
+		AppDrawingGui.vcproj 
+
