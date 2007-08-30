@@ -28,6 +28,8 @@
 
 #include <Base/Parameter.h>
 
+class SoNode;
+
 namespace Gui {
 
 class Document;

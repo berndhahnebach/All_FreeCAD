@@ -160,7 +160,7 @@ QPixmap BitmapFactoryInst::pixmap(const QString& name) const
         return icon;
     }
 
-    Base::Console().Warning("Can't find Pixmap:%s\n", name.toUtf8());
+    Base::Console().Warning("Can't find Pixmap:%s\n", (const char*)name.toUtf8());
     return QPixmap(px);
 }
 

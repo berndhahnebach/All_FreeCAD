@@ -177,7 +177,7 @@ AC_MSG_RESULT($host_os)
 case $host_os in
   mingw32*)
     QT_LIBS="-L$fc_qt4_lib -lopengl32 -lglu32 -lgdi32 -luser32 -lmingw32 -mthreads -Wl,-enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc -Wl,-s -Wl,-s -Wl,-subsystem,windows"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtOpenGL -DUNICODE -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DQT_NEEDS_QMAIN -frtti -fexceptions"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtSvg -DUNICODE -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DQT_NEEDS_QMAIN -frtti -fexceptions"
     ;;
   darwin*)
     AC_PATH_XTRA
@@ -199,18 +199,18 @@ case $host_os in
     fi
     if test "$ac_have_qt_framework" = yes; then
     # Qt as framework installed 
-    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork -Wl,-framework,QtXml -Wl,-framework,QtSql"
-    QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers"
+    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork -Wl,-framework,QtXml -Wl,-framework,QtSql -Wl,-framework,QtSvg"
+    QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers -I$fc_qt4_frm/QtSvg.framework/Headers"
     else
     # Qt not as framework installed 
-    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork"
+    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg"
     fi
     ;;
   *)  # UNIX/Linux based
     AC_PATH_XTRA
-    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork $X_CFLAGS"
+    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg $X_CFLAGS"
     ;;
 esac
 
