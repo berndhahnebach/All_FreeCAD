@@ -74,6 +74,7 @@ public:
     static void destruct();
     /** Sets up the toolbars of a given workbench. */
     void setup(ToolBarItem*) const;
+    void retranslate() const;
 
 protected:
     void setup(ToolBarItem*, QToolBar*) const;

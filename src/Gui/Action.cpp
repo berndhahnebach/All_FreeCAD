@@ -343,7 +343,13 @@ void WorkbenchComboBox::onActivated(QAction* a)
 
 void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 {
-    setCurrentIndex(findText(name));
+    int index = findText(name);
+    if (index >= 0) {
+        // Notify the workbench menu by triggering the appropriate action
+        QList<QAction*> a = actions();
+        if (index < a.size())
+            a[index]->trigger();
+    }
 }
 
 WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )

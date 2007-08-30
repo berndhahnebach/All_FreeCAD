@@ -232,6 +232,15 @@ void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
     }
 }
 
+void ToolBarManager::retranslate() const
+{
+    QList<QToolBar*> toolbars = toolBars();
+    for (QList<QToolBar*>::Iterator it = toolbars.begin(); it != toolbars.end(); ++it) {
+        QByteArray toolbarName = (*it)->objectName().toUtf8();
+        (*it)->setWindowTitle(QObject::trUtf8(toolbarName.constData()));
+    }
+}
+
 QToolBar* ToolBarManager::findToolBar(const QList<QToolBar*>& toolbars, const QString& item) const
 {
     for (QList<QToolBar*>::ConstIterator it = toolbars.begin(); it != toolbars.end(); ++it) {

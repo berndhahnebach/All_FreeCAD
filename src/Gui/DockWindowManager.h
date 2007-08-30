@@ -68,7 +68,7 @@ public:
 
     void showDockWindows(const QStringList&);
     void hideDockWindows(const QStringList&);
-    void languageChanged();
+    void retranslate();
 
 private:
     DockWindowManager();

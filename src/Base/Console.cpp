@@ -609,3 +609,42 @@ void ConsoleObserverStd::Log    (const char *sErr)
 #	endif
 }
 
+
+RedirectStdOutput::RedirectStdOutput() 
+{
+    buffer.reserve(80);
+}
+
+int RedirectStdOutput::overflow(int c)
+{
+    if (c != EOF)
+        buffer.push_back((char)c);
+    return c;
+}
+
+int RedirectStdOutput::sync()
+{
+    // Print as log as this might be verbose
+    Base::Console().Log("%s", buffer.c_str());
+    buffer.clear();
+    return 0;
+}
+
+RedirectStdError::RedirectStdError() 
+{
+    buffer.reserve(80);
+}
+
+int RedirectStdError::overflow(int c)
+{
+    if (c != EOF)
+        buffer.push_back((char)c);
+    return c;
+}
+
+int RedirectStdError::sync()
+{
+    Base::Console().Error("%s", buffer.c_str());
+    buffer.clear();
+    return 0;
+}

@@ -237,7 +237,7 @@ void DockWindowManager::hideDockWindows(const QStringList& dw)
 /**
  * Sets the window title for the dockable windows.
  */
-void DockWindowManager::languageChanged()
+void DockWindowManager::retranslate()
 {
     for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
         (*it)->setWindowTitle(QDockWidget::tr((*it)->objectName().toAscii()));
@@ -276,7 +276,7 @@ void DockWindowManager::setup(DockWindowItems* items)
 {
     // if this configuration is already setup
     if (!items || d->_dockWindowItems == *items) {
-        languageChanged();
+        retranslate();
         return;
     }
 

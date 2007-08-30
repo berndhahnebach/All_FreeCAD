@@ -644,8 +644,13 @@ void MainWindow::switchToTopLevelMode()
 
 void MainWindow::switchToDockedMode()
 {
-  // TODO
-  QMessageBox::critical(getMainWindow(), "Not implemented yet", "Not implemented yet");
+    // Search for all top-level MDI views
+    QWidgetList toplevel = QApplication::topLevelWidgets();
+    for (QWidgetList::Iterator it = toplevel.begin(); it != toplevel.end(); ++it) {
+        Gui::MDIView* view = qobject_cast<MDIView*>(*it);
+        if (view)
+            view->setCurrentViewMode(MDIView::Child);
+    }
 }
 
 void MainWindow::loadWindowSettings()
@@ -832,11 +837,7 @@ void MainWindow::changeEvent(QEvent *e)
 
     // reload current workbench to retranslate all actions and window titles
     Workbench* wb = WorkbenchManager::instance()->active();
-    if (wb) {
-      this->saveLayoutSettings();
-      wb->activate();
-      this->loadLayoutSettings();
-    }
+    if (wb) wb->retranslate();
   } else {
     QMainWindow::changeEvent(e);
   }

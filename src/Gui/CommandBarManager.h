@@ -52,6 +52,7 @@ public:
     /** Sets up the command bars of a given workbench. */
     void setup(ToolBarItem*) const;
     void setToolBox(DockWnd::ToolBox*);
+    void retranslate() const;
 
 protected:
     CommandBarManager();
