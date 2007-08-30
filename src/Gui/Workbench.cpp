@@ -313,6 +313,14 @@ bool Workbench::activate()
     return true;
 }
 
+void Workbench::retranslate() const
+{
+    ToolBarManager::getInstance()->retranslate();
+    CommandBarManager::getInstance()->retranslate();
+    DockWindowManager::instance()->retranslate();
+    MenuManager::getInstance()->retranslate();
+}
+
 PyObject* Workbench::getPyObject()
 {
     return new WorkbenchPy(this);

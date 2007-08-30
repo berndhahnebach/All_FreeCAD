@@ -75,6 +75,7 @@ public:
     void setup(MenuItem*) const;
     /// sets up a context menu out of item
     void setupContextMenu(MenuItem* item, QMenu &menu) const;
+    void retranslate() const;
 
     /// The one and only instance.
     static MenuManager* getInstance();
@@ -86,6 +87,7 @@ protected:
 
 private:
     void setup(MenuItem*, QMenu*) const;
+    void retranslate(QMenu*) const;
     QAction* findAction(const QList<QAction*>&, const QString&) const;
 
 private:

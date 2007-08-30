@@ -77,6 +77,10 @@ public:
    * Activates the workbench and adds/removes GUI elements.
    */
   bool activate();
+  /**
+   * Translates the window titles of all menus, toolbars and dock windows.
+   */
+  void retranslate() const;
 
 protected:
   /** Returns a MenuItem tree structure of menus for this workbench. */

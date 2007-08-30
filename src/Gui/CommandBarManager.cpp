@@ -83,6 +83,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
         bar->setOrientation(Qt::Vertical);
         bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         QByteArray toolbarName = (*item)->command().toUtf8();
+        bar->setObjectName((*item)->command());
         bar->setWindowTitle(QObject::trUtf8((const char*)toolbarName)); // i18n
         _toolBox->addItem( bar, bar->windowTitle() );
 
@@ -112,5 +113,17 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
                 (*it)->setIcon(p);
             }
         }
+    }
+}
+
+void CommandBarManager::retranslate() const
+{
+    int ct = _toolBox->count();
+    for (int i=0; i<ct; i++) {
+        // get always the first item widget
+        QWidget* w = _toolBox->widget(i);
+        QByteArray toolbarName = w->objectName().toUtf8();
+        w->setWindowTitle(QObject::trUtf8(toolbarName.constData()));
+        _toolBox->setItemText(i, w->windowTitle());
     }
 }

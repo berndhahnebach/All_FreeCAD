@@ -239,8 +239,8 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
                 if ((*it)->hasItems()) {
                     // Creste a submenu
                     QByteArray menuName = (*it)->command().toUtf8();
-                    action = menu->addAction(QObject::trUtf8((const char*)menuName));
-                    action->setMenu(new QMenu);
+                    QMenu* submenu = menu->addMenu(QObject::trUtf8((const char*)menuName));
+                    action = submenu->menuAction();
                 } else {
                     // Check if action was added successfully
                     if (mgr.addTo((const char*)(*it)->command().toAscii(), menu))
@@ -266,6 +266,34 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
     // remove all menu items which we don't need for the moment
     for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
         menu->removeAction(*it);
+    }
+}
+
+void MenuManager::retranslate() const
+{
+    QMenuBar* menuBar = getMainWindow()->menuBar();
+    QList<QAction*> actions = menuBar->actions();
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+        if ((*it)->menu())
+            retranslate((*it)->menu());
+    }
+}
+
+void MenuManager::retranslate(QMenu* menu) const
+{
+    // Custom actions with a sub-menu do the translation themselves and we must not do that
+    // here. Such actions have the appropriate command name set as user data.
+    // Note: This workaround works as long as a command doesn't match with its menu text
+    CommandManager& mgr = Application::Instance->commandManager();
+    QByteArray menuName = menu->menuAction()->data().toByteArray();
+    if (mgr.getCommandByName(menuName))
+        return;
+    menu->setTitle(QObject::trUtf8(menuName.constData()));
+    QList<QAction*> actions = menu->actions();
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+        if ((*it)->menu()) {
+            retranslate((*it)->menu());
+        }
     }
 }
 

@@ -36,6 +36,7 @@
 #include <iostream>
 #include <fstream> 
 #include <set>
+#include <string>
 
 //**************************************************************************
 // Loging levels
@@ -230,6 +231,32 @@ public:
 	virtual void Log    (const char *sErr); 
   const char* Name(void){return "Console";}
 
+};
+
+class BaseExport RedirectStdOutput : public std::streambuf
+{
+public:
+    RedirectStdOutput();
+
+protected:
+    int overflow(int c = EOF);
+    int sync();
+
+private:
+    std::string buffer;
+};
+
+class BaseExport RedirectStdError : public std::streambuf
+{
+public:
+    RedirectStdError();
+
+protected:
+    int overflow(int c = EOF);
+    int sync();
+
+private:
+    std::string buffer;
 };
 
 
