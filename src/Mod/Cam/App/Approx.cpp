@@ -35,7 +35,7 @@
 #include "Approx.h"
 #include <iostream>
 #include <Algorithm>
-
+#include <Base/Exception.h>
 
 /*************BOOST***************/
 
@@ -65,8 +65,8 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
 	//Initialize the NURB
 	MainNurb.DegreeU = 3;
 	MainNurb.DegreeV = 3;
-	MainNurb.MaxU = 60;
-	MainNurb.MaxV = 60;
+	MainNurb.MaxU = 10;
+	MainNurb.MaxV = 10;
 	tolerance = tol;
 	GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
 	GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
@@ -530,7 +530,7 @@ void Approximate::ParameterInnerPoints()
 			}
 			else   //Can an inside point have less than 3 neighbours...?
 			{
-				throw "Something's wrong here. Less than 3 Neighbour";
+				throw Base::Exception("Something's wrong here. Less than 3 Neighbour");
 			}
 		}
 	}				
@@ -644,14 +644,13 @@ void Approximate::ErrorApprox()
 	ublas::matrix<double> C_Temp(NumOfPoints,3);
 	std::cout << "C_Temp succesfully constructed" << std::endl;
 	//Time saving... C_Temp matrix is constant for all time
-	for(unsigned int i = 0; i < UnparamX.size(); ++i)
-	{
-		
-			C_Temp(i,0) = UnparamX[i];
-			C_Temp(i,1) = UnparamY[i];
-			C_Temp(i,2) = UnparamZ[i];
-			
-	}
+
+
+	std::vector <double> err_w(NumOfPoints);
+
+	for(int i=1; i<NumOfPoints; i++)
+		err_w[i] = 1;
+
 
 	while(ErrThere)
 	{
@@ -659,16 +658,34 @@ void Approximate::ErrorApprox()
 		ublas::matrix<double> B_Matrix(NumOfPoints,(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
 		std::cout << "B_Matrix succesfully constructed" << std::endl;
 		std::cout << "Preparing B-Matrix..." << std::endl;
+		
+		std::vector<double> N_u(MainNurb.MaxU+1, 0.0);
+		std::vector<double> N_v(MainNurb.MaxV+1, 0.0);
+		std::vector<double> TempU(MainNurb.DegreeU+1, 0.0);
+		std::vector<double> TempV(MainNurb.DegreeV+1, 0.0);
+		std::vector<double> swapDegreeU(MainNurb.DegreeU+1, 0.0);
+		std::vector<double> swapDegreeV(MainNurb.DegreeV+1, 0.0);
+		std::vector<double> swapV(MainNurb.MaxV+1, 0.0);
+		std::vector<double> swapU(MainNurb.MaxU+1, 0.0);
+		
 		for(int i = 0; i < NumOfPoints; i++)
 		{
 			//std::cout << i << " " << ParameterX[i] << " " << ParameterY[i] << std::endl;
+			/*N_u.swap(swapU);
+			N_v.swap(swapV);
+			TempU.swap(swapDegreeU);
+			TempV.swap(swapDegreeV);
+			*/
+			
 			std::vector<double> N_u(MainNurb.MaxU+1, 0.0);
-			std::vector<double> N_v(MainNurb.MaxV+1, 0.0);
+		std::vector<double> N_v(MainNurb.MaxV+1, 0.0);
+		std::vector<double> TempU(MainNurb.DegreeU+1, 0.0);
+		std::vector<double> TempV(MainNurb.DegreeV+1, 0.0);
+
 			int j1 = FindSpan(MainNurb.MaxU, MainNurb.DegreeU, ParameterX[i], MainNurb.KnotU);
 			int j2 = FindSpan(MainNurb.MaxV, MainNurb.DegreeV, ParameterY[i], MainNurb.KnotV);
 
-			std::vector<double> TempU(MainNurb.DegreeU+1, 0.0);
-			std::vector<double> TempV(MainNurb.DegreeV+1, 0.0);
+		
 			Basisfun(j1,ParameterX[i], MainNurb.DegreeU, MainNurb.KnotU, TempU);
 			Basisfun(j2,ParameterY[i], MainNurb.DegreeV, MainNurb.KnotV, TempV);
 
@@ -682,10 +699,18 @@ void Approximate::ErrorApprox()
 				for(int h = 0; h <= MainNurb.MaxU; h++)
 				{
 					//double result = N_u[h] * N_v[j];
-					B_Matrix(i,(j*(MainNurb.MaxU+1))+h) = N_u[h] * N_v[j];	
+					B_Matrix(i,(j*(MainNurb.MaxU+1))+h) =  sqrt(err_w[i]) * N_u[h] * N_v[j];	
 				}
 			}
 		}
+
+		for(unsigned int i = 0; i < UnparamX.size(); ++i)
+		{
+			C_Temp(i,0) = sqrt(err_w[i])*UnparamX[i];
+			C_Temp(i,1) = sqrt(err_w[i])*UnparamY[i];
+			C_Temp(i,2) = sqrt(err_w[i])*UnparamZ[i];
+		}
+
 		ublas::matrix<double> G_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
 		ublas::matrix<double> C_Tempo((MainNurb.MaxU+1)*(MainNurb.MaxV+1),3);
 		atlas::gemm(CblasTrans, CblasNoTrans, 1.0, B_Matrix,C_Temp,0.0,C_Tempo);
@@ -723,6 +748,7 @@ void Approximate::ErrorApprox()
 		std::vector<double> TempoB;
 		
 		
+
 		std::cout << "Solving" << std::endl;
 		for(unsigned int i = 0; i < 3; i++)  //Since umfpack can only solve Ax = B, where x and B are vectors 
 											 //instead of matrices...
@@ -746,21 +772,147 @@ void Approximate::ErrorApprox()
 		std::cout << "U: " << MainNurb.MaxU + 1 << std::endl;
 		std::cout << "V: " << MainNurb.MaxV + 1 << std::endl;
 		
-		ComputeError(h, 0.1, 0.1, max_err,av, c2);
-		std::cout << "Error is " << max_err <<std::endl;
+		ComputeError(h, 0.1, 0.1, max_err,av, c2, err_w);
+		
+		std::cout << "Maximum error is " << max_err <<std::endl;
 		std::cout << "Average error: " << av << std::endl;
 		std::cout << "Average points in error: " << c2 << std::endl;
-		
-		if(max_err > tolerance)// && test < 1) //Error still bigger than our tolerance?
+	
+
+		if(max_err > (1.2*tolerance))//Error still bigger than our tolerance?
 		{
+
 			Reparam();   //Reparameterize
-		    MainNurb.MaxU += 2;
-	        MainNurb.MaxV += 2;
-	        MainNurb.MaxKnotU += 2;
-	        MainNurb.MaxKnotV += 2;
-			GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-	        GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-			//ExtendNurb(c2,h);  //Extend ze NURB
+            
+
+			if(NumOfPoints>8000)
+			{
+            if(max_err > (15*tolerance))
+			{
+
+				MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+
+				/*MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				*/
+
+			}
+			else if(max_err > 5*tolerance)
+			{
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+
+			}
+			else
+			{
+				ExtendNurb(c2,h);
+			}
+			}
+			else if(NumOfPoints > 4000)
+			{
+				if((max_err > (10*tolerance)))
+			{
+				MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				
+			}
+			else if(max_err > (3*tolerance))
+			{
+
+				MainNurb.MaxU += 6;
+				MainNurb.MaxV += 6;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+
+				/*MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				*/
+
+			}
+			else if(max_err > 2*tolerance)
+			{
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+			}
+			else
+			{
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+			}
+			}
+			else
+			{
+				if((max_err > (10*tolerance)))
+			{
+				MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				
+			}
+			else if(max_err > (3*tolerance))
+			{
+
+				MainNurb.MaxU += 4;
+				MainNurb.MaxV += 4;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+
+				/*MainNurb.MaxU += 10;
+				MainNurb.MaxV += 10;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				*/
+
+			}
+			else if(max_err > 2*tolerance)
+			{
+				ExtendNurb(c2,h);
+				ExtendNurb(c2,h);
+			}
+			else
+			{
+				ExtendNurb(c2,h);
+			}
+			}
+				
+				/*MainNurb.MaxU += 5;
+				MainNurb.MaxV += 5;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				*/
+
+
 		}
 		else ErrThere = false;
 		test++;	
@@ -803,7 +955,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 	std::vector<double> A_2(precision,0.0);
 	std::vector<double> B_2(precision,0.0);
 	std::vector<double> C_2(precision,0.0);
-	std::cout << "A_1:- " << A_1.size() << std::endl;
+
 	//Filling up the first six matrices
 	for(int i = 0; i < precision; i++)
 	{
@@ -833,7 +985,8 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 	//Now lets fill up the E
 	for(int a = 0; a < MainNurb.MaxV+1; a++)
 	{
-		std::cout << "percent: " << 100.0*((double) a/(double) MainNurb.MaxV) << std::endl;
+		
+		std::cout << "\r" << ceil(100.0*((double) a/(double) MainNurb.MaxV)) << "%" << " ";
 		for(int b = 0; b < MainNurb.MaxU+1; b++)
 		{
 			for(int c = 0; c < MainNurb.MaxV+1; c++)
@@ -868,6 +1021,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 					//result = A + 2*B + C;
 					E_Matrix((a*(MainNurb.MaxU+1))+b,(c*(MainNurb.MaxV+1))+d) = A + 2*B +C;
 
+				
 					
 					
 					
@@ -875,12 +1029,13 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 			}
 		}
 	}
+	std::cout << std::endl;
 }
 
 /*! \brief This function will compute the current error
 */
 void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_error, 
-							  double &av, double &c2)
+							  double &av, double &c2, std::vector <double> &err_w)
 {
 	std::cout << "Computing Error..." << std::endl;
 	av = 0;
@@ -1037,17 +1192,24 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 				double lam = ublas::norm_frobenius(JacPoint) * ublas::norm_frobenius(EvalMat);
 				if(lam == 0)
 					throw "Division by Zero in ComputeError function";
-				lam = fabs(Holder(0,0) / lam);
+				else
+				    lam = fabs(Holder(0,0) / lam);
 				error.push_back(lam);
 			}
 		}
 		ParameterX[i] = V[0];
 		ParameterY[i] = V[1];
 		av += norm_frobenius(EvalMat);  //Average Error
+
+		err_w[i] = norm_frobenius(EvalMat);
+
 		if(norm_frobenius(EvalMat) > max_error && c < 1000)
 		{
 			max_error = norm_frobenius(EvalMat);
 			h = i;
+		    //if(max_error > (3*tolerance))
+			//	break;
+		
 		}
 		if(norm_frobenius(EvalMat) > tolerance) 
 			c2++;    //% of point's error still above tolerance
