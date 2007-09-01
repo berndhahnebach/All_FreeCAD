@@ -21,6 +21,8 @@ EXTRA_DIST = \
 		images.cpp \
 		Icons.h \
 		ParamDlgImgs.h \
+		preferences-display.svg \
+		preferences-general.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm
