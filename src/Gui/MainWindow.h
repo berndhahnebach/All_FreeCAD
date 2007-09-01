@@ -129,10 +129,6 @@ public:
   void loadWindowSettings();
   /// Saves the main window settings.
   void saveWindowSettings();
-  /// Loads the dock windows and toolbar settings.
-  void loadLayoutSettings();
-  /// Saves the dock windows and toolbar settings.
-  void saveLayoutSettings();
   //@}
 
 public Q_SLOTS:
@@ -184,17 +180,17 @@ protected:
   /**
    * This method checks if the main window can be closed by checking all open documents and views.
    */
-  void closeEvent ( QCloseEvent * e );
-  void timerEvent( QTimerEvent * e){ timeEvent();}
-  void customEvent( QEvent* e );
+  void closeEvent (QCloseEvent * e);
+  void timerEvent (QTimerEvent * e){ timeEvent();}
+  void customEvent(QEvent      * e);
   /**
    * Try to interpret dropped elements.
    */
-  void dropEvent        ( QDropEvent        * e );
+  void dropEvent  (QDropEvent  * e);
   /**
    * Checks if a mime source object can be interpreted.
    */
-  void dragEnterEvent   ( QDragEnterEvent   * e );
+  void dragEnterEvent(QDragEnterEvent * e);
   /**
    * This method is called from the Qt framework automatically whenever a
    * QTranslator object has been installed. This allows to translate all

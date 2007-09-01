@@ -114,13 +114,8 @@ bool WorkbenchManager::activate( const QString& name, const QString& className )
   Workbench* wb = createWorkbench( name, className );
   if ( wb ) 
   {
-    // save layout of old workbench stuff
-    getMainWindow()->saveLayoutSettings();
     _activeWorkbench = wb;
     wb->activate();
-
-    // load layout of new workbench stuff
-    getMainWindow()->loadLayoutSettings();
     return true;
   }
   

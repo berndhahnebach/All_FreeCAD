@@ -520,16 +520,10 @@ MenuItem* NoneWorkbench::setupMenuBar() const
     file->setCommand("&File");
     *file << "Std_Quit";
 
-    // Edit
-    MenuItem* edit = new MenuItem( menuBar );
-    edit->setCommand("&Edit");
-    *edit << "Std_DlgPreferences";
-
     // View
     MenuItem* view = new MenuItem( menuBar );
     view->setCommand("&View");
-    *view << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
-          << "Std_ViewStatusBar" << "Std_UserInterface";
+    *view << "Std_Workbench";
 
     // Separator
     MenuItem* sep = new MenuItem( menuBar );
@@ -538,8 +532,7 @@ MenuItem* NoneWorkbench::setupMenuBar() const
     // Help
     MenuItem* help = new MenuItem( menuBar );
     help->setCommand("&Help");
-    *help << "Std_OnlineHelp" << "Std_TipOfTheDay" << "Separator" << "Std_About" << "Std_AboutQt"
-          << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
+    *help << "Std_OnlineHelp" << "Std_About" << "Std_AboutQt";
 
     return menuBar;
 }
@@ -547,14 +540,6 @@ MenuItem* NoneWorkbench::setupMenuBar() const
 ToolBarItem* NoneWorkbench::setupToolBars() const
 {
     ToolBarItem* root = new ToolBarItem;
-
-    // File
-    ToolBarItem* file = new ToolBarItem( root );
-    file->setCommand(QT_TR_NOOP("File"));
-    *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
-          << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
-          << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
-
     return root;
 }
 

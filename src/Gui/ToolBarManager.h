@@ -73,7 +73,8 @@ public:
     static ToolBarManager* getInstance();
     static void destruct();
     /** Sets up the toolbars of a given workbench. */
-    void setup(ToolBarItem*) const;
+    void setup(ToolBarItem*);
+    void saveState() const;
     void retranslate() const;
 
 protected:
@@ -86,6 +87,7 @@ protected:
     ~ToolBarManager();
 
 private:
+    QStringList toolbarNames;
     static ToolBarManager* _instance;
 };
 

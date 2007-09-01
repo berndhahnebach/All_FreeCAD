@@ -79,7 +79,8 @@ void DlgPreferencesImp::setupPages()
         QListWidgetItem *item = new QListWidgetItem(listBox);
         item->setData(Qt::UserRole, QVariant(group));
         item->setText(QObject::tr(group.constData()));
-        QPixmap icon = Gui::BitmapFactory().pixmap("px");
+        QString iconName = QString("preferences-%1").arg(QString(group).toLower());
+        QPixmap icon = Gui::BitmapFactory().pixmapFromSvg(iconName, QSize(96,96));
         item->setIcon(icon);
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

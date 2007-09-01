@@ -60,7 +60,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
   new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
   new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Viewer")  );
+  new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
 
   // ADD YOUR CUSTOMIZE PAGES HERE
   //

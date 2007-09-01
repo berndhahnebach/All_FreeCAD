@@ -16,8 +16,14 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QFileInfo>
+# include <strstream>
+#endif
 
 #include "DrawingView.h"
+#include <Gui/FileDialog.h>
+#include <Base/gzstream.h>
 
 using namespace DrawingGui;
 
@@ -35,6 +41,9 @@ public:
 protected:
     void wheelEvent(QWheelEvent* e)
     {
+#if QT_VERSION >= 0x040200
+        e->ignore();
+#endif
     }
 };
 
@@ -216,11 +225,21 @@ bool DrawingView::onHasMsg(const char* pMsg) const
   return false;
 }
 
-
-
 void DrawingView::load (const QString & file)
 {
-    this->_drawingView->load(file);
+    QFileInfo fi(file);
+    QString suffix = fi.suffix().toLower();
+    if (suffix == "svg") {
+        this->_drawingView->load(file);
+    } else if (suffix == "svgz") {
+        QByteArray contents;
+        Gui::ByteArrayStream buf(contents);
+        Base::igzstream gzip(file.toUtf8());
+        gzip >> &buf;
+        gzip.close();
+        this->_drawingView->load(contents);
+    }
+
     QSize size = this->_drawingView->renderer()->defaultSize();
     this->aspectRatio = (float)size.width() / (float)size.height();
     this->_drawingView->resize(size);

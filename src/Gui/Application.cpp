@@ -906,7 +906,6 @@ void Application::runApplication(void)
   // show the main window
   Base::Console().Log("Init: Showing main window\n");
   mw.loadWindowSettings();
-  mw.show();
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
   SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
@@ -959,6 +958,5 @@ void Application::runApplication(void)
     throw;
   }
 
-  mw.saveWindowSettings();
   Base::Console().Log("Init: event loop left\n");
 }

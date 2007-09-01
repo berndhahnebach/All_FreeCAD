@@ -169,6 +169,26 @@ private:
     QString _filter;
 };
 
+// ----------------------------------------------------------------------
+
+/**
+ * Simple class to write the read bytes directly into Qt's QByteArray.
+ * This class can only be used for writing but not reading purposes.
+ * @author Werner Mayer
+ */
+class GuiExport ByteArrayStream : public std::basic_streambuf<char>
+{
+public:
+	ByteArrayStream(QByteArray& buf);
+	~ByteArrayStream();
+
+protected:
+	virtual int overflow(int v);
+
+private:
+	QByteArray& buffer;
+};
+
 } // namespace Gui
 
 #endif // GUI_FILEDIALOG_H

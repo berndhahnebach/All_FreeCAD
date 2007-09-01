@@ -168,21 +168,32 @@ ToolBarManager::~ToolBarManager()
 {
 }
 
-void ToolBarManager::setup(ToolBarItem* toolBarItems) const
+void ToolBarManager::setup(ToolBarItem* toolBarItems)
 {
     if (!toolBarItems)
         return; // empty menu bar
 
+    saveState();
+    this->toolbarNames.clear();
+    
+    ParameterGrp::handle hPref = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+                               ->GetGroup("MainWindow")->GetGroup("Toolbars");
     QList<ToolBarItem*> items = toolBarItems->getItems();
     QList<QToolBar*> toolbars = toolBars();
     for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the toolbar
+        this->toolbarNames << (*it)->command();
         QToolBar* toolbar = findToolBar(toolbars, (*it)->command());
+        QByteArray toolbarName = (*it)->command().toUtf8();
+        bool visible = hPref->GetBool(toolbarName.constData(), true);
+
         if (!toolbar) {
-            QByteArray toolbarName = (*it)->command().toUtf8();
             toolbar = getMainWindow()->addToolBar(QObject::trUtf8((const char*)toolbarName)); // i18n
             toolbar->setObjectName((*it)->command());
+            toolbar->setVisible(visible);
         } else {
+            toolbar->setVisible(visible);
+            toolbar->toggleViewAction()->setVisible(true);
             int index = toolbars.indexOf(toolbar);
             toolbars.removeAt(index);
         }
@@ -191,10 +202,15 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems) const
         setup(*it, toolbar);
     }
 
-    // remove and destroy all unneeded toolbars
+    // hide all unneeded toolbars
     for (QList<QToolBar*>::Iterator it = toolbars.begin(); it != toolbars.end(); ++it) {
-        getMainWindow()->removeToolBar(*it);
-        delete *it;
+        // ignore toolbars which do not belong to the previously active workbench
+        QByteArray toolbarName = (*it)->objectName().toUtf8();
+        if (!(*it)->toggleViewAction()->isVisible())
+            continue;
+        hPref->SetBool(toolbarName.constData(), (*it)->isVisible());
+        (*it)->hide();
+        (*it)->toggleViewAction()->setVisible(false);
     }
 }
 
@@ -229,6 +245,21 @@ void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
     // remove all tool buttons which we don't need for the moment
     for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
         toolbar->removeAction(*it);
+    }
+}
+
+void ToolBarManager::saveState() const
+{
+    ParameterGrp::handle hPref = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+                               ->GetGroup("MainWindow")->GetGroup("Toolbars");
+
+    QList<QToolBar*> toolbars = toolBars();
+    for (QStringList::ConstIterator it = this->toolbarNames.begin(); it != this->toolbarNames.end(); ++it) {
+        QToolBar* toolbar = findToolBar(toolbars, *it);
+        if (toolbar) {
+            QByteArray toolbarName = toolbar->objectName().toUtf8();
+            hPref->SetBool(toolbarName.constData(), toolbar->isVisible());
+        }
     }
 }
 

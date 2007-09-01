@@ -32,6 +32,7 @@
 #include "MainWindow.h"
 #include "BitmapFactory.h"
 #include "OnlineDocumentation.h"
+#include "FileDialog.h"
 
 using namespace Gui;
 
@@ -61,33 +62,6 @@ static const unsigned char navicon_data[] = {
     0x00,0x00,0x93,0xfd,0x00,0x00,0x81,0xd8,0x00,0x00,0x99,0x9d,0x00,0x00,
     0x9c,0x3d,0x00,0x00,0x9f,0xfd,0x00,0x00,0x80,0xfd,0x00,0x00,0xff,0x7d,
     0x00,0x00,0xfe,0x01,0x00,0x00,0xff,0x7f,0x00,0x00};
-
-/**
- * Simple class to store the read bytes directly in Qt's QByteArray.
- * This class can only be used for writing but not reading purposes.
- * @author Werner Mayer
- */
-class ByteArrayStream : public std::basic_streambuf<char>
-{
-public:
-	ByteArrayStream(QByteArray& buf) : buffer(buf)
-	{
-	}
-	~ByteArrayStream()
-	{
-	}
-
-protected:
-	virtual int_type overflow(int_type v)
-	{
-        //does a re-allocation if needed
-        buffer.append((char)v);
-        return v;
-	}
-
-private:
-	QByteArray& buffer;
-};
 
 OnlineDocumentation::OnlineDocumentation()
 {

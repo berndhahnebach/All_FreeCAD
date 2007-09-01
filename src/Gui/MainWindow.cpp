@@ -36,6 +36,7 @@
 
 #include "CommandBarManager.h"
 #include "DockWindowManager.h"
+#include "ToolBarManager.h"
 #include "WorkbenchManager.h"
 #include "Workbench.h"
 
@@ -600,6 +601,7 @@ void MainWindow::closeEvent ( QCloseEvent * e )
     }
 
     d->activityTimer->stop();
+    saveWindowSettings();
     QMainWindow::closeEvent( e );
   }
 }
@@ -619,8 +621,6 @@ void MainWindow::updateActions()
   if ( cLastCall.elapsed() > 250 && isVisible() )
   {
     Application::Instance->commandManager().testActive();
-    //pcTree->testStatus();
-    // remember last call
     cLastCall.start();
   }
 
@@ -655,8 +655,6 @@ void MainWindow::switchToDockedMode()
 
 void MainWindow::loadWindowSettings()
 {
-  loadLayoutSettings();
-
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
   int h = hGrp->GetInt("Height", 768);
@@ -665,7 +663,7 @@ void MainWindow::loadWindowSettings()
   bool max = hGrp->GetBool("Maximized", false);
   resize( w, h );
   move(x, y);
-  if (max) showMaximized();
+  max ? showMaximized() : show();
 }
 
 void MainWindow::saveWindowSettings()
@@ -684,58 +682,8 @@ void MainWindow::saveWindowSettings()
     hGrp->SetBool("Maximized", false);
   }
 
-  saveLayoutSettings();
-}
-
-void MainWindow::loadLayoutSettings()
-{
-  std::string path = App::GetApplication().Config()["UserAppData"];
-  QByteArray state;
-  QDir dir(path.c_str());
-  if (dir.exists() && WorkbenchManager::instance()->active()) {
-    QString name = WorkbenchManager::instance()->active()->name();
-    for (int i=0; i<name.length(); i++) {
-      if (!name[i].isLetterOrNumber())
-        name[i] = '_';
-    }
-    name += ".bin";
-    QString filename = dir.filePath(name);
-    QFile file(filename);
-    if (file.open(QIODevice::ReadOnly)) {
-      QDataStream str(&file);
-      str >> state;
-      file.close();
-    }
-  }
-
-  QString hidden = App::Application::Config()["HiddenDockWindow"].c_str();
-  QStringList hiddenDW = hidden.split(";");
-  DockWindowManager::instance()->hideDockWindows( hiddenDW );
-
-  restoreState(state);
-}
-
-void MainWindow::saveLayoutSettings()
-{
-  std::string path = App::GetApplication().Config()["UserAppData"];
-  QDir dir(path.c_str());
-
-  if (dir.exists() && WorkbenchManager::instance()->active()) {
-    QString name = WorkbenchManager::instance()->active()->name();
-    for (int i=0; i<name.length(); i++) {
-      if (!name[i].isLetterOrNumber())
-        name[i] = '_';
-    }
-    name += ".bin";
-    QString filename = dir.filePath(name);
-    QFile file(filename);
-    if (file.open(QIODevice::WriteOnly)) {
-      QByteArray state = saveState();
-      QDataStream str(&file);
-      str << state;
-      file.close();
-    }
-  }
+    DockWindowManager::instance()->saveState();
+    ToolBarManager::getInstance()->saveState();
 }
 
 void MainWindow::startSplasher(void)

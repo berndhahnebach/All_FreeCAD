@@ -121,35 +121,36 @@ void DlgParameterImp::onGroupSelected( QTreeWidgetItem * item )
         std::vector<std::pair<std::string,std::string> > mcTextMap = _hcGrp->GetASCIIMap();
         for(std::vector<std::pair<std::string,std::string> >::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
         {
-            (void)new ParameterText(paramValue,It2->first.c_str(),It2->second.c_str(), _hcGrp);
+            (void)new ParameterText(paramValue,QString::fromUtf8(It2->first.c_str()),
+                It2->second.c_str(), _hcGrp);
         }
 
         // filling up Int nodes
         std::vector<std::pair<std::string,long> > mcIntMap = _hcGrp->GetIntMap();
         for(std::vector<std::pair<std::string,long> >::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
         {
-            (void)new ParameterInt(paramValue,It3->first.c_str(),It3->second, _hcGrp);
+            (void)new ParameterInt(paramValue,QString::fromUtf8(It3->first.c_str()),It3->second, _hcGrp);
         }
 
         // filling up Float nodes
         std::vector<std::pair<std::string,double> > mcFloatMap = _hcGrp->GetFloatMap();
         for(std::vector<std::pair<std::string,double> >::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
         {
-            (void)new ParameterFloat(paramValue,It4->first.c_str(),It4->second, _hcGrp);
+            (void)new ParameterFloat(paramValue,QString::fromUtf8(It4->first.c_str()),It4->second, _hcGrp);
         }
 
         // filling up bool nodes
         std::vector<std::pair<std::string,bool> > mcBoolMap = _hcGrp->GetBoolMap();
         for(std::vector<std::pair<std::string,bool> >::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
         {
-            (void)new ParameterBool(paramValue,It5->first.c_str(),It5->second, _hcGrp);
+            (void)new ParameterBool(paramValue,QString::fromUtf8(It5->first.c_str()),It5->second, _hcGrp);
         }
 
         // filling up UInt nodes
         std::vector<std::pair<std::string,unsigned long> > mcUIntMap = _hcGrp->GetUnsignedMap();
         for(std::vector<std::pair<std::string,unsigned long> >::iterator It6=mcUIntMap.begin();It6!=mcUIntMap.end();It6++)
         {
-            (void)new ParameterUInt(paramValue,It6->first.c_str(),It6->second, _hcGrp);
+            (void)new ParameterUInt(paramValue,QString::fromUtf8(It6->first.c_str()),It6->second, _hcGrp);
         }
     }
 }
