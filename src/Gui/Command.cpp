@@ -129,9 +129,9 @@ CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* s
 
 CommandBase::~CommandBase()
 {
-  //FIXME: The QAction object becomes a children of QMainWindow which gets destoyed _before_ the command manager 
-  //hence before any command object. So the action pointer is a dangling pointer here.
-  //delete _pcAction;
+  //Note: The Action object becomes a children of MainWindow which gets destoyed _before_ the 
+  //command manager hence before any command object. So the action pointer is a dangling pointer
+  //at this state.
 }
 
 Action* CommandBase::getAction() const

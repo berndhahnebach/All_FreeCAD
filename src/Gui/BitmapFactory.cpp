@@ -203,10 +203,15 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const QString& name, const QSize& size)
 
 QPixmap BitmapFactoryInst::pixmapFromSvg(const QByteArray& contents, const QSize& size) const
 {
-    QSvgRenderer* svg = new QSvgRenderer(contents);
+    // create an icon with transparent background
     QPixmap icon(size);
+    QBitmap mask(size);
+    mask.fill(Qt::color0);
+    icon.setMask(mask);
+
     QPainter* painter = new QPainter;
     painter->begin(&icon);
+    QSvgRenderer* svg = new QSvgRenderer(contents);
     svg->render(painter);
     painter->end();
     delete svg;

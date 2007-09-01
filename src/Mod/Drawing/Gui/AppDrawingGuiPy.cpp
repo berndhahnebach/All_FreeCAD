@@ -47,7 +47,7 @@ open(PyObject *self, PyObject *args)
     
     PY_TRY {
         Base::FileInfo file(Name);
-        if (file.hasExtension("svg")) {
+        if (file.hasExtension("svg") || file.hasExtension("svgz")) {
             QString fileName = QString::fromUtf8(Name);
             // Displaying the image in a view
             DrawingView* view = new DrawingView(Gui::getMainWindow());

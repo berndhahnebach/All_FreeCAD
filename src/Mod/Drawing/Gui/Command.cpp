@@ -41,7 +41,7 @@ void CmdDrawingOpen::activated(int iMsg)
 {
     // Reading an image
     QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
-                                           QObject::tr("Scalable Vector Graphics (*.svg)"));
+                                           QObject::tr("Scalable Vector Graphics (*.svg *.svgz)"));
     if (!filename.isEmpty())
     {
         // load the file with the module

@@ -1202,39 +1202,32 @@ DEF_STD_CMD_A(StdViewZoomIn);
 StdViewZoomIn::StdViewZoomIn()
   : Command("Std_ViewZoomIn")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Zoom In");
-  sToolTipText  = QT_TR_NOOP("Zoom In");
-  sWhatsThis    = QT_TR_NOOP("Zoom In");
-  sStatusTip    = QT_TR_NOOP("Zoom In");
-  iAccel        = Qt::Key_Plus;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Zoom In");
+    sToolTipText  = QT_TR_NOOP("Zoom In");
+    sWhatsThis    = QT_TR_NOOP("Zoom In");
+    sStatusTip    = QT_TR_NOOP("Zoom In");
+    iAccel        = Qt::Key_Plus;
 }
 
 void StdViewZoomIn::activated(int iMsg)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view ) {
-    View3DInventorViewer* viewer = view->getViewer();
-#if 0
-    SoCamera* cam = viewer->getCamera();
-    // for orthographic cameras this does exactly the same as View3DInventorViewer::zoom()
-    float val = float(exp(-0.05f));
-    cam->scaleHeight(val);
-#else // send an event to the GL widget to use the internal View3DInventorViewer::zoom() method
-    // do only one step to zoom in 
-//    QWheelEvent we(QPoint(0,0), -1/*QApplication::wheelScrollLines ()*/, Qt::NoButton );
-//    QApplication::sendEvent(viewer->getGLWidget(), &we);
-    SoMouseButtonEvent e;
-    e.setButton(SoMouseButtonEvent::BUTTON5);
-    e.setState(SoMouseButtonEvent::DOWN);
-    viewer->sendSoEvent(&e);
-#endif
-  }
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if ( view ) {
+        View3DInventorViewer* viewer = view->getViewer();
+
+        // send an event to the GL widget to use the internal View3DInventorViewer::zoom() method
+        // do only one step to zoom in 
+        SoMouseButtonEvent e;
+        e.setButton(SoMouseButtonEvent::BUTTON5);
+        e.setState(SoMouseButtonEvent::DOWN);
+        viewer->sendSoEvent(&e);
+    }
 }
 
 bool StdViewZoomIn::isActive(void)
 {
-  return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+    return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 //===========================================================================
@@ -1245,36 +1238,31 @@ DEF_STD_CMD_A(StdViewZoomOut);
 StdViewZoomOut::StdViewZoomOut()
   : Command("Std_ViewZoomOut")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Zoom Out");
-  sToolTipText  = QT_TR_NOOP("Zoom Out");
-  sWhatsThis    = QT_TR_NOOP("Zoom Out");
-  sStatusTip    = QT_TR_NOOP("Zoom Out");
-  iAccel        = Qt::Key_Minus;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Zoom Out");
+    sToolTipText  = QT_TR_NOOP("Zoom Out");
+    sWhatsThis    = QT_TR_NOOP("Zoom Out");
+    sStatusTip    = QT_TR_NOOP("Zoom Out");
+    iAccel        = Qt::Key_Minus;
 }
 
 void StdViewZoomOut::activated(int iMsg)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view ) {
-    View3DInventorViewer* viewer = view->getViewer();
-#if 0
-    SoCamera* cam = viewer->getCamera();
-    float val = float(exp(0.05f));
-    cam->scaleHeight(val);
-#else // send an event to the GL widget to use the internal View3DInventorViewer::zoom() method
-    // do only one step to zoom out 
-    SoMouseButtonEvent e;
-    e.setButton(SoMouseButtonEvent::BUTTON4);
-    e.setState(SoMouseButtonEvent::DOWN);
-    viewer->sendSoEvent(&e);
-#endif
-  }
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if ( view ) {
+        View3DInventorViewer* viewer = view->getViewer();
+        // send an event to the GL widget to use the internal View3DInventorViewer::zoom() method
+        // do only one step to zoom out 
+        SoMouseButtonEvent e;
+        e.setButton(SoMouseButtonEvent::BUTTON4);
+        e.setState(SoMouseButtonEvent::DOWN);
+        viewer->sendSoEvent(&e);
+    }
 }
 
 bool StdViewZoomOut::isActive(void)
 {
-  return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+    return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 //===========================================================================
@@ -1285,32 +1273,32 @@ DEF_STD_CMD_A(StdViewBoxZoom);
 StdViewBoxZoom::StdViewBoxZoom()
   : Command("Std_ViewBoxZoom")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Box zoom");
-  sToolTipText  = QT_TR_NOOP("Box zoom");
-  sWhatsThis    = QT_TR_NOOP("Box zoom");
-  sStatusTip    = QT_TR_NOOP("Box zoom");
-  iAccel        = Qt::CTRL+Qt::Key_B;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Box zoom");
+    sToolTipText  = QT_TR_NOOP("Box zoom");
+    sWhatsThis    = QT_TR_NOOP("Box zoom");
+    sStatusTip    = QT_TR_NOOP("Box zoom");
+    iAccel        = Qt::CTRL+Qt::Key_B;
 }
 
 void StdViewBoxZoom::activated(int iMsg)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view ) {
-    View3DInventorViewer* viewer = view->getViewer();
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if ( view ) {
+        View3DInventorViewer* viewer = view->getViewer();
 
-    // This is just for test purposes. We create two poinmts that define a bounding box to which we want to zoom.
-    // FIXME: We should start a rubber band to select the bounding box by the user
-    SbVec2f p1(0.5f, 0.5f), p2(1.0f, 1.0f);
-    SbBox2f box(p1, p2);
-    viewer->boxZoom(box);
-  }
+        // This is just for test purposes. We create two points that define a bounding box to which we want to zoom.
+        // FIXME: We should start a rubber band to select the bounding box by the user
+        SbVec2f p1(0.5f, 0.5f), p2(1.0f, 1.0f);
+        SbBox2f box(p1, p2);
+        viewer->boxZoom(box);
+    }
 }
 
 bool StdViewBoxZoom::isActive(void)
 {
-  return false; // tmp. deactivated
-  //return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+    return false; // tmp. deactivated
+    //return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 

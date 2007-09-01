@@ -228,14 +228,6 @@ void DlgSettingsEditorImp::on_fontFamily_activated()
     int fontSize = this->fontSize->value();
     QFont ft(fontFamily, fontSize);
     textEdit1->setFont(ft);
-    //QTextCursor cursor = textEdit1->textCursor();
-    //QTextCharFormat format = cursor.charFormat();
-    //format.setFontFamily(fontFamily);
-    //format.setFontPointSize(fontSize);
-    //cursor.setPosition(0);
-    //cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    //cursor.mergeCharFormat(format);
-    //cursor.clearSelection();
 }
 
 void DlgSettingsEditorImp::on_fontSize_valueChanged()

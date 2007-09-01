@@ -6,5 +6,7 @@
         <file>button_left.xpm</file>
         <file>button_right.xpm</file>
         <file>button_up.xpm</file>
+        <file>preferences-display.svg</file>
+        <file>preferences-general.svg</file>
     </qresource>
 </RCC>
