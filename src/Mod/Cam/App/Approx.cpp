@@ -821,6 +821,7 @@ void Approximate::ErrorApprox()
 			{
 				if((max_err > (10*tolerance)))
 			{
+
 				MainNurb.MaxU += 10;
 				MainNurb.MaxV += 10;
 				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
@@ -853,13 +854,13 @@ void Approximate::ErrorApprox()
 				ExtendNurb(c2,h);
 				ExtendNurb(c2,h);
 				ExtendNurb(c2,h);
-				ExtendNurb(c2,h);
+
 			}
 			else
 			{
 				ExtendNurb(c2,h);
 				ExtendNurb(c2,h);
-				ExtendNurb(c2,h);
+
 			}
 			}
 			else
