@@ -50,87 +50,59 @@ using namespace MeshGui;
 CleanupHandler::CleanupHandler()
  : QObject(qApp)
 {
-  // connect to lstWindowClosed signal
-  connect( qApp, SIGNAL(lastWindowClosed()), this, SLOT(cleanup()) );
+    // connect to lstWindowClosed signal
+    connect( qApp, SIGNAL(lastWindowClosed()), this, SLOT(cleanup()) );
 }
 
 // The lastWindowClosed signal will be emitted recursively and before the cleanup slot is finished
 // therefore all code inside this function must handle this case!
 void CleanupHandler::cleanup()
 {
-  DockEvaluateMeshImp::destruct();
+    DockEvaluateMeshImp::destruct();
 }
 
 // -------------------------------------------------------------
 
 /* TRANSLATOR MeshGui::DlgEvaluateMeshImp */
-/*
-void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
-{
-  if ( std::find(Reason.DeletedObjects.begin(), Reason.DeletedObjects.end(), _meshFeature) != Reason.DeletedObjects.end() )
-  {
-    removeViewProviders();
 
-    QStringList items;
-    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
-    for ( std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt )
-    {
-      if ( _meshFeature != *jt )
-        items.push_back( (*jt)->name.getValue() );
-    }
-
-    meshNameButton->clear();
-    meshNameButton->insertItem(0, tr("No selection"));
-    meshNameButton->insertItems(1, items);
-    meshNameButton->setDisabled(items.empty());
-    cleanInformation();
-
-    _meshFeature = 0;
-  }
-}
-*/
 void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
 {
+    if (&Obj == _meshFeature) {
+        removeViewProviders();
 
-  if ( &Obj == _meshFeature) 
-  {
-    removeViewProviders();
+        QStringList items;
+        std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+        for (std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt) {
+            if (_meshFeature != *jt)
+                items.push_back((*jt)->name.getValue());
+        }
 
-    QStringList items;
-    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
-    for ( std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt )
-    {
-      if ( _meshFeature != *jt )
-        items.push_back( (*jt)->name.getValue() );
-    }
+        meshNameButton->clear();
+        meshNameButton->insertItem(0, tr("No selection"));
+        meshNameButton->insertItems(1, items);
+        meshNameButton->setDisabled(items.empty());
+        cleanInformation();
 
-    meshNameButton->clear();
-    meshNameButton->insertItem(0, tr("No selection"));
-    meshNameButton->insertItems(1, items);
-    meshNameButton->setDisabled(items.empty());
-    cleanInformation();
-
-    _meshFeature = 0;
-  }
- 
+        _meshFeature = 0;
+    } 
 }
 
 void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
 {
     if (&Doc == _pDoc) {
         // the view is already destroyed
-        for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
+        for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
             delete it->second;
         }
 
         _vp.clear();    
     
-        _pDoc = 0;
-        _viewer = 0;
+        this->connectDocumentDeletedObject.disconnect();
+        this->_pDoc = 0;
+        this->_viewer = 0;
         on_refreshButton_clicked();
     }
 }
-
 
 /**
  *  Constructs a DlgEvaluateMeshImp which is a child of 'parent', with the 
@@ -142,14 +114,18 @@ void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
 DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl ), _meshFeature(0), _viewer(0), _pDoc(0)
 {
-  this->setupUi(this);
-  connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
+    this->setupUi(this);
+    connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
 
-  Gui::Document* pGui = Gui::Application::Instance->activeDocument();
-  _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
-  _pDoc = pGui->getDocument();
-  _pDoc->signalDeletedObject.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
-  App::GetApplication().signalDeletedDocument.connect(boost::bind(&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
+    Gui::Document* pGui = Gui::Application::Instance->activeDocument();
+    _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
+    _pDoc = pGui->getDocument();
+
+    // Connect to application and active document
+    this->connectDocumentDeletedObject = _pDoc->signalDeletedObject.connect(boost::bind
+        (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
+    this->connectApplicationDeletedDocument = App::GetApplication().signalDeletedDocument.connect(boost::bind
+        (&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
 }
 
 /**
@@ -157,525 +133,496 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
  */
 DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
 {
-  // no need to delete child widgets, Qt does it all for us
-  for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
-    _viewer->removeViewProvider( it->second );
-    delete it->second;
-  }
+    // no need to delete child widgets, Qt does it all for us
+    for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
+        _viewer->removeViewProvider( it->second );
+        delete it->second;
+    }
 
-  _vp.clear();
+    _vp.clear();
+
+    // disconnect from application and document
+    this->connectApplicationDeletedDocument.disconnect();
+    if (this->_pDoc)
+        this->connectDocumentDeletedObject.disconnect();
 }
 
 void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
 {
-  _meshFeature = m;
+    _meshFeature = m;
   
-  on_refreshButton_clicked();
+    on_refreshButton_clicked();
 
-  int ct = meshNameButton->count();
-  for (int i=1; i<ct; i++) {
-    if ( meshNameButton->itemText(i) == _meshFeature->name.getValue() ) {
-      meshNameButton->setCurrentIndex(i);
-      on_meshNameButton_activated(i);
-      break;
+    int ct = meshNameButton->count();
+    for (int i=1; i<ct; i++) {
+        if (meshNameButton->itemText(i) == _meshFeature->name.getValue()) {
+            meshNameButton->setCurrentIndex(i);
+            on_meshNameButton_activated(i);
+            break;
+        }
     }
-  }
 }
 
 void DlgEvaluateMeshImp::setFixedMesh()
 {
-  std::vector<App::DocumentObject*> fixed = _pDoc->getObjectsOfType(Mesh::FixDefects::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = fixed.begin(); it != fixed.end(); ++it ) {
-    Mesh::FixDefects* fix = dynamic_cast<Mesh::FixDefects*>(*it);
-    if ( fix && fix->Source.getValue() == _meshFeature ) {
-      setMesh(fix);
-      break;
+    std::vector<App::DocumentObject*> fixed = _pDoc->getObjectsOfType(Mesh::FixDefects::getClassTypeId());
+    for ( std::vector<App::DocumentObject*>::const_iterator it = fixed.begin(); it != fixed.end(); ++it ) {
+        Mesh::FixDefects* fix = dynamic_cast<Mesh::FixDefects*>(*it);
+        if (fix && fix->Source.getValue() == _meshFeature) {
+            setMesh(fix);
+            break;
+        }
     }
-  }
 }
 
 void DlgEvaluateMeshImp::addViewProvider( const char* name )
 {
-  removeViewProvider( name );
+    removeViewProvider( name );
 
-  ViewProviderMeshDefects* vp = (ViewProviderMeshDefects*)Base::Type::createInstanceByName( name );
-  assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
-  vp->attach( _meshFeature );
-  _viewer->addViewProvider( vp );
-  vp->showDefects();
-  _vp[name] = vp;
+    ViewProviderMeshDefects* vp = (ViewProviderMeshDefects*)Base::Type::createInstanceByName( name );
+    assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
+    vp->attach( _meshFeature );
+    _viewer->addViewProvider( vp );
+    vp->showDefects();
+    _vp[name] = vp;
 }
 
 void DlgEvaluateMeshImp::removeViewProvider( const char* name )
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find( name );
-  if ( it != _vp.end() ) {
-    _viewer->removeViewProvider( it->second );
-    delete it->second;
-    _vp.erase( it );
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find( name );
+    if (it != _vp.end()) {
+        _viewer->removeViewProvider( it->second );
+        delete it->second;
+        _vp.erase(it);
+    }
 }
 void DlgEvaluateMeshImp::removeViewProviders()
 {
-  if (_viewer) {
-    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
-      _viewer->removeViewProvider( it->second );
-      delete it->second;
+    if (_viewer) {
+        for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
+            _viewer->removeViewProvider( it->second );
+            delete it->second;
+        }
+        _vp.clear();
     }
-    _vp.clear();
-  }
 }
 
 void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
 {
-  QString item = meshNameButton->itemText(i);
+    QString item = meshNameButton->itemText(i);
 
-  _meshFeature = 0;
-  std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it ) {
-    if ( item == (*it)->name.getValue() ) {
-      _meshFeature = (Mesh::Feature*)(*it);
-      break;
+    _meshFeature = 0;
+    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        if ( item == (*it)->name.getValue() ) {
+            _meshFeature = (Mesh::Feature*)(*it);
+            break;
+        }
     }
-  }
 
-  if ( i== 0) {
-    cleanInformation();
-  } else if ( !_meshFeature ) {
-    on_refreshButton_clicked();
-  } else {
-    analyzeOrientationButton->setEnabled(true);
-    analyzeDuplicatedFacesButton->setEnabled(true);
-    analyzeDuplicatedPointsButton->setEnabled(true);
-    analyzeNonmanifoldsButton->setEnabled(true);
-    analyzeDegeneratedButton->setEnabled(true);
-    analyzeIndicesButton->setEnabled(true);
+    if (i== 0) {
+        cleanInformation();
+    } else if ( !_meshFeature ) {
+        on_refreshButton_clicked();
+    } else {
+        analyzeOrientationButton->setEnabled(true);
+        analyzeDuplicatedFacesButton->setEnabled(true);
+        analyzeDuplicatedPointsButton->setEnabled(true);
+        analyzeNonmanifoldsButton->setEnabled(true);
+        analyzeDegeneratedButton->setEnabled(true);
+        analyzeIndicesButton->setEnabled(true);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    textLabel4->setText( QString("%1").arg(rMesh.CountFacets()) );
-    textLabel5->setText( QString("%1").arg(rMesh.CountEdges()) );
-    textLabel6->setText( QString("%1").arg(rMesh.CountPoints()) );
-  }
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        textLabel4->setText(QString("%1").arg(rMesh.CountFacets()));
+        textLabel5->setText(QString("%1").arg(rMesh.CountEdges()));
+        textLabel6->setText(QString("%1").arg(rMesh.CountPoints()));
+    }
 }
 
 void DlgEvaluateMeshImp::cleanInformation()
 {
-  textLabel4->setText( tr("No information") );
-  textLabel5->setText( tr("No information") );
-  textLabel6->setText( tr("No information") );
-  checkOrientationButton->setText( tr("No information") );
-  checkDuplicatedFacesButton->setText( tr("No information") );
-  checkDuplicatedPointsButton->setText( tr("No information") );
-  checkNonmanifoldsButton->setText( tr("No information") );
-  checkDegenerationButton->setText( tr("No information") );
-  checkIndicesButton->setText( tr("No information") );
-  analyzeOrientationButton->setDisabled(true);
-  repairOrientationButton->setDisabled(true);
-  analyzeDuplicatedFacesButton->setDisabled(true);
-  repairDuplicatedFacesButton->setDisabled(true);
-  analyzeDuplicatedPointsButton->setDisabled(true);
-  repairDuplicatedPointsButton->setDisabled(true);
-  analyzeNonmanifoldsButton->setDisabled(true);
-  repairNonmanifoldsButton->setDisabled(true);
-  analyzeDegeneratedButton->setDisabled(true);
-  repairDegeneratedButton->setDisabled(true);
-  analyzeIndicesButton->setDisabled(true);
-  repairIndicesButton->setDisabled(true);
+    textLabel4->setText( tr("No information") );
+    textLabel5->setText( tr("No information") );
+    textLabel6->setText( tr("No information") );
+    checkOrientationButton->setText( tr("No information") );
+    checkDuplicatedFacesButton->setText( tr("No information") );
+    checkDuplicatedPointsButton->setText( tr("No information") );
+    checkNonmanifoldsButton->setText( tr("No information") );
+    checkDegenerationButton->setText( tr("No information") );
+    checkIndicesButton->setText( tr("No information") );
+    analyzeOrientationButton->setDisabled(true);
+    repairOrientationButton->setDisabled(true);
+    analyzeDuplicatedFacesButton->setDisabled(true);
+    repairDuplicatedFacesButton->setDisabled(true);
+    analyzeDuplicatedPointsButton->setDisabled(true);
+    repairDuplicatedPointsButton->setDisabled(true);
+    analyzeNonmanifoldsButton->setDisabled(true);
+    repairNonmanifoldsButton->setDisabled(true);
+    analyzeDegeneratedButton->setDisabled(true);
+    repairDegeneratedButton->setDisabled(true);
+    analyzeIndicesButton->setDisabled(true);
+    repairIndicesButton->setDisabled(true);
 }
 
 void DlgEvaluateMeshImp::on_refreshButton_clicked()
 {
-  QStringList items;
-  App::Document* doc = App::GetApplication().getActiveDocument();
+    QStringList items;
+    App::Document* doc = App::GetApplication().getActiveDocument();
 
-  // switch to the active document
-  if (doc && doc != _pDoc) {
-    _pDoc = doc;
-    removeViewProviders();
-    Gui::Document* pGui = Gui::Application::Instance->activeDocument();
-    _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
-  }
-
-  if ( _pDoc ) {
-    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
-    for ( std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it )
-    {
-      items.push_back( (*it)->name.getValue() );
+    // switch to the active document
+    if (doc && doc != this->_pDoc) {
+        this->connectDocumentDeletedObject.disconnect();
+        this->_pDoc = doc;
+        this->connectDocumentDeletedObject = _pDoc->signalDeletedObject.connect(boost::bind
+            (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
+        removeViewProviders();
+        Gui::Document* pGui = Gui::Application::Instance->activeDocument();
+        _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
     }
-  }
 
-  meshNameButton->clear();
-  meshNameButton->insertItem(0, tr("No selection"));
-  meshNameButton->insertItems(1, items);
-  meshNameButton->setDisabled(items.empty());
-  cleanInformation();
+    if (_pDoc) {
+        std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+        for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+            items.push_back( (*it)->name.getValue() );
+        }
+    }
+
+    meshNameButton->clear();
+    meshNameButton->insertItem(0, tr("No selection"));
+    meshNameButton->insertItems(1, items);
+    meshNameButton->setDisabled(items.empty());
+    cleanInformation();
 }
 
 void DlgEvaluateMeshImp::on_checkOrientationButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshOrientation");
-  if ( it != _vp.end() )
-  {
-    if ( checkOrientationButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshOrientation");
+    if (it != _vp.end()) {
+        if (checkOrientationButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeOrientationButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeOrientationButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalOrientation eval(rMesh);
-    std::vector<unsigned long> inds = eval.GetIndices();
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalOrientation eval(rMesh);
+        std::vector<unsigned long> inds = eval.GetIndices();
     
-    if ( inds.empty() )
-    {
-      checkOrientationButton->setText( tr("No flipped normals") );
-      removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
-    }
-    else
-    {
-      checkOrientationButton->setText( tr("%1 flipped normals").arg(inds.size()) );
-      checkOrientationButton->setChecked(true);
-      repairOrientationButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
-    }
+        if (inds.empty()) {
+            checkOrientationButton->setText( tr("No flipped normals") );
+            removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
+        } else {
+            checkOrientationButton->setText( tr("%1 flipped normals").arg(inds.size()) );
+            checkOrientationButton->setChecked(true);
+            repairOrientationButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeOrientationButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeOrientationButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    doc->openCommand("Removed duplicated faces");
-    Gui::Application::Instance->runCommand(
-      true, "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
-      _meshFeature->name.getValue(),_meshFeature->name.getValue());
-    doc->commitCommand();
-    doc->getDocument()->recompute();
+    if (_meshFeature) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        doc->openCommand("Removed duplicated faces");
+        Gui::Application::Instance->runCommand(
+            true, "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
+            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        doc->commitCommand();
+        doc->getDocument()->recompute();
     
-    repairOrientationButton->setEnabled(false);
-    checkOrientationButton->setChecked(false);
-    removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
-    setFixedMesh();
-  }
+        repairOrientationButton->setEnabled(false);
+        checkOrientationButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
+        setFixedMesh();
+    }
 }
 
 void DlgEvaluateMeshImp::on_checkNonmanifoldsButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshNonManifolds");
-  if ( it != _vp.end() )
-  {
-    if ( checkDegenerationButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshNonManifolds");
+    if (it != _vp.end()) {
+        if (checkDegenerationButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeNonmanifoldsButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeNonmanifoldsButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalTopology eval(rMesh);
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalTopology eval(rMesh);
     
-    if ( eval.Evaluate() )
-    {
-      checkNonmanifoldsButton->setText( tr("No non-manifolds") );
-    }
-    else
-    {
-      checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
-      checkNonmanifoldsButton->setChecked(true);
-      repairNonmanifoldsButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
-    }
+        if (eval.Evaluate()) {
+            checkNonmanifoldsButton->setText( tr("No non-manifolds") );
+        } else {
+          checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
+          checkNonmanifoldsButton->setChecked(true);
+          repairNonmanifoldsButton->setEnabled(true);
+          addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeNonmanifoldsButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeNonmanifoldsButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
 {
-  QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
+    QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
 }
 
 void DlgEvaluateMeshImp::on_checkIndicesButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshIndices");
-  if ( it != _vp.end() )
-  {
-    if ( checkIndicesButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshIndices");
+    if (it != _vp.end()) {
+        if (checkIndicesButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeIndicesButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeIndicesButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalNeighbourhood nb(rMesh);
-    MeshEvalRangeFacet rf(rMesh);
-    MeshEvalRangePoint rp(rMesh);
-    MeshEvalCorruptedFacets cf(rMesh);
-    
-    if ( !nb.Evaluate() ) {
-      checkIndicesButton->setText( tr("Invalid neighbour indices") );
-      checkIndicesButton->setChecked(true);
-      repairIndicesButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    }
-    else if ( !rf.Evaluate() ) {
-      checkIndicesButton->setText( tr("Invalid face indices") );
-      checkIndicesButton->setChecked(true);
-      repairIndicesButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    }
-    else if ( !rp.Evaluate() ) {
-      checkIndicesButton->setText( tr("Invalid point indices") );
-      checkIndicesButton->setChecked(true);
-      repairIndicesButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    }
-    else if ( !cf.Evaluate() ) {
-      checkIndicesButton->setText( tr("Multiple point indices") );
-      checkIndicesButton->setChecked(true);
-      repairIndicesButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    }
-    else {
-      checkIndicesButton->setText( tr("No invalid indices") );
-      removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    }
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalNeighbourhood nb(rMesh);
+        MeshEvalRangeFacet rf(rMesh);
+        MeshEvalRangePoint rp(rMesh);
+        MeshEvalCorruptedFacets cf(rMesh);
+        
+        if ( !nb.Evaluate() ) {
+            checkIndicesButton->setText( tr("Invalid neighbour indices") );
+            checkIndicesButton->setChecked(true);
+            repairIndicesButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        } else if ( !rf.Evaluate() ) {
+            checkIndicesButton->setText( tr("Invalid face indices") );
+            checkIndicesButton->setChecked(true);
+            repairIndicesButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        } else if ( !rp.Evaluate() ) {
+            checkIndicesButton->setText( tr("Invalid point indices") );
+            checkIndicesButton->setChecked(true);
+            repairIndicesButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        } else if ( !cf.Evaluate() ) {
+            checkIndicesButton->setText( tr("Multiple point indices") );
+            checkIndicesButton->setChecked(true);
+            repairIndicesButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        } else {
+            checkIndicesButton->setText( tr("No invalid indices") );
+            removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeIndicesButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeIndicesButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    doc->openCommand("Removed duplicated faces");
-    Gui::Application::Instance->runCommand(
-      true, "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
-      _meshFeature->name.getValue(),_meshFeature->name.getValue());
-    doc->commitCommand();
-    doc->getDocument()->recompute();
+    if (_meshFeature) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        doc->openCommand("Removed duplicated faces");
+        Gui::Application::Instance->runCommand(
+            true, "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
+            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        doc->commitCommand();
+        doc->getDocument()->recompute();
     
-    repairIndicesButton->setEnabled(false);
-    checkIndicesButton->setChecked(false);
-    removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
-    setFixedMesh();
-  }
+        repairIndicesButton->setEnabled(false);
+        checkIndicesButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        setFixedMesh();
+    }
 }
 
 void DlgEvaluateMeshImp::on_checkDegenerationButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDegenerations");
-  if ( it != _vp.end() )
-  {
-    if ( checkDegenerationButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDegenerations");
+    if (it != _vp.end()) {
+        if (checkDegenerationButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeDegeneratedButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeDegeneratedButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalDegeneratedFacets eval(rMesh);
-    std::vector<unsigned long> degen = eval.GetIndices();
-    
-    if ( degen.empty() )
-    {
-      checkDegenerationButton->setText( tr("No degenerations") );
-      removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
-    }
-    else
-    {
-      checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
-      checkDegenerationButton->setChecked(true);
-      repairDegeneratedButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
-    }
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalDegeneratedFacets eval(rMesh);
+        std::vector<unsigned long> degen = eval.GetIndices();
+        
+        if (degen.empty()) {
+            checkDegenerationButton->setText( tr("No degenerations") );
+            removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+        } else {
+            checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
+            checkDegenerationButton->setChecked(true);
+            repairDegeneratedButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeDegeneratedButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeDegeneratedButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    doc->openCommand("Removed duplicated faces");
-    Gui::Application::Instance->runCommand(
-      true, "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
-      _meshFeature->name.getValue(),_meshFeature->name.getValue());
-    doc->commitCommand();
-    doc->getDocument()->recompute();
+    if (_meshFeature) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        doc->openCommand("Removed duplicated faces");
+        Gui::Application::Instance->runCommand(
+            true, "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
+            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        doc->commitCommand();
+        doc->getDocument()->recompute();
     
-    repairDegeneratedButton->setEnabled(false);
-    checkDegenerationButton->setChecked(false);
-    removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
-    setFixedMesh();
-  }
+        repairDegeneratedButton->setEnabled(false);
+        checkDegenerationButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+        setFixedMesh();
+    }
 }
 
 void DlgEvaluateMeshImp::on_checkDuplicatedFacesButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedFaces");
-  if ( it != _vp.end() )
-  {
-    if ( checkDuplicatedFacesButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedFaces");
+    if (it != _vp.end()) {
+        if (checkDuplicatedFacesButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeDuplicatedFacesButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeDuplicatedFacesButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalDuplicateFacets eval(rMesh);
-    std::vector<unsigned long> dupl = eval.GetIndices();
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalDuplicateFacets eval(rMesh);
+        std::vector<unsigned long> dupl = eval.GetIndices();
     
-    if ( dupl.empty() )
-    {
-      checkDuplicatedFacesButton->setText( tr("No duplicated faces") );
-      removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
-    }
-    else
-    {
-      checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
-      checkDuplicatedFacesButton->setChecked(true);
-      repairDuplicatedFacesButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
-    }
+        if (dupl.empty()) {
+            checkDuplicatedFacesButton->setText( tr("No duplicated faces") );
+            removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+        } else {
+            checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
+            checkDuplicatedFacesButton->setChecked(true);
+            repairDuplicatedFacesButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeDuplicatedFacesButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeDuplicatedFacesButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    doc->openCommand("Removed duplicated faces");
-    Gui::Application::Instance->runCommand(
-      true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
-      _meshFeature->name.getValue(),_meshFeature->name.getValue());
-    doc->commitCommand();
-    doc->getDocument()->recompute();
+    if (_meshFeature) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        doc->openCommand("Removed duplicated faces");
+        Gui::Application::Instance->runCommand(
+            true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
+            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        doc->commitCommand();
+        doc->getDocument()->recompute();
     
-    repairDuplicatedFacesButton->setEnabled(false);
-    checkDuplicatedFacesButton->setChecked(false);
-    removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
-    setFixedMesh();
-  }
+        repairDuplicatedFacesButton->setEnabled(false);
+        checkDuplicatedFacesButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+        setFixedMesh();
+    }
 }
 
 void DlgEvaluateMeshImp::on_checkDuplicatedPointsButton_clicked()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedPoints");
-  if ( it != _vp.end() )
-  {
-    if ( checkDuplicatedPointsButton->isChecked() )
-      it->second->show();
-    else
-      it->second->hide();
-  }
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedPoints");
+    if (it != _vp.end()) {
+        if ( checkDuplicatedPointsButton->isChecked() )
+            it->second->show();
+        else
+            it->second->hide();
+    }
 }
 
 void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    analyzeDuplicatedPointsButton->setEnabled(false);
-    qApp->processEvents();
-    qApp->setOverrideCursor(Qt::WaitCursor);
+    if (_meshFeature) {
+        analyzeDuplicatedPointsButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
-    MeshEvalDuplicatePoints eval(rMesh);
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalDuplicatePoints eval(rMesh);
     
-    if ( eval.Evaluate() )
-    {
-      checkDuplicatedPointsButton->setText( tr("No duplicated points") );
-      removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
-    }
-    else
-    {
-      checkDuplicatedPointsButton->setText( tr("Duplicated points") );
-      checkDuplicatedPointsButton->setChecked(true);
-      repairDuplicatedPointsButton->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
-    }
+        if (eval.Evaluate()) {
+            checkDuplicatedPointsButton->setText( tr("No duplicated points") );
+            removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+        } else {
+            checkDuplicatedPointsButton->setText( tr("Duplicated points") );
+            checkDuplicatedPointsButton->setChecked(true);
+            repairDuplicatedPointsButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+        }
 
-    qApp->restoreOverrideCursor();
-    analyzeDuplicatedPointsButton->setEnabled(true);
-  }
+        qApp->restoreOverrideCursor();
+        analyzeDuplicatedPointsButton->setEnabled(true);
+    }
 }
 
 void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
 {
-  if ( _meshFeature )
-  {
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    doc->openCommand("Removed duplicated points");
-    Gui::Application::Instance->runCommand(
-      true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
-      _meshFeature->name.getValue(),_meshFeature->name.getValue());
-    doc->commitCommand();
-    doc->getDocument()->recompute();
+    if (_meshFeature) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        doc->openCommand("Removed duplicated points");
+        Gui::Application::Instance->runCommand(
+            true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
+            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        doc->commitCommand();
+        doc->getDocument()->recompute();
     
-    repairDuplicatedPointsButton->setEnabled(false);
-    checkDuplicatedPointsButton->setChecked(false);
-    removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
-    setFixedMesh();
-  }
+        repairDuplicatedPointsButton->setEnabled(false);
+        checkDuplicatedPointsButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+        setFixedMesh();
+    }
 }
 
 // -------------------------------------------------------------
@@ -684,29 +631,27 @@ DockEvaluateMeshImp* DockEvaluateMeshImp::_instance=0;
 
 DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
 {
-  // not initialized?
-  if(!_instance)
-  {
-    _instance = new DockEvaluateMeshImp(Gui::getMainWindow());
-    _instance->setSizeGripEnabled(false);
-  }
+    // not initialized?
+    if(!_instance) {
+        _instance = new DockEvaluateMeshImp(Gui::getMainWindow());
+        _instance->setSizeGripEnabled(false);
+    }
 
-  return _instance;
+    return _instance;
 }
 
 void DockEvaluateMeshImp::destruct ()
 {
-  if ( _instance != 0 )
-  {
-    DockEvaluateMeshImp *pTmp = _instance;
-    _instance = 0;
-    delete pTmp;
-  }
+    if (_instance != 0) {
+        DockEvaluateMeshImp *pTmp = _instance;
+        _instance = 0;
+        delete pTmp;
+    }
 }
 
 bool DockEvaluateMeshImp::hasInstance()
 {
-  return _instance != 0;
+    return _instance != 0;
 }
 
 /**
@@ -716,13 +661,13 @@ bool DockEvaluateMeshImp::hasInstance()
 DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   : DlgEvaluateMeshImp( parent, fl )
 {
-  // save the current layout of the main window and restore it when we close this window
-  state = Gui::getMainWindow()->saveState(1000);
-  // embed this dialog into a dockable widget container
-  Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
-  // use Qt macro for preparing for translation stuff (but not translating yet)
-  QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate Mesh"), this, Qt::RightDockWidgetArea);
-  dw->show();
+    // save the current layout of the main window and restore it when we close this window
+    state = Gui::getMainWindow()->saveState(1000);
+    // embed this dialog into a dockable widget container
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    // use Qt macro for preparing for translation stuff (but not translating yet)
+    QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate Mesh"), this, Qt::RightDockWidgetArea);
+    dw->show();
 }
 
 /**
@@ -730,7 +675,7 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
  */
 DockEvaluateMeshImp::~DockEvaluateMeshImp()
 {
-  _instance = 0;
+    _instance = 0;
 }
 
 /**
@@ -738,10 +683,10 @@ DockEvaluateMeshImp::~DockEvaluateMeshImp()
  */
 void DockEvaluateMeshImp::closeEvent(QCloseEvent* e)
 {
-  // closes the dock window and restores the former layout of the main window
-  Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
-  pDockMgr->removeDockWindow(this);
-  Gui::getMainWindow()->restoreState(this->state, 1000);
+    // closes the dock window and restores the former layout of the main window
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    pDockMgr->removeDockWindow(this);
+    Gui::getMainWindow()->restoreState(this->state, 1000);
 }
 
 /**
@@ -749,7 +694,7 @@ void DockEvaluateMeshImp::closeEvent(QCloseEvent* e)
  */
 QSize DockEvaluateMeshImp::sizeHint () const
 {
-  return QSize(371, 579);
+    return QSize(371, 579);
 }
 
 #include "moc_DlgEvaluateMeshImp.cpp"

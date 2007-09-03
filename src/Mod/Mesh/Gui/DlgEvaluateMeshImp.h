@@ -25,6 +25,7 @@
 #define MESHGUI_DLG_EVALUATE_MESH_IMP_H
 
 #include <map>
+
 #include <App/Application.h>
 #include <App/Document.h>
 #include "ui_DlgEvaluateMesh.h"
@@ -38,6 +39,7 @@ namespace Mesh {
 
 namespace MeshGui {
 class ViewProviderMeshDefects;
+typedef boost::signals::connection Connection;
 
 /**
  * The GuiCleanupHandler class is used to cleanup GUI elements from the MeshGui module when the application is about to be 
@@ -109,6 +111,8 @@ protected:
     void removeViewProviders();
 
 private:
+    Connection connectApplicationDeletedDocument;
+    Connection connectDocumentDeletedObject;
     std::map<std::string, ViewProviderMeshDefects*> _vp;
     Mesh::Feature* _meshFeature;
     Gui::View3DInventorViewer* _viewer;
