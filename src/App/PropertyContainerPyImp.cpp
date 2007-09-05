@@ -23,8 +23,7 @@ PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  Property *prop = getPropertyContainerObject()->getPropertyByName(pstr);
-  short Type =  getPropertyContainerObject()->getPropertyType(prop);
+  short Type =  getPropertyContainerObject()->getPropertyType(pstr);
 
   if(Type & Prop_Hidden) 
     ret.append(Py::String("Hidden"));
@@ -42,8 +41,20 @@ PyObject*  PropertyContainerPy::getGroupOfProperty(PyObject *args)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  Property *prop = getPropertyContainerObject()->getPropertyByName(pstr);
-  const char* Group = getPropertyContainerObject()->getPropertyGroup(prop);
+  const char* Group = getPropertyContainerObject()->getPropertyGroup(pstr);
+  if(Group)
+    return Py::new_reference_to(Py::String(Group));
+  else
+    return Py::new_reference_to(Py::String(""));
+}
+
+PyObject*  PropertyContainerPy::getDocumentationOfProperty(PyObject *args)
+{
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  const char* Group = getPropertyContainerObject()->getPropertyDocumentation(pstr);
   if(Group)
     return Py::new_reference_to(Py::String(Group));
   else

@@ -21,6 +21,11 @@
 			  <UserDocu>returns the name of the group which the property belongs to in this class. The Properties sorted in differnt named groups for convinians.</UserDocu>
 		  </Documentation>
 	  </Methode>
+	  <Methode Name="getDocumentationOfProperty">
+		  <Documentation>
+			  <UserDocu>returns the documentation string of the propery of this class.</UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Attribute Name="PropertiesList" ReadOnly="true">
       <Documentation>
         <UserDocu>A List of all property names</UserDocu>

@@ -58,7 +58,7 @@ const char* FeatEnums[]= {"Valid","New","Inactive","Recompute","Error",NULL};
 AbstractFeature::AbstractFeature(void)
 : _execute(false)
 {
-  ADD_PROPERTY_TYPE(status,(1),"Base",Prop_None);
+  ADD_PROPERTY_TYPE(status,(1),"Base",Prop_None,"Current status of the Feature");
   status.setEnums(FeatEnums);
 }
 

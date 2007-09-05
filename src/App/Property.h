@@ -85,6 +85,9 @@ public:
 
   /// Get the group of this Property
   const char* getGroup(void) const;
+
+  /// Get the Documentation of this Property
+  const char* getDocumentation(void) const;
   
 
   /// is called by the framework to set the Father (Container)
