@@ -67,6 +67,12 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.Angle-3.0<0.001)
     self.failUnless(L1.Distance-47.11<0.001)
 
+    # test basic property stuff
+    self.failUnless(not L1.getDocumentationOfProperty("Source1") == "")
+    self.failUnless(L1.getGroupOfProperty("Source1") == "Feature Test")
+    self.failUnless(L1.getTypeOfProperty("Source1") == [])
+
+
     # test the constraint types ( both are constraint to percent range)
     self.failUnless(L1.ConstraintInt == 5)
     self.failUnless(L1.ConstraintFloat-5.0<0.001)

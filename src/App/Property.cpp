@@ -71,6 +71,11 @@ const char* Property::getGroup(void) const
   return father->getPropertyGroup(this);
 }
 
+const char* Property::getDocumentation(void) const
+{
+  return father->getPropertyDocumentation(this);
+}
+
 
 void Property::setContainer(PropertyContainer *Father)
 {

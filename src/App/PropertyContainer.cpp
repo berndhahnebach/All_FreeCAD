@@ -151,24 +151,62 @@ void PropertyContainer::Restore(Base::XMLReader &reader)
 }
 
 
-void PropertyData::addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup , PropertyType Type)
+void PropertyData::addProperty(const PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup , PropertyType Type, const char* PropertyDocu)
 {
-  std::map<std::string,PropertySpec>::const_iterator pos = propertyData.find(PropName);
+  bool IsIn = false;
+  for (vector<PropertySpec>::const_iterator It = propertyData.begin(); It != propertyData.end(); ++It)
+    if(strcmp(It->Name,PropName)==0)
+      IsIn = true;
 
-  if(pos == propertyData.end())
+  if( !IsIn )
   {
     PropertySpec temp;
+    temp.Name   = PropName;
     temp.Offset = (short) ((char*)Prop - (char*)container);
     temp.Group  = PropertyGroup;
     temp.Type   = Type;
-    propertyData[PropName] = temp;
-    //propertyData[PropName] = (int) ((char*)Prop - (char*)container);
+    temp.Docu   = PropertyDocu;
+    propertyData.push_back(temp);
   }
 }
 
-const char* PropertyData::getName(const PropertyContainer *container,const Property* prop)const
+const PropertyData::PropertySpec *PropertyData::findProperty(const PropertyContainer *container,const char* PropName) const
+{
+  for (vector<PropertyData::PropertySpec>::const_iterator It = propertyData.begin(); It != propertyData.end(); ++It)
+    if(strcmp(It->Name,PropName)==0)
+      return &(*It);
+
+  if(parentPropertyData)
+      return parentPropertyData->findProperty(container,PropName);
+ 
+  return 0;
+}
+
+const PropertyData::PropertySpec *PropertyData::findProperty(const PropertyContainer *container,const Property* prop) const
 {
   const int diff = (int) ((char*)prop - (char*)container);
+
+  for (vector<PropertyData::PropertySpec>::const_iterator It = propertyData.begin(); It != propertyData.end(); ++It)
+    if(diff == It->Offset)
+      return &(*It);
+  
+  if(parentPropertyData)
+      return parentPropertyData->findProperty(container,prop);
+
+  return 0;
+}
+
+
+
+const char* PropertyData::getName(const PropertyContainer *container,const Property* prop) const
+{
+  const PropertyData::PropertySpec* Spec = findProperty(container,prop);
+
+  if(Spec)
+    return Spec->Name;
+  else
+    return 0;
+  /*
 
   for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
     if(pos->second.Offset == diff)
@@ -178,10 +216,19 @@ const char* PropertyData::getName(const PropertyContainer *container,const Prope
     return parentPropertyData->getName(container,prop);
 
   return 0;
+  */
 }
 
 short PropertyData::getType(const PropertyContainer *container,const Property* prop) const
 {
+  const PropertyData::PropertySpec* Spec = findProperty(container,prop);
+
+  if(Spec)
+    return Spec->Type;
+  else
+    return 0;
+
+  /*
   const int diff = (int) ((char*)prop - (char*)container);
 
   for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
@@ -192,10 +239,29 @@ short PropertyData::getType(const PropertyContainer *container,const Property* p
     return parentPropertyData->getType(container,prop);
 
   return 0;
+  */
+}
+
+short PropertyData::getType(const PropertyContainer *container,const char* name) const
+{
+  const PropertyData::PropertySpec* Spec = findProperty(container,name);
+
+  if(Spec)
+    return Spec->Type;
+  else
+    return 0;
 }
 
 const char* PropertyData::getGroup(const PropertyContainer *container,const Property* prop) const
 {
+  const PropertyData::PropertySpec* Spec = findProperty(container,prop);
+
+  if(Spec)
+    return Spec->Group;
+  else
+    return 0;
+
+  /*
   const int diff = (int) ((char*)prop - (char*)container);
 
   for(std::map<std::string,PropertySpec>::const_iterator pos = propertyData.begin();pos != propertyData.end();++pos)
@@ -206,11 +272,50 @@ const char* PropertyData::getGroup(const PropertyContainer *container,const Prop
     return parentPropertyData->getGroup(container,prop);
 
   return 0;
+  */
 }
+
+const char* PropertyData::getGroup(const PropertyContainer *container,const char* name) const
+{
+  const PropertyData::PropertySpec* Spec = findProperty(container,name);
+
+  if(Spec)
+    return Spec->Group;
+  else
+    return 0;
+}
+
+const char* PropertyData::getDocumentation(const PropertyContainer *container,const Property* prop) const
+{
+  const PropertyData::PropertySpec* Spec = findProperty(container,prop);
+
+  if(Spec)
+    return Spec->Docu;
+  else
+    return 0;
+}
+
+const char* PropertyData::getDocumentation(const PropertyContainer *container,const char* name) const
+{
+  const PropertyData::PropertySpec* Spec = findProperty(container,name);
+
+  if(Spec)
+    return Spec->Docu;
+  else
+    return 0;
+}
+
 
 
 Property *PropertyData::getPropertyByName(const PropertyContainer *container,const char* name) const 
 {
+  const PropertyData::PropertySpec* Spec = findProperty(container,name);
+
+  if(Spec)
+    return (Property *) (Spec->Offset + (char *)container);
+  else
+    return 0;
+/*
   std::map<std::string,PropertySpec>::const_iterator pos = propertyData.find(name);
 
   if(pos != propertyData.end())
@@ -222,17 +327,22 @@ Property *PropertyData::getPropertyByName(const PropertyContainer *container,con
       return parentPropertyData->getPropertyByName(container,name);
     else
       return 0;
-  }
+  }*/
 }
 
 void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const
 {
+  for (vector<PropertyData::PropertySpec>::const_iterator It = propertyData.begin(); It != propertyData.end(); ++It)
+    Map[It->Name] = (Property *) (It->Offset + (char *)container);
+/*
   std::map<std::string,PropertySpec>::const_iterator pos;
 
   for(pos = propertyData.begin();pos != propertyData.end();++pos)
   {
     Map[pos->first] = (Property *) (pos->second.Offset + (char *)container);
   }
+  */
+
   if(parentPropertyData)
     parentPropertyData->getPropertyMap(container,Map);
 
@@ -240,12 +350,15 @@ void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<st
 
 void PropertyData::getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const
 {
-  std::map<std::string,PropertySpec>::const_iterator pos;
+  for (vector<PropertyData::PropertySpec>::const_iterator It = propertyData.begin(); It != propertyData.end(); ++It)
+    List.push_back((Property *) (It->Offset + (char *)container) );
+
+/*  std::map<std::string,PropertySpec>::const_iterator pos;
 
   for(pos = propertyData.begin();pos != propertyData.end();++pos)
   {
     List.push_back((Property *) (pos->second.Offset + (char *)container) );
-  }
+  }*/
   if(parentPropertyData)
     parentPropertyData->getPropertyList(container,List);
 

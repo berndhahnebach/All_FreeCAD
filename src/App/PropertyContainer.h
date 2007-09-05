@@ -50,16 +50,28 @@ struct AppExport PropertyData
 {
   struct PropertySpec
   {
-    short Offset,Type;
+    const char* Name;
     const char * Group;
-  };
-  std::map<std::string,PropertySpec> propertyData;
+    const char * Docu;
+    short Offset,Type;
+ };
+  // vector of all propteries
+  std::vector<PropertySpec> propertyData;
   const PropertyData *parentPropertyData;
 
-  void addProperty(PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup= 0, PropertyType = Prop_None );
-  const char* getName(const PropertyContainer *container,const Property* prop) const;
-  short getType(const PropertyContainer *container,const Property* prop) const;
-  const char* getGroup(const PropertyContainer *container,const Property* prop) const;
+  void addProperty(const PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup= 0, PropertyType = Prop_None, const char* PropertyDocu= 0 );
+
+  const PropertySpec *findProperty(const PropertyContainer *container,const char* PropName) const;
+  const PropertySpec *findProperty(const PropertyContainer *container,const Property* prop) const;
+  
+  const char* getName         (const PropertyContainer *container,const Property* prop) const;
+  short       getType         (const PropertyContainer *container,const Property* prop) const;
+  short       getType         (const PropertyContainer *container,const char* name)     const;
+  const char* getGroup        (const PropertyContainer *container,const char* name)     const;
+  const char* getGroup        (const PropertyContainer *container,const Property* prop) const;
+  const char* getDocumentation(const PropertyContainer *container,const char* name)     const;
+  const char* getDocumentation(const PropertyContainer *container,const Property* prop) const;
+
   Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
   void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
   void getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const;
@@ -103,9 +115,21 @@ public:
   /// get the Type of a Property
   short getPropertyType(const Property* prop) const 
   {return getPropertyData().getType(this,prop);}
+  /// get the Type of a named Property
+  short getPropertyType(const char *name) const 
+  {return getPropertyData().getType(this,name);}
   /// get the Group of a Property
   const char* getPropertyGroup(const Property* prop) const
   {return getPropertyData().getGroup(this,prop);}
+  /// get the Group of a named Property
+  const char* getPropertyGroup(const char *name) const
+  {return getPropertyData().getGroup(this,name);}
+  /// get the Group of a Property
+  const char* getPropertyDocumentation(const Property* prop) const
+  {return getPropertyData().getDocumentation(this,prop);}
+  /// get the Group of a named Property
+  const char* getPropertyDocumentation(const char *name) const
+  {return getPropertyData().getDocumentation(this,name);}
 
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void);
@@ -140,11 +164,11 @@ protected:
     propertyData.addProperty(this, #_prop_, &this->_prop_); \
   } while (0)
 
-#define ADD_PROPERTY_TYPE(_prop_, _defaultval_, _group_,_type_) \
+#define ADD_PROPERTY_TYPE(_prop_, _defaultval_, _group_,_type_,_Docu_) \
   do { \
     this->_prop_.setValue _defaultval_;\
     this->_prop_.setContainer(this); \
-    propertyData.addProperty(this, #_prop_, &this->_prop_, (_group_),(_type_)); \
+    propertyData.addProperty(this, #_prop_, &this->_prop_, (_group_),(_type_),(_Docu_)); \
   } while (0)
 
 
