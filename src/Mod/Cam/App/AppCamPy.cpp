@@ -46,6 +46,7 @@
 #include <App/Application.h>
 #include <App/Document.h>
 
+
 // Things from the part module
 #include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
@@ -58,6 +59,7 @@
 #include <Mod/Mesh/App/MeshPy.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
+#include <Mod/Mesh/App/Core/Elements.h>
 
 
 # include <BRepOffsetAPI_MakeOffsetShape.hxx>
@@ -84,7 +86,7 @@
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <GeomAdaptor_Curve.hxx>
-
+#include <Base/Builder3d.h>
 #include "Approx.h"
 #include "ConvertDyna.h"
 
@@ -3181,6 +3183,111 @@ static PyObject * openDYNA(PyObject *self, PyObject *args)
 	Py_Return;
 
 }
+
+
+static PyObject * offset_mesh(PyObject *self, PyObject *args)
+{
+	double offset;
+
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	pcObject = (MeshPy*)pcObj;
+	Base::Builder3D log3d;
+
+	PY_TRY
+	{
+		MeshCore::MeshKernel mesh = pcObject->getMesh();
+		Base::Vector3f Point[3];
+		Base::Vector3f current_pnt;
+
+ 
+		const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+		const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+		
+		MeshCore::MeshPointIterator p_it(mesh);
+		MeshCore::MeshFacetIterator f_it(mesh);
+        MeshCore::MeshRefPointToFacets rf2pt(mesh);
+	    MeshCore::MeshGeomFacet t_face;
+		
+		int NumOfPoints = mesh.CountPoints();
+
+        Base::Vector3f normal,local_normal;
+		float fArea = 0.0f;
+
+		
+
+		for (unsigned long i=0; i<rf2pt.size(); i++) 
+		{    
+			 // Satz von Dreiecken zu jedem Punkt
+             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+             float fArea = 0.0;
+			 normal.Set(0.0,0.0,0.0);
+			 
+             
+			 // Iteriere über die Dreiecke zu jedem Punkt
+             for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
+			 {
+				 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+				 t_face = mesh.GetFacet(**it);
+				 // Flächeninhalt aufsummieren
+				 float local_Area = t_face.Area();
+				local_normal = t_face.GetNormal();
+				if(local_normal.z < 0)
+				 {
+					 local_normal = local_normal * (-1);
+				 }
+
+				fArea = fArea + local_Area;
+				normal = normal + local_normal;
+                 
+			 }
+
+			 normal.Normalize();
+			 log3d.addSingleArrow(mesh.GetPoint(i),mesh.GetPoint(i) + (normal*offset));
+			 mesh.MovePoint(i,(normal*offset));
+			
+		}
+
+	    log3d.saveToFile("c:/test.iv");
+		return new MeshPy(mesh);
+	}
+	PY_CATCH;
+
+	Py_Return;
+
+
+		
+		/*for(p_it.Begin();!(p_it.EndReached()); ++p_it)
+		{
+			cout << "Erste Schleife" <<endl;
+			for(f_it.Begin(); !(f_it.EndReached()); ++f_it)
+			{
+				cout << "Zweite Schleife" <<endl;
+				int pos = f_it.Position();
+				t_face = mesh.GetFacet(f_it.Position());
+
+				for (int i = 0; i < 3; ++i)
+				{
+					cout << "dritte Schleife" <<endl;
+					if(*p_it == t_face._aclPoints[i])
+					{
+						a += t_face.Area();
+						normal = t_face.Area()*t_face.GetNormal();
+					}
+				}
+				normal = normal/a;
+				n_vect.push_back(normal);
+				log3d.addPoint(normal);
+			}
+		}*/
+}
+
+
+
+
 //PyDoc_STRVAR(open_doc,
 //"open(string) -- Not implemnted for this Module so far.");
 //
@@ -3196,12 +3303,13 @@ static PyObject * openDYNA(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Cam_methods[] = {
 	{"open"   , open,   Py_NEWARGS, "open(string) -- Not implemnted for this Module so far."},       
-  {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
-  {"read"   , read,  1},       
-  {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
+    {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
+    {"read"   , read,  1},       
+    {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
 	{"createTestApproximate" , createTestApproximate, 1},
 	{"makeToolPath", makeToolPath, 1},
 	{"offset", offset, 1},
+	{"offset_mesh", offset_mesh, 1},
 	{"cut", cut, 1},
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
@@ -3211,10 +3319,4 @@ struct PyMethodDef Cam_methods[] = {
 	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
     {NULL     , NULL      }        /* end of table marker */
 };
-
-
-
-
-
-
 
