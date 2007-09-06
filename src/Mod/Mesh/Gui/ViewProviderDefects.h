@@ -162,6 +162,24 @@ protected:
   SoFaceSet* pcFaces;
 };
 
+/** The ViewProviderMeshSelfIntersections class displays lines of self-intersections. 
+ * @author Werner Mayer
+ */
+class GuiMeshExport ViewProviderMeshSelfIntersections : public ViewProviderMeshDefects
+{
+  PROPERTY_HEADER(MeshGui::ViewProviderMeshSelfIntersections);
+
+public:
+  ViewProviderMeshSelfIntersections();
+  virtual ~ViewProviderMeshSelfIntersections();
+
+  void attach(App::DocumentObject* pcFeature);
+  void showDefects();
+
+protected:
+  SoLineSet* pcLines;
+};
+
 } // namespace MeshGui
 
 

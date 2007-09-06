@@ -62,6 +62,7 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedFaces, MeshGui::ViewProviderM
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedPoints, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDegenerations, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshIndices, MeshGui::ViewProviderMeshDefects)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshSelfIntersections, MeshGui::ViewProviderMeshDefects)
 
 ViewProviderMeshDefects::ViewProviderMeshDefects()
 {
@@ -548,4 +549,67 @@ void ViewProviderMeshIndices::showDefects()
   }
   else if ( !cf.Evaluate() ) {
   }
+}
+
+// ----------------------------------------------------------------------
+
+ViewProviderMeshSelfIntersections::ViewProviderMeshSelfIntersections()
+{
+  pcLines = new SoLineSet;
+  pcLines->ref();
+}
+
+ViewProviderMeshSelfIntersections::~ViewProviderMeshSelfIntersections()
+{
+  pcLines->unref();
+}
+
+void ViewProviderMeshSelfIntersections::attach(App::DocumentObject* pcFeat)
+{
+  ViewProviderDocumentObject::attach( pcFeat );
+
+  SoGroup* pcLineRoot = new SoGroup();
+  pcDrawStyle->lineWidth = 3;
+  pcLineRoot->addChild(pcDrawStyle);
+
+  // Draw lines
+  SoSeparator* linesep = new SoSeparator;
+  SoBaseColor * basecol = new SoBaseColor;
+  basecol->rgb.setValue( 1.0f, 0.5f, 0.0f );
+  linesep->addChild(basecol);
+  linesep->addChild(pcCoords);
+  linesep->addChild(pcLines);
+  pcLineRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
+
+  addDisplayMaskMode(pcLineRoot, "Line");
+}
+
+void ViewProviderMeshSelfIntersections::showDefects()
+{
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  MeshCore::MeshEvalSelfIntersection eval(rMesh);
+  
+  eval.Evaluate();
+  const std::vector<std::pair<Base::Vector3f, Base::Vector3f> >& lines = eval.GetIntersections();
+
+  pcCoords->point.deleteValues(0);
+  pcCoords->point.setNum(2*lines.size());
+  unsigned long i=0;
+  unsigned long j=0;
+  for (std::vector<std::pair<Base::Vector3f, Base::Vector3f> >::const_iterator it = lines.begin(); it != lines.end(); ++it) {
+    pcCoords->point.set1Value(i++,it->first.x,it->first.y,it->first.z);
+    pcCoords->point.set1Value(i++,it->second.x,it->second.y,it->second.z);
+    pcLines->numVertices.set1Value(j++, 2);
+  }
+
+  setDisplayMaskMode("Line");
 }

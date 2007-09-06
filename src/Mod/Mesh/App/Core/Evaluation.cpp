@@ -414,8 +414,56 @@ bool MeshFixSingleFacet::Fixup ()
 
 // ----------------------------------------------------------------
 
+//FIXME: Must not check two adjacent facets for intersection.
 bool MeshEvalSelfIntersection::Evaluate ()
 {
+    // Contains bounding boxes for every facet 
+    std::vector<Base::BoundBox3f> boxes;
+    _intersection.clear();
+
+    // Splits the mesh using grid for speeding up the calculation
+    MeshFacetGrid cMeshFacetGrid(_rclMesh);
+    MeshGridIterator clGridIter(cMeshFacetGrid);
+    unsigned long ulGridX, ulGridY, ulGridZ;
+    cMeshFacetGrid.GetCtGrids(ulGridX, ulGridY, ulGridZ);
+
+    MeshFacetIterator cMFI(_rclMesh);
+    for(cMFI.Begin(); cMFI.More(); cMFI.Next()) {
+        boxes.push_back((*cMFI).GetBoundBox());
+    }
+
+    // Calculates the intersections
+    for (clGridIter.Init(); clGridIter.More(); clGridIter.Next()) {
+        //Get the facet indices, belonging to the current grid unit
+        std::vector<unsigned long> aulGridElements;
+        clGridIter.GetElements(aulGridElements);
+        if (aulGridElements.size()==0)
+            continue;
+
+        MeshGeomFacet facet1, facet2;
+        Base::Vector3f pt1, pt2;
+        for (std::vector<unsigned long>::iterator it = aulGridElements.begin(); it != aulGridElements.end(); ++it) {
+            const Base::BoundBox3f& box1 = boxes[*it];
+            cMFI.Set(*it);
+            facet1 = *cMFI;
+            for (std::vector<unsigned long>::iterator jt = it; jt != aulGridElements.end(); ++jt) {
+                if (jt == it)
+                    continue;
+                const Base::BoundBox3f& box2 = boxes[*jt];
+                if (box1 && box2) {
+                    cMFI.Set(*jt);
+                    facet2 = *cMFI;
+                    int ret = facet1.IntersectWithFacet1(facet2, pt1, pt2);
+                    if (ret == 2) {
+                        _intersection.push_back(std::make_pair(pt1, pt2));
+                    }
+                }
+            }
+        }
+    }
+
+    return _intersection.empty();
+
   std::set<unsigned long> ulsSelfIntersectFacets;
 /*
   //Contains bounding boxes for every facet 
