@@ -100,6 +100,10 @@ protected Q_SLOTS:
     void on_analyzeIndicesButton_clicked();
     void on_repairIndicesButton_clicked();
 
+    void on_checkSelfIntersectionButton_clicked();
+    void on_analyzeSelfIntersectionButton_clicked();
+    void on_repairSelfIntersectionButton_clicked();
+
     void on_refreshButton_clicked();
     void on_meshNameButton_activated(int);
 

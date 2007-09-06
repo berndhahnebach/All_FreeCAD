@@ -625,6 +625,47 @@ void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
     }
 }
 
+void DlgEvaluateMeshImp::on_checkSelfIntersectionButton_clicked()
+{
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshSelfIntersections");
+    if (it != _vp.end()) {
+        if ( checkSelfIntersectionButton->isChecked() )
+            it->second->show();
+        else
+            it->second->hide();
+    }
+}
+
+void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
+{
+    if (_meshFeature) {
+        analyzeSelfIntersectionButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
+
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
+        MeshEvalSelfIntersection eval(rMesh);
+    
+        if (eval.Evaluate()) {
+            checkSelfIntersectionButton->setText( tr("No self-intersections") );
+            removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+        } else {
+            checkSelfIntersectionButton->setText( tr("Self-intersections") );
+            checkSelfIntersectionButton->setChecked(true);
+            repairSelfIntersectionButton->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+        }
+
+        qApp->restoreOverrideCursor();
+        analyzeSelfIntersectionButton->setEnabled(true);
+    }
+}
+
+void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
+{
+    QMessageBox::warning(this, tr("Self-intersections"), tr("Cannot repair self-intersections"));
+}
+
 // -------------------------------------------------------------
 
 DockEvaluateMeshImp* DockEvaluateMeshImp::_instance=0;

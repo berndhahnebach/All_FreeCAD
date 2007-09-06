@@ -227,6 +227,11 @@ public:
   MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   virtual ~MeshEvalSelfIntersection () {}
   bool Evaluate ();
+  const std::vector<std::pair<Base::Vector3f, Base::Vector3f> >& GetIntersections() const
+  { return _intersection; }
+
+protected:
+    std::vector<std::pair<Base::Vector3f, Base::Vector3f> > _intersection;
 };
 
 // ----------------------------------------------------

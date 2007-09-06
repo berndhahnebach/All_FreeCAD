@@ -117,6 +117,7 @@ void GuiMeshExport initMeshGui() {
   MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
   MeshGui::ViewProviderMeshDegenerations     ::init();
   MeshGui::ViewProviderMeshIndices           ::init();
+  MeshGui::ViewProviderMeshSelfIntersections ::init();
   MeshGui::Workbench                         ::init();
 
   // add resources and reloads the translators
