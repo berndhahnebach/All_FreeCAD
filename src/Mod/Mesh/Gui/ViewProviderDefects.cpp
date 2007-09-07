@@ -598,8 +598,8 @@ void ViewProviderMeshSelfIntersections::showDefects()
   const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalSelfIntersection eval(rMesh);
   
-  eval.Evaluate();
-  const std::vector<std::pair<Base::Vector3f, Base::Vector3f> >& lines = eval.GetIntersections();
+  std::vector<std::pair<Base::Vector3f, Base::Vector3f> > lines;
+  eval.GetIntersections(lines);
 
   pcCoords->point.deleteValues(0);
   pcCoords->point.setNum(2*lines.size());
