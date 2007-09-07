@@ -421,6 +421,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
 
     // Splits the mesh using grid for speeding up the calculation
     MeshFacetGrid cMeshFacetGrid(_rclMesh);
+    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
     MeshGridIterator clGridIter(cMeshFacetGrid);
     unsigned long ulGridX, ulGridY, ulGridZ;
     cMeshFacetGrid.GetCtGrids(ulGridX, ulGridY, ulGridZ);
@@ -431,10 +432,13 @@ bool MeshEvalSelfIntersection::Evaluate ()
     }
 
     // Calculates the intersections
+    Base::SequencerLauncher seq("Checking for self-intersections...", ulGridX*ulGridY*ulGridZ);
     for (clGridIter.Init(); clGridIter.More(); clGridIter.Next()) {
         //Get the facet indices, belonging to the current grid unit
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
+
+        Base::Sequencer().next();
         if (aulGridElements.size()==0)
             continue;
 
@@ -444,15 +448,26 @@ bool MeshEvalSelfIntersection::Evaluate ()
             const Base::BoundBox3f& box1 = boxes[*it];
             cMFI.Set(*it);
             facet1 = *cMFI;
+            const MeshFacet& rface1 = rFaces[*it];
             for (std::vector<unsigned long>::iterator jt = it; jt != aulGridElements.end(); ++jt) {
-                if (jt == it)
+                if (jt == it) // the identical facet
                     continue;
-                // if the facets are adjacent we must not check for self-intersections because they cannot intersect each other
-                // and the algorithm below would detect false-positives
-                unsigned long uN0, uN1, uN2;
-                _rclMesh.GetFacetNeighbours(*it, uN0, uN1, uN2);
-                if (*jt == uN0 || *jt == uN1 || *jt == uN2)
-                    continue; // ignore adjacent facets
+                // If the facets share a common vertex we do not check for self-intersections because they 
+                // could but usually do not intersect each other and the algorithm below would detect false-positives,
+                // otherwise
+                const MeshFacet& rface2 = rFaces[*jt];
+                if (rface1._aulPoints[0] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[0] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[0] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
+                if (rface1._aulPoints[1] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[1] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[1] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
+                if (rface1._aulPoints[2] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[2] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[2] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
 
                 const Base::BoundBox3f& box2 = boxes[*jt];
                 if (box1 && box2) {
@@ -574,6 +589,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
 
     // Splits the mesh using grid for speeding up the calculation
     MeshFacetGrid cMeshFacetGrid(_rclMesh);
+    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
     MeshGridIterator clGridIter(cMeshFacetGrid);
     unsigned long ulGridX, ulGridY, ulGridZ;
     cMeshFacetGrid.GetCtGrids(ulGridX, ulGridY, ulGridZ);
@@ -584,10 +600,13 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
     }
 
     // Calculates the intersections
+    Base::SequencerLauncher seq("Checking for self-intersections...", ulGridX*ulGridY*ulGridZ);
     for (clGridIter.Init(); clGridIter.More(); clGridIter.Next()) {
         //Get the facet indices, belonging to the current grid unit
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
+
+        Base::Sequencer().next();
         if (aulGridElements.size()==0)
             continue;
 
@@ -597,15 +616,26 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
             const Base::BoundBox3f& box1 = boxes[*it];
             cMFI.Set(*it);
             facet1 = *cMFI;
+            const MeshFacet& rface1 = rFaces[*it];
             for (std::vector<unsigned long>::iterator jt = it; jt != aulGridElements.end(); ++jt) {
-                if (jt == it)
+                if (jt == it) // the identical facet
                     continue;
-                // if the facets are adjacent we must not check for self-intersections because they cannot intersect each other
-                // and the algorithm below would detect false-positives
-                unsigned long uN0, uN1, uN2;
-                _rclMesh.GetFacetNeighbours(*it, uN0, uN1, uN2);
-                if (*jt == uN0 || *jt == uN1 || *jt == uN2)
-                    continue; // ignore adjacent facets
+                // If the facets share a common vertex we do not check for self-intersections because they 
+                // could but usually do not intersect each other and the algorithm below would detect false-positives,
+                // otherwise
+                const MeshFacet& rface2 = rFaces[*jt];
+                if (rface1._aulPoints[0] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[0] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[0] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
+                if (rface1._aulPoints[1] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[1] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[1] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
+                if (rface1._aulPoints[2] == rface2._aulPoints[0] || 
+                    rface1._aulPoints[2] == rface2._aulPoints[1] ||
+                    rface1._aulPoints[2] == rface2._aulPoints[2])
+                    continue; // ignore facets sharing a common vertex
 
                 const Base::BoundBox3f& box2 = boxes[*jt];
                 if (box1 && box2) {
