@@ -104,3 +104,4 @@ private:
 
 };
 #endif  /*CONVERTDYNA_H DEFINED*/
+

@@ -109,3 +109,4 @@ private:
 };
 
 #endif  /*APPROX_H DEFINED*/
+
