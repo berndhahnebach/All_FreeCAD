@@ -574,9 +574,9 @@ int tri_tri_intersect_with_isectline(float V0[3],float V1[3],float V2[3],
   float N1[3],N2[3],d1,d2;
   float du0,du1,du2,dv0,dv1,dv2;
   float D[3];
-  float isect1[2], isect2[2];
-  float isectpointA1[3],isectpointA2[3];
-  float isectpointB1[3],isectpointB2[3];
+  float isect1[2]={0.0f,0.0f}, isect2[2]={0.0f,0.0f};
+  float isectpointA1[3]={0.0f,0.0f,0.0f},isectpointA2[3]={0.0f,0.0f,0.0f};
+  float isectpointB1[3]={0.0f,0.0f,0.0f},isectpointB2[3]={0.0f,0.0f,0.0f};
   float du0du1,du0du2,dv0dv1,dv0dv2;
   short index;
   float vp0,vp1,vp2;
