@@ -44,7 +44,10 @@ libCam_la_LIBADD   = \
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lTKOffset \
-		-lTKPrim
+		-lTKPrim \
+		-lblas \
+		-lumfpack \
+		-lamd
 
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<

@@ -34,7 +34,7 @@
 #include "PreCompiled.h"
 #include "Approx.h"
 #include <iostream>
-#include <Algorithm>
+#include <algorithm>
 #include <Base/Exception.h>
 
 /*************BOOST***************/

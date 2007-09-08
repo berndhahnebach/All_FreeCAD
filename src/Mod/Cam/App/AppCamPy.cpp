@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel         (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,16 +21,6 @@
  ***************************************************************************/
  
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <BRepAdaptor_Curve.hxx>
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Face.hxx>
-# include <Geom_Plane.hxx>
-# include <Handle_Geom_Plane.hxx>
-# include <TopExp_Explorer.hxx>
-# include <TopoDS.hxx>
-# include <TopoDS_Compound.hxx>
-#endif
 
 #include <stdio.h>
 
@@ -43,6 +33,7 @@
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Builder3D.h>
 #include <App/Application.h>
 #include <App/Document.h>
 
@@ -62,30 +53,30 @@
 #include <Mod/Mesh/App/Core/Elements.h>
 
 
-# include <BRepOffsetAPI_MakeOffsetShape.hxx>
-# include <BRepAlgoAPI_Cut.hxx>
-#include  <BRepAlgoAPI_Section.hxx>
-# include <GeomAPI_IntSS.hxx>
-#include <Base/Builder3d.h>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <BRepBndLib.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <GeomAPI_IntSS.hxx>
 
 #include <Geom_BSplineSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <GeomAPI_IntCS.hxx>
-#include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRep_Tool.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
@@ -99,13 +90,18 @@
 //#include <Handle_Adaptor3d_GenHCurve.hxx>
 //#include <Handle_Adaptor3d_GenHSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Base/Builder3d.h>
+#include <Geom_Plane.hxx>
+#include <Handle_Geom_Plane.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include "Approx.h"
 #include "ConvertDyna.h"
 
 
 
-using Base::Console;
 using namespace Part;
 using namespace Mesh;
 using namespace std;
@@ -301,7 +297,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 					
 				outfile.close();
 				Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, final_OffsetPoints.size());
-				for(int i=0;i<final_OffsetPoints.size();i++)
+				for(unsigned int i=0;i<final_OffsetPoints.size();i++)
 				{
 				  aPnts->SetValue(i+1,final_OffsetPoints[i]);
 				}
@@ -432,18 +428,18 @@ static PyObject * cut(PyObject *self, PyObject *args)
 	PyObject *pcObj;
 	PyObject *pcObj2;
 	double z_pitch;
-	double rGap = 1000.0; //Rand um die Bounding Box für ein sauberes Ergebnis
+	//double rGap = 1000.0; //Rand um die Bounding Box für ein sauberes Ergebnis
 	if (!PyArg_ParseTuple(args, "O!O!d", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2,&z_pitch))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	TopoShapePyOld *pcShape =  static_cast<TopoShapePyOld*>(pcObj); //Surface to cut
-	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cutting Plane
+	//TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cutting Plane
 
 	PY_TRY 
 	{	
 			//Global Variables for the cut probleme
 			Bnd_Box currentBBox;
-			Standard_Real m_rXMin, m_rYMin, m_rZMin, m_rXMax, m_rYMax, m_rZMax;
+			//Standard_Real m_rXMin, m_rYMin, m_rZMin, m_rXMax, m_rYMax, m_rZMax;
 
 			Base::Builder3D logit;
 			
@@ -558,7 +554,7 @@ static PyObject * cut(PyObject *self, PyObject *args)
 			//Abstand zweier flacher Bereiche ist entscheidend
 			
 
-			for(int i=1;i<flat_areas.size();++i)
+			for(unsigned int i=1;i<flat_areas.size();++i)
 			{
 				cout << "Bereich" <<endl;
 				float delta_z = sqrt((flat_areas[i]-flat_areas[i-1])*(flat_areas[i]-flat_areas[i-1]));
@@ -3372,9 +3368,9 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
     // points of a triangle
     m.GetFacetPoints(idx,idx1,idx2,idx3);
     MeshCore::MeshPoint p = m.GetPoint(idx1);
-    float x = p[0];
-    float y = p[1];
-    float z = p[2];
+    //float x = p[0];
+    //float y = p[1];
+    //float z = p[2];
 
     // topological stuff, works only on a non const copy....
     //MeshCore::MeshTopoAlgorithm  TopAlgs(m);
@@ -3521,22 +3517,22 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
 	PY_TRY
 	{
 		MeshCore::MeshKernel mesh = pcObject->getMesh();
-		Base::Vector3f Point[3];
+		//Base::Vector3f Point[3];
 		Base::Vector3f current_pnt;
 
  
-		const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
-		const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+		//const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+		//const MeshCore::MeshPointArray& Points = mesh.GetPoints();
 		
 		MeshCore::MeshPointIterator p_it(mesh);
 		MeshCore::MeshFacetIterator f_it(mesh);
         MeshCore::MeshRefPointToFacets rf2pt(mesh);
 	    MeshCore::MeshGeomFacet t_face;
 		
-		int NumOfPoints = mesh.CountPoints();
+		//int NumOfPoints = mesh.CountPoints();
 
         Base::Vector3f normal,local_normal;
-		float fArea = 0.0f;
+		//float fArea = 0.0f;
 
 		
 
@@ -3553,7 +3549,7 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
 			 {
 				 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
 				 t_face = mesh.GetFacet(**it);
-				 // Flächeninhalt aufsummieren
+				 // Flaecheninhalt aufsummieren
 				 float local_Area = t_face.Area();
 				local_normal = t_face.GetNormal();
 				if(local_normal.z < 0)
