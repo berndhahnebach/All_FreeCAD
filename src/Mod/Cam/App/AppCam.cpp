@@ -26,18 +26,18 @@ PyDoc_STRVAR(module_part_doc,
 extern "C" {
 void AppCamExport initCam() {
 
-  Base::Console().Log("Mod: Loading Cam module... done\n");
-  PyObject* partModule = Py_InitModule3("Cam", Cam_methods, module_part_doc);   /* mod name, table ptr */
+    Base::Console().Log("Mod: Loading Cam module... done\n");
+    Py_InitModule3("Cam", Cam_methods, module_part_doc);   /* mod name, table ptr */
 
-  // load dependend module
-  Base::Interpreter().loadModule("Part");
-  Base::Interpreter().loadModule("Mesh");
+    // load dependend module
+    Base::Interpreter().loadModule("Part");
+    Base::Interpreter().loadModule("Mesh");
 
-  // NOTE: To finish the initialization of our own type objects we must
-  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-  // This function is responsible for adding inherited slots from a type's base class.
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
  
-	return;
+    return;
 }
 
 } // extern "C"

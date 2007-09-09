@@ -337,7 +337,12 @@ TRational<N>::TRational (float fValue)
     }
 
     // value = sign * 1.mantissa * 2^exponent
+#if 0
     unsigned int uiBits = *(unsigned int*)&fValue;
+#else
+    union {float f; unsigned int i;} value = {fValue};
+    unsigned int uiBits = value.i;
+#endif
     unsigned int uiSign = (0x80000000u & uiBits);
     unsigned int uiExponent = ((0x7F800000 & uiBits) >> 23);
     unsigned int uiMantissa = (0x007FFFFF & uiBits);
@@ -603,7 +608,12 @@ TRational<N>::TRational (double dValue)
     }
 
     // value = sign * 1.mantissa * 2^exponent
+#if 0
     unsigned int* auiBits = (unsigned int*)&dValue;
+#else
+    union {double *d; unsigned int *i;} value = {&dValue};
+    unsigned int* auiBits = value.i;
+#endif
 #ifdef WM4_BIG_ENDIAN
     unsigned int uiSave = auiBits[0];
     auiBits[0] = auiBits[1];

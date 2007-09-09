@@ -66,12 +66,12 @@ void AppMeshExport initMesh() {
   // NOTE: To finish the initialization of our own type objects we must
   // call PyType_Ready, otherwise we run into a segmentation fault, later on.
   // This function is responsible for adding inherited slots from a type's base class.
-  PyObject* pyMeshType = (PyObject *)&Mesh::MeshPy::Type;
   if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
-  PyModule_AddObject(meshModule, "mesh", pyMeshType);
-  PyObject* pyMeshFeatureType = (PyObject *)&Mesh::MeshFeaturePy::Type;
+  union PyType_Object pyMeshType = {&Mesh::MeshPy::Type};
+  PyModule_AddObject(meshModule, "mesh", pyMeshType.o);
   if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
-  PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType);
+  union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
+  PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType.o);
 
   Mesh::PropertyNormalList    ::init();
   Mesh::PropertyCurvatureList ::init();

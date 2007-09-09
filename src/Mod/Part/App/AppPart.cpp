@@ -46,17 +46,17 @@ void AppPartExport initPart() {
   // NOTE: To finish the initialization of our own type objects we must
   // call PyType_Ready, otherwise we run into a segmentation fault, later on.
   // This function is responsible for adding inherited slots from a type's base class.
-  PyObject* pyPartType = (PyObject *)&Part::TopoShapePyOld::Type;
   if(PyType_Ready(&Part::TopoShapePyOld::Type) < 0) return;
-  PyModule_AddObject(partModule, "shape", pyPartType);
+  union PyType_Object pyPartType = {&Part::TopoShapePyOld::Type};
+  PyModule_AddObject(partModule, "shape", pyPartType.o);
   // Append line() method
-  PyObject* pyLineType = (PyObject *)&Part::LinePy::Type;
   if(PyType_Ready(&Part::LinePy::Type) < 0) return;
-  PyModule_AddObject(partModule, "line", pyLineType);
+  union PyType_Object pyLineType = {&Part::LinePy::Type};
+  PyModule_AddObject(partModule, "line", pyLineType.o);
   // Append circle() method
-  PyObject* pyCircType = (PyObject *)&Part::CirclePy::Type;
   if(PyType_Ready(&Part::CirclePy::Type) < 0) return;
-  PyModule_AddObject(partModule, "circle", pyCircType);
+  union PyType_Object pyCircType = {&Part::CirclePy::Type};
+  PyModule_AddObject(partModule, "circle", pyCircType.o);
 
   Part::PropertyPartShape   ::init();
   Part::PropertyLine        ::init();

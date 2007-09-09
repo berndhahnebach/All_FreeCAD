@@ -94,7 +94,7 @@ double Routines::CalcAngle(Base::Vector3f a,Base::Vector3f  b,Base::Vector3f c)
 	Base::Vector3f First = a - b;
 	Base::Vector3f Second = c - b;
 	Base::Vector3f Third = c - a;
-	double test1 = First.Length(), test2 = Second.Length(), test3 = Third.Length();
+	//double test1 = First.Length(), test2 = Second.Length(), test3 = Third.Length();
 	double UpperTerm = (First.Length() * First.Length()) + (Second.Length() *Second.Length()) - (Third.Length() * Third.Length() );
 	double LowerTerm = 2 * First.Length() * Second.Length() ;
 	double ang = acos( UpperTerm / LowerTerm );
@@ -331,7 +331,7 @@ void Routines::PointNrbDerivate(NURBS MainNurb, std::vector<NURBS> &OutNurbs)
 		j++;
 		a += 3;
 		i = k*3;
-		if(j == ControlDerivate[i].size())
+		if(j == (int)ControlDerivate[i].size())
 		{
 			j = 0;
 			k++;
@@ -383,7 +383,7 @@ void Routines::PointNrbDerivate(NURBS MainNurb, std::vector<NURBS> &OutNurbs)
 		Temp.CntrlArray[a+2] = ControlDerivate[i+2][j];
 		a += 3;
 		i += 3;
-		if(i == ControlDerivate.size())
+		if(i == (int)ControlDerivate.size())
 		{
 			j++;
 			i = 0;
@@ -529,7 +529,7 @@ void Routines::ExtendKnot(double ErrPnt, int NurbDegree, int MaxCntrl, std::vect
 	if(KnotSequence.size()>40)
 		tol_knot = 0.015;
 
-	for(int i = NurbDegree; i < (KnotSequence.size() - NurbDegree); i++)
+	for(unsigned int i = NurbDegree; i < (KnotSequence.size() - NurbDegree); i++)
 	{
 		if((KnotSequence[i] > ErrPnt) && (ErrPnt >= KnotSequence[i-1]))
 		{
@@ -557,7 +557,7 @@ void Routines::ExtendKnot(double ErrPnt, int NurbDegree, int MaxCntrl, std::vect
 		else
 		{
 			double temp = mid - ((double)ind_1);
-			ind_2 = mid + temp;
+			ind_2 = (int)(mid + temp);
 			new2 = (KnotSequence[ind_2-1] + KnotSequence[ind_2]) / 2.0;
 			if(ind_1 < ind_2)
 				Extension(KnotSequence,ind_1,ind_2,new1,new2);

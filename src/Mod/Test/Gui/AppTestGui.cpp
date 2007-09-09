@@ -76,11 +76,10 @@ void loadTestResource()
 /* Python entry */
 extern "C" {
 void AppTestGuiExport initQtUnitGui() {
+  if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;
   PyObject* pyModule = Py_InitModule("QtUnitGui", TestGui_methods);   /* mod name, table ptr */
-  PyObject* pyDlgType = (PyObject *)&TestGui::UnitTestPy::Type;
-  if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;;
-  
-  PyModule_AddObject(pyModule, "UnitTest", pyDlgType);
+  union PyType_Object pyDlgType = {&TestGui::UnitTestPy::Type};
+  PyModule_AddObject(pyModule, "UnitTest", pyDlgType.o);
 
   // add resources and reloads the translators
   loadTestResource();

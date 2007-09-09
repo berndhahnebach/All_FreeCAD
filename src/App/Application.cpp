@@ -128,33 +128,30 @@ PyDoc_STRVAR(FreeCAD_doc,
 );
 
 Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
-	://_pcSysParamMngr(pcSysParamMngr),
-	 //_pcUserParamMngr(pcUserParamMngr),
-	 _mConfig(mConfig),
-	 _pActiveDoc(0)
+    ://_pcSysParamMngr(pcSysParamMngr),
+     //_pcUserParamMngr(pcUserParamMngr),
+     _mConfig(mConfig),
+     _pActiveDoc(0)
 {
-
-	//_hApp = new ApplicationOCC;
-	mpcPramManager["System parameter"] = _pcSysParamMngr;
-	mpcPramManager["User parameter"] = _pcUserParamMngr;
-
-
-	// seting up Python binding
-	_pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
-
-  // introducing additional classes
-
-  // NOTE: To finish the initialization of our own type objects we must
-  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-  // This function is responsible for adding inherited slots from a type's base class.
-  PyObject* pyVecType = (PyObject *)&App::VectorPy::Type;
-  if (PyType_Ready(&App::VectorPy::Type) < 0) return;
-  PyModule_AddObject(_pcAppModule, "Vector", pyVecType);
-  PyObject* pyMatType = (PyObject *)&App::MatrixPy::Type;
-  if(PyType_Ready(&App::MatrixPy::Type) < 0) return;
-  PyModule_AddObject(_pcAppModule, "Matrix", pyMatType);
+    //_hApp = new ApplicationOCC;
+    mpcPramManager["System parameter"] = _pcSysParamMngr;
+    mpcPramManager["User parameter"] = _pcUserParamMngr;
 
 
+    // seting up Python binding
+    _pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
+
+    // introducing additional classes
+
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if (PyType_Ready(&App::VectorPy::Type) < 0) return;
+    union PyType_Object pyVecType = {&App::VectorPy::Type};
+    PyModule_AddObject(_pcAppModule, "Vector", pyVecType.o);
+    if(PyType_Ready(&App::MatrixPy::Type) < 0) return;
+    union PyType_Object pyMatType = {&App::MatrixPy::Type};
+    PyModule_AddObject(_pcAppModule, "Matrix", pyMatType.o);
 }
 
 Application::~Application()

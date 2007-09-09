@@ -28,7 +28,7 @@ PyDoc_STRVAR(module_drawing_doc,
 extern "C" {
 void DrawingAppExport initDrawing() {
   Base::Console().Log("Mod: Loading Drawing module... done\n");
-  PyObject* partModule = Py_InitModule3("Drawing", Drawing_methods, module_drawing_doc);   /* mod name, table ptr */
+  Py_InitModule3("Drawing", Drawing_methods, module_drawing_doc);   /* mod name, table ptr */
 
   // load dependend module
   Base::Interpreter().loadModule("Part");
