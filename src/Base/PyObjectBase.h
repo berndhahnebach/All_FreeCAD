@@ -20,19 +20,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PYEXPORTIMP_H__
-#define __PYEXPORTIMP_H__
+#ifndef BASE_PYOBJECTBASE_H
+#define BASE_PYOBJECTBASE_H
 
 // Std. configurations
 
 // (re-)defined in pyconfig.h
 #if defined (_POSIX_C_SOURCE)
-#	undef  _POSIX_C_SOURCE
+#   undef  _POSIX_C_SOURCE
 #endif
 
 // needed header
 #undef slots
-#	include <Python.h>
+#   include <Python.h>
 #define slots
 #include <iostream>
 
@@ -71,28 +71,35 @@
  */
 #define PYFUNCIMP_S(CLASS,SFUNC) PyObject* CLASS::SFUNC (PyObject *self,PyObject *args,PyObject *kwd)
 
+/**
+ * Union to convert from PyTypeObject to PyObject pointer.
+ */
+union PyType_Object {
+    PyTypeObject *t;
+    PyObject *o;
+};
 
 
 
 /*------------------------------
  * Basic defines
 ------------------------------*/
-//typedef const char * version;			// define "version"
+//typedef const char * version;     // define "version"
 
 
 namespace Base
 {
 
-  class BaseClass;
- 
+class BaseClass;
 
-inline int streq(const char *A, const char *B)	// define "streq"
+
+inline int streq(const char *A, const char *B)  // define "streq"
 { return strcmp(A,B) == 0;};
 
 
-inline void Assert(int expr, char *msg)		// C++ assert
+inline void Assert(int expr, char *msg)         // C++ assert
 {
-  if (!expr) 
+    if (!expr) 
     {
       fprintf(stderr, "%s\n", msg);
       exit(-1);
@@ -106,8 +113,8 @@ inline void Assert(int expr, char *msg)		// C++ assert
 
 /// some basic python macros
 #define Py_NEWARGS 1
-/// return with no retrnvalue if nothin happens			
-#define Py_Return Py_INCREF(Py_None); return Py_None;	
+/// return with no retrnvalue if nothin happens
+#define Py_Return Py_INCREF(Py_None); return Py_None;
 /// returns an error
 #define Py_Error(E, M)   {PyErr_SetString(E, M); return NULL;}
 /// checks on a condition and returns an error on failure
@@ -117,32 +124,32 @@ inline void Assert(int expr, char *msg)		// C++ assert
 
 
 /// Define the PyParent Object
-typedef PyTypeObject * PyParentObject;			
+typedef PyTypeObject * PyParentObject;
 
 
 /// This must be the first line of each PyC++ class
-#define Py_Header												\
- public:														\
-  static PyTypeObject   Type;									\
-  static PyMethodDef    Methods[];								\
-  static PyParentObject Parents[];								\
-  virtual PyTypeObject *GetType(void) {return &Type;};			\
-  virtual PyParentObject *GetParents(void) {return Parents;}
+#define Py_Header                                           \
+public:                                                     \
+    static PyTypeObject   Type;                             \
+    static PyMethodDef    Methods[];                        \
+    static PyParentObject Parents[];                        \
+    virtual PyTypeObject *GetType(void) {return &Type;};    \
+    virtual PyParentObject *GetParents(void) {return Parents;}
 
 /** This defines the _getattr_up macro
  *  which allows attribute and method calls
  *  to be properly passed up the hierarchy.
  */
-#define _getattr_up(Parent)										\
-{																\
-	PyObject *rvalue = Py_FindMethod(Methods, this, attr);		\
-	if (rvalue == NULL)											\
-	{															\
-		PyErr_Clear();											\
-		return Parent::_getattr(attr);							\
-	}															\
-	else														\
-		return rvalue;											\
+#define _getattr_up(Parent)                                 \
+{                                                           \
+    PyObject *rvalue = Py_FindMethod(Methods, this, attr);  \
+    if (rvalue == NULL)                                     \
+    {                                                       \
+        PyErr_Clear();                                      \
+        return Parent::_getattr(attr);                      \
+    }                                                       \
+    else                                                    \
+        return rvalue;                                      \
 } 
 
 /*------------------------------
@@ -175,75 +182,75 @@ namespace Base
  *  @see Py_Assert  
  */
 class BaseExport PyObjectBase : public PyObject 
-{				
-	/** Py_Header struct from python.h.
-	 *  Every PyObjectBase object is also a python object. So you can use
-	 *  every Python C-Library function also on a PyObjectBase object
-	 */
-  Py_Header;
+{
+    /** Py_Header struct from python.h.
+     *  Every PyObjectBase object is also a python object. So you can use
+     *  every Python C-Library function also on a PyObjectBase object
+     */
+    Py_Header;
 
 protected:
-	/// destructor
-	virtual ~PyObjectBase();
+    /// destructor
+    virtual ~PyObjectBase();
 
 public:  
- 	/** Constructor
- 	 *  Sets the Type of the object (for inherintance) and decrease the
- 	 *  the reference count of the PyObject.
- 	 */
-	PyObjectBase(BaseClass*, PyTypeObject *T);
-	/// Wrapper for the Python destructor
-	static void PyDestructor(PyObject *P)				// python wrapper
-		{  delete ((PyObjectBase *) P);  }
-	/// incref method wrapper (see python extending manual)
-	PyObjectBase* IncRef(void) {Py_INCREF(this);return this;}
-	/// decref method wrapper (see python extending manual)	
-	PyObjectBase* DecRef(void) {Py_DECREF(this);return this;}
+    /** Constructor
+     *  Sets the Type of the object (for inherintance) and decrease the
+     *  the reference count of the PyObject.
+     */
+    PyObjectBase(BaseClass*, PyTypeObject *T);
+    /// Wrapper for the Python destructor
+    static void PyDestructor(PyObject *P)   // python wrapper
+    {  delete ((PyObjectBase *) P);  }
+    /// incref method wrapper (see python extending manual)
+    PyObjectBase* IncRef(void) {Py_INCREF(this);return this;}
+    /// decref method wrapper (see python extending manual)	
+    PyObjectBase* DecRef(void) {Py_DECREF(this);return this;}
 
-	/** GetAttribute implementation
-	 *  This method implements the retriavel of object attributes.
-	 *  If you whant to implement attributes in your class, reimplement
-	 *  this method, the FCDocument is a good expample.
-	 *  You have to call the method of the base class.
-	 *  Note: if you reimplement _gettattr() in a inheriting class you
-	 *  need to call the method of the base class! Otherwise even the 
-	 *  methods of the object will disapiear!
-	 *  @see FCDocument
-	 */
-	virtual PyObject *_getattr(char *attr);	
-	/// static wrapper for pythons _getattr()
-  static  PyObject *__getattr(PyObject * PyObj, char *attr) { 	// This should be the entry in Type. 
-    if (!((PyObjectBase*) PyObj)->_valid){
-      PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
-      return NULL;
+    /** GetAttribute implementation
+     *  This method implements the retriavel of object attributes.
+     *  If you whant to implement attributes in your class, reimplement
+     *  this method, the FCDocument is a good expample.
+     *  You have to call the method of the base class.
+     *  Note: if you reimplement _gettattr() in a inheriting class you
+     *  need to call the method of the base class! Otherwise even the 
+     *  methods of the object will disapiear!
+     *  @see FCDocument
+     */
+    virtual PyObject *_getattr(char *attr);
+    /// static wrapper for pythons _getattr()
+    static  PyObject *__getattr(PyObject * PyObj, char *attr) {     // This should be the entry in Type. 
+        if (!((PyObjectBase*) PyObj)->_valid){
+            PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+            return NULL;
+        }
+        return ((PyObjectBase*) PyObj)->_getattr(attr);
     }
-	  return ((PyObjectBase*) PyObj)->_getattr(attr);
-  }
-   
-	/** SetAttribute implementation
-	 *  This method implements the seting of object attributes.
-	 *  If you whant to implement attributes in your class, reimplement
-	 *  this method, the FCDocument is a good expample.
-	 *  You have to call the method of the base class.
-	 *  @see FCDocument
-	 */
-  virtual int _setattr(char *attr, PyObject *value);		// _setattr method
-  /// static wrapper for pythons _setattr(). // This should be the entry in Type. 
-  static  int __setattr(PyObject *PyObj, char *attr, PyObject *value) { 
-    //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
-    //we must check then in _setattr() of all subclasses whether value is 0.
-    if ( value==0 ) {
-      PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
-      return -1;
-    }
-    else if (!((PyObjectBase*) PyObj)->_valid){
-      PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
-      return -1;
-    }
-    return ((PyObjectBase*) PyObj)->_setattr(attr, value);
-  }
 
-	/** _repr method
+    /** SetAttribute implementation
+     *  This method implements the seting of object attributes.
+     *  If you whant to implement attributes in your class, reimplement
+     *  this method, the FCDocument is a good expample.
+     *  You have to call the method of the base class.
+     *  @see FCDocument
+     */
+    virtual int _setattr(char *attr, PyObject *value);    // _setattr method
+    /// static wrapper for pythons _setattr(). // This should be the entry in Type. 
+    static  int __setattr(PyObject *PyObj, char *attr, PyObject *value) { 
+        //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
+        //we must check then in _setattr() of all subclasses whether value is 0.
+        if ( value==0 ) {
+            PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
+            return -1;
+        }
+        else if (!((PyObjectBase*) PyObj)->_valid){
+            PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+            return -1;
+        }
+        return ((PyObjectBase*) PyObj)->_setattr(attr, value);
+    }
+
+    /** _repr method
     * Overide this method to return a string object with some
     * invormation about the object.
     * \code
@@ -257,14 +264,14 @@ public:
     * }
     * \endcode
     */
-	virtual PyObject *_repr(void);				
-	/// python wrapper for the _repr() function
-  static  PyObject *__repr(PyObject *PyObj)	{
-    if (!((PyObjectBase*) PyObj)->_valid){
-      PyErr_Format(PyExc_ReferenceError, "Cannot print representation of deleted object");
-      return NULL;
-    }
-	  return ((PyObjectBase*) PyObj)->_repr();
+    virtual PyObject *_repr(void);
+    /// python wrapper for the _repr() function
+    static  PyObject *__repr(PyObject *PyObj)	{
+        if (!((PyObjectBase*) PyObj)->_valid){
+            PyErr_Format(PyExc_ReferenceError, "Cannot print representation of deleted object");
+            return NULL;
+        }
+        return ((PyObjectBase*) PyObj)->_repr();
   }
 
   /** @name helper methods */
@@ -273,7 +280,7 @@ public:
   static float getFloatFromPy(PyObject *value);
   //@}
 //
-//	/// Type checking							
+//	/// Type checking	
 //	bool IsA(PyTypeObject *T);
 //	/// Type checking
 //	bool IsA(const char *type_name);
@@ -287,16 +294,16 @@ public:
 //    return ((PyObjectBase*)self)->isA(args);
 //  };
 
-  /** Should be implemented by subclasses that have PyObjectBase members 
-   * to set them invalid as well. 
-   */
-  virtual void setInvalid() { _valid = false; }
+    /** Should be implemented by subclasses that have PyObjectBase members 
+     * to set them invalid as well. 
+     */
+    virtual void setInvalid() { _valid = false; }
 
 private:
-  bool _valid;
+    bool _valid;
 protected:
-  /// pointer to the handled class
-  BaseClass * _pcBaseClass;
+    /// pointer to the handled class
+    BaseClass * _pcBaseClass;
 };
 
 
@@ -320,7 +327,7 @@ protected:
  * @see PYFUNCIMP_D
  * @see PyObjectBase
  */
-#define PYFUNCDEF_D(CLASS,DFUNC)	PyObject * DFUNC (PyObject *args);	\
+#define PYFUNCDEF_D(CLASS,DFUNC)	PyObject * DFUNC (PyObject *args);  \
 static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
 
 /** Python dynamic class macro for implementation
@@ -415,7 +422,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           str += e.what();                                            \
           str += ")";                                                 \
           e.ReportException();                                        \
-    		  Py_Error(PyExc_Exception,str.c_str());                      \
+          Py_Error(PyExc_Exception,str.c_str());                      \
     }                                                                 \
     catch(std::exception &e)                                          \
     {                                                                 \
@@ -424,13 +431,13 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           str += e.what();                                            \
           str += ")";                                                 \
           Base::Console().Error(str.c_str());                         \
-    		  Py_Error(PyExc_Exception,str.c_str());                      \
+          Py_Error(PyExc_Exception,str.c_str());                      \
     }                                                                 \
     catch(...)                                                        \
     {                                                                 \
-    		  Py_Error(PyExc_Exception,"Unknown C++ exception");          \
-    }   
-                                                              
+          Py_Error(PyExc_Exception,"Unknown C++ exception");          \
+    }
+
 #else
 /// see docu of PY_TRY 
 #  define PY_CATCH catch(Base::Exception &e)                          \
@@ -440,10 +447,10 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           str += e.what();                                            \
           str += ")";                                                 \
           e.ReportException();                                        \
-    		  Py_Error(PyExc_Exception,str.c_str());                      \
-    }                                                                 
-                                                             
-#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+          Py_Error(PyExc_Exception,str.c_str());                      \
+    }
+
+#endif  // DONT_CATCH_CXX_EXCEPTIONS
 
 /// Root definition of the inheritance tree of the FreeCAD python objects
 #define PARENTSPyObjectBase &Base::PyObjectBase::Type,NULL
@@ -452,25 +459,22 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  *  This class encapsulate the Decoding of UTF8 to a python object.
  *  Including exception handling.
  */
-
 inline PyObject * PyAsUnicodeObject(const char *str)
 {
-  // Returns a new reference, don't increment it!
-  PyObject *p = PyUnicode_DecodeUTF8(str,strlen(str),0);
-  if(!p)
-    throw Base::Exception("UTF8 conversion failure at PyAsUnicodeString()");
-  return p;
+    // Returns a new reference, don't increment it!
+    PyObject *p = PyUnicode_DecodeUTF8(str,strlen(str),0);
+    if(!p)
+        throw Base::Exception("UTF8 conversion failure at PyAsUnicodeString()");
+    return p;
 }
 
 inline PyObject * PyAsUnicodeObject(const std::string &str)
 {
-  return PyAsUnicodeObject(str.c_str());
+    return PyAsUnicodeObject(str.c_str());
 }
 
 
 } // namespace Base
 
 
-
-
-#endif // __PYEXPORTIMP_H__
+#endif // BASE_PYOBJECTBASE_H

@@ -179,14 +179,16 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         //Py::Object type = obj.type();
         Py::Object type(PyObject_Type(obj.ptr()), true);
         Py::Object inst = obj; // the object instance 
-        bool subclass = PyObject_IsSubclass(type.ptr(), (PyObject*)(&Base::PyObjectBase::Type));
+        union PyType_Object typeobj = {&Base::PyObjectBase::Type};
+        bool subclass = PyObject_IsSubclass(type.ptr(), typeobj.o);
         if (subclass)
             obj = type;
         Py::List list(PyObject_Dir(obj.ptr()), true);
 
         // If we derive from PropertyContainerPy we can search for the properties in the
         // C++ twin class.
-        if (PyObject_IsSubclass(type.ptr(), (PyObject*)(&App::PropertyContainerPy::Type))) {
+        union PyType_Object proptypeobj = {&App::PropertyContainerPy::Type};
+        if (PyObject_IsSubclass(type.ptr(), proptypeobj.o)) {
             App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(inst.ptr());
             Py::List prop = cont->getPropertiesList();
             // These are the attributes of the instance itself which are NOT accessible by
