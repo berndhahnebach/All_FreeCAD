@@ -16,7 +16,7 @@
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
-
+ 
 
 extern struct PyMethodDef Drawing_methods[];
 
@@ -26,7 +26,7 @@ PyDoc_STRVAR(module_drawing_doc,
 
 /* Python entry */
 extern "C" {
-void DrawingAppExport initDrawing() {
+void AppDrawingExport initDrawing() {
   Base::Console().Log("Mod: Loading Drawing module... done\n");
   Py_InitModule3("Drawing", Drawing_methods, module_drawing_doc);   /* mod name, table ptr */
 

@@ -5,13 +5,13 @@
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define DrawingAppExport __declspec(dllexport)
+# define AppDrawingExport __declspec(dllexport)
 # define AppPartExport  __declspec(dllimport)
 # define PartExport     __declspec(dllimport)
 # define AppMeshExport  __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
 #else // for Linux
-# define DrawingAppExport
+# define AppDrawingExport
 # define AppPartExport 
 # define PartExport   
 # define AppMeshExport 

@@ -50,8 +50,67 @@ void CmdDrawingOpen::activated(int iMsg)
     }
 }
 
+DEF_STD_CMD(CmdDrawingNewA3Landscape);
+
+CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
+	:Command("Drawing_NewA3Landscape")
+{
+    sAppModule      = "Drawing";
+    sGroup          = QT_TR_NOOP("Drawing");
+    sMenuText       = QT_TR_NOOP("Insert new A3 landscape drawing");
+    sToolTipText    = QT_TR_NOOP("Insert new A3 landscape drawing");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/drawing-landscape-A3";
+}
+
+
+void CmdDrawingNewA3Landscape::activated(int iMsg)
+{
+    // Reading an image
+    QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
+                                           QObject::tr("Scalable Vector Graphics (*.svg *.svgz)"));
+    if (!filename.isEmpty())
+    {
+        // load the file with the module
+        Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
+        Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
+    }
+}
+
+DEF_STD_CMD(CmdDrawingNewView);
+
+CmdDrawingNewView::CmdDrawingNewView()
+	:Command("Drawing_NewView")
+{
+    sAppModule      = "Drawing";
+    sGroup          = QT_TR_NOOP("Drawing");
+    sMenuText       = QT_TR_NOOP("Insert a new View in the active drawing");
+    sToolTipText    = QT_TR_NOOP("Insert a new View in the active drawing");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/drawing-view";
+}
+
+
+void CmdDrawingNewView::activated(int iMsg)
+{
+    // Reading an image
+    QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
+                                           QObject::tr("Scalable Vector Graphics (*.svg *.svgz)"));
+    if (!filename.isEmpty())
+    {
+        // load the file with the module
+        Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
+        Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
+    }
+}
+
 void CreateDrawingCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+
     rcCmdMgr.addCommand(new CmdDrawingOpen());
+    rcCmdMgr.addCommand(new CmdDrawingNewA3Landscape());
+    rcCmdMgr.addCommand(new CmdDrawingNewView());
 }

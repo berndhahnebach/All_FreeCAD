@@ -29,7 +29,7 @@ import FreeCAD, os, unittest
 # define the functions to test the FreeCAD Document code
 #---------------------------------------------------------------------------
 
-
+  
 class DocumentBasicCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("CreateTest")

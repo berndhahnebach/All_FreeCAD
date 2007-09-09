@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2007     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,52 +20,58 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
 
-#include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qobject.h>
+#ifndef _FeatureView_h_
+#define _FeatureView_h_
+
+
+#include <App/Feature.h>
+
+class PyObjectBase;
+class FeaturePy;
+
+namespace Base{
+  class PyObjectBase;
+}
+
+namespace Drawing
+{
+
+
+/** Base class of all View Features in the drawing module
+ */
+class AppDrawingExport FeatureView: public App::AbstractFeature
+{
+  PROPERTY_HEADER(Part::FeatureView);
+
+public:
+	/// Constructor
+	FeatureView(void);
+  virtual ~FeatureView();
+
+
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void) const {
+    return "DrawingGui::ViewProviderFeatureView";
+  }
+
+
+	
+ // virtual PyObject* getPyObject(void);
+
+};
+
+
+} //namespace Drawing
+
+
+
 #endif
-
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
-
-using namespace DrawingGui;
-
-TYPESYSTEM_SOURCE(DrawingGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{
-}
-
-Workbench::~Workbench()
-{
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Drawing"));
-    *part << "Drawing_Open";
-    *part << "Drawing_NewA3Landscape";
-    *part << "Drawing_NewView";
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("I/O"));
-    *img << "Drawing_Open";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Drawing types"));
-    *img << "Drawing_NewA3Landscape";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Views"));
-    *img << "Drawing_NewView";
-    return root;
-}
-
