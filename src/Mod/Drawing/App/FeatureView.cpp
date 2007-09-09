@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,48 +24,52 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qobject.h>
+# include <sstream>
+
 #endif
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
 
-using namespace DrawingGui;
+#include <strstream>
+#include <Base/Writer.h>
+#include <Base/Reader.h>
+#include <Base/Exception.h>
+#include <Base/FileInfo.h>
 
-TYPESYSTEM_SOURCE(DrawingGui::Workbench, Gui::StdWorkbench)
+#include "FeatureView.h"
 
-Workbench::Workbench()
+using namespace Drawing;
+
+
+//===========================================================================
+// FeatureView
+//===========================================================================
+
+PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
+
+
+FeatureView::FeatureView(void) 
+{
+  //ADD_PROPERTY(Shape, (TopoDS_Shape()));
+}
+
+FeatureView::~FeatureView()
 {
 }
 
-Workbench::~Workbench()
+int FeatureView::execute(void)
 {
+  return 0;
 }
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Drawing"));
-    *part << "Drawing_Open";
-    *part << "Drawing_NewA3Landscape";
-    *part << "Drawing_NewView";
-    return root;
-}
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("I/O"));
-    *img << "Drawing_Open";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Drawing types"));
-    *img << "Drawing_NewA3Landscape";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Views"));
-    *img << "Drawing_NewView";
-    return root;
-}
+//
+//PyObject *Feature::getPyObject(void)
+//{
+// if(PythonObject.is(Py::_None())){
+//    // ref counter is set to 1
+//    PythonObject.set(new PartFeaturePy(this),true);
+//  }
+//  return Py::new_reference_to(PythonObject); 
+//}
+
 

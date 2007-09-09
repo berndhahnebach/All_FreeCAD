@@ -52,7 +52,7 @@ open(PyObject *self, PyObject *args)
             // Displaying the image in a view
             DrawingView* view = new DrawingView(Gui::getMainWindow());
             view->load(fileName);
-            view->setWindowIcon(Gui::BitmapFactory().pixmap("colors"));
+            view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
             view->setWindowTitle(QObject::tr("Drawing viewer"));
             view->resize( 400, 300 );
             Gui::getMainWindow()->addWindow(view);

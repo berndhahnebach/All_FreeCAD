@@ -37,7 +37,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy"
-				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy"
-				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
