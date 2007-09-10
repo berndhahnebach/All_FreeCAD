@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../../obj/Mod/Drawing/Debug"
-			IntermediateDirectory="../../../../obj/Mod/Drawing/Debug"
+			OutputDirectory="../../../../obj/Mod/Drawing/DebugApp"
+			IntermediateDirectory="../../../../obj/Mod/Drawing/DebugApp"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -41,7 +41,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Drawing/Debug/AppDrawing.tlb"
+				TypeLibraryName="../../../../obj/Mod/Drawing/DebugApp/AppDrawing.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -55,10 +55,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/Debug/AppDrawing.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Drawing/Debug/"
-				ObjectFile="../../../../obj/Mod/Drawing/Debug/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/Debug/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/DebugApp/AppDrawing.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Drawing/DebugApp/"
+				ObjectFile="../../../../obj/Mod/Drawing/DebugApp/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/DebugApp/"
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Drawing/Debug/AppDrawing.bsc"
+				OutputFile="../../../../obj/Mod/Drawing/DebugApp/AppDrawing.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -112,13 +112,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../../../obj/Mod/Drawing/Release"
-			IntermediateDirectory="../../../../obj/Mod/Drawing/Release"
+			OutputDirectory="../../../../obj/Mod/Drawing/ReleaseApp"
+			IntermediateDirectory="../../../../obj/Mod/Drawing/ReleaseApp"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -142,7 +142,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Drawing/Release/AppDrawing.tlb"
+				TypeLibraryName="../../../../obj/Mod/Drawing/ReleaseApp/AppDrawing.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -157,10 +157,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/Release/AppDrawing.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Drawing/Release/"
-				ObjectFile="../../../../obj/Mod/Drawing/Release/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/Release/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/ReleaseApp/AppDrawing.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Drawing/ReleaseApp/"
+				ObjectFile="../../../../obj/Mod/Drawing/ReleaseApp/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/ReleaseApp/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Drawing/Release/AppDrawing.bsc"
+				OutputFile="../../../../obj/Mod/Drawing/ReleaseApp/AppDrawing.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\"
 			/>
 		</Configuration>
 	</Configurations>
@@ -255,30 +255,6 @@
 		<File
 			RelativePath=".\AppDrawingPy.cpp"
 			>
-		</File>
-		<File
-			RelativePath="..\Init.py"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;../../../../Mod/Drawing/$(InputName).py&quot;"
-					Outputs="$(OutDir)\$(InputName).py"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;../../../../Mod/Drawing/$(InputName).py&quot;"
-					Outputs="$(OutDir)\$(InputName).py"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="PreCompiled.cpp"
