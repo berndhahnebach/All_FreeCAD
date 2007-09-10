@@ -15,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="../../../../obj/Mod/Import/ReleaseGui"
+			IntermediateDirectory="../../../../obj/Mod/Import/ReleaseGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -40,7 +40,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/AppImportGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Import/ReleaseGui/AppImportGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -55,10 +55,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Release/AppImportGui.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Import/ReleaseGui/AppImportGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Import/ReleaseGui/"
+				ObjectFile="../../../../obj/Mod/Import/ReleaseGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Import/ReleaseGui/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -75,11 +75,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="Release\ImportGui.pyd"
+				OutputFile="../../../../Mod/Import/ImportGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/ImportGui.pdb"
-				ImportLibrary=".\Release/ImportGui.lib"
+				ProgramDatabaseFile="../../../../Mod/Import/ImportGui.pdb"
+				ImportLibrary="../../../../obj/Mod/Import/ReleaseGui/ImportGui.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -94,7 +94,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/AppImportGui.bsc"
+				OutputFile="../../../../obj/Mod/Import/ReleaseGui/AppImportGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -107,13 +107,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Import&#x0D;&#x0A;copy Release\ImportGui.pyd ..\..\..\..\Mod\Import&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Import&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\Import&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Import&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="../../../../obj/Mod/Import/DebugGui"
+			IntermediateDirectory="../../../../obj/Mod/Import/DebugGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -137,7 +137,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/AppImportGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Import/DebugGui/AppImportGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -151,10 +151,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Debug/AppImportGui.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Import/DebugGui/AppImportGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Import/DebugGui/"
+				ObjectFile="../../../../obj/Mod/Import/DebugGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Import/DebugGui/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -172,12 +172,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="Debug\ImportGui_d.pyd"
+				OutputFile="../../../../Mod/Import/ImportGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/ImportGui_d.pdb"
-				ImportLibrary=".\Debug/ImportGui_d.lib"
+				ProgramDatabaseFile="../../../../Mod/Import/ImportGui_d.pdb"
+				ImportLibrary="../../../../obj/Mod/Import/DebugGui/ImportGui_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -192,7 +192,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/AppImportGui.bsc"
+				OutputFile="../../../../obj/Mod/Import/DebugGui/AppImportGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -205,7 +205,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Import&#x0D;&#x0A;copy Debug\ImportGui_d.pyd ..\..\..\..\Mod\Import&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Import&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\Import&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Import&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

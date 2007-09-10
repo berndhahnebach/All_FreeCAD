@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="../obj/DebugAllCmd"
+			IntermediateDirectory="../obj/DebugAllCmd"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -31,7 +31,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/AllCmdFiles.tlb"
+				TypeLibraryName="../obj/DebugAllCmd/AllCmdFiles.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -42,8 +42,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="../obj/ReleaseAllCmd"
+			IntermediateDirectory="../obj/ReleaseAllCmd"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/AllCmdFiles.tlb"
+				TypeLibraryName="../obj/ReleaseAllCmd/AllCmdFiles.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
