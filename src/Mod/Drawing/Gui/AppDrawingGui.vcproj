@@ -15,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../../obj/Mod/Drawing/Debug"
-			IntermediateDirectory="../../../../obj/Mod/Drawing/Debug"
+			OutputDirectory="../../../../obj/Mod/Drawing/DebugGui"
+			IntermediateDirectory="../../../../obj/Mod/Drawing/DebugGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -40,7 +40,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Drawing/Debug/AppDrawingGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Drawing/DebugGui/AppDrawingGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -54,10 +54,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/Debug/AppDrawingGui.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Drawing/Debug/"
-				ObjectFile="../../../../obj/Mod/Drawing/Debug/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/Debug/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/DebugGui/AppDrawingGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Drawing/DebugGui/"
+				ObjectFile="../../../../obj/Mod/Drawing/DebugGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/DebugGui/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Drawing/Debug/AppDrawingGui.bsc"
+				OutputFile="../../../../obj/Mod/Drawing/DebugGui/AppDrawingGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -117,8 +117,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../../../obj/Mod/Drawing/Release"
-			IntermediateDirectory="../../../../obj/Mod/Drawing/Release"
+			OutputDirectory="../../../../obj/Mod/Drawing/ReleaseGui"
+			IntermediateDirectory="../../../../obj/Mod/Drawing/ReleaseGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -142,7 +142,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Drawing/Release/AppDrawingGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Drawing/ReleaseGui/AppDrawingGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -157,10 +157,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/Release/AppDrawingGui.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Drawing/Release/"
-				ObjectFile="../../../../obj/Mod/Drawing/Release/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/Release/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Drawing/ReleaseGui/AppDrawingGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Drawing/ReleaseGui/"
+				ObjectFile="../../../../obj/Mod/Drawing/ReleaseGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Drawing/ReleaseGui/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -199,7 +199,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Drawing/Release/AppDrawingGui.bsc"
+				OutputFile="../../../../obj/Mod/Drawing/ReleaseGui/AppDrawingGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

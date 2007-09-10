@@ -15,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../../../obj/Mod/Part/Release"
-			IntermediateDirectory="../../../../obj/Mod/Part/Release"
+			OutputDirectory="../../../../obj/Mod/Part/ReleaseGui"
+			IntermediateDirectory="../../../../obj/Mod/Part/ReleaseGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -40,7 +40,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Part/Release/AppPartGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Part/ReleaseGui/AppPartGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -55,10 +55,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Part/Release/AppPartGui.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Part/Release/"
-				ObjectFile="../../../../obj/Mod/Part/Release/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Part/Release/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Part/ReleaseGui/AppPartGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Part/ReleaseGui/"
+				ObjectFile="../../../../obj/Mod/Part/ReleaseGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Part/ReleaseGui/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -96,7 +96,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Part/Release/AppPartGui.bsc"
+				OutputFile="../../../../obj/Mod/Part/ReleaseGui/AppPartGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -114,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../../obj/Mod/Part/Debug"
-			IntermediateDirectory="../../../../obj/Mod/Part/Debug"
+			OutputDirectory="../../../../obj/Mod/Part/DebugGui"
+			IntermediateDirectory="../../../../obj/Mod/Part/DebugGui"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -139,7 +139,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../../../obj/Mod/Part/Debug/AppPartGui.tlb"
+				TypeLibraryName="../../../../obj/Mod/Part/DebugGui/AppPartGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -153,10 +153,10 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../../../obj/Mod/Part/Debug/AppPartGui.pch"
-				AssemblerListingLocation="../../../../obj/Mod/Part/Debug/"
-				ObjectFile="../../../../obj/Mod/Part/Debug/"
-				ProgramDataBaseFileName="../../../../obj/Mod/Part/Debug/"
+				PrecompiledHeaderFile="../../../../obj/Mod/Part/DebugGui/AppPartGui.pch"
+				AssemblerListingLocation="../../../../obj/Mod/Part/DebugGui/"
+				ObjectFile="../../../../obj/Mod/Part/DebugGui/"
+				ProgramDataBaseFileName="../../../../obj/Mod/Part/DebugGui/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -196,7 +196,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../../../obj/Mod/Part/Debug/AppPartGui.bsc"
+				OutputFile="../../../../obj/Mod/Part/DebugGui/AppPartGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
