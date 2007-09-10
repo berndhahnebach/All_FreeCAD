@@ -78,15 +78,16 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
 
   //if (!in.openFile(filename)) { exit(1); }
 
-  SoCamera * Cam;
-  SoDB::read(&in,(SoNode*&)Cam);
+  SoNode* rootNode;
+  SoDB::read(&in,rootNode);
 
-  if (!Cam)
+  if (!rootNode || !rootNode->getTypeId().isDerivedFrom(SoCamera::getClassTypeId()))
     throw Base::Exception("CmdRaytracingWriteCamera::activated(): Could not read Camera information from ASCII stream....\n");
 
   // root-node returned from SoDB::readAll() has initial zero
   // ref-count, so reference it before we start using it to
   // avoid premature destruction.
+  SoCamera * Cam = static_cast<SoCamera*>(rootNode);
   Cam->ref();
 
   SbRotation camrot = Cam->orientation.getValue();
