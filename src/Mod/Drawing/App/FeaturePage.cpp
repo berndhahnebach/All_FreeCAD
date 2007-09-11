@@ -30,12 +30,15 @@
 
 
 #include <Base/Exception.h>
+#include <boost/regex.hpp>
+#include <iostream>
 
 #include "FeaturePage.h"
 
 using namespace Drawing;
+using namespace std;
 
-
+  
 //===========================================================================
 // FeatureView
 //===========================================================================
@@ -50,7 +53,8 @@ FeaturePage::FeaturePage(void)
 
   ADD_PROPERTY_TYPE(Views ,(0),group,App::Prop_None,"List of views in this page");
 
-  ADD_PROPERTY_TYPE(PageResult ,(0),group,App::Prop_Output,"Resulting SVG document of that page");
+  ADD_PROPERTY_TYPE(PageResult ,(""),group,App::Prop_Output,"Resulting SVG document of that page");
+  ADD_PROPERTY_TYPE(Template   ,(""),group,App::Prop_None  ,"Template for the page");
 }
 
 FeaturePage::~FeaturePage()
@@ -59,6 +63,13 @@ FeaturePage::~FeaturePage()
 
 int FeaturePage::execute(void)
 {
+  const char* text = "lskdfjlsd";
+  const char* regex = "lskdflds";
+  boost::regex e(regex);
+  boost::smatch what;
+  if(boost::regex_match(string(text), what, e))
+  {
+  }
   return 0;
 }
 

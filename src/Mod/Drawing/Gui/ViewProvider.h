@@ -1,7 +1,7 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2007     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
- *   This file is part of the FreeCAD CAx development system.              *
+ *   This file is Drawing of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
  *   modify it under the terms of the GNU Library General Public           *
@@ -10,7 +10,7 @@
  *                                                                         *
  *   This library  is distributed in the hope that it will be useful,      *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   MERCHANTABILITY or FITNESS FOR A DrawingICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
@@ -20,57 +20,42 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+#ifndef __VIEWPROVIDERDrawing_H__
+#define __VIEWPROVIDERDrawing_H__
+
+#include <Gui/ViewProviderFeature.h>
 
 
-#ifndef _PageGroup_h_
-#define _PageGroup_h_
+namespace DrawingGui {
 
 
-#include <App/DocumentObjectGroup.h>
-#include <App/PropertyStandard.h>
-#include <App/PropertyLinks.h>
-
-
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
-
-namespace Drawing
+class DrawingGuiExport ViewProviderDrawing:public Gui::ViewProviderDocumentObject
 {
-
-
-/** Base class of all View Features in the drawing module
- */
-class AppDrawingExport PageGroup: public App::DocumentObjectGroup
-{
-  PROPERTY_HEADER(Drawing::PageGroup);
+  PROPERTY_HEADER(DrawingGui::ViewProviderDrawing);
 
 public:
-	/// Constructor
-	PageGroup(void);
-  virtual ~PageGroup();
-
-  App::PropertyLinkList Pages;
- 
-
-   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "DrawingGui::ViewProviderDrawing";
-  }
+  /// constructor
+  ViewProviderDrawing();
+  /// destructor
+  virtual ~ViewProviderDrawing();
 
 
-	
- // virtual PyObject* getPyObject(void);
+  virtual void attach(App::DocumentObject *);
+  virtual void setDisplayMode(const char* ModeName);
+  /// returns a list of all possible modes
+  virtual std::vector<std::string> getDisplayModes(void) const;
+  /// Update the Drawing representation
+  //virtual void update(const ChangeType&);
+
+  virtual void updateData(void);
+
+protected:
 
 };
 
-
-} //namespace Drawing
-
+} // namespace DrawingGui
 
 
-#endif
+#endif // __VIEWPROVIDERDrawing_H__
+

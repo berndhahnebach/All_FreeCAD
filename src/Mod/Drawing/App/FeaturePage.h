@@ -56,6 +56,7 @@ public:
   App::PropertyLinkList Views;
 
   App::PropertyString PageResult;
+  App::PropertyString Template;
 
 
   /** @name methods overide Feature */
@@ -66,7 +67,7 @@ public:
 
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void) const {
-    return "DrawingGui::ViewProviderFeaturePage";
+    return "DrawingGui::ViewProviderDrawing";
   }
 
 

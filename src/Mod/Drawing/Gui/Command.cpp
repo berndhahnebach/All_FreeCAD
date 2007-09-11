@@ -21,6 +21,7 @@
 #include "DrawingView.h"
 
 using namespace DrawingGui;
+using namespace std;
 
 DEF_STD_CMD(CmdDrawingOpen);
 
@@ -50,7 +51,7 @@ void CmdDrawingOpen::activated(int iMsg)
     }
 }
 
-DEF_STD_CMD(CmdDrawingNewA3Landscape);
+DEF_STD_CMD_A(CmdDrawingNewA3Landscape);
 
 CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
 	:Command("Drawing_NewA3Landscape")
@@ -67,15 +68,21 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
 
 void CmdDrawingNewA3Landscape::activated(int iMsg)
 {
-    // Reading an image
-    QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
-                                           QObject::tr("Scalable Vector Graphics (*.svg *.svgz)"));
-    if (!filename.isEmpty())
-    {
-        // load the file with the module
-        Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
-        Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
-    }
+  string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3 Landscape.svg");
+  //App::Application::Config;
+  string FeatName = getUniqueObjectName("Page");
+  
+  doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Template = open('%s').read()",FeatName.c_str(), Path.c_str());
+    
+}
+
+bool CmdDrawingNewA3Landscape::isActive(void)
+{
+  if( getActiveGuiDocument() )
+    return true;
+  else
+    return false;
 }
 
 DEF_STD_CMD(CmdDrawingNewView);
