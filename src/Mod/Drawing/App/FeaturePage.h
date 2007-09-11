@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2007     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,61 +20,64 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
 
-#include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <sstream>
+#ifndef _FeaturePage_h_
+#define _FeaturePage_h_
+
+
+#include <App/Feature.h>
+#include <App/PropertyStandard.h>
+#include <App/PropertyLinks.h>
+
+
+class PyObjectBase;
+
+namespace Base{
+  class PyObjectBase;
+}
+
+namespace Drawing
+{
+
+
+/** Base class of all View Features in the drawing module
+ */
+class AppDrawingExport FeaturePage: public App::AbstractFeature
+{
+  PROPERTY_HEADER(Drawing::FeaturePage);
+
+public:
+	/// Constructor
+	FeaturePage(void);
+  virtual ~FeaturePage();
+
+  App::PropertyLinkList Views;
+
+  App::PropertyString PageResult;
+
+
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void) const {
+    return "DrawingGui::ViewProviderFeaturePage";
+  }
+
+
+	
+ // virtual PyObject* getPyObject(void);
+
+};
+
+
+} //namespace Drawing
+
+
 
 #endif
-
-
-#include <strstream>
-#include <Base/Writer.h>
-#include <Base/Reader.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
-
-#include "FeatureView.h"
-
-using namespace Drawing;
-
-
-//===========================================================================
-// FeatureView
-//===========================================================================
-
-PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
-
-
-
-FeatureView::FeatureView(void) 
-{
-  static const char *group = "Drawing view";
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
-
-  ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
-}
-
-FeatureView::~FeatureView()
-{
-}
-
-int FeatureView::execute(void)
-{
-  return 0;
-}
-
-
-//
-//PyObject *Feature::getPyObject(void)
-//{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PartFeaturePy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
-//}
-
-

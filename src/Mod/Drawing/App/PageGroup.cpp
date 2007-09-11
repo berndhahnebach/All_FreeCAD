@@ -29,13 +29,8 @@
 #endif
 
 
-#include <strstream>
-#include <Base/Writer.h>
-#include <Base/Reader.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
 
-#include "FeatureView.h"
+#include "PageGroup.h"
 
 using namespace Drawing;
 
@@ -44,35 +39,27 @@ using namespace Drawing;
 // FeatureView
 //===========================================================================
 
-PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
+PROPERTY_SOURCE(Drawing::PageGroup, App::DocumentObjectGroup)
 
 
 
-FeatureView::FeatureView(void) 
+PageGroup::PageGroup(void) 
 {
-  static const char *group = "Drawing view";
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
-
-  ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
+  static const char *group = "Drawings";
+  ADD_PROPERTY_TYPE(Pages ,(0),group,App::Prop_None,"List of pages");
 }
 
-FeatureView::~FeatureView()
+PageGroup::~PageGroup()
 {
-}
-
-int FeatureView::execute(void)
-{
-  return 0;
 }
 
 
 //
-//PyObject *Feature::getPyObject(void)
+//PyObject *PageGroup::getPyObject(void)
 //{
 // if(PythonObject.is(Py::_None())){
 //    // ref counter is set to 1
-//    PythonObject.set(new PartFeaturePy(this),true);
+//    PythonObject.set(new PageGroupPy(this),true);
 //  }
 //  return Py::new_reference_to(PythonObject); 
 //}

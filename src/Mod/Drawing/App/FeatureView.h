@@ -28,6 +28,8 @@
 
 
 #include <App/Feature.h>
+#include <App/PropertyStandard.h>
+
 
 class PyObjectBase;
 class FeaturePy;
@@ -44,12 +46,15 @@ namespace Drawing
  */
 class AppDrawingExport FeatureView: public App::AbstractFeature
 {
-  PROPERTY_HEADER(Part::FeatureView);
+  PROPERTY_HEADER(Drawing::FeatureView);
 
 public:
 	/// Constructor
 	FeatureView(void);
   virtual ~FeatureView();
+
+  App::PropertyFloat X,Y;
+  App::PropertyString ViewResult;
 
 
   /** @name methods overide Feature */
