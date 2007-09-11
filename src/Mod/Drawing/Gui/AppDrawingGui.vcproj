@@ -404,6 +404,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\ViewProvider.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ViewProvider.h"
+			>
+		</File>
+		<File
 			RelativePath="Workbench.cpp"
 			>
 			<FileConfiguration

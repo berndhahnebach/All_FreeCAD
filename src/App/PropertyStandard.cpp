@@ -967,9 +967,12 @@ PropertyString::~PropertyString()
 
 void PropertyString::setValue(const char* sString)
 {
-  aboutToSetValue();
-	_cValue = sString;
-  hasSetValue();
+  if(sString)
+  {
+    aboutToSetValue();
+	  _cValue = sString;
+    hasSetValue();
+  }
 
 }
 
