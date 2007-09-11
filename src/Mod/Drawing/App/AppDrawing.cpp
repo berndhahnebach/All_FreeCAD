@@ -17,6 +17,10 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
  
+#include "FeaturePage.h"
+#include "FeatureView.h"
+#include "FeatureViewPart.h"
+#include "PageGroup.h"
 
 extern struct PyMethodDef Drawing_methods[];
 
@@ -38,6 +42,11 @@ void AppDrawingExport initDrawing() {
   // call PyType_Ready, otherwise we run into a segmentation fault, later on.
   // This function is responsible for adding inherited slots from a type's base class.
  
+  Drawing::FeaturePage            ::init();
+  Drawing::FeatureView            ::init();
+  Drawing::FeatureViewPart        ::init();
+  Drawing::PageGroup              ::init();
+
 	return;
 }
 

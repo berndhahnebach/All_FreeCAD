@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2007     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,61 +20,62 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#include "PreCompiled.h"
-
-#ifndef _PreComp_
-# include <sstream>
-
-#endif
+ 
 
 
-#include <strstream>
-#include <Base/Writer.h>
-#include <Base/Reader.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
+#ifndef _FeatureViewPart_h_
+#define _FeatureViewPart_h_
 
+
+#include <App/Feature.h>
+#include <App/PropertyLinks.h>
 #include "FeatureView.h"
 
-using namespace Drawing;
 
+class PyObjectBase;
 
-//===========================================================================
-// FeatureView
-//===========================================================================
-
-PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
-
-
-
-FeatureView::FeatureView(void) 
-{
-  static const char *group = "Drawing view";
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
-
-  ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
+namespace Base{
+  class PyObjectBase;
 }
 
-FeatureView::~FeatureView()
+namespace Drawing
 {
-}
 
-int FeatureView::execute(void)
+
+/** Base class of all View Features in the drawing module
+ */
+class AppDrawingExport FeatureViewPart: public FeatureView
 {
-  return 0;
-}
+  PROPERTY_HEADER(Part::FeatureViewPart);
+
+public:
+	/// Constructor
+	FeatureViewPart(void);
+  virtual ~FeatureViewPart();
+
+  App::PropertyLink Source;
+ 
+
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void) const {
+    return "DrawingGui::ViewProviderFeatureViewPart";
+  }
 
 
-//
-//PyObject *Feature::getPyObject(void)
-//{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PartFeaturePy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
-//}
+	
+ // virtual PyObject* getPyObject(void);
+
+};
 
 
+} //namespace Drawing
+
+
+
+#endif

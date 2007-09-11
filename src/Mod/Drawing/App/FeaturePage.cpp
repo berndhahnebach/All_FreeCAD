@@ -29,13 +29,9 @@
 #endif
 
 
-#include <strstream>
-#include <Base/Writer.h>
-#include <Base/Reader.h>
 #include <Base/Exception.h>
-#include <Base/FileInfo.h>
 
-#include "FeatureView.h"
+#include "FeaturePage.h"
 
 using namespace Drawing;
 
@@ -44,24 +40,24 @@ using namespace Drawing;
 // FeatureView
 //===========================================================================
 
-PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
+PROPERTY_SOURCE(Drawing::FeaturePage, App::AbstractFeature)
 
+const char *group = "Drawing view";
 
-
-FeatureView::FeatureView(void) 
+FeaturePage::FeaturePage(void) 
 {
   static const char *group = "Drawing view";
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
 
-  ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
+  ADD_PROPERTY_TYPE(Views ,(0),group,App::Prop_None,"List of views in this page");
+
+  ADD_PROPERTY_TYPE(PageResult ,(0),group,App::Prop_Output,"Resulting SVG document of that page");
 }
 
-FeatureView::~FeatureView()
+FeaturePage::~FeaturePage()
 {
 }
 
-int FeatureView::execute(void)
+int FeaturePage::execute(void)
 {
   return 0;
 }
