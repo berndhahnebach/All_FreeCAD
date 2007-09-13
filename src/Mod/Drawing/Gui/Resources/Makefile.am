@@ -9,6 +9,15 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/actions/document-new.png \
 		icons/actions/document-new.svg \
+		icons/actions/drawing-landscape-A0.svg \
+		icons/actions/drawing-landscape-A1.svg \
+		icons/actions/drawing-landscape-A2.svg \
+		icons/actions/drawing-landscape.svg \
+		icons/actions/drawing-view.svg \
+		icons/actions/drawing-landscape-A3.svg \
+		icons/actions/drawing-landscape-A4.svg \
+		icons/actions/drawing-landscape-new.svg \
+		icons/actions/drawing-portrait-A4.svg \
 		icons/Page.svg \
 		icons/Pages.svg \
 		icons/View.svg \
