@@ -24,9 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <sstream>
-
-#endif
+# include <sstream>#endif
 
 
 #include <HLRBRep_Algo.hxx>
@@ -84,7 +82,10 @@ int FeatureViewPart::execute(void)
   // retirer le TopoDS_Shape S1
   Hider->Remove(Hider->Index(S1));
 
-  delete Hider;
+  // This does not work with gcc. Isn't it the correct way to nullify the handle which decrements the ref counter
+  // and destroy the data if it reaches zero? (Werner)
+  Hider.Nullify();
+  //delete Hider;
        //2- avec un HLRTopoBRep_OutLiner
 
   //Hider = new HLRBRep_Algo();
