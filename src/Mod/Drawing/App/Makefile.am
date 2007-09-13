@@ -4,6 +4,14 @@ lib_LTLIBRARIES=libDrawing.la Drawing.la
 
 libDrawing_la_SOURCES=\
                 AppDrawingPy.cpp \
+		FeaturePage.cpp \
+		FeaturePage.h \
+		FeatureView.cpp \
+		FeatureView.h \
+		FeatureViewPart.cpp \
+		FeatureViewPart.h \
+		PageGroup.cpp \
+		PageGroup.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
