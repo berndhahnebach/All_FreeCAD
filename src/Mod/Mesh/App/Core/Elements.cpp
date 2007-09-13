@@ -28,9 +28,7 @@
 
 #include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Plane3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Box3.h>
-#include <Mod/Mesh/App/WildMagic4/Wm4IntrTriangle3Triangle3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Triangle3.h>
-#include <Mod/Mesh/App/WildMagic4/Wm4DistSegment3Segment3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4DistSegment3Triangle3.h>
 
 #include "Elements.h"
@@ -721,55 +719,27 @@ void MeshGeomFacet::SubSample (float fStep, std::vector<Base::Vector3f> &rclPoin
   rclPoints.insert(rclPoints.end(), clPoints.begin(), clPoints.end());
 }
 
-bool MeshGeomFacet::IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet) const
-{
-  // project facet 2 onto facet 1
-  MeshGeomFacet cProjFac;
-  Base::Vector3f res;
-  IntersectPlaneWithLine( rclFacet._aclPoints[0], GetNormal(), res);
-  cProjFac._aclPoints[0] = res;
-
-  IntersectPlaneWithLine( rclFacet._aclPoints[1], GetNormal(), res);
-  cProjFac._aclPoints[1] = res;
-  
-  IntersectPlaneWithLine( rclFacet._aclPoints[2], GetNormal(), res);
-  cProjFac._aclPoints[2] = res;
-
-  Vector3<float> akU[3] = 
-      {Vector3<float>(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z),
-       Vector3<float>(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z),
-       Vector3<float>(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z)};
-
-  Vector3<float> akV[3] = 
-      {Vector3<float>(cProjFac._aclPoints[0].x, cProjFac._aclPoints[0].y, cProjFac._aclPoints[0].z),
-       Vector3<float>(cProjFac._aclPoints[1].x, cProjFac._aclPoints[1].y, cProjFac._aclPoints[1].z),
-       Vector3<float>(cProjFac._aclPoints[2].x, cProjFac._aclPoints[2].y, cProjFac._aclPoints[2].z)};
-
-  Triangle3<float> akTria1(akU);
-  Triangle3<float> akTria2(akV);
-
-  //Tests two triangles for intersection (Magic Softwate Library)
-  return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
-}
-
+/**
+ * Fast Triangle-Triangle Intersection Test by Tomas Möller
+ * http://www.acm.org/jgt/papers/Moller97/tritri.html
+ * http://www.cs.lth.se/home/Tomas_Akenine_Moller/code/
+ */
 bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
 {
-  // project facet 2 onto facet 1
-  Vector3<float> akU[3] = 
-      {Vector3<float>(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z),
-       Vector3<float>(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z),
-       Vector3<float>(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z)};
+  float V[3][3], U[3][3];
+  for (int i = 0; i < 3; i++)
+  {
+    V[i][0] = _aclPoints[i].x;
+    V[i][1] = _aclPoints[i].y;
+    V[i][2] = _aclPoints[i].z;
+    U[i][0] = rclFacet._aclPoints[i].x;
+    U[i][1] = rclFacet._aclPoints[i].y;
+    U[i][2] = rclFacet._aclPoints[i].z;
+  }
 
-  Vector3<float> akV[3] = 
-      {Vector3<float>(rclFacet._aclPoints[0].x, rclFacet._aclPoints[0].y, rclFacet._aclPoints[0].z),
-       Vector3<float>(rclFacet._aclPoints[1].x, rclFacet._aclPoints[1].y, rclFacet._aclPoints[1].z),
-       Vector3<float>(rclFacet._aclPoints[2].x, rclFacet._aclPoints[2].y, rclFacet._aclPoints[2].z)};
-
-  Triangle3<float> akTria1(akU);
-  Triangle3<float> akTria2(akV);
-
-  //Tests two triangles for intersection (Magic Softwate Library)
-  return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
+  if (tri_tri_intersect(V[0], V[1], V[2], U[0], U[1], U[2]) == 0)
+    return false; // no intersections
+  return true;
 }
 
 /**
@@ -777,7 +747,7 @@ bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
  * http://www.acm.org/jgt/papers/Moller97/tritri.html
  * http://www.cs.lth.se/home/Tomas_Akenine_Moller/code/
  */
-int MeshGeomFacet::IntersectWithFacet1 (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
+int MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
 {
   float V[3][3], U[3][3];
   int coplanar = 0;
@@ -803,49 +773,6 @@ int MeshGeomFacet::IntersectWithFacet1 (const MeshGeomFacet& rclFacet, Base::Vec
     return 1;
   else
     return 2;
-}
-
-bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
-{
-  Vector3<float> akU[3] = 
-      {Vector3<float>(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z),
-       Vector3<float>(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z),
-       Vector3<float>(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z)};
-
-  Vector3<float> akV[3] = 
-      {Vector3<float>(rclFacet._aclPoints[0].x, rclFacet._aclPoints[0].y, rclFacet._aclPoints[0].z),
-       Vector3<float>(rclFacet._aclPoints[1].x, rclFacet._aclPoints[1].y, rclFacet._aclPoints[1].z),
-       Vector3<float>(rclFacet._aclPoints[2].x, rclFacet._aclPoints[2].y, rclFacet._aclPoints[2].z)};
-
-  Triangle3<float> akTria1(akU);
-  Triangle3<float> akTria2(akV);
-
-  IntrTriangle3Triangle3<float> intersect(akTria1, akTria2);
-
-  if (intersect.Find())
-  {
-    
-    int q = intersect.GetQuantity();
-    if (q == 2)
-    {
-      Vector3<float> p0 = intersect.GetPoint(0);
-      Vector3<float> p1 = intersect.GetPoint(1);
-      rclPt0.Set(p0.X(), p0.Y(), p0.Z());
-      rclPt1.Set(p1.X(), p1.Y(), p1.Z());
-    }
-    else if (q == 1)
-    {
-      Vector3<float> p0 = intersect.GetPoint(0);
-      rclPt0.Set(p0.X(), p0.Y(), p0.Z());
-      rclPt1.Set(p0.X(), p0.Y(), p0.Z());
-    }
-    
-    return true;
-  }
-  else
-  {
-    return false;
-  }
 }
 
 float MeshGeomFacet::CenterOfInscribedCircle(Base::Vector3f& rclCenter) const

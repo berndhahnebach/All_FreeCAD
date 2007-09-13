@@ -368,11 +368,7 @@ public:
   inline bool ContainedByOrIntersectBoundingBox (const Base::BoundBox3f &rcBB) const;
   /** Checks if the facet intersects with the given bounding box. */
   bool IntersectBoundingBox ( const Base::BoundBox3f &rclBB ) const;
-  /** This method projects the second facet onto the plane defined by this facet and checks then
-   * if both facets intersects.
-   */
-  bool IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet) const;
-  /** This method checks if both facets intersects.
+  /** This method checks if both facets intersect.
    */
   bool IntersectWithFacet(const MeshGeomFacet &rclFacet) const;
   /**
@@ -380,14 +376,7 @@ public:
    * The result is line given by two points (if intersected).
    * Return is the number of intersections points: 0: no intersection, 1: one intersection point (rclPt0), 2: two intersections points (rclPt0, rclPt1)
    */
-  int IntersectWithFacet1 (const MeshGeomFacet& facet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const;
-
-   /**
-   * Intersect the facet with the other facet
-   * The result is line given by two points (if intersected).
-   * Return True if the two facets has a intersections otherwise false
-   */
-  bool IntersectWithFacet (const MeshGeomFacet& facet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const;
+  int IntersectWithFacet (const MeshGeomFacet& facet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const;
   /** Calculates the shortest distance from the line segment defined by \a rcP1 and \a rcP2 to
    * this facet.
    */
