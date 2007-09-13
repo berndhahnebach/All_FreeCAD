@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #include <math.h>
-#include "Definitions.h"
 
 #include "Definitions.h"
 

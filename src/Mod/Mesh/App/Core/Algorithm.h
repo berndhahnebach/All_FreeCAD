@@ -26,7 +26,6 @@
 
 #include <set>
 #include <vector>
-#include <Mod/Mesh/App/WildMagic4/Wm4Plane3.h>
 
 #include "MeshKernel.h"
 #include "Elements.h"
@@ -249,11 +248,14 @@ public:
   bool NearestPointFromPoint (const Base::Vector3f &rclPt, const MeshFacetGrid& rclGrid, float fMaxSearchArea,
                               unsigned long &rclResFacetIndex, Base::Vector3f &rclResPoint) const;
   /** Cuts the mesh with a plane. The result is a list of polylines. */
-  bool CutWithPlane (const Wm4::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps = 1.0e-2f) const;
   bool CutWithPlane (const Base::Vector3f &clBase, const Base::Vector3f &clNormal, const MeshFacetGrid &rclGrid,
                      std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false) const;
-  /** Gets all facets that cut the plane and lying between the the two points. */
-  void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm4::Plane3<float>& clPlane, const Base::Vector3f &rclLeft, const Base::Vector3f &rclRight, std::vector<unsigned long> &rclRes) const;
+  /** 
+   * Gets all facets that cut the plane (N,d) and that lie between the two points left and right. 
+   * The plane is defined by it normalized normal and the signed distance to the origin.
+   */
+  void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Base::Vector3f& clNormal, float dist, 
+      const Base::Vector3f &rclLeft, const Base::Vector3f &rclRight, std::vector<unsigned long> &rclRes) const;
   /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
    * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
    */

@@ -27,9 +27,6 @@
 # include <algorithm>
 #endif
 
-#include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
-#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
-
 #include "Algorithm.h"
 #include "Elements.h"
 #include "Iterator.h"
@@ -1010,10 +1007,10 @@ int MeshAlgorithm::Surround( const Base::BoundBox3f& rBox, const Base::Vector3f&
     {
       for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
       {
-        int ret = cTIt->IntersectWithFacet1(*it,pt1, pt2);
+        int ret = cTIt->IntersectWithFacet(*it,pt1, pt2);
 
         // the box intersects the mesh?
-        if ( ret != 0)
+        if (ret != 0)
           return 0; // => no more investigations required
       }
     }
@@ -1393,19 +1390,6 @@ bool MeshAlgorithm::NearestPointFromPoint (const Base::Vector3f &rclPt, const Me
   return true;
 }
 
-bool MeshAlgorithm::CutWithPlane (const Wm4::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid,
-                                  std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps) const
-{
-  Base::Vector3f  clBase, clNormal; // Schnittebene
-
-  Wm4::Vector3<float> clPos = rclPlane.Normal * rclPlane.Constant;
-  Wm4::Vector3<float> clDir = rclPlane.Normal;
-  clBase.Set(clPos.X(), clPos.Y(), clPos.Z());
-  clNormal.Set(clDir.X(), clDir.Y(), clDir.Z());
-
-  return CutWithPlane (clBase, clNormal, rclGrid, rclResult, fMinEps, false);
-}
-
 bool MeshAlgorithm::CutWithPlane (const Base::Vector3f &clBase, const Base::Vector3f &clNormal, const MeshFacetGrid &rclGrid,
                                   std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps, bool bConnectPolygons) const
 {
@@ -1614,17 +1598,12 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Base::Vector3f> > &clP
   return true;
 }
 
-void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm4::Plane3<float>& clPlane, const Base::Vector3f &rclLeft,
+void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Base::Vector3f& clNormal, float d, const Base::Vector3f &rclLeft,
                                         const Base::Vector3f &rclRight, std::vector<unsigned long> &rclRes) const
 {
   std::vector<unsigned long> aulFacets;
- 
-  Wm4::Vector3<float> clPos = clPlane.Normal * clPlane.Constant;
-  Wm4::Vector3<float> clDir = clPlane.Normal;
 
-  Base::Vector3f clBase(float(clPos.X()), float(clPos.Y()), float(clPos.Z()));
-  Base::Vector3f clNormal(float(clDir.X()), float(clDir.Y()), float(clDir.Z()));
-  clNormal.Normalize();
+  Base::Vector3f clBase = d * clNormal;
 
   Base::Vector3f clPtNormal(rclLeft - rclRight);
   clPtNormal.Normalize();

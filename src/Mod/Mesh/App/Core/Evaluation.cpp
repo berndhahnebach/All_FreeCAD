@@ -28,7 +28,6 @@
 # include <vector>
 #endif
 
-#include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Plane3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
 
@@ -473,7 +472,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
                 if (box1 && box2) {
                     cMFI.Set(*jt);
                     facet2 = *cMFI;
-                    int ret = facet1.IntersectWithFacet1(facet2, pt1, pt2);
+                    int ret = facet1.IntersectWithFacet(facet2, pt1, pt2);
                     if (ret == 2) {
                         // abort after the first detected self-intersection
                         return false;
@@ -546,7 +545,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
                 if (box1 && box2) {
                     cMFI.Set(*jt);
                     facet2 = *cMFI;
-                    int ret = facet1.IntersectWithFacet1(facet2, pt1, pt2);
+                    int ret = facet1.IntersectWithFacet(facet2, pt1, pt2);
                     if (ret == 2) {
                         intersection.push_back(std::make_pair(pt1, pt2));
                     }

@@ -182,7 +182,7 @@ void SetOperations::Cut (std::set<unsigned long>& facetsCuttingEdge0, std::set<u
 
                 MeshPoint p0, p1;
 
-                int isect = f1.IntersectWithFacet1(f2, p0, p1);
+                int isect = f1.IntersectWithFacet(f2, p0, p1);
                 if (isect > 0)
                 { 
                    // optimize cut line if distance to nearest point is too small
