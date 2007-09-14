@@ -1410,6 +1410,37 @@ bool MeshOutput::SaveCadmouldFE (std::ostream &rstrOut) const
   return false;
 }
 
+/** Writes a Python module */
+bool MeshOutput::SaveFCPython (std::ostream &rstrOut) const
+{
+  if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
+    return false;
+
+  MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+  const MeshGeomFacet *pclFacet;
+  char szBuf[200];
+
+  strcpy(szBuf, "faces = (");
+  rstrOut.write(szBuf, strlen(szBuf));
+
+  while (clIter < clEnd)
+  {
+    pclFacet = &(*clIter);
+
+    for (int i = 0; i < 3; i++)
+    {
+      sprintf(szBuf, "(%.4f,%.4f,%.4f),", pclFacet->_aclPoints[i].x,pclFacet->_aclPoints[i].y, pclFacet->_aclPoints[i].z);
+      rstrOut.write(szBuf, strlen(szBuf));
+    }
+
+    strcpy(szBuf, ")\n");
+    rstrOut.write(szBuf, strlen(szBuf));
+  }
+
+
+  return false;
+}
+
 // --------------------------------------------------------------
 
 SaveMeshVRML::SaveMeshVRML (const MeshKernel &rclM)
