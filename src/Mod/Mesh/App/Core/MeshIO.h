@@ -96,6 +96,8 @@ public:
   bool SaveNastran (std::ostream &rstrOut) const;
   /** Writes a Cadmould FE file. */
   bool SaveCadmouldFE (std::ostream &rstrOut) const;
+  /** Writes a python module which create a mesh */
+  bool SaveFCPython (std::ostream &rstrOut) const;
 
 protected:
   const MeshKernel &_rclMesh;   /**< reference to mesh data structure */

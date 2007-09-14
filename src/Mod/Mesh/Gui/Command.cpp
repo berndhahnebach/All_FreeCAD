@@ -362,7 +362,7 @@ void CmdMeshExport::activated(int iMsg)
   QString dir = docObj->name.getValue();
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Alias Mesh (*.obj);;"
                    "Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;"
-                   "Nastran (*.nas *.bdf);;All Files (*.*)";
+                   "Nastran (*.nas *.bdf);;Python module def (*.py);;All Files (*.*)";
 
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export mesh"), dir, filter, &format);

@@ -100,6 +100,15 @@ int Export::execute(void)
             setError("Export of Inventor mesh to file '%s' failed",FileName.getValue());
             return 1;
         }
+    } else if ( fi.hasExtension("py")  ) {
+        std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+        MeshCore::MeshOutput aWriter(pcFeat->Mesh.getValue());
+
+        // write file
+        if ( !aWriter.SaveFCPython(str) ) {
+            setError("Export of Python mesh to file '%s' failed",FileName.getValue());
+            return 1;
+        }
     } else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml") ) {
         std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
         MeshCore::SaveMeshVRML aWriter(pcFeat->Mesh.getValue());
