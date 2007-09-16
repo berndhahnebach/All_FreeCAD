@@ -1,4 +1,4 @@
-SUBDIRS=Base App Gui Main Mod Tools
+SUBDIRS=3rdParty Base App Gui Main Mod Tools
 
 EXTRA_DIST = \
 		Build/BuildVersion.bat \

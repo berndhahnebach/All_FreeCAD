@@ -105,30 +105,38 @@ const char* ViewProviderExport::getDefaultDisplayMode() const
 
 QPixmap ViewProviderExport::getIcon() const
 {
-  const char * Mesh_Feature_xpm[] = {
-    "16 16 4 1",
-    ".	c None",
-    "#	c #000000",
-    "s	c #BEC2FC",
-    "g	c #00FF00",
-    ".......##.......",
-    "....#######.....",
-    "..##ggg#ggg#....",
-    "##ggggg#gggg##..",
-    "#g#ggg#gggggg##.",
-    "#gg#gg#gggg###s.",
-    "#gg#gg#gg##gg#s.",
-    "#ggg#####ggg#ss.",
-    "#gggg##gggg#ss..",
-    ".#g##g#gggg#s...",
-    ".##ggg#ggg#ss...",
-    ".##gggg#g#ss....",
-    "..s#####g#s.....",
-    "....sss##ss.....",
-    "........ss......",
-    "................"};
-  QPixmap px(Mesh_Feature_xpm);
-  return px;
+    const char * Mesh_Feature_xpm[] = {
+        "22 22 6 1",
+        ". c None",
+        "# c #000000",
+        "c c #ffff00",
+        "a c #808080",
+        "b c #c0c0c0",
+        "f c #008000",
+        ".............##.......",
+        ".............###......",
+        ".............#f##.....",
+        ".#....####...#ff##....",
+        ".##.##....#..#fff##...",
+        ".###.........#ffff##..",
+        ".####........#fffff##.",
+        ".#####.......#ffffff##",
+        ".............#########",
+        ".####.................",
+        "#abab##########.......",
+        "#babababababab#.......",
+        "#ababababababa#.......",
+        "#babab################",
+        "#abab##cccccccccccc##.",
+        "#bab##cccccccccccc##..",
+        "#ab##cccccccccccc##...",
+        "#b##cccccccccccc##....",
+        "###cccccccccccc##.....",
+        "##cccccccccccc##......",
+        "###############.......",
+        "......................"};
+    QPixmap px(Mesh_Feature_xpm);
+    return px;
 }
 
 void ViewProviderExport::update()

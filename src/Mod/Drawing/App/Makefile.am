@@ -22,6 +22,7 @@ libDrawing_la_CPPFLAGS = -DDrawingAppExport=
 
 libDrawing_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
+		-lboost_regex \
 		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \

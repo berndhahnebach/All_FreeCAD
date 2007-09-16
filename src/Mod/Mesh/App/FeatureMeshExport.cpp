@@ -105,7 +105,7 @@ int Export::execute(void)
         MeshCore::MeshOutput aWriter(pcFeat->Mesh.getValue());
 
         // write file
-        if ( !aWriter.SaveFCPython(str) ) {
+        if ( !aWriter.SavePython(str) ) {
             setError("Export of Python mesh to file '%s' failed",FileName.getValue());
             return 1;
         }
