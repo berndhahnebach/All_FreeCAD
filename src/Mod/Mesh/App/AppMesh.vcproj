@@ -2115,6 +2115,20 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MeshTestsApp.py"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="copy $(InputFileName)"
+					CommandLine="copy &quot;$(InputFileName)&quot; &quot;../../../../Mod/Mesh/&quot;"
+					Outputs="../../../../Mod/Mesh/$(InputFileName)"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

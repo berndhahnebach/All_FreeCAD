@@ -49,11 +49,12 @@ protected:
 
 public:
   MeshPy(PyTypeObject *T = &Type);
-  MeshPy(const MeshCore::MeshKernel& rcMesh, PyTypeObject *T = &Type);
+  MeshPy(MeshCore::MeshKernel* pcMesh, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
   static int PyInit(PyObject*, PyObject*, PyObject*);
 
-  void setMesh(const MeshCore::MeshKernel& rcMesh);
+  /// sets this object to a new mesh kernel, the old will be deleted!
+  void setMesh(MeshCore::MeshKernel* pcMesh);
   const MeshCore::MeshKernel& getMesh(void) const;
 
   //---------------------------------------------------------------------
@@ -103,7 +104,7 @@ public:
   PYFUNCDEF_D(MeshPy,splitEdge)
 
 protected:
-  MeshCore::MeshKernel _cMesh;
+  MeshCore::MeshKernel *_pcMesh;
 };
 
 } //namespace Mesh

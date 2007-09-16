@@ -366,7 +366,7 @@ void PropertyMeshKernel::clear()
 
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-  return new MeshPy(*_pcMesh);
+  return new MeshPy(_pcMesh);
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)

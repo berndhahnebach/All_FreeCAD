@@ -226,8 +226,12 @@ class AppMeshExport MeshEvalSelfIntersection : public MeshEvaluation
 public:
   MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   virtual ~MeshEvalSelfIntersection () {}
+  /// Evaluate the mesh and return if true if there are self intersections
   bool Evaluate ();
+  /// collect all intersection lines
   void GetIntersections(std::vector<std::pair<Base::Vector3f, Base::Vector3f> >&) const;
+  /// collect the index of all facets with self intersections
+  void GetIntersections(std::vector<unsigned long >& ) const;
 };
 
 // ----------------------------------------------------

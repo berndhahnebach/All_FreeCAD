@@ -38,6 +38,7 @@
 #include "Core/Iterator.h"
 #include "Core/Algorithm.h"
 #include "Core/TopoAlgorithm.h"
+#include "Core/Evaluation.h"
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
@@ -145,6 +146,31 @@ void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
   for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
+}
+
+void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
+{
+  std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
+
+  unsigned int i = 0;
+  // go throug all the Vertex normales
+  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
+    // and move each mesh point in the normal direction
+    Mesh->MovePoint(i,It->Normalize() * fSize);
+
+  MeshCore::MeshEvalSelfIntersection eval(*Mesh);
+  
+  std::vector<unsigned long > faces;
+  eval.GetIntersections(faces);
+
+#ifdef DEBUG_OFFSET
+  Base::Builder3D builder;
+
+  builder.addSingleLine();
+
+  builder.addToLog();
+#endif
+
 }
 
 void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin)
