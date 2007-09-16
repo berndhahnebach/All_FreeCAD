@@ -54,62 +54,16 @@ static PyObject * read(PyObject *self, PyObject *args)
     return NULL;                         
     
   PY_TRY {
-
-    //Base::Console().Log("Open in Mesh with %s",Name);
-    Base::FileInfo file(Name);
-
-	  if ( !file.exists() || !file.isFile() || !file.isReadable() )
-      Py_Error(PyExc_Exception,"No read permission for file");
-
-    std::ifstream str( Name, std::ios::in | std::ios::binary );
     
-    MeshCore::MeshKernel *pcKernel=0;
-    if ( file.hasExtension("bms") )
-    {
-      try {
-        MeshKernel kernel;
-        kernel.Read( str );
-        return new MeshPy(kernel);
-      } catch( const Base::MemoryException&) {
-        delete pcKernel;
-        Py_Error(PyExc_Exception,"Invalid mesh file");
-      }
-    }
-    else 
-    {
-      MeshKernel Kernel;
-      MeshInput aReader( Kernel );
+    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
+  
+    MeshInput aReader( *apcKernel );
       
-      try {
-        // read file
-        bool ok = false;
-        if ( file.hasExtension("stl") || file.hasExtension("ast") ) {
-          ok = aReader.LoadSTL( str );
-        } else if ( file.hasExtension("iv") ) {
-          ok = aReader.LoadInventor( str );
-          if ( ok && pcKernel->CountFacets() == 0 )
-            Base::Console().Warning("No usable mesh found in file '%s'", Name);
-        } else if ( file.hasExtension("nas") || file.hasExtension("bdf") ) {
-          ok = aReader.LoadNastran( str );
-        } else if ( file.hasExtension("obj") ) {
-          ok = aReader.LoadOBJ( str );
-        } else {
-          delete pcKernel;
-          Py_Error(PyExc_Exception,"File format not supported");
-        }
+    aReader.LoadAny(Name);
+  
+    // Mesh is okay
 
-        // Check whether load process succeeded
-        if ( !ok ) 
-          Py_Error(PyExc_Exception,"Import of file failed");
- 
-
-        // Mesh is okay
-        return new MeshPy(Kernel);
-
-      }catch ( Base::AbortException& e ){
-         Py_Error(PyExc_Exception, "Import of file aborted.");
-      }
-    }
+    return new MeshPy(apcKernel.release());
 
   } PY_CATCH;
 
@@ -194,10 +148,119 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+
+static PyObject *                        
+show(PyObject *self, PyObject *args)     
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+
+    App::Document *pcDoc = App::GetApplication().getActiveDocument();
+    if(!pcDoc)
+      pcDoc = App::GetApplication().newDocument();
+    
+    pcObject = (MeshPy*)pcObj;
+
+    const MeshKernel& m = ((MeshPy*)pcObj)->getMesh();
+
+    Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "showed");
+    pcFeature->Mesh.setValue( m );
+    pcDoc->recompute();
+
+  } PY_CATCH;
+
+  Py_Return;
+}
+static PyObject *                        
+createBox(PyObject *self, PyObject *args)     
+{
+  float x=1,y=0,z=0;
+  if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
+    return NULL;                                   // NULL triggers exception 
+
+  if(y==0) 
+    y=x;
+  if(z==0) 
+    z=x;
+
+  float hx = x/2.0;
+  float hy = y/2.0;
+  float hz = z/2.0;
+
+  PY_TRY {
+
+    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
+    std::vector<MeshCore::MeshGeomFacet> TriaList;
+    
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, -hy, hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(-hx, -hy, hz)));
+
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, hy, -hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(hx, hy, hz)));
+
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(-hx, hy, -hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, -hy, hz),Base::Vector3f(-hx, hy, hz)));
+
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, hy, hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, -hy, hz)));
+
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, -hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, -hy, -hz)));
+
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(-hx, hy, hz)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(hx, hy, hz)));
+
+    *apcKernel += TriaList;
+
+	  return new MeshPy(apcKernel.release());
+    
+  } PY_CATCH;
+}
+static PyObject *                        
+createPlane(PyObject *self, PyObject *args)     
+{
+
+ float x=1,y=0,z=0;
+  if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
+    return NULL;                                   // NULL triggers exception 
+
+  if(y==0) 
+    y=x;
+
+  float hx = x/2.0;
+  float hy = y/2.0;
+
+  PY_TRY {
+
+    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
+    std::vector<MeshCore::MeshGeomFacet> TriaList;
+    
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0),Base::Vector3f(-hx, hy, 0.0)));
+    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0)));
+
+    *apcKernel += TriaList;
+
+	  return new MeshPy(apcKernel.release());
+    
+  } PY_CATCH;
+
+}
+static PyObject *                        
+createSphere(PyObject *self, PyObject *args)     
+{
+
+	Py_Return;    
+
+}
+
 static PyObject *                        
 loftOnCurve(PyObject *self, PyObject *args)
 {
-#if 0
+/*
   Part::TopoShapePy   *pcObject;
   PyObject *pcTopoObj,*pcListObj;
   float x=0,y=0,z=1,size = 0.1;
@@ -244,10 +307,9 @@ loftOnCurve(PyObject *self, PyObject *args)
   } PY_CATCH;
 
   return new MeshPy(M);
-#else
-  Base::Console().Error("Linker error: Part::TopoShapePy\n");
-  Py_Return;
-#endif
+*/
+ 	Py_Return;    
+
 }
 
 PyDoc_STRVAR(open_doc,
@@ -265,6 +327,10 @@ struct PyMethodDef Mesh_Import_methods[] = {
     {"open"       ,open ,       METH_VARARGS, open_doc},				
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a Mesh from a file and returns a Mesh object."},
+    {"show"       ,show,        Py_NEWARGS,   "Puts a mesh object in the active document"},
+    {"createBox"  ,createBox,   Py_NEWARGS,   "Creates a solid mesh box"},
+    {"createPlane",createPlane, Py_NEWARGS,   "Creates a mesh XY plane normal +Z"},
+    {"createSphere" ,createSphere,Py_NEWARGS,   "Creates a solid sphere"},
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };

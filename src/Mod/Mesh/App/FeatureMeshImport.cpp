@@ -47,71 +47,12 @@ Import::Import(void)
 
 int Import::execute(void)
 {
-  // ask for read permission
-  Base::FileInfo fi(FileName.getValue());
-	if ( !fi.exists() || !fi.isFile() || !fi.isReadable() )
-  {
-    setError("No read permission for file '%s'",FileName.getValue());
-    return 1;
-  }
-
-  std::ifstream str( FileName.getValue(), std::ios::in | std::ios::binary );
-  
-  MeshCore::MeshKernel *pcKernel=0;
-  if ( fi.hasExtension("bms") )
-  {
-    try {
-      pcKernel = new MeshCore::MeshKernel();
-      pcKernel->Read( str );
-      Mesh.setValue(pcKernel);
-    } catch( const Base::MemoryException&) {
-      setError("Invalid mesh file");
-      delete pcKernel;
-      return 1;
-    }
-  }
-  else 
-  {
-    pcKernel = new MeshCore::MeshKernel();
-    MeshInput aReader( *pcKernel );
-    
-    try {
-      // read file
-      bool ok = false;
-      if ( fi.hasExtension("stl") || fi.hasExtension("ast") ) {
-        ok = aReader.LoadSTL( str );
-      } else if ( fi.hasExtension("iv") ) {
-        ok = aReader.LoadInventor( str );
-        if ( ok && pcKernel->CountFacets() == 0 )
-          Base::Console().Warning("No usable mesh found in file '%s'", FileName.getValue());
-      } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
-        ok = aReader.LoadNastran( str );
-      } else if ( fi.hasExtension("obj") ) {
-        ok = aReader.LoadOBJ( str );
-      } else {
-        setError("File format '%s' not supported", fi.extension().c_str());
-        delete pcKernel;
-        return 1;
-      }
-
-      // Check whether load process succeeded
-      if ( !ok ) {
-        setError("Import of file '%s' failed",FileName.getValue());
-        delete pcKernel;
-        return 1;
-      }
-
+  std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
+  MeshInput aReader( *apcKernel );
+      
+  aReader.LoadAny(FileName.getValue());
       // Mesh is okay
-      Mesh.setValue(pcKernel);
-
-    }catch ( Base::AbortException& e ){
-      char szBuf[200];
-      snprintf(szBuf, 200, "Import of file '%s' aborted.", FileName.getValue());
-      e.setMessage( szBuf );
-      delete pcKernel;
-      throw; // Throw the same instance of Base::AbortException
-    }
-  }
+  Mesh.setValue(apcKernel.release());
 
   return 0;
 }

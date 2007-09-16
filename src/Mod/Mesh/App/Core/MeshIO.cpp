@@ -31,10 +31,12 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <Base/Sequencer.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 #include <Base/Persistance.h>
+#include <Base/FileInfo.h>
+#include <Base/gzstream.h>
+#include <Base/Sequencer.h>
 
 #include <math.h>
 
@@ -259,6 +261,48 @@ Convert_Camera_Model(Vector *pos, Vector *at, Vector *up, Vector *res_axis,
 }
 
 // --------------------------------------------------------------
+
+
+bool MeshInput::LoadAny(const char* FileName)
+{
+  // ask for read permission
+  Base::FileInfo fi(FileName);
+	if ( !fi.exists() || !fi.isFile()  )
+    throw Base::FileException("File does not exists",FileName);
+	if ( !fi.isReadable() )
+    throw Base::FileException("No permission on the file",FileName);
+
+  std::ifstream str( FileName, std::ios::in | std::ios::binary );
+  _rclMesh.Clear();
+
+  MeshCore::MeshKernel *pcKernel=0;
+  if ( fi.hasExtension("bms") )
+  {
+     _rclMesh.Read( str );
+     return true;
+  }
+  else 
+  {  
+    // read file
+    bool ok = false;
+    if ( fi.hasExtension("stl") || fi.hasExtension("ast") ) {
+      ok = LoadSTL( str );
+    } else if ( fi.hasExtension("iv") ) {
+      ok = LoadInventor( str );
+      if ( ok && pcKernel->CountFacets() == 0 )
+        Base::Console().Warning("No usable mesh found in file '%s'", FileName);
+    } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
+      ok = LoadNastran( str );
+    } else if ( fi.hasExtension("obj") ) {
+      ok = LoadOBJ( str );
+    } else {
+      throw Base::FileException("File extension not supported",FileName);
+    }
+    
+    return ok;
+      
+  }
+}
 
 /** Loads an STL file either in binary or ASCII format. 
  * Therefore the file header gets checked to decide if the file is binary or not.
@@ -929,6 +973,87 @@ bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 
 // --------------------------------------------------------------
 
+/// Save in a file, format is decided by the axtension
+bool MeshOutput::SaveAny(const char* FileName) const
+{
+  // ask for write permission
+  Base::FileInfo fi(FileName);
+  Base::FileInfo di(fi.dirPath().c_str());
+  if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false ) 
+     throw Base::FileException("No write permission for file",FileName);
+
+  if ( fi.hasExtension("bms") ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+      _rclMesh.Write( str );
+  } else if ( fi.hasExtension("stl") || fi.hasExtension("ast") ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+      MeshOutput aWriter(_rclMesh);
+
+      // write file
+      bool ok = false;
+      if ( fi.hasExtension("stl") )
+          ok = aWriter.SaveBinarySTL( str );
+      else // "ast"
+          ok = aWriter.SaveAsciiSTL( str );
+
+      if ( !ok ) 
+          throw Base::FileException("Export of STL mesh failed",FileName);
+          
+  } else if ( fi.hasExtension("obj")  ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+      // write file
+      if ( !SaveOBJ(str) ) 
+          throw Base::FileException("Export of OBJ mesh failed",FileName);
+
+  } else if ( fi.hasExtension("iv")  ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+
+      // write file
+      if ( !SaveInventor(str) ) 
+          throw Base::FileException("Export of Inventor mesh failed",FileName);
+
+  } else if ( fi.hasExtension("py")  ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+
+      // write file
+      if ( !SavePython(str) ) 
+          throw Base::FileException("Export of Python mesh failed",FileName);
+
+  } else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml") ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+      MeshCore::SaveMeshVRML aWriter(_rclMesh);
+
+      // write file
+      App::Material rclMat;
+      if ( !aWriter.Save(str,rclMat) ) 
+          throw Base::FileException("Export of VRML mesh failed",FileName);
+          
+  } else if ( fi.hasExtension("wrz") ) {
+      // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
+      Base::ogzstream gzip( FileName, std::ios::out | std::ios::binary );
+      MeshCore::SaveMeshVRML aWriter(_rclMesh);
+
+      // write file
+      App::Material rclMat;
+      if ( !aWriter.Save(gzip,rclMat) ) 
+          throw Base::FileException("Export of compressed VRML mesh failed",FileName);
+          
+  } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
+      std::ofstream str( FileName, std::ios::out | std::ios::binary );
+
+      // write file
+      if ( !SaveNastran(str) ) 
+          throw Base::FileException("Export of NASTRAN mesh failed",FileName);
+          
+  } else {
+      throw Base::FileException("File format not supported", FileName);
+  }
+
+  return true;
+
+}
+
+
 /** Saves the mesh object into an ASCII file. */
 bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 {
@@ -1419,7 +1544,7 @@ bool MeshOutput::SavePython (std::ostream &rstrOut) const
   MeshFacetIterator clIter(_rclMesh);
   char szBuf[200];
 
-  strcpy(szBuf, "faces = (");
+  strcpy(szBuf, "faces = [\n");
   rstrOut.write(szBuf, strlen(szBuf));
 
   for (clIter.Init(); clIter.More(); clIter.Next())
@@ -1428,13 +1553,13 @@ bool MeshOutput::SavePython (std::ostream &rstrOut) const
 
     for (int i = 0; i < 3; i++)
     {
-      sprintf(szBuf, "(%.4f,%.4f,%.4f),", rFacet._aclPoints[i].x,rFacet._aclPoints[i].y,rFacet._aclPoints[i].z);
+      sprintf(szBuf, "[%.4f,%.4f,%.4f],", rFacet._aclPoints[i].x,rFacet._aclPoints[i].y,rFacet._aclPoints[i].z);
       rstrOut.write(szBuf, strlen(szBuf));
     }
     rstrOut << std::endl;
   }
 
-  strcpy(szBuf, ")\n");
+  strcpy(szBuf, "]\n");
   rstrOut.write(szBuf, strlen(szBuf));
 
   return true;

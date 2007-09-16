@@ -47,6 +47,8 @@ public:
   MeshInput (MeshKernel &rclM): _rclMesh(rclM){};
   virtual ~MeshInput (void) { }
 
+  /// Loads the file, decided by extension
+  bool LoadAny(const char* FileName);
   /** Loads an STL file either in binary or ASCII format. 
    * Therefore the file header gets checked to decide if the file is binary or not.
    */
@@ -79,6 +81,8 @@ class AppMeshExport MeshOutput
 public:
   MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
   virtual ~MeshOutput (void) { }
+  /// Loads the file, decided by extension
+  bool SaveAny(const char* FileName) const;
 
   /** Saves the mesh object into an ASCII STL file. */
   bool SaveAsciiSTL (std::ostream &rstrOut) const;
