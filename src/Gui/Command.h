@@ -179,7 +179,7 @@ public:
    *  when the name does not exist or no document is active!
    */
   App::Document*  getDocument(const char* Name=0);
-  /// checks if the activ view is of a special type or derived
+  /// checks if the active view is of a special type or derived
   bool isViewOfType(Base::Type t) const;
   /// returns the named feature or the active one from the active document or NULL
   App::AbstractFeature* getFeature(const char* Name);
@@ -531,7 +531,8 @@ protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getMainWindow()->activeWindow() && QString( getMainWindow()->activeWindow()->getName()).contains( "View3DInventor" )  > 0)?true:false;\
+    Gui::MDIView* view = getMainWindow()->activeWindow();\
+    return view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId());\
   }\
 };
 

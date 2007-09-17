@@ -141,7 +141,7 @@ protected:
 protected:
   std::vector<QPoint> _cNodeVector;
   int  m_iRadius, m_iNodes;
-  bool m_bWorking, m_bDrawNodes;
+  bool m_bWorking;
 };
 
 // -----------------------------------------------------------------------------------

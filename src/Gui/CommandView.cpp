@@ -1268,7 +1268,7 @@ bool StdViewZoomOut::isActive(void)
 //===========================================================================
 // Std_ViewBoxZoom
 //===========================================================================
-DEF_STD_CMD_A(StdViewBoxZoom);
+DEF_3DV_CMD(StdViewBoxZoom);
 
 StdViewBoxZoom::StdViewBoxZoom()
   : Command("Std_ViewBoxZoom")
@@ -1287,20 +1287,15 @@ void StdViewBoxZoom::activated(int iMsg)
     if ( view ) {
         View3DInventorViewer* viewer = view->getViewer();
 
-        // This is just for test purposes. We create two points that define a bounding box to which we want to zoom.
-        // FIXME: We should start a rubber band to select the bounding box by the user
-        SbVec2f p1(0.5f, 0.5f), p2(1.0f, 1.0f);
-        SbBox2f box(p1, p2);
-        viewer->boxZoom(box);
+        viewer->startPicking(View3DInventorViewer::Rectangle);
+
+        //// This is just for test purposes. We create two points that define a bounding box to which we want to zoom.
+        //// FIXME: We should start a rubber band to select the bounding box by the user
+        //SbVec2f p1(0.5f, 0.5f), p2(1.0f, 1.0f);
+        //SbBox2f box(p1, p2);
+        //viewer->boxZoom(box);
     }
 }
-
-bool StdViewBoxZoom::isActive(void)
-{
-    return false; // tmp. deactivated
-    //return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
-}
-
 
 
 //===========================================================================

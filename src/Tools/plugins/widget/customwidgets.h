@@ -230,6 +230,8 @@ class ColorButton : public QPushButton
   Q_OBJECT
 
   Q_PROPERTY( QColor color READ color WRITE setColor )
+  Q_PROPERTY( bool allowChangeColor READ allowChangeColor WRITE setAllowChangeColor )
+  Q_PROPERTY( bool drawFrame READ drawFrame WRITE setDrawFrame )
 
 public:
   ColorButton( QWidget* parent = 0 );
@@ -237,6 +239,12 @@ public:
 
   void setColor( const QColor& );
   QColor color() const;
+
+  void setAllowChangeColor(bool);
+  bool allowChangeColor() const;
+
+  void setDrawFrame(bool);
+  bool drawFrame() const;
 
 public Q_SLOTS:
   virtual void onChooseColor();
@@ -249,6 +257,8 @@ protected:
 
 private:
   QColor _col;
+  bool _allowChange;
+  bool _drawFrame;
 };
 
 // ------------------------------------------------------------------------------

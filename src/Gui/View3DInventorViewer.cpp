@@ -1554,7 +1554,7 @@ void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue)
         first = FALSE;
       }*/
     }
-    
+
     const float oldfocaldist = cam->focalDistance.getValue();
     const float newfocaldist = oldfocaldist * multiplicator;
 
@@ -1591,68 +1591,107 @@ void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue)
 }
 
 // Draw routines
-void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
+void View3DInventorViewer::drawRect(int x1, int y1, int x2, int y2)
 {
-#if 0 //TODO
-  if (p)
-    p->drawRect( QRect( QPoint( QMIN( x, w ), QMIN( y, h ) ),
-         QPoint( QMAX( x, w ), QMAX( y, h ) ) ) );
-  else
-  {
-    QPainter p(getGLWidget());
-//    p.setPen( Qt::white );
-    QPen pen = p.pen();
-    pen.setColor( Qt::white );
-    pen.setStyle( Qt::DashLine );
-    pen.setWidth( 3 );
-    p.setPen( pen );
-    p.setRasterOp( QPainter::XorROP );
-    drawRect( x, y, w, h, &p );
-  }
+    SbVec2s s = this->getSize();
+    this->glLockNormal();
+    glDrawBuffer(GL_FRONT);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, s[0], 0, s[1], -1, 1);
+  //  glViewport(-1, -1, s[0] + 2, s[1] + 2);
+
+    // Store GL state.
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GLfloat depthrange[2];
+    glGetFloatv(GL_DEPTH_RANGE, depthrange);
+    GLdouble projectionmatrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
+
+    glDepthFunc(GL_ALWAYS);
+    glDepthMask(GL_TRUE);
+    glDepthRange(0,0);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glDisable(GL_BLEND);
+
+    SbVec2s view = this->getGLSize();
+    glViewport(0, 0, view[0], view[1]);
+    
+    glEnable(GL_COLOR_LOGIC_OP);
+    glLogicOp(GL_XOR);
+    glDrawBuffer(GL_FRONT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
+    glLineWidth(3.0f);
+    glEnable(GL_LINE_STIPPLE);
+    glLineStipple(2, 0x3F3F);
+    glColor4f(1.0, 1.0, 0.0, 0.0);
+
+    glBegin(GL_LINE_LOOP);
+		glVertex3i(x1, view[1]-y1, 0.0);
+		glVertex3i(x2, view[1]-y1, 0.0);
+		glVertex3i(x2, view[1]-y2, 0.0);
+		glVertex3i(x1, view[1]-y2, 0.0);
+	glEnd();
+    glFlush();
+    glDisable(GL_LINE_STIPPLE);
+    glDisable(GL_COLOR_LOGIC_OP);
+
+
+#if 0
+    // Render axis notation letters ("X", "Y", "Z").
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, view[0], 0, view[1], -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    GLint unpack;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack);
+    glPopMatrix();
 #endif
+
+    // Reset original state
+    glDepthRange(depthrange[0], depthrange[1]);
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(projectionmatrix);
+
+    glPopAttrib();
+
+    glPopMatrix();
 }
 
-void View3DInventorViewer::drawNode ( int x, int y, int w, int h, QPainter* p )
-{
-#if 0 //TODO
-  if (p)
-    p->drawEllipse( x, y, w, h );
-  else
-  {
-    QPainter p(getGLWidget());
-//    p.setPen( Qt::white );
-    QPen pen = p.pen();
-    pen.setColor( Qt::white );
-    pen.setWidth( 3 );
-    p.setPen( pen );
-    p.setBrush( Qt::white );
-    p.setRasterOp( QPainter::XorROP );
-    drawNode( x, y, w, h, &p );
-  }
-#endif
+void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
+{/*
+    QSize s = this->getWidget()->size();
+    //glOrtho(-1, 1, -1, 1, -10, 10);
+    
+    glEnable(GL_COLOR_LOGIC_OP);
+    glLogicOp(GL_XOR);
+    glDrawBuffer(GL_FRONT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
+    glLineWidth(3.0f);
+    glEnable(GL_LINE_STIPPLE);
+    glLineStipple(2, 0x3F3F);
+    glColor4f(1.0, 1.0, 0.0, 0.0);
+
+    glBegin(GL_LINES);
+		glVertex3i( x1, s.height()-y1, 0.0);
+		glVertex3i( x2, s.height()-y2, 0.0);
+	glEnd();
+    glFlush();
+    glDisable(GL_LINE_STIPPLE);
+    glDisable(GL_COLOR_LOGIC_OP);*/
 }
 
-void View3DInventorViewer::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
-{
-#if 0 //TODO
-  if (p)
-    p->drawLine( x1, y1, x2, y2 );
-  else
-  {
-    QPainter p(getGLWidget());
-//    p.setPen( Qt::white );
-    QPen pen = p.pen();
-    pen.setColor( Qt::white );
-    pen.setStyle( Qt::DashLine );
-    pen.setWidth( 3 );
-    p.setPen( pen );
-    p.setRasterOp( QPainter::XorROP );
-    drawLine( x1, y1, x2, y2, &p );
-  }
-#endif
-}
-
-void View3DInventorViewer::drawCircle ( int x, int y, int r, QPainter* p )
+void View3DInventorViewer::drawCircle (int x, int y, int r)
 {
 #if 0 //TODO
   if (p)
@@ -1670,7 +1709,7 @@ void View3DInventorViewer::drawCircle ( int x, int y, int r, QPainter* p )
 #endif
 }
 
-void View3DInventorViewer::drawText ( int x, int y, const QString & str, QPainter* p )
+void View3DInventorViewer::drawText (int x, int y, const QString & str)
 {
 #if 0 //TODO
   if (p)
