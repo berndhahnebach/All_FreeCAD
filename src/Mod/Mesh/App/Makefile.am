@@ -308,6 +308,10 @@ endif
 endif
 
 libdir = $(prefix)/Mod/Mesh
+datadir = $(prefix)/Mod/Mesh
+data_DATA = MeshTestsApp.py 
 
 EXTRA_DIST = \
+		$(data_DATA) \
 		AppMesh.vcproj
+
