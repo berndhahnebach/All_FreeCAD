@@ -194,25 +194,26 @@ int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
 {
   PyObject *pcObj=0;
   if (!PyArg_ParseTuple(args, "|O", &pcObj))     // convert args: Python->C 
-    return -1;                             // NULL triggers exception 
+    return -1;                             // NULL triggers exception
 
-  if( PyObject_TypeCheck(pcObj, &(MeshPy::Type)) ) 
+  // if no mesh is given
+  if (!pcObj) return 0;
+  if (PyObject_TypeCheck(pcObj, &(MeshPy::Type))) 
   {
-    MeshPy* pcMesh = (MeshPy*)pcObj;
-    ((MeshPy*)self)->_pcMesh = pcMesh->_pcMesh;
+    MeshPy* pcMesh = static_cast<MeshPy*>(pcObj);
+    *(static_cast<MeshPy*>(self)->_pcMesh) = *(pcMesh->_pcMesh);
   }
-  else  if (PyList_Check(pcObj))
+  else if (PyList_Check(pcObj))
   {
     ((MeshPy*)self)->addFacets(args);
   }
-  else  if (PyString_Check(pcObj))
+  else if (PyString_Check(pcObj))
   {
-
     std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-    MeshInput aReader( *apcKernel );
+    MeshInput aReader(*apcKernel);
         
     aReader.LoadAny(PyString_AsString(pcObj));
-        // Mesh is okay
+    // Mesh is okay
     ((MeshPy*)self)->_pcMesh = apcKernel.release();
   }
 
@@ -226,14 +227,14 @@ MeshPy::MeshPy(PyTypeObject *T)
 : Base::PyObjectBase(0,T)
 {
   _pcMesh = new MeshCore::MeshKernel();
-  //assert(0);
-  //Base::Console().Log("Create MeshPy: %p \n",this);
 }
 
 MeshPy::MeshPy(MeshCore::MeshKernel* pcMesh, PyTypeObject *T)
-: Base::PyObjectBase(0,T), _pcMesh(pcMesh)
+: Base::PyObjectBase(0,T)
 {
-  //Base::Console().Log("Create MeshPy: %p \n",this);
+  // As long as we don't have a reference mechanism working we must copy the data, otherwise we run into SEGFAULTS
+  _pcMesh = new MeshCore::MeshKernel();
+  _pcMesh->operator = (*pcMesh);
 }
 
 //--------------------------------------------------------------------------
@@ -242,7 +243,6 @@ MeshPy::MeshPy(MeshCore::MeshKernel* pcMesh, PyTypeObject *T)
 MeshPy::~MeshPy()           // Everything handled in parent
 {
   delete _pcMesh;
-  //Base::Console().Log("Destroy MeshPy: %p \n",this);
 } 
 
 //--------------------------------------------------------------------------
@@ -559,7 +559,7 @@ PYFUNCIMP_D(MeshPy,coarsen)
 
 PYFUNCIMP_D(MeshPy,unite)
 {
- 	MeshPy   *pcObject;
+  MeshPy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -576,7 +576,7 @@ PYFUNCIMP_D(MeshPy,unite)
 
 PYFUNCIMP_D(MeshPy,intersect)
 {
- 	MeshPy   *pcObject;
+  MeshPy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -593,7 +593,7 @@ PYFUNCIMP_D(MeshPy,intersect)
 
 PYFUNCIMP_D(MeshPy,diff)
 {
- 	MeshPy   *pcObject;
+  MeshPy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -610,7 +610,7 @@ PYFUNCIMP_D(MeshPy,diff)
 
 PYFUNCIMP_D(MeshPy,cutOuter)
 {
- 	MeshPy   *pcObject;
+  MeshPy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -627,7 +627,7 @@ PYFUNCIMP_D(MeshPy,cutOuter)
 
 PYFUNCIMP_D(MeshPy,cutInner)
 {
- 	MeshPy   *pcObject;
+  MeshPy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -739,7 +739,6 @@ PYFUNCIMP_D(MeshPy,addFacet)
 
 PYFUNCIMP_D(MeshPy,addFacets)
 {
- 
   PyObject *list;
 
   vector<MeshGeomFacet> facets;

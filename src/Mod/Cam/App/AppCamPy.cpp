@@ -3491,89 +3491,85 @@ static PyObject * openDYNA(PyObject *self, PyObject *args)
 		return NULL;  
 	PY_TRY
 	{
-		MeshCore::MeshKernel mesh;
-		ReadDyna parse(mesh,filename);
+		MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel();
+		ReadDyna parse(*mesh,filename);
 		return new MeshPy(mesh);
 	}
 	PY_CATCH;
 
 	Py_Return;
-
 }
 
 
 static PyObject * offset_mesh(PyObject *self, PyObject *args)
 {
-	double offset;
+    double offset;
 
-	MeshPy   *pcObject;
-	PyObject *pcObj;
-	if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
+    MeshPy   *pcObject;
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
 
-	pcObject = (MeshPy*)pcObj;
-	Base::Builder3D log3d;
+    pcObject = (MeshPy*)pcObj;
+    Base::Builder3D log3d;
 
-	PY_TRY
-	{
-		MeshCore::MeshKernel mesh = pcObject->getMesh();
-		//Base::Vector3f Point[3];
-		Base::Vector3f current_pnt;
+    PY_TRY
+    {
+        MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel(pcObject->getMesh());
+        //Base::Vector3f Point[3];
+        Base::Vector3f current_pnt;
 
  
-		//const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
-		//const MeshCore::MeshPointArray& Points = mesh.GetPoints();
-		
-		MeshCore::MeshPointIterator p_it(mesh);
-		MeshCore::MeshFacetIterator f_it(mesh);
-        MeshCore::MeshRefPointToFacets rf2pt(mesh);
-	    MeshCore::MeshGeomFacet t_face;
-		
-		//int NumOfPoints = mesh.CountPoints();
+        //const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+        //const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+
+        MeshCore::MeshPointIterator p_it(*mesh);
+        MeshCore::MeshFacetIterator f_it(*mesh);
+        MeshCore::MeshRefPointToFacets rf2pt(*mesh);
+        MeshCore::MeshGeomFacet t_face;
+
+        //int NumOfPoints = mesh.CountPoints();
 
         Base::Vector3f normal,local_normal;
-		//float fArea = 0.0f;
+        //float fArea = 0.0f;
 
-		
 
-		for (unsigned long i=0; i<rf2pt.size(); i++) 
-		{    
-			 // Satz von Dreiecken zu jedem Punkt
+
+        for (unsigned long i=0; i<rf2pt.size(); i++) 
+        {
+             // Satz von Dreiecken zu jedem Punkt
              const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
              float fArea = 0.0;
-			 normal.Set(0.0,0.0,0.0);
-			 
-             
-			 // Iteriere über die Dreiecke zu jedem Punkt
+             normal.Set(0.0,0.0,0.0);
+
+
+             // Iteriere ueber die Dreiecke zu jedem Punkt
              for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
-			 {
-				 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-				 t_face = mesh.GetFacet(**it);
-				 // Flaecheninhalt aufsummieren
-				 float local_Area = t_face.Area();
-				local_normal = t_face.GetNormal();
-				if(local_normal.z < 0)
-				 {
-					 local_normal = local_normal * (-1);
-				 }
+             {
+                 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+                 t_face = mesh->GetFacet(**it);
+                 // Flaecheninhalt aufsummieren
+                 float local_Area = t_face.Area();
+                 local_normal = t_face.GetNormal();
+                 if (local_normal.z < 0)
+                 {
+                     local_normal = local_normal * (-1);
+                 }
 
-				fArea = fArea + local_Area;
-				normal = normal + local_normal;
-                 
-			 }
+                 fArea = fArea + local_Area;
+                 normal = normal + local_normal;
+             }
 
-			 normal.Normalize();
-			 log3d.addSingleArrow(mesh.GetPoint(i),mesh.GetPoint(i) + (normal*offset));
-			 mesh.MovePoint(i,(normal*offset));
-			
-		}
+             normal.Normalize();
+             log3d.addSingleArrow(mesh->GetPoint(i),mesh->GetPoint(i) + (normal*offset));
+             mesh->MovePoint(i,(normal*offset));	
+        }
 
-	    log3d.saveToFile("c:/test.iv");
-		return new MeshPy(mesh);
-	}
-	PY_CATCH;
-
-	Py_Return;
+        log3d.saveToFile("c:/test.iv");
+        return new MeshPy(mesh);
+    }
+    PY_CATCH;
+    Py_Return;
 
 
 		

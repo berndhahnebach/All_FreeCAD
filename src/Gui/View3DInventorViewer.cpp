@@ -1593,17 +1593,16 @@ void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue)
 // Draw routines
 void View3DInventorViewer::drawRect(int x1, int y1, int x2, int y2)
 {
-    SbVec2s s = this->getSize();
+    // Make current context
+    SbVec2s view = this->getGLSize();
     this->glLockNormal();
-    glDrawBuffer(GL_FRONT);
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0, s[0], 0, s[1], -1, 1);
-  //  glViewport(-1, -1, s[0] + 2, s[1] + 2);
+    glOrtho(0, view[0], 0, view[1], -1, 1);
 
-    // Store GL state.
+    // Store GL state
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     GLfloat depthrange[2];
     glGetFloatv(GL_DEPTH_RANGE, depthrange);
@@ -1618,45 +1617,25 @@ void View3DInventorViewer::drawRect(int x1, int y1, int x2, int y2)
     glEnable(GL_COLOR_MATERIAL);
     glDisable(GL_BLEND);
 
-    SbVec2s view = this->getGLSize();
-    glViewport(0, 0, view[0], view[1]);
-    
     glEnable(GL_COLOR_LOGIC_OP);
     glLogicOp(GL_XOR);
     glDrawBuffer(GL_FRONT);
-    //glClear(GL_DEPTH_BUFFER_BIT);
     glLineWidth(3.0f);
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(2, 0x3F3F);
     glColor4f(1.0, 1.0, 0.0, 0.0);
+    glViewport(0, 0, view[0], view[1]);
 
     glBegin(GL_LINE_LOOP);
-		glVertex3i(x1, view[1]-y1, 0.0);
-		glVertex3i(x2, view[1]-y1, 0.0);
-		glVertex3i(x2, view[1]-y2, 0.0);
-		glVertex3i(x1, view[1]-y2, 0.0);
-	glEnd();
+        glVertex3i(x1, view[1]-y1, 0);
+        glVertex3i(x2, view[1]-y1, 0);
+        glVertex3i(x2, view[1]-y2, 0);
+        glVertex3i(x1, view[1]-y2, 0);
+    glEnd();
+
     glFlush();
     glDisable(GL_LINE_STIPPLE);
     glDisable(GL_COLOR_LOGIC_OP);
-
-
-#if 0
-    // Render axis notation letters ("X", "Y", "Z").
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, view[0], 0, view[1], -1, 1);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    GLint unpack;
-    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack);
-    glPopMatrix();
-#endif
 
     // Reset original state
     glDepthRange(depthrange[0], depthrange[1]);
@@ -1664,31 +1643,66 @@ void View3DInventorViewer::drawRect(int x1, int y1, int x2, int y2)
     glLoadMatrixd(projectionmatrix);
 
     glPopAttrib();
-
     glPopMatrix();
+    
+    // Release the context
+    this->glUnlockNormal();
 }
 
 void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
-{/*
-    QSize s = this->getWidget()->size();
-    //glOrtho(-1, 1, -1, 1, -10, 10);
-    
+{
+    // Make current context
+    SbVec2s view = this->getGLSize();
+    this->glLockNormal();
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, view[0], 0, view[1], -1, 1);
+
+    // Store GL state
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GLfloat depthrange[2];
+    glGetFloatv(GL_DEPTH_RANGE, depthrange);
+    GLdouble projectionmatrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
+
+    glDepthFunc(GL_ALWAYS);
+    glDepthMask(GL_TRUE);
+    glDepthRange(0,0);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glDisable(GL_BLEND);
+
     glEnable(GL_COLOR_LOGIC_OP);
     glLogicOp(GL_XOR);
     glDrawBuffer(GL_FRONT);
-    //glClear(GL_DEPTH_BUFFER_BIT);
     glLineWidth(3.0f);
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(2, 0x3F3F);
     glColor4f(1.0, 1.0, 0.0, 0.0);
+    glViewport(0, 0, view[0], view[1]);
 
-    glBegin(GL_LINES);
-		glVertex3i( x1, s.height()-y1, 0.0);
-		glVertex3i( x2, s.height()-y2, 0.0);
-	glEnd();
+    glBegin(GL_LINE_LOOP);
+        glVertex3i(x1, view[1]-y1, 0);
+        glVertex3i(x2, view[1]-y2, 0);
+    glEnd();
+
     glFlush();
     glDisable(GL_LINE_STIPPLE);
-    glDisable(GL_COLOR_LOGIC_OP);*/
+    glDisable(GL_COLOR_LOGIC_OP);
+
+    // Reset original state
+    glDepthRange(depthrange[0], depthrange[1]);
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(projectionmatrix);
+
+    glPopAttrib();
+    glPopMatrix();
+    
+    // Release the context
+    this->glUnlockNormal();
 }
 
 void View3DInventorViewer::drawCircle (int x, int y, int r)
