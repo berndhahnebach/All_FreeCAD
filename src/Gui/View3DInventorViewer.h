@@ -159,11 +159,10 @@ public:
 
   /** @name Draw routines */
   //@{
-  void drawRect ( int x, int y, int w, int h, QPainter* p = 0 );
-  void drawNode ( int x, int y, int w, int h, QPainter* p = 0 );
-  void drawLine ( int x1, int y1, int x2, int y2, QPainter* p = 0 );
-  void drawCircle ( int x, int y, int r, QPainter* p = 0 );
-  void drawText ( int x, int y, const QString & str, QPainter* p = 0 );
+  void drawRect (int x, int y, int w, int h);
+  void drawLine (int x1, int y1, int x2, int y2);
+  void drawCircle (int x, int y, int r);
+  void drawText (int x, int y, const QString & str);
   //@}
 
   bool bDrawAxisCross;

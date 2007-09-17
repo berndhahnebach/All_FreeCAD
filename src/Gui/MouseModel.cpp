@@ -191,7 +191,6 @@ PolyPickerMouseModel::PolyPickerMouseModel()
   m_iRadius    = 2;
   m_iNodes     = 0;
   m_bWorking   = false;
-  m_bDrawNodes = true;
 }
 
 void PolyPickerMouseModel::initialize()
@@ -227,11 +226,6 @@ void PolyPickerMouseModel::draw ()
     if (m_iNodes < int(_cNodeVector.size()))
     {
       m_iNodes = int(_cNodeVector.size());
-      // drawing the point
-      if (m_bDrawNodes == true)
-      {
-        _pcView3D->drawNode(m_iXnew-m_iRadius,m_iYnew-m_iRadius,2*m_iRadius,2*m_iRadius);
-      }
 
       if ( _cNodeVector.size() > 2 )
       {

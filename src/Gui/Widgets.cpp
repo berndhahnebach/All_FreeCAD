@@ -252,8 +252,9 @@ void CheckListDialog::accept ()
  * Constructs a colored button called \a name with parent \a parent.
  */
 ColorButton::ColorButton( QWidget* parent )
-    : QPushButton( parent )
+    : QPushButton( parent ), _allowChange(true), _drawFrame(true)
 {
+  _col = palette().color(QPalette::Active,QPalette::Midlight);
   connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
 }
 
@@ -281,20 +282,45 @@ QColor ColorButton::color() const
   return _col;
 }
 
+void ColorButton::setAllowChangeColor(bool ok)
+{
+    _allowChange = ok;
+}
+
+bool ColorButton::allowChangeColor() const
+{
+    return _allowChange;
+}
+
+void ColorButton::setDrawFrame(bool ok)
+{
+    _drawFrame = ok;
+}
+
+bool ColorButton::drawFrame() const
+{
+    return _drawFrame;
+}
+
 /**
  * Draws the button label.
  */
 void ColorButton::paintEvent ( QPaintEvent * e )
 {
-  QPushButton::paintEvent( e );
-  
+  QPushButton::paintEvent(e);
+
   QPalette::ColorGroup group = isEnabled() ? hasFocus() ? QPalette::Active : QPalette::Inactive : QPalette::Disabled;
   QColor pen = palette().color(group,QPalette::ButtonText);
 
   QPainter paint(this);
   paint.setPen( pen );
-  paint.setBrush( QBrush( _col ) );
-  paint.drawRect( width()/4, height()/4, width()/2, height()/2 );
+
+  if (_drawFrame) {
+    paint.setBrush(QBrush(_col));
+    paint.drawRect(5, 5, width()-10, height()-10);
+  } else {
+    paint.fillRect(5, 5, width()-10, height()-10, QBrush(_col));
+  }
 }
 
 /**
@@ -302,6 +328,8 @@ void ColorButton::paintEvent ( QPaintEvent * e )
  */
 void ColorButton::onChooseColor()
 {
+  if (!_allowChange)
+      return;
   QColor c = QColorDialog::getColor( _col, this );
   if ( c.isValid() )
   {
