@@ -412,6 +412,9 @@ void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
   case Rectangle:
     pcMouseModel = new SelectionMouseModel();
     break;
+  case BoxZoom:
+    pcMouseModel = new BoxZoomMouseModel();
+    break;
   case Circle:
     pcMouseModel = new CirclePickerMouseModel();
     break;
@@ -421,6 +424,11 @@ void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
 
   if ( pcMouseModel )
     pcMouseModel->grabMouseModel(this);
+}
+
+bool View3DInventorViewer::isPicking() const
+{
+    return (pcMouseModel ? true : false);
 }
 
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
@@ -1406,19 +1414,42 @@ SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
   return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
-void View3DInventorViewer::boxZoom( const SbBox2f& box )
+void View3DInventorViewer::boxZoom(const SbBox2s& box)
 {
-  // first move to the center of the box
-  panToCenter(panningplane, box.getCenter());
-  float w,h;
-  box.getSize(w,h);
+    SoCamera* cam = this->getCamera();
+    if (!cam) return; // no camera 
+    SbViewVolume vv = cam->getViewVolume(getGLAspectRatio());
 
-  // normalized coordinates are within the range [0,1]
-  float max = w>h?w:h;
-  if ( max < 0.001f )
-    return;
-  // global ln function
-  zoom(getCamera(), ::log(max));
+    short sizeX,sizeY;
+    box.getSize(sizeX, sizeY);
+    SbVec2s size = this->getGLSize();
+
+    // The bbox must not be empty i.e. width and length is zero, but it is possible that
+    // either width or length is zero
+    if (sizeX == 0 && sizeY ==0) 
+        return;
+
+    // Get the new center in normalized pixel coordinates
+    short xmin,xmax,ymin,ymax;
+    box.getBounds(xmin,ymin,xmax,ymax);
+    const SbVec2f center((float) ((xmin+xmax)/2) / (float) SoQtMax((int)(size[0] - 1), 1),
+                         (float) (size[1]-(ymin+ymax)/2) / (float) SoQtMax((int)(size[1] - 1), 1));
+
+    SbPlane plane = vv.getPlane(cam->focalDistance.getValue());
+    pan(cam,getGLAspectRatio(),plane, SbVec2f(0.5,0.5), center);
+
+    // Set height or height angle of the camera
+    float scaleX = (float)sizeX/(float)size[0];
+    float scaleY = (float)sizeY/(float)size[1];
+    float scale = std::max<float>(scaleX, scaleY);
+    if (cam && cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        float height = static_cast<SoOrthographicCamera*>(cam)->height.getValue() * scale;
+        static_cast<SoOrthographicCamera*>(cam)->height = height;
+    } else if (cam && cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        float height = static_cast<SoPerspectiveCamera*>(cam)->heightAngle.getValue() / 2.0f;
+        height = 2.0f * atan(tan(height) * scale);
+        static_cast<SoPerspectiveCamera*>(cam)->heightAngle = height;
+    }
 }
 
 void View3DInventorViewer::viewAll()

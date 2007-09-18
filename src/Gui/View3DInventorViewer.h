@@ -95,9 +95,11 @@ public:
   enum ePickMode {
     Lasso       = 0,  /**< Select objects using a lasso. */
     Rectangle   = 1,  /**< Select objects using a rectangle. */
-    Circle      = 2,  /**< Select objects using a circle. */
+    BoxZoom     = 2,  /**< Perform a box zoom. */
+    Circle      = 3,  /**< Select objects using a circle. */
   };
   void startPicking( ePickMode = Lasso );
+  bool isPicking() const;
   const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
 
   void setEditing(SbBool edit);
@@ -133,9 +135,8 @@ public:
 
   /** 
    * Zooms the viewport to the size of the bounding box. 
-   * FIXME: This method is due to testing purposes public but should become protected later on.
    */
-  void boxZoom( const SbBox2f& );
+  void boxZoom(const SbBox2s&);
   /**
    * Reposition the current camera so we can see the complete scene.
    */

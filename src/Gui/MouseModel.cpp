@@ -422,6 +422,7 @@ int SelectionMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, c
     {
     case SoMouseButtonEvent::BUTTON1:
       {
+        releaseMouseModel();
         m_bWorking = false;
         ret = Finish;
       } break;
@@ -446,6 +447,27 @@ int SelectionMouseModel::locationEvent( const SoLocation2Event * const e, const 
 int SelectionMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
 {
   return Continue;
+}
+
+// -----------------------------------------------------------------------------------
+
+BoxZoomMouseModel::BoxZoomMouseModel()
+{
+}
+
+BoxZoomMouseModel::~BoxZoomMouseModel()
+{
+}
+
+void BoxZoomMouseModel::terminate()
+{
+    SbVec2s ;
+    int xmin = std::min<int>(m_iXold, m_iXnew);
+    int xmax = std::max<int>(m_iXold, m_iXnew);
+    int ymin = std::min<int>(m_iYold, m_iYnew);
+    int ymax = std::max<int>(m_iYold, m_iYnew);
+    SbBox2s box(xmin, ymin, xmax, ymax);
+    _pcView3D->boxZoom(box);
 }
 
 // -----------------------------------------------------------------------------------

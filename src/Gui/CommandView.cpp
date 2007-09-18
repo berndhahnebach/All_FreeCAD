@@ -1286,14 +1286,8 @@ void StdViewBoxZoom::activated(int iMsg)
     View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
     if ( view ) {
         View3DInventorViewer* viewer = view->getViewer();
-
-        viewer->startPicking(View3DInventorViewer::Rectangle);
-
-        //// This is just for test purposes. We create two points that define a bounding box to which we want to zoom.
-        //// FIXME: We should start a rubber band to select the bounding box by the user
-        //SbVec2f p1(0.5f, 0.5f), p2(1.0f, 1.0f);
-        //SbBox2f box(p1, p2);
-        //viewer->boxZoom(box);
+        if (!viewer->isPicking())
+            viewer->startPicking(View3DInventorViewer::BoxZoom);
     }
 }
 
