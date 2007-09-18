@@ -179,6 +179,21 @@ private:
 // -----------------------------------------------------------------------------------
 
 /**
+ * The box zoom mouse model class
+ * Draws a rectangle for box zooming
+ * \author Werner Mayer
+ */
+class GuiExport BoxZoomMouseModel : public SelectionMouseModel 
+{
+public:
+  BoxZoomMouseModel();
+  ~BoxZoomMouseModel();
+  void terminate();
+};
+
+// -----------------------------------------------------------------------------------
+
+/**
  * The picker mouse model class
  * \author Werner Mayer
  */
