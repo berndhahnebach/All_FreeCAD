@@ -433,6 +433,10 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           Base::Console().Error(str.c_str());                         \
           Py_Error(PyExc_Exception,str.c_str());                      \
     }                                                                 \
+    catch(const char *e)                                              \
+    {                                                                 \
+          Py_Error(PyExc_Exception,e);                                \
+    }                                                                 \
     catch(...)                                                        \
     {                                                                 \
           Py_Error(PyExc_Exception,"Unknown C++ exception");          \
@@ -448,6 +452,9 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           str += ")";                                                 \
           e.ReportException();                                        \
           Py_Error(PyExc_Exception,str.c_str());                      \
+    }catch(const char *e)                                             \
+    {                                                                 \
+          Py_Error(PyExc_Exception,e);                                \
     }
 
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
