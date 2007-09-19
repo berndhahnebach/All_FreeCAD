@@ -44,7 +44,7 @@ class SoMaterial;
 class SoRotationXYZ;
 class SbSphereSheetProjector;
 class SoEventCallback;
-class SbBox2f;
+class SbBox2s;
 
 namespace Gui {
 
