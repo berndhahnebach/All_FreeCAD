@@ -603,6 +603,7 @@ src/Mod/Drawing/Makefile
 src/Mod/Drawing/App/Makefile
 src/Mod/Drawing/Gui/Makefile
 src/Mod/Drawing/Gui/Resources/Makefile
+src/Mod/Drawing/Templates/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
 src/Tools/Makefile

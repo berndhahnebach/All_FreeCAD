@@ -28,6 +28,7 @@
 # include <qevent.h>
 # include <qpainter.h>
 # include <qpixmap.h>
+# include <Inventor/SbBox.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
@@ -461,7 +462,6 @@ BoxZoomMouseModel::~BoxZoomMouseModel()
 
 void BoxZoomMouseModel::terminate()
 {
-    SbVec2s ;
     int xmin = std::min<int>(m_iXold, m_iXnew);
     int xmax = std::max<int>(m_iXold, m_iXnew);
     int ymin = std::min<int>(m_iYold, m_iYnew);
