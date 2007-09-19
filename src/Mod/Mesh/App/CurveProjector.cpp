@@ -40,7 +40,6 @@
 #include "Core/Algorithm.h"
 
 #include <Base/Exception.h>
-#include <Base/FileInfo.h>
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 

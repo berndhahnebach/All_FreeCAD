@@ -27,7 +27,6 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshImport.h"
 
@@ -51,7 +50,7 @@ int Import::execute(void)
   MeshInput aReader( *apcKernel );
       
   aReader.LoadAny(FileName.getValue());
-      // Mesh is okay
+  // Mesh is okay
   Mesh.setValue(apcKernel.release());
 
   return 0;
