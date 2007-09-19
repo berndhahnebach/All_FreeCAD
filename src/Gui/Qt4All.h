@@ -79,6 +79,8 @@
 #include <qstatusbar.h>
 #include <qstyle.h>
 #include <qstylefactory.h>
+#include <QStyleOptionButton>
+#include <QStylePainter>
 #include <QSyntaxHighlighter>
 #include <qtabbar.h>
 #include <qtabwidget.h>

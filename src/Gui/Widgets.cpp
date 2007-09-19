@@ -305,22 +305,35 @@ bool ColorButton::drawFrame() const
 /**
  * Draws the button label.
  */
-void ColorButton::paintEvent ( QPaintEvent * e )
+void ColorButton::paintEvent (QPaintEvent * e)
 {
-  QPushButton::paintEvent(e);
+    // first paint the complete button
+    QPushButton::paintEvent(e);
 
-  QPalette::ColorGroup group = isEnabled() ? hasFocus() ? QPalette::Active : QPalette::Inactive : QPalette::Disabled;
-  QColor pen = palette().color(group,QPalette::ButtonText);
+    // repaint the rectangle area
+    QPalette::ColorGroup group = isEnabled() ? hasFocus() ? QPalette::Active : QPalette::Inactive : QPalette::Disabled;
+    QColor pen = palette().color(group,QPalette::ButtonText);
+    {
+        QPainter paint(this);
+        paint.setPen( pen );
 
-  QPainter paint(this);
-  paint.setPen( pen );
+        if (_drawFrame) {
+            paint.setBrush(QBrush(_col));
+            paint.drawRect(5, 5, width()-10, height()-10);
+        } else {
+            paint.fillRect(5, 5, width()-10, height()-10, QBrush(_col));
+        }
+    }
 
-  if (_drawFrame) {
-    paint.setBrush(QBrush(_col));
-    paint.drawRect(5, 5, width()-10, height()-10);
-  } else {
-    paint.fillRect(5, 5, width()-10, height()-10, QBrush(_col));
-  }
+    // overpaint the rectangle to paint icon and text 
+    QStyleOptionButton opt;
+    opt.init(this);
+    opt.text = text();
+    opt.icon = icon();
+    opt.iconSize = iconSize();
+
+    QStylePainter p(this);
+    p.drawControl(QStyle::CE_PushButtonLabel, opt);
 }
 
 /**
