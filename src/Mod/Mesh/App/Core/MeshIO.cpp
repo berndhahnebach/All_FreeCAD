@@ -267,9 +267,9 @@ bool MeshInput::LoadAny(const char* FileName)
 {
   // ask for read permission
   Base::FileInfo fi(FileName);
-	if ( !fi.exists() || !fi.isFile()  )
+  if ( !fi.exists() || !fi.isFile()  )
     throw Base::FileException("File does not exists",FileName);
-	if ( !fi.isReadable() )
+  if ( !fi.isReadable() )
     throw Base::FileException("No permission on the file",FileName);
 
   std::ifstream str( FileName, std::ios::in | std::ios::binary );
@@ -300,7 +300,6 @@ bool MeshInput::LoadAny(const char* FileName)
     }
     
     return ok;
-      
   }
 }
 
