@@ -1426,7 +1426,7 @@ void View3DInventorViewer::boxZoom(const SbBox2s& box)
 
     // The bbox must not be empty i.e. width and length is zero, but it is possible that
     // either width or length is zero
-    if (sizeX == 0 && sizeY ==0) 
+    if (sizeX == 0 && sizeY == 0) 
         return;
 
     // Get the new center in normalized pixel coordinates
