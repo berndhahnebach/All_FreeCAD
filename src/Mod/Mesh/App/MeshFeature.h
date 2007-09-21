@@ -28,6 +28,7 @@
 
 #include "Core/MeshKernel.h"
 #include "Mesh.h"
+#include "MeshProperties.h"
 
 namespace Base{
   class PyObjectBase;

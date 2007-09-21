@@ -1725,6 +1725,10 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\FacetPy.xml"
+			>
+		</File>
+		<File
 			RelativePath="FeatureMeshCurvature.cpp"
 			>
 			<FileConfiguration
@@ -2089,6 +2093,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MeshProperties.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshProperties.h"
+			>
+		</File>
+		<File
 			RelativePath="MeshPy.cpp"
 			>
 			<FileConfiguration
@@ -2123,7 +2135,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="copy $(InputFileName)"
-					CommandLine="copy &quot;$(InputFileName)&quot; &quot;../../../../Mod/Mesh/&quot;"
+					CommandLine="copy &quot;$(InputFileName)&quot; &quot;../../../../Mod/Mesh/&quot;&#x0D;&#x0A;"
 					Outputs="../../../../Mod/Mesh/$(InputFileName)"
 				/>
 			</FileConfiguration>
