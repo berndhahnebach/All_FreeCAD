@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\&#x0D;&#x0A;xcopy  /y  /f  &quot;../Templates/A3 Landscape.svg&quot;  ..\..\..\..\Mod\Drawing\Templates\"
+				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\&#x0D;&#x0A;xcopy  /y  /f  &quot;../Templates/*.svg&quot;  ..\..\..\..\Mod\Drawing\Templates\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\&#x0D;&#x0A;xcopy  /y  /f  &quot;../Templates/A3 Landscape.svg&quot;  ..\..\..\..\Mod\Drawing\Templates\"
+				CommandLine="xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Drawing\&#x0D;&#x0A;xcopy  /y  /f  &quot;../Templates/*.svg&quot;  ..\..\..\..\Mod\Drawing\Templates\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

@@ -68,7 +68,7 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
 
 void CmdDrawingNewA3Landscape::activated(int iMsg)
 {
-  string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3 Landscape.svg");
+  string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3_Landscape.svg");
   //App::Application::Config;
   string FeatName = getUniqueObjectName("Page");
   
