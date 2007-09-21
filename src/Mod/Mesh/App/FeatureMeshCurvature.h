@@ -29,6 +29,7 @@
 #include <App/PropertyGeo.h>
 
 #include "Mesh.h"
+#include "MeshProperties.h"
 
 namespace Base {
 class Matrix4D;

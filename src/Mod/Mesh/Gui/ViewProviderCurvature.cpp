@@ -52,7 +52,7 @@
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/ViewProviderFeature.h>
 
-#include <Mod/Mesh/App/Mesh.h>
+#include <Mod/Mesh/App/MeshProperties.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
