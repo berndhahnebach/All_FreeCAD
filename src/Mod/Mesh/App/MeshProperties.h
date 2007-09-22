@@ -44,6 +44,7 @@ namespace Mesh
 
 /** The normals property class.
  * Note: We need an own class for that to distinguish from the base vector list.
+ * @author Werner Mayer
  */
 class AppMeshExport PropertyNormalList : public App::PropertyVectorList
 {
@@ -67,6 +68,7 @@ struct AppMeshExport CurvatureInfo
 };
 
 /** The Curvature property class.
+ * @author Werner Mayer
  */
 class AppMeshExport PropertyCurvatureList: public App::PropertyLists
 {
@@ -111,15 +113,16 @@ private:
   std::vector<CurvatureInfo> _lValueList;
 };
 
-/** The meshkernl property
+/** The mesh kernel property class.
+ * @author Werner Mayer
  */
 class AppMeshExport PropertyMeshKernel : public App::Property
 {
   TYPESYSTEM_HEADER();
 
 public:
-	PropertyMeshKernel();
-	~PropertyMeshKernel();
+  PropertyMeshKernel();
+  ~PropertyMeshKernel();
 
   /** @name Getter/setter */
   //@{
@@ -130,7 +133,6 @@ public:
   /// get the Kernel (only const possible!)
   const MeshCore::MeshKernel &getValue(void) const;
   virtual unsigned int getMemSize (void) const;
-
   //@}
 
   /** @name Modify */

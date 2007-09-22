@@ -68,13 +68,16 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
 
 void CmdDrawingNewA3Landscape::activated(int iMsg)
 {
-  string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3_Landscape.svg");
-  //App::Application::Config;
-  string FeatName = getUniqueObjectName("Page");
+  // Note: On Linux it is bad behaviour to mix up data files with binary files in the same directory.
+# ifdef TEMPLATEDIR
+  std::string Path = TEMPLATEDIR; Path += "/A3_Landscape.svg";
+# else
+  std::string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3_Landscape.svg");
+#endif
+  std::string FeatName = getUniqueObjectName("Page");
   
   doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
-  doCommand(Doc,"App.activeDocument().%s.Template = open('%s').read()",FeatName.c_str(), Path.c_str());
-    
+  doCommand(Doc,"App.activeDocument().%s.Template = open('%s').read()",FeatName.c_str(), Path.c_str());    
 }
 
 bool CmdDrawingNewA3Landscape::isActive(void)

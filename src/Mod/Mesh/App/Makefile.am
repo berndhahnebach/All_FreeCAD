@@ -3,6 +3,12 @@ if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMesh.la Mesh.la
 
+BUILT_SOURCES=\
+		FacetPy.cpp
+
+libMesh_la_BUILT=\
+		FacetPy.h
+
 libMesh_la_SOURCES=\
 		Core/Algorithm.cpp \
 		Core/Algorithm.h \
@@ -260,10 +266,15 @@ libMesh_la_SOURCES=\
 		MeshFeature.h \
 		MeshFeaturePy.cpp \
 		MeshFeaturePy.h \
+		MeshProperties.cpp \
+		MeshProperties.h \
 		MeshPy.cpp \
 		MeshPy.h \
 		PreCompiled.cpp \
 		PreCompiled.h
+
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 
 # the library search path.
@@ -313,5 +324,7 @@ data_DATA = MeshTestsApp.py
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		AppMesh.vcproj
+		AppMesh.vcproj \
+		FacetPy.xml
+
 

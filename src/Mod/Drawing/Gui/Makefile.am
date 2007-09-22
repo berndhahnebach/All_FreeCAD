@@ -19,7 +19,7 @@ libDrawingGui_la_SOURCES=\
 
 # the library search path.
 libDrawingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libDrawingGui_la_CPPFLAGS = -DDrawingAppExport= -DDrawingGuiExport=
+libDrawingGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DDrawingAppExport= -DDrawingGuiExport=
 
 libDrawingGui_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
