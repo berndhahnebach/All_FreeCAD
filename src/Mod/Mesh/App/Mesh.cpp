@@ -39,3 +39,28 @@
 
 using namespace Mesh;
 
+
+MeshCore::MeshFacetIterator MeshObject::FacetIterator() const
+{
+  MeshCore::MeshFacetIterator it = _pcKernel->FacetIterator();
+  it.Transform(_Mtrx);
+  return it;
+}
+
+MeshCore::MeshPointIterator MeshObject::PointIterator() const
+{
+  MeshCore::MeshPointIterator it = _pcKernel->PointIterator();
+  it.Transform(_Mtrx);
+  return it;
+}
+
+void MeshObject::ApplyTransform( const Base::Matrix4D& rclTrf )
+{
+  _Mtrx = rclTrf * _Mtrx;
+}
+
+void MeshObject::SetTransform( const Base::Matrix4D& rclTrf )
+{
+  _Mtrx = rclTrf;
+}
+

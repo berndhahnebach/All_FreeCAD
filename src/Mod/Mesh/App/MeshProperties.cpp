@@ -44,32 +44,6 @@ TYPESYSTEM_SOURCE(Mesh::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Mesh::PropertyCurvatureList , App::PropertyLists);
 TYPESYSTEM_SOURCE(Mesh::PropertyMeshKernel , App::Property);
 
-MeshCore::MeshFacetIterator MeshObject::FacetIterator() const
-{
-  MeshCore::MeshFacetIterator it = _pcKernel->FacetIterator();
-  it.Transform(_Mtrx);
-  return it;
-}
-
-MeshCore::MeshPointIterator MeshObject::PointIterator() const
-{
-  MeshCore::MeshPointIterator it = _pcKernel->PointIterator();
-  it.Transform(_Mtrx);
-  return it;
-}
-
-void MeshObject::ApplyTransform( const Base::Matrix4D& rclTrf )
-{
-  _Mtrx = rclTrf * _Mtrx;
-}
-
-void MeshObject::SetTransform( const Base::Matrix4D& rclTrf )
-{
-  _Mtrx = rclTrf;
-}
-
-// ----------------------------------------------------------------------------
-
 void PropertyNormalList::transform(const Base::Matrix4D &mat)
 {
   // A normal vector is only a direction with unit length, so we only need to rotate it
