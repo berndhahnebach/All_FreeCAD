@@ -1,18 +1,21 @@
 //---------------------------------------------------------------------------
 
-
+#ifdef _MSC_VER
 #pragma hdrstop
+#endif
 
 #include "CaptureClass.h"
 
 //---------------------------------------------------------------------------
 
+#ifdef _MSC_VER
 #pragma package(smart_init)
+#endif
 
 
 	/// Constructor with an Capture number, 0 will ask for one
 Capturerer::Capturerer(int num)
-: capture(NULL),_bIsWinOn(false),captureImage(0)
+: capture(NULL),captureImage(0),_bIsWinOn(false)
 {
   capture = cvCaptureFromCAM( num );
 
@@ -23,7 +26,7 @@ Capturerer::Capturerer(int num)
 }
 	/// Constructor with an File name. 	Object will capture from that Video file
 Capturerer::Capturerer(const char* fileName)
-: capture(NULL),_bIsWinOn(false), captureImage(0)
+: capture(NULL), captureImage(0),_bIsWinOn(false)
 {
    capture = cvCaptureFromAVI( fileName );
 

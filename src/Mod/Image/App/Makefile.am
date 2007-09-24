@@ -2,6 +2,8 @@
 lib_LTLIBRARIES=libImage.la Image.la
 
 libImage_la_SOURCES=\
+		CaptureClass.cpp \
+		CaptureClass.h \
 		ImageBase.cpp \
 		ImageBase.h \
 		PreCompiled.cpp \
@@ -15,6 +17,9 @@ libImage_la_CPPFLAGS = -DImageAppExport=
 libImage_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lcv \
+		-lcxcore \
+		-lhighgui \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -35,7 +40,7 @@ Image_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I/usr/include/opencv -I$(top_srcdir)/src -I$(top_builddir)/src
 
 libdir = $(prefix)/Mod/Image
 
