@@ -2198,7 +2198,15 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <name>Gui::Translator</name>
     <message>
         <source>English</source>
+        <translation>Englisch</translation>
+    </message>
+    <message>
+        <source>German</source>
         <translation>Deutsch</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>Französisch</translation>
     </message>
 </context>
 <context>

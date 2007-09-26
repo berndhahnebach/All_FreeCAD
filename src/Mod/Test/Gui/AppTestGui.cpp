@@ -70,7 +70,7 @@ void loadTestResource()
 {
   // add resources and reloads the translators
   Q_INIT_RESOURCE(Test);
-  Gui::Translator::instance()->reinstallLanguage();
+  Gui::Translator::instance()->refresh();
 }
 
 /* Python entry */

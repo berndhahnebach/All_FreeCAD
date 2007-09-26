@@ -41,7 +41,7 @@ void loadPointsResource()
 {
   // add resources and reloads the translators
   Q_INIT_RESOURCE(Points);
-  Gui::Translator::instance()->reinstallLanguage();
+  Gui::Translator::instance()->refresh();
 }
 
 

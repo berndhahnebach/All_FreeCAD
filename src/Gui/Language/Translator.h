@@ -40,36 +40,35 @@ namespace Gui {
  */
 class GuiExport Translator : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /** @name singleton stuff */
-  //@{
-  /// Creates an instance
-  static Translator* instance(void);
-  /// Destroys the instance
-  static void destruct (void);
-  //@}
+    /** @name singleton stuff */
+    //@{
+    /// Creates an instance
+    static Translator* instance(void);
+    /// Destroys the instance
+    static void destruct (void);
+    //@}
 
-  /** Installs the specified language \a lang if available. */
-  void installLanguage ( const QString& lang );
-  /* Reloads the translators */
-  void reinstallLanguage();
-  /** Returns the currently installed language. If no language is installed an empty string is returned. */
-  QString installedLanguage() const;
-  /** Returns a list of supported languages. */
-  QStringList supportedLanguages() const;
+    /** Activates the specified language \a lang if available. */
+    void activateLanguage (const QString& lang);
+    /* Reloads the translators */
+    void refresh();
+    /** Returns the currently installed language. If no language is installed an empty string is returned. */
+    QString activeLanguage() const;
+    /** Returns a list of supported languages. */
+    QStringList supportedLanguages() const;
 
 private:
-  Translator();
-  ~Translator();
-  void findQmFiles();
-  void removeLanguage();
+    Translator();
+    ~Translator();
+    void removeTranslators();
 
-  static Translator* _pcSingleton;
-  QString language; /**< Active language */
-  QMap<QString, QString> languages; /**< Language associated to filename containing the translated literal */
-  QList<QTranslator*> translators; /**< A list of all created translators */
+    static Translator* _pcSingleton;
+    QString activatedLanguage; /**< Active language */
+    QMap<QString, QString> mapLanguageTopLevelDomain;
+    QList<QTranslator*> translators; /**< A list of all created translators */
 };
 
 } // namespace Gui

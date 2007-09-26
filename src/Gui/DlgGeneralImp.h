@@ -38,22 +38,22 @@ namespace Dialog {
  */
 class DlgGeneralImp : public PreferencePage, public Ui_DlgGeneral
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgGeneralImp( QWidget* parent = 0 );
-  ~DlgGeneralImp();
+    DlgGeneralImp( QWidget* parent = 0 );
+    ~DlgGeneralImp();
 
-  void saveSettings();
-  void loadSettings();
-  bool eventFilter ( QObject* o, QEvent* e );
+    void saveSettings();
+    void loadSettings();
+    bool eventFilter ( QObject* o, QEvent* e );
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 private:
-  void setRecentFileSize();
-  QTabWidget* watched;
+    void setRecentFileSize();
+    QTabWidget* watched;
 };
 
 } // namespace Dialog

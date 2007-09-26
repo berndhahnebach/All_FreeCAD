@@ -47,36 +47,36 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent )
   : PreferencePage( parent ), watched(0)
 {
-  this->setupUi(this);
-  // fills the combo box with all available workbenches
-  QStringList work = Application::Instance->workbenches();
-  work.sort();
-  for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it )
-  {
-    QPixmap px = Application::Instance->workbenchIcon( *it );
-    if ( px.isNull() )
-      AutoloadModuleCombo->addItem( *it );
-    else
-      AutoloadModuleCombo->addItem( px, *it );
-  }
-  
-  // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
-  // it, if it is set by the user
-  QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
-  AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findText(curWbName));
-
-  // do not save the content but the current item only
-  QWidget* dw = DockWindowManager::instance()->getDockWindow("Report view");
-  if ( dw )
-  {
-    watched = dw->findChild<QTabWidget*>();
-    if ( watched )
+    this->setupUi(this);
+    // fills the combo box with all available workbenches
+    QStringList work = Application::Instance->workbenches();
+    work.sort();
+    for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it )
     {
-      for (int i=0; i<watched->count(); i++)
-        AutoloadTabCombo->addItem( watched->tabText(i) );
-      watched->installEventFilter(this);
+        QPixmap px = Application::Instance->workbenchIcon( *it );
+        if ( px.isNull() )
+            AutoloadModuleCombo->addItem( *it );
+        else
+            AutoloadModuleCombo->addItem( px, *it );
     }
-  }
+  
+    // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
+    // it, if it is set by the user
+    QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
+    AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findText(curWbName));
+
+    // do not save the content but the current item only
+    QWidget* dw = DockWindowManager::instance()->getDockWindow("Report view");
+    if (dw)
+    {
+        watched = dw->findChild<QTabWidget*>();
+        if (watched)
+        {
+            for (int i=0; i<watched->count(); i++)
+                AutoloadTabCombo->addItem( watched->tabText(i) );
+            watched->installEventFilter(this);
+        }
+    }
 }
 
 /** 
@@ -84,9 +84,9 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
  */
 DlgGeneralImp::~DlgGeneralImp()
 {
-  // no need to delete child widgets, Qt does it all for us
-  if (watched)
-    watched->removeEventFilter(this);
+    // no need to delete child widgets, Qt does it all for us
+    if (watched)
+        watched->removeEventFilter(this);
 }
 
 /** Sets the size of the recent file list from the user parameters.
@@ -104,77 +104,82 @@ void DlgGeneralImp::setRecentFileSize()
 
 void DlgGeneralImp::saveSettings()
 {
-  AutoloadModuleCombo->onSave();
-  AutoloadTabCombo->onSave();
-  RecentFiles->onSave();
-  SplashScreen->onSave();
+    AutoloadModuleCombo->onSave();
+    AutoloadTabCombo->onSave();
+    RecentFiles->onSave();
+    SplashScreen->onSave();
 
-  // set new user defined style
-  (void)QApplication::setStyle(WindowStyle->currentText());
+    // set new user defined style
+    (void)QApplication::setStyle(WindowStyle->currentText());
 
-  setRecentFileSize();
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  QString language = hGrp->GetASCII("Language", "English").c_str();
-  if ( QString::compare( Languages->currentText(), language ) != 0 )
-  {
-    hGrp->SetASCII("Language", Languages->currentText().toUtf8());
-    Translator::instance()->installLanguage(Languages->currentText());
-  }
+    setRecentFileSize();
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+    QByteArray language = hGrp->GetASCII("Language", "English").c_str();
+    QByteArray current = Languages->itemData(Languages->currentIndex()).toByteArray();
+    if (current != language)
+    {
+        hGrp->SetASCII("Language", current.constData());
+        Translator::instance()->activateLanguage(current.constData());
+    }
 }
 
 void DlgGeneralImp::loadSettings()
 {
-  // in case the user defined workbench is hidden
-  AutoloadModuleCombo->onRestore();
-  AutoloadTabCombo->onRestore();
-  RecentFiles->onRestore();
-  SplashScreen->onRestore();
+    // in case the user defined workbench is hidden
+    AutoloadModuleCombo->onRestore();
+    AutoloadTabCombo->onRestore();
+    RecentFiles->onRestore();
+    SplashScreen->onRestore();
 
-  // fill up styles
-  //
-  QStringList styles = QStyleFactory::keys();
-  WindowStyle->addItems(styles);
-  QString style = QApplication::style()->objectName().toLower();
-  int i=0;
-  for (QStringList::ConstIterator it = styles.begin(); it != styles.end(); ++it, i++) {
-    if (style == (*it).toLower()) {
-      WindowStyle->setCurrentIndex( i );
-      break;
+    // fill up styles
+    //
+    QStringList styles = QStyleFactory::keys();
+    WindowStyle->addItems(styles);
+    QString style = QApplication::style()->objectName().toLower();
+    int i=0;
+    for (QStringList::ConstIterator it = styles.begin(); it != styles.end(); ++it, i++) {
+        if (style == (*it).toLower()) {
+            WindowStyle->setCurrentIndex( i );
+            break;
+        }
     }
-  }
 
-  // search for the language files
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  QString language = QString::fromUtf8(hGrp->GetASCII("Language", "English").c_str());
-  Languages->addItem("English"); 
-  Languages->addItems(Translator::instance()->supportedLanguages());
-  int ct=Languages->count();
-  for (int i=0; i<ct; i++) {
-    if (Languages->itemText(i) == language) {
-      Languages->setCurrentIndex(i);
-      break;
+    // search for the language files
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+    QByteArray language = hGrp->GetASCII("Language", "English").c_str();
+    Languages->addItem(Gui::Translator::tr("English"), QByteArray("English"));
+    int index = 1;
+    QStringList list = Translator::instance()->supportedLanguages();
+    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it, index++) {
+        QByteArray lang = it->toAscii();
+        Languages->addItem(Gui::Translator::tr(lang.constData()), lang);
+        if (language == lang)
+            Languages->setCurrentIndex(index);
     }
-  }
 }
 
 void DlgGeneralImp::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi(this);
-  } else {
-    QWidget::changeEvent(e);
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+        for (int i = 0; i < Languages->count(); i++) {
+            QByteArray lang = Languages->itemData(i).toByteArray();
+            Languages->setItemText(i, Gui::Translator::tr(lang.constData()));
+        }
+    } else {
+        QWidget::changeEvent(e);
+    }
 }
 
 bool DlgGeneralImp::eventFilter(QObject* o, QEvent* e)
 {
-  // make sure that report tabs have been translated
-  if (o == watched && e->type() == QEvent::LanguageChange) {
-    for (int i=0; i<watched->count(); i++)
-      AutoloadTabCombo->setItemText( i, watched->tabText(i) );
-  }
+    // make sure that report tabs have been translated
+    if (o == watched && e->type() == QEvent::LanguageChange) {
+        for (int i=0; i<watched->count(); i++)
+            AutoloadTabCombo->setItemText( i, watched->tabText(i) );
+    }
 
-  return QWidget::eventFilter(o, e);
+    return QWidget::eventFilter(o, e);
 }
 
 #include "moc_DlgGeneralImp.cpp"
