@@ -65,10 +65,15 @@ class TestWorkbench ( Workbench ):
 				list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
 				w.appendMenu(menu,list)
 
-				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3", 
-				"Separator", "Std_ViewIvStereoRedGreen", "Std_ViewIvStereoQuadBuff", "Std_ViewIvStereoInterleavedRows", 
-				"Std_ViewIvStereoInterleavedColumns", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
+				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3"]
 				w.appendMenu("Inventor View",list)
+
+				try:
+					import Mesh, MeshGui
+					list = ["Mesh_ExMakeMesh", "Mesh_ExMakeTool", "Mesh_ExMakeUnion"]
+					w.appendMenu("Mesh",list)
+				except:
+					Err('Cannot load Mesh module\n')
 
 				Log ('Setup Test menues...\n')
 			Log ('Loading GUI of Test module... done\n')

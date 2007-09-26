@@ -282,6 +282,123 @@ bool CmdMeshExMakeUnion::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshUnion);
+
+CmdMeshUnion::CmdMeshUnion()
+  :Command("Mesh_Union")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Union");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  iAccel        = 0;
+}
+
+void CmdMeshUnion::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  std::string name1 = obj.front()->name.getValue();
+  std::string name2 = obj.back()->name.getValue();
+  std::string name3 = getUniqueObjectName("Union");
+  openCommand("Mesh Union");
+  doCommand(Doc,
+    "import Mesh,MeshGui\n"
+    "m = App.activeDocument().%s.Mesh\n"
+    "m.unite(App.activeDocument().%s.Mesh)\n"
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+ 
+  updateActive();
+  commitCommand();
+}
+
+bool CmdMeshUnion::isActive(void)
+{
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+}
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshDifference);
+
+CmdMeshDifference::CmdMeshDifference()
+  :Command("Mesh_Difference")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Difference");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  iAccel        = 0;
+}
+
+void CmdMeshDifference::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  std::string name1 = obj.front()->name.getValue();
+  std::string name2 = obj.back()->name.getValue();
+  std::string name3 = getUniqueObjectName("Difference");
+  openCommand("Mesh Union");
+  doCommand(Doc,
+    "import Mesh,MeshGui\n"
+    "m = App.activeDocument().%s.Mesh\n"
+    "m.diff(App.activeDocument().%s.Mesh)\n"
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+ 
+  updateActive();
+  commitCommand();
+}
+
+bool CmdMeshDifference::isActive(void)
+{
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+}
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshIntersection);
+
+CmdMeshIntersection::CmdMeshIntersection()
+  :Command("Mesh_Intersection")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Intersection");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  iAccel        = 0;
+}
+
+void CmdMeshIntersection::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  std::string name1 = obj.front()->name.getValue();
+  std::string name2 = obj.back()->name.getValue();
+  std::string name3 = getUniqueObjectName("Intersection");
+  openCommand("Mesh Union");
+  doCommand(Doc,
+    "import Mesh,MeshGui\n"
+    "m = App.activeDocument().%s.Mesh\n"
+    "m.intersect(App.activeDocument().%s.Mesh)\n"
+    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+ 
+  updateActive();
+  commitCommand();
+}
+
+bool CmdMeshIntersection::isActive(void)
+{
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshImport);
 
 CmdMeshImport::CmdMeshImport()
@@ -907,7 +1024,7 @@ CmdMeshBoundingBox::CmdMeshBoundingBox()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Boundings info");
+  sMenuText     = QT_TR_NOOP("Boundings info...");
   sToolTipText  = QT_TR_NOOP("Shows the boundings of the selected mesh");
   sWhatsThis    = QT_TR_NOOP("Shows the boundings of the selected mesh");
   sStatusTip    = QT_TR_NOOP("Shows the boundings of the selected mesh");
@@ -921,16 +1038,13 @@ void CmdMeshBoundingBox::activated(int iMsg)
   {
     const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->Mesh.getValue();
     const Base::BoundBox3f& box = rMesh.GetBoundBox();
-    QString minX, maxX, minY, maxY, minZ, maxZ;
-    minX.sprintf("Min X=%f", box.MinX);
-    maxX.sprintf("Max X=%f", box.MaxX);
-    minY.sprintf("Min Y=%f", box.MinY);
-    maxY.sprintf("Min Y=%f", box.MaxY);
-    minZ.sprintf("Min Z=%f", box.MinZ);
-    maxZ.sprintf("Max Z=%f", box.MaxZ);
 
-    QString msg = QString("%1\t%2\t%3\n\n%4\t%5\t%6\n\n").arg(minX).arg(minY).arg(minZ).arg(maxX).arg(maxY).arg(maxZ);
-    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), msg);
+    Base::Console().Message("Boundings: Min=<%f,%f,%f>, Max=<%f,%f,%f>\n",
+                            box.MinX,box.MinY,box.MinZ,box.MaxX,box.MaxY,box.MaxZ);
+
+    QString bound = QString("Min=<%1,%2,%3>\n\nMax=<%4,%5,%6>").arg(box.MinX).arg(box.MinY).arg(box.MinZ)
+                                                               .arg(box.MaxX).arg(box.MaxY).arg(box.MaxZ);
+    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), bound);
     break;
   }
 }
@@ -1095,6 +1209,9 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
   rcCmdMgr.addCommand(new CmdMeshExMakeTool());
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
+  rcCmdMgr.addCommand(new CmdMeshUnion());
+  rcCmdMgr.addCommand(new CmdMeshDifference());
+  rcCmdMgr.addCommand(new CmdMeshIntersection());
   rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolyPick());
   rcCmdMgr.addCommand(new CmdMeshPolyCut());

@@ -44,12 +44,12 @@ Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
 {
   sAppModule    = "_TEMPLATE_";
   sGroup        = QT_TR_NOOP("_TEMPLATE_");
-  sMenuText     = QT_TR_NOOP("Test1");
+  sMenuText     = QT_TR_NOOP("Hello");
   sToolTipText  = QT_TR_NOOP("_TEMPLATE_ Test function");
   sWhatsThis    = QT_TR_NOOP("_TEMPLATE_ Test function");
   sStatusTip    = QT_TR_NOOP("_TEMPLATE_ Test function");
   sPixmap       = "Test1";
-  iAccel        = Qt::CTRL+Qt::Key_T;
+  iAccel        = Qt::CTRL+Qt::Key_H;
 }
 
 void Cmd_TEMPLATE_Test::activated(int iMsg)

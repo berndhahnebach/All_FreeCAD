@@ -1,13 +1,13 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>CmdMeshBoundingBox</name>
+    <name>QObject</name>
     <message>
         <source>Mesh</source>
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Boundings info</source>
-        <translation>Abmessungen</translation>
+        <source>Boundings info...</source>
+        <translation>Abmessungen...</translation>
     </message>
     <message>
         <source>Shows the boundings of the selected mesh</source>

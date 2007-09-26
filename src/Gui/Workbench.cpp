@@ -391,8 +391,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     view3d->setCommand(QT_TR_NOOP("&3D View"));
     *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" 
             << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" 
-            << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" 
-            << "Std_ViewExample3";
+            << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewIvIssueCamPos";
 
     // zoom
     MenuItem* zoom = new MenuItem;
@@ -586,9 +585,7 @@ MenuItem* TestWorkbench::setupMenuBar() const
     MenuItem* opiv = new MenuItem;
     menuBar->insertItem( item, opiv );
     opiv->setCommand("&Inventor View");
-    *opiv << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3" << "Std_ViewIvDecorationOn"
-          << "Std_ViewIvDecorationOff" << "Std_ViewIvStereoOn" << "Std_ViewIvStereoOff" 
-          << "Std_ViewIvIssueCamPos";
+    *opiv << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
 
     return menuBar;
 }

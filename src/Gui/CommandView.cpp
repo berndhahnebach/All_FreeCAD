@@ -739,7 +739,7 @@ Action * StdViewDockUndockFullscreen::createAction(void)
   fullscr->setToolTip(QObject::tr(sToolTipText));
   fullscr->setStatusTip(QObject::tr(sStatusTip));
   fullscr->setWhatsThis(QObject::tr(sWhatsThis));
-  fullscr->setShortcut(Qt::Key_F);
+  fullscr->setShortcut(Qt::Key_F11);
   fullscr->setCheckable(true);
 
   return pcAction;
@@ -1181,16 +1181,13 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
   Temp += Temp2;
   Temp += "\")";
 
-  Base::Console().Message("%s",Temp.c_str());
-
-  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.document().recompute()");
+  Base::Console().Message("%s\n",Temp2.c_str());
   getGuiApplication()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
-  //doCommand(Command::Gui,Temp.c_str());
 }
 
 bool StdCmdViewIvIssueCamPos::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
+  return getGuiApplication()->sendHasMsgToActiveView("GetCamera");
 }
 
 

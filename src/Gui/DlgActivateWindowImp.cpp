@@ -45,6 +45,10 @@ DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, Qt::WFlags fl )
 {
     // create widgets
     setupUi(this);
+    QTreeWidgetItem* active=0;
+    QStringList labels; labels << "Windows";
+    treeWidget->setHeaderLabels(labels);
+    treeWidget->header()->hide();
 
     QList<QWidget*> windows = getMainWindow()->windows();
     if (windows.isEmpty())
@@ -55,10 +59,6 @@ DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, Qt::WFlags fl )
 
     QWidget* activeWnd = getMainWindow()->activeWindow();
 
-    QTreeWidgetItem* active=0;
-    QStringList labels; labels << "Windows";
-    treeWidget->setHeaderLabels(labels);
-    treeWidget->header()->hide();
     for (QList<QWidget*>::ConstIterator it = windows.begin(); it != windows.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(treeWidget);
         item->setText(0, (*it)->windowTitle());
