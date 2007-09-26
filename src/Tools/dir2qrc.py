@@ -38,9 +38,9 @@ Dir = '.'
 Output = 'resources.qrc'
 
 hhcHeader = """<!DOCTYPE RCC><RCC version="1.0">
-<qresource> 
+    <qresource> 
 """
-hhcFooter="""</qresource>
+hhcFooter="""    </qresource>
 </RCC> 
 """
 
@@ -79,10 +79,9 @@ def main():
 				FilePath = FilePath.replace('\\','/')
 				if Verbose: print FilePathOrg + ' -> ' + FilePath 
 				
-				file.write('<file>' + FilePath + '</file>\n')
+				file.write('        <file>' + FilePath + '</file>\n')
 
 
-	file.write("\n")
 	file.write(hhcFooter)
 	file.close()
 

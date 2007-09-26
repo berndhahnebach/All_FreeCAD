@@ -97,80 +97,73 @@ Translator* Translator::_pcSingleton = 0;
 
 Translator* Translator::instance(void)
 {
-  if (!_pcSingleton)
-    _pcSingleton = new Translator;
-  return _pcSingleton;
+    if (!_pcSingleton)
+        _pcSingleton = new Translator;
+    return _pcSingleton;
 }
 
 void Translator::destruct (void)
 {
-  if (_pcSingleton)
-    delete _pcSingleton;
-  _pcSingleton=0;
+    if (_pcSingleton)
+        delete _pcSingleton;
+    _pcSingleton=0;
 }
 
 Translator::Translator()
 {
-  findQmFiles();
+    // This is needed for Qt's lupdate
+    mapLanguageTopLevelDomain[QT_TR_NOOP("English")] = "en";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("German" )] = "de";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("French" )] = "fr";
+    activatedLanguage = "English";
 }
 
 Translator::~Translator()
 {
-  removeLanguage();
-}
-
-void Translator::findQmFiles()
-{
-  // List all .qm files
-  QDir dir(":/translations");
-  QStringList fileNames = dir.entryList(QStringList("*.qm"), QDir::Files, QDir::Name);
-  
-  // For every language we support we translate the literal into the actual language name,
-  // i.e. to support German we translate 'English' to 'Deutsch'.
-  for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
-    QTranslator translator;
-    QString absName = dir.filePath(*it);
-    if (translator.load(absName)) {
-      // use the context of this class name
-      QString lang = translator.translate(this->metaObject()->className(), QT_TR_NOOP("English"));
-      if (!lang.isEmpty())
-        languages[lang] = absName;
-    }
-  }
+    removeTranslators();
 }
 
 QStringList Translator::supportedLanguages() const
 {
-  return languages.keys();
-}
-
-void Translator::installLanguage ( const QString& lang )
-{
-  removeLanguage(); // remove the currently active translators
-  
-  QMap<QString, QString>::ConstIterator it = languages.find(lang);
-  if (it != languages.end()) {
-    this->language = lang;
+    // List all .qm files
+    QStringList languages;
     QDir dir(":/translations");
-    QString suffix = it.value().right(6);
-    suffix.prepend('*');
-    QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
-    for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
-      QTranslator* translator = new QTranslator;
-      translator->setObjectName(*it);
-      if (translator->load(dir.filePath(*it))) {
-        qApp->installTranslator(translator);
-        translators.push_back(translator);
-      } else {
-        delete translator;
-      }
+    for (QMap<QString,QString>::ConstIterator it = mapLanguageTopLevelDomain.begin(); it != mapLanguageTopLevelDomain.end(); ++it) {
+        QString filter = QString("*_%1.qm").arg(it.value());
+        QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
+        if (!fileNames.isEmpty())
+            languages << it.key();
     }
-  }
+
+    return languages;
 }
 
-QString Translator::installedLanguage() const
+void Translator::activateLanguage (const QString& lang)
 {
-  return this->language;
+    removeTranslators(); // remove the currently installed translators
+    QStringList languages = supportedLanguages();
+    if (languages.contains(lang)) {
+        this->activatedLanguage = lang;
+        QMap<QString, QString>::Iterator tld = mapLanguageTopLevelDomain.find(lang);
+        QString filter = QString("*_%1.qm").arg(tld.value());
+        QDir dir(":/translations");
+        QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
+        for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
+            QTranslator* translator = new QTranslator;
+            translator->setObjectName(*it);
+            if (translator->load(dir.filePath(*it))) {
+                qApp->installTranslator(translator);
+                translators.push_back(translator);
+            } else {
+                delete translator;
+            }
+        }
+    }
+}
+
+QString Translator::activeLanguage() const
+{
+    return this->activatedLanguage;
 }
 
 /**
@@ -178,50 +171,48 @@ QString Translator::installedLanguage() const
  * gets loaded at runtime. For each newly added files that supports the currently set language a new translator object is created 
  * to load the file.
  */
-void Translator::reinstallLanguage()
+void Translator::refresh()
 {
-  QMap<QString, QString>::ConstIterator it = languages.find(this->language);
-  if (it != languages.end()) {
-    QDir dir(":/translations");
-    QString suffix = it.value().right(6);
-    suffix.prepend('*');
-    QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
+    QMap<QString, QString>::Iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
+    if (tld == mapLanguageTopLevelDomain.end())
+        return; // no language activated
+    QString filter = QString("*_%1.qm").arg(tld.value());
+    QDir dir(QString(":/translations"));
+    QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
-      bool ok=false;
-      for (QList<QTranslator*>::ConstIterator tt = translators.begin(); tt != translators.end(); ++tt) {
-        if ( (*tt)->objectName() == *it ) {
-          ok = true; // this file is already installed
-          break;
+        bool ok=false;
+        for (QList<QTranslator*>::ConstIterator tt = translators.begin(); tt != translators.end(); ++tt) {
+            if ( (*tt)->objectName() == *it ) {
+                ok = true; // this file is already installed
+                break;
+            }
         }
-      }
 
-      // okay, we need to install this file
-      if ( !ok ) {
-        QTranslator* translator = new QTranslator;
-        translator->setObjectName(*it);
-        if (translator->load(dir.filePath(*it))) {
-          qApp->installTranslator(translator);
-          translators.push_back(translator);
-        } else {
-          delete translator;
+        // okay, we need to install this file
+        if (!ok) {
+            QTranslator* translator = new QTranslator;
+            translator->setObjectName(*it);
+            if (translator->load(dir.filePath(*it))) {
+                qApp->installTranslator(translator);
+                translators.push_back(translator);
+            } else {
+                delete translator;
+            }
         }
-      }
     }
-  }
 }
 
 /**
  * Uninstalls all translators.
  */
-void Translator::removeLanguage()
+void Translator::removeTranslators()
 {
-  for (QList<QTranslator*>::Iterator it = translators.begin(); it != translators.end(); ++it)
-  {
-    qApp->removeTranslator( *it );
-    delete *it;
-  }
+    for (QList<QTranslator*>::Iterator it = translators.begin(); it != translators.end(); ++it) {
+        qApp->removeTranslator( *it );
+        delete *it;
+    }
 
-  translators.clear();
+    translators.clear();
 }
 
 #include "moc_Translator.cpp"

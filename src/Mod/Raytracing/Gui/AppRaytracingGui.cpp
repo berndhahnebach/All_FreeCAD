@@ -43,7 +43,7 @@ void loadRaytracingResource()
 {
   // add resources and reloads the translators
   Q_INIT_RESOURCE(Raytracing);
-  Gui::Translator::instance()->reinstallLanguage();
+  Gui::Translator::instance()->refresh();
 }
 
 using namespace RaytracingGui;

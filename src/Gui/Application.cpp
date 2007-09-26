@@ -117,7 +117,7 @@ Application::Application()
   // install the last active language
   ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-  Translator::instance()->installLanguage(hPGrp->GetASCII("Language", "English").c_str());
+  Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
   GetWidgetFactorySupplier();
 
   // setting up Python binding

@@ -41,7 +41,7 @@ void loadPartResource()
 {
   // add resources and reloads the translators
   Q_INIT_RESOURCE(Part);
-  Gui::Translator::instance()->reinstallLanguage();
+  Gui::Translator::instance()->refresh();
 }
 
 /* registration table  */
