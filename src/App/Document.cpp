@@ -978,7 +978,7 @@ void Document::recompute()
 
     // test if a feature
     if(!Cur->isDerivedFrom(AbstractFeature::getClassTypeId())) 
-      break;
+      continue;
 
     // check if one of the dependencies is touched
     bool NeedUpdate = false;
