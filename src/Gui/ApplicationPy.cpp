@@ -46,6 +46,11 @@ using namespace Gui;
 
 // FCApplication Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
+  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbenchHandler,1,
+   "deprecated -- activateWorkbenchHandler"},
+  {"activateWorkbenchHandler",(PyCFunction) Application::sActivateWorkbenchHandler,1,
+   "activateWorkbench(string) -> None\n\n"
+   "Activate the workbench with name"},
   {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
    "deprecated -- use addWorkbenchHandler"},
   {"addWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
@@ -76,11 +81,6 @@ PyMethodDef Application::Methods[] = {
   {"activeWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1,
    "activeWorkbench() -> object\n\n"
    "Return the active workbench object"},
-  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1,
-   "deprecated -- activateWorkbench"},
-  {"activateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1,
-   "activateWorkbench(string) -> None\n\n"
-   "Activate the workbench with name"},
   {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
    "deprecated -- use listWorkbenches"},
   {"listWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
@@ -120,13 +120,13 @@ PyMethodDef Application::Methods[] = {
    "Run command with name"},
   {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1,
    "deprecated -- use class View"},
-  {"hide",                    (PyCFunction) Application::shide,                    1,
+  {"hide",                    (PyCFunction) Application::sHide,                    1,
    "deprecated"},
-  {"show",                    (PyCFunction) Application::sshow,                    1,
+  {"show",                    (PyCFunction) Application::sShow,                    1,
    "deprecated"},
-  {"open",                    (PyCFunction) Application::sopen,                    1,
+  {"open",                    (PyCFunction) Application::sOpen,                    1,
    "Open a macro, Inventor or VRML file"},
-  {"insert",                  (PyCFunction) Application::sinsert,                  1,
+  {"insert",                  (PyCFunction) Application::sInsert,                  1,
    "Open a macro, Inventor or VRML file"},
   {"activeDocument",          (PyCFunction) Application::sActiveDocument,          1,
    "activeDocument() -> object or None\n\n"
@@ -167,7 +167,7 @@ PYFUNCIMP_S(Application,sGetDocument)
   return pcDoc->getPyObject();
 } 
 
-PYFUNCIMP_S(Application,shide)
+PYFUNCIMP_S(Application,sHide)
 {
   char *psFeatStr;
   if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
@@ -183,7 +183,7 @@ PYFUNCIMP_S(Application,shide)
    Py_Return;
 } 
 
-PYFUNCIMP_S(Application,sshow)
+PYFUNCIMP_S(Application,sShow)
 {
   char *psFeatStr;
   if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
@@ -199,7 +199,7 @@ PYFUNCIMP_S(Application,sshow)
    Py_Return;
 } 
 
-PYFUNCIMP_S(Application,sopen)
+PYFUNCIMP_S(Application,sOpen)
 {
   // only used to open Python files
   const char* Name;
@@ -231,7 +231,7 @@ PYFUNCIMP_S(Application,sopen)
 	Py_Return;    
 } 
 
-PYFUNCIMP_S(Application,sinsert)
+PYFUNCIMP_S(Application,sInsert)
 {
   const char* Name;
   const char* DocName;
@@ -304,6 +304,26 @@ PYFUNCIMP_S(Application,sCreateDialog)
   }
 
   return pPyResource;
+} 
+
+PYFUNCIMP_S(Application,sActivateWorkbenchHandler)
+{
+  char*       psKey;
+  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
+
+  // search for workbench handler from the dictionary
+  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
+  if ( !pcWorkbench )
+  {
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+    return NULL;
+  }
+
+  Instance->activateWorkbench(psKey);
+
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(Application,sAddWorkbenchHandler)
@@ -464,26 +484,6 @@ PYFUNCIMP_S(Application,sActiveWorkbench)
   // object get incremented
   PyObject* pyObj = actWb->getPyObject();
   return pyObj;
-} 
-
-PYFUNCIMP_S(Application,sActivateWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  // search for workbench handler from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
-  if ( !pcWorkbench )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
-    return NULL;
-  }
-
-  Instance->activateWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-  return Py_None;
 } 
 
 PYFUNCIMP_S(Application,sGetWorkbench)

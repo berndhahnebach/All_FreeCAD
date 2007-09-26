@@ -174,17 +174,17 @@ public:
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
   //---------------------------------------------------------------------
   // static python wrapper of the exported functions
-  PYFUNCDEF_S(sAddWorkbenchHandler);     // adds a new workbench handler to a list
-  PYFUNCDEF_S(sRemoveWorkbenchHandler);  // removes a workbench handler from the list
-  PYFUNCDEF_S(sGetWorkbenchHandler);     // retrieves the workbench handler
-  PYFUNCDEF_S(sListWorkbenchHandlers);   // retrieves a list of all workbench handlers
-  PYFUNCDEF_S(sCreateWorkbench);         // creates a new workbench object
-  PYFUNCDEF_S(sActiveWorkbench);         // retrieves the active workbench object
-  PYFUNCDEF_S(sActivateWorkbench);       // activates a workbench object
-  PYFUNCDEF_S(sListWorkbenches);         // retrieves a list of all workbench objects
-  PYFUNCDEF_S(sGetWorkbench);            // retrieves a workbench object
-  PYFUNCDEF_S(sHasWorkbench);            // checks for a workbench object
-  PYFUNCDEF_S(sAddIconPath);             // adds a path to an icon file
+  PYFUNCDEF_S(sActivateWorkbenchHandler); // activates a workbench object
+  PYFUNCDEF_S(sAddWorkbenchHandler);      // adds a new workbench handler to a list
+  PYFUNCDEF_S(sRemoveWorkbenchHandler);   // removes a workbench handler from the list
+  PYFUNCDEF_S(sGetWorkbenchHandler);      // retrieves the workbench handler
+  PYFUNCDEF_S(sListWorkbenchHandlers);    // retrieves a list of all workbench handlers
+  PYFUNCDEF_S(sCreateWorkbench);          // creates a new workbench object
+  PYFUNCDEF_S(sActiveWorkbench);          // retrieves the active workbench object
+  PYFUNCDEF_S(sListWorkbenches);          // retrieves a list of all workbench objects
+  PYFUNCDEF_S(sGetWorkbench);             // retrieves a workbench object
+  PYFUNCDEF_S(sHasWorkbench);             // checks for a workbench object
+  PYFUNCDEF_S(sAddIconPath);              // adds a path to an icon file
 
   PYFUNCDEF_S(sSendActiveView);
 
@@ -194,11 +194,11 @@ public:
   PYFUNCDEF_S(sRunCommand);
   PYFUNCDEF_S(sAddCommand);
 
-  PYFUNCDEF_S(shide);
-  PYFUNCDEF_S(sshow);
+  PYFUNCDEF_S(sHide);
+  PYFUNCDEF_S(sShow);
   
-  PYFUNCDEF_S(sopen);                     // open Python scripts
-  PYFUNCDEF_S(sinsert);                   // open Python scripts
+  PYFUNCDEF_S(sOpen);                     // open Python scripts
+  PYFUNCDEF_S(sInsert);                   // open Python scripts
 
   PYFUNCDEF_S(sActiveDocument);
   PYFUNCDEF_S(sGetDocument);

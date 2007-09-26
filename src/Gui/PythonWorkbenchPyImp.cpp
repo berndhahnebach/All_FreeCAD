@@ -300,4 +300,59 @@ int PythonWorkbenchPy::setCustomAttributes(const char* attr, PyObject *obj)
     return 0; 
 }
 
+PyObject*  PythonWorkbenchPy::AppendMenu(PyObject *args)
+{
+    return appendMenu(args);
+}
+
+PyObject*  PythonWorkbenchPy::RemoveMenu(PyObject *args)
+{
+    return removeMenu(args);
+}
+
+PyObject*  PythonWorkbenchPy::ListMenus(PyObject *args)
+{
+    return listMenus(args);
+}
+
+PyObject*  PythonWorkbenchPy::AppendContextMenu(PyObject *args)
+{
+    return appendContextMenu(args);
+}
+
+PyObject*  PythonWorkbenchPy::RemoveContextMenu(PyObject *args)
+{
+    return removeContextMenu(args);
+}
+
+PyObject*  PythonWorkbenchPy::AppendToolbar(PyObject *args)
+{
+    return appendToolbar(args);
+}
+
+PyObject*  PythonWorkbenchPy::RemoveToolbar(PyObject *args)
+{
+    return removeToolbar(args);
+}
+
+PyObject*  PythonWorkbenchPy::ListToolbars(PyObject *args)
+{
+    return listToolbars(args);
+}
+
+PyObject*  PythonWorkbenchPy::AppendCommandbar(PyObject *args)
+{
+    return appendCommandbar(args);
+}
+
+PyObject*  PythonWorkbenchPy::RemoveCommandbar(PyObject *args)
+{
+    return removeCommandbar(args);
+}
+
+PyObject*  PythonWorkbenchPy::ListCommandbars(PyObject *args)
+{
+    return listCommandbars(args);
+}
+
 
