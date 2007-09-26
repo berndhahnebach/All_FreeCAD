@@ -158,7 +158,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,
     "import Mesh\n"
-    "mb = Mesh.Mesh()\n"
+    "mb = Mesh.mesh()\n"
     "mb.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
     "mb.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
     "mb.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"
@@ -210,7 +210,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "mt = Mesh.Mesh()\n"
+    "mt = Mesh.mesh()\n"
     "mt.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
     "mt.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
     "mt.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"

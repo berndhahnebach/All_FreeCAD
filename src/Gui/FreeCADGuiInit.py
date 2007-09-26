@@ -136,7 +136,7 @@ Gui.addWorkbenchHandler("<none>",NoneWorkbench())
 InitApplications()
 
 # set standard workbench (needed as fallback)
-Gui.activateWorkbench("<none>")
+Gui.activateWorkbenchHandler("<none>")
 
 # Register .py, .FCScript and .FCMacro
 FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")
