@@ -34,6 +34,7 @@
 
 #include <Base/Vector3D.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/Qt/SoQtCursor.h>
 #include "Selection.h"
 
@@ -114,6 +115,16 @@ public:
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const;
   SoPickedPoint* pickPoint(const SbVec2s& pos) const;
+  /**
+   * Set up a callback function \a cb which will be invoked for the given eventtype. 
+   * \a view will be given as the first argument to the callback function. 
+   */
+  void addEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view = 0);
+  /**
+   * Unregister the given callback function \a cb.
+   */
+  void removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view = 0);
+  ViewProvider* getViewProviderByPath(SoPath*) const;
 
 
   /** @name Clipping plane
@@ -214,6 +225,7 @@ private:
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
+  SoEventCallback* pEventCallback;
   AbstractMouseModel* pcMouseModel;
   std::vector<SbVec2f> pcPolygon;
 

@@ -30,6 +30,7 @@
 #endif
 
 #include "FeaturePartPolygon.h"
+#include <Base/Exception.h>
 
 using namespace Part;
 
@@ -59,6 +60,8 @@ int Polygon::execute(void)
   if ( Close.getValue() )
     poly.Close();
 
+  if (!poly.IsDone())
+    throw Base::Exception("Cannot create polygon because less than two vetices are given");
   TopoDS_Wire wire = poly.Wire();
   setShape(wire);
 

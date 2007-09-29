@@ -33,6 +33,10 @@
 # include <map>
 #endif
 
+#ifndef __InventorAll__
+# include <Gui/InventorAll.h>
+#endif
+
 #include "../App/MeshFeature.h"
 #include "../App/MeshAlgos.h"
 
@@ -42,6 +46,7 @@
 #include <App/DocumentObjectGroup.h>
 #include <App/Feature.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
@@ -594,7 +599,7 @@ CmdMeshPolyCut::CmdMeshPolyCut()
   sToolTipText  = QT_TR_NOOP("Cuts a mesh with a picked polygon");
   sWhatsThis    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
   sStatusTip    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
-  sPixmap       = "PolygonPick";
+  sPixmap       = "mesh_cut";
 }
 
 void CmdMeshPolyCut::activated(int iMsg)
@@ -727,21 +732,27 @@ CmdMeshEvaluateFacet::CmdMeshEvaluateFacet()
     sToolTipText  = QT_TR_NOOP("Information about face");
     sWhatsThis    = QT_TR_NOOP("Information about face");
     sStatusTip    = QT_TR_NOOP("Information about face");
+    sPixmap       = "mesh_pipette";
 }
 
 void CmdMeshEvaluateFacet::activated(int iMsg)
 {
-    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    if ( fea.size() == 1 ) {
-        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
-        ((MeshGui::ViewProviderMeshFaceSet*)pVP)->addFaceInfoCallback();
-    }
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        MeshGui::ViewProviderMeshFaceSet::faceInfoActive = true;
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::faceInfoCallback);
+     }
 }
 
 bool CmdMeshEvaluateFacet::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    if (MeshGui::ViewProviderMeshFaceSet::faceInfoActive)
+        return false;
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    return (doc && doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
 }
 
 //--------------------------------------------------------------------------------------
@@ -1183,21 +1194,27 @@ CmdMeshFillInteractiveHole::CmdMeshFillInteractiveHole()
     sToolTipText  = QT_TR_NOOP("Close holes interactively");
     sWhatsThis    = QT_TR_NOOP("Close holes interactively");
     sStatusTip    = QT_TR_NOOP("Close holes interactively");
+    sPixmap       = "mesh_boundary";
 }
 
 void CmdMeshFillInteractiveHole::activated(int iMsg)
 {
-    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    if ( fea.size() == 1 ) {
-        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
-        ((MeshGui::ViewProviderMeshFaceSet*)pVP)->addFillHoleCallback();
-    }
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_fillhole"),5,5));
+        MeshGui::ViewProviderMeshFaceSet::fillHoleActive = true;
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::fillHoleCallback);
+     }
 }
 
 bool CmdMeshFillInteractiveHole::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    if (MeshGui::ViewProviderMeshFaceSet::fillHoleActive)
+        return false;
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    return (doc && doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
 }
 
 void CreateMeshCommands(void)

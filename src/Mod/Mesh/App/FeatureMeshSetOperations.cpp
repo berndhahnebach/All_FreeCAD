@@ -74,26 +74,20 @@ int SetOperations::execute(void)
     else if (ot == "difference")
       type = MeshCore::SetOperations::Difference;
     else
-    {
-      type = MeshCore::SetOperations::Union;
-      //throw new exception("operation type must be: union, intersection or difference");
-    }
+      throw new Base::Exception("Operation type must either be 'union' or 'intersection' or 'difference'");
     
     MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
-
     setOp.Do();
-    
     Mesh.setValue(pcKernel);
-
-
   }
   else
-  { // Error mesh property
+  { 
+    // Error mesh property
+    if (!mesh1)
+      throw new Base::Exception("First input mesh not set");
+    if (!mesh2)
+      throw new Base::Exception("Second input mesh not set");
   }
-
-    
-
-  
 
   return 0;
 }

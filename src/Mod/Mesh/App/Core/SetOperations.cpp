@@ -101,9 +101,9 @@ void SetOperations::Do ()
   float mult0, mult1;
   switch (_operationType)
   {
-    case Union:       mult0 =  1.0f; mult1 = -1.0f;  break;
-    case Intersect:   mult0 = -1.0f; mult1 = -1.0f;  break;
-    case Difference:  mult0 =  1.0f; mult1 =  1.0f;  break;
+    case Union:       mult0 = -1.0f; mult1 = -1.0f;  break;
+    case Intersect:   mult0 =  1.0f; mult1 =  1.0f;  break;
+    case Difference:  mult0 =  1.0f; mult1 = -1.0f;  break;
     // needed to avoid gcc compiler warning
     default:          mult0 =  0.0f; mult1 =  0.0f;  break;
   }
@@ -118,7 +118,7 @@ void SetOperations::Do ()
   std::vector<MeshGeomFacet>::iterator itf;
   for (itf = _facetsOf[0].begin(); itf != _facetsOf[0].end(); itf++)
   {
-    if (_operationType == Intersect)
+    if (_operationType == Difference)
     { // toggle normal
       std::swap(itf->_aclPoints[0], itf->_aclPoints[1]);
       itf->CalcNormal();

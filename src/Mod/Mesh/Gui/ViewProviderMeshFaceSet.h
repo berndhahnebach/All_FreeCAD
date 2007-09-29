@@ -72,20 +72,18 @@ public:
   virtual std::vector<std::string> getDisplayModes() const;
 
   /** @name Polygon picking */
-	//@{
+  //@{
   // Draws the picked polygon
   bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
   /// Sets the edit mnode
   void setEdit(void);
   /// Unsets the edit mode
   void unsetEdit(void);
-  void addFaceInfoCallback();
-  void removeFaceInfoCallback();
-  void addFillHoleCallback();
-  void removeFillHoleCallback();
   /// Returns the edit mode
   const char* getEditModeName(void);
-	//@}
+  void faceInfo(unsigned long facet);
+  void fillHole(unsigned long facet);
+  //@}
 
 protected:
   /// get called by the container whenever a proptery has been changed
@@ -105,9 +103,11 @@ protected:
   SoBaseColor    * pOpenColor;
   SoShapeHints   * pShapeHints;
 
-private:
+public:
   static void faceInfoCallback(void * ud, SoEventCallback * n);
   static void fillHoleCallback(void * ud, SoEventCallback * n);
+  static bool faceInfoActive;
+  static bool fillHoleActive;
 
 private:
   bool m_bEdit;

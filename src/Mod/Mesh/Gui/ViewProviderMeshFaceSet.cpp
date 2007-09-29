@@ -420,24 +420,21 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
     Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
-void ViewProviderMeshFaceSet::addFaceInfoCallback()
-{
-    addEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback, this);
-}
-
-void ViewProviderMeshFaceSet::removeFaceInfoCallback()
-{
-    removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback, this);
-}
+bool ViewProviderMeshFaceSet::faceInfoActive = false;
+bool ViewProviderMeshFaceSet::fillHoleActive = false;
 
 void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
 {
-    ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(ud);
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
 
-    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::DOWN) {
+    // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+    n->getAction()->setHandled();
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
         n->setHandled();
-        that->removeFaceInfoCallback();
+        ViewProviderMeshFaceSet::faceInfoActive = false;
+        view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
+        view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback);
     } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
         const SoPickedPoint * point = n->getPickedPoint();
         if (point == NULL) {
@@ -446,115 +443,130 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
         }
 
         n->setHandled();
-        Mesh::Feature* fea = static_cast<Mesh::Feature*>(that->getObject());
-        const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
-
-        // By specifying the indexed mesh node 'pcMeshFaces' we make sure that the picked point is
-        // really from the the mesh we render and not any other geometry
-        const SoDetail* detail = point->getDetail(that->pcFaceSet);
-        if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
-            unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
-            const MeshCore::MeshFacetArray& facets = rKernel.GetFacets();
-            if (uFacet < facets.size()) {
-                MeshCore::MeshFacet face = facets[uFacet];
-                MeshCore::MeshGeomFacet tria = rKernel.GetFacet(face);
-                Base::Console().Message("Facet %ld: Points=<%ld, %ld, %ld>, Neighbours: <%ld, %ld, %ld>\n"
-                    "Triangle: <[%.6f, %.6f, %.6f], [%.6f, %.6f, %.6f], [%.6f, %.6f, %.6f]>\n", uFacet, 
-                    face._aulPoints[0], face._aulPoints[1], face._aulPoints[2], 
-                    face._aulNeighbours[0], face._aulNeighbours[1], face._aulNeighbours[2],
-                    tria._aclPoints[0].x, tria._aclPoints[0].y, tria._aclPoints[0].z,
-                    tria._aclPoints[1].x, tria._aclPoints[1].y, tria._aclPoints[1].z,
-                    tria._aclPoints[2].x, tria._aclPoints[2].y, tria._aclPoints[2].z);
-            }
-        }
-    }
-}
-
-void ViewProviderMeshFaceSet::addFillHoleCallback()
-{
-    addEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback, this);
-}
-
-void ViewProviderMeshFaceSet::removeFillHoleCallback()
-{
-    removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback, this);
-}
-
-void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
-{
-    ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(ud);
-    const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
-
-    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::DOWN) {
-        n->setHandled();
-        that->removeFillHoleCallback();
-    } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
-        const SoPickedPoint * point = n->getPickedPoint();
-        if (point == NULL) {
-            Base::Console().Message("No facet picked.\n");
-            return;
-        }
-
-        n->setHandled();
-        Mesh::Feature* fea = static_cast<Mesh::Feature*>(that->getObject());
-        const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
 
         // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
         // really from the mesh we render and not from any other geometry
+        Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
+            return;
+        ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
         const SoDetail* detail = point->getDetail(that->pcFaceSet);
         if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
             // get the boundary to the picked facet
             unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
-            std::list<unsigned long> aBorder;
-            MeshCore::MeshAlgorithm meshAlg(rKernel);
-            meshAlg.GetMeshBorder(uFacet, aBorder);
-            std::vector<unsigned long> boundary(aBorder.begin(), aBorder.end());
-            std::list<std::vector<unsigned long> > boundaries;
-            boundaries.push_back(boundary);
-            meshAlg.SplitBoundaryLoops(boundaries);
-            
-            std::vector<MeshCore::MeshFacet> newFacets;
-            std::vector<Base::Vector3f> newPoints;
-            unsigned long numberOfOldPoints = rKernel.CountPoints();
-            for (std::list<std::vector<unsigned long> >::iterator it = boundaries.begin(); it != boundaries.end(); ++it) {
-                if (it->size() < 3 || it->size() > 200)
-                    continue;
-                boundary = *it;
-                MeshCore::MeshFacetArray faces;
-                MeshCore::MeshPointArray points;
-                if (meshAlg.FillupHole(boundary, 0.05f, faces, points)) {
-                    if (boundary.front() == boundary.back())
-                        boundary.pop_back();
-                    // the triangulation may produce additional points which we must take into account when appending to the mesh
-                    unsigned long countBoundaryPoints = boundary.size();
-                    unsigned long countDifference = points.size() - countBoundaryPoints;
-                    if (countDifference > 0) {
-                        MeshCore::MeshPointArray::_TIterator pt = points.begin() + countBoundaryPoints;
-                        for (unsigned long i=0; i<countDifference; i++, pt++) {
-                            boundary.push_back(numberOfOldPoints++);
-                            newPoints.push_back(*pt);
-                        }
-                    }
-                    for (MeshCore::MeshFacetArray::_TIterator kt = faces.begin(); kt != faces.end(); ++kt ) {
-                        kt->_aulPoints[0] = boundary[kt->_aulPoints[0]];
-                        kt->_aulPoints[1] = boundary[kt->_aulPoints[1]];
-                        kt->_aulPoints[2] = boundary[kt->_aulPoints[2]];
-                        newFacets.push_back(*kt);
-                    }
-                }
-            }
-
-            if (newFacets.empty())
-                return; // nothing to do
-
-            //add the facets to the mesh and open a transaction object for the undo/redo stuff
-            Gui::Application::Instance->activeDocument()->openCommand("Fill hole");
-            fea->Mesh.append(newFacets, newPoints);
-            Gui::Application::Instance->activeDocument()->commitCommand();
-
-            // notify the mesh shape node
-            that->pcFaceSet->touch();
-            //fea->getDocument().update(fea);
+            that->faceInfo(uFacet);
         }
     }
 }
+
+void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
+{
+    const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+
+    // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+    n->getAction()->setHandled();
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
+        n->setHandled();
+        ViewProviderMeshFaceSet::fillHoleActive = false;
+        view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
+        view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback);
+    } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+        const SoPickedPoint * point = n->getPickedPoint();
+        if (point == NULL) {
+            Base::Console().Message("No facet picked.\n");
+            return;
+        }
+
+        n->setHandled();
+
+        // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
+        // really from the mesh we render and not from any other geometry
+        Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
+            return;
+        ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
+        const SoDetail* detail = point->getDetail(that->pcFaceSet);
+        if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
+            // get the boundary to the picked facet
+            unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
+            that->fillHole(uFacet);
+        }
+    }
+}
+
+void ViewProviderMeshFaceSet::faceInfo(unsigned long uFacet)
+{
+    Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
+    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
+    const MeshCore::MeshFacetArray& facets = rKernel.GetFacets();
+    if (uFacet < facets.size()) {
+        MeshCore::MeshFacet face = facets[uFacet];
+        MeshCore::MeshGeomFacet tria = rKernel.GetFacet(face);
+        Base::Console().Message("Mesh: %s Facet %ld: Points: <%ld, %ld, %ld>, Neighbours: <%ld, %ld, %ld>\n"
+            "Triangle: <[%.6f, %.6f, %.6f], [%.6f, %.6f, %.6f], [%.6f, %.6f, %.6f]>\n", fea->name.getValue(), uFacet, 
+            face._aulPoints[0], face._aulPoints[1], face._aulPoints[2], 
+            face._aulNeighbours[0], face._aulNeighbours[1], face._aulNeighbours[2],
+            tria._aclPoints[0].x, tria._aclPoints[0].y, tria._aclPoints[0].z,
+            tria._aclPoints[1].x, tria._aclPoints[1].y, tria._aclPoints[1].z,
+            tria._aclPoints[2].x, tria._aclPoints[2].y, tria._aclPoints[2].z);
+    }
+}
+
+void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
+{
+    // get the boundary to the picked facet
+    std::list<unsigned long> aBorder;
+    Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
+    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
+    MeshCore::MeshAlgorithm meshAlg(rKernel);
+    meshAlg.GetMeshBorder(uFacet, aBorder);
+    std::vector<unsigned long> boundary(aBorder.begin(), aBorder.end());
+    std::list<std::vector<unsigned long> > boundaries;
+    boundaries.push_back(boundary);
+    meshAlg.SplitBoundaryLoops(boundaries);
+
+    std::vector<MeshCore::MeshFacet> newFacets;
+    std::vector<Base::Vector3f> newPoints;
+    unsigned long numberOfOldPoints = rKernel.CountPoints();
+    for (std::list<std::vector<unsigned long> >::iterator it = boundaries.begin(); it != boundaries.end(); ++it) {
+        if (it->size() < 3 || it->size() > 200)
+            continue;
+        boundary = *it;
+        MeshCore::MeshFacetArray faces;
+        MeshCore::MeshPointArray points;
+        if (meshAlg.FillupHole(boundary, 0.05f, faces, points)) {
+            if (boundary.front() == boundary.back())
+                boundary.pop_back();
+            // the triangulation may produce additional points which we must take into account when appending to the mesh
+            unsigned long countBoundaryPoints = boundary.size();
+            unsigned long countDifference = points.size() - countBoundaryPoints;
+            if (countDifference > 0) {
+                MeshCore::MeshPointArray::_TIterator pt = points.begin() + countBoundaryPoints;
+                for (unsigned long i=0; i<countDifference; i++, pt++) {
+                    boundary.push_back(numberOfOldPoints++);
+                    newPoints.push_back(*pt);
+                 }
+             }
+            for (MeshCore::MeshFacetArray::_TIterator kt = faces.begin(); kt != faces.end(); ++kt ) {
+                kt->_aulPoints[0] = boundary[kt->_aulPoints[0]];
+                kt->_aulPoints[1] = boundary[kt->_aulPoints[1]];
+                kt->_aulPoints[2] = boundary[kt->_aulPoints[2]];
+                newFacets.push_back(*kt);
+            }
+        }
+    }
+ 
+    if (newFacets.empty())
+        return; // nothing to do
+ 
+    //add the facets to the mesh and open a transaction object for the undo/redo stuff
+    Gui::Application::Instance->activeDocument()->openCommand("Fill hole");
+    fea->Mesh.append(newFacets, newPoints);
+    Gui::Application::Instance->activeDocument()->commitCommand();
+
+    // notify the mesh shape node
+    this->pcFaceSet->touch();
+    //fea->getDocument().update(fea);
+}
+
