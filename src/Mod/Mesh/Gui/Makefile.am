@@ -99,6 +99,8 @@ libdir = $(prefix)/Mod/Mesh
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		Icons/mesh_cut.svg \
+		Icons/mesh_boundary.svg \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \

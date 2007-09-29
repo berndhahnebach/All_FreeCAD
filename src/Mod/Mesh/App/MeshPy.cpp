@@ -46,6 +46,7 @@
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
 #include "Core/Iterator.h"
+#include "Core/SetOperations.h"
 #include <Mod/Part/App/TopologyPy.h>
 
 
@@ -568,7 +569,8 @@ PYFUNCIMP_D(MeshPy,unite)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    MeshAlgos::boolean(_pcMesh,&m,_pcMesh,0);
+    MeshCore::SetOperations setOp(*_pcMesh, m, *_pcMesh, MeshCore::SetOperations::Union, 1.0e-5);
+    setOp.Do();
   } PY_CATCH;
 
   Py_Return;
@@ -585,7 +587,8 @@ PYFUNCIMP_D(MeshPy,intersect)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    MeshAlgos::boolean(_pcMesh,&m,_pcMesh,1);  
+    MeshCore::SetOperations setOp(*_pcMesh, m, *_pcMesh, MeshCore::SetOperations::Intersect, 1.0e-5);
+    setOp.Do();
   } PY_CATCH;
 
   Py_Return;
@@ -602,7 +605,9 @@ PYFUNCIMP_D(MeshPy,diff)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    MeshAlgos::boolean(_pcMesh,&m,_pcMesh,2);  
+    // Note: SetOperations does the difference _pcMesh - m
+    MeshCore::SetOperations setOp(m, *_pcMesh, *_pcMesh, MeshCore::SetOperations::Difference, 1.0e-5);
+    setOp.Do();
   } PY_CATCH;
 
   Py_Return;

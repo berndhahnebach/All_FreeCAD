@@ -215,6 +215,11 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   // is not really working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcViewProviderRoot);
+  // Event callback node
+  pEventCallback = new SoEventCallback();
+  pEventCallback->setUserData(this);
+  pEventCallback->ref();
+  pcViewProviderRoot->addChild(pEventCallback);
 
   // This is a callback node that logs all action that traverse the Inventor tree.
 #if defined (FC_DEBUG) && defined(FC_LOGGING_CB)
@@ -277,6 +282,8 @@ View3DInventorViewer::~View3DInventorViewer()
   this->pcBackGround = 0;
 
   setSceneGraph(0);
+  this->pEventCallback->unref();
+  this->pEventCallback = 0;
   this->pcViewProviderRoot->unref();
   this->pcViewProviderRoot = 0;
 
@@ -1221,6 +1228,21 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     processed = action.isHandled();
   }
 
+  // invokes the appropriate callback function when user interaction has started or finished
+  bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
+  if (bInteraction && getInteractiveCount()==0)
+    interactiveCountInc();
+  // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
+  else if (!bInteraction&&!dCliBut3&&getInteractiveCount()>0&&!isSeekMode())
+    interactiveCountDec();
+
+
+  if(!processed)
+    processed = inherited::processSoEvent(ev);
+  else 
+    return true;
+
+
   // right mouse button pressed
   if (!processed && !MoveMode && !RotMode)
   {
@@ -1233,30 +1255,14 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           }
 
           // Steal all RMB-events if the viewer uses the popup-menu.
-          processed = TRUE;
+          return true;
         }
       }
     }
   }
 
-  // invokes the appropriate callback function when user interaction has started or finished
-  bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
-  if (bInteraction && getInteractiveCount()==0)
-    interactiveCountInc();
-  // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
-  else if (!bInteraction&&!dCliBut3&&getInteractiveCount()>0&&!isSeekMode())
-    interactiveCountDec();
-
-
-  bool baseProcessed;
-  if(!processed)
-    baseProcessed = inherited::processSoEvent(ev);
-  else 
-    return true;
-
-
   // check for left click without selecting something
-  if (!baseProcessed)
+  if (!processed)
   {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
@@ -2270,3 +2276,29 @@ void View3DInventorViewer::setEditingCursor (const SoQtCursor& cursor)
   this->setComponentCursor(cursor);
   this->editCursor = this->getWidget()->cursor();
 }
+
+void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view)
+{
+    pEventCallback->addEventCallback(eventtype, cb, view);
+}
+
+void View3DInventorViewer::removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view)
+{
+    pEventCallback->removeEventCallback(eventtype, cb, view);
+}
+
+ViewProvider* View3DInventorViewer::getViewProviderByPath(SoPath * path) const
+{
+    for (std::set<ViewProvider*>::const_iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); it++) {
+        for (int i = 0; i<path->getLength();i++) {
+            SoNode *node = path->getNode(i);
+            if ((*it)->getRoot() == node) {
+                return (*it);
+            }
+        }
+    }
+
+    return 0;
+}
+ 
+

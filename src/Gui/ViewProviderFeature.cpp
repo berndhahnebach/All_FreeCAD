@@ -47,7 +47,7 @@ using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderFeature, Gui::ViewProviderDocumentObject)
 
-ViewProviderFeature::ViewProviderFeature() : pEventCallback(0)
+ViewProviderFeature::ViewProviderFeature()
 {
   // Create the selection node
   pcHighlight = new SoFCSelection();
@@ -136,16 +136,3 @@ SoPickedPoint* ViewProviderFeature::getPickedPoint(const SbVec2s& pos, const Vie
   return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
-void ViewProviderFeature::addEventCallback(SoType eventtype, SoEventCallbackCB * f, void *  userdata)
-{
-    if (!pEventCallback)
-        pEventCallback = new SoEventCallback;	 	
-    pEventCallback->addEventCallback(eventtype, f, userdata);
-    pcHighlight->addChild(pEventCallback);
-}
-
-void ViewProviderFeature::removeEventCallback(SoType eventtype, SoEventCallbackCB * f, void *  userdata)
-{
-    if (pEventCallback)
-        pEventCallback->removeEventCallback(eventtype, f, userdata);
-}

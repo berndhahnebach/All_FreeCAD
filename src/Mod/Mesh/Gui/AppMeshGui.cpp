@@ -84,6 +84,8 @@ void GuiMeshExport initMeshGui() {
   Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
   Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
   Gui::BitmapFactory().addXPM("solid_mesh", solid_mesh);
+  Gui::BitmapFactory().addXPM("mesh_fillhole", mesh_fillhole);
+  Gui::BitmapFactory().addXPM("mesh_pipette", mesh_pipette);
 
   // instanciating the commands
   CreateMeshCommands();

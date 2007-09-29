@@ -2,4 +2,8 @@
     <qresource prefix="/translations" >
         <file>Mesh_de.qm</file>
     </qresource>
+    <qresource>
+        <file>Icons/mesh_cut.svg</file>
+        <file>Icons/mesh_boundary.svg</file>
+    </qresource>
 </RCC>

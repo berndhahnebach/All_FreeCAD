@@ -53,6 +53,7 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
     {
         _pcSingleton = new BitmapFactoryInst;
         _pcSingleton->addPath(":/icons/");
+        _pcSingleton->addPath(":/Icons/");
         _pcSingleton->addPath(App::GetApplication().GetHomePath());
 
         RegisterIcons();
