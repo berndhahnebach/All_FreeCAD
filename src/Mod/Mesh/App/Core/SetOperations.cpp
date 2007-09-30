@@ -77,6 +77,37 @@ void SetOperations::Do ()
   std::set<unsigned long> facetsCuttingEdge0, facetsCuttingEdge1;
   Cut(facetsCuttingEdge0, facetsCuttingEdge1);
 
+  // no intersection curve of the meshes found
+  if (facetsCuttingEdge0.empty() || facetsCuttingEdge1.empty())
+  {
+    switch (_operationType)
+    {
+      case Union:
+          {
+            _resultMesh = _cutMesh0;
+            _resultMesh.Merge(_cutMesh1.GetPoints(), _cutMesh1.GetFacets());
+          } break;
+      case Intersect:
+          {
+            _resultMesh.Clear();
+          } break;
+      case Difference:
+      case Inner:
+      case Outer:
+          {
+            _resultMesh = _cutMesh0;
+          } break;
+      default:
+          {
+            _resultMesh.Clear();
+            break;
+          }
+    }
+    
+    MeshDefinitions::SetMinPointDistance(saveMinMeshDistance);
+    return;
+  }
+
   unsigned long i;
   for (i = 0; i < _cutMesh0.CountFacets(); i++)
   {
@@ -87,9 +118,7 @@ void SetOperations::Do ()
   for (i = 0; i < _cutMesh1.CountFacets(); i++)
   {
     if (facetsCuttingEdge1.find(i) == facetsCuttingEdge1.end())
-    {
       _newMeshFacets[1].push_back(_cutMesh1.GetFacet(i));
-    }
   }
 
   //Base::Sequencer().next();
@@ -103,8 +132,9 @@ void SetOperations::Do ()
   {
     case Union:       mult0 = -1.0f; mult1 = -1.0f;  break;
     case Intersect:   mult0 =  1.0f; mult1 =  1.0f;  break;
-    case Difference:  mult0 =  1.0f; mult1 = -1.0f;  break;
-    // needed to avoid gcc compiler warning
+    case Difference:  mult0 = -1.0f; mult1 =  1.0f;  break;
+    case Inner:       mult0 =  1.0f; mult1 =  0.0f;  break;
+    case Outer:       mult0 = -1.0f; mult1 =  0.0f;  break;
     default:          mult0 =  0.0f; mult1 =  0.0f;  break;
   }
 
@@ -144,7 +174,6 @@ void SetOperations::Cut (std::set<unsigned long>& facetsCuttingEdge0, std::set<u
 {
   MeshFacetGrid grid1(_cutMesh0, 20);
   MeshFacetGrid grid2(_cutMesh1, 20);
-  Base::BoundBox3f bbMesh2 = _cutMesh1.GetBoundBox();
 
   unsigned long ctGx1, ctGy1, ctGz1;
   grid1.GetCtGrids(ctGx1, ctGy1, ctGz1);

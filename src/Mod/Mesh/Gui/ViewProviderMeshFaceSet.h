@@ -106,8 +106,6 @@ protected:
 public:
   static void faceInfoCallback(void * ud, SoEventCallback * n);
   static void fillHoleCallback(void * ud, SoEventCallback * n);
-  static bool faceInfoActive;
-  static bool fillHoleActive;
 
 private:
   bool m_bEdit;

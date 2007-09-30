@@ -54,7 +54,7 @@ class MeshFacetIterator;
 class AppMeshExport SetOperations
 {
 public:
-  enum OperationType { Union, Intersect, Difference };
+  enum OperationType { Union, Intersect, Difference, Inner, Outer };
 
   /// Construction
   SetOperations (const MeshKernel &cutMesh1, const MeshKernel &cutMesh2, MeshKernel &result, OperationType opType, float minDistanceToPoint = 1e-5f);

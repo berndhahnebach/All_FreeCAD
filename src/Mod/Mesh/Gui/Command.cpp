@@ -310,10 +310,10 @@ void CmdMeshUnion::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m = App.activeDocument().%s.Mesh\n"
-    "m.unite(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.activeDocument().%s.Mesh\n"
+    "mesh.union(App.activeDocument().%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();
@@ -349,10 +349,10 @@ void CmdMeshDifference::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m = App.activeDocument().%s.Mesh\n"
-    "m.diff(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.activeDocument().%s.Mesh\n"
+    "mesh.diff(App.activeDocument().%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();
@@ -388,10 +388,10 @@ void CmdMeshIntersection::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m = App.activeDocument().%s.Mesh\n"
-    "m.intersect(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.activeDocument().%s.Mesh\n"
+    "mesh.intersect(App.activeDocument().%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = m\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();
@@ -741,18 +741,25 @@ void CmdMeshEvaluateFacet::activated(int iMsg)
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
         viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
-        MeshGui::ViewProviderMeshFaceSet::faceInfoActive = true;
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::faceInfoCallback);
      }
 }
 
 bool CmdMeshEvaluateFacet::isActive(void)
 {
-    if (MeshGui::ViewProviderMeshFaceSet::faceInfoActive)
-        return false;
     App::Document* doc = App::GetApplication().getActiveDocument();
-    return (doc && doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
+    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1203,18 +1210,25 @@ void CmdMeshFillInteractiveHole::activated(int iMsg)
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
         viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_fillhole"),5,5));
-        MeshGui::ViewProviderMeshFaceSet::fillHoleActive = true;
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::fillHoleCallback);
      }
 }
 
 bool CmdMeshFillInteractiveHole::isActive(void)
 {
-    if (MeshGui::ViewProviderMeshFaceSet::fillHoleActive)
-        return false;
     App::Document* doc = App::GetApplication().getActiveDocument();
-    return (doc && doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
+    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
 }
 
 void CreateMeshCommands(void)
