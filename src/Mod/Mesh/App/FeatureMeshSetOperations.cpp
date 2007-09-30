@@ -73,8 +73,13 @@ int SetOperations::execute(void)
       type = MeshCore::SetOperations::Intersect;
     else if (ot == "difference")
       type = MeshCore::SetOperations::Difference;
+    else if (ot == "inner")
+      type = MeshCore::SetOperations::Inner;
+    else if (ot == "outer")
+      type = MeshCore::SetOperations::Outer;
     else
-      throw new Base::Exception("Operation type must either be 'union' or 'intersection' or 'difference'");
+      throw new Base::Exception("Operation type must either be 'union' or 'intersection'"
+                                " or 'difference' or 'inner' or 'outer'");
     
     MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
     setOp.Do();

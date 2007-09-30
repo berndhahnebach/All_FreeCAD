@@ -126,31 +126,30 @@ PyTypeObject MeshPy::Type = {
   0                                                 /*tp_weaklist */
 };
 
-PyDoc_STRVAR(mesh_pointCount_doc,
-"Returns the number of vertices of the mesh object.");
-
-PyDoc_STRVAR(mesh_faceCount_doc,
-"Returns the number of faces of the mesh object.");
-
-PyDoc_STRVAR(mesh_read_doc,
-"Read in a mesh object from an STL file.");
-
-PyDoc_STRVAR(mesh_write_doc,
-"Writes the mesh object into an STL file.");
-
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef MeshPy::Methods[] = {
-  {"pointCount", (PyCFunction) spointCount, Py_NEWARGS, mesh_pointCount_doc},
-  {"faceCount", (PyCFunction) sfaceCount, Py_NEWARGS, mesh_faceCount_doc},
-  {"read", (PyCFunction) sread, Py_NEWARGS, mesh_read_doc},
-  {"write", (PyCFunction) swrite, Py_NEWARGS, mesh_write_doc},
+  {"pointCount", (PyCFunction) spointCount, Py_NEWARGS, 
+   "Return the number of vertices of the mesh object."},
+  {"faceCount", (PyCFunction) sfaceCount, Py_NEWARGS, 
+   "Return the number of faces of the mesh object."},
+  {"read", (PyCFunction) sread, Py_NEWARGS, 
+   "Read in a mesh object from an STL file."},
+  {"write", (PyCFunction) swrite, Py_NEWARGS, 
+   "Write the mesh object into an STL file."},
   PYMETHODEDEF(offset)
   PYMETHODEDEF(offsetSpecial)
-  PYMETHODEDEF(unite)
-  PYMETHODEDEF(intersect)
-  PYMETHODEDEF(diff)
+  {"unite", (PyCFunction) sunite, Py_NEWARGS, 
+   "deprecated -- use union instead"},
+  {"union", (PyCFunction) sunite, Py_NEWARGS, 
+   "Union of this and the given mesh object."},
+  {"intersect", (PyCFunction) sintersect, Py_NEWARGS, 
+   "Intersection of this and the given mesh object."},
+  {"diff", (PyCFunction) sdiff, Py_NEWARGS, 
+   "Difference of this and the given mesh object."},
+  PYMETHODEDEF(outer)
+  PYMETHODEDEF(inner)
   PYMETHODEDEF(coarsen)
   PYMETHODEDEF(translate)
   PYMETHODEDEF(rotate)
@@ -165,8 +164,6 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(hasNonManifolds)
   PYMETHODEDEF(testDelaunay)
   PYMETHODEDEF(makeCutToolFromShape)
-  PYMETHODEDEF(cutOuter)
-  PYMETHODEDEF(cutInner)
   PYMETHODEDEF(flipNormals)
   PYMETHODEDEF(hasNonUnifomOrientedFacets)
   PYMETHODEDEF(countNonUnifomOrientedFacets)
@@ -605,15 +602,14 @@ PYFUNCIMP_D(MeshPy,diff)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    // Note: SetOperations does the difference _pcMesh - m
-    MeshCore::SetOperations setOp(m, *_pcMesh, *_pcMesh, MeshCore::SetOperations::Difference, 1.0e-5);
+    MeshCore::SetOperations setOp(*_pcMesh, m, *_pcMesh, MeshCore::SetOperations::Difference, 1.0e-5);
     setOp.Do();
   } PY_CATCH;
 
   Py_Return;
 }
 
-PYFUNCIMP_D(MeshPy,cutOuter)
+PYFUNCIMP_D(MeshPy,outer)
 {
   MeshPy   *pcObject;
   PyObject *pcObj;
@@ -624,13 +620,14 @@ PYFUNCIMP_D(MeshPy,cutOuter)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    MeshAlgos::boolean(_pcMesh,&m,_pcMesh,4);  
+    MeshCore::SetOperations setOp(*_pcMesh, m, *_pcMesh, MeshCore::SetOperations::Outer, 1.0e-5);
+    setOp.Do();
   } PY_CATCH;
 
   Py_Return;
 }
 
-PYFUNCIMP_D(MeshPy,cutInner)
+PYFUNCIMP_D(MeshPy,inner)
 {
   MeshPy   *pcObject;
   PyObject *pcObj;
@@ -641,7 +638,8 @@ PYFUNCIMP_D(MeshPy,cutInner)
 
   PY_TRY {
     MeshKernel& m = *(pcObject->_pcMesh);
-    MeshAlgos::boolean(_pcMesh,&m,_pcMesh,3);  
+    MeshCore::SetOperations setOp(*_pcMesh, m, *_pcMesh, MeshCore::SetOperations::Inner, 1.0e-5);
+    setOp.Do();
   } PY_CATCH;
 
   Py_Return;

@@ -146,8 +146,8 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
     Gui::Application::Instance->activeDocument()->openCommand(solid.toUtf8());
     Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
     Gui::Application::Instance->activeDocument()->commitCommand();
-    Gui::Application::Instance->activeDocument()->getDocument()->recompute();
-    Gui::Application::Instance->sendMsgToActiveView("ViewFit");
+    Gui::Command::doCommand(Gui::Command::Doc, "App.activeDocument().recompute()");
+    Gui::Command::doCommand(Gui::Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
   } catch (const Base::PyException& e) {
     QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), e.what());
   }

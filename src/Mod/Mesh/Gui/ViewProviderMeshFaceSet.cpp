@@ -420,9 +420,6 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
     Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
-bool ViewProviderMeshFaceSet::faceInfoActive = false;
-bool ViewProviderMeshFaceSet::fillHoleActive = false;
-
 void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
 {
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
@@ -432,7 +429,7 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
     n->getAction()->setHandled();
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
         n->setHandled();
-        ViewProviderMeshFaceSet::faceInfoActive = false;
+        view->setEditing(false);
         view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
         view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback);
     } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -468,7 +465,7 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
     n->getAction()->setHandled();
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
         n->setHandled();
-        ViewProviderMeshFaceSet::fillHoleActive = false;
+        view->setEditing(false);
         view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
         view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback);
     } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
