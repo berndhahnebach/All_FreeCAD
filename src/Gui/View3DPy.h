@@ -23,6 +23,7 @@
 
 #include "../Base/PyObjectBase.h"
 
+class SoEventCallback;
 
 namespace Gui {
 
@@ -32,50 +33,51 @@ class View3DInventor;
  */
 class GuiExport View3DPy :public Base::PyObjectBase
 {
-	/// always start with Py_Header
-	Py_Header;
+    /// always start with Py_Header
+    Py_Header;
 
 protected:
-	~View3DPy();
+    ~View3DPy();
 
 public:
-  View3DPy(View3DInventor *pcView, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
+    View3DPy(View3DInventor *pcView, PyTypeObject *T = &Type);
+    static PyObject *PyMake(PyObject *, PyObject *);
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+    //---------------------------------------------------------------------
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-//	PyObject *PyDocType(PyObject *args);		// Python wrapper
-//	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((View3DPy*)self)->PyDocType(args);};
-	PYFUNCDEF_D(View3DPy,message)
-	PYFUNCDEF_D(View3DPy,fitAll)
-	PYFUNCDEF_D(View3DPy,viewBottom)
-	PYFUNCDEF_D(View3DPy,viewFront)
-	PYFUNCDEF_D(View3DPy,viewLeft)
-	PYFUNCDEF_D(View3DPy,viewRear)
-	PYFUNCDEF_D(View3DPy,viewRight)
-	PYFUNCDEF_D(View3DPy,viewTop)
-	PYFUNCDEF_D(View3DPy,viewAxometric)
-	PYFUNCDEF_D(View3DPy,dump)
-	PYFUNCDEF_D(View3DPy,setStereoType)
-	PYFUNCDEF_D(View3DPy,getStereoType)
-	PYFUNCDEF_D(View3DPy,listStereoTypes)
-	PYFUNCDEF_D(View3DPy,saveImage)
-	PYFUNCDEF_D(View3DPy,getCamera)
-	PYFUNCDEF_D(View3DPy,setCamera)
-	PYFUNCDEF_D(View3DPy,getCameraType)
-	PYFUNCDEF_D(View3DPy,setCameraType)
-	PYFUNCDEF_D(View3DPy,listCameraTypes)
-	PYFUNCDEF_D(View3DPy,getCursorPos)
-	PYFUNCDEF_D(View3DPy,getObjectInfo)
+    virtual PyObject *_repr(void);  				// the representation
+    PyObject *_getattr(char *attr);					// __getattr__ function
+    int _setattr(char *attr, PyObject *value);		// __setattr__ function
+    PYFUNCDEF_D(View3DPy,message)
+    PYFUNCDEF_D(View3DPy,fitAll)
+    PYFUNCDEF_D(View3DPy,viewBottom)
+    PYFUNCDEF_D(View3DPy,viewFront)
+    PYFUNCDEF_D(View3DPy,viewLeft)
+    PYFUNCDEF_D(View3DPy,viewRear)
+    PYFUNCDEF_D(View3DPy,viewRight)
+    PYFUNCDEF_D(View3DPy,viewTop)
+    PYFUNCDEF_D(View3DPy,viewAxometric)
+    PYFUNCDEF_D(View3DPy,dump)
+    PYFUNCDEF_D(View3DPy,setStereoType)
+    PYFUNCDEF_D(View3DPy,getStereoType)
+    PYFUNCDEF_D(View3DPy,listStereoTypes)
+    PYFUNCDEF_D(View3DPy,saveImage)
+    PYFUNCDEF_D(View3DPy,getCamera)
+    PYFUNCDEF_D(View3DPy,setCamera)
+    PYFUNCDEF_D(View3DPy,getCameraType)
+    PYFUNCDEF_D(View3DPy,setCameraType)
+    PYFUNCDEF_D(View3DPy,listCameraTypes)
+    PYFUNCDEF_D(View3DPy,getCursorPos)
+    PYFUNCDEF_D(View3DPy,getObjectInfo)
+    PYFUNCDEF_D(View3DPy,getSize)
+    PYFUNCDEF_D(View3DPy,addEventCallback)
+    PYFUNCDEF_D(View3DPy,removeEventCallback)
 
 private:
-  Gui::View3DInventor *_pcView;
-
+    static void eventCallback(void * ud, SoEventCallback * n);
+    Gui::View3DInventor *_pcView;
 };
 
 } // namespace App
