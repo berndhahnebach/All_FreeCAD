@@ -1,5 +1,6 @@
 
-TEMPLATE = app
+TEMPLATE = lib
+CONFIG += designer plugin
 TARGET = FreeCAD_widgets
 DEPENDPATH += .
 INCLUDEPATH += .
