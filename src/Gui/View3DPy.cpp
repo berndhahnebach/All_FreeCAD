@@ -106,20 +106,6 @@ PyTypeObject View3DPy::Type = {
   0                                                 /*tp_weaklist */
 };
 
-PyDoc_STRVAR(view_getCursorPos_doc,
-"getCursorPos() -> tuple of integers\n"
-"\n"
-"Return the current cursor position relative to the coordinate system of the\n"
-"viewport region.\n");
-
-PyDoc_STRVAR(view_getObjectInfo_doc,
-"getObjectInfoPos(tuple of integers) -> dictionary or None\n"
-"\n"
-"Return a dictionary with the name of document, object and component. The\n"
-"dictionary also contains the coordinates of the appropriate 3d point of\n"
-"the underlying geometry in the scenegraph.\n"
-"If no geometry was found 'None' is returned, instead.\n");
-
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
@@ -144,8 +130,21 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(setStereoType)
   PYMETHODEDEF(getStereoType)
   PYMETHODEDEF(listStereoTypes)
-  {"getCursorPos",  (PyCFunction) sgetCursorPos,  Py_NEWARGS, view_getCursorPos_doc },
-  {"getObjectInfo", (PyCFunction) sgetObjectInfo, Py_NEWARGS, view_getObjectInfo_doc},
+  {"getCursorPos",  (PyCFunction) sgetCursorPos,  Py_NEWARGS, 
+    "getCursorPos() -> tuple of integers\n"
+    "\n"
+    "Return the current cursor position relative to the coordinate system of the\n"
+    "viewport region.\n" },
+  {"getObjectInfo", (PyCFunction) sgetObjectInfo, Py_NEWARGS, 
+    "getObjectInfoPos(tuple of integers) -> dictionary or None\n"
+    "\n"
+    "Return a dictionary with the name of document, object and component. The\n"
+    "dictionary also contains the coordinates of the appropriate 3d point of\n"
+    "the underlying geometry in the scenegraph.\n"
+    "If no geometry was found 'None' is returned, instead.\n"},
+  PYMETHODEDEF(getSize)
+  PYMETHODEDEF(addEventCallback)
+  PYMETHODEDEF(removeEventCallback)
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -609,4 +608,88 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
   } catch (const Py::Exception&) {
     return NULL;
   }
+}
+
+PYFUNCIMP_D(View3DPy,getSize)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    try {
+        SbVec2s size = _pcView->getViewer()->getSize();
+        Py::Tuple tuple(2);
+        tuple.setItem(0, Py::Int(size[0]));
+        tuple.setItem(1, Py::Int(size[1]));
+        return Py::new_reference_to(tuple); // increment ref counter
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+void View3DPy::eventCallback(void * ud, SoEventCallback * n)
+{
+    PyObject* method = reinterpret_cast<PyObject*>(ud);
+    SbVec2s pos = n->getEvent()->getPosition();
+    PyObject* args = Py_BuildValue("(ii)", pos[0], pos[1]);
+    PyObject* res = PyEval_CallObject(method, args);
+    if (res)
+        Py_DECREF(res);
+    else if (PyErr_Occurred()) {
+        PyObject *errobj, *errdata, *errtraceback;
+        PyErr_Fetch(&errobj, &errdata, &errtraceback);
+        if ( PyString_Check( errdata ) )
+            Base::Console().Log("%s\n", PyString_AsString(errdata));
+        PyErr_Restore(errobj, errdata, errtraceback);
+        // Prints message to console window if we are in interactive mode
+        PyErr_Print();
+    }
+    Py_DECREF(args);
+}
+
+PYFUNCIMP_D(View3DPy,addEventCallback)
+{
+    char* eventtype;
+    PyObject* method;
+    if (!PyArg_ParseTuple(args, "sO", &eventtype, &method))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    try {
+        if (PyCallable_Check(method) == 0) {
+            PyErr_SetString(PyExc_TypeError, "object is not callable");
+            return NULL;
+        }
+        SoType eventId = SoType::fromName(eventtype);
+        if (eventId.isBad() || !eventId.isDerivedFrom(SoEvent::getClassTypeId())) {
+            PyErr_Format(PyExc_Exception, "%s is not a valid event type", eventtype);
+            return NULL;
+        }
+
+        _pcView->getViewer()->addEventCallback(eventId, View3DPy::eventCallback, method);
+        Py_INCREF(method);
+        return method;
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PYFUNCIMP_D(View3DPy,removeEventCallback)
+{
+    char* eventtype;
+    PyObject* method;
+    if (!PyArg_ParseTuple(args, "sO", &eventtype, &method))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    try {
+        if (PyCallable_Check(method) == 0) {
+            PyErr_SetString(PyExc_TypeError, "object is not callable");
+            return NULL;
+        }
+        SoType eventId = SoType::fromName(eventtype);
+        if (eventId.isBad() || !eventId.isDerivedFrom(SoEvent::getClassTypeId())) {
+            PyErr_Format(PyExc_Exception, "%s is not a valid event type", eventtype);
+            return NULL;
+        }
+
+        _pcView->getViewer()->removeEventCallback(eventId, View3DPy::eventCallback, method);
+        Py_Return;
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
 }

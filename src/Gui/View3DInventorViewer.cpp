@@ -2277,14 +2277,14 @@ void View3DInventorViewer::setEditingCursor (const SoQtCursor& cursor)
   this->editCursor = this->getWidget()->cursor();
 }
 
-void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view)
+void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata)
 {
-    pEventCallback->addEventCallback(eventtype, cb, view);
+    pEventCallback->addEventCallback(eventtype, cb, userdata);
 }
 
-void View3DInventorViewer::removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view)
+void View3DInventorViewer::removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata)
 {
-    pEventCallback->removeEventCallback(eventtype, cb, view);
+    pEventCallback->removeEventCallback(eventtype, cb, userdata);
 }
 
 ViewProvider* View3DInventorViewer::getViewProviderByPath(SoPath * path) const

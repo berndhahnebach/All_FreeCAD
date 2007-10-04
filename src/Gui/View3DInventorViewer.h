@@ -117,13 +117,13 @@ public:
   SoPickedPoint* pickPoint(const SbVec2s& pos) const;
   /**
    * Set up a callback function \a cb which will be invoked for the given eventtype. 
-   * \a view will be given as the first argument to the callback function. 
+   * \a userdata will be given as the first argument to the callback function. 
    */
-  void addEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view = 0);
+  void addEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata = 0);
   /**
    * Unregister the given callback function \a cb.
    */
-  void removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, ViewProvider* view = 0);
+  void removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata = 0);
   ViewProvider* getViewProviderByPath(SoPath*) const;
 
 
