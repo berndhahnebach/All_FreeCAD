@@ -72,6 +72,7 @@ public:
     PYFUNCDEF_D(View3DPy,getCursorPos)
     PYFUNCDEF_D(View3DPy,getObjectInfo)
     PYFUNCDEF_D(View3DPy,getSize)
+    PYFUNCDEF_D(View3DPy,getPoint)
     PYFUNCDEF_D(View3DPy,addEventCallback)
     PYFUNCDEF_D(View3DPy,removeEventCallback)
 

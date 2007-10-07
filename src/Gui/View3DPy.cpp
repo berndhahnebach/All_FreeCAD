@@ -39,6 +39,7 @@
 #include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <App/VectorPy.h>
 #include "Application.h"
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
@@ -143,6 +144,11 @@ PyMethodDef View3DPy::Methods[] = {
     "the underlying geometry in the scenegraph.\n"
     "If no geometry was found 'None' is returned, instead.\n"},
   PYMETHODEDEF(getSize)
+  {"getPoint", (PyCFunction) sgetPoint, Py_NEWARGS, 
+    "getPoint(pixel coords (as integer)) -> 3D vector\n"
+    "\n"
+    "Return the according 3D point on the focal plane to the given 2D point (in\n"
+    "pixel coordinates).\n"},
   PYMETHODEDEF(addEventCallback)
   PYMETHODEDEF(removeEventCallback)
   {NULL, NULL}		/* Sentinel */
@@ -620,6 +626,44 @@ PYFUNCIMP_D(View3DPy,getSize)
         tuple.setItem(0, Py::Int(size[0]));
         tuple.setItem(1, Py::Int(size[1]));
         return Py::new_reference_to(tuple); // increment ref counter
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PYFUNCIMP_D(View3DPy,getPoint)
+{
+    int x,y;
+    if (!PyArg_ParseTuple(args, "ii", &x, &y))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    try {
+        const SbViewportRegion& vp = _pcView->getViewer()->getViewportRegion();
+
+        SbVec2f siz = vp.getViewportSize();
+        float dX, dY; siz.getValue(dX, dY);
+
+        float fRatio = vp.getViewportAspectRatio();
+        float pX = (float)x / float(vp.getViewportSizePixels()[0]);
+        float pY = (float)y / float(vp.getViewportSizePixels()[1]);
+
+        // now calculate the real points respecting aspect ratio information
+        //
+        if (fRatio > 1.0f) {
+            pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
+        }
+        else if (fRatio < 1.0f) {
+            pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
+        }
+        
+        SoCamera* pCam = _pcView->getViewer()->getCamera();  
+        SbViewVolume  vol = pCam->getViewVolume(); 
+        
+        SbLine line; SbVec3f pt;
+        SbPlane focalPlane = vol.getPlane(pCam->focalDistance.getValue());
+        vol.projectPointToLine(SbVec2f(pX,pY), line);
+        focalPlane.intersect(line, pt);
+        
+        return new App::VectorPy(Base::Vector3f(pt[0], pt[1], pt[2]));
     } catch (const Py::Exception&) {
         return NULL;
     }
