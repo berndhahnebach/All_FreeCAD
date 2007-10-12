@@ -1963,6 +1963,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GTSAlgos.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GTSAlgos.h"
+			>
+		</File>
+		<File
 			RelativePath="Mesh.cpp"
 			>
 			<FileConfiguration

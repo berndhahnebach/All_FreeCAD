@@ -28,6 +28,8 @@
 
 #include <Base/Placement.h>
 #include <Base/Persistance.h>
+#include <Base/Handle.h>
+#include <Base/Matrix.h>
 
 
 
@@ -38,17 +40,28 @@ namespace Data
 /** Placement Object
  *  Handles the repositioning of data. Also can do grouping
  */
-class AppExport ComplexGeoData: public Base::Persistance
+class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
 {
 
   TYPESYSTEM_HEADER();
  
 public:
 
-
 	/// Constructor
 	ComplexGeoData(void);
+  ComplexGeoData(const Base::Matrix4D &mtrx):_Mtrx(mtrx){}
   virtual ~ComplexGeoData();
+
+
+  /** Applies an additional transformation to the current transformation. */
+  void applyTransform( const Base::Matrix4D& rclTrf );
+  /** Override the current transformation with the new one. */
+  void setTransform( const Base::Matrix4D& rclTrf );
+
+  const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
+
+protected:
+  Base::Matrix4D _Mtrx;
 
 
 };

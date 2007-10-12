@@ -198,7 +198,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
   * Does not much 
   */
 ParameterGrp::ParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode,const char* sName)	
-	: FCHandled(), Subject<const char*>(),_pGroupNode(GroupNode)
+	: Base::Handled(), Subject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
 }
@@ -215,7 +215,7 @@ ParameterGrp::~ParameterGrp()
 // Access methods
 
 
-void ParameterGrp::copyTo(FCHandle<ParameterGrp> Grp)
+void ParameterGrp::copyTo(Base::Reference<ParameterGrp> Grp)
 {
   // delete previos content
   Grp->Clear();
@@ -224,11 +224,11 @@ void ParameterGrp::copyTo(FCHandle<ParameterGrp> Grp)
   insertTo(Grp);
 }
 
-void ParameterGrp::insertTo(FCHandle<ParameterGrp> Grp)
+void ParameterGrp::insertTo(Base::Reference<ParameterGrp> Grp)
 {
     // copy group
-    std::vector<FCHandle<ParameterGrp> > Grps = GetGroups();
-    std::vector<FCHandle<ParameterGrp> >::iterator It1;
+    std::vector<Base::Reference<ParameterGrp> > Grps = GetGroups();
+    std::vector<Base::Reference<ParameterGrp> >::iterator It1;
     for(It1 = Grps.begin();It1 != Grps.end();++It1)
         (*It1)->insertTo(Grp->GetGroup((*It1)->GetGroupName()));
 
@@ -282,7 +282,7 @@ void ParameterGrp::importFrom(const char* FileName)
   if(Mngr.LoadDocument(FileName) != 1)
     throw Exception("ParameterGrp::import() cant load document");
 
-  Mngr.GetGroup("root")->copyTo(FCHandle<ParameterGrp>(this));
+  Mngr.GetGroup("root")->copyTo(Base::Reference<ParameterGrp>(this));
 
 }
 
@@ -293,7 +293,7 @@ void ParameterGrp::insert(const char* FileName)
   if(Mngr.LoadDocument(FileName) != 1)
     throw Exception("ParameterGrp::import() cant load document");
 
-  Mngr.GetGroup("root")->insertTo(FCHandle<ParameterGrp>(this));
+  Mngr.GetGroup("root")->insertTo(Base::Reference<ParameterGrp>(this));
 
 }
 
@@ -301,7 +301,7 @@ void ParameterGrp::insert(const char* FileName)
 
 
 
-FCHandle<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
+Base::Reference<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
 {
 	std::string cName = Name;
 
@@ -338,9 +338,9 @@ FCHandle<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
 
 }
 
-FCHandle<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
+Base::Reference<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
 {
-	FCHandle<ParameterGrp> rParamGrp;
+	Base::Reference<ParameterGrp> rParamGrp;
 	DOMElement *pcTemp;
 
 	// already created?
@@ -354,17 +354,17 @@ FCHandle<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
 	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
 
 	// create and register handle
-	rParamGrp = FCHandle<ParameterGrp> (new ParameterGrp(pcTemp,Name));
+	rParamGrp = Base::Reference<ParameterGrp> (new ParameterGrp(pcTemp,Name));
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
 
 }
 
-std::vector<FCHandle<ParameterGrp> > ParameterGrp::GetGroups(void)
+std::vector<Base::Reference<ParameterGrp> > ParameterGrp::GetGroups(void)
 {
-	FCHandle<ParameterGrp> rParamGrp;
-	std::vector<FCHandle<ParameterGrp> >  vrParamGrp;
+	Base::Reference<ParameterGrp> rParamGrp;
+	std::vector<Base::Reference<ParameterGrp> >  vrParamGrp;
 	DOMElement *pcTemp; //= _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -376,7 +376,7 @@ std::vector<FCHandle<ParameterGrp> > ParameterGrp::GetGroups(void)
 		// already created?
 		if( ! (rParamGrp=_GroupMap[Name]).IsValid() )
 		{
-			rParamGrp = FCHandle<ParameterGrp> (new ParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
+			rParamGrp = Base::Reference<ParameterGrp> (new ParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
 			_GroupMap[Name] = rParamGrp;
 		}
 		vrParamGrp.push_back( rParamGrp );
@@ -905,7 +905,7 @@ void ParameterGrp::Clear(void)
 	std::vector<DOMNode*> vecNodes;
 
 	// checking on references
-	std::map <std::string ,FCHandle<ParameterGrp> >::iterator It1;
+	std::map <std::string ,Base::Reference<ParameterGrp> >::iterator It1;
 	for(It1 = _GroupMap.begin();It1!=_GroupMap.end();It1++)
 		if(!(It1->second.IsLastRef()))
 			Console().Warning("ParameterGrp::Clear(): Group clear with active references");

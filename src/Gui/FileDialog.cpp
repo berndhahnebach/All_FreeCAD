@@ -148,7 +148,7 @@ QStringList FileDialog::getOpenFileNames (QWidget * parent, const QString & capt
 QString FileDialog::getWorkingDirectory()
 {
     std::string path = App::GetApplication().Config()["UserHomePath"];
-    FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+    Base::Reference<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
     path = hPath->GetASCII("FileOpenSavePath", path.c_str());
     return QString::fromUtf8(path.c_str());
@@ -167,7 +167,7 @@ void FileDialog::setWorkingDirectory( const QString& dir )
         dirName = info.absolutePath();
     }
 
-    FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+    Base::Reference<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
     hPath->SetASCII("FileOpenSavePath", dirName.toUtf8());
 }

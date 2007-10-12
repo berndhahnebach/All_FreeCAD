@@ -156,9 +156,9 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
     const char* subgroup = (type == Toolbar ? "Toolbar" : "Toolboxbar");
     hGrp = hGrp->GetGroup(name.constData())->GetGroup(subgroup);
 
-    std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
+    std::vector<Base::Reference<ParameterGrp> > hGrps = hGrp->GetGroups();
     CommandManager& rMgr = Application::Instance->commandManager();
-    for (std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it) {
+    for (std::vector<Base::Reference<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it) {
         // create a toplevel item
         QTreeWidgetItem* toplevel = new QTreeWidgetItem(toolbarTreeWidget);
         bool active = (*it)->GetBool("Active", true);

@@ -138,7 +138,7 @@ public:
     * std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
     * \endcode
     */
-	FCHandle<ParameterGrp>                            GetParameterGroupByPath(const char* sName);
+	Base::Reference<ParameterGrp>                            GetParameterGroupByPath(const char* sName);
 
 	ParameterManager *                                GetParameterSet(const char* sName) const;
 	const std::map<std::string,ParameterManager *> &  GetParameterSetList(void) const;

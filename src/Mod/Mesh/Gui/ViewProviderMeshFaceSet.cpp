@@ -112,7 +112,7 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), pBoundingBox
   Lighting.touch();
 
   // read the correct shape color from the preferences
-  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
   App::Color color = ShapeColor.getValue();
   unsigned long current = color.getPackedValue();
   unsigned long setting = hGrp->GetUnsigned("MeshColor", current);

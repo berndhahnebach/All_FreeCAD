@@ -114,7 +114,7 @@ void DlgParameterImp::onGroupSelected( QTreeWidgetItem * item )
     if ( item && item->type() == QTreeWidgetItem::UserType + 1 )
     {
         paramValue->clear();
-        FCHandle<ParameterGrp> _hcGrp = static_cast<ParameterGroupItem*>(item)->_hcGrp;
+        Base::Reference<ParameterGrp> _hcGrp = static_cast<ParameterGroupItem*>(item)->_hcGrp;
         static_cast<ParameterValue*>(paramValue)->setCurrentGroup( _hcGrp );
 
         // filling up Text nodes
@@ -165,8 +165,8 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
     paramValue->clear();
 
     // root labels
-    std::vector<FCHandle<ParameterGrp> > grps = rcParMngr->GetGroups();
-    for ( std::vector<FCHandle<ParameterGrp> >::iterator it = grps.begin(); it != grps.end(); ++it ) {
+    std::vector<Base::Reference<ParameterGrp> > grps = rcParMngr->GetGroups();
+    for ( std::vector<Base::Reference<ParameterGrp> >::iterator it = grps.begin(); it != grps.end(); ++it ) {
         QTreeWidgetItem* item = new ParameterGroupItem(paramGroup, *it);
         paramGroup->expandItem(item);
         item->setIcon(0, QApplication::style()->standardPixmap(QStyle::SP_ComputerIcon));
@@ -300,7 +300,7 @@ void ParameterGroup::onCreateSubgroup()
         if (isItemSelected(item))
         {
             ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
-            FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+            Base::Reference<ParameterGrp> hGrp = para->_hcGrp;
 
             if ( hGrp->HasGroup( name.toAscii() ) )
             {
@@ -325,7 +325,7 @@ void ParameterGroup::onExportToFile()
         if (isItemSelected(item))
         {
             ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
-            FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+            Base::Reference<ParameterGrp> hGrp = para->_hcGrp;
             hGrp->exportTo( file.toUtf8() );
         }
     }
@@ -341,7 +341,7 @@ void ParameterGroup::onImportFromFile()
         if (isItemSelected(item))
         {
             ParameterGroupItem* para = static_cast<ParameterGroupItem*>(item);
-            FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+            Base::Reference<ParameterGrp> hGrp = para->_hcGrp;
 
             // remove the items and internal parameter values
             QList<QTreeWidgetItem*> childs = para->takeChildren();
@@ -353,8 +353,8 @@ void ParameterGroup::onImportFromFile()
             try
             {
                 hGrp->importFrom( file.toUtf8() );
-                std::vector<FCHandle<ParameterGrp> > cSubGrps = hGrp->GetGroups();
-                for ( std::vector<FCHandle<ParameterGrp> >::iterator it = cSubGrps.begin(); it != cSubGrps.end(); ++it )
+                std::vector<Base::Reference<ParameterGrp> > cSubGrps = hGrp->GetGroups();
+                for ( std::vector<Base::Reference<ParameterGrp> >::iterator it = cSubGrps.begin(); it != cSubGrps.end(); ++it )
                 {
                     new ParameterGroupItem(para,*it);
                 }
@@ -422,7 +422,7 @@ ParameterValue::~ParameterValue()
 {
 }
 
-void ParameterValue::setCurrentGroup( const FCHandle<ParameterGrp>& hGrp )
+void ParameterValue::setCurrentGroup( const Base::Reference<ParameterGrp>& hGrp )
 {
     _hcGrp = hGrp;
 }
@@ -645,14 +645,14 @@ void ParameterValue::onCreateBoolItem()
 
 // ---------------------------------------------------------------------------
 
-ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp )
+ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const Base::Reference<ParameterGrp> &hcGrp )
     : QTreeWidgetItem( parent, QTreeWidgetItem::UserType+1 ), _hcGrp(hcGrp)
 {
     setFlags(flags() | Qt::ItemIsEditable);
     fillUp();
 }
 
-ParameterGroupItem::ParameterGroupItem( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp)
+ParameterGroupItem::ParameterGroupItem( QTreeWidget* parent, const Base::Reference<ParameterGrp> &hcGrp)
     : QTreeWidgetItem( parent, QTreeWidgetItem::UserType+1 ), _hcGrp(hcGrp)
 {
     setFlags(flags() | Qt::ItemIsEditable);
@@ -670,10 +670,10 @@ ParameterGroupItem::~ParameterGroupItem()
 void ParameterGroupItem::fillUp(void)
 {
     // filing up groups
-    std::vector<FCHandle<ParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
+    std::vector<Base::Reference<ParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
 
     setText(0,_hcGrp->GetGroupName());
-    for(std::vector<FCHandle<ParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
+    for(std::vector<Base::Reference<ParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
         (void)new ParameterGroupItem(this,*It);
 }
 
@@ -705,8 +705,8 @@ void ParameterGroupItem::setData ( int column, int role, const QVariant & value 
         else 
         {
             // rename the group by adding a new group, copy the content and remove the old group
-            FCHandle<ParameterGrp> hOldGrp = item->_hcGrp->GetGroup( oldName.toAscii() );
-            FCHandle<ParameterGrp> hNewGrp = item->_hcGrp->GetGroup( newName.toAscii() );
+            Base::Reference<ParameterGrp> hOldGrp = item->_hcGrp->GetGroup( oldName.toAscii() );
+            Base::Reference<ParameterGrp> hNewGrp = item->_hcGrp->GetGroup( newName.toAscii() );
             hOldGrp->copyTo( hNewGrp );
             item->_hcGrp->RemoveGrp( oldName.toAscii() );
         }
@@ -731,7 +731,7 @@ QVariant ParameterGroupItem::data ( int column, int role ) const
 
 // --------------------------------------------------------------------
 
-ParameterValueItem::ParameterValueItem ( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp)
+ParameterValueItem::ParameterValueItem ( QTreeWidget* parent, const Base::Reference<ParameterGrp> &hcGrp)
   : QTreeWidgetItem( parent ), _hcGrp(hcGrp)
 {
     setFlags(flags() | Qt::ItemIsEditable);
@@ -760,7 +760,7 @@ void ParameterValueItem::setData ( int column, int role, const QVariant & value 
 
 // --------------------------------------------------------------------
 
-ParameterText::ParameterText ( QTreeWidget * parent, QString label, const char* value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterText::ParameterText ( QTreeWidget * parent, QString label, const char* value, const Base::Reference<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_Text") );
@@ -804,7 +804,7 @@ void ParameterText::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterInt::ParameterInt ( QTreeWidget * parent, QString label, long value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterInt::ParameterInt ( QTreeWidget * parent, QString label, long value, const Base::Reference<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_Int") );
@@ -848,7 +848,7 @@ void ParameterInt::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterUInt::ParameterUInt ( QTreeWidget * parent, QString label, unsigned long value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterUInt::ParameterUInt ( QTreeWidget * parent, QString label, unsigned long value, const Base::Reference<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_UInt") );
@@ -901,7 +901,7 @@ void ParameterUInt::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterFloat::ParameterFloat ( QTreeWidget * parent, QString label, double value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterFloat::ParameterFloat ( QTreeWidget * parent, QString label, double value, const Base::Reference<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_Float") );
@@ -945,7 +945,7 @@ void ParameterFloat::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterBool::ParameterBool ( QTreeWidget * parent, QString label, bool value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterBool::ParameterBool ( QTreeWidget * parent, QString label, bool value, const Base::Reference<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, hcGrp)
 {
     setIcon(0,BitmapFactory().pixmap("Param_Bool") );

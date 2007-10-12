@@ -568,8 +568,8 @@ void MacroCommand::load()
   if (hGrp->HasGroup("Macros"))
   {
     hGrp = hGrp->GetGroup("Macros");
-    std::vector<FCHandle<ParameterGrp> > macros = hGrp->GetGroups();
-    for (std::vector<FCHandle<ParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
+    std::vector<Base::Reference<ParameterGrp> > macros = hGrp->GetGroups();
+    for (std::vector<Base::Reference<ParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
       MacroCommand* macro = new MacroCommand((*it)->GetGroupName());
       macro->setScriptName  ( (*it)->GetASCII( "Script"     ).c_str() );

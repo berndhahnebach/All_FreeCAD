@@ -130,7 +130,7 @@ public:
     virtual ~ParameterValue();
 
     /** Sets the current parameter group that is displayed. */
-    void setCurrentGroup( const FCHandle<ParameterGrp>& _hcGrp );
+    void setCurrentGroup( const Base::Reference<ParameterGrp>& _hcGrp );
 
 protected:
     /** Shows the context menu. */
@@ -175,7 +175,7 @@ private:
     QAction* newIntAct;
     QAction* newUlgAct;
     QAction* newBlnAct;
-    FCHandle<ParameterGrp> _hcGrp;
+    Base::Reference<ParameterGrp> _hcGrp;
 };
 
 /** The link between the Tree and the shown Label.
@@ -189,15 +189,15 @@ class ParameterGroupItem : public QTreeWidgetItem
 {
 public:
     /// Constructor
-    ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp );
-    ParameterGroupItem( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterGroupItem( ParameterGroupItem * parent, const Base::Reference<ParameterGrp> &hcGrp );
+    ParameterGroupItem( QTreeWidget* parent, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterGroupItem();
 
     void setData ( int column, int role, const QVariant & value );
     QVariant data ( int column, int role ) const;
 
     void fillUp(void);
-    FCHandle<ParameterGrp> _hcGrp;
+    Base::Reference<ParameterGrp> _hcGrp;
 };
 
 // --------------------------------------------------------------------
@@ -213,7 +213,7 @@ class ParameterValueItem : public QTreeWidgetItem
 {
 public:
     /// Constructor
-    ParameterValueItem ( QTreeWidget* parent, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterValueItem ( QTreeWidget* parent, const Base::Reference<ParameterGrp> &hcGrp);
     virtual ~ParameterValueItem();
 
     /** If the name of the item has changed replace() is invoked. */
@@ -230,7 +230,7 @@ protected:
     virtual void replace( const QString& oldName, const QString& newName ) = 0;
 
 protected:
-    FCHandle<ParameterGrp> _hcGrp;
+    Base::Reference<ParameterGrp> _hcGrp;
 };
 
 /**
@@ -241,7 +241,7 @@ class ParameterText : public ParameterValueItem
 {
 public:
     /// Constructor
-    ParameterText ( QTreeWidget * parent, QString label1, const char* value, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterText ( QTreeWidget * parent, QString label1, const char* value, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterText();
 
     void changeValue();
@@ -260,7 +260,7 @@ class ParameterInt : public ParameterValueItem
 {
 public:
     /// Constructor
-    ParameterInt ( QTreeWidget * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterInt ( QTreeWidget * parent, QString label1, long value, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterInt();
 
     void changeValue();
@@ -279,7 +279,7 @@ class ParameterUInt : public ParameterValueItem
 {
 public:
     /// Constructor
-    ParameterUInt ( QTreeWidget * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterUInt ( QTreeWidget * parent, QString label1, unsigned long value, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterUInt();
 
     void changeValue();
@@ -298,7 +298,7 @@ class ParameterFloat : public ParameterValueItem
 {
 public:
     /// Constructor
-    ParameterFloat ( QTreeWidget * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterFloat ( QTreeWidget * parent, QString label1, double value, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterFloat();
 
     void changeValue();
@@ -317,7 +317,7 @@ class ParameterBool : public ParameterValueItem
 {
 public:
     /// Constructor
-    ParameterBool ( QTreeWidget * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
+    ParameterBool ( QTreeWidget * parent, QString label1, bool value, const Base::Reference<ParameterGrp> &hcGrp);
     ~ParameterBool();
 
     void changeValue();
