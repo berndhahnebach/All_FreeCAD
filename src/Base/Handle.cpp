@@ -39,14 +39,14 @@ using namespace Base;
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCHandled::FCHandled() 
+Handled::Handled() 
 	: _lRefCount(0)
 {
 
 
 }
 
-FCHandled::~FCHandled()
+Handled::~Handled()
 {
 	if(_lRefCount != 0)
 		throw Exception("handled deleted with Rerferences!!!!!\n");
@@ -58,12 +58,12 @@ FCHandled::~FCHandled()
 
 
 
-void  FCHandled::AttachRef(void* pHandle)
+void  Handled::AttachRef(void* pHandle)
 {
 	_lRefCount++;
 }
 
-void  FCHandled::DetachRef(void* pHandle)
+void  Handled::DetachRef(void* pHandle)
 {
 	assert(_lRefCount > 0); 
 	if (--_lRefCount == 0)
@@ -75,7 +75,7 @@ void  FCHandled::DetachRef(void* pHandle)
 		}
 		catch(...)
 		{
-			throw Exception("FChandled freed twice !!!!!\n");
+      throw Exception("Base::Handled freed twice !!!!!\n");
 		}
 	}
 }

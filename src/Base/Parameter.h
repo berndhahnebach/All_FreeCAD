@@ -71,7 +71,7 @@ class ParameterManager;
  *  kind of preferences and so on.
  *  @see ParameterManager
  */
-class  BaseExport ParameterGrp	: public FCHandled,public Base::Subject <const char*>
+class  BaseExport ParameterGrp	: public Base::Handled,public Base::Subject <const char*>
 {
 
 
@@ -79,9 +79,9 @@ public:
 	/** @name copy and insertation */
 	//@{
   /// make a deep copy to the other group
-  void copyTo(FCHandle<ParameterGrp>);
+  void copyTo(Base::Reference<ParameterGrp>);
   /// overwrite everithing similar, leaf the others allone 
-  void insertTo(FCHandle<ParameterGrp>); 
+  void insertTo(Base::Reference<ParameterGrp>); 
   /// export this group to a file
   void exportTo(const char* FileName);
   /// import from a file to this group
@@ -93,15 +93,15 @@ public:
   /** @name methods for group handling */
 	//@{
 	/// get a handle to a sub group or creat one
-	FCHandle<ParameterGrp> GetGroup(const char* Name);
+	Base::Reference<ParameterGrp> GetGroup(const char* Name);
 	/// get a vector of all sub groups in this group
-	std::vector<FCHandle<ParameterGrp> > GetGroups(void);
+	std::vector<Base::Reference<ParameterGrp> > GetGroups(void);
 	/// test if this group is emty
 	bool IsEmpty(void) const;
 	/// test if a special sub group is in this group
 	bool HasGroup(const char* Name) const;
 	/// type of the handle
-	typedef FCHandle<ParameterGrp> handle;
+	typedef Base::Reference<ParameterGrp> handle;
 	/// remove a sub group from this group
 	void RemoveGrp(const char* Name);
 	/// clears everithing in this group (all types)
@@ -215,7 +215,7 @@ protected:
 	/// destructor is protected (handle concept)
 	~ParameterGrp();
 	/// helper function for GetGroup
-	FCHandle<ParameterGrp> _GetGroup(const char* Name);
+	Base::Reference<ParameterGrp> _GetGroup(const char* Name);
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type) const;
 
@@ -240,7 +240,7 @@ protected:
 	/// the own name
 	std::string _cName;
 	/// map of already exported groups
-	std::map <std::string ,FCHandle<ParameterGrp> > _GroupMap;
+	std::map <std::string ,Base::Reference<ParameterGrp> > _GroupMap;
 
 };
 
@@ -289,7 +289,7 @@ XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument   *_pDocument;
 
 /** python wrapper function
 */
-BaseExport PyObject* GetPyObject( const FCHandle<ParameterGrp> &hcParamGrp);
+BaseExport PyObject* GetPyObject( const Base::Reference<ParameterGrp> &hcParamGrp);
 
 
 #endif

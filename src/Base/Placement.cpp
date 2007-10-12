@@ -30,3 +30,7 @@
 
 using namespace Base;
 
+Base::Matrix4D Placement::getAsMatrix(void)
+{
+  return Base::Matrix4D();
+}

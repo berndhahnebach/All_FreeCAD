@@ -33,13 +33,15 @@
 #include <typeinfo>
 
 
+namespace Base{
+
 /** Handle class
  *  Implementation of the referenc counting pattern
  *  Only able to instatiate with a class inhereting
  *  FCHandled!
  */
 template <class HandledType>
-class FCHandle
+class Reference
 {
 public:
 	//**************************************************************************
@@ -50,7 +52,7 @@ public:
 	 *  instead using a overwriten new operator in the
 	 *  HandledType class! But is not easy to inforce!
 	 */
-	FCHandle(HandledType* ToHandel=0L)
+	Reference(HandledType* ToHandel=0L)
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
@@ -58,7 +60,7 @@ public:
 	}
 
 	/// Copy constructor
-	FCHandle(const FCHandle<HandledType>& ToHandel)
+	Reference(const Reference<HandledType>& ToHandel)
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
@@ -70,7 +72,7 @@ public:
 	 *  if was the last one, the referenced object to
 	 *  destruct!
 	 */
-	~FCHandle()
+	~Reference()
 	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
@@ -80,7 +82,7 @@ public:
 	// operator implementation
 
 	// assign operator from a pointer
-	FCHandle <HandledType>& operator=(HandledType* other)
+	Reference <HandledType>& operator=(HandledType* other)
 	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
@@ -91,7 +93,7 @@ public:
 	}
 
 	// assign operator from a handle
-	FCHandle <HandledType>& operator=(const FCHandle<HandledType>& other)
+	Reference <HandledType>& operator=(const Reference<HandledType>& other)
 	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
@@ -116,13 +118,13 @@ public:
 	/** lower operator
 	 *  needed for sorting in maps and sets
 	 */
-	bool operator<(const FCHandle<HandledType>& other) const
+	bool operator<(const Reference<HandledType>& other) const
 	{
 		return _pHandels<other._pHandels;
 	}
 
 	/// equal operator
-	bool operator==(const FCHandle<HandledType>& other) const
+	bool operator==(const Reference<HandledType>& other) const
 	{
 		return _pHandels==other._pHandels;
 	}
@@ -166,11 +168,11 @@ private:
 
 
 
-class BaseExport FCHandled
+class BaseExport Handled
 {
 public:
-	FCHandled();
-	virtual ~FCHandled();
+	Handled();
+	virtual ~Handled();
 
 	void  AttachRef(void* pHandle);
 	void  DetachRef(void* pHandle);
@@ -185,5 +187,6 @@ private:
 	long _lRefCount;
 };
 
+} // namespace Base
 
 #endif // __HANDLE_H__

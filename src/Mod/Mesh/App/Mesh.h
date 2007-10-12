@@ -35,31 +35,34 @@
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyGeo.h>
+#include <App/ComplexGeoData.h>
 
 #include "Core/MeshKernel.h"
 
 
 namespace Mesh
 {
-class AppMeshExport MeshObject
+class AppMeshExport MeshObject: public Data::ComplexGeoData
 {
 public:
   MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx )
-    : _pcKernel(Kernel),_Mtrx(Mtrx){}
+    : _pcKernel(Kernel),ComplexGeoData(Mtrx){}
+
+  MeshObject();
 
   /** Returns an iterator object to go over all facets. */
   MeshCore::MeshFacetIterator FacetIterator() const;
   /** Returns an iterator object to go over all points. */
   MeshCore::MeshPointIterator PointIterator() const;
 
-  /** Applies an additional transformation to the current transformation. */
-  void ApplyTransform( const Base::Matrix4D& rclTrf );
-  /** Override the current transformation with the new one. */
-  void SetTransform( const Base::Matrix4D& rclTrf );
+  MeshCore::MeshKernel& getKernel(void){return *_pcKernel;}
+  const MeshCore::MeshKernel& getKernel(void) const {return *_pcKernel;}
+
+  /// clears the Mesh
+  void clear(void);
 
 protected:
   MeshCore::MeshKernel* _pcKernel;
-  Base::Matrix4D _Mtrx;
 };
 
 

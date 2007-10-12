@@ -25,6 +25,8 @@
 #define __Placement_H
 
 #include "Vector3D.h"
+#include "Matrix.h"
+
 
 
 namespace Base {
@@ -43,6 +45,9 @@ public:
 
   const Vector3<double> &getPos(void) const {return _Pos;}
   const double *getRotation(void) const {return _q;}
+
+  Base::Matrix4D getAsMatrix(void);
+
 
   Vector3<double> _Pos;
   double _q[4];

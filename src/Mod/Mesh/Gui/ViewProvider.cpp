@@ -178,7 +178,7 @@ ViewProviderMesh::ViewProviderMesh() : m_bEdit(false)
   pcPointStyle->pointSize = PointSize.getValue();
 
   // read the correct shape color from the preferences
-  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
   App::Color color = ShapeColor.getValue();
   unsigned long current = color.getPackedValue();
   unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
@@ -329,7 +329,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   SoGroup* pcFlatRoot = new SoGroup();
 
   // read the correct shape color from the preferences
-  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
   bool twoSide = hGrp->GetBool("TwoSideRendering", true);
   if ( twoSide )
   {

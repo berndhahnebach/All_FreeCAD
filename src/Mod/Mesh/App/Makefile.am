@@ -270,6 +270,8 @@ libMesh_la_SOURCES=\
 		MeshProperties.h \
 		MeshPy.cpp \
 		MeshPy.h \
+		GTSAlgos.cpp \
+		GTSAlgos.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

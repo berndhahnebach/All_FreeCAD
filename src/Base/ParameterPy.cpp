@@ -76,7 +76,7 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructor 
-	ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
+	ParameterGrpPy(const Base::Reference<ParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 
@@ -123,7 +123,7 @@ public:
 protected:
 
 	/// Pointer to the FCDocument where the label comes from 
-	FCHandle<ParameterGrp> _cParamGrp;
+	Base::Reference<ParameterGrp> _cParamGrp;
 };
 
 
@@ -198,7 +198,7 @@ PyParentObject ParameterGrpPy::Parents[] = {&PyObjectBase::Type,&ParameterGrpPy:
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-ParameterGrpPy::ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T ) 
+ParameterGrpPy::ParameterGrpPy(const Base::Reference<ParameterGrp> &rcParamGrp, PyTypeObject *T ) 
  : PyObjectBase(0, T),_cParamGrp(rcParamGrp)
 {
 	//Console().Log("Create Param Group %p\n",this);
@@ -330,7 +330,7 @@ PyObject *ParameterGrpPy::PyGetGrp(PyObject *args)
     return NULL;                             // NULL triggers exception 
   PY_TRY {
 	  // get the Handle of the wanted group
-	  FCHandle<ParameterGrp> handle = _cParamGrp->GetGroup(pstr);
+	  Base::Reference<ParameterGrp> handle = _cParamGrp->GetGroup(pstr);
 	  if(handle.IsValid()){
 		  // crate a python wrapper class
 		  ParameterGrpPy *pcParamGrp = new ParameterGrpPy(handle);
@@ -581,7 +581,7 @@ PyObject *ParameterGrpPy::PyNotifyAll(PyObject *args)
 
 /** python wrapper function
 */
-PyObject* GetPyObject( const FCHandle<ParameterGrp> &hcParamGrp)
+PyObject* GetPyObject( const Base::Reference<ParameterGrp> &hcParamGrp)
 {
 
 	return new ParameterGrpPy(hcParamGrp); 

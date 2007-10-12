@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,41 +21,51 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef _GTSAlgos_h_
+#define _GTSAlgos_h_
 
-#ifndef _PreComp_
-#endif
+#include <gts.h>
+#include <vector>
 
-
-#include "ComplexGeoData.h"
-
-using namespace Data;
-
-
-TYPESYSTEM_SOURCE(Data::ComplexGeoData , Base::Persistance);
+#include <Base/Vector3D.h>
+#include <Base/Matrix.h>
+#include "Mesh.h"
 
 
-
-ComplexGeoData::ComplexGeoData(void)
+namespace Mesh
 {
 
-  
-}
-
-ComplexGeoData::~ComplexGeoData(void)
+/** The mesh algorithems container class
+ */
+class AppMeshExport GTSAlgos
 {
-}
+public:
+  //GTSAlgos(MeshCore::MeshKernel* Mesh);
+  GTSAlgos(Mesh::MeshObject& Mesh):_Mesh(Mesh){};
+
+  /** Coarsen the mesh
+  */
+  void coarsen(float f);
+
+  /** makes a boolean add
+   * The int Type stears the boolean oberation: 0=add;1=intersection;2=diff
+  */
+  void boolean(const Mesh::MeshObject& ToolMesh, int Type=0);
+
+  /** Creates a GTS Surface from a MeshKernel
+  */
+  static GtsSurface* createGTSSurface(const Mesh::MeshObject& Mesh);
+
+  /** Creates a GTS Surface from a MeshKernel
+  */
+  static void fillMeshFromGTSSurface(Mesh::MeshObject& Mesh, GtsSurface* pSurface);
+
+private:
+
+  Mesh::MeshObject& _Mesh;
+};
 
 
-void ComplexGeoData::applyTransform( const Base::Matrix4D& rclTrf )
-{
-  _Mtrx = rclTrf * _Mtrx;
-}
 
-void ComplexGeoData::setTransform( const Base::Matrix4D& rclTrf )
-{
-  _Mtrx = rclTrf;
-}
-
-
-
+} // namespace Mesh
+#endif 

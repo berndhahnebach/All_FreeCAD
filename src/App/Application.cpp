@@ -460,7 +460,7 @@ std::vector<std::string> Application::GetAllTemplates(void)
 }
 */
 
-FCHandle<ParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
+Base::Reference<ParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
 {
 	std::string cName = sName,cTemp;
 

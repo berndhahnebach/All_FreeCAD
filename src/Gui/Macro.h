@@ -100,7 +100,7 @@ protected:
     bool guiAsComment;
     bool scriptToPyConsole;
     PythonConsole* pyConsole;       // link to the python console
-    FCHandle<ParameterGrp> params;  // link to the Macro parameter group
+    Base::Reference<ParameterGrp> params;  // link to the Macro parameter group
 
     friend struct ApplicationP;
 };
