@@ -44,7 +44,6 @@ MeshObject::MeshObject()
 {
 }
 
-
 MeshCore::MeshFacetIterator MeshObject::FacetIterator() const
 {
   MeshCore::MeshFacetIterator it = _pcKernel->FacetIterator();

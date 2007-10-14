@@ -49,7 +49,7 @@
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
 				AdditionalIncludeDirectories=".,inventor/Qt,.."
-				PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER"
+				PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -117,8 +117,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../obj/Gui/Releas"
-			IntermediateDirectory="../../obj/Gui/Releas"
+			OutputDirectory="../../obj/Gui/Release"
+			IntermediateDirectory="../../obj/Gui/Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -142,7 +142,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="../../obj/Gui/Releas/FreeCADGui.tlb"
+				TypeLibraryName="../../obj/Gui/Release/FreeCADGui.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -151,17 +151,17 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories=".,inventor/Qt,.."
-				PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile="../../obj/Gui/Releas/FreeCADGui.pch"
-				AssemblerListingLocation="../../obj/Gui/Releas/"
-				ObjectFile="../../obj/Gui/Releas/"
-				ProgramDataBaseFileName="../../obj/Gui/Releas/"
+				PrecompiledHeaderFile="../../obj/Gui/Release/FreeCADGui.pch"
+				AssemblerListingLocation="../../obj/Gui/Release/"
+				ObjectFile="../../obj/Gui/Release/"
+				ProgramDataBaseFileName="../../obj/Gui/Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -199,7 +199,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile="../../obj/Gui/Releas/FreeCADGui.bsc"
+				OutputFile="../../obj/Gui/Release/FreeCADGui.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

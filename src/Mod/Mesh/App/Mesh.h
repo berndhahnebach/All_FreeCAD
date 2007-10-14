@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef _Mesh_h_
-#define _Mesh_h_
+#ifndef MESH_MESH_H
+#define MESH_MESH_H
 
 #include <vector>
 #include <list>
@@ -45,8 +45,8 @@ namespace Mesh
 class AppMeshExport MeshObject: public Data::ComplexGeoData
 {
 public:
-  MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx )
-    : _pcKernel(Kernel),ComplexGeoData(Mtrx){}
+  MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx)
+    : ComplexGeoData(Mtrx),_pcKernel(Kernel){}
 
   MeshObject();
 
@@ -65,9 +65,7 @@ protected:
   MeshCore::MeshKernel* _pcKernel;
 };
 
-
-
 } // namespace Mesh
 
-#endif // _Mesh_h_
+#endif // MESH_MESH_H
 
