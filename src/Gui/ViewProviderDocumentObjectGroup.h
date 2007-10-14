@@ -46,6 +46,7 @@ public:
 
   virtual void attach(App::DocumentObject *pcObject);
   //FIXME: getIcon(Icon) enum Icon {Active, Disabled, Open, Closed, ...} 
+  virtual QPixmap getIcon(void) const;
   virtual QPixmap getOpenedGroupIcon() const;
   virtual QPixmap getClosedGroupIcon() const;
   /// returns a list of all possible modes

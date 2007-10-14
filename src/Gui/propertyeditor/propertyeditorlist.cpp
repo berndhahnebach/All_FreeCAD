@@ -185,7 +185,7 @@ void PropertyStringListItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()));
-        ((App::PropertyStringList*)*it)->setValue(list);
+        ((App::PropertyStringList*)*it)->setValues(list);
     }
 }
 

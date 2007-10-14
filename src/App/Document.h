@@ -104,208 +104,207 @@ public:
 /// The document class
 class AppExport Document :public App::PropertyContainer//, public Base::Subject<const DocChanges&>
 {
-  PROPERTY_HEADER(App::Document);
+    PROPERTY_HEADER(App::Document);
 
 public:
 
-  /// holds the long name of the document (utf-8 coded)
-  PropertyString Name;
-  /// full qualified (with path) file name (utf-8 coded)
-  PropertyString FileName;
-  /// creators name (utf-8)
-  PropertyString CreatedBy;
-  PropertyString CreationDate;
-  PropertyString LastModifiedBy;
-  PropertyString LastModifiedDate;
-  PropertyString Company;
-  PropertyString Comment;
+    /// holds the long name of the document (utf-8 coded)
+    PropertyString Name;
+    /// full qualified (with path) file name (utf-8 coded)
+    PropertyString FileName;
+    /// creators name (utf-8)
+    PropertyString CreatedBy;
+    PropertyString CreationDate;
+    PropertyString LastModifiedBy;
+    PropertyString LastModifiedDate;
+    PropertyString Company;
+    PropertyString Comment;
 
-  /** @name Signals of the document */
-	//@{
-  /// signal on new Object
-  boost::signal<void (App::DocumentObject&)> signalNewObject;
-  //boost::signal<void (const App::DocumentObject&)>     m_sig;
-  /// signal on deleted Object
-  boost::signal<void (App::DocumentObject&)> signalDeletedObject;
-  /// signal on changed Object
-  boost::signal<void (App::DocumentObject&)> signalChangedObject;
-  /// signal on renamed Object
-  boost::signal<void (App::DocumentObject&)> signalRenamedObject;
-  /** signal on save document
-    * this signal is given when the document get streamt.
-    * you can use this hook to write additional information in 
-    * the file (like the Gui::Document does).
-    */
-  boost::signal<void (Base::Writer &)> signalSaveDocument;
-  //@}
+    /** @name Signals of the document */
+    //@{
+    /// signal on new Object
+    boost::signal<void (App::DocumentObject&)> signalNewObject;
+    //boost::signal<void (const App::DocumentObject&)>     m_sig;
+    /// signal on deleted Object
+    boost::signal<void (App::DocumentObject&)> signalDeletedObject;
+    /// signal on changed Object
+    boost::signal<void (App::DocumentObject&)> signalChangedObject;
+    /// signal on renamed Object
+    boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+    /** signal on save document
+     * this signal is given when the document get streamt.
+     * you can use this hook to write additional information in 
+     * the file (like the Gui::Document does).
+     */
+    boost::signal<void (Base::Writer &)> signalSaveDocument;
+    //@}
 
- 	/** @name File handling of the document */
-	//@{
-	/// Save the Document under a new Name
-	//void saveAs (const char* Name);
-	/// Save the document to the file in Property Path
-	bool save (void);
-	/// Restore the document from the file in Property Path
-	void restore (void);
-	/// Opens the document from its file name
-	//void open (void);
-	/// Is the document already saved to a file
-	bool isSaved() const;
-	/// Get the document name of a saved document 
-  const char* getName() const {return Name.getValue();}
-	/// Get the path of a saved document 
-	//const char* getPath() const;
-  //@}
+    /** @name File handling of the document */
+    //@{
+    /// Save the Document under a new Name
+    //void saveAs (const char* Name);
+    /// Save the document to the file in Property Path
+    bool save (void);
+    /// Restore the document from the file in Property Path
+    void restore (void);
+    /// Opens the document from its file name
+    //void open (void);
+    /// Is the document already saved to a file
+    bool isSaved() const;
+    /// Get the document name of a saved document 
+    const char* getName() const {return Name.getValue();}
+    /// Get the path of a saved document 
+    //const char* getPath() const;
+    //@}
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-  /// returns the complet document mermory consumption, including all managed DocObjects and Undo Redo.
-  unsigned int getMemSize (void) const;
-  
-
-  //FIXME: This is a hack to allow to save or read data from the Gui::Document.
-  void installDocumentHook(Base::Persistance* pHook) {
-    pDocumentHook = pHook;
-  }
-  void removeDocumentHook() {
-    pDocumentHook=0;
-  }
+    /// returns the complet document mermory consumption, including all managed DocObjects and Undo Redo.
+    unsigned int getMemSize (void) const;
 
 
-	/** @name Object handling  */
-	//@{
-  /// Add a feature of sType with sName to this document and set it active
-	DocumentObject *addObject(const char* sType, const char* pObjectName=0);
-  /// Remove a feature out of the document
-	void remObject(const char* sName);
-  /// Returns the active Object of this document
-	DocumentObject *getActiveObject(void) const;
-  /// Returns a Object of this document
-	DocumentObject *getObject(const char *Name) const;
-  /// Returns a Name of an Object or 0
-	const char *getObjectName(DocumentObject *pFeat) const;
-  /// Returns a Name of an Object or 0
-  std::string getUniqueObjectName(const char *Name) const;
-  /// Returns a list of all Objects
-  std::vector<DocumentObject*> getObjects() const;
-  std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
-  int countObjectsOfType(const Base::Type& typeId) const;
-	//@}
+    //FIXME: This is a hack to allow to save or read data from the Gui::Document.
+    void installDocumentHook(Base::Persistance* pHook) {
+        pDocumentHook = pHook;
+    }
+    void removeDocumentHook() {
+        pDocumentHook=0;
+    }
 
 
-	/** @name methods for modification and state handling
-	 */
-	//@{
-
-	/// Remove all modifications. After this call The document becomes again Valid.
-	void purgeTouched();
-  /// check if there is any touched object in this document
-  bool isTouched(void) const;
-  /// returns all touched objects
-  std::vector<App::DocumentObject *> getTouched(void) const;
-	/// Recompute all touched features
-	void recompute();
-  /// Recompute only one feature
-  void recomputeFeature(AbstractFeature* Feat);
-	//@}
-
-
-	/** @name methods for the UNDO REDO and Transaction handling */
-	//@{
-  /// switch the level of Undo/Redo
-  void setUndoMode(int iMode);  
-  /// switch the level of Undo/Redo
-  int getUndoMode(void) const;  
-  /// switch the tranaction mode
-  void setTransactionMode(int iMode);
-	/// Open a new command Undo/Redo, an UTF-8 name can be specified
-	void openTransaction(const char* name=0);
-	/// Commit the Command transaction. Do nothing If there is no Command transaction open.
-	void commitTransaction();
-	/// Abort the  actually runing transaction. 
-	void abortTransaction();
-	/// Set the Undo limit in Byte!
-	void SetUndoLimit(unsigned int MemSize=0);
-	/// Remove all stored Undos and Redos
-	void clearUndos();
-	/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
-	int getAvailableUndos() const;
-	/// Returns a list of the Undo names
-  std::vector<std::string> getAvailableUndoNames() const;
-  /// Returns the actual memory consumption of the Undo redo stuff.
-  unsigned int getUndoMemSize (void) const;
-	/// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
-	bool undo();
-	/// Returns the number of stored Redos. If greater than 0 Redo will be effective.
-	int getAvailableRedos() const;
-	/// Returns a list of the Redo names.
-	std::vector<std::string> getAvailableRedoNames() const;
-	/// Will REDO  one step, returns  False if no redo was done (Redos == 0).
-	bool redo() ;
-	//@}
-
-	/** @name dependency stuff */
-	//@{
-  /// write GraphViz file
-  void writeDependencyGraphViz(std::ostream &out);
-  bool checkOnCycle(void);
-  // set Changed
-  //void setChanged(DocumentObject* change);
-  //@}
-
-	virtual PyObject *getPyObject(void);
+    /** @name Object handling  */
+    //@{
+    /// Add a feature of sType with sName to this document and set it active
+    DocumentObject *addObject(const char* sType, const char* pObjectName=0);
+    /// Remove a feature out of the document
+    void remObject(const char* sName);
+    /// Returns the active Object of this document
+    DocumentObject *getActiveObject(void) const;
+    /// Returns a Object of this document
+    DocumentObject *getObject(const char *Name) const;
+    /// Returns a Name of an Object or 0
+    const char *getObjectName(DocumentObject *pFeat) const;
+    /// Returns a Name of an Object or 0
+    std::string getUniqueObjectName(const char *Name) const;
+    /// Returns a list of all Objects
+    std::vector<DocumentObject*> getObjects() const;
+    std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
+    int countObjectsOfType(const Base::Type& typeId) const;
+    //@}
 
 
-	friend class DocumentPy;
-	friend class Application;
-	friend class AbstractFeature;
-  /// because of transaction handling
-	friend class DocumentObject;
-	friend class Transaction;
-	friend class TransactionObject;
+    /** @name methods for modification and state handling
+     */
+    //@{
+    /// Remove all modifications. After this call The document becomes again Valid.
+    void purgeTouched();
+    /// check if there is any touched object in this document
+    bool isTouched(void) const;
+    /// returns all touched objects
+    std::vector<App::DocumentObject *> getTouched(void) const;
+    /// Recompute all touched features
+    void recompute();
+    /// Recompute only one feature
+    void recomputeFeature(AbstractFeature* Feat);
+    //@}
 
-  /// Destruction 
-	virtual ~Document();
+
+    /** @name methods for the UNDO REDO and Transaction handling */
+    //@{
+    /// switch the level of Undo/Redo
+    void setUndoMode(int iMode);  
+    /// switch the level of Undo/Redo
+    int getUndoMode(void) const;  
+    /// switch the tranaction mode
+    void setTransactionMode(int iMode);
+    /// Open a new command Undo/Redo, an UTF-8 name can be specified
+    void openTransaction(const char* name=0);
+    // Commit the Command transaction. Do nothing If there is no Command transaction open.
+    void commitTransaction();
+    /// Abort the  actually runing transaction. 
+    void abortTransaction();
+    /// Set the Undo limit in Byte!
+    void SetUndoLimit(unsigned int MemSize=0);
+    /// Remove all stored Undos and Redos
+    void clearUndos();
+    /// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
+    int getAvailableUndos() const;
+    /// Returns a list of the Undo names
+    std::vector<std::string> getAvailableUndoNames() const;
+    /// Returns the actual memory consumption of the Undo redo stuff.
+    unsigned int getUndoMemSize (void) const;
+    /// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
+    bool undo();
+    /// Returns the number of stored Redos. If greater than 0 Redo will be effective.
+    int getAvailableRedos() const;
+    /// Returns a list of the Redo names.
+    std::vector<std::string> getAvailableRedoNames() const;
+    /// Will REDO  one step, returns  False if no redo was done (Redos == 0).
+    bool redo() ;
+    //@}
+
+    /** @name dependency stuff */
+    //@{
+    /// write GraphViz file
+    void writeDependencyGraphViz(std::ostream &out);
+    bool checkOnCycle(void);
+    // set Changed
+    //void setChanged(DocumentObject* change);
+    //@}
+
+    virtual PyObject *getPyObject(void);
+
+
+    friend class DocumentPy;
+    friend class Application;
+    friend class AbstractFeature;
+    /// because of transaction handling
+    friend class DocumentObject;
+    friend class Transaction;
+    friend class TransactionObject;
+
+    /// Destruction 
+    virtual ~Document();
 
 protected:
 
-  /// Construction
-	Document(void);
+    /// Construction
+    Document(void);
 
-  void _remObject(DocumentObject* pcObject);
-  void _addObject(DocumentObject* pcObject, const char* pObjectName);
+    void _remObject(DocumentObject* pcObject);
+    void _addObject(DocumentObject* pcObject, const char* pObjectName);
 
-  /// callback from the Document objects bevor property will be changed
-  void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
-  /// callback from the Document objects after property was changed
-  void onChangedProperty(const DocumentObject *Who, const Property *What);
-  /// helper which Recompute only this feature
-  void _recomputeFeature(AbstractFeature* Feat);
+    /// callback from the Document objects bevor property will be changed
+    void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+    /// callback from the Document objects after property was changed
+    void onChangedProperty(const DocumentObject *Who, const Property *What);
+    /// helper which Recompute only this feature
+    void _recomputeFeature(AbstractFeature* Feat);
 
-  // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  int _iTransactionMode;
-  int iTransactionCount;
-  std::map<int,Transaction*> mTransactions;
-  Transaction *activTransaction;
-  bool bRollback;
+    int _iTransactionMode;
+    int iTransactionCount;
+    std::map<int,Transaction*> mTransactions;
+    Transaction *activTransaction;
+    bool bRollback;
 
-  int _iUndoMode;
-  std::list<Transaction*> mUndoTransactions;
-  std::list<Transaction*> mRedoTransactions;
-  Transaction *activUndoTransaction;
-  void _clearRedos();
+    int _iUndoMode;
+    std::list<Transaction*> mUndoTransactions;
+    std::list<Transaction*> mRedoTransactions;
+    Transaction *activUndoTransaction;
+    void _clearRedos();
 
 
-  DocumentObject* pActiveObject;
-  std::map<std::string,DocumentObject*> ObjectMap;
-  // Array to preserve the creation order of created objects
-  std::vector<DocumentObject*> ObjectArray;
-  Base::Persistance* pDocumentHook;
+    DocumentObject* pActiveObject;
+    std::map<std::string,DocumentObject*> ObjectMap;
+    // Array to preserve the creation order of created objects
+    std::vector<DocumentObject*> ObjectArray;
+    Base::Persistance* pDocumentHook;
 
-	// pointer to the python class
-  Py::Object DocumentPythonObject;
+    // pointer to the python class
+    Py::Object DocumentPythonObject;
 };
 
 
