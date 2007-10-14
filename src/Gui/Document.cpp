@@ -338,43 +338,40 @@ void Document::slotNewObject(App::DocumentObject& Obj)
   }
 
 }
+
 void Document::slotDeletedObject(App::DocumentObject& Obj)
 {
-  std::list<Gui::BaseView*>::iterator VIt;
-  setModified(true);
-  Base::Console().Log("Document::slotDeleteObject() called\n");
-  // cycling to all views of the document
-  ViewProvider* vpInv = getViewProvider( &Obj );
-  for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-  {
-    View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-    if(pcIvView && vpInv)
-    {
-      pcIvView->getViewer()->removeViewProvider( vpInv );
+    std::list<Gui::BaseView*>::iterator VIt;
+    setModified(true);
+    Base::Console().Log("Document::slotDeleteObject() called\n");
+  
+    // cycling to all views of the document
+    ViewProvider* viewProvider = getViewProvider(&Obj);
+    for (VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+        View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+        if (pcIvView && viewProvider)
+            pcIvView->getViewer()->removeViewProvider(viewProvider);
     }
-  }
 
-  if ( vpInv )
-  {
-    // removing from tree
-    signalDeletedObject(*(dynamic_cast<ViewProviderDocumentObject*>(vpInv)));
-    //pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
+    if (viewProvider && viewProvider->getTypeId().isDerivedFrom(
+        ViewProviderDocumentObject::getClassTypeId())) {
+        // removing from tree
+        signalDeletedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
+        //pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
 
-    //delete vpInv;
-    //DocChange.ViewProviders.insert(vpInv);
-    _ViewProviderMap.erase(&Obj);
-  }
-
- 
+        //delete viewProvider;
+        //DocChange.ViewProviders.insert(viewProvider);
+        _ViewProviderMap.erase(&Obj);
+    }
 }
 
 void Document::slotChangedObject(App::DocumentObject& Obj)
 {
     Base::Console().Log("Document::slotChangedObject() called\n");
-    ViewProvider* pcProvider = getViewProvider( &Obj );
-    if ( pcProvider ) {
+    ViewProvider* viewProvider = getViewProvider(&Obj);
+    if (viewProvider) {
         try {
-            pcProvider->update();
+            viewProvider->update();
         } catch(const Base::MemoryException& e) {
             Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.name.getValue(),e.what());
         } catch(Base::Exception &e){
@@ -382,13 +379,17 @@ void Document::slotChangedObject(App::DocumentObject& Obj)
         } catch (...) {
             Base::Console().Error("Cannot update representation for '%s'.\n", Obj.name.getValue());
         }
+
         // The call of setActiveMode() must be delayed to wait until the associated
         // document object is fully built, otherwise we run into strange effects
         if (Obj.StatusBits.test(2)) {
             Obj.StatusBits.reset(2);
-            if (pcProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
-                dynamic_cast<ViewProviderDocumentObject*>(pcProvider)->setActiveMode();
+            if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+                static_cast<ViewProviderDocumentObject*>(viewProvider)->setActiveMode();
         }
+
+        if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+            signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
     }
 }
 

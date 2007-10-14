@@ -255,70 +255,10 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
         item->setIcon(0, obj.getIcon());
         item->setText(0, QString(name.c_str()));
         ObjectMap[name] = item;
+        slotChangedObject(obj);
     } else {
         Base::Console().Warning("DocumentItem::slotNewObject: Cannot add view provider twice.\n");
     }
-    
-    /*
-  std::string name = Provider->getObject()->name.getValue();
-  std::map<std::string,DocumentObjectItem*>::iterator it = FeatMap.find( name );
-
-  if ( it == FeatMap.end() ) {
-    
-    // get the associated document object
-    App::DocumentObject* obj = Provider->getObject();
-    
-    // is the object part of a group?
-    DocumentObjectItem* groupItem=0;
-    App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( obj );
-    if ( grp ) {
-      std::string grpname = grp->name.getValue();
-      std::map<std::string,DocumentObjectItem*>::iterator jt = FeatMap.find( grpname );
-
-      if ( jt != FeatMap.end() )
-        groupItem = jt->second;
-
-#ifdef FC_DEBUG
-      else
-        Base::Console().Warning("DocItem::addViewProviderDocumentObject: try to insert a group object before the group itself is inserted\n");
-#endif
-    }
-
-    DocumentObjectItem* item = Provider->getTreeItem(this);
-    QListViewItem* child=0;
-    QListViewItem* sibling=0;
-    if ( groupItem )
-    {
-      // set the newly created item at the end of the group
-      groupItem->setOpen(true);
-      groupItem->insertItem(item);
-      child = groupItem->firstChild();
-    }
-    else
-    {
-      // set the newly created item at the end of the document item
-      child = firstChild();
-    }
-
-    // get the last item
-    while (child)
-    {
-      sibling = child;
-      child = child->nextSibling();
-    }
-
-    if ( sibling )
-      item->moveItem(sibling);
-
-    FeatMap[ name ] = item;
-
-    if(FeatMap.size() == 1)
-      setOpen(true);
-  } else {
-#ifdef FC_DEBUG
-    Base::Console().Warning("DocItem::addViewProviderDocumentObject: cannot add view provider twice\n");
-#endif
-  }*/
 }
 
 void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
@@ -326,60 +266,54 @@ void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
     std::string name = obj.getObject()->name.getValue();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
     if (it != ObjectMap.end()) {
-        this->takeChild(this->indexOfChild(it->second));
+        // FIXME: We must check in App::Document::remObject() whether a group should be removed.
+        // If so we must remove all its children first and then the group itself.
+        QList<QTreeWidgetItem*> children = it->second->takeChildren();
+        QTreeWidgetItem* parent = it->second->parent();
+        parent->addChildren(children);
+        parent->takeChild(parent->indexOfChild(it->second));
         delete it->second;
         ObjectMap.erase(it);
     }
-
-/*
-  //FIXME: 
-#if 1
-  // If we remove an item from the list view all its children would get removed, too. Thus we must
-  // move all children items one level up. 
-  QString name = Provider->getObject()->name.getValue();
-  std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
-  if ( it != FeatMap.end() )
-  {
-    ObjectItem* item = it->second;
-    FeatMap.erase(it);
-
-    ObjectItem *child = (ObjectItem*)item->firstChild();
-    QListViewItem* parent = item->parent();
-    while ( child ) {
-      // move the items to the parent item
-      ObjectItem* sibling = (ObjectItem*)child->nextSibling();
-      item->takeItem(child);
-      parent->insertItem(child);
-      child = sibling;
-    }
-
-    delete item;
-  }
-#else
-  // If we remove an item from the list view all its children get removed, too. Thus we must
-  // make sure to´remove properly all concerning elements from our map, too. 
-  QString name = Provider->getObject()->name.getValue();
-  std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
-  if ( it != FeatMap.end() )
-  {
-    ObjectItem* item = it->second;
-    FeatMap.erase(it);
-
-    ObjectItem *child = (ObjectItem*)item->firstChild();
-    while ( child ) {
-      ObjectItem* sibling = (ObjectItem*)child->nextSibling();
-      // call recursively
-      removeViewProviderDocumentObject( child->_pcViewProvider );
-      child = sibling;
-    }
-
-    delete item;
-  }
-#endif*/
 }
 
 void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 {
+    // As we immediately add a newly created object to the tree we check here which
+    // item (this or a DocumentObjectItem) is the parent of the associated item of 'obj'
+    std::string name = obj.getObject()->name.getValue();
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    if (it != ObjectMap.end()) {
+        // is the object part of a group?
+        App::DocumentObjectGroup* group = App::DocumentObjectGroup::getGroupOfObject(obj.getObject());
+        if (group) {
+            std::string groupname = group->name.getValue();
+            std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(groupname);
+            if (jt != ObjectMap.end()) {
+                QTreeWidgetItem* parent = it->second->parent();
+                if (parent && parent != jt->second) {
+                    int index = parent->indexOfChild(it->second);
+                    parent->takeChild(index);
+                    jt->second->addChild(it->second);
+                    this->treeWidget()->expandItem(jt->second);
+                }
+            }
+            else {
+                Base::Console().Warning("DocumentItem::slotChangedObject: Try to insert an object of "
+                                        "a group before the group is inserted.\n");
+            }
+        }
+        else {
+            QTreeWidgetItem* parent = it->second->parent();
+            if (parent && parent != this) {
+                int index = parent->indexOfChild(it->second);
+                parent->takeChild(index);
+                this->addChild(it->second);
+            }
+        }
+    } else {
+        Base::Console().Warning("DocumentItem::slotChangedObject: Cannot change unknown object.\n");
+    }
 }
 
 void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)

@@ -70,58 +70,58 @@ PropertyInteger::~PropertyInteger()
 
 void PropertyInteger::setValue(long lValue)
 {
-  aboutToSetValue();
-	_lValue=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValue=lValue;
+    hasSetValue();
 }
 
 long PropertyInteger::getValue(void) const
 {
-	return _lValue;
+    return _lValue;
 }
 
 PyObject *PropertyInteger::getPyObject(void)
 {
-  return Py_BuildValue("l", _lValue);
+    return Py_BuildValue("l", _lValue);
 }
 
 void PropertyInteger::setPyObject(PyObject *value)
 { 
-  if(PyInt_Check( value) )
-  {
-    aboutToSetValue();
-    _lValue = PyInt_AsLong(value);
-    hasSetValue();
-  }else
-    throw Base::Exception("Not allowed type used (Integer expected)...");
+    if(PyInt_Check( value) )
+    {
+        aboutToSetValue();
+        _lValue = PyInt_AsLong(value);
+        hasSetValue();
+    } else
+        throw Base::Exception("Not allowed type used (Integer expected)...");
 
 }
 
 void PropertyInteger::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
 }
 
 void PropertyInteger::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("Integer");
-  // get the value of my Attribute
-  _lValue = reader.getAttributeAsInteger("value");
+    // read my Element
+    reader.readElement("Integer");
+    // get the value of my Attribute
+    _lValue = reader.getAttributeAsInteger("value");
 }
 
 Property *PropertyInteger::Copy(void) const
 {
-  PropertyInteger *p= new PropertyInteger();
-  p->_lValue = _lValue;
-  return p;
+    PropertyInteger *p= new PropertyInteger();
+    p->_lValue = _lValue;
+    return p;
 }
 
 void PropertyInteger::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
+    hasSetValue();
 }
 
 
@@ -159,92 +159,88 @@ PropertyPath::~PropertyPath()
 
 void PropertyPath::setValue(const boost::filesystem::path &Path)
 {
-  aboutToSetValue();
-	_cValue = Path;
-  hasSetValue();
-
+    aboutToSetValue();
+    _cValue = Path;
+    hasSetValue();
 }
 
 void PropertyPath::setValue(const char * Path)
 {
-  aboutToSetValue();
-  _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
-  //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
-  //_cValue = boost::filesystem::path(Path,boost::filesystem::windows_name );
-  hasSetValue();
-
+    aboutToSetValue();
+    _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
+    //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
+    //_cValue = boost::filesystem::path(Path,boost::filesystem::windows_name );
+    hasSetValue();
 }
 
 boost::filesystem::path PropertyPath::getValue(void) const
 {
-	return _cValue;
+    return _cValue;
 }
 
 PyObject *PropertyPath::getPyObject(void)
 {
-        const std::string s = _cValue.string() ;
-      std::string s2 = _cValue.native_file_string();
-      std::string s3 = _cValue.native_directory_string();
+    const std::string s = _cValue.string() ;
+    std::string s2 = _cValue.native_file_string();
+    std::string s3 = _cValue.native_directory_string();
 
-      // decomposition functions:
-      std::string  r = _cValue.root_name();
-      std::string  d = _cValue.root_directory() ;
-      std::string  l = _cValue.leaf();
+    // decomposition functions:
+    std::string  r = _cValue.root_name();
+    std::string  d = _cValue.root_directory() ;
+    std::string  l = _cValue.leaf();
 
-  // Returns a new reference, don't increment it!
-  PyObject *p = PyUnicode_DecodeUTF8(_cValue.native_file_string().c_str(),_cValue.native_file_string().size(),0);
-  if(!p)
-    throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
-  return p;
+    // Returns a new reference, don't increment it!
+    PyObject *p = PyUnicode_DecodeUTF8(_cValue.native_file_string().c_str(),_cValue.native_file_string().size(),0);
+    if(!p)
+        throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+    return p;
 
   //return Py_BuildValue("s", _cValue.c_str());
-
 }
 
 void PropertyPath::setPyObject(PyObject *value)
 {
-  if(PyUnicode_Check( value ))
-    value = PyUnicode_AsUTF8String(value);
+    if(PyUnicode_Check( value ))
+        value = PyUnicode_AsUTF8String(value);
 
-  if(PyString_Check( value) )
-  {
-    aboutToSetValue();
-    _cValue = PyString_AsString(value);
-    hasSetValue();
-
-  }else
-    throw "Not allowed type used (string expected)...";
+    if(PyString_Check( value) )
+    {
+        aboutToSetValue();
+        _cValue = PyString_AsString(value);
+        hasSetValue();
+    } else
+        throw "Not allowed type used (string expected)...";
 
 }
 
 
 void PropertyPath::Save (Writer &writer) const
 {
-  std::string val = encodeAttribute(_cValue.string());
-  writer.Stream() << writer.ind() << "<Path value=\"" <<  val <<"\"/>" << std::endl;
+    std::string val = encodeAttribute(_cValue.string());
+    writer.Stream() << writer.ind() << "<Path value=\"" <<  val <<"\"/>" << std::endl;
 }
 
 void PropertyPath::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("Path");
-  // get the value of my Attribute
-  _cValue = reader.getAttribute("value");
+    // read my Element
+    reader.readElement("Path");
+    // get the value of my Attribute
+    _cValue = reader.getAttribute("value");
 }
 
 
 Property *PropertyPath::Copy(void) const
 {
-  PropertyPath *p= new PropertyPath();
-  p->_cValue = _cValue;
-  return p;
+    PropertyPath *p= new PropertyPath();
+    p->_cValue = _cValue;
+    return p;
 }
 
 void PropertyPath::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cValue = dynamic_cast<const PropertyPath&>(from)._cValue;
-  hasSetValue();
+    aboutToSetValue();
+    _cValue = dynamic_cast<const PropertyPath&>(from)._cValue;
+    hasSetValue();
 }
 
 
@@ -273,144 +269,143 @@ PropertyEnumeration::~PropertyEnumeration()
 
 void PropertyEnumeration::setEnums(const char** plEnums)
 {
-  _EnumArray = plEnums;
+    _EnumArray = plEnums;
 # ifdef FC_DEBUG
-  if (_EnumArray) {
-    // check for NULL termination
-    const char* p = *_EnumArray;
-    unsigned int i=0;
-    while(*(p++) != NULL)i++;
-    // very unlikely to have enums with more then 5000 entries!
-    assert(i<5000);
-  }
+    if (_EnumArray) {
+        // check for NULL termination
+        const char* p = *_EnumArray;
+        unsigned int i=0;
+        while(*(p++) != NULL)i++;
+            // very unlikely to have enums with more then 5000 entries!
+            assert(i<5000);
+    }
 # endif
 }
 
 void PropertyEnumeration::setValue(const char* value)
 {
-  // using string methods without set, use setEnums(const char** plEnums) first!
-  assert(_EnumArray);
+    // using string methods without set, use setEnums(const char** plEnums) first!
+    assert(_EnumArray);
 
-  // set zero if there is no enum array
-  if(!_EnumArray){
-    PropertyInteger::setValue(0);
-    return;
-  }
-
-  unsigned int i=0;
-  const char** plEnums = _EnumArray;
-
-  // search for the right entry
-  while(1){
-    // end of list? set zero
-    if(*plEnums==NULL){
-      PropertyInteger::setValue(0);
-      break;
+    // set zero if there is no enum array
+    if(!_EnumArray){
+        PropertyInteger::setValue(0);
+        return;
     }
-    if(strcmp(*plEnums,value)==0){
-      PropertyInteger::setValue(i);
-      break;
+
+    unsigned int i=0;
+    const char** plEnums = _EnumArray;
+
+    // search for the right entry
+    while(1){
+        // end of list? set zero
+        if(*plEnums==NULL){
+            PropertyInteger::setValue(0);
+            break;
+        }
+        if(strcmp(*plEnums,value)==0){
+            PropertyInteger::setValue(i);
+            break;
+        }
+        plEnums++;
+        i++;
     }
-    plEnums++;
-    i++;
-  }
 }
 
 void PropertyEnumeration::setValue(long value)
 {
 # ifdef FC_DEBUG
-  assert(value>=0 && value<5000);
-  if(_EnumArray){
-    const char** plEnums = _EnumArray;
-    long i=0;
-    while(*(plEnums++) != NULL)i++;
-    // very unlikely to have enums with more then 5000 entries!
-    // Note: Do NOT call assert() because this code might be executed from Python console!
-    if ( value < 0 || i <= value )
-      throw Base::Exception("Out of range");
-  }
+    assert(value>=0 && value<5000);
+    if(_EnumArray){
+        const char** plEnums = _EnumArray;
+        long i=0;
+        while(*(plEnums++) != NULL)i++;
+        // very unlikely to have enums with more then 5000 entries!
+        // Note: Do NOT call assert() because this code might be executed from Python console!
+        if ( value < 0 || i <= value )
+            throw Base::Exception("Out of range");
+    }
 # endif
-  PropertyInteger::setValue(value);
+    PropertyInteger::setValue(value);
 }
 
 /// checks if the property is set to a certain string value
 bool PropertyEnumeration::isValue(const char* value) const
 {
-  // using string methods without set, use setEnums(const char** plEnums) first!
-  assert(_EnumArray);
-  return strcmp(_EnumArray[getValue()],value)==0;
+    // using string methods without set, use setEnums(const char** plEnums) first!
+    assert(_EnumArray);
+    return strcmp(_EnumArray[getValue()],value)==0;
 }
 
 /// checks if a string is included in the enumeration
 bool PropertyEnumeration::isPartOf(const char* value) const
 {
-  // using string methods without set, use setEnums(const char** plEnums) first!
-  assert(_EnumArray);
+    // using string methods without set, use setEnums(const char** plEnums) first!
+    assert(_EnumArray);
 
-  const char** plEnums = _EnumArray;
+    const char** plEnums = _EnumArray;
 
-  // search for the right entry
-  while(1){
-    // end of list?
-    if(*plEnums==NULL) 
-      return false;
-    if(strcmp(*plEnums,value)==0) 
-      return true;
-    plEnums++;
-  }
-
+    // search for the right entry
+    while(1){
+        // end of list?
+        if(*plEnums==NULL) 
+            return false;
+        if(strcmp(*plEnums,value)==0) 
+            return true;
+        plEnums++;
+    }
 }
 
 /// get the value as string
 const char* PropertyEnumeration::getValueAsString(void) const
 {
-  // using string methods without set, use setEnums(const char** plEnums) first!
-  assert(_EnumArray);
+    // using string methods without set, use setEnums(const char** plEnums) first!
+    assert(_EnumArray);
 
-  return _EnumArray[getValue()];
+    return _EnumArray[getValue()];
 }
 
 std::vector<std::string> PropertyEnumeration::getEnumVector(void) const
 {
-  // using string methods without set, use setEnums(const char** plEnums) first!
-  assert(_EnumArray);
+    // using string methods without set, use setEnums(const char** plEnums) first!
+    assert(_EnumArray);
 
-  std::vector<std::string> result;
+    std::vector<std::string> result;
 
-  const char** plEnums = _EnumArray;
+    const char** plEnums = _EnumArray;
 
-  // end of list?
-  while(*plEnums!=NULL){ 
-    result.push_back(*plEnums);
-    plEnums++;
-  }
+    // end of list?
+    while(*plEnums!=NULL){ 
+        result.push_back(*plEnums);
+        plEnums++;
+    }
 
-  return result;
+    return result;
 }
 
 const char** PropertyEnumeration::getEnums(void) const
 {
-  return _EnumArray;
+    return _EnumArray;
 }
 
 PyObject *PropertyEnumeration::getPyObject(void)
 {
-  return Py_BuildValue("s", getValueAsString());
+    return Py_BuildValue("s", getValueAsString());
 }
 
 void PropertyEnumeration::setPyObject(PyObject *value)
 { 
-  if(PyInt_Check( value) )
-    setValue(PyInt_AsLong(value));
-  else if(PyString_Check( value) ){
-    const char* str = PyString_AsString (value);
-    if(isPartOf(str))
-      setValue(PyString_AsString (value));
+    if(PyInt_Check( value) )
+        setValue(PyInt_AsLong(value));
+    else if(PyString_Check( value) ){
+        const char* str = PyString_AsString (value);
+        if(isPartOf(str))
+            setValue(PyString_AsString (value));
+        else
+            throw Base::Exception("Not a member of the enum");
+    }
     else
-      throw Base::Exception("Not a member of the enum");
-  }
-  else
-    throw Base::Exception("Not allowed type used (string or int expected)...");
+        throw Base::Exception("Not allowed type used (string or int expected)...");
 }
 
 //**************************************************************************
@@ -438,31 +433,31 @@ PropertyIntegerConstraint::~PropertyIntegerConstraint()
 
 void PropertyIntegerConstraint::setConstraints(const Constraints* sConstrain)
 {
-  _ConstStruct = sConstrain;
+    _ConstStruct = sConstrain;
 }
 
 const PropertyIntegerConstraint::Constraints*  PropertyIntegerConstraint::getConstraints(void) const
 {
-  return _ConstStruct;
+    return _ConstStruct;
 }
 
 void PropertyIntegerConstraint::setPyObject(PyObject *value)
 { 
-  if(PyInt_Check( value) )
-  {
-    long temp = PyInt_AsLong(value);
-    if(_ConstStruct)
+    if(PyInt_Check( value) )
     {
-      if(temp > _ConstStruct->UpperBound)
-        temp = _ConstStruct->UpperBound;
-      else if(temp < _ConstStruct->LowerBound)
-        temp = _ConstStruct->LowerBound;
-    }
-    aboutToSetValue();
-    _lValue = temp;
-    hasSetValue();
-  }else
-    throw Base::Exception("Not allowed type used (Integer expected)...");
+        long temp = PyInt_AsLong(value);
+        if(_ConstStruct)
+        {
+            if(temp > _ConstStruct->UpperBound)
+                temp = _ConstStruct->UpperBound;
+            else if(temp < _ConstStruct->LowerBound)
+                temp = _ConstStruct->LowerBound;
+        }
+        aboutToSetValue();
+        _lValue = temp;
+        hasSetValue();
+    } else
+        throw Base::Exception("Not allowed type used (Integer expected)...");
 }
 
 //**************************************************************************
@@ -481,7 +476,7 @@ const PropertyIntegerConstraint::Constraints percent = {0,100,1};
 PropertyPercent::PropertyPercent()
 //:_ConstStruct(&percent)
 {
-  _ConstStruct = &percent;
+    _ConstStruct = &percent;
 }
 
 
@@ -517,27 +512,27 @@ PropertyIntegerList::~PropertyIntegerList()
 
 void PropertyIntegerList::setValue(long lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
 void PropertyIntegerList::setValues(const std::vector<long>& values)
 {
-  aboutToSetValue();
-  _lValueList = values;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = values;
+    hasSetValue();
 }
 
 PyObject *PropertyIntegerList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
+    PyObject* list = PyList_New(	getSize() );
 
-  for(int i = 0;i<getSize(); i++)
-     PyList_SetItem( list, i, PyInt_FromLong(	_lValueList[i]));
+    for(int i = 0;i<getSize(); i++)
+        PyList_SetItem( list, i, PyInt_FromLong(	_lValueList[i]));
 
-  return list;
+    return list;
 }
 
 void PropertyIntegerList::setPyObject(PyObject *value)
@@ -563,7 +558,8 @@ void PropertyIntegerList::setPyObject(PyObject *value)
     }
 
     hasSetValue();
-  }else if(PyInt_Check( value) )
+  }
+  else if(PyInt_Check( value) )
   {
     setValue(PyInt_AsLong(value));
   }else
@@ -644,19 +640,19 @@ PropertyFloat::~PropertyFloat()
 
 void PropertyFloat::setValue(float lValue)
 {
-  aboutToSetValue();
-	_dValue=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _dValue=lValue;
+    hasSetValue();
 }
 
 float PropertyFloat::getValue(void) const
 {
-	return _dValue;
+    return _dValue;
 }
 
 PyObject *PropertyFloat::getPyObject(void)
 {
-  return Py_BuildValue("d", _dValue);
+    return Py_BuildValue("d", _dValue);
 }
 
 void PropertyFloat::setPyObject(PyObject *value)
@@ -798,17 +794,17 @@ PropertyFloatList::~PropertyFloatList()
 
 void PropertyFloatList::setValue(float lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
 void PropertyFloatList::setValues(const std::vector<float>& values)
 {
-  aboutToSetValue();
-  _lValueList = values;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = values;
+    hasSetValue();
 }
 
 PyObject *PropertyFloatList::getPyObject(void)
@@ -967,26 +963,24 @@ PropertyString::~PropertyString()
 
 void PropertyString::setValue(const char* sString)
 {
-  if(sString)
-  {
-    aboutToSetValue();
-	  _cValue = sString;
-    hasSetValue();
-  }
-
+    if(sString)
+    {
+        aboutToSetValue();
+        _cValue = sString;
+        hasSetValue();
+    }
 }
 
 void PropertyString::setValue(const std::string &sString)
 {
-  aboutToSetValue();
-	_cValue = sString;
-  hasSetValue();
-
+    aboutToSetValue();
+    _cValue = sString;
+    hasSetValue();
 }
 
 const char* PropertyString::getValue(void) const
 {
-	return _cValue.c_str();
+    return _cValue.c_str();
 }
 
 PyObject *PropertyString::getPyObject(void)
@@ -1071,26 +1065,26 @@ PropertyStringList::~PropertyStringList()
 
 void PropertyStringList::setValue(const std::string& lValue)
 {
-  aboutToSetValue();
-  if ( _lValueList.empty() )
-    _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    if (_lValueList.empty())
+        _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
-void PropertyStringList::setValue(const std::vector<std::string>& lValue)
+void PropertyStringList::setValues(const std::vector<std::string>& lValue)
 {
-  aboutToSetValue();
-	_lValueList=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList=lValue;
+    hasSetValue();
 }
 
-void PropertyStringList::setValue(const std::list<std::string>& lValue)
+void PropertyStringList::setValues(const std::list<std::string>& lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(lValue.size());
-  std::copy(lValue.begin(), lValue.end(), _lValueList.begin());
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(lValue.size());
+    std::copy(lValue.begin(), lValue.end(), _lValueList.begin());
+    hasSetValue();
 }
 
 PyObject *PropertyStringList::getPyObject(void)
@@ -1225,15 +1219,14 @@ PropertyBool::~PropertyBool()
 
 void PropertyBool::setValue(bool lValue)
 {
-  aboutToSetValue();
-	_lValue=lValue;
-  hasSetValue();
-
+    aboutToSetValue();
+    _lValue=lValue;
+    hasSetValue();
 }
 
 bool PropertyBool::getValue(void) const
 {
-	return _lValue;
+    return _lValue;
 }
 
 PyObject *PropertyBool::getPyObject(void)
@@ -1323,35 +1316,35 @@ PropertyColor::~PropertyColor()
 
 void PropertyColor::setValue(const Color &col)
 {
-	_cCol=col;
-  hasSetValue();
+    _cCol=col;
+    hasSetValue();
 }
 
 void PropertyColor::setValue(float r, float g, float b, float a)
 {
-  _cCol.set(r,g,b,a);
-  hasSetValue();
+    _cCol.set(r,g,b,a);
+    hasSetValue();
 }
 
 const Color& PropertyColor::getValue(void) const 
 {
-	return _cCol;
+    return _cCol;
 }
 
 PyObject *PropertyColor::getPyObject(void)
 {
-  PyObject* rgba = PyTuple_New(4);
-  PyObject* r = PyFloat_FromDouble(_cCol.r);
-  PyObject* g = PyFloat_FromDouble(_cCol.g);
-  PyObject* b = PyFloat_FromDouble(_cCol.b);
-  PyObject* a = PyFloat_FromDouble(_cCol.a);
+    PyObject* rgba = PyTuple_New(4);
+    PyObject* r = PyFloat_FromDouble(_cCol.r);
+    PyObject* g = PyFloat_FromDouble(_cCol.g);
+    PyObject* b = PyFloat_FromDouble(_cCol.b);
+    PyObject* a = PyFloat_FromDouble(_cCol.a);
 
-  PyTuple_SetItem(rgba, 0, r);
-  PyTuple_SetItem(rgba, 1, g);
-  PyTuple_SetItem(rgba, 2, b);
-  PyTuple_SetItem(rgba, 3, a);
+    PyTuple_SetItem(rgba, 0, r);
+    PyTuple_SetItem(rgba, 1, g);
+    PyTuple_SetItem(rgba, 2, b);
+    PyTuple_SetItem(rgba, 3, a);
 
-  return rgba;
+    return rgba;
 }
 
 void PropertyColor::setPyObject(PyObject *value)
@@ -1638,19 +1631,19 @@ PropertyMaterial::~PropertyMaterial()
 
 void PropertyMaterial::setValue(const Material &mat)
 {
-	_cMat=mat;
-  hasSetValue();
+    _cMat=mat;
+    hasSetValue();
 }
 
 const Material& PropertyMaterial::getValue(void) const 
 {
-	return _cMat;
+    return _cMat;
 }
 
 void PropertyMaterial::setAmbientColor(const Color& col)
 {
-  _cMat.ambientColor = col;
-  hasSetValue();
+    _cMat.ambientColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setDiffuseColor(const Color& col)

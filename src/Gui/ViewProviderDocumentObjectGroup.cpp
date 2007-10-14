@@ -123,11 +123,19 @@ void ViewProviderDocumentObjectGroup::getViewProviders(std::vector<ViewProviderD
 }
 
 /**
+ * Returns the pixmap for the list item.
+ */
+QPixmap ViewProviderDocumentObjectGroup::getIcon() const
+{
+    return QApplication::style()->standardPixmap(QStyle::SP_DirOpenIcon);
+}
+
+/**
  * Returns the pixmap for the opened list item.
  */
 QPixmap ViewProviderDocumentObjectGroup::getOpenedGroupIcon() const
 {
-  return Gui::BitmapFactory().pixmap("PrefTree_GroupOpen");
+    return QApplication::style()->standardPixmap(QStyle::SP_DirOpenIcon);
 }
 
 /**
@@ -135,5 +143,5 @@ QPixmap ViewProviderDocumentObjectGroup::getOpenedGroupIcon() const
  */
 QPixmap ViewProviderDocumentObjectGroup::getClosedGroupIcon() const
 {
-  return Gui::BitmapFactory().pixmap("PrefTree_GroupClosed");
+    return QApplication::style()->standardPixmap(QStyle::SP_DirClosedIcon);
 }
