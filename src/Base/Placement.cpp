@@ -27,10 +27,17 @@
 
 
 #include "Placement.h"
+#include "Rotation.h"
 
 using namespace Base;
 
 Base::Matrix4D Placement::getAsMatrix(void)
 {
-  return Base::Matrix4D();
+    Base::Rotation rot((float)this->_q[0],(float)this->_q[1],(float)this->_q[2],(float)this->_q[3]);
+    Base::Matrix4D matrix;
+    rot.getValue(matrix);
+    matrix[3][0] = this->_Pos.x;
+    matrix[3][1] = this->_Pos.y;
+    matrix[3][2] = this->_Pos.z;
+    return matrix;
 }
