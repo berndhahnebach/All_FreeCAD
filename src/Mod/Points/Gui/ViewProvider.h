@@ -75,7 +75,7 @@ public:
   virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the point representation
   virtual void updateData();
-  virtual QPixmap getIcon() const;
+  virtual QIcon getIcon() const;
 
   /// Sets the edit mnode
   void setEdit(void);

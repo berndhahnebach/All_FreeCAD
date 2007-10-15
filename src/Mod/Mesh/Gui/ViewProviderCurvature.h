@@ -77,7 +77,7 @@ public:
   /// Updates the mesh feature representation
   void updateData();
   /// Returns a pixmap for the associated feature type
-  QPixmap getIcon() const;
+  QIcon getIcon() const;
   /// Once the color bar settinhs has been changed this method gets called to update the feature's representation
   void OnChange(Base::Subject<int> &rCaller,int rcReason);
   /// Returns a color bar

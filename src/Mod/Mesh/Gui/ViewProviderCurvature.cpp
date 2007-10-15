@@ -270,7 +270,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
   }
 }
 
-QPixmap ViewProviderMeshCurvature::getIcon() const
+QIcon ViewProviderMeshCurvature::getIcon() const
 {
   static const char * Mesh_Feature_xpm[] = {
     "16 16 7 1",

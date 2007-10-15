@@ -45,7 +45,7 @@ public:
   virtual ~ViewProviderPythonFeature();
 
   // Returns the icon
-  QPixmap getIcon() const;
+  QIcon getIcon() const;
 };
 
 

@@ -455,7 +455,9 @@ void DocumentObjectItem::testStatus()
 
     if (!viewObject->isShow()) {
         this->setTextColor(0, Qt::gray);
-        QPixmap hidden = BitmapFactory().disabled(viewObject->getIcon());
+        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+        QPixmap icon = viewObject->getIcon().pixmap(w,w);
+        QPixmap hidden = BitmapFactory().disabled(icon);
         if (px) {
             this->setIcon(0, BitmapFactory().merge(hidden,*px,false));
         } else {
@@ -463,8 +465,10 @@ void DocumentObjectItem::testStatus()
         }
     } else { // visible
         this->setTextColor(0, QColor());
+        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+        QPixmap icon = viewObject->getIcon().pixmap(w,w);
         if (px) {
-            this->setIcon(0, BitmapFactory().merge(viewObject->getIcon(),*px,false));
+            this->setIcon(0, BitmapFactory().merge(icon,*px,false));
         } else {
             this->setIcon(0, viewObject->getIcon());
         }

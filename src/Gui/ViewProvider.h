@@ -76,7 +76,7 @@ public:
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getBackRoot(void) const {return 0;}
   // returns the TreeLabel
-  virtual QPixmap getIcon(void) const;
+  virtual QIcon getIcon(void) const;
 
 
   /** update the content of the ViewProvider
