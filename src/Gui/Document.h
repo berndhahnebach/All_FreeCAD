@@ -92,6 +92,7 @@ public:
     void slotNewObject(App::DocumentObject&);
     void slotDeletedObject(App::DocumentObject&);
     void slotChangedObject(App::DocumentObject&);
+    void slotRenamedObject(App::DocumentObject&);
     virtual void refresh(App::DocumentObject&) const {};
     //@}
     /** @name Signals of the document */

@@ -81,6 +81,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcDocument->signalNewObject.connect(boost::bind(&Gui::Document::slotNewObject, this, _1));
   pcDocument->signalDeletedObject.connect(boost::bind(&Gui::Document::slotDeletedObject, this, _1));
   pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1));
+  pcDocument->signalRenamedObject.connect(boost::bind(&Gui::Document::slotRenamedObject, this, _1));
   //pcDocument->signalNewObject.connect(&(this->slotNewObject));
   
   // pointer to the python class
@@ -390,6 +391,14 @@ void Document::slotChangedObject(App::DocumentObject& Obj)
 
         if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
             signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
+    }
+}
+
+void Document::slotRenamedObject(App::DocumentObject& Obj)
+{
+    ViewProvider* viewProvider = getViewProvider(&Obj);
+    if (viewProvider && viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
+        signalRenamedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
     }
 }
 

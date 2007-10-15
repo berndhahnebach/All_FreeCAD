@@ -248,13 +248,14 @@ DocumentItem::~DocumentItem()
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string name = obj.getObject()->name.getValue();
-    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    std::string displayName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it == ObjectMap.end()) {
         DocumentObjectItem* item = new DocumentObjectItem(&obj, this);
         item->setIcon(0, obj.getIcon());
-        item->setText(0, QString(name.c_str()));
-        ObjectMap[name] = item;
+        item->setText(0, QString(displayName.c_str()));
+        ObjectMap[objectName] = item;
         slotChangedObject(obj);
     } else {
         Base::Console().Warning("DocumentItem::slotNewObject: Cannot add view provider twice.\n");
@@ -263,8 +264,8 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string name = obj.getObject()->name.getValue();
-    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    std::string objectName = obj.getObject()->getNameInDocument();
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // FIXME: We must check in App::Document::remObject() whether a group should be removed.
         // If so we must remove all its children first and then the group itself.
@@ -281,13 +282,14 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 {
     // As we immediately add a newly created object to the tree we check here which
     // item (this or a DocumentObjectItem) is the parent of the associated item of 'obj'
-    std::string name = obj.getObject()->name.getValue();
-    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    std::string displayName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // is the object part of a group?
         App::DocumentObjectGroup* group = App::DocumentObjectGroup::getGroupOfObject(obj.getObject());
         if (group) {
-            std::string groupname = group->name.getValue();
+            std::string groupname = group->getNameInDocument();
             std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(groupname);
             if (jt != ObjectMap.end()) {
                 QTreeWidgetItem* parent = it->second->parent();
@@ -311,6 +313,8 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
                 this->addChild(it->second);
             }
         }
+
+        it->second->setText(0, QString::fromUtf8(displayName.c_str()));
     } else {
         Base::Console().Warning("DocumentItem::slotChangedObject: Cannot change unknown object.\n");
     }
@@ -320,7 +324,10 @@ void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
 {
     for (std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
         if (it->second->object() == &obj) {
-            it->second->setText(0, QString::fromUtf8(obj.getObject()->name.getValue()));
+            DocumentObjectItem* item = it->second;
+            ObjectMap.erase(it);
+            std::string objectName = obj.getObject()->getNameInDocument();
+            ObjectMap[objectName] = item;
             break;
         }
     }
