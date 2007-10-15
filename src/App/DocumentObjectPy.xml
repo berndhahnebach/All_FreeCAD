@@ -11,12 +11,17 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>This is the father of all classes handled by the document</UserDocu>
     </Documentation>
-   <Methode Name="touch">
+    <Methode Name="touch">
       <Documentation>
         <UserDocu>Mark the object as changed (touched)</UserDocu>
       </Documentation>
     </Methode>
-    <Attribute Name="State" ReadOnly="true">
+	<Methode Name="getInternalName">
+	  <Documentation>
+		<UserDocu>Return the internal name of this object</UserDocu>
+		</Documentation>
+	</Methode>
+	<Attribute Name="State" ReadOnly="true">
       <Documentation>
         <UserDocu>State of the object in the document</UserDocu>
       </Documentation>

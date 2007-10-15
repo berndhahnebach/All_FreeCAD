@@ -232,7 +232,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                     int pos = longdoc.indexOf(QChar('\n'));
                     pos = qMin(pos, 70);
                     if (pos < 0) 
-                        pos = qMin(longdoc.length()-1, 70);
+                        pos = qMin(longdoc.length(), 70);
                     tip.description = longdoc;
                     tip.parameter = longdoc.left(pos);
                 }
@@ -244,7 +244,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                     int pos = longdoc.indexOf(QChar('\n'));
                     pos = qMin(pos, 70);
                     if (pos < 0) 
-                        pos = qMin(longdoc.length()-1, 70);
+                        pos = qMin(longdoc.length(), 70);
                     tip.description = longdoc;
                     tip.parameter = longdoc.left(pos);
                 }
