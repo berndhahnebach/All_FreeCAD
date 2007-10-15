@@ -74,7 +74,7 @@ public:
   ViewProviderExport();
   virtual ~ViewProviderExport();
 
-  virtual QPixmap getIcon() const;
+  virtual QIcon getIcon() const;
   void update();
   SoSeparator* getRoot(void){return 0;}
   std::vector<std::string> getDisplayModes(void) const;
@@ -110,7 +110,7 @@ public:
   virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the Mesh representation
   virtual void updateData();
-  virtual QPixmap getIcon() const;
+  virtual QIcon getIcon() const;
 
   /** @name Polygon picking */
 	//@{

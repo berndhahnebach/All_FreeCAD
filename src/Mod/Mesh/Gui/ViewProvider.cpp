@@ -103,7 +103,7 @@ const char* ViewProviderExport::getDefaultDisplayMode() const
   return "";
 }
 
-QPixmap ViewProviderExport::getIcon() const
+QIcon ViewProviderExport::getIcon() const
 {
     const char * Mesh_Feature_xpm[] = {
         "22 22 6 1",
@@ -394,7 +394,7 @@ void ViewProviderMesh::updateData(void)
     createMesh(kernel->getValue());
 }
 
-QPixmap ViewProviderMesh::getIcon() const
+QIcon ViewProviderMesh::getIcon() const
 {
   const char * Mesh_Feature_xpm[] = {
     "16 16 4 1",

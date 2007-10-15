@@ -230,8 +230,8 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
   pcPointsRoot->addChild(VertexRoot);
 
    // putting all together with the switch
-  addDisplayMaskMode(pcNormalRoot, "Normal");
-  addDisplayMaskMode(pcFlatRoot, "Flat");
+  addDisplayMaskMode(pcNormalRoot, "Flat Lines");
+  addDisplayMaskMode(pcFlatRoot, "Shaded");
   addDisplayMaskMode(pcWireframeRoot, "Wireframe");
   addDisplayMaskMode(pcPointsRoot, "Point");
 
@@ -241,10 +241,10 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderPart::setDisplayMode(const char* ModeName)
 {
-  if ( strcmp("Normal",ModeName)==0 )
-    setDisplayMaskMode("Normal");
-  else if ( strcmp("Flat",ModeName)==0 )
-    setDisplayMaskMode("Flat");
+  if ( strcmp("Flat Lines",ModeName)==0 )
+    setDisplayMaskMode("Flat Lines");
+  else if ( strcmp("Shaded",ModeName)==0 )
+    setDisplayMaskMode("Shaded");
   else if ( strcmp("Wireframe",ModeName)==0 )
     setDisplayMaskMode("Wireframe");
   else if ( strcmp("Points",ModeName)==0 )
@@ -259,8 +259,8 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
   std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
 
   // add your own modes
-  StrList.push_back("Normal");
-  StrList.push_back("Flat");
+  StrList.push_back("Flat Lines");
+  StrList.push_back("Shaded");
   StrList.push_back("Wireframe");
   StrList.push_back("Points");
 

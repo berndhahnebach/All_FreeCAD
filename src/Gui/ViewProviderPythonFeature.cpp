@@ -46,7 +46,7 @@ ViewProviderPythonFeature::~ViewProviderPythonFeature()
 {
 }
 
-QPixmap ViewProviderPythonFeature::getIcon() const
+QIcon ViewProviderPythonFeature::getIcon() const
 {
   const char * Python_Feature_xpm[] = {
     "14 15 7 1",

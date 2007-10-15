@@ -201,7 +201,7 @@ void ViewProviderMeshNode::updateData(void)
   pcHighlight->touch();
 }
 
-QPixmap ViewProviderMeshNode::getIcon() const
+QIcon ViewProviderMeshNode::getIcon() const
 {
   const char * Mesh_Feature_xpm[] = {
     "16 16 4 1",

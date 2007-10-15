@@ -67,7 +67,7 @@ public:
 
   void attach(App::DocumentObject *pcFeat);
   virtual void updateData();
-  virtual QPixmap getIcon() const;
+  virtual QIcon getIcon() const;
   virtual void setDisplayMode(const char* ModeName);
   virtual std::vector<std::string> getDisplayModes() const;
 

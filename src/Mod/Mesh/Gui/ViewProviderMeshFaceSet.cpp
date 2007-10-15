@@ -240,7 +240,7 @@ void ViewProviderMeshFaceSet::updateData(void)
   }
 }
 
-QPixmap ViewProviderMeshFaceSet::getIcon() const
+QIcon ViewProviderMeshFaceSet::getIcon() const
 {
   const char * Mesh_Feature_xpm[] = {
     "16 16 4 1",

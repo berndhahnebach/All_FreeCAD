@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <algorithm>
 # include <qstringlist.h>
 # include <qcursor.h>
 # include <qcombobox.h>
@@ -74,7 +75,7 @@ QWidget* PropertyBoolItem::createEditor(QWidget* parent, const QObject* receiver
 void PropertyBoolItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    cb->setItemText(cb->currentIndex(), data.toString());
+    cb->setCurrentIndex(cb->findText(data.toString()));
 }
 
 QVariant PropertyBoolItem::editorData(QWidget *editor) const
@@ -124,15 +125,30 @@ QWidget* PropertyEnumItem::createEditor(QWidget* parent, const QObject* receiver
 void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     const std::vector<App::Property*>& items = getProperty();
-    App::PropertyEnumeration* prop = (App::PropertyEnumeration*)items[0];
-    const std::vector<std::string>& value = ((App::PropertyEnumeration*)prop)->getEnumVector();
 
-    QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    for (std::vector<std::string>::const_iterator it = value.begin(); it != value.end(); ++it) {
-        cb->addItem(it->c_str());
+    QStringList commonModes, modes;
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        if ((*it)->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
+            App::PropertyEnumeration* prop = static_cast<App::PropertyEnumeration*>(*it);
+            const std::vector<std::string>& value = prop->getEnumVector();
+            if (it == items.begin()) {
+                for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt)
+                    commonModes << jt->c_str();
+            }
+            else {
+                for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt) {
+                    if (commonModes.contains(jt->c_str()))
+                        modes << jt->c_str();
+                }
+
+                commonModes = modes;
+            }
+        }
     }
 
-    cb->setItemText(cb->currentIndex(), data.toString());
+    QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    cb->addItems(commonModes);
+    cb->setCurrentIndex(cb->findText(data.toString()));
 }
 
 QVariant PropertyEnumItem::editorData(QWidget *editor) const

@@ -45,10 +45,7 @@ public:
   virtual ~ViewProviderDocumentObjectGroup();
 
   virtual void attach(App::DocumentObject *pcObject);
-  //FIXME: getIcon(Icon) enum Icon {Active, Disabled, Open, Closed, ...} 
-  virtual QPixmap getIcon(void) const;
-  virtual QPixmap getOpenedGroupIcon() const;
-  virtual QPixmap getClosedGroupIcon() const;
+  virtual QIcon getIcon(void) const;
   /// returns a list of all possible modes
   virtual std::vector<std::string> getDisplayModes(void) const;
   bool isShow(void) const;

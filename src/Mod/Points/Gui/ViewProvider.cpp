@@ -335,7 +335,7 @@ void ViewProviderPoints::updateData()
   setActiveMode();
 }
 
-QPixmap ViewProviderPoints::getIcon() const
+QIcon ViewProviderPoints::getIcon() const
 {
   const char * Points_Feature_xpm[] = {
     "16 16 4 1",
