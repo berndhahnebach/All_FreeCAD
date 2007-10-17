@@ -285,7 +285,7 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 + if (i.ReadOnly):
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {
-        PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is not writable");
+        PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is read-only");
         return -1;
 }
 = else:
@@ -374,6 +374,11 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
         PyErr_SetString(PyExc_Exception,str.c_str());
         return NULL;
     }
+    catch(const Py::Exception&)
+    {
+        // The exception text is already set
+        return NULL;
+    }
     catch(...)  // catch the rest!
     {
         PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
@@ -388,6 +393,11 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
         str += ")";
         e.ReportException();
         PyErr_SetString(PyExc_Exception,str.c_str());
+        return NULL;
+    }
+    catch(const Py::Exception&)
+    {
+        // The exception text is already set
         return NULL;
     }
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
@@ -423,6 +433,11 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
         PyErr_SetString(PyExc_Exception,str.c_str());
         return -1;
     }
+    catch(const Py::Exception&)
+    {
+        // The exception text is already set
+        return -1;
+    }
     catch(...)  // catch the rest!
     {
         PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
@@ -437,6 +452,11 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
         str += ")";
         e.ReportException();
         PyErr_SetString(PyExc_Exception,str.c_str());
+        return -1;
+    }
+    catch(const Py::Exception&)
+    {
+        // The exception text is already set
         return -1;
     }
 #endif  // DONT_CATCH_CXX_EXCEPTIONS

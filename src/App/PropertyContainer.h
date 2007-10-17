@@ -54,8 +54,8 @@ struct AppExport PropertyData
     const char * Group;
     const char * Docu;
     short Offset,Type;
- };
-  // vector of all propteries
+  };
+  // vector of all properties
   std::vector<PropertySpec> propertyData;
   const PropertyData *parentPropertyData;
 
@@ -75,7 +75,6 @@ struct AppExport PropertyData
   Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
   void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
   void getPropertyList(const PropertyContainer *container,std::vector<Property*> &List) const;
-
 };
 
 
@@ -88,18 +87,18 @@ class AppExport PropertyContainer: public Base::Persistance
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyContainer();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	virtual ~PropertyContainer();
+  /**
+   * A constructor.
+   * A more elaborate description of the constructor.
+   */
+  PropertyContainer();
+
+  /**
+   * A destructor.
+   * A more elaborate description of the destructor.
+   */
+  virtual ~PropertyContainer();
 
   virtual unsigned int getMemSize (void) const;
 
@@ -140,7 +139,7 @@ public:
 
   friend class Property;
 
-	
+
 protected: 
   /// get called by the container when a Proptery was changed
   virtual void onChanged(const Property* prop){};

@@ -42,5 +42,20 @@ PyObject *DocumentObjectPy::getCustomAttributes(const char* attr) const
 
 int DocumentObjectPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-    return 0; 
+    // search in PropertyList
+    Property *prop = getDocumentObjectObject()->getPropertyByName(attr);
+    if (prop) {
+        // Read-only attributes must not be set over its Python interface
+        short Type =  getDocumentObjectObject()->getPropertyType(prop);
+        if (Type & Prop_ReadOnly) {
+            std::stringstream s;
+            s << "'DocumentObject' attribute '" << attr << "' is read-only"; 
+            throw Py::AttributeError(s.str());
+        }
+
+        prop->setPyObject(obj);
+        return 1;
+    } 
+
+    return 0;
 }

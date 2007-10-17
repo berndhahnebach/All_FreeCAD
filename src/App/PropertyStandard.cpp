@@ -209,7 +209,7 @@ void PropertyPath::setPyObject(PyObject *value)
         _cValue = PyString_AsString(value);
         hasSetValue();
     } else
-        throw "Not allowed type used (string expected)...";
+        throw Base::Exception("Not allowed type used (string expected)...");
 
 }
 
@@ -669,7 +669,7 @@ void PropertyFloat::setPyObject(PyObject *value)
     _dValue = (float) PyInt_AsLong(value);
     hasSetValue();
   }else
-    throw "Not allowed type used (float or int expected)...";
+      throw Base::Exception("Not allowed type used (float or int expected)...");
 
 }
 
@@ -996,20 +996,17 @@ PyObject *PropertyString::getPyObject(void)
 
 void PropertyString::setPyObject(PyObject *value)
 {
-  if(PyUnicode_Check( value ))
-    value = PyUnicode_AsUTF8String(value);
+    if(PyUnicode_Check( value ))
+        value = PyUnicode_AsUTF8String(value);
 
-  if(PyString_Check( value) )
-  {
-    aboutToSetValue();
-    _cValue = PyString_AsString(value);
-    hasSetValue();
-
-  }else
-    throw "Not allowed type used (string expected)...";
-
+    if (PyString_Check(value)) {
+        aboutToSetValue();
+        _cValue = PyString_AsString(value);
+        hasSetValue();
+    }
+    else
+        throw Base::Exception("Not allowed type used (string expected)...");
 }
-
 
 void PropertyString::Save (Writer &writer) const
 {

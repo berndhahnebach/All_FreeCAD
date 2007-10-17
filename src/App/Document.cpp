@@ -461,14 +461,14 @@ Document::Document(void)
     Console().Log("+App::Document: %p\n",this);
 
 
-    ADD_PROPERTY(Name,("Unnamed"));
-    ADD_PROPERTY(FileName,(""));
-    ADD_PROPERTY(CreatedBy,(""));
-    ADD_PROPERTY(CreationDate,(Base::TimeInfo::currentDateTimeString()));
-    ADD_PROPERTY(LastModifiedBy,(""));
-    ADD_PROPERTY(LastModifiedDate,("Unknown"));
-    ADD_PROPERTY(Company,(""));
-    ADD_PROPERTY(Comment,(""));
+    ADD_PROPERTY_TYPE(Name,("Unnamed"),0,Prop_ReadOnly,"The name of the document");
+    ADD_PROPERTY_TYPE(FileName,(""),0,Prop_ReadOnly,"The path to the file where the document is saved to");
+    ADD_PROPERTY_TYPE(CreatedBy,(""),0,Prop_None,"The creator of the document");
+    ADD_PROPERTY_TYPE(CreationDate,(Base::TimeInfo::currentDateTimeString()),0,Prop_ReadOnly,"Date of creation");
+    ADD_PROPERTY_TYPE(LastModifiedBy,(""),0,Prop_None,0);
+    ADD_PROPERTY_TYPE(LastModifiedDate,("Unknown"),0,Prop_ReadOnly,"Date of last modification");
+    ADD_PROPERTY_TYPE(Company,(""),0,Prop_None,"Additional tag to save the the name of the company");
+    ADD_PROPERTY_TYPE(Comment,(""),0,Prop_None,"Additional tag to save a comment");
 }
 
 Document::~Document()

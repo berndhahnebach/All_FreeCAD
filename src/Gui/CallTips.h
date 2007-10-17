@@ -74,6 +74,7 @@ private:
     QString extractContext(const QString&) const;
     QMap<QString, CallTip> extractTips(const QString&) const;
     void extractTipsFromObject(Py::Object&, Py::List&, QMap<QString, CallTip>&) const;
+    void extractTipsFromProperties(Py::Object&, QMap<QString, CallTip>&) const;
 
 private:
     QTextEdit* textEdit;
