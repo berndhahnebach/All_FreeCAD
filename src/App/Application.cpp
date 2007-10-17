@@ -201,7 +201,7 @@ Document* Application::newDocument(const char * Name, const char * UserName)
 	DocMap[name] = newDoc.release(); // now owned by the Application
 	_pActiveDoc = DocMap[name];
 
-  // conect the signals to the application for the new document
+  // connect the signals to the application for the new document
   _pActiveDoc->signalNewObject.connect(boost::bind(&App::Application::slotNewObject, this, _1));
   _pActiveDoc->signalDeletedObject.connect(boost::bind(&App::Application::slotDeletedObject, this, _1));
   _pActiveDoc->signalChangedObject.connect(boost::bind(&App::Application::slotChangedObject, this, _1));

@@ -1,6 +1,10 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <sstream>
+#endif
+
 #include "PropertyContainer.h"
 #include "Property.h"
 
@@ -100,14 +104,20 @@ PyObject *PropertyContainerPy::getCustomAttributes(const char* attr) const
 
 int PropertyContainerPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-	   // search in PropertyList
-  Property *prop = getPropertyContainerObject()->getPropertyByName(attr);
-  if (prop) {
-    prop->setPyObject(obj);
-    return 1;
-  } 
+    // search in PropertyList
+    Property *prop = getPropertyContainerObject()->getPropertyByName(attr);
+    if (prop) {
+        // Read-only attributes must not be set over its Python interface
+        short Type =  getPropertyContainerObject()->getPropertyType(prop);
+        if (Type & Prop_ReadOnly) {
+            std::stringstream s;
+            s << "Object attribute '" << attr << "' is read-only"; 
+            throw Py::AttributeError(s.str());
+        }
 
-  return 0;
+        prop->setPyObject(obj);
+        return 1;
+    } 
+
+    return 0;
 }
-
-

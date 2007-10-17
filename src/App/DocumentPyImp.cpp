@@ -2,6 +2,10 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <sstream>
+#endif
+
 #include "Document.h"
 #include <Base/PyTools.h>
 #include "DocumentObject.h"
@@ -208,32 +212,40 @@ Py::String  DocumentPy::getDependencyGraph(void) const
   return Py::String(out.str());
 }
 
-
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
-    //// FIXME: This method should only be called if attr is a property
-    //App::Property* prop = getDocumentObject()->getPropertyByName(attr);
-    //if (prop)
-    //    return prop->getPyObject();
-    ////FIXME: What should happen if a document object has the same name as an attribute
-    //
+    // Note: Here we want to return only a document object if its
+    // name matches 'attr'. However, it is possible to have an object
+    // with the same name as an attribute. If so, we return 0 as other-
+    // wise it wouldn't be possible to address this attribute any more.
+    // The object must then be addressed by the getObject() method directly.
+    App::Property* prop = getPropertyContainerObject()->getPropertyByName(attr);
+    if (prop) return 0;
+    PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
+    if (method) return 0;
     // search for an object with this name
-    DocumentObject *pcFtr = getDocumentObject()->getObject(attr);
-    if(pcFtr)
-        return pcFtr->getPyObject();
-    else
-        return 0;
+    DocumentObject* obj = getDocumentObject()->getObject(attr);
+    return (obj ? obj->getPyObject() : 0);
 }
 
-int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
+int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
 {
-  DocumentObject *pcFtr = getDocumentObject()->getObject(attr);
-  if(pcFtr)
-  {
-    char szBuf[200];
-    snprintf(szBuf, 200, "'Document' object attribute '%s' must not set this way!", attr);
-    throw Py::AttributeError(szBuf); 
-  }
+    // Note: Here we want to return only a document object if its
+    // name matches 'attr'. However, it is possible to have an object
+    // with the same name as an attribute. If so, we return 0 as other-
+    // wise it wouldn't be possible to address this attribute any more.
+    // The object must then be addressed by the getObject() method directly.
+    App::Property* prop = getPropertyContainerObject()->getPropertyByName(attr);
+    if (prop) return 0;
+    PyObject *method = Py_FindMethod(this->Methods, this, attr);
+    if (method) return 0;
+    DocumentObject* obj = getDocumentObject()->getObject(attr);
+    if (obj)
+    {
+        char szBuf[200];
+        snprintf(szBuf, 200, "'Document' object attribute '%s' must not be set this way", attr);
+        throw Py::AttributeError(szBuf); 
+    }
     
-  return 0;
+    return 0;
 }

@@ -248,13 +248,13 @@ DocumentItem::~DocumentItem()
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string displayName = obj.getObject()->name.getValue();
-    std::string objectName = obj.getObject()->getNameInDocument();
+    std::string displayName = obj.Name.getValue();
+    std::string objectName = obj.getObject()->name.getValue();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it == ObjectMap.end()) {
         DocumentObjectItem* item = new DocumentObjectItem(&obj, this);
         item->setIcon(0, obj.getIcon());
-        item->setText(0, QString(displayName.c_str()));
+        item->setText(0, QString::fromUtf8(displayName.c_str()));
         ObjectMap[objectName] = item;
         slotChangedObject(obj);
     } else {
@@ -264,14 +264,17 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string objectName = obj.getObject()->getNameInDocument();
+    std::string objectName = obj.getObject()->name.getValue();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // FIXME: We must check in App::Document::remObject() whether a group should be removed.
         // If so we must remove all its children first and then the group itself.
-        QList<QTreeWidgetItem*> children = it->second->takeChildren();
         QTreeWidgetItem* parent = it->second->parent();
-        parent->addChildren(children);
+        if (it->second->childCount() > 0) {
+            QList<QTreeWidgetItem*> children = it->second->takeChildren();
+            parent->addChildren(children);
+        }
+
         parent->takeChild(parent->indexOfChild(it->second));
         delete it->second;
         ObjectMap.erase(it);
@@ -282,14 +285,13 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 {
     // As we immediately add a newly created object to the tree we check here which
     // item (this or a DocumentObjectItem) is the parent of the associated item of 'obj'
-    std::string displayName = obj.getObject()->name.getValue();
-    std::string objectName = obj.getObject()->getNameInDocument();
+    std::string objectName = obj.getObject()->name.getValue();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // is the object part of a group?
         App::DocumentObjectGroup* group = App::DocumentObjectGroup::getGroupOfObject(obj.getObject());
         if (group) {
-            std::string groupname = group->getNameInDocument();
+            std::string groupname = group->name.getValue();
             std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(groupname);
             if (jt != ObjectMap.end()) {
                 QTreeWidgetItem* parent = it->second->parent();
@@ -313,8 +315,6 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
                 this->addChild(it->second);
             }
         }
-
-        it->second->setText(0, QString::fromUtf8(displayName.c_str()));
     } else {
         Base::Console().Warning("DocumentItem::slotChangedObject: Cannot change unknown object.\n");
     }
@@ -322,14 +322,13 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
 {
-    for (std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
-        if (it->second->object() == &obj) {
-            DocumentObjectItem* item = it->second;
-            ObjectMap.erase(it);
-            std::string objectName = obj.getObject()->getNameInDocument();
-            ObjectMap[objectName] = item;
-            break;
-        }
+    std::string objectName = obj.getObject()->name.getValue();
+    std::string displayName = obj.Name.getValue();
+    std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
+    if (it != ObjectMap.end()) {
+        it->second->setText(0, QString::fromUtf8(displayName.c_str()));
+    } else {
+        Base::Console().Warning("DocumentItem::slotRenamedObject: Cannot rename unknown object.\n");
     }
 }
 

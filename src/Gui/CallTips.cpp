@@ -28,6 +28,8 @@
 
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/PyObjectBase.h>
+#include <App/Property.h>
+#include <App/PropertyContainer.h>
 #include <App/PropertyContainerPy.h>
 #include "CallTips.h"
 
@@ -189,11 +191,9 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // C++ twin class.
         union PyType_Object proptypeobj = {&App::PropertyContainerPy::Type};
         if (PyObject_IsSubclass(type.ptr(), proptypeobj.o)) {
-            App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(inst.ptr());
-            Py::List prop = cont->getPropertiesList();
             // These are the attributes of the instance itself which are NOT accessible by
             // its type object
-            extractTipsFromObject(inst, prop, tips);
+            extractTipsFromProperties(inst, tips);
         }
 
         // These are the attributes from the type object
@@ -254,6 +254,31 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
     } catch (Py::Exception& e) {
         // Just clear the Python exception
         e.clear();
+    }
+}
+
+void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, CallTip>& tips) const
+{
+    App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(obj.ptr());
+    App::PropertyContainer* container = cont->getPropertyContainerObject();
+    std::map<std::string,App::Property*> Map;
+    container->getPropertyMap(Map);
+
+    for (std::map<std::string,App::Property*>::const_iterator It=Map.begin();It!=Map.end();++It) {
+        CallTip tip;
+        QString str = It->first.c_str();
+        tip.name = str;
+        tip.type = CallTip::Atribute;
+        QString longdoc = container->getPropertyDocumentation(It->second);
+        if (!longdoc.isEmpty()) {
+            int pos = longdoc.indexOf(QChar('\n'));
+            pos = qMin(pos, 70);
+            if (pos < 0) 
+                pos = qMin(longdoc.length(), 70);
+            tip.description = longdoc;
+            tip.parameter = longdoc.left(pos);
+        }
+        tips[str] = tip;
     }
 }
 
