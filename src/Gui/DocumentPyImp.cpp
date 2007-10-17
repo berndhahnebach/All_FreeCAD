@@ -142,12 +142,46 @@ PyObject*  DocumentPy::activeView(PyObject *args)
 
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
-	return 0;
+    // Note: Here we want to return only a document object if its
+    // name matches 'attr'. However, it is possible to have an object
+    // with the same name as an attribute. If so, we return 0 as other-
+    // wise it wouldn't be possible to address this attribute any more.
+    // The object must then be addressed by the getObject() method directly.
+    PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
+    if (method) {
+        Py_DECREF(method);
+        return 0;
+    } else if (PyErr_Occurred()) {
+        PyErr_Clear();
+    }
+    // search for an object with this name
+    ViewProvider* obj = getDocumentObject()->getViewProviderByName(attr);
+    return (obj ? obj->getPyObject() : 0);
 }
 
-int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
+int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
 {
-	return 0; 
+    // Note: Here we want to return only a document object if its
+    // name matches 'attr'. However, it is possible to have an object
+    // with the same name as an attribute. If so, we return 0 as other-
+    // wise it wouldn't be possible to address this attribute any more.
+    // The object must then be addressed by the getObject() method directly.
+    PyObject *method = Py_FindMethod(this->Methods, this, attr);
+    if (method) {
+        Py_DECREF(method);
+        return 0;
+    } else if (PyErr_Occurred()) {
+        PyErr_Clear();
+    }
+    ViewProvider* obj = getDocumentObject()->getViewProviderByName(attr);
+    if (obj)
+    {
+        char szBuf[200];
+        snprintf(szBuf, 200, "'Document' object attribute '%s' must not be set this way", attr);
+        throw Py::AttributeError(szBuf); 
+    }
+    
+    return 0;
 }
 
 

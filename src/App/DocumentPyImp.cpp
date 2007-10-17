@@ -222,7 +222,12 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
     App::Property* prop = getPropertyContainerObject()->getPropertyByName(attr);
     if (prop) return 0;
     PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
-    if (method) return 0;
+    if (method) {
+        Py_DECREF(method);
+        return 0;
+    } else if (PyErr_Occurred()) {
+        PyErr_Clear();
+    }
     // search for an object with this name
     DocumentObject* obj = getDocumentObject()->getObject(attr);
     return (obj ? obj->getPyObject() : 0);
@@ -238,7 +243,12 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
     App::Property* prop = getPropertyContainerObject()->getPropertyByName(attr);
     if (prop) return 0;
     PyObject *method = Py_FindMethod(this->Methods, this, attr);
-    if (method) return 0;
+    if (method) {
+        Py_DECREF(method);
+        return 0;
+    } else if (PyErr_Occurred()) {
+        PyErr_Clear();
+    }
     DocumentObject* obj = getDocumentObject()->getObject(attr);
     if (obj)
     {
