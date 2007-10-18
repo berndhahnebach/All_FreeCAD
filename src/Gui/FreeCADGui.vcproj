@@ -4199,6 +4199,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ViewProviderInventorObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ViewProviderInventorObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ViewProviderPy.xml"
 				>
 				<FileConfiguration

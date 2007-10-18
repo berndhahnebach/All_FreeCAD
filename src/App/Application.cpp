@@ -69,6 +69,7 @@
 #include "PropertyLinks.h"
 #include "Document.h"
 #include "DocumentObjectGroup.h"
+#include "InventorObject.h"
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include <Build/Version.h>
@@ -735,6 +736,7 @@ void Application::initTypes(void)
   App ::FeaturePython             ::init();
   App ::Document                  ::init();
   App ::DocumentObjectGroup       ::init();
+  App ::InventorObject            ::init();
 
   // test code
   /*

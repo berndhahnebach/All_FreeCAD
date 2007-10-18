@@ -50,6 +50,8 @@ libFreeCADApp_la_SOURCES=\
 		FeatureTest.h \
 		GeoFeature.cpp \
 		GeoFeature.h \
+		InventorObject.cpp \
+		InventorObject.h \
 		Material.cpp \
 		Material.h \
 		MaterialPy.cpp \
