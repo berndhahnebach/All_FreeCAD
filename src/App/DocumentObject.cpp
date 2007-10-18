@@ -56,7 +56,7 @@ DocumentObject::DocumentObject(void)
     // the document object must be read-only.
     // So, we don't need to change client code where we use the name property and can access the correct internal name in constant 
     // time. This makes the method getNameInDocument() obsolete, then.
-    ADD_PROPERTY_TYPE(name,("Unnamed"),"Base",Prop_ReadOnly,"User name of the object (UTF8)");
+    ADD_PROPERTY_TYPE(name,("Unnamed"),"Base",Prop_None,"User name of the object (UTF8)");
     touchTime.setToActual();
     touchViewTime.setToActual();
 }

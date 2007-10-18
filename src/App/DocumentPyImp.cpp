@@ -7,6 +7,7 @@
 #endif
 
 #include "Document.h"
+#include <Base/FileInfo.h>
 #include <Base/PyTools.h>
 #include "DocumentObject.h"
 
@@ -25,13 +26,39 @@ const char *DocumentPy::representation(void)
 
 PyObject*  DocumentPy::save(PyObject *args)
 {
-    getDocumentObject()->save();
+    if (!getDocumentObject()->save()) {
+        PyErr_Format(PyExc_ValueError, "Object attribute 'FileName' is not set");
+        return NULL;
+    }
+
+    const char* filename = getDocumentObject()->FileName.getValue();
+    Base::FileInfo fi(filename);
+    if (!fi.isReadable()) {
+        PyErr_Format(PyExc_IOError, "No such file or directory: '%s'", filename);
+        return NULL;
+    }
+
     Py_Return;
 }
 
 PyObject*  DocumentPy::restore(PyObject *args)
 {
-    getDocumentObject()->restore();
+    const char* filename = getDocumentObject()->FileName.getValue();
+    if (!filename || *filename == '\0') {
+        PyErr_Format(PyExc_ValueError, "Object attribute 'FileName' is not set");
+        return NULL;
+    }
+    Base::FileInfo fi(filename);
+    if (!fi.isReadable()) {
+        PyErr_Format(PyExc_IOError, "No such file or directory: '%s'", filename);
+        return NULL;
+    }
+    try {
+        getDocumentObject()->restore();
+    } catch (...) {
+        PyErr_Format(PyExc_IOError, "Reading from file '%s' failed", filename);
+        return NULL;
+    }
     Py_Return;
 }
 
