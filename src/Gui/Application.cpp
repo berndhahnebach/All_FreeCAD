@@ -63,6 +63,7 @@
 #include "ViewProviderPythonFeature.h"
 #include "ViewProviderDocumentObjectGroup.h"
 #include "ViewProviderGeometryObject.h"
+#include "ViewProviderInventorObject.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -783,6 +784,7 @@ void Application::initTypes(void)
   Gui::ViewProviderPythonFeature             ::init();
   Gui::ViewProviderDocumentObjectGroup       ::init();
   Gui::ViewProviderGeometryObject            ::init();
+  Gui::ViewProviderInventorObject            ::init();
 
   // Workbench
   Gui::Workbench                             ::init();

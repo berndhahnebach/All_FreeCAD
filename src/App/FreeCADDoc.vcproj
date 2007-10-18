@@ -697,6 +697,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InventorObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InventorObject.h"
+				>
+			</File>
+			<File
 				RelativePath="Placement.cpp"
 				>
 				<FileConfiguration

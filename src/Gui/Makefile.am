@@ -296,6 +296,8 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderFeature.h \
 		ViewProviderGeometryObject.cpp \
 		ViewProviderGeometryObject.h \
+		ViewProviderInventorObject.cpp \
+		ViewProviderInventorObject.h \
 		ViewProviderPyImp.cpp \
 		ViewProviderPythonFeature.cpp \
 		ViewProviderPythonFeature.h \
