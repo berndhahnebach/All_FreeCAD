@@ -42,7 +42,13 @@ public:
     ~ViewProviderInventorObject();
 
     void attach(App::DocumentObject *pcObject);
+    void setDisplayMode(const char* ModeName);
+    std::vector<std::string> getDisplayModes() const;
     void updateData(void);
+
+protected:
+    SoSeparator  *pcBuffer;
+    SoSeparator  *pcFile;
 };
 
 } //namespace Gui
