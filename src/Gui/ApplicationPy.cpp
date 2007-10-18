@@ -217,7 +217,9 @@ PYFUNCIMP_S(Application,sOpen)
     else if ( ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz" ) {
       if ( !Application::Instance->activeDocument() )
         App::GetApplication().newDocument();
-      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+      //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+      QString cmd = QString("App.activeDocument().addObject(\"App::InventorObject\",\"%1\").FileName=\"%2\"\n"
+                            "App.activeDocument().recompute()").arg(fi.baseName()).arg(fi.absoluteFilePath());
       Base::Interpreter().runString(cmd.toAscii());
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
@@ -243,8 +245,10 @@ PYFUNCIMP_S(Application,sInsert)
     QFileInfo fi;
     fi.setFile(fileName);
     QString ext = fi.completeSuffix().toLower();
-    if ( ext == "iv" || ext == "wrl" ) {
-      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+    if ( ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz" ) {
+      //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+      QString cmd = QString("App.activeDocument().addObject(\"App::InventorObject\",\"%1\").FileName=\"%2\"\n"
+                            "App.activeDocument().recompute()").arg(fi.baseName()).arg(fi.absoluteFilePath());
       Base::Interpreter().runString(cmd.toAscii());
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {

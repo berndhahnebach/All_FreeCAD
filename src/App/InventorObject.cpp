@@ -36,7 +36,8 @@ PROPERTY_SOURCE(App::InventorObject, App::AbstractFeature)
 
 InventorObject::InventorObject() 
 {
-    ADD_PROPERTY(Node,(""));
+    ADD_PROPERTY_TYPE(Buffer,(""),"",Prop_None,"String buffer with a scene graph");
+    ADD_PROPERTY_TYPE(FileName,(""),"",Prop_None,"Path to an Inventor file");
 }
 
 InventorObject::~InventorObject()

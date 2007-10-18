@@ -50,7 +50,8 @@ public:
     }
     virtual PyObject *getPyObject(void);
 
-    PropertyString Node;
+    PropertyString Buffer;
+    PropertyString FileName;
 };
 
 } //namespace App
