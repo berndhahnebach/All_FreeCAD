@@ -11,30 +11,35 @@
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>This is the ViewProvider base class</UserDocu>
     </Documentation>
-   <Methode Name="show">
+    <Methode Name="show">
       <Documentation>
         <UserDocu>Show the object</UserDocu>
       </Documentation>
     </Methode>
-   <Methode Name="hide">
+    <Methode Name="hide">
       <Documentation>
         <UserDocu>Hide the object</UserDocu>
       </Documentation>
     </Methode>
-   <Methode Name="isVisible">
+    <Methode Name="isVisible">
       <Documentation>
         <UserDocu>Check if the object is visible</UserDocu>
       </Documentation>
     </Methode>
-   <Methode Name="update">
+    <Methode Name="update">
       <Documentation>
         <UserDocu>Update the view representation of the object</UserDocu>
       </Documentation>
     </Methode>
-   <Methode Name="listDisplayModes">
+    <Methode Name="listDisplayModes">
       <Documentation>
         <UserDocu>Show a list of all display modes</UserDocu>
       </Documentation>
     </Methode>
+	  <Methode Name="toString">
+		  <Documentation>
+			  <UserDocu>Return a string representation of the Inventor node</UserDocu>
+		  </Documentation>
+	  </Methode>
   </PythonExport>
 </GenerateModel>

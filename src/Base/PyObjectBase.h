@@ -460,7 +460,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 
 /// Root definition of the inheritance tree of the FreeCAD python objects
-#define PARENTSPyObjectBase &Base::PyObjectBase::Type,NULL
+#define PARENTSBasePyObjectBase &Base::PyObjectBase::Type,NULL
 
 /** Python helper class 
  *  This class encapsulate the Decoding of UTF8 to a python object.

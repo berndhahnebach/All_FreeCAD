@@ -87,6 +87,7 @@ public:
     */
   virtual void update(void)=0;
 
+  std::string toString() const;
   PyObject* getPyObject();
 
 protected:

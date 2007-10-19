@@ -37,6 +37,7 @@
 #include "ViewProvider.h"
 #include "ViewProviderPy.h"
 #include "BitmapFactory.h"
+#include "View3DInventor.h"
 
 using namespace std;
 using namespace Gui;
@@ -154,6 +155,11 @@ bool ViewProvider::isShow(void) const
 {
   return pcModeSwitch->whichChild.getValue() != -1;
 
+}
+
+std::string ViewProvider::toString() const
+{
+    return View3DInventor::writeNodesToString(pcRoot);
 }
 
 PyObject* ViewProvider::getPyObject()

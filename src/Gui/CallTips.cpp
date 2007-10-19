@@ -31,6 +31,11 @@
 #include <App/Property.h>
 #include <App/PropertyContainer.h>
 #include <App/PropertyContainerPy.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
+#include <App/DocumentPy.h>
+#include <Gui/Document.h>
+#include <Gui/DocumentPy.h>
 #include "CallTips.h"
 
 using namespace Gui;
@@ -194,6 +199,32 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
             // These are the attributes of the instance itself which are NOT accessible by
             // its type object
             extractTipsFromProperties(inst, tips);
+        }
+
+        // If we derive from App::DocumentPy we have direct access to the objects by their internal
+        // names. So, we add these names to the list, too.
+        union PyType_Object appdoctypeobj = {&App::DocumentPy::Type};
+        if (PyObject_IsSubclass(type.ptr(), appdoctypeobj.o)) {
+            App::DocumentPy* docpy = (App::DocumentPy*)(inst.ptr());
+            App::Document* document = docpy->getDocumentObject();
+            std::vector<App::DocumentObject*> objects = document->getObjects();
+            Py::List list;
+            for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+                list.append(Py::String((*it)->name.getValue()));
+            extractTipsFromObject(inst, list, tips);
+        }
+
+        // If we derive from Gui::DocumentPy we have direct access to the objects by their internal
+        // names. So, we add these names to the list, too.
+        union PyType_Object guidoctypeobj = {&Gui::DocumentPy::Type};
+        if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o)) {
+            Gui::DocumentPy* docpy = (Gui::DocumentPy*)(inst.ptr());
+            App::Document* document = docpy->getDocumentObject()->getDocument();
+            std::vector<App::DocumentObject*> objects = document->getObjects();
+            Py::List list;
+            for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+                list.append(Py::String((*it)->name.getValue()));
+            extractTipsFromObject(inst, list, tips);
         }
 
         // These are the attributes from the type object
