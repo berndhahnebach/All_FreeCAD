@@ -477,7 +477,7 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
                 hide();
                 return true;
             } else if (this->hideKeys.indexOf(ke->key()) > -1) {
-                hide();
+                itemActivated(currentItem());
                 return false;
             } else if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Tab) {
                 itemActivated(currentItem());
@@ -519,10 +519,19 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
 void CallTipsList::callTipItemActivated(QListWidgetItem *item)
 {
     hide();
+    if (!isItemSelected(item)) return;
+    
     QString text = item->text();
     QTextCursor cursor = textEdit->textCursor();
     cursor.setPosition(this->cursorPos);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+    QString sel = cursor.selectedText();
+    if (!sel.isEmpty()) {
+        // in case the cursor moved too far on the right side
+        QChar ch = sel.at(sel.count()-1);
+        if (!ch.isLetterOrNumber())
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+    }
     cursor.insertText( text );
     textEdit->ensureCursorVisible();
 
