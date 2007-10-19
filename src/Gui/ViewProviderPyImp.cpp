@@ -86,6 +86,16 @@ PyObject*  ViewProviderPy::listDisplayModes(PyObject *args)
     } PY_CATCH;
 }
 
+PyObject*  ViewProviderPy::toString(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    PY_TRY {
+        std::string buffer = getViewProviderObject()->toString();
+        return Py::new_reference_to(Py::String(buffer));
+    } PY_CATCH;
+}
+
 PyObject *ViewProviderPy::getCustomAttributes(const char* attr) const
 {
 	return 0;

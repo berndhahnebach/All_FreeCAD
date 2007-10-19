@@ -92,22 +92,6 @@ PyObject*  DocumentPy::update(PyObject *args)
     } PY_CATCH;
 }
 
-PyObject*  DocumentPy::activeObject(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                       // NULL triggers exception 
-
-    PY_TRY {
-        App::DocumentObject *pcFtr = getDocumentObject()->getDocument()->getActiveObject();
-        if (pcFtr) {
-            ViewProvider *pcView = getDocumentObject()->getViewProvider(pcFtr);
-	        return pcView->getPyObject();
-        } else {
-		    Py_Error(PyExc_Exception,"No active Object");
-        }
-    } PY_CATCH;
-}
-
 PyObject*  DocumentPy::getObject(PyObject *args)
 {
     char *sName;
@@ -120,6 +104,22 @@ PyObject*  DocumentPy::getObject(PyObject *args)
 		    return pcView->getPyObject();
         else {
             Py_Return;
+        }
+    } PY_CATCH;
+}
+
+PyObject*  DocumentPy::activeObject(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+
+    PY_TRY {
+        App::DocumentObject *pcFtr = getDocumentObject()->getDocument()->getActiveObject();
+        if (pcFtr) {
+            ViewProvider *pcView = getDocumentObject()->getViewProvider(pcFtr);
+	        return pcView->getPyObject();
+        } else {
+		    Py_Return;
         }
     } PY_CATCH;
 }
@@ -138,6 +138,38 @@ PyObject*  DocumentPy::activeView(PyObject *args)
             Py_Return;
         }
     } PY_CATCH;
+}
+
+Py::Object DocumentPy::getActiveObject(void) const
+{
+    App::DocumentObject *object = getDocumentObject()->getDocument()->getActiveObject();
+    if (object) {
+        ViewProvider *viewObj = getDocumentObject()->getViewProvider(object);
+        return Py::Object(viewObj->getPyObject());
+    } else {
+        return Py::None();
+    }
+}
+
+void  DocumentPy::setActiveObject(Py::Object arg)
+{
+    throw Py::AttributeError("'Document' object attribute 'ActiveObject' is read-only");
+}
+
+Py::Object DocumentPy::getActiveView(void) const
+{
+    Gui::MDIView *view = getDocumentObject()->getActiveView();
+    if (view) {
+        // already incremented in getPyObject().
+        return Py::Object(view->getPyObject());
+    } else {
+        return Py::None();
+    }
+}
+
+void  DocumentPy::setActiveView(Py::Object arg)
+{
+    throw Py::AttributeError("'Document' object attribute 'ActiveView' is read-only");
 }
 
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const

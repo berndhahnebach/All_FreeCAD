@@ -102,7 +102,7 @@ public:
     @self.export.Twin@ *get@self.export.Twin@Object(void) const;
 };
 
-#define PARENTS@self.export.Name@ &@self.export.Name@::Type,PARENTS@self.export.Father@
+#define PARENTS@self.export.Namespace@@self.export.Name@ &@self.export.Name@::Type,PARENTS@self.export.FatherNamespace@@self.export.Father@
 
 }  //namespace @self.export.Namespace@
 
@@ -310,7 +310,7 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Name@ };
+PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@self.export.Name@ };
 
 //--------------------------------------------------------------------------
 // Constructor

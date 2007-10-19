@@ -164,8 +164,7 @@ Py::Object DocumentPy::getActiveObject(void) const
     DocumentObject *pcFtr = getDocumentObject()->getActiveObject();
     if(pcFtr)
         return Py::Object(pcFtr->getPyObject());
-    else
-        throw Py::Exception("No active Object");
+    return Py::None();
 }
 
 void  DocumentPy::setActiveObject(Py::Object arg)
