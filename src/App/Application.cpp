@@ -1059,7 +1059,6 @@ pair<string, string> customSyntax(const string& s)
 
 }
 
-// TODO still linker errors when using boost::program_options .....
 // A helper function to simplify the main part.
 template<class T>
 ostream& operator<<(ostream& os, const vector<T>& v)

@@ -154,10 +154,7 @@ PyObject *MeshFeaturePy::_repr(void)
 PyObject *MeshFeaturePy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 { 
   try{
-    if (Base::streq(attr, "XXXX"))
-      return Py_BuildValue("i",1); 
-    else
-        _getattr_up(FeaturePy);
+    _getattr_up(FeaturePy);
   }catch(...){
     Py_Error(PyExc_Exception,"Error in get Attribute");
   }
@@ -165,10 +162,7 @@ PyObject *MeshFeaturePy::_getattr(char *attr)     // __getattr__ function: note 
 
 int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function: note only need to handle new state
 { 
-  if (Base::streq(attr, "XXXX"))           // settable new state
-    return 1;
-  else 
-    return FeaturePy::_setattr(attr, value); 
+  return FeaturePy::_setattr(attr, value); 
 } 
 
 //--------------------------------------------------------------------------
