@@ -174,7 +174,7 @@ public:
   void PointsFromFacetsIndices (const std::vector<unsigned long> &rvecIndices, std::vector<Base::Vector3f> &rvecPoints) const;
   /**
    * Returns the indices of all facets that have at least one point that lies inside the tool mesh. The direction
-   * \a dir is used to try to foraminate the facets of the tool mesh and counts the number of formainated facets.
+   * \a dir is used to try to foraminate the facets of the tool mesh and counts the number of foraminated facets.
    * If this number is odd the considered point lies inside otherwise outside.
    * @note The tool mesh must be a valid solid.
    * @note It's not tested if \a rToolMesh is a valid solid. In case it is not the result is undefined.
@@ -186,7 +186,7 @@ public:
   void GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Base::Vector3f& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const;
   /** 
    * Checks whether the bounding box \a rBox is surrounded by the attached mesh which must be a solid.
-   * The direction \a rcDir is used to try to foraminate the facets of the tool mesh and counts the number of formainated facets.
+   * The direction \a rcDir is used to try to foraminate the facets of the tool mesh and counts the number of foraminated facets.
    *  1 is returned if the box is completely inside the mesh
    *  0 is returned if the box is partially inside (i.e. intersects) the mesh
    * -1 is returned if the box is completely outside the mesh. This could also mean that the mesh is surrounded by \a rBox.
@@ -240,7 +240,7 @@ public:
   void SearchFacetsFromPolyline (const std::vector<Base::Vector3f> &rclPolyline, float fRadius,
                                  const MeshFacetGrid& rclGrid, std::vector<unsigned long> &rclResultFacetsIndices) const;
   /** Projects a point directly to the mesh (means nearest facet), the result is the facet index and
-   * the formainate point, use second version with grid for more performance.
+   * the foraminate point, use second version with grid for more performance.
    */
   bool NearestPointFromPoint (const Base::Vector3f &rclPt, unsigned long &rclResFacetIndex, Base::Vector3f &rclResPoint) const;
   bool NearestPointFromPoint (const Base::Vector3f &rclPt, const MeshFacetGrid& rclGrid,
