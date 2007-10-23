@@ -43,6 +43,7 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Console.h>
+#include <Base/Builder3D.h>
 
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
@@ -148,6 +149,8 @@ void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
     Mesh->MovePoint(i,It->Normalize() * fSize);
 }
 
+
+
 void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
 {
   std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
@@ -157,20 +160,23 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
   for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
+  Mesh->RecalcBoundBox();
 
+  // search for intersected facets
   MeshCore::MeshEvalSelfIntersection eval(*Mesh);
-  
   std::vector<unsigned long > faces;
   eval.GetIntersections(faces);
 
-#ifdef DEBUG_OFFSET
+  // Debug output 
   Base::Builder3D builder;
+  builder.startPoints();
+  for(std::vector<unsigned long >::iterator It = faces.begin();It!= faces.end();++It)
+    builder.addPoint(Mesh->GetFacet(*It).GetGravityPoint());
+  builder.endPoints();
+  builder.saveToFile("d:/temp/OffsetPoints.iv");
 
-  builder.addSingleLine();
 
-  builder.addToLog();
-#endif
-
+  //Mesh->DeleteFacets(faces);
 }
 
 void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin)

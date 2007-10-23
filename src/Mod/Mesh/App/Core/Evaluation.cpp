@@ -564,7 +564,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<unsigned long >& int
 {
     // Contains bounding boxes for every facet 
     std::vector<Base::BoundBox3f> boxes;
-    intersection.clear();
+    //intersection.clear();
 
     // Splits the mesh using grid for speeding up the calculation
     MeshFacetGrid cMeshFacetGrid(_rclMesh);

@@ -248,9 +248,11 @@ void ReportOutput::Error  (const char * s)
 
 void ReportOutput::Log (const char * s)
 {
-  // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
-  QApplication::postEvent(this, ev);
+  if(strlen(s) < 1000){
+    // Send the event to itself to allow thread-safety. Qt will delete it when done.
+    CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
+    QApplication::postEvent(this, ev);
+  }
 }
 
 void ReportOutput::customEvent ( QEvent* ev )
