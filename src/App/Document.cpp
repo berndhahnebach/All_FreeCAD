@@ -1213,9 +1213,9 @@ void Document::remObject(const char* sName)
 
   // Undo stuff
   if(activUndoTransaction){
+    activUndoTransaction->addObjectNew(pos->second);
     // set name cache false
     pos->second->pcNameInDocument = 0;
-    activUndoTransaction->addObjectNew(pos->second);
   }else
     // if not saved in undo -> delete
     delete pos->second;
