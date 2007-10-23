@@ -124,7 +124,7 @@ void PropertyLink::setPyObject(PyObject *value)
 
 void PropertyLink::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->name.getValue():"") <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\"/>" << std::endl;
 }
 
 void PropertyLink::Restore(Base::XMLReader &reader)
@@ -253,7 +253,7 @@ void PropertyLinkList::Save (Writer &writer) const
   writer.Stream() << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
   writer.incInd();
   for(int i = 0;i<getSize(); i++)
-    writer.Stream() << writer.ind() << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
+    writer.Stream() << writer.ind() << "<Link value=\"" <<  _lValueList[i]->getNameInDocument() <<"\"/>" << endl; ;
   writer.decInd();
   writer.Stream() << writer.ind() << "</LinkList>" << endl ;
 }

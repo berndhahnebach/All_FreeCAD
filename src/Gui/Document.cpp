@@ -312,13 +312,13 @@ void Document::slotNewObject(App::DocumentObject& Obj)
       // if succesfully created set the right name and calculate the view
       pcProvider->attach(&Obj);
     }catch(const Base::MemoryException& e){
-      Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.name.getValue(),e.what());
+      Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
     }catch(Base::Exception &e){
       e.ReportException();
     }
 #ifndef FC_DEBUG
     catch(...){
-      Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Obj.name.getValue());
+      Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Obj.getNameInDocument());
     }
 #endif
     std::list<Gui::BaseView*>::iterator VIt;
@@ -374,11 +374,11 @@ void Document::slotChangedObject(App::DocumentObject& Obj)
         try {
             viewProvider->update();
         } catch(const Base::MemoryException& e) {
-            Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.name.getValue(),e.what());
+            Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
         } catch(Base::Exception &e){
             e.ReportException();
         } catch (...) {
-            Base::Console().Error("Cannot update representation for '%s'.\n", Obj.name.getValue());
+            Base::Console().Error("Cannot update representation for '%s'.\n", Obj.getNameInDocument());
         }
 
         // The call of setActiveMode() must be delayed to wait until the associated
@@ -447,7 +447,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
     }
 
     // remove also from the selection, if selected
-    Selection().rmvSelection( _pcDocument->getName(), (*It)->name.getValue() );
+    Selection().rmvSelection( _pcDocument->getName(), (*It)->getNameInDocument() );
   }
 
   if ( !DocChange.ViewProviders.empty() ) {
@@ -482,13 +482,13 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
         pcProvider->attach(*it);
         pcProvider->setActiveMode();
       }catch(const Base::MemoryException& e){
-        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*it)->name.getValue(),e.what());
+        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*it)->getNameInDocument(),e.what());
       }catch(Base::Exception &e){
         e.ReportException();
       }
 #ifndef FC_DEBUG
       catch(...){
-        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*it)->name.getValue());
+        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*it)->getNameInDocument());
       }
 #endif
 
@@ -689,7 +689,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
   {
     App::DocumentObject* doc = it->first;
     ViewProvider* obj = it->second;
-    writer.Stream() << writer.ind() << "<ViewProvider name=\"" << doc->name.getValue() << "\">" << std::endl;   
+    writer.Stream() << writer.ind() << "<ViewProvider name=\"" << doc->getNameInDocument() << "\">" << std::endl;   
     obj->Save(writer);
     writer.Stream() << writer.ind() << "</ViewProvider>" << std::endl;
   }

@@ -304,8 +304,8 @@ CmdMeshUnion::CmdMeshUnion()
 void CmdMeshUnion::activated(int iMsg)
 {
   std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->name.getValue();
-  std::string name2 = obj.back()->name.getValue();
+  std::string name1 = obj.front()->getNameInDocument();
+  std::string name2 = obj.back()->getNameInDocument();
   std::string name3 = getUniqueObjectName("Union");
   openCommand("Mesh Union");
   doCommand(Doc,
@@ -343,8 +343,8 @@ CmdMeshDifference::CmdMeshDifference()
 void CmdMeshDifference::activated(int iMsg)
 {
   std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->name.getValue();
-  std::string name2 = obj.back()->name.getValue();
+  std::string name1 = obj.front()->getNameInDocument();
+  std::string name2 = obj.back()->getNameInDocument();
   std::string name3 = getUniqueObjectName("Difference");
   openCommand("Mesh Union");
   doCommand(Doc,
@@ -382,8 +382,8 @@ CmdMeshIntersection::CmdMeshIntersection()
 void CmdMeshIntersection::activated(int iMsg)
 {
   std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->name.getValue();
-  std::string name2 = obj.back()->name.getValue();
+  std::string name1 = obj.front()->getNameInDocument();
+  std::string name2 = obj.back()->getNameInDocument();
   std::string name3 = getUniqueObjectName("Intersection");
   openCommand("Mesh Union");
   doCommand(Doc,
@@ -481,7 +481,7 @@ void CmdMeshExport::activated(int iMsg)
 
   App::DocumentObject* docObj = docObjs.front();
 
-  QString dir = docObj->name.getValue();
+  QString dir = docObj->getNameInDocument();
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Alias Mesh (*.obj);;"
                    "Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;"
                    "Nastran (*.nas *.bdf);;Python module def (*.py);;All Files (*.*)";
@@ -499,7 +499,7 @@ void CmdMeshExport::activated(int iMsg)
     doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toUtf8());
     doCommand(Doc,"f.Format = \"%s\"",(const char*)format.toAscii());
-    doCommand(Doc,"f.Source = App.activeDocument().%s",docObj->name.getValue());
+    doCommand(Doc,"f.Source = App.activeDocument().%s",docObj->getNameInDocument());
     commitCommand();
     updateActive();
   }
@@ -531,17 +531,17 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Curvature";
     fName = getUniqueObjectName(fName.c_str());
 
     openCommand("Mesh VertexCurvature");
     App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( *it );
     if (grp)
-      doCommand(Doc,"App.activeDocument().getObject(\"%s\").addObject(\"Mesh::Curvature\",\"%s\")",grp->name.getValue(), fName.c_str());
+      doCommand(Doc,"App.activeDocument().getObject(\"%s\").addObject(\"Mesh::Curvature\",\"%s\")",grp->getNameInDocument(), fName.c_str());
     else
       doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
   }
 
   commitCommand();
@@ -661,7 +661,7 @@ void CmdMeshToolMesh::activated(int iMsg)
       "App.activeDocument().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
       "App.activeDocument().%s.Source = App.activeDocument().%s\n"
       "App.activeDocument().%s.Tool = App.activeDocument().%s\n",
-      fName.c_str(), fName.c_str(),  mesh->name.getValue(), fName.c_str(), tool->name.getValue() );
+      fName.c_str(), fName.c_str(),  mesh->getNameInDocument(), fName.c_str(), tool->getNameInDocument() );
 
     commitCommand();
     updateActive();
@@ -671,8 +671,8 @@ void CmdMeshToolMesh::activated(int iMsg)
 
     if ( pObj )
     {
-      doCommand(Gui,"Gui.hide(\"%s\")", mesh->name.getValue());
-      doCommand(Gui,"Gui.hide(\"%s\")", tool->name.getValue());
+      doCommand(Gui,"Gui.hide(\"%s\")", mesh->getNameInDocument());
+      doCommand(Gui,"Gui.hide(\"%s\")", tool->getNameInDocument());
       getSelection().clearSelection();
     }
   }
@@ -784,7 +784,7 @@ void CmdMeshEvaluateSolid::activated(int iMsg)
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     Mesh::Feature* mesh = (Mesh::Feature*)(*it);
-    QString msg = QString("The mesh '%1' is ").arg(mesh->name.getValue());
+    QString msg = QString("The mesh '%1' is ").arg(mesh->getNameInDocument());
     if ( mesh->Mesh.getValue().HasOpenEdges() )
       msg += "not a solid.";
     else
@@ -820,15 +820,15 @@ void CmdMeshHarmonizeNormals::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Harmonize";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -859,15 +859,15 @@ void CmdMeshFlipNormals::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Flip";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Flip Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -898,15 +898,15 @@ void CmdMeshFixDegenerations::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Fixed";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -937,15 +937,15 @@ void CmdMeshFixDuplicateFaces::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Fixed";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -976,15 +976,15 @@ void CmdMeshFixDuplicatePoints::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Fixed";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Remove duplicated points");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -1015,15 +1015,15 @@ void CmdMeshFixIndices::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_Fixed";
     fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
   }
 }
 
@@ -1127,11 +1127,11 @@ void CmdMeshFillupHoles::activated(int iMsg)
   openCommand("Fill up holes");
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_fill";
     fName = getUniqueObjectName(fName.c_str());
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FillHoles\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.FillupHolesOfLength = %d",fName.c_str(), FillupHolesOfLength);
   }
   commitCommand();
@@ -1171,11 +1171,11 @@ void CmdMeshRemoveComponents::activated(int iMsg)
   openCommand("Remove components");
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    std::string fName = (*it)->name.getValue();
+    std::string fName = (*it)->getNameInDocument();
     fName += "_rem_comps";
     fName = getUniqueObjectName(fName.c_str());
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::RemoveComponents\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.RemoveCompOfSize = %d",fName.c_str(), RemoveCompOfSize);
   }
   commitCommand();

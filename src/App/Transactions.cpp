@@ -102,7 +102,7 @@ void Transaction::apply(Document &Doc, DocChanges &ChangeList)
 
 void Transaction::addObjectNew(const DocumentObject *Obj)
 {
-  TransactionObject *To = new TransactionObject(Obj);
+  TransactionObject *To = new TransactionObject(Obj,Obj->getNameInDocument());
   To->status = TransactionObject::New;
   _Objects[Obj] = To;
 }
@@ -158,9 +158,11 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
  * A constructor.
  * A more elaborate description of the constructor.
  */
-TransactionObject::TransactionObject(const DocumentObject *pcObj)
+TransactionObject::TransactionObject(const DocumentObject *pcObj,const char *NameInDocument)
 :status(New)
 {
+  if(NameInDocument)
+    _NameInDocument=NameInDocument;
 }
 
 /**
@@ -181,7 +183,8 @@ void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
     // simply filling in the saved object
     Doc._remObject(pcObj);
   }else if(status == New){
-    Doc._addObject(pcObj,pcObj->name.getValue());
+    Doc._addObject(pcObj,_NameInDocument.c_str());
+    //Doc._addObject(pcObj,pcObj->getNameInDocument());
   }else if(status == Chn){
     std::map<const Property*,Property*>::const_iterator It;
     for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)

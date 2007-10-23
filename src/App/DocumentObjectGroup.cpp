@@ -53,7 +53,7 @@ DocumentObjectGroup::~DocumentObjectGroup()
 DocumentObject* DocumentObjectGroup::addObject(const char* sType, const char* pObjectName)
 {
     DocumentObject* obj = getDocument().addObject(sType, pObjectName);
-    if (obj) addObject(obj->getNameInDocument().c_str());
+    if (obj) addObject(obj->getNameInDocument());
     return obj;
 }
 
@@ -146,7 +146,7 @@ DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
     std::vector<DocumentObject*> grps = doc.getObjectsOfType( DocumentObjectGroup::getClassTypeId() );
     for ( std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it ) {
         DocumentObjectGroup* grp = (DocumentObjectGroup*)(*it);
-        if (grp->hasObject(obj->getNameInDocument().c_str()))
+        if (grp->hasObject(obj->getNameInDocument()))
             return grp;
     }
 

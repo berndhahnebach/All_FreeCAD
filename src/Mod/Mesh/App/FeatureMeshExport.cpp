@@ -51,7 +51,7 @@ int Export::execute(void)
 {
     Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue());
     if(!pcFeat || pcFeat->getStatus() != Valid) {
-        setError("Cannot export invalid mesh feature '%s'", pcFeat->name.getValue());
+        setError("Cannot export invalid mesh feature '%s'", pcFeat->getNameInDocument());
         return 1;
     }
 

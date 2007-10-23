@@ -108,6 +108,10 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
   string CleanName;
   const char *It=Name;
 
+  // check for first character whether it's a digit
+  if ((*It != '\0') && (*It>=48 && *It<=57))
+    CleanName = "_";
+
   while(*It != '\0')
   {
     if(   (*It>=48 && *It<=57)   // Numbers
@@ -117,17 +121,8 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
     {
       CleanName += *It;
     }else{
-      switch(*It)
-      {
-      case 'ä': CleanName += "ae"; break;
-      case 'ü': CleanName += "ue"; break;
-      case 'ö': CleanName += "oe"; break;
-      case 'Ä': CleanName += "Ae"; break;
-      case 'Ü': CleanName += "Ue"; break;
-      case 'Ö': CleanName += "Oe"; break;
-      default:
-        CleanName += '_';
-      }
+      // All other letters gets replaced
+      CleanName += '_';
     }
     It++;
   }

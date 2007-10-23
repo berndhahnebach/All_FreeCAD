@@ -527,7 +527,7 @@ void Document::Save (Writer &writer) const
   {
     writer.Stream() << writer.ind() << "<Object " 
                                     << "type=\"" << (*it)->getTypeId().getName() << "\" "
-                                    << "name=\"" << (*it)->name.getValue()       << "\" "
+                                    << "name=\"" << (*it)->getNameInDocument()       << "\" "
                                     << "/>" << endl;    
   }
 
@@ -540,7 +540,7 @@ void Document::Save (Writer &writer) const
   writer.incInd(); // indention for 'Object name'
   for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
-    writer.Stream() << writer.ind() << "<Object name=\"" << (*it)->name.getValue() << "\">" << endl;   
+    writer.Stream() << writer.ind() << "<Object name=\"" << (*it)->getNameInDocument() << "\">" << endl;   
     (*it)->Save(writer);
     writer.Stream() << writer.ind() << "</Object>" << endl;
   }
@@ -884,7 +884,7 @@ void Document::recompute()
       signalChangedObject(**it);
 
   for(l = DocChange.ErrorFeatures.begin();l!=DocChange.ErrorFeatures.end();++l)
-    Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->name.getValue(),(*l)->getErrorString());
+    Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->getNameInDocument(),(*l)->getErrorString());
 
   Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
                       Name.getValue(),
@@ -896,7 +896,7 @@ void Document::recompute()
 // call the recompute of the Feature and handle the exceptions and errors.
 void Document::_recomputeFeature(AbstractFeature* Feat)
 {
-  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
+  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
 
   Feat->status.setValue(AbstractFeature::Recompute);
   int  succes;
@@ -907,22 +907,22 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     succes = 4;
   }catch(const Base::MemoryException& e){
     if ( !e.isHandled() )
-      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
     else
-      Base::Console().Log("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+      Base::Console().Log("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
     Feat->setError(e.what());
     succes = 4; // Must not rerun twice
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
   }catch(std::exception &e){
-    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
+    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->getNameInDocument(),e.what());
     Feat->setError(e.what());
     succes = 3;
   }
 #ifndef FC_DEBUG
   catch(...){
-    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->name.getValue());
+    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
     succes = 3;
   }
 #endif
@@ -1018,7 +1018,7 @@ void Document::recompute()
 // call the recompute of the Feature and handle the exceptions and errors.
 void Document::_recomputeFeature(AbstractFeature* Feat)
 {
-  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
+  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
 
   Feat->status.setValue(AbstractFeature::Recompute);
   int  succes;
@@ -1028,20 +1028,20 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
   //  e.ReportException();
   //  succes = 4;
   }catch(const Base::MemoryException& e){
-    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
     Feat->setError(e.what());
     succes = 4; // Must not rerun twice
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
   }catch(std::exception &e){
-    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
+    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->getNameInDocument(),e.what());
     Feat->setError(e.what());
     succes = 3;
   }
 #ifndef FC_DEBUG
   catch(...){
-    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->name.getValue());
+    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
     succes = 3;
   }
 #endif
@@ -1109,16 +1109,19 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     else
         ObjectName = getUniqueObjectName(sType);
 
+    
     pActiveObject = pcObject;
 
     // insert in the name map
     ObjectMap[ObjectName] = pcObject;
+    // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
+    pcObject->pcNameInDocument = &(ObjectMap.find(ObjectName)->first);
     // insert in the vector
     ObjectArray.push_back(pcObject);
     // insert in the adjacence list and referenc through the ConectionMap
     //_DepConMap[pcObject] = add_vertex(_DepList);
 
-    pcObject->name.setValue( ObjectName );
+    pcObject->Label.setValue( ObjectName );
 
     // mark the object as new (i.e. set status bit 2) and send the signal
     pcObject->StatusBits.set(2);
@@ -1133,6 +1136,8 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 
   ObjectMap[pObjectName] = pcObject;
   ObjectArray.push_back(pcObject);
+  // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
+  pcObject->pcNameInDocument = &(ObjectMap.find(pObjectName)->first);
 
   // Transaction stuff
   if(activTransaction)
@@ -1213,6 +1218,9 @@ void Document::remObject(const char* sName)
     // if not saved in undo -> delete
     delete pos->second;
 
+  // set name cache false
+  pos->second->pcNameInDocument = 0;
+
   for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
     if ( *obj == pos->second ) {
       ObjectArray.erase(obj);
@@ -1239,14 +1247,18 @@ void Document::_remObject(DocumentObject* pcObject)
     // if not saved in undo -> delete
     delete pcObject;
 
-  ObjectMap.erase(pcObject->name.getValue());
+  signalDeletedObject(*pcObject);
+
+  // set name cache false
+  pcObject->pcNameInDocument = 0;
+
+  ObjectMap.erase(pcObject->getNameInDocument());
   for ( std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it ) {
     if ( *it == pcObject ) {
       ObjectArray.erase(it);
       break;
     }
   }
-  signalDeletedObject(*pcObject);
 
 }
 
@@ -1294,23 +1306,14 @@ string Document::getUniqueObjectName(const char *Name) const
   while(*It != '\0')
   {
     if(   (*It>=48 && *It<=57)   // Numbers
-        ||(*It>=65 && *It<=90)   // Upercase letters
+        ||(*It>=65 && *It<=90)   // lowercase letters
         ||(*It>=97 && *It<=122)  // Upercase letters
        )
     {
       CleanName += *It;
     }else{
-      switch(*It)
-      {
-      case 'ä': CleanName += "ae"; break;
-      case 'ü': CleanName += "ue"; break;
-      case 'ö': CleanName += "oe"; break;
-      case 'Ä': CleanName += "Ae"; break;
-      case 'Ü': CleanName += "Ue"; break;
-      case 'Ö': CleanName += "Oe"; break;
-      default:
-        CleanName += '_';
-      }
+      // All other letters gets replaced
+      CleanName += '_';
     }
     It++;
   }

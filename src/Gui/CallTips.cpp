@@ -210,7 +210,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
             std::vector<App::DocumentObject*> objects = document->getObjects();
             Py::List list;
             for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-                list.append(Py::String((*it)->name.getValue()));
+                list.append(Py::String((*it)->getNameInDocument()));
             extractTipsFromObject(inst, list, tips);
         }
 
@@ -223,7 +223,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
             std::vector<App::DocumentObject*> objects = document->getObjects();
             Py::List list;
             for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-                list.append(Py::String((*it)->name.getValue()));
+                list.append(Py::String((*it)->getNameInDocument()));
             extractTipsFromObject(inst, list, tips);
         }
 
