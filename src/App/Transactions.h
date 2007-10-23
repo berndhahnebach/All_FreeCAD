@@ -31,9 +31,36 @@ namespace App
 
 class Document;
 class DocumentObject;
-class DocChanges;
 class Property;
 class Transaction;
+class AbstractFeature;
+
+/** transport the changes of the Document
+ *  This class transport closer information what was changed in a
+ *  document. Its a optional information and not all commands set this
+ *  information. If not set all observer of the document assume a full change
+ *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only
+ *  a small parameter whas changed. There for one can use this class and make the
+ *  update of the document much faster!
+ *@see FCDocument
+ *@see FCObserver
+ *@bug not implemented so far...!
+*/
+class AppExport DocChanges
+{
+public:  
+  enum {
+    Recompute,
+    Rename,
+    UndoRedo
+  } Why;
+
+  // use a vector to preserve insertion order
+  std::vector<DocumentObject*>   NewObjects;
+  std::set<DocumentObject*>   UpdatedObjects;
+  std::set<AbstractFeature*> ErrorFeatures;
+  std::set<DocumentObject*>   DeletedObjects;
+};
 
 /** Represents an entry for an object in a Transaction
  */
@@ -43,13 +70,12 @@ class AppExport TransactionObject: public Base::Persistance
 
 public:
   /// Construction
-  TransactionObject(const DocumentObject *pcObj);
+  TransactionObject(const DocumentObject *pcObj,const char *NameInDocument=0);
   /// Destruction
   virtual ~TransactionObject();
 
   void apply(Document &Doc, DocumentObject *pcObj);
 
-  enum Status {New,Del,Chn} status;
 
   void setProperty(const Property* pcProp);
   
@@ -60,7 +86,9 @@ public:
   friend class Transaction;
 
 protected:
+  enum Status {New,Del,Chn} status;
   std::map<const Property*,Property*> _PropChangeMap;
+  std::string _NameInDocument;
 };
 
 /** Represents a atomic transaction of the document

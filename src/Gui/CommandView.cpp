@@ -476,10 +476,10 @@ void StdCmdToggleVisibility::activated(int iMsg)
     const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
     for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
-      if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False", (*it)->getName(), (*ft)->name.getValue());
+      if ( pcDoc && pcDoc->isShow((*ft)->getNameInDocument()) )
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False", (*it)->getName(), (*ft)->getNameInDocument());
       else
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True", (*it)->getName(), (*ft)->name.getValue());
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True", (*it)->getName(), (*ft)->getNameInDocument());
     }
   }
 }

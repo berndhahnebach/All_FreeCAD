@@ -167,7 +167,7 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
 
   // set the object's name as default value
   this->Name.enableNotify(false);
-  this->Name.setValue(pcObj->name.getValue());
+  this->Name.setValue(pcObj->getNameInDocument());
   this->Name.enableNotify(true);
 }
 

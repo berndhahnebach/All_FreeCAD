@@ -125,7 +125,7 @@ void CmdPointsExport::activated(int iMsg)
     
     for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
     {
-      doCommand(Doc,"l.append(App.document().getObject(\"%s\"))",(*it)->name.getValue());
+      doCommand(Doc,"l.append(App.document().getObject(\"%s\"))",(*it)->getNameInDocument());
     }
 
     doCommand(Doc,"f.Sources = l");
@@ -173,7 +173,7 @@ void CmdPointsTransform::activated(int iMsg)
     else
     {
       Points::Transform* f = (Points::Transform*)pDoc->addObject(Points::Transform::getClassTypeId().getName(),"Transform");
-      pGui->setHide( (*it)->name.getValue() );
+      pGui->setHide( (*it)->getNameInDocument() );
       f->Source.setValue(dynamic_cast<App::AbstractFeature*>(*it));
       pDoc->recompute();
     }

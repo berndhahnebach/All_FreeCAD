@@ -21,7 +21,7 @@ PyObject*  DocumentObjectPy::getInternalName(PyObject *args)
         return NULL;                   // NULL triggers exception 
 
     DocumentObject* object = this->getDocumentObjectObject();
-    return PyString_FromString(object->getNameInDocument().c_str());
+    return PyString_FromString(object->getNameInDocument());
 }
 
 PyObject*  DocumentObjectPy::touch(PyObject *args)

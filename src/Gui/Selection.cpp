@@ -385,7 +385,7 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
 void SelectionSingleton::slotDeletedObject(App::DocumentObject& Obj)
 {
  // remove also from the selection, if selected
-  Selection().rmvSelection( Obj.getDocument().getName(), Obj.name.getValue() );
+  Selection().rmvSelection( Obj.getDocument().getName(), Obj.getNameInDocument() );
 }
 
 void SelectionSingleton::slotRenamedObject(App::DocumentObject& Obj)

@@ -41,7 +41,7 @@ PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 //===========================================================================
 
 DocumentObject::DocumentObject(void)
-  : _pDoc(0)
+  : _pDoc(0),pcNameInDocument(0)
 {
     // FIXME: Each document object has two names associated, its 'name' property and the internal name stored inside
     // the document it belongs to. The name property is claimed to be the user name, e.g. to display in the tree view
@@ -56,7 +56,7 @@ DocumentObject::DocumentObject(void)
     // the document object must be read-only.
     // So, we don't need to change client code where we use the name property and can access the correct internal name in constant 
     // time. This makes the method getNameInDocument() obsolete, then.
-    ADD_PROPERTY_TYPE(name,("Unnamed"),"Base",Prop_None,"User name of the object (UTF8)");
+    ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_None,"User name of the object (UTF8)");
     touchTime.setToActual();
     touchViewTime.setToActual();
 }
@@ -75,11 +75,16 @@ DocumentObject::~DocumentObject(void)
     }
 }
 
-const std::string &DocumentObject::getNameInDocument(void) const
-{
+const char *DocumentObject::getNameInDocument(void) const
+{/*
+  assert(pcNameInDocument);
+  return pcNameInDocument->c_str();
+  */
     std::map<std::string,DocumentObject*>::const_iterator It = _pDoc->ObjectMap.begin();
     while(It != _pDoc->ObjectMap.end() && It->second!= this) ++It;
-    return It->first;
+    assert(It != _pDoc->ObjectMap.end());
+    return It->first.c_str();
+    
 }
 
 void DocumentObject::onLoseLinkToObject(DocumentObject*)

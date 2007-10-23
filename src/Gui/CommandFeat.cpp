@@ -83,7 +83,7 @@ void StdCmdRandomColor::activated(int iMsg)
   std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
   for ( std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it ) {
     const char* docName = it->pDoc->getName();
-    const char* objName = it->pObject->name.getValue();
+    const char* objName = it->pObject->getNameInDocument();
     float fMax = (float)RAND_MAX;
     float fRed = (float)rand()/fMax;
     float fGrn = (float)rand()/fMax;

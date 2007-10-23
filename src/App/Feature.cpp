@@ -88,7 +88,7 @@ void AbstractFeature::onChanged(const Property* prop)
   // Ignore some properties
   if ( prop == &status )
     return;
-  else if ( prop == &name )
+  else if ( prop == &Label )
     return;
   touchPropertyTime.setToActual();
   //setModified(true);

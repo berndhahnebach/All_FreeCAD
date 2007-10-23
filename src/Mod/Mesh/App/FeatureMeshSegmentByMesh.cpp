@@ -66,13 +66,13 @@ int SegmentByMesh::execute(void)
     setError("No mesh specified.\n");
     return 1;
   } else if (pcMesh->getStatus() != Valid) {
-    setError("'%s' isn't a valid mesh.\n", pcMesh->name.getValue());
+    setError("'%s' isn't a valid mesh.\n", pcMesh->getNameInDocument());
     return 1;
   } else if (!pcTool) {
     setError("No toolmesh specified.\n");
     return 1;
   } else if (pcTool->getStatus() != Valid) {
-    setError("'%s' isn't a valid toolmesh.\n", pcTool->name.getValue());
+    setError("'%s' isn't a valid toolmesh.\n", pcTool->getNameInDocument());
     return 1;
   }
 
@@ -82,7 +82,7 @@ int SegmentByMesh::execute(void)
   // check if the toolmesh is a solid
   if ( !MeshEvalSolid(rToolMesh).Evaluate() )
   {
-    setError("'%s' isn't a solid.\n", pcTool->name.getValue());
+    setError("'%s' isn't a solid.\n", pcTool->getNameInDocument());
     return 1; // no solid
   }
 

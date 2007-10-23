@@ -72,32 +72,7 @@ namespace App
 namespace App
 {
 
-/** transport the changes of the Document
- *  This class transport closer information what was changed in a
- *  document. Its a optional information and not all commands set this
- *  information. If not set all observer of the document assume a full change
- *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only
- *  a small parameter whas changed. There for one can use this class and make the
- *  update of the document much faster!
- *@see FCDocument
- *@see FCObserver
- *@bug not implemented so far...!
-*/
-class AppExport DocChanges
-{
-public:  
-  enum {
-    Recompute,
-    Rename,
-    UndoRedo
-  } Why;
 
-  // use a vector to preserve insertion order
-  std::vector<DocumentObject*>   NewObjects;
-  std::set<DocumentObject*>   UpdatedObjects;
-  std::set<AbstractFeature*> ErrorFeatures;
-  std::set<DocumentObject*>   DeletedObjects;
-};
 //
 
 
@@ -175,7 +150,7 @@ public:
 
     /** @name Object handling  */
     //@{
-    /// Add a feature of sType with sName to this document and set it active
+    /// Add a feature of sType with sName (ASCII) to this document and set it active. Unicode names are set through the Label propery
     DocumentObject *addObject(const char* sType, const char* pObjectName=0);
     /// Remove a feature out of the document
     void remObject(const char* sName);

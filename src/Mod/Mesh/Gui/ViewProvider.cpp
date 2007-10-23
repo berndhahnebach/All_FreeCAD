@@ -620,7 +620,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
           "f.Tool     = App.document().%s\n"
           "f.Base     = (%.6f,%.6f,%.6f)\n"
           "f.Normal   = (%.6f,%.6f,%.6f)\n"
-          , fName.c_str(),  meshFeature->name.getValue(), fTool.c_str(), 
+          , fName.c_str(),  meshFeature->getNameInDocument(), fTool.c_str(), 
             cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
     }
 

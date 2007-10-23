@@ -300,7 +300,7 @@ void ViewProviderPart::updateData(void)
     BRepTools::Clean(cShape); // remove triangulation
   } catch (...){
     Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
-                          pcObject->name.getValue());
+                          pcObject->getNameInDocument());
   }
 
 }
@@ -439,7 +439,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
     Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Edge");
     name += SbString(i);
-    h->objectName = pcObject->name.getValue();
+    h->objectName = pcObject->getNameInDocument();
     h->documentName = pcObject->getDocument().getName();
     h->subElementName = name;
 
@@ -480,7 +480,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
   Gui::SoFCSelection* h = new Gui::SoFCSelection();
   SbString name("Point");
   name += SbString(i);
-  h->objectName = pcObject->name.getValue();
+  h->objectName = pcObject->getNameInDocument();
   h->documentName = pcObject->getDocument().getName();
   h->subElementName = name;
 
@@ -560,7 +560,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 		Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Face");
     name += SbString(i);
-    h->objectName = pcObject->name.getValue();
+    h->objectName = pcObject->getNameInDocument();
     h->documentName = pcObject->getDocument().getName();
     h->subElementName = name;
 

@@ -48,7 +48,7 @@ class AppExport DocumentObject: public App::PropertyContainer
 
 public:
 
-    PropertyString name;
+    PropertyString Label;
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
@@ -62,7 +62,7 @@ public:
     void setDocument(App::Document* doc);
 
     /// returns the name which is set in the document for this object (not the Name propertie!)
-    const std::string &getNameInDocument(void) const;
+    const char *getNameInDocument(void) const;
 
     /** Set the property touched -> changed, cause recomputation in Update()
      */
@@ -97,6 +97,8 @@ public:
     virtual PyObject *getPyObject(void);
 
     std::bitset<16> StatusBits;
+    
+    friend App::Document;
 
 protected:
     /// get called befor the value is changed
@@ -111,6 +113,9 @@ protected:
     Py::Object PythonObject;
     /// pointer to the document this object belongs to
     App::Document* _pDoc;
+
+    // pointer to the document name string (for performance)
+    const std::string *pcNameInDocument;
 };
 
 } //namespace App

@@ -126,7 +126,7 @@ int Export::execute(void)
       Feature *pcFeat  = dynamic_cast<Feature*>(*it);
       const PointKernel& kernel = pcFeat->Points.getValue();
 
-      str << "# " << pcFeat->name.getValue() << " Number of points: " << kernel.size() << std::endl;
+      str << "# " << pcFeat->getNameInDocument() << " Number of points: " << kernel.size() << std::endl;
       for ( PointKernel::const_iterator it = kernel.begin(); it != kernel.end(); ++it )
         str << it->x << " " << it->y << " " << it->z << std::endl;
     }

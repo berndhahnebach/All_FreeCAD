@@ -103,10 +103,10 @@ class DocumentBasicCases(unittest.TestCase):
     #self.failUnless(L1.Matrix  == [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0] )
     #self.failUnless(L1.Vector  == [1.0,2.0,3.0])
     
-    self.failUnless(L1.name== "Label_1","Invalid object name")
-    L1.name="Label_2"
+    self.failUnless(L1.Label== "Label_1","Invalid object name")
+    L1.Label="Label_2"
     self.Doc.recompute()
-    self.failUnless(L1.name== "Label_2","Invalid object name")
+    self.failUnless(L1.Label== "Label_2","Invalid object name")
     self.Doc.removeObject("Label_1")
 
   def testMem(self):

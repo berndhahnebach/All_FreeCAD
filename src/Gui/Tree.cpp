@@ -249,7 +249,7 @@ DocumentItem::~DocumentItem()
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 {
     std::string displayName = obj.Name.getValue();
-    std::string objectName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it == ObjectMap.end()) {
         DocumentObjectItem* item = new DocumentObjectItem(&obj, this);
@@ -264,7 +264,7 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string objectName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // FIXME: We must check in App::Document::remObject() whether a group should be removed.
@@ -285,13 +285,13 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 {
     // As we immediately add a newly created object to the tree we check here which
     // item (this or a DocumentObjectItem) is the parent of the associated item of 'obj'
-    std::string objectName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         // is the object part of a group?
         App::DocumentObjectGroup* group = App::DocumentObjectGroup::getGroupOfObject(obj.getObject());
         if (group) {
-            std::string groupname = group->name.getValue();
+            std::string groupname = group->getNameInDocument();
             std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(groupname);
             if (jt != ObjectMap.end()) {
                 QTreeWidgetItem* parent = it->second->parent();
@@ -322,7 +322,7 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 
 void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string objectName = obj.getObject()->name.getValue();
+    std::string objectName = obj.getObject()->getNameInDocument();
     std::string displayName = obj.Name.getValue();
     std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
