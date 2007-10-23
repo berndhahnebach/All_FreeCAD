@@ -21,7 +21,12 @@ PyObject*  DocumentObjectPy::getInternalName(PyObject *args)
         return NULL;                   // NULL triggers exception 
 
     DocumentObject* object = this->getDocumentObjectObject();
-    return PyString_FromString(object->getNameInDocument());
+    const char* internal = object->getNameInDocument();
+    if (!internal) {
+        PyErr_SetString(PyExc_RuntimeError, "This object is currently not part of a document");
+        return NULL;
+    }
+    return PyString_FromString(internal);
 }
 
 PyObject*  DocumentObjectPy::touch(PyObject *args)

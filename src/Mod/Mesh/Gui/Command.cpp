@@ -481,7 +481,7 @@ void CmdMeshExport::activated(int iMsg)
 
   App::DocumentObject* docObj = docObjs.front();
 
-  QString dir = docObj->getNameInDocument();
+  QString dir = QString::fromUtf8(docObj->Label.getValue());
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Alias Mesh (*.obj);;"
                    "Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;"
                    "Nastran (*.nas *.bdf);;Python module def (*.py);;All Files (*.*)";

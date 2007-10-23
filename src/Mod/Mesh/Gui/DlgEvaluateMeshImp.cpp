@@ -70,16 +70,17 @@ void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
     if (&Obj == _meshFeature) {
         removeViewProviders();
 
-        QStringList items;
+        QList<QPair<QString, QString> > items;
         std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
         for (std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt) {
             if (_meshFeature != *jt)
-                items.push_back((*jt)->getNameInDocument());
+                items.push_back(qMakePair(QString((*jt)->Label.getValue()), QString((*jt)->getNameInDocument())));
         }
 
         meshNameButton->clear();
-        meshNameButton->insertItem(0, tr("No selection"));
-        meshNameButton->insertItems(1, items);
+        meshNameButton->addItem(tr("No selection"));
+        for (QList<QPair<QString, QString> >::iterator it = items.begin(); it != items.end(); ++it)
+            meshNameButton->addItem(it->first, it->second);
         meshNameButton->setDisabled(items.empty());
         cleanInformation();
 
@@ -147,15 +148,16 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
         this->connectDocumentDeletedObject.disconnect();
 }
 
-void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
+void DlgEvaluateMeshImp::setMesh(Mesh::Feature* m)
 {
     _meshFeature = m;
   
     on_refreshButton_clicked();
 
     int ct = meshNameButton->count();
+    QString objName = _meshFeature->getNameInDocument();
     for (int i=1; i<ct; i++) {
-        if (meshNameButton->itemText(i) == _meshFeature->getNameInDocument()) {
+        if (meshNameButton->itemData(i).toString() == objName) {
             meshNameButton->setCurrentIndex(i);
             on_meshNameButton_activated(i);
             break;
@@ -197,7 +199,7 @@ void DlgEvaluateMeshImp::removeViewProviders()
 
 void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
 {
-    QString item = meshNameButton->itemText(i);
+    QString item = meshNameButton->itemData(i).toString();
 
     _meshFeature = 0;
     std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
@@ -254,7 +256,6 @@ void DlgEvaluateMeshImp::cleanInformation()
 
 void DlgEvaluateMeshImp::on_refreshButton_clicked()
 {
-    QStringList items;
     App::Document* doc = App::GetApplication().getActiveDocument();
 
     // switch to the active document
@@ -268,16 +269,18 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
         _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
     }
 
+    QList<QPair<QString, QString> > items;
     if (_pDoc) {
         std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
         for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
-            items.push_back( (*it)->getNameInDocument() );
+            items.push_back(qMakePair(QString((*it)->Label.getValue()), QString((*it)->getNameInDocument())));
         }
     }
 
     meshNameButton->clear();
-    meshNameButton->insertItem(0, tr("No selection"));
-    meshNameButton->insertItems(1, items);
+    meshNameButton->addItem(tr("No selection"));
+    for (QList<QPair<QString, QString> >::iterator it = items.begin(); it != items.end(); ++it)
+        meshNameButton->addItem(it->first, it->second);
     meshNameButton->setDisabled(items.empty());
     cleanInformation();
 }
@@ -819,3 +822,4 @@ QSize DockEvaluateMeshImp::sizeHint () const
 }
 
 #include "moc_DlgEvaluateMeshImp.cpp"
+

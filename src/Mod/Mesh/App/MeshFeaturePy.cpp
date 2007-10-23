@@ -145,7 +145,7 @@ MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 PyObject *MeshFeaturePy::_repr(void)
 {
   std::stringstream a;
-  a << _pcFeature->getTypeId().getName() << " : ['" << _pcFeature->getNameInDocument() << "']";
+  a << _pcFeature->getTypeId().getName() << " object at " << _pcFeature;
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
