@@ -76,15 +76,15 @@ DocumentObject::~DocumentObject(void)
 }
 
 const char *DocumentObject::getNameInDocument(void) const
-{/*
+{
   assert(pcNameInDocument);
   return pcNameInDocument->c_str();
-  */
+ /* 
     std::map<std::string,DocumentObject*>::const_iterator It = _pDoc->ObjectMap.begin();
     while(It != _pDoc->ObjectMap.end() && It->second!= this) ++It;
     assert(It != _pDoc->ObjectMap.end());
     return It->first.c_str();
-    
+   */ 
 }
 
 void DocumentObject::onLoseLinkToObject(DocumentObject*)
