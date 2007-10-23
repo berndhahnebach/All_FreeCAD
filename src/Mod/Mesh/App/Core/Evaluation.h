@@ -182,6 +182,22 @@ protected:
   std::vector<std::pair<unsigned long, unsigned long> >   _aclManifoldList;
 };
 
+/**
+ * The MeshFixTopology class tries to fix a few cases of non-manifolds.
+ * @see MeshEvalTopology
+ */
+class AppMeshExport MeshFixTopology : public MeshValidation
+{
+public:
+  MeshFixTopology (MeshKernel &rclB, const std::vector<std::pair<unsigned long, unsigned long> >& mf)
+    : MeshValidation(rclB), _raclManifoldList(mf) {}
+  virtual ~MeshFixTopology () {}
+  bool Fixup();
+
+protected:
+  const std::vector<std::pair<unsigned long, unsigned long> >& _raclManifoldList;
+};
+
 // ----------------------------------------------------
 
 /**

@@ -78,10 +78,10 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY_TYPE(ExecCount     ,(0),group,Prop_None,"Number of executions");
   
   // properties with types
-  ADD_PROPERTY_TYPE(TypeHidden  ,(4711),group,Prop_Hidden,"An example propery which has the Type 'Hidden'"  );
-  ADD_PROPERTY_TYPE(TypeReadOnly,(4711),group,Prop_ReadOnly ,"An example propery which has the Type 'ReadOnly'"  );
-  ADD_PROPERTY_TYPE(TypeOutput  ,(4711),group,Prop_Output ,"An example propery which has the Type 'Output'"  );
-  ADD_PROPERTY_TYPE(TypeAll     ,(4711),group,(App::PropertyType) (Prop_Output|Prop_ReadOnly |Prop_Hidden ),"An example propery which has the Type 'Output', 'ReadOnly' and 'Hidden'");
+  ADD_PROPERTY_TYPE(TypeHidden  ,(4711),group,Prop_Hidden,"An example property which has the Type 'Hidden'"  );
+  ADD_PROPERTY_TYPE(TypeReadOnly,(4711),group,Prop_ReadOnly ,"An example property which has the Type 'ReadOnly'"  );
+  ADD_PROPERTY_TYPE(TypeOutput  ,(4711),group,Prop_Output ,"An example property which has the Type 'Output'"  );
+  ADD_PROPERTY_TYPE(TypeAll     ,(4711),group,(App::PropertyType) (Prop_Output|Prop_ReadOnly |Prop_Hidden ),"An example property which has the Type 'Output', 'ReadOnly' and 'Hidden'");
  
 }
 

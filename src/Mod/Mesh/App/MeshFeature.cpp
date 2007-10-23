@@ -51,7 +51,7 @@ PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
 
 Feature::Feature()
 {
-  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
+    ADD_PROPERTY_TYPE(Mesh,(MeshCore::MeshKernel()),0,App::Prop_Output,"The mesh kernel");
 }
 
 Feature::~Feature()
@@ -60,29 +60,29 @@ Feature::~Feature()
 
 int Feature::execute(void)
 {
-  return 0;
+    return 0;
 }
 
 PyObject *Feature::getPyObject(void)
 {
- if(PythonObject.is(Py::_None())){
-    // ref counter is set to 1
-    PythonObject.set(new MeshFeaturePy(this),true);
-  }
-  return Py::new_reference_to(PythonObject); 
+    if(PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject.set(new MeshFeaturePy(this),true);
+    }
+    return Py::new_reference_to(PythonObject); 
 }
 
 void Feature::onChanged(const App::Property* prop)
 {
-  // FIXME: What is to do if only the mesh property has changed? I think in this case no recomputation needs to be done
-  // for the owner feature because the mesh is the output of the previous recomputation and not an input parameter.
-  // But on the other hand all feature objects that depend on this mesh must be executed because for these ones it is
-  // an input parameter.
-  if ( prop == &Mesh ) {
-  // call for undo/redo only but do not set to be modified
-    DocumentObject::onChanged(prop);
-  } else {
-    // set to be modified
-    AbstractFeature::onChanged(prop);
-  }
+    // FIXME: What is to do if only the mesh property has changed? I think in this case no recomputation needs to be done
+    // for the owner feature because the mesh is the output of the previous recomputation and not an input parameter.
+    // But on the other hand all feature objects that depend on this mesh must be executed because for those ones it is
+    // an input parameter.
+    if ( prop == &Mesh ) {
+        // call for undo/redo only but do not set to be modified
+        DocumentObject::onChanged(prop);
+    } else {
+        // set to be modified
+        AbstractFeature::onChanged(prop);
+    }
 }

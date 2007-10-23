@@ -109,7 +109,6 @@ protected Q_SLOTS:
 
 protected:
     void cleanInformation();
-    void setFixedMesh();
     void addViewProvider( const char* vp );
     void removeViewProvider( const char* vp );
     void removeViewProviders();
