@@ -45,6 +45,7 @@
 #include "Core/MeshIO.h"
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
+#include "Core/Degeneration.h"
 #include "Core/Iterator.h"
 #include "Core/SetOperations.h"
 #include <Mod/Part/App/TopologyPy.h>
@@ -61,7 +62,7 @@ using namespace MeshCore;
 PyDoc_STRVAR(mesh_doc,
 "mesh() -- Create an empty mesh object.\n"
 "\n"
-"This class allows to manipulate the mesh object by adding new faces, deleting faces, importing from an STL file,\n"
+"This class allows to manipulate the mesh object by adding new facets, deleting facets, importing from an STL file,\n"
 "transforming the mesh and much more.\n"
 "For a complete overview of what can be done see also the documentation of mesh.\n"
 "A mesh object cannot be added to an existing document directly. Therefore the document must create an object\n"
@@ -132,8 +133,8 @@ PyTypeObject MeshPy::Type = {
 PyMethodDef MeshPy::Methods[] = {
   {"pointCount", (PyCFunction) spointCount, Py_NEWARGS, 
    "Return the number of vertices of the mesh object."},
-  {"faceCount", (PyCFunction) sfaceCount, Py_NEWARGS, 
-   "Return the number of faces of the mesh object."},
+  {"facetCount", (PyCFunction) sfacetCount, Py_NEWARGS, 
+   "Return the number of facets of the mesh object."},
   {"read", (PyCFunction) sread, Py_NEWARGS, 
    "Read in a mesh object from an STL file."},
   {"write", (PyCFunction) swrite, Py_NEWARGS, 
@@ -162,6 +163,9 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(copy)
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
+  PYMETHODEDEF(removeNonManifolds)
+  PYMETHODEDEF(hasSelfIntersections)
+  PYMETHODEDEF(fixSelfIntersections)
   PYMETHODEDEF(testDelaunay)
   PYMETHODEDEF(makeCutToolFromShape)
   PYMETHODEDEF(flipNormals)
@@ -171,6 +175,11 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(countComponents)
   PYMETHODEDEF(removeComponents)
   PYMETHODEDEF(fillupHoles)
+  PYMETHODEDEF(fixIndices)
+  PYMETHODEDEF(fixDeformations)
+  PYMETHODEDEF(fixDegenerations)
+  PYMETHODEDEF(removeDuplicatedPoints)
+  PYMETHODEDEF(removeDuplicatedFacets)
   PYMETHODEDEF(refine)
   PYMETHODEDEF(optimizeTopology)
   PYMETHODEDEF(optimizeEdges)
@@ -321,7 +330,7 @@ PYFUNCIMP_D(MeshPy,pointCount)
   return Py_BuildValue("i",_pcMesh->CountPoints()); 
 }
 
-PYFUNCIMP_D(MeshPy,faceCount)
+PYFUNCIMP_D(MeshPy,facetCount)
 {
   return Py_BuildValue("i",_pcMesh->CountFacets()); 
 }
@@ -449,6 +458,93 @@ PYFUNCIMP_D(MeshPy,fillupHoles)
   PY_TRY {
     MeshTopoAlgorithm topalg(*_pcMesh);
     topalg.FillupHoles((unsigned long)len);
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,fixIndices)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshCore::MeshEvalNeighbourhood nb(*_pcMesh);
+    if (!nb.Evaluate()) {
+      MeshCore::MeshFixNeighbourhood fix(*_pcMesh);
+      fix.Fixup();
+    }
+
+    MeshCore::MeshEvalRangeFacet rf(*_pcMesh);
+    if (!rf.Evaluate()) {
+      MeshCore::MeshFixRangeFacet fix(*_pcMesh);
+      fix.Fixup();
+    }
+
+    MeshCore::MeshEvalRangePoint rp(*_pcMesh);
+    if (!rp.Evaluate()) {
+      MeshCore::MeshFixRangePoint fix(*_pcMesh);
+      fix.Fixup();
+    }
+
+    MeshCore::MeshEvalCorruptedFacets cf(*_pcMesh);
+    if (!nb.Evaluate()) {
+      MeshCore::MeshFixCorruptedFacets fix(*_pcMesh);
+      fix.Fixup();
+    }
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,fixDeformations)
+{
+  float fMaxAngle;
+  if (! PyArg_ParseTuple(args, "f", &fMaxAngle))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshCore::MeshFixDeformedFacets eval(*_pcMesh, fMaxAngle);
+    eval.Fixup();
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,fixDegenerations)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshCore::MeshFixDegeneratedFacets eval(*_pcMesh);
+    eval.Fixup();
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,removeDuplicatedPoints)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshCore::MeshFixDuplicatePoints eval(*_pcMesh);
+    eval.Fixup();
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,removeDuplicatedFacets)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshCore::MeshFixDuplicateFacets eval(*_pcMesh);
+    eval.Fixup();
   } PY_CATCH;
 
   Py_Return; 
@@ -853,6 +949,29 @@ PYFUNCIMP_D(MeshPy,hasNonManifolds)
   MeshEvalTopology cMeshEval( *_pcMesh );
   bool ok = !cMeshEval.Evaluate();
   return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
+
+PYFUNCIMP_D(MeshPy,removeNonManifolds)
+{
+  MeshEvalTopology cMeshEval( *_pcMesh );
+  if (!cMeshEval.Evaluate()) {
+      MeshFixTopology cMeshFix(*_pcMesh, cMeshEval.GetIndices());
+      cMeshFix.Fixup();
+  }
+  Py_Return
+}
+
+PYFUNCIMP_D(MeshPy,hasSelfIntersections)
+{
+  MeshEvalTopology cMeshEval( *_pcMesh );
+  bool ok = !cMeshEval.Evaluate();
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
+
+PYFUNCIMP_D(MeshPy,fixSelfIntersections)
+{
+  PyErr_SetString(PyExc_NotImplementedError, "Cannot repair self-intersections");
+  return NULL;
 }
 
 PYFUNCIMP_D(MeshPy,testDelaunay)

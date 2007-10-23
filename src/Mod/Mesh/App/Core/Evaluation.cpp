@@ -328,6 +328,11 @@ unsigned long MeshEvalTopology::CountManifolds() const
   return _aclManifoldList.size();
 }
 
+bool MeshFixTopology::Fixup ()
+{
+    return false;
+}
+
 // ---------------------------------------------------------
 
 bool MeshEvalSingleFacet::Evaluate ()

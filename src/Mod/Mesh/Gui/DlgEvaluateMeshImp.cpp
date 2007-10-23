@@ -163,18 +163,6 @@ void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
     }
 }
 
-void DlgEvaluateMeshImp::setFixedMesh()
-{
-    std::vector<App::DocumentObject*> fixed = _pDoc->getObjectsOfType(Mesh::FixDefects::getClassTypeId());
-    for ( std::vector<App::DocumentObject*>::const_iterator it = fixed.begin(); it != fixed.end(); ++it ) {
-        Mesh::FixDefects* fix = dynamic_cast<Mesh::FixDefects*>(*it);
-        if (fix && fix->Source.getValue() == _meshFeature) {
-            setMesh(fix);
-            break;
-        }
-    }
-}
-
 void DlgEvaluateMeshImp::addViewProvider( const char* name )
 {
     removeViewProvider( name );
@@ -334,18 +322,27 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
 void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
 {
     if (_meshFeature) {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        doc->openCommand("Removed duplicated faces");
-        Gui::Application::Instance->runCommand(
-            true, "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
-            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Harmonize normals");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.harmonizeNormals()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Orientation"), e.what());
+        }
+
         doc->commitCommand();
         doc->getDocument()->recompute();
     
         repairOrientationButton->setEnabled(false);
         checkOrientationButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
-        setFixedMesh();
     }
 }
 
@@ -386,7 +383,32 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
 
 void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
 {
-    QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
+    if (_meshFeature) {
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Remove non-manifolds");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.removeNonManifolds()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        } 
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Non-manifolds"), e.what());
+        }
+        catch (...) {
+            QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
+        }
+
+        doc->commitCommand();
+        doc->getDocument()->recompute();
+    
+        repairNonmanifoldsButton->setEnabled(false);
+        checkNonmanifoldsButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
+    }
 }
 
 void DlgEvaluateMeshImp::on_checkIndicesButton_clicked()
@@ -446,18 +468,27 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
 void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
 {
     if (_meshFeature) {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        doc->openCommand("Removed duplicated faces");
-        Gui::Application::Instance->runCommand(
-            true, "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
-            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Fix indices");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.fixIndices()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Indices"), e.what());
+        }
+
         doc->commitCommand();
         doc->getDocument()->recompute();
     
         repairIndicesButton->setEnabled(false);
         checkIndicesButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
-        setFixedMesh();
     }
 }
 
@@ -501,18 +532,27 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
 void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
 {
     if (_meshFeature) {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        doc->openCommand("Removed duplicated faces");
-        Gui::Application::Instance->runCommand(
-            true, "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
-            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Remove degenerated faces");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.fixDegenerations()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Degenerations"), e.what());
+        }
+
         doc->commitCommand();
         doc->getDocument()->recompute();
     
         repairDegeneratedButton->setEnabled(false);
         checkDegenerationButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
-        setFixedMesh();
     }
 }
 
@@ -556,18 +596,27 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
 void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
 {
     if (_meshFeature) {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        doc->openCommand("Removed duplicated faces");
-        Gui::Application::Instance->runCommand(
-            true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
-            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Remove duplicated faces");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.removeDuplicatedFacets()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Duplicated faces"), e.what());
+        }
+
         doc->commitCommand();
         doc->getDocument()->recompute();
     
         repairDuplicatedFacesButton->setEnabled(false);
         checkDuplicatedFacesButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
-        setFixedMesh();
     }
 }
 
@@ -610,18 +659,27 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
 void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
 {
     if (_meshFeature) {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        doc->openCommand("Removed duplicated points");
-        Gui::Application::Instance->runCommand(
-            true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
-            _meshFeature->name.getValue(),_meshFeature->name.getValue());
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Remove duplicated points");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.removeDuplicatedPoints()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Duplicated points"), e.what());
+        }
+
         doc->commitCommand();
         doc->getDocument()->recompute();
     
         repairDuplicatedPointsButton->setEnabled(false);
         checkDuplicatedPointsButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
-        setFixedMesh();
     }
 }
 
@@ -663,7 +721,29 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
 
 void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
 {
-    QMessageBox::warning(this, tr("Self-intersections"), tr("Cannot repair self-intersections"));
+    if (_meshFeature) {
+        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* objName = _meshFeature->name.getValue();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Fix self-intersections");
+        try {
+            Gui::Application::Instance->runCommand(
+                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
+                      "__mesh__.fixSelfIntersections()\n"
+                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
+                      "del __mesh__\n", docName, objName, docName, objName);
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Self-intersections"), e.what());
+        }
+
+        doc->commitCommand();
+        doc->getDocument()->recompute();
+    
+        repairSelfIntersectionButton->setEnabled(false);
+        checkSelfIntersectionButton->setChecked(false);
+        removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+    }
 }
 
 // -------------------------------------------------------------
