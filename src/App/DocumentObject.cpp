@@ -77,8 +77,13 @@ DocumentObject::~DocumentObject(void)
 
 const char *DocumentObject::getNameInDocument(void) const
 {
-  assert(pcNameInDocument);
-  return pcNameInDocument->c_str();
+    // Note: It can happen that we query the internal name of an object even if it is not
+    // part of a document (anymore). This is the case e.g. if we have a reference in Python 
+    // to an object that has been removed from the document. In this case we should rather
+    // return 0.
+    //assert(pcNameInDocument);
+    if (!pcNameInDocument) return 0;
+    return pcNameInDocument->c_str();
  /* 
     std::map<std::string,DocumentObject*>::const_iterator It = _pDoc->ObjectMap.begin();
     while(It != _pDoc->ObjectMap.end() && It->second!= this) ++It;

@@ -98,7 +98,7 @@ public:
 
     std::bitset<16> StatusBits;
     
-    friend App::Document;
+    friend class Document;
 
 protected:
     /// get called befor the value is changed
