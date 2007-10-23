@@ -1212,14 +1212,14 @@ void Document::remObject(const char* sName)
     this->activTransaction->addObjectDel(pos->second);
 
   // Undo stuff
-  if(activUndoTransaction)
+  if(activUndoTransaction){
+    // set name cache false
+    pos->second->pcNameInDocument = 0;
     activUndoTransaction->addObjectNew(pos->second);
-  else
+  }else
     // if not saved in undo -> delete
     delete pos->second;
 
-  // set name cache false
-  pos->second->pcNameInDocument = 0;
 
   for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
     if ( *obj == pos->second ) {
@@ -1249,10 +1249,11 @@ void Document::_remObject(DocumentObject* pcObject)
 
   signalDeletedObject(*pcObject);
 
+  // remove from map
+  ObjectMap.erase(pcObject->getNameInDocument());
   // set name cache false
   pcObject->pcNameInDocument = 0;
 
-  ObjectMap.erase(pcObject->getNameInDocument());
   for ( std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it ) {
     if ( *it == pcObject ) {
       ObjectArray.erase(it);
