@@ -139,8 +139,9 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     mpcPramManager["User parameter"] = _pcUserParamMngr;
 
 
-    // seting up Python binding
+    // setting up Python binding
     _pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
+    Py::Module(_pcAppModule).setAttr(std::string("ActiveDocument"),Py::None());
 
     // introducing additional classes
 

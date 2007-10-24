@@ -1891,7 +1891,7 @@ public:
 	// Mappings
 	// ==================================================
 	template<TEMPLATE_TYPENAME T>
-	class BaseExport mapref
+	class mapref
 		{
 	protected:
 		MapBase<T>& s; // the map
