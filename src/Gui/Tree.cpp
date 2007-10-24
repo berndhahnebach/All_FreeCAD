@@ -248,7 +248,7 @@ DocumentItem::~DocumentItem()
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
 {
-    std::string displayName = obj.Name.getValue();
+    std::string displayName = obj.getObject()->Label.getValue();
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it == ObjectMap.end()) {
@@ -281,40 +281,50 @@ void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& view)
 {
     // As we immediately add a newly created object to the tree we check here which
-    // item (this or a DocumentObjectItem) is the parent of the associated item of 'obj'
-    std::string objectName = obj.getObject()->getNameInDocument();
+    // item (this or a DocumentObjectItem) is the parent of the associated item of 'view'
+    App::DocumentObject* obj = view.getObject();
+    std::string objectName = obj->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
-        // is the object part of a group?
-        App::DocumentObjectGroup* group = App::DocumentObjectGroup::getGroupOfObject(obj.getObject());
-        if (group) {
-            std::string groupname = group->getNameInDocument();
-            std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(groupname);
-            if (jt != ObjectMap.end()) {
-                QTreeWidgetItem* parent = it->second->parent();
-                if (parent && parent != jt->second) {
-                    int index = parent->indexOfChild(it->second);
-                    parent->takeChild(index);
-                    jt->second->addChild(it->second);
-                    this->treeWidget()->expandItem(jt->second);
+
+        // is the object a group?
+        if (obj->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+            std::set<QTreeWidgetItem*> children;
+            std::vector<std::string> group = static_cast<App::DocumentObjectGroup*>(obj)->Group.getValues();
+            for (std::vector<std::string>::iterator jt = group.begin(); jt != group.end(); ++jt) {
+                std::map<std::string, DocumentObjectItem*>::iterator kt = ObjectMap.find(*jt);
+                if (kt != ObjectMap.end()) {
+                    children.insert(kt->second);
+                    QTreeWidgetItem* parent = kt->second->parent();
+                    if (parent && parent != it->second) {
+                        int index = parent->indexOfChild(kt->second);
+                        parent->takeChild(index);
+                        it->second->addChild(kt->second);
+                    }
+                }
+                else {
+                    Base::Console().Warning("DocumentItem::slotChangedObject: Cannot reparent unknown object.\n");
                 }
             }
-            else {
-                Base::Console().Warning("DocumentItem::slotChangedObject: Try to insert an object of "
-                                        "a group before the group is inserted.\n");
+
+            // move all children which are not part of the group anymore to this item
+            int count = it->second->childCount();
+            for (int i=0; i < count; i++) {
+                QTreeWidgetItem* child = it->second->child(i);
+                if (children.find(child) == children.end()) {
+                    it->second->takeChild(i);
+                    this->addChild(child);
+                }
             }
+            this->treeWidget()->expandItem(it->second);
         }
-        else {
-            QTreeWidgetItem* parent = it->second->parent();
-            if (parent && parent != this) {
-                int index = parent->indexOfChild(it->second);
-                parent->takeChild(index);
-                this->addChild(it->second);
-            }
-        }
+
+        // set the text label
+        std::string displayName = obj->Label.getValue();
+        it->second->setText(0, QString::fromUtf8(displayName.c_str()));
     } else {
         Base::Console().Warning("DocumentItem::slotChangedObject: Cannot change unknown object.\n");
     }
@@ -323,7 +333,7 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& obj)
 void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
 {
     std::string objectName = obj.getObject()->getNameInDocument();
-    std::string displayName = obj.Name.getValue();
+    std::string displayName = obj.getObject()->Label.getValue();
     std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
         it->second->setText(0, QString::fromUtf8(displayName.c_str()));

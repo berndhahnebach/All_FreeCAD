@@ -83,7 +83,7 @@ public:
     }
     virtual PyObject *getPyObject(void);
 
-protected:
+    /// Properties
     PropertyStringList Group;
 };
 

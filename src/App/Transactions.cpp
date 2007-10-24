@@ -189,7 +189,7 @@ void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
     std::map<const Property*,Property*>::const_iterator It;
     for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
       const_cast<Property*>(It->first)->Paste(*(It->second));
-    Doc.signalChangedObject(*pcObj);
+    //Doc.signalChangedObject(*pcObj);
   }
 
 }
