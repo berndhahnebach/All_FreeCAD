@@ -65,7 +65,6 @@ public:
    */
 
   // Display properties
-  App::PropertyString Name;
   App::PropertyColor ShapeColor;
   App::PropertyEnumeration DisplayMode;
   App::PropertyPercent Transparency;

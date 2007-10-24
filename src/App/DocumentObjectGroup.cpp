@@ -37,7 +37,7 @@ PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
 
 DocumentObjectGroup::DocumentObjectGroup() 
 {
-    ADD_PROPERTY(Group,(""));
+    ADD_PROPERTY_TYPE(Group,(""),"Base",(App::PropertyType)(Prop_ReadOnly|Prop_Output),"List of referenced objects");
 
     // make sure that the list is empty
     std::list<std::string> grp;
@@ -62,9 +62,9 @@ void DocumentObjectGroup::addObject(const char* Name)
     if (!hasObject(Name)) {
         std::vector<std::string> grp = Group.getValues();
         grp.push_back(Name);
-        Group.enableNotify(false);
+        //Group.enableNotify(false);
         Group.setValues(grp);
-        Group.enableNotify(true);
+        //Group.enableNotify(true);
     }
 }
 
@@ -74,9 +74,9 @@ void DocumentObjectGroup::removeObject(const char* Name)
     for (std::vector<std::string>::iterator it = grp.begin(); it != grp.end(); ++it) {
         if (*it == Name) {
             grp.erase(it);
-            Group.enableNotify(false);
+            //Group.enableNotify(false);
             Group.setValues(grp);
-            Group.enableNotify(true);
+            //Group.enableNotify(true);
             break;
         }
     }

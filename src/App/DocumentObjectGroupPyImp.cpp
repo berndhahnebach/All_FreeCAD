@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include "DocumentObjectGroup.h"
+#include "Document.h"
 
 // inclusion of the generated files (generated out of DocumentObjectGroupPy.xml)
 #include "DocumentObjectGroupPy.h"
@@ -34,35 +35,40 @@ using namespace App;
 // returns a string which represent the object e.g. when printed in python
 const char *DocumentObjectGroupPy::representation(void)
 {
-	return "DocumentObjectGroupPy";
+	return "A group of document objects";
 }
 
 
 PyObject*  DocumentObjectGroupPy::addObject(PyObject *args)
 {
-    char *sType,*sName=0;
-    if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
+    char *sName;
+    if (!PyArg_ParseTuple(args, "s", &sName))     // convert args: Python->C
         return NULL;
 
-    DocumentObject *pcObj = getDocumentObjectGroupObject()->addObject(sType, sName);
+    DocumentObject *pcObj = getDocumentObjectGroupObject()->getDocument().getObject(sName);
     if ( pcObj ) {
-        return pcObj->getPyObject();
+        getDocumentObjectGroupObject()->addObject(sName);
+        Py_Return
     } else {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Cannot create object of type '%s'", sType);
-        Py_Error(PyExc_Exception,szBuf);
+        PyErr_Format(PyExc_Exception, "No document object with name '%s' found", sName);
+        return NULL;
     }
 }
 
 PyObject*  DocumentObjectGroupPy::removeObject(PyObject *args)
 {
-    char* pcName;
-    if (!PyArg_ParseTuple(args, "s", &pcName)) 
-        return false;
+    char* sName;
+    if (!PyArg_ParseTuple(args, "s", &sName)) 
+        return NULL;
 
-    getDocumentObjectGroupObject()->removeObject(pcName);
-
-    Py_Return;
+    DocumentObject *pcObj = getDocumentObjectGroupObject()->getDocument().getObject(sName);
+    if ( pcObj ) {
+        getDocumentObjectGroupObject()->removeObject(sName);
+        Py_Return
+    } else {
+        PyErr_Format(PyExc_Exception, "No document object with name '%s' found", sName);
+        return NULL;
+    }
 }
 
 PyObject*  DocumentObjectGroupPy::getObject(PyObject *args)

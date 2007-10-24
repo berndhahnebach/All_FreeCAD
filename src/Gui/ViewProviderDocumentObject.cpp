@@ -52,7 +52,6 @@ const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
 ViewProviderDocumentObject::ViewProviderDocumentObject()
   : pcObject(0), pcObjItem(0), _cLastStatus(-1)
 {
-  ADD_PROPERTY_TYPE(Name,("Unnamed"),"Base",App::Prop_None,"Name of the object (UTF8)");
   ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
   ADD_PROPERTY(DisplayMode,((long)0));
   ADD_PROPERTY(Transparency,(0));
@@ -82,10 +81,7 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
   // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
   // Both redundant properties are kept due to more convenience for the user. But we must keep the values
   // consistent of all these properties.
-  if ( prop == &Name) {
-    Gui::Document* doc = Application::Instance->getDocument(&(getObject()->getDocument()));
-    doc->signalRenamedObject(*this);
-  } else if ( prop == &ShapeColor ) {
+  if ( prop == &ShapeColor ) {
     const App::Color& c = ShapeColor.getValue();
     pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
     ShapeMaterial.enableNotify(false);
@@ -164,11 +160,6 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
 
   calcMaterial = pcObject->getTouchViewTime();
   calcData = pcObject->getTouchTime();
-
-  // set the object's name as default value
-  this->Name.enableNotify(false);
-  this->Name.setValue(pcObj->getNameInDocument());
-  this->Name.enableNotify(true);
 }
 
 SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type) const

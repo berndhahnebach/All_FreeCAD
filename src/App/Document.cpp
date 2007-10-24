@@ -371,6 +371,7 @@ void Document::onChangedProperty(const DocumentObject *Who, const Property *What
 {
   if(this->activTransaction && !bRollback)
     this->activTransaction->addObjectChange(Who,What);
+  signalChangedObject(const_cast<DocumentObject&>(*Who));
 }
 
 void Document::setTransactionMode(int iMode)
@@ -1005,7 +1006,7 @@ void Document::recompute()
       std::cout << "Recompute" << endl;
       _recomputeFeature(dynamic_cast<AbstractFeature*>(Cur));
       // signal the change
-      signalChangedObject(*Cur);
+      //signalChangedObject(*Cur);
     }
 
   }
@@ -1074,7 +1075,7 @@ void Document::recomputeFeature(AbstractFeature* Feat)
   if(Feat->getStatus() == AbstractFeature::Valid)
     DocChange.UpdatedObjects.insert(Feat);
 
-  signalChangedObject(*Feat);
+  //signalChangedObject(*Feat);
   //Notify(DocChange);
 
 }
