@@ -50,6 +50,7 @@ using namespace Base;
 Builder3D::Builder3D()
 :bStartEndOpen(false)
 {
+  result << "#Inventor V2.1 ascii " << std::endl << std::endl;
   result << "Separator { ";
 }
 
@@ -315,11 +316,12 @@ void Builder3D::addTransformation(const Base::Vector3f& translation, const Base:
 void Builder3D::saveToLog(void)
 {
   result <<   "} ";
-  //FIXME: The string can become very long, so that ConsoleSingelton::Log() will crash.
-  //       So, we disable the output at least for the release mode.
-#ifdef FC_DEBUG
-  Console().Log("Vdbg: %s \n",result.str().c_str());
-#endif
+  // Note: The string can become very long, so that ConsoleSingelton::Log() will internally 
+  // truncate the string which causes Inventor to fail to interpret the truncated string.
+  // So, we send the string directly to the observer that handles the Inventor stuff.
+  //Console().Log("Vdbg: %s \n",result.str().c_str());
+  ConsoleObserver* obs = Base::Console().Get("StatusBar");
+  if (obs) obs->Log(result.str().c_str());
 }
 
 /**

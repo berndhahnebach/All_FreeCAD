@@ -69,22 +69,20 @@ namespace Base {
 class BaseExport ConsoleObserver
 {
 public:
-  ConsoleObserver()
-    :bErr(true),bMsg(true),bLog(true),bWrn(true) {}
-  virtual ~ConsoleObserver() {}
-	/// get calles when a Warning is issued
-	virtual void Warning(const char *){};
-	/// get calles when a Message is issued
-	virtual void Message(const char *){};
-	/// get calles when a Error is issued
-	virtual void Error  (const char *)=0;
-	/// get calles when a Log Message is issued
-	virtual void Log    (const char *){};
+    ConsoleObserver()
+        :bErr(true),bMsg(true),bLog(true),bWrn(true) {}
+    virtual ~ConsoleObserver() {}
+    /// get calles when a Warning is issued
+    virtual void Warning(const char *){};
+    /// get calles when a Message is issued
+    virtual void Message(const char *){};
+    /// get calles when a Error is issued
+    virtual void Error  (const char *)=0;
+    /// get calles when a Log Message is issued
+    virtual void Log    (const char *){};
 
-  virtual const char *Name(void){return 0L;}
-  
-  bool bErr,bMsg,bLog,bWrn;
-  
+    virtual const char *Name(void){return 0L;}
+    bool bErr,bMsg,bLog,bWrn;
 };
 
 
@@ -110,81 +108,77 @@ class BaseExport ConsoleSingelton //:public FCPythonExport
 
 public:
 
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	/// Prints a Message 
+    // exported functions goes here +++++++++++++++++++++++++++++++++++++++
+    /// Prints a Message 
     virtual void Message ( const char * pMsg, ... ) ;
-	/// Prints a warning Message 
+    /// Prints a warning Message 
     virtual void Warning ( const char * pMsg, ... ) ;
-	/// Prints a error Message 
+    /// Prints a error Message 
     virtual void Error   ( const char * pMsg, ... ) ;
-	/// Prints a log Message 
+    /// Prints a log Message 
     virtual void Log     ( const char * pMsg, ... ) ;
 
-	/// Delivers a time/date string 
-	const char* Time(void);
-	/// Attaches an Observer to FCConsole
-	void AttachObserver(ConsoleObserver *pcObserver);
-	/// Detaches an Observer from FCConsole
-	void DetachObserver(ConsoleObserver *pcObserver);
-	/// enumaration for the console modes
-	enum ConsoleMode{
-		Verbose = 1,	// supress Log messages
-	};
+    /// Delivers a time/date string 
+    const char* Time(void);
+    /// Attaches an Observer to FCConsole
+    void AttachObserver(ConsoleObserver *pcObserver);
+    /// Detaches an Observer from FCConsole
+    void DetachObserver(ConsoleObserver *pcObserver);
+    /// enumaration for the console modes
+    enum ConsoleMode{
+        Verbose = 1,	// supress Log messages
+    };
 
-  enum FreeCAD_ConsoleMsgType { 
-    MsgType_Txt = 1, 
-    MsgType_Log = 2, 
-    MsgType_Wrn = 4, 
-    MsgType_Err = 8 
-  };
+    enum FreeCAD_ConsoleMsgType { 
+        MsgType_Txt = 1, 
+        MsgType_Log = 2, 
+        MsgType_Wrn = 4, 
+        MsgType_Err = 8 
+    } ;
 
-	/// Change mode
-	void SetMode(ConsoleMode m);
-	/// Change mode
-	void UnsetMode(ConsoleMode m);
-  /// Enables or disables message types of a cetain console observer
-  ConsoleMsgFlags SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b);
+    /// Change mode
+    void SetMode(ConsoleMode m);
+    /// Change mode
+    void UnsetMode(ConsoleMode m);
+    /// Enables or disables message types of a cetain console observer
+    ConsoleMsgFlags SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b);
 
-	/// singelton 
-	static ConsoleSingelton &Instance(void);
+    /// singelton 
+    static ConsoleSingelton &Instance(void);
+
+    // retrieval of an observer by name
+    ConsoleObserver *Get(const char *Name);
 
 protected:
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	// static python wrapper of the exported functions
-	static PyObject *sPyLog      (PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyMessage  (PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyWarning  (PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyError    (PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPySetStatus(PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyGetStatus(PyObject *self,PyObject *args,PyObject *kwd);
-	static PyMethodDef    Methods[]; 
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+    // static python wrapper of the exported functions
+    static PyObject *sPyLog      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sPyMessage  (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sPyWarning  (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sPyError    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sPySetStatus(PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sPyGetStatus(PyObject *self,PyObject *args,PyObject *kwd);
+    static PyMethodDef    Methods[]; 
 
-	bool _bVerbose;
+    bool _bVerbose;
 
-	// Singelton!
-	ConsoleSingelton(void);
-	virtual ~ConsoleSingelton();
+    // Singelton!
+    ConsoleSingelton(void);
+    virtual ~ConsoleSingelton();
 
 private:
-	// singelton
-	static void Destruct(void);
-	static ConsoleSingelton *_pcSingelton;
+    // singelton
+    static void Destruct(void);
+    static ConsoleSingelton *_pcSingelton;
 
-	// observer processing 
-	void NotifyMessage(const char *sMsg);
-	void NotifyWarning(const char *sMsg);
-	void NotifyError  (const char *sMsg);
-	void NotifyLog    (const char *sMsg);
+    // observer processing 
+    void NotifyMessage(const char *sMsg);
+    void NotifyWarning(const char *sMsg);
+    void NotifyError  (const char *sMsg);
+    void NotifyLog    (const char *sMsg);
 
-  // retraivel of an observer by name
-  ConsoleObserver *Get(const char *Name);
-
-	// observer list
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#endif
-	std::set<ConsoleObserver * > _aclObservers;
-
+    // observer list
+    std::set<ConsoleObserver * > _aclObservers;
 };
 
 /** Access to the Console
@@ -192,7 +186,7 @@ private:
  *  the ConsoleSingelton class.
  */  
 inline ConsoleSingelton &Console(void){
-	return ConsoleSingelton::Instance();
+    return ConsoleSingelton::Instance();
 }
 
 
@@ -205,16 +199,16 @@ inline ConsoleSingelton &Console(void){
 class BaseExport ConsoleObserverFile : public ConsoleObserver
 {
 public:
-	ConsoleObserverFile(const char *sFileName);
-	virtual ~ConsoleObserverFile();
-	virtual void Warning(const char *sWarn);
-	virtual void Message(const char *sMsg);
-	virtual void Error  (const char *sErr);
-	virtual void Log    (const char *sLog);
-  const char* Name(void){return "File";}
+    ConsoleObserverFile(const char *sFileName);
+    virtual ~ConsoleObserverFile();
+    virtual void Warning(const char *sWarn);
+    virtual void Message(const char *sMsg);
+    virtual void Error  (const char *sErr);
+    virtual void Log    (const char *sLog);
+    const char* Name(void){return "File";}
 
 protected:
-	std::ofstream cFileStream;
+    std::ofstream cFileStream;
 };
 
 /** The CmdConsoleObserver class
@@ -223,14 +217,13 @@ protected:
 class BaseExport ConsoleObserverStd: public ConsoleObserver
 {
 public:
-  ConsoleObserverStd();
-  virtual ~ConsoleObserverStd();
-	virtual void Warning(const char *sWarn);
-	virtual void Message(const char *sMsg); 
-	virtual void Error  (const char *sErr); 
-	virtual void Log    (const char *sErr); 
-  const char* Name(void){return "Console";}
-
+    ConsoleObserverStd();
+    virtual ~ConsoleObserverStd();
+    virtual void Warning(const char *sWarn);
+    virtual void Message(const char *sMsg); 
+    virtual void Error  (const char *sErr); 
+    virtual void Log    (const char *sErr); 
+    const char* Name(void){return "Console";}
 };
 
 class BaseExport RedirectStdOutput : public std::streambuf
