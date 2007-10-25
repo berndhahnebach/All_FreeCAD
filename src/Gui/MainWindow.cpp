@@ -64,6 +64,8 @@
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
 
+#include "Document.h"
+#include "ViewProviderExtern.h"
 
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -806,14 +808,18 @@ namespace Gui {
 class CustomMessageEvent : public QEvent
 {
 public:
-  CustomMessageEvent(const QString& s)
-    : QEvent(QEvent::User), msg(s)
+  enum Type {Msg, Wrn, Err, Log};
+  CustomMessageEvent(Type t, const QString& s)
+    : QEvent(QEvent::User), _type(t), msg(s)
   { }
   ~CustomMessageEvent()
   { }
+  Type type() const
+  { return _type; }
   const QString& message() const
   { return msg; }
 private:
+  Type _type;
   QString msg;
 };
 }
@@ -822,9 +828,26 @@ void MainWindow::customEvent( QEvent* e )
 {
   if (e->type() == QEvent::User) {
     Gui::CustomMessageEvent* ce = (Gui::CustomMessageEvent*)e;
-    d->actionLabel->setText(ce->message());
-    d->actionTimer->setSingleShot(true);
-    d->actionTimer->start(5000);
+    QString msg = ce->message();
+    if (ce->type() == CustomMessageEvent::Log) {
+      if (msg.startsWith("#Inventor V2.1 ascii ")) {
+        Gui::Document *d = Application::Instance->activeDocument();
+        if (d) {
+          ViewProviderExtern *view = new ViewProviderExtern();
+          try {
+            view->setModeByString("1",msg.toAscii().constData());
+            d->setAnotationViewProvider("Vdbg",view);
+          } catch (...) {
+            delete view;
+          }
+        }
+      }
+    }
+    else {
+      d->actionLabel->setText(msg);
+      d->actionTimer->setSingleShot(true);
+      d->actionTimer->start(5000);
+    }
   }
 }
 
@@ -846,8 +869,8 @@ StatusBarObserver::~StatusBarObserver()
 void StatusBarObserver::Message(const char * m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-    QString msg = QString("<font color=\"#000000\">%1</font>").arg(QString::fromUtf8(m));
-  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  QString msg = QString("<font color=\"#000000\">%1</font>").arg(QString::fromUtf8(m));
+  CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Msg, msg);
   QApplication::postEvent(getMainWindow(), ev);
 }
 
@@ -858,7 +881,7 @@ void StatusBarObserver::Warning(const char *m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
   QString msg = QString("<font color=\"#ffaa00\">%1</font>").arg(QString::fromUtf8(m));
-  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Wrn, msg);
   QApplication::postEvent(getMainWindow(), ev);
 }
 
@@ -869,15 +892,18 @@ void StatusBarObserver::Error  (const char *m)
 {
   // Send the event to the main window to allow thread-safety. Qt will delete it when done.
   QString msg = QString("<font color=\"#ff0000\">%1</font>").arg(QString::fromUtf8(m));
-  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Err, msg);
   QApplication::postEvent(getMainWindow(), ev);
 }
 
 /** Get called when a log message is issued. 
- * Log messages are completely ignored.
+ * The message is used to create an Inventor node for debug purposes. 
  */
-void StatusBarObserver::Log(const char *log)
+void StatusBarObserver::Log(const char *m)
 {
+  // Send the event to the main window to allow thread-safety. Qt will delete it when done.
+  CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Log, m);
+  QApplication::postEvent(getMainWindow(), ev);
 }
 
 
