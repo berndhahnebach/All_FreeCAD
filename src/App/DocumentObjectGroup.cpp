@@ -37,10 +37,10 @@ PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
 
 DocumentObjectGroup::DocumentObjectGroup() 
 {
-    ADD_PROPERTY_TYPE(Group,(""),"Base",(App::PropertyType)(Prop_ReadOnly|Prop_Output),"List of referenced objects");
+    ADD_PROPERTY_TYPE(Group,(0),"Base",(App::PropertyType)(Prop_ReadOnly|Prop_Output),"List of referenced objects");
 
     // make sure that the list is empty
-    std::list<std::string> grp;
+    std::vector<DocumentObject*> grp;
     Group.enableNotify(false);
     Group.setValues(grp);
     Group.enableNotify(true);
@@ -53,48 +53,66 @@ DocumentObjectGroup::~DocumentObjectGroup()
 DocumentObject* DocumentObjectGroup::addObject(const char* sType, const char* pObjectName)
 {
     DocumentObject* obj = getDocument().addObject(sType, pObjectName);
-    if (obj) addObject(obj->getNameInDocument());
+    if (obj) addObject(obj);
     return obj;
 }
 
-void DocumentObjectGroup::addObject(const char* Name)
+void DocumentObjectGroup::addObject(DocumentObject* obj)
 {
-    if (!hasObject(Name)) {
-        std::vector<std::string> grp = Group.getValues();
-        grp.push_back(Name);
-        //Group.enableNotify(false);
+    if (!hasObject(obj)) {
+        std::vector<DocumentObject*> grp = Group.getValues();
+        grp.push_back(obj);
         Group.setValues(grp);
-        //Group.enableNotify(true);
     }
 }
 
-void DocumentObjectGroup::removeObject(const char* Name)
+void DocumentObjectGroup::removeObject(DocumentObject* obj)
 {
-    std::vector<std::string> grp = Group.getValues();
-    for (std::vector<std::string>::iterator it = grp.begin(); it != grp.end(); ++it) {
-        if (*it == Name) {
+    std::vector<DocumentObject*> grp = Group.getValues();
+    for (std::vector<DocumentObject*>::iterator it = grp.begin(); it != grp.end(); ++it) {
+        if (*it == obj) {
             grp.erase(it);
-            //Group.enableNotify(false);
             Group.setValues(grp);
-            //Group.enableNotify(true);
             break;
         }
     }
 }
 
+void DocumentObjectGroup::removeObjectsFromDocument()
+{
+    std::vector<DocumentObject*> grp = Group.getValues();
+    for (std::vector<DocumentObject*>::iterator it = grp.begin(); it != grp.end(); ++it) {
+        removeObjectFromDocument(*it);
+    }
+}
+
+void DocumentObjectGroup::removeObjectFromDocument(DocumentObject* obj)
+{
+    // remove all children
+    if (obj->getTypeId().isDerivedFrom(DocumentObjectGroup::getClassTypeId())) {
+        std::vector<DocumentObject*> grp = static_cast<DocumentObjectGroup*>(obj)->Group.getValues();
+        for (std::vector<DocumentObject*>::iterator it = grp.begin(); it != grp.end(); ++it) {
+            // recursive call to remove all subgroups
+            removeObjectFromDocument(*it);
+        }
+    }
+
+    this->getDocument().remObject(obj->getNameInDocument());
+}
+
 DocumentObject *DocumentObjectGroup::getObject(const char *Name) const
 {
     DocumentObject* obj = getDocument().getObject(Name);
-    if (obj && hasObject(Name))
+    if (obj && hasObject(obj))
         return obj;
     return 0;
 }
 
-bool DocumentObjectGroup::hasObject(const char *Name) const
+bool DocumentObjectGroup::hasObject(DocumentObject* obj) const
 {
-    const std::vector<std::string>& grp = Group.getValues();
-    for (std::vector<std::string>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
-        if (*it == Name)
+    const std::vector<DocumentObject*>& grp = Group.getValues();
+    for ( std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it ) {
+        if (*it == obj)
             return true;
     }
 
@@ -103,25 +121,16 @@ bool DocumentObjectGroup::hasObject(const char *Name) const
 
 std::vector<DocumentObject*> DocumentObjectGroup::getObjects() const
 {
-    std::vector<DocumentObject*> objs;
-    const std::vector<std::string>& grp = Group.getValues();
-    for (std::vector<std::string>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
-        DocumentObject* obj = this->getDocument().getObject(it->c_str());
-        if (obj)
-            objs.push_back(obj);
-    }
-
-    return objs;
+    return Group.getValues();
 }
 
 std::vector<DocumentObject*> DocumentObjectGroup::getObjectsOfType(const Base::Type& typeId) const
 {
     std::vector<DocumentObject*> type;
-    const std::vector<std::string>& grp = Group.getValues();
-    for (std::vector<std::string>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
-        DocumentObject* obj = this->getDocument().getObject(it->c_str());
-        if (obj && obj->getTypeId().isDerivedFrom(typeId))
-            type.push_back(obj);
+    const std::vector<DocumentObject*>& grp = Group.getValues();
+    for (std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
+        if ( (*it)->getTypeId().isDerivedFrom(typeId))
+            type.push_back(*it);
     }
 
     return type;
@@ -129,15 +138,14 @@ std::vector<DocumentObject*> DocumentObjectGroup::getObjectsOfType(const Base::T
 
 int DocumentObjectGroup::countObjectsOfType(const Base::Type& typeId) const
 {
-    int ct=0;
-    const std::vector<std::string>& grp = Group.getValues();
-    for (std::vector<std::string>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
-        DocumentObject* obj = this->getDocument().getObject(it->c_str());
-        if (obj && obj->getTypeId().isDerivedFrom(typeId))
-            ct++;
+    int type=0;
+    const std::vector<DocumentObject*>& grp = Group.getValues();
+    for (std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
+        if ( (*it)->getTypeId().isDerivedFrom(typeId))
+            type++;
     }
 
-    return ct;
+    return type;
 }
 
 DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
@@ -146,7 +154,7 @@ DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
     std::vector<DocumentObject*> grps = doc.getObjectsOfType( DocumentObjectGroup::getClassTypeId() );
     for ( std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it ) {
         DocumentObjectGroup* grp = (DocumentObjectGroup*)(*it);
-        if (grp->hasObject(obj->getNameInDocument()))
+        if (grp->hasObject(obj))
             return grp;
     }
 

@@ -27,6 +27,7 @@
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
 #include <App/Document.h>
+#include <App/DocumentObjectGroup.h>
 #include <App/Feature.h>
 
 #include "Action.h"
@@ -487,20 +488,23 @@ StdCmdDelete::StdCmdDelete()
 
 void StdCmdDelete::activated(int iMsg)
 {
-  openCommand("Delete Object");
-  const SelectionSingleton& rSel = Selection();
-  // go through all documents
-  const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-  for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
-  {
-    const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->Name.getValue());
-    for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
-    {
-      doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")",(*it)->Name.getValue(), (*ft)->getNameInDocument());
+    // go through all documents
+    const SelectionSingleton& rSel = Selection();
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it ) {
+        const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->Name.getValue());
+        if (!sel.empty()) {
+            (*it)->openTransaction("Delete");
+            for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+                if ((*ft)->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()))
+                doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
+                             ,(*it)->Name.getValue(), (*ft)->getNameInDocument());
+                doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
+                             ,(*it)->Name.getValue(), (*ft)->getNameInDocument());
+            }
+            (*it)->commitTransaction();
+        }
     }
-  }
-
-  commitCommand(); 
 }
 
 bool StdCmdDelete::isActive(void)

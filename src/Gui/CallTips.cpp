@@ -292,6 +292,7 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
 {
     App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(obj.ptr());
     App::PropertyContainer* container = cont->getPropertyContainerObject();
+    if (!container) return;
     std::map<std::string,App::Property*> Map;
     container->getPropertyMap(Map);
 

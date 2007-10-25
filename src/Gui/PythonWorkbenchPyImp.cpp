@@ -44,7 +44,7 @@ using namespace Gui;
 // returns a string which represent the object e.g. when printed in python
 const char *PythonWorkbenchPy::representation(void)
 {
-	return "PythonWorkbenchPy";
+	return "The Python workbench class";
 }
 
 

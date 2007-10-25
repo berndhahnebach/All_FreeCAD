@@ -16,7 +16,7 @@ using namespace Gui;
 // returns a string which represent the object e.g. when printed in python
 const char *DocumentPy::representation(void)
 {
-	return "DocumentPy";
+	return "The GUI document class";
 }
 
 

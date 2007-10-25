@@ -20,9 +20,8 @@ using namespace App;
 // returns a string which represent the object e.g. when printed in python
 const char *DocumentPy::representation(void)
 {
-	return "DocumentPy";
+	return "The document class";
 }
-
 
 PyObject*  DocumentPy::save(PyObject *args)
 {
@@ -165,6 +164,19 @@ Py::Object DocumentPy::getActiveObject(void) const
     if(pcFtr)
         return Py::Object(pcFtr->getPyObject());
     return Py::None();
+}
+
+PyObject*  DocumentPy::supportedTypes(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception
+    
+    std::vector<Base::Type> ary;
+    Base::Type::getAllDerivedFrom(App::DocumentObject::getClassTypeId(), ary);
+    Py::List res;
+    for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it)
+        res.append(Py::String(it->getName()));
+    return Py::new_reference_to(res);
 }
 
 void  DocumentPy::setActiveObject(Py::Object arg)

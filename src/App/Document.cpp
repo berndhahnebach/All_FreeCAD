@@ -1156,21 +1156,15 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 /// Remove an object out of the document
 void Document::remObject(const char* sName)
 {
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Recompute;
-
   std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(sName);
 
   // name not found?
   if(pos == ObjectMap.end())
     return;
 
-  DocChange.DeletedObjects.insert(pos->second);
-
   if(pActiveObject == pos->second)
     pActiveObject = 0;
 
-  //Notify(DocChange);
   signalDeletedObject(*(pos->second));
 
   // Before deleting we must nullify all dependant objects
@@ -1190,20 +1184,17 @@ void Document::remObject(const char* sName)
       else if ( pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId()) )
       {
         PropertyLinkList* link = (PropertyLinkList*)pt->second;
-        // copy the list (not the features)
-        std::vector<DocumentObject*>::const_iterator fIt;
-        std::vector<DocumentObject*> copy_linked;
-        const std::vector<DocumentObject*>& linked = link->getValues();
-        for ( fIt = linked.begin(); fIt != linked.end(); ++fIt )
+        // copy the list (not the objects)
+        std::vector<DocumentObject*> linked = link->getValues();
+        for (std::vector<DocumentObject*>::iterator fIt = linked.begin(); fIt != linked.end(); ++fIt)
         {
-          if ( (*fIt) != pos->second )
-            copy_linked.push_back( *fIt );
+          if ((*fIt) == pos->second) {
+            // reassign the the list without the object to be deleted
+            linked.erase(fIt);
+            link->setValues(linked);
+            break;
+          }
         }
-
-        // reset the the copied list without the object(s) to be deleted
-        link->setSize( copy_linked.size() );
-        for ( fIt = copy_linked.begin(); fIt != copy_linked.end(); ++fIt )
-          link->set1Value(fIt-copy_linked.begin(), *fIt );
       }
     }
   }

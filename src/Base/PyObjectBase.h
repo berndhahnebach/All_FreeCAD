@@ -294,10 +294,10 @@ public:
 //    return ((PyObjectBase*)self)->isA(args);
 //  };
 
-    /** Should be implemented by subclasses that have PyObjectBase members 
-     * to set them invalid as well. 
-     */
-    virtual void setInvalid() { _valid = false; }
+    void setInvalid() { 
+        _valid = false;
+        _pcBaseClass = 0;
+    }
 
 private:
     bool _valid;
