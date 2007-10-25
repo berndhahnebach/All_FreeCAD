@@ -153,13 +153,17 @@ void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
 
 void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
 {
+  Base::Builder3D builder;  
+  
   std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
 
   unsigned int i = 0;
   // go throug all the Vertex normales
-  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
+  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++){
+    builder.addSingleLine(Mesh->GetPoint(i),Mesh->GetPoint(i)+It->Normalize() * fSize);
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
+  }
   Mesh->RecalcBoundBox();
 
   // search for intersected facets
@@ -168,12 +172,12 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
   eval.GetIntersections(faces);
 
   // Debug output 
-  Base::Builder3D builder;
+
   builder.startPoints();
   for(std::vector<unsigned long >::iterator It = faces.begin();It!= faces.end();++It)
     builder.addPoint(Mesh->GetFacet(*It).GetGravityPoint());
   builder.endPoints();
-  builder.saveToFile("d:/temp/OffsetPoints.iv");
+  builder.saveToLog();
 
 
   //Mesh->DeleteFacets(faces);
