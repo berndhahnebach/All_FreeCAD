@@ -484,6 +484,7 @@ const char *@self.export.Name@::representation(void)
 
 PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 -
@@ -541,6 +542,7 @@ const char *@self.export.Name@::representation(void)
 
 PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 -

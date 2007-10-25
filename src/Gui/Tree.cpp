@@ -293,9 +293,9 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& view)
         // is the object a group?
         if (obj->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
             std::set<QTreeWidgetItem*> children;
-            std::vector<std::string> group = static_cast<App::DocumentObjectGroup*>(obj)->Group.getValues();
-            for (std::vector<std::string>::iterator jt = group.begin(); jt != group.end(); ++jt) {
-                std::map<std::string, DocumentObjectItem*>::iterator kt = ObjectMap.find(*jt);
+            std::vector<App::DocumentObject*> group = static_cast<App::DocumentObjectGroup*>(obj)->Group.getValues();
+            for (std::vector<App::DocumentObject*>::iterator jt = group.begin(); jt != group.end(); ++jt) {
+                std::map<std::string, DocumentObjectItem*>::iterator kt = ObjectMap.find((*jt)->getNameInDocument());
                 if (kt != ObjectMap.end()) {
                     children.insert(kt->second);
                     QTreeWidgetItem* parent = kt->second->parent();

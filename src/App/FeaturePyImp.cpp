@@ -18,7 +18,13 @@ const char *FeaturePy::representation(void)
 
 PyObject*  FeaturePy::recompute(PyObject *args)
 {
-	return 0;
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+    
+    PY_TRY {
+        getAbstractFeatureObject()->recompute();
+	    Py_Return;
+    } PY_CATCH;
 }
 
 Py::Int FeaturePy::getValid(void) const

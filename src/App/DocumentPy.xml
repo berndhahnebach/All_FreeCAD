@@ -71,6 +71,11 @@
 			  <UserDocu>Return the object with the given name</UserDocu>
 		  </Documentation>
 	  </Methode>
+	  <Methode Name="supportedTypes">
+		  <Documentation>
+			  <UserDocu>A list of supported types of objects</UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Attribute Name="DependencyGraph" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>The dependency graph as GraphViz text</UserDocu>

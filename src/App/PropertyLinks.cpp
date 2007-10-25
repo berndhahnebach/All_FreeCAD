@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
+#   include <assert.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -33,8 +33,6 @@
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 
-#include "FeaturePy.h"
-#include "Feature.h"
 #include "DocumentObject.h"
 #include "DocumentObjectPy.h"
 #include "Document.h"
@@ -77,90 +75,93 @@ PropertyLink::~PropertyLink()
 
 void PropertyLink::setValue(App::DocumentObject * lValue)
 {
-  aboutToSetValue();
-	_pcLink=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _pcLink=lValue;
+    hasSetValue();
 }
 
 App::DocumentObject * PropertyLink::getValue(void) const
 {
-	return _pcLink;
+    return _pcLink;
 }
 
 App::DocumentObject * PropertyLink::getValue(Base::Type t) const
 {
-  if(_pcLink->getTypeId().isDerivedFrom(t))
-	  return _pcLink;
-  else
-    return 0;
+    if(_pcLink->getTypeId().isDerivedFrom(t))
+        return _pcLink;
+    else
+        return 0;
 }
 
 
 
 PyObject *PropertyLink::getPyObject(void)
 {
-  if(_pcLink)
-    return _pcLink->getPyObject();
-  else
-    Py_Return;
+    if(_pcLink)
+        return _pcLink->getPyObject();
+    else
+        Py_Return;
 }
 
 void PropertyLink::setPyObject(PyObject *value)
 { 
-  if( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) )
-  {
-   	DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
-    setValue(pcObject->getDocumentObjectObject());
-  }else if(PyInt_Check( value) ){
-    if(PyInt_AsLong(value)== 0)
-      setValue(0);
+    if ( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) ) {
+        DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
+        setValue(pcObject->getDocumentObjectObject());
+    }
+    else if(PyInt_Check( value) ){
+        if(PyInt_AsLong(value)== 0)
+            setValue(0);
+        else
+            throw Base::Exception("Not allowed type used (document object expected)...");
+    }
+    else if(Py_None == value) {
+        setValue(0);
+    }
     else
-      throw Base::Exception("Not allowed type used (document object expected)...");
-  }else if(Py_None == value) {
-      setValue(0);
-  }else
-    throw Base::Exception("Not allowed type used (document object expected)...");
+        throw Base::Exception("Not allowed type used (document object expected)...");
 }
 
 void PropertyLink::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\"/>" << std::endl;
 }
 
 void PropertyLink::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("Link");
-  // get the value of my Attribute
-  string name = reader.getAttribute("value");
+    // read my Element
+    reader.readElement("Link");
+    // get the value of my Attribute
+    string name = reader.getAttribute("value");
 
-  // Property not in a Feature!
-  assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+    // Property not in a Feature!
+    assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  if(name != ""){
-    DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+    if(name != ""){
+        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
 
-    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+        assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-    _pcLink = dynamic_cast<DocumentObject*>(pcObject);
-  }else
-    _pcLink = 0;
+        _pcLink = dynamic_cast<DocumentObject*>(pcObject);
+    }
+    else
+        _pcLink = 0;
 
 }
 
 
 Property *PropertyLink::Copy(void) const
 {
-  PropertyLink *p= new PropertyLink();
-  p->_pcLink = _pcLink;
-  return p;
+    PropertyLink *p= new PropertyLink();
+    p->_pcLink = _pcLink;
+    return p;
 }
 
 void PropertyLink::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
-  hasSetValue();
+    aboutToSetValue();
+    _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
+    hasSetValue();
 }
 
 
@@ -183,122 +184,114 @@ PropertyLinkList::~PropertyLinkList()
 
 void PropertyLinkList::setValue(DocumentObject* lValue)
 {
-  if(lValue){
-    aboutToSetValue();
-    _lValueList.resize(1);
-	  _lValueList[0]=lValue;
-    hasSetValue();
-  }
+    if(lValue){
+        aboutToSetValue();
+        _lValueList.resize(1);
+        _lValueList[0]=lValue;
+        hasSetValue();
+    }
 }
 
 void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
 {
-  aboutToSetValue();
-	_lValueList=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList=lValue;
+    hasSetValue();
 }
 
 PyObject *PropertyLinkList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
+    PyObject* list = PyList_New(	getSize() );
 
-  for(int i = 0;i<getSize(); i++)
-     PyList_SetItem( list, i, _lValueList[i]->getPyObject());
+    for(int i = 0;i<getSize(); i++)
+        PyList_SetItem( list, i, _lValueList[i]->getPyObject());
 
-  return list;
+    return list;
 }
 
 void PropertyLinkList::setPyObject(PyObject *value)
 {
-  if ( PyList_Check( value) )
-  {
-    aboutToSetValue();
+    if ( PyList_Check( value) ) {
+        aboutToSetValue();
 
-    int nSize = PyList_Size( value );
-    _lValueList.resize(nSize);
+        int nSize = PyList_Size( value );
+        _lValueList.resize(nSize);
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      if ( PyObject_TypeCheck(item, &(FeaturePy::Type)) )
-      {
-   	    FeaturePy  *pcObject = (FeaturePy*)item;
-        _lValueList[i] = pcObject->getAbstractFeatureObject();
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if ( PyObject_TypeCheck(item, &(DocumentObjectPy::Type)) ) {
+                DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(item);
+                _lValueList[i] = pcObject->getDocumentObjectObject();
+                hasSetValue();
+            }
+            else {
+                _lValueList.resize(1);
+                _lValueList[0] = 0;
+                throw Base::Exception("Not allowed type in list (float expected)...");
+            }
+        }
+
         hasSetValue();
-      }
-      else
-      {
-        _lValueList.resize(1);
-        _lValueList[0] = 0;
-        throw Base::Exception("Not allowed type in list (float expected)...");
-      }
     }
-
-    hasSetValue();
-  }
-  else if( PyObject_TypeCheck(value, &(FeaturePy::Type)) )
-  {
-    aboutToSetValue();
-   	FeaturePy  *pcObject = (FeaturePy*)value;
-    setValue( pcObject->getAbstractFeatureObject() );
-  }
-  else
-  {
-    throw Base::Exception("Not allowed type used (Feature expected)...");
-  }
+    else if( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) ) {
+        aboutToSetValue();
+        DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(value);
+        setValue( pcObject->getDocumentObjectObject() );
+    }
+    else {
+        throw Base::Exception("Not allowed type used (Feature expected)...");
+    }
 }
 
 void PropertyLinkList::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
-  writer.incInd();
-  for(int i = 0;i<getSize(); i++)
-    writer.Stream() << writer.ind() << "<Link value=\"" <<  _lValueList[i]->getNameInDocument() <<"\"/>" << endl; ;
-  writer.decInd();
-  writer.Stream() << writer.ind() << "</LinkList>" << endl ;
+    writer.Stream() << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
+    writer.incInd();
+    for(int i = 0;i<getSize(); i++)
+        writer.Stream() << writer.ind() << "<Link value=\"" <<  _lValueList[i]->getNameInDocument() <<"\"/>" << endl; ;
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</LinkList>" << endl ;
 }
 
 void PropertyLinkList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("LinkList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
+    // read my Element
+    reader.readElement("LinkList");
+    // get the value of my Attribute
+    int count = reader.getAttributeAsInteger("count");
 
-  setSize(count);
+    setSize(count);
 
-  assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+    assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  for(int i = 0;i<count; i++)
-  {
-    reader.readElement("Link");
-    std::string name = reader.getAttribute("value");
+    for(int i = 0;i<count; i++) {
+        reader.readElement("Link");
+        std::string name = reader.getAttribute("value");
 
-    // Property not in a Feature!
-    //assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-    //_lValueList[i] = reinterpret_cast<App::DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+        // Property not in a Feature!
+        //assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+        //_lValueList[i] = reinterpret_cast<App::DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
 
-    // Property not in a Feature!
-    DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
-    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-    _lValueList[i] = pcObject;
+        // Property not in a Feature!
+        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+        assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+        _lValueList[i] = pcObject;
+    }
 
-  }
-
-  reader.readEndElement("LinkList");
+    reader.readEndElement("LinkList");
 }
 
 
 Property *PropertyLinkList::Copy(void) const
 {
-  PropertyLinkList *p= new PropertyLinkList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyLinkList *p= new PropertyLinkList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyLinkList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyLinkList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyLinkList&>(from)._lValueList;
+    hasSetValue();
 }

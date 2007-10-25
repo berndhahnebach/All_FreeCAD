@@ -37,7 +37,17 @@ PyObject*  DocumentObjectPy::touch(PyObject *args)
 
 Py::List DocumentObjectPy::getState(void) const
 {
-    return Py::List();
+    DocumentObject* object = this->getDocumentObjectObject();
+    Py::List list;
+    if (object->StatusBits.test(0))
+        list.append(Py::String("Recompute"));
+    if (object->StatusBits.test(1))
+        list.append(Py::String("Invalid"));
+    if (object->StatusBits.test(2))
+        list.append(Py::String("New"));
+    if (object->StatusBits.to_ulong() == 0)
+        list.append(Py::String("Up-to-date"));
+    return list;
 }
 
 PyObject *DocumentObjectPy::getCustomAttributes(const char* attr) const
