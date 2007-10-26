@@ -713,6 +713,18 @@ bool Document::save (void)
 // Open the document
 void Document::restore (void)
 {
+  // clean up if the document is not empty
+  // !TODO mind exeptions wile restoring!
+  clearUndos();
+  for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
+    signalDeletedObject(*(*obj));
+    delete *obj;
+  }
+  ObjectArray.clear();
+  ObjectMap.clear();
+  pActiveObject = 0;
+
+
   std::string FilePath = FileName.getValue();
   std::string OrigName = Name.getValue();
   
@@ -724,7 +736,8 @@ void Document::restore (void)
 
   Document::Restore(reader);
 
-  // We must restore the correct 'FileName' property again because the stored value could be invalid.
+  // We must restore the correct 'FileName' property again because the stored
+  // value could be invalid.
   FileName.setValue(FilePath.c_str());
 
   // When this document has been created it got a preliminary name which might have changed now,
