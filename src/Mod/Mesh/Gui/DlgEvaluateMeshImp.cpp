@@ -223,6 +223,7 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
         analyzeNonmanifoldsButton->setEnabled(true);
         analyzeDegeneratedButton->setEnabled(true);
         analyzeIndicesButton->setEnabled(true);
+        analyzeSelfIntersectionButton->setEnabled(true);
 
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
         textLabel4->setText(QString("%1").arg(rMesh.CountFacets()));
@@ -242,6 +243,7 @@ void DlgEvaluateMeshImp::cleanInformation()
     checkNonmanifoldsButton->setText( tr("No information") );
     checkDegenerationButton->setText( tr("No information") );
     checkIndicesButton->setText( tr("No information") );
+    checkSelfIntersectionButton->setText( tr("No information") );
     analyzeOrientationButton->setDisabled(true);
     repairOrientationButton->setDisabled(true);
     analyzeDuplicatedFacesButton->setDisabled(true);
@@ -254,6 +256,8 @@ void DlgEvaluateMeshImp::cleanInformation()
     repairDegeneratedButton->setDisabled(true);
     analyzeIndicesButton->setDisabled(true);
     repairIndicesButton->setDisabled(true);
+    analyzeSelfIntersectionButton->setDisabled(true);
+    repairSelfIntersectionButton->setDisabled(true);
 }
 
 void DlgEvaluateMeshImp::on_refreshButton_clicked()

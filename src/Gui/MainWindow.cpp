@@ -593,6 +593,11 @@ void MainWindow::closeEvent ( QCloseEvent * e )
   Application::Instance->tryClose( e );
   if( e->isAccepted() )
   {
+    // Send close event to all non-modal dialogs
+    QList<QDialog*> dialogs = this->findChildren<QDialog*>();
+    for (QList<QDialog*>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+        (*it)->close();
+    
     // Before closing the main window we must make sure that all views are in 'Normal' mode otherwise the 'lastWindowClosed()' signal
     // doesn't get emitted from QApplication later on. Just destroying these views doesn't work either.
     for ( int i = 0; i < d->tabs->count(); i++ )
