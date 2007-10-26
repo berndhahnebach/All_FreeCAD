@@ -127,6 +127,8 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
         (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
     this->connectApplicationDeletedDocument = App::GetApplication().signalDeletedDocument.connect(boost::bind
         (&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
+
+    this->on_refreshButton_clicked();
 }
 
 /**
@@ -791,6 +793,8 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     // use Qt macro for preparing for translation stuff (but not translating yet)
     QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate Mesh"), this, Qt::RightDockWidgetArea);
+    //dw->setAttribute(Qt::WA_DeleteOnClose);
+    dw->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     dw->show();
 }
 

@@ -715,8 +715,12 @@ void CmdMeshEvaluation::activated(int iMsg)
 
 bool CmdMeshEvaluation::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    // Check for the selected mesh feature (all Mesh types)
+    return (!MeshGui::DockEvaluateMeshImp::hasInstance());
 }
 
 //--------------------------------------------------------------------------------------
