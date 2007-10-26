@@ -53,7 +53,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
-				OpenMP="true"
+				OpenMP="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile="../../../../obj/Mod/Cam/DebugApp/AppCam.pch"
@@ -79,13 +79,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib"
 				OutputFile="../../../../Mod/Cam/Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam_d.pdb"
+				SubSystem="1"
 				ImportLibrary="../../../../obj/Mod/Cam/DebugApp/Cam_d.lib"
 				TargetMachine="1"
 			/>
@@ -157,7 +158,7 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
-				OpenMP="true"
+				OpenMP="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile="../../../../obj/Mod/Cam/ReleaseApp/AppCam.pch"
@@ -180,7 +181,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKMesh.lib TKSTL.lib TKOffset.lib"
 				OutputFile="../../../../Mod/Cam/Cam.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -274,11 +275,42 @@
 			>
 		</File>
 		<File
+			RelativePath=".\best_fit.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\best_fit.h"
+			>
+		</File>
+		<File
+			RelativePath=".\BRepAdaptor_CompCurve2.cxx"
+			>
+		</File>
+		<File
+			RelativePath=".\BRepAdaptor_CompCurve2.h"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\ConvertDyna.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\ConvertDyna.h"
+			>
+		</File>
+		<File
+			RelativePath=".\cutting_tools.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cutting_tools.h"
 			>
 		</File>
 		<File
@@ -315,6 +347,18 @@
 		</File>
 		<File
 			RelativePath=".\routine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\stuff.h"
+			>
+		</File>
+		<File
+			RelativePath=".\WireExplorer.cxx"
+			>
+		</File>
+		<File
+			RelativePath=".\WireExplorer.h"
 			>
 		</File>
 	</Files>

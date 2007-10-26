@@ -59,19 +59,28 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+# include <BRepMesh.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
+#include <Poly_Triangulation.hxx>
 
 #include <Geom_BSplineSurface.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HCompCurve.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <IntCurveSurface_HInter.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <GeomAPI_IntCS.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_HSurface.hxx>
+#include <Approx_Curve3d.hxx>
 #include <Bnd_Box.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
@@ -87,11 +96,14 @@
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
 //#include <Handle_Adaptor3d_GenHCurve.hxx>
 //#include <Handle_Adaptor3d_GenHSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Handle_Geom_Plane.hxx>
+#include <Handle_Poly_Triangulation.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
@@ -99,6 +111,9 @@
 #include <TopoDS_Compound.hxx>
 #include "Approx.h"
 #include "ConvertDyna.h"
+#include "WireExplorer.h"
+#include "cutting_tools.h"
+#include "BRepAdaptor_CompCurve2.h"
 
 
 
@@ -151,216 +166,129 @@ static PyObject * read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-static PyObject * makeToolPath(PyObject *self, PyObject *args)
+static PyObject * tesselateShape(PyObject *self, PyObject *args)
 {
-	Py::List AllCuts = Py::List();
-	double offset=0.0;
 
 	PyObject *pcObj;
-	PyObject *pcObj2;
-	if (!PyArg_ParseTuple(args, "O!O!d", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2, &offset))     // convert args: Python->C 
+	float aDeflection;
+	//PyObject *pcObj2;
+	if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
-	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cut-Curve
+    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
+    
+
+	Base::Builder3D aBuild;
+	
+		MeshCore::MeshKernel mesh;
+	  	MeshCore::MeshBuilder builder(mesh);
+		builder.Initialize(1000);
+		Base::Vector3f Points[3];
+		
+	PY_TRY
+    {
+			// removes all the triangulations of the faces ,
+			//and all the polygons on the triangulations of the edges:
+			BRepTools::Clean(pcShape->getShape());
+
+			// adds a triangulation of the shape aShape with the deflection aDeflection:
+			//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
+			
+			BRepMesh::Mesh(pcShape->getShape(),aDeflection);
+			TopExp_Explorer aExpFace;
+			for(aExpFace.Init(pcShape->getShape(),TopAbs_FACE);aExpFace.More();aExpFace.Next())
+			{  
+			  TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
+			  TopLoc_Location aLocation;
+			  // takes the triangulation of the face aFace:
+			  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
+			  if(!aTr.IsNull()) // if this triangulation is not NULL
+			  { 
+				// takes the array of nodes for this triangulation:
+				const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
+				// takes the array of triangles for this triangulation:
+				const Poly_Array1OfTriangle& triangles = aTr->Triangles();
+				// create array of node points in absolute coordinate system
+				TColgp_Array1OfPnt aPoints(1, aNodes.Length());
+				for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)
+				  aPoints(i) = aNodes(i).Transformed(aLocation);
+				// Takes the node points of each triangle of this triangulation.
+				// takes a number of triangles:
+				Standard_Integer nnn = aTr->NbTriangles();
+				Standard_Integer nt,n1,n2,n3;
+				for( nt = 1 ; nt < nnn+1 ; nt++)
+				{
+				  // takes the node indices of each triangle in n1,n2,n3:
+				  triangles(nt).Get(n1,n2,n3);
+				  // takes the node points:
+				  gp_Pnt aPnt1 = aPoints(n1);
+				  Points[0].Set(float(aPnt1.X()),float(aPnt1.Y()),float(aPnt1.Z()));
+				  gp_Pnt aPnt2 = aPoints(n2);
+				  Points[1].Set(aPnt2.X(),aPnt2.Y(),aPnt2.Z());
+				  gp_Pnt aPnt3 = aPoints(n3);
+				  Points[2].Set(aPnt3.X(),aPnt3.Y(),aPnt3.Z());
+				  // give the occ faces to the internal mesh structure of freecad
+				  MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
+				  builder.AddFacet(Face);
+
+				} 
+
+			  }
+			  // if the triangulation of only one face is not possible to get
+			  else
+			  {
+				  throw Base::Exception("Empty face triangulation\n");
+			  }
+			}
+			// finish FreeCAD Mesh Builder and exit with new mesh
+			builder.Finish();
+			return new MeshPy(mesh);
+    } PY_CATCH;
+
+	Py_Return;
+}
+
+
+
+
+static PyObject * makeToolPath(PyObject *self, PyObject *args)
+{
+
+	PyObject *pcObj;
+	//PyObject *pcObj2;
+	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))    // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
     PY_TRY
     {
         //Base::Builder3D log3D;
-
-        TopExp_Explorer Ex;
-
-        Ex.Init(pcShape->getShape(),TopAbs_FACE);
-
-		TopoDS_Edge aTopoEdge;
-		TopoDS_Compound aCompound;
+		cutting_tools anewCuttingEnv(pcShape->getShape());
+		anewCuttingEnv.arrangecuts_ZLEVEL();
+		anewCuttingEnv.OffsetWires_Standard(10.0);
 		
-
-        if (!Ex.More())
-        {
-            //log3D.addText(0.0,0.0 ,0.0,"Keine Surface gefunden");
-           // log3D.saveToFile("c:/test.iv");
-            return NULL;
-        }
-
-        Handle_Geom_Surface geom_surface;
-
-        for (; Ex.More(); Ex.Next())
-        {
-            const TopoDS_Face &atopo_surface =  TopoDS::Face (Ex.Current());
-            geom_surface= BRep_Tool::Surface(atopo_surface);
-        }
-
-        Ex.Init(pcShape2->getShape(),TopAbs_EDGE);
-        Standard_Real d_tmin,d_tmax;
-        int numberofpoints;
-        for (; Ex.More(); Ex.Next())
-        {
-            const TopoDS_Edge &edge =  TopoDS::Edge (Ex.Current());
-            //gp_Pnt aPoint = BRep_Tool::Edge( Edge );
-            //Handle(Geom_Curve) po_segment = BRep_Tool::Curve (edge,d_tmin, d_tmax);
-
-            BRepAdaptor_Curve edge_adaptor;
-            edge_adaptor.Initialize(edge);
-            d_tmin=edge_adaptor.FirstParameter();
-            d_tmax=edge_adaptor.LastParameter();
-            //GCPnts_UniformAbscissa evaluate_points(edge_adaptor, 2.0, d_tmin,d_tmax);
-			GCPnts_QuasiUniformDeflection evaluate_points(edge_adaptor,0.001);
-            if (!evaluate_points.IsDone())
-            {
-                PyErr_SetString(PyExc_Exception, "Sampling of curve failed");
-                return NULL;
-            }
-            numberofpoints = evaluate_points.NbPoints();
-
-            if (numberofpoints < 5) 
-            {
-                PyErr_SetString(PyExc_Exception, "Sampling of curve returned too less points");
-                return NULL;
-            }
-
-			std::vector<gp_Pnt> final_OffsetPoints;
-			int j=0;
-			ofstream outfile;
-			outfile.open("c:/testfile.out");
-            for (int i=1;i<=numberofpoints;++i)
-            {
-                //Project Points onto Surface and Offset Them and generate a new BSpline Offset Curve
-                gp_Pnt currentPoint = edge_adaptor.Value(evaluate_points.Parameter(i));
-                GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
-				int numberofpoints = aPPS.NbPoints();
-                Standard_Real U,V;
-				if (! aPPS.IsDone())
-				{
-					return NULL;
-				}
-                aPPS.LowerDistanceParameters (U,V);
-				gp_Pnt projectedSurfacePoint;
-                gp_Pnt Zero(0,0,0);
-                geom_surface->D0(U,V,projectedSurfacePoint);
-				//Schauen ob die Projection geklappt hat und Punkte heraus filtern, welche nicht mit den Ursprungspunkten zusammen passen
-				if (!((currentPoint.Z() - projectedSurfacePoint.Z()) >= 0.05)||((currentPoint.Z() - projectedSurfacePoint.Z()) <= -0.05))
-				{
-					GeomLProp_SLProps aLProps (geom_surface, U,V,2, 0.001);
-					gp_Dir Normal_direction;
-					if (aLProps.IsNormalDefined())
-					{
-					 Normal_direction = aLProps.Normal();
-					}
-					gp_Vec NormalVector(Normal_direction);
-					gp_Vec projectedSurfacePoint_Vector(Zero,projectedSurfacePoint);
-					gp_Pnt OffsetPoint ((projectedSurfacePoint_Vector + (NormalVector*(offset))).XYZ());
-					
-					outfile << OffsetPoint.X() << "," \
-						<< OffsetPoint.Y()<< "," \
-						<< OffsetPoint.Z() << "," \
-						<< currentPoint.X() << "," \
-						<< currentPoint.Y() << "," \
-						<< currentPoint.Z() << "," \
-						<< projectedSurfacePoint.X() << "," \
-						<< projectedSurfacePoint.Y() << "," \
-						<< projectedSurfacePoint.Z() << "," \
-						<< NormalVector.X() << "," \
-						<< NormalVector.Y() << "," \
-						<< NormalVector.Z() << "," \
-						<< numberofpoints \
-						<< endl;
-				
-					
-				
-					//Check if point is really advanced and not behind the other points
-					if(i>2)
-					{
-						if((final_OffsetPoints[j-2].SquareDistance(OffsetPoint)) > (final_OffsetPoints[j-1].SquareDistance(OffsetPoint)))
-						{
-							final_OffsetPoints.push_back(OffsetPoint);
-							j++;
-							
-							
-						}
-						else
-						{
-						cout << "Ein schlechter Punkt ist entdeckt" << endl;
-						}
-					}
-					else
-					{
-						final_OffsetPoints.push_back(OffsetPoint);
-						j++;
-					}
-				}
-				else
-				{
-				cout << "Delta z groesser als 0,05" << endl;
-				}
-			}
-				
-					
-				outfile.close();
-				Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, final_OffsetPoints.size());
-				for(unsigned int i=0;i<final_OffsetPoints.size();i++)
-				{
-				  aPnts->SetValue(i+1,final_OffsetPoints[i]);
-				}
-			
-
-
-
-
-
-
-
-
-				  Standard_Boolean isPeriodic = Standard_False;
-				  GeomAPI_Interpolate aNoPeriodInterpolate(aPnts, isPeriodic, Precision::Confusion());
-				  aNoPeriodInterpolate.Perform();
-				  // check results
-				  if (!aNoPeriodInterpolate.IsDone()) return NULL;
-				  
-				  Handle_Geom_BSplineCurve anInterpolationCurve = aNoPeriodInterpolate.Curve();
-
-				  GeomAdaptor_Curve offsetCurveAdaptor;
-				  offsetCurveAdaptor.Load(anInterpolationCurve);
-
-				  /* Ab Hier alles für die Ausgabe der Punkte der B-Spline Kurve*/
-				  /*
-				  GCPnts_QuasiUniformDeflection evaluate_points_OffsetCurve(offsetCurveAdaptor,0.001);
-				  
-				  ofstream outfile;
-				  outfile.open("c:/testfile.out");
-				  int numberofpointsOffset = evaluate_points_OffsetCurve.NbPoints();
-				  gp_Pnt currentOffsetPoint;
-				  gp_Vec firstderivativeVector,secondderivativeVector;
-					for (int i=1;i<=numberofpointsOffset;++i)
-					{
-						
-						//offsetCurveAdaptor.D1(evaluate_points_OffsetCurve.Parameter(i),currentOffsetPoint,firstderivativeVector);
-						offsetCurveAdaptor.D2(evaluate_points_OffsetCurve.Parameter(i),currentOffsetPoint,firstderivativeVector,secondderivativeVector);
-						firstderivativeVector.Normalize();
-						//secondderivativeVector.Normalize();
-						outfile << currentOffsetPoint.X() << "," \
-								<< currentOffsetPoint.Y()<< "," \
-								<< currentOffsetPoint.Z() << "," \
-								<< firstderivativeVector.X() << "," \
-								<< firstderivativeVector.Y() << "," \
-								<< firstderivativeVector.Z() << "," \
-								<< secondderivativeVector.X()<< "," \
-								<< secondderivativeVector.Y()<< "," \
-								<< secondderivativeVector.Z()<< endl;
-					}
-					outfile.close();
-
-
-					*/ 
-
-				  
-				  BRep_Builder aBuilder;
-				  
-				  aBuilder.MakeEdge(aTopoEdge,anInterpolationCurve,0.001);
-			
 		
-        }
-		return new TopoShapePyOld( aTopoEdge);
+		return new TopoShapePyOld(anewCuttingEnv.getCutShape());
+
+		/*//anewCuttingEnv.getFlatLevels();
+		//anewCuttingEnv.cutShape();
+		//anewCuttingEnv.OffsetWires();
+		std::vector<Handle_Geom_BSplineCurve> *topCurves;
+		std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
+		topCurves = anewCuttingEnv.getOutputhigh();
+		GeomAdaptor_Curve anAdaptorCurve;
+		for(an_it=topCurves->begin();an_it<topCurves->end();++an_it)
+		{
+			anAdaptorCurve.Load(*an_it);
+			double length = GCPnts_AbscissaPoint::Length(anAdaptorCurve);
+			std::cout << "Length: "<< length <<std::endl;
+		}
+*/
+
+
     } PY_CATCH;
+
+	Py_Return;
 }
 
 
@@ -376,6 +304,10 @@ static PyObject * offset(PyObject *self,PyObject *args)
 
   PY_TRY {
 	
+	  BRepOffsetAPI_MakeOffsetShape anoffsetShape(pcShape->getShape(),offset,0.0001);
+	  anoffsetShape.Build();
+	  return new TopoShapePyOld(anoffsetShape.Shape());
+
 		TopExp_Explorer Ex;
 
 	  Handle_Geom_Surface geom_surface;
@@ -423,178 +355,54 @@ static PyObject * offset(PyObject *self,PyObject *args)
 
 }
 
+
+/*
 static PyObject * cut(PyObject *self, PyObject *args)
 {
 	PyObject *pcObj;
-	PyObject *pcObj2;
 	double z_pitch;
 	//double rGap = 1000.0; //Rand um die Bounding Box für ein sauberes Ergebnis
-	if (!PyArg_ParseTuple(args, "O!O!d", &(TopoShapePyOld::Type), &pcObj,&(TopoShapePyOld::Type), &pcObj2,&z_pitch))     // convert args: Python->C 
+	if (!PyArg_ParseTuple(args, "O!d", &(TopoShapePyOld::Type), &pcObj,&z_pitch))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	TopoShapePyOld *pcShape =  static_cast<TopoShapePyOld*>(pcObj); //Surface to cut
 	//TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cutting Plane
 
+
+	ofstream outputfile;
+	outputfile.open("c:/allpoints.out");
+
 	PY_TRY 
 	{	
-			//Global Variables for the cut probleme
-			Bnd_Box currentBBox;
-			//Standard_Real m_rXMin, m_rYMin, m_rZMin, m_rXMax, m_rYMax, m_rZMax;
+
 
 			Base::Builder3D logit;
 			
-			TopoDS_Face atopo_surface; 
-			BRepAdaptor_Surface aAdaptor_Surface;
-			
-			//Lets go through all the faces and cut if the bounding box is on the z-level of the cutting plane
-			TopExp_Explorer Explorer;
-			Explorer.Init(pcShape->getShape(),TopAbs_FACE);
-
-			if (!Explorer.More())
-			{
-				return NULL;
-			}
-			
-			BRep_Builder builder;     
-			TopoDS_Compound totalwire;     
-			builder.MakeCompound(totalwire);
-			std::vector<float> flat_areas;
-			flat_areas.clear();
-			for (;Explorer.More();Explorer.Next())
-			{
-				atopo_surface = TopoDS::Face (Explorer.Current());
-				aAdaptor_Surface.Initialize(atopo_surface);
-				Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
-				gp_Pnt first,second,third;
-				gp_Vec first_u,first_v,second_u,second_v,third_u,third_v, Norm_first,Norm_second,Norm_third,Norm_average;
-				double u_middle,v_middle;
-				//Generate three random point on the surface to get the surface normal and decide wether its a 
-				//planar section or not
-				FirstUParameter = aAdaptor_Surface.FirstUParameter();
-				LastUParameter  = aAdaptor_Surface.LastUParameter();
-				FirstVParameter = aAdaptor_Surface.FirstVParameter();
-				LastVParameter = aAdaptor_Surface.LastVParameter();
-				u_middle = sqrt((FirstUParameter - LastUParameter)*(FirstUParameter - LastUParameter))/2;
-				v_middle = sqrt((FirstVParameter - LastVParameter)*(FirstVParameter - LastVParameter))/2;
-				aAdaptor_Surface.D1(sqrt((FirstUParameter-u_middle)*(FirstUParameter-u_middle))/2,sqrt((FirstVParameter-v_middle)*(FirstVParameter-v_middle))/2,first,first_u,first_v);
-				aAdaptor_Surface.D1(sqrt((u_middle)*(u_middle))/2,sqrt((v_middle)*(v_middle))/2,second,second_u,second_v);
-				aAdaptor_Surface.D1(sqrt((FirstUParameter+u_middle)*(FirstUParameter+u_middle))/2,sqrt((FirstVParameter+v_middle)*(FirstVParameter+v_middle))/2,third,third_u,third_v);
-				//Get Surface normal as Cross-Product between two Vectors
-				Norm_first = first_u.Crossed(first_v);
-				Norm_first.Normalize();
-				Norm_second = second_u.Crossed(second_v);
-				Norm_second.Normalize();
-				Norm_third = third_u.Crossed(third_v);
-				Norm_third.Normalize();
-				//Evaluate average normal vector
-				Norm_average.SetX((Norm_first.X()+Norm_second.X()+Norm_third.X())/3);
-				Norm_average.SetY((Norm_first.Y()+Norm_second.Y()+Norm_third.Y())/3);
-				Norm_average.SetZ((Norm_first.Z()+Norm_second.Z()+Norm_third.Z())/3);
-				Norm_average.Normalize();
-				gp_Vec z_normal(0,0,1);
-				gp_Vec z_normal_opposite(0,0,-1);
-				if(Norm_average.IsEqual(z_normal,0.01,0.01) || Norm_average.IsEqual(z_normal_opposite,0.01,0.01))
-				{
-					cout << "Einen flachen Bereich gefunden";
-					//Z-Wert vom flachen Bereich in einen Vektor pushen
-					flat_areas.push_back((first.Z()+second.Z()+third.Z())/3);
-					TopExp_Explorer Explore_Face;
-					bool edge=false;
-					Explore_Face.Init(atopo_surface,TopAbs_WIRE);
-					if(!Explore_Face.More()) //If there is no Wire look after edges 
-					{
-						Explore_Face.Init(atopo_surface,TopAbs_EDGE);
-						edge = true;
-						if(!Explore_Face.More())
-						{
-							return NULL;
-						}
-					}
-					
-					for(;Explore_Face.More();Explore_Face.Next())
-					{
-						if(edge)
-						{
-							TopoDS_Edge edge = TopoDS::Edge(Explore_Face.Current());
-						}
-						else
-						{
-							TopoDS_Wire wire = TopoDS::Wire(Explore_Face.Current());
-							builder.Add(totalwire,wire);
-						}
-					}
-
-					
-				}
-
-				
-	
-				
-
-			}
-			//Nach dem Z-Level sortieren
-			std::sort(flat_areas.begin(),flat_areas.end());
-
-			/*
+/*
 			Jetzt die eigentlichen Schnitte erzeugen:
 			1.	Wenn die oberste Ebene ein flacher Bereich ist, werden von dort die Bounding Wires genommen
 				Ermittlung über die Bounding Box
 			2.	Anschließend über die Differenz von zwei Flat-Bereichen die Anzahl von Schnitten ermitteln mit gegebenem Abstand
 			3.	Die Edges bzw. Wires in B-Spline Kurven wandeln und anschließend evaluieren
 			4.	Abfahrreihenfolge festlegen und Output für die Simulation bzw. Versuch vorbereiten
-																									*/
-			/*1. Bounding Box vom Shape bestimmen
-			BRepBndLib::Add(pcShape->getShape(), currentBBox );          
-			currentBBox.SetGap(0.0);
-			currentBBox.Get(m_rXMin, m_rYMin, m_rZMin, m_rXMax, m_rYMax, m_rZMax);
-			// remove the gap from each result;
-			m_rXMin += rGap;m_rYMin += rGap;m_rZMin += rGap;
-			m_rXMax -= rGap;m_rYMax -= rGap;m_rZMax -= rGap;*/
-			//Cut Abstand muss eventuell angepasst werden, falls das delta z nicht durch den vorgegebenen Abstand erreicht wird
-			//Abstand zweier flacher Bereiche ist entscheidend
-			
+																									
 
-			for(unsigned int i=1;i<flat_areas.size();++i)
-			{
-				cout << "Bereich" <<endl;
-				float delta_z = sqrt((flat_areas[i]-flat_areas[i-1])*(flat_areas[i]-flat_areas[i-1]));
-				float anzahl = delta_z/z_pitch;
-				float z_level = flat_areas[i];
-				for(int j=1;j<anzahl;++j)
-				{
-					z_level=z_level-z_pitch;
-					cout << z_level << " Current Level" << endl;
-					gp_Pnt aPlanePnt(0,0,z_level);
-					gp_Dir aPlaneDir(0,0,1);
-					Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
-					BRepBuilderAPI_MakeFace Face(aPlane);
-					BRepAlgo_Section mkCut(pcShape->getShape(), Face.Face(),Standard_False);
-					mkCut.Approximation (Standard_True);
-					mkCut.ComputePCurveOn1(Standard_True);
-					mkCut.Build();
-					builder.Add(totalwire,mkCut.Shape());
-					//Test the resulting wire for a cut with a plane parallel to XY-plane
-					gp_Pnt asecondPlanPnt(0,0,0);
-					gp_Dir asecondPlaneDir(0,1,0);
-					const Handle_Geom_Plane asecondPlane = new Geom_Plane(asecondPlanPnt,asecondPlaneDir);
-					IntCurveSurface_HInter intersect;
+							
+					
+					//builder.Add(totalwire,mkWire.Wire());
 
+										
 					
 
 
 
-
-
-					TopExp_Explorer explore_cut;
-					explore_cut.Init(mkCut.Shape(),TopAbs_EDGE);
-					//Da sind keine Wires vorhanden....deshalb direkt auf die Edges zugreifen
-					//BRepTools_WireExplorer Exp_Wire;
 					BRep_Builder buildface;
 					TopoDS_Face topoface;
 					buildface.MakeFace(topoface,asecondPlane,0.001);
 					//TopoDS_Wire wire = TopoDS::Wire(explore_cut.Current());
 					
 					//Exp_Wire.Init(wire);
+					explore_cut.ReInit();
 					for(; explore_cut.More(); explore_cut.Next()) 
 					{
 						TopoDS_Edge edge = TopoDS::Edge(explore_cut.Current());
@@ -610,81 +418,26 @@ static PyObject * cut(PyObject *self, PyObject *args)
 						{
 							IntCurveSurface_IntersectionPoint pointofintersect = intersect.Point(1);
 							gp_Pnt actualIntersectPoint = pointofintersect.Pnt();
-							logit.addSinglePoint(actualIntersectPoint.X(),actualIntersectPoint.Y(),actualIntersectPoint.Z());
+							logit.addSinglePoint(actualIntersectPoint.X(),actualIntersectPoint.Y(),actualIntersectPoint.Z(),10);
 						}
 					}
 
 				}
 			}
-					
-			logit.saveToFile("c:/test.iv");
-			return new TopoShapePyOld( totalwire);
-
-
-				
-
 			
-
-			
-
-
-
-
-
-
-
-
-/*
-		// Let's call for algorithm computing a cut operation:
-  			BRepAlgo_Section mkCut(pcShape->getShape(), pcShape2->getShape(),Standard_False); 
-			//mkCut.ComputePCurveOn1(Standard_True);
-			mkCut.Approximation (Standard_True);
-			mkCut.Build();
-						
-			// Let's check if the Cut has been successfull:
-			if (!mkCut.IsDone()) 
-			{
-			  PyErr_SetString(PyExc_Exception,"Cut failed");
-			  return NULL;
-			} 
-
-			//Verify that there is a Wire available or just one edge that represents the sectio cut
-			TopExp_Explorer Ex,Ex1;
-			Ex.Init(mkCut.Shape(),TopAbs_WIRE);
-			TopoDS_Wire aTopoWire;
-			if (!Ex.More())
-			{
-				//log3D.addText(0.0,0.0 ,0.0,"Keine Wire gefunden");
-				//log3D.saveToFile("c:/test.iv");
-				
-				Ex1.Init(mkCut.Shape(),TopAbs_EDGE);
-				TopoDS_Edge aTopoEdge;
-				if (!Ex1.More())
-				{
-					//log3D.addText(0.0,0.0 ,0.0,"Auch keine Edge gefunden");
-					//log3D.saveToFile("c:/test.iv");
-					Py_Return;
-				}
-				int i=0;
-				for (; Ex1.More(); Ex1.Next())
-				{
-					i++;
-				}
-
-				if(i>1) //If there is more then one edge and no wire -> change the cutting plane z-level!!
-				{
-				Py_Return;
-				}
-				
-			}
-
-			return new TopoShapePyOld( mkCut.Shape());
-		
-	  */
-	} PY_CATCH;
+		}
+		for(int i =0;i<allcutPoints.size();++i)
+		{
+			outputfile << 	allcutPoints[i].X() << "," << allcutPoints[i].Y() << "," << allcutPoints[i].Z() <<endl;
+		}
+		outputfile.close();
+		logit.saveToFile("c:/test.iv");
+		return new TopoShapePyOld( totalwire);
+	
+}PY_CATCH;
 
 }
-
+*/
 
 /* Approximate test function */
 
@@ -3623,7 +3376,8 @@ struct PyMethodDef Cam_methods[] = {
 	{"makeToolPath", makeToolPath, 1},
 	{"offset", offset, 1},
 	{"offset_mesh", offset_mesh, 1},
-	{"cut", cut, 1},
+	{"tesselateShape",tesselateShape,1},
+//	{"cut", cut, 1},
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
