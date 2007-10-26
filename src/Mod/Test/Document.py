@@ -111,7 +111,64 @@ class DocumentBasicCases(unittest.TestCase):
 
   def testMem(self):
     self.Doc.MemSize
+
+  def testGroup(self):
+    # Add an object to the group
+    L2 = self.Doc.addObject("App::FeatureTest","Label_2")
+    G1 = self.Doc.addObject("App::DocumentObjectGroup","Group")
+    G1.addObject(L2)
+    self.failUnless(G1.hasObject(L2))
     
+    # Adding the group to itself must fail
+    try:
+      G1.addObject(G1)
+    except:
+      FreeCAD.PrintLog("Cannot add group to itself, OK\n")
+    else:
+      self.fail("Adding the group to itself must not be possible")
+    
+    # Remove object from group
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first group and then the object
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Group")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first object and then the group in two transactions
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first object and then the group in one transaction
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    # FIXME: See bug #1820554
+    self.failUnless(G1.getObject("Label_2") != None)
+    
+    # Cleanup
+    self.Doc.removeObject("Group")
+    self.Doc.removeObject("Label_2")
+
   def tearDown(self):
     #closing doc
     FreeCAD.closeDocument("CreateTest")
@@ -135,6 +192,17 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.Doc = FreeCAD.open(SaveName)
     self.failUnless(self.Doc.Label_1.Integer == 4711)
     self.failUnless(self.Doc.Label_2.Integer == 4711)
+    
+  def testRestore(self):
+    Doc = FreeCAD.newDocument("RestoreTests")
+    Doc.addObject("App::FeatureTest","Label_1")
+    # saving and restoring
+    Doc.FileName = self.TempPath + os.sep + "Test2.FCStd"
+    Doc.save()
+    # restore must first clear the current content
+    Doc.restore()
+    self.failUnless(len(Doc.Objects) == 1)
+    FreeCAD.closeDocument("RestoreTests")
 
   def testActiveDocument(self):
     # open 2nd doc
