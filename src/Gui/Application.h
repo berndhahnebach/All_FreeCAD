@@ -47,168 +47,157 @@ class MDIView;
 class MainWindow;
 class MenuItem;
 
-/** transport the changes of the Application
- *  This class transport closer information what was changed in the
- *  application. 
- *@see Application
- *@see Observer
-*/
-//class GuiExport AppChanges
-//{
-//public:
-//  enum {
-//    New,
-//    Del
-//  } Why;
-//  Gui::Document* Doc;
-//};
-
 /** The Applcation main class
  * This is the central class of the GUI 
  * @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport Application /*:public App::Application::ObserverType,public Base::Subject<const AppChanges&>*/ 
+class GuiExport Application 
 {
 public:
-  /// construction
-  Application();
-  /// destruction
-  ~Application();
+    /// construction
+    Application();
+    /// destruction
+    ~Application();
 
-  /** @name methods for support of files */
-  //@{
-  /// open a file
-  void open(const char* FileName);
-  /// import a file into the document DocName
-  void import(const char* FileName, const char* DocName);
-  //@}
+    /** @name methods for support of files */
+    //@{
+    /// open a file
+    void open(const char* FileName);
+    /// import a file into the document DocName
+    void import(const char* FileName, const char* DocName);
+    //@}
 
 
-  /** @name methods for View handling */
-  //@{
-  /// send Messages to the active view
-  bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
-  /// send Messages test to the active view
-  bool sendHasMsgToActiveView(const char* pMsg);
-  /// Attach a view (get called by the FCView constructor)
-  void attachView(Gui::BaseView* pcView);
-  /// Detach a view (get called by the FCView destructor)
-  void detachView(Gui::BaseView* pcView);
-  /// get called if a view gets activated, this manage the whole activation scheme
-  void viewActivated(Gui::MDIView* pcView);
-  /// call update to all docuemnts an all views (costly!)
-  void onUpdate(void);
-  /// call update to all views of the active document
-  void updateActive(void);
-  //@}
+    /** @name methods for View handling */
+    //@{
+    /// send Messages to the active view
+    bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
+    /// send Messages test to the active view
+    bool sendHasMsgToActiveView(const char* pMsg);
+    /// Attach a view (get called by the FCView constructor)
+    void attachView(Gui::BaseView* pcView);
+    /// Detach a view (get called by the FCView destructor)
+    void detachView(Gui::BaseView* pcView);
+    /// get called if a view gets activated, this manage the whole activation scheme
+    void viewActivated(Gui::MDIView* pcView);
+    /// call update to all docuemnts an all views (costly!)
+    void onUpdate(void);
+    /// call update to all views of the active document
+    void updateActive(void);
+    //@}
 
-  /** @name Signals of the Application */
-  //@{
-  /// signal on new Document
-  boost::signal<void (Gui::Document&)> signalNewDocument;
-  /// signal on deleted Document
-  boost::signal<void (Gui::Document&)> signalDeletedDocument;
-  /// signal on renaming Document
-  boost::signal<void (Gui::Document&)> signalRenameDocument;
-  //@}
+    /** @name Signals of the Application */
+    //@{
+    /// signal on new Document
+    boost::signal<void (Gui::Document&)> signalNewDocument;
+    /// signal on deleted Document
+    boost::signal<void (Gui::Document&)> signalDeleteDocument;
+    /// signal on renaming Document
+    boost::signal<void (Gui::Document&)> signalRenameDocument;
+    /// signal on activating Document
+    boost::signal<void (Gui::Document&)> signalActiveDocument;
+    //@}
 
-  /** @name methods for Document handling */
-  //@{
-  /// Observer message from the Application
-  //virtual void OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason);
-  void slotNewDocument(App::Document&);
-  void slotDeletedDocument(App::Document&);
-  void slotRenameDocument(App::Document&);
-  /// message when a GuiDocument is about to vanish
-  void onLastWindowClosed(Gui::Document* pcDoc);
-  /// Getter for the active document
-  Gui::Document* activeDocument(void) const;
-  /// Set the active document
-  void setActiveDocument(Gui::Document* pcDocument);
-  /** Retrieves a pointer to the Gui::Document whose App::Document has the name \a name.
-   * If no such document exists 0 is returned.
-   */
-  Gui::Document* getDocument(const char* name) const;
-  /** Retrieves a pointer to the Gui::Document whose App::Document matches to \a pDoc.
-   * If no such document exists 0 is returned.
-   */
-  Gui::Document* getDocument(App::Document* pDoc) const;
-  //@}
-
-  /// true when the application shuting down
-  bool isClosing(void);
-
-  /** @name workbench handling */
-  //@{	
-  /// Activate a named workbench
-  bool activateWorkbench( const char* name );
-  QPixmap workbenchIcon( const QString& ) const;
-  QStringList workbenches(void) const;
-  void setupContextMenu(const char* recipient, MenuItem*) const;
-  //@}
-
-  /** @name User Commands */
-  //@{
-  /// Get macro manager
-  Gui::MacroManager *macroManager(void);
-  /// Reference to the command manager
-  Gui::CommandManager &commandManager(void);
-  /// Run a Python command
-  void runCommand(bool bForce, const char* sCmd,...);
-  /// helper which create the commands
-  void createStandardOperations();
-  //@}
-
-  /** @name Init, Destruct an Access methods */
-  //@{
-  /// some kind of singelton
-  static Application* Instance;
-  static void initApplication(void);
-  static void initTypes(void);
-  static void runApplication(void);
-  void tryClose( QCloseEvent * e );
-  //@}
+    /** @name methods for Document handling */
+    //@{
+protected:
+    /// Observer message from the Application
+    void slotNewDocument(App::Document&);
+    void slotDeleteDocument(App::Document&);
+    void slotRenameDocument(App::Document&);
+    void slotActiveDocument(App::Document&);
 
 public:
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
-  // static python wrapper of the exported functions
-  PYFUNCDEF_S(sActivateWorkbenchHandler); // activates a workbench object
-  PYFUNCDEF_S(sAddWorkbenchHandler);      // adds a new workbench handler to a list
-  PYFUNCDEF_S(sRemoveWorkbenchHandler);   // removes a workbench handler from the list
-  PYFUNCDEF_S(sGetWorkbenchHandler);      // retrieves the workbench handler
-  PYFUNCDEF_S(sListWorkbenchHandlers);    // retrieves a list of all workbench handlers
-  PYFUNCDEF_S(sCreateWorkbench);          // creates a new workbench object
-  PYFUNCDEF_S(sActiveWorkbench);          // retrieves the active workbench object
-  PYFUNCDEF_S(sListWorkbenches);          // retrieves a list of all workbench objects
-  PYFUNCDEF_S(sGetWorkbench);             // retrieves a workbench object
-  PYFUNCDEF_S(sHasWorkbench);             // checks for a workbench object
-  PYFUNCDEF_S(sAddIconPath);              // adds a path to an icon file
+    /// message when a GuiDocument is about to vanish
+    void onLastWindowClosed(Gui::Document* pcDoc);
+    /// Getter for the active document
+    Gui::Document* activeDocument(void) const;
+    /// Set the active document
+    void setActiveDocument(Gui::Document* pcDocument);
+    /** Retrieves a pointer to the Gui::Document whose App::Document has the name \a name.
+    * If no such document exists 0 is returned.
+    */
+    Gui::Document* getDocument(const char* name) const;
+    /** Retrieves a pointer to the Gui::Document whose App::Document matches to \a pDoc.
+    * If no such document exists 0 is returned.
+    */
+    Gui::Document* getDocument(App::Document* pDoc) const;
+    //@}
 
-  PYFUNCDEF_S(sSendActiveView);
+    /// true when the application shuting down
+    bool isClosing(void);
 
-  PYFUNCDEF_S(sUpdateGui);
-  PYFUNCDEF_S(sCreateDialog);
+    /** @name workbench handling */
+    //@{	
+    /// Activate a named workbench
+    bool activateWorkbench( const char* name );
+    QPixmap workbenchIcon( const QString& ) const;
+    QStringList workbenches(void) const;
+    void setupContextMenu(const char* recipient, MenuItem*) const;
+    //@}
 
-  PYFUNCDEF_S(sRunCommand);
-  PYFUNCDEF_S(sAddCommand);
+    /** @name User Commands */
+    //@{
+    /// Get macro manager
+    Gui::MacroManager *macroManager(void);
+    /// Reference to the command manager
+    Gui::CommandManager &commandManager(void);
+    /// Run a Python command
+    void runCommand(bool bForce, const char* sCmd,...);
+    /// helper which create the commands
+    void createStandardOperations();
+    //@}
 
-  PYFUNCDEF_S(sHide);
-  PYFUNCDEF_S(sShow);
-  
-  PYFUNCDEF_S(sOpen);                     // open Python scripts
-  PYFUNCDEF_S(sInsert);                   // open Python scripts
+    /** @name Init, Destruct an Access methods */
+    //@{
+    /// some kind of singelton
+    static Application* Instance;
+    static void initApplication(void);
+    static void initTypes(void);
+    static void runApplication(void);
+    void tryClose( QCloseEvent * e );
+    //@}
 
-  PYFUNCDEF_S(sActiveDocument);
-  PYFUNCDEF_S(sGetDocument);
+public:
+    //---------------------------------------------------------------------
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+    //---------------------------------------------------------------------
+    // static python wrapper of the exported functions
+    PYFUNCDEF_S(sActivateWorkbenchHandler); // activates a workbench object
+    PYFUNCDEF_S(sAddWorkbenchHandler);      // adds a new workbench handler to a list
+    PYFUNCDEF_S(sRemoveWorkbenchHandler);   // removes a workbench handler from the list
+    PYFUNCDEF_S(sGetWorkbenchHandler);      // retrieves the workbench handler
+    PYFUNCDEF_S(sListWorkbenchHandlers);    // retrieves a list of all workbench handlers
+    PYFUNCDEF_S(sCreateWorkbench);          // creates a new workbench object
+    PYFUNCDEF_S(sActiveWorkbench);          // retrieves the active workbench object
+    PYFUNCDEF_S(sListWorkbenches);          // retrieves a list of all workbench objects
+    PYFUNCDEF_S(sGetWorkbench);             // retrieves a workbench object
+    PYFUNCDEF_S(sHasWorkbench);             // checks for a workbench object
+    PYFUNCDEF_S(sAddIconPath);              // adds a path to an icon file
 
-  static PyMethodDef    Methods[]; 
+    PYFUNCDEF_S(sSendActiveView);
+
+    PYFUNCDEF_S(sUpdateGui);
+    PYFUNCDEF_S(sCreateDialog);
+
+    PYFUNCDEF_S(sRunCommand);
+    PYFUNCDEF_S(sAddCommand);
+
+    PYFUNCDEF_S(sHide);
+    PYFUNCDEF_S(sShow);
+
+    PYFUNCDEF_S(sOpen);                     // open Python scripts
+    PYFUNCDEF_S(sInsert);                   // open Python scripts
+
+    PYFUNCDEF_S(sActiveDocument);
+    PYFUNCDEF_S(sGetDocument);
+
+    static PyMethodDef    Methods[]; 
 
 private:
-  struct ApplicationP* d;
-  /// workbench python dictionary
-  PyObject*		 _pcWorkbenchDictionary;
+    struct ApplicationP* d;
+    /// workbench python dictionary
+    PyObject*             _pcWorkbenchDictionary;
 };
 
 } //namespace Gui

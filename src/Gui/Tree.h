@@ -60,6 +60,13 @@ public:
     DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent);
     ~DocumentItem();
 
+    void setObjectHighlighted(const char*, bool);
+    void setObjectSelected(const char*, bool);
+    void clearSelection(void);
+    void updateSelection(void);
+    void testStatus(void);
+
+protected:
     /** Adds a view provider to the document item.
      * If this view provider is already added nothing happens.
      */
@@ -67,15 +74,10 @@ public:
     /** Removes a view provider from the document item.
      * If this view provider is not added nothing happens.
      */
-    void slotDeletedObject(Gui::ViewProviderDocumentObject&);
-    void slotChangedObject(Gui::ViewProviderDocumentObject&);
-    void slotRenamedObject(Gui::ViewProviderDocumentObject&);
-
-    void setObjectHighlighted(const char*, bool);
-    void setObjectSelected(const char*, bool);
-    void clearSelection(void);
-    void updateSelection(void);
-    void testStatus(void);
+    void slotDeleteObject(Gui::ViewProviderDocumentObject&);
+    void slotChangeObject(Gui::ViewProviderDocumentObject&);
+    void slotRenameObject(Gui::ViewProviderDocumentObject&);
+    void slotActiveObject(Gui::ViewProviderDocumentObject&);
 
 private:
     Gui::Document* pDocument;
@@ -115,9 +117,6 @@ public:
     ~TreeDockWidget();
 
     const char *getName(void) const {return "TreeView";}
-    void slotNewDocument(Gui::Document&);
-    void slotDeletedDocument(Gui::Document&);
-    void slotRenameDocument(Gui::Document&);
 
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
@@ -128,6 +127,11 @@ public Q_SLOTS:
     void onTestStatus(void);
 
 protected:
+    void slotNewDocument(Gui::Document&);
+    void slotDeleteDocument(Gui::Document&);
+    void slotRenameDocument(Gui::Document&);
+    void slotActiveDocument(Gui::Document&);
+
     void contextMenuEvent ( QContextMenuEvent * e );
     void changeEvent(QEvent *e);
 

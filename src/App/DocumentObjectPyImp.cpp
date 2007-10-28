@@ -12,21 +12,17 @@ using namespace App;
 // returns a string which represent the object e.g. when printed in python
 const char *DocumentObjectPy::representation(void)
 {
-    return "DocumentObjectPy";
+    return "Document object";
 }
 
-PyObject*  DocumentObjectPy::getInternalName(PyObject *args)
+Py::String DocumentObjectPy::getName(void) const
 {
-    if (!PyArg_ParseTuple(args, ""))   // convert args: Python->C 
-        return NULL;                   // NULL triggers exception 
-
     DocumentObject* object = this->getDocumentObjectObject();
     const char* internal = object->getNameInDocument();
     if (!internal) {
-        PyErr_SetString(PyExc_RuntimeError, "This object is currently not part of a document");
-        return NULL;
+        throw Py::RuntimeError(std::string("This object is currently not part of a document"));
     }
-    return PyString_FromString(internal);
+    return Py::String(std::string(internal));
 }
 
 PyObject*  DocumentObjectPy::touch(PyObject *args)

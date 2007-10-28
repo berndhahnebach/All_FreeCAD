@@ -208,12 +208,9 @@ Document* Application::newDocument(const char * Name, const char * UserName)
   _pActiveDoc->signalDeletedObject.connect(boost::bind(&App::Application::slotDeletedObject, this, _1));
   _pActiveDoc->signalChangedObject.connect(boost::bind(&App::Application::slotChangedObject, this, _1));
   _pActiveDoc->signalRenamedObject.connect(boost::bind(&App::Application::slotRenamedObject, this, _1));
+  _pActiveDoc->signalActivatedObject.connect(boost::bind(&App::Application::slotActivatedObject, this, _1));
 
 
-  //AppChanges Reason;
-  //Reason.Doc = _pActiveDoc;
-  //Reason.Why = AppChanges::New;
-  //Notify(Reason);
   signalNewDocument(*_pActiveDoc);
 
   return _pActiveDoc;
@@ -227,11 +224,7 @@ bool Application::closeDocument(const char* name)
 
   // Trigger observers before removing the document from the internal map.
   // Some observers might rely on that this document is still there.
-  /*AppChanges Reason;
-  Reason.Doc = pos->second;
-  Reason.Why = AppChanges::Del;
-  Notify(Reason);*/
-  signalDeletedDocument(*pos->second);
+  signalDeleteDocument(*pos->second);
 
   // For exception-safety use a smart pointer
   if(_pActiveDoc == pos->second)
@@ -372,6 +365,8 @@ Document* Application::getActiveDocument(void) const
 void Application::setActiveDocument(Document* pDoc)
 {
 	_pActiveDoc = pDoc;
+    if (pDoc)
+        signalActiveDocument(*pDoc);
 }
 
 void Application::setActiveDocument(const char *Name)
@@ -385,10 +380,14 @@ void Application::setActiveDocument(const char *Name)
   std::map<std::string,Document*>::iterator pos;
   pos = DocMap.find(Name);
 
-  if(pos != DocMap.end())
-	  _pActiveDoc = pos->second;
-  else
-    Base::Console().Warning("try to set unknown document active (ignored)!");
+  if (pos != DocMap.end()) {
+    setActiveDocument(pos->second);
+  }
+  else {
+    std::stringstream s;
+    s << "Try to activate unknown document '" << Name << "'";
+    throw Base::Exception(s.str());
+  }
 }
 
 const char* Application::GetHomePath(void)
@@ -581,6 +580,11 @@ void Application::slotChangedObject(App::DocumentObject&O)
 void Application::slotRenamedObject(App::DocumentObject&O)
 {
   this->signalRenamedObject(O);
+}
+
+void Application::slotActivatedObject(App::DocumentObject&O)
+{
+  this->signalActivatedObject(O);
 }
 
 

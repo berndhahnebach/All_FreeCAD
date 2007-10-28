@@ -106,6 +106,8 @@ public:
     boost::signal<void (App::DocumentObject&)> signalChangedObject;
     /// signal on renamed Object
     boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+    /// signal on activated Object
+    boost::signal<void (App::DocumentObject&)> signalActivatedObject;
     /** signal on save document
      * this signal is given when the document get streamt.
      * you can use this hook to write additional information in 

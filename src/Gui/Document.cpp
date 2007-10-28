@@ -82,6 +82,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcDocument->signalDeletedObject.connect(boost::bind(&Gui::Document::slotDeletedObject, this, _1));
   pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1));
   pcDocument->signalRenamedObject.connect(boost::bind(&Gui::Document::slotRenamedObject, this, _1));
+  pcDocument->signalActivatedObject.connect(boost::bind(&Gui::Document::slotActivatedObject, this, _1));
   //pcDocument->signalNewObject.connect(&(this->slotNewObject));
   
   // pointer to the python class
@@ -102,7 +103,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   //pcTreeItem = new DocItem(Gui::getMainWindow()->getTreeView()->getMainItem(),this);
   //pcTreeItem = Gui::getMainWindow()->getTreeView()->NewDoc(this);
   // open at least one viewer
-  createView("View3DIv");
+  //createView("View3DIv");
 }
 
 
@@ -402,126 +403,13 @@ void Document::slotRenamedObject(App::DocumentObject& Obj)
     }
 }
 
-/*
-void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
+void Document::slotActivatedObject(App::DocumentObject& Obj)
 {
-#ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::Document::OnChange()");
-#endif
-
-  if(Reason.Why == App::DocChanges::Rename)
-  {
-    onRename();
-    setModified(false); // either opened or saved
-    return;
-  }
-
-  setModified(true);
-  std::list<Gui::BaseView*>::iterator VIt;
-
-  // remove the representation of Objects no longer exist
-  std::set<App::DocumentObject*>::const_iterator It;
-
-  DocChanges DocChange;
-  for(It=Reason.DeletedObjects.begin();It!=Reason.DeletedObjects.end();It++)
-  {
-    // cycling to all views of the document
-    ViewProvider* vpInv = getViewProvider( *It );
-    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-    {
-      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-      if(pcIvView && vpInv)
-      {
-        pcIvView->getViewer()->removeViewProvider( vpInv );
-      }
+    ViewProvider* viewProvider = getViewProvider(&Obj);
+    if (viewProvider && viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
+        signalActivatedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
     }
-
-    if ( vpInv )
-    {
-      // removing from tree
-      pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
-
-      //delete vpInv;
-      DocChange.ViewProviders.insert(vpInv);
-      _ViewProviderMap.erase(*It);
-    }
-
-    // remove also from the selection, if selected
-    Selection().rmvSelection( _pcDocument->getName(), (*It)->getNameInDocument() );
-  }
-
-  if ( !DocChange.ViewProviders.empty() ) {
-    DocChange.Why = DocChanges::Delete;
-    Notify(DocChange);
-    for ( std::set<ViewProvider*>::iterator vp = DocChange.ViewProviders.begin(); vp != DocChange.ViewProviders.end(); ++vp )
-      delete *vp;
-    DocChange.ViewProviders.clear();
-  }
-
-
-  // set up new providers
-  std::vector<App::DocumentObject*>::const_iterator it;
-  for(it=Reason.NewObjects.begin();it!=Reason.NewObjects.end();it++)
-  {
-    std::string cName = (*it)->getViewProviderName();
-    if (cName.empty()) {
-      // handle document object with no view provider specified
-      Base::Console().Log("%s has no view provider specified\n", (*it)->getTypeId().getName());
-      continue;
-    }
-
-    ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
-    if ( pcProvider )
-    {
-      // type not derived from ViewProviderDocumentObject!!!
-      assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
-      _ViewProviderMap[*it] = pcProvider;
-
-      try{
-        // if succesfully created set the right name and calculate the view
-        pcProvider->attach(*it);
-        pcProvider->setActiveMode();
-      }catch(const Base::MemoryException& e){
-        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*it)->getNameInDocument(),e.what());
-      }catch(Base::Exception &e){
-        e.ReportException();
-      }
-#ifndef FC_DEBUG
-      catch(...){
-        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*it)->getNameInDocument());
-      }
-#endif
-
-      // cycling to all views of the document
-      for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-      {
-        View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-        if(pcIvView)
-          pcIvView->getViewer()->addViewProvider(pcProvider);
-      }
-
-      // adding to the tree
-      pcTreeItem->addViewProviderDocumentObject(pcProvider);
-
-    }else{
-      Base::Console().Warning("Gui::Document::OnChange() no view provider for the object %s found\n",cName.c_str());
-    }
-  }
-
-  // update recalculated features
-  for(It=Reason.UpdatedObjects.begin();It!=Reason.UpdatedObjects.end();It++)
-  {
-    ViewProvider* vpInv = getViewProvider( *It );
-    if ( vpInv )
-      vpInv->update();
-  }
-
-  //getViewer()->addViewProvider()
-  
-  
-  onUpdate();
 }
-*/
 
 void Document::setModified(bool b)
 {

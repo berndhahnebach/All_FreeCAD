@@ -61,8 +61,9 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     Gui::Selection().Attach(this);
     // Setup connections
     Application::Instance->signalNewDocument.connect(boost::bind(&TreeDockWidget::slotNewDocument, this, _1));
-    Application::Instance->signalDeletedDocument.connect(boost::bind(&TreeDockWidget::slotDeletedDocument, this, _1));
+    Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeDockWidget::slotDeleteDocument, this, _1));
     Application::Instance->signalRenameDocument.connect(boost::bind(&TreeDockWidget::slotRenameDocument, this, _1));
+    Application::Instance->signalActiveDocument.connect(boost::bind(&TreeDockWidget::slotActiveDocument, this, _1));
 
     QGridLayout* pLayout = new QGridLayout(this); 
     pLayout->setSpacing(0);
@@ -105,15 +106,9 @@ void TreeDockWidget::slotNewDocument(Gui::Document& Doc)
     item->setIcon(0, *documentPixmap);
     item->setText(0, QString(Doc.getDocument()->getName()));
     DocumentMap[ &Doc ] = item;
-
-    // Setup connections
-    Doc.signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, item, _1));
-    Doc.signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeletedObject, item, _1));
-    Doc.signalChangedObject.connect(boost::bind(&DocumentItem::slotChangedObject, item, _1));
-    Doc.signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenamedObject, item, _1));
 }
 
-void TreeDockWidget::slotDeletedDocument(Gui::Document& Doc)
+void TreeDockWidget::slotDeleteDocument(Gui::Document& Doc)
 {
     std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
@@ -125,9 +120,20 @@ void TreeDockWidget::slotDeletedDocument(Gui::Document& Doc)
 
 void TreeDockWidget::slotRenameDocument(Gui::Document& Doc)
 {
-    std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
-    if (it != DocumentMap.end()) {
-        it->second->setText(0, QString(Doc.getDocument()->getName()));
+    // do nothing here
+}
+
+void TreeDockWidget::slotActiveDocument(Gui::Document& Doc)
+{
+    std::map<Gui::Document*, DocumentItem*>::iterator jt = DocumentMap.find(&Doc);
+    if (jt == DocumentMap.end())
+        return; // signal is emitted before the item gets created
+    for (std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.begin();
+         it != DocumentMap.end(); ++it)
+    {
+        QFont f = it->second->font(0);
+        f.setBold(it == jt);
+        it->second->setFont(0,f);
     }
 }
 
@@ -240,6 +246,12 @@ TreeWidget::~TreeWidget()
 DocumentItem::DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent)
     : QTreeWidgetItem(parent), pDocument(doc)
 {
+    // Setup connections
+    doc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
+    doc->signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeleteObject, this, _1));
+    doc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
+    doc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
+    doc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
 }
 
 DocumentItem::~DocumentItem()
@@ -256,13 +268,12 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
         item->setIcon(0, obj.getIcon());
         item->setText(0, QString::fromUtf8(displayName.c_str()));
         ObjectMap[objectName] = item;
-        slotChangedObject(obj);
     } else {
         Base::Console().Warning("DocumentItem::slotNewObject: Cannot add view provider twice.\n");
     }
 }
 
-void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotDeleteObject(Gui::ViewProviderDocumentObject& obj)
 {
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
@@ -281,7 +292,7 @@ void DocumentItem::slotDeletedObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& view)
+void DocumentItem::slotChangeObject(Gui::ViewProviderDocumentObject& view)
 {
     // As we immediately add a newly created object to the tree we check here which
     // item (this or a DocumentObjectItem) is the parent of the associated item of 'view'
@@ -336,15 +347,34 @@ void DocumentItem::slotChangedObject(Gui::ViewProviderDocumentObject& view)
     }
 }
 
-void DocumentItem::slotRenamedObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotRenameObject(Gui::ViewProviderDocumentObject& obj)
+{
+    for (std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+        if (it->second->object() == &obj) {
+            DocumentObjectItem* item = it->second;
+            ObjectMap.erase(it);
+            std::string objectName = obj.getObject()->getNameInDocument();
+            ObjectMap[objectName] = item;
+            return;
+        }
+    }
+
+    // no such object found
+    Base::Console().Warning("DocumentItem::slotRenamedObject: Cannot rename unknown object.\n");
+}
+
+void DocumentItem::slotActiveObject(Gui::ViewProviderDocumentObject& obj)
 {
     std::string objectName = obj.getObject()->getNameInDocument();
-    std::string displayName = obj.getObject()->Label.getValue();
-    std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
-    if (it != ObjectMap.end()) {
-        it->second->setText(0, QString::fromUtf8(displayName.c_str()));
-    } else {
-        Base::Console().Warning("DocumentItem::slotRenamedObject: Cannot rename unknown object.\n");
+    std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(objectName);
+    if (jt == ObjectMap.end())
+        return; // signal is emitted before the item gets created
+    for (std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.begin();
+         it != ObjectMap.end(); ++it)
+    {
+        QFont f = it->second->font(0);
+        f.setBold(it == jt);
+        it->second->setFont(0,f);
     }
 }
 

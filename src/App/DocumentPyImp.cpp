@@ -123,13 +123,15 @@ PyObject*  DocumentPy::commitTransaction(PyObject *args)
 
 PyObject*  DocumentPy::undo(PyObject *args)
 {
-    getDocumentObject()->undo();
+    if (getDocumentObject()->getAvailableUndos())
+        getDocumentObject()->undo();
     Py_Return;
 }
 
 PyObject*  DocumentPy::redo(PyObject *args)
 {
-    getDocumentObject()->redo();
+    if (getDocumentObject()->getAvailableRedos())
+        getDocumentObject()->redo();
     Py_Return;
 }
 

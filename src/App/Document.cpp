@@ -1140,6 +1140,7 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     // mark the object as new (i.e. set status bit 2) and send the signal
     pcObject->StatusBits.set(2);
     signalNewObject(*pcObject);
+    signalActivatedObject(*pcObject);
 
     // return the Object
     return pcObject;

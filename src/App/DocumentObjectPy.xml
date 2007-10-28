@@ -16,11 +16,12 @@
         <UserDocu>Mark the object as changed (touched)</UserDocu>
       </Documentation>
     </Methode>
-	<Methode Name="getInternalName">
+	<Attribute Name="Name" ReadOnly="true">
 	  <Documentation>
 		<UserDocu>Return the internal name of this object</UserDocu>
 		</Documentation>
-	</Methode>
+		<Parameter Name="Name" Type="String"/>
+	</Attribute>
 	<Attribute Name="State" ReadOnly="true">
       <Documentation>
         <UserDocu>State of the object in the document</UserDocu>
