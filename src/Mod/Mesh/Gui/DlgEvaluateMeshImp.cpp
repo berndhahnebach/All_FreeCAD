@@ -125,7 +125,7 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
     // Connect to application and active document
     this->connectDocumentDeletedObject = _pDoc->signalDeletedObject.connect(boost::bind
         (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
-    this->connectApplicationDeletedDocument = App::GetApplication().signalDeletedDocument.connect(boost::bind
+    this->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument.connect(boost::bind
         (&MeshGui::DlgEvaluateMeshImp::slotDeletedDocument, this, _1));
 
     this->on_refreshButton_clicked();

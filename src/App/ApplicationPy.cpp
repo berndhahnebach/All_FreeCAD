@@ -133,7 +133,12 @@ PYFUNCIMP_S(Application,sSetActiveDocument)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
       return NULL;                             // NULL triggers exception 
 
-  GetApplication().setActiveDocument(pstr);
+  try {
+    GetApplication().setActiveDocument(pstr);
+  } catch (const Base::Exception& e) {
+    PyErr_SetString(PyExc_Exception, e.what());
+    return NULL;
+  }
 
   Py_Return;
 }

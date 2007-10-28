@@ -57,35 +57,23 @@ class ViewProvider;
 class ViewProviderDocumentObject;
 class Application;
 class DocumentPy;
-class DocItem;
-
-class GuiExport DocChanges
-{
-public:  
-    enum {
-        New,
-        Update,
-        Delete
-    } Why;
-
-    std::set<ViewProvider*> ViewProviders;
-};
 
 /** The Gui Document
  *  This is the document on GUI level. Its main responsibility is 
  *  keeping track off open windows for a document, handling the OCC
  *  interactiv context and warning on unsaved closes.
  *  All handled views on the document must inherit from MDIView
- *  @see FCDocument 
+ *  @see App::Document 
  *  @see MDIView
  *  @author Jürgen Riegel
  */
-class GuiExport Document : /*public QObject,public App::Document::ObserverType, */ public Base::Subject<const DocChanges&>, public Base::Persistance
+class GuiExport Document : public Base::Persistance
 {
 public:
     Document(App::Document* pcDocument, Application * app, const char * name=0);
     ~Document();
 
+protected:
     /** @name I/O of the document */
     //@{
     /// This slot is connected to the App::Document::signalNewObject(...)
@@ -93,8 +81,11 @@ public:
     void slotDeletedObject(App::DocumentObject&);
     void slotChangedObject(App::DocumentObject&);
     void slotRenamedObject(App::DocumentObject&);
+    void slotActivatedObject(App::DocumentObject&);
     virtual void refresh(App::DocumentObject&) const {};
     //@}
+
+public:
     /** @name Signals of the document */
     //@{
     /// signal on new Object
@@ -105,6 +96,8 @@ public:
     boost::signal<void (Gui::ViewProviderDocumentObject&)> signalChangedObject;
     /// signal on renamed Object
     boost::signal<void (Gui::ViewProviderDocumentObject&)> signalRenamedObject;
+    /// signal on activated Object
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalActivatedObject;
     //@}
 
     /** @name I/O of the document */
@@ -124,7 +117,6 @@ public:
     //@}
 
     /// Observer message from the App doc
-    //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
     void setModified(bool);
     bool isModified() const { return _isModified; }
 

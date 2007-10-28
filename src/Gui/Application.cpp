@@ -111,8 +111,9 @@ Application::Application()
 {
   //App::GetApplication().Attach(this);
   App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
-  App::GetApplication().signalDeletedDocument.connect(boost::bind(&Gui::Application::slotDeletedDocument, this, _1));
+  App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
   App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
+  App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
 
 
   // install the last active language
@@ -122,7 +123,7 @@ Application::Application()
   GetWidgetFactorySupplier();
 
   // setting up Python binding
-  (void) Py_InitModule3("FreeCADGui", Application::Methods,
+  PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
     "The functions in the FreeCADGui module allow working with GUI documents,\n"
     "view providers, views, workbenches and much more.\n\n"
     "The FreeCADGui instance provides a list of references of GUI documents which\n"
@@ -131,6 +132,7 @@ Application::Application()
     "accessed with the same name.\n\n"
     "The FreeCADGui module also provides a set of functions to work with so called\n"
     "workbenches.");
+  Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
 
   d = new ApplicationP;
 
@@ -276,19 +278,6 @@ void Application::createStandardOperations()
   Gui::CreateTestCommands();
 }
 
-/*
-void Application::OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason)
-{
-  switch(Reason.Why){
-  case App::AppChanges::New:
-    OnDocNew(Reason.Doc);
-    break;
-  case App::AppChanges::Del:
-    OnDocDelete(Reason.Doc);
-    break;
-  }
-}
-*/
 void Application::slotNewDocument(App::Document& Doc)
 {
 #ifdef FC_DEBUG
@@ -298,9 +287,10 @@ void Application::slotNewDocument(App::Document& Doc)
   Gui::Document* pDoc = new Gui::Document(&Doc,this);
   d->lpcDocuments[&Doc] = pDoc;
   signalNewDocument(*pDoc);
+  pDoc->createView("View3DIv");
 }
 
-void Application::slotDeletedDocument(App::Document& Doc)
+void Application::slotDeleteDocument(App::Document& Doc)
 {
   std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
@@ -310,7 +300,7 @@ void Application::slotDeletedDocument(App::Document& Doc)
 
   // We must clear the selection here to notify all observers
   Gui::Selection().clearSelection(doc->second->getDocument()->getName());
-  signalDeletedDocument(*doc->second);
+  signalDeleteDocument(*doc->second);
 
   // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
   // view that becomes active sets the active document again. So, we needn't worry about this.
@@ -329,6 +319,16 @@ void Application::slotRenameDocument(App::Document& Doc)
 #endif
 
   signalRenameDocument(*doc->second);
+}
+
+void Application::slotActiveDocument(App::Document& Doc)
+{
+  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+#ifdef FC_DEBUG
+  assert(doc!=d->lpcDocuments.end());
+#endif
+
+  signalActiveDocument(*doc->second);
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
@@ -380,24 +380,35 @@ Gui::Document* Application::activeDocument(void) const
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
-  //FIXME: Fix this bug
-  //return;
-  d->_pcActiveDocument=pcDocument;
-  string name;
+  d->_pcActiveDocument = pcDocument;
+  std::string name;
  
   // This adds just a line to the macro file but does not set the active document
   if(pcDocument){
     name += "App.setActiveDocument(\"";
     name += pcDocument->getDocument()->getName(); 
+    name +=  "\")\n";
+    name += "App.ActiveDocument=App.getDocument(\"";
+    name += pcDocument->getDocument()->getName(); 
+    name +=  "\")\n";
+    name += "Gui.ActiveDocument=Gui.getDocument(\"";
+    name += pcDocument->getDocument()->getName(); 
     name +=  "\")";
     macroManager()->addLine(MacroManager::Gui,name.c_str());
   }else{
-    name += "App.setActiveDocument(\"\")";
+    name += "App.setActiveDocument(\"\")\n";
+    name += "App.ActiveDocument=None\n";
+    name += "Gui.ActiveDocument=None";
     macroManager()->addLine(MacroManager::Gui,name.c_str());
   }
 
   // Sets the currently active document
-  Base::Interpreter().runString(name.c_str());
+  try {
+    Base::Interpreter().runString(name.c_str());
+  } catch (const Base::Exception& e) {
+    Base::Console().Warning(e.what());
+    return;
+  }
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);

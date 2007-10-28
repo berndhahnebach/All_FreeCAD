@@ -285,8 +285,8 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 + if (i.ReadOnly):
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {
-        PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is read-only");
-        return -1;
+    PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is read-only");
+    return -1;
 }
 = else:
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)

@@ -431,8 +431,13 @@ void ViewProviderMeshDegenerations::showDefects()
 
     // check if the points are coincident
     if ( rE0 == rE1 && rE0 == rE2 ) {
-      // not implemented yet
-      continue;
+      // set a small tolerance to get a non-degenerated line
+      float eps = 0.005f;
+      Base::Vector3f cP1, cP2;
+      cP1.Set(rE1.x+eps,rE1.y+eps,rE1.z+eps);
+      cP2.Set(rE2.x-eps,rE2.y-eps,rE2.z-eps);
+      pcCoords->point.set1Value(i++,cP1.x,cP1.y,cP1.z);
+      pcCoords->point.set1Value(i++,cP2.x,cP2.y,cP2.z);
     }
     else if ( rE0 == rE1 ) {
       pcCoords->point.set1Value(i++,rE1.x,rE1.y,rE1.z);

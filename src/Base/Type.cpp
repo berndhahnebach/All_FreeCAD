@@ -208,7 +208,7 @@ int Type::getAllDerivedFrom(const Type type, std::vector<Type> & List)
 
   for(std::vector<TypeData*>::const_iterator it = typedata.begin();it!= typedata.end();++it)
   {
-    if((*it)->parent == type)
+    if((*it)->type.isDerivedFrom(type))
     {
       List.push_back((*it)->type);
       cnt++;
