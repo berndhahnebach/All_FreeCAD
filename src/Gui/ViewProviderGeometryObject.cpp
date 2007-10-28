@@ -113,9 +113,6 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
 void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
 {
   ViewProviderDocumentObject::attach(pcObj);
-
-  calcMaterial = pcObject->getTouchViewTime();
-  calcData = pcObject->getTouchTime();
 }
 
 SoPickedPointList ViewProviderGeometryObject::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const
@@ -152,38 +149,4 @@ SoPickedPoint* ViewProviderGeometryObject::getPickedPoint(const SbVec2s& pos, co
   // returns a copy of the point
   SoPickedPoint* pick = rp.getPickedPoint();
   return (pick ? pick->copy() : 0);
-}
-
-bool ViewProviderGeometryObject::ifDataNewer(void) const
-{
-  // first do attach
-  assert(pcObject);
-  return pcObject->getTouchTime() > calcData || pcObject->getTouchTime() == calcData; 
-}
-
-bool ViewProviderGeometryObject::ifMaterialNewer(void) const
-{
-  // first do attach
-  assert(pcObject);
-  return pcObject->getTouchViewTime() > calcMaterial || pcObject->getTouchViewTime() == calcMaterial; 
-
-}
-
-void ViewProviderGeometryObject::update(void)
-{
-  //FIXME: Leads to problems when using time stamps. It's basically the same problem as desribed in 
-  //       AbstractFeature::mustExecute().
-  updateData();
-//  if(ifDataNewer())
-//  {
-//    updateData();
-//    
-//    calcData.setToActual();
-//  }
-//
-//  if(ifMaterialNewer())
-//  {
-////    setMatFromObject();
-//    calcMaterial.setToActual();
-//  }
 }

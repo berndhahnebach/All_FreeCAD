@@ -75,7 +75,6 @@ public:
   virtual ~ViewProviderExport();
 
   virtual QIcon getIcon() const;
-  void update();
   SoSeparator* getRoot(void){return 0;}
   std::vector<std::string> getDisplayModes(void) const;
   const char* getDefaultDisplayMode() const;

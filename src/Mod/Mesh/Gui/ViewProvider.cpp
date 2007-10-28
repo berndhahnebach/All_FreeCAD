@@ -139,10 +139,6 @@ QIcon ViewProviderExport::getIcon() const
     return px;
 }
 
-void ViewProviderExport::update()
-{
-}
-
 // ======================================================================
 
 App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {0.0f,20.0f,0.1f};
