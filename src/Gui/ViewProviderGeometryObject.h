@@ -75,12 +75,6 @@ public:
    */
   SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
 
-  /// check if the Data has to be recalculated
-  bool ifDataNewer(void) const;
-  /// check if the matrial has to be recalculated
-  bool ifMaterialNewer(void) const; 
-
-  virtual void update(void);
   virtual void updateData(void){};
 
 protected:
@@ -89,7 +83,6 @@ protected:
 
 protected:
   SoMaterial  *pcShapeMaterial;
-  Base::TimeInfo calcMaterial,calcData;
 };
 
 

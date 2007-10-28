@@ -356,11 +356,11 @@ int Document::getUndoMode(void) const
   return _iUndoMode;
 }
 
-
 unsigned int Document::getUndoMemSize (void) const
 {
   return 0;
 }
+
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
 {
   if(activUndoTransaction && !bRollback)

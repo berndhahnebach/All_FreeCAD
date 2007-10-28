@@ -47,7 +47,7 @@ namespace Gui {
 
 class ObjectItem;
 
-class GuiExport ViewProviderDocumentObject:public ViewProvider
+class GuiExport ViewProviderDocumentObject : public ViewProvider
 {
   PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
 
@@ -79,13 +79,6 @@ public:
   /// Sets the active mode, i.e. the first item of the 'Display' property.
   void setActiveMode();
 
-  /// check if the Data has to be recalculated
-  bool ifDataNewer(void) const;
-  /// check if the matrial has to be recalculated
-  bool ifMaterialNewer(void) const; 
-
-  virtual void update(void);
-
   virtual void updateData(void){};
 
   inline App::AbstractFeature *getAsFeature(void){
@@ -107,13 +100,9 @@ protected:
 
 protected:
   SoMaterial  *pcShapeMaterial;
-
   App::DocumentObject *pcObject;
-
   ObjectItem *pcObjItem;
-
   int _cLastStatus;
-  Base::TimeInfo calcMaterial,calcData;
 
 private:
   std::vector<const char*> aDisplayEnumsArray;

@@ -80,6 +80,15 @@ ViewProvider::~ViewProvider()
   pcModeSwitch->unref();
 }
 
+void ViewProvider::update(void)
+{
+    // Hide the object temporarily to speed up the update
+    bool vis = this->isShow();
+    if (vis) hide();
+    updateData();
+    if (vis) show();
+}
+
 QIcon ViewProvider::getIcon(void) const
 {
   return Gui::BitmapFactory().pixmap(sPixmap);

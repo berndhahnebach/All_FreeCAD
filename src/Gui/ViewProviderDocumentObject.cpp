@@ -156,10 +156,6 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   if ( defmode )
     DisplayMode.setValue(defmode);
   DisplayMode.enableNotify(true);
-
-
-  calcMaterial = pcObject->getTouchViewTime();
-  calcData = pcObject->getTouchTime();
 }
 
 SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type) const
@@ -193,31 +189,6 @@ void ViewProviderDocumentObject::setActiveMode()
     setDisplayMode(mode);
   if ( !Visibility.getValue() )
     ViewProvider::hide();
-}
-
-bool ViewProviderDocumentObject::ifDataNewer(void) const
-{
-  // first do attach
-  assert(pcObject);
-  return pcObject->getTouchTime() > calcData || pcObject->getTouchTime() == calcData; 
-}
-
-bool ViewProviderDocumentObject::ifMaterialNewer(void) const
-{
-  // first do attach
-  assert(pcObject);
-  return pcObject->getTouchViewTime() > calcMaterial || pcObject->getTouchViewTime() == calcMaterial; 
-
-}
-
-
-void ViewProviderDocumentObject::update(void)
-{
-    // Hide the object temporarily to speed up the update
-    bool vis = this->isShow();
-    if (vis) hide();
-    updateData();
-    if (vis) show();
 }
 
 const char* ViewProviderDocumentObject::getDefaultDisplayMode() const

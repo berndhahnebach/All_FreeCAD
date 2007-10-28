@@ -58,7 +58,7 @@ class ObjectItem;
 
 
 
-class GuiExport ViewProvider: public App::PropertyContainer
+class GuiExport ViewProvider : public App::PropertyContainer
 {
     PROPERTY_HEADER(Gui::ViewProvider);
 
@@ -85,7 +85,8 @@ public:
     * update. E.g. only the view attribute has changed, or
     * the data has manipulated.
     */
-  virtual void update(void)=0;
+  void update(void);
+  virtual void updateData(void)=0;
 
   std::string toString() const;
   PyObject* getPyObject();
