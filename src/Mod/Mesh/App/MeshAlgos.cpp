@@ -154,8 +154,29 @@ void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
 void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
 {
   Base::Builder3D builder;  
-  
   std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
+  std::vector<unsigned long> fliped;
+  MeshFacetIterator it(*Mesh);
+  for (  it.Init(); it.More(); it.Next() )
+  {
+    unsigned long p1,p2,p3;
+
+    // get the points of the facet
+    Mesh->GetFacetPoints(it.Position(),p1,p2,p3);
+
+    // construct the offseted twin
+    MeshGeomFacet twin(Mesh->GetPoint(p1) + normals[p1],Mesh->GetPoint(p2) + normals[p2],Mesh->GetPoint(p3) + normals[p3]);
+    // compare fore angel
+    float angle = acos((it->GetNormal() * twin.GetNormal()) / (it->GetNormal().Length() * twin.GetNormal().Length()));
+    if(angle < 1.6)
+      builder.addSinglePoint(it->GetGravityPoint(),3,1,0,0);
+    else 
+      fliped.push_back(it.Position());
+  }
+  
+  
+  
+  
 
   unsigned int i = 0;
   // go throug all the Vertex normales
@@ -164,6 +185,15 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
   }
+
+
+  MeshTopoAlgorithm alg(*Mesh);
+  for(std::vector<unsigned long>::iterator it= fliped.begin();it!=fliped.end();++it)
+    if( ! (Mesh->GetFacet(*it).IsFlag(MeshFacet::INVALID)))
+      alg.CollapseFacet(*it);
+  alg.Cleanup();
+
+
   Mesh->RecalcBoundBox();
 
   // search for intersected facets
