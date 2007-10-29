@@ -181,7 +181,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // of a member we must get it by its type instead of its instance otherwise we get the
         // wrong string, namely that of the type of the member. 
         // Note: 3rd party libraries may use their own type object classes so that we cannot 
-        // reliably use Py::Type. To be on the safe side we should use Py::Object to assigh
+        // reliably use Py::Type. To be on the safe side we should use Py::Object to assign
         // the used type object to.
         //Py::Object type = obj.type();
         Py::Object type(PyObject_Type(obj.ptr()), true);
@@ -207,11 +207,14 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         if (PyObject_IsSubclass(type.ptr(), appdoctypeobj.o)) {
             App::DocumentPy* docpy = (App::DocumentPy*)(inst.ptr());
             App::Document* document = docpy->getDocumentObject();
-            std::vector<App::DocumentObject*> objects = document->getObjects();
-            Py::List list;
-            for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-                list.append(Py::String((*it)->getNameInDocument()));
-            extractTipsFromObject(inst, list, tips);
+            // Make sure that the C++ object is alive
+            if (document) {
+                std::vector<App::DocumentObject*> objects = document->getObjects();
+                Py::List list;
+                for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+                    list.append(Py::String((*it)->getNameInDocument()));
+                extractTipsFromObject(inst, list, tips);
+            }
         }
 
         // If we derive from Gui::DocumentPy we have direct access to the objects by their internal
@@ -220,11 +223,14 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o)) {
             Gui::DocumentPy* docpy = (Gui::DocumentPy*)(inst.ptr());
             App::Document* document = docpy->getDocumentObject()->getDocument();
-            std::vector<App::DocumentObject*> objects = document->getObjects();
-            Py::List list;
-            for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-                list.append(Py::String((*it)->getNameInDocument()));
-            extractTipsFromObject(inst, list, tips);
+            // Make sure that the C++ object is alive
+            if (document) {
+                std::vector<App::DocumentObject*> objects = document->getObjects();
+                Py::List list;
+                for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+                    list.append(Py::String((*it)->getNameInDocument()));
+                extractTipsFromObject(inst, list, tips);
+            }
         }
 
         // These are the attributes from the type object
@@ -292,6 +298,7 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
 {
     App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(obj.ptr());
     App::PropertyContainer* container = cont->getPropertyContainerObject();
+    // Make sure that the C++ object is alive
     if (!container) return;
     std::map<std::string,App::Property*> Map;
     container->getPropertyMap(Map);
