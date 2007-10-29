@@ -10,6 +10,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -54,15 +55,15 @@
 #include "BRepAdaptor_CompCurve2.h"
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include "stuff.h"
-#include <Base/Builder3d.h>
+#include <Base/Builder3D.h>
 #include "best_fit.h"
 
 cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
         : m_Shape(aShape),
+        m_aMeshAlgo(m_CAD_Mesh),
+        m_CAD_Mesh_Grid(m_CAD_Mesh),
         m_mirrortobothsides(mirrortobothsides),
-        m_pitch(pitch),
-		m_aMeshAlgo(m_CAD_Mesh),
-		m_CAD_Mesh_Grid(m_CAD_Mesh)
+        m_pitch(pitch)
 {
     m_ordered_cuts.clear();
 	m_all_offset_cuts_high.clear();
@@ -178,7 +179,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 	if(m_cad==false) 
     {
 		//Cast um die Nachkommastellen wegzuschneiden
-        int cutnumber = fabs((m_maxlevel-m_minlevel)/m_pitch);
+        int cutnumber = (int)fabs((m_maxlevel-m_minlevel)/m_pitch);
 		//m_pitch leicht korrigieren um wirklich auf die letzte Ebene zu kommen
         m_pitch = fabs(m_maxlevel-m_minlevel)/cutnumber;
 		//Jetzt die Schnitte machen. Die höchste Ebene fällt weg, da hier noch kein Blech gedrückt wird
@@ -228,7 +229,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 				cout << "Mehrere Areas erkannt";
 			}
 			//Jetzt schnippeln von temp_max bis temp_min
-			int cutnumber = fabs((temp_max-temp_min)/m_pitch);
+			int cutnumber = (int)fabs((temp_max-temp_min)/m_pitch);
 			//m_pitch leicht korrigieren um wirklich auf die letzte Ebene zu kommen
 			m_pitch = fabs(temp_max-temp_min)/cutnumber;
 			//Jetzt die Schnitte machen. Die höchste Ebene fällt weg, da hier noch kein Blech gedrückt wird
@@ -250,6 +251,8 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			return true;
 		}
 	}
+
+	return false;
 }
 
 bool cutting_tools::checkFlatLevel()

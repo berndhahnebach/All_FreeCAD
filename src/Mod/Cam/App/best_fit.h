@@ -26,7 +26,6 @@
 #ifndef BEST_FIT_H
 #define BEST_FIT_H
 
-#define WM4_FOUNDATION_DLL_IMPORT
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
@@ -59,6 +58,7 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
@@ -119,7 +119,7 @@
 #include <BRepMesh.hxx>
 #include <MeshShape.hxx>
 #include <MeshAlgo.hxx>
-#include <handle_poly_triangulation.hxx>
+#include <Handle_Poly_Triangulation.hxx>
 #include <Poly_Triangulation.hxx>
 
 
@@ -152,3 +152,4 @@ public:
 };
 
 #endif
+

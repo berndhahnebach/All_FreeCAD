@@ -59,7 +59,8 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-# include <BRepMesh.hxx>
+#include <BRepTools.hxx>
+#include <BRepMesh.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
@@ -180,8 +181,8 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
 
 	Base::Builder3D aBuild;
 	
-		MeshCore::MeshKernel mesh;
-	  	MeshCore::MeshBuilder builder(mesh);
+		MeshCore::MeshKernel *mesh = new MeshCore::MeshKernel;
+	  	MeshCore::MeshBuilder builder(*mesh);
 		builder.Initialize(1000);
 		Base::Vector3f Points[3];
 		
@@ -378,7 +379,7 @@ static PyObject * cut(PyObject *self, PyObject *args)
 
 			Base::Builder3D logit;
 			
-/*
+
 			Jetzt die eigentlichen Schnitte erzeugen:
 			1.	Wenn die oberste Ebene ein flacher Bereich ist, werden von dort die Bounding Wires genommen
 				Ermittlung über die Bounding Box

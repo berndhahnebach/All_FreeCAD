@@ -17,3 +17,4 @@ struct edge_container
 	gp_Pnt lastPoint;
 
 };
+

@@ -15,6 +15,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <ElCLib.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
 #include "WireExplorer.h"
 
 BRepAdaptor_CompCurve2::BRepAdaptor_CompCurve2()
