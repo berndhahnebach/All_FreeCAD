@@ -55,7 +55,7 @@ public:
   virtual void attach(App::DocumentObject *);
 
   /// Update the Part representation
-  virtual void updateData(void){}
+  virtual void updateData(const App::Property*){}
 
   virtual void setEdit(void);
   virtual void unsetEdit(void);

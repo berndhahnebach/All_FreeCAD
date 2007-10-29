@@ -88,9 +88,9 @@ void ViewProviderMeshTransform::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcEditRoot, "Edit");
 }
 
-void ViewProviderMeshTransform::updateData(void)
+void ViewProviderMeshTransform::updateData(const App::Property* prop)
 {
-  ViewProviderMesh::updateData();
+  ViewProviderMesh::updateData(prop);
 }
 
 void ViewProviderMeshTransform::setDisplayMode(const char* ModeName)

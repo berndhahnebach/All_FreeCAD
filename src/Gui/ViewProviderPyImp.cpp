@@ -34,11 +34,13 @@ using namespace Gui;
 // returns a string which represent the object e.g. when printed in python
 const char *ViewProviderPy::representation(void)
 {
-	return "ViewProviderPy";
+	return "View provider";
 }
 
 PyObject*  ViewProviderPy::show(PyObject *args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
     PY_TRY {
         getViewProviderObject()->show();  
         Py_Return;
@@ -47,6 +49,8 @@ PyObject*  ViewProviderPy::show(PyObject *args)
 
 PyObject*  ViewProviderPy::hide(PyObject *args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
     PY_TRY {
         getViewProviderObject()->hide();  
         Py_Return;
@@ -55,6 +59,8 @@ PyObject*  ViewProviderPy::hide(PyObject *args)
 
 PyObject*  ViewProviderPy::isVisible(PyObject *args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
     PY_TRY {
         return Py_BuildValue("O", (getViewProviderObject()->isShow() ? Py_True : Py_False));
     } PY_CATCH;
@@ -62,8 +68,10 @@ PyObject*  ViewProviderPy::isVisible(PyObject *args)
 
 PyObject*  ViewProviderPy::update(PyObject *args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
     PY_TRY {
-        getViewProviderObject()->update();  
+        //getViewProviderObject()->update();  
         Py_Return;
     } PY_CATCH;
 }

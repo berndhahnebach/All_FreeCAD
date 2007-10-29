@@ -195,7 +195,7 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 }
 
-void ViewProviderMeshNode::updateData(void)
+void ViewProviderMeshNode::updateData(const App::Property*)
 {
   // Needs to update internal bounding box caches
   pcHighlight->touch();

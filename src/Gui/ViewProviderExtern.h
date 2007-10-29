@@ -58,7 +58,7 @@ public:
   
   virtual const char* getDefaultDisplayMode() const;
   virtual std::vector<std::string> getDisplayModes(void) const;
-  virtual void updateData(void){}
+  virtual void updateData(const App::Property*){}
 
 private:
   void adjustRecursiveDocumentName(SoNode*, const char* docname);

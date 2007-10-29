@@ -188,7 +188,7 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
 }
 
-void ViewProviderMeshCurvature::updateData(void)
+void ViewProviderMeshCurvature::updateData(const App::Property*)
 {
     if (pcObject->StatusBits.test(2)) {
         init( pcObject ); // init color bar

@@ -327,7 +327,7 @@ std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderPoints::updateData()
+void ViewProviderPoints::updateData(const App::Property*)
 {
   createPoints(dynamic_cast<Points::Feature*>(pcObject));
 
@@ -386,7 +386,6 @@ bool ViewProviderPoints::handleEvent(const SoEvent * const ev,Gui::View3DInvento
       clPoly.push_back(clPoly.front());
 
     cut( clPoly, Viewer );
-    updateData();
   }
 
   return false;

@@ -75,7 +75,7 @@ public:
   /// Returns a list of all possible modes
   std::vector<std::string> getDisplayModes(void) const;
   /// Updates the mesh feature representation
-  void updateData();
+  void updateData(const App::Property*);
   /// Returns a pixmap for the associated feature type
   QIcon getIcon() const;
   /// Once the color bar settinhs has been changed this method gets called to update the feature's representation

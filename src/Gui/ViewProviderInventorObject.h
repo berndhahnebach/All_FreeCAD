@@ -44,7 +44,7 @@ public:
     void attach(App::DocumentObject *pcObject);
     void setDisplayMode(const char* ModeName);
     std::vector<std::string> getDisplayModes() const;
-    void updateData(void);
+    void updateData(const App::Property*);
 
 protected:
     SoSeparator  *pcBuffer;

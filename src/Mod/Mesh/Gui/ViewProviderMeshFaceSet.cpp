@@ -216,28 +216,29 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 }
 
-void ViewProviderMeshFaceSet::updateData(void)
+void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 {
-  const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
-  if ( pcHighlight->getNumChildren() > 2 )
-  {
-    SoNode* ch1 = pcHighlight->getChild(0);
-    if ( ch1->getTypeId() == SoFCMeshVertex::getClassTypeId() ) {
-      const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
-      SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
-      vertex->point.setValue(rPAry);
-    }
+    if (prop->getTypeId() != Mesh::PropertyMeshKernel::getClassTypeId())
+        return;
+    const Mesh::Feature* meshFeature = static_cast<Mesh::Feature*>(pcObject);
+    if (pcHighlight->getNumChildren() > 2) {
+        SoNode* ch1 = pcHighlight->getChild(0);
+        if (ch1->getTypeId() == SoFCMeshVertex::getClassTypeId()) {
+            const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
+            SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
+            vertex->point.setValue(rPAry);
+        }
 
-    SoNode* ch2 = pcHighlight->getChild(1);
-    if ( ch2->getTypeId() == SoFCMeshFacet::getClassTypeId() ) {
-      const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
-      SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
-      facet->coordIndex.setValue(rFAry);
-    }
+        SoNode* ch2 = pcHighlight->getChild(1);
+        if (ch2->getTypeId() == SoFCMeshFacet::getClassTypeId()) {
+            const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
+            SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
+            facet->coordIndex.setValue(rFAry);
+        }
 
-    // Needs to update internal bounding box caches
-    pcFaceSet->touch();
-  }
+        // Needs to update internal bounding box caches
+        pcFaceSet->touch();
+    }
 }
 
 QIcon ViewProviderMeshFaceSet::getIcon() const

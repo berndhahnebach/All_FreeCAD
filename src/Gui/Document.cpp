@@ -160,12 +160,12 @@ Document::~Document()
 
 void Document::update(void)
 {
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
-    for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
-         It1->second->update();
-    std::map<std::string,ViewProvider*>::const_iterator It2;
-    for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
-         It2->second->update();
+    //std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
+    //for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+    //     It1->second->update();
+    //std::map<std::string,ViewProvider*>::const_iterator It2;
+    //for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+    //     It2->second->update();
 
     onUpdate();
 }
@@ -359,10 +359,8 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
         ViewProviderDocumentObject::getClassTypeId())) {
         // removing from tree
         signalDeletedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
-        //pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
 
-        //delete viewProvider;
-        //DocChange.ViewProviders.insert(viewProvider);
+        delete viewProvider;
         _ViewProviderMap.erase(&Obj);
     }
 }
@@ -373,7 +371,7 @@ void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
     ViewProvider* viewProvider = getViewProvider(&Obj);
     if (viewProvider) {
         try {
-            viewProvider->update();
+            viewProvider->update(&Prop);
         } catch(const Base::MemoryException& e) {
             Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
         } catch(Base::Exception &e){

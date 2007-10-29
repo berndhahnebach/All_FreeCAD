@@ -48,7 +48,7 @@ public:
   /// Update the Drawing representation
   //virtual void update(const ChangeType&);
 
-  virtual void updateData(void);
+  virtual void updateData(const App::Property*);
 
 protected:
 
