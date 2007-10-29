@@ -159,7 +159,6 @@ public:
 	std::vector<Base::Vector3f> m_normals;
 	std::list< std::vector <unsigned long> >  m_boundInd;
 	TopoDS_Shape m_Cad;
-	Mesh::PropertyCurvatureList m_CurvInfo;
 	std::vector<int> m_pntInd;
 
 protected:
