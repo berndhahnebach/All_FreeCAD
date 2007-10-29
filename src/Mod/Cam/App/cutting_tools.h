@@ -2,6 +2,8 @@
 #define Cutting_Tools
 
 #include "PreCompiled.h"
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
@@ -84,4 +86,4 @@ private:
 
 
 
-		
+

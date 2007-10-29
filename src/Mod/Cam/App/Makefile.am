@@ -8,12 +8,23 @@ libCam_la_SOURCES=\
 		AppCamPy.cpp \
 		Approx.cpp \
 		Approx.h \
+		best_fit.cpp \
+		best_fit.h \
+		BRepAdaptor_CompCurve2.cxx \
+		BRepAdaptor_CompCurve2.h \
 		ConvertDyna.cpp \
 		ConvertDyna.h \
+		cutting_tools.cpp \
+		cutting_tools.h \
+		path_simulate.cpp \
+		path_simulate.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		routine.cpp \
-		routine.h
+		routine.h \
+		stuff.h \
+		WireExplorer.cxx \
+		WireExplorer.h
 
 # the library search path.
 libCam_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App -L/usr/X11R6/lib -L$(OCC_LIB) $(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -45,6 +56,7 @@ libCam_la_LIBADD   = \
 		-lTKGeomBase \
 		-lTKOffset \
 		-lTKPrim \
+		-lTKMesh \
 		-lblas \
 		-lumfpack \
 		-lamd

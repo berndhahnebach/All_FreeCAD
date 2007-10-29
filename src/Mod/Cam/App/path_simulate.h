@@ -1,8 +1,8 @@
 #ifndef Path_Simulate
 #define Path_Simulate
 
-#include "PreCompiled.h"
 #include "Base/Vector3D.h"
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
@@ -28,10 +28,10 @@ public:
 	bool ParameterCalculation(double wirelenghth);
 	bool ParameterCalculation(double wirelenghth_1, double wirelenghth_2);   
 	
-	std::vector<std::vector<Base::Vector3d>> PointEvaluation(double TotaltimeforonePath, unsigned int NumberOfEvalPoints, double startParam);
-	std::vector<std::vector<Base::Vector3d>> Derivate(const std::vector<std::vector<Base::Vector3d>> &D);
+	std::vector<std::vector<Base::Vector3d> > PointEvaluation(double TotaltimeforonePath, unsigned int NumberOfEvalPoints, double startParam);
+	std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
 	bool ConnectPaths();
-	bool OutputPath(std::vector<std::vector<Base::Vector3d>> &D1, std::vector<std::vector<Base::Vector3d>> &D2);
+	bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
 	bool UpdateParam();
 	
 	bool MakeSinglePath();
@@ -68,6 +68,7 @@ private:
 };
 
 #endif
+
 
 
 

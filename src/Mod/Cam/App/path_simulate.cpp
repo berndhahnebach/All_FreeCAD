@@ -49,16 +49,16 @@
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Base/Builder3d.h>
+#include <Base/Builder3D.h>
 
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a, double v)
 :m_BSplineTop(BSplineTop),
-m_amax(a),
 m_vmax(v),
-m_a1(a),
-m_a2(a),
+m_amax(a),
 m_v1(v),
 m_v2(v),
+m_a1(a),
+m_a2(a),
 m_t0(0)
 {
 	m_it1 = BSplineTop.begin();
@@ -89,12 +89,12 @@ path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve> &BSplineTop, 
 							  double a, double v)
 :m_BSplineTop(BSplineTop),
 m_BSplineBottom(BSplineBottom),
-m_amax(a),
 m_vmax(v),
-m_a1(a),
-m_a2(a),
+m_amax(a),
 m_v1(v),
 m_v2(v),
+m_a1(a),
+m_a2(a),
 m_t0(0)
 {
 
@@ -422,7 +422,7 @@ bool path_simulate::ParameterCalculation(double S1)
 	return true;
 }
 
-std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T, unsigned int N, double startParam)
+std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double T, unsigned int N, double startParam)
 {
     double t = m_t0;
 	double foundParameter;
@@ -435,7 +435,7 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 
 	m_del_t = ( (m_T- m_t0)/N);
 	
-	std::vector<std::vector<Base::Vector3d>> pnts;
+	std::vector<std::vector<Base::Vector3d> > pnts;
 	std::vector<Base::Vector3d> tmp3;
 
 	for(unsigned int i=0; i<N; ++i)
@@ -479,9 +479,9 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 	return pnts;
 }
 
-std::vector<std::vector<Base::Vector3d>> path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d>> &D0)
+std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d> > &D0)
 {
-	std::vector<std::vector<Base::Vector3d>> D1 = D0;
+	std::vector<std::vector<Base::Vector3d> > D1 = D0;
 	int N = D0.size();
 	
 	D1[0][0] = (D0[1][0]-D0[N-1][0])/(2*m_del_t);
@@ -514,7 +514,7 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::Derivate(const std::vect
 	return D1;
 }
 
-bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d>> &D1, std::vector<std::vector<Base::Vector3d>> &D2)
+bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2)
 {
 	std::vector<Base::Vector3d> tmp2;
 	Base::Vector3d tmp;
@@ -701,7 +701,7 @@ bool path_simulate::EstimateMaxAcceleration()
 	anAdaptorCurve1.Load(*m_it1);
     double w1 = GetLength(anAdaptorCurve1, anAdaptorCurve1.FirstParameter(), anAdaptorCurve1.LastParameter());
 
-	int N = w1;
+	int N = (int)w1;
 
 	std::vector< std::vector<Base::Vector3d> > D0(2,N);   /* 0.abl entspricht punkte auf kurve */
 	std::vector< std::vector<Base::Vector3d> > D1(2,N);   /* 1.abl */
@@ -792,7 +792,7 @@ bool path_simulate::MakeSinglePath()
 	else
 		ParameterCalculation(w1);
 
-	int N = w1;
+	int N = (int)w1;
 	
 	std::vector< std::vector<Base::Vector3d> > D0(2,N);   /* 0.abl entspricht punkte auf kurve */
 	std::vector< std::vector<Base::Vector3d> > D1(2,N);   /* 1.abl */
@@ -813,6 +813,8 @@ bool path_simulate::MakeSinglePath()
 
 bool path_simulate::MakePath()
 {
+// Was soll 'for i=1:(length(x))' für ein Konstrukt sein? Eine for-Schleife ist das jedenfalls nicht! (Werner)
+#ifndef __GNUC__
 	ofstream anOutputFile;
 	anOutputFile.open("c:/output.txt");
 
@@ -853,4 +855,7 @@ for i=1:(length(x));
 
 	anOutputFile.close();
 	return true;
+#else
+    return false;
+#endif
 }

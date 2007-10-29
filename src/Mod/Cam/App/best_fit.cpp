@@ -25,9 +25,10 @@
 
 
 #include "PreCompiled.h"
-#include "C:/FreeCAD/src/Mod/Cam/App/best_fit.h"
+#include "best_fit.h"
 #include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
+#include <Mod/Mesh/App/MeshProperties.h>
 
 
 best_fit::best_fit(const MeshCore::MeshKernel &mesh, TopoDS_Shape &cad)
@@ -80,7 +81,7 @@ bool best_fit::mesh_curvature()
     const float* aMaxCurv = meshCurv.GetMaxCurvatures();
     const float* aMinCurv = meshCurv.GetMinCurvatures();
 
-	Mesh::PropertyCurvatureList CurvInfo;
+    Mesh::PropertyCurvatureList CurvInfo;
     CurvInfo.setSize(rMesh.CountPoints());
     for ( unsigned long i=0; i<rMesh.CountPoints(); i++ ) {
 		Mesh::CurvatureInfo ci;
@@ -343,13 +344,13 @@ double best_fit::Comp_Error()
 	unsigned long facetIndex;
 
 	//const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
-	const MeshCore::MeshPointArray& Points = m_Mesh.GetPoints();
+	//const MeshCore::MeshPointArray& Points = m_Mesh.GetPoints();
 
 	MeshCore::MeshRefPointToFacets rf2pt(m_Mesh);
 	MeshCore::MeshPointIterator    p_it(m_Mesh);
 
 
-	int NumOfPoints = rf2pt.size();
+	//int NumOfPoints = rf2pt.size();
 
 	//int NumOfPoints = mesh.CountPoints();
 	//float fArea = 0.0f;
@@ -397,7 +398,7 @@ bool best_fit::Comp_Normals()
 	MeshCore::MeshRefPointToFacets rf2pt(m_Mesh);
 	MeshCore::MeshGeomFacet        t_face;
 
-	int NumOfPoints = rf2pt.size();
+	//int NumOfPoints = rf2pt.size();
 
 	//int NumOfPoints = mesh.CountPoints();
 	//float fArea = 0.0f;

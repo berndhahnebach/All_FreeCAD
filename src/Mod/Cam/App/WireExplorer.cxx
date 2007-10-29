@@ -203,3 +203,4 @@ bool WireExplorer::IsValidEdge(const TopoDS_Edge& edge)
 
        return true;
 }
+
