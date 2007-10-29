@@ -1,6 +1,7 @@
 #ifndef Path_Simulate
 #define Path_Simulate
 
+#include "PreCompiled.h"
 #include "Base/Vector3D.h"
 #include <TopoDS_Wire.hxx>
 #include <GProp_GProps.hxx>

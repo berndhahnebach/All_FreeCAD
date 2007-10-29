@@ -51,6 +51,7 @@
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
 #include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
 
 
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
@@ -59,25 +60,20 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepMesh.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
-#include <Poly_Triangulation.hxx>
 
 #include <Geom_BSplineSurface.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <IntCurveSurface_HInter.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
 #include <GeomAPI_IntCS.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_HSurface.hxx>
@@ -104,7 +100,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Handle_Geom_Plane.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
@@ -114,7 +109,15 @@
 #include "ConvertDyna.h"
 #include "WireExplorer.h"
 #include "cutting_tools.h"
+#include "path_simulate.h"
+#include "best_fit.h"
 #include "BRepAdaptor_CompCurve2.h"
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <gp_Mat.hxx> 
 
 
 
@@ -167,124 +170,45 @@ static PyObject * read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-//static PyObject * tesselateShape(PyObject *self, PyObject *args)
-//{
-//
-//	PyObject *pcObj;
-//	float aDeflection;
-//	//PyObject *pcObj2;
-//	if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C 
-//		return NULL;                             // NULL triggers exception 
-//
-//    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
-//    
-//
-//	Base::Builder3D aBuild;
-//	
-//		MeshCore::MeshKernel mesh;
-//	  	MeshCore::MeshBuilder builder(mesh);
-//		builder.Initialize(1000);
-//		Base::Vector3f Points[3];
-//		
-//	PY_TRY
-//    {
-//			// removes all the triangulations of the faces ,
-//			//and all the polygons on the triangulations of the edges:
-//			BRepTools::Clean(pcShape->getShape());
-//
-//			// adds a triangulation of the shape aShape with the deflection aDeflection:
-//			//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
-//			
-//			BRepMesh::Mesh(pcShape->getShape(),aDeflection);
-//			TopExp_Explorer aExpFace;
-//			for(aExpFace.Init(pcShape->getShape(),TopAbs_FACE);aExpFace.More();aExpFace.Next())
-//			{  
-//			  TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
-//			  TopLoc_Location aLocation;
-//			  // takes the triangulation of the face aFace:
-//			  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
-//			  if(!aTr.IsNull()) // if this triangulation is not NULL
-//			  { 
-//				// takes the array of nodes for this triangulation:
-//				const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
-//				// takes the array of triangles for this triangulation:
-//				const Poly_Array1OfTriangle& triangles = aTr->Triangles();
-//				// create array of node points in absolute coordinate system
-//				TColgp_Array1OfPnt aPoints(1, aNodes.Length());
-//				for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)
-//				  aPoints(i) = aNodes(i).Transformed(aLocation);
-//				// Takes the node points of each triangle of this triangulation.
-//				// takes a number of triangles:
-//				Standard_Integer nnn = aTr->NbTriangles();
-//				Standard_Integer nt,n1,n2,n3;
-//				for( nt = 1 ; nt < nnn+1 ; nt++)
-//				{
-//				  // takes the node indices of each triangle in n1,n2,n3:
-//				  triangles(nt).Get(n1,n2,n3);
-//				  // takes the node points:
-//				  gp_Pnt aPnt1 = aPoints(n1);
-//				  Points[0].Set(float(aPnt1.X()),float(aPnt1.Y()),float(aPnt1.Z()));
-//				  gp_Pnt aPnt2 = aPoints(n2);
-//				  Points[1].Set(aPnt2.X(),aPnt2.Y(),aPnt2.Z());
-//				  gp_Pnt aPnt3 = aPoints(n3);
-//				  Points[2].Set(aPnt3.X(),aPnt3.Y(),aPnt3.Z());
-//				  // give the occ faces to the internal mesh structure of freecad
-//				  MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
-//				  builder.AddFacet(Face);
-//
-//				} 
-//
-//			  }
-//			  // if the triangulation of only one face is not possible to get
-//			  else
-//			  {
-//				  throw Base::Exception("Empty face triangulation\n");
-//			  }
-//			}
-//			// finish FreeCAD Mesh Builder and exit with new mesh
-//			builder.Finish();
-//			return new MeshPy(mesh);
-//    } PY_CATCH;
-//
-//	Py_Return;
-//}
-//
-
-
-
 static PyObject * makeToolPath(PyObject *self, PyObject *args)
 {
+//	Py::List AllCuts = Py::List();
+//	double offset=0.0;
 
 	PyObject *pcObj;
 	//PyObject *pcObj2;
 	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))    // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
+    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
+//	TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cut-Curve
     PY_TRY
     {
         //Base::Builder3D log3D;
 		cutting_tools anewCuttingEnv(pcShape->getShape());
-		anewCuttingEnv.arrangecuts_ZLEVEL();
-		anewCuttingEnv.OffsetWires_Standard(10.0);
-		
-		
-		return new TopoShapePyOld(anewCuttingEnv.getCutShape());
-
-		/*//anewCuttingEnv.getFlatLevels();
-		//anewCuttingEnv.cutShape();
-		//anewCuttingEnv.OffsetWires();
-		std::vector<Handle_Geom_BSplineCurve> *topCurves;
+		anewCuttingEnv.getFlatLevels();
+		anewCuttingEnv.cutShape();
+		anewCuttingEnv.OffsetWires();
+		std::vector<Handle_Geom_BSplineCurve> topCurves;
+		std::vector<Handle_Geom_BSplineCurve> botCurves;
 		std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
-		topCurves = anewCuttingEnv.getOutputhigh();
+		topCurves = *(anewCuttingEnv.getOutputhigh());
+		
+		botCurves.push_back(*(topCurves.begin()));
+
+		path_simulate path(topCurves , botCurves);
+		//path.MakePathSimulate();
+		path.MakePathRobot();
+
 		GeomAdaptor_Curve anAdaptorCurve;
-		for(an_it=topCurves->begin();an_it<topCurves->end();++an_it)
+		for(an_it=topCurves.begin();an_it<topCurves.end();++an_it)
 		{
 			anAdaptorCurve.Load(*an_it);
 			double length = GCPnts_AbscissaPoint::Length(anAdaptorCurve);
-			std::cout << "Length: "<< length <<std::endl;
+			std::cout << "Length: " << length << std::endl;
 		}
-*/
+
+		//return TopoShapePyOld(topCurves);
 
 
     } PY_CATCH;
@@ -305,10 +229,6 @@ static PyObject * offset(PyObject *self,PyObject *args)
 
   PY_TRY {
 	
-	  BRepOffsetAPI_MakeOffsetShape anoffsetShape(pcShape->getShape(),offset,0.0001);
-	  anoffsetShape.Build();
-	  return new TopoShapePyOld(anoffsetShape.Shape());
-
 		TopExp_Explorer Ex;
 
 	  Handle_Geom_Surface geom_surface;
@@ -379,7 +299,7 @@ static PyObject * cut(PyObject *self, PyObject *args)
 
 			Base::Builder3D logit;
 			
-
+/*
 			Jetzt die eigentlichen Schnitte erzeugen:
 			1.	Wenn die oberste Ebene ein flacher Bereich ist, werden von dort die Bounding Wires genommen
 				Ermittlung über die Bounding Box
@@ -3238,112 +3158,814 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 
   Py_Return;
 }
-//static PyObject * openDYNA(PyObject *self, PyObject *args)
+static PyObject * openDYNA(PyObject *self, PyObject *args)
+{
+	const char* filename;
+	if (! PyArg_ParseTuple(args, "s;Usage:- openDYNA(filename)", &filename))			 
+		return NULL;  
+	PY_TRY
+	{
+		MeshCore::MeshKernel mesh;
+		ReadDyna parse(mesh,filename);
+		return new MeshPy(mesh);
+	}
+	PY_CATCH;
+
+	Py_Return;
+
+}
+
+
+static PyObject * offset_mesh(PyObject *self, PyObject *args)
+{
+	double offset;
+
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	pcObject = (MeshPy*)pcObj;
+	Base::Builder3D log3d;
+
+	PY_TRY
+	{
+		MeshCore::MeshKernel mesh = pcObject->getMesh();
+		//Base::Vector3f Point[3];
+		Base::Vector3f current_pnt;
+
+ 
+		//const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+		//const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+		
+		MeshCore::MeshPointIterator p_it(mesh);
+		MeshCore::MeshFacetIterator f_it(mesh);
+        MeshCore::MeshRefPointToFacets rf2pt(mesh);
+	    MeshCore::MeshGeomFacet t_face;
+		
+		//int NumOfPoints = mesh.CountPoints();
+
+        Base::Vector3f normal,local_normal;
+		//float fArea = 0.0f;
+
+		
+
+		for (unsigned long i=0; i<rf2pt.size(); i++) 
+		{    
+			 // Satz von Dreiecken zu jedem Punkt
+             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+             float fArea = 0.0;
+			 normal.Set(0.0,0.0,0.0);
+			 
+             
+			 // Iteriere über die Dreiecke zu jedem Punkt
+             for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
+			 {
+				 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+				 t_face = mesh.GetFacet(**it);
+				 // Flaecheninhalt aufsummieren
+				 float local_Area = t_face.Area();
+				local_normal = t_face.GetNormal();
+				if(local_normal.z < 0)
+				 {
+					 local_normal = local_normal * (-1);
+				 }
+
+				fArea = fArea + local_Area;
+				normal = normal + local_normal;
+                 
+			 }
+
+			 normal.Normalize();
+			 log3d.addSingleArrow(mesh.GetPoint(i),mesh.GetPoint(i) + (normal*offset));
+			 mesh.MovePoint(i,(normal*offset));
+			
+		}
+
+	    log3d.saveToFile("c:/test.iv");
+		return new MeshPy(mesh);
+	}
+	PY_CATCH;
+
+	Py_Return;
+
+
+		
+		/*for(p_it.Begin();!(p_it.EndReached()); ++p_it)
+		{
+			cout << "Erste Schleife" <<endl;
+			for(f_it.Begin(); !(f_it.EndReached()); ++f_it)
+			{
+				cout << "Zweite Schleife" <<endl;
+				int pos = f_it.Position();
+				t_face = mesh.GetFacet(f_it.Position());
+
+				for (int i = 0; i < 3; ++i)
+				{
+					cout << "dritte Schleife" <<endl;
+					if(*p_it == t_face._aclPoints[i])
+					{
+						a += t_face.Area();
+						normal = t_face.Area()*t_face.GetNormal();
+					}
+				}
+				normal = normal/a;
+				n_vect.push_back(normal);
+				log3d.addPoint(normal);
+			}
+		}*/
+}
+
+
+static PyObject * mesh_build(PyObject *self, PyObject *args)
+{		
+	PyObject *pcObj;
+
+	if (!PyArg_ParseTuple(args, "O!; Need exatly one CAD object",&(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception
+
+
+	TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
+
+	TopExp_Explorer Ex;
+	Ex.Init(pcShape->getShape(),TopAbs_FACE);  // initialisiere cad-geometrie (trimmed surface)
+
+	Base::Builder3D m_log3d;
+
+	// surface types
+	TopoDS_Face atopo_surface,atopo_surface2;
+	BRepAdaptor_Surface adaptor_surface;
+	GeomAdaptor_Surface geom_adapterSurface;
+	Handle_Geom_Surface geom_surf;
+	GeomAbs_SurfaceType type;
+	gp_Pln plane;
+
+	TopoDS_Shape cad = pcShape->getShape();
+
+	// point types
+	std::vector<Base::Vector3f> point_list;
+	gp_Pnt tmp_pnt;
+	Base::Vector3f pnt;
+	gp_Dir pl_vec;
+	gp_Lin lin;
+
+
+	// bounding box
+	Bnd_Box BBox;
+	Standard_Real XMin1, YMin1, ZMin1, XMax1, YMax1, ZMax1;
+
+	IntCurvesFace_ShapeIntersector shp_int;
+	BRepClass3d_SolidClassifier    check;
+
+
+	double u_min,v_min,u_max,v_max;
+	double u_range, v_range;
+	double N;
+	int n1,n2;
+	bool b;
+	
+	if (!Ex.More()) return false;
+
+    for (;Ex.More();Ex.Next())
+    {
+		// übergebe die einzelnen patches
+		atopo_surface = TopoDS::Face (Ex.Current());
+		adaptor_surface.Initialize(atopo_surface);
+
+		type = adaptor_surface.GetType();
+
+		if(type == GeomAbs_Plane)
+		{
+			check.Load(atopo_surface);
+			
+			plane = adaptor_surface.Plane();
+			pl_vec = (plane.Axis()).Direction();
+			
+			/*geom_adapterSurface = adaptor_surface.Surface();
+			geom_surf = geom_adapterSurface.Surface();*/
+
+			u_min = adaptor_surface.FirstUParameter();
+			u_max = adaptor_surface.LastUParameter();
+
+			v_min = adaptor_surface.FirstVParameter();
+			v_max = adaptor_surface.LastVParameter();
+
+			u_range = u_max - u_min;
+			v_range = v_max - v_min;
+
+			BRepBndLib::Add(atopo_surface, BBox);
+			BBox.SetGap(0.0);
+			BBox.Get(XMin1, YMin1, ZMin1, XMax1, YMax1, ZMax1);
+
+			N  = (XMax1 - XMin1)*(YMax1 - YMin1)/1e+4;
+			n1 = sqrt(N);//(XMax1 - XMin1)*sqrt(N)/(YMax1 - YMin1);
+			n2 = sqrt(N);//(YMax1 - YMin1)*sqrt(N)/(XMax1 - XMin1);
+
+			if(n1<2)
+				n1=2;
+			if(n2<2)
+				n2=2;
+
+			BBox.SetVoid();
+ 
+			for(int i=0; i<n1; ++i)
+			{
+				for(int j=0; j<n2; ++j)
+				{
+					adaptor_surface.D0(u_min + i*u_range/(n1-1) ,v_min + j*v_range/(n2-1) ,tmp_pnt);
+					check.Perform(tmp_pnt, 0.1);					
+					b = check.IsOnAFace();
+					
+					if(b==true)
+					{					
+						pnt.x = tmp_pnt.X();
+						pnt.y = tmp_pnt.Y();
+						pnt.z = tmp_pnt.Z();
+
+						point_list.push_back(pnt);
+						m_log3d.addSinglePoint(pnt);
+					}
+					else
+					{
+						lin.SetLocation(tmp_pnt);
+						lin.SetDirection(pl_vec);
+
+						shp_int.Load(cad, 0.1);
+						shp_int.PerformNearest(lin, -RealLast(), +RealLast());
+
+						if(shp_int.IsDone())
+						{
+							tmp_pnt = shp_int.Pnt(1);
+
+							pnt.x = tmp_pnt.X();
+							pnt.y = tmp_pnt.Y();
+							pnt.z = tmp_pnt.Z();
+
+							point_list.push_back(pnt);
+							m_log3d.addSinglePoint(pnt,2,0,0,0);
+						}
+					}
+				}	
+			}
+			break;			
+		}		
+	}
+
+
+	m_log3d.saveToFile("c:/test_trim.iv");
+
+
+	PY_TRY
+	{
+		MeshCore::MeshKernel mesh;
+	  	MeshCore::MeshBuilder builder(mesh);
+		builder.Initialize(point_list.size()-3);
+		Base::Vector3f Points[3];
+
+		for(unsigned int i = 0; i < point_list.size()-2; ++i)
+		{ 
+			for(unsigned int j = 0; j < 3; j++)
+				Points[j] = point_list[i+j];
+
+
+			MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
+			Face.CalcNormal();
+			builder.AddFacet(Face);
+
+		}
+		builder.Finish();
+
+		return new MeshPy(mesh);
+
+
+
+	}PY_CATCH;
+
+	Py_Return;
+}
+
+//static PyObject * best_fit(PyObject *self, PyObject *args)
 //{
-//	const char* filename;
-//	if (! PyArg_ParseTuple(args, "s;Usage:- openDYNA(filename)", &filename))			 
-//		return NULL;  
+//	MeshPy   *pcObject;
+//	MeshPy   *pcObject2;
+//	PyObject *pcObj;
+//	PyObject *pcObj2;
+//
+//
+//	Base::Builder3D log3d;
+//	Base::Vector3f pnt(0.0,0.0,0.0);
+//
+//	if (!PyArg_ParseTuple(args, "O!O!; Need two Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(MeshPy::Type), &pcObj2))     // convert args: Python->C 
+//		return NULL;                             // NULL triggers exception 
+//
+//	pcObject  = (MeshPy*)pcObj;
+//	pcObject2 = (MeshPy*)pcObj2;
+//	
+//
 //	PY_TRY
 //	{
-//		MeshCore::MeshKernel mesh;
-//		ReadDyna parse(mesh,filename);
+//		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+//		MeshCore::MeshKernel mesh2 = pcObject2->getMesh(); // Mesh from CAD
+//		
+//		MeshCore::MeshEigensystem pca(mesh);  
+//		pca.Evaluate();
+//		
+//		MeshCore::MeshEigensystem pca2(mesh2); 
+//		pca2.Evaluate();
+//		
+//		
+//		
+//		Base::Matrix4D T1 =  pca.Transform();
+//		Base::Matrix4D T2 =  pca2.Transform();
+//			
+//	    T2[0][3] = 0.0;
+//		T2[1][3] = 0.0;
+//		T2[2][3] = 0.0;
+//
+//		Base::Matrix4D C;
+//		C.unity();
+//
+//		T2.inverse();
+//		mesh.Transform(T2*T1);
+//
+//		/*
+//		const MeshCore::MeshPointArray& rPoints = mesh.GetPoints();
+//		Base::Vector3f vec(0.0,0.0,0.0);
+//		unsigned long c=0;
+//
+//		
+//		for(MeshCore::MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it)
+//		{
+//			vec = *it;
+//			//vec = T*vec;
+//			//T.transform(vec,T);
+//			mesh.SetPoint(c,vec);
+//			++c;
+//		}
+//		*/
+//
+//
+//		log3d.addSinglePoint(pnt);
+//		log3d.saveToFile("c:/origin.iv");
 //		return new MeshPy(mesh);
-//	}
-//	PY_CATCH;
+//
+//	}PY_CATCH;
 //
 //	Py_Return;
 //}
 
+static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	PyObject *pcObj2;
 
-//static PyObject * offset_mesh(PyObject *self, PyObject *args)
+	if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	PY_TRY
+	{
+		GProp_GProps prop;
+		GProp_PrincipalProps pprop;
+		BRepGProp SurfProp;
+		gp_Pnt orig;
+
+		pcObject  = (MeshPy*)pcObj;
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
+		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+
+		best_fit befi(mesh,cad);
+		befi.MeshFit_Coarse();
+
+		return new MeshPy(befi.m_Mesh);
+
+	}PY_CATCH;
+
+	Py_Return;
+}
+
+static PyObject * best_fit_complete(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	PyObject *pcObj2;
+
+	if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	PY_TRY
+	{
+		GProp_GProps prop;
+		GProp_PrincipalProps pprop;
+		BRepGProp SurfProp;
+		gp_Pnt orig;
+
+		pcObject  = (MeshPy*)pcObj;
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
+		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+
+		best_fit befi(mesh,cad);
+		befi.MeshFit_Coarse();
+		befi.ShapeFit_Coarse();
+		
+		cout << "tesselate shape" << endl;
+		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
+		
+		cout << "compute normals" << endl;
+		befi.Comp_Normals();
+
+		befi.mesh_curvature();
+		
+		cout << "correction" << endl;
+		befi.Coarse_correction();
+
+		//befi.mesh_curvature();
+		
+		cout << "start fitting iteration:" << endl;
+		befi.Fit_iter();
+
+		return new MeshPy(befi.m_Mesh);
+
+	}PY_CATCH;
+
+	Py_Return;
+}
+
+static PyObject * best_fit_test(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	PyObject *pcObj2;
+
+	if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	PY_TRY
+	{
+		GProp_GProps prop;
+		GProp_PrincipalProps pprop;
+		BRepGProp SurfProp;
+		gp_Pnt orig;
+
+		pcObject  = (MeshPy*)pcObj;
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
+		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+
+		best_fit befi(mesh,cad);
+		befi.MeshFit_Coarse();
+		befi.ShapeFit_Coarse();
+		
+		cout << "tesselate shape" << endl;
+		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
+		
+		cout << "compute normals" << endl;
+		befi.Comp_Normals();
+
+		befi.mesh_curvature();
+		
+		cout << "correction" << endl;
+		befi.Coarse_correction();
+
+		
+
+		/*befi.thinning();
+		befi.test();*/
+		
+		//cout << "start fitting iteration:" << endl;
+		//befi.Fit_iter();
+
+		return new MeshPy(befi.m_Mesh);
+
+	}PY_CATCH;
+
+	Py_Return;
+}
+
+static PyObject * shape2orig(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+
+	if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePyOld::Type), &pcObj))  // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	PY_TRY
+	{
+		GProp_GProps prop;
+		GProp_PrincipalProps pprop;
+		BRepGProp SurfProp;
+		gp_Pnt orig;
+
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
+		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+
+		best_fit befi(cad);
+		befi.ShapeFit_Coarse();
+
+		return new TopoShapePyOld(befi.m_Cad);
+
+	}PY_CATCH;
+	
+	Py_Return;
+}
+
+
+static PyObject * tess_shape(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+
+	if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	PY_TRY
+	{
+
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
+		TopoDS_Shape cad        = pcShape->getShape();  // Input CAD
+
+		best_fit befi(cad);
+		befi.ShapeFit_Coarse();
+		
+		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
+
+		return new MeshPy(befi.m_CadMesh);
+
+	}PY_CATCH;
+	
+	Py_Return;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//static PyObject * trafo_mesh(PyObject *self, PyObject *args)
 //{
-//    double offset;
-//
-//    MeshPy   &pcObject;
-//    PyObject *pcObj;
-//    if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
-//        return NULL;                             // NULL triggers exception 
-//
-//    pcObject = (MeshPy*)pcObj;
-//    Base::Builder3D log3d;
-//
-//    PY_TRY
-//    {
-//        MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel(pcObject->getMesh());
-//        //Base::Vector3f Point[3];
-//        Base::Vector3f current_pnt;
-//
-// 
-//        //const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
-//        //const MeshCore::MeshPointArray& Points = mesh.GetPoints();
-//
-//        MeshCore::MeshPointIterator p_it(*mesh);
-//        MeshCore::MeshFacetIterator f_it(*mesh);
-//        MeshCore::MeshRefPointToFacets rf2pt(*mesh);
-//        MeshCore::MeshGeomFacet t_face;
-//        //int NumOfPoints = mesh.CountPoints();
-//        Base::Vector3f normal,local_normal;
-//        //float fArea = 0.0f;
-//
-//        for (unsigned long i=0; i<rf2pt.size(); i++) 
-//        {
-//             // Satz von Dreiecken zu jedem Punkt
-//             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
-//             float fArea = 0.0;
-//             normal.Set(0.0,0.0,0.0);
-//             // Iteriere ueber die Dreiecke zu jedem Punkt
-//             for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
-//             {
-//                 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-//                 t_face = mesh->GetFacet(**it);
-//                 // Flaecheninhalt aufsummieren
-//                 float local_Area = t_face.Area();
-//                 local_normal = t_face.GetNormal();
-//                 if (local_normal.z < 0)
-//                 {
-//                     local_normal = local_normal * (-1);
-//                 }
-//                 fArea = fArea + local_Area;
-//                 normal = normal + local_normal;
-//             }
-//             normal.Normalize();
-//             log3d.addSingleArrow(mesh->GetPoint(i),mesh->GetPoint(i) + (normal*offset));
-//             mesh->MovePoint(i,(normal*offset));	
-//        }
-//        log3d.saveToFile("c:/test.iv");
-//        return new MeshPy(mesh);
-//    }
-//    PY_CATCH;
-//    Py_Return;
+//	MeshPy   *pcObject;
 //
 //
-//		
-//		/*for(p_it.Begin();!(p_it.EndReached()); ++p_it)
-//		{
-//			cout << "Erste Schleife" <<endl;
-//			for(f_it.Begin(); !(f_it.EndReached()); ++f_it)
-//			{
-//				cout << "Zweite Schleife" <<endl;
-//				int pos = f_it.Position();
-//				t_face = mesh.GetFacet(f_it.Position());
+//	Base::Vector3f pnt;
 //
-//				for (int i = 0; i < 3; ++i)
-//				{
-//					cout << "dritte Schleife" <<endl;
-//					if(*p_it == t_face._aclPoints[i])
-//					{
-//						a += t_face.Area();
-//						normal = t_face.Area()*t_face.GetNormal();
-//					}
-//				}
-//				normal = normal/a;
-//				n_vect.push_back(normal);
-//				log3d.addPoint(normal);
-//			}
-//		}*/
+//	if (!PyArg_ParseTuple(args, "O!; Need one Mesh objects", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+//		return NULL;                             // NULL triggers exception 
+//
+//	pcObject  = (MeshPy*)pcObj;
+//
+//	PY_TRY
+//	{
+//        gp_Trsf trf;
+//        trf.SetTranslation(trafo);
+//        
+//		BRepBuilderAPI_Transform trsf(tsf);
+//        trsf.Perform(cad);
+//        TopoDS_Shape ResultShape = trsf.Shape();
+//
+//			return new MeshPy(mesh);
+//
+//	}PY_CATCH;
+//
+//	Py_Return;
+//}
+//
+//static PyObject * trafo_cad(PyObject *self, PyObject *args)
+//{
+//	MeshPy   *pcObject;
+//
+//	Base::Vector3f pnt;
+//
+//	if (!PyArg_ParseTuple(args, "O!; Need one TopoShape objects", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+//		return NULL;                             // NULL triggers exception 
+//
+//	pcObject  = (MeshPy*)pcObj;
+//
+//	PY_TRY
+//	{
+//        gp_Trsf trf;
+//        trf.SetTranslation(trafo);
+//        
+//		BRepBuilderAPI_Transform trsf(tsf);
+//        trsf.Perform(cad);
+//        TopoDS_Shape ResultShape = trsf.Shape();
+//
+//			return new MeshPy(mesh);
+//
+//	}PY_CATCH;
+//
+//	Py_Return;
 //}
 
+static PyObject * fit_iter(PyObject *self, PyObject *args)
+{
+	MeshPy   *pcObject;
+	PyObject *pcObj;
+	PyObject *pcObj2;
 
+	if (!PyArg_ParseTuple(args, "O!O!; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Surface wird übergeben
+
+	TopExp_Explorer Ex;
+	Ex.Init(pcShape->getShape(),TopAbs_FACE);  // initialisiere cad-geometrie (trimmed surface)
+
+	TopoDS_Shape cad = pcShape->getShape();
+
+	pcObject = (MeshPy*)pcObj;
+
+	Base::Builder3D log3d;
+	gp_Dir pl_vec;
+	gp_Lin lin;
+	gp_Pnt pnt;
+	Base::Vector3f tmp_pnt;
+	IntCurvesFace_ShapeIntersector shp_int;
+
+	std::vector< std::vector<double> > R(3, std::vector<double>(3,0.0)); // Rotationsmatrix
+	double err = 1001;
+
+	TopoDS_Face atopo_surface;
+
+	MeshCore::MeshKernel mesh = pcObject->getMesh();
+
+	PY_TRY
+	{
+		//Base::Vector3f Point[3];
+		Base::Vector3f current_pnt;
+
+		
+
+ 
+		//const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+		//const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+		
+		MeshCore::MeshPointIterator p_it(mesh);
+		MeshCore::MeshFacetIterator f_it(mesh);
+        MeshCore::MeshRefPointToFacets rf2pt(mesh);
+	    MeshCore::MeshGeomFacet t_face;
+		
+		int NumOfPoints = rf2pt.size();
+		
+		//int NumOfPoints = mesh.CountPoints();
+
+        Base::Vector3f normal,local_normal;
+		//float fArea = 0.0f;
+
+		while(err > 1000)
+		{
+
+			err = 0.0;
+			for (unsigned long i=0; i<rf2pt.size(); i++)
+			{    
+				 // Satz von Dreiecken zu jedem Punkt
+				 const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+				 float fArea = 0.0;
+				 normal.Set(0.0,0.0,0.0);
+				 
+	             
+				 // Iteriere über die Dreiecke zu jedem Punkt
+				 for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
+				 {
+					 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+					 t_face = mesh.GetFacet(**it);
+					 // Flaecheninhalt aufsummieren
+					 float local_Area = t_face.Area();
+					local_normal = t_face.GetNormal();
+					if(local_normal.z < 0)
+					 {
+						 local_normal = local_normal * (-1);
+					 }
+
+					fArea = fArea + local_Area;
+					normal = normal + local_normal;
+	                 
+				 }
+
+				 pnt.SetX((mesh.GetPoint(i)).x);
+				 pnt.SetY((mesh.GetPoint(i)).y);
+				 pnt.SetZ((mesh.GetPoint(i)).z);
+
+				 lin.SetLocation(pnt);
+
+				 pl_vec.SetX(normal.x);
+				 pl_vec.SetY(normal.y);
+				 pl_vec.SetZ(normal.z);
+
+				 lin.SetDirection(pl_vec);
+				 
+				 shp_int.Load(cad, 0.1);
+				 shp_int.PerformNearest(lin,-RealLast(),+RealLast());
+
+			     if(shp_int.IsDone())
+				 {
+					 err += sqrt((pnt.X() - shp_int.Pnt(1).X())*(pnt.X() - shp_int.Pnt(1).X())*
+								 (pnt.Y() - shp_int.Pnt(1).Y())*(pnt.Y() - shp_int.Pnt(1).Y())*
+								 (pnt.Z() - shp_int.Pnt(1).Z())*(pnt.Z() - shp_int.Pnt(1).Z()));
+					  
+					  
+		 			 pnt = shp_int.Pnt(1);
+
+					 tmp_pnt.x = pnt.X();
+					 tmp_pnt.y = pnt.Y();
+					 tmp_pnt.z = pnt.Z();
+
+					 //point_list.push_back(pnt);
+					 log3d.addSinglePoint(tmp_pnt,2,0,0,0);
+				 }  
+			}			
+		
+			
+			R[0][0] =  cos(PI);
+			R[0][1] = -sin(PI);
+			R[1][0] =  sin(PI);
+			R[1][1] =  cos(PI);
+			R[2][2] =  1;
+
+			MeshCore::MeshPoint mpnt;
+			
+			for(int i=0; i<NumOfPoints; ++i)
+			{
+				mpnt = mesh.GetPoint(i);
+
+				tmp_pnt.x = (R[0][0]*mpnt.x + R[0][1]*mpnt.y + R[0][2]*mpnt.z);
+				tmp_pnt.y = (R[1][0]*mpnt.x + R[1][1]*mpnt.y + R[1][2]*mpnt.z);
+				tmp_pnt.z = (R[2][0]*mpnt.x + R[2][1]*mpnt.y + R[2][2]*mpnt.z);
+
+				mesh.SetPoint(i,tmp_pnt);
+			}
+
+			break;
+		
+		} /*end while*/
+
+		//// translation fit
+		//// z-translation
+		//while(traf_step > TOL)
+		//{
+		//	traf += fl*traf_step;
+
+		//	err = 0;
+		//	for(int i=0; i<NumOfPoints; ++i)
+		//	{
+		//		pnt_tmp[i][0] = pnt[i][0];
+		//		pnt_tmp[i][1] = pnt[i][1];
+		//		pnt_tmp[i][2] = pnt[i][2] + traf;
+
+		//		err += weights[i]*sqrt( (pnt_tmp[i][0] - pnt_ref[i][0])*(pnt_tmp[i][0] - pnt_ref[i][0]) + 
+		//	                            (pnt_tmp[i][1] - pnt_ref[i][1])*(pnt_tmp[i][1] - pnt_ref[i][1]) + 
+		//								(pnt_tmp[i][2] - pnt_ref[i][2])*(pnt_tmp[i][2] - pnt_ref[i][2]) );
+		//	}
+
+		//	traf -= fl*traf_step;
+		//	
+		//	if(err < err_tmp)
+		//	{
+		//		err_tmp = err;
+		//		traf += fl*traf_step;
+		//	}
+		//	else
+		//	{
+		//		if(fl == -1)
+		//		{
+		//			traf_step /= 2;
+		//			fl = 1;
+		//		}
+		//		else
+		//		    fl = -1;				
+		//	}
+		//}
+
+		//for(int i=0; i<NumOfPoints; ++i)
+		//	pnt[i][2] += traf;
+		//
+		//
+		//traf = 0;
+		//traf_step = 1;
+		//// end z-translation
+	}PY_CATCH;
+
+	log3d.saveToFile("c:/test_trim2.iv");
+
+	return new MeshPy(mesh);
+	Py_Return;
+}
 
 
 //PyDoc_STRVAR(open_doc,
@@ -3360,22 +3982,28 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 
 /* registration table  */
 struct PyMethodDef Cam_methods[] = {
-	{"open"   , open,   Py_NEWARGS, "open(string) -- Not implemnted for this Module so far."},       
-    {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemnted for this Module so far."},       
+	{"open"   , open,   Py_NEWARGS, "open(string) -- Not implemented for this Module so far."},       
+    {"insert" , insert, Py_NEWARGS, "insert(string, string) -- Not implemented for this Module so far."},       
     {"read"   , read,  1},       
     {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"}, 
 	{"createTestApproximate" , createTestApproximate, 1},
 	{"makeToolPath", makeToolPath, 1},
 	{"offset", offset, 1},
-//	{"offset_mesh", offset_mesh, 1},
-//	{"tesselateShape",tesselateShape,1},
+	{"offset_mesh", offset_mesh, 1},
+	{"mesh_build", mesh_build, 1},
+	{"best_fit_coarse", best_fit_coarse, 1},
+	{"shape2orig",  shape2orig,  1},
+	{"tess_shape",  tess_shape,  1},
+	{"best_fit_complete",  best_fit_complete,  1},
+	{"best_fit_test",  best_fit_test,  1},
+	{"fit_iter", fit_iter, 1},
 //	{"cut", cut, 1},
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
 	{"MyApprox" , MyApprox, Py_NEWARGS,
        "MyApprox(MeshObject) -- My test approximate." },
-//	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
+	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
     {NULL     , NULL      }        /* end of table marker */
 };
 

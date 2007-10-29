@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *	 Human Rezai <human.rezai@eads.net>                                    * 
+ *	 Human Rezai <human@mytum.de>                                    * 
  *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
@@ -37,8 +37,6 @@
 #include <algorithm>
 #include <Base/Exception.h>
 
-
-
 /*************BOOST***************/
 
 /********UBLAS********/
@@ -67,11 +65,8 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
 	//Initialize the NURB
 	MainNurb.DegreeU = 3;
 	MainNurb.DegreeV = 3;
-
-	MainNurb.MaxU = 40;
-	MainNurb.MaxV = 40;
-
-
+	MainNurb.MaxU = 10;
+	MainNurb.MaxV = 10;
 	tolerance = tol;
 	GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
 	GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
@@ -1000,7 +995,6 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 				
 				for(int d = 0; d < MainNurb.MaxU+1; d++)
 				{	
-					
 					for(int w = 0; w < precision; w++)   //Fill up the last 6 Matrices from the first matrix
 					{
 						A_1[w] = (N_u2[w][b]*N_u2[w][d]);
@@ -1013,15 +1007,25 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 						C_2[w] = (N_v2[w][a]*N_v2[w][c]);
 					}
 
+					
+
 					//SehnenTrapezRegel
 					A = TrapezoidIntergration(U, A_1);
-					A *= TrapezoidIntergration(U, A_2);	
+					A *= TrapezoidIntergration(U, A_2);
+					
 					B = TrapezoidIntergration(U, B_1);
 					B *= TrapezoidIntergration(U, B_2);
+
 					C = TrapezoidIntergration(U, C_1);
 					C *= TrapezoidIntergration(U, C_2);
+
+					//result = A + 2*B + C;
 					E_Matrix((a*(MainNurb.MaxU+1))+b,(c*(MainNurb.MaxV+1))+d) = A + 2*B +C;
 
+				
+					
+					
+					
 				}
 			}
 		}
