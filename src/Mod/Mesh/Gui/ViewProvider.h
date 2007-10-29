@@ -108,7 +108,7 @@ public:
   /// returns a list of all possible modes
   virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the Mesh representation
-  virtual void updateData();
+  virtual void updateData(const App::Property*);
   virtual QIcon getIcon() const;
 
   /** @name Polygon picking */

@@ -79,7 +79,7 @@ public:
   /// Sets the active mode, i.e. the first item of the 'Display' property.
   void setActiveMode();
 
-  virtual void updateData(void){};
+  virtual void updateData(const App::Property*){};
 
   inline App::AbstractFeature *getAsFeature(void){
     assert(pcObject && pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );

@@ -373,21 +373,12 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
 }
 
-void ViewProviderMesh::updateData(void)
+void ViewProviderMesh::updateData(const App::Property* Prop)
 {
-    // search for a mesh property
-    std::map<std::string, App::Property*> Map;
-    Mesh::PropertyMeshKernel* kernel=0;
-    pcObject->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyMeshKernel::getClassTypeId())) {
-            kernel = (Mesh::PropertyMeshKernel*)it->second;
-            break;
-        }
+    if (Prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        const Mesh::PropertyMeshKernel* kernel = static_cast<const Mesh::PropertyMeshKernel*>(Prop);
+        createMesh(kernel->getValue());
     }
-
-    assert(kernel);
-    createMesh(kernel->getValue());
 }
 
 QIcon ViewProviderMesh::getIcon() const

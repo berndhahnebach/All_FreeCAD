@@ -80,12 +80,12 @@ ViewProvider::~ViewProvider()
   pcModeSwitch->unref();
 }
 
-void ViewProvider::update(void)
+void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
     bool vis = this->isShow();
     if (vis) hide();
-    updateData();
+    updateData(prop);
     if (vis) show();
 }
 

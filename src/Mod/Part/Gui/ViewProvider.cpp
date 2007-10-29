@@ -234,9 +234,6 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
   addDisplayMaskMode(pcFlatRoot, "Shaded");
   addDisplayMaskMode(pcWireframeRoot, "Wireframe");
   addDisplayMaskMode(pcPointsRoot, "Point");
-
-  // Build up the view represetation from the shape
-  updateData();
 }
 
 void ViewProviderPart::setDisplayMode(const char* ModeName)
@@ -267,7 +264,7 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderPart::updateData(void)
+void ViewProviderPart::updateData(const App::Property*)
 {
 //  Base::Console().Log("ViewProviderPart::updateData() for %s called\n",pcFeature->getName()); 
 

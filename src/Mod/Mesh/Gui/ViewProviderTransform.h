@@ -67,7 +67,7 @@ public:
   /// returns a list of all possible modes
   virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the Mesh representation
-  virtual void updateData(void);
+  virtual void updateData(const App::Property*);
 
 protected:
 

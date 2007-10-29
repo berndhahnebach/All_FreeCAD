@@ -82,24 +82,28 @@ std::vector<std::string> ViewProviderInventorObject::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderInventorObject::updateData(void)
+void ViewProviderInventorObject::updateData(const App::Property* prop)
 {
-    pcBuffer->removeAllChildren();
-    pcFile->removeAllChildren();
-
-    // read from buffer
-    SoInput in;
-    const char* buffer = static_cast<App::InventorObject*>(pcObject)->Buffer.getValue();
-    in.setBuffer((void *)buffer, strlen(buffer));
-    SoSeparator * node = SoDB::readAll(&in);
-    if (node) pcBuffer->addChild(node);
-
-    // read also from file
-    const char* filename = static_cast<App::InventorObject*>(pcObject)->FileName.getValue();
-    Base::FileInfo fi(filename);
-    if (fi.isReadable()) {
-        in.openFile(filename);
-        SoSeparator * node2 = SoDB::readAll(&in);
-        if (node2) pcFile->addChild(node2);
+    App::InventorObject* ivObj = static_cast<App::InventorObject*>(pcObject);
+    if (prop == &ivObj->Buffer) {
+        // read from buffer
+        SoInput in;
+        const char* buffer = ivObj->Buffer.getValue();
+        in.setBuffer((void *)buffer, strlen(buffer));
+        SoSeparator * node = SoDB::readAll(&in);
+        pcBuffer->removeAllChildren();
+        if (node) pcBuffer->addChild(node);
+    }
+    if (prop == &ivObj->FileName) {
+        // read also from file
+        const char* filename = static_cast<App::InventorObject*>(pcObject)->FileName.getValue();
+        Base::FileInfo fi(filename);
+        SoInput in;
+        if (fi.isReadable()) {
+            in.openFile(filename);
+            SoSeparator * node = SoDB::readAll(&in);
+            pcFile->removeAllChildren();
+            if (node) pcFile->addChild(node);
+        }
     }
 }

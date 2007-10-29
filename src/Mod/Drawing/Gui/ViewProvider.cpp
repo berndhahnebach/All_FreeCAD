@@ -94,7 +94,7 @@ std::vector<std::string> ViewProviderDrawing::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderDrawing::updateData(void)
+void ViewProviderDrawing::updateData(const App::Property*)
 {
 
 

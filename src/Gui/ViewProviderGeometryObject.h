@@ -75,7 +75,7 @@ public:
    */
   SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
 
-  virtual void updateData(void){};
+  virtual void updateData(const App::Property*){};
 
 protected:
   /// get called by the container whenever a property has been changed
