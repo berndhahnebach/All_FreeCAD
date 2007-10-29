@@ -314,6 +314,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\path_simulate.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\path_simulate.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

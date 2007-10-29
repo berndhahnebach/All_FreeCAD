@@ -36,6 +36,7 @@ public:
 	*/
 	
 	bool arrangecuts_ZLEVEL();
+	bool initializeMeshStuff();
 	bool arrangecuts_SPIRAL();
 	bool arrangecuts_FEATURE_BASED();
 	inline std::vector<Handle_Geom_BSplineCurve>* getOutputhigh()
@@ -68,8 +69,8 @@ private:
 	bool m_cad;
 	TopoDS_Shape &m_Shape;
 	MeshCore::MeshKernel m_CAD_Mesh;
-	MeshCore::MeshAlgorithm m_aMeshAlgo;
-	MeshCore::MeshFacetGrid m_CAD_Mesh_Grid;
+	MeshCore::MeshAlgorithm * m_aMeshAlgo;
+	MeshCore::MeshFacetGrid * m_CAD_Mesh_Grid;
 	bool m_mirrortobothsides;
 	//Zustellungswert
 	float m_pitch;

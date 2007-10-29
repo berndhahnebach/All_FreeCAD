@@ -167,88 +167,88 @@ static PyObject * read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-static PyObject * tesselateShape(PyObject *self, PyObject *args)
-{
-
-	PyObject *pcObj;
-	float aDeflection;
-	//PyObject *pcObj2;
-	if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
-
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
-    
-
-	Base::Builder3D aBuild;
-	
-		MeshCore::MeshKernel *mesh = new MeshCore::MeshKernel;
-	  	MeshCore::MeshBuilder builder(*mesh);
-		builder.Initialize(1000);
-		Base::Vector3f Points[3];
-		
-	PY_TRY
-    {
-			// removes all the triangulations of the faces ,
-			//and all the polygons on the triangulations of the edges:
-			BRepTools::Clean(pcShape->getShape());
-
-			// adds a triangulation of the shape aShape with the deflection aDeflection:
-			//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
-			
-			BRepMesh::Mesh(pcShape->getShape(),aDeflection);
-			TopExp_Explorer aExpFace;
-			for(aExpFace.Init(pcShape->getShape(),TopAbs_FACE);aExpFace.More();aExpFace.Next())
-			{  
-			  TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
-			  TopLoc_Location aLocation;
-			  // takes the triangulation of the face aFace:
-			  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
-			  if(!aTr.IsNull()) // if this triangulation is not NULL
-			  { 
-				// takes the array of nodes for this triangulation:
-				const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
-				// takes the array of triangles for this triangulation:
-				const Poly_Array1OfTriangle& triangles = aTr->Triangles();
-				// create array of node points in absolute coordinate system
-				TColgp_Array1OfPnt aPoints(1, aNodes.Length());
-				for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)
-				  aPoints(i) = aNodes(i).Transformed(aLocation);
-				// Takes the node points of each triangle of this triangulation.
-				// takes a number of triangles:
-				Standard_Integer nnn = aTr->NbTriangles();
-				Standard_Integer nt,n1,n2,n3;
-				for( nt = 1 ; nt < nnn+1 ; nt++)
-				{
-				  // takes the node indices of each triangle in n1,n2,n3:
-				  triangles(nt).Get(n1,n2,n3);
-				  // takes the node points:
-				  gp_Pnt aPnt1 = aPoints(n1);
-				  Points[0].Set(float(aPnt1.X()),float(aPnt1.Y()),float(aPnt1.Z()));
-				  gp_Pnt aPnt2 = aPoints(n2);
-				  Points[1].Set(aPnt2.X(),aPnt2.Y(),aPnt2.Z());
-				  gp_Pnt aPnt3 = aPoints(n3);
-				  Points[2].Set(aPnt3.X(),aPnt3.Y(),aPnt3.Z());
-				  // give the occ faces to the internal mesh structure of freecad
-				  MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
-				  builder.AddFacet(Face);
-
-				} 
-
-			  }
-			  // if the triangulation of only one face is not possible to get
-			  else
-			  {
-				  throw Base::Exception("Empty face triangulation\n");
-			  }
-			}
-			// finish FreeCAD Mesh Builder and exit with new mesh
-			builder.Finish();
-			return new MeshPy(mesh);
-    } PY_CATCH;
-
-	Py_Return;
-}
-
+//static PyObject * tesselateShape(PyObject *self, PyObject *args)
+//{
+//
+//	PyObject *pcObj;
+//	float aDeflection;
+//	//PyObject *pcObj2;
+//	if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C 
+//		return NULL;                             // NULL triggers exception 
+//
+//    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
+//    
+//
+//	Base::Builder3D aBuild;
+//	
+//		MeshCore::MeshKernel mesh;
+//	  	MeshCore::MeshBuilder builder(mesh);
+//		builder.Initialize(1000);
+//		Base::Vector3f Points[3];
+//		
+//	PY_TRY
+//    {
+//			// removes all the triangulations of the faces ,
+//			//and all the polygons on the triangulations of the edges:
+//			BRepTools::Clean(pcShape->getShape());
+//
+//			// adds a triangulation of the shape aShape with the deflection aDeflection:
+//			//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
+//			
+//			BRepMesh::Mesh(pcShape->getShape(),aDeflection);
+//			TopExp_Explorer aExpFace;
+//			for(aExpFace.Init(pcShape->getShape(),TopAbs_FACE);aExpFace.More();aExpFace.Next())
+//			{  
+//			  TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
+//			  TopLoc_Location aLocation;
+//			  // takes the triangulation of the face aFace:
+//			  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
+//			  if(!aTr.IsNull()) // if this triangulation is not NULL
+//			  { 
+//				// takes the array of nodes for this triangulation:
+//				const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
+//				// takes the array of triangles for this triangulation:
+//				const Poly_Array1OfTriangle& triangles = aTr->Triangles();
+//				// create array of node points in absolute coordinate system
+//				TColgp_Array1OfPnt aPoints(1, aNodes.Length());
+//				for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)
+//				  aPoints(i) = aNodes(i).Transformed(aLocation);
+//				// Takes the node points of each triangle of this triangulation.
+//				// takes a number of triangles:
+//				Standard_Integer nnn = aTr->NbTriangles();
+//				Standard_Integer nt,n1,n2,n3;
+//				for( nt = 1 ; nt < nnn+1 ; nt++)
+//				{
+//				  // takes the node indices of each triangle in n1,n2,n3:
+//				  triangles(nt).Get(n1,n2,n3);
+//				  // takes the node points:
+//				  gp_Pnt aPnt1 = aPoints(n1);
+//				  Points[0].Set(float(aPnt1.X()),float(aPnt1.Y()),float(aPnt1.Z()));
+//				  gp_Pnt aPnt2 = aPoints(n2);
+//				  Points[1].Set(aPnt2.X(),aPnt2.Y(),aPnt2.Z());
+//				  gp_Pnt aPnt3 = aPoints(n3);
+//				  Points[2].Set(aPnt3.X(),aPnt3.Y(),aPnt3.Z());
+//				  // give the occ faces to the internal mesh structure of freecad
+//				  MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
+//				  builder.AddFacet(Face);
+//
+//				} 
+//
+//			  }
+//			  // if the triangulation of only one face is not possible to get
+//			  else
+//			  {
+//				  throw Base::Exception("Empty face triangulation\n");
+//			  }
+//			}
+//			// finish FreeCAD Mesh Builder and exit with new mesh
+//			builder.Finish();
+//			return new MeshPy(mesh);
+//    } PY_CATCH;
+//
+//	Py_Return;
+//}
+//
 
 
 
@@ -3238,119 +3238,110 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
 
   Py_Return;
 }
-static PyObject * openDYNA(PyObject *self, PyObject *args)
-{
-	const char* filename;
-	if (! PyArg_ParseTuple(args, "s;Usage:- openDYNA(filename)", &filename))			 
-		return NULL;  
-	PY_TRY
-	{
-		MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel();
-		ReadDyna parse(*mesh,filename);
-		return new MeshPy(mesh);
-	}
-	PY_CATCH;
-
-	Py_Return;
-}
-
-
-static PyObject * offset_mesh(PyObject *self, PyObject *args)
-{
-    double offset;
-
-    MeshPy   *pcObject;
-    PyObject *pcObj;
-    if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-    pcObject = (MeshPy*)pcObj;
-    Base::Builder3D log3d;
-
-    PY_TRY
-    {
-        MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel(pcObject->getMesh());
-        //Base::Vector3f Point[3];
-        Base::Vector3f current_pnt;
-
- 
-        //const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
-        //const MeshCore::MeshPointArray& Points = mesh.GetPoints();
-
-        MeshCore::MeshPointIterator p_it(*mesh);
-        MeshCore::MeshFacetIterator f_it(*mesh);
-        MeshCore::MeshRefPointToFacets rf2pt(*mesh);
-        MeshCore::MeshGeomFacet t_face;
-
-        //int NumOfPoints = mesh.CountPoints();
-
-        Base::Vector3f normal,local_normal;
-        //float fArea = 0.0f;
+//static PyObject * openDYNA(PyObject *self, PyObject *args)
+//{
+//	const char* filename;
+//	if (! PyArg_ParseTuple(args, "s;Usage:- openDYNA(filename)", &filename))			 
+//		return NULL;  
+//	PY_TRY
+//	{
+//		MeshCore::MeshKernel mesh;
+//		ReadDyna parse(mesh,filename);
+//		return new MeshPy(mesh);
+//	}
+//	PY_CATCH;
+//
+//	Py_Return;
+//}
 
 
-
-        for (unsigned long i=0; i<rf2pt.size(); i++) 
-        {
-             // Satz von Dreiecken zu jedem Punkt
-             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
-             float fArea = 0.0;
-             normal.Set(0.0,0.0,0.0);
-
-
-             // Iteriere ueber die Dreiecke zu jedem Punkt
-             for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
-             {
-                 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-                 t_face = mesh->GetFacet(**it);
-                 // Flaecheninhalt aufsummieren
-                 float local_Area = t_face.Area();
-                 local_normal = t_face.GetNormal();
-                 if (local_normal.z < 0)
-                 {
-                     local_normal = local_normal * (-1);
-                 }
-
-                 fArea = fArea + local_Area;
-                 normal = normal + local_normal;
-             }
-
-             normal.Normalize();
-             log3d.addSingleArrow(mesh->GetPoint(i),mesh->GetPoint(i) + (normal*offset));
-             mesh->MovePoint(i,(normal*offset));	
-        }
-
-        log3d.saveToFile("c:/test.iv");
-        return new MeshPy(mesh);
-    }
-    PY_CATCH;
-    Py_Return;
-
-
-		
-		/*for(p_it.Begin();!(p_it.EndReached()); ++p_it)
-		{
-			cout << "Erste Schleife" <<endl;
-			for(f_it.Begin(); !(f_it.EndReached()); ++f_it)
-			{
-				cout << "Zweite Schleife" <<endl;
-				int pos = f_it.Position();
-				t_face = mesh.GetFacet(f_it.Position());
-
-				for (int i = 0; i < 3; ++i)
-				{
-					cout << "dritte Schleife" <<endl;
-					if(*p_it == t_face._aclPoints[i])
-					{
-						a += t_face.Area();
-						normal = t_face.Area()*t_face.GetNormal();
-					}
-				}
-				normal = normal/a;
-				n_vect.push_back(normal);
-				log3d.addPoint(normal);
-			}
-		}*/
-}
+//static PyObject * offset_mesh(PyObject *self, PyObject *args)
+//{
+//    double offset;
+//
+//    MeshPy   &pcObject;
+//    PyObject *pcObj;
+//    if (!PyArg_ParseTuple(args, "O!d; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &offset))     // convert args: Python->C 
+//        return NULL;                             // NULL triggers exception 
+//
+//    pcObject = (MeshPy*)pcObj;
+//    Base::Builder3D log3d;
+//
+//    PY_TRY
+//    {
+//        MeshCore::MeshKernel* mesh = new MeshCore::MeshKernel(pcObject->getMesh());
+//        //Base::Vector3f Point[3];
+//        Base::Vector3f current_pnt;
+//
+// 
+//        //const MeshCore::MeshFacetArray& Facets = mesh.GetFacets();
+//        //const MeshCore::MeshPointArray& Points = mesh.GetPoints();
+//
+//        MeshCore::MeshPointIterator p_it(*mesh);
+//        MeshCore::MeshFacetIterator f_it(*mesh);
+//        MeshCore::MeshRefPointToFacets rf2pt(*mesh);
+//        MeshCore::MeshGeomFacet t_face;
+//        //int NumOfPoints = mesh.CountPoints();
+//        Base::Vector3f normal,local_normal;
+//        //float fArea = 0.0f;
+//
+//        for (unsigned long i=0; i<rf2pt.size(); i++) 
+//        {
+//             // Satz von Dreiecken zu jedem Punkt
+//             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+//             float fArea = 0.0;
+//             normal.Set(0.0,0.0,0.0);
+//             // Iteriere ueber die Dreiecke zu jedem Punkt
+//             for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
+//             {
+//                 // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+//                 t_face = mesh->GetFacet(**it);
+//                 // Flaecheninhalt aufsummieren
+//                 float local_Area = t_face.Area();
+//                 local_normal = t_face.GetNormal();
+//                 if (local_normal.z < 0)
+//                 {
+//                     local_normal = local_normal * (-1);
+//                 }
+//                 fArea = fArea + local_Area;
+//                 normal = normal + local_normal;
+//             }
+//             normal.Normalize();
+//             log3d.addSingleArrow(mesh->GetPoint(i),mesh->GetPoint(i) + (normal*offset));
+//             mesh->MovePoint(i,(normal*offset));	
+//        }
+//        log3d.saveToFile("c:/test.iv");
+//        return new MeshPy(mesh);
+//    }
+//    PY_CATCH;
+//    Py_Return;
+//
+//
+//		
+//		/*for(p_it.Begin();!(p_it.EndReached()); ++p_it)
+//		{
+//			cout << "Erste Schleife" <<endl;
+//			for(f_it.Begin(); !(f_it.EndReached()); ++f_it)
+//			{
+//				cout << "Zweite Schleife" <<endl;
+//				int pos = f_it.Position();
+//				t_face = mesh.GetFacet(f_it.Position());
+//
+//				for (int i = 0; i < 3; ++i)
+//				{
+//					cout << "dritte Schleife" <<endl;
+//					if(*p_it == t_face._aclPoints[i])
+//					{
+//						a += t_face.Area();
+//						normal = t_face.Area()*t_face.GetNormal();
+//					}
+//				}
+//				normal = normal/a;
+//				n_vect.push_back(normal);
+//				log3d.addPoint(normal);
+//			}
+//		}*/
+//}
 
 
 
@@ -3376,15 +3367,15 @@ struct PyMethodDef Cam_methods[] = {
 	{"createTestApproximate" , createTestApproximate, 1},
 	{"makeToolPath", makeToolPath, 1},
 	{"offset", offset, 1},
-	{"offset_mesh", offset_mesh, 1},
-	{"tesselateShape",tesselateShape,1},
+//	{"offset_mesh", offset_mesh, 1},
+//	{"tesselateShape",tesselateShape,1},
 //	{"cut", cut, 1},
 	{"createPlane" , createPlane, 1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
 	{"MyApprox" , MyApprox, Py_NEWARGS,
        "MyApprox(MeshObject) -- My test approximate." },
-	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
+//	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
     {NULL     , NULL      }        /* end of table marker */
 };
 
