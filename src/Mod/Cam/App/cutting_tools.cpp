@@ -60,10 +60,10 @@
 
 cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
         : m_Shape(aShape),
-        m_aMeshAlgo(m_CAD_Mesh),
-        m_CAD_Mesh_Grid(m_CAD_Mesh),
         m_mirrortobothsides(mirrortobothsides),
-        m_pitch(pitch)
+        m_pitch(pitch),
+		m_aMeshAlgo(NULL),
+		m_CAD_Mesh_Grid(NULL)
 {
     m_ordered_cuts.clear();
 	m_all_offset_cuts_high.clear();
@@ -76,6 +76,7 @@ cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortoboth
 	fillFaceBBoxes();
 	classifyShape();
 	checkFlatLevel();
+	initializeMeshStuff();
 	
 }
 
@@ -173,6 +174,17 @@ bool cutting_tools::checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f
 
 	return false;
 }
+bool cutting_tools::initializeMeshStuff()
+{
+	
+	m_CAD_Mesh_Grid = new MeshCore::MeshFacetGrid(m_CAD_Mesh);
+	m_aMeshAlgo = new MeshCore::MeshAlgorithm(m_CAD_Mesh);
+
+	//Test für die Curvature mal schnell durchführen
+	best_fit abestfit(m_CAD_Mesh);
+	abestfit.mesh_curvature();
+	return true;
+}
 bool cutting_tools::arrangecuts_ZLEVEL()
 {
 	//Zunächst wieder checken ob CAD oder nicht
@@ -195,7 +207,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			//cut(z_level,m_minlevel,aTopoWire,z_level_corrected);
 			cut_Mesh(z_level,m_minlevel,result);
 
-			//Jetzt die resultierende Wire in den vector schieben
+			//Jetzt die resultierenden Points in den vector schieben
 			std::pair<float,std::list<std::vector<Base::Vector3f> > > tempPair;
 			tempPair.first = z_level_corrected;
 			tempPair.second = result;
@@ -240,6 +252,16 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			{
 				z_level = temp_max-(i*m_pitch);
 				z_level_corrected = z_level;
+				std::list<std::vector<Base::Vector3f> > result;
+				result.clear();
+				//cut(z_level,m_minlevel,aTopoWire,z_level_corrected);
+				cut_Mesh(z_level,m_minlevel,result);
+
+				//Jetzt die resultierenden Points in den vector schieben
+				std::pair<float,std::list<std::vector<Base::Vector3f> > > tempPair;
+				tempPair.first = z_level_corrected;
+				tempPair.second = result;
+				m_ordered_cuts.push_back(tempPair);
 				//cut(z_level,temp_min, aTopoWire,z_level_corrected);
 				//Jetzt die gefüllte Wire in den vector schieben
 				//std::pair<float,TopoDS_Wire> tempPair;
@@ -696,12 +718,20 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 //}
 bool cutting_tools::cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> >&result)
 {
-	
+	std::ofstream outfile;
+	outfile.open("c:/mesh_cut.out");
 	Base::Vector3f z_level_plane,normal;
-
 	z_level_plane.z=z_level;
 	normal.x=0;normal.y=0;normal.z=1.0;
-	m_aMeshAlgo.CutWithPlane(z_level_plane,normal,m_CAD_Mesh_Grid,result);
+	m_aMeshAlgo->CutWithPlane(z_level_plane,normal,*m_CAD_Mesh_Grid,result);
+	std::list<std::vector<Base::Vector3f> >::iterator it;
+	std::vector<Base::Vector3f>::iterator vector_it;
+	//Zum testen mal schnell den Output überprüfen
+
+		for(vector_it=(*(result.begin())).begin();vector_it<(*(result.begin())).end();++vector_it)
+		outfile << (*vector_it).x <<","<<(*vector_it).y <<","<<(*vector_it).z<< std::endl;
+
+	outfile.close();
 	return true;
 
 
