@@ -26,6 +26,9 @@
 #ifndef BEST_FIT_H
 #define BEST_FIT_H
 
+
+#define WM4_FOUNDATION_DLL_IMPORT
+
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
@@ -50,7 +53,8 @@
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
 #include <Mod/Mesh/App/Core/Grid.h>
-
+//#include <Mod/Mesh/App/FeatureMeshCurvature.h>
+//#include <Mod/Mesh/App/MeshFeature.h>
 
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -58,7 +62,6 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAPI_IntSS.hxx>
@@ -119,8 +122,11 @@
 #include <BRepMesh.hxx>
 #include <MeshShape.hxx>
 #include <MeshAlgo.hxx>
-#include <Handle_Poly_Triangulation.hxx>
+#include <handle_poly_triangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
+
 
 
 
@@ -133,13 +139,17 @@ public:
 	~best_fit();
 
 	bool MeshFit_Coarse();
-	bool mesh_curvature();
 	bool ShapeFit_Coarse();
-	double Comp_Error();
+	bool mesh_curvature();
+	bool thinning();
 	bool Comp_Normals();
 	bool rotation_fit();
 	bool translation_fit();
 	bool projection();
+	bool Coarse_correction();
+	bool Fit_iter();
+	bool test();
+	double Comp_Error(MeshCore::MeshKernel &mesh);
 	static bool Tesselate_Shape(TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection);
 	static bool Tesselate_Face(TopoDS_Face &aface, MeshCore::MeshKernel &mesh, float deflection);
 
@@ -147,9 +157,15 @@ public:
 	MeshCore::MeshKernel m_Mesh;
 	MeshCore::MeshKernel m_CadMesh;
 	std::vector<Base::Vector3f> m_normals;
+	std::list< std::vector <unsigned long> >  m_boundInd;
 	TopoDS_Shape m_Cad;
+	Mesh::PropertyCurvatureList m_CurvInfo;
+	std::vector<int> m_pntInd;
+
+protected:
+	inline bool RotMat(Base::Matrix4D &matrix, double degree, int rotaionAxis);
+	inline bool TransMat(Base::Matrix4D &matrix, double translation, int translationAxis);
 
 };
 
 #endif
-
