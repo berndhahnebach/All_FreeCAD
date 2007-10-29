@@ -103,7 +103,7 @@ public:
     /// signal on deleted Object
     boost::signal<void (App::DocumentObject&)> signalDeletedObject;
     /// signal on changed Object
-    boost::signal<void (App::DocumentObject&)> signalChangedObject;
+    boost::signal<void (App::DocumentObject&, App::Property&)> signalChangedObject;
     /// signal on renamed Object
     boost::signal<void (App::DocumentObject&)> signalRenamedObject;
     /// signal on activated Object
