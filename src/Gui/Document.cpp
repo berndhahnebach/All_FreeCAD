@@ -80,7 +80,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   //m_connection = pcDocument->connect(boost::bind(&Document::slotNewObject, this, _1));
   pcDocument->signalNewObject.connect(boost::bind(&Gui::Document::slotNewObject, this, _1));
   pcDocument->signalDeletedObject.connect(boost::bind(&Gui::Document::slotDeletedObject, this, _1));
-  pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1));
+  pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1, _2));
   pcDocument->signalRenamedObject.connect(boost::bind(&Gui::Document::slotRenamedObject, this, _1));
   pcDocument->signalActivatedObject.connect(boost::bind(&Gui::Document::slotActivatedObject, this, _1));
   //pcDocument->signalNewObject.connect(&(this->slotNewObject));
@@ -367,7 +367,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
     }
 }
 
-void Document::slotChangedObject(App::DocumentObject& Obj)
+void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
 {
     Base::Console().Log("Document::slotChangedObject() called\n");
     ViewProvider* viewProvider = getViewProvider(&Obj);

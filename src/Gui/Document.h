@@ -79,7 +79,7 @@ protected:
     /// This slot is connected to the App::Document::signalNewObject(...)
     void slotNewObject(App::DocumentObject&);
     void slotDeletedObject(App::DocumentObject&);
-    void slotChangedObject(App::DocumentObject&);
+    void slotChangedObject(App::DocumentObject&, App::Property&);
     void slotRenamedObject(App::DocumentObject&);
     void slotActivatedObject(App::DocumentObject&);
     virtual void refresh(App::DocumentObject&) const {};
