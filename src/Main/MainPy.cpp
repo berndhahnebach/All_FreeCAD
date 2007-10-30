@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -10,12 +10,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -34,7 +34,7 @@
 #ifdef FC_OS_MACOSX
 # include <mach-o/dyld.h>
 # include <string>
-#endif 
+#endif
 
 #if HAVE_CONFIG_H
 #	include <config.h>
@@ -48,8 +48,8 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 
-// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script 
-// "SubWCRev.py" on Linux based systems which builds src/Build/Version.h. Or create your own from 
+// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script
+// "SubWCRev.py" on Linux based systems which builds src/Build/Version.h. Or create your own from
 // src/Build/Version.h.in!
 #include <Build/Version.h>
 
@@ -62,18 +62,18 @@
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call) {
-    case DLL_PROCESS_ATTACH:
-      {
+    case DLL_PROCESS_ATTACH: {
         // This name is preliminary, we pass it to Application::init() in initFreeCAD()
         // which does the rest.
-	      char  szFileName [MAX_PATH];
-	      GetModuleFileName((HMODULE)hModule, szFileName, MAX_PATH-1);
+        char  szFileName [MAX_PATH];
+        GetModuleFileName((HMODULE)hModule, szFileName, MAX_PATH-1);
         App::Application::Config()["AppHomePath"] = szFileName;
-      } break;
-    default:
-      break;
     }
-    
+    break;
+    default:
+        break;
+    }
+
     return TRUE;
 }
 #elif defined(FC_OS_LINUX)
@@ -91,71 +91,73 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserv
 #	define MainExport
 #endif
 
-extern "C" {
-	void MainExport initFreeCAD() {
+extern "C"
+{
+    void MainExport initFreeCAD() {
 
-	// Init phase ===========================================================
-  App::Application::Config()["ExeName"] = "FreeCAD";
-  App::Application::Config()["ExeVendor"] = "FreeCAD";
-  App::Application::Config()["ExeVersion"] = "0.7";
+        // Init phase ===========================================================
+        App::Application::Config()["ExeName"] = "FreeCAD";
+        App::Application::Config()["ExeVendor"] = "FreeCAD";
+        App::Application::Config()["ExeVersion"] = "0.7";
 
 
-  int    argc=1;
-  char** argv;
-  argv = (char**)malloc(sizeof(char*)* (argc+1));
-  argv[0] = (char*)malloc(1024);
+        int    argc=1;
+        char** argv;
+        argv = (char**)malloc(sizeof(char*)* (argc+1));
+        argv[0] = (char*)malloc(1024);
 
 #if defined(FC_OS_WIN32)
-  strcpy(argv[0],App::Application::Config()["AppHomePath"].c_str());
+        strcpy(argv[0],App::Application::Config()["AppHomePath"].c_str());
 #elif defined(FC_OS_CYGWIN)
-  HMODULE hModule = GetModuleHandle("FreeCAD.dll");
-  char szFileName [MAX_PATH];
-  GetModuleFileName(hModule, szFileName, MAX_PATH-1);
-  strcpy(argv[0],szFileName);
+        HMODULE hModule = GetModuleHandle("FreeCAD.dll");
+        char szFileName [MAX_PATH];
+        GetModuleFileName(hModule, szFileName, MAX_PATH-1);
+        strcpy(argv[0],szFileName);
 #elif defined(FC_OS_LINUX)
-  // get whole path of the library
-  Dl_info info;
-  int ret = dladdr((void*)initFreeCAD, &info);
-  if ((ret == 0) || (!info.dli_fname)) {
-    PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
-    return;
-  }
+        // get whole path of the library
+        Dl_info info;
+        int ret = dladdr((void*)initFreeCAD, &info);
+        if ((ret == 0) || (!info.dli_fname)) {
+            PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
+            return;
+        }
 
-  strcpy(argv[0], info.dli_fname);
+        strcpy(argv[0], info.dli_fname);
 #elif defined(FC_OS_MACOSX)
-  uint32_t sz = 0;
-  char *buf;
+        uint32_t sz = 0;
+        char *buf;
 
-  _NSGetExecutablePath(NULL, &sz);
-  buf = (char*) malloc(++sz);
-  int err=_NSGetExecutablePath(buf, &sz);
-  if (err != 0){
-    PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
-    return;
-  }
-  
-  strcpy(argv[0], buf); 
-  free(buf);
+        _NSGetExecutablePath(NULL, &sz);
+        buf = (char*) malloc(++sz);
+        int err=_NSGetExecutablePath(buf, &sz);
+        if (err != 0) {
+            PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
+            return;
+        }
+
+        strcpy(argv[0], buf);
+        free(buf);
 #else
 # error "Implement: Retrieve the path of the module for your platform."
 #endif
-  argv[argc] = 0;
+        argv[argc] = 0;
 
-  try {
-	  // Inits the Application 
-	  App::Application::init(argc,argv);
-  } catch (const Base::Exception& e) {
-    std::string appName = App::Application::Config()["ExeName"];
-    std::stringstream msg;
-    msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
-    msg << "\nPlease contact the application's support team for more information.\n\n";
-    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
-  }
+        try {
+            // Inits the Application
+            App::Application::init(argc,argv);
+        }
+        catch (const Base::Exception& e) {
+            std::string appName = App::Application::Config()["ExeName"];
+            std::stringstream msg;
+            msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
+            msg << "\nPlease contact the application's support team for more information.\n\n";
+            printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+        }
 
-  free(argv[0]);
-  free(argv);
+        free(argv[0]);
+        free(argv);
 
-		return;
-	} //InitFreeCAD....
+        return;
+    } //InitFreeCAD....
 } // extern "C"
 

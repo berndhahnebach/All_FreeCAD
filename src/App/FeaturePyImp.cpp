@@ -23,23 +23,21 @@ PyObject*  FeaturePy::recompute(PyObject *args)
     
     PY_TRY {
         getAbstractFeatureObject()->recompute();
-	    Py_Return;
+        Py_Return;
     } PY_CATCH;
 }
 
 Py::Int FeaturePy::getValid(void) const
 {
-	return Py::Int(getAbstractFeatureObject()->isValid());
+    return Py::Int(getAbstractFeatureObject()->isValid());
 }
 
 PyObject *FeaturePy::getCustomAttributes(const char* attr) const
 {
-	return 0;
+    return 0;
 }
 
 int FeaturePy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-	return 0; 
+    return 0; 
 }
-
-

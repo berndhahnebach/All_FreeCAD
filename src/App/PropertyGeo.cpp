@@ -74,30 +74,30 @@ PropertyVector::~PropertyVector()
 
 void PropertyVector::setValue(const Base::Vector3f &vec)
 {
-  aboutToSetValue();
-	_cVec=vec;
-  hasSetValue();
+    aboutToSetValue();
+    _cVec=vec;
+    hasSetValue();
 }
 
 void PropertyVector::setValue(float x, float y, float z)
 {
-  aboutToSetValue();
-	_cVec=Vector3f(x,y,z);
-  hasSetValue();
+    aboutToSetValue();
+    _cVec=Vector3f(x,y,z);
+    hasSetValue();
 }
 
 const Base::Vector3f & PropertyVector::getValue(void)const
 {
-	return _cVec;
+    return _cVec;
 }
 
 PyObject *PropertyVector::getPyObject(void)
 {
-  return new VectorPy(_cVec);
+    return new VectorPy(_cVec);
 }
 
 void PropertyVector::setPyObject(PyObject *value)
-{ 
+{
     if (PyObject_TypeCheck(value, &(VectorPy::Type))) {
         VectorPy  *pcObject = (VectorPy*)value;
         setValue(pcObject->value());
@@ -140,32 +140,32 @@ void PropertyVector::setPyObject(PyObject *value)
 
 void PropertyVector::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
+    writer.Stream() << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
 
 void PropertyVector::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("PropertyVector");
-  // get the value of my Attribute
-  _cVec.x = (float)reader.getAttributeAsFloat("valueX");
-  _cVec.y = (float)reader.getAttributeAsFloat("valueY");
-  _cVec.z = (float)reader.getAttributeAsFloat("valueZ");
+    // read my Element
+    reader.readElement("PropertyVector");
+    // get the value of my Attribute
+    _cVec.x = (float)reader.getAttributeAsFloat("valueX");
+    _cVec.y = (float)reader.getAttributeAsFloat("valueY");
+    _cVec.z = (float)reader.getAttributeAsFloat("valueZ");
 }
 
 
 Property *PropertyVector::Copy(void) const
 {
-  PropertyVector *p= new PropertyVector();
-  p->_cVec = _cVec;
-  return p;
+    PropertyVector *p= new PropertyVector();
+    p->_cVec = _cVec;
+    return p;
 }
 
 void PropertyVector::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cVec = dynamic_cast<const PropertyVector&>(from)._cVec;
-  hasSetValue();
+    aboutToSetValue();
+    _cVec = dynamic_cast<const PropertyVector&>(from)._cVec;
+    hasSetValue();
 }
 
 
@@ -193,27 +193,27 @@ PropertyVectorList::~PropertyVectorList()
 
 void PropertyVectorList::setValue(const Base::Vector3f& lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
 void PropertyVectorList::setValues(const std::vector<Base::Vector3f>& values)
 {
-  aboutToSetValue();
-  _lValueList = values;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = values;
+    hasSetValue();
 }
 
 PyObject *PropertyVectorList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
+    PyObject* list = PyList_New(	getSize() );
 
-  for(int i = 0;i<getSize(); i++)
-     PyList_SetItem( list, i, new VectorPy(	_lValueList[i]));
+    for (int i = 0;i<getSize(); i++)
+        PyList_SetItem( list, i, new VectorPy(	_lValueList[i]));
 
-  return list;
+    return list;
 }
 
 void PropertyVectorList::setPyObject(PyObject *value)
@@ -232,7 +232,7 @@ void PropertyVectorList::setPyObject(PyObject *value)
 
         setValues(values);
     }
-    else if(PyObject_TypeCheck(value, &(VectorPy::Type))) {
+    else if (PyObject_TypeCheck(value, &(VectorPy::Type))) {
         VectorPy  *pcObject = (VectorPy*)value;
         setValue( pcObject->value() );
     }
@@ -250,24 +250,22 @@ void PropertyVectorList::setPyObject(PyObject *value)
 
 void PropertyVectorList::Save (Writer &writer) const
 {
-  if(writer.isForceXML())
-  {
+    if (writer.isForceXML()) {
 //  writer << "<VectorList count=\"" <<  getSize() <<"\"/>" << endl;
 //  for(int i = 0;i<getSize(); i++)
 //    writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
 //  writer << "</VectorList>" << endl ;
-  }else{
-    writer.Stream() << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
-  }
+    }else {
+        writer.Stream() << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyVectorList::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("VectorList");
-  string file (reader.getAttribute("file") );
+    reader.readElement("VectorList");
+    string file (reader.getAttribute("file") );
 
-  if(file == "")
-  {
+    if (file == "") {
 //  // read my Element
 //  reader.readElement("VectorList");
 //  // get the value of my Attribute
@@ -284,49 +282,51 @@ void PropertyVectorList::Restore(Base::XMLReader &reader)
 //  }
 //
 //  reader.readEndElement("VectorList");
-  }else{
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-  }
+    }else {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
-  try {
-    unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-  } catch( const Base::Exception&) {
-    throw;
-  }
+    try {
+        unsigned long uCt = getSize();
+        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
+    }
+    catch ( const Base::Exception&) {
+        throw;
+    }
 }
 
 void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
 {
-  try {
-    _lValueList.clear();
-    unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
-    _lValueList.resize(uCt);
-    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-  } catch( const Base::Exception&) {
-    throw;
-  }
+    try {
+        _lValueList.clear();
+        unsigned long uCt=ULONG_MAX;
+        reader.read((char*)&uCt, sizeof(unsigned long));
+        _lValueList.resize(uCt);
+        reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
+    }
+    catch ( const Base::Exception&) {
+        throw;
+    }
 }
 
 
 Property *PropertyVectorList::Copy(void) const
 {
-  PropertyVectorList *p= new PropertyVectorList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyVectorList *p= new PropertyVectorList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyVectorList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyVectorList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyVectorList&>(from)._lValueList;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -357,24 +357,24 @@ PropertyMatrix::~PropertyMatrix()
 
 void PropertyMatrix::setValue(const Base::Matrix4D &mat)
 {
-  aboutToSetValue();
-	_cMat=mat;
-  hasSetValue();
+    aboutToSetValue();
+    _cMat=mat;
+    hasSetValue();
 }
 
 
-const Base::Matrix4D & PropertyMatrix::getValue(void)const 
+const Base::Matrix4D & PropertyMatrix::getValue(void)const
 {
-	return _cMat;
+    return _cMat;
 }
 
 PyObject *PropertyMatrix::getPyObject(void)
 {
-  return new MatrixPy(_cMat);
+    return new MatrixPy(_cMat);
 }
 
 void PropertyMatrix::setPyObject(PyObject *value)
-{ 
+{
     if (PyObject_TypeCheck(value, &(MatrixPy::Type))) {
         MatrixPy  *pcObject = (MatrixPy*)value;
         setValue( pcObject->value() );
@@ -382,9 +382,9 @@ void PropertyMatrix::setPyObject(PyObject *value)
     else if (PyTuple_Check(value)&&PyTuple_Size(value)==16) {
         PyObject* item;
         Base::Matrix4D cMatrix;
-    
-        for(int x=0; x<4;x++){
-            for(int y=0; y<4;y++){
+
+        for (int x=0; x<4;x++) {
+            for (int y=0; y<4;y++) {
                 item = PyTuple_GetItem(value,x+y*4);
                 if (PyFloat_Check(item))
                     cMatrix[x][y] = (float)PyFloat_AsDouble(item);
@@ -394,7 +394,7 @@ void PropertyMatrix::setPyObject(PyObject *value)
                     throw Base::Exception("Not allowed type used in matrix tuple (a number expected)...");
             }
         }
-        
+
         setValue( cMatrix );
     }
     else {
@@ -406,53 +406,53 @@ void PropertyMatrix::setPyObject(PyObject *value)
 
 void PropertyMatrix::Save (Base::Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyMatrix"; 
-  writer.Stream() << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
-  writer.Stream() << " a21=\"" <<  _cMat[1][0] << "\" a22=\"" <<  _cMat[1][1] << "\" a23=\"" <<  _cMat[1][2] << "\" a24=\"" <<  _cMat[1][3] << "\"";
-  writer.Stream() << " a31=\"" <<  _cMat[2][0] << "\" a32=\"" <<  _cMat[2][1] << "\" a33=\"" <<  _cMat[2][2] << "\" a34=\"" <<  _cMat[2][3] << "\"";
-  writer.Stream() << " a41=\"" <<  _cMat[3][0] << "\" a42=\"" <<  _cMat[3][1] << "\" a43=\"" <<  _cMat[3][2] << "\" a44=\"" <<  _cMat[3][3] << "\"";
-  writer.Stream() <<"/>" << endl;
+    writer.Stream() << writer.ind() << "<PropertyMatrix";
+    writer.Stream() << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
+    writer.Stream() << " a21=\"" <<  _cMat[1][0] << "\" a22=\"" <<  _cMat[1][1] << "\" a23=\"" <<  _cMat[1][2] << "\" a24=\"" <<  _cMat[1][3] << "\"";
+    writer.Stream() << " a31=\"" <<  _cMat[2][0] << "\" a32=\"" <<  _cMat[2][1] << "\" a33=\"" <<  _cMat[2][2] << "\" a34=\"" <<  _cMat[2][3] << "\"";
+    writer.Stream() << " a41=\"" <<  _cMat[3][0] << "\" a42=\"" <<  _cMat[3][1] << "\" a43=\"" <<  _cMat[3][2] << "\" a44=\"" <<  _cMat[3][3] << "\"";
+    writer.Stream() <<"/>" << endl;
 }
 
 void PropertyMatrix::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("PropertyMatrix");
-  // get the value of my Attribute
-  _cMat[0][0] = (float)reader.getAttributeAsFloat("a11");
-  _cMat[0][1] = (float)reader.getAttributeAsFloat("a12");
-  _cMat[0][2] = (float)reader.getAttributeAsFloat("a13");
-  _cMat[0][3] = (float)reader.getAttributeAsFloat("a14");
+    // read my Element
+    reader.readElement("PropertyMatrix");
+    // get the value of my Attribute
+    _cMat[0][0] = (float)reader.getAttributeAsFloat("a11");
+    _cMat[0][1] = (float)reader.getAttributeAsFloat("a12");
+    _cMat[0][2] = (float)reader.getAttributeAsFloat("a13");
+    _cMat[0][3] = (float)reader.getAttributeAsFloat("a14");
 
-  _cMat[1][0] = (float)reader.getAttributeAsFloat("a21");
-  _cMat[1][1] = (float)reader.getAttributeAsFloat("a22");
-  _cMat[1][2] = (float)reader.getAttributeAsFloat("a23");
-  _cMat[1][3] = (float)reader.getAttributeAsFloat("a24");
+    _cMat[1][0] = (float)reader.getAttributeAsFloat("a21");
+    _cMat[1][1] = (float)reader.getAttributeAsFloat("a22");
+    _cMat[1][2] = (float)reader.getAttributeAsFloat("a23");
+    _cMat[1][3] = (float)reader.getAttributeAsFloat("a24");
 
-  _cMat[2][0] = (float)reader.getAttributeAsFloat("a31");
-  _cMat[2][1] = (float)reader.getAttributeAsFloat("a32");
-  _cMat[2][2] = (float)reader.getAttributeAsFloat("a33");
-  _cMat[2][3] = (float)reader.getAttributeAsFloat("a34");
+    _cMat[2][0] = (float)reader.getAttributeAsFloat("a31");
+    _cMat[2][1] = (float)reader.getAttributeAsFloat("a32");
+    _cMat[2][2] = (float)reader.getAttributeAsFloat("a33");
+    _cMat[2][3] = (float)reader.getAttributeAsFloat("a34");
 
-  _cMat[3][0] = (float)reader.getAttributeAsFloat("a41");
-  _cMat[3][1] = (float)reader.getAttributeAsFloat("a42");
-  _cMat[3][2] = (float)reader.getAttributeAsFloat("a43");
-  _cMat[3][3] = (float)reader.getAttributeAsFloat("a44");
+    _cMat[3][0] = (float)reader.getAttributeAsFloat("a41");
+    _cMat[3][1] = (float)reader.getAttributeAsFloat("a42");
+    _cMat[3][2] = (float)reader.getAttributeAsFloat("a43");
+    _cMat[3][3] = (float)reader.getAttributeAsFloat("a44");
 }
 
 
 Property *PropertyMatrix::Copy(void) const
 {
-  PropertyMatrix *p= new PropertyMatrix();
-  p->_cMat = _cMat;
-  return p;
+    PropertyMatrix *p= new PropertyMatrix();
+    p->_cMat = _cMat;
+    return p;
 }
 
 void PropertyMatrix::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cMat = dynamic_cast<const PropertyMatrix&>(from)._cMat;
-  hasSetValue();
+    aboutToSetValue();
+    _cMat = dynamic_cast<const PropertyMatrix&>(from)._cMat;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -483,12 +483,12 @@ PropertyPlacement::~PropertyPlacement()
 
 void PropertyPlacement::setValue(const Base::Placement &pos)
 {
-  aboutToSetValue();
-	_cPos=pos;
-  hasSetValue();
+    aboutToSetValue();
+    _cPos=pos;
+    hasSetValue();
 }
 
-const Base::Placement & PropertyPlacement::getValue(void)const 
+const Base::Placement & PropertyPlacement::getValue(void)const
 {
     return _cPos;
 }
@@ -506,40 +506,40 @@ void PropertyPlacement::setPyObject(PyObject *value)
 
 void PropertyPlacement::Save (Base::Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyPlacement"; 
-  writer.Stream() << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
-  writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
-  writer.Stream() <<"/>" << endl;
+    writer.Stream() << writer.ind() << "<PropertyPlacement";
+    writer.Stream() << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
+    writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
+    writer.Stream() <<"/>" << endl;
 }
 
 void PropertyPlacement::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("PropertyPlacement");
-  // get the value of my Attribute
-  _cPos._Pos.x = reader.getAttributeAsFloat("Px");
-  _cPos._Pos.y = reader.getAttributeAsFloat("Py");
-  _cPos._Pos.z = reader.getAttributeAsFloat("Pz");
+    // read my Element
+    reader.readElement("PropertyPlacement");
+    // get the value of my Attribute
+    _cPos._Pos.x = reader.getAttributeAsFloat("Px");
+    _cPos._Pos.y = reader.getAttributeAsFloat("Py");
+    _cPos._Pos.z = reader.getAttributeAsFloat("Pz");
 
-  _cPos._q[0] = reader.getAttributeAsFloat("Q0");
-  _cPos._q[1] = reader.getAttributeAsFloat("Q1");
-  _cPos._q[2] = reader.getAttributeAsFloat("Q2");
-  _cPos._q[3] = reader.getAttributeAsFloat("Q3");
+    _cPos._q[0] = reader.getAttributeAsFloat("Q0");
+    _cPos._q[1] = reader.getAttributeAsFloat("Q1");
+    _cPos._q[2] = reader.getAttributeAsFloat("Q2");
+    _cPos._q[3] = reader.getAttributeAsFloat("Q3");
 }
 
 
 Property *PropertyPlacement::Copy(void) const
 {
-  PropertyPlacement *p= new PropertyPlacement();
-  p->_cPos = _cPos;
-  return p;
+    PropertyPlacement *p= new PropertyPlacement();
+    p->_cPos = _cPos;
+    return p;
 }
 
 void PropertyPlacement::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cPos = dynamic_cast<const PropertyPlacement&>(from)._cPos;
-  hasSetValue();
+    aboutToSetValue();
+    _cPos = dynamic_cast<const PropertyPlacement&>(from)._cPos;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -566,10 +566,10 @@ PropertyPlacementLink::~PropertyPlacementLink()
 
 App::Placement * PropertyPlacementLink::getPlacementObject(void) const
 {
-  if(_pcLink->getTypeId().isDerivedFrom(App::Placement::getClassTypeId()))
-    return dynamic_cast<App::Placement*>(_pcLink);
-  else
-    return 0;
+    if (_pcLink->getTypeId().isDerivedFrom(App::Placement::getClassTypeId()))
+        return dynamic_cast<App::Placement*>(_pcLink);
+    else
+        return 0;
 
 }
 
@@ -578,15 +578,15 @@ App::Placement * PropertyPlacementLink::getPlacementObject(void) const
 
 Property *PropertyPlacementLink::Copy(void) const
 {
-  PropertyPlacementLink *p= new PropertyPlacementLink();
-  p->_pcLink = _pcLink;
-  return p;
+    PropertyPlacementLink *p= new PropertyPlacementLink();
+    p->_pcLink = _pcLink;
+    return p;
 }
 
 void PropertyPlacementLink::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _pcLink = dynamic_cast<const PropertyPlacementLink&>(from)._pcLink;
-  hasSetValue();
+    aboutToSetValue();
+    _pcLink = dynamic_cast<const PropertyPlacementLink&>(from)._pcLink;
+    hasSetValue();
 }
 

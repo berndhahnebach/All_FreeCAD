@@ -76,171 +76,173 @@ class  BaseExport ParameterGrp	: public Base::Handled,public Base::Subject <cons
 
 
 public:
-	/** @name copy and insertation */
-	//@{
-  /// make a deep copy to the other group
-  void copyTo(Base::Reference<ParameterGrp>);
-  /// overwrite everithing similar, leaf the others allone 
-  void insertTo(Base::Reference<ParameterGrp>); 
-  /// export this group to a file
-  void exportTo(const char* FileName);
-  /// import from a file to this group
-  void importFrom(const char* FileName);
-  /// insert from a file to this group, overwrite only the similar
-  void insert(const char* FileName);
-	//@}
-  
-  /** @name methods for group handling */
-	//@{
-	/// get a handle to a sub group or creat one
-	Base::Reference<ParameterGrp> GetGroup(const char* Name);
-	/// get a vector of all sub groups in this group
-	std::vector<Base::Reference<ParameterGrp> > GetGroups(void);
-	/// test if this group is emty
-	bool IsEmpty(void) const;
-	/// test if a special sub group is in this group
-	bool HasGroup(const char* Name) const;
-	/// type of the handle
-	typedef Base::Reference<ParameterGrp> handle;
-	/// remove a sub group from this group
-	void RemoveGrp(const char* Name);
-	/// clears everithing in this group (all types)
-	void Clear(void);
-	//@}
+    /** @name copy and insertation */
+    //@{
+    /// make a deep copy to the other group
+    void copyTo(Base::Reference<ParameterGrp>);
+    /// overwrite everithing similar, leaf the others allone
+    void insertTo(Base::Reference<ParameterGrp>);
+    /// export this group to a file
+    void exportTo(const char* FileName);
+    /// import from a file to this group
+    void importFrom(const char* FileName);
+    /// insert from a file to this group, overwrite only the similar
+    void insert(const char* FileName);
+    //@}
 
-	/** @name methods for bool handling */
-	//@{
-	/// read bool values or give default
-	bool GetBool(const char* Name, bool bPreset=false) const;
-	/// set a bool value
-	void SetBool(const char* Name, bool bValue);
-	/// get a vector of all bool values in this group
-	std::vector<bool> GetBools(const char * sFilter = NULL) const;
-	/// get a map with all bool values and the keys of this group
+    /** @name methods for group handling */
+    //@{
+    /// get a handle to a sub group or creat one
+    Base::Reference<ParameterGrp> GetGroup(const char* Name);
+    /// get a vector of all sub groups in this group
+    std::vector<Base::Reference<ParameterGrp> > GetGroups(void);
+    /// test if this group is emty
+    bool IsEmpty(void) const;
+    /// test if a special sub group is in this group
+    bool HasGroup(const char* Name) const;
+    /// type of the handle
+    typedef Base::Reference<ParameterGrp> handle;
+    /// remove a sub group from this group
+    void RemoveGrp(const char* Name);
+    /// clears everithing in this group (all types)
+    void Clear(void);
+    //@}
+
+    /** @name methods for bool handling */
+    //@{
+    /// read bool values or give default
+    bool GetBool(const char* Name, bool bPreset=false) const;
+    /// set a bool value
+    void SetBool(const char* Name, bool bValue);
+    /// get a vector of all bool values in this group
+    std::vector<bool> GetBools(const char * sFilter = NULL) const;
+    /// get a map with all bool values and the keys of this group
     std::vector<std::pair<std::string,bool> > GetBoolMap(const char * sFilter = NULL) const;
-	/// remove a bool value from this group
-	void RemoveBool(const char* Name);
-	//@}
+    /// remove a bool value from this group
+    void RemoveBool(const char* Name);
+    //@}
 
-	/** @name methods for Int handling */
-	//@{
-	/// read bool values or give default
-	long GetInt(const char* Name, long lPreset=0) const;
-	/// set a int value
-	void SetInt(const char* Name, long lValue);
-	/// get a vector of all int values in this group
-	std::vector<long> GetInts(const char * sFilter = NULL) const;
-	/// get a map with all int values and the keys of this group
+    /** @name methods for Int handling */
+    //@{
+    /// read bool values or give default
+    long GetInt(const char* Name, long lPreset=0) const;
+    /// set a int value
+    void SetInt(const char* Name, long lValue);
+    /// get a vector of all int values in this group
+    std::vector<long> GetInts(const char * sFilter = NULL) const;
+    /// get a map with all int values and the keys of this group
     std::vector<std::pair<std::string,long> > GetIntMap(const char * sFilter = NULL) const;
-	/// remove a int value from this group
-	void RemoveInt(const char* Name);
-	//@}
+    /// remove a int value from this group
+    void RemoveInt(const char* Name);
+    //@}
 
-	/** @name methods for Unsigned Int handling */
-	//@{
-	/// read uint values or give default
-	unsigned long GetUnsigned(const char* Name, unsigned long lPreset=0) const;
-	/// set a uint value
-	void SetUnsigned(const char* Name, unsigned long lValue);
-	/// get a vector of all uint values in this group
-	std::vector<unsigned long> GetUnsigneds(const char * sFilter = NULL) const;
-	/// get a map with all uint values and the keys of this group
+    /** @name methods for Unsigned Int handling */
+    //@{
+    /// read uint values or give default
+    unsigned long GetUnsigned(const char* Name, unsigned long lPreset=0) const;
+    /// set a uint value
+    void SetUnsigned(const char* Name, unsigned long lValue);
+    /// get a vector of all uint values in this group
+    std::vector<unsigned long> GetUnsigneds(const char * sFilter = NULL) const;
+    /// get a map with all uint values and the keys of this group
     std::vector<std::pair<std::string,unsigned long> > GetUnsignedMap(const char * sFilter = NULL) const;
-	/// remove a uint value from this group
-	void RemoveUnsigned(const char* Name);
-	//@}
+    /// remove a uint value from this group
+    void RemoveUnsigned(const char* Name);
+    //@}
 
 
-	/** @name methods for Float handling */
-	//@{
-	/// set a float value
-	double GetFloat(const char* Name, double dPreset=0.0) const;
-	/// read float values or give default
-	void SetFloat(const char* Name, double dValue);
-	/// get a vector of all float values in this group
-	std::vector<double> GetFloats(const char * sFilter = NULL) const;
-	/// get a map with all float values and the keys of this group
+    /** @name methods for Float handling */
+    //@{
+    /// set a float value
+    double GetFloat(const char* Name, double dPreset=0.0) const;
+    /// read float values or give default
+    void SetFloat(const char* Name, double dValue);
+    /// get a vector of all float values in this group
+    std::vector<double> GetFloats(const char * sFilter = NULL) const;
+    /// get a map with all float values and the keys of this group
     std::vector<std::pair<std::string,double> > GetFloatMap(const char * sFilter = NULL) const;
-	/// remove a float value from this group
-	void RemoveFloat(const char* Name);
-	//@}
+    /// remove a float value from this group
+    void RemoveFloat(const char* Name);
+    //@}
 
 
-	/** @name methods for Blob handling (not implemented yet) */
-	//@{
-	/// set a blob value
-	void  SetBlob(const char* Name, void *pValue, long lLength);
-	/// read blob values or give default
-	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL) const;
-	/// remove a blob value from this group
-	void RemoveBlob(const char* Name);
-	//@}
+    /** @name methods for Blob handling (not implemented yet) */
+    //@{
+    /// set a blob value
+    void  SetBlob(const char* Name, void *pValue, long lLength);
+    /// read blob values or give default
+    void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL) const;
+    /// remove a blob value from this group
+    void RemoveBlob(const char* Name);
+    //@}
 
 
 
-	/** @name methods for String handling */
-	//@{
-	/// set a string value
-	void  SetASCII(const char* Name, const char *sValue);
-	/// read a string values with a buffer
-	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL) const;
-	/// read a string values
-	std::string GetASCII(const char* Name, const char * pPreset=NULL) const;
-	/// remove a string value from this group
-	void RemoveASCII(const char* Name);
-	/** Return all string elements in this group as a vector of strings
-	 *  Its also possible to set a filter criteria.
-	 *  @param sFilter only strings which name includes sFilter are put in the vector
-	 *  @return std::vector of std::strings
-	 */
-	std::vector<std::string> GetASCIIs(const char * sFilter = NULL) const;
-	/// Same as GetASCIIs() but with key,value map
+    /** @name methods for String handling */
+    //@{
+    /// set a string value
+    void  SetASCII(const char* Name, const char *sValue);
+    /// read a string values with a buffer
+    void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL) const;
+    /// read a string values
+    std::string GetASCII(const char* Name, const char * pPreset=NULL) const;
+    /// remove a string value from this group
+    void RemoveASCII(const char* Name);
+    /** Return all string elements in this group as a vector of strings
+     *  Its also possible to set a filter criteria.
+     *  @param sFilter only strings which name includes sFilter are put in the vector
+     *  @return std::vector of std::strings
+     */
+    std::vector<std::string> GetASCIIs(const char * sFilter = NULL) const;
+    /// Same as GetASCIIs() but with key,value map
     std::vector<std::pair<std::string,std::string> > GetASCIIMap(const char * sFilter = NULL) const;
-	//@}
+    //@}
 
-	static void Init(void);
+    static void Init(void);
 
-	friend class ParameterManager;
+    friend class ParameterManager;
 
-	/// returns the name
-	const char* GetGroupName(void) const {return _cName.c_str();}
+    /// returns the name
+    const char* GetGroupName(void) const {
+        return _cName.c_str();
+    }
 
-	/** Notifies all observers for all entries except of sub-groups.
-	 */
-  void NotifyAll();
+    /** Notifies all observers for all entries except of sub-groups.
+     */
+    void NotifyAll();
 
 protected:
-	/// constructor is protected (handle concept)
-	ParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);
-	/// destructor is protected (handle concept)
-	~ParameterGrp();
-	/// helper function for GetGroup
-	Base::Reference<ParameterGrp> _GetGroup(const char* Name);
+    /// constructor is protected (handle concept)
+    ParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);
+    /// destructor is protected (handle concept)
+    ~ParameterGrp();
+    /// helper function for GetGroup
+    Base::Reference<ParameterGrp> _GetGroup(const char* Name);
 
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type) const;
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type) const;
 
-	/** Find an element specified by Type and Name
-	 *  Search in the parent element Start for the first occourrence of an
-	 *  element of Type and with the attribute Name=Name. On success it returns
-	 *  the pointer to that element, otherwise NULL
-	 *  If the names not given he returns the first occourence fo Type.
-	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name=0L) const;
+    /** Find an element specified by Type and Name
+     *  Search in the parent element Start for the first occourrence of an
+     *  element of Type and with the attribute Name=Name. On success it returns
+     *  the pointer to that element, otherwise NULL
+     *  If the names not given he returns the first occourence fo Type.
+     */
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name=0L) const;
 
-	/** Find an element specified by Type and Name or create it if not found
-	 *  Search in the parent element Start for the first occourrence of an
-	 *  element of Type and with the attribute Name=Name. On success it returns
-	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
-	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const;
+    /** Find an element specified by Type and Name or create it if not found
+     *  Search in the parent element Start for the first occourrence of an
+     *  element of Type and with the attribute Name=Name. On success it returns
+     *  the pointer to that element, otherwise it creates the element and returns the pointer.
+     */
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const;
 
 
-	/// DOM Node of the Base node of this group
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *_pGroupNode;
-	/// the own name
-	std::string _cName;
-	/// map of already exported groups
-	std::map <std::string ,Base::Reference<ParameterGrp> > _GroupMap;
+    /// DOM Node of the Base node of this group
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *_pGroupNode;
+    /// the own name
+    std::string _cName;
+    /// map of already exported groups
+    std::map <std::string ,Base::Reference<ParameterGrp> > _GroupMap;
 
 };
 
@@ -253,37 +255,37 @@ protected:
 class BaseExport ParameterManager	: public ParameterGrp
 {
 public:
-	ParameterManager();
-	~ParameterManager();
-	static void Init(void);
+    ParameterManager();
+    ~ParameterManager();
+    static void Init(void);
 
-	int   LoadDocument(const char* sFileName);
+    int   LoadDocument(const char* sFileName);
 
-	bool  LoadOrCreateDocument(const char* sFileName);
+    bool  LoadOrCreateDocument(const char* sFileName);
 
-	void  SaveDocument(const char* sFileName) const;
+    void  SaveDocument(const char* sFileName) const;
 
-	void  CreateDocument(void);
+    void  CreateDocument(void);
 
-	void  CheckDocument() const;
+    void  CheckDocument() const;
 
 private:
 
-XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument   *_pDocument;
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument   *_pDocument;
 
-	bool          gDoNamespaces         ;
-	bool          gDoSchema             ;
-	bool          gSchemaFullChecking   ;
-	bool          gDoCreate             ;
+    bool          gDoNamespaces         ;
+    bool          gDoSchema             ;
+    bool          gSchemaFullChecking   ;
+    bool          gDoCreate             ;
 
 
-	const XMLCh*  gOutputEncoding       ;
-	const XMLCh*  gMyEOLSequence        ;
+    const XMLCh*  gOutputEncoding       ;
+    const XMLCh*  gMyEOLSequence        ;
 
-	bool          gSplitCdataSections   ;
-	bool          gDiscardDefaultContent;
-	bool          gUseFilter            ;
-	bool          gFormatPrettyPrint    ;
+    bool          gSplitCdataSections   ;
+    bool          gDiscardDefaultContent;
+    bool          gUseFilter            ;
+    bool          gFormatPrettyPrint    ;
 
 };
 

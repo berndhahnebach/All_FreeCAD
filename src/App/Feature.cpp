@@ -56,68 +56,51 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 const char* FeatEnums[]= {"Valid","New","Inactive","Recompute","Error",NULL};
 
 AbstractFeature::AbstractFeature(void)
-: _execute(false)
+        : _execute(false)
 {
-  ADD_PROPERTY_TYPE(status,(1),"Base",Prop_None,"Current status of the Feature");
-  status.setEnums(FeatEnums);
+    ADD_PROPERTY_TYPE(status,(1),"Base",Prop_None,"Current status of the Feature");
+    status.setEnums(FeatEnums);
 }
 
 AbstractFeature::~AbstractFeature(void)
 {
- /* if (pcFeaturePy)
-  {
-    pcFeaturePy->setInvalid();
-    pcFeaturePy->DecRef();
-  }*/
 }
 
 PyObject *AbstractFeature::getPyObject(void)
 {
- if(PythonObject.is(Py::_None())){
-    // ref counter is set to 1
-    PythonObject.set(new FeaturePy(this),true);
-  }
-  return Py::new_reference_to(PythonObject); 
+    if (PythonObject.is(Py::_None())) {
+        // ref counter is set to 1
+        PythonObject.set(new FeaturePy(this),true);
+    }
+    return Py::new_reference_to(PythonObject);
 }
 
 void AbstractFeature::onChanged(const Property* prop)
 {
-  // call father for Undo/Redo...
-  DocumentObject::onChanged(prop);
+    // call father for Undo/Redo...
+    DocumentObject::onChanged(prop);
 
-  // Ignore some properties
-  if ( prop == &status )
-    return;
-  else if ( prop == &Label )
-    return;
-  touchPropertyTime.setToActual();
-  //setModified(true);
+    // Ignore some properties
+    if ( prop == &status )
+        return;
+    else if ( prop == &Label )
+        return;
+    touchPropertyTime.setToActual();
 }
 
-/*
-void AbstractFeature::setModified(bool b)
-{
-  _execute = b;
-}
-
-bool AbstractFeature::isModified() const
-{
-  return _execute;
-}
-*/
 bool AbstractFeature::mustExecute(void)
 {
-  // If the object's label is modified:
-  if (getStatus() != Valid && getStatus()!= Inactive) 
-    return true;
+    // If the object's label is modified:
+    if (getStatus() != Valid && getStatus()!= Inactive)
+        return true;
 
-  //FIXME: The setModified() method is a workaround for the problems with the time stamp.
-  //E.g. when a property has changed then the feature itself has changed. If the recomputation takes place
-  //immediately and is finished very fast then it could happen that the OS returns the same time stamp for both
-  //events. And the other way round a property has changed immediately after a recomputation of the feature.
-  //In both cases the time stamp doesn't work as expected. Using a boolean instead solves the problem.
-  return _execute;
-//  if ( touchTime <= touchPropertyTime ) 
+    //FIXME: The setModified() method is a workaround for the problems with the time stamp.
+    //E.g. when a property has changed then the feature itself has changed. If the recomputation takes place
+    //immediately and is finished very fast then it could happen that the OS returns the same time stamp for both
+    //events. And the other way round a property has changed immediately after a recomputation of the feature.
+    //In both cases the time stamp doesn't work as expected. Using a boolean instead solves the problem.
+    return _execute;
+//  if ( touchTime <= touchPropertyTime )
 //    return true;
 //
 //  return false;
@@ -126,46 +109,39 @@ bool AbstractFeature::mustExecute(void)
 
 void AbstractFeature::recompute(void)
 {
-  _pDoc->recomputeFeature(this);
+    _pDoc->recomputeFeature(this);
 }
 
 const char* AbstractFeature::getStatusString(void) const
 {
-  switch (status.getValue())
-  {
-  case Valid:
-    return "Valid";
-  case New:
-    return "New";
-  case Inactive:
-    return "Inactive";
-  case Recompute:
-    return "Recompute";
-  case Error:
-    return "Error";
-  default:
-    return "Unknown";
-  }
+    switch (status.getValue()) {
+    case Valid:
+        return "Valid";
+    case New:
+        return "New";
+    case Inactive:
+        return "Inactive";
+    case Recompute:
+        return "Recompute";
+    case Error:
+        return "Error";
+    default:
+        return "Unknown";
+    }
 }
 
 void AbstractFeature::setError(const char* pMsg,...)
 {
-  // temp buffer
-  unsigned int format_len = strlen(pMsg)+4024;
-  char* format = (char*) malloc(format_len);
+    // temp buffer
+    unsigned int format_len = strlen(pMsg)+4024;
+    char* format = (char*) malloc(format_len);
 
-  va_list namelessVars;
-  va_start(namelessVars, pMsg);  // Get the "..." vars
-  vsnprintf(format, format_len, pMsg, namelessVars);
-  va_end(namelessVars);
+    va_list namelessVars;
+    va_start(namelessVars, pMsg);  // Get the "..." vars
+    vsnprintf(format, format_len, pMsg, namelessVars);
+    va_end(namelessVars);
 
-  /*_eStatus = Error;*/
-  status.setValue(Error);
-  _cErrorMessage = format;
+    /*_eStatus = Error;*/
+    status.setValue(Error);
+    _cErrorMessage = format;
 }
-
-
-
-
-
-

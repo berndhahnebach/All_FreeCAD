@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -10,7 +10,7 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
@@ -53,73 +53,73 @@ using Base::Console;
 using App::Application;
 
 const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\
-"  #####                 ####  ###   ####  \n" \
-"  #                    #      # #   #   # \n" \
-"  #     ##  #### ####  #     #   #  #   # \n" \
-"  ####  # # #  # #  #  #     #####  #   # \n" \
-"  #     #   #### ####  #    #     # #   # \n" \
-"  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
-"  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
+                       "  #####                 ####  ###   ####  \n" \
+                       "  #                    #      # #   #   # \n" \
+                       "  #     ##  #### ####  #     #   #  #   # \n" \
+                       "  ####  # # #  # #  #  #     #####  #   # \n" \
+                       "  #     #   #### ####  #    #     # #   # \n" \
+                       "  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
+                       "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
 
 
 int main( int argc, char ** argv )
 {
-  // Name and Version of the Application
-  App::Application::Config()["ExeName"] = "FreeCAD";
-  App::Application::Config()["ExeVendor"] = "FreeCAD";
-  App::Application::Config()["ExeVersion"] = "0.7";
+    // Name and Version of the Application
+    App::Application::Config()["ExeName"] = "FreeCAD";
+    App::Application::Config()["ExeVendor"] = "FreeCAD";
+    App::Application::Config()["ExeVersion"] = "0.7";
 
-  // set the banner (for loging and console)
-  App::Application::Config()["ConsoleBanner"] = sBanner;
+    // set the banner (for loging and console)
+    App::Application::Config()["ConsoleBanner"] = sBanner;
 
-  try{
-    // Init phase ===========================================================
-	  // sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-    App::Application::Config()["RunMode"] = "Exit";
+    try {
+        // Init phase ===========================================================
+        // sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
+        App::Application::Config()["RunMode"] = "Exit";
 
-	  // Inits the Application 
-	  App::Application::init(argc,argv);
-  } catch(const Base::Exception& e) {
-    std::string appName = App::Application::Config()["ExeName"];
-    std::stringstream msg;
-    msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
-    msg << "Python is searching for its runtime files in the following directories:\n" << Py_GetPath() << "\n\n";
-    msg << "Python version information:\n" << Py_GetVersion() << "\n";
-    const char* pythonhome = getenv("PYTHONHOME");
-    if ( pythonhome )
-    {
-      msg << "\nThe environment variable PYTHONHOME is set to '" << pythonhome << "'.";
-      msg << "\nSetting this environment variable might cause Python to fail. Please contact your administrator to unset it on your system.\n\n";
+        // Inits the Application
+        App::Application::init(argc,argv);
     }
-    else
-    {
-      msg << "\nPlease contact the application's support team for more information.\n\n";
+    catch (const Base::Exception& e) {
+        std::string appName = App::Application::Config()["ExeName"];
+        std::stringstream msg;
+        msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
+        msg << "Python is searching for its runtime files in the following directories:\n" << Py_GetPath() << "\n\n";
+        msg << "Python version information:\n" << Py_GetVersion() << "\n";
+        const char* pythonhome = getenv("PYTHONHOME");
+        if ( pythonhome ) {
+            msg << "\nThe environment variable PYTHONHOME is set to '" << pythonhome << "'.";
+            msg << "\nSetting this environment variable might cause Python to fail. Please contact your administrator to unset it on your system.\n\n";
+        }
+        else {
+            msg << "\nPlease contact the application's support team for more information.\n\n";
+        }
+
+        printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+        exit(100);
+    }
+    catch (...) {
+        std::string appName = App::Application::Config()["ExeName"];
+        std::stringstream msg;
+        msg << "Unknown runtime error occurred while initializing " << appName <<".\n\n";
+        msg << "Please contact the application's support team for more information.\n\n";
+        printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+        exit(101);
     }
 
-    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
-    exit(100);
-  } catch(...) {
-    std::string appName = App::Application::Config()["ExeName"];
-    std::stringstream msg;
-    msg << "Unknown runtime error occurred while initializing " << appName <<".\n\n";
-    msg << "Please contact the application's support team for more information.\n\n";
-    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
-    exit(101);
-  }
-
-	// Run phase ===========================================================
-	Application::runApplication();
+    // Run phase ===========================================================
+    Application::runApplication();
 
 
-	// Destruction phase ===========================================================
-	Console().Log("FreeCAD terminating...\n\n");
+    // Destruction phase ===========================================================
+    Console().Log("FreeCAD terminating...\n\n");
 
-	// cleans up 
-	Application::destruct();
+    // cleans up
+    Application::destruct();
 
-	Console().Log("FreeCAD completely terminated\n\n");
+    Console().Log("FreeCAD completely terminated\n\n");
 
-	return 0;
+    return 0;
 }
 

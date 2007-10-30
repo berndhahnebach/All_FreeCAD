@@ -583,7 +583,7 @@ void ConsoleObserverStd::Log    (const char *sErr)
 #   else
     printf("\033[1;36m");
 #   endif
-	printf("%s",sErr);
+    printf("%s",sErr);
 #   ifdef FC_OS_WIN32
 #   if defined(_MSC_VER) && _MSC_VER >= 1400
     //::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );

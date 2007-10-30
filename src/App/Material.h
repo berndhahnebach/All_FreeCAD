@@ -140,9 +140,9 @@ public:
   };
 
 public:
-	/** @name Constructors
-	 */
-	//@{
+  /** @name Constructors
+   */
+  //@{
   /** Sets the USER_DEFINED material type. The user must set the colors afterwards. */
   Material(void);
   /** Defines the colors and shininess for the material \a MatName. If \a MatName isn't defined then USER_DEFINED is
@@ -151,11 +151,11 @@ public:
   Material(const char* MatName);
   /** Does basically the same as the constructor above unless that it accepts a MaterialType as argument. */
   Material(const MaterialType MatType);
-	//@}
+  //@}
   virtual ~Material();
 
-	/** Set a material by name
-	 *  There are some standard materials defined which are:
+  /** Set a material by name
+   *  There are some standard materials defined which are:
    *  \li Brass
    *  \li Bronze
    *  \li Copper
@@ -181,7 +181,7 @@ public:
    * does nothing.
    * The Color and the other properties of the material are defined in the range [0-1].
    * If \a MatName is an unknown material name then the type USER_DEFINED is set and the material doesn't get changed.
-	 */
+   */
   void set(const char* MatName);
   /**
    * This method is provided for convenience which does basically the same as the method above unless that it accepts a MaterialType 
@@ -196,15 +196,15 @@ public:
 
   //Base::PyObjectBase* GetPyObject(void);
 
-	/** @name Properties */
-	//@{
+  /** @name Properties */
+  //@{
   Color ambientColor;  /**< Defines the ambient color. */
   Color diffuseColor;  /**< Defines the diffuse color. */
   Color specularColor; /**< Defines the specular color. */
   Color emissiveColor; /**< Defines the emissive color. */
   float shininess;
   float transparency;
-	//@}
+  //@}
 
 private:
   MaterialPy* _materialPy;

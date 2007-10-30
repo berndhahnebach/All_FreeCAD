@@ -26,8 +26,6 @@
 #ifndef _PreComp_
 #endif
 
-#include <Base/Console.h>
-using Base::Console;
 #include "GeoFeature.h"
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
@@ -42,17 +40,9 @@ PROPERTY_SOURCE_ABSTRACT(App::GeoFeature, App::AbstractFeature)
 
 GeoFeature::GeoFeature(void)
 {
-
-
-  ADD_PROPERTY(Pos,(0));
+    ADD_PROPERTY(Pos,(0));
 }
 
 GeoFeature::~GeoFeature(void)
 {
 }
-
-
-
-
-
-

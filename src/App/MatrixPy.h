@@ -44,44 +44,48 @@ class Material;
  */
 class AppExport MatrixPy :public Base::PyObjectBase
 {
-	/// always start with Py_Header
-	Py_Header;
+    /// always start with Py_Header
+    Py_Header;
 
 protected:
-	~MatrixPy();
+    ~MatrixPy();
 
 public:
-  MatrixPy(const Base::Matrix4D &rcMatrix = Base::Matrix4D(), PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyTypeObject *, PyObject *, PyObject *);
+    MatrixPy(const Base::Matrix4D &rcMatrix = Base::Matrix4D(), PyTypeObject *T = &Type);
+    static PyObject *PyMake(PyTypeObject *, PyObject *, PyObject *);
 
-  Base::Matrix4D value(void){return _cMatrix;}
-  void set(const Base::Matrix4D &cMat){_cMatrix = cMat;}
+    Base::Matrix4D value(void) {
+        return _cMatrix;
+    }
+    void set(const Base::Matrix4D &cMat) {
+        _cMatrix = cMat;
+    }
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+    //---------------------------------------------------------------------
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+    virtual PyObject *_repr(void);  				// the representation
+    PyObject *_getattr(char *attr);					// __getattr__ function
+    int _setattr(char *attr, PyObject *value);		// __setattr__ function
 
-  PYFUNCDEF_D(MatrixPy,move)
-  PYFUNCDEF_D(MatrixPy,rotateX)
-  PYFUNCDEF_D(MatrixPy,rotateY)
-  PYFUNCDEF_D(MatrixPy,rotateZ)
-  PYFUNCDEF_D(MatrixPy,scale)
-  PYFUNCDEF_D(MatrixPy,transform)
-  PYFUNCDEF_D(MatrixPy,unity)
+    PYFUNCDEF_D(MatrixPy,move)
+    PYFUNCDEF_D(MatrixPy,rotateX)
+    PYFUNCDEF_D(MatrixPy,rotateY)
+    PYFUNCDEF_D(MatrixPy,rotateZ)
+    PYFUNCDEF_D(MatrixPy,scale)
+    PYFUNCDEF_D(MatrixPy,transform)
+    PYFUNCDEF_D(MatrixPy,unity)
 
 
 
-	//---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // helpers for python exports goes here +++++++++++++++++++++++++++++++
+    //---------------------------------------------------------------------
 
 protected:
 
-  Base::Matrix4D _cMatrix;
+    Base::Matrix4D _cMatrix;
 
 };
 

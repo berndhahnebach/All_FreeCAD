@@ -33,30 +33,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <stdlib.h>
+#   include <stdlib.h>
 #endif
 
 #include "PyExport.h"
 #include "PyObjectBase.h"
 
 using namespace Base;
-
-//PyHandler::~PyHandler()
-//{
-//
-//}
-//
-//void PyHandler::IncRef(void)
-//{
-//  // GetPyObject() increments already by one
-//  GetPyObject();
-//}
-//
-//void PyHandler::DecRef(void)
-//{
-//  // GetPyObject() increments already by one
-//  PyObjectBase* pyObj = GetPyObject();
-//  pyObj->DecRef(); // restore old counter
-//  pyObj->DecRef(); // decrement now
-//}
-

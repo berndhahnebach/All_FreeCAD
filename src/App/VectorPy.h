@@ -41,36 +41,40 @@ namespace App
  */
 class AppExport VectorPy :public Base::PyObjectBase
 {
-	/// always start with Py_Header
-	Py_Header;
+    /// always start with Py_Header
+    Py_Header;
 
 protected:
-	~VectorPy();
+    ~VectorPy();
 
 public:
-  VectorPy(const Base::Vector3f &rcVector = Base::Vector3f(), PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyTypeObject  *, PyObject *, PyObject *);
+    VectorPy(const Base::Vector3f &rcVector = Base::Vector3f(), PyTypeObject *T = &Type);
+    static PyObject *PyMake(PyTypeObject  *, PyObject *, PyObject *);
 
-  Base::Vector3f value(void){return _cVector;}
-  void set(const Base::Vector3f &cVec){_cVector = cVec;}
+    Base::Vector3f value(void) {
+        return _cVector;
+    }
+    void set(const Base::Vector3f &cVec) {
+        _cVector = cVec;
+    }
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+    //---------------------------------------------------------------------
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(VectorPy,set)
+    virtual PyObject *_repr(void);  				// the representation
+    PyObject *_getattr(char *attr);					// __getattr__ function
+    int _setattr(char *attr, PyObject *value);		// __setattr__ function
+    PYFUNCDEF_D(VectorPy,set)
 
 
-	//---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // helpers for python exports goes here +++++++++++++++++++++++++++++++
+    //---------------------------------------------------------------------
 
 protected:
 
-  Base::Vector3f  _cVector;
+    Base::Vector3f  _cVector;
 
 };
 

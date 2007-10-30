@@ -43,12 +43,12 @@ class AppExport GeoFeature: public App::AbstractFeature
 
 public:
 
-  PropertyPlacementLink Pos;
+    PropertyPlacementLink Pos;
 
 
-	/// Constructor
-	GeoFeature(void);
-  virtual ~GeoFeature();
+    /// Constructor
+    GeoFeature(void);
+    virtual ~GeoFeature();
 
 };
 
