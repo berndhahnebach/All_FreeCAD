@@ -90,14 +90,10 @@ bool cutting_tools::getShapeBB()
 	//Die Cascade-Bounding Box funktioniert nicht richtig
 	//Es wird dort wohl ne BoundingBox um dasKontrollnetz gelegt
 	//Deshalb wird jetzt kurz das Shape tesseliert und dann die Bounding Box direkt ausgelesen
-	
-	
 	best_fit::Tesselate_Shape(m_Shape,m_CAD_Mesh,0.1);
-	
 	Base::BoundBox3f aBoundBox = m_CAD_Mesh.GetBoundBox();
 	m_maxlevel = aBoundBox.MaxZ;
 	m_minlevel = aBoundBox.MinZ;
-    
 	/*	Hier ist die alte OCC BoundingBox Funktion
 	Bnd_Box currentBBox;
 	Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
@@ -110,9 +106,7 @@ bool cutting_tools::getShapeBB()
 
 bool cutting_tools::fillFaceBBoxes()
 {
-	//Da es nicht funktioniert, wenn wir nur ein Face reinschieben. Muss ich ein paar Punkte bzw. Vertex erzeugen und diese dann in die BBox schieben
 	TopoDS_Face atopo_surface;
-    BRepAdaptor_Surface aAdaptor_Surface;
     TopExp_Explorer Explorer;
 	MeshCore::MeshKernel aFaceMesh;
 	Base::BoundBox3f aBoundBox;
@@ -128,14 +122,14 @@ bool cutting_tools::fillFaceBBoxes()
 		tempPair.first = atopo_surface;
 		tempPair.second = aBoundBox;
 		m_face_bboxes.push_back(tempPair);
-
-
-
-
+	}
+	return true;
+}
+//Hier ist die alte Version um die Bounding Box zu bestimmen
   //      aAdaptor_Surface.Initialize(atopo_surface);
   //      Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
   //      gp_Pnt aSurfacePoint;
-		//FirstUParameter = aAdaptor_Surface.FirstUParameter();
+  //	  FirstUParameter = aAdaptor_Surface.FirstUParameter();
   //      LastUParameter  = aAdaptor_Surface.LastUParameter();
   //      FirstVParameter = aAdaptor_Surface.FirstVParameter();
   //      LastVParameter = aAdaptor_Surface.LastVParameter();
@@ -163,27 +157,28 @@ bool cutting_tools::fillFaceBBoxes()
 		////aVertex = BRepBuilderAPI_MakeVertex(aSurfacePoint); 
 		////BRepBndLib::Add(aVertex, currentBBox );
 		//currentBBox.SetVoid();
-	}
-	return true;
-}
+
+
+
+
+
+
+
+
 
 bool cutting_tools::checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox)
 {
-	//aBndBox.Enlarge(float(1.05));
 	if((aPnt.X()>aBndBox.MinX) && (aPnt.X()<aBndBox.MaxX) && (aPnt.Y()>aBndBox.MinY) && (aPnt.Y()<aBndBox.MaxY) && (aPnt.Z()>aBndBox.MinZ) && (aPnt.Z()<aBndBox.MaxZ))
 		return true;
 
 	return false;
 }
+
+
 bool cutting_tools::initializeMeshStuff()
 {
-	
 	m_CAD_Mesh_Grid = new MeshCore::MeshFacetGrid(m_CAD_Mesh);
 	m_aMeshAlgo = new MeshCore::MeshAlgorithm(m_CAD_Mesh);
-
-	//Test für die Curvature mal schnell durchführen
-	best_fit abestfit(m_CAD_Mesh);
-	abestfit.mesh_curvature();
 	return true;
 }
 bool cutting_tools::arrangecuts_ZLEVEL()
@@ -206,7 +201,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			std::list<std::vector<Base::Vector3f> > result;
 			result.clear();
 			//cut(z_level,m_minlevel,aTopoWire,z_level_corrected);
-			cut_Mesh(z_level,m_minlevel,result);
+			cut_Mesh(z_level,m_minlevel,result,z_level_corrected);
 
 			//Jetzt die resultierenden Points in den vector schieben
 			std::pair<float,std::list<std::vector<Base::Vector3f> > > tempPair;
@@ -221,6 +216,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 	{
 		//Erst mal schauen ob der maximale Wert vom Bauteil m_maxlevel mit dem höchsten flachen Bereich zusammenfällt
 		if(m_zl_wire_combination.empty()) return false;
+		//Wir benutzen rbegin, weil wir damit den ersten Z-Wert bekommen (wurde vom kleinsten zum größten geordnet)
 		float test = m_maxlevel-m_zl_wire_combination.rbegin()->first;
 		//Oberste Ebene vom Bauteil fällt mit der obersten flachen Ebene zusammen
 		//-> Schnitte von der obersten flachen Ebene bis zur nächsten flachen Ebene oder bis ganz nach unten m_minlevel
@@ -228,10 +224,11 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 		{
 			float temp_max = m_zl_wire_combination.rbegin()->first;
 			float temp_min;
-			std::multimap<float,TopoDS_Wire>::iterator m_zl_wire_it;
-			//Wir holen uns jetzt den nächsten Z-Level raus
-			m_zl_wire_it = m_zl_wire_combination.upper_bound(temp_max-0.1);
-			if(m_zl_wire_it->first == temp_max)
+			std::multimap<float,TopoDS_Wire>::iterator zl_wire_it;
+			//Wir holen uns jetzt den nächsten Z-Level raus. Wir müssen was kleineres 
+			//wie den höchsten Wert nehmen sonst gibt er den höchsten Wert wieder aus
+			zl_wire_it = m_zl_wire_combination.upper_bound(temp_max-0.1);
+			if(zl_wire_it->first == temp_max)
 			{
 				cout << "Tja, es gibt wohl nur eine flache Area";
 				temp_min = m_minlevel;
@@ -249,15 +246,14 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			float z_level,z_level_corrected;
 			TopoDS_Wire aTopoWire;
 			//Jetzt schneiden (die oberste Ebene auslassen)
-			for (int i=1;i<=2;++i) 
+			for (int i=1;i<=cutnumber;++i) 
 			{
 				z_level = temp_max-(i*m_pitch);
 				z_level_corrected = z_level;
 				std::list<std::vector<Base::Vector3f> > result;
 				result.clear();
+				cut_Mesh(z_level,m_minlevel,result,z_level_corrected);
 				//cut(z_level,m_minlevel,aTopoWire,z_level_corrected);
-				cut_Mesh(z_level,m_minlevel,result);
-
 				//Jetzt die resultierenden Points in den vector schieben
 				std::pair<float,std::list<std::vector<Base::Vector3f> > > tempPair;
 				tempPair.first = z_level_corrected;
@@ -281,14 +277,12 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 bool cutting_tools::checkFlatLevel()
 {
 	//Falls keine CAD-Geometrie da ist, gleich wieder rausspringen
-	//classifyShape();
 	
 	if(m_cad==false) return false;
     
 	TopoDS_Face atopo_surface;
     BRepAdaptor_Surface aAdaptor_Surface;
     TopExp_Explorer Explorer;
-
     Explorer.Init(m_Shape,TopAbs_FACE);
 
     for (;Explorer.More();Explorer.Next())
@@ -343,6 +337,7 @@ bool cutting_tools::checkFlatLevel()
             {
                 TopoDS_Wire wire = TopoDS::Wire(Explore_Face.Current());
 				aTempPair.second = wire;
+				//aTempPair.first ist ja noch auf dem gleichen Z-Wert wie vorher, deswegen muss da nichts abgepasst werden
 				m_zl_wire_combination.insert(aTempPair);
             }
 		}
@@ -462,14 +457,73 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 
 bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
 {
+	//Die ordered_cuts sind ein Vector wo für jede Ebene ein Pair existiert
+	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it<m_ordered_cuts.end();++m_ordered_cuts_it)
+	{
+		//Der Iterator m_ordered_cuts_it zeigt bis jetzt noch auf das pair
+		Polylines::iterator aPolyline_it =(m_ordered_cuts_it->second);
+		std::vector<Base::Vector3f>::iterator avector_it = (*alist_it).begin();
+		(*alist_it).size();
 
-	//Base::Builder3D build;
-	//std::ofstream outfile;
-	//outfile.open("c:/atest.out");
+	}
+	return true;
+}
+		//Now project the points to the surface and get surface normal. 
+	//	for (int i=1;i<=numberofpoints;++i)
+	//	{
+	//		lowestdistance=200;
+	//		//Aktuellen Punkt holen
+	//		gp_Pnt currentPoint = aProp.Value(i);
+	//		//checken auf welches Face wir projezieren könnnen
+	//		for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it<m_face_bboxes.end();++m_face_bb_it)
+	//		{
+	//			//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
+	//			if(checkPointinFaceBB(aProp.Value(i),m_face_bb_it->second))
+	//			{
+	//				atopo_surface = m_face_bb_it->first;
+	//				geom_surface = BRep_Tool::Surface(atopo_surface);
+	//				
+	//				GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
+	//				//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
+	//				if (aPPS.NbPoints() == 0) continue;
+	//				//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
+	//				double length = aPPS.LowerDistance();
+	//				if(lowestdistance>length)
+	//				{
+	//					lowestdistance=length;
+	//					atopo_surface_shortest = atopo_surface;
+	//					aPPS.LowerDistanceParameters (Umin,Vmin);
+	////				}
+	////			}
+	////		}
 
-//	for(m_it = m_ordered_cuts.begin();m_it<m_ordered_cuts.end();++m_it)
-	//{
-		// make your wire looks like a curve to other algorithm and generate Points to offset the curve
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Alte Version wo Wires reinkommen
+//bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
+//{
+//
+//	//Base::Builder3D build;
+//	//std::ofstream outfile;
+//	//outfile.open("c:/atest.out");
+//
+//	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it<m_ordered_cuts.end();++m_ordered_cuts_it)
+//	{
+
+		//Here is the old version 
+		 //make your wire looks like a curve to other algorithm and generate Points to offset the curve
 		/*BRepAdaptor_CompCurve2 wireAdaptor((*m_it).second);
 		GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.001);
 		int numberofpoints = aProp.NbPoints();
@@ -649,9 +703,9 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 //build.saveToFile("c:/output.iv");
 //outfile.close();
 
-
-	return true;
-}
+//
+//	return true;
+//}
 
 
 
@@ -717,25 +771,51 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 //{
 //
 //}
-bool cutting_tools::cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> >&result)
+bool cutting_tools::cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> >&result, float &z_level_corrected)
 {
-	std::ofstream outfile;
-	outfile.open("c:/mesh_cut.out");
+	//std::ofstream outfile;
+	//outfile.open("c:/mesh_cut.out");
 	Base::Vector3f z_level_plane,normal;
 	z_level_plane.z=z_level;
 	normal.x=0;normal.y=0;normal.z=1.0;
-	m_aMeshAlgo->CutWithPlane(z_level_plane,normal,*m_CAD_Mesh_Grid,result);
-	std::list<std::vector<Base::Vector3f> >::iterator it;
-	std::vector<Base::Vector3f>::iterator vector_it;
-	//Zum testen mal schnell den Output überprüfen
-
-		for(vector_it=(*(result.begin())).begin();vector_it<(*(result.begin())).end();++vector_it)
-		outfile << (*vector_it).x <<","<<(*vector_it).y <<","<<(*vector_it).z<< std::endl;
-
-	outfile.close();
+	bool cutok;
+	//Die Richtung für die Korrektur wird hier festgelegt
+	bool direction=true;
+	float factor = 0.0;
+	do
+	{
+		cutok = true;
+		m_aMeshAlgo->CutWithPlane(z_level_plane,normal,*m_CAD_Mesh_Grid,result);
+		//std::list<std::vector<Base::Vector3f> >::iterator it;
+		//std::vector<Base::Vector3f>::iterator vector_it;
+		//checken ob wirklich ein Schnitt zustande gekommen ist
+		if(result.size()==0)
+		{
+			cutok = false;
+			//Jedes Mal ein wenig mehr Abstand für die Korrektur einfügen
+			factor = factor+0.05;
+			if(factor>=1) factor = 0.95;
+			//Wenn wir das erste Mal eine Korrektur machen müssen gehts zunächst mal mit Minus rein
+			if(direction)
+			{
+				z_level_plane.z = (z_level-(m_pitch*factor));
+				z_level_corrected = z_level_plane.z;
+				direction=false;
+				continue;
+			}
+			else
+			{
+				z_level_plane.z = (z_level+(m_pitch*factor));
+				z_level_corrected = z_level_plane.z;
+				direction=true;
+				continue;
+			}
+		}
+	}while (cutok==false);
+	//for(vector_it=(*(result.begin())).begin();vector_it<(*(result.begin())).end();++vector_it)
+	//outfile << (*vector_it).x <<","<<(*vector_it).y <<","<<(*vector_it).z<< std::endl;
+	//outfile.close();
 	return true;
-
-
 }
 
 
