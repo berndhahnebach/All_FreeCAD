@@ -87,14 +87,16 @@ PyObject *PropertyInteger::getPyObject(void)
 
 void PropertyInteger::setPyObject(PyObject *value)
 { 
-    if(PyInt_Check( value) )
-    {
+    if (PyInt_Check(value)) {
         aboutToSetValue();
         _lValue = PyInt_AsLong(value);
         hasSetValue();
-    } else
-        throw Base::Exception("Not allowed type used (Integer expected)...");
-
+    } 
+    else {
+        std::string error = std::string("type must be int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyInteger::Save (Writer &writer) const
@@ -200,17 +202,18 @@ PyObject *PropertyPath::getPyObject(void)
 
 void PropertyPath::setPyObject(PyObject *value)
 {
-    if(PyUnicode_Check( value ))
+    if (PyUnicode_Check(value))
         value = PyUnicode_AsUTF8String(value);
 
-    if(PyString_Check( value) )
-    {
+    if (PyString_Check(value)) {
         aboutToSetValue();
         _cValue = PyString_AsString(value);
         hasSetValue();
-    } else
-        throw Base::Exception("Not allowed type used (string expected)...");
-
+    } else {
+        std::string error = std::string("type must be str, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 
@@ -256,7 +259,7 @@ TYPESYSTEM_SOURCE(PropertyEnumeration, App::PropertyInteger);
 
 
 PropertyEnumeration::PropertyEnumeration()
-:_EnumArray(0)
+  : _EnumArray(0)
 {
 
 }
@@ -361,7 +364,6 @@ const char* PropertyEnumeration::getValueAsString(void) const
 {
     // using string methods without set, use setEnums(const char** plEnums) first!
     assert(_EnumArray);
-
     return _EnumArray[getValue()];
 }
 
@@ -371,7 +373,6 @@ std::vector<std::string> PropertyEnumeration::getEnumVector(void) const
     assert(_EnumArray);
 
     std::vector<std::string> result;
-
     const char** plEnums = _EnumArray;
 
     // end of list?
@@ -395,17 +396,29 @@ PyObject *PropertyEnumeration::getPyObject(void)
 
 void PropertyEnumeration::setPyObject(PyObject *value)
 { 
-    if(PyInt_Check( value) )
-        setValue(PyInt_AsLong(value));
-    else if(PyString_Check( value) ){
+    if (PyInt_Check(value)) {
+        long val = PyInt_AsLong(value);
+        if(_EnumArray){
+            const char** plEnums = _EnumArray;
+            long i=0;
+            while(*(plEnums++) != NULL)i++;
+            if (val < 0 || i <= val)
+                throw Py::ValueError("Out of range");
+            PropertyInteger::setValue(val);
+        }
+    }
+    else if (PyString_Check(value)) {
         const char* str = PyString_AsString (value);
-        if(isPartOf(str))
+        if (isPartOf(str))
             setValue(PyString_AsString (value));
         else
-            throw Base::Exception("Not a member of the enum");
+            throw Py::ValueError("not a member of the enum");
     }
-    else
-        throw Base::Exception("Not allowed type used (string or int expected)...");
+    else {
+        std::string error = std::string("type must be int or str, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 //**************************************************************************
@@ -420,7 +433,7 @@ TYPESYSTEM_SOURCE(App::PropertyIntegerConstraint, App::PropertyInteger);
 
 
 PropertyIntegerConstraint::PropertyIntegerConstraint()
-:_ConstStruct(0)
+  : _ConstStruct(0)
 {
 
 }
@@ -443,10 +456,9 @@ const PropertyIntegerConstraint::Constraints*  PropertyIntegerConstraint::getCon
 
 void PropertyIntegerConstraint::setPyObject(PyObject *value)
 { 
-    if(PyInt_Check( value) )
-    {
+    if (PyInt_Check(value)) {
         long temp = PyInt_AsLong(value);
-        if(_ConstStruct)
+        if (_ConstStruct)
         {
             if(temp > _ConstStruct->UpperBound)
                 temp = _ConstStruct->UpperBound;
@@ -456,8 +468,12 @@ void PropertyIntegerConstraint::setPyObject(PyObject *value)
         aboutToSetValue();
         _lValue = temp;
         hasSetValue();
-    } else
-        throw Base::Exception("Not allowed type used (Integer expected)...");
+    } 
+    else {
+        std::string error = std::string("type must be int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 //**************************************************************************
@@ -474,7 +490,6 @@ const PropertyIntegerConstraint::Constraints percent = {0,100,1};
 
 
 PropertyPercent::PropertyPercent()
-//:_ConstStruct(&percent)
 {
     _ConstStruct = &percent;
 }
@@ -537,77 +552,73 @@ PyObject *PropertyIntegerList::getPyObject(void)
 
 void PropertyIntegerList::setPyObject(PyObject *value)
 { 
-  if(PyList_Check( value) )
-  {
-    aboutToSetValue();
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<long> values;
+        values.resize(nSize);
 
-    int nSize = PyList_Size(value);
-    _lValueList.resize(nSize);
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if (!PyInt_Check(item)) {
+                std::string error = std::string("type in list must be int, not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
+            }
+            values[i] = PyInt_AsLong(item);
+        }
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      if (!PyInt_Check(item))
-      {
-        _lValueList.resize(1);
-        _lValueList[0] = 0;
-        throw Base::Exception("Not allowed type in list (int expected)...");
-      }
-      long pItem = PyInt_AsLong(item);
-      _lValueList[i] = pItem;
+        setValues(values);
     }
-
-    hasSetValue();
-  }
-  else if(PyInt_Check( value) )
-  {
-    setValue(PyInt_AsLong(value));
-  }else
-    throw Base::Exception("Not allowed type used (int expected)...");
-
+    else if (PyInt_Check(value)) {
+        setValue(PyInt_AsLong(value));
+    }
+    else {
+        std::string error = std::string("type must be int or list of int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyIntegerList::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\">" << endl;
-  writer.incInd();
-  for(int i = 0;i<getSize(); i++)
-    writer.Stream() << writer.ind() << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
-  writer.decInd();
-  writer.Stream() << writer.ind() << "</IntegerList>" << endl ;
+    writer.Stream() << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\">" << endl;
+    writer.incInd();
+    for(int i = 0;i<getSize(); i++)
+        writer.Stream() << writer.ind() << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</IntegerList>" << endl ;
 }
 
 void PropertyIntegerList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("IntegerList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
-
-  setSize(count);
-
-  for(int i = 0;i<count; i++)
-  {
-    reader.readElement("I");
-    _lValueList[i] = reader.getAttributeAsInteger("v");
-  }
-
-  reader.readEndElement("IntegerList");
-
+    // read my Element
+    reader.readElement("IntegerList");
+    // get the value of my Attribute
+    int count = reader.getAttributeAsInteger("count");
+    
+    setSize(count);
+    
+    for(int i = 0;i<count; i++)
+    {
+        reader.readElement("I");
+        _lValueList[i] = reader.getAttributeAsInteger("v");
+    }
+    
+    reader.readEndElement("IntegerList");
 }
 
 Property *PropertyIntegerList::Copy(void) const
 {
-  PropertyIntegerList *p= new PropertyIntegerList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyIntegerList *p= new PropertyIntegerList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyIntegerList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyIntegerList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyIntegerList&>(from)._lValueList;
+    hasSetValue();
 }
 
 
@@ -657,47 +668,48 @@ PyObject *PropertyFloat::getPyObject(void)
 
 void PropertyFloat::setPyObject(PyObject *value)
 {
-  if(PyFloat_Check( value) )
-  {
-    aboutToSetValue();
-    _dValue = (float) PyFloat_AsDouble(value);
-    hasSetValue();
-
-  }else if(PyInt_Check( value) )
-  {
-    aboutToSetValue();
-    _dValue = (float) PyInt_AsLong(value);
-    hasSetValue();
-  }else
-      throw Base::Exception("Not allowed type used (float or int expected)...");
-
+    if (PyFloat_Check(value)) {
+        aboutToSetValue();
+        _dValue = (float) PyFloat_AsDouble(value);
+        hasSetValue();
+    }
+    else if(PyInt_Check(value)) {
+        aboutToSetValue();
+        _dValue = (float) PyInt_AsLong(value);
+        hasSetValue();
+    }
+    else {
+        std::string error = std::string("type must be float or int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyFloat::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
 }
 
 void PropertyFloat::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("Float");
-  // get the value of my Attribute
-  _dValue = (float) reader.getAttributeAsFloat("value");
+    // read my Element
+    reader.readElement("Float");
+    // get the value of my Attribute
+    _dValue = (float) reader.getAttributeAsFloat("value");
 }
 
 Property *PropertyFloat::Copy(void) const
 {
-  PropertyFloat *p= new PropertyFloat();
-  p->_dValue = _dValue;
-  return p;
+    PropertyFloat *p= new PropertyFloat();
+    p->_dValue = _dValue;
+    return p;
 }
 
 void PropertyFloat::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
-  hasSetValue();
+    aboutToSetValue();
+    _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -712,7 +724,7 @@ TYPESYSTEM_SOURCE(PropertyFloatConstraint, App::PropertyFloat);
 
 
 PropertyFloatConstraint::PropertyFloatConstraint()
-:_ConstStruct(0)
+  : _ConstStruct(0)
 {
 
 }
@@ -725,31 +737,34 @@ PropertyFloatConstraint::~PropertyFloatConstraint()
 
 void PropertyFloatConstraint::setConstraints(const Constraints* sConstrain)
 {
-  _ConstStruct = sConstrain;
+    _ConstStruct = sConstrain;
 }
 
 const PropertyFloatConstraint::Constraints*  PropertyFloatConstraint::getConstraints(void) const
 {
-  return _ConstStruct;
+    return _ConstStruct;
 }
 
 void PropertyFloatConstraint::setPyObject(PyObject *value)
 { 
-  if(PyFloat_Check( value) )
-  {
-    float temp = (float)PyFloat_AsDouble(value);
-    if(_ConstStruct)
-    {
-      if(temp > _ConstStruct->UpperBound)
-        temp = _ConstStruct->UpperBound;
-      else if(temp < _ConstStruct->LowerBound)
-        temp = _ConstStruct->LowerBound;
+    if (PyFloat_Check(value)) {
+        float temp = (float)PyFloat_AsDouble(value);
+        if (_ConstStruct) {
+            if (temp > _ConstStruct->UpperBound)
+                temp = _ConstStruct->UpperBound;
+            else if (temp < _ConstStruct->LowerBound)
+                temp = _ConstStruct->LowerBound;
+        }
+    
+        aboutToSetValue();
+        _dValue = temp;
+        hasSetValue();
+    } 
+    else {
+        std::string error = std::string("type must be float, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
-    aboutToSetValue();
-    _dValue = temp;
-    hasSetValue();
-  }else
-    throw Base::Exception("Not allowed type used (Integer expected)...");
 }
 
 //**************************************************************************
@@ -809,67 +824,66 @@ void PropertyFloatList::setValues(const std::vector<float>& values)
 
 PyObject *PropertyFloatList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
-
-  for(int i = 0;i<getSize(); i++)
-     PyList_SetItem( list, i, PyFloat_FromDouble(	_lValueList[i]));
-
-  return list;
+    PyObject* list = PyList_New(	getSize() );
+    
+    for(int i = 0;i<getSize(); i++)
+         PyList_SetItem( list, i, PyFloat_FromDouble(	_lValueList[i]));
+    
+    return list;
 }
 
 void PropertyFloatList::setPyObject(PyObject *value)
 { 
-  if(PyList_Check( value) )
-  {
-    aboutToSetValue();
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<float> values;
+        values.resize(nSize);
 
-    int nSize = PyList_Size(value);
-    _lValueList.resize(nSize);
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if (!PyFloat_Check(item)) {
+                std::string error = std::string("type in list must be float, not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
+            }
+            
+            values[i] = (float) PyFloat_AsDouble(item);
+        }
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      if (!PyFloat_Check(item))
-      {
-        _lValueList.resize(1);
-        _lValueList[0] = 0;
-        throw Base::Exception("Not allowed type in list (float expected)...");
-      }
-      float pItem = (float) PyFloat_AsDouble(item);
-      _lValueList[i] = pItem;
+        setValues(values);
     }
-
-    hasSetValue();
-  }else if(PyFloat_Check( value) )
-  {
-    setValue((float) PyFloat_AsDouble(value));
-  }else
-    throw Base::Exception("Not allowed type used (float expected)...");
-
+    else if (PyFloat_Check(value)) {
+        setValue((float) PyFloat_AsDouble(value));
+    } 
+    else {
+        std::string error = std::string("type must be list of float, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyFloatList::Save (Writer &writer) const
 {
-  if(writer.isForceXML())
-  {
-    writer.Stream() << writer.ind() << "<FloatList count=\"" <<  getSize() <<"\">" << endl;
-    writer.incInd();
-    for(int i = 0;i<getSize(); i++)
-      writer.Stream() << writer.ind() << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
-    writer.decInd();
-    writer.Stream() << writer.ind() <<"</FloatList>" << endl ;
-  }else{
-    writer.Stream() << writer.ind() << "<FloatList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
-  }
+    if (writer.isForceXML()) {
+        writer.Stream() << writer.ind() << "<FloatList count=\"" <<  getSize() <<"\">" << endl;
+        writer.incInd();
+        for(int i = 0;i<getSize(); i++)
+            writer.Stream() << writer.ind() << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+        writer.decInd();
+        writer.Stream() << writer.ind() <<"</FloatList>" << endl ;
+    }
+    else {
+        writer.Stream() << writer.ind() << "<FloatList file=\"" << 
+        writer.addFile(getName(), this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyFloatList::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("FloatList");
-  string file (reader.getAttribute("file") );
+    reader.readElement("FloatList");
+    string file (reader.getAttribute("file") );
 
-  if(file == "")
-  {
+    if(file == "") {
 //  // read my Element
 //  reader.readElement("FloatList");
 //  // get the value of my Attribute
@@ -884,48 +898,48 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
 //  }
 //
 //  reader.readEndElement("FloatList");
-  }else{
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-  }
+    } else {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
-  try {
-    unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+    try {
+        unsigned long uCt = getSize();
+        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
+    } catch( const Base::Exception& e) {
+        throw e;
+    }
 }
 
 void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
 {
-  try {
-    _lValueList.clear();
-    unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
-    _lValueList.resize(uCt);
-    reader.read((char*)&(_lValueList[0]), uCt*sizeof(float));
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+    try {
+        _lValueList.clear();
+        unsigned long uCt=ULONG_MAX;
+        reader.read((char*)&uCt, sizeof(unsigned long));
+        _lValueList.resize(uCt);
+        reader.read((char*)&(_lValueList[0]), uCt*sizeof(float));
+    } catch( const Base::Exception& e) {
+        throw e;
+    }
 }
 
 Property *PropertyFloatList::Copy(void) const
 {
-  PropertyFloatList *p= new PropertyFloatList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyFloatList *p= new PropertyFloatList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyFloatList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyFloatList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyFloatList&>(from)._lValueList;
+    hasSetValue();
 }
 
 
@@ -963,8 +977,7 @@ PropertyString::~PropertyString()
 
 void PropertyString::setValue(const char* sString)
 {
-    if(sString)
-    {
+    if (sString) {
         aboutToSetValue();
         _cValue = sString;
         hasSetValue();
@@ -985,13 +998,10 @@ const char* PropertyString::getValue(void) const
 
 PyObject *PropertyString::getPyObject(void)
 {
-  PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
-  if(!p)
-    throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
-  return p;
-
-  //return Py_BuildValue("s", _cValue.c_str());
-
+     PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
+    if (!p)
+        throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+    return p;
 }
 
 void PropertyString::setPyObject(PyObject *value)
@@ -1004,37 +1014,40 @@ void PropertyString::setPyObject(PyObject *value)
         _cValue = PyString_AsString(value);
         hasSetValue();
     }
-    else
-        throw Base::Exception("Not allowed type used (string expected)...");
+    else {
+        std::string error = std::string("type must be string, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyString::Save (Writer &writer) const
 {
-  std::string val = encodeAttribute(_cValue);
-  writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
+    std::string val = encodeAttribute(_cValue);
+    writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
 }
 
 void PropertyString::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("String");
-  // get the value of my Attribute
-  _cValue = reader.getAttribute("value");
+    // read my Element
+    reader.readElement("String");
+    // get the value of my Attribute
+    _cValue = reader.getAttribute("value");
 }
 
 
 Property *PropertyString::Copy(void) const
 {
-  PropertyString *p= new PropertyString();
-  p->_cValue = _cValue;
-  return p;
+    PropertyString *p= new PropertyString();
+    p->_cValue = _cValue;
+    return p;
 }
 
 void PropertyString::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
-  hasSetValue();
+    aboutToSetValue();
+    _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
+    hasSetValue();
 }
 
 
@@ -1063,8 +1076,7 @@ PropertyStringList::~PropertyStringList()
 void PropertyStringList::setValue(const std::string& lValue)
 {
     aboutToSetValue();
-    if (_lValueList.empty())
-        _lValueList.resize(1);
+    _lValueList.resize(1);
     _lValueList[0]=lValue;
     hasSetValue();
 }
@@ -1086,105 +1098,96 @@ void PropertyStringList::setValues(const std::list<std::string>& lValue)
 
 PyObject *PropertyStringList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
+    PyObject* list = PyList_New(getSize());
 
-  for(int i = 0;i<getSize(); i++)
-  {
-    PyObject* item = PyString_FromString(_lValueList[i].c_str());
-    PyList_SetItem( list, i, item );
-  }
+    for(int i = 0;i<getSize(); i++)
+    {
+        PyObject* item = PyString_FromString(_lValueList[i].c_str());
+        PyList_SetItem( list, i, item );
+    }
 
-  return list;
+    return list;
 }
 
 void PropertyStringList::setPyObject(PyObject *value)
 {
-  if ( PyList_Check( value ) )
-  {
-    aboutToSetValue();
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<std::string> values;
+        values.resize(nSize);
 
-    int nSize = PyList_Size(value);
-    _lValueList.resize(nSize);
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if (!PyString_Check(item)) {
+                std::string error = std::string("type in list must be str, not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
+            }
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      if ( PyString_Check(item) )
-      {
-        char* pItem = PyString_AsString(item);
-        _lValueList[i] = pItem;
-        hasSetValue();
-      }
-      else
-      {
-        _lValueList.resize(1);
-        _lValueList[0] = "";
-        throw Base::Exception("Not allowed type in list (string expected)...");
-      }
+            values[i] = PyString_AsString(item);
+        }
+        
+        setValues(values);
     }
-
-    hasSetValue();
-  }
-  else if ( PyString_Check(value) )
-  {
-    _lValueList.resize(1);
-    _lValueList[0] = PyString_AsString(value);
-  }
-  else
-    throw Base::Exception("Not allowed type used...");
+    else if (PyString_Check(value)) {
+        setValue(PyString_AsString(value));
+    }
+    else {
+        std::string error = std::string("type must be list or str, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 unsigned int PropertyStringList::getMemSize (void) const
 {
-  unsigned int size=0;
-  for(int i = 0;i<getSize(); i++) 
-    size += _lValueList[i].size();
-  
-  return size;
+    unsigned int size=0;
+    for(int i = 0;i<getSize(); i++) 
+        size += _lValueList[i].size();
+    return size;
 }
 
 void PropertyStringList::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
-  writer.incInd();
-  for(int i = 0;i<getSize(); i++) {
-    std::string val = encodeAttribute(_lValueList[i]);
-    writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << endl;
-  }
-  writer.decInd();
-  writer.Stream() << writer.ind() << "</StringList>" << endl ;
+    writer.Stream() << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
+    writer.incInd();
+    for(int i = 0;i<getSize(); i++) {
+        std::string val = encodeAttribute(_lValueList[i]);
+        writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << endl;
+    }
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</StringList>" << endl ;
 }
 
 void PropertyStringList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("StringList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
-
-  setSize(count);
-
-  for(int i = 0;i<count; i++)
-  {
-    reader.readElement("String");
-    _lValueList[i] = reader.getAttribute("value");
-  }
-
-  reader.readEndElement("StringList");
+    // read my Element
+    reader.readElement("StringList");
+    // get the value of my Attribute
+    int count = reader.getAttributeAsInteger("count");
+    
+    setSize(count);
+    
+    for(int i = 0;i<count; i++) {
+        reader.readElement("String");
+        _lValueList[i] = reader.getAttribute("value");
+    }
+    
+    reader.readEndElement("StringList");
 }
 
 Property *PropertyStringList::Copy(void) const
 {
-  PropertyStringList *p= new PropertyStringList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyStringList *p= new PropertyStringList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyStringList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyStringList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyStringList&>(from)._lValueList;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -1228,59 +1231,61 @@ bool PropertyBool::getValue(void) const
 
 PyObject *PropertyBool::getPyObject(void)
 {
-  if(_lValue)
-    {Py_INCREF(Py_True); return Py_True;}
-  else
-    {Py_INCREF(Py_False); return Py_False;}
+    if (_lValue)
+        {Py_INCREF(Py_True); return Py_True;}
+    else
+        {Py_INCREF(Py_False); return Py_False;}
 
 }
 
 void PropertyBool::setPyObject(PyObject *value)
 {
-  if(PyBool_Check( value) )
-    setValue( value == Py_True );
-  else if(PyInt_Check( value) )
-    setValue( PyInt_AsLong(value)!=0 );
-  else
-    throw Base::Exception("Not allowed type used (bool expected)...");
+    if (PyBool_Check(value))
+        setValue(value == Py_True);
+    else if(PyInt_Check(value))
+        setValue(PyInt_AsLong(value)!=0);
+    else {
+        std::string error = std::string("type must be bool, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyBool::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<Bool value=\"" ;
-  if(_lValue)
-    writer.Stream() << "true" <<"\"/>" ;
-  else
-    writer.Stream() << "false" <<"\"/>" ;
-  writer.Stream() << std::endl;
-
+    writer.Stream() << writer.ind() << "<Bool value=\"" ;
+    if (_lValue)
+        writer.Stream() << "true" <<"\"/>" ;
+    else
+        writer.Stream() << "false" <<"\"/>" ;
+    writer.Stream() << std::endl;
 }
 
 void PropertyBool::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("Bool");
-  // get the value of my Attribute
-  string b = reader.getAttribute("value");
-  if(b == "true")
-    _lValue = true;
-  else
-    _lValue = false;
+    // read my Element
+    reader.readElement("Bool");
+    // get the value of my Attribute
+    string b = reader.getAttribute("value");
+    if (b == "true")
+        _lValue = true;
+    else
+        _lValue = false;
 }
 
 
 Property *PropertyBool::Copy(void) const
 {
-  PropertyBool *p= new PropertyBool();
-  p->_lValue = _lValue;
-  return p;
+    PropertyBool *p= new PropertyBool();
+    p->_lValue = _lValue;
+    return p;
 }
 
 void PropertyBool::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValue = dynamic_cast<const PropertyBool&>(from)._lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValue = dynamic_cast<const PropertyBool&>(from)._lValue;
+    hasSetValue();
 }
 
 
@@ -1346,89 +1351,86 @@ PyObject *PropertyColor::getPyObject(void)
 
 void PropertyColor::setPyObject(PyObject *value)
 {
-  App::Color cCol;
-  if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
-  {
-    PyObject* item;
-    item = PyTuple_GetItem(value,0);
-    if ( PyFloat_Check(item) )
-      cCol.r = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    item = PyTuple_GetItem(value,1);
-    if ( PyFloat_Check(item) )
-      cCol.g = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    item = PyTuple_GetItem(value,2);
-    if ( PyFloat_Check(item) )
-      cCol.b = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-  }
-  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 4 )
-  {
-    PyObject* item;
-    item = PyTuple_GetItem(value,0);
-    if ( PyFloat_Check(item) )
-      cCol.r = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    item = PyTuple_GetItem(value,1);
-    if ( PyFloat_Check(item) )
-      cCol.g = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    item = PyTuple_GetItem(value,2);
-    if ( PyFloat_Check(item) )
-      cCol.b = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    item = PyTuple_GetItem(value,3);
-    if ( PyFloat_Check(item) )
-      cCol.a = (float)PyFloat_AsDouble(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-  }
-  else if ( PyInt_Check(value) )
-  {
-    cCol.setPackedValue(PyInt_AsLong(value));
-  }
-  else
-  {
-    throw Base::Exception("Not allowed type used...");
-  }
+    App::Color cCol;
+    if (PyTuple_Check(value) && PyTuple_Size(value) == 3) {
+        PyObject* item;
+        item = PyTuple_GetItem(value,0);
+        if (PyFloat_Check(item))
+            cCol.r = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        item = PyTuple_GetItem(value,1);
+        if (PyFloat_Check(item))
+            cCol.g = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        item = PyTuple_GetItem(value,2);
+        if (PyFloat_Check(item))
+            cCol.b = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    }
+    else if (PyTuple_Check(value) && PyTuple_Size(value) == 4) {
+        PyObject* item;
+        item = PyTuple_GetItem(value,0);
+        if (PyFloat_Check(item))
+            cCol.r = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        item = PyTuple_GetItem(value,1);
+        if (PyFloat_Check(item))
+            cCol.g = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        item = PyTuple_GetItem(value,2);
+        if (PyFloat_Check(item))
+            cCol.b = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        item = PyTuple_GetItem(value,3);
+        if (PyFloat_Check(item))
+            cCol.a = (float)PyFloat_AsDouble(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    }
+    else if (PyInt_Check(value)) {
+        cCol.setPackedValue(PyInt_AsLong(value));
+    }
+    else {
+        throw Base::Exception("Not allowed type used...");
+    }
 
-  setValue( cCol );
+    setValue( cCol );
 }
 
 void PropertyColor::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyColor value=\"" <<  _cCol.getPackedValue() <<"\"/>" << endl;
+    writer.Stream() << writer.ind() << "<PropertyColor value=\"" 
+    <<  _cCol.getPackedValue() <<"\"/>" << endl;
 }
 
 void PropertyColor::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("PropertyColor");
-  // get the value of my Attribute
-  unsigned long rgba = reader.getAttributeAsUnsigned("value");
-  _cCol.setPackedValue(rgba);
+    // read my Element
+    reader.readElement("PropertyColor");
+    // get the value of my Attribute
+    unsigned long rgba = reader.getAttributeAsUnsigned("value");
+    _cCol.setPackedValue(rgba);
 }
 
 
 Property *PropertyColor::Copy(void) const
 {
-  PropertyColor *p= new PropertyColor();
-  p->_cCol = _cCol;
-  return p;
+    PropertyColor *p= new PropertyColor();
+    p->_cCol = _cCol;
+    return p;
 }
 
 void PropertyColor::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
-  hasSetValue();
+    aboutToSetValue();
+    _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
+    hasSetValue();
 }
 
 
@@ -1457,96 +1459,89 @@ PropertyColorList::~PropertyColorList()
 
 void PropertyColorList::setValue(const Color& lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-	_lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
 PyObject *PropertyColorList::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
+    PyObject* list = PyList_New(getSize());
 
-  for(int i = 0;i<getSize(); i++)
-  {
-    PyObject* rgba = PyTuple_New(4);
-    PyObject* r = PyFloat_FromDouble(_lValueList[i].r);
-    PyObject* g = PyFloat_FromDouble(_lValueList[i].g);
-    PyObject* b = PyFloat_FromDouble(_lValueList[i].b);
-    PyObject* a = PyFloat_FromDouble(_lValueList[i].a);
+    for(int i = 0;i<getSize(); i++) {
+        PyObject* rgba = PyTuple_New(4);
+        PyObject* r = PyFloat_FromDouble(_lValueList[i].r);
+        PyObject* g = PyFloat_FromDouble(_lValueList[i].g);
+        PyObject* b = PyFloat_FromDouble(_lValueList[i].b);
+        PyObject* a = PyFloat_FromDouble(_lValueList[i].a);
 
-    PyTuple_SetItem(rgba, 0, r);
-    PyTuple_SetItem(rgba, 1, g);
-    PyTuple_SetItem(rgba, 2, b);
-    PyTuple_SetItem(rgba, 3, a);
+        PyTuple_SetItem(rgba, 0, r);
+        PyTuple_SetItem(rgba, 1, g);
+        PyTuple_SetItem(rgba, 2, b);
+        PyTuple_SetItem(rgba, 3, a);
 
-    PyList_SetItem( list, i, rgba );
-  }
+        PyList_SetItem( list, i, rgba );
+    }
 
-  return list;
+    return list;
 }
 
 void PropertyColorList::setPyObject(PyObject *value)
 {
-  if( PyList_Check( value) )
-  {
-    aboutToSetValue();
+    if (PyList_Check(value)) {
+        aboutToSetValue();
+        int nSize = PyList_Size(value);
+        _lValueList.resize(nSize);
 
-    int nSize = PyList_Size(value);
-    _lValueList.resize(nSize);
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            try {
+                PropertyColor col;
+                col.setPyObject( item );
+                _lValueList[i] = col.getValue();
+            } catch (const Base::Exception& e) {
+                _lValueList.resize(1);
+                _lValueList[0] = Color();
+                throw e;
+            }
+        }
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      try {
-        PropertyColor col;
-        col.setPyObject( item );
-        _lValueList[i] = col.getValue();
-      } catch (const Base::Exception& e) {
-        _lValueList.resize(1);
-        _lValueList[0] = Color();
-        throw e;
-      }
+        hasSetValue();
     }
-
-    hasSetValue();
-  }
-  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
-  {
-    PropertyColor col;
-    col.setPyObject( value );
-    setValue( col.getValue() );
-  }
-  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 4 )
-  {
-    PropertyColor col;
-    col.setPyObject( value );
-    setValue( col.getValue() );
-  }
-  else
-    throw Base::Exception("Not allowed type used...");
+    else if (PyTuple_Check(value) && PyTuple_Size(value) == 3) {
+        PropertyColor col;
+        col.setPyObject( value );
+        setValue( col.getValue() );
+    }
+    else if (PyTuple_Check(value) && PyTuple_Size(value) == 4) {
+        PropertyColor col;
+        col.setPyObject( value );
+        setValue( col.getValue() );
+    }
+    else {
+        throw Base::Exception("Not allowed type used...");
+    }
 }
 
 void PropertyColorList::Save (Writer &writer) const
 {
-  if(writer.isForceXML())
-  {
+    if (writer.isForceXML()) {
 //    writer << "<ColorList count=\"" <<  getSize() <<"\"/>" << endl;
 //    for(int i = 0;i<getSize(); i++)
 //      writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
 //    writer << "</ColorList>" << endl ;
-  }else{
-    writer.Stream() << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
-  }
+    } else {
+        writer.Stream() << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyColorList::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("ColorList");
-  string file (reader.getAttribute("file") );
+    reader.readElement("ColorList");
+    std::string file (reader.getAttribute("file") );
 
-  if(file == "")
-  {
+    if (file == "") {
 //  // read my Element
 //  reader.readElement("ColorList");
 //  // get the value of my Attribute
@@ -1561,50 +1556,50 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
 //  }
 //
 //  reader.readEndElement("ColorList");
-  }else{
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-  }
+    } else {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
-  try {
-    unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+    try {
+        unsigned long uCt = getSize();
+        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
+    } catch( const Base::Exception& e) {
+        throw e;
+    }
 }
 
 void PropertyColorList::RestoreDocFile(Base::Reader &reader)
 {
-  try {
-    _lValueList.clear();
-    unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
-    _lValueList.resize(uCt);
-    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Color));
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+    try {
+        _lValueList.clear();
+        unsigned long uCt=ULONG_MAX;
+        reader.read((char*)&uCt, sizeof(unsigned long));
+        _lValueList.resize(uCt);
+        reader.read((char*)&(_lValueList[0]), uCt*sizeof(Color));
+    } catch( const Base::Exception& e) {
+        throw e;
+    }
 }
 
 
 
 Property *PropertyColorList::Copy(void) const
 {
-  PropertyColorList *p= new PropertyColorList();
-  p->_lValueList = _lValueList;
-  return p;
+    PropertyColorList *p= new PropertyColorList();
+    p->_lValueList = _lValueList;
+    return p;
 }
 
 void PropertyColorList::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyColorList&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyColorList&>(from)._lValueList;
+    hasSetValue();
 }
 
 
@@ -1645,81 +1640,83 @@ void PropertyMaterial::setAmbientColor(const Color& col)
 
 void PropertyMaterial::setDiffuseColor(const Color& col)
 {
-  _cMat.diffuseColor = col;
-  hasSetValue();
+    _cMat.diffuseColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setSpecularColor(const Color& col)
 {
-  _cMat.specularColor = col;
-  hasSetValue();
+    _cMat.specularColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setEmmisiveColor(const Color& col)
 {
-  _cMat.emissiveColor = col;
-  hasSetValue();
+    _cMat.emissiveColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setShininess(float val)
 {
-  _cMat.shininess = val;
-  hasSetValue();
+    _cMat.shininess = val;
+    hasSetValue();
 }
 
 void PropertyMaterial::setTransparency(float val)
 {
-  _cMat.transparency = val;
-  hasSetValue();
+    _cMat.transparency = val;
+    hasSetValue();
 }
 
 PyObject *PropertyMaterial::getPyObject(void)
 {
-  return new MaterialPy(&_cMat);
+    return new MaterialPy(&_cMat);
 }
 
 void PropertyMaterial::setPyObject(PyObject *value)
 {
-  if( PyObject_TypeCheck(value, &(MaterialPy::Type)) ) {
-   	MaterialPy  *pcObject = (MaterialPy*)value;
-    setValue( *pcObject->_pcMaterial );
-  }
+    if (PyObject_TypeCheck(value, &(MaterialPy::Type))) {
+        MaterialPy  *pcObject = (MaterialPy*)value;
+        setValue( *pcObject->_pcMaterial );
+    }
 }
 
 void PropertyMaterial::Save (Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyMaterial ambientColor=\"" <<  _cMat.ambientColor.getPackedValue() 
-    << "\" diffuseColor=\"" <<  _cMat.diffuseColor.getPackedValue() 
-    << "\" specularColor=\"" <<  _cMat.specularColor.getPackedValue()
-    << "\" emissiveColor=\"" <<  _cMat.emissiveColor.getPackedValue()
-    << "\" shininess=\"" <<  _cMat.shininess << "\" transparency=\"" <<  _cMat.transparency << "\"/>" << endl;
+    writer.Stream() << writer.ind() << "<PropertyMaterial ambientColor=\"" 
+        <<  _cMat.ambientColor.getPackedValue() 
+        << "\" diffuseColor=\"" <<  _cMat.diffuseColor.getPackedValue() 
+        << "\" specularColor=\"" <<  _cMat.specularColor.getPackedValue()
+        << "\" emissiveColor=\"" <<  _cMat.emissiveColor.getPackedValue()
+        << "\" shininess=\"" <<  _cMat.shininess << "\" transparency=\"" 
+        <<  _cMat.transparency << "\"/>" << endl;
 }
 
 void PropertyMaterial::Restore(Base::XMLReader &reader)
 {
-  // read my Element
-  reader.readElement("PropertyMaterial");
-  // get the value of my Attribute
-  _cMat.ambientColor.setPackedValue(reader.getAttributeAsInteger("ambientColor"));
-  _cMat.diffuseColor.setPackedValue(reader.getAttributeAsInteger("diffuseColor"));
-  _cMat.specularColor.setPackedValue(reader.getAttributeAsInteger("specularColor"));
-  _cMat.emissiveColor.setPackedValue(reader.getAttributeAsInteger("emissiveColor"));
-  _cMat.shininess = (float)reader.getAttributeAsInteger("shininess");
-  _cMat.transparency = (float)reader.getAttributeAsFloat("transparency");
+    // read my Element
+    reader.readElement("PropertyMaterial");
+    // get the value of my Attribute
+    _cMat.ambientColor.setPackedValue(reader.getAttributeAsInteger("ambientColor"));
+    _cMat.diffuseColor.setPackedValue(reader.getAttributeAsInteger("diffuseColor"));
+    _cMat.specularColor.setPackedValue(reader.getAttributeAsInteger("specularColor"));
+    _cMat.emissiveColor.setPackedValue(reader.getAttributeAsInteger("emissiveColor"));
+    _cMat.shininess = (float)reader.getAttributeAsInteger("shininess");
+    _cMat.transparency = (float)reader.getAttributeAsFloat("transparency");
 }
 
 Property *PropertyMaterial::Copy(void) const
 {
-  PropertyMaterial *p= new PropertyMaterial();
-  p->_cMat = _cMat;
-  return p;
+    PropertyMaterial *p= new PropertyMaterial();
+    p->_cMat = _cMat;
+    return p;
 }
 
 void PropertyMaterial::Paste(const Property &from)
 {
-  aboutToSetValue();
-  _cMat = dynamic_cast<const PropertyMaterial&>(from)._cMat;
-  hasSetValue();
+    aboutToSetValue();
+    _cMat = dynamic_cast<const PropertyMaterial&>(from)._cMat;
+    hasSetValue();
 }
 
 

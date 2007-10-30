@@ -69,7 +69,7 @@ public:
   /** @name point set handling */
   //@{
   /// starts a point set
-  void startPoints(short pointSize=2.0, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+  void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
   /// insert a point in an point set
   void addPoint(float x, float y, float z);
   /// add a vector to a point set
@@ -151,7 +151,7 @@ public:
   /** @name point set handling */
   //@{
   /// starts a point set
-  void startPoints(short pointSize=2.0, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+  void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
   /// insert a point in an point set
   void addPoint(float x, float y, float z);
   /// add a vector to a point set
@@ -207,4 +207,3 @@ private:
 } //namespace Base
 
 #endif // __BUILDER3D_H__
-
