@@ -856,7 +856,7 @@ void PropertyFloatList::setPyObject(PyObject *value)
         setValue((float) PyFloat_AsDouble(value));
     } 
     else {
-        std::string error = std::string("type must be list of float, not ");
+        std::string error = std::string("type must be float or list of float, not ");
         error += value->ob_type->tp_name;
         throw Py::TypeError(error);
     }
@@ -1133,7 +1133,7 @@ void PropertyStringList::setPyObject(PyObject *value)
         setValue(PyString_AsString(value));
     }
     else {
-        std::string error = std::string("type must be list or str, not ");
+        std::string error = std::string("type must be str or list of str, not ");
         error += value->ob_type->tp_name;
         throw Py::TypeError(error);
     }
@@ -1358,17 +1358,17 @@ void PropertyColor::setPyObject(PyObject *value)
         if (PyFloat_Check(item))
             cCol.r = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
         item = PyTuple_GetItem(value,1);
         if (PyFloat_Check(item))
             cCol.g = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
         item = PyTuple_GetItem(value,2);
         if (PyFloat_Check(item))
             cCol.b = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
     }
     else if (PyTuple_Check(value) && PyTuple_Size(value) == 4) {
         PyObject* item;
@@ -1376,28 +1376,30 @@ void PropertyColor::setPyObject(PyObject *value)
         if (PyFloat_Check(item))
             cCol.r = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
         item = PyTuple_GetItem(value,1);
         if (PyFloat_Check(item))
             cCol.g = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
         item = PyTuple_GetItem(value,2);
         if (PyFloat_Check(item))
             cCol.b = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
         item = PyTuple_GetItem(value,3);
         if (PyFloat_Check(item))
             cCol.a = (float)PyFloat_AsDouble(item);
         else
-            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+            throw Base::Exception("Type in tuple must be float");
     }
     else if (PyInt_Check(value)) {
         cCol.setPackedValue(PyInt_AsLong(value));
     }
     else {
-        throw Base::Exception("Not allowed type used...");
+        std::string error = std::string("type must be int or tuple of float, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
 
     setValue( cCol );
@@ -1465,6 +1467,13 @@ void PropertyColorList::setValue(const Color& lValue)
     hasSetValue();
 }
 
+void PropertyColorList::setValues (const std::vector<Color>& values)
+{
+    aboutToSetValue();
+    _lValueList=values;
+    hasSetValue();
+}
+
 PyObject *PropertyColorList::getPyObject(void)
 {
     PyObject* list = PyList_New(getSize());
@@ -1490,24 +1499,18 @@ PyObject *PropertyColorList::getPyObject(void)
 void PropertyColorList::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        aboutToSetValue();
         int nSize = PyList_Size(value);
-        _lValueList.resize(nSize);
+        std::vector<Color> values;
+        values.resize(nSize);
 
         for (int i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
-            try {
-                PropertyColor col;
-                col.setPyObject( item );
-                _lValueList[i] = col.getValue();
-            } catch (const Base::Exception& e) {
-                _lValueList.resize(1);
-                _lValueList[0] = Color();
-                throw e;
-            }
+            PropertyColor col;
+            col.setPyObject(item);
+            values[i] = col.getValue();
         }
 
-        hasSetValue();
+        setValues(values);
     }
     else if (PyTuple_Check(value) && PyTuple_Size(value) == 3) {
         PropertyColor col;
@@ -1520,7 +1523,9 @@ void PropertyColorList::setPyObject(PyObject *value)
         setValue( col.getValue() );
     }
     else {
-        throw Base::Exception("Not allowed type used...");
+        std::string error = std::string("not allowed type, ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
 }
 
@@ -1678,6 +1683,11 @@ void PropertyMaterial::setPyObject(PyObject *value)
     if (PyObject_TypeCheck(value, &(MaterialPy::Type))) {
         MaterialPy  *pcObject = (MaterialPy*)value;
         setValue( *pcObject->_pcMaterial );
+    }
+    else {
+        std::string error = std::string("type must be 'Material', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
 }
 

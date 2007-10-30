@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef _FACTORY_H_
-#define _FACTORY_H_
+#ifndef BASE_FACTORY_H
+#define BASE_FACTORY_H
 
 #include<typeinfo>
 #include<string>
@@ -39,11 +39,11 @@ namespace Base
 /// Abstract base class of all producers
 class BaseExport AbstractProducer
 {
-	public:
+public:
     AbstractProducer() {}
     virtual ~AbstractProducer() {}
     /// overwriten by a concret producer to produce the needed object
-		virtual void* Produce (void) const = 0;
+    virtual void* Produce (void) const = 0;
 };
 
 
@@ -56,23 +56,22 @@ class BaseExport AbstractProducer
   */
 class BaseExport Factory
 {
-	public:
-		/// Adds a new prducer instance
-		void AddProducer (const char* sClassName, AbstractProducer *pcProducer);
+public:
+    /// Adds a new prducer instance
+    void AddProducer (const char* sClassName, AbstractProducer *pcProducer);
     /// returns true if there is a producer for this class registered
-		bool CanProduce(const char* sClassName) const;
+    bool CanProduce(const char* sClassName) const;
     /// returns a list of all registered producer
-		std::list<std::string> CanProduce() const;
+    std::list<std::string> CanProduce() const;
 
-	protected:
-		/// produce a class with the given name
-		void* Produce (const char* sClassName) const;
-		std::map<const std::string, AbstractProducer*> _mpcProducers;
-   
-		/// construction
-		Factory (void){}
-		/// destruction 
-		virtual ~Factory ();
+protected:
+    /// produce a class with the given name
+    void* Produce (const char* sClassName) const;
+    std::map<const std::string, AbstractProducer*> _mpcProducers;
+    /// construction
+    Factory (void){}
+    /// destruction 
+    virtual ~Factory ();
 };
 
 // --------------------------------------------------------------------
@@ -81,22 +80,22 @@ class BaseExport Factory
   */
 class BaseExport ScriptFactorySingleton : public Factory
 {
-	public:
-		static ScriptFactorySingleton& Instance(void);
-		static void Destruct (void);
+public:
+    static ScriptFactorySingleton& Instance(void);
+    static void Destruct (void);
 
-		const char* ProduceScript (const char* sScriptName) const;
+    const char* ProduceScript (const char* sScriptName) const;
 
-	private:
-		static ScriptFactorySingleton* _pcSingleton;
+private:
+    static ScriptFactorySingleton* _pcSingleton;
 
-		ScriptFactorySingleton(){}
-		~ScriptFactorySingleton(){}
+    ScriptFactorySingleton(){}
+    ~ScriptFactorySingleton(){}
 };
 
 inline BaseExport ScriptFactorySingleton& ScriptFactory(void)
 {
-	return ScriptFactorySingleton::Instance();
+    return ScriptFactorySingleton::Instance();
 }
 
 // --------------------------------------------------------------------
@@ -108,24 +107,23 @@ inline BaseExport ScriptFactorySingleton& ScriptFactory(void)
 class BaseExport ScriptProducer: public AbstractProducer
 {
 public:
-	/// Constructor
-	ScriptProducer (const char* name, const char* script) : mScript(script)
-	{
-		ScriptFactorySingleton::Instance().AddProducer(name, this);
-	}
+    /// Constructor
+    ScriptProducer (const char* name, const char* script) : mScript(script)
+    {
+        ScriptFactorySingleton::Instance().AddProducer(name, this);
+    }
 
-	virtual ~ScriptProducer (void){}
+    virtual ~ScriptProducer (void){}
 
-	/// Produce an instance
-	virtual void* Produce (void) const
-	{ 
-	  return (void*)mScript;
-	}
+    /// Produce an instance
+    virtual void* Produce (void) const
+    { 
+        return (void*)mScript;
+    }
 
-	private:
-		const char* mScript;
+private:
+    const char* mScript;
 };
-
 
 } //namespace Base
 

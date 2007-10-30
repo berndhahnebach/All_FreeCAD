@@ -10,25 +10,25 @@
 using namespace Data;
 
 // returns a string which represent the object e.g. when printed in python
-const char *ComplexGeoDataPy::representation(void)
+const char *ComplexGeoDataPy::representation(void) const
 {
-	return "ComplexGeoDataPy";
+    return "<ComplexGeoData object>";
 }
 
 PyObject*  ComplexGeoDataPy::setPlacement(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-	return 0;
+    return 0;
 }
 
 PyObject *ComplexGeoDataPy::getCustomAttributes(const char* attr) const
 {
-	return 0;
+    return 0;
 }
 
 int ComplexGeoDataPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-	return 0; 
+    return 0; 
 }
 
 

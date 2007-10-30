@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Placement_H
-#define __Placement_H
+#ifndef BASE_PLACEMENT_H
+#define BASE_PLACEMENT_H
 
 #include "Vector3D.h"
 #include "Matrix.h"
@@ -54,9 +54,9 @@ public:
 
 };
 
+} // namespace Base
 
-} // namespace Mesh
 
-#endif // __Placement_H 
+#endif // BASE_PLACEMENT_H 
 
 

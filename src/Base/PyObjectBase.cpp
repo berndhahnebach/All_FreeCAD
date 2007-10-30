@@ -25,7 +25,7 @@
 
 #ifndef _PreComp_
 # include <sstream>
-#	include <stdlib.h>
+# include <stdlib.h>
 #endif
 
 #include "PyObjectBase.h"
@@ -38,18 +38,18 @@ using namespace Base;
 PyObjectBase::PyObjectBase(BaseClass* p,PyTypeObject *T)
 :_pcBaseClass(p)
 {
-  this->ob_type = T;
-  _Py_NewReference(this);
+    this->ob_type = T;
+    _Py_NewReference(this);
 #ifdef FC_LOGPYOBJECTS
-  Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
+    Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
 #endif
-  _valid = true;
+    _valid = true;
 }
 /// destructor
 PyObjectBase::~PyObjectBase() 
 {
 #ifdef FC_LOGPYOBJECTS
-  Base::Console().Log("PyO-: %s (%p)\n",this->ob_type->tp_name, this);
+    Base::Console().Log("PyO-: %s (%p)\n",this->ob_type->tp_name, this);
 #endif
 }
 
@@ -67,59 +67,59 @@ PyObjectBase::~PyObjectBase()
  */
 
 PyTypeObject PyObjectBase::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						                                   	/*ob_size*/
-	"PyObjectBase",			                              /*tp_name*/
-	sizeof(PyObjectBase),	                            /*tp_basicsize*/
-	0,						                                   	/*tp_itemsize*/
-	/* --- methods ---------------------------------------------- */
-	PyDestructor,                                    	/*tp_dealloc*/
-	0,			 		                                    	/*tp_print*/
-	__getattr, 	                                    	/*tp_getattr*/
-	__setattr, 	                                    	/*tp_setattr*/
-	0,				                      	              	/*tp_compare*/
-	__repr,		                      	                /*tp_repr*/
-	0,				                      	              	/*tp_as_number*/
-	0,		 		                      	              	/*tp_as_sequence*/
-	0,				                      	              	/*tp_as_mapping*/
-	0,				                      	              	/*tp_hash*/
-	0,				                      		              /*tp_call */
-  0,                                                /*tp_str  */
-  0,                                                /*tp_getattro*/
-  0,                                                /*tp_setattro*/
-  /* --- Functions to access object as input/output buffer ---------*/
-  0,                                                /* tp_as_buffer */
-  /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About PyObjectBase",                             /*tp_doc */
-  0,                                                /*tp_iter */
-  0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
-  0,                                                /*tp_members */
-  0,                                                /*tp_getset */
-  0,                                                /*tp_base */
-  0,                                                /*tp_dict */
-  0,                                                /*tp_descr_get */
-  0,                                                /*tp_descr_set */
-  0,                                                /*tp_dictoffset */
-  0,                                                /*tp_init */
-  0,                                                /*tp_alloc */
-  0,                                                /*tp_new */
-  0,                                                /*tp_free   Low-level free-memory routine */
-  0,                                                /*tp_is_gc  For PyObject_IS_GC */
-  0,                                                /*tp_bases */
-  0,                                                /*tp_mro    method resolution order */
-  0,                                                /*tp_cache */
-  0,                                                /*tp_subclasses */
-  0                                                 /*tp_weaklist */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                                                      /*ob_size*/
+    "PyObjectBase",                                         /*tp_name*/
+    sizeof(PyObjectBase),                                   /*tp_basicsize*/
+    0,                                                      /*tp_itemsize*/
+    /* --- methods ---------------------------------------------- */
+    PyDestructor,                                           /*tp_dealloc*/
+    0,                                                      /*tp_print*/
+    __getattr,                                              /*tp_getattr*/
+    __setattr,                                              /*tp_setattr*/
+    0,                                                      /*tp_compare*/
+    __repr,                                                 /*tp_repr*/
+    0,                                                      /*tp_as_number*/
+    0,                                                      /*tp_as_sequence*/
+    0,                                                      /*tp_as_mapping*/
+    0,                                                      /*tp_hash*/
+    0,                                                      /*tp_call */
+    0,                                                      /*tp_str  */
+    0,                                                      /*tp_getattro*/
+    0,                                                      /*tp_setattro*/
+    /* --- Functions to access object as input/output buffer ---------*/
+    0,                                                      /* tp_as_buffer */
+    /* --- Flags to define presence of optional/expanded features */
+    Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,              /*tp_flags */
+    "The most base class for Python obinding",              /*tp_doc */
+    0,                                                      /*tp_iter */
+    0,                                                      /*tp_iternext */
+    0,                                                      /*tp_methods */
+    0,                                                      /*tp_members */
+    0,                                                      /*tp_getset */
+    0,                                                      /*tp_base */
+    0,                                                      /*tp_dict */
+    0,                                                      /*tp_descr_get */
+    0,                                                      /*tp_descr_set */
+    0,                                                      /*tp_dictoffset */
+    0,                                                      /*tp_init */
+    0,                                                      /*tp_alloc */
+    0,                                                      /*tp_new */
+    0,                                                      /*tp_free   Low-level free-memory routine */
+    0,                                                      /*tp_is_gc  For PyObject_IS_GC */
+    0,                                                      /*tp_bases */
+    0,                                                      /*tp_mro    method resolution order */
+    0,                                                      /*tp_cache */
+    0,                                                      /*tp_subclasses */
+    0                                                       /*tp_weaklist */
 };
 
 /*------------------------------
  * PyObjectBase Methods 	-- Every class, even the abstract one should have a Methods
 ------------------------------*/
 PyMethodDef PyObjectBase::Methods[] = {
-// 	PYMETHODEDEF(isA)
-  {NULL, NULL}		/* Sentinel */
+//  PYMETHODEDEF(isA)
+    {NULL, NULL}        /* Sentinel */
 };
 
 /*------------------------------
@@ -132,43 +132,43 @@ PyParentObject PyObjectBase::Parents[] = {&PyObjectBase::Type, NULL};
 ------------------------------*/
 PyObject *PyObjectBase::_getattr(char *attr)
 {
-  if (streq(attr, "__class__")) {
-    // Note: We must return the type object here, 
-    // so that our own types feel as really Python objects 
-	  Py_INCREF(this->ob_type);
-	  return (PyObject *)(this->ob_type);
-  }
-  else if (streq(attr, "__members__")) {
-    // Use __dict__ instead as __members__ is deprecated
-    return NULL;
-  }
-  else if (streq(attr,"__dict__")) {
-    // Return the default dict
-    PyTypeObject *tp = this->ob_type;
-    Py_XINCREF(tp->tp_dict);
-    return tp->tp_dict;
-  }
-  else if (streq(attr,"softspace")) {
-    // Internal Python stuff
-    return NULL;
-  }
-  else {
-    // As fallback solution use Python's default method to get generic attributes
-	  PyObject *w, *res;
-	  w = PyString_InternFromString(attr);
-    if (w != NULL) {
-	    res = PyObject_GenericGetAttr(this, w);
-	    Py_XDECREF(w);
-	    return res;
-    } else {
-      // Throw an exception for unknown attributes
-	    PyTypeObject *tp = this->ob_type;
-		  PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
-      return NULL;
+    if (streq(attr, "__class__")) {
+        // Note: We must return the type object here, 
+        // so that our own types feel as really Python objects 
+        Py_INCREF(this->ob_type);
+        return (PyObject *)(this->ob_type);
     }
-  }
-  
-  Py_Return;
+    else if (streq(attr, "__members__")) {
+        // Use __dict__ instead as __members__ is deprecated
+        return NULL;
+    }
+    else if (streq(attr,"__dict__")) {
+        // Return the default dict
+        PyTypeObject *tp = this->ob_type;
+        Py_XINCREF(tp->tp_dict);
+        return tp->tp_dict;
+    }
+    else if (streq(attr,"softspace")) {
+        // Internal Python stuff
+        return NULL;
+    }
+    else {
+        // As fallback solution use Python's default method to get generic attributes
+        PyObject *w, *res;
+        w = PyString_InternFromString(attr);
+        if (w != NULL) {
+            res = PyObject_GenericGetAttr(this, w);
+            Py_XDECREF(w);
+            return res;
+        } else {
+            // Throw an exception for unknown attributes
+            PyTypeObject *tp = this->ob_type;
+            PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
+            return NULL;
+        }
+    }
+
+    Py_Return;
 }
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
@@ -191,21 +191,20 @@ int PyObjectBase::_setattr(char *attr, PyObject *value)
 }
 
 /*------------------------------
- * PyObjectBase repr		-- representations
+ * PyObjectBase repr    representations
 ------------------------------*/
 PyObject *PyObjectBase::_repr(void)
 {
-  std::stringstream a;
-  a << "PyObjectBase: [ ";
-  a << "]" << std::endl;
+    std::stringstream a;
+    a << "<base object at " << _pcBaseClass << ">";
 # ifdef FCDebug
-    Console().Log("PyObjectBase::_repr() not overwriten representation!");
+    Console().Log("PyObjectBase::_repr() not overwritten representation!");
 # endif
-	return Py_BuildValue("s", a.str().c_str());
+    return Py_BuildValue("s", a.str().c_str());
 }
 
 /*------------------------------
- * PyObjectBase isA		-- the isA functions
+ * PyObjectBase isA    the isA functions
 ------------------------------*/
 //bool PyObjectBase::IsA(PyTypeObject *T)		// if called with a Type, use "typename"
 //{
@@ -237,13 +236,12 @@ PyObject *PyObjectBase::_repr(void)
 //
 float PyObjectBase::getFloatFromPy(PyObject *value)
 {
-  if(PyFloat_Check( value) )
-  {
-    return (float) PyFloat_AsDouble(value);
-  }else if(PyInt_Check( value) )
-  {
-    return (float) PyInt_AsLong(value);
-  }else
-    throw "Not allowed type used (float or int expected)...";
+    if (PyFloat_Check(value)) {
+        return (float) PyFloat_AsDouble(value);
+    }
+    else if (PyInt_Check(value)) {
+        return (float) PyInt_AsLong(value);
+    } else
+        throw Base::Exception("Not allowed type used (float or int expected)...");
 }
 

@@ -60,19 +60,19 @@ void Factory::AddProducer (const char *sClassName, AbstractProducer *pcProducer)
 
 bool Factory::CanProduce(const char* sClassName) const
 {
-	return (_mpcProducers.find(sClassName) != _mpcProducers.end());
+  return (_mpcProducers.find(sClassName) != _mpcProducers.end());
 }
 
 std::list<std::string> Factory::CanProduce() const
 {
-	std::list<std::string> lObjects;
+  std::list<std::string> lObjects;
 
   for (std::map<const std::string, AbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-	{
-		lObjects.push_back(pI->first);
-	}
+  {
+    lObjects.push_back(pI->first);
+  }
 
-	return lObjects;
+  return lObjects;
 }
 
 // ----------------------------------------------------
@@ -97,15 +97,15 @@ void ScriptFactorySingleton::Destruct (void)
 
 const char* ScriptFactorySingleton::ProduceScript (const char* sScriptName) const
 {
-	const char* script = (const char*)Produce(sScriptName);
+  const char* script = (const char*)Produce(sScriptName);
 
-	if ( !script )
-	{
+  if ( !script )
+  {
 #ifdef FC_DEBUG
-		Console().Warning("\"%s\" is not registered\n", sScriptName);
+    Console().Warning("\"%s\" is not registered\n", sScriptName);
 #endif
-		return ""; // no data
-	}
+    return ""; // no data
+  }
 
-	return script;
+  return script;
 }

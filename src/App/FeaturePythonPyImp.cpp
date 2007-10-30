@@ -32,9 +32,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *FeaturePythonPy::representation(void)
+const char *FeaturePythonPy::representation(void) const
 {
-	return "FeaturePythonPy";
+    return "Python feature object>";
 }
 
 PyObject*  FeaturePythonPy::addProperty(PyObject *args)

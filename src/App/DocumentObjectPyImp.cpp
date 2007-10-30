@@ -10,9 +10,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *DocumentObjectPy::representation(void)
+const char *DocumentObjectPy::representation(void) const
 {
-    return "Document object";
+    return "<Document object>";
 }
 
 Py::String DocumentObjectPy::getName(void) const

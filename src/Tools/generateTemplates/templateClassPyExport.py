@@ -58,7 +58,7 @@ public:
 
 
     virtual PyObject *_repr(void);        // the representation
-    const char *representation(void);
+    const char *representation(void) const;
 
     /** @name callbacks and implementers for the python object methods */
     //@{
@@ -335,7 +335,7 @@ PyObject *@self.export.Name@::PyMake(PyObject *ignored, PyObject *args)  // Pyth
 }
 
 //--------------------------------------------------------------------------
-// PersistancePy representation
+// @self.export.Name@ representation
 //--------------------------------------------------------------------------
 PyObject *@self.export.Name@::_repr(void)
 {
@@ -344,7 +344,7 @@ PyObject *@self.export.Name@::_repr(void)
 
 + if(self.export.CustomAttributes != None):
 //--------------------------------------------------------------------------
-// PersistancePy Attributes
+// @self.export.Name@ Attributes
 //--------------------------------------------------------------------------
 PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
@@ -476,9 +476,9 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
  */
 
 // returns a string which represent the object e.g. when printed in python
-const char *@self.export.Name@::representation(void)
+const char *@self.export.Name@::representation(void) const
 {
-    return "@self.export.Name@";
+    return "<@self.export.Twin@ object>";
 }
 + for i in self.export.Methode:
 
@@ -533,9 +533,9 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 using namespace @self.export.Namespace@;
 
 // returns a string which represent the object e.g. when printed in python
-const char *@self.export.Name@::representation(void)
+const char *@self.export.Name@::representation(void) const
 {
-    return "@self.export.Name@";
+    return "<@self.export.Twin@ object>";
 }
 
 + for i in self.export.Methode:

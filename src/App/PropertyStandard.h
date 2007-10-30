@@ -687,6 +687,7 @@ public:
     
     void  set1Value (const int idx, const Color& value){_lValueList.operator[] (idx) = value;}
     
+    void setValues (const std::vector<Color>& values);
     const std::vector<Color> &getValues(void) const{return _lValueList;}
     
     virtual PyObject *getPyObject(void);

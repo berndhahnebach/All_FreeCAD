@@ -82,6 +82,12 @@ public:
   inline  BoundBox3<_Precision>& operator &= (const Vector3<_Precision> &rclVect);
   /** The union of two bounding boxes. */
   BoundBox3<_Precision> operator | (const BoundBox3<_Precision> &rcBB) const;
+  /** Appends the point to the box. The box can grow but not shrink. 
+   * This method does the same as the &= operator unless that it nothing returns.
+   */
+  inline  void Add (const Vector3<_Precision> &rclVect);
+  /** Appends the bounding box to this box. The box can grow but not shrink. */
+  inline  void Add (const BoundBox3<_Precision> &rcBB);
   //@}
  
   /** Test methods */
@@ -225,6 +231,28 @@ inline BoundBox3<_Precision> BoundBox3<_Precision>::operator | (const BoundBox3<
   cBBRes.MaxZ = std::max<_Precision> (MaxZ, rcBB.MaxZ);
 
   return cBBRes;
+}
+
+template <class _Precision>
+inline  void BoundBox3<_Precision>::Add (const Vector3<_Precision> &rclVect)
+{
+  this->MinX = std::min<_Precision>(this->MinX, rclVect.x);
+  this->MinY = std::min<_Precision>(this->MinY, rclVect.y);
+  this->MinZ = std::min<_Precision>(this->MinZ, rclVect.z);
+  this->MaxX = std::max<_Precision>(this->MaxX, rclVect.x);
+  this->MaxY = std::max<_Precision>(this->MaxY, rclVect.y);
+  this->MaxZ = std::max<_Precision>(this->MaxZ, rclVect.z);
+}
+
+template <class _Precision>
+inline  void BoundBox3<_Precision>::Add (const BoundBox3<_Precision> &rcBB)
+{
+  this->MinX = std::min<_Precision> (this->MinX, rcBB.MinX);
+  this->MaxX = std::max<_Precision> (this->MaxX, rcBB.MaxX);
+  this->MinY = std::min<_Precision> (this->MinY, rcBB.MinY);
+  this->MaxY = std::max<_Precision> (this->MaxY, rcBB.MaxY);
+  this->MinZ = std::min<_Precision> (this->MinZ, rcBB.MinZ);
+  this->MaxZ = std::max<_Precision> (this->MaxZ, rcBB.MaxZ);
 }
 
 template <class _Precision>

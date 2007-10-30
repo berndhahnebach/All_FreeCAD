@@ -10,9 +10,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *FeaturePy::representation(void)
+const char *FeaturePy::representation(void) const
 {
-	return "FeaturePy";
+    return "<Feature object>";
 }
 
 

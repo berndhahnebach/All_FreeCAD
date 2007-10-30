@@ -32,9 +32,9 @@
 using namespace Gui;
 
 // returns a string which represent the object e.g. when printed in python
-const char *ViewProviderPy::representation(void)
+const char *ViewProviderPy::representation(void) const
 {
-	return "View provider";
+    return "<View provider object>";
 }
 
 PyObject*  ViewProviderPy::show(PyObject *args)

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __BUILDER3D_H__
-#define __BUILDER3D_H__
+#ifndef BASE_BUILDER3D_H
+#define BASE_BUILDER3D_H
 
 // Std. configurations
 
@@ -206,4 +206,4 @@ private:
 
 } //namespace Base
 
-#endif // __BUILDER3D_H__
+#endif // BASE_BUILDER3D_H

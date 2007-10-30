@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef VIEW_PROJ_H
-#define VIEW_PROJ_H
+#ifndef BASE_VIEWPROJ_H
+#define BASE_VIEWPROJ_H
 
 #include "Tools2D.h"
 #include "Vector3D.h"
@@ -82,4 +82,4 @@ inline Vector3f ViewProjMatrix::inverse (const Vector2D &rclPt) const
 
 } // namespace Base
 
-#endif // VIEW_PROJ_H
+#endif // BASE_VIEWPROJ_H

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#ifndef BASE_VECTOR3D_H
+#define BASE_VECTOR3D_H
 
 
 #include <math.h>
@@ -119,8 +119,7 @@ public:
   void RotateZ (_Precision f);
   //@}
 
-  inline void Set (float fX, float fY, float fZ);
-  inline void Set (double dX, double dY, double dZ);
+  inline void Set (_Precision fX, _Precision fY, _Precision fZ);
 
   /** @name Mathematics */
   //@{
@@ -346,19 +345,11 @@ inline _Precision Vector3<_Precision>::Sqr (void) const
 }
 
 template <class _Precision>
-inline void Vector3<_Precision>::Set (float fX, float fY, float fZ)
+inline void Vector3<_Precision>::Set (_Precision fX, _Precision fY, _Precision fZ)
 {
-  x = _Precision(fX);
-  y = _Precision(fY);
-  z = _Precision(fZ);
-}
-
-template <class _Precision>
-inline void Vector3<_Precision>::Set (double dX, double dY, double dZ)
-{
-  x = _Precision(dX);
-  y = _Precision(dY);
-  z = _Precision(dZ);
+  x = fX;
+  y = fY;
+  z = fZ;
 }
 
 // global functions
@@ -556,5 +547,5 @@ typedef Vector3<double> Vector3d;
 
 } // namespace Base
 
-#endif // VECTOR3D_H
+#endif // BASE_VECTOR3D_H
 

@@ -23,8 +23,8 @@
 
 
 
-#ifndef _Material_h_
-#define _Material_h_
+#ifndef APP_MATERIAL_H
+#define APP_MATERIAL_H
 
 namespace Base
 {
@@ -213,4 +213,4 @@ private:
 
 } //namespace App
 
-#endif
+#endif // APP_MATERIAL_H

@@ -341,26 +341,26 @@ void Base::XMLReader::resetDocument()
 // ---------------------------------------------------------------------------
 void Base::XMLReader::error(const SAXParseException& e)
 {
-   cerr << "\nError at file " << StrX(e.getSystemId())
-	 << ", line " << e.getLineNumber()
-	 << ", char " << e.getColumnNumber()
-       << "\n  Message: " << StrX(e.getMessage()) <<  endl;
+    cerr << "\nError at file " << StrX(e.getSystemId())
+         << ", line " << e.getLineNumber()
+         << ", char " << e.getColumnNumber()
+         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 }
 
 void Base::XMLReader::fatalError(const SAXParseException& e)
 {
-   cerr << "\nFatal Error at file " << StrX(e.getSystemId())
-	 << ", line " << e.getLineNumber()
-	 << ", char " << e.getColumnNumber()
-       << "\n  Message: " << StrX(e.getMessage()) <<  endl;
+    cerr << "\nFatal Error at file " << StrX(e.getSystemId())
+         << ", line " << e.getLineNumber()
+         << ", char " << e.getColumnNumber()
+         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 }
 
 void Base::XMLReader::warning(const SAXParseException& e)
 {
    cerr << "\nWarning at file " << StrX(e.getSystemId())
-	 << ", line " << e.getLineNumber()
-	 << ", char " << e.getColumnNumber()
-       << "\n  Message: " << StrX(e.getMessage()) <<  endl;         
+        << ", line " << e.getLineNumber()
+        << ", char " << e.getColumnNumber()
+        << "\n  Message: " << StrX(e.getMessage()) <<  endl;         
 }
 
 void Base::XMLReader::resetErrors()

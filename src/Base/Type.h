@@ -191,10 +191,8 @@ Type::isBad(void) const
   return (this->index == 0);
 }
 
-
-
-
 } //namespace Base
 
-#endif // __FILETEMPLATE_H__
+
+#endif // __Type_H__
 

@@ -104,22 +104,19 @@ PyObject *PropertyLink::getPyObject(void)
 }
 
 void PropertyLink::setPyObject(PyObject *value)
-{ 
-    if ( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) ) {
+{
+    if (PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
         DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
         setValue(pcObject->getDocumentObjectObject());
-    }
-    else if(PyInt_Check( value) ){
-        if(PyInt_AsLong(value)== 0)
-            setValue(0);
-        else
-            throw Base::Exception("Not allowed type used (document object expected)...");
     }
     else if(Py_None == value) {
         setValue(0);
     }
-    else
-        throw Base::Exception("Not allowed type used (document object expected)...");
+    else {
+        std::string error = std::string("type must be 'DocumentObject' or 'NoneType', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyLink::Save (Writer &writer) const
@@ -211,35 +208,33 @@ PyObject *PropertyLinkList::getPyObject(void)
 
 void PropertyLinkList::setPyObject(PyObject *value)
 {
-    if ( PyList_Check( value) ) {
-        aboutToSetValue();
-
-        int nSize = PyList_Size( value );
-        _lValueList.resize(nSize);
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<DocumentObject*> values;
+        values.resize(nSize);
 
         for (int i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
-            if ( PyObject_TypeCheck(item, &(DocumentObjectPy::Type)) ) {
-                DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(item);
-                _lValueList[i] = pcObject->getDocumentObjectObject();
-                hasSetValue();
+            if (!PyObject_TypeCheck(item, &(DocumentObjectPy::Type))) {
+                std::string error = std::string("type in list must be 'DocumentObject', not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
             }
-            else {
-                _lValueList.resize(1);
-                _lValueList[0] = 0;
-                throw Base::Exception("Not allowed type in list (float expected)...");
-            }
+
+            values[i] = static_cast<DocumentObjectPy*>(item)->getDocumentObjectObject();
         }
 
-        hasSetValue();
+        setValues(values);
     }
-    else if( PyObject_TypeCheck(value, &(DocumentObjectPy::Type)) ) {
+    else if(PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
         aboutToSetValue();
         DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(value);
-        setValue( pcObject->getDocumentObjectObject() );
+        setValue(pcObject->getDocumentObjectObject());
     }
     else {
-        throw Base::Exception("Not allowed type used (Feature expected)...");
+        std::string error = std::string("type must be 'DocumentObject' or list of 'DocumentObject', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
 }
 
