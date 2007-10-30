@@ -67,12 +67,15 @@ PyObject *PropertyPointKernel::getPyObject(void)
 
 void PropertyPointKernel::setPyObject(PyObject *value)
 {
-  if( PyObject_TypeCheck(value, &(PointsPy::Type)) ) {
-   	PointsPy  *pcObject = (PointsPy*)value;
-    setValue( pcObject->getPoints());
-  } else {
-    throw Base::Exception("Not allowed type (Points expected)");
-  }
+    if (PyObject_TypeCheck(value, &(PointsPy::Type))) {
+        PointsPy  *pcObject = (PointsPy*)value;
+        setValue( pcObject->getPoints());
+    }
+    else {
+        std::string error = std::string("type must be 'Points', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyPointKernel::Save (Base::Writer &writer) const

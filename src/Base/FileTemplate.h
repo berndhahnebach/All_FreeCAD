@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FILETEMPLATE_H__
-#define __FILETEMPLATE_H__
+#ifndef BASE_FILETEMPLATE_H
+#define BASE_FILETEMPLATE_H
 
 // Std. configurations
 
@@ -84,63 +84,61 @@ namespace Base
 class BaseExport ClassTemplate
 {
 public:
-  /// Construction
-  ClassTemplate();
-  /// Destruction
-  virtual ~ClassTemplate();
+    /// Construction
+    ClassTemplate();
+    /// Destruction
+    virtual ~ClassTemplate();
 
-  int testMe(int a,const char *s);
+    int testMe(int a,const char *s);
 
-  /** 
-   * An enum.
-   * More detailed enum description.
-   */
+    /** 
+     * An enum.
+     * More detailed enum description.
+     */
 
-  enum TEnum { 
-      TVal1, /**< enum value TVal1. */  
-      TVal2, /**< enum value TVal2. */  
-      TVal3  /**< enum value TVal3. */  
-     } 
-  *enumPtr, /**< enum pointer. Details. */
-  enumVar;  /**< enum variable. Details. */
+    enum TEnum { 
+        TVal1, /**< enum value TVal1. */  
+        TVal2, /**< enum value TVal2. */  
+        TVal3  /**< enum value TVal3. */  
+    } 
+    *enumPtr, /**< enum pointer. Details. */
+    enumVar;  /**< enum variable. Details. */
 
-  /**
-   * A pure virtual member.
-   * @see testMe()
-   * @param c1 the first argument.
-   * @param c2 the second argument.
-   */
-  virtual void testMeToo(char c1,char c2) = 0;
+    /**
+     * A pure virtual member.
+     * @see testMe()
+     * @param c1 the first argument.
+     * @param c2 the second argument.
+     */
+    virtual void testMeToo(char c1,char c2) = 0;
 
-  /** @name a group of methods */
-  //@{
-  /// I am method one
-  virtual void one(void)=0;
-  /// I am method two
-  virtual void two(void)=0;
-  /// I am method three
-  virtual void three(void)=0;
-  //@}
+    /** @name a group of methods */
+    //@{
+    /// I am method one
+    virtual void one(void)=0;
+    /// I am method two
+    virtual void two(void)=0;
+    /// I am method three
+    virtual void three(void)=0;
+    //@}
 
 
-  /** 
-   * a public variable.
-   * Details.
-   */
-  int publicVar;
+    /** 
+    * a public variable.
+    * Details.
+    */
+    int publicVar;
  
-  /**
-   * a function variable.
-   * Details.
-   */
-  int (*handler)(int a,int b);
+    /**
+     * a function variable.
+     * Details.
+     */
+    int (*handler)(int a,int b);
 
-  // VC6 warns a DLL interface, ignore!
-  std::string something;
-
+    std::string something;
 };
 
 } //namespace Base
 
-#endif // __FILETEMPLATE_H__
+#endif // BASE_FILETEMPLATE_H
 

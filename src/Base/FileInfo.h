@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef _FILEINFO_H_
-#define _FILEINFO_H_
+#ifndef BASE_FILEINFO_H
+#define BASE_FILEINFO_H
 
 #include <string>
 
@@ -38,9 +38,9 @@ namespace Base
   */
 class BaseExport FileInfo
 {
-	public:
-		/// Constrction
-		FileInfo (const char* FileName="");
+public:
+    /// Constrction
+    FileInfo (const char* FileName="");
     /// gecerates a unique file name
     void makeTemp(const char* Template);
     /// set a new file name
@@ -58,16 +58,16 @@ class BaseExport FileInfo
     /// Returns the name of the file, excluding the path and the extension.
     std::string fileNamePure () const;
     /** Returns the file's extension name.
-      * If complete is TRUE (the default), extension() returns the string of all characters in the file name after (but not including) the first '.' character.
-      * If complete is FALSE, extension() returns the string of all characters in the file name after (but not including) the last '.' character.
-      * Example:
-      *@code
-      *  FileInfo fi( "/tmp/archive.tar.gz" );
-      *  std::string ext = fi.extension(true);  // ext = "tar.gz"
-      *  ext = fi.extension(false);   // ext = "gz"
-      *  ext = fi.extension();   // ext = "gz"
-      *@endcode
-    */
+     * If complete is TRUE (the default), extension() returns the string of all characters in the file name after (but not including) the first '.' character.
+     * If complete is FALSE, extension() returns the string of all characters in the file name after (but not including) the last '.' character.
+     * Example:
+     *@code
+     *  FileInfo fi( "/tmp/archive.tar.gz" );
+     *  std::string ext = fi.extension(true);  // ext = "tar.gz"
+     *  ext = fi.extension(false);   // ext = "gz"
+     *  ext = fi.extension();   // ext = "gz"
+     *@endcode
+     */
     std::string extension ( bool complete = false ) const;
     /// checks for a special extension, NOT case sensetive
     bool hasExtension ( const char* Ext) const;
@@ -92,16 +92,12 @@ class BaseExport FileInfo
     /// delete the file
     bool deleteFile(void);
 
-  protected:
+protected:
     std::string FileName;
 };
-
-// --------------------------------------------------------------------
-
-
 
 } //namespace Base
 
 
-#endif
+#endif // BASE_FILEINFO_H
 

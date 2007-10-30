@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Writer_H__
-#define __Writer_H__
+#ifndef BASE_WRITER_H
+#define BASE_WRITER_H
 
 
 #include <string>
@@ -162,4 +162,4 @@ private:
 }  //namespace Base
 
 
-#endif
+#endif // BASE_WRITER_H

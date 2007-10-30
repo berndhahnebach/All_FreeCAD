@@ -61,12 +61,15 @@ PyObject *PropertyCircle::getPyObject(void)
 
 void PropertyCircle::setPyObject(PyObject *value)
 {
-  if (PyObject_TypeCheck(value, &(CirclePy::Type))) {
-   	CirclePy  *pcObject = (CirclePy*)value;
-    setValue( pcObject->value() );
-  } else {
-    throw Base::Exception("Argument must be a circle");
-  }
+    if (PyObject_TypeCheck(value, &(CirclePy::Type))) {
+        CirclePy  *pcObject = (CirclePy*)value;
+        setValue( pcObject->value() );
+    } 
+    else {
+        std::string error = std::string("type must be 'Circle', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 App::Property *PropertyCircle::Copy(void) const

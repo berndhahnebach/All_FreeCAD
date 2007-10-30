@@ -75,7 +75,7 @@ void  Handled::DetachRef(void* pHandle)
 		}
 		catch(...)
 		{
-      throw Exception("Base::Handled freed twice !!!!!\n");
+			throw Exception("Base::Handled freed twice !!!!!\n");
 		}
 	}
 }

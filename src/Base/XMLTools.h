@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef __XMLTools_H__
-#define __XMLTools_H__
+#ifndef __XMLTOOLS_H__
+#define __XMLTOOLS_H__
 
 // Std. configurations
 
@@ -36,12 +36,10 @@
 
 
 XERCES_CPP_NAMESPACE_BEGIN
-	class DOMNode;
-	class DOMElement;
-	class DOMDocument;
+    class DOMNode;
+    class DOMElement;
+    class DOMDocument;
 XERCES_CPP_NAMESPACE_END
-
-using namespace Base;
 
 
 //**************************************************************************
@@ -78,7 +76,7 @@ inline StrX::StrX(const XMLCh* const toTranscode)
 inline StrX::~StrX()
 {
     //delete [] fLocalForm; // dont work on VC7.1
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fLocalForm);
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fLocalForm);
 }
 
 
@@ -124,7 +122,7 @@ inline XStr::XStr(const char* const toTranscode)
 inline XStr::~XStr()
 {
     //delete [] fUnicodeForm;
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fUnicodeForm);
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fUnicodeForm);
 }
 
 
@@ -136,4 +134,4 @@ inline const XMLCh* XStr::unicodeForm() const
     return fUnicodeForm;
 }
 
-#endif 
+#endif // __XMLTOOLS_H__

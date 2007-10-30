@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef BASE_MATRIX_H
+#define BASE_MATRIX_H
 
 //#include "Definitions.h"
 #include <assert.h>
@@ -280,6 +280,6 @@ inline const double* Matrix4D::operator[] (unsigned short usNdx) const
 
 } // namespace Mesh
 
-#endif // MATRIX_H 
+#endif // BASE_MATRIX_H 
 
 

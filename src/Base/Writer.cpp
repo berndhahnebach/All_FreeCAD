@@ -123,10 +123,9 @@ string Writer::getUniqueFileName(const char *Name)
     }
     char szName[200];
     snprintf(szName, 200, "%s%d", Name, nSuff + 1);
-	
+
     return string(szName);
   }
-	
 }
 
 const std::vector<std::string>& Writer::getFilenames() const

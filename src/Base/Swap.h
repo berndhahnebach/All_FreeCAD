@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef SWAP_H
-#define SWAP_H
+#ifndef BASE_SWAP_H
+#define BASE_SWAP_H
 
 #define LOW_ENDIAN	(unsigned short) 0x4949 
 #define HIGH_ENDIAN	(unsigned short) 0x4D4D 
@@ -50,4 +50,4 @@ void SwapVar (double&);
 } // namespace Base
 
 
-#endif // SWAP_H 
+#endif // BASE_SWAP_H 

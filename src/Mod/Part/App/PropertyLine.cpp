@@ -61,12 +61,15 @@ PyObject *PropertyLine::getPyObject(void)
 
 void PropertyLine::setPyObject(PyObject *value)
 {
-  if (PyObject_TypeCheck(value, &(LinePy::Type))) {
-   	LinePy  *pcObject = (LinePy*)value;
-    setValue( pcObject->value() );
-  } else {
-    throw Base::Exception("Argument must be Line");
-  }
+    if (PyObject_TypeCheck(value, &(LinePy::Type))) {
+        LinePy  *pcObject = (LinePy*)value;
+        setValue( pcObject->value() );
+    }
+    else {
+        std::string error = std::string("type must be 'Line', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 App::Property *PropertyLine::Copy(void) const
@@ -145,30 +148,29 @@ PyObject *PropertyLineSet::getPyObject(void)
 
 void PropertyLineSet::setPyObject(PyObject *value)
 {
-  if (PyList_Check(value)) {
-    int nSize = PyList_Size(value);
-    std::vector<Line3f> lines;
-    lines.resize(nSize);
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<Line3f> lines;
+        lines.resize(nSize);
 
-    try {
-      for (int i=0; i<nSize;++i) {
-        PyObject* item = PyList_GetItem(value, i);
-        PropertyLine val;
-        val.setPyObject(item);
-        lines[i] = val.getValue();
-      }
-    } catch (const Base::Exception&) {
-      lines.resize(1);
-      throw;
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            PropertyLine val;
+            val.setPyObject(item);
+            lines[i] = val.getValue();
+        }
+
+        setValues(lines);
     }
-
-    setValues(lines);
-  } else if (PyObject_TypeCheck(value, &(LinePy::Type))) {
-    LinePy  *pcObject = (LinePy*)value;
-    setValue(pcObject->value());
-  } else {
-    throw Base::Exception("Argument must be a Line or list of Line");
-  }
+    else if (PyObject_TypeCheck(value, &(LinePy::Type))) {
+        LinePy  *pcObject = (LinePy*)value;
+        setValue(pcObject->value());
+    }
+    else {
+        std::string error = std::string("type must be 'Line' or list of 'Line', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 App::Property *PropertyLineSet::Copy(void) const

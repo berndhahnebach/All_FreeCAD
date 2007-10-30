@@ -15,9 +15,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *PropertyContainerPy::representation(void)
+const char *PropertyContainerPy::representation(void) const
 {
-	return "PropertyContainerPy";
+	return "<property container>";
 }
 
 PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)

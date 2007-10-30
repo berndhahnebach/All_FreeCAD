@@ -680,6 +680,11 @@ public:
 			{
 			return PyFloat_AsDouble (ptr());
 			}
+		// convert to float
+		operator float () const
+			{
+			return (float)PyFloat_AsDouble (ptr());
+			}
 		// assign from a double
 		Float& operator= (double v)
 			{

@@ -78,16 +78,15 @@ Builder3D::~Builder3D()
  */
 void Builder3D::startPoints(short pointSize, float color_r,float color_g,float color_b)
 {
- bStartEndOpen = true;
- result << "Separator { ";
- result <<   "Material { ";
- result <<     "diffuseColor " << color_r << " "<< color_g << " "<< color_b  ;
- result <<   "} ";
- result <<   "MaterialBinding { value PER_PART } ";
- result <<   "DrawStyle { pointSize " << pointSize << "} ";
- result <<   "Coordinate3 { ";
- result <<     "point [ ";
-
+  bStartEndOpen = true;
+  result << "Separator { ";
+  result <<   "Material { ";
+  result <<     "diffuseColor " << color_r << " "<< color_g << " "<< color_b  ;
+  result <<   "} ";
+  result <<   "MaterialBinding { value PER_PART } ";
+  result <<   "DrawStyle { pointSize " << pointSize << "} ";
+  result <<   "Coordinate3 { ";
+  result <<     "point [ ";
 }
 
 /// insert a point in an point set

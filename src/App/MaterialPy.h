@@ -23,8 +23,8 @@
 
 
 
-#ifndef _MaterialPy_h_
-#define _MaterialPy_h_
+#ifndef APP_MATERIALPY_H
+#define APP_MATERIALPY_H
 
 #include <Base/PyObjectBase.h>
 
@@ -37,30 +37,77 @@ class Material;
 // MaterialPy - Python wrapper
 //===========================================================================
 
-/** The DocTypeStd python class
+/** The python export class for Material
  */
-class AppExport MaterialPy :public Base::PyObjectBase
+class AppExport MaterialPy : public Base::PyObjectBase
 {
-	/// always start with Py_Header
-	Py_Header;
-
-protected:
-	~MaterialPy();
+public:
+    static PyTypeObject   Type;
+    static PyMethodDef    Methods[];
+    static PyGetSetDef    GetterSetter[];
+    static PyParentObject Parents[];
+    virtual PyTypeObject *GetType(void) {return &Type;};
+    virtual PyParentObject *GetParents(void) {return Parents;}
 
 public:
 	MaterialPy(Material *pcMaterial, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
+	~MaterialPy();
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+    virtual PyObject *_repr(void);        // the representation
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+    /** @name callbacks and implementers for the python object methods */
+    //@{
+    /// callback for the set() method
+    static PyObject * staticCallback_set (PyObject *self, PyObject *args, PyObject *kwd);
+    /// implementer for the set() method
+    PyObject*  set(PyObject *args);
+    //@}
 
-  
-  PYFUNCDEF_D(MaterialPy,set)
+
+    /** @name callbacks and implementers for the python object methods */
+    //@{
+    ///getter callback for the AmbientColor attribute
+    static PyObject * staticCallback_getAmbientColor (PyObject *self, void *closure);
+    /// getter for the AmbientColor attribute
+    Py::Tuple getAmbientColor(void) const;
+    /// setter callback for the AmbientColor attribute
+    static int staticCallback_setAmbientColor (PyObject *self, PyObject *value, void *closure);
+    /// setter for the AmbientColor attribute
+    void setAmbientColor(Py::Tuple arg);
+    ///getter callback for the DiffuseColor attribute
+    static PyObject * staticCallback_getDiffuseColor (PyObject *self, void *closure);
+    /// getter for the DiffuseColor attribute
+    Py::Tuple getDiffuseColor(void) const;
+    /// setter callback for the DiffuseColor attribute
+    static int staticCallback_setDiffuseColor (PyObject *self, PyObject *value, void *closure);
+    /// setter for the DiffuseColor attribute
+    void setDiffuseColor(Py::Tuple arg);
+    ///getter callback for the SpecularColor attribute
+    static PyObject * staticCallback_getSpecularColor (PyObject *self, void *closure);
+    /// getter for the SpecularColor attribute
+    Py::Tuple getSpecularColor(void) const;
+    /// setter callback for the SpecularColor attribute
+    static int staticCallback_setSpecularColor (PyObject *self, PyObject *value, void *closure);
+    /// setter for the SpecularColor attribute
+    void setSpecularColor(Py::Tuple arg);
+    ///getter callback for the Shininess attribute
+    static PyObject * staticCallback_getShininess (PyObject *self, void *closure);
+    /// getter for the Shininess attribute
+    Py::Float getShininess(void) const;
+    /// setter callback for the Shininess attribute
+    static int staticCallback_setShininess (PyObject *self, PyObject *value, void *closure);
+    /// setter for the Shininess attribute
+    void setShininess(Py::Float arg);
+    ///getter callback for the Transparency attribute
+    static PyObject * staticCallback_getTransparency (PyObject *self, void *closure);
+    /// getter for the Transparency attribute
+    Py::Float getTransparency(void) const;
+    /// setter callback for the Transparency attribute
+    static int staticCallback_setTransparency (PyObject *self, PyObject *value, void *closure);
+    /// setter for the Transparency attribute
+    void setTransparency(Py::Float arg);
+    //@}
 
 
 	//---------------------------------------------------------------------
@@ -74,10 +121,7 @@ public:
 
 };
 
-
-
 } //namespace App
 
 
-
-#endif
+#endif // APP_MATERIALPY_H

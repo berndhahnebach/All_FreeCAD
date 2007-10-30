@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Reader_H__
-#define __Reader_H__
+#ifndef BASE_READER_H
+#define BASE_READER_H
 
 
 #include <string>
@@ -37,7 +37,7 @@
 class zipios::ZipInputStream;
 
 XERCES_CPP_NAMESPACE_BEGIN
-	class DefaultHandler;
+    class DefaultHandler;
 XERCES_CPP_NAMESPACE_END
 
 namespace Base
@@ -119,7 +119,7 @@ public:
   bool isValid() const { return _valid; }
 
   /** @name Parser handling */
-	//@{
+  //@{
   /// read the next element
   bool read(void);
   /// get the local name of the current Element
@@ -133,7 +133,7 @@ public:
 	//@}
 
   /** @name Attribute handling */
-	//@{
+  //@{
   /// get the numbers of attributes of the current Element
   unsigned int getAttributeCount    (void) const;
   /// check if the read element has a special attribute
@@ -145,7 +145,7 @@ public:
   double       getAttributeAsFloat  (const char* AttrName) const;
   /// returns the named attribute as an double floating point (does type checking)
   const char*  getAttribute         (const char* AttrName) const;
-	//@}
+  //@}
 
    /** @name additional file reading */
   //@{
@@ -173,7 +173,7 @@ private:
   // -----------------------------------------------------------------------
   //  Handlers for the SAX ErrorHandler interface
   // -----------------------------------------------------------------------
-	void warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+  void warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
   void error(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
   void fatalError(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
   void resetErrors();
@@ -206,36 +206,8 @@ private:
   };
   std::vector<FileEntry> FileList;
   std::vector<std::string> FileNames;
-
 };
 
-/**
- * Extended XML reader class the collects also the attached data files in a zip file.
- * @author Werner Mayer
- */
- /*
-class BaseExport XMLZipReader : public XMLReader
-{
-public:
-    /// opens the file and read the first element
-  XMLZipReader(const char* FileName, Reader& reader)
-    : XMLReader(FileName, reader), _reader(reader)
-  {
-  }
-
-  ~XMLZipReader()
-  {
-  }
-
-  void addFile(const char* FileName, const char* FeatName)
-  {
-    _reader.addFile(FileName,FeatName);
-  }
-
-private:
-  Reader& _reader;
-};
-*/
 }
 
 

@@ -73,7 +73,7 @@ ClassTemplate::~ClassTemplate()
  */
 int ClassTemplate::testMe(int a,const char *s)
 {
-  return 0;
+    return 0;
 }
 
 

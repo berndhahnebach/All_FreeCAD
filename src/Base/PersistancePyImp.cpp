@@ -11,18 +11,18 @@
 using namespace Base;
 
 // returns a string which represent the object e.g. when printed in python
-const char *PersistancePy::representation(void)
+const char *PersistancePy::representation(void) const
 {
-	return "PersistancePy";
+    return "<persistence object>";
 }
 
 
 Py::String PersistancePy::getContent(void) const
 {
-  Base::StringWriter writer;
-  getPersistanceObject()->Save(writer);
+    Base::StringWriter writer;
+    getPersistanceObject()->Save(writer);
 
-  return  Py::String (writer.getString());
+    return  Py::String (writer.getString());
 }
 
 void  PersistancePy::setContent(Py::String arg)
@@ -32,17 +32,17 @@ void  PersistancePy::setContent(Py::String arg)
 
 Py::Int PersistancePy::getMemSize(void) const
 {
-  return Py::Int((long)getPersistanceObject()->getMemSize());
+    return Py::Int((long)getPersistanceObject()->getMemSize());
 }
 
 
 PyObject *PersistancePy::getCustomAttributes(const char* attr) const
 {
-  return 0;
+    return 0;
 }
 
 int PersistancePy::setCustomAttributes(const char*,PyObject *obj)
 {
-  return 0; 
+    return 0; 
 }
 

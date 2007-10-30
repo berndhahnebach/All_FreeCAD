@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef __OBSERVER_H__
-#define __OBSERVER_H__
+#ifndef BASE_OBSERVER_H
+#define BASE_OBSERVER_H
 
 // Std. configurations
 
@@ -204,4 +204,4 @@ protected:
 } //namespace Base
 
 
-#endif // __OBSERVER_H__
+#endif // BASE_OBSERVER_H

@@ -114,10 +114,11 @@ void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const cha
  */
 PyObject *BaseClass::getPyObject(void)
 {
+  assert(0);
   Py_Return;
 }
 
 void BaseClass::setPyObject(PyObject *)
 {
-
+  assert(0);
 }

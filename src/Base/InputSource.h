@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __InputSource_H__
-#define __InputSource_H__
+#ifndef BASE_IINPUTSOURCE_H
+#define BASE_IINPUTSOURCE_H
 
 
 #include <iostream>
@@ -33,7 +33,7 @@
 
 
 XERCES_CPP_NAMESPACE_BEGIN
-	class BinInputStream;
+  class BinInputStream;
 XERCES_CPP_NAMESPACE_END
 
 namespace Base
@@ -77,7 +77,7 @@ public :
   StdInputSource ( std::istream& Stream, const char* filePath, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const manager = XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager );
    ~StdInputSource();
 
-   virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream* makeStream() const;
+  virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream* makeStream() const;
 
 private:
   StdInputSource(const StdInputSource&);
@@ -88,4 +88,4 @@ private:
 
 }
 
-#endif
+#endif // BASE_IINPUTSOURCE_H

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef TOOLS2D_H
-#define TOOLS2D_H
+#ifndef BASE_TOOLS2D_H
+#define BASE_TOOLS2D_H
 
 
 #include <math.h>
@@ -373,6 +373,6 @@ inline bool BoundBox2D::operator== (const BoundBox2D& rclBB) const
 
 } // namespace Base
 
-#endif // TOOLS2D_H
+#endif // BASE_TOOLS2D_H
 
 

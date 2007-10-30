@@ -99,10 +99,15 @@ PyObject *PropertyPartShape::getPyObject(void)
 
 void PropertyPartShape::setPyObject(PyObject *value)
 {
-  if( PyObject_TypeCheck(value, &(TopoShapePyOld::Type)) ) {
-   	TopoShapePyOld  *pcObject = (TopoShapePyOld*)value;
-    setValue(pcObject->getTopoShape());
-  }
+    if( PyObject_TypeCheck(value, &(TopoShapePyOld::Type)) ) {
+        TopoShapePyOld  *pcObject = (TopoShapePyOld*)value;
+        setValue(pcObject->getTopoShape());
+    }
+    else {
+        std::string error = std::string("type must be 'Shape', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 App::Property *PropertyPartShape::Copy(void) const

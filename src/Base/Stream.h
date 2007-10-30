@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef STREAM_H
-#define STREAM_H
+#ifndef BASE_STREAM_H
+#define BASE_STREAM_H
 
 
 #ifndef _PreComp_
@@ -217,4 +217,4 @@ public:
 
 } // namespace Base
 
-#endif // STREAM_H
+#endif // BASE_STREAM_H

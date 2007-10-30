@@ -33,9 +33,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *DocumentObjectGroupPy::representation(void)
+const char *DocumentObjectGroupPy::representation(void) const
 {
-	return "A group of document objects";
+    return "<group object>";
 }
 
 PyObject*  DocumentObjectGroupPy::newObject(PyObject *args)

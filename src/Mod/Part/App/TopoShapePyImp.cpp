@@ -23,9 +23,9 @@
 using namespace Part;
 
 // returns a string which represent the object e.g. when printed in python
-const char *TopoShapePy::representation(void)
+const char *TopoShapePy::representation(void) const
 {
-	return "TopoShapePy";
+	return "<shape object>";
 }
 
 

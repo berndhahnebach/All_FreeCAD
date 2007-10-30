@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef BASE_TIME_INFO_H
-#define BASE_TIME_INFO_H
+#ifndef BASE_TIMEINFO_H
+#define BASE_TIMEINFO_H
 
 // Std. configurations
 
@@ -33,9 +33,6 @@
 
 namespace Base
 {
-  //typedef struct _object PyObject;
-
-
 /// BaseClass class and root of the type system
 class BaseExport TimeInfo
 {
@@ -94,7 +91,6 @@ TimeInfo::operator <  (const TimeInfo &time) const
     return timebuffer.millitm < time.timebuffer.millitm;
   else
     return timebuffer.time < time.timebuffer.time;
-//  return (timebuffer.time < time.timebuffer.time && timebuffer.millitm < time.timebuffer.millitm);
 }
 
 inline bool
@@ -104,7 +100,6 @@ TimeInfo::operator <= (const TimeInfo &time) const
     return timebuffer.millitm <= time.timebuffer.millitm;
   else
     return timebuffer.time <= time.timebuffer.time;
-//  return (timebuffer.time <= time.timebuffer.time && timebuffer.millitm <= time.timebuffer.millitm);
 }
 
 inline bool
@@ -114,7 +109,6 @@ TimeInfo::operator >= (const TimeInfo &time) const
     return timebuffer.millitm >= time.timebuffer.millitm;
   else
     return timebuffer.time >= time.timebuffer.time;
-//  return (timebuffer.time >= time.timebuffer.time && timebuffer.millitm >= time.timebuffer.millitm);
 }
 
 inline bool
@@ -124,12 +118,10 @@ TimeInfo::operator >  (const TimeInfo &time) const
     return timebuffer.millitm > time.timebuffer.millitm;
   else
     return timebuffer.time > time.timebuffer.time;
-//  return (timebuffer.time > time.timebuffer.time && timebuffer.millitm > time.timebuffer.millitm);
 }
-
-
 
 } //namespace Base
 
-#endif // BASE_TIME_INFO_H
+
+#endif // BASE_TIMEINFO_H
 

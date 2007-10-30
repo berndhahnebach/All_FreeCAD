@@ -98,39 +98,44 @@ PyObject *PropertyVector::getPyObject(void)
 
 void PropertyVector::setPyObject(PyObject *value)
 { 
-  if( PyObject_TypeCheck(value, &(VectorPy::Type)) ) {
-   	VectorPy  *pcObject = (VectorPy*)value;
-    setValue( pcObject->value() );
-  }else if(PyTuple_Check(value)&&PyTuple_Size(value)==3) {
-    PyObject* item;
-    Base::Vector3f cVec;
-    // x
-    item = PyTuple_GetItem(value,0);
-    if (PyFloat_Check(item))
-      cVec.x = (float)PyFloat_AsDouble(item);
-    else if (PyInt_Check(item))
-      cVec.x = (float)PyInt_AsLong(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    // y
-    item = PyTuple_GetItem(value,1);
-    if (PyFloat_Check(item))
-      cVec.y = (float)PyFloat_AsDouble(item);
-    else if (PyInt_Check(item))
-      cVec.y = (float)PyInt_AsLong(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    // z
-    item = PyTuple_GetItem(value,2);
-    if (PyFloat_Check(item))
-      cVec.z = (float)PyFloat_AsDouble(item);
-    else if (PyInt_Check(item))
-      cVec.z = (float)PyInt_AsLong(item);
-    else
-      throw Base::Exception("Not allowed type used in tuple (float expected)...");
-    setValue( cVec );
-  }else
-    throw Base::Exception("Not allowed type used (Vector expected)...");
+    if (PyObject_TypeCheck(value, &(VectorPy::Type))) {
+        VectorPy  *pcObject = (VectorPy*)value;
+        setValue(pcObject->value());
+    }
+    else if (PyTuple_Check(value)&&PyTuple_Size(value)==3) {
+        PyObject* item;
+        Base::Vector3f cVec;
+        // x
+        item = PyTuple_GetItem(value,0);
+        if (PyFloat_Check(item))
+            cVec.x = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+            cVec.x = (float)PyInt_AsLong(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        // y
+        item = PyTuple_GetItem(value,1);
+        if (PyFloat_Check(item))
+            cVec.y = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+            cVec.y = (float)PyInt_AsLong(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        // z
+        item = PyTuple_GetItem(value,2);
+        if (PyFloat_Check(item))
+            cVec.z = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+            cVec.z = (float)PyInt_AsLong(item);
+        else
+            throw Base::Exception("Not allowed type used in tuple (float expected)...");
+        setValue( cVec );
+    }
+    else {
+        std::string error = std::string("type must be 'Vector' or tuple of three floats, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyVector::Save (Writer &writer) const
@@ -212,43 +217,35 @@ PyObject *PropertyVectorList::getPyObject(void)
 }
 
 void PropertyVectorList::setPyObject(PyObject *value)
-{ 
-  if(PyList_Check( value) )
-  {
-    aboutToSetValue();
+{
+    if (PyList_Check(value)) {
+        int nSize = PyList_Size(value);
+        std::vector<Base::Vector3f> values;
+        values.resize(nSize);
 
-    int nSize = PyList_Size(value);
-    _lValueList.resize(nSize);
+        for (int i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            PropertyVector val;
+            val.setPyObject( item );
+            values[i] = val.getValue();
+        }
 
-    try {
-      for (int i=0; i<nSize;++i)
-      {
-        PyObject* item = PyList_GetItem(value, i);
-        PropertyVector val;
-        val.setPyObject( item );
-        _lValueList[i] = val.getValue();
-      }
-    } catch (const Base::Exception&) {
-      _lValueList.resize(1);
-      _lValueList[0] = Base::Vector3f();
-      throw;
+        setValues(values);
     }
-
-    hasSetValue();
-  }
-  else if(PyObject_TypeCheck(value, &(VectorPy::Type)))
-  {
-    VectorPy  *pcObject = (VectorPy*)value;
-    setValue( pcObject->value() );
-  }
-  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
-  {
-    PropertyVector val;
-    val.setPyObject( value );
-    setValue( val.getValue() );
-  }
-  else
-    throw Base::Exception("Not allowed type used (vector expected)...");
+    else if(PyObject_TypeCheck(value, &(VectorPy::Type))) {
+        VectorPy  *pcObject = (VectorPy*)value;
+        setValue( pcObject->value() );
+    }
+    else if (PyTuple_Check(value) && PyTuple_Size(value) == 3) {
+        PropertyVector val;
+        val.setPyObject( value );
+        setValue( val.getValue() );
+    }
+    else {
+        std::string error = std::string("type must be 'Vector' or list of 'Vector', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyVectorList::Save (Writer &writer) const
@@ -378,28 +375,33 @@ PyObject *PropertyMatrix::getPyObject(void)
 
 void PropertyMatrix::setPyObject(PyObject *value)
 { 
-  if( PyObject_TypeCheck(value, &(MatrixPy::Type)) )
-  {
-   	MatrixPy  *pcObject = (MatrixPy*)value;
-    setValue( pcObject->value() );
-  }else if(PyTuple_Check(value)&&PyTuple_Size(value)==16) {
-    PyObject* item;
-    Base::Matrix4D cMatrix;
-    
-    for(int x=0; x<4;x++){
-      for(int y=0; y<4;y++){
-        item = PyTuple_GetItem(value,x+y*4);
-        if (PyFloat_Check(item))
-          cMatrix[x][y] = (float)PyFloat_AsDouble(item);
-        else if (PyInt_Check(item))
-          cMatrix[x][y] = (float)PyInt_AsLong(item);
-        else
-          throw Base::Exception("Not allowed type used in matrix tuple (a number expected)...");
-      }
+    if (PyObject_TypeCheck(value, &(MatrixPy::Type))) {
+        MatrixPy  *pcObject = (MatrixPy*)value;
+        setValue( pcObject->value() );
     }
-    setValue( cMatrix );
-  }else
-    throw Base::Exception("Not allowed type used (Tuple (n=16) or App.Matrix expected)...");
+    else if (PyTuple_Check(value)&&PyTuple_Size(value)==16) {
+        PyObject* item;
+        Base::Matrix4D cMatrix;
+    
+        for(int x=0; x<4;x++){
+            for(int y=0; y<4;y++){
+                item = PyTuple_GetItem(value,x+y*4);
+                if (PyFloat_Check(item))
+                    cMatrix[x][y] = (float)PyFloat_AsDouble(item);
+                else if (PyInt_Check(item))
+                    cMatrix[x][y] = (float)PyInt_AsLong(item);
+                else
+                    throw Base::Exception("Not allowed type used in matrix tuple (a number expected)...");
+            }
+        }
+        
+        setValue( cMatrix );
+    }
+    else {
+        std::string error = std::string("type must be 'Matrix' or tuple of 16 float or int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 void PropertyMatrix::Save (Base::Writer &writer) const
@@ -486,20 +488,20 @@ void PropertyPlacement::setValue(const Base::Placement &pos)
   hasSetValue();
 }
 
-
 const Base::Placement & PropertyPlacement::getValue(void)const 
 {
-	return _cPos;
+    return _cPos;
 }
 
 PyObject *PropertyPlacement::getPyObject(void)
 {
-  return 0;
+    Base::Matrix4D mat = _cPos.getAsMatrix();
+    return new MatrixPy(mat);
 }
 
 void PropertyPlacement::setPyObject(PyObject *value)
-{ 
-  assert(0);
+{
+    throw Py::AttributeError(std::string("Assignment of placement not implemented"));
 }
 
 void PropertyPlacement::Save (Base::Writer &writer) const

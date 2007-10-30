@@ -18,9 +18,9 @@
 using namespace App;
 
 // returns a string which represent the object e.g. when printed in python
-const char *DocumentPy::representation(void)
+const char *DocumentPy::representation(void) const
 {
-	return "The document class";
+    return "<Document>";
 }
 
 PyObject*  DocumentPy::save(PyObject *args)
