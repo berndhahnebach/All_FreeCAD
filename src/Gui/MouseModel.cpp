@@ -148,7 +148,7 @@ BaseMouseModel::BaseMouseModel()
 }
 
 // -----------------------------------------------------------------------------------
-
+#if 0
 /* XPM */
 static const char *cursor_polypick[]={
 "32 32 2 1",
@@ -225,7 +225,7 @@ static const char *cursor_scissors[]={
 ".......................######...",
 "................................",
 "................................"};
-
+#endif
 static const char *cursor_cut_scissors[]={
 "32 32 6 1",
 "a c #800000",
