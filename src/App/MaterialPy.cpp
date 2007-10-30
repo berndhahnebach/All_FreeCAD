@@ -109,31 +109,31 @@ PyGetSetDef MaterialPy::GetterSetter[] = {
     {"AmbientColor",
         (getter) staticCallback_getAmbientColor,
         (setter) staticCallback_setAmbientColor, 
-        "Is the type of the FreeCAD object with module domain",
+        "Ambient color",
         NULL
     },
     {"DiffuseColor",
         (getter) staticCallback_getDiffuseColor,
         (setter) staticCallback_setDiffuseColor, 
-        "Is the type of the FreeCAD object with module domain",
+        "Diffuse color",
         NULL
     },
     {"SpecularColor",
         (getter) staticCallback_getSpecularColor,
         (setter) staticCallback_setSpecularColor, 
-        "Is the type of the FreeCAD object with module domain",
+        "Speculat color",
         NULL
     },
     {"Shininess",
         (getter) staticCallback_getShininess,
         (setter) staticCallback_setShininess, 
-        "Is the type of the FreeCAD object with module domain",
+        "Shininess",
         NULL
     },
     {"Transparency",
         (getter) staticCallback_getTransparency,
         (setter) staticCallback_setTransparency, 
-        "Is the type of the FreeCAD object with module domain",
+        "Transparency",
         NULL
     },
     {NULL, NULL}		/* Sentinel */
