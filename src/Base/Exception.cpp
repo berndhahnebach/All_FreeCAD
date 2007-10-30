@@ -65,12 +65,12 @@ Exception &Exception::operator=(const Exception &inst)
 
 const char* Exception::what(void) const throw()
 {
-	return _sErrMsg.c_str();
+    return _sErrMsg.c_str();
 }
 
 void Exception::ReportException (void) const
 {
-	Console().Error("\nException (%s): %s \n",Console().Time(),what());
+    Console().Error("\nException (%s): %s \n",Console().Time(),what());
 }
 
 // ---------------------------------------------------------
@@ -82,7 +82,7 @@ AbortException::AbortException(const char * sMessage)
 
 AbortException::AbortException()
 {
-  _sErrMsg = "Aborted operation";
+    _sErrMsg = "Aborted operation";
 }
 
 AbortException::AbortException(const AbortException &inst)
@@ -92,7 +92,7 @@ AbortException::AbortException(const AbortException &inst)
 
 const char* AbortException::what() const throw()
 {
-  return Exception::what();
+    return Exception::what();
 }
 
 // ---------------------------------------------------------
@@ -120,14 +120,14 @@ FileException::FileException(const FileException &inst)
 
 const char* FileException::what() const throw()
 {
-  return Exception::what();
+    return Exception::what();
 }
 
 // ---------------------------------------------------------
 
 MemoryException::MemoryException()
 {
-  _sErrMsg = "Not enough memory available";
+    _sErrMsg = "Not enough memory available";
 }
 
 MemoryException::MemoryException(const MemoryException &inst)
@@ -138,7 +138,7 @@ MemoryException::MemoryException(const MemoryException &inst)
 #if defined (__GNUC__)
 const char* MemoryException::what() const throw()
 {
-  // call what() of Exception, not of std::bad_alloc
-  return Exception::what();
+    // call what() of Exception, not of std::bad_alloc
+    return Exception::what();
 }
 #endif

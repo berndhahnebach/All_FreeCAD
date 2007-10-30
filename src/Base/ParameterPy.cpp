@@ -26,15 +26,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
-#	include <fcntl.h>
-#	include <sys/types.h>
-#	include <sys/stat.h>
-#	ifdef FC_OS_WIN32
-#		include <io.h>
+#   include <assert.h>
+#   include <fcntl.h>
+#   include <sys/types.h>
+#   include <sys/stat.h>
+#   ifdef FC_OS_WIN32
+#   include <io.h>
 #   include <xercesc/sax/SAXParseException.hpp>
-#	endif
-#	include <stdio.h>
+#   endif
+#   include <stdio.h>
 #endif
 
 
@@ -491,7 +491,7 @@ PyObject *ParameterGrpPy::PyIsEmpty(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
     PY_TRY {
-  	    return Py_BuildValue("i",_cParamGrp->IsEmpty());
+        return Py_BuildValue("i",_cParamGrp->IsEmpty());
     }PY_CATCH;
 } 
 
@@ -532,6 +532,3 @@ PyObject* GetPyObject( const Base::Reference<ParameterGrp> &hcParamGrp)
 {
     return new ParameterGrpPy(hcParamGrp); 
 }
-
-
-

@@ -59,8 +59,8 @@ class AppExport Property: public Base::Persistance
 public:
 
        
-	Property();
-	virtual ~Property();
+  Property();
+  virtual ~Property();
 
   /** This method is used to get the size of objects
     * Its not ment to have the exact size, is more or less an estimation which run fast!

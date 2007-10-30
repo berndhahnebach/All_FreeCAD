@@ -45,55 +45,55 @@ using namespace App;
 //--------------------------------------------------------------------------
 
 PyTypeObject App::VectorPy::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						/*ob_size*/
-	"App.Vector",				/*tp_name*/
-	sizeof(VectorPy),			/*tp_basicsize*/
-	0,						/*tp_itemsize*/
-	/* methods */
-	PyDestructor,	  		/*tp_dealloc*/
-	0,			 			/*tp_print*/
-	__getattr, 				/*tp_getattr*/
-	__setattr, 				/*tp_setattr*/
-	0,						/*tp_compare*/
-	__repr,					/*tp_repr*/
-	0,						/*tp_as_number*/
-	0,						/*tp_as_sequence*/
-	0,						/*tp_as_mapping*/
-	0,						/*tp_hash*/
-	0,						/*tp_call */
-  0,                                                /*tp_str  */
-  0,                                                /*tp_getattro*/
-  0,                                                /*tp_setattro*/
-  /* --- Functions to access object as input/output buffer ---------*/
-  0,                                                /* tp_as_buffer */
-  /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
-  "About App.Vector",                               /*tp_doc */
-  0,                                                /*tp_traverse */
-  0,                                                /*tp_clear */
-  0,                                                /*tp_richcompare */
-  0,                                                /*tp_weaklistoffset */
-  0,                                                /*tp_iter */
-  0,                                                /*tp_iternext */
-  VectorPy::Methods,                                /*tp_methods */
-  0,                                                /*tp_members */
-  0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
-  0,                                                /*tp_dict */
-  0,                                                /*tp_descr_get */
-  0,                                                /*tp_descr_set */
-  0,                                                /*tp_dictoffset */
-  0,                                                /*tp_init */
-  0,                                                /*tp_alloc */
-  PyMake,                                           /*tp_new */
-  0,                                                /*tp_free   Low-level free-memory routine */
-  0,                                                /*tp_is_gc  For PyObject_IS_GC */
-  0,                                                /*tp_bases */
-  0,                                                /*tp_mro    method resolution order */
-  0,                                                /*tp_cache */
-  0,                                                /*tp_subclasses */
-  0                                                 /*tp_weaklist */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,						/*ob_size*/
+    "App.Vector",				/*tp_name*/
+    sizeof(VectorPy),			/*tp_basicsize*/
+    0,						/*tp_itemsize*/
+    /* methods */
+    PyDestructor,	  		/*tp_dealloc*/
+    0,			 			/*tp_print*/
+    __getattr, 				/*tp_getattr*/
+    __setattr, 				/*tp_setattr*/
+    0,						/*tp_compare*/
+    __repr,					/*tp_repr*/
+    0,						/*tp_as_number*/
+    0,						/*tp_as_sequence*/
+    0,						/*tp_as_mapping*/
+    0,						/*tp_hash*/
+    0,						/*tp_call */
+    0,                                                /*tp_str  */
+    0,                                                /*tp_getattro*/
+    0,                                                /*tp_setattro*/
+    /* --- Functions to access object as input/output buffer ---------*/
+    0,                                                /* tp_as_buffer */
+    /* --- Flags to define presence of optional/expanded features */
+    Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
+    "About App.Vector",                               /*tp_doc */
+    0,                                                /*tp_traverse */
+    0,                                                /*tp_clear */
+    0,                                                /*tp_richcompare */
+    0,                                                /*tp_weaklistoffset */
+    0,                                                /*tp_iter */
+    0,                                                /*tp_iternext */
+    VectorPy::Methods,                                /*tp_methods */
+    0,                                                /*tp_members */
+    0,                                                /*tp_getset */
+    &Base::PyObjectBase::Type,                        /*tp_base */
+    0,                                                /*tp_dict */
+    0,                                                /*tp_descr_get */
+    0,                                                /*tp_descr_set */
+    0,                                                /*tp_dictoffset */
+    0,                                                /*tp_init */
+    0,                                                /*tp_alloc */
+    PyMake,                                           /*tp_new */
+    0,                                                /*tp_free   Low-level free-memory routine */
+    0,                                                /*tp_is_gc  For PyObject_IS_GC */
+    0,                                                /*tp_bases */
+    0,                                                /*tp_mro    method resolution order */
+    0,                                                /*tp_cache */
+    0,                                                /*tp_subclasses */
+    0                                                 /*tp_weaklist */
 };
 
 //--------------------------------------------------------------------------
@@ -101,9 +101,11 @@ PyTypeObject App::VectorPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef App::VectorPy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-	PYMETHODEDEF(set)
+    PYMETHODEDEF(set)
 
-	{NULL, NULL}		/* Sentinel */
+    {
+        NULL, NULL
+    }		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -115,19 +117,19 @@ PyParentObject App::VectorPy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 App::VectorPy::VectorPy(const Base::Vector3f &rcVector, PyTypeObject *T)
-: PyObjectBase(0, T), _cVector(rcVector)
+        : PyObjectBase(0, T), _cVector(rcVector)
 {
-	Base::Console().Log("Create VectorPy: %p \n",this);
+    Base::Console().Log("Create VectorPy: %p \n",this);
 }
 
 PyObject *VectorPy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-	float x=0.0,y=0.0,z=0.0;
-  if (!PyArg_ParseTuple(args, "|fff", &x,&y,&z))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
+    float x=0.0,y=0.0,z=0.0;
+    if (!PyArg_ParseTuple(args, "|fff", &x,&y,&z))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
-  Base::Console().Log("Constructor VectorPy\n");
-	return new VectorPy(Base::Vector3f(x,y,z));
+    Base::Console().Log("Constructor VectorPy\n");
+    return new VectorPy(Base::Vector3f(x,y,z));
 }
 
 
@@ -136,7 +138,7 @@ PyObject *VectorPy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwd
 //--------------------------------------------------------------------------
 VectorPy::~VectorPy()						// Everything handled in parent
 {
-	Base::Console().Log("Destroy VectorPy: %p \n",this);
+    Base::Console().Log("Destroy VectorPy: %p \n",this);
 }
 
 
@@ -145,61 +147,66 @@ VectorPy::~VectorPy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *VectorPy::_repr(void)
 {
-  std::stringstream a;
-  a << "App.Vector ( ";
-  a << _cVector.x << ", "<< _cVector.y << ", "<< _cVector.z ; 
-  a << ")" << std::endl;
-	return Py_BuildValue("s", a.str().c_str());
+    std::stringstream a;
+    a << "App.Vector ( ";
+    a << _cVector.x << ", "<< _cVector.y << ", "<< _cVector.z ;
+    a << ")" << std::endl;
+    return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
 // VectorPy Attributes
 //--------------------------------------------------------------------------
 PyObject *VectorPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-  if (Base::streq(attr, "__dict__")) {
-    PyObject *dict = PyDict_New();
-    if (dict) {
-      PyDict_SetItemString(dict,"x", Py_BuildValue("f",_cVector.x));
-      PyDict_SetItemString(dict,"y", Py_BuildValue("f",_cVector.y));
-      PyDict_SetItemString(dict,"z", Py_BuildValue("f",_cVector.z));
-      if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
+{
+    if (Base::streq(attr, "__dict__")) {
+        PyObject *dict = PyDict_New();
+        if (dict) {
+            PyDict_SetItemString(dict,"x", Py_BuildValue("f",_cVector.x));
+            PyDict_SetItemString(dict,"y", Py_BuildValue("f",_cVector.y));
+            PyDict_SetItemString(dict,"z", Py_BuildValue("f",_cVector.z));
+            if (PyErr_Occurred()) {
+                Py_DECREF(dict);
+                dict = NULL;
+            }
+        }
+        return dict;
     }
-    return dict;
-  }
-  else if (Base::streq(attr, "x"))
-    return Py_BuildValue("f",_cVector.x);
-  else if (Base::streq(attr, "y"))
-    return Py_BuildValue("f",_cVector.y);
-  else if (Base::streq(attr, "z"))
-    return Py_BuildValue("f",_cVector.z);
-  else
-   _getattr_up(PyObjectBase);
-} 
+    else if (Base::streq(attr, "x"))
+        return Py_BuildValue("f",_cVector.x);
+    else if (Base::streq(attr, "y"))
+        return Py_BuildValue("f",_cVector.y);
+    else if (Base::streq(attr, "z"))
+        return Py_BuildValue("f",_cVector.z);
+    else
+        _getattr_up(PyObjectBase);
+}
 
 int VectorPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-  if (Base::streq(attr, "x")) {
-    if (PyInt_Check(value))
-      _cVector.x = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _cVector.x = (float)PyFloat_AsDouble(value);
-    return 0;
-  }else if (Base::streq(attr, "y")) {
-    if (PyInt_Check(value))
-      _cVector.y = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _cVector.y = (float)PyFloat_AsDouble(value);
-    return 0;
-  }else if (Base::streq(attr, "z")) {
-    if (PyInt_Check(value))
-      _cVector.z = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _cVector.z = (float)PyFloat_AsDouble(value);
-    return 0;
-  }
+{
+    if (Base::streq(attr, "x")) {
+        if (PyInt_Check(value))
+            _cVector.x = (float)PyInt_AsLong(value);
+        else if (PyFloat_Check(value))
+            _cVector.x = (float)PyFloat_AsDouble(value);
+        return 0;
+    }
+    else if (Base::streq(attr, "y")) {
+        if (PyInt_Check(value))
+            _cVector.y = (float)PyInt_AsLong(value);
+        else if (PyFloat_Check(value))
+            _cVector.y = (float)PyFloat_AsDouble(value);
+        return 0;
+    }
+    else if (Base::streq(attr, "z")) {
+        if (PyInt_Check(value))
+            _cVector.z = (float)PyInt_AsLong(value);
+        else if (PyFloat_Check(value))
+            _cVector.z = (float)PyFloat_AsDouble(value);
+        return 0;
+    }
 
-  return PyObjectBase::_setattr(attr, value); 						
-} 
+    return PyObjectBase::_setattr(attr, value);
+}
 
 
 //--------------------------------------------------------------------------
@@ -208,47 +215,48 @@ int VectorPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: no
 
 PYFUNCIMP_D(VectorPy,set)
 {
-  float x,y,z;
-  PyObject *pyObject;
-  if ( PyArg_ParseTuple(args, "fff", &x, &y, &z) ) {
-    _cVector.Set(x,y,z);
-  }
-  else if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-    PY_TRY{
-      // clears the error from the first PyArg_ParseTuple()
-      PyErr_Clear();
-      if ( PyObject_TypeCheck(pyObject, &(VectorPy::Type)) ) {
-   	    VectorPy  *pcVector = (VectorPy*)pyObject;
-        // check for the identical object
-        if ( this != pcVector )
-          _cVector = pcVector->value();
-      } else if ( PyTuple_Check(pyObject) && PyTuple_Size(pyObject)==3 ) {
-        PyObject* item;
-        // x coordinate
-        item = PyTuple_GetItem(pyObject,0);
-        if (PyFloat_Check(item))
-          _cVector.x = (float)PyFloat_AsDouble(item);
-        else if (PyInt_Check(item))
-          _cVector.x = (float)PyInt_AsLong(item);
-        // y coordinate
-        item = PyTuple_GetItem(pyObject,1);
-        if (PyFloat_Check(item))
-          _cVector.y = (float)PyFloat_AsDouble(item);
-        else if (PyInt_Check(item))
-          _cVector.y = (float)PyInt_AsLong(item);
-        // z coordinate
-        item = PyTuple_GetItem(pyObject,2);
-        if (PyFloat_Check(item))
-          _cVector.z = (float)PyFloat_AsDouble(item);
-        else if (PyInt_Check(item))
-          _cVector.z = (float)PyInt_AsLong(item);
-      }
-	  }PY_CATCH;
-  }
-  else
-    return NULL; // NULL triggers exception 
+    float x,y,z;
+    PyObject *pyObject;
+    if ( PyArg_ParseTuple(args, "fff", &x, &y, &z) ) {
+        _cVector.Set(x,y,z);
+    }
+    else if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
+        PY_TRY {
+            // clears the error from the first PyArg_ParseTuple()
+            PyErr_Clear();
+            if ( PyObject_TypeCheck(pyObject, &(VectorPy::Type)) ) {
+                VectorPy  *pcVector = (VectorPy*)pyObject;
+                // check for the identical object
+                if ( this != pcVector )
+                    _cVector = pcVector->value();
+            }
+            else if ( PyTuple_Check(pyObject) && PyTuple_Size(pyObject)==3 ) {
+                PyObject* item;
+                // x coordinate
+                item = PyTuple_GetItem(pyObject,0);
+                if (PyFloat_Check(item))
+                    _cVector.x = (float)PyFloat_AsDouble(item);
+                else if (PyInt_Check(item))
+                    _cVector.x = (float)PyInt_AsLong(item);
+                // y coordinate
+                item = PyTuple_GetItem(pyObject,1);
+                if (PyFloat_Check(item))
+                    _cVector.y = (float)PyFloat_AsDouble(item);
+                else if (PyInt_Check(item))
+                    _cVector.y = (float)PyInt_AsLong(item);
+                // z coordinate
+                item = PyTuple_GetItem(pyObject,2);
+                if (PyFloat_Check(item))
+                    _cVector.z = (float)PyFloat_AsDouble(item);
+                else if (PyInt_Check(item))
+                    _cVector.z = (float)PyInt_AsLong(item);
+            }
+        }PY_CATCH;
+    }
+    else
+        return NULL; // NULL triggers exception
 
-	Py_Return;
+    Py_Return;
 }
 
 

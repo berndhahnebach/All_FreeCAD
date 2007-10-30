@@ -43,19 +43,6 @@ PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 DocumentObject::DocumentObject(void)
   : _pDoc(0),pcNameInDocument(0)
 {
-    // FIXME: Each document object has two names associated, its 'name' property and the internal name stored inside
-    // the document it belongs to. The name property is claimed to be the user name, e.g. to display in the tree view
-    // while the internal name is used to address an object over its document. Thus, the internal name must be unique but
-    // the value of the name property not necessarily. 
-    // However, whereever we work with a document object we pass the value of the name property instead of using its internal
-    // name (see getNameInDocument()) which is wrong as the name property and internal name may differ.
-    // On the other hand the method getNameInDocument() is rather slow as we need to iterate always over an internal map and
-    // should thus be avoided.
-    // I think the best way would be to define the name property to always be set to the internal name as stored in the document 
-    // and to have a second name property in its associated view provider class for display purposes. Thus, the name property of 
-    // the document object must be read-only.
-    // So, we don't need to change client code where we use the name property and can access the correct internal name in constant 
-    // time. This makes the method getNameInDocument() obsolete, then.
     ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_Output,"User name of the object (UTF8)");
     touchTime.setToActual();
     touchViewTime.setToActual();

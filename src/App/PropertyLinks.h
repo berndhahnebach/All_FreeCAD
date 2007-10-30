@@ -32,7 +32,7 @@
 
 namespace Base
 {
-  class Writer;
+class Writer;
 }
 
 namespace App
@@ -45,99 +45,113 @@ class DocumentObject;
  */
 class AppExport PropertyLink: public Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyLink();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyLink();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyLink();
 
-	/** Sets the property 
-	 */
-	void setValue(App::DocumentObject *);
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyLink();
 
-	/** This method returns the linked DocumentObject
-	 */
-	App::DocumentObject * getValue(void) const;
+    /** Sets the property
+     */
+    void setValue(App::DocumentObject *);
 
-	/** Returns the link type checked
-	 */
-  App::DocumentObject * getValue(Base::Type t) const;
+    /** This method returns the linked DocumentObject
+     */
+    App::DocumentObject * getValue(void) const;
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /** Returns the link type checked
+     */
+    App::DocumentObject * getValue(Base::Type t) const;
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const{return sizeof(App::DocumentObject *);}
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return sizeof(App::DocumentObject *);
+    }
 protected:
 
-  App::DocumentObject *_pcLink;
+    App::DocumentObject *_pcLink;
 
 };
 
 class AppExport PropertyLinkList: public PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyLinkList();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	virtual ~PropertyLinkList();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyLinkList();
 
-  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-  virtual int getSize(void) const {return _lValueList.size();}   
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    virtual ~PropertyLinkList();
 
-	/** Sets the property 
-	 */
-	void setValue(DocumentObject*);
-  void setValues(const std::vector<DocumentObject*>&);
-  
-  /// index operator
-  DocumentObject* operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
-  
-  
-  void  set1Value (const int idx, DocumentObject* value){_lValueList.operator[] (idx) = value;}
+    virtual void setSize(int newSize) {
+        _lValueList.resize(newSize);
+    }
+    virtual int getSize(void) const {
+        return _lValueList.size();
+    }
 
-  const std::vector<DocumentObject*> &getValues(void) const{return _lValueList;}
+    /** Sets the property
+     */
+    void setValue(DocumentObject*);
+    void setValues(const std::vector<DocumentObject*>&);
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /// index operator
+    DocumentObject* operator[] (const int idx) const {
+        return _lValueList.operator[] (idx);
+    }
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    void  set1Value (const int idx, DocumentObject* value) {
+        _lValueList.operator[] (idx) = value;
+    }
 
-  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(App::DocumentObject *);}
+    const std::vector<DocumentObject*> &getValues(void) const {
+        return _lValueList;
+    }
+
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return _lValueList.size() * sizeof(App::DocumentObject *);
+    }
 
 private:
-  std::vector<DocumentObject*> _lValueList;
+    std::vector<DocumentObject*> _lValueList;
 };
 
 } // namespace App

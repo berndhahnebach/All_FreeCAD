@@ -54,81 +54,86 @@ class AppExport AbstractFeature: public App::DocumentObject
 
 public:
 
-  PropertyEnumeration status;
+    PropertyEnumeration status;
 
 
-	/// Constructor
-	AbstractFeature(void);
-  virtual ~AbstractFeature();
+    /// Constructor
+    AbstractFeature(void);
+    virtual ~AbstractFeature();
 
-  virtual void onChanged(const Property* prop);
-  //void setModified(bool);
-  //bool isModified() const;
-
-
-	/** @name methods to overide with a new feature type */
-	//@{
-
-	/** Validate
-	 *  We compute the object and topologically name it.
-	 *  If during the execution we found something wrong,
-	 *  we return the number of the failure. For example:
-	 *  1 - an attribute hasn't been found,
-	 *  2 - algorithm failed
-	 *  0 - no mistakes were found.
-	 */
-	virtual int execute(void)=0;
+    virtual void onChanged(const Property* prop);
+    //void setModified(bool);
+    //bool isModified() const;
 
 
-  //@}
+    /** @name methods to overide with a new feature type */
+    //@{
 
-	/** @name status methods of the feature */
-	//@{
-  /// status types
-  enum Status 
-  {
-    Valid =0   ,/**< enum The Feature is Valid */
-    New=1      ,/**< enum The Feature is new */
-    Inactive=2 ,/**< enum Will not recalculated */
-    Recompute=3,/**< enum Fetature is in recomputation*/
-    Error=4     /**< enum Feture is in error state */
-  };
-
-  /// gets the status
-  int getStatus(void) const { return /*_eStatus;*/status.getValue();}
-  /// set the status, e.g. after recoputation in Execute()
- // void setStatus(const Status &s){_eStatus = s;}
-  /// get the status Message
-  const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
-  /// get the error Message (if any)
-  const char *getErrorString(void) const{return _cErrorMessage.c_str();}
-  /// set an error on recoputation
-  void setError(const char* pMsg,...);
-  /// checks if valid
-  bool isValid(void){return /*_eStatus == Valid;*/ status.getValue() == Valid; }
-  /// Recompute only this feature and makes it valid again
-  void recompute(void);
-	/** MustExecute
-	 *  We call this method to check if the object was modified to
-	 *  be invoked. If the object label or an argument is modified.
-	 *  If we must recompute the object - to call the method Execute().
-	 */
-	virtual bool mustExecute(void);
-  //@}
+    /** Validate
+     *  We compute the object and topologically name it.
+     *  If during the execution we found something wrong,
+     *  we return the number of the failure. For example:
+     *  1 - an attribute hasn't been found,
+     *  2 - algorithm failed
+     *  0 - no mistakes were found.
+     */
+    virtual int execute(void)=0;
 
 
+    //@}
+
+    /** @name status methods of the feature */
+    //@{
+    /// status types
+    enum Status {
+        Valid =0   ,/**< enum The Feature is Valid */
+        New=1      ,/**< enum The Feature is new */
+        Inactive=2 ,/**< enum Will not recalculated */
+        Recompute=3,/**< enum Fetature is in recomputation*/
+        Error=4     /**< enum Feture is in error state */
+    };
+
+    /// gets the status
+    int getStatus(void) const {
+        return /*_eStatus;*/status.getValue();
+    }
+    /// set the status, e.g. after recoputation in Execute()
+// void setStatus(const Status &s){_eStatus = s;}
+    /// get the status Message
+    const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
+    /// get the error Message (if any)
+    const char *getErrorString(void) const {
+        return _cErrorMessage.c_str();
+    }
+    /// set an error on recoputation
+    void setError(const char* pMsg,...);
+    /// checks if valid
+    bool isValid(void) {
+        return /*_eStatus == Valid;*/ status.getValue() == Valid;
+    }
+    /// Recompute only this feature and makes it valid again
+    void recompute(void);
+    /** MustExecute
+     *  We call this method to check if the object was modified to
+     *  be invoked. If the object label or an argument is modified.
+     *  If we must recompute the object - to call the method Execute().
+     */
+    virtual bool mustExecute(void);
+    //@}
 
 
-	virtual PyObject *getPyObject(void);
 
-  friend class FeaturePy;
-  friend class Document;
+
+    virtual PyObject *getPyObject(void);
+
+    friend class FeaturePy;
+    friend class Document;
 
 
 protected:
 
-  std::string _cErrorMessage;
-  bool _execute;
+    std::string _cErrorMessage;
+    bool _execute;
 
 };
 

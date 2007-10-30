@@ -61,8 +61,8 @@ public:
   PropertyPlacement Pos;
 
 
-	/// Constructor
-	Placement(void);
+  /// Constructor
+  Placement(void);
   virtual ~Placement();
 
 

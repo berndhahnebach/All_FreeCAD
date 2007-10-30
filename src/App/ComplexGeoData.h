@@ -47,8 +47,8 @@ class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
  
 public:
 
-	/// Constructor
-	ComplexGeoData(void);
+  /// Constructor
+  ComplexGeoData(void);
   ComplexGeoData(const Base::Matrix4D &mtrx):_Mtrx(mtrx){}
   virtual ~ComplexGeoData();
 

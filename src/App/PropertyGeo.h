@@ -33,14 +33,15 @@
 #include "Property.h"
 #include "PropertyLinks.h"
 
-namespace Base {
-  class Writer;
+namespace Base
+{
+class Writer;
 }
 
 namespace App
 {
-  class Feature;
-  class Placement;
+class Feature;
+class Placement;
 
 
 
@@ -49,47 +50,49 @@ namespace App
  */
 class AppExport PropertyVector: public Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyVector();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyVector();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyVector();
 
-	/** Sets the property 
-	 */
-  void setValue(const Base::Vector3f &vec);
-  void setValue(float x, float y, float z);
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyVector();
 
-	/** This method returns a string representation of the property
-	 */
-	const Base::Vector3f &getValue(void) const;
+    /** Sets the property
+     */
+    void setValue(const Base::Vector3f &vec);
+    void setValue(float x, float y, float z);
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /** This method returns a string representation of the property
+     */
+    const Base::Vector3f &getValue(void) const;
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const{return sizeof(Base::Vector3f);}
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return sizeof(Base::Vector3f);
+    }
 
 
 private:
 
-  Base::Vector3f _cVec;
+    Base::Vector3f _cVec;
 
 };
 
@@ -99,55 +102,67 @@ private:
 
 class AppExport PropertyVectorList: public PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyVectorList();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyVectorList();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyVectorList();
 
-  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-  virtual int getSize(void) const {return _lValueList.size();}   
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyVectorList();
 
-	/** Sets the property 
-	 */
-	void setValue(const Base::Vector3f&);
-  
-  /// index operator
-  const Base::Vector3f& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
-  
-  
-  void set1Value (const int idx, const Base::Vector3f& value){_lValueList.operator[] (idx) = value;}
-  void setValues (const std::vector<Base::Vector3f>& values);
+    virtual void setSize(int newSize) {
+        _lValueList.resize(newSize);
+    }
+    virtual int getSize(void) const {
+        return _lValueList.size();
+    }
 
-  const std::vector<Base::Vector3f> &getValues(void) const{return _lValueList;}
+    /** Sets the property
+     */
+    void setValue(const Base::Vector3f&);
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /// index operator
+    const Base::Vector3f& operator[] (const int idx) const {
+        return _lValueList.operator[] (idx);
+    }
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
 
-  virtual void SaveDocFile (Base::Writer &writer) const;
-  virtual void RestoreDocFile(Base::Reader &reader);
+    void set1Value (const int idx, const Base::Vector3f& value) {
+        _lValueList.operator[] (idx) = value;
+    }
+    void setValues (const std::vector<Base::Vector3f>& values);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    const std::vector<Base::Vector3f> &getValues(void) const {
+        return _lValueList;
+    }
 
-  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(Base::Vector3f);}
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+    virtual void SaveDocFile (Base::Writer &writer) const;
+    virtual void RestoreDocFile(Base::Reader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return _lValueList.size() * sizeof(Base::Vector3f);
+    }
 
 private:
-  std::vector<Base::Vector3f> _lValueList;
+    std::vector<Base::Vector3f> _lValueList;
 };
 
 /** Vector properties
@@ -155,44 +170,46 @@ private:
  */
 class AppExport PropertyMatrix: public Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyMatrix();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyMatrix();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyMatrix();
 
-	/** Sets the property 
-	 */
-  void setValue(const Base::Matrix4D &mat);
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyMatrix();
 
-	/** This method returns a string representation of the property
-	 */
-	const Base::Matrix4D &getValue(void) const;
+    /** Sets the property
+     */
+    void setValue(const Base::Matrix4D &mat);
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /** This method returns a string representation of the property
+     */
+    const Base::Matrix4D &getValue(void) const;
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const{return sizeof(Base::Matrix4D);}
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return sizeof(Base::Matrix4D);
+    }
 
 private:
-  Base::Matrix4D _cMat;
+    Base::Matrix4D _cMat;
 };
 
 /** Vector properties
@@ -200,44 +217,46 @@ private:
  */
 class AppExport PropertyPlacement: public Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyPlacement();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyPlacement();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyPlacement();
 
-	/** Sets the property 
-	 */
-  void setValue(const Base::Placement &pos);
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyPlacement();
 
-	/** This method returns a string representation of the property
-	 */
-	const Base::Placement &getValue(void) const;
+    /** Sets the property
+     */
+    void setValue(const Base::Placement &pos);
 
-  virtual PyObject *getPyObject(void);
-  virtual void setPyObject(PyObject *);
+    /** This method returns a string representation of the property
+     */
+    const Base::Placement &getValue(void) const;
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const{return sizeof(Base::Placement);}
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return sizeof(Base::Placement);
+    }
 
 private:
-  Base::Placement _cPos;
+    Base::Placement _cPos;
 };
 
 /** the general Link Poperty
@@ -245,30 +264,30 @@ private:
  */
 class AppExport PropertyPlacementLink: public PropertyLink
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyPlacementLink();
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	~PropertyPlacementLink();
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyPlacementLink();
+
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyPlacementLink();
 
 
-	/** This method returns the linked DocumentObject
-	 */
-	App::Placement * getPlacementObject(void) const;
+    /** This method returns the linked DocumentObject
+     */
+    App::Placement * getPlacementObject(void) const;
 
-  virtual Property *Copy(void) const;
-  virtual void Paste(const Property &from);
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
 
 };
 

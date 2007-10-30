@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
@@ -45,126 +45,120 @@ FeaturePython::FeaturePython()
 
 int FeaturePython::execute(void)
 {
-  // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
-  // instance does this for us.
-  Base::Interpreter().runMethodVoid(PythonObject.ptr(), "execute");
+    // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
+    // instance does this for us.
+    Base::Interpreter().runMethodVoid(PythonObject.ptr(), "execute");
 
-  return 0;
+    return 0;
 }
 
 void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
-  // get the properties of the base class first and insert the dynamic properties afterwards
-  AbstractFeature::getPropertyMap(Map);
-  for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it )
-    Map[it->first] = it->second;
+    // get the properties of the base class first and insert the dynamic properties afterwards
+    AbstractFeature::getPropertyMap(Map);
+    for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it )
+        Map[it->first] = it->second;
 }
 
 Property *FeaturePython::getPropertyByName(const char* name) const
 {
-  std::map<std::string,Property*>::const_iterator it = objectProperties.find( name );
-  if ( it != objectProperties.end() )
-    return it->second;
-  return AbstractFeature::getPropertyByName( name );
+    std::map<std::string,Property*>::const_iterator it = objectProperties.find( name );
+    if ( it != objectProperties.end() )
+        return it->second;
+    return AbstractFeature::getPropertyByName( name );
 }
 
 const char* FeaturePython::getName(const Property* prop) const
 {
-  for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it ) {
-    if (it->second == prop)
-      return it->first.c_str();
-  }
-  return AbstractFeature::getName(prop);
+    for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it ) {
+        if (it->second == prop)
+            return it->first.c_str();
+    }
+    return AbstractFeature::getName(prop);
 }
 
 void FeaturePython::addDynamicProperty(const char* type, const char* name)
-{  
-  Property* pcObject = (Property*) Base::Type::createInstanceByName(type,true);
-	if (pcObject)
-	{
-    if (!pcObject->getTypeId().isDerivedFrom(Property::getClassTypeId()))
-    {
-      delete pcObject;
-      char szBuf[200];
-      snprintf(szBuf, 200, "'%s' is not a property type", type);
-      throw Base::Exception(szBuf);
+{
+    Property* pcObject = (Property*) Base::Type::createInstanceByName(type,true);
+    if (pcObject) {
+        if (!pcObject->getTypeId().isDerivedFrom(Property::getClassTypeId())) {
+            delete pcObject;
+            char szBuf[200];
+            snprintf(szBuf, 200, "'%s' is not a property type", type);
+            throw Base::Exception(szBuf);
+        }
+
+        // get Unique name
+        string ObjectName;
+        if (name)
+            ObjectName = getUniquePropertyName(name);
+        else
+            ObjectName = getUniquePropertyName(type);
+
+        pcObject->setContainer(this);
+        objectProperties[name] = pcObject;
     }
-
-    // get Unique name
-    string ObjectName;
-    if(name)
-      ObjectName = getUniquePropertyName(name);
-    else
-      ObjectName = getUniquePropertyName(type);
-
-    pcObject->setContainer(this);
-    objectProperties[name] = pcObject;
-  }  
 }
 
 string FeaturePython::getUniquePropertyName(const char *Name) const
 {
-  // strip ilegal chars
-  string CleanName;
-  const char *It=Name;
+    // strip ilegal chars
+    string CleanName;
+    const char *It=Name;
 
-  // check for first character whether it's a digit
-  if ((*It != '\0') && (*It>=48 && *It<=57))
-    CleanName = "_";
+    // check for first character whether it's a digit
+    if ((*It != '\0') && (*It>=48 && *It<=57))
+        CleanName = "_";
 
-  while(*It != '\0')
-  {
-    if(   (*It>=48 && *It<=57)   // Numbers
-        ||(*It>=65 && *It<=90)   // Upercase letters
-        ||(*It>=97 && *It<=122)  // Upercase letters
-       )
-    {
-      CleanName += *It;
-    }else{
-      // All other letters gets replaced
-      CleanName += '_';
-    }
-    It++;
-  }
-
-  std::map<std::string,Property*>::const_iterator pos;
-
-  // name in use?
-  pos = objectProperties.find(CleanName);
-
-  if (pos == objectProperties.end())
-    // if not, name is OK
-    return CleanName;
-  else
-  {
-    // find highes sufix
-    int nSuff = 0;  
-    for(pos = objectProperties.begin();pos != objectProperties.end();++pos)
-    {
-      const string &rclObjName = pos->first;
-      if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName)  // Prefix gleich
-      {
-        string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
-        if (clSuffix.size() > 0){
-          int nPos = clSuffix.find_first_not_of("0123456789");
-          if(nPos==-1)
-            nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+    while (*It != '\0') {
+        if (   (*It>=48 && *It<=57)  // Numbers
+                ||(*It>=65 && *It<=90)   // Upercase letters
+                ||(*It>=97 && *It<=122)  // Upercase letters
+           ) {
+            CleanName += *It;
         }
-      }
+        else {
+            // All other letters gets replaced
+            CleanName += '_';
+        }
+        It++;
     }
-    char szName[200];
-    snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
-	
-    return string(szName);
-  }
-	
+
+    std::map<std::string,Property*>::const_iterator pos;
+
+    // name in use?
+    pos = objectProperties.find(CleanName);
+
+    if (pos == objectProperties.end())
+        // if not, name is OK
+        return CleanName;
+    else {
+        // find highes sufix
+        int nSuff = 0;
+        for (pos = objectProperties.begin();pos != objectProperties.end();++pos) {
+            const string &rclObjName = pos->first;
+            if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName) { // Prefix gleich
+                string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
+                if (clSuffix.size() > 0) {
+                    int nPos = clSuffix.find_first_not_of("0123456789");
+                    if (nPos==-1)
+                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+                }
+            }
+        }
+        char szName[200];
+        snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
+
+        return string(szName);
+    }
+
 }
 
 PyObject *FeaturePython::getPyObject(void)
 {
- if(PythonObject.is(Py::_None())){
-    // ref counter is set to 1
-    PythonObject.set(new FeaturePythonPy(this),true);
-  }
-  return Py::new_reference_to(PythonObject); 
+    if (PythonObject.is(Py::_None())) {
+        // ref counter is set to 1
+        PythonObject.set(new FeaturePythonPy(this),true);
+    }
+    return Py::new_reference_to(PythonObject);
 }
