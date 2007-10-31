@@ -32,12 +32,15 @@ best_fit::best_fit(const MeshCore::MeshKernel &mesh, TopoDS_Shape &cad)
 :m_Mesh(mesh),m_Cad(cad)
 {
 	m_normals.resize(m_Mesh.CountPoints());
+	mesh_curvature();
+
 }
 
 best_fit::best_fit(const MeshCore::MeshKernel &mesh)
 :m_Mesh(mesh)
 {
 	m_normals.resize(m_Mesh.CountPoints());
+	mesh_curvature();
 }
 
 best_fit::best_fit(TopoDS_Shape &cad)
@@ -56,9 +59,9 @@ bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
 
 	switch(axis)
 	{
-		case 1:  M[1][1]=cos(degree); M[1][2]=sin(degree); M[2][1]=sin(degree); M[2][2]=cos(degree); 
-		case 2:  M[0][0]=cos(degree); M[0][2]=sin(degree); M[2][0]=sin(degree); M[2][2]=cos(degree); 
-		case 3:  M[0][0]=cos(degree); M[0][1]=sin(degree); M[1][0]=sin(degree); M[1][1]=cos(degree);
+		case 1:  M[1][1]=cos(degree); M[1][2]=sin(degree); M[2][1]=sin(degree); M[2][2]=cos(degree); break;
+		case 2:  M[0][0]=cos(degree); M[0][2]=sin(degree); M[2][0]=sin(degree); M[2][2]=cos(degree); break;
+		case 3:  M[0][0]=cos(degree); M[0][1]=sin(degree); M[1][0]=sin(degree); M[1][1]=cos(degree); break;
 		default: throw Base::Exception("second input value differs from 1,2,3 (x,y,z)");
 	}
 
@@ -71,9 +74,9 @@ bool best_fit::TransMat(Base::Matrix4D &M, double trans, int axis)
 
 	switch(axis)
 	{
-		case 1:  M[0][3] = trans;
-		case 2:  M[1][3] = trans;
-		case 3:  M[2][3] = trans;
+		case 1:  M[0][3] = trans; break;
+		case 2:  M[1][3] = trans; break;
+		case 3:  M[2][3] = trans; break;
 		default: throw Base::Exception("second input value differs from 1,2,3 (x,y,z)");
 	}
 
@@ -94,7 +97,7 @@ bool best_fit::MeshFit_Coarse()
 	gp_Vec v1,v2,v3,vec; // Hauptachsenrichtungen
 	gp_Trsf trafo;
 	
-	SurfProp.SurfaceProperties(m_Cad, prop);
+	BRepGProp::SurfaceProperties(m_Cad, prop);
 	pprop = prop.PrincipalProperties();	
 	v1 = pprop.FirstAxisOfInertia();
 	v2 = pprop.SecondAxisOfInertia();
@@ -235,7 +238,7 @@ bool best_fit::mesh_curvature()
 
 	avgCurv /= rMesh.CountPoints();
 
-	double TOL = 0.02*(maxCurv - avgCurv);
+	double TOL = 0.08*(maxCurv - avgCurv);
 
 	for (unsigned long i=0; i<rMesh.CountPoints(); i++ ) {
 
@@ -370,15 +373,17 @@ bool best_fit::Tesselate_Shape(TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, 
 	// and all the polygons on the triangulations of the edges:
 	BRepTools::Clean(shape);
 
-	// adds a triangulation of the shape aShape with the deflection aDeflection:
-	//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
+	// adds a triangulation of the shape aShape with the deflection deflection:
+	BRepMesh_IncrementalMesh Mesh(shape,deflection);
 
-	BRepMesh::Mesh(shape,deflection);
+	//BRepMesh::Mesh(shape,deflection);
 	TopExp_Explorer aExpFace;
+	
 	for(aExpFace.Init(shape,TopAbs_FACE);aExpFace.More();aExpFace.Next())
 	{  
 	  TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
 	  TopLoc_Location aLocation;
+
 	  // takes the triangulation of the face aFace:
 	  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
 	  if(!aTr.IsNull()) // if this triangulation is not NULL
@@ -484,7 +489,7 @@ bool best_fit::Comp_Normals()
 
 double best_fit::Comp_Error(MeshCore::MeshKernel &mesh)
 {
-	Base::Builder3D log3d;
+	//Base::Builder3D log3d;
 	double err_avg = 0.0;
 	double err_max = 0.0;
 
@@ -500,11 +505,11 @@ double best_fit::Comp_Error(MeshCore::MeshKernel &mesh)
 	const MeshCore::MeshPointArray& Points = mesh.GetPoints();
 	MeshCore::MeshPointIterator p_it(mesh);
 
-	int NumOfPoints = Points.size();
+	int NumOfPoints = m_pntInd.size();
 
 	int i = 0;
 	
-	for (unsigned int i=0; i<m_pntInd.size(); ++i)
+	for (int i=0; i<NumOfPoints; ++i)
 	{     
 		p_it.Set(m_pntInd[i]); 
 
@@ -517,7 +522,7 @@ double best_fit::Comp_Error(MeshCore::MeshKernel &mesh)
 		if(!malg.NearestFacetOnRay(origPoint,normal,aFacetGrid,projPoint,facetIndex))   // gridoptimiert
 			malg2.NearestFacetOnRay(origPoint,normal,projPoint,facetIndex);
 
-		log3d.addSingleArrow(origPoint,projPoint);
+		//log3d.addSingleArrow(origPoint,projPoint);
 
 		distVec = projPoint-origPoint;
 		 
@@ -527,42 +532,27 @@ double best_fit::Comp_Error(MeshCore::MeshKernel &mesh)
 		err_avg += distVec.Length();
 	}	
 
-	log3d.saveToFile("c:/projection.iv");
+	//log3d.saveToFile("c:/projection.iv");
 
 	return err_avg/NumOfPoints;
 }
 
 bool best_fit::Coarse_correction()
 {
-	double error = 0.0;
-	double error_tmp;
-	int n = m_normals.size();
-	Base::Matrix4D M_z,M_x,M_y, M, M_fin;
-
-	// 180°- rotation um z-Achse
-	M_z[0][0] = cos(PI); M_z[0][1] = -sin(PI); M_z[0][2] = 0.0f;     M_z[0][3] = 0.0f;
-	M_z[1][0] = sin(PI); M_z[1][1] =  cos(PI); M_z[1][2] = 0.0f;     M_z[1][3] = 0.0f;
-    M_z[2][0] = 0.0f;    M_z[2][1] =  0.0f;    M_z[2][2] = 1.0f;     M_z[2][3] = 0.0f;
-    M_z[3][0] = 0.0f;    M_z[3][1] =  0.0f;    M_z[3][2] = 0.0f;     M_z[3][3] = 1.0f;
-
-	// 180°- rotation um y-Achse
-	M_y[0][0] = cos(PI); M_y[0][1] = 0.0f;     M_y[0][2] = -sin(PI); M_y[0][3] = 0.0f;
-	M_y[1][0] = 0.0f;    M_y[1][1] = 1.0f;     M_y[1][2] = 0.0f;     M_y[1][3] = 0.0f;
-    M_y[2][0] = sin(PI); M_y[2][1] = 0.0f;     M_y[2][2] = cos(PI);  M_y[2][3] = 0.0f;
-    M_y[3][0] = 0.0f;    M_y[3][1] = 0.0f;     M_y[3][2] = 0.0f;     M_y[3][3] = 1.0f;
-
-	// 180°- rotation um x-Achse
-	M_x[0][0] = 1.0f;    M_x[0][1] = 0.0f;     M_x[0][2] = 0.0f;     M_x[0][3] = 0.0f;
-	M_x[1][0] = 0.0f;    M_x[1][1] = cos(PI);  M_x[1][2] = sin(PI);  M_x[1][3] = 0.0f;
-    M_x[2][0] = 0.0f;    M_x[2][1] = sin(PI);  M_x[2][2] = cos(PI);  M_x[2][3] = 0.0f;
-    M_x[3][0] = 0.0f;    M_x[3][1] = 0.0f;     M_x[3][2] = 0.0f;     M_x[3][3] = 1.0f;
-
+	double error, error_tmp;
+	int n = m_Mesh.CountPoints();
 	
-
 	MeshCore::MeshKernel tmp_mesh = m_Mesh;
 	
+	Base::BoundBox3f BBox_mesh;
+	Base::BoundBox3f BBox_cad;
+	Base::Matrix4D   M_z,M_x,M_y, M, M_fin;
+
+	RotMat(M_x, 180, 1);
+	RotMat(M_y, 180, 2);
+	RotMat(M_z, 180, 3);
 	
-	error = best_fit::Comp_Error(tmp_mesh);  // ausgangsfehler
+	error = best_fit::Comp_Error(tmp_mesh);  // startfehler
 	
 	M = M_x;
 	tmp_mesh.Transform(M);
@@ -581,8 +571,6 @@ bool best_fit::Coarse_correction()
 		error = error_tmp;
 		M_fin = M;
 	}
-
-
 
 	M = M_y;
 	tmp_mesh = m_Mesh;
@@ -603,10 +591,9 @@ bool best_fit::Coarse_correction()
 		M_fin = M;
 	}
 
-
 	M = M_z;
 	tmp_mesh = m_Mesh;
-	tmp_mesh.Transform(M_z);
+	tmp_mesh.Transform(M);
 
 	for(int i=0; i<n;++i)
 	{
@@ -622,7 +609,6 @@ bool best_fit::Coarse_correction()
 		error = error_tmp;
 		M_fin = M;
 	}
-
 
 	M = M_x*M_y;
 	tmp_mesh = m_Mesh;
@@ -662,7 +648,6 @@ bool best_fit::Coarse_correction()
 		M_fin = M;
 	}
 
-
 	M = M_y*M_z;
 	tmp_mesh = m_Mesh;
 	tmp_mesh.Transform(M);
@@ -681,7 +666,6 @@ bool best_fit::Coarse_correction()
 		error = error_tmp;
 		M_fin = M;
 	}
-
 
 	M = M_x*M_y*M_z;
 	tmp_mesh = m_Mesh;
@@ -702,472 +686,136 @@ bool best_fit::Coarse_correction()
 		M_fin = M;
 	}
 
+	
+	
 	m_Mesh.Transform(M_fin);
-	error_tmp = best_fit::Comp_Error(m_Mesh);
+	//error_tmp = Comp_Error(m_Mesh);
 
+	
+	// Bounding Box Correction of z-values 
+	BBox_mesh = m_Mesh.GetBoundBox();
+	BBox_cad  = m_CadMesh.GetBoundBox();
+
+	if( (BBox_mesh.MaxZ > BBox_cad.MaxZ) && (BBox_mesh.MinZ > BBox_cad.MinZ) )
+	{
+		TransMat(M_fin, BBox_cad.MaxZ-BBox_mesh.MaxZ, 3);
+		m_Mesh.Transform(M_fin);
+	}
+		
 	return true;
 }
 
 
 bool best_fit::Fit_iter()
 {
-	double check = 0;
-	double TOL = 0.4;
+	double ref_trans  = -20;
+	double ref_rot    = -20;
+	double step_trans =  10;
+	double step_rot   =   5;
 
-	double err = 0.0;
+	int m = m_pntInd.size();
+    int n = m_Mesh.CountPoints();
+
+	double err = 1e+10;
 	double err_tmp = 0;
-	double alph = 0;
-	double alph_step = 1;
-	double traf = 0;
-	double traf_step = 5;
-	double step = 5*PI/360;
-	double ref  = -20*PI/360;
 
+    MeshCore::MeshKernel tmp_mesh2,tmp_mesh = m_Mesh;
+	std::vector<Base::Vector3f> normals_tmp = m_normals;
 
-	int c = 0;
-	int pos = 0;
-	int neg = 0;
-	int fl = 1;
-
-	int n = m_Mesh.CountPoints();
-
-    MeshCore::MeshKernel tmp_mesh = m_Mesh;
-	MeshCore::MeshKernel tmp_mesh2;
-
-	Base::Matrix4D Mx,My,Mz,Mx_ref,My_ref,Mz_ref, M_fin,M;
-	
-	M.unity();
-	Mx.unity();
-	My.unity();
-	Mz.unity();
-	M_fin.unity();
-
-	// start fehler
-	err = best_fit::Comp_Error(m_Mesh);
-
-	// rotation
-    // Rotation um die z-achse
-	Mz[0][0] =  cos(step);
-	Mz[0][1] = -sin(step);
-	Mz[1][0] =  sin(step);
-	Mz[1][1] =  cos(step);
-
-    // Rotation um die y-achse
-	My[0][0] =  cos(step);
-    My[0][2] = -sin(step);
-	My[2][0] =  sin(step);
-	My[2][2] =  cos(step);
-
-    // Rotation um die x-achse
-	Mx[1][1] =  cos(step);
-    Mx[1][2] = -sin(step);
-	Mx[2][1] =  sin(step);
-	Mx[2][2] =  cos(step);
+	Base::Matrix4D Mx,My,Mz,Mx_ref,My_ref,Mz_ref,   // Rotationsmatrizen
+		           Tx,Ty,Tz,Tx_ref,Ty_ref,Tz_ref,   // Translationsmatrizen
+				   M_fin,M; 
 
 	
-	Mz_ref[0][0] =  cos(ref);
-    Mz_ref[0][1] = -sin(ref);
-	Mz_ref[1][0] =  sin(ref);
-	Mz_ref[1][1] =  cos(ref);
+	
+	RotMat(Mx,5,1); TransMat(Tx,10,1);
+	RotMat(My,5,2); TransMat(Ty,10,2);
+	RotMat(Mz,5,3); TransMat(Tz,10,3);
+	
+	RotMat(Mx_ref,-20,1); TransMat(Tx_ref,-20,1);
+	RotMat(My_ref,-20,2); TransMat(Ty_ref,-20,2);
+	RotMat(Mz_ref,-20,3); TransMat(Tz_ref,-20,3);
 
+	M = Mx_ref*My_ref*Mz_ref*Tx_ref*Ty_ref*Tz_ref;
+	tmp_mesh.Transform(M);							// Rotiere Mesh zur Referenzposition (-20°,-20°,-20°, <- ausrichtung
+													//                                    -20, -20, -20)  <- position
+	tmp_mesh2 = tmp_mesh;
 
-	My_ref[0][0] =  cos(ref);
-    My_ref[0][2] = -sin(ref);
-	My_ref[2][0] =  sin(ref);
-	My_ref[2][2] =  cos(ref);
-
-
-	Mx_ref[1][1] =  cos(ref);
-    Mx_ref[1][2] = -sin(ref);
-	Mx_ref[2][1] =  sin(ref);
-	Mx_ref[2][2] =  cos(ref);
-
-
-	M = Mx_ref*My_ref*Mz_ref;
-	tmp_mesh.Transform(M);  // rotiere zur referenzposition (-20°, -20°, -20°)
-
-	for (unsigned int i=0; i<m_pntInd.size(); ++i)
+	for (int i=0; i<m; ++i)
 	{
-		//p_it.Set(m_pntInd[i]); 
 		m_normals[m_pntInd[i]].x = M[0][0]*m_normals[m_pntInd[i]].x + M[0][1]*m_normals[m_pntInd[i]].y + M[0][2]*m_normals[m_pntInd[i]].z;
 		m_normals[m_pntInd[i]].y = M[1][0]*m_normals[m_pntInd[i]].x + M[1][1]*m_normals[m_pntInd[i]].y + M[1][2]*m_normals[m_pntInd[i]].z;
 		m_normals[m_pntInd[i]].z = M[2][0]*m_normals[m_pntInd[i]].x + M[2][1]*m_normals[m_pntInd[i]].y + M[2][2]*m_normals[m_pntInd[i]].z;
 	}
 	
-	err = best_fit::Comp_Error(tmp_mesh);
-
-
-	std::vector<Base::Vector3f> normals_tmp = m_normals;
 	M.unity();
 
-	tmp_mesh2 = tmp_mesh;
-
-	for(int n1=0; n1<9; ++n1)
-	{
-		for(int m1=0; m1<n1; ++m1)
+	// Rotationspart
+	for(int n1=0; n1<9; ++n1){
+		for(int m1=0; m1<n1; ++m1){
+			
 			M *= Mx;
-
-		for(int n2=0; n2<9; ++n2)
-	    {
-			for(int m2=0; m2<n2; ++m2)
-				M *= My;
-
-			for(int n3=0; n3<9; ++n3)
-			{
-				for(int m3=0; m3<n3; ++m3)
-					M *= Mz;
-
-				tmp_mesh.Transform(M);
+			
+			for(int n2=0; n2<9; ++n2){
+				for(int m2=0; m2<n2; ++m2){
 				
-				for (unsigned int i=0; i<m_pntInd.size(); ++i)
-				{
-					//p_it.Set(m_pntInd[i]); 
-					m_normals[m_pntInd[i]].x = M[0][0]*m_normals[m_pntInd[i]].x + M[0][1]*m_normals[m_pntInd[i]].y + M[0][2]*m_normals[m_pntInd[i]].z;
-					m_normals[m_pntInd[i]].y = M[1][0]*m_normals[m_pntInd[i]].x + M[1][1]*m_normals[m_pntInd[i]].y + M[1][2]*m_normals[m_pntInd[i]].z;
-					m_normals[m_pntInd[i]].z = M[2][0]*m_normals[m_pntInd[i]].x + M[2][1]*m_normals[m_pntInd[i]].y + M[2][2]*m_normals[m_pntInd[i]].z;
+					M *= My;
+					
+					for(int n3=0; n3<9; ++n3){
+						for(int m3=0; m3<n3; ++m3){
+							
+							M *= Mz;
+							
+							// Translationspart
+							for(int n4=0; n4<5; ++n4){
+								for(int m4=0; m4<5; ++m4){
+									
+									M *= Tx;
+
+									for(int n5=0; n5<5; ++n5){
+										for(int m5=0; m5<n5; ++m5){
+
+											M *= Ty;
+
+											for(int n6=0; n6<6; ++n6){
+												for(int m6=0; m6<n6; ++m6){
+
+													M *= Tz;
+													tmp_mesh.Transform(M);
+				
+						
+													for (int i=0; i<m; ++i){
+														m_normals[m_pntInd[i]].x = M[0][0]*m_normals[m_pntInd[i]].x + M[0][1]*m_normals[m_pntInd[i]].y + M[0][2]*m_normals[m_pntInd[i]].z;
+														m_normals[m_pntInd[i]].y = M[1][0]*m_normals[m_pntInd[i]].x + M[1][1]*m_normals[m_pntInd[i]].y + M[1][2]*m_normals[m_pntInd[i]].z;
+														m_normals[m_pntInd[i]].z = M[2][0]*m_normals[m_pntInd[i]].x + M[2][1]*m_normals[m_pntInd[i]].y + M[2][2]*m_normals[m_pntInd[i]].z;
+													}
+
+													err_tmp = Comp_Error(tmp_mesh);
+
+													if(err_tmp < err){
+														M_fin = M;
+														err = err_tmp;
+													}
+
+													M.unity();
+													tmp_mesh  = tmp_mesh2;
+													m_normals = normals_tmp;  // zurück zur Referenzausrichtung
+
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
-
-				err_tmp = best_fit::Comp_Error(tmp_mesh);
-
-				if(err_tmp < err)
-					M_fin = M;
-
-				M.unity();
-				m_normals = normals_tmp;
 			}
 		}
 	}
-		
-	m_Mesh.Transform(M_fin);
-
 	
 
-
-	//for(int i=0; i<3; ++i)
-	//{
-    
-		
-	//// translation fit
-	//
-	//// z-translation
-
-	//cout << "z-translation" << endl;
-
-	//while(traf_step > TOL)
-	//{
-	//	M[2][3] = fl*traf_step; // z-translation-element
-
-	//	tmp_mesh.Transform(M);
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);		
-	//	
-	//	if(err_tmp <= err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{
-	//		if(fl == -1)
-	//		{
-	//			// zurück als es noch besser war
-	//			M[2][3] = traf_step;
-	//			tmp_mesh.Transform(M);
-
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "z-translation: " << check << endl;
-
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M[2][3] = 0.0f;
-	//check = 0;
-	//// end z-translation
-
-
-	//// y-translation
-
-	//cout << "y-translation" << endl;
-
-	//while(traf_step > TOL)
-	//{
-	//	M[1][3] = fl*traf_step; // y-translation-element
-
-	//	tmp_mesh.Transform(M);
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);		
-	//	
-	//	if(err_tmp <= err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{				
-	//		if(fl == -1)
-	//		{
-	//			M[1][3] = traf_step;
-	//			tmp_mesh.Transform(M);
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "y-translation: " << check << endl;
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M[1][3] = 0.0f;
-	//check = 0;
-	//// end y-translation
-
-
-	//// x-translation
-
-	//cout << "x-translation" << endl;
-
-	//while(traf_step > TOL)
-	//{
-	//	M[0][3] = fl*traf_step; // x-translation-element
-
-	//	tmp_mesh.Transform(M);
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);
-	//	
-	//	if(err_tmp <= err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{				
-	//		if(fl == -1)
-	//		{
-	//			M[0][3] = traf_step;
-	//			tmp_mesh.Transform(M);
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "x-translation: " << check << endl;
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M[0][3] = 0.0f;
-	//check = 0;
-	//// end x-translation
-
- //   // end translation fit
-
-
- //   
-	//
-	//// rotation fit
-
-	//// z-rotation
-	//cout << "z-rotation " << check << endl;
-	//while(traf_step > TOL)
-	//{
-	//	traf = fl*PI*traf_step/360;
-
-	//	// Rotation um die z-achse
-	//	M[0][0] =  cos(traf);
-	//    M[0][1] = -sin(traf);
-	//	M[1][0] =  sin(traf);
-	//	M[1][1] =  cos(traf);
-	//	
-	//	tmp_mesh.Transform(M);
-
-	//	for(int i=0; i<n;++i)
-	//	{
-	//		m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//		m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//		m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//    }
-
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);
-	//	
-	//	if(err_tmp < err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{				
-	//		if(fl == -1)
-	//		{
-	//			M[0][0] =  cos(-traf);
-	//			M[0][1] = -sin(-traf);
-	//			M[1][0] =  sin(-traf);
-	//			M[1][1] =  cos(-traf);
-	//			tmp_mesh.Transform(M);
-
-	//			for(int i=0; i<n;++i)
-	//			{
-	//				m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//				m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//				m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//			}
-
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "z-rotation: " << check << endl;
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M.unity();
-	//check = 0;
-	//// end z-rotation
-
-	//// y-rotation
-	//cout << "y-rotation " << check << endl;
-	//while(traf_step > TOL)
-	//{
-	//	traf = fl*PI*traf_step/360;
-
-	//	// Rotation um die z-achse
-	//	M[0][0] =  cos(traf);
-	//    M[0][2] = -sin(traf);
-	//	M[2][0] =  sin(traf);
-	//	M[2][2] =  cos(traf);
-	//	
-	//	tmp_mesh.Transform(M);
-
-	//	for(int i=0; i<n;++i)
-	//	{
-	//		m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//		m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//		m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//    }
-
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);
-	//	
-	//	if(err_tmp < err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{				
-	//		if(fl == -1)
-	//		{
-	//			M[0][0] =  cos(-traf);
-	//			M[0][2] = -sin(-traf);
-	//			M[2][0] =  sin(-traf);
-	//			M[2][2] =  cos(-traf);
-	//			tmp_mesh.Transform(M);
-
-	//			for(int i=0; i<n;++i)
-	//			{
-	//				m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//				m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//				m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//			}
-
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "y-rotation: " << check << endl;
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M.unity();
-	//check = 0;
-	//// end y-rotation
-
-	//// x-rotation
-	//cout << "x-rotation: " << check << endl;
-	//while(traf_step > TOL)
-	//{
-	//	traf = fl*PI*traf_step/360;
-
-	//	// Rotation um die z-achse
-	//	M[1][1] =  cos(traf);
-	//    M[1][2] = -sin(traf);
-	//	M[2][1] =  sin(traf);
-	//	M[2][2] =  cos(traf);
-	//	
-	//	tmp_mesh.Transform(M);
-
-	//	for(int i=0; i<n;++i)
-	//	{
-	//		m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//		m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//		m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//    }
-
-	//	err_tmp = best_fit::Comp_Error(tmp_mesh);
-	//	
-	//	if(err_tmp < err)
-	//	{
-	//		err = err_tmp;
-	//		cout << "avg_err: " << err << endl;
-	//		check  += fl*traf_step;
-	//	}
-	//	else
-	//	{				
-	//		if(fl == -1)
-	//		{
-	//			M[1][1] =  cos(-traf);
-	//			M[1][2] = -sin(-traf);
-	//			M[2][1] =  sin(-traf);
-	//			M[2][2] =  cos(-traf);
-	//			tmp_mesh.Transform(M);
-
-	//			for(int i=0; i<n;++i)
-	//			{
-	//				m_normals[i].x = M[0][0]*m_normals[i].x + M[0][1]*m_normals[i].y + M[0][2]*m_normals[i].z;
-	//				m_normals[i].y = M[1][0]*m_normals[i].x + M[1][1]*m_normals[i].y + M[1][2]*m_normals[i].z;
-	//				m_normals[i].z = M[2][0]*m_normals[i].x + M[2][1]*m_normals[i].y + M[2][2]*m_normals[i].z;
-	//			}
-
-	//			traf_step /= 2;
-	//			fl = 1;
-	//		}
-	//		else
-	//		    fl = -1;				
-	//	}
-	//}
-
-	//cout << "x-rotation: " << check << endl;
-	//fl = 1;
-	//traf = 0;
-	//traf_step = step;
-	//M.unity();
-
-	//check = 0;
-	//// end x-rotation
-
- //   // end rotation fit
-
-    //m_Mesh = tmp_mesh;
+	m_Mesh.Transform(M_fin);
 
 	return true;
 }

@@ -68,6 +68,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 #include <Geom_BSplineSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>

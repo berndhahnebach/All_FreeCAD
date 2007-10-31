@@ -220,7 +220,7 @@ double path_simulate::GetLength(GeomAdaptor_Curve& curve, const Standard_Real st
 
 double path_simulate::FindParamAt(GeomAdaptor_Curve& curve, double dist, double startParam)
 {
-	double foundParameter;
+	double foundParameter = 0.0;
 
     //get the first and last parameters of the curve
     Standard_Real firstParam = curve.FirstParameter();
