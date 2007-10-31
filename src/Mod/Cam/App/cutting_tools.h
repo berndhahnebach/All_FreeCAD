@@ -37,6 +37,8 @@ public:
 	*/
 	
 	bool arrangecuts_ZLEVEL();
+	bool checkPointIntersection(std::vector<gp_Pnt> &finalPoints);
+	bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
 	bool initializeMeshStuff();
 	bool arrangecuts_SPIRAL();
 	bool arrangecuts_FEATURE_BASED();
