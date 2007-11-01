@@ -47,6 +47,17 @@ void SwapVar (unsigned long&);
 void SwapVar (float&);
 void SwapVar (double&);
 
+template <class T>
+void SwapEndian(T& v)
+{
+  T tmp;
+  int i;
+
+  for (i = 0; i < (int)sizeof (T); i++)
+    *(((char*) &tmp) + i) = *(((char*) &v) + sizeof (T) - i - 1);
+  v = tmp;
+}
+
 } // namespace Base
 
 

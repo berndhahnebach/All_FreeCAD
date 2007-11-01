@@ -34,6 +34,190 @@
 
 using namespace Base;
 
+Stream::Stream() : _swap(false)
+{
+}
+
+Stream::~Stream()
+{
+}
+
+Stream::ByteOrder Stream::byteOrder() const
+{
+    return _swap ? BigEndian : LittleEndian;
+}
+
+void Stream::setByteOrder(ByteOrder bo)
+{
+    _swap = (bo == BigEndian);
+}
+
+OutputStream::OutputStream(std::ostream &rout) : _out(rout)
+{
+}
+
+OutputStream::~OutputStream()
+{
+}
+
+OutputStream& OutputStream::operator << (bool b)
+{
+    _out.write((const char*)&b, sizeof(bool));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (char ch)
+{
+    _out.write((const char*)&ch, sizeof(char));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (unsigned char uch)
+{
+    _out.write((const char*)&uch, sizeof(unsigned char));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (short s)
+{
+    if (_swap) SwapEndian<short>(s);
+    _out.write((const char*)&s, sizeof(short));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (unsigned short us)
+{
+    if (_swap) SwapEndian<unsigned short>(us);
+    _out.write((const char*)&us, sizeof(unsigned short));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (int i)
+{
+    if (_swap) SwapEndian<int>(i);
+    _out.write((const char*)&i, sizeof(int));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (unsigned int ui)
+{
+    if (_swap) SwapEndian<unsigned int>(ui);
+    _out.write((const char*)&ui, sizeof(unsigned int));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (long l)
+{
+    if (_swap) SwapEndian<long>(l);
+    _out.write((const char*)&l, sizeof(long));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (unsigned long ul)
+{
+    if (_swap) SwapEndian<unsigned long>(ul);
+    _out.write((const char*)&ul, sizeof(unsigned long));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (float f)
+{
+    if (_swap) SwapEndian<float>(f);
+    _out.write((const char*)&f, sizeof(float));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (double d)
+{
+    if (_swap) SwapEndian<double>(d);
+    _out.write((const char*)&d, sizeof(double));
+    return *this;
+}
+
+InputStream::InputStream(std::istream &rin) : _in(rin)
+{
+}
+
+InputStream::~InputStream()
+{
+}
+
+InputStream& InputStream::operator >> (bool& b)
+{
+    _in.read((char*)&b, sizeof(bool));
+    return *this;
+}
+
+InputStream& InputStream::operator >> (char& ch)
+{
+    _in.read((char*)&ch, sizeof(char));
+    return *this;
+}
+
+InputStream& InputStream::operator >> (unsigned char& uch)
+{
+    _in.read((char*)&uch, sizeof(unsigned char));
+    return *this;
+}
+
+InputStream& InputStream::operator >> (short& s)
+{
+    _in.read((char*)&s, sizeof(short));
+    if (_swap) SwapEndian<short>(s);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (unsigned short& us)
+{
+    _in.read((char*)&us, sizeof(unsigned short));
+    if (_swap) SwapEndian<unsigned short>(us);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (int& i)
+{
+    _in.read((char*)&i, sizeof(int));
+    if (_swap) SwapEndian<int>(i);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (unsigned int& ui)
+{
+    _in.read((char*)&ui, sizeof(unsigned int));
+    if (_swap) SwapEndian<unsigned int>(ui);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (long& l)
+{
+    _in.read((char*)&l, sizeof(long));
+    if (_swap) SwapEndian<long>(l);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (unsigned long& ul)
+{
+    _in.read((char*)&ul, sizeof(unsigned long));
+    if (_swap) SwapEndian<unsigned long>(ul);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (float& f)
+{
+    _in.read((char*)&f, sizeof(float));
+    if (_swap) SwapEndian<float>(f);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (double& d)
+{
+    _in.read((char*)&d, sizeof(double));
+    if (_swap) SwapEndian<double>(d);
+    return *this;
+}
+
+//---------------------------------------------------- -------------------------
+
 /** Initializes the stream data. This method should be called before 
  * Open() and after Close() calls.
  */

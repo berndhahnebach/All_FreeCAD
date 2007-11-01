@@ -36,10 +36,78 @@
 
 namespace Base {
 
+class BaseExport Stream
+{
+public:
+    enum ByteOrder { BigEndian, LittleEndian };
+    
+    ByteOrder byteOrder() const;
+    void setByteOrder(ByteOrder);
+
+protected:
+    Stream();
+    virtual ~Stream(); 
+
+    bool _swap;
+};
+
+/**
+ * The OutputStream class provides writing of binary data to an ostream.
+ * @author Werner Mayer
+ */
+class BaseExport OutputStream : public Stream
+{
+public:
+    OutputStream(std::ostream &rout);
+    ~OutputStream();
+
+    OutputStream& operator << (bool b);
+    OutputStream& operator << (char ch);
+    OutputStream& operator << (unsigned char uch);
+    OutputStream& operator << (short s);
+    OutputStream& operator << (unsigned short us);
+    OutputStream& operator << (int i);
+    OutputStream& operator << (unsigned int ui);
+    OutputStream& operator << (long l);
+    OutputStream& operator << (unsigned long ul);
+    OutputStream& operator << (float f);
+    OutputStream& operator << (double d);
+
+private:
+    std::ostream& _out;
+};
+
+/**
+ * The InputStream class provides reading of binary data from an istream.
+ * @author Werner Mayer
+ */
+class BaseExport InputStream : public Stream
+{
+public:
+    InputStream(std::istream &rin);
+    ~InputStream();
+
+    InputStream& operator >> (bool& b);
+    InputStream& operator >> (char& ch);
+    InputStream& operator >> (unsigned char& uch);
+    InputStream& operator >> (short& s);
+    InputStream& operator >> (unsigned short& us);
+    InputStream& operator >> (int& i);
+    InputStream& operator >> (unsigned int& ui);
+    InputStream& operator >> (long& l);
+    InputStream& operator >> (unsigned long& ul);
+    InputStream& operator >> (float& f);
+    InputStream& operator >> (double& d);
+
+private:
+    std::istream& _in;
+};
+
 class   DataStream;
 typedef DataStream *PDataStream;
 typedef DataStream &RDataStream;
 
+/** \deprecated */
 class BaseExport DataStream
 {
 public:
@@ -119,8 +187,7 @@ class   FileStream;
 typedef FileStream *PFileStream;
 typedef FileStream &RFileStream;
 
-//typedef openmode RSios::open_mode;
-
+/** \deprecated */
 class BaseExport FileStream : public DataStream
 {
 protected:
@@ -162,6 +229,7 @@ public:
 
 //--------- CLASS FileBuffer -------------------------*/
 
+/** \deprecated */
 class BaseExport FileBuffer : public std::filebuf
 {
 public:
@@ -176,6 +244,7 @@ class   BlobStream;
 typedef BlobStream *PBlobStream;
 typedef BlobStream &RBlobStream;
 
+/** \deprecated */
 class BaseExport BlobStream : public DataStream
 {
 protected:

@@ -69,14 +69,14 @@ public:
   /// Construction
   MeshKernel (const MeshKernel &rclMesh);
   /// Destruction
-  virtual ~MeshKernel (void)
+  ~MeshKernel (void)
   { Clear(); }
 
   /** @name I/O methods */
   //@{
   /// Binary streaming of data
-  virtual void Write (std::ostream &rclOut) const;
-  virtual void Read (std::istream &rclIn);
+  void Write (std::ostream &rclOut) const;
+  void Read (std::istream &rclIn);
   //@}
 
   /** @name Querying */
@@ -133,7 +133,7 @@ public:
   std::vector<unsigned long> HasFacets (const MeshPointIterator &rclIter) const;
 
   /** Returns true if the data structure is valid. */
-  virtual bool IsValid (void) const
+  bool IsValid (void) const
   { return _bValid; }
 
   /** Returns the array of all data points. */
@@ -300,7 +300,7 @@ public:
    */
   bool DeleteFacet (unsigned long ulInd);
   /** Removes several facets from the data structure. */
-  virtual void DeleteFacets (const std::vector<unsigned long> &raulFacets);
+  void DeleteFacets (const std::vector<unsigned long> &raulFacets);
   /** Deletes the point the iterator points to. The deletion of a point requires the following step:
    * \li Find all associated facets to this point.
    * \li Delete these facets.
@@ -308,7 +308,7 @@ public:
    */
   bool DeletePoint (const MeshPointIterator &rclIter);
   /** Removes several points from the data structure. */
-  virtual void DeletePoints (const std::vector<unsigned long> &raulPoints);
+  void DeletePoints (const std::vector<unsigned long> &raulPoints);
   /** Clears the whole data structure. */
   void Clear (void);
   /** Replaces the current data structure with the structure built up of the array 
@@ -327,7 +327,7 @@ public:
    */
   void Adopt(MeshPointArray& rPoints, MeshFacetArray& rFaces, bool checkNeighbourHood=false);
   /// Transform the data structure with the given transformation matrix.
-  virtual void operator *= (const Base::Matrix4D &rclMat);
+  void operator *= (const Base::Matrix4D &rclMat);
   /// Transform the data structure with the given transformation matrix.
   void Transform (const Base::Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */

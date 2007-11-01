@@ -29,7 +29,10 @@
 # include <queue>
 #endif
 
+#include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Base/Stream.h>
+#include <Base/Swap.h>
 
 #include "Algorithm.h"
 #include "Helpers.h"
@@ -790,37 +793,117 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
 
 void MeshKernel::Write (std::ostream &rclOut) const 
 {
-  unsigned long uCtPts = CountPoints();
-  unsigned long uCtFts = CountFacets();
-  rclOut.write((const char*)&uCtPts, sizeof(unsigned long));
-  rclOut.write((const char*)&uCtFts, sizeof(unsigned long));
+    if (!rclOut || rclOut.bad())
+        return;
 
-  // the mesh kernel might be empty
-  if ( uCtPts > 0 )
-    rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
-  if ( uCtFts > 0 )
-    rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
-  rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3f));
+    Base::OutputStream str(rclOut);
+
+    // Write a header with a "magic number" and a version
+    str << (unsigned long)0xA0B0C0D0;
+    str << (unsigned long)0x010000;
+
+    char szInfo[257]; // needs an additional byte for zero-termination
+    strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-"
+                   "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-"
+                   "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-"
+                   "MESH-MESH-MESH-\n");
+    for (int i=0; i<256; i++)
+        str << szInfo[i];
+
+    // write the number of points and facets
+    str << CountPoints() << CountFacets();
+
+    // write the data
+    for (MeshPointArray::_TConstIterator it = _aclPointArray.begin(); it != _aclPointArray.end(); ++it) {
+        str << it->x << it->y << it->z;
+    }
+
+    for (MeshFacetArray::_TConstIterator it = _aclFacetArray.begin(); it != _aclFacetArray.end(); ++it) {
+        str << it->_aulPoints[0] << it->_aulPoints[1] << it->_aulPoints[2];
+        str << it->_aulNeighbours[0] << it->_aulNeighbours[1] << it->_aulNeighbours[2];
+    }
+
+    str << _clBoundBox.MinX << _clBoundBox.MaxX;
+    str << _clBoundBox.MinY << _clBoundBox.MaxY;
+    str << _clBoundBox.MinZ << _clBoundBox.MaxZ;
 }
 
 void MeshKernel::Read (std::istream &rclIn)
 {
-  Clear();
+    if (!rclIn || rclIn.bad())
+        return;
 
-  unsigned long uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
-  rclIn.read((char*)&uCtPts, sizeof(unsigned long));
-  rclIn.read((char*)&uCtFts, sizeof(unsigned long));
+    // get header
+    Base::InputStream str(rclIn);
 
-  // the stored mesh kernel might be empty
-  if ( uCtPts > 0 ) {
-    _aclPointArray.resize(uCtPts);
-    rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
-  }
-  if ( uCtFts > 0 ) {
-    _aclFacetArray.resize(uCtFts);
-    rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
-  }
-  rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3f));
+    // Read the header with a "magic number" and a version
+    unsigned long magic, version, swap_magic, swap_version;
+    str >> magic >> version;
+    swap_magic = magic; Base::SwapEndian(swap_magic);
+    swap_version = version; Base::SwapEndian(swap_version);
+
+    // is it the new or old format?
+    bool new_format = false;
+    if (magic == 0xA0B0C0D0 && version == 0x010000) {
+        new_format = true;
+    }
+    else if (swap_magic == 0xA0B0C0D0 && swap_version == 0x010000) {
+        new_format = true;
+        str.setByteOrder(Base::Stream::BigEndian);
+    }
+
+    if (new_format) {
+        char szInfo[256];
+        for (int i=0; i<256; i++)
+            str >> szInfo[i];
+
+        // read the number of points and facets
+        unsigned long uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
+        str >> uCtPts >> uCtFts;
+
+        try {
+            // read the data
+            MeshPointArray pointArray;
+            pointArray.resize(uCtPts);
+            for (MeshPointArray::_TIterator it = pointArray.begin(); it != pointArray.end(); ++it) {
+                str >> it->x >> it->y >> it->z;
+            }
+          
+            MeshFacetArray facetArray;
+            facetArray.resize(uCtFts);
+            for (MeshFacetArray::_TIterator it = facetArray.begin(); it != facetArray.end(); ++it) {
+                str >> it->_aulPoints[0] >> it->_aulPoints[1] >> it->_aulPoints[2];
+                str >> it->_aulNeighbours[0] >> it->_aulNeighbours[1] >> it->_aulNeighbours[2];
+            }
+
+            str >> _clBoundBox.MinX >> _clBoundBox.MaxX;
+            str >> _clBoundBox.MinY >> _clBoundBox.MaxY;
+            str >> _clBoundBox.MinZ >> _clBoundBox.MaxZ;
+
+            // If we reach this block no exception occurred and we can safely assign the mesh
+            _aclPointArray.swap(pointArray);
+            _aclFacetArray.swap(facetArray);
+        }
+        catch (std::length_error&) {
+            // Special handling of std::length_error
+            throw Base::Exception("Reading from stream failed");
+        }
+    }
+    else {
+        // The old format
+        unsigned long uCtPts=magic, uCtFts=version;
+
+        // the stored mesh kernel might be empty
+        if ( uCtPts > 0 ) {
+          _aclPointArray.resize(uCtPts);
+          rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
+        }
+        if ( uCtFts > 0 ) {
+          _aclFacetArray.resize(uCtFts);
+          rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+        }
+        rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3f));
+    }
 }
 
 void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
