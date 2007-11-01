@@ -38,7 +38,6 @@
 #endif
 
 #include "../App/MeshFeature.h"
-#include "../App/MeshAlgos.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>

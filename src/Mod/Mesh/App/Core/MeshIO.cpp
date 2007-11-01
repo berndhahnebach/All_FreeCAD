@@ -268,12 +268,11 @@ bool MeshInput::LoadAny(const char* FileName)
   // ask for read permission
   Base::FileInfo fi(FileName);
   if ( !fi.exists() || !fi.isFile()  )
-    throw Base::FileException("File does not exists",FileName);
+    throw Base::FileException("File does not exist",FileName);
   if ( !fi.isReadable() )
     throw Base::FileException("No permission on the file",FileName);
 
   std::ifstream str( FileName, std::ios::in | std::ios::binary );
-  _rclMesh.Clear();
 
   MeshCore::MeshKernel *pcKernel=0;
   if ( fi.hasExtension("bms") )
@@ -972,7 +971,7 @@ bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 
 // --------------------------------------------------------------
 
-/// Save in a file, format is decided by the axtension
+/// Save in a file, format is decided by the extension
 bool MeshOutput::SaveAny(const char* FileName) const
 {
   // ask for write permission
@@ -1020,21 +1019,19 @@ bool MeshOutput::SaveAny(const char* FileName) const
 
   } else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml") ) {
       std::ofstream str( FileName, std::ios::out | std::ios::binary );
-      MeshCore::SaveMeshVRML aWriter(_rclMesh);
-
+      
       // write file
-      App::Material rclMat;
-      if ( !aWriter.Save(str,rclMat) ) 
+      App::Material clMat;
+      if ( !SaveVRML(str, clMat) ) 
           throw Base::FileException("Export of VRML mesh failed",FileName);
           
   } else if ( fi.hasExtension("wrz") ) {
       // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
       Base::ogzstream gzip( FileName, std::ios::out | std::ios::binary );
-      MeshCore::SaveMeshVRML aWriter(_rclMesh);
 
       // write file
-      App::Material rclMat;
-      if ( !aWriter.Save(gzip,rclMat) ) 
+      App::Material clMat;
+      if ( !SaveVRML(gzip, clMat) ) 
           throw Base::FileException("Export of compressed VRML mesh failed",FileName);
           
   } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
@@ -1348,13 +1345,6 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
   return true;
 }
 
-/** Writes a VRML file. */
-bool MeshOutput::SaveVRML (std::ostream &rstrOut) const
-{
-  App::Material rclMat;
-  return SaveMeshVRML(_rclMesh).Save(rstrOut, rclMat);
-}
-
 /** Writes a Nastran file. */
 bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
 {
@@ -1566,17 +1556,42 @@ bool MeshOutput::SavePython (std::ostream &rstrOut) const
 
 // --------------------------------------------------------------
 
-SaveMeshVRML::SaveMeshVRML (const MeshKernel &rclM)
+class MeshVRML
+{
+public:
+  MeshVRML (const MeshKernel &rclM);
+  MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
+  ~MeshVRML (void){}
+
+  bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
+  bool Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
+
+protected:
+  void WriteVRMLHeaderInfo(std::ostream &rstrOut) const;
+  void WriteVRMLAnnotations(std::ostream &rstrOut) const;
+  void WriteVRMLViewpoints(std::ostream &rstrOut) const;
+
+  const MeshKernel &_rclMesh;   // reference to mesh data structure
+  VRMLInfo* _pclVRMLInfo;
+};
+
+/** Writes a VRML file. */
+bool MeshOutput::SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const
+{
+  return MeshVRML(_rclMesh).Save(rstrOut, rclMat);
+}
+
+MeshVRML::MeshVRML (const MeshKernel &rclM)
 : _rclMesh(rclM), _pclVRMLInfo(0)
 {
 }
 
-SaveMeshVRML::SaveMeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo)
+MeshVRML::MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo)
 : _rclMesh(rclM), _pclVRMLInfo(pclVRMLInfo)
 {
 }
 
-bool SaveMeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex) const
+bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex) const
 {
   if ((!rstrOut) || (rstrOut.bad() == true) ||
       (_rclMesh.CountFacets() == 0))
@@ -1885,7 +1900,7 @@ bool SaveMeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &r
   return true;
 }
 
-void SaveMeshVRML::WriteVRMLHeaderInfo(std::ostream &clStream) const
+void MeshVRML::WriteVRMLHeaderInfo(std::ostream &clStream) const
 {
   char szBuf[1000];
   // save information about file
@@ -1912,7 +1927,7 @@ void SaveMeshVRML::WriteVRMLHeaderInfo(std::ostream &clStream) const
   clStream.write(szBuf, strlen(szBuf));
 }
 
-void SaveMeshVRML::WriteVRMLAnnotations(std::ostream &clStream) const
+void MeshVRML::WriteVRMLAnnotations(std::ostream &clStream) const
 {
   float r = float(_pclVRMLInfo->_clColor.r) / 255.0f;
   float g = float(_pclVRMLInfo->_clColor.g) / 255.0f;
@@ -2004,7 +2019,7 @@ void SaveMeshVRML::WriteVRMLAnnotations(std::ostream &clStream) const
     clStream.write(szBuf, strlen(szBuf)); 
 }
 
-void SaveMeshVRML::WriteVRMLViewpoints(std::ostream &rstrOut) const
+void MeshVRML::WriteVRMLViewpoints(std::ostream &rstrOut) const
 {
   char szBuf[1000];
   // write viewpoints
@@ -2058,7 +2073,7 @@ void SaveMeshVRML::WriteVRMLViewpoints(std::ostream &rstrOut) const
   }
 }
 
-bool SaveMeshVRML::Save (std::ostream &rstrOut, const App::Material &rclMat) const
+bool MeshVRML::Save (std::ostream &rstrOut, const App::Material &rclMat) const
 {
   std::vector<App::Color> aclDummy;
 /*

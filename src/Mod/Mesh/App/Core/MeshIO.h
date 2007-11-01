@@ -95,7 +95,7 @@ public:
   /** Writes an OpenInventor file. */
   bool SaveInventor (std::ostream &rstrOut) const;
   /** Writes a VRML file. */
-  bool SaveVRML (std::ostream &rstrOut) const;
+  bool SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const;
   /** Writes a Nastran file. */
   bool SaveNastran (std::ostream &rstrOut) const;
   /** Writes a Cadmould FE file. */
@@ -134,26 +134,6 @@ struct AppMeshExport VRMLInfo
   bool     _bSavePicture;
   std::vector<std::string> _clComments;
   std::vector<VRMLViewpointData> _clViewpoints;
-};
-
-
-class AppMeshExport SaveMeshVRML
-{
-  public:
-    SaveMeshVRML (const MeshKernel &rclM);
-    SaveMeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
-    virtual ~SaveMeshVRML (void){}
-
-    bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
-    bool Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
-
-  protected:
-    void WriteVRMLHeaderInfo(std::ostream &rstrOut) const;
-    void WriteVRMLAnnotations(std::ostream &rstrOut) const;
-    void WriteVRMLViewpoints(std::ostream &rstrOut) const;
-
-    const MeshKernel &_rclMesh;   // reference to mesh data structure
-    VRMLInfo* _pclVRMLInfo;
 };
 
 

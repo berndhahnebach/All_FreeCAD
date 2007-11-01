@@ -136,9 +136,9 @@ PyMethodDef MeshPy::Methods[] = {
   {"facetCount", (PyCFunction) sfacetCount, Py_NEWARGS, 
    "Return the number of facets of the mesh object."},
   {"read", (PyCFunction) sread, Py_NEWARGS, 
-   "Read in a mesh object from an STL file."},
+   "Read in a mesh object from file."},
   {"write", (PyCFunction) swrite, Py_NEWARGS, 
-   "Write the mesh object into an STL file."},
+   "Write the mesh object into file."},
   PYMETHODEDEF(offset)
   PYMETHODEDEF(offsetSpecial)
   {"unite", (PyCFunction) sunite, Py_NEWARGS, 
@@ -355,14 +355,9 @@ PYFUNCIMP_D(MeshPy,read)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
 
-  Base::FileInfo File(Name);
-  
-  // checking on the file
-  if(!File.isReadable())
-    Py_Error(PyExc_Exception,"File to load not existing or not readable");
-
   PY_TRY {
-    MeshAlgos::read(_pcMesh,Name);
+    MeshInput aReader(*_pcMesh);
+    aReader.LoadAny(Name); 
   } PY_CATCH;
 
   Py_Return; 
