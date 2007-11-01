@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <algorithm>
+# include <stdexcept>
 # include <map>
 # include <queue>
 #endif
