@@ -439,8 +439,20 @@ void CmdMeshImport::activated(int iMsg)
     fi.setFile(*it);
 
     openCommand("Import Mesh");
+#if 1 // feature based
     doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toUtf8());
+#elif 0 // data based
+    doCommand(Doc,"import Mesh");
+    doCommand(Doc,"__mesh__ = Mesh.mesh()");
+    doCommand(Doc,"__mesh__.read(\"%s\")", (const char*)(*it).toUtf8());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Feature\",\"%s\").Mesh=__mesh__", 
+             (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"del __mesh__");
+#else // data based once changed to ref handling
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Feature\",\"%s\").Mesh.read(\"%s\")", 
+             (const char*)fi.baseName().toAscii(), (const char*)(*it).toUtf8());
+#endif
     commitCommand();
     updateActive();
   }

@@ -290,12 +290,11 @@ void MeshAlgorithm::GetMeshBorders (std::list<std::vector<unsigned long> > &rclB
 
 void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Base::Vector3f> > &rclBorders) const
 {
-#if 0
-  //FIXME: Test this code!
+#if 1
   const MeshPointArray &rclPAry = _rclMesh._aclPointArray;
   std::list<std::vector<unsigned long> > aulBorders;
 
-  GetFacetBorders ( raulInd, aulBorders );
+  GetFacetBorders (raulInd, aulBorders, true);
   for ( std::list<std::vector<unsigned long> >::iterator it = aulBorders.begin(); it != aulBorders.end(); ++it )
   {
     std::vector<Base::Vector3f> boundary;
@@ -400,7 +399,9 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
 #endif
 }
 
-void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders) const
+void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
+                                     std::list<std::vector<unsigned long> > &rclBorders,
+                                     bool ignoreOrientation) const
 {
   const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
 
@@ -460,22 +461,22 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
         aclEdges.erase(pEI);
         break;
       }
-      //FIXME: Using this might result into boundaries with wrong orientation. But if the mesh has some facets with wrong orientation
-      //we might get broken boundary curves.
-//      else if (pEI->second == ulLast)
-//      {
-//        ulLast = pEI->first;
-//        clBorder.push_back(ulLast);
-//        aclEdges.erase(pEI);
-//        break;
-//      }
-//      else if (pEI->first == ulFirst)
-//      {
-//        ulFirst = pEI->second;
-//        clBorder.push_front(ulFirst);
-//        aclEdges.erase(pEI);
-//        break;
-//      }
+      // Note: Using this might result into boundaries with wrong orientation. But if the mesh has some 
+      // facets with wrong orientation we might get broken boundary curves.
+      else if (pEI->second == ulLast && ignoreOrientation)
+      {
+        ulLast = pEI->first;
+        clBorder.push_back(ulLast);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->first == ulFirst && ignoreOrientation)
+      {
+        ulFirst = pEI->second;
+        clBorder.push_front(ulFirst);
+        aclEdges.erase(pEI);
+        break;
+      }
     }
     if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
     {  // keine weitere Kante gefunden bzw. Polylinie geschlossen

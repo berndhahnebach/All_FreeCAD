@@ -215,7 +215,6 @@ void MeshBuilder::Finish (bool freeMemory)
     // Note: this scope is needed to free memory immediately
     { std::vector<MeshPointIterator>().swap(_pointsIterator); }
     _points.clear();
-    //  _points.swap(_points);
 
     SetNeighbourhood();
     RemoveUnreferencedPoints();
@@ -239,11 +238,6 @@ void MeshBuilder::Finish (bool freeMemory)
             }
         }
     }
-
-    // FIXME: Does this work for MS compiler version 8 or higher? At least, with version 6 and STLport this has no effect.
-    // release some memory
-    //  _meshKernel._aclFacetArray.swap(_meshKernel._aclFacetArray);
-    //  _meshKernel._aclPointArray.swap(_meshKernel._aclPointArray);
 
     _meshKernel.RecalcBoundBox();
     Base::Sequencer().stop();
