@@ -120,8 +120,13 @@ public:
   /**
    * Returns all boundaries of a subset the mesh defined by \a raulInd. This method does basically the same as above unless 
    * that it returns the point indices of the boundaries.
+   * If \a ignoreOrientation is false (the default) we may get a broken boundary curve if the mesh has facets
+   * with wrong orientation. However, if \a ignoreOrientation is true we may get a boundary curve with wrong
+   * orientation even if the mesh is topologically correct. You should let the default value unless you exactly
+   * know what you do.
    */
-  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders) const;
+  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders,
+                        bool ignoreOrientation = false) const;
   /**
    * Returns the boundary of the mesh to the facet \a uFacet. If this facet does not have an open edge the returned
    * boundary is empty.
