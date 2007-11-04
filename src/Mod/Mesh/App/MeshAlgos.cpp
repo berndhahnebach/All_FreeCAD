@@ -192,9 +192,6 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
         int f =fliped.size();
         if(fliped.size() == 0)
             break;
-
-        //Mesh->RecalcBoundBox();
-
       
         for(std::set<unsigned long>::iterator It= fliped.begin();It!=fliped.end();++It)
             alg.CollapseFacet(*It);
@@ -208,17 +205,9 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
     std::vector<unsigned long > faces;
     eval.GetIntersections(faces);
 
-    // Debug output 
-
-    //builder.startPoints();
-    //for(std::vector<unsigned long >::iterator It = faces.begin();It!= faces.end();++It)
-    //    builder.addPoint(Mesh->GetFacet(*It).GetGravityPoint());
-    //builder.endPoints();
 
     builder.saveToLog();
 
-
-  //Mesh->DeleteFacets(faces);
 }
 
 void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin)
