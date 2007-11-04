@@ -367,6 +367,30 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\UnicodeTests.py"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="unittestgui.py"
 			>
 			<FileConfiguration
