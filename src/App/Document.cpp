@@ -189,15 +189,12 @@ bool Document::undo(void)
         else
             assert(mUndoTransactions.size()!=0);
 
-        DocChanges DocChange;
-        DocChange.Why = DocChanges::UndoRedo;
-
         // redo
         activUndoTransaction = new Transaction();
         activUndoTransaction->Name = mUndoTransactions.back()->Name;
 
         // applying the undo
-        mUndoTransactions.back()->apply(*this,DocChange);
+        mUndoTransactions.back()->apply(*this/*,DocChange*/);
 
         // save the redo
         mRedoTransactions.push_back(activUndoTransaction);
@@ -206,9 +203,7 @@ bool Document::undo(void)
         delete mUndoTransactions.back();
         mUndoTransactions.pop_back();
 
-        // notify all the listeners (e.g. GuiDocument)
-        //Notify(DocChange);
-    }
+     }
 
     return false;
 }
@@ -221,23 +216,18 @@ bool Document::redo(void)
 
         assert(mRedoTransactions.size()!=0);
 
-        DocChanges DocChange;
-        DocChange.Why = DocChanges::UndoRedo;
-
         // undo
         activUndoTransaction = new Transaction();
         activUndoTransaction->Name = mRedoTransactions.back()->Name;
 
         // do the redo
-        mRedoTransactions.back()->apply(*this,DocChange);
+        mRedoTransactions.back()->apply(*this/*,DocChange*/);
         mUndoTransactions.push_back(activUndoTransaction);
         activUndoTransaction = 0;
 
         delete mRedoTransactions.back();
         mRedoTransactions.pop_back();
 
-        // notiefy all the listeners (e.g. GuiDocument)
-        //Notify(DocChange);
     }
 
     return false;
@@ -294,11 +284,10 @@ void Document::commitTransaction()
 
 void Document::abortTransaction()
 {
-    DocChanges dummy;
     if (activUndoTransaction) {
         bRollback = true;
         // applieing the so far made changes
-        activUndoTransaction->apply(*this,dummy);
+        activUndoTransaction->apply(*this);
         bRollback = false;
 
         // destroy the undo
@@ -1057,16 +1046,16 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
 
 void Document::recomputeFeature(AbstractFeature* Feat)
 {
-    DocChanges DocChange;
-    DocChange.Why = DocChanges::Recompute;
+    //DocChanges DocChange;
+    //DocChange.Why = DocChanges::Recompute;
 
     _recomputeFeature(Feat);
 
-    if (Feat->getStatus() == AbstractFeature::Error)
+ /*   if (Feat->getStatus() == AbstractFeature::Error)
         DocChange.ErrorFeatures.insert(Feat);
 
     if (Feat->getStatus() == AbstractFeature::Valid)
-        DocChange.UpdatedObjects.insert(Feat);
+        DocChange.UpdatedObjects.insert(Feat);*/
 
     //signalChangedObject(*Feat);
     //Notify(DocChange);

@@ -244,6 +244,8 @@ class UndoRedoCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("UndoTest")
     self.Doc.addObject("App::FeatureTest","Base")
+    self.Doc.addObject("App::FeatureTest","Del")
+    self.Doc.getObject("Del").Integer  = 2
 
   def testUndoProperties(self):
     # switch on the Undo
@@ -285,6 +287,8 @@ class UndoRedoCases(unittest.TestCase):
     self.Doc.openTransaction("Transaction1")
     self.Doc.addObject("App::FeatureTest","test1")
     self.Doc.getObject("test1").Integer  = 1
+    self.Doc.getObject("Del").Integer  = 1
+    self.Doc.removeObject("Del")
     self.assertEqual(self.Doc.UndoNames,['Transaction1'])
     self.assertEqual(self.Doc.UndoCount,1)
     self.assertEqual(self.Doc.RedoNames,[])
@@ -361,6 +365,7 @@ class UndoRedoCases(unittest.TestCase):
     # undo the first transaction 
     self.Doc.undo()
     self.failUnless(self.Doc.getObject("test1") == None)
+    self.failUnless(self.Doc.getObject("Del").Integer == 2)
     self.assertEqual(self.Doc.UndoNames,[])
     self.assertEqual(self.Doc.UndoCount,0)
     self.assertEqual(self.Doc.RedoNames,['Transaction1','Transaction2','Transaction3','Transaction4'])
