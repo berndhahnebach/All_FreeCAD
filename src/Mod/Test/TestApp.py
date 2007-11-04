@@ -32,6 +32,7 @@ import FreeCAD, os, unittest
 
 def All():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnicodeTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
     if ( FreeCAD.GuiUp == 1):
