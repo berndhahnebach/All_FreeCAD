@@ -184,6 +184,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(optimizeTopology)
   PYMETHODEDEF(optimizeEdges)
   PYMETHODEDEF(splitEdge)
+  PYMETHODEDEF(CollapseFacets)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -323,6 +324,36 @@ PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
   Base::Console().Error("Linker error: Part::TopoShapePy\n");
   Py_Return;
 #endif
+}
+PYFUNCIMP_D(MeshPy,CollapseFacets)
+{
+  PyObject *pcObj=0;
+  if (!PyArg_ParseTuple(args, "O", &pcObj))     // convert args: Python->C 
+    return 0;                             // NULL triggers exception
+
+  // if no mesh is given
+  if (PyList_Check(pcObj))
+  {
+      MeshTopoAlgorithm alg(*_pcMesh);
+      for (int i = 0; i < PyList_Size(pcObj); i++)
+      {
+        PyObject *idx = PyList_GetItem(pcObj, i);
+        if (PyInt_Check(idx)){
+            unsigned int iIdx = PyInt_AsLong(idx);  
+            alg.CollapseFacet(iIdx);
+        }else{
+            Py_Error(PyExc_Exception, "list of integers needed");
+        }
+
+      }
+      alg.Cleanup();
+  }
+  else 
+  {
+    Py_Error(PyExc_Exception, "List of Integers needed");
+  }
+
+  Py_Return; 
 }
 
 PYFUNCIMP_D(MeshPy,pointCount)

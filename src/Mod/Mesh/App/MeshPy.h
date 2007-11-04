@@ -110,6 +110,7 @@ public:
   PYFUNCDEF_D(MeshPy,optimizeTopology)
   PYFUNCDEF_D(MeshPy,optimizeEdges)
   PYFUNCDEF_D(MeshPy,splitEdge)
+  PYFUNCDEF_D(MeshPy,CollapseFacets)
 
 protected:
   MeshCore::MeshKernel *_pcMesh;
