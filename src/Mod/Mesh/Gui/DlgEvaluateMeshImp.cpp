@@ -320,6 +320,7 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
             checkOrientationButton->setText( tr("%1 flipped normals").arg(inds.size()) );
             checkOrientationButton->setChecked(true);
             repairOrientationButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
         }
 
@@ -382,6 +383,7 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
           checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
           checkNonmanifoldsButton->setChecked(true);
           repairNonmanifoldsButton->setEnabled(true);
+          repairAllTogether->setEnabled(true);
           addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
         }
 
@@ -448,21 +450,25 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
             checkIndicesButton->setText( tr("Invalid neighbour indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
         } else if ( !rf.Evaluate() ) {
             checkIndicesButton->setText( tr("Invalid face indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+            repairAllTogether->setEnabled(true);
+           addViewProvider( "MeshGui::ViewProviderMeshIndices" );
         } else if ( !rp.Evaluate() ) {
             checkIndicesButton->setText( tr("Invalid point indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
         } else if ( !cf.Evaluate() ) {
             checkIndicesButton->setText( tr("Multiple point indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
         } else {
             checkIndicesButton->setText( tr("No invalid indices") );
@@ -530,6 +536,7 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
             checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
             checkDegenerationButton->setChecked(true);
             repairDegeneratedButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
         }
 
@@ -594,6 +601,8 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
             checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
             checkDuplicatedFacesButton->setChecked(true);
             repairDuplicatedFacesButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
+
             addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
         }
 
@@ -657,6 +666,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
             checkDuplicatedPointsButton->setText( tr("Duplicated points") );
             checkDuplicatedPointsButton->setChecked(true);
             repairDuplicatedPointsButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
         }
 
@@ -720,6 +730,7 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
             checkSelfIntersectionButton->setText( tr("Self-intersections") );
             checkSelfIntersectionButton->setChecked(true);
             repairSelfIntersectionButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
         }
 
@@ -753,6 +764,35 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
         checkSelfIntersectionButton->setChecked(false);
         removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
     }
+}
+
+
+void DlgEvaluateMeshImp::on_analyzeAllTogether_clicked()
+{
+    on_analyzeOrientationButton_clicked();
+    on_analyzeDuplicatedFacesButton_clicked();
+    on_analyzeDuplicatedPointsButton_clicked();
+    on_analyzeNonmanifoldsButton_clicked();
+    on_analyzeDegeneratedButton_clicked();
+    on_analyzeIndicesButton_clicked();
+    on_analyzeSelfIntersectionButton_clicked();
+}
+void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
+{
+    if(repairSelfIntersectionButton->isEnabled())
+        on_repairSelfIntersectionButton_clicked();
+    if(repairDuplicatedPointsButton->isEnabled())
+        on_repairDuplicatedPointsButton_clicked();
+    if(repairDuplicatedFacesButton->isEnabled())
+        on_repairDuplicatedFacesButton_clicked();
+    if(repairDegeneratedButton->isEnabled())
+        on_repairDegeneratedButton_clicked();
+    if(repairIndicesButton->isEnabled())
+        on_repairIndicesButton_clicked();
+    if(repairNonmanifoldsButton->isEnabled())
+        on_repairNonmanifoldsButton_clicked();
+    if(repairOrientationButton->isEnabled())
+        on_repairOrientationButton_clicked();
 }
 
 // -------------------------------------------------------------
