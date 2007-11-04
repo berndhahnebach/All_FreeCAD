@@ -657,45 +657,51 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulFacetPos, unsigned long ulN
 ///FIXME: Creates non-manifolds
 bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 {
-  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-  if (rclF.CountOpenEdges() != 0)
-    return false;
-  
-  // set the neighbourhood of the circumjacent facets
-  for ( int i=0; i<3; i++ )
-  {
-    MeshFacet& rclN = _rclMesh._aclFacetArray[rclF._aulNeighbours[i]];
-    unsigned short uNSide = rclN.Side(rclF);
+    MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+    //if (rclF.CountOpenEdges() != 0)
+    //    return false;
 
-    if ( rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX )
+    if (!rclF.IsValid() )
+        return false; // the facets are marked invalid from a previous run
+
+    // set the neighbourhood of the circumjacent facets
+    for ( int i=0; i<3; i++ )
     {
-      _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+2)%3]);
-      _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].Transpose(rclN._aulPoints[(uNSide+1)%3],rclF._aulPoints[0]);
-    }
-    if ( rclN._aulNeighbours[(uNSide+2)%3] != ULONG_MAX )
-    {
-      _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+1)%3]);
-      _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]].Transpose(rclN._aulPoints[uNSide],rclF._aulPoints[0]);
-    }
+        MeshFacet& rclN = _rclMesh._aclFacetArray[rclF._aulNeighbours[i]];
+        unsigned short uNSide = rclN.Side(rclF);
+        if (!rclN.IsValid() || uNSide == USHRT_MAX)
+            continue; // the facets are marked invalid from a previous run
+
+        if ( rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX )
+          _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+2)%3]);
+        if ( rclN._aulNeighbours[(uNSide+2)%3] != ULONG_MAX )
+          _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+1)%3]);
+
+        // isolate the face and the point
+        rclN._aulNeighbours[0] = rclN._aulNeighbours[1] = rclN._aulNeighbours[2] = ULONG_MAX;
+        rclN.SetInvalid();
+
+  }
+  // move one point to gravity as replacement for the deleted face
+  Base::Vector3f cCenter = _rclMesh.GetGravityPoint(rclF);
+  unsigned long ptIdx0 = rclF._aulPoints[0];
+  unsigned long ptIdx1 = rclF._aulPoints[1];
+  unsigned long ptIdx2 = rclF._aulPoints[2];
+  _rclMesh._aclPointArray[ptIdx0] = cCenter;
+  // invalidate the rest of the points
+  _rclMesh._aclPointArray[rclF._aulPoints[1]].SetInvalid();
+  _rclMesh._aclPointArray[rclF._aulPoints[2]].SetInvalid();
+  // go through all faces and replace the deleted points with the point moved to the gravity point
+  for(MeshFacetArray::iterator It = _rclMesh._aclFacetArray.begin();It != _rclMesh._aclFacetArray.end(); ++ It){
+      if(rclF.IsValid()){
+        It->Transpose(ptIdx1,ptIdx0);
+        It->Transpose(ptIdx2,ptIdx0);
+      }
   }
 
-  // FIXME: quite ineffective
-  //
-  Base::Vector3f cCenter = _rclMesh.GetGravityPoint(rclF);
-  _rclMesh._aclPointArray[rclF._aulPoints[0]] = cCenter;
-
-  std::vector<unsigned long> remPoints;
-  remPoints.push_back(rclF._aulPoints[1]);
-  remPoints.push_back(rclF._aulPoints[2]);
-
-  _rclMesh._aclFacetArray.TransposeIndices(rclF._aulPoints[1], rclF._aulPoints[0]);
-  _rclMesh._aclFacetArray.TransposeIndices(rclF._aulPoints[2], rclF._aulPoints[0]);
-
-  rclF._aulPoints[0] = remPoints[0];
-  _rclMesh._aclFacetArray[rclF._aulNeighbours[0]]._aulPoints[0] = remPoints[0];
-  _rclMesh._aclFacetArray[rclF._aulNeighbours[1]]._aulPoints[0] = remPoints[0];
-  _rclMesh._aclFacetArray[rclF._aulNeighbours[0]]._aulPoints[2] = remPoints[0];
-  _rclMesh.DeletePoints(remPoints);
+  // isolate the face and the point
+  rclF._aulNeighbours[0] = rclF._aulNeighbours[1] = rclF._aulNeighbours[2] = ULONG_MAX;
+  rclF.SetInvalid();
 
   return true;
 }

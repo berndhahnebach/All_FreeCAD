@@ -147,67 +147,75 @@ void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
   for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
+  Mesh->RecalcBoundBox();
 }
 
 
 
 void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
 {
-  Base::Builder3D builder;  
-  std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
-  std::vector<unsigned long> fliped;
-  MeshFacetIterator it(*Mesh);
-  for (  it.Init(); it.More(); it.Next() )
-  {
-    unsigned long p1,p2,p3;
+    Base::Builder3D builder;  
+    std::vector<Base::Vector3f> PointNormals= Mesh->CalcVertexNormals();
+    std::vector<Base::Vector3f> FaceNormals;
+    std::set<unsigned long> fliped;
 
-    // get the points of the facet
-    Mesh->GetFacetPoints(it.Position(),p1,p2,p3);
+    MeshFacetIterator it(*Mesh);
+    for (  it.Init(); it.More(); it.Next() )
+        FaceNormals.push_back(it->GetNormal().Normalize());
 
-    // construct the offseted twin
-    MeshGeomFacet twin(Mesh->GetPoint(p1) + normals[p1],Mesh->GetPoint(p2) + normals[p2],Mesh->GetPoint(p3) + normals[p3]);
-    // compare fore angel
-    float angle = acos((it->GetNormal() * twin.GetNormal()) / (it->GetNormal().Length() * twin.GetNormal().Length()));
-    if(angle < 1.6)
-      builder.addSinglePoint(it->GetGravityPoint(),3,1,0,0);
-    else 
-      fliped.push_back(it.Position());
-  }
-  
-  
-  
-  
+    unsigned int i = 0;
 
-  unsigned int i = 0;
-  // go throug all the Vertex normales
-  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++){
-    builder.addSingleLine(Mesh->GetPoint(i),Mesh->GetPoint(i)+It->Normalize() * fSize);
-    // and move each mesh point in the normal direction
-    Mesh->MovePoint(i,It->Normalize() * fSize);
-  }
+    // go throug all the Vertex normales
+    for(std::vector<Base::Vector3f>::iterator It= PointNormals.begin();It != PointNormals.end();It++,i++){
+        builder.addSingleLine(Mesh->GetPoint(i),Mesh->GetPoint(i)+It->Normalize() * fSize);
+        // and move each mesh point in the normal direction
+        Mesh->MovePoint(i,It->Normalize() * fSize);
+    }
+    Mesh->RecalcBoundBox();
 
+    MeshTopoAlgorithm alg(*Mesh);
 
-  MeshTopoAlgorithm alg(*Mesh);
-  for(std::vector<unsigned long>::iterator it= fliped.begin();it!=fliped.end();++it)
-    if( ! (Mesh->GetFacet(*it).IsFlag(MeshFacet::INVALID)))
-      alg.CollapseFacet(*it);
-  alg.Cleanup();
+    for(int l= 0; l<1 ;l++){
+        for (  it.Init(),i=0; it.More(); it.Next(),i++ )
+        {
+            if(it->IsFlag(MeshFacet::INVALID))
+                continue;
+            // calculate the angle between them
+            float angle = acos((FaceNormals[i] * it->GetNormal()) / (it->GetNormal().Length() * FaceNormals[i].Length()));
+            if(angle > 1.6){
+                builder.addSinglePoint(it->GetGravityPoint(),4,1,0,0);
+                fliped.insert(it.Position());
+            }
+        }
+        
+        // if there no flipped triangels -> stop
+        int f =fliped.size();
+        if(fliped.size() == 0)
+            break;
 
+        //Mesh->RecalcBoundBox();
 
-  Mesh->RecalcBoundBox();
+      
+        for(std::set<unsigned long>::iterator It= fliped.begin();It!=fliped.end();++It)
+            alg.CollapseFacet(*It);
+        fliped.clear();
+    }
 
-  // search for intersected facets
-  MeshCore::MeshEvalSelfIntersection eval(*Mesh);
-  std::vector<unsigned long > faces;
-  eval.GetIntersections(faces);
+    alg.Cleanup();
 
-  // Debug output 
+    // search for intersected facets
+    MeshCore::MeshEvalSelfIntersection eval(*Mesh);
+    std::vector<unsigned long > faces;
+    eval.GetIntersections(faces);
 
-  builder.startPoints();
-  for(std::vector<unsigned long >::iterator It = faces.begin();It!= faces.end();++It)
-    builder.addPoint(Mesh->GetFacet(*It).GetGravityPoint());
-  builder.endPoints();
-  builder.saveToLog();
+    // Debug output 
+
+    //builder.startPoints();
+    //for(std::vector<unsigned long >::iterator It = faces.begin();It!= faces.end();++It)
+    //    builder.addPoint(Mesh->GetFacet(*It).GetGravityPoint());
+    //builder.endPoints();
+
+    builder.saveToLog();
 
 
   //Mesh->DeleteFacets(faces);
