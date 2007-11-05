@@ -109,7 +109,15 @@ public:
   PYFUNCDEF_D(MeshPy,refine)
   PYFUNCDEF_D(MeshPy,optimizeTopology)
   PYFUNCDEF_D(MeshPy,optimizeEdges)
+  PYFUNCDEF_D(MeshPy,splitEdges)
   PYFUNCDEF_D(MeshPy,splitEdge)
+  PYFUNCDEF_D(MeshPy,splitFacet)
+  PYFUNCDEF_D(MeshPy,swapEdge)
+  PYFUNCDEF_D(MeshPy,collapseEdge)
+  PYFUNCDEF_D(MeshPy,collapseFacet)
+  PYFUNCDEF_D(MeshPy,insertVertex)
+  PYFUNCDEF_D(MeshPy,snapVertex)
+  PYFUNCDEF_D(MeshPy,printInfo)
   PYFUNCDEF_D(MeshPy,CollapseFacets)
 
 protected:

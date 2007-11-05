@@ -36,6 +36,7 @@
 #include <Base/Builder3D.h>
 
 #include <App/MatrixPy.h>
+#include <App/VectorPy.h>
 
 #include "MeshPy.h"
 #include "Mesh.h"
@@ -183,7 +184,15 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(refine)
   PYMETHODEDEF(optimizeTopology)
   PYMETHODEDEF(optimizeEdges)
+  PYMETHODEDEF(splitEdges)
   PYMETHODEDEF(splitEdge)
+  PYMETHODEDEF(splitFacet)
+  PYMETHODEDEF(swapEdge)
+  PYMETHODEDEF(collapseEdge)
+  PYMETHODEDEF(collapseFacet)
+  PYMETHODEDEF(insertVertex)
+  PYMETHODEDEF(snapVertex)
+  PYMETHODEDEF(printInfo)
   PYMETHODEDEF(CollapseFacets)
   {NULL, NULL}    /* Sentinel */
 };
@@ -325,6 +334,7 @@ PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
   Py_Return;
 #endif
 }
+
 PYFUNCIMP_D(MeshPy,CollapseFacets)
 {
   PyObject *pcObj=0;
@@ -622,7 +632,7 @@ PYFUNCIMP_D(MeshPy,optimizeEdges)
   Py_Return; 
 }
 
-PYFUNCIMP_D(MeshPy,splitEdge)
+PYFUNCIMP_D(MeshPy,splitEdges)
 {
   if (! PyArg_ParseTuple(args, ""))			 
     return NULL;                         
@@ -656,6 +666,187 @@ PYFUNCIMP_D(MeshPy,splitEdge)
   } PY_CATCH;
 
   Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,splitEdge)
+{
+    int facet, neighbour;
+    PyObject* vertex;
+    if (! PyArg_ParseTuple(args, "iiO!", &facet, &neighbour, &App::VectorPy::Type, &vertex))
+        return NULL;
+
+    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+  
+        const MeshCore::MeshFacet& rclF = _pcMesh->GetFacets()[facet];
+        if (rclF._aulNeighbours[0] != neighbour && rclF._aulNeighbours[1] != neighbour &&
+            rclF._aulNeighbours[2] != neighbour) {
+            PyErr_SetString(PyExc_IndexError, "No adjacent facets");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.SplitEdge(facet, neighbour, v);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,splitFacet)
+{
+    int facet;
+    PyObject* vertex1;
+    PyObject* vertex2;
+    if (! PyArg_ParseTuple(args, "iO!O!", &facet, &App::VectorPy::Type, &vertex1, 
+                                                  &App::VectorPy::Type, &vertex2))
+        return NULL;
+
+    Base::Vector3f v1 = static_cast<App::VectorPy*>(vertex1)->value();
+    Base::Vector3f v2 = static_cast<App::VectorPy*>(vertex2)->value();
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.SplitFacet(facet, v1, v2);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,swapEdge)
+{
+    int facet, neighbour;
+    if (! PyArg_ParseTuple(args, "ii", &facet, &neighbour))
+        return NULL;
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+  
+        const MeshCore::MeshFacet& rclF = _pcMesh->GetFacets()[facet];
+        if (rclF._aulNeighbours[0] != neighbour && rclF._aulNeighbours[1] != neighbour &&
+            rclF._aulNeighbours[2] != neighbour) {
+            PyErr_SetString(PyExc_IndexError, "No adjacent facets");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.SwapEdge(facet, neighbour);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,collapseEdge)
+{
+    int facet, neighbour;
+    if (! PyArg_ParseTuple(args, "ii", &facet, &neighbour))
+        return NULL;
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+  
+        const MeshCore::MeshFacet& rclF = _pcMesh->GetFacets()[facet];
+        if (rclF._aulNeighbours[0] != neighbour && rclF._aulNeighbours[1] != neighbour &&
+            rclF._aulNeighbours[2] != neighbour) {
+            PyErr_SetString(PyExc_IndexError, "No adjacent facets");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.CollapseEdge(facet, neighbour);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,collapseFacet)
+{
+    int facet;
+    if (! PyArg_ParseTuple(args, "i", &facet))
+        return NULL;
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+  
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.CollapseFacet(facet);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,insertVertex)
+{
+    int facet;
+    PyObject* vertex;
+    if (! PyArg_ParseTuple(args, "iO!", &facet, &App::VectorPy::Type, &vertex))
+        return NULL;
+
+    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.InsertVertex(facet, v);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,snapVertex)
+{
+    int facet;
+    PyObject* vertex;
+    if (! PyArg_ParseTuple(args, "iO!", &facet, &App::VectorPy::Type, &vertex))
+        return NULL;
+
+    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+
+    PY_TRY {
+        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+            PyErr_SetString(PyExc_IndexError, "Facet index out of range");
+            return NULL;
+        }
+        
+        MeshTopoAlgorithm topalg(*_pcMesh);
+        topalg.SnapVertex(facet, v);
+    } PY_CATCH;
+
+    Py_Return; 
 }
 
 PYFUNCIMP_D(MeshPy,coarsen)
@@ -1039,5 +1230,18 @@ PYFUNCIMP_D(MeshPy,testDelaunay)
 //    delete [] idx;
 
     return pyMesh;
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(MeshPy,printInfo)
+{
+    if (! PyArg_ParseTuple(args, ""))			 
+        return NULL;                         
+
+    PY_TRY {
+        std::stringstream a;
+        MeshInfo info(*_pcMesh);
+        info.TopologyInformation( a );
+        return Py_BuildValue("s", a.str().c_str());
   } PY_CATCH;
 }
