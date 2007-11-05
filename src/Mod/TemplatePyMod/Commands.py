@@ -5,7 +5,7 @@
 
 
 # import FreeCAD modules
-import FreeCAD, FreeCADGui, TestApp
+import FreeCAD, FreeCADGui
 
 #---------------------------------------------------------------------------
 # The command classes
