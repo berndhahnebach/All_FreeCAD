@@ -135,7 +135,16 @@ public:
    */
   bool CollapseEdge(unsigned long ulFacetPos, unsigned long ulNeighbour);
   /**
-   * Removes the facet with index \a ulFacetPos and all its neighbour facets.
+   * Removes the facet with index \a ulFacetPos and all its neighbour facets. 
+   * The three vertices that are referenced by this facet are replaced by its gravity point. 
+   *
+   * @note The client programmer must make sure that this is a legal operation.
+   *
+   * @note This method marks the facets and the point as 'invalid' but does not remove them from the mesh structure, i.e. 
+   * the mesh structure gets into an inconsistent stage. To make the structure consistent again Cleanup() should be called. 
+   * The reason why this cannot be done automatically is that it would become quite slow if a lot of edges should be collapsed.
+   *
+   * @note While the mesh structure has invalid elements the client programmer must take care not to use such elements.
    */
   bool CollapseFacet(unsigned long ulFacetPos);
   /**
@@ -146,7 +155,7 @@ public:
    * Splits the facet with index \a ulFacetPos into up to three facets. The points \a rP1 and \a rP2 should lie on  
    * two different edges of the facet. This method splits up the both neighbour facets as well.
    * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet()) is coincident with a corner point then the
-   * facet is splitted into two facets. If both both points are coincident with corner points of this facet nothing is done.
+   * facet is splitted into two facets. If both points are coincident with corner points of this facet nothing is done.
    */
   void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2);
   /**

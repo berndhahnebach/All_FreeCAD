@@ -7,11 +7,11 @@ import FreeCAD, os, unittest,Mesh
 # define the functions to test the FreeCAD mesh module
 #---------------------------------------------------------------------------
 
-  
+
 class MeshTopoTestCases(unittest.TestCase):
-  def setUp(self):
+	def setUp(self):
 		# set up a planar face with 18 triangles
-    self.planarMesh = []
+		self.planarMesh = []
 		for x in range(3):
 			for y in range(3):
 				self.planarMesh.append( [0.0 + x, 0.0 + y,0.0000] ) 
@@ -22,24 +22,23 @@ class MeshTopoTestCases(unittest.TestCase):
 				self.planarMesh.append( [1.0 + x, 1.0 + y,0.0000] )
 
 
-  def testCollapseFacetsSingle(self):
+	def testCollapseFacetsSingle(self):
 		for i in range(18):
-			planarMeshObject = Mesh.mesh(planarMesh)
+			planarMeshObject = Mesh.mesh(self.planarMesh)
 			planarMeshObject.CollapseFacets([i])
 
-  def testCollapseFacetsMultible(self):
-		planarMeshObject = Mesh.mesh(planarMesh)
+	def testCollapseFacetsMultible(self):
+		planarMeshObject = Mesh.mesh(self.planarMesh)
 		planarMeshObject.CollapseFacets(range(7))
 
 	def testCollapseFacetsAll(self):
-		planarMeshObject = Mesh.mesh(planarMesh)
+		planarMeshObject = Mesh.mesh(self.planarMesh)
 		planarMeshObject.CollapseFacets(range(18))
 			
-    
-  def tearDown(self):
-    #closing doc
-    FreeCAD.closeDocument("CreateTest")
+
+	def tearDown(self):
+		#closing doc
+		FreeCAD.closeDocument("CreateTest")
 
 
 
-      

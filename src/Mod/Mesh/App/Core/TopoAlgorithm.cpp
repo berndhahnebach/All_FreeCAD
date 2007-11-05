@@ -654,7 +654,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulFacetPos, unsigned long ulN
 
   return true;
 }
-///FIXME: Creates non-manifolds
+#if 0
 bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 {
     MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
@@ -667,6 +667,8 @@ bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
     // set the neighbourhood of the circumjacent facets
     for ( int i=0; i<3; i++ )
     {
+        if (rclF._aulNeighbours[i] == ULONG_MAX)
+            continue;
         MeshFacet& rclN = _rclMesh._aclFacetArray[rclF._aulNeighbours[i]];
         unsigned short uNSide = rclN.Side(rclF);
         if (!rclN.IsValid() || uNSide == USHRT_MAX)
@@ -705,7 +707,71 @@ bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 
   return true;
 }
+#else
+bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
+{
+    MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+    if (!rclF.IsValid())
+        return false; // the facet is marked invalid from a previous run
 
+    // get the point index we want to remove
+    unsigned long ulPointInd0 = rclF._aulPoints[0];
+    unsigned long ulPointInd1 = rclF._aulPoints[1];
+    unsigned long ulPointInd2 = rclF._aulPoints[2];
+
+    // move the vertex to the gravity center
+    Base::Vector3f cCenter = _rclMesh.GetGravityPoint(rclF);
+    _rclMesh._aclPointArray[ulPointInd0] = cCenter;
+
+    // set the new point indices for all facets that share one of the points to be deleted
+    std::vector<unsigned long> aRefs = GetFacetsToPoint(ulFacetPos, ulPointInd1);
+    for (std::vector<unsigned long>::iterator it = aRefs.begin(); it != aRefs.end(); ++it) {
+        MeshFacet& rFace = _rclMesh._aclFacetArray[*it];
+        rFace.Transpose(ulPointInd1, ulPointInd0);
+    }
+    
+    aRefs = GetFacetsToPoint(ulFacetPos, ulPointInd2);
+    for (std::vector<unsigned long>::iterator it = aRefs.begin(); it != aRefs.end(); ++it) {
+        MeshFacet& rFace = _rclMesh._aclFacetArray[*it];
+        rFace.Transpose(ulPointInd2, ulPointInd0);
+    }
+
+    // set the neighbourhood of the circumjacent facets
+    for (int i=0; i<3; i++) {
+        if (rclF._aulNeighbours[i] == ULONG_MAX)
+            continue;
+        MeshFacet& rclN = _rclMesh._aclFacetArray[rclF._aulNeighbours[i]];
+        unsigned short uNSide = rclN.Side(rclF);
+
+        if (rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX) {
+            _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]]
+                    .ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+2)%3]);
+        }
+        if (rclN._aulNeighbours[(uNSide+2)%3] != ULONG_MAX) {
+            _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]]
+                    .ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+1)%3]);
+        }
+
+        // Isolate the neighbours from the topology
+        rclN._aulNeighbours[0] = ULONG_MAX;
+        rclN._aulNeighbours[1] = ULONG_MAX;
+        rclN._aulNeighbours[2] = ULONG_MAX;
+        rclN.SetInvalid();
+    }
+
+    // Isolate this facet and make two of its points invalid
+    rclF._aulNeighbours[0] = ULONG_MAX;
+    rclF._aulNeighbours[1] = ULONG_MAX;
+    rclF._aulNeighbours[2] = ULONG_MAX;
+    rclF.SetInvalid();
+    _rclMesh._aclPointArray[ulPointInd1].SetInvalid();
+    _rclMesh._aclPointArray[ulPointInd2].SetInvalid();
+
+    _needsCleanup = true;
+
+    return true;
+}
+#endif
 /// FIXME: Implement
 void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2)
 {
