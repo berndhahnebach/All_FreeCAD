@@ -315,6 +315,8 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
     
         if (inds.empty()) {
             checkOrientationButton->setText( tr("No flipped normals") );
+            checkOrientationButton->setChecked(false);
+            repairOrientationButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
         } else {
             checkOrientationButton->setText( tr("%1 flipped normals").arg(inds.size()) );
@@ -360,7 +362,7 @@ void DlgEvaluateMeshImp::on_checkNonmanifoldsButton_clicked()
 {
     std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshNonManifolds");
     if (it != _vp.end()) {
-        if (checkDegenerationButton->isChecked())
+        if (checkNonmanifoldsButton->isChecked())
             it->second->show();
         else
             it->second->hide();
@@ -378,7 +380,10 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
         MeshEvalTopology eval(rMesh);
     
         if (eval.Evaluate()) {
-            checkNonmanifoldsButton->setText( tr("No non-manifolds") );
+          checkNonmanifoldsButton->setText( tr("No non-manifolds") );
+          checkNonmanifoldsButton->setChecked(false);
+          repairNonmanifoldsButton->setEnabled(false);
+          removeViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
         } else {
           checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
           checkNonmanifoldsButton->setChecked(true);
@@ -472,6 +477,8 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
         } else {
             checkIndicesButton->setText( tr("No invalid indices") );
+            checkIndicesButton->setChecked(false);
+            repairIndicesButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
         }
 
@@ -531,6 +538,8 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
         
         if (degen.empty()) {
             checkDegenerationButton->setText( tr("No degenerations") );
+            checkDegenerationButton->setChecked(false);
+            repairDegeneratedButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
         } else {
             checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
@@ -596,6 +605,8 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
     
         if (dupl.empty()) {
             checkDuplicatedFacesButton->setText( tr("No duplicated faces") );
+            checkDuplicatedFacesButton->setChecked(false);
+            repairDuplicatedFacesButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
         } else {
             checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
@@ -661,6 +672,8 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
     
         if (eval.Evaluate()) {
             checkDuplicatedPointsButton->setText( tr("No duplicated points") );
+            checkDuplicatedPointsButton->setChecked(false);
+            repairDuplicatedPointsButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
         } else {
             checkDuplicatedPointsButton->setText( tr("Duplicated points") );
@@ -725,6 +738,8 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
     
         if (eval.Evaluate()) {
             checkSelfIntersectionButton->setText( tr("No self-intersections") );
+            checkSelfIntersectionButton->setChecked(false);
+            repairSelfIntersectionButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
         } else {
             checkSelfIntersectionButton->setText( tr("Self-intersections") );

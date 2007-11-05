@@ -243,3 +243,19 @@ std::ostream& MeshInfo::InternalInformation (std::ostream& rclStream) const
   return rclStream;
 }
 
+std::ostream& MeshInfo::TopologyInformation (std::ostream& rclStream) const
+{
+    unsigned long index = 0;
+    const MeshFacetArray& rFAry = _rclMesh.GetFacets();
+    for (MeshFacetArray::_TConstIterator it = rFAry.begin(); it != rFAry.end(); ++it, ++index) {
+        rclStream << "F " << std::setw(4) << index << ": P (" 
+                  << it->_aulPoints[0] << ", "
+                  << it->_aulPoints[1] << ", "
+                  << it->_aulPoints[2] << "), N ("
+                  << it->_aulNeighbours[0] << ", "
+                  << it->_aulNeighbours[1] << ", "
+                  << it->_aulNeighbours[2] << ")" << std::endl;
+    }
+    
+    return rclStream;
+}

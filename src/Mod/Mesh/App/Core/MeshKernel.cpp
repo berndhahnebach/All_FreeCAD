@@ -885,7 +885,7 @@ void MeshKernel::Read (std::istream &rclIn)
             _aclPointArray.swap(pointArray);
             _aclFacetArray.swap(facetArray);
         }
-        catch (std::length_error&) {
+        catch (std::exception&) {
             // Special handling of std::length_error
             throw Base::Exception("Reading from stream failed");
         }

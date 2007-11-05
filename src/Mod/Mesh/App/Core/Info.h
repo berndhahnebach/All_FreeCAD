@@ -50,6 +50,10 @@ public:
    * Writes internal information about the mesh structure into the stream.
    */
   std::ostream& InternalInformation (std::ostream& rclStream) const;
+  /**
+   * Writes topological information about the mesh structure into the stream.
+   */
+  std::ostream& TopologyInformation (std::ostream& rclStream) const;
 
 protected:
   /**
