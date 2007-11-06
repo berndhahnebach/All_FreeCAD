@@ -278,7 +278,7 @@ private:
 class PythonCommand: public Command
 {
 public:
-  PythonCommand(const char* name,PyObject * pcPyCommand);
+  PythonCommand(const char* name,PyObject * pcPyCommand, const char* pActivationString);
   virtual ~PythonCommand() {}
 
 protected:
@@ -314,6 +314,8 @@ protected:
   PyObject * _pcPyCommand;
   /// the command object resource dictionary
   PyObject * _pcPyResourceDict;
+  /// the activation sequence
+  std::string Activation;
 };
 
 

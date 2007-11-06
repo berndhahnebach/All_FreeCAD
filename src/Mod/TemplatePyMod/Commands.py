@@ -5,7 +5,21 @@
 
 
 # import FreeCAD modules
-import FreeCAD, FreeCADGui
+import FreeCAD, FreeCADGui,inspect
+
+# helper -------------------------------------------------------------------
+
+def addCommand(name,cmdObject):
+	(list,num) = inspect.getsourcelines(cmdObject.Activated)
+	pos = 0
+	# check for indentation
+	while(list[1][pos] == ' ' or list[1][pos] == '\t'):
+		pos += 1
+	source = ""
+	for i in range(len(list)-1):
+		source += list[i+1][pos:]
+	FreeCADGui.addCommand(name,cmdObject,source)
+	
 
 #---------------------------------------------------------------------------
 # The command classes
@@ -62,6 +76,6 @@ class TemplatePyMod_Cmd2:
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-FreeCADGui.addCommand('TemplatePyMod_Cmd1'        ,TemplatePyMod_Cmd1())
-FreeCADGui.addCommand('TemplatePyMod_Cmd2'        ,TemplatePyMod_Cmd2())
+addCommand('TemplatePyMod_Cmd1'        ,TemplatePyMod_Cmd1())
+addCommand('TemplatePyMod_Cmd2'        ,TemplatePyMod_Cmd2())
 

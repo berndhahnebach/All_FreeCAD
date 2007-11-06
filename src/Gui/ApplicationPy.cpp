@@ -543,13 +543,14 @@ PYFUNCIMP_S(Application,sAddIconPath)
 PYFUNCIMP_S(Application,sAddCommand)
 {
   char*       pName;
+  char*       pActivateionString=0;
   PyObject*   pcCmdObj;
-  if (!PyArg_ParseTuple(args, "sO", &pName,&pcCmdObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "sO|s", &pName,&pcCmdObj,&pActivateionString))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
   //Py_INCREF(pcObject);
 
-  Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj));
+  Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj,pActivateionString));
 
   Py_INCREF(Py_None);
   return Py_None;

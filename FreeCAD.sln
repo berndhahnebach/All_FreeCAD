@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "All", "src\All.vcproj", "{E95B1D77-A7C8-476E-9300-5C108B74D039}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EBE82CDA-AD94-4AB4-A198-D4EAEB1E05E9} = {EBE82CDA-AD94-4AB4-A198-D4EAEB1E05E9}
@@ -160,6 +160,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppDrawingGui", "src\Mod\Dr
 		{6E901906-58D6-439E-B729-B23DD8E25223} = {6E901906-58D6-439E-B729-B23DD8E25223}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppTemplatePyMod", "src\Mod\TemplatePyMod\AppTemplatePyMod.vcproj", "{2B8BF20D-7275-4673-B9D0-60453891F76A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -254,6 +256,10 @@ Global
 		{EBE82CDA-AD94-4AB4-A198-D4EAEB1E05E9}.Debug|Win32.Build.0 = Debug|Win32
 		{EBE82CDA-AD94-4AB4-A198-D4EAEB1E05E9}.Release|Win32.ActiveCfg = Release|Win32
 		{EBE82CDA-AD94-4AB4-A198-D4EAEB1E05E9}.Release|Win32.Build.0 = Release|Win32
+		{2B8BF20D-7275-4673-B9D0-60453891F76A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B8BF20D-7275-4673-B9D0-60453891F76A}.Debug|Win32.Build.0 = Debug|Win32
+		{2B8BF20D-7275-4673-B9D0-60453891F76A}.Release|Win32.ActiveCfg = Release|Win32
+		{2B8BF20D-7275-4673-B9D0-60453891F76A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
