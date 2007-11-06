@@ -455,7 +455,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
     // View
     ToolBarItem* view = new ToolBarItem( root );
     view->setCommand(QT_TR_NOOP("View"));
-    *view << "Separator" << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
+    *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
           << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
           << "Std_ViewBottom";
 

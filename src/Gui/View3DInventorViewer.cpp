@@ -433,6 +433,13 @@ void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
     pcMouseModel->grabMouseModel(this);
 }
 
+void View3DInventorViewer::stopPicking()
+{
+  pcPolygon.clear();
+  delete pcMouseModel; 
+  pcMouseModel = 0;
+}
+
 bool View3DInventorViewer::isPicking() const
 {
     return (pcMouseModel ? true : false);
@@ -1113,6 +1120,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     case SoMouseButtonEvent::BUTTON2:
       break;
     case SoMouseButtonEvent::BUTTON3:
+      if (isEditing()) // in edit mode do not do interactions 
+          break;
       if(press)
       {
         // check on double click
@@ -2300,5 +2309,16 @@ ViewProvider* View3DInventorViewer::getViewProviderByPath(SoPath * path) const
 
     return 0;
 }
- 
+
+std::vector<ViewProvider*> View3DInventorViewer::getViewProvidersOfType(const Base::Type& typeId) const
+{
+    std::vector<ViewProvider*> views;
+    for (std::set<ViewProvider*>::const_iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); it++) {
+        if ((*it)->getTypeId().isDerivedFrom(typeId)) {
+            views.push_back(*it);
+        }
+    }
+    return views;
+}
+
 

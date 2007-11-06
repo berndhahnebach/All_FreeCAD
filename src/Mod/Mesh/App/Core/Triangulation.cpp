@@ -30,6 +30,7 @@
 
 #include "Triangulation.h"
 #include "MeshKernel.h"
+#include "Approximation.h"
 #include "triangle.h"
 
 
@@ -402,10 +403,13 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     in->segmentlist = new int[_points.size() * 2];
     in->numberofsegments = _points.size();
 
+    PolynomialFit polyFit;
+
     // build up point list
     int i = 0, j = 0, k = 0;
     int mod = _points.size();
     for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+        polyFit.AddPoint(*it);
         in->pointlist[i++] = it->x;
         in->pointlist[i++] = it->y;
         in->segmentlist[j++] = k;
@@ -425,11 +429,14 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     snprintf(szBuf, 50, "pYzqa%.6f", fMaxArea);
     triangulate(szBuf, in, out, NULL);
 
+    polyFit.Fit();
+
     // get all added points by the algorithm
     for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
         float x = out->pointlist[index++];
         float y = out->pointlist[index++];
-        Base::Vector3f vertex(x, y, 0.0f);
+        float z = polyFit.Value(x, y);
+        Base::Vector3f vertex(x, y, z);
         newPoints.push_back(vertex);
     }
 

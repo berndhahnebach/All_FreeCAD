@@ -109,6 +109,11 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), pBoundingBox
   pShapeHints = new SoShapeHints;
   pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
   pShapeHints->ref();
+
+  pcMatBinding = new SoMaterialBinding;
+  pcMatBinding->value = SoMaterialBinding::OVERALL;
+  pcMatBinding->ref();
+
   Lighting.touch();
 
   // read the correct shape color from the preferences
@@ -129,6 +134,7 @@ ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
   pcLineStyle->unref();
   pcPointStyle->unref();
   pShapeHints->unref();
+  pcMatBinding->unref();
 }
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
@@ -190,6 +196,7 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 
   pcFlatRoot->addChild(pShapeHints);
   pcFlatRoot->addChild(pcShapeMaterial);
+  pcFlatRoot->addChild(pcMatBinding);
   pcFlatRoot->addChild(pcHighlight);
   addDisplayMaskMode(pcFlatRoot, "Flat");
 
@@ -493,6 +500,72 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
     }
 }
 
+void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
+{
+    // handle only mouse button events
+    if (n->getEvent()->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+        const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent*>(n->getEvent());
+        Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+
+        // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+        n->getAction()->setHandled();
+        if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
+            n->setHandled();
+            view->setEditing(false);
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), markPartCallback);
+
+            std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
+            for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                static_cast<ViewProviderMeshFaceSet*>(*it)->unmarkParts();
+            }
+        }
+        else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+            const SoPickedPoint * point = n->getPickedPoint();
+            if (point == NULL) {
+                Base::Console().Message("No facet picked.\n");
+                return;
+            }
+
+            n->setHandled();
+
+            // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
+            // really from the mesh we render and not from any other geometry
+            Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+            if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
+                return;
+            ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
+            const SoDetail* detail = point->getDetail(that->pcFaceSet);
+            if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
+                // get the boundary to the picked facet
+                unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
+                that->markPart(uFacet);
+            }
+        }
+        else if (mbe->getButton() == SoMouseButtonEvent::BUTTON3 && mbe->getState() == SoButtonEvent::DOWN) {
+            Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+            std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
+
+            // Check if facets are marked
+            unsigned long count = 0;
+            for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                count += static_cast<ViewProviderMeshFaceSet*>(*it)->countMarkedFacets();
+            }
+
+            if (count > 0) {
+                Gui::Application::Instance->activeDocument()->openCommand("Remove");
+                for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                    unsigned long count = static_cast<ViewProviderMeshFaceSet*>(*it)->countMarkedFacets();
+                    static_cast<ViewProviderMeshFaceSet*>(*it)->removePart();
+                    if (count > 0)
+                        view->render();
+                }
+                
+                Gui::Application::Instance->activeDocument()->commitCommand();
+            }
+        }
+    }
+}
+
 void ViewProviderMeshFaceSet::faceInfo(unsigned long uFacet)
 {
     Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
@@ -566,5 +639,59 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
     // notify the mesh shape node
     this->pcFaceSet->touch();
     //fea->getDocument().update(fea);
+}
+
+void ViewProviderMeshFaceSet::markPart(unsigned long uFacet)
+{
+    _markedFacets.push_back(uFacet);
+    MeshCore::MeshTopFacetVisitor clVisitor(_markedFacets);
+    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::VISIT);
+    rKernel.VisitNeighbourFacets(clVisitor, uFacet);
+
+    pcMatBinding->value = SoMaterialBinding::PER_FACE_INDEXED;
+    App::Color c = ShapeColor.getValue();
+    unsigned long uCtFacets = rKernel.CountFacets();
+    pcShapeMaterial->diffuseColor.setNum(uCtFacets);
+    for (unsigned long i=0; i<uCtFacets; i++)
+        pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
+    for (std::vector<unsigned long>::iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it)
+        pcShapeMaterial->diffuseColor.set1Value(*it, 1.0f,0.0f,0.0f);
+}
+
+void ViewProviderMeshFaceSet::unmarkParts()
+{
+    _markedFacets.clear();
+    pcMatBinding->value = SoMaterialBinding::OVERALL;
+    App::Color c = ShapeColor.getValue();
+    pcShapeMaterial->diffuseColor.setNum(0);
+    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+}
+
+void ViewProviderMeshFaceSet::removePart()
+{
+    if (!_markedFacets.empty()) {
+        // Get the attached mesh property
+        Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+        meshProp.deleteFacetIndices(_markedFacets);
+        ((Mesh::Feature*)pcObject)->purgeTouched();
+        
+        // notify the mesh shape node
+        const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+        App::Color c = ShapeColor.getValue();
+        unsigned long uCtFacets = rKernel.CountFacets();
+        pcShapeMaterial->diffuseColor.setNum(uCtFacets);
+        for (unsigned long i=0; i<uCtFacets; i++)
+            pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
+        pcFaceSet->touch();
+        showBoundingBox(BoundingBox.getValue());
+        
+        _markedFacets.clear();
+    }
+}
+
+unsigned long ViewProviderMeshFaceSet::countMarkedFacets() const
+{
+    return _markedFacets.size();
 }
 

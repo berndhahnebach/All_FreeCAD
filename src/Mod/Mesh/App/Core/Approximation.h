@@ -481,6 +481,25 @@ private:
   FunctionContainer(){};
 };
 
+class AppMeshExport PolynomialFit : public MeshPointFit
+{
+public:
+  /**
+   * Construction
+   */
+  PolynomialFit();
+  
+  /**
+   * Destruction
+   */
+  virtual ~PolynomialFit();
+  float Fit();
+  float Value(float x, float y) const;
+
+protected:
+  float _fCoeff[9];
+};
+
 } // namespace MeshCore
 
 #endif // MESH_APPROXIMATION_H

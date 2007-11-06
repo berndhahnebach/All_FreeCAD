@@ -35,6 +35,7 @@
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprPlaneFit3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Plane3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4ApprPolyFit3.h>
 
 using namespace Wm4;
 using namespace MeshCore;
@@ -643,4 +644,49 @@ float MeshSurfaceFit::SurfaceFit()
   _fCoeff[9] = 0.0f;
 
   return 0.0f;
+}
+// -----------------------------------------------------------------------------
+
+PolynomialFit::PolynomialFit()
+{
+    for (int i=0; i<9; i++)
+        _fCoeff[i] = 0.0f;
+}
+
+PolynomialFit::~PolynomialFit()
+{
+}
+
+float PolynomialFit::Fit()
+{
+    std::vector<float> x, y, z;
+    x.reserve(_vPoints.size());
+    y.reserve(_vPoints.size());
+    z.reserve(_vPoints.size());
+    for (std::list<Base::Vector3f>::const_iterator it = _vPoints.begin(); it != _vPoints.end(); ++it) {
+        x.push_back(it->x);
+        y.push_back(it->y);
+        z.push_back(it->z);
+    }
+
+    float* coeff = Wm4::PolyFit3<float>(_vPoints.size(), &(x[0]), &(y[0]), &(z[0]), 2 , 2);
+    for (int i=0; i<9; i++)
+        _fCoeff[i] = coeff[i];
+
+    return 0.0f;
+}
+
+float PolynomialFit::Value(float x, float y) const
+{
+    float fValue = 
+    _fCoeff[0]                   +
+    _fCoeff[1] * x               +
+    _fCoeff[2] * x * x           +
+    _fCoeff[3]         * y       +
+    _fCoeff[4] * x     * y       +
+    _fCoeff[5] * x * x * y       +
+    _fCoeff[6]         * y * y   +      
+    _fCoeff[7] * x     * y * y   +
+    _fCoeff[8] * x * x * y * y;
+    return fValue;
 }

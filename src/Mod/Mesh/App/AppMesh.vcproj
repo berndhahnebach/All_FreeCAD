@@ -710,6 +710,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\WildMagic4\Wm4ApprPolyFit3.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\WildMagic4\Wm4ApprQuadraticFit3.cpp"
 				>
 				<FileConfiguration

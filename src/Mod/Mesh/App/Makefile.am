@@ -51,6 +51,8 @@ libMesh_la_SOURCES=\
 		Core/Visitor.h \
 		WildMagic4/Wm4ApprPlaneFit3.cpp \
 		WildMagic4/Wm4ApprPlaneFit3.h \
+		WildMagic4/Wm4ApprPolyFit3.cpp \
+		WildMagic4/Wm4ApprPolyFit3.h \
 		WildMagic4/Wm4ApprQuadraticFit3.cpp \
 		WildMagic4/Wm4ApprQuadraticFit3.h \
 		WildMagic4/Wm4BandedMatrix.h \

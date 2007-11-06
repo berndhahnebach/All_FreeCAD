@@ -74,8 +74,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
  
     mesh->setCommand(QT_TR_NOOP("&Meshes"));
     *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
-          << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" 
-          << boolean << "Separator" << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
+          << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents" << "Mesh_RemoveCompByHand" << "Separator" 
+          << "Mesh_BuildRegularSolid" << boolean << "Separator" << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" 
+          << "Mesh_VertexCurvature";
     return root;
 }
 

@@ -154,7 +154,8 @@ private:
   virtual void notify(SoNotList * list);
   Binding findMaterialBinding(SoState * const state) const;
   // Draw faces
-  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SoMaterialBundle* mb, SbBool needNormals, SbBool ccw) const;
+  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SoMaterialBundle* mb, Binding bind, 
+                 SbBool needNormals, SbBool ccw) const;
   void drawPoints(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals, SbBool ccw) const;
   unsigned int countTriangles(SoAction * action) const;
   void createProxyModel(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool simplest);

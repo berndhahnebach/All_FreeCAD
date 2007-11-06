@@ -33,6 +33,7 @@
 #include <stack>
 
 #include <Base/Vector3D.h>
+#include <Base/Type.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/Qt/SoQtCursor.h>
@@ -100,6 +101,7 @@ public:
     Circle      = 3,  /**< Select objects using a circle. */
   };
   void startPicking( ePickMode = Lasso );
+  void stopPicking();
   bool isPicking() const;
   const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
 
@@ -125,7 +127,7 @@ public:
    */
   void removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata = 0);
   ViewProvider* getViewProviderByPath(SoPath*) const;
-
+  std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
 
   /** @name Clipping plane
    */

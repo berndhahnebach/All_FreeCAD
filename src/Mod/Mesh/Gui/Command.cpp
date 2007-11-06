@@ -778,6 +778,47 @@ bool CmdMeshEvaluateFacet::isActive(void)
 }
 
 //--------------------------------------------------------------------------------------
+DEF_STD_CMD_A(CmdMeshRemoveCompByHand);
+
+CmdMeshRemoveCompByHand::CmdMeshRemoveCompByHand()
+  :Command("Mesh_RemoveCompByHand")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Remove components by hand...");
+    sToolTipText  = QT_TR_NOOP("Mark a component to remove it from the mesh");
+    sWhatsThis    = QT_TR_NOOP("Mark a component to remove it from the mesh");
+    sStatusTip    = QT_TR_NOOP("Mark a component to remove it from the mesh");
+}
+
+void CmdMeshRemoveCompByHand::activated(int iMsg)
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        //viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::markPartCallback);
+    }
+}
+
+bool CmdMeshRemoveCompByHand::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::View3DInventor* view = dynamic_cast<Gui::View3DInventor*>(Gui::getMainWindow()->activeWindow());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshEvaluateSolid);
 
@@ -1277,4 +1318,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshFillupHoles());
   rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
   rcCmdMgr.addCommand(new CmdMeshFillInteractiveHole());
+  rcCmdMgr.addCommand(new CmdMeshRemoveCompByHand());
 }

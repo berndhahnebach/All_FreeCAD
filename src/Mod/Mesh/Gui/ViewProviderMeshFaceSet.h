@@ -33,6 +33,7 @@ class SbViewVolume;
 class SoBaseColor;
 class SoShapeHints;
 class SoEventCallback;
+class SoMaterialBinding;
 
 namespace Gui {
   class SoFCSelection;
@@ -83,6 +84,10 @@ public:
   const char* getEditModeName(void);
   void faceInfo(unsigned long facet);
   void fillHole(unsigned long facet);
+  void markPart(unsigned long facet);
+  void unmarkParts();
+  void removePart();
+  unsigned long countMarkedFacets() const;
   //@}
 
 protected:
@@ -93,21 +98,24 @@ protected:
   void setOpenEdgeColorFrom( const App::Color& col );
   virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
-  SoFCMeshVertex * pcVertexNode;
-  SoFCMeshFacet  * pcFacetNode;
-  SoFCMeshFaceSet* pcFaceSet;
-  SoDrawStyle    * pcLineStyle;
-  SoDrawStyle    * pcPointStyle;
-  SoSeparator    * pcOpenEdge;
-  SoSeparator    * pBoundingBox;
-  SoBaseColor    * pOpenColor;
-  SoShapeHints   * pShapeHints;
+  SoFCMeshVertex   * pcVertexNode;
+  SoFCMeshFacet    * pcFacetNode;
+  SoFCMeshFaceSet  * pcFaceSet;
+  SoDrawStyle      * pcLineStyle;
+  SoDrawStyle      * pcPointStyle;
+  SoSeparator      * pcOpenEdge;
+  SoSeparator      * pBoundingBox;
+  SoBaseColor      * pOpenColor;
+  SoShapeHints     * pShapeHints;
+  SoMaterialBinding* pcMatBinding;
 
 public:
   static void faceInfoCallback(void * ud, SoEventCallback * n);
   static void fillHoleCallback(void * ud, SoEventCallback * n);
+  static void markPartCallback(void * ud, SoEventCallback * n);
 
 private:
+  std::vector<unsigned long> _markedFacets;
   bool m_bEdit;
 
   static App::PropertyFloatConstraint::Constraints floatRange;
