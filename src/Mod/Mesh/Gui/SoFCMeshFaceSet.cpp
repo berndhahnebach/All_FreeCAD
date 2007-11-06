@@ -623,10 +623,10 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
       ccw = FALSE;
 
     if ( mode == false || index->size() <= this->MaximumTriangles ) {
-      if ( mbind == PER_VERTEX_INDEXED )
-        drawFaces(coords, index, &mb, needNormals, ccw);
+      if ( mbind != OVERALL )
+        drawFaces(coords, index, &mb, mbind, needNormals, ccw);
       else
-        drawFaces(coords, index, 0, needNormals, ccw);
+        drawFaces(coords, index, 0, mbind, needNormals, ccw);
     } else {
       drawPoints(coords, index, needNormals, ccw);
     }
@@ -673,9 +673,12 @@ SoFCMeshFaceSet::Binding SoFCMeshFaceSet::findMaterialBinding(SoState * const st
  * FIXME: Do it the same way as Coin did to have only one implementation which is controled by defines
  * FIXME: Implement using different values of transparency for each vertex or face
  */
-void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints, 
-                                const MeshCore::MeshFacetArray* rFacets, SoMaterialBundle* mb, SbBool needNormals, SbBool ccw) const
+void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints, const MeshCore::MeshFacetArray* rFacets, 
+                                SoMaterialBundle* mb, Binding bind, SbBool needNormals, SbBool ccw) const
 {
+  bool perVertex = (mb && bind == PER_VERTEX_INDEXED);
+  bool perFace = (mb && bind == PER_FACE_INDEXED);
+
   if (needNormals)
   {
     glBegin(GL_TRIANGLES);
@@ -693,14 +696,16 @@ void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints,
         n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
         n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
     
+        if(perFace)
+        mb->send(it-rFacets->begin(), TRUE);
         glNormal(n);
-        if(mb)
+        if(perVertex)
         mb->send(it->_aulPoints[0], TRUE);
         glVertex(v0);
-        if(mb)
+        if(perVertex)
         mb->send(it->_aulPoints[1], TRUE);
         glVertex(v1);
-        if(mb)
+        if(perVertex)
         mb->send(it->_aulPoints[2], TRUE);
         glVertex(v2);
       }

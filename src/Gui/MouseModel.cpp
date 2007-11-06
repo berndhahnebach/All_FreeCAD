@@ -372,6 +372,7 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
       
         QMenu menu;
         QAction* fi = menu.addAction("Finish");
+        menu.addAction("Clear");
         QAction* ca = menu.addAction("Cancel");
         if ( getPolygon().size() < 3 )
             fi->setEnabled(false);
