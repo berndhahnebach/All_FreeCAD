@@ -612,10 +612,14 @@ void MacroCommand::save()
 // PythonCommand
 //===========================================================================
 
-PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
+PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand, const char* pActivationString)
   :Command(name),_pcPyCommand(pcPyCommand)
 {
+  if(pActivationString)
+    Activation = pActivationString;
+
   sGroup = "Python";
+
   Py_INCREF(_pcPyCommand);
 
   // call the method "GetResources()" of the command object
@@ -641,6 +645,7 @@ const char* PythonCommand::getResource(const char* sName) const
 
 void PythonCommand::activated(int iMsg)
 {
+  if(Activation == ""){
     try{
         Interpreter().runMethodVoid(_pcPyCommand, "Activated");
     }catch ( const Base::PyException& e){
@@ -649,6 +654,9 @@ void PythonCommand::activated(int iMsg)
     }catch ( const Base::Exception&){
         Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
     }
+  }else{
+    doCommand(Doc,Activation.c_str());
+  }
 }
 
 bool PythonCommand::isActive(void)
