@@ -37,9 +37,14 @@ class WorkbenchTestCase(unittest.TestCase):
         list=FreeCADGui.listWorkbenchHandlers()
         for i in list:
             FreeCADGui.activateWorkbenchHandler(i)
+            j = list.get(i)
+            try:
+                name = j.WorkbenchName
+            except:
+                name = i
             FreeCADGui.updateGui()
-            FreeCAD.PrintLog("Currently: "+i+ " Should be: "+FreeCADGui.activeWorkbench().name())
-            self.failUnless(FreeCADGui.activeWorkbench().name()==i, "Test on activating workbench failed")
+            FreeCAD.PrintLog("Currently: "+name+ " Should be: "+FreeCADGui.activeWorkbench().name())
+            self.failUnless(FreeCADGui.activeWorkbench().name()==name, "Test on activating workbench failed")
         
 # Need a method to delete a workbench
 #    def testWorkbench(self):

@@ -550,8 +550,13 @@ void Application::tryClose ( QCloseEvent * e )
 }
 
 /**
- * Activates the matching workbench to the module name \a name.
- * The old workbench gets deactivated before. If \a name is already
+ * Activate the matching workbench to the registered workbench handler with name \a name.
+ * The handler must be an instance of a class written in Python.
+ * Normally, if a handler gets activated a workbench with the same name gets created unless it
+ * already exists. For a handler that creates the workbench itself but with a different name must
+ * define a string member called \a WorkbenchName.
+ *
+ * The old workbench gets deactivated before. If the workbench to the handler is already
  * active or if the switch fails false is returned. 
  */
 bool Application::activateWorkbench( const char* name )
@@ -607,12 +612,25 @@ bool Application::activateWorkbench( const char* name )
     return false;
   }
 
+  // The names of the handler and its workbench may differ. So, we check for the attribute 'WorkbenchName'
+  QString workbenchName = name;
+  try {
+      Py::Object handler(pcWorkbench);
+      if (handler.hasAttr(std::string("WorkbenchName"))) {
+          Py::String attr(handler.getAttr(std::string("WorkbenchName")));
+          workbenchName = attr.as_std_string().c_str();
+      }
+  }
+  catch (Py::Exception& e) {
+      e.clear();
+  }
+
   // the Python workbench handler has changed the workbench
   bool ok = false;
-  if ( newWb && newWb->name() == name )
+  if ( newWb && newWb->name() == workbenchName )
     ok = true; // already active
   // now try to create and activate the matching workbench object
-  else if ( WorkbenchManager::instance()->activate( name, className ) ) {
+  else if ( WorkbenchManager::instance()->activate( workbenchName, className ) ) {
     getMainWindow()->activateWorkbench(QString(name));
     ok = true;
   }

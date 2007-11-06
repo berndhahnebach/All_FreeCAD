@@ -164,10 +164,25 @@ class DocumentBasicCases(unittest.TestCase):
     self.Doc.undo()
     # FIXME: See bug #1820554
     self.failUnless(G1.getObject("Label_2") != None)
+
+    # Add a second object to the group
+    L3 = self.Doc.addObject("App::FeatureTest","Label_3")
+    G1.addObject(L3)
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.removeObject("Label_3")
+    self.failUnless(G1.getObject("Label_3") == None)
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_3") != None)
+    self.failUnless(G1.getObject("Label_2") != None)
     
     # Cleanup
     self.Doc.removeObject("Group")
     self.Doc.removeObject("Label_2")
+    self.Doc.removeObject("Label_3")
 
   def tearDown(self):
     #closing doc
