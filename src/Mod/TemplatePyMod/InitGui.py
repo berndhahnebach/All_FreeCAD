@@ -5,29 +5,25 @@
 
 class TemplatePyModWorkbench ( Workbench ):
 	"Test workbench object"
+	def __init__(self):
+		self.WorkbenchName = "TemplatePyMod"
+
 	def Activate(self):
 		try:
 			Log ('Loading GUI of TemplatePyMod module...\n')
-			import TestGui
+			import Commands
 			w=0
-			if Gui.hasWorkbench('Test framework') == False:
-				w = Gui.createWorkbench('Test framework')
+			if Gui.hasWorkbench(self.WorkbenchName) == False:
+				w = Gui.createWorkbench(self.WorkbenchName)
 
-				w.appendToolbar("TestTools",["TemplatePyMod_Cmd1"])
+				w.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
 
 				menu = ["ModulePy &Commands","PyModuleCommands"]
-				list = ["TemplatePyMod_Cmd1"]
+				list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
 				w.appendCommandbar("PyModuleCommands",list)
 				w.appendMenu(menu,list)
 
-				try:
-					import Mesh, MeshGui
-					list = ["Mesh_ExMakeMesh", "Mesh_ExMakeTool", "Mesh_ExMakeUnion"]
-					w.appendMenu("Mesh",list)
-				except:
-					Err('Cannot load Mesh module\n')
-
-				Log ('Setup Test menues...\n')
+				Log ('Setup menues...\n')
 			Log ('Loading GUI of Test module... done\n')
 		except:
 			Err('Activating of workbench "TemplatePyMod framework" failed\n')
