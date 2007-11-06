@@ -51,7 +51,7 @@ public:
 	
 
 private:
-	typedef std::list<std::vector<Base::Vector3f> > Polylines;
+	//typedef std::list<std::vector<Base::Vector3f> > Polylines;
 	bool getShapeBB();
 	bool fillFaceBBoxes();
 	bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
@@ -60,14 +60,14 @@ private:
 	bool cut(float z_level, float min_level, TopoDS_Wire &aWire,float &z_level_corrected);
 	bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
 	
-	std::vector<std::pair<float,Polylines> > m_ordered_cuts;
+	std::vector<std::pair<float,TopoDS_Wire> > m_ordered_cuts;
 	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
 	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;
 
 	std::vector<Handle_Geom_BSplineCurve> m_all_offset_cuts_high,m_all_offset_cuts_low;
 	std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
 	//std::vector<std::pair<float,std::vector<TopoDS_Wire> > > m_zl_wire_combination;
-	std::vector<std::pair<float,Polylines> >::iterator m_ordered_cuts_it;
+	std::vector<std::pair<float,TopoDS_Wire> >::iterator m_ordered_cuts_it;
 	
 	//Member zum checken ob CAD oder nicht
 	bool m_cad;
