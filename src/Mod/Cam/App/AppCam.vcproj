@@ -167,6 +167,7 @@
 				ProgramDataBaseFileName="../../../../obj/Mod/Cam/ReleaseApp/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -186,6 +187,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam.pdb"
 				ImportLibrary="../../../../obj/Mod/Cam/ReleaseApp/Cam.lib"
 				TargetMachine="1"

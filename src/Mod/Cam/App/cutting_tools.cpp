@@ -121,6 +121,7 @@ bool cutting_tools::fillFaceBBoxes()
         atopo_surface = TopoDS::Face (Explorer.Current());
 		best_fit::Tesselate_Face(atopo_surface,aFaceMesh,0.1);
 		aBoundBox = aFaceMesh.GetBoundBox();
+		aBoundBox.Enlarge(2.0);
 		std::pair<TopoDS_Face,Base::BoundBox3f> tempPair;
 		tempPair.first = atopo_surface;
 		tempPair.second = aBoundBox;
@@ -221,7 +222,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 		float test = m_maxlevel-m_zl_wire_combination.rbegin()->first;
 		//Oberste Ebene vom Bauteil fällt mit der obersten flachen Ebene zusammen
 		//-> Schnitte von der obersten flachen Ebene bis zur nächsten flachen Ebene oder bis ganz nach unten m_minlevel
-		if (fabs(test) < 1)
+		if (fabs(test) < 3)
 		{
 			float temp_max = m_zl_wire_combination.rbegin()->first;
 			float temp_min;
@@ -247,7 +248,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			float z_level,z_level_corrected;
 			TopoDS_Wire aTopoWire;
 			//Jetzt schneiden (die oberste Ebene auslassen)
-			for (int i=1;i<=cutnumber;++i) 
+			for (int i=155;i<=cutnumber;++i) 
 			{
 				z_level = temp_max-(i*m_pitch);
 				z_level_corrected = z_level;
@@ -598,30 +599,30 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 //
 //}
 
-bool cutting_tools::checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output)
-{
-	std::vector<gp_Pnt>::iterator aPntIt,atempit;
-	output.clear();
-	double square_precision = Precision::Confusion()*Precision::Confusion();
-	int i;
-	for(aPntIt=finalPoints.begin();aPntIt!=finalPoints.end();++aPntIt)
-	{
-		atempit=aPntIt;
-		output.push_back(*aPntIt);
-		i=1;
-		while(((*(aPntIt+i)).SquareDistance(*aPntIt))< square_precision && (aPntIt+i)!=finalPoints.end())
-		{
-			i++;
-			atempit++;
-		}
-		aPntIt = atempit;
-		
-		
-		
-	}
-			
-	return true;
-}
+//bool cutting_tools::checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output)
+//{
+//	std::vector<gp_Pnt>::iterator aPntIt,atempit;
+//	output.clear();
+//	double square_precision = Precision::Confusion()*Precision::Confusion();
+//	int i;
+//	for(aPntIt=finalPoints.begin();aPntIt!=finalPoints.end();++aPntIt)
+//	{
+//		atempit=aPntIt;
+//		output.push_back(*aPntIt);
+//		i=1;
+//		while(((*(aPntIt+i)).SquareDistance(*aPntIt))< square_precision && (aPntIt+i)!=finalPoints.end())
+//		{
+//			i++;
+//			atempit++;
+//		}
+//		aPntIt = atempit;
+//		
+//		
+//		
+//	}
+//			
+//	return true;
+//}
 
 bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 {
@@ -630,12 +631,15 @@ bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 	double distance,distance_old;
 	gp_Pnt nearestPoint;
 	int k;
-	for(aPntIt=finalPoints.begin();aPntIt!=finalPoints.end();++aPntIt)
+	for(unsigned int j=0;j<finalPoints.size();++j)
 	{
 		distance_old = 100;
-		for(int i=1;i<10;++i)
+		for(int i=1;i<30;++i)
 		{
-			distance = (*(aPntIt+i)).SquareDistance(*aPntIt);
+			//Wenn wir schon fast am Ende sind oder schon bald, dann rausspringen
+			if((j+i)>=finalPoints.size()) break;
+
+			distance = (finalPoints[j+i]).SquareDistance(finalPoints[j]);
 			if(distance<distance_old)
 			{
 				//Speichern wo wir den nächsten Punkt gefunden haben
@@ -651,9 +655,9 @@ bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 		else
 		{
 			//Jetzt den Punkteaustausch vornehmen
-			nearestPoint = *(aPntIt+k);
-			*(aPntIt+k) = *(aPntIt+1);
-			*(aPntIt+1) = nearestPoint;
+			nearestPoint = finalPoints[j+k];
+			finalPoints[j+k] = finalPoints[j+1];
+			finalPoints[j+1] = nearestPoint;
 		}
 	}
 
@@ -676,7 +680,7 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	{
 		//make your wire looks like a curve to other algorithm and generate Points to offset the curve
 		BRepAdaptor_CompCurve2 wireAdaptor(m_ordered_cuts_it->second);
-		GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.001);
+		GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.01);
 		int numberofpoints = aProp.NbPoints();
 		Standard_Real Umin,Vmin,lowestdistance;
 		TopoDS_Face atopo_surface,atopo_surface_shortest;
@@ -737,17 +741,19 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 			OffsetPoint.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
 			//Den OffsetPoint jetzt in einen Offset-Point Vector pushen
 			tempOffsetPoints.push_back(OffsetPoint);
+			
 
 		}
-		
+		//cout << tempOffsetPoints.size() << std::endl;
+		cout << m_ordered_cuts_it->first <<std::endl;
 		checkPointIntersection(tempOffsetPoints);
-		std::vector<gp_Pnt> finalPointscorrected;
-		finalPointscorrected.clear();
-		checkPointDistance(tempOffsetPoints,finalPointscorrected);
-		Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, finalPointscorrected.size());
-		for(unsigned int t=0;t<finalPointscorrected.size();++t)
+		//std::vector<gp_Pnt> finalPointscorrected;
+		//finalPointscorrected.clear();
+		//checkPointDistance(tempOffsetPoints,finalPointscorrected);
+		Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, tempOffsetPoints.size());
+		for(unsigned int t=0;t<tempOffsetPoints.size();++t)
 		{
-			finalOffsetPoints->SetValue(t+1,finalPointscorrected[t]);
+			finalOffsetPoints->SetValue(t+1,tempOffsetPoints[t]);
 		}
 		GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
 		aNoPeriodInterpolate.Perform();
