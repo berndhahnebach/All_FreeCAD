@@ -35,6 +35,7 @@ def All():
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnicodeTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("MeshTestsApp") )
     if ( FreeCAD.GuiUp == 1):
         suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Workbench") )
         suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Menu") )
