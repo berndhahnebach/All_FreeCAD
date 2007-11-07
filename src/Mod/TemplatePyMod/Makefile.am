@@ -7,4 +7,5 @@ data_DATA = \
 		Tests.py
 
 EXTRA_DIST = \
-		$(data_DATA)
+		$(data_DATA) \
+		AppTemplatePyMod.vcproj
