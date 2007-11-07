@@ -48,7 +48,9 @@ public:
   /// Destruction
   virtual ~TransactionObject();
 
-  void apply(Document &Doc, DocumentObject *pcObj);
+  void applyNew(Document &Doc, DocumentObject *pcObj);
+  void applyDel(Document &Doc, DocumentObject *pcObj);
+  void applyChn(Document &Doc, DocumentObject *pcObj);
 
 
   void setProperty(const Property* pcProp);
