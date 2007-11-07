@@ -136,6 +136,7 @@ libFreeCADBase_la_SOURCES=\
 		ViewProj.h \
 		Writer.cpp \
 		Writer.h \
+		XMLTools.cpp \
 		XMLTools.h
 
 %.cpp: %.xml
