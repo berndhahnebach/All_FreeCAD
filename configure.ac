@@ -606,6 +606,7 @@ src/Mod/Drawing/Gui/Resources/Makefile
 src/Mod/Drawing/Templates/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
+src/Mod/TemplatePyMod/Makefile
 src/Tools/Makefile
 src/Tools/_TEMPLATE_/Makefile
 src/Tools/_TEMPLATE_/App/Makefile
