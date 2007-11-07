@@ -1157,19 +1157,26 @@ void Document::remObject(const char* sName)
         for ( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt ) {
             if ( pt->second->getTypeId().isDerivedFrom(PropertyLink::getClassTypeId()) ) {
                 PropertyLink* link = (PropertyLink*)pt->second;
-                if ( link->getValue() == pos->second )
+                if (link->getValue() == pos->second)
+                    link->setValue(0);
+                else if (link->getContainer() == pos->second)
                     link->setValue(0);
             }
             else if ( pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId()) ) {
                 PropertyLinkList* link = (PropertyLinkList*)pt->second;
-                // copy the list (not the objects)
-                std::vector<DocumentObject*> linked = link->getValues();
-                for (std::vector<DocumentObject*>::iterator fIt = linked.begin(); fIt != linked.end(); ++fIt) {
-                    if ((*fIt) == pos->second) {
-                        // reassign the the list without the object to be deleted
-                        linked.erase(fIt);
-                        link->setValues(linked);
-                        break;
+                if (link->getContainer() == pos->second) {
+                    link->setValues(std::vector<DocumentObject*>());
+                }
+                else {
+                    // copy the list (not the objects)
+                    std::vector<DocumentObject*> linked = link->getValues();
+                    for (std::vector<DocumentObject*>::iterator fIt = linked.begin(); fIt != linked.end(); ++fIt) {
+                        if ((*fIt) == pos->second) {
+                            // reassign the the list without the object to be deleted
+                            linked.erase(fIt);
+                            link->setValues(linked);
+                            break;
+                        }
                     }
                 }
             }
