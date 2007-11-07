@@ -87,8 +87,14 @@ int Transaction::getPos(void) const
 void Transaction::apply(Document &Doc/*, DocChanges &ChangeList*/)
 {
   std::map<const DocumentObject*,TransactionObject*>::iterator It;
+  //for( It= _Objects.begin();It!=_Objects.end();++It)
+  //    It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
   for( It= _Objects.begin();It!=_Objects.end();++It)
-      It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
+      It->second->applyDel(Doc,const_cast<DocumentObject*>(It->first));
+  for( It= _Objects.begin();It!=_Objects.end();++It)
+      It->second->applyNew(Doc,const_cast<DocumentObject*>(It->first));
+  for( It= _Objects.begin();It!=_Objects.end();++It)
+      It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first));
 }
 
 void Transaction::addObjectNew(const DocumentObject *Obj)
@@ -107,9 +113,21 @@ void Transaction::addObjectNew(const DocumentObject *Obj)
 
 void Transaction::addObjectDel(const DocumentObject *Obj)
 {
-    TransactionObject *To = new TransactionObject(Obj);
-    _Objects[Obj] = To;
-    To->status = TransactionObject::Del;
+
+    map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+
+    // is it created in this transaction ?
+    if(pos != _Objects.end() && pos->second->status == TransactionObject::New){
+        // remove completely from transaction
+        delete pos->second;
+        _Objects.erase(pos);
+    }else if (pos != _Objects.end() && pos->second->status == TransactionObject::Chn)
+        pos->second->status = TransactionObject::Del;
+    else {
+        TransactionObject *To = new TransactionObject(Obj);
+        _Objects[Obj] = To;
+        To->status = TransactionObject::Del;
+    }
 }
 
 void Transaction::addObjectChange(const DocumentObject *Obj,const Property *Prop)
@@ -167,23 +185,29 @@ TransactionObject::~TransactionObject()
 
 }
 
-void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
+
+void TransactionObject::applyDel(Document &Doc, DocumentObject *pcObj)
 {
   if(status == Del){
     // simply filling in the saved object
     Doc._remObject(pcObj);
-  }else if(status == New){
+  }
+}
+void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
+{
+  if(status == New){
     Doc._addObject(pcObj,_NameInDocument.c_str());
+  }
+
+}
+void TransactionObject::applyChn(Document &Doc, DocumentObject *pcObj)
+{
+  if(status == New || status == Chn){
     // apply changes if any
     std::map<const Property*,Property*>::const_iterator It;
     for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
       const_cast<Property*>(It->first)->Paste(*(It->second));
-  }else if(status == Chn){
-    std::map<const Property*,Property*>::const_iterator It;
-    for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
-      const_cast<Property*>(It->first)->Paste(*(It->second));
   }
-
 }
 
 
@@ -194,12 +218,6 @@ void TransactionObject::setProperty(const Property* pcProp)
 
   if(pos == _PropChangeMap.end())
     _PropChangeMap[pcProp] = pcProp->Copy();
-  else
-  {
-    delete pos->second;
-    pos->second = pcProp->Copy();
-  }
-
 }
 
 void TransactionObject::Save (Writer &writer) const{
