@@ -34,11 +34,3 @@ class MeshTopoTestCases(unittest.TestCase):
 	def testCollapseFacetsAll(self):
 		planarMeshObject = Mesh.mesh(self.planarMesh)
 		planarMeshObject.CollapseFacets(range(18))
-			
-
-	def tearDown(self):
-		#closing doc
-		FreeCAD.closeDocument("CreateTest")
-
-
-
