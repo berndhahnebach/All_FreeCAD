@@ -298,7 +298,7 @@ void Base::XMLReader::startElement(const XMLCh* const uri, const XMLCh* const lo
 
   // saving attributes
   for (unsigned int i = 0; i < attrs.getLength(); i++) {
-    AttrMap[StrX(attrs.getQName(i)).c_str()] = StrX(attrs.getValue(i)).c_str();
+    AttrMap[StrX(attrs.getQName(i)).c_str()] = StrXUTF8(attrs.getValue(i)).c_str();
   }
 
   ReadType = StartElement;

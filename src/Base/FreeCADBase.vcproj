@@ -184,6 +184,7 @@
 				AdditionalLibraryDirectories="../../lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADBase.pdb"
+				GenerateMapFile="true"
 				ImportLibrary="../../lib/FreeCADBase.lib"
 				TargetMachine="1"
 			/>
@@ -1601,6 +1602,10 @@
 		</File>
 		<File
 			RelativePath="Writer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XMLTools.cpp"
 			>
 		</File>
 		<File

@@ -33,6 +33,10 @@
 #include <iostream>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/platformutils.hpp>
+#include <xercesc/util/TransService.hpp>
+
+#include <Base/Exception.h>
 
 
 XERCES_CPP_NAMESPACE_BEGIN
@@ -44,7 +48,7 @@ XERCES_CPP_NAMESPACE_END
 
 //**************************************************************************
 //**************************************************************************
-// StrX
+// StrXLocal
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class StrX
@@ -86,6 +90,66 @@ inline StrX::~StrX()
 inline const char* StrX::c_str() const
 {
     return fLocalForm;
+}
+
+//**************************************************************************
+//**************************************************************************
+// StrXUTF-8
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+class StrXUTF8
+{
+public :
+    StrXUTF8(const XMLCh* const toTranscode);
+
+    /// Getter method
+    const char* c_str() const;
+    /// string which holds the UTF-8 form
+    std::string  str;
+
+private :
+    static std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> transcoder;
+    //  This is the local code page form of the string.
+};
+
+inline std::ostream& operator<<(std::ostream& target, const StrXUTF8& toDump)
+{
+    target << toDump.c_str();
+    return target;
+}
+
+inline StrXUTF8::StrXUTF8(const XMLCh* const toTranscode)
+{
+    XERCES_CPP_NAMESPACE_USE;
+    if(!transcoder.get()){
+        XMLTransService::Codes  res;
+        transcoder.reset(XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgTransService->makeNewTranscoderFor(XERCES_CPP_NAMESPACE_QUALIFIER XMLRecognizer::UTF_8, res, 4096, XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager));
+        if (res != XMLTransService::Ok)
+            throw Base::Exception("Cant create UTF-8 encoder in StrXUTF8::StrXUTF8()");
+    }
+
+    //char outBuff[128];
+    static XMLByte outBuff[128];
+    unsigned int outputLength;
+    unsigned int eaten = 0;
+    unsigned int offset = 0;
+    unsigned int inputLength = XMLString::stringLen(toTranscode);
+
+    while (inputLength)
+    {
+        outputLength = transcoder->transcodeTo(toTranscode + offset, inputLength, outBuff, 128, eaten, XMLTranscoder::UnRep_RepChar);
+        str.append((const char*)outBuff, outputLength);
+        offset += eaten;
+        inputLength -= eaten;
+    }
+}
+
+// -----------------------------------------------------------------------
+//  Getter methods
+// -----------------------------------------------------------------------
+inline const char* StrXUTF8::c_str() const
+{
+    return str.c_str();
 }
 
 
