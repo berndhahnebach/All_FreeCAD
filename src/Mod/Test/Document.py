@@ -184,6 +184,32 @@ class DocumentBasicCases(unittest.TestCase):
     self.Doc.removeObject("Label_2")
     self.Doc.removeObject("Label_3")
 
+  def testAddRemove(self):
+    L1 = self.Doc.addObject("App::FeatureTest","Label_1")
+    # must delete object
+    self.Doc.removeObject(L1.Name)
+    try:
+      L1.Name
+    except:
+      self.failUnless(True)
+    else:
+      self.failUnless(False)
+    del L1
+
+    # What do we expect here?
+    self.Doc.openTransaction("AddRemove")
+    L2 = self.Doc.addObject("App::FeatureTest","Label_2")
+    self.Doc.removeObject(L2.Name)
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    try:
+      L2.Name
+    except:
+      self.failUnless(True)
+    else:
+      self.failUnless(False)
+    del L2
+
   def tearDown(self):
     #closing doc
     FreeCAD.closeDocument("CreateTest")
