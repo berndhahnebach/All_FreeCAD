@@ -61,7 +61,7 @@
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
-#include <xercesc/util/platformutils.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
 
 
 #endif
