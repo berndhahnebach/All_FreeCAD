@@ -66,4 +66,4 @@ class ImportWorkbench ( Workbench ):
 			"\"..#########.aaaa\",\n"
 			"\"...........aaaaa\"};\n"]
 
-Gui.AddWorkbenchHandler("Import",ImportWorkbench())
+Gui.addWorkbench("Import",ImportWorkbench())

@@ -34,42 +34,19 @@ class WorkbenchTestCase(unittest.TestCase):
         FreeCAD.PrintLog(FreeCADGui.activeWorkbench().name())
         
     def testActivate(self):
-        list=FreeCADGui.listWorkbenchHandlers()
+        list=FreeCADGui.listWorkbench()
         for i in list:
-            FreeCADGui.activateWorkbenchHandler(i)
-            j = list.get(i)
-            try:
-                name = j.WorkbenchName
-            except:
-                name = i
+            FreeCADGui.activateWorkbench(i)
             FreeCADGui.updateGui()
-            FreeCAD.PrintLog("Currently: "+name+ " Should be: "+FreeCADGui.activeWorkbench().name())
-            self.failUnless(FreeCADGui.activeWorkbench().name()==name, "Test on activating workbench failed")
-        
-# Need a method to delete a workbench
-#    def testWorkbench(self):
-#        self.failUnless(FreeCADGui.hasWorkbench("TestWb")==False, "TestWb was not expected to be in the list")
-#        self.failUnless(FreeCADGui.createWorkbench("TestWb")!=None, "Creation of TestWb failed")
-#        self.failUnless(FreeCADGui.hasWorkbench("TestWb")==True, "TestWb was not expected to be in the list")
-#        self.failUnless(FreeCADGui.getWorkbench("TestWb")!=None, "Retrieval of TestWb failed")
-#        list=FreeCADGui.listWorkbenches()
-#        fnd = False
-#        for i in list: 
-#            if (i == "TestWb"): 
-#                fnd = True;
-#        self.failUnless(fnd==True, "TestWb was expected to be in the list")
-#
+            FreeCAD.PrintLog("Active: "+FreeCADGui.activeWorkbench().name()+ " Expected: "+i+"\n")
+            self.failUnless(FreeCADGui.activeWorkbench().name()==i, "Test on activating workbench failed")
         
     def testHandler(self):
-        class UnitWorkbench:
+        import __main__
+        class UnitWorkbench(__main__.Workbench):
             def Activate(self):
-                try:
-                    if FreeCADGui.hasWorkbench('Unittest') == False:
-                        w = FreeCADGui.createWorkbench('Unittest')
-                        list = ["Test_Test"]
-                        w.appendToolbar("My Unittest",list)
-                except:
-                    raise
+                list = ["Test_Test"]
+                self.appendToolbar("My Unittest",list)
             def GetClassName(self):
                 return "Gui::PythonWorkbench"
             def GetIcon(self):
@@ -98,16 +75,16 @@ class WorkbenchTestCase(unittest.TestCase):
                     "\"......bbbb......\",\n"
                     "\"................\"};\n"]
 
-        FreeCADGui.addWorkbenchHandler("Unittest",UnitWorkbench())
-        list=FreeCADGui.listWorkbenchHandlers()
+        FreeCADGui.addWorkbench("Unittest",UnitWorkbench())
+        list=FreeCADGui.listWorkbench()
         self.failUnless(list.has_key("Unittest")==True, "Test on adding workbench handler failed")
-        FreeCADGui.activateWorkbenchHandler("Unittest")
+        FreeCADGui.activateWorkbench("Unittest")
         FreeCADGui.updateGui()
         self.failUnless(FreeCADGui.activeWorkbench().name()=="Unittest", "Test on loading workbench 'Unittest' failed")
-        FreeCADGui.removeWorkbenchHandler("Unittest")
-        list=FreeCADGui.listWorkbenchHandlers()
+        FreeCADGui.removeWorkbench("Unittest")
+        list=FreeCADGui.listWorkbench()
         self.failUnless(list.has_key("Unittest")==False, "Test on removing workbench handler failed")
 
     def tearDown(self):
-        FreeCADGui.activateWorkbenchHandler(self.Active.name())
+        FreeCADGui.activateWorkbench(self.Active.name())
         FreeCAD.PrintLog(self.Active.name())

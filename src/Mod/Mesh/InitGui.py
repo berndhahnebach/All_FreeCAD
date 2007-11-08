@@ -69,4 +69,4 @@ class MeshWorkbench ( Workbench ):
 			"\"........ss......\",\n"
 			"\"................\"};\n"]
 
-Gui.addWorkbenchHandler("Mesh design",MeshWorkbench())
+Gui.addWorkbench("Mesh design",MeshWorkbench())

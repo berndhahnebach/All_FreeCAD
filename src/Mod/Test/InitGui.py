@@ -97,4 +97,4 @@ class TestWorkbench ( Workbench ):
 			"\"................\",\n"
 			"\"................\"};\n"]
 
-Gui.addWorkbenchHandler("Test framework",TestWorkbench())
+Gui.addWorkbench("Test framework",TestWorkbench())

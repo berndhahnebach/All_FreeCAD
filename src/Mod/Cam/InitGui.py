@@ -70,4 +70,4 @@ class CamWorkbench ( Workbench ):
 			"\"................\"};\n"]
 
 # No Workbench at the moment
-#Gui.addWorkbenchHandler("Cam design",CamWorkbench())
+#Gui.addWorkbench("Cam design",CamWorkbench())

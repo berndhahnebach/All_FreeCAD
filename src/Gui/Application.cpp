@@ -575,7 +575,7 @@ bool Application::activateWorkbench(const char* name)
     try {
         QString type;
         Py::Object handler(pcWorkbench);
-        if (!handler.hasAttr(std::string("Workbench"))) {
+        if (!handler.hasAttr(std::string("__Workbench__"))) {
             // call its GetClassName method if possible
             Py::Callable method(handler.getAttr(std::string("GetClassName")));
             Py::Tuple args;
@@ -583,7 +583,7 @@ bool Application::activateWorkbench(const char* name)
             type = result.as_std_string().c_str();
             if (type == "Gui::PythonWorkbench") {
                 Workbench* wb = WorkbenchManager::instance()->createWorkbench(name, type);
-                handler.setAttr(std::string("Workbench"), Py::Object(wb->getPyObject()));
+                handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
             }
 
             // import the matching module first
@@ -599,6 +599,13 @@ bool Application::activateWorkbench(const char* name)
         else if (WorkbenchManager::instance()->activate(name, type)) {
             getMainWindow()->activateWorkbench(QString(name));
             ok = true;
+        }
+
+        // if we still not have this member then it must be built-in C++ workbench
+        // which could be created after loading the appropriate module
+        if (!handler.hasAttr(std::string("__Workbench__"))) {
+            Workbench* wb = WorkbenchManager::instance()->getWorkbench(name);
+            if (wb) handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
         }
     }
     catch (Py::Exception& e) {

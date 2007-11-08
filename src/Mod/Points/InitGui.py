@@ -67,4 +67,4 @@ class PointsWorkbench ( Workbench ):
 			"\"...##......##...\",\n"
 			"\"................\"};\n"]
 
-Gui.addWorkbenchHandler("Points design",PointsWorkbench())
+Gui.addWorkbench("Points design",PointsWorkbench())

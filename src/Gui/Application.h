@@ -168,11 +168,7 @@ public:
     PYFUNCDEF_S(sRemoveWorkbenchHandler);   // removes a workbench handler from the list
     PYFUNCDEF_S(sGetWorkbenchHandler);      // retrieves the workbench handler
     PYFUNCDEF_S(sListWorkbenchHandlers);    // retrieves a list of all workbench handlers
-    PYFUNCDEF_S(sCreateWorkbench);          // creates a new workbench object
-    PYFUNCDEF_S(sActiveWorkbench);          // retrieves the active workbench object
-    PYFUNCDEF_S(sListWorkbenches);          // retrieves a list of all workbench objects
-    PYFUNCDEF_S(sGetWorkbench);             // retrieves a workbench object
-    PYFUNCDEF_S(sHasWorkbench);             // checks for a workbench object
+    PYFUNCDEF_S(sActiveWorkbenchHandler);   // retrieves the active workbench object
     PYFUNCDEF_S(sAddIconPath);              // adds a path to an icon file
 
     PYFUNCDEF_S(sSendActiveView);

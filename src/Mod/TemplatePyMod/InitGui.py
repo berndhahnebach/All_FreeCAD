@@ -42,4 +42,4 @@ class TemplatePyModWorkbench ( Workbench ):
 			"\"................\",\n"
 			"\"................\"};\n"]
 
-Gui.addWorkbenchHandler("TemplatePyMod Workbench",TemplatePyModWorkbench())
+Gui.addWorkbench("TemplatePyMod Workbench",TemplatePyModWorkbench())

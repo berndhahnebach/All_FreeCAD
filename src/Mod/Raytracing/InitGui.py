@@ -69,4 +69,4 @@ class RaytracingWorkbench ( Workbench ):
 			"\"..#aa...........\",\n"
 			"\"..aaa...........\"};\n"]
 
-Gui.addWorkbenchHandler("Raytracing",RaytracingWorkbench())
+Gui.addWorkbench("Raytracing",RaytracingWorkbench())
