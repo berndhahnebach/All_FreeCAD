@@ -33,6 +33,8 @@
 
 class PointsWorkbench ( Workbench ):
 	"Points workbench object"
+	MenuText = "Points"
+	ToolTip = "Points workbench"
 	def Activate(self):
 		# load the module
 		try:

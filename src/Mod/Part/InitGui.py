@@ -33,6 +33,8 @@
 
 class PartWorkbench ( Workbench ):
 	"Part workbench object"
+	MenuText = "Part design"
+	ToolTip = "Part design workbench"
 	def Activate(self):
 		# load the module
 		try:

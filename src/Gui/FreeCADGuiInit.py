@@ -39,6 +39,31 @@ Gui = FreeCADGui
 # Important definitions
 class Workbench:
 	"""The workbench base class."""
+	Icon = ["/* XPM */\n"
+			"static const char *FCIcon[]={\n"
+			"\"16 16 4 1\",\n"
+			"\". c None\",\n"
+			"\"# c #000000\",\n"
+			"\"a c #848284\",\n"
+			"\"b c #ff0000\",\n"
+			"\"........#.......\",\n"
+			"\".......##aaaaaa.\",\n"
+			"\"........#.....a.\",\n"
+			"\".#######......a.\",\n"
+			"\".##...........a.\",\n"
+			"\".##...bbbb....a.\",\n"
+			"\".##..bb..bb...a.\",\n"
+			"\".###bb#...b..###\",\n"
+			"\".##.bb........#.\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb....b.....\",\n"
+			"\".....bb..bb.....\",\n"
+			"\"......bbbb......\",\n"
+			"\"................\"};\n"]
+	MenuText = ""
+	ToolTip = ""
 	def Activate(self):
 		"""Activate this workbench."""
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
@@ -108,6 +133,8 @@ context menu and dockable windows of the main window.
 
 class NoneWorkbench ( Workbench ):
 	"""An empty workbench."""
+	MenuText = "<none>"
+	ToolTip = "The default empty workbench"
 	def Activate(self):
 		"""Activate this workbench."""
 		# load the module

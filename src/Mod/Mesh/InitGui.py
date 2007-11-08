@@ -33,6 +33,8 @@
 
 class MeshWorkbench ( Workbench ):
 	"Mesh workbench object"
+	MenuText = "Mesh design"
+	ToolTip = "Mesh design workbench"
 	def Activate(self):
 		# load the module
 		try:

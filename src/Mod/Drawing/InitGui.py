@@ -33,6 +33,8 @@
 
 class DrawingWorkbench ( Workbench ):
 	"Drawing workbench object"
+	MenuText = "Drawing"
+	ToolTip = "Drawing workbench"
 	def Activate(self):
 		# load the module
 		try:

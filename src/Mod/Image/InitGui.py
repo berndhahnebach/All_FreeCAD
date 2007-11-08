@@ -33,6 +33,8 @@
 
 class ImageWorkbench ( Workbench ):
 	"Image workbench object"
+	MenuText = "Image"
+	ToolTip = "Image workbench"
 	def Activate(self):
 		# load the module
 		try:
