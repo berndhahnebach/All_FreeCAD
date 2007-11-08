@@ -42,9 +42,26 @@ class Workbench:
 	def Activate(self):
 		"""Activate this workbench."""
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
+	def appendToolbar(self,name,cmds):
+		self.Workbench.appendToolbar(name, cmds)
+	def removeToolbar(self,name):
+		self.Workbench.removeToolbar(name)
+	def appendCommandbar(self,name,cmds):
+		self.Workbench.appendCommandbar(name, cmds)
+	def removeCommandbar(self,name):
+		self.Workbench.removeCommandbar(name)
+	def appendMenu(self,name,cmds):
+		self.Workbench.appendMenu(name, cmds)
+	def removeMenu(self,name):
+		self.Workbench.removeMenu(name)
+	def appendContextMenu(self,name,cmds):
+		self.Workbench.appendContextMenu(name, cmds)
+	def removeContextMenu(self,name):
+		self.Workbench.removeContextMenu(name)
 	def GetClassName(self):
 		"""Return the name of the associated C++ class."""
-		Wrn("Init: "+ str(self) + ": Workbench.GetClassName() not implemented!")
+		# as default use this to simplify writing workbenches in Python 
+		return "Gui::PythonWorkbench"
 	def GetIcon(self):
 		"""Return a list of icons in XPM format."""
 		# returns an icon for the workbench

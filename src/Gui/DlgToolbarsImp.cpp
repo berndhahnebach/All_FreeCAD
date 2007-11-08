@@ -33,8 +33,6 @@
 #include "Command.h"
 #include "ToolBarManager.h"
 #include "Widgets.h"
-#include "Workbench.h"
-#include "WorkbenchManager.h"
 
 using namespace Gui::Dialog;
 

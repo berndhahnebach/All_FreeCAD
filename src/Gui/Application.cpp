@@ -553,89 +553,78 @@ void Application::tryClose ( QCloseEvent * e )
  * Activate the matching workbench to the registered workbench handler with name \a name.
  * The handler must be an instance of a class written in Python.
  * Normally, if a handler gets activated a workbench with the same name gets created unless it
- * already exists. For a handler that creates the workbench itself but with a different name must
- * define a string member called \a WorkbenchName.
+ * already exists. 
  *
  * The old workbench gets deactivated before. If the workbench to the handler is already
  * active or if the switch fails false is returned. 
  */
-bool Application::activateWorkbench( const char* name )
+bool Application::activateWorkbench(const char* name)
 { 
-  WaitCursor wc;
-  Workbench* oldWb = WorkbenchManager::instance()->active();
-  if ( oldWb && oldWb->name() == name )
-    return false; // already active
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = 0;
-  pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, name);
-  // test if the workbench exists
-  if ( !pcWorkbench )
-    return false;
+    bool ok = false;
+    WaitCursor wc;
+    Workbench* oldWb = WorkbenchManager::instance()->active();
+    if (oldWb && oldWb->name() == name)
+        return false; // already active
+    // get the python workbench object from the dictionary
+    PyObject* pcWorkbench = 0;
+    pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, name);
+    // test if the workbench exists
+    if (!pcWorkbench)
+        return false;
 
-  try{
-    // import the matching module first
-    Base::Interpreter().runMethodVoid(pcWorkbench, "Activate");
-  } catch (const Base::Exception& e) {
-    Base::Console().Error("%s\n", e.what() );
-    if (!d->_bStartingUp) {
-      QString msg(e.what());
-      QRegExp rx;
-      // ignore '<type 'exceptions.ImportError'>' prefixes
-      rx.setPattern("^\\s*<type 'exceptions.ImportError'>:\\s*");
-      int pos = rx.indexIn(msg);
-      while ( pos != -1 ) {
-        msg = msg.mid(rx.matchedLength());
-        pos = rx.indexIn(msg);
-      }
+    try {
+        QString type;
+        Py::Object handler(pcWorkbench);
+        if (!handler.hasAttr(std::string("Workbench"))) {
+            // call its GetClassName method if possible
+            Py::Callable method(handler.getAttr(std::string("GetClassName")));
+            Py::Tuple args;
+            Py::String result(method.apply(args));
+            type = result.as_std_string().c_str();
+            if (type == "Gui::PythonWorkbench") {
+                Workbench* wb = WorkbenchManager::instance()->createWorkbench(name, type);
+                handler.setAttr(std::string("Workbench"), Py::Object(wb->getPyObject()));
+            }
 
-      wc.restoreCursor();
-      QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
-        QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").arg(name).arg(msg));
-      wc.setWaitCursor();
+            // import the matching module first
+            Py::Callable activate(handler.getAttr(std::string("Activate")));
+            activate.apply(args);
+        }
+
+        // the Python workbench handler has changed the workbench
+        Workbench* newWb = WorkbenchManager::instance()->active();
+        if (newWb && newWb->name() == name)
+            ok = true; // already active
+        // now try to create and activate the matching workbench object
+        else if (WorkbenchManager::instance()->activate(name, type)) {
+            getMainWindow()->activateWorkbench(QString(name));
+            ok = true;
+        }
     }
-    // clears the error flag if needed (coming from a Python file)
-    if ( PyErr_Occurred() )
-      PyErr_Clear();
-  }
+    catch (Py::Exception& e) {
+        Py::Object o = Py::type(e);
+        e.clear();
+        if (o.isString() && !d->_bStartingUp) {
+            Py::String s(o);
+            QString msg = s.as_std_string().c_str();
+            QRegExp rx;
+            // ignore '<type 'exceptions.ImportError'>' prefixes
+            rx.setPattern("^\\s*<type 'exceptions.ImportError'>:\\s*");
+            int pos = rx.indexIn(msg);
+            while ( pos != -1 ) {
+                msg = msg.mid(rx.matchedLength());
+                pos = rx.indexIn(msg);
+            }
 
-  Workbench* newWb = WorkbenchManager::instance()->active();
+            wc.restoreCursor();
+            QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
+                QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").
+                arg(name).arg(msg));
+            wc.setWaitCursor();
+        }
+    }
 
-  // call its GetClassName method if possible
-  QString className;
-  try{
-    PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetClassName");
-    if ( PyString_Check( res) )
-     className = PyString_AsString(res);
-    Py_XDECREF(res);
-  } catch ( const Base::Exception& e ) {
-    Base::Console().Log("%s\n", e.what() );
-    return false;
-  }
-
-  // The names of the handler and its workbench may differ. So, we check for the attribute 'WorkbenchName'
-  QString workbenchName = name;
-  try {
-      Py::Object handler(pcWorkbench);
-      if (handler.hasAttr(std::string("WorkbenchName"))) {
-          Py::String attr(handler.getAttr(std::string("WorkbenchName")));
-          workbenchName = attr.as_std_string().c_str();
-      }
-  }
-  catch (Py::Exception& e) {
-      e.clear();
-  }
-
-  // the Python workbench handler has changed the workbench
-  bool ok = false;
-  if ( newWb && newWb->name() == workbenchName )
-    ok = true; // already active
-  // now try to create and activate the matching workbench object
-  else if ( WorkbenchManager::instance()->activate( workbenchName, className ) ) {
-    getMainWindow()->activateWorkbench(QString(name));
-    ok = true;
-  }
-
-  return ok;
+    return ok;
 }
 
 QPixmap Application::workbenchIcon( const QString& wb ) const

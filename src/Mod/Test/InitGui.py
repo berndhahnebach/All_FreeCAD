@@ -31,57 +31,48 @@
 class TestWorkbench ( Workbench ):
 	"Test workbench object"
 	def Activate(self):
+		Log ('Loading GUI of Test module...\n')
+		import TestGui
+
+		list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
+		self.appendToolbar("TestTools",list)
+
+		menu = ["Test &Commands","TestToolsGui"]
+		list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
+		self.appendCommandbar("TestToolsGui",list)
+		self.appendMenu(menu,list)
+
+		menu = ["Test &Commands","TestToolsText"]
+		list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
+		self.appendCommandbar("TestToolsText",list)
+		self.appendMenu(menu,list)
+
+		menu = ["Test &Commands","TestToolsMenu"]
+		list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
+		self.appendCommandbar("TestToolsMenu",list)
+		self.appendMenu(menu,list)
+
+		menu = ["Test &Commands","TestFeatureMenu"]
+		list = ["Test_InsertFeature"]
+		self.appendCommandbar("TestFeature",list)
+		self.appendMenu(menu,list)
+
+		menu = ["Test &Commands","Progress bar"]
+		list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
+		self.appendMenu(menu,list)
+
+		list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3"]
+		self.appendMenu("Inventor View",list)
+
 		try:
-			Log ('Loading GUI of Test module...\n')
-			import TestGui
-			w=0
-			if Gui.hasWorkbench('Test framework') == False:
-				w = Gui.createWorkbench('Test framework')
-
-				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-				w.appendToolbar("TestTools",list)
-
-				menu = ["Test &Commands","TestToolsGui"]
-				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-				w.appendCommandbar("TestToolsGui",list)
-				w.appendMenu(menu,list)
-
-				menu = ["Test &Commands","TestToolsText"]
-				list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
-				w.appendCommandbar("TestToolsText",list)
-				w.appendMenu(menu,list)
-
-				menu = ["Test &Commands","TestToolsMenu"]
-				list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
-				w.appendCommandbar("TestToolsMenu",list)
-				w.appendMenu(menu,list)
-				
-				menu = ["Test &Commands","TestFeatureMenu"]
-				list = ["Test_InsertFeature"]
-				w.appendCommandbar("TestFeature",list)
-				w.appendMenu(menu,list)
-
-				menu = ["Test &Commands","Progress bar"]
-				list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
-				w.appendMenu(menu,list)
-
-				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3"]
-				w.appendMenu("Inventor View",list)
-
-				try:
-					import Mesh, MeshGui
-					list = ["Mesh_ExMakeMesh", "Mesh_ExMakeTool", "Mesh_ExMakeUnion"]
-					w.appendMenu("Mesh",list)
-				except:
-					Err('Cannot load Mesh module\n')
-
-				Log ('Setup Test menues...\n')
-			Log ('Loading GUI of Test module... done\n')
+			import Mesh, MeshGui
+			list = ["Mesh_ExMakeMesh", "Mesh_ExMakeTool", "Mesh_ExMakeUnion"]
+			self.appendMenu("Mesh",list)
 		except:
-			Err('Activating of workbench "Test framework" failed\n')
-			raise
-	def GetClassName(self):
-		return "Gui::PythonWorkbench"
+			Err('Cannot load Mesh module\n')
+
+		Log ('Loading GUI of Test module... done\n')
+
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
