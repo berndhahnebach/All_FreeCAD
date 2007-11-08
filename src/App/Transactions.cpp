@@ -97,16 +97,26 @@ void Transaction::apply(Document &Doc/*, DocChanges &ChangeList*/)
       It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first));
 }
 
-void Transaction::addObjectNew(const DocumentObject *Obj)
+void Transaction::addObjectNew(DocumentObject *Obj)
 {
   map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
 
   if(pos != _Objects.end()){
-    pos->second->status = TransactionObject::New;
-    pos->second->_NameInDocument = Obj->getNameInDocument();
+      if(pos->second->status == TransactionObject::Del){
+            delete pos->second;
+            delete pos->first;
+            _Objects.erase(pos);
+
+ 
+      }else{
+        pos->second->status = TransactionObject::New;
+        pos->second->_NameInDocument = Obj->getNameInDocument();
+      }
   }else{
     TransactionObject *To = new TransactionObject(Obj,Obj->getNameInDocument());
     _Objects[Obj] = To;
+    // set name cache false
+    Obj->pcNameInDocument = 0;
     To->status = TransactionObject::New;
   }
 }

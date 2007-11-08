@@ -99,7 +99,7 @@ public:
   friend class Document;
 
 protected:
-  void addObjectNew(const DocumentObject *Obj);
+  void addObjectNew(DocumentObject *Obj);
   void addObjectDel(const DocumentObject *Obj);
   void addObjectChange(const DocumentObject *Obj,const Property *Prop);
 private:

@@ -99,6 +99,7 @@ public:
     std::bitset<16> StatusBits;
     
     friend class Document;
+    friend class Transaction;
 
 protected:
     /// get called befor the value is changed
