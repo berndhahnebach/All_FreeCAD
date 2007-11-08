@@ -33,7 +33,7 @@
 #include <iostream>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/platformutils.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 
 #include <Base/Exception.h>

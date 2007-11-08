@@ -35,3 +35,4 @@
 using namespace Base;
 
 std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> StrXUTF8::transcoder;
+
