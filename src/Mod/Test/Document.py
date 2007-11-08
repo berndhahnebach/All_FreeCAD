@@ -112,78 +112,6 @@ class DocumentBasicCases(unittest.TestCase):
   def testMem(self):
     self.Doc.MemSize
 
-  def testGroup(self):
-    # Add an object to the group
-    L2 = self.Doc.addObject("App::FeatureTest","Label_2")
-    G1 = self.Doc.addObject("App::DocumentObjectGroup","Group")
-    G1.addObject(L2)
-    self.failUnless(G1.hasObject(L2))
-    
-    # Adding the group to itself must fail
-    try:
-      G1.addObject(G1)
-    except:
-      FreeCAD.PrintLog("Cannot add group to itself, OK\n")
-    else:
-      self.fail("Adding the group to itself must not be possible")
-    
-    # Remove object from group
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Label_2")
-    self.Doc.commitTransaction()
-    self.failUnless(G1.getObject("Label_2") == None)
-    self.Doc.undo()
-    self.failUnless(G1.getObject("Label_2") != None)
-
-    # Remove first group and then the object
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Group")
-    self.Doc.removeObject("Label_2")
-    self.Doc.commitTransaction()
-    self.Doc.undo()
-    self.failUnless(G1.getObject("Label_2") != None)
-
-    # Remove first object and then the group in two transactions
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Label_2")
-    self.Doc.commitTransaction()
-    self.failUnless(G1.getObject("Label_2") == None)
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Group")
-    self.Doc.commitTransaction()
-    self.Doc.undo()
-    self.Doc.undo()
-    self.failUnless(G1.getObject("Label_2") != None)
-
-    # Remove first object and then the group in one transaction
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Label_2")
-    self.failUnless(G1.getObject("Label_2") == None)
-    self.Doc.removeObject("Group")
-    self.Doc.commitTransaction()
-    self.Doc.undo()
-    # FIXME: See bug #1820554
-    self.failUnless(G1.getObject("Label_2") != None)
-
-    # Add a second object to the group
-    L3 = self.Doc.addObject("App::FeatureTest","Label_3")
-    G1.addObject(L3)
-    self.Doc.openTransaction("Remove")
-    self.Doc.removeObject("Label_2")
-    self.failUnless(G1.getObject("Label_2") == None)
-    self.Doc.removeObject("Label_3")
-    self.failUnless(G1.getObject("Label_3") == None)
-    self.Doc.removeObject("Group")
-    self.Doc.commitTransaction()
-    self.Doc.undo()
-    self.failUnless(G1.getObject("Label_3") != None)
-    self.failUnless(G1.getObject("Label_2") != None)
-    
-    # Cleanup
-    self.Doc.removeObject("Group")
-    self.Doc.removeObject("Label_2")
-    self.Doc.removeObject("Label_3")
-
   def testAddRemove(self):
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     # must delete object
@@ -485,6 +413,82 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.UndoCount,0)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
+
+  def testGroup(self):
+    # Add an object to the group
+    L2 = self.Doc.addObject("App::FeatureTest","Label_2")
+    G1 = self.Doc.addObject("App::DocumentObjectGroup","Group")
+    G1.addObject(L2)
+    self.failUnless(G1.hasObject(L2))
+    
+    # Adding the group to itself must fail
+    try:
+      G1.addObject(G1)
+    except:
+      FreeCAD.PrintLog("Cannot add group to itself, OK\n")
+    else:
+      self.fail("Adding the group to itself must not be possible")
+    
+    self.Doc.UndoMode = 1
+    
+    # Remove object from group
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first group and then the object
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Group")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first object and then the group in two transactions
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.Doc.commitTransaction()
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Remove first object and then the group in one transaction
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    # FIXME: See bug #1820554
+    self.failUnless(G1.getObject("Label_2") != None)
+
+    # Add a second object to the group
+    L3 = self.Doc.addObject("App::FeatureTest","Label_3")
+    G1.addObject(L3)
+    self.Doc.openTransaction("Remove")
+    self.Doc.removeObject("Label_2")
+    self.failUnless(G1.getObject("Label_2") == None)
+    self.Doc.removeObject("Label_3")
+    self.failUnless(G1.getObject("Label_3") == None)
+    self.Doc.removeObject("Group")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+    self.failUnless(G1.getObject("Label_3") != None)
+    self.failUnless(G1.getObject("Label_2") != None)
+    
+    self.Doc.UndoMode = 0
+    
+    # Cleanup
+    self.Doc.removeObject("Group")
+    self.Doc.removeObject("Label_2")
+    self.Doc.removeObject("Label_3")
 
 
   def tearDown(self):

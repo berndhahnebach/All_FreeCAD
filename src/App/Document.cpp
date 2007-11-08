@@ -1214,6 +1214,10 @@ void Document::remObject(const char* sName)
 /// Remove an object out of the document (internal)
 void Document::_remObject(DocumentObject* pcObject)
 {
+    std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(pcObject->getNameInDocument());
+
+    signalDeletedObject(*pcObject);
+
     // Transaction stuff
     if (this->activTransaction)
         this->activTransaction->addObjectDel(pcObject);
@@ -1225,12 +1229,11 @@ void Document::_remObject(DocumentObject* pcObject)
         // if not saved in undo -> delete
         delete pcObject;
 
-    signalDeletedObject(*pcObject);
 
     // remove from map
-    ObjectMap.erase(pcObject->getNameInDocument());
-    // set name cache false
-    pcObject->pcNameInDocument = 0;
+    ObjectMap.erase(pos);
+    //// set name cache false
+    //pcObject->pcNameInDocument = 0;
 
     for ( std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it ) {
         if ( *it == pcObject ) {
