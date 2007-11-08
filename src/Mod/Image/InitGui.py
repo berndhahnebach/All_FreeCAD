@@ -33,21 +33,7 @@
 
 class ImageWorkbench ( Workbench ):
 	"Image workbench object"
-	MenuText = "Image"
-	ToolTip = "Image workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Image module...')
-			import ImageGui
-		except:
-			Err('Cannot load ImageGui')
-			raise
-	def GetClassName(self):
-		return "ImageGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *colors[]={\n"
 			"\"16 16 134 2\",\n"
 			"\"Qt c None\",\n"
@@ -200,8 +186,17 @@ class ImageWorkbench ( Workbench ):
 			"\"QtQtQtQtQtQtQt.Y#7#8#9a.a#aa#zQt\",\n"
 			"\"QtQtQtQtQtQtQtQtQt#zabacad#yQtQt\",\n"
 			"\"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt\"};\n"]
+	MenuText = "Image"
+	ToolTip = "Image workbench"
 
-Gui.addWorkbench("Image",ImageWorkbench())
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Image module...')
+		import ImageGui
+	def GetClassName(self):
+		return "ImageGui::Workbench"
+
+Gui.addWorkbench(ImageWorkbench())
 
 # Append the open handler
 FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","ImageGui")

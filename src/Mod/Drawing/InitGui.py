@@ -33,21 +33,7 @@
 
 class DrawingWorkbench ( Workbench ):
 	"Drawing workbench object"
-	MenuText = "Drawing"
-	ToolTip = "Drawing workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Drawing module...')
-			import DrawingGui
-		except:
-			Err('Cannot load DrawingGui')
-			raise
-	def GetClassName(self):
-		return "DrawingGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *colors[]={\n"
 			"\"16 16 49 1\",\n"
 			"\"Qt c None\",\n"
@@ -115,8 +101,17 @@ class DrawingWorkbench ( Workbench ):
 			"\" hggggiiigiiiij \",\n"
 			"\"                \",\n"
 			"\"                \"};\n"]
+	MenuText = "Drawing"
+	ToolTip = "Drawing workbench"
+
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Drawing module...')
+		import DrawingGui
+	def GetClassName(self):
+		return "DrawingGui::Workbench"
         
-Gui.addWorkbench("Drawing",DrawingWorkbench())
+Gui.addWorkbench(DrawingWorkbench())
 
 # Append the open handler
 FreeCAD.EndingAdd("Image formats (*.svg *.svgz)","DrawingGui")

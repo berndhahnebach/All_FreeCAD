@@ -44,38 +44,15 @@ class WorkbenchTestCase(unittest.TestCase):
     def testHandler(self):
         import __main__
         class UnitWorkbench(__main__.Workbench):
+            MenuText = "Unittest"
+            ToolTip = "Unittest"
             def Activate(self):
                 list = ["Test_Test"]
                 self.appendToolbar("My Unittest",list)
             def GetClassName(self):
                 return "Gui::PythonWorkbench"
-            def GetIcon(self):
-                # returns an icon for the workbench
-                return ["/* XPM */\n"
-                    "static const char *FCIcon[]={\n"
-                    "\"16 16 4 1\",\n"
-                    "\". c None\",\n"
-                    "\"# c #000000\",\n"
-                    "\"a c #848284\",\n"
-                    "\"b c #ff0000\",\n"
-                    "\"........#.......\",\n"
-                    "\".......##aaaaaa.\",\n"
-                    "\"........#.....a.\",\n"
-                    "\".#######......a.\",\n"
-                    "\".##...........a.\",\n"
-                    "\".##...bbbb....a.\",\n"
-                    "\".##..bb..bb...a.\",\n"
-                    "\".###bb#...b..###\",\n"
-                    "\".##.bb........#.\",\n"
-                    "\".##.bb..........\",\n"
-                    "\".##.bb..........\",\n"
-                    "\".##.bb..........\",\n"
-                    "\".##.bb....b.....\",\n"
-                    "\".....bb..bb.....\",\n"
-                    "\"......bbbb......\",\n"
-                    "\"................\"};\n"]
 
-        FreeCADGui.addWorkbench("Unittest",UnitWorkbench())
+        FreeCADGui.addWorkbench(UnitWorkbench())
         list=FreeCADGui.listWorkbench()
         self.failUnless(list.has_key("Unittest")==True, "Test on adding workbench handler failed")
         FreeCADGui.activateWorkbench("Unittest")

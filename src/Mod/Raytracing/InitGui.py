@@ -33,22 +33,7 @@
 
 class RaytracingWorkbench ( Workbench ):
 	"Raytracing workbench object"
-	MenuText = "Raytracing"
-	ToolTip = "Raytracing workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Raytracing module...')
-			import PartGui
-			import RaytracingGui
-		except:
-			Err('Cannot load RaytracingGui')
-			raise
-	def GetClassName(self):
-		return "RaytracingGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static char *arrows[]={\n"
 			"\"16 16 3 1\",\n"
 			"\"# c None\",\n"
@@ -70,5 +55,15 @@ class RaytracingWorkbench ( Workbench ):
 			"\".#a##...#aaaa#..\",\n"
 			"\"..#aa...........\",\n"
 			"\"..aaa...........\"};\n"]
+	MenuText = "Raytracing"
+	ToolTip = "Raytracing workbench"
 
-Gui.addWorkbench("Raytracing",RaytracingWorkbench())
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Raytracing module...')
+		import PartGui
+		import RaytracingGui
+	def GetClassName(self):
+		return "RaytracingGui::Workbench"
+
+Gui.addWorkbench(RaytracingWorkbench())

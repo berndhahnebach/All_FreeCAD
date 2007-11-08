@@ -33,21 +33,7 @@
 
 class MeshWorkbench ( Workbench ):
 	"Mesh workbench object"
-	MenuText = "Mesh design"
-	ToolTip = "Mesh design workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Mesh module...')
-			import MeshGui
-		except:
-			Err('Cannot load MeshGui')
-			raise
-	def GetClassName(self):
-		return "MeshGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *mesh_icon[]={\n"
 			"\"16 16 4 1\",\n"
 			"\".	c None\",\n"
@@ -70,5 +56,14 @@ class MeshWorkbench ( Workbench ):
 			"\"....sss##ss.....\",\n"
 			"\"........ss......\",\n"
 			"\"................\"};\n"]
+	MenuText = "Mesh design"
+	ToolTip = "Mesh design workbench"
 
-Gui.addWorkbench("Mesh design",MeshWorkbench())
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Mesh module...')
+		import MeshGui
+	def GetClassName(self):
+		return "MeshGui::Workbench"
+
+Gui.addWorkbench(MeshWorkbench())

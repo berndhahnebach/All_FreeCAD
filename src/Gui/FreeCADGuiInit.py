@@ -64,6 +64,7 @@ class Workbench:
 			"\"................\"};\n"]
 	MenuText = ""
 	ToolTip = ""
+	
 	def Activate(self):
 		"""Activate this workbench."""
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
@@ -91,32 +92,6 @@ class Workbench:
 		"""Return the name of the associated C++ class."""
 		# as default use this to simplify writing workbenches in Python 
 		return "Gui::PythonWorkbench"
-	def GetIcon(self):
-		"""Return a list of icons in XPM format."""
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
-			"static const char *FCIcon[]={\n"
-			"\"16 16 4 1\",\n"
-			"\". c None\",\n"
-			"\"# c #000000\",\n"
-			"\"a c #848284\",\n"
-			"\"b c #ff0000\",\n"
-			"\"........#.......\",\n"
-			"\".......##aaaaaa.\",\n"
-			"\"........#.....a.\",\n"
-			"\".#######......a.\",\n"
-			"\".##...........a.\",\n"
-			"\".##...bbbb....a.\",\n"
-			"\".##..bb..bb...a.\",\n"
-			"\".###bb#...b..###\",\n"
-			"\".##.bb........#.\",\n"
-			"\".##.bb..........\",\n"
-			"\".##.bb..........\",\n"
-			"\".##.bb..........\",\n"
-			"\".##.bb....b.....\",\n"
-			"\".....bb..bb.....\",\n"
-			"\"......bbbb......\",\n"
-			"\"................\"};\n"]
 
 
 class StandardWorkbench ( Workbench ):
@@ -178,7 +153,7 @@ Log ('Init: Running FreeCADGuiInit.py start script...\n')
 App.GuiUp = 1
 App.Gui = FreeCADGui
 
-Gui.addWorkbench("<none>",NoneWorkbench())
+Gui.addWorkbench(NoneWorkbench())
 
 # init modules
 InitApplications()
