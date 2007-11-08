@@ -111,6 +111,7 @@ void Transaction::addObjectNew(DocumentObject *Obj)
       }else{
         pos->second->status = TransactionObject::New;
         pos->second->_NameInDocument = Obj->getNameInDocument();
+        Obj->pcNameInDocument = 0;
       }
   }else{
     TransactionObject *To = new TransactionObject(Obj,Obj->getNameInDocument());

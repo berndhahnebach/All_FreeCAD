@@ -1192,7 +1192,7 @@ void Document::remObject(const char* sName)
         // in this case transaction delete or save the object
         activUndoTransaction->addObjectNew(pos->second);
         // set name cache false
-        pos->second->pcNameInDocument = 0;
+        //pos->second->pcNameInDocument = 0;
     }
     else
         // if not saved in undo -> delete object
@@ -1225,10 +1225,12 @@ void Document::_remObject(DocumentObject* pcObject)
     // Undo stuff
     if (activUndoTransaction)
         activUndoTransaction->addObjectNew(pcObject);
-    else
+    else{
+        // shut never happen
+        assert(0);
         // if not saved in undo -> delete
         delete pcObject;
-
+    }
 
     // remove from map
     ObjectMap.erase(pos);
