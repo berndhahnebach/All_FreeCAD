@@ -5,6 +5,8 @@
 
 class TemplatePyModWorkbench ( Workbench ):
 	"Test workbench object"
+	MenuText = "Python template"
+	ToolTip = "Python template workbench"
 	def Activate(self):
 		Log ('Loading GUI of TemplatePyMod module...\n')
 		import Commands

@@ -33,6 +33,8 @@
 
 class RaytracingWorkbench ( Workbench ):
 	"Raytracing workbench object"
+	MenuText = "Raytracing"
+	ToolTip = "Raytracing workbench"
 	def Activate(self):
 		# load the module
 		try:

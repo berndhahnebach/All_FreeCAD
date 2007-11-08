@@ -33,15 +33,12 @@
 
 class CamWorkbench ( Workbench ):
 	"Cam workbench object"
+	MenuText = "Cam design"
+	ToolTip = "Cam"
 	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Cam module...')
-			import CamGui
-			import Cam
-		except:
-			Err('Cannot load CamGui')
-			raise
+		Log ('Loading GUI of Cam module...')
+		import CamGui
+		import Cam
 	def GetClassName(self):
 		return "CamGui::Workbench"
 	def GetIcon(self):

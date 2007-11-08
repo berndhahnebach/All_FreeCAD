@@ -67,6 +67,9 @@ PyMethodDef Application::Methods[] = {
   {"addIconPath",             (PyCFunction) Application::sAddIconPath,      1,
    "addIconPath(string) -> None\n\n"
    "Add a new path to the system where to find icon files"},
+  {"addIcon",                 (PyCFunction) Application::sAddIcon,          1,
+   "addIcon(string, string or list) -> None\n\n"
+   "Add an icon as file name or in XPM format to the system"},
   {"updateGui",               (PyCFunction) Application::sUpdateGui,        1,
    "updateGui() -> None\n\n"
    "Update the main window and all its windows"},
@@ -429,6 +432,52 @@ PYFUNCIMP_S(Application,sAddIconPath)
   BitmapFactory().addPath(path);  
   Py_INCREF(Py_None);
   return Py_None;
+}
+
+PYFUNCIMP_S(Application,sAddIcon)
+{
+    char *iconName;
+    PyObject* pixmap;
+    if (!PyArg_ParseTuple(args, "sO", &iconName,&pixmap))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
+    
+    QPixmap icon;
+    if (BitmapFactory().findPixmapInCache(iconName, icon)) {
+        PyErr_SetString(PyExc_AssertionError, "Icon with this name already registered");
+        return NULL;
+    }
+
+    if (PyList_Check(pixmap)) {
+        // create temporary buffer
+        int ct = PyList_Size(pixmap);
+        QByteArray ary;
+
+        if ( ct > 0 ) {
+            PyObject* line = PyList_GetItem(pixmap,0);
+            if ( line && PyString_Check(line) ) {
+                const char* szBuf = PyString_AsString(line);
+                int strlen = PyString_Size(line);
+                ary.resize(strlen);
+                for (int j=0; j<strlen; j++)
+                    ary[j]=szBuf[j];
+                icon.loadFromData(ary, "XPM");
+            }
+        }
+    }
+    else if (PyString_Check(pixmap)){
+        QString file = QString::fromUtf8(PyString_AsString(pixmap));
+        icon.load(file);
+    }
+
+    if (icon.isNull()) {
+        PyErr_SetString(PyExc_Exception, "Invalid icon");
+        return NULL;
+    }
+
+    BitmapFactory().addPixmapToCache(iconName, icon);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 PYFUNCIMP_S(Application,sAddCommand)
