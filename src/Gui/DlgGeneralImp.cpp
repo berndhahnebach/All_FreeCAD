@@ -29,8 +29,6 @@
 #include "DockWindowManager.h"
 #include "MainWindow.h"
 #include "PrefWidgets.h"
-#include "Workbench.h"
-#include "WorkbenchManager.h"
 #include "Language/Translator.h"
 
 using namespace Gui::Dialog;

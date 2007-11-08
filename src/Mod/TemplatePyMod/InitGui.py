@@ -5,31 +5,19 @@
 
 class TemplatePyModWorkbench ( Workbench ):
 	"Test workbench object"
-	def __init__(self):
-		self.WorkbenchName = "TemplatePyMod"
-
 	def Activate(self):
-		try:
-			Log ('Loading GUI of TemplatePyMod module...\n')
-			import Commands
-			w=0
-			if Gui.hasWorkbench(self.WorkbenchName) == False:
-				w = Gui.createWorkbench(self.WorkbenchName)
+		Log ('Loading GUI of TemplatePyMod module...\n')
+		import Commands
 
-				w.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
+		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
 
-				menu = ["ModulePy &Commands","PyModuleCommands"]
-				list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
-				w.appendCommandbar("PyModuleCommands",list)
-				w.appendMenu(menu,list)
+		menu = ["ModulePy &Commands","PyModuleCommands"]
+		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
+		self.appendCommandbar("PyModuleCommands",list)
+		self.appendMenu(menu,list)
 
-				Log ('Setup menues...\n')
-			Log ('Loading GUI of Test module... done\n')
-		except:
-			Err('Activating of workbench "TemplatePyMod framework" failed\n')
-			raise
-	def GetClassName(self):
-		return "Gui::PythonWorkbench"
+		Log ('Loading GUI of Test module... done\n')
+
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
