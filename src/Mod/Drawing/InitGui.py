@@ -114,7 +114,7 @@ class DrawingWorkbench ( Workbench ):
 			"\"                \",\n"
 			"\"                \"};\n"]
         
-Gui.addWorkbenchHandler("Drawing",DrawingWorkbench())
+Gui.addWorkbench("Drawing",DrawingWorkbench())
 
 # Append the open handler
 FreeCAD.EndingAdd("Image formats (*.svg *.svgz)","DrawingGui")

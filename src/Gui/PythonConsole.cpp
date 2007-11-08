@@ -653,7 +653,7 @@ void PythonConsole::dropEvent ( QDropEvent * e )
         for (int i=0; i<ctActions; i++) {
             QString action;
             dataStream >> action;
-            printStatement( QString("Gui.RunCommand(\"%1\")").arg(action));
+            printStatement( QString("Gui.runCommand(\"%1\")").arg(action));
         }
 
         e->setDropAction(Qt::CopyAction);

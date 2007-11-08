@@ -43,21 +43,25 @@ class Workbench:
 		"""Activate this workbench."""
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
 	def appendToolbar(self,name,cmds):
-		self.Workbench.appendToolbar(name, cmds)
+		self.__Workbench__.appendToolbar(name, cmds)
 	def removeToolbar(self,name):
-		self.Workbench.removeToolbar(name)
+		self.__Workbench__.removeToolbar(name)
 	def appendCommandbar(self,name,cmds):
-		self.Workbench.appendCommandbar(name, cmds)
+		self.__Workbench__.appendCommandbar(name, cmds)
 	def removeCommandbar(self,name):
-		self.Workbench.removeCommandbar(name)
+		self.__Workbench__.removeCommandbar(name)
 	def appendMenu(self,name,cmds):
-		self.Workbench.appendMenu(name, cmds)
+		self.__Workbench__.appendMenu(name, cmds)
 	def removeMenu(self,name):
-		self.Workbench.removeMenu(name)
+		self.__Workbench__.removeMenu(name)
+	def listMenus(self):
+		return self.__Workbench__.listMenus()
 	def appendContextMenu(self,name,cmds):
-		self.Workbench.appendContextMenu(name, cmds)
+		self.__Workbench__.appendContextMenu(name, cmds)
 	def removeContextMenu(self,name):
-		self.Workbench.removeContextMenu(name)
+		self.__Workbench__.removeContextMenu(name)
+	def name(self):
+		return self.__Workbench__.name()
 	def GetClassName(self):
 		"""Return the name of the associated C++ class."""
 		# as default use this to simplify writing workbenches in Python 
@@ -147,13 +151,13 @@ Log ('Init: Running FreeCADGuiInit.py start script...\n')
 App.GuiUp = 1
 App.Gui = FreeCADGui
 
-Gui.addWorkbenchHandler("<none>",NoneWorkbench())
+Gui.addWorkbench("<none>",NoneWorkbench())
 
 # init modules
 InitApplications()
 
 # set standard workbench (needed as fallback)
-Gui.activateWorkbenchHandler("<none>")
+Gui.activateWorkbench("<none>")
 
 # Register .py, .FCScript and .FCMacro
 FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")

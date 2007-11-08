@@ -46,92 +46,52 @@ using namespace Gui;
 
 // FCApplication Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbenchHandler,1,
-   "deprecated -- activateWorkbenchHandler"},
-  {"activateWorkbenchHandler",(PyCFunction) Application::sActivateWorkbenchHandler,1,
+  {"activateWorkbench",(PyCFunction) Application::sActivateWorkbenchHandler,1,
    "activateWorkbench(string) -> None\n\n"
-   "Activate the workbench with name"},
-  {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
-   "deprecated -- use addWorkbenchHandler"},
-  {"addWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
-   "addWorkbenchHandler(string, object) -> None\n\n"
-   "Add a workbench handler under a defined name."},
-  {"RemoveWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1,
-   "deprecated -- use RemoveWorkbenchHandler"},
-  {"removeWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1,
-   "removeWorkbenchHandler(string) -> None\n\n"
-   "Remove the workbench handler with name"},
-  {"GetWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
-   "deprecated -- use getWorkbenchHandler"},
-  {"getWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
-   "getWorkbenchHandler(string) -> object\n\n"
-   "Get the workbench handler by its name"},
-  {"ListWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1,
-   "deprecated -- use listWorkbenchHandlers"},
-  {"listWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1,
-   "listWorkbenchHandlers() -> list\n\n"
-   "Show a list of all workbench handlers"},
-  {"CreateWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1,
-   "deprecated -- use createWorkbench"},
-  {"createWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1,
-   "createWorkbench(string, [string]) -> object\n\n"
-   "Create a workbench with name of type"},
-  {"ActiveWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1,
-   "deprecated -- use activeWorkbench"},
-  {"activeWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1,
+   "Activate the workbench by name"},
+  {"addWorkbench",     (PyCFunction) Application::sAddWorkbenchHandler,     1,
+   "addWorkbench(string, object) -> None\n\n"
+   "Add a workbench under a defined name."},
+  {"removeWorkbench",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1,
+   "removeWorkbench(string) -> None\n\n"
+   "Remove the workbench with name"},
+  {"getWorkbench",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
+   "getWorkbench(string) -> object\n\n"
+   "Get the workbench by its name"},
+  {"listWorkbench",   (PyCFunction) Application::sListWorkbenchHandlers,    1,
+   "listWorkbench() -> list\n\n"
+   "Show a list of all workbenches"},
+  {"activeWorkbench", (PyCFunction) Application::sActiveWorkbenchHandler,   1,
    "activeWorkbench() -> object\n\n"
    "Return the active workbench object"},
-  {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
-   "deprecated -- use listWorkbenches"},
-  {"listWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1,
-   "listWorkbenches() -> list\n\n"
-   "Show a list of all workbenches"},
-  {"GetWorkbench",            (PyCFunction) Application::sGetWorkbench,            1,
-   "deprecated -- use getWorkbench"},
-  {"getWorkbench",            (PyCFunction) Application::sGetWorkbench,            1,
-   "getWorkbench(string) -> object\n\n"
-   "Get a workbench by its name"},
-  {"HasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1,
-   "deprecated -- use hasWorkbench"},
-  {"hasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1,
-   "hasWorkbench(string) -> bool\n\n"
-   "Check if the workbench with name exists"},
-  {"addIconPath",             (PyCFunction) Application::sAddIconPath,             1,
+  {"addIconPath",             (PyCFunction) Application::sAddIconPath,      1,
    "addIconPath(string) -> None\n\n"
    "Add a new path to the system where to find icon files"},
-  {"UpdateGui",               (PyCFunction) Application::sUpdateGui,               1,
-   "deprecated -- use updateGui"},
-  {"updateGui",               (PyCFunction) Application::sUpdateGui,               1,
+  {"updateGui",               (PyCFunction) Application::sUpdateGui,        1,
    "updateGui() -> None\n\n"
    "Update the main window and all its windows"},
-  {"CreateDialog",            (PyCFunction) Application::sCreateDialog,            1,
-   "deprecated -- use createDialog"},
-  {"createDialog",            (PyCFunction) Application::sCreateDialog,            1,
+  {"createDialog",            (PyCFunction) Application::sCreateDialog,     1,
    "createDialog(string) -- Open a UI file"},
-  {"AddCommand",              (PyCFunction) Application::sAddCommand,              1,
-   "deprecated -- use addCommand"},
-  {"addCommand",              (PyCFunction) Application::sAddCommand,              1,
+  {"addCommand",              (PyCFunction) Application::sAddCommand,       1,
    "addCommand(string, object) -> None\n\n"
    "Add a command object"},
-  {"RunCommand",              (PyCFunction) Application::sRunCommand,              1,
-   "deprecated -- use runCommand"},
-  {"runCommand",              (PyCFunction) Application::sRunCommand,              1,
+  {"runCommand",              (PyCFunction) Application::sRunCommand,       1,
    "runCommand(string) -> None\n\n"
    "Run command with name"},
-  {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1,
+  {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,   1,
    "deprecated -- use class View"},
-  {"hide",                    (PyCFunction) Application::sHide,                    1,
+  {"hide",                    (PyCFunction) Application::sHide,             1,
    "deprecated"},
-  {"show",                    (PyCFunction) Application::sShow,                    1,
+  {"show",                    (PyCFunction) Application::sShow,             1,
    "deprecated"},
-  {"open",                    (PyCFunction) Application::sOpen,                    1,
+  {"open",                    (PyCFunction) Application::sOpen,             1,
    "Open a macro, Inventor or VRML file"},
-  {"insert",                  (PyCFunction) Application::sInsert,                  1,
+  {"insert",                  (PyCFunction) Application::sInsert,           1,
    "Open a macro, Inventor or VRML file"},
-  {"activeDocument",          (PyCFunction) Application::sActiveDocument,          1,
+  {"activeDocument",          (PyCFunction) Application::sActiveDocument,   1,
    "activeDocument() -> object or None\n\n"
    "Return the active document or None if no one exists"},
-  {"getDocument",             (PyCFunction) Application::sGetDocument,             1,
+  {"getDocument",             (PyCFunction) Application::sGetDocument,      1,
    "getDocument(string) -> object\n\n"
    "Get a document by its name"},
 
@@ -376,7 +336,7 @@ PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
   PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,psKey); 
   if ( !wb )
   {
-    PyErr_Format(PyExc_KeyError, "No such workbench handler '%s'", psKey);
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
     return NULL;
   }
 
@@ -414,10 +374,11 @@ PYFUNCIMP_S(Application,sGetWorkbenchHandler)
   PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
   if ( !pcWorkbench )
   {
-    PyErr_Format(PyExc_KeyError, "No such workbench handler '%s'", psKey);
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
     return NULL;
   }
 
+  Py_INCREF(pcWorkbench);
   return pcWorkbench;
 } 
 
@@ -427,53 +388,7 @@ PYFUNCIMP_S(Application,sListWorkbenchHandlers)
   return Instance->_pcWorkbenchDictionary;
 } 
 
-PYFUNCIMP_S(Application,sListWorkbenches)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-      return NULL;                             // NULL triggers exception 
-  QStringList wb = WorkbenchManager::instance()->workbenches();
-  PyObject* pyList = PyList_New(wb.count()); 
-  int i=0;
-  for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
-  {
-    PyObject* str = PyString_FromString((*it).toAscii());
-    PyList_SetItem(pyList, i++, str);
-  }
-
-  return pyList;
-} 
-
-PYFUNCIMP_S(Application,sCreateWorkbench)
-{
-  char* psName;
-  char* psType="Gui::PythonWorkbench";
-  if (!PyArg_ParseTuple(args, "s|s", &psName, &psType))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  if ( WorkbenchManager::instance()->getWorkbench(psName) )
-  {
-    PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psName);
-    return NULL;
-  }
-
-  PY_TRY {
-    // create a workbench of specified type (default PythonWorkbench)
-    Workbench* wb = WorkbenchManager::instance()->createWorkbench( psName, psType );
-    
-    // object get incremented
-    if (wb) {
-      PyObject* pyObj = wb->getPyObject();
-      return pyObj;
-    } else {
-      PyErr_Format(PyExc_KeyError, "Cannot create workbench '%s'", psName);
-      return NULL;
-    }
-  } PY_CATCH;
-
-  Py_Return;    
-} 
-
-PYFUNCIMP_S(Application,sActiveWorkbench)
+PYFUNCIMP_S(Application,sActiveWorkbenchHandler)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
@@ -485,42 +400,18 @@ PYFUNCIMP_S(Application,sActiveWorkbench)
     return NULL;
   }
 
-  // object get incremented
-  PyObject* pyObj = actWb->getPyObject();
-  return pyObj;
-} 
-
-PYFUNCIMP_S(Application,sGetWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  if ( !wb )
+  // get the python workbench object from the dictionary
+  QByteArray psKey = actWb->name().toUtf8();
+  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
+  if ( !pcWorkbench )
   {
-    PyErr_Format(PyExc_AssertionError, "No such workbench '%s'\n", psKey);		
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
     return NULL;
   }
 
   // object get incremented
-  return wb->getPyObject();
-} 
-
-PYFUNCIMP_S(Application,sHasWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  if ( wb ) {
-    Py_INCREF(Py_True);
-    return Py_True;
-  } else {
-    Py_INCREF(Py_False);
-    return Py_False;
-  }
+  Py_INCREF(pcWorkbench);
+  return pcWorkbench;
 } 
 
 PYFUNCIMP_S(Application,sAddIconPath)
