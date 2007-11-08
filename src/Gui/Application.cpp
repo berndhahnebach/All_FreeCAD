@@ -634,12 +634,12 @@ bool Application::activateWorkbench(const char* name)
     return ok;
 }
 
-QPixmap Application::workbenchIcon( const QString& wb ) const
+QPixmap Application::workbenchIcon(const QString& wb) const
 {
     // get the python workbench object from the dictionary
     PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
     // test if the workbench exists
-    if ( pcWorkbench ) {
+    if (pcWorkbench) {
         // make a unique icon name
         QString iconName;
         iconName.sprintf("%p", static_cast<const void *>(pcWorkbench));
@@ -647,34 +647,38 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
         if (BitmapFactory().findPixmapInCache(iconName, icon))
             return icon;
 
-        // call its GetIcon method if possible
+        // get its Icon member if possible
         try {
-            PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetIcon");
-            if ( !PyList_Check(res) ) {
-                Py_DECREF(res);
-            } else {
-                // create temporary buffer
-                int ct = PyList_Size(res);
-                QByteArray ary;
-
-                if ( ct > 0 ) {
-                    PyObject* line = PyList_GetItem(res,0);
-                    if ( line && PyString_Check(line) ) {
-                        const char* szBuf = PyString_AsString(line);
-                        int strlen = PyString_Size(line);
-                        ary.resize(strlen);
-                        for ( int j=0; j<strlen; j++ )
-                            ary[j]=szBuf[j];
-                    }
+            Py::Object handler(pcWorkbench);
+            Py::Object member = handler.getAttr(std::string("Icon"));
+            if (member.isString()) {
+                Py::String file(member);
+                QString fn = QString::fromUtf8(file.as_std_string().c_str());
+                QPixmap px; px.load(fn);
+                if (px.isNull()) {
+                    px = BitmapFactory().pixmap(fn);
                 }
+                BitmapFactory().addPixmapToCache(iconName.toAscii(), px);
+                return px;
+            }
+            else if (member.isList()) {
+                Py::List list(member);
+                Py::String xpm(list[0]);
+                std::string content = xpm.as_std_string();
 
-                Py_DECREF(res);
+                QByteArray ary;
+                int strlen = content.size();
+                ary.resize(strlen);
+                for (int j=0; j<strlen; j++)
+                    ary[j]=content[j];
+
                 QPixmap px; px.loadFromData(ary, "XPM");
                 BitmapFactory().addPixmapToCache(iconName.toAscii(), px);
                 return px;
             }
-        } catch ( const Base::Exception& e ) {
-            Base::Console().Log("%s\n", e.what() );
+        }
+        catch (Py::Exception& e) {
+            e.clear();
         }
     }
 

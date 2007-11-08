@@ -41,9 +41,7 @@ class CamWorkbench ( Workbench ):
 		import Cam
 	def GetClassName(self):
 		return "CamGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *Cam_Box[]={\n"
 			"\"16 16 3 1\",\n"
 			"\". c None\",\n"
@@ -67,4 +65,4 @@ class CamWorkbench ( Workbench ):
 			"\"................\"};\n"]
 
 # No Workbench at the moment
-#Gui.addWorkbench("Cam design",CamWorkbench())
+#Gui.addWorkbench(CamWorkbench())

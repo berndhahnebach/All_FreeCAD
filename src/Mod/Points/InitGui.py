@@ -33,21 +33,7 @@
 
 class PointsWorkbench ( Workbench ):
 	"Points workbench object"
-	MenuText = "Points"
-	ToolTip = "Points workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Points module...')
-			import PointsGui
-		except:
-			Err('Cannot load PointsGui')
-			raise
-	def GetClassName(self):
-		return "PointsGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *test_icon[]={\n"
 			"\"16 16 2 1\",\n"
 			"\"a c #000000\",\n"
@@ -68,5 +54,14 @@ class PointsWorkbench ( Workbench ):
 			"\".........##.....\",\n"
 			"\"...##......##...\",\n"
 			"\"................\"};\n"]
+	MenuText = "Points"
+	ToolTip = "Points workbench"
 
-Gui.addWorkbench("Points design",PointsWorkbench())
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Points module...')
+		import PointsGui
+	def GetClassName(self):
+		return "PointsGui::Workbench"
+
+Gui.addWorkbench(PointsWorkbench())

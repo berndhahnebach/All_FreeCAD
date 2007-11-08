@@ -5,24 +5,7 @@
 
 class TemplatePyModWorkbench ( Workbench ):
 	"Test workbench object"
-	MenuText = "Python template"
-	ToolTip = "Python template workbench"
-	def Activate(self):
-		Log ('Loading GUI of TemplatePyMod module...\n')
-		import Commands
-
-		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
-
-		menu = ["ModulePy &Commands","PyModuleCommands"]
-		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
-		self.appendCommandbar("PyModuleCommands",list)
-		self.appendMenu(menu,list)
-
-		Log ('Loading GUI of Test module... done\n')
-
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *test_icon[]={\n"
 			"\"16 16 2 1\",\n"
 			"\"a c #000000\",\n"
@@ -43,5 +26,20 @@ class TemplatePyModWorkbench ( Workbench ):
 			"\"......####......\",\n"
 			"\"................\",\n"
 			"\"................\"};\n"]
+	MenuText = "Python template"
+	ToolTip = "Python template workbench"
+	
+	def Activate(self):
+		Log ('Loading GUI of TemplatePyMod module...\n')
+		import Commands
 
-Gui.addWorkbench("TemplatePyMod Workbench",TemplatePyModWorkbench())
+		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
+
+		menu = ["ModulePy &Commands","PyModuleCommands"]
+		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
+		self.appendCommandbar("PyModuleCommands",list)
+		self.appendMenu(menu,list)
+
+		Log ('Loading GUI of Test module... done\n')
+
+Gui.addWorkbench(TemplatePyModWorkbench())

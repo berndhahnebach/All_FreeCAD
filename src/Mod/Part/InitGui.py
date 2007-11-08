@@ -33,22 +33,7 @@
 
 class PartWorkbench ( Workbench ):
 	"Part workbench object"
-	MenuText = "Part design"
-	ToolTip = "Part design workbench"
-	def Activate(self):
-		# load the module
-		try:
-			Log ('Loading GUI of Part module...')
-			import PartGui
-			import Part
-		except:
-			Err('Cannot load PartGui')
-			raise
-	def GetClassName(self):
-		return "PartGui::Workbench"
-	def GetIcon(self):
-		# returns an icon for the workbench
-		return ["/* XPM */\n"
+	Icon = ["/* XPM */\n"
 			"static const char *Part_Box[]={\n"
 			"\"16 16 3 1\",\n"
 			"\". c None\",\n"
@@ -70,5 +55,15 @@ class PartWorkbench ( Workbench ):
 			"\".#aaaaa###......\",\n"
 			"\".########.......\",\n"
 			"\"................\"};\n"]
+	MenuText = "Part design"
+	ToolTip = "Part design workbench"
 
-Gui.addWorkbench("Part design",PartWorkbench())
+	def Activate(self):
+		# load the module
+		Log ('Loading GUI of Part module...')
+		import PartGui
+		import Part
+	def GetClassName(self):
+		return "PartGui::Workbench"
+
+Gui.addWorkbench(PartWorkbench())

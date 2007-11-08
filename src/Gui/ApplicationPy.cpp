@@ -41,6 +41,7 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
+#include <Base/PyCXX/Objects.hxx>
 
 using namespace Gui;
 
@@ -295,39 +296,34 @@ PYFUNCIMP_S(Application,sActivateWorkbenchHandler)
 
 PYFUNCIMP_S(Application,sAddWorkbenchHandler)
 {
-  char*       psKey;
-  PyObject*   pcObject;
-  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
+    PyObject*   pcObject;
+    std::string item;
+    if (!PyArg_ParseTuple(args, "O", &pcObject))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
 
-  try {
-    // Search for some methods without invoking them
-    PyObject* meth = 0;
-    meth = PyObject_GetAttrString(pcObject, "Activate");
-    if (!meth) throw Base::PyException();
-    Py_DECREF(meth);
-    meth = PyObject_GetAttrString(pcObject, "GetClassName");
-    if (!meth) throw Base::PyException();
-    Py_DECREF(meth);
-    meth = PyObject_GetAttrString(pcObject, "GetIcon");
-    if (!meth) throw Base::PyException();
-    Py_DECREF(meth);
-  } catch (const Base::PyException& e) {
-    PyErr_Format(PyExc_AttributeError, "%s", e.what());
-    return NULL;
-  }
+    try {
+        // Search for some methods and members without invoking them
+        Py::Object object(pcObject);
+        Py::Callable(object.getAttr(std::string("Activate")));
+        Py::Callable(object.getAttr(std::string("GetClassName")));
+        Py::String text(object.getAttr(std::string("MenuText")));
+        item = text.as_std_string();
+        object.getAttr(std::string("Icon"));
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
 
-  PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,psKey); 
-  if ( wb )
-  {
-    PyErr_Format(PyExc_KeyError, "'%s' already exists.", psKey);
-    return NULL;
-  }
+    PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,item.c_str()); 
+    if (wb) {
+        PyErr_Format(PyExc_KeyError, "'%s' already exists.", item.c_str());
+        return NULL;
+    }
 
-  PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
+    PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),pcObject);
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
 PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
