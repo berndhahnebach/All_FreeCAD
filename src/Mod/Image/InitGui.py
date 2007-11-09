@@ -191,7 +191,7 @@ class ImageWorkbench ( Workbench ):
 	MenuText = "Image"
 	ToolTip = "Image workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Image module...')
 		import ImageGui

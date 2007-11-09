@@ -587,7 +587,7 @@ bool Application::activateWorkbench(const char* name)
             }
 
             // import the matching module first
-            Py::Callable activate(handler.getAttr(std::string("Activate")));
+            Py::Callable activate(handler.getAttr(std::string("Initialize")));
             activate.apply(args);
         }
 
@@ -607,6 +607,26 @@ bool Application::activateWorkbench(const char* name)
         if (!handler.hasAttr(std::string("__Workbench__"))) {
             Workbench* wb = WorkbenchManager::instance()->getWorkbench(name);
             if (wb) handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
+        }
+
+        // If the method Activate is available we call it
+        if (handler.hasAttr(std::string("Activate"))) {
+            Py::Object method(handler.getAttr(std::string("Activate")));
+            if (method.isCallable()) {
+                Py::Tuple args;
+                Py::Callable activate(method);
+                activate.apply(args);
+            }
+        }
+
+        // If the method Deactivate is available we call it
+        if (handler.hasAttr(std::string("Deactivate"))) {
+            Py::Object method(handler.getAttr(std::string("Deactivate")));
+            if (method.isCallable()) {
+                Py::Tuple args;
+                Py::Callable activate(method);
+                activate.apply(args);
+            }
         }
     }
     catch (Py::Exception& e) {

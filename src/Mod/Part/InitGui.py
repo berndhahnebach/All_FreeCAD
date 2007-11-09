@@ -60,7 +60,7 @@ class PartWorkbench ( Workbench ):
 	MenuText = "Part design"
 	ToolTip = "Part design workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Part module...')
 		import PartGui
