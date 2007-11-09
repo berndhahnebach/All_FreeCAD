@@ -33,74 +33,76 @@
 
 class DrawingWorkbench ( Workbench ):
 	"Drawing workbench object"
-	Icon = ["/* XPM */\n"
-			"static const char *colors[]={\n"
-			"\"16 16 49 1\",\n"
-			"\"Qt c None\",\n"
-			"\".	c #B0B0B0\",\n"
-			"\"+	c #C8C8C8\",\n"
-			"\"@	c #CACACA\",\n"
-			"\"#	c #CBCBCB\",\n"
-			"\"$	c #CDCDCD\",\n"
-			"\"%	c #D0D0D0\",\n"
-			"\"&	c #D1D1D1\",\n"
-			"\"*	c #D2D2D2\",\n"
-			"\"=	c #D3D3D3\",\n"
-			"\"-	c #D4D4D4\",\n"
-			"\";	c #D7D7D7\",\n"
-			"\">	c #D8D8D8\",\n"
-			"\",	c #E6E6E6\",\n"
-			"\"'	c #E7E7E7\",\n"
-			"\")	c #E5E5E5\",\n"
-			"\"!	c #E0E0E0\",\n"
-			"\"~	c #E4E4E4\",\n"
-			"\"{	c #DEDEDE\",\n"
-			"\"]	c #E1E1E1\",\n"
-			"\"^	c #DADADA\",\n"
-			"\"/	c #CCCCCC\",\n"
-			"\"(	c #EAEAEA\",\n"
-			"\"_	c #EBEBEB\",\n"
-			"\":	c #E9E9E9\",\n"
-			"\"<	c #E8E8E8\",\n"
-			"\"[	c #E2E2E2\",\n"
-			"\"}	c #DDDDDD\",\n"
-			"\"|	c #ECECEC\",\n"
-			"\"1	c #DBDBDB\",\n"
-			"\"2	c #EEEEEE\",\n"
-			"\"3	c #EDEDED\",\n"
-			"\"4	c #E3E3E3\",\n"
-			"\"5	c #F0F0F0\",\n"
-			"\"6	c #F1F1F1\",\n"
-			"\"7	c #EFEFEF\",\n"
-			"\"8	c #F2F2F2\",\n"
-			"\"9	c #F3F3F3\",\n"
-			"\"0	c #D6D6D6\",\n"
-			"\"a	c #F4F4F4\",\n"
-			"\"b	c #F5F5F5\",\n"
-			"\"c	c #F7F7F7\",\n"
-			"\"d	c #F6F6F6\",\n"
-			"\"e	c #F8F8F8\",\n"
-			"\"f	c #F9F9F9\",\n"
-			"\"g	c #CFCFCF\",\n"
-			"\"h	c #B3B3B3\",\n"
-			"\"i	c #CECECE\",\n"
-			"\"j	c #BBBBBB\",\n"
-			"\"                \",\n"
-			"\"                \",\n"
-			"\" .+@#$%&*=-;>>$ \",\n"
-			"\" #,'')!)~{!]!{^ \",\n"
-			"\" /(___(::<',~[} \",\n"
-			"\" /||||_(:<')~[1 \",\n"
-			"\" /22223|_(<')4^ \",\n"
-			"\" $5665723_(<,~; \",\n"
-			"\" $89986523_:')0 \",\n"
-			"\" /abba9673|(<)- \",\n"
-			"\" $bccda852|(<,* \",\n"
-			"\" $defcb852|(<,% \",\n"
-			"\" /bccda852|(<,g \",\n"
-			"\" hggggiiigiiiij \",\n"
-			"\"                \",\n"
-			"\"                \"};\n"]
+	Icon = """
+			/* XPM */
+			static const char *colors[]={
+			"16 16 49 1\",
+			"Qt c None\",
+			".	c #B0B0B0\",
+			"+	c #C8C8C8\",
+			"@	c #CACACA\",
+			"#	c #CBCBCB\",
+			"$	c #CDCDCD\",
+			"%	c #D0D0D0\",
+			"&	c #D1D1D1\",
+			"*	c #D2D2D2\",
+			"=	c #D3D3D3\",
+			"-	c #D4D4D4\",
+			";	c #D7D7D7\",
+			">	c #D8D8D8\",
+			",	c #E6E6E6\",
+			"'	c #E7E7E7\",
+			")	c #E5E5E5\",
+			"!	c #E0E0E0\",
+			"~	c #E4E4E4\",
+			"{	c #DEDEDE\",
+			"]	c #E1E1E1\",
+			"^	c #DADADA\",
+			"/	c #CCCCCC\",
+			"(	c #EAEAEA\",
+			"_	c #EBEBEB\",
+			":	c #E9E9E9\",
+			"<	c #E8E8E8\",
+			"[	c #E2E2E2\",
+			"}	c #DDDDDD\",
+			"|	c #ECECEC\",
+			"1	c #DBDBDB\",
+			"2	c #EEEEEE\",
+			"3	c #EDEDED\",
+			"4	c #E3E3E3\",
+			"5	c #F0F0F0\",
+			"6	c #F1F1F1\",
+			"7	c #EFEFEF\",
+			"8	c #F2F2F2\",
+			"9	c #F3F3F3\",
+			"0	c #D6D6D6\",
+			"a	c #F4F4F4\",
+			"b	c #F5F5F5\",
+			"c	c #F7F7F7\",
+			"d	c #F6F6F6\",
+			"e	c #F8F8F8\",
+			"f	c #F9F9F9\",
+			"g	c #CFCFCF\",
+			"h	c #B3B3B3\",
+			"i	c #CECECE\",
+			"j	c #BBBBBB\",
+			"                \",
+			"                \",
+			" .+@#$%&*=-;>>$ \",
+			" #,'')!)~{!]!{^ \",
+			" /(___(::<',~[} \",
+			" /||||_(:<')~[1 \",
+			" /22223|_(<')4^ \",
+			" $5665723_(<,~; \",
+			" $89986523_:')0 \",
+			" /abba9673|(<)- \",
+			" $bccda852|(<,* \",
+			" $defcb852|(<,% \",
+			" /bccda852|(<,g \",
+			" hggggiiigiiiij \",
+			"                \",
+			"                \"};
+			"""
 	MenuText = "Drawing"
 	ToolTip = "Drawing workbench"
 

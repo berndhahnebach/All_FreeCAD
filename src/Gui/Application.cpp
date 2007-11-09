@@ -598,6 +598,7 @@ bool Application::activateWorkbench(const char* name)
         // now try to create and activate the matching workbench object
         else if (WorkbenchManager::instance()->activate(name, type)) {
             getMainWindow()->activateWorkbench(QString(name));
+            this->signalActivateWorkbench(name);
             ok = true;
         }
 
@@ -651,31 +652,32 @@ QPixmap Application::workbenchIcon(const QString& wb) const
         try {
             Py::Object handler(pcWorkbench);
             Py::Object member = handler.getAttr(std::string("Icon"));
-            if (member.isString()) {
-                Py::String file(member);
-                QString fn = QString::fromUtf8(file.as_std_string().c_str());
-                QPixmap px; px.load(fn);
-                if (px.isNull()) {
-                    px = BitmapFactory().pixmap(fn);
+            Py::String data(member);
+            std::string content = data.as_std_string();
+
+            // test if in XPM format
+            QByteArray ary;
+            int strlen = content.size();
+            ary.resize(strlen);
+            for (int j=0; j<strlen; j++)
+                ary[j]=content[j];
+            icon.loadFromData(ary, "XPM");
+
+            if (icon.isNull()) {
+                // is if a file name...
+                QString file = QString::fromUtf8(content.c_str());
+                icon.load(file);
+                if (icon.isNull()) {
+                    // ... or the name of another icon?
+                    icon = BitmapFactory().pixmap(file);
                 }
-                BitmapFactory().addPixmapToCache(iconName.toAscii(), px);
-                return px;
             }
-            else if (member.isList()) {
-                Py::List list(member);
-                Py::String xpm(list[0]);
-                std::string content = xpm.as_std_string();
 
-                QByteArray ary;
-                int strlen = content.size();
-                ary.resize(strlen);
-                for (int j=0; j<strlen; j++)
-                    ary[j]=content[j];
-
-                QPixmap px; px.loadFromData(ary, "XPM");
-                BitmapFactory().addPixmapToCache(iconName.toAscii(), px);
-                return px;
+            if (!icon.isNull()) {
+                BitmapFactory().addPixmapToCache(iconName, icon);
             }
+
+            return icon;
         }
         catch (Py::Exception& e) {
             e.clear();
@@ -683,6 +685,29 @@ QPixmap Application::workbenchIcon(const QString& wb) const
     }
 
     return QPixmap();
+}
+
+QString Application::workbenchToolTip(const QString& wb) const
+{
+    // get the python workbench object from the dictionary
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
+    // test if the workbench exists
+    if (pcWorkbench) {
+        // get its ToolTip member if possible
+        try {
+            Py::Object handler(pcWorkbench);
+            Py::Object member = handler.getAttr(std::string("ToolTip"));
+            if (member.isString()) {
+                Py::String tip(member);
+                return QString::fromUtf8(tip.as_std_string().c_str());
+            }
+        }
+        catch (Py::Exception& e) {
+            e.clear();
+        }
+    }
+
+    return QString();
 }
 
 QStringList Application::workbenches(void) const

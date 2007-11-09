@@ -155,6 +155,10 @@ public:
   void addTo ( QWidget * w );
   void refreshWorkbenchList();
 
+  void slotActivateWorkbench(const char*);
+  void slotAddWorkbench(const char*);
+  void slotRemoveWorkbench(const char*);
+
 protected:
   void customEvent( QEvent* e );
 };

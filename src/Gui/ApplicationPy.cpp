@@ -321,6 +321,7 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
     }
 
     PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),pcObject);
+    Instance->signalAddWorkbench(item.c_str());
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -340,23 +341,8 @@ PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
   }
 
 
+  Instance->signalRemoveWorkbench(psKey);
   PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
-
-  // If the active workbench gets removed we must load another one
-  Workbench* actWb = WorkbenchManager::instance()->active();
-  if (actWb && actWb->name() == psKey)
-  {
-    // then just load the last workbench
-    int ct = PyDict_Size( Instance->_pcWorkbenchDictionary );
-    if ( ct > 0 )
-    {
-      PyObject* list = PyDict_Keys( Instance->_pcWorkbenchDictionary ); 
-      PyObject* str = PyList_GetItem( list, ct-1 );
-      Py_DECREF(list); // frees the list
-      const char* name = PyString_AsString( str );
-      Instance->activateWorkbench( name );
-    }
-  }
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -433,8 +419,8 @@ PYFUNCIMP_S(Application,sAddIconPath)
 PYFUNCIMP_S(Application,sAddIcon)
 {
     char *iconName;
-    PyObject* pixmap;
-    if (!PyArg_ParseTuple(args, "sO", &iconName,&pixmap))     // convert args: Python->C 
+    char *pixmap;
+    if (!PyArg_ParseTuple(args, "ss", &iconName,&pixmap))     // convert args: Python->C 
         return NULL;                    // NULL triggers exception 
     
     QPixmap icon;
@@ -443,25 +429,16 @@ PYFUNCIMP_S(Application,sAddIcon)
         return NULL;
     }
 
-    if (PyList_Check(pixmap)) {
-        // create temporary buffer
-        int ct = PyList_Size(pixmap);
-        QByteArray ary;
+    QByteArray ary;
+    std::string content = pixmap;
+    int strlen = content.size();
+    ary.resize(strlen);
+    for (int j=0; j<strlen; j++)
+        ary[j]=content[j];
+    icon.loadFromData(ary, "XPM");
 
-        if ( ct > 0 ) {
-            PyObject* line = PyList_GetItem(pixmap,0);
-            if ( line && PyString_Check(line) ) {
-                const char* szBuf = PyString_AsString(line);
-                int strlen = PyString_Size(line);
-                ary.resize(strlen);
-                for (int j=0; j<strlen; j++)
-                    ary[j]=szBuf[j];
-                icon.loadFromData(ary, "XPM");
-            }
-        }
-    }
-    else if (PyString_Check(pixmap)){
-        QString file = QString::fromUtf8(PyString_AsString(pixmap));
+    if (icon.isNull()){
+        QString file = QString::fromUtf8(pixmap);
         icon.load(file);
     }
 

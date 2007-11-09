@@ -23,6 +23,11 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
+#endif
+
 #include "Action.h"
 #include "Application.h"
 #include "Command.h"
@@ -299,51 +304,69 @@ WorkbenchComboBox::~WorkbenchComboBox()
 
 void WorkbenchComboBox::actionEvent ( QActionEvent* e )
 {
-  QAction *action = e->action();
-  switch (e->type()) {
-  case QEvent::ActionAdded:
-    {
-      if (action->isVisible()) {
-        QIcon icon = action->icon();
-        if (icon.isNull())
-          this->addItem(action->text(), action->data());
-        else
-          this->addItem(icon, action->text(), action->data());
-        if (action->isChecked())
-          this->setCurrentIndex(action->data().toInt());
-      }
-      break;
+    QAction *action = e->action();
+    switch (e->type()) {
+    case QEvent::ActionAdded:
+        {
+            if (action->isVisible()) {
+                QIcon icon = action->icon();
+                if (icon.isNull())
+                    this->addItem(action->text(), action->data());
+                else
+                    this->addItem(icon, action->text(), action->data());
+                if (action->isChecked())
+                    this->setCurrentIndex(action->data().toInt());
+            }
+            break;
+        }
+    case QEvent::ActionChanged:
+        {
+            QVariant data = action->data();
+            int index = this->findData(data);
+            // added a workbench
+            if (index < 0 && action->isVisible()) {
+                QString text = action->text();
+                QIcon icon = action->icon();
+                if (icon.isNull())
+                    this->addItem(action->text(), data);
+                else
+                    this->addItem(icon, action->text(), data);
+            }
+            // removed a workbench
+            else if (index >=0 && !action->isVisible()) {
+                this->removeItem(index);
+            }
+            break;
+        }
+    case QEvent::ActionRemoved:
+        {
+            //Nothing needs to be done
+            break;
+        }
+    default:
+        break;
     }
-  case QEvent::ActionChanged:
-    {
-      //Nothing needs to be done
-      break;
-    }
-  case QEvent::ActionRemoved:
-    {
-      //Nothing needs to be done
-      break;
-    }
-  default:
-    break;
-  }
 }
 
 void WorkbenchComboBox::onActivated(int i)
 {
-  // Send the event to the workbench group to delay the destruction of the emitting widget.
-  WorkbenchActionEvent* ev = new WorkbenchActionEvent(this->actions()[i]);
-  QApplication::postEvent(this->group, ev);
+    // Send the event to the workbench group to delay the destruction of the emitting widget.
+    int index = itemData(i).toInt();
+    WorkbenchActionEvent* ev = new WorkbenchActionEvent(this->actions()[index]);
+    QApplication::postEvent(this->group, ev);
 }
 
-void WorkbenchComboBox::onActivated(QAction* a)
+void WorkbenchComboBox::onActivated(QAction* action)
 {
-  setCurrentIndex(a->data().toInt());
+    QVariant data = action->data();
+    int index = this->findData(data);
+    setCurrentIndex(index);
 }
 
 void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 {
     int index = findText(name);
+    index = itemData(index).toInt();
     if (index >= 0) {
         // Notify the workbench menu by triggering the appropriate action
         QList<QAction*> a = actions();
@@ -355,11 +378,16 @@ void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
   : ActionGroup( pcCmd, parent )
 {
-  for (int i=0; i<50; i++) {
-    QAction* action = _group->addAction("");
-    action->setVisible(false);
-    action->setCheckable(true);
-  }
+    for (int i=0; i<50; i++) {
+        QAction* action = _group->addAction("");
+        action->setVisible(false);
+        action->setCheckable(true);
+        action->setData(QVariant(i)); // set the index
+    }
+
+    Application::Instance->signalActivateWorkbench.connect(boost::bind(&WorkbenchGroup::slotActivateWorkbench, this, _1));
+    Application::Instance->signalAddWorkbench.connect(boost::bind(&WorkbenchGroup::slotAddWorkbench, this, _1));
+    Application::Instance->signalRemoveWorkbench.connect(boost::bind(&WorkbenchGroup::slotRemoveWorkbench, this, _1));
 }
 
 WorkbenchGroup::~WorkbenchGroup()
@@ -368,57 +396,92 @@ WorkbenchGroup::~WorkbenchGroup()
 
 void WorkbenchGroup::addTo(QWidget *w)
 {
-  refreshWorkbenchList();
-  if (w->inherits("QToolBar"))
-  {
-    QToolBar* bar = qobject_cast<QToolBar*>(w);
-    QComboBox* box = new WorkbenchComboBox(this, w);
-    box->setToolTip(_action->toolTip());
-    box->setStatusTip(_action->statusTip());
-    box->setWhatsThis(_action->whatsThis());
-    box->addActions(_group->actions());
-    connect(_group, SIGNAL(triggered(QAction*)), box, SLOT(onActivated (QAction*)));
-    bar->addWidget(box);
-  }
-  else if (w->inherits("QMenu"))
-  {
-    QMenu* menu = qobject_cast<QMenu*>(w);
-    menu = menu->addMenu(_action->text());
-    menu->addActions(_group->actions());
-  }
+    refreshWorkbenchList();
+    if (w->inherits("QToolBar")) {
+        QToolBar* bar = qobject_cast<QToolBar*>(w);
+        QComboBox* box = new WorkbenchComboBox(this, w);
+        box->setToolTip(_action->toolTip());
+        box->setStatusTip(_action->statusTip());
+        box->setWhatsThis(_action->whatsThis());
+        box->addActions(_group->actions());
+        connect(_group, SIGNAL(triggered(QAction*)), box, SLOT(onActivated (QAction*)));
+        bar->addWidget(box);
+    }
+    else if (w->inherits("QMenu")) {
+        QMenu* menu = qobject_cast<QMenu*>(w);
+        menu = menu->addMenu(_action->text());
+        menu->addActions(_group->actions());
+    }
 }
 
 void WorkbenchGroup::refreshWorkbenchList()
 {
-  QString active = WorkbenchManager::instance()->active()->name();
-  QStringList items = Application::Instance->workbenches();
-  items.sort();
+    QString active = WorkbenchManager::instance()->active()->name();
+    QStringList items = Application::Instance->workbenches();
+    items.sort();
 
-  QList<QAction*> workbenches = _group->actions();
-  int numWorkbenches = std::min<int>(workbenches.count(), items.count());
-  for ( int index = 0; index < numWorkbenches; index++ ) {
-    QPixmap px = Application::Instance->workbenchIcon( items[index] );
-    workbenches[index]->setIcon(px);
-    workbenches[index]->setText(items[index]);
-    workbenches[index]->setStatusTip(tr("Select the '%1' workbench").arg(items[index]));
-    workbenches[index]->setData(QVariant(index));
-    workbenches[index]->setVisible(true);
-    workbenches[index]->setCheckable(true);
-    if ( items[index] == active )
-    workbenches[index]->setChecked(true);
-  }
+    QList<QAction*> workbenches = _group->actions();
+    int numWorkbenches = std::min<int>(workbenches.count(), items.count());
+    for ( int index = 0; index < numWorkbenches; index++ ) {
+        QPixmap px = Application::Instance->workbenchIcon(items[index]);
+        QString tip = Application::Instance->workbenchToolTip(items[index]);
+        workbenches[index]->setIcon(px);
+        workbenches[index]->setText(items[index]);
+        workbenches[index]->setToolTip(tip);
+        workbenches[index]->setStatusTip(tr("Select the '%1' workbench").arg(items[index]));
+        workbenches[index]->setVisible(true);
+        if ( items[index] == active )
+        workbenches[index]->setChecked(true);
+    }
 
-  // if less workbenches than actions
-  for (int index = numWorkbenches; index < workbenches.count(); index++)
-    workbenches[index]->setVisible(false);
+    // if less workbenches than actions
+    for (int index = numWorkbenches; index < workbenches.count(); index++)
+        workbenches[index]->setVisible(false);
 }
 
 void WorkbenchGroup::customEvent( QEvent* e )
 {
-  if (e->type() == QEvent::User) {
-    Gui::WorkbenchActionEvent* ce = (Gui::WorkbenchActionEvent*)e;
-    ce->action()->trigger();
-  }
+    if (e->type() == QEvent::User) {
+        Gui::WorkbenchActionEvent* ce = (Gui::WorkbenchActionEvent*)e;
+        ce->action()->trigger();
+    }
+}
+
+void WorkbenchGroup::slotActivateWorkbench(const char* name)
+{
+}
+
+void WorkbenchGroup::slotAddWorkbench(const char* name)
+{
+    QList<QAction*> workbenches = _group->actions();
+    for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
+        if (!(*it)->isVisible()) {
+            QPixmap px = Application::Instance->workbenchIcon(name);
+            QString tip = Application::Instance->workbenchToolTip(name);
+            (*it)->setIcon(px);
+            (*it)->setText(name);
+            (*it)->setToolTip(tip);
+            (*it)->setStatusTip(tr("Select the '%1' workbench").arg(name));
+            (*it)->setVisible(true); // do this at last
+            break;
+        }
+    }
+}
+
+void WorkbenchGroup::slotRemoveWorkbench(const char* name)
+{
+    QString workbench = name;
+    QList<QAction*> workbenches = _group->actions();
+    for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
+        if ((*it)->text() == workbench) {
+            (*it)->setIcon(QIcon());
+            (*it)->setText(QString());
+            (*it)->setToolTip(QString());
+            (*it)->setStatusTip(QString());
+            (*it)->setVisible(false); // do this at last
+            break;
+        }
+    }
 }
 
 // --------------------------------------------------------------------

@@ -33,29 +33,31 @@
 
 class MeshWorkbench ( Workbench ):
 	"Mesh workbench object"
-	Icon = ["/* XPM */\n"
-			"static const char *mesh_icon[]={\n"
-			"\"16 16 4 1\",\n"
-			"\".	c None\",\n"
-			"\"#	c #000000\",\n"
-			"\"s	c #BEC2FC\",\n"
-			"\"g	c #00FF00\",\n"
-			"\".......##.......\",\n"
-			"\"....#######.....\",\n"
-			"\"..##ggg#ggg#....\",\n"
-			"\"##ggggg#gggg##..\",\n"
-			"\"#g#ggg#gggggg##.\",\n"
-			"\"#gg#gg#gggg###s.\",\n"
-			"\"#gg#gg#gg##gg#s.\",\n"
-			"\"#ggg#####ggg#ss.\",\n"
-			"\"#gggg##gggg#ss..\",\n"
-			"\".#g##g#gggg#s...\",\n"
-			"\".##ggg#ggg#ss...\",\n"
-			"\".##gggg#g#ss....\",\n"
-			"\"..s#####g#s.....\",\n"
-			"\"....sss##ss.....\",\n"
-			"\"........ss......\",\n"
-			"\"................\"};\n"]
+	Icon = """
+			/* XPM */
+			static const char *mesh_icon[]={
+			"16 16 4 1\",
+			".	c None\",
+			"#	c #000000\",
+			"s	c #BEC2FC\",
+			"g	c #00FF00\",
+			".......##.......\",
+			"....#######.....\",
+			"..##ggg#ggg#....\",
+			"##ggggg#gggg##..\",
+			"#g#ggg#gggggg##.\",
+			"#gg#gg#gggg###s.\",
+			"#gg#gg#gg##gg#s.\",
+			"#ggg#####ggg#ss.\",
+			"#gggg##gggg#ss..\",
+			".#g##g#gggg#s...\",
+			".##ggg#ggg#ss...\",
+			".##gggg#g#ss....\",
+			"..s#####g#s.....\",
+			"....sss##ss.....\",
+			"........ss......\",
+			"................\"};
+			"""
 	MenuText = "Mesh design"
 	ToolTip = "Mesh design workbench"
 
