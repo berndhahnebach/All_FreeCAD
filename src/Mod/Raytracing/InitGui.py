@@ -60,7 +60,7 @@ class RaytracingWorkbench ( Workbench ):
 	MenuText = "Raytracing"
 	ToolTip = "Raytracing workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Raytracing module...')
 		import PartGui

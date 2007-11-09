@@ -106,7 +106,7 @@ class DrawingWorkbench ( Workbench ):
 	MenuText = "Drawing"
 	ToolTip = "Drawing workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Drawing module...')
 		import DrawingGui

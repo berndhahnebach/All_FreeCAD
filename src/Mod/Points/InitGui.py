@@ -59,7 +59,7 @@ class PointsWorkbench ( Workbench ):
 	MenuText = "Points"
 	ToolTip = "Points workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Points module...')
 		import PointsGui

@@ -304,7 +304,7 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
     try {
         // Search for some methods and members without invoking them
         Py::Object object(pcObject);
-        Py::Callable(object.getAttr(std::string("Activate")));
+        Py::Callable(object.getAttr(std::string("Initialize")));
         Py::Callable(object.getAttr(std::string("GetClassName")));
         Py::String text(object.getAttr(std::string("MenuText")));
         item = text.as_std_string();

@@ -67,9 +67,9 @@ class Workbench:
 	MenuText = ""
 	ToolTip = ""
 	
-	def Activate(self):
-		"""Activate this workbench."""
-		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
+	def Initialize(self):
+		"""Initializes this workbench."""
+		App.PrintWarning(str(self) + ": Workbench.Initialize() not implemented in subclass!")
 	def appendToolbar(self,name,cmds):
 		self.__Workbench__.appendToolbar(name, cmds)
 	def removeToolbar(self,name):
@@ -100,8 +100,8 @@ class StandardWorkbench ( Workbench ):
 	"""A workbench defines the tool bars, command bars, menus, 
 context menu and dockable windows of the main window.
 	"""
-	def Activate(self):
-		"""Activate this workbench."""
+	def Initialize(self):
+		"""Initialize this workbench."""
 		# load the module
 		Log ('Init: Loading FreeCAD GUI')
 	def GetClassName(self):
@@ -112,8 +112,8 @@ class NoneWorkbench ( Workbench ):
 	"""An empty workbench."""
 	MenuText = "<none>"
 	ToolTip = "The default empty workbench"
-	def Activate(self):
-		"""Activate this workbench."""
+	def Initialize(self):
+		"""Initialize this workbench."""
 		# load the module
 		Log ('Init: Loading FreeCAD GUI')
 	def GetClassName(self):

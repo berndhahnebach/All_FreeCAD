@@ -61,7 +61,7 @@ class MeshWorkbench ( Workbench ):
 	MenuText = "Mesh design"
 	ToolTip = "Mesh design workbench"
 
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of Mesh module...')
 		import MeshGui

@@ -56,7 +56,7 @@ class TestWorkbench ( Workbench ):
 	MenuText = "Test framework"
 	ToolTip = "Test framework"
 	
-	def Activate(self):
+	def Initialize(self):
 		Log ('Loading GUI of Test module...\n')
 		import TestGui
 

@@ -46,7 +46,7 @@ class WorkbenchTestCase(unittest.TestCase):
         class UnitWorkbench(__main__.Workbench):
             MenuText = "Unittest"
             ToolTip = "Unittest"
-            def Activate(self):
+            def Initialize(self):
                 list = ["Test_Test"]
                 self.appendToolbar("My Unittest",list)
             def GetClassName(self):

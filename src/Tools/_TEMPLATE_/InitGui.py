@@ -35,7 +35,7 @@ class _TEMPLATE_Workbench ( Workbench ):
 	"_TEMPLATE_ workbench object"
 	MenuText = "_TEMPLATE_"
 	ToolTip = "_TEMPLATE_ workbench"
-	def Activate(self):
+	def Initialize(self):
 		# load the module
 		Log ('Loading GUI of _TEMPLATE_ module...')
 		import _TEMPLATE_Gui
