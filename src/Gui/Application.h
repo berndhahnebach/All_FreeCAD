@@ -96,6 +96,12 @@ public:
     boost::signal<void (Gui::Document&)> signalRenameDocument;
     /// signal on activating Document
     boost::signal<void (Gui::Document&)> signalActiveDocument;
+    /// signal on activated workbench
+    boost::signal<void (const char*)> signalActivateWorkbench;
+    /// signal on added workbench
+    boost::signal<void (const char*)> signalAddWorkbench;
+    /// signal on removed workbench
+    boost::signal<void (const char*)> signalRemoveWorkbench;
     //@}
 
     /** @name methods for Document handling */
@@ -130,8 +136,9 @@ public:
     /** @name workbench handling */
     //@{	
     /// Activate a named workbench
-    bool activateWorkbench( const char* name );
-    QPixmap workbenchIcon( const QString& ) const;
+    bool activateWorkbench(const char* name);
+    QPixmap workbenchIcon(const QString&) const;
+    QString workbenchToolTip(const QString&) const;
     QStringList workbenches(void) const;
     void setupContextMenu(const char* recipient, MenuItem*) const;
     //@}

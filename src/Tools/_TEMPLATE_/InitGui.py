@@ -33,15 +33,13 @@
 
 class _TEMPLATE_Workbench ( Workbench ):
 	"_TEMPLATE_ workbench object"
+	MenuText = "_TEMPLATE_"
+	ToolTip = "_TEMPLATE_ workbench"
 	def Activate(self):
 		# load the module
-		try:
-			Log ('Loading GUI of _TEMPLATE_ module...')
-			import _TEMPLATE_Gui
-		except:
-			Err('Cannot load _TEMPLATE_Gui')
-			raise
+		Log ('Loading GUI of _TEMPLATE_ module...')
+		import _TEMPLATE_Gui
 	def GetClassName(self):
 		return "_TEMPLATE_Gui::Workbench"
 
-Gui.addWorkbench("_TEMPLATE_ design",_TEMPLATE_Workbench())
+Gui.addWorkbench(_TEMPLATE_Workbench())
