@@ -8,25 +8,25 @@ class TemplatePyModWorkbench ( Workbench ):
 	Icon = """
 			/* XPM */
 			static const char *test_icon[]={
-			"16 16 2 1\",
-			"a c #000000\",
-			". c None\",
-			"................\",
-			"................\",
-			"..############..\",
-			"..############..\",
-			"..############..\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"......####......\",
-			"................\",
-			"................\"};
+			"16 16 2 1",
+			"a c #000000",
+			". c None",
+			"................",
+			"................",
+			"..############..",
+			"..############..",
+			"..############..",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"......####......",
+			"................",
+			"................"};
 			"""
 	MenuText = "Python template"
 	ToolTip = "Python template workbench"
@@ -43,5 +43,9 @@ class TemplatePyModWorkbench ( Workbench ):
 		self.appendMenu(menu,list)
 
 		Log ('Loading GUI of Test module... done\n')
+	def Activated(self):
+		Msg("TemplatePyModWorkbench::Activated()\n")
+	def Deactivated(self):
+		Msg("TemplatePyModWorkbench::Deactivated()\n")
 
-Gui.addWorkbench(TemplatePyModWorkbench())
+Gui.addWorkbench(TemplatePyModWorkbench)

@@ -59,8 +59,8 @@ PyMethodDef Application::Methods[] = {
   {"getWorkbench",     (PyCFunction) Application::sGetWorkbenchHandler,     1,
    "getWorkbench(string) -> object\n\n"
    "Get the workbench by its name"},
-  {"listWorkbench",   (PyCFunction) Application::sListWorkbenchHandlers,    1,
-   "listWorkbench() -> list\n\n"
+  {"listWorkbenches",   (PyCFunction) Application::sListWorkbenchHandlers,    1,
+   "listWorkbenches() -> list\n\n"
    "Show a list of all workbenches"},
   {"activeWorkbench", (PyCFunction) Application::sActiveWorkbenchHandler,   1,
    "activeWorkbench() -> object\n\n"
@@ -302,30 +302,55 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
         return NULL;                    // NULL triggers exception 
 
     try {
-        // Search for some methods and members without invoking them
+        // get the class object 'Workbench' from the main module that is expected
+        // to be base class for all workbench classes
+        Py::Module module("__main__");
+        Py::Object baseclass(module.getAttr(std::string("Workbench")));
+        
+        // check whether it is an instance or class object
         Py::Object object(pcObject);
+        Py::String name;
+        
+        if (PyObject_IsSubclass(object.ptr(), baseclass.ptr()) == 1) {
+            // create an instance of this class
+            name = object.getAttr(std::string("__name__"));
+            Py::Tuple args;
+            Py::Callable creation(object);
+            object = creation.apply(args);
+        }
+        else if (PyObject_IsInstance(object.ptr(), baseclass.ptr()) == 1) {
+            // extract the class name of the instance
+            PyErr_Clear(); // PyObject_IsSubclass set an exception
+            Py::Object classobj = object.getAttr(std::string("__class__"));
+            name = classobj.getAttr(std::string("__name__"));
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "arg must be a subclass or an instance of "
+                                             "a subclass of 'Workbench'");
+            return NULL;
+        }
+
+        // Search for some methods and members without invoking them
         Py::Callable(object.getAttr(std::string("Initialize")));
         Py::Callable(object.getAttr(std::string("GetClassName")));
-        Py::String text(object.getAttr(std::string("MenuText")));
-        item = text.as_std_string();
-        object.getAttr(std::string("Icon"));
+        item = name.as_std_string();
+
+        PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,item.c_str()); 
+        if (wb) {
+            PyErr_Format(PyExc_KeyError, "'%s' already exists.", item.c_str());
+            return NULL;
+        }
+
+        PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),object.ptr());
+        Instance->signalAddWorkbench(item.c_str());
     }
     catch (const Py::Exception&) {
         return NULL;
     }
 
-    PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,item.c_str()); 
-    if (wb) {
-        PyErr_Format(PyExc_KeyError, "'%s' already exists.", item.c_str());
-        return NULL;
-    }
-
-    PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),pcObject);
-    Instance->signalAddWorkbench(item.c_str());
-
     Py_INCREF(Py_None);
     return Py_None;
-} 
+}
 
 PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
 {

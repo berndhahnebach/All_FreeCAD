@@ -654,60 +654,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulFacetPos, unsigned long ulN
 
   return true;
 }
-#if 0
-bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
-{
-    MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-    //if (rclF.CountOpenEdges() != 0)
-    //    return false;
 
-    if (!rclF.IsValid() )
-        return false; // the facets are marked invalid from a previous run
-
-    // set the neighbourhood of the circumjacent facets
-    for ( int i=0; i<3; i++ )
-    {
-        if (rclF._aulNeighbours[i] == ULONG_MAX)
-            continue;
-        MeshFacet& rclN = _rclMesh._aclFacetArray[rclF._aulNeighbours[i]];
-        unsigned short uNSide = rclN.Side(rclF);
-        if (!rclN.IsValid() || uNSide == USHRT_MAX)
-            continue; // the facets are marked invalid from a previous run
-
-        if ( rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX )
-          _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+2)%3]);
-        if ( rclN._aulNeighbours[(uNSide+2)%3] != ULONG_MAX )
-          _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]].ReplaceNeighbour(rclF._aulNeighbours[i],rclN._aulNeighbours[(uNSide+1)%3]);
-
-        // isolate the face and the point
-        rclN._aulNeighbours[0] = rclN._aulNeighbours[1] = rclN._aulNeighbours[2] = ULONG_MAX;
-        rclN.SetInvalid();
-
-  }
-  // move one point to gravity as replacement for the deleted face
-  Base::Vector3f cCenter = _rclMesh.GetGravityPoint(rclF);
-  unsigned long ptIdx0 = rclF._aulPoints[0];
-  unsigned long ptIdx1 = rclF._aulPoints[1];
-  unsigned long ptIdx2 = rclF._aulPoints[2];
-  _rclMesh._aclPointArray[ptIdx0] = cCenter;
-  // invalidate the rest of the points
-  _rclMesh._aclPointArray[rclF._aulPoints[1]].SetInvalid();
-  _rclMesh._aclPointArray[rclF._aulPoints[2]].SetInvalid();
-  // go through all faces and replace the deleted points with the point moved to the gravity point
-  for(MeshFacetArray::iterator It = _rclMesh._aclFacetArray.begin();It != _rclMesh._aclFacetArray.end(); ++ It){
-      if(rclF.IsValid()){
-        It->Transpose(ptIdx1,ptIdx0);
-        It->Transpose(ptIdx2,ptIdx0);
-      }
-  }
-
-  // isolate the face and the point
-  rclF._aulNeighbours[0] = rclF._aulNeighbours[1] = rclF._aulNeighbours[2] = ULONG_MAX;
-  rclF.SetInvalid();
-
-  return true;
-}
-#else
 bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 {
     MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
@@ -771,7 +718,7 @@ bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 
     return true;
 }
-#endif
+
 /// FIXME: Implement
 void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2)
 {

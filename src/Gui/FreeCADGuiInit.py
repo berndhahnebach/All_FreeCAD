@@ -42,27 +42,27 @@ class Workbench:
 	Icon = """
 			/* XPM */
 			static const char *FCIcon[]={
-			"16 16 4 1\",
-			". c None\",
-			"# c #000000\",
-			"a c #848284\",
-			"b c #ff0000\",
-			"........#.......\",
-			".......##aaaaaa.\",
-			"........#.....a.\",
-			".#######......a.\",
-			".##...........a.\",
-			".##...bbbb....a.\",
-			".##..bb..bb...a.\",
-			".###bb#...b..###\",
-			".##.bb........#.\",
-			".##.bb..........\",
-			".##.bb..........\",
-			".##.bb..........\",
-			".##.bb....b.....\",
-			".....bb..bb.....\",
-			"......bbbb......\",
-			"................\"};
+			"16 16 4 1",
+			". c None",
+			"# c #000000",
+			"a c #848284",
+			"b c #ff0000",
+			"........#.......",
+			".......##aaaaaa.",
+			"........#.....a.",
+			".#######......a.",
+			".##...........a.",
+			".##...bbbb....a.",
+			".##..bb..bb...a.",
+			".###bb#...b..###",
+			".##.bb........#.",
+			".##.bb..........",
+			".##.bb..........",
+			".##.bb..........",
+			".##.bb....b.....",
+			".....bb..bb.....",
+			"......bbbb......",
+			"................"};
 			"""
 	MenuText = ""
 	ToolTip = ""
@@ -161,7 +161,7 @@ Gui.addWorkbench(NoneWorkbench())
 InitApplications()
 
 # set standard workbench (needed as fallback)
-Gui.activateWorkbench("<none>")
+Gui.activateWorkbench("NoneWorkbench")
 
 # Register .py, .FCScript and .FCMacro
 FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")

@@ -36,27 +36,27 @@ class MeshWorkbench ( Workbench ):
 	Icon = """
 			/* XPM */
 			static const char *mesh_icon[]={
-			"16 16 4 1\",
-			".	c None\",
-			"#	c #000000\",
-			"s	c #BEC2FC\",
-			"g	c #00FF00\",
-			".......##.......\",
-			"....#######.....\",
-			"..##ggg#ggg#....\",
-			"##ggggg#gggg##..\",
-			"#g#ggg#gggggg##.\",
-			"#gg#gg#gggg###s.\",
-			"#gg#gg#gg##gg#s.\",
-			"#ggg#####ggg#ss.\",
-			"#gggg##gggg#ss..\",
-			".#g##g#gggg#s...\",
-			".##ggg#ggg#ss...\",
-			".##gggg#g#ss....\",
-			"..s#####g#s.....\",
-			"....sss##ss.....\",
-			"........ss......\",
-			"................\"};
+			"16 16 4 1",
+			".	c None",
+			"#	c #000000",
+			"s	c #BEC2FC",
+			"g	c #00FF00",
+			".......##.......",
+			"....#######.....",
+			"..##ggg#ggg#....",
+			"##ggggg#gggg##..",
+			"#g#ggg#gggggg##.",
+			"#gg#gg#gggg###s.",
+			"#gg#gg#gg##gg#s.",
+			"#ggg#####ggg#ss.",
+			"#gggg##gggg#ss..",
+			".#g##g#gggg#s...",
+			".##ggg#ggg#ss...",
+			".##gggg#g#ss....",
+			"..s#####g#s.....",
+			"....sss##ss.....",
+			"........ss......",
+			"................"};
 			"""
 	MenuText = "Mesh design"
 	ToolTip = "Mesh design workbench"
@@ -68,4 +68,4 @@ class MeshWorkbench ( Workbench ):
 	def GetClassName(self):
 		return "MeshGui::Workbench"
 
-Gui.addWorkbench(MeshWorkbench())
+Gui.addWorkbench(MeshWorkbench)

@@ -83,7 +83,7 @@ int main( int argc, char ** argv )
     App::Application::Config()["ConsoleBanner"] = sBanner;
     App::Application::Config()["AppIcon"] = "FCIcon";
     App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
-    App::Application::Config()["StartWorkbench"] = "Part design";
+    App::Application::Config()["StartWorkbench"] = "PartWorkbench";
     //App::Application::Config()["HiddenDockWindow"] = "Property editor";
     App::Application::Config()["SplashAlignment" ] = "Bottom|Left";
     App::Application::Config()["SplashTextColor" ] = "#000000"; // black
