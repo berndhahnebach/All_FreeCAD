@@ -36,26 +36,26 @@ class PartWorkbench ( Workbench ):
 	Icon = """
 			/* XPM */
 			static const char *Part_Box[]={
-			"16 16 3 1\",
-			". c None\",
-			"# c #000000\",
-			"a c #c6c642\",
-			"................\",
-			".......#######..\",
-			"......#aaaaa##..\",
-			".....#aaaaa###..\",
-			"....#aaaaa##a#..\",
-			"...#aaaaa##aa#..\",
-			"..#aaaaa##aaa#..\",
-			".########aaaa#..\",
-			".#aaaaa#aaaaa#..\",
-			".#aaaaa#aaaa##..\",
-			".#aaaaa#aaa##...\",
-			".#aaaaa#aa##....\",
-			".#aaaaa#a##... .\",
-			".#aaaaa###......\",
-			".########.......\",
-			"................\"};
+			"16 16 3 1",
+			". c None",
+			"# c #000000",
+			"a c #c6c642",
+			"................",
+			".......#######..",
+			"......#aaaaa##..",
+			".....#aaaaa###..",
+			"....#aaaaa##a#..",
+			"...#aaaaa##aa#..",
+			"..#aaaaa##aaa#..",
+			".########aaaa#..",
+			".#aaaaa#aaaaa#..",
+			".#aaaaa#aaaa##..",
+			".#aaaaa#aaa##...",
+			".#aaaaa#aa##....",
+			".#aaaaa#a##... .",
+			".#aaaaa###......",
+			".########.......",
+			"................"};
 			"""
 	MenuText = "Part design"
 	ToolTip = "Part design workbench"

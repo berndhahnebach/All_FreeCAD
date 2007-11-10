@@ -431,7 +431,7 @@ public:
 #endif
 
 	// Class Type
-	class Type: public Object
+	class BaseExport Type: public Object
 		{
 	public:
 		explicit Type (PyObject* pyob, bool owned = false): Object(pyob, owned)

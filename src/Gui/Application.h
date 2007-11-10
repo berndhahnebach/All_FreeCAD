@@ -139,6 +139,7 @@ public:
     bool activateWorkbench(const char* name);
     QPixmap workbenchIcon(const QString&) const;
     QString workbenchToolTip(const QString&) const;
+    QString workbenchMenuText(const QString&) const;
     QStringList workbenches(void) const;
     void setupContextMenu(const char* recipient, MenuItem*) const;
     //@}

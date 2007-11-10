@@ -41,28 +41,30 @@ class CamWorkbench ( Workbench ):
 		import Cam
 	def GetClassName(self):
 		return "CamGui::Workbench"
-	Icon = ["/* XPM */\n"
-			"static const char *Cam_Box[]={\n"
-			"\"16 16 3 1\",\n"
-			"\". c None\",\n"
-			"\"# c #000000\",\n"
-			"\"a c #c6c642\",\n"
-			"\"................\",\n"
-			"\".......#######..\",\n"
-			"\"......#aaaaa##..\",\n"
-			"\".....#aaaaa###..\",\n"
-			"\"....#aaaaa##a#..\",\n"
-			"\"...#aaaaa##aa#..\",\n"
-			"\"..#aaaaa##aaa#..\",\n"
-			"\".########aaaa#..\",\n"
-			"\".#aaaaa#aaaaa#..\",\n"
-			"\".#aaaaa#aaaa##..\",\n"
-			"\".#aaaaa#aaa##...\",\n"
-			"\".#aaaaa#aa##....\",\n"
-			"\".#aaaaa#a##... .\",\n"
-			"\".#aaaaa###......\",\n"
-			"\".########.......\",\n"
-			"\"................\"};\n"]
+	Icon = """
+			/* XPM */
+			static const char *Cam_Box[]={
+			"16 16 3 1",
+			". c None",
+			"# c #000000",
+			"a c #c6c642",
+			"................",
+			".......#######..",
+			"......#aaaaa##..",
+			".....#aaaaa###..",
+			"....#aaaaa##a#..",
+			"...#aaaaa##aa#..",
+			"..#aaaaa##aaa#..",
+			".########aaaa#..",
+			".#aaaaa#aaaaa#..",
+			".#aaaaa#aaaa##..",
+			".#aaaaa#aaa##...",
+			".#aaaaa#aa##....",
+			".#aaaaa#a##... .",
+			".#aaaaa###......",
+			".########.......",
+			"................"};
+			"""
 
 # No Workbench at the moment
 #Gui.addWorkbench(CamWorkbench())

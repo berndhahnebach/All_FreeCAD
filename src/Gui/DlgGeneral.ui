@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Gui::Dialog::DlgGeneral</class>
  <widget class="QWidget" name="Gui::Dialog::DlgGeneral" >
   <property name="geometry" >
@@ -91,14 +88,7 @@
             </widget>
            </item>
            <item row="0" column="1" >
-            <widget class="Gui::PrefComboBox" name="AutoloadModuleCombo" >
-             <property name="prefEntry" stdset="0" >
-              <cstring>AutoloadModule</cstring>
-             </property>
-             <property name="prefPath" stdset="0" >
-              <cstring>General</cstring>
-             </property>
-            </widget>
+            <widget class="QComboBox" name="AutoloadModuleCombo" />
            </item>
            <item row="1" column="1" >
             <widget class="Gui::PrefComboBox" name="AutoloadTabCombo" >
@@ -247,25 +237,19 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefComboBox</class>
-   <extends>QComboBox</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefSpinBox</class>
    <extends>QSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefComboBox</class>
+   <extends>QComboBox</extends>
+   <header>Gui/PrefWidgets.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

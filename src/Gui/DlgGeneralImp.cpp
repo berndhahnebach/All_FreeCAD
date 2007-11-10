@@ -47,21 +47,21 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
 {
     this->setupUi(this);
     // fills the combo box with all available workbenches
+    // sorted by their menu text
     QStringList work = Application::Instance->workbenches();
-    work.sort();
-    for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it )
-    {
-        QPixmap px = Application::Instance->workbenchIcon( *it );
-        if ( px.isNull() )
-            AutoloadModuleCombo->addItem( *it );
-        else
-            AutoloadModuleCombo->addItem( px, *it );
+    QMap<QString, QString> menuText;
+    for (QStringList::Iterator it = work.begin(); it != work.end(); ++it) {
+        QString text = Application::Instance->workbenchMenuText(*it);
+        menuText[text] = *it;
     }
-  
-    // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
-    // it, if it is set by the user
-    QString curWbName = App::Application::Config()["StartWorkbench"].c_str();
-    AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findText(curWbName));
+
+    for (QMap<QString, QString>::Iterator it = menuText.begin(); it != menuText.end(); ++it) {
+        QPixmap px = Application::Instance->workbenchIcon(it.value());
+        if (px.isNull())
+            AutoloadModuleCombo->addItem(it.key(), QVariant(it.value()));
+        else
+            AutoloadModuleCombo->addItem(px, it.key(), QVariant(it.value()));
+    }
 
     // do not save the content but the current item only
     QWidget* dw = DockWindowManager::instance()->getDockWindow("Report view");
@@ -102,7 +102,12 @@ void DlgGeneralImp::setRecentFileSize()
 
 void DlgGeneralImp::saveSettings()
 {
-    AutoloadModuleCombo->onSave();
+    int index = AutoloadModuleCombo->currentIndex();
+    QVariant data = AutoloadModuleCombo->itemData(index);
+    QString startWbName = data.toString();
+    App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                          SetASCII("AutoloadModule", startWbName.toAscii());
+    
     AutoloadTabCombo->onSave();
     RecentFiles->onSave();
     SplashScreen->onSave();
@@ -123,8 +128,12 @@ void DlgGeneralImp::saveSettings()
 
 void DlgGeneralImp::loadSettings()
 {
-    // in case the user defined workbench is hidden
-    AutoloadModuleCombo->onRestore();
+    std::string start = App::Application::Config()["StartWorkbench"];
+    start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                                  GetASCII("AutoloadModule", start.c_str());
+    QString startWbName = start.c_str();
+    AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findData(startWbName));
+
     AutoloadTabCombo->onRestore();
     RecentFiles->onRestore();
     SplashScreen->onRestore();

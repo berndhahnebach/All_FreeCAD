@@ -358,6 +358,7 @@ void WorkbenchComboBox::onActivated(int i)
 
 void WorkbenchComboBox::onActivated(QAction* action)
 {
+    // set the according item to the action
     QVariant data = action->data();
     int index = this->findData(data);
     setCurrentIndex(index);
@@ -365,13 +366,12 @@ void WorkbenchComboBox::onActivated(QAction* action)
 
 void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 {
-    int index = findText(name);
-    index = itemData(index).toInt();
-    if (index >= 0) {
-        // Notify the workbench menu by triggering the appropriate action
-        QList<QAction*> a = actions();
-        if (index < a.size())
-            a[index]->trigger();
+    QList<QAction*> a = actions();
+    for (QList<QAction*>::Iterator it = a.begin(); it != a.end(); ++it) {
+        if ((*it)->objectName() == name) {
+            (*it)->trigger();
+            break;
+        }
     }
 }
 
@@ -418,25 +418,38 @@ void WorkbenchGroup::refreshWorkbenchList()
 {
     QString active = WorkbenchManager::instance()->active()->name();
     QStringList items = Application::Instance->workbenches();
-    items.sort();
-
+    
     QList<QAction*> workbenches = _group->actions();
     int numWorkbenches = std::min<int>(workbenches.count(), items.count());
-    for ( int index = 0; index < numWorkbenches; index++ ) {
-        QPixmap px = Application::Instance->workbenchIcon(items[index]);
-        QString tip = Application::Instance->workbenchToolTip(items[index]);
-        workbenches[index]->setIcon(px);
-        workbenches[index]->setText(items[index]);
-        workbenches[index]->setToolTip(tip);
-        workbenches[index]->setStatusTip(tr("Select the '%1' workbench").arg(items[index]));
-        workbenches[index]->setVisible(true);
-        if ( items[index] == active )
-        workbenches[index]->setChecked(true);
+
+    // sort by workbench menu text
+    QMap<QString, QString> menuText;
+    for (int index = 0; index < numWorkbenches; index++) {
+        QString text = Application::Instance->workbenchMenuText(items[index]);
+        menuText[text] = items[index];
+    }
+
+    int i=0;
+    for (QMap<QString, QString>::Iterator it = menuText.begin(); it != menuText.end(); ++it, i++) {
+        QPixmap px = Application::Instance->workbenchIcon(it.value());
+        QString tip = Application::Instance->workbenchToolTip(it.value());
+        workbenches[i]->setObjectName(it.value());
+        workbenches[i]->setIcon(px);
+        workbenches[i]->setText(it.key());
+        workbenches[i]->setToolTip(tip);
+        workbenches[i]->setStatusTip(tr("Select the '%1' workbench").arg(it.key()));
+        workbenches[i]->setVisible(true);
+        if ( items[i] == active )
+        workbenches[i]->setChecked(true);
     }
 
     // if less workbenches than actions
-    for (int index = numWorkbenches; index < workbenches.count(); index++)
+    for (int index = numWorkbenches; index < workbenches.count(); index++) {
+        workbenches[i]->setObjectName(QString());
+        workbenches[i]->setIcon(QIcon());
+        workbenches[i]->setText(QString());
         workbenches[index]->setVisible(false);
+    }
 }
 
 void WorkbenchGroup::customEvent( QEvent* e )
@@ -457,9 +470,11 @@ void WorkbenchGroup::slotAddWorkbench(const char* name)
     for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
         if (!(*it)->isVisible()) {
             QPixmap px = Application::Instance->workbenchIcon(name);
+            QString text = Application::Instance->workbenchMenuText(name);
             QString tip = Application::Instance->workbenchToolTip(name);
             (*it)->setIcon(px);
-            (*it)->setText(name);
+            (*it)->setObjectName(name);
+            (*it)->setText(text);
             (*it)->setToolTip(tip);
             (*it)->setStatusTip(tr("Select the '%1' workbench").arg(name));
             (*it)->setVisible(true); // do this at last
@@ -473,7 +488,8 @@ void WorkbenchGroup::slotRemoveWorkbench(const char* name)
     QString workbench = name;
     QList<QAction*> workbenches = _group->actions();
     for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
-        if ((*it)->text() == workbench) {
+        if ((*it)->objectName() == workbench) {
+            (*it)->setObjectName(QString());
             (*it)->setIcon(QIcon());
             (*it)->setText(QString());
             (*it)->setToolTip(QString());

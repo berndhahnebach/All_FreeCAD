@@ -559,12 +559,20 @@ void Application::tryClose ( QCloseEvent * e )
  * active or if the switch fails false is returned. 
  */
 bool Application::activateWorkbench(const char* name)
-{ 
+{
     bool ok = false;
     WaitCursor wc;
     Workbench* oldWb = WorkbenchManager::instance()->active();
     if (oldWb && oldWb->name() == name)
         return false; // already active
+
+    // we check for the currently active workbench and call its 'Deactivated'
+    // method, if available
+    PyObject* pcOldWorkbench = 0;
+    if (oldWb) {
+        pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, oldWb->name().toAscii());
+    }
+
     // get the python workbench object from the dictionary
     PyObject* pcWorkbench = 0;
     pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, name);
@@ -609,19 +617,22 @@ bool Application::activateWorkbench(const char* name)
             if (wb) handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
         }
 
-        // If the method Activate is available we call it
-        if (handler.hasAttr(std::string("Activate"))) {
-            Py::Object method(handler.getAttr(std::string("Activate")));
-            if (method.isCallable()) {
-                Py::Tuple args;
-                Py::Callable activate(method);
-                activate.apply(args);
+        // If the method Deactivate is available we call it
+        if (pcOldWorkbench) {
+            Py::Object handler(pcOldWorkbench);
+            if (handler.hasAttr(std::string("Deactivated"))) {
+                Py::Object method(handler.getAttr(std::string("Deactivated")));
+                if (method.isCallable()) {
+                    Py::Tuple args;
+                    Py::Callable activate(method);
+                    activate.apply(args);
+                }
             }
         }
 
-        // If the method Deactivate is available we call it
-        if (handler.hasAttr(std::string("Deactivate"))) {
-            Py::Object method(handler.getAttr(std::string("Deactivate")));
+        // If the method Activate is available we call it
+        if (handler.hasAttr(std::string("Activated"))) {
+            Py::Object method(handler.getAttr(std::string("Activated")));
             if (method.isCallable()) {
                 Py::Tuple args;
                 Py::Callable activate(method);
@@ -717,6 +728,29 @@ QString Application::workbenchToolTip(const QString& wb) const
         try {
             Py::Object handler(pcWorkbench);
             Py::Object member = handler.getAttr(std::string("ToolTip"));
+            if (member.isString()) {
+                Py::String tip(member);
+                return QString::fromUtf8(tip.as_std_string().c_str());
+            }
+        }
+        catch (Py::Exception& e) {
+            e.clear();
+        }
+    }
+
+    return QString();
+}
+
+QString Application::workbenchMenuText(const QString& wb) const
+{
+    // get the python workbench object from the dictionary
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
+    // test if the workbench exists
+    if (pcWorkbench) {
+        // get its ToolTip member if possible
+        try {
+            Py::Object handler(pcWorkbench);
+            Py::Object member = handler.getAttr(std::string("MenuText"));
             if (member.isString()) {
                 Py::String tip(member);
                 return QString::fromUtf8(tip.as_std_string().c_str());
@@ -968,16 +1002,10 @@ void Application::runApplication(void)
 
   // Activate the correct workbench
   Base::Console().Log("Init: Activating default workbench\n");
-  QStringList visible = Instance->workbenches();
-  visible.sort();
-  QString start = App::Application::Config()["StartWorkbench"].c_str();
-  int index = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
-                           GetInt("AutoloadModule", visible.indexOf(start));
-
-  // in case the user defined workbench is hidden then we take the default StartWorkbench 
-  if (index >= 0 && index < visible.size())
-    start = visible.at(index);
-  app.activateWorkbench(start.toAscii());
+  std::string start = App::Application::Config()["StartWorkbench"];
+  start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                           GetASCII("AutoloadModule", start.c_str());
+  app.activateWorkbench(start.c_str());
 
   // show the main window
   Base::Console().Log("Init: Showing main window\n");
