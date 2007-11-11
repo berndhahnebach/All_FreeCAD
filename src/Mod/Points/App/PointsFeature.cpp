@@ -53,9 +53,9 @@ Feature::~Feature()
 {
 }
 
-int Feature::execute(void)
+App::DocumentObjectExecReturn *Feature::execute(void)
 {
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 
 void Feature::Restore(Base::XMLReader &reader)
@@ -105,15 +105,14 @@ Export::Export(void)
   ADD_PROPERTY(Format  ,(""));
 }
 
-int Export::execute(void)
+App::DocumentObjectExecReturn *Export::execute(void)
 {
   // ask for write permission
   Base::FileInfo fi(FileName.getValue());
   Base::FileInfo di(fi.dirPath().c_str());
   if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
   {
-    setError("No write permission for file '%s'",FileName.getValue());
-    return 1;
+      return new App::DocumentObjectExecReturn("No write permission for file");
   }
 
   std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
@@ -133,11 +132,10 @@ int Export::execute(void)
   }
   else
   {
-    setError("File format '%s' not supported", fi.extension().c_str());
-    return 1;
+      return new App::DocumentObjectExecReturn("File format not supported");
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ------------------------------------------------------------------
@@ -154,7 +152,7 @@ Transform::~Transform()
 {
 }
 
-int Transform::execute(void)
+App::DocumentObjectExecReturn *Transform::execute(void)
 {
   Feature *pcPoints  = dynamic_cast<Feature*>(Source.getValue());
   Points.setValue(pcPoints->Points.getValue());
@@ -165,5 +163,5 @@ int Transform::execute(void)
                           cMat[0][0],cMat[0][1],cMat[0][2],cMat[0][3],cMat[1][0],cMat[1][1],cMat[1][2],cMat[1][3],
                           cMat[2][0],cMat[2][1],cMat[2][2],cMat[2][3],cMat[3][0],cMat[3][1],cMat[3][2],cMat[3][3]);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }

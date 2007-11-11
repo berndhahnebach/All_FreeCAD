@@ -63,7 +63,7 @@ FeatureViewPart::~FeatureViewPart()
 {
 }
 
-int FeatureViewPart::execute(void)
+App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 {
     /*  Exemples d'utilisation :
 
@@ -146,7 +146,7 @@ int FeatureViewPart::execute(void)
   TopoDS_Shape HI = Tool.IsoLineHCompound(S);// isoparamtriques   caches
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 
