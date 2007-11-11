@@ -138,9 +138,14 @@ class ParameterTestCase(unittest.TestCase):
         Temp.SetInt("ExTest",4711)
         Temp.SetString("ExTest","4711")
         Temp.SetBool("ExTest",1)
-        self.TestPar.Export("ExportTest.FCExport")
+        if  os.getenv('TEMP') == None:
+            TempPath = "/tmp/ExportTest.FCExport";
+        else:
+            TempPath = os.getenv('TEMP') + os.sep + "ExportTest.FCExport";
+
+        self.TestPar.Export(TempPath)
         Temp = self.TestPar.GetGroup("ImportTest")
-        Temp.Import("ExportTest.FCExport")
+        Temp.Import(TempPath)
         self.failUnless(Temp.GetFloat("ExTest") == 4711.4711,"ExportImport error")
         Temp = 0
         

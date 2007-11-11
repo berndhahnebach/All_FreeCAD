@@ -411,11 +411,11 @@ PYFUNCIMP_S(Application,sActiveWorkbenchHandler)
   }
 
   // get the python workbench object from the dictionary
-  QByteArray psKey = actWb->name().toUtf8();
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
+  QByteArray psKey = actWb->name().toAscii();
+  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, (const char*)psKey);
   if ( !pcWorkbench )
   {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", (const char*)psKey);
     return NULL;
   }
 
