@@ -516,7 +516,10 @@ void DocumentObjectItem::testStatus()
             this->setIcon(0, hidden);
         }
     } else { // visible
-        this->setTextColor(0, QColor());
+        //FIXME: Bug item #1729033, reset to the default text color
+        //this->setTextColor(0, QColor());
+        QColor c = this->textColor(0);
+        printf("Color: <%d,%d,%d>\n",c.red(),c.green(),c.blue());
         int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
         QPixmap icon = viewObject->getIcon().pixmap(w,w);
         if (px) {
