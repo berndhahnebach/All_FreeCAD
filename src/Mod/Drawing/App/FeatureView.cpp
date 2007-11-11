@@ -61,9 +61,9 @@ FeatureView::~FeatureView()
 {
 }
 
-int FeatureView::execute(void)
+App::DocumentObjectExecReturn *FeatureView::execute(void)
 {
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 
 

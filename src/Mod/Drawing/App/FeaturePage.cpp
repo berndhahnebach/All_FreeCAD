@@ -61,7 +61,7 @@ FeaturePage::~FeaturePage()
 {
 }
 
-int FeaturePage::execute(void)
+App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
   const char* text = "lskdfjlsd";
   const char* regex = "lskdflds";
@@ -70,7 +70,7 @@ int FeaturePage::execute(void)
   if(boost::regex_match(string(text), what, e))
   {
   }
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 

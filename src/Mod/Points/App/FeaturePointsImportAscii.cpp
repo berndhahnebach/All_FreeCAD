@@ -42,7 +42,7 @@ ImportAscii::ImportAscii(void)
   ADD_PROPERTY(FileName,(""));
 }
 
-int ImportAscii::execute(void)
+App::DocumentObjectExecReturn *ImportAscii::execute(void)
 {
 
   // ask for read permisson
@@ -52,14 +52,13 @@ int ImportAscii::execute(void)
   if ( _access(FileName.getValue(), 4) != 0 )
 #endif
   {
-    Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.getValue());
-    return 1;
+      return new App::DocumentObjectExecReturn("FeaturePointsImportAscii::Execute() not able to open!\n");
   }
 
   PointKernel kernel;
   PointsAlgos::Load(kernel,FileName.getValue());
   Points.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

@@ -49,7 +49,7 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 

@@ -62,7 +62,7 @@ public:
   void Restore(Base::XMLReader &reader);
   void RestoreDocFile(Base::Reader &reader);
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void) const {
     return "PointsGui::ViewProviderPoints";
@@ -94,7 +94,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -113,7 +113,7 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
