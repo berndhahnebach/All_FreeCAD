@@ -50,6 +50,7 @@ Action::Action ( Command* pcCmd,QObject * parent )
   : QObject(parent), _action(0), _pcCmd(pcCmd)
 {
   _action = new QAction( this );
+  _action->setObjectName(_pcCmd->getName());
   connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 

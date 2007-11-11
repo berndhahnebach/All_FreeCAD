@@ -441,8 +441,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
             line = line.mid(4);
 
             // put statement to the history
-            if ( line.length() > 0 )
-                d->history.append(line);
+            d->history.append(line);
 
             // evaluate and run the command
             runSource(line);
@@ -769,9 +768,7 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
             cursor.insertText( *it );
             if (i < countNewlines) {
                 // put statement to the history
-                if ( (*it).length() > 0 ) {
-                    d->history.append(*it);
-                }
+                d->history.append(*it);
 
                 buffer.append(*it);
                 int ret = d->interpreter->compileCommand(buffer.join("\n").toUtf8());
@@ -1011,7 +1008,10 @@ bool ConsoleHistory::more()
 bool ConsoleHistory::next() 
 {
     if (it != _history.end()) {
-        it++;
+        for (++it; it != _history.end(); ++it) {
+            if (!it->isEmpty())
+                break;
+        }
         return true;
     }
 
@@ -1021,7 +1021,10 @@ bool ConsoleHistory::next()
 bool ConsoleHistory::prev() 
 {
     if (it != _history.begin()) {
-        it--;
+        for (--it; it != _history.begin(); --it) {
+            if (!it->isEmpty())
+                break;
+        }
         return true;
     }
 

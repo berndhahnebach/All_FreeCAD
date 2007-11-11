@@ -191,17 +191,20 @@ void MenuManager::setup(MenuItem* menuItems) const
             // we can safely remove it if available and append it at the end
             if ((*it)->command() == "Separator") {
                 action = menuBar->addSeparator();
+                action->setObjectName("Separator");
             } else {
                 // create a new menu
                 QByteArray menuName = (*it)->command().toUtf8();
                 QMenu* menu = menuBar->addMenu(QObject::trUtf8((const char*)menuName));
                 action = menu->menuAction();
+                menu->setObjectName((*it)->command());
+                action->setObjectName((*it)->command());
             }
 
             // set the menu user data
             action->setData((*it)->command());
         } else {
-            // put the menu at the ende
+            // put the menu at the end
             menuBar->removeAction(action);
             menuBar->addAction(action);
             action->setVisible(true);
@@ -235,12 +238,15 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
         if (!action) {
             if ((*it)->command() == "Separator") {
                 action = menu->addSeparator();
+                action->setObjectName("Separator");
             } else {
                 if ((*it)->hasItems()) {
                     // Creste a submenu
                     QByteArray menuName = (*it)->command().toUtf8();
                     QMenu* submenu = menu->addMenu(QObject::trUtf8((const char*)menuName));
                     action = submenu->menuAction();
+                    submenu->setObjectName((*it)->command());
+                    action->setObjectName((*it)->command());
                 } else {
                     // Check if action was added successfully
                     if (mgr.addTo((const char*)(*it)->command().toAscii(), menu))
@@ -251,7 +257,7 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
             // set the menu user data
             if (action) action->setData((*it)->command());
         } else {
-            // put the menu item at the ende
+            // put the menu item at the end
             menu->removeAction(action);
             menu->addAction(action);
             int index = actions.indexOf(action);
