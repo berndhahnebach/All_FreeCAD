@@ -43,13 +43,13 @@ FeaturePython::FeaturePython()
 {
 }
 
-int FeaturePython::execute(void)
+DocumentObjectExecReturn *FeaturePython::execute(void)
 {
     // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
     // instance does this for us.
     Base::Interpreter().runMethodVoid(PythonObject.ptr(), "execute");
 
-    return 0;
+    return DocumentObject::StdReturn;
 }
 
 void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const

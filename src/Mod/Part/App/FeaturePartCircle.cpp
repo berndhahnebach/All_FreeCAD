@@ -47,13 +47,13 @@ Circle::~Circle()
 {
 }
 
-int Circle::execute(void)
+App::DocumentObjectExecReturn *Circle::execute(void)
 {
   Handle_Geom_Circle hCircle = new Geom_Circle (Circ.getValue());
   BRepBuilderAPI_MakeEdge clMakeEdge(hCircle, this->Angle0.getValue(), this->Angle1.getValue());
   TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
   setShape(edge);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

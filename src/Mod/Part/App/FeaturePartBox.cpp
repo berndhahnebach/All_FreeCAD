@@ -48,40 +48,34 @@ Box::Box()
 }
 
 
-int Box::execute(void)
+App::DocumentObjectExecReturn *Box::execute(void)
 {
-  double X = x.getValue();
-  double Y = y.getValue();
-  double Z = z.getValue();
-  double L = l.getValue();
-  double H = h.getValue();
-  double W = w.getValue();
+    double X = x.getValue();
+    double Y = y.getValue();
+    double Z = z.getValue();
+    double L = l.getValue();
+    double H = h.getValue();
+    double W = w.getValue();
 
-  if ( L < gp::Resolution() ) {
-    setError("Length of '%.6f' too small", L);
-    return 1;
-  }
+    if ( L < gp::Resolution() ) 
+        return new App::DocumentObjectExecReturn("Length of L too small");
 
-  if ( H < gp::Resolution() ) {
-    setError("Height of '%.6f' too small", H);
-    return 1;
-  }
+    if ( H < gp::Resolution() ) 
+      return new App::DocumentObjectExecReturn("Height of H too small");
 
-  if ( W < gp::Resolution() ) {
-    setError("Width of '%.6f' too small", W);
-    return 1;
-  }
+    if ( W < gp::Resolution() ) 
+      return new App::DocumentObjectExecReturn("Width of W too small");
 
-	// Build a box using the dimension and position attributes
-	BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
+    // Build a box using the dimension and position attributes
+    BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
 
-  TopoDS_Shape ResultShape = mkBox.Shape();
+    TopoDS_Shape ResultShape = mkBox.Shape();
 
 
 	setShape(ResultShape);
 
 
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 
 

@@ -47,7 +47,7 @@ ImportIges::ImportIges(void)
 
 }
 
-Standard_Integer ImportIges::execute(void)
+App::DocumentObjectExecReturn *ImportIges::execute(void)
 {
 
   IGESControl_Reader aReader;
@@ -65,8 +65,8 @@ Standard_Integer ImportIges::execute(void)
 	  _close(i);
 #endif
 	}else{
-    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
-	  return 1;
+        Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
+        return App::DocumentObject::StdError;
 	}
 
   // just do show the wait cursor when the Gui is up
@@ -88,7 +88,7 @@ Standard_Integer ImportIges::execute(void)
 
 	setShape(aShape);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 

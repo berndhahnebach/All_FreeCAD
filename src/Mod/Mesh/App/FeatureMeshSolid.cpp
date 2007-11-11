@@ -52,7 +52,7 @@ Sphere::Sphere(void)
   Sampling.setConstraints(&intSampling);
 }
 
-int Sphere::execute(void)
+App::DocumentObjectExecReturn *Sphere::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
@@ -113,7 +113,7 @@ Ellipsoid::Ellipsoid(void)
   Sampling.setConstraints(&intSampling);
 }
 
-int Ellipsoid::execute(void)
+App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
@@ -157,7 +157,7 @@ int Ellipsoid::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -177,7 +177,7 @@ Cylinder::Cylinder(void)
   Sampling.setConstraints(&intSampling);
 }
 
-int Cylinder::execute(void)
+App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
@@ -244,7 +244,7 @@ Cone::Cone(void)
   Sampling.setConstraints(&intSampling);
 }
 
-int Cone::execute(void)
+App::DocumentObjectExecReturn *Cone::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
@@ -306,7 +306,7 @@ Torus::Torus(void)
   Sampling.setConstraints(&intSampling);
 }
 
-int Torus::execute(void)
+App::DocumentObjectExecReturn *Torus::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
@@ -367,7 +367,7 @@ Cube::Cube(void)
   Height.setConstraints(&floatRange);
 }
 
-int Cube::execute(void)
+App::DocumentObjectExecReturn *Cube::execute(void)
 {
   // load the 'BuildRegularGeoms' module
   PyObject* module = PyImport_ImportModule("BuildRegularGeoms");

@@ -48,7 +48,7 @@ CurveNet::CurveNet()
 
 
 
-int CurveNet::execute(void)
+App::DocumentObjectExecReturn *CurveNet::execute(void)
 {
   /*
   try{
@@ -73,6 +73,6 @@ int CurveNet::execute(void)
 */
 //  setShape(TopoDS_Shape());
 
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 

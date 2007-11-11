@@ -35,6 +35,8 @@ using namespace App;
 
 PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 
+DocumentObjectExecReturn *DocumentObject::StdReturn = new DocumentObjectExecReturn(0);
+DocumentObjectExecReturn *DocumentObject::StdError = new DocumentObjectExecReturn("Unknown Error");
 
 //===========================================================================
 // DocumentObject
@@ -44,8 +46,8 @@ DocumentObject::DocumentObject(void)
   : _pDoc(0),pcNameInDocument(0)
 {
     ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_Output,"User name of the object (UTF8)");
-    touchTime.setToActual();
-    touchViewTime.setToActual();
+    //touchTime.setToActual();
+    //touchViewTime.setToActual();
 }
 
 DocumentObject::~DocumentObject(void)
@@ -60,6 +62,25 @@ DocumentObject::~DocumentObject(void)
         // Call before decrementing the reference counter, otherwise a heap error can occur
         obj->setInvalid();
     }
+}
+
+DocumentObjectExecReturn *DocumentObject::execute(void)
+{
+    return DocumentObject::StdReturn;
+}
+bool DocumentObject::mustExecute(void)
+{
+    return false;
+}
+
+const char* DocumentObject::getStatusString(void) const
+{
+    if(isError())
+        return "Error";
+    else if(isTouched())
+        return "Touched";
+    else
+        return "Valid";
 }
 
 const char *DocumentObject::getNameInDocument(void) const
@@ -122,11 +143,12 @@ PyObject *DocumentObject::getPyObject(void)
 
 void DocumentObject::touch(void)
 {
-    touchTime.setToActual();
+    //touchTime.setToActual();
     StatusBits.set(0);
 }
-
+/*
 void DocumentObject::TouchView(void)
 {
     touchViewTime.setToActual();
 }
+*/

@@ -46,7 +46,7 @@ ImportBrep::ImportBrep(void)
 	ADD_PROPERTY(FileName,(""));
 }
 
-int ImportBrep::execute(void)
+App::DocumentObjectExecReturn *ImportBrep::execute(void)
 {
 
   IGESControl_Reader aReader;
@@ -65,7 +65,7 @@ int ImportBrep::execute(void)
 #endif
 	}else{
     Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
-	  return 1;
+	  return App::DocumentObject::StdError;
 	}
 
   // just do show the wait cursor when the Gui is up
@@ -79,6 +79,6 @@ int ImportBrep::execute(void)
 
 	setShape(aShape);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

@@ -47,7 +47,7 @@ Polygon::~Polygon()
 {
 }
 
-int Polygon::execute(void)
+App::DocumentObjectExecReturn *Polygon::execute(void)
 {
   BRepBuilderAPI_MakePolygon poly;
   const std::vector<Base::Vector3f> nodes = Nodes.getValues();

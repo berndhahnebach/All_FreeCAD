@@ -731,7 +731,7 @@ void Document::restore (void)
     for (std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
         if (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) {
             AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
-            feat->touchTime.setToActual();
+            //feat->touchTime.setToActual();
             //feat->setModified(false);
             //if ( feat->status.getValue() == AbstractFeature::New )
             //  feat->status.setValue( AbstractFeature::Valid );
@@ -959,8 +959,8 @@ void Document::recompute()
         std::cout << Cur->getNameInDocument() << " dep on: " ;
 
         // test if a feature
-        if (!Cur->isDerivedFrom(AbstractFeature::getClassTypeId()))
-            continue;
+        //if (!Cur->isDerivedFrom(AbstractFeature::getClassTypeId()))
+        //    continue;
 
         // check if one of the dependencies is touched
         bool NeedUpdate = false;
@@ -982,9 +982,7 @@ void Document::recompute()
         // if one touched recompute
         if (NeedUpdate) {
             std::cout << "Recompute" << endl;
-            _recomputeFeature(dynamic_cast<AbstractFeature*>(Cur));
-            // signal the change
-            //signalChangedObject(*Cur);
+            _recomputeFeature(Cur);
         }
 
     }
@@ -995,31 +993,31 @@ void Document::recompute()
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
-void Document::_recomputeFeature(AbstractFeature* Feat)
+void Document::_recomputeFeature(DocumentObject* Feat)
 {
     Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
 
-    Feat->status.setValue(AbstractFeature::Recompute);
-    int  succes;
+    //Feat->status.setValue(AbstractFeature::Recompute);
+    DocumentObjectExecReturn  *returnCode;
     try {
-        succes = Feat->execute();
+        returnCode = Feat->execute();
         //}catch(Base::AbortException &e){
         //  e.ReportException();
         //  succes = 4;
     }
     catch (const Base::MemoryException& e) {
         Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
-        Feat->setError(e.what());
-        succes = 4; // Must not rerun twice
+        //Feat->setError(e.what());
+        //succes = 4; // Must not rerun twice
     }
     catch (Base::Exception &e) {
         e.ReportException();
-        succes = 3;
+        //succes = 3;
     }
     catch (std::exception &e) {
         Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->getNameInDocument(),e.what());
-        Feat->setError(e.what());
-        succes = 3;
+        //Feat->setError(e.what());
+        //succes = 3;
     }
 #ifndef FC_DEBUG
     catch (...) {
@@ -1029,16 +1027,14 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
 #endif
 
     // error code
-    if (succes > 0) {
-        Feat->status.setValue(AbstractFeature::Error);
+    if (returnCode != DocumentObject::StdReturn) {
+        //Feat->status.setValue(AbstractFeature::Error);
         Feat->StatusBits.set(1);
     }
     else {
         // set the time of change
-        Feat->status.setValue(AbstractFeature::Valid);
+        //Feat->status.setValue(AbstractFeature::Valid);
         Feat->StatusBits.set(0);
-        Feat->touchTime.setToActual();
-        //Feat->setModified(false);
     }
 }
 

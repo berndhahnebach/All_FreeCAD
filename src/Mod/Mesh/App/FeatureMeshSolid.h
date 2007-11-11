@@ -48,7 +48,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -68,7 +68,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -90,7 +90,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -113,7 +113,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -133,7 +133,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -153,7 +153,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 

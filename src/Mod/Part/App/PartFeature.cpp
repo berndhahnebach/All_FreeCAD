@@ -369,9 +369,9 @@ Feature::~Feature()
 {
 }
 
-int Feature::execute(void)
+App::DocumentObjectExecReturn *Feature::execute(void)
 {
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 
 

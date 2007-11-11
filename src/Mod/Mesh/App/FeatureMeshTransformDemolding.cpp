@@ -49,11 +49,11 @@ TransformDemolding::TransformDemolding(void)
   ADD_PROPERTY(Axis,(0.0,0.0,1.0));
 }
 
-int TransformDemolding::execute(void)
+App::DocumentObjectExecReturn *TransformDemolding::execute(void)
 {
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
-    return 1;
+    return App::DocumentObject::StdError;
 
   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->Mesh.getValue()); // Result Meshkernel
   Base::Matrix4D trans(Base::Vector3f(0,0,0), Axis.getValue(), Rotation.getValue()  );
@@ -62,6 +62,6 @@ int TransformDemolding::execute(void)
   pcKernel->Transform(trans);
   Mesh.setValue(pcKernel);
  
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

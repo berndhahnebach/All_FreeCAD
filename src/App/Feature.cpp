@@ -85,7 +85,7 @@ void AbstractFeature::onChanged(const Property* prop)
         return;
     else if ( prop == &Label )
         return;
-    touchPropertyTime.setToActual();
+    //touchPropertyTime.setToActual();
 }
 
 bool AbstractFeature::mustExecute(void)
@@ -112,6 +112,7 @@ void AbstractFeature::recompute(void)
     _pDoc->recomputeFeature(this);
 }
 
+/*
 const char* AbstractFeature::getStatusString(void) const
 {
     switch (status.getValue()) {
@@ -129,7 +130,7 @@ const char* AbstractFeature::getStatusString(void) const
         return "Unknown";
     }
 }
-
+*/
 void AbstractFeature::setError(const char* pMsg,...)
 {
     // temp buffer

@@ -51,12 +51,11 @@ Curvature::Curvature(void)
   ADD_PROPERTY(CurvInfo, (CurvatureInfo()));
 }
 
-int Curvature::execute(void)
+App::DocumentObjectExecReturn *Curvature::execute(void)
 {
     Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue());
     if(!pcFeat || pcFeat->getStatus() != Valid) {
-        setError("No mesh object attached.");
-        return 1;
+        return new App::DocumentObjectExecReturn("No mesh object attached.");
     }
  
     // get all points
@@ -96,5 +95,5 @@ int Curvature::execute(void)
         CurvInfo.set1Value(i, ci);
     }
 
-    return 0;
+    return App::DocumentObject::StdReturn;
 }

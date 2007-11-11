@@ -47,7 +47,7 @@ Line::~Line()
 {
 }
 
-int Line::execute(void)
+App::DocumentObjectExecReturn *Line::execute(void)
 {
   Base::Vector3f beg = b.getValue();
   Base::Vector3f end = e.getValue();
@@ -86,11 +86,12 @@ int Line::execute(void)
   }
 
   // Error 
-  if ( !ok ) return 1;
+  if ( !ok ) 
+      return App::DocumentObject::StdError;
 
   TopoDS_Edge edge = makeEdge.Edge();
   setShape(edge);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

@@ -48,7 +48,7 @@ LineSet::~LineSet()
 {
 }
 
-int LineSet::execute(void)
+App::DocumentObjectExecReturn *LineSet::execute(void)
 {
   TopoDS_Compound aCompound;
   BRep_Builder aBuilder;
@@ -90,7 +90,8 @@ int LineSet::execute(void)
     }
 
     // Error 
-    if ( !ok ) return 1;
+    if ( !ok ) 
+        return App::DocumentObject::StdError;
     
     // add created edge to the compound
     TopoDS_Edge edge = makeEdge.Edge();

@@ -53,7 +53,7 @@ SetOperations::SetOperations(void)
   ADD_PROPERTY(OperationType, ("union"));
 }
 
-int SetOperations::execute(void)
+App::DocumentObjectExecReturn *SetOperations::execute(void)
 {
   Mesh::Feature *mesh1  = dynamic_cast<Mesh::Feature*>(Source1.getValue());
   Mesh::Feature *mesh2  = dynamic_cast<Mesh::Feature*>(Source2.getValue());
