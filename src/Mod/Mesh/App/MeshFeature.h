@@ -68,7 +68,7 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   virtual void onChanged(const App::Property* prop);
   //@}
 

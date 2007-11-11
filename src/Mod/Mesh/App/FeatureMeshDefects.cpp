@@ -49,9 +49,9 @@ FixDefects::~FixDefects()
 {
 }
 
-int FixDefects::execute(void)
+App::DocumentObjectExecReturn *FixDefects::execute(void)
 {
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ HarmonizeNormals::~HarmonizeNormals()
 {
 }
 
-int HarmonizeNormals::execute(void)
+App::DocumentObjectExecReturn *HarmonizeNormals::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -75,7 +75,7 @@ int HarmonizeNormals::execute(void)
   eval.Fixup();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -90,7 +90,7 @@ FlipNormals::~FlipNormals()
 {
 }
 
-int FlipNormals::execute(void)
+App::DocumentObjectExecReturn *FlipNormals::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -99,7 +99,7 @@ int FlipNormals::execute(void)
   cTopAlg.FlipNormals();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -114,9 +114,9 @@ FixNonManifolds::~FixNonManifolds()
 {
 }
 
-int FixNonManifolds::execute(void)
+App::DocumentObjectExecReturn *FixNonManifolds::execute(void)
 {
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -131,7 +131,7 @@ FixDuplicatedFaces::~FixDuplicatedFaces()
 {
 }
 
-int FixDuplicatedFaces::execute(void)
+App::DocumentObjectExecReturn *FixDuplicatedFaces::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -140,7 +140,7 @@ int FixDuplicatedFaces::execute(void)
   eval.Fixup();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -155,7 +155,7 @@ FixDuplicatedPoints::~FixDuplicatedPoints()
 {
 }
 
-int FixDuplicatedPoints::execute(void)
+App::DocumentObjectExecReturn *FixDuplicatedPoints::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -164,7 +164,7 @@ int FixDuplicatedPoints::execute(void)
   eval.Fixup();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -179,7 +179,7 @@ FixDegenerations::~FixDegenerations()
 {
 }
 
-int FixDegenerations::execute(void)
+App::DocumentObjectExecReturn *FixDegenerations::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -188,7 +188,7 @@ int FixDegenerations::execute(void)
   eval.Fixup();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -204,7 +204,7 @@ FixDeformations::~FixDeformations()
 {
 }
 
-int FixDeformations::execute(void)
+App::DocumentObjectExecReturn *FixDeformations::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -213,7 +213,7 @@ int FixDeformations::execute(void)
   eval.Fixup();
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -228,7 +228,7 @@ FixIndices::~FixIndices()
 {
 }
 
-int FixIndices::execute(void)
+App::DocumentObjectExecReturn *FixIndices::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -259,7 +259,7 @@ int FixIndices::execute(void)
 
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -275,7 +275,7 @@ FillHoles::~FillHoles()
 {
 }
 
-int FillHoles::execute(void)
+App::DocumentObjectExecReturn *FillHoles::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -285,7 +285,7 @@ int FillHoles::execute(void)
 
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -301,7 +301,7 @@ RemoveComponents::~RemoveComponents()
 {
 }
 
-int RemoveComponents::execute(void)
+App::DocumentObjectExecReturn *RemoveComponents::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
@@ -311,5 +311,5 @@ int RemoveComponents::execute(void)
 
   Mesh.setValue(kernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }

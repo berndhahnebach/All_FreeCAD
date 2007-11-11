@@ -47,16 +47,15 @@ Export::Export(void)
     ADD_PROPERTY(Format  ,(""));
 }
 
-int Export::execute(void)
+App::DocumentObjectExecReturn *Export::execute(void)
 {
     Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue());
     if(!pcFeat || pcFeat->getStatus() != Valid) {
-        setError("Cannot export invalid mesh feature '%s'", pcFeat->getNameInDocument());
-        return 1;
+        return new App::DocumentObjectExecReturn("Cannot export invalid mesh feature");
     }
 
     MeshOutput aWriter(pcFeat->Mesh.getValue());
     aWriter.SaveAny(FileName.getValue());
 
-    return 0;
+    return App::DocumentObject::StdReturn;
 }

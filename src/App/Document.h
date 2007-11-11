@@ -257,7 +257,7 @@ protected:
     /// callback from the Document objects after property was changed
     void onChangedProperty(const DocumentObject *Who, const Property *What);
     /// helper which Recompute only this feature
-    void _recomputeFeature(AbstractFeature* Feat);
+    void _recomputeFeature(DocumentObject* Feat);
 
     // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

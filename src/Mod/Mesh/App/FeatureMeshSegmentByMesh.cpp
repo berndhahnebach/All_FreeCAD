@@ -52,7 +52,7 @@ SegmentByMesh::SegmentByMesh(void)
 
 }
 
-int SegmentByMesh::execute(void)
+App::DocumentObjectExecReturn *SegmentByMesh::execute(void)
 {
   Feature *pcMesh  = dynamic_cast<Feature*>(Source.getValue());
   Feature *pcTool  = dynamic_cast<Feature*>(Tool.getValue());
@@ -63,18 +63,14 @@ int SegmentByMesh::execute(void)
   cNormal = Normal.getValue();
 
   if (!pcMesh) {
-    setError("No mesh specified.\n");
-    return 1;
+    return new App::DocumentObjectExecReturn("No mesh specified.\n");
   } else if (pcMesh->getStatus() != Valid) {
-    setError("'%s' isn't a valid mesh.\n", pcMesh->getNameInDocument());
-    return 1;
+    return new App::DocumentObjectExecReturn("No valid mesh.\n");
   } else if (!pcTool) {
-    setError("No toolmesh specified.\n");
-    return 1;
-  } else if (pcTool->getStatus() != Valid) {
-    setError("'%s' isn't a valid toolmesh.\n", pcTool->getNameInDocument());
-    return 1;
-  }
+    return new App::DocumentObjectExecReturn("No toolmesh specified.\n");
+ } else if (pcTool->getStatus() != Valid) {
+    return new App::DocumentObjectExecReturn("No valid toolmesh.\n");
+   }
 
   const MeshKernel& rMeshKernel = pcMesh->Mesh.getValue();
   const MeshKernel& rToolMesh   = pcTool->Mesh.getValue();
@@ -82,8 +78,7 @@ int SegmentByMesh::execute(void)
   // check if the toolmesh is a solid
   if ( !MeshEvalSolid(rToolMesh).Evaluate() )
   {
-    setError("'%s' isn't a solid.\n", pcTool->getNameInDocument());
-    return 1; // no solid
+    return new App::DocumentObjectExecReturn("Toolmesh is not solid.\n");
   }
 
   std::vector<unsigned long> faces;
@@ -140,6 +135,6 @@ int SegmentByMesh::execute(void)
   *pcKernel= ( aFaces );
   Mesh.setValue(pcKernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

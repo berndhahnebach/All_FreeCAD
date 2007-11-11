@@ -40,6 +40,22 @@ namespace App
 class Document;
 class DocumentObjectPy;
 
+/** Return object for feature execution
+*/
+class AppExport DocumentObjectExecReturn
+{
+public:
+    DocumentObjectExecReturn(const char* sWhy)
+    {
+        if(sWhy)
+            Why = sWhy;
+    }
+
+    std::string Why;
+};
+
+
+
 /** Base class of all Classes handled in the Document
  */
 class AppExport DocumentObject: public App::PropertyContainer
@@ -58,33 +74,47 @@ public:
     DocumentObject(void);
     virtual ~DocumentObject();
 
-    App::Document &getDocument(void) const;
-    void setDocument(App::Document* doc);
 
     /// returns the name which is set in the document for this object (not the Name propertie!)
     const char *getNameInDocument(void) const;
+    /// gets the document in which this Object is handled
+    App::Document &getDocument(void) const;
 
     /** Set the property touched -> changed, cause recomputation in Update()
      */
     //@{
     /// set this feature touched (cause recomputation on depndend features)
-    bool isTouched(void) const {return StatusBits.test(0);}
-    /// set this feature touched (cause recomputation on depndend features)
-    void purgeTouched(void){StatusBits.reset(0);}
-    /// set this feature touched (cause recomputation on depndend features)
     void touch(void);
-    /// set the view parameter of this feature touched (cause recomputation of representation)
-    void TouchView(void);
-    /// get the touch time
-    Base::TimeInfo getTouchTime(void) const {return touchTime;}
-    /// get the view touch time
-    Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
-    //@}
-
+    /// test if this feature is touched 
+    bool isTouched(void) const {return StatusBits.test(0);}
+    /// reset this feature touched 
+    void purgeTouched(void){StatusBits.reset(0);}
     /// set this feature to error 
     bool isError(void) const {return StatusBits.test(1);}
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
+    //@}
+
+    /** get called by the document to recompute this feature
+      * Normaly this methode get called in the processing of 
+      * Document::recompute(). 
+      * In execute() the outpupt properties get recomputed
+      * with the data from linked objects and objects own 
+      * properties.
+      */
+    virtual App::DocumentObjectExecReturn *execute(void);
+
+    /** mustExecute
+     *  We call this method to check if the object was modified to
+     *  be invoked. If the object label or an argument is modified.
+     *  If we must recompute the object - to call the method Execute().
+     */ 
+    virtual bool mustExecute(void);
+
+
+    /// get the status Message
+    const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
+
 
 
     /** Called in case of losing a link
@@ -101,14 +131,20 @@ public:
     friend class Document;
     friend class Transaction;
 
+    static DocumentObjectExecReturn *StdReturn;
+    static DocumentObjectExecReturn *StdError;
+
 protected:
+
+    void setDocument(App::Document* doc);
+    
     /// get called befor the value is changed
     virtual void onBevorChange(const Property* prop);
     /// get called by the container when a Proptery was changed
     virtual void onChanged(const Property* prop);
 
 
-    Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
+    //Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
 
     /// python object of this class and all descendend
     Py::Object PythonObject;

@@ -44,7 +44,7 @@ Import::Import(void)
   ADD_PROPERTY(FileName,(""));
 }
 
-int Import::execute(void)
+App::DocumentObjectExecReturn *Import::execute(void)
 {
   std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
   MeshInput aReader( *apcKernel );
@@ -53,6 +53,6 @@ int Import::execute(void)
   // Mesh is okay
   Mesh.setValue(apcKernel.release());
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

@@ -51,7 +51,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 
   /// returns the type name of the ViewProvider
@@ -74,7 +74,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -94,7 +94,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -114,7 +114,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -134,7 +134,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -154,7 +154,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -174,7 +174,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -198,7 +198,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -218,7 +218,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -239,7 +239,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 
@@ -260,7 +260,7 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
 };
 

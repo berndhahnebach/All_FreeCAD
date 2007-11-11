@@ -536,15 +536,11 @@ void DocumentObjectItem::displayStatusInfo()
 {
     App::DocumentObject* Obj = viewObject->getObject();
 
-    if (Obj->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId())) {
-        App::AbstractFeature *feat = dynamic_cast<App::AbstractFeature *>(Obj);
-        QString info = feat->getStatusString();
-        if ( feat->getStatus() == App::AbstractFeature::Error )
-            info += QString(" (%1)").arg(feat->getErrorString());
-        else if ( feat->mustExecute() )
-            info += QString(" (but must be executed)");
-        getMainWindow()->statusBar()->showMessage( info );
-    }
+    QString info = Obj->getStatusString();
+    if ( Obj->mustExecute() )
+        info += QString(" (but must be executed)");
+    getMainWindow()->statusBar()->showMessage( info );
+   
 }
 
 

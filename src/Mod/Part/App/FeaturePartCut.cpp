@@ -43,15 +43,15 @@ Cut::Cut(void)
   ADD_PROPERTY(Tool,(0));
 }
 
-int Cut::execute(void)
+App::DocumentObjectExecReturn *Cut::execute(void)
 {
  
   Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
-    return 1;
+   return App::DocumentObject::StdError;
   Part::Feature *pcSecond = dynamic_cast<Part::Feature*>(Tool.getValue());
   if(!pcSecond || pcSecond->getStatus() != Valid)
-    return 1;
+    return App::DocumentObject::StdError;
 
   // Now, let's get the TopoDS_Shape
 	TopoDS_Shape OriginalShape  = pcFirst->getShape();
@@ -62,14 +62,14 @@ int Cut::execute(void)
 	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
 	// Let's check if the Cut has been successfull:
 	if (!mkCut.IsDone()) 
-	  return 1;
+	  return App::DocumentObject::StdError;
 
   TopoDS_Shape ResultShape = mkCut.Shape();
 
 
   setShape(ResultShape);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 

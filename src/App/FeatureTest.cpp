@@ -34,7 +34,7 @@
 using namespace App;
 
 
-PROPERTY_SOURCE(App::FeatureTest, App::AbstractFeature)
+PROPERTY_SOURCE(App::FeatureTest, App::DocumentObject)
 
 const char* enums[]= {"Zero","One","Two","Three","Four",NULL};
 const PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
@@ -86,7 +86,7 @@ FeatureTest::FeatureTest()
 }
 
 
-int FeatureTest::execute(void)
+DocumentObjectExecReturn *FeatureTest::execute(void)
 {
 
 
@@ -100,7 +100,7 @@ int FeatureTest::execute(void)
 
   ExecResult.setValue("Exec");
 
-  return 0;
+  return DocumentObject::StdReturn;
 }
 
 
@@ -113,7 +113,7 @@ FeatureTestException::FeatureTestException()
 }
 
 
-int FeatureTestException::execute(void)
+DocumentObjectExecReturn *FeatureTestException::execute(void)
 {
   //ExceptionType;
 

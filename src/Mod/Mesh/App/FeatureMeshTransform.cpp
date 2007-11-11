@@ -47,12 +47,12 @@ Transform::Transform(void)
   ADD_PROPERTY(Position,(Matrix4D()));
 }
 
-int Transform::execute(void)
+App::DocumentObjectExecReturn *Transform::execute(void)
 {
 
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
-    return 1;
+    return App::DocumentObject::StdError;
 
   Matrix4D Matrix =Position.getValue();
 
@@ -61,6 +61,6 @@ int Transform::execute(void)
   pcKernel->Transform(Matrix);
   Mesh.setValue(pcKernel);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

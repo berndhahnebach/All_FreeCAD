@@ -35,7 +35,7 @@ namespace App
 {
 
 /// The testing feature
-class FeatureTest :public AbstractFeature
+class FeatureTest :public DocumentObject
 {
   PROPERTY_HEADER(App::FeatureTest);
 
@@ -86,7 +86,7 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual int execute(void);
+  virtual DocumentObjectExecReturn *execute(void);
   /// returns the type name of the ViewProvider
   //FIXME: Propably it makes sense to have a view provider for unittests (e.g. Gui::ViewProviderTest)
   virtual const char* getViewProviderName(void) const {
@@ -107,7 +107,7 @@ public:
   App::PropertyInteger ExceptionType;
 
   /// recalculate the Feature and throw an exeption
-  virtual int execute(void);
+  virtual DocumentObjectExecReturn *execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void) const {
     return "Gui::ViewProviderDocumentObject";

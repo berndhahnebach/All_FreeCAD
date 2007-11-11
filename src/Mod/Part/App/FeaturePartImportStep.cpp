@@ -45,14 +45,14 @@ ImportStep::ImportStep(void)
 	ADD_PROPERTY(FileName,(""));
 }
 
-Standard_Integer ImportStep::execute(void)
+App::DocumentObjectExecReturn *ImportStep::execute(void)
 {
   STEPControl_Reader aReader;
   TopoDS_Shape aShape;
 
 
   if( FileName.isEmpty()) 
-    return 1;
+    return App::DocumentObject::StdError;
 
 #if defined (__GNUC__)
   int i=open(FileName.getValue(),O_RDONLY);
@@ -67,7 +67,7 @@ Standard_Integer ImportStep::execute(void)
 #endif
 	}else{
     Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.getValue());
-	  return 1;
+	  return App::DocumentObject::StdError;
 	}
 
   // just do show the wait cursor when the Gui is up
@@ -78,7 +78,7 @@ Standard_Integer ImportStep::execute(void)
   if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
   {
     setError("File not readable");
-    return 1;
+    return App::DocumentObject::StdError;
   }
   
   // Root transfers
@@ -92,7 +92,7 @@ Standard_Integer ImportStep::execute(void)
     Standard_Integer nbs = aReader.NbShapes();
     if (nbs == 0) {
       aHSequenceOfShape.Nullify();
-      return 1;
+      return App::DocumentObject::StdError;
     } else {
       for (Standard_Integer i =1; i<=nbs; i++) 
       {
@@ -105,7 +105,7 @@ Standard_Integer ImportStep::execute(void)
 
 	setShape(aShape);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 

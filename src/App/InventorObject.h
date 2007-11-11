@@ -45,8 +45,8 @@ public:
     virtual const char* getViewProviderName(void) const {
         return "Gui::ViewProviderInventorObject";
     }
-    virtual int execute(void) {
-        return 0;
+    virtual DocumentObjectExecReturn *execute(void) {
+        return DocumentObject::StdReturn;
     }
     virtual PyObject *getPyObject(void);
 

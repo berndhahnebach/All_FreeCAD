@@ -66,22 +66,6 @@ public:
     //bool isModified() const;
 
 
-    /** @name methods to overide with a new feature type */
-    //@{
-
-    /** Validate
-     *  We compute the object and topologically name it.
-     *  If during the execution we found something wrong,
-     *  we return the number of the failure. For example:
-     *  1 - an attribute hasn't been found,
-     *  2 - algorithm failed
-     *  0 - no mistakes were found.
-     */
-    virtual int execute(void)=0;
-
-
-    //@}
-
     /** @name status methods of the feature */
     //@{
     /// status types
@@ -100,11 +84,11 @@ public:
     /// set the status, e.g. after recoputation in Execute()
 // void setStatus(const Status &s){_eStatus = s;}
     /// get the status Message
-    const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
+    //const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
     /// get the error Message (if any)
-    const char *getErrorString(void) const {
-        return _cErrorMessage.c_str();
-    }
+    //const char *getErrorString(void) const {
+    //    return _cErrorMessage.c_str();
+    //}
     /// set an error on recoputation
     void setError(const char* pMsg,...);
     /// checks if valid
