@@ -670,19 +670,19 @@ PYFUNCIMP_D(MeshPy,splitEdges)
 
 PYFUNCIMP_D(MeshPy,splitEdge)
 {
-    int facet, neighbour;
+    unsigned long facet, neighbour;
     PyObject* vertex;
-    if (! PyArg_ParseTuple(args, "iiO!", &facet, &neighbour, &App::VectorPy::Type, &vertex))
+    if (! PyArg_ParseTuple(args, "kkO!", &facet, &neighbour, &App::VectorPy::Type, &vertex))
         return NULL;
 
     Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
 
     PY_TRY {
-        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+        if (facet < 0 || facet >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
-        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+        if (neighbour < 0 || neighbour >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
@@ -728,16 +728,16 @@ PYFUNCIMP_D(MeshPy,splitFacet)
 
 PYFUNCIMP_D(MeshPy,swapEdge)
 {
-    int facet, neighbour;
-    if (! PyArg_ParseTuple(args, "ii", &facet, &neighbour))
+    unsigned long facet, neighbour;
+    if (! PyArg_ParseTuple(args, "kk", &facet, &neighbour))
         return NULL;
 
     PY_TRY {
-        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+        if (facet < 0 || facet >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
-        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+        if (neighbour < 0 || neighbour >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
@@ -758,16 +758,16 @@ PYFUNCIMP_D(MeshPy,swapEdge)
 
 PYFUNCIMP_D(MeshPy,collapseEdge)
 {
-    int facet, neighbour;
-    if (! PyArg_ParseTuple(args, "ii", &facet, &neighbour))
+    unsigned long facet, neighbour;
+    if (! PyArg_ParseTuple(args, "kk", &facet, &neighbour))
         return NULL;
 
     PY_TRY {
-        if (facet < 0 || facet >= (int)_pcMesh->CountFacets()) {
+        if (facet < 0 || facet >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
-        if (neighbour < 0 || neighbour >= (int)_pcMesh->CountFacets()) {
+        if (neighbour < 0 || neighbour >= _pcMesh->CountFacets()) {
             PyErr_SetString(PyExc_IndexError, "Facet index out of range");
             return NULL;
         }
