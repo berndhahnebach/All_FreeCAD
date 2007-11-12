@@ -161,20 +161,17 @@ void ViewProviderPart::onChanged(const App::Property* prop)
   } else if ( prop == &LineColor ) {
     const App::Color& c = LineColor.getValue();
     pcLineMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    LineMaterial.enableNotify(false);
+    if (c != LineMaterial.getValue().diffuseColor)
     LineMaterial.setDiffuseColor(c);
-    LineMaterial.enableNotify(true);
   } else if ( prop == &PointColor ) {
     const App::Color& c = PointColor.getValue();
     pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    PointMaterial.enableNotify(false);
+    if (c != PointMaterial.getValue().diffuseColor)
     PointMaterial.setDiffuseColor(c);
-    PointMaterial.enableNotify(true);
   } else if ( prop == &LineMaterial ) {
     const App::Material& Mat = LineMaterial.getValue();
-    LineColor.enableNotify(false);
+    if (LineColor.getValue() != Mat.diffuseColor)
     LineColor.setValue(Mat.diffuseColor);
-    LineColor.enableNotify(true);
     pcLineMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
     pcLineMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
     pcLineMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
@@ -183,9 +180,8 @@ void ViewProviderPart::onChanged(const App::Property* prop)
     pcLineMaterial->transparency.setValue(Mat.transparency);
   } else if ( prop == &PointMaterial ) {
     const App::Material& Mat = PointMaterial.getValue();
-    PointColor.enableNotify(false);
+    if (PointColor.getValue() != Mat.diffuseColor)
     PointColor.setValue(Mat.diffuseColor);
-    PointColor.enableNotify(true);
     pcPointMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
     pcPointMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
     pcPointMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);

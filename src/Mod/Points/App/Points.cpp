@@ -144,14 +144,14 @@ void PropertyCurvatureList::setValue(const CurvatureInfo& lValue)
 {
   aboutToSetValue();
   _lValueList.resize(1);
-	_lValueList[0]=lValue;
+  _lValueList[0]=lValue;
   hasSetValue();
 }
 
 void PropertyCurvatureList::setValues(const std::vector<CurvatureInfo>& lValues)
 {
   aboutToSetValue();
-	_lValueList=lValues;
+  _lValueList=lValues;
   hasSetValue();
 }
 

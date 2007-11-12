@@ -38,12 +38,6 @@ PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
 DocumentObjectGroup::DocumentObjectGroup() 
 {
     ADD_PROPERTY_TYPE(Group,(0),"Base",(App::PropertyType)(Prop_ReadOnly|Prop_Output),"List of referenced objects");
-
-    // make sure that the list is empty
-    std::vector<DocumentObject*> grp;
-    Group.enableNotify(false);
-    Group.setValues(grp);
-    Group.enableNotify(true);
 }
 
 DocumentObjectGroup::~DocumentObjectGroup()

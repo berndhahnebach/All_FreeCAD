@@ -80,23 +80,24 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
   if ( prop == &ShapeColor ) {
     const App::Color& c = ShapeColor.getValue();
     pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    ShapeMaterial.enableNotify(false);
+    if (c != ShapeMaterial.getValue().diffuseColor)
     ShapeMaterial.setDiffuseColor(c);
-    ShapeMaterial.enableNotify(true);
   } else if ( prop == &Transparency ) {
-    float trans = Transparency.getValue()/100.0f;
-    pcShapeMaterial->transparency = trans;
-    ShapeMaterial.enableNotify(false);
-    ShapeMaterial.setTransparency(trans);
-    ShapeMaterial.enableNotify(true);
+    const App::Material& Mat = ShapeMaterial.getValue();
+    long value = (long)(100*Mat.transparency);
+    if (value != Transparency.getValue()) {
+      float trans = Transparency.getValue()/100.0f;
+      pcShapeMaterial->transparency = trans;
+      ShapeMaterial.setTransparency(trans);
+    }
   } else if ( prop == &ShapeMaterial ) {
     const App::Material& Mat = ShapeMaterial.getValue();
-    Transparency.enableNotify(false);
-    Transparency.setValue((long)(100*Mat.transparency));
-    Transparency.enableNotify(true);
-    ShapeColor.enableNotify(false);
+    long value = (long)(100*Mat.transparency);
+    if (value != Transparency.getValue())
+    Transparency.setValue(value);
+    const App::Color& color = Mat.diffuseColor;
+    if (color != ShapeColor.getValue())
     ShapeColor.setValue(Mat.diffuseColor);
-    ShapeColor.enableNotify(true);
     pcShapeMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
     pcShapeMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
     pcShapeMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
