@@ -728,16 +728,16 @@ void Document::restore (void)
     reader.readFiles(zipstream);
 
     // notify all as new
-    for (std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
-        if (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) {
-            AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
+    //for (std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
+        //if (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) {
+            //AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
             //feat->touchTime.setToActual();
             //feat->setModified(false);
             //if ( feat->status.getValue() == AbstractFeature::New )
             //  feat->status.setValue( AbstractFeature::Valid );
-        }
+        //}
         //signalNewObject(*(It->second));
-    }
+    //}
 
     //Notify(DocChange);
 
@@ -998,7 +998,7 @@ void Document::_recomputeFeature(DocumentObject* Feat)
     Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
 
     //Feat->status.setValue(AbstractFeature::Recompute);
-    DocumentObjectExecReturn  *returnCode;
+    DocumentObjectExecReturn  *returnCode = 0;
     try {
         returnCode = Feat->execute();
         //}catch(Base::AbortException &e){
@@ -1022,7 +1022,7 @@ void Document::_recomputeFeature(DocumentObject* Feat)
 #ifndef FC_DEBUG
     catch (...) {
         Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
-        succes = 3;
+        //succes = 3;
     }
 #endif
 
