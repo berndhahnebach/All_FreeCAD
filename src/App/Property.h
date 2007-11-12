@@ -95,11 +95,6 @@ public:
 
   /// get a pointer to the PropertyContainer derived class the property belonging to
   PropertyContainer *getContainer(void) const {return father;}
-  /**
-   * If \a on is true the property container gets notified whenever the value has changed.
-   * Due to performance issues it's possible to disable the notification mechanism temporarily.
-   */
-  void enableNotify(bool on);
   /** 
    * Forces a notification of its property container even if the notification mechanism is
    * disabled.
@@ -125,8 +120,6 @@ protected:
 private:
 
   PropertyContainer *father;
-  bool notify;
-
 };
 
 

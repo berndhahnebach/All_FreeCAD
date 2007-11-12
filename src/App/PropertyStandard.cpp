@@ -1318,12 +1318,14 @@ PropertyColor::~PropertyColor()
 
 void PropertyColor::setValue(const Color &col)
 {
+    aboutToSetValue();
     _cCol=col;
     hasSetValue();
 }
 
 void PropertyColor::setValue(float r, float g, float b, float a)
 {
+    aboutToSetValue();
     _cCol.set(r,g,b,a);
     hasSetValue();
 }
@@ -1628,6 +1630,7 @@ PropertyMaterial::~PropertyMaterial()
 
 void PropertyMaterial::setValue(const Material &mat)
 {
+    aboutToSetValue();
     _cMat=mat;
     hasSetValue();
 }
@@ -1639,36 +1642,42 @@ const Material& PropertyMaterial::getValue(void) const
 
 void PropertyMaterial::setAmbientColor(const Color& col)
 {
+    aboutToSetValue();
     _cMat.ambientColor = col;
     hasSetValue();
 }
 
 void PropertyMaterial::setDiffuseColor(const Color& col)
 {
+    aboutToSetValue();
     _cMat.diffuseColor = col;
     hasSetValue();
 }
 
 void PropertyMaterial::setSpecularColor(const Color& col)
 {
+    aboutToSetValue();
     _cMat.specularColor = col;
     hasSetValue();
 }
 
 void PropertyMaterial::setEmmisiveColor(const Color& col)
 {
+    aboutToSetValue();
     _cMat.emissiveColor = col;
     hasSetValue();
 }
 
 void PropertyMaterial::setShininess(float val)
 {
+    aboutToSetValue();
     _cMat.shininess = val;
     hasSetValue();
 }
 
 void PropertyMaterial::setTransparency(float val)
 {
+    aboutToSetValue();
     _cMat.transparency = val;
     hasSetValue();
 }

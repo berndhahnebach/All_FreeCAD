@@ -227,7 +227,6 @@ void PropertyLinkList::setPyObject(PyObject *value)
         setValues(values);
     }
     else if(PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
-        aboutToSetValue();
         DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(value);
         setValue(pcObject->getDocumentObjectObject());
     }
