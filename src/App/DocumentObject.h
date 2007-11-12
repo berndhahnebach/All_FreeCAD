@@ -45,13 +45,15 @@ class DocumentObjectPy;
 class AppExport DocumentObjectExecReturn
 {
 public:
-    DocumentObjectExecReturn(const char* sWhy)
+    DocumentObjectExecReturn(const char* sWhy, DocumentObject* WhichObject=0)
+        :Which(WhichObject)
     {
         if(sWhy)
             Why = sWhy;
     }
 
     std::string Why;
+    DocumentObject* Which;
 };
 
 
@@ -88,7 +90,7 @@ public:
     /// test if this feature is touched 
     bool isTouched(void) const {return StatusBits.test(0);}
     /// reset this feature touched 
-    void purgeTouched(void){StatusBits.reset(0);}
+    void purgeTouched(void){StatusBits.reset(0);setPropertyStatus(0,false);}
     /// set this feature to error 
     bool isError(void) const {return StatusBits.test(1);}
     /// remove the error from the object
@@ -108,8 +110,11 @@ public:
      *  We call this method to check if the object was modified to
      *  be invoked. If the object label or an argument is modified.
      *  If we must recompute the object - to call the method Execute().
+     *  0: no recompution is needed
+     *  1: recompution needed
+     * -1: the document examine all links of this object and if one is touched -> recompute
      */ 
-    virtual bool mustExecute(void);
+    virtual unsigned short mustExecute(void) const;
 
 
     /// get the status Message
@@ -126,16 +131,22 @@ public:
     virtual void onLoseLinkToObject(DocumentObject*);
     virtual PyObject *getPyObject(void);
 
-    std::bitset<16> StatusBits;
-    
     friend class Document;
     friend class Transaction;
 
     static DocumentObjectExecReturn *StdReturn;
-    static DocumentObjectExecReturn *StdError;
+
+    /** status bits of the document object
+      * the first 8 bits are used for the base system
+      * the rest can be used in descendend classes to 
+      * to mark special stati on the objects
+      */   
+    std::bitset<32> StatusBits;
 
 protected:
 
+    void setError(void){StatusBits.set(1);}
+    void resetError(void){StatusBits.reset(1);}
     void setDocument(App::Document* doc);
     
     /// get called befor the value is changed
@@ -143,10 +154,7 @@ protected:
     /// get called by the container when a Proptery was changed
     virtual void onChanged(const Property* prop);
 
-
-    //Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
-
-    /// python object of this class and all descendend
+     /// python object of this class and all descendend
     Py::Object PythonObject;
     /// pointer to the document this object belongs to
     App::Document* _pDoc;

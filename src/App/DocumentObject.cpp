@@ -35,8 +35,7 @@ using namespace App;
 
 PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 
-DocumentObjectExecReturn *DocumentObject::StdReturn = new DocumentObjectExecReturn(0);
-DocumentObjectExecReturn *DocumentObject::StdError = new DocumentObjectExecReturn("Unknown Error");
+DocumentObjectExecReturn *DocumentObject::StdReturn = new DocumentObjectExecReturn(0,0);
 
 //===========================================================================
 // DocumentObject
@@ -46,8 +45,7 @@ DocumentObject::DocumentObject(void)
   : _pDoc(0),pcNameInDocument(0)
 {
     ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_Output,"User name of the object (UTF8)");
-    //touchTime.setToActual();
-    //touchViewTime.setToActual();
+    unsigned long test = sizeof(StatusBits);
 }
 
 DocumentObject::~DocumentObject(void)
@@ -68,9 +66,9 @@ DocumentObjectExecReturn *DocumentObject::execute(void)
 {
     return DocumentObject::StdReturn;
 }
-bool DocumentObject::mustExecute(void)
+unsigned short DocumentObject::mustExecute(void) const
 {
-    return false;
+    return 0;
 }
 
 const char* DocumentObject::getStatusString(void) const

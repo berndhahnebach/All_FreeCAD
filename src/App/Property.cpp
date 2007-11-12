@@ -86,12 +86,14 @@ void Property::touch()
 {
   if(father)
     father->onChanged(this);
+  StatusBits.set(0);
 }
 
 void Property::hasSetValue(void)
 {
   if(father)
     father->onChanged(this);
+  StatusBits.set(0);
 }
 
 void Property::aboutToSetValue(void)

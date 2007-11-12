@@ -81,6 +81,15 @@ void PropertyContainer::getPropertyList(std::vector<Property*> &List) const
   getPropertyData().getPropertyList(this,List);
 }
 
+void PropertyContainer::setPropertyStatus(unsigned char bit,bool value)
+{
+    std::vector<Property*> List;
+    getPropertyList(List);
+    for(std::vector<Property*>::const_iterator it=List.begin();it!=List.end();++it)
+        (**it).StatusBits.set(bit,value);
+}
+
+
 const char* PropertyContainer::getName(const Property* prop)const
 {
   return getPropertyData().getName(this,prop);

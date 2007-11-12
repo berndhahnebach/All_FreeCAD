@@ -47,11 +47,11 @@ App::DocumentObjectExecReturn *Cut::execute(void)
 {
  
   Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
-  if(!pcFirst || pcFirst->getStatus() != Valid)
-   return App::DocumentObject::StdError;
+  //if(!pcFirst || pcFirst->getStatus() != Valid)
+  // return new DocumentObjectExecReturn("Unknown Error");
   Part::Feature *pcSecond = dynamic_cast<Part::Feature*>(Tool.getValue());
-  if(!pcSecond || pcSecond->getStatus() != Valid)
-    return App::DocumentObject::StdError;
+  //if(!pcSecond || pcSecond->getStatus() != Valid)
+  //  return new DocumentObjectExecReturn("Unknown Error");
 
   // Now, let's get the TopoDS_Shape
 	TopoDS_Shape OriginalShape  = pcFirst->getShape();
@@ -62,7 +62,7 @@ App::DocumentObjectExecReturn *Cut::execute(void)
 	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
 	// Let's check if the Cut has been successfull:
 	if (!mkCut.IsDone()) 
-	  return App::DocumentObject::StdError;
+        return new App::DocumentObjectExecReturn("Unknown Error");
 
   TopoDS_Shape ResultShape = mkCut.Shape();
 

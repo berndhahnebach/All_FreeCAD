@@ -87,11 +87,10 @@ App::DocumentObject * PropertyLink::getValue(void) const
 
 App::DocumentObject * PropertyLink::getValue(Base::Type t) const
 {
-    if(_pcLink->getTypeId().isDerivedFrom(t))
-        return _pcLink;
-    else
-        return 0;
+    return (_pcLink && _pcLink->getTypeId().isDerivedFrom(t)) ? _pcLink : 0;
 }
+
+
 
 
 

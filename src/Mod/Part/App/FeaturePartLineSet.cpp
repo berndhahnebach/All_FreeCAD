@@ -91,7 +91,7 @@ App::DocumentObjectExecReturn *LineSet::execute(void)
 
     // Error 
     if ( !ok ) 
-        return App::DocumentObject::StdError;
+        return new App::DocumentObjectExecReturn("Unknown Error");
     
     // add created edge to the compound
     TopoDS_Edge edge = makeEdge.Edge();

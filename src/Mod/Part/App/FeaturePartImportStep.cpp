@@ -52,7 +52,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
 
 
   if( FileName.isEmpty()) 
-    return App::DocumentObject::StdError;
+    return new App::DocumentObjectExecReturn("Unknown Error");
 
 #if defined (__GNUC__)
   int i=open(FileName.getValue(),O_RDONLY);
@@ -67,7 +67,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
 #endif
 	}else{
     Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.getValue());
-	  return App::DocumentObject::StdError;
+	  return new App::DocumentObjectExecReturn("Unknown Error");
 	}
 
   // just do show the wait cursor when the Gui is up
@@ -77,8 +77,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
   Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
   if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
   {
-    setError("File not readable");
-    return App::DocumentObject::StdError;
+    return new App::DocumentObjectExecReturn("File not readable");
   }
   
   // Root transfers
@@ -92,7 +91,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
     Standard_Integer nbs = aReader.NbShapes();
     if (nbs == 0) {
       aHSequenceOfShape.Nullify();
-      return App::DocumentObject::StdError;
+      return new App::DocumentObjectExecReturn("Unknown Error");
     } else {
       for (Standard_Integer i =1; i<=nbs; i++) 
       {

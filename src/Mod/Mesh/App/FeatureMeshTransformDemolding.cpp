@@ -53,7 +53,7 @@ App::DocumentObjectExecReturn *TransformDemolding::execute(void)
 {
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
-    return App::DocumentObject::StdError;
+    return new App::DocumentObjectExecReturn("Unknown Error");
 
   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->Mesh.getValue()); // Result Meshkernel
   Base::Matrix4D trans(Base::Vector3f(0,0,0), Axis.getValue(), Rotation.getValue()  );

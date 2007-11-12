@@ -30,6 +30,7 @@
 
 #include <Base/Persistance.h>
 #include <string>
+#include <bitset>
 
 
 
@@ -70,8 +71,7 @@ public:
     */
   virtual unsigned int getMemSize (void) const{
     // you have to implement this method in all Property classes!
-    assert(0);
-    return 0;
+      return Base::Persistance::getMemSize() + sizeof(father) + sizeof(StatusBits);
   } 
 
   /// get the name of this property in the belonging Container
@@ -95,11 +95,12 @@ public:
 
   /// get a pointer to the PropertyContainer derived class the property belonging to
   PropertyContainer *getContainer(void) const {return father;}
-  /** 
-   * Forces a notification of its property container even if the notification mechanism is
-   * disabled.
-   */
+  /// set the property touched
   void touch();
+  /// test if this feature is touched 
+  bool isTouched(void) const {return StatusBits.test(0);}
+  /// reset this feature touched 
+  void purgeTouched(void){StatusBits.reset(0);}
 
   /// returns a new copy of the property (mainly for Undo/Redo and transactions)
   virtual Property *Copy(void) const;
@@ -111,6 +112,7 @@ public:
 
   friend class PropertyContainer;
 
+  std::bitset<32> StatusBits;
 protected:
   /// is called by all setValue() methods after the value was changed
   void hasSetValue(void);
