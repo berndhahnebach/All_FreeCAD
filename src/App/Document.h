@@ -60,6 +60,7 @@ namespace Base {
 namespace App
 {
   class DocumentObject;
+  class DocumentObjectExecReturn;
   class Document;
   class AbstractFeature;
   class DocumentPy; // the python document class
@@ -184,6 +185,8 @@ public:
     void recompute();
     /// Recompute only one feature
     void recomputeFeature(AbstractFeature* Feat);
+    /// get the error log from the recompute run
+    const std::vector<App::DocumentObjectExecReturn*> &getRecomputeLog(void)const{return _RecomputeLog;}
     //@}
 
 
@@ -257,7 +260,7 @@ protected:
     /// callback from the Document objects after property was changed
     void onChangedProperty(const DocumentObject *Who, const Property *What);
     /// helper which Recompute only this feature
-    void _recomputeFeature(DocumentObject* Feat);
+    bool _recomputeFeature(DocumentObject* Feat);
 
     // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -279,6 +282,9 @@ protected:
     // Array to preserve the creation order of created objects
     std::vector<DocumentObject*> ObjectArray;
     Base::Persistance* pDocumentHook;
+
+    // recompute log
+    std::vector<App::DocumentObjectExecReturn*> _RecomputeLog;
 
     // pointer to the python class
     Py::Object DocumentPythonObject;

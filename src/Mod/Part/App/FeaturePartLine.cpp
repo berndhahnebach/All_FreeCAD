@@ -60,34 +60,35 @@ App::DocumentObjectExecReturn *Line::execute(void)
   BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
   
   bool ok = false;
+  const char *error;
   switch ( makeEdge.Error() )
   {
   case BRepBuilderAPI_EdgeDone:
     ok = true;
     break; // ok
   case BRepBuilderAPI_PointProjectionFailed:
-    setError("Point projection failed");
+    error = "Point projection failed";
     break;
   case BRepBuilderAPI_ParameterOutOfRange:
-    setError("Parameter out of range");
+    error = "Parameter out of range";
     break;
   case BRepBuilderAPI_DifferentPointsOnClosedCurve:
-    setError("Different points on closed curve");
+    error = "Different points on closed curve";
     break;
   case BRepBuilderAPI_PointWithInfiniteParameter:
-    setError("Point with infinite parameter");
+    error = "Point with infinite parameter";
     break;
   case BRepBuilderAPI_DifferentsPointAndParameter:
-    setError("Different point and parameter");
+    error = "Different point and parameter";
     break;
   case BRepBuilderAPI_LineThroughIdenticPoints:
-    setError("Line through identic points");
+    error = "Line through identic points";
     break;
   }
 
   // Error 
   if ( !ok ) 
-      return App::DocumentObject::StdError;
+      return new App::DocumentObjectExecReturn(error);
 
   TopoDS_Edge edge = makeEdge.Edge();
   setShape(edge);

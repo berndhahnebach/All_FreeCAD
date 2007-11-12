@@ -66,7 +66,7 @@ App::DocumentObjectExecReturn *ImportIges::execute(void)
 #endif
 	}else{
         Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
-        return App::DocumentObject::StdError;
+        return new App::DocumentObjectExecReturn("Unknown Error");
 	}
 
   // just do show the wait cursor when the Gui is up

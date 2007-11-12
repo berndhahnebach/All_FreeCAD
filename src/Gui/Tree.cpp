@@ -456,7 +456,7 @@ void DocumentObjectItem::testStatus()
     return;
 
     QPixmap *px=0;
-    if (pObject->StatusBits.test(0)) {
+    if (pObject->mustExecute()==1) {
         // object has been touched
         //const char *feature_warning_xpm[]={
         //    "7 7 3 1",

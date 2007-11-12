@@ -110,6 +110,8 @@ public:
   virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
   /// get all properties of the class (including properies of the parent)
   virtual void getPropertyList(std::vector<Property*> &List) const;
+  /// set the Status bit of all properties at once
+  void setPropertyStatus(unsigned char bit,bool value);
 
   /// get the Type of a Property
   short getPropertyType(const Property* prop) const 

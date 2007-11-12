@@ -629,30 +629,7 @@ unsigned int Document::getMemSize (void) const
     return size;
 
 }
-// Save the Document under a new Name
-/* Obsolet
-void Document::saveAs (const char* name)
-{
-  Base::FileInfo File(name);
 
-  std::string oldName = Name.getValue();
-  std::string newName = File.fileNamePure();
-
-  // make sure that the new document name is a valid Python specifier
-  newName = GetApplication().getUniqueDocumentName(newName.c_str());
-  Name.setValue(newName);
-  FileName.setValue(File.filePath());
-
-  Document::save();
-
-  GetApplication().renameDocument(oldName.c_str(), Name.getValue());
-
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Rename;
-
-  Notify(DocChange);
-}
-*/
 // Save the document under the name its been opened
 bool Document::save (void)
 {
@@ -796,137 +773,14 @@ vector<DocumentObject*> Document::getTouched(void) const
 }
 
 
-/*
-/// Recompute if the document was  not valid and propagate the reccorded modification.
+
 void Document::recompute()
 {
-  int iSentinel = 20;
-  bool goOn;
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Recompute;
+    // delete recompute log
+    for( std::vector<App::DocumentObjectExecReturn*>::iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
+        delete *it;
+    _RecomputeLog.clear();
 
-//  std::set<DocumentObject*>::iterator i;
-  std::set<AbstractFeature*>::iterator l;
-  std::set<AbstractFeature*> tempErr;
-
-//  TDF_MapIteratorOfLabelMap It;
-  Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",Name.getValue());
-
-  do{
-    goOn = false;
-    tempErr = DocChange.ErrorFeatures;
-
-    std::vector<DocumentObject*>::iterator It;
-
-    for(It = ObjectArray.begin();It != ObjectArray.end();++It)
-    {
-      if( ! ((*It)->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) )
-        continue;
-      AbstractFeature *feat = dynamic_cast<AbstractFeature *>(*It);
-
-      // map the new features
-      if (feat->getStatus() == AbstractFeature::New)
-        DocChange.NewObjects.push_back(feat);
-
-		  if (feat->mustExecute())
-		  {
-        // if a feature change a other (earlier) Feature could be impacted, so go on ...
-        goOn = true;
-
-        _recomputeFeature(feat);
-
-        if(feat->getStatus() == AbstractFeature::Error)
-          DocChange.ErrorFeatures.insert(feat);
-
-        if(feat->getStatus() == AbstractFeature::Valid)
-        {
-          DocChange.UpdatedObjects.insert(feat);
-          DocChange.ErrorFeatures.erase(feat);
-        }
-		  }
-    }
-    // for detecting recursions
-    iSentinel --;
-
-  }while(iSentinel > 0 && goOn && tempErr != DocChange.ErrorFeatures);
-
-  if(iSentinel <= 0)
-    Base::Console().Warning("Document::recompute(): bailing out with to high solver count, possible recursion!\n");
-
-  // remove the new features from the update set, get updated anyway
-  for(std::vector<App::DocumentObject*>::iterator it = DocChange.NewObjects.begin();it!=DocChange.NewObjects.end();++it)
-    DocChange.UpdatedObjects.erase(*it);
-
-  Notify(DocChange);
-
-  // signal new objects
-  for(std::vector<App::DocumentObject*>::iterator it = DocChange.NewObjects.begin();it!=DocChange.NewObjects.end();++it)
-      signalNewObject(**it);
-
-  // signal updated objects
-  for(std::set<App::DocumentObject*>::iterator it = DocChange.UpdatedObjects.begin();it!=DocChange.UpdatedObjects.end();++it)
-      signalChangedObject(**it);
-
-  for(l = DocChange.ErrorFeatures.begin();l!=DocChange.ErrorFeatures.end();++l)
-    Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->getNameInDocument(),(*l)->getErrorString());
-
-  Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
-                      Name.getValue(),
-                      DocChange.NewObjects.size(),
-                      DocChange.UpdatedObjects.size(),
-                      DocChange.ErrorFeatures.size());
-
-}
-// call the recompute of the Feature and handle the exceptions and errors.
-void Document::_recomputeFeature(AbstractFeature* Feat)
-{
-  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
-
-  Feat->status.setValue(AbstractFeature::Recompute);
-  int  succes;
-  try{
-    succes = Feat->execute();
-  }catch(Base::AbortException &e){
-    e.ReportException();
-    succes = 4;
-  }catch(const Base::MemoryException& e){
-    if ( !e.isHandled() )
-      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
-    else
-      Base::Console().Log("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
-    Feat->setError(e.what());
-    succes = 4; // Must not rerun twice
-  }catch(Base::Exception &e){
-    e.ReportException();
-    succes = 3;
-  }catch(std::exception &e){
-    Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->getNameInDocument(),e.what());
-    Feat->setError(e.what());
-    succes = 3;
-  }
-#ifndef FC_DEBUG
-  catch(...){
-    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
-    succes = 3;
-  }
-#endif
-
-  // special error code to avoid to execute a feature twice
-  if (succes == 4){
-    Feat->status.setValue(AbstractFeature::Inactive);
-  }else if(succes > 0){
-    Feat->status.setValue(AbstractFeature::Error);
-  }else {
-    // set the time of change
-    Feat->status.setValue(AbstractFeature::Valid);
-
-    Feat->touchTime.setToActual();
-    Feat->setModified(false);
-  }
-}
-*/
-void Document::recompute()
-{
     DependencyList DepList;
     std::map<DocumentObject*,Vertex> VertexObjectList;
 
@@ -958,22 +812,17 @@ void Document::recompute()
         DocumentObject* Cur = VertexMap[*i];
         std::cout << Cur->getNameInDocument() << " dep on: " ;
 
-        // test if a feature
-        //if (!Cur->isDerivedFrom(AbstractFeature::getClassTypeId()))
-        //    continue;
-
-        // check if one of the dependencies is touched
         bool NeedUpdate = false;
 
-        // Update if the object self is touched
-        if (Cur->StatusBits.test(0))
+        // ask the object if it shut be recomputed
+        if (Cur->mustExecute() == 1)
             NeedUpdate = true;
-        else
+        else if (Cur->mustExecute() == -1)
             // update if one of the dependencies is touched
             for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j) {
                 DocumentObject* Test = VertexMap[target(*j, DepList)];
                 std::cout << Test->getNameInDocument() << ", " ;
-                if (Test->StatusBits.test(0)) {
+                if (Test->isTouched()) {
                     NeedUpdate = true;
                     break;
                 }
@@ -982,18 +831,20 @@ void Document::recompute()
         // if one touched recompute
         if (NeedUpdate) {
             std::cout << "Recompute" << endl;
-            _recomputeFeature(Cur);
+            if(_recomputeFeature(Cur))
+                // if somthing happen break execution of recompute
+                return;
         }
 
     }
     // reset all touched
     for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
-        It1->first->StatusBits.reset(0);
+        It1->first->purgeTouched();
 
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
-void Document::_recomputeFeature(DocumentObject* Feat)
+bool Document::_recomputeFeature(DocumentObject* Feat)
 {
     Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
 
@@ -1001,61 +852,62 @@ void Document::_recomputeFeature(DocumentObject* Feat)
     DocumentObjectExecReturn  *returnCode = 0;
     try {
         returnCode = Feat->execute();
-        //}catch(Base::AbortException &e){
-        //  e.ReportException();
-        //  succes = 4;
+    }catch(Base::AbortException &e){
+        e.ReportException();
+        _RecomputeLog.push_back(new DocumentObjectExecReturn("User abort",Feat));
+        Feat->setError();
+        return true;
     }
     catch (const Base::MemoryException& e) {
         Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getNameInDocument(),e.what());
-        //Feat->setError(e.what());
-        //succes = 4; // Must not rerun twice
+        _RecomputeLog.push_back(new DocumentObjectExecReturn("Out of memory exception",Feat));
+        Feat->setError();
+        return true;
     }
     catch (Base::Exception &e) {
         e.ReportException();
-        //succes = 3;
+        _RecomputeLog.push_back(new DocumentObjectExecReturn(e.what(),Feat));
+        Feat->setError();
+        return false;
     }
     catch (std::exception &e) {
         Base::Console().Warning("exception in Feature \"%s\" thrown: %s\n",Feat->getNameInDocument(),e.what());
-        //Feat->setError(e.what());
-        //succes = 3;
-    }
+        _RecomputeLog.push_back(new DocumentObjectExecReturn(e.what(),Feat));
+        Feat->setError();
+        return false;
+   }
 #ifndef FC_DEBUG
     catch (...) {
         Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
-        //succes = 3;
+        _RecomputeLog.push_back(new DocumentObjectExecReturn("Unknown exeption!"));
+        Feat.setError();
+        return true;
     }
 #endif
 
     // error code
-    if (returnCode != DocumentObject::StdReturn) {
+    if (returnCode == DocumentObject::StdReturn) {
         //Feat->status.setValue(AbstractFeature::Error);
-        Feat->StatusBits.set(1);
+        Feat->resetError();
     }
     else {
-        // set the time of change
-        //Feat->status.setValue(AbstractFeature::Valid);
-        Feat->StatusBits.set(0);
+        returnCode->Which = Feat;
+        _RecomputeLog.push_back(returnCode);
+        Feat->setError();
     }
+    return false;
 }
 
 
 
 void Document::recomputeFeature(AbstractFeature* Feat)
 {
-    //DocChanges DocChange;
-    //DocChange.Why = DocChanges::Recompute;
+     // delete recompute log
+    for( std::vector<App::DocumentObjectExecReturn*>::iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
+        delete *it;
+    _RecomputeLog.clear();
 
     _recomputeFeature(Feat);
-
- /*   if (Feat->getStatus() == AbstractFeature::Error)
-        DocChange.ErrorFeatures.insert(Feat);
-
-    if (Feat->getStatus() == AbstractFeature::Valid)
-        DocChange.UpdatedObjects.insert(Feat);*/
-
-    //signalChangedObject(*Feat);
-    //Notify(DocChange);
-
 }
 
 DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
