@@ -452,6 +452,9 @@ void DocumentObjectItem::testStatus()
         return;
     previousStatus = currentStatus;
 
+    //FIXME: As long as bug #1830509 is not fixed do nothing here!
+    return;
+
     QPixmap *px=0;
     if (pObject->StatusBits.test(0)) {
         // object has been touched
@@ -517,9 +520,9 @@ void DocumentObjectItem::testStatus()
         }
     } else { // visible
         //FIXME: Bug item #1729033, reset to the default text color
-        //this->setTextColor(0, QColor());
         QColor c = this->textColor(0);
         printf("Color: <%d,%d,%d>\n",c.red(),c.green(),c.blue());
+        this->setTextColor(0, QColor());
         int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
         QPixmap icon = viewObject->getIcon().pixmap(w,w);
         if (px) {
