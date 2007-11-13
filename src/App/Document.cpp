@@ -884,12 +884,12 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
         _RecomputeLog.push_back(new DocumentObjectExecReturn(e.what(),Feat));
         Feat->setError();
         return false;
-   }
+    }
 #ifndef FC_DEBUG
     catch (...) {
         Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getNameInDocument());
         _RecomputeLog.push_back(new DocumentObjectExecReturn("Unknown exeption!"));
-        Feat.setError();
+        Feat->setError();
         return true;
     }
 #endif
