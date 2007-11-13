@@ -843,6 +843,14 @@ void Document::recompute()
 
 }
 
+const char *Document::getErrorDescription(App::DocumentObject*Obj)
+{
+    for( std::vector<App::DocumentObjectExecReturn*>::iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
+        if( (**it).Which = Obj)
+            return (**it).Why.c_str();
+    return 0;
+}
+
 // call the recompute of the Feature and handle the exceptions and errors.
 bool Document::_recomputeFeature(DocumentObject* Feat)
 {

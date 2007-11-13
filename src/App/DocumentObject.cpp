@@ -35,7 +35,7 @@ using namespace App;
 
 PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 
-DocumentObjectExecReturn *DocumentObject::StdReturn = new DocumentObjectExecReturn(0,0);
+DocumentObjectExecReturn *DocumentObject::StdReturn = 0;
 
 //===========================================================================
 // DocumentObject
@@ -66,7 +66,7 @@ DocumentObjectExecReturn *DocumentObject::execute(void)
 {
     return DocumentObject::StdReturn;
 }
-unsigned short DocumentObject::mustExecute(void) const
+short DocumentObject::mustExecute(void) const
 {
     return 0;
 }

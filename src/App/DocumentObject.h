@@ -114,7 +114,7 @@ public:
      *  1: recompution needed
      * -1: the document examine all links of this object and if one is touched -> recompute
      */ 
-    virtual unsigned short mustExecute(void) const;
+    virtual short mustExecute(void) const;
 
 
     /// get the status Message
@@ -155,6 +155,7 @@ protected:
     virtual void onChanged(const Property* prop);
 
      /// python object of this class and all descendend
+protected: // attributes
     Py::Object PythonObject;
     /// pointer to the document this object belongs to
     App::Document* _pDoc;
