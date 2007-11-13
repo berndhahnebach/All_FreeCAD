@@ -100,6 +100,6 @@ App::DocumentObjectExecReturn *LineSet::execute(void)
 
   setShape(aCompound);
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 

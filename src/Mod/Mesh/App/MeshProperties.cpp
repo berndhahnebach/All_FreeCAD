@@ -97,6 +97,13 @@ void PropertyCurvatureList::setValue(const CurvatureInfo& lValue)
     hasSetValue();
 }
 
+void PropertyCurvatureList::setValues(const std::vector<CurvatureInfo>& lValues)
+{
+    aboutToSetValue();
+    _lValueList=lValues;
+    hasSetValue();
+}
+
 std::vector<float> PropertyCurvatureList::getCurvature( int mode ) const
 {
     const std::vector<Mesh::CurvatureInfo>& fCurvInfo = getValues();

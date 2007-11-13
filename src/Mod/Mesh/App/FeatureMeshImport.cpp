@@ -41,18 +41,25 @@ PROPERTY_SOURCE(Mesh::Import, Mesh::Feature)
 
 Import::Import(void)
 {
-  ADD_PROPERTY(FileName,(""));
+    ADD_PROPERTY(FileName,(""));
+}
+
+short Import::mustExecute(void) const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Import::execute(void)
 {
-  std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-  MeshInput aReader( *apcKernel );
+    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
+    MeshInput aReader( *apcKernel );
       
-  aReader.LoadAny(FileName.getValue());
-  // Mesh is okay
-  Mesh.setValue(apcKernel.release());
+    aReader.LoadAny(FileName.getValue());
+    // Mesh is okay
+    Mesh.setValue(apcKernel.release());
 
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

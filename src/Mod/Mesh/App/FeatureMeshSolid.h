@@ -48,7 +48,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 
@@ -68,7 +69,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 
@@ -90,7 +92,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 
@@ -113,7 +116,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 
@@ -133,7 +137,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 
@@ -153,7 +158,8 @@ public:
   /** @name methods override Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 };
 

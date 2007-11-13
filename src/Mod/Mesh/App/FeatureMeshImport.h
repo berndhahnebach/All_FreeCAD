@@ -48,7 +48,8 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute(void) const;
   //@}
 };
 

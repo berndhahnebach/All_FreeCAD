@@ -169,7 +169,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -179,7 +179,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -193,7 +193,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -203,13 +203,37 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\InitGui.py"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\PythonQt.py"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -241,7 +265,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -251,7 +275,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>

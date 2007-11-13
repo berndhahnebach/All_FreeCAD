@@ -52,6 +52,13 @@ Sphere::Sphere(void)
   Sampling.setConstraints(&intSampling);
 }
 
+short Sphere::mustExecute() const
+{
+    if (Radius.isTouched() || Sampling.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Sphere::execute(void)
 {
   // load the 'BuildRegularGeoms' module
@@ -96,7 +103,7 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -111,6 +118,15 @@ Ellipsoid::Ellipsoid(void)
   Radius1.setConstraints(&floatRange);
   Radius2.setConstraints(&floatRange);
   Sampling.setConstraints(&intSampling);
+}
+
+short Ellipsoid::mustExecute() const
+{
+    if (Radius1.isTouched() || 
+        Radius2.isTouched() || 
+        Sampling.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Ellipsoid::execute(void)
@@ -177,6 +193,17 @@ Cylinder::Cylinder(void)
   Sampling.setConstraints(&intSampling);
 }
 
+short Cylinder::mustExecute() const
+{
+    if (Radius.isTouched() || 
+        Length.isTouched() ||
+        EdgeLength.isTouched() ||
+        Closed.isTouched() ||
+        Sampling.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
   // load the 'BuildRegularGeoms' module
@@ -222,7 +249,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -242,6 +269,18 @@ Cone::Cone(void)
   Length.setConstraints(&floatRange);
   EdgeLength.setConstraints(&floatRange);
   Sampling.setConstraints(&intSampling);
+}
+
+short Cone::mustExecute() const
+{
+    if (Radius1.isTouched() || 
+        Radius2.isTouched() || 
+        Length.isTouched()  ||
+        EdgeLength.isTouched() ||
+        Closed.isTouched()  ||
+        Sampling.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Cone::execute(void)
@@ -289,7 +328,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -304,6 +343,15 @@ Torus::Torus(void)
   Radius1.setConstraints(&floatRange);
   Radius2.setConstraints(&floatRange);
   Sampling.setConstraints(&intSampling);
+}
+
+short Torus::mustExecute() const
+{
+    if (Radius1.isTouched() || 
+        Radius2.isTouched() || 
+        Sampling.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Torus::execute(void)
@@ -350,7 +398,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -365,6 +413,15 @@ Cube::Cube(void)
   Length.setConstraints(&floatRange);
   Width.setConstraints(&floatRange);
   Height.setConstraints(&floatRange);
+}
+
+short Cube::mustExecute() const
+{
+    if (Length.isTouched() || 
+        Width.isTouched() || 
+        Height.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Cube::execute(void)
@@ -411,5 +468,5 @@ App::DocumentObjectExecReturn *Cube::execute(void)
     throw e;
   }
 
-  return 0;
+  return App::DocumentObject::StdReturn;
 }

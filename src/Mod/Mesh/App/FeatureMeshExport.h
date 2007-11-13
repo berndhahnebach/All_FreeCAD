@@ -47,14 +47,15 @@ public:
     App::PropertyString Format;
     //FIXME: We should have an empty view provider which just does nothing
     //or even allow to have objects with no view provider related.
-    virtual const char* getViewProviderName(void) const {
+    const char* getViewProviderName(void) const {
     return "MeshGui::ViewProviderExport";
     }
 
     /** @name methods override feature */
     //@{
     /// recalculate the Feature
-    virtual App::DocumentObjectExecReturn *execute(void);
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
     //@}
 };
 

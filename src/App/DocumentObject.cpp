@@ -44,8 +44,7 @@ DocumentObjectExecReturn *DocumentObject::StdReturn = 0;
 DocumentObject::DocumentObject(void)
   : _pDoc(0),pcNameInDocument(0)
 {
-    ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_Output,"User name of the object (UTF8)");
-    unsigned long test = sizeof(StatusBits);
+    ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_None,"User name of the object (UTF8)");
 }
 
 DocumentObject::~DocumentObject(void)
@@ -66,6 +65,7 @@ DocumentObjectExecReturn *DocumentObject::execute(void)
 {
     return DocumentObject::StdReturn;
 }
+
 short DocumentObject::mustExecute(void) const
 {
     return 0;
@@ -73,9 +73,11 @@ short DocumentObject::mustExecute(void) const
 
 const char* DocumentObject::getStatusString(void) const
 {
-    if(isError())
-        return "Error";
-    else if(isTouched())
+    if (isError()) {
+        const char* text = getDocument().getErrorDescription(this);
+        return text ? text : "Error";
+    }
+    else if (isTouched())
         return "Touched";
     else
         return "Valid";

@@ -48,52 +48,64 @@ PROPERTY_SOURCE(Mesh::SetOperations, Mesh::Feature)
 
 SetOperations::SetOperations(void)
 {
-  ADD_PROPERTY(Source1  ,(0));
-  ADD_PROPERTY(Source2  ,(0));
-  ADD_PROPERTY(OperationType, ("union"));
+    ADD_PROPERTY(Source1  ,(0));
+    ADD_PROPERTY(Source2  ,(0));
+    ADD_PROPERTY(OperationType, ("union"));
+}
+
+short SetOperations::mustExecute() const
+{
+    if (Source1.getValue() && Source2.getValue()) {
+        if (Source1.isTouched())
+            return 1;
+        if (Source2.isTouched())
+            return 1;
+        if (OperationType.isTouched())
+            return 1;
+    }
+
+    return 0;
 }
 
 App::DocumentObjectExecReturn *SetOperations::execute(void)
 {
-  Mesh::Feature *mesh1  = dynamic_cast<Mesh::Feature*>(Source1.getValue());
-  Mesh::Feature *mesh2  = dynamic_cast<Mesh::Feature*>(Source2.getValue());
+    Mesh::Feature *mesh1  = dynamic_cast<Mesh::Feature*>(Source1.getValue());
+    Mesh::Feature *mesh2  = dynamic_cast<Mesh::Feature*>(Source2.getValue());
 
-  if ((mesh1 != NULL) && (mesh2 != NULL))
-  {
-    const MeshCore::MeshKernel& meshKernel1 = mesh1->Mesh.getValue();
-    const MeshCore::MeshKernel& meshKernel2 = mesh2->Mesh.getValue();
+    if ((mesh1 != NULL) && (mesh2 != NULL)) {
+        const MeshCore::MeshKernel& meshKernel1 = mesh1->Mesh.getValue();
+        const MeshCore::MeshKernel& meshKernel2 = mesh2->Mesh.getValue();
 
-    MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(); // Result Meshkernel
+        MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(); // Result Meshkernel
 
-    MeshCore::SetOperations::OperationType type;
-    string ot(OperationType.getValue());
-    if (ot == "union")
-      type = MeshCore::SetOperations::Union;
-    else if (ot == "intersection")
-      type = MeshCore::SetOperations::Intersect;
-    else if (ot == "difference")
-      type = MeshCore::SetOperations::Difference;
-    else if (ot == "inner")
-      type = MeshCore::SetOperations::Inner;
-    else if (ot == "outer")
-      type = MeshCore::SetOperations::Outer;
-    else
-      throw new Base::Exception("Operation type must either be 'union' or 'intersection'"
-                                " or 'difference' or 'inner' or 'outer'");
+        MeshCore::SetOperations::OperationType type;
+        string ot(OperationType.getValue());
+        if (ot == "union")
+            type = MeshCore::SetOperations::Union;
+        else if (ot == "intersection")
+            type = MeshCore::SetOperations::Intersect;
+        else if (ot == "difference")
+            type = MeshCore::SetOperations::Difference;
+        else if (ot == "inner")
+            type = MeshCore::SetOperations::Inner;
+        else if (ot == "outer")
+            type = MeshCore::SetOperations::Outer;
+        else
+            throw new Base::Exception("Operation type must either be 'union' or 'intersection'"
+                                      " or 'difference' or 'inner' or 'outer'");
     
-    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
-    setOp.Do();
-    Mesh.setValue(pcKernel);
-  }
-  else
-  { 
-    // Error mesh property
-    if (!mesh1)
-      throw new Base::Exception("First input mesh not set");
-    if (!mesh2)
-      throw new Base::Exception("Second input mesh not set");
-  }
+        MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
+        setOp.Do();
+        Mesh.setValue(pcKernel);
+    }
+    else { 
+        // Error mesh property
+        if (!mesh1)
+            throw new Base::Exception("First input mesh not set");
+        if (!mesh2)
+            throw new Base::Exception("Second input mesh not set");
+    }
 
-  return 0;
+    return App::DocumentObject::StdReturn;
 }
 

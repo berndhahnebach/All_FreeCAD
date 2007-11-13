@@ -42,20 +42,21 @@ namespace Mesh
  */
 class SetOperations : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::SetOperations);
+    PROPERTY_HEADER(Mesh::SetOperations);
 
 public:
-  SetOperations();
+    SetOperations();
 
-  App::PropertyLink   Source1;
-  App::PropertyLink   Source2;
-  App::PropertyString OperationType;
+    App::PropertyLink   Source1;
+    App::PropertyLink   Source2;
+    App::PropertyString OperationType;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 }
