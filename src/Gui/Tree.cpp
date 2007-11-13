@@ -496,8 +496,19 @@ void DocumentObjectItem::testStatus()
     int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
     QPixmap icon = viewObject->getIcon().pixmap(w,w);
     if (currentStatus & 1) { // visible
-        //FIXME: Bug item #1729033, reset to the default text color
-        this->setTextColor(0, QColor());
+        // Note: By default the foreground, i.e. text color is invalid
+        // to make use of the default color of the tree widget's palette.
+        // If we temporarily set this color to gray and reset to an invalid
+        // color again we cannot do it with setTextColor() or setForeground(), 
+        // respectively, because for any reason the color would always switch 
+        // to black which will lead to unreadable text if the system background 
+        // hss already a dark color.
+        // However, it works if we set the appropriate role to an empty QVariant().  
+#if QT_VERSION >= 0x040200
+        this->setData(0, Qt::ForegroundRole,QVariant());
+#else
+        this->setData(0, Qt::TextColorRole,QVariant());
+#endif
     } else { // invisible
         this->setTextColor(0, Qt::gray);
         icon = BitmapFactory().disabled(icon);
