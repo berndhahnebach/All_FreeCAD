@@ -41,65 +41,72 @@ PROPERTY_SOURCE(Part::LineSet, Part::Feature)
 
 LineSet::LineSet()
 {
-  ADD_PROPERTY(Lines,(Line3f()));
+    ADD_PROPERTY(Lines,(Line3f()));
 }
 
 LineSet::~LineSet()
 {
 }
 
+short LineSet::mustExecute() const
+{
+    if (Lines.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *LineSet::execute(void)
 {
-  TopoDS_Compound aCompound;
-  BRep_Builder aBuilder;
-  aBuilder.MakeCompound(aCompound);
+    TopoDS_Compound aCompound;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound(aCompound);
 
-  const std::vector<Line3f>& lines = Lines.getValues();
+    const std::vector<Line3f>& lines = Lines.getValues();
 
-  for (std::vector<Line3f>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
-    // Convert into OCC representation
-    gp_Pnt pnt1(it->b.x, it->b.y, it->b.z);
-    gp_Pnt pnt2(it->e.x, it->e.y, it->e.z);
+    for (std::vector<Line3f>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
+        // Convert into OCC representation
+        gp_Pnt pnt1(it->b.x, it->b.y, it->b.z);
+        gp_Pnt pnt2(it->e.x, it->e.y, it->e.z);
 
-    // Create directly the underlying line geometry
-    BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
-    bool ok = false;
-    switch ( makeEdge.Error() )
-    {
-    case BRepBuilderAPI_EdgeDone:
-      ok = true;
-      break; // ok
-    case BRepBuilderAPI_PointProjectionFailed:
-      setError("Point projection failed");
-      break;
-    case BRepBuilderAPI_ParameterOutOfRange:
-      setError("Parameter out of range");
-      break;
-    case BRepBuilderAPI_DifferentPointsOnClosedCurve:
-      setError("Different points on closed curve");
-      break;
-    case BRepBuilderAPI_PointWithInfiniteParameter:
-      setError("Point with infinite parameter");
-      break;
-    case BRepBuilderAPI_DifferentsPointAndParameter:
-      setError("Different point and parameter");
-      break;
-    case BRepBuilderAPI_LineThroughIdenticPoints:
-      setError("Line through identic points");
-      break;
+        // Create directly the underlying line geometry
+        BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
+        bool ok = false;
+        const char* error=0;
+        switch ( makeEdge.Error() )
+        {
+        case BRepBuilderAPI_EdgeDone:
+            ok = true;
+            break; // ok
+        case BRepBuilderAPI_PointProjectionFailed:
+            error = "Point projection failed";
+            break;
+        case BRepBuilderAPI_ParameterOutOfRange:
+            error = "Parameter out of range";
+            break;
+        case BRepBuilderAPI_DifferentPointsOnClosedCurve:
+            error = "Different points on closed curve";
+            break;
+        case BRepBuilderAPI_PointWithInfiniteParameter:
+            error = "Point with infinite parameter";
+            break;
+        case BRepBuilderAPI_DifferentsPointAndParameter:
+            error = "Different point and parameter";
+            break;
+        case BRepBuilderAPI_LineThroughIdenticPoints:
+            error = "Line through identic points";
+            break;
+        }
+
+        // Error 
+        if (!ok) return new App::DocumentObjectExecReturn(error);
+    
+        // add created edge to the compound
+        TopoDS_Edge edge = makeEdge.Edge();
+        aBuilder.Add(aCompound, edge);
     }
 
-    // Error 
-    if ( !ok ) 
-        return new App::DocumentObjectExecReturn("Unknown Error");
-    
-    // add created edge to the compound
-    TopoDS_Edge edge = makeEdge.Edge();
-    aBuilder.Add(aCompound, edge);
-  }
+    setShape(aCompound);
 
-  setShape(aCompound);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

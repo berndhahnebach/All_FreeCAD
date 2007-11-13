@@ -39,14 +39,25 @@ PROPERTY_SOURCE(Part::Box, Part::Feature)
 
 Box::Box()
 {
-  ADD_PROPERTY(x,(0.0));
-  ADD_PROPERTY(y,(0.0));
-  ADD_PROPERTY(z,(0.0));
-  ADD_PROPERTY(l,(100.0));
-  ADD_PROPERTY(h,(100.0));
-  ADD_PROPERTY(w,(100.0));
+    ADD_PROPERTY(x,(0.0));
+    ADD_PROPERTY(y,(0.0));
+    ADD_PROPERTY(z,(0.0));
+    ADD_PROPERTY(l,(100.0));
+    ADD_PROPERTY(h,(100.0));
+    ADD_PROPERTY(w,(100.0));
 }
 
+short Box::mustExecute() const
+{
+    if (x.isTouched() ||
+        y.isTouched() ||
+        z.isTouched() ||
+        l.isTouched() ||
+        h.isTouched() ||
+        w.isTouched() )
+        return 1;
+    return 0;
+}
 
 App::DocumentObjectExecReturn *Box::execute(void)
 {
@@ -61,19 +72,15 @@ App::DocumentObjectExecReturn *Box::execute(void)
         return new App::DocumentObjectExecReturn("Length of L too small");
 
     if ( H < gp::Resolution() ) 
-      return new App::DocumentObjectExecReturn("Height of H too small");
+        return new App::DocumentObjectExecReturn("Height of H too small");
 
     if ( W < gp::Resolution() ) 
       return new App::DocumentObjectExecReturn("Width of W too small");
 
     // Build a box using the dimension and position attributes
     BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
-
     TopoDS_Shape ResultShape = mkBox.Shape();
-
-
-	setShape(ResultShape);
-
+    setShape(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }

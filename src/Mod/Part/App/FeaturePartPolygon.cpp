@@ -39,32 +39,39 @@ PROPERTY_SOURCE(Part::Polygon, Part::Feature)
 
 Polygon::Polygon()
 {
-  ADD_PROPERTY(Nodes,(Base::Vector3f()));
-  ADD_PROPERTY(Close,(false));
+    ADD_PROPERTY(Nodes,(Base::Vector3f()));
+    ADD_PROPERTY(Close,(false));
 }
 
 Polygon::~Polygon()
 {
 }
 
+short Polygon::mustExecute() const
+{
+    if (Nodes.isTouched() || Close.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Polygon::execute(void)
 {
-  BRepBuilderAPI_MakePolygon poly;
-  const std::vector<Base::Vector3f> nodes = Nodes.getValues();
+    BRepBuilderAPI_MakePolygon poly;
+    const std::vector<Base::Vector3f> nodes = Nodes.getValues();
 
-  for ( std::vector<Base::Vector3f>::const_iterator it = nodes.begin(); it != nodes.end(); ++it ) {
-    gp_Pnt pnt(it->x, it->y, it->z);
-    poly.Add(pnt);
-  }
+    for (std::vector<Base::Vector3f>::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
+        gp_Pnt pnt(it->x, it->y, it->z);
+        poly.Add(pnt);
+    }
 
-  if ( Close.getValue() )
-    poly.Close();
+    if (Close.getValue())
+        poly.Close();
 
-  if (!poly.IsDone())
-    throw Base::Exception("Cannot create polygon because less than two vetices are given");
-  TopoDS_Wire wire = poly.Wire();
-  setShape(wire);
+    if (!poly.IsDone())
+        throw Base::Exception("Cannot create polygon because less than two vetices are given");
+    TopoDS_Wire wire = poly.Wire();
+    setShape(wire);
 
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

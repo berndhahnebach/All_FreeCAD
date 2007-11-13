@@ -38,22 +38,31 @@ PROPERTY_SOURCE(Part::Circle, Part::Feature)
 
 Circle::Circle()
 {
-  ADD_PROPERTY(Angle0,(0.0f));
-  ADD_PROPERTY(Angle1,(2*F_PI));
-  ADD_PROPERTY(Circ,(gp_Circ()));
+    ADD_PROPERTY(Angle0,(0.0f));
+    ADD_PROPERTY(Angle1,(2*F_PI));
+    ADD_PROPERTY(Circ,(gp_Circ()));
 }
 
 Circle::~Circle()
 {
 }
 
+short Circle::mustExecute() const
+{
+    if (Angle0.isTouched() ||
+        Angle1.isTouched() ||
+        Circ.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Circle::execute(void)
 {
-  Handle_Geom_Circle hCircle = new Geom_Circle (Circ.getValue());
-  BRepBuilderAPI_MakeEdge clMakeEdge(hCircle, this->Angle0.getValue(), this->Angle1.getValue());
-  TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
-  setShape(edge);
+    Handle_Geom_Circle hCircle = new Geom_Circle (Circ.getValue());
+    BRepBuilderAPI_MakeEdge clMakeEdge(hCircle, this->Angle0.getValue(), this->Angle1.getValue());
+    TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
+    setShape(edge);
 
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

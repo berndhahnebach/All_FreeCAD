@@ -33,21 +33,22 @@ namespace Part
 
 class Circle : public Part::Feature
 {
-  PROPERTY_HEADER(Part::Circle);
+    PROPERTY_HEADER(Part::Circle);
 
 public:
-  Circle();
-  virtual ~Circle();
+    Circle();
+    virtual ~Circle();
 
-  App::PropertyAngle Angle0;
-  App::PropertyAngle Angle1;
-  PropertyCircle Circ;
+    App::PropertyAngle Angle0;
+    App::PropertyAngle Angle1;
+    PropertyCircle Circ;
 
-  /** @name methods override feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 } //namespace Part

@@ -44,9 +44,10 @@ public:
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
+  App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
+  const char* getViewProviderName(void) const {
     return "PartGui::ViewProviderImport";
   }
   //@}

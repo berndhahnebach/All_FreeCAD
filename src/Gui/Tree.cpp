@@ -50,6 +50,7 @@
 using namespace Gui;
 
 QPixmap* TreeDockWidget::documentPixmap = 0;
+const int TreeWidget::ObjectType = 1000;
 
 TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
   : DockWindow(pcDocument,parent), fromOutside(false)
@@ -152,7 +153,7 @@ void TreeDockWidget::onTestStatus(void)
 void TreeDockWidget::onItemEntered(QTreeWidgetItem * item)
 {
     // object item selected
-    if ( item && item->type() == QTreeWidgetItem::UserType + 1 ) {
+    if ( item && item->type() == TreeWidget::ObjectType ) {
         DocumentObjectItem* obj = static_cast<DocumentObjectItem*>(item);
         obj->displayStatusInfo();
     }
@@ -429,7 +430,7 @@ void DocumentItem::updateSelection(void)
 // ----------------------------------------------------------------------------
 
 DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewProvider, QTreeWidgetItem* parent)
-    : QTreeWidgetItem( parent ), previousStatus(-1), viewObject(pcViewProvider)
+    : QTreeWidgetItem(parent, TreeWidget::ObjectType), previousStatus(-1), viewObject(pcViewProvider)
 {
 }
 

@@ -34,19 +34,20 @@ namespace Part
 
 class LineSet : public Part::Feature
 {
-  PROPERTY_HEADER(Part::LineSet);
+    PROPERTY_HEADER(Part::LineSet);
 
 public:
-  LineSet();
-  virtual ~LineSet();
+    LineSet();
+    virtual ~LineSet();
 
-  PropertyLineSet Lines;
+    PropertyLineSet Lines;
 
-  /** @name methods override feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 } //namespace Part
