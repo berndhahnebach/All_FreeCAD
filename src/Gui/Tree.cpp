@@ -540,7 +540,7 @@ void DocumentObjectItem::displayStatusInfo()
     App::DocumentObject* Obj = viewObject->getObject();
 
     QString info = Obj->getStatusString();
-    if ( Obj->mustExecute() )
+    if ( Obj->mustExecute() == 1 )
         info += QString(" (but must be executed)");
     getMainWindow()->statusBar()->showMessage( info );
    

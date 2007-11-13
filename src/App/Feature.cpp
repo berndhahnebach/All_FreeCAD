@@ -88,18 +88,17 @@ void AbstractFeature::onChanged(const Property* prop)
     //touchPropertyTime.setToActual();
 }
 
-bool AbstractFeature::mustExecute(void)
+short AbstractFeature::mustExecute(void)
 {
     // If the object's label is modified:
     if (getStatus() != Valid && getStatus()!= Inactive)
-        return true;
-
+        return 1;
     //FIXME: The setModified() method is a workaround for the problems with the time stamp.
     //E.g. when a property has changed then the feature itself has changed. If the recomputation takes place
     //immediately and is finished very fast then it could happen that the OS returns the same time stamp for both
     //events. And the other way round a property has changed immediately after a recomputation of the feature.
     //In both cases the time stamp doesn't work as expected. Using a boolean instead solves the problem.
-    return _execute;
+    return 0;
 //  if ( touchTime <= touchPropertyTime )
 //    return true;
 //
