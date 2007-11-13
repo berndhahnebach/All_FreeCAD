@@ -91,6 +91,7 @@ public:
   int getSize(void) const {return _lValueList.size();}   
   std::vector<float> getCurvature( int tMode) const;
   void setValue(const CurvatureInfo&);
+  void setValues(const std::vector<CurvatureInfo>&);
   
   /// index operator
   const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 

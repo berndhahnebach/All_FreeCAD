@@ -47,10 +47,23 @@ Export::Export(void)
     ADD_PROPERTY(Format  ,(""));
 }
 
+short Export::mustExecute() const
+{
+    if (Source.getValue()) {
+        if (Source.isTouched())
+            return 1;
+        if (FileName.isTouched())
+            return 1;
+        if (Format.isTouched())
+            return 1;
+    }
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Export::execute(void)
 {
     Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue());
-    if(!pcFeat || pcFeat->getStatus() != Valid) {
+    if(!pcFeat || pcFeat->isError()) {
         return new App::DocumentObjectExecReturn("Cannot export invalid mesh feature");
     }
 

@@ -843,11 +843,11 @@ void Document::recompute()
 
 }
 
-const char *Document::getErrorDescription(App::DocumentObject*Obj)
+const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
 {
-    for( std::vector<App::DocumentObjectExecReturn*>::iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
-        if( (**it).Which = Obj)
-            return (**it).Why.c_str();
+    for (std::vector<App::DocumentObjectExecReturn*>::const_iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
+        if ((*it)->Which == Obj)
+            return (*it)->Why.c_str();
     return 0;
 }
 
@@ -860,7 +860,8 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
     DocumentObjectExecReturn  *returnCode = 0;
     try {
         returnCode = Feat->execute();
-    }catch(Base::AbortException &e){
+    }
+    catch(Base::AbortException &e){
         e.ReportException();
         _RecomputeLog.push_back(new DocumentObjectExecReturn("User abort",Feat));
         Feat->setError();

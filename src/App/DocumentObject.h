@@ -109,7 +109,7 @@ public:
     /** mustExecute
      *  We call this method to check if the object was modified to
      *  be invoked. If the object label or an argument is modified.
-     *  If we must recompute the object - to call the method Execute().
+     *  If we must recompute the object - to call the method execute().
      *  0: no recompution is needed
      *  1: recompution needed
      * -1: the document examine all links of this object and if one is touched -> recompute
@@ -136,14 +136,14 @@ public:
 
     static DocumentObjectExecReturn *StdReturn;
 
-    /** status bits of the document object
-      * the first 8 bits are used for the base system
-      * the rest can be used in descendend classes to 
-      * to mark special stati on the objects
-      */   
-    std::bitset<32> StatusBits;
-
 protected:
+
+    /** status bits of the document object
+     * the first 8 bits are used for the base system
+     * the rest can be used in descendend classes to 
+     * to mark special stati on the objects
+     */
+    std::bitset<32> StatusBits;
 
     void setError(void){StatusBits.set(1);}
     void resetError(void){StatusBits.reset(1);}

@@ -380,13 +380,8 @@ void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
             Base::Console().Error("Cannot update representation for '%s'.\n", Obj.getNameInDocument());
         }
 
-        // The call of setActiveMode() must be delayed to wait until the associated
-        // document object is fully built, otherwise we run into strange effects
-        if (Obj.StatusBits.test(2)) {
-            Obj.StatusBits.reset(2);
-            if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
-                static_cast<ViewProviderDocumentObject*>(viewProvider)->setActiveMode();
-        }
+        if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+            static_cast<ViewProviderDocumentObject*>(viewProvider)->setActiveMode();
 
         if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
             signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));

@@ -42,8 +42,8 @@ namespace Gui {
   class View3DInventorViewer;
 }
 
-namespace App {
-  class Feature;
+namespace Mesh {
+  class PropertyCurvatureList;
 }
 
 namespace MeshGui {
@@ -87,7 +87,7 @@ protected:
   void setVertexCurvatureMode(int mode);
 
 private:
-  void init(App::DocumentObject *pcFeat);
+  void init(const Mesh::PropertyCurvatureList *prop);
 
 protected:
   SoMaterial       * pcColorMat;

@@ -35,14 +35,18 @@ Py::List DocumentObjectPy::getState(void) const
 {
     DocumentObject* object = this->getDocumentObjectObject();
     Py::List list;
-    if (object->isTouched())
+    bool uptodate = true;
+    if (object->isTouched()) {
+        uptodate = false;
         list.append(Py::String("Touched"));
-    //if (object->StatusBits.test(1))
-    //    list.append(Py::String("Invalid"));
-    //if (object->StatusBits.test(2))
-    //    list.append(Py::String("New"));
-    //if (object->StatusBits.to_ulong() == 0)
-    //    list.append(Py::String("Up-to-date"));
+    }
+    if (object->isError()) {
+        uptodate = false;
+        list.append(Py::String("Invalid"));
+    }
+    if (uptodate) {
+        list.append(Py::String("Up-to-date"));
+    }
     return list;
 }
 

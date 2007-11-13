@@ -47,14 +47,21 @@ PROPERTY_SOURCE(Mesh::Curvature, App::AbstractFeature)
 
 Curvature::Curvature(void)
 {
-  ADD_PROPERTY(Source,(0));
-  ADD_PROPERTY(CurvInfo, (CurvatureInfo()));
+    ADD_PROPERTY(Source,(0));
+    ADD_PROPERTY(CurvInfo, (CurvatureInfo()));
+}
+
+short Curvature::mustExecute() const
+{
+    if (Source.isTouched() || CurvInfo.isTouched())
+        return 1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Curvature::execute(void)
 {
     Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue());
-    if(!pcFeat || pcFeat->getStatus() != Valid) {
+    if(!pcFeat || pcFeat->isError()) {
         return new App::DocumentObjectExecReturn("No mesh object attached.");
     }
  
@@ -85,15 +92,17 @@ App::DocumentObjectExecReturn *Curvature::execute(void)
     const float* aMaxCurv = meshCurv.GetMaxCurvatures();
     const float* aMinCurv = meshCurv.GetMinCurvatures();
 
-    CurvInfo.setSize(rMesh.CountPoints());
+    std::vector<CurvatureInfo> values(rMesh.CountPoints());
     for ( unsigned long i=0; i<rMesh.CountPoints(); i++ ) {
         CurvatureInfo ci;
         ci.cMaxCurvDir = Base::Vector3f( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
         ci.cMinCurvDir = Base::Vector3f( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
         ci.fMaxCurvature = aMaxCurv[i];
         ci.fMinCurvature = aMinCurv[i];
-        CurvInfo.set1Value(i, ci);
+        values[i] = ci;
     }
+
+    CurvInfo.setValues(values);
 
     return App::DocumentObject::StdReturn;
 }

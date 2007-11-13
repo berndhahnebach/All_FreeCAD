@@ -447,92 +447,67 @@ void DocumentObjectItem::testStatus()
     App::DocumentObject* pObject = viewObject->getObject();
 
     // if status has changed then continue
-    int currentStatus = (((int)(pObject->StatusBits.to_ulong())) << 1) | (viewObject->isShow()?1:0);
+    int currentStatus = 
+        ((pObject->isError()          ? 1 : 0) << 2) |
+        ((pObject->mustExecute() == 1 ? 1 : 0) << 1) |
+        (viewObject->isShow()         ? 1 : 0);
     if (previousStatus == currentStatus)
         return;
     previousStatus = currentStatus;
 
-    //FIXME: As long as bug #1830509 is not fixed do nothing here!
-    return;
-
-    QPixmap *px=0;
-    if (pObject->mustExecute()==1) {
-        // object has been touched
-        //const char *feature_warning_xpm[]={
-        //    "7 7 3 1",
-        //    ". c None",
-        //    "a c #000000",
-        //    "# c #c8c800",
-        //    "...#...",
-        //    "..#a...",
-        //    "..#a#..",
-        //    ".##a#..",
-        //    ".##a##.",
-        //    "######.",
-        //    "###a###"};
-        //px = new QPixmap(feature_warning_xpm);
-        const char *feature_recompute_xpm[]={
-            "7 7 3 1",
-            ". c None",
-            "# c #ffffff",
-            "a c #0000ff",
-            "..#aa..",
-            ".##aa#.",
-            "###aa##",
-            "###aa##",
-            "#######",
-            ".##aa#.",
-            "..#aa.."};
-        px = new QPixmap(feature_recompute_xpm);
-        this->setTextColor(0, Qt::red);
-    } else if (pObject->StatusBits.test(1)) {
+    QPixmap px;
+    if (currentStatus & 4) {
         // object is in error state
-        const char *feature_error_xpm[]={
-            "7 7 3 1",
+        static const char * const feature_error_xpm[]={
+            "9 9 3 1",
             ". c None",
             "# c #ff0000",
             "a c #ffffff",
-            "..#aa..",
-            ".##aa#.",
-            "###aa##",
-            "###aa##",
-            "#######",
-            ".##aa#.",
-            "..#aa.."};
-        px = new QPixmap(feature_error_xpm);
-        this->setTextColor(0, Qt::red);
-    } else if (pObject->StatusBits.test(2)) {
-        // object is new
-        this->setTextColor(0, Qt::blue);
-    } else {
-        // object is valid
+            "...###...",
+            ".##aaa##.",
+            ".##aaa##.",
+            "###aaa###",
+            "###aaa###",
+            "#########",
+            ".##aaa##.",
+            ".##aaa##.",
+            "...###..."};
+        px = QPixmap(feature_error_xpm);
+    } else if (currentStatus & 2) {
+        // object must be recomputed
+        static const char * const feature_recompute_xpm[]={
+            "9 9 3 1",
+            ". c None",
+            "# c #0000ff",
+            "a c #ffffff",
+            "...###...",
+            ".######aa",
+            ".#####aa.",
+            "#####aa##",
+            "#aa#aa###",
+            "#aaaa####",
+            ".#aa####.",
+            ".#######.",
+            "...###..."};
+        px = QPixmap(feature_recompute_xpm);
     }
 
-    if (!viewObject->isShow()) {
-        this->setTextColor(0, Qt::gray);
-        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
-        QPixmap icon = viewObject->getIcon().pixmap(w,w);
-        QPixmap hidden = BitmapFactory().disabled(icon);
-        if (px) {
-            this->setIcon(0, BitmapFactory().merge(hidden,*px,false));
-        } else {
-            this->setIcon(0, hidden);
-        }
-    } else { // visible
+    int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+    QPixmap icon = viewObject->getIcon().pixmap(w,w);
+    if (currentStatus & 1) { // visible
         //FIXME: Bug item #1729033, reset to the default text color
-        QColor c = this->textColor(0);
-        printf("Color: <%d,%d,%d>\n",c.red(),c.green(),c.blue());
         this->setTextColor(0, QColor());
-        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
-        QPixmap icon = viewObject->getIcon().pixmap(w,w);
-        if (px) {
-            this->setIcon(0, BitmapFactory().merge(icon,*px,false));
-        } else {
-            this->setIcon(0, viewObject->getIcon());
-        }
+    } else { // invisible
+        this->setTextColor(0, Qt::gray);
+        icon = BitmapFactory().disabled(icon);
     }
 
-    delete px;
+    // if needed show small pixmap inside
+    if (!px.isNull()) {
+        this->setIcon(0, BitmapFactory().merge(icon,px,BitmapFactoryInst::TopRight));
+    } else {
+        this->setIcon(0, icon);
+    }
 }
 
 void DocumentObjectItem::displayStatusInfo()
