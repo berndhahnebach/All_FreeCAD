@@ -44,8 +44,12 @@ Cut::Cut(void)
 
 short Cut::mustExecute() const
 {
-    if (Base.getValue() && Tool.getValue())
-        return -1;
+    if (Base.getValue() && Tool.getValue()) {
+        if (Base.isTouched())
+            return 1;
+        if (Tool.isTouched())
+            return 1;
+    }
     return 0;
 }
 
