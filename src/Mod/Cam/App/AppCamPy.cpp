@@ -22,13 +22,11 @@
  
 #include "PreCompiled.h"
 
-#include <stdio.h>
-
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
 # endif // (re-)defined in pyconfig.h
-#include <Python.h>
 
+//Basic Stuff
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
@@ -38,22 +36,24 @@
 #include <App/Document.h>
 
 
-// Things from the part module
+//Part Stuff
 #include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
 
-// Things from the Mesh module
+//Mesh Stuff
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
+#include <Mod/Mesh/App/Core/Builder.h>
 #include <Mod/Mesh/App/MeshPy.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
 
-
+//OCC Stuff
+#include <Poly_Triangulation.hxx>
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Section.hxx>
@@ -61,63 +61,23 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <GeomAPI_IntSS.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepAdaptor_CompCurve.hxx>
-
-#include <Geom_BSplineSurface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
-#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <BRepMesh.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include <IntCurveSurface_HInter.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <Approx_Curve3d.hxx>
-#include <Bnd_Box.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <GeomLProp_SLProps.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <BRepOffset.hxx>
-#include <BRepOffsetAPI_MakeOffsetShape.hxx>
-#include <BRepAlgo_Section.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
-//#include <Handle_Adaptor3d_GenHCurve.hxx>
-//#include <Handle_Adaptor3d_GenHSurface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Handle_Geom_Plane.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
+#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <GProp_PrincipalProps.hxx>
+
+//Own Stuff
 #include "Approx.h"
 #include "ConvertDyna.h"
-#include "WireExplorer.h"
 #include "cutting_tools.h"
-#include "path_simulate.h"
 #include "best_fit.h"
-#include "BRepAdaptor_CompCurve2.h"
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <IntCurvesFace_ShapeIntersector.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepGProp.hxx>
-#include <GProp_PrincipalProps.hxx>
-#include <gp_Mat.hxx> 
+
+
 
 
 

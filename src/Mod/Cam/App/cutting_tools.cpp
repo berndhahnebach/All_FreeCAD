@@ -1,65 +1,50 @@
-#include "PreCompiled.h"
-#include "cutting_tools.h"
+/***************************************************************************
+ *   Copyright (c) 2007                                                    *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
-#include <BRepOffsetAPI_MakeOffsetShape.hxx>
-#include <IntCurvesFace_ShapeIntersector.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Section.hxx>
-#include <BRepBndLib.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
+#include "PreCompiled.h"
+
+//Mesh Stuff
+#include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
+#include <Mod/Mesh/App/MeshPy.h>
+#include <Mod/Mesh/App/Mesh.h>
+#include <Mod/Mesh/App/MeshAlgos.h>
+#include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/App/Core/Grid.h>
+
+//OCC Stuff
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <GeomAPI_IntSS.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepAdaptor_CompCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
-#include <IntCurveSurface_IntersectionPoint.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <IntCurveSurface_HInter.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <Approx_Curve3d.hxx>
-#include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <GeomAPI_PointsToBSpline.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <GeomLProp_SLProps.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <BRepOffset.hxx>
-#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
-#include <BRepTools_WireExplorer.hxx>
 #include <GProp_GProps.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGProp.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Handle_Geom_Plane.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
-#include "WireExplorer.h"
-#include "BRepAdaptor_CompCurve2.h"
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <Base/Builder3D.h>
+
+//Own Stuff
+#include "cutting_tools.h"
 #include "best_fit.h"
-#include "Edgesort.h"
-#include <BRepBuilderAPI_Sewing.hxx>
+
+
 
 cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
         : m_Shape(aShape),
@@ -86,6 +71,7 @@ cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortoboth
 	//Everything should be initialised now
 	
 }
+
 
 cutting_tools::~cutting_tools()
 {

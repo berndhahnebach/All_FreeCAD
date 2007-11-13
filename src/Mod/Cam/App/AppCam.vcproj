@@ -115,7 +115,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;xcopy    /y    /f    Debug\Cam_d.lib    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;"
+				CommandLine="xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -217,7 +217,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;xcopy    /y    /f    Release\Cam.lib    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;"
+				CommandLine="xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Cam\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -225,26 +225,8 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="AppCam.cpp"
+			RelativePath=".\AppCam.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="AppCamPy.cpp"
