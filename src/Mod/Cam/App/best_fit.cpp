@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *	 Human Rezai <human@mytum.de>                                    * 
+ *	 Human Rezai <human@mytum.de>										   * 
  *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
@@ -25,6 +25,36 @@
 
 
 #include "PreCompiled.h"
+
+
+//Basic Stuff
+#include <Base/Builder3D.h>
+
+
+
+//Mesh Stuff
+#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
+#include <Mod/Mesh/App/MeshAlgos.h>
+#include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/App/Core/Grid.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/Builder.h>
+
+//OCC Stuff
+#include <BRep_Tool.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <BRepMesh.hxx>
+#include <Poly_Triangulation.hxx>
+
+//WM4 Stuff
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
+
+//Own Stuff
 #include "best_fit.h"
 
 
