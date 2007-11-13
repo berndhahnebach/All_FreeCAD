@@ -302,7 +302,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
         //Base::Builder3D log3D;
 		cutting_tools anewCuttingEnv(pcShape->getShape());
 		anewCuttingEnv.arrangecuts_ZLEVEL();
-		anewCuttingEnv.OffsetWires_Standard(10.0);
+//		anewCuttingEnv.OffsetWires_Standard(10.0);
 		//std::vector<Handle_Geom_BSplineCurve> topCurves;
 		//std::vector<Handle_Geom_BSplineCurve> botCurves;
 		//std::vector<Handle_Geom_BSplineCurve>::iterator an_it;

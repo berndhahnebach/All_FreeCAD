@@ -316,6 +316,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\edgesort.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\edgesort.h"
+			>
+		</File>
+		<File
 			RelativePath=".\path_simulate.cpp"
 			>
 		</File>

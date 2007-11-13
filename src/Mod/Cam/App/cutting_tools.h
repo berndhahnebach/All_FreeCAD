@@ -19,6 +19,8 @@
 #include <Mod/Mesh/App/MeshPy.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
+#include "edgesort.h"
+#include "stuff.h"
 
 
 class cutting_tools
@@ -29,7 +31,7 @@ public:
 	
 	TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
 	double GetWireLength(TopoDS_Wire &aWire);
-	bool OffsetWires_Standard(float radius);
+	//bool OffsetWires_Standard(float radius);
 	
 	/*
 	Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt 
@@ -37,7 +39,8 @@ public:
 	*/
 	
 	bool arrangecuts_ZLEVEL();
-	bool checkPointIntersection(std::vector<gp_Pnt> &finalPoints);
+	bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
+	bool calculateAccurateSlaveZLevel(std::vector<projectPointContainer> &finalPoints, float radius, float &average_delta_z);
 	//bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
 	bool initializeMeshStuff();
 	bool arrangecuts_SPIRAL();
@@ -53,21 +56,23 @@ public:
 private:
 	//typedef std::list<std::vector<Base::Vector3f> > Polylines;
 	bool getShapeBB();
+	//bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
+
 	bool fillFaceBBoxes();
 	bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
 	bool classifyShape();
 	bool checkFlatLevel();
-	bool cut(float z_level, float min_level, TopoDS_Wire &aWire,float &z_level_corrected);
+	bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
 	bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
 	
-	std::vector<std::pair<float,TopoDS_Wire> > m_ordered_cuts;
+	std::vector<std::pair<float,TopoDS_Shape> > m_ordered_cuts;
 	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
 	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;
 
 	std::vector<Handle_Geom_BSplineCurve> m_all_offset_cuts_high,m_all_offset_cuts_low;
 	std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
 	//std::vector<std::pair<float,std::vector<TopoDS_Wire> > > m_zl_wire_combination;
-	std::vector<std::pair<float,TopoDS_Wire> >::iterator m_ordered_cuts_it;
+	std::vector<std::pair<float,TopoDS_Shape> >::iterator m_ordered_cuts_it;
 	
 	//Member zum checken ob CAD oder nicht
 	bool m_cad;

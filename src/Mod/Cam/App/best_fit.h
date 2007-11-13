@@ -26,8 +26,6 @@
 #define BEST_FIT_H
 
 
-#define WM4_FOUNDATION_DLL_IMPORT
-
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>

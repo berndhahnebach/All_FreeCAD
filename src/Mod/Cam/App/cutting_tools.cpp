@@ -42,6 +42,7 @@
 #include <BRepAlgo_Section.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GProp_GProps.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGProp.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -55,9 +56,10 @@
 #include "WireExplorer.h"
 #include "BRepAdaptor_CompCurve2.h"
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include "stuff.h"
 #include <Base/Builder3D.h>
 #include "best_fit.h"
+#include "Edgesort.h"
+#include <BRepBuilderAPI_Sewing.hxx>
 
 cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
         : m_Shape(aShape),
@@ -78,6 +80,9 @@ cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortoboth
 	classifyShape();
 	checkFlatLevel();
 	initializeMeshStuff();
+	//BRepBuilderAPI_Sewing aSewer;
+	//aSewer.Add(m_Shape);
+	//aSewer.
 	//Everything should be initialised now
 	
 }
@@ -196,19 +201,19 @@ bool cutting_tools::arrangecuts_ZLEVEL()
         m_pitch = fabs(m_maxlevel-m_minlevel)/cutnumber;
 		//Jetzt die Schnitte machen. Die höchste Ebene fällt weg, da hier noch kein Blech gedrückt wird
         float z_level,z_level_corrected;
-		TopoDS_Wire aTopoWire;
+		TopoDS_Shape aCutShape;
 		for (int i=1;i<=cutnumber;++i) 
 		{
             //Jetzt schneiden (die oberste Ebene auslassen)
             z_level = m_maxlevel-(i*m_pitch);
 			z_level_corrected = z_level;
-			cut(z_level,m_minlevel,aTopoWire,z_level_corrected);
+			cut(z_level,m_minlevel,aCutShape,z_level_corrected);
 			//cut_Mesh(z_level,m_minlevel,result,z_level_corrected);
 
 			//Jetzt die resultierende Wire in einen Vector pushen
-			std::pair<float,TopoDS_Wire> tempPair;
+			std::pair<float,TopoDS_Shape> tempPair;
 			tempPair.first = z_level_corrected;
-			tempPair.second = aTopoWire;
+			tempPair.second = aCutShape;
 			m_ordered_cuts.push_back(tempPair);
 		}
         return true;
@@ -246,7 +251,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			m_pitch = fabs(temp_max-temp_min)/cutnumber;
 			//Jetzt die Schnitte machen. Die höchste Ebene fällt weg, da hier noch kein Blech gedrückt wird
 			float z_level,z_level_corrected;
-			TopoDS_Wire aTopoWire;
+			TopoDS_Shape aCutShape;
 			//Jetzt schneiden (die oberste Ebene auslassen)
 			for (int i=155;i<=cutnumber;++i) 
 			{
@@ -258,11 +263,11 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 				//tempPair.first = z_level_corrected;
 				//tempPair.second = result;
 				//m_ordered_cuts.push_back(tempPair);
-				cut(z_level,temp_min, aTopoWire,z_level_corrected);
+				cut(z_level,temp_min, aCutShape,z_level_corrected);
 				//Jetzt die gefüllte Wire in den vector schieben
-				std::pair<float,TopoDS_Wire> tempPair;
+				std::pair<float,TopoDS_Shape> tempPair;
 				tempPair.first = z_level_corrected;
-				tempPair.second = aTopoWire;
+				tempPair.second = aCutShape;
 				m_ordered_cuts.push_back(tempPair);
 			}
 			return true;
@@ -343,6 +348,67 @@ bool cutting_tools::checkFlatLevel()
     
     return true;
 }
+
+//bool cutting_tools::projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
+//{
+//	//make your wire looks like a curve to other algorithm and generate Points to offset the curve
+//	aContainer.clear();
+//	BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+//	GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.01);
+//	int numberofpoints = aProp.NbPoints();
+//	Standard_Real Umin,Vmin,lowestdistance;
+//	TopoDS_Face atopo_surface,atopo_surface_shortest;
+//	Handle_Geom_Surface geom_surface;
+//
+//	//Now project the points to the surface and get surface normal. 
+//	for (int i=1;i<=numberofpoints;++i)
+//	{
+//		lowestdistance=200;
+//		//Aktuellen Punkt holen
+//		gp_Pnt currentPoint = aProp.Value(i);
+//		projectPointContainer aTempContainer;
+//		//checken auf welches Face wir projezieren könnnen
+//		for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it!=m_face_bboxes.end();++m_face_bb_it)
+//		{
+//			//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
+//			if(checkPointinFaceBB(aProp.Value(i),m_face_bb_it->second))
+//			{
+//				atopo_surface = m_face_bb_it->first;
+//				geom_surface = BRep_Tool::Surface(atopo_surface);
+//				GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
+//				//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
+//				if (aPPS.NbPoints() == 0) continue;
+//				//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
+//				double length = aPPS.LowerDistance();
+//				if(lowestdistance>length)
+//				{
+//					lowestdistance=length;
+//					atopo_surface_shortest = atopo_surface;
+//					aPPS.LowerDistanceParameters (Umin,Vmin);
+//				}
+//			}
+//		}
+//		gp_Vec Uvec,Vvec,normalVec;
+//		geom_surface = BRep_Tool::Surface(atopo_surface_shortest);
+//		//Das Face welches am nächsten ist in der temp-struct speichern
+//		aTempContainer.face = atopo_surface_shortest;
+//		geom_surface->D1(Umin,Vmin,aTempContainer.point,Uvec,Vvec);
+//		//Jetzt den Normalenvector auf die Fläche ausrechnen
+//		normalVec = Uvec;
+//		normalVec.Cross(Vvec);
+//		normalVec.Normalize(); 
+//		//Jetzt ist die Normale berechnet und auch normalisiert
+//		//Jetzt noch checken ob die Normale auch wirklich wie alle anderen auf die gleiche Seite zeigt.
+//		//dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+//		if(normalVec.Z()<0) normalVec.Multiply(-1.0);
+//		//Mal kurz den Winkel zur Grund-Ebene ausrechnen
+//		aTempContainer.normalvector = normalVec;
+//		aContainer.push_back(aTempContainer);
+//			
+//	}
+//	return true;
+//}
+
 
 TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 {
@@ -457,144 +523,144 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 //	Base::Builder3D build;
 //	std::ofstream outfile;
 //	outfile.open("c:/atest.out");
-
-
-	////Die ordered_cuts sind ein Vector wo für jede Ebene ein Pair existiert
-	//for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
-	//{
-	//	//Der Iterator m_ordered_cuts_it zeigt bis jetzt noch auf das pair
-	//	Polylines::iterator aPolyline_it = m_ordered_cuts_it->second.begin();
-	//	//Jetzt sind wir mit dem aPolyline_it bereits auf dem ersten Element der Liste
-	//	//und können somit über einen vector Iterator bereits über den ersten Listen std::vector iterieren
-	//	std::vector<Base::Vector3f>::iterator avector_it = aPolyline_it->begin();
-	//	float current_z_level = m_ordered_cuts_it->first;
-	//	std::vector<gp_Pnt> finalPoints;
-	//	finalPoints.clear();
-	//	Standard_Real Umin,Vmin,lowestdistance;
-	//	TopoDS_Face atopo_surface,atopo_surface_shortest;
-	//	Handle_Geom_Surface geom_surface;
-	//	int i=0;
-	//	for (;avector_it!=aPolyline_it->end();++avector_it)
-	//	{
-	//		i++;
-	//		lowestdistance=200;
-	//		//Aktuellen Punkt holen
-	//		gp_Pnt currentPoint(avector_it->x,avector_it->y,avector_it->z);
-	//		gp_Pnt nearest_Point;
-	//		//checken auf welches Face wir projezieren könnnen
-	//		for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it!=m_face_bboxes.end();++m_face_bb_it)
-	//		{
-	//			//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
-	//			if(checkPointinFaceBB(currentPoint,m_face_bb_it->second))
-	//			{
-	//				atopo_surface = m_face_bb_it->first;
-	//				geom_surface = BRep_Tool::Surface(atopo_surface);
-	//				GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
-	//				//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
-	//				if (aPPS.NbPoints() == 0) continue;
-	//				//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
-	//				double length = aPPS.LowerDistance();
-	//				if(lowestdistance>length)
-	//				{
-	//					lowestdistance=length;
-	//					atopo_surface_shortest = atopo_surface;
-	//					//aPPS.LowerDistanceParameters (Umin,Vmin);
-	//					nearest_Point = aPPS.NearestPoint();
-	//				}
-	//			}
-	//		}
-	//		//Für eine saubere Projection auf der aktuellen Ebene wird jetzt der Richtungsvector 
-	//		//aus dem projezierten Punkt und dem Ursprungspunkt gebildet
-	//		//und dieser dann hergenommen um damit nochmal in dessen Richtung zu projezieren
-	//		gp_Vec aVec(currentPoint,nearest_Point);
-	//		aVec.Normalize();
-	//		aVec.SetZ(0.0);
-	//		gp_Dir aDir(aVec);
-	//		gp_Lin aLine(currentPoint,aDir);
-	//		IntCurvesFace_ShapeIntersector aFaceIntSect;
-	//		aFaceIntSect.Load(m_Shape, 0.001);
-	//		aFaceIntSect.PerformNearest(aLine,-RealLast(), +RealLast());
-	//		//Jetzt holen wir uns auf der Fläche den U und V Wert um dann D1 und D2 bestimmen zu können
-	//		gp_Pnt projectedPoint,OffsetPoint;
-	//		gp_Pnt testpoint,testpoint2;
-	//		float abstand,abstand_old;
-	//		int number = aFaceIntSect.NbPnt();
-	//		abstand_old = 100;
-	//		for(int k=0;k<number;++k)
-	//		{
-	//			testpoint = aFaceIntSect.Pnt(k+1);
-	//			abstand = testpoint.Distance(currentPoint);
-	//			if(abstand<abstand_old)
-	//			{
-	//				Umin = aFaceIntSect.UParameter(k+1);
-	//				Vmin = aFaceIntSect.VParameter(k+1);
-	//				atopo_surface_shortest = aFaceIntSect.Face(k+1);
-	//				abstand_old = abstand;
-	//			}
-	//		}	
-	//		gp_Vec Uvec,Vvec,normalVec,projPointVec,z_normale;
-	//		geom_surface = BRep_Tool::Surface(atopo_surface_shortest);
-	//		geom_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
-	//		normalVec = Uvec;
-	//		normalVec.Cross(Vvec);
-	//		normalVec.Normalize(); 
-	//		//Jetzt ist die Surface-Normale berechnet und auch normalisiert
-	//		//Jetzt noch checken ob die Normale auch wirklich wie alle anderen auf die gleiche Seite zeigt.
-	//		//dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
-	//		if(normalVec.Z()<0) normalVec.Multiply(-1.0);
-	//		//Jetzt die Normale auf die Radiuslänge verlängern
-	//		normalVec.Multiply(radius);
-	//		//Jetzt die Z-Komponente auf 0 setzen
-	//		normalVec.SetZ(0.0);
-	//		//float abstand = currentPoint.Distance(projectedPoint);
-	//		//if(abstand>0.2)
-	//		//{cout<<"error"<<endl;}
-	//		projPointVec.SetXYZ(projectedPoint.XYZ());
-	//		OffsetPoint.SetXYZ((projPointVec + normalVec).XYZ());
-	//		OffsetPoint.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
-	//		//Aktuellen OffsetPoint setzen
-	//		finalPoints.push_back(OffsetPoint);
-
-	//		//Base::Vector3f offsetPoint,projectPoint;
-	//		//offsetPoint.x=OffsetPoint.X();offsetPoint.y=OffsetPoint.Y();offsetPoint.z=OffsetPoint.Z();
-	//		//projectPoint.x=projectedPoint.X();projectPoint.y=projectedPoint.Y();projectPoint.z=projectedPoint.Z();
-	//		//build.addSingleArrow(projectPoint,offsetPoint);
-	//		build.addSinglePoint(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z());
-	//		outfile << currentPoint.X() <<","<<currentPoint.Y()<<","<<currentPoint.Z()<<","<< projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<","<< OffsetPoint.X() <<","<<OffsetPoint.Y()<<","<<OffsetPoint.Z()<<","<<normalVec.X() <<","<<normalVec.Y()<<","<<normalVec.Z()<< std::endl;
-	//	}
-
-
-	////		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
-	//		//Jetzt die aktuelle Kurve als BSpline interpolieren
-	//	//check for intersections due to wrong offseted points
-	//	checkPointIntersection(finalPoints);
-	//	std::vector<gp_Pnt> finalPointscorrected;
-	//	finalPointscorrected.clear();
-	//	checkPointDistance(finalPoints,finalPointscorrected);
-	//	Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, finalPointscorrected.size());
-	//	for(int t=0;t<finalPointscorrected.size();++t)
-	//	{
-	//		finalOffsetPoints->SetValue(t+1,finalPointscorrected[t]);
-	//	}
-	//	GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
-	//	aNoPeriodInterpolate.Perform();
-	//	Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
-	//	 //check results
-	//	if (!aNoPeriodInterpolate.IsDone()) return false;
-	//	m_all_offset_cuts_high.push_back(aCurve);
-	//}
-
-
-
-
-
-	//build.saveToFile("c:/output.iv");
-	//outfile.close();
-
-
-
-
-
+//
+//
+//	//Die ordered_cuts sind ein Vector wo für jede Ebene ein Pair existiert
+//	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
+//	{
+//		//Der Iterator m_ordered_cuts_it zeigt bis jetzt noch auf das pair
+//		Polylines::iterator aPolyline_it = m_ordered_cuts_it->second.begin();
+//		//Jetzt sind wir mit dem aPolyline_it bereits auf dem ersten Element der Liste
+//		//und können somit über einen vector Iterator bereits über den ersten Listen std::vector iterieren
+//		std::vector<Base::Vector3f>::iterator avector_it = aPolyline_it->begin();
+//		float current_z_level = m_ordered_cuts_it->first;
+//		std::vector<gp_Pnt> finalPoints;
+//		finalPoints.clear();
+//		Standard_Real Umin,Vmin,lowestdistance;
+//		TopoDS_Face atopo_surface,atopo_surface_shortest;
+//		Handle_Geom_Surface geom_surface;
+//		int i=0;
+//		for (;avector_it!=aPolyline_it->end();++avector_it)
+//		{
+//			i++;
+//			lowestdistance=200;
+//			//Aktuellen Punkt holen
+//			gp_Pnt currentPoint(avector_it->x,avector_it->y,avector_it->z);
+//			gp_Pnt nearest_Point;
+//			//checken auf welches Face wir projezieren könnnen
+//			for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it!=m_face_bboxes.end();++m_face_bb_it)
+//			{
+//				//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
+//				if(checkPointinFaceBB(currentPoint,m_face_bb_it->second))
+//				{
+//					atopo_surface = m_face_bb_it->first;
+//					geom_surface = BRep_Tool::Surface(atopo_surface);
+//					GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
+//					//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
+//					if (aPPS.NbPoints() == 0) continue;
+//					//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
+//					double length = aPPS.LowerDistance();
+//					if(lowestdistance>length)
+//					{
+//						lowestdistance=length;
+//						atopo_surface_shortest = atopo_surface;
+//						//aPPS.LowerDistanceParameters (Umin,Vmin);
+//						nearest_Point = aPPS.NearestPoint();
+//					}
+//				}
+//			}
+//			//Für eine saubere Projection auf der aktuellen Ebene wird jetzt der Richtungsvector 
+//			//aus dem projezierten Punkt und dem Ursprungspunkt gebildet
+//			//und dieser dann hergenommen um damit nochmal in dessen Richtung zu projezieren
+//			gp_Vec aVec(currentPoint,nearest_Point);
+//			aVec.Normalize();
+//			aVec.SetZ(0.0);
+//			gp_Dir aDir(aVec);
+//			gp_Lin aLine(currentPoint,aDir);
+//			IntCurvesFace_ShapeIntersector aFaceIntSect;
+//			aFaceIntSect.Load(m_Shape, 0.001);
+//			aFaceIntSect.PerformNearest(aLine,-RealLast(), +RealLast());
+//			//Jetzt holen wir uns auf der Fläche den U und V Wert um dann D1 und D2 bestimmen zu können
+//			gp_Pnt projectedPoint,OffsetPoint;
+//			gp_Pnt testpoint,testpoint2;
+//			float abstand,abstand_old;
+//			int number = aFaceIntSect.NbPnt();
+//			abstand_old = 100;
+//			for(int k=0;k<number;++k)
+//			{
+//				testpoint = aFaceIntSect.Pnt(k+1);
+//				abstand = testpoint.Distance(currentPoint);
+//				if(abstand<abstand_old)
+//				{
+//					Umin = aFaceIntSect.UParameter(k+1);
+//					Vmin = aFaceIntSect.VParameter(k+1);
+//					atopo_surface_shortest = aFaceIntSect.Face(k+1);
+//					abstand_old = abstand;
+//				}
+//			}	
+//			gp_Vec Uvec,Vvec,normalVec,projPointVec,z_normale;
+//			geom_surface = BRep_Tool::Surface(atopo_surface_shortest);
+//			geom_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
+//			normalVec = Uvec;
+//			normalVec.Cross(Vvec);
+//			normalVec.Normalize(); 
+//			//Jetzt ist die Surface-Normale berechnet und auch normalisiert
+//			//Jetzt noch checken ob die Normale auch wirklich wie alle anderen auf die gleiche Seite zeigt.
+//			//dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+//			if(normalVec.Z()<0) normalVec.Multiply(-1.0);
+//			//Jetzt die Normale auf die Radiuslänge verlängern
+//			normalVec.Multiply(radius);
+//			//Jetzt die Z-Komponente auf 0 setzen
+//			normalVec.SetZ(0.0);
+//			//float abstand = currentPoint.Distance(projectedPoint);
+//			//if(abstand>0.2)
+//			//{cout<<"error"<<endl;}
+//			projPointVec.SetXYZ(projectedPoint.XYZ());
+//			OffsetPoint.SetXYZ((projPointVec + normalVec).XYZ());
+//			OffsetPoint.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
+//			//Aktuellen OffsetPoint setzen
+//			finalPoints.push_back(OffsetPoint);
+//
+//			//Base::Vector3f offsetPoint,projectPoint;
+//			//offsetPoint.x=OffsetPoint.X();offsetPoint.y=OffsetPoint.Y();offsetPoint.z=OffsetPoint.Z();
+//			//projectPoint.x=projectedPoint.X();projectPoint.y=projectedPoint.Y();projectPoint.z=projectedPoint.Z();
+//			//build.addSingleArrow(projectPoint,offsetPoint);
+//			build.addSinglePoint(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z());
+//			outfile << currentPoint.X() <<","<<currentPoint.Y()<<","<<currentPoint.Z()<<","<< projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<","<< OffsetPoint.X() <<","<<OffsetPoint.Y()<<","<<OffsetPoint.Z()<<","<<normalVec.X() <<","<<normalVec.Y()<<","<<normalVec.Z()<< std::endl;
+//		}
+//
+//
+//	//		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
+//			//Jetzt die aktuelle Kurve als BSpline interpolieren
+//		//check for intersections due to wrong offseted points
+//		checkPointIntersection(finalPoints);
+//		std::vector<gp_Pnt> finalPointscorrected;
+//		finalPointscorrected.clear();
+//		checkPointDistance(finalPoints,finalPointscorrected);
+//		Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, finalPointscorrected.size());
+//		for(int t=0;t<finalPointscorrected.size();++t)
+//		{
+//			finalOffsetPoints->SetValue(t+1,finalPointscorrected[t]);
+//		}
+//		GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
+//		aNoPeriodInterpolate.Perform();
+//		Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
+//		 //check results
+//		if (!aNoPeriodInterpolate.IsDone()) return false;
+//		m_all_offset_cuts_high.push_back(aCurve);
+//	}
+//
+//
+//
+//
+//
+//	build.saveToFile("c:/output.iv");
+//	outfile.close();
+//
+//
+//
+//
+//
 //return true;
 //
 //}
@@ -624,12 +690,12 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 //	return true;
 //}
 
-bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
+bool cutting_tools::checkPointIntersection(std::vector<projectPointContainer> &finalPoints)
 {
 	//Hier wird gecheckt ob die Punkte wirklich alle in der richtigen Reihenfolge vorliegen
-	std::vector<gp_Pnt>::iterator aPntIt;
+	std::vector<projectPointContainer>::iterator aPntIt;
 	double distance,distance_old;
-	gp_Pnt nearestPoint;
+	projectPointContainer nearestPointStruct;
 	int k;
 	for(unsigned int j=0;j<finalPoints.size();++j)
 	{
@@ -639,7 +705,7 @@ bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 			//Wenn wir schon fast am Ende sind oder schon bald, dann rausspringen
 			if((j+i)>=finalPoints.size()) break;
 
-			distance = (finalPoints[j+i]).SquareDistance(finalPoints[j]);
+			distance = (finalPoints[j+i].point).SquareDistance(finalPoints[j].point);
 			if(distance<distance_old)
 			{
 				//Speichern wo wir den nächsten Punkt gefunden haben
@@ -655,9 +721,9 @@ bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 		else
 		{
 			//Jetzt den Punkteaustausch vornehmen
-			nearestPoint = finalPoints[j+k];
+			nearestPointStruct = finalPoints[j+k];
 			finalPoints[j+k] = finalPoints[j+1];
-			finalPoints[j+1] = nearestPoint;
+			finalPoints[j+1] = nearestPointStruct;
 		}
 	}
 
@@ -669,227 +735,251 @@ bool cutting_tools::checkPointIntersection(std::vector<gp_Pnt> &finalPoints)
 
 
 //Alte Version wo Wires reinkommen
-bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
-{
-
-	//Base::Builder3D build;
-	//std::ofstream outfile;
-	//outfile.open("c:/atest.out");
-
-	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
-	{
-		//make your wire looks like a curve to other algorithm and generate Points to offset the curve
-		BRepAdaptor_CompCurve2 wireAdaptor(m_ordered_cuts_it->second);
-		GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.01);
-		int numberofpoints = aProp.NbPoints();
-		Standard_Real Umin,Vmin,lowestdistance;
-		TopoDS_Face atopo_surface,atopo_surface_shortest;
-		Handle_Geom_Surface geom_surface;
-		std::vector<gp_Pnt> tempOffsetPoints;
-		tempOffsetPoints.clear();
-
-		//Now project the points to the surface and get surface normal. 
-		for (int i=1;i<=numberofpoints;++i)
-		{
-			lowestdistance=200;
-			//Aktuellen Punkt holen
-			gp_Pnt currentPoint = aProp.Value(i);
-			//checken auf welches Face wir projezieren könnnen
-			for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it!=m_face_bboxes.end();++m_face_bb_it)
-			{
-				//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
-				if(checkPointinFaceBB(aProp.Value(i),m_face_bb_it->second))
-				{
-					atopo_surface = m_face_bb_it->first;
-					geom_surface = BRep_Tool::Surface(atopo_surface);
-					
-					GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
-					//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
-					if (aPPS.NbPoints() == 0) continue;
-					//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
-					double length = aPPS.LowerDistance();
-					if(lowestdistance>length)
-					{
-						lowestdistance=length;
-						atopo_surface_shortest = atopo_surface;
-						aPPS.LowerDistanceParameters (Umin,Vmin);
-					}
-				}
-			}
-			gp_Pnt projectedPoint,OffsetPoint;
-			gp_Vec Uvec,Vvec,normalVec,projPointVec,z_normale;
-			geom_surface = BRep_Tool::Surface(atopo_surface_shortest);
-			geom_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
-			//Jetzt den Normalenvector auf die Fläche ausrechnen
-			normalVec = Uvec;
-			normalVec.Cross(Vvec);
-			normalVec.Normalize(); 
-			//Jetzt ist die Normale berechnet und auch normalisiert
-			//Jetzt noch checken ob die Normale auch wirklich wie alle anderen auf die gleiche Seite zeigt.
-			//dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
-			if(normalVec.Z()<0) normalVec.Multiply(-1.0);
-			//Jetzt die Normale auf die Radiuslänge verlängern
-			normalVec.Multiply(radius);
-			//Jetzt die Z-Komponente auf 0 setzen
-			normalVec.SetZ(0.0);
-			if(lowestdistance>0.2)
-			{cout<<"error"<<endl;}
-			//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
-			projectedPoint.SetZ(m_ordered_cuts_it->first);
-			projPointVec.SetXYZ(projectedPoint.XYZ());
-			OffsetPoint.SetXYZ((projPointVec + normalVec).XYZ());
-			OffsetPoint.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
-			//Den OffsetPoint jetzt in einen Offset-Point Vector pushen
-			tempOffsetPoints.push_back(OffsetPoint);
-			
-
-		}
-		//cout << tempOffsetPoints.size() << std::endl;
-		cout << m_ordered_cuts_it->first <<std::endl;
-		checkPointIntersection(tempOffsetPoints);
-		//std::vector<gp_Pnt> finalPointscorrected;
-		//finalPointscorrected.clear();
-		//checkPointDistance(tempOffsetPoints,finalPointscorrected);
-		Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, tempOffsetPoints.size());
-		for(unsigned int t=0;t<tempOffsetPoints.size();++t)
-		{
-			finalOffsetPoints->SetValue(t+1,tempOffsetPoints[t]);
-		}
-		GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
-		aNoPeriodInterpolate.Perform();
-		Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
-		//check results
-		if (!aNoPeriodInterpolate.IsDone()) return false;
-		m_all_offset_cuts_high.push_back(aCurve);
-
-
-	}
-
-
-	//		//Base::Vector3f offsetPoint,projectPoint;
-	//		//offsetPoint.x=OffsetPoint.X();offsetPoint.y=OffsetPoint.Y();offsetPoint.z=OffsetPoint.Z();
-	//		//projectPoint.x=projectedPoint.X();projectPoint.y=projectedPoint.Y();projectPoint.z=projectedPoint.Z();
-	//		//build.addSingleArrow(projectPoint,offsetPoint);
-	//		//build.addSinglePoint(offsetPoint);
-	//		//outfile << currentPoint.X() <<","<<currentPoint.Y()<<","<<currentPoint.Z()<<","<< projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<","<< OffsetPoint.X() <<","<<OffsetPoint.Y()<<","<<OffsetPoint.Z()<<","<<normalVec.X() <<","<<normalVec.Y()<<","<<normalVec.Z()<< std::endl;
-	//	}
-
-	////		build.addSinglePoint(projectedPoint.X(),projectedPoint.Y(),projectedPoint.Z());
-	////		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
-	//		//Jetzt die aktuelle Kurve als BSpline interpolieren
-	//	GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
-	//	aNoPeriodInterpolate.Perform();
-	//	Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
-	//	 //check results
-	//	if (!aNoPeriodInterpolate.IsDone()) return false;
-	//	m_all_offset_cuts_high.push_back(aCurve);
-	//	
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//		IntCurvesFace_ShapeIntersector shp_int;
-	//		gp_Pnt OffsetPointUP;
-	//		gp_Dir pl_vec;
-	//		gp_Lin line;
-	//		gp_Vec Uvec,Vvec,normalVec,projPointVec;
-	//		line.SetLocation(aProp.Value(i));
-	//		line.SetDirection(pl_vec);
-	//		shp_int.Load(m_Shape, 0.001);
-	//		shp_int.PerformNearest(line, -RealLast(), +RealLast());
-	//		if(shp_int.IsDone())  
-	//		gp_Pnt projectedPoint;
-	//		geom_surface->D1(shp_int.UParameter(1),shp_int.VParameter(1),projectedPoint,Uvec,Vvec);
-	//		//Jetzt die Normale berechnen
-	//		normalVec = Uvec;
-	//		normalVec.Cross(Vvec);
-	//		//Jetzt wird die Normale berechnet und auch normalisiert
-	//		normalVec.Normalize(); 
-	//		//Jetzt wird die Normale auf die Radiuslänge verlängern
-	//		normalVec.Multiply(radius);
-	//		//Jetzt die Z-Komponente auf 0 setzen
-	//		normalVec.SetZ(0.0);
-	//		//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
-	//		projectedPoint.SetZ(current_z_level);
-	//		projPointVec.SetXYZ(projectedPoint.XYZ());
-	//		OffsetPointUP.SetXYZ((projPointVec + normalVec).XYZ());
-	//		OffsetPointUP.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
-	//		finalOffsetPointsUP->SetValue(i,OffsetPointUP); //Aktuellen OffsetPoint setzen
-
-		/*	TopExp_Explorer ExShape;*/
-	/*		ExShape.Init(m_Shape,TopAbs_FACE);
-			Standard_Real Umin,Vmin;
-			double distance_old,distance;
-			Handle_Geom_Surface nearest_surface;
-			distance_old = 200.0;
-			for (; ExShape.More(); ExShape.Next())
-			{
-				const TopoDS_Face &atopo_surface =  TopoDS::Face (ExShape.Current());
-				Handle_Geom_Surface geom_surface = BRep_Tool::Surface(atopo_surface);
-				gp_Pnt currentPoint = aProp.Value(i);
-				GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
-				if (! aPPS.IsDone())
-				{
-					return false;
-				}
-				distance = aPPS.LowerDistance();
-				if(distance<distance_old)
-				{	
-					distance_old = distance;
-					aPPS.LowerDistanceParameters (Umin,Vmin);
-					nearest_surface = geom_surface;
-				}
-			}*/
-	//		gp_Pnt projectedPoint,OffsetPoint;
-	//		gp_Vec Uvec,Vvec,normalVec,projPointVec;
-	//		nearest_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
-	//		normalVec = Uvec;
-	//		normalVec.Cross(Vvec);
-	//		normalVec.Normalize(); //Jetzt ist die Normale berechnet und auch normalisiert
-	//		//Jetzt die Normale auf die Radiuslänge verlängern
-	//		normalVec.Multiply(12.5);
-	//		//Jetzt die Z-Komponente auf 0 setzen
-	//		normalVec.SetZ(0.0);
-	//		//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
-	//		projectedPoint.SetZ(current_z_level);
-	//		projPointVec.SetXYZ(projectedPoint.XYZ());
-	//		OffsetPoint.SetXYZ((projPointVec + normalVec).XYZ());
-	//		OffsetPoint.SetZ(projectedPoint.Z()+12.5);//Den Radius noch dazu addieren
-	//		finalOffsetPoints->SetValue(i,OffsetPoint); //Aktuellen OffsetPoint setzen
-	//		build.addSinglePoint(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z(),2 ,0,0,0);
-	//		build.addSinglePoint(projectedPoint.X(),projectedPoint.Y(),projectedPoint.Z());
-	//		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
-	//	}
-	//
-	//	GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
-	//	aNoPeriodInterpolate.Perform();
-	//	Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
-	//	
-	//	// check results
-	//	if (!aNoPeriodInterpolate.IsDone()) return false;
-	//	m_all_offset_cuts_high.push_back(aCurve);
-	//	
-	//}
-//build.saveToFile("c:/output.iv");
-//outfile.close();
-
+//bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
+//{
 //
-	return true;
+//
+//	//Base::Builder3D build;
+//	//std::ofstream outfile;
+//	//outfile.open("c:/atest.out");
+//
+//	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
+//	{
+//		//make your wire looks like a curve to other algorithm and generate Points to offset the curve
+//		BRepAdaptor_CompCurve2 wireAdaptor(m_ordered_cuts_it->second);
+//		GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.01);
+//		int numberofpoints = aProp.NbPoints();
+//		Standard_Real Umin,Vmin,lowestdistance;
+//		TopoDS_Face atopo_surface,atopo_surface_shortest;
+//		Handle_Geom_Surface geom_surface;
+//		std::vector<projectPointContainer> aprojectPointContainer;
+//		aprojectPointContainer.clear();
+//
+//		//Now project the points to the surface and get surface normal. 
+//		for (int i=1;i<=numberofpoints;++i)
+//		{
+//			lowestdistance=200;
+//			//Aktuellen Punkt holen
+//			gp_Pnt currentPoint = aProp.Value(i);
+//			projectPointContainer OffsetPointContainer;
+//			//checken auf welches Face wir projezieren könnnen
+//			for(m_face_bb_it = m_face_bboxes.begin();m_face_bb_it!=m_face_bboxes.end();++m_face_bb_it)
+//			{
+//				//Wenn der aktuelle Punkt in der BBox enthalten ist, dann machen wir mit der Projection weiter
+//				if(checkPointinFaceBB(aProp.Value(i),m_face_bb_it->second))
+//				{
+//					atopo_surface = m_face_bb_it->first;
+//					geom_surface = BRep_Tool::Surface(atopo_surface);
+//					
+//					GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
+//					//Wenn nichts projeziert werden kann, gehts gleich weiter zum nächsten Face bzw. der nächsten BBox
+//					if (aPPS.NbPoints() == 0) continue;
+//					//Jetzt muss das aktuelle Face gespeichert werden, da es eventuell das face ist, welches am nächsten ist
+//					double length = aPPS.LowerDistance();
+//					if(lowestdistance>length)
+//					{
+//						lowestdistance=length;
+//						atopo_surface_shortest = atopo_surface;
+//						aPPS.LowerDistanceParameters (Umin,Vmin);
+//					}
+//				}
+//			}
+//			gp_Pnt projectedPoint;
+//			gp_Vec Uvec,Vvec,normalVec,projPointVec,z_normale;
+//			geom_surface = BRep_Tool::Surface(atopo_surface_shortest);
+//			//Das Face welches am nächsten ist in der temp-struct speichern
+//			OffsetPointContainer.face = atopo_surface_shortest;
+//			geom_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
+//			//Jetzt den Normalenvector auf die Fläche ausrechnen
+//			normalVec = Uvec;
+//			normalVec.Cross(Vvec);
+//			normalVec.Normalize(); 
+//			//Jetzt ist die Normale berechnet und auch normalisiert
+//			//Jetzt noch checken ob die Normale auch wirklich wie alle anderen auf die gleiche Seite zeigt.
+//			//dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+//			if(normalVec.Z()<0) normalVec.Multiply(-1.0);
+//			//Mal kurz den Winkel zur Grund-Ebene ausrechnen
+//			gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
+//			OffsetPointContainer.angle = normalVec.Angle(planeVec);
+//			//Jetzt die Normale auf die Radiuslänge verlängern
+//			normalVec.Multiply(radius);
+//			//Jetzt die Z-Komponente auf 0 setzen
+//			normalVec.SetZ(0.0);
+//			if(lowestdistance>0.2)
+//			{cout<<"error"<<endl;}
+//			//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
+//			projectedPoint.SetZ(m_ordered_cuts_it->first);
+//			projPointVec.SetXYZ(projectedPoint.XYZ());
+//			OffsetPointContainer.point.SetXYZ((projPointVec + normalVec).XYZ());
+//			OffsetPointContainer.point.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
+//			//Den OffsetPoint jetzt in einen Offset-Point Vector pushen
+//			aprojectPointContainer.push_back(OffsetPointContainer);
+//			
+//		}
+//		//cout << tempOffsetPoints.size() << std::endl;
+//		cout << m_ordered_cuts_it->first <<std::endl;
+//		checkPointIntersection(aprojectPointContainer);
+//		//Jetzt den Z-Level für die untere Bahn ausrechnen
+//		float average_delta_z;
+//		calculateAccurateSlaveZLevel(aprojectPointContainer,radius, average_delta_z);
+//		//Jetzt beim Z-Level schneiden, und dann auch gleich Punkte erzeugen
+//		
+//		//std::vector<gp_Pnt> finalPointscorrected;
+//		//finalPointscorrected.clear();
+//		//checkPointDistance(tempOffsetPoints,finalPointscorrected);
+//		Handle(TColgp_HArray1OfPnt) finalOffsetPoints = new TColgp_HArray1OfPnt(1, aprojectPointContainer.size());
+//		for(unsigned int t=0;t<tempOffsetPoints.size();++t)
+//		{
+//			finalOffsetPoints->SetValue(t+1,tempOffsetPoints[t].first);
+//		}
+//		GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
+//		aNoPeriodInterpolate.Perform();
+//		Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
+//		//check results
+//		if (!aNoPeriodInterpolate.IsDone()) return false;
+//		m_all_offset_cuts_high.push_back(aCurve);
+//
+//
+//	}
+//
+//
+//	//		//Base::Vector3f offsetPoint,projectPoint;
+//	//		//offsetPoint.x=OffsetPoint.X();offsetPoint.y=OffsetPoint.Y();offsetPoint.z=OffsetPoint.Z();
+//	//		//projectPoint.x=projectedPoint.X();projectPoint.y=projectedPoint.Y();projectPoint.z=projectedPoint.Z();
+//	//		//build.addSingleArrow(projectPoint,offsetPoint);
+//	//		//build.addSinglePoint(offsetPoint);
+//	//		//outfile << currentPoint.X() <<","<<currentPoint.Y()<<","<<currentPoint.Z()<<","<< projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<","<< OffsetPoint.X() <<","<<OffsetPoint.Y()<<","<<OffsetPoint.Z()<<","<<normalVec.X() <<","<<normalVec.Y()<<","<<normalVec.Z()<< std::endl;
+//	//	}
+//
+//	////		build.addSinglePoint(projectedPoint.X(),projectedPoint.Y(),projectedPoint.Z());
+//	////		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
+//	//		//Jetzt die aktuelle Kurve als BSpline interpolieren
+//	//	GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
+//	//	aNoPeriodInterpolate.Perform();
+//	//	Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
+//	//	 //check results
+//	//	if (!aNoPeriodInterpolate.IsDone()) return false;
+//	//	m_all_offset_cuts_high.push_back(aCurve);
+//	//	
+//	//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//		IntCurvesFace_ShapeIntersector shp_int;
+//	//		gp_Pnt OffsetPointUP;
+//	//		gp_Dir pl_vec;
+//	//		gp_Lin line;
+//	//		gp_Vec Uvec,Vvec,normalVec,projPointVec;
+//	//		line.SetLocation(aProp.Value(i));
+//	//		line.SetDirection(pl_vec);
+//	//		shp_int.Load(m_Shape, 0.001);
+//	//		shp_int.PerformNearest(line, -RealLast(), +RealLast());
+//	//		if(shp_int.IsDone())  
+//	//		gp_Pnt projectedPoint;
+//	//		geom_surface->D1(shp_int.UParameter(1),shp_int.VParameter(1),projectedPoint,Uvec,Vvec);
+//	//		//Jetzt die Normale berechnen
+//	//		normalVec = Uvec;
+//	//		normalVec.Cross(Vvec);
+//	//		//Jetzt wird die Normale berechnet und auch normalisiert
+//	//		normalVec.Normalize(); 
+//	//		//Jetzt wird die Normale auf die Radiuslänge verlängern
+//	//		normalVec.Multiply(radius);
+//	//		//Jetzt die Z-Komponente auf 0 setzen
+//	//		normalVec.SetZ(0.0);
+//	//		//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
+//	//		projectedPoint.SetZ(current_z_level);
+//	//		projPointVec.SetXYZ(projectedPoint.XYZ());
+//	//		OffsetPointUP.SetXYZ((projPointVec + normalVec).XYZ());
+//	//		OffsetPointUP.SetZ(projectedPoint.Z()+radius);//Den Radius noch dazu addieren
+//	//		finalOffsetPointsUP->SetValue(i,OffsetPointUP); //Aktuellen OffsetPoint setzen
+//
+//		/*	TopExp_Explorer ExShape;*/
+//	/*		ExShape.Init(m_Shape,TopAbs_FACE);
+//			Standard_Real Umin,Vmin;
+//			double distance_old,distance;
+//			Handle_Geom_Surface nearest_surface;
+//			distance_old = 200.0;
+//			for (; ExShape.More(); ExShape.Next())
+//			{
+//				const TopoDS_Face &atopo_surface =  TopoDS::Face (ExShape.Current());
+//				Handle_Geom_Surface geom_surface = BRep_Tool::Surface(atopo_surface);
+//				gp_Pnt currentPoint = aProp.Value(i);
+//				GeomAPI_ProjectPointOnSurf aPPS(currentPoint,geom_surface,0.001);
+//				if (! aPPS.IsDone())
+//				{
+//					return false;
+//				}
+//				distance = aPPS.LowerDistance();
+//				if(distance<distance_old)
+//				{	
+//					distance_old = distance;
+//					aPPS.LowerDistanceParameters (Umin,Vmin);
+//					nearest_surface = geom_surface;
+//				}
+//			}*/
+//	//		gp_Pnt projectedPoint,OffsetPoint;
+//	//		gp_Vec Uvec,Vvec,normalVec,projPointVec;
+//	//		nearest_surface->D1(Umin,Vmin,projectedPoint,Uvec,Vvec);
+//	//		normalVec = Uvec;
+//	//		normalVec.Cross(Vvec);
+//	//		normalVec.Normalize(); //Jetzt ist die Normale berechnet und auch normalisiert
+//	//		//Jetzt die Normale auf die Radiuslänge verlängern
+//	//		normalVec.Multiply(12.5);
+//	//		//Jetzt die Z-Komponente auf 0 setzen
+//	//		normalVec.SetZ(0.0);
+//	//		//Eine Korrektur vom z-Level machen weil er durch numerische Fehler nicht exact auf dem Z-Level liegt wo wir ihn haben wollen. Die Normale wird aber trotzdem vom (durch numerische Fehler) berechneten Z-Wert genommen
+//	//		projectedPoint.SetZ(current_z_level);
+//	//		projPointVec.SetXYZ(projectedPoint.XYZ());
+//	//		OffsetPoint.SetXYZ((projPointVec + normalVec).XYZ());
+//	//		OffsetPoint.SetZ(projectedPoint.Z()+12.5);//Den Radius noch dazu addieren
+//	//		finalOffsetPoints->SetValue(i,OffsetPoint); //Aktuellen OffsetPoint setzen
+//	//		build.addSinglePoint(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z(),2 ,0,0,0);
+//	//		build.addSinglePoint(projectedPoint.X(),projectedPoint.Y(),projectedPoint.Z());
+//	//		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
+//	//	}
+//	//
+//	//	GeomAPI_Interpolate aNoPeriodInterpolate(finalOffsetPoints, Standard_False, Precision::Confusion());
+//	//	aNoPeriodInterpolate.Perform();
+//	//	Handle_Geom_BSplineCurve aCurve(aNoPeriodInterpolate.Curve());
+//	//	
+//	//	// check results
+//	//	if (!aNoPeriodInterpolate.IsDone()) return false;
+//	//	m_all_offset_cuts_high.push_back(aCurve);
+//	//	
+//	//}
+////build.saveToFile("c:/output.iv");
+////outfile.close();
+//
+////
+//	return true;
+//}
+
+bool cutting_tools::calculateAccurateSlaveZLevel(std::vector<projectPointContainer> &finalPoints, float radius, float &average_delta_z)
+{
+	//Mittelwert von allen Delta-Z-Leveln bilden
+	average_delta_z=0.0;
+	float delta_z=0.0;
+
+	for(int i=0;i<finalPoints.size();++i)
+	{
+//		delta_z = delta_z + ((cos(90-finalPoints[i].angle))*radius);
+	}
+	average_delta_z = delta_z/finalPoints.size();
+
+	return  true;
 }
-
-
 
 //bool cutting_tools::OffsetWires() //Hier ist die alte Version
 //{
@@ -1005,7 +1095,7 @@ bool cutting_tools::cut_Mesh(float z_level, float min_level, std::list<std::vect
 
 
 
-bool cutting_tools::cut(float z_level, float min_level, TopoDS_Wire &aWire, float &z_level_corrected)
+bool cutting_tools::cut(float z_level, float min_level, TopoDS_Shape &aCutShape, float &z_level_corrected)
 {
 	gp_Pnt aPlanePnt(0,0,z_level);
     gp_Dir aPlaneDir(0,0,1);
@@ -1020,10 +1110,23 @@ bool cutting_tools::cut(float z_level, float min_level, TopoDS_Wire &aWire, floa
 		BRepBuilderAPI_MakeFace Face(aPlane);
 		BRepAlgo_Section mkCut(m_Shape, Face.Face(),Standard_False);
 		mkCut.Approximation (Standard_True);
+		mkCut.ComputePCurveOn1(Standard_True);
 		mkCut.Build();
+		//Den neuen Algorithmus checken
+		//Edgesort aSorter(mkCut.Shape());
+		//aSorter.Init();
+		
 		//Jetzt checken ob auch wirlich edges vorhanden sind
 		TopExp_Explorer exploreShape;
 		exploreShape.Init(mkCut.Shape(),TopAbs_EDGE);
+
+			/*Handle_Geom2d_Curve aCurve;
+			Handle_Geom_Surface aSurface;
+			TopLoc_Location aLoc;
+			TopoDS_Face aFace;
+			double first,last;
+			BRep_Tool::CurveOnSurface(aSorter.Current(),aCurve,aSurface,aLoc,first,last);*/
+		
 		//Wenn keine Edge vorhanden ist
 		if(!exploreShape.More())
 		{
@@ -1047,8 +1150,8 @@ bool cutting_tools::cut(float z_level, float min_level, TopoDS_Wire &aWire, floa
 				continue;
 			}
 		}
-		//Die Wire, welche per Referenz übergeben wird jetzt mit dem geordneten Schnitt füllen
-		aWire = ordercutShape(mkCut.Shape());
+		//Das Shape, welches per Referenz übergeben wird jetzt mit dem geordneten Schnitt füllen
+		aCutShape = mkCut.Shape();
 
 	}while (cutok==false);
 
