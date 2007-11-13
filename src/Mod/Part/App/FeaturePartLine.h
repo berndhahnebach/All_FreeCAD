@@ -33,20 +33,21 @@ namespace Part
 
 class Line : public Part::Feature
 {
-  PROPERTY_HEADER(Part::Line);
+    PROPERTY_HEADER(Part::Line);
 
 public:
-  Line();
-  virtual ~Line();
+    Line();
+    virtual ~Line();
 
-  App::PropertyVector b;
-  App::PropertyVector e;
+    App::PropertyVector b;
+    App::PropertyVector e;
 
-  /** @name methods override feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 } //namespace Part

@@ -47,6 +47,13 @@ ImportIges::ImportIges(void)
 
 }
 
+short ImportIges::mustExecute() const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *ImportIges::execute(void)
 {
 

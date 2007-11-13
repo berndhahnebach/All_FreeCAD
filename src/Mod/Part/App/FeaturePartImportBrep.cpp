@@ -46,6 +46,13 @@ ImportBrep::ImportBrep(void)
 	ADD_PROPERTY(FileName,(""));
 }
 
+short ImportBrep::mustExecute() const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *ImportBrep::execute(void)
 {
 

@@ -45,6 +45,13 @@ ImportStep::ImportStep(void)
 	ADD_PROPERTY(FileName,(""));
 }
 
+short ImportStep::mustExecute() const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *ImportStep::execute(void)
 {
   STEPControl_Reader aReader;

@@ -39,60 +39,67 @@ PROPERTY_SOURCE(Part::Line, Part::Feature)
 
 Line::Line()
 {
-  ADD_PROPERTY(b,(0.0f,0.0f,0.0f));
-  ADD_PROPERTY(e,(1.0f,1.0f,1.0f));
+    ADD_PROPERTY(b,(0.0f,0.0f,0.0f));
+    ADD_PROPERTY(e,(1.0f,1.0f,1.0f));
 }
 
 Line::~Line()
 {
 }
 
+short Line::mustExecute() const
+{
+    if (b.isTouched() || e.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *Line::execute(void)
 {
-  Base::Vector3f beg = b.getValue();
-  Base::Vector3f end = e.getValue();
+    Base::Vector3f beg = b.getValue();
+    Base::Vector3f end = e.getValue();
 
-  // Convert into OCC representation
-  gp_Pnt pnt1(beg.x, beg.y, beg.z);
-  gp_Pnt pnt2(end.x, end.y, end.z);
+    // Convert into OCC representation
+    gp_Pnt pnt1(beg.x, beg.y, beg.z);
+    gp_Pnt pnt2(end.x, end.y, end.z);
 
-  // Create directly the underlying line geometry
-  BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
-  
-  bool ok = false;
-  const char *error;
-  switch ( makeEdge.Error() )
-  {
-  case BRepBuilderAPI_EdgeDone:
-    ok = true;
-    break; // ok
-  case BRepBuilderAPI_PointProjectionFailed:
-    error = "Point projection failed";
-    break;
-  case BRepBuilderAPI_ParameterOutOfRange:
-    error = "Parameter out of range";
-    break;
-  case BRepBuilderAPI_DifferentPointsOnClosedCurve:
-    error = "Different points on closed curve";
-    break;
-  case BRepBuilderAPI_PointWithInfiniteParameter:
-    error = "Point with infinite parameter";
-    break;
-  case BRepBuilderAPI_DifferentsPointAndParameter:
-    error = "Different point and parameter";
-    break;
-  case BRepBuilderAPI_LineThroughIdenticPoints:
-    error = "Line through identic points";
-    break;
-  }
+    // Create directly the underlying line geometry
+    BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
 
-  // Error 
-  if ( !ok ) 
-      return new App::DocumentObjectExecReturn(error);
+    bool ok = false;
+    const char *error;
+    switch ( makeEdge.Error() )
+    {
+    case BRepBuilderAPI_EdgeDone:
+        ok = true;
+        break; // ok
+    case BRepBuilderAPI_PointProjectionFailed:
+        error = "Point projection failed";
+        break;
+    case BRepBuilderAPI_ParameterOutOfRange:
+        error = "Parameter out of range";
+        break;
+    case BRepBuilderAPI_DifferentPointsOnClosedCurve:
+        error = "Different points on closed curve";
+        break;
+    case BRepBuilderAPI_PointWithInfiniteParameter:
+        error = "Point with infinite parameter";
+        break;
+    case BRepBuilderAPI_DifferentsPointAndParameter:
+        error = "Different point and parameter";
+        break;
+    case BRepBuilderAPI_LineThroughIdenticPoints:
+        error = "Line through identic points";
+        break;
+    }
 
-  TopoDS_Edge edge = makeEdge.Edge();
-  setShape(edge);
+    // Error 
+    if ( !ok ) 
+        return new App::DocumentObjectExecReturn(error);
 
-  return App::DocumentObject::StdReturn;
+    TopoDS_Edge edge = makeEdge.Edge();
+    setShape(edge);
+
+    return App::DocumentObject::StdReturn;
 }
 

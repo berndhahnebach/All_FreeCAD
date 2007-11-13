@@ -33,20 +33,21 @@ namespace Part
 
 class Polygon :public Part::Feature
 {
-  PROPERTY_HEADER(Part::Polygon);
+    PROPERTY_HEADER(Part::Polygon);
 
 public:
-  Polygon();
-  virtual ~Polygon();
+    Polygon();
+    virtual ~Polygon();
 
-  App::PropertyVectorList Nodes;
-  App::PropertyBool       Close;
+    App::PropertyVectorList Nodes;
+    App::PropertyBool       Close;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 } //namespace Part

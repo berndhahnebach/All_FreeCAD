@@ -47,6 +47,8 @@ class TreeWidget : public QTreeWidget
 public:
     TreeWidget(QWidget* parent=0);
     ~TreeWidget();
+
+    static const int ObjectType;
 };
 
 /** The link between the tree and a document.

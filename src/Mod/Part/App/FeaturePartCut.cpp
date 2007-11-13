@@ -38,38 +38,37 @@ PROPERTY_SOURCE(Part::Cut, Part::Feature)
 
 Cut::Cut(void)
 {
+    ADD_PROPERTY(Base,(0));
+    ADD_PROPERTY(Tool,(0));
+}
 
-  ADD_PROPERTY(Base,(0));
-  ADD_PROPERTY(Tool,(0));
+short Cut::mustExecute() const
+{
+    if (Base.getValue() && Tool.getValue())
+        return -1;
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Cut::execute(void)
 {
- 
-  Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
-  //if(!pcFirst || pcFirst->getStatus() != Valid)
-  // return new DocumentObjectExecReturn("Unknown Error");
-  Part::Feature *pcSecond = dynamic_cast<Part::Feature*>(Tool.getValue());
-  //if(!pcSecond || pcSecond->getStatus() != Valid)
-  //  return new DocumentObjectExecReturn("Unknown Error");
+    Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
+    Part::Feature *pcSecond = dynamic_cast<Part::Feature*>(Tool.getValue());
 
-  // Now, let's get the TopoDS_Shape
-	TopoDS_Shape OriginalShape  = pcFirst->getShape();
-	TopoDS_Shape ToolShape = pcSecond->getShape();
+    // Now, let's get the TopoDS_Shape
+    TopoDS_Shape OriginalShape  = pcFirst->getShape();
+    TopoDS_Shape ToolShape = pcSecond->getShape();
 
-  // STEP 2:
-	// Let's call for algorithm computing a cut operation:
-	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
-	// Let's check if the Cut has been successfull:
-	if (!mkCut.IsDone()) 
-        return new App::DocumentObjectExecReturn("Unknown Error");
+    // STEP 2:
+    // Let's call for algorithm computing a cut operation:
+    BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
+    // Let's check if the Cut has been successfull:
+    if (!mkCut.IsDone()) 
+        return new App::DocumentObjectExecReturn("Cut operation failed");
 
-  TopoDS_Shape ResultShape = mkCut.Shape();
+    TopoDS_Shape ResultShape = mkCut.Shape();
+    setShape(ResultShape);
 
-
-  setShape(ResultShape);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 

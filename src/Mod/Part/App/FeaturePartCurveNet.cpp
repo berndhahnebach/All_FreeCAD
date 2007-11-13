@@ -46,7 +46,12 @@ CurveNet::CurveNet()
   ADD_PROPERTY(FileName,(""));
 }
 
-
+short CurveNet::mustExecute() const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
+}
 
 App::DocumentObjectExecReturn *CurveNet::execute(void)
 {

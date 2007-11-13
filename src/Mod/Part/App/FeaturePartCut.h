@@ -35,20 +35,21 @@ namespace Part
 
 class Cut :public Part::Feature
 {
-  PROPERTY_HEADER(Part::Cut);
+    PROPERTY_HEADER(Part::Cut);
 
 public:
-  Cut();
+    Cut();
 
-  App::PropertyLink Base;
-  App::PropertyLink Tool;
+    App::PropertyLink Base;
+    App::PropertyLink Tool;
 
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
 };
 
 
