@@ -42,6 +42,13 @@ ImportAscii::ImportAscii(void)
   ADD_PROPERTY(FileName,(""));
 }
 
+short ImportAscii::mustExecute() const
+{
+    if (FileName.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *ImportAscii::execute(void)
 {
 

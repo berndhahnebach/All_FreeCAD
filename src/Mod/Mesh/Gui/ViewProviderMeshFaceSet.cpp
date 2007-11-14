@@ -220,8 +220,6 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
     pcFlatWireRoot->addChild(pcFlatRoot);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
-
-    updateData(&meshFeature->Mesh);
 }
 
 void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
@@ -279,16 +277,16 @@ QIcon ViewProviderMeshFaceSet::getIcon() const
 
 void ViewProviderMeshFaceSet::setDisplayMode(const char* ModeName)
 {
-  if ( strcmp("Shaded",ModeName)==0 )
-    setDisplayMaskMode("Flat");
-  else if ( strcmp("Points",ModeName)==0 )
-    setDisplayMaskMode("Point");
-  else if ( strcmp("Flat Lines",ModeName)==0 )
-    setDisplayMaskMode("FlatWireframe");
-  else if ( strcmp("Wireframe",ModeName)==0 )
-    setDisplayMaskMode("Wireframe");
+    if ( strcmp("Shaded",ModeName)==0 )
+        setDisplayMaskMode("Flat");
+    else if ( strcmp("Points",ModeName)==0 )
+        setDisplayMaskMode("Point");
+    else if ( strcmp("Flat Lines",ModeName)==0 )
+        setDisplayMaskMode("FlatWireframe");
+    else if ( strcmp("Wireframe",ModeName)==0 )
+        setDisplayMaskMode("Wireframe");
 
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
@@ -338,55 +336,55 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
 
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 {
-  if (pcOpenEdge) {
-    // remove the node and destroy the data
-    pcRoot->removeChild(pcOpenEdge);
-    pcOpenEdge = 0;
-  }
+    if (pcOpenEdge) {
+	    // remove the node and destroy the data
+	    pcRoot->removeChild(pcOpenEdge);
+	    pcOpenEdge = 0;
+    }
 
-  if ( show ) {
-    pcOpenEdge = new SoSeparator();
-    pcOpenEdge->addChild(pcLineStyle);
-    pcOpenEdge->addChild(pOpenColor);
-
-    pcOpenEdge->addChild(pcVertexNode);
-    pcOpenEdge->addChild(pcFacetNode);
-    pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
-
-    // add to the highlight node
-    pcRoot->addChild(pcOpenEdge);
-  }
+    if ( show ) {
+	    pcOpenEdge = new SoSeparator();
+	    pcOpenEdge->addChild(pcLineStyle);
+	    pcOpenEdge->addChild(pOpenColor);
+	
+	    pcOpenEdge->addChild(pcVertexNode);
+	    pcOpenEdge->addChild(pcFacetNode);
+	    pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
+	
+	    // add to the highlight node
+	    pcRoot->addChild(pcOpenEdge);
+    }
 }
 
 void ViewProviderMeshFaceSet::showBoundingBox(bool show)
 {
-  if (pBoundingBox) {
-    // remove the node and destroy the data
-    pcRoot->removeChild(pBoundingBox);
-    pBoundingBox = 0;
-  }
+    if (pBoundingBox) {
+	    // remove the node and destroy the data
+	    pcRoot->removeChild(pBoundingBox);
+	    pBoundingBox = 0;
+    }
 
-  if ( show ) {
-    pBoundingBox = new SoSeparator();
-    SoDrawStyle* lineStyle = new SoDrawStyle;
-    lineStyle->lineWidth = 2.0f;
-    pBoundingBox->addChild(lineStyle);
-    SoBaseColor* color = new SoBaseColor();
-    color->rgb.setValue(1.0f, 1.0f, 1.0f);
-    pBoundingBox->addChild(color);
-
-    Gui::SoFCBoundingBox* bbox = new Gui::SoFCBoundingBox;
-    pBoundingBox->addChild(bbox);
-    const Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
-    Base::BoundBox3f box = meshProp.getValue().GetBoundBox();
-    bbox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
-    bbox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
-    bbox->coordsOn.setValue(false);
-    bbox->dimensionsOn.setValue(true);
-
-    // add to the highlight node
-    pcRoot->addChild(pBoundingBox);
-  }
+    if ( show ) {
+	    pBoundingBox = new SoSeparator();
+	    SoDrawStyle* lineStyle = new SoDrawStyle;
+	    lineStyle->lineWidth = 2.0f;
+	    pBoundingBox->addChild(lineStyle);
+	    SoBaseColor* color = new SoBaseColor();
+	    color->rgb.setValue(1.0f, 1.0f, 1.0f);
+	    pBoundingBox->addChild(color);
+	
+	    Gui::SoFCBoundingBox* bbox = new Gui::SoFCBoundingBox;
+	    pBoundingBox->addChild(bbox);
+	    const Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+	    Base::BoundBox3f box = meshProp.getValue().GetBoundBox();
+	    bbox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
+	    bbox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
+	    bbox->coordsOn.setValue(false);
+	    bbox->dimensionsOn.setValue(true);
+	
+	    // add to the highlight node
+	    pcRoot->addChild(pBoundingBox);
+    }
 }
 
 void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
@@ -694,4 +692,3 @@ unsigned long ViewProviderMeshFaceSet::countMarkedFacets() const
 {
     return _markedFacets.size();
 }
-

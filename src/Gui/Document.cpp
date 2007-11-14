@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 Jrgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -294,52 +294,57 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 void Document::slotNewObject(App::DocumentObject& Obj)
 {
-  Base::Console().Log("Document::slotNewObject() called\n");
-  std::string cName = Obj.getViewProviderName();
-  if (cName.empty()) {
-    // handle document object with no view provider specified
-    Base::Console().Log("%s has no view provider specified\n", Obj.getTypeId().getName());
-    return;
-  }
-  setModified(true);
-  ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
-  if ( pcProvider )
-  {
-    // type not derived from ViewProviderDocumentObject!!!
-    assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
-    _ViewProviderMap[&Obj] = pcProvider;
-
-    try{
-      // if succesfully created set the right name and calculate the view
-      pcProvider->attach(&Obj);
-      pcProvider->setActiveMode();
-    }catch(const Base::MemoryException& e){
-      Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
-    }catch(Base::Exception &e){
-      e.ReportException();
+    Base::Console().Log("Document::slotNewObject() called\n");
+    std::string cName = Obj.getViewProviderName();
+    if (cName.empty()) {
+        // handle document object with no view provider specified
+        Base::Console().Log("%s has no view provider specified\n", Obj.getTypeId().getName());
+        return;
     }
+  
+    setModified(true);
+    ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
+    if (pcProvider) {
+        // type not derived from ViewProviderDocumentObject!!!
+        assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
+        _ViewProviderMap[&Obj] = pcProvider;
+
+        try {
+            // if succesfully created set the right name and calculate the view
+            pcProvider->attach(&Obj);
+            std::map<std::string, App::Property*> Map;
+            Obj.getPropertyMap(Map);
+            for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+                pcProvider->updateData(it->second);
+            }
+      
+            pcProvider->setActiveMode();
+        }
+        catch(const Base::MemoryException& e){
+            Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
+        }
+        catch(Base::Exception &e){
+            e.ReportException();
+        }
 #ifndef FC_DEBUG
-    catch(...){
-      Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Obj.getNameInDocument());
-    }
+        catch(...){
+            Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Obj.getNameInDocument());
+        }
 #endif
-    std::list<Gui::BaseView*>::iterator VIt;
-    // cycling to all views of the document
-    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-    {
-      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-      if(pcIvView)
-        pcIvView->getViewer()->addViewProvider(pcProvider);
+        std::list<Gui::BaseView*>::iterator VIt;
+        // cycling to all views of the document
+        for (VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+            View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+            if(pcIvView)
+                pcIvView->getViewer()->addViewProvider(pcProvider);
+        }
+    
+        // adding to the tree
+        signalNewObject(*pcProvider);
     }
-
-    // adding to the tree
-    signalNewObject(*pcProvider);
-    //pcTreeItem->addViewProviderDocumentObject(pcProvider);
-
-  }else{
-    Base::Console().Warning("Gui::Document::slotNewObject() no view provider for the object %s found\n",cName.c_str());
-  }
-
+    else {
+        Base::Console().Warning("Gui::Document::slotNewObject() no view provider for the object %s found\n",cName.c_str());
+    }
 }
 
 void Document::slotDeletedObject(App::DocumentObject& Obj)
@@ -985,4 +990,3 @@ void Document::unmadeSelection(  SoPath * path )
 
 
 #endif
-
