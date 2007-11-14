@@ -83,58 +83,57 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), pBoundingBox(0), m_bEdit(false)
 {
-  ADD_PROPERTY(LineWidth,(2.0f));
-  LineWidth.setConstraints(&floatRange);
-  ADD_PROPERTY(PointSize,(2.0f));
-  PointSize.setConstraints(&floatRange);
-  ADD_PROPERTY(OpenEdges,(false));
-  ADD_PROPERTY(BoundingBox,(false));
-  ADD_PROPERTY(Lighting,(1));
-  Lighting.setEnums(LightingEnums);
+    ADD_PROPERTY(LineWidth,(2.0f));
+    LineWidth.setConstraints(&floatRange);
+    ADD_PROPERTY(PointSize,(2.0f));
+    PointSize.setConstraints(&floatRange);
+    ADD_PROPERTY(OpenEdges,(false));
+    ADD_PROPERTY(BoundingBox,(false));
+    ADD_PROPERTY(Lighting,(1));
+    Lighting.setEnums(LightingEnums);
 
-  pOpenColor = new SoBaseColor();
-  setOpenEdgeColorFrom(ShapeColor.getValue());
-  pOpenColor->ref();
+    pOpenColor = new SoBaseColor();
+    setOpenEdgeColorFrom(ShapeColor.getValue());
+    pOpenColor->ref();
 
-  pcLineStyle = new SoDrawStyle();
-  pcLineStyle->ref();
-  pcLineStyle->style = SoDrawStyle::LINES;
-  pcLineStyle->lineWidth = LineWidth.getValue();
+    pcLineStyle = new SoDrawStyle();
+    pcLineStyle->ref();
+    pcLineStyle->style = SoDrawStyle::LINES;
+    pcLineStyle->lineWidth = LineWidth.getValue();
 
-  pcPointStyle = new SoDrawStyle();
-  pcPointStyle->ref();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = PointSize.getValue();
+    pcPointStyle = new SoDrawStyle();
+    pcPointStyle->ref();
+    pcPointStyle->style = SoDrawStyle::POINTS;
+    pcPointStyle->pointSize = PointSize.getValue();
 
-  pShapeHints = new SoShapeHints;
-  pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-  pShapeHints->ref();
+    pShapeHints = new SoShapeHints;
+    pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    pShapeHints->ref();
 
-  pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::OVERALL;
-  pcMatBinding->ref();
+    pcMatBinding = new SoMaterialBinding;
+    pcMatBinding->value = SoMaterialBinding::OVERALL;
+    pcMatBinding->ref();
 
-  Lighting.touch();
+    Lighting.touch();
 
-  // read the correct shape color from the preferences
-  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
-  App::Color color = ShapeColor.getValue();
-  unsigned long current = color.getPackedValue();
-  unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
-  if ( current != setting )
-  {
-    color.setPackedValue(setting);
-    ShapeColor.setValue(color);
-  }
+    // read the correct shape color from the preferences
+    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+    App::Color color = ShapeColor.getValue();
+    unsigned long current = color.getPackedValue();
+    unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
+    if (current != setting) {
+        color.setPackedValue(setting);
+        ShapeColor.setValue(color);
+    }
 }
 
 ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
 {
-  pOpenColor->unref();
-  pcLineStyle->unref();
-  pcPointStyle->unref();
-  pShapeHints->unref();
-  pcMatBinding->unref();
+    pOpenColor->unref();
+    pcLineStyle->unref();
+    pcPointStyle->unref();
+    pShapeHints->unref();
+    pcMatBinding->unref();
 }
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
@@ -165,62 +164,64 @@ void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
 
 void ViewProviderMeshFaceSet::setOpenEdgeColorFrom( const App::Color& c )
 {
-  float r=1.0f-c.r; r = r < 0.5f ? 0.0f : 1.0f;
-  float g=1.0f-c.g; g = g < 0.5f ? 0.0f : 1.0f;
-  float b=1.0f-c.b; b = b < 0.5f ? 0.0f : 1.0f;
-  pOpenColor->rgb.setValue(r, g, b);
+    float r=1.0f-c.r; r = r < 0.5f ? 0.0f : 1.0f;
+    float g=1.0f-c.g; g = g < 0.5f ? 0.0f : 1.0f;
+    float b=1.0f-c.b; b = b < 0.5f ? 0.0f : 1.0f;
+    pOpenColor->rgb.setValue(r, g, b);
 }
 
 void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 {
-  ViewProviderFeature::attach(pcFeat);
+    ViewProviderFeature::attach(pcFeat);
 
-  // only one selection node for the mesh
-  const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
+    // only one selection node for the mesh
+    const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
 
-  pcVertexNode = new SoFCMeshVertex;
-  const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
-  pcVertexNode->point.setValue(rPAry);
-  pcHighlight->addChild(pcVertexNode);
+    pcVertexNode = new SoFCMeshVertex;
+    const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
+    pcVertexNode->point.setValue(rPAry);
+    pcHighlight->addChild(pcVertexNode);
 
-  pcFacetNode = new SoFCMeshFacet;
-  const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
-  pcFacetNode->coordIndex.setValue(rFAry);
-  pcHighlight->addChild(pcFacetNode);
+    pcFacetNode = new SoFCMeshFacet;
+    const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
+    pcFacetNode->coordIndex.setValue(rFAry);
+    pcHighlight->addChild(pcFacetNode);
 
-  pcFaceSet = new SoFCMeshFaceSet;
-  pcHighlight->addChild(pcFaceSet);
+    pcFaceSet = new SoFCMeshFaceSet;
+    pcHighlight->addChild(pcFaceSet);
 
-  // faces
-  SoGroup* pcFlatRoot = new SoGroup();
+    // faces
+    SoGroup* pcFlatRoot = new SoGroup();
 
-  pcFlatRoot->addChild(pShapeHints);
-  pcFlatRoot->addChild(pcShapeMaterial);
-  pcFlatRoot->addChild(pcMatBinding);
-  pcFlatRoot->addChild(pcHighlight);
-  addDisplayMaskMode(pcFlatRoot, "Flat");
+    pcFlatRoot->addChild(pShapeHints);
+    pcFlatRoot->addChild(pcShapeMaterial);
+    pcFlatRoot->addChild(pcMatBinding);
+    pcFlatRoot->addChild(pcHighlight);
+    addDisplayMaskMode(pcFlatRoot, "Flat");
 
-  // points
-  SoGroup* pcPointRoot = new SoGroup();
-  pcPointRoot->addChild(pcPointStyle);
-  pcPointRoot->addChild(pcFlatRoot);
-  addDisplayMaskMode(pcPointRoot, "Point");
+    // points
+    SoGroup* pcPointRoot = new SoGroup();
+    pcPointRoot->addChild(pcPointStyle);
+    pcPointRoot->addChild(pcFlatRoot);
+    addDisplayMaskMode(pcPointRoot, "Point");
 
-  // wires
-  SoLightModel* pcLightModel = new SoLightModel();
-  pcLightModel->model = SoLightModel::BASE_COLOR;
-  SoGroup* pcWireRoot = new SoGroup();
-  pcWireRoot->addChild(pcLineStyle);
-  pcWireRoot->addChild(pcLightModel);
-  pcWireRoot->addChild(pcShapeMaterial);
-  pcWireRoot->addChild(pcHighlight);
-  addDisplayMaskMode(pcWireRoot, "Wireframe");
+    // wires
+    SoLightModel* pcLightModel = new SoLightModel();
+    pcLightModel->model = SoLightModel::BASE_COLOR;
+    SoGroup* pcWireRoot = new SoGroup();
+    pcWireRoot->addChild(pcLineStyle);
+    pcWireRoot->addChild(pcLightModel);
+    pcWireRoot->addChild(pcShapeMaterial);
+    pcWireRoot->addChild(pcHighlight);
+    addDisplayMaskMode(pcWireRoot, "Wireframe");
 
-  // faces+wires
-  SoGroup* pcFlatWireRoot = new SoGroup();
-  pcFlatWireRoot->addChild(pcFlatRoot);
-  pcFlatWireRoot->addChild(pcWireRoot);
-  addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
+    // faces+wires
+    SoGroup* pcFlatWireRoot = new SoGroup();
+    pcFlatWireRoot->addChild(pcFlatRoot);
+    pcFlatWireRoot->addChild(pcWireRoot);
+    addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
+
+    updateData(&meshFeature->Mesh);
 }
 
 void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
@@ -250,30 +251,30 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 
 QIcon ViewProviderMeshFaceSet::getIcon() const
 {
-  static const char * const Mesh_Feature_xpm[] = {
-    "16 16 4 1",
-    ".	c None",
-    "#	c #000000",
-    "s	c #BEC2FC",
-    "g	c #00FF00",
-    ".......##.......",
-    "....#######.....",
-    "..##ggg#ggg#....",
-    "##ggggg#gggg##..",
-    "#g#ggg#gggggg##.",
-    "#gg#gg#gggg###s.",
-    "#gg#gg#gg##gg#s.",
-    "#ggg#####ggg#ss.",
-    "#gggg##gggg#ss..",
-    ".#g##g#gggg#s...",
-    ".##ggg#ggg#ss...",
-    ".##gggg#g#ss....",
-    "..s#####g#s.....",
-    "....sss##ss.....",
-    "........ss......",
-    "................"};
-  QPixmap px(Mesh_Feature_xpm);
-  return px;
+    static const char * const Mesh_Feature_xpm[] = {
+        "16 16 4 1",
+        ".	c None",
+        "#	c #000000",
+        "s	c #BEC2FC",
+        "g	c #00FF00",
+        ".......##.......",
+        "....#######.....",
+        "..##ggg#ggg#....",
+        "##ggggg#gggg##..",
+        "#g#ggg#gggggg##.",
+        "#gg#gg#gggg###s.",
+        "#gg#gg#gg##gg#s.",
+        "#ggg#####ggg#ss.",
+        "#gggg##gggg#ss..",
+        ".#g##g#gggg#s...",
+        ".##ggg#ggg#ss...",
+        ".##gggg#g#ss....",
+        "..s#####g#s.....",
+        "....sss##ss.....",
+        "........ss......",
+        "................"};
+    QPixmap px(Mesh_Feature_xpm);
+    return px;
 }
 
 void ViewProviderMeshFaceSet::setDisplayMode(const char* ModeName)
@@ -292,48 +293,47 @@ void ViewProviderMeshFaceSet::setDisplayMode(const char* ModeName)
 
 std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
 {
-  std::vector<std::string> StrList;
+    std::vector<std::string> StrList;
 
-  // add your own modes
-  StrList.push_back("Shaded");
-  StrList.push_back("Wireframe");
-  StrList.push_back("Flat Lines");
-  StrList.push_back("Points");
+    // add your own modes
+    StrList.push_back("Shaded");
+    StrList.push_back("Wireframe");
+    StrList.push_back("Flat Lines");
+    StrList.push_back("Points");
 
-  return StrList;
+    return StrList;
 }
 
 void ViewProviderMeshFaceSet::setEdit(void)
 {
-  if ( m_bEdit ) return;
-  m_bEdit = true;
+    if ( m_bEdit ) return;
+    m_bEdit = true;
 }
 
 void ViewProviderMeshFaceSet::unsetEdit(void)
 {
-  m_bEdit = false;
+    m_bEdit = false;
 }
 
 const char* ViewProviderMeshFaceSet::getEditModeName(void)
 {
-  return "Polygon picking";
+    return "Polygon picking";
 }
 
 bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
-  if ( m_bEdit )
-  {
-    unsetEdit();
-    std::vector<SbVec2f> clPoly = Viewer.getPickedPolygon();
-    if ( clPoly.size() < 3 )
-      return false;
-    if ( clPoly.front() != clPoly.back() )
-      clPoly.push_back(clPoly.front());
+    if ( m_bEdit ) {
+        unsetEdit();
+        std::vector<SbVec2f> clPoly = Viewer.getPickedPolygon();
+        if ( clPoly.size() < 3 )
+            return false;
+        if ( clPoly.front() != clPoly.back() )
+            clPoly.push_back(clPoly.front());
 
-    cutMesh(clPoly, Viewer);
-  }
+        cutMesh(clPoly, Viewer);
+    }
 
-  return false;
+    return false;
 }
 
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)

@@ -371,6 +371,15 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   pcHiddenLineRoot->addChild(wirehints);
   pcHiddenLineRoot->addChild(pcWireRoot);
   addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
+
+  std::map<std::string, App::Property*> Map;
+  this->pcObject->getPropertyMap(Map);
+  for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+    if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyMeshKernel::getClassTypeId())) {
+      createMesh(static_cast<Mesh::PropertyMeshKernel*>(it->second)->getValue());
+      break;
+    }
+  }
 }
 
 void ViewProviderMesh::updateData(const App::Property* Prop)

@@ -53,6 +53,7 @@
 #include <Gui/ViewProviderFeature.h>
 
 #include <Mod/Mesh/App/MeshProperties.h>
+#include <Mod/Mesh/App/MeshFeature.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
@@ -73,6 +74,7 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
     pcColorBar->Attach(this);
     pcColorBar->ref();
     pcColorBar->setRange( -0.1f, 0.1f, 3 );
+    pcLinkRoot = new SoGroup;
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
@@ -80,6 +82,7 @@ ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
     pcColorMat->unref();
     pcColorBar->Detach(this);
     pcColorBar->unref();
+    pcLinkRoot->unref();
 }
 
 void ViewProviderMeshCurvature::init(const Mesh::PropertyCurvatureList* pCurvInfo)
@@ -161,52 +164,60 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
     pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
     pcColorShadedRoot->addChild(pcColorMat);
     pcColorShadedRoot->addChild(pcMatBinding);
+    pcColorShadedRoot->addChild(pcLinkRoot);
 
     addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
+  
+    // if the data are valid update the Inventor node
+    std::map<std::string, App::Property*> Map;
+    this->pcObject->getPropertyMap(Map);
+    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyCurvatureList::getClassTypeId())) {
+            Mesh::PropertyCurvatureList* curv = static_cast<Mesh::PropertyCurvatureList*>(it->second);
+            if (curv->getSize() > 2)
+                updateData(static_cast<Mesh::PropertyCurvatureList*>(it->second));
+            break;
+        }
+    }
 }
 
 void ViewProviderMeshCurvature::updateData(const App::Property* prop)
 {
-    if (prop->getTypeId() != Mesh::PropertyCurvatureList::getClassTypeId())
-        return;
-    init( static_cast<const Mesh::PropertyCurvatureList*>(prop) ); // init color bar
-    // Check for an already existing color bar
-    Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
-    if ( pcBar ) {
-        float fMin = pcColorBar->getMinValue();
-        float fMax = pcColorBar->getMaxValue();
+    // set to the expected size
+    if (prop->getTypeId() == App::PropertyLink::getClassTypeId()) {
+        Mesh::Feature* object = static_cast<const App::PropertyLink*>(prop)->getValue<Mesh::Feature*>();
+        if (object) {
+            const MeshCore::MeshKernel& kernel = object->Mesh.getValue();
+            pcColorMat->diffuseColor.setNum((int)kernel.CountPoints());
+            pcColorMat->transparency.setNum((int)kernel.CountPoints());
 
-        // Attach to the foreign color bar and delete our own bar
-        pcBar->Attach(this);
-        pcBar->ref();
-        pcBar->setRange(fMin, fMax, 3);
-        pcBar->Notify(0);
-        pcColorBar->Detach(this);
-        pcColorBar->unref();
-        pcColorBar = pcBar;
-    }
-
-    // search for a linked object with a mesh property
-    std::map<std::string, App::Property*> Map;
-    App::PropertyLink* linkObject=0;
-    pcObject->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(App::PropertyLink::getClassTypeId())) {
-            linkObject = (App::PropertyLink*)it->second;
-            break;
+            // get the view provider of the associated mesh feature
+            App::Document& rDoc = pcObject->getDocument();
+            Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
+            Gui::ViewProviderFeature* view = (Gui::ViewProviderFeature*)pDoc->getViewProvider(object);
+            this->pcLinkRoot->removeAllChildren();
+            this->pcLinkRoot->addChild(view->getHighlightNode());
         }
     }
+    else if (prop->getTypeId() == Mesh::PropertyCurvatureList::getClassTypeId()) {
+        init( static_cast<const Mesh::PropertyCurvatureList*>(prop) ); // init color bar
+        setActiveMode();
+        // Check for an already existing color bar
+        Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
+        if ( pcBar ) {
+            float fMin = pcColorBar->getMinValue();
+            float fMax = pcColorBar->getMaxValue();
 
-    assert(linkObject && linkObject->getValue());
-
-    // get the view provider of the associated mesh feature
-    App::Document& rDoc = pcObject->getDocument();
-    Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
-    Gui::ViewProviderFeature* view = (Gui::ViewProviderFeature*)pDoc->getViewProvider(linkObject->getValue());
-    SoGroup* sep = this->getRoot();
-    sep = (SoGroup*)sep->getChild(1); // an SoSwitch
-    sep = (SoGroup*)sep->getChild(0); // an SoGroup
-    sep->addChild(view->getHighlightNode());
+            // Attach to the foreign color bar and delete our own bar
+            pcBar->Attach(this);
+            pcBar->ref();
+            pcBar->setRange(fMin, fMax, 3);
+            pcBar->Notify(0);
+            pcColorBar->Detach(this);
+            pcColorBar->unref();
+            pcColorBar = pcBar;
+        }
+    }
 }
 
 SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const
