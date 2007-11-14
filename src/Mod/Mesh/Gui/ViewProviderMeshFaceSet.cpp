@@ -250,7 +250,7 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 
 QIcon ViewProviderMeshFaceSet::getIcon() const
 {
-  const char * Mesh_Feature_xpm[] = {
+  static const char * const Mesh_Feature_xpm[] = {
     "16 16 4 1",
     ".	c None",
     "#	c #000000",

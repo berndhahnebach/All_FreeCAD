@@ -80,6 +80,7 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     this->rootItem->setText(0, tr("Application"));
     this->treeWidget->expandItem(this->rootItem);
     this->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    this->treeWidget->setMouseTracking(true); // needed for itemEntered() to work
 
     this->statusTimer = new QTimer(this);
 
@@ -240,6 +241,24 @@ TreeWidget::TreeWidget(QWidget* parent)
 
 TreeWidget::~TreeWidget()
 {
+}
+
+void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options, const QModelIndex &index) const
+{
+    QTreeWidget::drawRow(painter, options, index);
+    // Set the text and highlighted text color of a hidden object to a dark
+    //QTreeWidgetItem * item = itemFromIndex(index);
+    //if (item->type() == ObjectType && !(static_cast<DocumentObjectItem*>(item)->previousStatus & 1)) {
+    //    QStyleOptionViewItem opt(options);
+    //    opt.state ^= QStyle::State_Enabled;
+    //    QColor c = opt.palette.color(QPalette::Inactive, QPalette::Dark);
+    //    opt.palette.setColor(QPalette::Inactive, QPalette::Text, c);
+    //    opt.palette.setColor(QPalette::Inactive, QPalette::HighlightedText, c);
+    //    QTreeWidget::drawRow(painter, opt, index);
+    //}
+    //else {
+    //    QTreeWidget::drawRow(painter, options, index);
+    //}
 }
 
 // ----------------------------------------------------------------------------
@@ -493,12 +512,11 @@ void DocumentObjectItem::testStatus()
         px = QPixmap(feature_recompute_xpm);
     }
 
-    int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
-    QPixmap icon = viewObject->getIcon().pixmap(w,w);
+    QIcon::Mode mode = QIcon::Normal;
     if (currentStatus & 1) { // visible
         // Note: By default the foreground, i.e. text color is invalid
         // to make use of the default color of the tree widget's palette.
-        // If we temporarily set this color to gray and reset to an invalid
+        // If we temporarily set this color to dark and reset to an invalid
         // color again we cannot do it with setTextColor() or setForeground(), 
         // respectively, because for any reason the color would always switch 
         // to black which will lead to unreadable text if the system background 
@@ -510,9 +528,18 @@ void DocumentObjectItem::testStatus()
         this->setData(0, Qt::TextColorRole,QVariant());
 #endif
     } else { // invisible
-        this->setTextColor(0, Qt::gray);
-        icon = BitmapFactory().disabled(icon);
+        QStyleOptionViewItem opt;
+        opt.initFrom(this->treeWidget());
+#if QT_VERSION >= 0x040200
+        this->setForeground(0, opt.palette.color(QPalette::Disabled,QPalette::Dark));
+#else
+        this->setTextColor(0, opt.palette.color(QPalette::Disabled,QPalette::Dark));
+#endif
+        mode = QIcon::Disabled;
     }
+
+    int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+    QPixmap icon = viewObject->getIcon().pixmap(w, w, mode);
 
     // if needed show small pixmap inside
     if (!px.isNull()) {
