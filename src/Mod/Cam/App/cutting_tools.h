@@ -38,7 +38,7 @@ public:
 	
 	TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
 	double GetWireLength(TopoDS_Wire &aWire);
-	//bool OffsetWires_Standard(float radius);
+	bool OffsetWires_Standard(float radius);
 	
 	/*
 	Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt 
@@ -46,8 +46,8 @@ public:
 	*/
 	
 	bool arrangecuts_ZLEVEL();
-	bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
-	bool calculateAccurateSlaveZLevel(std::vector<projectPointContainer> &finalPoints, float radius, float &average_delta_z);
+	//bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
+	bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level);
 	//bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
 	bool initializeMeshStuff();
 	bool arrangecuts_SPIRAL();
@@ -56,7 +56,8 @@ public:
 	{return &m_all_offset_cuts_high;}
 	inline std::vector<Handle_Geom_BSplineCurve>* getOutputlow()
 	{return &m_all_offset_cuts_low;}
-	TopoDS_Compound getCutShape();
+	inline std::vector<std::pair<float,TopoDS_Shape> > getCutShape()
+	{return m_ordered_cuts;}
 	
 	
 

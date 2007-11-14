@@ -50,6 +50,15 @@ void Edgesort::Init()
     m_edgeIter = m_edges.begin();
 }
 
+void Edgesort::ReInit(const TopoDS_Shape& aShape)
+{
+	m_shape= aShape;
+	m_done = false;
+	m_edges.clear();
+	Perform();
+    m_edgeIter = m_edges.begin();
+}
+
 bool Edgesort::More()
 {
        return m_edgeIter != m_edges.end();
