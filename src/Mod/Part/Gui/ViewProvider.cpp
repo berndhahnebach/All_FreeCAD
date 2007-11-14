@@ -230,6 +230,15 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     addDisplayMaskMode(pcFlatRoot, "Shaded");
     addDisplayMaskMode(pcWireframeRoot, "Wireframe");
     addDisplayMaskMode(pcPointsRoot, "Point");
+
+    std::map<std::string, App::Property*> Map;
+    this->pcObject->getPropertyMap(Map);
+    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(Part::PropertyPartShape::getClassTypeId())) {
+            updateData(static_cast<Part::PropertyPartShape*>(it->second));
+            break;
+        }
+    }
 }
 
 void ViewProviderPart::setDisplayMode(const char* ModeName)

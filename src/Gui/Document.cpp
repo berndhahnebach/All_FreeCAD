@@ -312,6 +312,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     try{
       // if succesfully created set the right name and calculate the view
       pcProvider->attach(&Obj);
+      pcProvider->setActiveMode();
     }catch(const Base::MemoryException& e){
       Base::Console().Error("Memory exception in '%s' thrown: %s\n",Obj.getNameInDocument(),e.what());
     }catch(Base::Exception &e){
@@ -379,9 +380,6 @@ void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
         } catch (...) {
             Base::Console().Error("Cannot update representation for '%s'.\n", Obj.getNameInDocument());
         }
-
-        if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
-            static_cast<ViewProviderDocumentObject*>(viewProvider)->setActiveMode();
 
         if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
             signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));

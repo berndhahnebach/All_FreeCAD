@@ -91,6 +91,7 @@ private:
 
 protected:
   SoMaterial       * pcColorMat;
+  SoGroup          * pcLinkRoot;
   Gui::SoFCColorBar* pcColorBar;
 };
 

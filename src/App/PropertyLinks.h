@@ -76,12 +76,11 @@ public:
 
    /** Returns the link type checked
      */
-    template <class _type>
-    _type * getValue(void) const
+    template <typename _type>
+    inline _type getValue(void) const
     {
         return _pcLink ? dynamic_cast<_type>(_pcLink) : 0;
     }
-
 
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);

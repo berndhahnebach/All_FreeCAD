@@ -36,8 +36,8 @@ class SoEventCallback;
 class SoMaterialBinding;
 
 namespace Gui {
-  class SoFCSelection;
-  class AbstractMouseModel;
+    class SoFCSelection;
+    class AbstractMouseModel;
 }
 namespace MeshGui {
 class SoFCMeshVertex;
@@ -53,73 +53,73 @@ class SoFCMeshFaceSet;
  */
 class GuiMeshExport ViewProviderMeshFaceSet : public Gui::ViewProviderFeature
 {
-  PROPERTY_HEADER(TriangulationGui::ViewProviderMeshFaceSet);
+    PROPERTY_HEADER(TriangulationGui::ViewProviderMeshFaceSet);
 
 public:
-  ViewProviderMeshFaceSet();
-  virtual ~ViewProviderMeshFaceSet();
-  
-  // Display properties
-  App::PropertyFloatConstraint LineWidth;
-  App::PropertyFloatConstraint PointSize;
-  App::PropertyBool OpenEdges;
-  App::PropertyBool BoundingBox;
-  App::PropertyEnumeration Lighting;
+    ViewProviderMeshFaceSet();
+    virtual ~ViewProviderMeshFaceSet();
 
-  void attach(App::DocumentObject *pcFeat);
-  virtual void updateData(const App::Property*);
-  virtual QIcon getIcon() const;
-  virtual void setDisplayMode(const char* ModeName);
-  virtual std::vector<std::string> getDisplayModes() const;
+    // Display properties
+    App::PropertyFloatConstraint LineWidth;
+    App::PropertyFloatConstraint PointSize;
+    App::PropertyBool OpenEdges;
+    App::PropertyBool BoundingBox;
+    App::PropertyEnumeration Lighting;
 
-  /** @name Polygon picking */
-  //@{
-  // Draws the picked polygon
-  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-  /// Sets the edit mnode
-  void setEdit(void);
-  /// Unsets the edit mode
-  void unsetEdit(void);
-  /// Returns the edit mode
-  const char* getEditModeName(void);
-  void faceInfo(unsigned long facet);
-  void fillHole(unsigned long facet);
-  void markPart(unsigned long facet);
-  void unmarkParts();
-  void removePart();
-  unsigned long countMarkedFacets() const;
-  //@}
+    void attach(App::DocumentObject *pcFeat);
+    virtual void updateData(const App::Property*);
+    virtual QIcon getIcon() const;
+    virtual void setDisplayMode(const char* ModeName);
+    virtual std::vector<std::string> getDisplayModes() const;
+
+    /** @name Polygon picking */
+    //@{
+    // Draws the picked polygon
+    bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
+    /// Sets the edit mnode
+    void setEdit(void);
+    /// Unsets the edit mode
+    void unsetEdit(void);
+    /// Returns the edit mode
+    const char* getEditModeName(void);
+    void faceInfo(unsigned long facet);
+    void fillHole(unsigned long facet);
+    void markPart(unsigned long facet);
+    void unmarkParts();
+    void removePart();
+    unsigned long countMarkedFacets() const;
+    //@}
 
 protected:
-  /// get called by the container whenever a proptery has been changed
-  void onChanged(const App::Property* prop);
-  void showOpenEdges( bool );
-  void showBoundingBox( bool );
-  void setOpenEdgeColorFrom( const App::Color& col );
-  virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
+    /// get called by the container whenever a proptery has been changed
+    void onChanged(const App::Property* prop);
+    void showOpenEdges( bool );
+    void showBoundingBox( bool );
+    void setOpenEdgeColorFrom( const App::Color& col );
+    virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
-  SoFCMeshVertex   * pcVertexNode;
-  SoFCMeshFacet    * pcFacetNode;
-  SoFCMeshFaceSet  * pcFaceSet;
-  SoDrawStyle      * pcLineStyle;
-  SoDrawStyle      * pcPointStyle;
-  SoSeparator      * pcOpenEdge;
-  SoSeparator      * pBoundingBox;
-  SoBaseColor      * pOpenColor;
-  SoShapeHints     * pShapeHints;
-  SoMaterialBinding* pcMatBinding;
+    SoFCMeshVertex   * pcVertexNode;
+    SoFCMeshFacet    * pcFacetNode;
+    SoFCMeshFaceSet  * pcFaceSet;
+    SoDrawStyle      * pcLineStyle;
+    SoDrawStyle      * pcPointStyle;
+    SoSeparator      * pcOpenEdge;
+    SoSeparator      * pBoundingBox;
+    SoBaseColor      * pOpenColor;
+    SoShapeHints     * pShapeHints;
+    SoMaterialBinding* pcMatBinding;
 
 public:
-  static void faceInfoCallback(void * ud, SoEventCallback * n);
-  static void fillHoleCallback(void * ud, SoEventCallback * n);
-  static void markPartCallback(void * ud, SoEventCallback * n);
+    static void faceInfoCallback(void * ud, SoEventCallback * n);
+    static void fillHoleCallback(void * ud, SoEventCallback * n);
+    static void markPartCallback(void * ud, SoEventCallback * n);
 
 private:
-  std::vector<unsigned long> _markedFacets;
-  bool m_bEdit;
+    std::vector<unsigned long> _markedFacets;
+    bool m_bEdit;
 
-  static App::PropertyFloatConstraint::Constraints floatRange;
-  static const char* LightingEnums[];
+    static App::PropertyFloatConstraint::Constraints floatRange;
+    static const char* LightingEnums[];
 };
 
 } // namespace MeshGui
