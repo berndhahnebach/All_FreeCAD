@@ -49,6 +49,9 @@ public:
     ~TreeWidget();
 
     static const int ObjectType;
+
+protected:
+    void drawRow(QPainter *, const QStyleOptionViewItem &, const QModelIndex &) const;
 };
 
 /** The link between the tree and a document.
@@ -104,6 +107,8 @@ public:
 private:
     int previousStatus;
     Gui::ViewProviderDocumentObject* viewObject;
+
+    friend class TreeWidget;
 };
 
 /**
