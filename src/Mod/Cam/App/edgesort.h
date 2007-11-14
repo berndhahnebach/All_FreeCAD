@@ -52,6 +52,7 @@ public:
        Standard_EXPORT virtual ~Edgesort(void);
 
        Standard_EXPORT void Init();
+	   Standard_EXPORT void ReInit(const TopoDS_Shape& aShape);
        Standard_EXPORT bool More();
        Standard_EXPORT void Next();
        Standard_EXPORT const TopoDS_Edge& Current();
