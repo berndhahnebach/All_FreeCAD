@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 Jrgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -230,15 +230,6 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     addDisplayMaskMode(pcFlatRoot, "Shaded");
     addDisplayMaskMode(pcWireframeRoot, "Wireframe");
     addDisplayMaskMode(pcPointsRoot, "Point");
-
-    std::map<std::string, App::Property*> Map;
-    this->pcObject->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(Part::PropertyPartShape::getClassTypeId())) {
-            updateData(static_cast<Part::PropertyPartShape*>(it->second));
-            break;
-        }
-    }
 }
 
 void ViewProviderPart::setDisplayMode(const char* ModeName)
@@ -274,13 +265,15 @@ void ViewProviderPart::updateData(const App::Property* prop)
     if (prop->getTypeId() != Part::PropertyPartShape::getClassTypeId())
         return;
 
+    TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
+    if (cShape.IsNull())
+        return;
+
     // getting current setting values...
     fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
     bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
     bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
-
-    TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
 
     // clear anchor nodes
     EdgeRoot->removeAllChildren();

@@ -53,7 +53,9 @@ Curvature::Curvature(void)
 
 short Curvature::mustExecute() const
 {
-    if (Source.isTouched() || CurvInfo.isTouched())
+    if (Source.isTouched())
+        return 1;
+    if (Source.getValue() && Source.getValue()->isTouched())
         return 1;
     return 0;
 }

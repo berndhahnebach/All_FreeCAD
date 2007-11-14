@@ -36,7 +36,7 @@
 # include <algorithm>
 #endif
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
+// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
@@ -75,6 +75,7 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
     pcColorBar->ref();
     pcColorBar->setRange( -0.1f, 0.1f, 3 );
     pcLinkRoot = new SoGroup;
+    pcLinkRoot->ref();
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
@@ -145,7 +146,7 @@ void ViewProviderMeshCurvature::init(const Mesh::PropertyCurvatureList* pCurvInf
 
 void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 {
-    // creats the satandard viewing modes
+    // creats the standard viewing modes
     inherited::attach(pcFeat);
 
     SoShapeHints * flathints = new SoShapeHints;
@@ -155,7 +156,7 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
     SoGroup* pcColorShadedRoot = new SoGroup();
     pcColorShadedRoot->addChild(flathints);
 
-    // color shaded  ------------------------------------------
+    // color shaded
     SoDrawStyle *pcFlatStyle = new SoDrawStyle();
     pcFlatStyle->style = SoDrawStyle::FILLED;
     pcColorShadedRoot->addChild(pcFlatStyle);
@@ -167,18 +168,6 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
     pcColorShadedRoot->addChild(pcLinkRoot);
 
     addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
-  
-    // if the data are valid update the Inventor node
-    std::map<std::string, App::Property*> Map;
-    this->pcObject->getPropertyMap(Map);
-    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyCurvatureList::getClassTypeId())) {
-            Mesh::PropertyCurvatureList* curv = static_cast<Mesh::PropertyCurvatureList*>(it->second);
-            if (curv->getSize() > 2)
-                updateData(static_cast<Mesh::PropertyCurvatureList*>(it->second));
-            break;
-        }
-    }
 }
 
 void ViewProviderMeshCurvature::updateData(const App::Property* prop)
@@ -186,6 +175,7 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
     // set to the expected size
     if (prop->getTypeId() == App::PropertyLink::getClassTypeId()) {
         Mesh::Feature* object = static_cast<const App::PropertyLink*>(prop)->getValue<Mesh::Feature*>();
+        this->pcLinkRoot->removeAllChildren();
         if (object) {
             const MeshCore::MeshKernel& kernel = object->Mesh.getValue();
             pcColorMat->diffuseColor.setNum((int)kernel.CountPoints());
@@ -195,7 +185,6 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
             App::Document& rDoc = pcObject->getDocument();
             Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
             Gui::ViewProviderFeature* view = (Gui::ViewProviderFeature*)pDoc->getViewProvider(object);
-            this->pcLinkRoot->removeAllChildren();
             this->pcLinkRoot->addChild(view->getHighlightNode());
         }
     }
