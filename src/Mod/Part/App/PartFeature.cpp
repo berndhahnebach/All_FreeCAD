@@ -346,11 +346,14 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
   file.close();
 
   // read the shape from the temp file
-  if (! BRepTools::Read(_Shape, (const Standard_CString)fi.filePath().c_str(), builder))
+  TopoDS_Shape shape;
+  if (! BRepTools::Read(shape, (const Standard_CString)fi.filePath().c_str(), builder))
     throw Base::Exception("PropertyPartShape::RestoreDocFile(): Cant read file...");
 
   // delete the temp file
   fi.deleteFile();
+
+  setValue(shape);
 }
 
 //===========================================================================

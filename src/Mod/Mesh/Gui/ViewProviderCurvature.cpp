@@ -189,7 +189,9 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
         }
     }
     else if (prop->getTypeId() == Mesh::PropertyCurvatureList::getClassTypeId()) {
-        init( static_cast<const Mesh::PropertyCurvatureList*>(prop) ); // init color bar
+        const Mesh::PropertyCurvatureList* curv = static_cast<const Mesh::PropertyCurvatureList*>(prop);
+        if (curv->getSize() < 3) return; // invalid array
+        init(curv); // init color bar
         setActiveMode();
         // Check for an already existing color bar
         Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
