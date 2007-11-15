@@ -1,6 +1,8 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>							   *
+ *				based on work by										   *
+ *	 Stephane Routelous <Stephane.Routelous@exotk.org					   *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -31,11 +33,11 @@ struct Edgesort_gp_Pnt_Less
                Standard_Real x1,y1,z1,x2,y2,z2;
 			   _Left.Coord(x1,y1,z1);
 			   _Right.Coord(x2,y2,z2);
-               if ( fabs(x1- x2) > 0.01 )
+               if ( fabs(x1- x2) > 0.2 )
                        return x1 < x2;
-               else if ( fabs(y1 -y2) > 0.01 )
+               else if ( fabs(y1 -y2) > 0.2 )
                        return y1 < y2;
-			   else if ( fabs(z1 -z2) > 0.01 )
+			   else if ( fabs(z1 -z2) > 0.2 )
                        return z1 < z2;
                return false;
        }

@@ -36,6 +36,7 @@ Edgesort::Edgesort(const TopoDS_Shape& aShape)
 :m_shape(aShape),m_done(false)
 {
 	m_edges.clear();
+	m_vertices.clear();
 }
 
 Edgesort::~Edgesort(void)
@@ -55,6 +56,7 @@ void Edgesort::ReInit(const TopoDS_Shape& aShape)
 	m_shape= aShape;
 	m_done = false;
 	m_edges.clear();
+	m_vertices.clear();
 	Perform();
     m_edgeIter = m_edges.begin();
 }
@@ -152,9 +154,10 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
        }
 
        gp_Pnt nextPoint;
-	   if ( P2.IsEqual(point,0.01) )
+	   if ( P2.IsEqual(point,0.2) )
        {
                //need to reverse the edge
+		   
                theEdge.Reverse();
                nextPoint = P1;
        }
