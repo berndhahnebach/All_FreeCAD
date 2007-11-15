@@ -109,7 +109,7 @@ void PropertyInteger::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("Integer");
     // get the value of my Attribute
-    _lValue = reader.getAttributeAsInteger("value");
+    setValue(reader.getAttributeAsInteger("value"));
 }
 
 Property *PropertyInteger::Copy(void) const
@@ -228,7 +228,7 @@ void PropertyPath::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("Path");
     // get the value of my Attribute
-    _cValue = reader.getAttribute("value");
+    setValue(reader.getAttribute("value"));
 }
 
 
@@ -596,15 +596,16 @@ void PropertyIntegerList::Restore(Base::XMLReader &reader)
     // get the value of my Attribute
     int count = reader.getAttributeAsInteger("count");
     
-    setSize(count);
-    
-    for(int i = 0;i<count; i++)
-    {
+    std::vector<long> values(count);
+    for(int i = 0; i < count; i++) {
         reader.readElement("I");
-        _lValueList[i] = reader.getAttributeAsInteger("v");
+        values[i] = reader.getAttributeAsInteger("v");
     }
     
     reader.readEndElement("IntegerList");
+
+    //assignment
+    setValues(values);
 }
 
 Property *PropertyIntegerList::Copy(void) const
@@ -695,7 +696,7 @@ void PropertyFloat::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("Float");
     // get the value of my Attribute
-    _dValue = (float) reader.getAttributeAsFloat("value");
+    setValue((float)reader.getAttributeAsFloat("value"));
 }
 
 Property *PropertyFloat::Copy(void) const
@@ -906,26 +907,20 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
 
 void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
-    try {
-        unsigned long uCt = getSize();
-        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
-    } catch( const Base::Exception& e) {
-        throw e;
-    }
+    unsigned long uCt = getSize();
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    if (uCt > 0)
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
 }
 
 void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
 {
-    try {
-        _lValueList.clear();
-        unsigned long uCt=ULONG_MAX;
-        reader.read((char*)&uCt, sizeof(unsigned long));
-        _lValueList.resize(uCt);
-        reader.read((char*)&(_lValueList[0]), uCt*sizeof(float));
-    } catch( const Base::Exception& e) {
-        throw e;
-    }
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    std::vector<float> values(uCt);
+    if (uCt > 0)
+    reader.read((char*)&(values[0]), uCt*sizeof(float));
+    setValues(values);
 }
 
 Property *PropertyFloatList::Copy(void) const
@@ -1032,7 +1027,7 @@ void PropertyString::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("String");
     // get the value of my Attribute
-    _cValue = reader.getAttribute("value");
+    setValue(reader.getAttribute("value"));
 }
 
 
@@ -1165,15 +1160,17 @@ void PropertyStringList::Restore(Base::XMLReader &reader)
     reader.readElement("StringList");
     // get the value of my Attribute
     int count = reader.getAttributeAsInteger("count");
-    
-    setSize(count);
-    
-    for(int i = 0;i<count; i++) {
+
+    std::vector<std::string> values(count);
+    for(int i = 0; i < count; i++) {
         reader.readElement("String");
-        _lValueList[i] = reader.getAttribute("value");
+        values[i] = reader.getAttribute("value");
     }
     
     reader.readEndElement("StringList");
+
+    // assignment
+    setValues(values);
 }
 
 Property *PropertyStringList::Copy(void) const
@@ -1267,10 +1264,7 @@ void PropertyBool::Restore(Base::XMLReader &reader)
     reader.readElement("Bool");
     // get the value of my Attribute
     string b = reader.getAttribute("value");
-    if (b == "true")
-        _lValue = true;
-    else
-        _lValue = false;
+    (b == "true") ? setValue(true) : setValue(false);
 }
 
 
@@ -1320,6 +1314,13 @@ void PropertyColor::setValue(const Color &col)
 {
     aboutToSetValue();
     _cCol=col;
+    hasSetValue();
+}
+
+void PropertyColor::setValue(unsigned long rgba)
+{
+    aboutToSetValue();
+    _cCol.setPackedValue(rgba);
     hasSetValue();
 }
 
@@ -1419,7 +1420,7 @@ void PropertyColor::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyColor");
     // get the value of my Attribute
     unsigned long rgba = reader.getAttributeAsUnsigned("value");
-    _cCol.setPackedValue(rgba);
+    setValue(rgba);
 }
 
 
@@ -1571,26 +1572,20 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
 
 void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
-    try {
-        unsigned long uCt = getSize();
-        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
-    } catch( const Base::Exception& e) {
-        throw e;
-    }
+    unsigned long uCt = getSize();
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    if (uCt > 0)
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
 }
 
 void PropertyColorList::RestoreDocFile(Base::Reader &reader)
 {
-    try {
-        _lValueList.clear();
-        unsigned long uCt=ULONG_MAX;
-        reader.read((char*)&uCt, sizeof(unsigned long));
-        _lValueList.resize(uCt);
-        reader.read((char*)&(_lValueList[0]), uCt*sizeof(Color));
-    } catch( const Base::Exception& e) {
-        throw e;
-    }
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    std::vector<Color> values(uCt);
+    if (uCt > 0)
+    reader.read((char*)&(values[0]), uCt*sizeof(Color));
+    setValues(values);
 }
 
 
@@ -1716,12 +1711,14 @@ void PropertyMaterial::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("PropertyMaterial");
     // get the value of my Attribute
+    aboutToSetValue();
     _cMat.ambientColor.setPackedValue(reader.getAttributeAsInteger("ambientColor"));
     _cMat.diffuseColor.setPackedValue(reader.getAttributeAsInteger("diffuseColor"));
     _cMat.specularColor.setPackedValue(reader.getAttributeAsInteger("specularColor"));
     _cMat.emissiveColor.setPackedValue(reader.getAttributeAsInteger("emissiveColor"));
     _cMat.shininess = (float)reader.getAttributeAsInteger("shininess");
     _cMat.transparency = (float)reader.getAttributeAsFloat("transparency");
+    hasSetValue();
 }
 
 Property *PropertyMaterial::Copy(void) const

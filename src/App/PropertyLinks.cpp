@@ -248,30 +248,27 @@ void PropertyLinkList::Save (Writer &writer) const
 
 void PropertyLinkList::Restore(Base::XMLReader &reader)
 {
-    // read my Element
+    // read my element
     reader.readElement("LinkList");
     // get the value of my Attribute
     int count = reader.getAttributeAsInteger("count");
-
-    setSize(count);
-
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-    for(int i = 0;i<count; i++) {
+    std::vector<DocumentObject*> values(count);
+    for (int i = 0; i < count; i++) {
         reader.readElement("Link");
         std::string name = reader.getAttribute("value");
 
-        // Property not in a Feature!
-        //assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-        //_lValueList[i] = reinterpret_cast<App::DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
-
-        // Property not in a Feature!
+        // Property not in an object!
         DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
-        assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-        _lValueList[i] = pcObject;
+        assert(pcObject);
+        values[i] = pcObject;
     }
 
     reader.readEndElement("LinkList");
+
+    // assignment
+    setValues(values);
 }
 
 

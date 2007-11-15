@@ -25,28 +25,10 @@
 #define PART_PROPERTYLINE_H
 
 #include <App/PropertyGeo.h>
+#include <gp_Lin.hxx>
 
 namespace Part
 {
-
-template <class T>
-struct Line3
-{
-  Line3() 
-  {
-    this->b.x = 0.0f;
-    this->b.y = 0.0f;
-    this->b.z = 0.0f;
-    this->e.x = 0.0f;
-    this->e.y = 0.0f;
-    this->e.z = 0.0f;
-  }
-
-  Base::Vector3<T> b, e;
-};
-
-typedef Line3<float> Line3f;
-typedef Line3<double> Line3d;
 
 /** The line property class.
  * @author Werner Mayer
@@ -62,9 +44,9 @@ public:
   /** @name Getter/setter */
   //@{
   /// set the line
-  void setValue( const Line3f& line );
+  void setValue( const gp_Lin& line );
   /// get the line
-  const Line3f& getValue(void) const;
+  const gp_Lin& getValue(void) const;
   //@}
 
   /** @name Python interface */
@@ -84,7 +66,7 @@ public:
   //@}
 
 private:
-  Line3f _line;
+  gp_Lin _line;
 };
 
 /** The line set property class.
@@ -103,11 +85,11 @@ public:
   void setSize(int newSize){_lValueList.resize(newSize);}   
   int getSize(void) const {return _lValueList.size();} 
   /// index operator
-  const Line3f& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
-  void setValue( const Line3f& line );
-  void set1Value (const int idx, const Line3f& value){_lValueList.operator[] (idx) = value;}
-  void setValues (const std::vector<Line3f>& values);
-  const std::vector<Line3f> &getValues(void) const {return _lValueList;}
+  const gp_Lin& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
+  void setValue( const gp_Lin& line );
+  void set1Value (const int idx, const gp_Lin& value){_lValueList.operator[] (idx) = value;}
+  void setValues (const std::vector<gp_Lin>& values);
+  const std::vector<gp_Lin> &getValues(void) const {return _lValueList;}
   //@}
 
   /** @name Python interface */
@@ -131,7 +113,7 @@ public:
   //@}
 
 private:
-  std::vector<Line3f> _lValueList;
+  std::vector<gp_Lin> _lValueList;
 };
 
 } // namespace Part

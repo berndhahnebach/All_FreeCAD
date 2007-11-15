@@ -48,7 +48,7 @@ public:
 	/// Constructor 
   LinePy(PyTypeObject *T = &Type);
 	/// Constructor 
-  LinePy(const Line3f& cLine, PyTypeObject *T = &LinePy::Type);
+  LinePy(const gp_Lin& cLine, PyTypeObject *T = &LinePy::Type);
   /// For construction in Python 
   static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
   /// For initialization in Python 
@@ -69,11 +69,14 @@ public:
 	int _setattr(char *attr, PyObject *value);
   //@}
 
-	const Line3f value(void) const {return _Line;}
-	void setValue(const Line3f& line) {_Line = line;}
+	const gp_Lin& value(void) const {return _Line;}
+	void setValue(const gp_Lin& line) {_Line = line;}
+
+    PYFUNCDEF_D(LinePy,setLocation)
+    PYFUNCDEF_D(LinePy,setDirection)
 
 protected:
-	Line3f _Line;
+	gp_Lin _Line;
 };
 
 } //namespace Part

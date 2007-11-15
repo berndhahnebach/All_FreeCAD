@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include "LinePy.h"
+#include <App/VectorPy.h>
 
 using namespace Part;
 
@@ -87,7 +88,9 @@ PyTypeObject LinePy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef LinePy::Methods[] = {
-	{NULL, NULL}		/* Sentinel */
+    PYMETHODEDEF(setLocation)
+    PYMETHODEDEF(setDirection)
+    {NULL, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -122,9 +125,10 @@ int LinePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 LinePy::LinePy(PyTypeObject *T)
   : PyObjectBase(0,T)
 {
+    _Line.SetLocation(gp_Pnt(0.0,0.0,0.0));
 }
 
-LinePy::LinePy(const Part::Line3f &rcLine, PyTypeObject *T)
+LinePy::LinePy(const gp_Lin &rcLine, PyTypeObject *T)
   : PyObjectBase(0,T), _Line(rcLine)
 {
 }
@@ -141,12 +145,15 @@ LinePy::~LinePy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *LinePy::_repr(void)
 {
-  std::stringstream a;
-  a << "Part.Line (";
-  a << _Line.b.x << ", "<< _Line.b.y << ", "<< _Line.b.z << "; "; 
-  a << _Line.e.x << ", "<< _Line.e.y << ", "<< _Line.e.z ; 
-  a << ")" << std::endl;
-	return Py_BuildValue("s", a.str().c_str());
+    const gp_Dir& dir = _Line.Direction();
+    const gp_Pnt& loc = _Line.Location();
+    
+    std::stringstream a;
+    a << "Part.Line (";
+    a << loc.X() << ", "<< loc.Y() << ", " << loc.Z() << "; "; 
+    a << dir.X() << ", "<< dir.Y() << ", " << dir.Z(); 
+    a << ")";
+    return Py_BuildValue("s", a.str().c_str());
 }
 
 //--------------------------------------------------------------------------
@@ -154,78 +161,50 @@ PyObject *LinePy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *LinePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-  if (Base::streq(attr, "__dict__")) {
-    PyObject *dict = PyDict_New();
-    if (dict) {
-      PyDict_SetItemString(dict,"bx", Py_BuildValue("f",_Line.b.x));
-      PyDict_SetItemString(dict,"by", Py_BuildValue("f",_Line.b.y));
-      PyDict_SetItemString(dict,"bz", Py_BuildValue("f",_Line.b.z));
-      PyDict_SetItemString(dict,"ex", Py_BuildValue("f",_Line.e.x));
-      PyDict_SetItemString(dict,"ey", Py_BuildValue("f",_Line.e.y));
-      PyDict_SetItemString(dict,"ez", Py_BuildValue("f",_Line.e.z));
-      if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-    }
-    return dict;
-  }
-  else if (Base::streq(attr, "bx"))
-    return Py_BuildValue("f",_Line.b.x);
-  else if (Base::streq(attr, "by"))
-    return Py_BuildValue("f",_Line.b.y);
-  else if (Base::streq(attr, "bz"))
-    return Py_BuildValue("f",_Line.b.z);
-  else if (Base::streq(attr, "ex"))
-    return Py_BuildValue("f",_Line.e.x);
-  else if (Base::streq(attr, "ey"))
-    return Py_BuildValue("f",_Line.e.y);
-  else if (Base::streq(attr, "ez"))
-    return Py_BuildValue("f",_Line.e.z);
-  else
-   _getattr_up(PyObjectBase);
+  _getattr_up(PyObjectBase);
 } 
 
 int LinePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-  if (Base::streq(attr, "bx")) {
-    if (PyInt_Check(value))
-      _Line.b.x = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.b.x = (float)PyFloat_AsDouble(value);
-    return 0;
-  } else if (Base::streq(attr, "by")) {
-    if (PyInt_Check(value))
-      _Line.b.y = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.b.y = (float)PyFloat_AsDouble(value);
-    return 0;
-  } else if (Base::streq(attr, "bz")) {
-    if (PyInt_Check(value))
-      _Line.b.z = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.b.z = (float)PyFloat_AsDouble(value);
-    return 0;
-  } else if (Base::streq(attr, "ex")) {
-    if (PyInt_Check(value))
-      _Line.e.x = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.e.x = (float)PyFloat_AsDouble(value);
-    return 0;
-  } else if (Base::streq(attr, "ey")) {
-    if (PyInt_Check(value))
-      _Line.e.y = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.e.y = (float)PyFloat_AsDouble(value);
-    return 0;
-  } else if (Base::streq(attr, "ez")) {
-    if (PyInt_Check(value))
-      _Line.e.z = (float)PyInt_AsLong(value);
-    else if (PyFloat_Check(value))
-      _Line.e.z = (float)PyFloat_AsDouble(value);
-    return 0;
-  }
-
   return PyObjectBase::_setattr(attr, value); 						
 }
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
+
+PYFUNCIMP_D(LinePy,setLocation)
+{
+  PyObject *pyObject;
+  if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
+    if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
+      App::VectorPy *pcVector = (App::VectorPy*)pyObject;
+      Base::Vector3f v = pcVector->value();
+      _Line.SetLocation(gp_Pnt(v.x,v.y,v.z));
+    } else {
+      return NULL;
+    }
+  } else {
+    return NULL;
+  }
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(LinePy,setDirection)
+{
+  PyObject *pyObject;
+  if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
+    if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
+      App::VectorPy *pcVector = (App::VectorPy*)pyObject;
+      Base::Vector3f v = pcVector->value();
+      _Line.SetDirection(gp_Dir(v.x,v.y,v.z));
+    } else {
+      return NULL;
+    }
+  } else {
+    return NULL;
+  }
+
+  Py_Return; 
+}

@@ -24,9 +24,8 @@
 #ifndef PART_FEATUREPARTLINE_H
 #define PART_FEATUREPARTLINE_H
 
-#include <App/PropertyGeo.h>
-
 #include "PartFeature.h"
+#include "PropertyLine.h"
 
 namespace Part
 {
@@ -39,8 +38,7 @@ public:
     Line();
     virtual ~Line();
 
-    App::PropertyVector b;
-    App::PropertyVector e;
+    PropertyLine StraightLine;
 
     /** @name methods override feature */
     //@{

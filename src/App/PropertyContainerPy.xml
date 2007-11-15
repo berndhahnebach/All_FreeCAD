@@ -11,19 +11,24 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>This is a persistance class</UserDocu>
     </Documentation>
+	  <Methode Name="getPropertyByName">
+		  <Documentation>
+			  <UserDocu>Return the value of a named property.</UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Methode Name="getTypeOfProperty">
 		  <Documentation>
-			  <UserDocu>returns the Type of a nemed property. This can be (Hidden,ReadOnly,Output) or any combination. </UserDocu>
+			  <UserDocu>Return the type of a named property. This can be (Hidden,ReadOnly,Output) or any combination. </UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Methode Name="getGroupOfProperty">
 		  <Documentation>
-			  <UserDocu>returns the name of the group which the property belongs to in this class. The Properties sorted in differnt named groups for convinians.</UserDocu>
+			  <UserDocu>Return the name of the group which the property belongs to in this class. The properties sorted in differnt named groups for convenience.</UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Methode Name="getDocumentationOfProperty">
 		  <Documentation>
-			  <UserDocu>returns the documentation string of the propery of this class.</UserDocu>
+			  <UserDocu>Return the documentation string of the property of this class.</UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Attribute Name="PropertiesList" ReadOnly="true">

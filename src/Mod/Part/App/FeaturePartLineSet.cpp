@@ -28,6 +28,7 @@
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <Geom_Line.hxx>
 # include <gp_Pnt.hxx>
+# include <gp_Lin.hxx>
 # include <TopoDS_Compound.hxx>
 # include <TopoDS_Edge.hxx>
 #endif
@@ -41,7 +42,9 @@ PROPERTY_SOURCE(Part::LineSet, Part::Feature)
 
 LineSet::LineSet()
 {
-    ADD_PROPERTY(Lines,(Line3f()));
+    gp_Lin line;
+    line.SetLocation(gp_Pnt(0.0,0.0,0.0));
+    ADD_PROPERTY(Lines,(line));
 }
 
 LineSet::~LineSet()
@@ -61,12 +64,14 @@ App::DocumentObjectExecReturn *LineSet::execute(void)
     BRep_Builder aBuilder;
     aBuilder.MakeCompound(aCompound);
 
-    const std::vector<Line3f>& lines = Lines.getValues();
+    const std::vector<gp_Lin>& lines = Lines.getValues();
 
-    for (std::vector<Line3f>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
+    for (std::vector<gp_Lin>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
+        const gp_Pnt& p = it->Location();
+        const gp_Dir& d = it->Direction(); 
         // Convert into OCC representation
-        gp_Pnt pnt1(it->b.x, it->b.y, it->b.z);
-        gp_Pnt pnt2(it->e.x, it->e.y, it->e.z);
+        gp_Pnt pnt1 = p;
+        gp_Pnt pnt2(p.X()+d.X(), p.Y()+d.Y(), p.Z()+d.Z());
 
         // Create directly the underlying line geometry
         BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);

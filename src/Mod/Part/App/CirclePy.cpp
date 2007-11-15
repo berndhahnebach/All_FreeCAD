@@ -157,7 +157,7 @@ PyObject *CirclePy::_repr(void)
   a << "Radius : " << fRad << ", "; 
   a << "Position : (" << loc.X() << ", "<< loc.Y() << ", "<< loc.Z() << "), "; 
   a << "Direction : (" << dir.X() << ", "<< dir.Y() << ", "<< dir.Z() << "), "; 
-  a << ")" << std::endl;
+  a << ")";
 	return Py_BuildValue("s", a.str().c_str());
 }
 

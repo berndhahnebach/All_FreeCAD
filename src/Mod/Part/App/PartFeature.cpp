@@ -58,6 +58,7 @@
 
 
 #include <strstream>
+#include <Base/Console.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
@@ -301,59 +302,69 @@ void PropertyPartShape::Restore(Base::XMLReader &reader)
 
 void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
 {
-  // Before writing to the project we clean all triangulation data to save memory
-  BRepTools::Clean(_Shape);
+    // Before writing to the project we clean all triangulation data to save memory
+    BRepTools::Clean(_Shape);
 
-  // create a temporary file and copy the content to the zip stream
-  Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
+    // create a temporary file and copy the content to the zip stream
+    Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
-  if (! BRepTools::Write(_Shape,(const Standard_CString)fi.filePath().c_str()))
-    throw Base::Exception("PropertyPartShape::SaveDocFile: Can't save file...");
-
-  std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
-  if (file){
-    unsigned long ulSize = 0; 
-    std::streambuf* buf = file.rdbuf();
-    if ( buf ) {
-      unsigned long ulCurr;
-      ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
-      ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
-      buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
+    if (!BRepTools::Write(_Shape,(const Standard_CString)fi.filePath().c_str())) {
+        // Note: Do NOT throw an exception here because if the tmp. file could
+        // not be created we should not abort.
+        // We only print an error message but continue writing the next files to the
+        // stream...
+        Base::Console().Error("Cannot save BRep file '%s'", fi.filePath().c_str());
     }
 
-    // read in the ASCII file and write back to the stream
-    std::strstreambuf sbuf(ulSize);
-    file >> &sbuf;
-    writer.Stream() << &sbuf;
-  }
+    std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
+    if (file){
+        unsigned long ulSize = 0; 
+        std::streambuf* buf = file.rdbuf();
+        if (buf) {
+            unsigned long ulCurr;
+            ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+            ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+            buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
+        }
 
-  file.close();
-  // remove temp file
-  fi.deleteFile();
+        // read in the ASCII file and write back to the stream
+        std::strstreambuf sbuf(ulSize);
+        file >> &sbuf;
+        writer.Stream() << &sbuf;
+    }
+
+    file.close();
+    // remove temp file
+    fi.deleteFile();
 }
 
 void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 {
-  BRep_Builder builder;
+    BRep_Builder builder;
 
-  // create a temporary file and copy the content from the zip stream
-  Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
+    // create a temporary file and copy the content from the zip stream
+    Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
-  // read in the ASCII file and write back to the file stream
-  std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
-  if (reader)
-    reader >> file.rdbuf();
-  file.close();
+    // read in the ASCII file and write back to the file stream
+    std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
+    if (reader)
+        reader >> file.rdbuf();
+    file.close();
 
-  // read the shape from the temp file
-  TopoDS_Shape shape;
-  if (! BRepTools::Read(shape, (const Standard_CString)fi.filePath().c_str(), builder))
-    throw Base::Exception("PropertyPartShape::RestoreDocFile(): Cant read file...");
+    // read the shape from the temp file
+    TopoDS_Shape shape;
+    if (!BRepTools::Read(shape, (const Standard_CString)fi.filePath().c_str(), builder)) {
+        // Note: Do NOT throw an exception here because if the tmp. created file could
+        // not be read it's NOT an indication for an invalid input stream 'reader'.
+        // We only print an error message but continue reading the next files from the
+        // stream...
+        Base::Console().Error("Cannot read BRep file '%s'", fi.filePath().c_str());
+    }
 
-  // delete the temp file
-  fi.deleteFile();
+    // delete the temp file
+    fi.deleteFile();
 
-  setValue(shape);
+    setValue(shape);
 }
 
 //===========================================================================

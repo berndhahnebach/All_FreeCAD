@@ -103,21 +103,23 @@ void PropertyCircle::Save (Base::Writer &writer) const
 
 void PropertyCircle::Restore(Base::XMLReader &reader)
 {
-  // read my element
-  reader.readElement("PropertyCircle");
+    // read my element
+    reader.readElement("PropertyCircle");
 
-  // get the value of my Attribute
-  Standard_Real fR = (float)reader.getAttributeAsFloat("Radius");
-  Standard_Real pX = (float)reader.getAttributeAsFloat("PosX");
-  Standard_Real pY = (float)reader.getAttributeAsFloat("PosY");
-  Standard_Real pZ = (float)reader.getAttributeAsFloat("PosZ");
-  Standard_Real dX = (float)reader.getAttributeAsFloat("DirX");
-  Standard_Real dY = (float)reader.getAttributeAsFloat("DirY");
-  Standard_Real dZ = (float)reader.getAttributeAsFloat("DirZ");
+    // get the value of my Attribute
+    Standard_Real fR = (float)reader.getAttributeAsFloat("Radius");
+    Standard_Real pX = (float)reader.getAttributeAsFloat("PosX");
+    Standard_Real pY = (float)reader.getAttributeAsFloat("PosY");
+    Standard_Real pZ = (float)reader.getAttributeAsFloat("PosZ");
+    Standard_Real dX = (float)reader.getAttributeAsFloat("DirX");
+    Standard_Real dY = (float)reader.getAttributeAsFloat("DirY");
+    Standard_Real dZ = (float)reader.getAttributeAsFloat("DirZ");
 
-  gp_Dir dir(dX, dY, dZ);
-  gp_Pnt loc(pX, pY, pZ);
-  gp_Ax1 axis(loc, dir);
-  _circle.SetAxis(axis);
-  _circle.SetRadius(fR);
+    gp_Dir dir(dX, dY, dZ);
+    gp_Pnt loc(pX, pY, pZ);
+    gp_Ax1 axis(loc, dir);
+    aboutToSetValue();
+    _circle.SetAxis(axis);
+    _circle.SetRadius(fR);
+    hasSetValue();
 }

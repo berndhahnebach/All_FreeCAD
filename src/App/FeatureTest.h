@@ -48,6 +48,7 @@ public:
   App::PropertyBool         Bool;
   App::PropertyString       String;
   App::PropertyPath         Path;
+  App::PropertyStringList   StringList;
 
   // special types
   App::PropertyDistance     Distance;
@@ -67,8 +68,9 @@ public:
   App::PropertyLinkList LinkList;
 
   // Standard Properties (PropertyGeo.h)
-  App::PropertyMatrix  Matrix;
-  App::PropertyVector  Vector;
+  App::PropertyMatrix    Matrix;
+  App::PropertyVector    Vector;
+  App::PropertyPlacement Placement;
 
   // Properties to test the Document::recompute()
   App::PropertyLink     Source1;

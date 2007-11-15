@@ -76,7 +76,7 @@ void CmdPointsImport::activated(int iMsg)
     fi.setFile(fn);
 
     openCommand("Points Import Create");
-    doCommand(Doc,"f = App.document().addObject(\"Points::ImportAscii\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f = App.ActiveDocument.addObject(\"Points::ImportAscii\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     commitCommand();
  
@@ -119,13 +119,13 @@ void CmdPointsExport::activated(int iMsg)
   
     openCommand("Export Points");
     std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
-    doCommand(Doc,"f = App.document().addObject(\"Points::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f = App.ActiveDocument.addObject(\"Points::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
     doCommand(Doc,"l=list()");
     
     for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
     {
-      doCommand(Doc,"l.append(App.document().getObject(\"%s\"))",(*it)->getNameInDocument());
+      doCommand(Doc,"l.append(App.ActiveDocument.getObject(\"%s\"))",(*it)->getNameInDocument());
     }
 
     doCommand(Doc,"f.Sources = l");
