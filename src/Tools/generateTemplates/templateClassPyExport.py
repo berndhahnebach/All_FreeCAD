@@ -213,6 +213,17 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
 // has to be implemented in @self.export.Name@Imp.cpp
 PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject *kwd)
 {
+	// test if twin object not allready deleted
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return NULL;
+    }
+	// test if object is set Const
+    if (((PyObjectBase*) self)->isConst()){
+        PyErr_Format(PyExc_ReferenceError, "This object is imutable, you can not set any attribute or call a methode");
+        return NULL;
+    }
+
     try { // catches all exeptions coming up from c++ and generate a python exeption
         return ((@self.export.Name@*)self)->@i.Name@(args);
     }
@@ -271,6 +282,11 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 // has to be implemented in @self.export.Name@Imp.cpp
 PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void *closure)
 {
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return NULL;
+    }
+
     try {
         return Py::new_reference_to(((@self.export.Name@*)self)->get@i.Name@());
     } catch (const Py::Exception&) {
@@ -285,12 +301,26 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 + if (i.ReadOnly):
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return NULL;
+    }
+
     PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is read-only");
     return -1;
 }
 = else:
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
-{
+{    
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return NULL;
+    }
+    if (((PyObjectBase*) self)->isConst()){
+        PyErr_Format(PyExc_ReferenceError, "This object is imutable, you can not set any attribute or call a methode");
+        return NULL;
+    }
+
     try {
         ((@self.export.Name@*)self)->set@i.Name@(Py::@i.Parameter.Type@(value,false));
         return 0;
@@ -467,7 +497,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 
 @self.export.Twin@ *@self.export.Name@::get@self.export.Twin@Object(void) const
 {
-    return dynamic_cast<@self.export.Twin@ *>(_pcBaseClass);
+    return static_cast<@self.export.Twin@ *>(_pcTwinPointer);
 }
 
 #if 0

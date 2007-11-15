@@ -35,6 +35,7 @@
 #   include <Python.h>
 #define slots
 #include <iostream>
+#include <bitset>
 
 #include<typeinfo>
 #include "Exception.h"
@@ -44,7 +45,7 @@
 
 /** Python static class macro for definition
  * sets up a static function entry in a class inheriting 
- * from FCPythonExport. Its a pure confiniance macro. You can also do
+ * from PyObjectBase. Its a pure confiniance macro. You can also do
  * it by hand if you want. It looks like that:
  * \code
  * static PyObject* X (PyObject *self,PyObject *args,PyObject *kwd);
@@ -89,9 +90,6 @@ union PyType_Object {
 
 namespace Base
 {
-
-class BaseClass;
-
 
 inline int streq(const char *A, const char *B)  // define "streq"
 { return strcmp(A,B) == 0;};
@@ -163,7 +161,7 @@ namespace Base
 /** The PyObjectBase class, exports the class as a python type
  *  PyObjectBase is the base class for all C++ classes which
  *  need to get exported into the python namespace. This class is 
- *  very important because nearly all imported classes in FreeCAD
+ *  very important because nearly all importand classes in FreeCAD
  *  are visible in python for macro recording and automation purpose.
  *  The class App::Document is a good expample for a exported class.
  *  There are some conveniance macros to make it easier to inherit
@@ -198,7 +196,7 @@ public:
      *  Sets the Type of the object (for inherintance) and decrease the
      *  the reference count of the PyObject.
      */
-    PyObjectBase(BaseClass*, PyTypeObject *T);
+    PyObjectBase(void*, PyTypeObject *T);
     /// Wrapper for the Python destructor
     static void PyDestructor(PyObject *P)   // python wrapper
     {  delete ((PyObjectBase *) P);  }
@@ -220,7 +218,7 @@ public:
     virtual PyObject *_getattr(char *attr);
     /// static wrapper for pythons _getattr()
     static  PyObject *__getattr(PyObject * PyObj, char *attr) {     // This should be the entry in Type. 
-        if (!((PyObjectBase*) PyObj)->_valid){
+        if (!((PyObjectBase*) PyObj)->isValid()){
             PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
             return NULL;
         }
@@ -243,7 +241,7 @@ public:
             PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
             return -1;
         }
-        else if (!((PyObjectBase*) PyObj)->_valid){
+        else if (!((PyObjectBase*) PyObj)->isValid()){
             PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
             return -1;
         }
@@ -267,7 +265,7 @@ public:
     virtual PyObject *_repr(void);
     /// python wrapper for the _repr() function
     static  PyObject *__repr(PyObject *PyObj)	{
-        if (!((PyObjectBase*) PyObj)->_valid){
+        if (!((PyObjectBase*) PyObj)->isValid()){
             PyErr_Format(PyExc_ReferenceError, "Cannot print representation of deleted object");
             return NULL;
         }
@@ -276,7 +274,7 @@ public:
 
   /** @name helper methods */
   //@{
-  /// return a float from an int or flot object, or throw.
+  /// return a float from an int or float object, or throw.
   static float getFloatFromPy(PyObject *value);
   //@}
 //
@@ -295,15 +293,26 @@ public:
 //  };
 
     void setInvalid() { 
-        _valid = false;
-        _pcBaseClass = 0;
+        StatusBits.reset(0);
+        _pcTwinPointer = 0;
     }
 
-private:
-    bool _valid;
+    bool isValid(void){
+        return StatusBits.test(0);
+    }
+
+    void setConst() { 
+        StatusBits.reset(1);
+    }
+
+    bool isConst(void){
+        return StatusBits.test(1);
+    }
+
 protected:
+    std::bitset<32> StatusBits;
     /// pointer to the handled class
-    BaseClass * _pcBaseClass;
+    void * _pcTwinPointer;
 };
 
 
