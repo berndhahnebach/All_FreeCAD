@@ -150,7 +150,7 @@ PyObject *VectorPy::_repr(void)
     std::stringstream a;
     a << "App.Vector ( ";
     a << _cVector.x << ", "<< _cVector.y << ", "<< _cVector.z ;
-    a << ")" << std::endl;
+    a << ")";
     return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------

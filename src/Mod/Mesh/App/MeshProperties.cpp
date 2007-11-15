@@ -213,26 +213,20 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 
 void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
-    try {
-        unsigned long uCt = getSize();
-        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
-    } catch( const Base::Exception&) {
-        throw;
-    }
+    unsigned long uCt = getSize();
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    if (uCt > 0)
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
 }
 
 void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
 {
-    try {
-        _lValueList.clear();
-        unsigned long uCt=ULONG_MAX;
-        reader.read((char*)&uCt, sizeof(unsigned long));
-        _lValueList.resize(uCt);
-        reader.read((char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
-    } catch( const Base::Exception&) {
-        throw;
-    }
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    std::vector<CurvatureInfo> values(uCt);
+    if (uCt > 0)
+    reader.read((char*)&(values[0]), uCt*sizeof(CurvatureInfo));
+    setValues(values);
 }
 
 App::Property *PropertyCurvatureList::Copy(void) const
@@ -378,8 +372,18 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
     
     if (file == "") {
         // read XML
-        MeshCore::MeshInput restorer(*_pcMesh);
+        MeshCore::MeshKernel kernel;
+        MeshCore::MeshInput restorer(kernel);
         restorer.LoadXML(reader);
+
+        // avoid to duplicate the mesh in memory
+        MeshCore::MeshPointArray points;
+        MeshCore::MeshFacetArray facets;
+        kernel.Adopt(points, facets);
+
+        aboutToSetValue();
+        _pcMesh->Adopt(points, facets);
+        hasSetValue();
     } 
     else {
         // initate a file read

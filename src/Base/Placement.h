@@ -33,25 +33,20 @@ namespace Base {
 
 
 /**
- * The Matrix4D class.
+ * The Placement class.
  */
 class BaseExport Placement
 {
 public:
-  /// default constructor
-  Placement(void){};
-  /// Destruction
-  virtual ~Placement () {};
+    /// default constructor
+    Placement(void);
+    /// Destruction
+    ~Placement () {};
 
-  const Vector3<double> &getPos(void) const {return _Pos;}
-  const double *getRotation(void) const {return _q;}
+    Base::Matrix4D getAsMatrix(void) const;
 
-  Base::Matrix4D getAsMatrix(void);
-
-
-  Vector3<double> _Pos;
-  double _q[4];
-
+    Vector3<double> _pos;
+    double _q[4];
 };
 
 } // namespace Base

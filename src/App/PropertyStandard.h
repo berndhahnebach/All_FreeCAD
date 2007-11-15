@@ -634,6 +634,7 @@ public:
      */
     void setValue(const Color &col);
     void setValue(float r, float g, float b, float a=0.0f);
+    void setValue(unsigned long rgba);
 
     /** This method returns a string representation of the property
      */

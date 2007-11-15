@@ -27,6 +27,7 @@
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <Geom_Line.hxx>
 # include <gp_Pnt.hxx>
+# include <gp_Lin.hxx>
 # include <TopoDS_Edge.hxx>
 #endif
 
@@ -39,8 +40,9 @@ PROPERTY_SOURCE(Part::Line, Part::Feature)
 
 Line::Line()
 {
-    ADD_PROPERTY(b,(0.0f,0.0f,0.0f));
-    ADD_PROPERTY(e,(1.0f,1.0f,1.0f));
+    gp_Lin line;
+    line.SetLocation(gp_Pnt(0.0,0.0,0.0));
+    ADD_PROPERTY(StraightLine,(line));
 }
 
 Line::~Line()
@@ -49,19 +51,20 @@ Line::~Line()
 
 short Line::mustExecute() const
 {
-    if (b.isTouched() || e.isTouched())
+    if (StraightLine.isTouched())
         return 1;
     return 0;
 }
 
 App::DocumentObjectExecReturn *Line::execute(void)
 {
-    Base::Vector3f beg = b.getValue();
-    Base::Vector3f end = e.getValue();
+    const gp_Lin& l = StraightLine.getValue();
+    const gp_Pnt& p = l.Location();
+    const gp_Dir& d = l.Direction(); 
 
     // Convert into OCC representation
-    gp_Pnt pnt1(beg.x, beg.y, beg.z);
-    gp_Pnt pnt2(end.x, end.y, end.z);
+    gp_Pnt pnt1 = p;
+    gp_Pnt pnt2(p.X()+d.X(), p.Y()+d.Y(), p.Z()+d.Z());
 
     // Create directly the underlying line geometry
     BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);

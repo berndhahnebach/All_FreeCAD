@@ -23,6 +23,7 @@
 #ifndef POINTSGUI_VIEWPROVIDERPOINTS_H
 #define POINTSGUI_VIEWPROVIDERPOINTS_H
 
+#include <Base/Vector3D.h>
 #include <Gui/ViewProviderFeature.h>
 #include <Inventor/SbVec2f.h>
 
@@ -86,7 +87,7 @@ public:
 
 protected:
   void onChanged(const App::Property* prop);
-  void createPoints(Points::Feature *pcFeature);
+  void createPoints(const std::vector<Base::Vector3f>& pnts);
   void setVertexColorMode(App::PropertyColorList*);
   void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
   void setVertexNormalMode(Points::PropertyNormalList*);

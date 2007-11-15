@@ -42,14 +42,14 @@ PropertyLine::~PropertyLine()
 {
 }
 
-void PropertyLine::setValue(const Line3f& line)
+void PropertyLine::setValue(const gp_Lin& line)
 {
   aboutToSetValue();
   _line = line;
   hasSetValue();
 }
 
-const Line3f& PropertyLine::getValue(void) const 
+const gp_Lin& PropertyLine::getValue(void) const 
 {
 	return _line;
 }
@@ -88,27 +88,33 @@ void PropertyLine::Paste(const App::Property &from)
 
 unsigned int PropertyLine::getMemSize (void) const
 {
-  return sizeof(Line3f);
+  return sizeof(gp_Lin);
 }
 
 void PropertyLine::Save (Base::Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<PropertyLine bX=\"" <<  _line.b.x << "\" bY=\"" <<  _line.b.y << "\" bZ=\"" <<  _line.b.z 
-         << writer.ind() << "\" eX=\"" <<  _line.e.x << "\" eY=\"" <<  _line.e.y << "\" eZ=\"" <<  _line.e.z <<"\"/>" << std::endl;
+    const gp_Dir& dir = _line.Direction();
+    const gp_Pnt& loc = _line.Location();
+    writer.Stream() << writer.ind() << "<PropertyLine bX=\"" 
+                    <<  loc.X() << "\" bY=\"" <<  loc.Y() << "\" bZ=\"" <<  loc.Z() << writer.ind() 
+                    << "\" eX=\"" <<  dir.X() << "\" eY=\"" <<  dir.Y() << "\" eZ=\"" <<  dir.Z() <<"\"/>" << std::endl;
 }
 
 void PropertyLine::Restore(Base::XMLReader &reader)
 {
-  // read my element
-  reader.readElement("PropertyLine");
+    // read my element
+    reader.readElement("PropertyLine");
 
-  // get the value of my Attribute
-  _line.b.x = (float)reader.getAttributeAsFloat("bX");
-  _line.b.y = (float)reader.getAttributeAsFloat("bY");
-  _line.b.z = (float)reader.getAttributeAsFloat("bZ");
-  _line.e.x = (float)reader.getAttributeAsFloat("eX");
-  _line.e.y = (float)reader.getAttributeAsFloat("eY");
-  _line.e.z = (float)reader.getAttributeAsFloat("eZ");
+    // get the value of my Attribute
+    gp_Pnt loc; gp_Dir dir;
+    loc.SetX(reader.getAttributeAsFloat("bX"));
+    loc.SetY(reader.getAttributeAsFloat("bY"));
+    loc.SetZ(reader.getAttributeAsFloat("bZ"));
+    dir.SetX(reader.getAttributeAsFloat("eX"));
+    dir.SetY(reader.getAttributeAsFloat("eY"));
+    dir.SetZ(reader.getAttributeAsFloat("eZ"));
+
+    setValue(gp_Lin(loc, dir));
 }
 
 // --------------------------------------------------------
@@ -123,7 +129,7 @@ PropertyLineSet::~PropertyLineSet()
 {
 }
 
-void PropertyLineSet::setValue(const Line3f& lValue)
+void PropertyLineSet::setValue(const gp_Lin& lValue)
 {
   aboutToSetValue();
   _lValueList.resize(1);
@@ -131,7 +137,7 @@ void PropertyLineSet::setValue(const Line3f& lValue)
   hasSetValue();
 }
 
-void PropertyLineSet::setValues(const std::vector<Line3f>& values)
+void PropertyLineSet::setValues(const std::vector<gp_Lin>& values)
 {
   aboutToSetValue();
   _lValueList = values;
@@ -150,7 +156,7 @@ void PropertyLineSet::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
         int nSize = PyList_Size(value);
-        std::vector<Line3f> lines;
+        std::vector<gp_Lin> lines;
         lines.resize(nSize);
 
         for (int i=0; i<nSize;++i) {
@@ -189,7 +195,7 @@ void PropertyLineSet::Paste(const App::Property &from)
 
 unsigned int PropertyLineSet::getMemSize (void) const
 {
-  return sizeof(Line3f)*_lValueList.size();
+  return sizeof(gp_Lin)*_lValueList.size();
 }
 
 void PropertyLineSet::Save (Base::Writer &writer) const
@@ -206,24 +212,18 @@ void PropertyLineSet::Restore(Base::XMLReader &reader)
 
 void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
 {
-  try {
     unsigned long uCt = getSize();
     writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Line3f));
-  } catch( const Base::Exception&) {
-    throw;
-  }
+    if (uCt > 0)
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(gp_Lin));
 }
 
 void PropertyLineSet::RestoreDocFile(Base::Reader &reader)
 {
-  try {
-    _lValueList.clear();
     unsigned long uCt=ULONG_MAX;
     reader.read((char*)&uCt, sizeof(unsigned long));
-    _lValueList.resize(uCt);
-    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Line3f));
-  } catch( const Base::Exception&) {
-    throw;
-  }
+    std::vector<gp_Lin> values(uCt);
+    if (uCt > 0)
+    reader.read((char*)&(values[0]), uCt*sizeof(gp_Lin));
+    setValues(values);
 }

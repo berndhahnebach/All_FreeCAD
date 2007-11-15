@@ -100,19 +100,28 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
 
 void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
-  unsigned long uCtPts = _cPoints.size();
-  writer.Stream().write((const char*)&uCtPts, sizeof(unsigned long));
-  writer.Stream().write((const char*)&(_cPoints[0]), uCtPts*sizeof(Base::Vector3f));
+    unsigned long uCt = _cPoints.size();
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it) {
+        writer.Stream().write((const char*)&(it->x), sizeof(float));
+        writer.Stream().write((const char*)&(it->y), sizeof(float));
+        writer.Stream().write((const char*)&(it->z), sizeof(float));
+    }
 }
 
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
-  _cPoints.clear();
-
-  unsigned long uCtPts;
-  reader.read((char*)&uCtPts, sizeof(unsigned long));
-  _cPoints.resize(uCtPts);
-  reader.read((char*)&(_cPoints[0]), uCtPts*sizeof(Base::Vector3f));
+    unsigned long uCt;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    PointKernel kernel(uCt);
+    for (unsigned long i=0; i < uCt; i++) {
+        float x, y, z;
+        reader.read((char*)&x, sizeof(float));
+        reader.read((char*)&y, sizeof(float));
+        reader.read((char*)&z, sizeof(float));
+        kernel[i].Set(x,y,z);
+    }
+    setValue(kernel);
 }
 
 App::Property *PropertyPointKernel::Copy(void) const 

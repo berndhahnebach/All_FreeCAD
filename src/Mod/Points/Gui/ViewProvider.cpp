@@ -97,11 +97,8 @@ void ViewProviderPoints::onChanged(const App::Property* prop)
   }
 }
 
-void ViewProviderPoints::createPoints(Points::Feature *pFeature)
+void ViewProviderPoints::createPoints(const std::vector<Base::Vector3f>& cPts)
 {
-  if ( !pFeature ) return;
-  const PointKernel& cPts = pFeature->Points.getValue();
-
   // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
   pcPointsCoord->enableNotify(false);
   pcPointsCoord->point.deleteValues(0);
@@ -109,7 +106,7 @@ void ViewProviderPoints::createPoints(Points::Feature *pFeature)
 
   // get all points
   int idx=0;
-  for ( PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++ )
+  for (PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++)
   {
     pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
   }
@@ -209,10 +206,6 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
   addDisplayMaskMode(pcPointRoot, "Point");
   addDisplayMaskMode(pcColorShadedRoot, "Color");
   addDisplayMaskMode(pcPointShadedRoot, "Shaded");
-
-  // get and save the feature
-  Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcObj);
-  createPoints( ptFea );
 }
 
 void ViewProviderPoints::setDisplayMode(const char* ModeName)
@@ -327,12 +320,14 @@ std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderPoints::updateData(const App::Property*)
+void ViewProviderPoints::updateData(const App::Property* prop)
 {
-  createPoints(dynamic_cast<Points::Feature*>(pcObject));
+    if (prop->getTypeId() == Points::PropertyPointKernel::getClassTypeId()) {
+        createPoints(static_cast<const Points::PropertyPointKernel*>(prop)->getValue());
 
-  // The number of points might have changed, so force also a resize of the Inventor internals
-  setActiveMode();
+        // The number of points might have changed, so force also a resize of the Inventor internals
+        setActiveMode();
+    }
 }
 
 QIcon ViewProviderPoints::getIcon() const

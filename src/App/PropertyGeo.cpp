@@ -148,9 +148,11 @@ void PropertyVector::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("PropertyVector");
     // get the value of my Attribute
+    aboutToSetValue();
     _cVec.x = (float)reader.getAttributeAsFloat("valueX");
     _cVec.y = (float)reader.getAttributeAsFloat("valueY");
     _cVec.z = (float)reader.getAttributeAsFloat("valueZ");
+    hasSetValue();
 }
 
 
@@ -290,28 +292,20 @@ void PropertyVectorList::Restore(Base::XMLReader &reader)
 
 void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
-    try {
-        unsigned long uCt = getSize();
-        writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-        writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-    }
-    catch ( const Base::Exception&) {
-        throw;
-    }
+    unsigned long uCt = getSize();
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    if (uCt > 0)
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
 }
 
 void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
 {
-    try {
-        _lValueList.clear();
-        unsigned long uCt=ULONG_MAX;
-        reader.read((char*)&uCt, sizeof(unsigned long));
-        _lValueList.resize(uCt);
-        reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-    }
-    catch ( const Base::Exception&) {
-        throw;
-    }
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    std::vector<Base::Vector3f> values(uCt);
+    if (uCt > 0)
+    reader.read((char*)&(values[0]), uCt*sizeof(Base::Vector3f));
+    setValues(values);
 }
 
 
@@ -419,6 +413,7 @@ void PropertyMatrix::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("PropertyMatrix");
     // get the value of my Attribute
+    aboutToSetValue();
     _cMat[0][0] = (float)reader.getAttributeAsFloat("a11");
     _cMat[0][1] = (float)reader.getAttributeAsFloat("a12");
     _cMat[0][2] = (float)reader.getAttributeAsFloat("a13");
@@ -438,6 +433,7 @@ void PropertyMatrix::Restore(Base::XMLReader &reader)
     _cMat[3][1] = (float)reader.getAttributeAsFloat("a42");
     _cMat[3][2] = (float)reader.getAttributeAsFloat("a43");
     _cMat[3][3] = (float)reader.getAttributeAsFloat("a44");
+    hasSetValue();
 }
 
 
@@ -507,8 +503,8 @@ void PropertyPlacement::setPyObject(PyObject *value)
 void PropertyPlacement::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyPlacement";
-    writer.Stream() << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
-    writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
+    writer.Stream() << " Px=\"" <<  _cPos._pos.x << "\" Py=\"" <<  _cPos._pos.y << "\" Pz=\"" <<  _cPos._pos.z << "\"";
+    writer.Stream() << " Q0=\"" <<  _cPos._q[0] << "\" Q1=\"" <<  _cPos._q[1] << "\" Q2=\"" <<  _cPos._q[2] << "\" Q3=\"" <<  _cPos._q[3] << "\"";
     writer.Stream() <<"/>" << endl;
 }
 
@@ -517,14 +513,16 @@ void PropertyPlacement::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("PropertyPlacement");
     // get the value of my Attribute
-    _cPos._Pos.x = reader.getAttributeAsFloat("Px");
-    _cPos._Pos.y = reader.getAttributeAsFloat("Py");
-    _cPos._Pos.z = reader.getAttributeAsFloat("Pz");
+    aboutToSetValue();
+    _cPos._pos.x = reader.getAttributeAsFloat("Px");
+    _cPos._pos.y = reader.getAttributeAsFloat("Py");
+    _cPos._pos.z = reader.getAttributeAsFloat("Pz");
 
     _cPos._q[0] = reader.getAttributeAsFloat("Q0");
     _cPos._q[1] = reader.getAttributeAsFloat("Q1");
     _cPos._q[2] = reader.getAttributeAsFloat("Q2");
     _cPos._q[3] = reader.getAttributeAsFloat("Q3");
+    hasSetValue();
 }
 
 

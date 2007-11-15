@@ -48,6 +48,7 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Bool   ,(true)  );
   ADD_PROPERTY(String ,("4711"));
   ADD_PROPERTY(Path   ,("c:\\temp"));
+  ADD_PROPERTY(StringList ,("4711"));
 
   ADD_PROPERTY(Enum   ,(4));
   Enum.setEnums(enums);
@@ -65,8 +66,9 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Link     ,(0));
   ADD_PROPERTY(LinkList ,(0));
 
-  ADD_PROPERTY(Vector ,(1.0,2.0,3.0));
-  ADD_PROPERTY(Matrix ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
+  ADD_PROPERTY(Vector    ,(1.0,2.0,3.0));
+  ADD_PROPERTY(Matrix    ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
+  ADD_PROPERTY(Placement ,(Base::Placement()));
   
   // properties for recompute testing
   static const char* group = "Feature Test";

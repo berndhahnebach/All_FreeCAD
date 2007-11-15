@@ -31,13 +31,18 @@
 
 using namespace Base;
 
-Base::Matrix4D Placement::getAsMatrix(void)
+Placement::Placement()
+{
+    _q[0]=_q[1]=_q[2]=0.0;_q[3]=1.0;
+}
+
+Base::Matrix4D Placement::getAsMatrix(void) const
 {
     Base::Rotation rot((float)this->_q[0],(float)this->_q[1],(float)this->_q[2],(float)this->_q[3]);
     Base::Matrix4D matrix;
     rot.getValue(matrix);
-    matrix[3][0] = this->_Pos.x;
-    matrix[3][1] = this->_Pos.y;
-    matrix[3][2] = this->_Pos.z;
+    matrix[3][0] = this->_pos.x;
+    matrix[3][1] = this->_pos.y;
+    matrix[3][2] = this->_pos.z;
     return matrix;
 }

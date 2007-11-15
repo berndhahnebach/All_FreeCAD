@@ -20,6 +20,21 @@ const char *PropertyContainerPy::representation(void) const
     return "<property container>";
 }
 
+PyObject*  PropertyContainerPy::getPropertyByName(PyObject *args)
+{
+    char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+    App::Property* prop = getPropertyContainerObject()->getPropertyByName(pstr);
+    if (prop) {
+        return prop->getPyObject();
+    }
+    else {
+        PyErr_Format(PyExc_AttributeError, "Property container has no property '%s'", pstr);
+        return NULL;
+    }
+}
+
 PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)
 {
     Py::List ret;
@@ -77,7 +92,6 @@ Py::List PropertyContainerPy::getPropertiesList(void) const
 
     return ret;
 }
-
 
 PyObject *PropertyContainerPy::getCustomAttributes(const char* attr) const
 {

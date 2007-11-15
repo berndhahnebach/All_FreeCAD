@@ -175,7 +175,7 @@ PyObject *MatrixPy::_repr(void)
     a << "(" << _cMatrix[1][0] << ","<< _cMatrix[1][1] << ","<< _cMatrix[1][2] << ","<< _cMatrix[1][3] << ")"<< ",";
     a << "(" << _cMatrix[2][0] << ","<< _cMatrix[2][1] << ","<< _cMatrix[2][2] << ","<< _cMatrix[2][3] << ")"<< ",";
     a << "(" << _cMatrix[3][0] << ","<< _cMatrix[3][1] << ","<< _cMatrix[3][2] << ","<< _cMatrix[3][3] << ")";
-    a << ")" << std::endl;
+    a << ")";
     return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
