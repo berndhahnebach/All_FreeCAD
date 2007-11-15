@@ -83,24 +83,24 @@ PropertyPartShape::~PropertyPartShape()
 
 void PropertyPartShape::setValue(TopoDS_Shape m)
 {
-  aboutToSetValue();
-  _Shape = m;
-  hasSetValue();
+    aboutToSetValue();
+    _Shape = m;
+    hasSetValue();
 }
 
 TopoDS_Shape PropertyPartShape::getValue(void)const 
 {
-	return _Shape;
+    return _Shape;
 }
 
 PyObject *PropertyPartShape::getPyObject(void)
 {
-  return new TopoShapePyOld(_Shape);
+    return new TopoShapePyOld(_Shape);
 }
 
 void PropertyPartShape::setPyObject(PyObject *value)
 {
-    if( PyObject_TypeCheck(value, &(TopoShapePyOld::Type)) ) {
+    if (PyObject_TypeCheck(value, &(TopoShapePyOld::Type))) {
         TopoShapePyOld  *pcObject = (TopoShapePyOld*)value;
         setValue(pcObject->getTopoShape());
     }
@@ -113,36 +113,33 @@ void PropertyPartShape::setPyObject(PyObject *value)
 
 App::Property *PropertyPartShape::Copy(void) const
 {
-  PropertyPartShape *p= new PropertyPartShape();
+    PropertyPartShape *p= new PropertyPartShape();
   
-  if (!_Shape.IsNull())
-  {
-    BRepBuilderAPI_Copy copy(_Shape);
-    p->_Shape = copy.Shape();
-  }
-  
-  return p;
+    if (!_Shape.IsNull()) {
+        BRepBuilderAPI_Copy copy(_Shape);
+        p->_Shape = copy.Shape();
+    }
+
+    return p;
 }
 
 void PropertyPartShape::Paste(const App::Property &from)
 {
-  aboutToSetValue();
-  _Shape = dynamic_cast<const PropertyPartShape&>(from)._Shape;
-  hasSetValue();
-
+    aboutToSetValue();
+    _Shape = dynamic_cast<const PropertyPartShape&>(from)._Shape;
+    hasSetValue();
 }
 
 unsigned int PropertyPartShape::RefCountShapes(const TopoDS_Shape& aShape) const
 {
-  unsigned int size = 1; // this shape
-  TopoDS_Iterator it;
-  // go through all direct children
-  for (it.Initialize(aShape, false, false);it.More(); it.Next())
-  {
-    size += RefCountShapes(it.Value());
-  }
+    unsigned int size = 1; // this shape
+    TopoDS_Iterator it;
+    // go through all direct children
+    for (it.Initialize(aShape, false, false);it.More(); it.Next()) {
+        size += RefCountShapes(it.Value());
+    }
 
-  return size;
+    return size;
 }
 
 unsigned int PropertyPartShape::getMemSize (void) const
@@ -273,31 +270,21 @@ unsigned int PropertyPartShape::getMemSize (void) const
 
 void PropertyPartShape::Save (Base::Writer &writer) const
 {
-//  if( writer.isForceXML() )
-//  {
-//    writer << writer.ind() << "<Part>" << std::endl;
-//    MeshCore::MeshDocXML saver(*_pcMesh);
-//    saver.Save(writer);
-//  }else{
-    //See SaveDocFile(), RestoreDocFile()
-    writer.Stream() << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
-//  }
+    if(!writer.isForceXML()) {
+        //See SaveDocFile(), RestoreDocFile()
+        writer.Stream() << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyPartShape::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("Part");
-  std::string file (reader.getAttribute("file") );
-//
-//  if(file == "")
-//  {
-//    // read XML
-//    MeshCore::MeshDocXML restorer(*_pcMesh);
-//    restorer.Restore(reader);
-//  }else{
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-//  }
+    reader.readElement("Part");
+    std::string file (reader.getAttribute("file") );
+
+    if (!file.empty()) {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
@@ -376,7 +363,7 @@ PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 Feature::Feature(void) 
 {
-  ADD_PROPERTY(Shape, (TopoDS_Shape()));
+    ADD_PROPERTY(Shape, (TopoDS_Shape()));
 }
 
 Feature::~Feature()
@@ -391,22 +378,20 @@ App::DocumentObjectExecReturn *Feature::execute(void)
 
 void Feature::setShape(const TopoDS_Shape &Shape)
 {
-  this->Shape.setValue(Shape);
+    this->Shape.setValue(Shape);
 }
 
 TopoDS_Shape Feature::getShape(void)
 {
-  return Shape.getValue();
+    return Shape.getValue();
 }
-
 
 PyObject *Feature::getPyObject(void)
 {
- if(PythonObject.is(Py::_None())){
-    // ref counter is set to 1
-    PythonObject.set(new PartFeaturePy(this),true);
-  }
-  return Py::new_reference_to(PythonObject); 
+    if (PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject.set(new PartFeaturePy(this),true);
+    }
+    return Py::new_reference_to(PythonObject); 
 }
-
 

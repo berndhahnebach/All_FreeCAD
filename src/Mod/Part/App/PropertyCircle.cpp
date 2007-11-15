@@ -44,19 +44,19 @@ PropertyCircle::~PropertyCircle()
 
 void PropertyCircle::setValue(const gp_Circ& circ)
 {
-  aboutToSetValue();
-  _circle = circ;
-  hasSetValue();
+    aboutToSetValue();
+    _circle = circ;
+    hasSetValue();
 }
 
 const gp_Circ& PropertyCircle::getValue(void) const 
 {
-	return _circle;
+    return _circle;
 }
 
 PyObject *PropertyCircle::getPyObject(void)
 {
-  return new CirclePy(this->_circle);
+    return new CirclePy(this->_circle);
 }
 
 void PropertyCircle::setPyObject(PyObject *value)
@@ -74,31 +74,31 @@ void PropertyCircle::setPyObject(PyObject *value)
 
 App::Property *PropertyCircle::Copy(void) const
 {
-  PropertyCircle* p = new PropertyCircle();
-  p->_circle = this->_circle;
-  return p;
+    PropertyCircle* p = new PropertyCircle();
+    p->_circle = this->_circle;
+    return p;
 }
 
 void PropertyCircle::Paste(const App::Property &from)
 {
-  aboutToSetValue();
-  _circle = dynamic_cast<const PropertyCircle&>(from)._circle;
-  hasSetValue();
+    aboutToSetValue();
+    _circle = dynamic_cast<const PropertyCircle&>(from)._circle;
+    hasSetValue();
 }
 
 unsigned int PropertyCircle::getMemSize (void) const
 {
-  return sizeof(gp_Circ);
+    return sizeof(gp_Circ);
 }
 
 void PropertyCircle::Save (Base::Writer &writer) const
 {
-  gp_Ax1 axis = _circle.Axis();
-  gp_Dir dir = axis.Direction();
-  gp_Pnt loc = axis.Location();
-  Standard_Real fRad = _circle.Radius();
-  writer.Stream() << writer.ind() << "<PropertyCircle Radius=\"" <<  fRad << "\" PosX=\"" <<  loc.X() << "\" PosY=\"" <<  loc.Y() << "\" PosZ=\"" <<  loc.Z() 
-         << writer.ind() << "\" DirX=\"" <<  dir.X() << "\" DirY=\"" <<  dir.Y() << "\" DirZ=\"" <<  dir.Z() <<"\"/>" << std::endl;
+    gp_Ax1 axis = _circle.Axis();
+    gp_Dir dir = axis.Direction();
+    gp_Pnt loc = axis.Location();
+    Standard_Real fRad = _circle.Radius();
+    writer.Stream() << writer.ind() << "<PropertyCircle Radius=\"" <<  fRad << "\" PosX=\"" <<  loc.X() << "\" PosY=\"" <<  loc.Y() << "\" PosZ=\"" <<  loc.Z() 
+                    << writer.ind() << "\" DirX=\"" <<  dir.X() << "\" DirY=\"" <<  dir.Y() << "\" DirZ=\"" <<  dir.Z() <<"\"/>" << std::endl;
 }
 
 void PropertyCircle::Restore(Base::XMLReader &reader)
@@ -107,13 +107,13 @@ void PropertyCircle::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyCircle");
 
     // get the value of my Attribute
-    Standard_Real fR = (float)reader.getAttributeAsFloat("Radius");
-    Standard_Real pX = (float)reader.getAttributeAsFloat("PosX");
-    Standard_Real pY = (float)reader.getAttributeAsFloat("PosY");
-    Standard_Real pZ = (float)reader.getAttributeAsFloat("PosZ");
-    Standard_Real dX = (float)reader.getAttributeAsFloat("DirX");
-    Standard_Real dY = (float)reader.getAttributeAsFloat("DirY");
-    Standard_Real dZ = (float)reader.getAttributeAsFloat("DirZ");
+    Standard_Real fR = reader.getAttributeAsFloat("Radius");
+    Standard_Real pX = reader.getAttributeAsFloat("PosX");
+    Standard_Real pY = reader.getAttributeAsFloat("PosY");
+    Standard_Real pZ = reader.getAttributeAsFloat("PosZ");
+    Standard_Real dX = reader.getAttributeAsFloat("DirX");
+    Standard_Real dY = reader.getAttributeAsFloat("DirY");
+    Standard_Real dZ = reader.getAttributeAsFloat("DirZ");
 
     gp_Dir dir(dX, dY, dZ);
     gp_Pnt loc(pX, pY, pZ);

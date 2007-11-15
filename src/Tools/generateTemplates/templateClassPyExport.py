@@ -215,12 +215,12 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 {
 	// test if twin object not allready deleted
     if (!((PyObjectBase*) self)->isValid()){
-        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
 	// test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_Format(PyExc_ReferenceError, "This object is imutable, you can not set any attribute or call a methode");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
         return NULL;
     }
 
@@ -283,7 +283,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void *closure)
 {
     if (!((PyObjectBase*) self)->isValid()){
-        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
 
@@ -302,7 +302,7 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {
     if (!((PyObjectBase*) self)->isValid()){
-        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
 
@@ -313,11 +313,11 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {    
     if (!((PyObjectBase*) self)->isValid()){
-        PyErr_Format(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_Format(PyExc_ReferenceError, "This object is imutable, you can not set any attribute or call a methode");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
         return NULL;
     }
 

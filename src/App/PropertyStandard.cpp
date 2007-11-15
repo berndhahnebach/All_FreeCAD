@@ -31,6 +31,7 @@
 #include <Base/Exception.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
+#include <Base/Stream.h>
 
 #include "PropertyStandard.h"
 #include "MaterialPy.h"
@@ -231,7 +232,6 @@ void PropertyPath::Restore(Base::XMLReader &reader)
     setValue(reader.getAttribute("value"));
 }
 
-
 Property *PropertyPath::Copy(void) const
 {
     PropertyPath *p= new PropertyPath();
@@ -263,7 +263,6 @@ PropertyEnumeration::PropertyEnumeration()
 {
 
 }
-
 
 PropertyEnumeration::~PropertyEnumeration()
 {
@@ -494,7 +493,6 @@ PropertyPercent::PropertyPercent()
     _ConstStruct = &percent;
 }
 
-
 PropertyPercent::~PropertyPercent()
 {
 }
@@ -515,7 +513,6 @@ PropertyIntegerList::PropertyIntegerList()
 
 }
 
-
 PropertyIntegerList::~PropertyIntegerList()
 {
 
@@ -523,7 +520,6 @@ PropertyIntegerList::~PropertyIntegerList()
 
 //**************************************************************************
 // Base class implementer
-
 
 void PropertyIntegerList::setValue(long lValue)
 {
@@ -542,11 +538,9 @@ void PropertyIntegerList::setValues(const std::vector<long>& values)
 
 PyObject *PropertyIntegerList::getPyObject(void)
 {
-    PyObject* list = PyList_New(	getSize() );
-
+    PyObject* list = PyList_New(getSize());
     for(int i = 0;i<getSize(); i++)
-        PyList_SetItem( list, i, PyInt_FromLong(	_lValueList[i]));
-
+        PyList_SetItem( list, i, PyInt_FromLong(_lValueList[i]));
     return list;
 }
 
@@ -623,7 +617,6 @@ void PropertyIntegerList::Paste(const Property &from)
 }
 
 
-
 //**************************************************************************
 //**************************************************************************
 // PropertyFloat
@@ -640,7 +633,6 @@ PropertyFloat::PropertyFloat()
 
 }
 
-
 PropertyFloat::~PropertyFloat()
 {
 
@@ -648,7 +640,6 @@ PropertyFloat::~PropertyFloat()
 
 //**************************************************************************
 // Base class implementer
-
 
 void PropertyFloat::setValue(float lValue)
 {
@@ -730,7 +721,6 @@ PropertyFloatConstraint::PropertyFloatConstraint()
 
 }
 
-
 PropertyFloatConstraint::~PropertyFloatConstraint()
 {
 
@@ -798,7 +788,6 @@ PropertyFloatList::PropertyFloatList()
 
 }
 
-
 PropertyFloatList::~PropertyFloatList()
 {
 
@@ -806,7 +795,6 @@ PropertyFloatList::~PropertyFloatList()
 
 //**************************************************************************
 // Base class implementer
-
 
 void PropertyFloatList::setValue(float lValue)
 {
@@ -825,11 +813,9 @@ void PropertyFloatList::setValues(const std::vector<float>& values)
 
 PyObject *PropertyFloatList::getPyObject(void)
 {
-    PyObject* list = PyList_New(	getSize() );
-    
-    for(int i = 0;i<getSize(); i++)
-         PyList_SetItem( list, i, PyFloat_FromDouble(	_lValueList[i]));
-    
+    PyObject* list = PyList_New(getSize());
+    for (int i = 0;i<getSize(); i++)
+         PyList_SetItem( list, i, PyFloat_FromDouble(_lValueList[i]));
     return list;
 }
 
@@ -884,22 +870,7 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
     reader.readElement("FloatList");
     string file (reader.getAttribute("file") );
 
-    if(file == "") {
-//  // read my Element
-//  reader.readElement("FloatList");
-//  // get the value of my Attribute
-//  int count = reader.getAttributeAsInteger("count");
-//
-//  setSize(count);
-//
-//  for(int i = 0;i<count; i++)
-//  {
-//    reader.readElement("F");
-//    _lValueList[i] = (float) reader.getAttributeAsFloat("v");
-//  }
-//
-//  reader.readEndElement("FloatList");
-    } else {
+    if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
@@ -907,19 +878,23 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
 
 void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    if (uCt > 0)
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
+    str << uCt;
+    for (std::vector<float>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        str << *it;
+    }
 }
 
 void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
 {
+    Base::InputStream str(reader);
     unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    str >> uCt;
     std::vector<float> values(uCt);
-    if (uCt > 0)
-    reader.read((char*)&(values[0]), uCt*sizeof(float));
+    for (std::vector<float>::iterator it = values.begin(); it != values.end(); ++it) {
+        str >> *it;
+    }
     setValues(values);
 }
 
@@ -945,30 +920,15 @@ void PropertyFloatList::Paste(const Property &from)
 
 TYPESYSTEM_SOURCE(App::PropertyString , App::Property);
 
-//**************************************************************************
-// Construction/Destruction
-
-       
 PropertyString::PropertyString()
 {
 
 }
 
-
 PropertyString::~PropertyString()
 {
 
 }
-
-
-
-//**************************************************************************
-// Base class implementer
-
-
-//**************************************************************************
-// Seter getter for the property
-
 
 void PropertyString::setValue(const char* sString)
 {
@@ -993,9 +953,8 @@ const char* PropertyString::getValue(void) const
 
 PyObject *PropertyString::getPyObject(void)
 {
-     PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
-    if (!p)
-        throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+    PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
+    if (!p) throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
     return p;
 }
 
@@ -1030,7 +989,6 @@ void PropertyString::Restore(Base::XMLReader &reader)
     setValue(reader.getAttribute("value"));
 }
 
-
 Property *PropertyString::Copy(void) const
 {
     PropertyString *p= new PropertyString();
@@ -1045,15 +1003,11 @@ void PropertyString::Paste(const Property &from)
     hasSetValue();
 }
 
-
 //**************************************************************************
 // PropertyStringList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE(App::PropertyStringList , App::PropertyLists);
-
-//**************************************************************************
-// Construction/Destruction
 
 PropertyStringList::PropertyStringList()
 {
@@ -1095,8 +1049,7 @@ PyObject *PropertyStringList::getPyObject(void)
 {
     PyObject* list = PyList_New(getSize());
 
-    for(int i = 0;i<getSize(); i++)
-    {
+    for(int i = 0;i<getSize(); i++) {
         PyObject* item = PyString_FromString(_lValueList[i].c_str());
         PyList_SetItem( list, i, item );
     }
@@ -1196,20 +1149,16 @@ TYPESYSTEM_SOURCE(App::PropertyBool , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
-
        
 PropertyBool::PropertyBool()
 {
 
 }
 
-
 PropertyBool::~PropertyBool()
 {
 
 }
-
-
 
 //**************************************************************************
 // Seter getter for the property
@@ -1282,8 +1231,6 @@ void PropertyBool::Paste(const Property &from)
     hasSetValue();
 }
 
-
-
 //**************************************************************************
 //**************************************************************************
 // PropertyColor
@@ -1294,12 +1241,10 @@ TYPESYSTEM_SOURCE(App::PropertyColor , App::Property);
 //**************************************************************************
 // Construction/Destruction
 
-
 PropertyColor::PropertyColor()
 {
 
 }
-
 
 PropertyColor::~PropertyColor()
 {
@@ -1308,7 +1253,6 @@ PropertyColor::~PropertyColor()
 
 //**************************************************************************
 // Base class implementer
-
 
 void PropertyColor::setValue(const Color &col)
 {
@@ -1423,7 +1367,6 @@ void PropertyColor::Restore(Base::XMLReader &reader)
     setValue(rgba);
 }
 
-
 Property *PropertyColor::Copy(void) const
 {
     PropertyColor *p= new PropertyColor();
@@ -1437,8 +1380,6 @@ void PropertyColor::Paste(const Property &from)
     _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
     hasSetValue();
 }
-
-
 
 //**************************************************************************
 // PropertyColorList
@@ -1534,12 +1475,7 @@ void PropertyColorList::setPyObject(PyObject *value)
 
 void PropertyColorList::Save (Writer &writer) const
 {
-    if (writer.isForceXML()) {
-//    writer << "<ColorList count=\"" <<  getSize() <<"\"/>" << endl;
-//    for(int i = 0;i<getSize(); i++)
-//      writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
-//    writer << "</ColorList>" << endl ;
-    } else {
+    if (!writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
     }
 }
@@ -1549,22 +1485,7 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
     reader.readElement("ColorList");
     std::string file (reader.getAttribute("file") );
 
-    if (file == "") {
-//  // read my Element
-//  reader.readElement("ColorList");
-//  // get the value of my Attribute
-//  int count = reader.getAttributeAsInteger("count");
-//
-//  setSize(count);
-//
-//  for(int i = 0;i<count; i++)
-//  {
-//    reader.readElement("PropertyColor");
-//    _lValueList[i].setPackedValue( reader.getAttributeAsInteger("value") );
-//  }
-//
-//  reader.readEndElement("ColorList");
-    } else {
+    if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
@@ -1572,23 +1493,27 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
 
 void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    if (uCt > 0)
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
+    str << uCt;
+    for (std::vector<App::Color>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        str << it->getPackedValue();
+    }
 }
 
 void PropertyColorList::RestoreDocFile(Base::Reader &reader)
 {
+    Base::InputStream str(reader);
     unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    str >> uCt;
     std::vector<Color> values(uCt);
-    if (uCt > 0)
-    reader.read((char*)&(values[0]), uCt*sizeof(Color));
+    unsigned long value;
+    for (std::vector<App::Color>::iterator it = values.begin(); it != values.end(); ++it) {
+        str >> value;
+        it->setPackedValue(value);
+    }
     setValues(values);
 }
-
-
 
 Property *PropertyColorList::Copy(void) const
 {
@@ -1604,14 +1529,12 @@ void PropertyColorList::Paste(const Property &from)
     hasSetValue();
 }
 
-
 //**************************************************************************
 //**************************************************************************
 // PropertyMaterial
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE(App::PropertyMaterial , App::Property);
-
 
 PropertyMaterial::PropertyMaterial()
 {

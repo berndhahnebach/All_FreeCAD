@@ -35,38 +35,38 @@ namespace Part
  */
 class AppPartExport PropertyLine : public App::Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-	PropertyLine();
-	~PropertyLine();
+    PropertyLine();
+    ~PropertyLine();
 
-  /** @name Getter/setter */
-  //@{
-  /// set the line
-  void setValue( const gp_Lin& line );
-  /// get the line
-  const gp_Lin& getValue(void) const;
-  //@}
+    /** @name Getter/setter */
+    //@{
+    /// set the line
+    void setValue( const gp_Lin& line );
+    /// get the line
+    const gp_Lin& getValue(void) const;
+    //@}
 
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
-  unsigned int getMemSize (void) const;
-  //@}
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
 
 private:
-  gp_Lin _line;
+    gp_Lin _line;
 };
 
 /** The line set property class.
@@ -74,46 +74,46 @@ private:
  */
 class AppPartExport PropertyLineSet : public App::PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-	PropertyLineSet();
-	~PropertyLineSet();
+    PropertyLineSet();
+    ~PropertyLineSet();
 
-  /** @name Getter/setter */
-  //@{
-  void setSize(int newSize){_lValueList.resize(newSize);}   
-  int getSize(void) const {return _lValueList.size();} 
-  /// index operator
-  const gp_Lin& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
-  void setValue( const gp_Lin& line );
-  void set1Value (const int idx, const gp_Lin& value){_lValueList.operator[] (idx) = value;}
-  void setValues (const std::vector<gp_Lin>& values);
-  const std::vector<gp_Lin> &getValues(void) const {return _lValueList;}
-  //@}
+    /** @name Getter/setter */
+    //@{
+    void setSize(int newSize){_lValueList.resize(newSize);}   
+    int getSize(void) const {return _lValueList.size();} 
+    /// index operator
+    const gp_Lin& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
+    void setValue( const gp_Lin& line );
+    void set1Value (const int idx, const gp_Lin& value){_lValueList.operator[] (idx) = value;}
+    void setValues (const std::vector<gp_Lin>& values);
+    const std::vector<gp_Lin> &getValues(void) const {return _lValueList;}
+    //@}
 
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
-  /** @name Save/Restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
-  //@}
+    /** @name Save/Restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+    //@}
 
-  /** @name Copy/Paste */
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
-  unsigned int getMemSize (void) const;
-  //@}
+    /** @name Copy/Paste */
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
 
 private:
-  std::vector<gp_Lin> _lValueList;
+    std::vector<gp_Lin> _lValueList;
 };
 
 } // namespace Part

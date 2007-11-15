@@ -23,11 +23,9 @@
  
 
 
-#ifndef _PartFeature_h_
-#define _PartFeature_h_
+#ifndef PART_FEATURE_H
+#define PART_FEATURE_H
 
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
 #include <TopoDS_Shape.hxx>
 #include <App/Feature.h>
 
@@ -48,94 +46,82 @@ class PartFeaturePy;
  */
 class AppPartExport PropertyPartShape : public App::Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-	PropertyPartShape();
-	~PropertyPartShape();
+    PropertyPartShape();
+    ~PropertyPartShape();
 
-  /** @name Getter/setter */
-  //@{
-  /// set the part shape
-  void setValue( TopoDS_Shape );
-  /// get the part shape
-  TopoDS_Shape getValue(void) const;
-  //@}
+    /** @name Getter/setter */
+    //@{
+    /// set the part shape
+    void setValue( TopoDS_Shape );
+    /// get the part shape
+    TopoDS_Shape getValue(void) const;
+    //@}
 
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
 
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
-  
-  virtual unsigned int getMemSize (void) const;
-
-  //@}
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
 
 private:
-  /** Recursive counting of multiple referenced shape elements. */
-  unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
-  TopoDS_Shape _Shape;
+    /** Recursive counting of multiple referenced shape elements. */
+    unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
+    TopoDS_Shape _Shape;
 };
 
 /** Base class of all Feature classes in FreeCAD
  */
 class AppPartExport Feature: public App::AbstractFeature
 {
-  PROPERTY_HEADER(Part::Feature);
+    PROPERTY_HEADER(Part::Feature);
 
 public:
-	/// Constructor
-	Feature(void);
-  virtual ~Feature();
+    /// Constructor
+    Feature(void);
+    virtual ~Feature();
 
-  PropertyPartShape Shape;
+    PropertyPartShape Shape;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "PartGui::ViewProviderPart";
-  }
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderPart";
+    }
 
-
-	/** @name methods for handling the result shape */
-	//@{
-	/** Set the result shape
-	 *
-	 */
-  void setShape(const TopoDS_Shape &Shape);
-
-	/** Get the actual result shape
-	 *
-	 */
-  TopoDS_Shape getShape(void);
-
+    /** @name methods for handling the result shape */
+    //@{
+    /** Set the result shape
+     */
+    void setShape(const TopoDS_Shape &Shape);
+    /** Get the actual result shape
+     */
+    TopoDS_Shape getShape(void);
 	//@}
-
-
-  virtual PyObject* getPyObject(void);
-
+    virtual PyObject* getPyObject(void);
 };
-
 
 } //namespace Part
 
 
-
-#endif
+#endif // PART_FEATURE_H

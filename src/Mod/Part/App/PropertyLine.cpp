@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 
+#include <Base/Stream.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
@@ -44,19 +45,19 @@ PropertyLine::~PropertyLine()
 
 void PropertyLine::setValue(const gp_Lin& line)
 {
-  aboutToSetValue();
-  _line = line;
-  hasSetValue();
+    aboutToSetValue();
+    _line = line;
+    hasSetValue();
 }
 
 const gp_Lin& PropertyLine::getValue(void) const 
 {
-	return _line;
+    return _line;
 }
 
 PyObject *PropertyLine::getPyObject(void)
 {
-  return new LinePy(this->_line);
+    return new LinePy(this->_line);
 }
 
 void PropertyLine::setPyObject(PyObject *value)
@@ -74,21 +75,21 @@ void PropertyLine::setPyObject(PyObject *value)
 
 App::Property *PropertyLine::Copy(void) const
 {
-  PropertyLine* p = new PropertyLine();
-  p->_line = this->_line;
-  return p;
+    PropertyLine* p = new PropertyLine();
+    p->_line = this->_line;
+    return p;
 }
 
 void PropertyLine::Paste(const App::Property &from)
 {
-  aboutToSetValue();
-  _line = dynamic_cast<const PropertyLine&>(from)._line;
-  hasSetValue();
+    aboutToSetValue();
+    _line = dynamic_cast<const PropertyLine&>(from)._line;
+    hasSetValue();
 }
 
 unsigned int PropertyLine::getMemSize (void) const
 {
-  return sizeof(gp_Lin);
+    return sizeof(gp_Lin);
 }
 
 void PropertyLine::Save (Base::Writer &writer) const
@@ -131,25 +132,25 @@ PropertyLineSet::~PropertyLineSet()
 
 void PropertyLineSet::setValue(const gp_Lin& lValue)
 {
-  aboutToSetValue();
-  _lValueList.resize(1);
-  _lValueList[0]=lValue;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0]=lValue;
+    hasSetValue();
 }
 
 void PropertyLineSet::setValues(const std::vector<gp_Lin>& values)
 {
-  aboutToSetValue();
-  _lValueList = values;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = values;
+    hasSetValue();
 }
 
 PyObject *PropertyLineSet::getPyObject(void)
 {
-  PyObject* list = PyList_New(	getSize() );
-  for(int i = 0;i<getSize(); i++)
-    PyList_SetItem( list, i, new LinePy(_lValueList[i]));
-  return list;
+    PyObject* list = PyList_New(	getSize() );
+    for(int i = 0;i<getSize(); i++)
+        PyList_SetItem( list, i, new LinePy(_lValueList[i]));
+    return list;
 }
 
 void PropertyLineSet::setPyObject(PyObject *value)
@@ -181,49 +182,64 @@ void PropertyLineSet::setPyObject(PyObject *value)
 
 App::Property *PropertyLineSet::Copy(void) const
 {
-  PropertyLineSet* p = new PropertyLineSet();
-  p->_lValueList = this->_lValueList;
-  return p;
+    PropertyLineSet* p = new PropertyLineSet();
+    p->_lValueList = this->_lValueList;
+    return p;
 }
 
 void PropertyLineSet::Paste(const App::Property &from)
 {
-  aboutToSetValue();
-  _lValueList = dynamic_cast<const PropertyLineSet&>(from)._lValueList;
-  hasSetValue();
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyLineSet&>(from)._lValueList;
+    hasSetValue();
 }
 
 unsigned int PropertyLineSet::getMemSize (void) const
 {
-  return sizeof(gp_Lin)*_lValueList.size();
+    return sizeof(gp_Lin)*_lValueList.size();
 }
 
 void PropertyLineSet::Save (Base::Writer &writer) const
 {
-  writer.Stream() << writer.ind() << "<LineSet file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    if (!writer.isForceXML()) {
+        writer.Stream() << writer.ind() << "<LineSet file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyLineSet::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("LineSet");
-  std::string file (reader.getAttribute("file") );
-  reader.addFile(file.c_str(),this);
+    reader.readElement("LineSet");
+    std::string file (reader.getAttribute("file"));
+    if (!file.empty()) {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    if (uCt > 0)
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(gp_Lin));
+    str << uCt;
+    for (std::vector<gp_Lin>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        const gp_Pnt& loc = it->Location();
+        str << loc.X() << loc.Y() << loc.Z();
+        const gp_Dir& dir = it->Direction();
+        str << dir.X() << dir.Y() << dir.Z();
+    }
 }
 
 void PropertyLineSet::RestoreDocFile(Base::Reader &reader)
 {
-    unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    Base::InputStream str(reader);
+    unsigned long uCt;
+    str >> uCt;
     std::vector<gp_Lin> values(uCt);
-    if (uCt > 0)
-    reader.read((char*)&(values[0]), uCt*sizeof(gp_Lin));
+    for (unsigned long i=0; i < uCt; i++) {
+        Standard_Real x,y,z,u,v,w;
+        str >> x >> y >> z >> u >> v >> w;
+        values[i].SetLocation(gp_Pnt(x,y,z));
+        values[i].SetDirection(gp_Dir(u,v,w));
+    }
     setValues(values);
 }

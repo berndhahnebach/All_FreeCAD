@@ -50,6 +50,9 @@ public:
   App::PropertyPath         Path;
   App::PropertyStringList   StringList;
 
+  App::PropertyColor        Colour;
+  App::PropertyColorList    ColourList;
+
   // special types
   App::PropertyDistance     Distance;
   App::PropertyAngle        Angle;
@@ -68,9 +71,10 @@ public:
   App::PropertyLinkList LinkList;
 
   // Standard Properties (PropertyGeo.h)
-  App::PropertyMatrix    Matrix;
-  App::PropertyVector    Vector;
-  App::PropertyPlacement Placement;
+  App::PropertyMatrix     Matrix;
+  App::PropertyVector     Vector;
+  App::PropertyVectorList VectorList;
+  App::PropertyPlacement  Placement;
 
   // Properties to test the Document::recompute()
   App::PropertyLink     Source1;

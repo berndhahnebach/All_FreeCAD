@@ -32,6 +32,7 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Stream.h>
 
 #include "VectorPy.h"
 #include "MatrixPy.h"
@@ -201,6 +202,14 @@ void PropertyVectorList::setValue(const Base::Vector3f& lValue)
     hasSetValue();
 }
 
+void PropertyVectorList::setValue(float x, float y, float z)
+{
+    aboutToSetValue();
+    _lValueList.resize(1);
+    _lValueList[0].Set(x,y,z);
+    hasSetValue();
+}
+
 void PropertyVectorList::setValues(const std::vector<Base::Vector3f>& values)
 {
     aboutToSetValue();
@@ -252,12 +261,7 @@ void PropertyVectorList::setPyObject(PyObject *value)
 
 void PropertyVectorList::Save (Writer &writer) const
 {
-    if (writer.isForceXML()) {
-//  writer << "<VectorList count=\"" <<  getSize() <<"\"/>" << endl;
-//  for(int i = 0;i<getSize(); i++)
-//    writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
-//  writer << "</VectorList>" << endl ;
-    }else {
+    if (!writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
     }
 }
@@ -265,26 +269,9 @@ void PropertyVectorList::Save (Writer &writer) const
 void PropertyVectorList::Restore(Base::XMLReader &reader)
 {
     reader.readElement("VectorList");
-    string file (reader.getAttribute("file") );
+    std::string file (reader.getAttribute("file") );
 
-    if (file == "") {
-//  // read my Element
-//  reader.readElement("VectorList");
-//  // get the value of my Attribute
-//  int count = reader.getAttributeAsInteger("count");
-//
-//  setSize(count);
-//
-//  for(int i = 0;i<count; i++)
-//  {
-//    reader.readElement("PropertyVector");
-//    _lValueList[i].x = (float) reader.getAttributeAsFloat("valueX");
-//    _lValueList[i].y = (float) reader.getAttributeAsFloat("valueY");
-//    _lValueList[i].z = (float) reader.getAttributeAsFloat("valueZ");
-//  }
-//
-//  reader.readEndElement("VectorList");
-    }else {
+    if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
@@ -292,22 +279,25 @@ void PropertyVectorList::Restore(Base::XMLReader &reader)
 
 void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    if (uCt > 0)
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
+    str << uCt;
+    for (std::vector<Base::Vector3f>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        str << it->x << it->y << it->z;
+    }
 }
 
 void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
 {
+    Base::InputStream str(reader);
     unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    str >> uCt;
     std::vector<Base::Vector3f> values(uCt);
-    if (uCt > 0)
-    reader.read((char*)&(values[0]), uCt*sizeof(Base::Vector3f));
+    for (std::vector<Base::Vector3f>::iterator it = values.begin(); it != values.end(); ++it) {
+        str >> it->x >> it->y >> it->z;
+    }
     setValues(values);
 }
-
 
 Property *PropertyVectorList::Copy(void) const
 {

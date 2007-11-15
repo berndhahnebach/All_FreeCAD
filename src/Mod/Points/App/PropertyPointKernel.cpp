@@ -30,6 +30,7 @@
 
 #include <Base/Exception.h>
 #include <Base/Matrix.h>
+#include <Base/Stream.h>
 #include <Base/Writer.h>
 
 #include "PropertyPointKernel.h"
@@ -50,19 +51,19 @@ PropertyPointKernel::~PropertyPointKernel()
 
 void PropertyPointKernel::setValue(const PointKernel& m)
 {
-  aboutToSetValue();
-  _cPoints = m;
-  hasSetValue();
+    aboutToSetValue();
+    _cPoints = m;
+    hasSetValue();
 }
 
 const PointKernel& PropertyPointKernel::getValue(void) const 
 {
-  return _cPoints;
+    return _cPoints;
 }
 
 PyObject *PropertyPointKernel::getPyObject(void)
 {
-  return new PointsPy(_cPoints);
+    return new PointsPy(_cPoints);
 }
 
 void PropertyPointKernel::setPyObject(PyObject *value)
@@ -80,45 +81,41 @@ void PropertyPointKernel::setPyObject(PyObject *value)
 
 void PropertyPointKernel::Save (Base::Writer &writer) const
 {
-  if ( writer.isForceXML() ) {
-  } else {
-    writer.Stream() << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
-  }
+    if (!writer.isForceXML()) {
+        writer.Stream() << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyPointKernel::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("Points");
-  std::string file (reader.getAttribute("file") );
+    reader.readElement("Points");
+    std::string file (reader.getAttribute("file") );
 
-  if ( file == "" ) {
-  } else {
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-  }
+    if (!file.empty()) {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = _cPoints.size();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    str << uCt;
     for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it) {
-        writer.Stream().write((const char*)&(it->x), sizeof(float));
-        writer.Stream().write((const char*)&(it->y), sizeof(float));
-        writer.Stream().write((const char*)&(it->z), sizeof(float));
+        str << it->x << it->y << it->z;
     }
 }
 
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
+    Base::InputStream str(reader);
     unsigned long uCt;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    str >> uCt;
     PointKernel kernel(uCt);
     for (unsigned long i=0; i < uCt; i++) {
         float x, y, z;
-        reader.read((char*)&x, sizeof(float));
-        reader.read((char*)&y, sizeof(float));
-        reader.read((char*)&z, sizeof(float));
+        str >> x >> y >> z;
         kernel[i].Set(x,y,z);
     }
     setValue(kernel);
@@ -126,55 +123,55 @@ void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 
 App::Property *PropertyPointKernel::Copy(void) const 
 {
-  PropertyPointKernel* prop = new PropertyPointKernel();
-  prop->_cPoints = this->_cPoints;
-  return prop;
+    PropertyPointKernel* prop = new PropertyPointKernel();
+    prop->_cPoints = this->_cPoints;
+    return prop;
 }
 
 void PropertyPointKernel::Paste(const App::Property &from)
 {
-  aboutToSetValue();
-  const PropertyPointKernel& prop = dynamic_cast<const PropertyPointKernel&>(from);
-  this->_cPoints = prop._cPoints;
-  hasSetValue();
+    aboutToSetValue();
+    const PropertyPointKernel& prop = dynamic_cast<const PropertyPointKernel&>(from);
+    this->_cPoints = prop._cPoints;
+    hasSetValue();
 }
 
 unsigned int PropertyPointKernel::getMemSize (void) const
 {
-  return sizeof(Base::Vector3f) * this->_cPoints.size();
+    return sizeof(Base::Vector3f) * this->_cPoints.size();
 }
 
 void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
 {
-  // We need a sorted array
-  std::vector<unsigned long> uSortedInds = uIndices;
-  std::sort(uSortedInds.begin(), uSortedInds.end());
+    // We need a sorted array
+    std::vector<unsigned long> uSortedInds = uIndices;
+    std::sort(uSortedInds.begin(), uSortedInds.end());
 
-  assert( uSortedInds.size() <= _cPoints.size() );
-  if ( uSortedInds.size() > _cPoints.size() )
-    return;
+    assert( uSortedInds.size() <= _cPoints.size() );
+    if ( uSortedInds.size() > _cPoints.size() )
+        return;
 
-  std::vector<Base::Vector3f> remainValue;
-  remainValue.reserve(_cPoints.size() - uSortedInds.size());
+    std::vector<Base::Vector3f> remainValue;
+    remainValue.reserve(_cPoints.size() - uSortedInds.size());
 
-  std::vector<unsigned long>::iterator pos = uSortedInds.begin();
-  for ( std::vector<Base::Vector3f>::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it ) {
-    unsigned long index = it - _cPoints.begin();
-    if (pos == uSortedInds.end())
-      remainValue.push_back( *it );
-    else if (index != *pos)
-      remainValue.push_back( *it );
-    else 
-      pos++;
-  }
+    std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+    for ( std::vector<Base::Vector3f>::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it ) {
+        unsigned long index = it - _cPoints.begin();
+        if (pos == uSortedInds.end())
+            remainValue.push_back( *it );
+        else if (index != *pos)
+            remainValue.push_back( *it );
+        else 
+        pos++;
+    }
 
-  setValue(remainValue);
+    setValue(remainValue);
 }
 
 void PropertyPointKernel::transform(const Base::Matrix4D &rclMat)
 {
-  aboutToSetValue();
-  for (std::vector<Base::Vector3f>::iterator it = _cPoints.begin(); it != _cPoints.end(); ++it)
-    *it = rclMat * (*it);
-  hasSetValue();
+    aboutToSetValue();
+    for (std::vector<Base::Vector3f>::iterator it = _cPoints.begin(); it != _cPoints.end(); ++it)
+        *it = rclMat * (*it);
+    hasSetValue();
 }

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PropteryGeo_H__
-#define __PropteryGeo_H__
+#ifndef APP_PROPERTYGEO_H
+#define APP_PROPERTYGEO_H
 
 // Std. configurations
 
@@ -89,15 +89,11 @@ public:
         return sizeof(Base::Vector3f);
     }
 
-
 private:
 
     Base::Vector3f _cVec;
 
 };
-
-
-
 
 
 class AppExport PropertyVectorList: public PropertyLists
@@ -129,6 +125,7 @@ public:
     /** Sets the property
      */
     void setValue(const Base::Vector3f&);
+    void setValue(float x, float y, float z);
 
     /// index operator
     const Base::Vector3f& operator[] (const int idx) const {
@@ -291,7 +288,7 @@ public:
 
 };
 
-
 } // namespace App
 
-#endif // __PropteryStandard_H__
+
+#endif // APP_PROPERTYGEO_H

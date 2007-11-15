@@ -45,7 +45,7 @@
 
 /** Python static class macro for definition
  * sets up a static function entry in a class inheriting 
- * from PyObjectBase. Its a pure confiniance macro. You can also do
+ * from PyObjectBase. Its a pure convenience macro. You can also do
  * it by hand if you want. It looks like that:
  * \code
  * static PyObject* X (PyObject *self,PyObject *args,PyObject *kwd);
@@ -161,7 +161,7 @@ namespace Base
 /** The PyObjectBase class, exports the class as a python type
  *  PyObjectBase is the base class for all C++ classes which
  *  need to get exported into the python namespace. This class is 
- *  very important because nearly all importand classes in FreeCAD
+ *  very important because nearly all important classes in FreeCAD
  *  are visible in python for macro recording and automation purpose.
  *  The class App::Document is a good expample for a exported class.
  *  There are some conveniance macros to make it easier to inherit
