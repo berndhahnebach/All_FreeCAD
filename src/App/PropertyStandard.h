@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PropteryStandard_H__
-#define __PropteryStandard_H__
+#ifndef APP_PROPERTYSTANDARD_H
+#define APP_PROPERTYSTANDARD_H
 
 // Std. configurations
 
@@ -422,7 +422,7 @@ public:
 
 class AppExport PropertyFloatList: public PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
 
@@ -775,4 +775,4 @@ public:
 
 } // namespace App
 
-#endif // __PropteryStandard_H__
+#endif // APP_PROPERTYSTANDARD_H

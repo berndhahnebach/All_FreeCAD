@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef _MeshProperties_h_
-#define _MeshProperties_h_
+#ifndef MESH_MESHPROPERTIES_H
+#define MESH_MESHPROPERTIES_H
 
 #include <vector>
 #include <list>
@@ -48,23 +48,23 @@ namespace Mesh
  */
 class AppMeshExport PropertyNormalList : public App::PropertyVectorList
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyNormalList()
-  {
-  }
-  virtual ~PropertyNormalList()
-  {
-  }
-  void transform(const Base::Matrix4D &rclMat);
+    PropertyNormalList()
+    {
+    }
+    virtual ~PropertyNormalList()
+    {
+    }
+    void transform(const Base::Matrix4D &rclMat);
 };
 
 /** Curvature information. */
 struct AppMeshExport CurvatureInfo
 {
-  float fMaxCurvature, fMinCurvature;
-  Base::Vector3f cMaxCurvDir, cMinCurvDir;
+    float fMaxCurvature, fMinCurvature;
+    Base::Vector3f cMaxCurvDir, cMinCurvDir;
 };
 
 /** The Curvature property class.
@@ -72,46 +72,46 @@ struct AppMeshExport CurvatureInfo
  */
 class AppMeshExport PropertyCurvatureList: public App::PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  enum { 
-    MeanCurvature  = 0,  /**< Mean curvature */
-    GaussCurvature = 1,  /**< Gaussian curvature */
-    MaxCurvature   = 2,  /**< Maximum curvature */ 
-    MinCurvature   = 3,  /**< Minimum curvature */
-    AbsCurvature   = 4   /**< Absolute curvature */
-  };
+    enum { 
+        MeanCurvature  = 0,  /**< Mean curvature */
+        GaussCurvature = 1,  /**< Gaussian curvature */
+        MaxCurvature   = 2,  /**< Maximum curvature */ 
+        MinCurvature   = 3,  /**< Minimum curvature */
+        AbsCurvature   = 4   /**< Absolute curvature */
+    };
 
 public:
-  PropertyCurvatureList();
-  ~PropertyCurvatureList();
+    PropertyCurvatureList();
+    ~PropertyCurvatureList();
 
-  void setSize(int newSize){_lValueList.resize(newSize);}   
-  int getSize(void) const {return _lValueList.size();}   
-  std::vector<float> getCurvature( int tMode) const;
-  void setValue(const CurvatureInfo&);
-  void setValues(const std::vector<CurvatureInfo>&);
-  
-  /// index operator
-  const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
-  void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
-  const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
-  void transform(const Base::Matrix4D &rclMat);
+    void setSize(int newSize){_lValueList.resize(newSize);}   
+    int getSize(void) const {return _lValueList.size();}   
+    std::vector<float> getCurvature( int tMode) const;
+    void setValue(const CurvatureInfo&);
+    void setValues(const std::vector<CurvatureInfo>&);
 
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
-  
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
+    /// index operator
+    const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+    void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
+    const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
+    void transform(const Base::Matrix4D &rclMat);
 
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(CurvatureInfo);}
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+
+    virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(CurvatureInfo);}
 
 private:
-  std::vector<CurvatureInfo> _lValueList;
+    std::vector<CurvatureInfo> _lValueList;
 };
 
 /** The mesh kernel property class.
@@ -119,58 +119,58 @@ private:
  */
 class AppMeshExport PropertyMeshKernel : public App::Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyMeshKernel();
-  ~PropertyMeshKernel();
+    PropertyMeshKernel();
+    ~PropertyMeshKernel();
 
-  /** @name Getter/setter */
-  //@{
-  /// COPIES the mesh into the Property
-  void setValue( const MeshCore::MeshKernel& m);
-  /// REPLACES the mesh in the Property
-  void setValue( MeshCore::MeshKernel* m);
-  /// get the Kernel (only const possible!)
-  const MeshCore::MeshKernel &getValue(void) const;
-  virtual unsigned int getMemSize (void) const;
-  //@}
+    /** @name Getter/setter */
+    //@{
+    /// COPIES the mesh into the Property
+    void setValue( const MeshCore::MeshKernel& m);
+    /// REPLACES the mesh in the Property
+    void setValue( MeshCore::MeshKernel* m);
+    /// get the Kernel (only const possible!)
+    const MeshCore::MeshKernel &getValue(void) const;
+    virtual unsigned int getMemSize (void) const;
+    //@}
 
-  /** @name Modify */
-  //@{
-  void applyTransformation( const Base::Matrix4D& rclTrf );
-  void deletePointIndices ( const std::vector<unsigned long>& );
-  void deleteFacetIndices ( const std::vector<unsigned long>& );
-  void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );
-  void append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints);
-  void clear();
-  //@}
+    /** @name Modify */
+    //@{
+    void applyTransformation( const Base::Matrix4D& rclTrf );
+    void deletePointIndices ( const std::vector<unsigned long>& );
+    void deleteFacetIndices ( const std::vector<unsigned long>& );
+    void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );
+    void append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints);
+    void clear();
+    //@}
 
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
-  const char* getEditorName(void) const { return "MeshGui::PropertyMeshKernelItem"; }
+    const char* getEditorName(void) const { return "MeshGui::PropertyMeshKernelItem"; }
 
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
 
-  App::Property *Copy(void) const;
-  void Paste(const App::Property &from);
-  //@}
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    //@}
 
 private:
-  MeshCore::MeshKernel *_pcMesh;
+    MeshCore::MeshKernel *_pcMesh;
 };
 
 } // namespace Mesh
 
-#endif // _Mesh_h_
+#endif // MESH_MESHPROPERTIES_H
 

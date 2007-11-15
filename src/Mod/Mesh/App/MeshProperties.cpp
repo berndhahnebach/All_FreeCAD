@@ -29,6 +29,7 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Stream.h>
 
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
@@ -190,9 +191,7 @@ void PropertyCurvatureList::transform(const Base::Matrix4D &mat)
 
 void PropertyCurvatureList::Save (Base::Writer &writer) const
 {
-    if(writer.isForceXML()) {
-    }
-    else {
+    if (!writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<CurvatureList file=\"" << 
         writer.addFile(getName(), this) << "\"/>" << std::endl;
     }
@@ -203,9 +202,7 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
     reader.readElement("CurvatureList");
     std::string file (reader.getAttribute("file") );
     
-    if (file == "") {
-    }
-    else {
+    if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
@@ -213,19 +210,28 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 
 void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
+    Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
-    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
-    if (uCt > 0)
-    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+    str << uCt;
+    for (std::vector<CurvatureInfo>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        str << it->fMaxCurvature << it->fMinCurvature;
+        str << it->cMaxCurvDir.x << it->cMaxCurvDir.y << it->cMaxCurvDir.z;
+        str << it->cMinCurvDir.x << it->cMinCurvDir.y << it->cMinCurvDir.z;
+    }
 }
 
 void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
 {
+    Base::InputStream str(reader);
     unsigned long uCt=ULONG_MAX;
-    reader.read((char*)&uCt, sizeof(unsigned long));
+    str >> uCt;
     std::vector<CurvatureInfo> values(uCt);
-    if (uCt > 0)
-    reader.read((char*)&(values[0]), uCt*sizeof(CurvatureInfo));
+    for (std::vector<CurvatureInfo>::iterator it = values.begin(); it != values.end(); ++it) {
+        str >> it->fMaxCurvature >> it->fMinCurvature;
+        str >> it->cMaxCurvDir.x >> it->cMaxCurvDir.y >> it->cMaxCurvDir.z;
+        str >> it->cMinCurvDir.x >> it->cMinCurvDir.y >> it->cMinCurvDir.z;
+    }
+
     setValues(values);
 }
 
@@ -370,7 +376,7 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
     reader.readElement("Mesh");
     std::string file (reader.getAttribute("file") );
     
-    if (file == "") {
+    if (file.empty()) {
         // read XML
         MeshCore::MeshKernel kernel;
         MeshCore::MeshInput restorer(kernel);

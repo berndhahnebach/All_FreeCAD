@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PropteryLinks_H__
-#define __PropteryLinks_H__
+#ifndef APP_PROPERTYLINKS_H
+#define APP_PROPERTYLINKS_H
 
 // Std. configurations
 
@@ -164,4 +164,5 @@ private:
 
 } // namespace App
 
-#endif // __PropteryStandard_H__
+
+#endif // APP_PROPERTYLINKS_H

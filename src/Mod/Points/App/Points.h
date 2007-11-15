@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef _Points_h_
-#define _Points_h_
+#ifndef POINTS_POINTPROPERTIES_H
+#define POINTS_POINTPROPERTIES_H
 
 #include <vector>
 
@@ -43,15 +43,15 @@ typedef std::vector<Base::Vector3f> PointKernel;
  */
 class PointsAppExport PropertyGreyValue : public App::PropertyFloat
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyGreyValue(void)
-  {
-  }
-  virtual ~PropertyGreyValue()
-  {
-  }
+    PropertyGreyValue(void)
+    {
+    }
+    virtual ~PropertyGreyValue()
+    {
+    }
 };
 
 /**
@@ -59,20 +59,20 @@ public:
  */
 class PointsAppExport PropertyGreyValueList : public App::PropertyFloatList
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyGreyValueList()
-  {
-  }
-  virtual ~PropertyGreyValueList()
-  {
-  }
+    PropertyGreyValueList()
+    {
+    }
+    virtual ~PropertyGreyValueList()
+    {
+    }
 
-  /** @name Modify */
-  //@{
-  void removeIndices( const std::vector<unsigned long>& );
-  //@}
+    /** @name Modify */
+    //@{
+    void removeIndices( const std::vector<unsigned long>& );
+    //@}
 };
 
 /**
@@ -80,89 +80,89 @@ public:
  */
 class PointsAppExport PropertyNormalList : public App::PropertyVectorList
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyNormalList()
-  {
-  }
-  virtual ~PropertyNormalList()
-  {
-  }
+    PropertyNormalList()
+    {
+    }
+    virtual ~PropertyNormalList()
+    {
+    }
 
-  /** @name Modify */
-  //@{
-  void transform(const Base::Matrix4D &rclMat);
-  void removeIndices( const std::vector<unsigned long>& );
-  //@}
+    /** @name Modify */
+    //@{
+    void transform(const Base::Matrix4D &rclMat);
+    void removeIndices( const std::vector<unsigned long>& );
+    //@}
 };
 
 /** Curvature information. */
 struct PointsAppExport CurvatureInfo
 {
-  float fMaxCurvature, fMinCurvature;
-  Base::Vector3f cMaxCurvDir, cMinCurvDir;
+    float fMaxCurvature, fMinCurvature;
+    Base::Vector3f cMaxCurvDir, cMinCurvDir;
 };
 
 /** The Curvature property class.
  */
 class PointsAppExport PropertyCurvatureList: public App::PropertyLists
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  enum { 
-    MeanCurvature  = 0,  /**< Mean curvature */
-    GaussCurvature = 1,  /**< Gaussian curvature */
-    MaxCurvature   = 2,  /**< Maximum curvature */ 
-    MinCurvature   = 3,  /**< Minimum curvature */
-    AbsCurvature   = 4   /**< Absolute curvature */
-  };
+    enum { 
+        MeanCurvature  = 0,  /**< Mean curvature */
+        GaussCurvature = 1,  /**< Gaussian curvature */
+        MaxCurvature   = 2,  /**< Maximum curvature */ 
+        MinCurvature   = 3,  /**< Minimum curvature */
+        AbsCurvature   = 4   /**< Absolute curvature */
+    };
 
 public:
-	PropertyCurvatureList();
-	~PropertyCurvatureList();
+    PropertyCurvatureList();
+    ~PropertyCurvatureList();
 
-  void setSize(int newSize){_lValueList.resize(newSize);}   
-  int getSize(void) const {return _lValueList.size();}   
-	void setValue(const CurvatureInfo&);
-  void setValues(const std::vector<CurvatureInfo>&);
-  std::vector<float> getCurvature( int tMode) const;
-  
-  /// index operator
-  const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
-  void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
-  const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
+    void setSize(int newSize){_lValueList.resize(newSize);}   
+    int getSize(void) const {return _lValueList.size();}   
+    void setValue(const CurvatureInfo&);
+    void setValues(const std::vector<CurvatureInfo>&);
+    std::vector<float> getCurvature( int tMode) const;
 
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
+    /// index operator
+    const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+    void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
+    const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
 
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
-  //@}
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  /** @name Undo/Redo */
-  //@{
-  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
-  App::Property *Copy(void) const;
-  /// paste the value from the property (mainly for Undo/Redo and transactions)
-  void Paste(const App::Property &from);
-  unsigned int getMemSize (void) const;
-  //@}
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+    //@}
 
-  /** @name Modify */
-  //@{
-  void transform(const Base::Matrix4D &rclMat);
-  void removeIndices( const std::vector<unsigned long>& );
-  //@}
+    /** @name Undo/Redo */
+    //@{
+    /// returns a new copy of the property (mainly for Undo/Redo and transactions)
+    App::Property *Copy(void) const;
+    /// paste the value from the property (mainly for Undo/Redo and transactions)
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
+
+    /** @name Modify */
+    //@{
+    void transform(const Base::Matrix4D &rclMat);
+    void removeIndices( const std::vector<unsigned long>& );
+    //@}
 
 private:
-  std::vector<CurvatureInfo> _lValueList;
+    std::vector<CurvatureInfo> _lValueList;
 };
 
 } // namespace Points
 
 
-#endif // _Points_h_ 
+#endif // POINTS_POINTPROPERTIES_H 

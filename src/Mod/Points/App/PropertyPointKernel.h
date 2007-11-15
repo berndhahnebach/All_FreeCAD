@@ -33,52 +33,52 @@ namespace Points
  */
 class PointsAppExport PropertyPointKernel : public App::Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  PropertyPointKernel();
-  ~PropertyPointKernel();
+    PropertyPointKernel();
+    ~PropertyPointKernel();
 
-  /** @name Getter/setter */
-  //@{
-  /// Sets the points to the property
-  void setValue( const PointKernel& m);
-  /// get the points (only const possible!)
-  const PointKernel &getValue(void) const;
-  //@}
+    /** @name Getter/setter */
+    //@{
+    /// Sets the points to the property
+    void setValue( const PointKernel& m);
+    /// get the points (only const possible!)
+    const PointKernel &getValue(void) const;
+    //@}
 
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
-  /** @name Undo/Redo */
-  //@{
-  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
-  App::Property *Copy(void) const;
-  /// paste the value from the property (mainly for Undo/Redo and transactions)
-  void Paste(const App::Property &from);
-  unsigned int getMemSize (void) const;
-  //@}
+    /** @name Undo/Redo */
+    //@{
+    /// returns a new copy of the property (mainly for Undo/Redo and transactions)
+    App::Property *Copy(void) const;
+    /// paste the value from the property (mainly for Undo/Redo and transactions)
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
 
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
-  //@}
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+    //@}
 
-  /** @name Modify */
-  //@{
-  void removeIndices( const std::vector<unsigned long>& );
-  void transform(const Base::Matrix4D &rclMat);
-  //@}
+    /** @name Modify */
+    //@{
+    void removeIndices( const std::vector<unsigned long>& );
+    void transform(const Base::Matrix4D &rclMat);
+    //@}
 
 private:
-  PointKernel _cPoints;
+    PointKernel _cPoints;
 };
 
 } // namespace Points

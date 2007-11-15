@@ -72,7 +72,6 @@ PropertyLink::~PropertyLink()
 //**************************************************************************
 // Base class implementer
 
-
 void PropertyLink::setValue(App::DocumentObject * lValue)
 {
     aboutToSetValue();
@@ -89,10 +88,6 @@ App::DocumentObject * PropertyLink::getValue(Base::Type t) const
 {
     return (_pcLink && _pcLink->getTypeId().isDerivedFrom(t)) ? _pcLink : 0;
 }
-
-
-
-
 
 PyObject *PropertyLink::getPyObject(void)
 {
@@ -128,23 +123,20 @@ void PropertyLink::Restore(Base::XMLReader &reader)
     // read my Element
     reader.readElement("Link");
     // get the value of my Attribute
-    string name = reader.getAttribute("value");
+    std::string name = reader.getAttribute("value");
 
     // Property not in a Feature!
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-    if(name != ""){
+    if (name != ""){
         DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
-
-        assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-
+        assert(pcObject);
         setValue(pcObject);
     }
-    else
+    else {
        setValue(0);
-
+    }
 }
-
 
 Property *PropertyLink::Copy(void) const
 {
@@ -159,7 +151,6 @@ void PropertyLink::Paste(const Property &from)
     _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
     hasSetValue();
 }
-
 
 
 TYPESYSTEM_SOURCE(App::PropertyLinkList , App::PropertyLists);
@@ -180,7 +171,7 @@ PropertyLinkList::~PropertyLinkList()
 
 void PropertyLinkList::setValue(DocumentObject* lValue)
 {
-    if(lValue){
+    if (lValue){
         aboutToSetValue();
         _lValueList.resize(1);
         _lValueList[0]=lValue;
@@ -198,10 +189,8 @@ void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
 PyObject *PropertyLinkList::getPyObject(void)
 {
     PyObject* list = PyList_New(	getSize() );
-
     for(int i = 0;i<getSize(); i++)
         PyList_SetItem( list, i, _lValueList[i]->getPyObject());
-
     return list;
 }
 
@@ -270,7 +259,6 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
     // assignment
     setValues(values);
 }
-
 
 Property *PropertyLinkList::Copy(void) const
 {

@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include "FeatureTest.h"
+#include "Material.h"
 
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
@@ -57,6 +58,10 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(ConstraintFloat ,(5.0));
   ConstraintFloat.setConstraints(&floatPercent);
 
+  App::Color c;
+  ADD_PROPERTY(Colour      ,(c) );
+  ADD_PROPERTY(ColourList  ,(c) );
+
   ADD_PROPERTY(Distance,(47.11f) );
   ADD_PROPERTY(Angle   ,(3.0f) );
 
@@ -67,6 +72,7 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(LinkList ,(0));
 
   ADD_PROPERTY(Vector    ,(1.0,2.0,3.0));
+  ADD_PROPERTY(VectorList,(3.0,2.0,1.0));
   ADD_PROPERTY(Matrix    ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
   ADD_PROPERTY(Placement ,(Base::Placement()));
   
