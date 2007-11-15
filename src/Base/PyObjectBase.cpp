@@ -35,15 +35,15 @@ using namespace Base;
 
 
 // Constructor
-PyObjectBase::PyObjectBase(BaseClass* p,PyTypeObject *T)
-:_pcBaseClass(p)
+PyObjectBase::PyObjectBase(void* p,PyTypeObject *T)
+:_pcTwinPointer(p)
 {
     this->ob_type = T;
     _Py_NewReference(this);
 #ifdef FC_LOGPYOBJECTS
     Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
 #endif
-    _valid = true;
+    StatusBits.set(0);
 }
 /// destructor
 PyObjectBase::~PyObjectBase() 
@@ -196,7 +196,7 @@ int PyObjectBase::_setattr(char *attr, PyObject *value)
 PyObject *PyObjectBase::_repr(void)
 {
     std::stringstream a;
-    a << "<base object at " << _pcBaseClass << ">";
+    a << "<base object at " << _pcTwinPointer << ">";
 # ifdef FCDebug
     Console().Log("PyObjectBase::_repr() not overwritten representation!");
 # endif
