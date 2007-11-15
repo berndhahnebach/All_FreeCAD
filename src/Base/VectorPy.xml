@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+      Father="PyObjectBase" 
+      Name="VectorPy" 
+      Twin="Vector3f" 
+      FatherInclude="Base/PyObjectBase.h" 
+      Namespace="Base" 
+      FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <DeveloperDocu>This is the Vector export class</DeveloperDocu>
+      <UserDocu>This class represents a 3D float vector</UserDocu>
+    </Documentation>
+    <Methode Name="normalize">
+      <Documentation>
+        <UserDocu>Normalize the vector to the length of 1.0</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="projectToLine">
+      <Documentation>
+        <UserDocu>Deliver the projection point to a given line</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="projectToPlane">
+      <Documentation>
+        <UserDocu>Deliver the projection point to a given plane</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="distanceToLine">
+      <Documentation>
+        <UserDocu>Deliver the distance of the point to a given line</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="distanceToPlane">
+      <Documentation>
+        <UserDocu>Deliver the distance of the point to a given plane</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Length" ReadOnly="false">
+      <Documentation>
+        <UserDocu>To read or modifiy the length of the vector</UserDocu>
+      </Documentation>
+      <Parameter Name="Type" Type="Float" />
+    </Attribute>
+    <Attribute Name="x" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The X component of the vector</UserDocu>
+      </Documentation>
+      <Parameter Name="x" Type="Float"/>
+    </Attribute>
+    <Attribute Name="x" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The Y component of the vector</UserDocu>
+      </Documentation>
+      <Parameter Name="y" Type="Float"/>
+    </Attribute>
+    <Attribute Name="x" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The Z component of the vector</UserDocu>
+      </Documentation>
+      <Parameter Name="z" Type="Float"/>
+    </Attribute>
+  </PythonExport>
+</GenerateModel>
