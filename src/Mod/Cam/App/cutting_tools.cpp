@@ -239,7 +239,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			float z_level,z_level_corrected;
 			TopoDS_Shape aCutShape;
 			//Jetzt schneiden (die oberste Ebene auslassen)
-			for (int i=155;i<=cutnumber;++i) 
+			for (int i=1;i<=cutnumber;++i) 
 			{
 				z_level = temp_max-(i*m_pitch);
 				z_level_corrected = z_level;
@@ -726,11 +726,14 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 
 bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
 {
-	Base::Builder3D build;
+	std::ofstream inventoroutput;
+	inventoroutput.open("c:/finalTest.iv");
+	Base::InventorBuilder build(inventoroutput);;
 
 	std::ofstream anoutput1,anoutput2;
 	anoutput1.open("c:/master.txt");
 	anoutput2.open("c:/slave.txt");
+	bool write=true;
 	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
 	{
 		std::vector<std::pair<gp_Pnt,double> > OffsetPointContainer;
@@ -739,8 +742,10 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 		SlaveOffsetPointContainer.clear();
 		//Order the CutShape and access the PCurve to generate the points to offset
 		Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
+		int k=1;
 		for(aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
 		{
+			
 			//Get the PCurve and the GeomSurface
 			Handle_Geom2d_Curve aCurve;
 			aCurve.Nullify();
@@ -749,7 +754,13 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 			TopLoc_Location aLoc;
 			double first,last;
 			BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
-			if(aCurve.IsNull() || aSurface.IsNull)
+			bool test = aLoc.IsIdentity();
+			//Jetzt noch die resultierende Surface und die Curve sauber drehen 
+			//(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
+	
+			aSurface->Transform(aLoc.Transformation());
+			aCurve->Transform(aLoc.Transformation());
+			if(aCurve.IsNull() || aSurface.IsNull())
 			{
 				cout << "error";
 			}
@@ -793,9 +804,18 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				PointContactPair.first.SetZ(PointContactPair.first.Z() + radius);
 				OffsetPointContainer.push_back(PointContactPair);
 				anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-				build.addSinglePoint(PointContactPair.first.X(),PointContactPair.first.Y(),PointContactPair.first.Z());
+				//Damit nur eine Runde ausgegeben wird
+				if(write)
+				{
+					char output[20];
+					sprintf(output,"%d",k++);
+					build.addSinglePoint(PointContactPair.first.X(),PointContactPair.first.Y(),PointContactPair.first.Z());
+					build.addText(PointContactPair.first.X(), PointContactPair.first.Y(),PointContactPair.first.Z(),output);
+				}
 			}
+			
 		}
+		write = false;
 
 		//Jetzt wurden alle Edges offsettiert und jetzt wird das Gegenstück erzeugt werden
 		//Zunächst mal die Z-Ebene fürs Gegenstück generieren
@@ -849,7 +869,7 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
 				//Debug Output
 				anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-				build.addSinglePoint(SlaveOffsetPoint.X(),SlaveOffsetPoint.Y(),SlaveOffsetPoint.Z());
+				//build.addSinglePoint(SlaveOffsetPoint.X(),SlaveOffsetPoint.Y(),SlaveOffsetPoint.Z());
 
 			}
 		}
@@ -882,7 +902,7 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	}
 	anoutput1.close();
 	anoutput2.close();
-	build.saveToFile("c:/finalTest.iv");
+	
 		//make your wire looks like a curve to other algorithm and generate Points to offset the curve
 		//BRepAdaptor_CompCurve2 wireAdaptor(m_ordered_cuts_it->second);
 		/*GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.01);
