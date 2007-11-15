@@ -13,5 +13,46 @@ SET(LINKER_LANGUAGE CXX)
 
 # Create a library FreeCADBase which includes the source files.
 # The extension is already found.  Any number of sources could be listed here.
-ADD_LIBRARY(FreeCADBase SHARED BoundBox)
+ADD_LIBRARY(FreeCADBase SHARED 
+ BaseClass
+ BaseClassPy.xml
+ BaseClassPyImp.cpp
+ BoundBox
+ Builder3D
+ Console
+ Exception
+ Factory
+ FileInfo
+ FileTemplate
+ Handle
+ InputSource
+ Interpreter
+ Matrix
+ MemDebug
+ Observer
+ Parameter
+ ParameterPy
+ Persistance
+ PersistancePy.xml
+ PersistancePyImp
+ Placement
+ PreCompiled
+ PyExport
+ PyObjectBase
+ PyTools
+ Reader
+ Rotation
+ Sequencer
+ Stream
+ Swap
+ TimeInfo
+ Tools2D
+ Type
+ Vector3D
+ ViewProj
+ Writer
+ XMLTools
+ gzstream
+  
+ )
 
