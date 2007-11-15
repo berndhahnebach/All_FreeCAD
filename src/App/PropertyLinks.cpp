@@ -138,10 +138,10 @@ void PropertyLink::Restore(Base::XMLReader &reader)
 
         assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-        _pcLink = dynamic_cast<DocumentObject*>(pcObject);
+        setValue(pcObject);
     }
     else
-        _pcLink = 0;
+       setValue(0);
 
 }
 

@@ -533,12 +533,31 @@ void Document::Save (Writer &writer) const
 void Document::Restore(Base::XMLReader &reader)
 {
     int i,Cnt;
-
     reader.readElement("Document");
     long scheme = reader.getAttributeAsInteger("SchemaVersion");
 
+    std::string FilePath = FileName.getValue();
+    std::string OrigName = Name.getValue();
+
     // read the Document Properties
     PropertyContainer::Restore(reader);
+
+    // We must restore the correct 'FileName' property again because the stored
+    // value could be invalid.
+    FileName.setValue(FilePath.c_str());
+
+    // When this document has been created it got a preliminary name which might have changed now,
+    // because the document XML file can contain a name different from the original name.
+    // So firstly we must make sure that the new name is unique and secondly we must notify the
+    // application and the observers of this.
+    std::string NewName = Name.getValue();
+    if ( NewName != OrigName ) {
+        // The document's name has changed. We make sure that this new name is unique then.
+        std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
+        Name.setValue(NewUniqueName);
+        // Notify the application and all observers
+        GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
+    }
 
     // SchemeVersion "2"
     if ( scheme == 2 ) {
@@ -673,50 +692,15 @@ void Document::restore (void)
     ObjectMap.clear();
     pActiveObject = 0;
 
-
-    std::string FilePath = FileName.getValue();
-    std::string OrigName = Name.getValue();
-
     zipios::ZipInputStream zipstream(FileName.getValue());
     Base::XMLReader reader(FileName.getValue(), zipstream);
 
     if ( ! reader.isValid() )
-        throw Base::FileException("Document::open(): Error reading file",FilePath.c_str());
+        throw Base::FileException("Document::open(): Error reading file",FileName.getValue());
 
     Document::Restore(reader);
 
-    // We must restore the correct 'FileName' property again because the stored
-    // value could be invalid.
-    FileName.setValue(FilePath.c_str());
-
-    // When this document has been created it got a preliminary name which might have changed now,
-    // because the document XML file can contain a name different from the original name.
-    // So firstly we must make sure that the new name is unique and secondly we must notify the
-    // application and the observers of this.
-    std::string NewName = Name.getValue();
-    if ( NewName != OrigName ) {
-        // The document's name has changed. We make sure that this new name is unique then.
-        std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
-        Name.setValue(NewUniqueName);
-        // Notify the application and all observers
-        GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
-    }
-
     reader.readFiles(zipstream);
-
-    // notify all as new
-    //for (std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
-        //if (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) {
-            //AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
-            //feat->touchTime.setToActual();
-            //feat->setModified(false);
-            //if ( feat->status.getValue() == AbstractFeature::New )
-            //  feat->status.setValue( AbstractFeature::Valid );
-        //}
-        //signalNewObject(*(It->second));
-    //}
-
-    //Notify(DocChange);
 
     // Special handling for Gui document, the view representations must already
     // exist, what is done in Notify().
@@ -737,6 +721,10 @@ void Document::restore (void)
                 pDocumentHook->RestoreDocFile( zipstream );
         }
     }
+
+    // reset all touched
+    for (std::map<std::string,DocumentObject*>::iterator It= ObjectMap.begin();It!=ObjectMap.end();++It)
+        It->second->purgeTouched();
 }
 
 bool Document::isSaved() const

@@ -389,20 +389,22 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 {
-    try {
-        _pcMesh->Write( writer.Stream() );
-    } catch( const Base::Exception&) {
-        throw;
-    }
+    _pcMesh->Write( writer.Stream() );
 }
 
 void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 {
-    try {
-        _pcMesh->Read( reader );
-    } catch( const Base::Exception&) {
-        throw;
-    }
+    MeshCore::MeshKernel kernel;
+    kernel.Read(reader);
+
+    // avoid to duplicate the mesh in memory
+    MeshCore::MeshPointArray points;
+    MeshCore::MeshFacetArray facets;
+    kernel.Adopt(points, facets);
+
+    aboutToSetValue();
+    _pcMesh->Adopt(points, facets);
+    hasSetValue();
 }
 
 App::Property *PropertyMeshKernel::Copy(void) const
