@@ -90,8 +90,8 @@ void ViewProviderCurveNet::attach(App::DocumentObject *pcFeat)
 {
   pcObject = pcFeat;
 
-  if ( getAsFeature()->getStatus() ==  App::AbstractFeature::Error )
-    return; // feature is invalid
+  //if ( getAsFeature()->getStatus() ==  App::AbstractFeature::Error )
+  //  return; // feature is invalid
 
 //  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
 

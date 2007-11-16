@@ -33,6 +33,8 @@
 #include "Command.h"
 #include "ToolBarManager.h"
 #include "Widgets.h"
+#include "Workbench.h"
+#include "WorkbenchManager.h"
 
 using namespace Gui::Dialog;
 
@@ -72,11 +74,12 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     workbenches.sort();
     index = 0;
     for ( QStringList::Iterator it = workbenches.begin(); it != workbenches.end(); ++it, ++index ) {
-        QPixmap px = Application::Instance->workbenchIcon( *it );
+        QPixmap px = Application::Instance->workbenchIcon(*it);
+        QString mt = Application::Instance->workbenchMenuText(*it);
         if ( px.isNull() )
-            workbenchBox->addItem( *it );
+            workbenchBox->addItem(mt);
         else
-            workbenchBox->addItem( px, *it );
+            workbenchBox->addItem(px, mt);
         workbenchBox->setItemData(index, QVariant(*it), Qt::UserRole);
     }
 
@@ -89,6 +92,12 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     toolbarTreeWidget->header()->hide();
 
     on_categoryBox_activated(categoryBox->currentIndex());
+    Workbench* w = WorkbenchManager::instance()->active();
+    if (w) {
+        QString name = w->name();
+        int index = workbenchBox->findData(name);
+        workbenchBox->setCurrentIndex(index);
+    }
     on_workbenchBox_activated(workbenchBox->currentIndex());
 }
 

@@ -47,25 +47,13 @@ using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 
-const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
-      
 ViewProviderDocumentObject::ViewProviderDocumentObject()
-  : pcObject(0), pcObjItem(0), _cLastStatus(-1)
+  : pcObject(0)
 {
-  ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
   ADD_PROPERTY(DisplayMode,((long)0));
-  ADD_PROPERTY(Transparency,(0));
-  Transparency.setConstraints(&intPercent);
   ADD_PROPERTY(Visibility,(true));
-  App::Material mat(App::Material::DEFAULT);
-  ADD_PROPERTY(ShapeMaterial,(mat));
-
-  pcShapeMaterial = new SoMaterial;
-  pcShapeMaterial->ref();
-  ShapeMaterial.touch();
 
   sPixmap = "Feature";
-
 }
 
 
@@ -73,42 +61,11 @@ ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
   // Make sure that the property class does not destruct our string list
   DisplayMode.setEnums(0);
-  pcShapeMaterial->unref();
 }
 
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)
 {
-  // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
-  // Both redundant properties are kept due to more convenience for the user. But we must keep the values
-  // consistent of all these properties.
-  if ( prop == &ShapeColor ) {
-    const App::Color& c = ShapeColor.getValue();
-    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    if (c != ShapeMaterial.getValue().diffuseColor)
-    ShapeMaterial.setDiffuseColor(c);
-  } else if ( prop == &Transparency ) {
-    const App::Material& Mat = ShapeMaterial.getValue();
-    long value = (long)(100*Mat.transparency);
-    if (value != Transparency.getValue()) {
-      float trans = Transparency.getValue()/100.0f;
-      pcShapeMaterial->transparency = trans;
-      ShapeMaterial.setTransparency(trans);
-    }
-  } else if ( prop == &ShapeMaterial ) {
-    const App::Material& Mat = ShapeMaterial.getValue();
-    long value = (long)(100*Mat.transparency);
-    if (value != Transparency.getValue())
-    Transparency.setValue(value);
-    const App::Color& color = Mat.diffuseColor;
-    if (color != ShapeColor.getValue())
-    ShapeColor.setValue(Mat.diffuseColor);
-    pcShapeMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-    pcShapeMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-    pcShapeMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-    pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-    pcShapeMaterial->shininess.setValue(Mat.shininess);
-    pcShapeMaterial->transparency.setValue(Mat.transparency);
-  } else if ( prop == &DisplayMode ) {
+  if ( prop == &DisplayMode ) {
     setActiveMode();
   } else if ( prop == &Visibility ) {
     Visibility.getValue() ? show() : hide();

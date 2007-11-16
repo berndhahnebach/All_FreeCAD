@@ -74,15 +74,11 @@ PyObject *Feature::getPyObject(void)
 
 void Feature::onChanged(const App::Property* prop)
 {
-    // FIXME: What is to do if only the mesh property has changed? I think in this case no recomputation needs to be done
-    // for the owner feature because the mesh is the output of the previous recomputation and not an input parameter.
-    // But on the other hand all feature objects that depend on this mesh must be executed because for those ones it is
-    // an input parameter.
-    if ( prop == &Mesh ) {
-        // call for undo/redo only but do not set to be modified
-        DocumentObject::onChanged(prop);
-    } else {
-        // set to be modified
-        AbstractFeature::onChanged(prop);
-    }
+    // Note: If the Mesh property has changed the property and this object are marked as 'touched'
+    // but no recomputation of this objects needs to be done because the Mesh property is regarded
+    // as output of a previous recomputation The mustExecute() method returns 0 in that case. 
+    // However, objects that reference this object the Mesh property can be an input parameter.
+    // As this object and the property are touched such objects can check this and return a value 1 
+    // (or -1) in their mustExecute() to be recomputed the next time the document recomputes itself.
+    DocumentObject::onChanged(prop);
 }

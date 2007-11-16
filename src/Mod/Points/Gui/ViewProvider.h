@@ -24,7 +24,7 @@
 #define POINTSGUI_VIEWPROVIDERPOINTS_H
 
 #include <Base/Vector3D.h>
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <Inventor/SbVec2f.h>
 
 
@@ -55,7 +55,7 @@ namespace PointsGui {
  * a node representing the point data structure.
  * @author Werner Mayer
  */
-class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
+class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(PointsGui::ViewProviderPoints);
 
@@ -63,7 +63,7 @@ public:
   ViewProviderPoints();
   virtual ~ViewProviderPoints();
 
-  App::PropertyFloat PointSize;
+  App::PropertyFloatConstraint PointSize;
 
   /** 
    * Extracts the point data from the feature \a pcFeature and creates
@@ -101,6 +101,7 @@ protected:
   SoDrawStyle       *pcPointStyle;
 
 private:
+  static App::PropertyFloatConstraint::Constraints floatRange;
   bool _bEdit;
 };
 

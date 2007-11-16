@@ -23,7 +23,7 @@
 #ifndef MESHGUI_VIEWPROVIDERMESHNODE_H
 #define MESHGUI_VIEWPROVIDERMESHNODE_H
 
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 
 #include <vector>
@@ -42,7 +42,7 @@ namespace MeshGui {
  * The ViewProviderMeshNode class creates a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshNode : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderMeshNode : public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(TriangulationGui::ViewProviderMeshNode);
 

@@ -27,16 +27,18 @@
 #include <Inventor/lists/SoPickedPointList.h> 
 #include "ViewProviderDocumentObject.h"
 
+class SoPickedPointList;
 class SbVec2s;
 
 namespace Gui {
 
+class SoFCSelection;
 class View3DInventorViewer;
 
-//FIXME: At the moment the class ViewProviderDocumentObject has properties like ShapeColor, Transparency, ... which are rather
-//related to a geometric data type. So, we should removed these properties from there and use ViewProviderGeometryObject as 
-//base class for all geometry descendant view types.
-
+/**
+ * The base class for all view providers that display geometric data, like mesh, point cloudes and shapes.
+ * @author Werner Mayer
+ */
 class GuiExport ViewProviderGeometryObject : public ViewProviderDocumentObject
 {
   PROPERTY_HEADER(Gui::ViewProviderGeometryObject);
@@ -48,20 +50,16 @@ public:
   /// destructor.
   virtual ~ViewProviderGeometryObject();
 
-  /*
-   * Note: Due to the redesign using display properties in this class directly instead of DocumentObject several
-   * methods can be removed, such as copy(), setMatFromObject(), setTransparency(), setColor(), setPointSize() and
-   * setLineWidth()
-   */
-
   // Display properties
   App::PropertyColor ShapeColor;
-  App::PropertyEnumeration DisplayMode;
   App::PropertyPercent Transparency;
-  App::PropertyBool Visibility;
   App::PropertyMaterial ShapeMaterial;
 
+  /**
+   * Attaches the document object to this view provider.
+   */
   virtual void attach(App::DocumentObject *pcObject);
+  SoFCSelection* getHighlightNode() const { return pcHighlight; }
   /**
    * Returns a list of picked points from the geometry under \a pcHighlight.
    * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
@@ -75,18 +73,17 @@ public:
    */
   SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
 
-  virtual void updateData(const App::Property*){};
-
 protected:
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 
 protected:
-  SoMaterial  *pcShapeMaterial;
+  SoFCSelection* pcHighlight;
+  SoMaterial   * pcShapeMaterial;
 };
 
-
 } // namespace Gui
+
 
 #endif // GUI_VIEWPROVIDER_GEOMETRYOBJECT_H
 

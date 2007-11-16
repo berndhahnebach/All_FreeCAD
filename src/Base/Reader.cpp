@@ -230,31 +230,49 @@ void Base::XMLReader::readCharacters(void)
 }
 
 
-void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream)
+void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
 {
-  // It's possible that not all objects inside the document could be created, e.g. if a module
-  // is missing that would know these object types. So, there may be data files inside the document
-  // structure that cannot be read. This means that the number of registered files is less or equal
-  // to the number of available files. However, it's guaranteed that the order of the files is kept.
-  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
-  {
+    // It's possible that not all objects inside the document could be created, e.g. if a module
+    // is missing that would know these object types. So, there may be data files inside the zip
+    // file that cannot be read. We simply ignore these files. 
+    // On the other hand, however, it could happen that a file should be read that is not part of
+    // the zip file. This happens e.g. if a document is written without GUI up but is read with GUI
+    // up. In this case the associated GUI document asks for its file which is not part of the ZIP
+    // file, then.
+    // In either case it's guaranteed that the order of the files is kept.
     zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+    std::vector<FileEntry>::const_iterator it = FileList.begin();
+    while (entry->isValid() && it != FileList.end()) {
+        std::vector<FileEntry>::const_iterator jt = it; 
+        // Check if the current entry is registered, otherwise check the next registered files as soon as
+        // both file names match
+        while (jt != FileList.end() && entry->getName() != jt->FileName)
+            ++jt;
+        // If this condition is true both file names match and we can read-in the data, otherwise
+        // no file name for the current entry in the zip was registered.
+        if (jt != FileList.end()) {
+            jt->Object->RestoreDocFile(zipstream);
+            // Go to the next registered file name
+            it = jt + 1;
+        }
 
-    // Check if the current file is registered, otherwise check the next files as soon as
-    // both file names match.
-    while ( entry->isValid() && entry->getName() != it->FileName )
-      entry = zipstream.getNextEntry();
-    if ( entry->isValid() )
-      it->Object->RestoreDocFile( zipstream );
-    else
-      throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
-//    zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-//    if ( entry->isValid() && entry->getName() == it->FileName )
-//    {
-//      it->Object->RestoreDocFile( zipstream );
-//    }else
-//      throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
-  }
+        // In either case we must go to the next entry
+        entry = zipstream.getNextEntry();
+    }
+/*
+
+    for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it) {
+        zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+
+        // Check if the current file is registered, otherwise check the next files as soon as
+        // both file names match.
+        while (entry->isValid() && entry->getName() != it->FileName)
+            entry = zipstream.getNextEntry();
+        if (entry->isValid())
+            it->Object->RestoreDocFile( zipstream );
+        else
+            throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
+    }*/
 }
 
 const char *Base::XMLReader::addFile(const char* Name, Base::Persistance *Object)

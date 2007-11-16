@@ -26,12 +26,8 @@
 
 #include <Inventor/SoType.h>
 
-#include <Base/Factory.h>
-#include <Base/TimeInfo.h>
 #include "ViewProvider.h"
-
 #include <App/DocumentObject.h>
-#include <App/Feature.h>
 
 class SoMaterial;
 class SoDrawStyle;
@@ -45,8 +41,6 @@ namespace App
 
 namespace Gui {
 
-class ObjectItem;
-
 class GuiExport ViewProviderDocumentObject : public ViewProvider
 {
   PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
@@ -58,18 +52,9 @@ public:
   /// destructor.
   virtual ~ViewProviderDocumentObject();
 
-  /*
-   * Note: Due to the redesign using display properties in this class directly instead of DocumentObject several
-   * methods can be removed, such as copy(), setMatFromObject(), setTransparency(), setColor(), setPointSize() and
-   * setLineWidth()
-   */
-
   // Display properties
-  App::PropertyColor ShapeColor;
   App::PropertyEnumeration DisplayMode;
-  App::PropertyPercent Transparency;
   App::PropertyBool Visibility;
-  App::PropertyMaterial ShapeMaterial;
 
   virtual void attach(App::DocumentObject *pcObject);
   /// get the default display mode
@@ -80,12 +65,6 @@ public:
   void setActiveMode();
 
   virtual void updateData(const App::Property*){};
-
-  inline App::AbstractFeature *getAsFeature(void){
-    assert(pcObject && pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
-    return dynamic_cast<App::AbstractFeature *>(pcObject);
-  }
-
   App::DocumentObject *getObject(void) const {return pcObject;}
 
 protected:
@@ -96,13 +75,10 @@ protected:
    * Before calling this function this view provider has to be attached to an object.
    * The method returns after the first front root node matches. If no front root node matches, 0 is returned.
    */
-  SoSeparator* findFrontRootOfType( const SoType& type) const;
+  SoSeparator* findFrontRootOfType(const SoType& type) const;
 
 protected:
-  SoMaterial  *pcShapeMaterial;
   App::DocumentObject *pcObject;
-  ObjectItem *pcObjItem;
-  int _cLastStatus;
 
 private:
   std::vector<const char*> aDisplayEnumsArray;

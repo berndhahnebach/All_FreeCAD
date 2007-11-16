@@ -152,7 +152,7 @@ public:
   /// add a read request of a persistent object
   const char *addFile(const char* Name, Base::Persistance *Object);
   /// process the requested file writes
-  void readFiles(zipios::ZipInputStream &zipstream);
+  void readFiles(zipios::ZipInputStream &zipstream) const;
   /// get all registered file names
   const std::vector<std::string>& getFilenames() const;
   bool isRegistered(Base::Persistance *Object) const;

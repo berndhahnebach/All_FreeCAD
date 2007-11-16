@@ -141,9 +141,9 @@ QIcon ViewProviderExport::getIcon() const
 
 // ======================================================================
 
-App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {0.0f,20.0f,0.1f};
+App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {1.0f,64.0f,1.0f};
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderGeometryObject)
 
 
 ViewProviderMesh::ViewProviderMesh() : m_bEdit(false)
@@ -209,7 +209,7 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
     } else if ( prop == &ShapeMaterial ) {
       setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
     }
-    ViewProviderFeature::onChanged(prop);
+    ViewProviderGeometryObject::onChanged(prop);
   }
 }
 
@@ -314,7 +314,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
   // Call parents attach method
-  ViewProviderFeature::attach(pcFeat);
+  ViewProviderGeometryObject::attach(pcFeat);
 
   // only one selection node for the mesh
   pcHighlight->addChild(pcMeshCoord);
@@ -422,7 +422,7 @@ void ViewProviderMesh::setDisplayMode(const char* ModeName)
   else if ( strcmp("Hidden line",ModeName)==0 )
     setDisplayMaskMode("HiddenLine");
 
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+  ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderMesh::getDisplayModes(void) const

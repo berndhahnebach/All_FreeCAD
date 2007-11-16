@@ -23,7 +23,7 @@
 #ifndef MESHGUI_VIEWPROVIDERMESHFACESET_H
 #define MESHGUI_VIEWPROVIDERMESHFACESET_H
 
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 
 #include <vector>
@@ -51,7 +51,7 @@ class SoFCMeshFaceSet;
  * SoFCMeshNode and SoFCMeshFaceSet.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshFaceSet : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderMeshFaceSet : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(TriangulationGui::ViewProviderMeshFaceSet);
 
