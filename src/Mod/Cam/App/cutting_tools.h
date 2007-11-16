@@ -69,6 +69,7 @@ private:
 	bool fillFaceBBoxes();
 	bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
 	bool classifyShape();
+	//bool GenFlatLevelBSpline(
 	bool checkFlatLevel();
 	bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
 	bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);

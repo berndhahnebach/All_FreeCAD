@@ -263,6 +263,8 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 	return false;
 }
 
+
+
 bool cutting_tools::checkFlatLevel()
 {
 	//Falls keine CAD-Geometrie da ist, gleich wieder rausspringen
@@ -726,14 +728,14 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 
 bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
 {
-	std::ofstream inventoroutput;
-	inventoroutput.open("c:/finalTest.iv");
-	Base::InventorBuilder build(inventoroutput);;
+	//std::ofstream inventoroutput;
+	//inventoroutput.open("c:/finalTest.iv");
+	//Base::InventorBuilder build(inventoroutput);;
 
-	std::ofstream anoutput1,anoutput2;
-	anoutput1.open("c:/master.txt");
-	anoutput2.open("c:/slave.txt");
-	bool write=true;
+	//std::ofstream anoutput1,anoutput2;
+	//anoutput1.open("c:/master.txt");
+	//anoutput2.open("c:/slave.txt");
+	//bool write=true;
 	for(m_ordered_cuts_it = m_ordered_cuts.begin();m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
 	{
 		std::vector<std::pair<gp_Pnt,double> > OffsetPointContainer;
@@ -742,30 +744,23 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 		SlaveOffsetPointContainer.clear();
 		//Order the CutShape and access the PCurve to generate the points to offset
 		Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
-		int k=1;
+		//int k=1;
 		for(aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
 		{
 			
 			//Get the PCurve and the GeomSurface
 			Handle_Geom2d_Curve aCurve;
-			aCurve.Nullify();
 			Handle_Geom_Surface aSurface;
-			aSurface.Nullify();
 			TopLoc_Location aLoc;
 			double first,last;
 			BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
-			bool test = aLoc.IsIdentity();
 			//Jetzt noch die resultierende Surface und die Curve sauber drehen 
 			//(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
-	
-			aSurface->Transform(aLoc.Transformation());
-			aCurve->Transform(aLoc.Transformation());
-			if(aCurve.IsNull() || aSurface.IsNull())
-			{
-				cout << "error";
-			}
+
+			if(aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
+
 			Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
-			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.001);
+			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
 			//Now get the surface normal to the generated points 
 			for (int i=1;i<=aPointGenerator.NbPoints();++i)
 			{
@@ -790,32 +785,40 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				}*/
 				//Mal kurz den Winkel zur Grund-Ebene ausrechnen
 				gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
-				double angle = normalVec.Angle(planeVec);
-				//double angle_winkelmass = (180/PI) * angle;
-				//Jetzt noch die Kontakthöhe bestimmen
-				PointContactPair.second = 2*radius*cos(angle)*cos(angle);
+				//Den Winkel 
+				PointContactPair.second = normalVec.Angle(planeVec);
 				//Jetzt die Z-Komponente auf 0 setzen
 				normalVec.SetZ(0.0);
 				//Jetzt die Normale mit folgender Formel multiplizieren
 				normalVec.Multiply(cos(angle)*(1-sin(angle))*radius);
-
 				//Jetzt den OffsetPunkt berechnen
 				PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
 				PointContactPair.first.SetZ(PointContactPair.first.Z() + radius);
-				OffsetPointContainer.push_back(PointContactPair);
-				anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+				//Damit wir keine Punkte bekommen die zu nahe beieinander liegen
+				//Den letzten hinzugefügten Punkt suchen
+			
+				if(OffsetPointContainer.size()>0 && (OffsetPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
+				{
+					OffsetPointContainer.push_back(PointContactPair);
+					//anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+				}
+				else if(OffsetPointContainer.empty())
+				{
+					OffsetPointContainer.push_back(PointContactPair);
+					//anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+				}
 				//Damit nur eine Runde ausgegeben wird
-				if(write)
+				/*if(write)
 				{
 					char output[20];
 					sprintf(output,"%d",k++);
 					build.addSinglePoint(PointContactPair.first.X(),PointContactPair.first.Y(),PointContactPair.first.Z());
 					build.addText(PointContactPair.first.X(), PointContactPair.first.Y(),PointContactPair.first.Z(),output);
-				}
+				}*/
 			}
 			
 		}
-		write = false;
+		//write = false;
 
 		//Jetzt wurden alle Edges offsettiert und jetzt wird das Gegenstück erzeugt werden
 		//Zunächst mal die Z-Ebene fürs Gegenstück generieren
@@ -823,6 +826,7 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 		float slave_z_level_corrected;
 		TopoDS_Shape slaveCutShape;
 		calculateAccurateSlaveZLevel(OffsetPointContainer,m_ordered_cuts_it->first,slave_z_level);
+		//check 
 		cut(slave_z_level,m_minlevel,slaveCutShape,slave_z_level_corrected);
 		for(aCutShapeSorter.ReInit(slaveCutShape);aCutShapeSorter.More();aCutShapeSorter.Next())
 		{
@@ -832,8 +836,10 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 			TopLoc_Location aLoc;
 			double first,last;
 			BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
+			//Reverse the PCurve if the Edge-Orientation is reversed
+			if(aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
 			Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
-			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.001);
+			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
 			//Now get the surface normal to the generated points 
 			for (int i=1;i<=aPointGenerator.NbPoints();++i)
 			{
@@ -866,9 +872,18 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				//Jetzt den SlaveOffsetPunkt berechnen
 				gp_Pnt SlaveOffsetPoint(aSurfacePoint.XYZ() + normalVec.XYZ());
 				SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - radius);
-				SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
+				//checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+				if(SlaveOffsetPointContainer.size()>0 && (SlaveOffsetPointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+				{
+					SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
+					//anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+				}
+				else if(SlaveOffsetPointContainer.empty())
+				{
+					SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
+					//anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+				}
 				//Debug Output
-				anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
 				//build.addSinglePoint(SlaveOffsetPoint.X(),SlaveOffsetPoint.Y(),SlaveOffsetPoint.Z());
 
 			}
@@ -900,8 +915,8 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 		m_all_offset_cuts_high.push_back(MasterCurve);
 		m_all_offset_cuts_low.push_back(SlaveCurve);
 	}
-	anoutput1.close();
-	anoutput2.close();
+	//anoutput1.close();
+	//anoutput2.close();
 	
 		//make your wire looks like a curve to other algorithm and generate Points to offset the curve
 		//BRepAdaptor_CompCurve2 wireAdaptor(m_ordered_cuts_it->second);
@@ -1126,12 +1141,15 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 
 bool cutting_tools::calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >& OffsetPoints, double current_z_level, double &slave_z_level)
 {
-	//Mittelwert von allen Kontakthöhen bilden
+	//Mittelwert von allen Normalenwinkeln und damit dann den Mittelwert der Blechdicke bilden
 	double delta_z=0.0;
 	for(int i=0;i<OffsetPoints.size();++i) delta_z = delta_z + OffsetPoints[i].second;
 	
 	delta_z = delta_z/OffsetPoints.size();
-	slave_z_level = current_z_level + delta_z;
+
+	slave_z_level = current_z_level + delta_z;	
+	//check if desired z_level is possible
+	if(slave_z_level>=(m_ordered_cuts.begin()->first)) slave_z_level = m_ordered_cuts.begin()->first;
 	return  true;
 }
 
