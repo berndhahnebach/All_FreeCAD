@@ -25,6 +25,8 @@
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
 
+#include <Mod/Image/App/CaptureClass.h>
+
 #include "ImageView.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -65,9 +67,37 @@ void CmdImageOpen::activated(int iMsg)
   }
 }
 
+DEF_STD_CMD(CmdImageCapturerTest);
+
+CmdImageCapturerTest::CmdImageCapturerTest()
+	:Command("Image_CapturerTest")
+{
+	sAppModule		= "Image";
+	sGroup			  = QT_TR_NOOP("Image");
+	sMenuText		  = QT_TR_NOOP("CapturerTest");
+	sToolTipText	= QT_TR_NOOP("test camara capturing");
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			  = "Open";
+	iAccel			  = 0;
+}
+
+
+void CmdImageCapturerTest::activated(int iMsg)
+{
+  Capturerer cap(0);
+  cap.setCaptureWindows(true);
+  for(int i = 0; i< 200;i++)
+      if(cap.getOneCapture()==27)
+          break;
+
+  
+}
+
 void CreateImageCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new CmdImageOpen());
+	rcCmdMgr.addCommand(new CmdImageCapturerTest());
 }
