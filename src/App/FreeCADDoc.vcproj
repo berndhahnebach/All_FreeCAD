@@ -284,8 +284,8 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py PropertyContainerPy.xml&#x0D;&#x0A;"
-						Outputs="PropertyContainerPy.cpp;PropertyContainerPy.h"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -522,8 +522,8 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentPy.xml&#x0D;&#x0A;"
-						Outputs="DocumentPy.h;DocumentPy.cpp"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -531,8 +531,8 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentPy.xml&#x0D;&#x0A;"
-						Outputs="DocumentPy.h;DocumentPy.cpp"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
@@ -636,7 +636,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp"
+						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>

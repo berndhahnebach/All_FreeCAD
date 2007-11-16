@@ -874,8 +874,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../Tools/generate.py  BaseClassPy.xml&#x0D;&#x0A;"
-					Outputs="BaseClassPy.h;BaseClassPy.cpp"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -883,8 +883,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../Tools/generate.py BaseClassPy.xml&#x0D;&#x0A;"
-					Outputs="BaseClassPy.h;BaseClassPy.cpp"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>
@@ -1254,8 +1254,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../Tools/generate.py PersistancePy.xml&#x0D;&#x0A;"
-					Outputs="PersistancePy.cpp;PersistancePy.h"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -1263,8 +1263,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../Tools/generate.py PersistancePy.xml&#x0D;&#x0A;"
-					Outputs="PersistancePy.cpp;PersistancePy.h"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>
@@ -1574,6 +1574,32 @@
 		</File>
 		<File
 			RelativePath="Vector3D.h"
+			>
+		</File>
+		<File
+			RelativePath=".\VectorPy.xml"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\VectorPyImp.cpp"
 			>
 		</File>
 		<File
