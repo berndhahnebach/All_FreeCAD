@@ -584,6 +584,7 @@ Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 }
 + if (i.ReadOnly):
 = else:
+
 void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 {
 
