@@ -59,7 +59,6 @@
 #include <Inventor/nodes/SoOrthographicCamera.h>
 
 #include "View3DInventorExamples.h"
-#include "ViewProviderFeature.h"
 #include "SoFCSelectionAction.h"
 #include "View3DPy.h"
 

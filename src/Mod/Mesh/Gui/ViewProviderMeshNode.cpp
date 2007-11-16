@@ -70,9 +70,9 @@
 using namespace MeshGui;
 
 
-App::PropertyFloatConstraint::Constraints ViewProviderMeshNode::floatRange = {0.0f,20.0f,0.1f};
+App::PropertyFloatConstraint::Constraints ViewProviderMeshNode::floatRange = {1.0f,64.0f,1.0f};
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderGeometryObject)
 
 ViewProviderMeshNode::ViewProviderMeshNode() : pcOpenEdge(0), m_bEdit(false)
 {
@@ -130,7 +130,7 @@ void ViewProviderMeshNode::onChanged(const App::Property* prop)
     } else if ( prop == &ShapeMaterial ) {
       setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
     }
-    ViewProviderFeature::onChanged(prop);
+    ViewProviderGeometryObject::onChanged(prop);
   }
 }
 
@@ -144,7 +144,7 @@ void ViewProviderMeshNode::setOpenEdgeColorFrom( const App::Color& c )
 
 void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
 {
-  ViewProviderFeature::attach(pcFeat);
+  ViewProviderGeometryObject::attach(pcFeat);
 
   // only one selection node for the mesh
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
@@ -240,7 +240,7 @@ void ViewProviderMeshNode::setDisplayMode(const char* ModeName)
   else if ( strcmp("Wireframe",ModeName)==0 )
     setDisplayMaskMode("Wireframe");
 
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+  ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderMeshNode::getDisplayModes(void) const

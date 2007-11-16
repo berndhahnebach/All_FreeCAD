@@ -109,12 +109,13 @@ public:
     boost::signal<void (App::DocumentObject&)> signalRenamedObject;
     /// signal on activated Object
     boost::signal<void (App::DocumentObject&)> signalActivatedObject;
-    /** signal on save document
-     * this signal is given when the document get streamt.
+    /** signal on load/save document
+     * this signal is given when the document gets streamed.
      * you can use this hook to write additional information in 
-     * the file (like the Gui::Document does).
+     * the file (like the Gui::Document it does).
      */
     boost::signal<void (Base::Writer &)> signalSaveDocument;
+    boost::signal<void (Base::XMLReader&)> signalRestoreDocument;
     //@}
 
     /** @name File handling of the document */
@@ -140,15 +141,6 @@ public:
 
     /// returns the complet document mermory consumption, including all managed DocObjects and Undo Redo.
     unsigned int getMemSize (void) const;
-
-
-    //FIXME: This is a hack to allow to save or read data from the Gui::Document.
-    void installDocumentHook(Base::Persistance* pHook) {
-        pDocumentHook = pHook;
-    }
-    void removeDocumentHook() {
-        pDocumentHook=0;
-    }
 
 
     /** @name Object handling  */
@@ -283,7 +275,6 @@ protected:
     std::map<std::string,DocumentObject*> ObjectMap;
     // Array to preserve the creation order of created objects
     std::vector<DocumentObject*> ObjectArray;
-    Base::Persistance* pDocumentHook;
 
     // recompute log
     std::vector<App::DocumentObjectExecReturn*> _RecomputeLog;

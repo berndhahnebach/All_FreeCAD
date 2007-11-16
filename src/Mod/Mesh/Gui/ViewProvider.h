@@ -27,7 +27,7 @@
 #include <Inventor/fields/SoSFVec2f.h>
 
 #include "../App/Core/Elements.h"
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <App/PropertyStandard.h>
 
 
@@ -85,7 +85,7 @@ public:
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMesh);
 

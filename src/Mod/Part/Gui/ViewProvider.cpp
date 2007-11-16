@@ -76,14 +76,14 @@
 
 using namespace PartGui;
 
-PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 
 
 //**************************************************************************
 // Construction/Destruction
 
-App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {0.0f,20.0f,0.1f};
-       
+App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
+
 ViewProviderPart::ViewProviderPart()
 {
     App::Material mat;
@@ -189,14 +189,14 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcPointMaterial->transparency.setValue(Mat.transparency);
     }
     else {
-        ViewProviderDocumentObject::onChanged(prop);
+        ViewProviderGeometryObject::onChanged(prop);
     }
 }
 
 void ViewProviderPart::attach(App::DocumentObject *pcFeat)
 {
     // call parent attach method
-    ViewProviderDocumentObject::attach(pcFeat);
+    ViewProviderGeometryObject::attach(pcFeat);
 
     SoGroup* pcNormalRoot = new SoGroup();
     SoGroup* pcFlatRoot = new SoGroup();
@@ -243,13 +243,13 @@ void ViewProviderPart::setDisplayMode(const char* ModeName)
     else if ( strcmp("Points",ModeName)==0 )
         setDisplayMaskMode("Point");
 
-    ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
 {
     // get the modes of the father
-    std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
+    std::vector<std::string> StrList = ViewProviderGeometryObject::getDisplayModes();
 
     // add your own modes
     StrList.push_back("Flat Lines");

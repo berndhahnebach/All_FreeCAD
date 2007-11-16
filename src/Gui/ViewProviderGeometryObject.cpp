@@ -38,6 +38,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "ViewProviderGeometryObject.h"
 #include "View3DInventorViewer.h"
+#include "SoFCSelection.h"
+#include "Window.h"
 
 
 
@@ -50,104 +52,144 @@ const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
       
 ViewProviderGeometryObject::ViewProviderGeometryObject()
 {
-  ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
-  ADD_PROPERTY(DisplayMode,((long)0));
-  ADD_PROPERTY(Transparency,(0));
-  Transparency.setConstraints(&intPercent);
-  ADD_PROPERTY(Visibility,(true));
-  App::Material mat(App::Material::DEFAULT);
-  ADD_PROPERTY(ShapeMaterial,(mat));
+    ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
+    ADD_PROPERTY(Transparency,(0));
+    Transparency.setConstraints(&intPercent);
+    App::Material mat(App::Material::DEFAULT);
+    ADD_PROPERTY(ShapeMaterial,(mat));
 
-  pcShapeMaterial = new SoMaterial;
-  pcShapeMaterial->ref();
-  ShapeMaterial.touch();
+    // Create the selection node
+    pcHighlight = new SoFCSelection();
+    pcHighlight->ref();
 
-  sPixmap = "Feature";
+    float transparency;
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("View");
+
+    // switch off preselection
+    bool disablePre = hGrp->GetBool("DisablePreselection", false);
+    bool disableSel = hGrp->GetBool("DisableSelection", false);
+    if (disablePre) {
+        pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
+    }
+    else {
+        // Search for a user defined value with the current color as default
+        SbColor highlightColor = pcHighlight->colorHighlight.getValue();
+        unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
+        int a = (highlight)&0xff;
+        highlight = hGrp->GetUnsigned("HighlightColor", highlight);
+        highlight += a;
+        highlightColor.setPackedValue((uint32_t)highlight, transparency);
+        pcHighlight->colorHighlight.setValue(highlightColor);
+    }
+    if (disableSel) {
+        pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
+        pcHighlight->style = Gui::SoFCSelection::BOX;
+    }
+    else {
+        // Do the same with the selection color
+        SbColor selectionColor = pcHighlight->colorSelection.getValue();
+        unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
+        int a = (selection)&0xff;
+        selection = hGrp->GetUnsigned("SelectionColor", selection);
+        selection += a;
+        selectionColor.setPackedValue((uint32_t)selection, transparency);
+        pcHighlight->colorSelection.setValue(selectionColor);
+    }
+
+    pcShapeMaterial = new SoMaterial;
+    pcShapeMaterial->ref();
+    ShapeMaterial.touch();
+
+    sPixmap = "Feature";
 }
 
 ViewProviderGeometryObject::~ViewProviderGeometryObject()
 {
-  // Make sure that the property class does not destruct our string list
-  DisplayMode.setEnums(0);
-  pcShapeMaterial->unref();
+    pcShapeMaterial->unref();
+    pcHighlight->unref();
 }
 
 void ViewProviderGeometryObject::onChanged(const App::Property* prop)
 {
-  // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
-  // Both redundant properties are kept due to more convenience for the user. But we must keep the values
-  // consistent of all these properties.
-  if ( prop == &ShapeColor ) {
-    const App::Color& c = ShapeColor.getValue();
-    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    if (c != ShapeMaterial.getValue().diffuseColor)
-    ShapeMaterial.setDiffuseColor(c);
-  } else if ( prop == &Transparency ) {
-    const App::Material& Mat = ShapeMaterial.getValue();
-    long value = (long)(100*Mat.transparency);
-    if (value != Transparency.getValue()) {
-      float trans = Transparency.getValue()/100.0f;
-      pcShapeMaterial->transparency = trans;
-      ShapeMaterial.setTransparency(trans);
-    }
-  } else if ( prop == &ShapeMaterial ) {
-    const App::Material& Mat = ShapeMaterial.getValue();
-    long value = (long)(100*Mat.transparency);
-    if (value != Transparency.getValue())
-    Transparency.setValue(value);
-    const App::Color& color = Mat.diffuseColor;
-    if (color != ShapeColor.getValue())
-    ShapeColor.setValue(Mat.diffuseColor);
-    pcShapeMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-    pcShapeMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-    pcShapeMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-    pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-    pcShapeMaterial->shininess.setValue(Mat.shininess);
-    pcShapeMaterial->transparency.setValue(Mat.transparency);
-  } else if ( prop == &DisplayMode ) {
-    setActiveMode();
-  } else if ( prop == &Visibility ) {
-    Visibility.getValue() ? show() : hide();
+    // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
+    // Both redundant properties are kept due to more convenience for the user. But we must keep the values
+    // consistent of all these properties.
+    if ( prop == &ShapeColor ) {
+        const App::Color& c = ShapeColor.getValue();
+        pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+        if (c != ShapeMaterial.getValue().diffuseColor)
+        ShapeMaterial.setDiffuseColor(c);
+    } 
+    else if ( prop == &Transparency ) {
+        const App::Material& Mat = ShapeMaterial.getValue();
+        long value = (long)(100*Mat.transparency);
+        if (value != Transparency.getValue()) {
+            float trans = Transparency.getValue()/100.0f;
+            pcShapeMaterial->transparency = trans;
+            ShapeMaterial.setTransparency(trans);
+        }
+    } 
+    else if ( prop == &ShapeMaterial ) {
+        const App::Material& Mat = ShapeMaterial.getValue();
+        long value = (long)(100*Mat.transparency);
+        if (value != Transparency.getValue())
+        Transparency.setValue(value);
+        const App::Color& color = Mat.diffuseColor;
+        if (color != ShapeColor.getValue())
+        ShapeColor.setValue(Mat.diffuseColor);
+        pcShapeMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+        pcShapeMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+        pcShapeMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+        pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+        pcShapeMaterial->shininess.setValue(Mat.shininess);
+        pcShapeMaterial->transparency.setValue(Mat.transparency);
+  }
+  else {
+      ViewProviderDocumentObject::onChanged(prop);
   }
 }
 
 void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
 {
-  ViewProviderDocumentObject::attach(pcObj);
+    ViewProviderDocumentObject::attach(pcObj);
+    pcHighlight->objectName = pcObj->getNameInDocument();
+    pcHighlight->documentName = pcObj->getDocument().getName();
+    pcHighlight->subElementName = "Main";
 }
 
 SoPickedPointList ViewProviderGeometryObject::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const
 {
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-  root->addChild(viewer.getHeadlight());
-  root->addChild(viewer.getCamera());
-//  root->addChild(this->pcHighlight);
+    SoSeparator* root = new SoSeparator;
+    root->ref();
+    root->addChild(viewer.getHeadlight());
+    root->addChild(viewer.getCamera());
+    root->addChild(this->pcHighlight);
 
-  SoRayPickAction rp(viewer.getViewportRegion());
-  rp.setPickAll(pickAll);
-  rp.setPoint(pos);
-  rp.apply(root);
-  root->unref();
+    SoRayPickAction rp(viewer.getViewportRegion());
+    rp.setPickAll(pickAll);
+    rp.setPoint(pos);
+    rp.apply(root);
+    root->unref();
 
-  // returns a copy of the list
-  return rp.getPickedPointList();
+    // returns a copy of the list
+    return rp.getPickedPointList();
 }
 
 SoPickedPoint* ViewProviderGeometryObject::getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const
 {
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-  root->addChild(viewer.getHeadlight());
-  root->addChild(viewer.getCamera());
-//  root->addChild(this->pcHighlight);
+    SoSeparator* root = new SoSeparator;
+    root->ref();
+    root->addChild(viewer.getHeadlight());
+    root->addChild(viewer.getCamera());
+    root->addChild(this->pcHighlight);
 
-  SoRayPickAction rp(viewer.getViewportRegion());
-  rp.setPoint(pos);
-  rp.apply(root);
-  root->unref();
+    SoRayPickAction rp(viewer.getViewportRegion());
+    rp.setPoint(pos);
+    rp.apply(root);
+    root->unref();
 
-  // returns a copy of the point
-  SoPickedPoint* pick = rp.getPickedPoint();
-  return (pick ? pick->copy() : 0);
+    // returns a copy of the point
+    SoPickedPoint* pick = rp.getPickedPoint();
+    //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+    return (pick ? new SoPickedPoint(*pick) : 0);
 }

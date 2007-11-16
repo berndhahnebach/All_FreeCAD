@@ -41,7 +41,7 @@
 #include "Tree.h"
 #include "Document.h"
 #include "BitmapFactory.h"
-#include "ViewProviderFeature.h"
+#include "ViewProviderDocumentObject.h"
 #include "MenuManager.h"
 #include "Application.h"
 #include "MainWindow.h"
@@ -298,8 +298,6 @@ void DocumentItem::slotDeleteObject(Gui::ViewProviderDocumentObject& obj)
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it != ObjectMap.end()) {
-        // FIXME: We must check in App::Document::remObject() whether a group should be removed.
-        // If so we must remove all its children first and then the group itself.
         QTreeWidgetItem* parent = it->second->parent();
         if (it->second->childCount() > 0) {
             QList<QTreeWidgetItem*> children = it->second->takeChildren();

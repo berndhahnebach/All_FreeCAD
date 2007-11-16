@@ -428,8 +428,7 @@ Document::Document(void)
     bRollback(false),
     _iUndoMode(0),
     activUndoTransaction(0),
-    pActiveObject(0),
-    pDocumentHook(0)
+    pActiveObject(0)
 {
     // Remark: In a constructor we should never increment a Python object as we cannot be sure
     // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
@@ -665,9 +664,7 @@ bool Document::save (void)
         Document::Save(writer);
 
         // Special handling for Gui document.
-        if (pDocumentHook) {
-            pDocumentHook->Save(writer);
-        }
+        signalSaveDocument(writer);
 
         // write additional files
         writer.writeFiles();
@@ -695,33 +692,18 @@ void Document::restore (void)
     zipios::ZipInputStream zipstream(FileName.getValue());
     Base::XMLReader reader(FileName.getValue(), zipstream);
 
-    if ( ! reader.isValid() )
+    if (!reader.isValid())
         throw Base::FileException("Document::open(): Error reading file",FileName.getValue());
 
     Document::Restore(reader);
 
-    reader.readFiles(zipstream);
-
     // Special handling for Gui document, the view representations must already
-    // exist, what is done in Notify().
-    if (pDocumentHook) {
-        pDocumentHook->Restore( reader );
-        const std::vector<std::string>& files = reader.getFilenames();
-        if ( !files.empty() ) {
-            // That's the name of the GUI related stuff
-            std::string GuiDocument = files.back();
-            zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-            // If this file is there then we search for it.
-            // Note: This file doesn't need to be available if the document has been created
-            // without GUI. But if available then it's the last file inside the ZIP.
-            while ( entry->isValid() && entry->getName() != GuiDocument )
-                entry = zipstream.getNextEntry();
-            // Okay, the file is available
-            if ( entry->isValid() )
-                pDocumentHook->RestoreDocFile( zipstream );
-        }
-    }
-
+    // exist, what is done in Restore().
+    // Note: This file doesn't need to be available if the document has been created
+    // without GUI. But if available then follow after all data files of the App document.
+    signalRestoreDocument(reader);
+    reader.readFiles(zipstream);
+    
     // reset all touched
     for (std::map<std::string,DocumentObject*>::iterator It= ObjectMap.begin();It!=ObjectMap.end();++It)
         It->second->purgeTouched();

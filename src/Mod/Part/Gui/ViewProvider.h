@@ -24,7 +24,7 @@
 #ifndef __VIEWPROVIDERPART_H__
 #define __VIEWPROVIDERPART_H__
 
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <Standard_Boolean.hxx>
 
 class TopoDS_Shape;
@@ -35,7 +35,7 @@ class SbVec3f;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderDocumentObject
+class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(PartGui::ViewProviderPart);
 

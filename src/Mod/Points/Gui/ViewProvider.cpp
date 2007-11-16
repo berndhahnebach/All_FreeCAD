@@ -57,12 +57,15 @@ using namespace PointsGui;
 using namespace Points;
 
 
-PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderGeometryObject)
 
+
+App::PropertyFloatConstraint::Constraints ViewProviderPoints::floatRange = {1.0f,64.0f,1.0f};
 
 ViewProviderPoints::ViewProviderPoints() : _bEdit(false)
 {
   ADD_PROPERTY(PointSize,(2.0f));
+  PointSize.setConstraints(&floatRange);
 
   pcPointsCoord = new SoCoordinate3();
   pcPointsCoord->ref();
@@ -93,7 +96,7 @@ void ViewProviderPoints::onChanged(const App::Property* prop)
   if ( prop == &PointSize ) {
     pcPointStyle->pointSize = PointSize.getValue();
   } else {
-    ViewProviderFeature::onChanged(prop);
+    ViewProviderGeometryObject::onChanged(prop);
   }
 }
 
@@ -173,7 +176,7 @@ void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcPrope
 void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 {
   // call parent's attach to define display modes
-  ViewProviderFeature::attach(pcObj);
+  ViewProviderGeometryObject::attach(pcObj);
 
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcPointShadedRoot = new SoGroup();
@@ -292,7 +295,7 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
     setDisplayMaskMode("Point");
   }
 
-  ViewProviderDocumentObject::setDisplayMode(ModeName);
+  ViewProviderGeometryObject::setDisplayMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const

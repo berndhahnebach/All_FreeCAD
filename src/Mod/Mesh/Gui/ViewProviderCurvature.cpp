@@ -50,7 +50,7 @@
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCColorBar.h>
 #include <Gui/View3DInventorViewer.h>
-#include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderGeometryObject.h>
 
 #include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -184,7 +184,7 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
             // get the view provider of the associated mesh feature
             App::Document& rDoc = pcObject->getDocument();
             Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
-            Gui::ViewProviderFeature* view = (Gui::ViewProviderFeature*)pDoc->getViewProvider(object);
+            Gui::ViewProviderGeometryObject* view = static_cast<Gui::ViewProviderGeometryObject*>(pDoc->getViewProvider(object));
             this->pcLinkRoot->addChild(view->getHighlightNode());
         }
     }

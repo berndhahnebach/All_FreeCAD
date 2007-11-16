@@ -51,7 +51,7 @@
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "BitmapFactory.h"
-#include "ViewProviderFeature.h"
+#include "ViewProviderDocumentObject.h"
 #include "Selection.h"
 #include "SoFCSelection.h"
 #include "WaitCursor.h"
@@ -70,7 +70,6 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
 
   //_pcDocument->Attach(this);
-  _pcDocument->installDocumentHook(this);
   // connect signal
 
   //pcDocument->m_sig.connect(boost::bind(&Gui::Document::refresh, this, _1));
@@ -84,6 +83,8 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcDocument->signalRenamedObject.connect(boost::bind(&Gui::Document::slotRenamedObject, this, _1));
   pcDocument->signalActivatedObject.connect(boost::bind(&Gui::Document::slotActivatedObject, this, _1));
   //pcDocument->signalNewObject.connect(&(this->slotNewObject));
+  pcDocument->signalSaveDocument.connect(boost::bind(&Gui::Document::Save, this, _1));
+  pcDocument->signalRestoreDocument.connect(boost::bind(&Gui::Document::Restore, this, _1));
   
   // pointer to the python class
   // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006)
@@ -146,7 +147,6 @@ Document::~Document()
 
   //delete (pcTreeItem);
   //_pcDocument->Detach(this);
-  _pcDocument->removeDocumentHook();
 
   // remove the reference from the object
   _pcDocPy->setInvalid();
