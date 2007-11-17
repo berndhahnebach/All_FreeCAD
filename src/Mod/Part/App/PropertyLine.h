@@ -30,6 +30,8 @@
 namespace Part
 {
 
+typedef std::pair<Base::Vector3f, Base::Vector3f> Line3f;
+
 /** The line property class.
  * @author Werner Mayer
  */
@@ -44,9 +46,9 @@ public:
     /** @name Getter/setter */
     //@{
     /// set the line
-    void setValue( const gp_Lin& line );
+    void setValue( const Line3f& line );
     /// get the line
-    const gp_Lin& getValue(void) const;
+    const Line3f& getValue(void) const;
     //@}
 
     /** @name Python interface */
@@ -66,7 +68,8 @@ public:
     //@}
 
 private:
-    gp_Lin _line;
+    // start and end point of the line
+    Line3f _line;
 };
 
 /** The line set property class.
@@ -85,11 +88,11 @@ public:
     void setSize(int newSize){_lValueList.resize(newSize);}   
     int getSize(void) const {return _lValueList.size();} 
     /// index operator
-    const gp_Lin& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
-    void setValue( const gp_Lin& line );
-    void set1Value (const int idx, const gp_Lin& value){_lValueList.operator[] (idx) = value;}
-    void setValues (const std::vector<gp_Lin>& values);
-    const std::vector<gp_Lin> &getValues(void) const {return _lValueList;}
+    const Line3f& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
+    void setValue( const Line3f& line );
+    void set1Value (const int idx, const Line3f& value){_lValueList.operator[] (idx) = value;}
+    void setValues (const std::vector<Line3f>& values);
+    const std::vector<Line3f> &getValues(void) const {return _lValueList;}
     //@}
 
     /** @name Python interface */
@@ -113,7 +116,7 @@ public:
     //@}
 
 private:
-    std::vector<gp_Lin> _lValueList;
+    std::vector<Line3f> _lValueList;
 };
 
 } // namespace Part

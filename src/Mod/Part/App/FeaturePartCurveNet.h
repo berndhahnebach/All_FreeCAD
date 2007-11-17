@@ -34,30 +34,26 @@ namespace Part
 
 class CurveNet :public Part::Feature
 {
-  PROPERTY_HEADER(Part::FeaturePartCurveNet);
+    PROPERTY_HEADER(Part::FeaturePartCurveNet);
 
 public:
-  CurveNet();
+    CurveNet();
 
-  App::PropertyString FileName;
+    App::PropertyString FileName;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  short mustExecute() const;
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "PartGui::ViewProviderCurveNet";
-  }
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderCurveNet";
+    }
+    //@}
 };
 
-
-
 }
-
-
 
 
 #endif // __FeaturePartCurveNet_H__

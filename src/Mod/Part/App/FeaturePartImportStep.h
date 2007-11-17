@@ -38,23 +38,23 @@ namespace Part
 
 class ImportStep :public Part::Feature
 {
-  PROPERTY_HEADER(Part::FeaturePartImportStep);
+    PROPERTY_HEADER(Part::FeaturePartImportStep);
 
 public:
-  ImportStep();
+    ImportStep();
 
-  App::PropertyString FileName;
+    App::PropertyString FileName;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  App::DocumentObjectExecReturn *execute(void);
-  short mustExecute() const;
-  /// returns the type name of the ViewProvider
-  const char* getViewProviderName(void) const {
-    return "PartGui::ViewProviderImport";
-  }
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderImport";
+    }
+    //@}
 };
 
 

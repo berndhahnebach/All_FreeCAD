@@ -32,6 +32,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
 #include "FeaturePartImportBrep.h"
 
@@ -43,7 +44,7 @@ PROPERTY_SOURCE(Part::ImportBrep, Part::Feature)
 
 ImportBrep::ImportBrep(void)
 {
-	ADD_PROPERTY(FileName,(""));
+    ADD_PROPERTY(FileName,(""));
 }
 
 short ImportBrep::mustExecute() const
@@ -55,37 +56,27 @@ short ImportBrep::mustExecute() const
 
 App::DocumentObjectExecReturn *ImportBrep::execute(void)
 {
+    IGESControl_Reader aReader;
+    TopoDS_Shape aShape;
 
-  IGESControl_Reader aReader;
-  TopoDS_Shape aShape;
+    Base::FileInfo fi(FileName.getValue());
+    if (!fi.isReadable()) {
+        Base::Console().Log("ImportBrep::execute() not able to open %s!\n",FileName.getValue());
+        std::string error = std::string("Cannot open file ") + FileName.getValue();
+        return new App::DocumentObjectExecReturn(error);
+    }
 
-#if defined (__GNUC__)
-  int i=open(FileName.getValue(),O_RDONLY);
-	if( i != -1)
-	{
-	  close(i);
-#else
-  int i=_open(FileName.getValue(),O_RDONLY);
-	if( i != -1)
-	{
-	  _close(i);
-#endif
-	}else{
-    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
-	  return new App::DocumentObjectExecReturn("Unknown Error");
-	}
+    // just do show the wait cursor when the Gui is up
+    Base::SequencerLauncher seq("Load BREP", 1);
+    Base::Sequencer().next();
 
-  // just do show the wait cursor when the Gui is up
-  Base::SequencerLauncher seq("Load BREP", 1);
-  Base::Sequencer().next();
+    BRep_Builder aBuilder;
 
-  BRep_Builder aBuilder;
+    // read brep-file
+    BRepTools::Read(aShape,(const Standard_CString)FileName.getValue(),aBuilder);
 
-  // read brep-file
-  BRepTools::Read(aShape,(const Standard_CString)FileName.getValue(),aBuilder);
+    setShape(aShape);
 
-	setShape(aShape);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

@@ -43,14 +43,14 @@ PropertyLine::~PropertyLine()
 {
 }
 
-void PropertyLine::setValue(const gp_Lin& line)
+void PropertyLine::setValue(const Line3f& line)
 {
     aboutToSetValue();
     _line = line;
     hasSetValue();
 }
 
-const gp_Lin& PropertyLine::getValue(void) const 
+const Line3f& PropertyLine::getValue(void) const 
 {
     return _line;
 }
@@ -89,16 +89,16 @@ void PropertyLine::Paste(const App::Property &from)
 
 unsigned int PropertyLine::getMemSize (void) const
 {
-    return sizeof(gp_Lin);
+    return sizeof(Line3f);
 }
 
 void PropertyLine::Save (Base::Writer &writer) const
 {
-    const gp_Dir& dir = _line.Direction();
-    const gp_Pnt& loc = _line.Location();
+    const Base::Vector3f& pt1 = _line.first;
+    const Base::Vector3f& pt2 = _line.second;
     writer.Stream() << writer.ind() << "<PropertyLine bX=\"" 
-                    <<  loc.X() << "\" bY=\"" <<  loc.Y() << "\" bZ=\"" <<  loc.Z() << writer.ind() 
-                    << "\" eX=\"" <<  dir.X() << "\" eY=\"" <<  dir.Y() << "\" eZ=\"" <<  dir.Z() <<"\"/>" << std::endl;
+                    <<  pt1.x << "\" bY=\"" << pt1.y << "\" bZ=\"" << pt1.z << writer.ind() 
+                    << "\" eX=\"" << pt2.x << "\" eY=\"" << pt2.y << "\" eZ=\"" << pt2.z <<"\"/>" << std::endl;
 }
 
 void PropertyLine::Restore(Base::XMLReader &reader)
@@ -107,15 +107,15 @@ void PropertyLine::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyLine");
 
     // get the value of my Attribute
-    gp_Pnt loc; gp_Dir dir;
-    loc.SetX(reader.getAttributeAsFloat("bX"));
-    loc.SetY(reader.getAttributeAsFloat("bY"));
-    loc.SetZ(reader.getAttributeAsFloat("bZ"));
-    dir.SetX(reader.getAttributeAsFloat("eX"));
-    dir.SetY(reader.getAttributeAsFloat("eY"));
-    dir.SetZ(reader.getAttributeAsFloat("eZ"));
+    Line3f line;
+    line.first.x = float(reader.getAttributeAsFloat("bX"));
+    line.first.y = float(reader.getAttributeAsFloat("bY"));
+    line.first.z = float(reader.getAttributeAsFloat("bZ"));
+    line.second.x = float(reader.getAttributeAsFloat("eX"));
+    line.second.y = float(reader.getAttributeAsFloat("eY"));
+    line.second.z = float(reader.getAttributeAsFloat("eZ"));
 
-    setValue(gp_Lin(loc, dir));
+    setValue(line);
 }
 
 // --------------------------------------------------------
@@ -130,7 +130,7 @@ PropertyLineSet::~PropertyLineSet()
 {
 }
 
-void PropertyLineSet::setValue(const gp_Lin& lValue)
+void PropertyLineSet::setValue(const Line3f& lValue)
 {
     aboutToSetValue();
     _lValueList.resize(1);
@@ -138,7 +138,7 @@ void PropertyLineSet::setValue(const gp_Lin& lValue)
     hasSetValue();
 }
 
-void PropertyLineSet::setValues(const std::vector<gp_Lin>& values)
+void PropertyLineSet::setValues(const std::vector<Line3f>& values)
 {
     aboutToSetValue();
     _lValueList = values;
@@ -157,7 +157,7 @@ void PropertyLineSet::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
         int nSize = PyList_Size(value);
-        std::vector<gp_Lin> lines;
+        std::vector<Line3f> lines;
         lines.resize(nSize);
 
         for (int i=0; i<nSize;++i) {
@@ -221,11 +221,9 @@ void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
     Base::OutputStream str(writer.Stream());
     unsigned long uCt = getSize();
     str << uCt;
-    for (std::vector<gp_Lin>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
-        const gp_Pnt& loc = it->Location();
-        str << loc.X() << loc.Y() << loc.Z();
-        const gp_Dir& dir = it->Direction();
-        str << dir.X() << dir.Y() << dir.Z();
+    for (std::vector<Line3f>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        str << it->first.x << it->first.y << it->first.z;
+        str << it->second.x << it->second.y << it->second.z;
     }
 }
 
@@ -234,12 +232,12 @@ void PropertyLineSet::RestoreDocFile(Base::Reader &reader)
     Base::InputStream str(reader);
     unsigned long uCt;
     str >> uCt;
-    std::vector<gp_Lin> values(uCt);
+    std::vector<Line3f> values(uCt);
     for (unsigned long i=0; i < uCt; i++) {
-        Standard_Real x,y,z,u,v,w;
-        str >> x >> y >> z >> u >> v >> w;
-        values[i].SetLocation(gp_Pnt(x,y,z));
-        values[i].SetDirection(gp_Dir(u,v,w));
+        float x1,y1,z1,x2,y2,z2;
+        str >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+        values[i].first.Set(x1,y1,z1);
+        values[i].second.Set(x2,y2,z2);
     }
     setValues(values);
 }

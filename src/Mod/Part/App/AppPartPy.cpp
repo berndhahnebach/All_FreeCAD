@@ -66,186 +66,150 @@ using namespace std;
 
 
 /* module functions */
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-    
-  PY_TRY {
-
-    //Base::Console().Log("Open in Part with %s",Name);
-    Base::FileInfo file(Name);
-
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
-
-    if(file.hasExtension("stp") || file.hasExtension("step"))
-    {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-
-    }else if(file.hasExtension("igs") || file.hasExtension("iges"))
-    {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-
-    }else if(file.hasExtension("brp") || file.hasExtension("brep"))
-    {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-
-
-  } PY_CATCH;
-
-	Py_Return;    
-}
-
-
-/* module functions */
-static PyObject *                        
-insert(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  const char* DocName;
-  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
-    return NULL;                         
-    
-  PY_TRY {
-
-    //Base::Console().Log("Insert in Part with %s",Name);
-    Base::FileInfo file(Name);
-
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
-
-    if(file.hasExtension("stp") || file.hasExtension("step"))
-    {
-      // add Import feature
-      App::Document *pcDoc = App::GetApplication().getDocument(DocName);
-      if (!pcDoc)
-      {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
-        Py_Error(PyExc_Exception,szBuf);
-      }
-
-      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-
-    }else if(file.hasExtension("igs") || file.hasExtension("iges"))
-    {
-      App::Document *pcDoc = App::GetApplication().getActiveDocument();
-      if (!pcDoc)
-        throw "Import called without a active document??";
-      Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-
-    }else if(file.hasExtension("brp") || file.hasExtension("brep"))
-    {
-      App::Document *pcDoc = App::GetApplication().getActiveDocument();
-      if (!pcDoc)
-        throw "Import called without a active document??";
-      Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue(Name);
-      pcDoc->recompute();
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-
-
-  } PY_CATCH;
-
-	Py_Return;    
-}
-
-/* module functions */
-static PyObject *                        
-read(PyObject *self, PyObject *args)
+static PyObject * open(PyObject *self, PyObject *args)
 {
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-  PY_TRY {
-    return new TopoShapePyOld(TopoShape::read(Name)); 
-  } PY_CATCH;
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;                         
+
+    PY_TRY {
+        //Base::Console().Log("Open in Part with %s",Name);
+        Base::FileInfo file(Name);
+
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
+
+        if (file.hasExtension("stp") || file.hasExtension("step")) {
+            // create new document and add Import feature
+            App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+            Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            // create new document and add Import feature
+            App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+            Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else if (file.hasExtension("brp") || file.hasExtension("brep")) {
+            // create new document and add Import feature
+            App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+            Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+
+/* module functions */
+static PyObject * insert(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    const char* DocName;
+    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+        return NULL;                         
+
+    PY_TRY {
+        //Base::Console().Log("Insert in Part with %s",Name);
+        Base::FileInfo file(Name);
+
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
+        App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+        if (!pcDoc) {
+            PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
+            return NULL;
+        }
+
+        if (file.hasExtension("stp") || file.hasExtension("step")) {
+            // add Import feature
+            Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else if (file.hasExtension("brp") || file.hasExtension("brep")) {
+            Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
+        else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+/* module functions */
+static PyObject * read(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;                         
+    PY_TRY {
+        return new TopoShapePyOld(TopoShape::read(Name)); 
+    } PY_CATCH;
 }
 
 /* Approximate test function */
 
 
-
-
 static PyObject * createPlane(PyObject *self, PyObject *args)
 {
-		double z_level;
+    double z_level;
 
-  //const char* Name;
-  if (! PyArg_ParseTuple(args, "d", &z_level))			 
-    return NULL;                         
+    //const char* Name;
+    if (!PyArg_ParseTuple(args, "d", &z_level))
+        return NULL;                         
 
-  
-  PY_TRY {
-  
-  gp_Pnt aPlanePnt(0,0,z_level);
-  gp_Dir aPlaneDir(0,0,1);
-  Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
-  BRepBuilderAPI_MakeFace 	Face(aPlane);
-
-    return new TopoShapePyOld(Face.Face()); 
-  } PY_CATCH;
+    PY_TRY {
+        gp_Pnt aPlanePnt(0,0,z_level);
+        gp_Dir aPlaneDir(0,0,1);
+        Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+        BRepBuilderAPI_MakeFace 	Face(aPlane);
+        return new TopoShapePyOld(Face.Face()); 
+    } PY_CATCH;
 }
 
 static PyObject * createBox(PyObject *self, PyObject *args)
 {
-		double X, Y, Z , L, H, W ;
+    double X, Y, Z , L, H, W ;
 
-  //const char* Name;
-  if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))			 
-    return NULL;                         
+    //const char* Name;
+    if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))			 
+        return NULL;                         
 
-  
-  PY_TRY {
-  	// Build a box using the dimension and position attributes
-	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
-
-    TopoDS_Shape ResultShape = mkBox.Shape();
-
-    return new TopoShapePy(new TopoShape(ResultShape)); 
-  } PY_CATCH;
+    PY_TRY {
+        // Build a box using the dimension and position attributes
+        BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
+        TopoDS_Shape ResultShape = mkBox.Shape();
+        return new TopoShapePy(new TopoShape(ResultShape)); 
+    } PY_CATCH;
 }
-
 
 
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
-    {"open"   , open,    1},       
-    {"insert" , insert,  1},       
-    {"read"   , read,  1},       
-	{"createPlane" , createPlane, 1},
-	{"createBox" , createBox, 1},
+    {"open"   , open,    1},
+    {"insert" , insert,  1},
+    {"read"   , read,  1},
+    {"createPlane" , createPlane, 1},
+    {"createBox" , createBox, 1},
     {NULL     , NULL      }        /* end of table marker */
 };
 

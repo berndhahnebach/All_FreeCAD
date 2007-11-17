@@ -37,13 +37,7 @@ PROPERTY_SOURCE(Part::CurveNet, Part::Feature)
 
 CurveNet::CurveNet()
 {
-//  _pointMaterial.ambientColor.set(0.9f,0.9f,0.9f);
-//  _pointMaterial.diffuseColor.set(0.8f,0.8f,0.8f);;
-//  _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
-//  _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-//  _pointMaterial.shininess = 0.3f;
-
-  ADD_PROPERTY(FileName,(""));
+    ADD_PROPERTY(FileName,(""));
 }
 
 short CurveNet::mustExecute() const

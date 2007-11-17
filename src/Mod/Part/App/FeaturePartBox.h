@@ -35,28 +35,27 @@ namespace Part
 
 class Box :public Part::Feature
 {
-  PROPERTY_HEADER(Part::Box);
+    PROPERTY_HEADER(Part::Box);
 
 public:
-  Box();
+    Box();
 
-  App::PropertyDistance x,y,z,l,h,w;
+    App::PropertyDistance x,y,z,l,h,w;
 
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  App::DocumentObjectExecReturn *execute(void);
-  short mustExecute() const;
-  /// returns the type name of the ViewProvider
-  const char* getViewProviderName(void) const {
-    return "PartGui::ViewProviderBox";
-  }
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderBox";
+    }
+    //@}
 };
 
-
-
 } //namespace Part
+
 
 #endif // __FEATUREPARTBOX_H__

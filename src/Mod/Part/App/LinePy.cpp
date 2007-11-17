@@ -33,63 +33,63 @@ using namespace Part;
 //--------------------------------------------------------------------------
 
 PyTypeObject LinePy::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						                                    /*ob_size*/
-	"Part.Line",				                              /*tp_name*/
-	sizeof(LinePy),			                              /*tp_basicsize*/
-	0,						                                    /*tp_itemsize*/
-  /* ---------------------- Methods -----------------------------*/
-	PyDestructor,	  		                              /*tp_dealloc*/
-	0,			 			                                    /*tp_print*/
-	__getattr, 				                                /*tp_getattr*/
-	__setattr, 				                                /*tp_setattr*/
-	0,						                                    /*tp_compare*/
-	__repr,					                                  /*tp_repr*/
-	0,						                                    /*tp_as_number*/
-	0,						                                    /*tp_as_sequence*/
-	0,						                                    /*tp_as_mapping*/
-	0,						                                    /*tp_hash*/
-	0,						                                    /*tp_call */
-  0,                                                /*tp_str  */
-  0,                                                /*tp_getattro*/
-  0,                                                /*tp_setattro*/
-  /* --- Functions to access object as input/output buffer ---------*/
-  0,                                                /* tp_as_buffer */
-  /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
-  "About Line",                                     /*tp_doc */
-  0,                                                /*tp_traverse */
-  0,                                                /*tp_clear */
-  0,                                                /*tp_richcompare */
-  0,                                                /*tp_weaklistoffset */
-  0,                                                /*tp_iter */
-  0,                                                /*tp_iternext */
-  LinePy::Methods,                                  /*tp_methods */
-  0,                                                /*tp_members */
-  0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
-  0,                                                /*tp_dict */
-  0,                                                /*tp_descr_get */
-  0,                                                /*tp_descr_set */
-  0,                                                /*tp_dictoffset */
-  PyInit,                                           /*tp_init */
-  0,                                                /*tp_alloc */
-  PyMake,                                           /*tp_new */
-  0,                                                /*tp_free   Low-level free-memory routine */
-  0,                                                /*tp_is_gc  For PyObject_IS_GC */
-  0,                                                /*tp_bases */
-  0,                                                /*tp_mro    method resolution order */
-  0,                                                /*tp_cache */
-  0,                                                /*tp_subclasses */
-  0                                                 /*tp_weaklist */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,						                                    /*ob_size*/
+    "Part.Line",				                              /*tp_name*/
+    sizeof(LinePy),			                              /*tp_basicsize*/
+    0,						                                    /*tp_itemsize*/
+    /* ---------------------- Methods -----------------------------*/
+    PyDestructor,	  		                              /*tp_dealloc*/
+    0,			 			                                    /*tp_print*/
+    __getattr, 				                                /*tp_getattr*/
+    __setattr, 				                                /*tp_setattr*/
+    0,						                                    /*tp_compare*/
+    __repr,					                                  /*tp_repr*/
+    0,						                                    /*tp_as_number*/
+    0,						                                    /*tp_as_sequence*/
+    0,						                                    /*tp_as_mapping*/
+    0,						                                    /*tp_hash*/
+    0,						                                    /*tp_call */
+    0,                                                /*tp_str  */
+    0,                                                /*tp_getattro*/
+    0,                                                /*tp_setattro*/
+    /* --- Functions to access object as input/output buffer ---------*/
+    0,                                                /* tp_as_buffer */
+    /* --- Flags to define presence of optional/expanded features */
+    Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
+    "About Line",                                     /*tp_doc */
+    0,                                                /*tp_traverse */
+    0,                                                /*tp_clear */
+    0,                                                /*tp_richcompare */
+    0,                                                /*tp_weaklistoffset */
+    0,                                                /*tp_iter */
+    0,                                                /*tp_iternext */
+    LinePy::Methods,                                  /*tp_methods */
+    0,                                                /*tp_members */
+    0,                                                /*tp_getset */
+    &Base::PyObjectBase::Type,                        /*tp_base */
+    0,                                                /*tp_dict */
+    0,                                                /*tp_descr_get */
+    0,                                                /*tp_descr_set */
+    0,                                                /*tp_dictoffset */
+    PyInit,                                           /*tp_init */
+    0,                                                /*tp_alloc */
+    PyMake,                                           /*tp_new */
+    0,                                                /*tp_free   Low-level free-memory routine */
+    0,                                                /*tp_is_gc  For PyObject_IS_GC */
+    0,                                                /*tp_bases */
+    0,                                                /*tp_mro    method resolution order */
+    0,                                                /*tp_cache */
+    0,                                                /*tp_subclasses */
+    0                                                 /*tp_weaklist */
 };
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef LinePy::Methods[] = {
-    PYMETHODEDEF(setLocation)
-    PYMETHODEDEF(setDirection)
+    PYMETHODEDEF(setStartPoint)
+    PYMETHODEDEF(setEndPoint)
     {NULL, NULL}		/* Sentinel */
 };
 
@@ -104,31 +104,29 @@ PyParentObject LinePy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 
 PyObject* LinePy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-  return new LinePy();
+    return new LinePy();
 }
 
 int LinePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 {
-  PyObject *pcObj=0;
-  if (!PyArg_ParseTuple(args, "|O!", &(LinePy::Type), &pcObj))     // convert args: Python->C 
-    return -1;                             // NULL triggers exception 
+    PyObject *pcObj=0;
+    if (!PyArg_ParseTuple(args, "|O!", &(LinePy::Type), &pcObj))     // convert args: Python->C 
+        return -1;                             // NULL triggers exception 
 
-  if ( pcObj )
-  {
-    LinePy* pcLine = (LinePy*)pcObj;
-    ((LinePy*)self)->_Line = pcLine->_Line;
-  }
+    if (pcObj) {
+        LinePy* pcLine = (LinePy*)pcObj;
+        ((LinePy*)self)->_Line = pcLine->_Line;
+    }
 
-  return 0;
+    return 0;
 }
 
 LinePy::LinePy(PyTypeObject *T)
   : PyObjectBase(0,T)
 {
-    _Line.SetLocation(gp_Pnt(0.0,0.0,0.0));
 }
 
-LinePy::LinePy(const gp_Lin &rcLine, PyTypeObject *T)
+LinePy::LinePy(const Line3f &rcLine, PyTypeObject *T)
   : PyObjectBase(0,T), _Line(rcLine)
 {
 }
@@ -136,7 +134,7 @@ LinePy::LinePy(const gp_Lin &rcLine, PyTypeObject *T)
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
-LinePy::~LinePy()						// Everything handled in parent
+LinePy::~LinePy()                       // Everything handled in parent
 {
 }
 
@@ -145,13 +143,13 @@ LinePy::~LinePy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *LinePy::_repr(void)
 {
-    const gp_Dir& dir = _Line.Direction();
-    const gp_Pnt& loc = _Line.Location();
+    const Base::Vector3f& pt1 = _Line.first;
+    const Base::Vector3f& pt2 = _Line.second;
     
     std::stringstream a;
     a << "Part.Line (";
-    a << loc.X() << ", "<< loc.Y() << ", " << loc.Z() << "; "; 
-    a << dir.X() << ", "<< dir.Y() << ", " << dir.Z(); 
+    a << pt1.x << ", "<< pt1.y << ", " << pt1.z << "; "; 
+    a << pt2.x << ", "<< pt2.y << ", " << pt2.z; 
     a << ")";
     return Py_BuildValue("s", a.str().c_str());
 }
@@ -160,51 +158,53 @@ PyObject *LinePy::_repr(void)
 // LinePy Attributes
 //--------------------------------------------------------------------------
 PyObject *LinePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-  _getattr_up(PyObjectBase);
+{
+    _getattr_up(PyObjectBase);
 } 
 
 int LinePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-  return PyObjectBase::_setattr(attr, value); 						
+{
+    return PyObjectBase::_setattr(attr, value); 						
 }
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(LinePy,setLocation)
+PYFUNCIMP_D(LinePy,setStartPoint)
 {
-  PyObject *pyObject;
-  if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-    if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
-      App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-      Base::Vector3f v = pcVector->value();
-      _Line.SetLocation(gp_Pnt(v.x,v.y,v.z));
-    } else {
-      return NULL;
+    PyObject *pyObject;
+    if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
+        if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
+            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
+            _Line.first = pcVector->value();
+        }
+        else {
+            return NULL;
+        }
     }
-  } else {
-    return NULL;
-  }
+    else {
+        return NULL;
+    }
 
-  Py_Return; 
+    Py_Return; 
 }
 
-PYFUNCIMP_D(LinePy,setDirection)
+PYFUNCIMP_D(LinePy,setEndPoint)
 {
-  PyObject *pyObject;
-  if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-    if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
-      App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-      Base::Vector3f v = pcVector->value();
-      _Line.SetDirection(gp_Dir(v.x,v.y,v.z));
-    } else {
-      return NULL;
+    PyObject *pyObject;
+    if (PyArg_ParseTuple(args, "O", &pyObject)) {
+        if (PyObject_TypeCheck(pyObject, &(App::VectorPy::Type))) {
+            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
+            _Line.second = pcVector->value();
+        }
+        else {
+            return NULL;
+        }
     }
-  } else {
-    return NULL;
-  }
+    else {
+        return NULL;
+    }
 
-  Py_Return; 
+    Py_Return; 
 }

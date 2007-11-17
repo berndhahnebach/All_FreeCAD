@@ -31,7 +31,7 @@
 namespace Part
 {
 
-class Polygon :public Part::Feature
+class Polygon : public Part::Feature
 {
     PROPERTY_HEADER(Part::Polygon);
 

@@ -87,7 +87,6 @@ public:
     void set@i.Name@(Py::@i.Parameter.Type@ arg);
 -
 -
-
 + if(self.export.CustomAttributes != None):
     /// getter method for special attributes (e.g. dynamic ones)
     PyObject *getCustomAttributes(const char* attr) const;
@@ -213,12 +212,12 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
 // has to be implemented in @self.export.Name@Imp.cpp
 PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject *kwd)
 {
-	// test if twin object not allready deleted
+    // test if twin object not allready deleted
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
-	// test if object is set Const
+    // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
         PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
         return NULL;
