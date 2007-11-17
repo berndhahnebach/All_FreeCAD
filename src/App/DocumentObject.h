@@ -45,8 +45,12 @@ class DocumentObjectPy;
 class AppExport DocumentObjectExecReturn
 {
 public:
+    DocumentObjectExecReturn(const std::string& sWhy, DocumentObject* WhichObject=0)
+        : Why(sWhy), Which(WhichObject)
+    {
+    }
     DocumentObjectExecReturn(const char* sWhy, DocumentObject* WhichObject=0)
-        :Which(WhichObject)
+        : Which(WhichObject)
     {
         if(sWhy)
             Why = sWhy;

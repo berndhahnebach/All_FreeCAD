@@ -35,52 +35,52 @@ namespace Part
  */
 class AppPartExport CirclePy : public Base::PyObjectBase
 {
-	/** always start with Py_Header */
-	Py_Header;
+    /** always start with Py_Header */
+    Py_Header;
 
 protected:
-	/// Destruction 
-	~CirclePy();
+    /// Destruction 
+    ~CirclePy();
 
 public:
-  /** @name Construction */
-  //@{
-	/// Constructor 
-  CirclePy(PyTypeObject *T = &Type);
-	/// Constructor 
-  CirclePy(const gp_Circ& circle, PyTypeObject *T = &CirclePy::Type);
-  /// For construction in Python 
-  static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
-  /// For initialization in Python 
-  static int PyInit(PyObject*, PyObject*, PyObject*);
-  //@}
+    /** @name Construction */
+    //@{
+    /// Constructor 
+    CirclePy(PyTypeObject *T = &Type);
+    /// Constructor 
+    CirclePy(const gp_Circ& circle, PyTypeObject *T = &CirclePy::Type);
+    /// For construction in Python 
+    static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
+    /// For initialization in Python 
+    static int PyInit(PyObject*, PyObject*, PyObject*);
+    //@}
 
-  //---------------------------------------------------------------------
-  // Python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // Python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+    //---------------------------------------------------------------------
 
-  /** @name Python export */
-  //@{
-  /// Representation
-  PyObject *_repr(void);  				
-  /// Get attributes
-	PyObject *_getattr(char *attr);
-  /// Set attributes
-	int _setattr(char *attr, PyObject *value);
-  //@}
+    /** @name Python export */
+    //@{
+    /// Representation
+    PyObject *_repr(void);
+    /// Get attributes
+    PyObject *_getattr(char *attr);
+    /// Set attributes
+    int _setattr(char *attr, PyObject *value);
+    //@}
 
-	const gp_Circ& value(void) const {return _circle;}
-	void setValue(const gp_Circ& circle) {_circle = circle;}
+    const gp_Circ& value(void) const {return _circle;}
+    void setValue(const gp_Circ& circle) {_circle = circle;}
 
-  PYFUNCDEF_D(CirclePy,radius)
-  PYFUNCDEF_D(CirclePy,setRadius)
-  PYFUNCDEF_D(CirclePy,position)
-  PYFUNCDEF_D(CirclePy,setPosition)
-  PYFUNCDEF_D(CirclePy,axis)
-  PYFUNCDEF_D(CirclePy,setAxis)
+    PYFUNCDEF_D(CirclePy,radius)
+    PYFUNCDEF_D(CirclePy,setRadius)
+    PYFUNCDEF_D(CirclePy,position)
+    PYFUNCDEF_D(CirclePy,setPosition)
+    PYFUNCDEF_D(CirclePy,axis)
+    PYFUNCDEF_D(CirclePy,setAxis)
 
 protected:
-	gp_Circ _circle;
+    gp_Circ _circle;
 };
 
 } //namespace Part

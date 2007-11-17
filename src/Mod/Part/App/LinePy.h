@@ -35,48 +35,48 @@ namespace Part
  */
 class AppPartExport LinePy : public Base::PyObjectBase
 {
-	/** always start with Py_Header */
-	Py_Header;
+    /** always start with Py_Header */
+    Py_Header;
 
 protected:
-	/// Destruction 
-	~LinePy();
+    /// Destruction 
+    ~LinePy();
 
 public:
-  /** @name Construction */
-  //@{
-	/// Constructor 
-  LinePy(PyTypeObject *T = &Type);
-	/// Constructor 
-  LinePy(const gp_Lin& cLine, PyTypeObject *T = &LinePy::Type);
-  /// For construction in Python 
-  static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
-  /// For initialization in Python 
-  static int PyInit(PyObject*, PyObject*, PyObject*);
-  //@}
+    /** @name Construction */
+    //@{
+    /// Constructor 
+    LinePy(PyTypeObject *T = &Type);
+    /// Constructor 
+    LinePy(const Line3f& cLine, PyTypeObject *T = &LinePy::Type);
+    /// For construction in Python 
+    static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
+    /// For initialization in Python 
+    static int PyInit(PyObject*, PyObject*, PyObject*);
+    //@}
 
-  //---------------------------------------------------------------------
-  // Python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // Python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+    //---------------------------------------------------------------------
 
-  /** @name Python export */
-  //@{
-  /// Representation
-  PyObject *_repr(void);  				
-  /// Get attributes
-	PyObject *_getattr(char *attr);
-  /// Set attributes
-	int _setattr(char *attr, PyObject *value);
-  //@}
+    /** @name Python export */
+    //@{
+    /// Representation
+    PyObject *_repr(void);
+    /// Get attributes
+    PyObject *_getattr(char *attr);
+    /// Set attributes
+    int _setattr(char *attr, PyObject *value);
+    //@}
 
-	const gp_Lin& value(void) const {return _Line;}
-	void setValue(const gp_Lin& line) {_Line = line;}
+    const Line3f& value(void) const {return _Line;}
+    void setValue(const Line3f& line) {_Line = line;}
 
-    PYFUNCDEF_D(LinePy,setLocation)
-    PYFUNCDEF_D(LinePy,setDirection)
+    PYFUNCDEF_D(LinePy,setStartPoint)
+    PYFUNCDEF_D(LinePy,setEndPoint)
 
 protected:
-	gp_Lin _Line;
+    Line3f _Line;
 };
 
 } //namespace Part

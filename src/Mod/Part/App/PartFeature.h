@@ -26,7 +26,7 @@
 #ifndef PART_FEATURE_H
 #define PART_FEATURE_H
 
-#include <TopoDS_Shape.hxx>
+#include "TopoShape.h"
 #include <App/Feature.h>
 
 class PyObjectBase;
@@ -83,6 +83,7 @@ private:
     /** Recursive counting of multiple referenced shape elements. */
     unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
     TopoDS_Shape _Shape;
+    //TopoShape _Shape;
 };
 
 /** Base class of all Feature classes in FreeCAD
@@ -117,7 +118,7 @@ public:
     /** Get the actual result shape
      */
     TopoDS_Shape getShape(void);
-	//@}
+    //@}
     virtual PyObject* getPyObject(void);
 };
 

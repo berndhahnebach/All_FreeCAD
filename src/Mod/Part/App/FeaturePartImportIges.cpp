@@ -32,6 +32,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
 #include "FeaturePartImportIges.h"
 
@@ -43,8 +44,7 @@ PROPERTY_SOURCE(Part::ImportIges, Part::Feature)
 
 ImportIges::ImportIges(void)
 {
-	ADD_PROPERTY(FileName,(""));
-
+    ADD_PROPERTY(FileName,(""));
 }
 
 short ImportIges::mustExecute() const
@@ -56,46 +56,36 @@ short ImportIges::mustExecute() const
 
 App::DocumentObjectExecReturn *ImportIges::execute(void)
 {
+    IGESControl_Reader aReader;
+    TopoDS_Shape aShape;
 
-  IGESControl_Reader aReader;
-  TopoDS_Shape aShape;
+    Base::FileInfo fi(FileName.getValue());
+    if (!fi.isReadable()) {
+        Base::Console().Log("ImportIges::execute() not able to open %s!\n",FileName.getValue());
+        std::string error = std::string("Cannot open file ") + FileName.getValue();
+        return new App::DocumentObjectExecReturn(error);
+    }
 
-#if defined (__GNUC__)
-  int i=open(FileName.getValue(),O_RDONLY);
-	if( i != -1)
-	{
-	  close(i);
-#else
-  int i=_open(FileName.getValue(),O_RDONLY);
-	if( i != -1)
-	{
-	  _close(i);
-#endif
-	}else{
-        Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
-        return new App::DocumentObjectExecReturn("Unknown Error");
-	}
-
-  // just do show the wait cursor when the Gui is up
-  Base::SequencerLauncher seq("Load IGES", 1);
-  Base::Sequencer().next();
+    // just do show the wait cursor when the Gui is up
+    Base::SequencerLauncher seq("Load IGES", 1);
+    Base::Sequencer().next();
 
     // read iges-file
-  if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
-    throw Base::Exception("IGES read failed (load file)");
+    if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
+        throw Base::Exception("IGES read failed (load file)");
   
   // check iges-file (memory)
   //if (!aReader.Check(Standard_True))
   //  Base::Console().Warning( "IGES model contains errors! try loading anyway....\n" );
   
-  // make brep
-  aReader.TransferRoots();
-  // one shape, who contain's all subshapes
-  aShape = aReader.OneShape();
+    // make brep
+    aReader.TransferRoots();
+    // one shape, who contain's all subshapes
+    aShape = aReader.OneShape();
 
-	setShape(aShape);
+    setShape(aShape);
 
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 

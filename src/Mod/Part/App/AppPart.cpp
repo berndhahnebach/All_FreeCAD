@@ -40,42 +40,42 @@ PyDoc_STRVAR(module_part_doc,
 extern "C" {
 void AppPartExport initPart() {
 
-  Base::Console().Log("Mod: Loading Part module... done\n");
-  PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
+    Base::Console().Log("Mod: Loading Part module... done\n");
+    PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
 
-  // NOTE: To finish the initialization of our own type objects we must
-  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-  // This function is responsible for adding inherited slots from a type's base class.
-  if(PyType_Ready(&Part::TopoShapePyOld::Type) < 0) return;
-  union PyType_Object pyPartType = {&Part::TopoShapePyOld::Type};
-  PyModule_AddObject(partModule, "shape", pyPartType.o);
-  // Append line() method
-  if(PyType_Ready(&Part::LinePy::Type) < 0) return;
-  union PyType_Object pyLineType = {&Part::LinePy::Type};
-  PyModule_AddObject(partModule, "line", pyLineType.o);
-  // Append circle() method
-  if(PyType_Ready(&Part::CirclePy::Type) < 0) return;
-  union PyType_Object pyCircType = {&Part::CirclePy::Type};
-  PyModule_AddObject(partModule, "circle", pyCircType.o);
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if(PyType_Ready(&Part::TopoShapePyOld::Type) < 0) return;
+    union PyType_Object pyPartType = {&Part::TopoShapePyOld::Type};
+    PyModule_AddObject(partModule, "shape", pyPartType.o);
+    // Append line() method
+    if(PyType_Ready(&Part::LinePy::Type) < 0) return;
+    union PyType_Object pyLineType = {&Part::LinePy::Type};
+    PyModule_AddObject(partModule, "line", pyLineType.o);
+    // Append circle() method
+    if(PyType_Ready(&Part::CirclePy::Type) < 0) return;
+    union PyType_Object pyCircType = {&Part::CirclePy::Type};
+    PyModule_AddObject(partModule, "circle", pyCircType.o);
 
-  Part::PropertyPartShape   ::init();
-  Part::PropertyLine        ::init();
-  Part::PropertyLineSet     ::init();
-  Part::PropertyCircle      ::init();
+    Part::PropertyPartShape   ::init();
+    Part::PropertyLine        ::init();
+    Part::PropertyLineSet     ::init();
+    Part::PropertyCircle      ::init();
 
-  Part::Feature             ::init();
-  Part::Box                 ::init();
-  Part::Cut                 ::init();
-  Part::ImportStep          ::init();
-  Part::ImportIges          ::init();
-  Part::ImportBrep          ::init();
-  Part::CurveNet            ::init();
-  Part::Line                ::init();
-  Part::LineSet             ::init();
-  Part::Polygon             ::init();
-  Part::Circle              ::init();
+    Part::Feature             ::init();
+    Part::Box                 ::init();
+    Part::Cut                 ::init();
+    Part::ImportStep          ::init();
+    Part::ImportIges          ::init();
+    Part::ImportBrep          ::init();
+    Part::CurveNet            ::init();
+    Part::Line                ::init();
+    Part::LineSet             ::init();
+    Part::Polygon             ::init();
+    Part::Circle              ::init();
 
-	return;
+    return;
 }
 
 } // extern "C"

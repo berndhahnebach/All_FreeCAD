@@ -40,9 +40,7 @@ PROPERTY_SOURCE(Part::Line, Part::Feature)
 
 Line::Line()
 {
-    gp_Lin line;
-    line.SetLocation(gp_Pnt(0.0,0.0,0.0));
-    ADD_PROPERTY(StraightLine,(line));
+    ADD_PROPERTY(Line_,(Line3f()));
 }
 
 Line::~Line()
@@ -51,20 +49,18 @@ Line::~Line()
 
 short Line::mustExecute() const
 {
-    if (StraightLine.isTouched())
+    if (Line_.isTouched())
         return 1;
     return 0;
 }
 
 App::DocumentObjectExecReturn *Line::execute(void)
 {
-    const gp_Lin& l = StraightLine.getValue();
-    const gp_Pnt& p = l.Location();
-    const gp_Dir& d = l.Direction(); 
+    const Line3f& line = Line_.getValue();
 
     // Convert into OCC representation
-    gp_Pnt pnt1 = p;
-    gp_Pnt pnt2(p.X()+d.X(), p.Y()+d.Y(), p.Z()+d.Z());
+    gp_Pnt pnt1 = gp_Pnt(line.first.x,line.first.y,line.first.z);
+    gp_Pnt pnt2 = gp_Pnt(line.second.x,line.second.y,line.second.z);
 
     // Create directly the underlying line geometry
     BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);

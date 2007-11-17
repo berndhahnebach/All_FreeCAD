@@ -38,7 +38,7 @@ public:
     Line();
     virtual ~Line();
 
-    PropertyLine StraightLine;
+    PropertyLine Line_;
 
     /** @name methods override feature */
     //@{
