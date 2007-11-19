@@ -60,15 +60,13 @@ void Capturerer::setCaptureWindows(bool On)
 }
 
 
-char Capturerer::getOneCapture(void)
+char Capturerer::getOneCapture(const char *text)
 {
     static int i = 0;
     // Get frame
     IplImage* frame = NULL;
 	frame = cvQueryFrame( capture );
 
-    double time = cvGetCaptureProperty(capture, CV_CAP_PROP_FPS );
-  
     if( !frame )
 		throw "Cannot get frame";
 
@@ -83,16 +81,14 @@ char Capturerer::getOneCapture(void)
 	cvFlip(captureImage, captureImage);
 
     // label
-    if (useLabel){
-        sprintf(buff,"T:%d ",i++);
-        cvPutText (captureImage,buff, cvPoint(0,size.height - 5) , &font, cvScalar(0,255,0));
-    }
+    if (text)
+        cvPutText (captureImage,text, cvPoint(0,size.height - 5) , &font, cvScalar(0,255,0));
 
 
 	if(_bIsWinOn)
 	  cvShowImage( "Capture", captureImage );
 
-    return cvWaitKey(10);
+    return cvWaitKey(1);
 
 }
 

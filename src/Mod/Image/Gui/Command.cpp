@@ -17,6 +17,9 @@
 # include <qmessagebox.h>
 #endif
 
+#include <time.h>
+#include <sys/timeb.h>
+
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
 #include <App/Document.h>
@@ -84,17 +87,24 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
-    try {
-        Capturerer cap(0);
-        cap.setCaptureWindows(true);
-        for(int i = 0; i< 200;i++) {
-            if (cap.getOneCapture()==27)
-                break;
-        }
-    }
-    catch(const char* e) {
-        QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Capture test"), e);
-    }
+  struct tm *newtime;
+  struct _timeb tstruct;
+
+  __int64 ltime;
+  char buff[100];
+  Capturerer cap(0);
+  cap.setCaptureWindows(true);
+  for(int i = 0; i< 200;i++){
+
+    _ftime( &tstruct ); 
+    _time64( &ltime );
+    // Obtain coordinated universal time:
+    newtime = _gmtime64( &ltime ); // C4996
+    sprintf(buff,"%2d:%2d:%2d:%3d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm );
+    if(cap.getOneCapture(buff)==27)
+          break;
+  }
+  
 }
 
 void CreateImageCommands(void)
