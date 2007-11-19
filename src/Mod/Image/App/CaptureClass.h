@@ -21,7 +21,7 @@ public:
 
 	void setCaptureWindows(bool On);
 
-	char getOneCapture(void);
+	char getOneCapture(const char *text=0);
 
 private:
   CvCapture* capture;
