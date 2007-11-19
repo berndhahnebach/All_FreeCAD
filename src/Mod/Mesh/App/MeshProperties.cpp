@@ -30,6 +30,7 @@
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Stream.h>
+#include <Base/PyCXX/Objects.hxx>
 
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
@@ -233,6 +234,34 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
     }
 
     setValues(values);
+}
+
+PyObject* PropertyCurvatureList::getPyObject(void)
+{
+    Py::List list;
+    for (std::vector<CurvatureInfo>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
+        Py::Tuple tuple(4);
+        tuple.setItem(0, Py::Float(it->fMaxCurvature));
+        tuple.setItem(1, Py::Float(it->fMinCurvature));
+        Py::Tuple maxDir(3);
+        maxDir.setItem(0, Py::Float(it->cMaxCurvDir.x));
+        maxDir.setItem(1, Py::Float(it->cMaxCurvDir.y));
+        maxDir.setItem(2, Py::Float(it->cMaxCurvDir.z));
+        tuple.setItem(2, maxDir);
+        Py::Tuple minDir(3);
+        minDir.setItem(0, Py::Float(it->cMinCurvDir.x));
+        minDir.setItem(1, Py::Float(it->cMinCurvDir.y));
+        minDir.setItem(2, Py::Float(it->cMinCurvDir.z));
+        tuple.setItem(3, minDir);
+        list.append(tuple);
+    }
+
+    return Py::new_reference_to(list);
+}
+
+void PropertyCurvatureList::setPyObject(PyObject *value)
+{
+    throw Py::AttributeError(std::string("This attribute is read-only"));
 }
 
 App::Property *PropertyCurvatureList::Copy(void) const

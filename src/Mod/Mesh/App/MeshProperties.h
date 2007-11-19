@@ -105,6 +105,12 @@ public:
     void SaveDocFile (Base::Writer &writer) const;
     void RestoreDocFile(Base::Reader &reader);
 
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
+
     App::Property *Copy(void) const;
     void Paste(const App::Property &from);
 
