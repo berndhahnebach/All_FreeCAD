@@ -36,68 +36,71 @@ using namespace ImageGui;
 DEF_STD_CMD(CmdImageOpen);
 
 CmdImageOpen::CmdImageOpen()
-	:Command("Image_Open")
+    :Command("Image_Open")
 {
-	sAppModule		= "Image";
-	sGroup			  = QT_TR_NOOP("Image");
-	sMenuText		  = QT_TR_NOOP("Open");
-	sToolTipText	= QT_TR_NOOP("Image open image view function");
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			  = "Open";
-	iAccel			  = Qt::CTRL+Qt::Key_O;
+    sAppModule      = "Image";
+    sGroup          = QT_TR_NOOP("Image");
+    sMenuText       = QT_TR_NOOP("Open");
+    sToolTipText    = QT_TR_NOOP("Image open image view function");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Open";
+    iAccel          = Qt::CTRL+Qt::Key_O;
 }
-
 
 void CmdImageOpen::activated(int iMsg)
 {
-  // Reading an image
-  QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
-                                           QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
-  if (s.isEmpty() == false)
-  {
-    try{
-      // load the file with the module
-      Command::doCommand(Command::Gui, "import Image, ImageGui");
-      Command::doCommand(Command::Gui, "ImageGui.open(\"%s\")", (const char*)s.toUtf8());
-    } catch (const Base::PyException& e){
-      // Usually thrown if the file is invalid somehow
-      e.ReportException();
+    // Reading an image
+    QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
+                                             QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
+    if (!s.isEmpty()) {
+        try{
+            // load the file with the module
+            Command::doCommand(Command::Gui, "import Image, ImageGui");
+            Command::doCommand(Command::Gui, "ImageGui.open(\"%s\")", (const char*)s.toUtf8());
+        }
+        catch (const Base::PyException& e){
+            // Usually thrown if the file is invalid somehow
+            e.ReportException();
+        }
     }
-  }
 }
 
 DEF_STD_CMD(CmdImageCapturerTest);
 
 CmdImageCapturerTest::CmdImageCapturerTest()
-	:Command("Image_CapturerTest")
+    :Command("Image_CapturerTest")
 {
-	sAppModule		= "Image";
-	sGroup			  = QT_TR_NOOP("Image");
-	sMenuText		  = QT_TR_NOOP("CapturerTest");
-	sToolTipText	= QT_TR_NOOP("test camara capturing");
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			  = "Open";
-	iAccel			  = 0;
+    sAppModule      = "Image";
+    sGroup          = QT_TR_NOOP("Image");
+    sMenuText       = QT_TR_NOOP("CapturerTest");
+    sToolTipText    = QT_TR_NOOP("test camara capturing");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Open";
+    iAccel          = 0;
 }
 
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
-  Capturerer cap(0);
-  cap.setCaptureWindows(true);
-  for(int i = 0; i< 200;i++)
-      if(cap.getOneCapture()==27)
-          break;
-
-  
+    try {
+        Capturerer cap(0);
+        cap.setCaptureWindows(true);
+        for(int i = 0; i< 200;i++) {
+            if (cap.getOneCapture()==27)
+                break;
+        }
+    }
+    catch(const char* e) {
+        QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Capture test"), e);
+    }
 }
 
 void CreateImageCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-	rcCmdMgr.addCommand(new CmdImageOpen());
-	rcCmdMgr.addCommand(new CmdImageCapturerTest());
+    rcCmdMgr.addCommand(new CmdImageOpen());
+    rcCmdMgr.addCommand(new CmdImageCapturerTest());
 }
