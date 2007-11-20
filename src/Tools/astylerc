@@ -8,7 +8,8 @@ suffix=none
 indent=spaces=4
 
 # break brackets from class and function declarations, same as -ly
-brackets=linux=break-closing
+brackets=linux
+brackets=break-closing
 
 # don't break complex statements and multiple statements residing on a single line, same as -o
 one-line=keep-statements

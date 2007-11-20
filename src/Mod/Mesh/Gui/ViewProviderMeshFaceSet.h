@@ -85,6 +85,7 @@ public:
     void faceInfo(unsigned long facet);
     void fillHole(unsigned long facet);
     void markPart(unsigned long facet);
+    bool isMarked(unsigned long facet) const;
     void unmarkParts();
     void removePart();
     unsigned long countMarkedFacets() const;

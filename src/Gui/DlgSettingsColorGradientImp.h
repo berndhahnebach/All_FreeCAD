@@ -46,6 +46,8 @@ public:
   DlgSettingsColorGradientImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgSettingsColorGradientImp();
 
+  void accept();
+
   /** @name Color model */
   //@{
   void setColorModel( App::ColorGradient::TColorModel tModel);

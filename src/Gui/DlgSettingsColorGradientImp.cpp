@@ -38,8 +38,8 @@ DlgSettingsColorGradientImp::DlgSettingsColorGradientImp( QWidget* parent, Qt::W
   : QDialog( parent, fl )
 {
   this->setupUi(this);
-  connect(floatSpinBoxMin, SIGNAL(valueChanged(double)), this, SLOT(onValidateMinimum()));
-  connect(floatSpinBoxMax, SIGNAL(valueChanged(double)), this, SLOT(onValidateMaximum()));
+  //connect(floatSpinBoxMin, SIGNAL(valueChanged(double)), this, SLOT(onValidateMinimum()));
+  //connect(floatSpinBoxMax, SIGNAL(valueChanged(double)), this, SLOT(onValidateMaximum()));
   connect(spinBoxDecimals, SIGNAL(valueChanged(int)), this, SLOT(onSetDecimals(int)));
 }
 
@@ -149,12 +149,26 @@ int DlgSettingsColorGradientImp::numberOfLabels() const
 
 void DlgSettingsColorGradientImp::setNumberOfDecimals(int val)
 {
-  spinBoxDecimals->setValue( val );
+  spinBoxDecimals->setValue(val);
+  onSetDecimals(val);
 }
 
 int DlgSettingsColorGradientImp::numberOfDecimals() const
 {
   return spinBoxDecimals->value();
+}
+
+void DlgSettingsColorGradientImp::accept()
+{
+  double fMax = floatSpinBoxMax->value();
+  double fMin = floatSpinBoxMin->value();
+
+  if (fMax <= fMin) {
+    QMessageBox::warning(this, tr("Wrong parameter"), tr("The maximum value must be higher than the minimum value."));
+  }
+  else {
+    QDialog::accept();
+  }
 }
 
 void DlgSettingsColorGradientImp::onValidateMaximum()
@@ -187,6 +201,9 @@ void DlgSettingsColorGradientImp::onSetDecimals(int dec)
 {
   floatSpinBoxMax->setDecimals(dec);
   floatSpinBoxMin->setDecimals(dec);
+  double step = pow(0.1,dec);
+  floatSpinBoxMax->setSingleStep(step);
+  floatSpinBoxMin->setSingleStep(step);
 }
 
 #include "moc_DlgSettingsColorGradientImp.cpp"

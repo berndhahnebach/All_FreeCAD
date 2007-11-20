@@ -40,7 +40,7 @@ SO_NODE_SOURCE(SoFCColorGradient);
 /*!
   Constructor.
 */
-SoFCColorGradient::SoFCColorGradient() : _fMaxX(4.5f), _fMinX(4.0f), _fMaxY(4.0f), _fMinY(-4.0f), _bOutInvisible(false)
+SoFCColorGradient::SoFCColorGradient() : _fMaxX(4.5f), _fMinX(4.0f), _fMaxY(4.0f), _fMinY(-4.0f), _bOutInvisible(false), _precision(3)
 {
     SO_NODE_CONSTRUCTOR(SoFCColorGradient);
     coords = new SoCoordinate3;
@@ -321,7 +321,7 @@ bool SoFCColorGradient::customize()
     dlg.setOutGrayed( _cColGrad.isOutsideGrayed() );
     dlg.setOutInvisible( _bOutInvisible );
     dlg.setNumberOfLabels( _cColGrad.getCountColors() );
-    dlg.setNumberOfDecimals( 3 );
+    dlg.setNumberOfDecimals( _precision );
     float fMin, fMax;
     _cColGrad.getRange(fMin, fMax);
     dlg.setRange(fMin, fMax);
@@ -337,6 +337,7 @@ bool SoFCColorGradient::customize()
         _cColGrad.setOutsideGrayed( dlg.isOutGrayed() );
         _bOutInvisible = dlg.isOutInvisible();
         _cColGrad.setCountColors( dlg.numberOfLabels() );
+        _precision = dlg.numberOfDecimals();
         dlg.getRange( fMin, fMax );
         int dec = dlg.numberOfDecimals();
         setRange( fMin, fMax, dec );
