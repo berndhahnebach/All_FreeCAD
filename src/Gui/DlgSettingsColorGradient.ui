@@ -275,6 +275,9 @@
           <property name="minimum" >
            <double>-1000</double>
           </property>
+          <property name="singleStep" >
+           <double>0.01</double>
+          </property>
          </widget>
         </item>
         <item row="1" column="1" >
@@ -284,6 +287,9 @@
           </property>
           <property name="minimum" >
            <double>-1000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.01</double>
           </property>
          </widget>
         </item>
@@ -322,6 +328,9 @@
         </item>
         <item row="1" column="1" >
          <widget class="QSpinBox" name="spinBoxDecimals" >
+          <property name="maximum" >
+           <number>6</number>
+          </property>
           <property name="value" >
            <number>2</number>
           </property>

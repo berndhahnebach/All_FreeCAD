@@ -103,6 +103,7 @@ private:
   SoSeparator* labels;
   float _fMaxX, _fMinX, _fMaxY, _fMinY;
   bool  _bOutInvisible;
+  int _precision;
   App::ColorGradient _cColGrad;
 };
 

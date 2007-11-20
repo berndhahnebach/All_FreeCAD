@@ -536,9 +536,18 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
             if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
                 // get the boundary to the picked facet
                 unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
-                that->markPart(uFacet);
+                if (that->isMarked(uFacet)) {
+                    Gui::Application::Instance->activeDocument()->openCommand("Remove");
+                    that->removePart();
+                    view->render();
+                    Gui::Application::Instance->activeDocument()->commitCommand();
+                }
+                else {
+                    that->markPart(uFacet);
+                }
             }
         }
+#if 0
         else if (mbe->getButton() == SoMouseButtonEvent::BUTTON3 && mbe->getState() == SoButtonEvent::DOWN) {
             Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
             std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
@@ -561,6 +570,7 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
                 Gui::Application::Instance->activeDocument()->commitCommand();
             }
         }
+#endif
     }
 }
 
@@ -655,6 +665,15 @@ void ViewProviderMeshFaceSet::markPart(unsigned long uFacet)
         pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
     for (std::vector<unsigned long>::iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it)
         pcShapeMaterial->diffuseColor.set1Value(*it, 1.0f,0.0f,0.0f);
+}
+
+bool ViewProviderMeshFaceSet::isMarked(unsigned long facet) const
+{
+    for (std::vector<unsigned long>::const_iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it) {
+        if (*it == facet)
+            return true;
+    }
+    return false;
 }
 
 void ViewProviderMeshFaceSet::unmarkParts()

@@ -1120,8 +1120,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     case SoMouseButtonEvent::BUTTON2:
       break;
     case SoMouseButtonEvent::BUTTON3:
-      if (isEditing()) // in edit mode do not do interactions 
-          break;
+      //if (isEditing()) // in edit mode do not do interactions 
+      //    break;
       if(press)
       {
         // check on double click
