@@ -302,7 +302,7 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
 {
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
-        return NULL;
+        return -1;
     }
 
     PyErr_SetString(PyExc_AttributeError, "Attribute '@i.Name@' of object '@self.export.Twin@' is read-only");
@@ -313,11 +313,11 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
 {    
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
-        return NULL;
+        return -1;
     }
     if (((PyObjectBase*) self)->isConst()){
         PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
-        return NULL;
+        return -1;
     }
 
     try {

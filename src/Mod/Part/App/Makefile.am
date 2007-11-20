@@ -3,9 +3,11 @@ if OCC_LIBRARY_FILES
 lib_LTLIBRARIES=libPart.la Part.la
 
 BUILT_SOURCES=\
+		PartFeaturePy.cpp \
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
+		PartFeaturePy.h \
 		TopoShapePy.h
 
 libPart_la_SOURCES=\
@@ -36,8 +38,7 @@ libPart_la_SOURCES=\
 		LinePy.h \
 		PartFeature.cpp \
 		PartFeature.h \
-		PartFeaturePy.cpp \
-		PartFeaturePy.h \
+		PartFeaturePyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyCircle.cpp \
@@ -108,5 +109,6 @@ libdir = $(prefix)/Mod/Part
 CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)
 
 EXTRA_DIST = \
+		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		AppPart.vcproj
