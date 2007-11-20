@@ -1049,22 +1049,21 @@ bool MeshOutput::SaveAny(const char* FileName) const
 
 }
 
-
 /** Saves the mesh object into an ASCII file. */
 bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
   unsigned long i, ulCtFacet;
-  char szBuf[200];
 
-  if ( !rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0 )
+  if (!rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0)
     return false;
 
-  Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
+  rstrOut.precision(6);
+  rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+  Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);
 
-  strcpy(szBuf, "solid MESH\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+  rstrOut << "solid Mesh" << std::endl;
 
   clIter.Begin();
   clEnd.End();
@@ -1074,33 +1073,25 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
     pclFacet = &(*clIter);
       
     // normale
-    sprintf(szBuf, "  facet normal %.4f %.4f %.4f\n", pclFacet->GetNormal().x,
-             pclFacet->GetNormal().y,  pclFacet->GetNormal().z);
-    rstrOut.write(szBuf, strlen(szBuf));
+    rstrOut << "  facet normal " << pclFacet->GetNormal().x << " " 
+                                 << pclFacet->GetNormal().y << " "
+                                 << pclFacet->GetNormal().z << std::endl;
+    rstrOut << "    outer loop" << std::endl;
 
-    strcpy(szBuf, "    outer loop\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-
-    for (i = 0; i < 3; i++)
-    {
-      sprintf(szBuf, "      vertex %.4f %.4f %.4f\n", pclFacet->_aclPoints[i].x,
-              pclFacet->_aclPoints[i].y, pclFacet->_aclPoints[i].z);
-      rstrOut.write(szBuf, strlen(szBuf));
+    for (i = 0; i < 3; i++) {
+        rstrOut << "      vertex "  << pclFacet->_aclPoints[i].x << " "
+                                    << pclFacet->_aclPoints[i].y << "  "
+                                    << pclFacet->_aclPoints[i].z << std::endl;
     }
 
-    strcpy(szBuf, "    endloop\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-
-    strcpy(szBuf, "  endfacet\n");
-    rstrOut.write(szBuf, strlen(szBuf));
+    rstrOut << "    endlooop" << std::endl;
+    rstrOut << "  endfacet" << std::endl;
 
     ++clIter; 
     Base::Sequencer().next( true );// allow to cancel
   } 
 
-  strcpy(szBuf, "endsolid MESH\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-
+  rstrOut << "endsolid Mesh" << std::endl;
  
   return true;
 }

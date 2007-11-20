@@ -103,9 +103,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getDocument(DocName);
       if (!pcDoc)
       {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
-        Py_Error(PyExc_Exception,szBuf);
+        PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
+        return NULL;
       }
 
       Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addObject("Points::ImportAscii", file.fileNamePure().c_str());

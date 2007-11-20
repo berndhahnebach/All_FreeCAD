@@ -21,6 +21,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 #endif
 
 #include <Inventor/SbBox.h>
@@ -131,7 +132,6 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
 {
     SbVec3f corner[2], ctr, *vptr;
     bool coord, dimension;
-    char str[50], buf[10];
 
     // grab the current state
     //SoState *state = action->getState();
@@ -158,23 +158,17 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
         ctr = (corner[1] - corner[0]) / 2.0f;
         for (int i = 0; i < 8; i++) {
             // create the string for the text
-            strcpy(str, "(");
-            sprintf(buf, "%6.2f", vptr[i][0]);
-            strcat(str, buf);
-            strcat(str, ",");
-            sprintf(buf, "%6.2f", vptr[i][1]);
-            strcat(str, buf);
-            strcat(str, ",");
-            sprintf(buf, "%6.2f", vptr[i][2]);
-            strcat(str, buf);
-            strcat(str, ")");
+            std::stringstream str;
+            str.precision(2);
+            str.setf(std::ios::fixed | std::ios::showpoint);
+            str << "(" << vptr[i][0] << "," << vptr[i][1] << "," << vptr[i][2] << ")";
 
             SoSeparator *sep   = (SoSeparator *)textSep->getChild(i);
             SoTransform *trans = (SoTransform *)sep->getChild(0);
 
             trans->translation.setValue(vptr[i].getValue());
             SoText2* t = (SoText2 *)sep->getChild(1);
-            t->string.setValue(str);
+            t->string.setValue(str.str().c_str());
         }
 
         textSep->ref();
@@ -190,7 +184,10 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
         ctr = (corner[1] - corner[0]) / 2.0f;
         for (int i = 0; i < 3; i++) {
             // create the string for the text
-            sprintf(str, "%6.2f", 2.0f * ctr[i]);
+            std::stringstream str;
+            str.precision(2);
+            str.setf(std::ios::fixed | std::ios::showpoint);
+            str << (2.0f * ctr[i]);
 
             SoSeparator *sep   = (SoSeparator *)dimSep->getChild(i);
             SoTransform *trans = (SoTransform *)sep->getChild(0);
@@ -199,7 +196,7 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
             point[i] += ctr[i];
             trans->translation.setValue(point.getValue());
             SoText2* t = (SoText2 *)sep->getChild(1);
-            t->string.setValue(str);
+            t->string.setValue(str.str().c_str());
         }
 
         dimSep->ref();

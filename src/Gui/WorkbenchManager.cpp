@@ -80,9 +80,8 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
       if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId()))
       {
         delete wb;
-        char szBuf[200];
-        snprintf(szBuf, 200, "'%s' is not a workbench type", (const char*)className.toAscii());
-        throw Base::Exception(szBuf);
+        QString error = QString("'%1' is not a workbench type").arg(className);
+        throw Base::Exception((const char*)error.toAscii());
       }
 
       wb->setName( name );

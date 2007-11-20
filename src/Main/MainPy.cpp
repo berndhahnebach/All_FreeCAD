@@ -107,12 +107,12 @@ extern "C"
         argv[0] = (char*)malloc(1024);
 
 #if defined(FC_OS_WIN32)
-        strcpy(argv[0],App::Application::Config()["AppHomePath"].c_str());
+        strncpy(argv[0],App::Application::Config()["AppHomePath"].c_str(),1024);
 #elif defined(FC_OS_CYGWIN)
         HMODULE hModule = GetModuleHandle("FreeCAD.dll");
         char szFileName [MAX_PATH];
         GetModuleFileName(hModule, szFileName, MAX_PATH-1);
-        strcpy(argv[0],szFileName);
+        strncpy(argv[0],szFileName,1024);
 #elif defined(FC_OS_LINUX)
         // get whole path of the library
         Dl_info info;
@@ -122,7 +122,7 @@ extern "C"
             return;
         }
 
-        strcpy(argv[0], info.dli_fname);
+        strncpy(argv[0], info.dli_fname,1024);
 #elif defined(FC_OS_MACOSX)
         uint32_t sz = 0;
         char *buf;
@@ -135,7 +135,7 @@ extern "C"
             return;
         }
 
-        strcpy(argv[0], buf);
+        strncpy(argv[0], buf, 1024);
         free(buf);
 #else
 # error "Implement: Retrieve the path of the module for your platform."

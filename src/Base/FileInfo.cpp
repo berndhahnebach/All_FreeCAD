@@ -98,10 +98,10 @@ string FileInfo::getTempFileName(void)
 void FileInfo::makeTemp(const char* Template)
 {
   char tmp[256];
-  strcpy(tmp,Template);
+  strncpy(tmp,Template,256);
 
 #if defined (__GNUC__)
-  mktemp(tmp);
+  mkstemp(tmp);
 #else
   _mktemp(tmp);
 #endif
