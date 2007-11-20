@@ -26,7 +26,7 @@
 #ifndef _GeoFeature_h_
 #define _GeoFeature_h_
 
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "PropertyGeo.h"
 
 
@@ -35,9 +35,9 @@ namespace App
 {
 
 
-/** Base class of all Feature classes in FreeCAD
+/** Base class of all geometric document objects.
  */
-class AppExport GeoFeature: public App::AbstractFeature
+class AppExport GeoFeature : public App::DocumentObject
 {
     PROPERTY_HEADER(App::GeoFeature);
 
@@ -45,18 +45,12 @@ public:
 
     PropertyPlacementLink Pos;
 
-
     /// Constructor
     GeoFeature(void);
     virtual ~GeoFeature();
-
 };
 
-
-
-
 } //namespace App
-
 
 
 #endif

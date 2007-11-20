@@ -38,7 +38,7 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::Export, App::AbstractFeature)
+PROPERTY_SOURCE(Mesh::Export, App::DocumentObject)
 
 Export::Export(void)
 {

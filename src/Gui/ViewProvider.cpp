@@ -33,6 +33,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Matrix.h>
+#include <Base/Placement.h>
+#include <App/PropertyGeo.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderPy.h"
@@ -83,10 +85,24 @@ ViewProvider::~ViewProvider()
 void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
-    bool vis = this->isShow();
-    if (vis) hide();
-    updateData(prop);
-    if (vis) show();
+    if (prop->getTypeId() == App::PropertyPlacement::getClassTypeId()) {
+        Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
+        float q0 = (float)p._q[0];
+        float q1 = (float)p._q[1];
+        float q2 = (float)p._q[2];
+        float q3 = (float)p._q[3];
+        float px = (float)p._pos.x;
+        float py = (float)p._pos.y;
+        float pz = (float)p._pos.z;
+        pcTransform->rotation.setValue(q0,q1,q2,q3);
+        pcTransform->translation.setValue(px,py,pz);
+    }
+    else {
+        bool vis = this->isShow();
+        if (vis) hide();
+        updateData(prop);
+        if (vis) show();
+    }
 }
 
 QIcon ViewProvider::getIcon(void) const

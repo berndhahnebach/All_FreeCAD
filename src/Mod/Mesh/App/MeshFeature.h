@@ -24,7 +24,7 @@
 #ifndef MESH_FEATURE_H
 #define MESH_FEATURE_H
 
-#include <App/Feature.h>
+#include <App/GeoFeature.h>
 
 #include "Core/MeshKernel.h"
 #include "Mesh.h"
@@ -50,7 +50,7 @@ class MeshFeaturePy;
  * This class holds a MeshKernel object.
  * \author Werner Mayer
  */
-class AppMeshExport Feature : public App::AbstractFeature
+class AppMeshExport Feature : public App::GeoFeature
 {
   PROPERTY_HEADER(Mesh::Feature);
 

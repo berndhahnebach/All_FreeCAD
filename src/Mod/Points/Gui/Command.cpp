@@ -174,7 +174,7 @@ void CmdPointsTransform::activated(int iMsg)
     {
       Points::Transform* f = (Points::Transform*)pDoc->addObject(Points::Transform::getClassTypeId().getName(),"Transform");
       pGui->setHide( (*it)->getNameInDocument() );
-      f->Source.setValue(dynamic_cast<App::AbstractFeature*>(*it));
+      f->Source.setValue(*it);
       pDoc->recompute();
     }
   }

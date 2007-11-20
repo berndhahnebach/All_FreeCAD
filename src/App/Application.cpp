@@ -61,6 +61,7 @@
 #include "VectorPy.h"
 #include "MatrixPy.h"
 #include "Feature.h"
+#include "GeoFeature.h"
 #include "FeatureTest.h"
 #include "FeaturePython.h"
 #include "Property.h"
@@ -699,6 +700,7 @@ void Application::initTypes(void)
     // Document classes
     App ::DocumentObject            ::init();
     App ::AbstractFeature           ::init();
+    App ::GeoFeature                ::init();
     App ::FeatureTest               ::init();
     App ::FeatureTestException      ::init();
     App ::FeaturePython             ::init();

@@ -78,7 +78,7 @@ PyTypeObject MeshFeaturePy::Type = {
   MeshFeaturePy::Methods,                           /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &App::FeaturePy::Type,                            /*tp_base */
+  &App::DocumentObjectPy::Type,                     /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -113,13 +113,13 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type, &App::DocumentObjectPy::Type, &App::FeaturePy::Type, NULL};     
+PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type, &App::DocumentObjectPy::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 MeshFeaturePy::MeshFeaturePy(Feature *pcFeature, PyTypeObject *T)
-  : App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
+  : App::DocumentObjectPy(pcFeature, T), _pcFeature(pcFeature)
 {
   Base::Console().Log("Create Mesh::Feature: %p \n",this);
 }
@@ -154,7 +154,7 @@ PyObject *MeshFeaturePy::_repr(void)
 PyObject *MeshFeaturePy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 { 
   try{
-    _getattr_up(FeaturePy);
+    _getattr_up(DocumentObjectPy);
   }catch(...){
     Py_Error(PyExc_Exception,"Error in get Attribute");
   }
@@ -162,7 +162,7 @@ PyObject *MeshFeaturePy::_getattr(char *attr)     // __getattr__ function: note 
 
 int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function: note only need to handle new state
 { 
-  return FeaturePy::_setattr(attr, value); 
+  return DocumentObjectPy::_setattr(attr, value); 
 } 
 
 //--------------------------------------------------------------------------

@@ -47,7 +47,7 @@ using namespace Mesh;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
+PROPERTY_SOURCE(Mesh::Feature, App::GeoFeature)
 
 Feature::Feature()
 {

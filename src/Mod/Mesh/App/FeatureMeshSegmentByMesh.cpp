@@ -64,11 +64,11 @@ App::DocumentObjectExecReturn *SegmentByMesh::execute(void)
 
   if (!pcMesh) {
     return new App::DocumentObjectExecReturn("No mesh specified.\n");
-  } else if (pcMesh->getStatus() != Valid) {
+  } else if (pcMesh->isError()) {
     return new App::DocumentObjectExecReturn("No valid mesh.\n");
   } else if (!pcTool) {
     return new App::DocumentObjectExecReturn("No toolmesh specified.\n");
- } else if (pcTool->getStatus() != Valid) {
+ } else if (pcTool->isError()) {
     return new App::DocumentObjectExecReturn("No valid toolmesh.\n");
    }
 

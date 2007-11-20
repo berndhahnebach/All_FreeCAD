@@ -42,7 +42,7 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::Curvature, App::AbstractFeature)
+PROPERTY_SOURCE(Mesh::Curvature, App::DocumentObject)
 
 
 Curvature::Curvature(void)
