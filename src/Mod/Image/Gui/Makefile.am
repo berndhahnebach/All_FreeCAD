@@ -25,6 +25,9 @@ libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 libImageGui_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lcv \
+		-lcxcore \
+		-lhighgui \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
@@ -63,7 +66,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I/usr/include/opencv -I$(top_srcdir)/src -I$(top_builddir)/src
 
 libdir = $(prefix)/Mod/Image
 

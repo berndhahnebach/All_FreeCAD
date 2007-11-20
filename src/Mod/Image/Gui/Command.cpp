@@ -87,6 +87,8 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
+//FIXME: Add a portable method to Base::TimeInfo
+#if defined (_MSC_VER)
   struct tm *newtime;
   struct _timeb tstruct;
 
@@ -104,7 +106,7 @@ void CmdImageCapturerTest::activated(int iMsg)
     if(cap.getOneCapture(buff)==27)
           break;
   }
-  
+#endif
 }
 
 void CreateImageCommands(void)

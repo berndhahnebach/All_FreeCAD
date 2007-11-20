@@ -112,7 +112,7 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
         }
         
         // if there no flipped triangels -> stop
-        int f =fliped.size();
+        //int f =fliped.size();
         if(fliped.size() == 0)
             break;
       

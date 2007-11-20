@@ -23,6 +23,10 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+#include <math.h>
+#endif
+
 #include "DlgSettingsColorGradientImp.h"
 #include "SpinBox.h"
 
