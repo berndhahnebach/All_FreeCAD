@@ -11,6 +11,14 @@ SET(LINKER_LANGUAGE CXX)
 #SUBDIRS(PyCXX zipios)
 
 
+# custom build steps:
+ADD_CUSTOM_COMMAND(
+	OUTPUT PersistancePy.h PersistancePy.cpp
+	COMMAND python ../Tools/generate.py PersistancePy.xml
+	MAIN_DEPENDENCY PersistancePy.xml
+	COMMENT Building PersistancePy out of PersistancePy.xml
+)
+
 # Create a library FreeCADBase which includes the source files.
 # The extension is already found.  Any number of sources could be listed here.
 ADD_LIBRARY(FreeCADBase SHARED 

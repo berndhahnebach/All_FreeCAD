@@ -16,7 +16,14 @@ SET(FREECAD_BUILD_VERSION 911)
 SET(FREECAD_VERSION
     "${FREECAD_VERSION_MAJOR_VERSION}.${FREECAD_VERSION_MINOR_VERSION}.${FREECAD_VERSION_BUILD_VERSION}")
 
+# check for needet libraries
+#FIND_PACKAGE(QT4)
+FIND_PACKAGE(PythonLibs)
+FIND_PACKAGE(PythonInterp)
+FIND_PACKAGE(Boost)
 
+	
+	
 
 
 # Recurse into the src subdirectories.  This does not actually
