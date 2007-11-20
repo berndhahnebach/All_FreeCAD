@@ -25,7 +25,7 @@
 #define MESH_FEATURE_PY_H
 
 #include <Base/PyObjectBase.h>
-#include <App/FeaturePy.h>
+#include <App/DocumentObjectPy.h>
 
 namespace Base{
   class PyObjectBase;
@@ -42,7 +42,7 @@ class MeshPy;
 //===========================================================================
 
 // The DocTypeStd python class 
-class AppMeshExport MeshFeaturePy :public App::FeaturePy
+class AppMeshExport MeshFeaturePy :public App::DocumentObjectPy
 {
   /// always start with Py_Header
   Py_Header;

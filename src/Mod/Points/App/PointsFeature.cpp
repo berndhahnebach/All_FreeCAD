@@ -42,11 +42,12 @@ using namespace Points;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
+PROPERTY_SOURCE(Points::Feature, App::GeoFeature)
 
 Feature::Feature() 
 {
   ADD_PROPERTY(Points, (PointKernel()));
+  ADD_PROPERTY(Placement, (Base::Placement()));
 }
 
 Feature::~Feature()
@@ -62,7 +63,7 @@ void Feature::Restore(Base::XMLReader &reader)
 {
   // Note: In a previous version we have saved the points directly from this feature class instead of using an appropriate property
   // class. To keep old project files working we must do a special check for this case.
-  AbstractFeature::Restore(reader);
+  GeoFeature::Restore(reader);
 
   if ( !reader.isRegistered(&Points) )
   {

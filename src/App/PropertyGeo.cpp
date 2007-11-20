@@ -33,6 +33,7 @@
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Stream.h>
+#include <Base/Rotation.h>
 
 #include "VectorPy.h"
 #include "MatrixPy.h"
@@ -487,7 +488,22 @@ PyObject *PropertyPlacement::getPyObject(void)
 
 void PropertyPlacement::setPyObject(PyObject *value)
 {
-    throw Py::AttributeError(std::string("Assignment of placement not implemented"));
+    if (PyObject_TypeCheck(value, &(MatrixPy::Type))) {
+        MatrixPy  *pcObject = (MatrixPy*)value;
+        Base::Matrix4D mat = pcObject->value();
+        Base::Rotation rot(mat);
+        float q0,q1,q2,q3;
+        rot.getValue(q0, q1, q2, q3);
+        aboutToSetValue();
+        _cPos._q[0] = q0;
+        _cPos._q[1] = q1;
+        _cPos._q[2] = q2;
+        _cPos._q[3] = q3;
+        _cPos._pos.x = mat[0][3];
+        _cPos._pos.y = mat[1][3];
+        _cPos._pos.z = mat[2][3];
+        hasSetValue();
+    }
 }
 
 void PropertyPlacement::Save (Base::Writer &writer) const

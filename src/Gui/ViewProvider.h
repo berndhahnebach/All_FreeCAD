@@ -63,42 +63,42 @@ class GuiExport ViewProvider : public App::PropertyContainer
     PROPERTY_HEADER(Gui::ViewProvider);
 
 public:
-  /// constructor.
-  ViewProvider();
+    /// constructor.
+    ViewProvider();
 
-  /// destructor.
-  virtual ~ViewProvider();
+    /// destructor.
+    virtual ~ViewProvider();
 
-  // returns the root node of the Provider (3D)
-  virtual SoSeparator* getRoot(void){return pcRoot;}
-  // returns the root node of the Provider (3D)
-  virtual SoSeparator* getFrontRoot(void) const {return 0;}
-  // returns the root node of the Provider (3D)
-  virtual SoSeparator* getBackRoot(void) const {return 0;}
-  // returns the TreeLabel
-  virtual QIcon getIcon(void) const;
+    // returns the root node of the Provider (3D)
+    virtual SoSeparator* getRoot(void){return pcRoot;}
+    // returns the root node of the Provider (3D)
+    virtual SoSeparator* getFrontRoot(void) const {return 0;}
+    // returns the root node of the Provider (3D)
+    virtual SoSeparator* getBackRoot(void) const {return 0;}
+    // returns the TreeLabel
+    virtual QIcon getIcon(void) const;
 
 
-  /** update the content of the ViewProvider
-    * this method have to implement the recalcualtion
-    * of the ViewProvider. There are different reasons to 
-    * update. E.g. only the view attribute has changed, or
-    * the data has manipulated.
-    */
-  void update(const App::Property*);
-  virtual void updateData(const App::Property*)=0;
+    /** update the content of the ViewProvider
+     * this method have to implement the recalcualtion
+     * of the ViewProvider. There are different reasons to 
+     * update. E.g. only the view attribute has changed, or
+     * the data has manipulated.
+     */
+    void update(const App::Property*);
+    virtual void updateData(const App::Property*)=0;
 
-  std::string toString() const;
-  PyObject* getPyObject();
+    std::string toString() const;
+    PyObject* getPyObject();
 
 protected:
-	/** @name Display mask modes
+  /** @name Display mask modes
    * Mainly controls an SoSwitch node which selects the display mask modes.
    * The number of display mask modes doesn't necessarily match with the number of display modes.
    * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
    * by one display mask mode that handles color values.
    */
-	//@{
+  //@{
   /// Adds a new display mask mode 
   void addDisplayMaskMode( SoNode *node, const char* type );
   /// Activates the display mask mode \a type
@@ -108,65 +108,62 @@ protected:
   //@}
 
 public:
-	/** @name Display mode methods 
-    */
-	//@{
-  std::string getActiveDisplayMode(void) const;
-  /// set the display mode
-  virtual void setDisplayMode(const char* ModeName);
-  /// get the default display mode
-  virtual const char* getDefaultDisplayMode() const=0;
-  /// returns a list of all possible display modes
-  virtual std::vector<std::string> getDisplayModes(void) const=0;
+    /** @name Display mode methods 
+     */
+    //@{
+    std::string getActiveDisplayMode(void) const;
+    /// set the display mode
+    virtual void setDisplayMode(const char* ModeName);
+    /// get the default display mode
+    virtual const char* getDefaultDisplayMode() const=0;
+    /// returns a list of all possible display modes
+    virtual std::vector<std::string> getDisplayModes(void) const=0;
 
-  virtual void setEdit(void){};
-  virtual void unsetEdit(void){};
-  virtual const char* getEditModeName(void){return 0;}
+    virtual void setEdit(void){};
+    virtual void unsetEdit(void){};
+    virtual const char* getEditModeName(void){return 0;}
 
-  virtual void hide(void);
-  virtual void show(void);
-  virtual bool isShow(void) const;
-  //@}
+    virtual void hide(void);
+    virtual void show(void);
+    virtual bool isShow(void) const;
+    //@}
 
-  
-  /** @name direct handling methods
-    *  This group of methods is to direct influence the 
-    *  appearence of the viewed content. It's only for fast
-    *  interactions! If you want to set the visual parameters
-    *  you have to do it on the object viewed by this provider!
-    */
-  //@{
-  /// set the viewing transformation of the provider
-  virtual void setTransformation(const Base::Matrix4D &rcMatrix);
-  virtual void setTransformation(const SbMatrix &rcMatrix);
-  //@}
 
-  /** event handling if the feature is in edit mode
-    * The Viewer will cast all left and right mouse 
-    * events to that method. If return true it will
-    * also handled by the viewer (selection & context menue)
-    */
-  virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
+    /** @name direct handling methods
+     *  This group of methods is to direct influence the 
+     *  appearence of the viewed content. It's only for fast
+     *  interactions! If you want to set the visual parameters
+     *  you have to do it on the object viewed by this provider!
+     */
+    //@{
+    /// set the viewing transformation of the provider
+    virtual void setTransformation(const Base::Matrix4D &rcMatrix);
+    virtual void setTransformation(const SbMatrix &rcMatrix);
+    //@}
 
-  /// freqently called by the framework to check status changes in the data
-  virtual bool testStatus(void){return false;}
+   /** event handling if the feature is in edit mode
+     * The Viewer will cast all left and right mouse 
+     * events to that method. If return true it will
+     * also handled by the viewer (selection & context menue)
+     */
+    virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
+
+    /// freqently called by the framework to check status changes in the data
+    virtual bool testStatus(void){return false;}
 
 protected:
-  SoSeparator *pcRoot;
-
-  /// this is transformation for the provider
-  SoTransform *pcTransform;
-
-  const char* sPixmap;
-
-  /// this is the mode switch, all the different viewing modes are collected here
-  SoSwitch    *pcModeSwitch;
+    SoSeparator *pcRoot;
+    /// this is transformation for the provider
+    SoTransform *pcTransform;
+    const char* sPixmap;
+    /// this is the mode switch, all the different viewing modes are collected here
+    SoSwitch    *pcModeSwitch;
 
 private:
-  int _iActualMode;
-  std::string _sCurrentMode;
-  std::map<std::string, int> _sDisplayMaskModes;
-  ViewProviderPy* _pyObject;
+    int _iActualMode;
+    std::string _sCurrentMode;
+    std::map<std::string, int> _sDisplayMaskModes;
+    ViewProviderPy* _pyObject;
 };
 
 } // namespace Gui

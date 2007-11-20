@@ -25,7 +25,7 @@
 #define Points_FEATURE_PY_H
 
 #include <Base/PyObjectBase.h>
-#include <App/FeaturePy.h>
+#include <App/DocumentObjectPy.h>
 
 namespace Base{
   class PyObjectBase;
@@ -42,7 +42,7 @@ class PointsPy;
 //===========================================================================
 
 // The DocTypeStd python class 
-class PointsAppExport PointsFeaturePy :public App::FeaturePy
+class PointsAppExport PointsFeaturePy :public App::DocumentObjectPy
 {
   /// always start with Py_Header
   Py_Header;

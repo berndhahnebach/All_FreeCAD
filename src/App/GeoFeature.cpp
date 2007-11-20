@@ -31,7 +31,7 @@
 using namespace App;
 
 
-PROPERTY_SOURCE_ABSTRACT(App::GeoFeature, App::AbstractFeature)
+PROPERTY_SOURCE(App::GeoFeature, App::DocumentObject)
 
 
 //===========================================================================

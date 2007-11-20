@@ -51,7 +51,7 @@ App::DocumentObjectExecReturn *Transform::execute(void)
 {
 
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
-  if(!pcFirst || pcFirst->getStatus() != Valid)
+  if(!pcFirst || pcFirst->isError())
     return new App::DocumentObjectExecReturn("Unknown Error");
 
   Matrix4D Matrix =Position.getValue();
