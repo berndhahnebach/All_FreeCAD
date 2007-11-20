@@ -88,15 +88,15 @@ void ViewProviderInventorObject::updateData(const App::Property* prop)
     if (prop == &ivObj->Buffer) {
         // read from buffer
         SoInput in;
-        const char* buffer = ivObj->Buffer.getValue();
-        in.setBuffer((void *)buffer, strlen(buffer));
+        std::string buffer = ivObj->Buffer.getValue();
+        in.setBuffer((void *)buffer.c_str(), buffer.size());
         SoSeparator * node = SoDB::readAll(&in);
         pcBuffer->removeAllChildren();
         if (node) pcBuffer->addChild(node);
     }
     if (prop == &ivObj->FileName) {
         // read also from file
-        const char* filename = static_cast<App::InventorObject*>(pcObject)->FileName.getValue();
+        const char* filename = ivObj->FileName.getValue();
         Base::FileInfo fi(filename);
         SoInput in;
         if (fi.isReadable()) {

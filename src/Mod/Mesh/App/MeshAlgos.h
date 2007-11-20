@@ -49,22 +49,6 @@ namespace Mesh
 class AppMeshExport MeshAlgos
 {
 public:
-  /** Load a Mesh
-   */
-  static MeshCore::MeshKernel* Load(const char *FileName);
-
-  /** write a Mesh as binery STL
-   */
-  static void writeBin(MeshCore::MeshKernel* Mesh,const char *FileName);
-
-  /** write a Mesh as ASCII STL
-   */
-  static void writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName);
-
-  /** reads a Mesh format if supported
-   */
-  static void read(MeshCore::MeshKernel* Mesh,const char *FileName);
-
   /** Calculate per Vertex normales and adds the Normal property bag
   */
   static void offset(MeshCore::MeshKernel* Mesh, float fSize);

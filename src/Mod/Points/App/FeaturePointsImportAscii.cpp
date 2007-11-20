@@ -27,6 +27,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 
 #include "PointsAlgos.h"
 #include "Points.h"
@@ -52,20 +53,17 @@ short ImportAscii::mustExecute() const
 App::DocumentObjectExecReturn *ImportAscii::execute(void)
 {
 
-  // ask for read permisson
-#if defined (__GNUC__)
-  if ( access(FileName.getValue(), 4) != 0 )
-#else
-  if ( _access(FileName.getValue(), 4) != 0 )
-#endif
-  {
-      return new App::DocumentObjectExecReturn("FeaturePointsImportAscii::Execute() not able to open!\n");
-  }
+    // ask for read permisson
+    Base::FileInfo fi(FileName.getValue());
+    if (!fi.isReadable()) {
+        std::string error = std::string("Cannot open file ") + FileName.getValue();
+        return new App::DocumentObjectExecReturn(error);
+    }
 
-  PointKernel kernel;
-  PointsAlgos::Load(kernel,FileName.getValue());
-  Points.setValue(kernel);
+    PointKernel kernel;
+    PointsAlgos::Load(kernel,FileName.getValue());
+    Points.setValue(kernel);
 
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 

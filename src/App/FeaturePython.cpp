@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <sstream>
 #endif
 
 
@@ -83,12 +84,12 @@ void FeaturePython::addDynamicProperty(const char* type, const char* name)
     if (pcObject) {
         if (!pcObject->getTypeId().isDerivedFrom(Property::getClassTypeId())) {
             delete pcObject;
-            char szBuf[200];
-            snprintf(szBuf, 200, "'%s' is not a property type", type);
-            throw Base::Exception(szBuf);
+            std::stringstream str;
+            str << "'" << type << "' is not a property type";
+            throw Base::Exception(str.str());
         }
 
-        // get Unique name
+        // get unique name
         string ObjectName;
         if (name)
             ObjectName = getUniquePropertyName(name);
@@ -96,13 +97,13 @@ void FeaturePython::addDynamicProperty(const char* type, const char* name)
             ObjectName = getUniquePropertyName(type);
 
         pcObject->setContainer(this);
-        objectProperties[name] = pcObject;
+        objectProperties[ObjectName] = pcObject;
     }
 }
 
 string FeaturePython::getUniquePropertyName(const char *Name) const
 {
-    // strip ilegal chars
+    // strip illegal chars
     string CleanName;
     const char *It=Name;
 
@@ -133,12 +134,12 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
         // if not, name is OK
         return CleanName;
     else {
-        // find highes sufix
+        // find highest suffix
         int nSuff = 0;
         for (pos = objectProperties.begin();pos != objectProperties.end();++pos) {
             const string &rclObjName = pos->first;
-            if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName) { // Prefix gleich
-                string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
+            if (rclObjName.substr(0, CleanName.size()) == CleanName) { // Prefix gleich
+                string clSuffix(rclObjName.substr(CleanName.size()));
                 if (clSuffix.size() > 0) {
                     int nPos = clSuffix.find_first_not_of("0123456789");
                     if (nPos==-1)
@@ -146,10 +147,9 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
                 }
             }
         }
-        char szName[200];
-        snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
-
-        return string(szName);
+        std::stringstream str;
+        str << CleanName << ++nSuff;
+        return str.str();
     }
 
 }
