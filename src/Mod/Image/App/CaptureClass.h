@@ -6,7 +6,6 @@
 
 #include <cv.h>
 #include <highgui.h>
-
 //---------------------------------------------------------------------------
 
 class ImageAppExport Capturerer
@@ -18,6 +17,8 @@ public:
 	Capturerer(const char* fileName);
 
     ~Capturerer();
+
+    static int chooseCamNum(void);
 
 	void setCaptureWindows(bool On);
 

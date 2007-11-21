@@ -94,7 +94,7 @@ void CmdImageCapturerTest::activated(int iMsg)
 
   __int64 ltime;
   char buff[100];
-  Capturerer cap(0);
+  Capturerer cap(Capturerer::chooseCamNum());
   cap.setCaptureWindows(true);
   for(int i = 0; i< 200;i++){
 
@@ -102,7 +102,7 @@ void CmdImageCapturerTest::activated(int iMsg)
     _time64( &ltime );
     // Obtain coordinated universal time:
     newtime = _gmtime64( &ltime ); // C4996
-    sprintf(buff,"%2d:%2d:%2d:%3d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm );
+    sprintf(buff,"%2d:%2d:%2d:%3d - %4d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm,i );
     if(cap.getOneCapture(buff)==27)
           break;
   }
