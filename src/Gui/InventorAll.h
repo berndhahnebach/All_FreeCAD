@@ -44,6 +44,7 @@
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/events/SoMotion3Event.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/events/SoSpaceballButtonEvent.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoClipPlaneManip.h>
