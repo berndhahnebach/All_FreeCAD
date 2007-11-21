@@ -3,6 +3,7 @@
 
 #include "CaptureClass.h"
 
+#include <cvcam.h>
 //---------------------------------------------------------------------------
 
 
@@ -34,6 +35,26 @@ Capturerer::Capturerer(const char* fileName)
    if( !capture )
 	throw "Cant create capture device";
 
+}
+
+int Capturerer::chooseCamNum(void)
+{
+    int ncams = cvcamGetCamerasCount( );//returns the number of available cameras in the system
+    //printf("Number of Cams: %d\n",ncams);
+    int* out;
+    if(ncams >1){
+        int nselected = cvcamSelectCamera(&out);
+        if(nselected>0)
+            printf("the 1-st selected camera is camera number %d", out[0]);
+        if(nselected == 2)
+            printf("the 2-nd selected camera is camera number %d", out[1]);
+    }else if (ncams < 1){
+        printf("No camara in system! Terminating.\n");
+        return -1;
+    }else
+        out = new int(0);
+
+    return *out;
 }
 
 Capturerer::~Capturerer()
