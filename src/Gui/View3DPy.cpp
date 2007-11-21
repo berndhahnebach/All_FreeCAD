@@ -23,13 +23,8 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <Inventor/actions/SoHandleEventAction.h>
-# include <Inventor/actions/SoWriteAction.h>
-# include <Inventor/events/SoLocation2Event.h>
-# include <Inventor/nodes/SoCamera.h>
-# include <Inventor/nodes/SoOrthographicCamera.h>
-# include <Inventor/nodes/SoPerspectiveCamera.h>
+#ifndef __InventorAll__
+# include "InventorAll.h"
 #endif
 
 
@@ -39,6 +34,7 @@
 #include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/PyCXX/Objects.hxx>
 #include <App/VectorPy.h>
 #include "Application.h"
 #include "SoFCSelectionAction.h"
@@ -671,22 +667,138 @@ PYFUNCIMP_D(View3DPy,getPoint)
 
 void View3DPy::eventCallback(void * ud, SoEventCallback * n)
 {
-    PyObject* method = reinterpret_cast<PyObject*>(ud);
-    SbVec2s pos = n->getEvent()->getPosition();
-    PyObject* args = Py_BuildValue("(ii)", pos[0], pos[1]);
-    PyObject* res = PyEval_CallObject(method, args);
-    if (res)
-        Py_DECREF(res);
-    else if (PyErr_Occurred()) {
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if ( PyString_Check( errdata ) )
-            Base::Console().Log("%s\n", PyString_AsString(errdata));
-        PyErr_Restore(errobj, errdata, errtraceback);
+    try {
+        Py::Dict dict;
+        const SoEvent* e = n->getEvent();
+        // Type
+        dict.setItem("Type", Py::String(std::string(e->getTypeId().getName().getString())));
+        // Time
+        dict.setItem("Time", Py::String(std::string(e->getTime().formatDate().getString())));
+        SbVec2s p = n->getEvent()->getPosition();
+        Py::Tuple pos(2);
+        pos.setItem(0, Py::Int(p[0]));
+        pos.setItem(1, Py::Int(p[1]));
+        // Position
+        dict.setItem("Position", pos);
+        // Shift, Ctrl, Alt down
+        dict.setItem("ShiftDown", Py::Object((e->wasShiftDown() ? Py_True : Py_False)));
+        dict.setItem("CtrlDown",  Py::Object((e->wasCtrlDown()  ? Py_True : Py_False)));
+        dict.setItem("AltDown",   Py::Object((e->wasAltDown()   ? Py_True : Py_False)));
+        if (e->isOfType(SoButtonEvent::getClassTypeId())) {
+            std::string state;
+            const SoButtonEvent* be = static_cast<const SoButtonEvent*>(e);
+            switch (be->getState()) {
+                case SoButtonEvent::UP:
+                    state = "UP";
+                    break;
+                case SoButtonEvent::DOWN:
+                    state = "DOWN";
+                    break;
+                default:
+                    state = "UNKNOWN";
+                    break;
+            }
+
+            dict.setItem("State", Py::String(state));
+        }
+        if (e->isOfType(SoKeyboardEvent::getClassTypeId())) {
+            const SoKeyboardEvent* ke = static_cast<const SoKeyboardEvent*>(e);
+            dict.setItem("Key", Py::Char(ke->getPrintableCharacter()));
+        }
+        if (e->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+            const SoMouseButtonEvent* mbe = static_cast<const SoMouseButtonEvent*>(e);
+            std::string button;
+            switch (mbe->getButton()) {
+                case SoMouseButtonEvent::BUTTON1:
+                    button = "BUTTON1";
+                    break;
+                case SoMouseButtonEvent::BUTTON2:
+                    button = "BUTTON2";
+                    break;
+                case SoMouseButtonEvent::BUTTON3:
+                    button = "BUTTON3";
+                    break;
+                case SoMouseButtonEvent::BUTTON4:
+                    button = "BUTTON4";
+                    break;
+                case SoMouseButtonEvent::BUTTON5:
+                    button = "BUTTON5";
+                    break;
+                default:
+                    button = "ANY";
+                    break;
+            }
+
+            dict.setItem("Button", Py::String(button));
+        }
+        if (e->isOfType(SoSpaceballButtonEvent::getClassTypeId())) {
+            const SoSpaceballButtonEvent* sbe = static_cast<const SoSpaceballButtonEvent*>(e);
+            std::string button;
+            switch (sbe->getButton()) {
+                case SoSpaceballButtonEvent::BUTTON1:
+                    button = "BUTTON1";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON2:
+                    button = "BUTTON2";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON3:
+                    button = "BUTTON3";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON4:
+                    button = "BUTTON4";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON5:
+                    button = "BUTTON5";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON6:
+                    button = "BUTTON6";
+                    break;
+                case SoSpaceballButtonEvent::BUTTON7:
+                    button = "BUTTON7";
+                    break;
+                default:
+                    button = "ANY";
+                    break;
+            }
+
+            dict.setItem("Button", Py::String(button));
+        }
+        if (e->isOfType(SoMotion3Event::getClassTypeId())) {
+            const SoMotion3Event* me = static_cast<const SoMotion3Event*>(e);
+            const SbVec3f& m = me->getTranslation();
+            const SbRotation& r = me->getRotation();
+            Py::Tuple mov(3);
+            mov.setItem(0, Py::Float(m[0]));
+            mov.setItem(1, Py::Float(m[1]));
+            mov.setItem(2, Py::Float(m[2]));
+            dict.setItem("Translation", mov);
+            Py::Tuple rot(4);
+            rot.setItem(0, Py::Float(r.getValue()[0]));
+            rot.setItem(1, Py::Float(r.getValue()[1]));
+            rot.setItem(2, Py::Float(r.getValue()[2]));
+            rot.setItem(3, Py::Float(r.getValue()[3]));
+            dict.setItem("Rotation", rot);
+        }
+
+        // now run the method
+        Py::Callable method(reinterpret_cast<PyObject*>(ud));
+        Py::Tuple args(1);
+        args.setItem(0, dict);
+        method.apply(args);
+    }
+    catch (const Py::Exception& e) {
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            Base::Console().Log("%s\n", s.as_std_string().c_str());
+        }
+        else {
+            Py::String s(o.repr());
+            Base::Console().Log("%s\n", s.as_std_string().c_str());
+        }
         // Prints message to console window if we are in interactive mode
         PyErr_Print();
     }
-    Py_DECREF(args);
 }
 
 PYFUNCIMP_D(View3DPy,addEventCallback)

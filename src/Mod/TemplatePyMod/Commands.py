@@ -45,14 +45,14 @@ class TemplatePyMod_Cmd2:
                 self.view = view
                 self.call = view.addEventCallback("SoMouseButtonEvent",self.addVertex)
                 self.max = max
-                self.down=True
                 self.node=[]
                 self.count=0
                 self.poly=None
 
-            def addVertex(self, x, y):
-                if (self.down):
-                    self.node.append(self.view.getPoint(x,y))
+            def addVertex(self, d):
+                if (d["State"] == "DOWN"):
+                    pos = d["Position"]
+                    self.node.append(self.view.getPoint(pos[0],pos[1]))
                     self.count = self.count+1
                     if (self.count == 1):
                         import Part,PartGui
@@ -65,7 +65,6 @@ class TemplatePyMod_Cmd2:
                     if (self.count == self.max):
                         self.node=[]
                         self.view.removeEventCallback("SoMouseButtonEvent",self.call)
-                self.down = not self.down
 
         p=PolygonCreator(d,v,10)
 
