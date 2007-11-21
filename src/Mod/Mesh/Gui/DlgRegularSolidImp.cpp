@@ -71,6 +71,10 @@ void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
   try {
     QString cmd; std::string name;
     App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc) {
+        QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), tr("No active document"));
+        return;
+    }
     if ( comboBox1->currentIndex() == 0 ) {         // cube
       name = doc->getUniqueObjectName("Cube");
       cmd.sprintf(

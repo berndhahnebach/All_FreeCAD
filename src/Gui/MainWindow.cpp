@@ -836,7 +836,7 @@ void MainWindow::customEvent( QEvent* e )
           ViewProviderExtern *view = new ViewProviderExtern();
           try {
             view->setModeByString("1",msg.toAscii().constData());
-            d->setAnotationViewProvider("Vdbg",view);
+            d->setAnnotationViewProvider("Vdbg",view);
           } catch (...) {
             delete view;
           }

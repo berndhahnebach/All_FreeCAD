@@ -283,7 +283,7 @@ void PropertyCurvatureList::Paste(const App::Property &from)
 PropertyMeshKernel::PropertyMeshKernel()
   : _pcMesh(new MeshCore::MeshKernel())
 {
-
+    _meshObject = new MeshObject();
 }
 
 PropertyMeshKernel::~PropertyMeshKernel()
@@ -295,6 +295,13 @@ void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
 {
     aboutToSetValue();
     _pcMesh->operator=( m );
+    hasSetValue();
+}
+
+void PropertyMeshKernel::setValue(MeshObject* m)
+{
+    aboutToSetValue();
+    _meshObject = m;
     hasSetValue();
 }
 

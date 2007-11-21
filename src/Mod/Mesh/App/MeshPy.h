@@ -25,7 +25,9 @@
 #define MESH_PY_H
 
 #include <Base/PyObjectBase.h>
+#include <Base/Handle.h>
 #include "Core/MeshKernel.h"
+#include "Mesh.h"
 
 namespace MeshCore {
   class MeshKernel;
@@ -121,6 +123,7 @@ public:
   PYFUNCDEF_D(MeshPy,CollapseFacets)
 
 protected:
+  Base::Reference<MeshObject>* _meshObject;
   MeshCore::MeshKernel *_pcMesh;
 };
 

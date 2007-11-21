@@ -30,6 +30,7 @@
 #include <string>
 #include <map>
 
+#include <Base/Handle.h>
 #include <Base/Matrix.h>
 #include <Base/Vector3D.h>
 
@@ -37,6 +38,7 @@
 #include <App/PropertyGeo.h>
 
 #include "Core/MeshKernel.h"
+#include "Mesh.h"
 
 
 namespace Mesh
@@ -135,6 +137,7 @@ public:
     //@{
     /// COPIES the mesh into the Property
     void setValue( const MeshCore::MeshKernel& m);
+    void setValue( MeshObject* m);
     /// REPLACES the mesh in the Property
     void setValue( MeshCore::MeshKernel* m);
     /// get the Kernel (only const possible!)
@@ -173,6 +176,7 @@ public:
     //@}
 
 private:
+    Base::Reference<MeshObject> _meshObject;
     MeshCore::MeshKernel *_pcMesh;
 };
 

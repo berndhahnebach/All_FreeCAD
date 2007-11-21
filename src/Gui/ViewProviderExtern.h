@@ -28,43 +28,36 @@
 
 
 class SoNode;
-class SoMaterial;
 class SoInput;
-
-namespace App
-{
-  class Material;
-}
-
 
 namespace Gui {
 
 
 class GuiExport ViewProviderExtern:public ViewProvider
 {
-   PROPERTY_HEADER(Gui::ViewProviderExtern);
+    PROPERTY_HEADER(Gui::ViewProviderExtern);
 
 public:
-  /// constructor.
-  ViewProviderExtern();
+    /// constructor.
+    ViewProviderExtern();
 
-  /// destructor.
-  virtual ~ViewProviderExtern();
+    /// destructor.
+    virtual ~ViewProviderExtern();
 
-  void setModeByString(const char* name, const char* ivFragment);
-  void setModeByFile(const char* name, const char* ivFileName);
-  void setModeBySoInput(const char* name, SoInput &ivFileInput);
-  void adjustDocumentName(const char* docname);
-  
-  virtual const char* getDefaultDisplayMode() const;
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  virtual void updateData(const App::Property*){}
+    void setModeByString(const char* name, const char* ivFragment);
+    void setModeByFile(const char* name, const char* ivFileName);
+    void setModeBySoInput(const char* name, SoInput &ivFileInput);
+    void adjustDocumentName(const char* docname);
+
+    virtual const char* getDefaultDisplayMode() const;
+    virtual std::vector<std::string> getDisplayModes(void) const;
+    virtual void updateData(const App::Property*){}
 
 private:
-  void adjustRecursiveDocumentName(SoNode*, const char* docname);
+    void adjustRecursiveDocumentName(SoNode*, const char* docname);
 
 protected:
-  std::vector<std::string> modes;
+    std::vector<std::string> modes;
 };
 
 

@@ -74,7 +74,7 @@ PyObject*  DocumentPy::addAnnotation(PyObject *args)
         pcExt->setModeByFile(psModName?psModName:"Main",psFileName);
         pcExt->adjustDocumentName(getDocumentObject()->getDocument()->getName());
 
-        getDocumentObject()->setAnotationViewProvider(psAnnoName,pcExt);
+        getDocumentObject()->setAnnotationViewProvider(psAnnoName,pcExt);
 
         Py_Return;
 

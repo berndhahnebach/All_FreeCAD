@@ -45,27 +45,43 @@ namespace Mesh
 class AppMeshExport MeshObject: public Data::ComplexGeoData
 {
 public:
-  MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx)
-    : ComplexGeoData(Mtrx),_pcKernel(Kernel){}
+    MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx);
+    MeshObject();
+    ~MeshObject();
 
-  MeshObject();
+    std::string representation() const;
+    unsigned long countPoints() const;
+    unsigned long countFacets() const;
+    unsigned long countEdges () const;
+    unsigned long countComponents() const;
 
-  /** Returns an iterator object to go over all facets. */
-  MeshCore::MeshFacetIterator FacetIterator() const;
-  /** Returns an iterator object to go over all points. */
-  MeshCore::MeshPointIterator PointIterator() const;
+    /** Returns an iterator object to go over all facets. */
+    MeshCore::MeshFacetIterator FacetIterator() const;
+    /** Returns an iterator object to go over all points. */
+    MeshCore::MeshPointIterator PointIterator() const;
 
-  MeshCore::MeshKernel& getKernel(void){return *_pcKernel;}
-  const MeshCore::MeshKernel& getKernel(void) const {return *_pcKernel;}
+    MeshCore::MeshKernel& getKernel(void){return *_pcKernel;}
+    const MeshCore::MeshKernel& getKernel(void) const {return *_pcKernel;}
 
-  /// clears the Mesh
-  void clear(void);
+    void save(const char* file) const;
+    void save(std::ostream&) const;
+    void load(const char* file);
+    void load(std::istream&);
+
+    void flipNormals();
+    void harmonizeNormals();
+    void collapseFacets(const std::vector<unsigned long>&);
+    void removeComponents(unsigned long);
+    void fillupHoles(unsigned long);
+
+    /// clears the Mesh
+    void clear(void);
 
 protected:
-  MeshCore::MeshKernel* _pcKernel;
+    MeshCore::MeshKernel* _pcKernel;
 };
 
 } // namespace Mesh
 
-#endif // MESH_MESH_H
 
+#endif // MESH_MESH_H
