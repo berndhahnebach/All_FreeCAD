@@ -30,6 +30,8 @@
 
 #include "View3DInventor.h"
 #include "View3DPy.h"
+#include "ViewProviderExtern.h"
+#include "Document.h"
 
 #include <Base/PyExport.h>
 #include <Base/Console.h>
@@ -147,6 +149,8 @@ PyMethodDef View3DPy::Methods[] = {
     "pixel coordinates).\n"},
   PYMETHODEDEF(addEventCallback)
   PYMETHODEDEF(removeEventCallback)
+  PYMETHODEDEF(setAnnotation)
+  PYMETHODEDEF(removeAnnotation)
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -846,6 +850,43 @@ PYFUNCIMP_D(View3DPy,removeEventCallback)
         _pcView->getViewer()->removeEventCallback(eventId, View3DPy::eventCallback, method);
         Py_Return;
     } catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PYFUNCIMP_D(View3DPy,setAnnotation)
+{
+    char *psAnnoName,*psBuffer;
+    if (!PyArg_ParseTuple(args, "ss", &psAnnoName, &psBuffer))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception
+    ViewProviderExtern* view = 0;
+    try {
+        view = new ViewProviderExtern();
+        view->setModeByString(psAnnoName, psBuffer);
+    }
+    catch (const Base::Exception& e) {
+        delete view;
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+
+    _pcView->getGuiDocument()->setAnnotationViewProvider(psAnnoName, view);
+    Py_Return;
+}
+
+PYFUNCIMP_D(View3DPy,removeAnnotation)
+{
+    char *psAnnoName;
+    if (!PyArg_ParseTuple(args, "s", &psAnnoName))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception
+    ViewProvider* view = 0;
+    view = _pcView->getGuiDocument()->getAnnotationViewProvider(psAnnoName);
+    if (view) {
+        _pcView->getGuiDocument()->removeAnnotationViewProvider(psAnnoName);
+        Py_Return;
+    }
+    else {
+        PyErr_Format(PyExc_KeyError, "No such annotation '%s'", psAnnoName);
         return NULL;
     }
 }

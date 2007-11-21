@@ -136,7 +136,7 @@ Document::~Document()
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
   std::map<std::string,ViewProvider*>::iterator it2;
-  for(it2 = _ViewProviderMapAnotation.begin();it2 != _ViewProviderMapAnotation.end(); ++it2)
+  for(it2 = _ViewProviderMapAnnotation.begin();it2 != _ViewProviderMapAnnotation.end(); ++it2)
     delete it2->second;
 
 //  pcSelection->unref();
@@ -164,23 +164,23 @@ void Document::update(void)
     //for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
     //     It1->second->update();
     //std::map<std::string,ViewProvider*>::const_iterator It2;
-    //for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+    //for (It2=_ViewProviderMapAnnotation.begin();It2!=_ViewProviderMapAnnotation.end();++It2)
     //     It2->second->update();
 
     onUpdate();
 }
 
-void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvider)
+void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {
   std::list<Gui::BaseView*>::iterator VIt;
 
   // already in ?
-  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
-  if(it != _ViewProviderMapAnotation.end())
-    rmvAnotationViewProvider(name);
+  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnnotation.find( name );
+  if(it != _ViewProviderMapAnnotation.end())
+    removeAnnotationViewProvider(name);
 
   // add 
-  _ViewProviderMapAnotation[name] = pcProvider;
+  _ViewProviderMapAnnotation[name] = pcProvider;
 
   // cycling to all views of the document
   for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
@@ -192,16 +192,16 @@ void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvid
 
 }
 
-ViewProvider * Document::getAnotationViewProvider(const char* name) const
+ViewProvider * Document::getAnnotationViewProvider(const char* name) const
 {
-  std::map<std::string,ViewProvider*>::const_iterator it = _ViewProviderMapAnotation.find( name );
-  return ( (it != _ViewProviderMapAnotation.end()) ? it->second : 0 );
+  std::map<std::string,ViewProvider*>::const_iterator it = _ViewProviderMapAnnotation.find( name );
+  return ( (it != _ViewProviderMapAnnotation.end()) ? it->second : 0 );
 
 }
 
-void Document::rmvAnotationViewProvider(const char* name)
+void Document::removeAnnotationViewProvider(const char* name)
 {
-  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnnotation.find( name );
   std::list<Gui::BaseView*>::iterator VIt;
 
   // cycling to all views of the document
@@ -213,7 +213,7 @@ void Document::rmvAnotationViewProvider(const char* name)
   }
 
   delete it->second;
-  _ViewProviderMapAnotation.erase(it); 
+  _ViewProviderMapAnnotation.erase(it); 
 }
 
 
@@ -239,9 +239,9 @@ ViewProvider *Document::getViewProviderByName(const char* name) const
             return it->second;
     } else {
         // then try annotation name
-        std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnotation.find( name );
+        std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnnotation.find( name );
 
-        if (it2 != _ViewProviderMapAnotation.end())
+        if (it2 != _ViewProviderMapAnnotation.end())
             return it2->second;
     }
 
@@ -618,7 +618,7 @@ void Document::createView(const char* sType)
         for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
             ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
         std::map<std::string,ViewProvider*>::const_iterator It2;
-        for (It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+        for (It2=_ViewProviderMapAnnotation.begin();It2!=_ViewProviderMapAnnotation.end();++It2)
             ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
 
     } else /* if(strcmp(sType,"View3DOCC") == 0){

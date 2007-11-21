@@ -243,12 +243,14 @@ int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
 MeshPy::MeshPy(PyTypeObject *T)
 : Base::PyObjectBase(0,T)
 {
+  _meshObject = new Base::Reference<MeshObject>;
   _pcMesh = new MeshCore::MeshKernel();
 }
 
 MeshPy::MeshPy(MeshCore::MeshKernel* pcMesh, PyTypeObject *T)
 : Base::PyObjectBase(0,T)
 {
+  _meshObject = new Base::Reference<MeshObject>;
   // As long as we don't have a reference mechanism working we must copy the data, otherwise we run into SEGFAULTS
   _pcMesh = new MeshCore::MeshKernel();
   _pcMesh->operator = (*pcMesh);
@@ -259,6 +261,7 @@ MeshPy::MeshPy(MeshCore::MeshKernel* pcMesh, PyTypeObject *T)
 //--------------------------------------------------------------------------
 MeshPy::~MeshPy()           // Everything handled in parent
 {
+  delete _meshObject;
   delete _pcMesh;
 } 
 

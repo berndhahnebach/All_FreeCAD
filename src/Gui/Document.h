@@ -162,12 +162,12 @@ public:
     //@{
     /// Get the view provider for that Feature
     ViewProvider* getViewProvider(App::DocumentObject *) const;
-    /// set an anotation view provider
-    void setAnotationViewProvider(const char* name, ViewProvider *pcProvider);
-    /// get an anotation view provider
-    ViewProvider * getAnotationViewProvider(const char* name) const;
-    /// remove an anotation view provider
-    void rmvAnotationViewProvider(const char* name);
+    /// set an annotation view provider
+    void setAnnotationViewProvider(const char* name, ViewProvider *pcProvider);
+    /// get an annotation view provider
+    ViewProvider * getAnnotationViewProvider(const char* name) const;
+    /// remove an annotation view provider
+    void removeAnnotationViewProvider(const char* name);
     /// test if the feature is in show
     bool isShow(const char* name);
     /// put the feature in show
@@ -228,7 +228,7 @@ private:
     App::Document*  _pcDocument;
 
     std::map<App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
-    std::map<std::string,ViewProvider*> _ViewProviderMapAnotation;
+    std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
 
     /** @name attributes for the UNDO REDO facility
      */

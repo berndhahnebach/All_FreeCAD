@@ -47,7 +47,7 @@ using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderExtern, Gui::ViewProvider)
 
-      
+
 ViewProviderExtern::ViewProviderExtern()
 {
 
@@ -62,75 +62,73 @@ ViewProviderExtern::~ViewProviderExtern()
 
 void ViewProviderExtern::setModeByString(const char* name, const char* ivFragment)
 {
-  SoInput in;
-  in.setBuffer((void*)ivFragment,strlen(ivFragment));
-
-  setModeBySoInput(name,in);
-
+    SoInput in;
+    in.setBuffer((void*)ivFragment,strlen(ivFragment));
+    setModeBySoInput(name,in);
 }
 
 
 void ViewProviderExtern::setModeByFile(const char* name, const char* ivFileName)
 {
-  SoInput in;
-  if (in.openFile(ivFileName)) 
-  {
-     setModeBySoInput(name,in);
-  }
+    SoInput in;
+    if (in.openFile(ivFileName)) 
+         setModeBySoInput(name,in);
 }
 
 void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput)
 {
-  SoSeparator * root = SoDB::readAll(&ivFileInput);
-  if (root) {
-
-    std::vector<std::string>::iterator pos = std::find<std::vector<std::string>::iterator,string>(modes.begin(),modes.end(),string(name));
-
-    if(pos == modes.end())
-    { // new mode
-      modes.push_back(name);
-      addDisplayMaskMode(root, name);
-      setDisplayMaskMode(name);
-    }else
-    { // existing mode
-      // not implemented yet
-      assert(0);
-      root->unref();
+    SoSeparator * root = SoDB::readAll(&ivFileInput);
+    if (root) {
+        std::vector<std::string>::iterator pos = std::find<std::vector<std::string>::iterator,string>(modes.begin(),modes.end(),string(name));
+        if (pos == modes.end()) {
+            // new mode
+            modes.push_back(name);
+            addDisplayMaskMode(root, name);
+            setDisplayMaskMode(name);
+        }
+        else{ 
+            // existing mode
+            // not implemented yet
+            assert(0);
+            root->unref();
+        }
     }
-  }else
-    throw Base::Exception("nothing read");
-  return;
+    else {
+        throw Base::Exception("No valid Inventor input");
+    }
+  
+    return;
 }
 
 void ViewProviderExtern::adjustDocumentName(const char* docname)
 {
-  for ( int i=0; i<this->pcModeSwitch->getNumChildren(); i++ )
-  {
-    SoNode* child = this->pcModeSwitch->getChild(i);
-    adjustRecursiveDocumentName(child, docname);
-  }
+    for (int i=0; i<this->pcModeSwitch->getNumChildren(); i++) {
+        SoNode* child = this->pcModeSwitch->getChild(i);
+        adjustRecursiveDocumentName(child, docname);
+    }
 }
 
 void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* docname)
 {
-  if ( child->getTypeId().isDerivedFrom( SoFCSelection::getClassTypeId() ) ) {
-    static_cast<SoFCSelection*>(child)->documentName = docname;
-  } else if ( child->getTypeId().isDerivedFrom( SoGroup::getClassTypeId() ) ) {
-    SoGroup* group = (SoGroup*)child;
-    for ( int i=0; i<group->getNumChildren(); i++ ) {
-      SoNode* subchild = group->getChild(i);
-      adjustRecursiveDocumentName(subchild, docname);
+    if (child->getTypeId().isDerivedFrom( SoFCSelection::getClassTypeId())) {
+        static_cast<SoFCSelection*>(child)->documentName = docname;
     }
-  }
+    else if (child->getTypeId().isDerivedFrom( SoGroup::getClassTypeId())) {
+        SoGroup* group = (SoGroup*)child;
+        for (int i=0; i<group->getNumChildren(); i++) {
+            SoNode* subchild = group->getChild(i);
+            adjustRecursiveDocumentName(subchild, docname);
+        }
+    }
 }
 
 const char* ViewProviderExtern::getDefaultDisplayMode() const
 {
-  // returns the first item of the available modes
-  return (modes.empty() ? "" : modes.front().c_str());
+    // returns the first item of the available modes
+    return (modes.empty() ? "" : modes.front().c_str());
 }
 
 std::vector<std::string> ViewProviderExtern::getDisplayModes(void) const
 {
-  return modes;
+    return modes;
 }

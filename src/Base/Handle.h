@@ -81,6 +81,9 @@ public:
 
     // assign operator from a pointer
     Reference <HandledType>& operator=(HandledType* other) {
+        // check if we want to reassign the same object
+        if (_pHandels == other)
+            return *this;
         if (_pHandels)
             _pHandels->DetachRef(this);
         _pHandels = other;
@@ -91,6 +94,9 @@ public:
 
     // assign operator from a handle
     Reference <HandledType>& operator=(const Reference<HandledType>& other) {
+        // check if we want to reassign the same object
+        if (_pHandels == other._pHandels)
+            return *this;
         if (_pHandels)
             _pHandels->DetachRef(this);
         _pHandels = other._pHandels;
