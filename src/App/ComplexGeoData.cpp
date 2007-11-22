@@ -35,7 +35,6 @@ using namespace Data;
 TYPESYSTEM_SOURCE(Data::ComplexGeoData , Base::Persistance);
 
 
-
 ComplexGeoData::ComplexGeoData(void)
 {
 
@@ -46,16 +45,26 @@ ComplexGeoData::~ComplexGeoData(void)
 {
 }
 
-
 void ComplexGeoData::applyTransform( const Base::Matrix4D& rclTrf )
 {
-  _Mtrx = rclTrf * _Mtrx;
+     _Mtrx = rclTrf * _Mtrx;
+}
+
+void ComplexGeoData::applyTranslation(const Base::Vector3f& mov)
+{
+    Base::Matrix4D mat;
+    mat.move(mov);
+    _Mtrx = mat * _Mtrx;
+}
+
+void ComplexGeoData::applyRotation(const Base::Rotation& rot)
+{
+    Base::Matrix4D mat;
+    rot.getValue(mat);
+    _Mtrx = mat * _Mtrx;
 }
 
 void ComplexGeoData::setTransform( const Base::Matrix4D& rclTrf )
 {
-  _Mtrx = rclTrf;
+    _Mtrx = rclTrf;
 }
-
-
-

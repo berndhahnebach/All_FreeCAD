@@ -609,7 +609,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
     std::vector<Base::Vector3f> newPoints;
     unsigned long numberOfOldPoints = rKernel.CountPoints();
     for (std::list<std::vector<unsigned long> >::iterator it = boundaries.begin(); it != boundaries.end(); ++it) {
-        if (it->size() < 3 || it->size() > 200)
+        if (it->size() < 3/* || it->size() > 200*/)
             continue;
         boundary = *it;
         MeshCore::MeshFacetArray faces;

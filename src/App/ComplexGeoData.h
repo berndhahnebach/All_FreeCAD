@@ -30,47 +30,41 @@
 #include <Base/Persistance.h>
 #include <Base/Handle.h>
 #include <Base/Matrix.h>
-
+#include <Base/Rotation.h>
 
 
 namespace Data
 {
-
 
 /** Placement Object
  *  Handles the repositioning of data. Also can do grouping
  */
 class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
 {
-
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
  
 public:
+    /// Constructor
+    ComplexGeoData(void);
+    ComplexGeoData(const Base::Matrix4D &mtrx):_Mtrx(mtrx){}
+    virtual ~ComplexGeoData();
 
-  /// Constructor
-  ComplexGeoData(void);
-  ComplexGeoData(const Base::Matrix4D &mtrx):_Mtrx(mtrx){}
-  virtual ~ComplexGeoData();
+    /** Applies an additional transformation to the current transformation. */
+    void applyTransform(const Base::Matrix4D& rclTrf);
+    /** Applies an additional translation to the current transformation. */
+    void applyTranslation(const Base::Vector3f&);
+    /** Applies an additional rotation to the current transformation. */
+    void applyRotation(const Base::Rotation&);
+    /** Override the current transformation with the new one. */
+    void setTransform(const Base::Matrix4D& rclTrf);
 
-
-  /** Applies an additional transformation to the current transformation. */
-  void applyTransform( const Base::Matrix4D& rclTrf );
-  /** Override the current transformation with the new one. */
-  void setTransform( const Base::Matrix4D& rclTrf );
-
-  const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
+    const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
 
 protected:
-  Base::Matrix4D _Mtrx;
-
-
+    Base::Matrix4D _Mtrx;
 };
 
-
-
-
 } //namespace App
-
 
 
 #endif
