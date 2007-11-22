@@ -87,26 +87,34 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
-//FIXME: Add a portable method to Base::TimeInfo
-#if defined (_MSC_VER)
   struct tm *newtime;
+#if defined (_MSC_VER)
   struct _timeb tstruct;
-
   __int64 ltime;
+#elif defined(__GNUC__)
+  struct timeb tstruct;
+  time_t ltime;
+#endif
+  
   char buff[100];
   Capturerer cap(Capturerer::chooseCamNum());
   cap.setCaptureWindows(true);
   for(int i = 0; i< 200;i++){
-
+#if defined (_MSC_VER)
     _ftime( &tstruct ); 
     _time64( &ltime );
     // Obtain coordinated universal time:
     newtime = _gmtime64( &ltime ); // C4996
+#elif defined(__GNUC__)
+    ftime( &tstruct ); 
+    time( &ltime );
+    // Obtain coordinated universal time:
+    newtime = gmtime( &ltime ); // C4996
+#endif
     sprintf(buff,"%2d:%2d:%2d:%3d - %4d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm,i );
     if(cap.getOneCapture(buff)==27)
           break;
   }
-#endif
 }
 
 void CreateImageCommands(void)
