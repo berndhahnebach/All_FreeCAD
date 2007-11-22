@@ -1,9 +1,14 @@
 //---------------------------------------------------------------------------
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <stdio.h>
+#endif
 
 #include "CaptureClass.h"
 
-#include <cvcam.h>
+#ifdef _MSC_VER // this file is not available on Linux
+# include <cvcam.h>
+#endif 
 //---------------------------------------------------------------------------
 
 
@@ -39,6 +44,7 @@ Capturerer::Capturerer(const char* fileName)
 
 int Capturerer::chooseCamNum(void)
 {
+#ifdef _MSC_VER
     int ncams = cvcamGetCamerasCount( );//returns the number of available cameras in the system
     //printf("Number of Cams: %d\n",ncams);
     int* out;
@@ -55,6 +61,10 @@ int Capturerer::chooseCamNum(void)
         out = new int(0);
 
     return *out;
+#else
+    //FIXME: cvcamGetCamerasCount is not available on Linux
+    return -1;
+#endif
 }
 
 Capturerer::~Capturerer()
@@ -83,7 +93,7 @@ void Capturerer::setCaptureWindows(bool On)
 
 char Capturerer::getOneCapture(const char *text)
 {
-    static int i = 0;
+    //static int i = 0;
     // Get frame
     IplImage* frame = NULL;
 	frame = cvQueryFrame( capture );
