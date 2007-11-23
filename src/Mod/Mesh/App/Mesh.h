@@ -81,10 +81,10 @@ public:
 
     /** @name I/O */
     //@{
-    bool save(const char* file) const;
-    bool save(std::ostream&) const;
-    bool load(const char* file);
-    bool load(std::istream&);
+    void save(const char* file) const;
+    void save(std::ostream&) const;
+    void load(const char* file);
+    void load(std::istream&);
     //@}
 
     /** @name Manipulation */

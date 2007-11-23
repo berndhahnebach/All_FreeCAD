@@ -132,28 +132,26 @@ MeshCore::MeshPointIterator MeshObject::PointIterator() const
     return it;
 }
 
-bool MeshObject::save(const char* file) const
+void MeshObject::save(const char* file) const
 {
     MeshCore::MeshOutput aWriter(_kernel);
-    return aWriter.SaveAny(file);
+    aWriter.SaveAny(file);
 }
 
-bool MeshObject::save(std::ostream& out) const
+void MeshObject::save(std::ostream& out) const
 {
     _kernel.Write(out);
-    return true;
 }
 
-bool MeshObject::load(const char* file)
+void MeshObject::load(const char* file)
 {
     MeshCore::MeshInput aReader(_kernel);
-    return aReader.LoadAny(file);
+    aReader.LoadAny(file);
 }
 
-bool MeshObject::load(std::istream& in)
+void MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
-    return true;
 }
 
 void MeshObject::addFacet(const MeshCore::MeshGeomFacet& facet)
