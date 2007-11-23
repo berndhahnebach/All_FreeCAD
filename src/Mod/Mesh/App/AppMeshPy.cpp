@@ -88,19 +88,26 @@ static PyObject * open(PyObject *self, PyObject *args)
 static PyObject * insert(PyObject *self, PyObject *args)
 {
     const char* Name;
-    const char* DocName;
-    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+    const char* DocName=0;
+    if (!PyArg_ParseTuple(args, "s|s",&Name,&DocName))
         return NULL;
 
     PY_TRY {
         Base::FileInfo file(Name);
       
         // add Import feature
-        App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+        App::Document *pcDoc = 0;
+        if (DocName)
+            pcDoc = App::GetApplication().getDocument(DocName);
+        else
+            pcDoc = App::GetApplication().getActiveDocument();
+
         if (!pcDoc) {
-            char szBuf[200];
-            snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
-            Py_Error(PyExc_Exception,szBuf);
+            if (DocName)
+                PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
+            else
+                PyErr_SetString(PyExc_Exception, "No active document found");
+            return NULL;
         }
 
         // The feature checks the file extension

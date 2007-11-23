@@ -52,6 +52,7 @@ public:
   //@{
   /// recalculate the Feature
   virtual App::DocumentObjectExecReturn *execute(void);
+  short mustExecute() const;
   //@}
 
   /// returns the type name of the ViewProvider

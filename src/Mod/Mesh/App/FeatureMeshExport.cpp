@@ -67,7 +67,6 @@ App::DocumentObjectExecReturn *Export::execute(void)
         return new App::DocumentObjectExecReturn("Cannot export invalid mesh feature");
     }
 
-    if (!pcFeat->Mesh.getValue().save(FileName.getValue()))
-        throw Base::Exception("Unsupported file extension for mesh");
+    pcFeat->Mesh.getValue().save(FileName.getValue());
     return App::DocumentObject::StdReturn;
 }

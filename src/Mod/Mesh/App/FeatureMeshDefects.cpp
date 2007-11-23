@@ -49,6 +49,13 @@ FixDefects::~FixDefects()
 {
 }
 
+short FixDefects::mustExecute() const
+{
+    if (Source.isTouched())
+        return 1;
+    return 0;
+}
+
 App::DocumentObjectExecReturn *FixDefects::execute(void)
 {
   return App::DocumentObject::StdReturn;
