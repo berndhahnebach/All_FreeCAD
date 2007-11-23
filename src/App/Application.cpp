@@ -64,6 +64,7 @@
 #include "GeoFeature.h"
 #include "FeatureTest.h"
 #include "FeaturePython.h"
+#include "ComplexGeoData.h"
 #include "Property.h"
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
@@ -671,6 +672,8 @@ void Application::initTypes(void)
     Base::BaseClass                 ::init();
     Base::Exception                 ::init();
     Base::Persistance               ::init();
+    // Complex data classes
+    Data::ComplexGeoData            ::init();
     // Properties
     App ::Property                  ::init();
     App ::PropertyContainer         ::init();
@@ -693,6 +696,9 @@ void Application::initTypes(void)
     App ::PropertyMatrix            ::init();
     App ::PropertyVector            ::init();
     App ::PropertyVectorList        ::init();
+    App ::PropertyPlacement         ::init();
+    App ::PropertyPlacementLink     ::init();
+    App ::PropertyComplexGeoData    ::init();
     App ::PropertyColor             ::init();
     App ::PropertyColorList         ::init();
     App ::PropertyMaterial          ::init();

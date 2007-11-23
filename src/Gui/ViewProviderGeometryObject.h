@@ -28,11 +28,13 @@
 #include "ViewProviderDocumentObject.h"
 
 class SoPickedPointList;
+class SoSwitch;
 class SbVec2s;
 
 namespace Gui {
 
 class SoFCSelection;
+class SoFCBoundingBox;
 class View3DInventorViewer;
 
 /**
@@ -41,45 +43,51 @@ class View3DInventorViewer;
  */
 class GuiExport ViewProviderGeometryObject : public ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(Gui::ViewProviderGeometryObject);
+    PROPERTY_HEADER(Gui::ViewProviderGeometryObject);
 
 public:
-  /// constructor.
-  ViewProviderGeometryObject();
+    /// constructor.
+    ViewProviderGeometryObject();
 
-  /// destructor.
-  virtual ~ViewProviderGeometryObject();
+    /// destructor.
+    virtual ~ViewProviderGeometryObject();
 
-  // Display properties
-  App::PropertyColor ShapeColor;
-  App::PropertyPercent Transparency;
-  App::PropertyMaterial ShapeMaterial;
+    // Display properties
+    App::PropertyColor ShapeColor;
+    App::PropertyPercent Transparency;
+    App::PropertyMaterial ShapeMaterial;
+    App::PropertyBool BoundingBox;
 
-  /**
-   * Attaches the document object to this view provider.
-   */
-  virtual void attach(App::DocumentObject *pcObject);
-  SoFCSelection* getHighlightNode() const { return pcHighlight; }
-  /**
-   * Returns a list of picked points from the geometry under \a pcHighlight.
-   * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
-   * all intersection points will be picked. 
-   */
-  SoPickedPointList getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll=false) const;
-  /**
-   * This method is provided for convenience and does basically the same as getPickedPoints() unless that only the closest
-   * point to the camera will be picked.
-   * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
-   */
-  SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
+    /**
+     * Attaches the document object to this view provider.
+     */
+    void attach(App::DocumentObject *pcObject);
+    void updateData(const App::Property*);
+
+    SoFCSelection* getHighlightNode() const { return pcHighlight; }
+    /**
+     * Returns a list of picked points from the geometry under \a pcHighlight.
+     * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
+     * all intersection points will be picked. 
+     */
+    SoPickedPointList getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll=false) const;
+    /**
+     * This method is provided for convenience and does basically the same as getPickedPoints() unless that only the closest
+     * point to the camera will be picked.
+     * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
+     */
+    SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
 
 protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
+    void showBoundingBox(bool);
+    /// get called by the container whenever a property has been changed
+    void onChanged(const App::Property* prop);
 
 protected:
-  SoFCSelection* pcHighlight;
-  SoMaterial   * pcShapeMaterial;
+    SoFCSelection    * pcHighlight;
+    SoMaterial       * pcShapeMaterial;
+    SoFCBoundingBox  * pcBoundingBox;
+    SoSwitch         * pcBoundSwitch;
 };
 
 } // namespace Gui

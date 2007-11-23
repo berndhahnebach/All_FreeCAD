@@ -49,7 +49,6 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
-#include <Gui/SoFCBoundingBox.h>
 #include <Gui/MainWindow.h>
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
@@ -81,14 +80,13 @@ const char* ViewProviderMeshFaceSet::LightingEnums[]= {"One side","Two side",NUL
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderGeometryObject)
 
-ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), pBoundingBox(0), m_bEdit(false)
+ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
 {
     ADD_PROPERTY(LineWidth,(2.0f));
     LineWidth.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
     PointSize.setConstraints(&floatRange);
     ADD_PROPERTY(OpenEdges,(false));
-    ADD_PROPERTY(BoundingBox,(false));
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
 
@@ -138,28 +136,31 @@ ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
 {
-  if ( prop == &LineWidth ) {
-    pcLineStyle->lineWidth = LineWidth.getValue();
-  } else if ( prop == &PointSize ) {
-    pcPointStyle->pointSize = PointSize.getValue();
-  } else if ( prop == &OpenEdges ) {
-    showOpenEdges( OpenEdges.getValue() );
-  } else if ( prop == &BoundingBox ) {
-    showBoundingBox( BoundingBox.getValue() );
-  } else if ( prop == &Lighting ) {
-    if ( Lighting.getValue() == 0 )
-      pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
-    else
-      pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-  } else {
-    // Set the inverse color for open edges
-    if ( prop == &ShapeColor ) {
-      setOpenEdgeColorFrom(ShapeColor.getValue());
-    } else if ( prop == &ShapeMaterial ) {
-      setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
+    if ( prop == &LineWidth ) {
+        pcLineStyle->lineWidth = LineWidth.getValue();
     }
-    ViewProviderGeometryObject::onChanged(prop);
-  }
+    else if ( prop == &PointSize ) {
+        pcPointStyle->pointSize = PointSize.getValue();
+    }
+    else if ( prop == &OpenEdges ) {
+        showOpenEdges( OpenEdges.getValue() );
+    }
+    else if ( prop == &Lighting ) {
+        if ( Lighting.getValue() == 0 )
+            pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
+        else
+            pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+    }
+    else {
+        // Set the inverse color for open edges
+        if ( prop == &ShapeColor ) {
+            setOpenEdgeColorFrom(ShapeColor.getValue());
+        }
+        else if ( prop == &ShapeMaterial ) {
+            setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
+        }
+        ViewProviderGeometryObject::onChanged(prop);
+    }
 }
 
 void ViewProviderMeshFaceSet::setOpenEdgeColorFrom( const App::Color& c )
@@ -224,26 +225,27 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 {
-    if (prop->getTypeId() != Mesh::PropertyMeshKernel::getClassTypeId())
-        return;
-    const Mesh::Feature* meshFeature = static_cast<Mesh::Feature*>(pcObject);
-    if (pcHighlight->getNumChildren() > 2) {
-        SoNode* ch1 = pcHighlight->getChild(0);
-        if (ch1->getTypeId() == SoFCMeshVertex::getClassTypeId()) {
-            const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
-            SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
-            vertex->point.setValue(rPAry);
-        }
+    Gui::ViewProviderGeometryObject::updateData(prop);
+    if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        const Mesh::Feature* meshFeature = static_cast<Mesh::Feature*>(pcObject);
+        if (pcHighlight->getNumChildren() > 2) {
+            SoNode* ch1 = pcHighlight->getChild(0);
+            if (ch1->getTypeId() == SoFCMeshVertex::getClassTypeId()) {
+                const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
+                SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
+                vertex->point.setValue(rPAry);
+            }
 
-        SoNode* ch2 = pcHighlight->getChild(1);
-        if (ch2->getTypeId() == SoFCMeshFacet::getClassTypeId()) {
-            const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
-            SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
-            facet->coordIndex.setValue(rFAry);
-        }
+            SoNode* ch2 = pcHighlight->getChild(1);
+            if (ch2->getTypeId() == SoFCMeshFacet::getClassTypeId()) {
+                const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
+                SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
+                facet->coordIndex.setValue(rFAry);
+            }
 
-        // Needs to update internal bounding box caches
-        pcFaceSet->touch();
+            // Needs to update internal bounding box caches
+            pcFaceSet->touch();
+        }
     }
 }
 
@@ -337,53 +339,22 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 {
     if (pcOpenEdge) {
-	    // remove the node and destroy the data
-	    pcRoot->removeChild(pcOpenEdge);
-	    pcOpenEdge = 0;
+        // remove the node and destroy the data
+        pcRoot->removeChild(pcOpenEdge);
+        pcOpenEdge = 0;
     }
 
     if ( show ) {
-	    pcOpenEdge = new SoSeparator();
-	    pcOpenEdge->addChild(pcLineStyle);
-	    pcOpenEdge->addChild(pOpenColor);
-	
-	    pcOpenEdge->addChild(pcVertexNode);
-	    pcOpenEdge->addChild(pcFacetNode);
-	    pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
-	
-	    // add to the highlight node
-	    pcRoot->addChild(pcOpenEdge);
-    }
-}
+        pcOpenEdge = new SoSeparator();
+        pcOpenEdge->addChild(pcLineStyle);
+        pcOpenEdge->addChild(pOpenColor);
 
-void ViewProviderMeshFaceSet::showBoundingBox(bool show)
-{
-    if (pBoundingBox) {
-	    // remove the node and destroy the data
-	    pcRoot->removeChild(pBoundingBox);
-	    pBoundingBox = 0;
-    }
+        pcOpenEdge->addChild(pcVertexNode);
+        pcOpenEdge->addChild(pcFacetNode);
+        pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
 
-    if ( show ) {
-	    pBoundingBox = new SoSeparator();
-	    SoDrawStyle* lineStyle = new SoDrawStyle;
-	    lineStyle->lineWidth = 2.0f;
-	    pBoundingBox->addChild(lineStyle);
-	    SoBaseColor* color = new SoBaseColor();
-	    color->rgb.setValue(1.0f, 1.0f, 1.0f);
-	    pBoundingBox->addChild(color);
-	
-	    Gui::SoFCBoundingBox* bbox = new Gui::SoFCBoundingBox;
-	    pBoundingBox->addChild(bbox);
-	    const Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
-	    Base::BoundBox3f box = meshProp.getValue().GetBoundBox();
-	    bbox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
-	    bbox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
-	    bbox->coordsOn.setValue(false);
-	    bbox->dimensionsOn.setValue(true);
-	
-	    // add to the highlight node
-	    pcRoot->addChild(pBoundingBox);
+        // add to the highlight node
+        pcRoot->addChild(pcOpenEdge);
     }
 }
 
@@ -419,7 +390,6 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
   // notify the mesh shape node
   pcFaceSet->touch();
   Viewer.render();
-  showBoundingBox(BoundingBox.getValue());
   
   if ( !ok ) // note: the mouse grabbing needs to be released
 //      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
@@ -701,8 +671,6 @@ void ViewProviderMeshFaceSet::removePart()
         for (unsigned long i=0; i<uCtFacets; i++)
             pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
         pcFaceSet->touch();
-        showBoundingBox(BoundingBox.getValue());
-        
         _markedFacets.clear();
     }
 }

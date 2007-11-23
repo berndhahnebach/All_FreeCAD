@@ -44,7 +44,7 @@ using namespace Mesh;
 
 TYPESYSTEM_SOURCE(Mesh::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Mesh::PropertyCurvatureList , App::PropertyLists);
-TYPESYSTEM_SOURCE(Mesh::PropertyMeshKernel , App::Property);
+TYPESYSTEM_SOURCE(Mesh::PropertyMeshKernel , App::PropertyComplexGeoData);
 
 void PropertyNormalList::transform(const Base::Matrix4D &mat)
 {
@@ -316,6 +316,11 @@ void PropertyMeshKernel::setValue(MeshCore::MeshKernel* m)
 const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const 
 {
     return *_pcMesh;
+}
+
+Base::BoundBox3f PropertyMeshKernel::getBoundingBox() const
+{
+    return _pcMesh->GetBoundBox();
 }
 
 unsigned int PropertyMeshKernel::getMemSize (void) const

@@ -594,3 +594,16 @@ void PropertyPlacementLink::Paste(const Property &from)
     hasSetValue();
 }
 
+// ------------------------------------------------------------
+
+TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyComplexGeoData , App::Property);
+
+PropertyComplexGeoData::PropertyComplexGeoData()
+{
+
+}
+
+PropertyComplexGeoData::~PropertyComplexGeoData()
+{
+
+}

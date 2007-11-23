@@ -39,8 +39,9 @@
 #include "ViewProviderGeometryObject.h"
 #include "View3DInventorViewer.h"
 #include "SoFCSelection.h"
+#include "SoFCBoundingBox.h"
 #include "Window.h"
-
+#include <App/PropertyGeo.h>
 
 
 using namespace Gui;
@@ -50,13 +51,14 @@ PROPERTY_SOURCE(Gui::ViewProviderGeometryObject, Gui::ViewProviderDocumentObject
 
 const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
       
-ViewProviderGeometryObject::ViewProviderGeometryObject()
+ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
 {
     ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
     ADD_PROPERTY(Transparency,(0));
     Transparency.setConstraints(&intPercent);
     App::Material mat(App::Material::DEFAULT);
     ADD_PROPERTY(ShapeMaterial,(mat));
+    ADD_PROPERTY(BoundingBox,(false));
 
     // Create the selection node
     pcHighlight = new SoFCSelection();
@@ -100,6 +102,8 @@ ViewProviderGeometryObject::ViewProviderGeometryObject()
     pcShapeMaterial->ref();
     ShapeMaterial.touch();
 
+    pcBoundingBox = new Gui::SoFCBoundingBox;
+    pcBoundingBox->ref();
     sPixmap = "Feature";
 }
 
@@ -107,6 +111,7 @@ ViewProviderGeometryObject::~ViewProviderGeometryObject()
 {
     pcShapeMaterial->unref();
     pcHighlight->unref();
+    pcBoundingBox->unref();
 }
 
 void ViewProviderGeometryObject::onChanged(const App::Property* prop)
@@ -143,10 +148,13 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
         pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
         pcShapeMaterial->shininess.setValue(Mat.shininess);
         pcShapeMaterial->transparency.setValue(Mat.transparency);
-  }
-  else {
-      ViewProviderDocumentObject::onChanged(prop);
-  }
+    }
+    else if ( prop == &BoundingBox ) {
+        showBoundingBox( BoundingBox.getValue() );
+    }
+    else {
+        ViewProviderDocumentObject::onChanged(prop);
+    }
 }
 
 void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
@@ -155,6 +163,15 @@ void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
     pcHighlight->objectName = pcObj->getNameInDocument();
     pcHighlight->documentName = pcObj->getDocument().getName();
     pcHighlight->subElementName = "Main";
+}
+
+void ViewProviderGeometryObject::updateData(const App::Property* prop)
+{
+    if (prop->isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
+        Base::BoundBox3f box = static_cast<const App::PropertyComplexGeoData*>(prop)->getBoundingBox();
+        pcBoundingBox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
+        pcBoundingBox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
+    }
 }
 
 SoPickedPointList ViewProviderGeometryObject::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const
@@ -192,4 +209,30 @@ SoPickedPoint* ViewProviderGeometryObject::getPickedPoint(const SbVec2s& pos, co
     SoPickedPoint* pick = rp.getPickedPoint();
     //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
     return (pick ? new SoPickedPoint(*pick) : 0);
+}
+
+void ViewProviderGeometryObject::showBoundingBox(bool show)
+{
+    if (!pcBoundSwitch && show) {
+        pcBoundSwitch = new SoSwitch();
+        SoSeparator* pBoundingSep = new SoSeparator();
+        SoDrawStyle* lineStyle = new SoDrawStyle;
+        lineStyle->lineWidth = 2.0f;
+        pBoundingSep->addChild(lineStyle);
+        SoBaseColor* color = new SoBaseColor();
+        color->rgb.setValue(1.0f, 1.0f, 1.0f);
+        pBoundingSep->addChild(color);
+
+        pBoundingSep->addChild(pcBoundingBox);
+        pcBoundingBox->coordsOn.setValue(false);
+        pcBoundingBox->dimensionsOn.setValue(true);
+
+        // add to the highlight node
+        pcBoundSwitch->addChild(pBoundingSep);
+        pcRoot->addChild(pcBoundSwitch);
+    }
+
+    if (pcBoundSwitch) {
+        pcBoundSwitch->whichChild = (show ? 0 : -1);
+    }
 }
