@@ -281,22 +281,20 @@ void PropertyCurvatureList::Paste(const App::Property &from)
 // ----------------------------------------------------------------------------
 
 PropertyMeshKernel::PropertyMeshKernel()
-  : _pcMesh(new MeshCore::MeshKernel())
 {
     _meshObject = new MeshObject();
 }
 
 PropertyMeshKernel::~PropertyMeshKernel()
 {
-    delete _pcMesh;
 }
 
-void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
-{
-    aboutToSetValue();
-    _pcMesh->operator=( m );
-    hasSetValue();
-}
+//void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
+//{
+//    aboutToSetValue();
+//    _pcMesh->operator=( m );
+//    hasSetValue();
+//}
 
 void PropertyMeshKernel::setValue(MeshObject* m)
 {
@@ -305,67 +303,68 @@ void PropertyMeshKernel::setValue(MeshObject* m)
     hasSetValue();
 }
 
-void PropertyMeshKernel::setValue(MeshCore::MeshKernel* m)
-{
-    aboutToSetValue();
-    delete (_pcMesh);
-    _pcMesh = m;
-    hasSetValue();
-}
+//void PropertyMeshKernel::setValue(MeshCore::MeshKernel* m)
+//{
+//    aboutToSetValue();
+//    delete (_pcMesh);
+//    _pcMesh = m;
+//    hasSetValue();
+//}
 
-const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const 
+const MeshObject& PropertyMeshKernel::getValue(void)const 
 {
-    return *_pcMesh;
+    return *_meshObject;
 }
 
 Base::BoundBox3f PropertyMeshKernel::getBoundingBox() const
 {
-    return _pcMesh->GetBoundBox();
+    return _meshObject->getKernel().GetBoundBox();
 }
 
 unsigned int PropertyMeshKernel::getMemSize (void) const
 {
     unsigned int size = 0;
-    size += _pcMesh->GetMemSize();
+    size += _meshObject->getKernel().GetMemSize();
     
     return size;
 }
 
 //FIXME: This is the provisional solution to allow to transform meshes.
 //At a later stage we want to use a so called Placement object instead.
-void PropertyMeshKernel::applyTransformation( const Base::Matrix4D& rclTrf )
+void PropertyMeshKernel::applyTransformation(const Base::Matrix4D& rclTrf)
 {
     aboutToSetValue();
-    _pcMesh->Transform(rclTrf);
+    _meshObject->applyTransform(rclTrf);
     hasSetValue();
 }
 
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
 {
     aboutToSetValue();
-    _pcMesh->DeletePoints(inds);
+    _meshObject->getKernel().DeletePoints(inds);
     hasSetValue();
 }
 
 void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& inds )
 {
     aboutToSetValue();
-    _pcMesh->DeleteFacets(inds);
+    _meshObject->getKernel().DeleteFacets(inds);
     hasSetValue();
 }
 
 void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& inds )
 {
     aboutToSetValue();
+    MeshCore::MeshKernel& kernel = _meshObject->getKernel();
     for (std::vector<std::pair<unsigned long, Base::Vector3f> >::const_iterator it = inds.begin(); it != inds.end(); ++it)
-        _pcMesh->SetPoint(it->first, it->second);
+        kernel.SetPoint(it->first, it->second);
     hasSetValue();
 }
 
 void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints)
 {
     aboutToSetValue();
-    _pcMesh->AddFacets(rFaces, rPoints);
+    _meshObject->getKernel().AddFacets(rFaces, rPoints);
     hasSetValue();
 }
 
@@ -377,13 +376,13 @@ void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces,
 void PropertyMeshKernel::clear()
 {
     aboutToSetValue();
-    _pcMesh->Clear();
+    _meshObject->clear();
     hasSetValue();
 }
 
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-    return new MeshPy(_pcMesh);
+    return new MeshPy(&(*_meshObject));
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)
@@ -403,7 +402,7 @@ void PropertyMeshKernel::Save (Base::Writer &writer) const
 {
     if (writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<Mesh>" << std::endl;
-        MeshCore::MeshOutput saver(*_pcMesh);
+        MeshCore::MeshOutput saver(_meshObject->getKernel());
         saver.SaveXML(writer);
     }
     else {
@@ -429,7 +428,7 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
         kernel.Adopt(points, facets);
 
         aboutToSetValue();
-        _pcMesh->Adopt(points, facets);
+        _meshObject->getKernel().Adopt(points, facets);
         hasSetValue();
     } 
     else {
@@ -440,7 +439,7 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 {
-    _pcMesh->Write( writer.Stream() );
+    _meshObject->save(writer.Stream());
 }
 
 void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
@@ -454,23 +453,23 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
     kernel.Adopt(points, facets);
 
     aboutToSetValue();
-    _pcMesh->Adopt(points, facets);
+    _meshObject->getKernel().Adopt(points, facets);
     hasSetValue();
 }
 
 App::Property *PropertyMeshKernel::Copy(void) const
 {
     //NOTE: We must not copy the pointer to the mesh but the mesh data itself 
-    PropertyMeshKernel *p= new PropertyMeshKernel();
-    *(p->_pcMesh) = *_pcMesh;
-    return p;
+    PropertyMeshKernel *prop = new PropertyMeshKernel();
+    *(prop->_meshObject) = *(this->_meshObject);
+    return prop;
 }
 
 void PropertyMeshKernel::Paste(const App::Property &from)
 {
     //NOTE: We must not restore the pointer to the mesh but the mesh data itself 
     aboutToSetValue();
-    const PropertyMeshKernel& p = dynamic_cast<const PropertyMeshKernel&>(from);
-    *_pcMesh = *p._pcMesh;
+    const PropertyMeshKernel& prop = dynamic_cast<const PropertyMeshKernel&>(from);
+    *(this->_meshObject) = *(prop._meshObject);
     hasSetValue();
 }

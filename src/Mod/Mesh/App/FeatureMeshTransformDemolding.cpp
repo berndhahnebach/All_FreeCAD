@@ -50,7 +50,7 @@ TransformDemolding::TransformDemolding(void)
 }
 
 App::DocumentObjectExecReturn *TransformDemolding::execute(void)
-{
+{/*
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->isError())
     return new App::DocumentObjectExecReturn("Unknown Error");
@@ -61,7 +61,7 @@ App::DocumentObjectExecReturn *TransformDemolding::execute(void)
   //trans.rotLine( Axis.getValue(), Rotation.getValue()  );
   pcKernel->Transform(trans);
   Mesh.setValue(pcKernel);
- 
+ */
   return App::DocumentObject::StdReturn;
 }
 

@@ -235,6 +235,7 @@ public:
   FillHoles(void);
   virtual ~FillHoles();
   App::PropertyInteger FillupHolesOfLength;
+  App::PropertyFloat MaxArea;
 
   /** @name methods override Feature */
   //@{

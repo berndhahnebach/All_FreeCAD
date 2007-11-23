@@ -136,12 +136,12 @@ public:
     /** @name Getter/setter */
     //@{
     /// COPIES the mesh into the Property
-    void setValue( const MeshCore::MeshKernel& m);
+    //void setValue( const MeshCore::MeshKernel& m);
     void setValue( MeshObject* m);
     /// REPLACES the mesh in the Property
-    void setValue( MeshCore::MeshKernel* m);
+    //void setValue( MeshCore::MeshKernel* m);
     /// get the Kernel (only const possible!)
-    const MeshCore::MeshKernel &getValue(void) const;
+    const MeshObject &getValue(void) const;
     Base::BoundBox3f getBoundingBox() const;
     virtual unsigned int getMemSize (void) const;
     //@}
@@ -178,7 +178,6 @@ public:
 
 private:
     Base::Reference<MeshObject> _meshObject;
-    MeshCore::MeshKernel *_pcMesh;
 };
 
 } // namespace Mesh

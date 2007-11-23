@@ -179,12 +179,12 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
     const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
 
     pcVertexNode = new SoFCMeshVertex;
-    const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
+    const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().getKernel().GetPoints();
     pcVertexNode->point.setValue(rPAry);
     pcHighlight->addChild(pcVertexNode);
 
     pcFacetNode = new SoFCMeshFacet;
-    const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
+    const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().getKernel().GetFacets();
     pcFacetNode->coordIndex.setValue(rFAry);
     pcHighlight->addChild(pcFacetNode);
 
@@ -231,14 +231,14 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
         if (pcHighlight->getNumChildren() > 2) {
             SoNode* ch1 = pcHighlight->getChild(0);
             if (ch1->getTypeId() == SoFCMeshVertex::getClassTypeId()) {
-                const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().GetPoints();
+                const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().getKernel().GetPoints();
                 SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
                 vertex->point.setValue(rPAry);
             }
 
             SoNode* ch2 = pcHighlight->getChild(1);
             if (ch2->getTypeId() == SoFCMeshFacet::getClassTypeId()) {
-                const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().GetFacets();
+                const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().getKernel().GetFacets();
                 SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
                 facet->coordIndex.setValue(rFAry);
             }
@@ -377,8 +377,8 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
   std::vector<unsigned long> indices;
   MeshCore::MeshKernel cToolMesh;
   cToolMesh = aFaces;
-  MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
-  MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
+  MeshCore::MeshFacetGrid cGrid(meshProp.getValue().getKernel());
+  MeshCore::MeshAlgorithm cAlg(meshProp.getValue().getKernel());
   cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
 
   //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
@@ -547,7 +547,7 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
 void ViewProviderMeshFaceSet::faceInfo(unsigned long uFacet)
 {
     Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
-    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue().getKernel();
     const MeshCore::MeshFacetArray& facets = rKernel.GetFacets();
     if (uFacet < facets.size()) {
         MeshCore::MeshFacet face = facets[uFacet];
@@ -567,7 +567,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
     // get the boundary to the picked facet
     std::list<unsigned long> aBorder;
     Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
-    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue().getKernel();
     MeshCore::MeshAlgorithm meshAlg(rKernel);
     meshAlg.GetMeshBorder(uFacet, aBorder);
     std::vector<unsigned long> boundary(aBorder.begin(), aBorder.end());
@@ -623,7 +623,7 @@ void ViewProviderMeshFaceSet::markPart(unsigned long uFacet)
 {
     _markedFacets.push_back(uFacet);
     MeshCore::MeshTopFacetVisitor clVisitor(_markedFacets);
-    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
     MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::VISIT);
     rKernel.VisitNeighbourFacets(clVisitor, uFacet);
 
@@ -664,7 +664,7 @@ void ViewProviderMeshFaceSet::removePart()
         ((Mesh::Feature*)pcObject)->purgeTouched();
         
         // notify the mesh shape node
-        const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+        const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
         App::Color c = ShapeColor.getValue();
         unsigned long uCtFacets = rKernel.CountFacets();
         pcShapeMaterial->diffuseColor.setNum(uCtFacets);

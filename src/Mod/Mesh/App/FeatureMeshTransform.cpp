@@ -49,7 +49,7 @@ Transform::Transform(void)
 
 App::DocumentObjectExecReturn *Transform::execute(void)
 {
-
+/*
   Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->isError())
     return new App::DocumentObjectExecReturn("Unknown Error");
@@ -60,7 +60,7 @@ App::DocumentObjectExecReturn *Transform::execute(void)
   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->Mesh.getValue()); // Result Meshkernel
   pcKernel->Transform(Matrix);
   Mesh.setValue(pcKernel);
-
+*/
   return App::DocumentObject::StdReturn;
 }
 

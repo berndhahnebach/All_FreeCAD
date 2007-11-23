@@ -143,7 +143,7 @@ void ViewProviderMeshOrientation::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshOrientation::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalOrientation eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -211,7 +211,7 @@ void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshNonManifolds::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalTopology eval(rMesh);
   eval.Evaluate();
   
@@ -284,7 +284,7 @@ void ViewProviderMeshDuplicatedFaces::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshDuplicatedFaces::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalDuplicateFacets eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -352,7 +352,7 @@ void ViewProviderMeshDuplicatedPoints::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshDuplicatedPoints::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalDuplicatePoints eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -413,7 +413,7 @@ void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshDegenerations::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalDegeneratedFacets eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -522,7 +522,7 @@ void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshIndices::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalNeighbourhood nb(rMesh);
   MeshCore::MeshEvalRangeFacet rf(rMesh);
   MeshCore::MeshEvalRangePoint rp(rMesh);
@@ -600,7 +600,7 @@ void ViewProviderMeshSelfIntersections::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshSelfIntersections::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
   MeshCore::MeshEvalSelfIntersection eval(rMesh);
   
   std::vector<std::pair<Base::Vector3f, Base::Vector3f> > lines;

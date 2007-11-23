@@ -72,11 +72,11 @@ App::DocumentObjectExecReturn *SegmentByMesh::execute(void)
     return new App::DocumentObjectExecReturn("No valid toolmesh.\n");
    }
 
-  const MeshKernel& rMeshKernel = pcMesh->Mesh.getValue();
-  const MeshKernel& rToolMesh   = pcTool->Mesh.getValue();
+  const MeshKernel& rMeshKernel = pcMesh->Mesh.getValue().getKernel();
+  const MeshKernel& rToolMesh   = pcTool->Mesh.getValue().getKernel();
 
   // check if the toolmesh is a solid
-  if ( !MeshEvalSolid(rToolMesh).Evaluate() )
+  if (!MeshEvalSolid(rToolMesh).Evaluate())
   {
     return new App::DocumentObjectExecReturn("Toolmesh is not solid.\n");
   }
@@ -131,9 +131,9 @@ App::DocumentObjectExecReturn *SegmentByMesh::execute(void)
   for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
     aFaces.push_back( rMeshKernel.GetFacet(*it) );
 
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel();
-  *pcKernel= ( aFaces );
-  Mesh.setValue(pcKernel);
+  std::auto_ptr<MeshObject> pcKernel(new MeshObject);
+  pcKernel->addFacets(aFaces);
+  Mesh.setValue(pcKernel.release());
 
   return App::DocumentObject::StdReturn;
 }

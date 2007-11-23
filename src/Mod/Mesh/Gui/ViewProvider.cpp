@@ -377,7 +377,7 @@ void ViewProviderMesh::updateData(const App::Property* Prop)
 {
     if (Prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
         const Mesh::PropertyMeshKernel* kernel = static_cast<const Mesh::PropertyMeshKernel*>(Prop);
-        createMesh(kernel->getValue());
+        createMesh(kernel->getValue().getKernel());
     }
 }
 
@@ -649,7 +649,7 @@ void ViewProviderMesh::showOpenEdges(bool show)
 
     // Build up the lines with indices to the list of vertices 'pcMeshCoord'
     int index=0;
-    const MeshCore::MeshKernel& rMesh = meshFeature->Mesh.getValue();
+    const MeshCore::MeshKernel& rMesh = meshFeature->Mesh.getValue().getKernel();
     const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
     for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
       for ( int i=0; i<3; i++ ) {

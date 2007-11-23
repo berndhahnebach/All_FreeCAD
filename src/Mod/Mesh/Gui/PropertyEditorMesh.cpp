@@ -49,7 +49,7 @@ QVariant PropertyMeshKernelItem::value(const App::Property*) const
     std::vector<App::Property*> props = getProperty();
     for ( std::vector<App::Property*>::const_iterator pt = props.begin(); pt != props.end(); ++pt ) {
         Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
-        const MeshKernel& rMesh = pPropMesh->getValue();
+        const MeshKernel& rMesh = pPropMesh->getValue().getKernel();
         ctP += (int)rMesh.CountPoints();
         ctE += (int)rMesh.CountEdges();
         ctF += (int)rMesh.CountFacets();

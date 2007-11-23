@@ -47,214 +47,137 @@ using namespace MeshCore;
 
 
 /* module functions */
-static PyObject * read(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-    
-  PY_TRY {
-    
-    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-  
-    MeshInput aReader( *apcKernel );
-      
-    aReader.LoadAny(Name);
-  
-    // Mesh is okay
+static PyObject * read(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
 
-    return new MeshPy(apcKernel.release());
+    PY_TRY {
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        mesh->load(Name);
+        return new MeshPy(mesh.release());
+    } PY_CATCH;
 
-  } PY_CATCH;
-
-	Py_Return;    
+    Py_Return;
 }
 
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-    
-  PY_TRY {
+static PyObject * open(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
 
-    //Base::Console().Log("Open in Mesh with %s",Name);
-    Base::FileInfo file(Name);
+    PY_TRY {
+        //Base::Console().Log("Open in Mesh with %s",Name);
+        Base::FileInfo file(Name);
 
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
+        // create new document and add Import feature
+        App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+        // The feature checks the file extension
+        Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addObject("Mesh::Import",file.fileNamePure().c_str());
+        pcFeature->FileName.setValue( Name );
+        pcDoc->recompute();
+    } PY_CATCH;
 
-    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms")|| file.hasExtension("obj"))
-    {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addObject("Mesh::Import",file.fileNamePure().c_str());
-      pcFeature->FileName.setValue( Name );
-      pcDoc->recompute();
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-
-
-  } PY_CATCH;
-
-	Py_Return;    
+    Py_Return;    
 }
 
 
 /* module functions */
-static PyObject *                        
-insert(PyObject *self, PyObject *args)     
+static PyObject * insert(PyObject *self, PyObject *args)
 {
-  const char* Name;
-  const char* DocName;
-  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
-    return NULL;                         
-    
-  PY_TRY {
+    const char* Name;
+    const char* DocName;
+    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+        return NULL;
 
-    Base::FileInfo file(Name);
+    PY_TRY {
+        Base::FileInfo file(Name);
+      
+        // add Import feature
+        App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+        if (!pcDoc) {
+            char szBuf[200];
+            snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
+            Py_Error(PyExc_Exception,szBuf);
+        }
 
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
+        // The feature checks the file extension
+        Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
+        pcFeature->FileName.setValue( Name );
+        pcDoc->recompute();
+    } PY_CATCH;
 
-    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms")|| file.hasExtension("obj"))
-    {
-      // add Import feature
-      App::Document *pcDoc = App::GetApplication().getDocument(DocName);
-      if (!pcDoc)
-      {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
-        Py_Error(PyExc_Exception,szBuf);
-      }
-
-      Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
-      pcFeature->FileName.setValue( Name );
-      pcDoc->recompute();
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-
-  } PY_CATCH;
-
-	Py_Return;    
+    Py_Return;    
 }
 
-
-static PyObject *                        
-show(PyObject *self, PyObject *args)     
+static PyObject * 
+createBox(PyObject *self, PyObject *args)
 {
- 	MeshPy   *pcObject;
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
+    float x=1,y=0,z=0;
+    if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
 
-  PY_TRY {
+    if (y==0) 
+        y=x;
+    if (z==0) 
+        z=x;
 
-    App::Document *pcDoc = App::GetApplication().getActiveDocument();
-    if(!pcDoc)
-      pcDoc = App::GetApplication().newDocument();
+    float hx = x/2.0;
+    float hy = y/2.0;
+    float hz = z/2.0;
+
+    PY_TRY {
+        std::vector<MeshCore::MeshGeomFacet> TriaList;
     
-    pcObject = (MeshPy*)pcObj;
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, -hy, hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(-hx, -hy, hz)));
 
-    const MeshKernel& m = ((MeshPy*)pcObj)->getMesh();
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, hy, -hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(hx, hy, hz)));
 
-    Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "showed");
-    pcFeature->Mesh.setValue( m );
-    pcDoc->recompute();
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(-hx, hy, -hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, -hy, hz),Base::Vector3f(-hx, hy, hz)));
 
-  } PY_CATCH;
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, hy, hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, -hy, hz)));
 
-  Py_Return;
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, -hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, -hy, -hz)));
+
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(-hx, hy, hz)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(hx, hy, hz)));
+
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        mesh->addFacets(TriaList);
+
+        return new MeshPy(mesh.release());
+    } PY_CATCH;
 }
-static PyObject *                        
-createBox(PyObject *self, PyObject *args)     
+
+static PyObject *
+createPlane(PyObject *self, PyObject *args)
 {
-  float x=1,y=0,z=0;
-  if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
-    return NULL;                                   // NULL triggers exception 
+    float x=1,y=0,z=0;
+    if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
 
-  if(y==0) 
-    y=x;
-  if(z==0) 
-    z=x;
+    if(y==0) 
+        y=x;
 
-  float hx = x/2.0;
-  float hy = y/2.0;
-  float hz = z/2.0;
+    float hx = x/2.0;
+    float hy = y/2.0;
 
-  PY_TRY {
+    PY_TRY {
+        std::vector<MeshCore::MeshGeomFacet> TriaList;
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0),Base::Vector3f(-hx, hy, 0.0)));
+        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0)));
 
-    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-    std::vector<MeshCore::MeshGeomFacet> TriaList;
-    
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, -hy, hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(-hx, -hy, hz)));
-
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, hy, -hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(hx, hy, hz)));
-
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(-hx, hy, -hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, -hy, hz),Base::Vector3f(-hx, hy, hz)));
-
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, hy, hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, -hy, hz)));
-
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, -hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, -hy, -hz)));
-
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(-hx, hy, hz)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(hx, hy, hz)));
-
-    *apcKernel += TriaList;
-
-	  return new MeshPy(apcKernel.release());
-    
-  } PY_CATCH;
-}
-static PyObject *                        
-createPlane(PyObject *self, PyObject *args)     
-{
-
- float x=1,y=0,z=0;
-  if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
-    return NULL;                                   // NULL triggers exception 
-
-  if(y==0) 
-    y=x;
-
-  float hx = x/2.0;
-  float hy = y/2.0;
-
-  PY_TRY {
-
-    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-    std::vector<MeshCore::MeshGeomFacet> TriaList;
-    
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0),Base::Vector3f(-hx, hy, 0.0)));
-    TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, 0.0),Base::Vector3f(hx, -hy, 0.0),Base::Vector3f(hx, hy, 0.0)));
-
-    *apcKernel += TriaList;
-
-	  return new MeshPy(apcKernel.release());
-    
-  } PY_CATCH;
-
-}
-static PyObject *                        
-createSphere(PyObject *self, PyObject *args)     
-{
-
-	Py_Return;    
-
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        mesh->addFacets(TriaList);
+        return new MeshPy(mesh.release());
+    } PY_CATCH;
 }
 
 static PyObject *                        
@@ -324,13 +247,11 @@ PyDoc_STRVAR(loft_doc,
 /* List of functions defined in the module */
 
 struct PyMethodDef Mesh_Import_methods[] = { 
-    {"open"       ,open ,       METH_VARARGS, open_doc},				
+    {"open"       ,open ,       METH_VARARGS, open_doc},
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a Mesh from a file and returns a Mesh object."},
-    {"show"       ,show,        Py_NEWARGS,   "Puts a mesh object in the active document"},
     {"createBox"  ,createBox,   Py_NEWARGS,   "Creates a solid mesh box"},
     {"createPlane",createPlane, Py_NEWARGS,   "Creates a mesh XY plane normal +Z"},
-    {"createSphere" ,createSphere,Py_NEWARGS,   "Creates a solid sphere"},
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };

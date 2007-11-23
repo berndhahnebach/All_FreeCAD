@@ -51,7 +51,7 @@ PROPERTY_SOURCE(Mesh::Feature, App::GeoFeature)
 
 Feature::Feature()
 {
-    ADD_PROPERTY_TYPE(Mesh,(MeshCore::MeshKernel()),0,App::Prop_Output,"The mesh kernel");
+    ADD_PROPERTY_TYPE(Mesh,(new MeshObject()),0,App::Prop_Output,"The mesh kernel");
 }
 
 Feature::~Feature()

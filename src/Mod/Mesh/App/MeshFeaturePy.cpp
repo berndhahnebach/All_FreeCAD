@@ -171,39 +171,43 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 
 PYFUNCIMP_D(MeshFeaturePy,countPoints)
 {
-  return Py_BuildValue("i",_pcFeature->Mesh.getValue().CountPoints()); 
+  return Py_BuildValue("i",_pcFeature->Mesh.getValue().countPoints()); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,countFacets)
 {
-  return Py_BuildValue("i",_pcFeature->Mesh.getValue().CountFacets()); 
+  return Py_BuildValue("i",_pcFeature->Mesh.getValue().countFacets()); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,hasNonUnifomOrientedFacets)
 {
-  MeshCore::MeshEvalOrientation cMeshEval( _pcFeature->Mesh.getValue() );
-  bool ok = cMeshEval.Evaluate();
-  return Py_BuildValue("O", (ok ? Py_False : Py_True)); 
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    bool ok = _pcFeature->Mesh.getValue().countNonUnifomOrientedFacets() > 0;
+    return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,countNonUnifomOrientedFacets)
 {
-  MeshCore::MeshEvalOrientation cMeshEval( _pcFeature->Mesh.getValue() );
-  std::vector<unsigned long> inds = cMeshEval.GetIndices();
-  return Py_BuildValue("i", inds.size()); 
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    unsigned long count = _pcFeature->Mesh.getValue().countNonUnifomOrientedFacets();
+    return Py_BuildValue("k", count); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,isSolid)
 {
-  MeshCore::MeshEvalSolid cMeshEval( _pcFeature->Mesh.getValue() );
-  bool ok = cMeshEval.Evaluate();
-  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    bool ok = _pcFeature->Mesh.getValue().isSolid();
+    return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,hasNonManifolds)
 {
-  MeshCore::MeshEvalTopology cMeshEval( _pcFeature->Mesh.getValue() );
-  bool ok = !cMeshEval.Evaluate();
-  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    bool ok = _pcFeature->Mesh.getValue().hasNonManifolds();
+    return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 

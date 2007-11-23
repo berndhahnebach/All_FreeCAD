@@ -73,10 +73,10 @@ App::DocumentObjectExecReturn *SetOperations::execute(void)
     Mesh::Feature *mesh2  = dynamic_cast<Mesh::Feature*>(Source2.getValue());
 
     if ((mesh1 != NULL) && (mesh2 != NULL)) {
-        const MeshCore::MeshKernel& meshKernel1 = mesh1->Mesh.getValue();
-        const MeshCore::MeshKernel& meshKernel2 = mesh2->Mesh.getValue();
+        const MeshObject& meshKernel1 = mesh1->Mesh.getValue();
+        const MeshObject& meshKernel2 = mesh2->Mesh.getValue();
 
-        MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(); // Result Meshkernel
+        MeshObject *pcKernel = new MeshObject(); // Result Meshkernel
 
         MeshCore::SetOperations::OperationType type;
         string ot(OperationType.getValue());
@@ -94,7 +94,8 @@ App::DocumentObjectExecReturn *SetOperations::execute(void)
             throw new Base::Exception("Operation type must either be 'union' or 'intersection'"
                                       " or 'difference' or 'inner' or 'outer'");
     
-        MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
+        MeshCore::SetOperations setOp(meshKernel1.getKernel(), meshKernel2.getKernel(), 
+            pcKernel->getKernel(), type, 1.0e-5);
         setOp.Do();
         Mesh.setValue(pcKernel);
     }
