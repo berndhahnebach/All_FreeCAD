@@ -57,55 +57,57 @@ PyDoc_STRVAR(module_doc,
 
 /* Python entry */
 extern "C" {
-void AppMeshExport initMesh() {
+void AppMeshExport initMesh() 
+{
+    Base::Console().Log("Mod: Loading Mesh module... done\n");
 
-  Base::Console().Log("Mod: Loading Mesh module... done\n");
+    PyObject* meshModule = Py_InitModule3("Mesh", Mesh_Import_methods, module_doc);   /* mod name, table ptr */
 
-  PyObject* meshModule = Py_InitModule3("Mesh", Mesh_Import_methods, module_doc);   /* mod name, table ptr */
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
+    union PyType_Object pyMeshType = {&Mesh::MeshPy::Type};
+    // 'mesh' is a method, hence it's lowercase
+    PyModule_AddObject(meshModule, "mesh", pyMeshType.o);
+    if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
+    union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
+    PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType.o);
 
-  // NOTE: To finish the initialization of our own type objects we must
-  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-  // This function is responsible for adding inherited slots from a type's base class.
-  if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
-  union PyType_Object pyMeshType = {&Mesh::MeshPy::Type};
-  // 'mesh' is a method, hence it's lowercase
-  PyModule_AddObject(meshModule, "mesh", pyMeshType.o);
-  if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
-  union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
-  PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType.o);
+    Mesh::PropertyNormalList    ::init();
+    Mesh::PropertyCurvatureList ::init();
+    Mesh::PropertyMeshKernel    ::init();
 
-  Mesh::PropertyNormalList    ::init();
-  Mesh::PropertyCurvatureList ::init();
-  Mesh::PropertyMeshKernel    ::init();
+    Mesh::MeshObject            ::init();
 
-  Mesh::Feature               ::init();
-  Mesh::Import                ::init();
-  Mesh::Export                ::init();
-  Mesh::Transform             ::init();
-  Mesh::TransformDemolding    ::init();
-  Mesh::Curvature             ::init();
-  Mesh::SegmentByMesh         ::init();
-  Mesh::SetOperations         ::init();
-  Mesh::FixDefects            ::init();
-  Mesh::HarmonizeNormals      ::init();
-  Mesh::FlipNormals           ::init();
-  Mesh::FixNonManifolds       ::init();
-  Mesh::FixDuplicatedFaces    ::init();
-  Mesh::FixDuplicatedPoints   ::init();
-  Mesh::FixDegenerations      ::init();
-  Mesh::FixDeformations       ::init();
-  Mesh::FixIndices            ::init();
-  Mesh::FillHoles             ::init();
-  Mesh::RemoveComponents      ::init();
+    Mesh::Feature               ::init();
+    Mesh::Import                ::init();
+    Mesh::Export                ::init();
+    Mesh::Transform             ::init();
+    Mesh::TransformDemolding    ::init();
+    Mesh::Curvature             ::init();
+    Mesh::SegmentByMesh         ::init();
+    Mesh::SetOperations         ::init();
+    Mesh::FixDefects            ::init();
+    Mesh::HarmonizeNormals      ::init();
+    Mesh::FlipNormals           ::init();
+    Mesh::FixNonManifolds       ::init();
+    Mesh::FixDuplicatedFaces    ::init();
+    Mesh::FixDuplicatedPoints   ::init();
+    Mesh::FixDegenerations      ::init();
+    Mesh::FixDeformations       ::init();
+    Mesh::FixIndices            ::init();
+    Mesh::FillHoles             ::init();
+    Mesh::RemoveComponents      ::init();
 
-  Mesh::Sphere                ::init();
-  Mesh::Ellipsoid             ::init();
-  Mesh::Cylinder              ::init();
-  Mesh::Cone                  ::init();
-  Mesh::Torus                 ::init();
-  Mesh::Cube                  ::init();
+    Mesh::Sphere                ::init();
+    Mesh::Ellipsoid             ::init();
+    Mesh::Cylinder              ::init();
+    Mesh::Cone                  ::init();
+    Mesh::Torus                 ::init();
+    Mesh::Cube                  ::init();
 
-  return;
+    return;
 }
 
 

@@ -53,11 +53,9 @@ short Import::mustExecute(void) const
 
 App::DocumentObjectExecReturn *Import::execute(void)
 {
-    std::auto_ptr<MeshCore::MeshKernel> apcKernel(new MeshCore::MeshKernel());
-    MeshInput aReader( *apcKernel );
-      
-    aReader.LoadAny(FileName.getValue());
-    // Mesh is okay
+    std::auto_ptr<MeshObject> apcKernel(new MeshObject());
+    if (!apcKernel->load(FileName.getValue()))
+        throw Base::Exception("Unsupported file extension for mesh");
     Mesh.setValue(apcKernel.release());
 
     return App::DocumentObject::StdReturn;

@@ -46,6 +46,8 @@
 
 using namespace Mesh;
 
+TYPESYSTEM_SOURCE(Mesh::MeshObject, Data::ComplexGeoData);
+
 MeshObject::MeshObject()
 {
 }
@@ -87,6 +89,14 @@ std::string MeshObject::representation() const
     return str.str();
 }
 
+std::string MeshObject::topologyInfo() const
+{
+    std::stringstream str;
+    MeshCore::MeshInfo info(_kernel);
+    info.TopologyInformation(str);
+    return str.str();
+}
+
 unsigned long MeshObject::countPoints() const
 {
     return _kernel.CountPoints();
@@ -122,26 +132,28 @@ MeshCore::MeshPointIterator MeshObject::PointIterator() const
     return it;
 }
 
-void MeshObject::save(const char* file) const
+bool MeshObject::save(const char* file) const
 {
     MeshCore::MeshOutput aWriter(_kernel);
-    aWriter.SaveAny(file);
+    return aWriter.SaveAny(file);
 }
 
-void MeshObject::save(std::ostream& out) const
+bool MeshObject::save(std::ostream& out) const
 {
     _kernel.Write(out);
+    return true;
 }
 
-void MeshObject::load(const char* file)
+bool MeshObject::load(const char* file)
 {
     MeshCore::MeshInput aReader(_kernel);
-    aReader.LoadAny(file);
+    return aReader.LoadAny(file);
 }
 
-void MeshObject::load(std::istream& in)
+bool MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
+    return true;
 }
 
 void MeshObject::addFacet(const MeshCore::MeshGeomFacet& facet)
@@ -364,7 +376,7 @@ void MeshObject::splitFacet(unsigned long facet, const Base::Vector3f& v1, const
     topalg.SplitFacet(facet, v1, v2);
 }
 
-void MeshObject::swapEdges(unsigned long facet, unsigned long neighbour)
+void MeshObject::swapEdge(unsigned long facet, unsigned long neighbour)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
     topalg.SwapEdge(facet, neighbour);

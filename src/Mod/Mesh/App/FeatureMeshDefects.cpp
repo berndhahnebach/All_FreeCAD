@@ -68,14 +68,17 @@ HarmonizeNormals::~HarmonizeNormals()
 
 App::DocumentObjectExecReturn *HarmonizeNormals::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->harmonizeNormals();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshFixOrientation eval(*kernel);
-  eval.Fixup();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -92,14 +95,17 @@ FlipNormals::~FlipNormals()
 
 App::DocumentObjectExecReturn *FlipNormals::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->flipNormals();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
-  cTopAlg.FlipNormals();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -116,7 +122,17 @@ FixNonManifolds::~FixNonManifolds()
 
 App::DocumentObjectExecReturn *FixNonManifolds::execute(void)
 {
-  return App::DocumentObject::StdReturn;
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->removeNonManifolds();
+        this->Mesh.setValue(mesh.release());
+    }
+
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -133,14 +149,17 @@ FixDuplicatedFaces::~FixDuplicatedFaces()
 
 App::DocumentObjectExecReturn *FixDuplicatedFaces::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->removeDuplicatedFacets();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshFixDuplicateFacets eval(*kernel);
-  eval.Fixup();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -157,14 +176,17 @@ FixDuplicatedPoints::~FixDuplicatedPoints()
 
 App::DocumentObjectExecReturn *FixDuplicatedPoints::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->removeDuplicatedPoints();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshFixDuplicatePoints eval(*kernel);
-  eval.Fixup();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -181,14 +203,17 @@ FixDegenerations::~FixDegenerations()
 
 App::DocumentObjectExecReturn *FixDegenerations::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->validateDegenerations();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshFixDegeneratedFacets eval(*kernel);
-  eval.Fixup();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -206,14 +231,17 @@ FixDeformations::~FixDeformations()
 
 App::DocumentObjectExecReturn *FixDeformations::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->validateDeformations(MaxAngle.getValue());
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshFixDeformedFacets eval(*kernel, MaxAngle.getValue());
-  eval.Fixup();
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -230,36 +258,17 @@ FixIndices::~FixIndices()
 
 App::DocumentObjectExecReturn *FixIndices::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->validateIndices();
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshEvalNeighbourhood nb(*kernel);
-  if ( !nb.Evaluate() ) {
-    MeshCore::MeshFixNeighbourhood fix(*kernel);
-    fix.Fixup();
-  }
-
-  MeshCore::MeshEvalRangeFacet rf(*kernel);
-  if ( !rf.Evaluate() ) {
-    MeshCore::MeshFixRangeFacet fix(*kernel);
-    fix.Fixup();
-  }
-
-  MeshCore::MeshEvalRangePoint rp(*kernel);
-  if ( !rp.Evaluate() ) {
-    MeshCore::MeshFixRangePoint fix(*kernel);
-    fix.Fixup();
-  }
-
-  MeshCore::MeshEvalCorruptedFacets cf(*kernel);
-  if ( !nb.Evaluate() ) {
-    MeshCore::MeshFixCorruptedFacets fix(*kernel);
-    fix.Fixup();
-  }
-
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -269,6 +278,7 @@ PROPERTY_SOURCE(Mesh::FillHoles, Mesh::FixDefects)
 FillHoles::FillHoles()
 {
   ADD_PROPERTY(FillupHolesOfLength,(0));
+  ADD_PROPERTY(MaxArea,(0.1f));
 }
 
 FillHoles::~FillHoles()
@@ -277,15 +287,17 @@ FillHoles::~FillHoles()
 
 App::DocumentObjectExecReturn *FillHoles::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->fillupHoles(FillupHolesOfLength.getValue(), MaxArea.getValue());
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
-  cTopAlg.FillupHoles(FillupHolesOfLength.getValue());
-
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
 // ----------------------------------------------------------------------
@@ -303,13 +315,15 @@ RemoveComponents::~RemoveComponents()
 
 App::DocumentObjectExecReturn *RemoveComponents::execute(void)
 {
-  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
+    App::DocumentObject* link = Source.getValue();
+    App::Property* prop = link->getPropertyByName("Mesh");
+    if (prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
+        std::auto_ptr<MeshObject> mesh(new MeshObject);
+        *mesh = kernel->getValue();
+        mesh->removeComponents(RemoveCompOfSize.getValue());
+        this->Mesh.setValue(mesh.release());
+    }
 
-  MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
-  cTopAlg.RemoveComponents(RemoveCompOfSize.getValue());
-
-  Mesh.setValue(kernel);
-
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }

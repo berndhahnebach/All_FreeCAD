@@ -77,10 +77,10 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
-        Mesh.setValue( mesh->getMesh() );
+        Mesh.setValue(mesh->getMesh());
         Py_DECREF(args);
         Py_DECREF(mesh);
         Py_DECREF(result);
@@ -147,7 +147,7 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
         Mesh.setValue( mesh->getMesh() );
@@ -223,7 +223,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
         Mesh.setValue( mesh->getMesh() );
@@ -302,7 +302,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
         Mesh.setValue( mesh->getMesh() );
@@ -372,7 +372,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
         Mesh.setValue( mesh->getMesh() );
@@ -442,7 +442,7 @@ App::DocumentObjectExecReturn *Cube::execute(void)
 
       // We know it's a list of facets
       if ( result ) {
-        MeshPy* mesh = new MeshPy;
+        MeshPy* mesh = new MeshPy(new MeshObject);
         PyObject* args = Py_BuildValue("(O)",result);
         mesh->addFacets(args);
         Mesh.setValue( mesh->getMesh() );

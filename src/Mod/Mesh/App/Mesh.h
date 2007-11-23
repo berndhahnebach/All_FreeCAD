@@ -50,6 +50,8 @@ namespace Mesh
  */
 class AppMeshExport MeshObject : public Data::ComplexGeoData
 {
+    TYPESYSTEM_HEADER();
+
 public:
     MeshObject();
     MeshObject(const MeshCore::MeshKernel& Kernel);
@@ -62,6 +64,7 @@ public:
     /** @name Querying */
     //@{
     std::string representation() const;
+    std::string topologyInfo() const;
     unsigned long countPoints() const;
     unsigned long countFacets() const;
     unsigned long countEdges () const;
@@ -78,10 +81,10 @@ public:
 
     /** @name I/O */
     //@{
-    void save(const char* file) const;
-    void save(std::ostream&) const;
-    void load(const char* file);
-    void load(std::istream&);
+    bool save(const char* file) const;
+    bool save(std::ostream&) const;
+    bool load(const char* file);
+    bool load(std::istream&);
     //@}
 
     /** @name Manipulation */
@@ -116,7 +119,7 @@ public:
     void splitEdges();
     void splitEdge(unsigned long, unsigned long, const Base::Vector3f&);
     void splitFacet(unsigned long, const Base::Vector3f&, const Base::Vector3f&);
-    void swapEdges(unsigned long, unsigned long);
+    void swapEdge(unsigned long, unsigned long);
     void collapseEdge(unsigned long, unsigned long);
     void collapseFacet(unsigned long);
     void collapseFacets(const std::vector<unsigned long>&);

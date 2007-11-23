@@ -68,7 +68,7 @@ App::DocumentObjectExecReturn *Curvature::execute(void)
     }
  
     // get all points
-    const MeshKernel& rMesh = pcFeat->Mesh.getValue();
+    const MeshKernel& rMesh = pcFeat->Mesh.getValue().getKernel();
     std::vector< Wm4::Vector3<float> > aPnts;
     MeshPointIterator cPIt( rMesh );
     for ( cPIt.Init(); cPIt.More(); cPIt.Next() ) {

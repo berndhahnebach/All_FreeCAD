@@ -177,7 +177,7 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
         Mesh::Feature* object = static_cast<const App::PropertyLink*>(prop)->getValue<Mesh::Feature*>();
         this->pcLinkRoot->removeAllChildren();
         if (object) {
-            const MeshCore::MeshKernel& kernel = object->Mesh.getValue();
+            const MeshCore::MeshKernel& kernel = object->Mesh.getValue().getKernel();
             pcColorMat->diffuseColor.setNum((int)kernel.CountPoints());
             pcColorMat->transparency.setNum((int)kernel.CountPoints());
 
