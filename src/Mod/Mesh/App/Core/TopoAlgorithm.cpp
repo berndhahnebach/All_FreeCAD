@@ -1120,7 +1120,6 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea)
     // insert new points and faces into the mesh structure
     _rclMesh._aclPointArray.insert(_rclMesh._aclPointArray.end(), newPoints.begin(), newPoints.end());
     _rclMesh.AddFacets(newFacets);
-    _rclMesh.RecalcBoundBox();
 }
 
 void MeshTopoAlgorithm::RemoveComponents(unsigned long count)

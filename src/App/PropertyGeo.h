@@ -28,6 +28,7 @@
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
+#include <Base/BoundBox.h>
 #include <Base/Placement.h>
 
 #include "Property.h"
@@ -259,12 +260,11 @@ private:
 /** the general Link Poperty
  *  Main Purpose of this property is to Link Objects and Feautures in a document.
  */
-class AppExport PropertyPlacementLink: public PropertyLink
+class AppExport PropertyPlacementLink : public PropertyLink
 {
     TYPESYSTEM_HEADER();
 
 public:
-
 
     /**
      * A constructor.
@@ -278,14 +278,26 @@ public:
      */
     ~PropertyPlacementLink();
 
-
     /** This method returns the linked DocumentObject
      */
     App::Placement * getPlacementObject(void) const;
 
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
+};
 
+/** The base class for all complex data properties.
+ * @author Werner Mayer
+ */
+class AppExport PropertyComplexGeoData : public App::Property
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyComplexGeoData();
+    ~PropertyComplexGeoData();
+
+    virtual Base::BoundBox3f getBoundingBox() const = 0;
 };
 
 } // namespace App

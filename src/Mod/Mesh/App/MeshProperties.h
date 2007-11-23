@@ -125,7 +125,7 @@ private:
 /** The mesh kernel property class.
  * @author Werner Mayer
  */
-class AppMeshExport PropertyMeshKernel : public App::Property
+class AppMeshExport PropertyMeshKernel : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -142,6 +142,7 @@ public:
     void setValue( MeshCore::MeshKernel* m);
     /// get the Kernel (only const possible!)
     const MeshCore::MeshKernel &getValue(void) const;
+    Base::BoundBox3f getBoundingBox() const;
     virtual unsigned int getMemSize (void) const;
     //@}
 
