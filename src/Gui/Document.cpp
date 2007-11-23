@@ -294,7 +294,7 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 void Document::slotNewObject(App::DocumentObject& Obj)
 {
-    Base::Console().Log("Document::slotNewObject() called\n");
+    //Base::Console().Log("Document::slotNewObject() called\n");
     std::string cName = Obj.getViewProviderName();
     if (cName.empty()) {
         // handle document object with no view provider specified
@@ -351,7 +351,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
 {
     std::list<Gui::BaseView*>::iterator VIt;
     setModified(true);
-    Base::Console().Log("Document::slotDeleteObject() called\n");
+    //Base::Console().Log("Document::slotDeleteObject() called\n");
   
     // cycling to all views of the document
     ViewProvider* viewProvider = getViewProvider(&Obj);
@@ -373,7 +373,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
 
 void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
 {
-    Base::Console().Log("Document::slotChangedObject() called\n");
+    //Base::Console().Log("Document::slotChangedObject() called\n");
     ViewProvider* viewProvider = getViewProvider(&Obj);
     if (viewProvider) {
         try {
