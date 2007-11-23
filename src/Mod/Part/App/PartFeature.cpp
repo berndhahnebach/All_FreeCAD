@@ -27,6 +27,8 @@
 # include <sstream>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <BRepBndLib.hxx>
+# include <Bnd_Box.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
@@ -70,7 +72,7 @@
 
 using namespace Part;
 
-TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::Property);
+TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::PropertyComplexGeoData);
 
 PropertyPartShape::PropertyPartShape()
 {
@@ -91,6 +93,24 @@ void PropertyPartShape::setValue(TopoDS_Shape m)
 TopoDS_Shape PropertyPartShape::getValue(void)const 
 {
     return _Shape;
+}
+
+Base::BoundBox3f PropertyPartShape::getBoundingBox() const
+{
+    Bnd_Box bounds;
+    BRepBndLib::Add(_Shape, bounds);
+    bounds.SetGap(0.0);
+    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+
+    Base::BoundBox3f box;
+    box.MinX = (float)xMin;
+    box.MaxX = (float)xMax;
+    box.MinY = (float)yMin;
+    box.MaxY = (float)yMax;
+    box.MinZ = (float)zMin;
+    box.MaxZ = (float)zMax;
+    return box;
 }
 
 PyObject *PropertyPartShape::getPyObject(void)

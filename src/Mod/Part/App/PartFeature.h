@@ -28,6 +28,7 @@
 
 #include "TopoShape.h"
 #include <App/Feature.h>
+#include <App/PropertyGeo.h>
 
 class PyObjectBase;
 class FeaturePy;
@@ -44,7 +45,7 @@ class PartFeaturePy;
 
 /** The part shape property
  */
-class AppPartExport PropertyPartShape : public App::Property
+class AppPartExport PropertyPartShape : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -58,6 +59,7 @@ public:
     void setValue( TopoDS_Shape );
     /// get the part shape
     TopoDS_Shape getValue(void) const;
+    Base::BoundBox3f getBoundingBox() const;
     //@}
 
     /** @name Python interface */

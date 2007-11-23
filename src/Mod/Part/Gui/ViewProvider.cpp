@@ -262,37 +262,37 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
 
 void ViewProviderPart::updateData(const App::Property* prop)
 {
-    if (prop->getTypeId() != Part::PropertyPartShape::getClassTypeId())
-        return;
+    Gui::ViewProviderGeometryObject::updateData(prop);
+    if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
+        if (cShape.IsNull())
+            return;
 
-    TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
-    if (cShape.IsNull())
-        return;
-
-    // getting current setting values...
-    fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-    bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-    bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+        // getting current setting values...
+        fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
+        bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+        bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
 
-    // clear anchor nodes
-    EdgeRoot->removeAllChildren();
-    FaceRoot->removeAllChildren();
-    VertexRoot->removeAllChildren();
+        // clear anchor nodes
+        EdgeRoot->removeAllChildren();
+        FaceRoot->removeAllChildren();
+        VertexRoot->removeAllChildren();
 
-    try {
-        // creating the mesh on the data structure
-        BRepMesh::Mesh(cShape,fMeshDeviation);
-        //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
-        //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
-        computeFaces   (FaceRoot,cShape);
-        computeEdges   (EdgeRoot,cShape);
-        computeVertices(VertexRoot,cShape);
-        BRepTools::Clean(cShape); // remove triangulation
-    }
-    catch (...){
-        Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
-                              pcObject->getNameInDocument());
+        try {
+            // creating the mesh on the data structure
+            BRepMesh::Mesh(cShape,fMeshDeviation);
+            //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
+            //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
+            computeFaces   (FaceRoot,cShape);
+            computeEdges   (EdgeRoot,cShape);
+            computeVertices(VertexRoot,cShape);
+            BRepTools::Clean(cShape); // remove triangulation
+        }
+        catch (...){
+            Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
+                                  pcObject->getNameInDocument());
+        }
     }
 }
 

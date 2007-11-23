@@ -64,151 +64,148 @@ App::PropertyFloatConstraint::Constraints ViewProviderPoints::floatRange = {1.0f
 
 ViewProviderPoints::ViewProviderPoints() : _bEdit(false)
 {
-  ADD_PROPERTY(PointSize,(2.0f));
-  PointSize.setConstraints(&floatRange);
+    ADD_PROPERTY(PointSize,(2.0f));
+    PointSize.setConstraints(&floatRange);
 
-  pcPointsCoord = new SoCoordinate3();
-  pcPointsCoord->ref();
-  pcPoints = new SoPointSet();
-  pcPoints->ref();
-  pcPointsNormal = new SoNormal();  
-  pcPointsNormal->ref();
-  pcColorMat = new SoMaterial;
-  pcColorMat->ref();
+    pcPointsCoord = new SoCoordinate3();
+    pcPointsCoord->ref();
+    pcPoints = new SoPointSet();
+    pcPoints->ref();
+    pcPointsNormal = new SoNormal();  
+    pcPointsNormal->ref();
+    pcColorMat = new SoMaterial;
+    pcColorMat->ref();
 
-  pcPointStyle = new SoDrawStyle();
-  pcPointStyle->ref();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = PointSize.getValue();
+    pcPointStyle = new SoDrawStyle();
+    pcPointStyle->ref();
+    pcPointStyle->style = SoDrawStyle::POINTS;
+    pcPointStyle->pointSize = PointSize.getValue();
 }
 
 ViewProviderPoints::~ViewProviderPoints()
 {
-  pcPointsCoord->unref();
-  pcPoints->unref();
-  pcPointsNormal->unref();
-  pcColorMat->unref();
-  pcPointStyle->unref();
+    pcPointsCoord->unref();
+    pcPoints->unref();
+    pcPointsNormal->unref();
+    pcColorMat->unref();
+    pcPointStyle->unref();
 }
 
 void ViewProviderPoints::onChanged(const App::Property* prop)
 {
-  if ( prop == &PointSize ) {
-    pcPointStyle->pointSize = PointSize.getValue();
-  } else {
-    ViewProviderGeometryObject::onChanged(prop);
-  }
+    if ( prop == &PointSize ) {
+        pcPointStyle->pointSize = PointSize.getValue();
+    }
+    else {
+        ViewProviderGeometryObject::onChanged(prop);
+    }
 }
 
 void ViewProviderPoints::createPoints(const std::vector<Base::Vector3f>& cPts)
 {
-  // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
-  pcPointsCoord->enableNotify(false);
-  pcPointsCoord->point.deleteValues(0);
-  pcPointsCoord->point.setNum(cPts.size());
+    // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
+    pcPointsCoord->enableNotify(false);
+    pcPointsCoord->point.deleteValues(0);
+    pcPointsCoord->point.setNum(cPts.size());
 
-  // get all points
-  int idx=0;
-  for (PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++)
-  {
-    pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
-  }
+    // get all points
+    int idx=0;
+    for (PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++) {
+        pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
+    }
 
-  pcPoints->numPoints = cPts.size();
-  pcPointsCoord->enableNotify(true);
-  pcPointsCoord->touch();
+    pcPoints->numPoints = cPts.size();
+    pcPointsCoord->enableNotify(true);
+    pcPointsCoord->touch();
 }
 
 void ViewProviderPoints::setVertexColorMode(App::PropertyColorList* pcProperty)
 {
-  const std::vector<App::Color>& val = pcProperty->getValues();
-  unsigned long i=0;
+    const std::vector<App::Color>& val = pcProperty->getValues();
+    unsigned long i=0;
 
-  pcColorMat->enableNotify(false);
-  pcColorMat->diffuseColor.deleteValues(0);
-  pcColorMat->diffuseColor.setNum(val.size());
-  
-  for ( std::vector<App::Color>::const_iterator it = val.begin(); it != val.end(); ++it )
-  {
-    pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
-  }
+    pcColorMat->enableNotify(false);
+    pcColorMat->diffuseColor.deleteValues(0);
+    pcColorMat->diffuseColor.setNum(val.size());
 
-  pcColorMat->enableNotify(true);
-  pcColorMat->touch();
+    for ( std::vector<App::Color>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
+    }
+
+    pcColorMat->enableNotify(true);
+    pcColorMat->touch();
 }
 
 void ViewProviderPoints::setVertexGreyvalueMode(Points::PropertyGreyValueList* pcProperty)
 {
-  const std::vector<float>& val = pcProperty->getValues();
-  unsigned long i=0;
+    const std::vector<float>& val = pcProperty->getValues();
+    unsigned long i=0;
 
-  pcColorMat->enableNotify(false);
-  pcColorMat->diffuseColor.deleteValues(0);
-  pcColorMat->diffuseColor.setNum(val.size());
+    pcColorMat->enableNotify(false);
+    pcColorMat->diffuseColor.deleteValues(0);
+    pcColorMat->diffuseColor.setNum(val.size());
 
-  for ( std::vector<float>::const_iterator it = val.begin(); it != val.end(); ++it )
-  {
-    pcColorMat->diffuseColor.set1Value(i++, SbColor(*it, *it, *it));
-  }
+    for ( std::vector<float>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcColorMat->diffuseColor.set1Value(i++, SbColor(*it, *it, *it));
+    }
 
-  pcColorMat->enableNotify(true);
-  pcColorMat->touch();
+    pcColorMat->enableNotify(true);
+    pcColorMat->touch();
 }
 
 void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcProperty)
 {
-  const std::vector<Base::Vector3f>& val = pcProperty->getValues();
-  unsigned long i=0;
+    const std::vector<Base::Vector3f>& val = pcProperty->getValues();
+    unsigned long i=0;
 
-  pcPointsNormal->enableNotify(false);
-  pcPointsNormal->vector.deleteValues(0);
-  pcPointsNormal->vector.setNum(val.size());
+    pcPointsNormal->enableNotify(false);
+    pcPointsNormal->vector.deleteValues(0);
+    pcPointsNormal->vector.setNum(val.size());
 
-  for ( std::vector<Base::Vector3f>::const_iterator it = val.begin(); it != val.end(); ++it )
-  {
-    pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
-  }
+    for ( std::vector<Base::Vector3f>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
+    }
 
-  pcPointsNormal->enableNotify(true);
-  pcPointsNormal->touch();
+    pcPointsNormal->enableNotify(true);
+    pcPointsNormal->touch();
 }
 
 void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 {
-  // call parent's attach to define display modes
-  ViewProviderGeometryObject::attach(pcObj);
+    // call parent's attach to define display modes
+    ViewProviderGeometryObject::attach(pcObj);
 
-  SoGroup* pcPointRoot = new SoGroup();
-  SoGroup* pcPointShadedRoot = new SoGroup();
-  SoGroup* pcColorShadedRoot = new SoGroup();
+    SoGroup* pcPointRoot = new SoGroup();
+    SoGroup* pcPointShadedRoot = new SoGroup();
+    SoGroup* pcColorShadedRoot = new SoGroup();
 
-  // Hilight for selection
-  pcHighlight->addChild(pcPointsCoord);
-  pcHighlight->addChild(pcPoints);
+    // Hilight for selection
+    pcHighlight->addChild(pcPointsCoord);
+    pcHighlight->addChild(pcPoints);
 
-  // points part ---------------------------------------------
-  pcPointRoot->addChild(pcPointStyle);
-  pcPointRoot->addChild(pcShapeMaterial);
-  pcPointRoot->addChild(pcHighlight);
+    // points part ---------------------------------------------
+    pcPointRoot->addChild(pcPointStyle);
+    pcPointRoot->addChild(pcShapeMaterial);
+    pcPointRoot->addChild(pcHighlight);
 
-  // points shaded ---------------------------------------------
-  pcPointShadedRoot->addChild(pcPointStyle);
-  pcPointShadedRoot->addChild(pcShapeMaterial);
-  pcPointShadedRoot->addChild(pcPointsNormal);
-  pcPointShadedRoot->addChild(pcHighlight);
+    // points shaded ---------------------------------------------
+    pcPointShadedRoot->addChild(pcPointStyle);
+    pcPointShadedRoot->addChild(pcShapeMaterial);
+    pcPointShadedRoot->addChild(pcPointsNormal);
+    pcPointShadedRoot->addChild(pcHighlight);
 
-  // color shaded  ------------------------------------------
-  pcColorShadedRoot->addChild(pcPointStyle);
-  SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-  pcColorShadedRoot->addChild(pcColorMat);
-  pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcHighlight);
+    // color shaded  ------------------------------------------
+    pcColorShadedRoot->addChild(pcPointStyle);
+    SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
+    pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+    pcColorShadedRoot->addChild(pcColorMat);
+    pcColorShadedRoot->addChild(pcMatBinding);
+    pcColorShadedRoot->addChild(pcHighlight);
 
-  // putting all together with a switch
-  addDisplayMaskMode(pcPointRoot, "Point");
-  addDisplayMaskMode(pcColorShadedRoot, "Color");
-  addDisplayMaskMode(pcPointShadedRoot, "Shaded");
+    // putting all together with a switch
+    addDisplayMaskMode(pcPointRoot, "Point");
+    addDisplayMaskMode(pcColorShadedRoot, "Color");
+    addDisplayMaskMode(pcPointShadedRoot, "Shaded");
 }
 
 void ViewProviderPoints::setDisplayMode(const char* ModeName)
@@ -325,6 +322,7 @@ std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const
 
 void ViewProviderPoints::updateData(const App::Property* prop)
 {
+    Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Points::PropertyPointKernel::getClassTypeId()) {
         createPoints(static_cast<const Points::PropertyPointKernel*>(prop)->getValue());
 
@@ -335,7 +333,7 @@ void ViewProviderPoints::updateData(const App::Property* prop)
 
 QIcon ViewProviderPoints::getIcon() const
 {
-  const char * Points_Feature_xpm[] = {
+  static const char * const Points_Feature_xpm[] = {
     "16 16 4 1",
     ".	c none",
     "s	c #000000",

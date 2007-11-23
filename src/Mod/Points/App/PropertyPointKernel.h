@@ -31,7 +31,7 @@ namespace Points
 
 /** The point kernel property
  */
-class PointsAppExport PropertyPointKernel : public App::Property
+class PointsAppExport PropertyPointKernel : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -45,6 +45,7 @@ public:
     void setValue( const PointKernel& m);
     /// get the points (only const possible!)
     const PointKernel &getValue(void) const;
+    Base::BoundBox3f getBoundingBox() const;
     //@}
 
     /** @name Python interface */

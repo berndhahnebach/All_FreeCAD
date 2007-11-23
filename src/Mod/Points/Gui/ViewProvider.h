@@ -57,52 +57,52 @@ namespace PointsGui {
  */
 class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderGeometryObject
 {
-  PROPERTY_HEADER(PointsGui::ViewProviderPoints);
+    PROPERTY_HEADER(PointsGui::ViewProviderPoints);
 
 public:
-  ViewProviderPoints();
-  virtual ~ViewProviderPoints();
+    ViewProviderPoints();
+    virtual ~ViewProviderPoints();
 
-  App::PropertyFloatConstraint PointSize;
+    App::PropertyFloatConstraint PointSize;
 
-  /** 
-   * Extracts the point data from the feature \a pcFeature and creates
-   * an Inventor node \a SoNode with these data. 
-   */
-  virtual void attach(App::DocumentObject *);
-  /// set the viewing mode
-  virtual void setDisplayMode(const char* ModeName);
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Update the point representation
-  virtual void updateData(const App::Property*);
-  virtual QIcon getIcon() const;
+    /** 
+     * Extracts the point data from the feature \a pcFeature and creates
+     * an Inventor node \a SoNode with these data. 
+     */
+    virtual void attach(App::DocumentObject *);
+    /// set the viewing mode
+    virtual void setDisplayMode(const char* ModeName);
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
+    /// Update the point representation
+    virtual void updateData(const App::Property*);
+    virtual QIcon getIcon() const;
 
-  /// Sets the edit mnode
-  void setEdit(void);
-  /// Unsets the edit mode
-  void unsetEdit(void);
+    /// Sets the edit mnode
+    void setEdit(void);
+    /// Unsets the edit mode
+    void unsetEdit(void);
 
-  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-
-protected:
-  void onChanged(const App::Property* prop);
-  void createPoints(const std::vector<Base::Vector3f>& pnts);
-  void setVertexColorMode(App::PropertyColorList*);
-  void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
-  void setVertexNormalMode(Points::PropertyNormalList*);
-  virtual void cut( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
+    bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
 
 protected:
-  SoCoordinate3     *pcPointsCoord;
-  SoPointSet        *pcPoints;
-  SoMaterial        *pcColorMat;
-  SoNormal          *pcPointsNormal;
-  SoDrawStyle       *pcPointStyle;
+    void onChanged(const App::Property* prop);
+    void createPoints(const std::vector<Base::Vector3f>& pnts);
+    void setVertexColorMode(App::PropertyColorList*);
+    void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
+    void setVertexNormalMode(Points::PropertyNormalList*);
+    virtual void cut( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
+
+protected:
+    SoCoordinate3     *pcPointsCoord;
+    SoPointSet        *pcPoints;
+    SoMaterial        *pcColorMat;
+    SoNormal          *pcPointsNormal;
+    SoDrawStyle       *pcPointStyle;
 
 private:
-  static App::PropertyFloatConstraint::Constraints floatRange;
-  bool _bEdit;
+    static App::PropertyFloatConstraint::Constraints floatRange;
+    bool _bEdit;
 };
 
 } // namespace PointsGui
