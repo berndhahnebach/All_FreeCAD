@@ -293,6 +293,7 @@ public:
 //  };
 
     void setInvalid() { 
+        // first bit is not set, i.e. invalid
         StatusBits.reset(0);
         _pcTwinPointer = 0;
     }
@@ -301,8 +302,9 @@ public:
         return StatusBits.test(0);
     }
 
-    void setConst() { 
-        StatusBits.reset(1);
+    void setConst() {
+        // second bit is set, i.e. immutable
+        StatusBits.set(1);
     }
 
     bool isConst(void){

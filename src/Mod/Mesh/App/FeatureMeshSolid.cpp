@@ -182,8 +182,8 @@ PROPERTY_SOURCE(Mesh::Cylinder, Mesh::Feature)
 
 Cylinder::Cylinder(void)
 {
-  ADD_PROPERTY(Radius  ,(10.0));
-  ADD_PROPERTY(Length  ,(2.0));
+  ADD_PROPERTY(Radius  ,(2.0));
+  ADD_PROPERTY(Length  ,(10.0));
   ADD_PROPERTY(EdgeLength,(1.0));
   ADD_PROPERTY(Closed  ,(true));
   ADD_PROPERTY(Sampling  ,(50));

@@ -281,35 +281,25 @@ void PropertyCurvatureList::Paste(const App::Property &from)
 // ----------------------------------------------------------------------------
 
 PropertyMeshKernel::PropertyMeshKernel()
+  : _meshObject(new MeshObject())
 {
-    _meshObject = new MeshObject();
+    // Note: Normally this property is a member of a document object, i.e. the setValue()
+    // method gets called in the constructor of a sublcass of DocumentObject, e.g. Mesh::Feature.
+    // This means that the created MeshObject here will be replaced and deleted immediately. 
+    // However, we anyway create this object in case we use this class in another context.
 }
 
 PropertyMeshKernel::~PropertyMeshKernel()
 {
 }
 
-//void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
-//{
-//    aboutToSetValue();
-//    _pcMesh->operator=( m );
-//    hasSetValue();
-//}
-
-void PropertyMeshKernel::setValue(MeshObject* m)
+void PropertyMeshKernel::setValue(MeshObject* mesh)
 {
+    //Note: This references the same mesh object
     aboutToSetValue();
-    _meshObject = m;
+    _meshObject = mesh;
     hasSetValue();
 }
-
-//void PropertyMeshKernel::setValue(MeshCore::MeshKernel* m)
-//{
-//    aboutToSetValue();
-//    delete (_pcMesh);
-//    _pcMesh = m;
-//    hasSetValue();
-//}
 
 const MeshObject& PropertyMeshKernel::getValue(void)const 
 {
@@ -329,8 +319,6 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
     return size;
 }
 
-//FIXME: This is the provisional solution to allow to transform meshes.
-//At a later stage we want to use a so called Placement object instead.
 void PropertyMeshKernel::applyTransformation(const Base::Matrix4D& rclTrf)
 {
     aboutToSetValue();
@@ -368,13 +356,9 @@ void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces,
     hasSetValue();
 }
 
-/**
- * Clears the mesh kernel and frees any allocated memory.
- * \note If you replace the current with an empty mesh kernel with setValue() 
- * then the memory doesn't get freed.
- */
 void PropertyMeshKernel::clear()
 {
+    // clear the underlying mesh kernel and free any allocated memory
     aboutToSetValue();
     _meshObject->clear();
     hasSetValue();
@@ -382,16 +366,26 @@ void PropertyMeshKernel::clear()
 
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-    return new MeshPy(&(*_meshObject));
+    MeshPy* mesh = new MeshPy(&(*_meshObject));
+    mesh->setConst(); // set immutable
+    return mesh;
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(MeshPy::Type))) {
-        MeshPy  *pcObject = (MeshPy*)value;
-        // Copy the content, do NOT replace the pointer
-        setValue(pcObject->getMesh());
-    } else {
+        MeshPy* mesh = static_cast<MeshPy*>(value);
+        // Note: Copy the content, do NOT reference the same mesh object
+        aboutToSetValue();
+        *(this->_meshObject) = *(mesh->getMesh());
+        hasSetValue();
+    }
+    else if (PyList_Check(value)) {
+        // new instance of MeshObject
+        MeshObject* mesh = MeshObject::createMeshFromList(Py::List(value));
+        setValue(mesh);
+    }
+    else {
         std::string error = std::string("type must be 'Mesh', not ");
         error += value->ob_type->tp_name;
         throw Py::TypeError(error);
@@ -459,7 +453,7 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 
 App::Property *PropertyMeshKernel::Copy(void) const
 {
-    //NOTE: We must not copy the pointer to the mesh but the mesh data itself 
+    // Note: Copy the content, do NOT reference the same mesh object
     PropertyMeshKernel *prop = new PropertyMeshKernel();
     *(prop->_meshObject) = *(this->_meshObject);
     return prop;
@@ -467,7 +461,7 @@ App::Property *PropertyMeshKernel::Copy(void) const
 
 void PropertyMeshKernel::Paste(const App::Property &from)
 {
-    //NOTE: We must not restore the pointer to the mesh but the mesh data itself 
+    // Note: Copy the content, do NOT reference the same mesh object
     aboutToSetValue();
     const PropertyMeshKernel& prop = dynamic_cast<const PropertyMeshKernel&>(from);
     *(this->_meshObject) = *(prop._meshObject);

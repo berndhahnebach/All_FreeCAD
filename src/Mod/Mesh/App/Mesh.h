@@ -39,7 +39,10 @@
 
 #include "Core/MeshKernel.h"
 
-
+namespace Py
+{
+    class List;
+}
 namespace Mesh
 {
 /**
@@ -54,8 +57,8 @@ class AppMeshExport MeshObject : public Data::ComplexGeoData
 
 public:
     MeshObject();
-    MeshObject(const MeshCore::MeshKernel& Kernel);
-    MeshObject(const MeshCore::MeshKernel& Kernel, const Base::Matrix4D &Mtrx);
+    explicit MeshObject(const MeshCore::MeshKernel& Kernel);
+    explicit MeshObject(const MeshCore::MeshKernel& Kernel, const Base::Matrix4D &Mtrx);
     MeshObject(const MeshObject&);
     ~MeshObject();
 
@@ -143,7 +146,18 @@ public:
     void removeSelfIntersections();
     //@}
 
-protected:
+    /** @name Primitives */
+    //@{
+    static MeshObject* createMeshFromList(Py::List& list);
+    static MeshObject* createSphere(float, int);
+    static MeshObject* createEllipsoid(float, float, int);
+    static MeshObject* createCylinder(float, float, int, float, int);
+    static MeshObject* createCone(float, float, float, int, float, int);
+    static MeshObject* createTorus(float, float, int);
+    static MeshObject* createCube(float, float, float);
+    //@}
+
+private:
     MeshCore::MeshKernel _kernel;
 };
 
