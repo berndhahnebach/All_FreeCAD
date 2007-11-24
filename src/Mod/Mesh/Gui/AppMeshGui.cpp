@@ -66,7 +66,7 @@ static struct PyMethodDef MeshGui_methods[] = {
 
 /* Python entry */
 extern "C" {
-void GuiMeshExport initMeshGui() {
+void MeshGuiExport initMeshGui() {
   if ( !Gui::Application::Instance )
   {
     PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");

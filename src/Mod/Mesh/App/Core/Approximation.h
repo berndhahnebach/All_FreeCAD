@@ -40,7 +40,7 @@ namespace MeshCore {
 /**
  * Abstract base class for approximation of a geometry to a given set of points.
  */
-class AppMeshExport MeshPointFit
+class MeshExport MeshPointFit
 {
 public:
   /**
@@ -132,7 +132,7 @@ protected:
 /**
  * Approximation of a plane into a given set of points.
  */
-class AppMeshExport MeshPlaneFit : public MeshPointFit
+class MeshExport MeshPlaneFit : public MeshPointFit
 {
 public:
   /**
@@ -187,7 +187,7 @@ protected:
  * Depending on the parameters (a,..,k) this surface defines a sphere, ellipsoid, cylinder, cone
  * and so on.
  */
-class AppMeshExport MeshQuadraticFit : public MeshPointFit
+class MeshExport MeshQuadraticFit : public MeshPointFit
 {
 public:
   /**
@@ -267,7 +267,7 @@ protected:
  * Dieser Ansatz wurde als Alternative für den 3D-Ansatz mit Quadriken entwickelt, da bei
  * Quadriken in (vor allem) ebenen Bereichen recht seltsame Artefakte auftreten.
  */
-class AppMeshExport MeshSurfaceFit : public MeshPlaneFit
+class MeshExport MeshSurfaceFit : public MeshPlaneFit
 {
 public:
   /**
@@ -481,7 +481,7 @@ private:
   FunctionContainer(){};
 };
 
-class AppMeshExport PolynomialFit : public MeshPointFit
+class MeshExport PolynomialFit : public MeshPointFit
 {
 public:
   /**

@@ -52,7 +52,7 @@ class MeshGrid;
  * Grids can be used within algorithms to avoid to iterate through all elements,
  * so grids can speed up algorithms dramatically.
  */
-class AppMeshExport MeshGrid
+class MeshExport MeshGrid
 {
 protected:
   /** @name Construction */
@@ -176,7 +176,7 @@ protected:
  * Special grid class that stores facet indices of the mesh object
  * in its grids.
  */
-class AppMeshExport MeshFacetGrid: public MeshGrid
+class MeshExport MeshFacetGrid: public MeshGrid
 {
 public:
   /** @name Construction */
@@ -237,7 +237,7 @@ protected:
  * Special grid class that stores point indices of the mesh object
  * in its grids.
  */
-class AppMeshExport MeshPointGrid: public MeshGrid
+class MeshExport MeshPointGrid: public MeshGrid
 {
 public:
   /** @name Construction */
@@ -282,7 +282,7 @@ protected:
  * The MeshGridIterator class provides an interface to walk through
  * all grid elements of a mesh grid.
  */
-class AppMeshExport MeshGridIterator
+class MeshExport MeshGridIterator
 {
 public:
   /// Construction

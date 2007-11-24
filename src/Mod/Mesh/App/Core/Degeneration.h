@@ -44,7 +44,7 @@ class MeshFacetIterator;
  * @see MeshFixInvalids
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalInvalids : public MeshEvaluation
+class MeshExport MeshEvalInvalids : public MeshEvaluation
 {
 public:
   /**
@@ -70,7 +70,7 @@ public:
  * @see MeshEvalInvalids
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixInvalids : public MeshValidation
+class MeshExport MeshFixInvalids : public MeshValidation
 {
 public:
   /**
@@ -95,7 +95,7 @@ public:
  * @see MeshEvalDegeneratedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalDuplicatePoints : public MeshEvaluation
+class MeshExport MeshEvalDuplicatePoints : public MeshEvaluation
 {
 public:
   /**
@@ -121,7 +121,7 @@ public:
  * @see MeshEvalDuplicatePoints
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixDuplicatePoints : public MeshValidation
+class MeshExport MeshFixDuplicatePoints : public MeshValidation
 {
 public:
   /**
@@ -145,7 +145,7 @@ public:
  * @see MeshFixDuplicateFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalDuplicateFacets : public MeshEvaluation
+class MeshExport MeshEvalDuplicateFacets : public MeshEvaluation
 {
 public:
   /**
@@ -171,7 +171,7 @@ public:
  * @see MeshEvalDuplicateFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixDuplicateFacets : public MeshValidation
+class MeshExport MeshFixDuplicateFacets : public MeshValidation
 {
 public:
   /**
@@ -197,7 +197,7 @@ public:
  * @see MeshFixDegeneratedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalDegeneratedFacets : public MeshEvaluation
+class MeshExport MeshEvalDegeneratedFacets : public MeshEvaluation
 {
 public:
   /**
@@ -227,7 +227,7 @@ public:
  * @see MeshEvalDegeneratedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixDegeneratedFacets : public MeshValidation
+class MeshExport MeshFixDegeneratedFacets : public MeshValidation
 {
 public:
   /**
@@ -255,7 +255,7 @@ public:
  * @see MeshFixDegeneratedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalDeformedFacets : public MeshEvaluation
+class MeshExport MeshEvalDeformedFacets : public MeshEvaluation
 {
 public:
   /**
@@ -283,7 +283,7 @@ public:
  * @see MeshEvalDeformedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixDeformedFacets : public MeshValidation
+class MeshExport MeshFixDeformedFacets : public MeshValidation
 {
 public:
   /**
@@ -309,7 +309,7 @@ private:
  * @see MeshFixRangeFacet
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalRangeFacet : public MeshEvaluation
+class MeshExport MeshEvalRangeFacet : public MeshEvaluation
 {
 public:
   /**
@@ -335,7 +335,7 @@ public:
  * @see MeshEvalRangeFacet
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixRangeFacet : public MeshValidation
+class MeshExport MeshFixRangeFacet : public MeshValidation
 {
 public:
   /**
@@ -357,7 +357,7 @@ public:
  * @see MeshFixRangePoint
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalRangePoint : public MeshEvaluation
+class MeshExport MeshEvalRangePoint : public MeshEvaluation
 {
 public:
   /**
@@ -383,7 +383,7 @@ public:
  * @see MeshFixRangePoint
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixRangePoint : public MeshValidation
+class MeshExport MeshFixRangePoint : public MeshValidation
 {
 public:
   /**
@@ -406,7 +406,7 @@ public:
  * @see MeshFixCorruptedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalCorruptedFacets : public MeshEvaluation
+class MeshExport MeshEvalCorruptedFacets : public MeshEvaluation
 {
 public:
   /**
@@ -433,7 +433,7 @@ public:
  * @see MeshEvalCorruptedFacets
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixCorruptedFacets : public MeshValidation
+class MeshExport MeshFixCorruptedFacets : public MeshValidation
 {
 public:
   /**

@@ -10,10 +10,10 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define AppMeshExport       __declspec(dllimport)
+# define MeshExport        __declspec(dllimport)
 # define AppJtReaderExport __declspec(dllexport)
 #else // for Linux
-# define AppMeshExport
+# define MeshExport
 # define AppJtReaderExport
 #endif
 

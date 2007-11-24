@@ -34,7 +34,7 @@ class Feature;
 
 namespace MeshGui {
 
-class GuiMeshExport SoFCMeshNode : public SoShape {
+class MeshGuiExport SoFCMeshNode : public SoShape {
   typedef SoShape inherited;
 
   SO_NODE_HEADER(SoFCMeshNode);
@@ -79,7 +79,7 @@ private:
 
 // ------------------------------------------------------------
 
-class GuiMeshExport SoFCMeshOpenEdge : public SoShape {
+class MeshGuiExport SoFCMeshOpenEdge : public SoShape {
   typedef SoShape inherited;
 
   SO_NODE_HEADER(SoFCMeshOpenEdge);

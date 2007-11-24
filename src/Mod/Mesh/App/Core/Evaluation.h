@@ -41,7 +41,7 @@ namespace MeshCore {
  * The class itself is abstract, hence the method Evaluate() must be implemented 
  * by subclasses.
  */
-class AppMeshExport MeshEvaluation
+class MeshExport MeshEvaluation
 {
 public:
   MeshEvaluation (const MeshKernel &rclB) : _rclMesh(rclB) {}
@@ -67,7 +67,7 @@ protected:
  * The class itself is abstract, hence the method Fixup() must be implemented 
  * by subclasses.
  */
-class AppMeshExport MeshValidation
+class MeshExport MeshValidation
 {
 public:
   MeshValidation (MeshKernel &rclB) : _rclMesh(rclB) {}
@@ -89,7 +89,7 @@ protected:
  * This class searches for nonuniform orientation of neighboured facets.
  * @author Werner Mayer
  */
-class AppMeshExport MeshOrientationVisitor : public MeshFacetVisitor
+class MeshExport MeshOrientationVisitor : public MeshFacetVisitor
 {
 public:
   MeshOrientationVisitor();
@@ -107,7 +107,7 @@ private:
  * Note: The 'TMP0' flag for facets must be resetted before using this class.
  * @author Werner Mayer
  */
-class AppMeshExport MeshOrientationCollector : public MeshOrientationVisitor
+class MeshExport MeshOrientationCollector : public MeshOrientationVisitor
 {
 public:
   MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement);
@@ -124,7 +124,7 @@ private:
  * The MeshEvalOrientation class checks the mesh kernel for consistent facet normals.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalOrientation : public MeshEvaluation
+class MeshExport MeshEvalOrientation : public MeshEvaluation
 {
 public:
   MeshEvalOrientation (const MeshKernel& rclM);
@@ -137,7 +137,7 @@ public:
  * The MeshFixOrientation class harmonizes the facet normals of the passed mesh kernel.
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixOrientation : public MeshValidation
+class MeshExport MeshFixOrientation : public MeshValidation
 {
 public:
   MeshFixOrientation (MeshKernel& rclM);
@@ -151,7 +151,7 @@ public:
  * The MeshEvalSolid class checks if the mesh represents a solid.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalSolid : public MeshEvaluation
+class MeshExport MeshEvalSolid : public MeshEvaluation
 {
 public:
   MeshEvalSolid (const MeshKernel& rclM);
@@ -167,7 +167,7 @@ public:
  * non-manifold if it is shared by more than two facets.
  * @note This check does not necessarily cover any degenerations.
  */
-class AppMeshExport MeshEvalTopology : public MeshEvaluation
+class MeshExport MeshEvalTopology : public MeshEvaluation
 {
 public:
   MeshEvalTopology (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
@@ -186,7 +186,7 @@ protected:
  * The MeshFixTopology class tries to fix a few cases of non-manifolds.
  * @see MeshEvalTopology
  */
-class AppMeshExport MeshFixTopology : public MeshValidation
+class MeshExport MeshFixTopology : public MeshValidation
 {
 public:
   MeshFixTopology (MeshKernel &rclB, const std::vector<std::pair<unsigned long, unsigned long> >& mf)
@@ -207,7 +207,7 @@ protected:
  * at their other edges.
  * Such facets can just be removed from the mesh.
  */
-class AppMeshExport MeshEvalSingleFacet : public MeshEvalTopology
+class MeshExport MeshEvalSingleFacet : public MeshEvalTopology
 {
 public:
   MeshEvalSingleFacet (const MeshKernel &rclB) : MeshEvalTopology(rclB) {}
@@ -219,7 +219,7 @@ public:
  * The MeshFixSingleFacet class tries to fix a special case of non-manifolds.
  * @see MeshEvalSingleFacet
  */
-class AppMeshExport MeshFixSingleFacet : public MeshValidation
+class MeshExport MeshFixSingleFacet : public MeshValidation
 {
 public:
   MeshFixSingleFacet (MeshKernel &rclB, const std::vector<std::list<unsigned long> >& mf)
@@ -237,7 +237,7 @@ protected:
  * The MeshEvalSelfIntersection class checks the mesh for self intersection.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalSelfIntersection : public MeshEvaluation
+class MeshExport MeshEvalSelfIntersection : public MeshEvaluation
 {
 public:
   MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
@@ -257,7 +257,7 @@ public:
  * set correctly.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalNeighbourhood : public MeshEvaluation
+class MeshExport MeshEvalNeighbourhood : public MeshEvaluation
 {
 public:
   MeshEvalNeighbourhood (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
@@ -270,7 +270,7 @@ public:
  * The MeshFixNeighbourhood class fixes the neighbourhood of the facets.
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixNeighbourhood : public MeshValidation
+class MeshExport MeshFixNeighbourhood : public MeshValidation
 {
 public:
   MeshFixNeighbourhood (MeshKernel &rclB) : MeshValidation(rclB) {}
@@ -288,7 +288,7 @@ public:
  * expansion. The local coordinate system is right-handed.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEigensystem : public MeshEvaluation
+class MeshExport MeshEigensystem : public MeshEvaluation
 {
 public:
   MeshEigensystem (const MeshKernel &rclB);

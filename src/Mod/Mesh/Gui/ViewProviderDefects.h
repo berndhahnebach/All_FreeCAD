@@ -36,7 +36,7 @@ namespace MeshGui {
  * In subclasses defects like non-manifolds, wrong oriented facets, degenerated facets, duplicates, .... are displayed.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshDefects : public Gui::ViewProviderDocumentObject
+class MeshGuiExport ViewProviderMeshDefects : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshDefects);
 
@@ -63,7 +63,7 @@ protected:
 /** The ViewProviderMeshOrientation class displays wrong oriented facets (i.e. flipped normals) in orange. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshOrientation : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshOrientation : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshOrientation);
 
@@ -81,7 +81,7 @@ protected:
 /** The ViewProviderMeshNonManifolds class displays edges with more than two faces attached in red. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshNonManifolds : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshNonManifolds : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshNonManifolds);
 
@@ -99,7 +99,7 @@ protected:
 /** The ViewProviderMeshDuplicatedFaces class displays duplicated faces in red. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshDuplicatedFaces : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshDuplicatedFaces : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedFaces);
 
@@ -117,7 +117,7 @@ protected:
 /** The ViewProviderMeshDegenerations class displays degenerated faces to a line or even a point in orange. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshDegenerations : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshDegenerations : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshDegenerations);
 
@@ -132,7 +132,7 @@ protected:
   SoLineSet* pcLines;
 };
 
-class GuiMeshExport ViewProviderMeshDuplicatedPoints : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshDuplicatedPoints : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedPoints);
 
@@ -147,7 +147,7 @@ protected:
   SoPointSet* pcPoints;
 };
 
-class GuiMeshExport ViewProviderMeshIndices : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshIndices : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshIndices);
 
@@ -165,7 +165,7 @@ protected:
 /** The ViewProviderMeshSelfIntersections class displays lines of self-intersections. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshSelfIntersections : public ViewProviderMeshDefects
+class MeshGuiExport ViewProviderMeshSelfIntersections : public ViewProviderMeshDefects
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshSelfIntersections);
 

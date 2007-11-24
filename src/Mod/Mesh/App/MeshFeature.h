@@ -50,7 +50,7 @@ class MeshFeaturePy;
  * This class holds a MeshKernel object.
  * \author Werner Mayer
  */
-class AppMeshExport Feature : public App::GeoFeature
+class MeshExport Feature : public App::GeoFeature
 {
   PROPERTY_HEADER(Mesh::Feature);
 

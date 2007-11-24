@@ -5,11 +5,11 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define AppMeshExport __declspec(dllimport)
-# define GuiMeshExport __declspec(dllexport)
+# define MeshExport    __declspec(dllimport)
+# define MeshGuiExport __declspec(dllexport)
 #else // for Linux
-# define AppMeshExport
-# define GuiMeshExport
+# define MeshExport
+# define MeshGuiExport
 #endif
 
 #ifdef _PreComp_

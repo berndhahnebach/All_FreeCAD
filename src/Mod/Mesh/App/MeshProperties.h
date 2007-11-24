@@ -48,7 +48,7 @@ namespace Mesh
  * Note: We need an own class for that to distinguish from the base vector list.
  * @author Werner Mayer
  */
-class AppMeshExport PropertyNormalList : public App::PropertyVectorList
+class MeshExport PropertyNormalList : public App::PropertyVectorList
 {
     TYPESYSTEM_HEADER();
 
@@ -63,7 +63,7 @@ public:
 };
 
 /** Curvature information. */
-struct AppMeshExport CurvatureInfo
+struct MeshExport CurvatureInfo
 {
     float fMaxCurvature, fMinCurvature;
     Base::Vector3f cMaxCurvDir, cMinCurvDir;
@@ -72,7 +72,7 @@ struct AppMeshExport CurvatureInfo
 /** The Curvature property class.
  * @author Werner Mayer
  */
-class AppMeshExport PropertyCurvatureList: public App::PropertyLists
+class MeshExport PropertyCurvatureList: public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 
@@ -125,7 +125,7 @@ private:
 /** The mesh kernel property class.
  * @author Werner Mayer
  */
-class AppMeshExport PropertyMeshKernel : public App::PropertyComplexGeoData
+class MeshExport PropertyMeshKernel : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 

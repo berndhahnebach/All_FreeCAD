@@ -8,13 +8,11 @@
 # define AppDrawingExport __declspec(dllexport)
 # define AppPartExport  __declspec(dllimport)
 # define PartExport     __declspec(dllimport)
-# define AppMeshExport  __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
 #else // for Linux
 # define AppDrawingExport
 # define AppPartExport 
 # define PartExport   
-# define AppMeshExport 
 # define MeshExport   
 #endif
 

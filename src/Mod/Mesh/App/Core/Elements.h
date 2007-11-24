@@ -47,7 +47,7 @@ class MeshPoint;
  * of two edges. The class holds the point indices of the
  * underlying edge.
  */
-class AppMeshExport MeshHelpEdge
+class MeshExport MeshHelpEdge
 {
 public:
   inline bool operator == (const MeshHelpEdge &rclEdge) const;
@@ -58,7 +58,7 @@ public:
  * Structure that holds the facet index with the two corner point
  * indices of the facet's orientation this edge is attached to.
  */
-class AppMeshExport MeshIndexEdge
+class MeshExport MeshIndexEdge
 {
 public:
   unsigned long  _ulFacetIndex;  // Facet index
@@ -72,7 +72,7 @@ public:
  * A point can temporary be in an invalid state (e.g during deletion of several points), but
  * must not be set in general, i.e. always usable within a mesh-internal algorithm.
  */
-class AppMeshExport MeshPoint: public Base::Vector3f
+class MeshExport MeshPoint: public Base::Vector3f
 {
 public:
   enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
@@ -123,7 +123,7 @@ public:
  * The MeshGeomEdge class is geometric counterpart to MeshEdge that holds the 
  * geometric data points of an edge.
  */
-class AppMeshExport MeshGeomEdge
+class MeshExport MeshGeomEdge
 {
 public:
   MeshGeomEdge (void) : _bBorder(false) {}
@@ -264,7 +264,7 @@ public:
  * The MeshGeomFacet class is geometric counterpart to MeshFacet that holds the 
  * geometric data points of a triangle.
  */
-class AppMeshExport MeshGeomFacet 
+class MeshExport MeshGeomFacet 
 {
 public:
   /** @name Construction */
@@ -448,7 +448,7 @@ typedef  std::vector<MeshPoint>  TMeshPointArray;
 /**
  * Stores all data points of the mesh structure.
  */
-class AppMeshExport MeshPointArray: public TMeshPointArray
+class MeshExport MeshPointArray: public TMeshPointArray
 {
 public:
   // Iterator interface
@@ -499,7 +499,7 @@ typedef std::vector<MeshFacet>  TMeshFacetArray;
 /**
  * Stores all facets of the mesh data-structure.
  */
-class AppMeshExport MeshFacetArray: public TMeshFacetArray
+class MeshExport MeshFacetArray: public TMeshFacetArray
 {
 public:
   // Iterator interface

@@ -5,7 +5,6 @@
 #define MESH_MESHPY_H
 
 #include <Base/PyObjectBase.h>
-#include <Base/Handle.h>
 
 namespace Mesh
 {
@@ -18,7 +17,7 @@ class MeshObject;
 
 /** The python export class for MeshObject
  */
-class AppMeshExport MeshPy : public Base::PyObjectBase
+class MeshExport MeshPy : public Base::PyObjectBase
 {
 public:
     static PyTypeObject   Type;
@@ -255,7 +254,7 @@ public:
     //@}
 
     /// getter for the object handled by this class
-    //MeshObject *getMeshObjectObject(void) const;
+    MeshObject *getMeshObjectObject(void) const;
     Base::Reference<MeshObject> _meshObject;
 };
 

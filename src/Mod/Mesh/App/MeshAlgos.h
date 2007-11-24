@@ -46,7 +46,7 @@ namespace Mesh
 
 /** The mesh algorithems container class
  */
-class AppMeshExport MeshAlgos
+class MeshExport MeshAlgos
 {
 public:
   /** Calculate per Vertex normales and adds the Normal property bag

@@ -41,7 +41,7 @@ class MeshKernel;
  * The MeshInput class is able to read a mesh object from a input stream
  * in various formats.
  */
-class AppMeshExport MeshInput
+class MeshExport MeshInput
 {
 public:
   MeshInput (MeshKernel &rclM): _rclMesh(rclM){};
@@ -76,7 +76,7 @@ protected:
  * The MeshOutput class is able to write a mesh object to an ouput stream
  * on various formats.
  */
-class AppMeshExport MeshOutput
+class MeshExport MeshOutput
 {
 public:
   MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
@@ -107,7 +107,7 @@ protected:
   const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
 
-struct AppMeshExport VRMLViewpointData
+struct MeshExport VRMLViewpointData
 {
   Base::Vector3f clVRefPln;
   Base::Vector3f clVRefUp;
@@ -121,7 +121,7 @@ struct AppMeshExport VRMLViewpointData
   std::string  clName;
 };
 
-struct AppMeshExport VRMLInfo
+struct MeshExport VRMLInfo
 {
   std::string _clFileName;
   std::string _clAuthor;

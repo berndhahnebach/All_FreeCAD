@@ -35,7 +35,7 @@ class MeshFacetVisitor;
  * The MeshFacetVisitor class can be used for the so called
  * "Region growing" algorithms.
  */
-class AppMeshExport MeshFacetVisitor
+class MeshExport MeshFacetVisitor
 {
 public:
   /// Construction 
@@ -60,7 +60,7 @@ public:
 /**
  * Special mesh visitor that searches for facets within a given search radius.
  */
-class AppMeshExport MeshSearchNeighbourFacetsVisitor : public MeshFacetVisitor
+class MeshExport MeshSearchNeighbourFacetsVisitor : public MeshFacetVisitor
 {
 public:
   MeshSearchNeighbourFacetsVisitor (const MeshKernel &rclMesh, float fRadius, unsigned long ulStartFacetIdx);
@@ -105,7 +105,7 @@ inline bool MeshSearchNeighbourFacetsVisitor::Visit (const MeshFacet &rclFacet, 
 /**
  * The MeshTopFacetVisitor just collects the indices of all visited facets.
  */
-class AppMeshExport MeshTopFacetVisitor : public MeshFacetVisitor
+class MeshExport MeshTopFacetVisitor : public MeshFacetVisitor
 {
 public:
   MeshTopFacetVisitor (std::vector<unsigned long> &raulNB) : _raulNeighbours(raulNB) {}
@@ -126,7 +126,7 @@ protected:
 /**
  * Abstract base class for point visitors. 
  */
-class AppMeshExport MeshPointVisitor
+class MeshExport MeshPointVisitor
 {
 public:
   /// Construction 

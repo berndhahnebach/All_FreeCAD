@@ -51,7 +51,7 @@ class MeshFacetIterator;
 /**
  * The MeshAlgorithm class provides algorithms base on meshes.
  */
-class AppMeshExport SetOperations
+class MeshExport SetOperations
 {
 public:
   enum OperationType { Union, Intersect, Difference, Inner, Outer };

@@ -61,7 +61,7 @@ class MeshFacetGrid;
  *
  * This class provides only some rudimental querying methods.
  */
-class AppMeshExport MeshKernel
+class MeshExport MeshKernel
 {
 public:
   /// Construction

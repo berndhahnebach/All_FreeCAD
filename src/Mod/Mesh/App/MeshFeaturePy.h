@@ -42,7 +42,7 @@ class MeshPy;
 //===========================================================================
 
 // The DocTypeStd python class 
-class AppMeshExport MeshFeaturePy :public App::DocumentObjectPy
+class MeshExport MeshFeaturePy :public App::DocumentObjectPy
 {
   /// always start with Py_Header
   Py_Header;
