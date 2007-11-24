@@ -37,7 +37,7 @@ namespace Mesh
 
 /** The mesh algorithems container class
  */
-class AppMeshExport GTSAlgos
+class MeshExport GTSAlgos
 {
 public:
   //GTSAlgos(MeshCore::MeshKernel* Mesh);

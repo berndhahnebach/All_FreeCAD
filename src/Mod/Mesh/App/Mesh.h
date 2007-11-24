@@ -51,7 +51,7 @@ namespace Mesh
  * @note Each instance of MeshObject has its own instance of a MeshKernel so it's not possible
  * that several instances of MeshObject manage one instance of MeshKernel.
  */
-class AppMeshExport MeshObject : public Data::ComplexGeoData
+class MeshExport MeshObject : public Data::ComplexGeoData
 {
     TYPESYSTEM_HEADER();
 

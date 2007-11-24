@@ -167,7 +167,7 @@ protected:
  * The MeshPointIterator allows to iterate over the vertices of the mesh and provides access to their
  * geometric information.
  */
-class AppMeshExport MeshPointIterator
+class MeshExport MeshPointIterator
 {
 public:
   /** @name Construction */

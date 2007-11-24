@@ -23,10 +23,12 @@
 
 #include "PreCompiled.h"
 
+#include <App/VectorPy.h>
+#include <Base/Handle.h>
+
 #include "Mesh.h"
 #include "MeshPy.h"
 #include "MeshPy.cpp"
-#include <App/VectorPy.h>
 
 using namespace Mesh;
 

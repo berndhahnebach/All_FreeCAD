@@ -66,7 +66,7 @@ namespace MeshGui {
  * The ViewProviderExport class creates an empty node.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderExport : public Gui::ViewProviderDocumentObject
+class MeshGuiExport ViewProviderExport : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderExport);
 
@@ -85,7 +85,7 @@ public:
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderGeometryObject
+class MeshGuiExport ViewProviderMesh : public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMesh);
 

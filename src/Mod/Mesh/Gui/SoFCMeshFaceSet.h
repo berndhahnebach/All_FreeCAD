@@ -42,7 +42,7 @@ class Feature;
 
 namespace MeshGui {
 
-class GuiMeshExport SoSFMeshFacetArray : public SoSField {
+class MeshGuiExport SoSFMeshFacetArray : public SoSField {
   typedef SoSField inherited;
 
   SO_SFIELD_HEADER(SoSFMeshFacetArray, MeshCore::MeshFacetArray*, MeshCore::MeshFacetArray*);
@@ -61,7 +61,7 @@ protected:
 
 // -------------------------------------------------------
 
-class GuiMeshExport SoFCMeshFacetElement : public SoReplacedElement {
+class MeshGuiExport SoFCMeshFacetElement : public SoReplacedElement {
   typedef SoReplacedElement inherited;
 
   SO_ELEMENT_HEADER(SoFCMeshFacetElement);
@@ -82,7 +82,7 @@ protected:
 
 // -------------------------------------------------------
 
-class GuiMeshExport SoFCMeshFacet : public SoNode {
+class MeshGuiExport SoFCMeshFacet : public SoNode {
   typedef SoSField inherited;
 
   SO_NODE_HEADER(SoFCMeshFacet);
@@ -118,7 +118,7 @@ protected:
  * The actual data is only hold and written by SoFCMeshVertex and SoFCMeshFaceSet. Normally, no shape nodes have to save further data to the file.
  * @author Werner Mayer
  */
-class GuiMeshExport SoFCMeshFaceSet : public SoShape {
+class MeshGuiExport SoFCMeshFaceSet : public SoShape {
   typedef SoShape inherited;
 
   SO_NODE_HEADER(SoFCMeshFaceSet);
@@ -168,7 +168,7 @@ private:
 
 // ------------------------------------------------------------
 
-class GuiMeshExport SoFCMeshOpenEdgeSet : public SoShape {
+class MeshGuiExport SoFCMeshOpenEdgeSet : public SoShape {
   typedef SoShape inherited;
 
   SO_NODE_HEADER(SoFCMeshOpenEdgeSet);

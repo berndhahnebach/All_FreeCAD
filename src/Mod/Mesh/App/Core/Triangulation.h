@@ -34,7 +34,7 @@ namespace MeshCore
  * The MeshPolygonTriangulation embeds an efficient algorithm to triangulate polygons taken from
  * http://www.flipcode.com/files/code/triangulate.cpp.
  */
-class AppMeshExport MeshPolygonTriangulation
+class MeshExport MeshPolygonTriangulation
 {
 public:
     MeshPolygonTriangulation();

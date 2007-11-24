@@ -33,7 +33,7 @@ class MeshKernel;
 /**
  * Determines information about the mesh data structure.
  */
-class AppMeshExport MeshInfo
+class MeshExport MeshInfo
 {
 public:
   MeshInfo (const MeshKernel &rclM);

@@ -53,7 +53,7 @@ class MeshGeomFacet;
  * \endcode
  * @author Berthold Grupp
  */
-class AppMeshExport MeshBuilder
+class MeshExport MeshBuilder
 {
 private:
     /** @name Helper class */

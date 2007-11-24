@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Handle.h>
 
 #include "Core/Evaluation.h"
 #include "MeshPy.h"

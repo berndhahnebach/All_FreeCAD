@@ -57,7 +57,7 @@ PyDoc_STRVAR(module_doc,
 
 /* Python entry */
 extern "C" {
-void AppMeshExport initMesh() 
+void MeshExport initMesh() 
 {
     Base::Console().Log("Mod: Loading Mesh module... done\n");
 

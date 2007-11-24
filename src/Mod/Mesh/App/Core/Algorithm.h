@@ -50,7 +50,7 @@ class MeshRefPointToFacets;
 /**
  * The MeshAlgorithm class provides algorithms base on meshes.
  */
-class AppMeshExport MeshAlgorithm
+class MeshExport MeshAlgorithm
 {
 public:
   /// Construction
@@ -295,7 +295,7 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefPointToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
+class MeshExport MeshRefPointToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
 {
 public:
   /// Construction
@@ -327,7 +327,7 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefFacetToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
+class MeshExport MeshRefFacetToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
 {
 public:
   /// Construction
@@ -358,7 +358,7 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefPointToPoints : public std::vector<std::set<MeshPointArray::_TConstIterator> >
+class MeshExport MeshRefPointToPoints : public std::vector<std::set<MeshPointArray::_TConstIterator> >
 {
 public:
   /// Construction

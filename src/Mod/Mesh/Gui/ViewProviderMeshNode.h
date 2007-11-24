@@ -42,7 +42,7 @@ namespace MeshGui {
  * The ViewProviderMeshNode class creates a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshNode : public Gui::ViewProviderGeometryObject
+class MeshGuiExport ViewProviderMeshNode : public Gui::ViewProviderGeometryObject
 {
   PROPERTY_HEADER(TriangulationGui::ViewProviderMeshNode);
 

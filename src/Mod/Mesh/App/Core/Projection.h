@@ -51,7 +51,7 @@ struct SplitEdge
  * The MeshProjection class projects a shape onto a mesh.
  * @author Werner Mayer
  */
-class AppMeshExport MeshProjection
+class MeshExport MeshProjection
 {
 public:
   /// Construction

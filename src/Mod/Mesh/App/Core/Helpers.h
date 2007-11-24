@@ -34,7 +34,7 @@ namespace MeshCore {
 /**
  * Helper class for points.
  */
-struct AppMeshExport MeshHelpPoint
+struct MeshExport MeshHelpPoint
 {
   inline void Set (unsigned long ulCorner, unsigned long ulFacet, const Base::Vector3f &rclPt);
 
@@ -62,7 +62,7 @@ struct MeshPointBuilder: public std::vector<MeshHelpPoint>
 /**
  * Helper class for edges.
  */
-struct AppMeshExport MeshHelpBuilderEdge
+struct MeshExport MeshHelpBuilderEdge
 {
   unsigned long Side (void) const
   { return _ulFIndex & 3; }

@@ -3597,10 +3597,10 @@ int MeshPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note
     return PyObjectBase::_setattr(attr, value);
 }
 
-//MeshObject *MeshPy::getMeshObjectObject(void) const
-//{
-//    return static_cast<MeshObject *>(_pcTwinPointer);
-//}
+MeshObject *MeshPy::getMeshObjectObject(void) const
+{
+    return static_cast<MeshObject *>(_pcTwinPointer);
+}
 
 /* From here on come the methods you have to implement, but NOT in this module. Implement in MeshPyImp.cpp! This prototypes 
  * are just for convenience when you add a new method.

@@ -35,7 +35,7 @@ namespace Mesh
  * The Export class writes any supported mesh format into a file.
  * @author Werner Mayer
  */
-class AppMeshExport Export : public App::DocumentObject
+class MeshExport Export : public App::DocumentObject
 {
     PROPERTY_HEADER(Mesh::Export);
 

@@ -31,7 +31,7 @@ namespace MeshGui {
  * Display data of a mesh kernel.
  * \author Werner Mayer
  */
-class GuiMeshExport PropertyMeshKernelItem: public Gui::PropertyEditor::PropertyItem
+class MeshGuiExport PropertyMeshKernelItem: public Gui::PropertyEditor::PropertyItem
 {
     TYPESYSTEM_HEADER();
 
@@ -55,7 +55,7 @@ protected:
  * Change a text property.
  * \author Werner Mayer
  */
-class GuiMeshExport PropertyEditorMesh : public Gui::PropertyEditor::EditableItem
+class MeshGuiExport PropertyEditorMesh : public Gui::PropertyEditor::EditableItem
 {
   TYPESYSTEM_HEADER();
 

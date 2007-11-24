@@ -45,7 +45,7 @@ namespace MeshCore {
  * adjacent facets, split a facet, ...
  * @author Werner Mayer
  */
-class AppMeshExport MeshTopoAlgorithm
+class MeshExport MeshTopoAlgorithm
 {
 public:
   // construction/destruction
@@ -214,7 +214,7 @@ private:
  *
  * @author Werner Mayer
  */
-class AppMeshExport MeshComponents
+class MeshExport MeshComponents
 {
 public:
   enum TMode {OverEdge, OverPoint};

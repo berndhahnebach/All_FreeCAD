@@ -68,7 +68,7 @@ namespace MeshCore {
  * Global defined tolerances used to compare points
  * for equality.
  */
-class AppMeshExport MeshDefinitions
+class MeshExport MeshDefinitions
 {
 public:
   MeshDefinitions (void);

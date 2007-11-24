@@ -51,7 +51,7 @@ class SoFCMeshFaceSet;
  * SoFCMeshNode and SoFCMeshFaceSet.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshFaceSet : public Gui::ViewProviderGeometryObject
+class MeshGuiExport ViewProviderMeshFaceSet : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(TriangulationGui::ViewProviderMeshFaceSet);
 
