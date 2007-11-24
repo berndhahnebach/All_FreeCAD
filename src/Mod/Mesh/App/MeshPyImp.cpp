@@ -774,7 +774,7 @@ PyObject*  MeshPy::printInfo(PyObject *args)
     return Py_BuildValue("s", _meshObject->topologyInfo().c_str());
 }
 
-PyObject*  MeshPy::CollapseFacets(PyObject *args)
+PyObject*  MeshPy::collapseFacets(PyObject *args)
 {
     PyObject *pcObj=0;
     if (!PyArg_ParseTuple(args, "O", &pcObj))     // convert args: Python->C 

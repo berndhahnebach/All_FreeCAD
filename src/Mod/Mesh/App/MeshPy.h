@@ -210,6 +210,10 @@ public:
     static PyObject * staticCallback_collapseFacet (PyObject *self, PyObject *args, PyObject *kwd);
     /// implementer for the collapseFacet() method
     PyObject*  collapseFacet(PyObject *args);
+    /// callback for the collapseFacets() method
+    static PyObject * staticCallback_collapseFacets (PyObject *self, PyObject *args, PyObject *kwd);
+    /// implementer for the collapseFacets() method
+    PyObject*  collapseFacets(PyObject *args);
     /// callback for the insertVertex() method
     static PyObject * staticCallback_insertVertex (PyObject *self, PyObject *args, PyObject *kwd);
     /// implementer for the insertVertex() method
@@ -222,10 +226,6 @@ public:
     static PyObject * staticCallback_printInfo (PyObject *self, PyObject *args, PyObject *kwd);
     /// implementer for the printInfo() method
     PyObject*  printInfo(PyObject *args);
-    /// callback for the CollapseFacets() method
-    static PyObject * staticCallback_CollapseFacets (PyObject *self, PyObject *args, PyObject *kwd);
-    /// implementer for the CollapseFacets() method
-    PyObject*  CollapseFacets(PyObject *args);
     //@}
 
 
