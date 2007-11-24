@@ -478,9 +478,7 @@ unsigned long MeshFixDegeneratedFacets::RemoveEdgeTooSmall (float fMinEdgeLength
     }
 
     ulCtLastLoop = _rclMesh.CountFacets();
-
-    // Datenstruktur updaten (d.h. Punkte, Facets (und nicht Kanten) loeschen)
-    _rclMesh.RemoveInvalids(false, false);
+    _rclMesh.RemoveInvalids();
   }
   while (ulCtLastLoop > _rclMesh.CountFacets());
 

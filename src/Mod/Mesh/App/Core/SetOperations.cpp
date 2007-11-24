@@ -85,7 +85,7 @@ void SetOperations::Do ()
       case Union:
           {
             _resultMesh = _cutMesh0;
-            _resultMesh.Merge(_cutMesh1.GetPoints(), _cutMesh1.GetFacets());
+            _resultMesh.Merge(_cutMesh1);
           } break;
       case Intersect:
           {

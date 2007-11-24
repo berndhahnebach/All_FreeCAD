@@ -105,7 +105,8 @@ public:
   void RecalcBoundBox (void);
 
   /** Returns the point at the given index. This method is rather slow and should be
-   * called occassionally only.
+   * called occassionally only. For fast access the MeshPointIterator interfsce should
+   * be used.
    */
   inline MeshPoint GetPoint (unsigned long ulIndex) const;
 
@@ -115,7 +116,8 @@ public:
   std::vector<Base::Vector3f> CalcVertexNormals() const;
 
   /** Returns the facet at the given index. This method is rather slow and should be
-   * called occassionally only.
+   * called occassionally only. For fast access the MeshFacetIterator interface should
+   * be used.
    */
   inline MeshGeomFacet GetFacet (unsigned long ulIndex) const;
   inline MeshGeomFacet GetFacet (const MeshFacet &rclFacet) const;
@@ -127,7 +129,7 @@ public:
   inline void GetFacetNeighbours ( unsigned long ulIndex, unsigned long &rulNIdx0, 
                                    unsigned long &rulNIdx1, unsigned long &rulNIdx2) const;
 
-  /** Determines all facets that are associated to this point. This method is rather
+  /** Determines all facets that are associated to this point. This method is very
    * slow and should be called occassionally only.
    */
   std::vector<unsigned long> HasFacets (const MeshPointIterator &rclIter) const;
@@ -167,11 +169,6 @@ public:
   /** Checks whether the mesh intersects itself. */
   bool HasSelfIntersections() const;
   //@}
-
-  /** Adds a single facet to the data structure. */
-  MeshKernel& operator += (const MeshGeomFacet &rclSFacet);
-  /** Adds an array of facet to the data structure. */
-  MeshKernel& operator += (const std::vector<MeshGeomFacet> &rclVAry);
 
   /** @name Facet visitors
    * The MeshKernel class provides different methods to visit "topologic connected" facets 
@@ -252,13 +249,22 @@ public:
 
   /** @name Modification */
   //@{
-  /** Adds a single facet to the data structure. */
-  bool AddFacet(const MeshGeomFacet &rclSFacet);
-  /** Adds an array of facets to the data structure. This method is very slow but keeps temporarily 
-   * set properties and flags. If these flags are not important to keep then the += operator should
-   * be used.
+  /** Adds a single facet to the data structure. This method is very slow and should
+   * be called occassionally only.
    */
-  bool AddFacets(const std::vector<MeshGeomFacet> &rclVAry);
+  MeshKernel& operator += (const MeshGeomFacet &rclSFacet);
+  /** Adds a single facet to the data structure. This method is very slow and should
+   * be called occassionally only. This does the same as the += operator above.
+   */
+  void AddFacet(const MeshGeomFacet &rclSFacet);
+  /** Adds an array of facets to the data structure. This method keeps temporarily 
+   * set properties and flags. 
+   */
+  MeshKernel& operator += (const std::vector<MeshGeomFacet> &rclVAry);
+  /** Adds an array of facets to the data structure. This method keeps temporarily 
+   * set properties and flags. This does the same as the += operator above.
+   */
+  void AddFacets(const std::vector<MeshGeomFacet> &rclVAry);
   /**
    * Adds an array of topologic facets to the data structure without inserting new points.
    * Facets which would create non-manifolds are not inserted.
@@ -270,65 +276,82 @@ public:
   unsigned long AddFacets(const std::vector<MeshFacet> &rclVAry);
   /**
    * Adds new points and facets to the data structure. The client programmer must make sure
-   * that the new facets reference all new points. The indices of the new points start with
-   * the number of points before adding them to the data structure.
+   * that the new facets reference all new points. 
+   * All points in \a rclPAry get copied at the end of the internal point array keeping their order.
    */
   unsigned long AddFacets(const std::vector<MeshFacet> &rclVAry, const std::vector<Base::Vector3f>& rclPAry);
   /**
    * Adds all facets and referenced points to the underlying mesh structure. The client programmer
    * must be sure that both meshes doesn't have geometric overlaps, otherwise the resulting mesh might
-   * be invalid.
+   * be invalid, i.e. has self-intersections.
    * @note The method guarantees that the order of the arrays of the underlying mesh and of the given
    * array is kept.
-   * @note Not all points of \a rPoints are necessarily appended to the underlying mesh but only these points which
-   * are referenced by \a rFaces.
+   * @note Not all points of \a rKernel are necessarily appended to the underlying mesh but only these points which
+   * are referenced by facets of \a rKernel.
    */
-  void Merge( const MeshPointArray& rPoints, const MeshFacetArray& rFaces );
+  void Merge(const MeshKernel& rKernel);
   /** Deletes the facet the iterator points to. The deletion of a facet requires
    * the following steps:
    * \li Mark the neighbour index of all neighbour facets to the deleted facet as invalid
-   * \li If the neighbour facet exists adjust the edge index if needed, if there is no neighbour
-   *     remove the edges.
    * \li Adjust the indices of the neighbour facets of all facets.
-   * \li Adjust the indices of the edges.
    * \li If there is no neighbour facet check if the points can be deleted.
    * True is returned if the facet could be deleted.
+   * @note This method is very slow and should only be called occassionally.
+   * @note After deletion of the facet \a rclIter becomes invalid and must not 
+   * be used before setting to a new position.
    */
   bool DeleteFacet (const MeshFacetIterator &rclIter);
   /**
    * Does basically the same as the method above unless that the index of the facet is given.
    */
   bool DeleteFacet (unsigned long ulInd);
-  /** Removes several facets from the data structure. */
+  /** Removes several facets from the data structure. 
+   * @note This method overwrites the free usable property of each mesh point.
+   * @note This method also removes points from the structure that are no longer
+   * referenced by the facets.
+   * @note This method is very slow and should only be called occassionally.
+   */
   void DeleteFacets (const std::vector<unsigned long> &raulFacets);
   /** Deletes the point the iterator points to. The deletion of a point requires the following step:
    * \li Find all associated facets to this point.
    * \li Delete these facets.
    * True is returned if the point could be deleted.
+   * @note This method is very slow and should only be called occassionally.
+   * @note After deletion of the point \a rclIter becomes invalid and must not 
+   * be used before setting to a new position.
    */
   bool DeletePoint (const MeshPointIterator &rclIter);
-  /** Removes several points from the data structure. */
+  /**
+   * Does basically the same as the method above unless that the index of the facet is given.
+   */
+  bool DeletePoint (unsigned long ulInd);
+  /** Removes several points from the data structure. 
+   * @note This method overwrites the free usable property of each mesh point.
+   */
   void DeletePoints (const std::vector<unsigned long> &raulPoints);
   /** Clears the whole data structure. */
   void Clear (void);
   /** Replaces the current data structure with the structure built up of the array 
-   * of triangles given in \a rclVAry. \a rclVAry gets cleared automatically.
+   * of triangles given in \a rclVAry.
    */
-  MeshKernel& operator = (std::vector<MeshGeomFacet> &rclVAry);
+  MeshKernel& operator = (const std::vector<MeshGeomFacet> &rclVAry);
   /** Assignment operator. */
   MeshKernel& operator = (const MeshKernel &rclMesh);
-  /** This allows to assign the mesh structure directly. The caller must make sure that the point indices are correctly set
-   * but the neighbourhood gets checked and corrected if \a checkNeighbourHood is true.
+  /** This allows to assign the mesh structure directly. The caller must make sure that the point indices are
+   * correctly set but the neighbourhood gets checked and corrected if \a checkNeighbourHood is true.
    */
   void Assign(const MeshPointArray& rPoints, const MeshFacetArray& rFaces, bool checkNeighbourHood=false);
-  /** This method does basically the same as Assign() unless that it adopts the content of both arrays.
-   * These arrays are empty after assigning to the kernel. This method can be used for huge meshes to save memory
-   * and increase speed.
+  /** This method does basically the same as Assign() unless that it swaps the content of both arrays.
+   * These arrays may be empty after assigning to the kernel. This method is a convenient way to build up
+   * the mesh structure from outside and assign to a mesh kernel without copying the data.
+   * Especially for huge meshes this saves memory and increases speed.
    */
   void Adopt(MeshPointArray& rPoints, MeshFacetArray& rFaces, bool checkNeighbourHood=false);
   /// Transform the data structure with the given transformation matrix.
   void operator *= (const Base::Matrix4D &rclMat);
-  /// Transform the data structure with the given transformation matrix.
+  /** Transform the data structure with the given transformation matrix.
+   * It does exactly the same as the '*=' operator.
+   */
   void Transform (const Base::Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
   inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
@@ -353,13 +376,9 @@ public:
   void RebuildNeighbours (void);
 
 protected:
-  /** Adds new edges and updates the available edges respectively. All edges
-   * of the facets get checked if they have an associated MeshEdge. If needed 
-   * a new edge gets added. The new edges get inserted into the array in accordance
-   * to their index. The neighbour indices of the facets get resetted accordingly.
+  /** Removes all as INVALID marked points and facets from the structure.
    */
-  
-  void RemoveInvalids (bool bWithEdgeCorrect = true, bool bWithEdgeDelete = false);
+  void RemoveInvalids ();
   /** Checks if this point is associated to no other facet and deletes if so.
    * The point indices of the facets get adjusted.
    * \a ulIndex is the index of the point to be deleted. \a ulFacetIndex is the index

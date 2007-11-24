@@ -149,46 +149,27 @@ MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
   return *this;
 }
 
-MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
-{
-  // kompleter Neu-Aufbau
-  std::vector<MeshGeomFacet> clNew(rclVAry.size() + CountFacets());
-
-  std::vector<MeshGeomFacet>::iterator pN = clNew.begin();
-
-  MeshFacetIterator clF(*this);
-  for (clF.Init(); clF.More(); clF.Next(), pN++)
-    *pN = *clF;
-  
-  for (std::vector<MeshGeomFacet>::const_iterator pV = rclVAry.begin(); pV != rclVAry.end(); pV++, pN++)
-    *pN = *pV;
-
-  Base::Sequencer().setLocked( true );
-  *this = clNew;
-  Base::Sequencer().setLocked( false );
-
-  return *this;
-}
-
-bool MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
+void MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
 {
   *this += rclSFacet;
-
   RebuildNeighbours();
-
-  return true;
 }
 
-bool MeshKernel::AddFacets(const std::vector<MeshGeomFacet> &rclVAry)
+MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
 {
-  // operator += gehtnicht da dann das Mesh neu angelegt wird und somit alle props geloescht werden
-  //
-  for (std::vector<MeshGeomFacet>::const_iterator pN = rclVAry.begin();pN!=rclVAry.end();pN++)
-    (*this) += (*pN);
+    // Create a temp. kernel to get the topology of the passed triangles
+    // and merge them with this kernel. This keeps properties and flags 
+    // of this mesh.
+    MeshKernel tmp;
+    tmp = rclVAry;
+    Merge(tmp);
+    
+    return *this;
+}
 
-  RebuildNeighbours();
-
-  return true;
+void MeshKernel::AddFacets(const std::vector<MeshGeomFacet> &rclVAry)
+{
+  *this += rclVAry;
 }
 
 unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
@@ -341,8 +322,11 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry, const
     return this->AddFacets(rclVAry);
 }
 
-void MeshKernel::Merge( const MeshPointArray& rPoints, const MeshFacetArray& rFaces )
+void MeshKernel::Merge(const MeshKernel& rKernel)
 {
+  const MeshPointArray& rPoints = rKernel._aclPointArray;
+  const MeshFacetArray& rFaces  = rKernel._aclFacetArray;
+
   // Create a map <point index -> face indices>. The size of the map is the number of points we have to append 
   std::map<unsigned long, std::vector<unsigned long> > point2Faces;
 
@@ -427,12 +411,12 @@ void MeshKernel::Clear (void)
   _clBoundBox.Flush();
 }
 
-MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
+MeshKernel& MeshKernel::operator = (const std::vector<MeshGeomFacet> &rclVAry)
 {
     MeshBuilder builder(*this);
     builder.Initialize(rclVAry.size());
 
-    for (std::vector<MeshGeomFacet>::iterator it = rclVAry.begin(); it != rclVAry.end(); it++)
+    for (std::vector<MeshGeomFacet>::const_iterator it = rclVAry.begin(); it != rclVAry.end(); it++)
         builder.AddFacet(*it);
 
     builder.Finish();
@@ -462,7 +446,7 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
         if (_aclFacetArray[ulNFacet]._aulNeighbours[j] == ulInd)
         {
           _aclFacetArray[ulNFacet]._aulNeighbours[j] = ULONG_MAX;
-         break;
+          break;
         }
       }
     }
@@ -486,7 +470,7 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
 
 bool MeshKernel::DeleteFacet (unsigned long ulInd)
 {
-  if (ulInd >= _aclFacetArray.size() )
+  if (ulInd >= _aclFacetArray.size())
     return false;
 
   MeshFacetIterator clIter(*this);
@@ -495,15 +479,27 @@ bool MeshKernel::DeleteFacet (unsigned long ulInd)
   return DeleteFacet(clIter);
 }
 
+bool MeshKernel::DeletePoint (unsigned long ulInd)
+{
+  if (ulInd >= _aclPointArray.size())
+    return false;
+
+  MeshPointIterator clIter(*this);
+  clIter.Set(ulInd);
+
+  return DeletePoint(clIter);
+}
+
 bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
 {
   MeshFacetIterator pFIter(*this), pFEnd(*this);
   std::vector<MeshFacetIterator>  clToDel; 
-  MeshPoint clPt;
-  unsigned long i;
+  unsigned long i, ulInd;
+
+  // Index des zu loeschenden Punkts
+  ulInd = rclIter._clIter - _aclPointArray.begin(); 
  
   // Eckpunkte aller Facets ueberpruefen
-  clPt = *rclIter;
   pFIter.Begin();
   pFEnd.End();
 
@@ -511,16 +507,17 @@ bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
   {
     for (i = 0; i < 3; i++)
     {
-      if (clPt == _aclPointArray[pFIter._clIter->_aulPoints[i]])
+      if (ulInd == pFIter._clIter->_aulPoints[i])
         clToDel.push_back(pFIter);
     }
     ++pFIter;
   }
 
-  // Iteratoren (Facets) nach Index RSsortieren
+  // Iteratoren (Facets) nach Index sortieren
   std::sort(clToDel.begin(), clToDel.end());
 
-  // jedes einzelne Facet loeschen
+  // jedes einzelne Facet loeschen (von hinten nach vorne, so
+  // dass Iteratoren nicht ungültig werden)
   for (i = clToDel.size(); i > 0; i--)
     DeleteFacet(clToDel[i-1]); 
 
@@ -579,7 +576,80 @@ void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, 
     _aclPointArray[ulIndex].SetInvalid();
 }
 
-void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
+void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
+{
+  _aclPointArray.SetProperty(0);
+
+  // Anzahl der ref. Facet pro Punkt
+  for (MeshFacetArray::_TConstIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++)
+  {
+    _aclPointArray[pF->_aulPoints[0]]._ulProp++;
+    _aclPointArray[pF->_aulPoints[1]]._ulProp++;
+    _aclPointArray[pF->_aulPoints[2]]._ulProp++;
+  }
+
+  // Facet ungueltig markieren und Punkt-Ref. abstimmen
+  _aclFacetArray.ResetInvalid();
+  for (std::vector<unsigned long>::const_iterator pI = raulFacets.begin(); pI != raulFacets.end(); pI++)
+  {
+    MeshFacet &rclFacet = _aclFacetArray[*pI];
+    rclFacet.SetInvalid();
+    _aclPointArray[rclFacet._aulPoints[0]]._ulProp--;
+    _aclPointArray[rclFacet._aulPoints[1]]._ulProp--;
+    _aclPointArray[rclFacet._aulPoints[2]]._ulProp--;
+  }
+
+  // Alle Punkte die kein Facet mehr ref. ungueltig setzen
+  _aclPointArray.ResetInvalid();
+  for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++)
+  {
+    if (pP->_ulProp == 0)
+      pP->SetInvalid();
+  }
+
+  RemoveInvalids();
+  RecalcBoundBox();
+}
+
+void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
+{
+  _aclPointArray.ResetInvalid();
+  for (std::vector<unsigned long>::const_iterator pI = raulPoints.begin(); pI != raulPoints.end(); pI++)
+    _aclPointArray[*pI].SetInvalid();
+
+  // Facets loeschen, wenn mind. 1 Eckpunkt Invalid ist
+  _aclPointArray.SetProperty(0);
+  for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++)
+  {
+    MeshPoint &rclP0 = _aclPointArray[pF->_aulPoints[0]];
+    MeshPoint &rclP1 = _aclPointArray[pF->_aulPoints[1]];
+    MeshPoint &rclP2 = _aclPointArray[pF->_aulPoints[2]];
+
+    if ((rclP0.IsValid() == false) || (rclP1.IsValid() == false) || (rclP2.IsValid() == false))
+    {
+      pF->SetInvalid();
+    }
+    else
+    {
+      pF->ResetInvalid();
+      rclP0._ulProp++;
+      rclP1._ulProp++;
+      rclP2._ulProp++;
+    }
+  }
+ 
+  // alle einzelne Punkte (ohne Ref. zu Facet) loeschen
+  for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++)
+  {
+    if (pP->_ulProp == 0)
+      pP->SetInvalid();
+  }
+
+  RemoveInvalids();
+  RecalcBoundBox();
+}
+
+void MeshKernel::RemoveInvalids ()
 {
   std::vector<unsigned long> aulDecrements;
   std::vector<unsigned long>::iterator       pDIter;
@@ -607,7 +677,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
   {
     if (pFIter->IsValid() == true)
     {
-      pFIter->_aulPoints[0] -= aulDecrements[pFIter->_aulPoints[0]];      
+      pFIter->_aulPoints[0] -= aulDecrements[pFIter->_aulPoints[0]];
       pFIter->_aulPoints[1] -= aulDecrements[pFIter->_aulPoints[1]];
       pFIter->_aulPoints[2] -= aulDecrements[pFIter->_aulPoints[2]];
     }
@@ -673,6 +743,26 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
       *pFTemp++ = *pFIter;
   }
   _aclFacetArray = aclFArray;
+}
+
+void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj, 
+                           const Base::Polygon2D& rclPoly, bool bCutInner, std::vector<MeshGeomFacet> &raclFacets) 
+{
+  std::vector<unsigned long> aulFacets;
+
+  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bCutInner, aulFacets );
+
+  for (std::vector<unsigned long>::iterator i = aulFacets.begin(); i != aulFacets.end(); i++)
+    raclFacets.push_back(GetFacet(*i));
+
+  DeleteFacets(aulFacets);
+}
+
+void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj,
+                           const Base::Polygon2D& rclPoly, bool bInner, std::vector<unsigned long> &raclCutted)
+{
+  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bInner, raclCutted);
+  DeleteFacets(raclCutted);
 }
 
 std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIter) const
@@ -831,99 +921,6 @@ void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
 void MeshKernel::Transform (const Base::Matrix4D &rclMat)
 {
   (*this) *= rclMat;
-}
-
-void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
-{
-  _aclPointArray.SetProperty(0);
-
-  // Anzahl der ref. Facet pro Punkt
-  for (MeshFacetArray::_TConstIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++)
-  {
-    _aclPointArray[pF->_aulPoints[0]]._ulProp++;
-    _aclPointArray[pF->_aulPoints[1]]._ulProp++;
-    _aclPointArray[pF->_aulPoints[2]]._ulProp++;
-  }
-
-  // Facet ungueltig markieren und Punkt-Ref. abstimmen
-  _aclFacetArray.ResetInvalid();
-  for (std::vector<unsigned long>::const_iterator pI = raulFacets.begin(); pI != raulFacets.end(); pI++)
-  {
-    MeshFacet &rclFacet = _aclFacetArray[*pI];
-    rclFacet.SetInvalid();
-    _aclPointArray[rclFacet._aulPoints[0]]._ulProp--;
-    _aclPointArray[rclFacet._aulPoints[1]]._ulProp--;
-    _aclPointArray[rclFacet._aulPoints[2]]._ulProp--;
-  }
-
-  // Alle Punkte die kein Facet mehr ref. ungueltig setzen
-  _aclPointArray.ResetInvalid();
-  for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++)
-  {
-    if (pP->_ulProp == 0)
-      pP->SetInvalid();
-  }
-
-  RemoveInvalids(true, true);
-  RecalcBoundBox();
-}
-
-void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
-{
-  _aclPointArray.ResetInvalid();
-  for (std::vector<unsigned long>::const_iterator pI = raulPoints.begin(); pI != raulPoints.end(); pI++)
-    _aclPointArray[*pI].SetInvalid();
-
-  // Facets loeschen, wenn mind. 1 Eckpunkt Invalid ist
-  _aclPointArray.SetProperty(0);
-  for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++)
-  {
-    MeshPoint &rclP0 = _aclPointArray[pF->_aulPoints[0]];
-    MeshPoint &rclP1 = _aclPointArray[pF->_aulPoints[1]];
-    MeshPoint &rclP2 = _aclPointArray[pF->_aulPoints[2]];
-
-    if ((rclP0.IsValid() == false) || (rclP1.IsValid() == false) || (rclP2.IsValid() == false))
-    {
-      pF->SetInvalid();
-    }
-    else
-    {
-      pF->ResetInvalid();
-      rclP0._ulProp++;
-      rclP1._ulProp++;
-      rclP2._ulProp++;
-    }
-  }
- 
-  // alle einzele Punkte (ohne Ref. zu Facet) loeschen
-  for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++)
-  {
-    if (pP->_ulProp == 0)
-      pP->SetInvalid();
-  }
-
-  RemoveInvalids(true, true);
-  RecalcBoundBox();
-}
-
-void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj, 
-                           const Base::Polygon2D& rclPoly, bool bCutInner, std::vector<MeshGeomFacet> &raclFacets) 
-{
-  std::vector<unsigned long> aulFacets;
-
-  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bCutInner, aulFacets );
-
-  for (std::vector<unsigned long>::iterator i = aulFacets.begin(); i != aulFacets.end(); i++)
-    raclFacets.push_back(GetFacet(*i));
-
-  DeleteFacets(aulFacets);
-}
-
-void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj,
-                           const Base::Polygon2D& rclPoly, bool bInner, std::vector<unsigned long> &raclCutted)
-{
-  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bInner, raclCutted);
-  DeleteFacets(raclCutted);
 }
 
 void MeshKernel::RecalcBoundBox (void)
