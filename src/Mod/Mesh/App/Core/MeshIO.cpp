@@ -402,7 +402,9 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
   this->_rclMesh.Clear(); // remove all data before
   // Don't use Assign() because Merge() checks which points are really needed.
   // This method sets already the correct neighbourhood
-  this->_rclMesh.Merge(meshPoints,meshFacets);
+  MeshKernel tmp;
+  tmp.Adopt(meshPoints,meshFacets);
+  this->_rclMesh.Merge(tmp);
 
   return true;
 }

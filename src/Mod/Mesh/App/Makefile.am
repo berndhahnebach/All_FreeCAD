@@ -270,8 +270,7 @@ libMesh_la_SOURCES=\
 		MeshFeaturePy.h \
 		MeshProperties.cpp \
 		MeshProperties.h \
-		MeshPy.cpp \
-		MeshPy.h \
+		MeshPyImp.cpp \
 		GTSAlgos.cpp \
 		GTSAlgos.h \
 		PreCompiled.cpp \

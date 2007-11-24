@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+	<PythonExport 
+		Father="PyObjectBase" 
+		Name="MeshPy" 
+		Twin="MeshObject" 
+		Namespace="Mesh" 
+		FatherInclude="Base/PyObjectBase.h" 
+		FatherNamespace="Base">
+		<Documentation>
+			<Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
+			<UserDocu>Mesh class</UserDocu>
+		</Documentation>
+		<Attribute Name="CountPoints" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Number of possible Undos</UserDocu>
+			</Documentation>
+			<Parameter Name="CountPoints" Type="Int" />
+		</Attribute>
+		<Attribute Name="CountFacets" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Number of possible Undos</UserDocu>
+			</Documentation>
+			<Parameter Name="CountFacets" Type="Int" />
+		</Attribute>
+		<Methode Name="read">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="write">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="offset">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="offsetSpecial">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="unite">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="intersect">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="difference">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="inner">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="outer">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="coarsen">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="translate">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="rotate">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="transformToEigen">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addFacet">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addFacets">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="clear">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isSolid">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="hasNonManifolds">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="removeNonManifolds">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="hasSelfIntersections">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fixSelfIntersections">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="flipNormals">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="hasNonUnifomOrientedFacets">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="countNonUnifomOrientedFacets">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="harmonizeNormals">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="countComponents">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="removeComponents">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fillupHoles">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fixIndices">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fixDeformations">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fixDegenerations">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="removeDuplicatedPoints">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="removeDuplicatedFacets">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="refine">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="optimizeTopology">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="optimizeEdges">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="splitEdges">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="splitEdge">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="splitFacet">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="swapEdge">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="collapseEdge">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="collapseFacet">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="insertVertex">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="snapVertex">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="printInfo">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="CollapseFacets">
+			<Documentation>
+				<UserDocu>bla bla</UserDocu>
+			</Documentation>
+		</Methode>
+	</PythonExport>
+</GenerateModel>
