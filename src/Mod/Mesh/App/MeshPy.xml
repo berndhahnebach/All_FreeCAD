@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
 	<PythonExport 
-		Father="PyObjectBase" 
+		Father="ComplexGeoDataPy" 
 		Name="MeshPy" 
 		Twin="MeshObject" 
 		Namespace="Mesh" 
-		FatherInclude="Base/PyObjectBase.h" 
-		FatherNamespace="Base">
+		FatherInclude="App/ComplexGeoDataPy.h" 
+		FatherNamespace="Data">
 		<Documentation>
 			<Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
 			<UserDocu>mesh() -- Create an empty mesh object.\n"

@@ -44,6 +44,7 @@ class AppExport GeoFeature : public App::DocumentObject
 public:
 
     PropertyPlacementLink Pos;
+    PropertyPlacement Placement;
 
     /// Constructor
     GeoFeature(void);

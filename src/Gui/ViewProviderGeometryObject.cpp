@@ -41,6 +41,8 @@
 #include "SoFCSelection.h"
 #include "SoFCBoundingBox.h"
 #include "Window.h"
+
+#include <Base/Placement.h>
 #include <App/PropertyGeo.h>
 
 
@@ -171,6 +173,18 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         Base::BoundBox3f box = static_cast<const App::PropertyComplexGeoData*>(prop)->getBoundingBox();
         pcBoundingBox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
         pcBoundingBox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
+    }
+    else if (prop->isDerivedFrom(App::PropertyPlacement::getClassTypeId())) {
+        Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
+        float q0 = (float)p._q[0];
+        float q1 = (float)p._q[1];
+        float q2 = (float)p._q[2];
+        float q3 = (float)p._q[3];
+        float px = (float)p._pos.x;
+        float py = (float)p._pos.y;
+        float pz = (float)p._pos.z;
+        pcTransform->rotation.setValue(q0,q1,q2,q3);
+        pcTransform->translation.setValue(px,py,pz);
     }
 }
 

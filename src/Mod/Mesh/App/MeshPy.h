@@ -4,7 +4,7 @@
 #ifndef MESH_MESHPY_H
 #define MESH_MESHPY_H
 
-#include <Base/PyObjectBase.h>
+#include <App/ComplexGeoDataPy.h>
 
 namespace Mesh
 {
@@ -17,7 +17,7 @@ class MeshObject;
 
 /** The python export class for MeshObject
  */
-class MeshExport MeshPy : public Base::PyObjectBase
+class MeshExport MeshPy : public Data::ComplexGeoDataPy
 {
 public:
     static PyTypeObject   Type;
@@ -258,7 +258,7 @@ public:
     Base::Reference<MeshObject> _meshObject;
 };
 
-#define PARENTSMeshMeshPy &MeshPy::Type,PARENTSBasePyObjectBase
+#define PARENTSMeshMeshPy &MeshPy::Type,PARENTSDataComplexGeoDataPy
 
 }  //namespace Mesh
 

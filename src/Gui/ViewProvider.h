@@ -139,6 +139,7 @@ public:
     /// set the viewing transformation of the provider
     virtual void setTransformation(const Base::Matrix4D &rcMatrix);
     virtual void setTransformation(const SbMatrix &rcMatrix);
+    SbMatrix convert(const Base::Matrix4D &rcMatrix) const;
     //@}
 
    /** event handling if the feature is in edit mode
