@@ -135,13 +135,16 @@ public:
 
     /** @name Getter/setter */
     //@{
-    /// COPIES the mesh into the Property
-    //void setValue( const MeshCore::MeshKernel& m);
-    void setValue( MeshObject* m);
-    /// REPLACES the mesh in the Property
-    //void setValue( MeshCore::MeshKernel* m);
-    /// get the Kernel (only const possible!)
+    /** This method references the passed mesh object. It does NOT create a copy.
+     * The currently referenced mesh object gets detached and possibly deleted but
+     * saved before if a transaction is open at this time.
+     */
+    void setValue(MeshObject* m);
+    /** Returns a the attached mesh object by reference. It cannot be modified 
+     * from outside.
+     */
     const MeshObject &getValue(void) const;
+    /** Returns the bounding box around the underlying mesh kernel */
     Base::BoundBox3f getBoundingBox() const;
     virtual unsigned int getMemSize (void) const;
     //@}
@@ -158,7 +161,16 @@ public:
 
     /** @name Python interface */
     //@{
+    /** Returns a Python wrapper for the referenced mesh object. It does NOT 
+     * create a copy. However, the Python wrapper is marked as \a immutable so
+     * that the mesh object cannot be modified from outside.
+     */
     PyObject* getPyObject(void);
+    /** This method copies the content, hence creates an new mesh object 
+     * to copy the data. The passed argument can be an instance of the Python
+     * wrapper for the mesh object or simply a list of triangles, i.e. a list
+     * of lists of three floats.
+     */
     void setPyObject(PyObject *value);
     //@}
 

@@ -120,47 +120,23 @@ static PyObject * insert(PyObject *self, PyObject *args)
 }
 
 static PyObject * 
-createBox(PyObject *self, PyObject *args)
+show(PyObject *self, PyObject *args)
 {
-    float x=1,y=0,z=0;
-    if (!PyArg_ParseTuple(args, "|fff",&x,&y,&z))     // convert args: Python->C 
-        return NULL;                                   // NULL triggers exception 
-
-    if (y==0) 
-        y=x;
-    if (z==0) 
-        z=x;
-
-    float hx = x/2.0;
-    float hy = y/2.0;
-    float hz = z/2.0;
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
     PY_TRY {
-        std::vector<MeshCore::MeshGeomFacet> TriaList;
-    
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, -hy, hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(-hx, -hy, hz)));
-
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, hy, -hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(hx, hy, hz)));
-
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, hz),Base::Vector3f(-hx, hy, -hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, -hy, hz),Base::Vector3f(-hx, hy, hz)));
-
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, hy, hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(hx, -hy, -hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(hx, -hy, hz)));
-
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(-hx, hy, -hz),Base::Vector3f(hx, hy, -hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, -hz),Base::Vector3f(hx, hy, -hz),Base::Vector3f(hx, -hy, -hz)));
-
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, hy, hz),Base::Vector3f(-hx, hy, hz)));
-        TriaList.push_back(MeshCore::MeshGeomFacet(Base::Vector3f(-hx, -hy, hz),Base::Vector3f(hx, -hy, hz),Base::Vector3f(hx, hy, hz)));
-
-        std::auto_ptr<MeshObject> mesh(new MeshObject);
-        mesh->addFacets(TriaList);
-
-        return new MeshPy(mesh.release());
+        App::Document *pcDoc = App::GetApplication().getActiveDocument(); 	 
+        if (!pcDoc)
+            pcDoc = App::GetApplication().newDocument();
+        MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
+        Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
+        pcFeature->Mesh.setValue(pMesh->getMesh());
+        pcDoc->recompute();
     } PY_CATCH;
+
+    Py_Return;
 }
 
 static PyObject *
@@ -184,6 +160,124 @@ createPlane(PyObject *self, PyObject *args)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         mesh->addFacets(TriaList);
         return new MeshPy(mesh.release());
+    } PY_CATCH;
+}
+
+static PyObject *
+createSphere(PyObject *self, PyObject *args)
+{
+    float radius = 5.0f;
+    int sampling = 50;
+    if (!PyArg_ParseTuple(args, "|fi",&radius,&sampling))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createSphere(radius, sampling);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of sphere failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
+    } PY_CATCH;
+}
+
+static PyObject *
+createEllipsoid(PyObject *self, PyObject *args)
+{
+    float radius1 = 2.0f;
+    float radius2 = 4.0f;
+    int sampling = 50;
+    if (!PyArg_ParseTuple(args, "|ffi",&radius1,&radius2,&sampling))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createEllipsoid(radius1, radius2, sampling);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of ellipsoid failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
+    } PY_CATCH;
+}
+
+static PyObject *
+createCylinder(PyObject *self, PyObject *args)
+{
+    float radius = 2.0f;
+    float length = 10.0f;
+    int closed = 1;
+    float edgelen = 1.0f;
+    int sampling = 50;
+    if (!PyArg_ParseTuple(args, "|ffifi",&radius,&length,&closed,&edgelen,&sampling))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createCylinder(radius, length, closed, edgelen, sampling);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of cylinder failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
+    } PY_CATCH;
+}
+
+static PyObject *
+createCone(PyObject *self, PyObject *args)
+{
+    float radius1 = 2.0f;
+    float radius2 = 4.0f;
+    float len = 10.0f;
+    int closed = 1;
+    float edgelen = 1.0f;
+    int sampling = 50;
+    if (!PyArg_ParseTuple(args, "|fffifi",&radius1,&radius2,&len,&closed,&edgelen,&sampling))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createCone(radius1, radius2, len, closed, edgelen, sampling);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of cone failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
+    } PY_CATCH;
+}
+
+static PyObject *
+createTorus(PyObject *self, PyObject *args)
+{
+    float radius1 = 10.0f;
+    float radius2 = 2.0f;
+    int sampling = 50;
+    if (!PyArg_ParseTuple(args, "|ffi",&radius1,&radius2,&sampling))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createTorus(radius1, radius2, sampling);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of torus failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
+    } PY_CATCH;
+}
+
+static PyObject * 
+createBox(PyObject *self, PyObject *args)
+{
+    float length = 10.0f;
+    float width = 10.0f;
+    float height = 10.0f;
+    if (!PyArg_ParseTuple(args, "|fff",&length,&width,&height))     // convert args: Python->C 
+        return NULL;                                   // NULL triggers exception 
+
+    PY_TRY {
+        MeshObject* mesh = MeshObject::createCube(length, width, height);
+        if (!mesh) {
+            PyErr_SetString(PyExc_Exception, "Creation of box failed");
+            return NULL;
+        }
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -257,8 +351,14 @@ struct PyMethodDef Mesh_Import_methods[] = {
     {"open"       ,open ,       METH_VARARGS, open_doc},
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a Mesh from a file and returns a Mesh object."},
-    {"createBox"  ,createBox,   Py_NEWARGS,   "Creates a solid mesh box"},
-    {"createPlane",createPlane, Py_NEWARGS,   "Creates a mesh XY plane normal +Z"},
+    {"show"       ,show,        Py_NEWARGS,   "Put a mesh object in the active document or creates one if needed"},
+    {"createBox"  ,createBox,   Py_NEWARGS,   "Create a solid mesh box"},
+    {"createPlane",createPlane, Py_NEWARGS,   "Create a mesh XY plane normal +Z"},
+    {"createSphere",createSphere, Py_NEWARGS,   "Create a tessellated sphere"},
+    {"createEllipsoid",createEllipsoid, Py_NEWARGS,   "Create a tessellated ellipsoid"},
+    {"createCylinder",createCylinder, Py_NEWARGS,   "Create a tessellated cylinder"},
+    {"createCone",createCone, Py_NEWARGS,   "Create a tessellated cone"},
+    {"createTorus",createTorus, Py_NEWARGS,   "Create a tessellated torus"},
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };

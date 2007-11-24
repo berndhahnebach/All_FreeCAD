@@ -43,7 +43,7 @@ PyObjectBase::PyObjectBase(void* p,PyTypeObject *T)
 #ifdef FC_LOGPYOBJECTS
     Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
 #endif
-    StatusBits.set(0);
+    StatusBits.set(0); // valid, the second bit is NOT set, i.e. it's mutable
 }
 /// destructor
 PyObjectBase::~PyObjectBase() 

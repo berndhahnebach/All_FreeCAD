@@ -31,6 +31,7 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/PyCXX/Objects.hxx>
 
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
@@ -506,4 +507,158 @@ void MeshObject::removeDuplicatedFacets()
 {
     MeshCore::MeshFixDuplicateFacets eval(_kernel);
     eval.Fixup();
+}
+
+MeshObject* MeshObject::createMeshFromList(Py::List& list)
+{
+    std::vector<MeshCore::MeshGeomFacet> facets;
+    MeshCore::MeshGeomFacet facet;
+    int i = 0;
+    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+        Py::List item(*it);
+        for (int j = 0; j < 3; j++) {
+            Py::Float value(item[j]);
+            facet._aclPoints[i][j] = (float)value;
+        }
+        if (++i == 3) {
+            i = 0;
+            facet.CalcNormal();
+            facets.push_back(facet);
+        }
+    }
+
+    std::auto_ptr<MeshObject> mesh(new MeshObject);
+    //mesh->addFacets(facets);
+    mesh->getKernel() = facets;
+    return mesh.release();
+}
+
+MeshObject* MeshObject::createSphere(float radius, int sampling)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Sphere"));
+        Py::Tuple args(2);
+        args.setItem(0, Py::Float(radius));
+        args.setItem(1, Py::Int(sampling));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
+MeshObject* MeshObject::createEllipsoid(float radius1, float radius2, int sampling)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Ellipsoid"));
+        Py::Tuple args(3);
+        args.setItem(0, Py::Float(radius1));
+        args.setItem(1, Py::Float(radius2));
+        args.setItem(2, Py::Int(sampling));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
+MeshObject* MeshObject::createCylinder(float radius, float length, int closed, float edgelen, int sampling)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Cylinder"));
+        Py::Tuple args(5);
+        args.setItem(0, Py::Float(radius));
+        args.setItem(1, Py::Float(length));
+        args.setItem(2, Py::Int(closed));
+        args.setItem(3, Py::Float(edgelen));
+        args.setItem(4, Py::Int(sampling));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
+MeshObject* MeshObject::createCone(float radius1, float radius2, float len, int closed, float edgelen, int sampling)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Cone"));
+        Py::Tuple args(6);
+        args.setItem(0, Py::Float(radius1));
+        args.setItem(1, Py::Float(radius2));
+        args.setItem(2, Py::Float(len));
+        args.setItem(3, Py::Int(closed));
+        args.setItem(4, Py::Float(edgelen));
+        args.setItem(5, Py::Int(sampling));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
+MeshObject* MeshObject::createTorus(float radius1, float radius2, int sampling)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Toroid"));
+        Py::Tuple args(3);
+        args.setItem(0, Py::Float(radius1));
+        args.setItem(1, Py::Float(radius2));
+        args.setItem(2, Py::Int(sampling));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
+MeshObject* MeshObject::createCube(float length, float width, float height)
+{
+    // load the 'BuildRegularGeoms' module
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("Cube"));
+        Py::Tuple args(3);
+        args.setItem(0, Py::Float(length));
+        args.setItem(1, Py::Float(width));
+        args.setItem(2, Py::Float(height));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
 }
