@@ -66,7 +66,7 @@ class MainWindow:
 class PythonQtWorkbench (__main__.Workbench):
 	"Python Qt workbench object"
 	Icon = "python"
-	MenuText = "Python Qt"
+	MenuText = "PyQt sandbox"
 	ToolTip = "Python Qt workbench"
 
 	def __init__(self):

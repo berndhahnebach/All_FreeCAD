@@ -66,7 +66,7 @@ PyTypeObject MeshPy::Type = {
     Mesh::MeshPy::Methods,                     /*tp_methods */
     0,                                                /*tp_members */
     Mesh::MeshPy::GetterSetter,                     /*tp_getset */
-    &Base::PyObjectBase::Type,                        /*tp_base */
+    &Data::ComplexGeoDataPy::Type,                        /*tp_base */
     0,                                                /*tp_dict */
     0,                                                /*tp_descr_get */
     0,                                                /*tp_descr_set */
@@ -3547,7 +3547,7 @@ PyObject *MeshPy::_getattr(char *attr)				// __getattr__ function: note only nee
     }
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 
-    _getattr_up(PyObjectBase);
+    _getattr_up(ComplexGeoDataPy);
 }
 
 int MeshPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -3606,7 +3606,7 @@ int MeshPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note
     }
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 
-    return PyObjectBase::_setattr(attr, value);
+    return ComplexGeoDataPy::_setattr(attr, value);
 }
 
 MeshObject *MeshPy::getMeshObjectObject(void) const

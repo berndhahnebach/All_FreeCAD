@@ -64,6 +64,7 @@
 #include <Mod/Mesh/App/Core/Visitor.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/Gui/SoFCMeshNode.h>
 #include <Mod/Mesh/Gui/SoFCMeshVertex.h>
 #include <Mod/Mesh/Gui/SoFCMeshFaceSet.h>
@@ -123,6 +124,9 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(fals
         color.setPackedValue(setting);
         ShapeColor.setValue(color);
     }
+
+    pcComplexData = new SoTransform();
+    pcComplexData->ref();
 }
 
 ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
@@ -132,6 +136,7 @@ ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
     pcPointStyle->unref();
     pShapeHints->unref();
     pcMatBinding->unref();
+    pcComplexData->unref();
 }
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
@@ -175,17 +180,13 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderGeometryObject::attach(pcFeat);
 
-    // only one selection node for the mesh
-    const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
+    // apply the transformation of the mesh object
+    pcHighlight->addChild(pcComplexData);
 
     pcVertexNode = new SoFCMeshVertex;
-    const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().getKernel().GetPoints();
-    pcVertexNode->point.setValue(rPAry);
     pcHighlight->addChild(pcVertexNode);
 
     pcFacetNode = new SoFCMeshFacet;
-    const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().getKernel().GetFacets();
-    pcFacetNode->coordIndex.setValue(rFAry);
     pcHighlight->addChild(pcFacetNode);
 
     pcFaceSet = new SoFCMeshFaceSet;
@@ -227,25 +228,15 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
-        const Mesh::Feature* meshFeature = static_cast<Mesh::Feature*>(pcObject);
-        if (pcHighlight->getNumChildren() > 2) {
-            SoNode* ch1 = pcHighlight->getChild(0);
-            if (ch1->getTypeId() == SoFCMeshVertex::getClassTypeId()) {
-                const MeshCore::MeshPointArray& rPAry = meshFeature->Mesh.getValue().getKernel().GetPoints();
-                SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
-                vertex->point.setValue(rPAry);
-            }
+        const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
+        this->pcComplexData->setMatrix(convert(mesh->getValue().getMatrix()));
+        const MeshCore::MeshPointArray& rPAry = mesh->getValue().getKernel().GetPoints();
+        this->pcVertexNode->point.setValue(rPAry);
+        const MeshCore::MeshFacetArray& rFAry = mesh->getValue().getKernel().GetFacets();
+        this->pcFacetNode->coordIndex.setValue(rFAry);
 
-            SoNode* ch2 = pcHighlight->getChild(1);
-            if (ch2->getTypeId() == SoFCMeshFacet::getClassTypeId()) {
-                const MeshCore::MeshFacetArray& rFAry = meshFeature->Mesh.getValue().getKernel().GetFacets();
-                SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
-                facet->coordIndex.setValue(rFAry);
-            }
-
-            // Needs to update internal bounding box caches
-            pcFaceSet->touch();
-        }
+        // Needs to update internal bounding box caches
+        pcFaceSet->touch();
     }
 }
 

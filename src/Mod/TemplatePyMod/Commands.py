@@ -72,9 +72,23 @@ class TemplatePyMod_Cmd2:
         return {'Pixmap'  : 'Std_Tool2', 'MenuText': 'Create polygon...', 'ToolTip': 'Create a polygon by clicking inside the viewer'}
 
 
+class TemplatePyMod_Cmd3:
+    "Import PyQt4"
+    def Activated(self):
+        import PythonQt
+        from PyQt4 import QtGui
+        mw=QtGui.qApp.activeWindow()
+        QtGui.QMessageBox.information(mw,"PyQt","""PyQt was loaded successfully.\n
+        Load the PyQt sandbox now...""")
+        FreeCADGui.activateWorkbench("PythonQtWorkbench")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'python', 'MenuText': 'Import PyQt4', 'ToolTip': 'Add a workbench for PyQt4 samples'}
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-addCommand('TemplatePyMod_Cmd1'        ,TemplatePyMod_Cmd1())
-addCommand('TemplatePyMod_Cmd2'        ,TemplatePyMod_Cmd2())
+addCommand('TemplatePyMod_Cmd1',TemplatePyMod_Cmd1())
+addCommand('TemplatePyMod_Cmd2',TemplatePyMod_Cmd2())
+addCommand('TemplatePyMod_Cmd3',TemplatePyMod_Cmd3())
 

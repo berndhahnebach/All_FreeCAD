@@ -28,17 +28,17 @@ class TemplatePyModWorkbench ( Workbench ):
 			"................",
 			"................"};
 			"""
-	MenuText = "Python template"
+	MenuText = "Python sandbox"
 	ToolTip = "Python template workbench"
 	
 	def Initialize(self):
 		Log ('Loading GUI of TemplatePyMod module...\n')
 		import Commands
 
-		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"])
+		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3"])
 
 		menu = ["ModulePy &Commands","PyModuleCommands"]
-		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2"]
+		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3"]
 		self.appendCommandbar("PyModuleCommands",list)
 		self.appendMenu(menu,list)
 

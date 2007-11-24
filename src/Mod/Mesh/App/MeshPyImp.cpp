@@ -36,7 +36,7 @@ using namespace Mesh;
 // Constructor
 //--------------------------------------------------------------------------
 MeshPy::MeshPy(MeshObject *pcMeshObject, PyTypeObject *T)
-    : PyObjectBase(pcMeshObject, T), _meshObject(pcMeshObject)
+    : ComplexGeoDataPy(pcMeshObject, T), _meshObject(pcMeshObject)
 {
 }
 

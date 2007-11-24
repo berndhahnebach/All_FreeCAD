@@ -33,7 +33,6 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Matrix.h>
-#include <Base/Placement.h>
 #include <App/PropertyGeo.h>
 
 #include "ViewProvider.h"
@@ -85,24 +84,10 @@ ViewProvider::~ViewProvider()
 void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
-    if (prop->getTypeId() == App::PropertyPlacement::getClassTypeId()) {
-        Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
-        float q0 = (float)p._q[0];
-        float q1 = (float)p._q[1];
-        float q2 = (float)p._q[2];
-        float q3 = (float)p._q[3];
-        float px = (float)p._pos.x;
-        float py = (float)p._pos.y;
-        float pz = (float)p._pos.z;
-        pcTransform->rotation.setValue(q0,q1,q2,q3);
-        pcTransform->translation.setValue(px,py,pz);
-    }
-    else {
-        bool vis = this->isShow();
-        if (vis) hide();
-        updateData(prop);
-        if (vis) show();
-    }
+    bool vis = this->isShow();
+    if (vis) hide();
+    updateData(prop);
+    if (vis) show();
 }
 
 QIcon ViewProvider::getIcon(void) const
@@ -112,9 +97,7 @@ QIcon ViewProvider::getIcon(void) const
 
 void ViewProvider::setTransformation(const Base::Matrix4D &rcMatrix)
 {
-
   double dMtrx[16];
-  
   rcMatrix.getGLMatrix(dMtrx);
 
   pcTransform->setMatrix(SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
@@ -126,6 +109,16 @@ void ViewProvider::setTransformation(const Base::Matrix4D &rcMatrix)
 void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
 {
   pcTransform->setMatrix(rcMatrix);
+}
+
+SbMatrix ViewProvider::convert(const Base::Matrix4D &rcMatrix) const
+{
+  double dMtrx[16];
+  rcMatrix.getGLMatrix(dMtrx);
+  return SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
+                  dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
+                  dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
+                  dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]);
 }
 
 void ViewProvider::addDisplayMaskMode( SoNode *node, const char* type )
