@@ -43,7 +43,20 @@ PyTypeObject MeshPy::Type = {
     0,                                                /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-    "Mesh class",           /*tp_doc */
+    "mesh() -- Create an empty mesh object.\n"
+			"\n"
+			"This class allows to manipulate the mesh object by adding new facets, deleting facets, importing from an STL file,\n"
+			"transforming the mesh and much more.\n"
+			"For a complete overview of what can be done see also the documentation of mesh.\n"
+			"A mesh object cannot be added to an existing document directly. Therefore the document must create an object\n"
+			"with a property class that supports meshes.\n"
+			"Example:\n"
+			"  m = Mesh.mesh()\n"
+			"  ... # Manipulate the mesh\n"
+			"  d = FreeCAD.activeDocument() # Get a reference to the actie document\n"
+			"  f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature\n"
+			"  f.Mesh = m # Assign the mesh object to the internal property\n"
+			"  d.recompute()\n",           /*tp_doc */
     0,                                                /*tp_traverse */
     0,                                                /*tp_clear */
     0,                                                /*tp_richcompare */
@@ -75,232 +88,232 @@ PyMethodDef MeshPy::Methods[] = {
     {"read",
         (PyCFunction) staticCallback_read,
         Py_NEWARGS,
-        "bla bla"
+        "Read in a mesh object from file."
     },
     {"write",
         (PyCFunction) staticCallback_write,
         Py_NEWARGS,
-        "bla bla"
+        "Write the mesh object into file."
     },
     {"offset",
         (PyCFunction) staticCallback_offset,
         Py_NEWARGS,
-        "bla bla"
+        "Move the point along their normals"
     },
     {"offsetSpecial",
         (PyCFunction) staticCallback_offsetSpecial,
         Py_NEWARGS,
-        "bla bla"
+        "Move the point along their normals"
     },
     {"unite",
         (PyCFunction) staticCallback_unite,
         Py_NEWARGS,
-        "bla bla"
+        "Union of this and the given mesh object."
     },
     {"intersect",
         (PyCFunction) staticCallback_intersect,
         Py_NEWARGS,
-        "bla bla"
+        "Intersection of this and the given mesh object."
     },
     {"difference",
         (PyCFunction) staticCallback_difference,
         Py_NEWARGS,
-        "bla bla"
+        "Difference of this and the given mesh object."
     },
     {"inner",
         (PyCFunction) staticCallback_inner,
         Py_NEWARGS,
-        "bla bla"
+        "Get the part inside of the intersection"
     },
     {"outer",
         (PyCFunction) staticCallback_outer,
         Py_NEWARGS,
-        "bla bla"
+        "Get the part outside the intersection"
     },
     {"coarsen",
         (PyCFunction) staticCallback_coarsen,
         Py_NEWARGS,
-        "bla bla"
+        "Coarse the mesh"
     },
     {"translate",
         (PyCFunction) staticCallback_translate,
         Py_NEWARGS,
-        "bla bla"
+        "Apply a translation to the mesh"
     },
     {"rotate",
         (PyCFunction) staticCallback_rotate,
         Py_NEWARGS,
-        "bla bla"
+        "Apply a rotation to the mesh"
     },
     {"transformToEigen",
         (PyCFunction) staticCallback_transformToEigen,
         Py_NEWARGS,
-        "bla bla"
+        "Transform the mesh to its eigenbase"
     },
     {"addFacet",
         (PyCFunction) staticCallback_addFacet,
         Py_NEWARGS,
-        "bla bla"
+        "Add a facet to the mesh"
     },
     {"addFacets",
         (PyCFunction) staticCallback_addFacets,
         Py_NEWARGS,
-        "bla bla"
+        "Add a list of facets to the mesh"
     },
     {"clear",
         (PyCFunction) staticCallback_clear,
         Py_NEWARGS,
-        "bla bla"
+        "Clear the mesh"
     },
     {"isSolid",
         (PyCFunction) staticCallback_isSolid,
         Py_NEWARGS,
-        "bla bla"
+        "Check if the mesh is a solid"
     },
     {"hasNonManifolds",
         (PyCFunction) staticCallback_hasNonManifolds,
         Py_NEWARGS,
-        "bla bla"
+        "Check if the mesh has non-manifolds"
     },
     {"removeNonManifolds",
         (PyCFunction) staticCallback_removeNonManifolds,
         Py_NEWARGS,
-        "bla bla"
+        "Remove non-manifolds"
     },
     {"hasSelfIntersections",
         (PyCFunction) staticCallback_hasSelfIntersections,
         Py_NEWARGS,
-        "bla bla"
+        "Check if the mesh intersects itself"
     },
     {"fixSelfIntersections",
         (PyCFunction) staticCallback_fixSelfIntersections,
         Py_NEWARGS,
-        "bla bla"
+        "Repair self-intersections"
     },
     {"flipNormals",
         (PyCFunction) staticCallback_flipNormals,
         Py_NEWARGS,
-        "bla bla"
+        "Flip the mesh normals"
     },
     {"hasNonUnifomOrientedFacets",
         (PyCFunction) staticCallback_hasNonUnifomOrientedFacets,
         Py_NEWARGS,
-        "bla bla"
+        "Check if the mesh has facets with inconsistent orientation"
     },
     {"countNonUnifomOrientedFacets",
         (PyCFunction) staticCallback_countNonUnifomOrientedFacets,
         Py_NEWARGS,
-        "bla bla"
+        "Get the number of wrong oriented facets"
     },
     {"harmonizeNormals",
         (PyCFunction) staticCallback_harmonizeNormals,
         Py_NEWARGS,
-        "bla bla"
+        "Adjust wrong oriented facets"
     },
     {"countComponents",
         (PyCFunction) staticCallback_countComponents,
         Py_NEWARGS,
-        "bla bla"
+        "Get the number of topologic independent areas"
     },
     {"removeComponents",
         (PyCFunction) staticCallback_removeComponents,
         Py_NEWARGS,
-        "bla bla"
+        "Remove components with less or equal to number of given facets"
     },
     {"fillupHoles",
         (PyCFunction) staticCallback_fillupHoles,
         Py_NEWARGS,
-        "bla bla"
+        "Fillup holes"
     },
     {"fixIndices",
         (PyCFunction) staticCallback_fixIndices,
         Py_NEWARGS,
-        "bla bla"
+        "Repair any invalid indices"
     },
     {"fixDeformations",
         (PyCFunction) staticCallback_fixDeformations,
         Py_NEWARGS,
-        "bla bla"
+        "Repair deformed facets"
     },
     {"fixDegenerations",
         (PyCFunction) staticCallback_fixDegenerations,
         Py_NEWARGS,
-        "bla bla"
+        "Remove degenerated facets"
     },
     {"removeDuplicatedPoints",
         (PyCFunction) staticCallback_removeDuplicatedPoints,
         Py_NEWARGS,
-        "bla bla"
+        "Remove duplicated points"
     },
     {"removeDuplicatedFacets",
         (PyCFunction) staticCallback_removeDuplicatedFacets,
         Py_NEWARGS,
-        "bla bla"
+        "Remove duplicated facets"
     },
     {"refine",
         (PyCFunction) staticCallback_refine,
         Py_NEWARGS,
-        "bla bla"
+        "Refine the mesh"
     },
     {"optimizeTopology",
         (PyCFunction) staticCallback_optimizeTopology,
         Py_NEWARGS,
-        "bla bla"
+        "Optimize the edges to get nicer facets"
     },
     {"optimizeEdges",
         (PyCFunction) staticCallback_optimizeEdges,
         Py_NEWARGS,
-        "bla bla"
+        "Optimize the edges to get nicer facets"
     },
     {"splitEdges",
         (PyCFunction) staticCallback_splitEdges,
         Py_NEWARGS,
-        "bla bla"
+        "Split all edges"
     },
     {"splitEdge",
         (PyCFunction) staticCallback_splitEdge,
         Py_NEWARGS,
-        "bla bla"
+        "Split edge"
     },
     {"splitFacet",
         (PyCFunction) staticCallback_splitFacet,
         Py_NEWARGS,
-        "bla bla"
+        "Split facet"
     },
     {"swapEdge",
         (PyCFunction) staticCallback_swapEdge,
         Py_NEWARGS,
-        "bla bla"
+        "Swap the common edge with the neighbour"
     },
     {"collapseEdge",
         (PyCFunction) staticCallback_collapseEdge,
         Py_NEWARGS,
-        "bla bla"
+        "Remove an edge and both facets that share this edge"
     },
     {"collapseFacet",
         (PyCFunction) staticCallback_collapseFacet,
         Py_NEWARGS,
-        "bla bla"
+        "Remove a facet"
     },
     {"collapseFacets",
         (PyCFunction) staticCallback_collapseFacets,
         Py_NEWARGS,
-        "bla bla"
+        "Remove a list of facets"
     },
     {"insertVertex",
         (PyCFunction) staticCallback_insertVertex,
         Py_NEWARGS,
-        "bla bla"
+        "Insert a vertex into a facet"
     },
     {"snapVertex",
         (PyCFunction) staticCallback_snapVertex,
         Py_NEWARGS,
-        "bla bla"
+        "Insert a new facet at the border"
     },
     {"printInfo",
         (PyCFunction) staticCallback_printInfo,
         Py_NEWARGS,
-        "bla bla"
+        "Get detailed information about the mesh"
     },
     {NULL, NULL}		/* Sentinel */
 };
@@ -310,13 +323,13 @@ PyGetSetDef MeshPy::GetterSetter[] = {
     {"CountPoints",
         (getter) staticCallback_getCountPoints,
         (setter) staticCallback_setCountPoints, 
-        "Number of possible Undos",
+        "Return the number of vertices of the mesh object.",
         NULL
     },
     {"CountFacets",
         (getter) staticCallback_getCountFacets,
         (setter) staticCallback_setCountFacets, 
-        "Number of possible Undos",
+        "Return the number of facets of the mesh object.",
         NULL
     },
     {NULL, NULL}		/* Sentinel */
@@ -3468,6 +3481,8 @@ int MeshPy::staticCallback_setCountFacets (PyObject *self, PyObject *value, void
     return -1;
 }
 
+
+
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
@@ -3599,7 +3614,313 @@ MeshObject *MeshPy::getMeshObjectObject(void) const
     return static_cast<MeshObject *>(_pcTwinPointer);
 }
 
+#if 0
 /* From here on come the methods you have to implement, but NOT in this module. Implement in MeshPyImp.cpp! This prototypes 
  * are just for convenience when you add a new method.
  */
+
+// returns a string which represent the object e.g. when printed in python
+const char *MeshPy::representation(void) const
+{
+    return "<MeshObject object>";
+}
+
+PyObject*  MeshPy::read(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::write(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::offset(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::offsetSpecial(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::unite(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::intersect(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::difference(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::inner(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::outer(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::coarsen(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::translate(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::rotate(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::transformToEigen(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::addFacet(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::addFacets(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::clear(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::isSolid(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::hasNonManifolds(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::removeNonManifolds(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::hasSelfIntersections(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::fixSelfIntersections(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::flipNormals(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::hasNonUnifomOrientedFacets(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::countNonUnifomOrientedFacets(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::harmonizeNormals(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::countComponents(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::removeComponents(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::fillupHoles(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::fixIndices(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::fixDeformations(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::fixDegenerations(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::removeDuplicatedPoints(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::removeDuplicatedFacets(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::refine(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::optimizeTopology(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::optimizeEdges(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::splitEdges(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::splitEdge(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::splitFacet(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::swapEdge(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::collapseEdge(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::collapseFacet(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::collapseFacets(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::insertVertex(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::snapVertex(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject*  MeshPy::printInfo(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+Py::Int MeshPy::getCountPoints(void) const
+{
+    return Py::Int();
+}
+
+Py::Int MeshPy::getCountFacets(void) const
+{
+    return Py::Int();
+}
+
+PyObject *MeshPy::getCustomAttributes(const char* attr) const
+{
+    return 0;
+}
+
+int MeshPy::setCustomAttributes(const char* attr, PyObject *obj)
+{
+    return 0; 
+}
+#endif
+
+
 
