@@ -42,12 +42,14 @@ set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtSvg
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtTest
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtUITools
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtXml
+set INCLUDE=%INCLUDE%;D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs5\include\OpenCV10
 
 rem Set lib Pathes
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK\Lib
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Visual Studio\VC98\Lib
 set LIB=%LIB%;%QTDIR%\lib
 set LIB=%LIB%;%FREECADLIB%\lib
+set LIB=%LIB%;D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs5\lib
 
 rem Start the Visuall Studio build process
 vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv 

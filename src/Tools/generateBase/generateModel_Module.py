@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Sun May 27 16:29:48 2007 by generateDS.py.
+# Generated Sun Nov 25 21:12:22 2007 by generateDS.py.
 #
 
 import sys
@@ -216,13 +216,17 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, FatherNamespace='', Name='', FatherInclude='', Father='', Namespace='', Twin='', Documentation=None, Methode=None, Attribute=None, CustomAttributes=''):
+    def __init__(self, FatherNamespace='', Name='', FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
         self.FatherNamespace = FatherNamespace
         self.Name = Name
         self.FatherInclude = FatherInclude
         self.Father = Father
         self.Namespace = Namespace
         self.Twin = Twin
+        self.Constructor = Constructor
+        self.TwinPointer = TwinPointer
+        self.Include = Include
+        self.Delete = Delete
         self.Documentation = Documentation
         if Methode is None:
             self.Methode = []
@@ -233,6 +237,7 @@ class PythonExport:
         else:
             self.Attribute = Attribute
         self.CustomAttributes = CustomAttributes
+        self.ClassDeclarations = ClassDeclarations
     def factory(*args_, **kwargs_):
         if PythonExport.subclass:
             return PythonExport.subclass(*args_, **kwargs_)
@@ -251,6 +256,8 @@ class PythonExport:
     def insertAttribute(self, index, value): self.Attribute[index] = value
     def getCustomattributes(self): return self.CustomAttributes
     def setCustomattributes(self, CustomAttributes): self.CustomAttributes = CustomAttributes
+    def getClassdeclarations(self): return self.ClassDeclarations
+    def setClassdeclarations(self, ClassDeclarations): self.ClassDeclarations = ClassDeclarations
     def getFathernamespace(self): return self.FatherNamespace
     def setFathernamespace(self, FatherNamespace): self.FatherNamespace = FatherNamespace
     def getName(self): return self.Name
@@ -263,6 +270,14 @@ class PythonExport:
     def setNamespace(self, Namespace): self.Namespace = Namespace
     def getTwin(self): return self.Twin
     def setTwin(self, Twin): self.Twin = Twin
+    def getConstructor(self): return self.Constructor
+    def setConstructor(self, Constructor): self.Constructor = Constructor
+    def getTwinpointer(self): return self.TwinPointer
+    def setTwinpointer(self, TwinPointer): self.TwinPointer = TwinPointer
+    def getInclude(self): return self.Include
+    def setInclude(self, Include): self.Include = Include
+    def getDelete(self): return self.Delete
+    def setDelete(self, Delete): self.Delete = Delete
     def export(self, outfile, level, name_='PythonExport'):
         showIndent(outfile, level)
         outfile.write('<%s' % (name_, ))
@@ -278,6 +293,12 @@ class PythonExport:
         outfile.write(' Father="%s"' % (self.getFather(), ))
         outfile.write(' Namespace="%s"' % (self.getNamespace(), ))
         outfile.write(' Twin="%s"' % (self.getTwin(), ))
+        if self.getConstructor() is not None:
+            outfile.write(' Constructor="%s"' % (self.getConstructor(), ))
+        outfile.write(' TwinPointer="%s"' % (self.getTwinpointer(), ))
+        outfile.write(' Include="%s"' % (self.getInclude(), ))
+        if self.getDelete() is not None:
+            outfile.write(' Delete="%s"' % (self.getDelete(), ))
     def exportChildren(self, outfile, level, name_='PythonExport'):
         if self.Documentation:
             self.Documentation.export(outfile, level)
@@ -287,6 +308,8 @@ class PythonExport:
             Attribute_.export(outfile, level)
         showIndent(outfile, level)
         outfile.write('<CustomAttributes>%s</CustomAttributes>\n' % quote_xml(self.getCustomattributes()))
+        showIndent(outfile, level)
+        outfile.write('<ClassDeclarations>%s</ClassDeclarations>\n' % quote_xml(self.getClassdeclarations()))
     def exportLiteral(self, outfile, level, name_='PythonExport'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
@@ -304,6 +327,14 @@ class PythonExport:
         outfile.write('Namespace = "%s",\n' % (self.getNamespace(),))
         showIndent(outfile, level)
         outfile.write('Twin = "%s",\n' % (self.getTwin(),))
+        showIndent(outfile, level)
+        outfile.write('Constructor = "%s",\n' % (self.getConstructor(),))
+        showIndent(outfile, level)
+        outfile.write('TwinPointer = "%s",\n' % (self.getTwinpointer(),))
+        showIndent(outfile, level)
+        outfile.write('Include = "%s",\n' % (self.getInclude(),))
+        showIndent(outfile, level)
+        outfile.write('Delete = "%s",\n' % (self.getDelete(),))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.Documentation:
             showIndent(outfile, level)
@@ -337,6 +368,8 @@ class PythonExport:
         outfile.write('],\n')
         showIndent(outfile, level)
         outfile.write('CustomAttributes=%s,\n' % quote_python(self.getCustomattributes()))
+        showIndent(outfile, level)
+        outfile.write('ClassDeclarations=%s,\n' % quote_python(self.getClassdeclarations()))
     def build(self, node_):
         attrs = node_.attributes
         self.buildAttributes(attrs)
@@ -356,6 +389,24 @@ class PythonExport:
             self.Namespace = attrs.get('Namespace').value
         if attrs.get('Twin'):
             self.Twin = attrs.get('Twin').value
+        if attrs.get('Constructor'):
+            if attrs.get('Constructor').value in ('true', '1'):
+                self.Constructor = 1
+            elif attrs.get('Constructor').value in ('false', '0'):
+                self.Constructor = 0
+            else:
+                raise ValueError('Bad boolean attribute (Constructor)')
+        if attrs.get('TwinPointer'):
+            self.TwinPointer = attrs.get('TwinPointer').value
+        if attrs.get('Include'):
+            self.Include = attrs.get('Include').value
+        if attrs.get('Delete'):
+            if attrs.get('Delete').value in ('true', '1'):
+                self.Delete = 1
+            elif attrs.get('Delete').value in ('false', '0'):
+                self.Delete = 0
+            else:
+                raise ValueError('Bad boolean attribute (Delete)')
     def buildChildren(self, child_, nodeName_):
         if child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'Documentation':
@@ -378,12 +429,19 @@ class PythonExport:
             for text__content_ in child_.childNodes:
                 CustomAttributes_ += text__content_.nodeValue
             self.CustomAttributes = CustomAttributes_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'ClassDeclarations':
+            ClassDeclarations_ = ''
+            for text__content_ in child_.childNodes:
+                ClassDeclarations_ += text__content_.nodeValue
+            self.ClassDeclarations = ClassDeclarations_
 # end class PythonExport
 
 
 class Methode:
     subclass = None
-    def __init__(self, Name='', Documentation=None, Parameter=None):
+    def __init__(self, Const=0, Name='', Documentation=None, Parameter=None):
+        self.Const = Const
         self.Name = Name
         self.Documentation = Documentation
         if Parameter is None:
@@ -402,6 +460,8 @@ class Methode:
     def setParameter(self, Parameter): self.Parameter = Parameter
     def addParameter(self, value): self.Parameter.append(value)
     def insertParameter(self, index, value): self.Parameter[index] = value
+    def getConst(self): return self.Const
+    def setConst(self, Const): self.Const = Const
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
     def export(self, outfile, level, name_='Methode'):
@@ -413,6 +473,8 @@ class Methode:
         showIndent(outfile, level)
         outfile.write('</%s>\n' % name_)
     def exportAttributes(self, outfile, level, name_='Methode'):
+        if self.getConst() is not None:
+            outfile.write(' Const="%s"' % (self.getConst(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
     def exportChildren(self, outfile, level, name_='Methode'):
         if self.Documentation:
@@ -424,6 +486,8 @@ class Methode:
         self.exportLiteralAttributes(outfile, level, name_)
         self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('Const = "%s",\n' % (self.getConst(),))
         showIndent(outfile, level)
         outfile.write('Name = "%s",\n' % (self.getName(),))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -452,6 +516,13 @@ class Methode:
             nodeName_ = child_.nodeName.split(':')[-1]
             self.buildChildren(child_, nodeName_)
     def buildAttributes(self, attrs):
+        if attrs.get('Const'):
+            if attrs.get('Const').value in ('true', '1'):
+                self.Const = 1
+            elif attrs.get('Const').value in ('false', '0'):
+                self.Const = 0
+            else:
+                raise ValueError('Bad boolean attribute (Const)')
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
     def buildChildren(self, child_, nodeName_):
@@ -1484,6 +1555,28 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             val = attrs.get('Twin', None)
             if val is not None:
                 obj.setTwin(val)
+            val = attrs.get('Constructor', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setConstructor(1)
+                elif val in ('false', '0'):
+                    obj.setConstructor(0)
+                else:
+                    self.reportError('"Constructor" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('TwinPointer', None)
+            if val is not None:
+                obj.setTwinpointer(val)
+            val = attrs.get('Include', None)
+            if val is not None:
+                obj.setInclude(val)
+            val = attrs.get('Delete', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setDelete(1)
+                elif val in ('false', '0'):
+                    obj.setDelete(0)
+                else:
+                    self.reportError('"Delete" attribute must be boolean ("true", "1", "false", "0")')
             stackObj = SaxStackElement('PythonExport', obj)
             self.stack.append(stackObj)
             done = 1
@@ -1494,6 +1587,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             done = 1
         elif name == 'Methode':
             obj = Methode.factory()
+            val = attrs.get('Const', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setConst(1)
+                elif val in ('false', '0'):
+                    obj.setConst(0)
+                else:
+                    self.reportError('"Const" attribute must be boolean ("true", "1", "false", "0")')
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)
@@ -1529,6 +1630,10 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             done = 1
         elif name == 'CustomAttributes':
             stackObj = SaxStackElement('CustomAttributes', None)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'ClassDeclarations':
+            stackObj = SaxStackElement('ClassDeclarations', None)
             self.stack.append(stackObj)
             done = 1
         elif name == 'Dependencies':
@@ -1641,6 +1746,12 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             if len(self.stack) >= 2:
                 content = self.stack[-1].content
                 self.stack[-2].obj.setCustomattributes(content)
+                self.stack.pop()
+                done = 1
+        elif name == 'ClassDeclarations':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                self.stack[-2].obj.setClassdeclarations(content)
                 self.stack.pop()
                 done = 1
         elif name == 'Dependencies':

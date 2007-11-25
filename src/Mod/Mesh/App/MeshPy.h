@@ -5,11 +5,10 @@
 #define MESH_MESHPY_H
 
 #include <App/ComplexGeoDataPy.h>
+#include "Mesh.h"
 
 namespace Mesh
 {
-
-class MeshObject;
 
 //===========================================================================
 // MeshPy - Python wrapper
@@ -28,14 +27,12 @@ public:
     virtual PyParentObject *GetParents(void) {return Parents;}
 
 public:
-    MeshPy(MeshObject *pcMeshObjectObject, PyTypeObject *T = &Type);
-    static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
-    static int PyInit(PyObject*, PyObject*, PyObject*);
+    MeshPy(Base::Reference<MeshObject> *pcObject, PyTypeObject *T = &Type);
+    static PyObject *PyMake(PyObject *, PyObject *);
+    int PyInit(PyObject* self, PyObject* args, PyObject*);
     ~MeshPy();
 
-    /// sets this object to a new mesh kernel, the old will be deleted!
-    void setMesh(MeshObject* pcMesh);
-    MeshObject* getMesh(void) const;
+    typedef Base::Reference<MeshObject>* PointerType ;
 
     virtual PyObject *_repr(void);        // the representation
     const char *representation(void) const;
@@ -231,6 +228,14 @@ public:
 
     /** @name callbacks and implementers for the python object methods */
     //@{
+    ///getter callback for the Points attribute
+    static PyObject * staticCallback_getPoints (PyObject *self, void *closure);
+    /// getter for the Points attribute
+    Py::List getPoints(void) const;
+    /// setter callback for the Points attribute
+    static int staticCallback_setPoints (PyObject *self, PyObject *value, void *closure);
+    // no setter method,  Points is read only!
+   //@}
     ///getter callback for the CountPoints attribute
     static PyObject * staticCallback_getCountPoints (PyObject *self, void *closure);
     /// getter for the CountPoints attribute
@@ -238,6 +243,7 @@ public:
     /// setter callback for the CountPoints attribute
     static int staticCallback_setCountPoints (PyObject *self, PyObject *value, void *closure);
     // no setter method,  CountPoints is read only!
+   //@}
     ///getter callback for the CountFacets attribute
     static PyObject * staticCallback_getCountFacets (PyObject *self, void *closure);
     /// getter for the CountFacets attribute
@@ -245,17 +251,27 @@ public:
     /// setter callback for the CountFacets attribute
     static int staticCallback_setCountFacets (PyObject *self, PyObject *value, void *closure);
     // no setter method,  CountFacets is read only!
+   //@}
+
     /// getter method for special attributes (e.g. dynamic ones)
     PyObject *getCustomAttributes(const char* attr) const;
     /// setter for special attributes (e.g. dynamic ones)
     int setCustomAttributes(const char* attr, PyObject *obj);
     PyObject *_getattr(char *attr);              // __getattr__ function
     int _setattr(char *attr, PyObject *value);        // __setattr__ function
-    //@}
 
     /// getter for the object handled by this class
-    MeshObject *getMeshObjectObject(void) const;
-    Base::Reference<MeshObject> _meshObject;
+    Base::Reference<MeshObject> *getMeshObjectObject(void) const;
+		
+    /** @name additional declarations and methodes for the wrapper class */
+    //@{
+	
+public:
+    MeshObject & Mesh(void){return **getMeshObjectObject();}
+    MeshObject * getMesh(void){return &**getMeshObjectObject();}
+	const MeshObject & Mesh(void) const {return **getMeshObjectObject();}
+		
+    //@}
 };
 
 #define PARENTSMeshMeshPy &MeshPy::Type,PARENTSDataComplexGeoDataPy

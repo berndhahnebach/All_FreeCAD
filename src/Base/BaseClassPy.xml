@@ -4,6 +4,8 @@
       Father="PyObjectBase" 
       Name="BaseClassPy" 
       Twin="BaseClass" 
+      TwinPointer="BaseClass" 
+      Include="BaseClass.h" 
       FatherInclude="Base/PyObjectBase.h" 
       Namespace="Base" 
       FatherNamespace="Base">

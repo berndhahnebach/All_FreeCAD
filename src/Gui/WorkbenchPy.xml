@@ -4,6 +4,8 @@
     Father="BaseClassPy" 
     Name="WorkbenchPy" 
     Twin="Workbench" 
+    TwinPointer="Workbench" 
+    Include="Workbench.h" 
     Namespace="Gui" 
     FatherInclude="Base/BaseClassPy.h" 
     FatherNamespace="Base">

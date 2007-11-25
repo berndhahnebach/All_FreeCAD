@@ -4,6 +4,8 @@
     Father="FeaturePy" 
     Name="FeaturePythonPy" 
     Twin="FeaturePython" 
+    TwinPointer="FeaturePython" 
+    Include="FeaturePython.h" 
     Namespace="App" 
     FatherInclude="App/FeaturePy.h" 
     FatherNamespace="App">
@@ -13,9 +15,10 @@
     </Documentation>
    <Methode Name="addProperty">
       <Documentation>
-        <UserDocu>addProperty(string, string) -- Add a generic property.\n"
-		"The first argument specifies the type, the second the\n"
-		"name of the property.</UserDocu>
+        <UserDocu>addProperty(string, string) -- Add a generic property.
+The first argument specifies the type, the second the
+name of the property.
+		</UserDocu>
       </Documentation>
     </Methode>
    <Methode Name="execute">

@@ -14,7 +14,11 @@ def ensureDir(path,mode=0777):
 		#if errno != 17 or not os.path.isdir(path):
 		#	raise
 			
-
+def convertMultilineString(str):
+	str = str.replace('\n','\\n')
+	str = str.replace('"','\\"')
+	return str	
+	
 "Yet Another Python Templating Utility, Version 1.2"
 
 import sys

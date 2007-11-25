@@ -4,6 +4,8 @@
       Father="DocumentObjectPy" 
       Name="DocumentObjectGroupPy" 
       Twin="DocumentObjectGroup" 
+      TwinPointer="DocumentObjectGroup" 
+      Include="DocumentObjectGroup.h" 
       Namespace="App" 
       FatherInclude="App/DocumentObjectPy.h" 
       FatherNamespace="App">
