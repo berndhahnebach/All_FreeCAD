@@ -311,6 +311,8 @@ public:
         return StatusBits.test(1);
     }
 
+    typedef void* PointerType ;
+
 protected:
     std::bitset<32> StatusBits;
     /// pointer to the handled class

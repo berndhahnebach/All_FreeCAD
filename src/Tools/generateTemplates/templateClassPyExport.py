@@ -29,11 +29,10 @@ class TemplateClassPyExport (template.ModelTemplate):
 #define @self.export.Namespace.upper()@_@self.export.Name.upper()@_H
 
 #include <@self.export.FatherInclude@>
+#include "@self.export.Include@"
 
 namespace @self.export.Namespace@
 {
-
-class @self.export.Twin@;
 
 //===========================================================================
 // @self.export.Name@ - Python wrapper
@@ -52,10 +51,12 @@ public:
     virtual PyParentObject *GetParents(void) {return Parents;}
 
 public:
-    @self.export.Name@(@self.export.Twin@ *pc@self.export.Twin@Object, PyTypeObject *T = &Type);
+    @self.export.Name@(@self.export.TwinPointer@ *pcObject, PyTypeObject *T = &Type);
     static PyObject *PyMake(PyObject *, PyObject *);
+    int PyInit(PyObject* self, PyObject* args, PyObject*);
     ~@self.export.Name@();
 
+    typedef @self.export.TwinPointer@* PointerType ;
 
     virtual PyObject *_repr(void);        // the representation
     const char *representation(void) const;
@@ -86,7 +87,9 @@ public:
     /// setter for the @i.Name@ attribute
     void set@i.Name@(Py::@i.Parameter.Type@ arg);
 -
+   //@}
 -
+
 + if(self.export.CustomAttributes != None):
     /// getter method for special attributes (e.g. dynamic ones)
     PyObject *getCustomAttributes(const char* attr) const;
@@ -95,10 +98,16 @@ public:
     PyObject *_getattr(char *attr);              // __getattr__ function
     int _setattr(char *attr, PyObject *value);        // __setattr__ function
 -
-    //@}
 
     /// getter for the object handled by this class
-    @self.export.Twin@ *get@self.export.Twin@Object(void) const;
+    @self.export.TwinPointer@ *get@self.export.Twin@Object(void) const;
+		
++ if(self.export.ClassDeclarations != None):
+    /** @name additional declarations and methodes for the wrapper class */
+    //@{
+	@self.export.ClassDeclarations@
+    //@}
+-
 };
 
 #define PARENTS@self.export.Namespace@@self.export.Name@ &@self.export.Name@::Type,PARENTS@self.export.FatherNamespace@@self.export.Father@
@@ -122,7 +131,6 @@ public:
 #include <Base/Exception.h>
 #include <Base/PyCXX/Objects.hxx>
 
-#include "@self.export.Name@.h"
 #define new DEBUG_CLIENTBLOCK
 
 using Base::streq;
@@ -154,7 +162,7 @@ PyTypeObject @self.export.Name@::Type = {
     0,                                                /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-    "@self.export.Documentation.UserDocu@",           /*tp_doc */
+    "@self.export.Documentation.UserDocu.replace('\\n','\\\\n')@",           /*tp_doc */
     0,                                                /*tp_traverse */
     0,                                                /*tp_clear */
     0,                                                /*tp_richcompare */
@@ -187,7 +195,7 @@ PyMethodDef @self.export.Name@::Methods[] = {
     {"@i.Name@",
         (PyCFunction) staticCallback_@i.Name@,
         Py_NEWARGS,
-        "@i.Documentation.UserDocu@"
+        "@i.Documentation.UserDocu.replace('\\n','\\\\n')@"
     },
 -
     {NULL, NULL}		/* Sentinel */
@@ -199,7 +207,7 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
     {"@i.Name@",
         (getter) staticCallback_get@i.Name@,
         (setter) staticCallback_set@i.Name@, 
-        "@i.Documentation.UserDocu@",
+        "@i.Documentation.UserDocu.replace('\\n','\\\\n')@",
         NULL
     },
 -
@@ -217,11 +225,14 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
++	if(not i.Const):
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
+-
 
     try { // catches all exeptions coming up from c++ and generate a python exeption
         return ((@self.export.Name@*)self)->@i.Name@(args);
@@ -344,23 +355,37 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
-@self.export.Name@::@self.export.Name@(@self.export.Twin@ *pc@self.export.Twin@, PyTypeObject *T)
-    : @self.export.Father@(pc@self.export.Twin@, T)
+@self.export.Name@::@self.export.Name@(@self.export.TwinPointer@ *pcObject, PyTypeObject *T)
+    : @self.export.Father@(reinterpret_cast<@self.export.Father@::PointerType>(pcObject), T)
 {
 
 }
 
++ if (self.export.Constructor):
+PyObject *@self.export.Name@::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
+{
+		// creat a new instace
+    return new @self.export.Name@(new @self.export.TwinPointer@);
+}
+= else:
 PyObject *@self.export.Name@::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 {
     // never create such objects with the constructor
     return 0;
 }
 
+int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*){return 0;}
+-
+
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
 @self.export.Name@::~@self.export.Name@()                                // Everything handled in parent
 {
++ if (self.export.Delete):
+	// delete the handled object when the PyObject dies
+	delete _pcTwinPointer;
+-
 }
 
 //--------------------------------------------------------------------------
@@ -494,15 +519,23 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 }
 -
 
-@self.export.Twin@ *@self.export.Name@::get@self.export.Twin@Object(void) const
+@self.export.TwinPointer@ *@self.export.Name@::get@self.export.Twin@Object(void) const
 {
-    return static_cast<@self.export.Twin@ *>(_pcTwinPointer);
+    return static_cast<@self.export.TwinPointer@ *>(_pcTwinPointer);
 }
 
 #if 0
 /* From here on come the methods you have to implement, but NOT in this module. Implement in @self.export.Name@Imp.cpp! This prototypes 
  * are just for convenience when you add a new method.
  */
+
++ if (self.export.Constructor):
+// constructor methode
+int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*)
+{
+	return 0;
+}
+-
 
 // returns a string which represent the object e.g. when printed in python
 const char *@self.export.Name@::representation(void) const
@@ -553,7 +586,7 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 	TemplateImplement = """
 #include "PreCompiled.h"
 
-#include "@self.export.Twin@.h"
+#include "@self.export.Include@"
 
 // inclusion of the generated files (generated out of @self.export.Name@.xml)
 #include "@self.export.Name@.h"
@@ -566,6 +599,14 @@ const char *@self.export.Name@::representation(void) const
 {
     return "<@self.export.Twin@ object>";
 }
+
++ if (self.export.Constructor):
+// constructor methode
+int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*)
+{
+	return 0;
+}
+-
 
 + for i in self.export.Methode:
 

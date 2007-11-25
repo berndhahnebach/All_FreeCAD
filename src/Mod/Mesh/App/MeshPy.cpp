@@ -11,7 +11,6 @@
 #include <Base/Exception.h>
 #include <Base/PyCXX/Objects.hxx>
 
-#include "MeshPy.h"
 #define new DEBUG_CLIENTBLOCK
 
 using Base::streq;
@@ -43,20 +42,7 @@ PyTypeObject MeshPy::Type = {
     0,                                                /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-    "mesh() -- Create an empty mesh object.\n"
-			"\n"
-			"This class allows to manipulate the mesh object by adding new facets, deleting facets, importing from an STL file,\n"
-			"transforming the mesh and much more.\n"
-			"For a complete overview of what can be done see also the documentation of mesh.\n"
-			"A mesh object cannot be added to an existing document directly. Therefore the document must create an object\n"
-			"with a property class that supports meshes.\n"
-			"Example:\n"
-			"  m = Mesh.mesh()\n"
-			"  ... # Manipulate the mesh\n"
-			"  d = FreeCAD.activeDocument() # Get a reference to the actie document\n"
-			"  f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature\n"
-			"  f.Mesh = m # Assign the mesh object to the internal property\n"
-			"  d.recompute()\n",           /*tp_doc */
+    "mesh() -- Create an empty mesh object.\n\nThis class allows to manipulate the mesh object by adding new facets, deleting facets, importing from an STL file,\ntransforming the mesh and much more.\nFor a complete overview of what can be done see also the documentation of mesh.\nA mesh object cannot be added to an existing document directly. Therefore the document must create an object\nwith a property class that supports meshes.\nExample:\n  m = Mesh.mesh()\n  ... # Manipulate the mesh\n  d = FreeCAD.activeDocument() # Get a reference to the actie document\n  f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature\n  f.Mesh = m # Assign the mesh object to the internal property\n  d.recompute()\n        ",           /*tp_doc */
     0,                                                /*tp_traverse */
     0,                                                /*tp_clear */
     0,                                                /*tp_richcompare */
@@ -71,9 +57,9 @@ PyTypeObject MeshPy::Type = {
     0,                                                /*tp_descr_get */
     0,                                                /*tp_descr_set */
     0,                                                /*tp_dictoffset */
-    MeshPy::PyInit,                                   /*tp_init */
+    0,                                                /*tp_init */
     0,                                                /*tp_alloc */
-    MeshPy::PyMake,                                   /*tp_new */
+    0,                                                /*tp_new */
     0,                                                /*tp_free   Low-level free-memory routine */
     0,                                                /*tp_is_gc  For PyObject_IS_GC */
     0,                                                /*tp_bases */
@@ -320,6 +306,12 @@ PyMethodDef MeshPy::Methods[] = {
 
 /// Attribute structure of MeshPy
 PyGetSetDef MeshPy::GetterSetter[] = {
+    {"Points",
+        (getter) staticCallback_getPoints,
+        (setter) staticCallback_setPoints, 
+        "A collection of the Mesh Points\nWith this attribute its possible to get access to the points of the mesh\n\nfor p in mesh.Points:\n	print p.x, p.y, p.z\n				\n				",
+        NULL
+    },
     {"CountPoints",
         (getter) staticCallback_getCountPoints,
         (setter) staticCallback_setCountPoints, 
@@ -345,9 +337,10 @@ PyObject * MeshPy::staticCallback_read (PyObject *self, PyObject *args, PyObject
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -412,9 +405,10 @@ PyObject * MeshPy::staticCallback_write (PyObject *self, PyObject *args, PyObjec
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -479,9 +473,10 @@ PyObject * MeshPy::staticCallback_offset (PyObject *self, PyObject *args, PyObje
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -546,9 +541,10 @@ PyObject * MeshPy::staticCallback_offsetSpecial (PyObject *self, PyObject *args,
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -613,9 +609,10 @@ PyObject * MeshPy::staticCallback_unite (PyObject *self, PyObject *args, PyObjec
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -680,9 +677,10 @@ PyObject * MeshPy::staticCallback_intersect (PyObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -747,9 +745,10 @@ PyObject * MeshPy::staticCallback_difference (PyObject *self, PyObject *args, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -814,9 +813,10 @@ PyObject * MeshPy::staticCallback_inner (PyObject *self, PyObject *args, PyObjec
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -881,9 +881,10 @@ PyObject * MeshPy::staticCallback_outer (PyObject *self, PyObject *args, PyObjec
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -948,9 +949,10 @@ PyObject * MeshPy::staticCallback_coarsen (PyObject *self, PyObject *args, PyObj
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1015,9 +1017,10 @@ PyObject * MeshPy::staticCallback_translate (PyObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1082,9 +1085,10 @@ PyObject * MeshPy::staticCallback_rotate (PyObject *self, PyObject *args, PyObje
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1149,9 +1153,10 @@ PyObject * MeshPy::staticCallback_transformToEigen (PyObject *self, PyObject *ar
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1216,9 +1221,10 @@ PyObject * MeshPy::staticCallback_addFacet (PyObject *self, PyObject *args, PyOb
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1283,9 +1289,10 @@ PyObject * MeshPy::staticCallback_addFacets (PyObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1350,9 +1357,10 @@ PyObject * MeshPy::staticCallback_clear (PyObject *self, PyObject *args, PyObjec
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1417,9 +1425,10 @@ PyObject * MeshPy::staticCallback_isSolid (PyObject *self, PyObject *args, PyObj
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1484,9 +1493,10 @@ PyObject * MeshPy::staticCallback_hasNonManifolds (PyObject *self, PyObject *arg
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1551,9 +1561,10 @@ PyObject * MeshPy::staticCallback_removeNonManifolds (PyObject *self, PyObject *
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1618,9 +1629,10 @@ PyObject * MeshPy::staticCallback_hasSelfIntersections (PyObject *self, PyObject
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1685,9 +1697,10 @@ PyObject * MeshPy::staticCallback_fixSelfIntersections (PyObject *self, PyObject
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1752,9 +1765,10 @@ PyObject * MeshPy::staticCallback_flipNormals (PyObject *self, PyObject *args, P
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1819,9 +1833,10 @@ PyObject * MeshPy::staticCallback_hasNonUnifomOrientedFacets (PyObject *self, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -1886,11 +1901,7 @@ PyObject * MeshPy::staticCallback_countNonUnifomOrientedFacets (PyObject *self, 
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
-    // test if object is set Const
-    if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
-        return NULL;
-    }
+		
 
     try { // catches all exeptions coming up from c++ and generate a python exeption
         return ((MeshPy*)self)->countNonUnifomOrientedFacets(args);
@@ -1953,9 +1964,10 @@ PyObject * MeshPy::staticCallback_harmonizeNormals (PyObject *self, PyObject *ar
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2020,9 +2032,10 @@ PyObject * MeshPy::staticCallback_countComponents (PyObject *self, PyObject *arg
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2087,9 +2100,10 @@ PyObject * MeshPy::staticCallback_removeComponents (PyObject *self, PyObject *ar
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2154,9 +2168,10 @@ PyObject * MeshPy::staticCallback_fillupHoles (PyObject *self, PyObject *args, P
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2221,9 +2236,10 @@ PyObject * MeshPy::staticCallback_fixIndices (PyObject *self, PyObject *args, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2288,9 +2304,10 @@ PyObject * MeshPy::staticCallback_fixDeformations (PyObject *self, PyObject *arg
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2355,9 +2372,10 @@ PyObject * MeshPy::staticCallback_fixDegenerations (PyObject *self, PyObject *ar
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2422,9 +2440,10 @@ PyObject * MeshPy::staticCallback_removeDuplicatedPoints (PyObject *self, PyObje
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2489,9 +2508,10 @@ PyObject * MeshPy::staticCallback_removeDuplicatedFacets (PyObject *self, PyObje
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2556,9 +2576,10 @@ PyObject * MeshPy::staticCallback_refine (PyObject *self, PyObject *args, PyObje
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2623,9 +2644,10 @@ PyObject * MeshPy::staticCallback_optimizeTopology (PyObject *self, PyObject *ar
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2690,9 +2712,10 @@ PyObject * MeshPy::staticCallback_optimizeEdges (PyObject *self, PyObject *args,
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2757,9 +2780,10 @@ PyObject * MeshPy::staticCallback_splitEdges (PyObject *self, PyObject *args, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2824,9 +2848,10 @@ PyObject * MeshPy::staticCallback_splitEdge (PyObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2891,9 +2916,10 @@ PyObject * MeshPy::staticCallback_splitFacet (PyObject *self, PyObject *args, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -2958,9 +2984,10 @@ PyObject * MeshPy::staticCallback_swapEdge (PyObject *self, PyObject *args, PyOb
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3025,9 +3052,10 @@ PyObject * MeshPy::staticCallback_collapseEdge (PyObject *self, PyObject *args, 
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3092,9 +3120,10 @@ PyObject * MeshPy::staticCallback_collapseFacet (PyObject *self, PyObject *args,
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3159,9 +3188,10 @@ PyObject * MeshPy::staticCallback_collapseFacets (PyObject *self, PyObject *args
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3226,9 +3256,10 @@ PyObject * MeshPy::staticCallback_insertVertex (PyObject *self, PyObject *args, 
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3293,9 +3324,10 @@ PyObject * MeshPy::staticCallback_snapVertex (PyObject *self, PyObject *args, Py
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3360,9 +3392,10 @@ PyObject * MeshPy::staticCallback_printInfo (PyObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
+		
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
-        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a method");
+        PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
         return NULL;
     }
 
@@ -3415,6 +3448,38 @@ PyObject * MeshPy::staticCallback_printInfo (PyObject *self, PyObject *args, PyO
         return NULL;
     }
 #endif
+}
+
+// Points() callback and implementer
+// PyObject*  MeshPy::Points(PyObject *args){};
+// has to be implemented in MeshPyImp.cpp
+PyObject * MeshPy::staticCallback_getPoints (PyObject *self, void *closure)
+{
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return NULL;
+    }
+
+    try {
+        return Py::new_reference_to(((MeshPy*)self)->getPoints());
+    } catch (const Py::Exception&) {
+        // The exception text is already set
+        return NULL;
+    } catch (...) {
+        PyErr_SetString(PyExc_Exception, "Unknown exception while reading attribute 'Points' of object 'MeshObject'");
+        return NULL;
+    }
+}
+
+int MeshPy::staticCallback_setPoints (PyObject *self, PyObject *value, void *closure)
+{
+    if (!((PyObjectBase*) self)->isValid()){
+        PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
+        return -1;
+    }
+
+    PyErr_SetString(PyExc_AttributeError, "Attribute 'Points' of object 'MeshObject' is read-only");
+    return -1;
 }
 
 // CountPoints() callback and implementer
@@ -3487,6 +3552,36 @@ int MeshPy::staticCallback_setCountFacets (PyObject *self, PyObject *value, void
 // Parents structure
 //--------------------------------------------------------------------------
 PyParentObject MeshPy::Parents[] = { PARENTSMeshMeshPy };
+
+//--------------------------------------------------------------------------
+// Constructor
+//--------------------------------------------------------------------------
+MeshPy::MeshPy(Base::Reference<MeshObject> *pcObject, PyTypeObject *T)
+    : ComplexGeoDataPy(reinterpret_cast<ComplexGeoDataPy::PointerType>(pcObject), T)
+{
+
+}
+
+PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
+{
+		// creat a new instace
+    return new MeshPy(new Base::Reference<MeshObject>);
+}
+
+//--------------------------------------------------------------------------
+// destructor
+//--------------------------------------------------------------------------
+MeshPy::~MeshPy()                                // Everything handled in parent
+{
+}
+
+//--------------------------------------------------------------------------
+// MeshPy representation
+//--------------------------------------------------------------------------
+PyObject *MeshPy::_repr(void)
+{
+    return Py_BuildValue("s", representation());
+}
 
 //--------------------------------------------------------------------------
 // MeshPy Attributes
@@ -3609,15 +3704,21 @@ int MeshPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note
     return ComplexGeoDataPy::_setattr(attr, value);
 }
 
-MeshObject *MeshPy::getMeshObjectObject(void) const
+Base::Reference<MeshObject> *MeshPy::getMeshObjectObject(void) const
 {
-    return static_cast<MeshObject *>(_pcTwinPointer);
+    return static_cast<Base::Reference<MeshObject> *>(_pcTwinPointer);
 }
 
 #if 0
 /* From here on come the methods you have to implement, but NOT in this module. Implement in MeshPyImp.cpp! This prototypes 
  * are just for convenience when you add a new method.
  */
+
+// constructor methode
+int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
+{
+	return 0;
+}
 
 // returns a string which represent the object e.g. when printed in python
 const char *MeshPy::representation(void) const
@@ -3899,6 +4000,11 @@ PyObject*  MeshPy::printInfo(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
+}
+
+Py::List MeshPy::getPoints(void) const
+{
+    return Py::List();
 }
 
 Py::Int MeshPy::getCountPoints(void) const

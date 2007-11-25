@@ -4,6 +4,8 @@
       Father="ComplexGeoDataPy" 
       Name="TopoShapePy" 
       Twin="TopoShape" 
+      TwinPointer="TopoShape" 
+      Include="TopoShape.h" 
       Namespace="Part" 
       FatherInclude="App/ComplexGeoDataPy.h" 
       FatherNamespace="Data">

@@ -4,6 +4,8 @@
     Father="PyObjectBase" 
     Name="DocumentPy" 
     Twin="Document" 
+    TwinPointer="Document" 
+    Include="Document.h" 
     Namespace="Gui" 
     FatherInclude="Base/PyObjectBase.h" 
     FatherNamespace="Base">

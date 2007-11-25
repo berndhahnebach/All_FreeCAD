@@ -3,7 +3,9 @@
   <PythonExport 
     Father="PersistancePy" 
     Name="PropertyContainerPy" 
+    TwinPointer="PropertyContainer" 
     Twin="PropertyContainer" 
+    Include="PropertyContainer.h" 
     Namespace="App" 
     FatherInclude="Base/PersistancePy.h" 
     FatherNamespace="Base">

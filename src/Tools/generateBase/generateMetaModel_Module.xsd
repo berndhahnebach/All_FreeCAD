@@ -2,6 +2,7 @@
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
+<!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
@@ -21,6 +22,7 @@
 										<xs:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
 									</xs:sequence>
 									<xs:attribute name="Name" type="xs:string" use="required"/>
+									<xs:attribute name="Const" type="xs:boolean" use="optional"/>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="Attribute" minOccurs="0" maxOccurs="unbounded">
@@ -34,13 +36,18 @@
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="CustomAttributes" minOccurs="0"/>
+							<xs:element name="ClassDeclarations" type="xs:string"/>
 						</xs:sequence>
 						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Include" type="xs:string" use="required"/>
 						<xs:attribute name="Father" type="xs:string" use="required"/>
 						<xs:attribute name="Twin" type="xs:string" use="required"/>
 						<xs:attribute name="Namespace" type="xs:string" use="required"/>
 						<xs:attribute name="FatherInclude" type="xs:string" use="required"/>
 						<xs:attribute name="FatherNamespace" type="xs:string" use="required"/>
+						<xs:attribute name="Constructor" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="TwinPointer" type="xs:string" use="required"/>
+						<xs:attribute name="Delete" type="xs:boolean" use="optional" default="false"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>

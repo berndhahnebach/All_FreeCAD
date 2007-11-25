@@ -4,6 +4,8 @@
     Father="PropertyContainerPy" 
     Name="ViewProviderPy" 
     Twin="ViewProvider" 
+    TwinPointer="ViewProvider" 
+    Include="ViewProvider.h" 
     Namespace="Gui" 
     FatherInclude="App/PropertyContainerPy.h"
     FatherNamespace="App">
