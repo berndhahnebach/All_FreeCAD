@@ -7,7 +7,7 @@
 #include "CaptureClass.h"
 
 #ifdef _MSC_VER // this file is not available on Linux
-# include <cvcam.h>
+//# include <cvcam.h>
 #endif 
 //---------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ Capturerer::Capturerer(const char* fileName)
 
 int Capturerer::chooseCamNum(void)
 {
-#ifdef _MSC_VER
+#if 0
     int ncams = cvcamGetCamerasCount( );//returns the number of available cameras in the system
     //printf("Number of Cams: %d\n",ncams);
     int* out;
