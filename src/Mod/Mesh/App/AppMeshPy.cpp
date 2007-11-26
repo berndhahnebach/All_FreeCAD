@@ -56,7 +56,7 @@ static PyObject * read(PyObject *self, PyObject *args)
     PY_TRY {
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         mesh->load(Name);
-        return new MeshPy(new Base::Reference<MeshObject>(mesh.release()));
+        return new MeshPy(mesh.release());
     } PY_CATCH;
 
     Py_Return;
@@ -132,7 +132,7 @@ show(PyObject *self, PyObject *args)
             pcDoc = App::GetApplication().newDocument();
         MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
         Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
-        pcFeature->Mesh.setValue(&**(pMesh->getMeshObjectObject()));
+        pcFeature->Mesh.setValue(pMesh->getMeshObjectObject());
         pcDoc->recompute();
     } PY_CATCH;
 
@@ -159,7 +159,7 @@ createPlane(PyObject *self, PyObject *args)
 
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         mesh->addFacets(TriaList);
-        return new MeshPy(new Base::Reference<MeshObject>(mesh.release()));
+        return new MeshPy(mesh.release());
     } PY_CATCH;
 }
 
@@ -177,7 +177,7 @@ createSphere(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of sphere failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -196,7 +196,7 @@ createEllipsoid(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of ellipsoid failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -217,7 +217,7 @@ createCylinder(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of cylinder failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -239,7 +239,7 @@ createCone(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of cone failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -258,7 +258,7 @@ createTorus(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of torus failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 
@@ -277,7 +277,7 @@ createBox(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "Creation of box failed");
             return NULL;
         }
-        return new MeshPy(new Base::Reference<MeshObject>(mesh));
+        return new MeshPy(mesh);
     } PY_CATCH;
 }
 

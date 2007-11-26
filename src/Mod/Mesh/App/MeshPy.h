@@ -27,12 +27,12 @@ public:
     virtual PyParentObject *GetParents(void) {return Parents;}
 
 public:
-    MeshPy(Base::Reference<MeshObject> *pcObject, PyTypeObject *T = &Type);
+    MeshPy(MeshObject *pcObject, PyTypeObject *T = &Type);
     static PyObject *PyMake(PyObject *, PyObject *);
     int PyInit(PyObject* self, PyObject* args, PyObject*);
     ~MeshPy();
 
-    typedef Base::Reference<MeshObject>* PointerType ;
+    typedef MeshObject* PointerType ;
 
     virtual PyObject *_repr(void);        // the representation
     const char *representation(void) const;
@@ -261,15 +261,15 @@ public:
     int _setattr(char *attr, PyObject *value);        // __setattr__ function
 
     /// getter for the object handled by this class
-    Base::Reference<MeshObject> *getMeshObjectObject(void) const;
+    MeshObject *getMeshObjectObject(void) const;
 		
     /** @name additional declarations and methodes for the wrapper class */
     //@{
 	
 public:
-    MeshObject & Mesh(void){return **getMeshObjectObject();}
-    MeshObject * getMesh(void){return &**getMeshObjectObject();}
-	const MeshObject & Mesh(void) const {return **getMeshObjectObject();}
+    MeshObject & Mesh(void){return *getMeshObjectObject();}
+    MeshObject * getMesh(void){return getMeshObjectObject();}
+	const MeshObject & Mesh(void) const {return *getMeshObjectObject();}
 		
     //@}
 };

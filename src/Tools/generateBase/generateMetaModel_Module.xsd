@@ -3,6 +3,7 @@
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
+<!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
@@ -48,6 +49,7 @@
 						<xs:attribute name="Constructor" type="xs:boolean" use="optional" default="false"/>
 						<xs:attribute name="TwinPointer" type="xs:string" use="required"/>
 						<xs:attribute name="Delete" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="Reference" type="xs:boolean" use="optional"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>

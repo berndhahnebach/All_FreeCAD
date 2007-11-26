@@ -366,7 +366,7 @@ void PropertyMeshKernel::clear()
 
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-    MeshPy* mesh = new MeshPy(new Base::Reference<MeshObject>(_meshObject));
+    MeshPy* mesh = new MeshPy(&*_meshObject);
     mesh->setConst(); // set immutable
     return mesh;
 }
