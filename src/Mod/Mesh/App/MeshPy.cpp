@@ -3556,16 +3556,15 @@ PyParentObject MeshPy::Parents[] = { PARENTSMeshMeshPy };
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
-MeshPy::MeshPy(Base::Reference<MeshObject> *pcObject, PyTypeObject *T)
+MeshPy::MeshPy(MeshObject *pcObject, PyTypeObject *T)
     : ComplexGeoDataPy(reinterpret_cast<ComplexGeoDataPy::PointerType>(pcObject), T)
 {
-
 }
 
 PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 {
 		// creat a new instace
-    return new MeshPy(new Base::Reference<MeshObject>);
+    return new MeshPy(new MeshObject);
 }
 
 //--------------------------------------------------------------------------
@@ -3573,6 +3572,7 @@ PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 //--------------------------------------------------------------------------
 MeshPy::~MeshPy()                                // Everything handled in parent
 {
+
 }
 
 //--------------------------------------------------------------------------
@@ -3704,9 +3704,9 @@ int MeshPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note
     return ComplexGeoDataPy::_setattr(attr, value);
 }
 
-Base::Reference<MeshObject> *MeshPy::getMeshObjectObject(void) const
+MeshObject *MeshPy::getMeshObjectObject(void) const
 {
-    return static_cast<Base::Reference<MeshObject> *>(_pcTwinPointer);
+    return static_cast<MeshObject *>(_pcTwinPointer);
 }
 
 #if 0

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Sun Nov 25 21:12:22 2007 by generateDS.py.
+# Generated Mon Nov 26 22:03:58 2007 by generateDS.py.
 #
 
 import sys
@@ -216,9 +216,10 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, FatherNamespace='', Name='', FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
+    def __init__(self, FatherNamespace='', Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
         self.FatherNamespace = FatherNamespace
         self.Name = Name
+        self.Reference = Reference
         self.FatherInclude = FatherInclude
         self.Father = Father
         self.Namespace = Namespace
@@ -262,6 +263,8 @@ class PythonExport:
     def setFathernamespace(self, FatherNamespace): self.FatherNamespace = FatherNamespace
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
+    def getReference(self): return self.Reference
+    def setReference(self, Reference): self.Reference = Reference
     def getFatherinclude(self): return self.FatherInclude
     def setFatherinclude(self, FatherInclude): self.FatherInclude = FatherInclude
     def getFather(self): return self.Father
@@ -289,6 +292,8 @@ class PythonExport:
     def exportAttributes(self, outfile, level, name_='PythonExport'):
         outfile.write(' FatherNamespace="%s"' % (self.getFathernamespace(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
+        if self.getReference() is not None:
+            outfile.write(' Reference="%s"' % (self.getReference(), ))
         outfile.write(' FatherInclude="%s"' % (self.getFatherinclude(), ))
         outfile.write(' Father="%s"' % (self.getFather(), ))
         outfile.write(' Namespace="%s"' % (self.getNamespace(), ))
@@ -319,6 +324,8 @@ class PythonExport:
         outfile.write('FatherNamespace = "%s",\n' % (self.getFathernamespace(),))
         showIndent(outfile, level)
         outfile.write('Name = "%s",\n' % (self.getName(),))
+        showIndent(outfile, level)
+        outfile.write('Reference = "%s",\n' % (self.getReference(),))
         showIndent(outfile, level)
         outfile.write('FatherInclude = "%s",\n' % (self.getFatherinclude(),))
         showIndent(outfile, level)
@@ -381,6 +388,13 @@ class PythonExport:
             self.FatherNamespace = attrs.get('FatherNamespace').value
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
+        if attrs.get('Reference'):
+            if attrs.get('Reference').value in ('true', '1'):
+                self.Reference = 1
+            elif attrs.get('Reference').value in ('false', '0'):
+                self.Reference = 0
+            else:
+                raise ValueError('Bad boolean attribute (Reference)')
         if attrs.get('FatherInclude'):
             self.FatherInclude = attrs.get('FatherInclude').value
         if attrs.get('Father'):
@@ -1543,6 +1557,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)
+            val = attrs.get('Reference', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setReference(1)
+                elif val in ('false', '0'):
+                    obj.setReference(0)
+                else:
+                    self.reportError('"Reference" attribute must be boolean ("true", "1", "false", "0")')
             val = attrs.get('FatherInclude', None)
             if val is not None:
                 obj.setFatherinclude(val)

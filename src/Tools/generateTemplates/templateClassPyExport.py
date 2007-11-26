@@ -358,7 +358,9 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
 @self.export.Name@::@self.export.Name@(@self.export.TwinPointer@ *pcObject, PyTypeObject *T)
     : @self.export.Father@(reinterpret_cast<@self.export.Father@::PointerType>(pcObject), T)
 {
-
++ if (self.export.Reference):
+	pcObject->AttachRef(this);
+-
 }
 
 + if (self.export.Constructor):
@@ -382,6 +384,10 @@ int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*){return
 //--------------------------------------------------------------------------
 @self.export.Name@::~@self.export.Name@()                                // Everything handled in parent
 {
++ if (self.export.Reference):
+	get@self.export.Twin@Object()->DetachRef(this);
+-
+
 + if (self.export.Delete):
 	// delete the handled object when the PyObject dies
 	delete _pcTwinPointer;

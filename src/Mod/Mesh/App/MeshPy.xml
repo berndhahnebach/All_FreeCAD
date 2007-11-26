@@ -5,7 +5,7 @@
 		Include="Mesh.h"
 		Name="MeshPy" 
 		Twin="MeshObject"
-		TwinPointer="Base::Reference&lt;MeshObject&gt;" 
+		TwinPointer="MeshObject" 
 		Namespace="Mesh" 
 		FatherInclude="App/ComplexGeoDataPy.h" 
 		FatherNamespace="Data"
@@ -284,9 +284,9 @@ for p in mesh.Points:
 		</Attribute>
 		<ClassDeclarations>
 public:
-    MeshObject &amp; Mesh(void){return **getMeshObjectObject();}
-    MeshObject * getMesh(void){return &amp;**getMeshObjectObject();}
-	const MeshObject &amp; Mesh(void) const {return **getMeshObjectObject();}
+    MeshObject &amp; Mesh(void){return *getMeshObjectObject();}
+    MeshObject * getMesh(void){return getMeshObjectObject();}
+	const MeshObject &amp; Mesh(void) const {return *getMeshObjectObject();}
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>
