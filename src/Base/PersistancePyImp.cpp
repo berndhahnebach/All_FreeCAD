@@ -20,7 +20,7 @@ const char *PersistancePy::representation(void) const
 Py::String PersistancePy::getContent(void) const
 {
     Base::StringWriter writer;
-    getPersistanceObject()->Save(writer);
+    getPersistancePtr()->Save(writer);
 
     return  Py::String (writer.getString());
 }
@@ -32,7 +32,7 @@ void  PersistancePy::setContent(Py::String arg)
 
 Py::Int PersistancePy::getMemSize(void) const
 {
-    return Py::Int((long)getPersistanceObject()->getMemSize());
+    return Py::Int((long)getPersistancePtr()->getMemSize());
 }
 
 

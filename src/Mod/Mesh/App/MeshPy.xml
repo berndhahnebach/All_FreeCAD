@@ -283,9 +283,9 @@ for p in mesh.Points:
 		</Attribute>
 		<ClassDeclarations>
 public:
-    MeshObject &amp; Mesh(void){return *getMeshObjectObject();}
-    MeshObject * getMesh(void){return getMeshObjectObject();}
-	const MeshObject &amp; Mesh(void) const {return *getMeshObjectObject();}
+    MeshObject &amp; Mesh(void){return *getMeshObjectPtr();}
+    MeshObject * getMesh(void){return getMeshObjectPtr();}
+	const MeshObject &amp; Mesh(void) const {return *getMeshObjectPtr();}
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>

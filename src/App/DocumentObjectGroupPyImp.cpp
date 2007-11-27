@@ -44,7 +44,7 @@ PyObject*  DocumentObjectGroupPy::newObject(PyObject *args)
     if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
         return NULL;
 
-    DocumentObject *object = getDocumentObjectGroupObject()->addObject(sType, sName);
+    DocumentObject *object = getDocumentObjectGroupPtr()->addObject(sType, sName);
     if ( object ) {
         return object->getPyObject();
     } 
@@ -61,20 +61,20 @@ PyObject*  DocumentObjectGroupPy::addObject(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     DocumentObjectPy* docObj = static_cast<DocumentObjectPy*>(object);
-    if (!docObj->getDocumentObjectObject() || !docObj->getDocumentObjectObject()->getNameInDocument()) {
+    if (!docObj->getDocumentObjectPtr() || !docObj->getDocumentObjectPtr()->getNameInDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot add an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectObject()->getDocument()) != (&getDocumentObjectGroupObject()->getDocument())) {
+    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
         PyErr_SetString(PyExc_Exception, "Cannot add an object from another document to this group");
         return NULL;
     }
-    if (docObj->getDocumentObjectObject() == this->getDocumentObjectGroupObject()) {
+    if (docObj->getDocumentObjectPtr() == this->getDocumentObjectGroupPtr()) {
         PyErr_SetString(PyExc_Exception, "Cannot add a group object to itself");
         return NULL;
     }
 
-    getDocumentObjectGroupObject()->addObject(docObj->getDocumentObjectObject());
+    getDocumentObjectGroupPtr()->addObject(docObj->getDocumentObjectPtr());
     Py_Return;
 }
 
@@ -85,16 +85,16 @@ PyObject*  DocumentObjectGroupPy::removeObject(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     DocumentObjectPy* docObj = static_cast<DocumentObjectPy*>(object);
-    if (!docObj->getDocumentObjectObject() || !docObj->getDocumentObjectObject()->getNameInDocument()) {
+    if (!docObj->getDocumentObjectPtr() || !docObj->getDocumentObjectPtr()->getNameInDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot remove an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectObject()->getDocument()) != (&getDocumentObjectGroupObject()->getDocument())) {
+    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
         PyErr_SetString(PyExc_Exception, "Cannot remove an object from another document from this group");
         return NULL;
     }
 
-    getDocumentObjectGroupObject()->removeObject(docObj->getDocumentObjectObject());
+    getDocumentObjectGroupPtr()->removeObject(docObj->getDocumentObjectPtr());
     Py_Return;
 }
 
@@ -103,7 +103,7 @@ PyObject*  DocumentObjectGroupPy::removeObjectsFromDocument(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                    // NULL triggers exception 
 
-    getDocumentObjectGroupObject()->removeObjectsFromDocument();
+    getDocumentObjectGroupPtr()->removeObjectsFromDocument();
     Py_Return;
 }
 
@@ -113,7 +113,7 @@ PyObject*  DocumentObjectGroupPy::getObject(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &pcName))     // convert args: Python->C 
         return NULL;                    // NULL triggers exception 
 
-    DocumentObject* obj = getDocumentObjectGroupObject()->getObject(pcName);
+    DocumentObject* obj = getDocumentObjectGroupPtr()->getObject(pcName);
     if ( obj ) {
         return obj->getPyObject();
     } else {
@@ -128,16 +128,16 @@ PyObject*  DocumentObjectGroupPy::hasObject(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     DocumentObjectPy* docObj = static_cast<DocumentObjectPy*>(object);
-    if (!docObj->getDocumentObjectObject() || !docObj->getDocumentObjectObject()->getNameInDocument()) {
+    if (!docObj->getDocumentObjectPtr() || !docObj->getDocumentObjectPtr()->getNameInDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot check an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectObject()->getDocument()) != (&getDocumentObjectGroupObject()->getDocument())) {
+    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
         PyErr_SetString(PyExc_Exception, "Cannot check an object from another document with this group");
         return NULL;
     }
 
-    if (getDocumentObjectGroupObject()->hasObject(docObj->getDocumentObjectObject())) {
+    if (getDocumentObjectGroupPtr()->hasObject(docObj->getDocumentObjectPtr())) {
         Py_INCREF(Py_True);
         return Py_True;
     } 

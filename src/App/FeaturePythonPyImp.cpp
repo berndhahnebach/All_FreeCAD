@@ -44,7 +44,7 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     PY_TRY {
-        getFeaturePythonObject()->addDynamicProperty(sType,sName);
+        getFeaturePythonPtr()->addDynamicProperty(sType,sName);
     } PY_CATCH;
 
     Py_Return;
@@ -71,7 +71,7 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
  */
 PyObject*  FeaturePythonPy::execute(PyObject *args)
 {
-    Py::Object executeCallback = getFeaturePythonObject()->executeMethod;
+    Py::Object executeCallback = getFeaturePythonPtr()->executeMethod;
     if ( executeCallback.isCallable() ) {
         PyObject *result;
         /* Time to call the callback */
@@ -88,13 +88,13 @@ PyObject*  FeaturePythonPy::execute(PyObject *args)
 
 Py::Object FeaturePythonPy::getExecute(void) const
 {
-    return getFeaturePythonObject()->executeMethod;
+    return getFeaturePythonPtr()->executeMethod;
 }
 
 void FeaturePythonPy::setExecute(Py::Object value)
 {
     if ( value == Py::None()) {
-        getFeaturePythonObject()->executeMethod = value;
+        getFeaturePythonPtr()->executeMethod = value;
     } else {
         // Here we can check whether 'value' is a method or function but we cannot check the argument list
         // This will do Python for us in the execute method (and throws an exception if not empty).
@@ -102,7 +102,7 @@ void FeaturePythonPy::setExecute(Py::Object value)
             throw Py::TypeError("Value must be callable");
         }
 
-        getFeaturePythonObject()->executeMethod = value;
+        getFeaturePythonPtr()->executeMethod = value;
     }
 }
 
@@ -112,17 +112,17 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
         if (Base::streq(attr, "__dict__")){
             PyObject* dict = FeaturePy::getCustomAttributes(attr);
             if (dict){
-                const std::map<std::string,Property*>& Map = getFeaturePythonObject()->objectProperties;
+                const std::map<std::string,Property*>& Map = getFeaturePythonPtr()->objectProperties;
                 for ( std::map<std::string,App::Property*>::const_iterator it = Map.begin(); it != Map.end(); ++it )
                     PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
             }
             return dict;
         }
         // search in object PropertyList
-        std::map<std::string,Property*>::const_iterator pos = getFeaturePythonObject()->objectProperties.find(attr);
+        std::map<std::string,Property*>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
 
-        if (pos != getFeaturePythonObject()->objectProperties.end()) {
-            Property *prop = getFeaturePythonObject()->objectProperties[attr];
+        if (pos != getFeaturePythonPtr()->objectProperties.end()) {
+            Property *prop = getFeaturePythonPtr()->objectProperties[attr];
             return prop->getPyObject();
         }
 
@@ -134,12 +134,12 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
 int FeaturePythonPy::setCustomAttributes(const char* attr, PyObject *value)
 {
     // search in object PropertyList
-    std::map<std::string,Property*>::const_iterator pos = getFeaturePythonObject()->objectProperties.find(attr);
+    std::map<std::string,Property*>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
 
-    if (pos == getFeaturePythonObject()->objectProperties.end())
-        return FeaturePy::setCustomAttributes(attr, value); 						
+    if (pos == getFeaturePythonPtr()->objectProperties.end())
+        return FeaturePy::setCustomAttributes(attr, value);
     else {
-        Property *prop = getFeaturePythonObject()->objectProperties[attr];
+        Property *prop = getFeaturePythonPtr()->objectProperties[attr];
 
         try {
             prop->setPyObject(value);

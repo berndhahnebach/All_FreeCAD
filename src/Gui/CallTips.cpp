@@ -206,7 +206,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         union PyType_Object appdoctypeobj = {&App::DocumentPy::Type};
         if (PyObject_IsSubclass(type.ptr(), appdoctypeobj.o)) {
             App::DocumentPy* docpy = (App::DocumentPy*)(inst.ptr());
-            App::Document* document = docpy->getDocumentObject();
+            App::Document* document = docpy->getDocumentPtr();
             // Make sure that the C++ object is alive
             if (document) {
                 std::vector<App::DocumentObject*> objects = document->getObjects();
@@ -222,7 +222,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         union PyType_Object guidoctypeobj = {&Gui::DocumentPy::Type};
         if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o)) {
             Gui::DocumentPy* docpy = (Gui::DocumentPy*)(inst.ptr());
-            App::Document* document = docpy->getDocumentObject()->getDocument();
+            App::Document* document = docpy->getDocumentPtr()->getDocument();
             // Make sure that the C++ object is alive
             if (document) {
                 std::vector<App::DocumentObject*> objects = document->getObjects();
@@ -297,7 +297,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
 void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, CallTip>& tips) const
 {
     App::PropertyContainerPy* cont = (App::PropertyContainerPy*)(obj.ptr());
-    App::PropertyContainer* container = cont->getPropertyContainerObject();
+    App::PropertyContainer* container = cont->getPropertyContainerPtr();
     // Make sure that the C++ object is alive
     if (!container) return;
     std::map<std::string,App::Property*> Map;

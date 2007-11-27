@@ -25,7 +25,7 @@ PyObject*  PropertyContainerPy::getPropertyByName(PyObject *args)
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
-    App::Property* prop = getPropertyContainerObject()->getPropertyByName(pstr);
+    App::Property* prop = getPropertyContainerPtr()->getPropertyByName(pstr);
     if (prop) {
         return prop->getPyObject();
     }
@@ -42,7 +42,7 @@ PyObject*  PropertyContainerPy::getTypeOfProperty(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    short Type =  getPropertyContainerObject()->getPropertyType(pstr);
+    short Type =  getPropertyContainerPtr()->getPropertyType(pstr);
 
     if (Type & Prop_Hidden)
         ret.append(Py::String("Hidden"));
@@ -60,7 +60,7 @@ PyObject*  PropertyContainerPy::getGroupOfProperty(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    const char* Group = getPropertyContainerObject()->getPropertyGroup(pstr);
+    const char* Group = getPropertyContainerPtr()->getPropertyGroup(pstr);
     if (Group)
         return Py::new_reference_to(Py::String(Group));
     else
@@ -73,7 +73,7 @@ PyObject*  PropertyContainerPy::getDocumentationOfProperty(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    const char* Group = getPropertyContainerObject()->getPropertyDocumentation(pstr);
+    const char* Group = getPropertyContainerPtr()->getPropertyDocumentation(pstr);
     if (Group)
         return Py::new_reference_to(Py::String(Group));
     else
@@ -85,7 +85,7 @@ Py::List PropertyContainerPy::getPropertiesList(void) const
     Py::List ret;
     std::map<std::string,Property*> Map;
 
-    getPropertyContainerObject()->getPropertyMap(Map);
+    getPropertyContainerPtr()->getPropertyMap(Map);
 
     for (std::map<std::string,Property*>::const_iterator It=Map.begin();It!=Map.end();++It)
         ret.append(Py::String(It->first));
@@ -96,14 +96,14 @@ Py::List PropertyContainerPy::getPropertiesList(void) const
 PyObject *PropertyContainerPy::getCustomAttributes(const char* attr) const
 {
     // search in PropertyList
-    Property *prop = getPropertyContainerObject()->getPropertyByName(attr);
+    Property *prop = getPropertyContainerPtr()->getPropertyByName(attr);
     if (prop) {
         return prop->getPyObject();
     }
     else if (Base::streq(attr, "__dict__")) {
         // get the properties to the C++ PropertyContainer class
         std::map<std::string,App::Property*> Map;
-        getPropertyContainerObject()->getPropertyMap(Map);
+        getPropertyContainerPtr()->getPropertyMap(Map);
         PyObject *dict = PyDict_New();
         if (dict) {
             for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
@@ -122,10 +122,10 @@ PyObject *PropertyContainerPy::getCustomAttributes(const char* attr) const
 int PropertyContainerPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
     // search in PropertyList
-    Property *prop = getPropertyContainerObject()->getPropertyByName(attr);
+    Property *prop = getPropertyContainerPtr()->getPropertyByName(attr);
     if (prop) {
         // Read-only attributes must not be set over its Python interface
-        short Type =  getPropertyContainerObject()->getPropertyType(prop);
+        short Type =  getPropertyContainerPtr()->getPropertyType(prop);
         if (Type & Prop_ReadOnly) {
             std::stringstream s;
             s << "Object attribute '" << attr << "' is read-only";

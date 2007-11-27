@@ -22,14 +22,14 @@ PyObject*  FeaturePy::recompute(PyObject *args)
         return NULL;                             // NULL triggers exception 
     
     PY_TRY {
-        getAbstractFeatureObject()->recompute();
+        getAbstractFeaturePtr()->recompute();
         Py_Return;
     } PY_CATCH;
 }
 
 Py::Int FeaturePy::getValid(void) const
 {
-    return Py::Int(getAbstractFeatureObject()->isValid());
+    return Py::Int(getAbstractFeaturePtr()->isValid());
 }
 
 PyObject *FeaturePy::getCustomAttributes(const char* attr) const

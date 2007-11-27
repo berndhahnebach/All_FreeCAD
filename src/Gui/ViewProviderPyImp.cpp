@@ -42,7 +42,7 @@ PyObject*  ViewProviderPy::show(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        getViewProviderObject()->show();  
+        getViewProviderPtr()->show();  
         Py_Return;
     } PY_CATCH;
 }
@@ -52,7 +52,7 @@ PyObject*  ViewProviderPy::hide(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        getViewProviderObject()->hide();  
+        getViewProviderPtr()->hide();  
         Py_Return;
     } PY_CATCH;
 }
@@ -62,7 +62,7 @@ PyObject*  ViewProviderPy::isVisible(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        return Py_BuildValue("O", (getViewProviderObject()->isShow() ? Py_True : Py_False));
+        return Py_BuildValue("O", (getViewProviderPtr()->isShow() ? Py_True : Py_False));
     } PY_CATCH;
 }
 
@@ -71,7 +71,7 @@ PyObject*  ViewProviderPy::update(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        //getViewProviderObject()->update();  
+        //getViewProviderPtr()->update();  
         Py_Return;
     } PY_CATCH;
 }
@@ -81,7 +81,7 @@ PyObject*  ViewProviderPy::listDisplayModes(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        std::vector<std::string> modes = getViewProviderObject()->getDisplayModes();  
+        std::vector<std::string> modes = getViewProviderPtr()->getDisplayModes();  
         PyObject* pyList = PyList_New(modes.size()); 
         int i=0;
 
@@ -99,7 +99,7 @@ PyObject*  ViewProviderPy::toString(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     PY_TRY {
-        std::string buffer = getViewProviderObject()->toString();
+        std::string buffer = getViewProviderPtr()->toString();
         return Py::new_reference_to(Py::String(buffer));
     } PY_CATCH;
 }
