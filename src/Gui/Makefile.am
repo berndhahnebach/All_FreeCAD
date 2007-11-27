@@ -321,6 +321,7 @@ libFreeCADGui_la_SOURCES=\
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
+		swigpyrun.h \
 		Qt4All.h \
 		InventorAll.h \
 		FreeCADGuiInit.py \
