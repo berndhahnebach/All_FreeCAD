@@ -69,7 +69,7 @@ void MeshExport initMesh()
     if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
     union PyType_Object pyMeshType = {&Mesh::MeshPy::Type};
     // 'mesh' is a method, hence it's lowercase
-    PyModule_AddObject(meshModule, "mesh", pyMeshType.o);
+    PyModule_AddObject(meshModule, "Mesh", pyMeshType.o);
     if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
     union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
     PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType.o);

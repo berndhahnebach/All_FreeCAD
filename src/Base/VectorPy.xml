@@ -3,9 +3,13 @@
   <PythonExport 
       Father="PyObjectBase" 
       Name="VectorPy" 
-      Twin="Vector3f" 
+      Twin="Vector" 
+      TwinPointer="Vector3d" 
+      Include="Vector3D.h" 
       FatherInclude="Base/PyObjectBase.h" 
       Namespace="Base" 
+      Constructor="true"
+      Delete="true" 
       FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
@@ -49,17 +53,24 @@
       </Documentation>
       <Parameter Name="x" Type="Float"/>
     </Attribute>
-    <Attribute Name="x" ReadOnly="false">
+    <Attribute Name="y" ReadOnly="false">
       <Documentation>
         <UserDocu>The Y component of the vector</UserDocu>
       </Documentation>
       <Parameter Name="y" Type="Float"/>
     </Attribute>
-    <Attribute Name="x" ReadOnly="false">
+    <Attribute Name="z" ReadOnly="false">
       <Documentation>
         <UserDocu>The Z component of the vector</UserDocu>
       </Documentation>
       <Parameter Name="z" Type="Float"/>
     </Attribute>
+    <ClassDeclarations>
+      public:
+      VectorPy(const Vector3d &amp; vec, PyTypeObject *T = &amp;Type)
+      :PyObjectBase(new Vector3d(vec),T){}
+      VectorPy(const Vector3f &amp; vec, PyTypeObject *T = &amp;Type)
+      :PyObjectBase(new Vector3d(vec.x,vec.y,vec.z),T){}
+     </ClassDeclarations>
   </PythonExport>
 </GenerateModel>

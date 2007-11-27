@@ -24,13 +24,13 @@ class MeshTopoTestCases(unittest.TestCase):
 
 	def testCollapseFacetsSingle(self):
 		for i in range(18):
-			planarMeshObject = Mesh.mesh(self.planarMesh)
-			planarMeshObject.CollapseFacets([i])
+			planarMeshObject = Mesh.Mesh(self.planarMesh)
+			planarMeshObject.collapseFacets([i])
 
 	def testCollapseFacetsMultible(self):
-		planarMeshObject = Mesh.mesh(self.planarMesh)
-		planarMeshObject.CollapseFacets(range(7))
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+		planarMeshObject.collapseFacets(range(7))
 
 	def testCollapseFacetsAll(self):
-		planarMeshObject = Mesh.mesh(self.planarMesh)
-		planarMeshObject.CollapseFacets(range(18))
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+		planarMeshObject.collapseFacets(range(18))
