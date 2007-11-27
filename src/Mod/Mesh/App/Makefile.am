@@ -4,10 +4,12 @@ if GTS_LIBRARY_FILES
 lib_LTLIBRARIES=libMesh.la Mesh.la
 
 BUILT_SOURCES=\
-		FacetPy.cpp
+		FacetPy.cpp \
+		MeshPy.cpp
 
 libMesh_la_BUILT=\
-		FacetPy.h
+		FacetPy.h \
+		MeshPy.h
 
 libMesh_la_SOURCES=\
 		Core/Algorithm.cpp \
@@ -328,6 +330,7 @@ data_DATA = MeshTestsApp.py
 EXTRA_DIST = \
 		$(data_DATA) \
 		AppMesh.vcproj \
-		FacetPy.xml
+		FacetPy.xml \
+		MeshPy.xml
 
 
