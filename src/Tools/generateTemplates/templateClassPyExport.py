@@ -52,8 +52,8 @@ public:
 
 public:
     @self.export.Name@(@self.export.TwinPointer@ *pcObject, PyTypeObject *T = &Type);
-    static PyObject *PyMake(PyObject *, PyObject *);
-    int PyInit(PyObject* self, PyObject* args, PyObject*);
+    static PyObject *PyMake(struct _typeobject *, PyObject *, PyObject *);
+    virtual int PyInit(PyObject* args, PyObject*k);
     ~@self.export.Name@();
 
     typedef @self.export.TwinPointer@* PointerType ;
@@ -177,9 +177,9 @@ PyTypeObject @self.export.Name@::Type = {
     0,                                                /*tp_descr_get */
     0,                                                /*tp_descr_set */
     0,                                                /*tp_dictoffset */
-    0,                                                /*tp_init */
+    __PyInit,                                         /*tp_init */
     0,                                                /*tp_alloc */
-    0,                                                /*tp_new */
+    @self.export.Namespace@::@self.export.Name@::PyMake,/*tp_new */
     0,                                                /*tp_free   Low-level free-memory routine */
     0,                                                /*tp_is_gc  For PyObject_IS_GC */
     0,                                                /*tp_bases */
@@ -364,19 +364,22 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
 }
 
 + if (self.export.Constructor):
-PyObject *@self.export.Name@::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
+PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
-		// creat a new instace
+    // creat a new instance of @self.export.Name@ and the Twin object 
     return new @self.export.Name@(new @self.export.TwinPointer@);
 }
 = else:
-PyObject *@self.export.Name@::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
+PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
     // never create such objects with the constructor
+    PyErr_SetString(PyExc_RuntimeError, "You cannot create directly an instance of '@self.export.Name@'.\\n"
+    "You must have created a document where you can create an instance with addObject('@self.export.Name@').");
+ 
     return 0;
 }
 
-int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*){return 0;}
+int @self.export.Name@::PyInit(PyObject* args, PyObject*k){return 0;}
 -
 
 //--------------------------------------------------------------------------
@@ -537,7 +540,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 
 + if (self.export.Constructor):
 // constructor methode
-int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*)
+int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
 {
 	return 0;
 }
@@ -608,7 +611,7 @@ const char *@self.export.Name@::representation(void) const
 
 + if (self.export.Constructor):
 // constructor methode
-int @self.export.Name@::PyInit(PyObject* self, PyObject* args, PyObject*)
+int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
 {
 	return 0;
 }

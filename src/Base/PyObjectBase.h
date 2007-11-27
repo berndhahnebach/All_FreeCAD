@@ -270,12 +270,23 @@ public:
             return NULL;
         }
         return ((PyObjectBase*) PyObj)->_repr();
-  }
+    }
 
-  /** @name helper methods */
-  //@{
-  /// return a float from an int or float object, or throw.
-  static float getFloatFromPy(PyObject *value);
+    /** PyInit method
+    * Overide this method to initialize a newly created
+    * instance of the class (Constuctor)
+    */
+    virtual int PyInit(PyObject* args, PyObject* k){return 0;}
+    /// python wrapper for the _repr() function
+    static  int __PyInit(PyObject* self, PyObject* args, PyObject* k)	{
+        return ((PyObjectBase*) self)->PyInit(args, k);
+    }
+
+
+    /** @name helper methods */
+    //@{
+    /// return a float from an int or float object, or throw.
+    static float getFloatFromPy(PyObject *value);
   //@}
 //
 //	/// Type checking	

@@ -33,7 +33,7 @@
 using namespace Mesh;
 
 
-int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
+int MeshPy::PyInit(PyObject* args, PyObject*)
 {
     PyObject *pcObj=0;
     if (!PyArg_ParseTuple(args, "|O", &pcObj))     // convert args: Python->C 
@@ -42,13 +42,13 @@ int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
     // if no mesh is given
     if (!pcObj) return 0;
     if (PyObject_TypeCheck(pcObj, &(MeshPy::Type))) {
-        static_cast<MeshPy*>(self)->Mesh() = static_cast<MeshPy*>(pcObj)->Mesh();
+        Mesh() = static_cast<MeshPy*>(pcObj)->Mesh();
     }
     else if (PyList_Check(pcObj)) {
-        static_cast<MeshPy*>(self)->addFacets(args);
+        addFacets(args);
     }
     else if (PyString_Check(pcObj)) {
-        static_cast<MeshPy*>(self)->Mesh().load(PyString_AsString(pcObj));
+        Mesh().load(PyString_AsString(pcObj));
     }
 
     return 0;
