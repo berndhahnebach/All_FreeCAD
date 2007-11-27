@@ -37,7 +37,7 @@ PyObject*  TopoShapePy::exportIges(PyObject *args)
   // write iges file
   IGESControl_Controller::Init();
   IGESControl_Writer aWriter;
-  aWriter.AddShape(getTopoShapeObject()->_Shape);
+  aWriter.AddShape(getTopoShapePtr()->_Shape);
 
   if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
     PyErr_SetString(PyExc_Exception,"Writing IGES failed");
@@ -57,7 +57,7 @@ PyObject*  TopoShapePy::exportStep(PyObject *args)
   STEPControl_Writer aWriter;
 
   //FIXME: Does not work this way!!!
-  if (aWriter.Transfer(getTopoShapeObject()->_Shape, STEPControl_AsIs)) {
+  if (aWriter.Transfer(getTopoShapePtr()->_Shape, STEPControl_AsIs)) {
     PyErr_SetString(PyExc_Exception,"Transferring STEP failed");
     return NULL;
   }
@@ -78,7 +78,7 @@ PyObject*  TopoShapePy::exportBrep(PyObject *args)
     return NULL;
 
   // read brep file
-  if (!BRepTools::Write(getTopoShapeObject()->_Shape,(const Standard_CString)filename)) {
+  if (!BRepTools::Write(getTopoShapePtr()->_Shape,(const Standard_CString)filename)) {
     PyErr_SetString(PyExc_Exception,"Writing BREP failed");
     return NULL;
   }
@@ -96,12 +96,12 @@ PyObject*  TopoShapePy::check(PyObject *args)
 {
 	  if (!PyArg_ParseTuple(args, "" ))   
     return NULL;
-  if ( !getTopoShapeObject()->_Shape.IsNull() )
+  if ( !getTopoShapePtr()->_Shape.IsNull() )
   {
-    BRepCheck_Analyzer aChecker(getTopoShapeObject()->_Shape);
+    BRepCheck_Analyzer aChecker(getTopoShapePtr()->_Shape);
     if (!aChecker.IsValid())
     {
-      TopoDS_Iterator it(getTopoShapeObject()->_Shape);
+      TopoDS_Iterator it(getTopoShapePtr()->_Shape);
       for (;it.More(); it.Next())
       {
         if (!aChecker.IsValid(it.Value()))
@@ -246,7 +246,7 @@ Py::List TopoShapePy::getVertexes(void) const
 {
 	Py::List ret;
 
-  TopExp_Explorer Ex(getTopoShapeObject()->_Shape,TopAbs_VERTEX);
+  TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_VERTEX);
   while (Ex.More()) {
     //BRepBuilderAPI_Copy copy(Ex.Current());
     //TopoDS_Shape shape = copy.Shape();

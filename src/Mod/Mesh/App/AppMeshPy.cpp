@@ -133,7 +133,7 @@ show(PyObject *self, PyObject *args)
         MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
         Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
         // copy the data
-        MeshObject* mesh = new MeshObject(*pMesh->getMeshObjectObject());
+        MeshObject* mesh = new MeshObject(*pMesh->getMeshObjectPtr());
         pcFeature->Mesh.setValue(mesh);
         pcDoc->recompute();
     } PY_CATCH;

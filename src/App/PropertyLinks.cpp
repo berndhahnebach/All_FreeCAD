@@ -101,7 +101,7 @@ void PropertyLink::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
         DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
-        setValue(pcObject->getDocumentObjectObject());
+        setValue(pcObject->getDocumentObjectPtr());
     }
     else if(Py_None == value) {
         setValue(0);
@@ -209,14 +209,14 @@ void PropertyLinkList::setPyObject(PyObject *value)
                 throw Py::TypeError(error);
             }
 
-            values[i] = static_cast<DocumentObjectPy*>(item)->getDocumentObjectObject();
+            values[i] = static_cast<DocumentObjectPy*>(item)->getDocumentObjectPtr();
         }
 
         setValues(values);
     }
     else if(PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
         DocumentObjectPy  *pcObject = static_cast<DocumentObjectPy*>(value);
-        setValue(pcObject->getDocumentObjectObject());
+        setValue(pcObject->getDocumentObjectPtr());
     }
     else {
         std::string error = std::string("type must be 'DocumentObject' or list of 'DocumentObject', not ");

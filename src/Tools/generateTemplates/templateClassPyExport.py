@@ -100,7 +100,7 @@ public:
 -
 
     /// getter for the object handled by this class
-    @self.export.TwinPointer@ *get@self.export.Twin@Object(void) const;
+    @self.export.TwinPointer@ *get@self.export.Twin@Ptr(void) const;
 
 + if(self.export.ClassDeclarations != None):
     /** @name additional declarations and methods for the wrapper class */
@@ -388,7 +388,7 @@ int @self.export.Name@::PyInit(PyObject* args, PyObject*k){return 0;}
 @self.export.Name@::~@self.export.Name@()                                // Everything handled in parent
 {
 + if (self.export.Reference):
-    get@self.export.Twin@Object()->DetachRef(this);
+    get@self.export.Twin@Ptr()->DetachRef(this);
 -
 + if (self.export.Delete):
     // delete the handled object when the PyObject dies
@@ -527,7 +527,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 }
 -
 
-@self.export.TwinPointer@ *@self.export.Name@::get@self.export.Twin@Object(void) const
+@self.export.TwinPointer@ *@self.export.Name@::get@self.export.Twin@Ptr(void) const
 {
     return static_cast<@self.export.TwinPointer@ *>(_pcTwinPointer);
 }

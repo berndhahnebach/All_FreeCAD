@@ -23,7 +23,7 @@ PyObject*  BaseClassPy::isDerivedFrom(PyObject *args)
         return NULL;                    // NULL triggers exception
 
     Base::Type type = Base::Type::fromName(name);
-    if (type != Base::Type::badType() && getBaseClassObject()->getTypeId().isDerivedFrom(type)) {
+    if (type != Base::Type::badType() && getBaseClassPtr()->getTypeId().isDerivedFrom(type)) {
         Py_INCREF(Py_True);
         return Py_True;
     }
@@ -39,7 +39,7 @@ PyObject*  BaseClassPy::getAllDerivedFrom(PyObject *args)
         return NULL;                    // NULL triggers exception
     
     std::vector<Base::Type> ary;
-    Base::Type::getAllDerivedFrom(getBaseClassObject()->getTypeId(), ary);
+    Base::Type::getAllDerivedFrom(getBaseClassPtr()->getTypeId(), ary);
     Py::List res;
     for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it)
         res.append(Py::String(it->getName()));
@@ -48,7 +48,7 @@ PyObject*  BaseClassPy::getAllDerivedFrom(PyObject *args)
 
 Py::String BaseClassPy::getType(void) const
 {
-    return Py::String(std::string(getBaseClassObject()->getTypeId().getName()));
+    return Py::String(std::string(getBaseClassPtr()->getTypeId().getName()));
 }
 
 Py::Int BaseClassPy::getModule(void) const

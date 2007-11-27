@@ -27,7 +27,7 @@ PyObject*  DocumentPy::show(PyObject *args)
         return NULL;  // NULL triggers exception 
 
     PY_TRY {
-        getDocumentObject()->setShow(psFeatStr);  
+        getDocumentPtr()->setShow(psFeatStr);  
         Py_Return;
     } PY_CATCH;
 }
@@ -39,7 +39,7 @@ PyObject*  DocumentPy::hide(PyObject *args)
         return NULL;  // NULL triggers exception 
 
     PY_TRY {
-        getDocumentObject()->setHide(psFeatStr);  
+        getDocumentPtr()->setHide(psFeatStr);  
         Py_Return;
     } PY_CATCH;
 }
@@ -57,7 +57,7 @@ PyObject*  DocumentPy::setPos(PyObject *args)
     mat = ((App::MatrixPy*)pcMatObj)->value();
 
     PY_TRY {
-        getDocumentObject()->setPos(psFeatStr,mat);  
+        getDocumentPtr()->setPos(psFeatStr,mat);  
         Py_Return;
     } PY_CATCH;
 }
@@ -72,9 +72,9 @@ PyObject*  DocumentPy::addAnnotation(PyObject *args)
         ViewProviderExtern *pcExt = new ViewProviderExtern();
 
         pcExt->setModeByFile(psModName?psModName:"Main",psFileName);
-        pcExt->adjustDocumentName(getDocumentObject()->getDocument()->getName());
+        pcExt->adjustDocumentName(getDocumentPtr()->getDocument()->getName());
 
-        getDocumentObject()->setAnnotationViewProvider(psAnnoName,pcExt);
+        getDocumentPtr()->setAnnotationViewProvider(psAnnoName,pcExt);
 
         Py_Return;
 
@@ -87,7 +87,7 @@ PyObject*  DocumentPy::update(PyObject *args)
         return NULL;                       // NULL triggers exception 
 
     PY_TRY {
-        getDocumentObject()->update();
+        getDocumentPtr()->update();
         Py_Return;
     } PY_CATCH;
 }
@@ -99,7 +99,7 @@ PyObject*  DocumentPy::getObject(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     PY_TRY {
-        ViewProvider *pcView = getDocumentObject()->getViewProviderByName(sName);
+        ViewProvider *pcView = getDocumentPtr()->getViewProviderByName(sName);
 	    if (pcView)
 		    return pcView->getPyObject();
         else {
@@ -114,9 +114,9 @@ PyObject*  DocumentPy::activeObject(PyObject *args)
         return NULL;                       // NULL triggers exception 
 
     PY_TRY {
-        App::DocumentObject *pcFtr = getDocumentObject()->getDocument()->getActiveObject();
+        App::DocumentObject *pcFtr = getDocumentPtr()->getDocument()->getActiveObject();
         if (pcFtr) {
-            ViewProvider *pcView = getDocumentObject()->getViewProvider(pcFtr);
+            ViewProvider *pcView = getDocumentPtr()->getViewProvider(pcFtr);
 	        return pcView->getPyObject();
         } else {
 		    Py_Return;
@@ -130,7 +130,7 @@ PyObject*  DocumentPy::activeView(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     PY_TRY {
-        Gui::MDIView  *pcView = getDocumentObject()->getActiveView();
+        Gui::MDIView  *pcView = getDocumentPtr()->getActiveView();
         if (pcView){
             // already incremented in getPyObject().
             return pcView->getPyObject();
@@ -142,9 +142,9 @@ PyObject*  DocumentPy::activeView(PyObject *args)
 
 Py::Object DocumentPy::getActiveObject(void) const
 {
-    App::DocumentObject *object = getDocumentObject()->getDocument()->getActiveObject();
+    App::DocumentObject *object = getDocumentPtr()->getDocument()->getActiveObject();
     if (object) {
-        ViewProvider *viewObj = getDocumentObject()->getViewProvider(object);
+        ViewProvider *viewObj = getDocumentPtr()->getViewProvider(object);
         return Py::Object(viewObj->getPyObject());
     } else {
         return Py::None();
@@ -158,7 +158,7 @@ void  DocumentPy::setActiveObject(Py::Object arg)
 
 Py::Object DocumentPy::getActiveView(void) const
 {
-    Gui::MDIView *view = getDocumentObject()->getActiveView();
+    Gui::MDIView *view = getDocumentPtr()->getActiveView();
     if (view) {
         // already incremented in getPyObject().
         return Py::Object(view->getPyObject());
@@ -187,7 +187,7 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
         PyErr_Clear();
     }
     // search for an object with this name
-    ViewProvider* obj = getDocumentObject()->getViewProviderByName(attr);
+    ViewProvider* obj = getDocumentPtr()->getViewProviderByName(attr);
     return (obj ? obj->getPyObject() : 0);
 }
 
@@ -205,7 +205,7 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
     } else if (PyErr_Occurred()) {
         PyErr_Clear();
     }
-    ViewProvider* obj = getDocumentObject()->getViewProviderByName(attr);
+    ViewProvider* obj = getDocumentPtr()->getViewProviderByName(attr);
     if (obj)
     {
         char szBuf[200];

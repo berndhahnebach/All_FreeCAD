@@ -97,7 +97,7 @@ PyObject*  PythonWorkbenchPy::appendMenu(PyObject *args)
             return NULL;                             // NULL triggers exception 
         }
 
-        getPythonWorkbenchObject()->appendMenu( path, items );
+        getPythonWorkbenchPtr()->appendMenu( path, items );
 
         Py_Return; 
     } PY_CATCH;
@@ -111,7 +111,7 @@ PyObject*  PythonWorkbenchPy::removeMenu(PyObject *args)
         if (!PyArg_ParseTuple(args, "s", &psMenu))     // convert args: Python->C 
             return NULL;                             // NULL triggers exception 
     
-        getPythonWorkbenchObject()->removeMenu( psMenu );
+        getPythonWorkbenchPtr()->removeMenu( psMenu );
         Py_Return; 
     } PY_CATCH;
 }
@@ -120,7 +120,7 @@ PyObject*  PythonWorkbenchPy::removeMenu(PyObject *args)
 PyObject*  PythonWorkbenchPy::listMenus(PyObject *args)
 {
     PY_TRY {
-        QStringList menus = getPythonWorkbenchObject()->listMenus();
+        QStringList menus = getPythonWorkbenchPtr()->listMenus();
 
         PyObject* pyList = PyList_New(menus.count());
         int i=0;
@@ -155,7 +155,7 @@ PyObject*  PythonWorkbenchPy::appendContextMenu(PyObject *args)
             items.push_back(pItem);
         }
 
-        getPythonWorkbenchObject()->appendContextMenu( psMenu, items );
+        getPythonWorkbenchPtr()->appendContextMenu( psMenu, items );
 
         Py_Return; 
     } PY_CATCH;
@@ -169,7 +169,7 @@ PyObject*  PythonWorkbenchPy::removeContextMenu(PyObject *args)
         if (!PyArg_ParseTuple(args, "s", &psMenu))     // convert args: Python->C 
             return NULL;                             // NULL triggers exception 
     
-        getPythonWorkbenchObject()->removeContextMenu( psMenu );
+        getPythonWorkbenchPtr()->removeContextMenu( psMenu );
         Py_Return; 
     } PY_CATCH;
 }
@@ -197,7 +197,7 @@ PyObject*  PythonWorkbenchPy::appendToolbar(PyObject *args)
             items.push_back(pItem);
         }
 
-        getPythonWorkbenchObject()->appendToolbar( psToolBar, items );
+        getPythonWorkbenchPtr()->appendToolbar( psToolBar, items );
 
         Py_Return; 
     } PY_CATCH;
@@ -211,7 +211,7 @@ PyObject*  PythonWorkbenchPy::removeToolbar(PyObject *args)
         if (!PyArg_ParseTuple(args, "s", &psToolBar))     // convert args: Python->C 
             return NULL;                             // NULL triggers exception 
     
-        getPythonWorkbenchObject()->removeToolbar( psToolBar );
+        getPythonWorkbenchPtr()->removeToolbar( psToolBar );
         Py_Return; 
     } PY_CATCH;
 }
@@ -220,7 +220,7 @@ PyObject*  PythonWorkbenchPy::removeToolbar(PyObject *args)
 PyObject*  PythonWorkbenchPy::listToolbars(PyObject *args)
 {
     PY_TRY {
-        QStringList bars = getPythonWorkbenchObject()->listToolbars();
+        QStringList bars = getPythonWorkbenchPtr()->listToolbars();
 
         PyObject* pyList = PyList_New(bars.count());
         int i=0;
@@ -255,7 +255,7 @@ PyObject*  PythonWorkbenchPy::appendCommandbar(PyObject *args)
             items.push_back(pItem);
         }
 
-        getPythonWorkbenchObject()->appendCommandbar( psToolBar, items );
+        getPythonWorkbenchPtr()->appendCommandbar( psToolBar, items );
 
         Py_Return; 
     } PY_CATCH;
@@ -269,7 +269,7 @@ PyObject*  PythonWorkbenchPy::removeCommandbar(PyObject *args)
         if (!PyArg_ParseTuple(args, "s", &psToolBar))     // convert args: Python->C 
             return NULL;                             // NULL triggers exception 
     
-        getPythonWorkbenchObject()->removeCommandbar( psToolBar );
+        getPythonWorkbenchPtr()->removeCommandbar( psToolBar );
         Py_Return; 
     } PY_CATCH;
 }
@@ -278,7 +278,7 @@ PyObject*  PythonWorkbenchPy::removeCommandbar(PyObject *args)
 PyObject*  PythonWorkbenchPy::listCommandbars(PyObject *args)
 {
     PY_TRY {
-        QStringList bars = getPythonWorkbenchObject()->listCommandbars();
+        QStringList bars = getPythonWorkbenchPtr()->listCommandbars();
 
         PyObject* pyList = PyList_New(bars.count());
         int i=0;

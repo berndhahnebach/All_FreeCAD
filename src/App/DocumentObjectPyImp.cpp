@@ -17,7 +17,7 @@ const char *DocumentObjectPy::representation(void) const
 
 Py::String DocumentObjectPy::getName(void) const
 {
-    DocumentObject* object = this->getDocumentObjectObject();
+    DocumentObject* object = this->getDocumentObjectPtr();
     const char* internal = object->getNameInDocument();
     if (!internal) {
         throw Py::RuntimeError(std::string("This object is currently not part of a document"));
@@ -27,13 +27,13 @@ Py::String DocumentObjectPy::getName(void) const
 
 PyObject*  DocumentObjectPy::touch(PyObject *args)
 {
-    getDocumentObjectObject()->touch();
+    getDocumentObjectPtr()->touch();
     Py_Return;
 }
 
 Py::List DocumentObjectPy::getState(void) const
 {
-    DocumentObject* object = this->getDocumentObjectObject();
+    DocumentObject* object = this->getDocumentObjectPtr();
     Py::List list;
     bool uptodate = true;
     if (object->isTouched()) {
@@ -58,10 +58,10 @@ PyObject *DocumentObjectPy::getCustomAttributes(const char* attr) const
 int DocumentObjectPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
     // search in PropertyList
-    Property *prop = getDocumentObjectObject()->getPropertyByName(attr);
+    Property *prop = getDocumentObjectPtr()->getPropertyByName(attr);
     if (prop) {
         // Read-only attributes must not be set over its Python interface
-        short Type =  getDocumentObjectObject()->getPropertyType(prop);
+        short Type =  getDocumentObjectPtr()->getPropertyType(prop);
         if (Type & Prop_ReadOnly) {
             std::stringstream s;
             s << "'DocumentObject' attribute '" << attr << "' is read-only"; 
