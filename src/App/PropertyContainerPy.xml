@@ -5,7 +5,7 @@
     Name="PropertyContainerPy" 
     TwinPointer="PropertyContainer" 
     Twin="PropertyContainer" 
-    Include="PropertyContainer.h" 
+    Include="App/PropertyContainer.h" 
     Namespace="App" 
     FatherInclude="Base/PersistancePy.h" 
     FatherNamespace="Base">

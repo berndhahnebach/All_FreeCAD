@@ -5,7 +5,7 @@
       Name="TopoShapePy" 
       Twin="TopoShape" 
       TwinPointer="TopoShape" 
-      Include="TopoShape.h" 
+      Include="Mod/Part/App/TopoShape.h" 
       Namespace="Part" 
       FatherInclude="App/ComplexGeoDataPy.h" 
       FatherNamespace="Data">

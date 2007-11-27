@@ -5,7 +5,7 @@
     Name="PythonWorkbenchPy" 
     Twin="PythonWorkbench" 
     TwinPointer="PythonWorkbench" 
-    Include="Workbench.h" 
+    Include="Gui/Workbench.h" 
     Namespace="Gui" 
     FatherInclude="Gui/WorkbenchPy.h" 
     FatherNamespace="Gui">

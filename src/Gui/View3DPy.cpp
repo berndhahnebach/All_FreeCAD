@@ -42,6 +42,8 @@
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
 
+#include "swigpyrun.h"
+
 #include <Base/PyCXX/Objects.hxx>
 
 using Base::Console;
@@ -151,6 +153,7 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(removeEventCallback)
   PYMETHODEDEF(setAnnotation)
   PYMETHODEDEF(removeAnnotation)
+  PYMETHODEDEF(getSceneGraph)
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -889,4 +892,30 @@ PYFUNCIMP_D(View3DPy,removeAnnotation)
         PyErr_Format(PyExc_KeyError, "No such annotation '%s'", psAnnoName);
         return NULL;
     }
+}
+PYFUNCIMP_D(View3DPy,getSceneGraph)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoSeparator *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoSeparator'");
+        return NULL;
+    }
+
+    SoNode* scene = _pcView->getViewer()->getSceneGraph();
+    scene->ref();
+    
+    PyObject *resultobj = NULL;
+    resultobj = SWIG_Python_NewPointerObj((void*)scene,swig_type,1);
+    return resultobj;
 }
+

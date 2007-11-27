@@ -385,7 +385,8 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
     }
     else if (PyList_Check(value)) {
         // new instance of MeshObject
-        MeshObject* mesh = MeshObject::createMeshFromList(Py::List(value));
+        Py::List triangles(value);
+        MeshObject* mesh = MeshObject::createMeshFromList(triangles);
         setValue(mesh);
     }
     else {
