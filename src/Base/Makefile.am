@@ -3,12 +3,14 @@ lib_LTLIBRARIES=libFreeCADBase.la
 
 BUILT_SOURCES=\
 		BaseClassPy.cpp \
-		PersistancePy.cpp
+		PersistancePy.cpp \
+		VectorPy.cpp
 
 
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
-		PersistancePy.h
+		PersistancePy.h \
+		VectorPy.h
 
 libFreeCADBase_la_SOURCES=\
 		zipios/backbuffer.h \
@@ -132,6 +134,7 @@ libFreeCADBase_la_SOURCES=\
 		Type.h \
 		Tools2D.cpp \
 		Tools2D.h \
+		VectorPyImp.cpp \
 		Vector3D.h \
 		ViewProj.h \
 		Writer.cpp \
@@ -162,5 +165,6 @@ libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 EXTRA_DIST = \
 		FreeCADBase.vcproj \
 		BaseClassPy.xml \
-		PersistancePy.xml
+		PersistancePy.xml \
+		VectorPy.xml
 
