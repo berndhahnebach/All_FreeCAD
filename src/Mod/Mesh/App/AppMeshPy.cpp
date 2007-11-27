@@ -132,7 +132,9 @@ show(PyObject *self, PyObject *args)
             pcDoc = App::GetApplication().newDocument();
         MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
         Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
-        pcFeature->Mesh.setValue(pMesh->getMeshObjectObject());
+        // copy the data
+        MeshObject* mesh = new MeshObject(*pMesh->getMeshObjectObject());
+        pcFeature->Mesh.setValue(mesh);
         pcDoc->recompute();
     } PY_CATCH;
 
@@ -350,7 +352,7 @@ PyDoc_STRVAR(loft_doc,
 struct PyMethodDef Mesh_Import_methods[] = { 
     {"open"       ,open ,       METH_VARARGS, open_doc},
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
-    {"read"       ,read,        Py_NEWARGS,   "Read a Mesh from a file and returns a Mesh object."},
+    {"read"       ,read,        Py_NEWARGS,   "Read a mesh from a file and returns a Mesh object."},
     {"show"       ,show,        Py_NEWARGS,   "Put a mesh object in the active document or creates one if needed"},
     {"createBox"  ,createBox,   Py_NEWARGS,   "Create a solid mesh box"},
     {"createPlane",createPlane, Py_NEWARGS,   "Create a mesh XY plane normal +Z"},

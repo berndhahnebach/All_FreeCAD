@@ -87,7 +87,7 @@ public:
     /// setter for the @i.Name@ attribute
     void set@i.Name@(Py::@i.Parameter.Type@ arg);
 -
-   //@}
+    //@}
 -
 
 + if(self.export.CustomAttributes != None):
@@ -101,11 +101,11 @@ public:
 
     /// getter for the object handled by this class
     @self.export.TwinPointer@ *get@self.export.Twin@Object(void) const;
-		
+
 + if(self.export.ClassDeclarations != None):
-    /** @name additional declarations and methodes for the wrapper class */
+    /** @name additional declarations and methods for the wrapper class */
     //@{
-	@self.export.ClassDeclarations@
+@self.export.ClassDeclarations@
     //@}
 -
 };
@@ -162,7 +162,7 @@ PyTypeObject @self.export.Name@::Type = {
     0,                                                /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-    "@self.export.Documentation.UserDocu.replace('\\n','\\\\n')@",           /*tp_doc */
+    "@self.export.Documentation.UserDocu.replace('\\n','\\\\n\\"\\n    \\"')@",           /*tp_doc */
     0,                                                /*tp_traverse */
     0,                                                /*tp_clear */
     0,                                                /*tp_richcompare */
@@ -225,8 +225,8 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
         return NULL;
     }
-		
-+	if(not i.Const):
+
++	if (not i.Const):
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
         PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
@@ -359,7 +359,7 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
     : @self.export.Father@(reinterpret_cast<@self.export.Father@::PointerType>(pcObject), T)
 {
 + if (self.export.Reference):
-	pcObject->AttachRef(this);
+    pcObject->AttachRef(this);
 -
 }
 
@@ -388,12 +388,11 @@ int @self.export.Name@::PyInit(PyObject* args, PyObject*k){return 0;}
 @self.export.Name@::~@self.export.Name@()                                // Everything handled in parent
 {
 + if (self.export.Reference):
-	get@self.export.Twin@Object()->DetachRef(this);
+    get@self.export.Twin@Object()->DetachRef(this);
 -
-
 + if (self.export.Delete):
-	// delete the handled object when the PyObject dies
-	delete _pcTwinPointer;
+    // delete the handled object when the PyObject dies
+    delete _pcTwinPointer;
 -
 }
 
@@ -539,10 +538,10 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
  */
 
 + if (self.export.Constructor):
-// constructor methode
+// constructor method
 int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
 {
-	return 0;
+    return 0;
 }
 -
 
@@ -610,10 +609,10 @@ const char *@self.export.Name@::representation(void) const
 }
 
 + if (self.export.Constructor):
-// constructor methode
+// constructor method
 int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
 {
-	return 0;
+    return 0;
 }
 -
 

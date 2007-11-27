@@ -375,10 +375,13 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(MeshPy::Type))) {
         MeshPy* mesh = static_cast<MeshPy*>(value);
-        // Note: Copy the content, do NOT reference the same mesh object
-        aboutToSetValue();
-        *(this->_meshObject) = *(mesh->getMesh());
-        hasSetValue();
+        // Do not allow to reassign the same instance
+        if (&(*this->_meshObject) != mesh->getMesh()) {
+            // Note: Copy the content, do NOT reference the same mesh object
+            aboutToSetValue();
+            *(this->_meshObject) = *(mesh->getMesh());
+            hasSetValue();
+        }
     }
     else if (PyList_Check(value)) {
         // new instance of MeshObject

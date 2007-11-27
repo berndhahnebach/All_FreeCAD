@@ -77,9 +77,11 @@ MeshObject::~MeshObject()
 
 void MeshObject::operator = (const MeshObject& mesh)
 {
-    // copy the mesh structure
-    setTransform(mesh._Mtrx);
-    this->_kernel = mesh._kernel;
+    if (this != &mesh) {
+        // copy the mesh structure
+        setTransform(mesh._Mtrx);
+        this->_kernel = mesh._kernel;
+    }
 }
 
 std::string MeshObject::representation() const
@@ -131,6 +133,31 @@ MeshCore::MeshPointIterator MeshObject::PointIterator() const
     MeshCore::MeshPointIterator it = _kernel.PointIterator();
     it.Transform(_Mtrx);
     return it;
+}
+
+unsigned int MeshObject::getMemSize (void) const
+{
+    return _kernel.GetMemSize();
+}
+
+void MeshObject::Save (Base::Writer &writer) const
+{
+    // this is handled by the property class
+}
+
+void MeshObject::SaveDocFile (Base::Writer &writer) const
+{
+    _kernel.Write(writer.Stream());
+}
+
+void MeshObject::Restore(Base::XMLReader &reader)
+{
+    // this is handled by the property class
+}
+
+void MeshObject::RestoreDocFile(Base::Reader &reader)
+{
+    _kernel.Read(reader);
 }
 
 void MeshObject::save(const char* file) const
