@@ -242,6 +242,7 @@ libMesh_la_SOURCES=\
 		CurveProjector.cpp \
 		CurveProjector.h \
 		Doxygen.cpp \
+		FacetPyImp.cpp \
 		FeatureMeshCurvature.cpp \
 		FeatureMeshCurvature.h \
 		FeatureMeshExport.cpp \
@@ -289,6 +290,7 @@ libMesh_la_CPPFLAGS = -DMeshExport=
 libMesh_la_LIBADD   = \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
+		-lboost_filesystem \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lTKernel \
@@ -326,6 +328,8 @@ endif
 libdir = $(prefix)/Mod/Mesh
 datadir = $(prefix)/Mod/Mesh
 data_DATA = MeshTestsApp.py 
+
+CLEANFILES = $(BUILT_SOURCES) $(libMesh_la_BUILT)
 
 EXTRA_DIST = \
 		$(data_DATA) \

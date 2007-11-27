@@ -4,7 +4,7 @@
       Father="PersistancePy" 
       Name="ComplexGeoDataPy" 
       Twin="ComplexGeoData" 
-      Include="ComplexGeoData.h" 
+      Include="App/ComplexGeoData.h" 
   	  TwinPointer="ComplexGeoData" 
       Namespace="Data" 
       FatherInclude="Base/PersistancePy.h" 

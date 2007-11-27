@@ -29,8 +29,10 @@
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoTransform.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <qmessagebox.h>
 #endif

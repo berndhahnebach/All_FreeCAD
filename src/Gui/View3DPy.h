@@ -77,6 +77,7 @@ public:
     PYFUNCDEF_D(View3DPy,removeEventCallback)
     PYFUNCDEF_D(View3DPy,setAnnotation)
     PYFUNCDEF_D(View3DPy,removeAnnotation)
+    PYFUNCDEF_D(View3DPy,getSceneGraph)
 
 private:
     static void eventCallback(void * ud, SoEventCallback * n);

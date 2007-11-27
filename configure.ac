@@ -591,8 +591,6 @@ src/Mod/Raytracing/Gui/Makefile
 src/Mod/Mesh/Makefile
 src/Mod/Mesh/App/Makefile
 src/Mod/Mesh/Gui/Makefile
-src/Mod/Cam/Makefile
-src/Mod/Cam/App/Makefile
 src/Mod/Points/Makefile
 src/Mod/Points/App/Makefile
 src/Mod/Points/Gui/Makefile

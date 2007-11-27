@@ -5,7 +5,7 @@
       Name="VectorPy" 
       Twin="Vector" 
       TwinPointer="Vector3d" 
-      Include="Vector3D.h" 
+      Include="Base/Vector3D.h" 
       FatherInclude="Base/PyObjectBase.h" 
       Namespace="Base" 
       Constructor="true"

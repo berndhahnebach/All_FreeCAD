@@ -5,7 +5,7 @@
       Name="PersistancePy" 
       Twin="Persistance" 
       TwinPointer="Persistance" 
-      Include="Persistance.h" 
+      Include="Base/Persistance.h" 
       FatherInclude="Base/BaseClassPy.h" 
       Namespace="Base" 
       FatherNamespace="Base">

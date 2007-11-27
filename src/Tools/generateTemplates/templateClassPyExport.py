@@ -29,7 +29,7 @@ class TemplateClassPyExport (template.ModelTemplate):
 #define @self.export.Namespace.upper()@_@self.export.Name.upper()@_H
 
 #include <@self.export.FatherInclude@>
-#include "@self.export.Include@"
+#include <@self.export.Include@>
 
 namespace @self.export.Namespace@
 {
@@ -392,7 +392,8 @@ int @self.export.Name@::PyInit(PyObject* args, PyObject*k){return 0;}
 -
 + if (self.export.Delete):
     // delete the handled object when the PyObject dies
-    delete _pcTwinPointer;
+    @self.export.Name@::PointerType ptr = reinterpret_cast<@self.export.Name@::PointerType>(_pcTwinPointer);
+    delete ptr;
 -
 }
 

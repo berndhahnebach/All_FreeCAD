@@ -5,7 +5,7 @@
     Name="DocumentObjectPy" 
     Twin="DocumentObject" 
     TwinPointer="DocumentObject" 
-    Include="DocumentObject.h" 
+    Include="App/DocumentObject.h" 
     Namespace="App" 
     FatherInclude="App/PropertyContainerPy.h" 
     FatherNamespace="App">

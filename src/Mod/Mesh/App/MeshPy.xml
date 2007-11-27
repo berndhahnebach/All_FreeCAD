@@ -2,7 +2,7 @@
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
 	<PythonExport
 		Father="ComplexGeoDataPy"
-		Include="Mesh.h"
+		Include="Mod/Mesh/App/Mesh.h"
 		Name="MeshPy" 
 		Twin="MeshObject"
 		TwinPointer="MeshObject" 
