@@ -65,12 +65,11 @@
       </Documentation>
       <Parameter Name="z" Type="Float"/>
     </Attribute>
-    <ClassDeclarations>
-      public:
-      VectorPy(const Vector3d &amp; vec, PyTypeObject *T = &amp;Type)
-      :PyObjectBase(new Vector3d(vec),T){}
-      VectorPy(const Vector3f &amp; vec, PyTypeObject *T = &amp;Type)
-      :PyObjectBase(new Vector3d(vec.x,vec.y,vec.z),T){}
+    <ClassDeclarations>public:
+    VectorPy(const Vector3d &amp; vec, PyTypeObject *T = &amp;Type)
+    :PyObjectBase(new Vector3d(vec),T){}
+    VectorPy(const Vector3f &amp; vec, PyTypeObject *T = &amp;Type)
+    :PyObjectBase(new Vector3d(vec.x,vec.y,vec.z),T){}
      </ClassDeclarations>
   </PythonExport>
 </GenerateModel>

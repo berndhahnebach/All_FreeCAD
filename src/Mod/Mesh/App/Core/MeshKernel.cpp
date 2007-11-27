@@ -57,11 +57,13 @@ MeshKernel::MeshKernel (const MeshKernel &rclMesh)
 
 MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
 {
-  _aclPointArray  = rclMesh._aclPointArray;
-  _aclFacetArray  = rclMesh._aclFacetArray;
-  _clBoundBox     = rclMesh._clBoundBox;
-  _bValid         = rclMesh._bValid;
-  return *this;
+    if (this != &rclMesh) { // must be a different instance
+        this->_aclPointArray  = rclMesh._aclPointArray;
+        this->_aclFacetArray  = rclMesh._aclFacetArray;
+        this->_clBoundBox     = rclMesh._clBoundBox;
+        this->_bValid         = rclMesh._bValid;
+    }
+    return *this;
 }
 
 void MeshKernel::Assign(const MeshPointArray& rPoints, const MeshFacetArray& rFacets, bool checkNeighbourHood)

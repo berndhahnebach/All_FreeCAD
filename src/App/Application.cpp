@@ -57,8 +57,8 @@
 #include <Base/BaseClass.h>
 #include <Base/Persistance.h>
 #include <Base/Reader.h>
+#include <Base/VectorPy.h>
 
-#include "VectorPy.h"
 #include "MatrixPy.h"
 #include "Feature.h"
 #include "GeoFeature.h"
@@ -150,8 +150,8 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
-    if (PyType_Ready(&App::VectorPy::Type) < 0) return;
-    union PyType_Object pyVecType = {&App::VectorPy::Type};
+    if (PyType_Ready(&Base::VectorPy::Type) < 0) return;
+    union PyType_Object pyVecType = {&Base::VectorPy::Type};
     PyModule_AddObject(_pcAppModule, "Vector", pyVecType.o);
     if (PyType_Ready(&App::MatrixPy::Type) < 0) return;
     union PyType_Object pyMatType = {&App::MatrixPy::Type};

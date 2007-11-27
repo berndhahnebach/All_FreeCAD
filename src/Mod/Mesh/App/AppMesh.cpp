@@ -72,7 +72,7 @@ void MeshExport initMesh()
     PyModule_AddObject(meshModule, "Mesh", pyMeshType.o);
     if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
     union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
-    PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType.o);
+    PyModule_AddObject(meshModule, "Feature", pyMeshFeatureType.o);
 
     Mesh::PropertyNormalList    ::init();
     Mesh::PropertyCurvatureList ::init();
