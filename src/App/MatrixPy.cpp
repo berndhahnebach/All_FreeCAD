@@ -31,11 +31,12 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Vector3D.h>
+#include <Base/VectorPy.h>
+
 using Base::Vector3f;
 using Base::Console;
 
 #include "MatrixPy.h"
-#include "VectorPy.h"
 using Base::Matrix4D;
 
 
@@ -395,8 +396,10 @@ PYFUNCIMP_D(MatrixPy,move)
         vec.y = y;
         vec.z = z;
     }
-    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj)) {   // convert args: Python->C
-        vec = ((VectorPy*)pcVecObj)->value();
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {
+        Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
+        Base::Vector3d* val = pcObject->getVectorPtr();
+        vec.Set((float)val->x,(float)val->y,(float)val->z);
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
     }
@@ -423,8 +426,10 @@ PYFUNCIMP_D(MatrixPy,scale)
         vec.y = y;
         vec.z = z;
     }
-    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj)) {   // convert args: Python->C
-        vec = ((VectorPy*)pcVecObj)->value();
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {   // convert args: Python->C
+        Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
+        Base::Vector3d* val = pcObject->getVectorPtr();
+        vec.Set((float)val->x,(float)val->y,(float)val->z);
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
     }
@@ -456,9 +461,10 @@ PYFUNCIMP_D(MatrixPy,transform)
     PyObject *pcVecObj,*pcMatObj;
 
     if (PyArg_ParseTuple(args, "O!O!: a transform point (Vector) and a transform matrix (Matrix) is needed",
-                         &(VectorPy::Type), &pcVecObj,
-                         &(MatrixPy::Type), &pcMatObj) ) {   // convert args: Python->C
-        vec = ((VectorPy*)pcVecObj)->value();
+        &(Base::VectorPy::Type), &pcVecObj, &(MatrixPy::Type), &pcMatObj) ) {   // convert args: Python->C
+        Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
+        Base::Vector3d* val = pcObject->getVectorPtr();
+        vec.Set((float)val->x,(float)val->y,(float)val->z);
         mat = ((MatrixPy*)pcMatObj)->value();
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
