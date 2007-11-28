@@ -37,7 +37,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/PyCXX/Objects.hxx>
-#include <App/VectorPy.h>
+#include <Base/VectorPy.h>
 #include "Application.h"
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
@@ -666,7 +666,7 @@ PYFUNCIMP_D(View3DPy,getPoint)
         vol.projectPointToLine(SbVec2f(pX,pY), line);
         focalPlane.intersect(line, pt);
         
-        return new App::VectorPy(Base::Vector3f(pt[0], pt[1], pt[2]));
+        return new Base::VectorPy(Base::Vector3f(pt[0], pt[1], pt[2]));
     } catch (const Py::Exception&) {
         return NULL;
     }

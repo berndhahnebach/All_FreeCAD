@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#include <App/VectorPy.h>
+#include <Base/VectorPy.h>
 #include <Base/Handle.h>
 
 #include "Mesh.h"
@@ -57,7 +57,14 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
 // returns a string which represent the object e.g. when printed in python
 const char *MeshPy::representation(void) const
 {
-    return "<MeshObject object>";
+    // Note: As the return type is 'const char*' we cannot create a temporary char array neither on the stack because the array would be freed
+    // when leaving the scope nor on the heap because we would have a memory leak.
+    // So we use a static array that is used by all instances of this class. This, however, is not a problem as long as we only
+    // use this method in _repr().
+    MeshPy::PointerType ptr = reinterpret_cast<MeshPy::PointerType>(_pcTwinPointer);
+    static std::string buf;
+    buf = ptr->representation();
+    return buf.c_str();
 }
 
 PyObject*  MeshPy::read(PyObject *args)
@@ -556,10 +563,12 @@ PyObject*  MeshPy::splitEdge(PyObject *args)
 {
     unsigned long facet, neighbour;
     PyObject* vertex;
-    if (!PyArg_ParseTuple(args, "kkO!", &facet, &neighbour, &App::VectorPy::Type, &vertex))
+    if (!PyArg_ParseTuple(args, "kkO!", &facet, &neighbour, &Base::VectorPy::Type, &vertex))
         return NULL;
 
-    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(vertex);
+    Base::Vector3d* val = pcObject->getVectorPtr();
+    Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
 
     const MeshCore::MeshKernel& kernel = Mesh().getKernel();
     PY_TRY {
@@ -590,12 +599,17 @@ PyObject*  MeshPy::splitFacet(PyObject *args)
     unsigned long facet;
     PyObject* vertex1;
     PyObject* vertex2;
-    if (!PyArg_ParseTuple(args, "kO!O!", &facet, &App::VectorPy::Type, &vertex1, 
-                                                  &App::VectorPy::Type, &vertex2))
+    if (!PyArg_ParseTuple(args, "kO!O!", &facet, &Base::VectorPy::Type, &vertex1, 
+                                                 &Base::VectorPy::Type, &vertex2))
         return NULL;
 
-    Base::Vector3f v1 = static_cast<App::VectorPy*>(vertex1)->value();
-    Base::Vector3f v2 = static_cast<App::VectorPy*>(vertex2)->value();
+    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(vertex1);
+    Base::Vector3d* val = pcObject->getVectorPtr();
+    Base::Vector3f v1((float)val->x,(float)val->y,(float)val->z);
+
+    pcObject = static_cast<Base::VectorPy*>(vertex2);
+    val = pcObject->getVectorPtr();
+    Base::Vector3f v2((float)val->x,(float)val->y,(float)val->z);
 
     const MeshCore::MeshKernel& kernel = Mesh().getKernel();
     PY_TRY {
@@ -692,10 +706,12 @@ PyObject*  MeshPy::insertVertex(PyObject *args)
 {
     unsigned long facet;
     PyObject* vertex;
-    if (!PyArg_ParseTuple(args, "kO!", &facet, &App::VectorPy::Type, &vertex))
+    if (!PyArg_ParseTuple(args, "kO!", &facet, &Base::VectorPy::Type, &vertex))
         return NULL;
 
-    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(vertex);
+    Base::Vector3d* val = pcObject->getVectorPtr();
+    Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
 
     PY_TRY {
         if (facet < 0 || facet >= Mesh().countFacets()) {
@@ -713,10 +729,12 @@ PyObject*  MeshPy::snapVertex(PyObject *args)
 {
     unsigned long facet;
     PyObject* vertex;
-    if (!PyArg_ParseTuple(args, "kO!", &facet, &App::VectorPy::Type, &vertex))
+    if (!PyArg_ParseTuple(args, "kO!", &facet, &Base::VectorPy::Type, &vertex))
         return NULL;
 
-    Base::Vector3f v = static_cast<App::VectorPy*>(vertex)->value();
+    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(vertex);
+    Base::Vector3d* val = pcObject->getVectorPtr();
+    Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
 
     PY_TRY {
         if (facet < 0 || facet >= Mesh().countFacets()) {

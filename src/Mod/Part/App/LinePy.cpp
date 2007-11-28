@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #include "LinePy.h"
-#include <App/VectorPy.h>
+#include <Base/VectorPy.h>
 
 using namespace Part;
 
@@ -175,9 +175,11 @@ PYFUNCIMP_D(LinePy,setStartPoint)
 {
     PyObject *pyObject;
     if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-        if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
-            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-            _Line.first = pcVector->value();
+        if ( PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type)) ) {
+            Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
+            Base::Vector3d* val = pcObject->getVectorPtr();
+            Base::Vector3f vec((float)val->x,(float)val->y,(float)val->z);
+            _Line.first = vec;
         }
         else {
             return NULL;
@@ -194,9 +196,11 @@ PYFUNCIMP_D(LinePy,setEndPoint)
 {
     PyObject *pyObject;
     if (PyArg_ParseTuple(args, "O", &pyObject)) {
-        if (PyObject_TypeCheck(pyObject, &(App::VectorPy::Type))) {
-            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-            _Line.second = pcVector->value();
+        if (PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type))) {
+            Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
+            Base::Vector3d* val = pcObject->getVectorPtr();
+            Base::Vector3f vec((float)val->x,(float)val->y,(float)val->z);
+            _Line.second = vec;
         }
         else {
             return NULL;

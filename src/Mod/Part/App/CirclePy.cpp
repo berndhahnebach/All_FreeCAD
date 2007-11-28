@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #include "CirclePy.h"
-#include <App/VectorPy.h>
+#include <Base/VectorPy.h>
 
 using namespace Part;
 
@@ -199,7 +199,7 @@ PYFUNCIMP_D(CirclePy,position)
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
     gp_Pnt loc = _circle.Location();
-    App::VectorPy* vec = new App::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return vec; 
 }
 
@@ -207,9 +207,10 @@ PYFUNCIMP_D(CirclePy,setPosition)
 {
     PyObject *pyObject;
     if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-        if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
-            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-            Base::Vector3f v = pcVector->value();
+        if ( PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type)) ) {
+            Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
+            Base::Vector3d* val = pcObject->getVectorPtr();
+            Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
             _circle.SetLocation(gp_Pnt(v.x, v.y, v.z));
         }
         else {
@@ -229,7 +230,7 @@ PYFUNCIMP_D(CirclePy,axis)
         return NULL;
     gp_Ax1 axis = _circle.Axis();
     gp_Dir dir = axis.Direction();
-    App::VectorPy* vec = new App::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return vec; 
 }
 
@@ -237,9 +238,10 @@ PYFUNCIMP_D(CirclePy,setAxis)
 {
     PyObject *pyObject;
     if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-        if ( PyObject_TypeCheck(pyObject, &(App::VectorPy::Type)) ) {
-            App::VectorPy *pcVector = (App::VectorPy*)pyObject;
-            Base::Vector3f v = pcVector->value();
+        if ( PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type)) ) {
+            Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
+            Base::Vector3d* val = pcObject->getVectorPtr();
+            Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
             gp_Ax1 axis;
             axis.SetLocation(_circle.Location());
             axis.SetDirection(gp_Dir(v.x, v.y, v.z));

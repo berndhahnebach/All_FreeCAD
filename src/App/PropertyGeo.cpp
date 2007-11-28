@@ -34,8 +34,8 @@
 #include <Base/Reader.h>
 #include <Base/Stream.h>
 #include <Base/Rotation.h>
+#include <Base/VectorPy.h>
 
-#include "VectorPy.h"
 #include "MatrixPy.h"
 #include "Placement.h"
 
@@ -95,14 +95,16 @@ const Base::Vector3f & PropertyVector::getValue(void)const
 
 PyObject *PropertyVector::getPyObject(void)
 {
-    return new VectorPy(_cVec);
+    return new Base::VectorPy(_cVec);
 }
 
 void PropertyVector::setPyObject(PyObject *value)
 {
-    if (PyObject_TypeCheck(value, &(VectorPy::Type))) {
-        VectorPy  *pcObject = (VectorPy*)value;
-        setValue(pcObject->value());
+    if (PyObject_TypeCheck(value, &(Base::VectorPy::Type))) {
+        Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(value);
+        Base::Vector3d* val = pcObject->getVectorPtr();
+        Base::Vector3f vec((float)val->x,(float)val->y,(float)val->z);
+        setValue(vec);
     }
     else if (PyTuple_Check(value)&&PyTuple_Size(value)==3) {
         PyObject* item;
@@ -245,8 +247,10 @@ void PropertyVectorList::setPyObject(PyObject *value)
         setValues(values);
     }
     else if (PyObject_TypeCheck(value, &(VectorPy::Type))) {
-        VectorPy  *pcObject = (VectorPy*)value;
-        setValue( pcObject->value() );
+        Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(value);
+        Base::Vector3d* val = pcObject->getVectorPtr();
+        Base::Vector3f vec((float)val->x,(float)val->y,(float)val->z);
+        setValue(vec);
     }
     else if (PyTuple_Check(value) && PyTuple_Size(value) == 3) {
         PropertyVector val;

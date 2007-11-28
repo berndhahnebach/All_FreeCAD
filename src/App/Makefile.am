@@ -74,9 +74,7 @@ libFreeCADApp_la_SOURCES=\
 		PropertyStandard.cpp \
 		PropertyStandard.h \
 		Transactions.cpp \
-		Transactions.h \
-		VectorPy.cpp \
-		VectorPy.h
+		Transactions.h
 
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $< $@
