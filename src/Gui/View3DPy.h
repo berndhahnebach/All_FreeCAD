@@ -78,9 +78,12 @@ public:
     PYFUNCDEF_D(View3DPy,setAnnotation)
     PYFUNCDEF_D(View3DPy,removeAnnotation)
     PYFUNCDEF_D(View3DPy,getSceneGraph)
+    PYFUNCDEF_D(View3DPy,addEventCallbackSWIG)
+    PYFUNCDEF_D(View3DPy,removeEventCallbackSWIG)
 
 private:
     static void eventCallback(void * ud, SoEventCallback * n);
+    static void eventCallbackSWIG(void * ud, SoEventCallback * n);
     Gui::View3DInventor *_pcView;
 };
 
