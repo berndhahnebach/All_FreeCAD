@@ -25,6 +25,7 @@
 
 #include "LinePy.h"
 #include <Base/VectorPy.h>
+#include <Base/PyCXX/Objects.hxx>
 
 using namespace Part;
 
@@ -174,18 +175,28 @@ int LinePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note
 PYFUNCIMP_D(LinePy,setStartPoint)
 {
     PyObject *pyObject;
-    if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
-        if ( PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type)) ) {
+    if (!PyArg_ParseTuple(args, "O", &pyObject))
+        return NULL;
+    
+    try {
+        if (PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type))) {
             Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
             Base::Vector3d* val = pcObject->getVectorPtr();
             Base::Vector3f vec((float)val->x,(float)val->y,(float)val->z);
             _Line.first = vec;
         }
         else {
-            return NULL;
+            Py::Tuple tuple(pyObject);
+            Py::Float x(tuple.getItem(0));
+            Py::Float y(tuple.getItem(1));
+            Py::Float z(tuple.getItem(2));
+            _Line.first.x = (float)x;
+            _Line.first.y = (float)y;
+            _Line.first.z = (float)z;
         }
     }
-    else {
+    catch(const Py::Exception&) {
+        PyErr_SetString(PyExc_TypeError, "Either Vector or tuple of three floats expected");
         return NULL;
     }
 
@@ -195,7 +206,10 @@ PYFUNCIMP_D(LinePy,setStartPoint)
 PYFUNCIMP_D(LinePy,setEndPoint)
 {
     PyObject *pyObject;
-    if (PyArg_ParseTuple(args, "O", &pyObject)) {
+    if (!PyArg_ParseTuple(args, "O", &pyObject))
+        return NULL;
+    
+    try {
         if (PyObject_TypeCheck(pyObject, &(Base::VectorPy::Type))) {
             Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
             Base::Vector3d* val = pcObject->getVectorPtr();
@@ -203,10 +217,17 @@ PYFUNCIMP_D(LinePy,setEndPoint)
             _Line.second = vec;
         }
         else {
-            return NULL;
+            Py::Tuple tuple(pyObject);
+            Py::Float x(tuple.getItem(0));
+            Py::Float y(tuple.getItem(1));
+            Py::Float z(tuple.getItem(2));
+            _Line.second.x = (float)x;
+            _Line.second.y = (float)y;
+            _Line.second.z = (float)z;
         }
     }
-    else {
+    catch(const Py::Exception&) {
+        PyErr_SetString(PyExc_TypeError, "Either Vector or tuple of three floats expected");
         return NULL;
     }
 
