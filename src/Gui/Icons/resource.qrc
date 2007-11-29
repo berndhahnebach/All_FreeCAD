@@ -8,5 +8,12 @@
         <file>button_up.xpm</file>
         <file>preferences-display.svg</file>
         <file>preferences-general.svg</file>
+        <file>ClassBrowser/const_member.png</file>
+        <file>ClassBrowser/member.png</file>
+        <file>ClassBrowser/method.png</file>
+        <file>ClassBrowser/property.png</file>
+        <file>ClassBrowser/type_class.png</file>
+        <file>ClassBrowser/type_enum.png</file>
+        <file>ClassBrowser/type_module.png</file>
     </qresource>
 </RCC>

@@ -37,7 +37,7 @@ namespace Gui {
 class CallTip
 {
 public:
-    enum Type {Unknown, Class, Method, Atribute};
+    enum Type {Unknown, Module, Class, Method, Member, Property};
     CallTip():type(Unknown) {}
     QString name;
     QString description;
