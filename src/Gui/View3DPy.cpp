@@ -154,6 +154,8 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(setAnnotation)
   PYMETHODEDEF(removeAnnotation)
   PYMETHODEDEF(getSceneGraph)
+  PYMETHODEDEF(addEventCallbackSWIG)
+  PYMETHODEDEF(removeEventCallbackSWIG)
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -808,6 +810,51 @@ void View3DPy::eventCallback(void * ud, SoEventCallback * n)
     }
 }
 
+void View3DPy::eventCallbackSWIG(void * ud, SoEventCallback * n)
+{
+    const SoEvent* e = n->getEvent();
+    std::string type = e->getTypeId().getName().getString();
+    type += " *";
+
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        // No Python binding for Coin loaded
+        return;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery(type.c_str());
+    if (!swig_type) {
+        // Cannot find type information for event type
+        return;
+    }
+    
+    try {
+        PyObject *resultobj = NULL;
+        resultobj = SWIG_Python_NewPointerObj((void*)e,swig_type,0);
+
+        // now run the method
+        Py::Object event(resultobj,true);
+        Py::Callable method(reinterpret_cast<PyObject*>(ud));
+        Py::Tuple args(1);
+        args.setItem(0, event);
+        method.apply(args);
+    }
+    catch (const Py::Exception& e) {
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            Base::Console().Log("%s\n", s.as_std_string().c_str());
+        }
+        else {
+            Py::String s(o.repr());
+            Base::Console().Log("%s\n", s.as_std_string().c_str());
+        }
+        // Prints message to console window if we are in interactive mode
+        PyErr_Print();
+    }
+}
+
 PYFUNCIMP_D(View3DPy,addEventCallback)
 {
     char* eventtype;
@@ -917,5 +964,99 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
     PyObject *resultobj = NULL;
     resultobj = SWIG_Python_NewPointerObj((void*)scene,swig_type,1);
     return resultobj;
+}
+
+PYFUNCIMP_D(View3DPy,addEventCallbackSWIG)
+{
+    PyObject* proxy;
+    PyObject* method;
+    if (!PyArg_ParseTuple(args, "OO", &proxy, &method))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoType *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoType'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert into SoType");
+        return NULL;
+    }
+
+    SoType* eventId = reinterpret_cast<SoType*>(ptr);
+    if (eventId->isBad() || !eventId->isDerivedFrom(SoEvent::getClassTypeId())) {
+        PyErr_Format(PyExc_Exception, "%s is not a valid event type", eventId->getName().getString());
+        return NULL;
+    }
+
+    try {
+        if (PyCallable_Check(method) == 0) {
+            PyErr_SetString(PyExc_TypeError, "object is not callable");
+            return NULL;
+        }
+
+        _pcView->getViewer()->addEventCallback(*eventId, View3DPy::eventCallbackSWIG, method);
+        Py_INCREF(method);
+        return method;
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PYFUNCIMP_D(View3DPy,removeEventCallbackSWIG)
+{
+    PyObject* proxy;
+    PyObject* method;
+    if (!PyArg_ParseTuple(args, "OO", &proxy, &method))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoType *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoType'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert into SoType");
+        return NULL;
+    }
+
+    SoType* eventId = reinterpret_cast<SoType*>(ptr);
+    if (eventId->isBad() || !eventId->isDerivedFrom(SoEvent::getClassTypeId())) {
+        PyErr_Format(PyExc_Exception, "%s is not a valid event type", eventId->getName().getString());
+        return NULL;
+    }
+
+    try {
+        if (PyCallable_Check(method) == 0) {
+            PyErr_SetString(PyExc_TypeError, "object is not callable");
+            return NULL;
+        }
+
+        _pcView->getViewer()->removeEventCallback(*eventId, View3DPy::eventCallbackSWIG, method);
+        Py_INCREF(method);
+        return method;
+    } catch (const Py::Exception&) {
+        return NULL;
+    }
 }
 
