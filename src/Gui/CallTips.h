@@ -79,6 +79,7 @@ private:
 private:
     QTextEdit* textEdit;
     int cursorPos;
+    bool validObject;
     QList<int> hideKeys;
     QList<int> compKeys;
 };
