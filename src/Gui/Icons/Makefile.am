@@ -7,6 +7,13 @@ nodist_libIcons_la_SOURCES=\
 		qrc_resource.cpp
 
 EXTRA_DIST = \
+		ClassBrowser/const_member.png \
+		ClassBrowser/member.png \
+		ClassBrowser/method.png \
+		ClassBrowser/property.png \
+		ClassBrowser/type_class.png \
+		ClassBrowser/type_enum.png \
+		ClassBrowser/type_module.png \
 		BmpFactoryIcons.cpp \
 		background.xpm \
 		bulb.xpm \
