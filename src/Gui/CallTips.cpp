@@ -42,7 +42,7 @@
 using namespace Gui;
 
 CallTipsList::CallTipsList(QTextEdit* parent)
-  :  QListWidget(parent), textEdit(parent), cursorPos(0)
+  :  QListWidget(parent), textEdit(parent), cursorPos(0), validObject(true)
 {
     // make the user assume that the widget is active
     QPalette pal = parent->palette();
@@ -188,15 +188,25 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         Py::Object type(PyObject_Type(obj.ptr()), true);
         Py::Object inst = obj; // the object instance 
         union PyType_Object typeobj = {&Base::PyObjectBase::Type};
-        bool subclass = (PyObject_IsSubclass(type.ptr(), typeobj.o) > 0);
-        if (subclass)
-            obj = type;
+        bool subclass = (PyObject_IsSubclass(type.ptr(), typeobj.o) == 1);
+        if (subclass) obj = type;
+        
+        // If we have an instance of PyObjectBase then determine whether it's valid or not
+        if (PyObject_IsInstance(inst.ptr(), typeobj.o) == 1) {
+            Base::PyObjectBase* baseobj = static_cast<Base::PyObjectBase*>(inst.ptr());
+            const_cast<CallTipsList*>(this)->validObject = baseobj->isValid();
+        }
+        else {
+            // PyObject_IsInstance might set an exception
+            PyErr_Clear();
+        }
+
         Py::List list(PyObject_Dir(obj.ptr()), true);
 
         // If we derive from PropertyContainerPy we can search for the properties in the
         // C++ twin class.
         union PyType_Object proptypeobj = {&App::PropertyContainerPy::Type};
-        if (PyObject_IsSubclass(type.ptr(), proptypeobj.o) > 0) {
+        if (PyObject_IsSubclass(type.ptr(), proptypeobj.o) == 1) {
             // These are the attributes of the instance itself which are NOT accessible by
             // its type object
             extractTipsFromProperties(inst, tips);
@@ -205,7 +215,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // If we derive from App::DocumentPy we have direct access to the objects by their internal
         // names. So, we add these names to the list, too.
         union PyType_Object appdoctypeobj = {&App::DocumentPy::Type};
-        if (PyObject_IsSubclass(type.ptr(), appdoctypeobj.o) > 0) {
+        if (PyObject_IsSubclass(type.ptr(), appdoctypeobj.o) == 1) {
             App::DocumentPy* docpy = (App::DocumentPy*)(inst.ptr());
             App::Document* document = docpy->getDocumentPtr();
             // Make sure that the C++ object is alive
@@ -221,7 +231,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         // If we derive from Gui::DocumentPy we have direct access to the objects by their internal
         // names. So, we add these names to the list, too.
         union PyType_Object guidoctypeobj = {&Gui::DocumentPy::Type};
-        if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o) > 0) {
+        if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o) == 1) {
             Gui::DocumentPy* docpy = (Gui::DocumentPy*)(inst.ptr());
             App::Document* document = docpy->getDocumentPtr()->getDocument();
             // Make sure that the C++ object is alive
@@ -257,7 +267,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
 
             if (attr.isCallable()) {
                 union PyType_Object basetype = {&PyBaseObject_Type};
-                if (PyObject_IsSubclass(attr.ptr(), basetype.o) > 0) {
+                if (PyObject_IsSubclass(attr.ptr(), basetype.o) == 1) {
                     tip.type = CallTip::Class;
                 }
                 else {
@@ -335,12 +345,34 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
 void CallTipsList::showTips(const QString& line)
 {
     // search only once
-    static QIcon type_module_icon = BitmapFactory().pixmap("ClassBrowser/type_module");
-    static QIcon type_class_icon = BitmapFactory().pixmap("ClassBrowser/type_class");
-    static QIcon method_icon = BitmapFactory().pixmap("ClassBrowser/method");
-    static QIcon member_icon = BitmapFactory().pixmap("ClassBrowser/member");
-    static QIcon property_icon = BitmapFactory().pixmap("ClassBrowser/property");
+    static QPixmap type_module_icon = BitmapFactory().pixmap("ClassBrowser/type_module");
+    static QPixmap type_class_icon = BitmapFactory().pixmap("ClassBrowser/type_class");
+    static QPixmap method_icon = BitmapFactory().pixmap("ClassBrowser/method");
+    static QPixmap member_icon = BitmapFactory().pixmap("ClassBrowser/member");
+    static QPixmap property_icon = BitmapFactory().pixmap("ClassBrowser/property");
 
+    // object is in error state
+    static const char * const forbidden_xpm[]={
+            "8 8 3 1",
+            ". c None",
+            "# c #ff0000",
+            "a c #ffffff",
+            "..####..",
+            ".######.",
+            "########",
+            "#aaaaaa#",
+            "#aaaaaa#",
+            "########",
+            ".######.",
+            "..####.."};
+    static QPixmap forbidden_icon(forbidden_xpm);
+    static QPixmap forbidden_type_module_icon = BitmapFactory().merge(type_module_icon,forbidden_icon,BitmapFactoryInst::BottomLeft);
+    static QPixmap forbidden_type_class_icon = BitmapFactory().merge(type_class_icon,forbidden_icon,BitmapFactoryInst::BottomLeft);
+    static QPixmap forbidden_method_icon = BitmapFactory().merge(method_icon,forbidden_icon,BitmapFactoryInst::BottomLeft);
+    static QPixmap forbidden_member_icon = BitmapFactory().merge(member_icon,forbidden_icon,BitmapFactoryInst::BottomLeft);
+    static QPixmap forbidden_property_icon = BitmapFactory().merge(property_icon,forbidden_icon,BitmapFactoryInst::BottomLeft);
+
+    this->validObject = true;
     QString context = extractContext(line);
     QMap<QString, CallTip> tips = extractTips(context);
     clear();
@@ -353,23 +385,23 @@ void CallTipsList::showTips(const QString& line)
         {
         case CallTip::Module:
             {
-                item->setIcon(type_module_icon);
+                item->setIcon((this->validObject ? type_module_icon : forbidden_type_module_icon));
             }   break;
         case CallTip::Class:
             {
-                item->setIcon(type_class_icon);
+                item->setIcon((this->validObject ? type_class_icon : forbidden_type_class_icon));
             }   break;
         case CallTip::Method:
             {
-                item->setIcon(method_icon);
+                item->setIcon((this->validObject ? method_icon : forbidden_method_icon));
             }   break;
         case CallTip::Member:
             {
-                item->setIcon(member_icon);
+                item->setIcon((this->validObject ? member_icon : forbidden_member_icon));
             }   break;
         case CallTip::Property:
             {
-                item->setIcon(property_icon);
+                item->setIcon((this->validObject ? property_icon : forbidden_property_icon));
             }   break;
         default:
             break;
