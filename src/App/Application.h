@@ -248,6 +248,7 @@ private:
 
     /// pointer to the Python module of App...
     PyObject* _pcAppModule;
+    PyObject* _pcConsoleModule;
 
     friend class ApplicationObserver;
 

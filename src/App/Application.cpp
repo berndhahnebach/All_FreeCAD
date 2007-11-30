@@ -130,6 +130,10 @@ PyDoc_STRVAR(FreeCAD_doc,
      "file the document should be stored to.\n"
     );
 
+PyDoc_STRVAR(Console_doc,
+     "FreeCAD Console\n"
+    );
+
 Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
     ://_pcSysParamMngr(pcSysParamMngr),
     //_pcUserParamMngr(pcUserParamMngr),
@@ -145,6 +149,8 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     _pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
     Py::Module(_pcAppModule).setAttr(std::string("ActiveDocument"),Py::None());
 
+    _pcConsoleModule = Py_InitModule3("Console", ConsoleSingelton::Methods, Console_doc);
+
     // introducing additional classes
 
     // NOTE: To finish the initialization of our own type objects we must
@@ -156,7 +162,11 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     if (PyType_Ready(&App::MatrixPy::Type) < 0) return;
     union PyType_Object pyMatType = {&App::MatrixPy::Type};
     PyModule_AddObject(_pcAppModule, "Matrix", pyMatType.o);
+    //insert Console
+    Py_INCREF(_pcConsoleModule);
+    PyModule_AddObject(_pcAppModule, "Console", _pcConsoleModule);
 }
+    
 
 Application::~Application()
 {

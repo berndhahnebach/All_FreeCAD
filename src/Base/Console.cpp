@@ -340,7 +340,7 @@ ConsoleSingelton & ConsoleSingelton::Instance(void)
     if(!_pcSingelton)
     {
         _pcSingelton = new ConsoleSingelton();
-        (void) Py_InitModule("FreeCAD", ConsoleSingelton::Methods);
+        (void) Py_InitModule("Console", ConsoleSingelton::Methods);
     }
     return *_pcSingelton;
 }

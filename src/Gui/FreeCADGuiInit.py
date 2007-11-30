@@ -121,6 +121,7 @@ class NoneWorkbench ( Workbench ):
 		return "Gui::NoneWorkbench"
 
 def InitApplications():
+	import sys,os,dircache
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	#print FreeCAD.ConfigGet("AppHomePath")
@@ -167,6 +168,10 @@ Gui.activateWorkbench("NoneWorkbench")
 FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")
 FreeCAD.EndingAdd("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
 FreeCAD.EndingAdd("Python (*.py *.FCMacro *.FCScript)","FreeCADGui")
+
+del(InitApplications)
+del(NoneWorkbench)
+del(StandardWorkbench)
 
 
 Log ('Init: Running FreeCADGuiInit.py start script... done\n')
