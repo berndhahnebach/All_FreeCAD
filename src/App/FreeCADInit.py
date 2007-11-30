@@ -33,20 +33,13 @@
 # imports the one and only
 import FreeCAD
 
-try:
-	import sys,os,dircache
-except:
-	FreeCAD.PrintError("\n\nSeems the python standard libs are not installed, bailing out!\n\n")
-	raise
-
-def InitDocumentation():
-	# Checking on FreeCAD documentation path ++++++++++++++++++++++++++++++++++++++++++
-	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Doc'):
-		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Doc\\free-cad.sourceforge.net'):
-			FreeCAD.ConfigSet("DocPath",FreeCAD.ConfigGet("AppHomePath")+'Doc\\free-cad.sourceforge.net')
-
 
 def InitApplications():
+	try:
+		import sys,os,dircache
+	except:
+		FreeCAD.PrintError("\n\nSeems the python standard libs are not installed, bailing out!\n\n")
+		raise
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	#print FreeCAD.ConfigGet("AppHomePath")
@@ -97,10 +90,10 @@ def InitApplications():
 
 # some often used shortcuts (for lazy people like me ;-)
 App = FreeCAD
-Log = FreeCAD.PrintLog
-Msg = FreeCAD.PrintMessage
-Err = FreeCAD.PrintError
-Wrn = FreeCAD.PrintWarning
+Log = FreeCAD.Console.PrintLog
+Msg = FreeCAD.Console.PrintMessage
+Err = FreeCAD.Console.PrintError
+Wrn = FreeCAD.Console.PrintWarning
 
 Log ('\nInit: starting App::FreeCADInit.py\n')
 
@@ -111,6 +104,9 @@ FreeCAD.EndingAdd("FreeCAD document (*.FCStd)","FreeCAD")
 
 # set to no gui, is overwritten by InitGui
 App.GuiUp = 0
+
+# clean up namespace
+del(InitApplications)
 
 Log ('\nInit: App::FreeCADInit.py done\n')
 

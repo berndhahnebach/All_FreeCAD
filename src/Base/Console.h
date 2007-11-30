@@ -149,6 +149,8 @@ public:
     // retrieval of an observer by name
     ConsoleObserver *Get(const char *Name);
 
+    static PyMethodDef    Methods[]; 
+
 protected:
     // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
     // static python wrapper of the exported functions
@@ -158,7 +160,6 @@ protected:
     static PyObject *sPyError    (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sPySetStatus(PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sPyGetStatus(PyObject *self,PyObject *args,PyObject *kwd);
-    static PyMethodDef    Methods[]; 
 
     bool _bVerbose;
 
