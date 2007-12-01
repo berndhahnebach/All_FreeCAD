@@ -52,10 +52,10 @@
 
  
 namespace Base {
-class ConsoleSingelton;
+class ConsoleSingleton;
 }; // namespace Base
 
-typedef Base::ConsoleSingelton ConsoleMsgType;
+typedef Base::ConsoleSingleton ConsoleMsgType;
 typedef unsigned int ConsoleMsgFlags;
  
 namespace Base {
@@ -92,18 +92,18 @@ public:
  *  Messages are distributed with the FCConsoleObserver. The
  *  FCConsole class itself makes no IO, it's more like a manager.
  *  \par
- *  ConsoleSingelton is a singelton! That means you can access the only
+ *  ConsoleSingleton is a singleton! That means you can access the only
  *  instance of the class from every where in c++ by simply using:
  *  \code
  *  #include <Base/Console.h>
  *  Base::Console().Log("Stage: %d",i);
  *  \endcode
  *  \par
- *  ConsoleSingelton is abel to switch between several modes to, e.g. switch
+ *  ConsoleSingleton is abel to switch between several modes to, e.g. switch
  *  the logging on or off, or treat Warnings as Errors, and so on...
  *  @see ConsoleObserver
  */
-class BaseExport ConsoleSingelton //:public FCPythonExport
+class BaseExport ConsoleSingleton
 {
 
 public:
@@ -143,8 +143,8 @@ public:
     /// Enables or disables message types of a cetain console observer
     ConsoleMsgFlags SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b);
 
-    /// singelton 
-    static ConsoleSingelton &Instance(void);
+    /// singleton 
+    static ConsoleSingleton &Instance(void);
 
     // retrieval of an observer by name
     ConsoleObserver *Get(const char *Name);
@@ -163,14 +163,14 @@ protected:
 
     bool _bVerbose;
 
-    // Singelton!
-    ConsoleSingelton(void);
-    virtual ~ConsoleSingelton();
+    // Singleton!
+    ConsoleSingleton(void);
+    virtual ~ConsoleSingleton();
 
 private:
-    // singelton
+    // singleton
     static void Destruct(void);
-    static ConsoleSingelton *_pcSingelton;
+    static ConsoleSingleton *_pcSingleton;
 
     // observer processing 
     void NotifyMessage(const char *sMsg);
@@ -184,10 +184,10 @@ private:
 
 /** Access to the Console
  *  This method is used to gain access to the one and only instance of 
- *  the ConsoleSingelton class.
+ *  the ConsoleSingleton class.
  */  
-inline ConsoleSingelton &Console(void){
-    return ConsoleSingelton::Instance();
+inline ConsoleSingleton &Console(void){
+    return ConsoleSingleton::Instance();
 }
 
 

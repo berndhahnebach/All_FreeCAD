@@ -50,13 +50,13 @@ unsigned int format_len = 4024;
 // Construction destruction
 
 
-ConsoleSingelton::ConsoleSingelton(void)
+ConsoleSingleton::ConsoleSingleton(void)
   :_bVerbose(false)
 {
 
 }
 
-ConsoleSingelton::~ConsoleSingelton()
+ConsoleSingleton::~ConsoleSingleton()
 {
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         delete (*Iter);   
@@ -70,7 +70,7 @@ ConsoleSingelton::~ConsoleSingelton()
 /**  
  *  sets the console in a special mode
  */
-void ConsoleSingelton::SetMode(ConsoleMode m)
+void ConsoleSingleton::SetMode(ConsoleMode m)
 {
     if(m && Verbose)
         _bVerbose = true;
@@ -78,7 +78,7 @@ void ConsoleSingelton::SetMode(ConsoleMode m)
 /**  
  *  unsets the console from a special mode
  */
-void ConsoleSingelton::UnsetMode(ConsoleMode m)
+void ConsoleSingleton::UnsetMode(ConsoleMode m)
 {
     if(m && Verbose)
         _bVerbose = false;
@@ -100,7 +100,7 @@ void ConsoleSingelton::UnsetMode(ConsoleMode m)
  * switches off warnings and error messages and restore the state before the modification.
  * If the observer \a sObs doesn't exist then nothing happens.
  */
-ConsoleMsgFlags ConsoleSingelton::SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b)
+ConsoleMsgFlags ConsoleSingleton::SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b)
 {
     ConsoleObserver* pObs = Get(sObs);
     if ( pObs ){
@@ -147,7 +147,7 @@ ConsoleMsgFlags ConsoleSingelton::SetEnabledMsgType(const char* sObs, ConsoleMsg
  *  @see Error
  *  @see Log
  */
-void ConsoleSingelton::Message( const char *pMsg, ... )
+void ConsoleSingleton::Message( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -171,7 +171,7 @@ void ConsoleSingelton::Message( const char *pMsg, ... )
  *  @see Error
  *  @see Log
  */
-void ConsoleSingelton::Warning( const char *pMsg, ... )
+void ConsoleSingleton::Warning( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -195,7 +195,7 @@ void ConsoleSingelton::Warning( const char *pMsg, ... )
  *  @see Warning
  *  @see Log
  */
-void ConsoleSingelton::Error( const char *pMsg, ... )
+void ConsoleSingleton::Error( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -222,7 +222,7 @@ void ConsoleSingelton::Error( const char *pMsg, ... )
  */
 
 
-void ConsoleSingelton::Log( const char *pMsg, ... )
+void ConsoleSingleton::Log( const char *pMsg, ... )
 {
     if (!_bVerbose)
     {
@@ -240,7 +240,7 @@ void ConsoleSingelton::Log( const char *pMsg, ... )
  *  use that for Log() calls to make time stamps.
  *  @return Const string with the date/time
  */
-const char* ConsoleSingelton::Time(void)
+const char* ConsoleSingleton::Time(void)
 {
     struct tm *newtime;
     time_t aclock;
@@ -262,7 +262,7 @@ const char* ConsoleSingelton::Time(void)
  *  forwardet to it.
  *  @see ConsoleObserver
  */
-void ConsoleSingelton::AttachObserver(ConsoleObserver *pcObserver)
+void ConsoleSingleton::AttachObserver(ConsoleObserver *pcObserver)
 {
     // double insert !!
     assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
@@ -275,40 +275,40 @@ void ConsoleSingelton::AttachObserver(ConsoleObserver *pcObserver)
  *  After detaching you can destruct the Observer or reinsert it later.
  *  @see ConsoleObserver
  */
-void ConsoleSingelton::DetachObserver(ConsoleObserver *pcObserver)
+void ConsoleSingleton::DetachObserver(ConsoleObserver *pcObserver)
 {
     _aclObservers.erase(pcObserver);
 }
 
-void ConsoleSingelton::NotifyMessage(const char *sMsg)
+void ConsoleSingleton::NotifyMessage(const char *sMsg)
 {
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         if((*Iter)->bMsg)
             (*Iter)->Message(sMsg);   // send string to the listener
 }
 
-void ConsoleSingelton::NotifyWarning(const char *sMsg)
+void ConsoleSingleton::NotifyWarning(const char *sMsg)
 {
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         if((*Iter)->bWrn)
             (*Iter)->Warning(sMsg);   // send string to the listener
 }
 
-void ConsoleSingelton::NotifyError(const char *sMsg)
+void ConsoleSingleton::NotifyError(const char *sMsg)
 {
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         if((*Iter)->bErr)
             (*Iter)->Error(sMsg);   // send string to the listener
 }
 
-void ConsoleSingelton::NotifyLog(const char *sMsg)
+void ConsoleSingleton::NotifyLog(const char *sMsg)
 {
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         if((*Iter)->bLog)
             (*Iter)->Log(sMsg);   // send string to the listener
 }
 
-ConsoleObserver *ConsoleSingelton::Get(const char *Name)
+ConsoleObserver *ConsoleSingleton::Get(const char *Name)
 {
     const char* OName;
     for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
@@ -322,49 +322,48 @@ ConsoleObserver *ConsoleSingelton::Get(const char *Name)
 
 
 //**************************************************************************
-// Singelton stuff
+// Singleton stuff
 
-ConsoleSingelton * ConsoleSingelton::_pcSingelton = 0;
+ConsoleSingleton * ConsoleSingleton::_pcSingleton = 0;
 
-void ConsoleSingelton::Destruct(void)
+void ConsoleSingleton::Destruct(void)
 {
-    // not initialized or doubel destruct!
-    assert(_pcSingelton);
-    delete _pcSingelton;
-    _pcSingelton=0;
+    // not initialized or double destructed!
+    assert(_pcSingleton);
+    delete _pcSingleton;
+    _pcSingleton=0;
 }
 
-ConsoleSingelton & ConsoleSingelton::Instance(void)
+ConsoleSingleton & ConsoleSingleton::Instance(void)
 {
     // not initialized?
-    if(!_pcSingelton)
+    if(!_pcSingleton)
     {
-        _pcSingelton = new ConsoleSingelton();
-        (void) Py_InitModule("Console", ConsoleSingelton::Methods);
+        _pcSingleton = new ConsoleSingleton();
     }
-    return *_pcSingelton;
+    return *_pcSingleton;
 }
 
 //**************************************************************************
 // Python stuff
 
-// ConsoleSingelton Methods						// Methods structure
-PyMethodDef ConsoleSingelton::Methods[] = {
-    {"PrintMessage",         (PyCFunction) ConsoleSingelton::sPyMessage, 1, 
+// ConsoleSingleton Methods						// Methods structure
+PyMethodDef ConsoleSingleton::Methods[] = {
+    {"PrintMessage",         (PyCFunction) ConsoleSingleton::sPyMessage, 1, 
      "PrintMessage(string) -- Print a message to the output"},
-    {"PrintLog",             (PyCFunction) ConsoleSingelton::sPyLog, 1,
+    {"PrintLog",             (PyCFunction) ConsoleSingleton::sPyLog, 1,
      "PrintLog(string) -- Print a log message to the output"},
-    {"PrintError"  ,         (PyCFunction) ConsoleSingelton::sPyError, 1,
+    {"PrintError"  ,         (PyCFunction) ConsoleSingleton::sPyError, 1,
      "PrintError(string) -- Print an error message to the output"},
-    {"PrintWarning",         (PyCFunction) ConsoleSingelton::sPyWarning, 1,
+    {"PrintWarning",         (PyCFunction) ConsoleSingleton::sPyWarning, 1,
      "PrintWarning -- Print a warning to the output"},
-    {"SetStatus",            (PyCFunction) ConsoleSingelton::sPySetStatus, 1},
-    {"GetStatus",            (PyCFunction) ConsoleSingelton::sPyGetStatus, 1},
+    {"SetStatus",            (PyCFunction) ConsoleSingleton::sPySetStatus, 1},
+    {"GetStatus",            (PyCFunction) ConsoleSingleton::sPyGetStatus, 1},
     {NULL, NULL}		/* Sentinel */
 };
 
 
-PyObject *ConsoleSingelton::sPyMessage(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPyMessage(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -377,7 +376,7 @@ PyObject *ConsoleSingelton::sPyMessage(PyObject *self, PyObject *args, PyObject 
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingelton::sPyWarning(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPyWarning(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -389,7 +388,7 @@ PyObject *ConsoleSingelton::sPyWarning(PyObject *self, PyObject *args, PyObject 
         return Py_None;                              // None: no errors 
     }PY_CATCH;
 }
-PyObject *ConsoleSingelton::sPyError(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPyError(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -402,7 +401,7 @@ PyObject *ConsoleSingelton::sPyError(PyObject *self, PyObject *args, PyObject *k
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingelton::sPyLog(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPyLog(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -415,7 +414,7 @@ PyObject *ConsoleSingelton::sPyLog(PyObject *self, PyObject *args, PyObject *kwd
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingelton::sPyGetStatus(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPyGetStatus(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr1;
     char *pstr2;
@@ -444,7 +443,7 @@ PyObject *ConsoleSingelton::sPyGetStatus(PyObject *self, PyObject *args, PyObjec
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingelton::sPySetStatus(PyObject *self, PyObject *args, PyObject *kwd)
+PyObject *ConsoleSingleton::sPySetStatus(PyObject *self, PyObject *args, PyObject *kwd)
 {
     char *pstr1;
     char *pstr2;

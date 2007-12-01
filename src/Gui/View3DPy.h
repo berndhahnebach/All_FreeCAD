@@ -42,6 +42,7 @@ protected:
 public:
     View3DPy(View3DInventor *pcView, PyTypeObject *T = &Type);
     static PyObject *PyMake(PyObject *, PyObject *);
+    static void cleanupSWIG();
 
     //---------------------------------------------------------------------
     // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

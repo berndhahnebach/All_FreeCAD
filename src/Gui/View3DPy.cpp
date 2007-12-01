@@ -939,7 +939,8 @@ PYFUNCIMP_D(View3DPy,removeAnnotation)
         PyErr_Format(PyExc_KeyError, "No such annotation '%s'", psAnnoName);
         return NULL;
     }
-}
+}
+
 PYFUNCIMP_D(View3DPy,getSceneGraph)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -1057,6 +1058,40 @@ PYFUNCIMP_D(View3DPy,removeEventCallbackSWIG)
         return method;
     } catch (const Py::Exception&) {
         return NULL;
+    }
+}
+
+void View3DPy::cleanupSWIG()
+{
+    swig_module_info *swig_module = SWIG_GetModule(NULL);
+    if (!swig_module) {
+        // No Python binding for Coin loaded
+        return;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoBase *");
+    if (!swig_type) {
+        // Cannot find type information for event type
+        return;
+    }
+
+    PyObject* module = PyImport_AddModule("__main__");
+    if (module != NULL && PyModule_Check(module)) {
+        PyObject* dict = PyModule_GetDict(module);
+        if (!dict) return;
+
+        Py_ssize_t pos;
+        PyObject *key, *value;
+        pos = 0;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            if (value != Py_None && PyString_Check(key)) {
+                //char *s = PyString_AsString(key);
+                void* ptr = 0;
+                if (SWIG_ConvertPtr(value, &ptr, 0, 0) == 0)
+                    PyDict_SetItem(dict, key, Py_None);
+            }
+        }
     }
 }
 
