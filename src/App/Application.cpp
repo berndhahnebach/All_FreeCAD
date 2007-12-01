@@ -146,10 +146,10 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 
 
     // setting up Python binding
-    _pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
-    Py::Module(_pcAppModule).setAttr(std::string("ActiveDocument"),Py::None());
+    PyObject* pAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
+    Py::Module(pAppModule).setAttr(std::string("ActiveDocument"),Py::None());
 
-    _pcConsoleModule = Py_InitModule3("Console", ConsoleSingelton::Methods, Console_doc);
+    PyObject* pConsoleModule = Py_InitModule3("Console", ConsoleSingleton::Methods, Console_doc);
 
     // introducing additional classes
 
@@ -158,20 +158,18 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     // This function is responsible for adding inherited slots from a type's base class.
     if (PyType_Ready(&Base::VectorPy::Type) < 0) return;
     union PyType_Object pyVecType = {&Base::VectorPy::Type};
-    PyModule_AddObject(_pcAppModule, "Vector", pyVecType.o);
+    PyModule_AddObject(pAppModule, "Vector", pyVecType.o);
     if (PyType_Ready(&App::MatrixPy::Type) < 0) return;
     union PyType_Object pyMatType = {&App::MatrixPy::Type};
-    PyModule_AddObject(_pcAppModule, "Matrix", pyMatType.o);
+    PyModule_AddObject(pAppModule, "Matrix", pyMatType.o);
     //insert Console
-    Py_INCREF(_pcConsoleModule);
-    PyModule_AddObject(_pcAppModule, "Console", _pcConsoleModule);
+    Py_INCREF(pConsoleModule);
+    PyModule_AddObject(pAppModule, "Console", pConsoleModule);
 }
-    
 
 Application::~Application()
 {
 }
-
 
 //**************************************************************************
 // Interface
@@ -193,7 +191,6 @@ void Application::renameDocument(const char *OldName, const char *NewName)
         Base::Exception("Application::renameDocument(): no document with this name to rename!");
 
 }
-
 
 Document* Application::newDocument(const char * Name, const char * UserName)
 {
@@ -331,7 +328,6 @@ string Application::getUniqueDocumentName(const char *Name) const
 
 }
 
-
 Document* Application::openDocument(const char * FileName)
 {
     FileInfo File(FileName);
@@ -361,7 +357,6 @@ Document* Application::openDocument(const char * FileName)
 
     return newDoc;
 }
-
 
 Document* Application::getActiveDocument(void) const
 {
@@ -400,8 +395,6 @@ const char* Application::GetHomePath(void)
 {
     return _mConfig["AppHomePath"].c_str();
 }
-
-
 
 ParameterManager & Application::GetSystemParameter(void)
 {
@@ -571,9 +564,9 @@ void Application::slotActivatedObject(App::DocumentObject&O)
 
 
 //**************************************************************************
-// Init, Destruct and singelton
+// Init, Destruct and singleton
 
-Application * Application::_pcSingelton = 0;
+Application * Application::_pcSingleton = 0;
 
 int Application::_argc;
 char ** Application::_argv;
@@ -581,7 +574,6 @@ char ** Application::_argv;
 
 void Application::destruct(void)
 {
-
     // saving system parameter
     Console().Log("Saving system parameter...");
     _pcSysParamMngr->SaveDocument(mConfig["SystemParameter"].c_str());
@@ -594,8 +586,8 @@ void Application::destruct(void)
     delete _pcUserParamMngr;
 
     // not initialized or doubel destruct!
-    assert(_pcSingelton);
-    delete _pcSingelton;
+    assert(_pcSingleton);
+    delete _pcSingleton;
 
     // We must detach from console and delete the observer to save our file
     destructObserver();
@@ -604,7 +596,6 @@ void Application::destruct(void)
 
     ScriptFactorySingleton::Destruct();
     InterpreterSingleton::Destruct();
-
     Base::Type::destruct();
 }
 
@@ -725,7 +716,6 @@ void Application::initTypes(void)
     App ::InventorObject            ::init();
 }
 
-
 void Application::initConfig(int argc, char ** argv)
 {
     // find the home path....
@@ -765,7 +755,7 @@ void Application::initConfig(int argc, char ** argv)
     _pConsoleObserverStd = new ConsoleObserverStd();
     Console().AttachObserver(_pConsoleObserverStd);
     if (mConfig["Verbose"] == "Strict")
-        Console().SetMode(ConsoleSingelton::Verbose);
+        Console().SetMode(ConsoleSingleton::Verbose);
 
     // file logging Init ===========================================================
     if (mConfig["LoggingFile"] == "1") {
@@ -815,9 +805,7 @@ void Application::initConfig(int argc, char ** argv)
     // capture path
     SaveEnv("PATH");
     logStatus();
-
 }
-
 
 void Application::SaveEnv(const char* s)
 {
@@ -826,20 +814,16 @@ void Application::SaveEnv(const char* s)
         mConfig[s] = c;
 }
 
-
 void Application::initApplication(void)
 {
-
     // interpreter and Init script ==========================================================
     // register scripts
     new ScriptProducer( "FreeCADInit",    FreeCADInit    );
     new ScriptProducer( "FreeCADTest",    FreeCADTest    );
 
-
     // creating the application
     if (!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
-    Application::_pcSingelton = new Application(0,0,mConfig);
-
+    Application::_pcSingleton = new Application(0,0,mConfig);
 
     // starting the init script
     Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
@@ -872,7 +856,7 @@ void Application::processCmdLineFiles(void)
 
             if (Ext == "FCStd" || Ext == "std") {
                 // try to open
-                Application::_pcSingelton->openDocument(File.filePath().c_str());
+                Application::_pcSingleton->openDocument(File.filePath().c_str());
             }
             else if (Ext == "FCscript") {
                 Base::Interpreter().runFile(File.filePath().c_str());
@@ -953,7 +937,6 @@ void Application::LoadParameters(void)
             Console().Message("   This warning normally means that FreeCAD is running the first time\n"
                               "   or the configuration was deleted or moved. Build up the standard\n"
                               "   configuration.\n");
-
         }
     }
     catch (Base::Exception& e) {
@@ -1044,10 +1027,8 @@ ostream& operator<<(ostream& os, const vector<T>& v)
     return os;
 }
 
-
 void Application::ParseOptions(int ac, char ** av)
 {
-
     // Declare a group of options that will be
     // allowed only on command line
     options_description generic("Generic options");
@@ -1099,7 +1080,6 @@ void Application::ParseOptions(int ac, char ** av)
     //x11.add_options()
     //    ("display",  boost::program_options::value< string >(), "set the X-Server")
     //    ;
-
 
     options_description cmdline_options;
     cmdline_options.add(generic).add(config).add(hidden);
@@ -1229,7 +1209,6 @@ void Application::ParseOptions(int ac, char ** av)
     }
 
 }
-
 #else
 void Application::ParseOptions(int argc, char ** argv)
 {
@@ -1404,7 +1383,6 @@ void Application::ParseOptions(int argc, char ** argv)
     mConfig["OpenFileCount"] = buffer.str();
 
 }
-
 #endif
 
 void Application::ExtractUserPath()

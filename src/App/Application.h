@@ -153,11 +153,11 @@ public:
      *  a ending (file type) which he can handle to open. 
      *  The ending and the module name are stored and if the file
      *  type is opened the module get loaded and need to register a
-     *  OpenHandler class in the OpenHandlerFactorySingelton. 
+     *  OpenHandler class in the OpenHandlerFactorySingleton. 
      *  After the module is loaded a OpenHandler of this type is created
      *  and the file get loaded.
      *  @see OpenHandler
-     *  @see OpenHandlerFactorySingelton
+     *  @see OpenHandlerFactorySingleton
      */
     //@{
     /// register a ending and a module name
@@ -246,10 +246,6 @@ private:
 
     static PyMethodDef    Methods[]; 
 
-    /// pointer to the Python module of App...
-    PyObject* _pcAppModule;
-    PyObject* _pcConsoleModule;
-
     friend class ApplicationObserver;
 
     /** @name  Private Init, Destruct an Access methods */
@@ -258,7 +254,7 @@ private:
     static void initApplication(void);
     static void logStatus(void);
     // the one and only pointer to the application object
-    static Application *_pcSingelton;
+    static Application *_pcSingleton;
     /// argument helper function
     static void ParseOptions(int argc, char ** argv);
     /// checks if the environment is allreight
@@ -296,9 +292,9 @@ private:
     static Base::ConsoleObserverFile *_pConsoleObserverFile;
 };
 
-/// Singelton getter of the Applicaton
+/// Singleton getter of the Applicaton
 inline App::Application &GetApplication(void){
-    return *App::Application::_pcSingelton;
+    return *App::Application::_pcSingleton;
 }
 
 } // namespace App

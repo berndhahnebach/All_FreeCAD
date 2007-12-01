@@ -42,6 +42,7 @@
 #include "MainWindow.h"
 #include "Document.h"
 #include "View.h"
+#include "View3DPy.h"
 #include "WidgetFactory.h"
 #include "Command.h"
 #include "Macro.h"
@@ -156,6 +157,7 @@ Application::~Application()
   BitmapFactoryInst::destruct();
 
   // finish also Inventor subsystem
+  View3DPy::cleanupSWIG();
   SoFCDB::finish();
   SoQt::done();
 
@@ -864,7 +866,7 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
 }
 
 //**************************************************************************
-// Init, Destruct and singelton
+// Init, Destruct and ingleton
 
 void Application::initApplication(void)
 {
