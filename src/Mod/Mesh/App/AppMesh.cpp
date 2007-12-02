@@ -30,6 +30,7 @@
 
 #include "Mesh.h"
 #include "MeshPy.h"
+#include "MeshPointPy.h"
 #include "MeshFeaturePy.h"
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
@@ -66,14 +67,23 @@ void MeshExport initMesh()
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
+
+    // add MeshPoint
+    if(PyType_Ready(&Mesh::MeshPointPy::Type) < 0) return;
+    union PyType_Object pyMeshPointType = {&Mesh::MeshPointPy::Type};
+    PyModule_AddObject(meshModule, "MeshPoint", pyMeshPointType.o);
+
+    // add Mesh
     if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
     union PyType_Object pyMeshType = {&Mesh::MeshPy::Type};
-    // 'mesh' is a method, hence it's lowercase
     PyModule_AddObject(meshModule, "Mesh", pyMeshType.o);
+
+    // add Feature
     if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
     union PyType_Object pyMeshFeatureType = {&Mesh::MeshFeaturePy::Type};
     PyModule_AddObject(meshModule, "Feature", pyMeshFeatureType.o);
 
+    // init Type system
     Mesh::PropertyNormalList    ::init();
     Mesh::PropertyCurvatureList ::init();
     Mesh::PropertyMeshKernel    ::init();

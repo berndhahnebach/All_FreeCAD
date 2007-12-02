@@ -37,25 +37,25 @@ public:
   /** Construction. */
   //@{
   Rotation();
-  Rotation(const Vector3f& axis, const float fAngle);
+  Rotation(const Vector3d& axis, const double fAngle);
   Rotation(const Matrix4D& matrix);
-  Rotation(const float q[4]);
-  Rotation(const float q0, const float q1, const float q2, const float q3);
-  Rotation(const Vector3f& rotateFrom, const Vector3f& rotateTo);
+  Rotation(const double q[4]);
+  Rotation(const double q0, const double q1, const double q2, const double q3);
+  Rotation(const Vector3d& rotateFrom, const Vector3d& rotateTo);
   Rotation(const Rotation& rot);
   //@}
 
   /** Methods to get or set rotations. */
   //@{
-  const float * getValue(void) const;
-  void getValue(float & q0, float & q1, float & q2, float & q3) const;
-  void setValue(const float q0, const float q1, const float q2, const float q3);
-  void getValue(Vector3f & axis, float & rfAngle) const;
+  const double * getValue(void) const;
+  void getValue(double & q0, double & q1, double & q2, double & q3) const;
+  void setValue(const double q0, const double q1, const double q2, const double q3);
+  void getValue(Vector3d & axis, double & rfAngle) const;
   void getValue(Matrix4D & matrix) const;
-  void setValue(const float q[4]);
+  void setValue(const double q[4]);
   void setValue(const Matrix4D& matrix);
-  void setValue(const Vector3f & axis, const float fAngle);
-  void setValue(const Vector3f & rotateFrom, const Vector3f & rotateTo);
+  void setValue(const Vector3d & axis, const double fAngle);
+  void setValue(const Vector3d & rotateFrom, const Vector3d & rotateTo);
   //@}
 
   /** Invert rotations. */
@@ -71,16 +71,16 @@ public:
   bool operator==(const Rotation & q);
   bool operator!=(const Rotation & q);
 
-  void multVec(const Vector3f & src, Vector3f & dst) const;
-  void scaleAngle(const float scaleFactor);
+  void multVec(const Vector3d & src, Vector3d & dst) const;
+  void scaleAngle(const double scaleFactor);
   //@}
 
-  static Rotation slerp(const Rotation & rot0, const Rotation & rot1, float t);
+  static Rotation slerp(const Rotation & rot0, const Rotation & rot1, double t);
   static Rotation identity(void);
 
 private:
   void normalize();
-  float quat[4];
+  double quat[4];
 };
 
 }

@@ -137,13 +137,13 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
 
 PyObject *MatrixPy::PyMake(PyTypeObject *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-    float a11=1.0, a12=0.0, a13=0.0, a14=0.0;
-    float a21=0.0, a22=1.0, a23=0.0, a24=0.0;
-    float a31=0.0, a32=0.0, a33=1.0, a34=0.0;
-    float a41=0.0, a42=0.0, a43=0.0, a44=1.0;
+    double a11=1.0, a12=0.0, a13=0.0, a14=0.0;
+    double a21=0.0, a22=1.0, a23=0.0, a24=0.0;
+    double a31=0.0, a32=0.0, a33=1.0, a34=0.0;
+    double a41=0.0, a42=0.0, a43=0.0, a44=1.0;
 
-    if (!PyArg_ParseTuple(args, "|ffffffffffffffff",&a11,&a12,&a13,&a14,
-                          &a21,&a22,&a23,&a24,
+    if (!PyArg_ParseTuple(args, "|dddddddddddddddd",&a11,&a12,&a13,&a14,
+                          &a21,&a22,&a23,&a24,    
                           &a31,&a32,&a33,&a34,
                           &a41,&a42,&a43,&a44))     // convert args: Python->C
         return NULL;                       // NULL triggers exception

@@ -50,10 +50,15 @@ public:
             float a21, float a22, float a23, float a24,
             float a31, float a32, float a33, float a34,
             float a41, float a42, float a43, float a44 );
+  Matrix4D (double a11, double a12, double a13, double a14, 
+            double a21, double a22, double a23, double a24,
+            double a31, double a32, double a33, double a34,
+            double a41, double a42, double a43, double a44 );
   /// Construction
   Matrix4D (const Matrix4D& rclMtrx);
   /// Construction with an Axis
   Matrix4D (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
+  Matrix4D (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
   /// Destruction
   virtual ~Matrix4D () {};
 
@@ -73,6 +78,7 @@ public:
   inline Matrix4D  operator*  (const Matrix4D& rclMtrx) const;
   /// Multiplication matrix with vector 
   inline Vector3f  operator*  (const Vector3f& rclVct) const;
+  inline Vector3d  operator*  (const Vector3d& rclVct) const;
   /// Comparison
   inline bool      operator!= (const Matrix4D& rclMtrx);
   /// Comparison
@@ -103,10 +109,12 @@ public:
   void move         (float x, float y, float z){move(Vector3f(x,y,z));}
   /// moves the coordinatesystem for the vector
   void move         (const Vector3f& rclVct);
+  void move         (const Vector3d& rclVct);
   /// scale for the vector
   void scale        (float x, float y, float z){scale(Vector3f(x,y,z));}
   /// scale for the x,y,z value
   void scale        (const Vector3f& rclVct);
+  void scale        (const Vector3d& rclVct);
   /// rotate around the X axis for the given value
   void rotX         (float fAngle);
   /// rotate around the Y axis for the given value
@@ -115,12 +123,15 @@ public:
   void rotZ         (float fAngle);
   /// Rotation around an arbitrary axis passing the origin.
   void rotLine   (const Vector3f& rclVct, float fAngle);
+  void rotLine   (const Vector3d& rclVct, float fAngle);
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
   void rotLine   (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
+  void rotLine   (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
   /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
   bool toAxisAngle (Vector3f& rclBase, Vector3f& rclDir, float& fAngle, float& fTranslation) const;
   /// transform (move,scale,rotate) around a point
   void transform    (const Vector3f& rclVct, const Matrix4D& rclMtrx);
+  void transform    (const Vector3d& rclVct, const Matrix4D& rclMtrx);
   void inverse      (void);
   void inverseGauss (void);
   void transpose    (void);
@@ -241,6 +252,16 @@ inline Vector3f Matrix4D::operator* (const Vector3f& rclVct) const
                           dMtrx4D[1][2]*rclVct.z + dMtrx4D[1][3]),
                   (float)(dMtrx4D[2][0]*rclVct.x + dMtrx4D[2][1]*rclVct.y + 
                           dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
+}
+
+inline Vector3d Matrix4D::operator* (const Vector3d& rclVct) const
+{
+  return Vector3d((dMtrx4D[0][0]*rclVct.x + dMtrx4D[0][1]*rclVct.y +
+                   dMtrx4D[0][2]*rclVct.z + dMtrx4D[0][3]),
+                  (dMtrx4D[1][0]*rclVct.x + dMtrx4D[1][1]*rclVct.y + 
+                   dMtrx4D[1][2]*rclVct.z + dMtrx4D[1][3]),
+                  (dMtrx4D[2][0]*rclVct.x + dMtrx4D[2][1]*rclVct.y + 
+                   dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
 }
 
 inline bool Matrix4D::operator== (const Matrix4D& rclMtrx)

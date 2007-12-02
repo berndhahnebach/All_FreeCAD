@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,39 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef MESH_MESHPOINT_H
+#define MESH_MESHPOINT_H
 
-#ifndef _PreComp_
-#endif
+#include <Base/Matrix.h>
+#include <Base/Vector3D.h>
 
+#include "Mesh.h"
 
-#include "ComplexGeoData.h"
+using Base::Vector3d;
 
-using namespace Data;
-
-
-TYPESYSTEM_SOURCE(Data::ComplexGeoData , Base::Persistance);
-
-
-ComplexGeoData::ComplexGeoData(void)
+namespace Mesh
+{
+/** The MeshPoint helper class
+ * The MeshPoint class provides an interface for the MeshPointPy classes. For
+ * conviniant access to the Mesh data structur. This class shut not be used for
+ * programming algorithems in C++. Use Mesh Core classes instead!
+ */
+class MeshExport MeshPoint : public Vector3d
 {
 
-  
-}
+public:
+    /// simple constructor
+    MeshPoint(const Vector3d& vec = Vector3d(),MeshObject* obj = 0, unsigned int index = UINT_MAX)
+        :Vector3d(vec),Mesh(obj),Index(index)
+    {}
 
-ComplexGeoData::~ComplexGeoData(void)
-{
-}
+    bool isBound(void) {return Index != UINT_MAX;}
 
-void ComplexGeoData::applyTransform( const Base::Matrix4D& rclTrf )
-{
-     _Mtrx = rclTrf * _Mtrx;
-}
+    unsigned int Index;
+    Base::Reference<MeshObject> Mesh;
+};
 
-void ComplexGeoData::applyTranslation(const Base::Vector3d& mov)
-{
-    Base::Matrix4D mat;
-    mat.move(mov);
-    _Mtrx = mat * _Mtrx;
-}
+} // namespace Mesh
 
-void ComplexGeoData::applyRotation(const Base::Rotation& rot)
-{
-    Base::Matrix4D mat;
-    rot.getValue(mat);
-    _Mtrx = mat * _Mtrx;
-}
 
-void ComplexGeoData::setTransform( const Base::Matrix4D& rclTrf )
-{
-    _Mtrx = rclTrf;
-}
+#endif // MESH_MESH_H

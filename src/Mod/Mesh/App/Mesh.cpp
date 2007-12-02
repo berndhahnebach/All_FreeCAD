@@ -75,6 +75,20 @@ MeshObject::~MeshObject()
 {
 }
 
+
+void MeshObject::movePoint(unsigned long index, const Base::Vector3d& v)
+{
+    _kernel.MovePoint(index,transformToInside(v));
+}
+
+
+
+Base::Vector3d MeshObject::getPointNormal(unsigned long index)
+{
+    std::vector<Base::Vector3f> temp = _kernel.CalcVertexNormals();
+    return transformToOutside(temp[index]);
+}
+
 void MeshObject::operator = (const MeshObject& mesh)
 {
     if (this != &mesh) {
