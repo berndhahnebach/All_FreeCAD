@@ -28,9 +28,12 @@
 
 #include "Mesh.h"
 #include "MeshPy.h"
+#include "MeshPointPy.h"
 #include "MeshPy.cpp"
+#include "Core/Iterator.h"
 
 using namespace Mesh;
+using namespace MeshCore;
 
 
 int MeshPy::PyInit(PyObject* args, PyObject*)
@@ -806,5 +809,11 @@ int MeshPy::setCustomAttributes(const char* attr, PyObject *obj)
 
 Py::List MeshPy::getPoints(void) const
 {
-    return Py::List();
+    Py::List PointList;
+    MeshCore::MeshPointIterator it = Mesh().PointIterator();
+    unsigned int Index=0;
+    for (  it.Init(); it.More(); it.Next(),Index++ )
+        PointList.append(Py::Object(new MeshPointPy(new MeshPoint(it.asVector3d(),getMeshObjectPtr(),Index))));
+
+    return PointList;
 }

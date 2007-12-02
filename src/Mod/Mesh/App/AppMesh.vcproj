@@ -2121,15 +2121,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\MeshProperties.cpp"
+			RelativePath=".\MeshPoint.h"
 			>
 		</File>
 		<File
-			RelativePath=".\MeshProperties.h"
-			>
-		</File>
-		<File
-			RelativePath=".\MeshPy.xml"
+			RelativePath=".\MeshPointPy.xml"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
@@ -2146,6 +2142,40 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\MeshPointPyImp.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshProperties.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshProperties.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshPy.xml"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>

@@ -49,6 +49,17 @@ Matrix4D::Matrix4D (float a11, float a12, float a13, float a14,
   dMtrx4D[3][0] = a41; dMtrx4D[3][1] = a42; dMtrx4D[3][2] = a43; dMtrx4D[3][3] = a44;
 }
 
+Matrix4D::Matrix4D (double a11, double a12, double a13, double a14, 
+                    double a21, double a22, double a23, double a24,
+                    double a31, double a32, double a33, double a34,
+                    double a41, double a42, double a43, double a44 )
+{
+  dMtrx4D[0][0] = a11; dMtrx4D[0][1] = a12; dMtrx4D[0][2] = a13; dMtrx4D[0][3] = a14;
+  dMtrx4D[1][0] = a21; dMtrx4D[1][1] = a22; dMtrx4D[1][2] = a23; dMtrx4D[1][3] = a24;
+  dMtrx4D[2][0] = a31; dMtrx4D[2][1] = a32; dMtrx4D[2][2] = a33; dMtrx4D[2][3] = a34;
+  dMtrx4D[3][0] = a41; dMtrx4D[3][1] = a42; dMtrx4D[3][2] = a43; dMtrx4D[3][3] = a44;
+}
+
 
 Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
 {
@@ -121,6 +132,15 @@ void Matrix4D::move (const Vector3f& rclVct)
   clMat.dMtrx4D[2][3] = rclVct.z;
   (*this) *= clMat;
 }
+void Matrix4D::move (const Vector3d& rclVct)
+{
+  Matrix4D clMat;
+
+  clMat.dMtrx4D[0][3] = rclVct.x;
+  clMat.dMtrx4D[1][3] = rclVct.y;
+  clMat.dMtrx4D[2][3] = rclVct.z;
+  (*this) *= clMat;
+}
 /*
 void Matrix4D::setScaleX (float fScale)
 {
@@ -149,6 +169,15 @@ void Matrix4D::setScaleZ (float fScale)
 */
 
 void Matrix4D::scale (const Vector3f& rclVct)
+{
+  Matrix4D clMat;
+
+  clMat.dMtrx4D[0][0] = rclVct.x;
+  clMat.dMtrx4D[1][1] = rclVct.y;
+  clMat.dMtrx4D[2][2] = rclVct.z;
+  (*this) *= clMat;
+}
+void Matrix4D::scale (const Vector3d& rclVct)
 {
   Matrix4D clMat;
 
@@ -195,6 +224,12 @@ void Matrix4D::rotZ (float fAngle)
   clMat.dMtrx4D[0][1] = -fsin;  clMat.dMtrx4D[1][0] = fsin;
   
   (*this) *= clMat;
+}
+
+void Matrix4D::rotLine (const Vector3d& rclVct, float fAngle)
+{
+    Vector3f tmp((float)rclVct.x,(float)rclVct.x,(float)rclVct.x);
+    rotLine(tmp,fAngle);
 }
 
 void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
@@ -246,6 +281,20 @@ void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
       clMRot.dMtrx4D[iz][is] = clMA.dMtrx4D[iz][is]  + clMB.dMtrx4D[iz][is] +
                                clMC.dMtrx4D[iz][is];
   (*this) *= clMRot;
+}
+
+void Matrix4D::rotLine   (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle)
+{
+  Matrix4D  clMT, clMRot, clMInvT, clM;
+  Vector3d clBase(rclBase);
+  
+  clMT.move(clBase);            // Translation
+  clMInvT.move(clBase *= (-1.0f));  // inverse Translation
+  clMRot.rotLine(rclDir, fAngle);
+
+  clM = clMRot * clMInvT;
+  clM = clMT * clM; 
+  (*this) *= clM;  
 }
 
 void Matrix4D::rotLine   (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle)
@@ -401,6 +450,12 @@ bool Matrix4D::toAxisAngle (Vector3f& rclBase, Vector3f& rclDir, float& rfAngle,
 }
 
 void Matrix4D::transform (const Vector3f& rclVct, const Matrix4D& rclMtrx)
+{
+  move(-rclVct);
+  (*this) *= rclMtrx;
+  move(rclVct);
+}
+void Matrix4D::transform (const Vector3d& rclVct, const Matrix4D& rclMtrx)
 {
   move(-rclVct);
   (*this) *= rclMtrx;

@@ -52,7 +52,7 @@ public:
     /** Applies an additional transformation to the current transformation. */
     void applyTransform(const Base::Matrix4D& rclTrf);
     /** Applies an additional translation to the current transformation. */
-    void applyTranslation(const Base::Vector3f&);
+    void applyTranslation(const Base::Vector3d&);
     /** Applies an additional rotation to the current transformation. */
     void applyRotation(const Base::Rotation&);
     /** Override the current transformation with the new one. */
@@ -61,6 +61,22 @@ public:
     const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
 
 protected:
+
+    /// from local to outside
+    inline Base::Vector3d transformToOutside(Base::Vector3f vec)
+    {
+        return _Mtrx * Base::Vector3d(vec.x,vec.y,vec.z);
+    }
+
+   /// from local to outside
+    inline Base::Vector3f transformToInside(Base::Vector3d vec)
+    {
+        Base::Matrix4D tmpM(_Mtrx); 
+        tmpM.inverse();
+        Base::Vector3d tmp = tmpM * vec;
+        return Base::Vector3f((float)tmp.x,(float)tmp.y,(float)tmp.z);
+    }
+
     Base::Matrix4D _Mtrx;
 };
 

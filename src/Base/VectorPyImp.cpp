@@ -34,8 +34,8 @@ const char *VectorPy::representation(void) const
 // constructor method
 int VectorPy::PyInit(PyObject* args, PyObject*k)
 {
-    float x=0.0,y=0.0,z=0.0;
-    if (!PyArg_ParseTuple(args, "|fff", &x,&y,&z))
+    double x=0.0,y=0.0,z=0.0;
+    if (!PyArg_ParseTuple(args, "|ddd", &x,&y,&z))
         return -1;
 
     VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);

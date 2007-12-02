@@ -496,7 +496,7 @@ void PropertyPlacement::setPyObject(PyObject *value)
         MatrixPy  *pcObject = (MatrixPy*)value;
         Base::Matrix4D mat = pcObject->value();
         Base::Rotation rot(mat);
-        float q0,q1,q2,q3;
+        double q0,q1,q2,q3;
         rot.getValue(q0, q1, q2, q3);
         aboutToSetValue();
         _cPos._q[0] = q0;

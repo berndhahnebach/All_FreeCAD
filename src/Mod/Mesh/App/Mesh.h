@@ -134,6 +134,8 @@ public:
     void collapseFacets(const std::vector<unsigned long>&);
     void insertVertex(unsigned long, const Base::Vector3f& v);
     void snapVertex(unsigned long, const Base::Vector3f& v);
+    void movePoint(unsigned long, const Base::Vector3d& v);
+    Base::Vector3d getPointNormal(unsigned long);
     //@}
 
     /** @name Mesh validation */
