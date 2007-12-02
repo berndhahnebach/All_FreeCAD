@@ -58,6 +58,7 @@
 #include <Base/Persistance.h>
 #include <Base/Reader.h>
 #include <Base/VectorPy.h>
+#include <Base/BoundBoxPy.h>
 
 #include "MatrixPy.h"
 #include "Feature.h"
@@ -159,9 +160,15 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
     if (PyType_Ready(&Base::VectorPy::Type) < 0) return;
     union PyType_Object pyVecType = {&Base::VectorPy::Type};
     PyModule_AddObject(pAppModule, "Vector", pyVecType.o);
+
     if (PyType_Ready(&App::MatrixPy::Type) < 0) return;
     union PyType_Object pyMatType = {&App::MatrixPy::Type};
     PyModule_AddObject(pAppModule, "Matrix", pyMatType.o);
+
+    if (PyType_Ready(&Base::BoundBoxPy::Type) < 0) return;
+    union PyType_Object pyBoundBoxType = {&Base::BoundBoxPy::Type};
+    PyModule_AddObject(pAppModule, "BoundBox", pyBoundBoxType.o);
+    
     //insert Console
     Py_INCREF(pConsoleModule);
     PyModule_AddObject(pAppModule, "Console", pConsoleModule);

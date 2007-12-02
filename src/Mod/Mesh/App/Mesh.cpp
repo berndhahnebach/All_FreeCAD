@@ -75,7 +75,17 @@ MeshObject::~MeshObject()
 {
 }
 
-
+Base::BoundBox3d MeshObject::getBoundBox(void)const
+{   
+    const_cast<MeshCore::MeshKernel&>(_kernel).RecalcBoundBox();
+    Base::BoundBox3f Bnd = _kernel.GetBoundBox();
+    
+    Base::BoundBox3d Bnd2;
+    for(int i =0 ;i<=7;i++)
+        Bnd2.Add(transformToOutside(Bnd.CalcPoint(i)));
+    
+    return Bnd2;
+}
 void MeshObject::movePoint(unsigned long index, const Base::Vector3d& v)
 {
     _kernel.MovePoint(index,transformToInside(v));

@@ -30,6 +30,7 @@
 #include <Base/Persistance.h>
 #include <Base/Handle.h>
 #include <Base/Matrix.h>
+#include <Base/BoundBox.h>
 #include <Base/Rotation.h>
 
 
@@ -60,16 +61,18 @@ public:
 
     const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
 
+    virtual Base::BoundBox3d getBoundBox(void)const=0;
+
 protected:
 
     /// from local to outside
-    inline Base::Vector3d transformToOutside(Base::Vector3f vec)
+    inline Base::Vector3d transformToOutside(Base::Vector3f vec)const
     {
         return _Mtrx * Base::Vector3d(vec.x,vec.y,vec.z);
     }
 
    /// from local to outside
-    inline Base::Vector3f transformToInside(Base::Vector3d vec)
+    inline Base::Vector3f transformToInside(Base::Vector3d vec)const
     {
         Base::Matrix4D tmpM(_Mtrx); 
         tmpM.inverse();

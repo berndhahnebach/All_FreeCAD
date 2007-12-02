@@ -32,7 +32,7 @@
 using namespace Data;
 
 
-TYPESYSTEM_SOURCE(Data::ComplexGeoData , Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistance);
 
 
 ComplexGeoData::ComplexGeoData(void)
