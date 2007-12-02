@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+      Father="PyObjectBase" 
+      Name="BoundBoxPy" 
+      Twin="BoundBox" 
+      TwinPointer="BoundBox3d" 
+      Include="Base/BoundBox.h" 
+      FatherInclude="Base/PyObjectBase.h" 
+      Namespace="Base" 
+      Constructor="true"
+      Delete="true" 
+      FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <DeveloperDocu>This is the BoundBox export class</DeveloperDocu>
+      <UserDocu>Bound box class
+A Bound box is ortographic cube which is a way to descrpe outer bounderies.
+You get a bound box from a lot of 3D types. Its often used to check 
+if a 3D entety lies in the range of an other object. Checking for
+boundig interfirence first can save a lot computing time!
+
+Constructor:
+App.BoundBox(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
+	  </UserDocu>
+    </Documentation>
+    <Methode Name="add">
+      <Documentation>
+        <UserDocu>methode add(BoundBox)
+Adds (enlarge) the gifen BoundBox</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isIntersection">
+      <Documentation>
+        <UserDocu>methode isIntersection(Vector|BoundBox|Vector Base, Vector Dir)
+Checks if the given object intersect with the BoundBox. That can be:
+- A Vector (Point)
+- Another Bound Box
+- A Line, specified by Base and Dir
+		</UserDocu>
+      </Documentation>
+	</Methode>
+	<Methode Name="enlarge">
+		<Documentation>
+			<UserDocu>methode enlarge(Float)
+Enlarge the BoundBox by the given value in each direction.
+A negativ value shrinks the Box.</UserDocu>
+		</Documentation>
+	</Methode>
+
+	  <Methode Name="getIntersectionPoint">
+		  <Documentation>
+			  <UserDocu>methode Vector getIntersectionPoint(Vector Base, Vector Dir)
+Calculate the intersection Point of a Line with the BoundBox
+			  </UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="move">
+		  <Documentation>
+			  <UserDocu> methode getIntersectionPoint(Vector)
+Moves the BoundBox by the given Vector
+			  </UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="isCutPlane">
+      <Documentation>
+        <UserDocu>methode bool isCutPlane(Vector Base, Vector Normal)
+Checks if the plane specified by Base and Normal intersect (cut) the BoundBox</UserDocu>
+      </Documentation>
+    </Methode>
+	  <Attribute Name="Center" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Center point of the Bound box</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Center" Type="Object" />
+	  </Attribute>
+	  <Attribute Name="XMax" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The maximum x boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="XMax" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="YMax" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The maximum y boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="YMax" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="ZMax" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The maximum z boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="ZMax" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="XMin" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The minimum x boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="XMin" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="YMin" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The minimum y boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="YMin" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="ZMin" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>The minimum z boundery position</UserDocu>
+		  </Documentation>
+		  <Parameter Name="ZMin" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="XLength" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Length of the BoundBox in x direction</UserDocu>
+		  </Documentation>
+		  <Parameter Name="XLength" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="YLength" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Length of the BoundBox in y direction</UserDocu>
+		  </Documentation>
+		  <Parameter Name="YLength" Type="Float" />
+	  </Attribute>
+	  <Attribute Name="ZLength" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Length of the BoundBox in z direction</UserDocu>
+		  </Documentation>
+		  <Parameter Name="ZLength" Type="Float" />
+	  </Attribute>
+ 	  <Attribute Name="DiagonalLength" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Diagonal length of the BoundBox</UserDocu>
+		  </Documentation>
+		  <Parameter Name="DiagonalLength" Type="Float" />
+	  </Attribute>
+	  <ClassDeclarations>
+public:
+   BoundBox3d &amp; BoundBox(void){return *getBoundBoxPtr();}
+   const BoundBox3d &amp; BoundBox(void) const {return *getBoundBoxPtr();}
+	  </ClassDeclarations>
+  </PythonExport>
+</GenerateModel>

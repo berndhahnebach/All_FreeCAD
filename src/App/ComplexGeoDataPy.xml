@@ -19,5 +19,12 @@
         <UserDocu>set a new Position of this object</UserDocu>
       </Documentation>
     </Methode>
+	  <Attribute Name="BoundBox" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Get the BoundBox of the object</UserDocu>
+		  </Documentation>
+		  <Parameter Name="BoundBox" Type="Object" />
+	  </Attribute>
+
   </PythonExport>
 </GenerateModel>

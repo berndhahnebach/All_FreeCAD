@@ -85,6 +85,8 @@ public:
     MeshCore::MeshKernel& getKernel(void){return _kernel;}
     const MeshCore::MeshKernel& getKernel(void) const {return _kernel;}
 
+    virtual Base::BoundBox3d getBoundBox(void)const;
+
     /** @name I/O */
     //@{
     // Implemented from Persistence
