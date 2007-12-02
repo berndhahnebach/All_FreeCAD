@@ -21,8 +21,6 @@
  ***************************************************************************/
 
 
-
-
 #ifndef _AppComplexGeoData_h_
 #define _AppComplexGeoData_h_
 
@@ -66,13 +64,13 @@ public:
 protected:
 
     /// from local to outside
-    inline Base::Vector3d transformToOutside(Base::Vector3f vec)const
+    inline Base::Vector3d transformToOutside(const Base::Vector3f& vec) const
     {
         return _Mtrx * Base::Vector3d(vec.x,vec.y,vec.z);
     }
 
    /// from local to outside
-    inline Base::Vector3f transformToInside(Base::Vector3d vec)const
+    inline Base::Vector3f transformToInside(const Base::Vector3d& vec) const
     {
         Base::Matrix4D tmpM(_Mtrx); 
         tmpM.inverse();
