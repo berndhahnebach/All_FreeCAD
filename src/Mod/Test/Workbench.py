@@ -31,14 +31,14 @@ import FreeCAD, FreeCADGui, os, unittest
 class WorkbenchTestCase(unittest.TestCase):
     def setUp(self):
         self.Active = FreeCADGui.activeWorkbench()
-        FreeCAD.PrintLog(FreeCADGui.activeWorkbench().name())
+        FreeCAD.Console.PrintLog(FreeCADGui.activeWorkbench().name())
         
     def testActivate(self):
         list=FreeCADGui.listWorkbenches()
         for i in list:
             FreeCADGui.activateWorkbench(i)
             FreeCADGui.updateGui()
-            FreeCAD.PrintLog("Active: "+FreeCADGui.activeWorkbench().name()+ " Expected: "+i+"\n")
+            FreeCAD.Console.PrintLog("Active: "+FreeCADGui.activeWorkbench().name()+ " Expected: "+i+"\n")
             self.failUnless(FreeCADGui.activeWorkbench().name()==i, "Test on activating workbench failed")
         
     def testHandler(self):
@@ -64,4 +64,4 @@ class WorkbenchTestCase(unittest.TestCase):
 
     def tearDown(self):
         FreeCADGui.activateWorkbench(self.Active.name())
-        FreeCAD.PrintLog(self.Active.name())
+        FreeCAD.Console.PrintLog(self.Active.name())

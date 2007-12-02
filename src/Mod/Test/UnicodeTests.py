@@ -32,7 +32,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.TempPath = os.getenv('TEMP')
     if self.TempPath == None:
         self.TempPath = "/tmp";
-    FreeCAD.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
+    FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
     
   def testSaveAndRestore(self):
     # saving and restoring

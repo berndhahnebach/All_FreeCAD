@@ -44,14 +44,14 @@ import FreeCAD, os, unittest, FreeCADGui
 class MenuCreateCases(unittest.TestCase):
 
     def setUp(self):
-        FreeCAD.PrintLog ('Setup Test menu...\n')
+        FreeCAD.Console.PrintLog ('Setup Test menu...\n')
         list = ["Test_TestAll","Test_TestDoc","Test_TestBase","Test_TestWork"]
         w = FreeCADGui.getWorkbench('TestWorkbench')
         w.appendMenu("TestMenu",list)
 
     def testMenu(self):
         # check menu for items
-        FreeCAD.PrintLog ('Checking Test menu...\n')
+        FreeCAD.Console.PrintLog ('Checking Test menu...\n')
         w = FreeCADGui.getWorkbench('TestWorkbench')
         list = w.listMenus()
         self.b = False
@@ -61,21 +61,21 @@ class MenuCreateCases(unittest.TestCase):
 
     def tearDown(self):
       if self.b == True:
-        FreeCAD.PrintLog ('Test menu successfully added\n')
+        FreeCAD.Console.PrintLog ('Test menu successfully added\n')
       else:
-        FreeCAD.PrintLog ('Adding Test menu failed\n')
+        FreeCAD.Console.PrintLog ('Adding Test menu failed\n')
 
 
 class MenuDeleteCases(unittest.TestCase):
 
     def setUp(self):
-        FreeCAD.PrintLog ('Remove Test menu...\n')
+        FreeCAD.Console.PrintLog ('Remove Test menu...\n')
         w = FreeCADGui.getWorkbench('TestWorkbench')
         w.removeMenu("TestMenu")
 
     def testMenu(self):
         # check menu for items
-        FreeCAD.PrintLog ('Checking Test menu...\n')
+        FreeCAD.Console.PrintLog ('Checking Test menu...\n')
         w = FreeCADGui.getWorkbench('TestWorkbench')
         list = w.listMenus()
         self.b = True
@@ -85,7 +85,7 @@ class MenuDeleteCases(unittest.TestCase):
 
     def tearDown(self):
       if self.b == True:
-        FreeCAD.PrintLog ('Test menu successfully removed\n')
+        FreeCAD.Console.PrintLog ('Test menu successfully removed\n')
       else:
-        FreeCAD.PrintLog ('Removing Test menu failed\n')
+        FreeCAD.Console.PrintLog ('Removing Test menu failed\n')
 
