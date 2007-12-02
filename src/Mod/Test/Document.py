@@ -51,7 +51,7 @@ class DocumentBasicCases(unittest.TestCase):
     try:
       self.Doc.UndoCount = 3
     except:
-      FreeCAD.PrintLog("   exception thrown, OK\n")
+      FreeCAD.Console.PrintLog("   exception thrown, OK\n")
     else:
       self.fail("no exeption thrown")
     self.Doc.RedoCount
@@ -93,7 +93,7 @@ class DocumentBasicCases(unittest.TestCase):
     try:
       L1.Enum = "SurlyNotInThere!"
     except:
-      FreeCAD.PrintLog("   exception thrown, OK\n")
+      FreeCAD.Console.PrintLog("   exception thrown, OK\n")
     else:
       self.fail("no exeption thrown")
       
@@ -150,7 +150,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.TempPath = os.getenv('TEMP')
     if self.TempPath == None:
         self.TempPath = "/tmp";
-    FreeCAD.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
+    FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
     
   def testSaveAndRestore(self):
     # saving and restoring
@@ -201,7 +201,7 @@ class DocumentRecomputeCases(unittest.TestCase):
     
   def testDescent(self):
     # testing the up and downstream stuff
-    FreeCAD.PrintLog("def testDescent(self):Testcase not implemented\n")
+    FreeCAD.Console.PrintLog("def testDescent(self):Testcase not implemented\n")
     self.L1.Link = self.L2
     self.L2.Link = self.L3
     
@@ -426,7 +426,7 @@ class UndoRedoCases(unittest.TestCase):
     try:
       G1.addObject(G1)
     except:
-      FreeCAD.PrintLog("Cannot add group to itself, OK\n")
+      FreeCAD.Console.PrintLog("Cannot add group to itself, OK\n")
     else:
       self.fail("Adding the group to itself must not be possible")
     
