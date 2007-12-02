@@ -114,6 +114,9 @@ public:
     /// clears the Mesh
     void clear(void);
     void transformToEigenSystem();
+    void movePoint(unsigned long, const Base::Vector3d& v);
+    void setPoint(unsigned long, const Base::Vector3d& v);
+    Base::Vector3d getPointNormal(unsigned long) const;
     //@}
 
     /** @name Boolean operations */
@@ -139,8 +142,6 @@ public:
     void collapseFacets(const std::vector<unsigned long>&);
     void insertVertex(unsigned long, const Base::Vector3f& v);
     void snapVertex(unsigned long, const Base::Vector3f& v);
-    void movePoint(unsigned long, const Base::Vector3d& v);
-    Base::Vector3d getPointNormal(unsigned long);
     //@}
 
     /** @name Mesh validation */

@@ -33,7 +33,6 @@
 #include "Core/Iterator.h"
 
 using namespace Mesh;
-using namespace MeshCore;
 
 
 int MeshPy::PyInit(PyObject* args, PyObject*)
@@ -812,7 +811,7 @@ Py::List MeshPy::getPoints(void) const
     Py::List PointList;
     MeshCore::MeshPointIterator it = Mesh().PointIterator();
     unsigned int Index=0;
-    for (  it.Init(); it.More(); it.Next(),Index++ )
+    for (it.Init(); it.More(); it.Next(),Index++)
         PointList.append(Py::Object(new MeshPointPy(new MeshPoint(it.asVector3d(),getMeshObjectPtr(),Index))));
 
     return PointList;

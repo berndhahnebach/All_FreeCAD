@@ -259,8 +259,8 @@ Example:
 		</Methode>
 		<Attribute Name="Points" ReadOnly="true">
 			<Documentation>
-				<UserDocu>A collection of the Mesh Points
-With this attribute its possible to get access to the points of the mesh
+				<UserDocu>A collection of the mesh points
+With this attribute it is possible to get access to the points of the mesh
 
 for p in mesh.Points:
 	print p.x, p.y, p.z

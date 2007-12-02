@@ -38,14 +38,13 @@ TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistance);
 ComplexGeoData::ComplexGeoData(void)
 {
 
-  
 }
 
 ComplexGeoData::~ComplexGeoData(void)
 {
 }
 
-void ComplexGeoData::applyTransform( const Base::Matrix4D& rclTrf )
+void ComplexGeoData::applyTransform(const Base::Matrix4D& rclTrf)
 {
      _Mtrx = rclTrf * _Mtrx;
 }
@@ -64,7 +63,7 @@ void ComplexGeoData::applyRotation(const Base::Rotation& rot)
     _Mtrx = mat * _Mtrx;
 }
 
-void ComplexGeoData::setTransform( const Base::Matrix4D& rclTrf )
+void ComplexGeoData::setTransform(const Base::Matrix4D& rclTrf)
 {
     _Mtrx = rclTrf;
 }

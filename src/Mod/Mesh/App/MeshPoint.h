@@ -34,9 +34,9 @@ using Base::Vector3d;
 namespace Mesh
 {
 /** The MeshPoint helper class
- * The MeshPoint class provides an interface for the MeshPointPy classes. For
- * conviniant access to the Mesh data structur. This class shut not be used for
- * programming algorithems in C++. Use Mesh Core classes instead!
+ * The MeshPoint class provides an interface for the MeshPointPy classes for
+ * convenient access to the Mesh data structure. This class should not be used for
+ * programming algorithms in C++. Use Mesh Core classes instead!
  */
 class MeshExport MeshPoint : public Vector3d
 {
@@ -47,7 +47,7 @@ public:
         :Vector3d(vec),Mesh(obj),Index(index)
     {}
 
-    bool isBound(void) {return Index != UINT_MAX;}
+    bool isBound(void) const {return Index != UINT_MAX;}
 
     unsigned int Index;
     Base::Reference<MeshObject> Mesh;

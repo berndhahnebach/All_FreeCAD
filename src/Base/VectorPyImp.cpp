@@ -34,12 +34,22 @@ const char *VectorPy::representation(void) const
 // constructor method
 int VectorPy::PyInit(PyObject* args, PyObject*k)
 {
-    double x=0.0,y=0.0,z=0.0;
-    if (!PyArg_ParseTuple(args, "|ddd", &x,&y,&z))
-        return -1;
-
+    double  x=0.0,y=0.0,z=0.0;
+    PyObject *object;
     VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
-    ptr->Set(x,y,z);
+    if (PyArg_ParseTuple(args, "|ddd", &x,&y,&z)) {
+        ptr->Set(x,y,z);
+    } 
+    else if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
+        PyErr_Clear(); // set by PyArg_ParseTuple()
+        // Note: must be static_cast, not reinterpret_cast
+        *ptr = *(static_cast<Base::VectorPy*>(object)->getVectorPtr());
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "Either three floats or instance of Vector expected");
+        return -1;
+    }
+
     return 0;
 }
 

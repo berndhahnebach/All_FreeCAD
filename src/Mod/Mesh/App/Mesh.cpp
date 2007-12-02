@@ -86,18 +86,6 @@ Base::BoundBox3d MeshObject::getBoundBox(void)const
     
     return Bnd2;
 }
-void MeshObject::movePoint(unsigned long index, const Base::Vector3d& v)
-{
-    _kernel.MovePoint(index,transformToInside(v));
-}
-
-
-
-Base::Vector3d MeshObject::getPointNormal(unsigned long index)
-{
-    std::vector<Base::Vector3f> temp = _kernel.CalcVertexNormals();
-    return transformToOutside(temp[index]);
-}
 
 void MeshObject::operator = (const MeshObject& mesh)
 {
@@ -331,6 +319,22 @@ void MeshObject::transformToEigenSystem()
     MeshCore::MeshEigensystem cMeshEval(_kernel);
     cMeshEval.Evaluate();
     this->setTransform(cMeshEval.Transform());
+}
+
+void MeshObject::movePoint(unsigned long index, const Base::Vector3d& v)
+{
+    _kernel.MovePoint(index,transformToInside(v));
+}
+
+void MeshObject::setPoint(unsigned long index, const Base::Vector3d& v)
+{
+    _kernel.SetPoint(index,transformToInside(v));
+}
+
+Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
+{
+    std::vector<Base::Vector3f> temp = _kernel.CalcVertexNormals();
+    return transformToOutside(temp[index]);
 }
 
 void MeshObject::unite(const MeshObject& mesh)

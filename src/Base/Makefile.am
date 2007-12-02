@@ -3,12 +3,14 @@ lib_LTLIBRARIES=libFreeCADBase.la
 
 BUILT_SOURCES=\
 		BaseClassPy.cpp \
+		BoundBoxPy.cpp \
 		PersistancePy.cpp \
 		VectorPy.cpp
 
 
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
+		BoundBoxPy.h \
 		PersistancePy.h \
 		VectorPy.h
 
@@ -75,6 +77,7 @@ libFreeCADBase_la_SOURCES=\
 		BaseClass.cpp \
 		BaseClass.h \
 		BaseClassPyImp.cpp \
+		BoundBoxPyImp.cpp \
 		BoundBox.h \
 		Builder3D.cpp \
 		Builder3D.h \
@@ -165,6 +168,7 @@ libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 EXTRA_DIST = \
 		FreeCADBase.vcproj \
 		BaseClassPy.xml \
+		BoundBoxPy.xml \
 		PersistancePy.xml \
 		VectorPy.xml
 
