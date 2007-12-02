@@ -74,10 +74,13 @@ public:
     bool isSolid() const;
     //@}
 
+    /** @name Iterator */
+    //@{
     /** Returns an iterator object to go over all facets. */
     MeshCore::MeshFacetIterator FacetIterator() const;
     /** Returns an iterator object to go over all points. */
     MeshCore::MeshPointIterator PointIterator() const;
+    //@}
 
     MeshCore::MeshKernel& getKernel(void){return _kernel;}
     const MeshCore::MeshKernel& getKernel(void) const {return _kernel;}
@@ -167,6 +170,47 @@ public:
 
 private:
     MeshCore::MeshKernel _kernel;
+};
+
+class MeshExport MeshSegment
+{
+public:
+    MeshSegment(MeshObject*);
+    MeshSegment(MeshObject*, const std::vector<unsigned long>& inds);
+    void addIndices(const std::vector<unsigned long>& inds);
+    const std::vector<unsigned long>& getIndices() const;
+
+private:
+    MeshObject* _mesh;
+    std::vector<unsigned long> _indices;
+
+public:
+    class FacetIter
+    {
+    public:
+        FacetIter(const MeshSegment*, std::vector<unsigned long>::const_iterator);
+        FacetIter(const FacetIter& fi);
+        ~FacetIter();
+
+        FacetIter& operator=(const FacetIter& fi);
+        const MeshCore::MeshFacet& operator*() const;
+        const MeshCore::MeshFacet* operator->() const;
+        bool operator==(const FacetIter& fi) const;
+        bool operator!=(const FacetIter& fi) const;
+        FacetIter& operator++();
+        FacetIter& operator--();
+    private:
+        const MeshSegment* _segment;
+        MeshCore::MeshFacetArray::_TConstIterator _f_it;
+        std::vector<unsigned long>::const_iterator _it;
+    };
+
+    FacetIter facets_begin() const
+    { return FacetIter(this, _indices.begin()); }
+    FacetIter facets_end() const
+    { return FacetIter(this, _indices.end()); }
+
+    friend class FacetIter;
 };
 
 } // namespace Mesh
