@@ -66,7 +66,7 @@ App::DocumentObjectExecReturn *Line::execute(void)
     BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
 
     bool ok = false;
-    const char *error;
+    const char *error=0;
     switch ( makeEdge.Error() )
     {
     case BRepBuilderAPI_EdgeDone:
