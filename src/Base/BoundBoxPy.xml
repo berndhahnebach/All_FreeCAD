@@ -15,10 +15,10 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <DeveloperDocu>This is the BoundBox export class</DeveloperDocu>
       <UserDocu>Bound box class
-A Bound box is ortographic cube which is a way to descrpe outer bounderies.
-You get a bound box from a lot of 3D types. Its often used to check 
-if a 3D entety lies in the range of an other object. Checking for
-boundig interfirence first can save a lot computing time!
+A bounding box is an orthographic cube which is a way to describe outer boundaries.
+You get a bounding box from a lot of 3D types. It is often used to check 
+if a 3D entity lies in the range of another object. Checking for
+boundig interference first can save a lot of computing time!
 
 Constructor:
 App.BoundBox(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
@@ -26,87 +26,87 @@ App.BoundBox(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
     </Documentation>
     <Methode Name="add">
       <Documentation>
-        <UserDocu>methode add(BoundBox)
-Adds (enlarge) the gifen BoundBox</UserDocu>
+        <UserDocu>method add(BoundBox)
+Add (enlarge) the given BoundBox</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="isIntersection">
       <Documentation>
-        <UserDocu>methode isIntersection(Vector|BoundBox|Vector Base, Vector Dir)
-Checks if the given object intersect with the BoundBox. That can be:
+        <UserDocu>method isIntersection(Vector|BoundBox|Vector Base, Vector Dir)
+Checks if the given object intersects with the BoundBox. That can be:
 - A Vector (Point)
-- Another Bound Box
-- A Line, specified by Base and Dir
+- Another BoundBox
+- A line, specified by Base and Dir
 		</UserDocu>
       </Documentation>
 	</Methode>
 	<Methode Name="enlarge">
 		<Documentation>
-			<UserDocu>methode enlarge(Float)
+			<UserDocu>method enlarge(Float)
 Enlarge the BoundBox by the given value in each direction.
-A negativ value shrinks the Box.</UserDocu>
+A negative value shrinks the box.</UserDocu>
 		</Documentation>
 	</Methode>
 
 	  <Methode Name="getIntersectionPoint">
 		  <Documentation>
-			  <UserDocu>methode Vector getIntersectionPoint(Vector Base, Vector Dir)
-Calculate the intersection Point of a Line with the BoundBox
+			  <UserDocu>method Vector getIntersectionPoint(Vector Base, Vector Dir)
+Calculate the intersection point of a line with the BoundBox
 			  </UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Methode Name="move">
 		  <Documentation>
-			  <UserDocu> methode getIntersectionPoint(Vector)
-Moves the BoundBox by the given Vector
+			  <UserDocu> method getIntersectionPoint(Vector)
+Move the BoundBox by the given vector
 			  </UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Methode Name="isCutPlane">
       <Documentation>
-        <UserDocu>methode bool isCutPlane(Vector Base, Vector Normal)
-Checks if the plane specified by Base and Normal intersect (cut) the BoundBox</UserDocu>
+        <UserDocu>method bool isCutPlane(Vector Base, Vector Normal)
+Check if the plane specified by Base and Normal intersects (cuts) the BoundBox</UserDocu>
       </Documentation>
     </Methode>
 	  <Attribute Name="Center" ReadOnly="true">
 		  <Documentation>
-			  <UserDocu>Center point of the Bound box</UserDocu>
+			  <UserDocu>Center point of the bounding box</UserDocu>
 		  </Documentation>
 		  <Parameter Name="Center" Type="Object" />
 	  </Attribute>
 	  <Attribute Name="XMax" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The maximum x boundery position</UserDocu>
+			  <UserDocu>The maximum x boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="XMax" Type="Float" />
 	  </Attribute>
 	  <Attribute Name="YMax" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The maximum y boundery position</UserDocu>
+			  <UserDocu>The maximum y boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="YMax" Type="Float" />
 	  </Attribute>
 	  <Attribute Name="ZMax" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The maximum z boundery position</UserDocu>
+			  <UserDocu>The maximum z boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="ZMax" Type="Float" />
 	  </Attribute>
 	  <Attribute Name="XMin" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The minimum x boundery position</UserDocu>
+			  <UserDocu>The minimum x boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="XMin" Type="Float" />
 	  </Attribute>
 	  <Attribute Name="YMin" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The minimum y boundery position</UserDocu>
+			  <UserDocu>The minimum y boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="YMin" Type="Float" />
 	  </Attribute>
 	  <Attribute Name="ZMin" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>The minimum z boundery position</UserDocu>
+			  <UserDocu>The minimum z boundary position</UserDocu>
 		  </Documentation>
 		  <Parameter Name="ZMin" Type="Float" />
 	  </Attribute>
