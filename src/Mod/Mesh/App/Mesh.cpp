@@ -323,18 +323,32 @@ void MeshObject::transformToEigenSystem()
 
 void MeshObject::movePoint(unsigned long index, const Base::Vector3d& v)
 {
-    _kernel.MovePoint(index,transformToInside(v));
+    // v is a vector, hence we must not apply the translation part
+    // of the transformation to the vector
+    Base::Vector3d vec(v);
+    vec.x += _Mtrx[0][3];
+    vec.y += _Mtrx[1][3];
+    vec.z += _Mtrx[2][3];
+    _kernel.MovePoint(index,transformToInside(vec));
 }
 
-void MeshObject::setPoint(unsigned long index, const Base::Vector3d& v)
+void MeshObject::setPoint(unsigned long index, const Base::Vector3d& p)
 {
-    _kernel.SetPoint(index,transformToInside(v));
+    _kernel.SetPoint(index,transformToInside(p));
 }
 
 Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
 {
     std::vector<Base::Vector3f> temp = _kernel.CalcVertexNormals();
-    return transformToOutside(temp[index]);
+    Base::Vector3d normal = transformToOutside(temp[index]);
+
+    // the normal is a vector, hence we must not apply the translation part
+    // of the transformation to the vector
+    normal.x -= _Mtrx[0][3];
+    normal.y -= _Mtrx[1][3];
+    normal.z -= _Mtrx[2][3];
+    normal.Normalize();
+    return normal;
 }
 
 void MeshObject::unite(const MeshObject& mesh)

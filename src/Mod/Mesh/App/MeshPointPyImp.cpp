@@ -91,8 +91,6 @@ Py::Object MeshPointPy::getNormal(void) const
         PyErr_SetString(PyExc_Exception, "This object is not bounded to a mesh, so no topological operation is possible!");
 
     Base::Vector3d* v = new Base::Vector3d(getMeshPointPtr()->Mesh->getPointNormal(getMeshPointPtr()->Index));
-    v->Normalize();
-
     Base::VectorPy* normal = new Base::VectorPy(v);
     normal->setConst();
     return Py::Object(normal);
