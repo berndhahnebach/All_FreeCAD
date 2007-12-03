@@ -44,7 +44,7 @@ class MeshExport MeshPoint : public Vector3d
 public:
     /// simple constructor
     MeshPoint(const Vector3d& vec = Vector3d(),MeshObject* obj = 0, unsigned int index = UINT_MAX)
-        :Vector3d(vec),Mesh(obj),Index(index)
+        :Vector3d(vec),Index(index),Mesh(obj)
     {}
 
     bool isBound(void) const {return Index != UINT_MAX;}

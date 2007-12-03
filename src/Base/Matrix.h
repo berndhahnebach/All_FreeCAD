@@ -345,11 +345,7 @@ public:
     /// Index operator
     inline const double*    operator[] (unsigned short usNdx) const;
     /// Compute the determinant of the matrix
-    double determinant() const;
-
-    // friend
-    inline friend Vector3<T>& operator*= (Vector3<T>& rclVect, const Matrix4& rclMtrx);
-    //@}
+    double determinant() const;    //@}
 
     /// get the matrix in OpenGL style
     void   getGLMatrix (double dMtrx[16]) const;
