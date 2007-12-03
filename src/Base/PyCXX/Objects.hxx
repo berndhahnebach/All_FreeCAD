@@ -479,6 +479,80 @@ public:
 
 
 	// ===============================================
+	// class Bool (added 2007-12-03, wmayer)
+	class BaseExport Bool: public Object
+		{
+	public:
+		// Constructor
+		explicit Bool (PyObject *pyob, bool owned): Object (pyob, owned)
+			{
+			validate();
+			}
+
+		Bool (const Bool& ob): Object(*ob)
+			{
+			validate();
+			}
+
+		// create from bool
+		explicit Bool (bool v)
+			{
+			long w = v ? 1 : 0;
+			set(PyBool_FromLong(w), true);
+			validate();
+			}
+
+		// create from long
+		explicit Bool (long v = 0L)
+			{
+			set(PyBool_FromLong(v), true);
+			validate();
+			}
+
+		Bool (const Object& ob)
+			{
+			set(PyNumber_Long(*ob), true);
+			validate();
+			}
+
+		// Assignment acquires new ownership of pointer
+
+		Bool& operator= (const Object& rhs)
+			{
+			return (*this = *rhs);
+			}
+
+		Bool& operator= (PyObject* rhsp)
+			{
+			if(ptr() == rhsp) return *this;
+			set (PyNumber_Long(rhsp), true);
+			return *this;
+			}
+		// Membership
+		virtual bool accepts (PyObject *pyob) const
+			{
+			return pyob && (PyBool_Check (pyob) || PyLong_Check(pyob));
+			}
+		// assign from a bool
+		Bool& operator= (bool v)
+			{
+			long w = v ? 1 : 0;
+			set (PyBool_FromLong (w), true);
+			return *this;
+			}
+		// assign from a long
+		Bool& operator= (long v)
+			{
+			set (PyBool_FromLong (v), true);
+			return *this;
+			}
+		};
+
+
+
+
+
+	// ===============================================
 	// class Int
 	class BaseExport Int: public Object
 		{
