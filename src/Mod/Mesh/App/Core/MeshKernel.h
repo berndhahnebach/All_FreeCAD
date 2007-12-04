@@ -290,6 +290,11 @@ public:
    * are referenced by facets of \a rKernel.
    */
   void Merge(const MeshKernel& rKernel);
+  /**
+   * Does basically the same as the method above unless that it directly accepts the point and
+   * facet arrays.
+   */
+  void Merge(const MeshPointArray&, const MeshFacetArray&);
   /** Deletes the facet the iterator points to. The deletion of a facet requires
    * the following steps:
    * \li Mark the neighbour index of all neighbour facets to the deleted facet as invalid

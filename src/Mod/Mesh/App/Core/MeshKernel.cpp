@@ -326,9 +326,13 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry, const
 
 void MeshKernel::Merge(const MeshKernel& rKernel)
 {
-  const MeshPointArray& rPoints = rKernel._aclPointArray;
-  const MeshFacetArray& rFaces  = rKernel._aclFacetArray;
+    const MeshPointArray& rPoints = rKernel._aclPointArray;
+    const MeshFacetArray& rFacets  = rKernel._aclFacetArray;
+    Merge(rPoints, rFacets);
+}
 
+void MeshKernel::Merge(const MeshPointArray& rPoints, const MeshFacetArray& rFaces)
+{
   // Create a map <point index -> face indices>. The size of the map is the number of points we have to append 
   std::map<unsigned long, std::vector<unsigned long> > point2Faces;
 
