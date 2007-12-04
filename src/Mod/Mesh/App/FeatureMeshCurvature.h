@@ -31,10 +31,6 @@
 #include "Mesh.h"
 #include "MeshProperties.h"
 
-namespace Base {
-class Matrix4D;
-}
-
 namespace Mesh
 {
 
