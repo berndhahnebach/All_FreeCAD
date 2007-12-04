@@ -32,9 +32,9 @@
 
 #include <Base/BoundBox.h>
 #include <Base/Vector3D.h>
+#include <Base/Matrix.h>
 
 namespace Base{
-  class Matrix4D;
   class Polygon2D;
   class ViewProjMethod;
 }
@@ -348,11 +348,11 @@ public:
    */
   void Adopt(MeshPointArray& rPoints, MeshFacetArray& rFaces, bool checkNeighbourHood=false);
   /// Transform the data structure with the given transformation matrix.
-  void operator *= (const Base::Matrix4D &rclMat);
+  void operator *= (const Base::Matrix4f &rclMat);
   /** Transform the data structure with the given transformation matrix.
    * It does exactly the same as the '*=' operator.
    */
-  void Transform (const Base::Matrix4D &rclMat);
+  void Transform (const Base::Matrix4f &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
   inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
   /** Sets the point at the given index to the new \a rPoint. */
