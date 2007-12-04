@@ -323,27 +323,27 @@ public:
     /** @name Operators */
     //@{
     /// Matrix addition
-    inline Matrix4 operator  +  (const Matrix4& rclMtrx) const;
-    inline Matrix4& operator += (const Matrix4& rclMtrx);
+    Matrix4 operator  +  (const Matrix4& rclMtrx) const;
+    Matrix4& operator += (const Matrix4& rclMtrx);
     /// Matrix subtraction
-    inline Matrix4 operator  -  (const Matrix4& rclMtrx) const;
-    inline Matrix4& operator -= (const Matrix4& rclMtrx);
+    Matrix4 operator  -  (const Matrix4& rclMtrx) const;
+    Matrix4& operator -= (const Matrix4& rclMtrx);
     /// Matrix multiplication
-    inline Matrix4& operator*= (const Matrix4& rclMtrx);
+    Matrix4& operator*= (const Matrix4& rclMtrx);
     /// Assignment
-    inline Matrix4& operator=  (const Matrix4& rclMtrx);
+    Matrix4& operator=  (const Matrix4& rclMtrx);
     /// Matrix multiplication
-    inline Matrix4  operator*  (const Matrix4& rclMtrx) const;
+    Matrix4  operator*  (const Matrix4& rclMtrx) const;
     /// Multiplication matrix with vector 
-    inline Vector3<T>  operator*  (const Vector3<T>& rclVct) const;
+    Vector3<T>  operator*  (const Vector3<T>& rclVct) const;
     /// Comparison
-    inline bool      operator!= (const Matrix4& rclMtrx);
+    bool      operator!= (const Matrix4& rclMtrx);
     /// Comparison
-    inline bool      operator== (const Matrix4& rclMtrx);
+    bool      operator== (const Matrix4& rclMtrx);
     /// Index operator
-    inline double*   operator[] (unsigned short usNdx);
+    double*   operator[] (unsigned short usNdx);
     /// Index operator
-    inline const double*    operator[] (unsigned short usNdx) const;
+    const double*    operator[] (unsigned short usNdx) const;
     /// Compute the determinant of the matrix
     double determinant() const;    //@}
 
@@ -376,7 +376,6 @@ public:
     void rotLine   (const Vector3<T>& rclVct, T fAngle);
     /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
     void rotLine   (const Vector3<T>& rclBase, const Vector3<T>& rclDir, T fAngle);
-    void rotLine   (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
     /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
     bool toAxisAngle (Vector3<T>& rclBase, Vector3<T>& rclDir, T& fAngle, T& fTranslation) const;
     /// transform (move,scale,rotate) around a point
@@ -393,162 +392,10 @@ private:
 };
 
 template <class T>
-inline Matrix4<T> Matrix4<T>::operator  +  (const Matrix4<T>& rclMtrx) const
-{
-  Matrix4<T>  clMat;
-  short     iz, is;
-
-  for (iz = 0; iz < 4; iz++) {
-    for (is = 0; is < 4; is++) {
-      clMat.dMtrx4D[iz][is] = dMtrx4D[iz][is] + rclMtrx[iz][is];
-    }
-  }
-
-  return clMat;
-}
-
-template <class T>
-inline Matrix4<T>& Matrix4<T>::operator += (const Matrix4<T>& rclMtrx)
-{
-  short     iz, is;
-
-  for (iz = 0; iz < 4; iz++) {
-    for (is = 0; is < 4; is++) {
-      dMtrx4D[iz][is] += rclMtrx[iz][is];
-    }
-  }
-
-  return *this;
-}
-
-template <class T>
-inline Matrix4<T> Matrix4<T>::operator  -  (const Matrix4<T>& rclMtrx) const
-{
-  Matrix4<T>  clMat;
-  short     iz, is;
-
-  for (iz = 0; iz < 4; iz++) {
-    for (is = 0; is < 4; is++) {
-      clMat.dMtrx4D[iz][is] = dMtrx4D[iz][is] - rclMtrx[iz][is];
-    }
-  }
-
-  return clMat;
-}
-
-template <class T>
-inline Matrix4<T>& Matrix4<T>::operator -= (const Matrix4<T>& rclMtrx)
-{
-  short     iz, is;
-
-  for (iz = 0; iz < 4; iz++) {
-    for (is = 0; is < 4; is++) {
-      dMtrx4D[iz][is] -= rclMtrx[iz][is];
-    }
-  }
-
-  return *this;
-}
-
-template <class T>
-inline Matrix4<T>& Matrix4<T>::operator *= (const Matrix4<T>& rclMtrx)
-{
-  Matrix4<T>  clMat;
-  short     ie, iz, is;
-
-  for (iz = 0; iz < 4; iz++)
-    for (is = 0; is < 4; is++) {
-      clMat.dMtrx4D[iz][is] = 0;
-      for (ie = 0; ie < 4; ie++)
-        clMat.dMtrx4D[iz][is] += dMtrx4D[iz][ie] * 
-                          rclMtrx.dMtrx4D[ie][is];
-    }
-
-  (*this) = clMat;
- 
-  return *this;
-}
-
-template <class T>
-inline Matrix4<T> Matrix4<T>::operator * (const Matrix4<T>& rclMtrx) const
-{
-  Matrix4<T>  clMat;
-  short     ie, iz, is;
-
-  for (iz = 0; iz < 4; iz++)
-    for (is = 0; is < 4; is++) {
-      clMat.dMtrx4D[iz][is] = 0;
-      for (ie = 0; ie < 4; ie++)
-       	clMat.dMtrx4D[iz][is] += dMtrx4D[iz][ie] * 
-                          rclMtrx.dMtrx4D[ie][is];
-    }
-
-  return clMat;
-}
-
-template <class T>
-inline Matrix4<T>& Matrix4<T>::operator= (const Matrix4<T>& rclMtrx)
-{
-  short iz, is;
-
-  for (iz = 0; iz < 4; iz++) {
-    for (is = 0; is < 4; is++) {
-      dMtrx4D[iz][is] = rclMtrx.dMtrx4D[iz][is];
-    }
-  }
-  
-  return *this;
-}
-
-template <class T>
-inline Vector3<T> Matrix4<T>::operator* (const Vector3<T>& rclVct) const
-{
-  return Vector3<T>((T)(dMtrx4D[0][0]*rclVct.x + dMtrx4D[0][1]*rclVct.y +
-                        dMtrx4D[0][2]*rclVct.z + dMtrx4D[0][3]),
-                    (T)(dMtrx4D[1][0]*rclVct.x + dMtrx4D[1][1]*rclVct.y + 
-                        dMtrx4D[1][2]*rclVct.z + dMtrx4D[1][3]),
-                    (T)(dMtrx4D[2][0]*rclVct.x + dMtrx4D[2][1]*rclVct.y + 
-                        dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
-}
-
-template <class T>
-inline bool Matrix4<T>::operator== (const Matrix4<T>& rclMtrx)
-{
-  short     iz, is;
-  bool      bRet = true;
-
-  for (iz = 0; iz < 4; iz++)
-    for (is = 0; is < 4; is++) 
-      if (fabs(dMtrx4D[iz][is] - rclMtrx.dMtrx4D[iz][is]) > FLOAT_EPS)
-        bRet = false;
-
-  return bRet;
-}
-
-template <class T>
-inline bool Matrix4<T>::operator!= (const Matrix4<T>& rclMtrx)
-{
-  return !( (*this) == rclMtrx );
-}
-
-template <class T>
-inline Vector3<T>& operator*= (Vector3<T>& rclVect,
-                              const Matrix4<T>& rclMtrx)
+inline Vector3<T>& operator*= (Vector3<T>& rclVect, const Matrix4<T>& rclMtrx)
 {
   rclVect = rclMtrx * rclVect;
   return rclVect;
-}
-
-template <class T>
-inline double* Matrix4<T>::operator[] (unsigned short usNdx)
-{
-  return dMtrx4D[usNdx];
-}
-
-template <class T>
-inline const double* Matrix4<T>::operator[] (unsigned short usNdx) const
-{
-  return dMtrx4D[usNdx];
 }
 
 typedef Matrix4<float>  Matrix4f;
