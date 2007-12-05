@@ -39,7 +39,26 @@ Facet::Facet(const MeshCore::MeshFacet& face, MeshObject* obj, unsigned long ind
     }
 }
 
+Facet::Facet(const Facet& f)
+  : MeshCore::MeshGeomFacet(f), Index(f.Index), Mesh(f.Mesh)
+{
+    for (int i=0; i<3; i++) {
+        PIndex[i] = f.PIndex[i];
+        NIndex[i] = f.NIndex[i];
+    }
+}
+
 Facet::~Facet()
 {
 }
 
+void Facet::operator = (const Facet& f)
+{
+    MeshCore::MeshGeomFacet::operator = (f);
+    Mesh  = f.Mesh;
+    Index = f.Index;
+    for (int i=0; i<3; i++) {
+        PIndex[i] = f.PIndex[i];
+        NIndex[i] = f.NIndex[i];
+    }
+}
