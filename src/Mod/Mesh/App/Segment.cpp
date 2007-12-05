@@ -26,21 +26,8 @@
 # include <sstream>
 #endif
 
-#include <Base/Builder3D.h>
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Writer.h>
-#include <Base/Reader.h>
-#include <Base/PyCXX/Objects.hxx>
 
 #include "Core/MeshKernel.h"
-#include "Core/MeshIO.h"
-#include "Core/Iterator.h"
-#include "Core/Info.h"
-#include "Core/TopoAlgorithm.h"
-#include "Core/Evaluation.h"
-#include "Core/Degeneration.h"
-#include "Core/SetOperations.h"
 
 #include "Segment.h"
 #include "Mesh.h"
