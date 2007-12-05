@@ -24,18 +24,14 @@
 #ifndef BASE_MATRIX_H
 #define BASE_MATRIX_H
 
-//#include "Definitions.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
 
 #include "Vector3D.h"
 #include <float.h>
-namespace Base {
 
-class   Matrix4D;
-typedef Matrix4D* PMatrix4D;
-typedef Matrix4D& RMatrix4D;
+namespace Base {
 
 /**
  * The Matrix4D class.
@@ -60,58 +56,57 @@ public:
   Matrix4D (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
   Matrix4D (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
   /// Destruction
-  virtual ~Matrix4D () {};
+  ~Matrix4D () {};
 
   /** @name Operators */
   //@{
   /// Matrix addition
-  inline Matrix4D operator  +  (const Matrix4D& rclMtrx) const;
+  inline Matrix4D  operator +  (const Matrix4D& rclMtrx) const;
   inline Matrix4D& operator += (const Matrix4D& rclMtrx);
   /// Matrix subtraction
-  inline Matrix4D operator  -  (const Matrix4D& rclMtrx) const;
+  inline Matrix4D  operator -  (const Matrix4D& rclMtrx) const;
   inline Matrix4D& operator -= (const Matrix4D& rclMtrx);
   /// Matrix multiplication
-  inline Matrix4D& operator*= (const Matrix4D& rclMtrx);
+  inline Matrix4D& operator *= (const Matrix4D& rclMtrx);
   /// Assignment
-  inline Matrix4D& operator=  (const Matrix4D& rclMtrx);
+  inline Matrix4D& operator =  (const Matrix4D& rclMtrx);
   /// Matrix multiplication
-  inline Matrix4D  operator*  (const Matrix4D& rclMtrx) const;
+  inline Matrix4D  operator *  (const Matrix4D& rclMtrx) const;
   /// Multiplication matrix with vector 
-  inline Vector3f  operator*  (const Vector3f& rclVct) const;
-  inline Vector3d  operator*  (const Vector3d& rclVct) const;
+  inline Vector3f  operator *  (const Vector3f& rclVct) const;
+  inline Vector3d  operator *  (const Vector3d& rclVct) const;
   /// Comparison
-  inline bool      operator!= (const Matrix4D& rclMtrx);
+  inline bool      operator != (const Matrix4D& rclMtrx);
   /// Comparison
-  inline bool      operator== (const Matrix4D& rclMtrx);
+  inline bool      operator == (const Matrix4D& rclMtrx);
   /// Index operator
-  inline double*    operator[] (unsigned short usNdx);
+  inline double*   operator [] (unsigned short usNdx);
   /// Index operator
   inline const double*    operator[] (unsigned short usNdx) const;
   /// Compute the determinant of the matrix
   double determinant() const;
-
-  // friend
-  inline friend Vector3f& operator*= (Vector3f& rclVect, const Matrix4D& rclMtrx);
   //@}
 
   /// get the matrix in OpenGL style
-  void   getGLMatrix (double dMtrx[16]) const;
+  void getGLMatrix  (double dMtrx[16]) const;
   /// set the matrix in OpenGL style
-  void   setGLMatrix (const double dMtrx[16]);
+  void setGLMatrix  (const double dMtrx[16]);
 
-  virtual unsigned long getMemSpace (void);
+  unsigned long getMemSpace (void);
 
   /** @name Manipulation */
   //@{
   /// Makes unity matrix
   void unity        (void);
   /// moves the coordinatesystem for the x,y,z value
-  void move         (float x, float y, float z){move(Vector3f(x,y,z));}
+  void move         (float x, float y, float z)
+  { move(Vector3f(x,y,z)); }
   /// moves the coordinatesystem for the vector
   void move         (const Vector3f& rclVct);
   void move         (const Vector3d& rclVct);
   /// scale for the vector
-  void scale        (float x, float y, float z){scale(Vector3f(x,y,z));}
+  void scale        (float x, float y, float z)
+  { scale(Vector3f(x,y,z)); }
   /// scale for the x,y,z value
   void scale        (const Vector3f& rclVct);
   void scale        (const Vector3d& rclVct);
@@ -122,11 +117,11 @@ public:
   /// rotate around the Z axis for the given value
   void rotZ         (float fAngle);
   /// Rotation around an arbitrary axis passing the origin.
-  void rotLine   (const Vector3f& rclVct, float fAngle);
-  void rotLine   (const Vector3d& rclVct, float fAngle);
+  void rotLine      (const Vector3f& rclVct, float fAngle);
+  void rotLine      (const Vector3d& rclVct, float fAngle);
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
-  void rotLine   (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
-  void rotLine   (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
+  void rotLine      (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
+  void rotLine      (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
   /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
   bool toAxisAngle (Vector3f& rclBase, Vector3f& rclDir, float& fAngle, float& fTranslation) const;
   /// transform (move,scale,rotate) around a point
@@ -299,110 +294,8 @@ inline const double* Matrix4D::operator[] (unsigned short usNdx) const
   return dMtrx4D[usNdx];
 }
 
-// ----------------------------------------------------------------------------
-
-/** The Matrix4 class. */
-template <class T>
-class Matrix4
-{
-public:
-    /// default constructor
-    Matrix4(void);
-    /// Construction
-    Matrix4 (T a11, T a12, T a13, T a14, 
-             T a21, T a22, T a23, T a24,
-             T a31, T a32, T a33, T a34,
-             T a41, T a42, T a43, T a44);
-    /// Construction
-    Matrix4 (const Matrix4& rclMtrx);
-    /// Construction with an Axis
-    Matrix4 (const Vector3<T>& rclBase, const Vector3<T>& rclDir, T fAngle);
-    /// Destruction
-    ~Matrix4 () {};
-
-    /** @name Operators */
-    //@{
-    /// Matrix addition
-    Matrix4 operator  +  (const Matrix4& rclMtrx) const;
-    Matrix4& operator += (const Matrix4& rclMtrx);
-    /// Matrix subtraction
-    Matrix4 operator  -  (const Matrix4& rclMtrx) const;
-    Matrix4& operator -= (const Matrix4& rclMtrx);
-    /// Matrix multiplication
-    Matrix4& operator*= (const Matrix4& rclMtrx);
-    /// Assignment
-    Matrix4& operator=  (const Matrix4& rclMtrx);
-    /// Matrix multiplication
-    Matrix4  operator*  (const Matrix4& rclMtrx) const;
-    /// Multiplication matrix with vector 
-    Vector3<T>  operator*  (const Vector3<T>& rclVct) const;
-    /// Comparison
-    bool      operator!= (const Matrix4& rclMtrx);
-    /// Comparison
-    bool      operator== (const Matrix4& rclMtrx);
-    /// Index operator
-    double*   operator[] (unsigned short usNdx);
-    /// Index operator
-    const double*    operator[] (unsigned short usNdx) const;
-    /// Compute the determinant of the matrix
-    double determinant() const;    //@}
-
-    /// get the matrix in OpenGL style
-    void   getGLMatrix (double dMtrx[16]) const;
-    /// set the matrix in OpenGL style
-    void   setGLMatrix (const double dMtrx[16]);
-
-    unsigned long getMemSpace (void);
-
-    /** @name Manipulation */
-    //@{
-    /// Makes unity matrix
-    void unity        (void);
-    /// moves the coordinatesystem for the x,y,z value
-    void move         (T x, T y, T z);
-    /// moves the coordinatesystem for the vector
-    void move         (const Vector3<T>& rclVct);
-    /// scale for the vector
-    void scale        (T x, T y, T z);
-    /// scale for the x,y,z value
-    void scale        (const Vector3<T>& rclVct);
-    /// rotate around the X axis for the given value
-    void rotX         (T fAngle);
-    /// rotate around the Y axis for the given value
-    void rotY         (T fAngle);
-    /// rotate around the Z axis for the given value
-    void rotZ         (T fAngle);
-    /// Rotation around an arbitrary axis passing the origin.
-    void rotLine   (const Vector3<T>& rclVct, T fAngle);
-    /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
-    void rotLine   (const Vector3<T>& rclBase, const Vector3<T>& rclDir, T fAngle);
-    /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
-    bool toAxisAngle (Vector3<T>& rclBase, Vector3<T>& rclDir, T& fAngle, T& fTranslation) const;
-    /// transform (move,scale,rotate) around a point
-    void transform    (const Vector3<T>& rclVct, const Matrix4& rclMtrx);
-    void inverse      (void);
-    void inverseGauss (void);
-    void transpose    (void);
-    //@}
-
-    void Print        (void) const;
-
-private:
-    double  dMtrx4D[4][4];
-};
-
-template <class T>
-inline Vector3<T>& operator*= (Vector3<T>& rclVect, const Matrix4<T>& rclMtrx)
-{
-  rclVect = rclMtrx * rclVect;
-  return rclVect;
-}
-
-typedef Matrix4<float>  Matrix4f;
-typedef Matrix4<double> Matrix4d;
-
-
 } // namespace Base
+
 
 #endif // BASE_MATRIX_H 
 
