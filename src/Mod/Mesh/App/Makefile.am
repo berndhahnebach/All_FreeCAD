@@ -244,6 +244,8 @@ libMesh_la_SOURCES=\
 		CurveProjector.cpp \
 		CurveProjector.h \
 		Doxygen.cpp \
+		Facet.cpp \
+		Facet.h \
 		FacetPyImp.cpp \
 		FeatureMeshCurvature.cpp \
 		FeatureMeshCurvature.h \
@@ -280,6 +282,8 @@ libMesh_la_SOURCES=\
 		MeshPyImp.cpp \
 		GTSAlgos.cpp \
 		GTSAlgos.h \
+		Segment.cpp \
+		Segment.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
