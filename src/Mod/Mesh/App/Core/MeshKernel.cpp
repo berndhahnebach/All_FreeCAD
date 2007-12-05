@@ -910,10 +910,10 @@ void MeshKernel::Read (std::istream &rclIn)
     }
 }
 
-void MeshKernel::operator *= (const Base::Matrix4f &rclMat)
+void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
 {
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  Base::Matrix4f clMatrix(rclMat);
+  Base::Matrix4D clMatrix(rclMat);
 
   _clBoundBox.Flush();
   while (clPIter < clPEIter)
@@ -924,7 +924,7 @@ void MeshKernel::operator *= (const Base::Matrix4f &rclMat)
   }
 }
 
-void MeshKernel::Transform (const Base::Matrix4f &rclMat)
+void MeshKernel::Transform (const Base::Matrix4D &rclMat)
 {
   (*this) *= rclMat;
 }

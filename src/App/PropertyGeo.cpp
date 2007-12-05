@@ -376,9 +376,9 @@ void PropertyMatrix::setPyObject(PyObject *value)
             for (int y=0; y<4;y++) {
                 item = PyTuple_GetItem(value,x+y*4);
                 if (PyFloat_Check(item))
-                    cMatrix[x][y] = (float)PyFloat_AsDouble(item);
+                    cMatrix[x][y] = PyFloat_AsDouble(item);
                 else if (PyInt_Check(item))
-                    cMatrix[x][y] = (float)PyInt_AsLong(item);
+                    cMatrix[x][y] = (double)PyInt_AsLong(item);
                 else
                     throw Base::Exception("Not allowed type used in matrix tuple (a number expected)...");
             }

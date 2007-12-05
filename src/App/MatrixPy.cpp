@@ -387,11 +387,11 @@ PYFUNCIMP_D(MatrixPy,set)
 
 PYFUNCIMP_D(MatrixPy,move)
 {
-    float x,y,z;
-    Vector3f vec;
+    double x,y,z;
+    Base::Vector3d vec;
     PyObject *pcVecObj;
 
-    if (PyArg_ParseTuple(args, "fff", &x,&y,&z)) {   // convert args: Python->C
+    if (PyArg_ParseTuple(args, "ddd", &x,&y,&z)) {   // convert args: Python->C
         vec.x = x;
         vec.y = y;
         vec.z = z;
@@ -399,7 +399,7 @@ PYFUNCIMP_D(MatrixPy,move)
     else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {
         Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
         Base::Vector3d* val = pcObject->getVectorPtr();
-        vec.Set((float)val->x,(float)val->y,(float)val->z);
+        vec.Set(val->x,val->y,val->z);
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
     }
@@ -417,11 +417,11 @@ PYFUNCIMP_D(MatrixPy,move)
 
 PYFUNCIMP_D(MatrixPy,scale)
 {
-    float x,y,z;
-    Vector3f vec;
+    double x,y,z;
+    Base::Vector3d vec;
     PyObject *pcVecObj;
 
-    if (PyArg_ParseTuple(args, "fff", &x,&y,&z)) {   // convert args: Python->C
+    if (PyArg_ParseTuple(args, "ddd", &x,&y,&z)) {   // convert args: Python->C
         vec.x = x;
         vec.y = y;
         vec.z = z;
@@ -429,7 +429,7 @@ PYFUNCIMP_D(MatrixPy,scale)
     else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {   // convert args: Python->C
         Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
         Base::Vector3d* val = pcObject->getVectorPtr();
-        vec.Set((float)val->x,(float)val->y,(float)val->z);
+        vec.Set(val->x,val->y,val->z);
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
     }
@@ -456,7 +456,7 @@ PYFUNCIMP_D(MatrixPy,unity)
 
 PYFUNCIMP_D(MatrixPy,transform)
 {
-    Vector3f vec;
+    Base::Vector3d vec;
     Matrix4D mat;
     PyObject *pcVecObj,*pcMatObj;
 
@@ -464,7 +464,7 @@ PYFUNCIMP_D(MatrixPy,transform)
         &(Base::VectorPy::Type), &pcVecObj, &(MatrixPy::Type), &pcMatObj) ) {   // convert args: Python->C
         Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
         Base::Vector3d* val = pcObject->getVectorPtr();
-        vec.Set((float)val->x,(float)val->y,(float)val->z);
+        vec.Set(val->x,val->y,val->z);
         mat = ((MatrixPy*)pcMatObj)->value();
         // clears the error from the first PyArg_ParseTuple()6
         PyErr_Clear();
