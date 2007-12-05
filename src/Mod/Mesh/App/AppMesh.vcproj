@@ -1745,6 +1745,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\Facet.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Facet.h"
+			>
+		</File>
+		<File
 			RelativePath=".\FacetPy.xml"
 			>
 		</File>

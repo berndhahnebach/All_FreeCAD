@@ -21,60 +21,25 @@
  ***************************************************************************/
 
 
-#ifndef MESH_SEGMENT_H
-#define MESH_SEGMENT_H
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <sstream>
+#endif
 
-#include <vector>
 #include "Facet.h"
 
-namespace Mesh
+using namespace Mesh;
+
+Facet::Facet(const MeshCore::MeshFacet& face, MeshObject* obj, unsigned long index)
+  : Index(index), Mesh(obj)
 {
+    for (int i=0; i<3; i++) {
+        PIndex[i] = face._aulPoints[i];
+        NIndex[i] = face._aulNeighbours[i];
+    }
+}
 
-class MeshObject;
-
-class MeshExport Segment
+Facet::~Facet()
 {
-public:
-    Segment(MeshObject*);
-    Segment(MeshObject*, const std::vector<unsigned long>& inds);
-    void addIndices(const std::vector<unsigned long>& inds);
-    const std::vector<unsigned long>& getIndices() const;
+}
 
-private:
-    MeshObject* _mesh;
-    std::vector<unsigned long> _indices;
-
-public:
-    class FacetIter
-    {
-    public:
-        FacetIter(const Segment*, std::vector<unsigned long>::const_iterator);
-        FacetIter(const FacetIter& fi);
-        ~FacetIter();
-
-        FacetIter& operator=(const FacetIter& fi);
-        const Facet& operator*() const;
-        const Facet* operator->() const;
-        bool operator==(const FacetIter& fi) const;
-        bool operator!=(const FacetIter& fi) const;
-        FacetIter& operator++();
-        FacetIter& operator--();
-    private:
-        Facet _facet;
-        const Segment* _segment;
-        MeshCore::MeshFacetArray::_TConstIterator _f_it;
-        std::vector<unsigned long>::const_iterator _it;
-    };
-
-    FacetIter facets_begin() const
-    { return FacetIter(this, _indices.begin()); }
-    FacetIter facets_end() const
-    { return FacetIter(this, _indices.end()); }
-
-    friend class FacetIter;
-};
-
-} // namespace Mesh
-
-
-#endif // MESH_SEGMENT_H

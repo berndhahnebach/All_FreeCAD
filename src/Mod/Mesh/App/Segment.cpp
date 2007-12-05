@@ -79,14 +79,16 @@ Segment::FacetIter& Segment::FacetIter::operator=(const Segment::FacetIter& fi)
     return *this;
 }
 
-const MeshCore::MeshFacet& Segment::FacetIter::operator*() const
+const Facet& Segment::FacetIter::operator*() const
 {
-    return *(_f_it + *_it);
+    return this->_facet;
+    //return *(_f_it + *_it);
 }
 
-const MeshCore::MeshFacet* Segment::FacetIter::operator->() const
+const Facet* Segment::FacetIter::operator->() const
 {
-    return &(*(_f_it + *_it));
+    return &(this->_facet);
+    //return &(*(_f_it + *_it));
 }
 
 bool Segment::FacetIter::operator==(const Segment::FacetIter& fi) const
