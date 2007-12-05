@@ -45,7 +45,7 @@ private:
     std::vector<unsigned long> _indices;
 
 public:
-    class FacetIter
+    class MeshExport FacetIter
     {
     public:
         FacetIter(const Segment*, std::vector<unsigned long>::const_iterator);
@@ -53,25 +53,51 @@ public:
         ~FacetIter();
 
         FacetIter& operator=(const FacetIter& fi);
-        const Facet& operator*() const;
-        const Facet* operator->() const;
+        Facet& operator*();
+        Facet* operator->();
         bool operator==(const FacetIter& fi) const;
         bool operator!=(const FacetIter& fi) const;
         FacetIter& operator++();
         FacetIter& operator--();
     private:
-        Facet _facet;
+        void dereference();
         const Segment* _segment;
+        Facet _facet;
         MeshCore::MeshFacetArray::_TConstIterator _f_it;
         std::vector<unsigned long>::const_iterator _it;
     };
 
-    FacetIter facets_begin() const
+    class MeshExport ConstFacetIter
+    {
+    public:
+        ConstFacetIter(const Segment*, std::vector<unsigned long>::const_iterator);
+        ConstFacetIter(const ConstFacetIter& fi);
+        ~ConstFacetIter();
+
+        ConstFacetIter& operator=(const ConstFacetIter& fi);
+        const Facet& operator*() const;
+        const Facet* operator->() const;
+        bool operator==(const ConstFacetIter& fi) const;
+        bool operator!=(const ConstFacetIter& fi) const;
+        ConstFacetIter& operator++();
+        ConstFacetIter& operator--();
+    private:
+        void dereference();
+        const Segment* _segment;
+        Facet _facet;
+        MeshCore::MeshFacetArray::_TConstIterator _f_it;
+        std::vector<unsigned long>::const_iterator _it;
+    };
+
+    FacetIter facets_begin()
     { return FacetIter(this, _indices.begin()); }
-    FacetIter facets_end() const
+    FacetIter facets_end()
     { return FacetIter(this, _indices.end()); }
 
-    friend class FacetIter;
+    ConstFacetIter facets_begin() const
+    { return ConstFacetIter(this, _indices.begin()); }
+    ConstFacetIter facets_end() const
+    { return ConstFacetIter(this, _indices.end()); }
 };
 
 } // namespace Mesh

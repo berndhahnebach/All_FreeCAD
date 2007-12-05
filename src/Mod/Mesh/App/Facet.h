@@ -42,9 +42,11 @@ class MeshExport Facet : public MeshCore::MeshGeomFacet
 public:
     /// simple constructor
     Facet(const MeshCore::MeshFacet& face = MeshCore::MeshFacet(), MeshObject* obj = 0, unsigned long index = ULONG_MAX);
+    Facet(const Facet& f);
     ~Facet();
 
     bool isBound(void) const {return Index != ULONG_MAX;}
+    void operator = (const Facet& f);
 
     unsigned long Index;
     unsigned long PIndex[3];
