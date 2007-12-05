@@ -21,60 +21,38 @@
  ***************************************************************************/
 
 
-#ifndef MESH_SEGMENT_H
-#define MESH_SEGMENT_H
+#ifndef MESH_FACET_H
+#define MESH_FACET_H
 
-#include <vector>
-#include "Facet.h"
+#include <Base/Matrix.h>
+#include <Base/Vector3D.h>
+
+#include "Core/Elements.h"
+#include "MeshPoint.h"
 
 namespace Mesh
 {
-
-class MeshObject;
-
-class MeshExport Segment
+/** The Facet helper class
+ * The MeshFacet class provides an interface for the MeshFacetPy class for
+ * convenient access to the Mesh data structure. This class should not be used for
+ * programming algorithms in C++. Use Mesh Core classes instead!
+ */
+class MeshExport Facet : public MeshCore::MeshGeomFacet
 {
 public:
-    Segment(MeshObject*);
-    Segment(MeshObject*, const std::vector<unsigned long>& inds);
-    void addIndices(const std::vector<unsigned long>& inds);
-    const std::vector<unsigned long>& getIndices() const;
+    /// simple constructor
+    Facet(const MeshCore::MeshFacet& face = MeshCore::MeshFacet(), MeshObject* obj = 0, unsigned long index = ULONG_MAX);
+    ~Facet();
 
-private:
-    MeshObject* _mesh;
-    std::vector<unsigned long> _indices;
+    bool isBound(void) const {return Index != ULONG_MAX;}
 
-public:
-    class FacetIter
-    {
-    public:
-        FacetIter(const Segment*, std::vector<unsigned long>::const_iterator);
-        FacetIter(const FacetIter& fi);
-        ~FacetIter();
-
-        FacetIter& operator=(const FacetIter& fi);
-        const Facet& operator*() const;
-        const Facet* operator->() const;
-        bool operator==(const FacetIter& fi) const;
-        bool operator!=(const FacetIter& fi) const;
-        FacetIter& operator++();
-        FacetIter& operator--();
-    private:
-        Facet _facet;
-        const Segment* _segment;
-        MeshCore::MeshFacetArray::_TConstIterator _f_it;
-        std::vector<unsigned long>::const_iterator _it;
-    };
-
-    FacetIter facets_begin() const
-    { return FacetIter(this, _indices.begin()); }
-    FacetIter facets_end() const
-    { return FacetIter(this, _indices.end()); }
-
-    friend class FacetIter;
+    unsigned long Index;
+    unsigned long PIndex[3];
+    unsigned long NIndex[3];
+    Base::Reference<MeshObject> Mesh;
 };
 
 } // namespace Mesh
 
 
-#endif // MESH_SEGMENT_H
+#endif // MESH_FACET_H
