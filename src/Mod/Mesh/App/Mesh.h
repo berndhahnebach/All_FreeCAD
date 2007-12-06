@@ -38,6 +38,9 @@
 #include <App/ComplexGeoData.h>
 
 #include "Core/MeshKernel.h"
+#include "Core/Iterator.h"
+#include "Facet.h"
+#include "MeshPoint.h"
 
 namespace Py
 {
@@ -72,6 +75,8 @@ public:
     unsigned long countFacets() const;
     unsigned long countEdges () const;
     bool isSolid() const;
+    MeshPoint getPoint(unsigned long) const;
+    Facet getFacet(unsigned long) const;
     //@}
 
     /** @name Iterator */
@@ -170,6 +175,33 @@ public:
     static MeshObject* createTorus(float, float, int);
     static MeshObject* createCube(float, float, float);
     //@}
+
+public:
+    class MeshExport FacetIter
+    {
+    public:
+        FacetIter(MeshObject*, unsigned long index);
+        FacetIter(const FacetIter& fi);
+        ~FacetIter();
+
+        FacetIter& operator=(const FacetIter& fi);
+        Facet& operator*();
+        Facet* operator->();
+        bool operator==(const FacetIter& fi) const;
+        bool operator!=(const FacetIter& fi) const;
+        FacetIter& operator++();
+        FacetIter& operator--();
+    private:
+        void dereference();
+        MeshObject* _mesh;
+        Facet _facet;
+        MeshCore::MeshFacetIterator _f_it;
+    };
+
+    FacetIter facets_begin()
+    { return FacetIter(this, 0); }
+    FacetIter facets_end()
+    { return FacetIter(this, countFacets()); }
 
 private:
     MeshCore::MeshKernel _kernel;

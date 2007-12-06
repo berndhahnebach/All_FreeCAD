@@ -33,6 +33,9 @@ using Base::Vector3d;
 
 namespace Mesh
 {
+// forward declaration
+class MeshObject;
+
 /** The MeshPoint helper class
  * The MeshPoint class provides an interface for the MeshPointPy classes for
  * convenient access to the Mesh data structure. This class should not be used for

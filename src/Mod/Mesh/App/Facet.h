@@ -26,21 +26,23 @@
 
 #include <Base/Matrix.h>
 #include <Base/Vector3D.h>
+#include <Base/Handle.h>
 
 #include "Core/Elements.h"
-#include "MeshPoint.h"
 
 namespace Mesh
 {
+// forward declaration
+class MeshObject;
+
 /** The Facet helper class
  * The MeshFacet class provides an interface for the MeshFacetPy class for
- * convenient access to the Mesh data structure. This class should not be used for
- * programming algorithms in C++. Use Mesh Core classes instead!
+ * convenient access to the Mesh data structure. This class should not be used
+ * for programming algorithms in C++. Use Mesh Core classes instead!
  */
 class MeshExport Facet : public MeshCore::MeshGeomFacet
 {
 public:
-    /// simple constructor
     Facet(const MeshCore::MeshFacet& face = MeshCore::MeshFacet(), MeshObject* obj = 0, unsigned long index = ULONG_MAX);
     Facet(const Facet& f);
     ~Facet();
