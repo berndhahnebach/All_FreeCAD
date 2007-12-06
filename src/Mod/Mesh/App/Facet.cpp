@@ -27,6 +27,7 @@
 #endif
 
 #include "Facet.h"
+#include "Mesh.h"
 
 using namespace Mesh;
 
@@ -36,6 +37,12 @@ Facet::Facet(const MeshCore::MeshFacet& face, MeshObject* obj, unsigned long ind
     for (int i=0; i<3; i++) {
         PIndex[i] = face._aulPoints[i];
         NIndex[i] = face._aulNeighbours[i];
+    }
+    if (Mesh.IsValid() && index != ULONG_MAX) {
+        for (int i=0; i<3; i++) {
+            Base::Vector3d vert = Mesh->getPoint(PIndex[i]);
+            _aclPoints[i].Set(vert.x, vert.y, vert.z);
+        }
     }
 }
 

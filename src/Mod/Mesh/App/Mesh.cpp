@@ -133,6 +133,21 @@ bool MeshObject::isSolid() const
     return cMeshEval.Evaluate();
 }
 
+MeshPoint MeshObject::getPoint(unsigned long index) const
+{
+    Base::Vector3f vertf = _kernel.GetPoint(index);
+    Base::Vector3d vertd(vertf.x, vertf.y, vertf.z);
+    vertd = _Mtrx * vertd;
+    MeshPoint point(vertd, const_cast<MeshObject*>(this), index);
+    return point;
+}
+
+Facet MeshObject::getFacet(unsigned long index) const
+{
+    Facet face(_kernel.GetFacets()[index], const_cast<MeshObject*>(this), index);
+    return face;
+}
+
 MeshCore::MeshFacetIterator MeshObject::FacetIterator() const
 {
     MeshCore::MeshFacetIterator it = _kernel.FacetIterator();
@@ -730,4 +745,76 @@ MeshObject* MeshObject::createCube(float length, float width, float height)
     }
 
     return 0;
+}
+
+// ----------------------------------------------------------------------------
+
+MeshObject::FacetIter::FacetIter(MeshObject* mesh, unsigned long index)
+  : _mesh(mesh), _f_it(mesh->getKernel())
+{
+    this->_f_it.Set(index);
+    this->_f_it.Transform(_mesh->_Mtrx);
+    this->_facet.Mesh = _mesh;
+}
+
+MeshObject::FacetIter::FacetIter(const MeshObject::FacetIter& fi)
+  : _mesh(fi._mesh), _facet(fi._facet), _f_it(fi._f_it)
+{
+}
+
+MeshObject::FacetIter::~FacetIter()
+{
+}
+
+MeshObject::FacetIter& MeshObject::FacetIter::operator=(const MeshObject::FacetIter& fi)
+{
+    this->_mesh  = fi._mesh;
+    this->_facet = fi._facet;
+    this->_f_it  = fi._f_it;
+    return *this;
+}
+
+void MeshObject::FacetIter::dereference()
+{
+    this->_facet.MeshCore::MeshGeomFacet::operator = (*_f_it);
+    this->_facet.Index = _f_it.Position();
+    const MeshCore::MeshFacet& face = _f_it.GetReference();
+    for (int i=0; i<3;i++) {
+        this->_facet.PIndex[i] = face._aulPoints[i];
+        this->_facet.NIndex[i] = face._aulNeighbours[i];
+    }
+}
+
+Facet& MeshObject::FacetIter::operator*()
+{
+    dereference();
+    return this->_facet;
+}
+
+Facet* MeshObject::FacetIter::operator->()
+{
+    dereference();
+    return &(this->_facet);
+}
+
+bool MeshObject::FacetIter::operator==(const MeshObject::FacetIter& fi) const
+{
+    return (this->_mesh == fi._mesh) && (this->_f_it == fi._f_it);
+}
+
+bool MeshObject::FacetIter::operator!=(const MeshObject::FacetIter& fi) const 
+{
+    return !operator==(fi);
+}
+
+MeshObject::FacetIter& MeshObject::FacetIter::operator++()
+{
+    ++(this->_f_it);
+    return *this;
+}
+
+MeshObject::FacetIter& MeshObject::FacetIter::operator--()
+{
+    --(this->_f_it);
+    return *this;
 }

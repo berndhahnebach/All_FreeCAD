@@ -4,6 +4,7 @@
 # include <sstream>
 #endif
 
+#include "Mesh.h"
 #include "MeshPoint.h"
 #include "MeshPointPy.h"
 #include "MeshPointPy.cpp"
@@ -162,5 +163,3 @@ int MeshPointPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
     return 0; 
 }
-
-
