@@ -26,6 +26,7 @@
 
 #include <vector>
 #include "Facet.h"
+#include "Core/Iterator.h"
 
 namespace Mesh
 {
@@ -63,7 +64,7 @@ public:
         void dereference();
         const Segment* _segment;
         Facet _facet;
-        MeshCore::MeshFacetArray::_TConstIterator _f_it;
+        MeshCore::MeshFacetIterator _f_it;
         std::vector<unsigned long>::const_iterator _it;
     };
 
@@ -85,7 +86,7 @@ public:
         void dereference();
         const Segment* _segment;
         Facet _facet;
-        MeshCore::MeshFacetArray::_TConstIterator _f_it;
+        MeshCore::MeshFacetIterator _f_it;
         std::vector<unsigned long>::const_iterator _it;
     };
 

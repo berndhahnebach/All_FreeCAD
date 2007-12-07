@@ -1755,6 +1755,28 @@
 		<File
 			RelativePath=".\FacetPy.xml"
 			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\FacetPyImp.cpp"
+			>
 		</File>
 		<File
 			RelativePath="FeatureMeshCurvature.cpp"

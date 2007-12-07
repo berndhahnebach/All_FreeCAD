@@ -29,6 +29,7 @@
 #include "Mesh.h"
 #include "MeshPy.h"
 #include "MeshPointPy.h"
+#include "FacetPy.h"
 #include "MeshPy.cpp"
 #include "Core/Iterator.h"
 
@@ -815,4 +816,13 @@ Py::List MeshPy::getPoints(void) const
         PointList.append(Py::Object(new MeshPointPy(new MeshPoint(it.asVector3d(),getMeshObjectPtr(),Index))));
 
     return PointList;
+}
+
+Py::List MeshPy::getFacets(void) const
+{
+    Py::List FacetList;
+    for (MeshObject::FacetIter it = getMeshObjectPtr()->facets_begin(); it != getMeshObjectPtr()->facets_end(); ++it) {
+        FacetList.append(Py::Object(new FacetPy(new Facet(*it))));
+    }
+    return FacetList;
 }

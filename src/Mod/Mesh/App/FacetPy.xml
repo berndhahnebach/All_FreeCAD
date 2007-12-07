@@ -1,20 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="PersistancePy" 
+      Father="PyObjectBase" 
       Name="FacetPy" 
       Twin="Facet" 
+      TwinPointer="Facet" 
+      Include="Mod/Mesh/App/Facet.h" 
+      FatherInclude="Base/PyObjectBase.h" 
       Namespace="Mesh" 
-      FatherInclude="Base/PersistancePy.h" 
+      Constructor="true"
       FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
-      <UserDocu>Father of all complex geometric data types</UserDocu>
-    </Documentation>
-    <Methode Name="setPlacement">
-      <Documentation>
-        <UserDocu>set a new Position of this object</UserDocu>
-      </Documentation>
-    </Methode>
-  </PythonExport>
+		<DeveloperDocu>Facet in a Mesh</DeveloperDocu>
+		<UserDocu>Facet in mesh
+This is a facet in a MeshObject. You can get it by e.g. iterating a
+mesh. The facet has a connection to its mesh and allows therefore
+topological operations. It is also possible to create an unbounded facet e.g. to create
+a mesh. In this case the topological operations will fail. The same is
+when you cut the bound to the mesh by calling unbound().
+		</UserDocu>
+	</Documentation>
+	  <Methode Name="unbound">
+		  <Documentation>
+			  <UserDocu>method unbound()
+Cut the connection to a MeshObject. The facet becomes
+free and is more or less a simple facet.
+After calling unbound() no topological operation will
+work!
+			  </UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Attribute Name="Index" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>The index of this facet in the MeshObject</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Index" Type="Int"/>
+	  </Attribute>
+	  <Attribute Name="Bound" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Bound state of the facet</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Bound" Type="Bool"/>
+	  </Attribute>
+	  <Attribute Name="Normal" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Normal vector of the facet.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Normal" Type="Object"/>
+	  </Attribute>
+	</PythonExport>
 </GenerateModel>
