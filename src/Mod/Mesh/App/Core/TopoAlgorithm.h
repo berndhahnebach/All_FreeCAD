@@ -74,6 +74,11 @@ public:
    */
   void OptimizeTopology(float fMaxAngle);
   /**
+   * Tries to make a more beautiful mesh by swapping the common edge of two adjacent facets where needed. 
+   * A swap is needed where to adjacent facets don't fulfill the Delaunay condition.
+   */
+  void DelaunayFlip(float fMaxAngle);
+  /**
    * Tries to adjust the edges to the curvature direction with the minimum absolute value of maximum and minimum curvature.
    * @note This is a high-level operation and tries to optimze the mesh as a whole.
    */
