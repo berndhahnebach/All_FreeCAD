@@ -233,6 +233,53 @@ void MeshTopoAlgorithm::OptimizeTopology(float fMaxAngle)
   }
 }
 
+void MeshTopoAlgorithm::DelaunayFlip(float fMaxAngle)
+{
+    // For each internal edge get the adjacent facets.
+    std::set<std::pair<unsigned long, unsigned long> > aEdge2Face;
+    unsigned long index = 0;
+    for (MeshFacetArray::_TIterator pI = _rclMesh._aclFacetArray.begin(); pI != _rclMesh._aclFacetArray.end(); pI++, index++) {
+        for (int i = 0; i < 3; i++) {
+            // ignore open edges
+            if (pI->_aulNeighbours[i] != ULONG_MAX) {
+                unsigned long ulFt0 = std::min<unsigned long>(index, pI->_aulNeighbours[i]);
+                unsigned long ulFt1 = std::max<unsigned long>(index, pI->_aulNeighbours[i]);
+                aEdge2Face.insert(std::pair<unsigned long, unsigned long>(ulFt0, ulFt1));
+            }
+        }
+    }
+
+    Base::Vector3f center;
+    while (!aEdge2Face.empty()) {
+        std::set<std::pair<unsigned long, unsigned long> >::iterator it = aEdge2Face.begin();
+        std::pair<unsigned long, unsigned long> edge = *it;
+        aEdge2Face.erase(it);
+        if (ShouldSwapEdge(edge.first, edge.second, fMaxAngle)) {
+            float radius = _rclMesh.GetFacet(edge.first).CenterOfCircumCircle(center);
+            radius *= radius;
+            const MeshFacet& face_1 = _rclMesh._aclFacetArray[edge.first];
+            const MeshFacet& face_2 = _rclMesh._aclFacetArray[edge.second];
+            unsigned short side = face_2.Side(edge.first);
+            Base::Vector3f vertex = _rclMesh.GetPoint(face_2._aulPoints[(side+1)%3]);
+            if (Base::DistanceP2(center, vertex) < radius) {
+                SwapEdge(edge.first, edge.second);
+                for (int i=0; i<3; i++) {
+                    if (face_1._aulNeighbours[i] != ULONG_MAX && face_1._aulNeighbours[i] != edge.second) {
+                        unsigned long ulFt0 = std::min<unsigned long>(edge.first, face_1._aulNeighbours[i]);
+                        unsigned long ulFt1 = std::max<unsigned long>(edge.first, face_1._aulNeighbours[i]);
+                        aEdge2Face.insert(std::pair<unsigned long, unsigned long>(ulFt0, ulFt1));
+                    }
+                    if (face_2._aulNeighbours[i] != ULONG_MAX && face_2._aulNeighbours[i] != edge.first) {
+                        unsigned long ulFt0 = std::min<unsigned long>(edge.second, face_2._aulNeighbours[i]);
+                        unsigned long ulFt1 = std::max<unsigned long>(edge.second, face_2._aulNeighbours[i]);
+                        aEdge2Face.insert(std::pair<unsigned long, unsigned long>(ulFt0, ulFt1));
+                    }
+                }
+            }
+        }
+    }
+}
+
 void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
 {
   std::vector< Wm4::Vector3<float> > aPnts;
