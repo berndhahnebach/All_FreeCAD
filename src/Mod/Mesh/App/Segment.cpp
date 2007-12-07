@@ -56,10 +56,10 @@ const std::vector<unsigned long>& Segment::getIndices() const
 // ----------------------------------------------------------------------------
 
 Segment::FacetIter::FacetIter(const Segment* segm, std::vector<unsigned long>::const_iterator it)
-  : _segment(segm), _it(it)
+  : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
 {
-    const MeshCore::MeshKernel& kernel = _segment->_mesh->getKernel();
-    this->_f_it = kernel.GetFacets().begin();
+    this->_f_it.Set(0);
+    this->_f_it.Transform(_segment->_mesh->getMatrix());
     this->_facet.Mesh = _segment->_mesh;
 }
 
@@ -83,10 +83,13 @@ Segment::FacetIter& Segment::FacetIter::operator=(const Segment::FacetIter& fi)
 
 void Segment::FacetIter::dereference()
 {
+    this->_f_it.Set(*_it);
+    this->_facet.MeshCore::MeshGeomFacet::operator = (*_f_it);
     this->_facet.Index = *_it;
+    const MeshCore::MeshFacet& face = _f_it.GetReference();
     for (int i=0; i<3;i++) {
-        this->_facet.PIndex[i] = (_f_it + *_it)->_aulPoints[i];
-        this->_facet.NIndex[i] = (_f_it + *_it)->_aulNeighbours[i];
+        this->_facet.PIndex[i] = face._aulPoints[i];
+        this->_facet.NIndex[i] = face._aulNeighbours[i];
     }
 }
 
@@ -127,10 +130,10 @@ Segment::FacetIter& Segment::FacetIter::operator--()
 // ----------------------------------------------------------------------------
 
 Segment::ConstFacetIter::ConstFacetIter(const Segment* segm, std::vector<unsigned long>::const_iterator it)
-  : _segment(segm), _it(it)
+  : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
 {
-    const MeshCore::MeshKernel& kernel = _segment->_mesh->getKernel();
-    this->_f_it = kernel.GetFacets().begin();
+    this->_f_it.Set(0);
+    this->_f_it.Transform(_segment->_mesh->getMatrix());
     this->_facet.Mesh = _segment->_mesh;
 }
 
@@ -154,10 +157,13 @@ Segment::ConstFacetIter& Segment::ConstFacetIter::operator=(const Segment::Const
 
 void Segment::ConstFacetIter::dereference()
 {
+    this->_f_it.Set(*_it);
+    this->_facet.MeshCore::MeshGeomFacet::operator = (*_f_it);
     this->_facet.Index = *_it;
+    const MeshCore::MeshFacet& face = _f_it.GetReference();
     for (int i=0; i<3;i++) {
-        this->_facet.PIndex[i] = (_f_it + *_it)->_aulPoints[i];
-        this->_facet.NIndex[i] = (_f_it + *_it)->_aulNeighbours[i];
+        this->_facet.PIndex[i] = face._aulPoints[i];
+        this->_facet.NIndex[i] = face._aulNeighbours[i];
     }
 }
 

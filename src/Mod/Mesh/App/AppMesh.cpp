@@ -31,6 +31,7 @@
 #include "Mesh.h"
 #include "MeshPy.h"
 #include "MeshPointPy.h"
+#include "FacetPy.h"
 #include "MeshFeaturePy.h"
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
@@ -72,6 +73,11 @@ void MeshExport initMesh()
     if(PyType_Ready(&Mesh::MeshPointPy::Type) < 0) return;
     union PyType_Object pyMeshPointType = {&Mesh::MeshPointPy::Type};
     PyModule_AddObject(meshModule, "MeshPoint", pyMeshPointType.o);
+
+    // add Facet
+    if(PyType_Ready(&Mesh::FacetPy::Type) < 0) return;
+    union PyType_Object pyFacetType = {&Mesh::FacetPy::Type};
+    PyModule_AddObject(meshModule, "Facet", pyFacetType.o);
 
     // add Mesh
     if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;

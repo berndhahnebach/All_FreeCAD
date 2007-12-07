@@ -275,6 +275,18 @@ for p in mesh.Points:
 			</Documentation>
 			<Parameter Name="CountPoints" Type="Int" />
 		</Attribute>
+		<Attribute Name="Facets" ReadOnly="true">
+			<Documentation>
+				<UserDocu>A collection of facets
+With this attribute it is possible to get access to the facets of the mesh
+
+for p in mesh.Facets:
+	print p
+
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="Points" Type="List" />
+		</Attribute>
 		<Attribute Name="CountFacets" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Return the number of facets of the mesh object.</UserDocu>
