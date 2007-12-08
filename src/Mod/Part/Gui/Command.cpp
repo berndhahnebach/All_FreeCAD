@@ -279,6 +279,146 @@ bool CmdPartCut::isActive(void)
 }
 
 //===========================================================================
+// Part_Common
+//===========================================================================
+DEF_STD_CMD_A(CmdPartCommon);
+
+CmdPartCommon::CmdPartCommon()
+  :Command("Part_Common")
+{
+  sAppModule    = "Part";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Intersection");
+  sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Part_Box";
+  iAccel        = 0;
+}
+
+void CmdPartCommon::activated(int iMsg)
+{
+  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+  if(n != 2)
+  {
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
+    return;
+  }
+
+  string FeatName = getUniqueObjectName("Common");
+
+  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+  openCommand("Common");
+  doCommand(Doc,"App.activeDocument().addObject(\"Part::Common\",\"%s\")",FeatName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+  updateActive();
+  commitCommand();
+}
+
+bool CmdPartCommon::isActive(void)
+{
+  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+}
+
+//===========================================================================
+// Part_Fuse
+//===========================================================================
+DEF_STD_CMD_A(CmdPartFuse);
+
+CmdPartFuse::CmdPartFuse()
+  :Command("Part_Fuse")
+{
+  sAppModule    = "Part";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Union");
+  sToolTipText  = QT_TR_NOOP("Make union of two shapes");
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Part_Box";
+  iAccel        = 0;
+}
+
+
+void CmdPartFuse::activated(int iMsg)
+{
+  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+  if(n != 2)
+  {
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
+    return;
+  }
+
+  string FeatName = getUniqueObjectName("Fusion");
+
+  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+  openCommand("Fusion");
+  doCommand(Doc,"App.activeDocument().addObject(\"Part::Fuse\",\"%s\")",FeatName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+  updateActive();
+  commitCommand();
+}
+
+bool CmdPartFuse::isActive(void)
+{
+  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+}
+
+//===========================================================================
+// Part_Section
+//===========================================================================
+DEF_STD_CMD_A(CmdPartSection);
+
+CmdPartSection::CmdPartSection()
+  :Command("Part_Section")
+{
+  sAppModule    = "Part";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Section");
+  sToolTipText  = QT_TR_NOOP("Make section of two shapes");
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Part_Box";
+  iAccel        = 0;
+}
+
+
+void CmdPartSection::activated(int iMsg)
+{
+  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+  if(n != 2)
+  {
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
+    return;
+  }
+
+  string FeatName = getUniqueObjectName("Section");
+
+  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+  openCommand("Section");
+  doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());
+  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+  updateActive();
+  commitCommand();
+}
+
+bool CmdPartSection::isActive(void)
+{
+  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+}
+
+//===========================================================================
 // CmdPartImport
 //===========================================================================
 DEF_STD_CMD_A(CmdPartImport);
@@ -366,7 +506,10 @@ void CreatePartCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
+  rcCmdMgr.addCommand(new CmdPartCommon());
   rcCmdMgr.addCommand(new CmdPartCut());
+  rcCmdMgr.addCommand(new CmdPartFuse());
+  rcCmdMgr.addCommand(new CmdPartSection());
   rcCmdMgr.addCommand(new CmdPartBox());
   rcCmdMgr.addCommand(new CmdPartBox2());
   rcCmdMgr.addCommand(new CmdPartBox3());

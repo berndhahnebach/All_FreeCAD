@@ -17,7 +17,11 @@
 #include <Base/Console.h>
 
 #include "FeaturePartBox.h"
+#include "FeaturePartBoolean.h"
+#include "FeaturePartCommon.h"
 #include "FeaturePartCut.h"
+#include "FeaturePartFuse.h"
+#include "FeaturePartSection.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
@@ -65,7 +69,11 @@ void AppPartExport initPart() {
 
     Part::Feature             ::init();
     Part::Box                 ::init();
+    Part::Boolean             ::init();
+    Part::Common              ::init();
     Part::Cut                 ::init();
+    Part::Fuse                ::init();
+    Part::Section             ::init();
     Part::ImportStep          ::init();
     Part::ImportIges          ::init();
     Part::ImportBrep          ::init();

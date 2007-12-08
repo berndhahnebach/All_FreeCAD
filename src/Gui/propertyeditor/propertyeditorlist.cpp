@@ -142,6 +142,7 @@ void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) cons
                 }
 
                 commonModes = modes;
+                modes.clear();
             }
         }
     }
