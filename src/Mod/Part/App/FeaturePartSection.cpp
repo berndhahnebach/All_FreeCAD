@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,34 +20,33 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
 
 
-#include "FeaturePartCut.h"
-#include <BRepAlgoAPI_Cut.hxx>
+#include "FeaturePartSection.h"
+#include <BRepAlgoAPI_Section.hxx>
 
 #include <Base/Exception.h>
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::Cut, Part::Boolean)
+PROPERTY_SOURCE(Part::Section, Part::Boolean)
 
 
-Cut::Cut(void)
+Section::Section(void)
 {
 }
 
-TopoDS_Shape Cut::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+TopoDS_Shape Section::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
 {
-    // Let's call algorithm computing a cut operation:
-    BRepAlgoAPI_Cut mkCut(base, tool);
-    // Let's check if the cut has been successful
-    if (!mkCut.IsDone()) 
-        throw Base::Exception("Cut failed");
-    return mkCut.Shape();
+    // Let's call algorithm computing a section operation:
+    BRepAlgoAPI_Section mkSection(base, tool);
+    // Let's check if the section has been successful
+    if (!mkSection.IsDone()) 
+        throw Base::Exception("Section failed");
+    return mkSection.Shape();
 }
-
-

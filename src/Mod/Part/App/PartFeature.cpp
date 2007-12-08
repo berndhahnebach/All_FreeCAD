@@ -56,6 +56,7 @@
 # include <Geom_CartesianPoint.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
+# include <Standard_Failure.hxx>
 #endif
 
 
@@ -97,19 +98,25 @@ TopoDS_Shape PropertyPartShape::getValue(void)const
 
 Base::BoundBox3f PropertyPartShape::getBoundingBox() const
 {
-    Bnd_Box bounds;
-    BRepBndLib::Add(_Shape, bounds);
-    bounds.SetGap(0.0);
-    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
-    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
-
     Base::BoundBox3f box;
-    box.MinX = (float)xMin;
-    box.MaxX = (float)xMax;
-    box.MinY = (float)yMin;
-    box.MaxY = (float)yMax;
-    box.MinZ = (float)zMin;
-    box.MaxZ = (float)zMax;
+    try {
+        // If the shape is empty an exception may be thrown
+        Bnd_Box bounds;
+        BRepBndLib::Add(_Shape, bounds);
+        bounds.SetGap(0.0);
+        Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+        bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+
+        box.MinX = (float)xMin;
+        box.MaxX = (float)xMax;
+        box.MinY = (float)yMin;
+        box.MaxY = (float)yMax;
+        box.MinZ = (float)zMin;
+        box.MaxZ = (float)zMax;
+    }
+    catch (const Standard_Failure&) {
+    }
+
     return box;
 }
 

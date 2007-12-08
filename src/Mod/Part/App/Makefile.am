@@ -14,14 +14,20 @@ libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		CirclePy.cpp \
 		CirclePy.h \
+		FeaturePartBoolean.cpp \
+		FeaturePartBoolean.h \
 		FeaturePartBox.cpp \
 		FeaturePartBox.h \
 		FeaturePartCircle.cpp \
 		FeaturePartCircle.h \
 		FeaturePartCurveNet.cpp \
 		FeaturePartCurveNet.h \
+		FeaturePartCommon.cpp \
+		FeaturePartCommon.h \
 		FeaturePartCut.cpp \
 		FeaturePartCut.h \
+		FeaturePartFuse.cpp \
+		FeaturePartFuse.h \
 		FeaturePartImportBrep.cpp \
 		FeaturePartImportBrep.h \
 		FeaturePartImportIges.cpp \
@@ -34,6 +40,8 @@ libPart_la_SOURCES=\
 		FeaturePartLineSet.h \
 		FeaturePartPolygon.cpp \
 		FeaturePartPolygon.h \
+		FeaturePartSection.cpp \
+		FeaturePartSection.h \
 		LinePy.cpp \
 		LinePy.h \
 		PartFeature.cpp \

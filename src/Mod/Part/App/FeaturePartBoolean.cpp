@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,34 +20,54 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
 
 
-#include "FeaturePartCut.h"
-#include <BRepAlgoAPI_Cut.hxx>
+#include "FeaturePartBoolean.h"
 
-#include <Base/Exception.h>
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::Cut, Part::Boolean)
+PROPERTY_SOURCE_ABSTRACT(Part::Boolean, Part::Feature)
 
 
-Cut::Cut(void)
+Boolean::Boolean(void)
 {
+    ADD_PROPERTY(Base,(0));
+    ADD_PROPERTY(Tool,(0));
 }
 
-TopoDS_Shape Cut::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+short Boolean::mustExecute() const
 {
-    // Let's call algorithm computing a cut operation:
-    BRepAlgoAPI_Cut mkCut(base, tool);
-    // Let's check if the cut has been successful
-    if (!mkCut.IsDone()) 
-        throw Base::Exception("Cut failed");
-    return mkCut.Shape();
+    if (Base.getValue() && Tool.getValue()) {
+        if (Base.isTouched())
+            return 1;
+        if (Tool.isTouched())
+            return 1;
+    }
+    return 0;
 }
 
+App::DocumentObjectExecReturn *Boolean::execute(void)
+{
+    Part::Feature *base = dynamic_cast<Part::Feature*>(Base.getValue());
+    Part::Feature *tool = dynamic_cast<Part::Feature*>(Tool.getValue());
+
+    if (!base || !tool)
+        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+
+    // Now, let's get the TopoDS_Shape
+    TopoDS_Shape BaseShape = base->getShape();
+    TopoDS_Shape ToolShape = tool->getShape();
+
+    TopoDS_Shape resShape = runOperation(BaseShape, ToolShape);
+    if (resShape.IsNull())
+        return new App::DocumentObjectExecReturn("Resulting shape is invalid");
+    setShape(resShape);
+    return App::DocumentObject::StdReturn;
+}
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,34 +20,35 @@
  *                                                                         *
  ***************************************************************************/
 
- 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
 
 
-#include "FeaturePartCut.h"
-#include <BRepAlgoAPI_Cut.hxx>
+#ifndef PART_FEATUREPARTCOMMON_H
+#define PART_FEATUREPARTCOMMON_H
 
-#include <Base/Exception.h>
+#include <App/PropertyLinks.h>
 
-using namespace Part;
+#include "FeaturePartBoolean.h"
 
-PROPERTY_SOURCE(Part::Cut, Part::Boolean)
-
-
-Cut::Cut(void)
+namespace Part
 {
+
+
+class Common : public Boolean
+{
+    PROPERTY_HEADER(Part::Common);
+
+public:
+    Common();
+
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+protected:
+    TopoDS_Shape runOperation(TopoDS_Shape, TopoDS_Shape) const;
+    //@}
+};
+
 }
 
-TopoDS_Shape Cut::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
-{
-    // Let's call algorithm computing a cut operation:
-    BRepAlgoAPI_Cut mkCut(base, tool);
-    // Let's check if the cut has been successful
-    if (!mkCut.IsDone()) 
-        throw Base::Exception("Cut failed");
-    return mkCut.Shape();
-}
 
-
+#endif // PART_FEATUREPARTCOMMON_H

@@ -21,38 +21,33 @@
  ***************************************************************************/
 
 
-
-#ifndef __FEATUREPARTCUT_H__
-#define __FEATUREPARTCUT_H__
+#ifndef PART_FEATUREPARTCUT_H
+#define PART_FEATUREPARTCUT_H
 
 #include <App/PropertyLinks.h>
 
-#include "PartFeature.h"
+#include "FeaturePartBoolean.h"
 
 namespace Part
 {
 
 
-class Cut :public Part::Feature
+class Cut : public Boolean
 {
     PROPERTY_HEADER(Part::Cut);
 
 public:
     Cut();
 
-    App::PropertyLink Base;
-    App::PropertyLink Tool;
-
-
     /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
+protected:
+    TopoDS_Shape runOperation(TopoDS_Shape, TopoDS_Shape) const;
     //@}
 };
 
 }
 
 
-#endif // __FEATUREPARTCUT_H__
+#endif // PART_FEATUREPARTCUT_H

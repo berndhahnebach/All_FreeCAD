@@ -50,7 +50,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand(QT_TR_NOOP("&Part"));
-    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Separator" 
+          << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
     return root;
 }
 
@@ -59,7 +60,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
     part->setCommand(QT_TR_NOOP("Part tools"));
-    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Separator" 
+          << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
     return root;
 }
 

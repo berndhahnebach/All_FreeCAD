@@ -243,6 +243,14 @@
 			Name="Features"
 			>
 			<File
+				RelativePath=".\FeaturePartBoolean.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartBoolean.h"
+				>
+			</File>
+			<File
 				RelativePath="FeaturePartBox.cpp"
 				>
 				<FileConfiguration
@@ -274,6 +282,14 @@
 			</File>
 			<File
 				RelativePath=".\FeaturePartCircle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartCommon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartCommon.h"
 				>
 			</File>
 			<File
@@ -326,6 +342,14 @@
 			</File>
 			<File
 				RelativePath="FeaturePartCut.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartFuse.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartFuse.h"
 				>
 			</File>
 			<File
@@ -467,6 +491,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FeaturePartSection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartSection.h"
+				>
+			</File>
+			<File
 				RelativePath="PartFeature.cpp"
 				>
 				<FileConfiguration
@@ -520,7 +552,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -529,7 +561,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
