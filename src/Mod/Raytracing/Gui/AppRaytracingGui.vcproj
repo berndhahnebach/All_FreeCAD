@@ -83,7 +83,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/RaytracingGui_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Raytracing/DebugGui/RaytracingGui_d.lib"
+				ImportLibrary="../../../../lib/RaytracingGui_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -182,7 +182,7 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/RaytracingGui.pdb"
-				ImportLibrary="../../../../obj/Mod/Raytracing/ReleaseGui/RaytracingGui.lib"
+				ImportLibrary="../../../../lib/RaytracingGui.lib"
 				TargetMachine="1"
 			/>
 			<Tool

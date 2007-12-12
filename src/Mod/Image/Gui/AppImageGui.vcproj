@@ -84,7 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Image/ImageGui_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Image/DebugGui/ImageGui_d.lib"
+				ImportLibrary="../../../../lib/ImageGui_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -184,7 +184,7 @@
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Image/ImageGui.pdb"
-				ImportLibrary="../../../../obj/Mod/Image/ReleaseGui/ImageGui.lib"
+				ImportLibrary="../../../../lib/ImageGui.lib"
 				TargetMachine="1"
 			/>
 			<Tool

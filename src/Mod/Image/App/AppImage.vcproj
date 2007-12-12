@@ -84,7 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Image/Image_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Image/DebugApp/Image_d.lib"
+				ImportLibrary="../../../../lib/Image_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -183,7 +183,7 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Image/Image.pdb"
-				ImportLibrary="../../../../obj/Mod/Image/ReleaseApp/Image.lib"
+				ImportLibrary="../../../../lib/Image.lib"
 				TargetMachine="1"
 			/>
 			<Tool

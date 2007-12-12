@@ -82,7 +82,7 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Points/Points.pdb"
-				ImportLibrary="../../../../obj/Mod/Points/ReleaseApp/Points.lib"
+				ImportLibrary="../../../../lib/Points.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -183,7 +183,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Points/Points_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Points/DebugApp/Points_d.lib"
+				ImportLibrary="../../../../lib/Points_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
