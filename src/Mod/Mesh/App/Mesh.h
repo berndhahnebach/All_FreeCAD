@@ -66,6 +66,10 @@ public:
     ~MeshObject();
 
     void operator = (const MeshObject&);
+    /**
+     * Swaps the content of \a Kernel and the internal mesh kernel.
+     */
+    void swap(MeshCore::MeshKernel& Kernel);
 
     /** @name Querying */
     //@{

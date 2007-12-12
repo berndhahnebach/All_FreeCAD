@@ -96,6 +96,11 @@ void MeshObject::operator = (const MeshObject& mesh)
     }
 }
 
+void MeshObject::swap(MeshCore::MeshKernel& Kernel)
+{
+    this->_kernel.Swap(Kernel);
+}
+
 std::string MeshObject::representation() const
 {
     std::stringstream str;

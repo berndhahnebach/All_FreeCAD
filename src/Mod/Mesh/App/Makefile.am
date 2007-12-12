@@ -53,12 +53,18 @@ libMesh_la_SOURCES=\
 		Core/TopoAlgorithm.h \
 		Core/Visitor.cpp \
 		Core/Visitor.h \
+		WildMagic4/Wm4ApprCylinderFit3.cpp \
+		WildMagic4/Wm4ApprCylinderFit3.h \
+		WildMagic4/Wm4ApprLineFit3.cpp \
+		WildMagic4/Wm4ApprLineFit3.h \
 		WildMagic4/Wm4ApprPlaneFit3.cpp \
 		WildMagic4/Wm4ApprPlaneFit3.h \
 		WildMagic4/Wm4ApprPolyFit3.cpp \
 		WildMagic4/Wm4ApprPolyFit3.h \
 		WildMagic4/Wm4ApprQuadraticFit3.cpp \
 		WildMagic4/Wm4ApprQuadraticFit3.h \
+		WildMagic4/Wm4ApprSphereFit3.cpp \
+		WildMagic4/Wm4ApprSphereFit3.h \
 		WildMagic4/Wm4BandedMatrix.h \
 		WildMagic4/Wm4BandedMatrix.inl \
 		WildMagic4/Wm4Box3.h \
@@ -163,6 +169,10 @@ libMesh_la_SOURCES=\
 		WildMagic4/Wm4Plane3.h \
 		WildMagic4/Wm4Plane3.inl \
 		WildMagic4/Wm4Platforms.h \
+		WildMagic4/Wm4PolynomialRoots.cpp \
+		WildMagic4/Wm4PolynomialRoots.h \
+		WildMagic4/Wm4Polynomial1.h \
+		WildMagic4/Wm4Polynomial1.inl \
 		WildMagic4/Wm4QuadricSurface.cpp \
 		WildMagic4/Wm4QuadricSurface.h \
 		WildMagic4/Wm4Query.h \

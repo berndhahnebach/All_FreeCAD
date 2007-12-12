@@ -352,6 +352,8 @@ public:
    * Especially for huge meshes this saves memory and increases speed.
    */
   void Adopt(MeshPointArray& rPoints, MeshFacetArray& rFaces, bool checkNeighbourHood=false);
+  /// Swaps the content of this kernel and \a mesh
+  void Swap(MeshKernel& mesh);
   /// Transform the data structure with the given transformation matrix.
   void operator *= (const Base::Matrix4D &rclMat);
   /** Transform the data structure with the given transformation matrix.

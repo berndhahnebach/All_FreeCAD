@@ -84,6 +84,13 @@ void MeshKernel::Adopt(MeshPointArray& rPoints, MeshFacetArray& rFacets, bool ch
     RebuildNeighbours();
 }
 
+void MeshKernel::Swap(MeshKernel& mesh)
+{
+    this->_aclPointArray.swap(mesh._aclPointArray);
+    this->_aclFacetArray.swap(mesh._aclFacetArray);
+    this->_clBoundBox = mesh._clBoundBox;
+}
+
 MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 {
   unsigned long i;
