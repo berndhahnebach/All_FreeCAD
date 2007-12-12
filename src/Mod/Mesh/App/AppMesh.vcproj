@@ -83,7 +83,7 @@
 				AdditionalLibraryDirectories="../../../../lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/Mesh.pdb"
-				ImportLibrary="../../../../obj/Mod/Mesh/ReleaseApp/Mesh.lib"
+				ImportLibrary="../../../../lib/Mesh.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -185,7 +185,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/Mesh_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Mesh/DebugApp/Mesh_d.lib"
+				ImportLibrary="../../../../lib/Mesh_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool

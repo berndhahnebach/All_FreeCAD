@@ -82,7 +82,7 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/Raytracing.pdb"
-				ImportLibrary="../../../../obj/Mod/Raytracing/ReleaseApp/Raytracing.lib"
+				ImportLibrary="../../../../lib/Raytracing.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -183,7 +183,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/Raytracing_d.pdb"
-				ImportLibrary="../../../../obj/Mod/Raytracing/DebugApp/Raytracing_d.lib"
+				ImportLibrary="../../../../lib/Raytracing_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool

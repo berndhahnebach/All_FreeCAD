@@ -96,7 +96,8 @@ public:
     /// reset this feature touched 
     void purgeTouched(void){StatusBits.reset(0);setPropertyStatus(0,false);}
     /// set this feature to error 
-    bool isError(void) const {return StatusBits.test(1);}
+    bool isError(void) const {return  StatusBits.test(1);}
+    bool isValid(void) const {return !StatusBits.test(1);}
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
     //@}
