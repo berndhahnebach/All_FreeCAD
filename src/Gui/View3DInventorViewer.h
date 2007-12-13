@@ -186,6 +186,8 @@ public:
   void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
   void setEnabledFPSCounter(bool b);
 
+  void seekToCamera(const SbVec3f & scenepos);
+
   void setMouseModel(int i){_iMouseModel = i;}
 
 protected:

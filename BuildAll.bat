@@ -3,8 +3,8 @@ rem   Build script, uses vcbuild to completetly build FreeCAD
 
 rem  set the aprobiated Variables here or outside in the system
 if NOT DEFINED QMAKESPEC set QMAKESPEC=win32-msvc2005
-if NOT DEFINED QTDIR set QTDIR=D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
-if NOT DEFINED FREECADLIB set FREECADLIB=D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
+if NOT DEFINED QTDIR set QTDIR=C:\# Libs\FreeCADLibs\FreeCADLibs5
+if NOT DEFINED FREECADLIB set FREECADLIB=C:\# Libs\FreeCADLibs\FreeCADLibs5
 
 set PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem
 set INCLUDE=
