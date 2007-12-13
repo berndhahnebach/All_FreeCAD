@@ -118,6 +118,49 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 // *************************************************************************
 
 
+void
+View3DInventorViewer::seekToCamera(const SbVec3f & scenepos)
+{
+  //SbVec3f hitpoint(scenepos);
+
+  //PRIVATE(this)->camerastartposition = PRIVATE(this)->camera->position.getValue();
+  //camerastartorient = camera->orientation.getValue();
+
+  //// move point to the camera coordinate system, consider
+  //// transformations before camera in the scene graph
+  //SbMatrix cameramatrix, camerainverse;
+  //getCameraCoordinateSystem(camera,
+  //                                         sceneroot,
+  //                                         cameramatrix,
+  //                                         camerainverse);
+  //camerainverse.multVecMatrix(hitpoint, hitpoint);
+
+  //float fd = seekdistance;
+  //if (!seekdistanceabs)
+  //  fd *= (hitpoint - camera->position.getValue()).length()/100.0f;
+  //camera->focalDistance = fd;
+
+  //SbVec3f dir = hitpoint - camerastartposition;
+  //dir.normalize();
+
+  //// find a rotation that rotates current camera direction into new
+  //// camera direction.
+  //SbVec3f olddir;
+  //camera->orientation.getValue().multVec(SbVec3f(0, 0, -1), olddir);
+  //SbRotation diffrot(olddir, dir);
+  //cameraendposition = hitpoint - fd * dir;
+  //cameraendorient = camera->orientation.getValue() * diffrot;
+
+  //if (seeksensor->isScheduled()) {
+  //  seeksensor->unschedule();
+  //  this->interactiveCountDec();
+  //}
+
+  //seeksensor->setBaseTime(SbTime::getTimeOfDay());
+  //seeksensor->schedule();
+  //this->interactiveCountInc();
+}
+
 
 void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
@@ -235,10 +278,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 //  getGLRenderAction()->setSmoothing(true);
 
   // Settings
-  setSeekTime(0.5);
+  setSeekTime(0.4);
   if ( isSeekValuePercentage() == false )
     setSeekValueAsPercentage(true);
-  setSeekDistance(50);
+  setSeekDistance(100);
   setViewing(false);
 
   setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
@@ -1124,15 +1167,6 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       //    break;
       if(press)
       {
-        // check on double click
-        SbTime tmp = (ev->getTime() - CenterTime);
-        float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-        if (tmp.getValue() < dci/*0.300*/)
-        {
-          dCliBut3 = true;
-          if(!seekToPoint(pos))
-            panToCenter(panningplane, posn);
-        }else{
           CenterTime = ev->getTime();
           MoveMode = true;
           _bSpining = false;
@@ -1142,8 +1176,17 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           // save the current cursor before overriding
           _oldCursor = getWidget()->cursor();
           getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
-        }
+        //}
       }else{
+          SbTime tmp = (ev->getTime() - CenterTime);
+          float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+		  // is it just a middle click?
+		  if (tmp.getValue() < dci/*0.300*/){
+
+			  if(!seekToPoint(pos))
+				panToCenter(panningplane, posn);
+		  }
+
         MoveMode = false;
         RotMode = false;
         ZoomMode = false;
