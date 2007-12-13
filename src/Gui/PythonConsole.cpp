@@ -377,6 +377,7 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
         
         QFont font(fontFamily, fontSize);
         setFont(font);
+        setTabStopWidth(4 * fontSize);
     } else {
         QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
         if (it != d->colormap.end()) {
