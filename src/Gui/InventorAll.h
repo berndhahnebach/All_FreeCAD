@@ -18,6 +18,7 @@
 #include <Inventor/SoOffscreenRenderer.h> 
 #include <Inventor/SoPickedPoint.h>
 #include <Inventor/SoPrimitiveVertex.h>
+#include <Inventor/SbTesselator.h>
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
@@ -26,6 +27,7 @@
 #include <Inventor/actions/SoHandleEventAction.h> 
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoRayPickAction.h> 
+#include <Inventor/actions/SoSearchAction.h>
 #include <Inventor/actions/SoToVRML2Action.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/bundles/SoMaterialBundle.h>
@@ -65,6 +67,7 @@
 #include <Inventor/nodes/SoExtSelection.h>
 #include <Inventor/nodes/SoFaceSet.h>
 #include <Inventor/nodes/SoFont.h>
+#include <Inventor/nodes/SoFontStyle.h>
 #include <Inventor/nodes/SoImage.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
@@ -79,6 +82,7 @@
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoPickStyle.h>
 #include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoProfile.h>
 #include <Inventor/nodes/SoProfileCoordinate2.h>
@@ -99,11 +103,14 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoTransparencyType.h>
+#include <Inventor/manips/SoTransformBoxManip.h>
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
 #include <Inventor/projectors/SbSphereSheetProjector.h>
+#include <Inventor/sensors/SoNodeSensor.h>
 #include <Inventor/VRMLnodes/SoVRMLGroup.h>
 
-#include <Inventor/Qt/SoQt.h> 
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/SoQtCursor.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
 
