@@ -278,7 +278,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 //  getGLRenderAction()->setSmoothing(true);
 
   // Settings
-  setSeekTime(0.4);
+  setSeekTime(0.4f);
   if ( isSeekValuePercentage() == false )
     setSeekValueAsPercentage(true);
   setSeekDistance(100);
