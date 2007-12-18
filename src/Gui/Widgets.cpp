@@ -125,50 +125,50 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
   {
   case Qt::ControlModifier:
     {
-      QKeySequence key(Qt::CTRL+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::CTRL+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::AltModifier:
     {
-      QKeySequence key(Qt::ALT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::ALT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::ShiftModifier:
     {
-      QKeySequence key(Qt::SHIFT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::SHIFT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::ControlModifier+Qt::AltModifier:
     {
-      QKeySequence key(Qt::CTRL+Qt::ALT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::CTRL+Qt::ALT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::ControlModifier+Qt::ShiftModifier:
     {
-      QKeySequence key(Qt::CTRL+Qt::SHIFT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::CTRL+Qt::SHIFT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::ShiftModifier+Qt::AltModifier:
     {
-      QKeySequence key(Qt::SHIFT+Qt::ALT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::SHIFT+Qt::ALT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   case Qt::ControlModifier+Qt::AltModifier+Qt::ShiftModifier:
     {
-      QKeySequence key(Qt::CTRL+Qt::ALT+Qt::SHIFT+key);
-      txt += (QString)(key);
+      QKeySequence ks(Qt::CTRL+Qt::ALT+Qt::SHIFT+key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   default:
     {
-      QKeySequence key(key);
-      txt += (QString)(key);
+      QKeySequence ks(key);
+      txt += (QString)(ks);
       setText(txt);
     } break;
   }
