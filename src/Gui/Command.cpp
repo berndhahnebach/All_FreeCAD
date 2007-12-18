@@ -665,6 +665,22 @@ void PythonCommand::activated(int iMsg)
 
 bool PythonCommand::isActive(void)
 {
+    try {
+        Py::Object cmd(_pcPyCommand);
+        if (cmd.hasAttr("IsActive")) {
+            Py::Callable call(cmd.getAttr("IsActive"));
+            Py::Tuple args;
+            Py::Object ret = call.apply(args);
+            // if return type is not boolean or not true
+            if (!PyBool_Check(ret.ptr()) || ret.ptr() != Py_True)
+                return false;
+        }
+    }
+    catch(Py::Exception& e) {
+        e.clear();
+        return false;
+    }
+
     return true;
 }
 
