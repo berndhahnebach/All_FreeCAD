@@ -679,6 +679,7 @@ void View3DPy::eventCallback(void * ud, SoEventCallback * n)
     try {
         Py::Dict dict;
         const SoEvent* e = n->getEvent();
+        if (!e) return; // invalid event
         // Type
         dict.setItem("Type", Py::String(std::string(e->getTypeId().getName().getString())));
         // Time

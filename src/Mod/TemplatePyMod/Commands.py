@@ -37,8 +37,8 @@ class TemplatePyMod_Cmd1:
 class TemplatePyMod_Cmd2:
     "Example command class"
     def Activated(self):
-        d = FreeCAD.newDocument()
-        v = FreeCADGui.activeDocument().activeView()
+        d = FreeCAD.ActiveDocument
+        v = FreeCADGui.ActiveDocument.ActiveView
         class PolygonCreator:
             def __init__(self, doc, view, max):
                 self.doc = doc
@@ -67,6 +67,12 @@ class TemplatePyMod_Cmd2:
                         self.view.removeEventCallback("SoMouseButtonEvent",self.call)
 
         p=PolygonCreator(d,v,10)
+
+    def IsActive(self):
+        if FreeCAD.ActiveDocument == None:
+            return False
+        else:
+            return True
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool2', 'MenuText': 'Create polygon...', 'ToolTip': 'Create a polygon by clicking inside the viewer'}
