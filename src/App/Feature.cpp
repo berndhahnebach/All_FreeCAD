@@ -88,7 +88,7 @@ void AbstractFeature::onChanged(const Property* prop)
     //touchPropertyTime.setToActual();
 }
 
-short AbstractFeature::mustExecute(void)
+short AbstractFeature::mustExecute(void) const
 {
     // If the object's label is modified:
     if (getStatus() != Valid && getStatus()!= Inactive)

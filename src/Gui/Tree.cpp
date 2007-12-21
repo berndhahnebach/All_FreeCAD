@@ -491,7 +491,8 @@ void DocumentObjectItem::testStatus()
             ".##aaa##.",
             "...###..."};
         px = QPixmap(feature_error_xpm);
-    } else if (currentStatus & 2) {
+    }
+    else if (currentStatus & 2) {
         // object must be recomputed
         static const char * const feature_recompute_xpm[]={
             "9 9 3 1",
@@ -525,7 +526,8 @@ void DocumentObjectItem::testStatus()
 #else
         this->setData(0, Qt::TextColorRole,QVariant());
 #endif
-    } else { // invisible
+    }
+    else { // invisible
         QStyleOptionViewItem opt;
         opt.initFrom(this->treeWidget());
 #if QT_VERSION >= 0x040200
@@ -536,14 +538,14 @@ void DocumentObjectItem::testStatus()
         mode = QIcon::Disabled;
     }
 
-    int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
-    QPixmap icon = viewObject->getIcon().pixmap(w, w, mode);
-
     // if needed show small pixmap inside
     if (!px.isNull()) {
+        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+        QPixmap icon = viewObject->getIcon().pixmap(w, w, mode);
         this->setIcon(0, BitmapFactory().merge(icon,px,BitmapFactoryInst::TopRight));
-    } else {
-        this->setIcon(0, icon);
+    }
+    else {
+        this->setIcon(0, viewObject->getIcon());
     }
 }
 
