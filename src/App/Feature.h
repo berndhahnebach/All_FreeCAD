@@ -102,7 +102,7 @@ public:
      *  be invoked. If the object label or an argument is modified.
      *  If we must recompute the object - to call the method Execute().
      */
-    virtual short mustExecute(void);
+    virtual short mustExecute(void) const;
     //@}
 
 
