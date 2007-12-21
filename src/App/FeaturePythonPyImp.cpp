@@ -50,6 +50,19 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
     Py_Return;
 }
 
+PyObject*  FeaturePythonPy::supportedProperties(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception
+    
+    std::vector<Base::Type> ary;
+    Base::Type::getAllDerivedFrom(App::Property::getClassTypeId(), ary);
+    Py::List res;
+    for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it)
+        res.append(Py::String(it->getName()));
+    return Py::new_reference_to(res);
+}
+
 /** Invokes the registered callback function.
  * To register a callback function in Python do it as follows:
  * \code
@@ -57,7 +70,7 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
  *  d=FreeCAD.newDocument()
  *  f=d.addObject("App::FeaturePython")
  *
- *  def myCallback():
+ *  def myCallback(arg):
  *      FreeCAD.PrintMessage("Hello, World!")
  *
  *  # Save the callback function
@@ -73,12 +86,16 @@ PyObject*  FeaturePythonPy::execute(PyObject *args)
 {
     Py::Object executeCallback = getFeaturePythonPtr()->executeMethod;
     if ( executeCallback.isCallable() ) {
-        PyObject *result;
-        /* Time to call the callback */
-        result = PyEval_CallObject(executeCallback.ptr(), NULL);
-        if ( result == NULL )
-            return NULL; /* Pass error back */
-        Py_DECREF(result);  /* Dispose of result */
+        try {
+            Py::Callable method(executeCallback);
+            Py::Tuple args(1);
+            args.setItem(0, Py::Object(this));
+            method.apply(args);
+        }
+        catch (const Py::Exception&) {
+            return NULL;
+        }
+
         Py_Return;
     } else {
         PyErr_SetString(PyExc_NotImplementedError , "FeaturePython.execute not implemented");

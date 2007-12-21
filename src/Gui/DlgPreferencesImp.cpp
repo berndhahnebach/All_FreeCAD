@@ -86,8 +86,13 @@ void DlgPreferencesImp::setupPages()
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         for (QStringList::Iterator jt = it->second.begin(); jt != it->second.end(); ++jt) {
             PreferencePage* page = WidgetFactory().createPreferencePage((*jt).toAscii().constData());
-            tabWidget->addTab(page, page->windowTitle());
-            page->loadSettings();
+            if (page) {
+                tabWidget->addTab(page, page->windowTitle());
+                page->loadSettings();
+            }
+            else {
+                Base::Console().Warning("%s is not a preference page\n", (*jt).toAscii().constData());
+            }
         }
     }
 

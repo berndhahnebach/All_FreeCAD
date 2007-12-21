@@ -37,11 +37,18 @@ using namespace App;
 using namespace std;
 
 
-PROPERTY_SOURCE(App::FeaturePython, App::AbstractFeature)
+PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
 
 
 FeaturePython::FeaturePython()
 {
+}
+
+short FeaturePython::mustExecute() const
+{
+    if (this->isTouched())
+        return 1;
+    return 0;
 }
 
 DocumentObjectExecReturn *FeaturePython::execute(void)
@@ -56,7 +63,7 @@ DocumentObjectExecReturn *FeaturePython::execute(void)
 void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
     // get the properties of the base class first and insert the dynamic properties afterwards
-    AbstractFeature::getPropertyMap(Map);
+    DocumentObject::getPropertyMap(Map);
     for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it )
         Map[it->first] = it->second;
 }
@@ -66,7 +73,7 @@ Property *FeaturePython::getPropertyByName(const char* name) const
     std::map<std::string,Property*>::const_iterator it = objectProperties.find( name );
     if ( it != objectProperties.end() )
         return it->second;
-    return AbstractFeature::getPropertyByName( name );
+    return DocumentObject::getPropertyByName( name );
 }
 
 const char* FeaturePython::getName(const Property* prop) const
@@ -75,7 +82,7 @@ const char* FeaturePython::getName(const Property* prop) const
         if (it->second == prop)
             return it->first.c_str();
     }
-    return AbstractFeature::getName(prop);
+    return DocumentObject::getName(prop);
 }
 
 void FeaturePython::addDynamicProperty(const char* type, const char* name)

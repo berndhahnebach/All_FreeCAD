@@ -26,14 +26,14 @@
 #define APP_FEATUREPYTHON_H
 
 
-#include "Feature.h"
+#include "DocumentObject.h"
 
 namespace App
 {
 
 class FeaturePythonPy;
 
-class FeaturePython :public AbstractFeature
+class FeaturePython : public DocumentObject
 {
     PROPERTY_HEADER(App::FeaturePython);
 
@@ -42,6 +42,7 @@ public:
 
     /** @name methods overide Feature */
     //@{
+    short mustExecute() const;
     /// recalculate the Feature
     virtual DocumentObjectExecReturn *execute(void);
     /// returns the type name of the ViewProvider

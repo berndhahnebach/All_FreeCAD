@@ -21,7 +21,12 @@ name of the property.
 		</UserDocu>
       </Documentation>
     </Methode>
-   <Methode Name="execute">
+	  <Methode Name="supportedProperties">
+		  <Documentation>
+			  <UserDocu>A list of supported property types</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="execute">
       <Documentation>
         <UserDocu>Execute a callable Python object</UserDocu>
       </Documentation>
