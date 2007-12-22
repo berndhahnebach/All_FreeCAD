@@ -538,15 +538,24 @@ void DocumentObjectItem::testStatus()
         mode = QIcon::Disabled;
     }
 
+    // get the original icon set
+    QIcon icon_org = viewObject->getIcon();
+    QIcon icon_mod;
+    int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+
     // if needed show small pixmap inside
     if (!px.isNull()) {
-        int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
-        QPixmap icon = viewObject->getIcon().pixmap(w, w, mode);
-        this->setIcon(0, BitmapFactory().merge(icon,px,BitmapFactoryInst::TopRight));
+        icon_mod.addPixmap(BitmapFactory().merge(icon_org.pixmap(w, w, mode, QIcon::Off),
+            px,BitmapFactoryInst::TopRight), QIcon::Normal, QIcon::Off);
+        icon_mod.addPixmap(BitmapFactory().merge(icon_org.pixmap(w, w, mode, QIcon::On ),
+            px,BitmapFactoryInst::TopRight), QIcon::Normal, QIcon::Off);
     }
     else {
-        this->setIcon(0, viewObject->getIcon());
+        icon_mod.addPixmap(icon_org.pixmap(w, w, mode, QIcon::Off), QIcon::Normal, QIcon::Off);
+        icon_mod.addPixmap(icon_org.pixmap(w, w, mode, QIcon::On ), QIcon::Normal, QIcon::On );
     }
+
+    this->setIcon(0, icon_mod);
 }
 
 void DocumentObjectItem::displayStatusInfo()
