@@ -301,6 +301,13 @@ void PropertyMeshKernel::setValue(MeshObject* mesh)
     hasSetValue();
 }
 
+void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& mesh)
+{
+    aboutToSetValue();
+    _meshObject->setKernel(mesh);
+    hasSetValue();
+}
+
 const MeshObject& PropertyMeshKernel::getValue(void)const 
 {
     return *_meshObject;

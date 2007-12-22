@@ -140,6 +140,7 @@ public:
      * saved before if a transaction is open at this time.
      */
     void setValue(MeshObject* m);
+    void setValue(const MeshCore::MeshKernel& m);
     /** Returns a the attached mesh object by reference. It cannot be modified 
      * from outside.
      */

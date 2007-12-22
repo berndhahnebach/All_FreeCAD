@@ -91,8 +91,12 @@ public:
     MeshCore::MeshPointIterator PointIterator() const;
     //@}
 
-    MeshCore::MeshKernel& getKernel(void){return _kernel;}
-    const MeshCore::MeshKernel& getKernel(void) const {return _kernel;}
+    void setKernel(const MeshCore::MeshKernel& m)
+    { _kernel = m; }
+    MeshCore::MeshKernel& getKernel(void)
+    { return _kernel; }
+    const MeshCore::MeshKernel& getKernel(void) const
+    { return _kernel; }
 
     virtual Base::BoundBox3d getBoundBox(void)const;
 
