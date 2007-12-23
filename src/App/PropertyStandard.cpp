@@ -1635,11 +1635,11 @@ void PropertyMaterial::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyMaterial");
     // get the value of my Attribute
     aboutToSetValue();
-    _cMat.ambientColor.setPackedValue(reader.getAttributeAsInteger("ambientColor"));
-    _cMat.diffuseColor.setPackedValue(reader.getAttributeAsInteger("diffuseColor"));
-    _cMat.specularColor.setPackedValue(reader.getAttributeAsInteger("specularColor"));
-    _cMat.emissiveColor.setPackedValue(reader.getAttributeAsInteger("emissiveColor"));
-    _cMat.shininess = (float)reader.getAttributeAsInteger("shininess");
+    _cMat.ambientColor.setPackedValue(reader.getAttributeAsUnsigned("ambientColor"));
+    _cMat.diffuseColor.setPackedValue(reader.getAttributeAsUnsigned("diffuseColor"));
+    _cMat.specularColor.setPackedValue(reader.getAttributeAsUnsigned("specularColor"));
+    _cMat.emissiveColor.setPackedValue(reader.getAttributeAsUnsigned("emissiveColor"));
+    _cMat.shininess = (float)reader.getAttributeAsFloat("shininess");
     _cMat.transparency = (float)reader.getAttributeAsFloat("transparency");
     hasSetValue();
 }
