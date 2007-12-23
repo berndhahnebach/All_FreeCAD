@@ -295,9 +295,14 @@ PropertyMeshKernel::~PropertyMeshKernel()
 
 void PropertyMeshKernel::setValue(MeshObject* mesh)
 {
-    //Note: This references the same mesh object
+    // Note: As we reference internal pointers of the underlying MeshKernel
+    // e.g. in the SoFCMeshVertex node or SoFCMeshVertexElement instance for 
+    // display purposes we must guarantee not to replace this kernel but just
+    // assign the point and facet data to it.
     aboutToSetValue();
-    _meshObject = mesh;
+    mesh->AttachRef(0);
+    (*_meshObject) = (*mesh);
+    mesh->DetachRef(0);
     hasSetValue();
 }
 
