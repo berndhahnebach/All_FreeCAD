@@ -713,7 +713,224 @@ void View3DPy::eventCallback(void * ud, SoEventCallback * n)
         }
         if (e->isOfType(SoKeyboardEvent::getClassTypeId())) {
             const SoKeyboardEvent* ke = static_cast<const SoKeyboardEvent*>(e);
-            dict.setItem("Key", Py::Char(ke->getPrintableCharacter()));
+            switch (ke->getKey()) {
+                case SoKeyboardEvent::ANY:
+                    dict.setItem("Key", Py::String("ANY"));
+                    break;
+                case SoKeyboardEvent::UNDEFINED:
+                    dict.setItem("Key", Py::String("UNDEFINED"));
+                    break;
+                case SoKeyboardEvent::LEFT_SHIFT:
+                case SoKeyboardEvent::RIGHT_SHIFT:
+                    dict.setItem("Key", Py::String("SHIFT"));
+                    break;
+                case SoKeyboardEvent::LEFT_CONTROL:
+                case SoKeyboardEvent::RIGHT_CONTROL:
+                    dict.setItem("Key", Py::String("CONTROL"));
+                    break;
+                case SoKeyboardEvent::LEFT_ALT:
+                case SoKeyboardEvent::RIGHT_ALT:
+                    dict.setItem("Key", Py::String("ALT"));
+                    break;
+                case SoKeyboardEvent::HOME:
+                    dict.setItem("Key", Py::String("HOME"));
+                    break;
+                case SoKeyboardEvent::LEFT_ARROW:
+                    dict.setItem("Key", Py::String("LEFT_ARROW"));
+                    break;
+                case SoKeyboardEvent::UP_ARROW:
+                    dict.setItem("Key", Py::String("UP_ARROW"));
+                    break;
+                case SoKeyboardEvent::RIGHT_ARROW:
+                    dict.setItem("Key", Py::String("RIGHT_ARROW"));
+                    break;
+                case SoKeyboardEvent::DOWN_ARROW:
+                    dict.setItem("Key", Py::String("DOWN_ARROW"));
+                    break;
+                case SoKeyboardEvent::PAGE_UP:
+                    dict.setItem("Key", Py::String("PAGE_UP"));
+                    break;
+                case SoKeyboardEvent::PAGE_DOWN:
+                    dict.setItem("Key", Py::String("PAGE_DOWN"));
+                    break;
+                case SoKeyboardEvent::END:
+                    dict.setItem("Key", Py::String("END"));
+                    break;
+                case SoKeyboardEvent::PAD_ENTER:
+                    dict.setItem("Key", Py::String("PAD_ENTER"));
+                    break;
+                case SoKeyboardEvent::PAD_F1:
+                    dict.setItem("Key", Py::String("PAD_F1"));
+                    break;
+                case SoKeyboardEvent::PAD_F2:
+                    dict.setItem("Key", Py::String("PAD_F2"));
+                    break;
+                case SoKeyboardEvent::PAD_F3:
+                    dict.setItem("Key", Py::String("PAD_F3"));
+                    break;
+                case SoKeyboardEvent::PAD_F4:
+                    dict.setItem("Key", Py::String("PAD_F4"));
+                    break;
+                case SoKeyboardEvent::PAD_0:
+                    dict.setItem("Key", Py::String("PAD_0"));
+                    break;
+                case SoKeyboardEvent::PAD_1:
+                    dict.setItem("Key", Py::String("PAD_1"));
+                    break;
+                case SoKeyboardEvent::PAD_2:
+                    dict.setItem("Key", Py::String("PAD_2"));
+                    break;
+                case SoKeyboardEvent::PAD_3:
+                    dict.setItem("Key", Py::String("PAD_3"));
+                    break;
+                case SoKeyboardEvent::PAD_4:
+                    dict.setItem("Key", Py::String("PAD_4"));
+                    break;
+                case SoKeyboardEvent::PAD_5:
+                    dict.setItem("Key", Py::String("PAD_5"));
+                    break;
+                case SoKeyboardEvent::PAD_6:
+                    dict.setItem("Key", Py::String("PAD_6"));
+                    break;
+                case SoKeyboardEvent::PAD_7:
+                    dict.setItem("Key", Py::String("PAD_7"));
+                    break;
+                case SoKeyboardEvent::PAD_8:
+                    dict.setItem("Key", Py::String("PAD_8"));
+                    break;
+                case SoKeyboardEvent::PAD_9:
+                    dict.setItem("Key", Py::String("PAD_9"));
+                    break;
+                case SoKeyboardEvent::PAD_ADD:
+                    dict.setItem("Key", Py::String("PAD_ADD"));
+                    break;
+                case SoKeyboardEvent::PAD_SUBTRACT:
+                    dict.setItem("Key", Py::String("PAD_SUBTRACT"));
+                    break;
+                case SoKeyboardEvent::PAD_MULTIPLY:
+                    dict.setItem("Key", Py::String("PAD_MULTIPLY"));
+                    break;
+                case SoKeyboardEvent::PAD_DIVIDE:
+                    dict.setItem("Key", Py::String("PAD_DIVIDE"));
+                    break;
+                case SoKeyboardEvent::PAD_TAB:
+                    dict.setItem("Key", Py::String("PAD_TAB"));
+                    break;
+                case SoKeyboardEvent::PAD_DELETE:
+                    dict.setItem("Key", Py::String("PAD_DELETE"));
+                    break;
+                case SoKeyboardEvent::F1:
+                    dict.setItem("Key", Py::String("F1"));
+                    break;
+                case SoKeyboardEvent::F2:
+                    dict.setItem("Key", Py::String("F2"));
+                    break;
+                case SoKeyboardEvent::F3:
+                    dict.setItem("Key", Py::String("F3"));
+                    break;
+                case SoKeyboardEvent::F4:
+                    dict.setItem("Key", Py::String("F4"));
+                    break;
+                case SoKeyboardEvent::F5:
+                    dict.setItem("Key", Py::String("F5"));
+                    break;
+                case SoKeyboardEvent::F6:
+                    dict.setItem("Key", Py::String("F6"));
+                    break;
+                case SoKeyboardEvent::F7:
+                    dict.setItem("Key", Py::String("F7"));
+                    break;
+                case SoKeyboardEvent::F8:
+                    dict.setItem("Key", Py::String("F8"));
+                    break;
+                case SoKeyboardEvent::F9:
+                    dict.setItem("Key", Py::String("F9"));
+                    break;
+                case SoKeyboardEvent::F10:
+                    dict.setItem("Key", Py::String("F10"));
+                    break;
+                case SoKeyboardEvent::F11:
+                    dict.setItem("Key", Py::String("F11"));
+                    break;
+                case SoKeyboardEvent::F12:
+                    dict.setItem("Key", Py::String("F12"));
+                    break;
+                case SoKeyboardEvent::BACKSPACE:
+                    dict.setItem("Key", Py::String("BACKSPACE"));
+                    break;
+                case SoKeyboardEvent::TAB:
+                    dict.setItem("Key", Py::String("TAB"));
+                    break;
+                case SoKeyboardEvent::RETURN:
+                    dict.setItem("Key", Py::String("RETURN"));
+                    break;
+                case SoKeyboardEvent::PAUSE:
+                    dict.setItem("Key", Py::String("PAUSE"));
+                    break;
+                case SoKeyboardEvent::SCROLL_LOCK:
+                    dict.setItem("Key", Py::String("SCROLL_LOCK"));
+                    break;
+                case SoKeyboardEvent::ESCAPE:
+                    dict.setItem("Key", Py::String("ESCAPE"));
+                    break;
+                case SoKeyboardEvent::KEY_DELETE:
+                    dict.setItem("Key", Py::String("DELETE"));
+                    break;
+                case SoKeyboardEvent::PRINT:
+                    dict.setItem("Key", Py::String("PRINT"));
+                    break;
+                case SoKeyboardEvent::INSERT:
+                    dict.setItem("Key", Py::String("INSERT"));
+                    break;
+                case SoKeyboardEvent::NUM_LOCK:
+                    dict.setItem("Key", Py::String("NUM_LOCK"));
+                    break;
+                case SoKeyboardEvent::CAPS_LOCK:
+                    dict.setItem("Key", Py::String("CAPS_LOCK"));
+                    break;
+                case SoKeyboardEvent::SHIFT_LOCK:
+                    dict.setItem("Key", Py::String("SHIFT_LOCK"));
+                    break;
+                case SoKeyboardEvent::SPACE:
+                    dict.setItem("Key", Py::String("SPACE"));
+                    break;
+                case SoKeyboardEvent::APOSTROPHE:
+                    dict.setItem("Key", Py::String("APOSTROPHE"));
+                    break;
+                case SoKeyboardEvent::COMMA:
+                    dict.setItem("Key", Py::String("COMMA"));
+                    break;
+                case SoKeyboardEvent::MINUS:
+                    dict.setItem("Key", Py::String("MINUS"));
+                    break;
+                case SoKeyboardEvent::PERIOD:
+                    dict.setItem("Key", Py::String("PERIOD"));
+                    break;
+                case SoKeyboardEvent::SLASH:
+                    dict.setItem("Key", Py::String("SLASH"));
+                    break;
+                case SoKeyboardEvent::SEMICOLON:
+                    dict.setItem("Key", Py::String("SEMICOLON"));
+                    break;
+                case SoKeyboardEvent::EQUAL:
+                    dict.setItem("Key", Py::String("EQUAL"));
+                    break;
+                case SoKeyboardEvent::BRACKETLEFT:
+                    dict.setItem("Key", Py::String("BRACKETLEFT"));
+                    break;
+                case SoKeyboardEvent::BACKSLASH:
+                    dict.setItem("Key", Py::String("BACKSLASH"));
+                    break;
+                case SoKeyboardEvent::BRACKETRIGHT:
+                    dict.setItem("Key", Py::String("BRACKETRIGHT"));
+                    break;
+                case SoKeyboardEvent::GRAVE:
+                    dict.setItem("Key", Py::String("GRAVE"));
+                    break;
+                default:
+                    dict.setItem("Key", Py::Char(ke->getPrintableCharacter()));
+                    break;
+            }
         }
         if (e->isOfType(SoMouseButtonEvent::getClassTypeId())) {
             const SoMouseButtonEvent* mbe = static_cast<const SoMouseButtonEvent*>(e);
