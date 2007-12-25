@@ -220,7 +220,8 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
 
     if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0) {
         int tabWidth = hPrefGrp->GetInt("TabSize", 4);
-        int fontSize = hPrefGrp->GetInt("FontSize");
+        QFontMetrics metric(font());
+        int fontSize = metric.width("0");
         setTabStopWidth(tabWidth * fontSize);
     }
 }
