@@ -288,6 +288,16 @@ bool InteractiveInterpreter::push(const char* line)
     return false;
 }
 
+QStringList InteractiveInterpreter::getBuffer() const
+{
+    return d->buffer;
+}
+
+void InteractiveInterpreter::clearBuffer()
+{
+    d->buffer.clear();
+}
+
 /* TRANSLATOR Gui::PythonConsole */
 
 /**
@@ -377,7 +387,9 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
         
         QFont font(fontFamily, fontSize);
         setFont(font);
-        setTabStopWidth(4 * fontSize);
+        QFontMetrics metric(font);
+        int width = metric.width("0000");
+        setTabStopWidth(width);
     } else {
         QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
         if (it != d->colormap.end()) {
@@ -763,7 +775,8 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
 #endif
         QStringList lines = text.split('\n');
         QTextCursor cursor = textCursor();
-        QStringList buffer;
+        QStringList buffer = d->interpreter->getBuffer();
+        d->interpreter->clearBuffer();
         int countNewlines = lines.count() - 1, i = 0;
         for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it, ++i) {
             cursor.insertText( *it );
@@ -800,6 +813,8 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
                     buffer.clear();
                     break;
                 }
+            } else {
+                buffer.append(*it);
             }
         }
 

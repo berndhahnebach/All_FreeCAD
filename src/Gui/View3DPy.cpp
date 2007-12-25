@@ -1311,5 +1311,9 @@ void View3DPy::cleanupSWIG()
             }
         }
     }
+
+    // we must run the garbage collector before shutting down the SoDB or SoQt 
+    // system because we may reference some class objects of them via Python
+    PyGC_Collect();
 }
 
