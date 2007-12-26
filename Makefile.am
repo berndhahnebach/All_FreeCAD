@@ -26,6 +26,12 @@ EXTRA_DIST = \
 		README.Win32
 
 debian-package: dist
+	if test x"$(CASROOT)" = x; then \
+		echo "**** ERROR: the environment variable CASROOT is not set."; \
+		echo "First set CASROOT to point to the ros subdirectory of the"; \
+		echo "OpenCascade installation directory and retry make debian-package. ****"; \
+		exit 1; \
+	fi
 	-mkdir debian-build
 	cd debian-build && \
 	$(RM) -r $(PACKAGE)-$(VERSION) && \
