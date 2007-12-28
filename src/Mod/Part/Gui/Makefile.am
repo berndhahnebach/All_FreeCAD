@@ -6,10 +6,12 @@ BUILT_SOURCES=\
 		ui_DlgPartBox.h \
 		ui_DlgPartImportIges.h \
 		ui_DlgPartImportStep.h \
+		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStepImp.cpp \
+		moc_DlgPrimitivesImp.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
 		qrc_Part.cpp 
 
@@ -21,6 +23,8 @@ libPartGui_la_SOURCES=\
 		DlgPartImportIgesImp.h \
 		DlgPartImportStepImp.cpp \
 		DlgPartImportStepImp.h \
+		DlgPrimitivesImp.cpp \
+		DlgPrimitivesImp.h \
 		DlgSettings3DViewPartImp.cpp \
 		DlgSettings3DViewPartImp.h \
 		PreCompiled.cpp \
@@ -138,6 +142,7 @@ EXTRA_DIST = \
 		DlgPartBox.ui \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \
+		DlgPrimitives.ui \
 		DlgSettings3DViewPart.ui \
 		Part.qrc \
 		Part_de.qm \
