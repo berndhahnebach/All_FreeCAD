@@ -997,10 +997,16 @@ void Application::runApplication(void)
   SoQt::init(&mw);
   SoFCDB::init();
 
+  // show splasher while initializing the GUI
   mw.startSplasher();
 
-  // running the Gui init script
+  // running the GUI init script
   Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+  
+  // stop splash screen and set immediately the active window that may be of interest
+  // for scripts using Python binding for Qt
+  mw.stopSplasher();
+  mainApp.setActiveWindow(&mw);
 
   // Activate the correct workbench
   Base::Console().Log("Init: Activating default workbench\n");
@@ -1018,8 +1024,7 @@ void Application::runApplication(void)
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-  // Stop splash screen and open the 'Iip of the day' dialog if needed
-  mw.stopSplasher();
+  // open the 'Iip of the day' dialog if needed
   mw.showTipOfTheDay();
   Instance->d->_bStartingUp = false;
 
