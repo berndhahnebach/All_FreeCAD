@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 rem   Build script, uses vcbuild to completetly build FreeCAD
 
 rem  set the aprobiated Variables here or outside in the system
@@ -11,18 +11,18 @@ set INCLUDE=
 set LIB=
 
 rem Register VS Build programms
-call "%PROGRAMFILES%\Microsoft Visual Studio 8\VC\vcvarsall.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio 8\VC\vcvarsall.bat"
 rem QT stuff
 set PATH=%QTDIR%\bin;%FREECADLIB%\bin;%FREECADLIB%\dll;%PATH%
 
 rem Set Standard include paths
 set INCLUDE=%INCLUDE%;%FrameworkSDKDir%\include
-set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft Platform SDK\Include
+set INCLUDE=%INCLUDE%;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\boost-1_33_1
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\coin245
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\gts070_glib
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCascade61
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCascade62
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\python25
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\soqt141
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\Wm3_VC8
@@ -42,17 +42,16 @@ set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtSvg
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtTest
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtUITools
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtXml
-set INCLUDE=%INCLUDE%;D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs5\include\OpenCV10
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCV10
 
 rem Set lib Pathes
-set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK\Lib
+set LIB=%LIB%;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Visual Studio\VC98\Lib
 set LIB=%LIB%;%QTDIR%\lib
 set LIB=%LIB%;%FREECADLIB%\lib
-set LIB=%LIB%;D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs5\lib
 
 rem Start the Visuall Studio build process
-vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv 
+"C:\Program Files (x86)\Microsoft Visual Studio 8\VC\vcpackages\vcbuild.exe" FreeCAD.sln /useenv 
 
 
 
