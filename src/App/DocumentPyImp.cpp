@@ -160,6 +160,42 @@ PyObject*  DocumentPy::getObject(PyObject *args)
         Py_Return;
 }
 
+PyObject*  DocumentPy::findObjects(PyObject *args)
+{
+    char *sType="App::DocumentObject", *sName=0;
+    if (!PyArg_ParseTuple(args, "|ss",&sType, &sName))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
+
+    Base::Type type = Base::Type::fromName(sType);
+    if (type == Base::Type::badType()) {
+        PyErr_Format(PyExc_Exception, "'%s' is not a valid type", sType);
+        return NULL;
+    }
+    
+    if (!type.isDerivedFrom(App::DocumentObject::getClassTypeId())) {
+        PyErr_Format(PyExc_Exception, "Type '%s' does not inherit from 'App::DocumentObject'", sType);
+        return NULL;
+    }
+    
+    std::vector<DocumentObject*> objs = getDocumentPtr()->getObjectsOfType(type);
+    std::vector<DocumentObject*> res;
+    for (std::vector<DocumentObject*>::const_iterator It = objs.begin();It != objs.end();++It) {
+        if (sName) {
+            std::string name = (*It)->getNameInDocument();
+            if (name.find(sName) == std::string::npos)
+                continue;
+        }
+
+        res.push_back(*It);
+    }
+
+    Py_ssize_t index=0;
+    PyObject* list = PyList_New((Py_ssize_t)res.size()); 
+    for (std::vector<DocumentObject*>::const_iterator It = res.begin();It != res.end();++It, index++)
+        PyList_SetItem(list, index, (*It)->getPyObject());
+    return list;
+}
+
 Py::Object DocumentPy::getActiveObject(void) const
 {
     DocumentObject *pcFtr = getDocumentPtr()->getActiveObject();
