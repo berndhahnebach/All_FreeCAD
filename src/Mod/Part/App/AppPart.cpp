@@ -30,6 +30,7 @@
 #include "FeaturePartLineSet.h"
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
+#include "PrimitiveFeature.h"
 #include "PropertyLine.h"
 #include "PropertyCircle.h"
 #include "TopologyPy.h"
@@ -82,6 +83,11 @@ void AppPartExport initPart() {
     Part::LineSet             ::init();
     Part::Polygon             ::init();
     Part::Circle              ::init();
+    Part::Plane               ::init();
+    Part::Sphere              ::init();
+    Part::Cylinder            ::init();
+    Part::Cone                ::init();
+    Part::Torus               ::init();
 
     return;
 }

@@ -41,7 +41,9 @@
 #include "../App/PartFeature.h"
 #include "DlgPartBoxImp.h"
 #include "DlgPartImportStepImp.h"
-#include "DlgPartImportIgesImp.h"
+#include "DlgBooleanOperation.h"
+#include "DlgPrimitives.h"
+
 
 using Gui::FileDialog;
 
@@ -501,11 +503,73 @@ bool CmdPartImportCurveNet::isActive(void)
     return false;
 }
 
+//===========================================================================
+// Part_Boolean
+//===========================================================================
+DEF_STD_CMD_A(CmdPartBoolean);
+
+CmdPartBoolean::CmdPartBoolean()
+  :Command("Part_Boolean")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Boolean...");
+    sToolTipText  = QT_TR_NOOP("Run a boolean operation with two shapes selected");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    //sPixmap       = "Part_Box";
+    iAccel        = 0;
+}
+
+void CmdPartBoolean::activated(int iMsg)
+{
+    PartGui::DlgBooleanOperation dlg(Gui::getMainWindow());
+    dlg.exec();
+}
+
+bool CmdPartBoolean::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+//===========================================================================
+// Part_Primitives
+//===========================================================================
+DEF_STD_CMD_A(CmdPartPrimitives);
+
+CmdPartPrimitives::CmdPartPrimitives()
+  :Command("Part_Primitives")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create primitives...");
+    sToolTipText  = QT_TR_NOOP("Creation of geometric primitives");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    //sPixmap       = "Part_Box";
+    iAccel        = 0;
+}
+
+void CmdPartPrimitives::activated(int iMsg)
+{
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new PartGui::DlgPrimitives(Gui::getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+bool CmdPartPrimitives::isActive(void)
+{
+    return hasActiveDocument();
+}
+
 
 void CreatePartCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
+  rcCmdMgr.addCommand(new CmdPartBoolean());
   rcCmdMgr.addCommand(new CmdPartCommon());
   rcCmdMgr.addCommand(new CmdPartCut());
   rcCmdMgr.addCommand(new CmdPartFuse());
@@ -517,5 +581,6 @@ void CreatePartCommands(void)
   rcCmdMgr.addCommand(new CmdPartImport());
   rcCmdMgr.addCommand(new CmdPartImportCurveNet());
   rcCmdMgr.addCommand(new CmdPartPickCurveNet());
+  rcCmdMgr.addCommand(new CmdPartPrimitives());
 } 
 

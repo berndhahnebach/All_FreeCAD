@@ -49,6 +49,8 @@ libPart_la_SOURCES=\
 		PartFeaturePyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		PrimitiveFeature.cpp \
+		PrimitiveFeature.h \
 		PropertyCircle.cpp \
 		PropertyCircle.h \
 		PropertyLine.cpp \

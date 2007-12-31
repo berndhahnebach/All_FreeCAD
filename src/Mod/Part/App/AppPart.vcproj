@@ -524,6 +524,14 @@
 				RelativePath="PartFeature.h"
 				>
 			</File>
+			<File
+				RelativePath=".\PrimitiveFeature.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrimitiveFeature.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Python"

@@ -289,6 +289,58 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\DlgBooleanOperation.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgBooleanOperation.h"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\DlgBooleanOperation.ui"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="$(InputDir)ui_$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="$(InputDir)ui_$(InputName).h"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="DlgPartBox.ui"
 			>
 			<FileConfiguration
@@ -495,6 +547,38 @@
 					Description="Moc&apos;ing $(InputName).h ..."
 					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\DlgPrimitives.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgPrimitives.h"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgPrimitives.ui"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="$(InputDir)ui_$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="$(InputDir)ui_$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>

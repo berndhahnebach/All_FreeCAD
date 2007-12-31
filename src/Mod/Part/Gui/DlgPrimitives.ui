@@ -1,6 +1,9 @@
 <ui version="4.0" >
- <class>MeshGui::DlgRegularSolid</class>
- <widget class="QDialog" name="MeshGui::DlgRegularSolid" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>PartGui::DlgPrimitives</class>
+ <widget class="QDialog" name="PartGui::DlgPrimitives" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Primitives</string>
+   <string>Geometric Primitives</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -25,7 +28,7 @@
    <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox1" >
      <property name="title" >
-      <string>Solid:</string>
+      <string>Primitive</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -56,15 +59,15 @@
              <number>6</number>
             </property>
             <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="boxLength_2" >
+             <widget class="QDoubleSpinBox" name="planeLength" >
               <property name="maximum" >
-               <double>1000.000000000000000</double>
+               <double>1000</double>
               </property>
               <property name="minimum" >
-               <double>0.000000000000000</double>
+               <double>0</double>
               </property>
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
@@ -83,12 +86,12 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="boxWidth_2" >
+             <widget class="QDoubleSpinBox" name="planeWidth" >
               <property name="maximum" >
-               <double>1000.000000000000000</double>
+               <double>1000</double>
               </property>
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
@@ -151,23 +154,23 @@
             <item row="2" column="1" >
              <widget class="QDoubleSpinBox" name="boxHeight" >
               <property name="maximum" >
-               <double>1000.000000000000000</double>
+               <double>1000</double>
               </property>
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="boxLength" >
               <property name="maximum" >
-               <double>1000.000000000000000</double>
+               <double>1000</double>
               </property>
               <property name="minimum" >
-               <double>0.000000000000000</double>
+               <double>0</double>
               </property>
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
@@ -181,10 +184,10 @@
             <item row="1" column="1" >
              <widget class="QDoubleSpinBox" name="boxWidth" >
               <property name="maximum" >
-               <double>1000.000000000000000</double>
+               <double>1000</double>
               </property>
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
@@ -207,17 +210,41 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="cylinderClosed" >
-            <property name="text" >
-             <string>Closed</string>
+          <item row="2" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-            <property name="checked" >
-             <bool>true</bool>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label" >
+              <property name="text" >
+               <string>Angle:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="cylinderAngle" >
+              <property name="maximum" >
+               <double>360</double>
+              </property>
+              <property name="value" >
+               <double>360</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line_2" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
+          <item row="3" column="0" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -251,21 +278,21 @@
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="cylinderRadius" >
               <property name="value" >
-               <double>2.000000000000000</double>
+               <double>2</double>
               </property>
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="cylinderLength" >
+             <widget class="QDoubleSpinBox" name="cylinderHeight" >
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
             <item row="1" column="0" >
              <widget class="QLabel" name="textLabel6" >
               <property name="text" >
-               <string>Length:</string>
+               <string>Height:</string>
               </property>
              </widget>
             </item>
@@ -281,15 +308,55 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="coneClosed" >
-            <property name="text" >
-             <string>Closed</string>
+          <item row="2" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-            <property name="checked" >
-             <bool>true</bool>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_4" >
+              <property name="text" >
+               <string>Angle:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="coneAngle" >
+              <property name="maximum" >
+               <double>360</double>
+              </property>
+              <property name="value" >
+               <double>360</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line_3" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>31</width>
+              <height>91</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="0" column="0" >
            <layout class="QGridLayout" >
@@ -302,28 +369,28 @@
             <item rowspan="2" row="2" column="0" >
              <widget class="QLabel" name="textLabel11" >
               <property name="text" >
-               <string>Length:</string>
+               <string>Height:</string>
               </property>
              </widget>
             </item>
             <item rowspan="2" row="1" column="1" >
              <widget class="QDoubleSpinBox" name="coneRadius2" >
               <property name="value" >
-               <double>4.000000000000000</double>
+               <double>4</double>
               </property>
              </widget>
             </item>
             <item row="3" column="1" >
-             <widget class="QDoubleSpinBox" name="coneLength" >
+             <widget class="QDoubleSpinBox" name="coneHeight" >
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="coneRadius1" >
               <property name="value" >
-               <double>2.000000000000000</double>
+               <double>2</double>
               </property>
              </widget>
             </item>
@@ -343,22 +410,6 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>31</width>
-              <height>91</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="WStackPage4" >
@@ -370,6 +421,89 @@
            <number>6</number>
           </property>
           <item row="1" column="0" >
+           <widget class="Line" name="line" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label_3" >
+              <property name="text" >
+               <string>U parametric:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType" >
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>81</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="sphereAngle1" >
+              <property name="maximum" >
+               <double>90</double>
+              </property>
+              <property name="minimum" >
+               <double>-90</double>
+              </property>
+              <property name="value" >
+               <double>-90</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>V parametric:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QDoubleSpinBox" name="sphereAngle2" >
+              <property name="maximum" >
+               <double>90</double>
+              </property>
+              <property name="minimum" >
+               <double>-90</double>
+              </property>
+              <property name="value" >
+               <double>90</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="sphereAngle3" >
+              <property name="maximum" >
+               <double>360</double>
+              </property>
+              <property name="value" >
+               <double>360</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -403,7 +537,7 @@
             <item>
              <widget class="QDoubleSpinBox" name="sphereRadius" >
               <property name="value" >
-               <double>5.000000000000000</double>
+               <double>5</double>
               </property>
              </widget>
             </item>
@@ -446,7 +580,7 @@
             <item row="1" column="1" >
              <widget class="QDoubleSpinBox" name="ellipsoidRadius2" >
               <property name="value" >
-               <double>4.000000000000000</double>
+               <double>4</double>
               </property>
              </widget>
             </item>
@@ -460,7 +594,7 @@
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="ellipsoidRadius1" >
               <property name="value" >
-               <double>2.000000000000000</double>
+               <double>2</double>
               </property>
              </widget>
             </item>
@@ -484,6 +618,89 @@
            <number>6</number>
           </property>
           <item row="1" column="0" >
+           <widget class="Line" name="line_4" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label_5" >
+              <property name="text" >
+               <string>U parametric:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType" >
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>81</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="torusAngle1" >
+              <property name="maximum" >
+               <double>180</double>
+              </property>
+              <property name="minimum" >
+               <double>-180</double>
+              </property>
+              <property name="value" >
+               <double>-180</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_6" >
+              <property name="text" >
+               <string>V parametric:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QDoubleSpinBox" name="torusAngle2" >
+              <property name="maximum" >
+               <double>180</double>
+              </property>
+              <property name="minimum" >
+               <double>-180</double>
+              </property>
+              <property name="value" >
+               <double>180</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="torusAngle3" >
+              <property name="maximum" >
+               <double>360</double>
+              </property>
+              <property name="value" >
+               <double>360</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -522,16 +739,16 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="toroidRadius2" >
+             <widget class="QDoubleSpinBox" name="torusRadius2" >
               <property name="value" >
-               <double>2.000000000000000</double>
+               <double>2</double>
               </property>
              </widget>
             </item>
             <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="toroidRadius1" >
+             <widget class="QDoubleSpinBox" name="torusRadius1" >
               <property name="value" >
-               <double>10.000000000000000</double>
+               <double>10</double>
               </property>
              </widget>
             </item>
@@ -550,7 +767,7 @@
         </item>
         <item>
          <property name="text" >
-          <string>Cube</string>
+          <string>Box</string>
          </property>
         </item>
         <item>
@@ -648,17 +865,15 @@
   <tabstop>boxWidth</tabstop>
   <tabstop>boxHeight</tabstop>
   <tabstop>cylinderRadius</tabstop>
-  <tabstop>cylinderLength</tabstop>
-  <tabstop>cylinderClosed</tabstop>
+  <tabstop>cylinderHeight</tabstop>
   <tabstop>coneRadius1</tabstop>
   <tabstop>coneRadius2</tabstop>
-  <tabstop>coneLength</tabstop>
-  <tabstop>coneClosed</tabstop>
+  <tabstop>coneHeight</tabstop>
   <tabstop>sphereRadius</tabstop>
   <tabstop>ellipsoidRadius1</tabstop>
   <tabstop>ellipsoidRadius2</tabstop>
-  <tabstop>toroidRadius1</tabstop>
-  <tabstop>toroidRadius2</tabstop>
+  <tabstop>torusRadius1</tabstop>
+  <tabstop>torusRadius2</tabstop>
   <tabstop>createSolidButton</tabstop>
   <tabstop>buttonClose</tabstop>
  </tabstops>
@@ -671,8 +886,8 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>74</x>
-     <y>48</y>
+     <x>85</x>
+     <y>50</y>
     </hint>
     <hint type="destinationlabel" >
      <x>230</x>
@@ -683,16 +898,32 @@
   <connection>
    <sender>buttonClose</sender>
    <signal>clicked()</signal>
-   <receiver>MeshGui::DlgRegularSolid</receiver>
+   <receiver>PartGui::DlgPrimitives</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>222</x>
-     <y>284</y>
+     <x>254</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>52</x>
-     <y>296</y>
+     <x>44</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>createSolidButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PartGui::DlgPrimitives</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>160</x>
+     <y>276</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>8</x>
+     <y>277</y>
     </hint>
    </hints>
   </connection>

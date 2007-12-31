@@ -357,14 +357,15 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
             const TopoDS_Face& aFace = TopoDS::Face(edge2Face.FindFromKey(aEdge).First());
 
             // take the face's triangulation instead
-	        Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
+            Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
             if (!aLoc.IsIdentity())  {
                 identity = false;
                 myTransf = aLoc.Transformation();
             }
 
-            if (aPolyTria.IsNull()) // actually this shouldn't happen at all
-                throw Base::Exception("Empty face trianglutaion\n");
+            //if (aPolyTria.IsNull()) // actually this shouldn't happen at all
+            //    throw Base::Exception("Empty face trianglutaion\n");
+            if (aPolyTria.IsNull()) return false;
 
             // this holds the indices of the edge's triangulation to the actual points
             Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(aEdge, aPolyTria, aLoc);
@@ -546,7 +547,8 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     // doing the meshing and checking the result
     //BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
     Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
-    if (aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
+    //if (aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
+    if (aPoly.IsNull()) return;
 
         // geting the transformation of the shape/face
         gp_Trsf myTransf;
