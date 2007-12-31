@@ -3,28 +3,32 @@ if OCC_LIBRARY_FILES
 lib_LTLIBRARIES=libPartGui.la PartGui.la
 
 BUILT_SOURCES=\
+		ui_DlgBooleanOperation.h \
 		ui_DlgPartBox.h \
 		ui_DlgPartImportIges.h \
 		ui_DlgPartImportStep.h \
 		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
+		moc_DlgBooleanOperation.cpp \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStepImp.cpp \
-		moc_DlgPrimitivesImp.cpp \
+		moc_DlgPrimitives.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
 		qrc_Part.cpp 
 
 libPartGui_la_SOURCES=\
 		Command.cpp \
+		DlgBooleanOperation.cpp \
+		DlgBooleanOperation.h \
 		DlgPartBoxImp.cpp \
 		DlgPartBoxImp.h \
 		DlgPartImportIgesImp.cpp \
 		DlgPartImportIgesImp.h \
 		DlgPartImportStepImp.cpp \
 		DlgPartImportStepImp.h \
-		DlgPrimitivesImp.cpp \
-		DlgPrimitivesImp.h \
+		DlgPrimitives.cpp \
+		DlgPrimitives.h \
 		DlgSettings3DViewPartImp.cpp \
 		DlgSettings3DViewPartImp.h \
 		PreCompiled.cpp \
@@ -139,6 +143,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		Icons/PartFeature.xpm \
 		Icons/PartFeatureImport.xpm \
+		DlgBooleanOperation.ui \
 		DlgPartBox.ui \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \
