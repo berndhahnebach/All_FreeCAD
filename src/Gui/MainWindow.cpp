@@ -657,32 +657,31 @@ void MainWindow::switchToDockedMode()
 
 void MainWindow::loadWindowSettings()
 {
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
-  int w = hGrp->GetInt("Width", 1024);
-  int h = hGrp->GetInt("Height", 768);
-  int x = hGrp->GetInt("PosX", pos().x());
-  int y = hGrp->GetInt("PosY", pos().y());
-  bool max = hGrp->GetBool("Maximized", false);
-  resize( w, h );
-  move(x, y);
-  max ? showMaximized() : show();
+    QString vendor = App::Application::Config()["ExeVendor"].c_str();
+    QString application = App::Application::Config()["ExeName"].c_str();
+    QString version = App::Application::Config()["ExeVersion"].c_str();
+    QSettings config(vendor, application);
+    config.beginGroup(version);
+    this->resize(config.value("Size", QSize(1024, 768)).toSize());
+    this->move(config.value("Position", pos()).toPoint());
+    this->restoreState(config.value("MainWindowState").toByteArray());
+    bool max = config.value("Maximized", false).toBool();
+    max ? showMaximized() : show();
+    config.endGroup();
 }
 
 void MainWindow::saveWindowSettings()
 {
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
-  if (isMaximized())
-  {
-    hGrp->SetBool("Maximized", true);
-  }
-  else
-  {
-    hGrp->SetInt("Width", width());
-    hGrp->SetInt("Height", height());
-    hGrp->SetInt("PosX", pos().x());
-    hGrp->SetInt("PosY", pos().y());
-    hGrp->SetBool("Maximized", false);
-  }
+    QString vendor = App::Application::Config()["ExeVendor"].c_str();
+    QString application = App::Application::Config()["ExeName"].c_str();
+    QString version = App::Application::Config()["ExeVersion"].c_str();
+    QSettings config(vendor, application);
+    config.beginGroup(version);
+    config.setValue("Size", size());
+    config.setValue("Position", pos());
+    config.setValue("Maximized", isMaximized());
+    config.setValue("MainWindowState", this->saveState());
+    config.endGroup();
 
     DockWindowManager::instance()->saveState();
     ToolBarManager::getInstance()->saveState();

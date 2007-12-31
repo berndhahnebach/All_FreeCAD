@@ -71,6 +71,7 @@
 #include <qradiobutton.h>
 #include <QScrollArea>
 #include <qscrollbar.h>
+#include <QSettings>
 #include <QShortcut>
 #include <qslider.h>
 #include <qspinbox.h>
