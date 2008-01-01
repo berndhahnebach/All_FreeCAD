@@ -56,6 +56,7 @@
 #include "ToolBox.h"
 #include "HelpView.h"
 #include "ReportView.h"
+#include "PythonConsole.h"
 
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
@@ -226,6 +227,11 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
   pcReport->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Report view"));
   pDockMgr->registerDockWindow("Std_ReportView", pcReport);
+
+  // FIXME: Break into two dock windows in tabbed mode (with icon and correct tab width)
+  //QWidget* pcPython = new PythonConsole(this);
+  //pcPython->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Python view"));
+  //pDockMgr->registerDockWindow("Std_PythonView", pcPython);
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent
   setAcceptDrops(true);
