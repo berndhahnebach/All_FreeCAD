@@ -8,8 +8,10 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-CASROOTDIR=$(shell echo $(CASROOT))
-SOURCEOCCDIR=$(CASROOTDIR)/lin/lib
+CASROOT_DIR=$(shell echo $(CASROOT))
+OCC_INC_DIR=$(CASROOT_DIR)/inc
+OCC_LIB_DIR=$(CASROOT_DIR)/lin/lib
+SOURCEOCCDIR=$(OCC_LIB_DIR)
 DESTOCCDIR=$(shell pwd)/debian/freecad/usr/lib/freecad/lib
 
 
@@ -30,7 +32,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --disable-debug --with-occ-include=$(CASROOTDIR)/inc --with-occ-lib=$(CASROOTDIR)/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --disable-debug --with-occ-include=$(OCC_INC_DIR) --with-occ-lib=$(OCC_LIB_DIR) --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 build: build-stamp
