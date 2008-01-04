@@ -6,8 +6,10 @@ Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3), libstdc++6
 Standards-Version: 3.7.2
 
 Package: freecad
-Architecture: any
+Architecture: i386
 Depends: ${shlibs:Depends}
+Conflicts: freecad (<= 0.6.472-1)
+Replaces: freecad (<< 0.7.1031-1)
 Description: An extensible Open Source CAx program for Unix/X11
  FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
  It features some key concepts like macro recording, workbenches, ability

@@ -19,8 +19,10 @@ EXTRA_DIST = \
 		installer/Version.wxi.in \
 		FreeCAD.sln \
 		autogen.sh \
+		build.sh \
 		ChangeLog.txt \
 		copying.lib \
+		package.sh \
 		README.Cygwin \
 		README.Linux \
 		README.Win32
