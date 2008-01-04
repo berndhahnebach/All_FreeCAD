@@ -168,17 +168,34 @@ def BuildInstaller():
 	print ""
 	
 def HelpFile():
-	print sys.path
 	import wiki2chm
-	
-	CallProcess([Config.get('Tools','wget'),'-k', '-r', '-l5', '-P', 'tmp', '-nd', 
+	if not os.path.isdir('doc'):
+		os.mkdir('doc')
+	if not os.path.isdir('doc/tmp'):
+		os.mkdir('doc/tmp')
+		
+	CallProcess([Config.get('Tools','wget'),'-k', '-r', '-l5', '-P', 'doc/tmp', '-nd', 
 	            '-R', '*action=*',
 				'-R', '*title=Special*',
 				'-R', '*title=Talk*',
 				'-R', '*oldid=*',
 				'-R', '*printable=yes*',
+				'--append-output=doc/tmp/wget.log',
 				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
 				 "8) Download docu")
+
+	open('doc/tmp/chm.css','w').write(open('src/Tools/chm.css').read())
+	
+	wiki2chm.WikiBaseUrl ='http://juergen-riegel.net/FreeCAD/Docu/'
+	wiki2chm.TocPageName ='Online_Help_Toc'
+	wiki2chm.BasePath ='doc/tmp/'
+
+	wiki2chm.replaceCSS()
+	
+	wiki2chm.WriteProject()
+	wiki2chm.readToc()
+	
+	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'9) Compile docu:') 
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
