@@ -34,7 +34,7 @@ Version:
   0.1
 """
 
-import os,sys,string,re,getopt,codecs,binascii,datetime,urllib
+import os,sys,string,re,getopt,codecs,binascii,datetime,urllib,glob
 
 
 # Globals
@@ -57,6 +57,18 @@ hhcHeader = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 """
 hhcFooter="""</UL>
 </BODY></HTML>
+"""
+ProjectFile = """
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=FreeCAD.chm
+Contents file=Online_Help_Toc.hhc
+Default topic=index.php@title=Online_Help_Startpage
+Display compile progress=Yes
+Full-text search=Yes
+Language=0x409 Englisch (USA)
+[FILES]
+
 """
 
 def runWget():
@@ -153,9 +165,30 @@ def readToc():
 
 	file.write(hhcFooter)
 
-
-
-
+def WriteProject():
+	global proxies,WikiBaseUrl,TocPageName,BasePath
+	
+	file = open(BasePath + TocPageName +".hhp","w")
+	file.write(ProjectFile)
+	
+	for FileEntry in os.listdir(BasePath) :
+		if(not FileEntry == TocPageName +".hhp"):
+			file.write(FileEntry + '\n')
+	
+	file.close()
+	
+def replaceCSS():
+	paths = glob.glob(BasePath + 'index.php*')
+	for file in paths:
+		input = open(file,'r')
+		output = open(file + '_temp','w')
+		for l in input:
+			output.write(l.replace('"/FreeCAD/Docu/skins/monobook/main.css?9"','"chm.css"'))
+		output.close()
+		input.close()
+		os.remove(file)
+		os.rename(file + '_temp',file)
+		
 def main():
 	global proxies,WikiBaseUrl,TocPageName,BasePath
 	Proxy = ""
