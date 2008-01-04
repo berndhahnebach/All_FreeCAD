@@ -121,6 +121,9 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 void
 View3DInventorViewer::seekToCamera(const SbVec3f & scenepos)
 {
+	SoCamera *cam = getCamera();
+	cam;
+
   //SbVec3f hitpoint(scenepos);
 
   //PRIVATE(this)->camerastartposition = PRIVATE(this)->camera->position.getValue();

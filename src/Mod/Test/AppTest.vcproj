@@ -72,6 +72,7 @@
 				OutputFile="../../../Mod/Test/dummy.log"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				GenerateManifest="false"
 				ProgramDatabaseFile=".\../../../Mod/Test/dummy.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -162,6 +163,7 @@
 				OutputFile="../../../Mod/Test/dummy.log"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\../../../Mod/Test/dummy.pdb"
 				SubSystem="1"
@@ -375,7 +377,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -385,7 +387,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>

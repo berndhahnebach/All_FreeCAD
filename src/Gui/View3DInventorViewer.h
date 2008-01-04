@@ -233,6 +233,17 @@ private:
   AbstractMouseModel* pcMouseModel;
   std::vector<SbVec2f> pcPolygon;
 
+  // Seek functionality
+  SoTimerSensor * seeksensor;
+  float seekperiod;
+  SbBool inseekmode;
+  SbBool seektopoint;
+  SbVec3f camerastartposition, cameraendposition;
+  SbRotation camerastartorient, cameraendorient;
+  float seekdistance;
+  SbBool seekdistanceabs;
+
+
 
   void initialize();
   void finalize();
