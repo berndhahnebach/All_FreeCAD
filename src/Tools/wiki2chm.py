@@ -119,7 +119,7 @@ def insertTocEntry(file,Indent,points,name,folder=0):
 	file.write(IndentStr + '<LI><OBJECT type="text/sitemap">\n')
 	file.write(IndentStr + '      <param name="Name" value="'+ name +'">\n')
 	if(not folder):
-		file.write(IndentStr + '      <param name="Local" value="'+ name.replace(" ","_") + '.htm' +'">\n')
+		file.write(IndentStr + '      <param name="Local" value="index.php@title='+ name.replace(" ","_") + '">\n')
 	file.write(IndentStr + '   </OBJECT>\n')
 	return points
 	
@@ -180,6 +180,7 @@ def WriteProject():
 def replaceCSS():
 	paths = glob.glob(BasePath + 'index.php*')
 	for file in paths:
+		print "Replace: ",file
 		input = open(file,'r')
 		output = open(file + '_temp','w')
 		for l in input:

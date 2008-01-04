@@ -174,23 +174,23 @@ def HelpFile():
 	if not os.path.isdir('doc/tmp'):
 		os.mkdir('doc/tmp')
 		
-	CallProcess([Config.get('Tools','wget'),'-k', '-r', '-l5', '-P', 'doc/tmp', '-nd', 
-	            '-R', '*action=*',
-				'-R', '*title=Special*',
-				'-R', '*title=Talk*',
-				'-R', '*oldid=*',
-				'-R', '*printable=yes*',
-				'--append-output=doc/tmp/wget.log',
-				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
-				 "8) Download docu")
+#	CallProcess([Config.get('Tools','wget'),'-k', '-r', '-l5', '-P', 'doc/tmp', '-nd', 
+#	            '-R', '*action=*',
+#				'-R', '*title=Special*',
+#				'-R', '*title=Talk*',
+#				'-R', '*oldid=*',
+#				'-R', '*printable=yes*',
+#				'--append-output=doc/tmp/wget.log',
+#				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
+#				 "8) Download docu")
 
-	open('doc/tmp/chm.css','w').write(open('src/Tools/chm.css').read())
+#	open('doc/tmp/chm.css','w').write(open('src/Tools/chm.css').read())
 	
 	wiki2chm.WikiBaseUrl ='http://juergen-riegel.net/FreeCAD/Docu/'
 	wiki2chm.TocPageName ='Online_Help_Toc'
 	wiki2chm.BasePath ='doc/tmp/'
 
-	wiki2chm.replaceCSS()
+#	wiki2chm.replaceCSS()
 	
 	wiki2chm.WriteProject()
 	wiki2chm.readToc()
@@ -246,10 +246,10 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		#CheckOut()
-		#PackSourceZip()
-		#PackSourceTar()
-		#BuildAll()
+		CheckOut()
+		PackSourceZip()
+		PackSourceTar()
+		BuildAll()
 		HelpFile()
 		
 	except:
