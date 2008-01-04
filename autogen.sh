@@ -6,20 +6,20 @@
 echo "creating Version.h"
 python src/Tools/SubWCRev.py
 
+echo "calling libtoolize"
+libtoolize --force --copy
+
 echo "calling aclocal"
 aclocal
 
 echo "calling autoheader"
 autoheader
 
-echo "calling autoconf"
-autoconf
-
 echo "calling automake"
 automake --add-missing --copy
 
-echo "calling libtoolize"
-libtoolize --force --copy
+echo "calling autoconf"
+autoconf
 
 echo "Done"
 echo "Please run configure."
