@@ -1,0 +1,251 @@
+﻿#! python
+# -*- coding: utf-8 -*-
+# (c) 2007 Jürgen Riegel  GPL
+
+Usage = """BuildRelease - Build script to build a complete FreeCAD release
+
+Usage:
+   BuildRelease [Optionen] Major Minor ReleaseNbr Alias
+   
+Options:
+ -h, --help          print this help
+ -b, --buildPath     specify the output path where the build takes place
+ -i, --ini-file      specify the ini file to use
+ 
+This script will build a complete FreeCAD distribution which includes:
+* Check out fresh source
+* packing source
+* Set the Version and Release numbers
+* Gathering change log
+* completele build FreeCAD
+* run tests
+* build source docu
+* build user docu
+* build installer
+* upload to source forge 
+   
+On failure of one of these steps the script will stop.
+Each step writes tones of info in the log file.
+There is one error log file.
+
+Autor:
+  (c) 2007 Juergen Riegel
+  juergen.riegel@web.de
+	Licence: GPL
+
+Version:
+  0.1
+"""
+#  
+# Its inteded only to used by the maintainer
+
+import os, sys, getopt
+from subprocess import call,Popen,PIPE
+from time import sleep
+from zipfile import ZipFile,ZIP_DEFLATED
+import tarfile
+from string import find
+import ConfigParser
+
+
+# global information 
+Release = 0
+Major = 0
+Minor = 7
+Alias = ""
+FileName = ""
+BuildPath = "c:/temp"
+Log = None
+ErrLog = None
+Config = None
+
+
+def CallProcess(args,Msg):
+	Anim = ['-','\\','|','/']
+	
+	sys.stdout.write(Msg+':  ')
+	Log.write("====== Call: " + args[0] + '\n')
+	SVN = Popen(args,
+	            stdout=PIPE, stderr = ErrLog)
+	
+	i = 0
+	while(SVN.poll() == None):
+		line = SVN.stdout.readline()
+		if(line):
+			Log.write(line.replace('\n',''))
+		sys.stdout.write(chr(8) + Anim[i%4])
+		i+=1
+		sleep(0.2)
+	
+	#ErrLog.write(SVN.stdout.read())
+	sys.stdout.write(chr(8) + "done\n")
+	if(not SVN.returncode == 0):
+		raise
+
+
+def CheckOut():
+	
+	CallProcess([Config.get('Tools','svn'), 
+	             "checkout",
+				 "-r",
+				 `Release`,
+				 "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk",
+				 "../"+FileName],
+				 "2) Checking out")
+
+	sys.stdout.write('3) Write version files: ')
+	
+	Version = open("src/Build/Version.h","w")
+	Version.write('#define FCVersionMajor "' + `Major` + '"\n')
+	Version.write('#define FCVersionMinor "' + `Minor` + '"\n')
+	Version.write('#define FCVersionName "' + Alias + '"\n')
+	Version.write('#define FCRevision "' + `Release` + '"\n')
+	Version.write('#define FCRepositoryURL "' + "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk/src" + '"\n')
+	Version.write('#define FCRevisionDate  "undef"  \n')
+	Version.write('#define FCCurrentDateT  "undef"  \n')
+	Version.write('#define FCRevisionRange  "undef"   \n')
+	Version.write('#define FCScrClean  "undef"   \n')
+	Version.write('#define FCScrMixed  "undef"   \n')
+	Version.close()
+	
+	Version = open("installer/Version.wxi","w")
+	Version.write('<Include> \n')
+	Version.write('   <?define FCVersionMajor = ' + `Major` + ' ?>\n')
+	Version.write('   <?define FCVersionMinor = ' + `Minor` + ' ?>\n')
+	Version.write('   <?define FCVersionRevision =' + `Release` + ' ?>\n')
+	Version.write('   <?define FCVersionAlias = "' + Alias + '" ?>\n')
+	Version.write('</Include> \n')
+	Version.close()
+	
+	sys.stdout.write('done\n')
+	
+def BuildAll():
+	CallProcess(["BuildAll.bat"],
+				 "6) Build all")
+
+
+def PackSourceZip():
+
+	def addAll(dirFrom, ZipSrcFile):
+		for file in os.listdir(dirFrom):                      # for files/dirs here
+			if(not file==".svn" and not file== FileName+'_source.zip'):
+				pathFrom = os.path.join(dirFrom, file)
+				if not os.path.isdir(pathFrom):                   # copy simple files
+					ZipSrcFile.write(pathFrom,pathFrom.replace('.\\',FileName+'\\'))
+					Log.write("Insert: "+ pathFrom + '\n')
+				else:
+					addAll(pathFrom,ZipSrcFile)
+					
+	sys.stdout.write("4) Pack zip source files: ")
+	
+	SourceFile = ZipFile(FileName+'_source.zip','w',ZIP_DEFLATED,True)
+	addAll('.',SourceFile)
+	SourceFile.close()
+	
+	sys.stdout.write("done \n")
+	
+def PackSourceTar():
+
+	def addAll(dirFrom, ZipTarFile):
+		for file in os.listdir(dirFrom):                      # for files/dirs here
+			if(not file==".svn" and not file== FileName+'_source.zip'):
+				pathFrom = os.path.join(dirFrom, file)
+				if not os.path.isdir(pathFrom):                   # copy simple files
+					ZipTarFile.add(pathFrom,pathFrom.replace('.\\',FileName+'\\'))
+					Log.write("Insert: "+ pathFrom + '\n')
+				else:
+					addAll(pathFrom,ZipTarFile)
+					
+	sys.stdout.write("5) Pack tar source files: ")
+	
+	SourceFile = tarfile.open(FileName+'_source.tgz','w:gz')
+	addAll('.',SourceFile)
+	SourceFile.close()
+	
+	sys.stdout.write("done \n")
+	
+def BuildInstaller():
+	print ""
+	
+def HelpFile():
+	print sys.path
+	import wiki2chm
+	
+	CallProcess([Config.get('Tools','wget'),'-k', '-r', '-l5', '-P', 'tmp', '-nd', 
+	            '-R', '*action=*',
+				'-R', '*title=Special*',
+				'-R', '*title=Talk*',
+				'-R', '*oldid=*',
+				'-R', '*printable=yes*',
+				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
+				 "8) Download docu")
+	
+def main():
+	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
+	IniFile = "BuildRelease.ini"
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hb:", ["help","buildPath="])
+	except getopt.GetoptError:
+		# print help information and exit:
+		sys.stderr.write(Usage)
+		sys.exit(2)
+
+	# checking on the options
+	for o, a in opts:
+		if o in ("-h", "--help"):
+			sys.stderr.write(Usage)
+			sys.exit()
+		if o in ("-b", "--buildPath"):
+			BuildPath = a
+		if o in ("-i", "--ini-file"):
+			IniFile = a
+
+
+	# runing through the files
+	if (not len(args) == 1):
+		sys.stderr.write(Usage)
+	
+	Release = int(args[0])
+	
+	Config = ConfigParser.ConfigParser()
+	Config.readfp(open(IniFile))
+	
+	Alias   = Config.get('Version','Alias')
+	Major   = Config.getint('Version','Major')
+	Minor   = Config.getint('Version','Minor')
+
+	# creating the directory and switch to
+	FileName = 'FreeCAD_' + `Major` + '.' + `Minor` + '.' + `Release`
+	print "=== Building:", FileName, '\n'
+	BuildPath = BuildPath + '/' + FileName
+	# set tool path 
+	sys.path.append((BuildPath + '/src/Tools') )
+	OldCwd = os.getcwd()
+	print "1) Creating Build directory: ", BuildPath
+	if not os.path.isdir(BuildPath):
+		os.mkdir(BuildPath)
+	os.chdir(BuildPath)
+	Log = open("BuildRelease.log","w")
+	ErrLog = open("BuildReleaseErrors.log","w")
+	
+	try:
+		#CheckOut()
+		#PackSourceZip()
+		#PackSourceTar()
+		#BuildAll()
+		HelpFile()
+		
+	except:
+		Log.close()
+		ErrLog.close()
+		Err = open("BuildReleaseErrors.log","r")
+		sys.stderr.write("!!!!!!!!! Fehler aufgetreten:\n")
+		sys.stderr.write(Err.read())
+		raise
+	
+	os.chdir(OldCwd)
+	print "Press any key"
+	sys.stdin.readline()
+	
+if __name__ == "__main__":
+	main()
