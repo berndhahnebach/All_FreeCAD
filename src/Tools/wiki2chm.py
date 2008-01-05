@@ -193,7 +193,9 @@ def replaceCSS():
 			output.write(l.replace('"/FreeCAD/Docu/skins/monobook/main.css?9"','"chm.css"'))
 		output.close()
 		input.close()
+		time.sleep(0.2)
 		os.remove(file)
+		time.sleep(0.2)
 		os.rename(file + '_temp',file)
 		
 def main():

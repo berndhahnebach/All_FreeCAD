@@ -80,6 +80,7 @@ def CallProcess(args,Msg):
 	#ErrLog.write(SVN.stdout.read())
 	sys.stdout.write(chr(8) + "done\n")
 	if(not SVN.returncode == 0):
+		print "Process returns: ",SVN.returncode
 		raise
 
 
@@ -184,6 +185,7 @@ def HelpFile():
 				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
 				 "8) Download docu")
 
+	sys.stdout.write("9) Fix up CSS: ")
 	open('doc/tmp/chm.css','w').write(open('src/Tools/chm.css').read())
 	
 	wiki2chm.WikiBaseUrl ='http://juergen-riegel.net/FreeCAD/Docu/'
@@ -195,8 +197,10 @@ def HelpFile():
 	
 	wiki2chm.WriteProject()
 	wiki2chm.readToc()
+	sys.stdout.write("done \n")
 	
-	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'9) Compile docu:') 
+def CompileHelp()
+	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:') 
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
@@ -252,7 +256,7 @@ def main():
 		PackSourceTar()
 		BuildAll()
 		HelpFile()
-		
+		CompileHelp()
 	except:
 		Log.close()
 		ErrLog.close()
