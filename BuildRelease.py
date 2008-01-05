@@ -189,6 +189,7 @@ def HelpFile():
 	wiki2chm.WikiBaseUrl ='http://juergen-riegel.net/FreeCAD/Docu/'
 	wiki2chm.TocPageName ='Online_Help_Toc'
 	wiki2chm.BasePath ='doc/tmp/'
+	wiki2chm.Output = Log
 
 	wiki2chm.replaceCSS()
 	

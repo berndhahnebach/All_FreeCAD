@@ -20,6 +20,11 @@ Exit:
  
 This programm read the wiki and generate all nececary files
 to generat a .chm file.
+The TocPageName is a special page in the Wiki, which is used
+to generate the content for the .chm.
+This programm is part of the FreeCAD Build system and at the
+moment not realy in shape to use outside of FreeCAD. 
+There fore some changes have to be made (e.g. fix paths).
 
 Examples:
   
@@ -31,7 +36,7 @@ Autor:
   Licence: GPL
 
 Version:
-  0.1
+  0.2
 """
 
 import os,sys,string,re,getopt,codecs,binascii,datetime,urllib,glob
@@ -70,6 +75,7 @@ Language=0x409 Englisch (USA)
 [FILES]
 
 """
+Output = sys.stdout
 
 def runWget():
 	cmdLine = Wget + " "
@@ -103,7 +109,7 @@ def getArticle(Name):
 	file.close()
 
 def insertTocEntry(file,Indent,points,name,folder=0):
-	print "TocEntry",Indent,points,name
+	Output.write( "TocEntry:" + `Indent` + ' ' + name)
 	name = name.replace("\n","")
 	IndentStr = ""
 	for i in range(points):IndentStr += "   "
@@ -127,7 +133,7 @@ def readToc():
 	global proxies,WikiBaseUrl,TocPageName,BasePath
 	
 	url = WikiBaseUrl + 'index.php?title=Special:Export/' + TocPageName
-	print 'Open Toc url: ' + url
+	Output.write( 'Open Toc url: ' + url + '\n')
 	urlFile = urllib.urlopen(url,proxies=proxies)
 	Toc = urlFile.readlines()
 	
@@ -144,19 +150,19 @@ def readToc():
 		#print line
 		TocMatch = Toc2.search(line);
 		if TocMatch:
-			print "Match2: ", TocMatch.group(1),TocMatch.group(2),TocMatch.group(3)
+			#print "Match2: ", TocMatch.group(1),TocMatch.group(2),TocMatch.group(3)
 			#getArticle(TocMatch.group(2))
 			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc3.search(line);
 		if TocMatch:
-			print "Match3: ", TocMatch.group(1),TocMatch.group(2)
+			#print "Match3: ", TocMatch.group(1),TocMatch.group(2)
 			#getArticle(TocMatch.group(2))
 			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc1.search(line);
 		if TocMatch:
-			print "Match1: ", TocMatch.group(1),TocMatch.group(2)
+			#print "Match1: ", TocMatch.group(1),TocMatch.group(2)
 			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2),1)
 			continue
 	for i in range(ListIndent-1):
@@ -180,7 +186,7 @@ def WriteProject():
 def replaceCSS():
 	paths = glob.glob(BasePath + 'index.php*')
 	for file in paths:
-		print "Replace: ",file
+		Output.write( "Replace: " +file + '\n')
 		input = open(file,'r')
 		output = open(file + '_temp','w')
 		for l in input:
@@ -237,6 +243,7 @@ def main():
 		TocPageName = args[1]
 		runWget()
 		readToc()
+		WriteProject()
 		
 
 
