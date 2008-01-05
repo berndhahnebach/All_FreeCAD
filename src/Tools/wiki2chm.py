@@ -39,7 +39,7 @@ Version:
   0.2
 """
 
-import os,sys,string,re,getopt,codecs,binascii,datetime,urllib,glob
+import os,sys,string,re,getopt,codecs,binascii,datetime,urllib,glob,time
 
 
 # Globals

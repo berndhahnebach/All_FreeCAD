@@ -60,7 +60,7 @@ ErrLog = None
 Config = None
 
 
-def CallProcess(args,Msg):
+def CallProcess(args,Msg,ret=True):
 	Anim = ['-','\\','|','/']
 	
 	sys.stdout.write(Msg+':  ')
@@ -79,7 +79,7 @@ def CallProcess(args,Msg):
 	
 	#ErrLog.write(SVN.stdout.read())
 	sys.stdout.write(chr(8) + "done\n")
-	if(not SVN.returncode == 0):
+	if(not SVN.returncode == 0 and ret):
 		print "Process returns: ",SVN.returncode
 		raise
 
@@ -199,8 +199,8 @@ def HelpFile():
 	wiki2chm.readToc()
 	sys.stdout.write("done \n")
 	
-def CompileHelp()
-	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:') 
+def CompileHelp():
+	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:',False) 
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
