@@ -145,13 +145,13 @@ def readToc():
 		TocMatch = Toc2.search(line);
 		if TocMatch:
 			print "Match2: ", TocMatch.group(1),TocMatch.group(2),TocMatch.group(3)
-			getArticle(TocMatch.group(2))
+			#getArticle(TocMatch.group(2))
 			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc3.search(line);
 		if TocMatch:
 			print "Match3: ", TocMatch.group(1),TocMatch.group(2)
-			getArticle(TocMatch.group(2))
+			#getArticle(TocMatch.group(2))
 			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc1.search(line);
