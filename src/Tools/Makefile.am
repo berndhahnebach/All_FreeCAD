@@ -50,6 +50,7 @@ EXTRA_DIST = \
 		RegExp/regexpdialog.cpp \
 		RegExp/regexpdialog.h \
 		RegExp/regexpdialogbase.ui \
+		chm.css \
 		ConvertUi.py \
 		dir2qrc.py \
 		DistTools.py \
