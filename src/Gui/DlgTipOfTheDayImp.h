@@ -53,20 +53,26 @@ namespace Dialog {
  */
 class DlgTipOfTheDayImp : public QDialog, public Ui_DlgTipOfTheDay, public WindowParameter
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgTipOfTheDayImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgTipOfTheDayImp();
+    DlgTipOfTheDayImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgTipOfTheDayImp();
 
-  void reload();
+    void reload();
 
 public Q_SLOTS:
-  void on_buttonNextTip_clicked();
+    void on_buttonNextTip_clicked();
+
+protected Q_SLOTS:
+    void onDone(bool);
+    void onStateChanged (int state);
+    void onResponseHeaderReceived(const QHttpResponseHeader &);
 
 private:
-  QStringList _lTips;
-  int _iCurrentTip;
+    QStringList _lTips;
+    int _iCurrentTip;
+    QHttp* _http;
 };
 
 } // namespace Dialog
