@@ -53,10 +53,8 @@ DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, Qt::WFlags fl )
 {
     setupUi(this);
     _http = new QHttp;
-    connect(_http, SIGNAL(done(bool)), 
-            this, SLOT(onDone(bool)));
-    connect(_http, SIGNAL(stateChanged(int)), 
-            this, SLOT(onStateChanged(int)));
+    connect(_http, SIGNAL(done(bool)), this, SLOT(onDone(bool)));
+    connect(_http, SIGNAL(stateChanged(int)), this, SLOT(onStateChanged(int)));
     connect(_http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), 
             this, SLOT(onResponseHeaderReceived(const QHttpResponseHeader &)));
 
@@ -82,50 +80,21 @@ DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
 /** Shows next tip taken from the Tip-of-the-day site. */
 void DlgTipOfTheDayImp::on_buttonNextTip_clicked()
 {
-    _iCurrentTip = ( _iCurrentTip + 1 ) % _lTips.size();
-    textTip->setText( _lTips[_iCurrentTip] );
+    _iCurrentTip = (_iCurrentTip + 1) % _lTips.size();
+    textTip->setText(_lTips[_iCurrentTip]);
 }
 
 /** Reloads all tips from Tip-of-the-day site. */
 void DlgTipOfTheDayImp::reload()
 {
-    //QUrl url("http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Tip_of_the_day");
-    //_http->setHost(url.host());
-    //_http->get(url.path(), 0);
+    // set the host and start the download
     _http->setHost("juergen-riegel.net");
     _http->get("/FreeCAD/Docu/index.php?title=Tip_of_the_day", 0);
 
-    // search for the Wiki Tip-of-the-day site
-    QString home = App::GetApplication().GetHomePath();
-    QString path = getDefaultParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/wiki").c_str();
-    QString file = home + path + "index.php@TipOfTheDay.html";
-
-    QFile f ( file );
-    QTextStream txt( &f );
-
-    if (f.open( QIODevice::ReadOnly )) {
-        do {
-            QString inp = txt.readLine();
-            if (inp.startsWith("<li> ")) {
-                _lTips << inp;
-            }
-        }
-        //HACK Not sure this works (was  while ( !txt.eof()) )
-        while ( !txt.atEnd() );
-    }
-
     _iCurrentTip = 0;
-
-    // show standard tip if site is not found
-    if (_lTips.empty()) {
-        //_lTips << QString("If you want to make use of the Tip-of-the-day you must download "
-        //                  "FreeCAD's online help from <a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
-        //                  "http://freecad.juergen-riegel.net/Docu/</a>."
-        //                  "To download the online help press Help -> Download online help.");
-        _lTips << QString("If you want to learn more about FreeCAD you must go to "
-                          "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
-                          "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
-    }
+    _lTips << QString("If you want to learn more about FreeCAD you must go to "
+                      "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
+                      "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
 }
 
 void DlgTipOfTheDayImp::onResponseHeaderReceived(const QHttpResponseHeader & responseHeader)
@@ -142,26 +111,15 @@ void DlgTipOfTheDayImp::onDone(bool err)
     if (err)
         return;
 
-    //FIXME: Quick hack
-    QVariant data(_http->readAll());
-    QString text = data.toString();
-    QStringList lines = text.split("\n");
-    bool found = false;
-    QString buffer;
-    for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it) {
-        if (!found && it->startsWith("<div class=\"editsection\" style")) {
-            found = true;
-            continue;
-        }
-
-        if (found) {
-            buffer += *it;
-            if (it->startsWith("</p>")) {
-                found = false;
-                _lTips.push_back(buffer);
-                buffer.clear();
-            }
-        }
+    // get the page and search for the tips section
+    QString text = _http->readAll();
+    QRegExp rx("<div class=\"editsection\".+<div class=\"printfooter\">");
+    if (rx.indexIn(text) > -1) {
+        // the text of interest
+        text = rx.cap();
+        rx.setPattern("<div class=\"editsection\".+</h3>");
+        rx.setMinimal(true);
+        _lTips += text.split(rx, QString::SkipEmptyParts);
     }
 }
 

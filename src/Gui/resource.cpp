@@ -51,36 +51,36 @@ using namespace Gui::Dialog;
  */
 WidgetFactorySupplier::WidgetFactorySupplier()
 {
-  // ADD YOUR PREFERENCE PAGES HERE
-  //
-  //
-  new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
-  new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
+    // ADD YOUR PREFERENCE PAGES HERE
+    //
+    //
+    new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
+  //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
 
-  // ADD YOUR CUSTOMIZE PAGES HERE
-  //
-  //
-  new CustomPageProducer<DlgCustomCommandsImp>;
-  new CustomPageProducer<DlgCustomKeyboardImp>;
-  new CustomPageProducer<DlgCustomToolbarsImp>;
-  new CustomPageProducer<DlgCustomToolBoxbarsImp>;
-  new CustomPageProducer<DlgCustomActionsImp>;
+    // ADD YOUR CUSTOMIZE PAGES HERE
+    //
+    //
+    new CustomPageProducer<DlgCustomCommandsImp>;
+    new CustomPageProducer<DlgCustomKeyboardImp>;
+    new CustomPageProducer<DlgCustomToolbarsImp>;
+    new CustomPageProducer<DlgCustomToolBoxbarsImp>;
+    new CustomPageProducer<DlgCustomActionsImp>;
 
-  // ADD YOUR PREFERENCE WIDGETS HERE
-  //
-  //
-  new WidgetProducer<PrefSpinBox>;
-  new WidgetProducer<PrefLineEdit>;
-  new WidgetProducer<PrefComboBox>;
-  new WidgetProducer<PrefCheckBox>;
-  new WidgetProducer<PrefRadioButton>;
-  new WidgetProducer<PrefSlider>;
-  new WidgetProducer<CommandIconView>;
-  new WidgetProducer<AccelLineEdit>;
-  new WidgetProducer<ColorButton>;
+    // ADD YOUR PREFERENCE WIDGETS HERE
+    //
+    //
+    new WidgetProducer<PrefSpinBox>;
+    new WidgetProducer<PrefLineEdit>;
+    new WidgetProducer<PrefComboBox>;
+    new WidgetProducer<PrefCheckBox>;
+    new WidgetProducer<PrefRadioButton>;
+    new WidgetProducer<PrefSlider>;
+    new WidgetProducer<CommandIconView>;
+    new WidgetProducer<AccelLineEdit>;
+    new WidgetProducer<ColorButton>;
 }
