@@ -89,47 +89,41 @@ static PyObject * insert(PyObject *self, PyObject *args)
 {
     const char* Name;
     const char* DocName=0;
-	PyObject *pcObj = 0;
+    PyObject *pcObj = 0;
 
     if (!PyArg_ParseTuple(args, "s|s",&Name,&DocName))
-		if (!PyArg_ParseTuple(args, "O!|s", &(MeshPy::Type), &pcObj,&DocName))   
-			return NULL;
-	PyErr_Clear();
+        if (!PyArg_ParseTuple(args, "O!|s", &(MeshPy::Type), &pcObj,&DocName))
+            return NULL;
+    PyErr_Clear();
     PY_TRY {
-		App::Document *pcDoc = 0;
-		if (DocName)
-			pcDoc = App::GetApplication().getDocument(DocName);
-		else
-			pcDoc = App::GetApplication().getActiveDocument();
+        App::Document *pcDoc = 0;
+        if (DocName)
+            pcDoc = App::GetApplication().getDocument(DocName);
+        else
+            pcDoc = App::GetApplication().getActiveDocument();
 
-		if (!pcDoc) {
-			if (DocName)
-				PyErr_Format(PyExc_Exception, "Insert called to the non-existing document '%s'", DocName);
-			else
-				PyErr_SetString(PyExc_Exception, "No active document found");
-			return NULL;
-		}
+        if (!pcDoc) {
+            if (DocName)
+                PyErr_Format(PyExc_Exception, "Insert called to the non-existing document '%s'", DocName);
+            else
+                PyErr_SetString(PyExc_Exception, "No active document found");
+            return NULL;
+        }
 
-		if(pcObj){
-
-			MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
-			Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
-			// copy the data
-			MeshObject* mesh = new MeshObject(*pMesh->getMeshObjectPtr());
-			pcFeature->Mesh.setValue(mesh);
-
-		}else{
-
-			Base::FileInfo file(Name);
-	      
-			// add Import feature
-
-			// The feature checks the file extension
-			Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
-			pcFeature->FileName.setValue( Name );
-			pcDoc->recompute();
-		}
-
+        if (pcObj) {
+            MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
+            Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
+            // copy the data
+            MeshObject* mesh = new MeshObject(*pMesh->getMeshObjectPtr());
+            pcFeature->Mesh.setValue(mesh);
+        }
+        else {
+            // add Import feature (the feature checks the file extension)
+            Base::FileInfo file(Name);
+            Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
+            pcFeature->FileName.setValue(Name);
+            pcDoc->recompute();
+        }
     } PY_CATCH;
 
     Py_Return;    
@@ -358,7 +352,7 @@ PyDoc_STRVAR(open_doc,
 "open(string) -- Create a new document and a Mesh::Import feature to load the file into the document.");
 
 PyDoc_STRVAR(inst_doc,
-"insert(string|mesh,| string) -- Load or insert a mesh into the given or active document.");
+"insert(string|mesh,[string]) -- Load or insert a mesh into the given or active document.");
 
 PyDoc_STRVAR(loft_doc,
 "Loft on curve.");
