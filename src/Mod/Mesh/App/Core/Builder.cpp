@@ -38,10 +38,17 @@ using namespace MeshCore;
 
 MeshBuilder::MeshBuilder (MeshKernel& kernel) : _meshKernel(kernel)
 {
+    _fSaveTolerance = MeshDefinitions::_fMinPointDistanceD1;
 }
 
 MeshBuilder::~MeshBuilder (void)
 {
+    MeshDefinitions::_fMinPointDistanceD1 = _fSaveTolerance;
+}
+
+void MeshBuilder::SetTolerance(float fTol)
+{
+    MeshDefinitions::_fMinPointDistanceD1 = fTol;
 }
 
 void MeshBuilder::Initialize (unsigned long ctFacets, bool deletion)
