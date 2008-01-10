@@ -111,6 +111,11 @@ public:
     MeshBuilder(MeshKernel &rclM);
     ~MeshBuilder(void);
 
+    /**
+     * Set the tolerance for the comparison of points. Normally you don't need to set the tolerance.
+     */
+    void SetTolerance(float);
+
     /** Initializes the class. Must be done before adding facets 
      * @param \a ctFacets count of facets. 
      * @param \a deletion if true (default) the mesh-kernel will be cleared otherwise you can add new facets on an existing mesh-kernel
@@ -142,6 +147,9 @@ public:
     void Finish (bool freeMemory=false);
 
     friend class MeshKernel;
+
+private:
+    float _fSaveTolerance;
 };
 
 } // namespace MeshCore
