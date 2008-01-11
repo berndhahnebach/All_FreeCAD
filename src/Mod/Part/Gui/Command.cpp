@@ -30,10 +30,14 @@
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
+#include <Gui/Document.h>
 #include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -43,6 +47,7 @@
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
 #include "DlgPrimitives.h"
+#include "ViewProvider.h"
 
 
 using Gui::FileDialog;
@@ -564,23 +569,67 @@ bool CmdPartPrimitives::isActive(void)
     return hasActiveDocument();
 }
 
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdShapeInfo);
+
+CmdShapeInfo::CmdShapeInfo()
+  :Command("Part_ShapeInfo")
+{
+    sAppModule    = "Part";
+    sGroup        = "Part";
+    sMenuText     = "Shape info...";
+    sToolTipText  = "Info about shape";
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "mesh_pipette";
+}
+
+void CmdShapeInfo::activated(int iMsg)
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), PartGui::ViewProviderPart::shapeInfoCallback);
+     }
+}
+
+bool CmdShapeInfo::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc || doc->countObjectsOfType(Part::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
 
 void CreatePartCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-  rcCmdMgr.addCommand(new CmdPartBoolean());
-  rcCmdMgr.addCommand(new CmdPartCommon());
-  rcCmdMgr.addCommand(new CmdPartCut());
-  rcCmdMgr.addCommand(new CmdPartFuse());
-  rcCmdMgr.addCommand(new CmdPartSection());
-  rcCmdMgr.addCommand(new CmdPartBox());
-  rcCmdMgr.addCommand(new CmdPartBox2());
-  rcCmdMgr.addCommand(new CmdPartBox3());
+    rcCmdMgr.addCommand(new CmdPartBoolean());
+    rcCmdMgr.addCommand(new CmdPartCommon());
+    rcCmdMgr.addCommand(new CmdPartCut());
+    rcCmdMgr.addCommand(new CmdPartFuse());
+    rcCmdMgr.addCommand(new CmdPartSection());
+    rcCmdMgr.addCommand(new CmdPartBox());
+    rcCmdMgr.addCommand(new CmdPartBox2());
+    rcCmdMgr.addCommand(new CmdPartBox3());
 
-  rcCmdMgr.addCommand(new CmdPartImport());
-  rcCmdMgr.addCommand(new CmdPartImportCurveNet());
-  rcCmdMgr.addCommand(new CmdPartPickCurveNet());
-  rcCmdMgr.addCommand(new CmdPartPrimitives());
+    rcCmdMgr.addCommand(new CmdPartImport());
+    rcCmdMgr.addCommand(new CmdPartImportCurveNet());
+    rcCmdMgr.addCommand(new CmdPartPickCurveNet());
+    rcCmdMgr.addCommand(new CmdPartPrimitives());
+    rcCmdMgr.addCommand(new CmdShapeInfo());
 } 
 

@@ -26,10 +26,13 @@
 
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Standard_Boolean.hxx>
+#include <map>
 
 class TopoDS_Shape;
 class TopoDS_Face;
 class SoSeparator;
+class SoVertexShape;
+class SoPickedPoint;
 class SbVec3f;
 
 namespace PartGui {
@@ -37,60 +40,62 @@ namespace PartGui {
 
 class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderGeometryObject
 {
-  PROPERTY_HEADER(PartGui::ViewProviderPart);
+    PROPERTY_HEADER(PartGui::ViewProviderPart);
 
 public:
-  /// constructor
-  ViewProviderPart();
-  /// destructor
-  virtual ~ViewProviderPart();
+    /// constructor
+    ViewProviderPart();
+    /// destructor
+    virtual ~ViewProviderPart();
 
-  // Display properties
-  App::PropertyFloatConstraint LineWidth;
-  App::PropertyFloatConstraint PointSize;
-  App::PropertyColor LineColor;
-  App::PropertyColor PointColor;
-  App::PropertyMaterial LineMaterial;
-  App::PropertyMaterial PointMaterial;
+    // Display properties
+    App::PropertyFloatConstraint LineWidth;
+    App::PropertyFloatConstraint PointSize;
+    App::PropertyColor LineColor;
+    App::PropertyColor PointColor;
+    App::PropertyMaterial LineMaterial;
+    App::PropertyMaterial PointMaterial;
 
 
-  virtual void attach(App::DocumentObject *);
-  virtual void setDisplayMode(const char* ModeName);
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Update the Part representation
-  //virtual void update(const ChangeType&);
+    virtual void attach(App::DocumentObject *);
+    virtual void setDisplayMode(const char* ModeName);
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
+    /// Update the Part representation
+    //virtual void update(const ChangeType&);
 
-  virtual void updateData(const App::Property*);
+    virtual void updateData(const App::Property*);
+    TopoDS_Shape getShape(const SoPickedPoint*) const;
+    static void shapeInfoCallback(void * ud, SoEventCallback * n);
 
 protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+    /// get called by the container whenever a property has been changed
+    virtual void onChanged(const App::Property* prop);
+    Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
 
-  // nodes for the data representation
-  SoSeparator *EdgeRoot;
-  SoSeparator *FaceRoot;
-  SoSeparator *VertexRoot;
-  SoMaterial  *pcLineMaterial;
-  SoMaterial  *pcPointMaterial;
-  SoDrawStyle *pcLineStyle;
-  SoDrawStyle *pcPointStyle;
+    // nodes for the data representation
+    SoSeparator *EdgeRoot;
+    SoSeparator *FaceRoot;
+    SoSeparator *VertexRoot;
+    SoMaterial  *pcLineMaterial;
+    SoMaterial  *pcPointMaterial;
+    SoDrawStyle *pcLineStyle;
+    SoDrawStyle *pcPointStyle;
 
-
-  // settings stuff
-  ParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
+    // settings stuff
+    ParameterGrp::handle hGrp;
+    float fMeshDeviation;     
+    bool  bNoPerVertexNormals;
 //  long  lHilightColor;      
-  bool  bQualityNormals;    
+    bool  bQualityNormals;    
 
 private:
-  static App::PropertyFloatConstraint::Constraints floatRange;
+    static App::PropertyFloatConstraint::Constraints floatRange;
+    std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 
 } // namespace PartGui
