@@ -1,4 +1,4 @@
-SUBDIRS=App
+SUBDIRS=App Gui
 
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Cam
