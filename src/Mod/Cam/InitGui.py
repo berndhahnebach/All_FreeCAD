@@ -33,14 +33,6 @@
 
 class CamWorkbench ( Workbench ):
 	"Cam workbench object"
-	MenuText = "Cam design"
-	ToolTip = "Cam"
-	def Activate(self):
-		Log ('Loading GUI of Cam module...')
-		import CamGui
-		import Cam
-	def GetClassName(self):
-		return "CamGui::Workbench"
 	Icon = """
 			/* XPM */
 			static const char *Cam_Box[]={
@@ -65,6 +57,15 @@ class CamWorkbench ( Workbench ):
 			".########.......",
 			"................"};
 			"""
+	MenuText = "Cam design"
+	ToolTip = "Cam"
+
+	def Initialize(self):
+		Log ('Loading GUI of Cam module...')
+		import CamGui
+		import Cam
+	def GetClassName(self):
+		return "CamGui::Workbench"
 
 # No Workbench at the moment
-#Gui.addWorkbench(CamWorkbench())
+Gui.addWorkbench(CamWorkbench())
