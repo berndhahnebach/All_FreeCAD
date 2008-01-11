@@ -30,6 +30,20 @@
 #include "stuff.h"
 
 
+struct BoundBox3f_Less
+{
+       bool operator()(const Base::BoundBox3f& _Left, const Base::BoundBox3f& _Right) const
+       {
+		   if(_Left.IsInBox(_Right)) return false;
+
+		   return true;
+       }
+};
+
+
+
+
+
 class cutting_tools
 {
 public:
@@ -38,7 +52,7 @@ public:
 	
 	TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
 	double GetWireLength(TopoDS_Wire &aWire);
-	bool OffsetWires_Standard(float radius);
+	bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
 	
 	/*
 	Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt 
@@ -47,7 +61,7 @@ public:
 	
 	bool arrangecuts_ZLEVEL();
 	//bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
-	bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level);
+	bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level, double &average_sheet_thickness,double &average_angle);
 	//bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
 	bool initializeMeshStuff();
 	bool arrangecuts_SPIRAL();
@@ -67,6 +81,7 @@ private:
 	//bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
 
 	bool fillFaceBBoxes();
+	Base::BoundBox3f getWireBBox(TopoDS_Wire aWire);
 	bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
 	bool classifyShape();
 	//bool GenFlatLevelBSpline(
@@ -79,8 +94,8 @@ private:
 	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;
 
 	std::vector<Handle_Geom_BSplineCurve> m_all_offset_cuts_high,m_all_offset_cuts_low;
-	std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
-	//std::vector<std::pair<float,std::vector<TopoDS_Wire> > > m_zl_wire_combination;
+	//std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
+	std::map<float,std::map<Base::BoundBox3f,TopoDS_Wire,BoundBox3f_Less> > m_zl_wire_combination;
 	std::vector<std::pair<float,TopoDS_Shape> >::iterator m_ordered_cuts_it;
 	
 	//Member zum checken ob CAD oder nicht
@@ -94,6 +109,10 @@ private:
 	float m_pitch;
 	//Der höchste und niedrigste Z-Wert vom Shape 
 	float m_minlevel,m_maxlevel;
+	//Der Radius der Werkzeuge
+	float m_radius,m_radius_slave;
+	//Blechdicke
+	float m_sheet_thickness;
 
 
 
