@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib"
+				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib OCC_MESH_ADAPTD.lib"
 				OutputFile="../../../../Mod/Cam/Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -347,6 +347,14 @@
 		</File>
 		<File
 			RelativePath=".\routine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ShapeTriangulator.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ShapeTriangulator.h"
 			>
 		</File>
 		<File

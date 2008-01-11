@@ -29,6 +29,7 @@
 //Basic Stuff
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
+#include <Base/Handle.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Builder3D.h>
@@ -51,6 +52,7 @@
 #include <Mod/Mesh/App/MeshAlgos.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/Triangulation.h>
 
 //OCC Stuff
 #include <Poly_Triangulation.hxx>
@@ -130,6 +132,8 @@ static PyObject * read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
+#include <BrepMeshAdapt.hxx>
+
 static PyObject * tesselateShape(PyObject *self, PyObject *args)
 {
 
@@ -206,7 +210,7 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
 			}
 			// finish FreeCAD Mesh Builder and exit with new mesh
 			builder.Finish();
-			return new MeshPy(&mesh);
+			/*return new MeshPy(&mesh);*/
     } PY_CATCH;
 
 	Py_Return;
@@ -231,7 +235,7 @@ static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
 		best_fit befi(cad);    		
 		//best_fit::Tesselate_Shape(pcShape->getShape(),mesh,0.1);
 		
-		return new MeshPy(&befi.m_CadMesh);
+		//return new MeshPy(&befi.m_CadMesh);
 		
 			//return new TopoShapePyOld(befi.m_Cad);
 		
@@ -252,8 +256,9 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 {
 //	Py::List AllCuts = Py::List();
 //	double offset=0.0;
-	ofstream anoutput;
+	ofstream anoutput,anoutput2;
 	anoutput.open("c:/bspline_output.txt");
+	anoutput2.open("c:/bspline2_output.txt");
 	PyObject *pcObj;
 	//PyObject *pcObj2;
 	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))    // convert args: Python->C 
@@ -268,6 +273,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 		anewCuttingEnv.arrangecuts_ZLEVEL();
 		std::vector<std::pair<float,TopoDS_Shape> > aTestOutput = anewCuttingEnv.getCutShape();
 		BRep_Builder BB;
+		
 		TopoDS_Compound aCompound;
 		
 		BB.MakeCompound(aCompound);
@@ -278,22 +284,32 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 		}
 		
 		anewCuttingEnv.OffsetWires_Standard(10.0);
-		/*
+		
 		std::vector<Handle_Geom_BSplineCurve> topCurves;
 		std::vector<Handle_Geom_BSplineCurve> botCurves;
 		std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
 		topCurves = *(anewCuttingEnv.getOutputhigh());
-		botCurves = *(anewCuttingEnv.getOutputlow());*/
-		//for(unsigned int i=0;i<topCurves.size();++i)
-		//{
-		//	GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
-		//	GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.001);
-		//	for(int t=1;t<=aPointGenerator.NbPoints();++t)
-		//	{
-		//		anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-		//	}
-		//}
+		botCurves = *(anewCuttingEnv.getOutputlow());
+		for(unsigned int i=0;i<topCurves.size();++i)
+		{
+			GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
+			GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+			for(int t=1;t<=aPointGenerator.NbPoints();++t)
+			{
+				anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+			}
+		}
+		for(unsigned int i=0;i<botCurves.size();++i)
+		{
+			GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
+			GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+			for(int t=1;t<=aPointGenerator.NbPoints();++t)
+			{
+				anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+			}
+		}
 		anoutput.close();
+		anoutput2.close();
 		
 		//botCurves.push_back(*(topCurves.begin()));
 
@@ -330,48 +346,9 @@ static PyObject * offset(PyObject *self,PyObject *args)
 
   PY_TRY {
 	
-		TopExp_Explorer Ex;
-
-	  Handle_Geom_Surface geom_surface;
-
-	  Ex.Init(pcShape->getShape(),TopAbs_FACE);
-
-
-
-        if (!Ex.More())
-        {
-            //log3D.addText(0.0,0.0 ,0.0,"Keine Surface gefunden");
-           // log3D.saveToFile("c:/test.iv");
-            return NULL;
-        }
-
-       
-
-        const TopoDS_Face &atopo_surface =  TopoDS::Face (Ex.Current());
-        geom_surface= BRep_Tool::Surface(atopo_surface);
-
-
-
-
-	  Geom_OffsetSurface offsetsurface(geom_surface, offset);
-   // BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getShape(),offset,0.001,BRepOffset_Skin); 
-	  Handle_Geom_Surface aSurhandle;
-	  aSurhandle = offsetsurface.Surface();
-
+    BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getShape(),offset,0.001,BRepOffset_Skin); 
+	return new TopoShapePyOld(MakeOffsetShape.Shape());
 	
-	  BRepBuilderAPI_MakeFace Face(aSurhandle);
-	
-	  if(Face.IsDone())
-	  {
-			return new TopoShapePyOld(Face.Face());
-	  }
-	  else
-	  {
-		  return NULL;
-	  }
-
-    
-
 	  
   } PY_CATCH;
 
@@ -3117,7 +3094,9 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 	pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    const MeshKernel& m = pcObject->getMesh();
+    
+	const MeshObject *aMeshObject = pcObject->getMesh();
+	const MeshKernel& m = aMeshObject->getKernel();
     //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
 	MeshKernel copy = m;
 	MeshCore::MeshAlgorithm algo(copy);
@@ -3174,7 +3153,8 @@ static PyObject * MyApprox(PyObject *self, PyObject *args)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    const MeshKernel& m = pcObject->getMesh();
+    const MeshObject *o = pcObject->getMesh();
+	const MeshKernel &m = o->getKernel();
     //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
 	//MeshKernel copy = m;
 	
@@ -3268,7 +3248,9 @@ static PyObject * openDYNA(PyObject *self, PyObject *args)
 	{
 		MeshCore::MeshKernel mesh;
 		ReadDyna parse(mesh,filename);
-		return new MeshPy(&mesh);
+		MeshObject aObject(mesh);
+		
+		return aObject.getPyObject();
 	}
 	PY_CATCH;
 
@@ -3290,8 +3272,12 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
 	Base::Builder3D log3d;
 
 	PY_TRY
-	{
-		MeshCore::MeshKernel mesh = pcObject->getMesh();
+
+	{	
+		
+		MeshObject *o = pcObject->getMesh();
+		MeshKernel &mesh = o->getKernel();
+		
 		//Base::Vector3f Point[3];
 		Base::Vector3f current_pnt;
 
@@ -3344,7 +3330,8 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
 		}
 
 	    log3d.saveToFile("c:/test.iv");
-		return new MeshPy(&mesh);
+		MeshObject aObject(mesh);
+		return new MeshPy(&aObject);
 	}
 	PY_CATCH;
 
@@ -3636,19 +3623,19 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
 		pcObject  = (MeshPy*)pcObj;
 		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
 		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
-		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+		MeshCore::MeshKernel mesh  = pcObject->getMesh()->getKernel();  // Input Mesh
 
 		best_fit befi(mesh,cad);
 		befi.MeshFit_Coarse();
 		befi.ShapeFit_Coarse();
 		
 		cout << "tesselate shape" << endl;
-		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
+		befi.Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
 		
 		cout << "compute normals" << endl;
-		befi.Comp_Normals();
+//		befi.Comp_Normals();
 
-		befi.mesh_curvature();
+	//	befi.mesh_curvature();
 		
 		cout << "correction" << endl;
 		befi.Coarse_correction();
@@ -3657,59 +3644,190 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
 		
 		cout << "start fitting iteration:" << endl;
 		befi.Fit_iter();
+		MeshObject anObject(befi.m_Mesh);
 
-		return new MeshPy(&befi.m_Mesh);
+		return new MeshPy(&anObject);
 
 	}PY_CATCH;
 
 	Py_Return;
 }
 
+#include "wireexplorer.h"
+#include <GeomAPI_Interpolate.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include "BRepAdaptor_CompCurve2.h"
+#include "ShapeTriangulator.h"
 static PyObject * best_fit_test(PyObject *self, PyObject *args)
 {
-	MeshPy   *pcObject;
+	
 	PyObject *pcObj;
-	PyObject *pcObj2;
 
-	if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
+
+	if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	PY_TRY
 	{
-		GProp_GProps prop;
-		GProp_PrincipalProps pprop;
-		BRepGProp SurfProp;
-		gp_Pnt orig;
 
-		pcObject  = (MeshPy*)pcObj;
-		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
-		TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
-		MeshCore::MeshKernel mesh  = pcObject->getMesh();  // Input Mesh
+		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Shape wird übergeben
+		TopExp_Explorer anExplorer;
+		TopExp_Explorer aFaceExplorer;
 
-		best_fit befi(mesh,cad);
-		befi.MeshFit_Coarse();
-		befi.ShapeFit_Coarse();
+		ShapeTriangulator aShapeTriangulator(pcShape->getShape());
+		aShapeTriangulator.Init();
+		std::vector<TopoDS_Edge> anEdgeList;
+		TopoDS_Face first,second;
+		anEdgeList.clear();
+		bool firstrun=true;
+		bool finished=false;
+		for(anExplorer.Init(pcShape->getShape(),TopAbs_FACE);anExplorer.More();anExplorer.Next())
+		{
+			if(finished) break;
+			for(aFaceExplorer.Init(anExplorer.Current(),TopAbs_EDGE);aFaceExplorer.More();aFaceExplorer.Next())
+			{
+				if(!firstrun && finished==false)
+				{
+					for(int i=0;i<anEdgeList.size();++i)
+					{
+						if(anEdgeList[i].IsSame(TopoDS::Edge(aFaceExplorer.Current())))
+						{
+							second = TopoDS::Face(anExplorer.Current());
+							finished=true;
+							break;
+						}
+					}
+				}
+				if(firstrun)
+				{					
+					anEdgeList.push_back(TopoDS::Edge(aFaceExplorer.Current()));
+					first = TopoDS::Face(anExplorer.Current());
+				}	
+			}
+			firstrun=false;
+		}
+		//Uniformes Grid erzeugen und verschieben
+		BRepAdaptor_Surface afirstFaceAdaptor(first);
+
+		BRepAdaptor_Surface asecondFaceAdaptor(second);
+		Standard_Real lUf,lVf,fUf,fVf,lUs,lVs,fUs,fVs,schrittweiteUf,schrittweiteVf,schrittweiteUs,schrittweiteVs;
+		lUf = afirstFaceAdaptor.LastUParameter();
+		fUf = afirstFaceAdaptor.FirstUParameter();
+		lVf = afirstFaceAdaptor.LastVParameter();
+		fVf = afirstFaceAdaptor.FirstVParameter();
+		lUs = asecondFaceAdaptor.LastUParameter();
+		fUs = asecondFaceAdaptor.FirstUParameter();
+		lVs = asecondFaceAdaptor.LastVParameter();
+		fVs = asecondFaceAdaptor.FirstVParameter();
+		schrittweiteUf = fabs(lUf-fUf)/20.0;
+		schrittweiteVf = fabs(lVf-fVf)/20.0;
+		schrittweiteUs = fabs(lUs-fUs)/20.0;
+		schrittweiteVs = fabs(lVs-fVs)/20.0;
+		TColgp_Array2OfPnt Input(1,21,1,21);
+		for(int j=0;j<=20;++j)
+		{
+			for(int k=0;k<=20;++k)
+			{
+				gp_Pnt currentPoint;
+				gp_Vec UVec,VVec,Normal;
+				afirstFaceAdaptor.D1((fUf+j*schrittweiteUf),(fVf+k*schrittweiteVf),currentPoint,UVec,VVec);
+				UVec.Cross(VVec);
+				Normal = UVec;
+				Normal.Normalize();
+				Normal.Multiply(20.0);
+				gp_Pnt OffsetPoint;
+				OffsetPoint.SetXYZ(currentPoint.XYZ()+Normal.XYZ());
+				Input.SetValue(j+1,k+1,OffsetPoint);
+			}
+		}
+		GeomAPI_PointsToBSplineSurface *Approx_Surface = new GeomAPI_PointsToBSplineSurface(Input, 3, 8, GeomAbs_C1,0.1);  
+		Handle(Geom_BSplineSurface) Final_Approx = Approx_Surface->Surface () ;
+		//Jetzt die Wires vom ursprünglichen Face offsettieren.
+		TopExp_Explorer asecondFaceExplorer;
+		TopoDS_Wire aFaceWire;
+		for(asecondFaceExplorer.Init(first,TopAbs_WIRE);asecondFaceExplorer.More();asecondFaceExplorer.Next())
+		{
+			aFaceWire = TopoDS::Wire(asecondFaceExplorer.Current());
+		}
+		WireExplorer awireexplorer(aFaceWire);
+		//Punkte auf der Wire erzeugen und dann diese Punkte als Input in den Delaynay reinschieben
+		BRepAdaptor_CompCurve2 aWireAdapter(aFaceWire);
+		Standard_Real first_p,last_p,delta_u;
+		last_p = aWireAdapter.LastParameter();
+		first_p = aWireAdapter.FirstParameter();
+		delta_u = fabs(last_p-first_p)/50;
+		std::vector<Base::Vector3f> mesh_input;
+		mesh_input.clear();
+		for(int k=0;k<=50;++k)
+		{
+			gp_Pnt currentPoint = aWireAdapter.Value(first_p+(k*delta_u));
+			Base::Vector3f aVector;
+			aVector.x = currentPoint.X();
+			aVector.y = currentPoint.Y();
+			aVector.z = currentPoint.Z();
+			mesh_input.push_back(aVector);
+		}
+		MeshCore::MeshKernel ameshkernel;
+		MeshCore::MeshBuilder aBuilder(ameshkernel);
+		std::vector<Base::Vector3f> mesh_output;
+		MeshCore::MeshPolygonTriangulation aTriangulator;
+		aTriangulator.SetPolygon(mesh_input);
+		Base::Matrix4D matrix;
+		Base::Vector3f cPlaneNormal = aTriangulator.TransformToFitPlane(matrix);
+		aTriangulator.ComputeQualityDelaunay(20,mesh_output);
+		std::vector<MeshCore::MeshGeomFacet> geomfacets = aTriangulator.GetTriangles();
+		aBuilder.Initialize(100);
 		
-		cout << "tesselate shape" << endl;
-		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
 		
-		cout << "compute normals" << endl;
-		befi.Comp_Normals();
-
-		befi.mesh_curvature();
+        for ( std::vector<MeshCore::MeshGeomFacet>::iterator kt = geomfacets.begin(); kt != geomfacets.end(); ++kt )
+        {
+			MeshCore::MeshGeomFacet atempfacet(matrix*(kt->_aclPoints[0]),matrix*(kt->_aclPoints[1]),matrix*(kt->_aclPoints[2]));
+			atempfacet.CalcNormal();
+			aBuilder.AddFacet(atempfacet);
+		}
+		aBuilder.Finish();
+		MeshObject anObject(ameshkernel);
+		return new MeshPy(&anObject);
 		
-		cout << "correction" << endl;
-		befi.Coarse_correction();
-
 		
-
-		/*befi.thinning();
-		befi.test();*/
-		
-		//cout << "start fitting iteration:" << endl;
-		//befi.Fit_iter();
-
-		return new MeshPy(&befi.m_Mesh);
+		TopoDS_Wire newWire;
+		for(awireexplorer.Init();awireexplorer.More();awireexplorer.Next())
+		{
+			TopoDS_Edge currentEdge = TopoDS::Edge(awireexplorer.Current());
+			Standard_Real uf,ul,schrittweite_edge;
+			Handle_Geom2d_Curve aPCurve = BRep_Tool::CurveOnSurface(currentEdge,first,uf,ul);
+			schrittweite_edge = fabs(uf-ul)/10;
+			std::vector<gp_Pnt> offsetPoints;
+			offsetPoints.clear();
+			for(int i=0;i<=10;++i)
+			{
+				gp_Pnt2d a2dPoint;
+				aPCurve->D0(uf+i*schrittweite_edge,a2dPoint);
+				//Koordinaten von der Surface holen
+				gp_Pnt point;
+				gp_Vec vecu,vecv,normal;
+				afirstFaceAdaptor.D1(a2dPoint.X(),a2dPoint.Y(),point,vecu,vecv);
+				vecu.Cross(vecv);
+				normal = vecu;
+				normal.Normalize();
+				normal.Multiply(20.0);
+				gp_Pnt OffsetPoint;
+				OffsetPoint.SetXYZ(point.XYZ()+normal.XYZ());
+				offsetPoints.push_back(OffsetPoint);
+			}
+			Handle(TColgp_HArray1OfPnt) MasterOffsetPoints = new TColgp_HArray1OfPnt(1, offsetPoints.size());
+			for(unsigned int t=0;t<offsetPoints.size();++t)
+			{
+				MasterOffsetPoints->SetValue(t+1,offsetPoints[t]);
+			}
+			GeomAPI_Interpolate aBSplineInterp(MasterOffsetPoints, Standard_False, Precision::Confusion());
+			aBSplineInterp.Perform();
+			Handle_Geom_BSplineCurve currentOffsetCurve(aBSplineInterp.Curve());
+		}
+		BRepBuilderAPI_MakeFace Face(Final_Approx);
+		   
+		//return new TopoShapePyOld(Face.Face()); 
+	
 
 	}PY_CATCH;
 
@@ -3749,8 +3867,9 @@ static PyObject * tess_shape(PyObject *self, PyObject *args)
 {
 	MeshPy   *pcObject;
 	PyObject *pcObj;
-
-	if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C 
+	float aDeflection;
+	//PyObject *pcObj2;
+	if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	PY_TRY
@@ -3759,12 +3878,13 @@ static PyObject * tess_shape(PyObject *self, PyObject *args)
 		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
 		TopoDS_Shape cad        = pcShape->getShape();  // Input CAD
 
-		best_fit befi(cad);
-		befi.ShapeFit_Coarse();
+		//best_fit befi(cad);
+		//befi.ShapeFit_Coarse();
 		
-		best_fit::Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
-
-		return new MeshPy(&befi.m_CadMesh);
+		MeshCore::MeshKernel mesh;
+		best_fit::Tesselate_Shape(cad, mesh, 0.1);
+		MeshObject* anObject = new MeshObject(mesh);
+		return new MeshPy(anObject);
 
 	}PY_CATCH;
 	
@@ -3875,7 +3995,7 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
 
 	TopoDS_Face atopo_surface;
 
-	MeshCore::MeshKernel mesh = pcObject->getMesh();
+	MeshCore::MeshKernel mesh = pcObject->getMesh()->getKernel();
 
 	PY_TRY
 	{
@@ -4034,8 +4154,8 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
 	}PY_CATCH;
 
 	log3d.saveToFile("c:/test_trim2.iv");
-
-	return new MeshPy(&mesh);
+	MeshObject aObject(mesh);
+	return new MeshPy(&aObject);
 	Py_Return;
 }
 
@@ -4063,8 +4183,10 @@ struct PyMethodDef Cam_methods[] = {
 	{"offset", offset, 1},
 //	{"offset_mesh", offset_mesh, 1},
 	{"tesselateShape",tesselateShape,1},
+	{"tess_shape",tess_shape,1},
 //	{"cut", cut, 1},
 	{"createPlane" , createPlane, 1},
+	{"best_fit_test", best_fit_test,1},
 	{"best_fit_coarse", best_fit_coarse ,1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },

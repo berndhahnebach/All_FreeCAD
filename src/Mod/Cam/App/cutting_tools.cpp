@@ -154,13 +154,6 @@ bool cutting_tools::fillFaceBBoxes()
 		//currentBBox.SetVoid();
 
 
-
-
-
-
-
-
-
 bool cutting_tools::checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox)
 {
 	if((aPnt.X()>aBndBox.MinX) && (aPnt.X()<aBndBox.MaxX) && (aPnt.Y()>aBndBox.MinY) && (aPnt.Y()<aBndBox.MaxY) && (aPnt.Z()>aBndBox.MinZ) && (aPnt.Z()<aBndBox.MaxZ))
@@ -217,9 +210,9 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 		{
 			float temp_max = m_zl_wire_combination.rbegin()->first;
 			float temp_min;
-			std::multimap<float,TopoDS_Wire>::iterator zl_wire_it;
+			std::map<float,std::map<Base::BoundBox3f,TopoDS_Wire,BoundBox3f_Less> >::iterator zl_wire_it;
 			//Wir holen uns jetzt den nächsten Z-Level raus. Wir müssen was kleineres 
-			//wie den höchsten Wert nehmen sonst gibt er den höchsten Wert wieder aus
+			//wie den höchsten Wert nehmen sonst gibt er immer den höchsten Wert aus
 			zl_wire_it = m_zl_wire_combination.upper_bound(temp_max-0.1);
 			if(zl_wire_it->first == temp_max)
 			{
@@ -229,6 +222,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			//Wenn es mehrere flache Bereiche gibt muss ich nochmal weitermachen
 			else
 			{
+				temp_min = zl_wire_it->first;
 				cout << "Mehrere Areas erkannt";
 			}
 			//Jetzt schnippeln von temp_max bis temp_min
@@ -239,7 +233,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
 			float z_level,z_level_corrected;
 			TopoDS_Shape aCutShape;
 			//Jetzt schneiden (die oberste Ebene auslassen)
-			for (int i=1;i<=cutnumber;++i) 
+			for (int i=1;i<=20;++i) 
 			{
 				z_level = temp_max-(i*m_pitch);
 				z_level_corrected = z_level;
@@ -274,9 +268,9 @@ bool cutting_tools::checkFlatLevel()
 	TopoDS_Face atopo_surface;
     BRepAdaptor_Surface aAdaptor_Surface;
     TopExp_Explorer Explorer;
-    Explorer.Init(m_Shape,TopAbs_FACE);
+    
 
-    for (;Explorer.More();Explorer.Next())
+    for (Explorer.Init(m_Shape,TopAbs_FACE);Explorer.More();Explorer.Next())
     {
         atopo_surface = TopoDS::Face (Explorer.Current());
         aAdaptor_Surface.Initialize(atopo_surface);
@@ -314,7 +308,10 @@ bool cutting_tools::checkFlatLevel()
         if (Norm_average.IsEqual(z_normal,0.01,0.01) || Norm_average.IsEqual(z_normal_opposite,0.01,0.01))
         {
             cout << "Einen flachen Bereich gefunden";
-			std::pair<float,TopoDS_Wire> aTempPair;
+			std::pair<float,std::map<Base::BoundBox3f,TopoDS_Wire,BoundBox3f_Less> >aTempPair;
+			aTempPair.second.clear();
+			std::pair<Base::BoundBox3f,TopoDS_Wire> aTempBBoxPair;
+			
             //Z-Wert vom flachen Bereich in ein temporäres pair pushen
 			aTempPair.first = ((first.Z()+second.Z()+third.Z())/3);
 			//Jetzt durch das Face gehen und die Wires rausfiltern
@@ -323,14 +320,15 @@ bool cutting_tools::checkFlatLevel()
 			//If there is no Wire -> return
             if (!Explore_Face.More()) return false; 
 
-			//Jetzt alle Wires in die Map schieben
+			//Jetzt alle Wires in die map schieben
             for (Explore_Face.ReInit();Explore_Face.More();Explore_Face.Next())
             {
-                TopoDS_Wire wire = TopoDS::Wire(Explore_Face.Current());
-				aTempPair.second = wire;
+				aTempBBoxPair.first = getWireBBox(TopoDS::Wire(Explore_Face.Current()));
+				aTempBBoxPair.second = TopoDS::Wire(Explore_Face.Current());
+				aTempPair.second.insert(aTempBBoxPair);
 				//aTempPair.first ist ja noch auf dem gleichen Z-Wert wie vorher, deswegen muss da nichts abgepasst werden
-				m_zl_wire_combination.insert(aTempPair);
             }
+			m_zl_wire_combination.insert(aTempPair);
 		}
     }
     
@@ -721,13 +719,18 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 #include "edgesort.h"
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <BRep_Tool.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Base/Builder3D.h>
+#include "BrepAdaptor_CompCurve2.h"
 
-bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-Ebene verschoben wird
+bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float sheet_thickness) //Version wo nur in X,Y-Ebene verschoben wird
 {
+	m_radius = radius;
+	m_radius_slave = radius_slave;
+	m_sheet_thickness = sheet_thickness;
 	//std::ofstream inventoroutput;
 	//inventoroutput.open("c:/finalTest.iv");
 	//Base::InventorBuilder build(inventoroutput);;
@@ -756,9 +759,8 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 			BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
 			//Jetzt noch die resultierende Surface und die Curve sauber drehen 
 			//(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
-
 			if(aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
-
+			
 			Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
 			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
 			//Now get the surface normal to the generated points 
@@ -770,6 +772,9 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				TopoDS_Face aFace;
 				gp_Vec Uvec,Vvec,normalVec;
 				aCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+				GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+				Handle_Geom_BSplineSurface aBSurface = aGeom_Adaptor.BSpline();
+				//aBSurface->MovePoint();
 				aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
 				//Jetzt den Normalenvector auf die Fläche ausrechnen
 				normalVec = Uvec;
@@ -789,8 +794,9 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 				PointContactPair.second = normalVec.Angle(planeVec);
 				//Jetzt die Z-Komponente auf 0 setzen
 				normalVec.SetZ(0.0);
+				normalVec.Normalize();
 				//Jetzt die Normale mit folgender Formel multiplizieren
-				normalVec.Multiply(cos(angle)*(1-sin(angle))*radius);
+				normalVec.Multiply(((1-sin(PointContactPair.second))*radius)/cos(PointContactPair.second));
 				//Jetzt den OffsetPunkt berechnen
 				PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
 				PointContactPair.first.SetZ(PointContactPair.first.Z() + radius);
@@ -823,55 +829,23 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 		//Jetzt wurden alle Edges offsettiert und jetzt wird das Gegenstück erzeugt werden
 		//Zunächst mal die Z-Ebene fürs Gegenstück generieren
 		double slave_z_level;
+		double average_sheet_thickness,average_angle;
 		float slave_z_level_corrected;
 		TopoDS_Shape slaveCutShape;
-		calculateAccurateSlaveZLevel(OffsetPointContainer,m_ordered_cuts_it->first,slave_z_level);
-		//check 
-		cut(slave_z_level,m_minlevel,slaveCutShape,slave_z_level_corrected);
-		for(aCutShapeSorter.ReInit(slaveCutShape);aCutShapeSorter.More();aCutShapeSorter.Next())
+		calculateAccurateSlaveZLevel(OffsetPointContainer,m_ordered_cuts_it->first,slave_z_level,average_sheet_thickness,average_angle);
+		//check if its possible to cut. If not, take current wire as tool path
+		if(slave_z_level>=(m_ordered_cuts.begin()->first)) 
 		{
-			//Get the PCurve and the GeomSurface
-			Handle_Geom2d_Curve aCurve;
-			Handle_Geom_Surface aSurface;
-			TopLoc_Location aLoc;
-			double first,last;
-			BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
-			//Reverse the PCurve if the Edge-Orientation is reversed
-			if(aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
-			Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
-			GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
-			//Now get the surface normal to the generated points 
-			for (int i=1;i<=aPointGenerator.NbPoints();++i)
+			//Check the smallest Wire with the Bounding Box of the Wire
+			//currently we do not search for the desired z-level
+			//we just take the highest level available
+			TopoDS_Wire aWire = m_zl_wire_combination.rbegin()->second.begin()->second;
+			BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+			GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
+			for(int i=1;i<=aProp.NbPoints();++i)
 			{
-				gp_Pnt2d a2dParaPoint;
-				gp_Pnt aSurfacePoint;
-				TopoDS_Face aFace;
-				gp_Vec Uvec,Vvec,normalVec;
-				aCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
-				aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
-				//Jetzt den Normalenvector auf die Fläche ausrechnen
-				normalVec = Uvec;
-				normalVec.Cross(Vvec);
-				normalVec.Normalize(); 
-				//Jetzt ist die Normale berechnet und auch normalisiert
-				//Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
-				//dazu nur checken ob der Z-Wert der Normale kleiner Null ist (dann im 1.und 2. Quadranten)
-				if(normalVec.Z()< 0) normalVec.Multiply(-1.0);
-				/*if ( aSurface->.Orientation() == TopAbs_Reverse ) 
-				{
-					normalVec.Reverse()
-				}*/
-				//Mal kurz den Winkel zur Grund-Ebene ausrechnen
-				gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
-				double angle = normalVec.Angle(planeVec);
-				//Jetzt die Z-Komponente auf 0 setzen
-				normalVec.SetZ(0.0);
-				//Jetzt die Normale mit folgender Formel multiplizieren
-				//Das Minus ist für die Gegenseite
-				normalVec.Multiply(-(cos(angle)*(1-sin(angle))*radius));
-				//Jetzt den SlaveOffsetPunkt berechnen
-				gp_Pnt SlaveOffsetPoint(aSurfacePoint.XYZ() + normalVec.XYZ());
-				SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - radius);
+				gp_Pnt SlaveOffsetPoint(aProp.Value(i).XYZ());
+				SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_radius_slave - m_sheet_thickness);
 				//checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
 				if(SlaveOffsetPointContainer.size()>0 && (SlaveOffsetPointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
 				{
@@ -883,9 +857,74 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 					SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
 					//anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
 				}
-				//Debug Output
-				//build.addSinglePoint(SlaveOffsetPoint.X(),SlaveOffsetPoint.Y(),SlaveOffsetPoint.Z());
+			}
+		}
+		else
+		{
+			cut(slave_z_level,m_minlevel,slaveCutShape,slave_z_level_corrected);
+			for(aCutShapeSorter.ReInit(slaveCutShape);aCutShapeSorter.More();aCutShapeSorter.Next())
+			{
+				//Get the PCurve and the GeomSurface
+				Handle_Geom2d_Curve aCurve;
+				Handle_Geom_Surface aSurface;
+				TopLoc_Location aLoc;
+				double first,last;
+				BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
+				//Reverse the PCurve if the Edge-Orientation is reversed
+				if(aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
+				Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
+				GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
+				//Now get the surface normal to the generated points 
+				for (int i=1;i<=aPointGenerator.NbPoints();++i)
+				{
+					gp_Pnt2d a2dParaPoint;
+					gp_Pnt aSurfacePoint;
+					TopoDS_Face aFace;
+					gp_Vec Uvec,Vvec,normalVec;
+					aCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+					aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+					//Jetzt den Normalenvector auf die Fläche ausrechnen
+					normalVec = Uvec;
+					normalVec.Cross(Vvec);
+					normalVec.Normalize(); 
+					//Jetzt ist die Normale berechnet und auch normalisiert
+					//Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
+					//dazu nur checken ob der Z-Wert der Normale kleiner Null ist (dann im 1.und 2. Quadranten)
+					if(normalVec.Z()< 0) normalVec.Multiply(-1.0);
+					/*if ( aSurface->.Orientation() == TopAbs_Reverse ) 
+					{
+						normalVec.Reverse()
+					}*/
+					//Mal kurz den Winkel zur Grund-Ebene ausrechnen
+					gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
+					double angle = normalVec.Angle(planeVec);
+					//Jetzt die Z-Komponente auf 0 setzen
+					normalVec.SetZ(0.0);
+					//Und Normalisieren
+					normalVec.Normalize();
+					//Jetzt die Normale mit folgender Formel multiplizieren
+					//Aktuelle Blechdicke berechnen
+					double current_sheet_thickness = m_sheet_thickness * sin(PI/2-angle);
+					
+					normalVec.Multiply((average_sheet_thickness-current_sheet_thickness)/cos(angle));
+					//Jetzt den SlaveOffsetPunkt berechnen
+					gp_Pnt SlaveOffsetPoint(aSurfacePoint.XYZ() + normalVec.XYZ());
+					SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - ((average_sheet_thickness+radius_slave)/cos(average_angle)));
+					//checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+					if(SlaveOffsetPointContainer.size()>0 && (SlaveOffsetPointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+					{
+						SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
+						//anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+					}
+					else if(SlaveOffsetPointContainer.empty())
+					{
+						SlaveOffsetPointContainer.push_back(SlaveOffsetPoint);
+						//anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+					}
+					//Debug Output
+					//build.addSinglePoint(SlaveOffsetPoint.X(),SlaveOffsetPoint.Y(),SlaveOffsetPoint.Z());
 
+				}
 			}
 		}
 
@@ -1011,11 +1050,7 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	//	//check results
 	//	if (!aNoPeriodInterpolate.IsDone()) return false;
 	//	m_all_offset_cuts_high.push_back(aCurve);
-
-
 	//}
-
-
 	//		//Base::Vector3f offsetPoint,projectPoint;
 	//		//offsetPoint.x=OffsetPoint.X();offsetPoint.y=OffsetPoint.Y();offsetPoint.z=OffsetPoint.Z();
 	//		//projectPoint.x=projectedPoint.X();projectPoint.y=projectedPoint.Y();projectPoint.z=projectedPoint.Z();
@@ -1023,7 +1058,6 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	//		//build.addSinglePoint(offsetPoint);
 	//		//outfile << currentPoint.X() <<","<<currentPoint.Y()<<","<<currentPoint.Z()<<","<< projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<","<< OffsetPoint.X() <<","<<OffsetPoint.Y()<<","<<OffsetPoint.Z()<<","<<normalVec.X() <<","<<normalVec.Y()<<","<<normalVec.Z()<< std::endl;
 	//	}
-
 	////		build.addSinglePoint(projectedPoint.X(),projectedPoint.Y(),projectedPoint.Z());
 	////		outfile << projectedPoint.X() <<","<<projectedPoint.Y()<<","<<projectedPoint.Z()<<std::endl;
 	//		//Jetzt die aktuelle Kurve als BSpline interpolieren
@@ -1035,20 +1069,6 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	//	m_all_offset_cuts_high.push_back(aCurve);
 	//	
 	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	//		IntCurvesFace_ShapeIntersector shp_int;
 	//		gp_Pnt OffsetPointUP;
@@ -1139,17 +1159,44 @@ bool cutting_tools::OffsetWires_Standard(float radius) //Version wo nur in X,Y-E
 	return true;
 }
 
-bool cutting_tools::calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >& OffsetPoints, double current_z_level, double &slave_z_level)
+#include "BRepAdaptor_CompCurve2.h"
+Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
+{
+	//Fill Bounding Boxes with Wires
+	//Therefore we have to evaluate some points on our wire and feed the BBox Algorithm
+	Base::BoundBox3f currentBox;
+	BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+	GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
+	Base::Vector3f aPoint;
+	currentBox.Flush();
+	for(int j=1;j<=aProp.NbPoints();++j)
+	{
+		aPoint.x = aProp.Value(j).X();
+		aPoint.y = aProp.Value(j).Y();
+		aPoint.z = aProp.Value(j).Z();
+		currentBox.Add(aPoint);
+	}	
+	return currentBox;
+}
+
+
+bool cutting_tools::calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >& OffsetPoints, double current_z_level, double &slave_z_level, double &average_sheet_thickness, double &average_angle)
 {
 	//Mittelwert von allen Normalenwinkeln und damit dann den Mittelwert der Blechdicke bilden
-	double delta_z=0.0;
-	for(int i=0;i<OffsetPoints.size();++i) delta_z = delta_z + OffsetPoints[i].second;
+	average_angle = 0.0;
 	
-	delta_z = delta_z/OffsetPoints.size();
+	for(int i=0;i<OffsetPoints.size();++i) 
+	{average_angle = average_angle + OffsetPoints[i].second;}
+	
+	average_angle = average_angle/OffsetPoints.size();
+	//Average Sheet thickness based on sin-law
+	average_sheet_thickness = m_sheet_thickness * sin ((PI/2)-average_angle);
 
-	slave_z_level = current_z_level + delta_z;	
-	//check if desired z_level is possible
-	if(slave_z_level>=(m_ordered_cuts.begin()->first)) slave_z_level = m_ordered_cuts.begin()->first;
+	slave_z_level = current_z_level + \
+					(m_radius*(1-sin(average_angle))) - \
+					(sin(average_angle)*(average_sheet_thickness+m_radius_slave)) + \
+					((average_sheet_thickness+m_radius_slave)/cos(average_angle));
+
 	return  true;
 }
 
@@ -1341,10 +1388,6 @@ bool cutting_tools::classifyShape()
 	if (k>1) m_cad = true;
 	return true;
 }
-
-
-
-
 
 
 
