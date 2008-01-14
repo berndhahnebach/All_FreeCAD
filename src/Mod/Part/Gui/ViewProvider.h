@@ -33,6 +33,7 @@ class TopoDS_Face;
 class SoSeparator;
 class SoVertexShape;
 class SoPickedPoint;
+class SoEventCallback;
 class SbVec3f;
 
 namespace PartGui {
