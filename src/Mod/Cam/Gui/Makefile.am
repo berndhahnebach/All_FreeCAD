@@ -2,10 +2,14 @@ if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libCamGui.la CamGui.la
 
-BUILT_SOURCES=
+BUILT_SOURCES=\
+		ui_Cutting.h \
+		moc_Cutting.cpp
 
 libCamGui_la_SOURCES=\
 		Command.cpp \
+		Cutting.cpp \
+		Cutting.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \
@@ -65,5 +69,6 @@ libdir = $(prefix)/Mod/Cam
 
 CLEANFILES = $(BUILT_SOURCES)
 
-#EXTRA_DIST = \
-#		AppCamGui.vcproj
+EXTRA_DIST = \
+		AppCamGui.vcproj \
+		Cutting.ui
