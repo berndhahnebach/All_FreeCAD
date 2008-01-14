@@ -1,15 +1,21 @@
 #include "PreCompiled.h"
 #include "ShapeTriangulator.h"
+#include <Base/Builder3D.h>
 
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <Base/Builder3d.h>
 #include <Mod/Mesh/App/Core/Builder.h>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <BRepMesh.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 
 ShapeTriangulator::ShapeTriangulator(const TopoDS_Shape& aShape)

@@ -33,18 +33,18 @@ public:
 	std::vector<std::vector<Base::Vector3d> > PointEvaluation(double TotaltimeforonePath, 
 		                                                     unsigned int NumberOfEvalPoints, 
 															 std::vector<double> startParam, 
-															 std::vector<std::vector<Base::Vector3d>> &D1);
+															 std::vector<std::vector<Base::Vector3d> > &D1);
 
 	std::vector<std::vector<Base::Vector3d> > PointEvaluation(double T, 
 															 unsigned int N, 
 															 std::vector<double> startParam, 
-															 std::vector<std::vector<Base::Vector3d>> &D1,
-															 std::vector<std::vector<Base::Vector3d>> &D2);
+															 std::vector<std::vector<Base::Vector3d> > &D1,
+															 std::vector<std::vector<Base::Vector3d> > &D2);
 
-	std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d>> &D);
+	std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
 	bool ConnectPaths_xy(ofstream &anOutputFile, int &c, bool outputstyle);
 	bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
-	bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d>> &D2);
+	bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
 	bool UpdateParam();
 	bool WriteOutput(ofstream &m_anOutputFile, int &c, bool outputstyle);
 	bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
@@ -97,7 +97,3 @@ private:
 
 #endif
 
-
-
-
-		

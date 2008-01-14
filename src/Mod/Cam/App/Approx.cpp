@@ -109,11 +109,8 @@ void Approximate::ParameterBoundary()
 	ParameterMesh = LocalMesh;
 	MeshCore::MeshAlgorithm algo(ParameterMesh);
 	MeshCore::MeshPointIterator p_it(ParameterMesh);
-	unsigned long v_handle;
 	NumOfPoints = LocalMesh.CountPoints();
 	NumOfOuterPoints = 0;
-	int i = 1;
-	bool change = false;
 	double distance = 0;
 	unsigned int a;
 	std::vector<unsigned long> CornerIndex;
@@ -386,8 +383,8 @@ void Approximate::ParameterInnerPoints()
 			std::vector<double> Magnitude;
 			Base::Vector3f CurrentPoint(*v_it);
 			double TotAngle = 0;
-			int NumOfNeighbour = PntNei.size();
-			int i = 0;
+			unsigned int NumOfNeighbour = PntNei.size();
+			unsigned int i = 0;
 			//Angle and magnitude calculations for projection.
 			//With respect to CurrentPoint
 			while(i < NumOfNeighbour)
@@ -422,7 +419,7 @@ void Approximate::ParameterInnerPoints()
 			Base::Vector3f CurrentNeighbour(Magnitude[0],0.0,0.0);
 			NeiPnts.push_back(CurrentNeighbour);
 			double alpha = 0; unsigned int k = 0;
-			for(int i = 1; i < NumOfNeighbour; i++)
+			for(unsigned int i = 1; i < NumOfNeighbour; i++)
 			{
 				alpha = alpha + ((2 * D_PI * Angle[i-1]) / TotAngle);
 				double x_pnt = Magnitude[i] * cos(alpha), y_pnt = Magnitude[i] * sin(alpha);
@@ -441,7 +438,7 @@ void Approximate::ParameterInnerPoints()
 			{
 				for(k = 0; k < NumOfNeighbour;k++)   //...for all neighbours...
 				{
-					for(int l = k+1; l < NumOfNeighbour+k; l++) //...another iterator iterate through other neighbour
+					for(unsigned int l = k+1; l < NumOfNeighbour+k; l++) //...another iterator iterate through other neighbour
 					{
 						MMatrix[0][0] = NeiPnts[(unsigned int)fmod((double)l,(double)NumOfNeighbour)][0] - 
 							NeiPnts[(unsigned int)fmod((double)l-1,(double)NumOfNeighbour)][0];
@@ -499,10 +496,10 @@ void Approximate::ParameterInnerPoints()
 					}
 
 				}*/
-				for(int j = 0; j < NumOfNeighbour; j++)
+				for(unsigned int j = 0; j < NumOfNeighbour; j++)
 				{
 					double sum = 0;
-					for(int k = 0; k < NumOfNeighbour; k++)
+					for(unsigned int k = 0; k < NumOfNeighbour; k++)
 						sum += Mu[j][k];
 
 					Lambda(count,mapper[nei[j]]) = sum/NumOfNeighbour;
@@ -654,7 +651,6 @@ void Approximate::ErrorApprox()
 
 	while(ErrThere)
 	{
-		int count = 0;
 		ublas::matrix<double> B_Matrix(NumOfPoints,(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
 		std::cout << "B_Matrix succesfully constructed" << std::endl;
 		std::cout << "Preparing B-Matrix..." << std::endl;
@@ -982,7 +978,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 		
 	}
 	
-	double A,B,C,result; //Needed Variables for the Trapezoid-Integration
+	double A,B,C; //Needed Variables for the Trapezoid-Integration
 	//Now lets fill up the E
 	for(int a = 0; a < MainNurb.MaxV+1; a++)
 	{
@@ -1328,7 +1324,6 @@ void Approximate::ExtendNurb(double c2, int h)
 	MainNurb.MaxV += 2;
 	MainNurb.MaxKnotU += 2;
 	MainNurb.MaxKnotV += 2;
-	double mid = 0;
 	//U-V Knot Extension
 	ExtendKnot(ParameterX[h], MainNurb.DegreeU, MainNurb.MaxU, MainNurb.KnotU);
 	ExtendKnot(ParameterY[h], MainNurb.DegreeV, MainNurb.MaxV, MainNurb.KnotV);	

@@ -25,6 +25,7 @@
 #define Cutting_Tools
 
 
+#include <Handle_Geom_BSplineCurve.hxx>
 #include <Mod/Mesh/App/MeshAlgos.h>
 
 #include "stuff.h"

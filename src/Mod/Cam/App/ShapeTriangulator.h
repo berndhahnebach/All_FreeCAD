@@ -2,6 +2,7 @@
 #define _SHAPETRIANGULATOR_H_
 
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -85,3 +86,4 @@ private:
 };
 
 #endif
+

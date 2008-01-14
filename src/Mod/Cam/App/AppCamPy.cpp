@@ -62,6 +62,7 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepMesh.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -72,6 +73,15 @@
 #include <BRepGProp.hxx>
 #include <IntCurvesFace_ShapeIntersector.hxx>
 #include <GProp_PrincipalProps.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Handle_Geom_Plane.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom2d_Curve.hxx>
 
 //Own Stuff
 #include "Approx.h"
@@ -132,7 +142,7 @@ static PyObject * read(PyObject *self, PyObject *args)
   Py_Return;
 }
 
-#include <BrepMeshAdapt.hxx>
+#include <BRepMeshAdapt.hxx>
 
 static PyObject * tesselateShape(PyObject *self, PyObject *args)
 {
@@ -218,8 +228,6 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
 
 static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
 {
-	MeshPy   *pcObject;
-	PyObject *pcObj;
 	PyObject *pcObj2;
 
 	if (!PyArg_ParseTuple(args, "O!; Need one Mesh objects and one toposhape", &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
@@ -277,7 +285,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
 		TopoDS_Compound aCompound;
 		
 		BB.MakeCompound(aCompound);
-		for(int i=0;i<aTestOutput.size();++i)
+		for(unsigned int i=0;i<aTestOutput.size();++i)
 		{
 			
 			BB.Add(aCompound,TopoDS::Compound(aTestOutput[i].second));
@@ -377,7 +385,7 @@ static PyObject * cut(PyObject *self, PyObject *args)
 
 			Base::Builder3D logit;
 			
-/*
+
 			Jetzt die eigentlichen Schnitte erzeugen:
 			1.	Wenn die oberste Ebene ein flacher Bereich ist, werden von dort die Bounding Wires genommen
 				Ermittlung über die Bounding Box
@@ -3617,7 +3625,6 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
 	{
 		GProp_GProps prop;
 		GProp_PrincipalProps pprop;
-		BRepGProp SurfProp;
 		gp_Pnt orig;
 
 		pcObject  = (MeshPy*)pcObj;
@@ -3653,7 +3660,7 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
 	Py_Return;
 }
 
-#include "wireexplorer.h"
+#include "WireExplorer.h"
 #include <GeomAPI_Interpolate.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include "BRepAdaptor_CompCurve2.h"
@@ -3688,7 +3695,7 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
 			{
 				if(!firstrun && finished==false)
 				{
-					for(int i=0;i<anEdgeList.size();++i)
+					for(unsigned int i=0;i<anEdgeList.size();++i)
 					{
 						if(anEdgeList[i].IsSame(TopoDS::Edge(aFaceExplorer.Current())))
 						{
@@ -3836,7 +3843,6 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
 
 static PyObject * shape2orig(PyObject *self, PyObject *args)
 {
-	MeshPy   *pcObject;
 	PyObject *pcObj;
 
 	if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePyOld::Type), &pcObj))  // convert args: Python->C 
@@ -3846,7 +3852,6 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
 	{
 		GProp_GProps prop;
 		GProp_PrincipalProps pprop;
-		BRepGProp SurfProp;
 		gp_Pnt orig;
 
 		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
@@ -3865,7 +3870,6 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
 
 static PyObject * tess_shape(PyObject *self, PyObject *args)
 {
-	MeshPy   *pcObject;
 	PyObject *pcObj;
 	float aDeflection;
 	//PyObject *pcObj2;

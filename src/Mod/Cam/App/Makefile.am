@@ -16,6 +16,8 @@ libCam_la_SOURCES=\
 		ConvertDyna.h \
 		cutting_tools.cpp \
 		cutting_tools.h \
+		edgesort.cpp \
+		edgesort.h \
 		path_simulate.cpp \
 		path_simulate.h \
 		PreCompiled.cpp \
@@ -23,6 +25,8 @@ libCam_la_SOURCES=\
 		routine.cpp \
 		routine.h \
 		stuff.h \
+		ShapeTriangulator.cpp \
+		ShapeTriangulator.h \
 		WireExplorer.cxx \
 		WireExplorer.h
 
@@ -81,7 +85,7 @@ Cam_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/3rdParty -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src/3rdParty/Includes -I$(top_builddir)/src
 
 endif
 endif

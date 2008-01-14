@@ -25,6 +25,11 @@
 
 #include "WireExplorer.h"
 #include <BRep_Tool.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <Precision.hxx>
 
 
 WireExplorer::WireExplorer(const TopoDS_Wire& wire)

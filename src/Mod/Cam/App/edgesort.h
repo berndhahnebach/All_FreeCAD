@@ -26,6 +26,11 @@
 #ifndef EDGESORT_H
 #define EDGESORT_H
 
+#include <gp_Pnt.hxx>
+#include <TopoDS_Edge.hxx>
+#include <list>
+#include <map>
+
 struct Edgesort_gp_Pnt_Less
 {
        bool operator()(const gp_Pnt & _Left, const gp_Pnt & _Right) const
