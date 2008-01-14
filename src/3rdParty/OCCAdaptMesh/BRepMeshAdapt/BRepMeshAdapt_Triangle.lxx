@@ -1,0 +1,14 @@
+// File:	BRepMeshAdapt_Triangle.lxx
+// Created:	Thu Sep 23 13:14:07 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+inline MeshDS_DegreeOfFreedom  BRepMeshAdapt_Triangle::Movability()const 
+{
+  return myMovability;
+}
+
+inline Standard_Integer  BRepMeshAdapt_Triangle::Domain()const 
+{
+  return myDomain;
+}

@@ -3781,7 +3781,7 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
 		aTriangulator.SetPolygon(mesh_input);
 		Base::Matrix4D matrix;
 		Base::Vector3f cPlaneNormal = aTriangulator.TransformToFitPlane(matrix);
-		aTriangulator.ComputeQualityDelaunay(20,mesh_output);
+		//aTriangulator.ComputeQualityDelaunay(20,mesh_output);
 		std::vector<MeshCore::MeshGeomFacet> geomfacets = aTriangulator.GetTriangles();
 		aBuilder.Initialize(100);
 		

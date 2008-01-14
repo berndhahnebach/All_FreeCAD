@@ -31,13 +31,15 @@ libCam_la_SOURCES=\
 		WireExplorer.h
 
 # the library search path.
-libCam_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App -L/usr/X11R6/lib -L$(OCC_LIB) $(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libCam_la_LDFLAGS = -L../../../3rdParty/OCCAdaptMesh -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App \
+                    -L/usr/X11R6/lib -L$(OCC_LIB) $(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libCam_la_CPPFLAGS = -DAppCamExport=
 
 libCam_la_LIBADD   = \
 		-lxerces-c \
 		-lboost_filesystem \
 		-l@PYTHON_LIB@ \
+		-lOCCAdaptMesh \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lPart \
