@@ -44,6 +44,8 @@
 # include <Poly_PolygonOnTriangulation.hxx>
 # include <TColStd_Array1OfInteger.hxx>
 # include <TopTools_ListOfShape.hxx>
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
