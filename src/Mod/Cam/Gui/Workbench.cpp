@@ -50,7 +50,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* cam = new Gui::MenuItem;
     root->insertItem(item, cam);
     cam->setCommand(QT_TR_NOOP("&Cam"));
-    *cam << "Cam_ShapeInfo";
+    *cam << "Cam_ShapeInfo" << "Cam_Cutting";
     return root;
 }
 
