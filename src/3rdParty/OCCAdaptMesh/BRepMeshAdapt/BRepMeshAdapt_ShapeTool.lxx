@@ -1,0 +1,117 @@
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <BRep_Tool.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+
+inline void BRepMeshAdapt_ShapeTool::Init(const TopoDS_Shape& S) 
+{
+  theFIterator.Init(S, TopAbs_FACE);
+}
+
+inline Standard_Boolean BRepMeshAdapt_ShapeTool::MoreFace() 
+{
+  return theFIterator.More();
+}
+
+inline void BRepMeshAdapt_ShapeTool::NextFace()
+{
+  theFIterator.Next();
+}
+
+inline const TopoDS_Face& BRepMeshAdapt_ShapeTool:: CurrentFace()
+{
+  return TopoDS::Face(theFIterator.Current());
+}
+
+
+inline void BRepMeshAdapt_ShapeTool::Init(const TopoDS_Face& F) 
+{
+  theEIterator.Init(F,TopAbs_EDGE);
+}
+
+inline Standard_Boolean BRepMeshAdapt_ShapeTool::MoreEdge() 
+{
+  return theEIterator.More();
+}
+
+inline void BRepMeshAdapt_ShapeTool::NextEdge()
+{
+  theEIterator.Next();
+}
+
+
+inline const TopoDS_Edge& BRepMeshAdapt_ShapeTool::CurrentEdge()
+{
+  return TopoDS::Edge(theEIterator.Current());
+}
+
+inline void BRepMeshAdapt_ShapeTool::Init(const TopoDS_Edge& E) 
+{
+  theVIterator.Init(E,TopAbs_VERTEX);
+}
+
+
+inline void BRepMeshAdapt_ShapeTool::NextInternalVertex()
+{
+  theVIterator.Next();
+}
+
+inline const TopoDS_Vertex& BRepMeshAdapt_ShapeTool::CurrentInternalVertex()
+{
+  return TopoDS::Vertex(theVIterator.Current());
+}
+
+inline TopAbs_Orientation BRepMeshAdapt_ShapeTool::Orientation( 
+					const TopoDS_Edge& E) 
+{
+  return E.Orientation();
+}
+
+inline TopAbs_Orientation BRepMeshAdapt_ShapeTool::Orientation( 
+					const TopoDS_Face& F) 
+{
+  return F.Orientation();
+}
+
+inline void BRepMeshAdapt_ShapeTool::Range(const TopoDS_Edge& E,
+				      const TopoDS_Face& F,
+				      Standard_Real& wFirst,
+				      Standard_Real& wLast)
+{
+  BRep_Tool::Range(E, F, wFirst, wLast);
+}
+
+inline void BRepMeshAdapt_ShapeTool::UVPoints(const TopoDS_Edge& E,
+					 const TopoDS_Face& F,
+					 gp_Pnt2d& uvFirst,
+					 gp_Pnt2d& uvLast)
+{
+  BRep_Tool::UVPoints(E, F, uvFirst, uvLast);
+}
+
+inline Standard_Boolean BRepMeshAdapt_ShapeTool::Degenerated(const TopoDS_Edge& E)
+{
+  return BRep_Tool::Degenerated(E);
+}
+
+inline Standard_Real BRepMeshAdapt_ShapeTool::Tolerance(const TopoDS_Vertex& V)
+{
+  return BRep_Tool::Tolerance(V);
+}
+
+inline Standard_Real BRepMeshAdapt_ShapeTool::Parameter(const TopoDS_Vertex& V,
+						   const TopoDS_Edge& E,
+						   const TopoDS_Face& F)
+{
+  return BRep_Tool::Parameter(V,E,F);
+}
+
+inline gp_Pnt BRepMeshAdapt_ShapeTool::Pnt(const TopoDS_Vertex& V)
+{
+  return BRep_Tool::Pnt(V);
+}
+
+

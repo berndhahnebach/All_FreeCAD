@@ -1,0 +1,15 @@
+-- File:	Triangle_CMPLRS.edl
+-- Created:	Thu Sep 11 10:22:32 2003
+-- Author:	Open CASCADE Support
+--		<support@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+
+@ifnotdefined ( %Triangle_CMPLRS_EDL) then
+@set %Triangle_CMPLRS_EDL = "";
+
+-- @if ( %Station == "wnt" ) then
+@string %CMPLRS_C_Options += "-DTRILIBRARY -DNO_TIMER";
+-- @endif;
+
+@endif;

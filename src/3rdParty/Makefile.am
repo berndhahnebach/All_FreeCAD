@@ -1,3 +1,5 @@
+SUBDIRS=OCCAdaptMesh
+
 EXTRA_DIST = \
 		atlas/cblas.h \
 		atlas/clapack.h \

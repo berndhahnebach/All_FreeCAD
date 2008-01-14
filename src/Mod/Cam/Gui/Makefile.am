@@ -65,5 +65,5 @@ libdir = $(prefix)/Mod/Cam
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = \
-		AppCamGui.vcproj
+#EXTRA_DIST = \
+#		AppCamGui.vcproj
