@@ -53,7 +53,7 @@
 
 /* Konstruktor mit einer Bahnfolge (master tool) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
-:m_BSplineTop(BSplineTop),m_amax(0.85*a_max),m_vmax(0.85*v_max),m_a1(0.85*a_max),m_v1(0.85*v_max),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000)
+:m_BSplineTop(BSplineTop),m_count(1),m_step(1e-3),m_t(0.0),m_clip(90000),m_vmax(0.85*v_max),m_amax(0.85*a_max),m_v1(0.85*v_max),m_a1(0.85*a_max),m_t0(0.0)
 {
 	m_single = true;
 	
@@ -88,7 +88,8 @@ path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, 
 /* Konstruktor mit zwei Bahnfolgen (master tool & supporting die) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve> &BSplineTop, std::vector<Handle_Geom_BSplineCurve> &BSplineBottom, 
 							 double a, double v)
-:m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_amax(0.85*a),m_vmax(0.85*v),m_a1(0.85*a),m_a2(0.85*a),m_v1(0.85*v),m_v2(0.85*v),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000),m_SingleTop(false),m_SingleBot(false)
+:m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_count(1),m_step(1e-3),m_t(0.0),m_clip(90000),m_SingleTop(false),m_SingleBot(false),
+ m_vmax(0.85*v),m_amax(0.85*a),m_v1(0.85*v),m_v2(0.85*v),m_a1(0.85*a),m_a2(0.85*a),m_t0(0.0)
 {
 	m_single=false;
 
@@ -532,7 +533,6 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
 																		std::vector<std::vector<Base::Vector3d> > &D1)
 {
     double t = m_t0;
-	double foundParameter;
 	double firstParam,lastParam,period;
 	std::vector<double> d;
 	gp_Pnt tmp, p1,p2;
@@ -927,7 +927,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 			if(vec_21.Magnitude() != 0)
 				vec_21.Normalize();
 
-			N = (m_T - m_t0)/m_step;  /* anzahl der zu erzeugenden Outputwerte */
+			N = (int)((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
 
 			m_del_t = (m_T - m_t0)/N;
 
@@ -981,7 +981,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 
-			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
 			for (int i=0; i<N; ++i)
 			{				
@@ -1018,7 +1018,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 
 			vec_11.Normalize();
 
-			N = (m_T - m_t0)/m_step;        
+			N = (int)((m_T - m_t0)/m_step);        
 			m_del_t = (m_T - m_t0)/N;
 
 			for(int i=0; i<N; ++i)
@@ -1050,7 +1050,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 			
 			for (int i=0; i<N; ++i)
 			{				
@@ -1092,7 +1092,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		{
 			ParameterCalculation(vec_11.Magnitude(), vec_12.Magnitude());
 
-			N = (m_T - m_t0)/m_step;
+			N = (int)((m_T - m_t0)/m_step);
 			m_del_t = (m_T - m_t0)/N;
 
 			//vec_11.Normalize();
@@ -1153,7 +1153,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
 			for (int i=0; i<N; ++i)
 			{				
@@ -1187,7 +1187,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		{
 			ParameterCalculation(vec_12.Magnitude());
 
-			N = (m_T - m_t0)/m_step;
+			N = (int)((m_T - m_t0)/m_step);
 			m_del_t = (m_T - m_t0)/N;
 
 			for(int i=0; i<N; ++i)
@@ -1220,7 +1220,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = (int)vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 			
 			for (int i=0; i<N; ++i)
 			{				
@@ -1264,7 +1264,7 @@ bool path_simulate::EstimateMaxAcceleration()
 	
 	m_T = m_t1 + m_t2 - m_t0;
 
-	int N = (m_T - m_t0)/1e-3;
+	int N = (int)((m_T - m_t0)/1e-3);
 
 	if(N>10000)
 		N = 10000;	
@@ -1409,7 +1409,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		ParameterCalculation(w1);
 	}
 	
-	int N = (m_T-m_t0)/m_step;
+	int N = (int)((m_T-m_t0)/m_step);
 	m_del_t = (m_T-m_t0)/N;
 
 	cout << "NumOfPoints: " << N << endl;
@@ -1491,7 +1491,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 
-			N = w1;
+			N = (int)w1;
 
 			for(int i=0; i<N; ++i)
 			{
@@ -1615,23 +1615,23 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		{
 
 			
-			N = w1;
+			N = (int)w1;
 			double he = 0.9;
 
 			while(w2/N > m_dbound)
 			{
-				N = m_dbound/w2;
+				N = (int)(m_dbound/w2);
 
 
 				if(w1/N < he)
 				{
-					N = w1/he;
+					N = (int)(w1/he);
 					he = he - 0.1;
 				}
 
 				if(he<0.5)
 				{
-					N = w1/0.5;
+					N = (int)(w1/0.5);
 					break;
 				}
 			}
@@ -1894,7 +1894,7 @@ bool path_simulate::WriteOutput(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 			int n1 = m_Output_robo1.size();
-			int n2 = m_Output_robo2.size();
+			//int n2 = m_Output_robo2.size();
 
 			for(int i=0; i<n1; ++i)
 				anOutputFile << m_Output_robo1[i].x << "," <<  m_Output_robo1[i].y << "," << m_Output_robo1[i].z << "," << m_Output_robo2[i].x << "," <<  m_Output_robo2[i].y << "," << m_Output_robo2[i].z << endl;
