@@ -48,4 +48,4 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
 
 }
 
-#include "moc_cutting.cpp"
+#include "moc_Cutting.cpp"

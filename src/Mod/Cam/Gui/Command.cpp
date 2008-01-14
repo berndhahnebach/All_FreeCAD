@@ -4,7 +4,7 @@
 
 #include <Gui/Command.h>
 #include <Gui/Application.h>
-#include <Gui/Mainwindow.h>
+#include <Gui/MainWindow.h>
 
 
 
