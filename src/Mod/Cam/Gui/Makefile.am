@@ -2,10 +2,12 @@ if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libCamGui.la CamGui.la
 
-BUILT_SOURCES=\
+BUILT_SOURCES=
 
 libCamGui_la_SOURCES=\
 		Command.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h \
 		Workbench.cpp \
 		Workbench.h
 
