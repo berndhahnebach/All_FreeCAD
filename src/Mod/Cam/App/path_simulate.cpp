@@ -5,6 +5,7 @@
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Builder3D.h>
 #include <App/Application.h>
 #include <App/Document.h>
 
@@ -49,7 +50,6 @@
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Base/Builder3d.h>
 
 /* Konstruktor mit einer Bahnfolge (master tool) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
@@ -526,10 +526,10 @@ bool path_simulate::ParameterCalculation(double S1)
 
 	return true;
 }
-std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T, 
+std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double T, 
 																		unsigned int N, 
 																		std::vector<double> startParam, 
-																		std::vector<std::vector<Base::Vector3d>> &D1)
+																		std::vector<std::vector<Base::Vector3d> > &D1)
 {
     double t = m_t0;
 	double foundParameter;
@@ -547,7 +547,7 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 
 	m_del_t =  (m_T- m_t0)/N;
 	
-	std::vector<std::vector<Base::Vector3d>> D0;
+	std::vector<std::vector<Base::Vector3d> > D0;
 	std::vector<Base::Vector3d> tmp3,tmp5;
 
 	for(unsigned int i=0; i<N; ++i)
@@ -638,11 +638,11 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 	return D0;
 }
 
-std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T, 
+std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double T, 
 																		unsigned int N, 
 																		std::vector<double> startParam, 
-																		std::vector<std::vector<Base::Vector3d>> &D1,
-																		std::vector<std::vector<Base::Vector3d>> &D2)
+																		std::vector<std::vector<Base::Vector3d> > &D1,
+																		std::vector<std::vector<Base::Vector3d> > &D2)
 {
     double t = m_t0;
 	double foundParameter;
@@ -660,7 +660,7 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 
 	m_del_t =  (m_T- m_t0)/N;
 	
-	std::vector<std::vector<Base::Vector3d>> D0;
+	std::vector<std::vector<Base::Vector3d> > D0;
 	std::vector<Base::Vector3d> tmp3,tmp5;
 
 	for(unsigned int i=0; i<N; ++i)
@@ -746,9 +746,9 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T
 }
 
 /* berechnet die diskrete Ableitung einer Punktefolge über symmetrische Differenzen */
-std::vector<std::vector<Base::Vector3d>> path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d>> &D0)
+std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d> > &D0)
 {
-	std::vector<std::vector<Base::Vector3d>> D1 = D0;
+	std::vector<std::vector<Base::Vector3d> > D1 = D0;
 	int N = D0.size();
 	
 	D1[0][0] = (D0[1][0]-D0[N-1][0])/(2*m_del_t);
@@ -775,7 +775,7 @@ std::vector<std::vector<Base::Vector3d>> path_simulate::Derivate(const std::vect
 	return D1;
 }
 
-bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d>> &D1, std::vector<std::vector<Base::Vector3d>> &D2)
+bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2)
 {
 	std::vector<Base::Vector3d> tmp2;
 	Base::Vector3d tmp;

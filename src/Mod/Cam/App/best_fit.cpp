@@ -47,7 +47,11 @@
 #include <GProp_PrincipalProps.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TriangleAdapt_Parameters.h>
-#include <BrepMeshAdapt.hxx>
+#include <BRepMeshAdapt.hxx>
+#include <BRepTools.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
 //WM4 Stuff
 #include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
@@ -166,7 +170,6 @@ bool best_fit::MeshFit_Coarse()
 {
 	GProp_GProps prop;
 	GProp_PrincipalProps pprop;
-	BRepGProp SurfProp;
 	
     Base::Vector3f pnt(0.0,0.0,0.0);
 	Base::Vector3f x,y,z;
@@ -292,7 +295,7 @@ bool best_fit::thinning(unsigned int numPnts)
 		gridSize = gridIt.GetCtElements();
 		gridIt.GetElements(Elements);
 
-		n = a*gridSize;
+		n = (int)(a*gridSize);
 
 		if(n==0)
 		{
@@ -481,7 +484,7 @@ bool best_fit::AdjustPlane()
 	{
 		gridSize = gridIt.GetCtElements();
 		gridIt.GetElements(Elements);
-		n = a*gridSize;
+		n = (int)(a*gridSize);
 
 		if(n==0)
 		{
@@ -571,7 +574,6 @@ bool best_fit::AdjustPlane()
 double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Base::Vector3f> &normals)
 {
 	double err_avg = 0.0;
-	double err_max = 0.0;
 	double sqrdis  = 0.0;
 
 	MeshCore::MeshFacetGrid aFacetGrid(m_CadMesh);
@@ -615,7 +617,7 @@ double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Ba
 	std::sort(tmp.begin(), tmp.end());
 
 	double sum = 0.0;
-	int num = reject*tmp.size();
+	int num = (int)(reject*tmp.size());
 
 	for(int i=0; i<num; ++i)
 		sum += tmp[i];
@@ -839,7 +841,6 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 							std::vector<Base::Vector3f> &bpnts, std::vector<Base::Vector3f> &bnormals)
 {
 	double err_avg = 0.0;
-	double err_max = 0.0;
 	double sqrdis  = 0.0;
 	double weight  = 3*thin/b_thin;
 
@@ -887,7 +888,7 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 				err_avg += weight*sqrdis;
 			}
 			else
-				c += weight;
+				c += (int)weight;
 		}
 		else
 		{
@@ -897,7 +898,7 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 		}
 	}
 
-	int numAll = NumOfPoints1 + weight*NumOfPoints2;
+	int numAll = NumOfPoints1 + (int)(weight*NumOfPoints2);
 
 	if (c>(2*numAll/3))
 		return 1e+10;
@@ -909,7 +910,6 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals)
 {
 	double err_avg = 0.0;
-	double err_max = 0.0;
 	double sqrdis = 0.0;
 
 	MeshCore::MeshFacetGrid aFacetGrid(m_CadMesh);
@@ -957,7 +957,6 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base:
 	{
 		Base::Builder3D log3d;
 		double err_avg = 0.0;
-		double err_max = 0.0;
 		double sqrdis  = 0.0;
 
 
@@ -1016,7 +1015,7 @@ bool best_fit::Coarse_correction()
 	
 	error = Comp_Error(pnts, normals);  // startfehler
 
-	int n=360/rstep_corr;
+	int n=(int)(360/rstep_corr);
 
 	for(int i=1; i<n; ++i)
 	{
@@ -1050,8 +1049,8 @@ bool best_fit::Fit_iter()
 	double ref_trans, ref_rot = aref_rot;
 	double trans_step, rot_step;
 
-	int m = m_pntInd.size();
-    int n = m_Mesh.CountPoints();
+	unsigned int m = m_pntInd.size();
+    unsigned int n = m_Mesh.CountPoints();
 
 	double err, err_tmp, err_it = 1e+10;
 

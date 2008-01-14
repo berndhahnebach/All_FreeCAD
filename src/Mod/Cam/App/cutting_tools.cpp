@@ -34,11 +34,23 @@
 #include <Mod/Mesh/App/Core/Grid.h>
 
 //OCC Stuff
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Plane.hxx>
+#include <Handle_Geom_Plane.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS.hxx>
+#include <TopExp_Explorer.hxx>
 
 //Own Stuff
 #include "cutting_tools.h"
@@ -48,10 +60,10 @@
 
 cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
         : m_Shape(aShape),
-        m_mirrortobothsides(mirrortobothsides),
-        m_pitch(pitch),
 		m_aMeshAlgo(NULL),
-		m_CAD_Mesh_Grid(NULL)
+		m_CAD_Mesh_Grid(NULL),
+        m_mirrortobothsides(mirrortobothsides),
+        m_pitch(pitch)
 {
     m_ordered_cuts.clear();
 	m_all_offset_cuts_high.clear();
@@ -724,7 +736,7 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 #include <TColgp_HArray1OfPnt.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Base/Builder3D.h>
-#include "BrepAdaptor_CompCurve2.h"
+#include "BRepAdaptor_CompCurve2.h"
 
 bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float sheet_thickness) //Version wo nur in X,Y-Ebene verschoben wird
 {
@@ -1185,7 +1197,7 @@ bool cutting_tools::calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,do
 	//Mittelwert von allen Normalenwinkeln und damit dann den Mittelwert der Blechdicke bilden
 	average_angle = 0.0;
 	
-	for(int i=0;i<OffsetPoints.size();++i) 
+	for(unsigned int i=0;i<OffsetPoints.size();++i) 
 	{average_angle = average_angle + OffsetPoints[i].second;}
 	
 	average_angle = average_angle/OffsetPoints.size();
