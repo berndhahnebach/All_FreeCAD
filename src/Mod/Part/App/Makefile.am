@@ -119,6 +119,7 @@ libdir = $(prefix)/Mod/Part
 CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)
 
 EXTRA_DIST = \
+		OpenCascadeAll.h \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		AppPart.vcproj

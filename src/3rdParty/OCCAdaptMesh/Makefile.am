@@ -5,186 +5,86 @@ lib_LTLIBRARIES=libOCCAdaptMesh.la
 
 libOCCAdaptMesh_la_SOURCES=\
 		src/BRepMeshAdapt/BRepMeshAdapt_Array1OfBiPoint_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Array1OfBiPoint.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Array1OfVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Array1OfVertexOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_BiPoint.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_BiPoint.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Classifier.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Classifier.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ComparatorOfVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ComparatorOfVertexOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt.cxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfCouplePnt_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfCouplePnt.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfIntegerFace_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfIntegerFace.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfIntegerListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfIntegerListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfMeshVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfMeshVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeEdgeDiscret_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeEdgeDiscret.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeReal_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeReal.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfShapeSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfVertexInteger_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataMapOfVertexInteger.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_DataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_DataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Delaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Delaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Discret.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Discret.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Edge.cxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_EdgeDiscret.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_EdgeDiscret.hxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Edge.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_FastDiscret.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_FastDiscret.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_GeomTool_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_GeomTool.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_HArray1OfVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_HeapSortIndexedVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_HeapSortIndexedVertexOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_HeapSortVertexOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_HeapSortVertexOfDelaun.hxx \
-		src/BRepMeshAdapt/BRepMeshAdapt.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IncrementalMesh.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IncrementalMesh.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapOfVertex_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IndexedMapOfVertex.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfVertex_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfVertex.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListIteratorOfListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfVertex_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfVertex.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListNodeOfListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListOfSurfaceGrid_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListOfSurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListOfVertex_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListOfVertex.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ListOfXY_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ListOfXY.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_SelectorOfDataStructureOfDelaun_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_SelectorOfDataStructureOfDelaun.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_ShapeTool.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ShapeTool.hxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Status.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_SurfaceGrid.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_SurfaceGrid.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Triangle.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Triangle.hxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.cxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_VertexHasher_0.cxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_VertexHasher.hxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_DataStructureOfDelaun.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_Discret.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_EdgeDiscret.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_FastDiscret.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_ListNodeOfListOfVertex.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_ListNodeOfListOfXY.hxx \
-		src/BRepMeshAdapt/Handle_BRepMeshAdapt_SurfaceGrid.hxx \
 		src/BRepMeshAdapt/meshchronoAdapt.cxx \
 		src/BRepMeshAdapt/meshchronoAdapt.hxx \
 		src/BRepMeshAdapt/meshtriangleAdapt.cxx \
 		src/BRepMeshAdapt/meshtriangleAdapt.hxx \
-		src/MeshAlgoAdapt/Handle_MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_CircleTool.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_CircleTool.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt.cxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc_0.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc_0.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapOfIntegerCirc_0.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_DataMapOfIntegerCirc.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Edge.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Edge.hxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Triangle.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Triangle.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Vertex.cxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Vertex.hxx \
 		src/TriangleAdapt/occcallbackAdapt.cxx \
 		src/TriangleAdapt/triangleAdapt.c \
 		src/TriangleAdapt/triangleAdapt.h \
@@ -223,6 +123,9 @@ libOCCAdaptMesh_la_LIBADD   = \
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src \
+		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/src/BRepMeshAdapt \
+		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/src/MeshAlgoAdapt \
+		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/src/TriangleAdapt \
 		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/Include
 
 endif
@@ -345,60 +248,56 @@ EXTRA_DIST = \
 		Include/MeshAlgoAdapt_Vertex.hxx \
 		Include/MeshAlgoAdapt_Vertex.ixx \
 		Include/MeshAlgoAdapt_Vertex.jxx \
-		Include/meshchronoAdapt.hxx \
-		Include/meshtriangleAdapt.hxx \
-		Include/triangleAdapt.h \
-		Include/TriangleAdapt.hxx \
 		Include/TriangleAdapt_Parameters.h \
-		src/BRepMeshAdapt/BRepMeshAdapt_BiPoint.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_BiPoint.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_BiPoint.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Classifier.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Classifier.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Classifier.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Discret.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Discret.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_EdgeDiscret.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_EdgeDiscret.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Edge.hxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Edge.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Edge.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Edge.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_FastDiscret.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_FastDiscret.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_FastDiscret.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IncrementalMesh.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_IncrementalMesh.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ShapeTool.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ShapeTool.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_ShapeTool.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_SurfaceGrid.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_SurfaceGrid.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Triangle.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Triangle.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Triangle.lxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.ixx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.jxx \
-		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.lxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.jxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_CircleTool.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_CircleTool.jxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.lxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Delaunay.gxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Delaunay.lxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Edge.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Edge.jxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_IndexedPntComparator.gxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt.jxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_PntComparator.gxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Triangle.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Triangle.jxx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Vertex.ixx \
-		src/MeshAlgoAdapt/MeshAlgoAdapt_Vertex.jxx \
-		src/TriangleAdapt/TriangleAdapt_CMPLRS.edl
+		Include/BRepMeshAdapt_BiPoint.ixx \
+		Include/BRepMeshAdapt_BiPoint.jxx \
+		Include/BRepMeshAdapt_BiPoint.lxx \
+		Include/BRepMeshAdapt_Classifier.ixx \
+		Include/BRepMeshAdapt_Classifier.jxx \
+		Include/BRepMeshAdapt_Classifier.lxx \
+		Include/BRepMeshAdapt_Discret.ixx \
+		Include/BRepMeshAdapt_Discret.jxx \
+		Include/BRepMeshAdapt_EdgeDiscret.ixx \
+		Include/BRepMeshAdapt_EdgeDiscret.jxx \
+		Include/BRepMeshAdapt_Edge.hxx \
+		Include/BRepMeshAdapt_Edge.ixx \
+		Include/BRepMeshAdapt_Edge.jxx \
+		Include/BRepMeshAdapt_Edge.lxx \
+		Include/BRepMeshAdapt_FastDiscret.ixx \
+		Include/BRepMeshAdapt_FastDiscret.jxx \
+		Include/BRepMeshAdapt_FastDiscret.lxx \
+		Include/BRepMeshAdapt_IncrementalMesh.ixx \
+		Include/BRepMeshAdapt_IncrementalMesh.jxx \
+		Include/BRepMeshAdapt.ixx \
+		Include/BRepMeshAdapt.jxx \
+		Include/BRepMeshAdapt_ShapeTool.ixx \
+		Include/BRepMeshAdapt_ShapeTool.jxx \
+		Include/BRepMeshAdapt_ShapeTool.lxx \
+		Include/BRepMeshAdapt_SurfaceGrid.ixx \
+		Include/BRepMeshAdapt_SurfaceGrid.jxx \
+		Include/BRepMeshAdapt_Triangle.ixx \
+		Include/BRepMeshAdapt_Triangle.jxx \
+		Include/BRepMeshAdapt_Triangle.lxx \
+		Include/BRepMeshAdapt_Vertex.ixx \
+		Include/BRepMeshAdapt_Vertex.jxx \
+		Include/BRepMeshAdapt_Vertex.lxx \
+		Include/MeshAlgoAdapt_Circ.ixx \
+		Include/MeshAlgoAdapt_Circ.jxx \
+		Include/MeshAlgoAdapt_CircleTool.ixx \
+		Include/MeshAlgoAdapt_CircleTool.jxx \
+		Include/MeshAlgoAdapt_Circ.lxx \
+		Include/MeshAlgoAdapt_Delaunay.gxx \
+		Include/MeshAlgoAdapt_Delaunay.lxx \
+		Include/MeshAlgoAdapt_Edge.ixx \
+		Include/MeshAlgoAdapt_Edge.jxx \
+		Include/MeshAlgoAdapt_IndexedPntComparator.gxx \
+		Include/MeshAlgoAdapt.ixx \
+		Include/MeshAlgoAdapt.jxx \
+		Include/MeshAlgoAdapt_PntComparator.gxx \
+		Include/MeshAlgoAdapt_Triangle.ixx \
+		Include/MeshAlgoAdapt_Triangle.jxx \
+		Include/MeshAlgoAdapt_Vertex.ixx \
+		Include/MeshAlgoAdapt_Vertex.jxx \
+		src/TriangleAdapt/TriangleAdapt_CMPLRS.edl \
 		CMakeLists.txt
 
