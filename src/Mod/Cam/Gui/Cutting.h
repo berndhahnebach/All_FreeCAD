@@ -3,7 +3,11 @@
 
 #include "ui_Cutting.h"
 
-namespace CamGui{
+class cutting_tools;
+class TopoDS_Shape;
+
+namespace CamGui
+{
 
 class Cutting : public QDialog, public Ui_Cutting
 {
@@ -11,18 +15,25 @@ class Cutting : public QDialog, public Ui_Cutting
 public:
     Cutting(QWidget* parent,Qt::WFlags = 0);
     ~Cutting();
-
 protected Q_SLOTS:
     void on_CalculcateZLevel_clicked();
+    void on_select_shape_z_level_button_clicked();
+	void on_select_shape_feature_based_button_clicked();
     void on_toolpath_calculation_highest_level_button_clicked();
     void on_toolpath_calculation_middle_level_button_clicked();
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
+    void selectShape();
 
 private:
     //Instanz von der cutting-klasse auf dem Heap erzeugen
+    cutting_tools *m_CuttingAlgo;
+
+    TopoDS_Shape m_Shape;
+    bool m_timer;
+
+
 };
 
 }
-
 #endif

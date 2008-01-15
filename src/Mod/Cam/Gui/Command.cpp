@@ -15,7 +15,7 @@
 DEF_STD_CMD(StdCamCutting);
 
 StdCamCutting::StdCamCutting()
-  :Command("Cam_Cutting")
+        :Command("Cam_Cutting")
 {
     sGroup        = QT_TR_NOOP("Tools");
     sMenuText     = QT_TR_NOOP("Cutting...");

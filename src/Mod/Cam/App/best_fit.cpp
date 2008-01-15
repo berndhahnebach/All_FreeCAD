@@ -1,7 +1,8 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *	 Human Rezai <human@mytum.de>										   * 
+ *	 Human Rezai <human@mytum.de>                                    * 
+ *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,41 +25,29 @@
 
 
 #include "PreCompiled.h"
-
-
-//Basic Stuff
-#include <Base/Builder3D.h>
-
-
-
-//Mesh Stuff
-#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
-#include <Mod/Mesh/App/Core/Iterator.h>
-#include <Mod/Mesh/App/MeshAlgos.h>
-#include <Mod/Mesh/App/Core/Elements.h>
-#include <Mod/Mesh/App/Core/Grid.h>
-#include <Mod/Mesh/App/Core/Evaluation.h>
-#include <Mod/Mesh/App/Core/Builder.h>
-
-//OCC Stuff
-#include <BRep_Tool.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepGProp.hxx>
-#include <GProp_PrincipalProps.hxx>
-#include <Poly_Triangulation.hxx>
-#include <TriangleAdapt_Parameters.h>
-#include <BRepMeshAdapt.hxx>
-#include <BRepTools.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-
-//WM4 Stuff
-#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
-#include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
-
-//Own Stuff
 #include "best_fit.h"
+
+#include <Mod/Mesh/App/Core/Grid.h>
+#include <Mod/Mesh/App/Core/Builder.h>
+#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include <Mod/Mesh/App/MeshAlgos.h>
+
+#include <Base/Builder3d.h>
+
+#include <BRep_Tool.hxx>
+#include <BRepUtils.h>
+#include <BRepBuilderAPI_Sewing.hxx>
+
+#include <BRepMeshAdapt.hxx>
+
+#include <BRepGProp.hxx>
+
+#include <BRepBuilderAPI_Transform.hxx>
+#include <GProp_PrincipalProps.hxx>
+
+#include <handle_poly_triangulation.hxx>
+#include <Poly_Triangulation.hxx>
+
 
 
 best_fit::best_fit(const MeshCore::MeshKernel &mesh, TopoDS_Shape &cad)
@@ -79,6 +68,39 @@ best_fit::best_fit(TopoDS_Shape &cad)
 
 best_fit::~best_fit()
 {
+}
+
+bool best_fit::Perform()
+{
+	cout << "trafo2origin" << endl;
+	MeshFit_Coarse();
+	ShapeFit_Coarse();
+	
+	cout << "tesselate shape" << endl;
+	Tesselate_Shape(m_Cad, m_CadMesh, 1);
+	
+	cout << "mesh curvature" << endl;
+	thinning(thin);
+
+	cout << "compute normals" << endl;
+	m_normals = Comp_Normals(m_Mesh, m_pntInd);
+
+	cout << "correction" << endl;
+	Coarse_correction();
+	
+	cout << "adjust plane" << endl;
+	AdjustPlane();
+
+	cout << "start fitting iteration:" << endl;
+	Fit_iter();
+
+	m_normals.clear();
+	m_normals = Comp_Normals(m_CadMesh);
+
+	CompTotalError();
+
+
+	return true;
 }
 
 bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
@@ -170,6 +192,7 @@ bool best_fit::MeshFit_Coarse()
 {
 	GProp_GProps prop;
 	GProp_PrincipalProps pprop;
+	BRepGProp SurfProp;
 	
     Base::Vector3f pnt(0.0,0.0,0.0);
 	Base::Vector3f x,y,z;
@@ -295,7 +318,7 @@ bool best_fit::thinning(unsigned int numPnts)
 		gridSize = gridIt.GetCtElements();
 		gridIt.GetElements(Elements);
 
-		n = (int)(a*gridSize);
+		n = a*gridSize;
 
 		if(n==0)
 		{
@@ -484,7 +507,7 @@ bool best_fit::AdjustPlane()
 	{
 		gridSize = gridIt.GetCtElements();
 		gridIt.GetElements(Elements);
-		n = (int)(a*gridSize);
+		n = a*gridSize;
 
 		if(n==0)
 		{
@@ -563,7 +586,7 @@ bool best_fit::AdjustPlane()
 	err = ComPlaneErr(b_pnts, b_normals);
 	std::cout << "final average error: " << sqrt(err) << " mm" << std::endl;
 
-	Comp_Error(b_pnts, b_normals, true);
+	CompError(b_pnts, b_normals, true);
 
 	bpnts = b_pnts;
 	bnormals = b_normals;
@@ -574,6 +597,7 @@ bool best_fit::AdjustPlane()
 double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Base::Vector3f> &normals)
 {
 	double err_avg = 0.0;
+	double err_max = 0.0;
 	double sqrdis  = 0.0;
 
 	MeshCore::MeshFacetGrid aFacetGrid(m_CadMesh);
@@ -617,7 +641,7 @@ double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Ba
 	std::sort(tmp.begin(), tmp.end());
 
 	double sum = 0.0;
-	int num = (int)(reject*tmp.size());
+	int num = reject*tmp.size();
 
 	for(int i=0; i<num; ++i)
 		sum += tmp[i];
@@ -630,8 +654,7 @@ double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Ba
 	return sum;
 }
 
-
-bool best_fit::Tesselate_Face(TopoDS_Face &aface, MeshCore::MeshKernel &mesh, float deflection)
+bool best_fit::Tesselate_Face(const TopoDS_Face &aface, MeshCore::MeshKernel &mesh, float deflection)
 {
 	Base::Builder3D aBuild;
   	MeshCore::MeshBuilder builder(mesh);
@@ -645,8 +668,9 @@ bool best_fit::Tesselate_Face(TopoDS_Face &aface, MeshCore::MeshKernel &mesh, fl
 	// adds a triangulation of the shape aShape with the deflection aDeflection:
 	//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
 	TriangleAdapt_Parameters MeshingParams;
-	BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
 
+	
+	BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
 
 	 TopLoc_Location aLocation;
 	  // takes the triangulation of the face aFace:
@@ -693,14 +717,11 @@ bool best_fit::Tesselate_Face(TopoDS_Face &aface, MeshCore::MeshKernel &mesh, fl
 	return true;
 }
 
-//#include <BRepMesh.hxx>
-#include <BRepUtils.h>
-#include <BRepBuilderAPI_Sewing.hxx>
 bool best_fit::Tesselate_Shape(TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection)
 {
 	Base::Builder3D aBuild;
 	
-	MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.01;
+//MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.001;
   	MeshCore::MeshBuilder builder(mesh);
 	builder.Initialize(1000);
 	Base::Vector3f Points[3];
@@ -728,14 +749,15 @@ bool best_fit::Tesselate_Shape(TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, 
 	BRepTools::Clean(shape);
 
 	// adds a triangulation of the shape aShape with the deflection deflection:
-	//BRepMesh_IncrementalMesh Mesh(shape,deflection);
+
 	TriangleAdapt_Parameters MeshParams;
 	MeshParams._minAngle = 30.0;
 	MeshParams._minNbPntsPerEdgeLine = 10;
 	MeshParams._minNbPntsPerEdgeOther = 10;
 	MeshParams._minEdgeSplit = 5;
 	BRepMeshAdapt::Mesh(shape,deflection,MeshParams);
-	TopExp_Explorer aExpFace;
+	
+        TopExp_Explorer aExpFace;
 	
 	for(aExpFace.Init(shape,TopAbs_FACE);aExpFace.More();aExpFace.Next())
 	{  
@@ -837,10 +859,65 @@ std::vector<Base::Vector3f> best_fit::Comp_Normals(MeshCore::MeshKernel &M, std:
 	return normals;
 }
 
-double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base::Vector3f> &normals, 
+std::vector<Base::Vector3f> best_fit::Comp_Normals(MeshCore::MeshKernel &M)
+{
+	Base::Builder3D log3d;
+	Base::Vector3f normal,local_normal,origPoint;
+	MeshCore::MeshRefPointToFacets rf2pt(M);
+	MeshCore::MeshGeomFacet        t_face;
+	MeshCore::MeshPoint mPnt;
+	std::vector<Base::Vector3f>    normals;
+
+	int NumOfPoints = M.CountPoints();
+	float local_Area;
+	float fArea;
+
+	for (int i=0; i<NumOfPoints; ++i)
+	{
+		// Satz von Dreiecken zu jedem Punkt
+		mPnt = M.GetPoint(i);
+		origPoint.x = mPnt.x;
+		origPoint.y = mPnt.y;
+		origPoint.z = mPnt.z;
+
+    	const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+		fArea = 0.0;
+		normal.Set(0.0,0.0,0.0);	
+         
+		// Iteriere über die Dreiecke zu jedem Punkt
+		for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it) 
+		{
+			// Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+			t_face = M.GetFacet(**it);
+			// Flaecheninhalt aufsummieren
+			local_Area = t_face.Area();
+			local_normal = t_face.GetNormal();
+			if(local_normal.z < 0)
+			{
+				local_normal = local_normal * (-1);
+			}
+
+			fArea  = fArea  + local_Area;
+			normal = normal + local_Area*local_normal;
+
+		}
+
+		normal.Normalize();
+		normals.push_back(normal);
+
+		log3d.addSingleArrow(origPoint,origPoint+normal,1,0,0,0);
+	}
+
+	log3d.saveToFile("c:/normals.iv");
+
+	return normals;
+}
+
+double best_fit::CompError(std::vector<Base::Vector3f> &pnts,  std::vector<Base::Vector3f> &normals, 
 							std::vector<Base::Vector3f> &bpnts, std::vector<Base::Vector3f> &bnormals)
 {
 	double err_avg = 0.0;
+	double err_max = 0.0;
 	double sqrdis  = 0.0;
 	double weight  = 3*thin/b_thin;
 
@@ -888,7 +965,7 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 				err_avg += weight*sqrdis;
 			}
 			else
-				c += (int)weight;
+				c += weight;
 		}
 		else
 		{
@@ -898,7 +975,7 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 		}
 	}
 
-	int numAll = NumOfPoints1 + (int)(weight*NumOfPoints2);
+	int numAll = NumOfPoints1 + weight*NumOfPoints2;
 
 	if (c>(2*numAll/3))
 		return 1e+10;
@@ -907,9 +984,10 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base
 }
 
 
-double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals)
+double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals)
 {
 	double err_avg = 0.0;
+	double err_max = 0.0;
 	double sqrdis = 0.0;
 
 	MeshCore::MeshFacetGrid aFacetGrid(m_CadMesh);
@@ -949,14 +1027,15 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base:
 	return err_avg/(NumOfPoints-c);
 }
 
-double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot)
+double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot)
 {
 	if(plot==false)
-		return Comp_Error(pnts, normals);
+		return CompError(pnts, normals);
 	else
 	{
 		Base::Builder3D log3d;
 		double err_avg = 0.0;
+		double err_max = 0.0;
 		double sqrdis  = 0.0;
 
 
@@ -969,7 +1048,7 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base:
 
 		int NumOfPoints = pnts.size();
 		int c=0;
-		
+
 		for (int i=0; i<NumOfPoints; ++i)
 		{     
 			if(!malg.NearestFacetOnRay(pnts[i], normals[i], aFacetGrid, projPoint, facetIndex)){   // gridoptimiert
@@ -994,12 +1073,113 @@ double best_fit::Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base:
 		}
 
 		log3d.saveToFile("c:/projection.iv");
-			
+
 		if (c>(NumOfPoints/2))
 			return 1e+10;
-		
+
 		return err_avg/(NumOfPoints-c);
 	}	
+}
+
+double best_fit::CompTotalError()
+{
+	Base::Builder3D log3d;
+	double err_avg = 0.0;
+	double err_max = 0.0;
+	double sqrdis  = 0.0;
+
+	MeshCore::MeshFacetGrid aFacetGrid(m_Mesh);
+	MeshCore::MeshAlgorithm malg(m_Mesh);
+	MeshCore::MeshAlgorithm malg2(m_Mesh);
+	MeshCore::MeshPointIterator p_it(m_CadMesh);
+
+	Base::Vector3f projPoint, distVec, projPoint2;
+	unsigned long  facetIndex;
+
+	m_error.resize(m_CadMesh.CountPoints());
+
+	int c=0;
+
+	for (p_it.Begin(); p_it.More(); p_it.Next())
+	{     
+		if(!malg.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], aFacetGrid, projPoint, facetIndex)){   // gridoptimiert
+			if(malg2.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], projPoint, facetIndex)){
+
+				log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
+				distVec  = projPoint - *p_it;
+				sqrdis   = distVec*distVec;
+
+				if(((projPoint.z - p_it->z) / m_normals[p_it.Position()].z ) > 0) 
+					m_error[p_it.Position()] = sqrt(sqrdis);
+				else												
+					m_error[p_it.Position()] = -sqrt(sqrdis);
+
+				err_avg += sqrdis;
+			}
+			else
+			{
+				c++;
+				m_FailProj.push_back(p_it.Position());
+			}		
+		}
+		else 
+		{
+			distVec  = projPoint-*p_it;
+		    sqrdis   = distVec*distVec;
+
+			m_normals[p_it.Position()].Scale(-1,-1,-1);
+
+			if(malg.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], aFacetGrid, projPoint2, facetIndex)){
+				distVec  = projPoint2-*p_it;
+				if(sqrdis > distVec*distVec)
+				{
+					sqrdis   = distVec*distVec;
+				    log3d.addSingleArrow(*p_it, projPoint2, 3, 0,0,0);
+				}
+				else
+				{
+					log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
+				}
+
+			}
+			m_normals[p_it.Position()].Scale(-1,-1,-1);
+
+			if(((projPoint.z - p_it->z) / m_normals[p_it.Position()].z ) > 0) 
+					m_error[p_it.Position()] = sqrt(sqrdis);
+				else												
+					m_error[p_it.Position()] = -sqrt(sqrdis);
+
+			err_avg += sqrdis;
+		}
+	}
+
+	
+	std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator v_it;
+	MeshCore::MeshRefPointToPoints vv_it(m_CadMesh);
+
+	std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
+
+	for(unsigned int i=0; i<m_FailProj.size(); ++i)
+	{
+		PntNei = vv_it[m_FailProj[i]];
+		m_error[m_FailProj[i]] = 0.0;
+		
+		for(v_it = PntNei.begin(); v_it !=PntNei.end(); ++v_it)
+		{
+			m_error[m_FailProj[i]] += m_error[(*v_it)[0]._ulProp];
+		}
+
+		m_error[m_FailProj[i]] /= double(PntNei.size());
+		PntNei.clear();
+	}
+
+
+	log3d.saveToFile("c:/projection.iv");
+
+	if (c>(m_CadMesh.CountPoints()/2))
+		return 1e+10;
+	
+	return err_avg/(m_CadMesh.CountPoints()-c);
 }
 
 bool best_fit::Coarse_correction()
@@ -1012,15 +1192,15 @@ bool best_fit::Coarse_correction()
 
 	// 180°- rotation um z-Achse
 	RotMat(M_z, rstep_corr, 3);
-	
-	error = Comp_Error(pnts, normals);  // startfehler
 
-	int n=(int)(360/rstep_corr);
+	error = CompError(pnts, normals);  // startfehler
+
+	int n=360/rstep_corr;
 
 	for(int i=1; i<n; ++i)
 	{
 		MeshTransform(pnts, normals, M_z);
-		error_tmp = Comp_Error(pnts, normals);
+		error_tmp = CompError(pnts, normals);
 
 		if(error_tmp < error){
 			error = error_tmp;
@@ -1036,7 +1216,7 @@ bool best_fit::Coarse_correction()
 		m_Mesh.Transform(M_z);
 	}
 	
-	Comp_Error(m_pnts, m_normals, true);
+	CompError(m_pnts, m_normals, true);
 
 	normals.clear();
 	pnts.clear();
@@ -1049,8 +1229,8 @@ bool best_fit::Fit_iter()
 	double ref_trans, ref_rot = aref_rot;
 	double trans_step, rot_step;
 
-	unsigned int m = m_pntInd.size();
-    unsigned int n = m_Mesh.CountPoints();
+	int m = m_pntInd.size();
+    int n = m_Mesh.CountPoints();
 
 	double err, err_tmp, err_it = 1e+10;
 
@@ -1084,7 +1264,7 @@ bool best_fit::Fit_iter()
 
 	while(true){
 
-		err = Comp_Error(m_pnts, m_normals);  // startfehler
+		err = CompError(m_pnts, m_normals);  // startfehler
 		cout << "startfehler: " << sqrt(err) << endl;
 
 		// übergebe referenz
@@ -1109,7 +1289,7 @@ bool best_fit::Fit_iter()
 					else
 						MeshTransform(pnts_tmp, M);
 
-					err_tmp = Comp_Error(pnts_tmp, normals_tmp);
+					err_tmp = CompError(pnts_tmp, normals_tmp);
 
 					if(err_tmp < err){
 						M_fin = M;
@@ -1128,7 +1308,7 @@ bool best_fit::Fit_iter()
 		MeshTransform(m_pnts, m_normals, M_fin);
 		MeshTransform(bpnts,  bnormals,  M_fin);
 		m_Mesh.Transform(M_fin);
-		err = Comp_Error(m_pnts, m_normals, true);
+		err = CompError(m_pnts, m_normals, true);
 		
 		if( (err_it - err) < TOL2 || trans_step < TOL1)
 			break;
@@ -1142,30 +1322,33 @@ bool best_fit::Fit_iter()
         rot_step   = 2 * ref_rot   / nrstep;
 	}
 
-	err = Comp_Error(m_pnts, m_normals, true);
+	err = CompError(m_pnts, m_normals, true);
 	std::cout << "final average error: " << sqrt(err) << " mm" << std::endl;
 
+	
+	// correction of z-value
+	
 	std::vector<Base::Vector3f> tmp_bpnts;
 	std::vector<Base::Vector3f> tmp_bnormals;
 
 	double berr_1, berr_2, err_1;
 
 	cout << "compute new thinning..." << endl;
-	thinning(2*thin);
+	thinning(4*thin);
 	m_normals.clear();
 	m_normals = Comp_Normals(m_Mesh, m_pntInd);
 
 
-	ref_trans = 2.5;
+	ref_trans = 2.5;    // do correction from [-5/2, +5/2] with 1/10 mm steps
 	trans_step = 0.1;
     err = 1e+10;
 	pnts_tmp.clear();
 	
-	berr_1 = Comp_Error(bpnts,bnormals);
-	err_1  = Comp_Error(m_pnts, m_normals);
+	berr_1 = CompError(bpnts,bnormals);
+	err_1  = CompError(m_pnts, m_normals);
 	
-	cout << "startfehler - z-correction" << sqrt(Comp_Error(m_pnts, m_normals)) << endl;
-	//cout << "startfehler - z-correction bound" << sqrt(Comp_Error(bpnts,bnormals)) << endl;
+	cout << "startfehler - z-correction" << sqrt(CompError(m_pnts, m_normals)) << endl;
+	cout << "startfehler - z-correction bound" << sqrt(CompError(bpnts,bnormals)) << endl;
 	cout << "start z-trans correction... " << endl;
 	
 	while(true){
@@ -1183,13 +1366,13 @@ bool best_fit::Fit_iter()
 
 			ZTranslation(m_pnts, n*trans_step);		
 			ZTranslation(bpnts,  n*trans_step);		
-			err_tmp = Comp_Error(m_pnts, m_normals, bpnts, bnormals);
+			err_tmp = CompError(m_pnts, m_normals, bpnts, bnormals);
 
 			/*
-			err_tmp = Comp_Error(bpnts, bnormals);
+			err_tmp = CompError(bpnts, bnormals);
 			cout << " error bound: " << sqrt(err_tmp)<< endl;
 
-			err_tmp = Comp_Error(m_pnts, m_normals);*/
+			err_tmp = CompError(m_pnts, m_normals);*/
 			
 			cout << " error: " << sqrt(err_tmp)<< endl;
 
@@ -1201,15 +1384,16 @@ bool best_fit::Fit_iter()
 			}
 
 			m_pnts = pnts_tmp;
-			/*bpnts  = tmp_bpnts;*/
+			bpnts  = tmp_bpnts;
 		}
 
 		ZTranslation(m_pnts, trans_fin);
 		ZTranslation(bpnts, trans_fin);
-		berr_2 = Comp_Error(bpnts, bnormals);
-		//err = Comp_Error(m_pnts, m_normals, bpnts, bnormals);
-		err_tmp = Comp_Error(m_pnts, m_normals);
+		berr_2 = CompError(bpnts, bnormals);
+		//err = CompError(m_pnts, m_normals, bpnts, bnormals);
+		err_tmp = CompError(m_pnts, m_normals);
 
+		cout << "quotient: " << (berr_1-berr_2)/(err_1 - err_tmp) << endl;
 		if((berr_1-berr_2)/(err_1 - err_tmp) > -2)
 		{
 			TransMat(M_fin, trans_fin, 3);
@@ -1223,10 +1407,12 @@ bool best_fit::Fit_iter()
 		}
 
 		std::cout << "average error: " << sqrt(err) << " mm" << std::endl;
-		cout << "endfehler - z-correction" << sqrt(Comp_Error(m_pnts, m_normals)) << endl;
-		cout << "endfehler - z-correction bound" << sqrt(Comp_Error(bpnts, bnormals)) << endl;
+		cout << "endfehler - z-correction" << sqrt(CompError(m_pnts, m_normals)) << endl;
+		cout << "endfehler - z-correction bound" << sqrt(CompError(bpnts, bnormals)) << endl;
 		break;
 	}
+
+
 	
 	ref_trans = 5;
 	ref_rot   = 5;
@@ -1241,7 +1427,7 @@ bool best_fit::Fit_iter()
 
 	while(true){
 
-		err = Comp_Error(m_pnts, m_normals);  // startfehler
+		err = CompError(m_pnts, m_normals);  // startfehler
 		cout << "startfehler: " << sqrt(err) << endl;
 
 		// übergebe referenz
@@ -1275,7 +1461,7 @@ bool best_fit::Fit_iter()
 						MeshTransform(tmp_bpnts, M);
 					}
 
-					err_tmp = Comp_Error(pnts_tmp, normals_tmp);
+					err_tmp = CompError(pnts_tmp, normals_tmp);
 
 					if(err_tmp < err){
 						M_fin = M;
@@ -1297,7 +1483,7 @@ bool best_fit::Fit_iter()
 		MeshTransform(m_pnts, m_normals, M_fin);
 		MeshTransform(bpnts, bnormals, M_fin);
 		m_Mesh.Transform(M_fin);
-		err = Comp_Error(m_pnts, m_normals);
+		err = CompError(m_pnts, m_normals);
 
 		if( (err_it - err) < TOL2 || trans_step < TOL1)
 			break;
@@ -1311,7 +1497,7 @@ bool best_fit::Fit_iter()
         rot_step   = 2 * ref_rot   / nrstep;
 	}
 
-	err = Comp_Error(pnts_tmp, normals_tmp);
+	err = CompError(pnts_tmp, normals_tmp);
 	std::cout << "final average error: " << sqrt(err) << " mm" << std::endl;
 
 	// shape zurück zur ausgangsposition

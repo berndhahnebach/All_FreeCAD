@@ -1,7 +1,8 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *	 Human Rezai <human@mytum.de>										   * 
+ *	 Human Rezai <human.rezai@eads.net>                                    * 
+ *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -25,7 +26,9 @@
 #ifndef BEST_FIT_H
 #define BEST_FIT_H
 
-#include <Mod/Mesh/App/Core/MeshKernel.h>
+
+#include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Base/Exception.h>
 
 #define TOL1       0.0001  // step-break
 #define TOL2       0.0001  // error-break
@@ -51,20 +54,25 @@ public:
 	bool MeshFit_Coarse();
 	bool ShapeFit_Coarse();
 	bool thinning(unsigned int numPnts);
+	bool Perform();
 	bool Coarse_correction();
 	bool Fit_iter();
 	bool AdjustPlane();
-	double Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals);
-	double Comp_Error(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot);
-    double Comp_Error(std::vector<Base::Vector3f> &pnts,  std::vector<Base::Vector3f> &normals, 
+	double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals);
+	double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot);
+    double CompError(std::vector<Base::Vector3f> &pnts,  std::vector<Base::Vector3f> &normals, 
 					  std::vector<Base::Vector3f> &bpnts, std::vector<Base::Vector3f> &bnormals);
+	double CompTotalError();
 	static bool Tesselate_Shape(TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection);
-	static bool Tesselate_Face (TopoDS_Face  &aface, MeshCore::MeshKernel &mesh, float deflection);
+	static bool Tesselate_Face (const TopoDS_Face  &aface, MeshCore::MeshKernel &mesh, float deflection);
 	std::vector<Base::Vector3f> Comp_Normals(MeshCore::MeshKernel &M, std::vector<unsigned long> &Ind);
+	static std::vector<Base::Vector3f> Comp_Normals(MeshCore::MeshKernel &M);
 	
-	MeshCore::MeshKernel m_Mesh;
-	MeshCore::MeshKernel m_CadMesh;
+	MeshCore::MeshKernel m_Mesh;     // das zu fittende Netz
+	MeshCore::MeshKernel m_CadMesh;  // Netz aus CAD-Triangulierung
 	std::vector<Base::Vector3f> m_normals;
+	std::vector<double> m_error;
+	std::vector<int> m_FailProj;
 	std::list< std::vector <unsigned long> >  m_boundInd;
 	std::vector<double> m_pntCurv;
 	TopoDS_Shape m_Cad;
@@ -92,4 +100,3 @@ public:
 };
 
 #endif
-

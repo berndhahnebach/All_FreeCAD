@@ -277,7 +277,7 @@ static PyObject * makeToolPath(PyObject *self, PyObject *args)
     PY_TRY
     {
 
-		cutting_tools anewCuttingEnv(pcShape->getShape());
+		cutting_tools anewCuttingEnv(pcShape->getShape(),10.0);
 		anewCuttingEnv.arrangecuts_ZLEVEL();
 		std::vector<std::pair<float,TopoDS_Shape> > aTestOutput = anewCuttingEnv.getCutShape();
 		BRep_Builder BB;
@@ -3150,103 +3150,103 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
 
   Py_Return;
 }
-static PyObject * MyApprox(PyObject *self, PyObject *args)
-{
-  MeshPy   *pcObject;
-  PyObject *pcObj;
-  double tolerance;
-  if (!PyArg_ParseTuple(args, "O!d; Usage:- MyApprox(meshobject, tolerance)", &(MeshPy::Type), &pcObj, &tolerance))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  pcObject = (MeshPy*)pcObj;
-
-  PY_TRY {
-    const MeshObject *o = pcObject->getMesh();
-	const MeshKernel &m = o->getKernel();
-    //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
-	//MeshKernel copy = m;
-	
-	std::vector<double> Control;
-	std::vector<double> KntU;
-	std::vector<double> KntV;
-	int OrdU;
-	int OrdV;
-	try {
-		Approximate approx((MeshKernel &)m,Control,KntU,KntV,OrdU,OrdV,tolerance);
-	}
-	catch(const char *errstr) { std::cerr << errstr << std::endl; }
-	int maxCntrlU = KntU.size() - OrdU;
-	int maxCntrlV = KntU.size() - OrdV;
-	//Load Control Pnts
-	TColgp_Array2OfPnt Poles(1,maxCntrlU,1,maxCntrlV);
-	for(int u = 0; u < maxCntrlU; u++)
-	{
-		for(int v = 0; v < maxCntrlV; v++)
-			Poles.SetValue(u+1,v+1,gp_Pnt(Control[(u*3)+(3*maxCntrlU*v)],Control[(u*3)+(3*maxCntrlU*v)+1],
-			Control[(u*3)+(3*maxCntrlU*v)+2]));
-	}
-	//Load U-Knot Vector
-	TColStd_Array1OfReal UKnots(1,KntU.size() - 6);
-	TColStd_Array1OfInteger UMults(1,KntU.size() - 6);
-	UKnots.SetValue(1,KntU[0]);
-	for(unsigned int i = 1, j = 1; i < KntU.size(); i++)
-	{
-		if(KntU[i] == KntU[i-1])
-			continue;
-		else
-		{
-			UKnots.SetValue(j+1,KntU[i]);
-			j++;
-		}
-
-	}
-	UMults.SetValue(1,4);
-	UMults.SetValue(KntU.size() - 6,4);
-	for(unsigned int i = 1; i < KntU.size() - 7; i++)
-		UMults.SetValue(i+1,1);
-	//Load V-Knot Vector
-	TColStd_Array1OfReal VKnots(1,KntU.size() - 6);
-	TColStd_Array1OfInteger VMults(1,KntU.size() - 6);
-	VKnots.SetValue(1,KntV[0]);
-	for(unsigned int i = 1, j = 1; i < KntV.size(); i++)
-	{
-		if(KntV[i] == KntV[i-1])
-			continue;
-		else
-		{
-			VKnots.SetValue(j+1,KntV[i]);
-			j++;
-		}
-
-	}
-	VMults.SetValue(1,4);
-	VMults.SetValue(KntV.size() - 6,4);
-	for(unsigned int i = 1; i < KntV.size() - 7; i++)
-		VMults.SetValue(i+1,1);
-
-	Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
-                                      Poles,        // const TColgp_Array2OfPnt &  	 Poles,
-	                                    UKnots,       // const TColStd_Array1OfReal &  	UKnots,
-	                                    VKnots,       // const TColStd_Array1OfReal &  	VKnots,
-	                                    UMults,       // const TColStd_Array1OfInteger &  	UMults,
-	                                    VMults,       // const TColStd_Array1OfInteger &  	VMults,
-	                                    3,            // const Standard_Integer  	UDegree,
-	                                    3             // const Standard_Integer  	VDegree,
-	                                                  // const Standard_Boolean  	UPeriodic = Standard_False,
-	                                                  // const Standard_Boolean  	VPeriodic = Standard_False*/
-	                          );  
-
-
-	
-
-
-    BRepBuilderAPI_MakeFace 	Face(Surface);
-
-    return new TopoShapePyOld(Face.Face()); 
-  } PY_CATCH;
-
-  Py_Return;
-}
+//static PyObject * MyApprox(PyObject *self, PyObject *args)
+//{
+//  MeshPy   *pcObject;
+//  PyObject *pcObj;
+//  double tolerance;
+//  if (!PyArg_ParseTuple(args, "O!d; Usage:- MyApprox(meshobject, tolerance)", &(MeshPy::Type), &pcObj, &tolerance))     // convert args: Python->C 
+//    return NULL;                             // NULL triggers exception 
+//
+//  pcObject = (MeshPy*)pcObj;
+//
+//  PY_TRY {
+//    const MeshObject *o = pcObject->getMesh();
+//	const MeshKernel &m = o->getKernel();
+//    //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
+//	//MeshKernel copy = m;
+//	
+//	std::vector<double> Control;
+//	std::vector<double> KntU;
+//	std::vector<double> KntV;
+//	int OrdU;
+//	int OrdV;
+//	try {
+//		Approximate approx((MeshKernel &)m,Control,KntU,KntV,OrdU,OrdV,tolerance);
+//	}
+//	catch(const char *errstr) { std::cerr << errstr << std::endl; }
+//	int maxCntrlU = KntU.size() - OrdU;
+//	int maxCntrlV = KntU.size() - OrdV;
+//	//Load Control Pnts
+//	TColgp_Array2OfPnt Poles(1,maxCntrlU,1,maxCntrlV);
+//	for(int u = 0; u < maxCntrlU; u++)
+//	{
+//		for(int v = 0; v < maxCntrlV; v++)
+//			Poles.SetValue(u+1,v+1,gp_Pnt(Control[(u*3)+(3*maxCntrlU*v)],Control[(u*3)+(3*maxCntrlU*v)+1],
+//			Control[(u*3)+(3*maxCntrlU*v)+2]));
+//	}
+//	//Load U-Knot Vector
+//	TColStd_Array1OfReal UKnots(1,KntU.size() - 6);
+//	TColStd_Array1OfInteger UMults(1,KntU.size() - 6);
+//	UKnots.SetValue(1,KntU[0]);
+//	for(unsigned int i = 1, j = 1; i < KntU.size(); i++)
+//	{
+//		if(KntU[i] == KntU[i-1])
+//			continue;
+//		else
+//		{
+//			UKnots.SetValue(j+1,KntU[i]);
+//			j++;
+//		}
+//
+//	}
+//	UMults.SetValue(1,4);
+//	UMults.SetValue(KntU.size() - 6,4);
+//	for(unsigned int i = 1; i < KntU.size() - 7; i++)
+//		UMults.SetValue(i+1,1);
+//	//Load V-Knot Vector
+//	TColStd_Array1OfReal VKnots(1,KntU.size() - 6);
+//	TColStd_Array1OfInteger VMults(1,KntU.size() - 6);
+//	VKnots.SetValue(1,KntV[0]);
+//	for(unsigned int i = 1, j = 1; i < KntV.size(); i++)
+//	{
+//		if(KntV[i] == KntV[i-1])
+//			continue;
+//		else
+//		{
+//			VKnots.SetValue(j+1,KntV[i]);
+//			j++;
+//		}
+//
+//	}
+//	VMults.SetValue(1,4);
+//	VMults.SetValue(KntV.size() - 6,4);
+//	for(unsigned int i = 1; i < KntV.size() - 7; i++)
+//		VMults.SetValue(i+1,1);
+//
+//	Handle(Geom_BSplineSurface) Surface = new Geom_BSplineSurface(  	
+//                                      Poles,        // const TColgp_Array2OfPnt &  	 Poles,
+//	                                    UKnots,       // const TColStd_Array1OfReal &  	UKnots,
+//	                                    VKnots,       // const TColStd_Array1OfReal &  	VKnots,
+//	                                    UMults,       // const TColStd_Array1OfInteger &  	UMults,
+//	                                    VMults,       // const TColStd_Array1OfInteger &  	VMults,
+//	                                    3,            // const Standard_Integer  	UDegree,
+//	                                    3             // const Standard_Integer  	VDegree,
+//	                                                  // const Standard_Boolean  	UPeriodic = Standard_False,
+//	                                                  // const Standard_Boolean  	VPeriodic = Standard_False*/
+//	                          );  
+//
+//
+//	
+//
+//
+//    BRepBuilderAPI_MakeFace 	Face(Surface);
+//
+//    return new TopoShapePyOld(Face.Face()); 
+//  } PY_CATCH;
+//
+//  Py_Return;
+//}
 static PyObject * openDYNA(PyObject *self, PyObject *args)
 {
 	const char* filename;
@@ -3664,7 +3664,7 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
 #include <GeomAPI_Interpolate.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include "BRepAdaptor_CompCurve2.h"
-#include "ShapeTriangulator.h"
+#include "SpringbackCorrection.h"
 static PyObject * best_fit_test(PyObject *self, PyObject *args)
 {
 	
@@ -3681,7 +3681,7 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
 		TopExp_Explorer anExplorer;
 		TopExp_Explorer aFaceExplorer;
 
-		ShapeTriangulator aShapeTriangulator(pcShape->getShape());
+		SpringbackCorrection aShapeTriangulator(pcShape->getShape());
 		aShapeTriangulator.Init();
 		std::vector<TopoDS_Edge> anEdgeList;
 		TopoDS_Face first,second;
@@ -4194,8 +4194,7 @@ struct PyMethodDef Cam_methods[] = {
 	{"best_fit_coarse", best_fit_coarse ,1},
 	{"createBox" , createBox, 1},
 	{"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
-	{"MyApprox" , MyApprox, Py_NEWARGS,
-       "MyApprox(MeshObject) -- My test approximate." },
+	//{"MyApprox" , MyApprox, Py_NEWARGS, "MyApprox(MeshObject) -- My test approximate." },
 	{"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},
     {NULL     , NULL      }        /* end of table marker */
 };

@@ -1,19 +1,36 @@
-#ifndef Path_Simulate
-#define Path_Simulate
+/***************************************************************************
+ *   Copyright (c) 2007                                                    *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>							   *
+ *   Human Rezai <Human@web.de>                                            *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
-#include "PreCompiled.h"
-#include "Base/Vector3D.h"
-#include <TopoDS_Wire.hxx>
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <GeomAPI.hxx> 
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <Base/Exception.h>
+
+
+#ifndef Path_Simulate_h
+#define Path_Simulate_h
+
+
+#include <Base/Vector3D.h>
+
 #include <Base/Builder3D.h>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <math.h>
+
 
 class path_simulate
 {
@@ -33,18 +50,18 @@ public:
 	std::vector<std::vector<Base::Vector3d> > PointEvaluation(double TotaltimeforonePath, 
 		                                                     unsigned int NumberOfEvalPoints, 
 															 std::vector<double> startParam, 
-															 std::vector<std::vector<Base::Vector3d> > &D1);
+															 std::vector<std::vector<Base::Vector3d>> &D1);
 
 	std::vector<std::vector<Base::Vector3d> > PointEvaluation(double T, 
 															 unsigned int N, 
 															 std::vector<double> startParam, 
-															 std::vector<std::vector<Base::Vector3d> > &D1,
-															 std::vector<std::vector<Base::Vector3d> > &D2);
+															 std::vector<std::vector<Base::Vector3d>> &D1,
+															 std::vector<std::vector<Base::Vector3d>> &D2);
 
-	std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
+	std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d>> &D);
 	bool ConnectPaths_xy(ofstream &anOutputFile, int &c, bool outputstyle);
 	bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
-	bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
+	bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d>> &D2);
 	bool UpdateParam();
 	bool WriteOutput(ofstream &m_anOutputFile, int &c, bool outputstyle);
 	bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
@@ -95,5 +112,9 @@ private:
 	std::vector<double> GetDistance(double time);
 };
 
-#endif
+#endif //Path_Simulate_h
 
+
+
+
+		

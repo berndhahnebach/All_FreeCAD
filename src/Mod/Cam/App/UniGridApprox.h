@@ -1,5 +1,8 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007                                                    *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
+ *	 Human Rezai <human@mytum.de>										   * 
+ *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,33 +23,59 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef UNIGRIDAPPROX_H
+#define UNIGRIDAPPROX_H
 
-#ifndef CAMGUI_WORKBENCH_H
-#define CAMGUI_WORKBENCH_H
+#include "routine.h"
+#include <boost/numeric/ublas/matrix.hpp>
 
-#include <Gui/Workbench.h>
+using namespace boost::numeric;
 
-namespace CamGui
+
+class UniGridApprox: public Routines
 {
-
-/**
- * @author Werner Mayer
- */
-class AppCamGuiExport Workbench : public Gui::StdWorkbench
-{
-    TYPESYSTEM_HEADER();
-
 public:
-    Workbench();
-    virtual ~Workbench();
+	UniGridApprox(const MeshCore::MeshKernel &InputMesh, double offset);
+	~UniGridApprox();
+
+	bool Perform(double TOL);
+	bool MeshOffset();
+	bool SurfMeshParam(); 
+	bool CompKnots(int m, int n);
+	bool MatComp(int m, int n);
+	bool BuildSurf();
+	double CompGridError();
+	double CompMeshError();
+	bool WriteMatrix(ublas::matrix<double> M);
+
+	MeshCore::MeshKernel m_Mesh;
+	GeomAdaptor_Surface aAdaptorSurface;
+	double m_offset;
+	
+	std::vector< std::vector<Base::Vector3f> > m_Grid;
+	std::vector< std::vector<Base::Vector3f> > m_GridCopy;
+	std::vector<double> m_err;
+	std::vector< std::vector<double> > mG_err;
+	ublas::matrix<double> Q;   //Data-Matrix
+	ublas::matrix<double> CPx;
+	ublas::matrix<double> CPy;
+	ublas::matrix<double> CPz;
+	std::vector<double> m_uParam;
+	std::vector<double> m_vParam;
+	std::vector<double> m_uknots;
+	std::vector<double> m_vknots;
+	int uCP, vCP;
+	int m_um;
+	int m_vm;
+	int m_udeg;
+	int m_vdeg;
+	int n_x;
+	int n_y;
+
+	TopoDS_Face m_Face;
 
 protected:
-    Gui::MenuItem* setupMenuBar() const;
-    Gui::ToolBarItem* setupToolBars() const;
-    Gui::ToolBarItem* setupCommandBars() const;
+
 };
 
-} // namespace CamGui
-
-
-#endif // CAMGUI_WORKBENCH_H 
+#endif

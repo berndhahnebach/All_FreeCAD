@@ -253,10 +253,42 @@
 		<File
 			RelativePath=".\Approx.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Approx.h"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\best_fit.cpp"
@@ -350,15 +382,23 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ShapeTriangulator.cpp"
+			RelativePath=".\SpringbackCorrection.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\ShapeTriangulator.h"
+			RelativePath=".\SpringbackCorrection.h"
 			>
 		</File>
 		<File
 			RelativePath=".\stuff.h"
+			>
+		</File>
+		<File
+			RelativePath=".\UniGridApprox.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\UniGridApprox.h"
 			>
 		</File>
 		<File
