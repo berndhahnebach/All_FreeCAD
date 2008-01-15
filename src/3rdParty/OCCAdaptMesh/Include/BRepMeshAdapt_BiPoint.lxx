@@ -1,0 +1,30 @@
+// File:	BRepMeshAdapt_BiPoint.lxx
+// Created:	Thu Sep 18 10:33:49 1997
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : BRepMeshAdapt_BiPoint
+//purpose  : 
+//=======================================================================
+
+inline BRepMeshAdapt_BiPoint::BRepMeshAdapt_BiPoint ()
+{
+}
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address BRepMeshAdapt_BiPoint::Indices () const
+{ return (Standard_Address)myIndices; }
+
+//=======================================================================
+//function : Coordinates
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address BRepMeshAdapt_BiPoint::Coordinates () const
+{ return (Standard_Address)myCoordinates; }
+
