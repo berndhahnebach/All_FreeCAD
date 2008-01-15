@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib OCC_MESH_ADAPTD.lib"
+				AdditionalDependencies="importlib_atlas.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKMesh.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib OCC_MESH_ADAPT.lib"
 				OutputFile="../../../../Mod/Cam/Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -87,7 +87,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam_d.pdb"
 				SubSystem="1"
-				ImportLibrary="../../../../obj/Mod/Cam/DebugApp/Cam_d.lib"
+				ImportLibrary="../../../../lib/Cam_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -182,14 +182,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib importlib_umfpackamd.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKMesh.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="importlib_atlas.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKMesh.lib TKSTL.lib TKOffset.lib OCC_MESH_ADAPT.lib"
 				OutputFile="../../../../Mod/Cam/Cam.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam.pdb"
-				ImportLibrary="../../../../obj/Mod/Cam/ReleaseApp/Cam.lib"
+				ImportLibrary="../../../../lib/Cam.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -224,6 +224,26 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Libs"
+			>
+			<File
+				RelativePath="..\..\..\..\lib\FreeCADApp.lib"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\lib\FreeCADBase.lib"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\lib\Mesh.lib"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\lib\Part.lib"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\AppCam.cpp"
 			>

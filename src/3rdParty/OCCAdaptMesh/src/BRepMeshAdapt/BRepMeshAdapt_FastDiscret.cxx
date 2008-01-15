@@ -348,7 +348,9 @@ void BRepMeshAdapt_FastDiscret::Add(const TopoDS_Face& theface)
 #ifndef DEB_MESH
   try
   {
+#ifdef OCC_CATCH_SIGNALS
     OCC_CATCH_SIGNALS
+#endif
 #endif
     TopoDS_Face face = theface;
     BRepTools::Update(face);

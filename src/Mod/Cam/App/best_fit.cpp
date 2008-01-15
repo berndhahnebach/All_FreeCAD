@@ -32,7 +32,7 @@
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 #include <Mod/Mesh/App/MeshAlgos.h>
 
-#include <Base/Builder3d.h>
+#include <Base/Builder3D.h>
 
 #include <BRep_Tool.hxx>
 #include <BRepUtils.h>
