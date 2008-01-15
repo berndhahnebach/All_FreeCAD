@@ -6,6 +6,7 @@
 // Importing of App classes
 #ifdef FC_OS_WIN32
 # define MeshExport      __declspec(dllimport)
+# define AppPartExport __declspec(dllimport)
 # define AppCamExport    __declspec(dllimport)
 # define AppCamGuiExport __declspec(dllexport)
 #else // for Linux
@@ -36,7 +37,7 @@
 #include <Python.h>
 
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# include <windows.h>
 #endif
 
 // Xerces
@@ -94,4 +95,4 @@
 
 
 #endif
-#endif 
+#endif

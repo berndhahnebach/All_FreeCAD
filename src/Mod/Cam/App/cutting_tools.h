@@ -31,6 +31,17 @@
 #include "stuff.h"
 
 
+struct CuttingToolsSettings
+{
+	double limit_angle;
+	double cad_radius;
+	double master_radius;
+	double slave_radius;
+	double level_distance;
+	double correction_factor;
+	double sheet_thickness;
+};
+
 struct BoundBox3f_Less
 {
        bool operator()(const Base::BoundBox3f& _Left, const Base::BoundBox3f& _Right) const
@@ -45,15 +56,21 @@ struct BoundBox3f_Less
 
 
 
-class cutting_tools
+class AppCamExport cutting_tools
 {
 public:
-	cutting_tools(TopoDS_Shape &aShape, float pitch=1,bool mirrortobothsides=false);
+	cutting_tools(TopoDS_Shape aShape);
+	cutting_tools(TopoDS_Shape aShape, float pitch);
+	
 	~cutting_tools();
 	
 	TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
 	double GetWireLength(TopoDS_Wire &aWire);
 	bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
+	
+	//Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
+	inline void SetCuttingOrder(double zLevel)
+	{ m_CuttingOrder.push_back(zLevel);}
 	
 	/*
 	Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt 
@@ -74,7 +91,7 @@ public:
 	inline std::vector<std::pair<float,TopoDS_Shape> > getCutShape()
 	{return m_ordered_cuts;}
 	
-	
+	CuttingToolsSettings m_UserSettings;
 
 private:
 	//typedef std::list<std::vector<Base::Vector3f> > Polylines;
@@ -101,11 +118,13 @@ private:
 	
 	//Member zum checken ob CAD oder nicht
 	bool m_cad;
-	TopoDS_Shape &m_Shape;
+	TopoDS_Shape m_Shape;
 	MeshCore::MeshKernel m_CAD_Mesh;
 	MeshCore::MeshAlgorithm * m_aMeshAlgo;
 	MeshCore::MeshFacetGrid * m_CAD_Mesh_Grid;
 	bool m_mirrortobothsides;
+
+	std::vector<double> m_CuttingOrder;
 	//Zustellungswert
 	float m_pitch;
 	//Der höchste und niedrigste Z-Wert vom Shape 
@@ -114,6 +133,8 @@ private:
 	float m_radius,m_radius_slave;
 	//Blechdicke
 	float m_sheet_thickness;
+
+	
 
 
 

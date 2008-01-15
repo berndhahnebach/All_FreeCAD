@@ -1,59 +1,39 @@
+/***************************************************************************
+ *   Copyright (c) 2007                                                    *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>							   *
+ *   Human Rezai <Human@web.de>                                            *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "PreCompiled.h"
+
 #include "path_simulate.h"
-#include <GeomAdaptor_Curve.hxx>
-#include <Base/Console.h>
-#include <Base/PyObjectBase.h>
+
+
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 #include <Base/Exception.h>
-#include <Base/FileInfo.h>
-#include <Base/Builder3D.h>
-#include <App/Application.h>
-#include <App/Document.h>
-
-
-// Things from the part module
-#include <Mod/Part/App/TopologyPy.h>
-#include <Mod/Part/App/TopoShape.h>
-#include <Mod/Part/App/TopoShapePy.h>
-
-// Things from the Mesh module
-#include <Mod/Mesh/App/Core/MeshKernel.h>
-#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
-#include <Mod/Mesh/App/Core/Iterator.h>
-#include <Mod/Mesh/App/MeshPy.h>
-#include <Mod/Mesh/App/Mesh.h>
-#include <Mod/Mesh/App/MeshAlgos.h>
-#include <Mod/Mesh/App/Core/Elements.h>
-#include <Mod/Mesh/App/Core/Evaluation.h>
-
-
-# include <BRepOffsetAPI_MakeOffsetShape.hxx>
-# include <BRepAlgoAPI_Cut.hxx>
-#include  <BRepAlgoAPI_Section.hxx>
-# include <GeomAPI_IntSS.hxx>
-
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRep_Tool.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <GeomLProp_SLProps.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <BRepOffset.hxx>
-#include <BRepOffsetAPI_MakeOffsetShape.hxx>
-#include <BRepAlgo_Section.hxx>
-#include <GeomAdaptor_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 /* Konstruktor mit einer Bahnfolge (master tool) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
-:m_BSplineTop(BSplineTop),m_count(1),m_step(1e-3),m_t(0.0),m_clip(90000),m_vmax(0.85*v_max),m_amax(0.85*a_max),m_v1(0.85*v_max),m_a1(0.85*a_max),m_t0(0.0)
+:m_BSplineTop(BSplineTop),m_amax(0.85*a_max),m_vmax(0.85*v_max),m_a1(0.85*a_max),m_v1(0.85*v_max),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000)
 {
 	m_single = true;
 	
@@ -88,8 +68,7 @@ path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, 
 /* Konstruktor mit zwei Bahnfolgen (master tool & supporting die) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve> &BSplineTop, std::vector<Handle_Geom_BSplineCurve> &BSplineBottom, 
 							 double a, double v)
-:m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_count(1),m_step(1e-3),m_t(0.0),m_clip(90000),m_SingleTop(false),m_SingleBot(false),
- m_vmax(0.85*v),m_amax(0.85*a),m_v1(0.85*v),m_v2(0.85*v),m_a1(0.85*a),m_a2(0.85*a),m_t0(0.0)
+:m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_amax(0.85*a),m_vmax(0.85*v),m_a1(0.85*a),m_a2(0.85*a),m_v1(0.85*v),m_v2(0.85*v),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000),m_SingleTop(false),m_SingleBot(false)
 {
 	m_single=false;
 
@@ -221,7 +200,7 @@ double path_simulate::GetLength(GeomAdaptor_Curve& curve, const Standard_Real st
 
 double path_simulate::FindParamAt(GeomAdaptor_Curve& curve, double dist, double startParam)
 {
-	double foundParameter = 0.0;
+	double foundParameter;
 
     //get the first and last parameters of the curve
     Standard_Real firstParam = curve.FirstParameter();
@@ -527,12 +506,13 @@ bool path_simulate::ParameterCalculation(double S1)
 
 	return true;
 }
-std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double T, 
+std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T, 
 																		unsigned int N, 
 																		std::vector<double> startParam, 
-																		std::vector<std::vector<Base::Vector3d> > &D1)
+																		std::vector<std::vector<Base::Vector3d>> &D1)
 {
     double t = m_t0;
+	double foundParameter;
 	double firstParam,lastParam,period;
 	std::vector<double> d;
 	gp_Pnt tmp, p1,p2;
@@ -547,7 +527,7 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
 
 	m_del_t =  (m_T- m_t0)/N;
 	
-	std::vector<std::vector<Base::Vector3d> > D0;
+	std::vector<std::vector<Base::Vector3d>> D0;
 	std::vector<Base::Vector3d> tmp3,tmp5;
 
 	for(unsigned int i=0; i<N; ++i)
@@ -638,11 +618,11 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
 	return D0;
 }
 
-std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double T, 
+std::vector<std::vector<Base::Vector3d>> path_simulate::PointEvaluation(double T, 
 																		unsigned int N, 
 																		std::vector<double> startParam, 
-																		std::vector<std::vector<Base::Vector3d> > &D1,
-																		std::vector<std::vector<Base::Vector3d> > &D2)
+																		std::vector<std::vector<Base::Vector3d>> &D1,
+																		std::vector<std::vector<Base::Vector3d>> &D2)
 {
     double t = m_t0;
 	double foundParameter;
@@ -660,7 +640,7 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
 
 	m_del_t =  (m_T- m_t0)/N;
 	
-	std::vector<std::vector<Base::Vector3d> > D0;
+	std::vector<std::vector<Base::Vector3d>> D0;
 	std::vector<Base::Vector3d> tmp3,tmp5;
 
 	for(unsigned int i=0; i<N; ++i)
@@ -746,9 +726,9 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
 }
 
 /* berechnet die diskrete Ableitung einer Punktefolge über symmetrische Differenzen */
-std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d> > &D0)
+std::vector<std::vector<Base::Vector3d>> path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d>> &D0)
 {
-	std::vector<std::vector<Base::Vector3d> > D1 = D0;
+	std::vector<std::vector<Base::Vector3d>> D1 = D0;
 	int N = D0.size();
 	
 	D1[0][0] = (D0[1][0]-D0[N-1][0])/(2*m_del_t);
@@ -775,7 +755,7 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vec
 	return D1;
 }
 
-bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2)
+bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d>> &D1, std::vector<std::vector<Base::Vector3d>> &D2)
 {
 	std::vector<Base::Vector3d> tmp2;
 	Base::Vector3d tmp;
@@ -927,7 +907,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 			if(vec_21.Magnitude() != 0)
 				vec_21.Normalize();
 
-			N = (int)((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
+			N = (m_T - m_t0)/m_step;  /* anzahl der zu erzeugenden Outputwerte */
 
 			m_del_t = (m_T - m_t0)/N;
 
@@ -981,7 +961,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 
-			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
 			for (int i=0; i<N; ++i)
 			{				
@@ -1018,7 +998,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 
 			vec_11.Normalize();
 
-			N = (int)((m_T - m_t0)/m_step);        
+			N = (m_T - m_t0)/m_step;        
 			m_del_t = (m_T - m_t0)/N;
 
 			for(int i=0; i<N; ++i)
@@ -1050,7 +1030,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 			
 			for (int i=0; i<N; ++i)
 			{				
@@ -1092,7 +1072,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		{
 			ParameterCalculation(vec_11.Magnitude(), vec_12.Magnitude());
 
-			N = (int)((m_T - m_t0)/m_step);
+			N = (m_T - m_t0)/m_step;
 			m_del_t = (m_T - m_t0)/N;
 
 			//vec_11.Normalize();
@@ -1153,7 +1133,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
 			for (int i=0; i<N; ++i)
 			{				
@@ -1187,7 +1167,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		{
 			ParameterCalculation(vec_12.Magnitude());
 
-			N = (int)((m_T - m_t0)/m_step);
+			N = (m_T - m_t0)/m_step;
 			m_del_t = (m_T - m_t0)/N;
 
 			for(int i=0; i<N; ++i)
@@ -1220,7 +1200,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 		}
 		else
 		{
-			N = (int)vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+			N = vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 			
 			for (int i=0; i<N; ++i)
 			{				
@@ -1264,7 +1244,7 @@ bool path_simulate::EstimateMaxAcceleration()
 	
 	m_T = m_t1 + m_t2 - m_t0;
 
-	int N = (int)((m_T - m_t0)/1e-3);
+	int N = (m_T - m_t0)/1e-3;
 
 	if(N>10000)
 		N = 10000;	
@@ -1409,7 +1389,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		ParameterCalculation(w1);
 	}
 	
-	int N = (int)((m_T-m_t0)/m_step);
+	int N = (m_T-m_t0)/m_step;
 	m_del_t = (m_T-m_t0)/N;
 
 	cout << "NumOfPoints: " << N << endl;
@@ -1491,7 +1471,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 
-			N = (int)w1;
+			N = w1;
 
 			for(int i=0; i<N; ++i)
 			{
@@ -1615,23 +1595,23 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 		{
 
 			
-			N = (int)w1;
+			N = w1;
 			double he = 0.9;
 
 			while(w2/N > m_dbound)
 			{
-				N = (int)(m_dbound/w2);
+				N = m_dbound/w2;
 
 
 				if(w1/N < he)
 				{
-					N = (int)(w1/he);
+					N = w1/he;
 					he = he - 0.1;
 				}
 
 				if(he<0.5)
 				{
-					N = (int)(w1/0.5);
+					N = w1/0.5;
 					break;
 				}
 			}
@@ -1894,7 +1874,7 @@ bool path_simulate::WriteOutput(ofstream &anOutputFile, int &c, bool brob)
 		else
 		{
 			int n1 = m_Output_robo1.size();
-			//int n2 = m_Output_robo2.size();
+			int n2 = m_Output_robo2.size();
 
 			for(int i=0; i<n1; ++i)
 				anOutputFile << m_Output_robo1[i].x << "," <<  m_Output_robo1[i].y << "," << m_Output_robo1[i].z << "," << m_Output_robo2[i].x << "," <<  m_Output_robo2[i].y << "," << m_Output_robo2[i].z << endl;

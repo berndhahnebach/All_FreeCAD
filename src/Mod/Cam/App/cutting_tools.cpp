@@ -58,11 +58,10 @@
 
 
 
-cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortobothsides)
+cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
         : m_Shape(aShape),
 		m_aMeshAlgo(NULL),
 		m_CAD_Mesh_Grid(NULL),
-        m_mirrortobothsides(mirrortobothsides),
         m_pitch(pitch)
 {
     m_ordered_cuts.clear();
@@ -72,6 +71,9 @@ cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortoboth
 	m_cad = false;
 	m_CAD_Mesh.Clear();
 	m_zl_wire_combination.clear();
+	m_CuttingOrder.clear();
+	
+	
 	getShapeBB();
 	fillFaceBBoxes();
 	classifyShape();
@@ -84,6 +86,17 @@ cutting_tools::cutting_tools(TopoDS_Shape &aShape, float pitch,bool mirrortoboth
 	
 }
 
+cutting_tools::cutting_tools(TopoDS_Shape aShape)
+:m_Shape(aShape)
+{
+    m_ordered_cuts.clear();
+	m_all_offset_cuts_high.clear();
+	m_all_offset_cuts_low.clear();
+	m_face_bboxes.clear();
+	m_CAD_Mesh.Clear();
+	m_zl_wire_combination.clear();
+	m_CuttingOrder.clear();
+}
 
 cutting_tools::~cutting_tools()
 {
