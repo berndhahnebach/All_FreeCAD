@@ -29,9 +29,7 @@ void CreateCamCommands(void);
 /* registration table  */
 static struct PyMethodDef CamGui_methods[] =
 {
-    {
-        NULL, NULL
-    }                   /* end of table marker */
+    {NULL, NULL}                   /* end of table marker */
 };
 
 extern "C" {

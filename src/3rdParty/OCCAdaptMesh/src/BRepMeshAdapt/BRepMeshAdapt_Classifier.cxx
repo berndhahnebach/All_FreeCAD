@@ -162,7 +162,9 @@ void BRepMeshAdapt_Classifier::AnalizeWire (const TColgp_SequenceOfPnt2d&  theSe
     {
       try
       {
+#ifdef OCC_CATCH_SIGNALS
         OCC_CATCH_SIGNALS
+#endif
         // Create boundary indices
         TColStd_Array1OfInteger NN(1, nbpnts+1);
         for (i = 1; i <= nbpnts; i++) NN(i) = i;

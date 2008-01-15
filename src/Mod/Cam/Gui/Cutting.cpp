@@ -23,8 +23,7 @@ Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
         :QDialog(parent,fl)
 {
     this->setupUi(this);
-	m_timer= false;
-    
+    m_timer= false;
 }
 
 Cutting::~Cutting()
@@ -94,9 +93,8 @@ void Cutting::on_select_shape_z_level_button_clicked()
 
 void Cutting::on_select_shape_feature_based_button_clicked()
 {
-	selectShape();
+    selectShape();
 }
-
 
 void Cutting::on_toolpath_calculation_highest_level_button_clicked()
 {
