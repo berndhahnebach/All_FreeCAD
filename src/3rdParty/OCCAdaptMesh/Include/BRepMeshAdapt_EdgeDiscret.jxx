@@ -1,0 +1,12 @@
+#ifndef _TopoDS_Edge_HeaderFile
+#include <TopoDS_Edge.hxx>
+#endif
+#ifndef _BRepMeshAdapt_ListOfSurfaceGrid_HeaderFile
+#include <BRepMeshAdapt_ListOfSurfaceGrid.hxx>
+#endif
+#ifndef _TColStd_SequenceOfReal_HeaderFile
+#include <TColStd_SequenceOfReal.hxx>
+#endif
+#ifndef _BRepMeshAdapt_EdgeDiscret_HeaderFile
+#include <BRepMeshAdapt_EdgeDiscret.hxx>
+#endif

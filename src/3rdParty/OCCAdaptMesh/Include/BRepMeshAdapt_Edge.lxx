@@ -1,0 +1,25 @@
+// File:	BRepMeshAdapt_Edge.lxx
+// Created:	Thu Sep 23 13:44:34 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+inline Standard_Integer  BRepMeshAdapt_Edge::FirstNode()const 
+{
+  return myFirstNode;
+}
+
+inline Standard_Integer  BRepMeshAdapt_Edge::LastNode()const 
+{
+  return myLastNode;
+}
+
+inline Standard_Integer  BRepMeshAdapt_Edge::Domain()const 
+{
+  return myDomain;
+}
+
+inline MeshDS_DegreeOfFreedom  BRepMeshAdapt_Edge::Movability()const 
+{
+  return myMovability;
+}
+
