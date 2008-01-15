@@ -2,7 +2,7 @@ Source: freecad
 Section: x11
 Priority: optional
 Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
-Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3), libstdc++6, libboost-dev, libboost-date-time-dev, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-regex-dev, libboost-serialization-dev, libboost-signals-dev, python2.5-dev, libqt4-dev, zlib1g-dev, libxerces27-dev, libxt-dev, libsoqt-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, libx11-dev, libxext-dev, libgts-dev, libumfpack4-dev, libcv-dev, python-opencv
+Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3), libstdc++6, libboost-dev, libboost-date-time-dev, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-regex-dev, libboost-serialization-dev, libboost-signals-dev, python2.5-dev, libqt4-dev, zlib1g-dev, libxerces27-dev, libxt-dev, libsoqt-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, libx11-dev, libxext-dev, libgts-dev, libcv-dev, python-opencv
 Standards-Version: 3.7.2
 
 Package: freecad
