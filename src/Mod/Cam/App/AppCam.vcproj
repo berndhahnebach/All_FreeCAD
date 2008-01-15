@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="../../../;../../../3rdParty;../../../3rdParty/OCCAdaptMesh/Include"
 				PreprocessorDefinitions="_USRDLL;FCAppCam;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -152,7 +152,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="../../../;../../../3rdParty;../../../3rdParty/OCCAdaptMesh/Include"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppCam"
 				StringPooling="true"
 				RuntimeLibrary="2"
