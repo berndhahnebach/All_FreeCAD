@@ -25,8 +25,10 @@ libCam_la_SOURCES=\
 		routine.cpp \
 		routine.h \
 		stuff.h \
-		ShapeTriangulator.cpp \
-		ShapeTriangulator.h \
+		SpringbackCorrection.cpp \
+		SpringbackCorrection.h \
+		UniGridApprox.cpp \
+		UniGridApprox.h \
 		WireExplorer.cxx \
 		WireExplorer.h
 
