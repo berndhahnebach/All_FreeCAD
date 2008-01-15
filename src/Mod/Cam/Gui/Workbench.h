@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef CAM_WORKBENCH_H
-#define CAM_WORKBENCH_H
+#ifndef CAMGUI_WORKBENCH_H
+#define CAMGUI_WORKBENCH_H
 
 #include <Gui/Workbench.h>
 
@@ -36,16 +36,16 @@ class AppCamGuiExport Workbench : public Gui::StdWorkbench
     TYPESYSTEM_HEADER();
 
 public:
-  Workbench();
-  virtual ~Workbench();
+    Workbench();
+    virtual ~Workbench();
 
 protected:
-  Gui::MenuItem* setupMenuBar() const;
-  Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
+    Gui::MenuItem* setupMenuBar() const;
+    Gui::ToolBarItem* setupToolBars() const;
+    Gui::ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace CamGui
 
 
-#endif // CAM_WORKBENCH_H 
+#endif // CAMGUI_WORKBENCH_H 
