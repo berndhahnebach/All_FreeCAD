@@ -3882,44 +3882,44 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
 
 static PyObject * spring_back(PyObject *self, PyObject *args)
 {
-	MeshPy   *pcObject;
-	PyObject *pcObj;
-	PyObject *pcObj2;
+    MeshPy   *pcObject;
+    PyObject *pcObj;
+    PyObject *pcObj2;
 
-	if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
-	PY_TRY
-	{
-		GProp_GProps prop;
-		GProp_PrincipalProps pprop;
-		BRepGProp SurfProp;
-		gp_Pnt orig;
+    PY_TRY
+    {
+        GProp_GProps prop;
+        GProp_PrincipalProps pprop;
+        BRepGProp SurfProp;
+        gp_Pnt orig;
 
-		pcObject  = (MeshPy*)pcObj;
-		TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
-		TopoDS_Shape cad              = pcShape->getShape();            // Input CAD
-		MeshObject* anObject          = pcObject->getMesh();            // Input Mesh                             
-		MeshCore::MeshKernel mesh     = anObject->getKernel();
+        pcObject  = (MeshPy*)pcObj;
+        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
+        TopoDS_Shape cad              = pcShape->getShape();            // Input CAD
+        MeshObject* anObject          = pcObject->getMesh();            // Input Mesh
+        MeshCore::MeshKernel mesh     = anObject->getKernel();
 
-		time_t seconds1, seconds2;
-		seconds1 = time(NULL);
+        time_t seconds1, seconds2;
+        seconds1 = time(NULL);
 
-/*-----------------------------------------------*/
-		SpringbackCorrection aShapeTri(cad, mesh);
-		aShapeTri.Perform(60);
-/*-----------------------------------------------*/
+        /*-----------------------------------------------*/
+        SpringbackCorrection aShapeTri(cad, mesh);
+        aShapeTri.Perform(60);
+        /*-----------------------------------------------*/
 
-		seconds2 = time(NULL);
-		cout << "laufzeit: " << seconds2-seconds1 << " sec" << endl;
+        seconds2 = time(NULL);
+        cout << "laufzeit: " << seconds2-seconds1 << " sec" << endl;
 
-		anObject->setKernel(aShapeTri.m_Mesh);
+        //anObject->setKernel(aShapeTri.m_Mesh);
 
-		return new MeshPy(anObject);
+        return new MeshPy(anObject);
 
-	}PY_CATCH;
+    }PY_CATCH;
 
-	Py_Return;
+    Py_Return;
 }
 
 
@@ -4255,7 +4255,7 @@ struct PyMethodDef Cam_methods[] =
     {"best_fit_test", best_fit_test,1},
     {"best_fit_coarse", best_fit_coarse ,1},
     {"createBox" , createBox, 1},
-	{"spring_back", spring_back, 1},
+    {"spring_back", spring_back, 1},
     {"useMesh" , useMesh, Py_NEWARGS, "useMesh(MeshObject) -- Shows the usage of Mesh objects from the Mesh Module." },
     //{"MyApprox" , MyApprox, Py_NEWARGS, "MyApprox(MeshObject) -- My test approximate." },
     {"openDYNA" , openDYNA, Py_NEWARGS, "Open up a DYNA file, triangulate it, and returns a mesh"},

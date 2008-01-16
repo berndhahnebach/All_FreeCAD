@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *	 Human Rezai <human@mytum.de>										   * 
+ *  Human Rezai <human@mytum.de>             *
  *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
@@ -35,44 +35,44 @@ using namespace boost::numeric;
 class UniGridApprox: public Routines
 {
 public:
-	UniGridApprox(const MeshCore::MeshKernel &InputMesh, double offset);
-	~UniGridApprox();
+    UniGridApprox(const MeshCore::MeshKernel &InputMesh, double offset);
+    ~UniGridApprox();
 
-	bool Perform(double TOL);
-	bool MeshOffset();
-	bool SurfMeshParam(); 
-	bool CompKnots(int m, int n);
-	bool MatComp(int m, int n);
-	bool BuildSurf();
-	double CompGridError();
-	double CompMeshError();
-	bool WriteMatrix(ublas::matrix<double> M);
+    bool Perform(double TOL);
+    bool MeshOffset();
+    bool SurfMeshParam();
+    bool CompKnots(int m, int n);
+    bool MatComp(int m, int n);
+    bool BuildSurf();
+    double CompGridError();
+    double CompMeshError();
+    bool WriteMatrix(ublas::matrix<double> M);
 
-	MeshCore::MeshKernel m_Mesh;
-	GeomAdaptor_Surface aAdaptorSurface;
-	double m_offset;
-	
-	std::vector< std::vector<Base::Vector3f> > m_Grid;
-	std::vector< std::vector<Base::Vector3f> > m_GridCopy;
-	std::vector<double> m_err;
-	std::vector< std::vector<double> > mG_err;
-	ublas::matrix<double> Q;   //Data-Matrix
-	ublas::matrix<double> CPx;
-	ublas::matrix<double> CPy;
-	ublas::matrix<double> CPz;
-	std::vector<double> m_uParam;
-	std::vector<double> m_vParam;
-	std::vector<double> m_uknots;
-	std::vector<double> m_vknots;
-	int uCP, vCP;
-	int m_um;
-	int m_vm;
-	int m_udeg;
-	int m_vdeg;
-	int n_x;
-	int n_y;
+    MeshCore::MeshKernel m_Mesh;
+    GeomAdaptor_Surface aAdaptorSurface;
+    double m_offset;
 
-	TopoDS_Face m_Face;
+    std::vector< std::vector<Base::Vector3f> > m_Grid;
+    std::vector< std::vector<Base::Vector3f> > m_GridCopy;
+    std::vector<double> m_err;
+    std::vector< std::vector<double> > mG_err;
+    ublas::matrix<double> Q;   //Data-Matrix
+    ublas::matrix<double> CPx;
+    ublas::matrix<double> CPy;
+    ublas::matrix<double> CPz;
+    std::vector<double> m_uParam;
+    std::vector<double> m_vParam;
+    std::vector<double> m_uknots;
+    std::vector<double> m_vknots;
+    int uCP, vCP;
+    int m_um;
+    int m_vm;
+    int m_udeg;
+    int m_vdeg;
+    int n_x;
+    int n_y;
+
+    TopoDS_Face m_Face;
 
 protected:
 

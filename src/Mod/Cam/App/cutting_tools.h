@@ -33,23 +33,23 @@
 
 struct CuttingToolsSettings
 {
-	double limit_angle;
-	double cad_radius;
-	double master_radius;
-	double slave_radius;
-	double level_distance;
-	double correction_factor;
-	double sheet_thickness;
+    double limit_angle;
+    double cad_radius;
+    double master_radius;
+    double slave_radius;
+    double level_distance;
+    double correction_factor;
+    double sheet_thickness;
 };
 
 struct BoundBox3f_Less
 {
-       bool operator()(const Base::BoundBox3f& _Left, const Base::BoundBox3f& _Right) const
-       {
-		   if(_Left.IsInBox(_Right)) return false;
+    bool operator()(const Base::BoundBox3f& _Left, const Base::BoundBox3f& _Right) const
+    {
+        if (_Left.IsInBox(_Right)) return false;
 
-		   return true;
-       }
+        return true;
+    }
 };
 
 
@@ -59,82 +59,90 @@ struct BoundBox3f_Less
 class AppCamExport cutting_tools
 {
 public:
-	cutting_tools(TopoDS_Shape aShape);
-	cutting_tools(TopoDS_Shape aShape, float pitch);
-	
-	~cutting_tools();
-	
-	TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
-	double GetWireLength(TopoDS_Wire &aWire);
-	bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
-	
-	//Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
-	inline void SetCuttingOrder(double zLevel)
-	{ m_CuttingOrder.push_back(zLevel);}
-	
-	/*
-	Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt 
-	wo alle flachen bereiche drin sind
-	*/
-	
-	bool arrangecuts_ZLEVEL();
-	//bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
-	bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level, double &average_sheet_thickness,double &average_angle);
-	//bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
-	bool initializeMeshStuff();
-	bool arrangecuts_SPIRAL();
-	bool arrangecuts_FEATURE_BASED();
-	inline std::vector<Handle_Geom_BSplineCurve>* getOutputhigh()
-	{return &m_all_offset_cuts_high;}
-	inline std::vector<Handle_Geom_BSplineCurve>* getOutputlow()
-	{return &m_all_offset_cuts_low;}
-	inline std::vector<std::pair<float,TopoDS_Shape> > getCutShape()
-	{return m_ordered_cuts;}
-	
-	CuttingToolsSettings m_UserSettings;
+    cutting_tools(TopoDS_Shape aShape);
+    cutting_tools(TopoDS_Shape aShape, float pitch);
+
+    ~cutting_tools();
+
+    TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
+    double GetWireLength(TopoDS_Wire &aWire);
+    bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
+
+    //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
+    inline void SetCuttingOrder(double zLevel)
+    {
+        m_CuttingOrder.push_back(zLevel);
+    }
+
+    /*
+    Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt
+    wo alle flachen bereiche drin sind
+    */
+
+    bool arrangecuts_ZLEVEL();
+    //bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
+    bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level, double &average_sheet_thickness,double &average_angle);
+    //bool checkPointDistance(std::vector<gp_Pnt> &finalPoints,std::vector<gp_Pnt> &output);
+    bool initializeMeshStuff();
+    bool arrangecuts_SPIRAL();
+    bool arrangecuts_FEATURE_BASED();
+    inline std::vector<Handle_Geom_BSplineCurve>* getOutputhigh()
+    {
+        return &m_all_offset_cuts_high;
+    }
+    inline std::vector<Handle_Geom_BSplineCurve>* getOutputlow()
+    {
+        return &m_all_offset_cuts_low;
+    }
+    inline std::vector<std::pair<float,TopoDS_Shape> > getCutShape()
+    {
+        return m_ordered_cuts;
+    }
+
+    CuttingToolsSettings m_UserSettings;
 
 private:
-	//typedef std::list<std::vector<Base::Vector3f> > Polylines;
-	bool getShapeBB();
-	//bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
+    //typedef std::list<std::vector<Base::Vector3f> > Polylines;
+    bool getShapeBB();
+    //bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
 
-	bool fillFaceBBoxes();
-	Base::BoundBox3f getWireBBox(TopoDS_Wire aWire);
-	bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
-	bool classifyShape();
-	//bool GenFlatLevelBSpline(
-	bool checkFlatLevel();
-	bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
-	bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
-	
-	std::vector<std::pair<float,TopoDS_Shape> > m_ordered_cuts;
-	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
-	std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;
+    bool fillFaceBBoxes();
+    Base::BoundBox3f getWireBBox(TopoDS_Wire aWire);
+    bool checkPointinFaceBB(const gp_Pnt &aPnt,const Base::BoundBox3f &aBndBox);
+    bool classifyShape();
+    //bool GenFlatLevelBSpline(
+    bool checkFlatLevel();
+    bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
+    bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
 
-	std::vector<Handle_Geom_BSplineCurve> m_all_offset_cuts_high,m_all_offset_cuts_low;
-	//std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
-	std::map<float,std::map<Base::BoundBox3f,TopoDS_Wire,BoundBox3f_Less> > m_zl_wire_combination;
-	std::vector<std::pair<float,TopoDS_Shape> >::iterator m_ordered_cuts_it;
-	
-	//Member zum checken ob CAD oder nicht
-	bool m_cad;
-	TopoDS_Shape m_Shape;
-	MeshCore::MeshKernel m_CAD_Mesh;
-	MeshCore::MeshAlgorithm * m_aMeshAlgo;
-	MeshCore::MeshFacetGrid * m_CAD_Mesh_Grid;
-	bool m_mirrortobothsides;
+    std::vector<std::pair<float,TopoDS_Shape> > m_ordered_cuts;
+    std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
+    std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;
 
-	std::vector<double> m_CuttingOrder;
-	//Zustellungswert
-	float m_pitch;
-	//Der höchste und niedrigste Z-Wert vom Shape 
-	float m_minlevel,m_maxlevel;
-	//Der Radius der Werkzeuge
-	float m_radius,m_radius_slave;
-	//Blechdicke
-	float m_sheet_thickness;
+    std::vector<Handle_Geom_BSplineCurve> m_all_offset_cuts_high,m_all_offset_cuts_low;
+    //std::multimap<float,TopoDS_Wire> m_zl_wire_combination;
+    std::map<float,std::map<Base::BoundBox3f,TopoDS_Wire,BoundBox3f_Less> > m_zl_wire_combination;
+    std::vector<std::pair<float,TopoDS_Shape> >::iterator m_ordered_cuts_it;
 
-	
+    //Member zum checken ob CAD oder nicht
+    bool m_cad;
+    TopoDS_Shape m_Shape;
+    MeshCore::MeshKernel m_CAD_Mesh;
+    MeshCore::MeshAlgorithm * m_aMeshAlgo;
+    MeshCore::MeshFacetGrid * m_CAD_Mesh_Grid;
+    bool m_mirrortobothsides;
+
+    std::vector<double> m_CuttingOrder;
+    //Zustellungswert
+    float m_pitch;
+    //Der höchste und niedrigste Z-Wert vom Shape
+    float m_minlevel,m_maxlevel;
+    //Der Radius der Werkzeuge
+    float m_radius,m_radius_slave;
+    //Blechdicke
+    float m_sheet_thickness;
+
+
 
 
 
