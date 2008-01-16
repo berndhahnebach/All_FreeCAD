@@ -31,6 +31,9 @@ Cutting::~Cutting()
 
 }
 
+#include <string>
+#include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_Surface.hxx>
 void Cutting::selectShape()
 {
     if (!m_timer)
@@ -61,10 +64,45 @@ void Cutting::selectShape()
     }
     else
     {
+		
+
+	
+
         std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
         if ( fea.size() == 1)
         {
             m_Shape = static_cast<Part::Feature*>(fea.front())->Shape.getValue();
+
+			std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
+			std::string s1,s2;
+			s1 = aSelection.front().SubName;
+			string::size_type pos = s1.rfind('e');
+			s2 = s1.substr(pos+1,string::npos);
+			int i = atoi(s2.c_str());
+			TopExp_Explorer anExplorer;
+			int j=1;
+			TopoDS_Face selectedFace;
+			for(anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next(),j++)
+			{
+				if(j==i)
+				{
+					selectedFace = TopoDS::Face(anExplorer.Current());
+					break;
+				}
+			}
+			
+			BRepAdaptor_Surface aAdaptor_Surface;
+			aAdaptor_Surface.Initialize(selectedFace);
+			Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
+			gp_Pnt first,second,third;
+			FirstUParameter = aAdaptor_Surface.FirstUParameter();
+			FirstVParameter = aAdaptor_Surface.FirstVParameter();
+			aAdaptor_Surface.D0(FirstUParameter,FirstVParameter,first);
+
+
+
+
+
             this->show();
             CalculcateZLevel->setEnabled(true);
             CalculcateFeatureBased->setEnabled(true);
