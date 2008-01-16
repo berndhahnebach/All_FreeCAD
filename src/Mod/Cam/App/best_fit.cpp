@@ -724,23 +724,23 @@ double best_fit::ComPlaneErr(std::vector <Base::Vector3f> &pnts, std::vector <Ba
 
 bool best_fit::Tesselate_Face(const TopoDS_Face &aface, MeshCore::MeshKernel &mesh, float deflection)
 {
-	Base::Builder3D aBuild;
-	MeshCore::MeshBuilder builder(mesh);
-	builder.Initialize(1000);
-	Base::Vector3f Points[3];
-	if(!BRepTools::Triangulation(aface,0.1))
-	{
-		// removes all the triangulations of the faces ,
-		// and all the polygons on the triangulations of the edges:
-		BRepTools::Clean(aface);
+    Base::Builder3D aBuild;
+    MeshCore::MeshBuilder builder(mesh);
+    builder.Initialize(1000);
+    Base::Vector3f Points[3];
+    if (!BRepTools::Triangulation(aface,0.1))
+    {
+        // removes all the triangulations of the faces ,
+        // and all the polygons on the triangulations of the edges:
+        BRepTools::Clean(aface);
 
-		// adds a triangulation of the shape aShape with the deflection aDeflection:
-		//BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
-		TriangleAdapt_Parameters MeshingParams;
+        // adds a triangulation of the shape aShape with the deflection aDeflection:
+        //BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
+        TriangleAdapt_Parameters MeshingParams;
 
 
-		BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
-	}
+        BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
+    }
     TopLoc_Location aLocation;
     // takes the triangulation of the face aFace:
     Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aface,aLocation);
@@ -792,7 +792,7 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
 {
     Base::Builder3D aBuild;
 
-	MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.001;
+    MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.001;
     MeshCore::MeshBuilder builder(mesh);
     builder.Initialize(1000);
     Base::Vector3f Points[3];
@@ -816,7 +816,7 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
     //int test1 = aSewer.NbMultipleEdges();
     //int test2 = aSewer.NbDegeneratedShapes();
 
-    
+
 
     // adds a triangulation of the shape aShape with the deflection deflection:
 
@@ -825,7 +825,7 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
     MeshParams._minNbPntsPerEdgeLine = 10;
     MeshParams._minNbPntsPerEdgeOther = 10;
     MeshParams._minEdgeSplit = 5;
-	BRepMesh::Mesh(shape,deflection);
+    BRepMeshAdapt::Mesh(shape,deflection,MeshParams);
 
     TopExp_Explorer aExpFace;
 
