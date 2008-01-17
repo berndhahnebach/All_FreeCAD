@@ -206,6 +206,13 @@ bool cutting_tools::initializeMeshStuff()
     m_aMeshAlgo = new MeshCore::MeshAlgorithm(m_CAD_Mesh);
     return true;
 }
+//bool cutting_tools::arrangecuts_Spiral()
+//{ 
+	//IntCurvesFace_ShapeIntersector
+	//	http://www.opencascade.org/org/forum/thread_5825/
+
+//	return true;
+//}
 bool cutting_tools::arrangecuts_ZLEVEL()
 {
     //Zunächst wieder checken ob CAD oder nicht
