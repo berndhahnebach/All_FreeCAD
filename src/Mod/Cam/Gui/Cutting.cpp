@@ -1,21 +1,28 @@
 #include "PreCompiled.h"
 
 #include "Cutting.h"
+#include <QTimer.h>
 
-#include <Mod/Cam/App/cutting_tools.h>
-#include <Mod/Part/App/PartFeature.h>
 #include <Base/Vector3D.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Parameter.h>
+
 #include <Gui/ViewProvider.h>
 #include <Gui/Selection.h>
 #include <Gui/Application.h>
-#include <App/Document.h>
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <QTimer.h>
+#include <Gui/MainWindow.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include <Gui/Selection.h>
 #include <Gui/ViewProvider.h>
+#include <App/Document.h>
 #include <Gui/Document.h>
+
+#include <Mod/Cam/App/cutting_tools.h>
+#include <Mod/Part/App/PartFeature.h>
+#include <Mod/Part/Gui/ViewProvider.h>
 
 
 using namespace CamGui;
@@ -45,15 +52,15 @@ void Cutting::selectShape()
             check_box1 = QMessageBox::question(this, tr("FreeCAD CamWorkbench"),
                                                tr("You have already selected a CAD-Shape.\n"
                                                   "Do you want to make a new Selection?"),
-                                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+                                               QMessageBox::Yes, QMessageBox::No);
         }
         else
         {
             check_box2 = QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
                                                   tr("You have to select a CAD-Shape.\n"),
-                                                  QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+                                                  QMessageBox::Ok, QMessageBox::Cancel);
         }
-        if ((check_box1 == QMessageBox::Yes) | (check_box2 == QMessageBox::Ok))
+        if ((check_box1 == QMessageBox::Yes) || (check_box2 == QMessageBox::Ok))
         {
             //First, remove the old selection from the Gui, so that we do not directly have the same CAD once again.
             Gui::Selection().clearCompleteSelection();
@@ -84,19 +91,17 @@ void Cutting::selectShape()
 }
 
 
-void Cutting::selectFace()
+void Cutting::selectFace(TopoDS_Shape aShape, float x, float y, float z)
 {
 	//check if a Shape is selected
 	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
     if ( fea.size() == 1)
 	{
 		//get Hash Code of Selected Face inside the selected Shape and also the Coordinates of the click
-		TopoDS_Shape aShape;
 		if(aShape.ShapeType() != TopAbs_FACE)
 			return;
 
-		TopoDS_Face tempFace = TopoDS::Face(//Selected Face in the viewer);
-		Base::Vector3f clickPoint = //Where did we click??
+		TopoDS_Face tempFace = TopoDS::Face(aShape);
 		//Now search for the Hash-Code in the m_Shape
 		TopExp_Explorer anExplorer;
 		TopoDS_Face aselectedFace;
@@ -123,13 +128,13 @@ void Cutting::selectFace()
 			//s2 = s1.substr(pos+1,string::npos);
 			//int i = atoi(s2.c_str());
 }
+
 void Cutting::on_CalculcateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
     m_CuttingAlgo = new cutting_tools(m_Shape);
     toolpath_calculation_highest_level_button->setEnabled(true);
 }
-
 
 void Cutting::on_select_shape_z_level_button_clicked()
 {
@@ -146,6 +151,17 @@ void Cutting::on_toolpath_calculation_highest_level_button_clicked()
     //Do something
     toolpath_calculation_middle_level_button->setEnabled(true);
     toolpath_calculation_lowest_level_button->setEnabled(true);
+
+
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
+        this->hide();
+     }
 }
 
 void Cutting::on_toolpath_calculation_middle_level_button_clicked()
@@ -171,6 +187,48 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.master_radius = master_radius_box->value();
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
+}
+
+void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
+{
+    const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    Cutting* that = reinterpret_cast<Cutting*>(ud);
+
+    // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+    n->getAction()->setHandled();
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
+        n->setHandled();
+        view->setEditing(false);
+        view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, that);
+        that->show();
+    }
+    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+        const SoPickedPoint * point = n->getPickedPoint();
+        if (point == NULL) {
+            QMessageBox::warning(Gui::getMainWindow(),"z level", "No shape picked!");
+            return;
+        }
+
+        n->setHandled();
+
+        // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
+        // really from the mesh we render and not from any other geometry
+        Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+        if (!vp || !vp->getTypeId().isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId()))
+            return;
+        PartGui::ViewProviderPart* vpp = static_cast<PartGui::ViewProviderPart*>(vp);
+        TopoDS_Shape sh = vpp->getShape(point);
+        if (!sh.IsNull()) {
+            // ok a shape was picked
+            n->setHandled();
+            view->setEditing(false);
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, that);
+            that->show();
+            SbVec3f pt = point->getPoint();
+            that->selectFace(sh, pt[0],pt[1],pt[2]);
+        }
+    }
 }
 
 #include "moc_Cutting.cpp"

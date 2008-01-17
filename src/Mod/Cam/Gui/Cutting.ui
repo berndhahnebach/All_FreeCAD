@@ -247,7 +247,7 @@ p, li { white-space: pre-wrap; }
     <item>
      <widget class="QDoubleSpinBox" name="cad_radius_box" >
       <property name="value" >
-       <double>10.000000000000000</double>
+       <double>10</double>
       </property>
      </widget>
     </item>
@@ -257,38 +257,38 @@ p, li { white-space: pre-wrap; }
        <cursor>0</cursor>
       </property>
       <property name="maximum" >
-       <double>20.000000000000000</double>
+       <double>20</double>
       </property>
       <property name="value" >
-       <double>15.000000000000000</double>
+       <double>15</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="slave_radius_box" >
       <property name="value" >
-       <double>15.000000000000000</double>
+       <double>15</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="level_distance_box" >
       <property name="value" >
-       <double>1.000000000000000</double>
+       <double>1</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="correction_factor_box" >
       <property name="value" >
-       <double>0.700000000000000</double>
+       <double>0.7</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="limit_angle_box" >
       <property name="value" >
-       <double>60.000000000000000</double>
+       <double>60</double>
       </property>
      </widget>
     </item>
@@ -401,12 +401,12 @@ p, li { white-space: pre-wrap; }
     <string>Sheet Thickness</string>
    </property>
   </widget>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>350</x>
      <y>20</y>
-     <width>264</width>
+     <width>301</width>
      <height>271</height>
     </rect>
    </property>
@@ -640,5 +640,38 @@ p, li { white-space: pre-wrap; }
  </widget>
  <pixmapfunction></pixmapfunction>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CamGui::Cutting</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>446</x>
+     <y>407</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>239</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CamGui::Cutting</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>521</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>581</x>
+     <y>392</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
