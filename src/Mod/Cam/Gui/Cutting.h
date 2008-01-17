@@ -26,7 +26,7 @@ protected Q_SLOTS:
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
     void selectShape();
-    void selectFace(TopoDS_Shape, float , float, float);
+    void setFace(const TopoDS_Shape &aFace, const float , const float,const float);
 
 private:
     static void zLevelCallback(void * ud, SoEventCallback * n);

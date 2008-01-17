@@ -20,6 +20,8 @@
 #include <App/Document.h>
 #include <Gui/Document.h>
 
+#include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Mod/Cam/App/cutting_tools.h>
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/Gui/ViewProvider.h>
@@ -39,9 +41,7 @@ Cutting::~Cutting()
 
 }
 
-#include <string>
-#include <TopExp_Explorer.hxx>
-#include <BRepAdaptor_Surface.hxx>
+
 void Cutting::selectShape()
 {
     if (!m_timer)
@@ -91,7 +91,7 @@ void Cutting::selectShape()
 }
 
 
-void Cutting::selectFace(TopoDS_Shape aShape, float x, float y, float z)
+void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, const float z)
 {
 	//check if a Shape is selected
 	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
@@ -105,28 +105,17 @@ void Cutting::selectFace(TopoDS_Shape aShape, float x, float y, float z)
 		//Now search for the Hash-Code in the m_Shape
 		TopExp_Explorer anExplorer;
 		TopoDS_Face aselectedFace;
+	
+		//pickPoint.Set(x,y,z);
 		for(anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next())
 		{
 			if(tempFace.HashCode(IntegerLast()) == anExplorer.Current().HashCode(IntegerLast()))
 			{
-				aselectedFace = TopoDS::Face(anExplorer.Current());
+				m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
 				break;
 			}
 		}
-		//check ob der Z-Level wirklich stimmt
-		BRepAdaptor_Surface aAdaptor_Surface;
-		aAdaptor_Surface.Initialize(aselectedFace);
-		Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
-		gp_Pnt first,second,third;
-		FirstUParameter = aAdaptor_Surface.FirstUParameter();
-		FirstVParameter = aAdaptor_Surface.FirstVParameter();
-		aAdaptor_Surface.D0(FirstUParameter,FirstVParameter,first);
 	}
-			//std::string s1,s2;
-			//s1 = aSelection.front().SubName;
-			//string::size_type pos = s1.rfind('e');
-			//s2 = s1.substr(pos+1,string::npos);
-			//int i = atoi(s2.c_str());
 }
 
 void Cutting::on_CalculcateZLevel_clicked()
@@ -148,14 +137,26 @@ void Cutting::on_select_shape_feature_based_button_clicked()
 
 void Cutting::on_toolpath_calculation_highest_level_button_clicked()
 {
-    //Do something
-    toolpath_calculation_middle_level_button->setEnabled(true);
-    toolpath_calculation_lowest_level_button->setEnabled(true);
-
-
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
-    if (view) {
+    if (view) 
+	{
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
+        this->hide();
+     }
+	toolpath_calculation_middle_level_button->setEnabled(true);
+    toolpath_calculation_lowest_level_button->setEnabled(true);
+}
+
+void Cutting::on_toolpath_calculation_middle_level_button_clicked()
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) 
+	{
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
@@ -164,16 +165,19 @@ void Cutting::on_toolpath_calculation_highest_level_button_clicked()
      }
 }
 
-void Cutting::on_toolpath_calculation_middle_level_button_clicked()
-{
-    //Do something
-
-}
-
 void Cutting::on_toolpath_calculation_lowest_level_button_clicked()
 {
-    toolpath_calculation_go_button->setEnabled(true);
-
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) 
+	{
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
+        this->hide();
+     }
+	toolpath_calculation_go_button->setEnabled(true);
 }
 
 void Cutting::on_toolpath_calculation_go_button_clicked()
@@ -197,15 +201,18 @@ void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
 
     // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
     n->getAction()->setHandled();
-    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) 
+	{
         n->setHandled();
         view->setEditing(false);
         view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, that);
         that->show();
     }
-    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) 
+	{
         const SoPickedPoint * point = n->getPickedPoint();
-        if (point == NULL) {
+        if (point == NULL) 
+		{
             QMessageBox::warning(Gui::getMainWindow(),"z level", "No shape picked!");
             return;
         }
@@ -219,14 +226,15 @@ void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
             return;
         PartGui::ViewProviderPart* vpp = static_cast<PartGui::ViewProviderPart*>(vp);
         TopoDS_Shape sh = vpp->getShape(point);
-        if (!sh.IsNull()) {
+        if (!sh.IsNull()) 
+		{
             // ok a shape was picked
             n->setHandled();
             view->setEditing(false);
             view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, that);
             that->show();
             SbVec3f pt = point->getPoint();
-            that->selectFace(sh, pt[0],pt[1],pt[2]);
+            that->setFace(sh, pt[0],pt[1],pt[2]);
         }
     }
 }

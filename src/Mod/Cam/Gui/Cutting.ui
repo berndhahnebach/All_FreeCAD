@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>CamGui::Cutting</class>
  <widget class="QDialog" name="CamGui::Cutting" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
+    <width>628</width>
     <height>440</height>
    </rect>
   </property>
@@ -247,7 +244,7 @@ p, li { white-space: pre-wrap; }
     <item>
      <widget class="QDoubleSpinBox" name="cad_radius_box" >
       <property name="value" >
-       <double>10</double>
+       <double>10.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -257,38 +254,38 @@ p, li { white-space: pre-wrap; }
        <cursor>0</cursor>
       </property>
       <property name="maximum" >
-       <double>20</double>
+       <double>20.000000000000000</double>
       </property>
       <property name="value" >
-       <double>15</double>
+       <double>15.000000000000000</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="slave_radius_box" >
       <property name="value" >
-       <double>15</double>
+       <double>15.000000000000000</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="level_distance_box" >
       <property name="value" >
-       <double>1</double>
+       <double>1.000000000000000</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="correction_factor_box" >
       <property name="value" >
-       <double>0.7</double>
+       <double>0.700000000000000</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="limit_angle_box" >
       <property name="value" >
-       <double>60</double>
+       <double>60.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -404,10 +401,55 @@ p, li { white-space: pre-wrap; }
   <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
-     <x>350</x>
-     <y>20</y>
-     <width>301</width>
-     <height>271</height>
+     <x>210</x>
+     <y>390</y>
+     <width>351</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>131</width>
+        <height>31</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="okButton" >
+      <property name="text" >
+       <string>OK</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="cancelButton" >
+      <property name="text" >
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="" >
+   <property name="geometry" >
+    <rect>
+     <x>351</x>
+     <y>21</y>
+     <width>264</width>
+     <height>261</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -592,53 +634,7 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>210</x>
-     <y>390</y>
-     <width>351</width>
-     <height>33</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item>
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>131</width>
-        <height>31</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <widget class="QPushButton" name="okButton" >
-      <property name="text" >
-       <string>OK</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="cancelButton" >
-      <property name="text" >
-       <string>Cancel</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections>
   <connection>
