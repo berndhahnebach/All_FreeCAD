@@ -67,12 +67,10 @@ public:
     TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
     double GetWireLength(TopoDS_Wire &aWire);
     bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
+	    //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
+	bool SetMachiningOrder(const TopoDS_Face &aFace, float x,float y,float z);
 
-    //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
-    inline void SetCuttingOrder(double zLevel)
-    {
-        m_CuttingOrder.push_back(zLevel);
-    }
+
 
     /*
     Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt
@@ -132,7 +130,7 @@ private:
     MeshCore::MeshFacetGrid * m_CAD_Mesh_Grid;
     bool m_mirrortobothsides;
 
-    std::vector<double> m_CuttingOrder;
+
     //Zustellungswert
     float m_pitch;
     //Der höchste und niedrigste Z-Wert vom Shape
@@ -141,6 +139,7 @@ private:
     float m_radius,m_radius_slave;
     //Blechdicke
     float m_sheet_thickness;
+	std::vector<std::pair<Base::Vector3f,TopoDS_Face> > m_MachiningOrder;
 
 
 

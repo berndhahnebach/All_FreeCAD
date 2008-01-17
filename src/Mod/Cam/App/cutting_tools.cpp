@@ -71,7 +71,8 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
     m_cad = false;
     m_CAD_Mesh.Clear();
     m_zl_wire_combination.clear();
-    m_CuttingOrder.clear();
+
+	m_MachiningOrder.clear();
 
 
     getShapeBB();
@@ -95,13 +96,24 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape)
     m_face_bboxes.clear();
     m_CAD_Mesh.Clear();
     m_zl_wire_combination.clear();
-    m_CuttingOrder.clear();
+    m_MachiningOrder.clear();
 }
 
 cutting_tools::~cutting_tools()
 {
     delete m_aMeshAlgo;
     delete m_CAD_Mesh_Grid;
+}
+
+
+bool cutting_tools::SetMachiningOrder(const TopoDS_Face &aFace, float x,float y,float z)
+{
+	std::pair<Base::Vector3f,TopoDS_Face> aTempPair;
+	Base::Vector3f aPoint(x,y,z);
+	aTempPair.first = aPoint;
+	aTempPair.second = aFace;
+	m_MachiningOrder.push_back(aTempPair);
+	return true;
 }
 
 bool cutting_tools::getShapeBB()
