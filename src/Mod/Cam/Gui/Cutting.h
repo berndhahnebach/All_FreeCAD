@@ -25,6 +25,7 @@ protected Q_SLOTS:
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
     void selectShape();
+	void selectFace();
 
 private:
     //Instanz von der cutting-klasse auf dem Heap erzeugen

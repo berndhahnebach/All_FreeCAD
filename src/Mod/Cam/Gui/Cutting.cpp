@@ -4,6 +4,7 @@
 
 #include <Mod/Cam/App/cutting_tools.h>
 #include <Mod/Part/App/PartFeature.h>
+#include <Base/Vector3D.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/Selection.h>
 #include <Gui/Application.h>
@@ -64,45 +65,11 @@ void Cutting::selectShape()
     }
     else
     {
-		
-
-	
-
         std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
         if ( fea.size() == 1)
         {
             m_Shape = static_cast<Part::Feature*>(fea.front())->Shape.getValue();
-
-			std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
-			std::string s1,s2;
-			s1 = aSelection.front().SubName;
-			string::size_type pos = s1.rfind('e');
-			s2 = s1.substr(pos+1,string::npos);
-			int i = atoi(s2.c_str());
-			TopExp_Explorer anExplorer;
-			int j=1;
-			TopoDS_Face selectedFace;
-			for(anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next(),j++)
-			{
-				if(j==i)
-				{
-					selectedFace = TopoDS::Face(anExplorer.Current());
-					break;
-				}
-			}
-			
-			BRepAdaptor_Surface aAdaptor_Surface;
-			aAdaptor_Surface.Initialize(selectedFace);
-			Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
-			gp_Pnt first,second,third;
-			FirstUParameter = aAdaptor_Surface.FirstUParameter();
-			FirstVParameter = aAdaptor_Surface.FirstVParameter();
-			aAdaptor_Surface.D0(FirstUParameter,FirstVParameter,first);
-
-
-
-
-
+			//std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
             this->show();
             CalculcateZLevel->setEnabled(true);
             CalculcateFeatureBased->setEnabled(true);
@@ -116,6 +83,46 @@ void Cutting::selectShape()
     }
 }
 
+
+void Cutting::selectFace()
+{
+	//check if a Shape is selected
+	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
+    if ( fea.size() == 1)
+	{
+		//get Hash Code of Selected Face inside the selected Shape and also the Coordinates of the click
+		TopoDS_Shape aShape;
+		if(aShape.ShapeType() != TopAbs_FACE)
+			return;
+
+		TopoDS_Face tempFace = TopoDS::Face(//Selected Face in the viewer);
+		Base::Vector3f clickPoint = //Where did we click??
+		//Now search for the Hash-Code in the m_Shape
+		TopExp_Explorer anExplorer;
+		TopoDS_Face aselectedFace;
+		for(anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next())
+		{
+			if(tempFace.HashCode(IntegerLast()) == anExplorer.Current().HashCode(IntegerLast()))
+			{
+				aselectedFace = TopoDS::Face(anExplorer.Current());
+				break;
+			}
+		}
+		//check ob der Z-Level wirklich stimmt
+		BRepAdaptor_Surface aAdaptor_Surface;
+		aAdaptor_Surface.Initialize(aselectedFace);
+		Standard_Real FirstUParameter, LastUParameter,FirstVParameter,LastVParameter;
+		gp_Pnt first,second,third;
+		FirstUParameter = aAdaptor_Surface.FirstUParameter();
+		FirstVParameter = aAdaptor_Surface.FirstVParameter();
+		aAdaptor_Surface.D0(FirstUParameter,FirstVParameter,first);
+	}
+			//std::string s1,s2;
+			//s1 = aSelection.front().SubName;
+			//string::size_type pos = s1.rfind('e');
+			//s2 = s1.substr(pos+1,string::npos);
+			//int i = atoi(s2.c_str());
+}
 void Cutting::on_CalculcateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
