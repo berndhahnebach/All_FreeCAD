@@ -2,6 +2,7 @@
 #define CAMGUI_CUTTING_H
 
 #include "ui_Cutting.h"
+#include <Base/Vector3D.h>
 
 class cutting_tools;
 class TopoDS_Shape;
@@ -25,7 +26,10 @@ protected Q_SLOTS:
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
     void selectShape();
-	void selectFace();
+    void selectFace(TopoDS_Shape, float , float, float);
+
+private:
+    static void zLevelCallback(void * ud, SoEventCallback * n);
 
 private:
     //Instanz von der cutting-klasse auf dem Heap erzeugen
