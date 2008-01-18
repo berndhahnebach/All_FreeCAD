@@ -42,14 +42,14 @@ class AppPartExport TopoShape : public Data::ComplexGeoData
   TYPESYSTEM_HEADER();
 
 public:
-	TopoShape(TopoDS_Shape&);
+	TopoShape(const TopoDS_Shape&);
 	TopoShape();
 	~TopoShape();
     virtual Base::BoundBox3d getBoundBox(void)const{return Base::BoundBox3d();}
 
   static TopoDS_Shape read(const char *FileName);
 
-  TopoDS_Shape _Shape;
+  const TopoDS_Shape _Shape;
 };
 
 

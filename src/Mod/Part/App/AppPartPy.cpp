@@ -162,7 +162,7 @@ static PyObject * read(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s",&Name))
         return NULL;                         
     PY_TRY {
-        return new TopoShapePyOld(TopoShape::read(Name)); 
+        return new TopoShapePy(new TopoShape((TopoShape::read(Name)))); 
     } PY_CATCH;
 }
 
@@ -182,7 +182,7 @@ static PyObject * createPlane(PyObject *self, PyObject *args)
         gp_Dir aPlaneDir(0,0,1);
         Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
         BRepBuilderAPI_MakeFace 	Face(aPlane);
-        return new TopoShapePyOld(Face.Face()); 
+        return new TopoShapePy(new TopoShape((Face.Face()))); 
     } PY_CATCH;
 }
 

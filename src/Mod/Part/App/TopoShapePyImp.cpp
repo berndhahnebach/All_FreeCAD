@@ -20,6 +20,8 @@
 #include "TopoShapePy.h"
 #include "TopoShapePy.cpp"
 
+#include "TopoShapeFacePy.h"
+
 using namespace Part;
 
 // returns a string which represent the object e.g. when printed in python
@@ -239,23 +241,34 @@ Py::Int TopoShapePy::getValid(void) const
 
 Py::List TopoShapePy::getFaces(void) const
 {
-	return Py::List();
+	Py::List ret;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_FACE);
+	while (Ex.More()) {
+		//BRepBuilderAPI_Copy copy(Ex.Current());
+		//TopoDS_Shape shape = copy.Shape();
+		TopoDS_Shape shape = Ex.Current();
+		ret.append(Py::Object(new TopoShapeFacePy(new TopoShape(shape)),true));
+		Ex.Next();
+	}
+
+	return ret;
 }
 
 Py::List TopoShapePy::getVertexes(void) const
 {
 	Py::List ret;
 
-  TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_VERTEX);
-  while (Ex.More()) {
-    //BRepBuilderAPI_Copy copy(Ex.Current());
-    //TopoDS_Shape shape = copy.Shape();
-    TopoDS_Shape shape = Ex.Current();
-    ret.append(Py::Object(new TopoShapePy(new TopoShape(shape)),true));
-    Ex.Next();
-  }
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_VERTEX);
+	while (Ex.More()) {
+		//BRepBuilderAPI_Copy copy(Ex.Current());
+		//TopoDS_Shape shape = copy.Shape();
+		TopoDS_Shape shape = Ex.Current();
+		ret.append(Py::Object(new TopoShapePy(new TopoShape(shape)),true));
+		Ex.Next();
+	}
 
-	return Py::List();
+	return ret;
 }
 
 Py::List TopoShapePy::getShapes(void) const

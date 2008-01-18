@@ -41,7 +41,7 @@ using namespace Part;
 
 TYPESYSTEM_SOURCE(Part::TopoShape , App::ComplexGeoData);
 
-TopoShape::TopoShape(TopoDS_Shape& shape)
+TopoShape::TopoShape(const TopoDS_Shape& shape)
 : _Shape(shape)
 {
 
