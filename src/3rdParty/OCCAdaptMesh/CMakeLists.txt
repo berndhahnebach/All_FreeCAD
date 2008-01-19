@@ -2,24 +2,22 @@ project(OCCAdaptMesh)
 
 
 set(OCC_Includes
-C:/_Libs/OCC6/ros/inc
+c:/FreeCAD/FreeCADLibs4/include/OpenCascade62
 )
+
+set(OCCAdaptMesh_Include
+${CMAKE_CURRENT_SOURCE_DIR}/Include
+)
+
+include_directories(${OCCAdaptMesh_Include} ${OCC_Includes})
 
 set(FreeCAD_LibPack_Libs
-C:/_Libs/OCC6/ros/win32/lib
+c:/FreeCAD/FreeCADLibs4/lib
 )
-
-set(OCCAdaptMesh_Includes
-${CMAKE_CURRENT_SOURCE_DIR}/src
-${CMAKE_CURRENT_SOURCE_DIR}/src/BRepMeshAdapt
-${CMAKE_CURRENT_SOURCE_DIR}/src/MeshAlgoAdapt
-${CMAKE_CURRENT_SOURCE_DIR}/src/TriangleAdapt
-)
-
 
 add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS)
 
-include_directories(${OCC_Includes} ${OCCAdaptMesh_Includes})
+
 
 
 
@@ -133,14 +131,14 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/BRepUtils.cpp
 )
 
 set(OCCAdaptMesh_BREPUTILS_HDRS
-${CMAKE_CURRENT_SOURCE_DIR}/src/BRepUtils.h
+${CMAKE_CURRENT_SOURCE_DIR}/Include/BRepUtils.h
 )
 
 set(OCCAdaptMesh_TriangleAdapt_HDRS
 ${CMAKE_CURRENT_SOURCE_DIR}/src/TriangleAdapt/TriangleAdapt_CMPLRS.edl
-${CMAKE_CURRENT_SOURCE_DIR}/src/TriangleAdapt/TriangleAdapt_Parameters.h
-${CMAKE_CURRENT_SOURCE_DIR}/src/TriangleAdapt/triangleAdapt.h
-${CMAKE_CURRENT_SOURCE_DIR}/src/TriangleAdapt/TriangleAdapt.hxx
+${CMAKE_CURRENT_SOURCE_DIR}/Include/TriangleAdapt_Parameters.h
+${CMAKE_CURRENT_SOURCE_DIR}/Include/triangleAdapt.h
+${CMAKE_CURRENT_SOURCE_DIR}/Include/TriangleAdapt.hxx
 )
 
 set(OCCAdaptMesh_MeshAlgoAdapt_HDRS
@@ -176,8 +174,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Include/MeshAlgoAdapt_Delaunay.lxx
 
 
 set(OCCAdaptMesh_BRepMeshAdapt_HDRS
-${CMAKE_CURRENT_SOURCE_DIR}/src/BRepMeshAdapt/meshtriangleAdapt.hxx
-${CMAKE_CURRENT_SOURCE_DIR}/src/BRepMeshAdapt/meshchronoAdapt.hxx
+${CMAKE_CURRENT_SOURCE_DIR}/Include/meshtriangleAdapt.hxx
+${CMAKE_CURRENT_SOURCE_DIR}/Include/meshchronoAdapt.hxx
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/BRepMeshAdapt_DataStructureOfDelaun.hxx
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/BRepMeshAdapt_Delaun.hxx
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/BRepMeshAdapt_DataMapOfVertexInteger.hxx
@@ -316,7 +314,7 @@ ${OCCAdaptMesh_BREPUTILS_HDRS}
 )
 
 
-#qt4_automoc(${Synchronisierung_SRCS} ${Synchronisierung_HDRS})
+
 
 ADD_LIBRARY(OCCAdaptMesh SHARED ${OCCAdaptMesh_SRCS} ${OCCAdaptMesh_HDRS})
 
