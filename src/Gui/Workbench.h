@@ -194,28 +194,29 @@ public:
   /** @name Manipulation methods */
   //@{
   /// Appends a new menu
-  void appendMenu( const QStringList& menu, const QStringList& items ) const;
+  void appendMenu(const QStringList& menu, const QStringList& items) const;
   /// Removes a menu
-  void removeMenu( const QString& menu ) const;
+  void removeMenu(const QString& menu ) const;
   //// Shows a list of all menus
   QStringList listMenus() const;
 
   /// Appends new context menu items
-  void appendContextMenu( const QString& menu, const QStringList& items ) const;
+  void appendContextMenu(const QStringList& menu, const QStringList& items) const;
   /// Removes a context menu
-  void removeContextMenu( const QString& menu ) const;
+  void removeContextMenu(const QString& menu ) const;
+  void setupContextMenu(const char* recipient,MenuItem*) const;
 
   /// Appends a new toolbar
-  void appendToolbar( const QString& bar, const QStringList& items ) const;
+  void appendToolbar(const QString& bar, const QStringList& items) const;
   /// Removes a toolbar
-  void removeToolbar( const QString& bar ) const;
+  void removeToolbar(const QString& bar) const;
   //// Shows a list of all toolbars
   QStringList listToolbars() const;
 
   /// Appends a new command bar
-  void appendCommandbar( const QString& bar, const QStringList& items ) const;
+  void appendCommandbar(const QString& bar, const QStringList& items) const;
   /// Removes a command bar
-  void removeCommandbar( const QString& bar ) const;
+  void removeCommandbar(const QString& bar) const;
   //// Shows a list of all command bars
   QStringList listCommandbars() const;
   //@}
@@ -227,6 +228,7 @@ protected:
 
 private:
   MenuItem* _menuBar;
+  MenuItem* _contextMenu;
   ToolBarItem* _toolBar;
   ToolBarItem* _commandBar;
   Base::PyObjectBase* _workbenchPy;
