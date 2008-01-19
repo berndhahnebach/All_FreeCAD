@@ -73,9 +73,7 @@ libOCCAdaptMesh_la_SOURCES=\
 		src/BRepMeshAdapt/BRepMeshAdapt_Vertex.cxx \
 		src/BRepMeshAdapt/BRepMeshAdapt_VertexHasher_0.cxx \
 		src/BRepMeshAdapt/meshchronoAdapt.cxx \
-		src/BRepMeshAdapt/meshchronoAdapt.hxx \
 		src/BRepMeshAdapt/meshtriangleAdapt.cxx \
-		src/BRepMeshAdapt/meshtriangleAdapt.hxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Circ.cxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt_CircleTool.cxx \
 		src/MeshAlgoAdapt/MeshAlgoAdapt.cxx \
@@ -87,11 +85,7 @@ libOCCAdaptMesh_la_SOURCES=\
 		src/MeshAlgoAdapt/MeshAlgoAdapt_Vertex.cxx \
 		src/TriangleAdapt/occcallbackAdapt.cxx \
 		src/TriangleAdapt/triangleAdapt.c \
-		src/TriangleAdapt/triangleAdapt.h \
-		src/TriangleAdapt/TriangleAdapt.hxx \
-		src/TriangleAdapt/TriangleAdapt_Parameters.h \
-		src/BRepUtils.cpp \
-		src/BRepUtils.h
+		src/BRepUtils.cpp
 
 # the library search path.
 libOCCAdaptMesh_la_LDFLAGS = -L$(OCC_LIB) $(all_libraries)
@@ -298,6 +292,10 @@ EXTRA_DIST = \
 		Include/MeshAlgoAdapt_Triangle.jxx \
 		Include/MeshAlgoAdapt_Vertex.ixx \
 		Include/MeshAlgoAdapt_Vertex.jxx \
+		Include/meshchronoAdapt.hxx \
+		Include/meshtriangleAdapt.hxx \
+		Include/TriangleAdapt.hxx \
+		Include/triangleAdapt.h \
 		src/TriangleAdapt/TriangleAdapt_CMPLRS.edl \
 		CMakeLists.txt
 
