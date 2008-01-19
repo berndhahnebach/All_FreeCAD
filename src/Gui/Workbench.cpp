@@ -569,7 +569,7 @@ TestWorkbench::~TestWorkbench()
 
 MenuItem* TestWorkbench::setupMenuBar() const
 {
-  // Setup the default menu bar
+    // Setup the default menu bar
     MenuItem* menuBar = StdWorkbench::setupMenuBar();
 
     MenuItem* item = menuBar->findItem("&Help");
@@ -608,6 +608,7 @@ TYPESYSTEM_SOURCE(Gui::PythonWorkbench, Gui::Workbench)
 PythonWorkbench::PythonWorkbench() : _workbenchPy(0)
 {
     _menuBar = StdWorkbench::setupMenuBar();
+    _contextMenu = new MenuItem;
     _toolBar = StdWorkbench::setupToolBars();
     _commandBar = new ToolBarItem;
 }
@@ -615,6 +616,7 @@ PythonWorkbench::PythonWorkbench() : _workbenchPy(0)
 PythonWorkbench::~PythonWorkbench()
 {
     delete _menuBar;
+    delete _contextMenu;
     delete _toolBar;
     delete _commandBar;
     if (_workbenchPy)
@@ -652,7 +654,16 @@ ToolBarItem* PythonWorkbench::setupCommandBars() const
     return _commandBar->copy();
 }
 
-void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& items ) const
+void PythonWorkbench::setupContextMenu(const char* recipient, MenuItem* item) const
+{
+    StdWorkbench::setupContextMenu(recipient, item);
+    QList<MenuItem*> items = _contextMenu->getItems();
+    for (QList<MenuItem*>::Iterator it = items.begin(); it != items.end(); ++it) {
+        item->appendItem((*it)->copy());
+    }
+}
+
+void PythonWorkbench::appendMenu(const QStringList& menu, const QStringList& items) const
 {
     if ( menu.empty() || items.empty() )
         return;
@@ -683,7 +694,7 @@ void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& it
         *item << *it;
 }
 
-void PythonWorkbench::removeMenu( const QString& menu ) const
+void PythonWorkbench::removeMenu(const QString& menu) const
 {
     MenuItem* item = _menuBar->findItem( menu );
     if ( item ) {
@@ -701,15 +712,32 @@ QStringList PythonWorkbench::listMenus() const
     return menus;
 }
 
-void PythonWorkbench::appendContextMenu( const QString& menu, const QStringList& items ) const
+void PythonWorkbench::appendContextMenu(const QStringList& menu, const QStringList& items) const
 {
+    MenuItem* item = _contextMenu;
+    for (QStringList::ConstIterator jt=menu.begin();jt!=menu.end();++jt) {
+        MenuItem* subitem = item->findItem(*jt);
+        if (!subitem) {
+            subitem = new MenuItem(item);
+            subitem->setCommand(*jt);
+        }
+        item = subitem;
+    }
+
+    for (QStringList::ConstIterator it = items.begin(); it != items.end(); ++it)
+        *item << *it;
 }
 
-void PythonWorkbench::removeContextMenu( const QString& menu ) const
+void PythonWorkbench::removeContextMenu(const QString& menu) const
 {
+    MenuItem* item = _contextMenu->findItem(menu);
+    if (item) {
+        _contextMenu->removeItem(item);
+        delete item;
+    }
 }
 
-void PythonWorkbench::appendToolbar( const QString& bar, const QStringList& items ) const
+void PythonWorkbench::appendToolbar(const QString& bar, const QStringList& items) const
 {
     ToolBarItem* item = _toolBar->findItem( bar );
     if (!item)
@@ -722,7 +750,7 @@ void PythonWorkbench::appendToolbar( const QString& bar, const QStringList& item
         *item << *it;
 }
 
-void PythonWorkbench::removeToolbar( const QString& bar) const
+void PythonWorkbench::removeToolbar(const QString& bar) const
 {
     ToolBarItem* item = _toolBar->findItem( bar );
     if (item) {
@@ -740,7 +768,7 @@ QStringList PythonWorkbench::listToolbars() const
     return bars;
 }
 
-void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& items ) const
+void PythonWorkbench::appendCommandbar(const QString& bar, const QStringList& items) const
 {
     ToolBarItem* item = _commandBar->findItem( bar );
     if ( !item )
@@ -753,7 +781,7 @@ void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& i
         *item << *it;
 }
 
-void PythonWorkbench::removeCommandbar( const QString& bar ) const
+void PythonWorkbench::removeCommandbar(const QString& bar) const
 {
     ToolBarItem* item = _commandBar->findItem( bar );
     if ( item ) {
