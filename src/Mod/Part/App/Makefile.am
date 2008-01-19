@@ -4,10 +4,12 @@ lib_LTLIBRARIES=libPart.la Part.la
 
 BUILT_SOURCES=\
 		PartFeaturePy.cpp \
+		TopoShapeFacePy.cpp \
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
 		PartFeaturePy.h \
+		TopoShapeFacePy.h \
 		TopoShapePy.h
 
 libPart_la_SOURCES=\
@@ -57,6 +59,7 @@ libPart_la_SOURCES=\
 		PropertyLine.h \
 		TopoShape.cpp \
 		TopoShape.h \
+		TopoShapeFacePyImp.cpp \
 		TopoShapePyImp.cpp \
 		TopologyPy.cpp \
 		TopologyPy.h
@@ -122,4 +125,5 @@ EXTRA_DIST = \
 		OpenCascadeAll.h \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
+		TopoShapeFacePy.xml \
 		AppPart.vcproj
