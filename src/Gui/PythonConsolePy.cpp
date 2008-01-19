@@ -39,32 +39,32 @@ using namespace Gui;
 // Type structure
 //--------------------------------------------------------------------------
 PyTypeObject PythonStdoutPy::Type = {
-  PyObject_HEAD_INIT(&PyType_Type)
-  0,                      /*ob_size*/
-  "PythonStdout",       /*tp_name*/
-  sizeof(PythonStdoutPy), /*tp_basicsize*/
-  0,                      /*tp_itemsize*/
-  /* methods */
-  PyDestructor,           /*tp_dealloc*/
-  0,                      /*tp_print*/
-  __getattr,              /*tp_getattr*/
-  __setattr,              /*tp_setattr*/
-  0,                      /*tp_compare*/
-  __repr,                 /*tp_repr*/
-  0,                      /*tp_as_number*/
-  0,                      /*tp_as_sequence*/
-  0,                      /*tp_as_mapping*/
-  0,                      /*tp_hash*/
-  0,                      /*tp_call */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                      /*ob_size*/
+    "PythonStdout",       /*tp_name*/
+    sizeof(PythonStdoutPy), /*tp_basicsize*/
+    0,                      /*tp_itemsize*/
+    /* methods */
+    PyDestructor,           /*tp_dealloc*/
+    0,                      /*tp_print*/
+    __getattr,              /*tp_getattr*/
+    __setattr,              /*tp_setattr*/
+    0,                      /*tp_compare*/
+    __repr,                 /*tp_repr*/
+    0,                      /*tp_as_number*/
+    0,                      /*tp_as_sequence*/
+    0,                      /*tp_as_mapping*/
+    0,                      /*tp_hash*/
+    0,                      /*tp_call */
 };
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PythonStdoutPy::Methods[] = {
-  PYMETHODEDEF(write)
-  PYMETHODEDEF(flush)
-  {NULL, NULL}          /* Sentinel */
+    PYMETHODEDEF(write)
+    PYMETHODEDEF(flush)
+    {NULL, NULL}          /* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ PythonStdoutPy::~PythonStdoutPy()
 
 PyObject *PythonStdoutPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  return 0;
+    return 0;
 }
 
 //--------------------------------------------------------------------------
@@ -91,7 +91,7 @@ PyObject *PythonStdoutPy::PyMake(PyObject *ignored, PyObject *args)	// Python wr
 //--------------------------------------------------------------------------
 PyObject *PythonStdoutPy::_repr(void)
 {
-  return Py_BuildValue("s", "PythonStdout");
+    return Py_BuildValue("s", "PythonStdout");
 }
 
 //--------------------------------------------------------------------------
@@ -99,12 +99,12 @@ PyObject *PythonStdoutPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *PythonStdoutPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 {
-  _getattr_up(PyObjectBase); 
+    _getattr_up(PyObjectBase); 
 } 
 
 int PythonStdoutPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-  return PyObjectBase::_setattr(attr, value); 	// send up to parent
+    return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
 
 //--------------------------------------------------------------------------
@@ -112,16 +112,18 @@ int PythonStdoutPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStdoutPy,write)
 {
-  char *output;
-  if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
-      return Py_None;                            // Do not provok error messages 
-  pyConsole->insertPythonOutput(QString::fromUtf8(output));
-  return Py_None;
+    char *output;
+    if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
+        return Py_None;                            // Do not provok error messages 
+    pyConsole->insertPythonOutput(QString::fromUtf8(output));
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
 PYFUNCIMP_D(PythonStdoutPy,flush)
 {
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
 // -------------------------------------------------------------------------
@@ -130,32 +132,32 @@ PYFUNCIMP_D(PythonStdoutPy,flush)
 // Type structure
 //--------------------------------------------------------------------------
 PyTypeObject PythonStderrPy::Type = {
-  PyObject_HEAD_INIT(&PyType_Type)
-  0,                      /*ob_size*/
-  "PythonStderr",       /*tp_name*/
-  sizeof(PythonStderrPy), /*tp_basicsize*/
-  0,                      /*tp_itemsize*/
-  /* methods */
-  PyDestructor,           /*tp_dealloc*/
-  0,                      /*tp_print*/
-  __getattr,              /*tp_getattr*/
-  __setattr,              /*tp_setattr*/
-  0,                      /*tp_compare*/
-  __repr,                 /*tp_repr*/
-  0,                      /*tp_as_number*/
-  0,                      /*tp_as_sequence*/
-  0,                      /*tp_as_mapping*/
-  0,                      /*tp_hash*/
-  0,                      /*tp_call */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                      /*ob_size*/
+    "PythonStderr",       /*tp_name*/
+    sizeof(PythonStderrPy), /*tp_basicsize*/
+    0,                      /*tp_itemsize*/
+    /* methods */
+    PyDestructor,           /*tp_dealloc*/
+    0,                      /*tp_print*/
+    __getattr,              /*tp_getattr*/
+    __setattr,              /*tp_setattr*/
+    0,                      /*tp_compare*/
+    __repr,                 /*tp_repr*/
+    0,                      /*tp_as_number*/
+    0,                      /*tp_as_sequence*/
+    0,                      /*tp_as_mapping*/
+    0,                      /*tp_hash*/
+    0,                      /*tp_call */
 };
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PythonStderrPy::Methods[] = {
-  PYMETHODEDEF(write)
-  PYMETHODEDEF(flush)
-  {NULL, NULL}          /* Sentinel */
+    PYMETHODEDEF(write)
+    PYMETHODEDEF(flush)
+    {NULL, NULL}          /* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -174,7 +176,7 @@ PythonStderrPy::~PythonStderrPy()
 
 PyObject *PythonStderrPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  return 0;
+    return 0;
 }
 
 //--------------------------------------------------------------------------
@@ -182,7 +184,7 @@ PyObject *PythonStderrPy::PyMake(PyObject *ignored, PyObject *args)	// Python wr
 //--------------------------------------------------------------------------
 PyObject *PythonStderrPy::_repr(void)
 {
-  return Py_BuildValue("s", "PythonStderr");
+    return Py_BuildValue("s", "PythonStderr");
 }
 
 //--------------------------------------------------------------------------
@@ -190,30 +192,32 @@ PyObject *PythonStderrPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *PythonStderrPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 {
-  _getattr_up(PyObjectBase); 
-} 
+    _getattr_up(PyObjectBase); 
+}
 
 int PythonStderrPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-  return PyObjectBase::_setattr(attr, value); 	// send up to parent
-} 
+{
+    return PyObjectBase::_setattr(attr, value); 	// send up to parent
+}
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStderrPy,write)
 {
-  char *output;
-  if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
-      return Py_None;                            // Do not provok error messages 
-  pyConsole->insertPythonError(QString::fromUtf8(output));
-  return Py_None;
-} 
+    char *output;
+    if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
+        return Py_None;                            // Do not provok error messages 
+    pyConsole->insertPythonError(QString::fromUtf8(output));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 PYFUNCIMP_D(PythonStderrPy,flush)
 {
-  return Py_None;
-} 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 // -------------------------------------------------------------------------
 
@@ -221,31 +225,31 @@ PYFUNCIMP_D(PythonStderrPy,flush)
 // Type structure
 //--------------------------------------------------------------------------
 PyTypeObject PythonStdinPy::Type = {
-  PyObject_HEAD_INIT(&PyType_Type)
-  0,                      /*ob_size*/
-  "PythonStdin",        /*tp_name*/
-  sizeof(PythonStdinPy),  /*tp_basicsize*/
-  0,                      /*tp_itemsize*/
-  /* methods */
-  PyDestructor,           /*tp_dealloc*/
-  0,                      /*tp_print*/
-  __getattr,              /*tp_getattr*/
-  __setattr,              /*tp_setattr*/
-  0,                      /*tp_compare*/
-  __repr,                 /*tp_repr*/
-  0,                      /*tp_as_number*/
-  0,                      /*tp_as_sequence*/
-  0,                      /*tp_as_mapping*/
-  0,                      /*tp_hash*/
-  0,                      /*tp_call */
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                      /*ob_size*/
+    "PythonStdin",        /*tp_name*/
+    sizeof(PythonStdinPy),  /*tp_basicsize*/
+    0,                      /*tp_itemsize*/
+    /* methods */
+    PyDestructor,           /*tp_dealloc*/
+    0,                      /*tp_print*/
+    __getattr,              /*tp_getattr*/
+    __setattr,              /*tp_setattr*/
+    0,                      /*tp_compare*/
+    __repr,                 /*tp_repr*/
+    0,                      /*tp_as_number*/
+    0,                      /*tp_as_sequence*/
+    0,                      /*tp_as_mapping*/
+    0,                      /*tp_hash*/
+    0,                      /*tp_call */
 };
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PythonStdinPy::Methods[] = {
-  PYMETHODEDEF(readline)
-  {NULL, NULL}          /* Sentinel */
+    PYMETHODEDEF(readline)
+    {NULL, NULL}          /* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -264,7 +268,7 @@ PythonStdinPy::~PythonStdinPy()
 
 PyObject *PythonStdinPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  return 0;
+    return 0;
 }
 
 //--------------------------------------------------------------------------
@@ -272,7 +276,7 @@ PyObject *PythonStdinPy::PyMake(PyObject *ignored, PyObject *args)	// Python wra
 //--------------------------------------------------------------------------
 PyObject *PythonStdinPy::_repr(void)
 {
-  return Py_BuildValue("s", "PythonStdin");
+    return Py_BuildValue("s", "PythonStdin");
 }
 
 //--------------------------------------------------------------------------
@@ -280,19 +284,19 @@ PyObject *PythonStdinPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *PythonStdinPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 {
-  _getattr_up(PyObjectBase); 
-} 
+    _getattr_up(PyObjectBase); 
+}
 
 int PythonStdinPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-  return PyObjectBase::_setattr(attr, value); 	// send up to parent
-} 
+{
+    return PyObjectBase::_setattr(attr, value); 	// send up to parent
+}
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStdinPy,readline)
 {
-  QString txt = QInputDialog::getText(pyConsole, "Python Input Dialog", "Input for Python:", QLineEdit::Normal);
-  return Py_BuildValue("s", (const char*)txt.toAscii());
+    QString txt = QInputDialog::getText(pyConsole, "Python Input Dialog", "Input for Python:", QLineEdit::Normal);
+    return Py_BuildValue("s", (const char*)txt.toAscii());
 } 

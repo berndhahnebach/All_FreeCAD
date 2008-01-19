@@ -46,6 +46,7 @@ public:
 
     bool push(const char*);
     int compileCommand(const char*) const;
+    void setBuffer(const QStringList&);
     QStringList getBuffer() const;
     void clearBuffer();
 

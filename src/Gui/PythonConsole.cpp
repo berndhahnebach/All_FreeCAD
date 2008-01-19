@@ -293,6 +293,11 @@ QStringList InteractiveInterpreter::getBuffer() const
     return d->buffer;
 }
 
+void InteractiveInterpreter::setBuffer(const QStringList& buf)
+{
+    d->buffer = buf;
+}
+
 void InteractiveInterpreter::clearBuffer()
 {
     d->buffer.clear();
@@ -818,8 +823,7 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
             }
         }
 
-        if (!buffer.isEmpty())
-            runSource(buffer.join("\n"));
+        d->interpreter->setBuffer(buffer);
     }
 
     ensureCursorVisible();
