@@ -816,11 +816,29 @@ QStringList Application::workbenches(void) const
 
 void Application::setupContextMenu(const char* recipient, MenuItem* items) const
 {
-  Workbench* actWb = WorkbenchManager::instance()->active();
-  if ( actWb )
-  {
-    actWb->setupContextMenu( recipient, items );
-  }
+    Workbench* actWb = WorkbenchManager::instance()->active();
+    if (actWb) {
+        // when populating the context-menu of a Python workbench invoke the method 
+        // 'ContextMenu' of the handler object
+        if (actWb->getTypeId().isDerivedFrom(PythonWorkbench::getClassTypeId())) {
+            static_cast<PythonWorkbench*>(actWb)->clearContextMenu();
+            PyObject* pWorkbench = 0;
+            pWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, actWb->name().toAscii());
+
+            try {
+                // call its GetClassName method if possible
+                Py::Object handler(pWorkbench);
+                Py::Callable method(handler.getAttr(std::string("ContextMenu")));
+                Py::Tuple args(1);
+                args.setItem(0, Py::String(recipient));
+                method.apply(args);
+            }
+            catch (Py::Exception& e) {
+                e.clear();
+            }
+        }
+        actWb->setupContextMenu(recipient, items);
+    }
 }
 
 bool Application::isClosing(void)

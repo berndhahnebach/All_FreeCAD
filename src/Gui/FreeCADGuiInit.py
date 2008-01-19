@@ -70,6 +70,8 @@ class Workbench:
 	def Initialize(self):
 		"""Initializes this workbench."""
 		App.PrintWarning(str(self) + ": Workbench.Initialize() not implemented in subclass!")
+	def ContextMenu(self, recipient):
+		pass
 	def appendToolbar(self,name,cmds):
 		self.__Workbench__.appendToolbar(name, cmds)
 	def removeToolbar(self,name):

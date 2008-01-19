@@ -205,6 +205,7 @@ public:
   /// Removes a context menu
   void removeContextMenu(const QString& menu ) const;
   void setupContextMenu(const char* recipient,MenuItem*) const;
+  void clearContextMenu();
 
   /// Appends a new toolbar
   void appendToolbar(const QString& bar, const QStringList& items) const;

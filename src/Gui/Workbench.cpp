@@ -737,6 +737,11 @@ void PythonWorkbench::removeContextMenu(const QString& menu) const
     }
 }
 
+void PythonWorkbench::clearContextMenu()
+{
+    _contextMenu->clear();
+}
+
 void PythonWorkbench::appendToolbar(const QString& bar, const QStringList& items) const
 {
     ToolBarItem* item = _toolBar->findItem( bar );
