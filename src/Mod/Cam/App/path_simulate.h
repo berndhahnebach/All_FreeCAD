@@ -28,9 +28,10 @@
 
 
 #include <Base/Vector3D.h>
+//#include <Base/Builder3D.h>
 
-#include <Base/Builder3D.h>
-
+namespace Cam 
+{
 
 class path_simulate
 {
@@ -55,13 +56,13 @@ public:
     std::vector<std::vector<Base::Vector3d> > PointEvaluation(double T,
             unsigned int N,
             std::vector<double> startParam,
-            std::vector<std::vector<Base::Vector3d>> &D1,
-            std::vector<std::vector<Base::Vector3d>> &D2);
+            std::vector<std::vector<Base::Vector3d> > &D1,
+            std::vector<std::vector<Base::Vector3d> > &D2);
 
-    std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d>> &D);
+    std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
     bool ConnectPaths_xy(ofstream &anOutputFile, int &c, bool outputstyle);
     bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
-    bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d>> &D2);
+    bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
     bool UpdateParam();
     bool WriteOutput(ofstream &m_anOutputFile, int &c, bool outputstyle);
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
@@ -83,7 +84,7 @@ private:
     double m_step;
     double m_dbound;
     double m_t;
-    Base::Builder3D m_log3d;
+    //Base::Builder3D m_log3d;
 
     std::vector<Handle_Geom_BSplineCurve>::iterator m_it1;   /* iterator über inner-paths */
     std::vector<Handle_Geom_BSplineCurve>::iterator m_it2;   /* iterator über outer-paths */
@@ -111,6 +112,8 @@ private:
     std::vector<double> GetVelocity(double time);
     std::vector<double> GetDistance(double time);
 };
+
+} //namespace CAM
 
 #endif //Path_Simulate_h
 

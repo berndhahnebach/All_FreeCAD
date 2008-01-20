@@ -1,9 +1,6 @@
 project(OCCAdaptMesh)
 
 
-set(OCC_Includes
-c:/FreeCAD/FreeCADLibs4/include/OpenCascade62
-)
 
 set(OCCAdaptMesh_Include
 ${CMAKE_CURRENT_SOURCE_DIR}/Include
@@ -11,9 +8,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Include
 
 include_directories(${OCCAdaptMesh_Include} ${OCC_Includes})
 
-set(FreeCAD_LibPack_Libs
-c:/FreeCAD/FreeCADLibs4/lib
-)
 
 add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS)
 
@@ -22,15 +16,15 @@ add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS)
 
 
 set(OCC_Libs
-${FreeCAD_LibPack_Libs}/TKBRep.lib
-${FreeCAD_LibPack_Libs}/TKernel.lib
-${FreeCAD_LibPack_Libs}/TKG2d.lib
-${FreeCAD_LibPack_Libs}/TKG3d.lib
-${FreeCAD_LibPack_Libs}/TKGeomAlgo.lib
-${FreeCAD_LibPack_Libs}/TKGeomBase.lib
-${FreeCAD_LibPack_Libs}/TKMath.lib
-${FreeCAD_LibPack_Libs}/TKMesh.lib
-${FreeCAD_LibPack_Libs}/TKTopAlgo.lib
+TKBRep.lib
+TKernel.lib
+TKG2d.lib
+TKG3d.lib
+TKGeomAlgo.lib
+TKGeomBase.lib
+TKMath.lib
+TKMesh.lib
+TKTopAlgo.lib
 
 )
 
