@@ -127,6 +127,7 @@ endif
 CLEANFILES = $(libOCCAdaptMesh_la_BUILT)
 
 EXTRA_DIST = \
+		OCCAdaptMesh.vcproj \
 		Include/BRepMeshAdapt_Array1OfBiPoint.hxx \
 		Include/BRepMeshAdapt_Array1OfVertexOfDelaun.hxx \
 		Include/BRepMeshAdapt_BiPoint.hxx \

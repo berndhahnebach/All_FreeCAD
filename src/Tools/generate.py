@@ -56,6 +56,10 @@ def generate(filename,path):
 
 def main():
 	defaultPath = ""
+	class generateOutput:
+		def write(self, data):
+			pass  
+	sys.stdout=generateOutput()
 	
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "ho:", ["help","outputPath="])
