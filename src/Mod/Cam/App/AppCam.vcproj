@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKMesh.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib OCC_MESH_ADAPT.lib"
+				AdditionalDependencies="importlib_atlas.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKMesh.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib OCCAdaptMesh_d.lib"
 				OutputFile="../../../../Mod/Cam/Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -182,7 +182,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKMesh.lib TKSTL.lib TKOffset.lib OCC_MESH_ADAPT.lib"
+				AdditionalDependencies="importlib_atlas.lib MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKMesh.lib TKSTL.lib TKOffset.lib OCCAdaptMesh.lib"
 				OutputFile="../../../../Mod/Cam/Cam.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -442,7 +442,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -450,7 +449,6 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -462,7 +460,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
@@ -470,7 +467,6 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCustomBuildTool"

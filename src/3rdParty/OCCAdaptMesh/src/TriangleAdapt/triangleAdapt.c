@@ -6901,7 +6901,7 @@ struct badtriang *badtri;
 		length *= multiplier;
 	}
 	/* `length' is approximately squareroot(2.0) to what exponent? */
-	exponent = 2.0 * exponent + (length > SQUAREROOTTWO);
+	exponent = (int)(2.0 * exponent + (length > SQUAREROOTTWO));
 	/* `exponent' is now in the range 0...2047 for IEEE double precision.   */
 	/*   Choose a queue in the range 0...4095.  The shortest edges have the */
 	/*   highest priority (queue 4095).                                     */
@@ -16659,7 +16659,7 @@ int *index;
 			setvertexmark(pointloop, vmark);
 			*x = pointloop[0];
 			*y = pointloop[1];
-			*index = pointloop[2];
+			*index = (int)pointloop[2];
 
 			return 1;
 		}

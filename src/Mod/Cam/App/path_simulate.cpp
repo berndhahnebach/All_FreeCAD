@@ -30,6 +30,8 @@
 #include <Base/Exception.h>
 #include <GCPnts_AbscissaPoint.hxx>
 
+using namespace Cam;
+
 /* Konstruktor mit einer Bahnfolge (master tool) als Input */
 path_simulate::path_simulate(std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
         :m_BSplineTop(BSplineTop),m_amax(0.85*a_max),m_vmax(0.85*v_max),m_a1(0.85*a_max),m_v1(0.85*v_max),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000)
@@ -199,7 +201,7 @@ double path_simulate::GetLength(GeomAdaptor_Curve& curve, const Standard_Real st
 
 double path_simulate::FindParamAt(GeomAdaptor_Curve& curve, double dist, double startParam)
 {
-    double foundParameter;
+    double foundParameter = 0.0;
 
     //get the first and last parameters of the curve
     Standard_Real firstParam = curve.FirstParameter();
@@ -512,7 +514,7 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::PointEvaluation(double 
         std::vector<std::vector<Base::Vector3d> > &D1)
 {
     double t = m_t0;
-    double foundParameter;
+    //double foundParameter;
     double firstParam,lastParam,period;
     std::vector<double> d;
     gp_Pnt tmp, p1,p2;
@@ -907,11 +909,11 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
             if (vec_21.Magnitude() != 0)
                 vec_21.Normalize();
 
-            N = (m_T - m_t0)/m_step;  /* anzahl der zu erzeugenden Outputwerte */
+            N = (int)((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
 
             m_del_t = (m_T - m_t0)/N;
 
-            Base::Vector3f pit1,pit2;
+            Base::Vector3d pit1,pit2;
 
             for (int i=0; i<N; ++i)
             {
@@ -961,7 +963,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
         else
         {
 
-            N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+            N = (int) vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
             for (int i=0; i<N; ++i)
             {
@@ -998,7 +1000,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 
             vec_11.Normalize();
 
-            N = (m_T - m_t0)/m_step;
+            N = (int)((m_T - m_t0)/m_step);
             m_del_t = (m_T - m_t0)/N;
 
             for (int i=0; i<N; ++i)
@@ -1030,7 +1032,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
         }
         else
         {
-            N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+            N = (int) vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
             for (int i=0; i<N; ++i)
             {
@@ -1053,7 +1055,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
     Base::Vector3d tmp;
     std::vector<double> d;
     std::vector<Base::Vector3d> tmp2;
-    Base::Vector3f pit1,pit2;
+    Base::Vector3d pit1,pit2;
 
     if (m_single == false)
     {
@@ -1072,7 +1074,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
         {
             ParameterCalculation(vec_11.Magnitude(), vec_12.Magnitude());
 
-            N = (m_T - m_t0)/m_step;
+            N = (int)((m_T - m_t0)/m_step);
             m_del_t = (m_T - m_t0)/N;
 
             //vec_11.Normalize();
@@ -1133,7 +1135,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
         }
         else
         {
-            N = vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+            N = (int)vec_11.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
             for (int i=0; i<N; ++i)
             {
@@ -1167,7 +1169,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
         {
             ParameterCalculation(vec_12.Magnitude());
 
-            N = (m_T - m_t0)/m_step;
+            N = (int)((m_T - m_t0)/m_step);
             m_del_t = (m_T - m_t0)/N;
 
             for (int i=0; i<N; ++i)
@@ -1200,7 +1202,7 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
         }
         else
         {
-            N = vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
+            N =(int) vec_12.Magnitude();  /* anzahl der zu erzeugenden Outputwerte */
 
             for (int i=0; i<N; ++i)
             {
@@ -1244,7 +1246,7 @@ bool path_simulate::EstimateMaxAcceleration()
 
     m_T = m_t1 + m_t2 - m_t0;
 
-    int N = (m_T - m_t0)/1e-3;
+    int N = (int)((m_T - m_t0)/1e-3);
 
     if (N>10000)
         N = 10000;
@@ -1362,7 +1364,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
     Base::Vector3d tmp2;
     std::vector<Base::Vector3d> tmp3;
     bool b = false;
-    Base::Vector3f pit1,pit2;
+    Base::Vector3d pit1,pit2;
 
     anAdaptorCurve.Load(*m_it1);
     double w1 = anAdaptorCurve.LastParameter();//GetLength(anAdaptorCurve, anAdaptorCurve.FirstParameter(), anAdaptorCurve.LastParameter());
@@ -1389,7 +1391,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
         ParameterCalculation(w1);
     }
 
-    int N = (m_T-m_t0)/m_step;
+    int N = (int)((m_T-m_t0)/m_step);
     m_del_t = (m_T-m_t0)/N;
 
     cout << "NumOfPoints: " << N << endl;
@@ -1471,7 +1473,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
         else
         {
 
-            N = w1;
+            N = (int)w1;
 
             for (int i=0; i<N; ++i)
             {
@@ -1566,9 +1568,9 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 
                 if (m_it1==m_BSplineTop.begin()+30)
                 {
-                    m_log3d.addSinglePoint(pit1.x,pit1.y,pit1.z);
-                    m_log3d.addSinglePoint(pit2.x,pit2.y,pit2.z);
-                    m_log3d.addSingleArrow(pit1,pit2,1);
+     //               m_log3d.addSinglePoint(pit1.x,pit1.y,pit1.z);
+     //               m_log3d.addSinglePoint(pit2.x,pit2.y,pit2.z);
+					//m_log3d.addSingleArrow(Base::Vector3f(pit1.x,pit1.y,pit1.z),Base::Vector3f(pit2.x,pit2.y,pit2.z),1);
                 }
 
                 m_Output.push_back(tmp3);
@@ -1595,23 +1597,23 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
         {
 
 
-            N = w1;
+            N = (int)w1;
             double he = 0.9;
 
             while (w2/N > m_dbound)
             {
-                N = m_dbound/w2;
+                N = (int)(m_dbound/w2);
 
 
                 if (w1/N < he)
                 {
-                    N = w1/he;
+                    N = (int)(w1/he);
                     he = he - 0.1;
                 }
 
                 if (he<0.5)
                 {
-                    N = w1/0.5;
+                    N = (int)(w1/0.5);
                     break;
                 }
             }
