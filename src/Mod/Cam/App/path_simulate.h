@@ -30,7 +30,7 @@
 #include <Base/Vector3D.h>
 //#include <Base/Builder3D.h>
 
-namespace Cam 
+namespace Cam
 {
 
 class path_simulate

@@ -1568,9 +1568,9 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 
                 if (m_it1==m_BSplineTop.begin()+30)
                 {
-     //               m_log3d.addSinglePoint(pit1.x,pit1.y,pit1.z);
-     //               m_log3d.addSinglePoint(pit2.x,pit2.y,pit2.z);
-					//m_log3d.addSingleArrow(Base::Vector3f(pit1.x,pit1.y,pit1.z),Base::Vector3f(pit2.x,pit2.y,pit2.z),1);
+                    //               m_log3d.addSinglePoint(pit1.x,pit1.y,pit1.z);
+                    //               m_log3d.addSinglePoint(pit2.x,pit2.y,pit2.z);
+                    //m_log3d.addSingleArrow(Base::Vector3f(pit1.x,pit1.y,pit1.z),Base::Vector3f(pit2.x,pit2.y,pit2.z),1);
                 }
 
                 m_Output.push_back(tmp3);

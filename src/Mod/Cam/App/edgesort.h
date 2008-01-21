@@ -28,6 +28,7 @@
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Edge.hxx>
+#include <Mod/Mesh/App/MeshAlgos.h>
 #include <list>
 #include <map>
 
@@ -48,9 +49,21 @@ struct Edgesort_gp_Pnt_Less
     }
 };
 
+struct EdgeSortBoundBox_Less
+{
+    bool operator()(const Base::BoundBox3f& _Left, const Base::BoundBox3f& _Right) const
+    {
+        if (_Left.IsInBox(_Right)) return false;
+
+        return true;
+    }
+};
+
 typedef std::list<TopoDS_Edge> tEdgeList;
 typedef std::map<gp_Pnt,tEdgeList,Edgesort_gp_Pnt_Less>  tMapPntEdge;
 typedef std::pair<gp_Pnt,tEdgeList> tMapPntEdgePair;
+typedef std::map<Base::BoundBox3f,std::list<TopoDS_Edge>,EdgeSortBoundBox_Less> tEdgeBBoxMap;
+typedef std::pair<Base::BoundBox3f,std::list<TopoDS_Edge> >tEdgeBBoxPair;
 
 class Edgesort
 {
@@ -63,18 +76,25 @@ public:
     Standard_EXPORT bool More();
     Standard_EXPORT void Next();
     Standard_EXPORT const TopoDS_Edge& Current();
+    Standard_EXPORT TopoDS_Shape GetDesiredCutShape(int desiredIndex);
 private:
     void Perform();
     void Perform(const TopoDS_Edge& edge);
     bool PerformEdges(gp_Pnt& point);
     bool IsValidEdge(const TopoDS_Edge& edge);
+    Base::BoundBox3f getBoundingBox(std::list<TopoDS_Edge>& aList);
+
     TopoDS_Shape m_shape;
 
     tMapPntEdge m_vertices;
-
+    tEdgeBBoxMap m_EdgeBBoxMap;
     bool m_done;
+    bool m_asecondwire;
+    bool m_whichedgelist;
     tEdgeList m_edges;
+    //BoundingBox m_edges, m_edges2
     tEdgeList::const_iterator m_edgeIter;
+
 };
 
 #endif
