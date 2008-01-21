@@ -88,10 +88,24 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
     //Everything should be initialised now
 
 }
-
+#include <BRepBuilderAPI_Sewing.hxx>
 cutting_tools::cutting_tools(TopoDS_Shape aShape)
         :m_Shape(aShape)
 {
+
+
+    BRepBuilderAPI_Sewing aSewer;
+    aSewer.Load(m_Shape);
+    aSewer.Perform();
+    aSewer.IsModified(m_Shape);
+    const TopoDS_Shape& asewedShape = aSewer.SewedShape();
+    if (!asewedShape.IsNull())
+    {
+        m_Shape = asewedShape;
+    }
+    int test = aSewer.NbFreeEdges();
+    int test1 = aSewer.NbMultipleEdges();
+    int test2 = aSewer.NbDegeneratedShapes();
     m_ordered_cuts.clear();
     m_all_offset_cuts_high.clear();
     m_all_offset_cuts_low.clear();
@@ -895,7 +909,7 @@ Handle_Geom_BSplineCurve cutting_tools::InterpolateOrderedPoints(std::vector<gp_
 
 
 
-
+#include <GeomConvert.hxx>
 bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float sheet_thickness) //Version wo nur in X,Y-Ebene verschoben wird
 {
     std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
@@ -995,8 +1009,12 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                 //Jetzt noch die resultierende Surface und die Curve sauber drehen
                 //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
                 if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
-
+				//Convert Curve to BSplineCurve
+				
                 Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
+				int type = a2dCurveAdaptor.GetType();
+			
+				
                 GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
                 //Now get the surface normal to the generated points
                 for (int i=1;i<=aPointGenerator.NbPoints();++i)
@@ -1007,10 +1025,14 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                     TopoDS_Face aFace;
                     gp_Vec Uvec,Vvec,normalVec;
                     aCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
-                    GeomAdaptor_Surface aGeom_Adaptor(aSurface);
-                    int t = aGeom_Adaptor.GetType();
-                    aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+                    //GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+                    //int t = aGeom_Adaptor.GetType();
+                    //aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //Handle_Geom_BSplineSurface aBSurface = aGeom_Adaptor.BSpline();
+					Handle_Geom_BSplineSurface aBSplineSurface = GeomConvert::SurfaceToBSplineSurface(aSurface);
+					if(aBSplineSurface.IsNull())
+					{cout << "BigProbleme";}
+					aBSplineSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //aBSurface->MovePoint();
                     //aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //Jetzt den Normalenvector auf die Fläche ausrechnen
