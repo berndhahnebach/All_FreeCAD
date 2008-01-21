@@ -142,7 +142,7 @@ bool SpringbackCorrection::CalcCurv()
     {
         TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
         TransferFaceTriangulationtoFreeCAD(aFace, FaceMesh);
-		MeshPnts.clear();
+        MeshPnts.clear();
         MeshPnts = FaceMesh.GetPoints();
         MeshPntsCopy = MeshPnts;
         n = MeshPnts.size();
@@ -156,7 +156,7 @@ bool SpringbackCorrection::CalcCurv()
             aPoints(i) = aNodes(i).Transformed(aLocation);
 
         const TColgp_Array1OfPnt2d& aUVNodes = aTr->UVNodes();
-        
+
 
         BRepAdaptor_Surface aSurface(aFace);
         Base::Vector3f Pnt1, Pnt2;
@@ -173,7 +173,7 @@ bool SpringbackCorrection::CalcCurv()
             Pnt1.z = P.Z();
             meshIt = MeshMap.find(Pnt1);
             //if (meshIt == MeshMap.end())
-             //   cout << "error";
+            //   cout << "error";
 
             D1U.Cross(D1V);
             D1U.Normalize();
@@ -191,9 +191,9 @@ bool SpringbackCorrection::CalcCurv()
         int innerpoints = GetBoundary(FaceMesh, MeshPnts);
 
 
-    
-		FacePntVector.resize(innerpoints);  // stores inner-points and sourrounding edges-distances
-		
+
+        FacePntVector.resize(innerpoints);  // stores inner-points and sourrounding edges-distances
+
         // explores the edges of the face ----------------------
         for (aExpEdge.Init(aFace,TopAbs_EDGE);aExpEdge.More();aExpEdge.Next())
         {
@@ -206,67 +206,67 @@ bool SpringbackCorrection::CalcCurv()
             pnt2edge.LoadS1(aEdge);
 
             int counter = 0;
-			
+
             for (pIt = MeshPnts.begin(); pIt != MeshPnts.end(); ++pIt)
             {
-				//check if there is no boundary
+                //check if there is no boundary
                 if (pIt->_ulProp == 0)
                 {
                     m_pnt.SetCoord(pIt->x, pIt->y, pIt->z);
                     VertexBuild.MakeVertex(V,m_pnt,0.001);
                     pnt2edge.LoadS2(V);
                     pnt2edge.Perform();
-					
+
                     if (pnt2edge.IsDone() == false)
                     {
                         throw Base::Exception("couldn't perform distance calculation pnt2edge \n");
                     }
 
-					dist = pnt2edge.Value();
-                
+                    dist = pnt2edge.Value();
+
                     FacePntVector[counter].pnt = *pIt;
                     FacePntVector[counter].distances.push_back(dist);
                     FacePntVector[counter].MinEdgeOff.push_back((*edge_it).second[0]);
                     FacePntVector[counter].MaxEdgeOff.push_back((*edge_it).second[1]);
                     ++counter;
                 }
-            
-			}
+
+            }
 
             // Knoten auf der EDGE die EdgeOffset-Werte zuweisen
 
             // Edge -> Polygon -> Nodes
             Handle(Poly_Polygon3D) polyg = BRep_Tool::Polygon3D(aEdge,aloc);
 
-			if(polyg.IsNull())
-			{
-				cout << "error";
-			}
-          
+            if (polyg.IsNull())
+            {
+                cout << "error";
+            }
+
             TColStd_Array1OfInteger IndArr(1,polyg->NbNodes());
             //IndArr = polyg->Nodes();
 
-			//for (int k=0; k<polyg->Nodes().Upper(); ++k)
-   //         {
-   //             e_pnt = aPoints(IndArr.Value(k+1));
+            //for (int k=0; k<polyg->Nodes().Upper(); ++k)
+            //         {
+            //             e_pnt = aPoints(IndArr.Value(k+1));
 
-   //             mP.x = e_pnt.X();
-   //             mP.y = e_pnt.Y();
-   //             mP.z = e_pnt.Z();
+            //             mP.x = e_pnt.X();
+            //             mP.y = e_pnt.Y();
+            //             mP.z = e_pnt.Z();
 
-   //             meshIt = MeshMap.find(mP);
-   //             //if (meshIt == MeshMap.end())
-   //              //   cout << "error";
+            //             meshIt = MeshMap.find(mP);
+            //             //if (meshIt == MeshMap.end())
+            //              //   cout << "error";
 
-   //             ++MeanVec[meshIt->second.index];
+            //             ++MeanVec[meshIt->second.index];
 
-   //             // nehme stets den minimalen wert
-   //             if (((*edge_it).second[0])>((*meshIt).second).minCurv)
-   //                 ((*meshIt).second).minCurv = (*edge_it).second[0];
+            //             // nehme stets den minimalen wert
+            //             if (((*edge_it).second[0])>((*meshIt).second).minCurv)
+            //                 ((*meshIt).second).minCurv = (*edge_it).second[0];
 
-   //             if ((*edge_it).second[1]<((*meshIt).second).maxCurv)
-   //                 ((*meshIt).second).maxCurv = (*edge_it).second[1];
-   //         }
+            //             if ((*edge_it).second[1]<((*meshIt).second).maxCurv)
+            //                 ((*meshIt).second).maxCurv = (*edge_it).second[1];
+            //         }
         }
 
         // Knoten INNERHALB eines Faces die Offset-Werte zuweisen
@@ -542,27 +542,27 @@ int SpringbackCorrection::GetBoundary(const MeshCore::MeshKernel &mesh, MeshCore
 
     MeshCore::MeshAlgorithm algo(mesh);
     algo.GetMeshBorders(BoundariesIndex);
-	//Set all MeshPoints to Property 0
-	for(unsigned int i=0;i<meshPnts.size();++i)
-		meshPnts[i].SetProperty(0);
+    //Set all MeshPoints to Property 0
+    for (unsigned int i=0;i<meshPnts.size();++i)
+        meshPnts[i].SetProperty(0);
 
-	//Set Boundary Points to 1
-	int inner_points = 0;
+    //Set Boundary Points to 1
+    int inner_points = 0;
     for (bInd = BoundariesIndex.begin(); bInd != BoundariesIndex.end(); ++bInd)
     {
-		for (unsigned int i=0;i< bInd->size();++i)
+        for (unsigned int i=0;i< bInd->size();++i)
         {
-			meshPnts[(*bInd).at(i)].SetProperty(1);
+            meshPnts[(*bInd).at(i)].SetProperty(1);
         }
-		
-    }
-	for(unsigned int i=0;i<meshPnts.size();++i)
-	{
-		if(meshPnts[i]._ulProp == 0)
-			inner_points++;
-	}
 
-	return (inner_points);
+    }
+    for (unsigned int i=0;i<meshPnts.size();++i)
+    {
+        if (meshPnts[i]._ulProp == 0)
+            inner_points++;
+    }
+
+    return (inner_points);
 }
 
 bool SpringbackCorrection::SmoothCurvature()

@@ -12,7 +12,6 @@
 # define PartExport     __declspec(dllimport)
 # define AppMeshExport  __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
-# define WM4_FOUNDATION_DLL_IMPORT
 #else // for Linux
 # define AppCamExport
 # define CamExport

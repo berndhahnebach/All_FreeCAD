@@ -31,11 +31,14 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 
 Edgesort::Edgesort(const TopoDS_Shape& aShape)
         :m_shape(aShape),m_done(false)
 {
     m_edges.clear();
+    m_EdgeBBoxMap.clear();
     m_vertices.clear();
 }
 
@@ -45,10 +48,46 @@ Edgesort::~Edgesort(void)
 
 void Edgesort::Init()
 {
-    if ( !m_done )
-        Perform();
 
+    Perform();
+
+    m_edges.clear();
+    m_edges = m_EdgeBBoxMap.begin()->second;
     m_edgeIter = m_edges.begin();
+}
+
+//#include <BRepBuilder.hxx>
+TopoDS_Shape Edgesort::GetDesiredCutShape(int desiredIndex)
+{
+    m_edges.clear();
+    m_EdgeBBoxMap.clear();
+    m_vertices.clear();
+
+    Perform();
+
+    if (m_EdgeBBoxMap.size()>1)
+    {
+        if (desiredIndex == 1)
+        {
+            m_edges = m_EdgeBBoxMap.begin()->second;
+        }
+        else
+        {
+            m_edges = m_EdgeBBoxMap.rbegin()->second;
+        }
+        BRep_Builder aBuilder;
+        for (m_edgeIter = m_edges.begin();m_edgeIter!=m_edges.end();++m_edgeIter)
+        {
+            aBuilder.Remove(m_shape,*m_edgeIter);
+        }
+        return m_shape;
+    }
+    else
+    {
+        return m_shape;
+    }
+    //Go through the edges of the result you do not like and remove this result from the original shape
+
 }
 
 void Edgesort::ReInit(const TopoDS_Shape& aShape)
@@ -56,10 +95,14 @@ void Edgesort::ReInit(const TopoDS_Shape& aShape)
     m_shape= aShape;
     m_done = false;
     m_edges.clear();
+    m_EdgeBBoxMap.clear();
     m_vertices.clear();
     Perform();
+    m_edges.clear();
+    m_edges = m_EdgeBBoxMap.begin()->second;
     m_edgeIter = m_edges.begin();
 }
+
 
 bool Edgesort::More()
 {
@@ -99,23 +142,60 @@ void Edgesort::Perform()
         }
     }
 
-    //now, iterate through the edge to sort them
+    //now, iterate through the edges to sort them
 
-    //take the first entry in the map
-    tMapPntEdge::iterator iter = m_vertices.begin();
-    const gp_Pnt& firstPoint = iter->first;
 
-    gp_Pnt currentPoint = firstPoint;
-    Standard_Boolean toContinue;
+
     do
     {
-        toContinue = PerformEdges(currentPoint);
+        m_edges.clear();
+        tMapPntEdge::iterator iter = m_vertices.begin();
+        const gp_Pnt& firstPoint = iter->first;
+        gp_Pnt currentPoint = firstPoint;
+        Standard_Boolean toContinue;
+        do
+        {
+            toContinue = PerformEdges(currentPoint);
+        }
+        while (toContinue == Standard_True);
+
+        tEdgeBBoxPair aTempPair;
+        aTempPair.first = getBoundingBox(m_edges);
+        aTempPair.second = m_edges;
+        m_EdgeBBoxMap.insert(aTempPair);
     }
-    while (toContinue == Standard_True);
+    while (!m_vertices.empty());
+
+
 
     m_done = true;
 
 }
+
+Base::BoundBox3f Edgesort::getBoundingBox(std::list<TopoDS_Edge>& aList)
+{
+    std::list<TopoDS_Edge>::iterator aListIt;
+    //Fill Bounding Boxes with Edges
+    //Therefore we have to evaluate some points on our wire and feed the BBox Algorithm
+    Base::BoundBox3f currentBox;
+    currentBox.Flush();
+    for (aListIt = aList.begin();aListIt!=aList.end();aListIt++)
+    {
+        BRepAdaptor_Curve curveAdaptor(*aListIt);
+        GCPnts_QuasiUniformDeflection aProp(curveAdaptor,0.1);
+        Base::Vector3f aPoint;
+        for (int j=1;j<=aProp.NbPoints();++j)
+        {
+            aPoint.x = aProp.Value(j).X();
+            aPoint.y = aProp.Value(j).Y();
+            aPoint.z = aProp.Value(j).Z();
+            currentBox.Add(aPoint);
+        }
+    }
+    return currentBox;
+}
+
+
 
 bool Edgesort::PerformEdges(gp_Pnt& point)
 {
@@ -129,7 +209,11 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
 
     //no more edges. pb
     if ( edgeIt == edges.end() )
+    {
+        //Delete also the current vertex
+        m_vertices.erase(iter);
         return false;
+    }
 
     TopoDS_Edge theEdge = *edgeIt;
 
@@ -166,6 +250,7 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
         nextPoint = P2;
     }
 
+
     //need to erase the edge from the second point
     iter = m_vertices.find(nextPoint);
     if ( iter != m_vertices.end() )
@@ -185,6 +270,7 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
 
     //put the edge at the end of the list
     m_edges.push_back(theEdge);
+
 
     point = nextPoint;
     return true;

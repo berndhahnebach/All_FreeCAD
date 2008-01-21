@@ -65,6 +65,7 @@ public:
     double CompTotalError();
     static bool Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection);
     static bool Tesselate_Face (const TopoDS_Face  &aface, MeshCore::MeshKernel &mesh, float deflection);
+    //static int intersect_RayTriangle( Ray R, Triangle T, Point* I );
     std::vector<Base::Vector3f> Comp_Normals(MeshCore::MeshKernel &M, std::vector<unsigned long> &Ind);
     static std::vector<Base::Vector3f> Comp_Normals(MeshCore::MeshKernel &M);
 

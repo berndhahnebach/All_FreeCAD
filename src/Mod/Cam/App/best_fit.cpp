@@ -1158,7 +1158,7 @@ double best_fit::CompTotalError()
     double err_max = 0.0;
     double sqrdis  = 0.0;
 
-    MeshCore::MeshFacetGrid aFacetGrid(m_Mesh);
+    MeshCore::MeshFacetGrid aFacetGrid(m_Mesh,10);
     MeshCore::MeshAlgorithm malg(m_Mesh);
     MeshCore::MeshAlgorithm malg2(m_Mesh);
     MeshCore::MeshPointIterator p_it(m_CadMesh);
@@ -1169,29 +1169,29 @@ double best_fit::CompTotalError()
     m_error.resize(m_CadMesh.CountPoints());
 
     int c=0;
-
+    int i=0;
     for (p_it.Begin(); p_it.More(); p_it.Next())
     {
-        if (!malg.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], aFacetGrid, projPoint, facetIndex))   // gridoptimiert
+        if (!malg.NearestFacetOnRay(*p_it, m_normals[i], aFacetGrid, projPoint, facetIndex))   // gridoptimiert
         {
-            if (malg2.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], projPoint, facetIndex))
+            if (malg2.NearestFacetOnRay(*p_it, m_normals[i], projPoint, facetIndex))
             {
 
                 log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
                 distVec  = projPoint - *p_it;
                 sqrdis   = distVec*distVec;
 
-                if (((projPoint.z - p_it->z) / m_normals[p_it.Position()].z ) > 0)
-                    m_error[p_it.Position()] = sqrt(sqrdis);
+                if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
+                    m_error[i] = sqrt(sqrdis);
                 else
-                    m_error[p_it.Position()] = -sqrt(sqrdis);
+                    m_error[i] = -sqrt(sqrdis);
 
                 err_avg += sqrdis;
             }
             else
             {
                 c++;
-                m_FailProj.push_back(p_it.Position());
+                m_FailProj.push_back(i);
             }
         }
         else
@@ -1199,9 +1199,9 @@ double best_fit::CompTotalError()
             distVec  = projPoint-*p_it;
             sqrdis   = distVec*distVec;
 
-            m_normals[p_it.Position()].Scale(-1,-1,-1);
+            m_normals[i].Scale(-1,-1,-1);
 
-            if (malg.NearestFacetOnRay(*p_it, m_normals[p_it.Position()], aFacetGrid, projPoint2, facetIndex))
+            if (malg.NearestFacetOnRay(*p_it, m_normals[i], aFacetGrid, projPoint2, facetIndex))
             {
                 distVec  = projPoint2-*p_it;
                 if (sqrdis > distVec*distVec)
@@ -1217,13 +1217,14 @@ double best_fit::CompTotalError()
             }
             m_normals[p_it.Position()].Scale(-1,-1,-1);
 
-            if (((projPoint.z - p_it->z) / m_normals[p_it.Position()].z ) > 0)
-                m_error[p_it.Position()] = sqrt(sqrdis);
+            if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
+                m_error[i] = sqrt(sqrdis);
             else
-                m_error[p_it.Position()] = -sqrt(sqrdis);
+                m_error[i] = -sqrt(sqrdis);
 
             err_avg += sqrdis;
         }
+        ++i;
     }
 
 
