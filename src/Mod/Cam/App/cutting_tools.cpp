@@ -57,6 +57,7 @@
 #include "cutting_tools.h"
 #include "best_fit.h"
 #include "edgesort.h"
+#include "wireexplorer.h"
 
 
 
@@ -88,24 +89,10 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
     //Everything should be initialised now
 
 }
-#include <BRepBuilderAPI_Sewing.hxx>
+
 cutting_tools::cutting_tools(TopoDS_Shape aShape)
         :m_Shape(aShape)
 {
-
-
-    BRepBuilderAPI_Sewing aSewer;
-    aSewer.Load(m_Shape);
-    aSewer.Perform();
-    aSewer.IsModified(m_Shape);
-    const TopoDS_Shape& asewedShape = aSewer.SewedShape();
-    if (!asewedShape.IsNull())
-    {
-        m_Shape = asewedShape;
-    }
-    int test = aSewer.NbFreeEdges();
-    int test1 = aSewer.NbMultipleEdges();
-    int test2 = aSewer.NbDegeneratedShapes();
     m_ordered_cuts.clear();
     m_all_offset_cuts_high.clear();
     m_all_offset_cuts_low.clear();
@@ -908,12 +895,16 @@ Handle_Geom_BSplineCurve cutting_tools::InterpolateOrderedPoints(std::vector<gp_
 }
 
 
-
-#include <GeomConvert.hxx>
+#include <Geom_TrimmedCurve.hxx>
 bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float sheet_thickness) //Version wo nur in X,Y-Ebene verschoben wird
 {
+	//for debuggin issues
+	std::ofstream anoutput1,anoutput2;
+	anoutput1.open("c:/master_output.txt");
+	anoutput2.open("c:/slave_output.txt");
     std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
     current_flat_level = m_ordered_cuts.begin();
+	bool firstwire = true;
     //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
     for (m_ordered_cuts_it = m_ordered_cuts.begin()+1;m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
     {
@@ -925,46 +916,105 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
         //if the Shape is a wire, and we are not at the highest part level we just take it to generate points
         if ((m_ordered_cuts_it!=m_ordered_cuts.begin()) && (m_ordered_cuts_it->second.ShapeType() == TopAbs_WIRE))
         {
-            //Take the new flat Level so that the following functions can refer to it
-            current_flat_level = m_ordered_cuts_it;
-            //we just take the Wire (we know it is a Wire)
-            //if it is not at least C1, we have to split it
-            TopoDS_Wire aWire = TopoDS::Wire(m_ordered_cuts_it->second);
-            BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-            GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
-            for (int i=1;i<=aProp.NbPoints();++i)
-            {
-                std::pair<gp_Pnt,double> aTempPair;
-                aTempPair.first = aProp.Value(i).XYZ();
-                aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
-                aTempPair.second = 0.0; //Initialize of Angle
+			current_flat_level = m_ordered_cuts_it;
+			//We take the first wire of the flat area. If m_MachiningOrder > 2, then we have to refer to it
+			
+			//This means that normally we have a combination of sharp edges
+			//Therefore we take each edge and generate seperate BSplineCurves of it
+			//otherwise we can directly take the complete Wire and output only one BSplineCurve
+			if(firstwire)
+			{
+				firstwire = false;
+				WireExplorer aWireExplorer(TopoDS::Wire(m_ordered_cuts_it->second));
+				for(aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
+				{
+					BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
+					GCPnts_QuasiUniformDeflection aProp(curveAdaptor,0.1);
+					for (int i=1;i<=aProp.NbPoints();++i)
+					{
+						std::pair<gp_Pnt,double> aTempPair;
+						aTempPair.first = aProp.Value(i).XYZ();
+						aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
+						aTempPair.second = 0.0; //Initialize of Angle
 
-                //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-                if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
-                {
-                    MasterPointContainer.push_back(aTempPair);
-                    aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-                    SlavePointContainer.push_back(aTempPair.first);
-                }
-                else if (MasterPointContainer.empty())
-                {
-                    MasterPointContainer.push_back(aTempPair);
-                    aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-                    SlavePointContainer.push_back(aTempPair.first);
-                }
-            }
-            //Now Interpolate the two PointClouds
-            std::vector<gp_Pnt> tempMasterPoints;
-            tempMasterPoints.clear();
-            for (unsigned int k=0;k<MasterPointContainer.size();++k) tempMasterPoints.push_back(MasterPointContainer[k].first);
+						//checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+						if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
+						{
+							MasterPointContainer.push_back(aTempPair);
+							anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
 
-            m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
-            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
-            //}
-            //else
-            //{
-            // //Take each Edge of the Wire and Make a BSplineCurve of it and push it into the vector. do it directly for the slave as well
-            //}
+							aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+							SlavePointContainer.push_back(aTempPair.first);
+							anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+						}
+						else if (MasterPointContainer.empty())
+						{
+							MasterPointContainer.push_back(aTempPair);
+							anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+							aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+							SlavePointContainer.push_back(aTempPair.first);
+							anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+						}
+					}
+					//Now Interpolate the two PointClouds
+					std::vector<gp_Pnt> tempMasterPoints;
+					tempMasterPoints.clear();
+					for (unsigned int k=0;k<MasterPointContainer.size();++k) tempMasterPoints.push_back(MasterPointContainer[k].first);
+
+					m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
+					m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
+				}
+			}
+			else
+			{
+				//Take the new flat Level so that the following functions can refer to it
+				
+				//we just take the Wire (we know it is a Wire)
+				//if it is not at least C1, we have to split it
+				TopoDS_Wire aWire = TopoDS::Wire(m_ordered_cuts_it->second);
+				BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+				GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
+				for (int i=1;i<=aProp.NbPoints();++i)
+				{
+					std::pair<gp_Pnt,double> aTempPair;
+					aTempPair.first = aProp.Value(i).XYZ();
+					aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
+					aTempPair.second = 0.0; //Initialize of Angle
+
+					//checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+					if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
+					{
+						MasterPointContainer.push_back(aTempPair);
+						anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+						aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+						SlavePointContainer.push_back(aTempPair.first);
+						anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+					}
+					else if (MasterPointContainer.empty())
+					{
+						MasterPointContainer.push_back(aTempPair);
+						anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+						aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+						SlavePointContainer.push_back(aTempPair.first);
+						anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+					}
+				}
+				//Now Interpolate the two PointClouds
+				std::vector<gp_Pnt> tempMasterPoints;
+				tempMasterPoints.clear();
+				for (unsigned int k=0;k<MasterPointContainer.size();++k) tempMasterPoints.push_back(MasterPointContainer[k].first);
+
+				m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
+				m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
+			}
+
 
         }
         else
@@ -975,7 +1025,7 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
             for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
             {
                 //Make sure that the Slave Curve is not touching the highest level of the current area
-                if ((m_ordered_cuts_it->first + m_UserSettings.slave_radius) > (current_flat_level->first-m_UserSettings.sheet_thickness))
+                if (!slave_done && (m_ordered_cuts_it->first + m_UserSettings.slave_radius) > (current_flat_level->first-m_UserSettings.sheet_thickness))
                 {
                     TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
                     BRepAdaptor_CompCurve2 wireAdaptor(aWire);
@@ -988,51 +1038,59 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                         if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
                         {
                             SlavePointContainer.push_back(SlaveOffsetPoint);
-                            //anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-                        }
+							anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+
+						}
                         else if (SlavePointContainer.empty())
                         {
                             SlavePointContainer.push_back(SlaveOffsetPoint);
-                            //anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+
                         }
                     }
                     slave_done = true;
                 }
 
 
-                //Get the PCurve and the GeomSurface
-                Handle_Geom2d_Curve aCurve;
+                
+				//Get the PCurve and the GeomSurface
+                Handle_Geom2d_Curve a2DCurve;
                 Handle_Geom_Surface aSurface;
                 TopLoc_Location aLoc;
-                double first,last;
-                BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),aCurve,aSurface,aLoc,first,last);
+				TopoDS_Edge anEdge;
+				double first2,last2;
+				bool reversed = false;
+				BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
+				
                 //Jetzt noch die resultierende Surface und die Curve sauber drehen
                 //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
-                if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) aCurve->Reverse();
-				//Convert Curve to BSplineCurve
-				
-                Geom2dAdaptor_Curve a2dCurveAdaptor(aCurve);
-				int type = a2dCurveAdaptor.GetType();
+                if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED) 
+				{
+					reversed = true;
+				}
 			
+				BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
+
 				
-                GCPnts_QuasiUniformDeflection aPointGenerator(a2dCurveAdaptor,0.01);
+				
+				GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.01);
+				
+				int PointSize = aPointGenerator.NbPoints();
                 //Now get the surface normal to the generated points
-                for (int i=1;i<=aPointGenerator.NbPoints();++i)
+                for (int i=1;i<=PointSize;++i)
                 {
                     std::pair<gp_Pnt,double> PointContactPair;
                     gp_Pnt2d a2dParaPoint;
                     gp_Pnt aSurfacePoint;
                     TopoDS_Face aFace;
                     gp_Vec Uvec,Vvec,normalVec;
-                    aCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
-                    //GeomAdaptor_Surface aGeom_Adaptor(aSurface);
-                    //int t = aGeom_Adaptor.GetType();
-                    //aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+					//If the curve is reversed we also have to reverse the point direction
+					if(reversed) a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
+					else a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+                    GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+                    int t = aGeom_Adaptor.GetType();
+                    aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //Handle_Geom_BSplineSurface aBSurface = aGeom_Adaptor.BSpline();
-					Handle_Geom_BSplineSurface aBSplineSurface = GeomConvert::SurfaceToBSplineSurface(aSurface);
-					if(aBSplineSurface.IsNull())
-					{cout << "BigProbleme";}
-					aBSplineSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //aBSurface->MovePoint();
                     //aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
                     //Jetzt den Normalenvector auf die Fläche ausrechnen
@@ -1051,29 +1109,31 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                     gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
                     //Den Winkel
                     PointContactPair.second = normalVec.Angle(planeVec);
-
-                    //Auch den Slave miteinbeziehen wenn er noch nicht berechnet wurde
+					gp_Vec NormalVecSlave = normalVec;
+                    //Den Slave weglassen, wenn er schon berechnet wurde
                     if (slave_done)
                     {
                         //Jetzt die Z-Komponente auf 0 setzen
+						
                         normalVec.SetZ(0.0);
                         normalVec.Normalize();
                         //Jetzt die Normale mit folgender Formel multiplizieren
-                        normalVec.Multiply(((1-sin(PointContactPair.second))*radius)/cos(PointContactPair.second));
+						normalVec.Multiply(m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second));
                         //Jetzt den OffsetPunkt berechnen
                         PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
-                        PointContactPair.first.SetZ(PointContactPair.first.Z() + radius);
+                        PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
                         //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
                         //Den letzten hinzugefügten Punkt suchen
                         if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
                         {
                             MasterPointContainer.push_back(PointContactPair);
-                            //anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                        }
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                        
+						}
                         else if (MasterPointContainer.empty())
                         {
                             MasterPointContainer.push_back(PointContactPair);
-                            //anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
                         }
                     }
                     else
@@ -1083,11 +1143,14 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                         //Jetzt die Z-Komponente auf 0 setzen
                         normalVec.SetZ(0.0);
                         normalVec.Normalize();
-                        gp_Vec NormalVecSlave = normalVec;
+                        
                         //Jetzt die Normale mit folgender Formel multiplizieren für den Master
-                        normalVec.Multiply(((1-sin(PointContactPair.second))*m_UserSettings.master_radius)/cos(PointContactPair.second));
+						double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
+                        normalVec.Multiply(multiply);
                         //und hier für den Slave
-                        NormalVecSlave.Multiply((cos(PointContactPair.second)*m_UserSettings.sheet_thickness)-(m_UserSettings.slave_radius/cos(PointContactPair.second)));
+						NormalVecSlave.Normalize();
+						multiply = m_UserSettings.sheet_thickness+m_UserSettings.slave_radius;
+						NormalVecSlave.Multiply(multiply);
                         //Jetzt die Richtung umdrehen
                         NormalVecSlave.Multiply(-1.0);
                         //Jetzt den OffsetPunkt berechnen
@@ -1100,14 +1163,18 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                         {
                             MasterPointContainer.push_back(PointContactPair);
                             SlavePointContainer.push_back(SlavePoint);
-                            //anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                        }
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+							anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+                       
+						}
                         else if (MasterPointContainer.empty())
                         {
                             MasterPointContainer.push_back(PointContactPair);
                             SlavePointContainer.push_back(SlavePoint);
-                            //anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                        }
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                        	anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+
+						}
                     }
                 }
             }
@@ -1121,7 +1188,8 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
         }
     }
 
-
+	anoutput1.close();
+	anoutput2.close();
     //        //write = false;
 
     //        //Jetzt wurden alle Edges vom Masteroffsettiert und jetzt wird das Gegenstück erzeugt

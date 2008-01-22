@@ -97,9 +97,13 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
 	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
     if ( fea.size() == 1)
 	{
+		int test = aShape.ShapeType();
 		//get Hash Code of Selected Face inside the selected Shape and also the Coordinates of the click
 		if(aShape.ShapeType() != TopAbs_FACE)
+		{
+			QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to select a Face!!\n"));
 			return;
+		}
 
 		TopoDS_Face tempFace = TopoDS::Face(aShape);
 		//Now search for the Hash-Code in the m_Shape
@@ -191,6 +195,8 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.master_radius = master_radius_box->value();
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
+	m_CuttingAlgo->arrangecuts_ZLEVEL();
+	m_CuttingAlgo->OffsetWires_Standard();
 }
 
 void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
