@@ -913,15 +913,15 @@ bool cutting_tools::CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edg
         aCurve1.D1(aCurve1.FirstParameter(),P,Tangent1);
     else if (aCurve1.Value(aCurve1.LastParameter()).IsEqual(CommonPoint,0.1))
         aCurve1.D1(aCurve1.LastParameter(),P,Tangent1);
-    if (aCurve2.Value(aCurve1.FirstParameter()).IsEqual(CommonPoint,0.1))
+    if (aCurve2.Value(aCurve2.FirstParameter()).IsEqual(CommonPoint,0.1))
         aCurve2.D1(aCurve1.FirstParameter(),P,Tangent2);
-    else if (aCurve2.Value(aCurve1.LastParameter()).IsEqual(CommonPoint,0.1))
+    else if (aCurve2.Value(aCurve2.LastParameter()).IsEqual(CommonPoint,0.1))
         aCurve2.D1(aCurve1.LastParameter(),P,Tangent2);
 
     //Now we calculate the angle between the two Tangents and if the angle is below 10° then we say its continuous
     double angle = Tangent1.Angle(Tangent2);
-    //Winkel muss kleiner als 10° sein (0.1745 im Bogenmaß) oder größer als 170° sein (2.96)
-    if (angle<0.1745 || angle>2.96)
+    //Angle must be between +/-5° 
+    if (angle<(5.0/180.0*D_PI) || angle>(175.0/180.0*D_PI))
     {
         return true;
     }
@@ -1023,36 +1023,6 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
             Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
             for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
             {
-                //Make sure that the Slave Curve is not touching the highest level of the current area
-                if (!slave_done && (m_ordered_cuts_it->first + m_UserSettings.slave_radius) > (current_flat_level->first-m_UserSettings.sheet_thickness))
-                {
-                    TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
-                    BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-                    GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
-                    for (int i=1;i<=aProp.NbPoints();++i)
-                    {
-                        gp_Pnt SlaveOffsetPoint;
-                        wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
-                        SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-                        //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-                        if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
-                        {
-                            SlavePointContainer.push_back(SlaveOffsetPoint);
-                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-
-                        }
-                        else if (SlavePointContainer.empty())
-                        {
-                            SlavePointContainer.push_back(SlaveOffsetPoint);
-                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-
-                        }
-                    }
-                    slave_done = true;
-                }
-
-
-
                 //Get the PCurve and the GeomSurface
                 Handle_Geom2d_Curve a2DCurve;
                 Handle_Geom_Surface aSurface;
@@ -1061,18 +1031,13 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                 double first2,last2;
                 bool reversed = false;
                 BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
-
                 //Jetzt noch die resultierende Surface und die Curve sauber drehen
                 //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
                 if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED)
-                {
-                    reversed = true;
-                }
-
+                   reversed = true;
+                
                 BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
-
                 GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,200);
-
                 int PointSize = aPointGenerator.NbPoints();
                 //Now get the surface normal to the generated points
                 for (int i=1;i<=PointSize;++i)
@@ -1082,7 +1047,6 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                     gp_Pnt aSurfacePoint;
                     TopoDS_Face aFace;
                     gp_Vec Uvec,Vvec,normalVec;
-
                     //If the curve is reversed we also have to reverse the point direction
                     if (reversed) a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
                     else a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
@@ -1109,73 +1073,41 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
                     //Den Winkel
                     PointContactPair.second = normalVec.Angle(planeVec);
                     gp_Vec NormalVecSlave = normalVec;
-                    //Den Slave weglassen, wenn er schon berechnet wurde
-                    if (slave_done)
+                    gp_Pnt SlavePoint;
+                    //Jetzt die Z-Komponente auf 0 setzen
+                    normalVec.SetZ(0.0);
+                    normalVec.Normalize();
+                    //Jetzt die Normale mit folgender Formel multiplizieren für den Master
+                    double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
+                    normalVec.Multiply(multiply);
+                    //und hier für den Slave
+                    NormalVecSlave.Normalize();
+                    multiply = m_UserSettings.sheet_thickness+m_UserSettings.slave_radius;
+                    NormalVecSlave.Multiply(multiply);
+                    //Jetzt die Richtung umdrehen
+                    NormalVecSlave.Multiply(-1.0);
+                    //Jetzt den OffsetPunkt berechnen
+                    PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
+                    SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
+                    PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
+                    //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
+                    //Den letzten hinzugefügten Punkt suchen
+                    if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
                     {
-                        //Jetzt die Z-Komponente auf 0 setzen
-
-                        normalVec.SetZ(0.0);
-                        normalVec.Normalize();
-                        //Jetzt die Normale mit folgender Formel multiplizieren
-                        normalVec.Multiply(m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second));
-                        //Jetzt den OffsetPunkt berechnen
-                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
-                        PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
-                        //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
-                        //Den letzten hinzugefügten Punkt suchen
-                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
-                        {
-                            MasterPointContainer.push_back(PointContactPair);
-                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-
-                        }
-                        else if (MasterPointContainer.empty())
-                        {
-                            MasterPointContainer.push_back(PointContactPair);
-                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                        }
+                        MasterPointContainer.push_back(PointContactPair);
+                        SlavePointContainer.push_back(SlavePoint);
+                        anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                        anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
                     }
-                    else
+                    else if (MasterPointContainer.empty())
                     {
-                        gp_Pnt SlavePoint;
-
-                        //Jetzt die Z-Komponente auf 0 setzen
-                        normalVec.SetZ(0.0);
-                        normalVec.Normalize();
-
-                        //Jetzt die Normale mit folgender Formel multiplizieren für den Master
-                        double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
-                        normalVec.Multiply(multiply);
-                        //und hier für den Slave
-                        NormalVecSlave.Normalize();
-                        multiply = m_UserSettings.sheet_thickness+m_UserSettings.slave_radius;
-                        NormalVecSlave.Multiply(multiply);
-                        //Jetzt die Richtung umdrehen
-                        NormalVecSlave.Multiply(-1.0);
-                        //Jetzt den OffsetPunkt berechnen
-                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
-                        SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
-                        PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
-                        //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
-                        //Den letzten hinzugefügten Punkt suchen
-                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
-                        {
-                            MasterPointContainer.push_back(PointContactPair);
-                            SlavePointContainer.push_back(SlavePoint);
-                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
-
-                        }
-                        else if (MasterPointContainer.empty())
-                        {
-                            MasterPointContainer.push_back(PointContactPair);
-                            SlavePointContainer.push_back(SlavePoint);
-                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
-
-                        }
+                        MasterPointContainer.push_back(PointContactPair);
+                        SlavePointContainer.push_back(SlavePoint);
+                        anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                        anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
                     }
-                }
+                    
+				}
             }
 
             std::vector<gp_Pnt> tempMasterPoints;
@@ -1183,9 +1115,45 @@ bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float s
             for (unsigned int k=0;k<MasterPointContainer.size();++k) tempMasterPoints.push_back(MasterPointContainer[k].first);
 
             m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
-            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
-        }
-    }
+			//Before we Output the Slave we check if the lowest Coordinate can still touch the "currently" highest flat area
+			for(unsigned int k=0;k<SlavePointContainer.size();++k)
+			{
+				if((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
+				{
+					TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
+                    BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+                    GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
+					SlavePointContainer.clear();
+                    for (int i=1;i<=aProp.NbPoints();++i)
+                    {
+                        gp_Pnt SlaveOffsetPoint;
+                        wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
+                        SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+                        //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                        if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                        {
+                            SlavePointContainer.push_back(SlaveOffsetPoint);
+                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                        }
+                        else if (SlavePointContainer.empty())
+                        {
+                            SlavePointContainer.push_back(SlaveOffsetPoint);
+                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                        }
+                    }
+					break;
+				}
+			}
+			m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
+					
+                   
+                
+				
+			
+			}
+           
+		
+	}
 
     anoutput1.close();
     anoutput2.close();
