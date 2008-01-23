@@ -58,15 +58,22 @@ void DlgSettings3DViewPartImp::saveSettings()
     prefCheckBox8->onSave();
     prefCheckBox3->onSave();
 
+    float deviation = (float)prefFloatSpinBox1->value();
+    bool nonormal = prefCheckBox8->isChecked();
+    bool quality = prefCheckBox3->isChecked();
+
     // search for Part view providers and apply the new settings
     std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
         Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
         std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
         for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
-            static_cast<ViewProviderPart*>(*jt)->Deviation.setValue(prefFloatSpinBox1->value());
-            static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.setValue(prefCheckBox8->isChecked());
-            static_cast<ViewProviderPart*>(*jt)->QualityNormals.setValue(prefCheckBox3->isChecked());
+            if (static_cast<ViewProviderPart*>(*jt)->Deviation.getValue() != deviation)
+                static_cast<ViewProviderPart*>(*jt)->Deviation.setValue(deviation);
+            if (static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.getValue() != nonormal)
+                static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.setValue(nonormal);
+            if (static_cast<ViewProviderPart*>(*jt)->QualityNormals.getValue() != quality)
+                static_cast<ViewProviderPart*>(*jt)->QualityNormals.setValue(quality);
         }
     }
 }

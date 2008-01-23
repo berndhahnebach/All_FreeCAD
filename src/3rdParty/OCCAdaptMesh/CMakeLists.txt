@@ -9,7 +9,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Include
 include_directories(${OCCAdaptMesh_Include} ${OCC_Includes})
 
 
-add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS)
+add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 
 
 
