@@ -36,16 +36,15 @@ namespace PartGui {
  */
 class DlgSettings3DViewPartImp : public Gui::Dialog::PreferencePage, public Ui_DlgSettings3DViewPart
 { 
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgSettings3DViewPartImp( QWidget* parent = 0 );
-  ~DlgSettings3DViewPartImp();
+    DlgSettings3DViewPartImp( QWidget* parent = 0 );
+    ~DlgSettings3DViewPartImp();
 
 protected:
-  virtual void warnInventor(bool);
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 };
 
 } // namespace Gui
