@@ -197,7 +197,85 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
 	m_CuttingAlgo->arrangecuts_ZLEVEL();
 	m_CuttingAlgo->OffsetWires_Standard();
+	DisplayCAMOutput();
 }
+
+#include <BRep_Builder.hxx>
+#include <TopoDS_Compound.hxx>
+void Cutting::DisplayCAMOutput()
+{
+        BRep_Builder BB;
+		TopoDS_Compound aCompound1,aCompound2;
+		BB.MakeCompound(aCompound1);
+		BB.MakeCompound(aCompound2);
+		TopoDS_Edge anEdge;
+        std::vector<Handle_Geom_BSplineCurve>* topCurves;
+        std::vector<Handle_Geom_BSplineCurve>* botCurves;
+        std::vector<Handle_Geom_BSplineCurve>::iterator an_it1,an_it2;
+		topCurves = m_CuttingAlgo->getOutputhigh();
+        botCurves = m_CuttingAlgo->getOutputlow();
+		int size = topCurves->size();
+		size= botCurves->size();
+		for(an_it1 = topCurves->begin(),an_it2 = botCurves->begin();an_it1!=topCurves->end();an_it1++,an_it2++)
+		{
+			BB.MakeEdge(anEdge,*an_it1,0.01);
+			BB.Add(aCompound1,anEdge);
+			BB.MakeEdge(anEdge,*an_it2,0.01);
+			BB.Add(aCompound2,anEdge);
+		}
+
+		App::Document* doc = App::GetApplication().getActiveDocument();
+		App::DocumentObject* obj = doc->addObject("Part::Feature","Master-Tool");
+		App::DocumentObject* obj1 = doc->addObject("Part::Feature","Slave-Tool");
+
+		Part::Feature* part1 = static_cast<Part::Feature*>(obj);
+		Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
+		part1->setShape(aCompound1);
+		part2->setShape(aCompound2);
+		
+
+
+
+
+
+
+		//
+  //      for (unsigned int i=0;i<aTestOutput.size();++i)
+  //      {
+  //          BB.Add(aCompound,anEdge);
+  //      }
+
+        //anewCuttingEnv.OffsetWires_Standard(10.0);
+
+        //std::vector<Handle_Geom_BSplineCurve> topCurves;
+        //std::vector<Handle_Geom_BSplineCurve> botCurves;
+        //std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
+        //topCurves = *(anewCuttingEnv.getOutputhigh());
+        //botCurves = *(anewCuttingEnv.getOutputlow());
+        //for (unsigned int i=0;i<topCurves.size();++i)
+        //{
+        //    GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
+        //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+        //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
+        //    {
+        //        anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+        //    }
+        //}
+        //for (unsigned int i=0;i<botCurves.size();++i)
+        //{
+        //    GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
+        //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+        //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
+        //    {
+        //        anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+        //    }
+        //}
+        //anoutput.close();
+        //anoutput2.close();
+
+}
+
+
 
 void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
 {

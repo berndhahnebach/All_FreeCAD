@@ -30,6 +30,7 @@ protected Q_SLOTS:
 
 private:
     static void zLevelCallback(void * ud, SoEventCallback * n);
+	void DisplayCAMOutput();
 
 private:
     //Instanz von der cutting-klasse auf dem Heap erzeugen
