@@ -107,6 +107,7 @@ public:
 
 private:
     //typedef std::list<std::vector<Base::Vector3f> > Polylines;
+    bool CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
     bool getShapeBB();
     bool fillFaceWireMap();
     TopoDS_Shape getProperCut(TopoDS_Shape& aShape);

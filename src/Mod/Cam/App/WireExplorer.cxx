@@ -54,6 +54,11 @@ bool WireExplorer::More()
        return m_edgeIter != m_edges.end();
 }
 
+bool WireExplorer::MoreEdge()
+{
+       return (m_edgeIter+1) != m_edges.end();
+}
+
 void WireExplorer::Next()
 {
        ++m_edgeIter;
@@ -62,6 +67,11 @@ void WireExplorer::Next()
 const TopoDS_Edge& WireExplorer::Current()
 {
        return *m_edgeIter;
+}
+
+const TopoDS_Edge& WireExplorer::NextEdge()
+{
+	return *(m_edgeIter+1);
 }
 
 void WireExplorer::Perform()
@@ -111,9 +121,9 @@ bool WireExplorer::PerformEdges(gp_Pnt& point)
        if ( iter == m_vertices.end() )
                return false;
 
-       tEdgeList& edges = iter->second;
+       tEdgeVector& edges = iter->second;
 
-       tEdgeList::iterator edgeIt = edges.begin();
+       tEdgeVector::iterator edgeIt = edges.begin();
 
        //no more edges. pb
        if ( edgeIt == edges.end() )
@@ -157,7 +167,7 @@ bool WireExplorer::PerformEdges(gp_Pnt& point)
        iter = m_vertices.find(nextPoint);
        if ( iter != m_vertices.end() )
        {
-               tEdgeList& nextEdges = iter->second;
+               tEdgeVector& nextEdges = iter->second;
                bool somethingRemoved = false;
                for ( edgeIt = nextEdges.begin() ; edgeIt != nextEdges.end(); ++edgeIt )
                {
@@ -187,7 +197,7 @@ void WireExplorer::Perform(const TopoDS_Edge& edge)
        gp_Pnt P1 = BRep_Tool::Pnt(V1);
        gp_Pnt P2 = BRep_Tool::Pnt(V2);
 
-       tEdgeList emptyList;
+       tEdgeVector emptyList;
        std::pair<tMapPntShapes::iterator,bool> iter = m_vertices.insert(tMapPntShapesPair(P1,emptyList));
        iter.first->second.push_back(edge);
        iter = m_vertices.insert(tMapPntShapesPair(P2,emptyList));

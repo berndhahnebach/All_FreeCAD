@@ -46,9 +46,9 @@ struct WireExplorer_gp_PntLess
     }
 };
 
-typedef std::list<TopoDS_Edge> tEdgeList;
-typedef std::map<gp_Pnt,tEdgeList,WireExplorer_gp_PntLess>  tMapPntShapes;
-typedef std::pair<gp_Pnt,tEdgeList> tMapPntShapesPair;
+typedef std::vector<TopoDS_Edge> tEdgeVector;
+typedef std::map<gp_Pnt,tEdgeVector,WireExplorer_gp_PntLess>  tMapPntShapes;
+typedef std::pair<gp_Pnt,tEdgeVector> tMapPntShapesPair;
 
 class WireExplorer
 {
@@ -58,7 +58,9 @@ public:
 
     Standard_EXPORT void Init();
     Standard_EXPORT bool More();
+    Standard_EXPORT bool MoreEdge();
     Standard_EXPORT void Next();
+    Standard_EXPORT const TopoDS_Edge& NextEdge();
     Standard_EXPORT const TopoDS_Edge& Current();
 private:
     void Perform();
@@ -70,8 +72,8 @@ private:
     tMapPntShapes m_vertices;
 
     bool m_done;
-    tEdgeList m_edges;
-    tEdgeList::const_iterator m_edgeIter;
+    tEdgeVector m_edges;
+    tEdgeVector::const_iterator m_edgeIter;
 };
 
 #endif
