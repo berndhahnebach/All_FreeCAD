@@ -126,7 +126,8 @@ public:
     const char *getName(void) const {return "TreeView";}
 
     /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
+    void OnChange(Gui::SelectionSingleton::SubjectType &,Gui::SelectionSingleton::MessageType);
+    void scrollItemToTop(Gui::Document*);
 
 public Q_SLOTS:
     void onItemSelectionChanged(void);

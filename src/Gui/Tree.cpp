@@ -170,6 +170,21 @@ void TreeDockWidget::onItemSelectionChanged ()
     }
 }
 
+void TreeDockWidget::scrollItemToTop(Gui::Document* doc)
+{
+    std::map<Gui::Document*,DocumentItem*>::iterator it = DocumentMap.find(doc);
+    if (it != DocumentMap.end()) {
+        DocumentItem* root = it->second;
+        QTreeWidgetItemIterator it(root, QTreeWidgetItemIterator::Selected);
+        for (; *it; ++it) {
+            if ((*it)->type() == TreeWidget::ObjectType) {
+                this->treeWidget->scrollToItem(*it, QAbstractItemView::PositionAtTop);
+                break;
+            }
+        }
+    }
+}
+
 void TreeDockWidget::contextMenuEvent ( QContextMenuEvent * e )
 {
     // ask workbenches and view provider, ...

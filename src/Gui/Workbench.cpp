@@ -352,12 +352,14 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
         *item << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
 
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-    	    *item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
+            *item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" 
+                  << "Separator" << "Std_Delete";
     }
     else if (strcmp(recipient,"Tree") == 0)
     {
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-            *item << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
+            *item << "Std_TreeSelection" << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" 
+                  << "Std_RandomColor" << "Separator" << "Std_Delete";
     }
 }
 
@@ -404,7 +406,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
-    	  << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
+          << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
           << "Std_ViewStatusBar" << "Std_UserInterface";
 
