@@ -178,6 +178,7 @@ public:
     void setPos(const char* name, const Base::Matrix4D& rclMtrx);
     /// updates the view property of all view provider
     void update(void);
+    std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     ViewProvider *getViewProviderByName(const char* name) const;
     //@}
 

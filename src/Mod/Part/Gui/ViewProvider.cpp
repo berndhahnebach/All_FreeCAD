@@ -86,6 +86,7 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 // Construction/Destruction
 
 App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
+App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRangeDeviation = {0.01f,100.00f,0.10f};
 
 ViewProviderPart::ViewProviderPart()
 {
@@ -129,11 +130,11 @@ ViewProviderPart::ViewProviderPart()
     pcPointStyle->style = SoDrawStyle::POINTS;
     pcPointStyle->pointSize = PointSize.getValue();
 
-    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
-
-    fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-    bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-    bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
+    ADD_PROPERTY(Deviation,(hGrp->GetFloat("MeshDeviation",0.2)));
+    Deviation.setConstraints(&floatRangeDeviation);
+    ADD_PROPERTY(NoPerVertexNormals,(hGrp->GetBool("NoPerVertexNormals",false)));
+    ADD_PROPERTY(QualityNormals,(hGrp->GetBool("QualityNormals",false)));
 
     sPixmap = "PartFeature";
 }
@@ -151,25 +152,25 @@ ViewProviderPart::~ViewProviderPart()
 
 void ViewProviderPart::onChanged(const App::Property* prop)
 {
-    if ( prop == &LineWidth ) {
+    if (prop == &LineWidth) {
         pcLineStyle->lineWidth = LineWidth.getValue();
     }
-    else if ( prop == &PointSize ) {
+    else if (prop == &PointSize) {
         pcPointStyle->pointSize = PointSize.getValue();
     }
-    else if ( prop == &LineColor ) {
+    else if (prop == &LineColor) {
         const App::Color& c = LineColor.getValue();
         pcLineMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         if (c != LineMaterial.getValue().diffuseColor)
         LineMaterial.setDiffuseColor(c);
     }
-    else if ( prop == &PointColor ) {
+    else if (prop == &PointColor) {
         const App::Color& c = PointColor.getValue();
         pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         if (c != PointMaterial.getValue().diffuseColor)
         PointMaterial.setDiffuseColor(c);
     }
-    else if ( prop == &LineMaterial ) {
+    else if (prop == &LineMaterial) {
         const App::Material& Mat = LineMaterial.getValue();
         if (LineColor.getValue() != Mat.diffuseColor)
         LineColor.setValue(Mat.diffuseColor);
@@ -180,7 +181,7 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcLineMaterial->shininess.setValue(Mat.shininess);
         pcLineMaterial->transparency.setValue(Mat.transparency);
     }
-    else if ( prop == &PointMaterial ) {
+    else if (prop == &PointMaterial) {
         const App::Material& Mat = PointMaterial.getValue();
         if (PointColor.getValue() != Mat.diffuseColor)
         PointColor.setValue(Mat.diffuseColor);
@@ -190,6 +191,18 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
         pcPointMaterial->shininess.setValue(Mat.shininess);
         pcPointMaterial->transparency.setValue(Mat.transparency);
+    }
+    else if (prop == &Deviation) {
+        App::Property* shape = pcObject->getPropertyByName("Shape");
+        if (shape) update(shape);
+    }
+    else if (prop == &NoPerVertexNormals) {
+        App::Property* shape = pcObject->getPropertyByName("Shape");
+        if (shape) update(shape);
+    }
+    else if (prop == &QualityNormals) {
+        App::Property* shape = pcObject->getPropertyByName("Shape");
+        if (shape) update(shape);
     }
     else {
         ViewProviderGeometryObject::onChanged(prop);
@@ -319,12 +332,6 @@ void ViewProviderPart::updateData(const App::Property* prop)
         if (cShape.IsNull())
             return;
 
-        // getting current setting values...
-        fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-        bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-        bQualityNormals     = hGrp->GetBool("QualityNormals",false);
-
-
         // clear anchor nodes
         vertexShapeMap.clear();
         EdgeRoot->removeAllChildren();
@@ -333,7 +340,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
 
         try {
             // creating the mesh on the data structure
-            BRepMesh::Mesh(cShape,fMeshDeviation);
+            BRepMesh::Mesh(cShape,Deviation.getValue());
             //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
             //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
             computeFaces   (FaceRoot,cShape);
@@ -510,7 +517,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 
 //  BRepMesh::Mesh(myShape,1.0);
 //  BRepMesh_Discret MESH(1.0,myShape,20.0);
-    BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
+    BRepMesh_IncrementalMesh MESH(myShape,Deviation.getValue());
 
     // counting faces and start sequencer
     int l = 1;
@@ -534,7 +541,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         if (!vertices)
             break;
 
-        if (!bNoPerVertexNormals) {
+        if (!NoPerVertexNormals.getValue()) {
             // define normals (this is optional)
             SoNormal * norm = new SoNormal;
             norm->vector.setValues(0, nbNodesInFace, vertexnormals);
@@ -653,7 +660,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
             V3.Transform(myTransf);
         }
 
-        if (!bNoPerVertexNormals) {
+        if (!NoPerVertexNormals.getValue()) {
             // Calculate triangle normal
             gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
             gp_Vec Normal = (v2-v1)^(v3-v1); 
@@ -677,7 +684,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
 
     // normalize all vertex normals
     for(i=0;i < nbNodesInFace;i++) {
-        if (bQualityNormals) {
+        if (QualityNormals.getValue()) {
             gp_Dir clNormal;
 
             try {

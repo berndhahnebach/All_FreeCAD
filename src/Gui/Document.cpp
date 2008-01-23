@@ -224,6 +224,16 @@ ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
     return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
+std::vector<ViewProvider*> Document::getViewProvidersOfType(const Base::Type& typeId) const
+{
+    std::vector<ViewProvider*> Objects;
+    for (std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it = 
+         _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it ) {
+        if (it->second->getTypeId().isDerivedFrom(typeId))
+            Objects.push_back(it->second);
+    }
+    return Objects;
+}
 
 ViewProvider *Document::getViewProviderByName(const char* name) const
 {

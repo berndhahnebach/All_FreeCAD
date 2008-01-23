@@ -52,6 +52,9 @@ public:
     // Display properties
     App::PropertyFloatConstraint LineWidth;
     App::PropertyFloatConstraint PointSize;
+    App::PropertyFloatConstraint Deviation;
+    App::PropertyBool NoPerVertexNormals;
+    App::PropertyBool QualityNormals;
     App::PropertyColor LineColor;
     App::PropertyColor PointColor;
     App::PropertyMaterial LineMaterial;
@@ -87,15 +90,9 @@ protected:
     SoDrawStyle *pcLineStyle;
     SoDrawStyle *pcPointStyle;
 
-    // settings stuff
-    ParameterGrp::handle hGrp;
-    float fMeshDeviation;     
-    bool  bNoPerVertexNormals;
-//  long  lHilightColor;      
-    bool  bQualityNormals;    
-
 private:
     static App::PropertyFloatConstraint::Constraints floatRange;
+    static App::PropertyFloatConstraint::Constraints floatRangeDeviation;
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 

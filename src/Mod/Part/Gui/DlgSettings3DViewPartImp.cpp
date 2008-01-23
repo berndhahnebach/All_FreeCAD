@@ -24,7 +24,12 @@
 #include "PreCompiled.h"
 
 #include "DlgSettings3DViewPartImp.h"
+#include "ViewProvider.h"
 #include <Gui/PrefWidgets.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <App/Application.h>
+#include <App/Document.h>
 #include <Base/Console.h>
 
 using namespace PartGui;
@@ -47,18 +52,23 @@ DlgSettings3DViewPartImp::~DlgSettings3DViewPartImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
-/**
- * Print warning if OpenInventor viewer is used.
- */
-void DlgSettings3DViewPartImp::warnInventor(bool b)
-{
-}
-
 void DlgSettings3DViewPartImp::saveSettings()
 {
     prefFloatSpinBox1->onSave();
     prefCheckBox8->onSave();
     prefCheckBox3->onSave();
+
+    // search for Part view providers and apply the new settings
+    std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
+        Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
+        std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
+        for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
+            static_cast<ViewProviderPart*>(*jt)->Deviation.setValue(prefFloatSpinBox1->value());
+            static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.setValue(prefCheckBox8->isChecked());
+            static_cast<ViewProviderPart*>(*jt)->QualityNormals.setValue(prefCheckBox3->isChecked());
+        }
+    }
 }
 
 void DlgSettings3DViewPartImp::loadSettings()
