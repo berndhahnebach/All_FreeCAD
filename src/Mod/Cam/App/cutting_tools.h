@@ -73,6 +73,8 @@ public:
     TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
     double GetWireLength(TopoDS_Wire &aWire);
     bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
+    bool OffsetWires_FeatureBased();
+	bool OffsetWires_Spiral();
     //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
     bool SetMachiningOrder(const TopoDS_Face &aFace, float x,float y,float z);
 

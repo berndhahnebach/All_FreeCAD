@@ -78,8 +78,8 @@ void Cutting::selectShape()
             m_Shape = static_cast<Part::Feature*>(fea.front())->Shape.getValue();
 			//std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
             this->show();
-            CalculcateZLevel->setEnabled(true);
-            CalculcateFeatureBased->setEnabled(true);
+            CalculateZLevel->setEnabled(true);
+            CalculateFeatureBased->setEnabled(true);
             m_timer = false;
         }
         else
@@ -122,11 +122,21 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
 	}
 }
 
-void Cutting::on_CalculcateZLevel_clicked()
+void Cutting::on_CalculateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
     m_CuttingAlgo = new cutting_tools(m_Shape);
+	CalculateFeatureBased->setEnabled(false);
     toolpath_calculation_highest_level_button->setEnabled(true);
+}
+
+void Cutting::on_CalculateFeatureBased_clicked()
+{
+	//Cutting-Klasse instanzieren
+	m_CuttingAlgo = new cutting_tools(m_Shape);
+	m_StandardorFeature = false;
+	toolpath_calculation_highest_level_button->setEnabled(true);
+	CalculateZLevel->setEnabled(false);
 }
 
 void Cutting::on_select_shape_z_level_button_clicked()
@@ -196,7 +206,10 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
 	m_CuttingAlgo->arrangecuts_ZLEVEL();
-	m_CuttingAlgo->OffsetWires_Standard();
+	if(m_StandardorFeature)
+		m_CuttingAlgo->OffsetWires_Standard();
+	else
+		m_CuttingAlgo->OffsetWires_FeatureBased();
 	DisplayCAMOutput();
 }
 
@@ -211,16 +224,18 @@ void Cutting::DisplayCAMOutput()
 		TopoDS_Edge anEdge;
         std::vector<Handle_Geom_BSplineCurve>* topCurves;
         std::vector<Handle_Geom_BSplineCurve>* botCurves;
-        std::vector<Handle_Geom_BSplineCurve>::iterator an_it1,an_it2;
+        std::vector<Handle_Geom_BSplineCurve>::iterator an_it1;
 		topCurves = m_CuttingAlgo->getOutputhigh();
         botCurves = m_CuttingAlgo->getOutputlow();
-		int size = topCurves->size();
-		size= botCurves->size();
-		for(an_it1 = topCurves->begin(),an_it2 = botCurves->begin();an_it1!=topCurves->end();an_it1++,an_it2++)
+		for(an_it1 = topCurves->begin();an_it1!=topCurves->end();an_it1++)
 		{
 			BB.MakeEdge(anEdge,*an_it1,0.01);
 			BB.Add(aCompound1,anEdge);
-			BB.MakeEdge(anEdge,*an_it2,0.01);
+		
+		}
+		for(an_it1 = botCurves->begin();an_it1!=botCurves->end();an_it1++)
+		{
+			BB.MakeEdge(anEdge,*an_it1,0.01);
 			BB.Add(aCompound2,anEdge);
 		}
 
