@@ -173,10 +173,12 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                     setWindowFlags( windowFlags() & ~Qt::Window );
                 }
 
-                this->currentMode = Child;
-                getMainWindow()->addWindow(this);
-                getMainWindow()->activateWindow();
-                update();
+                if (this->currentMode != Child) {
+                    this->currentMode = Child;
+                    getMainWindow()->addWindow(this);
+                    getMainWindow()->activateWindow();
+                    update();
+                }
             }   break;
         // go to top-level mode
         case TopLevel:
