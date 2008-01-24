@@ -67,20 +67,23 @@ TopoDS_Shape Edgesort::GetDesiredCutShape(int desiredIndex)
 
     if (m_EdgeBBoxMap.size()>1)
     {
-        if (desiredIndex == 1)
-        {
-            m_edges = m_EdgeBBoxMap.begin()->second;
+        if (desiredIndex == 1) //Return the smallest to return it
+		{
+			m_edges = m_EdgeBBoxMap.begin()->second;
+			
         }
         else
         {
             m_edges = m_EdgeBBoxMap.rbegin()->second;
         }
         BRep_Builder aBuilder;
+TopoDS_Compound aCompound;
+aBuilder.MakeCompound(aCompound);
         for (m_edgeIter = m_edges.begin();m_edgeIter!=m_edges.end();++m_edgeIter)
         {
-            aBuilder.Remove(m_shape,*m_edgeIter);
+			aBuilder.Add(aCompound,*m_edgeIter);
         }
-        return m_shape;
+        return aCompound;
     }
     else
     {

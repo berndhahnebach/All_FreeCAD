@@ -18,7 +18,8 @@ public:
     Cutting(QWidget* parent,Qt::WFlags = 0);
     ~Cutting();
 protected Q_SLOTS:
-    void on_CalculcateZLevel_clicked();
+    void on_CalculateZLevel_clicked();
+	void on_CalculateFeatureBased_clicked();
     void on_select_shape_z_level_button_clicked();
     void on_select_shape_feature_based_button_clicked();
     void on_toolpath_calculation_highest_level_button_clicked();
@@ -37,7 +38,8 @@ private:
     cutting_tools *m_CuttingAlgo;
 
     TopoDS_Shape m_Shape;
-    bool m_timer;
+    bool m_timer,m_StandardorFeature;
+	
 };
 
 }
