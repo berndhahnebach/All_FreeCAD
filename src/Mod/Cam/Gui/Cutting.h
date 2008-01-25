@@ -20,8 +20,10 @@ public:
 protected Q_SLOTS:
     void on_CalculateZLevel_clicked();
 	void on_CalculateFeatureBased_clicked();
+	void on_CalculateSpiralBased_clicked();
     void on_select_shape_z_level_button_clicked();
     void on_select_shape_feature_based_button_clicked();
+	void on_select_shape_spiral_based_button_clicked();
     void on_toolpath_calculation_highest_level_button_clicked();
     void on_toolpath_calculation_middle_level_button_clicked();
     void on_toolpath_calculation_lowest_level_button_clicked();
@@ -38,7 +40,9 @@ private:
     cutting_tools *m_CuttingAlgo;
 
     TopoDS_Shape m_Shape;
-    bool m_timer,m_StandardorFeature;
+    bool m_timer;
+	//1 means Standard, 2 means Feature Based, 3 means Spiral Based
+	unsigned int m_Mode;
 	
 };
 

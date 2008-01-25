@@ -80,6 +80,7 @@ void Cutting::selectShape()
             this->show();
             CalculateZLevel->setEnabled(true);
             CalculateFeatureBased->setEnabled(true);
+			CalculateSpiralBased->setEnabled(true);
             m_timer = false;
         }
         else
@@ -126,7 +127,9 @@ void Cutting::on_CalculateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
     m_CuttingAlgo = new cutting_tools(m_Shape);
+	m_Mode = 1;
 	CalculateFeatureBased->setEnabled(false);
+	CalculateSpiralBased->setEnabled(false);
     toolpath_calculation_highest_level_button->setEnabled(true);
 }
 
@@ -134,9 +137,21 @@ void Cutting::on_CalculateFeatureBased_clicked()
 {
 	//Cutting-Klasse instanzieren
 	m_CuttingAlgo = new cutting_tools(m_Shape);
-	m_StandardorFeature = false;
+	m_Mode = 2;
 	toolpath_calculation_highest_level_button->setEnabled(true);
 	CalculateZLevel->setEnabled(false);
+	CalculateSpiralBased->setEnabled(false);
+}
+
+void Cutting::on_CalculateSpiralBased_clicked()
+{	
+	//Cutting-Klasse instanzieren
+	m_CuttingAlgo = new cutting_tools(m_Shape);
+	m_Mode = 3;//
+	toolpath_calculation_highest_level_button->setEnabled(true);
+	CalculateZLevel->setEnabled(false);
+	CalculateFeatureBased->setEnabled(false);
+
 }
 
 void Cutting::on_select_shape_z_level_button_clicked()
@@ -147,6 +162,11 @@ void Cutting::on_select_shape_z_level_button_clicked()
 void Cutting::on_select_shape_feature_based_button_clicked()
 {
     selectShape();
+}
+
+void Cutting::on_select_shape_spiral_based_button_clicked()
+{
+	selectShape();
 }
 
 void Cutting::on_toolpath_calculation_highest_level_button_clicked()
@@ -206,10 +226,18 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
 	m_CuttingAlgo->arrangecuts_ZLEVEL();
-	if(m_StandardorFeature)
-		m_CuttingAlgo->OffsetWires_Standard();
-	else
+	switch(m_Mode)
+	{
+		case 1:
+		//m_CuttingAlgo->OffsetWires_Standard();
+		break;
+		case 2:
 		m_CuttingAlgo->OffsetWires_FeatureBased();
+		break;
+		case 3:
+		m_CuttingAlgo->OffsetWires_Spiral();
+		break;
+	}
 	DisplayCAMOutput();
 }
 

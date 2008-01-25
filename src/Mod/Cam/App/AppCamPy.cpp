@@ -264,88 +264,88 @@ static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
 #include <GeomAdaptor_Curve.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 
-static PyObject * makeToolPath(PyObject *self, PyObject *args)
-{
-// Py::List AllCuts = Py::List();
-// double offset=0.0;
-    ofstream anoutput,anoutput2;
-    anoutput.open("c:/bspline_output.txt");
-    anoutput2.open("c:/bspline2_output.txt");
-    PyObject *pcObj;
-    //PyObject *pcObj2;
-    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))    // convert args: Python->C
-        return NULL;                             // NULL triggers exception
-
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
-// TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cut-Curve
-    PY_TRY
-    {
-
-        cutting_tools anewCuttingEnv(pcShape->getShape(),10.0);
-        anewCuttingEnv.arrangecuts_ZLEVEL();
-        std::vector<std::pair<float,TopoDS_Shape> > aTestOutput = anewCuttingEnv.getCutShape();
-        BRep_Builder BB;
-
-        TopoDS_Compound aCompound;
-
-        BB.MakeCompound(aCompound);
-        for (unsigned int i=0;i<aTestOutput.size();++i)
-        {
-
-            BB.Add(aCompound,TopoDS::Compound(aTestOutput[i].second));
-        }
-
-        anewCuttingEnv.OffsetWires_Standard(10.0);
-
-        std::vector<Handle_Geom_BSplineCurve> topCurves;
-        std::vector<Handle_Geom_BSplineCurve> botCurves;
-        std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
-        topCurves = *(anewCuttingEnv.getOutputhigh());
-        botCurves = *(anewCuttingEnv.getOutputlow());
-        for (unsigned int i=0;i<topCurves.size();++i)
-        {
-            GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
-            GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-            for (int t=1;t<=aPointGenerator.NbPoints();++t)
-            {
-                anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-            }
-        }
-        for (unsigned int i=0;i<botCurves.size();++i)
-        {
-            GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
-            GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-            for (int t=1;t<=aPointGenerator.NbPoints();++t)
-            {
-                anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-            }
-        }
-        anoutput.close();
-        anoutput2.close();
-
-        //botCurves.push_back(*(topCurves.begin()));
-
-        //path_simulate path(topCurves , botCurves);
-        ////path.MakePathSimulate();
-        //path.MakePathRobot();
-
-        //GeomAdaptor_Curve anAdaptorCurve;
-        //for(an_it=topCurves.begin();an_it<topCurves.end();++an_it)
-        //{
-        // anAdaptorCurve.Load(*an_it);
-        // double length = GCPnts_AbscissaPoint::Length(anAdaptorCurve);
-        // std::cout << "Length: " << length << std::endl;
-        //}
-
-        return new TopoShapePyOld(aCompound);
-
-
-    } PY_CATCH;
-
-    Py_Return;
-}
-
-
+//static PyObject * makeToolPath(PyObject *self, PyObject *args)
+//{
+//// Py::List AllCuts = Py::List();
+//// double offset=0.0;
+//    ofstream anoutput,anoutput2;
+//    anoutput.open("c:/bspline_output.txt");
+//    anoutput2.open("c:/bspline2_output.txt");
+//    PyObject *pcObj;
+//    //PyObject *pcObj2;
+//    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))    // convert args: Python->C
+//        return NULL;                             // NULL triggers exception
+//
+//    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface wird übergeben
+//// TopoShapePyOld *pcShape2 = static_cast<TopoShapePyOld*>(pcObj2); //Cut-Curve
+//    PY_TRY
+//    {
+//
+//        cutting_tools anewCuttingEnv(pcShape->getShape(),10.0);
+//        anewCuttingEnv.arrangecuts_ZLEVEL();
+//        std::vector<std::pair<float,TopoDS_Shape> > aTestOutput = anewCuttingEnv.getCutShape();
+//        BRep_Builder BB;
+//
+//        TopoDS_Compound aCompound;
+//
+//        BB.MakeCompound(aCompound);
+//        for (unsigned int i=0;i<aTestOutput.size();++i)
+//        {
+//
+//            BB.Add(aCompound,TopoDS::Compound(aTestOutput[i].second));
+//        }
+//
+//        anewCuttingEnv.OffsetWires_Standard(10.0);
+//
+//        std::vector<Handle_Geom_BSplineCurve> topCurves;
+//        std::vector<Handle_Geom_BSplineCurve> botCurves;
+//        std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
+//        topCurves = *(anewCuttingEnv.getOutputhigh());
+//        botCurves = *(anewCuttingEnv.getOutputlow());
+//        for (unsigned int i=0;i<topCurves.size();++i)
+//        {
+//            GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
+//            GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+//            for (int t=1;t<=aPointGenerator.NbPoints();++t)
+//            {
+//                anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+//            }
+//        }
+//        for (unsigned int i=0;i<botCurves.size();++i)
+//        {
+//            GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
+//            GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+//            for (int t=1;t<=aPointGenerator.NbPoints();++t)
+//            {
+//                anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+//            }
+//        }
+//        anoutput.close();
+//        anoutput2.close();
+//
+//        //botCurves.push_back(*(topCurves.begin()));
+//
+//        //path_simulate path(topCurves , botCurves);
+//        ////path.MakePathSimulate();
+//        //path.MakePathRobot();
+//
+//        //GeomAdaptor_Curve anAdaptorCurve;
+//        //for(an_it=topCurves.begin();an_it<topCurves.end();++an_it)
+//        //{
+//        // anAdaptorCurve.Load(*an_it);
+//        // double length = GCPnts_AbscissaPoint::Length(anAdaptorCurve);
+//        // std::cout << "Length: " << length << std::endl;
+//        //}
+//
+//        return new TopoShapePyOld(aCompound);
+//
+//
+//    } PY_CATCH;
+//
+//    Py_Return;
+//}
+//
+//
 
 static PyObject * offset(PyObject *self,PyObject *args)
 {
@@ -4245,7 +4245,7 @@ struct PyMethodDef Cam_methods[] =
     {"read"   , read,  1},
     {"createTestBSPLINE"   , createTestBSPLINE,  Py_NEWARGS, "Creates a TopoShape with a test BSPLINE"},
     {"createTestApproximate" , createTestApproximate, 1},
-    {"makeToolPath", makeToolPath, 1},
+    //  {"makeToolPath", makeToolPath, 1},
     {"offset", offset, 1},
 // {"offset_mesh", offset_mesh, 1},
     {"tesselateShape",tesselateShape,1},

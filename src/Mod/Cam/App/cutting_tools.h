@@ -26,6 +26,8 @@
 
 
 #include <Handle_Geom_BSplineCurve.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <Mod/Mesh/App/MeshAlgos.h>
 
 #include "stuff.h"
@@ -40,6 +42,13 @@ struct CuttingToolsSettings
     double level_distance;
     double correction_factor;
     double sheet_thickness;
+};
+
+struct SpiralHelper
+{
+    gp_Pnt SurfacePoint;
+    gp_Vec LineD1;
+    gp_Vec SurfaceNormal;
 };
 
 struct BoundBox3f_Less
@@ -71,10 +80,10 @@ public:
     ~cutting_tools();
 
     TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
-    double GetWireLength(TopoDS_Wire &aWire);
+    double GetEdgeLength(const TopoDS_Edge& anEdge);
     bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
     bool OffsetWires_FeatureBased();
-	bool OffsetWires_Spiral();
+    bool OffsetWires_Spiral();
     //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
     bool SetMachiningOrder(const TopoDS_Face &aFace, float x,float y,float z);
 
@@ -113,7 +122,7 @@ private:
     bool getShapeBB();
     bool fillFaceWireMap();
     TopoDS_Shape getProperCut(TopoDS_Shape& aShape);
-    Handle_Geom_BSplineCurve InterpolateOrderedPoints(std::vector<gp_Pnt>& Points);
+    Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints, TColgp_Array1OfVec& aTangentArray);
     //bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
 
     bool fillFaceBBoxes();
@@ -125,6 +134,7 @@ private:
     bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
     bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
 
+    gp_Dir getPerpendicularVec(gp_Vec& anInput);
     std::vector<std::pair<float,TopoDS_Shape> > m_ordered_cuts;
     std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
     std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> >::iterator m_face_bb_it;

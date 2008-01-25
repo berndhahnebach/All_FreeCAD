@@ -254,17 +254,17 @@ p, li { white-space: pre-wrap; }
        <cursor>0</cursor>
       </property>
       <property name="maximum" >
-       <double>20.000000000000000</double>
+       <double>99.989999999999995</double>
       </property>
       <property name="value" >
-       <double>15.000000000000000</double>
+       <double>10.000000000000000</double>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QDoubleSpinBox" name="slave_radius_box" >
       <property name="value" >
-       <double>15.000000000000000</double>
+       <double>10.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -290,7 +290,20 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <widget class="QDoubleSpinBox" name="sheet_thickness_box" />
+     <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
+      <property name="prefix" >
+       <string/>
+      </property>
+      <property name="suffix" >
+       <string/>
+      </property>
+      <property name="singleStep" >
+       <double>0.500000000000000</double>
+      </property>
+      <property name="value" >
+       <double>1.000000000000000</double>
+      </property>
+     </widget>
     </item>
     <item>
      <spacer>
@@ -564,6 +577,52 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text" >
          <string>Calculate Feature Based Toolpath</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="select_shape_spiral_based_button" >
+        <property name="toolTip" >
+         <string>Select Shape to Cut</string>
+        </property>
+        <property name="text" >
+         <string>Select Shape</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CalculateSpiralBased" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Calculate Spiral Based Toolpath</string>
         </property>
         <property name="autoDefault" >
          <bool>true</bool>
