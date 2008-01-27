@@ -38,6 +38,7 @@
 #include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/Qt/SoQtCursor.h>
 #include "Selection.h"
+#include "Flag.h"
 
 
 class SoSeparator;
@@ -306,6 +307,12 @@ private:
   void setMode(const ViewerMode mode);
 
   void setCursorRepresentation(int mode);
+
+public:
+    void addFlag(Flag*, FlagLayout::Position);
+
+private:
+    FlagLayout* _flaglayout;
 };
 
 } // namespace Gui

@@ -203,96 +203,100 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
   : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0),_iMouseModel(1), editing(FALSE)
 {
-  Gui::Selection().Attach(this);
-
-  // Coin should not clear the pixel-buffer, so the background image
-  // is not removed.
-  this->setClearBeforeRender(FALSE);
+    // set the layout for the flags
+    _flaglayout = new FlagLayout(3);
+    this->getGLWidget()->setLayout(_flaglayout);
   
-  // setting up the defaults for the spin rotation
-  initialize();
+    Gui::Selection().Attach(this);
 
-  _bRejectSelection = false;
+    // Coin should not clear the pixel-buffer, so the background image
+    // is not removed.
+    this->setClearBeforeRender(FALSE);
 
-  SoOrthographicCamera * cam = new SoOrthographicCamera;
-  cam->position = SbVec3f(0, 0, 1);
-  cam->height = 1;
-  cam->nearDistance = 0.5;
-  cam->farDistance = 1.5;
+    // setting up the defaults for the spin rotation
+    initialize();
 
-  // Set up background scenegraph with image in it.
-  backgroundroot = new SoSeparator;
-  backgroundroot->ref();
-  this->backgroundroot->addChild(cam);
+    _bRejectSelection = false;
 
-  // Background stuff
-  pcBackGround = new SoFCBackgroundGradient;
-  pcBackGround->ref();
+    SoOrthographicCamera * cam = new SoOrthographicCamera;
+    cam->position = SbVec3f(0, 0, 1);
+    cam->height = 1;
+    cam->nearDistance = 0.5;
+    cam->farDistance = 1.5;
 
-  // Set up foreground, overlayed scenegraph.
-  this->foregroundroot = new SoSeparator;
-  this->foregroundroot->ref();
+    // Set up background scenegraph with image in it.
+    backgroundroot = new SoSeparator;
+    backgroundroot->ref();
+    this->backgroundroot->addChild(cam);
 
-  SoLightModel * lm = new SoLightModel;
-  lm->model = SoLightModel::BASE_COLOR;
+    // Background stuff
+    pcBackGround = new SoFCBackgroundGradient;
+    pcBackGround->ref();
 
-  SoBaseColor * bc = new SoBaseColor;
-  bc->rgb = SbColor(1, 1, 0);
+    // Set up foreground, overlayed scenegraph.
+    this->foregroundroot = new SoSeparator;
+    this->foregroundroot->ref();
 
-  cam = new SoOrthographicCamera;
-  cam->position = SbVec3f(0, 0, 5);
-  cam->height = 10;
-  cam->nearDistance = 0;
-  cam->farDistance = 10;
+    SoLightModel * lm = new SoLightModel;
+    lm->model = SoLightModel::BASE_COLOR;
 
-  bDrawAxisCross = true;
-  bAllowSpining  = true;
+    SoBaseColor * bc = new SoBaseColor;
+    bc->rgb = SbColor(1, 1, 0);
 
-  this->foregroundroot->addChild(cam);
-  this->foregroundroot->addChild(lm);
-  this->foregroundroot->addChild(bc);
+    cam = new SoOrthographicCamera;
+    cam->position = SbVec3f(0, 0, 5);
+    cam->height = 10;
+    cam->nearDistance = 0;
+    cam->farDistance = 10;
 
-  // set the ViewProvider root
-  pcViewProviderRoot = new SoSeparator();
+    bDrawAxisCross = true;
+    bAllowSpining  = true;
 
-  // increase refcount before passing it to setScenegraph(), to avoid
-  // premature destruction
-  pcViewProviderRoot->ref();
-  // is not really working with Coin3D. 
+    this->foregroundroot->addChild(cam);
+    this->foregroundroot->addChild(lm);
+    this->foregroundroot->addChild(bc);
+
+    // set the ViewProvider root
+    pcViewProviderRoot = new SoSeparator();
+
+    // increase refcount before passing it to setScenegraph(), to avoid
+    // premature destruction
+    pcViewProviderRoot->ref();
+    // is not really working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
-  setSceneGraph(pcViewProviderRoot);
-  // Event callback node
-  pEventCallback = new SoEventCallback();
-  pEventCallback->setUserData(this);
-  pEventCallback->ref();
-  pcViewProviderRoot->addChild(pEventCallback);
+    setSceneGraph(pcViewProviderRoot);
+    // Event callback node
+    pEventCallback = new SoEventCallback();
+    pEventCallback->setUserData(this);
+    pEventCallback->ref();
+    pcViewProviderRoot->addChild(pEventCallback);
 
-  // This is a callback node that logs all action that traverse the Inventor tree.
+    // This is a callback node that logs all action that traverse the Inventor tree.
 #if defined (FC_DEBUG) && defined(FC_LOGGING_CB)
-  SoCallback * cb = new SoCallback;	 	
-  cb->setCallback(interactionLoggerCB, this);
-  pcViewProviderRoot->addChild(cb);
+    SoCallback * cb = new SoCallback;	 	
+    cb->setCallback(interactionLoggerCB, this);
+    pcViewProviderRoot->addChild(cb);
 #endif
 
 
-  // set the transperency and antialiasing settings
+    // set the transperency and antialiasing settings
 //  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+    getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
 //  getGLRenderAction()->setSmoothing(true);
 
-  // Settings
-  setSeekTime(0.4f);
-  if ( isSeekValuePercentage() == false )
-    setSeekValueAsPercentage(true);
-  setSeekDistance(100);
-  setViewing(false);
+    // Settings
+    setSeekTime(0.4f);
+    if ( isSeekValuePercentage() == false )
+        setSeekValueAsPercentage(true);
+    setSeekDistance(100);
+    setViewing(false);
 
-  setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
-  setGradientBackgroud(true);
+    setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
+    setGradientBackgroud(true);
 
-  // set some callback functions for user interaction
-  addStartCallback(interactionStartCB);
-  addFinishCallback(interactionFinishCB);
+    // set some callback functions for user interaction
+    addStartCallback(interactionStartCB);
+    addFinishCallback(interactionFinishCB);
 }
 
 void View3DInventorViewer::setGradientBackgroud(bool b)
@@ -2367,4 +2371,9 @@ std::vector<ViewProvider*> View3DInventorViewer::getViewProvidersOfType(const Ba
     return views;
 }
 
+void View3DInventorViewer::addFlag(Flag* item, FlagLayout::Position pos)
+{
+    item->setParent(this->getGLWidget());
+    _flaglayout->addWidget(item, pos);
+}
 
