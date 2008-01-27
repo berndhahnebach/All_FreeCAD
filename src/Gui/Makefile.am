@@ -29,6 +29,7 @@ BUILT_SOURCES=\
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
 		moc_FileDialog.cpp \
+		moc_Flag.cpp \
 		moc_HelpView.cpp \
 		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
@@ -198,6 +199,8 @@ libFreeCADGui_la_SOURCES=\
 		Doxygen.cpp \
 		FileDialog.cpp \
 		FileDialog.h \
+		Flag.cpp \
+		Flag.h \
 		GuiConsole.cpp \
 		GuiConsole.h \
 		HelpView.cpp \
