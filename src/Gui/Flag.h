@@ -42,12 +42,17 @@ public:
     ~Flag();
     QSize sizeHint() const;
 
+    void setOrigin(const SbVec3f&);
+    const SbVec3f& getOrigin() const;
+    void drawLine(int tox, int toy);
+
 protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
 
 private:
+    SbVec3f coord;
     QPoint dragPosition;
 };
 

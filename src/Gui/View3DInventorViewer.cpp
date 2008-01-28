@@ -598,54 +598,68 @@ void View3DInventorViewer::interactionLoggerCB(void * ud, SoAction* action)
 // upon spin.
 void View3DInventorViewer::actualRedraw(void)
 {
-  // Must set up the OpenGL viewport manually, as upon resize
-  // operations, Coin won't set it up until the SoGLRenderAction is
-  // applied again. And since we need to do glClear() before applying
-  // the action..
-  const SbViewportRegion vp = this->getViewportRegion();
-  SbVec2s origin = vp.getViewportOriginPixels();
-  SbVec2s size = vp.getViewportSizePixels();
-  glViewport(origin[0], origin[1], size[0], size[1]);
+    // Must set up the OpenGL viewport manually, as upon resize
+    // operations, Coin won't set it up until the SoGLRenderAction is
+    // applied again. And since we need to do glClear() before applying
+    // the action..
+    const SbViewportRegion vp = this->getViewportRegion();
+    SbVec2s origin = vp.getViewportOriginPixels();
+    SbVec2s size = vp.getViewportSizePixels();
+    glViewport(origin[0], origin[1], size[0], size[1]);
 
-  const SbColor col = this->getBackgroundColor();
-  glClearColor(col[0], col[1], col[2], 0.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    const SbColor col = this->getBackgroundColor();
+    glClearColor(col[0], col[1], col[2], 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // Render our scenegraph with the image.
-  SoGLRenderAction * glra = this->getGLRenderAction();
-  glra->apply(this->backgroundroot);
+    // Render our scenegraph with the image.
+    SoGLRenderAction * glra = this->getGLRenderAction();
+    glra->apply(this->backgroundroot);
 
-  SbTime now = SbTime::getTimeOfDay();
-  double secs = now.getValue() -  prevRedrawTime.getValue();
-  prevRedrawTime = now;
+    SbTime now = SbTime::getTimeOfDay();
+    double secs = now.getValue() -  prevRedrawTime.getValue();
+    prevRedrawTime = now;
 
-  if (this->isAnimating()) {
-    SbRotation deltaRotation = this->spinRotation;
-    deltaRotation.scaleAngle(secs * 5.0);
-    this->reorientCamera(deltaRotation);
-  }
+    if (this->isAnimating()) {
+        SbRotation deltaRotation = this->spinRotation;
+        deltaRotation.scaleAngle(secs * 5.0);
+        this->reorientCamera(deltaRotation);
+    }
 
-  try {
-    // Render normal scenegraph.
-    inherited::actualRedraw();
-  } catch ( const Base::MemoryException& e ) {
-    // FIXME: If this exception appears then the background and camera position get broken somehow. (Werner 2006-02-01) 
-    for ( std::set<ViewProvider*>::iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); ++it )
-      (*it)->hide();
-    inherited::actualRedraw();
-    QMessageBox::warning(getParentWidget(), e.what(), QObject::tr("Not enough memory available to display the data."));
-  }
+    try {
+        // Render normal scenegraph.
+        inherited::actualRedraw();
+    } catch ( const Base::MemoryException& e ) {
+        // FIXME: If this exception appears then the background and camera position get broken somehow. (Werner 2006-02-01) 
+        for ( std::set<ViewProvider*>::iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); ++it )
+            (*it)->hide();
+        inherited::actualRedraw();
+        QMessageBox::warning(getParentWidget(), e.what(), QObject::tr("Not enough memory available to display the data."));
+    }
 
-  // Render overlay front scenegraph.
-  glClear(GL_DEPTH_BUFFER_BIT);
-  glra->apply(this->foregroundroot);
+    // Render overlay front scenegraph.
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glra->apply(this->foregroundroot);
 
-  if (bDrawAxisCross) { this->drawAxisCross(); }
+    if (bDrawAxisCross) { this->drawAxisCross(); }
 
-  // Immediately reschedule to get continous spin animation.
-  if (this->isAnimating()) { this->scheduleRedraw(); }
+    // draw lines for the flags
+    int ct = _flaglayout->count();
+    SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+    for (int i=0; i<ct;i++) {
+        Flag* flag = qobject_cast<Flag*>(_flaglayout->itemAt(i)->widget());
+        if (flag) {
+            SbVec3f pt = flag->getOrigin();
+            vv.projectToScreen(pt, pt);
+            int tox = pt[0] * size[0];
+            int toy = (1.0f-pt[1]) * size[1];
+            flag->drawLine(tox, toy);
+        }
+    }
 
-  printDimension();
+    // Immediately reschedule to get continous spin animation.
+    if (this->isAnimating()) { this->scheduleRedraw(); }
+
+    printDimension();
 }
 
 void View3DInventorViewer::setSeekMode(SbBool on)
