@@ -81,7 +81,7 @@ public:
 
     TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
     double GetEdgeLength(const TopoDS_Edge& anEdge);
-    bool OffsetWires_Standard(float radius=10.0,float radius_slave =10.0,float sheet_thickness = 1.0);
+    bool OffsetWires_Standard();
     bool OffsetWires_FeatureBased();
     bool OffsetWires_Spiral();
     //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
@@ -122,7 +122,7 @@ private:
     bool getShapeBB();
     bool fillFaceWireMap();
     TopoDS_Shape getProperCut(TopoDS_Shape& aShape);
-    Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints, TColgp_Array1OfVec& aTangentArray);
+    Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints);
     //bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
 
     bool fillFaceBBoxes();

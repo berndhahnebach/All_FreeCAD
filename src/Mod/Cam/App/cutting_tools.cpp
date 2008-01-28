@@ -33,10 +33,23 @@
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Grid.h>
 
+//FreeCAD Stuff
+#include <Base/Builder3D.h>
+
 //OCC Stuff
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <GCPnts_QuasiUniformAbscissa.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BRep_Tool.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
 #include <BRepAlgo_Section.hxx>
 #include <BRep_Tool.hxx>
 #include <GProp_GProps.hxx>
@@ -52,12 +65,18 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
+#include <Handle_TColStd_HArray1OfBoolean.hxx>
 
 //Own Stuff
 #include "cutting_tools.h"
 #include "best_fit.h"
 #include "edgesort.h"
 #include "wireexplorer.h"
+#include "BRepAdaptor_CompCurve2.h"
+
+
+
+
 
 
 
@@ -238,13 +257,7 @@ bool cutting_tools::initializeMeshStuff()
     m_aMeshAlgo = new MeshCore::MeshAlgorithm(m_CAD_Mesh);
     return true;
 }
-//bool cutting_tools::arrangecuts_Spiral()
-//{
-//IntCurvesFace_ShapeIntersector
-// http://www.opencascade.org/org/forum/thread_5825/
 
-// return true;
-//}
 
 bool cutting_tools::arrangecuts_ZLEVEL()
 {
@@ -316,12 +329,6 @@ bool cutting_tools::arrangecuts_ZLEVEL()
                 else
                     z_level = temp_max+(i*m_UserSettings.level_distance);
                 z_level_corrected = z_level;
-                //cut_Mesh(z_level,m_minlevel,result,z_level_corrected);
-                //Jetzt die resultierenden Points in den vector schieben
-                //std::pair<float,std::list<std::vector<Base::Vector3f> > > tempPair;
-                //tempPair.first = z_level_corrected;
-                //tempPair.second = result;
-                //m_ordered_cuts.push_back(tempPair);
                 cut(z_level,temp_min, aCutShape,z_level_corrected);
                 if (z_level_corrected != z_level)
                     cout << "Somehow we couldnt cut";
@@ -870,28 +877,15 @@ TopoDS_Wire cutting_tools::ordercutShape(const TopoDS_Shape &aShape)
 //
 //
 
-#include "edgesort.h"
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <BRep_Tool.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <GeomAPI_PointsToBSpline.hxx>
-#include <Base/Builder3D.h>
-#include "BRepAdaptor_CompCurve2.h"
-#include <Handle_TColStd_HArray1OfBoolean.hxx>
 
-Handle_Geom_BSplineCurve cutting_tools::InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints, TColgp_Array1OfVec& Tangents)
+
+Handle_Geom_BSplineCurve cutting_tools::InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints)
 {
-
-    Handle_TColStd_HArray1OfBoolean TangentFlags = new TColStd_HArray1OfBoolean(1,InterpolationPoints->Length());
-    for (int j=1;j<=TangentFlags->Length();++j)
-        TangentFlags->SetValue(j,true);
-    //GeomAPI_PointsToBSpline aBSplineInterpolation(InterpolationPoints, 3, 8, GeomAbs_C1, 1.0e-2);
+    //Handle_TColStd_HArray1OfBoolean TangentFlags = new TColStd_HArray1OfBoolean(1,InterpolationPoints->Length());
+    //for (int j=1;j<=TangentFlags->Length();++j)
+    //    TangentFlags->SetValue(j,true);
     GeomAPI_Interpolate aBSplineInterpolation(InterpolationPoints, Standard_False, Precision::Confusion());
-    aBSplineInterpolation.Load(Tangents,TangentFlags);
+    //aBSplineInterpolation.Load(Tangents,TangentFlags);
     aBSplineInterpolation.Perform();
     Handle_Geom_BSplineCurve aBSplineCurve(aBSplineInterpolation.Curve());
     //check results
@@ -899,6 +893,7 @@ Handle_Geom_BSplineCurve cutting_tools::InterpolateOrderedPoints(Handle(TColgp_H
 
     return aBSplineCurve;
 }
+
 
 bool cutting_tools::CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2)
 {
@@ -934,237 +929,424 @@ bool cutting_tools::CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edg
 }
 
 
-#include <GCPnts_QuasiUniformAbscissa.hxx>
-//bool cutting_tools::OffsetWires_Standard(float radius,float radius_slave,float sheet_thickness) //Version wo nur in X,Y-Ebene verschoben wird
-//{
-//    //for debuggin issues
-//    std::ofstream anoutput1,anoutput2;
-//    anoutput1.open("c:/master_output.txt");
-//    anoutput2.open("c:/slave_output.txt");
-//    std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
-//    current_flat_level = m_ordered_cuts.begin();
-//    //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
-//    for (m_ordered_cuts_it = m_ordered_cuts.begin()+1;m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
-//    {
-//        std::vector<std::pair<gp_Pnt,double> > MasterPointContainer;
-//        std::vector<gp_Pnt> SlavePointContainer;
-//        MasterPointContainer.clear();
-//        SlavePointContainer.clear();
-//
-//        //if the Shape is a wire, and we are not at the highest part level we just take it to generate points
-//        if (m_ordered_cuts_it->second.ShapeType() == TopAbs_WIRE)
-//        {
-//            current_flat_level = m_ordered_cuts_it;
-//            //This means that normally we have a combination of sharp edges
-//            //Therefore we take each edge and check the tangent continuity and seperate BSplineCurves of it
-//
-//            WireExplorer aWireExplorer(TopoDS::Wire(m_ordered_cuts_it->second));
-//            for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
-//            {
-//                BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
-//                GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,100);
-//                for (int i=1;i<=aProp.NbPoints();++i)
-//                {
-//                    std::pair<gp_Pnt,double> aTempPair;
-//                    //Check the direction
-//                    if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
-//                        curveAdaptor.D0(aProp.Parameter(i),aTempPair.first);
-//                    else curveAdaptor.D0(aProp.Parameter(aProp.NbPoints()-i+1),aTempPair.first);
-//                    aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
-//                    aTempPair.second = 0.0; //Initialize of Angle
-//                    //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-//                    if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
-//                    {
-//                        MasterPointContainer.push_back(aTempPair);
-//                        anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
-//
-//                        aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-//                        SlavePointContainer.push_back(aTempPair.first);
-//                        anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
-//
-//                    }
-//                    else if (MasterPointContainer.empty())
-//                    {
-//                        MasterPointContainer.push_back(aTempPair);
-//                        anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
-//
-//                        aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-//                        SlavePointContainer.push_back(aTempPair.first);
-//                        anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
-//
-//                    }
-//                }
-//                //Now Interpolate the two PointClouds only if we have a non-continuous edge or if we are finished
-//                //with all edges
-//                bool tangency = true;
-//                //If there are more Edges in the wire
-//                if (aWireExplorer.MoreEdge())
-//                {
-//                    tangency = CheckEdgeTangency(aWireExplorer.Current(),aWireExplorer.NextEdge());
-//                }
-//
-//                if (!tangency || !aWireExplorer.MoreEdge())
-//                {
-//                    std::vector<gp_Pnt> tempMasterPoints;
-//                    tempMasterPoints.clear();
-//                    for (unsigned int k=0;k<MasterPointContainer.size();++k)
-//                        tempMasterPoints.push_back(MasterPointContainer[k].first);
-//
-//                    m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
-//                    m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
-//                    MasterPointContainer.clear();
-//                    SlavePointContainer.clear();
-//                }
-//            }
-//
-//        }
-//        else
-//        {
-//            bool slave_done = false;
-//            //Access the PCurve to generate the points to offset
-//            Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
-//            for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
-//            {
-//                //Get the PCurve and the GeomSurface
-//                Handle_Geom2d_Curve a2DCurve;
-//                Handle_Geom_Surface aSurface;
-//                TopLoc_Location aLoc;
-//                TopoDS_Edge anEdge;
-//                double first2,last2;
-//                bool reversed = false;
-//                BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
-//                //Jetzt noch die resultierende Surface und die Curve sauber drehen
-//                //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
-//                if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED)
-//                    reversed = true;
-//
-//                BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
-//                GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,200);
-//                int PointSize = aPointGenerator.NbPoints();
-//                //Now get the surface normal to the generated points
-//                for (int i=1;i<=PointSize;++i)
-//                {
-//                    std::pair<gp_Pnt,double> PointContactPair;
-//                    gp_Pnt2d a2dParaPoint;
-//                    gp_Pnt aSurfacePoint;
-//                    TopoDS_Face aFace;
-//                    gp_Vec Uvec,Vvec,normalVec;
-//                    //If the curve is reversed we also have to reverse the point direction
-//                    if (reversed) a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
-//                    else a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
-//                    GeomAdaptor_Surface aGeom_Adaptor(aSurface);
-//                    int t = aGeom_Adaptor.GetType();
-//                    aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
-//                    //Handle_Geom_BSplineSurface aBSurface = aGeom_Adaptor.BSpline();
-//                    //aBSurface->MovePoint();
-//                    //aSurface->D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
-//                    //Jetzt den Normalenvector auf die Fläche ausrechnen
-//                    normalVec = Uvec;
-//                    normalVec.Cross(Vvec);
-//                    normalVec.Normalize();
-//                    //Jetzt ist die Normale berechnet und auch normalisiert
-//                    //Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
-//                    //dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
-//                    if (normalVec.Z()<0) normalVec.Multiply(-1.0);
-//                    /*if ( aSurface->.Orientation() == TopAbs_Reverse )
-//                    {
-//                     normalVec.Reverse()
-//                    }*/
-//                    //Mal kurz den Winkel zur Grund-Ebene ausrechnen
-//                    gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
-//                    //Den Winkel
-//                    PointContactPair.second = normalVec.Angle(planeVec);
-//                    gp_Vec NormalVecSlave = normalVec;
-//                    gp_Pnt SlavePoint;
-//                    //Jetzt die Z-Komponente auf 0 setzen
-//                    normalVec.SetZ(0.0);
-//                    normalVec.Normalize();
-//                    //Jetzt die Normale mit folgender Formel multiplizieren für den Master
-//                    double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
-//                    normalVec.Multiply(multiply);
-//                    //und hier für den Slave
-//                    NormalVecSlave.Normalize();
-//                    multiply = m_UserSettings.sheet_thickness+m_UserSettings.slave_radius;
-//                    NormalVecSlave.Multiply(multiply);
-//                    //Jetzt die Richtung umdrehen
-//                    NormalVecSlave.Multiply(-1.0);
-//                    //Jetzt den OffsetPunkt berechnen
-//                    PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
-//                    SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
-//                    PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
-//                    //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
-//                    //Den letzten hinzugefügten Punkt suchen
-//                    if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
-//                    {
-//                        MasterPointContainer.push_back(PointContactPair);
-//                        SlavePointContainer.push_back(SlavePoint);
-//                        anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-//                        anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
-//                    }
-//                    else if (MasterPointContainer.empty())
-//                    {
-//                        MasterPointContainer.push_back(PointContactPair);
-//                        SlavePointContainer.push_back(SlavePoint);
-//                        anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
-//                        anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
-//                    }
-//
-//                }
-//            }
-//
-//            std::vector<gp_Pnt> tempMasterPoints;
-//            tempMasterPoints.clear();
-//            for (unsigned int k=0;k<MasterPointContainer.size();++k) tempMasterPoints.push_back(MasterPointContainer[k].first);
-//
-//            m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(tempMasterPoints));
-//            //Before we Output the Slave we check if the lowest Coordinate can still touch the "currently" highest flat area
-//            for (unsigned int k=0;k<SlavePointContainer.size();++k)
-//            {
-//                if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
-//                {
-//                    TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
-//                    BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-//                    GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
-//                    SlavePointContainer.clear();
-//                    for (int i=1;i<=aProp.NbPoints();++i)
-//                    {
-//                        gp_Pnt SlaveOffsetPoint;
-//                        wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
-//                        SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
-//                        //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-//                        if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
-//                        {
-//                            SlavePointContainer.push_back(SlaveOffsetPoint);
-//                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-//                        }
-//                        else if (SlavePointContainer.empty())
-//                        {
-//                            SlavePointContainer.push_back(SlaveOffsetPoint);
-//                            anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
-//            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(SlavePointContainer));
-//
-//
-//
-//
-//
-//        }
-//
-//
-//    }
-//
-//    anoutput1.close();
-//    anoutput2.close();
-//
-//
-//    return true;
-//}
 
-#include "BRepAdaptor_CompCurve2.h"
+bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verschoben wird
+{
+    //for debugging issues
+    std::ofstream anoutput1,anoutput2;
+    anoutput1.open("c:/master_output.txt");
+    anoutput2.open("c:/slave_output.txt");
+    std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
+    current_flat_level = m_ordered_cuts.begin();
+    //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
+    for (m_ordered_cuts_it = m_ordered_cuts.begin()+1;m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
+    {
+        std::vector<std::pair<gp_Pnt,double> > MasterPointContainer;
+        std::vector<gp_Pnt> SlavePointContainer;
+        MasterPointContainer.clear();
+        SlavePointContainer.clear();
+        //Now we have to select which strategy to choose
+        //if the current levels is bigger,the same, or less then the previous one
+        if (m_ordered_cuts_it->first<(m_ordered_cuts_it-1)->first)
+		{
+            //Master is calculated as Usual, Slave follows the Master
+            //Check if current Level has got a Wire
+            if (m_ordered_cuts_it->second.ShapeType() == TopAbs_WIRE)
+            {
+                WireExplorer aWireExplorer(TopoDS::Wire(m_ordered_cuts_it->second));
+                for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
+                {
+                    BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,100);
+                    for (int i=1;i<=aProp.NbPoints();++i)
+                    {
+                        std::pair<gp_Pnt,double> aTempPair;
+                        //Check the direction
+                        if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
+                            curveAdaptor.D0(aProp.Parameter(i),aTempPair.first);
+                        else curveAdaptor.D0(aProp.Parameter(aProp.NbPoints()-i+1),aTempPair.first);
+                        aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
+                        aTempPair.second = 0.0; //Initialize of Angle
+                        //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
+                        {
+                            MasterPointContainer.push_back(aTempPair);
+                            anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+                            aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+                            SlavePointContainer.push_back(aTempPair.first);
+                            anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+                        }
+                        else if (MasterPointContainer.empty())
+                        {
+                            MasterPointContainer.push_back(aTempPair);
+                            anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+                            aTempPair.first.SetZ(aTempPair.first.Z() - m_UserSettings.master_radius - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+                            SlavePointContainer.push_back(aTempPair.first);
+                            anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+
+                        }
+                    }
+                    //Now Interpolate the Points only if we have a non-continuous edge or if we are finished
+                    //with all edges
+                    bool tangency = true;
+                    //If there are more Edges in the wire
+                    if (aWireExplorer.MoreEdge())
+                    {
+                        tangency = CheckEdgeTangency(aWireExplorer.Current(),aWireExplorer.NextEdge());
+                    }
+                    if (!tangency || !aWireExplorer.MoreEdge())
+                    {
+                        //Now Interpolate the Spiral, therefore we also have to take the curves normal directions
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+
+
+                        for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                        {
+                            InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                            InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                        }
+                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster));
+                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave));
+                        MasterPointContainer.clear();
+                        SlavePointContainer.clear();
+                    }
+                }
+            }
+            else //If the current Curve is no Wire (Mode <)
+            {
+                Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
+                for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
+                {
+                    //Get the PCurve and the GeomSurface
+                    Handle_Geom2d_Curve a2DCurve;
+                    Handle_Geom_Surface aSurface;
+                    TopLoc_Location aLoc;
+                    TopoDS_Edge anEdge;
+                    double first2,last2;
+                    bool reversed = false;
+                    BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
+                    //Jetzt noch die resultierende Surface und die Curve sauber drehen
+                    //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
+                    if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED)
+                        reversed = true;
+
+                    BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
+                    GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,200);
+                    int PointSize = aPointGenerator.NbPoints();
+                    //Now get the surface normal to the generated points
+                    for (int i=1;i<=PointSize;++i)
+                    {
+                        std::pair<gp_Pnt,double> PointContactPair;
+                        gp_Pnt2d a2dParaPoint;
+                        gp_Pnt aSurfacePoint;
+                        TopoDS_Face aFace;
+                        gp_Vec Uvec,Vvec,normalVec;
+                        //If the curve is reversed we also have to reverse the point direction
+                        if (reversed) a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
+                        else a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+                        GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+                        int t = aGeom_Adaptor.GetType();
+                        aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+                        //Jetzt den Normalenvector auf die Fläche ausrechnen
+                        normalVec = Uvec;
+                        normalVec.Cross(Vvec);
+                        normalVec.Normalize();
+                        //Jetzt ist die Normale berechnet und auch normalisiert
+                        //Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
+                        //dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+                        if (normalVec.Z()<0) normalVec.Multiply(-1.0);
+
+                        //Mal kurz den Winkel zur Grund-Ebene ausrechnen
+                        gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
+                        //Den Winkel
+                        PointContactPair.second = normalVec.Angle(planeVec);
+                        gp_Vec NormalVecSlave = normalVec;
+                        gp_Pnt SlavePoint;
+                        //Jetzt die Z-Komponente auf 0 setzen
+                        normalVec.SetZ(0.0);
+                        normalVec.Normalize();
+                        //Jetzt die Normale mit folgender Formel multiplizieren für den Master
+                        double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
+                        normalVec.Multiply(multiply);
+                        //und hier für den Slave
+                        NormalVecSlave.Normalize();
+                        multiply = m_UserSettings.sheet_thickness+m_UserSettings.slave_radius;
+                        NormalVecSlave.Multiply(multiply);
+                        //Jetzt die Richtung umdrehen
+                        NormalVecSlave.Multiply(-1.0);
+                        //Jetzt den OffsetPunkt berechnen
+                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
+                        SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
+                        PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
+                        //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
+                        //Den letzten hinzugefügten Punkt suchen
+                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
+                        {
+                            MasterPointContainer.push_back(PointContactPair);
+                            SlavePointContainer.push_back(SlavePoint);
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+                        }
+                        else if (MasterPointContainer.empty())
+                        {
+                            MasterPointContainer.push_back(PointContactPair);
+                            SlavePointContainer.push_back(SlavePoint);
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+                        }
+                    }
+                }
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                for (unsigned int k=0;k<MasterPointContainer.size();++k)
+                    InterpolationPointsMaster->SetValue(k+1,MasterPointContainer[k].first);
+
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster));
+
+                //Before we Output the Slave we check if the lowest Coordinate can still touch the "currently" highest flat area
+                for (unsigned int k=0;k<SlavePointContainer.size();++k)
+                {
+                    if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
+                    {
+                        TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
+                        BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+                        GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
+                        SlavePointContainer.clear();
+                        for (int i=1;i<=aProp.NbPoints();++i)
+                        {
+                            gp_Pnt SlaveOffsetPoint;
+                            wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
+                            SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
+                            //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                            {
+                                SlavePointContainer.push_back(SlaveOffsetPoint);
+                                anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                            }
+                            else if (SlavePointContainer.empty())
+                            {
+                                SlavePointContainer.push_back(SlaveOffsetPoint);
+                                anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                            }
+                        }
+                        break;
+                    }
+                }
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                for (unsigned int t=0;t<SlavePointContainer.size();++t)
+                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave));
+                SlavePointContainer.clear();
+                MasterPointContainer.clear();
+                //SlaveTool Path finished
+            }//Current Curve < last curve is finished here
+        }
+        if (fabs(m_ordered_cuts_it->first-(m_ordered_cuts_it-1)->first)<=0.01)
+        {
+            //we only set the new flat level wire here
+            //no Toolpath is calculated
+            current_flat_level = m_ordered_cuts_it;
+        }//end of current == last
+        if (m_ordered_cuts_it->first>(m_ordered_cuts_it-1)->first)
+        {
+            //The Slave Tool is now the Master Tool and therefore we only have to exchange < case
+            //Check if current Level has got a Wire
+            if (m_ordered_cuts_it->second.ShapeType() == TopAbs_WIRE)
+            {
+                WireExplorer aWireExplorer(TopoDS::Wire(m_ordered_cuts_it->second));
+                for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
+                {
+                    BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,100);
+                    for (int i=1;i<=aProp.NbPoints();++i)
+                    {
+                        std::pair<gp_Pnt,double> aTempPair;
+                        //Check the direction
+                        if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
+                            curveAdaptor.D0(aProp.Parameter(i),aTempPair.first);
+                        else curveAdaptor.D0(aProp.Parameter(aProp.NbPoints()-i+1),aTempPair.first);
+						aTempPair.first.SetZ(aTempPair.first.Z() -m_UserSettings.slave_radius -m_UserSettings.sheet_thickness);
+                        aTempPair.second = 0.0; //Initialize of Angle
+                        //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
+                        {
+                            MasterPointContainer.push_back(aTempPair);
+                            anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+							aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius + m_UserSettings.slave_radius + m_UserSettings.sheet_thickness);
+                            SlavePointContainer.push_back(aTempPair.first);
+                            anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+                        }
+                        else if (MasterPointContainer.empty())
+                        {
+                            MasterPointContainer.push_back(aTempPair);
+                            anoutput1 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+                            aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius + m_UserSettings.slave_radius + m_UserSettings.sheet_thickness);
+                            SlavePointContainer.push_back(aTempPair.first);
+                            anoutput2 << aTempPair.first.X() <<","<< aTempPair.first.Y() <<","<< aTempPair.first.Z()<<std::endl;
+                        }
+                    }
+                    //Now Interpolate the Points only if we have a non-continuous edge or if we are finished
+                    //with all edges
+                    bool tangency = true;
+                    //If there are more Edges in the wire
+                    if (aWireExplorer.MoreEdge())
+                    {
+                        tangency = CheckEdgeTangency(aWireExplorer.Current(),aWireExplorer.NextEdge());
+                    }
+                    if (!tangency || !aWireExplorer.MoreEdge())
+                    {
+                        //Now Interpolate the Spiral, therefore we also have to take the curves normal directions
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                        for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                        {
+                            InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                            InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                        }
+                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster));
+                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave));
+                        MasterPointContainer.clear();
+                        SlavePointContainer.clear();
+                    }
+                }
+            }
+            else //If the current Curve is no Wire (Mode >)
+            {
+                Edgesort aCutShapeSorter(m_ordered_cuts_it->second);
+                for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
+                {
+                    //Get the PCurve and the GeomSurface
+                    Handle_Geom2d_Curve a2DCurve;
+                    Handle_Geom_Surface aSurface;
+                    TopLoc_Location aLoc;
+                    TopoDS_Edge anEdge;
+                    double first2,last2;
+                    bool reversed = false;
+                    BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
+                    //Jetzt noch die resultierende Surface und die Curve sauber drehen
+                    //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
+                    if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED)
+                        reversed = true;
+
+                    BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
+                    GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,200);
+                    int PointSize = aPointGenerator.NbPoints();
+                    //Now get the surface normal to the generated points
+                    for (int i=1;i<=PointSize;++i)
+                    {
+                        std::pair<gp_Pnt,double> PointContactPair;
+                        gp_Pnt2d a2dParaPoint;
+                        gp_Pnt aSurfacePoint;
+                        TopoDS_Face aFace;
+                        gp_Vec Uvec,Vvec,normalVec;
+                        //If the curve is reversed we also have to reverse the point direction
+                        if (reversed) a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
+                        else a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+                        GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+                        int t = aGeom_Adaptor.GetType();
+                        aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+                        //Jetzt den Normalenvector auf die Fläche ausrechnen
+                        normalVec = Uvec;
+                        normalVec.Cross(Vvec);
+                        normalVec.Normalize();
+                        //Jetzt ist die Normale berechnet und auch normalisiert
+                        //Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
+                        //dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+                        if (normalVec.Z()<0) normalVec.Multiply(-1.0);
+
+                        //Mal kurz den Winkel zur Grund-Ebene ausrechnen
+                        gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
+                        //Den Winkel
+                        PointContactPair.second = normalVec.Angle(planeVec);
+                        gp_Vec NormalVecSlave = normalVec;
+                        gp_Pnt SlavePoint;
+                        //Jetzt die Z-Komponente auf 0 setzen
+                        normalVec.SetZ(0.0);
+                        normalVec.Normalize();
+                        //Jetzt die Normale mit folgender Formel multiplizieren für den Master
+                        double multiply = (m_UserSettings.slave_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second))+m_UserSettings.sheet_thickness;
+                        //As the Master is now the Slave we have to multiply it also by -1.0
+                        normalVec.Multiply(-multiply);
+                        //und hier für den Slave
+                        NormalVecSlave.Normalize();
+                        multiply = m_UserSettings.master_radius;
+                        NormalVecSlave.Multiply(multiply);
+                        //Jetzt den OffsetPunkt berechnen
+                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
+                        SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
+                        PointContactPair.first.SetZ(PointContactPair.first.Z() - m_UserSettings.slave_radius);
+                        //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
+                        //Den letzten hinzugefügten Punkt suchen
+                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
+                        {
+                            MasterPointContainer.push_back(PointContactPair);
+                            SlavePointContainer.push_back(SlavePoint);
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+                        }
+                        else if (MasterPointContainer.empty())
+                        {
+                            MasterPointContainer.push_back(PointContactPair);
+                            SlavePointContainer.push_back(SlavePoint);
+                            anoutput1 << PointContactPair.first.X() <<","<< PointContactPair.first.Y() <<","<< PointContactPair.first.Z()<<std::endl;
+                            anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
+                        }
+                    }
+                }
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                for (unsigned int k=0;k<MasterPointContainer.size();++k)
+                    InterpolationPointsMaster->SetValue(k+1,MasterPointContainer[k].first);
+
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster));
+
+                //Before we Output the Slave we check if the lowest Coordinate can still touch the "currently" lowest flat area
+                for (unsigned int k=0;k<SlavePointContainer.size();++k)
+                {
+                    if ((SlavePointContainer[k].Z()-m_UserSettings.master_radius)<current_flat_level->first)
+                    {
+                        TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
+                        BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+                        GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
+                        SlavePointContainer.clear();
+                        for (int i=1;i<=aProp.NbPoints();++i)
+                        {
+                            gp_Pnt SlaveOffsetPoint;
+                            wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
+                            SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() + m_UserSettings.master_radius);
+                            //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                            {
+                                SlavePointContainer.push_back(SlaveOffsetPoint);
+                                anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                            }
+                            else if (SlavePointContainer.empty())
+                            {
+                                SlavePointContainer.push_back(SlaveOffsetPoint);
+                                anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
+                            }
+                        }
+                        break;
+                    }
+                }
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                for (unsigned int t=0;t<SlavePointContainer.size();++t)
+                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave));
+                SlavePointContainer.clear();
+                MasterPointContainer.clear();
+                //SlaveTool Path finished
+            }//Current Curve > last curve is finished here
+        }
+	}
+    return true;
+}
+
+
 Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
 {
     //Fill Bounding Boxes with Wires
@@ -1398,7 +1580,7 @@ gp_Dir cutting_tools::getPerpendicularVec(gp_Vec& anInput)
     }
     return Output;
 }
-#include <IntCurvesFace_ShapeIntersector.hxx>
+
 bool cutting_tools::OffsetWires_Spiral()
 {
     std::ofstream anoutput1;
@@ -1434,7 +1616,7 @@ bool cutting_tools::OffsetWires_Spiral()
                     BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
                     //Adjust the point amount based on the curve length make every 0.3mm a point
                     //GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,int(GetEdgeLength(aWireExplorer.Current())/0.4));
-                    GCPnts_QuasiUniformDeflection aProp(curveAdaptor,0.1);
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,1000);
                     for (int i=1;i<=aProp.NbPoints();++i)
                     {
                         //Check the direction
@@ -1469,13 +1651,12 @@ bool cutting_tools::OffsetWires_Spiral()
                     int points = anIntersector.NbPnt();
                     if (points>0)
                     {
-                        gp_Pnt TestPoint;
                         int current_index;
-                        double shortestDistance, shortestDistanceOld = 200.0;
+                        float shortestDistance, shortestDistanceOld = FLT_MAX;
                         for (int g=1;g<=points;g++)
                         {
-                            TestPoint = anIntersector.Pnt(g);
-                            shortestDistance = TestPoint.Distance(TempSpiralPoints[j].SurfacePoint);
+                            const gp_Pnt& TestPoint = anIntersector.Pnt(g);
+							shortestDistance = TestPoint.SquareDistance(TempSpiralPoints[j].SurfacePoint);
                             if (shortestDistance<shortestDistanceOld)
                             {
                                 current_index = g;
@@ -1529,7 +1710,7 @@ bool cutting_tools::OffsetWires_Spiral()
                 }
 
 
-                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints));
             }
 
 
@@ -1561,7 +1742,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
                 {
                     BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
-                    GCPnts_QuasiUniformDeflection aProp(curveAdaptor,0.1);
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,100);
                     for (int i=1;i<=aProp.NbPoints();++i)
                     {
                         std::pair<gp_Pnt,double> aTempPair;
@@ -1593,7 +1774,6 @@ bool cutting_tools::OffsetWires_FeatureBased()
                     }
                     if (!tangency || !aWireExplorer.MoreEdge())
                     {
-
                         //Now Interpolate the Spiral, therefore we also have to take the curves normal directions
                         Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
                         TColgp_Array1OfVec Tangents(1,MasterPointContainer.size());
@@ -1613,7 +1793,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                                 Tangents.SetValue(t+1,Tangents.Value(t));
                             }
                         }
-                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints));
                         MasterPointContainer.clear();
                     }
                 }
@@ -1636,7 +1816,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                         reversed = true;
 
                     BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
-                    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+                    GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,1000);
                     int PointSize = aPointGenerator.NbPoints();
                     //Now get the surface normal to the generated points
                     for (int i=1;i<=PointSize;++i)
@@ -1706,13 +1886,13 @@ bool cutting_tools::OffsetWires_FeatureBased()
                         Tangents.SetValue(t+1,Tangents.Value(t));
                     }
                 }
-                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints));
                 MasterPointContainer.clear();
             }//end calculation of the master if its not a wire
             //Calculate the Slave Toolpath
             TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
             BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-            GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
+            GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
             SlavePointContainer.clear();
             for (int i=1;i<=aProp.NbPoints();++i)
             {
@@ -1750,7 +1930,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                     Tangents.SetValue(t+1,Tangents.Value(t));
                 }
             }
-            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints));
 
             //SlaveTool Path finished
         }//Current Curve < last curve is finished here
@@ -1770,7 +1950,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
                 {
                     BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
-                    GCPnts_QuasiUniformDeflection aProp(curveAdaptor,0.1);
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,100);
                     for (int i=1;i<=aProp.NbPoints();++i)
                     {
                         std::pair<gp_Pnt,double> aTempPair;
@@ -1822,7 +2002,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                                 Tangents.SetValue(t+1,Tangents.Value(t));
                             }
                         }
-                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints));
                         MasterPointContainer.clear();
                     }
                 }
@@ -1845,7 +2025,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                         reversed = true;
 
                     BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
-                    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+                    GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,1000);
                     int PointSize = aPointGenerator.NbPoints();
                     //Now get the surface normal to the generated points
                     for (int i=1;i<=PointSize;++i)
@@ -1918,13 +2098,13 @@ bool cutting_tools::OffsetWires_FeatureBased()
                         Tangents.SetValue(t+1,Tangents.Value(t));
                     }
                 }
-                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints));
                 MasterPointContainer.clear();
             }//end calculation of the master if its not a wire
             //Calculate the Slave Toolpath which corresponds to the Master now
             TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
             BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-            GCPnts_QuasiUniformDeflection aProp(wireAdaptor,0.1);
+            GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
             SlavePointContainer.clear();
             for (int i=1;i<=aProp.NbPoints();++i)
             {
@@ -1962,12 +2142,7 @@ bool cutting_tools::OffsetWires_FeatureBased()
                     Tangents.SetValue(t+1,Tangents.Value(t));
                 }
             }
-            m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,Tangents));
-
-
-
-
-
+            m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints));
             //SlaveTool Path finished
         }//Current Curve > Last Curve
     }//Main for Loop which goes through all the curves

@@ -1168,7 +1168,7 @@ double best_fit::CompTotalError()
 
     m_error.resize(m_CadMesh.CountPoints());
 
-    int c=0;
+    unsigned int c=0;
     int i=0;
     for (p_it.Begin(); p_it.More(); p_it.Next())
     {
