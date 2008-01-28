@@ -50,6 +50,7 @@ protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
+    void contextMenuEvent(QContextMenuEvent *);
 
 private:
     SbVec3f coord;

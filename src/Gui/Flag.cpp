@@ -129,6 +129,21 @@ void Flag::mousePressEvent(QMouseEvent *e)
     }
 }
 
+void Flag::contextMenuEvent(QContextMenuEvent * e)
+{
+    QMenu menu(this);
+
+    QAction* topleft = menu.addAction(tr("Top left"));
+    topleft->setCheckable(true);
+    QAction* botleft = menu.addAction(tr("Bottom left"));
+    botleft->setCheckable(true);
+    QAction* topright = menu.addAction(tr("Top right"));
+    topright->setCheckable(true);
+    QAction* botright = menu.addAction(tr("Bottom right"));
+    botright->setCheckable(true);
+    menu.exec(e->globalPos());
+}
+
 QSize Flag::sizeHint() const
 {
     return QSize(100, 20);
