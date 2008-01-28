@@ -55,6 +55,7 @@
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
 #include <Gui/Window.h>
+#include <Gui/Flag.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
@@ -421,6 +422,10 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
             // get the boundary to the picked facet
             unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
             that->faceInfo(uFacet);
+            Gui::Flag* flag = new Gui::Flag;
+            flag->setText(QString("Index: %1").arg(uFacet));
+            flag->setOrigin(point->getPoint());
+            view->addFlag(flag, Gui::FlagLayout::TopRight);
         }
     }
 }

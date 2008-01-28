@@ -27,6 +27,7 @@
 #include <QLayout>
 #include <QRect>
 #include <QWidgetItem>
+#include <Inventor/SbVec3f.h>
 
 namespace Gui {
 
@@ -50,6 +51,7 @@ protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
+    void resizeEvent(QResizeEvent *);
     void contextMenuEvent(QContextMenuEvent *);
 
 private:

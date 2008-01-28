@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #include <Gui/Qt4All.h>
+#include <Inventor/SbVec2s.h>
 
 #include "Flag.h"
 
@@ -56,11 +57,14 @@ const SbVec3f& Flag::getOrigin() const
 
 void Flag::drawLine (int tox, int toy)
 {
-    // Make current context
+    if (!isVisible())
+        return;
+    // Get position of line
     QSize s = parentWidget()->size();
     SbVec2s view(s.width(), s.height());
     int fromx = pos().x();
-    int fromy = pos().y();
+    int fromy = pos().y() + height()/2;
+    if (false) fromx += width();
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -106,6 +110,28 @@ void Flag::drawLine (int tox, int toy)
 
     glPopAttrib();
     glPopMatrix();
+}
+
+void Flag::resizeEvent(QResizeEvent * )
+{
+    int w = width();
+    int h = height();
+    QPolygon p;
+    if (false) {
+        p.append(QPoint(0, 0));
+        p.append(QPoint(w-h/2, 0));
+        p.append(QPoint(w, h/2));
+        p.append(QPoint(w-h/2, h));
+        p.append(QPoint(0, h));
+    }
+    else {
+        p.append(QPoint(0, h/2));
+        p.append(QPoint(h/2, 0));
+        p.append(QPoint(w, 0));
+        p.append(QPoint(w, h));
+        p.append(QPoint(h/2, h));
+    }
+    setMask(QRegion(p));
 }
 
 void Flag::paintEvent(QPaintEvent* e)
@@ -283,7 +309,6 @@ QSize FlagLayout::calculateSize(SizeType sizeType) const
 
     for (int i = 0; i < list.size(); ++i) {
         ItemWrapper *wrapper = list.at(i);
-        Position position = wrapper->position;
         QSize itemSize;
 
         if (sizeType == MinimumSize)
