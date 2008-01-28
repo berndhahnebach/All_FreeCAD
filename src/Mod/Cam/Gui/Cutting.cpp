@@ -229,7 +229,7 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
 	switch(m_Mode)
 	{
 		case 1:
-		//m_CuttingAlgo->OffsetWires_Standard();
+		m_CuttingAlgo->OffsetWires_Standard();
 		break;
 		case 2:
 		m_CuttingAlgo->OffsetWires_FeatureBased();
