@@ -29,7 +29,7 @@
 using namespace Gui;
 
 Flag::Flag(QWidget* parent)
-  : QLabel(parent)
+  : QLabel(parent), coord(0.0f, 0.0f, 0.0f)
 {
     // use white background by default
     setAutoFillBackground(true);
@@ -42,6 +42,70 @@ Flag::Flag(QWidget* parent)
 
 Flag::~Flag()
 {
+}
+
+void Flag::setOrigin(const SbVec3f& v)
+{
+    this->coord = v;
+}
+
+const SbVec3f& Flag::getOrigin() const
+{
+    return this->coord;
+}
+
+void Flag::drawLine (int tox, int toy)
+{
+    // Make current context
+    QSize s = parentWidget()->size();
+    SbVec2s view(s.width(), s.height());
+    int fromx = pos().x();
+    int fromy = pos().y();
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, view[0], 0, view[1], -1, 1);
+
+    // Store GL state
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GLfloat depthrange[2];
+    glGetFloatv(GL_DEPTH_RANGE, depthrange);
+    GLdouble projectionmatrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
+
+    glDepthFunc(GL_ALWAYS);
+    glDepthMask(GL_TRUE);
+    glDepthRange(0,0);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glDisable(GL_BLEND);
+
+    glColor4f(1.0, 1.0, 1.0, 0.0);
+    glViewport(0, 0, view[0], view[1]);
+
+    // the line
+    glLineWidth(1.0f);
+    glBegin(GL_LINE_LOOP);
+        glVertex3i(fromx, view[1]-fromy, 0);
+        glVertex3i(tox  , view[1]-toy  , 0);
+    glEnd();
+
+    glPointSize(3.0f);
+    glBegin(GL_POINTS);
+        glVertex3i(tox  , view[1]-toy  , 0);
+    glEnd();
+
+    glFlush();
+
+    // Reset original state
+    glDepthRange(depthrange[0], depthrange[1]);
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(projectionmatrix);
+
+    glPopAttrib();
+    glPopMatrix();
 }
 
 void Flag::paintEvent(QPaintEvent* e)
