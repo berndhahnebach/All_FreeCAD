@@ -121,8 +121,7 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 void
 View3DInventorViewer::seekToCamera(const SbVec3f & scenepos)
 {
-	SoCamera *cam = getCamera();
-	cam;
+  //SoCamera *cam = getCamera();
 
   //SbVec3f hitpoint(scenepos);
 
@@ -650,8 +649,8 @@ void View3DInventorViewer::actualRedraw(void)
         if (flag) {
             SbVec3f pt = flag->getOrigin();
             vv.projectToScreen(pt, pt);
-            int tox = pt[0] * size[0];
-            int toy = (1.0f-pt[1]) * size[1];
+            int tox = (int)(pt[0] * size[0]);
+            int toy = (int)((1.0f-pt[1]) * size[1]);
             flag->drawLine(tox, toy);
         }
     }
@@ -2389,5 +2388,7 @@ void View3DInventorViewer::addFlag(Flag* item, FlagLayout::Position pos)
 {
     item->setParent(this->getGLWidget());
     _flaglayout->addWidget(item, pos);
+    item->show();
+    this->scheduleRedraw();
 }
 
