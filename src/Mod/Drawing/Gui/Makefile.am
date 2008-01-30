@@ -1,5 +1,7 @@
 SUBDIRS=Resources
 
+if OCC_LIBRARY_FILES
+
 lib_LTLIBRARIES=libDrawingGui.la DrawingGui.la
 
 BUILT_SOURCES=\
@@ -64,6 +66,8 @@ qrc_%.cpp: %.qrc
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+
+endif
 
 libdir = $(prefix)/Mod/Drawing
 
