@@ -549,7 +549,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     openCommand("Mesh VertexCurvature");
     App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( *it );
     if (grp)
-      doCommand(Doc,"App.activeDocument().getObject(\"%s\").addObject(\"Mesh::Curvature\",\"%s\")",grp->getNameInDocument(), fName.c_str());
+      doCommand(Doc,"App.activeDocument().getObject(\"%s\").newObject(\"Mesh::Curvature\",\"%s\")",grp->getNameInDocument(), fName.c_str());
     else
       doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());

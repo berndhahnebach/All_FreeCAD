@@ -53,7 +53,7 @@ class CleanupHandler : public QObject
 public:
     CleanupHandler();
 
-public slots:
+public Q_SLOTS:
     void cleanup();
 };
 

@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		ui_DlgPartBox.h \
 		ui_DlgPartImportIges.h \
 		ui_DlgPartImportStep.h \
+		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgPartBoxImp.cpp \

@@ -129,18 +129,21 @@ void DlgPreferencesImp::addPage(const QString& className, const QString& group)
 }
 
 /**
- * Activates the page at position \a pos of the group with name \a groupName.
+ * Activates the page at position \a index of the group with name \a group.
  */
-//void DlgPreferencesImp::activatePageOfGroup( int pos, const char* groupName )
-//{
-//  QMap<QString, int>::ConstIterator it = _mGroupIDs.find( groupName );
-//  if ( it != _mGroupIDs.end() )
-//  {
-//    QTabWidget* tab = getPreferenceGroup( it.value() );
-//    listBox->setCurrentItem( it.value() );
-//    tab->setCurrentIndex( pos );
-//  }
-//}
+void DlgPreferencesImp::activateGroupPage(const QString& group, int index)
+{
+    int ct = listBox->count();
+    for (int i=0; i<ct; i++) {
+        QListWidgetItem* item = listBox->item(i);
+        if (item->data(Qt::UserRole).toString() == group) {
+            listBox->setCurrentItem(item);
+            QTabWidget* tabWidget = (QTabWidget*)tabWidgetStack->widget(i);
+            tabWidget->setCurrentIndex(index);
+            break;
+        }
+    }
+}
 
 void DlgPreferencesImp::accept()
 {
@@ -179,7 +182,7 @@ void DlgPreferencesImp::on_buttonApply_clicked()
         QTabWidget* tabWidget = (QTabWidget*)tabWidgetStack->widget(i);
         for (int j=0; j<tabWidget->count(); j++) {
             PreferencePage* page = qobject_cast<PreferencePage*>(tabWidget->widget(j));
-	  	    if (page)
+            if (page)
                 page->saveSettings();
         }
     }
