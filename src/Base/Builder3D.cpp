@@ -174,7 +174,7 @@ void Builder3D::addText(const Base::Vector3f &vec,const char * text, float color
 void Builder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
-  unsigned int txt_len = strlen(format)+4024;
+  size_t txt_len = strlen(format)+4024;
   char* txt = (char*) malloc(txt_len);
 
   va_list namelessVars;
@@ -474,7 +474,7 @@ void InventorBuilder::addText(const Vector3f &vec,const char * text, float color
 void InventorBuilder::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
-  unsigned int txt_len = strlen(format)+4024;
+  size_t txt_len = strlen(format)+4024;
   char* txt = (char*) malloc(txt_len);
 
   va_list namelessVars;

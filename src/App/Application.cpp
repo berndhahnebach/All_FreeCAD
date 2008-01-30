@@ -321,8 +321,8 @@ string Application::getUniqueDocumentName(const char *Name) const
             if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName) { // Prefix gleich
                 string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
                 if (clSuffix.size() > 0) {
-                    int nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==-1)
+                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
+                    if (nPos==std::string::npos)
                         nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
                 }
             }
@@ -476,8 +476,8 @@ void Application::addOpenType(const char* Type, const char* ModuleName)
     // Extract each file type from 'Type' literal
     std::string::size_type pos = item.filter.find("*.");
     while ( pos != std::string::npos ) {
-        unsigned int next = item.filter.find_first_of(" )", pos+1);
-        unsigned int len = next-pos-2;
+        std::string::size_type next = item.filter.find_first_of(" )", pos+1);
+        std::string::size_type len = next-pos-2;
         std::string type = item.filter.substr(pos+2,len);
         item.types.push_back(type);
         pos = item.filter.find("*.", next);

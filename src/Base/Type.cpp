@@ -121,7 +121,7 @@ void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
 string Type::getModuleName(const char* ClassName)
 {
   string temp(ClassName);
-  unsigned int pos = temp.find_first_of("::");
+  std::string::size_type pos = temp.find_first_of("::");
 
   if(pos != std::string::npos)
     return string(temp,0,pos);

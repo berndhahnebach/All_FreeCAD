@@ -154,7 +154,7 @@ std::string FileInfo::dirPath () const
 string FileInfo::fileNamePure () const
 {
   string temp = fileName();
-  unsigned int pos = temp.find_last_of('.');
+  std::string::size_type pos = temp.find_last_of('.');
   
   if(pos != string::npos)
     return temp.substr(0,pos);

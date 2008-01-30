@@ -802,6 +802,14 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
   return aulBelongs;
 }
 
+#include <boost/cstdint.hpp>
+
+// Just to test for 64-bit platform
+namespace MeshCore {
+typedef boost::uint16_t uint16;
+typedef boost::uint32_t uint32;
+} // namespace MeshCore
+
 void MeshKernel::Write (std::ostream &rclOut) const 
 {
     if (!rclOut || rclOut.bad())
@@ -810,8 +818,13 @@ void MeshKernel::Write (std::ostream &rclOut) const
     Base::OutputStream str(rclOut);
 
     // Write a header with a "magic number" and a version
+#if 0
     str << (unsigned long)0xA0B0C0D0;
     str << (unsigned long)0x010000;
+#else
+    str << (uint32)0xA0B0C0D0;
+    str << (uint32)0x010000;
+#endif
 
     char szInfo[257]; // needs an additional byte for zero-termination
     strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-"
@@ -822,17 +835,32 @@ void MeshKernel::Write (std::ostream &rclOut) const
         str << szInfo[i];
 
     // write the number of points and facets
+#if 0
     str << CountPoints() << CountFacets();
+#else
+    str << (uint32)CountPoints() << (uint32)CountFacets();
+#endif
 
     // write the data
     for (MeshPointArray::_TConstIterator it = _aclPointArray.begin(); it != _aclPointArray.end(); ++it) {
         str << it->x << it->y << it->z;
     }
 
+#if 0
     for (MeshFacetArray::_TConstIterator it = _aclFacetArray.begin(); it != _aclFacetArray.end(); ++it) {
         str << it->_aulPoints[0] << it->_aulPoints[1] << it->_aulPoints[2];
         str << it->_aulNeighbours[0] << it->_aulNeighbours[1] << it->_aulNeighbours[2];
     }
+#else
+    for (MeshFacetArray::_TConstIterator it = _aclFacetArray.begin(); it != _aclFacetArray.end(); ++it) {
+        str << (uint32)it->_aulPoints[0] 
+            << (uint32)it->_aulPoints[1] 
+            << (uint32)it->_aulPoints[2];
+        str << (uint32)it->_aulNeighbours[0] 
+            << (uint32)it->_aulNeighbours[1] 
+            << (uint32)it->_aulNeighbours[2];
+    }
+#endif
 
     str << _clBoundBox.MinX << _clBoundBox.MaxX;
     str << _clBoundBox.MinY << _clBoundBox.MaxY;
@@ -848,7 +876,11 @@ void MeshKernel::Read (std::istream &rclIn)
     Base::InputStream str(rclIn);
 
     // Read the header with a "magic number" and a version
+#if 0
     unsigned long magic, version, swap_magic, swap_version;
+#else
+    uint32 magic, version, swap_magic, swap_version;
+#endif
     str >> magic >> version;
     swap_magic = magic; Base::SwapEndian(swap_magic);
     swap_version = version; Base::SwapEndian(swap_version);
@@ -869,7 +901,11 @@ void MeshKernel::Read (std::istream &rclIn)
             str >> szInfo[i];
 
         // read the number of points and facets
+#if 0
         unsigned long uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
+#else
+        uint32 uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
+#endif
         str >> uCtPts >> uCtFts;
 
         try {
@@ -882,10 +918,25 @@ void MeshKernel::Read (std::istream &rclIn)
           
             MeshFacetArray facetArray;
             facetArray.resize(uCtFts);
+#if 0
             for (MeshFacetArray::_TIterator it = facetArray.begin(); it != facetArray.end(); ++it) {
                 str >> it->_aulPoints[0] >> it->_aulPoints[1] >> it->_aulPoints[2];
                 str >> it->_aulNeighbours[0] >> it->_aulNeighbours[1] >> it->_aulNeighbours[2];
             }
+#else
+            uint32 v1, v2, v3;
+            for (MeshFacetArray::_TIterator it = facetArray.begin(); it != facetArray.end(); ++it) {
+                str >> v1 >> v2 >> v3;
+                it->_aulPoints[0] = v1;
+                it->_aulPoints[1] = v2;
+                it->_aulPoints[2] = v3;
+
+                str >> v1 >> v2 >> v3;
+                it->_aulNeighbours[0] = v1;
+                it->_aulNeighbours[1] = v2;
+                it->_aulNeighbours[2] = v3;
+            }
+#endif
 
             str >> _clBoundBox.MinX >> _clBoundBox.MaxX;
             str >> _clBoundBox.MinY >> _clBoundBox.MaxY;
