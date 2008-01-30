@@ -34,6 +34,7 @@
 namespace Gui {
 namespace Dialog {
 class PreferencePage;
+
 /**
  * This class implements a dialog containing several preference pages.
  * 
@@ -115,7 +116,7 @@ public:
     ~DlgPreferencesImp();
 
     void accept();
-    //void activatePageOfGroup( int pos, const char* groupName );
+    void activateGroupPage(const QString& group, int id);
 
 protected:
     void changeEvent(QEvent *e);
