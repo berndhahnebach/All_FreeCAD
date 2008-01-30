@@ -79,7 +79,7 @@ protected:
     Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
 
     // nodes for the data representation
     SoSeparator *EdgeRoot;

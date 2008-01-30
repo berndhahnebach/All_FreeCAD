@@ -534,7 +534,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         Standard_Integer nbNodesInFace,nbTriInFace;
         SbVec3f* vertices=0;
         SbVec3f* vertexnormals=0;
-        long* cons=0;
+        int32_t* cons=0;
 
         transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
 
@@ -601,7 +601,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
     return true;
 }
 
-void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
 {
     TopLoc_Location aLoc;
 
@@ -629,7 +629,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
         (*vertexnormals)[i]= SbVec3f(0.0,0.0,0.0);
     }
 
-    *cons = new long[4*(nbTriInFace)];
+    *cons = new int32_t[4*(nbTriInFace)];
 
     // check orientation
     TopAbs_Orientation orient = aFace.Orientation();
