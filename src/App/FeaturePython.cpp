@@ -148,8 +148,8 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
             if (rclObjName.substr(0, CleanName.size()) == CleanName) { // Prefix gleich
                 string clSuffix(rclObjName.substr(CleanName.size()));
                 if (clSuffix.size() > 0) {
-                    int nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==-1)
+                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
+                    if (nPos==std::string::npos)
                         nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
                 }
             }

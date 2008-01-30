@@ -536,7 +536,7 @@ void Application::tryClose ( QCloseEvent * e )
     }
 
     // remove all documents
-    unsigned long cnt = d->lpcDocuments.size();
+    size_t cnt = d->lpcDocuments.size();
     while ( d->lpcDocuments.size() > 0 && cnt > 0 )
     {
       // destroys also the Gui document
@@ -859,7 +859,7 @@ CommandManager &Application::commandManager(void)
 void Application::runCommand(bool bForce, const char* sCmd,...)
 {
   // temp buffer
-  unsigned int format_len = strlen(sCmd)+4024;
+  size_t format_len = strlen(sCmd)+4024;
   char* format = (char*) malloc(format_len);
   va_list namelessVars;
   va_start(namelessVars, sCmd);  // Get the "..." vars

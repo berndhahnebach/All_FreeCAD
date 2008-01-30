@@ -1162,7 +1162,7 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
 void StdCmdViewIvIssueCamPos::activated(int iMsg)
 {
   std::string Temp,Temp2;
-  unsigned int pos;
+  std::string::size_type pos;
 
   const char* ppReturn=0;
   getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);

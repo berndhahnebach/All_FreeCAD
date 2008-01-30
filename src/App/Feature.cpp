@@ -133,7 +133,7 @@ const char* AbstractFeature::getStatusString(void) const
 void AbstractFeature::setError(const char* pMsg,...)
 {
     // temp buffer
-    unsigned int format_len = strlen(pMsg)+4024;
+    size_t format_len = strlen(pMsg)+4024;
     char* format = (char*) malloc(format_len);
 
     va_list namelessVars;
