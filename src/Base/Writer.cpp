@@ -116,7 +116,7 @@ string Writer::getUniqueFileName(const char *Name)
         string clSuffix(rclObjName.substr(strlen(Name)));
         if (clSuffix.size() > 0){
             std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-          if(nPos==-1)
+          if(nPos==std::string::npos)
             nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
         }
       }
