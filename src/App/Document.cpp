@@ -669,6 +669,8 @@ bool Document::save (void)
         // write additional files
         writer.writeFiles();
 
+        GetApplication().signalSaveDocument(*this);
+
         return true;
     }
 
@@ -707,6 +709,8 @@ void Document::restore (void)
     // reset all touched
     for (std::map<std::string,DocumentObject*>::iterator It= ObjectMap.begin();It!=ObjectMap.end();++It)
         It->second->purgeTouched();
+
+    GetApplication().signalRestoreDocument(*this);
 }
 
 bool Document::isSaved() const
