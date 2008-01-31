@@ -36,14 +36,14 @@ using namespace std;
 DlgSettingsImageImp::DlgSettingsImageImp( QWidget* parent )
   : QWidget( parent )
 {
-  this->setupUi(this);
-  SbVec2s res = SoOffscreenRenderer::getMaximumResolution();
-  spinWidth->setMaximum((int)res[0]);
-  spinHeight->setMaximum((int)res[1]);
+    this->setupUi(this);
+    SbVec2s res = SoOffscreenRenderer::getMaximumResolution();
+    spinWidth->setMaximum((int)res[0]);
+    spinHeight->setMaximum((int)res[1]);
 
-  _width = width();
-  _height = height();
-  _fRatio = (float)_width/(float)_height;
+    _width = width();
+    _height = height();
+    _fRatio = (float)_width/(float)_height;
 }
 
 /**
@@ -57,15 +57,18 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
 /**
  * Sets the image size to (\a w, \a h).
  */
-void DlgSettingsImageImp::setImageSize( int w, int h )
+void DlgSettingsImageImp::setImageSize(int w, int h)
 {
-  spinWidth->setValue( w );
-  spinHeight->setValue( h );
+    // set current screen size
+    standardSizeBox->setItemData(0, QSize(w,h));
 
-  // As the image size is in pixel why shouldn't _width and _height be integers?
-  _width  = w;
-  _height = h;
-  _fRatio = (float)_width/(float)_height;
+    spinWidth->setValue(w);
+    spinHeight->setValue(h);
+
+    // As the image size is in pixel why shouldn't _width and _height be integers?
+    _width  = w;
+    _height = h;
+    _fRatio = (float)_width/(float)_height;
 }
 
 /**
@@ -73,13 +76,16 @@ void DlgSettingsImageImp::setImageSize( int w, int h )
  */
 void DlgSettingsImageImp::setImageSize( const QSize& s )
 {
-  spinWidth->setValue( s.width() );
-  spinHeight->setValue( s.height() );
+    // set current screen size
+    standardSizeBox->setItemData(0, s);
 
-  // As the image size is in pixel why shouldn't _width and _height be integers?
-  _width  = s.width();
-  _height = s.height();
-  _fRatio = (float)_width/(float)_height;
+    spinWidth->setValue( s.width() );
+    spinHeight->setValue( s.height() );
+
+    // As the image size is in pixel why shouldn't _width and _height be integers?
+    _width  = s.width();
+    _height = s.height();
+    _fRatio = (float)_width/(float)_height;
 }
 
 /**
@@ -87,7 +93,7 @@ void DlgSettingsImageImp::setImageSize( const QSize& s )
  */
 QSize DlgSettingsImageImp::imageSize() const
 {
-  return QSize( spinWidth->value(), spinHeight->value() );
+    return QSize( spinWidth->value(), spinHeight->value() );
 }
 
 /**
@@ -95,7 +101,7 @@ QSize DlgSettingsImageImp::imageSize() const
  */
 int DlgSettingsImageImp::imageWidth() const
 {
-  return spinWidth->value();
+    return spinWidth->value();
 }
 
 /**
@@ -103,7 +109,7 @@ int DlgSettingsImageImp::imageWidth() const
  */
 int DlgSettingsImageImp::imageHeight() const
 {
-  return spinHeight->value();
+    return spinHeight->value();
 }
 
 /**
@@ -112,57 +118,81 @@ int DlgSettingsImageImp::imageHeight() const
  */
 QString DlgSettingsImageImp::comment() const
 {
-  if ( !textEditComment->isEnabled() )
-    return QString::null;
-  else
-    return textEditComment->toPlainText();
+    if ( !textEditComment->isEnabled() )
+        return QString::null;
+    else
+        return textEditComment->toPlainText();
 }
 
 int DlgSettingsImageImp::backgroundType() const
 {
-  return comboBackground->currentIndex();
+    return comboBackground->currentIndex();
 }
 
 void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
 {
-  bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );	
-  buttonGroupComment->setEnabled( ok );
+    bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );	
+    buttonGroupComment->setEnabled( ok );
 }
 
 void DlgSettingsImageImp::adjustImageSize(float fRatio)
 {
-  // if width has changed then adjust height and vice versa, if both has changed then adjust width
-  if ( _height != spinHeight->value() )
-  {
-    _height = spinHeight->value();
-    _width = (int)((float)_height*fRatio);
-    spinWidth->setValue( (int)_width );
-  } else // if( _width != spinWidth->value() )
-  {
-    _width = spinWidth->value();
-    _height = (int)((float)_width/fRatio);
-    spinHeight->setValue( (int)_height );
-  }
+    // if width has changed then adjust height and vice versa, if both has changed then adjust width
+    if (_height != spinHeight->value())
+    {
+        _height = spinHeight->value();
+        _width = (int)((float)_height*fRatio);
+        spinWidth->setValue( (int)_width );
+    }
+    else // if( _width != spinWidth->value() )
+    {
+        _width = spinWidth->value();
+        _height = (int)((float)_width/fRatio);
+        spinHeight->setValue( (int)_height );
+    }
 }
 
 void DlgSettingsImageImp::on_buttonRatioScreen_clicked()
 {
-  adjustImageSize(_fRatio);
+    adjustImageSize(_fRatio);
 }
 
 void DlgSettingsImageImp::on_buttonRatio4x3_clicked()
 {
-  adjustImageSize(4.0f/3.0f);
+    adjustImageSize(4.0f/3.0f);
 }
 
 void DlgSettingsImageImp::on_buttonRatio16x9_clicked()
 {
-  adjustImageSize(16.0f/9.0f);
+    adjustImageSize(16.0f/9.0f);
 }
 
 void DlgSettingsImageImp::on_buttonRatio1x1_clicked()
 {
-  adjustImageSize(1.0f);
+    adjustImageSize(1.0f);
+}
+
+void DlgSettingsImageImp::on_standardSizeBox_activated(int index)
+{
+    if (index == 0) {
+        // we have set the user data for the 1st item
+        QSize s = standardSizeBox->itemData(0).toSize();
+        spinWidth->setValue(s.width());
+        spinHeight->setValue(s.height());
+    }
+    else {
+        // try to extract from the string
+        QString text = standardSizeBox->itemText(index);
+        QRegExp rx("\\b\\d{2,4}\\b");
+        int pos = 0;
+        pos = rx.indexIn(text, pos);
+        QString w = text.mid(pos, rx.matchedLength());
+        spinWidth->setValue(w.toInt());
+        pos += rx.matchedLength();
+        pos = rx.indexIn(text, pos);
+        QString h = text.mid(pos, rx.matchedLength());
+        spinHeight->setValue(h.toInt());
+    }
 }
 
 #include "moc_DlgSettingsImageImp.cpp"
