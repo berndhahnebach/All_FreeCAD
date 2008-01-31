@@ -15,45 +15,137 @@
   <property name="windowTitle" >
    <string>Image settings</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="QGroupBox" name="groupBoxDim" >
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBoxProp" >
      <property name="title" >
-      <string>Image dimensions</string>
+      <string>Image properties</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
        <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <layout class="QHBoxLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabelColor" >
+        <property name="text" >
+         <string>Back&amp;ground:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>comboBackground</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QComboBox" name="comboBackground" >
+        <item>
+         <property name="text" >
+          <string>Current</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>White</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Black</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Transperent</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBoxDim" >
+     <property name="title" >
+      <string>Image dimensions</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <layout class="QGridLayout" >
         <property name="margin" >
          <number>0</number>
         </property>
         <property name="spacing" >
          <number>6</number>
         </property>
-        <item>
-         <widget class="QLabel" name="label" >
-          <property name="text" >
-           <string>Standard sizes:</string>
+        <item row="1" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="2" >
+         <widget class="QSpinBox" name="spinHeight" >
+          <property name="maximum" >
+           <number>32767</number>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QComboBox" name="comboBoxStandardSize" >
+        <item row="1" column="2" >
+         <widget class="QSpinBox" name="spinWidth" >
+          <property name="maximum" >
+           <number>32767</number>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" >
+         <widget class="QLabel" name="label_2" >
+          <property name="text" >
+           <string>Pixel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="textLabelWidth" >
+          <property name="text" >
+           <string>&amp;Width:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>spinWidth</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" colspan="2" >
+         <widget class="QComboBox" name="standardSizeBox" >
           <item>
            <property name="text" >
-            <string>Actuall screen</string>
+            <string>Current screen</string>
            </property>
           </item>
           <item>
@@ -168,50 +260,47 @@
           </item>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="textLabelWidth" >
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label" >
           <property name="text" >
-           <string>&amp;Width:</string>
-          </property>
-          <property name="buddy" >
-           <cstring>spinWidth</cstring>
+           <string>Standard sizes:</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QSpinBox" name="spinWidth" >
-          <property name="suffix" >
-           <string> Pixel</string>
+        <item row="0" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="maximum" >
-           <number>32767</number>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
           </property>
-          <property name="minimum" >
-           <number>1</number>
+         </spacer>
+        </item>
+        <item row="2" column="3" >
+         <widget class="QLabel" name="label_3" >
+          <property name="text" >
+           <string>Pixel</string>
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
+        <item row="2" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="0" >
          <widget class="QLabel" name="textLabelHeight" >
           <property name="text" >
            <string>&amp;Height:</string>
@@ -221,22 +310,9 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QSpinBox" name="spinHeight" >
-          <property name="suffix" >
-           <string> Pixel</string>
-          </property>
-          <property name="maximum" >
-           <number>32767</number>
-          </property>
-          <property name="minimum" >
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
-      <item>
+      <item row="1" column="0" >
        <layout class="QHBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -296,56 +372,7 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxProp" >
-     <property name="title" >
-      <string>Image properties</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabelColor" >
-        <property name="text" >
-         <string>Back&amp;ground:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>comboBackground</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="comboBackground" >
-        <item>
-         <property name="text" >
-          <string>Current</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>White</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Black</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Transperent</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="2" column="0" >
     <widget class="QGroupBox" name="buttonGroupComment" >
      <property name="enabled" >
       <bool>false</bool>
@@ -392,7 +419,7 @@
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
-  <tabstop>comboBoxStandardSize</tabstop>
+  <tabstop>standardSizeBox</tabstop>
   <tabstop>spinWidth</tabstop>
   <tabstop>spinHeight</tabstop>
   <tabstop>buttonRatioScreen</tabstop>

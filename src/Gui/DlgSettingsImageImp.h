@@ -42,45 +42,46 @@ namespace Dialog {
  */
 class DlgSettingsImageImp : public QWidget, public Ui::DlgSettingsImage
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgSettingsImageImp( QWidget* parent = 0 );
-  ~DlgSettingsImageImp();
+    DlgSettingsImageImp( QWidget* parent = 0 );
+    ~DlgSettingsImageImp();
 
-  /** @name Image dimensions */
-  //@{
-  void setImageSize( int, int );
-  void setImageSize( const QSize& );
-  QSize imageSize() const;
-  int imageWidth() const;
-  int imageHeight() const;
-  //@}
+    /** @name Image dimensions */
+    //@{
+    void setImageSize( int, int );
+    void setImageSize( const QSize& );
+    QSize imageSize() const;
+    int imageWidth() const;
+    int imageHeight() const;
+    //@}
 
-  /** @name Image meta information */
-  //@{
-  QString comment() const;
-  int backgroundType() const;
-  //@}
+    /** @name Image meta information */
+    //@{
+    QString comment() const;
+    int backgroundType() const;
+    //@}
 
 public Q_SLOTS:
-  void onSelectedFilter( const QString& );
+    void onSelectedFilter( const QString& );
 
 protected Q_SLOTS:
-  void on_buttonRatioScreen_clicked();
-  void on_buttonRatio4x3_clicked();
-  void on_buttonRatio16x9_clicked();
-  void on_buttonRatio1x1_clicked();
+    void on_buttonRatioScreen_clicked();
+    void on_buttonRatio4x3_clicked();
+    void on_buttonRatio16x9_clicked();
+    void on_buttonRatio1x1_clicked();
+    void on_standardSizeBox_activated(int);
 
 protected:
-  // helper to force an aspect ratio
-  void adjustImageSize(float fRatio);
+    // helper to force an aspect ratio
+    void adjustImageSize(float fRatio);
 
 
 private:
-  float _fRatio;
-  int _width, _height;
-  SbMatrix _Matrix;
+    float _fRatio;
+    int _width, _height;
+    SbMatrix _Matrix;
 };
 
 } // namespace Dialog
