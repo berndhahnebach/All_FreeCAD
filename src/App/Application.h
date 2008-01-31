@@ -103,6 +103,10 @@ public:
     boost::signal<void (Document&)> signalRenameDocument;
     /// signal on activating Document
     boost::signal<void (Document&)> signalActiveDocument;
+    /// signal on saving Document
+    boost::signal<void (Document&)> signalSaveDocument;
+    /// signal on restoring Document
+    boost::signal<void (Document&)> signalRestoreDocument;
     //@}
 
 
