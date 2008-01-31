@@ -239,8 +239,11 @@
           </item>
           <item row="1" column="0" >
            <widget class="Line" name="line_2" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
             </property>
            </widget>
           </item>
@@ -337,8 +340,11 @@
           </item>
           <item row="1" column="0" >
            <widget class="Line" name="line_3" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
             </property>
            </widget>
           </item>
@@ -422,8 +428,11 @@
           </property>
           <item row="1" column="0" >
            <widget class="Line" name="line" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
             </property>
            </widget>
           </item>
@@ -619,8 +628,11 @@
           </property>
           <item row="1" column="0" >
            <widget class="Line" name="line_4" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
             </property>
            </widget>
           </item>
