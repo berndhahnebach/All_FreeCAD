@@ -75,6 +75,7 @@ public:
     /** Sets up the toolbars of a given workbench. */
     void setup(ToolBarItem*);
     void saveState() const;
+    void restoreState() const;
     void retranslate() const;
 
 protected:
