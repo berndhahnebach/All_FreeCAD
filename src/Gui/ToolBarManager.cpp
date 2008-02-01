@@ -263,6 +263,21 @@ void ToolBarManager::saveState() const
     }
 }
 
+void ToolBarManager::restoreState() const
+{
+    ParameterGrp::handle hPref = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+                               ->GetGroup("MainWindow")->GetGroup("Toolbars");
+
+    QList<QToolBar*> toolbars = toolBars();
+    for (QStringList::ConstIterator it = this->toolbarNames.begin(); it != this->toolbarNames.end(); ++it) {
+        QToolBar* toolbar = findToolBar(toolbars, *it);
+        if (toolbar) {
+            QByteArray toolbarName = toolbar->objectName().toUtf8();
+            toolbar->setVisible(hPref->GetBool(toolbarName.constData(), toolbar->isVisible()));
+        }
+    }
+}
+
 void ToolBarManager::retranslate() const
 {
     QList<QToolBar*> toolbars = toolBars();

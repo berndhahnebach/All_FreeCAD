@@ -674,6 +674,8 @@ void MainWindow::loadWindowSettings()
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
+
+    ToolBarManager::getInstance()->restoreState();
 }
 
 void MainWindow::saveWindowSettings()
