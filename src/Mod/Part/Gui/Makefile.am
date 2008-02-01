@@ -142,6 +142,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		Icons/PartFeature.xpm \
 		Icons/PartFeatureImport.xpm \
+		Icons/preferences-part_design.svg \
 		DlgBooleanOperation.ui \
 		DlgPartBox.ui \
 		DlgPartImportIges.ui \
