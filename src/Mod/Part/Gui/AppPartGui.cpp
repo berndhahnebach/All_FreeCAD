@@ -39,9 +39,9 @@ void CreatePartCommands(void);
 
 void loadPartResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Part);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Part);
+    Gui::Translator::instance()->refresh();
 }
 
 /* registration table  */
@@ -50,40 +50,41 @@ static struct PyMethodDef PartGui_methods[] = {
 };
 
 extern "C" {
-void AppPartGuiExport initPartGui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+void AppPartGuiExport initPartGui()
+{
+    if (!Gui::Application::Instance)
+    {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
+
+    Base::Console().Log("Mod: Loading GUI of Part module... done\n");
+    (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
+
+    // load needed modules
+    Base::Interpreter().loadModule("Part");
+
+    PartGui::ViewProviderPart    ::init();
+    PartGui::ViewProviderBox     ::init();
+    PartGui::ViewProviderImport  ::init();
+    PartGui::ViewProviderCurveNet::init();
+
+    PartGui::Workbench           ::init();
+
+    // instanciating the commands
+    CreatePartCommands();
+
+    // register preferences pages
+    new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ("Part design");
+
+    // add resources and reloads the translators
+    loadPartResource();
+
+    // register bitmaps
+    Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
+    rclBmpFactory.addXPM("PartFeature",(const char**) PartFeature_xpm);
+    rclBmpFactory.addXPM("PartFeatureImport",(const char**) PartFeatureImport_xpm);
+
     return;
-  }
-
-  Base::Console().Log("Mod: Loading GUI of Part module... done\n");
-	(void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
-
-  // load needed modules
-  Base::Interpreter().loadModule("Part");
-
-  PartGui::ViewProviderPart    ::init();
-  PartGui::ViewProviderBox     ::init();
-  PartGui::ViewProviderImport  ::init();
-  PartGui::ViewProviderCurveNet::init();
-
-  PartGui::Workbench           ::init();
-
-  // instanciating the commands
-	CreatePartCommands();
-
-  // register preferences pages
-  new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ( "Part design" );
-
-  // add resources and reloads the translators
-  loadPartResource();
-
-  // register bitmaps
-  Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
-  rclBmpFactory.addXPM("PartFeature",(const char**) PartFeature_xpm);
-  rclBmpFactory.addXPM("PartFeatureImport",(const char**) PartFeatureImport_xpm);
-
-	return;
 }
 } // extern "C"
