@@ -98,8 +98,8 @@ PyTypeObject App::MatrixPy::Type = {
     0,                                                /*tp_mro    method resolution order */
     0,                                                /*tp_cache */
     0,                                                /*tp_subclasses */
-    0                                                 /*tp_weaklist */
-
+    0,                                                /*tp_weaklist */
+    0                                                 /*tp_del */
 };
 
 //--------------------------------------------------------------------------
@@ -115,10 +115,7 @@ PyMethodDef App::MatrixPy::Methods[] = {
     PYMETHODEDEF(scale)
     PYMETHODEDEF(transform)
     PYMETHODEDEF(unity)
-
-    {
-        NULL, NULL
-    }		/* Sentinel */
+    {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -135,7 +132,7 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
     Base::Console().Log("Create MatrixPy: %p \n",this);
 }
 
-PyObject *MatrixPy::PyMake(PyTypeObject *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
+PyObject *MatrixPy::PyMake(PyTypeObject */*ignored*/, PyObject *args, PyObject */*kwds*/)	// Python wrapper
 {
     double a11=1.0, a12=0.0, a13=0.0, a14=0.0;
     double a21=0.0, a22=1.0, a23=0.0, a24=0.0;
@@ -447,6 +444,8 @@ PYFUNCIMP_D(MatrixPy,scale)
 
 PYFUNCIMP_D(MatrixPy,unity)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+      return NULL;                             // NULL triggers exception
     PY_TRY {
         _cMatrix.unity();
     }PY_CATCH;

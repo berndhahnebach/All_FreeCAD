@@ -56,12 +56,12 @@ Py::Int BaseClassPy::getModule(void) const
     return Py::Int();
 }
 
-PyObject *BaseClassPy::getCustomAttributes(const char* attr) const
+PyObject *BaseClassPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int BaseClassPy::setCustomAttributes(const char* attr, PyObject *obj)
+int BaseClassPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

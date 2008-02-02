@@ -55,12 +55,12 @@ Writer::~Writer()
 {
 }
 
-void Writer::insertAsciiFile(const char* FileName)
+void Writer::insertAsciiFile(const char* /*FileName*/)
 {
 
 }
 
-void Writer::insertBinFile(const char* FileName)
+void Writer::insertBinFile(const char* /*FileName*/)
 {
 
 }

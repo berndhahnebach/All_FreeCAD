@@ -662,13 +662,13 @@ std::vector<std::pair<std::string,double> > ParameterGrp::GetFloatMap(const char
 
 
 
-void  ParameterGrp::SetBlob(const char* Name, void *pValue, long lLength)
+void  ParameterGrp::SetBlob(const char* /*Name*/, void* /*pValue*/, long /*lLength*/)
 {
     // not implemented so far
     assert(0);
 }
 
-void ParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset) const
+void ParameterGrp::GetBlob(const char* /*Name*/, void* /*pBuf*/, long /*lMaxLength*/, void* /*pPreset*/) const
 {
     // not implemented so far
     assert(0);
@@ -824,7 +824,7 @@ void ParameterGrp::RemoveBool(const char* Name)
     Notify(Name);
 }
 
-void ParameterGrp::RemoveBlob(const char* Name)
+void ParameterGrp::RemoveBlob(const char* /*Name*/)
 {
     /* not implemented yet
     // check if Element in group

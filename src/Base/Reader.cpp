@@ -310,7 +310,7 @@ bool Base::XMLReader::isRegistered(Base::Persistance *Object) const
 // ---------------------------------------------------------------------------
 //  Base::XMLReader: Implementation of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------
-void Base::XMLReader::startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const Attributes& attrs)
+void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* const localname, const XMLCh* const /*qname*/, const Attributes& attrs)
 {
   LocalName = StrX(localname).c_str();
 
@@ -322,7 +322,7 @@ void Base::XMLReader::startElement(const XMLCh* const uri, const XMLCh* const lo
   ReadType = StartElement;
 }
 
-void Base::XMLReader::endElement  (const XMLCh* const uri, const XMLCh *const localname, const XMLCh *const qname)
+void Base::XMLReader::endElement  (const XMLCh* const /*uri*/, const XMLCh *const localname, const XMLCh *const /*qname*/)
 {
   LocalName = StrX(localname).c_str();
 
@@ -333,14 +333,14 @@ void Base::XMLReader::endElement  (const XMLCh* const uri, const XMLCh *const lo
 }
 
 
-void Base::XMLReader::characters(const   XMLCh* const    chars, const unsigned int    length)
+void Base::XMLReader::characters(const   XMLCh* const chars, const unsigned int length)
 {
   Characters = StrX(chars).c_str();
   ReadType = Chars;
   CharacterCount += length;
 }
 
-void Base::XMLReader::ignorableWhitespace( const   XMLCh* const chars, const unsigned int length)
+void Base::XMLReader::ignorableWhitespace( const   XMLCh* const /*chars*/, const unsigned int /*length*/)
 {
     //fSpaceCount += length;
 }

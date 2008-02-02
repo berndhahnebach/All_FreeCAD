@@ -33,7 +33,7 @@ const char *BoundBoxPy::representation(void) const
 }
 
 // constructor method
-int BoundBoxPy::PyInit(PyObject* args, PyObject*k)
+int BoundBoxPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
     double xMin=0.0,yMin=0.0,zMin=0.0,xMax=0.0,yMax=0.0,zMax=0.0;
     PyObject *object1, *object2;
@@ -275,12 +275,12 @@ Py::Float BoundBoxPy::getDiagonalLength(void) const
     return Py::Float(BoundBox().CalcDiagonalLength());
 }
 
-PyObject *BoundBoxPy::getCustomAttributes(const char* attr) const
+PyObject *BoundBoxPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int BoundBoxPy::setCustomAttributes(const char* attr, PyObject *obj)
+int BoundBoxPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

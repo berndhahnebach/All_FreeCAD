@@ -123,7 +123,7 @@ public:
 
   /** Copy-constructor intializes count to zero. It doesn't copy it
       from src. */
-  ReferenceCount( const ReferenceCount &src ) : _ref_count( 0 ) {}
+  ReferenceCount( const ReferenceCount &/*src*/ ) : _ref_count( 0 ) {}
 
   /** The assignment operator doesn't copy the reference count, it
       leaves it unchanged.  */

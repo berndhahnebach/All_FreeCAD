@@ -41,7 +41,7 @@ Exception::Exception(void) : _handled(false)
 }
 
 Exception::Exception(const Exception &inst)
- : _sErrMsg(inst._sErrMsg), _handled(inst._handled)
+ : BaseClass(),_sErrMsg(inst._sErrMsg), _handled(inst._handled)
 {
 }
 
@@ -131,7 +131,11 @@ MemoryException::MemoryException()
 }
 
 MemoryException::MemoryException(const MemoryException &inst)
+#if defined (__GNUC__)
+ : std::bad_alloc(), Exception(inst) 
+#else
  : Exception(inst)
+#endif
 {
 }
 
@@ -142,3 +146,4 @@ const char* MemoryException::what() const throw()
     return Exception::what();
 }
 #endif
+

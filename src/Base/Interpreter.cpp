@@ -237,7 +237,7 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     return true;
 }
 
-void InterpreterSingleton::addPythonPaths(const char* Path)
+void InterpreterSingleton::addPythonPaths(const char* /*Path*/)
 {
     // not implemented so far
     assert(0);
@@ -375,12 +375,12 @@ void InterpreterSingleton::dbgObserveFile(const char* sFileName)
         _cDebugFileName = "";
 }
 
-void InterpreterSingleton::dbgSetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::dbgSetBreakPoint(unsigned int /*uiLineNumber*/)
 {
 
 }
 
-void InterpreterSingleton::dbgUnsetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::dbgUnsetBreakPoint(unsigned int /*uiLineNumber*/)
 {
 
 }

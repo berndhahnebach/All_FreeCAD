@@ -144,9 +144,9 @@ public:
 
 protected: 
   /// get called by the container when a Proptery was changed
-  virtual void onChanged(const Property* prop){};
+  virtual void onChanged(const Property* /*prop*/){};
   /// get called befor the value is changed
-  virtual void onBevorChange(const Property* prop){};
+  virtual void onBevorChange(const Property* /*prop*/){};
 
   //void hasChanged(Propterty* prop);
   static const  PropertyData * getPropertyDataPtr(void); 

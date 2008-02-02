@@ -82,7 +82,7 @@ PyObject*  FeaturePythonPy::supportedProperties(PyObject *args)
  *
  * \note You must not pass any parameters to the callback function, its argument list must be empty.
  */
-PyObject*  FeaturePythonPy::execute(PyObject *args)
+PyObject*  FeaturePythonPy::execute(PyObject */*args*/)
 {
     Py::Object executeCallback = getFeaturePythonPtr()->executeMethod;
     if ( executeCallback.isCallable() ) {

@@ -52,7 +52,8 @@ using namespace App;
 
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-    {"ParamGet",       (PyCFunction) Application::sGetParam,       1},
+    {"ParamGet",       (PyCFunction) Application::sGetParam,       1,
+     "Get parameters by path"},
     {"Version",        (PyCFunction) Application::sGetVersion,     1,
      "Print the version to the output."},
     {"ConfigGet",      (PyCFunction) Application::sGetConfig,      1,
@@ -63,11 +64,15 @@ PyMethodDef Application::Methods[] = {
      "ConfigSet(string, string) -- Set the given key to the given value."},
     {"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1,
      "Dump the configuration to the output."},
-    {"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
-    {"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
-    {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
+    {"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1,
+     "Register file extension"},
+    {"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1,
+     "Unregister file extension"},
+    {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1,
+     "Not yet implemented"},
 
-    {"open",   (PyCFunction) Application::sOpenDocument,   1},
+    {"open",   (PyCFunction) Application::sOpenDocument,   1,
+     "See openDocument(string)"},
     {"openDocument",   (PyCFunction) Application::sOpenDocument,   1,
      "openDocument(string) -> object\n\n"
      "Create a document and load the project file into the document.\n"
@@ -99,7 +104,7 @@ PyMethodDef Application::Methods[] = {
      "listDocuments() -> list\n\n"
      "Return a list of names of all documents."},
 
-    {NULL, NULL}		/* Sentinel */
+    {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
 PYFUNCIMP_S(Application,sOpenDocument)

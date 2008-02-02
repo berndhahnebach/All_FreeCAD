@@ -68,7 +68,7 @@ public:
     * is writen. That means closing tags and writing UTF8. 
     * @see Base::Writer
     */
-  virtual void Save (Writer &writer) const {
+  virtual void Save (Writer &/*writer*/) const {
     // you have to implement this method in all descenting classes!
     assert(0);
   } 
@@ -87,7 +87,7 @@ public:
     * }
     * \endcode
     */
-  virtual void Restore(XMLReader &reader){
+  virtual void Restore(XMLReader &/*reader*/){
     // you have to implement this method in all descenting classes!
     assert(0);
   } 
@@ -123,7 +123,7 @@ public:
     * \endcode
     * In this method you can simply stream your content to the file (Base::Writer inheriting from ostream).
     */
-  virtual void SaveDocFile (Writer &writer) const{
+  virtual void SaveDocFile (Writer &/*writer*/) const{
     // you have to implement this method in all descenting classes!
     assert(0);
   } 
@@ -156,7 +156,7 @@ public:
     * \endcode
     * @see Base::Reader,Base::XMLReader
     */
-  virtual void RestoreDocFile(Reader &reader){
+  virtual void RestoreDocFile(Reader &/*reader*/){
     // you have to implement this method in all descenting classes!
     assert(0);
   } 
