@@ -219,7 +219,7 @@ void Builder3D::addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize, float 
          << "} ";
 }
 
-void Builder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void Builder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short /*linePattern*/)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
@@ -510,7 +510,7 @@ void InventorBuilder::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, sh
          << "  } " << std::endl;
 }
 
-void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short /*linePattern*/)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;

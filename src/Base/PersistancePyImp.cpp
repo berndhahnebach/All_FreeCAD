@@ -25,7 +25,7 @@ Py::String PersistancePy::getContent(void) const
     return  Py::String (writer.getString());
 }
 
-void  PersistancePy::setContent(Py::String arg)
+void  PersistancePy::setContent(Py::String /*arg*/)
 {
     throw Py::AttributeError(std::string("Attribute 'Content' of object 'Persistence' is read-only"));
 }
@@ -36,12 +36,12 @@ Py::Int PersistancePy::getMemSize(void) const
 }
 
 
-PyObject *PersistancePy::getCustomAttributes(const char* attr) const
+PyObject *PersistancePy::getCustomAttributes(const char*) const
 {
     return 0;
 }
 
-int PersistancePy::setCustomAttributes(const char*,PyObject *obj)
+int PersistancePy::setCustomAttributes(const char*,PyObject*)
 {
     return 0; 
 }

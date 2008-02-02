@@ -186,7 +186,8 @@ PyTypeObject @self.export.Name@::Type = {
     0,                                                /*tp_mro    method resolution order */
     0,                                                /*tp_cache */
     0,                                                /*tp_subclasses */
-    0                                                 /*tp_weaklist */
+    0,                                                /*tp_weaklist */
+    0                                                 /*tp_del */
 };
 
 /// Methods structure of @self.export.Name@
@@ -198,7 +199,7 @@ PyMethodDef @self.export.Name@::Methods[] = {
         "@i.Documentation.UserDocu.replace('\\n','\\\\n')@"
     },
 -
-    {NULL, NULL}		/* Sentinel */
+    {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
 /// Attribute structure of @self.export.Name@
@@ -211,14 +212,14 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
         NULL
     },
 -
-    {NULL, NULL}		/* Sentinel */
+    {NULL, NULL, NULL, NULL, NULL}		/* Sentinel */
 };
 
 + for i in self.export.Methode:
 // @i.Name@() callback and implementer
 // PyObject*  @self.export.Name@::@i.Name@(PyObject *args){};
 // has to be implemented in @self.export.Name@Imp.cpp
-PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject *kwd)
+PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject */*kwd*/)
 {
     // test if twin object not allready deleted
     if (!((PyObjectBase*) self)->isValid()){
@@ -290,7 +291,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 // @i.Name@() callback and implementer
 // PyObject*  @self.export.Name@::@i.Name@(PyObject *args){};
 // has to be implemented in @self.export.Name@Imp.cpp
-PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void *closure)
+PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void */*closure*/)
 {
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -309,7 +310,7 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 }
 
 + if (i.ReadOnly):
-int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
+int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject */*value*/, void */*closure*/)
 {
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -320,7 +321,7 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
     return -1;
 }
 = else:
-int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
+int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void */*closure*/)
 {    
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -379,7 +380,10 @@ PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject 
     return 0;
 }
 
-int @self.export.Name@::PyInit(PyObject* args, PyObject*k){return 0;}
+int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+{
+    return 0;
+}
 -
 
 //--------------------------------------------------------------------------
@@ -540,7 +544,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 
 + if (self.export.Constructor):
 // constructor method
-int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
+int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/
 {
     return 0;
 }
@@ -611,7 +615,7 @@ const char *@self.export.Name@::representation(void) const
 
 + if (self.export.Constructor):
 // constructor method
-int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
+int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
 }
@@ -619,7 +623,7 @@ int @self.export.Name@::PyInit(PyObject* args, PyObject*k)
 
 + for i in self.export.Methode:
 
-PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
+PyObject*  @self.export.Name@::@i.Name@(PyObject */*args*/)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -634,7 +638,7 @@ Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 + if (i.ReadOnly):
 = else:
 
-void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
+void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ /*arg*/)
 {
 
 }
@@ -642,12 +646,12 @@ void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 -
 + if(self.export.CustomAttributes != None):
 
-PyObject *@self.export.Name@::getCustomAttributes(const char* attr) const
+PyObject *@self.export.Name@::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
+int @self.export.Name@::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

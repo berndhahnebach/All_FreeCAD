@@ -147,12 +147,12 @@ PyObject*  DocumentObjectGroupPy::hasObject(PyObject *args)
     }
 }
 
-PyObject *DocumentObjectGroupPy::getCustomAttributes(const char* attr) const
+PyObject *DocumentObjectGroupPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int DocumentObjectGroupPy::setCustomAttributes(const char* attr, PyObject *obj)
+int DocumentObjectGroupPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

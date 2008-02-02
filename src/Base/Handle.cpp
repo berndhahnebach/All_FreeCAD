@@ -40,7 +40,7 @@ using namespace Base;
 
 // here the implemataion! description should take place in the header file!
 Handled::Handled()
-        : _lRefCount(0)
+  : _lRefCount(0)
 {
 
 
@@ -58,12 +58,12 @@ Handled::~Handled()
 
 
 
-void  Handled::AttachRef(void* pHandle)
+void  Handled::AttachRef(void* /*pHandle*/)
 {
     _lRefCount++;
 }
 
-void  Handled::DetachRef(void* pHandle)
+void  Handled::DetachRef(void* /*pHandle*/)
 {
     assert(_lRefCount > 0);
     if (--_lRefCount == 0) {

@@ -32,7 +32,7 @@ const char *VectorPy::representation(void) const
 }
 
 // constructor method
-int VectorPy::PyInit(PyObject* args, PyObject*k)
+int VectorPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
     double  x=0.0,y=0.0,z=0.0;
     PyObject *object;
@@ -223,12 +223,12 @@ void  VectorPy::setz(Py::Float arg)
     ptr->z = (double)arg;
 }
 
-PyObject *VectorPy::getCustomAttributes(const char* attr) const
+PyObject *VectorPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int VectorPy::setCustomAttributes(const char* attr, PyObject *obj)
+int VectorPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

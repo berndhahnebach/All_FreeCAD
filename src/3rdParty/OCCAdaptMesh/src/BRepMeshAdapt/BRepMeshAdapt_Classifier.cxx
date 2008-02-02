@@ -212,7 +212,7 @@ BRepMeshAdapt_Classifier::BRepMeshAdapt_Classifier(const TopoDS_Face& aFace,
 					 const Standard_Real Umax,
 					 const Standard_Real Vmin,
 					 const Standard_Real Vmax,
-					 const TriangleAdapt_Parameters& params):
+					 const TriangleAdapt_Parameters& /*params*/):
 					 Toluv(TolUV), Face(aFace),  
 					 myState(BRepMeshAdapt_NoError),
 					 isnatural(Standard_False)

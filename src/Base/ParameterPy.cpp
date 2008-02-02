@@ -132,61 +132,94 @@ protected:
 
 PyTypeObject ParameterGrpPy::Type = {
     PyObject_HEAD_INIT(&PyType_Type)
-    0,                      /*ob_size*/
-    "ParameterGrp",         /*tp_name*/
-    sizeof(ParameterGrpPy), /*tp_basicsize*/
-    0,                      /*tp_itemsize*/
+    0,                                                      /*ob_size*/
+    "ParameterGrp",                                         /*tp_name*/
+    sizeof(ParameterGrpPy),                                 /*tp_basicsize*/
+    0,                                                      /*tp_itemsize*/
     /* methods */
-    PyDestructor,           /*tp_dealloc*/
-    0,                      /*tp_print*/
-    __getattr,              /*tp_getattr*/
-    __setattr,              /*tp_setattr*/
-    0,                      /*tp_compare*/
-    __repr,                 /*tp_repr*/
-    0,                      /*tp_as_number*/
-    0,                      /*tp_as_sequence*/
-    0,                      /*tp_as_mapping*/
-    0,                      /*tp_hash*/
-    0,                      /*tp_call */
+    PyDestructor,                                           /*tp_dealloc*/
+    0,                                                      /*tp_print*/
+    __getattr,                                              /*tp_getattr*/
+    __setattr,                                              /*tp_setattr*/
+    0,                                                      /*tp_compare*/
+    __repr,                                                 /*tp_repr*/
+    0,                                                      /*tp_as_number*/
+    0,                                                      /*tp_as_sequence*/
+    0,                                                      /*tp_as_mapping*/
+    0,                                                      /*tp_hash*/
+    0,                                                      /*tp_call */
+    0,                                                      /*tp_str  */
+    0,                                                      /*tp_getattro*/
+    0,                                                      /*tp_setattro*/
+    /* --- Functions to access object as input/output buffer ---------*/
+    0,                                                      /* tp_as_buffer */
+    /* --- Flags to define presence of optional/expanded features */
+    0,                                                      /*tp_flags */
+    "Python interface class to set parameters",             /*tp_doc */
+    0,                                                      /*tp_traverse */
+    0,                                                      /*tp_clear */
+    0,                                                      /*tp_richcompare */
+    0,                                                      /*tp_weaklistoffset */
+    0,                                                      /*tp_iter */
+    0,                                                      /*tp_iternext */
+    0,                                                      /*tp_methods */
+    0,                                                      /*tp_members */
+    0,                                                      /*tp_getset */
+    0,                                                      /*tp_base */
+    0,                                                      /*tp_dict */
+    0,                                                      /*tp_descr_get */
+    0,                                                      /*tp_descr_set */
+    0,                                                      /*tp_dictoffset */
+    0,                                                      /*tp_init */
+    0,                                                      /*tp_alloc */
+    0,                                                      /*tp_new */
+    0,                                                      /*tp_free   Low-level free-memory routine */
+    0,                                                      /*tp_is_gc  For PyObject_IS_GC */
+    0,                                                      /*tp_bases */
+    0,                                                      /*tp_mro    method resolution order */
+    0,                                                      /*tp_cache */
+    0,                                                      /*tp_subclasses */
+    0,                                                      /*tp_weaklist */
+    0                                                       /*tp_del */
 };
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef ParameterGrpPy::Methods[] = {
-    {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
-    {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS},
-    {"HasGroup",         (PyCFunction) sPyHasGroup,        Py_NEWARGS},
-    {"IsEmpty",          (PyCFunction) sPyIsEmpty,         Py_NEWARGS},
-    {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS},
-    {"Notify",           (PyCFunction) sPyNotify,          Py_NEWARGS},
-    {"NotifyAll",        (PyCFunction) sPyNotifyAll,       Py_NEWARGS},
+    {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS, 0},
+    {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS, 0},
+    {"HasGroup",         (PyCFunction) sPyHasGroup,        Py_NEWARGS, 0},
+    {"IsEmpty",          (PyCFunction) sPyIsEmpty,         Py_NEWARGS, 0},
+    {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS, 0},
+    {"Notify",           (PyCFunction) sPyNotify,          Py_NEWARGS, 0},
+    {"NotifyAll",        (PyCFunction) sPyNotifyAll,       Py_NEWARGS, 0},
 
-    {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
-    {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
-    {"RemBool",          (PyCFunction) sPyRemBool,         Py_NEWARGS},
+    {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS, 0},
+    {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS, 0},
+    {"RemBool",          (PyCFunction) sPyRemBool,         Py_NEWARGS, 0},
 
-    {"SetInt",           (PyCFunction) sPySetInt,          Py_NEWARGS},
-    {"GetInt",           (PyCFunction) sPyGetInt,          Py_NEWARGS},
-    {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS},
+    {"SetInt",           (PyCFunction) sPySetInt,          Py_NEWARGS, 0},
+    {"GetInt",           (PyCFunction) sPyGetInt,          Py_NEWARGS, 0},
+    {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS, 0},
 
-    {"SetUnsigned",      (PyCFunction) sPySetUnsigned,     Py_NEWARGS},
-    {"GetUnsigned",      (PyCFunction) sPyGetUnsigned,     Py_NEWARGS},
-    {"RemUnsigned",      (PyCFunction) sPyRemUnsigned,     Py_NEWARGS},
+    {"SetUnsigned",      (PyCFunction) sPySetUnsigned,     Py_NEWARGS, 0},
+    {"GetUnsigned",      (PyCFunction) sPyGetUnsigned,     Py_NEWARGS, 0},
+    {"RemUnsigned",      (PyCFunction) sPyRemUnsigned,     Py_NEWARGS, 0},
 
-    {"SetFloat",         (PyCFunction) sPySetFloat,        Py_NEWARGS},
-    {"GetFloat",         (PyCFunction) sPyGetFloat,        Py_NEWARGS},
-    {"RemFloat",         (PyCFunction) sPyRemFloat,        Py_NEWARGS},
+    {"SetFloat",         (PyCFunction) sPySetFloat,        Py_NEWARGS, 0},
+    {"GetFloat",         (PyCFunction) sPyGetFloat,        Py_NEWARGS, 0},
+    {"RemFloat",         (PyCFunction) sPyRemFloat,        Py_NEWARGS, 0},
 
-    {"SetString",        (PyCFunction) sPySetString,       Py_NEWARGS},
-    {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
-    {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS},
+    {"SetString",        (PyCFunction) sPySetString,       Py_NEWARGS, 0},
+    {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS, 0},
+    {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS, 0},
 
-    {"Import",           (PyCFunction) simportFrom,        Py_NEWARGS},
-    {"Insert",           (PyCFunction) sinsert,            Py_NEWARGS},
-    {"Export",           (PyCFunction) sexportTo,          Py_NEWARGS},
+    {"Import",           (PyCFunction) simportFrom,        Py_NEWARGS, 0},
+    {"Insert",           (PyCFunction) sinsert,            Py_NEWARGS, 0},
+    {"Export",           (PyCFunction) sexportTo,          Py_NEWARGS, 0},
 
-    {NULL, NULL}		/* Sentinel */
+    {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -203,7 +236,7 @@ ParameterGrpPy::ParameterGrpPy(const Base::Reference<ParameterGrp> &rcParamGrp, 
     //Console().Log("Create Param Group %p\n",this);
 }
 
-PyObject *ParameterGrpPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *ParameterGrpPy::PyMake(PyObject* /*ignored*/, PyObject* /*args*/)	// Python wrapper
 {
     //return new ParameterGrpPy();			// Make new Python-able object
     return 0;

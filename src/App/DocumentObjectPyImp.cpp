@@ -25,7 +25,7 @@ Py::String DocumentObjectPy::getName(void) const
     return Py::String(std::string(internal));
 }
 
-PyObject*  DocumentObjectPy::touch(PyObject *args)
+PyObject*  DocumentObjectPy::touch(PyObject */*args*/)
 {
     getDocumentObjectPtr()->touch();
     Py_Return;
@@ -50,7 +50,7 @@ Py::List DocumentObjectPy::getState(void) const
     return list;
 }
 
-PyObject *DocumentObjectPy::getCustomAttributes(const char* attr) const
+PyObject *DocumentObjectPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }

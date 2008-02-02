@@ -346,7 +346,7 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to record a macro");
   sWhatsThis    = QT_TR_NOOP("Opens a Dialog to record a macro");
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to record a macro");
-  sPixmap       = "Std_MacroRecord";
+  sPixmap       = "macro-record";
   iAccel        = 0;
 }
 
@@ -374,7 +374,7 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
   sWhatsThis    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
   sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
-  sPixmap       = "Std_MacroPlay";
+  sPixmap       = "macro-execute";
   iAccel        = 0;
 }
 
@@ -402,7 +402,7 @@ StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
   sToolTipText  = QT_TR_NOOP("Execute the macro/script in the editor");
   sWhatsThis    = QT_TR_NOOP("Execute the macro/script in the editor");
   sStatusTip    = QT_TR_NOOP("Execute the macro/script in the editor");
-  sPixmap       = "Std_MacroPlay";
+  sPixmap       = "macro-execute";
   iAccel        = 0;
 }
 
@@ -429,7 +429,7 @@ StdCmdMacroStop::StdCmdMacroStop()
   sToolTipText  = QT_TR_NOOP("Stop the a running macro recording sassion");
   sWhatsThis    = QT_TR_NOOP("Stop the a running macro recording sassion");
   sStatusTip    = QT_TR_NOOP("Stop the a running macro recording sassion");
-  sPixmap       = "Std_MacroStop";
+  sPixmap       = "macro-stop";
   iAccel        = 0;
 }
 
@@ -482,7 +482,7 @@ StdCmdCommandLine::StdCmdCommandLine()
   sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
   sWhatsThis    = QT_TR_NOOP("Opens the command line in the console");
   sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
-  sPixmap       = "CommandLine";
+  sPixmap       = "utilities-terminal";
   iAccel        = 0;
 }
 

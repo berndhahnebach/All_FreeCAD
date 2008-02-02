@@ -66,11 +66,11 @@ Transaction::~Transaction()
     delete It->second;
 }
 
-void Transaction::Save (Writer &writer) const{
+void Transaction::Save (Writer &/*writer*/) const{
   assert(0);
 } 
 
-void Transaction::Restore(XMLReader &reader){
+void Transaction::Restore(XMLReader &/*reader*/){
   assert(0);
 } 
 
@@ -177,7 +177,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
  * A constructor.
  * A more elaborate description of the constructor.
  */
-TransactionObject::TransactionObject(const DocumentObject *pcObj,const char *NameInDocument)
+TransactionObject::TransactionObject(const DocumentObject */*pcObj*/,const char *NameInDocument)
 :status(New)
 {
   if(NameInDocument)
@@ -211,7 +211,7 @@ void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
   }
 
 }
-void TransactionObject::applyChn(Document &Doc, DocumentObject *pcObj)
+void TransactionObject::applyChn(Document &/*Doc*/, DocumentObject */*pcObj*/)
 {
   if(status == New || status == Chn){
     // apply changes if any
@@ -231,11 +231,11 @@ void TransactionObject::setProperty(const Property* pcProp)
     _PropChangeMap[pcProp] = pcProp->Copy();
 }
 
-void TransactionObject::Save (Writer &writer) const{
+void TransactionObject::Save (Writer &/*writer*/) const{
   assert(0);
 } 
 
-void TransactionObject::Restore(XMLReader &reader){
+void TransactionObject::Restore(XMLReader &/*reader*/){
   assert(0);
 } 
 

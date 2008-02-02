@@ -28,8 +28,12 @@ EXTRA_DIST = \
 		images.cpp \
 		Icons.h \
 		ParamDlgImgs.h \
+		macro-execute.svg \
+		macro-record.svg \
+		macro-stop.svg \
 		preferences-display.svg \
 		preferences-general.svg \
+		utilities-terminal.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm

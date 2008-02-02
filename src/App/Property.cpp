@@ -109,7 +109,7 @@ Property *Property::Copy(void) const
   return 0;
 }
 
-void Property::Paste(const Property &from)
+void Property::Paste(const Property& /*from*/)
 {
   // have to be reimplemented by a subclass!
   assert(0);

@@ -91,7 +91,11 @@ PyTypeObject PyObjectBase::Type = {
     0,                                                      /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,              /*tp_flags */
-    "The most base class for Python obinding",              /*tp_doc */
+    "The most base class for Python binding",               /*tp_doc */
+    0,                                                      /*tp_traverse */
+    0,                                                      /*tp_clear */
+    0,                                                      /*tp_richcompare */
+    0,                                                      /*tp_weaklistoffset */
     0,                                                      /*tp_iter */
     0,                                                      /*tp_iternext */
     0,                                                      /*tp_methods */
@@ -111,15 +115,15 @@ PyTypeObject PyObjectBase::Type = {
     0,                                                      /*tp_mro    method resolution order */
     0,                                                      /*tp_cache */
     0,                                                      /*tp_subclasses */
-    0                                                       /*tp_weaklist */
+    0,                                                      /*tp_weaklist */
+    0                                                       /*tp_del */
 };
 
 /*------------------------------
  * PyObjectBase Methods 	-- Every class, even the abstract one should have a Methods
 ------------------------------*/
 PyMethodDef PyObjectBase::Methods[] = {
-//  PYMETHODEDEF(isA)
-    {NULL, NULL}        /* Sentinel */
+    {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 /*------------------------------

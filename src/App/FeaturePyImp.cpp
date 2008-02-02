@@ -32,12 +32,12 @@ Py::Int FeaturePy::getValid(void) const
     return Py::Int(getAbstractFeaturePtr()->isValid());
 }
 
-PyObject *FeaturePy::getCustomAttributes(const char* attr) const
+PyObject *FeaturePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int FeaturePy::setCustomAttributes(const char* attr, PyObject *obj)
+int FeaturePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }

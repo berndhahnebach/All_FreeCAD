@@ -135,7 +135,9 @@ PyDoc_STRVAR(Console_doc,
      "FreeCAD Console\n"
     );
 
-Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
+Application::Application(ParameterManager */*pcSysParamMngr*/, 
+                         ParameterManager */*pcUserParamMngr*/,
+                         std::map<std::string,std::string> &mConfig)
     ://_pcSysParamMngr(pcSysParamMngr),
     //_pcUserParamMngr(pcUserParamMngr),
     _mConfig(mConfig),
@@ -513,7 +515,7 @@ const char* Application::hasOpenType(const char* Type) const
     return 0;
 }
 
-void Application::rmvOpenType(const char* Type)
+void Application::rmvOpenType(const char* /*Type*/)
 {
 //  _mEndings.erase(Type);
 }
