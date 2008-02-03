@@ -131,7 +131,7 @@ public:
      * otherwise it returns true.
      * In this method startStep() gets invoked that can be reimplemented in sub-classes.
      */
-    bool start(const char* pszStr, unsigned long steps);
+    bool start(const char* pszStr, size_t steps);
     /**
      * Performs the next step and returns true if the operation is not yet finished.
      * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
@@ -220,8 +220,8 @@ protected:
     virtual void resetData();
 
 protected:
-    unsigned long nProgress; /**< Stores the current amount of progress.*/
-    unsigned long nTotalSteps; /**< Stores the total number of steps */
+    size_t nProgress; /**< Stores the current amount of progress.*/
+    size_t nTotalSteps; /**< Stores the total number of steps */
 
 private:
     /**
@@ -238,7 +238,7 @@ private:
     int _nMaxInstStarted; /**< Stores the number of maximum pending operations until all pending operations
                             are finished. */
     int _nLastPercentage; /**< Progress in percent. */
-    unsigned long _nNewSteps; /**< Is used for nested calls of the sequencer. */
+    size_t _nNewSteps; /**< Is used for nested calls of the sequencer. */
     static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
 };
 
@@ -353,7 +353,7 @@ private:
 class BaseExport SequencerLauncher
 {
 public:
-    SequencerLauncher(const char* pszStr, unsigned long steps);
+    SequencerLauncher(const char* pszStr, size_t steps);
     ~SequencerLauncher();
     bool next( bool canAbort = false );
 };

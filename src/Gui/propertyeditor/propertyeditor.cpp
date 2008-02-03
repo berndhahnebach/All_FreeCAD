@@ -84,7 +84,7 @@ void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QM
     }
 }
 
-void PropertyEditor::buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct )
+void PropertyEditor::buildUp(const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct)
 {
     propertyModel->buildUp(props, ct);
 }
@@ -210,7 +210,7 @@ bool PropertyModel::setHeaderData ( int section, Qt::Orientation orientation, co
     return false;
 }
 
-void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct )
+void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct )
 {
     // fill up the listview with the properties
     rootItem->reset();

@@ -1200,7 +1200,7 @@ void MeshAlgorithm::SubSampleByDist (float fDist, std::vector<Base::Vector3f> &r
   MeshFacetIterator clFIter(_rclMesh);
   for (clFIter.Init(); clFIter.More(); clFIter.Next())
   {
-    unsigned long k = rclPoints.size();
+    size_t k = rclPoints.size();
     clFIter->SubSample(fDist, rclPoints);
     if (rclPoints.size() == k)
       rclPoints.push_back(clFIter->GetGravityPoint()); // min. add middle point

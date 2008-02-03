@@ -67,7 +67,7 @@ void SequencerBase::_setGlobalInstance ()
     _aclInstances.push_back( this );
 }
 
-bool SequencerBase::start(const char* pszStr, unsigned long steps)
+bool SequencerBase::start(const char* pszStr, size_t steps)
 {
     bool ret = false;
 
@@ -114,8 +114,8 @@ void SequencerBase::startStep()
 bool SequencerBase::next(bool canAbort)
 {
     nProgress++;
-    unsigned long uDiv = nTotalSteps > 0 ? nTotalSteps : _nNewSteps;
-    int perc = nProgress*100 / uDiv;
+    size_t uDiv = nTotalSteps > 0 ? nTotalSteps : _nNewSteps;
+    int perc = ((int)(nProgress / uDiv)) * 100;
 
     // do only an update if we have increased by one percent
     if ( perc > _nLastPercentage ) {
@@ -252,7 +252,7 @@ void ConsoleSequencer::resetData()
 
 // ---------------------------------------------------------
 
-SequencerLauncher::SequencerLauncher(const char* pszStr, unsigned long steps)
+SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 {
     SequencerBase::Instance().start( pszStr, steps );
 }

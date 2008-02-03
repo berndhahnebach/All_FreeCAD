@@ -156,11 +156,11 @@ PyObject *PropertyLineSet::getPyObject(void)
 void PropertyLineSet::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<Line3f> lines;
         lines.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             PropertyLine val;
             val.setPyObject(item);
