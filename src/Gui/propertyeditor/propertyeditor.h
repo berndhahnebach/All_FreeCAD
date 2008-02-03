@@ -51,7 +51,7 @@ public:
     ~PropertyEditor();
 
     /** Builds up the list view with the properties. */
-    void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
+    void buildUp(const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct);
 
 protected:
     virtual void currentChanged (const QModelIndex & current, const QModelIndex & previous);
@@ -78,7 +78,7 @@ public:
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
     QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     bool setHeaderData ( int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole );
-    void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
+    void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct );
 
 private:
     PropertyItem *rootItem;

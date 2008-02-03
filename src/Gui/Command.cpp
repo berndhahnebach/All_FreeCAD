@@ -366,7 +366,7 @@ void Command::blockCommand(bool block)
 void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 {
     // temp buffer
-    unsigned int format_len = strlen(sCmd)+4024;
+    size_t format_len = strlen(sCmd)+4024;
     char* format = (char*) malloc(format_len);
     va_list namelessVars;
     va_start(namelessVars, sCmd);  // Get the "..." vars

@@ -128,7 +128,7 @@ public:
   void Attach(Observer<_MessageType> *ToObserv)
   {
 #ifdef FC_DEBUG
-    unsigned long count = _ObserverSet.size();
+    size_t count = _ObserverSet.size();
     printf("Attach observer %p\n", ToObserv);
     _ObserverSet.insert(ToObserv);
     if ( _ObserverSet.size() == count )
@@ -147,7 +147,7 @@ public:
   void Detach(Observer<_MessageType> *ToObserv)
   {
 #ifdef FC_DEBUG
-    unsigned long count = _ObserverSet.size();
+    size_t count = _ObserverSet.size();
     printf("Detach observer %p\n", ToObserv);
     _ObserverSet.erase(ToObserv);
     if ( _ObserverSet.size() == count )
