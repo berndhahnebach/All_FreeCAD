@@ -41,7 +41,7 @@ void Base::SwapVar (unsigned char&)
 
 void Base::SwapVar (short& s)
 {
-  short sTmp;
+  short sTmp = s;
   int i;
 
   for (i = 0; i < (int)sizeof (short); i++)
@@ -51,7 +51,7 @@ void Base::SwapVar (short& s)
 
 void Base::SwapVar (unsigned short& s)
 {
-  short sTmp;
+  short sTmp = s;
   int i;
 
   for (i = 0; i < (int)sizeof (short); i++)
@@ -61,7 +61,7 @@ void Base::SwapVar (unsigned short& s)
 
 void Base::SwapVar (long& l)
 {
-  long lTmp;
+  long lTmp = l;
   int i;
 
   for (i = 0; i < (int)sizeof (long); i++)
@@ -71,7 +71,7 @@ void Base::SwapVar (long& l)
 
 void Base::SwapVar (unsigned long& l)
 {
-  long lTmp;
+  long lTmp = l;
   int i;
 
   for (i = 0; i < (int)sizeof (long); i++)
@@ -81,7 +81,7 @@ void Base::SwapVar (unsigned long& l)
 
 void Base::SwapVar (float& f)
 {
-  float fTmp;
+  float fTmp = f;
   int i;
 
   for (i = 0; i < (int)sizeof (float); i++)
@@ -91,7 +91,7 @@ void Base::SwapVar (float& f)
 
 void Base::SwapVar (double& d)
 {
-  double dTmp;
+  double dTmp = d;
   int i;
 
   for (i = 0; i < (int)sizeof (double); i++)

@@ -116,7 +116,7 @@ const char* Base::XMLReader::localName(void)
 
 unsigned int Base::XMLReader::getAttributeCount(void) const
 {
-  return AttrMap.size();
+  return (unsigned int)AttrMap.size();
 }
 
 long Base::XMLReader::getAttributeAsInteger(const char* AttrName) const

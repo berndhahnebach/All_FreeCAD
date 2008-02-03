@@ -1,9 +1,8 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
 #include "filterinputstreambuf.h"
-#define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 FilterInputStreambuf::FilterInputStreambuf( streambuf *inbuf, bool del_inbuf ) 

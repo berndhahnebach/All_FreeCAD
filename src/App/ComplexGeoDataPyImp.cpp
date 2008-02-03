@@ -17,7 +17,7 @@ const char *ComplexGeoDataPy::representation(void) const
     return "<ComplexGeoData object>";
 }
 
-PyObject*  ComplexGeoDataPy::setPlacement(PyObject */*args*/)
+PyObject*  ComplexGeoDataPy::setPlacement(PyObject * /*args*/)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;

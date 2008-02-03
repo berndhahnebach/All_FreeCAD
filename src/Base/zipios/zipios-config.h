@@ -1,6 +1,8 @@
 #ifndef ZIPIOS_CONFIG_H
 #define ZIPIOS_CONFIG_H
 
+#include <FCConfig.h>
+
 #ifdef _MSC_VER
 
 // This is fine for VC++ 5.0 sp 3

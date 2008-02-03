@@ -1,11 +1,10 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
 #include "meta-iostreams.h"
 #include <iterator>
 #include <string>
-#include <assert.h>
+#include <cassert>
 
 #include "zipios_common.h"
 #include "ziphead.h"
@@ -13,14 +12,6 @@
 #include "zipios_defs.h"
 
 #include "outputstringstream.h"
-
-#ifdef FC_OS_WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  include <crtdbg.h>
-#endif
-
-#define new DEBUG_CLIENTBLOCK
 
 namespace zipios {
 
@@ -148,7 +139,7 @@ bool ZipLocalEntry::isValid() const {
 }
 
 bool ZipLocalEntry::isDirectory() const {
-  assert( filename.size() != 0 ) ;
+  //std::assert( filename.size() != 0 ) ;
   return  filename[ filename.size() - 1 ] == separator ;
 }
 

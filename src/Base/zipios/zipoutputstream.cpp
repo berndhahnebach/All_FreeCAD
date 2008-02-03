@@ -1,4 +1,3 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
@@ -7,19 +6,12 @@
 #include "zipoutputstreambuf.h"
 #include "zipoutputstream.h"
 
-#ifdef FC_OS_WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  include <crtdbg.h>
-#endif
-
 using std::ostream;
-#define new DEBUG_CLIENTBLOCK
 
 namespace zipios {
 
 ZipOutputStream::ZipOutputStream( std::ostream &os ) 
-  : ostream( 0 ), 
+  : std::ostream( 0 ), 
 // SGIs basic_ifstream calls istream with 0, but calls basic_ios constructor first??
     ofs( 0 )
 {
@@ -30,7 +22,7 @@ ZipOutputStream::ZipOutputStream( std::ostream &os )
 
 
 ZipOutputStream::ZipOutputStream( const std::string &filename )
-  : ostream( 0 ),
+  : std::ostream( 0 ),
     ofs( 0 )
 {
   ofs = new std::ofstream( filename.c_str(), std::ios::out | std::ios::binary ) ;

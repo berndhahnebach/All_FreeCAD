@@ -20,7 +20,7 @@
 
 namespace Py
 	{
-	typedef int sequence_index_type;	// type of an index into a sequence
+	typedef size_t sequence_index_type;	// type of an index into a sequence
 
 	// Forward declarations
 	class Object;
@@ -236,7 +236,7 @@ public:
 			return (pyob != 0);
 			}
 
-		int reference_count () const
+		sequence_index_type reference_count () const
 			{ // the reference count
 			return p ? p->ob_refcnt : 0;
 			}
@@ -898,7 +898,7 @@ public:
 		{
 	protected:
 		SeqBase<T>& s; // the sequence
-		int offset; // item number
+		sequence_index_type offset; // item number
 		T the_item; // lvalue
 	public:
 
@@ -1229,7 +1229,7 @@ public:
 		protected:
 			friend class SeqBase<T>;
 			SeqBase<T>* seq;
-			int count;
+			sequence_index_type count;
 
 		public:
 			~iterator ()
@@ -1240,7 +1240,7 @@ public:
 				, count( 0 )
 				{}
 
-			iterator (SeqBase<T>* s, int where)
+			iterator (SeqBase<T>* s, sequence_index_type where)
 				: seq( s )
 				, count( where )
 				{}
@@ -1375,7 +1375,7 @@ public:
 				, count( 0 )
 				{}
 
-			const_iterator (const SeqBase<T>* s, int where)
+			const_iterator (const SeqBase<T>* s, sequence_index_type where)
 				: seq( s )
 				, count( where )
 				{}
@@ -1799,7 +1799,7 @@ public:
 			}
 
 		// New tuple of a given size
-		explicit Tuple (int size = 0)
+		explicit Tuple (sequence_index_type size = 0)
 			{
 			set(PyTuple_New (size), true);
 			validate ();
@@ -1869,7 +1869,7 @@ public:
 			validate();
 			}
 		// Creation at a fixed size
-		List (int size = 0)
+		List (sequence_index_type size = 0)
 			{
 			set(PyList_New (size), true);
 			validate();
@@ -1885,7 +1885,7 @@ public:
 		// List from a sequence
 		List (const Sequence& s): Sequence()
 			{
-			int n = s.length();
+			sequence_index_type n = s.length();
 			set(PyList_New (n), true);
 			validate();
 			for (sequence_index_type i=0; i < n; i++)
@@ -2226,7 +2226,7 @@ public:
 			return mapref<T>(*this, key);
 			}
 
-		int length () const
+		sequence_index_type length () const
 			{
 			return PyMapping_Length (ptr());
 			}

@@ -2,7 +2,6 @@
     This file and directory.h are borrowed from the dir_it library
     available at http://www.boost.org. dir_it is a directory iterator.
 */
-#include "../../FCConfig.h"
 
 // -*-C++-*- directory.cc
 // <!!----------------------------------------------------------------------> 
@@ -25,18 +24,11 @@
 
 #include "meta-iostreams.h"
 
-#ifdef FC_OS_WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  include <crtdbg.h>
-#endif
-
-#define new DEBUG_CLIENTBLOCK
 #include "directory.h"
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #  define BOOST_UNIX 1
-#elif defined(_WINDOWS)
+#elif defined(_WINDOWS) || defined(__MINGW32__) || defined (_MSC_VER)
 #  define BOOST_WINNT 1
 #endif 
 
