@@ -1,4 +1,3 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
@@ -10,7 +9,7 @@
 #include <zlib.h>
 
 #include "zipoutputstreambuf.h"
-#define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 using std::ios ;

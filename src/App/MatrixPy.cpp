@@ -132,7 +132,7 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
     Base::Console().Log("Create MatrixPy: %p \n",this);
 }
 
-PyObject *MatrixPy::PyMake(PyTypeObject */*ignored*/, PyObject *args, PyObject */*kwds*/)	// Python wrapper
+PyObject *MatrixPy::PyMake(PyTypeObject * /*ignored*/, PyObject *args, PyObject * /*kwds*/)	// Python wrapper
 {
     double a11=1.0, a12=0.0, a13=0.0, a14=0.0;
     double a21=0.0, a22=1.0, a23=0.0, a24=0.0;

@@ -74,6 +74,10 @@ public:
     OutputStream& operator << (double d);
 
 private:
+    OutputStream (const OutputStream&);
+    void operator = (const OutputStream&);
+
+private:
     std::ostream& _out;
 };
 
@@ -98,6 +102,10 @@ public:
     InputStream& operator >> (unsigned long& ul);
     InputStream& operator >> (float& f);
     InputStream& operator >> (double& d);
+
+private:
+    InputStream (const InputStream&);
+    void operator = (const InputStream&);
 
 private:
     std::istream& _in;

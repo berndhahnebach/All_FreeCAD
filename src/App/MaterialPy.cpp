@@ -140,7 +140,7 @@ PyGetSetDef MaterialPy::GetterSetter[] = {
     {NULL, NULL, NULL, NULL, NULL}		/* Sentinel */
 };
 
-PyObject * MaterialPy::staticCallback_set (PyObject *self, PyObject *args, PyObject */*kwd*/)
+PyObject * MaterialPy::staticCallback_set (PyObject *self, PyObject *args, PyObject * /*kwd*/)
 {
     try { // catches all exeptions coming up from c++ and generate a python exeption
         return ((MaterialPy*)self)->set(args);
@@ -193,7 +193,7 @@ PyObject * MaterialPy::staticCallback_set (PyObject *self, PyObject *args, PyObj
 #endif
 }
 
-PyObject * MaterialPy::staticCallback_getAmbientColor (PyObject *self, void */*closure*/)
+PyObject * MaterialPy::staticCallback_getAmbientColor (PyObject *self, void * /*closure*/)
 {
     try {
         return Py::new_reference_to(((MaterialPy*)self)->getAmbientColor());
@@ -206,7 +206,7 @@ PyObject * MaterialPy::staticCallback_getAmbientColor (PyObject *self, void */*c
     }
 }
 
-int MaterialPy::staticCallback_setAmbientColor (PyObject *self, PyObject *value, void */*closure*/)
+int MaterialPy::staticCallback_setAmbientColor (PyObject *self, PyObject *value, void * /*closure*/)
 {
     try {
         ((MaterialPy*)self)->setAmbientColor(Py::Tuple(value,false));
@@ -220,7 +220,7 @@ int MaterialPy::staticCallback_setAmbientColor (PyObject *self, PyObject *value,
     }
 }
 
-PyObject * MaterialPy::staticCallback_getDiffuseColor (PyObject *self, void */*closure*/)
+PyObject * MaterialPy::staticCallback_getDiffuseColor (PyObject *self, void * /*closure*/)
 {
     try {
         return Py::new_reference_to(((MaterialPy*)self)->getDiffuseColor());
@@ -233,7 +233,7 @@ PyObject * MaterialPy::staticCallback_getDiffuseColor (PyObject *self, void */*c
     }
 }
 
-int MaterialPy::staticCallback_setDiffuseColor (PyObject *self, PyObject *value, void */*closure*/)
+int MaterialPy::staticCallback_setDiffuseColor (PyObject *self, PyObject *value, void * /*closure*/)
 {
     try {
         ((MaterialPy*)self)->setDiffuseColor(Py::Tuple(value,false));
@@ -247,7 +247,7 @@ int MaterialPy::staticCallback_setDiffuseColor (PyObject *self, PyObject *value,
     }
 }
 
-PyObject * MaterialPy::staticCallback_getSpecularColor (PyObject *self, void */*closure*/)
+PyObject * MaterialPy::staticCallback_getSpecularColor (PyObject *self, void * /*closure*/)
 {
     try {
         return Py::new_reference_to(((MaterialPy*)self)->getSpecularColor());
@@ -260,7 +260,7 @@ PyObject * MaterialPy::staticCallback_getSpecularColor (PyObject *self, void */*
     }
 }
 
-int MaterialPy::staticCallback_setSpecularColor (PyObject *self, PyObject *value, void */*closure*/)
+int MaterialPy::staticCallback_setSpecularColor (PyObject *self, PyObject *value, void * /*closure*/)
 {
     try {
         ((MaterialPy*)self)->setSpecularColor(Py::Tuple(value,false));
@@ -274,7 +274,7 @@ int MaterialPy::staticCallback_setSpecularColor (PyObject *self, PyObject *value
     }
 }
 
-PyObject * MaterialPy::staticCallback_getShininess (PyObject *self, void */*closure*/)
+PyObject * MaterialPy::staticCallback_getShininess (PyObject *self, void * /*closure*/)
 {
     try {
         return Py::new_reference_to(((MaterialPy*)self)->getShininess());
@@ -287,7 +287,7 @@ PyObject * MaterialPy::staticCallback_getShininess (PyObject *self, void */*clos
     }
 }
 
-int MaterialPy::staticCallback_setShininess (PyObject *self, PyObject *value, void */*closure*/)
+int MaterialPy::staticCallback_setShininess (PyObject *self, PyObject *value, void * /*closure*/)
 {
     try {
         ((MaterialPy*)self)->setShininess(Py::Float(value,false));
@@ -301,7 +301,7 @@ int MaterialPy::staticCallback_setShininess (PyObject *self, PyObject *value, vo
     }
 }
 
-PyObject * MaterialPy::staticCallback_getTransparency (PyObject *self, void */*closure*/)
+PyObject * MaterialPy::staticCallback_getTransparency (PyObject *self, void * /*closure*/)
 {
     try {
         return Py::new_reference_to(((MaterialPy*)self)->getTransparency());
@@ -314,7 +314,7 @@ PyObject * MaterialPy::staticCallback_getTransparency (PyObject *self, void */*c
     }
 }
 
-int MaterialPy::staticCallback_setTransparency (PyObject *self, PyObject *value, void */*closure*/)
+int MaterialPy::staticCallback_setTransparency (PyObject *self, PyObject *value, void * /*closure*/)
 {
     try {
         ((MaterialPy*)self)->setTransparency(Py::Float(value,false));
@@ -342,7 +342,7 @@ MaterialPy::MaterialPy(Material *pcMaterial, PyTypeObject *T)
 
 }
 
-PyObject *MaterialPy::PyMake(PyObject */*ignored*/, PyObject */*args*/)  // Python wrapper
+PyObject *MaterialPy::PyMake(PyObject * /*ignored*/, PyObject * /*args*/)  // Python wrapper
 {
     // never create such objects with the constructor
     return 0;

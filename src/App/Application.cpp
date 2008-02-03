@@ -135,8 +135,8 @@ PyDoc_STRVAR(Console_doc,
      "FreeCAD Console\n"
     );
 
-Application::Application(ParameterManager */*pcSysParamMngr*/, 
-                         ParameterManager */*pcUserParamMngr*/,
+Application::Application(ParameterManager * /*pcSysParamMngr*/, 
+                         ParameterManager * /*pcUserParamMngr*/,
                          std::map<std::string,std::string> &mConfig)
     ://_pcSysParamMngr(pcSysParamMngr),
     //_pcUserParamMngr(pcUserParamMngr),

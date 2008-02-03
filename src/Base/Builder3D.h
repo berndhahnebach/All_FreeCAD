@@ -199,6 +199,10 @@ public:
   //@}
 
 private:
+    InventorBuilder (const InventorBuilder&);
+    void operator = (const InventorBuilder&);
+
+private:
   std::ostream& result;
   bool bStartEndOpen;
   bool bClosed;

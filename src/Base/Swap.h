@@ -50,7 +50,7 @@ void SwapVar (double&);
 template <class T>
 void SwapEndian(T& v)
 {
-  T tmp;
+  T tmp = v;
   int i;
 
   for (i = 0; i < (int)sizeof (T); i++)

@@ -365,7 +365,7 @@ PyMethodDef ConsoleSingleton::Methods[] = {
 };
 
 
-PyObject *ConsoleSingleton::sPyMessage(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPyMessage(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -378,7 +378,7 @@ PyObject *ConsoleSingleton::sPyMessage(PyObject */*self*/, PyObject *args, PyObj
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingleton::sPyWarning(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPyWarning(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -390,7 +390,7 @@ PyObject *ConsoleSingleton::sPyWarning(PyObject */*self*/, PyObject *args, PyObj
         return Py_None;                              // None: no errors 
     }PY_CATCH;
 }
-PyObject *ConsoleSingleton::sPyError(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPyError(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -403,7 +403,7 @@ PyObject *ConsoleSingleton::sPyError(PyObject */*self*/, PyObject *args, PyObjec
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingleton::sPyLog(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPyLog(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -416,7 +416,7 @@ PyObject *ConsoleSingleton::sPyLog(PyObject */*self*/, PyObject *args, PyObject 
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingleton::sPyGetStatus(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPyGetStatus(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr1;
     char *pstr2;
@@ -445,7 +445,7 @@ PyObject *ConsoleSingleton::sPyGetStatus(PyObject */*self*/, PyObject *args, PyO
     }PY_CATCH;
 }
 
-PyObject *ConsoleSingleton::sPySetStatus(PyObject */*self*/, PyObject *args, PyObject */*kwd*/)
+PyObject *ConsoleSingleton::sPySetStatus(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     char *pstr1;
     char *pstr2;

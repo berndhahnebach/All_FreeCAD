@@ -233,9 +233,8 @@ Vector2D Line2D::FromPos (float fDistance) const
 
 bool Line2D::IntersectAndContain (const Line2D& rclLine, Vector2D &rclV) const
 {
-  bool rc;
-  
-  if (rc = Intersect (rclLine, rclV))
+  bool rc = Intersect (rclLine, rclV);
+  if (rc)
     rc = Contains (rclV) && rclLine.Contains (rclV);
   return rc;
 }
@@ -349,9 +348,9 @@ void Polygon2D::Intersect (const Polygon2D &rclPolygon, std::list<Polygon2D> &rc
     clResultPolygon.Add(rclPolygon[0]);
 
   // for each polygon segment
-  unsigned long ulPolyCt = rclPolygon.GetCtVectors();
-  unsigned long ulTrimCt = GetCtVectors();
-  for (unsigned long ulVec = 0; ulVec < (ulPolyCt-1); ulVec++)
+  size_t ulPolyCt = rclPolygon.GetCtVectors();
+  size_t ulTrimCt = GetCtVectors();
+  for (size_t ulVec = 0; ulVec < (ulPolyCt-1); ulVec++)
   {
     Vector2D clPt0 = rclPolygon[ulVec];
     Vector2D clPt1 = rclPolygon[ulVec+1];
@@ -360,7 +359,7 @@ void Polygon2D::Intersect (const Polygon2D &rclPolygon, std::list<Polygon2D> &rc
     // try to intersect with each line of the trim-polygon
     std::set<float> afIntersections;  // set of intersections (sorted by line parameter)
     Vector2D clTrimPt2;  // second line point
-    for (unsigned long i = 0; i < ulTrimCt; i++)
+    for (size_t i = 0; i < ulTrimCt; i++)
     {
       clTrimPt2 = At((i + 1) % ulTrimCt);
       Line2D clToTrimLine(At(i), clTrimPt2);

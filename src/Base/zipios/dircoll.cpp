@@ -1,4 +1,3 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
@@ -10,20 +9,8 @@
 
 #include "directory.h"
 
-#ifdef FC_OS_WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  include <crtdbg.h>
-#endif
 
-#define new DEBUG_CLIENTBLOCK
-
-namespace zipios {
-
-using std::cerr ;
-using std::endl ;
-using std::vector ;
-using std::ifstream ;
+using namespace zipios;
 
 DirectoryCollection::DirectoryCollection( const string &path, bool recursive, 
 					  bool load_now ) 
@@ -81,8 +68,11 @@ istream *DirectoryCollection::getInputStream( const ConstEntryPointer &entry ) {
 }
 
 
-istream *DirectoryCollection::getInputStream( const string &entry_name, 
-					      MatchPath matchpath ) {
+std::istream *DirectoryCollection::getInputStream( const string &entry_name, 
+					      MatchPath matchpath ) 
+{
+  using std::ifstream ;
+
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
@@ -154,7 +144,7 @@ void DirectoryCollection::load( bool recursive, const FilePath &subdir ) {
   }
 }
 
-} // namespace
+// namespace
 
 /** \file
     Implementation of DirectoryCollection.

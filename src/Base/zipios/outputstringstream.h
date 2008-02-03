@@ -26,7 +26,7 @@ public:
 
   /** Specialization of ostrstream::str() that takes care of
       null-terminating the string and unfreezing the ostrstream.  */
-  inline string str() {
+  inline std::string str() {
     *this << std::ends ; // null terminate ostrstream
     string o_str( ostrstream::str() ) ;
     freeze( 0 ) ;
@@ -35,7 +35,7 @@ public:
 private:
   // To avoid invoking such a member function in the base
   // class if there is one!
-  string str() const ; 
+  std::string str() const ; 
 };
 
 #endif

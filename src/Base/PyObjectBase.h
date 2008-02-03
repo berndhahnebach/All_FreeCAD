@@ -276,10 +276,14 @@ public:
     * Overide this method to initialize a newly created
     * instance of the class (Constuctor)
     */
-    virtual int PyInit(PyObject* args, PyObject* k){return 0;}
+    virtual int PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+    {
+        return 0;
+    }
     /// python wrapper for the _repr() function
-    static  int __PyInit(PyObject* self, PyObject* args, PyObject* k)	{
-        return ((PyObjectBase*) self)->PyInit(args, k);
+    static  int __PyInit(PyObject* self, PyObject* args, PyObject* kwd)
+    {
+        return ((PyObjectBase*) self)->PyInit(args, kwd);
     }
 
 
@@ -352,7 +356,7 @@ protected:
  * @see PyObjectBase
  */
 #define PYFUNCDEF_D(CLASS,DFUNC)	PyObject * DFUNC (PyObject *args);  \
-static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
+static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject * /*kwd*/){return (( CLASS *)self)-> DFUNC (args);};
 
 /** Python dynamic class macro for implementation
  * used to set up a impementation for PYFUNCDEF_D definition.

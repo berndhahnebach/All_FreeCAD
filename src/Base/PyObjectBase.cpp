@@ -171,8 +171,6 @@ PyObject *PyObjectBase::_getattr(char *attr)
             return NULL;
         }
     }
-
-    Py_Return;
 }
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)

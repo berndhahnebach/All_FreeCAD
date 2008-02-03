@@ -219,7 +219,7 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
 // @i.Name@() callback and implementer
 // PyObject*  @self.export.Name@::@i.Name@(PyObject *args){};
 // has to be implemented in @self.export.Name@Imp.cpp
-PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject */*kwd*/)
+PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject * /*kwd*/)
 {
     // test if twin object not allready deleted
     if (!((PyObjectBase*) self)->isValid()){
@@ -291,7 +291,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 // @i.Name@() callback and implementer
 // PyObject*  @self.export.Name@::@i.Name@(PyObject *args){};
 // has to be implemented in @self.export.Name@Imp.cpp
-PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void */*closure*/)
+PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void * /*closure*/)
 {
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -310,7 +310,7 @@ PyObject * @self.export.Name@::staticCallback_get@i.Name@ (PyObject *self, void 
 }
 
 + if (i.ReadOnly):
-int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject */*value*/, void */*closure*/)
+int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject * /*value*/, void * /*closure*/)
 {
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -321,7 +321,7 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject */*
     return -1;
 }
 = else:
-int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void */*closure*/)
+int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void * /*closure*/)
 {    
     if (!((PyObjectBase*) self)->isValid()){
         PyErr_SetString(PyExc_ReferenceError, "This object is already deleted most likely through closing a document. This reference is no longer valid!");
@@ -623,7 +623,7 @@ int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 + for i in self.export.Methode:
 
-PyObject*  @self.export.Name@::@i.Name@(PyObject */*args*/)
+PyObject*  @self.export.Name@::@i.Name@(PyObject * /*args*/)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;

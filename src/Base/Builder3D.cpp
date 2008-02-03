@@ -572,11 +572,11 @@ void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short line
          << "    } " << std::endl
          << "    LineSet { " << std::endl
          << "      numVertices [ ";
-  unsigned long ct = points.size() / 2;
+  size_t ct = points.size() / 2;
   if ( ct > 0 )
   {
     result << "2";
-    for ( unsigned long i=1; i<ct; i++)
+    for (size_t i=1; i<ct; i++)
     {
       result << ","; 
       if (i%16==0)

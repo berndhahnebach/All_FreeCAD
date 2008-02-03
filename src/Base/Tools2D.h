@@ -142,11 +142,11 @@ public:
   inline Polygon2D& operator = (const Polygon2D &rclP);
 
   // admin-interface
-  inline unsigned long GetCtVectors (void) const;
+  inline size_t GetCtVectors (void) const;
   inline bool Add (const Vector2D &rclVct);
-  inline Vector2D& operator[] (unsigned long ulNdx) const;
-  inline Vector2D& At (unsigned long ulNdx) const;
-  inline bool Delete (unsigned long ulNdx);
+  inline Vector2D& operator[] (size_t ulNdx) const;
+  inline Vector2D& At (size_t ulNdx) const;
+  inline bool Delete (size_t ulNdx);
   inline void  DeleteAll (void);    
 
   // misc
@@ -259,7 +259,7 @@ inline void Polygon2D::DeleteAll (void)
   _aclVct.clear();
 }
 
-inline unsigned long Polygon2D::GetCtVectors (void) const
+inline size_t Polygon2D::GetCtVectors (void) const
 {
   return _aclVct.size ();
 }
@@ -270,7 +270,7 @@ inline bool Polygon2D::Add (const Vector2D &rclVct)
   return true;
 }
 
-inline bool Polygon2D::Delete (unsigned long ulNdx)
+inline bool Polygon2D::Delete (size_t ulNdx)
 {
   if ( ulNdx < _aclVct.size() )
   {
@@ -282,12 +282,12 @@ inline bool Polygon2D::Delete (unsigned long ulNdx)
   return false;
 }
 
-inline Vector2D& Polygon2D::operator[] (unsigned long ulNdx) const
+inline Vector2D& Polygon2D::operator[] (size_t ulNdx) const
 {
   return (Vector2D&) _aclVct[ulNdx];
 }
 
-inline Vector2D& Polygon2D::At (unsigned long ulNdx) const
+inline Vector2D& Polygon2D::At (size_t ulNdx) const
 {
   return (Vector2D&) _aclVct[ulNdx];
 }

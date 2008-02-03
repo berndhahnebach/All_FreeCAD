@@ -23,7 +23,7 @@ const char *DocumentPy::representation(void) const
     return "<Document>";
 }
 
-PyObject*  DocumentPy::save(PyObject */*args*/)
+PyObject*  DocumentPy::save(PyObject * /*args*/)
 {
     if (!getDocumentPtr()->save()) {
         PyErr_Format(PyExc_ValueError, "Object attribute 'FileName' is not set");
@@ -40,7 +40,7 @@ PyObject*  DocumentPy::save(PyObject */*args*/)
     Py_Return;
 }
 
-PyObject*  DocumentPy::restore(PyObject */*args*/)
+PyObject*  DocumentPy::restore(PyObject * /*args*/)
 {
     const char* filename = getDocumentPtr()->FileName.getValue();
     if (!filename || *filename == '\0') {
@@ -109,39 +109,39 @@ PyObject*  DocumentPy::openTransaction(PyObject *args)
     Py_Return; 
 }
 
-PyObject*  DocumentPy::abortTransaction(PyObject */*args*/)
+PyObject*  DocumentPy::abortTransaction(PyObject * /*args*/)
 {
     getDocumentPtr()->abortTransaction();
     Py_Return;
 }
 
-PyObject*  DocumentPy::commitTransaction(PyObject */*args*/)
+PyObject*  DocumentPy::commitTransaction(PyObject * /*args*/)
 {
     getDocumentPtr()->commitTransaction();
     Py_Return;
 }
 
-PyObject*  DocumentPy::undo(PyObject */*args*/)
+PyObject*  DocumentPy::undo(PyObject * /*args*/)
 {
     if (getDocumentPtr()->getAvailableUndos())
         getDocumentPtr()->undo();
     Py_Return;
 }
 
-PyObject*  DocumentPy::redo(PyObject */*args*/)
+PyObject*  DocumentPy::redo(PyObject * /*args*/)
 {
     if (getDocumentPtr()->getAvailableRedos())
         getDocumentPtr()->redo();
     Py_Return;
 }
 
-PyObject*  DocumentPy::clearUndos(PyObject */*args*/)
+PyObject*  DocumentPy::clearUndos(PyObject * /*args*/)
 {
     getDocumentPtr()->clearUndos();
     Py_Return;
 }
 
-PyObject*  DocumentPy::recompute(PyObject */*args*/)
+PyObject*  DocumentPy::recompute(PyObject * /*args*/)
 {
     getDocumentPtr()->recompute();
     Py_Return;

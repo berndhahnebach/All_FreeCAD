@@ -1,11 +1,10 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
 #include "meta-iostreams.h"
 
 #include "fcollexceptions.h"
-#define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 using std::cerr ;

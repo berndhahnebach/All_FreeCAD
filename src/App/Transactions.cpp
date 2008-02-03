@@ -177,7 +177,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
  * A constructor.
  * A more elaborate description of the constructor.
  */
-TransactionObject::TransactionObject(const DocumentObject */*pcObj*/,const char *NameInDocument)
+TransactionObject::TransactionObject(const DocumentObject * /*pcObj*/,const char *NameInDocument)
 :status(New)
 {
   if(NameInDocument)
@@ -196,7 +196,6 @@ TransactionObject::~TransactionObject()
 
 }
 
-
 void TransactionObject::applyDel(Document &Doc, DocumentObject *pcObj)
 {
   if(status == Del){
@@ -204,6 +203,7 @@ void TransactionObject::applyDel(Document &Doc, DocumentObject *pcObj)
     Doc._remObject(pcObj);
   }
 }
+
 void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
 {
   if(status == New){
@@ -211,7 +211,8 @@ void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
   }
 
 }
-void TransactionObject::applyChn(Document &/*Doc*/, DocumentObject */*pcObj*/)
+
+void TransactionObject::applyChn(Document & /*Doc*/, DocumentObject * /*pcObj*/)
 {
   if(status == New || status == Chn){
     // apply changes if any
@@ -220,8 +221,6 @@ void TransactionObject::applyChn(Document &/*Doc*/, DocumentObject */*pcObj*/)
       const_cast<Property*>(It->first)->Paste(*(It->second));
   }
 }
-
-
 
 void TransactionObject::setProperty(const Property* pcProp)
 {

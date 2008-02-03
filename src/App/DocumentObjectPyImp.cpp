@@ -25,7 +25,7 @@ Py::String DocumentObjectPy::getName(void) const
     return Py::String(std::string(internal));
 }
 
-PyObject*  DocumentObjectPy::touch(PyObject */*args*/)
+PyObject*  DocumentObjectPy::touch(PyObject * /*args*/)
 {
     getDocumentObjectPtr()->touch();
     Py_Return;

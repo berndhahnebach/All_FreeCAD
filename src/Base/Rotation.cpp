@@ -325,7 +325,7 @@ Rotation Rotation::slerp(const Rotation & q0, const Rotation & q1, double t)
   // q = [q0*sin((1-t)*theta)+q1*sin(t*theta)]/sin(theta), 0<=t<=1
   if (t<0.0f) t=0.0f;
   else if (t>1.0f) t=1.0f;
-  return q0;
+  //return q0;
 
   double scale0 = 1.0f - t;
   double scale1 = t;

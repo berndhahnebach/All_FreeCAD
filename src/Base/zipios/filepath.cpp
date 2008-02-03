@@ -1,4 +1,3 @@
-#include "../../FCConfig.h"
 
 #include "zipios-config.h"
 
@@ -8,7 +7,7 @@
 #include <sys/stat.h>
 
 #include "filepath.h"
-#define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 using namespace std ;

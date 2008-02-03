@@ -51,7 +51,7 @@ PyMethodDef* MethodTable::table()
 	{    
 	if( !mt )
 		{
-		int t1size = t.size();
+		size_t t1size = t.size();
 		mt = new PyMethodDef[t1size];
 		int j = 0;
 		for( std::vector<PyMethodDef>::iterator i = t.begin(); i != t.end(); i++ )
