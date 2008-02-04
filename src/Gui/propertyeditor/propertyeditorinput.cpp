@@ -164,12 +164,13 @@ QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent, const QObj
     return sb;
 }
 
-void PropertyIntegerConstraintItem::setEditorData(QWidget *editor, const QVariant& data) const
+void PropertyIntegerConstraintItem::setEditorData(QWidget *editor, const QVariant& /*data*/) const
 {
     const std::vector<App::Property*>& items = getProperty();
     App::PropertyIntegerConstraint* prop = (App::PropertyIntegerConstraint*)items[0];
 
-    const App::PropertyIntegerConstraint::Constraints* c = ((App::PropertyIntegerConstraint*)prop)->getConstraints();
+    const App::PropertyIntegerConstraint::Constraints* c = 
+        ((App::PropertyIntegerConstraint*)prop)->getConstraints();
     QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
     sb->setValue(prop->getValue());
     if (c) {
@@ -236,7 +237,7 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     sb->setValue(data.toDouble());
     const std::vector<App::Property*>& prop = getProperty();
     if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
-        sb->setSuffix(" °");
+        sb->setSuffix(" Â°");
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
         sb->setSuffix(" mm");
 }
@@ -291,7 +292,7 @@ QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent, const QObjec
     return sb;
 }
 
-void PropertyFloatConstraintItem::setEditorData(QWidget *editor, const QVariant& data) const
+void PropertyFloatConstraintItem::setEditorData(QWidget *editor, const QVariant& /*data*/) const
 {
     const std::vector<App::Property*>& items = getProperty();
     App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)items[0];
@@ -523,7 +524,7 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   if ( prop->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()) )
     editor->setSuffix(" mm");
   else if ( prop->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()) )
-    editor->setSuffix(" °");
+    editor->setSuffix(" Â°");
   
   return editor;*/
   return 0;
@@ -559,7 +560,7 @@ QVariant FloatEditorItem::convertFromProperty(const std::vector<App::Property*>&
   if ( pPropFloat->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()) )
     txt += " mm";
   else if ( pPropFloat->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()) )
-    txt += " °";
+    txt += " Â°";
   setText( 1, txt );
   return value;
 }

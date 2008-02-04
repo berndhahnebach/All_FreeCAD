@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
+ *   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -107,7 +107,7 @@ PyMethodDef Application::Methods[] = {
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(Application,sOpenDocument)
+PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -122,7 +122,7 @@ PYFUNCIMP_S(Application,sOpenDocument)
     }
 }
 
-PYFUNCIMP_S(Application,sNewDocument)
+PyObject* Application::sNewDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr = 0;
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C
@@ -133,7 +133,7 @@ PYFUNCIMP_S(Application,sNewDocument)
     }PY_CATCH;
 }
 
-PYFUNCIMP_S(Application,sSetActiveDocument)
+PyObject* Application::sSetActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr = 0;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -150,7 +150,7 @@ PYFUNCIMP_S(Application,sSetActiveDocument)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sCloseDocument)
+PyObject* Application::sCloseDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr = 0;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -164,7 +164,7 @@ PYFUNCIMP_S(Application,sCloseDocument)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sSaveDocument)
+PyObject* Application::sSaveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pDoc;
     if (!PyArg_ParseTuple(args, "s", &pDoc))     // convert args: Python->C
@@ -205,7 +205,7 @@ PYFUNCIMP_S(Application,sSaveDocumentAs)
   Py_Return;
 }
 */
-PYFUNCIMP_S(Application,sActiveDocument)
+PyObject* Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
         return NULL;                       // NULL triggers exception
@@ -220,7 +220,7 @@ PYFUNCIMP_S(Application,sActiveDocument)
     }
 }
 
-PYFUNCIMP_S(Application,sGetDocument)
+PyObject* Application::sGetDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr=0;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -235,7 +235,7 @@ PYFUNCIMP_S(Application,sGetDocument)
     return doc->getPyObject();
 }
 
-PYFUNCIMP_S(Application,sGetParam)
+PyObject* Application::sGetParam(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr=0;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -247,7 +247,7 @@ PYFUNCIMP_S(Application,sGetParam)
 }
 
 
-PYFUNCIMP_S(Application,sGetConfig)
+PyObject* Application::sGetConfig(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr=0;
 
@@ -257,7 +257,8 @@ PYFUNCIMP_S(Application,sGetConfig)
         return Py_BuildValue("s",GetApplication()._mConfig[pstr].c_str());
     else {
         PyObject *pDict = PyDict_New();
-        for (std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++) {
+        for (std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();
+             It!=GetApplication()._mConfig.end();It++) {
             PyDict_SetItemString(pDict,It->first.c_str(),PyString_FromString(It->second.c_str()));
         }
         return pDict;
@@ -265,19 +266,20 @@ PYFUNCIMP_S(Application,sGetConfig)
     }
 }
 
-PYFUNCIMP_S(Application,sDumpConfig)
+PyObject* Application::sDumpConfig(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, "") )    // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PyObject *dict = PyDict_New();
-    for (std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++) {
+    for (std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();
+         It!=GetApplication()._mConfig.end();It++) {
         PyDict_SetItemString(dict,It->first.c_str(), PyString_FromString(It->second.c_str()));
     }
     return dict;
 }
 
-PYFUNCIMP_S(Application,sSetConfig)
+PyObject* Application::sSetConfig(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr,*pstr2;
 
@@ -290,7 +292,7 @@ PYFUNCIMP_S(Application,sSetConfig)
     return Py_None;
 }
 
-PYFUNCIMP_S(Application,sGetVersion)
+PyObject* Application::sGetVersion(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
         return NULL; // NULL triggers exception
@@ -320,7 +322,7 @@ PYFUNCIMP_S(Application,sGetVersion)
 }
 
 
-PYFUNCIMP_S(Application,sEndingAdd)
+PyObject* Application::sEndingAdd(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *psKey,*psMod;
 
@@ -332,7 +334,7 @@ PYFUNCIMP_S(Application,sEndingAdd)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sEndingDelete)
+PyObject* Application::sEndingDelete(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char*       psKey;
 
@@ -344,7 +346,7 @@ PYFUNCIMP_S(Application,sEndingDelete)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sEndingGet)
+PyObject* Application::sEndingGet(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char*       psKey=0;
 
@@ -360,7 +362,7 @@ PYFUNCIMP_S(Application,sEndingGet)
 
 }
 
-PYFUNCIMP_S(Application,sListDocuments)
+PyObject* Application::sListDocuments(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
         return NULL;                       // NULL triggers exception
@@ -369,7 +371,8 @@ PYFUNCIMP_S(Application,sListDocuments)
         PyObject *pKey;
         Base::PyObjectBase* pValue;
 
-        for (std::map<std::string,Document*>::const_iterator It = GetApplication().DocMap.begin();It != GetApplication().DocMap.end();++It) {
+        for (std::map<std::string,Document*>::const_iterator It = GetApplication().DocMap.begin();
+             It != GetApplication().DocMap.end();++It) {
             pKey   = PyString_FromString(It->first.c_str());
             // GetPyObject() increments
             pValue = static_cast<Base::PyObjectBase*>(It->second->getPyObject());

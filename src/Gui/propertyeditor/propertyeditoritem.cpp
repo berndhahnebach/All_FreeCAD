@@ -100,12 +100,12 @@ bool PropertyItem::isReadOnly() const
     return readonly;
 }
 
-QVariant PropertyItem::toolTip(const App::Property* prop) const
+QVariant PropertyItem::toolTip(const App::Property* /*prop*/) const
 {
     return QVariant();
 }
 
-QVariant PropertyItem::decoration(const App::Property* prop) const
+QVariant PropertyItem::decoration(const App::Property* /*prop*/) const
 {
     return QVariant();
 }
@@ -115,25 +115,25 @@ QVariant PropertyItem::toString(const App::Property* prop) const
     return value(prop);
 }
 
-QVariant PropertyItem::value(const App::Property* prop) const
+QVariant PropertyItem::value(const App::Property* /*prop*/) const
 {
     return QVariant();
 }
 
-void PropertyItem::setValue(const QVariant& value)
+void PropertyItem::setValue(const QVariant& /*value*/)
 {
 }
 
-QWidget* PropertyItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+QWidget* PropertyItem::createEditor(QWidget* /*parent*/, const QObject* /*receiver*/, const char* /*method*/) const
 {
     return 0;
 }
 
-void PropertyItem::setEditorData(QWidget *editor, const QVariant& data) const
+void PropertyItem::setEditorData(QWidget * /*editor*/, const QVariant& /*data*/) const
 {
 }
 
-QVariant PropertyItem::editorData(QWidget *editor) const
+QVariant PropertyItem::editorData(QWidget * /*editor*/) const
 {
     return QVariant();
 }
@@ -219,13 +219,13 @@ PropertyItemEditorFactory::~PropertyItemEditorFactory()
 {
 }
 
-QWidget * PropertyItemEditorFactory::createEditor ( QVariant::Type type, QWidget * parent ) const
+QWidget * PropertyItemEditorFactory::createEditor (QVariant::Type /*type*/, QWidget * /*parent*/) const
 {
     // do not allow to create any editor widgets because we do that in subclasses of PropertyItem
     return 0;
 }
 
-QByteArray PropertyItemEditorFactory::valuePropertyName ( QVariant::Type type ) const
+QByteArray PropertyItemEditorFactory::valuePropertyName (QVariant::Type /*type*/) const
 {
     // do not allow to set properties because we do that in subclasses of PropertyItem
     return "";
@@ -242,7 +242,8 @@ PropertyItemDelegate::~PropertyItemDelegate()
 {
 }
 
-QWidget * PropertyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QWidget * PropertyItemDelegate::createEditor (QWidget * parent, const QStyleOptionViewItem & /*option*/, 
+                                              const QModelIndex & index ) const
 {
     if (!index.isValid())
         return 0;

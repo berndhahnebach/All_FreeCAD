@@ -461,7 +461,7 @@ void WorkbenchGroup::customEvent( QEvent* e )
     }
 }
 
-void WorkbenchGroup::slotActivateWorkbench(const char* name)
+void WorkbenchGroup::slotActivateWorkbench(const char* /*name*/)
 {
 }
 
