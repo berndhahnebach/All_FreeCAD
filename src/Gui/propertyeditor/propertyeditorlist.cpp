@@ -166,7 +166,7 @@ PropertyStringListItem::PropertyStringListItem()
 {
 }
 
-QWidget* PropertyStringListItem::createEditor(QWidget* parent, QObject* receiver, const char* method) const
+QWidget* PropertyStringListItem::createEditor(QWidget* parent, QObject* /*receiver*/, const char* /*method*/) const
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);

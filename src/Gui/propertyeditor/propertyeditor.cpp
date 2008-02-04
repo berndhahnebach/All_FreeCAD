@@ -191,7 +191,7 @@ int PropertyModel::rowCount ( const QModelIndex & parent ) const
     return parentItem->childCount();
 }
 
-QVariant PropertyModel::headerData ( int section, Qt::Orientation orientation, int role ) const
+QVariant PropertyModel::headerData (int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal) {
         if (role != Qt::DisplayRole)
@@ -205,7 +205,7 @@ QVariant PropertyModel::headerData ( int section, Qt::Orientation orientation, i
     return QVariant();
 }
 
-bool PropertyModel::setHeaderData ( int section, Qt::Orientation orientation, const QVariant & value, int role )
+bool PropertyModel::setHeaderData (int, Qt::Orientation, const QVariant &, int)
 {
     return false;
 }

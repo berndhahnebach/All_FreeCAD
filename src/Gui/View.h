@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 JÃ¼rgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -48,14 +48,14 @@ class ViewProvider;
 
 /** Base class of all windows belonging to a document
  *  there are two ways of belonging to a document. The 
- *  first way is to a fixed one. The second way is to allways
- *  belong to the Active document. that means switching every time
+ *  first way is to a fixed one. The second way is to always
+ *  belonging to the Active document. that means switching every time
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
  *  @see TreeView
  *  @see Gui::Document
  *  @see Application
- *  @author Jürgen Riegel
+ *  @author Juergen Riegel
  */
 class GuiExport BaseView: public Base::BaseClass
 {
@@ -63,9 +63,9 @@ class GuiExport BaseView: public Base::BaseClass
 
 public:
   /** View constructor
-   * Atach the view to the given document. If the document is NULL
+   * Attach the view to the given document. If the document is NULL
    * the view will attach to the active document. Be aware! there isn't
-   * allways a active document!
+   * always an active document!
    */
   BaseView( Gui::Document* pcDocument=0l);
   /** View destructor
@@ -79,7 +79,7 @@ public:
   //@{
   /// sets the view to an oter document (called by Application)
   void setDocument(Gui::Document* pcDocument);
-  /// is send from the document in oder to close the document
+  /// is send from the document in order to close the document
   void onClose(void);
   //@}
 
@@ -87,7 +87,7 @@ public:
   Gui::Document* getGuiDocument() const {return _pcDocument;}
   /// returns the document the view is attached to
   App::Document* getAppDocument() const;
-  /// indikates if the view is in passiv mode
+  /// indicates if the view is in passive mode
   bool isPassive(void) const {return bIsPassive;}
 
 
@@ -97,14 +97,14 @@ public:
   /// get called when the document is updated
   virtual void onUpdate(void)=0;
   /// get called when the document is updated
-  virtual void onRename(Gui::Document *pDoc){};
+  virtual void onRename(Gui::Document *){};
   /// returns the name of the view (important for messages)
   virtual const char *getName(void) const=0;
-  /// Mesage handler
+  /// Message handler
   virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
-  /// Mesage handler test
+  /// Message handler test
   virtual bool onHasMsg(const char* pMsg) const=0;
-  /// overvrit when checking on close state
+  /// overwrite when checking on close state
   virtual bool canClose(void){return true;}
   //@}
 

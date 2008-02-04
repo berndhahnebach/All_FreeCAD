@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel          (juergen.riegel@web.de) 2002    *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -106,15 +106,20 @@ PyTypeObject App::MatrixPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef App::MatrixPy::Methods[] = {
-
-//  PYMETHODEDEF(set)
-    PYMETHODEDEF(move)
-    PYMETHODEDEF(rotateX)
-    PYMETHODEDEF(rotateY)
-    PYMETHODEDEF(rotateZ)
-    PYMETHODEDEF(scale)
-    PYMETHODEDEF(transform)
-    PYMETHODEDEF(unity)
+    {"move"     , (PyCFunction) MatrixPy::smove, 1, 
+     "Moves the coordinatesystem for the x,y,z value"},
+    {"rotateX"  , (PyCFunction) MatrixPy::srotateX, 1, 
+     "Rotate around the X axis for the given value"},
+    {"rotateY"  , (PyCFunction) MatrixPy::srotateY, 1, 
+     "Rotate around the Y axis for the given value"},
+    {"rotateZ"  , (PyCFunction) MatrixPy::srotateZ, 1, 
+     "rotate around the Z axis for the given value"},
+    {"scale"    , (PyCFunction) MatrixPy::sscale, 1, 
+     "Scale for the x,y,z value"},
+    {"transform", (PyCFunction) MatrixPy::stransform, 1, 
+     "Transform (move,scale,rotate) around a point"},
+    {"unity"    , (PyCFunction) MatrixPy::sunity, 1, 
+     "Makes unity matrix"},
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
@@ -124,7 +129,7 @@ PyMethodDef App::MatrixPy::Methods[] = {
 PyParentObject App::MatrixPy::Parents[] = {&PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
-//t constructor
+//  Constructor
 //--------------------------------------------------------------------------
 App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
         : PyObjectBase(0, T), _cMatrix(rcMatrix)
@@ -132,7 +137,7 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
     Base::Console().Log("Create MatrixPy: %p \n",this);
 }
 
-PyObject *MatrixPy::PyMake(PyTypeObject * /*ignored*/, PyObject *args, PyObject * /*kwds*/)	// Python wrapper
+PyObject *MatrixPy::PyMake(PyTypeObject * /*ignored*/, PyObject *args, PyObject * /*kwds*/)
 {
     double a11=1.0, a12=0.0, a13=0.0, a14=0.0;
     double a21=0.0, a22=1.0, a23=0.0, a24=0.0;
@@ -382,7 +387,7 @@ PYFUNCIMP_D(MatrixPy,set)
 }
 */
 
-PYFUNCIMP_D(MatrixPy,move)
+PyObject* MatrixPy::move (PyObject *args)
 {
     double x,y,z;
     Base::Vector3d vec;
@@ -412,7 +417,7 @@ PYFUNCIMP_D(MatrixPy,move)
     Py_Return;
 }
 
-PYFUNCIMP_D(MatrixPy,scale)
+PyObject* MatrixPy::scale (PyObject *args)
 {
     double x,y,z;
     Base::Vector3d vec;
@@ -423,7 +428,8 @@ PYFUNCIMP_D(MatrixPy,scale)
         vec.y = y;
         vec.z = z;
     }
-    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {   // convert args: Python->C
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {
+        // convert args: Python->C
         Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
         Base::Vector3d* val = pcObject->getVectorPtr();
         vec.Set(val->x,val->y,val->z);
@@ -442,7 +448,7 @@ PYFUNCIMP_D(MatrixPy,scale)
     Py_Return;
 }
 
-PYFUNCIMP_D(MatrixPy,unity)
+PyObject* MatrixPy::unity (PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
       return NULL;                             // NULL triggers exception
@@ -453,7 +459,7 @@ PYFUNCIMP_D(MatrixPy,unity)
     Py_Return;
 }
 
-PYFUNCIMP_D(MatrixPy,transform)
+PyObject* MatrixPy::transform (PyObject *args)
 {
     Base::Vector3d vec;
     Matrix4D mat;
@@ -480,7 +486,7 @@ PYFUNCIMP_D(MatrixPy,transform)
     Py_Return;
 }
 
-PYFUNCIMP_D(MatrixPy,rotateX)
+PyObject* MatrixPy::rotateX (PyObject *args)
 {
     float a;
 
@@ -494,7 +500,8 @@ PYFUNCIMP_D(MatrixPy,rotateX)
 
     Py_Return;
 }
-PYFUNCIMP_D(MatrixPy,rotateY)
+
+PyObject* MatrixPy::rotateY (PyObject *args)
 {
     float a;
 
@@ -508,7 +515,8 @@ PYFUNCIMP_D(MatrixPy,rotateY)
 
     Py_Return;
 }
-PYFUNCIMP_D(MatrixPy,rotateZ)
+
+PyObject* MatrixPy::rotateZ (PyObject *args)
 {
     float a;
 
