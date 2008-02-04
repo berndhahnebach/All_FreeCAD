@@ -481,7 +481,7 @@ public:\
   virtual ~X(){}\
 protected: \
   virtual void activated(int iMsg);\
-  virtual Action * createAction(void);\
+  virtual Gui::Action * createAction(void);\
 };
 
 /** The Command Macro Standard + isActive() + createAction()
@@ -497,7 +497,7 @@ public:\
 protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
-  virtual Action * createAction(void);\
+  virtual Gui::Action * createAction(void);\
 };
 
 /** The Command Macro Standard + isActive() + createAction()
@@ -515,7 +515,7 @@ public:\
 protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
-  virtual Action * createAction(void);\
+  virtual Gui::Action * createAction(void);\
 };
 
 /** The Command Macro view
