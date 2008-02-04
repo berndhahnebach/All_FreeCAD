@@ -367,7 +367,9 @@
 
 #ifndef TRILIBRARY
 char *readline();
+char *readline(char *string, FILE *infile, char *infilename);
 char *findfield();
+char *findfield(char *string);
 #endif /* not TRILIBRARY */
 
 /* Labels that signify whether a record consists primarily of pointers or of */

@@ -53,7 +53,7 @@
 				AdditionalOptions=" /Zm1000"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="&quot;C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include&quot;;"
+				AdditionalIncludeDirectories=".\Include"
 				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG,WNT,NO_TIMER,_CRT_SECURE_NO_WARNINGS,&quot;CMAKE_INTDIR=\&quot;Debug\&quot;&quot;,OCCAdaptMesh_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -155,7 +155,7 @@
 				AdditionalOptions=" /Zm1000"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="&quot;C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include&quot;;"
+				AdditionalIncludeDirectories=".\Include"
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,WNT,NO_TIMER,_CRT_SECURE_NO_WARNINGS,&quot;CMAKE_INTDIR=\&quot;Release\&quot;&quot;,OCCAdaptMesh_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -254,7 +254,7 @@
 				AdditionalOptions=" /Zm1000"
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include&quot;;"
+				AdditionalIncludeDirectories=".\Include"
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,WNT,NO_TIMER,_CRT_SECURE_NO_WARNINGS,&quot;CMAKE_INTDIR=\&quot;MinSizeRel\&quot;&quot;,OCCAdaptMesh_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -353,7 +353,7 @@
 				AdditionalOptions=" /Zm1000"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include&quot;;"
+				AdditionalIncludeDirectories=".\Include"
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,WNT,NO_TIMER,_CRT_SECURE_NO_WARNINGS,&quot;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;&quot;,OCCAdaptMesh_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -423,988 +423,948 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Array1OfBiPoint_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Array1OfBiPoint_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Array1OfVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Array1OfVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_BiPoint.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_BiPoint.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Classifier.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Classifier.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ComparatorOfVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ComparatorOfVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfCouplePnt_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfCouplePnt_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfIntegerFace_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfIntegerFace_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfIntegerListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfIntegerListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfMeshVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfMeshVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeEdgeDiscret_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeEdgeDiscret_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeReal_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeReal_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfShapeSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfVertexInteger_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataMapOfVertexInteger_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_DataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_DataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Delaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Delaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Discret.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Discret.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Edge.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Edge.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_EdgeDiscret.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_EdgeDiscret.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_FastDiscret.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_FastDiscret.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_GeomTool_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_GeomTool_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_HArray1OfVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_HArray1OfVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_HeapSortIndexedVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_HeapSortIndexedVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_HeapSortVertexOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_HeapSortVertexOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IncrementalMesh.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IncrementalMesh.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapOfVertex_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_IndexedMapOfVertex_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfVertex_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfVertex_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListIteratorOfListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfVertex_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfVertex_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListNodeOfListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListOfSurfaceGrid_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListOfSurfaceGrid_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListOfVertex_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListOfVertex_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ListOfXY_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ListOfXY_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_SelectorOfDataStructureOfDelaun_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_SelectorOfDataStructureOfDelaun_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_ShapeTool.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_ShapeTool.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_SurfaceGrid.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_SurfaceGrid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Triangle.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Triangle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_Vertex.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_Vertex.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\BRepMeshAdapt_VertexHasher_0.cxx"
+				RelativePath=".\src\BRepMeshAdapt\BRepMeshAdapt_VertexHasher_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepUtils.cpp"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_Circ.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_Circ.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_CircleTool.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_CircleTool.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc_0.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc_0.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapOfIntegerCirc_0.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_DataMapOfIntegerCirc_0.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_Edge.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_Edge.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_Triangle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_Triangle.cxx"
+				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt_Vertex.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\MeshAlgoAdapt\MeshAlgoAdapt_Vertex.cxx"
+				RelativePath=".\src\BRepMeshAdapt\meshchronoAdapt.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\meshchronoAdapt.cxx"
+				RelativePath=".\src\BRepMeshAdapt\meshtriangleAdapt.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\BRepMeshAdapt\meshtriangleAdapt.cxx"
+				RelativePath=".\src\TriangleAdapt\occcallbackAdapt.cxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\TriangleAdapt\occcallbackAdapt.cxx"
+				RelativePath=".\src\TriangleAdapt\triangleAdapt.c"
 				>
-			</File>
-			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\TriangleAdapt\triangleAdapt.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="MinSizeRel|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="RelWithDebInfo|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt.hxx"
+				RelativePath=".\Include\BRepMeshAdapt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Array1OfBiPoint.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Array1OfBiPoint.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Array1OfVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Array1OfVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_BiPoint.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_BiPoint.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Classifier.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Classifier.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ComparatorOfIndexedVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ComparatorOfVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ComparatorOfVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfCouplePnt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerFace.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfIntegerListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfMeshVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeEdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeReal.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfShapeSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapIteratorOfDataMapOfVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfCouplePnt.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfCouplePnt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfIntegerFace.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfIntegerFace.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfIntegerListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfIntegerListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfMeshVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfMeshVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfShapeEdgeDiscret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfShapeEdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfShapeReal.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfShapeReal.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfShapeSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfShapeSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataMapOfVertexInteger.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataMapOfVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_DataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_DataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Delaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Delaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Discret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Discret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Edge.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Edge.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_EdgeDiscret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_EdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ElemHasherOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_FastDiscret.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_FastDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_GeomTool.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_GeomTool.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_HeapSortIndexedVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_HeapSortIndexedVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_HeapSortVertexOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_HeapSortVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IDMapOfLinkOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IDMapOfNodeOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IMapOfElementOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IncrementalMesh.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IncrementalMesh.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IndexedMapOfVertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_IndexedMapOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_LinkHasherOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListIteratorOfListOfSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListIteratorOfListOfVertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListIteratorOfListOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListIteratorOfListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListIteratorOfListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListNodeOfListOfVertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListNodeOfListOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListNodeOfListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListNodeOfListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListOfSurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListOfSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListOfVertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ListOfXY.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_NodeHasherOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_SelectorOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_SelectorOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ShapeTool.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_ShapeTool.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Status.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Status.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_SurfaceGrid.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_SurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Triangle.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Triangle.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Vertex.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_Vertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_VertexHasher.hxx"
+				RelativePath=".\Include\BRepMeshAdapt_VertexHasher.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepUtils.h"
+				RelativePath=".\Include\BRepUtils.h"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfCouplePnt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerFace.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfIntegerListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfMeshVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeEdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeReal.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfShapeSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataMapNodeOfDataMapOfVertexInteger.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_DataStructureOfDelaun.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_DataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_Discret.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_Discret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_EdgeDiscret.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_EdgeDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_FastDiscret.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_FastDiscret.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_HArray1OfVertexOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfLinkOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_IndexedDataMapNodeOfIDMapOfNodeOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_IndexedMapNodeOfIMapOfElementOfDataStructureOfDelaun.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_IndexedMapNodeOfIndexedMapOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_ListNodeOfListOfSurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_ListNodeOfListOfVertex.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_ListNodeOfListOfVertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_ListNodeOfListOfXY.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_ListNodeOfListOfXY.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_BRepMeshAdapt_SurfaceGrid.hxx"
+				RelativePath=".\Include\Handle_BRepMeshAdapt_SurfaceGrid.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\Handle_MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx"
+				RelativePath=".\Include\Handle_MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Circ.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_Circ.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_CircleTool.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_CircleTool.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_DataMapIteratorOfDataMapOfIntegerCirc.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_DataMapNodeOfDataMapOfIntegerCirc.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_DataMapOfIntegerCirc.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_DataMapOfIntegerCirc.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Edge.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_Edge.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Triangle.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_Triangle.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Vertex.hxx"
+				RelativePath=".\Include\MeshAlgoAdapt_Vertex.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\meshchronoAdapt.hxx"
+				RelativePath=".\Include\meshchronoAdapt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\meshtriangleAdapt.hxx"
+				RelativePath=".\Include\meshtriangleAdapt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\triangleAdapt.h"
+				RelativePath=".\Include\triangleAdapt.h"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\TriangleAdapt.hxx"
+				RelativePath=".\Include\TriangleAdapt.hxx"
 				>
 			</File>
 			<File
-				RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\TriangleAdapt_Parameters.h"
+				RelativePath=".\Include\TriangleAdapt_Parameters.h"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt.ixx"
+			RelativePath=".\Include\BRepMeshAdapt.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt.jxx"
+			RelativePath=".\Include\BRepMeshAdapt.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_BiPoint.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_BiPoint.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_BiPoint.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_BiPoint.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_BiPoint.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_BiPoint.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Classifier.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_Classifier.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Classifier.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_Classifier.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Classifier.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_Classifier.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Discret.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_Discret.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Discret.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_Discret.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Edge.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_Edge.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Edge.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_Edge.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Edge.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_Edge.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_EdgeDiscret.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_EdgeDiscret.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_EdgeDiscret.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_EdgeDiscret.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_FastDiscret.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_FastDiscret.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_FastDiscret.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_FastDiscret.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_FastDiscret.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_FastDiscret.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IncrementalMesh.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_IncrementalMesh.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_IncrementalMesh.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_IncrementalMesh.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ShapeTool.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_ShapeTool.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ShapeTool.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_ShapeTool.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_ShapeTool.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_ShapeTool.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_SurfaceGrid.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_SurfaceGrid.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_SurfaceGrid.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_SurfaceGrid.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Triangle.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_Triangle.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Triangle.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_Triangle.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Triangle.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_Triangle.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Vertex.ixx"
+			RelativePath=".\Include\BRepMeshAdapt_Vertex.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Vertex.jxx"
+			RelativePath=".\Include\BRepMeshAdapt_Vertex.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\BRepMeshAdapt_Vertex.lxx"
+			RelativePath=".\Include\BRepMeshAdapt_Vertex.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt.jxx"
+			RelativePath=".\Include\MeshAlgoAdapt.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Circ.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt_Circ.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Circ.jxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Circ.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Circ.lxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Circ.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_CircleTool.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt_CircleTool.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_CircleTool.jxx"
+			RelativePath=".\Include\MeshAlgoAdapt_CircleTool.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Delaunay.gxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Delaunay.gxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Delaunay.lxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Delaunay.lxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Edge.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt_Edge.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Edge.jxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Edge.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_IndexedPntComparator.gxx"
+			RelativePath=".\Include\MeshAlgoAdapt_IndexedPntComparator.gxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_PntComparator.gxx"
+			RelativePath=".\Include\MeshAlgoAdapt_PntComparator.gxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Triangle.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt_Triangle.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Triangle.jxx"
+			RelativePath=".\Include\MeshAlgoAdapt_Triangle.jxx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Vertex.ixx"
+			RelativePath=".\Include\MeshAlgoAdapt_Vertex.ixx"
 			>
 		</File>
 		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\Include\MeshAlgoAdapt_Vertex.jxx"
-			>
-		</File>
-		<File
-			RelativePath="C:\# Projekte\FreeCAD\FreeCAD_0.7\src\3rdParty\OCCAdaptMesh\src\TriangleAdapt\TriangleAdapt_CMPLRS.edl"
+			RelativePath=".\Include\MeshAlgoAdapt_Vertex.jxx"
 			>
 		</File>
 	</Files>
