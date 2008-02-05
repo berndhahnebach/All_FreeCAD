@@ -295,6 +295,7 @@ void InterpreterSingleton::Destruct(void)
 const char* InterpreterSingleton::init(int argc,char *argv[])
 {
     Py_SetProgramName(argv[0]);
+    PyEval_InitThreads();
     Py_Initialize();
     PySys_SetArgv(argc, argv);
     return Py_GetPath();
