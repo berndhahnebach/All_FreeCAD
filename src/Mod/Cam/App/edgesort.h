@@ -59,11 +59,11 @@ struct EdgeSortBoundBox_Less
     }
 };
 
-typedef std::list<TopoDS_Edge> tEdgeList;
-typedef std::map<gp_Pnt,tEdgeList,Edgesort_gp_Pnt_Less>  tMapPntEdge;
-typedef std::pair<gp_Pnt,tEdgeList> tMapPntEdgePair;
-typedef std::map<Base::BoundBox3f,std::list<TopoDS_Edge>,EdgeSortBoundBox_Less> tEdgeBBoxMap;
-typedef std::pair<Base::BoundBox3f,std::list<TopoDS_Edge> >tEdgeBBoxPair;
+typedef std::vector<TopoDS_Edge> tEdgeVector;
+typedef std::map<gp_Pnt,tEdgeVector,Edgesort_gp_Pnt_Less>  tMapPntEdge;
+typedef std::pair<gp_Pnt,tEdgeVector> tMapPntEdgePair;
+typedef std::map<Base::BoundBox3f,std::vector<TopoDS_Edge>,EdgeSortBoundBox_Less> tEdgeBBoxMap;
+typedef std::pair<Base::BoundBox3f,std::vector<TopoDS_Edge> >tEdgeBBoxPair;
 
 class Edgesort
 {
@@ -74,7 +74,9 @@ public:
     Standard_EXPORT void Init();
     Standard_EXPORT void ReInit(const TopoDS_Shape& aShape);
     Standard_EXPORT bool More();
+	Standard_EXPORT bool MoreEdge();
     Standard_EXPORT void Next();
+	Standard_EXPORT const TopoDS_Edge& NextEdge();
     Standard_EXPORT const TopoDS_Edge& Current();
     Standard_EXPORT TopoDS_Shape GetDesiredCutShape(int desiredIndex);
 private:
@@ -82,7 +84,7 @@ private:
     void Perform(const TopoDS_Edge& edge);
     bool PerformEdges(gp_Pnt& point);
     bool IsValidEdge(const TopoDS_Edge& edge);
-    Base::BoundBox3f getBoundingBox(std::list<TopoDS_Edge>& aList);
+    Base::BoundBox3f getBoundingBox(std::vector<TopoDS_Edge>& aList);
 
     TopoDS_Shape m_shape;
 
@@ -91,9 +93,9 @@ private:
     bool m_done;
     bool m_asecondwire;
     bool m_whichedgelist;
-    tEdgeList m_edges;
+    tEdgeVector m_edges;
     //BoundingBox m_edges, m_edges2
-    tEdgeList::const_iterator m_edgeIter;
+	tEdgeVector::const_iterator m_edgeIter;
 
 };
 

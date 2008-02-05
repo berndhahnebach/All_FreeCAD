@@ -66,6 +66,7 @@
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Handle_TColStd_HArray1OfBoolean.hxx>
+#include <BSplCLib.hxx>
 
 //Own Stuff
 #include "cutting_tools.h"
@@ -1073,7 +1074,10 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 }
                 MasterPointsStorage.insert((anIterator2+start_array+2),MasterPointContainer);
                 SlavePointsStorage.insert((anIterator1+start_array+2),SlavePointContainer);
-                //Delete the Original PointCloud
+                //Reinitialize the Iterators
+                anIterator1 = SlavePointsStorage.begin();
+                anIterator2 = MasterPointsStorage.begin();
+				//Delete the Original PointCloud
                 MasterPointsStorage.erase(anIterator2+start_array);
                 SlavePointsStorage.erase(anIterator1+start_array);
                 MasterPointContainer.clear();
@@ -1098,9 +1102,9 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                     }
                     if (j+1==start_array+1)
                         break;
-                    lastPoint = MasterPointsStorage[j].rbegin()->first;
+                    
                 }
-                
+				lastPoint = MasterPointsStorage[start_array].rbegin()->first;
             }
             else //If the current Curve is no Wire (Mode <)
             {
@@ -1170,7 +1174,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
                         //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
                         //Den letzten hinzugefügten Punkt suchen
-                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
+                        if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>0.001))
                         {
                             MasterPointContainer.push_back(PointContactPair);
                             SlavePointContainer.push_back(SlavePoint);
@@ -1185,24 +1189,23 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                             anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
                         }
                     }
-                }
-
-                //Before we Output anything we check if the lowest Coordinate can still touch the "currently" highest flat area
+				}
+                //Before we Output anything we check if the lowest Coordinate can still touch the "currently" highest flat area and if yes, we have to adapt the Slave toolpath
                 for (unsigned int k=0;k<SlavePointContainer.size();++k)
                 {
-                    if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
-                    {
-                        TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
-                        BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-                        GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
-                        SlavePointContainer.clear();
+						if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
+						{
+							TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
+							BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+							GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
+							SlavePointContainer.clear();
                         for (int i=1;i<=aProp.NbPoints();++i)
                         {
                             gp_Pnt SlaveOffsetPoint;
                             wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
                             SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() - m_UserSettings.slave_radius - m_UserSettings.sheet_thickness);
                             //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(0.001)))
                             {
                                 SlavePointContainer.push_back(SlaveOffsetPoint);
                                 anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
@@ -1216,20 +1219,44 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         break;
                     }
                 }
-
-                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
-                for (unsigned int k=0;k<MasterPointContainer.size();++k)
-                    InterpolationPointsMaster->SetValue(k+1,MasterPointContainer[k].first);
-                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
-                Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
-                for (unsigned int t=0;t<SlavePointContainer.size();++t)
-                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
-
-                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
-                SlavePointContainer.clear();
+				//Now we have to rearrange the point cloud according to the last Point
+				//Now check the point-cloud with the shortest distance to "lastPoint"
+				MasterPointsStorage.push_back(MasterPointContainer);
+				SlavePointsStorage.push_back(SlavePointContainer);
+                int start_index = 0,start_array=0;
+                CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage,SlavePointsStorage);
+                //Now Interpolate the PointCloud
+                //First we have to divide the first PointCloud as it is for sure that we start
+                //Somewhere in the middle of it. We will then insert the points at the current start
                 MasterPointContainer.clear();
+                SlavePointContainer.clear();
+				for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                {
+					MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+					SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+					//We skip the Endpoint as it may be the same point as the start point 
+					if(i+2 == MasterPointsStorage.begin()->size())
+						i=-1;
+					if(i+1 == start_index)
+						break;
+                }
+				//Now lets interpolate the Point Cloud
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                    for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                    {
+                        InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                        InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                    }
+					CheckPoints(InterpolationPointsMaster);
+					CheckPoints(InterpolationPointsSlave);
+
+                    m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
+                    m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+					//Store the last point
+					lastPoint = MasterPointContainer.rbegin()->first;
                 //SlaveTool Path finished
-            }//Current Curve < last curve is finished here
+			}//Current Curve < last curve is finished here
         }
         if (fabs(m_ordered_cuts_it->first-(m_ordered_cuts_it-1)->first)<=0.01)
         {
@@ -1433,6 +1460,20 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
 }
 
 
+bool cutting_tools::CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray) 
+{
+  Standard_Integer ii ;
+  Standard_Real tolerance_squared = Precision::Confusion() * Precision::Confusion(),
+  distance_squared ;
+  Standard_Boolean result = Standard_True ;
+  for (ii = PointArray->Lower() ; result && ii < PointArray->Upper() ; ii++) {
+    distance_squared = PointArray->Value(ii).SquareDistance(PointArray->Value(ii+1)) ;
+	if(distance_squared < tolerance_squared)
+	{result = false; break;}
+  }
+ return result ;
+
+}
 Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
 {
     //Fill Bounding Boxes with Wires
