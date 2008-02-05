@@ -112,6 +112,15 @@ bool Edgesort::More()
     return m_edgeIter != m_edges.end();
 }
 
+bool Edgesort::MoreEdge()
+{
+       return (m_edgeIter+1) != m_edges.end();
+}
+const TopoDS_Edge& Edgesort::NextEdge()
+{
+	return *(m_edgeIter+1);
+}
+
 void Edgesort::Next()
 {
     ++m_edgeIter;
@@ -175,9 +184,9 @@ void Edgesort::Perform()
 
 }
 
-Base::BoundBox3f Edgesort::getBoundingBox(std::list<TopoDS_Edge>& aList)
+Base::BoundBox3f Edgesort::getBoundingBox(std::vector<TopoDS_Edge>& aList)
 {
-    std::list<TopoDS_Edge>::iterator aListIt;
+    std::vector<TopoDS_Edge>::iterator aListIt;
     //Fill Bounding Boxes with Edges
     //Therefore we have to evaluate some points on our wire and feed the BBox Algorithm
     Base::BoundBox3f currentBox;
@@ -206,9 +215,9 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
     if ( iter == m_vertices.end() )
         return false;
 
-    tEdgeList& edges = iter->second;
+    tEdgeVector& edges = iter->second;
 
-    tEdgeList::iterator edgeIt = edges.begin();
+    tEdgeVector::iterator edgeIt = edges.begin();
 
     //no more edges. pb
     if ( edgeIt == edges.end() )
@@ -258,7 +267,7 @@ bool Edgesort::PerformEdges(gp_Pnt& point)
     iter = m_vertices.find(nextPoint);
     if ( iter != m_vertices.end() )
     {
-        tEdgeList& nextEdges = iter->second;
+        tEdgeVector& nextEdges = iter->second;
         bool somethingRemoved = false;
         for ( edgeIt = nextEdges.begin() ; edgeIt != nextEdges.end(); ++edgeIt )
         {
@@ -289,7 +298,7 @@ void Edgesort::Perform(const TopoDS_Edge& edge)
     gp_Pnt P1 = BRep_Tool::Pnt(V1);
     gp_Pnt P2 = BRep_Tool::Pnt(V2);
 
-    tEdgeList emptyList;
+    tEdgeVector emptyList;
 
     std::pair<tMapPntEdge::iterator,bool> iter = m_vertices.insert(tMapPntEdgePair(P1,emptyList));
     iter.first->second.push_back(edge);

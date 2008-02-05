@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib coin2d.lib soqt1d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib QtCored4.lib QtGuid4.lib QtNetworkd4.lib QtOpenGLd4.lib Qt3Supportd4.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib coin2d.lib soqt1d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKMeshD.lib QtCored4.lib QtGuid4.lib QtNetworkd4.lib QtOpenGLd4.lib Qt3Supportd4.lib"
 				OutputFile="../../../../Mod/Cam/CamGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
