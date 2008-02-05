@@ -121,8 +121,9 @@ private:
     bool CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
     bool getShapeBB();
     bool fillFaceWireMap();
+    bool CheckforLastPoint(const gp_Pnt& lastPoint,int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage,const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage);
     TopoDS_Shape getProperCut(TopoDS_Shape& aShape);
-    Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints);
+    Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints,const bool direction);
     //bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);
 
     bool fillFaceBBoxes();
