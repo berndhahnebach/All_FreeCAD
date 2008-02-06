@@ -85,7 +85,7 @@ class AppExport Document :public App::PropertyContainer//, public Base::Subject<
 public:
 
     /// holds the long name of the document (utf-8 coded)
-    PropertyString Name;
+    PropertyString Label;
     /// full qualified (with path) file name (utf-8 coded)
     PropertyString FileName;
     /// creators name (utf-8)

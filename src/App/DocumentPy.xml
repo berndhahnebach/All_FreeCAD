@@ -139,6 +139,12 @@ Both parameters are optional.</UserDocu>
       </Documentation>
       <Parameter Name="RedoNames" Type="List"/>
     </Attribute>
+    <Attribute Name="Name" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The internal name of the document</UserDocu>
+      </Documentation>
+      <Parameter Name="Name" Type="String"/>
+    </Attribute>
     <CustomAttributes />
   </PythonExport>
 </GenerateModel>

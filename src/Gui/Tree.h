@@ -139,6 +139,7 @@ protected:
     void slotDeleteDocument(Gui::Document&);
     void slotRenameDocument(Gui::Document&);
     void slotActiveDocument(Gui::Document&);
+    void slotRelabelDocument(Gui::Document&);
 
     void contextMenuEvent ( QContextMenuEvent * e );
     void changeEvent(QEvent *e);

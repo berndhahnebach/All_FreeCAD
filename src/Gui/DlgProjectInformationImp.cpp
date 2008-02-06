@@ -42,7 +42,7 @@ DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget*
   : QDialog( parent, fl ), _doc(doc)
 {
     this->setupUi(this);
-    lineEditName->setText(QString::fromUtf8(doc->Name.getValue()));
+    lineEditName->setText(QString::fromUtf8(doc->Label.getValue()));
     lineEditPath->setText(QString::fromUtf8(doc->FileName.getValue()));
     lineEditCreator->setText(QString::fromUtf8(doc->CreatedBy.getValue()));
     lineEditDate->setText(QString::fromUtf8(doc->CreationDate.getValue()));

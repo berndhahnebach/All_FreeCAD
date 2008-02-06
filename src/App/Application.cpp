@@ -227,9 +227,9 @@ Document* Application::newDocument(const char * Name, const char * UserName)
 
     // set the UserName after notifying all observers
     if (UserName)
-        _pActiveDoc->Name.setValue(UserName);
+        _pActiveDoc->Label.setValue(UserName);
     else
-        _pActiveDoc->Name.setValue(name);
+        _pActiveDoc->Label.setValue(name);
 
     return _pActiveDoc;
 }

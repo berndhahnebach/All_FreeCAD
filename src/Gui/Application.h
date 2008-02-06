@@ -92,6 +92,8 @@ public:
     boost::signal<void (Gui::Document&)> signalNewDocument;
     /// signal on deleted Document
     boost::signal<void (Gui::Document&)> signalDeleteDocument;
+    /// signal on relabeling Document
+    boost::signal<void (Gui::Document&)> signalRelabelDocument;
     /// signal on renaming Document
     boost::signal<void (Gui::Document&)> signalRenameDocument;
     /// signal on activating Document
@@ -110,6 +112,7 @@ protected:
     /// Observer message from the Application
     void slotNewDocument(App::Document&);
     void slotDeleteDocument(App::Document&);
+    void slotRelabelDocument(App::Document&);
     void slotRenameDocument(App::Document&);
     void slotActiveDocument(App::Document&);
 

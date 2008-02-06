@@ -283,9 +283,14 @@ Py::List DocumentPy::getRedoNames(void) const
 
 Py::String  DocumentPy::getDependencyGraph(void) const
 {
-  std::stringstream out;
-  getDocumentPtr()->writeDependencyGraphViz(out);
-  return Py::String(out.str());
+    std::stringstream out;
+    getDocumentPtr()->writeDependencyGraphViz(out);
+    return Py::String(out.str());
+}
+
+Py::String DocumentPy::getName(void) const
+{
+    return Py::String(getDocumentPtr()->getName());
 }
 
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const

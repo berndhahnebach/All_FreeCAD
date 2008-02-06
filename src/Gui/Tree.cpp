@@ -65,6 +65,7 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeDockWidget::slotDeleteDocument, this, _1));
     Application::Instance->signalRenameDocument.connect(boost::bind(&TreeDockWidget::slotRenameDocument, this, _1));
     Application::Instance->signalActiveDocument.connect(boost::bind(&TreeDockWidget::slotActiveDocument, this, _1));
+    Application::Instance->signalRelabelDocument.connect(boost::bind(&TreeDockWidget::slotRelabelDocument, this, _1));
 
     QGridLayout* pLayout = new QGridLayout(this); 
     pLayout->setSpacing(0);
@@ -106,7 +107,7 @@ void TreeDockWidget::slotNewDocument(Gui::Document& Doc)
     DocumentItem* item = new DocumentItem(&Doc, this->rootItem);
     this->treeWidget->expandItem(item);
     item->setIcon(0, *documentPixmap);
-    item->setText(0, QString(Doc.getDocument()->Name.getValue()));
+    item->setText(0, QString(Doc.getDocument()->Label.getValue()));
     DocumentMap[ &Doc ] = item;
 }
 
@@ -122,9 +123,14 @@ void TreeDockWidget::slotDeleteDocument(Gui::Document& Doc)
 
 void TreeDockWidget::slotRenameDocument(Gui::Document& Doc)
 {
+    // do nothing here
+}
+
+void TreeDockWidget::slotRelabelDocument(Gui::Document& Doc)
+{
     std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
-        it->second->setText(0, QString::fromUtf8(Doc.getDocument()->Name.getValue()));
+        it->second->setText(0, QString::fromUtf8(Doc.getDocument()->Label.getValue()));
     }
 }
 
