@@ -670,7 +670,10 @@ void MainWindow::loadWindowSettings()
     config.beginGroup(version);
     this->resize(config.value("Size", QSize(1024, 768)).toSize());
     this->move(config.value("Position", pos()).toPoint());
+    // tmp. disable the report window to suppress some bothering warnings
+    Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     this->restoreState(config.value("MainWindowState").toByteArray());
+    Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
