@@ -106,7 +106,7 @@ void TreeDockWidget::slotNewDocument(Gui::Document& Doc)
     DocumentItem* item = new DocumentItem(&Doc, this->rootItem);
     this->treeWidget->expandItem(item);
     item->setIcon(0, *documentPixmap);
-    item->setText(0, QString(Doc.getDocument()->getName()));
+    item->setText(0, QString(Doc.getDocument()->Name.getValue()));
     DocumentMap[ &Doc ] = item;
 }
 
@@ -122,7 +122,10 @@ void TreeDockWidget::slotDeleteDocument(Gui::Document& Doc)
 
 void TreeDockWidget::slotRenameDocument(Gui::Document& Doc)
 {
-    // do nothing here
+    std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
+    if (it != DocumentMap.end()) {
+        it->second->setText(0, QString::fromUtf8(Doc.getDocument()->Name.getValue()));
+    }
 }
 
 void TreeDockWidget::slotActiveDocument(Gui::Document& Doc)

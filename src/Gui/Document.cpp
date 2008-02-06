@@ -467,6 +467,7 @@ bool Document::saveAs(void)
 
     QFileInfo fi;
     fi.setFile(fn);
+    QString bn = fi.baseName();
 
     const char * DocName = App::GetApplication().getDocumentName(getDocument());
 
@@ -474,6 +475,7 @@ bool Document::saveAs(void)
     Gui::WaitCursor wc;
     Command::doCommand(Command::Doc,"App.getDocument(\"%s\").FileName = \"%s\"", DocName, (const char*)fn.toUtf8());
     Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()", DocName );
+    Command::doCommand(Command::Doc,"App.getDocument(\"%s\").Name = \"%s\"", DocName, (const char*)bn.toUtf8());
     setModified(false);
 
     getMainWindow()->appendRecentFile(fi.filePath());

@@ -131,7 +131,7 @@ public:
     /// Is the document already saved to a file
     bool isSaved() const;
     /// Get the document name of a saved document 
-    const char* getName() const {return Name.getValue();}
+    const char* getName() const;
     /// Get the path of a saved document 
     //const char* getPath() const;
     //@}
@@ -249,6 +249,7 @@ protected:
     void _remObject(DocumentObject* pcObject);
     void _addObject(DocumentObject* pcObject, const char* pObjectName);
 
+    void onChanged(const Property* prop);
     /// callback from the Document objects bevor property will be changed
     void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
     /// callback from the Document objects after property was changed

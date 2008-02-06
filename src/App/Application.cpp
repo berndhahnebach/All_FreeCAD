@@ -211,12 +211,6 @@ Document* Application::newDocument(const char * Name, const char * UserName)
     // create the FreeCAD document
     auto_ptr<Document> newDoc(new Document() );
 
-    // set the UserName
-    if (UserName)
-        newDoc->Name.setValue(UserName);
-    else
-        newDoc->Name.setValue(name);
-
     // add the document to the internal list
     DocMap[name] = newDoc.release(); // now owned by the Application
     _pActiveDoc = DocMap[name];
@@ -230,6 +224,12 @@ Document* Application::newDocument(const char * Name, const char * UserName)
 
 
     signalNewDocument(*_pActiveDoc);
+
+    // set the UserName after notifying all observers
+    if (UserName)
+        _pActiveDoc->Name.setValue(UserName);
+    else
+        _pActiveDoc->Name.setValue(name);
 
     return _pActiveDoc;
 }

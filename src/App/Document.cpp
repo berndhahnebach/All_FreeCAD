@@ -342,6 +342,13 @@ unsigned int Document::getUndoMemSize (void) const
     return 0;
 }
 
+void Document::onChanged(const Property* prop)
+{
+    // the Name property is a label for display purposes
+    if (prop == &Name)
+        App::GetApplication().signalRenameDocument(*this);
+}
+
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
 {
     if (activUndoTransaction && !bRollback)
@@ -441,7 +448,7 @@ Document::Document(void)
     Console().Log("+App::Document: %p\n",this);
 
 
-    ADD_PROPERTY_TYPE(Name,("Unnamed"),0,Prop_ReadOnly,"The name of the document");
+    ADD_PROPERTY_TYPE(Name,("Unnamed"),0,Prop_None,"The name of the document");
     ADD_PROPERTY_TYPE(FileName,(""),0,Prop_None,"The path to the file where the document is saved to");
     ADD_PROPERTY_TYPE(CreatedBy,(""),0,Prop_None,"The creator of the document");
     ADD_PROPERTY_TYPE(CreationDate,(Base::TimeInfo::currentDateTimeString()),0,Prop_ReadOnly,"Date of creation");
@@ -719,7 +726,10 @@ bool Document::isSaved() const
     return !name.empty();
 }
 
-
+const char* Document::getName() const
+{
+    return GetApplication().getDocumentName(this);
+}
 
 /// Remove all modifications. After this call The document becomesagain Valid.
 void Document::purgeTouched()
