@@ -115,6 +115,7 @@ Application::Application()
   App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
   App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
   App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
+  App::GetApplication().signalRelabelDocument.connect(boost::bind(&Gui::Application::slotRelabelDocument, this, _1));
 
 
   // install the last active language
@@ -311,6 +312,17 @@ void Application::slotDeleteDocument(App::Document& Doc)
 
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);
+}
+
+void Application::slotRelabelDocument(App::Document& Doc)
+{
+  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+#ifdef FC_DEBUG
+  assert(doc!=d->lpcDocuments.end());
+#endif
+
+  signalRelabelDocument(*doc->second);
+  doc->second->onRename();
 }
 
 void Application::slotRenameDocument(App::Document& Doc)

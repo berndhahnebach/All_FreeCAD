@@ -55,28 +55,28 @@ MDIView::~MDIView()
 
 void MDIView::onRename(Gui::Document *pDoc)
 {
-  if(!bIsPassive)
-  {
-    // Try to separate document name and view number if there is one
-    QString cap = windowTitle();
-    // Either with dirty flag ...
-    QRegExp rx("(\\s\\:\\s\\d+\\s\\*)$");
-    int pos = rx.lastIndexIn(cap);
-    if ( pos == -1 ) {
-      // ... or not
-      rx.setPattern("(\\s\\:\\s\\d+)$");
-      pos = rx.lastIndexIn(cap);
+    if(!bIsPassive)
+    {
+        // Try to separate document name and view number if there is one
+        QString cap = windowTitle();
+        // Either with dirty flag ...
+        QRegExp rx("(\\s\\:\\s\\d+\\s\\*)$");
+        int pos = rx.lastIndexIn(cap);
+        if (pos == -1) {
+            // ... or not
+            rx.setPattern("(\\s\\:\\s\\d+)$");
+            pos = rx.lastIndexIn(cap);
+        }
+        if (pos != -1) {
+            cap = QString::fromUtf8(pDoc->getDocument()->Label.getValue());
+            cap += rx.cap();
+            setWindowTitle(cap);
+        }
+        else {
+            setWindowTitle(QString::fromUtf8(pDoc->getDocument()->Label.getValue()));
+        }
     }
-    if ( pos != -1 ) {
-      cap = QString(pDoc->getDocument()->getName());
-      cap += rx.cap();
-      setWindowTitle(cap);
-    } else {
-      setWindowTitle(QString(pDoc->getDocument()->getName()));
-    }
-  }
 }
-
 
 /// recife a message
 bool MDIView::onMsg(const char* pMsg,const char** ppReturn)

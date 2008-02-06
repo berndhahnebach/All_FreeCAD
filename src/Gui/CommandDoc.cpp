@@ -494,15 +494,15 @@ void StdCmdDelete::activated(int iMsg)
     const SelectionSingleton& rSel = Selection();
     const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it ) {
-        const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->Name.getValue());
+        const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
         if (!sel.empty()) {
             (*it)->openTransaction("Delete");
             for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
                 if ((*ft)->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()))
                 doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
-                             ,(*it)->Name.getValue(), (*ft)->getNameInDocument());
+                             ,(*it)->getName(), (*ft)->getNameInDocument());
                 doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
-                             ,(*it)->Name.getValue(), (*ft)->getNameInDocument());
+                             ,(*it)->getName(), (*ft)->getNameInDocument());
             }
             (*it)->commitTransaction();
         }

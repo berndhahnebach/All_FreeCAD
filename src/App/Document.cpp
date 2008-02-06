@@ -345,8 +345,8 @@ unsigned int Document::getUndoMemSize (void) const
 void Document::onChanged(const Property* prop)
 {
     // the Name property is a label for display purposes
-    if (prop == &Name)
-        App::GetApplication().signalRenameDocument(*this);
+    if (prop == &Label)
+        App::GetApplication().signalRelabelDocument(*this);
 }
 
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
@@ -448,7 +448,7 @@ Document::Document(void)
     Console().Log("+App::Document: %p\n",this);
 
 
-    ADD_PROPERTY_TYPE(Name,("Unnamed"),0,Prop_None,"The name of the document");
+    ADD_PROPERTY_TYPE(Label,("Unnamed"),0,Prop_None,"The name of the document");
     ADD_PROPERTY_TYPE(FileName,(""),0,Prop_None,"The path to the file where the document is saved to");
     ADD_PROPERTY_TYPE(CreatedBy,(""),0,Prop_None,"The creator of the document");
     ADD_PROPERTY_TYPE(CreationDate,(Base::TimeInfo::currentDateTimeString()),0,Prop_ReadOnly,"Date of creation");
@@ -460,13 +460,13 @@ Document::Document(void)
 
 Document::~Document()
 {
-    Console().Log("-App::Document: %s %p\n",Name.getValue(), this);
+    Console().Log("-App::Document: %s %p\n",getName(), this);
 
     clearUndos();
 
     std::map<std::string,DocumentObject*>::iterator it;
 
-    Console().Log("-Delete Features of %s \n",Name.getValue());
+    Console().Log("-Delete Features of %s \n",getName());
 
     ObjectArray.clear();
     for (it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
@@ -543,7 +543,7 @@ void Document::Restore(Base::XMLReader &reader)
     long scheme = reader.getAttributeAsInteger("SchemaVersion");
 
     std::string FilePath = FileName.getValue();
-    std::string OrigName = Name.getValue();
+    std::string OrigName = Label.getValue();
 
     // read the Document Properties
     PropertyContainer::Restore(reader);
@@ -556,11 +556,11 @@ void Document::Restore(Base::XMLReader &reader)
     // because the document XML file can contain a name different from the original name.
     // So firstly we must make sure that the new name is unique and secondly we must notify the
     // application and the observers of this.
-    std::string NewName = Name.getValue();
+    std::string NewName = Label.getValue();
     if ( NewName != OrigName ) {
         // The document's name has changed. We make sure that this new name is unique then.
         std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
-        Name.setValue(NewUniqueName);
+        Label.setValue(NewUniqueName);
         // Notify the application and all observers
         GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
     }

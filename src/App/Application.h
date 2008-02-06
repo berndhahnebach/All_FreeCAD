@@ -99,7 +99,9 @@ public:
     boost::signal<void (Document&)> signalNewDocument;
     /// signal on deleted Document
     boost::signal<void (Document&)> signalDeleteDocument;
-    /// signal on renaming Document
+    /// signal on relabeling Document (user name)
+    boost::signal<void (Document&)> signalRelabelDocument;
+    /// signal on renaming Document (internal name)
     boost::signal<void (Document&)> signalRenameDocument;
     /// signal on activating Document
     boost::signal<void (Document&)> signalActiveDocument;
