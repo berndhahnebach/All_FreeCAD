@@ -130,6 +130,13 @@
           <property name="text" >
            <string/>
           </property>
+          <property name="color" >
+           <color>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+           </color>
+          </property>
           <property name="prefEntry" stdset="0" >
            <cstring>colorText</cstring>
           </property>
