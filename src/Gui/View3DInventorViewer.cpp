@@ -256,7 +256,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     this->foregroundroot->addChild(bc);
 
     // set the ViewProvider root
-    pcViewProviderRoot = new SoSeparator();
+    SoSelection* selectionRoot = new SoSelection();
+    selectionRoot->addSelectionCallback(View3DInventorViewer::selectCB, this);
+    selectionRoot->addDeselectionCallback(View3DInventorViewer::deselectCB, this);
+    pcViewProviderRoot = selectionRoot;
 
     // increase refcount before passing it to setScenegraph(), to avoid
     // premature destruction
@@ -2347,6 +2350,18 @@ void View3DInventorViewer::setEditingCursor (const SoQtCursor& cursor)
   //restore the wrong QCursor from the dictionary. 
   this->setComponentCursor(cursor);
   this->editCursor = this->getWidget()->cursor();
+}
+
+void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
+{
+    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+    if (view) view->select(path);
+}
+
+void View3DInventorViewer::deselectCB(void *viewer, SoPath *path)
+{
+    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+    if (view) view->deselect(path);
 }
 
 void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata)
