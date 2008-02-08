@@ -119,7 +119,7 @@ public:
 private:
     //typedef std::list<std::vector<Base::Vector3f> > Polylines;
     bool CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
-	bool CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray); 
+    bool CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray);
     bool getShapeBB();
     bool fillFaceWireMap();
     bool CheckforLastPoint(const gp_Pnt& lastPoint,int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage,const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage);

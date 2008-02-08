@@ -114,11 +114,11 @@ bool Edgesort::More()
 
 bool Edgesort::MoreEdge()
 {
-       return (m_edgeIter+1) != m_edges.end();
+    return (m_edgeIter+1) != m_edges.end();
 }
 const TopoDS_Edge& Edgesort::NextEdge()
 {
-	return *(m_edgeIter+1);
+    return *(m_edgeIter+1);
 }
 
 void Edgesort::Next()

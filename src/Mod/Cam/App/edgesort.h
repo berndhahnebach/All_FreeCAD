@@ -74,9 +74,9 @@ public:
     Standard_EXPORT void Init();
     Standard_EXPORT void ReInit(const TopoDS_Shape& aShape);
     Standard_EXPORT bool More();
-	Standard_EXPORT bool MoreEdge();
+    Standard_EXPORT bool MoreEdge();
     Standard_EXPORT void Next();
-	Standard_EXPORT const TopoDS_Edge& NextEdge();
+    Standard_EXPORT const TopoDS_Edge& NextEdge();
     Standard_EXPORT const TopoDS_Edge& Current();
     Standard_EXPORT TopoDS_Shape GetDesiredCutShape(int desiredIndex);
 private:
@@ -95,7 +95,7 @@ private:
     bool m_whichedgelist;
     tEdgeVector m_edges;
     //BoundingBox m_edges, m_edges2
-	tEdgeVector::const_iterator m_edgeIter;
+    tEdgeVector::const_iterator m_edgeIter;
 
 };
 

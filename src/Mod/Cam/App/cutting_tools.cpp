@@ -1051,60 +1051,89 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 //Now Interpolate the PointClouds...Cloud by Cloud
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
-                anIterator1 = SlavePointsStorage.begin();
-                anIterator2 = MasterPointsStorage.begin();
-                MasterPointContainer.clear();
-                SlavePointContainer.clear();
-                for (int i=0;i<start_index;i++)
+                if (MasterPointsStorage.size() == 1) //If we have only one PointCloud
                 {
-                    MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
-                    SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
-                }
-                MasterPointsStorage.insert((anIterator2+start_array+1),MasterPointContainer);
-                SlavePointsStorage.insert((anIterator1+start_array+1),SlavePointContainer);
-                MasterPointContainer.clear();
-                SlavePointContainer.clear();
-                //Reinitialize the Iterators
-                anIterator1 = SlavePointsStorage.begin();
-                anIterator2 = MasterPointsStorage.begin();
-                for (int i=start_index;i<MasterPointsStorage[start_array].size();i++)
-                {
-                    MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
-                    SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
-                }
-                MasterPointsStorage.insert((anIterator2+start_array+2),MasterPointContainer);
-                SlavePointsStorage.insert((anIterator1+start_array+2),SlavePointContainer);
-                //Reinitialize the Iterators
-                anIterator1 = SlavePointsStorage.begin();
-                anIterator2 = MasterPointsStorage.begin();
-				//Delete the Original PointCloud
-                MasterPointsStorage.erase(anIterator2+start_array);
-                SlavePointsStorage.erase(anIterator1+start_array);
-                MasterPointContainer.clear();
-                SlavePointContainer.clear();
-                //Now lets interpolate the Point Clouds
-                //Start at start_array+1 as the insert operations used us to do it like that
-                for (int j=start_array+1;j<MasterPointsStorage.size();++j)
-                {
-                    Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointsStorage[j].size());
-                    Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointsStorage[j].size());
-                    for (unsigned int t=0;t<MasterPointsStorage[j].size();++t)
+                    for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                     {
-                        InterpolationPointsMaster->SetValue(t+1,MasterPointsStorage[j][t].first);
-                        InterpolationPointsSlave->SetValue(t+1,SlavePointsStorage[j][t]);
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index)
+                            break;
+                    }
+                    //Now lets interpolate the Point Cloud
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                    for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                    {
+                        InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                        InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
                     }
                     m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
                     m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
-                    if (j+1==MasterPointsStorage.size())
-                    {
-                        j=-1;
-                        continue;
-                    }
-                    if (j+1==start_array+1)
-                        break;
-                    
+                    //Store the last point
+                    lastPoint = MasterPointContainer.rbegin()->first;
                 }
-				lastPoint = MasterPointsStorage[start_array].rbegin()->first;
+                else
+                {
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+
+                    for (int i=0;i<=start_index;i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
+                    }
+                    MasterPointsStorage.insert((anIterator2+start_array+1),MasterPointContainer);
+                    SlavePointsStorage.insert((anIterator1+start_array+1),SlavePointContainer);
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    //Reinitialize the Iterators
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    for (int i=start_index;i<MasterPointsStorage[start_array].size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
+                    }
+                    MasterPointsStorage.insert((anIterator2+start_array+2),MasterPointContainer);
+                    SlavePointsStorage.insert((anIterator1+start_array+2),SlavePointContainer);
+                    //Reinitialize the Iterators
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    //Delete the Original PointCloud
+                    MasterPointsStorage.erase(anIterator2+start_array);
+                    SlavePointsStorage.erase(anIterator1+start_array);
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    //Now lets interpolate the Point Clouds
+                    //Start at start_array+1 as the insert operations used us to do it like that
+                    for (int j=start_array+1;j<MasterPointsStorage.size();++j)
+                    {
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointsStorage[j].size());
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointsStorage[j].size());
+                        for (unsigned int t=0;t<MasterPointsStorage[j].size();++t)
+                        {
+                            InterpolationPointsMaster->SetValue(t+1,MasterPointsStorage[j][t].first);
+                            InterpolationPointsSlave->SetValue(t+1,SlavePointsStorage[j][t]);
+                        }
+                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
+                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+                        if (j+1==MasterPointsStorage.size())
+                        {
+                            j=-1;
+                            continue;
+                        }
+                        if (j+1==start_array+1)
+                            break;
+
+                    }
+                    lastPoint = MasterPointsStorage[start_array].rbegin()->first;
+                }
             }
             else //If the current Curve is no Wire (Mode <)
             {
@@ -1189,16 +1218,16 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                             anoutput2 << SlavePoint.X() <<","<< SlavePoint.Y() <<","<< SlavePoint.Z()<<std::endl;
                         }
                     }
-				}
+                }
                 //Before we Output anything we check if the lowest Coordinate can still touch the "currently" highest flat area and if yes, we have to adapt the Slave toolpath
                 for (unsigned int k=0;k<SlavePointContainer.size();++k)
                 {
-						if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
-						{
-							TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
-							BRepAdaptor_CompCurve2 wireAdaptor(aWire);
-							GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
-							SlavePointContainer.clear();
+                    if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
+                    {
+                        TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
+                        BRepAdaptor_CompCurve2 wireAdaptor(aWire);
+                        GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
+                        SlavePointContainer.clear();
                         for (int i=1;i<=aProp.NbPoints();++i)
                         {
                             gp_Pnt SlaveOffsetPoint;
@@ -1219,10 +1248,10 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         break;
                     }
                 }
-				//Now we have to rearrange the point cloud according to the last Point
-				//Now check the point-cloud with the shortest distance to "lastPoint"
-				MasterPointsStorage.push_back(MasterPointContainer);
-				SlavePointsStorage.push_back(SlavePointContainer);
+                //Now we have to rearrange the point cloud according to the last Point
+                //Now check the point-cloud with the shortest distance to "lastPoint"
+                MasterPointsStorage.push_back(MasterPointContainer);
+                SlavePointsStorage.push_back(SlavePointContainer);
                 int start_index = 0,start_array=0;
                 CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage,SlavePointsStorage);
                 //Now Interpolate the PointCloud
@@ -1230,33 +1259,33 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 MasterPointContainer.clear();
                 SlavePointContainer.clear();
-				for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                 {
-					MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-					SlavePointContainer.push_back(SlavePointsStorage[0][i]);
-					//We skip the Endpoint as it may be the same point as the start point 
-					if(i+2 == MasterPointsStorage.begin()->size())
-						i=-1;
-					if(i+1 == start_index)
-						break;
+                    MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                    SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                    //We skip the Endpoint as it may be the same point as the start point
+                    if (i+2 == MasterPointsStorage.begin()->size())
+                        i=-1;
+                    if (i +1 == start_index)
+                        break;
                 }
-				//Now lets interpolate the Point Cloud
-                    Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
-                    Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
-                    for (unsigned int t=0;t<MasterPointContainer.size();++t)
-                    {
-                        InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
-                        InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
-                    }
-					CheckPoints(InterpolationPointsMaster);
-					CheckPoints(InterpolationPointsSlave);
+                //Now lets interpolate the Point Cloud
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                {
+                    InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                }
+                /*CheckPoints(InterpolationPointsMaster);
+                CheckPoints(InterpolationPointsSlave);*/
 
-                    m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
-                    m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
-					//Store the last point
-					lastPoint = MasterPointContainer.rbegin()->first;
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+                //Store the last point
+                lastPoint = MasterPointContainer.rbegin()->first;
                 //SlaveTool Path finished
-			}//Current Curve < last curve is finished here
+            }//Current Curve < last curve is finished here
         }
         if (fabs(m_ordered_cuts_it->first-(m_ordered_cuts_it-1)->first)<=0.01)
         {
@@ -1460,18 +1489,22 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
 }
 
 
-bool cutting_tools::CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray) 
+bool cutting_tools::CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray)
 {
-  Standard_Integer ii ;
-  Standard_Real tolerance_squared = Precision::Confusion() * Precision::Confusion(),
-  distance_squared ;
-  Standard_Boolean result = Standard_True ;
-  for (ii = PointArray->Lower() ; result && ii < PointArray->Upper() ; ii++) {
-    distance_squared = PointArray->Value(ii).SquareDistance(PointArray->Value(ii+1)) ;
-	if(distance_squared < tolerance_squared)
-	{result = false; break;}
-  }
- return result ;
+    Standard_Integer ii ;
+    Standard_Real tolerance_squared = Precision::Confusion() * Precision::Confusion(),
+                                      distance_squared ;
+    Standard_Boolean result = Standard_True ;
+    for (ii = PointArray->Lower() ; result && ii < PointArray->Upper() ; ii++)
+    {
+        distance_squared = PointArray->Value(ii).SquareDistance(PointArray->Value(ii+1)) ;
+        if (distance_squared < tolerance_squared)
+        {
+            result = false;
+            break;
+        }
+    }
+    return result ;
 
 }
 Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
