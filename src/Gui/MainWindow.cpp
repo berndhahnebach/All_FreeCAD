@@ -737,11 +737,9 @@ void MainWindow::showTipOfTheDay( bool force )
   ParameterGrp::handle
   hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 
-#ifdef FC_DEBUG
-  bool tip = false;
-#else
-  bool tip = true;
-#endif
+  const std::map<std::string,std::string>& config = App::Application::Config();
+  std::map<std::string, std::string>::const_iterator tp = config.find("HideTipOfTheDay");
+  bool tip = (tp == config.end());
 
   tip = hGrp->GetBool("Tipoftheday", tip);
   if ( tip || force)
