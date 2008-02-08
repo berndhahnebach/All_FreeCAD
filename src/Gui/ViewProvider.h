@@ -75,6 +75,8 @@ public:
     virtual SoSeparator* getFrontRoot(void) const {return 0;}
     // returns the root node of the Provider (3D)
     virtual SoSeparator* getBackRoot(void) const {return 0;}
+    virtual void select(SoPath*) {}
+    virtual void deselect(SoPath*) {}
     // returns the TreeLabel
     virtual QIcon getIcon(void) const;
 

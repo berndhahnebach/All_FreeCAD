@@ -225,6 +225,10 @@ protected:
   SoFCBackgroundGradient *pcBackGround;
 
 private:
+  static void selectCB(void * closure, SoPath * p);
+  static void deselectCB(void * closure, SoPath * p);
+
+private:
   SoSeparator * backgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;
