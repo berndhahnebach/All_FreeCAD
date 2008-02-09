@@ -753,7 +753,7 @@ QMimeData * PythonConsole::createMimeDataFromSelection () const
  * simulate a "return" event to let decide keyPressEvent() how to continue. This
  * is to run the Python interpreter if needed.
  */
-void PythonConsole::insertFromMimeData ( const QMimeData * source )
+void PythonConsole::insertFromMimeData (const QMimeData * source)
 {
     if (!source)
         return;
@@ -767,65 +767,89 @@ void PythonConsole::insertFromMimeData ( const QMimeData * source )
     // definition contains several empty lines which leads to error messages (almost
     // indentation errors) later on.
     QString text = source->text();
-    if (!text.isNull()) {
-#if defined (Q_OS_LINUX) 
-        // Need to convert CRLF to LF
-        text.replace( "\r\n", "\n" );
+    if (text.isNull())
+        return;
+
+#if defined (Q_OS_LINUX)
+    // Need to convert CRLF to LF
+    text.replace( "\r\n", "\n" );
 #elif defined(Q_OS_WIN32)
-        // Need to convert CRLF to LF
-        text.replace( "\r\n", "\n" );
+    // Need to convert CRLF to LF
+    text.replace( "\r\n", "\n" );
 #elif defined(Q_OS_MAC)
-        //need to convert CR to LF
-        text.replace( '\r', '\n' );
+    //need to convert CR to LF
+    text.replace( '\r', '\n' );
 #endif
-        QStringList lines = text.split('\n');
-        QTextCursor cursor = textCursor();
-        QStringList buffer = d->interpreter->getBuffer();
-        d->interpreter->clearBuffer();
-        int countNewlines = lines.count() - 1, i = 0;
-        for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it, ++i) {
-            cursor.insertText( *it );
-            if (i < countNewlines) {
-                // put statement to the history
-                d->history.append(*it);
 
-                buffer.append(*it);
-                int ret = d->interpreter->compileCommand(buffer.join("\n").toUtf8());
-                if (ret == 1) { // incomplete
-                    printPrompt(true);
-                } else if (ret == 0) { // complete
-                    // check if the following lines belong to the previous block
-                    int k=i+1;
-                    QString nextline = lines[k];
-                    while ((nextline.isEmpty() || isComment(nextline)) && k < countNewlines) {
-                        k++;
-                        nextline = lines[k];
-                    }
-                    
-                    int ret = d->interpreter->compileCommand(nextline.toUtf8());
+    // separate the lines and get the last one
+    QStringList lines = text.split('\n');
+    QString last = lines.back();
+    lines.pop_back();
 
-                    // If the line is valid, i.e. complete or incomplete the previous block
-                    // is finished
-                    if (ret == -1) {
-                        // the command is not finished yet
-                        printPrompt(true);
-                    } else {
-                        runSource(buffer.join("\n"));
-                        buffer.clear();
-                    }
-                } else { // invalid
-                    runSource(buffer.join("\n"));
-                    buffer.clear();
-                    break;
-                }
-            } else {
-                buffer.append(*it);
-            }
+    QTextCursor cursor = textCursor();
+    QStringList buffer = d->interpreter->getBuffer();
+    d->interpreter->clearBuffer();
+
+    int countNewlines = lines.count(), i = 0;
+    for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it, ++i) {
+        QString line = *it;
+
+        // insert the text to the current cursor position
+        cursor.insertText(*it);
+
+        // for the very first line get the complete block
+        // because it may differ from the inserted text
+        if (i == 0) {
+            // get the text from the current cursor position to the end, remove it
+            // and add it to the last line
+            cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+            QString select = cursor.selectedText();
+            cursor.removeSelectedText();
+            last = last + select;
+            line = cursor.block().text();
+            line = line.mid(4);
         }
 
-        d->interpreter->setBuffer(buffer);
+        // put statement to the history
+        d->history.append(line);
+
+        buffer.append(line);
+        int ret = d->interpreter->compileCommand(buffer.join("\n").toUtf8());
+        if (ret == 1) { // incomplete
+            printPrompt(true);
+        }
+        else if (ret == 0) { // complete
+            // check if the following lines belong to the previous block
+            int k=i+1;
+            QString nextline;
+            while ((nextline.isEmpty() || isComment(nextline)) && k < countNewlines) {
+                nextline = lines[k];
+                k++;
+            }
+            
+            int ret = d->interpreter->compileCommand(nextline.toUtf8());
+
+            // If the line is valid, i.e. complete or incomplete the previous block
+            // is finished
+            if (ret == -1) {
+                // the command is not finished yet
+                printPrompt(true);
+            }
+            else {
+                runSource(buffer.join("\n"));
+                buffer.clear();
+            }
+        }
+        else { // invalid
+            runSource(buffer.join("\n"));
+            ensureCursorVisible();
+            return; // exit the method on error
+        }
     }
 
+    // set the incomplete block to the interpreter and insert the last line
+    d->interpreter->setBuffer(buffer);
+    cursor.insertText(last);
     ensureCursorVisible();
 }
 
