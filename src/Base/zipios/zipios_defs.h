@@ -2,15 +2,11 @@
 #define ZIPIOS_DEFS_H
 
 #include "zipios-config.h"
-//#include <stdint.h>
 
 namespace zipios {
 
-//TODO: Need a typedef of uint16_t and uint32_t to be working with x64
-//typedef uint16_t uint16 ;
-//typedef uint32_t uint32 ;
-typedef unsigned short uint16 ;
-typedef unsigned long  uint32 ;
+typedef uint16_t uint16 ;
+typedef uint32_t uint32 ;
 
 } // namespace
 

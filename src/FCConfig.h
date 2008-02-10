@@ -40,6 +40,13 @@
 #	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
 #	endif
+#elif defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
+#	ifndef FC_OS_WIN32
+#	define FC_OS_WIN32
+#	endif
+#	ifndef FC_OS_WIN64
+#	define FC_OS_WIN64
+#	endif
 #elif defined(__MWERKS__) && defined(__INTEL__)
 #	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
@@ -98,6 +105,55 @@
 #endif
 
 //**************************************************************************
+// Standard types for Windows
+
+#if defined (FC_OS_WIN64)
+#error "The standard types must be defined for the Windows 64 bit platform"
+#elif defined (FC_OS_WIN32)
+
+#ifndef HAVE_INT8_T
+#define HAVE_INT8_T
+typedef char                int8_t;
+#endif
+
+#ifndef HAVE_UINT8_T
+#define HAVE_UINT8_T
+typedef unsigned char       uint8_t;
+#endif
+
+#ifndef HAVE_INT16_T
+#define HAVE_INT16_T
+typedef short               int16_t;
+#endif
+
+#ifndef HAVE_UINT16_T
+#define HAVE_UINT16_T
+typedef unsigned short      uint16_t;
+#endif
+
+#ifndef HAVE_INT32_T
+#define HAVE_INT32_T
+typedef int                 int32_t;
+#endif
+
+#ifndef HAVE_UINT32_T
+#define HAVE_UINT32_T
+typedef unsigned int        uint32_t;
+#endif
+
+#ifndef HAVE_INT64_T
+#define HAVE_INT64_T
+typedef __int64             int64_t;
+#endif
+
+#ifndef HAVE_UINT64_T
+#define HAVE_UINT64_T
+typedef unsigned __int64    uint64_t;
+#endif
+
+#endif
+
+//**************************************************************************
 // Crt Memory debugging
 
 /** Memory Crt debugging on
@@ -114,19 +170,6 @@
 #else
 # define DEBUG_CLIENTBLOCK   new
 #endif // MemDebugOn
-
-
-
-//**************************************************************************
-// Xerces
-
-#ifdef _MSC_VER
-#	ifdef FC_DEBUG
-#		define DOMLIBNAME "xerces-c_2D.lib"
-#	else
-#		define DOMLIBNAME "xerces-c_2.lib"
-#	endif
-#endif
 
 
 
@@ -200,51 +243,16 @@
 # endif
 #endif
 
-#ifdef _MSC_VER
-#	ifdef FC_DEBUG
-#		define INVENTORLIBNAME "coin2.lib" // should be "coin2d.lib"
-#	else
-#		define INVENTORLIBNAME "coin2.lib"
-#	endif
-#endif
-
 //**************************************************************************
 // SoQt
-
 #if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
 # ifndef SOQT_DLL
 #   define SOQT_DLL
 # endif
 #endif
 
-// stopps includion of the QT 3 header through the SoQT header...
-#define __Qt3All__
-
-#ifdef _MSC_VER
-#	ifdef FC_DEBUG
-#		define SOQTLIBNAME "soqt1.lib" // should be soqt1d.lib
-#	else
-#		define SOQTLIBNAME "soqt1.lib"
-#	endif
-#endif
-
-//**************************************************************************
-// Wm3
-
-// Currently use dll for MSVC >= 7.x and static lib for MSVC 6
-#if defined(_MSC_VER) && _MSC_VER >= 1400
-# define WM3_DLL_IMPORT
-#endif
-
-// if not defined then set to current version of LibPack
-#ifndef WM3_VERSION
-# if defined(_MSC_VER) && _MSC_VER >= 1400
-#   define WM3_VERSION 335
-# else
-#   define WM3_VERSION 330
-# endif
-#endif
-
+// stops inclusion of the QT 3 header through the SoQT header...
+//#define __Qt3All__
 
 //**************************************************************************
 // Exception handling
@@ -266,10 +274,10 @@
 // Windows import export DLL defines
 #if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
 #	ifdef FCApp
-#		define AppExport  __declspec(dllexport)
+#		define AppExport   __declspec(dllexport)
 #		define DataExport  __declspec(dllexport)
 #	else
-#		define AppExport  __declspec(dllimport)
+#		define AppExport   __declspec(dllimport)
 #		define DataExport  __declspec(dllimport)
 #	endif
 #	ifdef FCBase
@@ -278,9 +286,9 @@
 #		define BaseExport  __declspec(dllimport)
 #	endif
 #	ifdef FCGui
-#		define GuiExport  __declspec(dllexport)
+#		define GuiExport   __declspec(dllexport)
 #	else
-#		define GuiExport  __declspec(dllimport)
+#		define GuiExport   __declspec(dllimport)
 #	endif
 #else
 #	ifndef BaseExport
