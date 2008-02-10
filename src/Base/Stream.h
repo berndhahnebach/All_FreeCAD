@@ -62,12 +62,14 @@ public:
     ~OutputStream();
 
     OutputStream& operator << (bool b);
-    OutputStream& operator << (char ch);
-    OutputStream& operator << (unsigned char uch);
-    OutputStream& operator << (short s);
-    OutputStream& operator << (unsigned short us);
-    OutputStream& operator << (int i);
-    OutputStream& operator << (unsigned int ui);
+    OutputStream& operator << (int8_t ch);
+    OutputStream& operator << (uint8_t uch);
+    OutputStream& operator << (int16_t s);
+    OutputStream& operator << (uint16_t us);
+    OutputStream& operator << (int32_t i);
+    OutputStream& operator << (uint32_t ui);
+    OutputStream& operator << (int64_t l);
+    OutputStream& operator << (uint64_t ul);
     OutputStream& operator << (long l);
     OutputStream& operator << (unsigned long ul);
     OutputStream& operator << (float f);
@@ -92,12 +94,14 @@ public:
     ~InputStream();
 
     InputStream& operator >> (bool& b);
-    InputStream& operator >> (char& ch);
-    InputStream& operator >> (unsigned char& uch);
-    InputStream& operator >> (short& s);
-    InputStream& operator >> (unsigned short& us);
-    InputStream& operator >> (int& i);
-    InputStream& operator >> (unsigned int& ui);
+    InputStream& operator >> (int8_t& ch);
+    InputStream& operator >> (uint8_t& uch);
+    InputStream& operator >> (int16_t& s);
+    InputStream& operator >> (uint16_t& us);
+    InputStream& operator >> (int32_t& i);
+    InputStream& operator >> (uint32_t& ui);
+    InputStream& operator >> (int64_t& l);
+    InputStream& operator >> (uint64_t& ul);
     InputStream& operator >> (long& l);
     InputStream& operator >> (unsigned long& ul);
     InputStream& operator >> (float& f);

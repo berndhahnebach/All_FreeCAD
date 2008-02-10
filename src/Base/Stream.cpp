@@ -66,43 +66,57 @@ OutputStream& OutputStream::operator << (bool b)
     return *this;
 }
 
-OutputStream& OutputStream::operator << (char ch)
+OutputStream& OutputStream::operator << (int8_t ch)
 {
-    _out.write((const char*)&ch, sizeof(char));
+    _out.write((const char*)&ch, sizeof(int8_t));
     return *this;
 }
 
-OutputStream& OutputStream::operator << (unsigned char uch)
+OutputStream& OutputStream::operator << (uint8_t uch)
 {
-    _out.write((const char*)&uch, sizeof(unsigned char));
+    _out.write((const char*)&uch, sizeof(uint8_t));
     return *this;
 }
 
-OutputStream& OutputStream::operator << (short s)
+OutputStream& OutputStream::operator << (int16_t s)
 {
-    if (_swap) SwapEndian<short>(s);
-    _out.write((const char*)&s, sizeof(short));
+    if (_swap) SwapEndian<int16_t>(s);
+    _out.write((const char*)&s, sizeof(int16_t));
     return *this;
 }
 
-OutputStream& OutputStream::operator << (unsigned short us)
+OutputStream& OutputStream::operator << (uint16_t us)
 {
-    if (_swap) SwapEndian<unsigned short>(us);
-    _out.write((const char*)&us, sizeof(unsigned short));
+    if (_swap) SwapEndian<uint16_t>(us);
+    _out.write((const char*)&us, sizeof(uint16_t));
     return *this;
 }
 
-OutputStream& OutputStream::operator << (int i)
+OutputStream& OutputStream::operator << (int32_t i)
 {
-    if (_swap) SwapEndian<int>(i);
-    _out.write((const char*)&i, sizeof(int));
+    if (_swap) SwapEndian<int32_t>(i);
+    _out.write((const char*)&i, sizeof(int32_t));
     return *this;
 }
 
-OutputStream& OutputStream::operator << (unsigned int ui)
+OutputStream& OutputStream::operator << (uint32_t ui)
 {
-    if (_swap) SwapEndian<unsigned int>(ui);
-    _out.write((const char*)&ui, sizeof(unsigned int));
+    if (_swap) SwapEndian<uint32_t>(ui);
+    _out.write((const char*)&ui, sizeof(uint32_t));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (int64_t l)
+{
+    if (_swap) SwapEndian<int64_t>(l);
+    _out.write((const char*)&l, sizeof(int64_t));
+    return *this;
+}
+
+OutputStream& OutputStream::operator << (uint64_t ul)
+{
+    if (_swap) SwapEndian<uint64_t>(ul);
+    _out.write((const char*)&ul, sizeof(uint64_t));
     return *this;
 }
 
@@ -148,43 +162,57 @@ InputStream& InputStream::operator >> (bool& b)
     return *this;
 }
 
-InputStream& InputStream::operator >> (char& ch)
+InputStream& InputStream::operator >> (int8_t& ch)
 {
-    _in.read((char*)&ch, sizeof(char));
+    _in.read((char*)&ch, sizeof(int8_t));
     return *this;
 }
 
-InputStream& InputStream::operator >> (unsigned char& uch)
+InputStream& InputStream::operator >> (uint8_t& uch)
 {
-    _in.read((char*)&uch, sizeof(unsigned char));
+    _in.read((char*)&uch, sizeof(uint8_t));
     return *this;
 }
 
-InputStream& InputStream::operator >> (short& s)
+InputStream& InputStream::operator >> (int16_t& s)
 {
-    _in.read((char*)&s, sizeof(short));
-    if (_swap) SwapEndian<short>(s);
+    _in.read((char*)&s, sizeof(int16_t));
+    if (_swap) SwapEndian<int16_t>(s);
     return *this;
 }
 
-InputStream& InputStream::operator >> (unsigned short& us)
+InputStream& InputStream::operator >> (uint16_t& us)
 {
-    _in.read((char*)&us, sizeof(unsigned short));
-    if (_swap) SwapEndian<unsigned short>(us);
+    _in.read((char*)&us, sizeof(uint16_t));
+    if (_swap) SwapEndian<uint16_t>(us);
     return *this;
 }
 
-InputStream& InputStream::operator >> (int& i)
+InputStream& InputStream::operator >> (int32_t& i)
 {
-    _in.read((char*)&i, sizeof(int));
-    if (_swap) SwapEndian<int>(i);
+    _in.read((char*)&i, sizeof(int32_t));
+    if (_swap) SwapEndian<int32_t>(i);
     return *this;
 }
 
-InputStream& InputStream::operator >> (unsigned int& ui)
+InputStream& InputStream::operator >> (uint32_t& ui)
 {
-    _in.read((char*)&ui, sizeof(unsigned int));
-    if (_swap) SwapEndian<unsigned int>(ui);
+    _in.read((char*)&ui, sizeof(uint32_t));
+    if (_swap) SwapEndian<uint32_t>(ui);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (int64_t& l)
+{
+    _in.read((char*)&l, sizeof(int64_t));
+    if (_swap) SwapEndian<int64_t>(l);
+    return *this;
+}
+
+InputStream& InputStream::operator >> (uint64_t& ul)
+{
+    _in.read((char*)&ul, sizeof(uint64_t));
+    if (_swap) SwapEndian<uint64_t>(ul);
     return *this;
 }
 
