@@ -1774,6 +1774,49 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
 
     // Store GL state
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+    glDepthFunc(GL_ALWAYS);
+    glDepthMask(GL_TRUE);
+    glDepthRange(0,0);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glDisable(GL_BLEND);
+
+    glLineWidth(3.0f);
+    glColor4f(1.0, 1.0, 0.0, 0.0);
+    glViewport(0, 0, view[0], view[1]);
+
+    glEnable(GL_COLOR_LOGIC_OP);
+    glLogicOp(GL_XOR);
+    glDrawBuffer(GL_FRONT);
+
+    glBegin(GL_LINES);
+        glVertex3i(x1, view[1]-y1, 0);
+        glVertex3i(x2, view[1]-y2, 0);
+    glEnd();
+
+    glFlush();
+    glLogicOp(GL_COPY);
+    glDisable(GL_COLOR_LOGIC_OP);
+
+    glPopAttrib();
+    glPopMatrix();
+    
+    // Release the context
+    this->glUnlockNormal();
+#if 0
+    // Make current context
+    SbVec2s view = this->getGLSize();
+    this->glLockNormal();
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, view[0], 0, view[1], -1, 1);
+
+    // Store GL state
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
     GLfloat depthrange[2];
     glGetFloatv(GL_DEPTH_RANGE, depthrange);
     GLdouble projectionmatrix[16];
@@ -1815,6 +1858,7 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
     
     // Release the context
     this->glUnlockNormal();
+#endif
 }
 
 void View3DInventorViewer::drawCircle (int x, int y, int r)
