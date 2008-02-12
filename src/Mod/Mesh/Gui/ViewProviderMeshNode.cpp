@@ -103,7 +103,7 @@ ViewProviderMeshNode::ViewProviderMeshNode() : pcOpenEdge(0), m_bEdit(false)
   unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
   if ( current != setting )
   {
-    color.setPackedValue(setting);
+    color.setPackedValue((uint32_t)setting);
     ShapeColor.setValue(color);
   }
 }

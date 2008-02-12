@@ -1257,7 +1257,7 @@ void PropertyColor::setValue(const Color &col)
     hasSetValue();
 }
 
-void PropertyColor::setValue(unsigned long rgba)
+void PropertyColor::setValue(uint32_t rgba)
 {
     aboutToSetValue();
     _cCol.setPackedValue(rgba);
@@ -1493,7 +1493,7 @@ void PropertyColorList::SaveDocFile (Base::Writer &writer) const
     uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<App::Color>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
-        str << (uint32_t)it->getPackedValue();
+        str << it->getPackedValue();
     }
 }
 

@@ -48,9 +48,9 @@ public:
     :r(R),g(G),b(B),a(A){}
   /**
    * Does basically the same as the constructor above unless that (R,G,B,A) is
-   * encoded as an unsigned long.
+   * encoded as an unsigned int.
    */
-  Color(unsigned long rgba)
+  Color(uint32_t rgba)
   { setPackedValue( rgba ); }
   /** Copy constructor. */
   Color(const Color& c)
@@ -85,22 +85,22 @@ public:
    *
    * \sa getPackedValue().
    */
-  Color& setPackedValue( unsigned long rgba)
+  Color& setPackedValue(uint32_t rgba)
   {
     this->set( (rgba >> 24)/255.0f, ((rgba >> 16)&0xff)/255.0f, ((rgba >> 8)&0xff)/255.0f, (rgba&0xff)/255.0f );
     return *this;
   }
   /**
-   * Returns color as a 32 bit packed unsigned long in the form 0xRRGGBBAA.
+   * Returns color as a 32 bit packed unsigned int in the form 0xRRGGBBAA.
    *
    *  \sa setPackedValue().
    */
-  unsigned long getPackedValue() const
+  uint32_t getPackedValue() const
   {
-    return ((unsigned long)(r*255.0f + 0.5f) << 24 |
-            (unsigned long)(g*255.0f + 0.5f) << 16 |
-            (unsigned long)(b*255.0f + 0.5f) << 8  |
-            (unsigned long)(a*255.0f + 0.5f));
+    return ((uint32_t)(r*255.0f + 0.5f) << 24 |
+            (uint32_t)(g*255.0f + 0.5f) << 16 |
+            (uint32_t)(b*255.0f + 0.5f) << 8  |
+            (uint32_t)(a*255.0f + 0.5f));
   }
 
   /// color values, public accesible

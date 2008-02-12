@@ -26,10 +26,10 @@
 #ifndef _PreComp_
 #endif
 
-#include "../Base/Exception.h"
+#include <Base/Exception.h>
 #include "Material.h"
 #include "MaterialPy.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace App;
 
 

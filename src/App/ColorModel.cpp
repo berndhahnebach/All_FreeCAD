@@ -386,7 +386,7 @@ Color ColorLegend::getColor (unsigned long ulPos) const
 }
 
 // color as: 0x00rrggbb
-unsigned long ColorLegend::getColorLong (unsigned long ulPos) const
+uint32_t ColorLegend::getPackedColor (unsigned long ulPos) const
 {
   Color clRGB = getColor(ulPos);
   return clRGB.getPackedValue();
