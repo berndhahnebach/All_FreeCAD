@@ -320,7 +320,7 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
   std::streambuf* buf = rstrIn.rdbuf();
   if (!buf) return false;
   buf->pubseekoff(80, std::ios::beg, std::ios::in);
-  unsigned long ulCt;
+  uint32_t ulCt;
   rstrIn.read((char*)&ulCt, sizeof(ulCt));
   // Either it's really an invalid STL file or it's just empty. In this case the number of facets must be 0.
   if ( rstrIn.read(szBuf, 50) == false )
@@ -483,10 +483,10 @@ bool MeshInput::LoadBinarySTL (std::istream &rstrIn)
 {
   char szInfo[80];
   Base::Vector3f clVects[4];
-  unsigned short usAtt; 
-  unsigned long ulCt;
+  uint16_t usAtt; 
+  uint32_t ulCt;
 
-  if ( !rstrIn || rstrIn.bad() == true )
+  if (!rstrIn || rstrIn.bad() == true)
     return false;
 
   // Header-Info ueberlesen
@@ -498,17 +498,17 @@ bool MeshInput::LoadBinarySTL (std::istream &rstrIn)
     return false;
 
   // get file size and calculate the number of facets
-  unsigned long ulSize = 0; 
+  std::streamoff ulSize = 0; 
   std::streambuf* buf = rstrIn.rdbuf();
   if ( buf )
   {
-    unsigned long ulCurr;
+    std::streamoff ulCurr;
     ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
     ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
     buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
   }
 
-  unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long))) / 50;
+  uint32_t ulFac = (ulSize - (80 + sizeof(uint32_t))) / 50;
 
   // compare the calculated with the read value
   if (ulCt > ulFac)
@@ -517,7 +517,7 @@ bool MeshInput::LoadBinarySTL (std::istream &rstrIn)
   MeshBuilder builder(this->_rclMesh);
   builder.Initialize(ulCt);
 
-  for (unsigned long i = 0; i < ulCt; i++)
+  for (uint32_t i = 0; i < ulCt; i++)
   {
     // read normal, points
     rstrIn.read((char*)&clVects, sizeof(clVects));
@@ -1103,11 +1103,11 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
-  unsigned long i, ulCtFacet;
-  unsigned short usAtt;
+  uint32_t i, ulCtFacet;
+  uint16_t usAtt;
   char szInfo[81];
 
-  if ( !rstrOut || rstrOut.bad() == true /*|| _rclMesh.CountFacets() == 0*/ )
+  if (!rstrOut || rstrOut.bad() == true /*|| _rclMesh.CountFacets() == 0*/)
     return false;
 
   Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
@@ -1115,8 +1115,8 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
   strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
   rstrOut.write(szInfo, strlen(szInfo));
 
-  unsigned long uCtFts = _rclMesh.CountFacets();
-  rstrOut.write((const char*)&uCtFts, sizeof(unsigned long));
+  uint32_t uCtFts = (uint32_t)_rclMesh.CountFacets();
+  rstrOut.write((const char*)&uCtFts, sizeof(uCtFts));
 
   usAtt = 0;
   clIter.Begin();
@@ -1139,7 +1139,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
     }
 
     // Attribut 
-    rstrOut.write((const char*)&usAtt, sizeof(unsigned short));
+    rstrOut.write((const char*)&usAtt, sizeof(usAtt));
 
     ++clIter;
     Base::Sequencer().next( true ); // allow to cancel
