@@ -474,9 +474,6 @@ void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
   case BoxZoom:
     pcMouseModel = new BoxZoomMouseModel();
     break;
-  case Circle:
-    pcMouseModel = new CirclePickerMouseModel();
-    break;
   default:
     break;
   }
@@ -1774,6 +1771,10 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
 
     // Store GL state
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GLfloat depthrange[2];
+    glGetFloatv(GL_DEPTH_RANGE, depthrange);
+    GLdouble projectionmatrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
 
     glDepthFunc(GL_ALWAYS);
     glDepthMask(GL_TRUE);
@@ -1783,8 +1784,8 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
     glEnable(GL_COLOR_MATERIAL);
     glDisable(GL_BLEND);
 
-    glLineWidth(3.0f);
-    glColor4f(1.0, 1.0, 0.0, 0.0);
+    glLineWidth(2.0f);
+    glColor4f(1.0, 1.0, 1.0, 0.0);
     glViewport(0, 0, view[0], view[1]);
 
     glEnable(GL_COLOR_LOGIC_OP);
@@ -1800,54 +1801,6 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
     glLogicOp(GL_COPY);
     glDisable(GL_COLOR_LOGIC_OP);
 
-    glPopAttrib();
-    glPopMatrix();
-    
-    // Release the context
-    this->glUnlockNormal();
-#if 0
-    // Make current context
-    SbVec2s view = this->getGLSize();
-    this->glLockNormal();
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0, view[0], 0, view[1], -1, 1);
-
-    // Store GL state
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    GLfloat depthrange[2];
-    glGetFloatv(GL_DEPTH_RANGE, depthrange);
-    GLdouble projectionmatrix[16];
-    glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
-
-    glDepthFunc(GL_ALWAYS);
-    glDepthMask(GL_TRUE);
-    glDepthRange(0,0);
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glDisable(GL_BLEND);
-
-    glEnable(GL_COLOR_LOGIC_OP);
-    glLogicOp(GL_XOR);
-    glDrawBuffer(GL_FRONT);
-    glLineWidth(3.0f);
-    glEnable(GL_LINE_STIPPLE);
-    glLineStipple(2, 0x3F3F);
-    glColor4f(1.0, 1.0, 0.0, 0.0);
-    glViewport(0, 0, view[0], view[1]);
-
-    glBegin(GL_LINE_LOOP);
-        glVertex3i(x1, view[1]-y1, 0);
-        glVertex3i(x2, view[1]-y2, 0);
-    glEnd();
-
-    glFlush();
-    glDisable(GL_LINE_STIPPLE);
-    glDisable(GL_COLOR_LOGIC_OP);
-
     // Reset original state
     glDepthRange(depthrange[0], depthrange[1]);
     glMatrixMode(GL_PROJECTION);
@@ -1858,40 +1811,6 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
     
     // Release the context
     this->glUnlockNormal();
-#endif
-}
-
-void View3DInventorViewer::drawCircle (int x, int y, int r)
-{
-#if 0 //TODO
-  if (p)
-  {
-    QPoint center(x-r/2, y-r/2);
-    p->drawEllipse( center.x(), center.y(), r, r );
-  }
-  else
-  {
-    QPainter p(getGLWidget());
-    p.setPen( Qt::green );
-    p.setRasterOp( QPainter::XorROP );
-    drawCircle( x, y, r, &p );
-  }
-#endif
-}
-
-void View3DInventorViewer::drawText (int x, int y, const QString & str)
-{
-#if 0 //TODO
-  if (p)
-    p->drawText( x, y, str);
-  else
-  {
-    QPainter p(getGLWidget());
-    p.setPen( Qt::white );
-    p.setRasterOp( QPainter::XorROP );
-    drawText( x, y, str, &p );
-  }
-#endif
 }
 
 /*!
