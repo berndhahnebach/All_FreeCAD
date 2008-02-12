@@ -23,8 +23,8 @@
 
 #include "PreCompiled.h"
 
-#include <App/Material.h>
 #include <App/PropertyStandard.h>
+#include <App/Material.h>
 
 #include "DlgMaterialPropertiesImp.h"
 #include "Widgets.h"
