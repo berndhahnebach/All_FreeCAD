@@ -70,8 +70,6 @@ public:
     OutputStream& operator << (uint32_t ui);
     OutputStream& operator << (int64_t l);
     OutputStream& operator << (uint64_t ul);
-    OutputStream& operator << (long l);
-    OutputStream& operator << (unsigned long ul);
     OutputStream& operator << (float f);
     OutputStream& operator << (double d);
 
@@ -102,8 +100,6 @@ public:
     InputStream& operator >> (uint32_t& ui);
     InputStream& operator >> (int64_t& l);
     InputStream& operator >> (uint64_t& ul);
-    InputStream& operator >> (long& l);
-    InputStream& operator >> (unsigned long& ul);
     InputStream& operator >> (float& f);
     InputStream& operator >> (double& d);
 

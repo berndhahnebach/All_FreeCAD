@@ -120,20 +120,6 @@ OutputStream& OutputStream::operator << (uint64_t ul)
     return *this;
 }
 
-OutputStream& OutputStream::operator << (long l)
-{
-    if (_swap) SwapEndian<long>(l);
-    _out.write((const char*)&l, sizeof(long));
-    return *this;
-}
-
-OutputStream& OutputStream::operator << (unsigned long ul)
-{
-    if (_swap) SwapEndian<unsigned long>(ul);
-    _out.write((const char*)&ul, sizeof(unsigned long));
-    return *this;
-}
-
 OutputStream& OutputStream::operator << (float f)
 {
     if (_swap) SwapEndian<float>(f);
@@ -213,20 +199,6 @@ InputStream& InputStream::operator >> (uint64_t& ul)
 {
     _in.read((char*)&ul, sizeof(uint64_t));
     if (_swap) SwapEndian<uint64_t>(ul);
-    return *this;
-}
-
-InputStream& InputStream::operator >> (long& l)
-{
-    _in.read((char*)&l, sizeof(long));
-    if (_swap) SwapEndian<long>(l);
-    return *this;
-}
-
-InputStream& InputStream::operator >> (unsigned long& ul)
-{
-    _in.read((char*)&ul, sizeof(unsigned long));
-    if (_swap) SwapEndian<unsigned long>(ul);
     return *this;
 }
 
