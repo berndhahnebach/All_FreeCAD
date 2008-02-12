@@ -197,11 +197,11 @@ PyObject *PropertyLinkList::getPyObject(void)
 void PropertyLinkList::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<DocumentObject*> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyObject_TypeCheck(item, &(DocumentObjectPy::Type))) {
                 std::string error = std::string("type in list must be 'DocumentObject', not ");

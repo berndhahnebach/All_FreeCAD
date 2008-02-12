@@ -626,50 +626,48 @@ keymatch (char * arg, const char * keyword, int minchars)
 
 void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment)
 {
-  char * comment_arg;
-  unsigned int comment_length;
-  int marker;
+    char * comment_arg;
+    unsigned int comment_length;
+    int marker;
 
-  comment_arg = (char *) malloc((size_t) strlen(Comment)+2);
-	strcpy(comment_arg, Comment);
-  comment_length = strlen(comment_arg);
+    comment_arg = (char *) malloc((size_t) strlen(Comment)+2);
+    strcpy(comment_arg, Comment);
+    comment_length = (unsigned int)strlen(comment_arg);
 
 
-  if ((infile = fopen(InFile, READ_BINARY)) == NULL) {
-    //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn]);
-    return;
-  }
-
-   
-  if ((outfile = fopen(OutFile, WRITE_BINARY)) == NULL) {
-    //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn+1]);
-    return;
-  }
-
-  /* Copy JPEG headers until SOFn marker;
-  * we will insert the new comment marker just before SOFn.
-  * This (a) causes the new comment to appear after, rather than before,
-  * existing comments; and (b) ensures that comments come after any JFIF
-  * or JFXX markers, as required by the JFIF specification.
-  */
-  marker = scan_JPEG_header(0);
-  /* Insert the new COM marker, but only if nonempty text has been supplied */
-  if (comment_length > 0) {
-    write_marker(M_COM);
-    write_2_bytes(comment_length + 2);
-    while (comment_length > 0) {
-      write_1_byte(*comment_arg++);
-      comment_length--;
+    if ((infile = fopen(InFile, READ_BINARY)) == NULL) {
+        //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn]);
+        return;
     }
-  }
-  /* Duplicate the remainder of the source file.
-   * Note that any COM markers occuring after SOF will not be touched.
-   */
-  write_marker(marker);
-  copy_rest_of_file();
+
+    if ((outfile = fopen(OutFile, WRITE_BINARY)) == NULL) {
+        //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn+1]);
+        return;
+    }
+
+    /* Copy JPEG headers until SOFn marker;
+    * we will insert the new comment marker just before SOFn.
+    * This (a) causes the new comment to appear after, rather than before,
+    * existing comments; and (b) ensures that comments come after any JFIF
+    * or JFXX markers, as required by the JFIF specification.
+    */
+    marker = scan_JPEG_header(0);
+    /* Insert the new COM marker, but only if nonempty text has been supplied */
+    if (comment_length > 0) {
+        write_marker(M_COM);
+        write_2_bytes(comment_length + 2);
+        while (comment_length > 0) {
+            write_1_byte(*comment_arg++);
+            comment_length--;
+        }
+    }
+    /* Duplicate the remainder of the source file.
+     * Note that any COM markers occuring after SOF will not be touched.
+     */
+    write_marker(marker);
+    copy_rest_of_file();
 
 
-  fclose(infile);
-  fclose(outfile);
-
+    fclose(infile);
+    fclose(outfile);
 }

@@ -32,23 +32,16 @@
 #include <vector>
 #include <boost/filesystem/path.hpp>
 
-#ifdef _MSC_VER
-# pragma warning( disable : 4251 )
-#endif
-
-
 #include "Property.h"
 #include "Material.h"
 
 namespace Base {
-  class Writer;
+class Writer;
 }
 
 
 namespace App
 {
-
-
 
 /** Integer properties
  * This is the father of all properties handling Integers.
@@ -58,7 +51,6 @@ class AppExport PropertyInteger: public Property
     TYPESYSTEM_HEADER();
 
 public:
-  
     PropertyInteger();
     ~PropertyInteger();
 
@@ -257,8 +249,6 @@ class AppExport PropertyIntegerList: public PropertyLists
     TYPESYSTEM_HEADER();
 
 public:
-
-       
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -309,7 +299,6 @@ class AppExport PropertyFloat: public Property
     TYPESYSTEM_HEADER();
 
 public:
- 
     /** Value Constructor
      *  Construct with explicite Values
      */

@@ -28,15 +28,15 @@
 #include <Base/Persistance.h>
 
 namespace Base {
-  class Writer;
+class Writer;
 }
 
 
 namespace App
 {
-  class Property;
-  class PropertyContainer;
-  class DocumentObject;
+class Property;
+class PropertyContainer;
+class DocumentObject;
 
 enum AppExport PropertyType 
 {
@@ -86,8 +86,6 @@ class AppExport PropertyContainer: public Base::Persistance
   TYPESYSTEM_HEADER();
 
 public:
-
-
   /**
    * A constructor.
    * A more elaborate description of the constructor.
@@ -202,7 +200,6 @@ void _class_::init(void){\
   initSubclass(_class_::classTypeId, #_class_ , #_parentclass_, &(_class_::create) ); \
   _class_::propertyData.parentPropertyData = _parentclass_::getPropertyDataPtr();\
 }
-
 
 
 } // namespace App

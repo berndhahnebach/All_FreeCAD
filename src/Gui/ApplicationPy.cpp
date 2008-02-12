@@ -456,7 +456,7 @@ PYFUNCIMP_S(Application,sAddIcon)
 
     QByteArray ary;
     std::string content = pixmap;
-    int strlen = content.size();
+    int strlen = (int)content.size();
     ary.resize(strlen);
     for (int j=0; j<strlen; j++)
         ary[j]=content[j];

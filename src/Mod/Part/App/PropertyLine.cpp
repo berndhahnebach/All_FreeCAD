@@ -219,7 +219,7 @@ void PropertyLineSet::Restore(Base::XMLReader &reader)
 void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = getSize();
+    uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<Line3f>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
         str << it->first.x << it->first.y << it->first.z;
@@ -230,10 +230,10 @@ void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
 void PropertyLineSet::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt;
+    uint32_t uCt = 0;
     str >> uCt;
     std::vector<Line3f> values(uCt);
-    for (unsigned long i=0; i < uCt; i++) {
+    for (uint32_t i=0; i < uCt; i++) {
         float x1,y1,z1,x2,y2,z2;
         str >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
         values[i].first.Set(x1,y1,z1);

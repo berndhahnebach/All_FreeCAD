@@ -61,22 +61,24 @@ Transaction::Transaction(int pos)
  */
 Transaction::~Transaction()
 {
-  std::map<const DocumentObject*,TransactionObject*>::iterator It;
-  for( It= _Objects.begin();It!=_Objects.end();++It)
-    delete It->second;
+    std::map<const DocumentObject*,TransactionObject*>::iterator It;
+    for( It= _Objects.begin();It!=_Objects.end();++It)
+        delete It->second;
 }
 
-void Transaction::Save (Writer &/*writer*/) const{
-  assert(0);
+void Transaction::Save (Writer &/*writer*/) const
+{
+    assert(0);
 } 
 
-void Transaction::Restore(XMLReader &/*reader*/){
-  assert(0);
+void Transaction::Restore(XMLReader &/*reader*/)
+{
+    assert(0);
 } 
 
 int Transaction::getPos(void) const
 {
-  return iPos;
+    return iPos;
 }
 
 
@@ -230,12 +232,14 @@ void TransactionObject::setProperty(const Property* pcProp)
     _PropChangeMap[pcProp] = pcProp->Copy();
 }
 
-void TransactionObject::Save (Writer &/*writer*/) const{
-  assert(0);
+void TransactionObject::Save (Writer &/*writer*/) const
+{
+    assert(0);
 } 
 
-void TransactionObject::Restore(XMLReader &/*reader*/){
-  assert(0);
+void TransactionObject::Restore(XMLReader &/*reader*/)
+{
+    assert(0);
 } 
 
 

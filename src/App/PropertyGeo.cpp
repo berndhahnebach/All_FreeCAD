@@ -233,11 +233,11 @@ PyObject *PropertyVectorList::getPyObject(void)
 void PropertyVectorList::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<Base::Vector3f> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             PropertyVector val;
             val.setPyObject( item );
@@ -285,7 +285,7 @@ void PropertyVectorList::Restore(Base::XMLReader &reader)
 void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = getSize();
+    uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<Base::Vector3f>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
         str << it->x << it->y << it->z;
@@ -295,7 +295,7 @@ void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt=ULONG_MAX;
+    uint32_t uCt=0;
     str >> uCt;
     std::vector<Base::Vector3f> values(uCt);
     for (std::vector<Base::Vector3f>::iterator it = values.begin(); it != values.end(); ++it) {

@@ -151,7 +151,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     if self.TempPath == None:
         self.TempPath = "/tmp";
     FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
-    
+
   def testSaveAndRestore(self):
     # saving and restoring
     SaveName = self.TempPath + os.sep + "Test1.FCStd"
@@ -497,4 +497,67 @@ class UndoRedoCases(unittest.TestCase):
     FreeCAD.closeDocument("UndoTest")
 
 
-      
+class DocumentPlatformCases(unittest.TestCase):
+  def setUp(self):
+    self.Doc = FreeCAD.newDocument("PlatformTests")
+    self.Doc.addObject("App::FeatureTest", "Test")
+    self.TempPath = os.getenv('TEMP')
+    if self.TempPath == None: self.TempPath = "/tmp";
+    self.DocName = self.TempPath + os.sep + "Platform.FCStd"
+    self.Doc.FileName = self.DocName
+
+  def testFloatList(self):
+    self.Doc.Test.FloatList = [-0.05, 2.5, 5.2]
+
+    # saving and restoring
+    self.Doc.save()
+    FreeCAD.closeDocument("PlatformTests")
+    self.Doc = FreeCAD.open(self.DocName)
+
+    self.failUnless(abs(self.Doc.Test.FloatList[0] + .05) < 0.01)
+    self.failUnless(abs(self.Doc.Test.FloatList[1] - 2.5) < 0.01)
+    self.failUnless(abs(self.Doc.Test.FloatList[2] - 5.2) < 0.01)
+
+  def testColorList(self):
+    self.Doc.Test.ColourList = [(1.0,0.5,0.0),(0.0,0.5,1.0)]
+
+    # saving and restoring
+    self.Doc.save()
+    FreeCAD.closeDocument("PlatformTests")
+    self.Doc = FreeCAD.open(self.DocName)
+
+    self.failUnless(abs(self.Doc.Test.ColourList[0][0] - 1.0) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[0][1] - 0.5) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[0][2] - 0.0) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[0][3] - 0.0) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[1][0] - 0.0) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[1][1] - 0.5) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[1][2] - 1.0) < 0.01)
+    self.failUnless(abs(self.Doc.Test.ColourList[1][3] - 0.0) < 0.01)
+
+  def testVectorList(self):
+    self.Doc.Test.VectorList = [(-0.05, 2.5, 5.2),(-0.05, 2.5, 5.2)]
+
+    # saving and restoring
+    self.Doc.save()
+    FreeCAD.closeDocument("PlatformTests")
+    self.Doc = FreeCAD.open(self.DocName)
+
+    self.failUnless(len(self.Doc.Test.VectorList) == 2)
+
+  def testPoints(self):
+    try:
+      self.Doc.addObject("Points::Feature", "Points")
+
+      # saving and restoring
+      self.Doc.save()
+      FreeCAD.closeDocument("PlatformTests")
+      self.Doc = FreeCAD.open(self.DocName)
+
+      self.failUnless(self.Doc.Points.Points.count() == 0)
+    except:
+      pass
+
+  def tearDown(self):
+    #closing doc
+    FreeCAD.closeDocument("PlatformTests")

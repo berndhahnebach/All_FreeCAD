@@ -141,4 +141,4 @@ std::string Property::encodeAttribute(const std::string& str) const
 // PropertyLists
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyLists , Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyLists , App::Property);

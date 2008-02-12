@@ -138,18 +138,15 @@ TYPESYSTEM_SOURCE(App::PropertyPath , App::Property);
 //**************************************************************************
 // Construction/Destruction
 
-       
 PropertyPath::PropertyPath()
 {
 
 }
 
-
 PropertyPath::~PropertyPath()
 {
 
 }
-
 
 
 //**************************************************************************
@@ -158,7 +155,6 @@ PropertyPath::~PropertyPath()
 
 //**************************************************************************
 // Seter getter for the property
-
 
 void PropertyPath::setValue(const boost::filesystem::path &Path)
 {
@@ -547,11 +543,11 @@ PyObject *PropertyIntegerList::getPyObject(void)
 void PropertyIntegerList::setPyObject(PyObject *value)
 { 
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<long> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyInt_Check(item)) {
                 std::string error = std::string("type in list must be int, not ");
@@ -822,11 +818,11 @@ PyObject *PropertyFloatList::getPyObject(void)
 void PropertyFloatList::setPyObject(PyObject *value)
 { 
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<float> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyFloat_Check(item)) {
                 std::string error = std::string("type in list must be float, not ");
@@ -879,7 +875,7 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
 void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = getSize();
+    uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<float>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
         str << *it;
@@ -889,7 +885,7 @@ void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt=ULONG_MAX;
+    uint32_t uCt=0;
     str >> uCt;
     std::vector<float> values(uCt);
     for (std::vector<float>::iterator it = values.begin(); it != values.end(); ++it) {
@@ -1060,11 +1056,11 @@ PyObject *PropertyStringList::getPyObject(void)
 void PropertyStringList::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<std::string> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyString_Check(item)) {
                 std::string error = std::string("type in list must be str, not ");
@@ -1443,11 +1439,11 @@ PyObject *PropertyColorList::getPyObject(void)
 void PropertyColorList::setPyObject(PyObject *value)
 {
     if (PyList_Check(value)) {
-        int nSize = PyList_Size(value);
+        Py_ssize_t nSize = PyList_Size(value);
         std::vector<Color> values;
         values.resize(nSize);
 
-        for (int i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(value, i);
             PropertyColor col;
             col.setPyObject(item);
@@ -1494,20 +1490,20 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
 void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = getSize();
+    uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<App::Color>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
-        str << it->getPackedValue();
+        str << (uint32_t)it->getPackedValue();
     }
 }
 
 void PropertyColorList::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt=ULONG_MAX;
+    uint32_t uCt=0;
     str >> uCt;
     std::vector<Color> values(uCt);
-    unsigned long value;
+    uint32_t value; // must be 32 bit long
     for (std::vector<App::Color>::iterator it = values.begin(); it != values.end(); ++it) {
         str >> value;
         it->setPackedValue(value);
@@ -1664,7 +1660,7 @@ void PropertyMaterial::Paste(const Property &from)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE(App::PropertyFile , App::PropertyString);
-       
+
 PropertyFile::PropertyFile()
 {
 

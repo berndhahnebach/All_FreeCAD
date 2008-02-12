@@ -42,10 +42,10 @@
 #include "Facet.h"
 #include "MeshPoint.h"
 
-namespace Py
-{
-    class List;
+namespace Py {
+class List;
 }
+
 namespace Mesh
 {
 /**

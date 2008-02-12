@@ -34,8 +34,7 @@
 #include "Property.h"
 #include "PropertyLinks.h"
 
-namespace Base
-{
+namespace Base {
 class Writer;
 }
 
@@ -54,8 +53,6 @@ class AppExport PropertyVector: public Property
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -91,9 +88,7 @@ public:
     }
 
 private:
-
     Base::Vector3f _cVec;
-
 };
 
 
@@ -102,8 +97,6 @@ class AppExport PropertyVectorList: public PropertyLists
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -133,10 +126,10 @@ public:
         return _lValueList.operator[] (idx);
     }
 
-
     void set1Value (const int idx, const Base::Vector3f& value) {
         _lValueList.operator[] (idx) = value;
     }
+
     void setValues (const std::vector<Base::Vector3f>& values);
 
     const std::vector<Base::Vector3f> &getValues(void) const {
@@ -171,8 +164,6 @@ class AppExport PropertyMatrix: public Property
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -218,8 +209,6 @@ class AppExport PropertyPlacement: public Property
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -265,7 +254,6 @@ class AppExport PropertyPlacementLink : public PropertyLink
     TYPESYSTEM_HEADER();
 
 public:
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.

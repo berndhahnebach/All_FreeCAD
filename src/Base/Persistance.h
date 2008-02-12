@@ -34,9 +34,9 @@
 
 namespace Base
 {
-  typedef std::istream Reader;
-  class Writer;
-  class XMLReader;
+typedef std::istream Reader;
+class Writer;
+class XMLReader;
 
 /// Persistance class and root of the type system
 class BaseExport Persistance : public BaseClass
@@ -162,9 +162,6 @@ public:
   } 
 
 };
-
-
-
 
 
 } //namespace Base
