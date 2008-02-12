@@ -332,7 +332,7 @@ public:
   void removeLast (void);    
 
   Color getColor (unsigned long ulPos) const;
-  unsigned long   getColorLong (unsigned long ulPos) const;
+  uint32_t  getPackedColor (unsigned long ulPos) const;
   bool setColor (unsigned long ulPos, float ucRed, float ucGreen, float ucBlue);
   bool setColor (unsigned long ulPos, unsigned long ulColor);
   float getValue (unsigned long ulPos) const;
