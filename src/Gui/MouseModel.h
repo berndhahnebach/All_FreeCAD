@@ -191,37 +191,6 @@ public:
   void terminate();
 };
 
-// -----------------------------------------------------------------------------------
-
-/**
- * The picker mouse model class
- * \author Werner Mayer
- */
-class GuiExport CirclePickerMouseModel : public BaseMouseModel 
-{
-public:
-  CirclePickerMouseModel();
-  virtual ~CirclePickerMouseModel();
-
-  /// set the new mouse cursor
-  virtual void initialize();
-  /// call the @ref draw() method to clear the view
-  virtual void terminate();
-
-  virtual void redraw();
-
-protected:
-  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
-  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
-  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
-  /// draw circle and text
-  virtual void draw ();
-
-private:
-  int    _nRadius;
-  bool   _bWorking;
-};
-
 } // namespace Gui
 
 #endif // MOUSEMODEL_H 

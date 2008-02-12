@@ -99,7 +99,6 @@ public:
     Lasso       = 0,  /**< Select objects using a lasso. */
     Rectangle   = 1,  /**< Select objects using a rectangle. */
     BoxZoom     = 2,  /**< Perform a box zoom. */
-    Circle      = 3,  /**< Select objects using a circle. */
   };
   void startPicking( ePickMode = Lasso );
   void stopPicking();
@@ -176,8 +175,6 @@ public:
   //@{
   void drawRect (int x, int y, int w, int h);
   void drawLine (int x1, int y1, int x2, int y2);
-  void drawCircle (int x, int y, int r);
-  void drawText (int x, int y, const QString & str);
   //@}
 
   bool bDrawAxisCross;
