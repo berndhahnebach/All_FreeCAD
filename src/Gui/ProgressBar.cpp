@@ -91,7 +91,7 @@ void Sequencer::resume()
 
 void Sequencer::startStep()
 {
-    d->bar->setRange(0, nTotalSteps);
+    d->bar->setRange(0, (int)nTotalSteps);
     if ( nTotalSteps == 0 ) {
         d->progressTime.start();
     }
@@ -118,10 +118,10 @@ void Sequencer::nextStep(bool canAbort)
             abort();
         } else {
             rejectCancel();
-            setProgress(nProgress+1);
+            setProgress((int)nProgress+1);
         }
     } else {
-        setProgress(nProgress+1);
+        setProgress((int)nProgress+1);
     }
 }
 

@@ -35,7 +35,7 @@ namespace App
 {
 
 /// The testing feature
-class FeatureTest :public DocumentObject
+class FeatureTest : public DocumentObject
 {
   PROPERTY_HEADER(App::FeatureTest);
 

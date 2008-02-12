@@ -108,7 +108,7 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
 void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = _cPoints.size();
+    uint32_t uCt = (uint32_t)_cPoints.size();
     str << uCt;
     for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it) {
         str << it->x << it->y << it->z;
@@ -118,7 +118,7 @@ void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt;
+    uint32_t uCt = 0;
     str >> uCt;
     PointKernel kernel(uCt);
     for (unsigned long i=0; i < uCt; i++) {

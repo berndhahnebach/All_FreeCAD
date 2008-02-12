@@ -33,12 +33,12 @@
 
 
 namespace Base{
-  class PyObjectBase;
-  class Writer;
+class PyObjectBase;
+class Writer;
 }
 
 namespace App{
-  class Color;
+class Color;
 }
 
 namespace Points
@@ -51,32 +51,31 @@ class PointsFeaturePy;
  */
 class PointsAppExport Feature : public App::GeoFeature
 {
-  PROPERTY_HEADER(Points::Feature);
+    PROPERTY_HEADER(Points::Feature);
 
 public:
-  /// Constructor
-  Feature(void);
-  virtual ~Feature(void);
+    /// Constructor
+    Feature(void);
+    virtual ~Feature(void);
 
-  App::PropertyPlacement Placement;
+    App::PropertyPlacement Placement;
 
-  /** @name methods overide Feature */
-  //@{
-  void Restore(Base::XMLReader &reader);
-  void RestoreDocFile(Base::Reader &reader);
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "PointsGui::ViewProviderPoints";
-  }
-  // handling the PointsPy object
-  virtual PyObject* getPyObject(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    void Restore(Base::XMLReader &reader);
+    void RestoreDocFile(Base::Reader &reader);
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "PointsGui::ViewProviderPoints";
+    }
+    // handling the PointsPy object
+    virtual PyObject* getPyObject(void);
+    //@}
 
 public:
-  PropertyPointKernel Points; /**< The point kernel property. */
-
+    PropertyPointKernel Points; /**< The point kernel property. */
 };
 
 /**
@@ -85,43 +84,42 @@ public:
  */
 class Export : public Feature
 {
-  PROPERTY_HEADER(Points::Export);
+    PROPERTY_HEADER(Points::Export);
 
 public:
-  Export();
+    Export();
 
-  App::PropertyLinkList   Sources;
-  App::PropertyString FileName;
-  App::PropertyString Format;
+    App::PropertyLinkList   Sources;
+    App::PropertyString FileName;
+    App::PropertyString Format;
 
-  /** @name methods override Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods override Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 };
 
 class PointsAppExport Transform : public Feature
 {
-  PROPERTY_HEADER(Points::Transform);
+    PROPERTY_HEADER(Points::Transform);
 
 public:
-  /// Constructor
-  Transform(void);
-  virtual ~Transform(void);
+    /// Constructor
+    Transform(void);
+    virtual ~Transform(void);
 
-  App::PropertyLink Source;
-  App::PropertyMatrix Trnsfrm;
+    App::PropertyLink Source;
+    App::PropertyMatrix Trnsfrm;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 };
 
 } //namespace Points
-
 
 
 #endif 

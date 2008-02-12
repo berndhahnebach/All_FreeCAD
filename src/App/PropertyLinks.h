@@ -30,8 +30,7 @@
 #include <vector>
 #include "Property.h"
 
-namespace Base
-{
+namespace Base {
 class Writer;
 }
 
@@ -48,8 +47,6 @@ class AppExport PropertyLink: public Property
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.
@@ -77,8 +74,7 @@ public:
    /** Returns the link type checked
      */
     template <typename _type>
-    inline _type getValue(void) const
-    {
+    inline _type getValue(void) const {
         return _pcLink ? dynamic_cast<_type>(_pcLink) : 0;
     }
 
@@ -91,11 +87,11 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
-    virtual unsigned int getMemSize (void) const {
+    virtual unsigned int getMemSize (void) const{
         return sizeof(App::DocumentObject *);
     }
-protected:
 
+protected:
     App::DocumentObject *_pcLink;
 
 };
@@ -105,8 +101,6 @@ class AppExport PropertyLinkList: public PropertyLists
     TYPESYSTEM_HEADER();
 
 public:
-
-
     /**
      * A constructor.
      * A more elaborate description of the constructor.

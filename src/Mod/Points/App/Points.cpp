@@ -277,7 +277,7 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
-    unsigned long uCt = getSize();
+    uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     if (uCt > 0)
     for (std::vector<CurvatureInfo>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
@@ -290,7 +290,7 @@ void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
-    unsigned long uCt=ULONG_MAX;
+    uint32_t uCt=0;
     str >> uCt;
     std::vector<CurvatureInfo> values(uCt);
     for (std::vector<CurvatureInfo>::iterator it = values.begin(); it != values.end(); ++it) {

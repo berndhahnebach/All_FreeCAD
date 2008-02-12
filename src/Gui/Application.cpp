@@ -702,7 +702,7 @@ QPixmap Application::workbenchIcon(const QString& wb) const
 
             // test if in XPM format
             QByteArray ary;
-            int strlen = content.size();
+            int strlen = (int)content.size();
             ary.resize(strlen);
             for (int j=0; j<strlen; j++)
                 ary[j]=content[j];
