@@ -251,7 +251,15 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
         // If this condition is true both file names match and we can read-in the data, otherwise
         // no file name for the current entry in the zip was registered.
         if (jt != FileList.end()) {
-            jt->Object->RestoreDocFile(zipstream);
+            try {
+                jt->Object->RestoreDocFile(zipstream);
+            }
+            catch(...) {
+                // FIXME: for any exception go back to the beginning of this 
+                // file and continue with the next file
+                // This may be useful if one of the readers reads more than 
+                // it should. If it reads less it's not a problem.
+            }
             // Go to the next registered file name
             it = jt + 1;
         }
