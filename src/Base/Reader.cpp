@@ -37,6 +37,7 @@
 #include "Persistance.h"
 #include "gzstream.h"
 #include "InputSource.h"
+#include "Console.h"
 
 #include "zipios/zipios-config.h"
 #include "zipios/zipfile.h"
@@ -255,10 +256,12 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
                 jt->Object->RestoreDocFile(zipstream);
             }
             catch(...) {
-                // FIXME: for any exception go back to the beginning of this 
-                // file and continue with the next file
-                // This may be useful if one of the readers reads more than 
-                // it should. If it reads less it's not a problem.
+                // For any exception we just continue with the next file.
+                // It doesn't matter if the last reader has read more or
+                // less data than the file size would allow.
+                // All what we need to do is to notify the user about the
+                // failure.
+                Base::Console().Error("Reading failed from embedded file: %s\n", entry->toString().c_str());
             }
             // Go to the next registered file name
             it = jt + 1;
