@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>          *
- *    based on work by             *
- *  Stephane Routelous <Stephane.Routelous@exotk.org        *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
