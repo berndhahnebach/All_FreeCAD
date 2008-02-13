@@ -730,17 +730,20 @@ void Application::initConfig(int argc, char ** argv)
     // find the home path....
     mConfig["AppHomePath"] = FindHomePath(argv[0]);
 
-    // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
-    App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
-    App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
-    App::Application::Config()["BuildRevision"]      = FCRevision;
-    App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
-    App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
-    App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
-    App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
-    App::Application::Config()["BuildScrClean"]      = FCScrClean;
-    App::Application::Config()["BuildScrMixed"]    = FCScrMixed;
-
+    // Version of the application extracted from SubWCRef into src/Build/Version.h
+    // We only set these keys if not yet defined. Therefore it suffices to search
+    // only for 'BuildVersionMajor'.
+    if (App::Application::Config().find("BuildVersionMajor") == App::Application::Config().end()) {
+        App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
+        App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
+        App::Application::Config()["BuildRevision"]      = FCRevision;
+        App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
+        App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
+        App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
+        App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
+        App::Application::Config()["BuildScrClean"]      = FCScrClean;
+        App::Application::Config()["BuildScrMixed"]      = FCScrMixed;
+    }
 
     _argc = argc;
     _argv = argv;
