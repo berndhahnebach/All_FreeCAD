@@ -1,7 +1,10 @@
 #include "PreCompiled.h"
 
 #include "Cutting.h"
-#include <QTimer.h>
+#include <Mod/Cam/App/ChangeDyna.h> //Only for Testing
+#include <QTimer>
+#include <QByteArray>
+
 
 #include <Base/Vector3D.h>
 #include <Base/Console.h>
@@ -30,7 +33,7 @@
 using namespace CamGui;
 
 Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
-        :QDialog(parent,fl)
+        :QDialog(parent,fl),m_Process(NULL)
 {
     this->setupUi(this);
     m_timer= false;
@@ -41,7 +44,61 @@ Cutting::~Cutting()
 
 }
 
+bool Cutting::getProcessOutput()
+{
+    QByteArray result = m_Process->readAll();
+    if (result.contains("Error"))
+    {
+        m_Process->kill();
+        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
+                              tr("Fehler bei der Erzeugung\n"),
+                              QMessageBox::Ok);
+    }
+    else if (result.contains("N o r m a l    t e r m i n a t i o n"))
+    {
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
+                                 tr("Dyna-Job finished well\n"),
+                                 QMessageBox::Ok);
+    }
 
+    return true;
+}
+void Cutting::on_adaptdynainput_clicked()
+{
+    //First we have to select the LS-Dyna Masterfile and the current working dir
+    QString filename, path, program;
+    QStringList arguments;
+    filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
+    QFileInfo aFileInfo(filename);
+    path = aFileInfo.absolutePath();
+    QDir::setCurrent(path);
+    program = "c:/Program Files/lsdyna/ls971d";
+    arguments << " i="<< aFileInfo.fileName();
+    m_Process = new QProcess(this);
+    m_Process->start(program, arguments);
+    //Now we check if the output is written correctly
+    m_Process->waitForFinished(20000);
+
+    aFileInfo.setFile("dyna.str");
+    if (aFileInfo.size() == 0) //the file does not exist
+    {
+        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
+                              tr("Fehler bei der Erzeugung vom Struct File\n"),
+                              QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
+                                 tr("Structured-Dyna gut erzeugt\n"),
+                                 QMessageBox::Ok);
+        ChangeDyna aFileChanger;
+        bool test = aFileChanger.Read("dyna.str");
+
+    }
+
+//connect(m_Process,SIGNAL(readyReadStandardError()),this,SLOT(getProcessOutput()));
+    //  connect(m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(getProcessOutput()));
+}
 void Cutting::selectShape()
 {
     if (!m_timer)
@@ -76,11 +133,11 @@ void Cutting::selectShape()
         if ( fea.size() == 1)
         {
             m_Shape = static_cast<Part::Feature*>(fea.front())->Shape.getValue();
-			//std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
+            //std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
             this->show();
             CalculateZLevel->setEnabled(true);
             CalculateFeatureBased->setEnabled(true);
-			CalculateSpiralBased->setEnabled(true);
+            CalculateSpiralBased->setEnabled(true);
             m_timer = false;
         }
         else
@@ -94,63 +151,63 @@ void Cutting::selectShape()
 
 void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, const float z)
 {
-	//check if a Shape is selected
-	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
+    //check if a Shape is selected
+    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
     if ( fea.size() == 1)
-	{
-		int test = aShape.ShapeType();
-		//get Hash Code of Selected Face inside the selected Shape and also the Coordinates of the click
-		if(aShape.ShapeType() != TopAbs_FACE)
-		{
-			QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to select a Face!!\n"));
-			return;
-		}
+    {
+        int test = aShape.ShapeType();
+        //get Hash Code of Selected Face inside the selected Shape and also the Coordinates of the click
+        if (aShape.ShapeType() != TopAbs_FACE)
+        {
+            QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to select a Face!!\n"));
+            return;
+        }
 
-		TopoDS_Face tempFace = TopoDS::Face(aShape);
-		//Now search for the Hash-Code in the m_Shape
-		TopExp_Explorer anExplorer;
-		TopoDS_Face aselectedFace;
-	
-		//pickPoint.Set(x,y,z);
-		for(anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next())
-		{
-			if(tempFace.HashCode(IntegerLast()) == anExplorer.Current().HashCode(IntegerLast()))
-			{
-				m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
-				break;
-			}
-		}
-	}
+        TopoDS_Face tempFace = TopoDS::Face(aShape);
+        //Now search for the Hash-Code in the m_Shape
+        TopExp_Explorer anExplorer;
+        TopoDS_Face aselectedFace;
+
+        //pickPoint.Set(x,y,z);
+        for (anExplorer.Init(m_Shape,TopAbs_FACE);anExplorer.More();anExplorer.Next())
+        {
+            if (tempFace.HashCode(IntegerLast()) == anExplorer.Current().HashCode(IntegerLast()))
+            {
+                m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
+                break;
+            }
+        }
+    }
 }
 
 void Cutting::on_CalculateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
     m_CuttingAlgo = new cutting_tools(m_Shape);
-	m_Mode = 1;
-	CalculateFeatureBased->setEnabled(false);
-	CalculateSpiralBased->setEnabled(false);
+    m_Mode = 1;
+    CalculateFeatureBased->setEnabled(false);
+    CalculateSpiralBased->setEnabled(false);
     toolpath_calculation_highest_level_button->setEnabled(true);
 }
 
 void Cutting::on_CalculateFeatureBased_clicked()
 {
-	//Cutting-Klasse instanzieren
-	m_CuttingAlgo = new cutting_tools(m_Shape);
-	m_Mode = 2;
-	toolpath_calculation_highest_level_button->setEnabled(true);
-	CalculateZLevel->setEnabled(false);
-	CalculateSpiralBased->setEnabled(false);
+    //Cutting-Klasse instanzieren
+    m_CuttingAlgo = new cutting_tools(m_Shape);
+    m_Mode = 2;
+    toolpath_calculation_highest_level_button->setEnabled(true);
+    CalculateZLevel->setEnabled(false);
+    CalculateSpiralBased->setEnabled(false);
 }
 
 void Cutting::on_CalculateSpiralBased_clicked()
-{	
-	//Cutting-Klasse instanzieren
-	m_CuttingAlgo = new cutting_tools(m_Shape);
-	m_Mode = 3;//
-	toolpath_calculation_highest_level_button->setEnabled(true);
-	CalculateZLevel->setEnabled(false);
-	CalculateFeatureBased->setEnabled(false);
+{
+    //Cutting-Klasse instanzieren
+    m_CuttingAlgo = new cutting_tools(m_Shape);
+    m_Mode = 3;//
+    toolpath_calculation_highest_level_button->setEnabled(true);
+    CalculateZLevel->setEnabled(false);
+    CalculateFeatureBased->setEnabled(false);
 
 }
 
@@ -166,22 +223,22 @@ void Cutting::on_select_shape_feature_based_button_clicked()
 
 void Cutting::on_select_shape_spiral_based_button_clicked()
 {
-	selectShape();
+    selectShape();
 }
 
 void Cutting::on_toolpath_calculation_highest_level_button_clicked()
 {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
-    if (view) 
-	{
+    if (view)
+    {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
         this->hide();
-     }
-	toolpath_calculation_middle_level_button->setEnabled(true);
+    }
+    toolpath_calculation_middle_level_button->setEnabled(true);
     toolpath_calculation_lowest_level_button->setEnabled(true);
 }
 
@@ -189,29 +246,29 @@ void Cutting::on_toolpath_calculation_middle_level_button_clicked()
 {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
-    if (view) 
-	{
+    if (view)
+    {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
         this->hide();
-     }
+    }
 }
 
 void Cutting::on_toolpath_calculation_lowest_level_button_clicked()
 {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
-    if (view) 
-	{
+    if (view)
+    {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a point.\n"));
         this->hide();
-     }
-	toolpath_calculation_go_button->setEnabled(true);
+    }
+    toolpath_calculation_go_button->setEnabled(true);
 }
 
 void Cutting::on_toolpath_calculation_go_button_clicked()
@@ -225,96 +282,97 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.master_radius = master_radius_box->value();
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
-	m_CuttingAlgo->arrangecuts_ZLEVEL();
-	switch(m_Mode)
-	{
-		case 1:
-		m_CuttingAlgo->OffsetWires_Standard();
-		break;
-		case 2:
-		m_CuttingAlgo->OffsetWires_FeatureBased();
-		break;
-		case 3:
-		m_CuttingAlgo->OffsetWires_Spiral();
-		break;
-	}
-	DisplayCAMOutput();
+
+    m_CuttingAlgo->arrangecuts_ZLEVEL();
+    switch (m_Mode)
+    {
+    case 1:
+        m_CuttingAlgo->OffsetWires_Standard();
+        break;
+    case 2:
+        m_CuttingAlgo->OffsetWires_FeatureBased();
+        break;
+    case 3:
+        m_CuttingAlgo->OffsetWires_Spiral();
+        break;
+    }
+    DisplayCAMOutput();
 }
 
 #include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 void Cutting::DisplayCAMOutput()
 {
-        BRep_Builder BB;
-		TopoDS_Compound aCompound1,aCompound2;
-		BB.MakeCompound(aCompound1);
-		BB.MakeCompound(aCompound2);
-		TopoDS_Edge anEdge;
-        std::vector<Handle_Geom_BSplineCurve>* topCurves;
-        std::vector<Handle_Geom_BSplineCurve>* botCurves;
-        std::vector<Handle_Geom_BSplineCurve>::iterator an_it1;
-		topCurves = m_CuttingAlgo->getOutputhigh();
-        botCurves = m_CuttingAlgo->getOutputlow();
-		for(an_it1 = topCurves->begin();an_it1!=topCurves->end();an_it1++)
-		{
-			BB.MakeEdge(anEdge,*an_it1,0.01);
-			BB.Add(aCompound1,anEdge);
-		
-		}
-		for(an_it1 = botCurves->begin();an_it1!=botCurves->end();an_it1++)
-		{
-			BB.MakeEdge(anEdge,*an_it1,0.01);
-			BB.Add(aCompound2,anEdge);
-		}
+    BRep_Builder BB;
+    TopoDS_Compound aCompound1,aCompound2;
+    BB.MakeCompound(aCompound1);
+    BB.MakeCompound(aCompound2);
+    TopoDS_Edge anEdge;
+    std::vector<Handle_Geom_BSplineCurve>* topCurves;
+    std::vector<Handle_Geom_BSplineCurve>* botCurves;
+    std::vector<Handle_Geom_BSplineCurve>::iterator an_it1;
+    topCurves = m_CuttingAlgo->getOutputhigh();
+    botCurves = m_CuttingAlgo->getOutputlow();
+    for (an_it1 = topCurves->begin();an_it1!=topCurves->end();an_it1++)
+    {
+        BB.MakeEdge(anEdge,*an_it1,0.01);
+        BB.Add(aCompound1,anEdge);
 
-		App::Document* doc = App::GetApplication().getActiveDocument();
-		App::DocumentObject* obj = doc->addObject("Part::Feature","Master-Tool");
-		App::DocumentObject* obj1 = doc->addObject("Part::Feature","Slave-Tool");
+    }
+    for (an_it1 = botCurves->begin();an_it1!=botCurves->end();an_it1++)
+    {
+        BB.MakeEdge(anEdge,*an_it1,0.01);
+        BB.Add(aCompound2,anEdge);
+    }
 
-		Part::Feature* part1 = static_cast<Part::Feature*>(obj);
-		Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
-		part1->setShape(aCompound1);
-		part2->setShape(aCompound2);
-		
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    App::DocumentObject* obj = doc->addObject("Part::Feature","Master-Tool");
+    App::DocumentObject* obj1 = doc->addObject("Part::Feature","Slave-Tool");
 
+    Part::Feature* part1 = static_cast<Part::Feature*>(obj);
+    Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
+    part1->setShape(aCompound1);
+    part2->setShape(aCompound2);
 
 
 
 
 
-		//
-  //      for (unsigned int i=0;i<aTestOutput.size();++i)
-  //      {
-  //          BB.Add(aCompound,anEdge);
-  //      }
 
-        //anewCuttingEnv.OffsetWires_Standard(10.0);
 
-        //std::vector<Handle_Geom_BSplineCurve> topCurves;
-        //std::vector<Handle_Geom_BSplineCurve> botCurves;
-        //std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
-        //topCurves = *(anewCuttingEnv.getOutputhigh());
-        //botCurves = *(anewCuttingEnv.getOutputlow());
-        //for (unsigned int i=0;i<topCurves.size();++i)
-        //{
-        //    GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
-        //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-        //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
-        //    {
-        //        anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-        //    }
-        //}
-        //for (unsigned int i=0;i<botCurves.size();++i)
-        //{
-        //    GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
-        //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-        //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
-        //    {
-        //        anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-        //    }
-        //}
-        //anoutput.close();
-        //anoutput2.close();
+    //
+    //      for (unsigned int i=0;i<aTestOutput.size();++i)
+    //      {
+    //          BB.Add(aCompound,anEdge);
+    //      }
+
+    //anewCuttingEnv.OffsetWires_Standard(10.0);
+
+    //std::vector<Handle_Geom_BSplineCurve> topCurves;
+    //std::vector<Handle_Geom_BSplineCurve> botCurves;
+    //std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
+    //topCurves = *(anewCuttingEnv.getOutputhigh());
+    //botCurves = *(anewCuttingEnv.getOutputlow());
+    //for (unsigned int i=0;i<topCurves.size();++i)
+    //{
+    //    GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
+    //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+    //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
+    //    {
+    //        anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+    //    }
+    //}
+    //for (unsigned int i=0;i<botCurves.size();++i)
+    //{
+    //    GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
+    //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+    //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
+    //    {
+    //        anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+    //    }
+    //}
+    //anoutput.close();
+    //anoutput2.close();
 
 }
 
@@ -328,18 +386,18 @@ void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
 
     // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
     n->getAction()->setHandled();
-    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) 
-	{
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP)
+    {
         n->setHandled();
         view->setEditing(false);
         view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, that);
         that->show();
     }
-    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) 
-	{
+    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN)
+    {
         const SoPickedPoint * point = n->getPickedPoint();
-        if (point == NULL) 
-		{
+        if (point == NULL)
+        {
             QMessageBox::warning(Gui::getMainWindow(),"z level", "No shape picked!");
             return;
         }
@@ -353,8 +411,8 @@ void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
             return;
         PartGui::ViewProviderPart* vpp = static_cast<PartGui::ViewProviderPart*>(vp);
         TopoDS_Shape sh = vpp->getShape(point);
-        if (!sh.IsNull()) 
-		{
+        if (!sh.IsNull())
+        {
             // ok a shape was picked
             n->setHandled();
             view->setEditing(false);

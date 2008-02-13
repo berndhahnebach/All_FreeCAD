@@ -414,6 +414,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\ChangeDyna.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ChangeDyna.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ConvertDyna.cpp"
 			>
 		</File>
