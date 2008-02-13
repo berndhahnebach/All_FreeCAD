@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007                                                    *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,33 +20,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef CHANGEDYNA_H
+#define CHANGEDYNA_H
 
-#ifndef CAMGUI_WORKBENCH_H
-#define CAMGUI_WORKBENCH_H
-
-#include <Gui/Workbench.h>
-
-namespace CamGui
+#include <iostream>
+#include <string>
+class AppCamExport ChangeDyna
 {
-
-/**
- * @author Werner Mayer
- */
-class AppCamGuiExport Workbench : public Gui::StdWorkbench
-{
-    TYPESYSTEM_HEADER();
-
 public:
-    Workbench();
-    virtual ~Workbench();
+    // ChangeDyna();
+    bool Read(const std::string &filename);
+    // ~ChangeDyna();
+private:
+    bool ReformatStream(const std::stringstream& astream, std::string& astring);
+    bool ReadCurve(std::ifstream &input,std::ofstream &output);
 
-protected:
-    Gui::MenuItem* setupMenuBar() const;
-    Gui::ToolBarItem* setupToolBars() const;
-    Gui::ToolBarItem* setupCommandBars() const;
 };
+#endif
 
-} // namespace CamGui
-
-
-#endif // CAMGUI_WORKBENCH_H

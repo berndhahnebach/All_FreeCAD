@@ -29,27 +29,32 @@ void CreateCamCommands(void);
 /* registration table  */
 static struct PyMethodDef CamGui_methods[] =
 {
-    {NULL, NULL}                   /* end of table marker */
+    {
+        NULL, NULL
+    }                   /* end of table marker */
 };
 
-extern "C" {
-void AppCamGuiExport initCamGui() {
-    if (!Gui::Application::Instance) {
-        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+extern "C"
+{
+    void AppCamGuiExport initCamGui()
+    {
+        if (!Gui::Application::Instance)
+        {
+            PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+            return;
+        }
+
+        Base::Console().Log("Mod: Loading GUI of Cam module... done\n");
+        (void) Py_InitModule("CamGui", CamGui_methods);   /* mod name, table ptr */
+
+        // load needed modules
+        Base::Interpreter().loadModule("Cam");
+
+        CamGui::Workbench           ::init();
+
+        // instanciating the commands
+        CreateCamCommands();
+
         return;
     }
-
-    Base::Console().Log("Mod: Loading GUI of Cam module... done\n");
-    (void) Py_InitModule("CamGui", CamGui_methods);   /* mod name, table ptr */
-
-    // load needed modules
-    Base::Interpreter().loadModule("Cam");
-
-    CamGui::Workbench           ::init();
-
-    // instanciating the commands
-    CreateCamCommands();
-
-    return;
-}
 } // extern "C"
