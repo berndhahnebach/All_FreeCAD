@@ -1,8 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
  *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
- *   Human Rezai <Human@mytum.de                                           *
- *   Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>                  *
+ *   Human Rezai <human@mytum.de>                                          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *

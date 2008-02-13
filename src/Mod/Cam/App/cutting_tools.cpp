@@ -942,9 +942,9 @@ bool cutting_tools::CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edg
 bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage,const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage)
 {
     float dist,distold = FLT_MAX;
-    for (int t=0;t<MasterPointsStorage.size();++t)
+    for (unsigned int t=0;t<MasterPointsStorage.size();++t)
     {
-        for (int k=0;k<MasterPointsStorage[t].size();k++)
+        for (unsigned int k=0;k<MasterPointsStorage[t].size();k++)
         {
             dist = MasterPointsStorage[t][k].first.SquareDistance(lastPoint);
             if (dist<distold)
@@ -1053,7 +1053,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 if (MasterPointsStorage.size() == 1) //If we have only one PointCloud
                 {
-                    for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                    for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                     {
                         MasterPointContainer.push_back(MasterPointsStorage[0][i]);
                         SlavePointContainer.push_back(SlavePointsStorage[0][i]);
@@ -1082,7 +1082,6 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                     anIterator2 = MasterPointsStorage.begin();
                     MasterPointContainer.clear();
                     SlavePointContainer.clear();
-
                     for (int i=0;i<=start_index;i++)
                     {
                         MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
@@ -1095,7 +1094,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                     //Reinitialize the Iterators
                     anIterator1 = SlavePointsStorage.begin();
                     anIterator2 = MasterPointsStorage.begin();
-                    for (int i=start_index;i<MasterPointsStorage[start_array].size();i++)
+                    for (unsigned int i=start_index;i<MasterPointsStorage[start_array].size();i++)
                     {
                         MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
                         SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
@@ -1112,7 +1111,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                     SlavePointContainer.clear();
                     //Now lets interpolate the Point Clouds
                     //Start at start_array+1 as the insert operations used us to do it like that
-                    for (int j=start_array+1;j<MasterPointsStorage.size();++j)
+                    for (unsigned int j=start_array+1;j<MasterPointsStorage.size();++j)
                     {
                         Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointsStorage[j].size());
                         Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointsStorage[j].size());
@@ -1259,7 +1258,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 MasterPointContainer.clear();
                 SlavePointContainer.clear();
-                for (int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                 {
                     MasterPointContainer.push_back(MasterPointsStorage[0][i]);
                     SlavePointContainer.push_back(SlavePointsStorage[0][i]);
@@ -1500,11 +1499,11 @@ bool cutting_tools::CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray)
         distance_squared = PointArray->Value(ii).SquareDistance(PointArray->Value(ii+1)) ;
         if (distance_squared < tolerance_squared)
         {
-            result = false;
-            break;
+            return false;
         }
+
     }
-    return result ;
+    return true; 
 
 }
 Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
@@ -1861,7 +1860,7 @@ bool cutting_tools::OffsetWires_Spiral()
             //This represents our startPoint. If we just started, then we skip this point
             int start_index = 0,adapted_start_index=0;
             float dist,distold = FLT_MAX;
-            for (int t=0;t<TempSpiralPoints.size();t++)
+            for (unsigned int t=0;t<TempSpiralPoints.size();t++)
             {
                 dist = TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint);
                 if (dist<distold)
@@ -1890,7 +1889,7 @@ bool cutting_tools::OffsetWires_Spiral()
                 adapted_start_index = start_index+1;
             else
                 adapted_start_index = start_index-1;
-            for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
+            for (unsigned int j=adapted_start_index;j<TempSpiralPoints.size();++j)
             {
                 distance = distance + PreviousPoint.Distance(TempSpiralPoints[j].SurfacePoint);
 

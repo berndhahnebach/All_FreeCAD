@@ -1,7 +1,8 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>          *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
  *   Human Rezai <Human@web.de>                                            *
+ *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
