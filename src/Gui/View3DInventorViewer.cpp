@@ -200,7 +200,7 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0),_iMouseModel(1), editing(FALSE)
+  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),_iMouseModel(1), editing(FALSE)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
