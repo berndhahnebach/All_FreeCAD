@@ -623,6 +623,7 @@ void CmdMeshPolyCut::activated(int iMsg)
       Gui::MDIView* view = doc->getActiveView();
       if ( view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId()) ) {
         Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+        viewer->setEditing(true);
         viewer->startPicking( Gui::View3DInventorViewer::Lasso );
       } else {
         return;
