@@ -325,6 +325,7 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
             clPoly.push_back(clPoly.front());
 
         cutMesh(clPoly, Viewer);
+        Viewer.setEditing(false);
     }
 
     return false;
