@@ -212,7 +212,10 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const QByteArray& contents, const QSize
 
     QPainter* painter = new QPainter;
     painter->begin(&icon);
+    // tmp. disable the report window to suppress some bothering warnings
+    Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     QSvgRenderer* svg = new QSvgRenderer(contents);
+    Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
     svg->render(painter);
     painter->end();
     delete svg;

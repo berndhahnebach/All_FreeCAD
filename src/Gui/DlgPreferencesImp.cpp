@@ -194,13 +194,19 @@ void DlgPreferencesImp::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
         retranslateUi(this);
-        // update the widget's tabs
+        // update the widgets' tabs
         for (int i=0; i<tabWidgetStack->count(); i++) {
             QTabWidget* tabWidget = (QTabWidget*)tabWidgetStack->widget(i);
             for (int j=0; j<tabWidget->count(); j++) {
                 QWidget* page = tabWidget->widget(j);
                 tabWidget->setTabText(j, page->windowTitle());
             }
+        }
+        // update the items' text
+        for (int i=0; i<listBox->count(); i++) {
+            QListWidgetItem *item = listBox->item(i);
+            QByteArray group = item->data(Qt::UserRole).toByteArray();
+            item->setText(QObject::tr(group.constData()));
         }
     } else {
         QWidget::changeEvent(e);
