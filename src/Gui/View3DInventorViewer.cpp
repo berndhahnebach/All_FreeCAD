@@ -874,13 +874,20 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
-      // If we are in zoom or pan mode ignore RMB events otherwise
-      // the canvas doesn't get any release events 
-      if (this->currentmode != View3DInventorViewer::ZOOMING && 
-        this->currentmode != View3DInventorViewer::PANNING) {
-        if (this->isPopupMenuEnabled()) {
-          if (!press) { // release right mouse button
-            this->openPopupMenu(event->getPosition());
+      // If we are in edit mode then simply ignore the RMB events
+      // to pass the event to the base class.
+      if (this->editing) {
+        processed = FALSE;
+      }
+      else {
+        // If we are in zoom or pan mode ignore RMB events otherwise
+        // the canvas doesn't get any release events 
+        if (this->currentmode != View3DInventorViewer::ZOOMING && 
+          this->currentmode != View3DInventorViewer::PANNING) {
+          if (this->isPopupMenuEnabled()) {
+            if (!press) { // release right mouse button
+              this->openPopupMenu(event->getPosition());
+            }
           }
         }
       } break;
@@ -1024,7 +1031,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
 
   // If not handled in this class, pass on upwards in the inheritance
   // hierarchy.
-  if (this->currentmode == View3DInventorViewer::SELECTION && !processed)
+  if ((this->currentmode == View3DInventorViewer::SELECTION || this->editing) && !processed)
     processed = inherited::processSoEvent(ev);
   else
     return TRUE;
@@ -1200,12 +1207,12 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       }else{
           SbTime tmp = (ev->getTime() - CenterTime);
           float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-		  // is it just a middle click?
-		  if (tmp.getValue() < dci/*0.300*/){
+          // is it just a middle click?
+          if (tmp.getValue() < dci/*0.300*/){
 
-			  if(!seekToPoint(pos))
-				panToCenter(panningplane, posn);
-		  }
+              if(!seekToPoint(pos))
+                panToCenter(panningplane, posn);
+          }
 
         MoveMode = false;
         RotMode = false;
