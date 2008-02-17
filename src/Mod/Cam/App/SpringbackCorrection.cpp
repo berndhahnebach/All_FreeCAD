@@ -27,7 +27,6 @@
 #include "SpringbackCorrection.h"
 #include "best_fit.h"
 
-
 #include <Mod/Mesh/App/Core/Builder.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
 
@@ -39,6 +38,8 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <Poly_Polygon3d.hxx>
+#include <Handle_Poly_Polygon3d.hxx>
 
 
 
@@ -83,9 +84,6 @@ SpringbackCorrection::~SpringbackCorrection()
 {
 }
 
-
-#include <Poly_Polygon3d.hxx>
-#include <Handle_Poly_Polygon3d.hxx>
 bool SpringbackCorrection::CalcCurv()
 {
     Base::Builder3D logo;
@@ -158,7 +156,6 @@ bool SpringbackCorrection::CalcCurv()
 
         const TColgp_Array1OfPnt2d& aUVNodes = aTr->UVNodes();
 
-
         BRepAdaptor_Surface aSurface(aFace);
         Base::Vector3f Pnt1, Pnt2;
         gp_Pnt2d par;
@@ -169,9 +166,9 @@ bool SpringbackCorrection::CalcCurv()
             par = aUVNodes.Value(i);
             aSurface.D1(par.X(),par.Y(),P,D1U,D1V);
             P = aPoints(i);
-            Pnt1.x = P.X();
-            Pnt1.y = P.Y();
-            Pnt1.z = P.Z();
+            Pnt1.x = float(P.X());
+            Pnt1.y = float(P.Y());
+            Pnt1.z = float(P.Z());
             meshIt = MeshMap.find(Pnt1);
             //if (meshIt == MeshMap.end())
             //   cout << "error";
@@ -183,9 +180,9 @@ bool SpringbackCorrection::CalcCurv()
             //Pnt2.Set(Pnt1.x+D1U.X(),Pnt1.y+D1U.Y(),Pnt1.z+D1U.Z());
             //logo.addSingleArrow(Pnt1, Pnt2);
 
-            m_MeshStruct[((*meshIt).second).index].normal.x = D1U.X();
-            m_MeshStruct[((*meshIt).second).index].normal.y = D1U.Y();
-            m_MeshStruct[((*meshIt).second).index].normal.z = D1U.Z();
+            m_MeshStruct[((*meshIt).second).index].normal.x = float(D1U.X());
+            m_MeshStruct[((*meshIt).second).index].normal.y = float(D1U.Y());
+            m_MeshStruct[((*meshIt).second).index].normal.z = float(D1U.Z());
         }
 
         // get Inner Mesh Points
@@ -488,18 +485,15 @@ bool SpringbackCorrection::TransferFaceTriangulationtoFreeCAD(const TopoDS_Face&
             MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
             builder.AddFacet(Face);
         }
-
     }
     // if the triangulation of only one face is not possible to get
     else
     {
         throw Base::Exception("Empty face triangulation\n");
     }
-
     // finish FreeCAD Mesh Builder and exit with new mesh
     builder.Finish();
     return true;
-
 }
 
 
@@ -526,10 +520,8 @@ MeshCore::MeshKernel SpringbackCorrection::BuildMesh(Handle_Poly_Triangulation a
         MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
         builder.AddFacet(Face);
     }
-
     // finish FreeCAD Mesh Builder and exit with new mesh
     builder.Finish();
-
     return FaceMesh;
 }
 
@@ -539,7 +531,6 @@ int SpringbackCorrection::GetBoundary(const MeshCore::MeshKernel &mesh, MeshCore
     // zweck: nur für die inneren punkte wird der curvature wert über die edge abstände berechnet
     std::list< std::vector <unsigned long> >  BoundariesIndex;
     std::list< std::vector <unsigned long> >::iterator bInd;
-
 
     MeshCore::MeshAlgorithm algo(mesh);
     algo.GetMeshBorders(BoundariesIndex);
@@ -748,7 +739,6 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
 
         localMesh.Assign(locPointArray, locFacetArray);
 
-
         // need at least one facet to perform the PCA
         MeshCore::MeshGeomFacet face;
         face._aclPoints[0] = locPointArray[0];
@@ -766,7 +756,6 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
         L.Set(v_it->x - spnt.x, v_it->y - spnt.y, v_it->z - spnt.z);
         N.Normalize();
 
-
         if (N*L < 0.0)
             N.Scale(-1.0, -1.0, -1.0);
 
@@ -782,9 +771,7 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
                 coor.x = T1[i][0];
                 coor.y = T1[i][1];
                 coor.z = T1[i][2];
-
                 coor.Normalize();
-
                 log.addSingleArrow(*v_it, *v_it + coor);
             }
 
@@ -796,7 +783,6 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
         double d = d_max;
         if (fabs(N*L)< d_max) d = fabs(N*L);
         N.Scale(d,d,d);
-
         PointArray[v_it.Position()].Set(v_it->x - N.x, v_it->y - N.y, v_it->z - N.z);
         locPointArray.clear();
         localMesh = Meshtmp;
@@ -814,7 +800,6 @@ bool SpringbackCorrection::GetFaceAng(MeshCore::MeshKernel &mesh, int deg_tol)
     double deg;
     int n = mesh.CountFacets(), n1,n2,n3;
     bool b = true;
-
     for (int i=0; i<n; ++i)
     {
         MeshCore::MeshGeomFacet face = mesh.GetFacet(i);
@@ -825,7 +810,6 @@ bool SpringbackCorrection::GetFaceAng(MeshCore::MeshKernel &mesh, int deg_tol)
         base.z = 0.0;
         base.Normalize();
         deg = ((PI/2) - acos(normal*base))*180.0/PI;
-
         if (deg > deg_tol)
             b = false;
 
@@ -857,7 +841,6 @@ std::vector<int> SpringbackCorrection::FaceCheck(MeshCore::MeshKernel mesh, int 
         base.z = 0.0;
         base.Normalize();
         double deg, lamda;
-
         if (normal*base > tol)
         {
             faceInd.push_back(i);
@@ -876,7 +859,6 @@ std::vector<int> SpringbackCorrection::FaceCheck(MeshCore::MeshKernel mesh, int 
             log.addSinglePoint(*mIt,4,1,0,0);
         }
     }
-
     log.saveToFile("c:/angles.iv");
     return faceInd;
 }

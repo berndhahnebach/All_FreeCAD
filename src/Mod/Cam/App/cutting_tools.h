@@ -122,7 +122,8 @@ private:
     bool CheckPoints(Handle(TColgp_HArray1OfPnt) PointArray);
     bool getShapeBB();
     bool fillFaceWireMap();
-    bool CheckforLastPoint(const gp_Pnt& lastPoint,int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage,const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage);
+    bool CheckforLastPoint(const gp_Pnt& lastPoint,int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage);
+    bool CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index_master,int &start_array_master,int &start_index_slave,int &start_array_slave,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage, const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage);
     TopoDS_Shape getProperCut(TopoDS_Shape& aShape);
     Handle_Geom_BSplineCurve InterpolateOrderedPoints(Handle(TColgp_HArray1OfPnt) InterpolationPoints,const bool direction);
     //bool projectWireToSurface(const TopoDS_Wire &aWire,const TopoDS_Shape &aShape,std::vector<projectPointContainer> &aContainer);

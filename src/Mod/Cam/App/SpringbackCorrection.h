@@ -140,7 +140,7 @@ private:
     std::vector<double> m_CurvNeg;
     std::vector<double> m_CurvMax;
     std::vector<EdgeStruct> m_EdgeStruct;
-private:
+
     MeshCore::MeshKernel m_Mesh;
     MeshCore::MeshKernel MeshRef;
     MeshCore::MeshKernel m_Mesh2Fit;
