@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="importlib_atlas.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernelD.lib TKBRepD.lib TKMathD.lib TKGeomAlgoD.lib TKGeomBaseD.lib TKBoolD.lib TKBOD.lib TKG2dD.lib TKG3dD.lib TKMeshD.lib TKTopAlgoD.lib TKPrimD.lib TKXSBaseD.lib TKIGESD.lib TKShHealingD.lib TKSTEPD.lib TKSTLD.lib TKOffsetD.lib OCCAdaptMesh.lib"
+				AdditionalDependencies="importlib_atlas.lib MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKMesh.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib OCCAdaptMesh.lib"
 				OutputFile="../../../../Mod/Cam/Cam_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

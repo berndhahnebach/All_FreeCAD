@@ -48,9 +48,12 @@
 
 #include <TopExp_Explorer.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRep_Builder.hxx>
+#include <TopoDS_Compound.hxx>
 #include <Mod/Cam/App/cutting_tools.h>
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/Gui/ViewProvider.h>
+
 
 
 using namespace CamGui;
@@ -101,7 +104,6 @@ void Cutting::on_adaptdynainput_clicked()
     m_Process->start(program, arguments);
     //Now we check if the output is written correctly
     m_Process->waitForFinished(20000);
-
     aFileInfo.setFile("dyna.str");
     if (aFileInfo.size() == 0) //the file does not exist
     {
@@ -322,8 +324,7 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     DisplayCAMOutput();
 }
 
-#include <BRep_Builder.hxx>
-#include <TopoDS_Compound.hxx>
+
 void Cutting::DisplayCAMOutput()
 {
     BRep_Builder BB;

@@ -939,7 +939,7 @@ bool cutting_tools::CheckEdgeTangency(const TopoDS_Edge& edge1, const TopoDS_Edg
         return false;
 }
 
-bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage,const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage)
+bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,int &start_array,const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage)
 {
     float dist,distold = FLT_MAX;
     for (unsigned int t=0;t<MasterPointsStorage.size();++t)
@@ -958,6 +958,45 @@ bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,
     return true;
 }
 
+bool cutting_tools::CheckforLastPoint(  const gp_Pnt& lastPoint, 
+                                        int &start_index_master,
+                                        int &start_array_master,
+                                        int &start_index_slave,
+                                        int &start_array_slave,
+                                        const std::vector<std::vector<std::pair<gp_Pnt,double> > >& MasterPointsStorage, 
+                                        const std::vector<std::vector<gp_Pnt> >& SlavePointsStorage
+                                      )
+{
+    float dist,distold = FLT_MAX;
+    for (unsigned int t=0;t<MasterPointsStorage.size();++t)
+    {
+        for (unsigned int k=0;k<MasterPointsStorage[t].size();k++)
+        {
+            dist = MasterPointsStorage[t][k].first.SquareDistance(lastPoint);
+            if (dist<distold)
+            {
+                start_index_master = k;
+                start_array_master = t;
+                distold = dist;
+            }
+        }
+    }
+    distold = FLT_MAX;
+    for (unsigned int t=0;t<SlavePointsStorage.size();++t)
+    {
+        for (unsigned int k=0;k<SlavePointsStorage[t].size();k++)
+        {
+            dist = SlavePointsStorage[t][k].SquareDistance(lastPoint);
+            if (dist<distold)
+            {
+                start_index_slave = k;
+                start_array_slave = t;
+                distold = dist;
+            }
+        }
+    }
+    return true;
+}
 bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verschoben wird
 {
     //for debugging issues
@@ -967,6 +1006,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
     std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
     gp_Pnt lastPoint(0.0,0.0,0.0); //Initialize the first Point to the Origin
     current_flat_level = m_ordered_cuts.begin();
+    bool slave_is_wire= false; //Necessary if the slave is a wire while the master is not...
     //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
     for (m_ordered_cuts_it = m_ordered_cuts.begin()+1;m_ordered_cuts_it!=m_ordered_cuts.end();++m_ordered_cuts_it)
     {
@@ -1047,7 +1087,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 }
                 //Now check the point-cloud with the shortest distance to "lastPoint"
                 int start_index = 0,start_array=0;
-                CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage,SlavePointsStorage);
+                CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage);
                 //Now Interpolate the PointClouds...Cloud by Cloud
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
@@ -1185,10 +1225,11 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         gp_Vec NormalVecSlave = normalVec;
                         gp_Pnt SlavePoint;
                         //Jetzt die Z-Komponente auf 0 setzen
-                        normalVec.SetZ(0.0);
+                        //normalVec.SetZ(0.0);
                         normalVec.Normalize();
                         //Jetzt die Normale mit folgender Formel multiplizieren für den Master
-                        double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
+                        //double multiply = m_UserSettings.master_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second);
+                        double multiply = m_UserSettings.master_radius;
                         normalVec.Multiply(multiply);
                         //und hier für den Slave
                         NormalVecSlave.Normalize();
@@ -1199,7 +1240,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         //Jetzt den OffsetPunkt berechnen
                         PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
                         SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
-                        PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
+                        //PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
                         //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
                         //Den letzten hinzugefügten Punkt suchen
                         if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>0.001))
@@ -1223,6 +1264,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                 {
                     if ((SlavePointContainer[k].Z()+m_UserSettings.slave_radius)>(current_flat_level->first-m_UserSettings.sheet_thickness))
                     {
+                        slave_is_wire = true;
                         TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
                         BRepAdaptor_CompCurve2 wireAdaptor(aWire);
                         GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
@@ -1247,37 +1289,70 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         break;
                     }
                 }
-                //Now we have to rearrange the point cloud according to the last Point
-                //Now check the point-cloud with the shortest distance to "lastPoint"
                 MasterPointsStorage.push_back(MasterPointContainer);
                 SlavePointsStorage.push_back(SlavePointContainer);
-                int start_index = 0,start_array=0;
-                CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage,SlavePointsStorage);
-                //Now Interpolate the PointCloud
-                //First we have to divide the first PointCloud as it is for sure that we start
-                //Somewhere in the middle of it. We will then insert the points at the current start
-                MasterPointContainer.clear();
-                SlavePointContainer.clear();
-                for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                int start_index_master = 0,start_array_master=0,start_index_slave=0,start_array_slave=0;
+                CheckforLastPoint(lastPoint,start_index_master,start_array_master,start_index_slave,start_array_slave,MasterPointsStorage,SlavePointsStorage);
+                //If the Slave is a Wire 'slave_is_wire ==true' then we have to take care of two independent point clouds 
+                if(!slave_is_wire)
                 {
-                    MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-                    SlavePointContainer.push_back(SlavePointsStorage[0][i]);
-                    //We skip the Endpoint as it may be the same point as the start point
-                    if (i+2 == MasterPointsStorage.begin()->size())
-                        i=-1;
-                    if (i +1 == start_index)
-                        break;
+                    //First we have to divide the first PointCloud as it is for sure that we start
+                    //Somewhere in the middle of it. We will then insert the points at the current start
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_master)
+                            break;
+                    }
+                 
+                }
+                else //if slave is a wire
+                {
+                    //Now check the point-cloud with the shortest distance to "lastPoint"
+                    //As the Master and the slave have different number of points we have to do it two times now
+                    //First we have to divide the first PointCloud as it is for sure that we start
+                    //Somewhere in the middle of it. We will then insert the points at the current start
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_master)
+                            break;
+                    }
+                    for (unsigned int i=start_index_slave;i<SlavePointsStorage.begin()->size();i++)
+                    {
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == SlavePointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_slave)
+                            break;
+                    }
                 }
                 //Now lets interpolate the Point Cloud
                 Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
                 Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
                 for (unsigned int t=0;t<MasterPointContainer.size();++t)
                 {
-                    InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
-                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                    InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);   
                 }
-                /*CheckPoints(InterpolationPointsMaster);
-                CheckPoints(InterpolationPointsSlave);*/
+                for (unsigned int t=0;t<SlavePointContainer.size();++t)
+                {
+                      InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                }
+              
+                /*CheckPoints(InterpolationPointsMaster);*/
+                /*CheckPoints(InterpolationPointsSlave);*/
 
                 m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
                 m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
@@ -1337,22 +1412,111 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                     if (aWireExplorer.MoreEdge())
                     {
                         tangency = CheckEdgeTangency(aWireExplorer.Current(),aWireExplorer.NextEdge());
-                    }
-                    if (!tangency || !aWireExplorer.MoreEdge())
-                    {
-                        //Now Interpolate the Spiral, therefore we also have to take the curves normal directions
-                        Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
-                        Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
-                        for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                        if (!tangency)
                         {
-                            InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
-                            InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                            //Store all the PointClouds in a StorageVector to arrange the Robot-Movement afterwards
+                            MasterPointsStorage.push_back(MasterPointContainer);
+                            SlavePointsStorage.push_back(SlavePointContainer);
+                            MasterPointContainer.clear();
+                            SlavePointContainer.clear();
                         }
-                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
-                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+                        else continue;
+                    }
+                    else
+                    {
+                        MasterPointsStorage.push_back(MasterPointContainer);
+                        SlavePointsStorage.push_back(SlavePointContainer);
                         MasterPointContainer.clear();
                         SlavePointContainer.clear();
                     }
+                }
+                //Now check the point-cloud with the shortest distance to "lastPoint"
+                int start_index = 0,start_array=0;
+                CheckforLastPoint(lastPoint,start_index,start_array,MasterPointsStorage);
+                //Now Interpolate the PointClouds...Cloud by Cloud
+                //First we have to divide the first PointCloud as it is for sure that we start
+                //Somewhere in the middle of it. We will then insert the points at the current start
+                if (MasterPointsStorage.size() == 1) //If we have only one PointCloud
+                {
+                    for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index)
+                            break;
+                    }
+                    //Now lets interpolate the Point Cloud
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
+                    Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                    for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                    {
+                        InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);
+                        InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                    }
+                    m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
+                    m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+                    //Store the last point
+                    lastPoint = MasterPointContainer.rbegin()->first;
+                }
+                else
+                {
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    for (int i=0;i<=start_index;i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
+                    }
+                    MasterPointsStorage.insert((anIterator2+start_array+1),MasterPointContainer);
+                    SlavePointsStorage.insert((anIterator1+start_array+1),SlavePointContainer);
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    //Reinitialize the Iterators
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    for (unsigned int i=start_index;i<MasterPointsStorage[start_array].size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[start_array][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[start_array][i]);
+                    }
+                    MasterPointsStorage.insert((anIterator2+start_array+2),MasterPointContainer);
+                    SlavePointsStorage.insert((anIterator1+start_array+2),SlavePointContainer);
+                    //Reinitialize the Iterators
+                    anIterator1 = SlavePointsStorage.begin();
+                    anIterator2 = MasterPointsStorage.begin();
+                    //Delete the Original PointCloud
+                    MasterPointsStorage.erase(anIterator2+start_array);
+                    SlavePointsStorage.erase(anIterator1+start_array);
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    //Now lets interpolate the Point Clouds
+                    //Start at start_array+1 as the insert operations used us to do it like that
+                    for (unsigned int j=start_array+1;j<MasterPointsStorage.size();++j)
+                    {
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointsStorage[j].size());
+                        Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointsStorage[j].size());
+                        for (unsigned int t=0;t<MasterPointsStorage[j].size();++t)
+                        {
+                            InterpolationPointsMaster->SetValue(t+1,MasterPointsStorage[j][t].first);
+                            InterpolationPointsSlave->SetValue(t+1,SlavePointsStorage[j][t]);
+                        }
+                        m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
+                        m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
+                        if (j+1==MasterPointsStorage.size())
+                        {
+                            j=-1;
+                            continue;
+                        }
+                        if (j+1==start_array+1)
+                            break;
+
+                    }
+                    lastPoint = MasterPointsStorage[start_array].rbegin()->first;
                 }
             }
             else //If the current Curve is no Wire (Mode >)
@@ -1406,10 +1570,11 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         gp_Vec NormalVecSlave = normalVec;
                         gp_Pnt SlavePoint;
                         //Jetzt die Z-Komponente auf 0 setzen
-                        normalVec.SetZ(0.0);
+                        //normalVec.SetZ(0.0);
                         normalVec.Normalize();
                         //Jetzt die Normale mit folgender Formel multiplizieren für den Master
-                        double multiply = (m_UserSettings.slave_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second))+m_UserSettings.sheet_thickness;
+                        //double multiply = (m_UserSettings.slave_radius*(1-sin(PointContactPair.second))/cos(PointContactPair.second))+m_UserSettings.sheet_thickness;
+                        double multiply = m_UserSettings.slave_radius + m_UserSettings.sheet_thickness;
                         //As the Master is now the Slave we have to multiply it also by -1.0
                         normalVec.Multiply(-multiply);
                         //und hier für den Slave
@@ -1419,7 +1584,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         //Jetzt den OffsetPunkt berechnen
                         PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
                         SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
-                        PointContactPair.first.SetZ(PointContactPair.first.Z() - m_UserSettings.slave_radius);
+                        //PointContactPair.first.SetZ(PointContactPair.first.Z() - m_UserSettings.slave_radius);
                         //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
                         //Den letzten hinzugefügten Punkt suchen
                         if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(PointContactPair.first)>(Precision::Confusion()*Precision::Confusion())))
@@ -1438,17 +1603,12 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         }
                     }
                 }
-                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
-                for (unsigned int k=0;k<MasterPointContainer.size();++k)
-                    InterpolationPointsMaster->SetValue(k+1,MasterPointContainer[k].first);
-
-                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
-
-                //Before we Output the Slave we check if the lowest Coordinate can still touch the "currently" lowest flat area
+                //Before we Output anything we check if the lowest Coordinate can still touch the "currently" highest flat area and if yes, we have to adapt the Slave toolpath
                 for (unsigned int k=0;k<SlavePointContainer.size();++k)
                 {
-                    if ((SlavePointContainer[k].Z()-m_UserSettings.master_radius)<current_flat_level->first)
+                    if ((SlavePointContainer[k].Z()-m_UserSettings.master_radius)<(current_flat_level->first))
                     {
+                        slave_is_wire = true;
                         TopoDS_Wire aWire = TopoDS::Wire(current_flat_level->second);
                         BRepAdaptor_CompCurve2 wireAdaptor(aWire);
                         GCPnts_QuasiUniformAbscissa aProp(wireAdaptor,1000);
@@ -1459,7 +1619,7 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                             wireAdaptor.D0(aProp.Parameter(i),SlaveOffsetPoint);
                             SlaveOffsetPoint.SetZ(SlaveOffsetPoint.Z() + m_UserSettings.master_radius);
                             //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
-                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                            if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(0.001)))
                             {
                                 SlavePointContainer.push_back(SlaveOffsetPoint);
                                 anoutput2 << SlaveOffsetPoint.X() <<","<< SlaveOffsetPoint.Y() <<","<< SlaveOffsetPoint.Z()<<std::endl;
@@ -1473,14 +1633,75 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         break;
                     }
                 }
+                MasterPointsStorage.push_back(MasterPointContainer);
+                SlavePointsStorage.push_back(SlavePointContainer);
+                int start_index_master = 0,start_array_master=0,start_index_slave=0,start_array_slave=0;
+                CheckforLastPoint(lastPoint,start_index_master,start_array_master,start_index_slave,start_array_slave,MasterPointsStorage,SlavePointsStorage);
+                //If the Slave is a Wire 'slave_is_wire ==true' then we have to take care of two independent point clouds 
+                if(!slave_is_wire)
+                {
+                    //First we have to divide the first PointCloud as it is for sure that we start
+                    //Somewhere in the middle of it. We will then insert the points at the current start
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_master)
+                            break;
+                    }
+                 
+                }
+                else //if slave is a wire
+                {
+                    //Now check the point-cloud with the shortest distance to "lastPoint"
+                    //As the Master and the slave have different number of points we have to do it two times now
+                    //First we have to divide the first PointCloud as it is for sure that we start
+                    //Somewhere in the middle of it. We will then insert the points at the current start
+                    MasterPointContainer.clear();
+                    SlavePointContainer.clear();
+                    for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
+                    {
+                        MasterPointContainer.push_back(MasterPointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == MasterPointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_master)
+                            break;
+                    }
+                    for (unsigned int i=start_index_slave;i<SlavePointsStorage.begin()->size();i++)
+                    {
+                        SlavePointContainer.push_back(SlavePointsStorage[0][i]);
+                        //We skip the Endpoint as it may be the same point as the start point
+                        if (i+2 == SlavePointsStorage.begin()->size())
+                            i=-1;
+                        if (i +1 == start_index_slave)
+                            break;
+                    }
+                }
+                //Now lets interpolate the Point Cloud
+                Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
                 Handle(TColgp_HArray1OfPnt) InterpolationPointsSlave = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                for (unsigned int t=0;t<MasterPointContainer.size();++t)
+                {
+                    InterpolationPointsMaster->SetValue(t+1,MasterPointContainer[t].first);   
+                }
                 for (unsigned int t=0;t<SlavePointContainer.size();++t)
-                    InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                {
+                      InterpolationPointsSlave->SetValue(t+1,SlavePointContainer[t]);
+                }
+              
+                /*CheckPoints(InterpolationPointsMaster);*/
+                /*CheckPoints(InterpolationPointsSlave);*/
 
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPointsMaster,true));
                 m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPointsSlave,true));
-                SlavePointContainer.clear();
-                MasterPointContainer.clear();
-                //SlaveTool Path finished
+                //Store the last point
+                lastPoint = MasterPointContainer.rbegin()->first;
             }//Current Curve > last curve is finished here
         }
     }
@@ -1784,6 +2005,8 @@ bool cutting_tools::OffsetWires_Spiral()
                         if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
                             curveAdaptor.D1(aProp.Parameter(i),aSpiralStruct.SurfacePoint,aSpiralStruct.LineD1);
                         else curveAdaptor.D1(aProp.Parameter(aProp.NbPoints()-i+1),aSpiralStruct.SurfacePoint,aSpiralStruct.LineD1);
+                        
+                        aSpiralStruct.SurfaceNormal.SetCoord(0.0,0.0,1.0);
                         TempSpiralPoints.push_back(aSpiralStruct);
                     }
                 }
@@ -1837,7 +2060,8 @@ bool cutting_tools::OffsetWires_Spiral()
                         //Jetzt ist die Normale berechnet und auch normalisiert
                         //Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
                         //dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
-                        if (normalVec.Z()<0) normalVec.Multiply(-1.0);
+                        if (normalVec.Z()<0) 
+                            normalVec.Multiply(-1.0);
 
                         //Mal kurz den Winkel zur Grund-Ebene ausrechnen
                         gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
@@ -1845,11 +2069,7 @@ bool cutting_tools::OffsetWires_Spiral()
                         float angle = normalVec.Angle(planeVec);
                         aSpiralStruct.SurfaceNormal = normalVec;
                         aSpiralStruct.SurfacePoint = aSurfacePoint;
-                        //Jetzt die Z-Komponente auf 0 setzen
-                        normalVec.SetZ(0.0);
-                        normalVec.Normalize();
                         TempSpiralPoints.push_back(aSpiralStruct);
-                        //Jetzt die Normale mit folgender Formel multiplizieren für den Master
 
                     }
                 }
@@ -1884,7 +2104,8 @@ bool cutting_tools::OffsetWires_Spiral()
             IntCurvesFace_ShapeIntersector anIntersector;
             anIntersector.Load(m_Shape,0.01);
 
-            //We directly start at start+1 as the first point is at the highest level
+            //We directly start at start+1 as the first point is at the highest level. 
+
             if (direction)
                 adapted_start_index = start_index+1;
             else
@@ -1941,7 +2162,13 @@ bool cutting_tools::OffsetWires_Spiral()
                                 anIntersector.VParameter(current_index),P,U_Vec,V_Vec);
                 U_Vec.Cross(V_Vec);
                 U_Vec.Normalize();
+                if(U_Vec.Z() < 0) U_Vec.Multiply(-1.0);
+
+                U_Vec.Multiply(m_UserSettings.master_radius);
                 TempSpiralPoints[j].SurfaceNormal = U_Vec;
+                //Offset for Master and Slave
+
+                TempSpiralPoints[j].SurfacePoint.SetXYZ(TempSpiralPoints[j].SurfacePoint.XYZ() + TempSpiralPoints[j].SurfaceNormal.XYZ());
                 if (OffsetSpiralPoints.size()>0 && (OffsetSpiralPoints.rbegin()->SurfacePoint.SquareDistance(TempSpiralPoints[j].SurfacePoint)>(Precision::Confusion()*Precision::Confusion())))
                 {
                     OffsetSpiralPoints.push_back(TempSpiralPoints[j]);
@@ -1984,25 +2211,15 @@ bool cutting_tools::OffsetWires_Spiral()
             last_direction_vector = OffsetSpiralPoints.rbegin()->SurfacePoint.Coord();
             last_direction_vector.Subtract(temp_vector);
             last_direction_vector.Normalize();
-
-            //Now Interpolate the Spiral, therefore we also have to take the curves normal directions
+            //Before we Interpolate we have to adapt the first Point in our OffsetSpiralPoints as this point was not offsetted yet :(
+            gp_Vec NormalVec(OffsetSpiralPoints.begin()->SurfaceNormal.XYZ());
+            NormalVec.Multiply(m_UserSettings.master_radius);
+            OffsetSpiralPoints.begin()->SurfacePoint.SetXYZ(OffsetSpiralPoints.begin()->SurfacePoint.XYZ() + NormalVec.XYZ());
             Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1,OffsetSpiralPoints.size());
             TColgp_Array1OfVec Tangents(1,OffsetSpiralPoints.size());
             for (unsigned int t=0;t<OffsetSpiralPoints.size();++t)
             {
                 InterpolationPoints->SetValue(t+1,OffsetSpiralPoints[t].SurfacePoint);
-                if ((t+1)< OffsetSpiralPoints.size())
-                {
-                    gp_Vec aPoint1(OffsetSpiralPoints[t].SurfacePoint.Coord()),
-                    aPoint2(OffsetSpiralPoints[t+1].SurfacePoint.Coord());
-                    aPoint2.Subtract(aPoint1);
-                    aPoint2.Normalize();
-                    Tangents.SetValue(t+1,aPoint2);
-                }
-                else
-                {
-                    Tangents.SetValue(t+1,Tangents.Value(t));
-                }
             }
             //Here we interpolate. If direction == true this means that the rotation is like the initial rotation
             m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
