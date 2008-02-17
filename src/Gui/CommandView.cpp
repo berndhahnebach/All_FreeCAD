@@ -33,6 +33,7 @@
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
+#include "Tree.h"
 #include "View.h"
 #include "Document.h"
 #include "Macro.h"
@@ -1288,6 +1289,32 @@ void StdViewBoxZoom::activated(int iMsg)
     }
 }
 
+//===========================================================================
+// Std_TreeSelection
+//===========================================================================
+
+DEF_STD_CMD(StdCmdTreeSelection);
+
+StdCmdTreeSelection::StdCmdTreeSelection()
+  : Command("Std_TreeSelection")
+{
+    sGroup        = QT_TR_NOOP("View");
+    sMenuText     = QT_TR_NOOP("Go to selection");
+    sToolTipText  = QT_TR_NOOP("Scroll to first selected item");
+    sWhatsThis    = QT_TR_NOOP("Scroll to first selected item");
+    sStatusTip    = QT_TR_NOOP("Scroll to first selected item");
+    iAccel        = 0;
+}
+
+void StdCmdTreeSelection::activated(int iMsg)
+{
+    TreeDockWidget* tree = Gui::getMainWindow()->findChild<TreeDockWidget*>();
+    if (tree) {
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        tree->scrollItemToTop(doc);
+    }
+}
+
 
 //===========================================================================
 // Instanciation
@@ -1335,6 +1362,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewZoomIn());
   rcCmdMgr.addCommand(new StdViewZoomOut());
   rcCmdMgr.addCommand(new StdViewBoxZoom());
+  rcCmdMgr.addCommand(new StdCmdTreeSelection());
 }
 
 } // namespace Gui
