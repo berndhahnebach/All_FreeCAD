@@ -85,6 +85,7 @@ struct InteractiveInterpreterP
 InteractiveInterpreter::InteractiveInterpreter()
 {
     // import code.py and create an instance of InteractiveInterpreter
+    Base::PyGILStateLocker lock;
     PyObject* module = PyImport_ImportModule("code");
     if (!module)
     throw Base::PyException();
@@ -101,6 +102,7 @@ InteractiveInterpreter::InteractiveInterpreter()
 
 InteractiveInterpreter::~InteractiveInterpreter()
 {
+    Base::PyGILStateLocker lock;
     Py_XDECREF(d->interpreter);
     Py_XDECREF(d->sysmodule);
     delete d;
@@ -112,6 +114,7 @@ InteractiveInterpreter::~InteractiveInterpreter()
 void InteractiveInterpreter::setPrompt()
 {
     // import code.py and create an instance of InteractiveInterpreter
+    Base::PyGILStateLocker lock;
     d->sysmodule = PyImport_ImportModule("sys");
     if (!PyObject_HasAttrString(d->sysmodule, "ps1"))
         PyObject_SetAttrString(d->sysmodule, "ps1", PyString_FromString(">>> "));
@@ -132,6 +135,7 @@ void InteractiveInterpreter::setPrompt()
  */
 PyObject* InteractiveInterpreter::compile(const char* source) const
 {
+    Base::PyGILStateLocker lock;
     PyObject* func = PyObject_GetAttrString(d->interpreter, "compile");
     PyObject* args = Py_BuildValue("(s)", source);
     PyObject* eval = PyEval_CallObject(func,args);  // must decref later
@@ -163,6 +167,7 @@ PyObject* InteractiveInterpreter::compile(const char* source) const
  */
 int InteractiveInterpreter::compileCommand(const char* source) const
 {
+    Base::PyGILStateLocker lock;
     PyObject* func = PyObject_GetAttrString(d->interpreter, "compile");
     PyObject* args = Py_BuildValue("(s)", source);
     PyObject* eval = PyEval_CallObject(func,args);  // must decref later
@@ -204,6 +209,7 @@ int InteractiveInterpreter::compileCommand(const char* source) const
  */
 bool InteractiveInterpreter::runSource(const char* source) const
 {
+    Base::PyGILStateLocker lock;
     PyObject* code;
     try {
         code = compile(source);
@@ -237,6 +243,7 @@ bool InteractiveInterpreter::runSource(const char* source) const
  */
 void InteractiveInterpreter::runCode(PyCodeObject* code) const
 {
+    Base::PyGILStateLocker lock;
     PyObject *module, *dict, *presult;           /* "exec code in d, d" */
     module = PyImport_AddModule("__main__");     /* get module, init python */
     if (module == NULL) 
@@ -351,6 +358,7 @@ PythonConsole::PythonConsole(QWidget *parent)
     setAcceptDrops( true );
 
     // try to override Python's stdout/err
+    Base::PyGILStateLocker lock;
     d->_stdoutPy = new PythonStdoutPy(this);
     d->_stderrPy = new PythonStderrPy(this);
     d->_stdinPy  = new PythonStdinPy (this);
@@ -369,11 +377,13 @@ PythonConsole::PythonConsole(QWidget *parent)
 /** Destroys the object and frees any allocated resources */
 PythonConsole::~PythonConsole()
 {
+    Base::PyGILStateLocker lock;
     getWindowParameter()->Detach( this );
     delete pythonSyntax;
     Py_XDECREF(d->_stdoutPy);
     Py_XDECREF(d->_stderrPy);
     Py_XDECREF(d->_stdinPy);
+    delete d->interpreter;
     delete d;
 }
 
@@ -573,6 +583,7 @@ void PythonConsole::printPrompt(bool incomplete)
 void PythonConsole::runSource(const QString& line)
 {
     bool incomplete = false;
+    Base::PyGILStateLocker lock;
     PySys_SetObject("stdout", d->_stdoutPy);
     PySys_SetObject("stderr", d->_stderrPy);
     d->interactive = true;
