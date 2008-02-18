@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/PyCXX/Objects.hxx>
+#include <Base/Interpreter.h>
 #include <Base/PyObjectBase.h>
 #include <App/Property.h>
 #include <App/PropertyContainer.h>
@@ -153,6 +154,7 @@ QString CallTipsList::extractContext(const QString& line) const
 
 QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
 {
+    Base::PyGILStateLocker lock;
     QMap<QString, CallTip> tips;
     if (context.isEmpty())
         return tips;

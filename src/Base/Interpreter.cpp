@@ -101,6 +101,7 @@ std::string InterpreterSingleton::runString(const char *sCmd)
 {
     PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
+    PyGILStateLocker locker;
     module = PP_Load_Module("__main__");         /* get module, init python */
     if (module == NULL)
         throw PyException();                         /* not incref'd */
@@ -174,6 +175,7 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 {
     PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
+    PyGILStateLocker locker;
     module = PP_Load_Module("__main__");         /* get module, init python */
     if (module == NULL)
         throw PyException();                         /* not incref'd */
@@ -227,6 +229,7 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     //PyBuf ModName(psModName);
     PyObject *module;
 
+    PyGILStateLocker locker;
     module = PP_Load_Module(psModName);
 
     if (!module )
@@ -303,6 +306,7 @@ const char* InterpreterSingleton::init(int argc,char *argv[])
 
 int InterpreterSingleton::runCommandLine(const char *prompt)
 {
+    PyGILStateLocker locker;
     return PP_Run_Command_Line(prompt);
 }
 
@@ -312,6 +316,7 @@ int InterpreterSingleton::runCommandLine(const char *prompt)
  */
 void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 {
+    PyGILStateLocker locker;
     if (PP_Run_Method(pobject ,    // object
                       method,  // run method
                       0,			   // no return type
@@ -326,6 +331,7 @@ PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *m
 {
     PyObject *pcO;
 
+    PyGILStateLocker locker;
     if (PP_Run_Method(pobject ,    // object
                       method,  // run method
                       "O",		   // return type
@@ -345,6 +351,7 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
     va_list argslist;                              /* "pobject.method(args)" */
     va_start(argslist, argfmt);
 
+    PyGILStateLocker locker;
     pmeth = PyObject_GetAttrString(pobject, method);
     if (pmeth == NULL)                             /* get callable object */
         throw Exception("Error runing InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
