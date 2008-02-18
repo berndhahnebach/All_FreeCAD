@@ -431,13 +431,28 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
 
     polyFit.Fit();
 
-    // get all added points by the algorithm
-    for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
-        float x = out->pointlist[index++];
-        float y = out->pointlist[index++];
-        float z = polyFit.Value(x, y);
-        Base::Vector3f vertex(x, y, z);
-        newPoints.push_back(vertex);
+    // For a good approximation we should have enough points, i.e. for 9 parameters
+    // for the fit function we should have at least 50 points.
+    unsigned int uMinPts = 50;
+    if (_points.size() < uMinPts) {
+        // get all added points by the algorithm
+        for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+            float x = out->pointlist[index++];
+            float y = out->pointlist[index++];
+            float z = 0.0f; // get the point on the plane
+            Base::Vector3f vertex(x, y, z);
+            newPoints.push_back(vertex);
+        }
+    }
+    else {
+        // get all added points by the algorithm
+        for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+            float x = out->pointlist[index++];
+            float y = out->pointlist[index++];
+            float z = polyFit.Value(x, y);
+            Base::Vector3f vertex(x, y, z);
+            newPoints.push_back(vertex);
+        }
     }
 
     // get the triangles
