@@ -113,6 +113,7 @@ public:
         return m_ordered_cuts;
     }
 
+    std::vector<float> getFlatAreas();
     CuttingToolsSettings m_UserSettings;
 
 private:

@@ -291,7 +291,6 @@ bool cutting_tools::arrangecuts_ZLEVEL()
             z_level_corrected = z_level;
             cut(z_level,m_minlevel,aCutShape,z_level_corrected);
             //cut_Mesh(z_level,m_minlevel,result,z_level_corrected);
-
             //Jetzt die resultierende Wire in einen Vector pushen
             std::pair<float,TopoDS_Shape> tempPair;
             tempPair.first = z_level_corrected;
@@ -2249,6 +2248,16 @@ bool cutting_tools::OffsetWires_Spiral()
 
     return true;
 }
+
+std::vector<float> cutting_tools::getFlatAreas()
+{
+    std::vector<float> FlatAreas;
+    FlatAreas.clear();
+    for(unsigned int i=0;i<m_MachiningOrder.size();++i)
+        FlatAreas.push_back(m_MachiningOrder[i].first.z);
+    return FlatAreas;
+}
+    
 
 bool cutting_tools::OffsetWires_FeatureBased()
 {
