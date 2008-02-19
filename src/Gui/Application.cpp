@@ -596,6 +596,7 @@ bool Application::activateWorkbench(const char* name)
 
     try {
         QString type;
+        Base::PyGILStateLocker lock;
         Py::Object handler(pcWorkbench);
         if (!handler.hasAttr(std::string("__Workbench__"))) {
             // call its GetClassName method if possible
@@ -657,7 +658,7 @@ bool Application::activateWorkbench(const char* name)
     catch (Py::Exception& e) {
         Py::Object o = Py::type(e);
         e.clear();
-        if (o.isString() && !d->_bStartingUp) {
+        if (o.isString()) {
             Py::String s(o);
             QString msg = s.as_std_string().c_str();
             QRegExp rx;
@@ -669,11 +670,15 @@ bool Application::activateWorkbench(const char* name)
                 pos = rx.indexIn(msg);
             }
 
-            wc.restoreCursor();
-            QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
-                QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").
-                arg(name).arg(msg));
-            wc.setWaitCursor();
+            Base::Console().Error("The workbench %s couldn't be loaded due to following error:%s\n",
+                                  name, (const char*)msg.toAscii());
+            if (!d->_bStartingUp) {
+                wc.restoreCursor();
+                QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
+                    QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").
+                    arg(name).arg(msg));
+                wc.setWaitCursor();
+            }
         }
     }
 
