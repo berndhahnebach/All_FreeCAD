@@ -83,7 +83,8 @@ public:
     /// Unsets the edit mode
     void unsetEdit(void);
 
-    bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
+public:
+    static void clipPointsCallback(void * ud, SoEventCallback * n);
 
 protected:
     void onChanged(const App::Property* prop);

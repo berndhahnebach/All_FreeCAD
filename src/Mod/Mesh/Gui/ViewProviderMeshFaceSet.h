@@ -73,8 +73,6 @@ public:
 
     /** @name Polygon picking */
     //@{
-    // Draws the picked polygon
-    bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
     /// Sets the edit mnode
     void setEdit(void);
     /// Unsets the edit mode
@@ -112,6 +110,7 @@ public:
     static void faceInfoCallback(void * ud, SoEventCallback * n);
     static void fillHoleCallback(void * ud, SoEventCallback * n);
     static void markPartCallback(void * ud, SoEventCallback * n);
+    static void clipMeshCallback(void * ud, SoEventCallback * n);
 
 private:
     std::vector<unsigned long> _markedFacets;
