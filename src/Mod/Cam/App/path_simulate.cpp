@@ -31,7 +31,9 @@
 #include <Base/Builder3D.h>
 #include <GCPnts_AbscissaPoint.hxx>
 
-#define curvTOL 100;
+#define curvTOL 100
+
+#define d_PI 3.14
 
 
 
