@@ -56,43 +56,45 @@ namespace MeshGui {
  */
 class MeshGuiExport ViewProviderMeshCurvature : public Gui::ViewProviderDocumentObject, 
                                                 public Base::Observer<int> {
-  typedef Gui::ViewProviderDocumentObject inherited;
+    typedef Gui::ViewProviderDocumentObject inherited;
 
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshCurvature);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshCurvature);
 
 public:
-  ViewProviderMeshCurvature();
-  virtual ~ViewProviderMeshCurvature();
+    ViewProviderMeshCurvature();
+    virtual ~ViewProviderMeshCurvature();
 
-  /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
-  void attach(App::DocumentObject* pcFeature);
-  /// Handles pick events to write curvature value to the status bar.
-  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-  /// Sets the viewing mode
-  void setDisplayMode(const char* ModeName);
-  /// get the default display mode
-  virtual const char* getDefaultDisplayMode() const;
-  /// Returns a list of all possible modes
-  std::vector<std::string> getDisplayModes(void) const;
-  /// Updates the mesh feature representation
-  void updateData(const App::Property*);
-  /// Returns a pixmap for the associated feature type
-  QIcon getIcon() const;
-  /// Once the color bar settinhs has been changed this method gets called to update the feature's representation
-  void OnChange(Base::Subject<int> &rCaller,int rcReason);
-  /// Returns a color bar
-  SoSeparator* getFrontRoot(void) const;
+    /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
+    void attach(App::DocumentObject* pcFeature);
+    /// Sets the viewing mode
+    void setDisplayMode(const char* ModeName);
+    /// get the default display mode
+    virtual const char* getDefaultDisplayMode() const;
+    /// Returns a list of all possible modes
+    std::vector<std::string> getDisplayModes(void) const;
+    /// Updates the mesh feature representation
+    void updateData(const App::Property*);
+    /// Returns a pixmap for the associated feature type
+    QIcon getIcon() const;
+    /// Once the color bar settinhs has been changed this method gets called to update the feature's representation
+    void OnChange(Base::Subject<int> &rCaller,int rcReason);
+    /// Returns a color bar
+    SoSeparator* getFrontRoot(void) const;
+
+public:
+    static void curvatureInfoCallback(void * ud, SoEventCallback * n);
 
 protected:
-  void setVertexCurvatureMode(int mode);
+    void setVertexCurvatureMode(int mode);
+    void curvatureInfo(int index1, int index2, int index3) const;
 
 private:
-  void init(const Mesh::PropertyCurvatureList *prop);
+    void init(const Mesh::PropertyCurvatureList *prop);
 
 protected:
-  SoMaterial       * pcColorMat;
-  SoGroup          * pcLinkRoot;
-  Gui::SoFCColorBar* pcColorBar;
+    SoMaterial       * pcColorMat;
+    SoGroup          * pcLinkRoot;
+    Gui::SoFCColorBar* pcColorBar;
 };
 
 } // namespace MeshGui

@@ -65,7 +65,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // analyze
     Gui::MenuItem* analyze = new Gui::MenuItem;
     analyze->setCommand(QT_TR_NOOP("Analyze"));
-    *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+    *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Mesh_CurvatureInfo" << "Separator" 
+             << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
 
     // boolean
     Gui::MenuItem* boolean = new Gui::MenuItem;

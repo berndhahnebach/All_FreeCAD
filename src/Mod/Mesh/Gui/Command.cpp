@@ -38,6 +38,7 @@
 #endif
 
 #include "../App/MeshFeature.h"
+#include "../App/FeatureMeshCurvature.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -58,6 +59,7 @@
 #include "DlgEvaluateMeshImp.h"
 #include "DlgRegularSolidImp.h"
 #include "ViewProviderMeshFaceSet.h"
+#include "ViewProviderCurvature.h"
 
 using namespace Mesh;
 
@@ -567,6 +569,48 @@ bool CmdMeshVertexCurvature::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshVertexCurvatureInfo);
+
+CmdMeshVertexCurvatureInfo::CmdMeshVertexCurvatureInfo()
+  :Command("Mesh_CurvatureInfo")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Curvature info");
+    sToolTipText  = QT_TR_NOOP("Information about curvature");
+    sWhatsThis    = QT_TR_NOOP("Information about curvature");
+    sStatusTip    = QT_TR_NOOP("Information about curvature");
+}
+
+void CmdMeshVertexCurvatureInfo::activated(int iMsg)
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshCurvature::curvatureInfoCallback);
+     }
+}
+
+bool CmdMeshVertexCurvatureInfo::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc || doc->countObjectsOfType(Mesh::Curvature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshPolyPick);
 
 CmdMeshPolyPick::CmdMeshPolyPick()
@@ -602,43 +646,53 @@ bool CmdMeshPolyPick::isActive(void)
 DEF_STD_CMD_A(CmdMeshPolyCut);
 
 CmdMeshPolyCut::CmdMeshPolyCut()
-  :Command("Mesh_PolyCut")
+  : Command("Mesh_PolyCut")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Cut mesh");
-  sToolTipText  = QT_TR_NOOP("Cuts a mesh with a picked polygon");
-  sWhatsThis    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
-  sStatusTip    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
-  sPixmap       = "mesh_cut";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Cut mesh");
+    sToolTipText  = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+    sWhatsThis    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+    sStatusTip    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+    sPixmap       = "mesh_cut";
 }
 
 void CmdMeshPolyCut::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it )
-  {
-    if ( it == docObj.begin() ) {
-      Gui::Document* doc = getActiveGuiDocument();
-      Gui::MDIView* view = doc->getActiveView();
-      if ( view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId()) ) {
-        Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
-        viewer->setEditing(true);
-        viewer->startPicking( Gui::View3DInventorViewer::Lasso );
-      } else {
-        return;
-      }
-    }
+    std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it) {
+        if (it == docObj.begin()) {
+            Gui::Document* doc = getActiveGuiDocument();
+            Gui::MDIView* view = doc->getActiveView();
+            if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+                Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+                viewer->setEditing(true);
+                viewer->startPicking(Gui::View3DInventorViewer::Lasso);
+                viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::clipMeshCallback);
+            }
+            else {
+                return;
+            }
+        }
 
-    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider( *it );
-    pVP->setEdit();
-  }
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
+        pVP->setEdit();
+    }
 }
 
 bool CmdMeshPolyCut::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    // Check for the selected mesh feature (all Mesh types)
+    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -779,6 +833,7 @@ bool CmdMeshEvaluateFacet::isActive(void)
 }
 
 //--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshRemoveCompByHand);
 
 CmdMeshRemoveCompByHand::CmdMeshRemoveCompByHand()
@@ -1294,6 +1349,7 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshImport());
   rcCmdMgr.addCommand(new CmdMeshExport());
   rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
+  rcCmdMgr.addCommand(new CmdMeshVertexCurvatureInfo());
   rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
   rcCmdMgr.addCommand(new CmdMeshExMakeTool());
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
