@@ -33,6 +33,7 @@ class SoPointSet;
 class SoLocateHighlight;
 class SoCoordinate3;
 class SoNormal;
+class SoEventCallback;
 
 namespace App {
   class PropertyColorList;

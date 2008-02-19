@@ -32,6 +32,7 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/errors/SoDebugError.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui,...
