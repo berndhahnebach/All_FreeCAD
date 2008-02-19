@@ -154,200 +154,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>210</y>
-     <width>256</width>
-     <height>338</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Settings</string>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="11" column="0" colspan="3" >
-       <widget class="QCheckBox" name="checkBox_2" >
-        <property name="text" >
-         <string>ISFID</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0" >
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_2" />
-      </item>
-      <item row="5" column="2" >
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
-         <string>Limit Angle</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2" >
-       <widget class="QLabel" name="label_4" >
-        <property name="text" >
-         <string>Correction Factor for Springback</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
-         <string>Cutting-Distance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2" >
-       <widget class="QLabel" name="label_11" >
-        <property name="text" >
-         <string>Max-Velocity</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="slave_radius_box" >
-        <property name="value" >
-         <double>10.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
-         <string>Slave-Radius</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="level_distance_box" >
-        <property name="value" >
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2" >
-       <widget class="QLabel" name="label_6" >
-        <property name="text" >
-         <string>Smallest CAD radius</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="correction_factor_box" >
-        <property name="value" >
-         <double>0.700000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1" colspan="2" >
-       <widget class="QLabel" name="label_13" >
-        <property name="text" >
-         <string>Max-Speed</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_3" />
-      </item>
-      <item row="7" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="doubleSpinBox" />
-      </item>
-      <item row="6" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
-        <property name="prefix" >
-         <string/>
-        </property>
-        <property name="suffix" >
-         <string/>
-        </property>
-        <property name="singleStep" >
-         <double>0.500000000000000</double>
-        </property>
-        <property name="value" >
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2" >
-       <widget class="QLabel" name="label_9" >
-        <property name="text" >
-         <string>Sheet Thickness</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2" >
-       <widget class="QLabel" name="label_12" >
-        <property name="text" >
-         <string>Max-Acceleration</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="limit_angle_box" >
-        <property name="value" >
-         <double>60.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
-         <string>Master-Radius</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="cad_radius_box" >
-        <property name="value" >
-         <double>10.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0" colspan="3" >
-       <widget class="QCheckBox" name="checkBox_3" >
-        <property name="text" >
-         <string>SPISF</string>
-        </property>
-        <property name="tristate" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QDoubleSpinBox" name="master_radius_box" >
-        <property name="cursor" >
-         <cursor>0</cursor>
-        </property>
-        <property name="maximum" >
-         <double>99.989999999999995</double>
-        </property>
-        <property name="value" >
-         <double>10.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
   <widget class="QGroupBox" name="groupBox" >
    <property name="geometry" >
     <rect>
@@ -474,6 +280,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="start_simulation" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
         <property name="text" >
          <string>Start Simulation</string>
         </property>
@@ -481,6 +290,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_6" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
         <property name="toolTip" >
          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
@@ -525,6 +337,9 @@ p, li { white-space: pre-wrap; }
       </property>
       <item>
        <widget class="QPushButton" name="GenRobotOut" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
         <property name="text" >
          <string>Generate Robot-Output</string>
         </property>
@@ -532,8 +347,14 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QPushButton" name="GenSimOut" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
         <property name="text" >
          <string>Generate Simulation-Output</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -549,6 +370,9 @@ p, li { white-space: pre-wrap; }
       </property>
       <item>
        <widget class="QPushButton" name="adaptdynainput" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
         <property name="text" >
          <string>AdaptDynaInput</string>
         </property>
@@ -807,6 +631,309 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>256</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Settings</string>
+   </property>
+   <widget class="QLabel" name="label_6" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>25</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Smallest CAD radius</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="cad_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>25</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>51</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Master-Radius</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="master_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>51</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="cursor" >
+     <cursor>0</cursor>
+    </property>
+    <property name="maximum" >
+     <double>99.989999999999995</double>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>77</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Slave-Radius</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="slave_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>77</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>103</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Cutting-Distance</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="level_distance_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>103</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>1.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="correction_factor_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>129</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>0.700000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>129</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Correction Factor for Springback</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>155</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Limit Angle</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="limit_angle_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>155</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>60.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>181</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="prefix" >
+     <string/>
+    </property>
+    <property name="suffix" >
+     <string/>
+    </property>
+    <property name="singleStep" >
+     <double>0.500000000000000</double>
+    </property>
+    <property name="value" >
+     <double>1.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>181</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Sheet Thickness</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>207</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Max-Velocity</string>
+    </property>
+    <property name="alignment" >
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="max_vel" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>207</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum" >
+     <double>10000.000000000000000</double>
+    </property>
+    <property name="value" >
+     <double>600.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="max_acc" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>233</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum" >
+     <double>50000.000000000000000</double>
+    </property>
+    <property name="singleStep" >
+     <double>500.000000000000000</double>
+    </property>
+    <property name="value" >
+     <double>20000.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>233</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Max-Acceleration</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_3" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>258</y>
+      <width>234</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>SPISF</string>
+    </property>
+    <property name="tristate" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_2" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>276</y>
+      <width>234</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>ISFID</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

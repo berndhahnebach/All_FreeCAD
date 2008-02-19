@@ -25,10 +25,12 @@
 #define CAMGUI_CUTTING_H
 
 #include "ui_Cutting.h"
+
 #include <Base/Vector3D.h>
 #include <QProcess>
 
 class cutting_tools;
+class path_simulate;
 class TopoDS_Shape;
 
 namespace CamGui
@@ -52,7 +54,9 @@ protected Q_SLOTS:
     void on_toolpath_calculation_middle_level_button_clicked();
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
+    void on_GenSimOut_clicked();
     void on_adaptdynainput_clicked();
+    void on_start_simulation_clicked();
     void selectShape();
     bool getProcessOutput();
     void setFace(const TopoDS_Shape &aFace, const float , const float,const float);
@@ -65,6 +69,7 @@ private:
 private:
     //Instanz von der cutting-klasse auf dem Heap erzeugen
     cutting_tools *m_CuttingAlgo;
+    path_simulate *m_PathSimulate;
     QProcess *m_Process;
     TopoDS_Shape m_Shape;
     bool m_timer;

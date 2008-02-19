@@ -25,6 +25,7 @@
 
 #include "Cutting.h"
 #include <Mod/Cam/App/ChangeDyna.h> //Only for Testing
+#include <Mod/Cam/App/path_simulate.h>
 #include <QTimer>
 #include <QByteArray>
 
@@ -95,6 +96,8 @@ void Cutting::on_adaptdynainput_clicked()
     QString filename, path, program;
     QStringList arguments;
     filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
+    if(filename.isNull())
+        return;
     QFileInfo aFileInfo(filename);
     path = aFileInfo.absolutePath();
     QDir::setCurrent(path);
@@ -116,13 +119,23 @@ void Cutting::on_adaptdynainput_clicked()
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
                                  tr("Structured-Dyna gut erzeugt\n"),
                                  QMessageBox::Ok);
-        ChangeDyna aFileChanger;
-        bool test = aFileChanger.Read("dyna.str");
-
+        ChangeDyna aFileChanger(m_PathSimulate->getPathTimes());
+        if(aFileChanger.Read("dyna.str"))
+            start_simulation->show();
     }
+}
 
-//connect(m_Process,SIGNAL(readyReadStandardError()),this,SLOT(getProcessOutput()));
-    //  connect(m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(getProcessOutput()));
+void Cutting::on_start_simulation_clicked()
+{
+    //check if the initial process is already killed
+    m_Process->kill();
+    QString program;
+    QStringList arguments;
+    program = "c:/Program Files/lsdyna/ls971d";
+    arguments << " i=dyna2.str";
+    connect(m_Process,SIGNAL(readyReadStandardError()),this,SLOT(getProcessOutput()));
+    connect(m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(getProcessOutput()));
+    m_Process->start(program, arguments);
 }
 void Cutting::selectShape()
 {
@@ -307,6 +320,8 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.master_radius = master_radius_box->value();
     m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
+    m_CuttingAlgo->m_UserSettings.max_Vel = max_vel->value();
+    m_CuttingAlgo->m_UserSettings.max_Acc = max_acc->value();
 
     m_CuttingAlgo->arrangecuts_ZLEVEL();
     switch (m_Mode)
@@ -322,8 +337,25 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
         break;
     }
     DisplayCAMOutput();
+    GenRobotOut->setEnabled(true);
+    GenSimOut->setEnabled(true);
 }
 
+void Cutting::on_GenSimOut_clicked()
+{
+    QString filename, path, program;
+    QStringList arguments;
+    filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
+    if(filename.isNull())
+        return;
+    QFileInfo aFileInfo(filename);
+    path = aFileInfo.absolutePath();
+    QDir::setCurrent(path);
+    m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
+    if(m_PathSimulate->MakePathSimulate())
+        adaptdynainput->setEnabled(true);
+
+}
 
 void Cutting::DisplayCAMOutput()
 {
@@ -332,9 +364,9 @@ void Cutting::DisplayCAMOutput()
     BB.MakeCompound(aCompound1);
     BB.MakeCompound(aCompound2);
     TopoDS_Edge anEdge;
-    std::vector<Handle_Geom_BSplineCurve>* topCurves;
-    std::vector<Handle_Geom_BSplineCurve>* botCurves;
-    std::vector<Handle_Geom_BSplineCurve>::iterator an_it1;
+    const std::vector<Handle_Geom_BSplineCurve>* topCurves;
+    const std::vector<Handle_Geom_BSplineCurve>* botCurves;
+    std::vector<Handle_Geom_BSplineCurve>::const_iterator an_it1;
     topCurves = m_CuttingAlgo->getOutputhigh();
     botCurves = m_CuttingAlgo->getOutputlow();
     for (an_it1 = topCurves->begin();an_it1!=topCurves->end();an_it1++)
@@ -357,7 +389,6 @@ void Cutting::DisplayCAMOutput()
     Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
     part1->setShape(aCompound1);
     part2->setShape(aCompound2);
-
 
 
 

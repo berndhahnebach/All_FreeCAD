@@ -42,6 +42,8 @@ struct CuttingToolsSettings
     double level_distance;
     double correction_factor;
     double sheet_thickness;
+    double max_Vel;
+    double max_Acc;
 };
 
 struct SpiralHelper
@@ -86,9 +88,6 @@ public:
     bool OffsetWires_Spiral();
     //Die Abfolge der flachen Bereiche wird hier festgelegt(der Input kommt von der GUI)
     bool SetMachiningOrder(const TopoDS_Face &aFace, float x,float y,float z);
-
-
-
     /*
     Dient zum checken wieviele Faces wir haben und hier wird auch gleich ein vector gefüllt
     wo alle flachen bereiche drin sind
@@ -101,11 +100,11 @@ public:
     bool initializeMeshStuff();
     bool arrangecuts_SPIRAL();
     bool arrangecuts_FEATURE_BASED();
-    inline std::vector<Handle_Geom_BSplineCurve>* getOutputhigh()
+    inline const std::vector<Handle_Geom_BSplineCurve>* getOutputhigh()
     {
         return &m_all_offset_cuts_high;
     }
-    inline std::vector<Handle_Geom_BSplineCurve>* getOutputlow()
+    inline const std::vector<Handle_Geom_BSplineCurve>* getOutputlow()
     {
         return &m_all_offset_cuts_low;
     }

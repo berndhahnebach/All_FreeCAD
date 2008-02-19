@@ -1,8 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>                              *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>          					   *
  *   Human Rezai <Human@web.de>                                            *
- *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
@@ -28,10 +27,13 @@
 
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 
+class MeshFacet;
 
 
 
-#define cMin  15.0;
+
+# define cMin    15.0
+# define toolRad  5.0
 
 struct EdgeStruct
 {
@@ -101,7 +103,7 @@ struct MeshPntLess
     }
 };
 
-class SpringbackCorrection
+class SpringbackCorrection : public MeshCore::MeshFacetVisitor
 {
 public:
     SpringbackCorrection(const TopoDS_Shape& aShape);
@@ -126,12 +128,21 @@ public:
     bool SmoothMesh(MeshCore::MeshKernel &mesh, double maxTranslation);
     bool SmoothMesh(MeshCore::MeshKernel &mesh, std::vector<int> indicies, double maxTranslation);
     bool GetFaceAng(MeshCore::MeshKernel &mesh, int deg_tol);
-    std::vector<int> FaceCheck(MeshCore::MeshKernel mesh, int deg_tol);
+    std::vector<int> FaceCheck(MeshCore::MeshKernel &mesh, int deg_tol);
+    std::vector<int> InitFaceCheck(MeshCore::MeshKernel &mesh, int deg_tol);
     void ReorderNeighbourList(std::set<MeshCore::MeshPointArray::_TConstIterator> &pnt,
                               std::set<MeshCore::MeshFacetArray::_TConstIterator> &face,
                               std::vector<unsigned long> &nei,
                               unsigned long CurInd);
 
+	bool FacetRegionGrowing(MeshCore::MeshKernel &mesh, 
+		                    std::vector<MeshCore::MeshFacet> &arr, 
+							MeshCore::MeshFacetArray &mFacets);
+
+	bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
+	std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
+	MeshCore::MeshKernel m_Mesh;
+	MeshCore::MeshKernel m_CadMesh;
 
 private:
     bool TransferFaceTriangulationtoFreeCAD(const TopoDS_Face& aFace, MeshCore::MeshKernel& TFaceMesh);
@@ -140,8 +151,13 @@ private:
     std::vector<double> m_CurvNeg;
     std::vector<double> m_CurvMax;
     std::vector<EdgeStruct> m_EdgeStruct;
+	std::vector<unsigned long> m_RingVector;
+	std::vector< std::vector<unsigned long> > m_RegionVector;
+	std::vector< std::vector<unsigned long> > m_Regions;
+	std::vector<MeshCore::MeshFacet> m_RegionBounds;
 
-    MeshCore::MeshKernel m_Mesh;
+	int m_RingCurrent;
+private:
     MeshCore::MeshKernel MeshRef;
     MeshCore::MeshKernel m_Mesh2Fit;
     MeshCore::MeshPointArray PointArray;
