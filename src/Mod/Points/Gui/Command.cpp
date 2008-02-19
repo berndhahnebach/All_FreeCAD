@@ -26,6 +26,7 @@
 # include <qaction.h>
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
 #include <Base/Exception.h>
