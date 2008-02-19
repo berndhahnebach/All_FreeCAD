@@ -74,11 +74,13 @@ public:
 	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle);
 	bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c, bool outputstyle);
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
-	bool MakeSinglePathNew(int &c, bool outputstyle, double length, bool part, bool curveType);
+	bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
     bool MakePathSimulate();
+	bool MakePathSimulate_Feat();
     bool MakePathRobot();
 	bool Integrate(bool b);
 	bool Correction(bool b);
+	bool TimeCorrection();
 	inline const std::vector<std::pair<float,float> >* getPathTimes() { return &m_PathTimes; }
 
 private:
@@ -147,6 +149,9 @@ private:
     std::vector<double> GetDistance(double time);
 	double GetDistanceNew(double time);
 	bool CheckConnect();
+	bool FillPathTimes();
+	std::vector<std::vector<double> > CompBounds(bool tool);
+	bool CompPath(bool tool);
 
 	std::vector<std::pair<float,float> > m_PathTimes;
 };

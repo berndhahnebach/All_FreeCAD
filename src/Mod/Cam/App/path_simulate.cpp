@@ -31,11 +31,7 @@
 #include <Base/Builder3D.h>
 #include <GCPnts_AbscissaPoint.hxx>
 
-#define curvTOL 100
-
-#define d_PI 3.14
-
-
+#define curvTOL 10.0
 
 /* Konstruktor mit einer Bahnfolge (master tool) als Input */
 path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
@@ -321,14 +317,14 @@ double path_simulate::GetVelocity(double t)
 
     if (t>=m_t0 && t<=m_t1)
     {
-		c[1] = d_PI*m_a / (m_v[1] - m_v[0]);
+		c[1] = PI*m_a / (m_v[1] - m_v[0]);
         if (t==m_t0)
         {
             vel = m_v[0];
         }
         else
         {
-			vel = c[0]*(sin(c[1]*(t-m_t0) - d_PI)/c[1] + (t-m_t0)) + m_v[0];
+			vel = c[0]*(sin(c[1]*(t-m_t0) - PI)/c[1] + (t-m_t0)) + m_v[0];
         }
     }
     else if (t>m_t1  && t<=m_t2)
@@ -337,13 +333,13 @@ double path_simulate::GetVelocity(double t)
     }
     else if (t>m_t2 && t<=m_T)
     {
-		c[1] = d_PI*m_a / (m_v[1] - m_v[2]);
+		c[1] = PI*m_a / (m_v[1] - m_v[2]);
 
 		if(t==m_T){
 			vel = m_v[1] - c[0]*(t-m_t2);
 		}
 		else{
-			vel = m_v[1] - c[0]*(sin(c[1]*(t-m_t2) - d_PI)/c[1] + (t-m_t2));
+			vel = m_v[1] - c[0]*(sin(c[1]*(t-m_t2) - PI)/c[1] + (t-m_t2));
 		}
     }
     else
@@ -481,21 +477,21 @@ double path_simulate::GetDistanceNew(double t)
 	c[0] = m_a/2.0;
 
     if (t>=m_t0 && t<m_t1){
-		c[1] = d_PI*m_a / (m_v[1] - m_v[0]);
+		c[1] = PI*m_a / (m_v[1] - m_v[0]);
 
         if (t==m_t0) d = 0.0;
-        else         d = -(c[0]/pow(c[1],2.0))*cos(c[1]*(t-m_t0) - d_PI) + c[0]*pow((t-m_t0),2.0)/2 - c[0]/(c[1]*c[1]) + m_v[0]*(t-m_t0);
+        else         d = -(c[0]/pow(c[1],2.0))*cos(c[1]*(t-m_t0) - PI) + c[0]*pow((t-m_t0),2.0)/2 - c[0]/(c[1]*c[1]) + m_v[0]*(t-m_t0);
     }               
     else if (t>=m_t1  && t<=m_t2){
         d = c[0]*pow((m_t1-m_t0),2.0)/2 + m_v[0]*(m_t1-m_t0) + m_v[1]*(t-m_t1);
 	}
     else if (t>m_t2 && t<=m_T){
-		c[1] = d_PI*m_a / (m_v[1] - m_v[2]);
+		c[1] = PI*m_a / (m_v[1] - m_v[2]);
 
 		if(t==m_T){
 		  	 d = c[0]*pow((m_t1-m_t0),2.0)/2 + m_v[0]*(m_t1-m_t0) + m_v[1]*(m_t2-m_t1) - c[0]*pow((t-m_t2),2.0)/2 + m_v[1]*(t-m_t2);
 		}
-		else d = c[0]*pow((m_t1-m_t0),2.0)/2 + m_v[0]*(m_t1-m_t0) + m_v[1]*(m_t2-m_t1) + (c[0]/pow(c[1],2.0))*cos(c[1]*(t-m_t2) - d_PI) - c[0]*pow((t-m_t2),2.0)/2 + (c[0]/pow(c[1],2.0)) + m_v[1]*(t-m_t2);
+		else d = c[0]*pow((m_t1-m_t0),2.0)/2 + m_v[0]*(m_t1-m_t0) + m_v[1]*(m_t2-m_t1) + (c[0]/pow(c[1],2.0))*cos(c[1]*(t-m_t2) - PI) - c[0]*pow((t-m_t2),2.0)/2 + (c[0]/pow(c[1],2.0)) + m_v[1]*(t-m_t2);
 	}
     else
     {
@@ -1233,6 +1229,12 @@ bool path_simulate::OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, st
 
 bool path_simulate::UpdateParam()
 {
+	m_Output.clear();
+	m_Output_time.clear();
+	m_Output2.clear();
+	m_Output_time2.clear();
+	m_Output_robo1.clear();
+
     m_v1 = m_vmax;
     m_a1 = m_amax;
 
@@ -1380,7 +1382,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
             if (vec_21.Magnitude() != 0)
                 vec_21.Normalize();
 
-            N = ceil((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
+            N = int(ceil((m_T - m_t0)/m_step));  /* anzahl der zu erzeugenden Outputwerte */
 
             m_del_t = (m_T - m_t0)/N;
 
@@ -1448,7 +1450,7 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
 				N = 0;
 			else{
 				if(vec_11.Magnitude() < TolDist) N=1;
-				else N = ceil(vec_11.Magnitude()/TolDist);  /* anzahl der zu erzeugenden Outputwerte */
+				else N = int(ceil(vec_11.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */
 				
 			}
 
@@ -1711,60 +1713,168 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
     return true;
 }
 
-
-
-bool path_simulate::EstimateMaxAcceleration()
-{
+std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = Slave, false = Master
+{	
 	int step = ceil(m_vmax*8e-3);  // schrittweite welche bei maximaler geschwindigkeit m_vmax in bogenmass vorkommen kann (*8)
     GeomAdaptor_Curve curve;
+	std::vector<double> hPnts;
+	std::vector<double> bounds;
+	std::vector<std::vector<double> > hPntsInt;
+	std::vector<std::vector<double> > CriticalBounds;
 
-	// lade aktuelle kurven
-	curve.Load(*m_it2);
+	std::vector<std::vector<Base::Vector3d> > D2;
+	std::vector<std::vector<double> > Cr;
 
-	double fParam2 = curve.FirstParameter(),
-		   lParam2 = curve.LastParameter();
+	// lade aktuelle kurve
+	if(!tool)  curve.Load(*m_it1);
+	else       curve.Load(*m_it2);
 
-	curve.Load(*m_it1);
+	double fParam = curve.FirstParameter(),
+		   lParam = curve.LastParameter();
+
+	double period = lParam - fParam;
+
+	std::vector<std::vector<Base::Vector3d> > D1;
+    std::vector<Base::Vector3d> tmp3;
+	Base::Vector3d tmp2;
+	gp_Pnt tmp;
+	gp_Vec dtmp1;
+
+	int N = ceil(period);
+
+	// Compute 2.Deriavative
+    for (int i=0; i<N; ++i)
+    {
+        //foundParameter = FindParamAt(curve1, d[0], startParam[0]);     /* d[0] - master tool, d[1] - supporting die */
+
+        if      ( m_StartParam[tool] + i > lParam  )curve.D1(m_StartParam[tool] + i - period, tmp, dtmp1);
+        else if ( m_StartParam[tool] + i < fParam ) curve.D1(m_StartParam[tool] + i + period, tmp, dtmp1);    
+        else                                        curve.D1(m_StartParam[tool] + i         , tmp, dtmp1);
+        
+
+        /* erste ableitung */
+        tmp2.x = dtmp1.X();
+        tmp2.y = dtmp1.Y();
+        tmp2.z = dtmp1.Z();
+
+        tmp3.push_back(tmp2);
+    }
+
+	D1.push_back(tmp3);
+	Cr = CurvCurvature(D1);
+	tmp3.clear();
+
+	// Get Point-Parameters with high Curvature
+	for (int i=0; i<N; ++i)
+    {
+		if(Cr[0][i] < curvTOL){
+			hPnts.push_back(i);
+		}
+	}
+
+	// füge zusammenhängende Punkte zu Bereichen zusammen 
+	std::vector<double> tmpo;
+	std::vector<double> tmpo2Push;
+
+	Base::Builder3D log;
+	int c;
 		
-	double fParam1 = curve.FirstParameter(),
-		   lParam1 = curve.LastParameter();
+	if(hPnts.size() > 2){
+		tmpo.push_back(hPnts[0]);
+		tmpo2Push.push_back(hPnts[0]);
+		
+		for(unsigned int i=0; i<hPnts.size()-1; ++i)
+		{
+			if( (hPnts[i+1] - tmpo2Push[i]) < (period/10.0)){
+				tmpo.push_back(hPnts[i+1]);
+				tmpo2Push.push_back(hPnts[i+1]);
+			}
+			else{
+				hPntsInt.push_back(tmpo);
+				tmpo.clear();
+				tmpo.push_back(hPnts[i+1]);
+				tmpo2Push.push_back(hPnts[i+1]);
+			}
+		}
 
-	double period2 = lParam2 - fParam2,
-		   period1 = lParam1 - fParam1;
+		tmpo2Push.clear();
 
-	double D1_Max[3], D1_Min[3], d2;
-	double length;
+		if(tmpo.size() > 0){
+			hPntsInt.push_back(tmpo);
+		}
+		else
+			throw Base::Exception("ooops");
 
-	length = GetLength(curve, fParam1, lParam1);
+		// suche die Bereichsgrenzen
+		for(unsigned int i=0; i<hPntsInt.size(); ++i){
+			bounds.push_back(hPntsInt[i][0]);
+			bounds.push_back(hPntsInt[i][hPntsInt[i].size()-1]);
+			CriticalBounds.push_back(bounds);
+			bounds.clear();
+		}
+	}
 
-	
+	if(CriBound_Master.size() == 1)
+	{
+		double len = 0.0;
+		len += CriticalBounds[0][0] + m_StartParam[tool];
+
+		if(len < 10.0)
+			CriticalBounds[0][0] = m_StartParam[0];
+
+		if(lParam < (m_StartParam[0] + CriticalBounds[0][1]))
+			len = CriticalBounds[0][1] + m_StartParam[0] - lParam;
+		else
+			len = lParam - CriticalBounds[0][1];
+
+		if(len < 10.0)
+			CriticalBounds[0][1] = m_StartParam[0];
+
+		if(CriticalBounds[0][0] == CriticalBounds[0][1])
+			CriticalBounds.clear();
+	}
+
+	return CriticalBounds;
+}
+
+bool path_simulate::CompPath(bool tool)
+{
+	int step = ceil(m_vmax*8e-3);
+	std::vector<std::vector<double> > CriticalBounds = CompBounds(tool);
+	GeomAdaptor_Curve curve;
 
 	gp_Pnt pnt0;
 	gp_Vec pnt1;
 	Base::Vector3d Pnt1;
 	std::vector<Base::Vector3d> Pnt1Vec;
+
+	// lade aktuelle kurve
+	if(!tool)  curve.Load(*m_it1);
+	else       curve.Load(*m_it2);
+
+	double fParam = curve.FirstParameter(),
+		   lParam = curve.LastParameter();
+
+	double period = lParam - fParam;
+	double D1_Max[3], D1_Min[3], d2, length, velo;
 	
+	m_Sum[0] = 0.0; 
+	m_Sum[1] = 0.0;	
+	m_Sum[2] = 0.0;
 
-	GetCriticalPoints(m_StartParam);  // bestimme parametergrenzen innerhalb der kurve(n)
+	double t0 = m_t0;
+	int start = m_StartParam[tool];
 
-	double velo;
-	
-
-	int c=1;
-	double t0 = m_t0, T;
 	m_v[0] = 0.0;
-
-	// MASTER
-	int start = m_StartParam[0];
-	m_Sum[0] = 0.0; m_Sum[1] = 0.0;	m_Sum[2] = 0.0;
-	for(unsigned int i=0; i<CriBound_Master.size(); ++i){
+	
+	for(unsigned int i=0; i<CriticalBounds.size(); ++i){
 
 		// gerader Bereich
-		for(int j= m_StartParam[0]; j<(ceil(CriBound_Master[i][0] - 10.0) + start); ++j){
+		for(int j= m_StartParam[tool]; j<(ceil(CriticalBounds[i][0] - 10.0) + start); ++j){
 
-			if      ( j > lParam1 )  curve.D1(j - period1, pnt0, pnt1);
-			else if ( j < fParam1 )  curve.D1(j + period1, pnt0, pnt1);    
-			else                     curve.D1(j          , pnt0, pnt1);
+			if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
+			else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
+			else                    curve.D1(j         , pnt0, pnt1);
 
 			Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
 			Pnt1.Normalize();
@@ -1800,11 +1910,11 @@ bool path_simulate::EstimateMaxAcceleration()
 		m_v[1] = velo;
 		m_a    = m_amax - (velo*d2/2.0);
 
-		for(int j=(start + ceil(CriBound_Master[i][0] - 10.0)); j<(start + ceil(CriBound_Master[i][1] + 10.0)); ++j){
+		for(int j=(start + ceil(CriticalBounds[i][0] - 10.0)); j<(start + ceil(CriticalBounds[i][1] + 10.0)); ++j){
 
-			if      ( j > lParam1 )  curve.D1(j - period1, pnt0, pnt1);
-			else if ( j < fParam1 )  curve.D1(j + period1, pnt0, pnt1);    
-			else                     curve.D1(j          , pnt0, pnt1);
+			if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
+			else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
+			else                     curve.D1(j         , pnt0, pnt1);
 
 			Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
 			Pnt1.Normalize();
@@ -1840,26 +1950,26 @@ bool path_simulate::EstimateMaxAcceleration()
 		m_v[2] = velo;
 
 		// gerader Bereich
-		length = CriBound_Master[i][0] - 10.0 - m_StartParam[0] + start;
-		length = GetLength(curve,m_StartParam[0] + start,CriBound_Master[i][0] - 10.0);
-		MakeSinglePathNew(c,1, length, 0,0);
+		length = CriticalBounds[i][0] - 10.0 - m_StartParam[tool] + start;
+		length = GetLength(curve,m_StartParam[tool] + start,CriticalBounds[i][0] - 10.0);
+		MakeSinglePathNew(1, length, 0,tool);
 		m_t0 = m_T;
-		m_StartParam[0] += length;
+		m_StartParam[tool] += length;
 		
 		// gekrümmter Bereich
-		length = CriBound_Master[i][1] - CriBound_Master[i][0] + 20.0;
-		MakeSinglePathNew(c,1, length, 1,0);
+		length = CriticalBounds[i][1] - CriticalBounds[i][0] + 20.0;
+		MakeSinglePathNew(1, length, 1,tool);
 		m_t0 = m_T;
-		m_StartParam[0] += length;
+		m_StartParam[tool] += length;
 
 		m_v[0] = m_v[2];
 	}
 
-	for(int j= m_StartParam[0]; j< lParam1 + start; ++j){
+	for(int j = m_StartParam[tool]; j< lParam + start; ++j){
 
-		if      ( j > lParam1 )  curve.D1(j - period1, pnt0, pnt1);
-		else if ( j < fParam1 )  curve.D1(j + period1, pnt0, pnt1);    
-		else                     curve.D1(j          , pnt0, pnt1);
+		if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
+		else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
+		else                    curve.D1(j         , pnt0, pnt1);
 
 		Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
 		Pnt1.Normalize();
@@ -1896,181 +2006,29 @@ bool path_simulate::EstimateMaxAcceleration()
 	m_v[2] = 0.0;
 	m_a = m_amax - (velo*d2/2.0);
 
-	length = lParam1 - m_StartParam[0] + start;
-	MakeSinglePathNew(c,1, length, 0,0);
-	Integrate(0);
+	length = lParam - m_StartParam[tool] + start;
+	MakeSinglePathNew(1, length, 0,tool);
+	Integrate(tool);
 	UpdateParam();
-	Correction(0);
-	Integrate(0);
+	Correction(tool);
+	Integrate(tool);
 	
 	/*m_Output_time.push_back(m_T);
 	Pnt1.Set(0.0,0.0,0.0);
 	Pnt1Vec.push_back(Pnt1);
 	m_Output.push_back(Pnt1Vec);*/
 
-	m_t0 = m_T;
-	m_StartParam[0] = start;
-	CriBound_Master.clear();
+	m_t0 = t0;
+	m_StartParam[tool] = start;
+	CriticalBounds.clear();
 
+	return true;
+}
 
-	if(m_single == false)
-	{
-		curve.Load(*m_it2);
-		m_t0 = t0;
-		m_v[0] = 0.0;
+bool path_simulate::EstimateMaxAcceleration()
+{
+	
 
-		// SLAVE
-		start = m_StartParam[1];
-		for(unsigned int i=0; i<CriBound_Slave.size(); ++i){
-
-			// gerader Bereich
-			for(int j= m_StartParam[1]; j<(ceil(CriBound_Slave[i][0] - 10.0) + start); ++j){
-
-				if      ( j > lParam2 )  curve.D1(j - period2, pnt0, pnt1);
-				else if ( j < fParam2 )  curve.D1(j + period2, pnt0, pnt1);    
-				else                     curve.D1(j          , pnt0, pnt1);
-
-				Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
-				Pnt1.Normalize();
-				Pnt1Vec.push_back(Pnt1);
-			}
-
-			d2 = 0;
-
-			for(unsigned int j=0; j<Pnt1Vec.size() - step; ++j){
-				D1_Max[0] = -1e+10; D1_Max[1] = -1e+10; D1_Max[2] = -1e+10;
-				D1_Min[0] =  1e+10; D1_Min[1] =  1e+10; D1_Min[2] =  1e+10;
-
-				for(int k=0; k<step+1; ++k){
-					if(Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-					if(Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-					if(Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-					if(Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-					if(Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-					if(Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-				}
-
-				if( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-				if( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-				if( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-			}
-
-			Pnt1Vec.clear();
-
-			d2 /= 2e-3;
-			velo = (m_amax/d2);
-			if(velo > m_vmax) velo = m_vmax;
-
-			m_v[1] = velo;
-			m_a    = m_amax - (velo*d2/2.0);
-
-			for(int j=(start + ceil(CriBound_Slave[i][0] - 10.0)); j<(start + ceil(CriBound_Slave[i][1] + 10.0)); ++j){
-
-				if      ( j > lParam2 )  curve.D1(j - period2, pnt0, pnt1);
-				else if ( j < fParam2 )  curve.D1(j + period2, pnt0, pnt1);    
-				else                     curve.D1(j          , pnt0, pnt1);
-
-				Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
-				Pnt1.Normalize();
-				Pnt1Vec.push_back(Pnt1);
-			}
-
-			d2 = 0;
-			
-			for(unsigned int j=0; j<Pnt1Vec.size() - step; ++j){
-				D1_Max[0] = -1e+10; D1_Max[1] = -1e+10; D1_Max[2] = -1e+10;
-				D1_Min[0] =  1e+10; D1_Min[1] =  1e+10; D1_Min[2] =  1e+10;
-
-				for(int k=0; k<step+1; ++k){
-					if(Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-					if(Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-					if(Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-					if(Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-					if(Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-					if(Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-				}
-
-				if( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-				if( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-				if( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-			}
-
-			Pnt1Vec.clear();
-
-			d2 /= 2e-3;
-			velo = (m_amax/d2);
-			if(velo > m_vmax) velo = m_vmax;
-
-			m_v[2] = velo;
-
-			// gerader Bereich
-			length = CriBound_Slave[i][0] - 10.0 - m_StartParam[1] + start;
-			length = GetLength(curve,m_StartParam[1] + start,CriBound_Slave[i][0] - 10.0);
-			MakeSinglePathNew(c,1, length, 0,1);
-			m_t0 = m_T;
-			m_StartParam[1] += length;
-			
-			// gekrümmter Bereich
-			length = CriBound_Slave[i][1] - CriBound_Slave[i][0] + 20.0;
-			MakeSinglePathNew(c,1, length, 1,1);
-			m_t0 = m_T;
-			m_StartParam[1] += length;
-
-			m_v[0] = m_v[2];
-		}
-
-		for(int j= m_StartParam[1]; j< lParam2 + start; ++j){
-
-			if      ( j > lParam2 )  curve.D1(j - period2, pnt0, pnt1);
-			else if ( j < fParam2 )  curve.D1(j + period2, pnt0, pnt1);    
-			else                     curve.D1(j          , pnt0, pnt1);
-
-			Pnt1.x = pnt1.X(); Pnt1.y = pnt1.Y(); Pnt1.z = pnt1.Z();
-			Pnt1.Normalize();
-			Pnt1Vec.push_back(Pnt1);
-		}
-
-		d2 = 0;
-
-		for(unsigned int j=0; j<Pnt1Vec.size() - step; ++j){
-			D1_Max[0] = -1e+10; D1_Max[1] = -1e+10; D1_Max[2] = -1e+10;
-			D1_Min[0] =  1e+10; D1_Min[1] =  1e+10; D1_Min[2] =  1e+10;
-
-			for(int k=0; k<step+1; ++k){
-				if(Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-				if(Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-				if(Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-				if(Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-				if(Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-				if(Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-			}
-
-			if( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-			if( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-			if( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-		}
-
-		Pnt1Vec.clear();
-
-		d2 /= 2e-3;
-		velo = (m_amax/d2);
-		if(velo > m_vmax) velo = m_vmax;
-
-		m_v[1] = velo;
-		m_v[2] = 0.0;
-		m_a = m_amax - (velo*d2/2.0);
-
-		length = lParam2 - m_StartParam[1] + start;
-		MakeSinglePathNew(c,1, length, 0,1);
-		Integrate(1);
-		UpdateParam();
-		Correction(1);
-		Integrate(1);
-
-		CriBound_Slave.clear();
-	}
-
-	// END SLAVE
 
     return true;
 }
@@ -2567,7 +2525,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
     return true;
 }
 
-bool path_simulate::MakeSinglePathNew(int &c, bool brob, double length, bool part, bool type)
+bool path_simulate::MakeSinglePathNew(bool brob, double length, bool part, bool type)
 {
     GeomAdaptor_Curve anAdaptorCurve;
 	double firstParam;
@@ -2813,59 +2771,7 @@ bool path_simulate::MakeSinglePathNew(int &c, bool brob, double length, bool par
 
 bool path_simulate::MakePathRobot()
 {
-    runInd=0;
 	int c=1;
-
-    ofstream anOutputFile;
-    anOutputFile.open("M:/Documents/output.k");
-    anOutputFile.precision(2);
-    anOutputFile.setf(ios::fixed,ios::floatfield);
-
-	m_checka = false;
-
-    for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end()-1; ++m_it1)
-    {
-
-		if(m_checka == false)
-		{
-			ConnectPaths_xy(anOutputFile,c,1);
-			ConnectPaths_z(anOutputFile,c,1);
-		}
-	
-		if(m_checka == true)
-		{ 
-			m_StartParam[0] = 0.0;
-			m_StartParam[1] = 0.0;
-		}
-	
-		MakeSinglePath(anOutputFile,c,1);
-
-        if (m_single==false && (m_it1 != (m_BSplineTop.end()-1)))
-            ++m_it2;
-
-		if(m_checka == true)
-		{
-			m_num--;
-			if(m_num == 0)
-				m_checka = false;
-		}
-
-		runInd++;
-		c++;
-    }
-
-    cout << "writing" << endl;
-    WriteOutput(anOutputFile,c,1);
-    m_Output_robo1.clear();
-    m_Output_robo2.clear();
-
-    return true;
-
-}
-
-bool path_simulate::MakePathSimulate()
-{
-    int c=1;
 	runInd=0;
 
     ofstream anOutputFile;
@@ -3024,6 +2930,195 @@ bool path_simulate::MakePathSimulate()
     anOutputFile2.close();
 
     return true;
+}
+
+bool path_simulate::TimeCorrection()
+{
+	if(m_single == false){
+
+		if(m_Output_time[m_Output_time.size()-1] < m_Output_time2[m_Output_time2.size()-1]){	
+			m_T = m_Output_time2[m_Output_time2.size()-1];
+			
+			int N = ceil((m_Output_time2[m_Output_time2.size()-1] - m_Output_time[m_Output_time.size()-1])/ m_step);		
+			
+			m_del_t = (m_Output_time2[m_Output_time2.size()-1] - m_Output_time[m_Output_time.size()-1])/double(N);		
+			
+			int ind = m_Output_time.size()-1;
+			double time = 0.0;
+			Base::Vector3d vec(0.0,0.0,0.0);
+			std::vector<Base::Vector3d> vecc;
+			vecc.push_back(vec);
+			
+			for(int i=1; i<N; ++i){
+				time += m_del_t;
+				m_Output_time.push_back(m_Output_time[ind] + time);
+				m_Output.push_back(vecc);
+			}
+			
+			m_Output_time.push_back(m_Output_time2[m_Output_time2.size()-1]);
+			m_Output.push_back(vecc);
+		}
+		else if(m_Output_time[m_Output_time.size()-1] > m_Output_time2[m_Output_time2.size()-1]){
+			m_T = m_Output_time[m_Output_time.size()-1];
+			
+			int N = ceil((m_Output_time[m_Output_time.size()-1] - m_Output_time2[m_Output_time2.size()-1])/ m_step);
+			
+			m_del_t = (m_Output_time[m_Output_time.size()-1] - m_Output_time2[m_Output_time2.size()-1])/double(N);
+			
+			int ind = m_Output_time2.size()-1;
+			double time = 0.0;
+
+			Base::Vector3d vec(0.0,0.0,0.0);
+			std::vector<Base::Vector3d> vecc;
+			vecc.push_back(vec);
+
+
+			for(int i=1; i<N; ++i)
+			{
+				time += m_del_t;
+				m_Output_time2.push_back(m_Output_time2[ind] + time);
+				m_Output2.push_back(vecc);
+			}
+
+			m_Output_time2.push_back(m_Output_time[m_Output_time.size()-1]);
+			m_Output2.push_back(vecc);
+		}
+	}
+	else{ return false; }
+
+	return true;
+}
+
+bool path_simulate::MakePathSimulate_Feat()
+{
+    int c=1;
+	runInd=0;
+
+    ofstream anOutputFile;
+	ofstream anOutputFile2;
+
+    anOutputFile.open("output_master.k");
+    anOutputFile.precision(7);
+
+	if(m_single == false){
+		anOutputFile2.open("output_slave.k");
+	    anOutputFile2.precision(7);
+	}
+
+	for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end(); ++m_it1)
+    {
+		m_StartParam[0] = ((*m_it1)->FirstParameter());
+		if(m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
+		
+		
+		/**************************************** ZUSTELLUNG 1 **********************************************/
+		if(CheckConnect())	  ConnectPaths_xy(anOutputFile,c,0);
+		else		          ConnectPaths_z(anOutputFile,c,0);
+			
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+		
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+
+		/**************************************** ZUSTELLUNG 2 **********************************************/
+		if(CheckConnect())	  ConnectPaths_z(anOutputFile,c,0);
+		else		          ConnectPaths_xy(anOutputFile,c,0);
+
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+		
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+		
+		/****************************************** KURVE ***************************************************/
+		CompPath(0); // Master
+	    CompPath(1); // Slave
+		TimeCorrection();
+		
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+
+		if (m_single==false && (m_it1 != (m_BSplineTop.end()-1)))
+            ++m_it2;
+	}
+
+	anOutputFile  << "*END" << endl;  anOutputFile.close();
+	anOutputFile2 << "*END" << endl; anOutputFile2.close();
+
+    return true;
+}
+
+bool path_simulate::MakePathSimulate()
+{
+    int c=1;
+	runInd=0;
+
+    ofstream anOutputFile;
+	ofstream anOutputFile2;
+
+    anOutputFile.open("output_master.k");
+    anOutputFile.precision(7);
+
+	if(m_single == false){
+		anOutputFile2.open("output_slave.k");
+	    anOutputFile2.precision(7);
+	}
+
+	for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end(); ++m_it1)
+    {
+		m_StartParam[0] = ((*m_it1)->FirstParameter());
+		if(m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
+		
+		
+		/**************************************** ZUSTELLUNG 1 **********************************************/
+		if(CheckConnect())	  ConnectPaths_xy(anOutputFile,c,0);
+		else		          ConnectPaths_z(anOutputFile,c,0);
+			
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+		
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+
+		/**************************************** ZUSTELLUNG 2 **********************************************/
+		if(CheckConnect())	  ConnectPaths_z(anOutputFile,c,0);
+		else		          ConnectPaths_xy(anOutputFile,c,0);
+
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+		
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+		
+		/****************************************** KURVE ***************************************************/
+		CompPath(0); // Master
+	    CompPath(1); // Slave
+		TimeCorrection();
+		
+		if(m_single == false) WriteOutputDouble(anOutputFile,anOutputFile2,c,0);
+		else                  WriteOutputSingle(anOutputFile,c,0);
+
+		FillPathTimes();
+		UpdateParam();
+		/****************************************/
+
+		if (m_single==false && (m_it1 != (m_BSplineTop.end()-1)))
+            ++m_it2;
+	}
+
+	anOutputFile  << "*END" << endl;  anOutputFile.close();
+	anOutputFile2 << "*END" << endl; anOutputFile2.close();
+
+    return true;
 
 
        
@@ -3081,6 +3176,24 @@ bool path_simulate::MakePathSimulate()
     anOutputFile.close();
 
     return true;
+}
+bool path_simulate::FillPathTimes()
+{
+	std::pair<float,float> Times;
+
+	if(m_Output_time.size() < 1)
+		throw Base::Exception("no time to push ...");
+
+	if(m_Output_time.size() > 1){
+
+		Times.first  = float(m_Output_time[0]);
+		Times.second = float(m_Output_time[m_Output_time.size()-1]);
+			
+		for(int i=0; i<6; ++i) m_PathTimes.push_back(Times);
+	}
+	else { return false; }
+	
+	return true;
 }
 
 bool path_simulate::WriteOutput(ofstream &anOutputFile, int &c, bool brob)
@@ -3342,7 +3455,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-			anOutputFile2 << "2,1,0," << c <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
+			anOutputFile2 << "3,1,0," << c+1 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
 			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c << std::endl;
 
 			for (int i=0; i<n2; ++i)
@@ -3356,7 +3469,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-			anOutputFile << "2,2,0," << c+1 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+			anOutputFile << "2,2,0," << c+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
 			anOutputFile << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
 
 			for (int i=0; i<n; ++i)
@@ -3370,7 +3483,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-			anOutputFile2 << "2,2,0," << c+1 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
+			anOutputFile2 << "3,2,0," << c+3 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
 			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
 
 			for (int i=0; i<n2; ++i)
@@ -3384,7 +3497,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-			anOutputFile << "2,3,0," << c+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+			anOutputFile << "2,3,0," << c+4 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
 			anOutputFile << "*DEFINE_CURVE" << std::endl << c+2 <<  std::endl;
 
 			for (int i=0; i<n; ++i)
@@ -3398,7 +3511,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-			anOutputFile2 << "2,3,0," << c+2 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
+			anOutputFile2 << "3,3,0," << c+5 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
 			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+2 << std::endl;
 
 			for (int i=0; i<n2; ++i)
@@ -3408,7 +3521,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << m_Output_time2[n2-1] - m_Output_time2[0] + 0.1 << "," << m_Output2[n2-1][0].z << std::endl;
 
-			c += 3;
+			c += 6;
 		}
     }
     else  // to do ..
