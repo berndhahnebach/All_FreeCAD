@@ -670,13 +670,11 @@ bool Application::activateWorkbench(const char* name)
                 pos = rx.indexIn(msg);
             }
 
-            Base::Console().Error("The workbench %s couldn't be loaded due to following error:%s\n",
-                                  name, (const char*)msg.toAscii());
+            Base::Console().Error("%s\n", (const char*)msg.toAscii());
             if (!d->_bStartingUp) {
                 wc.restoreCursor();
-                QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
-                    QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").
-                    arg(name).arg(msg));
+                QMessageBox::critical(getMainWindow(), QObject::tr("Workbench failure"), 
+                    QObject::tr("%1").arg(msg));
                 wc.setWaitCursor();
             }
         }
