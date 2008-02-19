@@ -666,6 +666,7 @@ void PythonCommand::activated(int iMsg)
 bool PythonCommand::isActive(void)
 {
     try {
+        Base::PyGILStateLocker lock;
         Py::Object cmd(_pcPyCommand);
         if (cmd.hasAttr("IsActive")) {
             Py::Callable call(cmd.getAttr("IsActive"));
