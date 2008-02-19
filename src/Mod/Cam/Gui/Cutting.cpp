@@ -247,6 +247,9 @@ void Cutting::on_CalculateSpiralBased_clicked()
     CalculateZLevel->setEnabled(false);
     CalculateFeatureBased->setEnabled(false);
 
+	m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
+    if(m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas()))
+        adaptdynainput->setEnabled(true);
 }
 
 void Cutting::on_select_shape_z_level_button_clicked()

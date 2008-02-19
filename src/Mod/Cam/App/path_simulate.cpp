@@ -2989,8 +2989,9 @@ bool path_simulate::TimeCorrection()
 	return true;
 }
 
-bool path_simulate::MakePathSimulate_Feat()
+bool path_simulate::MakePathSimulate_Feat(std::vector<float> flatAreas)
 {
+
     int c=1;
 	runInd=0;
 
@@ -3005,8 +3006,11 @@ bool path_simulate::MakePathSimulate_Feat()
 	    anOutputFile2.precision(7);
 	}
 
-	for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end(); ++m_it1)
+	float delta_z;
+	for (int i=0; i<flatAreas.size()-1; ++i)
     {
+		delta_z = flatAreas[i+1]-flatAreas[i];
+
 		m_StartParam[0] = ((*m_it1)->FirstParameter());
 		if(m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
 		
@@ -3456,7 +3460,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
 			anOutputFile2 << "3,1,0," << c+1 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c << std::endl;
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
 
 			for (int i=0; i<n2; ++i)
 			{
@@ -3470,7 +3474,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
 			anOutputFile << "2,2,0," << c+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
-			anOutputFile << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
+			anOutputFile << "*DEFINE_CURVE" << std::endl << c+2 << std::endl;
 
 			for (int i=0; i<n; ++i)
 			{
@@ -3484,7 +3488,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
 			anOutputFile2 << "3,2,0," << c+3 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+3 << std::endl;
 
 			for (int i=0; i<n2; ++i)
 			{
@@ -3498,7 +3502,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
 			anOutputFile << "2,3,0," << c+4 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
-			anOutputFile << "*DEFINE_CURVE" << std::endl << c+2 <<  std::endl;
+			anOutputFile << "*DEFINE_CURVE" << std::endl << c+4 <<  std::endl;
 
 			for (int i=0; i<n; ++i)
 			{
@@ -3512,7 +3516,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
 			anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
 			anOutputFile2 << "3,3,0," << c+5 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+2 << std::endl;
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c+5 << std::endl;
 
 			for (int i=0; i<n2; ++i)
 			{

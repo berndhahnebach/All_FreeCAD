@@ -76,7 +76,7 @@ public:
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
 	bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
     bool MakePathSimulate();
-	bool MakePathSimulate_Feat();
+	bool MakePathSimulate_Feat(std::vector<float> flatAreas);
     bool MakePathRobot();
 	bool Integrate(bool b);
 	bool Correction(bool b);
