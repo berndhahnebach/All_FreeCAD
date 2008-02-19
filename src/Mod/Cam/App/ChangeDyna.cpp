@@ -26,6 +26,10 @@
 #include "ChangeDyna.h"
 #include <sstream>
 
+ChangeDyna::ChangeDyna(const std::vector<std::pair<float,float> >* properTimes)
+{
+    m_ProperTime = properTimes;
+}
 bool ChangeDyna::Read( const std::string & _filename)
 {
     // open file for reading
@@ -85,15 +89,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     astream1.str(line.substr(10,5));
                     astream1 >> current_index;
                     //Exchange the Death time. We need a vector of pairs (birth,death)
-                    //Clear the current Stream;
-                    //temp_stream << times.at(current_index)
-                    //Exchange the Death time. We need a vector of pairs (birth,death)
-                    //Clear the current Stream;
-                    //temp_stream << times.at(current_index)
-                    //temp_stream.clear();
-                    //To test we set the death time to
-                    double temp_ = 130.1366;
-                    astream2 << temp_;
+                    astream2 << m_ProperTime->at(current_index-2).second;
                     //Now we have to reformat the string to fit exactly 9 digits
                     try
                     {
@@ -103,14 +99,15 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     catch (out_of_range)
                     {
                         output << line << endl;
+                        return false;
                     }
 
                     continue;
                 }
                 else //we are at the second line and can exchange the Birth-Time
                 {
-                    double temp_ = 130.106;
-                    astream2 << temp_;
+                    
+                    astream2 << m_ProperTime->at(current_index-2).first;
                     try
                     {
                         ReformatStream(astream2,subline1);
@@ -119,6 +116,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     catch (out_of_range)
                     {
                         output << line << endl;
+                        return false;
                     }
 
                     continue;

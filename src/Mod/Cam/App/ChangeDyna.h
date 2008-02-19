@@ -29,12 +29,13 @@
 class AppCamExport ChangeDyna
 {
 public:
-    // ChangeDyna();
+    ChangeDyna(const std::vector<std::pair<float,float> >* properTimes);
     bool Read(const std::string &filename);
     // ~ChangeDyna();
 private:
     bool ReformatStream(const std::stringstream& astream, std::string& astring);
     bool ReadCurve(std::ifstream &input,std::ofstream &output);
+    const std::vector<std::pair<float,float> >* m_ProperTime;
 
 };
 #endif
