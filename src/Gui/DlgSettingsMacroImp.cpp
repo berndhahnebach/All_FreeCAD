@@ -36,12 +36,11 @@ using namespace Gui::Dialog;
 DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent )
   : PreferencePage( parent )
 {
-  this->setupUi(this);
-  if ( MacroPath->fileName().isEmpty() )
-  {
-    QDir d(App::GetApplication().GetHomePath());
-    MacroPath->setFileName( d.path() );
-  }
+    this->setupUi(this);
+    if (MacroPath->fileName().isEmpty()) {
+        QDir d(App::GetApplication().GetHomePath());
+        MacroPath->setFileName( d.path() );
+    }
 }
 
 /** 
@@ -49,27 +48,27 @@ DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent )
  */
 DlgSettingsMacroImp::~DlgSettingsMacroImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 void DlgSettingsMacroImp::saveSettings()
 {
-  MacroPath->onSave();
-  PrefCheckBox_RecordGui->onSave();
-  PrefCheckBox_GuiAsComment->onSave();
-  PConsoleCheckBox->onSave();
-  FileLogCheckBox->onSave();
-  MacroPath_2->onSave();
+    MacroPath->onSave();
+    PrefCheckBox_RecordGui->onSave();
+    PrefCheckBox_GuiAsComment->onSave();
+    PConsoleCheckBox->onSave();
+    FileLogCheckBox->onSave();
+    MacroPath_2->onSave();
 }
 
 void DlgSettingsMacroImp::loadSettings()
 {
-  MacroPath->onRestore();
-  PrefCheckBox_RecordGui->onRestore();
-  PrefCheckBox_GuiAsComment->onRestore();
-  PConsoleCheckBox->onRestore();
-  FileLogCheckBox->onRestore();
-  MacroPath_2->onRestore();
+    MacroPath->onRestore();
+    PrefCheckBox_RecordGui->onRestore();
+    PrefCheckBox_GuiAsComment->onRestore();
+    PConsoleCheckBox->onRestore();
+    FileLogCheckBox->onRestore();
+    MacroPath_2->onRestore();
 }
 
 /**
@@ -77,11 +76,12 @@ void DlgSettingsMacroImp::loadSettings()
  */
 void DlgSettingsMacroImp::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi(this);
-  } else {
-    QWidget::changeEvent(e);
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
 }
 
 #include "moc_DlgSettingsMacroImp.cpp"

@@ -35,16 +35,17 @@ namespace RaytracingGui {
  * \author Jürgen Riegel
  */
 class DlgSettingsRayImp : public Gui::Dialog::PreferencePage, public Ui_DlgSettingsRay
-{ 
-  Q_OBJECT
+{
+    Q_OBJECT
 
 public:
-  DlgSettingsRayImp( QWidget* parent = 0 );
-  ~DlgSettingsRayImp();
+    DlgSettingsRayImp( QWidget* parent = 0 );
+    ~DlgSettingsRayImp();
 
 protected:
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
+    void changeEvent(QEvent *e);
 };
 
 } // namespace RaytracingGui

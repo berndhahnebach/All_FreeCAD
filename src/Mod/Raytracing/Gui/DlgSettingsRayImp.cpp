@@ -36,7 +36,7 @@ using namespace RaytracingGui;
 DlgSettingsRayImp::DlgSettingsRayImp( QWidget* parent )
   : PreferencePage( parent )
 {
-  this->setupUi(this);
+    this->setupUi(this);
 }
 
 /** 
@@ -44,28 +44,40 @@ DlgSettingsRayImp::DlgSettingsRayImp( QWidget* parent )
  */
 DlgSettingsRayImp::~DlgSettingsRayImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
-
 
 void DlgSettingsRayImp::saveSettings()
 {
-  prefFileChooser1->onSave();
-  prefLineEdit2->onSave();
-  prefLineEdit3->onSave();
-  prefFloatSpinBox1->onSave();
-  prefCheckBox8->onSave();
-  prefCheckBox9->onSave();
+    prefFileChooser1->onSave();
+    prefLineEdit2->onSave();
+    prefLineEdit3->onSave();
+    prefFloatSpinBox1->onSave();
+    prefCheckBox8->onSave();
+    prefCheckBox9->onSave();
 }
 
 void DlgSettingsRayImp::loadSettings()
 {
-  prefFileChooser1->onRestore();
-  prefLineEdit2->onRestore();
-  prefLineEdit3->onRestore();
-  prefFloatSpinBox1->onRestore();
-  prefCheckBox8->onRestore();
-  prefCheckBox9->onRestore();
+    prefFileChooser1->onRestore();
+    prefLineEdit2->onRestore();
+    prefLineEdit3->onRestore();
+    prefFloatSpinBox1->onRestore();
+    prefCheckBox8->onRestore();
+    prefCheckBox9->onRestore();
+}
+
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettingsRayImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
 }
 
 #include "moc_DlgSettingsRayImp.cpp"
