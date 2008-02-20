@@ -106,7 +106,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                 }
                 else //we are at the second line and can exchange the Birth-Time
                 {
-                    
+
                     astream2 << m_ProperTime->at(current_index-2).first;
                     try
                     {

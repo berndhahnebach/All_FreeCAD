@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>          					   *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                  *
  *   Human Rezai <Human@web.de>                                            *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -135,14 +135,14 @@ public:
                               std::vector<unsigned long> &nei,
                               unsigned long CurInd);
 
-	bool FacetRegionGrowing(MeshCore::MeshKernel &mesh, 
-		                    std::vector<MeshCore::MeshFacet> &arr, 
-							MeshCore::MeshFacetArray &mFacets);
+    bool FacetRegionGrowing(MeshCore::MeshKernel &mesh,
+                            std::vector<MeshCore::MeshFacet> &arr,
+                            MeshCore::MeshFacetArray &mFacets);
 
-	bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
-	std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
-	MeshCore::MeshKernel m_Mesh;
-	MeshCore::MeshKernel m_CadMesh;
+    bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
+    std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
+    MeshCore::MeshKernel m_Mesh;
+    MeshCore::MeshKernel m_CadMesh;
 
 private:
     bool TransferFaceTriangulationtoFreeCAD(const TopoDS_Face& aFace, MeshCore::MeshKernel& TFaceMesh);
@@ -151,12 +151,12 @@ private:
     std::vector<double> m_CurvNeg;
     std::vector<double> m_CurvMax;
     std::vector<EdgeStruct> m_EdgeStruct;
-	std::vector<unsigned long> m_RingVector;
-	std::vector< std::vector<unsigned long> > m_RegionVector;
-	std::vector< std::vector<unsigned long> > m_Regions;
-	std::vector<MeshCore::MeshFacet> m_RegionBounds;
+    std::vector<unsigned long> m_RingVector;
+    std::vector< std::vector<unsigned long> > m_RegionVector;
+    std::vector< std::vector<unsigned long> > m_Regions;
+    std::vector<MeshCore::MeshFacet> m_RegionBounds;
 
-	int m_RingCurrent;
+    int m_RingCurrent;
 private:
     MeshCore::MeshKernel MeshRef;
     MeshCore::MeshKernel m_Mesh2Fit;
