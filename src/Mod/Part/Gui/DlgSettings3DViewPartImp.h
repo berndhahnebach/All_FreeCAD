@@ -45,6 +45,7 @@ public:
 protected:
     void saveSettings();
     void loadSettings();
+    void changeEvent(QEvent *e);
 };
 
 } // namespace Gui

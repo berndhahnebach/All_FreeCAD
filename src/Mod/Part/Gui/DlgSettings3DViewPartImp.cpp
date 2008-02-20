@@ -85,4 +85,17 @@ void DlgSettings3DViewPartImp::loadSettings()
     prefCheckBox3->onRestore();
 }
 
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettings3DViewPartImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
+}
+
 #include "moc_DlgSettings3DViewPartImp.cpp"
