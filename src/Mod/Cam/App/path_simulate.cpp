@@ -73,7 +73,7 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
 							 const std::vector<Handle_Geom_BSplineCurve> &BSplineBottom,
                              double a, double v)
         :m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_amax(0.85*a),m_vmax(0.85*v),m_a1(0.85*a),m_a2(0.85*a),
-		 m_v1(0.85*v),m_v2(0.85*v),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000),
+		 m_v1(0.85*v),m_v2(0.85*v),m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000),m_blech(1.0), m_stress(1.0),
 		 m_SingleTop(false),m_SingleBot(false)
 {
     m_single=false;
@@ -120,10 +120,7 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
     m_StartParam.push_back((*m_it1)->FirstParameter());
     m_StartParam.push_back((*m_it2)->FirstParameter());
 
-    m_toolrad = 10.0;
-    m_stress = 1.0;
-
-    q.SetZ(m_StartPnts2[0].Z() - (m_toolrad + m_stress));
+    q.SetZ(m_StartPnts2[0].Z() - (5.0 - m_blech + m_stress));
     m_StartPnts2[0] = q;
 
 	m_c1.push_back(m_a1/2);
@@ -1368,8 +1365,14 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
         vec_11.SetX(vec_1.X());  // master zustellung in XY-Richtung
         vec_11.SetY(vec_1.Y());
 
-		vec_21.SetX(0.0);
-		vec_21.SetY(vec_2.Z());  // slave zustellung in Z-Richtung
+		if(m_it1 == m_BSplineTop.begin() && m_it2 == m_BSplineBottom.begin()){
+			vec_21.SetX(vec_2.X());
+			vec_21.SetY(vec_2.Y());
+		}
+		else{
+			vec_21.SetX(0.0);
+			vec_21.SetY(vec_2.Z());  // slave zustellung in Z-Richtung
+		}
 
         if (brob == false)
         {
@@ -1444,39 +1447,60 @@ bool path_simulate::ConnectPaths_xy(ofstream &anOutputFile, int &c, bool brob)
         }
         else
         {
-
-			if(vec_11.Magnitude() == 0.0)
-				N = 0;
-			else{
-				if(vec_11.Magnitude() < TolDist) N=1;
-				else N = int(ceil(vec_11.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */
-				
-			}
-
 			bool con = false;
 
+			if(vec_11.Magnitude() > vec_21.Magnitude()){
+				if(vec_21.Magnitude() < TolDist + 1.0) N=2;
+				else                                   N = int(ceil(vec_21.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */
+			}
+			else{
+				if(vec_11.Magnitude() < TolDist + 1.0) N=2;
+				else                                   N = int(ceil(vec_11.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */	
+			}
+
+			if(N<2) throw Base::Exception("attention - division by zero ... ");
+
+			if(vec_11.Magnitude() == 0.0 && vec_21.Magnitude() == 0.0) N=0;
 			if(CheckConnect() == false) con = true;
 
-            for (int i=0; i<N; ++i)
+			
+			if(m_it1 == m_BSplineTop.begin() && m_it2 == m_BSplineBottom.begin()){
+				tmp.x = m_StartPnts1[0].X();
+				tmp.y = m_StartPnts1[0].Y();
+				tmp.z = m_StartPnts1[0].Z();
+				m_Output_robo1.push_back(tmp);
+				RoboFlag.push_back(0);
+				
+				tmp.x = m_StartPnts2[0].X();
+				tmp.y = m_StartPnts2[0].Y();
+				tmp.z = m_StartPnts2[0].Z();
+				m_Output_robo2.push_back(tmp);
+				}
+
+			// MASTER
+            for (int i=1; i<N; ++i)
             {
-                tmp.x = m_StartPnts1[0].X() + (double(i)*vec_11.X())/double(N);
-                tmp.y = m_StartPnts1[0].Y() + (double(i)*vec_11.Y())/double(N);
+                tmp.x = m_StartPnts1[0].X() + (double(i)*vec_11.X())/double(N-1);
+                tmp.y = m_StartPnts1[0].Y() + (double(i)*vec_11.Y())/double(N-1);
                 tmp.z = m_StartPnts1[con].Z();
 
                 m_Output_robo1.push_back(tmp);
 				RoboFlag.push_back(0);
             }
 
-            for (int i=0; i<N; ++i)
+			// SLAVE
+            for (int i=1; i<N; ++i)
             {
-                //tmp.x = m_StartPnts2[0].X() + (i*vec_21.X())/N;
-                //tmp.y = m_StartPnts2[0].Y() + (i*vec_21.Y())/N;
-                //tmp.z = m_StartPnts2[0].Z();
-
-				tmp.x = m_StartPnts2[con].X();
-                tmp.y = m_StartPnts2[con].Y();
-                tmp.z = m_StartPnts2[0].Z() + (double(i)*vec_21.Y())/double(N);
-
+				if(m_it1 == m_BSplineTop.begin() && m_it2 == m_BSplineBottom.begin()){
+					tmp.x = m_StartPnts2[0].X() + (double(i)*vec_21.X())/double(N-1);
+					tmp.y = m_StartPnts2[0].Y() + (double(i)*vec_21.Y())/double(N-1);
+					tmp.z = m_StartPnts2[0].Z();
+				}
+				else{
+					tmp.x = m_StartPnts2[con].X();
+					tmp.y = m_StartPnts2[con].Y();
+					tmp.z = m_StartPnts2[0].Z() + (double(i)*vec_21.Y())/double(N-1);
+				}
                 m_Output_robo2.push_back(tmp);
             }
         }
@@ -1566,11 +1590,15 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
 
         vec_11.SetX(0.0);
         vec_11.SetY(vec_1.Z());
-        //vec_12.SetX(0.0);
-        //vec_12.SetY(vec_2.Z());
 
-		vec_12.SetX(vec_2.X());
-		vec_12.SetY(vec_2.Y());
+		if(m_it1 == m_BSplineTop.begin() && m_it2 == m_BSplineBottom.begin()){
+			vec_12.SetX(0.0);
+			vec_12.SetY(vec_2.Z());
+		}
+		else{
+			vec_12.SetX(vec_2.X());
+			vec_12.SetY(vec_2.Y());			
+		}
 
         if (brob == false)
         {
@@ -1631,30 +1659,42 @@ bool path_simulate::ConnectPaths_z(ofstream &anOutputFile, int &c, bool brob)
         }
         else
         {
-			if(vec_11.Magnitude() == 0.0)
-				N = 0;
+			bool con = false;
+			
+			if(vec_11.Magnitude() > vec_12.Magnitude()){
+				if(vec_12.Magnitude() < TolDist + 1.0) N=2;
+				else                                   N = int(ceil(vec_12.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */
+			}
 			else{
-				if(vec_11.Magnitude() < TolDist) N=1;
-				else N = ceil(vec_11.Magnitude()/TolDist);  /* anzahl der zu erzeugenden Outputwerte */
+				if(vec_11.Magnitude() < TolDist + 1.0) N=2;
+				else                                   N = int(ceil(vec_11.Magnitude()/TolDist));  /* anzahl der zu erzeugenden Outputwerte */	
 			}
 
-			bool con = false;
+			if(N<2)
+				throw Base::Exception("attention - division by zero...");
 
-			if(CheckConnect() == true)
-				con = true;
+			if(vec_11.Magnitude() == 0.0 && vec_12.Magnitude() == 0.0) N=0;	
+			if(CheckConnect() == true) con = true;
 
-            for (int i=0; i<N; ++i)
+            for (int i=1; i<N; ++i)
             {
                 tmp.x = m_StartPnts1[con].X();
                 tmp.y = m_StartPnts1[con].Y();
-                tmp.z = m_StartPnts1[0].Z() + (double(i)*vec_11.Y())/double(N);
+                tmp.z = m_StartPnts1[0].Z() + (double(i)*vec_11.Y())/double(N-1);
 
                 m_Output_robo1.push_back(tmp);
 				RoboFlag.push_back(0);
 
-				tmp.x = m_StartPnts2[0].X() + (double(i)*vec_12.X())/double(N);
-                tmp.y = m_StartPnts2[0].Y() + (double(i)*vec_12.Y())/double(N);
-                tmp.z = m_StartPnts2[con].Z();
+				if(m_it1 == m_BSplineTop.begin() && m_it2 == m_BSplineBottom.begin()){
+					tmp.x = m_StartPnts2[1].X();
+					tmp.y = m_StartPnts2[1].Y();
+					tmp.z = m_StartPnts2[0].Z() + (double(i)*vec_12.Y())/double(N-1);					
+				}
+				else{
+					tmp.x = m_StartPnts2[0].X() + (double(i)*vec_12.X())/double(N-1);
+					tmp.y = m_StartPnts2[0].Y() + (double(i)*vec_12.Y())/double(N-1);
+					tmp.z = m_StartPnts2[con].Z();
+				}
 
                 m_Output_robo2.push_back(tmp);
             }
@@ -2194,7 +2234,7 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
     {
         b = true;
         anAdaptorCurve2.Load(*m_it2);
-		w2 = anAdaptorCurve2.LastParameter();//GetLength(anAdaptorCurve2, anAdaptorCurve2.FirstParameter(), anAdaptorCurve2.LastParameter());
+		w2 = GetLength(anAdaptorCurve2, anAdaptorCurve2.FirstParameter(), anAdaptorCurve2.LastParameter());
 
         ParameterCalculation(w1,w2);
 
@@ -2412,24 +2452,21 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
         else
         {
 
-
 			if(w1<w2) N = ceil(w1 / double(TolDist));
 			else      N = ceil(w2 / double(TolDist));
 
-            for (int i=0; i<N; ++i)
+			if(N<2)
+				throw Base::Exception("thats new ...");
+
+            for (int i=1; i<N; ++i)  // niemals den ersten punkt mitnehmen
             {
-				if (     m_StartParam[0] + double(i)*w1/(double(N)-1) > lastParam1 )
-				{
-					anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1) - period1, tmp);
+				if(m_StartParam[0] + double(i)*w1/(double(N)-1.0) > lastParam1){
+					anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1.0) - period1, tmp);
 				}
-				else if( m_StartParam[0] + double(i)*w1/(double(N)-1) < firstParam1 )
-				{
-					anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1) + period1, tmp);
+				else if(m_StartParam[0] + double(i)*w1/(double(N)-1) < firstParam1 ){
+					anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1.0) + period1, tmp);
 				}
-				else
-				{
-					anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1),           tmp);
-				}
+				else{anAdaptorCurve.D0(m_StartParam[0] + double(i)*w1/(double(N)-1.0), tmp);}
 
                 tmp2.x = tmp.X();
                 tmp2.y = tmp.Y();
@@ -2439,20 +2476,18 @@ bool path_simulate::MakeSinglePath(ofstream &anOutputFile, int &c, bool brob)
 				if(i==0 && (m_it1 != m_BSplineTop.begin())) RoboFlag.push_back(1);
 				else                                        RoboFlag.push_back(0);
 
-				if ( m_StartParam[1] + double(i)*w2/(double(N)-1) > lastParam2 )
-					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1) - period2, tmp);
-				else if ( m_StartParam[1] + double(i)*w2/(double(N)-1) < firstParam2 )
-					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1) + period2, tmp);
+				if ( m_StartParam[1] + double(i)*w2/(double(N)-1.0) > lastParam2 )
+					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1.0) - period2, tmp);
+				else if ( m_StartParam[1] + double(i)*w2/(double(N)-1.0) < firstParam2 )
+					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1.0) + period2, tmp);
 				else
-					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1), tmp);
-
+					anAdaptorCurve2.D0(m_StartParam[1] + double(i)*w2/(double(N)-1.0), tmp);
 
                 tmp2.x = tmp.X();
                 tmp2.y = tmp.Y();
                 tmp2.z = tmp.Z();
 
                 m_Output_robo2.push_back(tmp2);
-
             }
         }
     }

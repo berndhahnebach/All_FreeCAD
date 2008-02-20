@@ -119,6 +119,7 @@ private:
     ofstream m_anOutputFile;
     double m_toolrad;
     double m_stress;
+	float m_blech;
     int  m_clip;
     int  m_NumPaths;
     bool m_single;
