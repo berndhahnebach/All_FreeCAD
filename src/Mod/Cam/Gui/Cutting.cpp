@@ -60,7 +60,7 @@
 using namespace CamGui;
 
 Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
-        :QDialog(parent,fl),m_Process(NULL)
+        :QDialog(parent,fl),m_Process(NULL),m_PathSimulate(NULL),m_CuttingAlgo(NULL)
 {
     this->setupUi(this);
     m_timer= false;
@@ -96,7 +96,7 @@ void Cutting::on_adaptdynainput_clicked()
     QString filename, path, program;
     QStringList arguments;
     filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
-    if(filename.isNull())
+    if (filename.isNull())
         return;
     QFileInfo aFileInfo(filename);
     path = aFileInfo.absolutePath();
@@ -120,7 +120,7 @@ void Cutting::on_adaptdynainput_clicked()
                                  tr("Structured-Dyna gut erzeugt\n"),
                                  QMessageBox::Ok);
         ChangeDyna aFileChanger(m_PathSimulate->getPathTimes());
-        if(aFileChanger.Read("dyna.str"))
+        if (aFileChanger.Read("dyna.str"))
             start_simulation->show();
     }
 }
@@ -349,17 +349,32 @@ void Cutting::on_GenSimOut_clicked()
     QString filename, path, program;
     QStringList arguments;
     filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
-    if(filename.isNull())
+    if (filename.isNull())
         return;
     QFileInfo aFileInfo(filename);
     path = aFileInfo.absolutePath();
     QDir::setCurrent(path);
     m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
-    if(m_PathSimulate->MakePathSimulate())
+    if (m_PathSimulate->MakePathSimulate())
         adaptdynainput->setEnabled(true);
 
 }
 
+void Cutting::on_GenRobotOut_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Select File Output-Directory"),"d:/",
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+    QDir::setCurrent(dir);
+    if(!m_PathSimulate == NULL)
+        m_PathSimulate->MakePathRobot();
+    else 
+    {
+       m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
+       m_PathSimulate->MakePathRobot();
+    }
+
+}
 void Cutting::DisplayCAMOutput()
 {
     BRep_Builder BB;

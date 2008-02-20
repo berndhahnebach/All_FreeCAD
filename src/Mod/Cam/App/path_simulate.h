@@ -70,7 +70,7 @@ public:
     bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
     bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
     bool UpdateParam();
-    bool WriteOutput(ofstream &m_anOutputFile, int &c, bool outputstyle);
+    bool WriteOutput(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle);
 	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle);
 	bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c, bool outputstyle);
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);

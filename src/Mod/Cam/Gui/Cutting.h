@@ -55,6 +55,7 @@ protected Q_SLOTS:
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
     void on_GenSimOut_clicked();
+    void on_GenRobotOut_clicked();
     void on_adaptdynainput_clicked();
     void on_start_simulation_clicked();
     void selectShape();
