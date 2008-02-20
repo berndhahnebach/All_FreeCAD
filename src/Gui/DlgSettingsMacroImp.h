@@ -36,18 +36,18 @@ namespace Dialog {
  * \author Jürgen Riegel
  */
 class DlgSettingsMacroImp : public PreferencePage, public Ui_DlgSettingsMacro
-{ 
-  Q_OBJECT
+{
+    Q_OBJECT
 
 public:
-  DlgSettingsMacroImp( QWidget* parent = 0 );
-  ~DlgSettingsMacroImp();
+    DlgSettingsMacroImp( QWidget* parent = 0 );
+    ~DlgSettingsMacroImp();
 
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 };
 
 } // namespace Dialog
