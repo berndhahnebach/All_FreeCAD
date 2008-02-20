@@ -39,7 +39,7 @@ using namespace Gui::Dialog;
 DlgReportViewImp::DlgReportViewImp( QWidget* parent )
   : PreferencePage(parent)
 {
-  this->setupUi(this);
+    this->setupUi(this);
 }
 
 /** 
@@ -51,24 +51,24 @@ DlgReportViewImp::~DlgReportViewImp()
 
 void DlgReportViewImp::saveSettings()
 {
-  checkLogging->onSave();
-  checkWarning->onSave();
-  checkError->onSave();
-  colorText->onSave();
-  colorLogging->onSave();
-  colorWarning->onSave();
-  colorError->onSave();
+    checkLogging->onSave();
+    checkWarning->onSave();
+    checkError->onSave();
+    colorText->onSave();
+    colorLogging->onSave();
+    colorWarning->onSave();
+    colorError->onSave();
 }
 
 void DlgReportViewImp::loadSettings()
 {
-  checkLogging->onRestore();
-  checkWarning->onRestore();
-  checkError->onRestore();
-  colorText->onRestore();
-  colorLogging->onRestore();
-  colorWarning->onRestore();
-  colorError->onRestore();
+    checkLogging->onRestore();
+    checkWarning->onRestore();
+    checkError->onRestore();
+    colorText->onRestore();
+    colorLogging->onRestore();
+    colorWarning->onRestore();
+    colorError->onRestore();
 }
 
 /**
@@ -76,10 +76,11 @@ void DlgReportViewImp::loadSettings()
  */
 void DlgReportViewImp::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi(this);
-  } else {
-    QWidget::changeEvent(e);
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
 }
 

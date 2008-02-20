@@ -141,9 +141,9 @@ QStringList Translator::supportedLanguages() const
 void Translator::activateLanguage (const QString& lang)
 {
     removeTranslators(); // remove the currently installed translators
+    this->activatedLanguage = lang;
     QStringList languages = supportedLanguages();
     if (languages.contains(lang)) {
-        this->activatedLanguage = lang;
         QMap<QString, QString>::Iterator tld = mapLanguageTopLevelDomain.find(lang);
         QString filter = QString("*_%1.qm").arg(tld.value());
         QDir dir(":/translations");

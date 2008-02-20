@@ -37,14 +37,14 @@ namespace Dialog {
 class DlgReportViewImp : public PreferencePage, public Ui_DlgReportView
 {
 public:
-  DlgReportViewImp( QWidget* parent = 0 );
-  ~DlgReportViewImp();
+    DlgReportViewImp( QWidget* parent = 0 );
+    ~DlgReportViewImp();
 
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 };
 
 } // namespace Dialog
