@@ -34,6 +34,7 @@
 # include <GL/gl.h>
 # endif
 # include <Inventor/SbBox.h>
+# include <Inventor/SbTesselator.h>
 # include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoToVRML2Action.h>
@@ -494,6 +495,38 @@ bool View3DInventorViewer::isPicking() const
     return (pcMouseModel ? true : false);
 }
 
+void View3DInventorViewer::tessCB(void * v0, void * v1, void * v2, void * cbdata)
+{
+    int * vtx0 = (int *)v0; 
+    int * vtx1 = (int *)v1; 
+    int * vtx2 = (int *)v2;
+
+    std::vector<int>* array = (std::vector<int> *)cbdata;
+    array->push_back(*vtx0);
+    array->push_back(*vtx1);
+    array->push_back(*vtx2);
+    array->push_back(-1);
+}
+
+std::vector<int> View3DInventorViewer::tessellate(const std::vector<SbVec2f>& polygon) const
+{
+    std::vector<int> indices(polygon.size());
+    std::vector<int> face_indices;
+
+    SbTesselator tessellator(tessCB, &face_indices);
+    tessellator.beginPolygon();
+
+    int index = 0;
+    for (std::vector<SbVec2f>::const_iterator it = polygon.begin(); it != polygon.end(); ++it, index++) {
+        indices[index] = index;
+        tessellator.addVertex(SbVec3f((*it)[0], (*it)[1], 0.0f), &(indices[index]));
+    }
+
+    // run the triangulation now
+    tessellator.endPolygon();
+    return face_indices;
+}
+
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
 {
   bool ret = false;
@@ -793,13 +826,6 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
   // event, we only need this flag to see if any processing happened
   // at all.
   SbBool processed = FALSE;
-
-  // If we are in editing mode then all events must be redirected to the view providers
-  if (this->editing) {
-    std::set<ViewProvider*>::iterator It;
-    for (It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-      processed = (*It)->handleEvent(ev,*this);
-  }
 
   if (processed)
     return TRUE;
@@ -1289,11 +1315,6 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
         pcPolygon.clear();
         delete pcMouseModel; pcMouseModel = 0;
       }
-    }
-    if (!processed) {
-      std::set<ViewProvider*>::iterator It;
-      for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-        processed = (*It)->handleEvent(ev,*this);
     }
   }
 

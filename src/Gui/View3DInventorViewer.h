@@ -104,6 +104,7 @@ public:
   void stopPicking();
   bool isPicking() const;
   const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
+  std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
 
   void setEditing(SbBool edit);
   SbBool isEditing() const { return this->editing; }
@@ -224,6 +225,7 @@ protected:
 private:
   static void selectCB(void * closure, SoPath * p);
   static void deselectCB(void * closure, SoPath * p);
+  static void tessCB(void * v0, void * v1, void * v2, void * cbdata);
 
 private:
   SoSeparator * backgroundroot;

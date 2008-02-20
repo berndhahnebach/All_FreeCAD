@@ -136,6 +136,12 @@ Application::Application()
     "workbenches.");
   Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
 
+  //insert Selection module
+  PyObject* pSelectionModule = Py_InitModule3("Selection", SelectionSingleton::Methods,
+    "Selection module");
+  Py_INCREF(pSelectionModule);
+  PyModule_AddObject(module, "Selection", pSelectionModule);
+
   d = new ApplicationP;
 
   // global access 
