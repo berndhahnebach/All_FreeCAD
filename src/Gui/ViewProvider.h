@@ -77,9 +77,7 @@ public:
     virtual SoSeparator* getBackRoot(void) const {return 0;}
     virtual void select(SoPath*) {}
     virtual void deselect(SoPath*) {}
-    // returns the TreeLabel
     virtual QIcon getIcon(void) const;
-
 
     /** update the content of the ViewProvider
      * this method have to implement the recalcualtion
@@ -94,20 +92,20 @@ public:
     PyObject* getPyObject();
 
 protected:
-  /** @name Display mask modes
-   * Mainly controls an SoSwitch node which selects the display mask modes.
-   * The number of display mask modes doesn't necessarily match with the number of display modes.
-   * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
-   * by one display mask mode that handles color values.
-   */
-  //@{
-  /// Adds a new display mask mode 
-  void addDisplayMaskMode( SoNode *node, const char* type );
-  /// Activates the display mask mode \a type
-  void setDisplayMaskMode( const char* type );
-  /// Returns a list of added display mask modes
-  std::vector<std::string> getDisplayMaskModes() const;
-  //@}
+    /** @name Display mask modes
+     * Mainly controls an SoSwitch node which selects the display mask modes.
+     * The number of display mask modes doesn't necessarily match with the number of display modes.
+     * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
+     * by one display mask mode that handles color values.
+     */
+    //@{
+    /// Adds a new display mask mode 
+    void addDisplayMaskMode( SoNode *node, const char* type );
+    /// Activates the display mask mode \a type
+    void setDisplayMaskMode( const char* type );
+    /// Returns a list of added display mask modes
+    std::vector<std::string> getDisplayMaskModes() const;
+    //@}
 
 public:
     /** @name Display mode methods 
@@ -130,7 +128,6 @@ public:
     virtual bool isShow(void) const;
     //@}
 
-
     /** @name direct handling methods
      *  This group of methods is to direct influence the 
      *  appearence of the viewed content. It's only for fast
@@ -143,16 +140,6 @@ public:
     virtual void setTransformation(const SbMatrix &rcMatrix);
     SbMatrix convert(const Base::Matrix4D &rcMatrix) const;
     //@}
-
-   /** event handling if the feature is in edit mode
-     * The Viewer will cast all left and right mouse 
-     * events to that method. If return true it will
-     * also handled by the viewer (selection & context menue)
-     */
-    virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
-
-    /// freqently called by the framework to check status changes in the data
-    virtual bool testStatus(void){return false;}
 
 protected:
     SoSeparator *pcRoot;

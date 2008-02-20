@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Selection_h__
-#define __Selection_h__
+#ifndef GUI_SELECTION_H
+#define GUI_SELECTION_H
 
 // Std. configurations
 
@@ -58,22 +58,22 @@ namespace Gui
 class GuiExport SelectionChanges
 {
 public:
-  enum MsgType {
-    AddSelection,
-    RmvSelection,
-    ClearSelection,
-    SetPreselect,
-    RmvPreselect
-  };
+        enum MsgType {
+        AddSelection,
+        RmvSelection,
+        ClearSelection,
+        SetPreselect,
+        RmvPreselect
+    };
 
-  MsgType Type;
+    MsgType Type;
 
-  const char* pDocName;
-  const char* pObjectName;
-  const char* pSubName;
-  float x;
-  float y;
-  float z;
+    const char* pDocName;
+    const char* pObjectName;
+    const char* pSubName;
+    float x;
+    float y;
+    float z;
 };
 
 } //namespace Gui
@@ -101,126 +101,126 @@ namespace Gui
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>//, public App::Document::ObserverType
 {
 public:
+    /// Add a selection 
+    bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
+    /// Remove a selection (for internal use)
+    void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
+    /// Clears the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
+    void clearSelection(const char* pDocName=0);
+    /// Clears the selection of all documents
+    void clearCompleteSelection();
+    /// checks if selected
+    bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
+    /// checks if selected
+    bool isSelected(App::DocumentObject*) const;
 
-  /// Add a selection 
-  bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
-  /// Remove a selection (for internal use)
-  void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
-  /// Clears the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
-  void clearSelection(const char* pDocName=0);
-  /// Clears the selection of all documents
-  void clearCompleteSelection();
-  /// checks if selected
-  bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
-  /// checks if selected
-  bool isSelected(App::DocumentObject*) const;
+    bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
+    void rmvPreselect();
 
-  bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
-  void rmvPreselect();
+    /** Returns the number of selected objects with an special Object type
+     * Its the convenient way to check if the right Objects are selected to 
+     * perform an operation (GuiCommand). The checking also detect base type. 
+     * E.g. "Part" also fits on "PartImport" or "PartTransform types.
+     * If no document name is given the active document is assumed.
+     */
+    unsigned int countObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
-  /** Returns the number of selected objects with an special Object type
-   * Its the convenient way to check if the right Objects are selected to 
-   * perform an operation (GuiCommand). The checking also detect base type. 
-   * E.g. "Part" also fits on "PartImport" or "PartTransform types.
-   * If no document name is given the active document is assumed.
-   */
-  unsigned int countObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
+    /**
+     * Does basically the same as the method above unless that it accepts a string literal as first argument.
+     * \a typeName must be a registered type otherwise 0 is returned.
+     */
+    unsigned int countObjectsOfType(const char* typeName, const char* pDocName=0) const;
 
-  /**
-   * Does basically the same as the method above unless that it accepts a string literal as first argument.
-   * \a typeName must be a registered type otherwise 0 is returned.
-   */
-  unsigned int countObjectsOfType(const char* typeName, const char* pDocName=0) const;
+    /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
+     * If no document name is specified the Objects from the active document are regarded.
+     * If no objects of this document are selected an empty vector is returned.
+     * @note The vector reflects the sequence of selection.
+     */
+    std::vector<App::DocumentObject*> getObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
-  /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
-   * If no document name is specified the Objects from the active document are regarded.
-   * If no objects of this document are selected an empty vector is returned.
-   * @note The vector reflects the sequence of selection.
-   */
-  std::vector<App::DocumentObject*> getObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
+    /**
+     * Does basically the same as the method above unless that it accepts a string literal as first argument.
+     * \a typeName must be a registered type otherwise an empty array is returned.
+     */
+    std::vector<App::DocumentObject*> getObjectsOfType(const char* typeName, const char* pDocName=0) const;
 
-  /**
-   * Does basically the same as the method above unless that it accepts a string literal as first argument.
-   * \a typeName must be a registered type otherwise an empty array is returned.
-   */
-  std::vector<App::DocumentObject*> getObjectsOfType(const char* typeName, const char* pDocName=0) const;
+    struct SelObj {
+        const char* DocName;
+        const char* FeatName;
+        const char* SubName;
+        const char* TypeName;
+        App::Document* pDoc;
+        App::DocumentObject*  pObject;
+    };
 
-  struct SelObj {
-    const char* DocName;
-    const char* FeatName;
-    const char* SubName;
-    const char* TypeName;
-    App::Document* pDoc;
-    App::DocumentObject*  pObject;
-  };
+    /** returns a vector of selection objects
+     * if no document name is given the objects of the active are returned.
+     * If nothing for this Document is selected a empty vector is returnd.
+     * The vector reflects the sequence of selection!
+     */
+    std::vector<SelObj> getSelection(const char* pDocName=0) const;
 
-  /** returns a vector of selection objects
-   * if no document name is given the objects of the active are returned.
-   * If nothing for this Document is selected a empty vector is returnd.
-   * The vector reflects the sequence of selection!
-   */
-  std::vector<SelObj> getSelection(const char* pDocName=0) const;
+    /** Returns a vector of all selection objects of all documents. */
+    std::vector<SelObj> getCompleteSelection() const;
 
-  /** Returns a vector of all selection objects of all documents. */
-  std::vector<SelObj> getCompleteSelection() const;
+    /// size of selcted enteties for all docuements
+    unsigned int size(void) const {return _SelList.size();}
 
+    static SelectionSingleton& instance(void);
+    static void destruct (void);
 
-  /// size of selcted enteties for all docuements
-  unsigned int size(void) const {return _SelList.size();}
-
-  static SelectionSingleton& instance(void);
-  static void destruct (void);
+    // Python interface
+    static PyMethodDef    Methods[];
 
 protected:
+    static PyObject *sAddSelection   (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sRemoveSelection(PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sClearSelection (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sIsSelected     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sGetSelection   (PyObject *self,PyObject *args,PyObject *kwd);
 
-  /// Construction
-  SelectionSingleton();
-  /// Destruction
-  virtual ~SelectionSingleton();
+protected:
+    /// Construction
+    SelectionSingleton();
+    /// Destruction
+    virtual ~SelectionSingleton();
 
-  /// Observer message from the App doc
-  void slotRenamedObject(App::DocumentObject&);
-  void slotDeletedObject(App::DocumentObject&);
+    /// Observer message from the App doc
+    void slotRenamedObject(App::DocumentObject&);
+    void slotDeletedObject(App::DocumentObject&);
 
-  /// Observer message from the App doc
-  //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
-
-
-  /// helper to retrieve document by name
-  App::Document* getDocument(const char* pDocName=0) const;
+    /// Observer message from the App doc
+    //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
 
 
-  struct _SelObj {
+    /// helper to retrieve document by name
+    App::Document* getDocument(const char* pDocName=0) const;
+
+    struct _SelObj {
+        std::string DocName;
+        std::string FeatName;
+        std::string SubName;
+        std::string TypeName;
+        App::Document* pDoc;
+        App::DocumentObject*  pObject;
+        float x,y,z;
+    };
+    std::list<_SelObj> _SelList;
+
+    static SelectionSingleton* _pcSingleton;
+
     std::string DocName;
     std::string FeatName;
     std::string SubName;
-    std::string TypeName;
-    App::Document* pDoc;
-    App::DocumentObject*  pObject;
-    float x,y,z;
-  };
-  std::list<_SelObj> _SelList;
-
-  static SelectionSingleton* _pcSingleton;
-
-  std::string DocName;
-  std::string FeatName;
-  std::string SubName;
-  float hx,hy,hz;
-
+    float hx,hy,hz;
 };
-
 
 /// Get the global instance
 inline GuiExport SelectionSingleton& Selection(void)
 {
-  return SelectionSingleton::instance();
+    return SelectionSingleton::instance();
 }
-
-
-
 
 } //namespace Gui
 
-#endif // __FILETEMPLATE_H__
-
+#endif // GUI_SELECTION_H
