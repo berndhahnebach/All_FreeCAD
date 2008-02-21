@@ -495,20 +495,24 @@ ConsoleObserverFile::~ConsoleObserverFile()
 void ConsoleObserverFile::Warning(const char *sWarn)
 {
     cFileStream << "Wrn: " << sWarn;
+    cFileStream.flush();
 }
 void ConsoleObserverFile::Message(const char *sMsg)
 {
     cFileStream << "Msg: " << sMsg;
+    cFileStream.flush();
 }
 
 void ConsoleObserverFile::Error  (const char *sErr)
 {
     cFileStream << "Err: " << sErr;
+    cFileStream.flush();
 }
 
 void ConsoleObserverFile::Log    (const char *sLog)
 {
     cFileStream << "Log: " << sLog;
+    cFileStream.flush();
 }
 
 
@@ -611,8 +615,10 @@ int RedirectStdOutput::overflow(int c)
 int RedirectStdOutput::sync()
 {
     // Print as log as this might be verbose
-    Base::Console().Log("%s", buffer.c_str());
-    buffer.clear();
+    if (!buffer.empty()) {
+        Base::Console().Log("%s", buffer.c_str());
+        buffer.clear();
+    }
     return 0;
 }
 
@@ -630,7 +636,9 @@ int RedirectStdError::overflow(int c)
 
 int RedirectStdError::sync()
 {
-    Base::Console().Error("%s", buffer.c_str());
-    buffer.clear();
+    if (!buffer.empty()) {
+        Base::Console().Error("%s", buffer.c_str());
+        buffer.clear();
+    }
     return 0;
 }
