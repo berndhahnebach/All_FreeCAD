@@ -68,7 +68,9 @@ Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
 
 Cutting::~Cutting()
 {
-
+    delete m_CuttingAlgo;
+    delete m_PathSimulate;
+    delete m_Process;
 }
 
 bool Cutting::getProcessOutput()
@@ -137,6 +139,7 @@ void Cutting::on_start_simulation_clicked()
     connect(m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(getProcessOutput()));
     m_Process->start(program, arguments);
 }
+
 void Cutting::selectShape()
 {
     if (!m_timer)
@@ -221,7 +224,13 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
 void Cutting::on_CalculateZLevel_clicked()
 {
     //Cutting-Klasse instanzieren
+    if(m_CuttingAlgo == NULL)
     m_CuttingAlgo = new cutting_tools(m_Shape);
+    else
+    {
+        delete m_CuttingAlgo;
+        m_CuttingAlgo = new cutting_tools(m_Shape);
+    }
     m_Mode = 1;
     CalculateFeatureBased->setEnabled(false);
     CalculateSpiralBased->setEnabled(false);
@@ -230,8 +239,13 @@ void Cutting::on_CalculateZLevel_clicked()
 
 void Cutting::on_CalculateFeatureBased_clicked()
 {
-    //Cutting-Klasse instanzieren
+    if(m_CuttingAlgo == NULL)
     m_CuttingAlgo = new cutting_tools(m_Shape);
+    else
+    {
+        delete m_CuttingAlgo;
+        m_CuttingAlgo = new cutting_tools(m_Shape);
+    }
     m_Mode = 2;
     toolpath_calculation_highest_level_button->setEnabled(true);
     CalculateZLevel->setEnabled(false);
@@ -240,16 +254,18 @@ void Cutting::on_CalculateFeatureBased_clicked()
 
 void Cutting::on_CalculateSpiralBased_clicked()
 {
-    //Cutting-Klasse instanzieren
+    if(m_CuttingAlgo == NULL)
     m_CuttingAlgo = new cutting_tools(m_Shape);
+    else
+    {
+        delete m_CuttingAlgo;
+        m_CuttingAlgo = new cutting_tools(m_Shape);
+    }
     m_Mode = 3;//
     toolpath_calculation_highest_level_button->setEnabled(true);
     CalculateZLevel->setEnabled(false);
     CalculateFeatureBased->setEnabled(false);
 
-	m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
-    if(m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas()))
-        adaptdynainput->setEnabled(true);
 }
 
 void Cutting::on_select_shape_z_level_button_clicked()
@@ -325,19 +341,32 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
     m_CuttingAlgo->m_UserSettings.max_Vel = max_vel->value();
     m_CuttingAlgo->m_UserSettings.max_Acc = max_acc->value();
+    m_CuttingAlgo->m_UserSettings.spring_pretension = spring_pretension->value();
+    
+    if(!m_CuttingAlgo->arrangecuts_ZLEVEL())
+    {std::cout << "Konnte nicht sauber schneiden" << std::endl;}
 
-    m_CuttingAlgo->arrangecuts_ZLEVEL();
+    bool ok = true; 
     switch (m_Mode)
     {
     case 1:
-        m_CuttingAlgo->OffsetWires_Standard();
+        ok = m_CuttingAlgo->OffsetWires_Standard();
         break;
     case 2:
-        m_CuttingAlgo->OffsetWires_FeatureBased();
+        ok = m_CuttingAlgo->OffsetWires_FeatureBased();
         break;
     case 3:
-        m_CuttingAlgo->OffsetWires_Spiral();
+        ok = m_CuttingAlgo->OffsetWires_Spiral();
         break;
+    }
+    if(!ok)
+    {
+        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
+                              tr("Irgendwas stimmt nicht. Nochmal alles neu versuchen\n"),
+                              QMessageBox::Ok);
+        delete m_CuttingAlgo;
+        m_CuttingAlgo = new cutting_tools(m_Shape);
+        return;
     }
     DisplayCAMOutput();
     GenRobotOut->setEnabled(true);
@@ -346,15 +375,14 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
 
 void Cutting::on_GenSimOut_clicked()
 {
-    QString filename, path, program;
-    QStringList arguments;
-    filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
-    if (filename.isNull())
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Select Simulation-Path Output-Directory"),"d:/",
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+    if (dir.isNull())
         return;
-    QFileInfo aFileInfo(filename);
-    path = aFileInfo.absolutePath();
-    QDir::setCurrent(path);
-    m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
+    QDir::setCurrent(dir);
+    if(m_PathSimulate != NULL) delete m_PathSimulate;//If it exists already
+    m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings);
     if (m_PathSimulate->MakePathSimulate())
         adaptdynainput->setEnabled(true);
 
@@ -366,13 +394,10 @@ void Cutting::on_GenRobotOut_clicked()
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     QDir::setCurrent(dir);
-    if(!m_PathSimulate == NULL)
-        m_PathSimulate->MakePathRobot();
-    else 
-    {
-       m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings.max_Acc,m_CuttingAlgo->m_UserSettings.max_Vel);
-       m_PathSimulate->MakePathRobot();
-    }
+    if(m_PathSimulate != NULL) delete m_PathSimulate;
+      m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings);
+      m_PathSimulate->MakePathRobot();
+    
 
 }
 void Cutting::DisplayCAMOutput()

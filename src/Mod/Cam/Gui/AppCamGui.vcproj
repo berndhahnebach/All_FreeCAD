@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="AppCamGui"
 	ProjectGUID="{071D36BB-65CE-4219-847D-005D2C142D46}"
 	>
@@ -82,6 +82,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui_d.pdb"
+				SubSystem="1"
 				ImportLibrary="../../../../lib/CamGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -181,6 +182,7 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui.pdb"
+				SubSystem="1"
 				ImportLibrary="../../../../lib/CamGui.lib"
 				TargetMachine="1"
 			/>

@@ -28,6 +28,7 @@
 
 
 #include <Base/Vector3D.h>
+#include "cutting_tools.h"
 //#include <Base/Builder3D.h>
 
 #define TolDist 2.0
@@ -39,7 +40,7 @@ public:
     path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplineTop,double a_max=15000.0,double v_max=1000.0);                        /*eine kurve  input*/
     path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplineTop,
                   const std::vector<Handle_Geom_BSplineCurve>& BSplineBottom,
-                  double a_max=20000.0, double v_max=600.0);             /*zwei kurven input*/
+                  struct CuttingToolsSettings& set);  /*zwei kurven input*/
     ~path_simulate();
 
     double GetLength(GeomAdaptor_Curve& acurve, const Standard_Real startParameter,const Standard_Real endParameter);
@@ -53,22 +54,10 @@ public:
 
 	std::vector<std::vector<Base::Vector3d> > GetCriticalPoints(std::vector<double> startParam);
 
-    std::vector<std::vector<Base::Vector3d> > PointEvaluation(double TotaltimeforonePath,
-            unsigned int NumberOfEvalPoints,
-            std::vector<double> startParam,
-            std::vector<std::vector<Base::Vector3d>> &D1);
-
-    std::vector<std::vector<Base::Vector3d> > PointEvaluation(double T,
-            unsigned int N,
-            std::vector<double> startParam,
-            std::vector<std::vector<Base::Vector3d> > &D1,
-            std::vector<std::vector<Base::Vector3d> > &D2);
-
     std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
     std::vector<std::vector<double> > CurvCurvature(const std::vector<std::vector<Base::Vector3d> > &D);
     bool ConnectPaths_xy(ofstream &anOutputFile, int &c, bool outputstyle);
     bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
-    bool OutputPath(std::vector<std::vector<Base::Vector3d> > &D1, std::vector<std::vector<Base::Vector3d> > &D2);
     bool UpdateParam();
     bool WriteOutput(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle);
 	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle);
@@ -118,7 +107,7 @@ private:
     std::vector<Handle_Geom_BSplineCurve>::iterator m_it2;   /* iterator über outer-paths */
     ofstream m_anOutputFile;
     double m_toolrad;
-    double m_stress;
+    double m_pretension;
 	float m_blech;
     int  m_clip;
     int  m_NumPaths;
@@ -135,8 +124,8 @@ private:
 	double m_a;
 	double m_aS;
     double m_v1, m_v2, m_a1, m_a2;
-    std::vector<double> m_c1, m_c2;         /* parameter for the velocity function for the master toolpath ( c_1 )
-                          and the incrementlal die ( c_2 ) */
+    std::vector<double> m_c1, m_c2;  /* parameter for the velocity function for the master toolpath ( c_1 )
+                                        and the incrementlal die ( c_2 ) */
     std::vector<double> m_StartParam;
     double m_t0, m_t1, m_t2, m_T, m_del_t;  /* t_0 - starttime, T - endtime, del_t - timestep */
 
@@ -155,6 +144,7 @@ private:
 	bool CompPath(bool tool);
 
 	std::vector<std::pair<float,float> > m_PathTimes;
+    bool m_conn;
 };
 
 
