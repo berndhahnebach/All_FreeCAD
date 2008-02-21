@@ -95,10 +95,7 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
     m_cad = false;
     m_CAD_Mesh.Clear();
     m_FaceWireMap.clear();
-
     m_MachiningOrder.clear();
-
-
     getShapeBB();
     fillFaceBBoxes();
     classifyShape();
@@ -112,7 +109,7 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
 }
 
 cutting_tools::cutting_tools(TopoDS_Shape aShape)
-        :m_Shape(aShape)
+        :m_Shape(aShape),m_aMeshAlgo(NULL),m_CAD_Mesh_Grid(NULL),m_cad(false),m_pitch(0.0)
 {
     m_ordered_cuts.clear();
     m_all_offset_cuts_high.clear();
@@ -121,6 +118,11 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape)
     m_CAD_Mesh.Clear();
     m_FaceWireMap.clear();
     m_MachiningOrder.clear();
+    getShapeBB();
+    fillFaceBBoxes();
+    classifyShape();
+    //checkFlatLevel();
+    initializeMeshStuff();
 }
 
 cutting_tools::~cutting_tools()
@@ -341,7 +343,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
                 z_level_corrected = z_level;
                 cut(z_level,temp_min, aCutShape,z_level_corrected);
                 if (z_level_corrected != z_level)
-                    cout << "Somehow we couldnt cut";
+                    std::cout << "Somehow we couldnt cut" << std::endl;
                 //Jetzt nur das gewünschte Resultat in den vector schieben (von oben nach unten große usw.)
                 Edgesort aCuttingShapeSorter(aCutShape);
                 tempPair.first = z_level_corrected;
@@ -368,9 +370,7 @@ bool cutting_tools::arrangecuts_ZLEVEL()
                 m_ordered_cuts.push_back(tempPair);
             }
         }
-
     }
-
     return true;
 }
 
@@ -2949,6 +2949,7 @@ bool cutting_tools::classifyShape()
     {
         k++;
     }
+    std::cout <<"We have " << k << "Faces" << std::endl;
     //Wenn mehr als ein Face vorhanden, dann eine Membervariable setzen
     if (k>1) m_cad = true;
     return true;

@@ -44,6 +44,7 @@ struct CuttingToolsSettings
     double sheet_thickness;
     double max_Vel;
     double max_Acc;
+    int spring_pretension;
 };
 
 struct SpiralHelper

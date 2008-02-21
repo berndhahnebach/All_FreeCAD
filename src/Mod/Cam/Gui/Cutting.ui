@@ -632,6 +632,19 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="label_13" >
+   <property name="geometry" >
+    <rect>
+     <x>100</x>
+     <y>470</y>
+     <width>155</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Spring Squeeze</string>
+   </property>
+  </widget>
   <widget class="QGroupBox" name="groupBox_2" >
    <property name="geometry" >
     <rect>
@@ -873,25 +886,6 @@ p, li { white-space: pre-wrap; }
      <double>600.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="max_acc" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>233</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum" >
-     <double>50000.000000000000000</double>
-    </property>
-    <property name="singleStep" >
-     <double>500.000000000000000</double>
-    </property>
-    <property name="value" >
-     <double>20000.000000000000000</double>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_12" >
     <property name="geometry" >
      <rect>
@@ -905,33 +899,48 @@ p, li { white-space: pre-wrap; }
      <string>Max-Acceleration</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_3" >
+   <widget class="QDoubleSpinBox" name="spring_pretension" >
     <property name="geometry" >
      <rect>
-      <x>11</x>
-      <y>258</y>
-      <width>234</width>
-      <height>18</height>
+      <x>10</x>
+      <y>260</y>
+      <width>73</width>
+      <height>20</height>
      </rect>
     </property>
-    <property name="text" >
-     <string>SPISF</string>
+    <property name="decimals" >
+     <number>0</number>
     </property>
-    <property name="tristate" >
-     <bool>false</bool>
+    <property name="maximum" >
+     <double>10.000000000000000</double>
+    </property>
+    <property name="singleStep" >
+     <double>1.000000000000000</double>
+    </property>
+    <property name="value" >
+     <double>0.000000000000000</double>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_2" >
+   <widget class="QDoubleSpinBox" name="max_acc" >
     <property name="geometry" >
      <rect>
       <x>11</x>
-      <y>276</y>
-      <width>234</width>
-      <height>18</height>
+      <y>233</y>
+      <width>73</width>
+      <height>20</height>
      </rect>
     </property>
-    <property name="text" >
-     <string>ISFID</string>
+    <property name="decimals" >
+     <number>0</number>
+    </property>
+    <property name="maximum" >
+     <double>50000.000000000000000</double>
+    </property>
+    <property name="singleStep" >
+     <double>500.000000000000000</double>
+    </property>
+    <property name="value" >
+     <double>20000.000000000000000</double>
     </property>
    </widget>
   </widget>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="AppCam"
 	ProjectGUID="{7BCA5FC1-6063-4C3C-84F6-29D5029BEB59}"
 	RootNamespace="AppCam"
@@ -189,6 +189,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam.pdb"
+				SubSystem="1"
 				ImportLibrary="../../../../lib/Cam.lib"
 				TargetMachine="1"
 			/>
