@@ -1052,6 +1052,15 @@ void Application::runApplication(void)
   std::string start = App::Application::Config()["StartWorkbench"];
   start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
                            GetASCII("AutoloadModule", start.c_str());
+  // if the auto workbench is not visible then force to use the default workbech
+  // and replace the wrong entry in the parameters
+  QStringList wb = app.workbenches();
+  if (!wb.contains(start.c_str())) {
+      start = App::Application::Config()["StartWorkbench"];
+      App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                            SetASCII("AutoloadModule", start.c_str());
+  }
+
   app.activateWorkbench(start.c_str());
 
   // show the main window
