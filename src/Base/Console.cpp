@@ -622,6 +622,28 @@ int RedirectStdOutput::sync()
     return 0;
 }
 
+RedirectStdLog::RedirectStdLog() 
+{
+    buffer.reserve(80);
+}
+
+int RedirectStdLog::overflow(int c)
+{
+    if (c != EOF)
+        buffer.push_back((char)c);
+    return c;
+}
+
+int RedirectStdLog::sync()
+{
+    // Print as log as this might be verbose
+    if (!buffer.empty()) {
+        Base::Console().Log("%s", buffer.c_str());
+        buffer.clear();
+    }
+    return 0;
+}
+
 RedirectStdError::RedirectStdError() 
 {
     buffer.reserve(80);

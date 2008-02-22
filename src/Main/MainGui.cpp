@@ -59,7 +59,7 @@
 
 void PrintInitHelp(void);
 
-const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\
+const char sBanner[] = "(c) Juergen Riegel 2001-2008\n"\
 "  #####                 ####  ###   ####  \n" \
 "  #                    #      # #   #   # \n" \
 "  #     ##  #### ####  #     #   #  #   # \n" \
@@ -132,12 +132,15 @@ int main( int argc, char ** argv )
 
     if (App::Application::Config()["RunMode"] == "Gui") {
         // run GUI
-        Base::RedirectStdOutput out;
-        Base::RedirectStdError err;
-        std::streambuf* oldcout = std::cout.rdbuf(&out);
-        std::streambuf* oldcerr = std::cerr.rdbuf(&err);
+        Base::RedirectStdOutput stdcout;
+        Base::RedirectStdLog    stdclog;
+        Base::RedirectStdError  stdcerr;
+        std::streambuf* oldcout = std::cout.rdbuf(&stdcout);
+        std::streambuf* oldclog = std::clog.rdbuf(&stdclog);
+        std::streambuf* oldcerr = std::cerr.rdbuf(&stdcerr);
         Gui::Application::runApplication();
         std::cout.rdbuf(oldcout);
+        std::clog.rdbuf(oldclog);
         std::cerr.rdbuf(oldcerr);
     } else {
         App::Application::runApplication();
