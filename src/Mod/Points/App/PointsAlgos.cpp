@@ -23,9 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# ifdef FC_OS_LINUX
-#	  include <unistd.h>
-# endif
+#ifdef FC_OS_LINUX
+# include <unistd.h>
+#endif
+# include <sstream>
 #endif
 
 
@@ -38,83 +39,72 @@
 #include <Base/Sequencer.h>
 
 
-
 using namespace Points;
-
 
 void PointsAlgos::Load(PointKernel &points, const char *FileName)
 {
-  Base::FileInfo File(FileName);
+    Base::FileInfo File(FileName);
   
-  // checking on the file
-  if(!File.isReadable())
-    throw Base::Exception("File to load not existing or not readable");
+    // checking on the file
+    if (!File.isReadable())
+        throw Base::Exception("File to load not existing or not readable");
     
-  if(File.extension() == "asc" ||File.extension() == "ASC"  )
-  {
-  
-    LoadAscii(points,FileName);
-
-  }else{
-    throw Base::Exception("Unknown ending");
-  }
+    if (File.extension() == "asc" ||File.extension() == "ASC")
+        LoadAscii(points,FileName);
+    else
+        throw Base::Exception("Unknown ending");
 }
 
 void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
 {
-  char buff[512];
-  float x,y,z;
-  std::ifstream file(FileName);
+    float x,y,z;
+    int LineCnt=0;
+    std::string line;
+    std::ifstream tmp_str(FileName);
 
-  int LineCnt=0;
-
-  Base::Sequencer().start( "Counting lines...", 10 );
-  Base::Sequencer().next();
-  // estemating size
-  while(file.getline(buff,512,'\n'))
-    LineCnt++;
-  Base::Sequencer().stop();
-  
-    
-  // resize the PointKernel
-  points.resize(LineCnt);
-
-  Base::Sequencer().start( "Loading points...", LineCnt );
-  
-  // again to the begining
-//  file.seekg(ios::beg);
-  file.close();
-  std::ifstream file2(FileName);
-
-  LineCnt = 0;
-
-  try{
-    // read file
-    while(file2.getline(buff,211,'\n'))
-    {
-      // is a comment line?
-      if(buff[0]>='0'&&buff[0]<='9' || buff[1]>='0'&&buff[1]<='9')
-      {
-        sscanf(buff,"%f %f %f",&x,&y,&z);
-        points[LineCnt] = Base::Vector3f(x,y,z);
-        Base::Sequencer().next();
+    Base::Sequencer().start( "Counting lines...", 10 );
+    Base::Sequencer().next();
+    // estemating size
+    while(std::getline(tmp_str,line))
         LineCnt++;
-      }
+    Base::Sequencer().stop();
+
+    // resize the PointKernel
+    points.resize(LineCnt);
+
+    Base::Sequencer().start( "Loading points...", LineCnt );
+  
+    // again to the beginning
+    std::ifstream file(FileName);
+    LineCnt = 0;
+
+    try {
+        // read file
+        std::stringstream str;
+        while (std::getline(file, line)) {
+            str.str(line);
+            str >> x >> y >> z;
+            if (!str) {
+                // a comment line
+                str.clear();
+            }
+            else {
+                points[LineCnt] = Base::Vector3f(x,y,z);
+                Base::Sequencer().next();
+                LineCnt++;
+            }
+        }
     }
-  }catch(...){
-    points.clear();
-    throw Base::Exception("Reading in points failed.");
-  }
+    catch(...) {
+        points.clear();
+        throw Base::Exception("Reading in points failed.");
+    }
 
-  // now remove the last points from the kernel
-  // Note: first we allocate memory corresponding to the number of lines (points and comments)
-  //       and read in the file twice. But then the size of the kernel is too high
-  if ( LineCnt < (int)points.size() )
-  {
-    points.erase( points.begin()+LineCnt, points.end() );
-  }
+    // now remove the last points from the kernel
+    // Note: first we allocate memory corresponding to the number of lines (points and comments)
+    //       and read in the file twice. But then the size of the kernel is too high
+    if (LineCnt < (int)points.size())
+        points.erase(points.begin() + LineCnt, points.end());
 
-  Base::Sequencer().stop();
+    Base::Sequencer().stop();
 }
-
-
