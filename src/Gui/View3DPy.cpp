@@ -121,6 +121,10 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(viewRight)
   PYMETHODEDEF(viewTop)
   PYMETHODEDEF(viewAxometric)
+  PYMETHODEDEF(setViewDirection)
+  PYMETHODEDEF(getViewDirection)
+  PYMETHODEDEF(setFocalDistance)
+  PYMETHODEDEF(getFocalDistance)
   PYMETHODEDEF(saveImage)
   PYMETHODEDEF(getCamera)
   PYMETHODEDEF(setCamera)
@@ -344,6 +348,76 @@ PYFUNCIMP_D(View3DPy,viewAxometric)
 
   }PY_CATCH;
 } 
+
+PYFUNCIMP_D(View3DPy,setViewDirection)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    try {
+        Py::Tuple tuple(object);
+        Py::Float x(tuple.getItem(0));
+        Py::Float y(tuple.getItem(1));
+        Py::Float z(tuple.getItem(2));
+        SbVec3f dir;
+        dir.setValue((float)x, (float)y, (float)z);
+        if (dir.length() < 0.001f)
+            throw Py::ValueError("Null vector cannot be used to set direction");
+        SoCamera* cam = _pcView->_viewer->getCamera();
+        cam->orientation.setValue(SbRotation(SbVec3f(0, 0, -1), dir));
+    }
+    catch (Py::Exception&) {
+        return NULL;
+    }
+
+    Py_Return;
+}
+
+PYFUNCIMP_D(View3DPy,getViewDirection)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    try {
+        SoCamera* cam = _pcView->_viewer->getCamera();
+        SbRotation camrot = cam->orientation.getValue();
+        SbVec3f lookat(0, 0, -1); // init to default view direction vector
+        camrot.multVec(lookat, lookat);
+
+        Py::Tuple tuple(3);
+        tuple.setItem(0, Py::Float(lookat[0]));
+        tuple.setItem(1, Py::Float(lookat[1]));
+        tuple.setItem(2, Py::Float(lookat[2]));
+        return Py::new_reference_to(tuple);
+    }
+    catch (Py::Exception&) {
+        return NULL;
+    }
+}
+
+PYFUNCIMP_D(View3DPy,setFocalDistance)
+{
+    float distance;
+    if (!PyArg_ParseTuple(args, "f", &distance))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    PY_TRY {
+        SoCamera* cam = _pcView->_viewer->getCamera();
+        cam->focalDistance.setValue(distance);
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+PYFUNCIMP_D(View3DPy,getFocalDistance)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    return PyFloat_FromDouble(cam->focalDistance.getValue());
+}
 
 PYFUNCIMP_D(View3DPy,saveImage)
 { 
