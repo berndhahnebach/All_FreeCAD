@@ -253,6 +253,19 @@ private:
     std::string buffer;
 };
 
+class BaseExport RedirectStdLog : public std::streambuf
+{
+public:
+    RedirectStdLog();
+
+protected:
+    int overflow(int c = EOF);
+    int sync();
+
+private:
+    std::string buffer;
+};
+
 
 } // namespace Base 
 

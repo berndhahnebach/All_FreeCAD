@@ -181,6 +181,8 @@ protected:
    * This method checks if the main window can be closed by checking all open documents and views.
    */
   void closeEvent (QCloseEvent * e);
+  void showEvent  (QShowEvent  * e);
+  void hideEvent  (QHideEvent  * e);
   void timerEvent (QTimerEvent *  ){ timeEvent();}
   void customEvent(QEvent      * e);
   /**

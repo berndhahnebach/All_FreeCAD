@@ -614,6 +614,18 @@ void MainWindow::closeEvent ( QCloseEvent * e )
   }
 }
 
+void MainWindow::showEvent(QShowEvent  * /*e*/)
+{
+    // needed for logging
+    std::clog << "Show main window" << std::endl;
+}
+
+void MainWindow::hideEvent(QHideEvent  * /*e*/)
+{
+    // needed for logging
+    std::clog << "Hide main window" << std::endl;
+}
+
 void MainWindow::appendRecentFile(const QString& filename)
 {
     RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QString("recentFiles"));
@@ -673,12 +685,14 @@ void MainWindow::loadWindowSettings()
     // tmp. disable the report window to suppress some bothering warnings
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     this->restoreState(config.value("MainWindowState").toByteArray());
+    std::clog << "Main window restored" << std::endl;
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
 
     ToolBarManager::getInstance()->restoreState();
+    std::clog << "Toolbars restored" << std::endl;
 }
 
 void MainWindow::saveWindowSettings()
