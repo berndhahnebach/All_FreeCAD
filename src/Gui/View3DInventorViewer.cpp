@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 JÃ¼rgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -1997,7 +1997,7 @@ void View3DInventorViewer::drawAxisCross(void)
 
   const float NEARVAL = 0.1f;
   const float FARVAL = 10.0f;
-  const float dim = NEARVAL * float(tan(M_PI / 8.0)); // FOV is 45ï¿½ (45/360 = 1/8)
+  const float dim = NEARVAL * float(tan(M_PI / 8.0)); // FOV is 45° (45/360 = 1/8)
   glFrustum(-dim, dim, -dim, dim, NEARVAL, FARVAL);
 
 

@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef __Qt4All__
+# include <Qt4All.h>
+#endif
 
 #include "ReportView.h"
 #include "FileDialog.h"
@@ -40,35 +43,35 @@ using namespace Gui::DockWnd;
 ReportView::ReportView( QWidget* parent )
   : QWidget(parent)
 {
-  setObjectName( "ReportOutput" );
+    setObjectName( "ReportOutput" );
 
-  resize( 529, 162 );
-  QGridLayout* tabLayout = new QGridLayout( this );
-  tabLayout->setSpacing( 0 );
-  tabLayout->setMargin( 0 );
+    resize( 529, 162 );
+    QGridLayout* tabLayout = new QGridLayout( this );
+    tabLayout->setSpacing( 0 );
+    tabLayout->setMargin( 0 );
 
-  tabWidget = new QTabWidget( this );
-  tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-  tabWidget->setTabPosition(QTabWidget::South);
-  tabWidget->setTabShape(QTabWidget::Rounded);
-  tabLayout->addWidget( tabWidget, 0, 0 );
+    tabWidget = new QTabWidget( this );
+    tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+    tabWidget->setTabPosition(QTabWidget::South);
+    tabWidget->setTabShape(QTabWidget::Rounded);
+    tabLayout->addWidget( tabWidget, 0, 0 );
 
 
-  // create the output window
-  tabOutput = new ReportOutput();
-  int output = tabWidget->addTab(tabOutput, trUtf8("Output"));
-  tabWidget->setTabIcon(output, BitmapFactory().pixmap("MacroEditor"));
+    // create the output window
+    tabOutput = new ReportOutput();
+    int output = tabWidget->addTab(tabOutput, trUtf8("Output"));
+    tabWidget->setTabIcon(output, BitmapFactory().pixmap("MacroEditor"));
 
-  // create the python console
-  tabPython = new PythonConsole();
-  int python = tabWidget->addTab(tabPython, trUtf8("Python console"));
-  tabWidget->setTabIcon(python, BitmapFactory().pixmap("python_small"));
-  tabWidget->setCurrentIndex(0);
+    // create the python console
+    tabPython = new PythonConsole();
+    int python = tabWidget->addTab(tabPython, trUtf8("Python console"));
+    tabWidget->setTabIcon(python, BitmapFactory().pixmap("python_small"));
+    tabWidget->setCurrentIndex(0);
 
-  // raise the tab page set in the preferences
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  int index = hGrp->GetInt("AutoloadTab", 0);
-  tabWidget->setCurrentIndex(index);
+    // raise the tab page set in the preferences
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+    int index = hGrp->GetInt("AutoloadTab", 0);
+    tabWidget->setCurrentIndex(index);
 }
 
 /**
@@ -76,76 +79,107 @@ ReportView::ReportView( QWidget* parent )
  */
 ReportView::~ReportView()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 void ReportView::changeEvent(QEvent *e)
 {
-  QWidget::changeEvent(e);
-  if (e->type() == QEvent::LanguageChange) {
-    tabWidget->setTabText( tabWidget->indexOf(tabOutput), trUtf8( "Output" ) );
-    tabWidget->setTabText( tabWidget->indexOf(tabPython), trUtf8("Python console") );
-  }
+    QWidget::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange) {
+        tabWidget->setTabText( tabWidget->indexOf(tabOutput), trUtf8( "Output" ) );
+        tabWidget->setTabText( tabWidget->indexOf(tabPython), trUtf8("Python console") );
+    }
 }
 
 // ----------------------------------------------------------
 
+namespace Gui {
+struct TextBlockData : public QTextBlockUserData
+{
+    struct State {
+        int length;
+        ReportHighlighter::Paragraph type;
+    };
+    QVector<State> block;
+};
+}
+
 ReportHighlighter::ReportHighlighter(QTextEdit* edit)
   : QSyntaxHighlighter(edit), type(Message)
 {
-  txtCol = Qt::black;
-  logCol = Qt::blue;
-  warnCol = QColor(255, 170, 0);
-  errCol = Qt::red;
+    txtCol = Qt::black;
+    logCol = Qt::blue;
+    warnCol = QColor(255, 170, 0);
+    errCol = Qt::red;
 }
 
 ReportHighlighter::~ReportHighlighter()
 {
 }
 
-void ReportHighlighter::highlightBlock ( const QString & text )
+void ReportHighlighter::highlightBlock (const QString & text)
 {
-  if (type == Message)
-  {
-    setFormat(0, text.length(), txtCol);
-  }
-  else if (type == Warning)
-  {
-    setFormat(0, text.length(), warnCol);
-  }
-  else if (type == Error)
-  {
-    setFormat(0, text.length(), errCol);
-  }
-  else if (type == LogText)
-  {
-    setFormat(0, text.length(), logCol);
-  }
+    if (text.isEmpty())
+        return;
+    TextBlockData* ud = static_cast<TextBlockData*>(this->currentBlockUserData());
+    if (!ud) {
+        ud = new TextBlockData;
+        this->setCurrentBlockUserData(ud);
+    }
+
+    TextBlockData::State b;
+    b.length = text.length();
+    b.type = this->type;
+    ud->block.append(b);
+
+    QVector<TextBlockData::State> block = ud->block;
+    int start = 0;
+    for (QVector<TextBlockData::State>::Iterator it = block.begin(); it != block.end(); ++it) {
+        switch (it->type)
+        {
+        case Message:
+            setFormat(start, it->length-start, txtCol);
+            break;
+        case Warning:
+            setFormat(start, it->length-start, warnCol);
+            break;
+        case Error:
+            setFormat(start, it->length-start, errCol);
+            break;
+        case LogText:
+            setFormat(start, it->length-start, logCol);
+            break;
+        default:
+            break;
+        }
+
+        start = it->length;
+    }
 }
 
 void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
 {
-  type = t;
+    type = t;
 }
 
 void ReportHighlighter::setTextColor( const QColor& col )
 {
-  txtCol = col;
+    txtCol = col;
 }
 
 void ReportHighlighter::setLogColor( const QColor& col )
 {
-  logCol = col;
+    logCol = col;
 }
 
 void ReportHighlighter::setWarningColor( const QColor& col )
 {
-  warnCol = col;
+    warnCol = col;
 }
 
 void ReportHighlighter::setErrorColor( const QColor& col )
 {
-  errCol = col;
+    errCol = col;
 }
 
 // ----------------------------------------------------------
@@ -161,18 +195,18 @@ void ReportHighlighter::setErrorColor( const QColor& col )
 class CustomReportEvent : public QEvent
 {
 public:
-  CustomReportEvent(ReportHighlighter::Paragraph p, const QString& s)
+    CustomReportEvent(ReportHighlighter::Paragraph p, const QString& s)
     : QEvent(QEvent::Type(QEvent::User)) 
-  { par = p; msg = s;}
-  ~CustomReportEvent()
-  { }
-  const QString& message() const
-  { return msg; }
-  ReportHighlighter::Paragraph messageType() const
-  { return par; }
+    { par = p; msg = s;}
+    ~CustomReportEvent()
+    { }
+    const QString& message() const
+    { return msg; }
+    ReportHighlighter::Paragraph messageType() const
+    { return par; }
 private:
-  ReportHighlighter::Paragraph par;
-  QString msg;
+    ReportHighlighter::Paragraph par;
+    QString msg;
 };
 
 // ----------------------------------------------------------
@@ -184,23 +218,23 @@ private:
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent)
- : QTextEdit(parent), WindowParameter("OutputWindow")
+  : QTextEdit(parent), WindowParameter("OutputWindow")
 {
-  bLog = false;
-  reportHl = new ReportHighlighter(this);
+    bLog = false;
+    reportHl = new ReportHighlighter(this);
 
-  restoreFont();
-  setReadOnly(true);
-  clear();
-  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    restoreFont();
+    setReadOnly(true);
+    clear();
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-  Base::Console().AttachObserver(this);
-  getWindowParameter()->Attach( this );
+    Base::Console().AttachObserver(this);
+    getWindowParameter()->Attach( this );
 
-  getWindowParameter()->NotifyAll();
+    getWindowParameter()->NotifyAll();
 
-  // scroll to bottom at startup to make sure that last appended text is visible
-  ensureCursorVisible();
+    // scroll to bottom at startup to make sure that last appended text is visible
+    ensureCursorVisible();
 }
 
 /**
@@ -208,185 +242,176 @@ ReportOutput::ReportOutput(QWidget* parent)
  */
 ReportOutput::~ReportOutput()
 {
-  getWindowParameter()->Detach( this );
-  Base::Console().DetachObserver(this);
-  delete reportHl;
+    getWindowParameter()->Detach( this );
+    Base::Console().DetachObserver(this);
+    delete reportHl;
 }
 
 void ReportOutput::restoreFont()
 {
-  QFont _font(  font() );
-  _font.setFamily( "Courier" );
+    QFont _font(  font() );
+    _font.setFamily( "Courier" );
 #ifdef FC_OS_LINUX
-  _font.setPointSize( 12 );
+    _font.setPointSize( 12 );
 #else
-  _font.setPointSize( 10 );
+    _font.setPointSize( 10 );
 #endif
-  setFont( _font ); 
+    setFont( _font ); 
 }
 
 void ReportOutput::Warning(const char * s)
 {
-  // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Warning, QString::fromUtf8(s));
-  QApplication::postEvent(this, ev);
+    // Send the event to itself to allow thread-safety. Qt will delete it when done.
+    CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Warning, QString::fromUtf8(s));
+    QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Message(const char * s)
 {
-  // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Message, QString::fromUtf8(s));
-  QApplication::postEvent(this, ev);
+    // Send the event to itself to allow thread-safety. Qt will delete it when done.
+    CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Message, QString::fromUtf8(s));
+    QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Error  (const char * s)
 {
-  // Send the event to itself to allow thread-safety. Qt will delete it when done.
-  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Error, QString::fromUtf8(s));
-  QApplication::postEvent(this, ev);
+    // Send the event to itself to allow thread-safety. Qt will delete it when done.
+    CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Error, QString::fromUtf8(s));
+    QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Log (const char * s)
 {
-  if(strlen(s) < 1000){
-    // Send the event to itself to allow thread-safety. Qt will delete it when done.
-    CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
-    QApplication::postEvent(this, ev);
-  }
+    if(strlen(s) < 1000){
+        // Send the event to itself to allow thread-safety. Qt will delete it when done.
+        CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
+        QApplication::postEvent(this, ev);
+    }
 }
 
 void ReportOutput::customEvent ( QEvent* ev )
 {
-  // Appends the text stored in the event to the text view
-  if ( ev->type() ==  QEvent::User ) {
-    CustomReportEvent* ce = (CustomReportEvent*)ev;
-    reportHl->setParagraphType(ce->messageType());
+    // Appends the text stored in the event to the text view
+    if ( ev->type() ==  QEvent::User ) {
+        CustomReportEvent* ce = (CustomReportEvent*)ev;
+        reportHl->setParagraphType(ce->messageType());
 
-    QTextCursor cursor(this->document());
-    cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::End);
-    cursor.insertText(ce->message());
-    cursor.endEditBlock();
-    ensureCursorVisible();
-  }
+        QTextCursor cursor(this->document());
+        cursor.beginEditBlock();
+        cursor.movePosition(QTextCursor::End);
+        cursor.insertText(ce->message());
+        cursor.endEditBlock();
+        ensureCursorVisible();
+    }
 }
 
 void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )
 {
-  QMenu* menu = createStandardContextMenu();
-  QAction* first = menu->actions().front();
+    QMenu* menu = createStandardContextMenu();
+    QAction* first = menu->actions().front();
 
-  QMenu* submenu = new QMenu( menu );
-  QAction* logAct = submenu->addAction(tr("Logging"), this, SLOT(onToggleLogging()));
-  logAct->setCheckable(true);
-  logAct->setChecked(bLog);
+    QMenu* submenu = new QMenu( menu );
+    QAction* logAct = submenu->addAction(tr("Logging"), this, SLOT(onToggleLogging()));
+    logAct->setCheckable(true);
+    logAct->setChecked(bLog);
 
-  QAction* wrnAct = submenu->addAction(tr("Warning"), this, SLOT(onToggleWarning()));
-  wrnAct->setCheckable(true);
-  wrnAct->setChecked(bWrn);
+    QAction* wrnAct = submenu->addAction(tr("Warning"), this, SLOT(onToggleWarning()));
+    wrnAct->setCheckable(true);
+    wrnAct->setChecked(bWrn);
 
-  QAction* errAct = submenu->addAction(tr("Error"), this, SLOT(onToggleError()));
-  errAct->setCheckable(true);
-  errAct->setChecked(bErr);
+    QAction* errAct = submenu->addAction(tr("Error"), this, SLOT(onToggleError()));
+    errAct->setCheckable(true);
+    errAct->setChecked(bErr);
 
-  submenu->setTitle(tr("Options"));
-  menu->insertMenu(first, submenu);
-  menu->insertSeparator(first);
+    submenu->setTitle(tr("Options"));
+    menu->insertMenu(first, submenu);
+    menu->insertSeparator(first);
 
-  menu->addAction(tr("Clear"), this, SLOT(clear()));
-  menu->addSeparator();
-  menu->addAction(tr("Save As..."), this, SLOT(onSaveAs()));
+    menu->addAction(tr("Clear"), this, SLOT(clear()));
+    menu->addSeparator();
+    menu->addAction(tr("Save As..."), this, SLOT(onSaveAs()));
 
-  menu->exec(e->globalPos());
-  delete menu;
+    menu->exec(e->globalPos());
+    delete menu;
 }
 
 void ReportOutput::onSaveAs()
 {
-  QString fn = QFileDialog::getSaveFileName(this, tr("Save Report Output"), QString(), tr("Plain Text Files (*.txt *.log)"));
-  if (!fn.isEmpty())
-  {
-    QFileInfo fi(fn);
-    if (fi.completeSuffix().isEmpty())
-      fn += ".log";
-    QFile f(fn);
-    if (f.open(QIODevice::WriteOnly))
-    {
-      QTextStream t (&f);
-      t << toPlainText();
-      f.close();
+    QString fn = QFileDialog::getSaveFileName(this, tr("Save Report Output"), QString(), tr("Plain Text Files (*.txt *.log)"));
+    if (!fn.isEmpty()) {
+        QFileInfo fi(fn);
+        if (fi.completeSuffix().isEmpty())
+            fn += ".log";
+        QFile f(fn);
+        if (f.open(QIODevice::WriteOnly)) {
+            QTextStream t (&f);
+            t << toPlainText();
+            f.close();
+        }
     }
-  }
 }
 
 bool ReportOutput::isError() const
 {
-  return bErr;
+    return bErr;
 }
 
 bool ReportOutput::isWarning() const
 {
-  return bWrn;
+    return bWrn;
 }
 
 bool ReportOutput::isLogging() const
 {
-  return bLog;
+    return bLog;
 }
 
 void ReportOutput::onToggleError()
 {
-  bErr = bErr ? false : true;
-  getWindowParameter()->SetBool( "checkError", bErr );
+    bErr = bErr ? false : true;
+    getWindowParameter()->SetBool( "checkError", bErr );
 }
 
 void ReportOutput::onToggleWarning()
 {
-  bWrn = bWrn ? false : true;
-  getWindowParameter()->SetBool( "checkWarning", bWrn );
+    bWrn = bWrn ? false : true;
+    getWindowParameter()->SetBool( "checkWarning", bWrn );
 }
 
 void ReportOutput::onToggleLogging()
 {
-  bLog = bLog ? false : true;
-  getWindowParameter()->SetBool( "checkLogging", bLog );
+    bLog = bLog ? false : true;
+    getWindowParameter()->SetBool( "checkLogging", bLog );
 }
 
 void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
-  ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-  if (strcmp(sReason, "checkLogging") == 0)
-  {
-    bLog = rclGrp.GetBool( sReason, bLog );
-  }
-  else if (strcmp(sReason, "checkWarning") == 0)
-  {
-    bWrn = rclGrp.GetBool( sReason, bWrn );
-  }
-  else if (strcmp(sReason, "checkError") == 0)
-  {
-    bErr = rclGrp.GetBool( sReason, bErr );
-  }
-  else if (strcmp(sReason, "colorText") == 0)
-  {
-    unsigned long col = rclGrp.GetUnsigned( sReason );
-    reportHl->setTextColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
-  }
-  else if (strcmp(sReason, "colorLogging") == 0)
-  {
-    unsigned long col = rclGrp.GetUnsigned( sReason );
-    reportHl->setLogColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
-  }
-  else if (strcmp(sReason, "colorWarning") == 0)
-  {
-    unsigned long col = rclGrp.GetUnsigned( sReason );
-    reportHl->setWarningColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
-  }
-  else if (strcmp(sReason, "colorError") == 0)
-  {
-    unsigned long col = rclGrp.GetUnsigned( sReason );
-    reportHl->setErrorColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
-  }
+    ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    if (strcmp(sReason, "checkLogging") == 0) {
+        bLog = rclGrp.GetBool( sReason, bLog );
+    }
+    else if (strcmp(sReason, "checkWarning") == 0) {
+        bWrn = rclGrp.GetBool( sReason, bWrn );
+    }
+    else if (strcmp(sReason, "checkError") == 0) {
+        bErr = rclGrp.GetBool( sReason, bErr );
+    }
+    else if (strcmp(sReason, "colorText") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        reportHl->setTextColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+    }
+    else if (strcmp(sReason, "colorLogging") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        reportHl->setLogColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+    }
+    else if (strcmp(sReason, "colorWarning") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        reportHl->setWarningColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+    }
+    else if (strcmp(sReason, "colorError") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        reportHl->setErrorColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+    }
 }
 
 #include "moc_ReportView.cpp"
