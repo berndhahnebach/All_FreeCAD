@@ -72,6 +72,26 @@ char *ltrim (char *psz)
   return psz;
 }
 
+std::string& upper(std::string& str)
+{
+    for (std::string::iterator it = str.begin(); it != str.end(); ++it)
+        *it = toupper(*it);
+    return str;
+}
+
+std::string& ltrim(std::string& str)
+{
+    std::string::size_type pos=0;
+    for (std::string::iterator it = str.begin(); it != str.end(); ++it) {
+        if (*it != 0x20 && *it != 0x09)
+            break;
+        pos++;
+    }
+    if (pos > 0)
+        str = str.substr(pos);
+    return str;
+}
+
 /* Define a vector.  */
 typedef struct _Vector
 	{
@@ -83,7 +103,7 @@ typedef struct _Vector
 /* Usage by CMeshNastran, CMeshCadmouldFE. Added by Sergey Sukhov (26.04.2002)*/
 struct NODE {float x, y, z;};
 struct TRIA {int iV[3];};
-struct QUAD {int iVer[4];};
+struct QUAD {int iV[4];};
 
 /* Takes the modulus of v */
 #define VMod(v)		(sqrt((v).x*(v).x + (v).y*(v).y + (v).z*(v).z))
@@ -441,9 +461,6 @@ bool MeshInput::LoadAsciiSTL (std::istream &rstrIn)
 
     std::streamoff ulSize = 0;
     std::streambuf* buf = rstrIn.rdbuf();
-    if (!buf)
-        return false;
-
     ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
     buf->pubseekoff(0, std::ios::beg, std::ios::in);
     ulSize -= 20;
@@ -551,17 +568,16 @@ bool MeshInput::LoadBinarySTL (std::istream &rstrIn)
 /** Loads the mesh object from an XML file. */
 void MeshInput::LoadXML (Base::XMLReader &reader)
 {
-    int Cnt,i;
     MeshPointArray cPoints;
     MeshFacetArray cFacets;
  
 //  reader.readElement("Mesh");
 
     reader.readElement("Points");
-    Cnt = reader.getAttributeAsInteger("Count");
+    int Cnt = reader.getAttributeAsInteger("Count");
 
     cPoints.resize(Cnt);
-    for (i=0 ;i<Cnt ;i++) {
+    for (int i=0 ;i<Cnt ;i++) {
         reader.readElement("P");
         cPoints[i].x = reader.getAttributeAsFloat("x");
         cPoints[i].y = reader.getAttributeAsFloat("y");
@@ -573,9 +589,8 @@ void MeshInput::LoadXML (Base::XMLReader &reader)
     Cnt = reader.getAttributeAsInteger("Count");
 
     cFacets.resize(Cnt);
-    for(i=0 ;i<Cnt ;i++) {
+    for (int i=0 ;i<Cnt ;i++) {
         reader.readElement("F");
-     
         cFacets[i]._aulPoints[0] = reader.getAttributeAsInteger("p0");
         cFacets[i]._aulPoints[1] = reader.getAttributeAsInteger("p1");
         cFacets[i]._aulPoints[2] = reader.getAttributeAsInteger("p2");
@@ -583,8 +598,8 @@ void MeshInput::LoadXML (Base::XMLReader &reader)
         cFacets[i]._aulNeighbours[1] = reader.getAttributeAsInteger("n1");
         cFacets[i]._aulNeighbours[2] = reader.getAttributeAsInteger("n2");
     }
-    reader.readEndElement("Faces");
 
+    reader.readEndElement("Faces");
     reader.readEndElement("Mesh");
 
     _rclMesh.Adopt(cPoints, cFacets);
@@ -635,7 +650,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
         // read the normals if they are defined
         if (!normals && line.find("NORMAL {") != std::string::npos) {
             float fX, fY, fZ;
-            normals = true; // okay, the normals are set by a Normal node
+            normals = true; // okay, the normals are set by an SoNormal node
             flag = true;
             // Get the next line and check for the normal field which might begin
             // with the first vector already i.e. it's of the form 'vector [ 0.0 0.0 1.0,'
@@ -646,7 +661,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                 *it = toupper(*it);
             std::string::size_type pos = line.find("VECTOR [");
             if (pos != std::string::npos)
-                line = line.substr(pos+8);
+                line = line.substr(pos+8); // 8 = length of 'VECTOR ['
             do {
                 if (boost::regex_match(line.c_str(), what, rx_p)) {
                     fX = (float)std::atof(what[1].first);
@@ -662,7 +677,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
         // read the coordinates
         else if (!points && line.find("COORDINATE3 {") != std::string::npos) {
             Base::Vector3f clPoint;
-            points = true; // the Coordinate3 node
+            points = true; // the SoCoordinate3 node
             flag = true;
             // Get the next line and check for the points field which might begin
             // with the first point already i.e. it's of the form 'point [ 0.0 0.0 0.0,'
@@ -673,7 +688,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                 *it = toupper(*it);
             std::string::size_type pos = line.find("POINT [");
             if (pos != std::string::npos)
-                line = line.substr(pos+7);
+                line = line.substr(pos+7); // 7 = length of 'POINT ['
             do {
                 if (boost::regex_match(line.c_str(), what, rx_p)) {
                     clPoint.x = (float)std::atof(what[1].first);
@@ -702,7 +717,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                 *it = toupper(*it);
             std::string::size_type pos = line.find("COORDINDEX [");
             if (pos != std::string::npos)
-                line = line.substr(pos+12);
+                line = line.substr(pos+12); // 12 = length of 'COORDINDEX ['
             do {
                 flag = false;
                 std::string::size_type pos = line.find("-1");
@@ -741,213 +756,129 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
 /** Loads a Nastran file. */
 bool MeshInput::LoadNastran (std::istream &rstrIn)
 {
-  if ((!rstrIn) || (rstrIn.bad() == true))
-    return false;
+    if ((!rstrIn) || (rstrIn.bad() == true))
+        return false;
 
-  char szLine[100], szKey[50], cBuffer[16];
-  int iI, iN, i, iIndx = 1, iEnd, iNext=0;
-  float fLength[2], fDx, fDy, fDz;
+    boost::regex rx_p("\\s*GRID\\s+([0-9]+)"
+                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*");
+    boost::regex rx_t("\\s*CTRIA3\\s+([0-9]+)\\s+([0-9]+)"
+                      "\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s*");
+    boost::regex rx_q("\\s*CTRIA3\\s+([0-9]+)\\s+([0-9]+)"
+                      "\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s*");
+    boost::cmatch what;
 
-  MeshGeomFacet clMeshFacet;
-  std::vector <MeshGeomFacet> vTriangle;
- 
-  std::map <int, NODE> mNode;
-  std::map <int, TRIA> mTria;
-  std::map <int, QUAD> mQuad;
+    std::string line;
+    MeshFacet clMeshFacet;
+    MeshPointArray vVertices;
+    MeshFacetArray vTriangle;
 
-  while ((rstrIn.eof() == false) && (rstrIn.bad() == false))
-  {
-    rstrIn.getline(szLine, 100);
-    upper(ltrim(szLine));
+    int index;
+    std::map <int, NODE> mNode;
+    std::map <int, TRIA> mTria;
+    std::map <int, QUAD> mQuad;
 
-    if (strncmp(szLine, "GRID*", 5) == 0)
-    {
-      sscanf(szLine, "%s %d", szKey, &iI);
-      memcpy (cBuffer, szLine+40, 16);
-      mNode[iI].x = (float)atof(cBuffer);
-      memcpy (cBuffer, "                ", 16);
-      memcpy (cBuffer, szLine+56, 16);
-      mNode[iI].y = (float)atof(cBuffer);
-      memcpy (cBuffer, "                ", 16);
-      memcpy (cBuffer, szLine+73, 7);
-      iNext = (int)atof(cBuffer);
-      memcpy (cBuffer, "                ", 16);
+    while (std::getline(rstrIn, line)) {
+        upper(ltrim(line));
+        if (line.find("GRID*") == 0) {
+            assert(0);
+        }
+        else if (line.find("*") == 0) {
+            assert(0);
+        }
+        // insert the read-in vertex into a map to preserve the order
+        else if (line.find("GRID") == 0) {
+            if (boost::regex_match(line.c_str(), what, rx_p)) {
+                index = std::atol(what[1].first)-1;
+                mNode[index].x = (float)std::atof(what[2].first);
+                mNode[index].y = (float)std::atof(what[5].first);
+                mNode[index].z = (float)std::atof(what[8].first);
+            }
+        }
+        // insert the read-in triangle into a map to preserve the order
+        else if (line.find("CTRIA3 ") == 0) {
+            if (boost::regex_match(line.c_str(), what, rx_t)) {
+                index = std::atol(what[1].first)-1;
+                mTria[index].iV[0] = std::atol(what[3].first)-1;
+                mTria[index].iV[1] = std::atol(what[4].first)-1;
+                mTria[index].iV[2] = std::atol(what[5].first)-1;
+            }
+        }
+        // insert the read-in quadrangle into a map to preserve the order
+        else if (line.find("CQUAD4") == 0) {
+            if (boost::regex_match(line.c_str(), what, rx_q)) {
+                index = std::atol(what[1].first)-1;
+                mQuad[index].iV[0] = std::atol(what[3].first)-1;
+                mQuad[index].iV[1] = std::atol(what[4].first)-1;
+                mQuad[index].iV[2] = std::atol(what[5].first)-1;
+                mQuad[index].iV[3] = std::atol(what[6].first)-1;
+            }
+        }
     }
-    else if (strncmp(szLine, "GRID ", 5) == 0)
-    {
-      sscanf(szLine, "%s %d", szKey, &iN);
-      memcpy (cBuffer, szLine+24, 8);
-      mNode[iN].x = (float)atof (cBuffer);
-      memcpy (cBuffer, "                ", 16);
-      memcpy (cBuffer, szLine+32, 8);
-      mNode[iN].y = (float)atof (cBuffer);
-      memcpy (cBuffer, "                ", 16);
-      memcpy (cBuffer, szLine+40, 8);
-      mNode[iN].z = (float)atof (cBuffer);
-      memcpy (cBuffer, "                ", 16);
-    }
-    else if (strncmp(szLine, "*", 1) == 0)
-    {
-      memcpy (cBuffer, szLine+1, 7);
-      if ((int)atof (cBuffer) == iNext)
-      {
-        memcpy (cBuffer, szLine+8, 16);
-        mNode[iI].z = (float)atof(cBuffer);
-        memcpy (cBuffer, "                ", 16);
-      }
-    }
-    else if (strncmp(szLine, "GRID", 4) == 0)
-    {
-      sscanf(szLine, "%s %d", szKey, &iI);
-      memcpy (cBuffer, szLine+24, 8);
-      mNode[iI].x = (float)atof (cBuffer);
-      memcpy (cBuffer, szLine+32, 8);
-      mNode[iI].y = (float)atof (cBuffer);
-      memcpy (cBuffer, szLine+40, 8);
-      mNode[iI].z = (float)atof (cBuffer);
-    }
-    else if (strncmp(szLine, "CTRIA3", 6) == 0)
-    {
-      sscanf(szLine, "%s", szKey);
-      sscanf(szLine, "%s %d %d %d %d %d", szKey, &i, &i, &(mTria[iIndx].iV[0]), &(mTria[iIndx].iV[1]), &(mTria[iIndx].iV[2]));
-      iIndx++;
-    }
-    else if (strncmp(szLine, "CQUAD4", 6) == 0)
-    {
-      sscanf(szLine, "%s %d", szKey, &iI);
-      sscanf(szLine, "%s %d %d %d %d %d %d", szKey, &i, &i, &(mQuad[iI].iVer[0]), &(mQuad[iI].iVer[1]), &(mQuad[iI].iVer[2]), &(mQuad[iI].iVer[3]));
-    }
-  }
 
-  for (std::map <int, QUAD>::iterator QI=mQuad.begin(); QI!=mQuad.end(); QI++)
-  {
-    for (int i = 0; i < 2; i++)
-    {
-      fDx = mNode[(*QI).second.iVer[i+2]].x - mNode[(*QI).second.iVer[i]].x;
-      fDy = mNode[(*QI).second.iVer[i+2]].y - mNode[(*QI).second.iVer[i]].y;
-      fDz = mNode[(*QI).second.iVer[i+2]].z - mNode[(*QI).second.iVer[i]].z;
-      fLength[i] = fDx*fDx + fDy*fDy + fDz*fDz;
-    }
-    iEnd = mTria.size()+1; 
-    if (fLength[0] < fLength[1])
-    {
-      mTria[iEnd].iV[0] = (*QI).second.iVer[0];
-      mTria[iEnd].iV[1] = (*QI).second.iVer[1];
-      mTria[iEnd].iV[2] = (*QI).second.iVer[2];
-
-      mTria[iEnd+1].iV[0] = (*QI).second.iVer[0];
-      mTria[iEnd+1].iV[1] = (*QI).second.iVer[2];
-      mTria[iEnd+1].iV[2] = (*QI).second.iVer[3];
-    }
+    float fLength[2];
+    if (mTria.empty())
+        index = 0;
     else
-    {
-      mTria[iEnd].iV[0] = (*QI).second.iVer[0];
-      mTria[iEnd].iV[1] = (*QI).second.iVer[1];
-      mTria[iEnd].iV[2] = (*QI).second.iVer[3];
+        index = mTria.rbegin()->first + 1;
+    for (std::map <int, QUAD>::iterator QI=mQuad.begin(); QI!=mQuad.end(); QI++) {
+        for (int i = 0; i < 2; i++) {
+            float fDx = mNode[(*QI).second.iV[i+2]].x - mNode[(*QI).second.iV[i]].x;
+            float fDy = mNode[(*QI).second.iV[i+2]].y - mNode[(*QI).second.iV[i]].y;
+            float fDz = mNode[(*QI).second.iV[i+2]].z - mNode[(*QI).second.iV[i]].z;
+            fLength[i] = fDx*fDx + fDy*fDy + fDz*fDz;
+        }
+        if (fLength[0] < fLength[1]) {
+            mTria[index].iV[0] = (*QI).second.iV[0];
+            mTria[index].iV[1] = (*QI).second.iV[1];
+            mTria[index].iV[2] = (*QI).second.iV[2];
 
-      mTria[iEnd+1].iV[0] = (*QI).second.iVer[1];
-      mTria[iEnd+1].iV[1] = (*QI).second.iVer[2];
-      mTria[iEnd+1].iV[2] = (*QI).second.iVer[3];
+            mTria[index+1].iV[0] = (*QI).second.iV[0];
+            mTria[index+1].iV[1] = (*QI).second.iV[2];
+            mTria[index+1].iV[2] = (*QI).second.iV[3];
+        }
+        else {
+            mTria[index].iV[0] = (*QI).second.iV[0];
+            mTria[index].iV[1] = (*QI).second.iV[1];
+            mTria[index].iV[2] = (*QI).second.iV[3];
+
+            mTria[index+1].iV[0] = (*QI).second.iV[1];
+            mTria[index+1].iV[1] = (*QI).second.iV[2];
+            mTria[index+1].iV[2] = (*QI).second.iV[3];
+        }
+
+        index += 2;
     }
-  }
 
-  /* Converting data to Mesh. Negatiw conversion for right orientation of normal-vectors. */
-  for (std::map<int, TRIA>::iterator MI=mTria.begin(); MI!=mTria.end(); MI++)
-  {
-    clMeshFacet._aclPoints[0].x = mNode[(*MI).second.iV[1]].x;
-    clMeshFacet._aclPoints[0].y = mNode[(*MI).second.iV[1]].y;
-    clMeshFacet._aclPoints[0].z = mNode[(*MI).second.iV[1]].z;
+    // Applying the nodes
+    vVertices.reserve(mNode.size());
+    for (std::map<int, NODE>::iterator MI=mNode.begin(); MI!=mNode.end(); MI++) {
+        vVertices.push_back(Base::Vector3f(MI->second.x, MI->second.y, MI->second.z));
+    }
 
-    clMeshFacet._aclPoints[1].x = mNode[(*MI).second.iV[0]].x;
-    clMeshFacet._aclPoints[1].y = mNode[(*MI).second.iV[0]].y;
-    clMeshFacet._aclPoints[1].z = mNode[(*MI).second.iV[0]].z;
+    // Converting data to Mesh. Negative conversion for right orientation of normal-vectors.
+    vTriangle.reserve(mTria.size());
+    for (std::map<int, TRIA>::iterator MI=mTria.begin(); MI!=mTria.end(); MI++) {
+        clMeshFacet._aulPoints[0] = (*MI).second.iV[1];
+        clMeshFacet._aulPoints[1] = (*MI).second.iV[0];
+        clMeshFacet._aulPoints[2] = (*MI).second.iV[2];
+        vTriangle.push_back (clMeshFacet);
+    }
 
-    clMeshFacet._aclPoints[2].x = mNode[(*MI).second.iV[2]].x;
-    clMeshFacet._aclPoints[2].y = mNode[(*MI).second.iV[2]].y;
-    clMeshFacet._aclPoints[2].z = mNode[(*MI).second.iV[2]].z;
+    // make sure to add only vertices which are referenced by the triangles
+    _rclMesh.Merge(vVertices, vTriangle);
 
-    vTriangle.push_back (clMeshFacet);
-  }
-
-  _rclMesh = vTriangle;
-
-  return true;
+    return true;
 }
 
 /** Loads a Cadmould FE file. */
 bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 {
-  if ((rstrIn.is_open() == false) || (rstrIn.bad() == true))
+    if ((!rstrIn) || (rstrIn.bad() == true))
+        return false;
+    assert(0);
     return false;
-
-  char szLine[100];
-  unsigned long ulNumNodes, ulNumElems;
-
-  MeshGeomFacet clMeshFacet;
-  std::vector <MeshGeomFacet> vTriangle;
- 
-  std::map <int, NODE> node;
-  std::map <int, TRIA> elem;
-
-  if ((rstrIn.eof() == false) && (rstrIn.bad() == false))
-  {
-    rstrIn.getline(szLine, 100);
-    upper(ltrim(szLine));
-    if (sscanf(szLine, "%lu %lu", &ulNumNodes, &ulNumElems)!=2)
-      return false;
-    Base::Console().Log("Expected number of nodes: %d, number of elements: %d\n", ulNumNodes, ulNumElems);
-  }
-  else 
-    return false;
-
-  unsigned long ulNumElemsCounter = 1;
-  while ((ulNumElemsCounter<=ulNumElems) && (rstrIn.eof() == false) && (rstrIn.bad() == false))
-  {
-    rstrIn.getline(szLine, 100);
-    upper(ltrim(szLine));
-    if (sscanf(szLine, "%d %d %d", &(elem[ulNumElemsCounter].iV[0]),
-                                   &(elem[ulNumElemsCounter].iV[1]),
-                                   &(elem[ulNumElemsCounter].iV[2])) != 3)
-    ulNumElemsCounter++;
-  }
-  unsigned long ulNumNodesCounter = 1;
-  while ((ulNumNodesCounter<=ulNumNodes) && (rstrIn.eof() == false) && (rstrIn.bad() == false))
-  {
-    rstrIn.getline(szLine, 100);
-    upper(ltrim(szLine));
-    if(sscanf(szLine, "%f %f %f", &(node[ulNumNodesCounter].x),
-                                  &(node[ulNumNodesCounter].y),
-                                  &(node[ulNumNodesCounter].z)) != 3)
-    ulNumNodesCounter++;
-  }
-
-  unsigned long ulNumCyl = 0;
-  /* Converting data to Mesh. Negativ convertation for right orientation of normal-vectors. */
-  for (std::map<int, TRIA>::iterator MI=elem.begin(); MI!=elem.end(); MI++)
-  {
-    if ((*MI).second.iV[2] == -1) 
-    {
-      ulNumCyl++;
-      continue;
-    }
-    clMeshFacet._aclPoints[0].x = node[(*MI).second.iV[0]].x;
-    clMeshFacet._aclPoints[0].y = node[(*MI).second.iV[0]].y;
-    clMeshFacet._aclPoints[0].z = node[(*MI).second.iV[0]].z;
-
-    clMeshFacet._aclPoints[1].x = node[(*MI).second.iV[1]].x;
-    clMeshFacet._aclPoints[1].y = node[(*MI).second.iV[1]].y;
-    clMeshFacet._aclPoints[1].z = node[(*MI).second.iV[1]].z;
-
-    clMeshFacet._aclPoints[2].x = node[(*MI).second.iV[2]].x;
-    clMeshFacet._aclPoints[2].y = node[(*MI).second.iV[2]].y;
-    clMeshFacet._aclPoints[2].z = node[(*MI).second.iV[2]].z;
-
-    vTriangle.push_back (clMeshFacet);
-  }
-
-  _rclMesh = vTriangle;
-
-  return true;
 }
 
 // --------------------------------------------------------------
@@ -1057,15 +988,16 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
     while (clIter < clEnd) {
         pclFacet = &(*clIter);
       
-        // normale
+        // normal
         rstrOut << "  facet normal " << pclFacet->GetNormal().x << " " 
                                      << pclFacet->GetNormal().y << " "
                                      << pclFacet->GetNormal().z << std::endl;
         rstrOut << "    outer loop" << std::endl;
 
+        // vertices
         for (i = 0; i < 3; i++) {
             rstrOut << "      vertex "  << pclFacet->_aclPoints[i].x << " "
-                                        << pclFacet->_aclPoints[i].y << "  "
+                                        << pclFacet->_aclPoints[i].y << " "
                                         << pclFacet->_aclPoints[i].z << std::endl;
         }
 
@@ -1107,19 +1039,19 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
     ulCtFacet = 0;
     while (clIter < clEnd) {
         pclFacet = &(*clIter);
-        // Normale
+        // normal
         rstrOut.write((const char*)&(pclFacet->GetNormal().x), sizeof(float));
         rstrOut.write((const char*)&(pclFacet->GetNormal().y), sizeof(float));
         rstrOut.write((const char*)&(pclFacet->GetNormal().z), sizeof(float));
 
-        // Eckpunkte
+        // vertices
         for (i = 0; i < 3; i++) {
             rstrOut.write((const char*)&(pclFacet->_aclPoints[i].x), sizeof(float));
             rstrOut.write((const char*)&(pclFacet->_aclPoints[i].y), sizeof(float));
             rstrOut.write((const char*)&(pclFacet->_aclPoints[i].z), sizeof(float));
         }
 
-        // Attribut 
+        // attribute 
         rstrOut.write((const char*)&usAtt, sizeof(usAtt));
 
         ++clIter;
@@ -1140,11 +1072,13 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
 
     Base::SequencerLauncher seq("saving...", _rclMesh.CountPoints() + _rclMesh.CountFacets());  
 
+    // vertices
     for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
         rstrOut << "V " << it->x << " " << it->y << " " << it->z << std::endl;
         Base::Sequencer().next( true ); // allow to cancel
     }
 
+    // facet indices
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
         rstrOut << "F " << it->_aulPoints[0]+1 << "/" << it->_aulPoints[0]+1 << " "
                         << it->_aulPoints[1]+1 << "/" << it->_aulPoints[1]+1 << " "
@@ -1177,7 +1111,7 @@ void MeshOutput::SaveXML (Base::Writer &writer) const
     writer.decInd();
     writer.Stream() << writer.ind() << "</Points>" << std::endl;
 
-    // write the faces....
+    // write the faces
     writer.Stream() <<writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
 
     writer.incInd();
@@ -1201,292 +1135,250 @@ void MeshOutput::SaveXML (Base::Writer &writer) const
 /** Writes an OpenInventor file. */
 bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
 {
-  if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
-    return false;
+    if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
+        return false;
 
-  MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
-  MeshPointIterator clPtIter(_rclMesh), clPtEnd(_rclMesh);
-  const MeshGeomFacet* pclFacet;
-  unsigned long ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
-  char szBuf[200];
+    MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+    MeshPointIterator clPtIter(_rclMesh), clPtEnd(_rclMesh);
+    const MeshGeomFacet* pclFacet;
+    unsigned long ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
 
-  Base::SequencerLauncher seq("Saving...", _rclMesh.CountFacets() + 1);
+    Base::SequencerLauncher seq("Saving...", _rclMesh.CountFacets() + 1);
+    rstrOut.precision(6);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
 
-  // Header info
-  strcpy(szBuf, "#Inventor V2.1 ascii\n\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "# Created by FreeCAD <http://free-cad.sourceforge.net>\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# Triangle mesh contains %lu vertices and %lu faces\n",
-      _rclMesh.CountPoints(), _rclMesh.CountFacets());
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "Separator {\n\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "  Label {\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "    label \"Triangle mesh\"\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+    // Header info
+    rstrOut << "#Inventor V2.1 ascii\n" << std::endl;
+    rstrOut << "# Created by FreeCAD <http://free-cad.sourceforge.net>" << std::endl;
+    rstrOut << "# Triangle mesh contains " << _rclMesh.CountPoints() << " vertices"
+            << " and " << _rclMesh.CountFacets() << " faces" << std::endl;
+    rstrOut << "Separator {\n" << std::endl;
+    rstrOut << "  Label {" << std::endl;
+    rstrOut << "    label \"Triangle mesh\"\n  }" << std::endl;
 
-  // write out the normals of the facets
-  strcpy(szBuf, "  Normal { \n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "    vector [ ");
-  rstrOut.write(szBuf, strlen(szBuf));
+    // write out the normals of the facets
+    rstrOut << "  Normal { " << std::endl;
+    rstrOut << "    vector [ ";
 
-  clIter.Begin();
-  clEnd.End();
-  ulCtFacet = 0;
+    clIter.Begin();
+    clEnd.End();
+    ulCtFacet = 0;
 
-  pclFacet = &(*clIter);
-  sprintf(szBuf, "%.6f  %.6f  %.6f", pclFacet->GetNormal().x,
-          pclFacet->GetNormal().y, pclFacet->GetNormal().z);
-  rstrOut.write(szBuf, strlen(szBuf));
-  ++clIter;
-
-  while (clIter < clEnd)
-  {
     pclFacet = &(*clIter);
-    sprintf(szBuf, ",\n        %.6f  %.6f  %.6f", pclFacet->GetNormal().x,
-            pclFacet->GetNormal().y, pclFacet->GetNormal().z);
-    rstrOut.write(szBuf, strlen(szBuf));
+    rstrOut << pclFacet->GetNormal().x << "  "
+            << pclFacet->GetNormal().y << "  "
+            << pclFacet->GetNormal().z;
     ++clIter;
 
-    Base::Sequencer().next( true ); // allow to cancel
-  }
-  strcpy(szBuf, " ]\n\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+    while (clIter < clEnd) {
+        pclFacet = &(*clIter);
+        rstrOut << ",\n        "
+                << pclFacet->GetNormal().x << "  "
+                << pclFacet->GetNormal().y << "  "
+                << pclFacet->GetNormal().z;
+        ++clIter;
 
-  // coordinates of the vertices
-  strcpy(szBuf, "  NormalBinding {\n    value PER_FACE\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf, "  Coordinate3 {\n    point [ ");
-  rstrOut.write(szBuf, strlen(szBuf));
+        Base::Sequencer().next( true ); // allow to cancel
+    }
 
-  clPtIter.Begin();
-  clPtEnd.End();
-  ulCtFacet = 0;
+    rstrOut << " ]\n\n  }" << std::endl;
 
-  sprintf(szBuf, "%.6f  %.6f  %.6f", clPtIter->x, clPtIter->y, clPtIter->z);
-  rstrOut.write(szBuf, strlen(szBuf));
-  ++clPtIter;
+    // coordinates of the vertices
+    rstrOut << "  NormalBinding {\n    value PER_FACE\n  }" << std::endl;
+    rstrOut << "  Coordinate3 {\n    point [ ";
 
-  while (clPtIter < clPtEnd)
-  {
-    sprintf(szBuf, ",\n        %.6f  %.6f  %.6f", clPtIter->x, clPtIter->y, clPtIter->z);
-    rstrOut.write(szBuf, strlen(szBuf));
+    clPtIter.Begin();
+    clPtEnd.End();
+    ulCtFacet = 0;
+
+    rstrOut << clPtIter->x << "  "
+            << clPtIter->y << "  "
+            << clPtIter->z;
     ++clPtIter;
 
-    Base::Sequencer().next( true ); // allow to cancel
-  }
-  strcpy(szBuf, " ]\n\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  // and finally the facets with their point indices
-  strcpy(szBuf, "  IndexedFaceSet {\n    coordIndex [ ");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  const MeshFacet clFacet = _rclMesh.GetFacets()[0];
-  sprintf(szBuf, "%lu, %lu, %lu, %d", clFacet._aulPoints[0],
-            clFacet._aulPoints[1], clFacet._aulPoints[2], - 1);
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  unsigned long i = 1;
-  while (i < ulAllFacets)
-  {
-    // write two triples per line
-    const MeshFacet clFacet = _rclMesh.GetFacets()[i];
-    if ( i%2==0 ) {
-      sprintf(szBuf, ",\n        %lu, %lu, %lu, %d", clFacet._aulPoints[0],
-                clFacet._aulPoints[1], clFacet._aulPoints[2], -1);
-    } else {
-      sprintf(szBuf, ", %lu, %lu, %lu, %d", clFacet._aulPoints[0],
-                clFacet._aulPoints[1], clFacet._aulPoints[2], -1);
+    while (clPtIter < clPtEnd) {
+        rstrOut << ",\n        " 
+                << clPtIter->x << "  "
+                << clPtIter->y << "  "
+                << clPtIter->z;
+        ++clPtIter;
+        Base::Sequencer().next( true ); // allow to cancel
     }
-    rstrOut.write(szBuf, strlen(szBuf));
-    ++i;
-  }
 
+    rstrOut << " ]\n\n  }" << std::endl;
 
-  strcpy(szBuf, " ]\n\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+    // and finally the facets with their point indices
+    rstrOut << "  IndexedFaceSet {\n    coordIndex [ ";
 
-  strcpy(szBuf, "#End of triangle mesh \n}\n\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+    const MeshFacet clFacet = _rclMesh.GetFacets()[0];
+    rstrOut << clFacet._aulPoints[0] << ", "
+            << clFacet._aulPoints[1] << ", "
+            << clFacet._aulPoints[2] << ", -1";
 
-  return true;
+    unsigned long i = 1;
+    while (i < ulAllFacets) {
+        // write two triples per line
+        const MeshFacet clFacet = _rclMesh.GetFacets()[i];
+        if ( i%2==0 ) {
+            rstrOut << ",\n        "
+                    << clFacet._aulPoints[0] << ", "
+                    << clFacet._aulPoints[1] << ", "
+                    << clFacet._aulPoints[2] << ", -1";
+        }
+        else {
+            rstrOut << ", "
+                    << clFacet._aulPoints[0] << ", "
+                    << clFacet._aulPoints[1] << ", "
+                    << clFacet._aulPoints[2] << ", -1";
+        }
+        ++i;
+    }
+
+    rstrOut << " ]\n\n  }" << std::endl;
+    rstrOut << "#End of triangle mesh \n}\n" << std::endl;
+
+    return true;
 }
 
 /** Writes a Nastran file. */
 bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
 {
-  if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
-    return false;
+    if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
+        return false;
 
-  MeshPointIterator clPIter(_rclMesh);
-  MeshFacetIterator clTIter(_rclMesh);
-  char szBuf[200];
-  int iIndx = 1, iDec, iSign, iCount = 0;
+    MeshPointIterator clPIter(_rclMesh);
+    MeshFacetIterator clTIter(_rclMesh);
+    int iIndx = 1, iDec, iSign, iCount = 0;
 
-  Base::Sequencer().start("Saving...", _rclMesh.CountFacets() + 1);
-  
-  for (clPIter.Init(); clPIter.More(); clPIter.Next())
-  {
-    strcpy(szBuf, "GRID");
-    rstrOut.write(szBuf, strlen(szBuf));
+    Base::Sequencer().start("Saving...", _rclMesh.CountFacets() + 1);
 
-#ifdef __GNUC__
-    fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#else
-    _fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#endif
-    int i;
-    for (i = iDec; i <= 11; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    sprintf(szBuf, "%d", iIndx);
-    rstrOut.write(szBuf, strlen(szBuf));
+    rstrOut.precision(3);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    for (clPIter.Init(); clPIter.More(); clPIter.Next()) {
+        rstrOut << "GRID";
 
 #ifdef __GNUC__
-    fcvt ((*clPIter).x, iCount, &iDec, &iSign);
+        fcvt ((float)iIndx, iCount, &iDec, &iSign);
 #else
-    _fcvt ((*clPIter).x, iCount, &iDec, &iSign);
+        _fcvt ((float)iIndx, iCount, &iDec, &iSign);
 #endif
-    if (iSign == 0)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    if (fabs((*clPIter).x) < pow (10.0, (iDec-1))) iDec--;
-    if (iDec <= 0) iDec = 1;
-    for (i = iDec; i <= 10; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    sprintf(szBuf, "%.3f", (*clPIter).x);
-    rstrOut.write(szBuf, strlen(szBuf));
+        for (int i = iDec; i <= 11; i++) {
+            rstrOut << " ";
+        }
+
+        rstrOut << iIndx;
 
 #ifdef __GNUC__
-    fcvt ((*clPIter).y, iCount, &iDec, &iSign);
+        fcvt ((*clPIter).x, iCount, &iDec, &iSign);
 #else
-    _fcvt ((*clPIter).y, iCount, &iDec, &iSign);
+        _fcvt ((*clPIter).x, iCount, &iDec, &iSign);
 #endif
-    if (iSign == 0)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    if (fabs((*clPIter).y) < pow (10.0, (iDec-1))) iDec--;
-    if (iDec <= 0) iDec = 1;
-    for (i = iDec; i <= 2; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    sprintf(szBuf, "%.3f", (*clPIter).y);
-    rstrOut.write(szBuf, strlen(szBuf));
+        if (iSign == 0) {
+            rstrOut << " ";
+        }
+        if (fabs((*clPIter).x) < pow (10.0, (iDec-1))) iDec--;
+        if (iDec <= 0) iDec = 1;
+        for (int i = iDec; i <= 10; i++) {
+            rstrOut << " ";
+        }
+
+        rstrOut << clPIter->x;
 
 #ifdef __GNUC__
-    fcvt ((*clPIter).z, iCount, &iDec, &iSign);
+        fcvt ((*clPIter).y, iCount, &iDec, &iSign);
 #else
-    _fcvt ((*clPIter).z, iCount, &iDec, &iSign);
+        _fcvt ((*clPIter).y, iCount, &iDec, &iSign);
 #endif
-    if (iSign == 0)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
-    if (fabs((*clPIter).z) < pow (10.0, (iDec-1))) iDec--;
-    if (iDec <= 0) iDec = 1;
-    for (i = iDec; i <= 2; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
+        if (iSign == 0) {
+            rstrOut << " ";
+        }
+        if (fabs((*clPIter).y) < pow (10.0, (iDec-1))) iDec--;
+        if (iDec <= 0) iDec = 1;
+        for (int i = iDec; i <= 2; i++) {
+            rstrOut << " ";
+        }
 
-    sprintf(szBuf, "%.3f\n", (*clPIter).z);
-    rstrOut.write(szBuf, strlen(szBuf));
-
-    iIndx++;
-    Base::Sequencer().next();
-  }
-
-  iIndx = 1;
-  for (clTIter.Init(); clTIter.More(); clTIter.Next())
-  {
-    strcpy(szBuf, "CTRIA3");
-    rstrOut.write(szBuf, strlen(szBuf));
+        rstrOut << clPIter->y;
 
 #ifdef __GNUC__
-    fcvt ((float)iIndx, iCount, &iDec, &iSign);
+        fcvt ((*clPIter).z, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)iIndx, iCount, &iDec, &iSign);
+        _fcvt ((*clPIter).z, iCount, &iDec, &iSign);
 #endif
-    int i;
-    for (i = iDec; i <= 9; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
+        if (iSign == 0) {
+            rstrOut << " ";
+        }
+        if (fabs((*clPIter).z) < pow (10.0, (iDec-1))) iDec--;
+        if (iDec <= 0) iDec = 1;
+        for (int i = iDec; i <= 2; i++) {
+            rstrOut << " ";
+        }
+
+        rstrOut << clPIter->z << std::endl;
+
+        iIndx++;
+        Base::Sequencer().next();
     }
 
-    sprintf(szBuf, "%d       0", iIndx);
-    rstrOut.write(szBuf, strlen(szBuf));
+    iIndx = 1;
+    for (clTIter.Init(); clTIter.More(); clTIter.Next()) {
+        rstrOut << "CTRIA3";
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
+        fcvt ((float)iIndx, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
+        _fcvt ((float)iIndx, iCount, &iDec, &iSign);
 #endif
-    for (i = iDec; i <= 7; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
+        for (int i = iDec; i <= 9; i++) {
+            rstrOut << " ";
+        }
 
-    sprintf(szBuf, "%lu", clTIter.GetIndices()._aulPoints[1]+1);
-    rstrOut.write(szBuf, strlen(szBuf));
+        rstrOut << iIndx << "       0";
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
+        fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
+        _fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
 #endif
-    for (i = iDec; i <= 7; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
+        for (int i = iDec; i <= 7; i++) {
+            rstrOut << " ";
+        }
 
-    sprintf(szBuf, "%lu", clTIter.GetIndices()._aulPoints[0]+1);
-    rstrOut.write(szBuf, strlen(szBuf));
+        rstrOut << clTIter.GetIndices()._aulPoints[1]+1;
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
+        fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
+        _fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
 #endif
-    for (i = iDec; i <= 7; i++)
-    {
-      strcpy(szBuf, " ");
-      rstrOut.write(szBuf, strlen(szBuf));
-    }
+        for (int i = iDec; i <= 7; i++) {
+            rstrOut << " ";
+        }
 
-    sprintf(szBuf, "%lu\n", clTIter.GetIndices()._aulPoints[2]+1);
-    rstrOut.write(szBuf, strlen(szBuf));
+        rstrOut << clTIter.GetIndices()._aulPoints[0]+1;
+
+#ifdef __GNUC__
+        fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
+#else
+        _fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
+#endif
+        for (int i = iDec; i <= 7; i++) {
+            rstrOut << " ";
+        }
+
+        rstrOut << clTIter.GetIndices()._aulPoints[2]+1 << std::endl;
 
 //    sprintf(szBuf, "CTRIA3 %d 0 %d %d %d\n", iIndx, clTIter.GetIndices()._aulPoints[0]+1, clTIter.GetIndices()._aulPoints[1]+1, clTIter.GetIndices()._aulPoints[2]+1);
 //    rstrOut.write(szBuf, strlen(szBuf));
-    iIndx++;
-    Base::Sequencer().next();
-  }
-  strcpy(szBuf, "ENDDATA");
-  rstrOut.write(szBuf, strlen(szBuf));
+        iIndx++;
+        Base::Sequencer().next();
+    }
 
-  Base::Sequencer().stop();
+    rstrOut << "ENDDATA";
 
-  return true;
+    Base::Sequencer().stop();
+
+    return true;
 }
 
 /** Writes a Cadmould FE file. */
@@ -1527,523 +1419,522 @@ bool MeshOutput::SavePython (std::ostream &str) const
 class MeshVRML
 {
 public:
-  MeshVRML (const MeshKernel &rclM);
-  MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
-  ~MeshVRML (void){}
+    MeshVRML (const MeshKernel &rclM);
+    MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
+    ~MeshVRML (void){}
 
-  bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
-  bool Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
+    bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
+    bool Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, 
+               const App::Material &rclMat, bool bColorPerVertex = true) const;
 
 protected:
-  void WriteVRMLHeaderInfo(std::ostream &rstrOut) const;
-  void WriteVRMLAnnotations(std::ostream &rstrOut) const;
-  void WriteVRMLViewpoints(std::ostream &rstrOut) const;
+    void WriteVRMLHeaderInfo(std::ostream &rstrOut) const;
+    void WriteVRMLAnnotations(std::ostream &rstrOut) const;
+    void WriteVRMLViewpoints(std::ostream &rstrOut) const;
 
-  const MeshKernel &_rclMesh;   // reference to mesh data structure
-  VRMLInfo* _pclVRMLInfo;
+    const MeshKernel &_rclMesh;   // reference to mesh data structure
+    VRMLInfo* _pclVRMLInfo;
 };
 
 /** Writes a VRML file. */
 bool MeshOutput::SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const
 {
-  return MeshVRML(_rclMesh).Save(rstrOut, rclMat);
+    return MeshVRML(_rclMesh).Save(rstrOut, rclMat);
 }
 
 MeshVRML::MeshVRML (const MeshKernel &rclM)
-: _rclMesh(rclM), _pclVRMLInfo(0)
+  : _rclMesh(rclM), _pclVRMLInfo(0)
 {
 }
 
 MeshVRML::MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo)
-: _rclMesh(rclM), _pclVRMLInfo(pclVRMLInfo)
+  : _rclMesh(rclM), _pclVRMLInfo(pclVRMLInfo)
 {
 }
 
-bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex) const
+bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, 
+                     const App::Material &rclMat, bool bColorPerVertex) const
 {
-  if ((!rstrOut) || (rstrOut.bad() == true) ||
-      (_rclMesh.CountFacets() == 0))
-  {
-    return false;
-  }
+    if ((!rstrOut) || (rstrOut.bad() == true) || (_rclMesh.CountFacets() == 0))
+        return false;
+
+    Base::BoundBox3f clBB = _rclMesh.GetBoundBox();
+    Base::Vector3f   clCenter = clBB.CalcCenter();
+
+    Base::SequencerLauncher seq("Saving VRML file...", 
+        _rclMesh.CountPoints() + raclColor.size() + _rclMesh.CountFacets());
+
+    rstrOut << "#VRML V2.0 utf8" << std::endl;
+
+    if (_pclVRMLInfo)
+        WriteVRMLHeaderInfo(rstrOut);
+    else
+        rstrOut << "WorldInfo {\n"
+                << "  title \"Exported tringle mesh to VRML97\"\n"
+                << "  info [\"Created by FreeCAD\"\n"
+                << "        \"<http://free-cad.sourceforge.net>\"]\n"
+                << "}\n";
+
+    // Write background
+    // Note: We must write the background info straight after the header and before any geometry.
+    // To see the background color in the Inventor viewer we must either skip the skyAngle property
+    // or set it to 1.57, otherwise we'll see a strange beam in the scene.
+    // FIXME: Test this also with external VRML viewer plugins.
+    if (_pclVRMLInfo) {
+        float r = float(_pclVRMLInfo->_clColor.r) / 255.0f;
+        float g = float(_pclVRMLInfo->_clColor.g) / 255.0f;
+        float b = float(_pclVRMLInfo->_clColor.b) / 255.0f;
+        rstrOut.precision(1);
+        rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+        rstrOut << "Background\n{\n  skyAngle    1.57\n  skyColor    "
+                << r << " " << g << " " << b << "\n}" << std::endl;
+    }
+    else {
+        rstrOut << "Background\n{\n  skyAngle    1.57\n  skyColor    "
+                << "0.1 0.2 0.2\n}" << std::endl;
+    }
+  
+    // Transform
+    rstrOut.precision(3);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    rstrOut << "Transform\n{\n"
+            << "scale             1 1 1\n"
+            << "rotation          0 0 1 0\n"
+            << "scaleOrientation  0 0 1 0\n"
+            << "bboxCenter        0 0 0\n"
+            << "bboxSize      "
+            << clBB.LengthX() << " "
+            << clBB.LengthY() << " "
+            << clBB.LengthZ() << std::endl;
+    rstrOut << "center        "
+            << 0.0f << "  "
+            << 0.0f << "  "
+            << 0.0f << std::endl;
+    rstrOut << "translation  "
+            << -clCenter.x << "  "
+            << -clCenter.y << "  "
+            << -clCenter.z << std::endl;
+
+    rstrOut << "children\n[\n";
+    rstrOut << "Shape\n{" << std::endl;
+
+    // write appearance
+    rstrOut << "  appearance Appearance\n  {\n    material Material\n    {\n";
+    rstrOut << "      ambientIntensity 0.2" << std::endl;
+
+    rstrOut.precision(2);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    if (raclColor.size() > 0) { // black
+        rstrOut << "      diffuseColor     0.2 0.2 0.2\n";
+        rstrOut << "      emissiveColor    0.2 0.2 0.2\n";
+        rstrOut << "      specularColor    0.2 0.2 0.2\n";
+    }
+    else {
+        App::Color clCol;
+        clCol = rclMat.diffuseColor;
+        rstrOut << "      diffuseColor      "
+                << clCol.r << " "
+                << clCol.g << " "
+                << clCol.b << std::endl;
+        clCol = rclMat.emissiveColor;
+        rstrOut << "      emissiveColor     "
+                << clCol.r << " "
+                << clCol.g << " "
+                << clCol.b << std::endl;
+        clCol = rclMat.specularColor;
+        rstrOut << "      specularColor     "
+                << clCol.r << " "
+                << clCol.g << " "
+                << clCol.b << std::endl;
+    }
+
+    rstrOut << "      shininess        " << rclMat.shininess << std::endl;
+    rstrOut << "      transparency     " << rclMat.transparency << std::endl;
+    rstrOut << "    }\n  }" << std::endl; // end write appearance
 
 
-  Base::BoundBox3f clBB = _rclMesh.GetBoundBox();
-  Base::Vector3f   clCenter = clBB.CalcCenter();
+    // write IndexedFaceSet
+    rstrOut << "  geometry IndexedFaceSet\n  {\n";
+    rstrOut << "    solid   FALSE\n";
 
-  Base::SequencerLauncher seq("Saving VRML file...", _rclMesh.CountPoints() + raclColor.size() + _rclMesh.CountFacets());
+    // write coords
+    rstrOut << "    coord Coordinate\n    {\n      point\n      [\n";
+    MeshPointIterator pPIter(_rclMesh);
+    unsigned long i = 0, k = _rclMesh.CountPoints();
+    rstrOut.precision(3);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    for (pPIter.Init(); pPIter.More(); pPIter.Next()) {
+        rstrOut << "        "
+                << pPIter->x << " "
+                << pPIter->y << " "
+                << pPIter->z;
+        if (i++ < (k-1))
+            rstrOut << ",\n";
+        else
+            rstrOut << "\n";
 
-  char szBuf[1000];
-  strcpy(szBuf, "#VRML V2.0 utf8\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+        Base::Sequencer().next();
+    }
 
-  if (_pclVRMLInfo)
-    WriteVRMLHeaderInfo(rstrOut);
-  else{
-    strcpy(szBuf, "WorldInfo {\n"
-                  "  title \"Exported tringle mesh to VRML97\"\n"
-                  "  info [\"Created by FreeCAD\"\n"
-                  "        \"<http://free-cad.sourceforge.net>\"]\n"
-                  "}\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-  }
+    rstrOut << "      ]\n    }" << std::endl;  // end write coord
 
-  // Write background
-  // Note: We must write the background info straight after the header and before any geometry.
-  // To see the background color in the Inventor viewer we must either skip the skyAngle property
-  // or set it to 1.57, otherwise we'll see a strange beam in the scene.
-  // FIXME: Test this also with external VRML viewer plugins.
-  if (_pclVRMLInfo)
-  {
+    rstrOut << "    colorPerVertex  " 
+            << (bColorPerVertex ? "TRUE" : "FALSE") << std::endl;
+
+    if (raclColor.size() > 0) {
+        // write colors for each vertex
+        rstrOut << "    color Color\n    {\n       color\n       [\n";
+        rstrOut.precision(3);
+        rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+        for (std::vector<App::Color>::const_iterator pCIter = raclColor.begin();
+            pCIter != raclColor.end(); pCIter++) {
+            rstrOut << "         "
+                    << float(pCIter->r) / 255.0f << " "
+                    << float(pCIter->g) / 255.0f << " "
+                    << float(pCIter->b) / 255.0f;
+            if (pCIter < (raclColor.end() - 1))
+                rstrOut << ",\n";
+            else
+                rstrOut << "\n";
+            Base::Sequencer().next();
+        }
+
+        rstrOut << "      ]\n    }" << std::endl;
+    }
+
+    // write face index
+    rstrOut << "    coordIndex\n    [\n";
+    MeshFacetIterator pFIter(_rclMesh);
+    i = 0, k = _rclMesh.CountFacets();
+    for (pFIter.Init(); pFIter.More(); pFIter.Next()) {
+        MeshFacet clFacet = pFIter.GetIndices();
+        rstrOut << "      "
+                << clFacet._aulPoints[0] << ", "
+                << clFacet._aulPoints[1] << ", "
+                << clFacet._aulPoints[2] << ", -1";
+        if (i++ < (k-1))
+            rstrOut << ",\n";
+        else
+            rstrOut << "\n";
+
+        Base::Sequencer().next();
+    }
+
+    rstrOut << "    ]\n  }" << std::endl;  // End IndexedFaceSet
+    rstrOut << "}" << std::endl;  // End Shape
+
+    // close children and Transform
+    rstrOut << "]\n}" << std::endl;
+
+    // write viewpoints
+    rstrOut.precision(3);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    for (i = 0; i < 6; i++) {
+        rstrOut << "Viewpoint\n{\n"
+                << "  jump         TRUE\n";
+
+        Base::Vector3f clPos = clCenter;
+        float fLen  = clBB.CalcDiagonalLength();
+        switch (i)
+        {
+        case 0:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x;        pos.y = clPos.y;        pos.z = clPos.z + fLen;
+                up.x  = 0.0;            up.y  = 1.0;            up.z  = 0.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"top\"\n";
+                clPos.z += fLen;
+                break;
+            }
+        case 1:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x;        pos.y = clPos.y;        pos.z = clPos.z - fLen;
+                up.x  = 0.0;            up.y  = -1.0;           up.z  = 0.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"bottom\"\n";
+                clPos.z -= fLen;
+                break;
+            }
+        case 2:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x;        pos.y = clPos.y - fLen; pos.z = clPos.z;
+                up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"front\"\n";
+                clPos.y -= fLen;
+                break;
+            }
+        case 3:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x;        pos.y = clPos.y + fLen; pos.z = clPos.z;
+                up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"back\"\n";
+                clPos.y += fLen;
+                break;
+            }
+        case 4:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x - fLen; pos.y = clPos.y;        pos.z = clPos.z;
+                up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"right\"\n";
+                clPos.x -= fLen;
+                break;
+            }
+        case 5:
+            {
+                Vector at, pos, up, rot_axis;
+                double rot_angle;
+                at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
+                pos.x = clPos.x + fLen; pos.y = clPos.y;        pos.z = clPos.z;
+                up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
+                Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+                rstrOut << "  orientation   "
+                        << rot_axis.x << " "
+                        << rot_axis.y << " "
+                        << rot_axis.z << " "
+                        << rot_angle << "\n";
+                rstrOut << "  description  \"left\"\n";
+                clPos.x += fLen;
+                break;
+            }
+        }
+
+        rstrOut << "  position     "
+                << clPos.x << " "
+                << clPos.y << " "
+                << clPos.z << "\n}" << std::endl;
+    }
+
+    // write navigation info
+    rstrOut << "NavigationInfo\n{\n"
+            << "  avatarSize       [0.25, 1.6, 0.75]\n"
+            << "  headlight        TRUE\n"
+            << "  speed            1.0\n"
+            << "  type             \"EXAMINE\"\n"
+            << "  visibilityLimit  0.0\n"
+            << "}" << std::endl;
+
+    // write custom viewpoints
+    if (_pclVRMLInfo)
+        WriteVRMLViewpoints(rstrOut);
+
+    if (_pclVRMLInfo)
+        WriteVRMLAnnotations(rstrOut);
+
+    return true;
+}
+
+void MeshVRML::WriteVRMLHeaderInfo(std::ostream &rstrOut) const
+{
+    // save information about file
+    //
+    rstrOut << "#=================================================#\n#\n"
+            << "# F I L E   I N F O R M A T I O N\n#\n"
+            << "# This file was created by " << _pclVRMLInfo->_clAuthor << "\n"
+            << "# Creation Date:    " << _pclVRMLInfo->_clDate << "\n"
+            << "# Company:          " << _pclVRMLInfo->_clCompany << "\n";
+    std::vector<std::string>::const_iterator sIt = _pclVRMLInfo->_clComments.begin();
+    rstrOut << "# Further comments: " << *sIt << "\n";
+    for (sIt++ ;sIt != _pclVRMLInfo->_clComments.end(); ++sIt) {
+        rstrOut << "#                   " << *sIt << "\n";
+    }
+    rstrOut << "#=================================================#\n" << std::endl;
+}
+
+void MeshVRML::WriteVRMLAnnotations(std::ostream &rstrOut) const
+{
     float r = float(_pclVRMLInfo->_clColor.r) / 255.0f;
     float g = float(_pclVRMLInfo->_clColor.g) / 255.0f;
     float b = float(_pclVRMLInfo->_clColor.b) / 255.0f;
-    sprintf(szBuf, "Background\n{\n  skyAngle    1.57\n  skyColor    %.1f %.1f %.1f\n}\n", r, g, b);
-  }
-  else
-    strcpy(szBuf, "Background\n{\n  skyAngle    1.57\n  skyColor    0.1 0.2 0.2\n}\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  
-  // Transform
-  strcpy(szBuf, "Transform\n{\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf,  "scale             1 1 1\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf,  "rotation          0 0 1 0\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf,  "scaleOrientation  0 0 1 0\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  strcpy(szBuf,  "bboxCenter        0 0 0\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "bboxSize      %.3f %.3f %.3f\n", clBB.LengthX(), clBB.LengthY(), clBB.LengthZ());
-  rstrOut.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "center        %.3f  %.3f  %.3f\n", 0.0f, 0.0f, 0.0f);
-  rstrOut.write(szBuf, strlen(szBuf));
-  sprintf(szBuf,  "translation  %.3f  %.3f  %.3f\n", -clCenter.x, -clCenter.y, -clCenter.z);
-  rstrOut.write(szBuf, strlen(szBuf));
+    float textr = 1.0f - r;
+    float textg = 1.0f - g;
+    float textb = 1.0f - b;
 
-  strcpy(szBuf, "children\n[\n");
-  rstrOut.write(szBuf, strlen(szBuf));
+    if (fabs(textr-r) < 0.05)
+        textr = 1.0f;
+    if (fabs(textg-g) < 0.05)
+        textg = 1.0f;
+    if (fabs(textb-b) < 0.05)
+        textb = 1.0f;
 
-  strcpy(szBuf, "Shape\n{\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // Begin Shape
-
-  // write appearance
-  strcpy(szBuf, "  appearance Appearance\n  {\n    material Material\n    {\n");
-  strcat(szBuf, "      ambientIntensity 0.2\n");
-  if (raclColor.size() > 0) // black
-  {
-    strcat(szBuf, "      diffuseColor     0.2 0.2 0.2\n");
-    strcat(szBuf, "      emissiveColor    0.2 0.2 0.2\n");
-    strcat(szBuf, "      specularColor    0.2 0.2 0.2\n");
-  }
-  else
-  {
-    App::Color clCol;
-    clCol = rclMat.diffuseColor;
-    sprintf(szBuf, "%s      diffuseColor      %.2f %.2f %.2f\n", szBuf, clCol.r , clCol.g  , clCol.b ); 
-    clCol = rclMat.emissiveColor;
-    sprintf(szBuf, "%s      emissiveColor     %.2f %.2f %.2f\n", szBuf, clCol.r , clCol.g  , clCol.b ); 
-    clCol = rclMat.specularColor;
-    sprintf(szBuf, "%s      specularColor     %.2f %.2f %.2f\n", szBuf, clCol.r , clCol.g  , clCol.b ); 
-//    strcat(szBuf, "      diffuseColor     0.2 0.2 0.8\n");
-//    strcat(szBuf, "      emissiveColor    0.2 0.2 0.8\n");
-//    strcat(szBuf, "      specularColor    0.2 0.2 0.8\n");
-  }
-  sprintf(szBuf, "%s      shininess        %.2f\n", szBuf, rclMat.shininess);
-  sprintf(szBuf, "%s      transparency     %.2f\n", szBuf, rclMat.transparency);
-//  strcat(szBuf, "      shininess        0.3\n");
-//  strcat(szBuf, "      transparency     0.0\n");
-  strcat(szBuf, "    }\n  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // end write appearance
-
-
-  strcpy(szBuf, "  geometry IndexedFaceSet\n  {\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // Begin IndexedFaceSet
-
-  strcpy(szBuf, "    solid   FALSE\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  // write coords
-  strcpy(szBuf, "    coord Coordinate\n    {\n      point\n      [\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  MeshPointIterator pPIter(_rclMesh);
-  unsigned long i = 0, k = _rclMesh.CountPoints();
-  for (pPIter.Init(); pPIter.More(); pPIter.Next())
-  {
-    sprintf(szBuf, "        %.3f %.3f %.3f", pPIter->x, pPIter->y, pPIter->z);
-    if (i++ < (k-1))
-      strcat(szBuf, ",\n");
-    else
-      strcat(szBuf, "\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-
-    Base::Sequencer().next();
-  }
-  strcpy(szBuf, "      ]\n    }\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // end write coord  
-
-  sprintf(szBuf, "    colorPerVertex  %s\n", bColorPerVertex ? "TRUE" : "FALSE");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  if (raclColor.size() > 0)
-  {  // write colors for each vertex
-    strcpy(szBuf, "    color Color\n    {\n       color\n       [\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-    
-    for (std::vector<App::Color>::const_iterator pCIter = raclColor.begin(); pCIter != raclColor.end(); pCIter++)
-    { 
-      sprintf(szBuf, "         %.3f %.3f %.3f", float(pCIter->r) / 255.0f, float(pCIter->g) / 255.0f, float(pCIter->b) / 255.0f); 
-      if (pCIter < (raclColor.end() - 1))
-        strcat(szBuf, ",\n");
-      else 
-        strcat(szBuf, "\n");
-      rstrOut.write(szBuf, strlen(szBuf));
-      
-      Base::Sequencer().next();
-    }
-    strcpy(szBuf, "      ]\n    }\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-
-/*
-    strcpy(szBuf, "    colorIndex\n    [\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-    for (int i = 0; i < (_rclMesh.CountPoints() - 1); i++)
-    {
-      sprintf(szBuf, "      %d,\n", i+1);
-      rstrOut.write(szBuf, strlen(szBuf));     
+    // annotationen
+    rstrOut << "DEF User ProximitySensor {\n"
+            << " size        1000000 1000000 1000000\n"
+            << "}\n"
+            << "\n"
+            << "    Group { \n"
+            << "      children [\n"
+            << " DEF UserPos Transform {\n"
+            << "   children [\n"
+            << "     # Text position\n"
+            << "     Transform {\n"
+            << "       translation  -1.0 -0.75 -2\n"
+            << "       children [\n"
+            << "          Transform {\n"
+            << "            translation 1.95 0.75 0\n"
+            << "            children [\n"
+            << "              Shape {\n";
+    if (_pclVRMLInfo->_bSavePicture) {
+        rstrOut << "                appearance Appearance {\n" 
+                << "              texture ImageTexture { \n"
+                << "                url \""
+                << _pclVRMLInfo->_clPicFileName
+                << "\"\n"
+                << "                repeatS FALSE\n"
+                << "                repeatT FALSE\n"
+                << "              }\n"
+                << "                }\n"
+                << "                geometry IndexedFaceSet {\n"
+                << "              coord Coordinate { point [ -0.08 -0.8 0,\n"
+                << "                             0.08 -0.8 0,\n"
+                << "                             0.08  0.8 0,\n"
+                << "                             -0.08  0.8 0\n"
+                << "                           ]\n"
+                << "                       }\n"
+                << "              coordIndex [0,1,2,3, -1]\n"
+                << "              texCoord TextureCoordinate {\n"
+                << "               point   [ 0 0,\n"
+                << "                    1 0,\n"
+                << "                    1 1,\n"
+                << "                   0 1 ]\n"
+                << "              }\n"
+                << "              texCoordIndex	[ 0, 1, 2, 3, -1 ]\n\n"
+                << "             solid FALSE\n"
+                << "                }" << std::endl;
     }
 
-    sprintf(szBuf, "      %d\n    ]\n", _rclMesh.CountPoints());
-    rstrOut.write(szBuf, strlen(szBuf));     
-*/
-  }
-
-  // write face index
-  strcpy(szBuf, "    coordIndex\n    [\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-  MeshFacetIterator pFIter(_rclMesh);
-  i = 0, k = _rclMesh.CountFacets();
-  for (pFIter.Init(); pFIter.More(); pFIter.Next())
-  {
-    MeshFacet clFacet = pFIter.GetIndices();
-    sprintf(szBuf, "      %lu, %lu, %lu, -1", clFacet._aulPoints[0], clFacet._aulPoints[1], clFacet._aulPoints[2]);
-    if (i++ < (k-1))
-      strcat(szBuf, ",\n");
-    else
-      strcat(szBuf, "\n");
-    rstrOut.write(szBuf, strlen(szBuf));
-
-    Base::Sequencer().next();
-  }
-  strcpy(szBuf, "    ]\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // 
-
-  strcpy(szBuf, "  }\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // End IndexedFaceSet
-
-
-  strcpy(szBuf, "}\n");
-  rstrOut.write(szBuf, strlen(szBuf));  // End Shape
-
-  // close children and Transform
-  strcpy(szBuf, "]\n}\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  // write viewpoints
-  for (i = 0; i < 6; i++)
-  {
-    strcpy(szBuf, "Viewpoint\n{\n");
-    strcat(szBuf, "  jump         TRUE\n");
-
-    Base::Vector3f clPos = clCenter;
-    float     fLen  = clBB.CalcDiagonalLength();
-    switch (i)
-    {
-      case 0:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x;        pos.y = clPos.y;        pos.z = clPos.z + fLen;
-        up.x  = 0.0;            up.y  = 1.0;            up.z  = 0.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"top\"\n");
-        clPos.z += fLen;
-        break;
-      }
-      case 1:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x;        pos.y = clPos.y;        pos.z = clPos.z - fLen;
-        up.x  = 0.0;            up.y  = -1.0;           up.z  = 0.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"bottom\"\n");
-        clPos.z -= fLen;
-        break;
-      }
-      case 2:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x;        pos.y = clPos.y - fLen; pos.z = clPos.z;
-        up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"front\"\n");
-        clPos.y -= fLen;
-        break;
-      }
-      case 3:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x;        pos.y = clPos.y + fLen; pos.z = clPos.z;
-        up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"back\"\n");
-        clPos.y += fLen;
-        break;
-      }
-      case 4:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x - fLen; pos.y = clPos.y;        pos.z = clPos.z;
-        up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"right\"\n");
-        clPos.x -= fLen;
-        break;
-      }
-      case 5:
-      {
-        Vector at, pos, up, rot_axis;
-        double rot_angle;
-        at.x  = clPos.x;        at.y  = clPos.y;        at.z  = clPos.z;
-        pos.x = clPos.x + fLen; pos.y = clPos.y;        pos.z = clPos.z;
-        up.x  = 0.0;            up.y  = 0.0;            up.z  = 1.0;
-        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
-        sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-        strcat(szBuf, "  description  \"left\"\n");
-        clPos.x += fLen;
-        break;
-      }
-    }
-    rstrOut.write(szBuf, strlen(szBuf));
-    sprintf(szBuf, "  position     %.3f %.3f %.3f\n", clPos.x, clPos.y, clPos.z);
-    rstrOut.write(szBuf, strlen(szBuf));
-    strcpy(szBuf, "}\n");
-    rstrOut.write(szBuf, strlen(szBuf)); 
-  }
-
-  // write navigation info
-  strcpy(szBuf, "NavigationInfo\n{\n");
-  strcat(szBuf, "  avatarSize       [0.25, 1.6, 0.75]\n");
-  strcat(szBuf, "  headlight        TRUE\n");
-  strcat(szBuf, "  speed            1.0\n");
-  strcat(szBuf, "  type             \"EXAMINE\"\n");
-  strcat(szBuf, "  visibilityLimit  0.0\n");
-  strcat(szBuf, "}\n");
-  rstrOut.write(szBuf, strlen(szBuf));
-
-  // write custom viewpoints
-  if (_pclVRMLInfo)
-  {
-    WriteVRMLViewpoints(rstrOut);
-  }
-
-  if (_pclVRMLInfo)
-    WriteVRMLAnnotations(rstrOut);
-
-  return true;
-}
-
-void MeshVRML::WriteVRMLHeaderInfo(std::ostream &clStream) const
-{
-  char szBuf[1000];
-  // save information about file
-  //
-  sprintf(szBuf, "#=================================================#\n#\n");
-  clStream.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# F I L E   I N F O R M A T I O N\n#\n");
-  clStream.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# This file was created by %s\n", _pclVRMLInfo->_clAuthor.c_str());
-  clStream.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# Creation Date:    %s\n", _pclVRMLInfo->_clDate.c_str());
-  clStream.write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# Company:          %s\n", _pclVRMLInfo->_clCompany.c_str());
-  clStream.write(szBuf, strlen(szBuf));
-  std::vector<std::string>::const_iterator sIt = _pclVRMLInfo->_clComments.begin();
-  sprintf(szBuf, "# Further comments: %s\n", sIt->c_str());
-  clStream.write(szBuf, strlen(szBuf));
-  for (sIt++ ;sIt != _pclVRMLInfo->_clComments.end(); ++sIt)
-  {
-    sprintf(szBuf, "#                   %s\n", sIt->c_str());
-    clStream.write(szBuf, strlen(szBuf));
-  }
-  sprintf(szBuf, "#=================================================#\n\n");
-  clStream.write(szBuf, strlen(szBuf));
-}
-
-void MeshVRML::WriteVRMLAnnotations(std::ostream &clStream) const
-{
-  float r = float(_pclVRMLInfo->_clColor.r) / 255.0f;
-  float g = float(_pclVRMLInfo->_clColor.g) / 255.0f;
-  float b = float(_pclVRMLInfo->_clColor.b) / 255.0f;
-  float textr = 1.0f - r;
-  float textg = 1.0f - g;
-  float textb = 1.0f - b;
-
-  if (fabs(textr-r) < 0.05)
-    textr = 1.0f;
-  if (fabs(textg-g) < 0.05)
-    textg = 1.0f;
-  if (fabs(textb-b) < 0.05)
-    textb = 1.0f;
-
-  // annotationen
-  char szBuf[1000];
-  sprintf(szBuf, 
-    "DEF User ProximitySensor {\n"
-    " size        1000000 1000000 1000000\n"
-    "}\n"
-    "\n"
-    "    Group { \n"
-    "      children [\n"
-    " DEF UserPos Transform {\n"
-    "   children [\n"
-    "     # Text position\n"
-    "     Transform {\n"
-    "       translation  -1.0 -0.75 -2\n"
-    "       children [\n"
-    "		  Transform {\n"
-    "		    translation 1.95 0.75 0\n"
-    "		    children [\n"
-    "		      Shape {\n");
-  clStream.write(szBuf, strlen(szBuf));
-  if (_pclVRMLInfo->_bSavePicture)
-  {
-  sprintf(szBuf, 
-    "		        appearance Appearance {\n" 
-    "			  texture ImageTexture { \n"
-    "			    url \"%s\"\n"
-    "			    repeatS FALSE\n"
-    "			    repeatT FALSE\n"
-    "			  }\n"
-    "		        }\n"
-    "		        geometry IndexedFaceSet {\n"
-    "			  coord Coordinate { point [ -0.08 -0.8 0,\n"
-    "						     0.08 -0.8 0,\n"
-    "						     0.08  0.8 0,\n"
-    "						     -0.08  0.8 0\n"
-    "						   ]\n"
-    "					   }\n"
-    "			  coordIndex [0,1,2,3, -1]\n"
-    "	          texCoord TextureCoordinate {\n"
-    "	            point	[ 0 0,\n"
-    "		            1 0,\n"
-    "		            1 1,\n"
-    "		            0 1 ]\n"
-    "	          }\n"
-    "	          texCoordIndex	[ 0, 1, 2, 3, -1 ]\n\n"
-    "	          solid	FALSE\n"
-    "		        }\n", _pclVRMLInfo->_clPicFileName.c_str());
-  clStream.write(szBuf, strlen(szBuf)); 
-  }
-  sprintf(szBuf, 
-    "		      }\n"
-    "		    ]\n"
-    "		  }\n"
-    "  Shape {\n"
-    "    appearance DEF COAP Appearance {\n"
-    "      material Material {diffuseColor %.1f %.1f %.1f}} # text color\n"
-    "    geometry   DEF MyText Text {\n"
-    "      string \"%s\"\n"          
-    "      fontStyle DEF COFS FontStyle {\n"
-    "        family [ \"Verdana\", \"Arial\", \"Helvetica\" ]\n"
-    "        size         0.08                     # text size\n"
-    "      }\n"
-    "    }\n"
-    "  }\n"
-    "       ]\n"
-    "     }\n"
-    "   ]\n"
-    " }\n"
-    "      ]\n"
-    "    }\n"
-    ""
-    "ROUTE User.position_changed TO UserPos.set_translation\n"
-    "ROUTE User.orientation_changed TO UserPos.set_rotation\n", textr, textg,textb, _pclVRMLInfo->_clAnnotation.c_str());
-    clStream.write(szBuf, strlen(szBuf)); 
+    rstrOut << "              }\n"
+            << "            ]\n"
+            << "          }\n"
+            << "  Shape {\n"
+            << "    appearance DEF COAP Appearance {\n"
+            << "      material Material {diffuseColor "
+            << textr << " "
+            << textg << " "
+            << textb << "}} # text color\n"
+            << "    geometry   DEF MyText Text {\n"
+            << "      string \""
+            << _pclVRMLInfo->_clAnnotation
+            << "\"\n"
+            << "      fontStyle DEF COFS FontStyle {\n"
+            << "        family [ \"Verdana\", \"Arial\", \"Helvetica\" ]\n"
+            << "        size         0.08                     # text size\n"
+            << "      }\n"
+            << "    }\n"
+            << "  }\n"
+            << "       ]\n"
+            << "     }\n"
+            << "   ]\n"
+            << " }\n"
+            << "      ]\n"
+            << "    }\n"
+            << ""
+            << "ROUTE User.position_changed TO UserPos.set_translation\n"
+            << "ROUTE User.orientation_changed TO UserPos.set_rotation" << std::endl;
 }
 
 void MeshVRML::WriteVRMLViewpoints(std::ostream &rstrOut) const
 {
-  char szBuf[1000];
-  // write viewpoints
-  //
-  Base::BoundBox3f clBB = _rclMesh.GetBoundBox();
-  Base::Vector3f   clCenter = clBB.CalcCenter();
-  for (std::vector<VRMLViewpointData>::iterator it = _pclVRMLInfo->_clViewpoints.begin(); it != _pclVRMLInfo->_clViewpoints.end(); ++it)
-  {
-		// build up the observer's coordinate system
-		Base::Vector3f u,v,w;
-		v = it->clVRefUp;
-		w = it->clVRefPln;
-		u = v % w;
-		u.Normalize();
-		v.Normalize();
-		w.Normalize();
+    // write viewpoints
+    //
+    rstrOut.precision(3);
+    rstrOut.setf(std::ios::fixed | std::ios::showpoint);
+    Base::BoundBox3f clBB = _rclMesh.GetBoundBox();
+    Base::Vector3f   clCenter = clBB.CalcCenter();
+    for (std::vector<VRMLViewpointData>::iterator it = _pclVRMLInfo->_clViewpoints.begin(); it != _pclVRMLInfo->_clViewpoints.end(); ++it)
+    {
+        // build up the observer's coordinate system
+        Base::Vector3f u,v,w;
+        v = it->clVRefUp;
+        w = it->clVRefPln;
+        u = v % w;
+        u.Normalize();
+        v.Normalize();
+        w.Normalize();
 
-		// calc the view axis in world coordinates
-		//
-		Base::Vector3f p_uvw, p_xyz;
-		p_uvw   = it->clPRefPt;
-		p_xyz.x = u.x*p_uvw.x+v.x*p_uvw.y+w.x*p_uvw.z;
-		p_xyz.y = u.y*p_uvw.x+v.y*p_uvw.y+w.y*p_uvw.z;
-		p_xyz.z = u.z*p_uvw.x+v.z*p_uvw.y+w.z*p_uvw.z;
-		p_xyz   = p_xyz + it->clVRefPt;
+        // calc the view axis in world coordinates
+        //
+        Base::Vector3f p_uvw, p_xyz;
+        p_uvw   = it->clPRefPt;
+        p_xyz.x = u.x*p_uvw.x+v.x*p_uvw.y+w.x*p_uvw.z;
+        p_xyz.y = u.y*p_uvw.x+v.y*p_uvw.y+w.y*p_uvw.z;
+        p_xyz.z = u.z*p_uvw.x+v.z*p_uvw.y+w.z*p_uvw.z;
+        p_xyz   = p_xyz + it->clVRefPt;
 
-		float t = (clCenter - p_xyz)*w;
-		Base::Vector3f a = p_xyz + t*w;
+        float t = (clCenter - p_xyz)*w;
+        Base::Vector3f a = p_xyz + t*w;
 
-    Vector at, pos, up, rot_axis;
-    double rot_angle;
+        Vector at, pos, up, rot_axis;
+        double rot_angle;
 
-		float fDistance = (float)(it->dVmax - it->dVmin);
-		Base::Vector3f p = a + fDistance * w;
-    pos.x = p.x;   pos.y = p.y;   pos.z = p.z;
-    at.x  = a.x;   at.y  = a.y;   at.z  = a.z;
-    up.x  = v.x;   up.y  = v.y;   up.z  = v.z;
+        float fDistance = (float)(it->dVmax - it->dVmin);
+        Base::Vector3f p = a + fDistance * w;
+        pos.x = p.x;   pos.y = p.y;   pos.z = p.z;
+        at.x  = a.x;   at.y  = a.y;   at.z  = a.z;
+        up.x  = v.x;   up.y  = v.y;   up.z  = v.z;
 
-    Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
+        Convert_Camera_Model(&pos, &at, &up, &rot_axis, &rot_angle);
 
-    strcpy(szBuf, "Viewpoint\n{\n");
-    strcat(szBuf, "  jump         TRUE\n");
-    sprintf(szBuf, "%s  orientation   %.3f %.3f %.3f %.3f\n", szBuf, rot_axis.x, rot_axis.y, rot_axis.z, rot_angle);
-    rstrOut.write(szBuf, strlen(szBuf));
-    sprintf(szBuf, "  description  \"%s\"\n", it->clName.c_str());
-    rstrOut.write(szBuf, strlen(szBuf));
-    sprintf(szBuf, "  position     %.3f %.3f %.3f\n", pos.x, pos.y, pos.z);
-    rstrOut.write(szBuf, strlen(szBuf));
-    strcpy(szBuf, "}\n");
-    rstrOut.write(szBuf, strlen(szBuf)); 
-  }
+        rstrOut << "Viewpoint\n{\n"
+                << "  jump         TRUE\n"
+                << "  orientation   "
+                << rot_axis.x << " "
+                << rot_axis.y << " "
+                << rot_axis.z << " "
+                << rot_angle << "\n";
+        rstrOut << "  description  \"" << it->clName << "\"\n";
+        rstrOut << "  position     "
+                << pos.x << " "
+                << pos.y << " "
+                << pos.z << "\n}" << std::endl;
+    }
 }
 
 bool MeshVRML::Save (std::ostream &rstrOut, const App::Material &rclMat) const
 {
-  std::vector<App::Color> aclDummy;
+    std::vector<App::Color> aclDummy;
 /*
 for (int i = 0; i < _rclMesh.CountPoints(); i++)
 {
@@ -2054,6 +1945,6 @@ unsigned short b =  (rand() * 255) / float(RAND_MAX);
   aclDummy.push_back(App::Color(r, g, b));
 }
 */
-  return Save(rstrOut, aclDummy, rclMat, false);
+    return Save(rstrOut, aclDummy, rclMat, false);
 }
 
