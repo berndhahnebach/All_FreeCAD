@@ -38,17 +38,18 @@
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 
+#include <boost/regex.hpp>
 
 using namespace Points;
 
 void PointsAlgos::Load(PointKernel &points, const char *FileName)
 {
     Base::FileInfo File(FileName);
-  
+
     // checking on the file
     if (!File.isReadable())
         throw Base::Exception("File to load not existing or not readable");
-    
+
     if (File.extension() == "asc" ||File.extension() == "ASC")
         LoadAscii(points,FileName);
     else
@@ -57,15 +58,22 @@ void PointsAlgos::Load(PointKernel &points, const char *FileName)
 
 void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
 {
+    boost::regex rx("^\\s*([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                     "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                     "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
+    //boost::regex rx("(\\b[0-9]+\\.([0-9]+\\b)?|\\.[0-9]+\\b)");
+    //boost::regex rx("^\\s*(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s*$");
+    boost::cmatch what;
+
     float x,y,z;
     int LineCnt=0;
     std::string line;
     std::ifstream tmp_str(FileName);
 
-    Base::Sequencer().start( "Counting lines...", 10 );
+    Base::Sequencer().start("Counting lines...", 10);
     Base::Sequencer().next();
-    // estemating size
-    while(std::getline(tmp_str,line))
+    // estimating size
+    while (std::getline(tmp_str,line))
         LineCnt++;
     Base::Sequencer().stop();
 
@@ -73,29 +81,26 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     points.resize(LineCnt);
 
     Base::Sequencer().start( "Loading points...", LineCnt );
-  
+
     // again to the beginning
     std::ifstream file(FileName);
     LineCnt = 0;
 
     try {
         // read file
-        std::stringstream str;
         while (std::getline(file, line)) {
-            str.str(line);
-            str >> x >> y >> z;
-            if (!str) {
-                // a comment line
-                str.clear();
-            }
-            else {
+            if (boost::regex_match(line.c_str(), what, rx)) {
+                x = (float)std::atof(what[1].first);
+                y = (float)std::atof(what[4].first);
+                z = (float)std::atof(what[7].first);
+
                 points[LineCnt] = Base::Vector3f(x,y,z);
                 Base::Sequencer().next();
                 LineCnt++;
             }
         }
     }
-    catch(...) {
+    catch (...) {
         points.clear();
         throw Base::Exception("Reading in points failed.");
     }
