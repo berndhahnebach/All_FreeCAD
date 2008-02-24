@@ -29,8 +29,8 @@
 #include <App/Material.h>
 
 namespace Base {
-  class XMLReader;
-  class Writer;
+class XMLReader;
+class Writer;
 }
 
 namespace MeshCore {
@@ -44,32 +44,32 @@ class MeshKernel;
 class MeshExport MeshInput
 {
 public:
-  MeshInput (MeshKernel &rclM): _rclMesh(rclM){};
-  virtual ~MeshInput (void) { }
+    MeshInput (MeshKernel &rclM): _rclMesh(rclM){};
+    virtual ~MeshInput (void) { }
 
-  /// Loads the file, decided by extension
-  bool LoadAny(const char* FileName);
-  /** Loads an STL file either in binary or ASCII format. 
-   * Therefore the file header gets checked to decide if the file is binary or not.
-   */
-  bool LoadSTL (std::istream &rstrIn);
-  /** Loads an ASCII STL file. */
-  bool LoadAsciiSTL (std::istream &rstrIn);
-  /** Loads a binary STL file. */
-  bool LoadBinarySTL (std::istream &rstrIn);
-  /** Loads an OBJ Mesh file. */
-  bool LoadOBJ (std::istream &rstrIn);
-  /** Loads the mesh object from an XML file. */
-  void LoadXML (Base::XMLReader &reader);
-  /** Loads an OpenInventor file. */
-  bool LoadInventor (std::istream &rstrIn);
-  /** Loads a Nastran file. */
-  bool LoadNastran (std::istream &rstrIn);
-  /** Loads a Cadmould FE file. */
-  bool LoadCadmouldFE (std::ifstream &rstrIn);
+    /// Loads the file, decided by extension
+    bool LoadAny(const char* FileName);
+    /** Loads an STL file either in binary or ASCII format. 
+     * Therefore the file header gets checked to decide if the file is binary or not.
+     */
+    bool LoadSTL (std::istream &rstrIn);
+    /** Loads an ASCII STL file. */
+    bool LoadAsciiSTL (std::istream &rstrIn);
+    /** Loads a binary STL file. */
+    bool LoadBinarySTL (std::istream &rstrIn);
+    /** Loads an OBJ Mesh file. */
+    bool LoadOBJ (std::istream &rstrIn);
+    /** Loads the mesh object from an XML file. */
+    void LoadXML (Base::XMLReader &reader);
+    /** Loads an OpenInventor file. */
+    bool LoadInventor (std::istream &rstrIn);
+    /** Loads a Nastran file. */
+    bool LoadNastran (std::istream &rstrIn);
+    /** Loads a Cadmould FE file. */
+    bool LoadCadmouldFE (std::ifstream &rstrIn);
 
 protected:
-  MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+    MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
 
 /**
@@ -79,64 +79,64 @@ protected:
 class MeshExport MeshOutput
 {
 public:
-  MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
-  virtual ~MeshOutput (void) { }
-  /// Loads the file, decided by extension
-  bool SaveAny(const char* FileName) const;
+    MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
+    virtual ~MeshOutput (void) { }
+    /// Loads the file, decided by extension
+    bool SaveAny(const char* FileName) const;
 
-  /** Saves the mesh object into an ASCII STL file. */
-  bool SaveAsciiSTL (std::ostream &rstrOut) const;
-  /** Saves the mesh object into a binary STL file. */
-  bool SaveBinarySTL (std::ostream &rstrOut) const;
-  /** Saves the mesh object into an OBJ file. */
-  bool SaveOBJ (std::ostream &rstrOut) const;
-  /** Saves the mesh object into an XML file. */
-  void SaveXML (Base::Writer &writer) const;
-  /** Writes an OpenInventor file. */
-  bool SaveInventor (std::ostream &rstrOut) const;
-  /** Writes a VRML file. */
-  bool SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const;
-  /** Writes a Nastran file. */
-  bool SaveNastran (std::ostream &rstrOut) const;
-  /** Writes a Cadmould FE file. */
-  bool SaveCadmouldFE (std::ostream &rstrOut) const;
-  /** Writes a python module which creates a mesh */
-  bool SavePython (std::ostream &rstrOut) const;
+    /** Saves the mesh object into an ASCII STL file. */
+    bool SaveAsciiSTL (std::ostream &rstrOut) const;
+    /** Saves the mesh object into a binary STL file. */
+    bool SaveBinarySTL (std::ostream &rstrOut) const;
+    /** Saves the mesh object into an OBJ file. */
+    bool SaveOBJ (std::ostream &rstrOut) const;
+    /** Saves the mesh object into an XML file. */
+    void SaveXML (Base::Writer &writer) const;
+    /** Writes an OpenInventor file. */
+    bool SaveInventor (std::ostream &rstrOut) const;
+    /** Writes a VRML file. */
+    bool SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const;
+    /** Writes a Nastran file. */
+    bool SaveNastran (std::ostream &rstrOut) const;
+    /** Writes a Cadmould FE file. */
+    bool SaveCadmouldFE (std::ostream &rstrOut) const;
+    /** Writes a python module which creates a mesh */
+    bool SavePython (std::ostream &rstrOut) const;
 
 protected:
-  const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+    const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
 
 struct MeshExport VRMLViewpointData
 {
-  Base::Vector3f clVRefPln;
-  Base::Vector3f clVRefUp;
-  Base::Vector3f clVRefPt;
-  Base::Vector3f clPRefPt;
-  double    dVPlnDist;
-  double    dUmin;
-  double    dUmax;
-  double    dVmin;
-  double    dVmax;
-  std::string  clName;
+    Base::Vector3f clVRefPln;
+    Base::Vector3f clVRefUp;
+    Base::Vector3f clVRefPt;
+    Base::Vector3f clPRefPt;
+    double    dVPlnDist;
+    double    dUmin;
+    double    dUmax;
+    double    dVmin;
+    double    dVmax;
+    std::string  clName;
 };
 
 struct MeshExport VRMLInfo
 {
-  std::string _clFileName;
-  std::string _clAuthor;
-  std::string _clDate;
-  std::string _clCompany;
-  std::string _clAnnotation;
-  std::string _clPicFileName;
-  App::Color  _clColor;
-  bool     _bSaveViewPoints;
-  bool     _bSavePicture;
-  std::vector<std::string> _clComments;
-  std::vector<VRMLViewpointData> _clViewpoints;
+    std::string _clFileName;
+    std::string _clAuthor;
+    std::string _clDate;
+    std::string _clCompany;
+    std::string _clAnnotation;
+    std::string _clPicFileName;
+    App::Color  _clColor;
+    bool     _bSaveViewPoints;
+    bool     _bSavePicture;
+    std::vector<std::string> _clComments;
+    std::vector<VRMLViewpointData> _clViewpoints;
 };
 
 
 } // namespace MeshCore
 
-#endif // MESH_IO_H 
+#endif // MESH_IO_H

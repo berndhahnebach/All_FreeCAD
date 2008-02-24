@@ -309,6 +309,7 @@ libMesh_la_LIBADD   = \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
 		-lboost_filesystem \
+		-lboost_regex \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lTKernel \

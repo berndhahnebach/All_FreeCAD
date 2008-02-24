@@ -30,6 +30,7 @@ libPoints_la_CPPFLAGS = -DPointsAppExport=
 libPoints_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lboost_regex \
 		-lFreeCADBase \
 		-lFreeCADApp
 
