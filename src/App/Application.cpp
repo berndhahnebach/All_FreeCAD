@@ -1450,18 +1450,29 @@ void Application::ExtractUserPath()
     // of the application.
     if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath))) {
         std::string appData = szPath;
-
-        // Try to write into our data path
-        appData += PATHSEP;
-        appData += mConfig["ExeVendor"];
         Base::FileInfo fi(appData.c_str());
         if (!fi.exists()) {
-            if (!fi.createDirectory(appData.c_str())) {
-                // Want more details on console
-                printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
-                std::string error = "Cannot create directory ";
-                error += appData;
-                throw Base::Exception(error);
+            // This should never ever happen
+            std::stringstream str;
+            str << "Application data directory " << appData << " does not exist!";
+            throw Base::Exception(str.str());
+        }
+
+        // Try to write into our data path, therefore we must create some directories, first.
+        // If 'AppDataSkipVendor' is defined the value of 'ExeVendor' must not be part of
+        // the path.
+        if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
+            appData += PATHSEP;
+            appData += mConfig["ExeVendor"];
+            fi.setFile(appData.c_str());
+            if (!fi.exists()) {
+                if (!fi.createDirectory(appData.c_str())) {
+                    // Want more details on console
+                    printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
+                    std::string error = "Cannot create directory ";
+                    error += appData;
+                    throw Base::Exception(error);
+                }
             }
         }
 
