@@ -199,8 +199,7 @@ QVariant PropertyFloatItem::toString(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
     double value = ((App::PropertyFloat*)prop)->getValue();
-    QString data;
-    data.sprintf("%.2f", value);
+    QString data = QString("%1").arg(value,0,'f',2);
     return QVariant(data);
 }
 
@@ -261,8 +260,7 @@ QVariant PropertyFloatConstraintItem::toString(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
     double value = ((App::PropertyFloat*)prop)->getValue();
-    QString data;
-    data.sprintf("%.2f", value);
+    QString data = QString("%1").arg(value,0,'f',2);
     return QVariant(data);
 }
 
