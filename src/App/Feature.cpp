@@ -106,12 +106,13 @@ short AbstractFeature::mustExecute(void) const
 
 }
 
+#if 0
 void AbstractFeature::recompute(void)
 {
     _pDoc->recomputeFeature(this);
 }
-
-/*
+#endif
+#if 0
 const char* AbstractFeature::getStatusString(void) const
 {
     switch (status.getValue()) {
@@ -129,7 +130,8 @@ const char* AbstractFeature::getStatusString(void) const
         return "Unknown";
     }
 }
-*/
+#endif
+#if 0
 void AbstractFeature::setError(const char* pMsg,...)
 {
     // temp buffer
@@ -145,3 +147,4 @@ void AbstractFeature::setError(const char* pMsg,...)
     status.setValue(Error);
     _cErrorMessage = format;
 }
+#endif

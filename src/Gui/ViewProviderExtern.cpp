@@ -63,7 +63,7 @@ ViewProviderExtern::~ViewProviderExtern()
 void ViewProviderExtern::setModeByString(const char* name, const char* ivFragment)
 {
     SoInput in;
-    in.setBuffer((void*)ivFragment,strlen(ivFragment));
+    in.setBuffer((void*)ivFragment,std::strlen(ivFragment));
     setModeBySoInput(name,in);
 }
 

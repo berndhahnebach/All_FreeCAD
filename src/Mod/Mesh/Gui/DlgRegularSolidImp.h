@@ -29,14 +29,14 @@
 namespace MeshGui {
 class DlgRegularSolidImp : public QDialog, public Ui_DlgRegularSolid
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgRegularSolidImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgRegularSolidImp();
+    DlgRegularSolidImp(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~DlgRegularSolidImp();
 
 public Q_SLOTS:
-  void on_createSolidButton_clicked();
+    void on_createSolidButton_clicked();
 };
 
 /**
@@ -46,16 +46,16 @@ public Q_SLOTS:
 class SingleDlgRegularSolidImp : public DlgRegularSolidImp
 { 
 protected:
-  SingleDlgRegularSolidImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~SingleDlgRegularSolidImp();
+    SingleDlgRegularSolidImp(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~SingleDlgRegularSolidImp();
 
 public:
-  static SingleDlgRegularSolidImp* instance();
-  static void destruct();
-  static bool hasInstance();
+    static SingleDlgRegularSolidImp* instance();
+    static void destruct();
+    static bool hasInstance();
 
 private:
-  static SingleDlgRegularSolidImp* _instance;
+    static SingleDlgRegularSolidImp* _instance;
 };
 
 }

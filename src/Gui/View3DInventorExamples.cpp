@@ -308,7 +308,7 @@ void LightManip(SoSeparator * root)
 {
 
   SoInput in;
-  in.setBuffer( (void *)scenegraph, strlen( scenegraph ) );
+  in.setBuffer((void *)scenegraph, std::strlen(scenegraph));
   SoSeparator * _root = SoDB::readAll( &in );
   root->addChild(_root);
   if ( root == NULL ) exit( 1 ); // Shouldn't happen.

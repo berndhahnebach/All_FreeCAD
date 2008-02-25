@@ -48,11 +48,11 @@ using namespace MeshGui;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, Qt::WFlags fl )
- : QDialog( parent, fl )
+MeshGui::DlgRegularSolidImp::DlgRegularSolidImp(QWidget* parent, Qt::WFlags fl)
+  : QDialog( parent, fl )
 {
-  this->setupUi(this);
-  Gui::Command::doCommand(Gui::Command::Doc, "import Mesh,BuildRegularGeoms");
+    this->setupUi(this);
+    Gui::Command::doCommand(Gui::Command::Doc, "import Mesh,BuildRegularGeoms");
 }
 
 /**
@@ -60,7 +60,7 @@ MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, Qt::WFlags fl 
  */
 MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -68,93 +68,105 @@ MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
  */
 void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
 {
-  try {
-    QString cmd; std::string name;
-    App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc) {
-        QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), tr("No active document"));
-        return;
-    }
-    if ( comboBox1->currentIndex() == 0 ) {         // cube
-      name = doc->getUniqueObjectName("Cube");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Cube\",\"%s\")\n"
-          "App.activeDocument().%s.Length=%.2f\n"
-          "App.activeDocument().%s.Width=%.2f\n"
-          "App.activeDocument().%s.Height=%.2f\n"
-          ,name.c_str(),name.c_str(),boxLength->value(),
-           name.c_str(),boxWidth->value(),
-           name.c_str(),boxHeight->value());
-    } else if ( comboBox1->currentIndex() == 1 ) {  // cylinder
-      name = doc->getUniqueObjectName("Cylinder");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Cylinder\",\"%s\")\n"
-          "App.activeDocument().%s.Radius=%.2f\n"
-          "App.activeDocument().%s.Length=%.2f\n"
-          "App.activeDocument().%s.EdgeLength=%.2f\n"
-          "App.activeDocument().%s.Closed=%s\n"
-          "App.activeDocument().%s.Sampling=%d\n"
-          ,name.c_str(),name.c_str(),cylinderRadius->value(),
-           name.c_str(),cylinderLength->value(),
-           name.c_str(),cylinderEdgeLength->value(),
-           name.c_str(),(cylinderClosed->isChecked()?"True":"False"),
-           name.c_str(),cylinderCount->value());
-    } else if ( comboBox1->currentIndex() == 2 ) {  // cone
-      name = doc->getUniqueObjectName("Cone");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Cone\",\"%s\")\n"
-          "App.activeDocument().%s.Radius1=%.2f\n"
-          "App.activeDocument().%s.Radius2=%.2f\n"
-          "App.activeDocument().%s.Length=%.2f\n"
-          "App.activeDocument().%s.EdgeLength=%.2f\n"
-          "App.activeDocument().%s.Closed=%s\n"
-          "App.activeDocument().%s.Sampling=%d\n"
-          ,name.c_str(),name.c_str(),coneRadius1->value(),
-           name.c_str(),coneRadius2->value(),
-           name.c_str(),coneLength->value(),
-           name.c_str(),coneEdgeLength->value(),
-           name.c_str(),(coneClosed->isChecked()?"True":"False"),
-           name.c_str(),coneCount->value());
-    } else if ( comboBox1->currentIndex() == 3 ) {  // sphere
-      name = doc->getUniqueObjectName("Sphere");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Sphere\",\"%s\")\n"
-          "App.activeDocument().%s.Radius=%.2f\n"
-          "App.activeDocument().%s.Sampling=%d\n"
-          ,name.c_str(),name.c_str(),sphereRadius->value(),
-           name.c_str(),sphereCount->value());
-    } else if ( comboBox1->currentIndex() == 4 ) {  // ellipsoid
-      name = doc->getUniqueObjectName("Ellipsoid");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Ellipsoid\",\"%s\")\n"
-          "App.activeDocument().%s.Radius1=%.2f\n"
-          "App.activeDocument().%s.Radius2=%.2f\n"
-          "App.activeDocument().%s.Sampling=%d\n"
-          ,name.c_str(),name.c_str(),ellipsoidRadius1->value(),
-           name.c_str(),ellipsoidRadius2->value(),
-           name.c_str(),ellipsoidCount->value());
-    } else if ( comboBox1->currentIndex() == 5 ) {  // toroid
-      name = doc->getUniqueObjectName("Torus");
-      cmd.sprintf(
-          "App.activeDocument().addObject(\"Mesh::Torus\",\"%s\")\n"
-          "App.activeDocument().%s.Radius1=%.2f\n"
-          "App.activeDocument().%s.Radius2=%.2f\n"
-          "App.activeDocument().%s.Sampling=%d\n"
-          ,name.c_str(),name.c_str(),toroidRadius1->value(),
-           name.c_str(),toroidRadius2->value(),
-           name.c_str(),toroidCount->value());
-    }
+    try {
+        QString cmd; std::string name;
+        App::Document* doc = App::GetApplication().getActiveDocument();
+        if (!doc) {
+            QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), tr("No active document"));
+            return;
+        }
+        if (comboBox1->currentIndex() == 0) {         // cube
+            name = doc->getUniqueObjectName("Cube");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Cube\",\"%1\")\n"
+                "App.ActiveDocument.%1.Length=%2\n"
+                "App.ActiveDocument.%1.Width=%3\n"
+                "App.ActiveDocument.%1.Height=%4\n")
+                .arg(name.c_str())
+                .arg(boxLength->value(),0,'f',2)
+                .arg(boxWidth->value(),0,'f',2)
+                .arg(boxHeight->value(),0,'f',2);
+        }
+        else if (comboBox1->currentIndex() == 1) {  // cylinder
+            name = doc->getUniqueObjectName("Cylinder");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Cylinder\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius=%2\n"
+                "App.ActiveDocument.%1.Length=%3\n"
+                "App.ActiveDocument.%1.EdgeLength=%4\n"
+                "App.ActiveDocument.%1.Closed=%5\n"
+                "App.ActiveDocument.%1.Sampling=%6\n")
+                .arg(name.c_str())
+                .arg(cylinderRadius->value(),0,'f',2)
+                .arg(cylinderLength->value(),0,'f',2)
+                .arg(cylinderEdgeLength->value(),0,'f',2)
+                .arg((cylinderClosed->isChecked()?"True":"False"))
+                .arg(cylinderCount->value());
+        }
+        else if (comboBox1->currentIndex() == 2) {  // cone
+            name = doc->getUniqueObjectName("Cone");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Cone\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius1=%2\n"
+                "App.ActiveDocument.%1.Radius2=%3\n"
+                "App.ActiveDocument.%1.Length=%4\n"
+                "App.ActiveDocument.%1.EdgeLength=%5\n"
+                "App.ActiveDocument.%1.Closed=%6\n"
+                "App.ActiveDocument.%1.Sampling=%7\n")
+                .arg(name.c_str())
+                .arg(coneRadius1->value(),0,'f',2)
+                .arg(coneRadius2->value(),0,'f',2)
+                .arg(coneLength->value(),0,'f',2)
+                .arg(coneEdgeLength->value(),0,'f',2)
+                .arg((coneClosed->isChecked()?"True":"False"))
+                .arg(coneCount->value());
+        }
+        else if (comboBox1->currentIndex() == 3) {  // sphere
+            name = doc->getUniqueObjectName("Sphere");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Sphere\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius=%2\n"
+                "App.ActiveDocument.%1.Sampling=%3\n")
+                .arg(name.c_str())
+                .arg(sphereRadius->value(),0,'f',2)
+                .arg(sphereCount->value());
+        }
+        else if (comboBox1->currentIndex() == 4) {  // ellipsoid
+            name = doc->getUniqueObjectName("Ellipsoid");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Ellipsoid\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius1=%2\n"
+                "App.ActiveDocument.%1.Radius2=%3\n"
+                "App.ActiveDocument.%1.Sampling=%4\n")
+                .arg(name.c_str())
+                .arg(ellipsoidRadius1->value(),0,'f',2)
+                .arg(ellipsoidRadius2->value(),0,'f',2)
+                .arg(ellipsoidCount->value());
+        }
+        else if (comboBox1->currentIndex() == 5) {  // toroid
+            name = doc->getUniqueObjectName("Torus");
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Mesh::Torus\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius1=%2\n"
+                "App.ActiveDocument.%1.Radius2=%3\n"
+                "App.ActiveDocument.%1.Sampling=%4\n")
+                .arg(name.c_str())
+                .arg(toroidRadius1->value(),0,'f',2)
+                .arg(toroidRadius2->value(),0,'f',2)
+                .arg(toroidCount->value());
+        }
 
-    // Execute the Python block
-    QString solid = tr("Create %1").arg(comboBox1->currentText());
-    Gui::Application::Instance->activeDocument()->openCommand(solid.toUtf8());
-    Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
-    Gui::Application::Instance->activeDocument()->commitCommand();
-    Gui::Command::doCommand(Gui::Command::Doc, "App.activeDocument().recompute()");
-    Gui::Command::doCommand(Gui::Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
-  } catch (const Base::PyException& e) {
-    QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), e.what());
-  }
+        // Execute the Python block
+        QString solid = tr("Create %1").arg(comboBox1->currentText());
+        Gui::Application::Instance->activeDocument()->openCommand(solid.toUtf8());
+        Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
+        Gui::Application::Instance->activeDocument()->commitCommand();
+        Gui::Command::doCommand(Gui::Command::Doc, "App.activeDocument().recompute()");
+        Gui::Command::doCommand(Gui::Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    }
+    catch (const Base::PyException& e) {
+        QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), e.what());
+    }
 }
 
 // -------------------------------------------------------------
@@ -163,37 +175,35 @@ SingleDlgRegularSolidImp* SingleDlgRegularSolidImp::_instance=0;
 
 SingleDlgRegularSolidImp* SingleDlgRegularSolidImp::instance()
 {
-  // not initialized?
-  if(!_instance)
-  {
-    _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow());
-    _instance->setAttribute(Qt::WA_DeleteOnClose);
-  }
+    // not initialized?
+    if(!_instance) {
+        _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow());
+        _instance->setAttribute(Qt::WA_DeleteOnClose);
+    }
 
-  return _instance;
+    return _instance;
 }
 
 void SingleDlgRegularSolidImp::destruct ()
 {
-  if ( _instance != 0 )
-  {
-    SingleDlgRegularSolidImp *pTmp = _instance;
-    _instance = 0;
-    delete pTmp;
-  }
+    if (_instance != 0) {
+        SingleDlgRegularSolidImp *pTmp = _instance;
+        _instance = 0;
+        delete pTmp;
+    }
 }
 
 bool SingleDlgRegularSolidImp::hasInstance()
 {
-  return _instance != 0;
+    return _instance != 0;
 }
 
 /**
  *  Constructs a SingleDlgRegularSolidImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  */
-SingleDlgRegularSolidImp::SingleDlgRegularSolidImp( QWidget* parent, Qt::WFlags fl )
-  : DlgRegularSolidImp( parent, fl )
+SingleDlgRegularSolidImp::SingleDlgRegularSolidImp(QWidget* parent, Qt::WFlags fl)
+  : DlgRegularSolidImp(parent, fl)
 {
 }
 
@@ -202,7 +212,7 @@ SingleDlgRegularSolidImp::SingleDlgRegularSolidImp( QWidget* parent, Qt::WFlags 
  */
 SingleDlgRegularSolidImp::~SingleDlgRegularSolidImp()
 {
-  _instance = 0;
+    _instance = 0;
 }
 
 #include "moc_DlgRegularSolidImp.cpp"

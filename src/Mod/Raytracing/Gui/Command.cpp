@@ -74,7 +74,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   Base::Console().Log("GetCamera MSG send:\n%s",ppReturn);
 
   SoInput in;
-  in.setBuffer((void*)ppReturn,strlen(ppReturn));
+  in.setBuffer((void*)ppReturn,std::strlen(ppReturn));
 
   //if (!in.openFile(filename)) { exit(1); }
 

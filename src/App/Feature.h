@@ -90,13 +90,13 @@ public:
     //    return _cErrorMessage.c_str();
     //}
     /// set an error on recoputation
-    void setError(const char* pMsg,...);
+    //void setError(const char* pMsg,...);
     /// checks if valid
     bool isValid(void) {
         return /*_eStatus == Valid;*/ status.getValue() == Valid;
     }
     /// Recompute only this feature and makes it valid again
-    void recompute(void);
+    //void recompute(void);
     /** MustExecute
      *  We call this method to check if the object was modified to
      *  be invoked. If the object label or an argument is modified.
@@ -116,7 +116,7 @@ public:
 
 protected:
 
-    std::string _cErrorMessage;
+    //std::string _cErrorMessage;
     bool _execute;
 
 };

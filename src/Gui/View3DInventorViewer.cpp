@@ -711,61 +711,54 @@ void View3DInventorViewer::setSeekMode(SbBool on)
 
 void View3DInventorViewer::printDimension()
 {
-  SoCamera* cam = getCamera();
-  if ( !cam ) return; // no camera there
-  SoType t = getCamera()->getTypeId();
-  if (t.isDerivedFrom(SoOrthographicCamera::getClassTypeId())) 
-  {
-    const SbViewportRegion& vp = getViewportRegion();
-    const SbVec2s& size = vp.getWindowSize();
-    short dimX, dimY; size.getValue(dimX, dimY);
+    SoCamera* cam = getCamera();
+    if (!cam) return; // no camera there
+    SoType t = getCamera()->getTypeId();
+    if (t.isDerivedFrom(SoOrthographicCamera::getClassTypeId())) {
+        const SbViewportRegion& vp = getViewportRegion();
+        const SbVec2s& size = vp.getWindowSize();
+        short dimX, dimY; size.getValue(dimX, dimY);
 
-    float fHeight = static_cast<SoOrthographicCamera*>(getCamera())->height.getValue();
-    float fWidth = fHeight;
-    if ( dimX > dimY )
-    {
-      fWidth *= ((float)dimX)/((float)dimY);
-    }
-    else if ( dimX < dimY )
-    {
-      fHeight *= ((float)dimY)/((float)dimX);
-    }
+        float fHeight = static_cast<SoOrthographicCamera*>(getCamera())->height.getValue();
+        float fWidth = fHeight;
+        if (dimX > dimY)
+            fWidth *= ((float)dimX)/((float)dimY);
+        else if ( dimX < dimY )
+            fHeight *= ((float)dimY)/((float)dimX);
 
-    float fLog = float(log10(fWidth)), fFac;
-    int   nExp = int(fLog);
-    char  szUnit[20];
+        float fLog = float(log10(fWidth)), fFac;
+        int   nExp = int(fLog);
+        QString unit;
   
-    if (nExp >= 6)
-    {
-      fFac = 1.0e+6f;
-      strcpy(szUnit, "km");
+        if (nExp >= 6) {
+            fFac = 1.0e+6f;
+            unit = "km";
+        }
+        else if (nExp >= 3) {
+            fFac = 1.0e+3f;
+            unit = "m";
+        }
+        else if ((nExp >= 0) && (fLog > 0.0f)) {
+            fFac = 1.0e+0f;
+            unit = "mm";
+        }
+        else if (nExp >= -3) {
+            fFac = 1.0e-3f;
+            unit = "um";
+        }
+        else {
+            fFac = 1.0e-6f;
+            unit = "nm";
+        }
+
+        QString dim = QString("%1 x %2 %3")
+                             .arg(fWidth / fFac,0,'f',2)
+                             .arg(fHeight / fFac,0,'f',2)
+                             .arg(unit);
+        getMainWindow()->setPaneText(2, dim);
     }
-    else if (nExp >= 3)
-    {
-      fFac = 1.0e+3f;
-      strcpy(szUnit, "m");
-    }
-    else if ((nExp >= 0) && (fLog > 0.0f))
-    {
-      fFac = 1.0e+0f;
-      strcpy(szUnit, "mm");
-    }
-    else if (nExp >= -3)
-    {
-      fFac = 1.0e-3f;
-      strcpy(szUnit, "um");
-    }
-    else 
-    {
-      fFac = 1.0e-6f;
-      strcpy(szUnit, "nm");
-    }
-  
-    QString dim; dim.sprintf("%.2f x %.2f %s", fWidth / fFac, fHeight / fFac, szUnit);
-    getMainWindow()->setPaneText(2, dim);
-  }
-  else
-    getMainWindow()->setPaneText(2, "");
+    else
+        getMainWindow()->setPaneText(2, "");
 }
 
 /*!
