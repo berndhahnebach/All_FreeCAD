@@ -431,10 +431,10 @@ bool View3DInventor::setCamera(const char* pCamera)
     }
 
     SoInput in;
-    in.setBuffer((void*)pCamera,strlen(pCamera));
+    in.setBuffer((void*)pCamera,std::strlen(pCamera));
 
     SoNode * Cam;
-    SoDB::read(&in,(SoNode*&)Cam);
+    SoDB::read(&in,Cam);
 
     if (!Cam){
         throw Base::Exception("Camera settings failed to read");

@@ -171,21 +171,6 @@ void Builder3D::addText(const Base::Vector3f &vec,const char * text, float color
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
-void Builder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
-{
-  // temp buffer
-  size_t txt_len = strlen(format)+4024;
-  char* txt = (char*) malloc(txt_len);
-
-  va_list namelessVars;
-  va_start(namelessVars, format);  // Get the "..." vars
-  vsnprintf(txt, txt_len, format, namelessVars);
-  va_end(namelessVars);
-
-  addText(vec, txt, color_r, color_g, color_b);
-  free(txt); // free memory
-}
-
 void Builder3D::clear ()
 {
   // Under VC6 string::clear() doesn't exist, under gcc stringstream::str() returns a copy not a reference
@@ -469,21 +454,6 @@ void InventorBuilder::addText(float pos_x, float pos_y , float pos_z,const char 
 void InventorBuilder::addText(const Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
 {
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
-}
-
-void InventorBuilder::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
-{
-  // temp buffer
-  size_t txt_len = strlen(format)+4024;
-  char* txt = (char*) malloc(txt_len);
-
-  va_list namelessVars;
-  va_start(namelessVars, format);  // Get the "..." vars
-  vsnprintf(txt, txt_len, format, namelessVars);
-  va_end(namelessVars);
-
-  addText(vec, txt, color_r, color_g, color_b);
-  free(txt);
 }
 
 //**************************************************************************

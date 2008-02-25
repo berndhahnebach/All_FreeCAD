@@ -53,6 +53,7 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 #endif
 
 #include <boost/graph/topological_sort.hpp>
@@ -912,9 +913,9 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
         return 0;
     if (!pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId())) {
         delete pcObject;
-        char szBuf[200];
-        snprintf(szBuf, 200, "'%s' is not a document object type", sType);
-        throw Base::Exception(szBuf);
+        std::stringstream str;
+        str << "'" << sType << "' is not a document object type";
+        throw Base::Exception(str.str());
     }
 
     pcObject->setDocument(this);
@@ -1117,57 +1118,49 @@ const char *Document::getObjectName(DocumentObject *pFeat) const
     return 0;
 }
 
-string Document::getUniqueObjectName(const char *Name) const
+std::string Document::getUniqueObjectName(const char *Name) const
 {
-
-    // strip ilegal chars
-    string CleanName;
-    const char *It=Name;
+    if (!Name || *Name == '\0')
+        return std::string();
 
     // check for first character whether it's a digit
-    if ((*It != '\0') && (*It>=48 && *It<=57))
-        CleanName = "_";
-
-    while (*It != '\0') {
-        if (   (*It>=48 && *It<=57)  // Numbers
-                ||(*It>=65 && *It<=90)   // lowercase letters
-                ||(*It>=97 && *It<=122)  // Upercase letters
-           ) {
-            CleanName += *It;
-        }
-        else {
-            // All other letters gets replaced
-            CleanName += '_';
-        }
-        It++;
+    std::string CleanName = Name;
+    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
+        CleanName[0] = '_';
+    // strip illegal chars
+    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
+        if (!((*it>=48 && *it<=57) ||  // number
+             (*it>=65 && *it<=90)  ||  // uppercase letter
+             (*it>=97 && *it<=122)))   // lowercase letter
+             *it = '_'; // it's neither number nor letter
     }
 
-    std::map<std::string,DocumentObject*>::const_iterator pos;
-
     // name in use?
+    std::map<std::string,DocumentObject*>::const_iterator pos;
     pos = ObjectMap.find(CleanName);
 
-    if (pos == ObjectMap.end())
+    if (pos == ObjectMap.end()) {
         // if not, name is OK
         return CleanName;
+    }
     else {
-        // find highes sufix
+        // find highest suffix
         int nSuff = 0;
         for (pos = ObjectMap.begin();pos != ObjectMap.end();++pos) {
-            const string &rclObjName = pos->first;
-            if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName) { // Prefix gleich
-                string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
+            const std::string &ObjName = pos->first;
+            if (ObjName.substr(0, CleanName.length()) == CleanName) { // same prefix
+                std::string clSuffix(ObjName.substr(CleanName.length()));
                 if (clSuffix.size() > 0) {
                     std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
                     if (nPos==std::string::npos)
-                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
                 }
             }
         }
-        char szName[200];
-        snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
 
-        return string(szName);
+        std::stringstream str;
+        str << CleanName << (nSuff + 1);
+        return str.str();
     }
 }
 

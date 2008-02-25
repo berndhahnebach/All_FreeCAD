@@ -109,8 +109,6 @@ public:
   void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a text
   void addText(const Base::Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  /// add a text
-  void addText(const Base::Vector3f &vec, float color_r,float color_g,float color_b, const char * format, ...);
   //@}
 
   /// clear the string buffer
@@ -194,8 +192,6 @@ public:
   void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a text
   void addText(const Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  /// add a text
-  void addText(const Vector3f &vec, float color_r,float color_g,float color_b, const char * format, ...);
   //@}
 
 private:

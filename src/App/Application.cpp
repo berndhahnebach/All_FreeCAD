@@ -282,59 +282,50 @@ std::vector<App::Document*> Application::getDocuments() const
     return docs;
 }
 
-string Application::getUniqueDocumentName(const char *Name) const
+std::string Application::getUniqueDocumentName(const char *Name) const
 {
-// strip ilegal chars
-    string CleanName;
-    const char *It=Name;
+    if (!Name || *Name == '\0')
+        return std::string();
 
     // check for first character whether it's a digit
-    if ((*It != '\0') && (*It>=48 && *It<=57))
-        CleanName = "_";
-
-    while (*It != '\0') {
-        if (   (*It>=48 && *It<=57)   // Numbers
-             ||(*It>=65 && *It<=90)   // Upercase letters
-             ||(*It>=97 && *It<=122)  // Upercase letters
-           ) {
-            CleanName += *It;
-        }
-        else {
-            // All other letters gets replaced
-            CleanName += '_';
-        }
-
-        It++;
+    std::string CleanName = Name;
+    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
+        CleanName[0] = '_';
+    // strip illegal chars
+    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
+        if (!((*it>=48 && *it<=57) ||  // number
+             (*it>=65 && *it<=90)  ||  // uppercase letter
+             (*it>=97 && *it<=122)))   // lowercase letter
+             *it = '_'; // it's neither number nor letter
     }
 
-    map<string,Document*>::const_iterator pos;
-
     // name in use?
+    std::map<string,Document*>::const_iterator pos;
     pos = DocMap.find(CleanName);
 
-    if (pos == DocMap.end())
+    if (pos == DocMap.end()) {
         // if not, name is OK
         return CleanName;
+    }
     else {
         // find highest suffix
         int nSuff = 0;
         for (pos = DocMap.begin();pos != DocMap.end();++pos) {
-            const string &rclObjName = pos->first;
-            if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName) { // Prefix gleich
-                string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
+            const std::string &DocName = pos->first;
+            if (DocName.substr(0, CleanName.length()) == CleanName) { // same prefix
+                std::string clSuffix(DocName.substr(CleanName.length()));
                 if (clSuffix.size() > 0) {
                     std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
                     if (nPos==std::string::npos)
-                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
                 }
             }
         }
-        char szName[200];
-        snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
 
-        return string(szName);
+        std::stringstream str;
+        str << CleanName << (nSuff + 1);
+        return str.str();
     }
-
 }
 
 Document* Application::openDocument(const char * FileName)
@@ -952,10 +943,10 @@ void Application::LoadParameters(void)
         }
     }
     catch (Base::Exception& e) {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Malformed parameter file '%s'", mConfig["SystemParameter"].c_str());
-        e.setMessage( szBuf );
-        throw e;
+        std::stringstream str;
+        str << "Malformed parameter file " << mConfig["SystemParameter"];
+        e.setMessage(str.str());
+        throw; // re-throw this instance
     }
 
     try {
@@ -968,10 +959,10 @@ void Application::LoadParameters(void)
         }
     }
     catch (Base::Exception& e) {
-        char szBuf[200];
-        snprintf(szBuf, 200, "Malformed parameter file '%s'", mConfig["UserParameter"].c_str());
-        e.setMessage( szBuf );
-        throw e;
+        std::stringstream str;
+        str << "Malformed parameter file " << mConfig["UserParameter"];
+        e.setMessage(str.str());
+        throw; // re-throw this instance
     }
 }
 

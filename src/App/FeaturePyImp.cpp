@@ -22,7 +22,7 @@ PyObject*  FeaturePy::recompute(PyObject *args)
         return NULL;                             // NULL triggers exception 
     
     PY_TRY {
-        getAbstractFeaturePtr()->recompute();
+        //getAbstractFeaturePtr()->recompute();
         Py_Return;
     } PY_CATCH;
 }

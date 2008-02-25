@@ -46,30 +46,31 @@
 
 using namespace MeshCore;
 
-char *upper(char * string) {
+char *upper(char * string)
+{
     int i;
     int l;
 
     if (string != NULL) {
-       l = strlen(string);
-       for (i=0; i<l; i++)
-         string[i] = toupper(string[i]);
+        l = std::strlen(string);
+        for (i=0; i<l; i++)
+            string[i] = toupper(string[i]);
     }
 
-  return string;
+    return string;
 }
 
 char *ltrim (char *psz)
 {
-  int i, sl;
+    int i, sl;
 
-  if (psz) {
-     for (i = 0; (psz[i] == 0x20) || (psz[i] == 0x09); i++);
-     sl = strlen (psz + i);
-     memmove (psz, psz + i, sl);
-     psz[sl] = 0;
-  }
-  return psz;
+    if (psz) {
+        for (i = 0; (psz[i] == 0x20) || (psz[i] == 0x09); i++);
+        sl = std::strlen (psz + i);
+        memmove (psz, psz + i, sl);
+        psz[sl] = 0;
+    }
+    return psz;
 }
 
 std::string& upper(std::string& str)
@@ -1028,7 +1029,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
     Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
  
     strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
-    rstrOut.write(szInfo, strlen(szInfo));
+    rstrOut.write(szInfo, std::strlen(szInfo));
 
     uint32_t uCtFts = (uint32_t)_rclMesh.CountFacets();
     rstrOut.write((const char*)&uCtFts, sizeof(uCtFts));
