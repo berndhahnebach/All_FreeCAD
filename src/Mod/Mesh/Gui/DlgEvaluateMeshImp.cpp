@@ -116,12 +116,28 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl ), _meshFeature(0), _viewer(0), _pDoc(0)
 {
     this->setupUi(this);
-    connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    line_2->setFrameShape(QFrame::HLine);
+    line_2->setFrameShadow(QFrame::Sunken);
+    line_3->setFrameShape(QFrame::HLine);
+    line_3->setFrameShadow(QFrame::Sunken);
+    line_4->setFrameShape(QFrame::HLine);
+    line_4->setFrameShadow(QFrame::Sunken);
+    line_5->setFrameShape(QFrame::HLine);
+    line_5->setFrameShadow(QFrame::Sunken);
+    line_6->setFrameShape(QFrame::HLine);
+    line_6->setFrameShadow(QFrame::Sunken);
+    line_7->setFrameShape(QFrame::HLine);
+    line_7->setFrameShadow(QFrame::Sunken);
+    line_8->setFrameShape(QFrame::HLine);
+    line_8->setFrameShadow(QFrame::Sunken);
 
     Gui::Document* pGui = Gui::Application::Instance->activeDocument();
     _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
     _pDoc = pGui->getDocument();
 
+    connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
     // Connect to application and active document
     this->connectDocumentDeletedObject = _pDoc->signalDeletedObject.connect(boost::bind
         (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
@@ -340,10 +356,8 @@ void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
         doc->openCommand("Harmonize normals");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.harmonizeNormals()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Orientation"), e.what());
@@ -406,10 +420,8 @@ void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
         doc->openCommand("Remove non-manifolds");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.removeNonManifolds()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()\n"
+                    , docName, objName);
         } 
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Non-manifolds"), e.what());
@@ -496,10 +508,8 @@ void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
         doc->openCommand("Fix indices");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.fixIndices()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Indices"), e.what());
@@ -563,10 +573,8 @@ void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
         doc->openCommand("Remove degenerated faces");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.fixDegenerations()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Degenerations"), e.what());
@@ -631,10 +639,8 @@ void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
         doc->openCommand("Remove duplicated faces");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.removeDuplicatedFacets()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Duplicated faces"), e.what());
@@ -697,10 +703,8 @@ void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
         doc->openCommand("Remove duplicated points");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.removeDuplicatedPoints()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Duplicated points"), e.what());
@@ -763,10 +767,8 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
         doc->openCommand("Fix self-intersections");
         try {
             Gui::Application::Instance->runCommand(
-                true, "__mesh__=App.getDocument(\"%s\").getObject(\"%s\").Mesh\n"
-                      "__mesh__.fixSelfIntersections()\n"
-                      "App.getDocument(\"%s\").getObject(\"%s\").Mesh=__mesh__\n"
-                      "del __mesh__\n", docName, objName, docName, objName);
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()\n"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Self-intersections"), e.what());

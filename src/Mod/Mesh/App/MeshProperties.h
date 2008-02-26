@@ -160,6 +160,18 @@ public:
     void clear();
     //@}
 
+    /** @name Mesh validation */
+    //@{
+    void harmonizeNormals();
+    void validateIndices();
+    void validateDeformations(float fMaxAngle);
+    void validateDegenerations();
+    void removeDuplicatedPoints();
+    void removeDuplicatedFacets();
+    void removeNonManifolds();
+    void removeSelfIntersections();
+    //@}
+
     /** @name Python interface */
     //@{
     /** Returns a Python wrapper for the referenced mesh object. It does NOT 

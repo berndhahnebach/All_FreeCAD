@@ -376,6 +376,62 @@ void PropertyMeshKernel::clear()
     hasSetValue();
 }
 
+void PropertyMeshKernel::harmonizeNormals()
+{
+    aboutToSetValue();
+    _meshObject->harmonizeNormals();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::removeNonManifolds()
+{
+    aboutToSetValue();
+    _meshObject->removeNonManifolds();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::validateIndices()
+{
+    aboutToSetValue();
+    _meshObject->validateIndices();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::validateDegenerations()
+{
+    aboutToSetValue();
+    _meshObject->validateDegenerations();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::validateDeformations(float fMaxAngle)
+{
+    aboutToSetValue();
+    _meshObject->validateDeformations(fMaxAngle);
+    hasSetValue();
+}
+
+void PropertyMeshKernel::removeDuplicatedFacets()
+{
+    aboutToSetValue();
+    _meshObject->removeDuplicatedFacets();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::removeDuplicatedPoints()
+{
+    aboutToSetValue();
+    _meshObject->removeDuplicatedPoints();
+    hasSetValue();
+}
+
+void PropertyMeshKernel::removeSelfIntersections()
+{
+    aboutToSetValue();
+    _meshObject->removeSelfIntersections();
+    hasSetValue();
+}
+
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
     MeshPy* mesh = new MeshPy(&*_meshObject);

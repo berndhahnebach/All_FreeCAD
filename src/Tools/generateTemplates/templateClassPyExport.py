@@ -375,7 +375,7 @@ PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject 
 {
     // never create such objects with the constructor
     PyErr_SetString(PyExc_RuntimeError, "You cannot create directly an instance of '@self.export.Name@'.\\n"
-    "You must have created a document where you can create an instance with addObject('@self.export.Name@').");
+    "You must have created a document where you can create an instance with addObject('@self.export.Namespace@::@self.export.Twin@').");
  
     return 0;
 }

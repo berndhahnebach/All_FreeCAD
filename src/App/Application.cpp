@@ -32,6 +32,8 @@
 # ifdef FC_OS_LINUX
 # include <time.h>
 # include <unistd.h>
+# include <pwd.h>
+# include <sys/types.h>
 # endif
 # include <boost/program_options.hpp>
 #endif
@@ -1395,36 +1397,49 @@ void Application::ExtractUserPath()
     mConfig["DocPath"] = mConfig["AppHomePath"] + "doc" + PATHSEP;
 
 #if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
-    // On Linux systems the environment variable 'HOME' points to the user home path.
-    //
-    // Default paths for the user depending on the platform
-    if (getenv("HOME") != 0)
-        mConfig["UserHomePath"] = getenv("HOME");
-
-    // Try to write into our data path
-    std::string appData = mConfig["UserHomePath"];
-    appData += PATHSEP;
-    appData += ".";
-    appData += mConfig["ExeVendor"];
+    // Default paths for the user depending stuff on the platform
+    struct passwd *pwd = getpwuid(getuid());
+    if (pwd == NULL)
+        throw Base::Exception("Getting HOME path from system failed!");
+    mConfig["UserHomePath"] = pwd->pw_dir;
+    std::string appData = pwd->pw_dir;
     Base::FileInfo fi(appData.c_str());
     if (!fi.exists()) {
-        if (!fi.createDirectory(appData.c_str())) {
-            // Want more details on console
-            printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
-            // FIXME: Who should catch this exception?
-            throw Base::Exception("Application::ExtractUserPath(): could not write in AppData directory!");
-        }
+        // This should never ever happen
+        std::stringstream str;
+        str << "Application data directory " << appData << " does not exist!";
+        throw Base::Exception(str.str());
     }
 
+    // Try to write into our data path, therefore we must create some directories, first.
+    // If 'AppDataSkipVendor' is defined the value of 'ExeVendor' must not be part of
+    // the path.
     appData += PATHSEP;
+    appData += ".";
+    if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
+        appData += mConfig["ExeVendor"];
+        fi.setFile(appData.c_str());
+        if (!fi.exists()) {
+            if (!fi.createDirectory(appData.c_str())) {
+                std::string error = "Cannot create directory ";
+                error += appData;
+                // Want more details on console
+                std::cerr << error << std::endl;
+                throw Base::Exception(error);
+            }
+        }
+        appData += PATHSEP;
+    }
+    
     appData += mConfig["ExeName"];
     fi.setFile(appData.c_str());
     if (!fi.exists()) {
         if (!fi.createDirectory(appData.c_str())) {
+            std::string error = "Cannot create directory ";
+            error += appData;
             // Want more details on console
-            printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
-            // FIXME: Who should catch this exception?
-            throw Base::Exception("Application::ExtractUserPath(): could not write in AppData directory!");
+            std::cerr << error << std::endl;
+            throw Base::Exception(error);
         }
     }
 
@@ -1467,10 +1482,10 @@ void Application::ExtractUserPath()
             fi.setFile(appData.c_str());
             if (!fi.exists()) {
                 if (!fi.createDirectory(appData.c_str())) {
-                    // Want more details on console
-                    printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
                     std::string error = "Cannot create directory ";
                     error += appData;
+                    // Want more details on console
+                    std::cerr << error << std::endl;
                     throw Base::Exception(error);
                 }
             }
@@ -1481,10 +1496,10 @@ void Application::ExtractUserPath()
         fi.setFile(appData.c_str());
         if (!fi.exists()) {
             if (!fi.createDirectory(appData.c_str())) {
-                // Want more details on console
-                printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
                 std::string error = "Cannot create directory ";
                 error += appData;
+                // Want more details on console
+                std::cerr << error << std::endl;
                 throw Base::Exception(error);
             }
         }
