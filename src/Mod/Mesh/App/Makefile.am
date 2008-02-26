@@ -5,11 +5,13 @@ lib_LTLIBRARIES=libMesh.la Mesh.la
 
 BUILT_SOURCES=\
 		FacetPy.cpp \
+		MeshFeaturePy.cpp \
 		MeshPointPy.cpp \
 		MeshPy.cpp
 
 libMesh_la_BUILT=\
 		FacetPy.h \
+		MeshFeaturePy.h \
 		MeshPointPy.h \
 		MeshPy.h
 
@@ -283,8 +285,7 @@ libMesh_la_SOURCES=\
 		MeshCurvature.h \
 		MeshFeature.cpp \
 		MeshFeature.h \
-		MeshFeaturePy.cpp \
-		MeshFeaturePy.h \
+		MeshFeaturePyImp.cpp \
 		MeshPointPyImp.cpp \
 		MeshPoint.h \
 		MeshProperties.cpp \
@@ -354,6 +355,7 @@ EXTRA_DIST = \
 		$(data_DATA) \
 		AppMesh.vcproj \
 		FacetPy.xml \
+		MeshFeaturePy.xml \
 		MeshPointPy.xml \
 		MeshPy.xml
 

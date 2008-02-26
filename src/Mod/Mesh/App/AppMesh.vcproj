@@ -2205,29 +2205,29 @@
 			>
 		</File>
 		<File
-			RelativePath="MeshFeaturePy.cpp"
+			RelativePath=".\MeshFeaturePy.xml"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="MeshFeaturePy.h"
+			RelativePath=".\MeshFeaturePyImp.cpp"
 			>
 		</File>
 		<File
