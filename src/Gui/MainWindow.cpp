@@ -679,14 +679,17 @@ void MainWindow::loadWindowSettings()
     QString application = App::Application::Config()["ExeName"].c_str();
     QString version = App::Application::Config()["ExeVersion"].c_str();
     QSettings config(vendor, application);
+    
     config.beginGroup(version);
-    this->resize(config.value("Size", QSize(1024, 768)).toSize());
-    this->move(config.value("Position", pos()).toPoint());
+    this->resize(config.value("Size", this->size()).toSize());
+    this->move(config.value("Position", this->pos()).toPoint());
+    
     // tmp. disable the report window to suppress some bothering warnings
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     this->restoreState(config.value("MainWindowState").toByteArray());
     std::clog << "Main window restored" << std::endl;
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
+    
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
@@ -701,10 +704,11 @@ void MainWindow::saveWindowSettings()
     QString application = App::Application::Config()["ExeName"].c_str();
     QString version = App::Application::Config()["ExeVersion"].c_str();
     QSettings config(vendor, application);
+    
     config.beginGroup(version);
-    config.setValue("Size", size());
-    config.setValue("Position", pos());
-    config.setValue("Maximized", isMaximized());
+    config.setValue("Size", this->size());
+    config.setValue("Position", this->pos());
+    config.setValue("Maximized", this->isMaximized());
     config.setValue("MainWindowState", this->saveState());
     config.endGroup();
 

@@ -425,7 +425,7 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     // a: max. area of triangles
     triangulateio* out = new triangulateio();
     memset(out, 0, sizeof(triangulateio));
-    char szBuf[50];
+    char szBuf[51];
     snprintf(szBuf, 50, "pYzqa%.6f", fMaxArea);
     triangulate(szBuf, in, out, NULL);
 

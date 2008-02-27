@@ -415,7 +415,7 @@ void StdCmdPythonHelp::activated(int iMsg)
       PyObject* dict = PyModule_GetDict(module);
       PyObject* func = PyDict_GetItemString(dict, "open");
       if ( func ) {
-        char szBuf[200];
+        char szBuf[201];
         snprintf(szBuf, 200, "http://localhost:%d", port);
         PyObject* args = Py_BuildValue("(s)", szBuf);
         PyObject* result = PyEval_CallObject(func,args);

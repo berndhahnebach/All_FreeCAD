@@ -192,7 +192,7 @@ void SoFCSelection::doAction( SoAction *action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
-    static char buf[512];
+    static char buf[513];
     HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
     const SoEvent * event = action->getEvent();
   

@@ -1,6 +1,10 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <sstream>
+#endif
+
 #include <Base/Matrix.h>
 #include <App/MatrixPy.h>
 
@@ -206,11 +210,11 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
         PyErr_Clear();
     }
     ViewProvider* obj = getDocumentPtr()->getViewProviderByName(attr);
-    if (obj)
-    {
-        char szBuf[200];
-        snprintf(szBuf, 200, "'Document' object attribute '%s' must not be set this way", attr);
-        throw Py::AttributeError(szBuf); 
+    if (obj) {
+        std::stringstream str;
+        str << "'Document' object attribute '" << attr 
+            << "' must not be set this way" << std::ends;
+        throw Py::AttributeError(str.str());
     }
     
     return 0;

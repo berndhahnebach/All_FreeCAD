@@ -59,17 +59,15 @@ const char *FileInfo::getTempPath(void)
 {
   static string tempPath;
 
-  if(tempPath == "")
+  if (tempPath == "")
   {
 #ifdef FC_OS_WIN32
     char buf[MAX_PATH + 2];
     GetTempPath(MAX_PATH + 1,buf);
     tempPath = buf;
 #else
-  const char* tmp = getenv("TEMP");
-  if ( !tmp ) tmp = getenv("TMP");
-  if ( tmp )
-    tempPath = tmp;
+    const char* tmp = getenv("TMPDIR");
+    tempPath = tmp ? tmp : "/tmp/";
 #endif
   }
 
@@ -78,35 +76,22 @@ const char *FileInfo::getTempPath(void)
 
 string FileInfo::getTempFileName(void)
 {
+  //FIXME: To avoid race conditons we should rather return a file pointer
+  //than a file name.
 #ifdef FC_OS_WIN32
   char buf[MAX_PATH + 2];
+  // this already creates the file
   GetTempFileName(getTempPath(),"FCTempFile",0,buf);
   return string(buf);
 #else
-  const char* tmp = getenv("TEMP");
-  if ( !tmp ) tmp = getenv("TMP");
-  std::string buf;
-  if ( tmp ) { 
-    buf = tmp;
-    buf += "/";
-  }
-  buf += "FCT_tmpfile.tmp";
-  return buf;
+  char buf[PATH_MAX+1];
+  strncpy(buf, getTempPath(), PATH_MAX);
+  buf[PATH_MAX] = 0; // null termination needed
+  strcat(buf, "/fileXXXXXX");
+  /*int id =*/ mkstemp(buf);
+  //FILE* file = fdopen(id, "w");
+  return std::string(buf);
 #endif
-}
-
-void FileInfo::makeTemp(const char* Template)
-{
-  char tmp[256];
-  strncpy(tmp,Template,256);
-
-#if defined (__GNUC__)
-  mkstemp(tmp);
-#else
-  _mktemp(tmp);
-#endif
-
-  setFile(tmp);
 }
 
 void FileInfo::setFile(const char* name)

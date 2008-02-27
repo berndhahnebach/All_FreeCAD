@@ -75,9 +75,9 @@ PyObject*  DocumentPy::addObject(PyObject *args)
         return pcFtr->getPyObject();
     else
     {
-        char szBuf[200];
-        snprintf(szBuf, 200, "No document object found of type '%s'", sType);
-        Py_Error(PyExc_Exception,szBuf);
+        std::stringstream str;
+        str << "No document object found of type '" << sType << "'" << std::ends;
+        throw Py::Exception(PyExc_Exception,str.str());
     }
 }
 
@@ -93,9 +93,9 @@ PyObject*  DocumentPy::removeObject(PyObject *args)
         getDocumentPtr()->remObject( sName );
         Py_Return;
     } else {
-        char szBuf[200];
-        snprintf(szBuf, 200, "No feature found with name '%s'", sName);
-        Py_Error(PyExc_Exception,szBuf);
+        std::stringstream str;
+        str << "No document object found with name '" << sName << "'" << std::ends;
+        throw Py::Exception(PyExc_Exception,str.str());
     }
 }
 
@@ -333,9 +333,10 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
     DocumentObject* obj = getDocumentPtr()->getObject(attr);
     if (obj)
     {
-        char szBuf[200];
-        snprintf(szBuf, 200, "'Document' object attribute '%s' must not be set this way", attr);
-        throw Py::AttributeError(szBuf); 
+        std::stringstream str;
+        str << "'Document' object attribute '" << attr 
+            << "' must not be set this way" << std::ends;
+        throw Py::AttributeError(str.str());
     }
     
     return 0;

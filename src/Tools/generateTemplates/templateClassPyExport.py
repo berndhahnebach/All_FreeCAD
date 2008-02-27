@@ -260,13 +260,18 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         PyErr_SetString(PyExc_Exception,str.c_str());
         return NULL;
     }
+    catch(const Py::Exception&)
+    {
+        // The exception text is already set
+        return NULL;
+    }
     catch(const char *e) // catch simple string exceptions
     {
         Base::Console().Error(e);
         PyErr_SetString(PyExc_Exception,e);
         return NULL;
     }
-    // in debug not all exceptions will be catched to get the attentation of the developer!
+    // in debug not all exceptions will be catched to get the attention of the developer!
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
     catch(std::exception &e) // catch other c++ exeptions
     {

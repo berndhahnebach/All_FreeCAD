@@ -880,7 +880,7 @@ CommandManager &Application::commandManager(void)
 void Application::runCommand(bool bForce, const char* sCmd,...)
 {
   // temp buffer
-  size_t format_len = strlen(sCmd)+4024;
+    size_t format_len = std::strlen(sCmd)+4024;
   char* format = (char*) malloc(format_len);
   va_list namelessVars;
   va_start(namelessVars, sCmd);  // Get the "..." vars

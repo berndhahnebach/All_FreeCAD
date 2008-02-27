@@ -193,7 +193,7 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated(QTreeWidgetItem *ite
         pixmapLabel->clear();
         m_sPixmap = QString::null;
         const char* name = pScript->getPixmap();
-        if ( name && strlen(name) > 2)
+        if (name && std::strlen(name) > 2)
         {
             QPixmap p = Gui::BitmapFactory().pixmap(pScript->getPixmap());
             pixmapLabel->setPixmap(p);
