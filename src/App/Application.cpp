@@ -1598,7 +1598,8 @@ std::string Application::FindHomePath(const char* sCall)
     // Called from Python
     if (Py_IsInitialized()) {
         char resolved[PATH_MAX];
-        if (realpath(sCall, resolved))
+        char* path = realpath(sCall, resolved);
+        if (path)
             absPath = resolved;
     }
     else {

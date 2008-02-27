@@ -94,38 +94,36 @@ std::string Writer::addFile(const char* Name,const Base::Persistance *Object)
   return temp.FileName;
 }
 
-string Writer::getUniqueFileName(const char *Name)
+std::string Writer::getUniqueFileName(const char *Name)
 {
-  //std::vector<std::string>::const_iterator pos;
+    // name in use?
+    std::string CleanName = (Name ? Name : "");
+    std::vector<std::string>::const_iterator pos;
+    pos = find(FileNames.begin(),FileNames.end(),CleanName);
 
-  // name in use?
-  std::vector<std::string>::const_iterator pos = find(FileNames.begin(),FileNames.end(),Name);
-
-  if (pos == FileNames.end())
-    // if not, name is OK
-    return Name;
-  else
-  {
-    // find highes sufix
-    int nSuff = 0;  
-    for(pos = FileNames.begin();pos != FileNames.end();++pos)
-    {
-      const string &rclObjName = *pos;
-      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
-      {
-        string clSuffix(rclObjName.substr(strlen(Name)));
-        if (clSuffix.size() > 0){
-            std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-          if(nPos==std::string::npos)
-            nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
-        }
-      }
+    if (pos == FileNames.end()) {
+        // if not, name is OK
+        return CleanName;
     }
-    char szName[200];
-    snprintf(szName, 200, "%s%d", Name, nSuff + 1);
+    else {
+        // find highest sufix
+        int nSuff = 0;  
+        for (pos = FileNames.begin();pos != FileNames.end();++pos) {
+            const std::string &FilName = *pos;
+            if (FilName.substr(0, CleanName.length()) == CleanName) { // same prefix
+                std::string clSuffix(FilName.substr(CleanName.length()));
+                if (clSuffix.size() > 0){
+                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
+                    if (nPos==std::string::npos)
+                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+                }
+            }
+        }
 
-    return string(szName);
-  }
+        std::stringstream str;
+        str << CleanName << (nSuff + 1);
+        return str.str();
+    }
 }
 
 const std::vector<std::string>& Writer::getFilenames() const
@@ -136,21 +134,19 @@ const std::vector<std::string>& Writer::getFilenames() const
 
 void Writer::incInd(void)
 {
-  // because of buffer 
-  assert(indent < 255);
-
-  indBuf[indent] = '\t';
-  indBuf[indent+1] = '\0';
-
-  indent++;
+    if (indent < 255) {
+        indBuf[indent] = '\t';
+        indBuf[indent+1] = '\0';
+        indent++;
+    }
 }
 
 void Writer::decInd(void)
 {
-  // indention mismatch
-  assert(indent > 0);
-  indent--;
-  indBuf[indent] = '\0';
+    if (indent > 0) {
+        indent--;
+        indBuf[indent] = '\0';
+    }
 }
 
 ZipWriter::ZipWriter(const char* FileName) 

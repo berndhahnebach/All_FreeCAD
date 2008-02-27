@@ -630,9 +630,9 @@ void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comme
     unsigned int comment_length;
     int marker;
 
-    comment_arg = (char *) malloc((size_t) strlen(Comment)+2);
+    comment_arg = (char *) malloc((size_t) std::strlen(Comment)+2);
     strcpy(comment_arg, Comment);
-    comment_length = (unsigned int)strlen(comment_arg);
+    comment_length = (unsigned int)std::strlen(comment_arg);
 
 
     if ((infile = fopen(InFile, READ_BINARY)) == NULL) {

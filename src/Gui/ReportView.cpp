@@ -282,9 +282,10 @@ void ReportOutput::Error  (const char * s)
 
 void ReportOutput::Log (const char * s)
 {
-    if(strlen(s) < 1000){
+    QString msg = QString::fromUtf8(s);
+    if (msg.length() < 1000){
         // Send the event to itself to allow thread-safety. Qt will delete it when done.
-        CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, QString::fromUtf8(s));
+        CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, msg);
         QApplication::postEvent(this, ev);
     }
 }

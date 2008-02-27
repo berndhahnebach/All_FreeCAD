@@ -32,7 +32,6 @@
 namespace Base
 {
 
- 
 /** File name unification
   * This class handles everything related to file names
   */
@@ -41,8 +40,6 @@ class BaseExport FileInfo
 public:
     /// Constrction
     FileInfo (const char* FileName="");
-    /// gecerates a unique file name
-    void makeTemp(const char* Template);
     /// set a new file name
     void setFile(const char* name);
     /// set a new file name
