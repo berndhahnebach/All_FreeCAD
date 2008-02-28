@@ -28,6 +28,7 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <stdio.h>
+# include <fstream>
 # if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 # include <unistd.h>
 # include <sys/stat.h>
