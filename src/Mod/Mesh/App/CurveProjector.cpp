@@ -64,14 +64,15 @@ CurveProjector::CurveProjector(const TopoDS_Shape &aShape, const MeshKernel &pMe
 void CurveProjector::writeIntersectionPointsToFile(const char *name)
 {
   // export points
-  FILE* file = fopen(name, "w");
-  for (result_type::const_iterator it1 = mvEdgeSplitPoints.begin();it1!=mvEdgeSplitPoints.end();++it1)
-    for (std::vector<FaceSplitEdge>::const_iterator it2 = it1->second.begin();it2!=it1->second.end();++it2)
-    {
-      fprintf(file, "%.4f %.4f %.4f\n", it2->p1.x, it2->p1.y, it2->p1.z);
-    }
-
-  fclose(file);
+  std::ofstream str(name, std::ios::out | std::ios::binary);
+  str.precision(4);
+  str.setf(std::ios::fixed | std::ios::showpoint);
+  for (result_type::const_iterator it1 = mvEdgeSplitPoints.begin();it1!=mvEdgeSplitPoints.end();++it1) {
+      for (std::vector<FaceSplitEdge>::const_iterator it2 = it1->second.begin();it2!=it1->second.end();++it2) {
+        str << it2->p1.x << " " << it2->p1.y << " " << it2->p1.z << std::endl;
+      }
+  }
+  str.close();
 }
 
 
@@ -307,8 +308,10 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   
   MeshFacetIterator It(_Mesh);
 
-  Base::SequencerLauncher seq("Building up projection map...", ulNbOfPoints+1);  
-  FILE* file = fopen("projected.asc", "w");
+  Base::SequencerLauncher seq("Building up projection map...", ulNbOfPoints+1);
+  std::ofstream str("projected.asc", std::ios::out | std::ios::binary);
+  str.precision(4);
+  str.setf(std::ios::fixed | std::ios::showpoint);
 
   std::map<unsigned long,std::vector<Base::Vector3f> > FaceProjctMap;
  
@@ -324,7 +327,9 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
       if(It->IntersectWithLine (Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), TempResultPoint) )
       {
         FaceProjctMap[It.Position()].push_back(TempResultPoint);
-        fprintf(file, "%.4f %.4f %.4f\n", TempResultPoint.x, TempResultPoint.y, TempResultPoint.z);
+        str << TempResultPoint.x << " " 
+            << TempResultPoint.y << " " 
+            << TempResultPoint.z << std::endl;
         Base::Console().Log("IDX %d\n",It.Position());
 
         if(bFirst){
@@ -337,7 +342,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
     }
   }
 
-  fclose(file);
+  str.close();
   Base::Console().Log("Projection map [%d facets with %d points]\n",FaceProjctMap.size(),PointCount);
 
   // estimate the first face

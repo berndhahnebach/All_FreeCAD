@@ -182,8 +182,6 @@ public:
     //@{
     /// set a string value
     void  SetASCII(const char* Name, const char *sValue);
-    /// read a string values with a buffer
-    void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL) const;
     /// read a string values
     std::string GetASCII(const char* Name, const char * pPreset=NULL) const;
     /// remove a string value from this group

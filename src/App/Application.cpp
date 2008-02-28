@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
+ *   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -649,16 +649,7 @@ void Application::init(int argc, char ** argv)
 
         boost::filesystem::path::default_name_check(boost::filesystem::no_check);
 
-        if (argc==0) {
-            char* buf = new char[256];
-            strncpy(buf,mConfig["ExeName"].c_str(),98);
-            initConfig(1,reinterpret_cast<char **>(&buf));
-            delete [] buf;
-            buf = 0;
-        }
-        else
-            initConfig(argc,argv);
-
+        initConfig(argc,argv);
         initApplication();
     }
     catch (...) {
@@ -1514,43 +1505,49 @@ void Application::ExtractUserPath()
 #endif
 }
 
-#if defined (FC_OS_LINUX)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/param.h>
+
 std::string Application::FindHomePath(const char* sCall)
 {
     // We have three ways to start this application either use one of the both executables or
     // import the FreeCAD.so module from a running Python session. In the latter case the
     // Python interpreter is already initialized.
-    std::string Call, TempHomePath;
+    std::string absPath;
+    std::string homePath;
     if (Py_IsInitialized()) {
-        // sCall must already be the right path. See also MainPy.cpp
-        // Possibly we get only a relative path then we need to prepend the cwd
-        if (sCall[0] != '/') {
-            // get the current working directory
-            char szDir[PATH_MAX];
-            getcwd(szDir, sizeof(szDir));
-            Call = szDir;
-            Call += '/';
-            Call += sCall;
-        }
-        else {
-            Call = sCall;
-        }
+        // Note: realpath is known to cause a buffer overflow because it
+        // expands the given path to an absolute path of unknown length.
+        // Even setting PATH_MAX does not necessarily solve the problem
+        // for sure but the risk of overflow is rather small.
+        char resolved[PATH_MAX];
+        char* path = realpath(sCall, resolved);
+        if (path)
+            absPath = path;
     }
     else {
-        // Find the path of the executable
-        char szDir[PATH_MAX];
-        int n = readlink("/proc/self/exe", szDir, PATH_MAX);
-        if (n != -1) {
-            Call = szDir;
-        }
+        // Find the path of the executable. Theoretically, there could  occur a
+        // race condition when using readlink, but we only use  this method to
+        // get the absolute path of the executable to compute the actual home
+        // path. In the worst case we simply get q wrong path and FreeCAD is not
+        // able to load its modules.
+        char resolved[PATH_MAX];
+        int nchars = readlink("/proc/self/exe", resolved, PATH_MAX);
+        if (nchars < 0 || nchars >= PATH_MAX)
+            throw Base::Exception("Cannot determine the absolute path of the executable");
+        resolved[nchars] = '\0'; // enfore null termination
+        absPath = resolved;
     }
 
-    std::string::size_type pos = Call.find_last_of(PATHSEP);
-    TempHomePath.assign(Call,0,pos);
-    pos = TempHomePath.find_last_of(PATHSEP);
-    TempHomePath.assign(TempHomePath,0,pos+1);
+    // should be an absolute path now
+    std::string::size_type pos = absPath.find_last_of("/");
+    homePath.assign(absPath,0,pos);
+    pos = homePath.find_last_of("/");
+    homePath.assign(homePath,0,pos+1);
 
-    return TempHomePath;
+    return homePath;
 }
 
 #elif defined(FC_OS_MACOSX)
@@ -1583,41 +1580,6 @@ std::string Application::FindHomePath(const char* call)
     }
 
     return call; // error
-}
-
-#elif defined(FC_OS_CYGWIN)
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/param.h>
-
-std::string Application::FindHomePath(const char* sCall)
-{
-    std::string absPath;
-    std::string homePath;
-
-    // Called from Python
-    if (Py_IsInitialized()) {
-        char resolved[PATH_MAX];
-        char* path = realpath(sCall, resolved);
-        if (path)
-            absPath = resolved;
-    }
-    else {
-        // Find the path of the executable
-        char resolved[PATH_MAX];
-        int n = readlink("/proc/self/exe", resolved, PATH_MAX);
-        if (n != -1) {
-            absPath = resolved;
-        }
-    }
-
-    // should be an absolute path now
-    std::string::size_type pos = absPath.find_last_of(PATHSEP);
-    homePath.assign(absPath,0,pos);
-    pos = homePath.find_last_of(PATHSEP);
-    homePath.assign(homePath,0,pos+1);
-
-    return homePath;
 }
 
 #elif defined (FC_OS_WIN32)
