@@ -29,6 +29,8 @@
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
+#include <Base/Reader.h>
+
 #include "FeaturePython.h"
 #include "FeaturePythonPy.h"
 
@@ -85,80 +87,116 @@ const char* FeaturePython::getName(const Property* prop) const
     return DocumentObject::getName(prop);
 }
 
-void FeaturePython::addDynamicProperty(const char* type, const char* name)
+Property* FeaturePython::addDynamicProperty(const char* type, const char* name)
 {
-    Property* pcObject = (Property*) Base::Type::createInstanceByName(type,true);
-    if (pcObject) {
-        if (!pcObject->getTypeId().isDerivedFrom(Property::getClassTypeId())) {
-            delete pcObject;
-            std::stringstream str;
-            str << "'" << type << "' is not a property type";
-            throw Base::Exception(str.str());
-        }
-
-        // get unique name
-        string ObjectName;
-        if (name)
-            ObjectName = getUniquePropertyName(name);
-        else
-            ObjectName = getUniquePropertyName(type);
-
-        pcObject->setContainer(this);
-        objectProperties[ObjectName] = pcObject;
+    Property* pcProperty = (Property*) Base::Type::createInstanceByName(type,true);
+    if (!pcProperty)
+        return 0;
+    if (!pcProperty->getTypeId().isDerivedFrom(Property::getClassTypeId())) {
+        delete pcProperty;
+        std::stringstream str;
+        str << "'" << type << "' is not a property type";
+        throw Base::Exception(str.str());
     }
+
+    // get unique name
+    std::string ObjectName;
+    if (name && *name != '\0')
+        ObjectName = getUniquePropertyName(name);
+    else
+        ObjectName = getUniquePropertyName(type);
+
+    pcProperty->setContainer(this);
+    objectProperties[ObjectName] = pcProperty;
+
+    return pcProperty;
 }
 
-string FeaturePython::getUniquePropertyName(const char *Name) const
+std::string FeaturePython::getUniquePropertyName(const char *Name) const
 {
-    // strip illegal chars
-    string CleanName;
-    const char *It=Name;
-
     // check for first character whether it's a digit
-    if ((*It != '\0') && (*It>=48 && *It<=57))
-        CleanName = "_";
-
-    while (*It != '\0') {
-        if (   (*It>=48 && *It<=57)  // Numbers
-                ||(*It>=65 && *It<=90)   // Upercase letters
-                ||(*It>=97 && *It<=122)  // Upercase letters
-           ) {
-            CleanName += *It;
-        }
-        else {
-            // All other letters gets replaced
-            CleanName += '_';
-        }
-        It++;
+    std::string CleanName = Name;
+    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
+        CleanName[0] = '_';
+    // strip illegal chars
+    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
+        if (!((*it>=48 && *it<=57) ||  // number
+             (*it>=65 && *it<=90)  ||  // uppercase letter
+             (*it>=97 && *it<=122)))   // lowercase letter
+             *it = '_'; // it's neither number nor letter
     }
 
-    std::map<std::string,Property*>::const_iterator pos;
-
     // name in use?
-    pos = objectProperties.find(CleanName);
+    std::map<std::string,Property*> objectProps;
+    getPropertyMap(objectProps);
+    std::map<std::string,Property*>::const_iterator pos;
+    pos = objectProps.find(CleanName);
 
-    if (pos == objectProperties.end())
+    if (pos == objectProps.end()) {
         // if not, name is OK
         return CleanName;
+    }
     else {
         // find highest suffix
         int nSuff = 0;
-        for (pos = objectProperties.begin();pos != objectProperties.end();++pos) {
-            const string &rclObjName = pos->first;
-            if (rclObjName.substr(0, CleanName.size()) == CleanName) { // Prefix gleich
-                string clSuffix(rclObjName.substr(CleanName.size()));
+        for (pos = objectProps.begin();pos != objectProps.end();++pos) {
+            const std::string &PropName = pos->first;
+            if (PropName.substr(0, CleanName.length()) == CleanName) { // same prefix
+                std::string clSuffix(PropName.substr(CleanName.size()));
                 if (clSuffix.size() > 0) {
                     std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
                     if (nPos==std::string::npos)
-                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
                 }
             }
         }
+
         std::stringstream str;
         str << CleanName << ++nSuff;
         return str.str();
     }
+}
 
+void FeaturePython::Save (Base::Writer &writer) const 
+{
+    DocumentObject::Save(writer);
+}
+
+void FeaturePython::Restore(Base::XMLReader &reader)
+{
+    reader.readElement("Properties");
+    int Cnt = reader.getAttributeAsInteger("Count");
+
+    for (int i=0 ;i<Cnt ;i++) {
+        reader.readElement("Property");
+        const char* PropName = reader.getAttribute("name");
+        const char* TypeName = reader.getAttribute("type");
+        Property* prop = getPropertyByName(PropName);
+        try {
+            if (!prop) prop = addDynamicProperty(TypeName, PropName);
+        }
+        catch(const Base::Exception& e) {
+            // only handle this exception type
+            Base::Console().Warning(e.what());
+        }
+
+        //NOTE: We must also check the type of the current property because a subclass of
+        //PropertyContainer might change the type of a property but not its name. In this
+        //case we would force to read-in a wrong property type and the behaviour would be
+        //undefined.
+        if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
+            prop->Restore(reader);
+        else if (prop)
+            Base::Console().Warning("%s: Overread data for property %s of type %s,"
+            " expected type is %s\n", this->getNameInDocument(), prop->getName(),
+                                    prop->getTypeId().getName(), TypeName);
+        else
+            Base::Console().Warning("%s: No property found with name %s and type %s\n",
+                                    this->getNameInDocument(), PropName, TypeName);
+        reader.readEndElement("Property");
+    }
+
+    reader.readEndElement("Properties");
 }
 
 PyObject *FeaturePython::getPyObject(void)

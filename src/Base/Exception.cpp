@@ -70,7 +70,7 @@ const char* Exception::what(void) const throw()
 
 void Exception::ReportException (void) const
 {
-    Console().Error("\nException (%s): %s \n",Console().Time(),what());
+    Console().Error("Exception (%s): %s \n",Console().Time(),what());
 }
 
 // ---------------------------------------------------------
