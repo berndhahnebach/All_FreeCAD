@@ -693,23 +693,6 @@ void  ParameterGrp::SetASCII(const char* Name, const char *sValue)
 
 }
 
-void ParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset) const
-{
-    // check if Element in group
-    DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
-    // if not return preset
-    if (!pcElem) strncpy(pBuf,pPreset,lMaxLength);
-    // if yes check the value and return
-    DOMNode *pcElem2 = pcElem->getFirstChild();
-    if (pcElem2) {
-        StrX cTemp(pcElem2->getNodeValue());
-        strncpy(pBuf,cTemp.c_str(),lMaxLength);
-    }
-    else {
-        strncpy(pBuf,pPreset,lMaxLength);
-    }
-}
-
 std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset) const
 {
     // check if Element in group

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
+ *   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -104,15 +104,18 @@ extern "C"
         int    argc=1;
         char** argv;
         argv = (char**)malloc(sizeof(char*)* (argc+1));
-        argv[0] = (char*)malloc(1024);
 
 #if defined(FC_OS_WIN32)
-        strncpy(argv[0],App::Application::Config()["AppHomePath"].c_str(),1024);
+        argv[0] = (char*)malloc(MAX_PATH);
+        strncpy(argv[0],App::Application::Config()["AppHomePath"].c_str(),MAX_PATH);
+        argv[0][MAX_PATH-1] = '\0'; // ensure null termination
 #elif defined(FC_OS_CYGWIN)
         HMODULE hModule = GetModuleHandle("FreeCAD.dll");
         char szFileName [MAX_PATH];
         GetModuleFileName(hModule, szFileName, MAX_PATH-1);
-        strncpy(argv[0],szFileName,1024);
+        argv[0] = (char*)malloc(MAX_PATH);
+        strncpy(argv[0],szFileName,MAX_PATH);
+        argv[0][MAX_PATH-1] = '\0'; // ensure null termination
 #elif defined(FC_OS_LINUX)
         // get whole path of the library
         Dl_info info;
@@ -122,7 +125,9 @@ extern "C"
             return;
         }
 
-        strncpy(argv[0], info.dli_fname,1024);
+        argv[0] = (char*)malloc(PATH_MAX);
+        strncpy(argv[0], info.dli_fname,PATH_MAX);
+        argv[0][PATH_MAX-1] = '\0'; // ensure null termination
 #elif defined(FC_OS_MACOSX)
         uint32_t sz = 0;
         char *buf;
@@ -135,7 +140,9 @@ extern "C"
             return;
         }
 
-        strncpy(argv[0], buf, 1024);
+        argv[0] = (char*)malloc(PATH_MAX);
+        strncpy(argv[0], buf, PATH_MAX);
+        argv[0][PATH_MAX-1] = '\0'; // ensure null termination
         free(buf);
 #else
 # error "Implement: Retrieve the path of the module for your platform."
@@ -149,7 +156,8 @@ extern "C"
         catch (const Base::Exception& e) {
             std::string appName = App::Application::Config()["ExeName"];
             std::stringstream msg;
-            msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
+            msg << "While initializing " << appName << " the  following exception occurred: '"
+                << e.what() << "'\n\n";
             msg << "\nPlease contact the application's support team for more information.\n\n";
             printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
         }

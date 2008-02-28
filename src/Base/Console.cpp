@@ -42,8 +42,8 @@ using namespace Base;
 
 
 
-char format[4024];  //Warning! Can't go over 512 characters!!! 
-unsigned int format_len = 4024;
+char format[4024];  // global buffer 
+const unsigned int format_len = 4024;
 
 
 //**************************************************************************

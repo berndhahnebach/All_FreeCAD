@@ -52,215 +52,202 @@ using namespace std;
 
 FileInfo::FileInfo (const char* FileName)
 {
-  setFile(FileName);
+    setFile(FileName);
 }
 
 const char *FileInfo::getTempPath(void)
 {
-  static string tempPath;
+    static std::string tempPath;
 
-  if (tempPath == "")
-  {
+    if (tempPath == "") {
 #ifdef FC_OS_WIN32
-    char buf[MAX_PATH + 2];
-    GetTempPath(MAX_PATH + 1,buf);
-    tempPath = buf;
+        char buf[MAX_PATH + 2];
+        GetTempPath(MAX_PATH + 1,buf);
+        tempPath = buf;
 #else
-    const char* tmp = getenv("TMPDIR");
-    tempPath = tmp ? tmp : "/tmp/";
+        const char* tmp = getenv("TMPDIR");
+        tempPath = tmp ? tmp : "/tmp/";
 #endif
-  }
+    }
 
-  return tempPath.c_str();
+    return tempPath.c_str();
 }
 
 string FileInfo::getTempFileName(void)
 {
-  //FIXME: To avoid race conditons we should rather return a file pointer
-  //than a file name.
+    //FIXME: To avoid race conditons we should rather return a file pointer
+    //than a file name.
 #ifdef FC_OS_WIN32
-  char buf[MAX_PATH + 2];
-  // this already creates the file
-  GetTempFileName(getTempPath(),"FCTempFile",0,buf);
-  return string(buf);
+    char buf[MAX_PATH + 2];
+    // this already creates the file
+    GetTempFileName(getTempPath(),"FCTempFile",0,buf);
+    return string(buf);
 #else
-  char buf[PATH_MAX+1];
-  strncpy(buf, getTempPath(), PATH_MAX);
-  buf[PATH_MAX] = 0; // null termination needed
-  strcat(buf, "/fileXXXXXX");
-  /*int id =*/ mkstemp(buf);
-  //FILE* file = fdopen(id, "w");
-  return std::string(buf);
+    char buf[PATH_MAX+1];
+    strncpy(buf, getTempPath(), PATH_MAX);
+    buf[PATH_MAX] = 0; // null termination needed
+    strcat(buf, "/fileXXXXXX");
+    /*int id =*/ mkstemp(buf);
+    //FILE* file = fdopen(id, "w");
+    return std::string(buf);
 #endif
 }
 
 void FileInfo::setFile(const char* name)
 {
-  string result;
-  const char *It=name;
+    std::string result;
+    const char *It=name;
 
-  while(*It != '\0')
-  {
-    switch(*It)
-    {
-    case '\\':
-      result += "/";
-      break;
-//    case ' ':
-//      result += "\\ ";
-//      break;
-//    case '\'':
-//      result += "\\\'";
-//      break;
-    default:
-      result += *It;
+    while(*It != '\0') {
+        switch(*It)
+        {
+        case '\\':
+            result += "/";
+            break;
+        default:
+            result += *It;
+        }
+        It++;
     }
-    It++;
-  }
 
-  FileName = result;
+    FileName = result;
 }
 
-string FileInfo::filePath () const
+std::string FileInfo::filePath () const
 {
-  return FileName;
+    return FileName;
 }
 
-string FileInfo::fileName () const
+std::string FileInfo::fileName () const
 {
-  return FileName.substr(FileName.find_last_of('/')+1);
+    return FileName.substr(FileName.find_last_of('/')+1);
 }
 
 std::string FileInfo::dirPath () const
 {
-  return FileName.substr(0,FileName.find_last_of('/'));
+    return FileName.substr(0,FileName.find_last_of('/'));
 }
 
-string FileInfo::fileNamePure () const
+std::string FileInfo::fileNamePure () const
 {
-  string temp = fileName();
-  std::string::size_type pos = temp.find_last_of('.');
+    std::string temp = fileName();
+    std::string::size_type pos = temp.find_last_of('.');
   
-  if(pos != string::npos)
-    return temp.substr(0,pos);
-  else 
-    return temp;
+    if (pos != string::npos)
+        return temp.substr(0,pos);
+    else 
+        return temp;
 }
 
-string FileInfo::extension ( bool complete ) const
+std::string FileInfo::extension (bool complete) const
 {
-  // complete not implemented
-  assert(complete==false);
-  return FileName.substr(FileName.find_last_of('.')+1);
+    // complete not implemented
+    assert(complete==false);
+    return FileName.substr(FileName.find_last_of('.')+1);
 }
 
 bool FileInfo::hasExtension ( const char* Ext) const
 {
 #if defined (__GNUC__)
-  return strcasecmp(Ext,extension().c_str()) == 0;
+    return strcasecmp(Ext,extension().c_str()) == 0;
 #else
-  return _stricmp(Ext,extension().c_str()) == 0;
+    return _stricmp(Ext,extension().c_str()) == 0;
 #endif
 }
 
 bool FileInfo::exists () const
 {
 #if defined (__GNUC__)
-  return access(FileName.c_str(),0) == 0;
+    return access(FileName.c_str(),0) == 0;
 #else
-  return _access(FileName.c_str(),0) == 0;
+    return _access(FileName.c_str(),0) == 0;
 #endif
 }
 
 bool FileInfo::isReadable () const
 {
 #if defined (__GNUC__)
-  return access(FileName.c_str(),4) == 0;
+    return access(FileName.c_str(),4) == 0;
 #else
-  return _access(FileName.c_str(),4) == 0;
+    return _access(FileName.c_str(),4) == 0;
 #endif
 }
 
 bool FileInfo::isWritable () const
 {
 #if defined (__GNUC__)
-  return access(FileName.c_str(),2) == 0;
+    return access(FileName.c_str(),2) == 0;
 #else
-  return _access(FileName.c_str(),2) == 0;
+    return _access(FileName.c_str(),2) == 0;
 #endif
 }
 
 bool FileInfo::isFile () const
 {
-  if ( exists() )
-  {
-    FILE* file = fopen(FileName.c_str(), "r");
-    if ( file )
-    {
-      // okay, it's an existing file
-      fclose(file);
-      return true;
+    if (exists()) {
+        // If we can open it must be an existing file, otherwise we assume it
+        // is a directory (which doesn't need to be true for any cases)
+        std::ifstream str(FileName.c_str(), std::ios::in | std::ios::binary);
+        if (!str) return false;
+        str.close();
+        return true;
     }
-    else
-      // must be a directory
-      return false;
-  }
 
-  // TODO: Check for valid file name
-  return true;
+    // TODO: Check for valid file name
+    return true;
 }
 
 bool FileInfo::isDir () const
 {
-  if ( exists() )
-  {
-    // if we can chdir then it must be a directory
-    char cwd[1000];
+    if (exists()) {
+        // if we can chdir then it must be a directory, otherwise we assume it
+        // is a file (which doesn't need to be true for any cases)
 #if defined (__GNUC__)
-    if ( getcwd(cwd,1000) != 0 && chdir(FileName.c_str()) == 0 )
-    {
-      chdir(cwd);
-      return true;
+        char cwd[PATH_MAX+1];
+        if (getcwd(cwd,PATH_MAX+1) != 0 && chdir(FileName.c_str()) == 0) {
+            chdir(cwd);
+            return true;
+        }
 #else
-    if ( _getcwd(cwd,1000) != 0 && _chdir(FileName.c_str()) == 0 )
-    {
-      _chdir(cwd);
-      return true;
+        char cwd[MAX_PATH+1];
+        if (_getcwd(cwd,MAX_PATH+1) != 0 && _chdir(FileName.c_str()) == 0) {
+            _chdir(cwd);
+            return true;
+        }
 #endif
+        return false;
     }
-    else
-      return false;
-  }
 
-  // TODO: Check for valid path name
-  return true;
+    // TODO: Check for valid path name
+    return true;
 }
 
 unsigned int FileInfo::size () const
 {
-  // not implemented
-  assert(0);
-  return 0;
+    // not implemented
+    assert(0);
+    return 0;
 }
 
 bool FileInfo::deleteFile(void)
 {
 #if defined (_MSC_VER)
-  return DeleteFile(FileName.c_str())>0;
+    return DeleteFile(FileName.c_str())>0;
 #elif defined(__GNUC__)
-  return (::remove(FileName.c_str())==0);
+    return (::remove(FileName.c_str())==0);
 #else
-# error "DeleteFile() not implemented for this platform!"
+#   error "DeleteFile() not implemented for this platform!"
 #endif
 }
+
 bool FileInfo::createDirectory( const char* directory ) const
 {
 #if defined (_MSC_VER)
-  return _mkdir( directory ) == 0;
+    return _mkdir( directory ) == 0;
 #elif defined(__GNUC__)
-  return mkdir( directory, 0777 ) == 0;
+    return mkdir( directory, 0777 ) == 0;
 #else
-# error "FileInfo::createDirectory() not implemented for this platform!"
+#   error "FileInfo::createDirectory() not implemented for this platform!"
 #endif
 }
 
