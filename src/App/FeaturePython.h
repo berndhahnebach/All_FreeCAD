@@ -31,6 +31,7 @@
 namespace App
 {
 
+class Property;
 class FeaturePythonPy;
 
 class FeaturePython : public DocumentObject
@@ -57,13 +58,16 @@ public:
     virtual const char* getName(const Property* prop) const;
     //@}
 
-    void addDynamicProperty(const char* type, const char* name=0);
+    Property* addDynamicProperty(const char* type, const char* name=0);
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
 
-    std::string getUniquePropertyName(const char *Name) const;
-
-    virtual PyObject *getPyObject(void);
+    PyObject *getPyObject(void);
 
     friend class FeaturePythonPy;
+
+private:
+    std::string getUniquePropertyName(const char *Name) const;
 
 private:
     std::map<std::string,Property*> objectProperties;

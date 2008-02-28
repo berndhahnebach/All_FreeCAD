@@ -23,6 +23,10 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <sstream>
+#endif
+
 #include "FeaturePython.h"
 
 // inclusion of the generated files (generated out of FeaturePythonPy.xml)
@@ -40,12 +44,17 @@ const char *FeaturePythonPy::representation(void) const
 PyObject*  FeaturePythonPy::addProperty(PyObject *args)
 {
     char *sType,*sName=0;
-    if (!PyArg_ParseTuple(args, "ss", &sType,&sName))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
         return NULL;                             // NULL triggers exception 
 
-    PY_TRY {
-        getFeaturePythonPtr()->addDynamicProperty(sType,sName);
-    } PY_CATCH;
+    Property* prop=0;
+    prop = getFeaturePythonPtr()->addDynamicProperty(sType,sName);
+    
+    if (!prop) {
+        std::stringstream str;
+        str << "No property found of type '" << sType << "'" << std::ends;
+        throw Py::Exception(PyExc_Exception,str.str());
+    }
 
     Py_Return;
 }
