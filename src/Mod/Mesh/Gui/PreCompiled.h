@@ -22,8 +22,9 @@
 #endif
 
 // Gts
-#include <gts.h>
-
+#ifdef FC_USE_GTS
+#  include <gts.h>
+#endif
 // standard
 #include <stdio.h>
 #include <assert.h>

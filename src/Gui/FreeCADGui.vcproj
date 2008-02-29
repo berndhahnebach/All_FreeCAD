@@ -48,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
-				AdditionalIncludeDirectories=".,inventor/Qt,.."
+				AdditionalIncludeDirectories=".;..;..\..\include\python;..\..\include;..\..\include\zlib;..\..\include\qt;..\..\include\qt\Qt;..\..\include\qt\QtCore;..\..\include\qt\QtDesigner;..\..\include\qt\QtSvg;..\..\include\qt\QtNetwork;..\..\include\qt\QtGui;..\..\include\qt\QtSql;..\..\include\qt\QtTest;..\..\include\qt\QtUiTools;..\..\include\qt\QtXml;..\..\include\qt\QtOpenGl..;..\..\include\qt\QtOpenGl;..\..\include\coin;..\..\include\soqt"
 				PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -81,6 +81,7 @@
 				OutputFile="../../bin/FreeCADGuiD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADGuiD.pdb"
@@ -150,7 +151,7 @@
 				AdditionalOptions="/Zm200 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".,inventor/Qt,.."
+				AdditionalIncludeDirectories=".;..;..\..\include\python;..\..\include;..\..\include\zlib;..\..\include\qt;..\..\include\qt\Qt;..\..\include\qt\QtCore;..\..\include\qt\QtDesigner;..\..\include\qt\QtSvg;..\..\include\qt\QtNetwork;..\..\include\qt\QtGui;..\..\include\qt\QtSql;..\..\include\qt\QtTest;..\..\include\qt\QtUiTools;..\..\include\qt\QtXml;..\..\include\qt\QtOpenGl..;..\..\include\qt\QtOpenGl;..\..\include\coin;..\..\include\soqt"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -182,6 +183,7 @@
 				OutputFile="../../bin/FreeCADGui.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADGui.pdb"
 				ImportLibrary="../../lib/FreeCADGui.lib"
@@ -3535,7 +3537,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3545,7 +3547,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>

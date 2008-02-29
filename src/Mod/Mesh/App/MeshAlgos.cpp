@@ -156,6 +156,7 @@ void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zma
 
 void MeshAlgos::coarsen(MeshCore::MeshKernel* Mesh, float f)
 {
+#ifdef FC_USE_GTS
   GtsSurface * surface;
 
   // create a GTS surface
@@ -174,11 +175,13 @@ void MeshAlgos::coarsen(MeshCore::MeshKernel* Mesh, float f)
 
   // get the standard mesh
   fillMeshFromGTSSurface(Mesh,surface);
+#endif
 }
 
 
 MeshCore::MeshKernel* MeshAlgos::boolean(MeshCore::MeshKernel* pMesh1, MeshCore::MeshKernel* pMesh2, MeshCore::MeshKernel* pResult,int Type)
 {
+#ifdef FC_USE_GTS
   GtsSurface * s1, * s2, * s3;
   GtsSurfaceInter * si;
   GNode * tree1, * tree2;
@@ -314,12 +317,12 @@ MeshCore::MeshKernel* MeshAlgos::boolean(MeshCore::MeshKernel* pMesh1, MeshCore:
 //  gts_bb_tree_destroy (tree1, TRUE);
 //  gts_bb_tree_destroy (tree2, TRUE);  
   
-  
+#endif
   return pMesh1;
 }
 
 
-
+#ifdef FC_USE_GTS
 
 
 /// helper function - construct a Edge out of two Vertexes if not allready there
@@ -373,6 +376,7 @@ GtsSurface* MeshAlgos::createGTSSurface(MeshCore::MeshKernel* Mesh)
                                                                      gts_surface_is_self_intersecting(Surf)?"self-intersections":"no self-intersection" ); 
 
   return Surf;
+
 }
 
 /// helper function for the face (triangle iteration
@@ -412,6 +416,7 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* 
 
 }
 
+#endif
 
 void MeshAlgos::cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh)
 {

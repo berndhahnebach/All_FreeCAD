@@ -38,9 +38,9 @@
 #include <ios>
 #include <io.h>
 
-
-#include <gts.h>
-
+#ifdef FC_USE_GTS
+#  include <gts.h>
+#endif
 // STL
 #include <algorithm>
 #include <bitset>

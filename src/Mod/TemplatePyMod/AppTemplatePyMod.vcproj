@@ -57,6 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -126,6 +127,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -241,7 +243,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -251,7 +253,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(OutDir)\$(InputName).py"
 				/>
 			</FileConfiguration>

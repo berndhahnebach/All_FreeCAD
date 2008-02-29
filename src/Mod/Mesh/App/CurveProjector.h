@@ -24,7 +24,10 @@
 #ifndef _CurveProjector_h_
 #define _CurveProjector_h_
 
-#include <gts.h>
+#ifdef FC_USE_GTS
+#  include <gts.h>
+#endif
+
 #include <gp_Pln.hxx>
 
 #include <Base/Vector3D.h>

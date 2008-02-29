@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade"
 				PreprocessorDefinitions="_USRDLL;FCAppPart;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -82,6 +82,7 @@
 				OutputFile="../../../../Mod/Part/Part_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Part/Part_d.pdb"
@@ -150,7 +151,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPart"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -182,6 +183,7 @@
 				OutputFile="../../../../Mod/Part/Part.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Part/Part.pdb"
 				ImportLibrary="../../../../lib/Part.lib"
@@ -693,7 +695,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
@@ -702,7 +704,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
