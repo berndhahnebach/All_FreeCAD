@@ -3,8 +3,8 @@ rem   Build script, uses vcbuild to completetly build FreeCAD
 
 rem  set the aprobiated Variables here or outside in the system
 if NOT DEFINED QMAKESPEC set QMAKESPEC=win32-msvc2005
-if NOT DEFINED QTDIR set QTDIR=C:\# Libs\FreeCADLibs\FreeCADLibs5
-if NOT DEFINED FREECADLIB set FREECADLIB=C:\# Libs\FreeCADLibs\FreeCADLibs5
+if NOT DEFINED QTDIR set QTDIR=C:\Libs\FreeCADLibs\FreeCADLibs5
+if NOT DEFINED FREECADLIB set FREECADLIB=C:\Libs\FreeCADLibs\FreeCADLibs5
 
 set PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem
 set INCLUDE=
@@ -43,12 +43,14 @@ set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtTest
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtUITools
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtXml
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCV10
+set INCLUDE=%INCLUDE%;.\include\
 
 rem Set lib Pathes
 set LIB=%LIB%;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib
 set LIB=%LIB%;%PROGRAMFILES%\Microsoft Visual Studio\VC98\Lib
 set LIB=%LIB%;%QTDIR%\lib
 set LIB=%LIB%;%FREECADLIB%\lib
+set LIB=%LIB%;.\lib
 
 rem Start the Visuall Studio build process
 "C:\Program Files (x86)\Microsoft Visual Studio 8\VC\vcpackages\vcbuild.exe" FreeCAD.sln /useenv 
