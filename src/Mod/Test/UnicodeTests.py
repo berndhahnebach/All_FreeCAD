@@ -3,7 +3,7 @@
 
 # Open and edit only in UTF-8 !!!!!!
 
-import FreeCAD, os, unittest
+import FreeCAD, os, unittest, tempfile
 
 
 #---------------------------------------------------------------------------
@@ -29,9 +29,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.Doc = FreeCAD.newDocument("SaveRestoreTests")
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     L1.Label = u"हिन्दी"
-    self.TempPath = os.getenv('TEMP')
-    if self.TempPath == None:
-        self.TempPath = "/tmp";
+    self.TempPath = tempfile.gettempdir()
     FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
     
   def testSaveAndRestore(self):

@@ -22,7 +22,7 @@
 #*   Juergen Riegel 2003                                                   *
 #***************************************************************************/
 
-import FreeCAD, os, unittest
+import FreeCAD, os, unittest, tempfile
 
 
 #---------------------------------------------------------------------------
@@ -147,9 +147,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.Doc = FreeCAD.newDocument("SaveRestoreTests")
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     L2 = self.Doc.addObject("App::FeatureTest","Label_2")   
-    self.TempPath = os.getenv('TEMP')
-    if self.TempPath == None:
-        self.TempPath = "/tmp";
+    self.TempPath = tempfile.gettempdir()
     FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
 
   def testSaveAndRestore(self):
@@ -501,8 +499,7 @@ class DocumentPlatformCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("PlatformTests")
     self.Doc.addObject("App::FeatureTest", "Test")
-    self.TempPath = os.getenv('TEMP')
-    if self.TempPath == None: self.TempPath = "/tmp";
+    self.TempPath = tempfile.gettempdir()
     self.DocName = self.TempPath + os.sep + "Platform.FCStd"
     self.Doc.FileName = self.DocName
 

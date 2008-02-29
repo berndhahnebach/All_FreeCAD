@@ -43,6 +43,7 @@ using namespace Gui;
 namespace Gui {
 struct PythonConsoleP
 {
+    enum Output {Error = 20, Message = 21};
     enum CopyType {Normal, History, Command};
     CopyType type;
     PyObject *_stdoutPy, *_stderrPy, *_stdinPy;
@@ -540,18 +541,14 @@ void PythonConsole::printPrompt(bool incomplete)
 {
     // write normal messages
     if (!d->output.isEmpty()) {
-        pythonSyntax->highlightOutput(true);
-        append(d->output);
+        appendOutput(d->output, (int)PythonConsoleP::Message);
         d->output = QString::null;
-        pythonSyntax->highlightOutput(false);
     }
 
     // write error messages
     if (!d->error.isEmpty()) {
-        pythonSyntax->highlightError(true);
-        append(d->error);
+        appendOutput(d->error, (int)PythonConsoleP::Error);
         d->error = QString::null;
-        pythonSyntax->highlightError(false);
     }
 
     // Append the prompt string 
@@ -575,6 +572,28 @@ void PythonConsole::printPrompt(bool incomplete)
     // move cursor to the end
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
+}
+
+/**
+ * Appends \a output to the console and set \a state as user state to
+ * the text block which is needed for the highlighting.
+ */
+void PythonConsole::appendOutput(const QString& output, int state)
+{
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::End);
+    int pos = cursor.position() + 1;
+    
+    // delay rehighlighting
+    cursor.beginEditBlock();
+    append(output);
+
+    QTextBlock block = this->document()->findBlock(pos);
+    while (block.isValid()) {
+        block.setUserState(state);
+        block = block.next();
+    }
+    cursor.endEditBlock(); // start highlightiong
 }
 
 /**
@@ -670,7 +689,7 @@ void PythonConsole::showEvent ( QShowEvent * e )
 /**
  * Drops the event \a e and writes the right Python command.
  */
-void PythonConsole::dropEvent ( QDropEvent * e )
+void PythonConsole::dropEvent (QDropEvent * e)
 {
     const QMimeData* mimeData = e->mimeData();
     if (mimeData->hasFormat("text/x-action-items")) {
@@ -686,9 +705,9 @@ void PythonConsole::dropEvent ( QDropEvent * e )
 
         e->setDropAction(Qt::CopyAction);
         e->accept();
-    } else {
-        e->ignore();
     }
+    else // this will call insertFromMimeData
+        QTextEdit::dropEvent(e);
 }
 
 /** Dragging of action objects is allowed. */ 
@@ -697,23 +716,70 @@ void PythonConsole::dragMoveEvent( QDragMoveEvent *e )
     const QMimeData* mimeData = e->mimeData();
     if (mimeData->hasFormat("text/x-action-items"))
         e->accept();
-    else
-        e->ignore();
+    else // this will call canInsertFromMimeData
+        QTextEdit::dragMoveEvent(e);
 }
 
 /** Dragging of action objects is allowed. */ 
-void PythonConsole::dragEnterEvent ( QDragEnterEvent * e )
+void PythonConsole::dragEnterEvent (QDragEnterEvent * e)
 {
     const QMimeData* mimeData = e->mimeData();
     if (mimeData->hasFormat("text/x-action-items"))
         e->accept();
-    else
-        e->ignore();
+    else // this will call canInsertFromMimeData
+        QTextEdit::dragEnterEvent(e);
 }
 
-bool PythonConsole::canInsertFromMimeData ( const QMimeData * source ) const
+bool PythonConsole::canInsertFromMimeData (const QMimeData * source) const
 {
-    return source->hasText();
+    if (source->hasText())
+        return true;
+    if (source->hasUrls()) {
+        QList<QUrl> uri = source->urls();
+        for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
+            QFileInfo info((*it).toLocalFile());
+            if (info.exists() && info.isFile()) {
+                QString ext = info.suffix().toLower();
+                if (ext == QString("py") || ext == QString("fcmacro"))
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Allow to paste plain text or urls of text files.
+ */
+void PythonConsole::insertFromMimeData (const QMimeData * source)
+{
+    if (!source)
+        return;
+    if (source->hasText()) {
+        runSourceFromMimeData(source->text());
+        return;
+    }
+    if (source->hasUrls()) {
+        QList<QUrl> uri = source->urls();
+        for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
+            // get the file name and check the extension
+            QFileInfo info((*it).toLocalFile());
+            QString ext = info.suffix().toLower();
+            if (info.exists() && info.isFile() && 
+                (ext == QString("py") || ext == QString("fcmacro"))) {
+                // load the file and read-in the source code
+                QFile file(info.absoluteFilePath());
+                if (file.open(QIODevice::ReadOnly)) {
+                    QTextStream str(&file);
+                    runSourceFromMimeData(str.readAll());
+                }
+                file.close();
+            }
+        }
+        
+        return;
+    }
 }
 
 QMimeData * PythonConsole::createMimeDataFromSelection () const
@@ -759,16 +825,8 @@ QMimeData * PythonConsole::createMimeDataFromSelection () const
     return mime;
 }
 
-/**
- * Decodes the clipboard plain text and insert line by line to this text edit and
- * simulate a "return" event to let decide keyPressEvent() how to continue. This
- * is to run the Python interpreter if needed.
- */
-void PythonConsole::insertFromMimeData (const QMimeData * source)
+void PythonConsole::runSourceFromMimeData(const QString& source)
 {
-    if (!source)
-        return;
-
     // When inserting a big text block we must break it down into several command
     // blocks instead of processing the text block as a whole or each single line.
     // If we processed the complete block as a whole only the first valid Python
@@ -777,7 +835,7 @@ void PythonConsole::insertFromMimeData (const QMimeData * source)
     // is complete but it might be not. This is for instance, if a class or method 
     // definition contains several empty lines which leads to error messages (almost
     // indentation errors) later on.
-    QString text = source->text();
+    QString text = source;
     if (text.isNull())
         return;
 
@@ -968,7 +1026,7 @@ void PythonConsole::onCopyCommand()
 // ---------------------------------------------------------------------
 
 PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
-  : PythonSyntaxHighlighter(edit),_output(false), _error(false)
+  : PythonSyntaxHighlighter(edit)
 {
 }
 
@@ -978,24 +1036,13 @@ PythonConsoleHighlighter::~PythonConsoleHighlighter()
 
 void PythonConsoleHighlighter::highlightBlock(const QString& text)
 {
-    const int ErrorOutput   = 20;
-    const int MessageOutput = 21;
+    const int ErrorOutput   = (int)PythonConsoleP::Error;
+    const int MessageOutput = (int)PythonConsoleP::Message;
 
-    // Restore user state to re-highlight the blocks in the appropriate format
+    // Get user state to re-highlight the blocks in the appropriate format
     int stateOfPara = currentBlockState();
-    if (previousBlockState() < 0)
-        stateOfPara = MessageOutput; // the very first line is an output
 
-    // for new lines check whether that's an output
-    if (stateOfPara == -1) {
-        if ( _output )
-            stateOfPara = MessageOutput;
-        else if ( _error )
-            stateOfPara = ErrorOutput;
-    }
-    setCurrentBlockState(stateOfPara);
-
-    switch ( stateOfPara )
+    switch (stateOfPara)
     {
     case ErrorOutput:
         {
@@ -1019,24 +1066,8 @@ void PythonConsoleHighlighter::highlightBlock(const QString& text)
     }
 }
 
-void PythonConsoleHighlighter::colorChanged( const QString& type, const QColor& col )
+void PythonConsoleHighlighter::colorChanged(const QString& type, const QColor& col)
 {
-}
-
-/**
- * If \a b is set to true the following input to the editor is highlighted as normal output.
- */
-void PythonConsoleHighlighter::highlightOutput (bool b)
-{
-    _output = b;
-}
-
-/**
- * If \a b is set to true the following input to the editor is highlighted as error.
- */
-void PythonConsoleHighlighter::highlightError (bool b)
-{
-    _error = b;
 }
 
 // ---------------------------------------------------------------------

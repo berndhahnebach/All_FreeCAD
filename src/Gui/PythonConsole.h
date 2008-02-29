@@ -125,8 +125,10 @@ private:
     void runSource(const QString&);
     bool isComment(const QString&) const;
     void printPrompt(bool);
-    void insertPythonOutput( const QString& );
-    void insertPythonError ( const QString& );
+    void insertPythonOutput(const QString&);
+    void insertPythonError (const QString&);
+    void runSourceFromMimeData(const QString&);
+    void appendOutput(const QString&, int);
 
 private:
     struct PythonConsoleP* d;
@@ -145,20 +147,13 @@ private:
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {
 public:
-    PythonConsoleHighlighter(QTextEdit* );
+    PythonConsoleHighlighter(QTextEdit *);
     ~PythonConsoleHighlighter();
 
-    void highlightBlock ( const QString & text );
-
-    void highlightOutput (bool b);
-    void highlightError (bool b);
+    void highlightBlock (const QString & text);
 
 protected:
-    void colorChanged( const QString& type, const QColor& col );
-
-private:
-    bool _output, _error;
-    friend class PythonConsole;
+    void colorChanged(const QString& type, const QColor& col);
 };
 
 } // namespace Gui

@@ -556,6 +556,8 @@ void View3DInventor::dropEvent (QDropEvent * e)
             for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
                 QFileInfo info((*it).toLocalFile());
                 if ( info.exists() && info.isFile() ) {
+                    if (info.isSymLink())
+                        info.setFile(info.readLink());
                     // First check the complete extension
                     if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
                         Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());

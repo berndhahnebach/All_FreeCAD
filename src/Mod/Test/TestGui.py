@@ -43,6 +43,7 @@ class TestCmd:
         QtUnitGui.setTest("TestApp.All")
         QtUnitGui.addTest("Base")
         QtUnitGui.addTest("Document")
+        QtUnitGui.addTest("UnicodeTests")
         QtUnitGui.addTest("Workbench")
         QtUnitGui.addTest("Menu")
         QtUnitGui.addTest("Menu.MenuDeleteCases")

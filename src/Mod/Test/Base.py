@@ -22,7 +22,7 @@
 #*   Juergen Riegel 2004                                                   *
 #***************************************************************************/
 
-import FreeCAD, os, unittest
+import FreeCAD, os, unittest, tempfile
 
 class ConsoleTestCase(unittest.TestCase):
     def testPrint(self):
@@ -138,10 +138,7 @@ class ParameterTestCase(unittest.TestCase):
         Temp.SetInt("ExTest",4711)
         Temp.SetString("ExTest","4711")
         Temp.SetBool("ExTest",1)
-        if  os.getenv('TEMP') == None:
-            TempPath = "/tmp/ExportTest.FCExport";
-        else:
-            TempPath = os.getenv('TEMP') + os.sep + "ExportTest.FCExport";
+        TempPath = tempfile.gettempdir() + os.sep + "ExportTest.FCExport"
 
         self.TestPar.Export(TempPath)
         Temp = self.TestPar.GetGroup("ImportTest")
