@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade;..\..\..\..\include\OpenCv"
 				PreprocessorDefinitions="_USRDLL;FCAppImage;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\OpenCascade;..\..\..\..\include\OpenCv"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImage"
 				StringPooling="true"
 				RuntimeLibrary="2"
