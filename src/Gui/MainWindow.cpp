@@ -770,25 +770,28 @@ void MainWindow::showTipOfTheDay( bool force )
 /**
  * Drops the event \a e and tries to open the files.
  */
-void MainWindow::dropEvent ( QDropEvent* e )
+void MainWindow::dropEvent (QDropEvent* e)
 {
-  const QMimeData* data = e->mimeData();
-  if ( data->hasUrls() ) {
-    QList<QUrl> uri = data->urls();
-    for ( QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it ) {
-      QFileInfo info((*it).toLocalFile());
-      if ( info.exists() && info.isFile() ) {
-        // First check the complete extension
-        if ( App::GetApplication().hasOpenType( info.completeSuffix().toAscii() ) )
-          Application::Instance->open(info.absoluteFilePath().toUtf8());
-        // Don't get the complete extension
-        else if ( App::GetApplication().hasOpenType( info.suffix().toAscii() ) )
-          Application::Instance->open(info.absoluteFilePath().toUtf8());
-      }
+    const QMimeData* data = e->mimeData();
+    if (data->hasUrls()) {
+        QList<QUrl> uri = data->urls();
+        for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
+            QFileInfo info((*it).toLocalFile());
+            if (info.exists() && info.isFile()) {
+                if (info.isSymLink())
+                    info.setFile(info.readLink());
+                // First check the complete extension
+                if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
+                    Application::Instance->open(info.absoluteFilePath().toUtf8());
+                // Don't get the complete extension
+                else if (App::GetApplication().hasOpenType(info.suffix().toAscii()))
+                    Application::Instance->open(info.absoluteFilePath().toUtf8());
+            }
+        }
     }
-  } else {
-    QMainWindow::dropEvent(e);
-  }
+    else {
+        QMainWindow::dropEvent(e);
+    }
 }
 
 void MainWindow::dragEnterEvent ( QDragEnterEvent * e )
