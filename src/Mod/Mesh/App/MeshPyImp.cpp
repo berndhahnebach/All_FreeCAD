@@ -98,8 +98,8 @@ PyObject*  MeshPy::write(PyObject *args)
 
 PyObject*  MeshPy::offset(PyObject *args)
 {
-    double Float;
-    if (!PyArg_ParseTuple(args, "d",&Float))
+    float Float;
+    if (!PyArg_ParseTuple(args, "f",&Float))
         return NULL;
 
     PY_TRY {
@@ -111,8 +111,8 @@ PyObject*  MeshPy::offset(PyObject *args)
 
 PyObject*  MeshPy::offsetSpecial(PyObject *args)
 {
-    double Float,zmin,zmax;
-    if (!PyArg_ParseTuple(args, "ddd",&Float,&zmin,&zmax))			 
+    float Float,zmin,zmax;
+    if (!PyArg_ParseTuple(args, "fff",&Float,&zmin,&zmax))			 
         return NULL;                         
 
     PY_TRY {

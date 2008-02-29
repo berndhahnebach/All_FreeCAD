@@ -24,7 +24,10 @@
 #ifndef _MeshAlgos_h_
 #define _MeshAlgos_h_
 
-#include <gts.h>
+#ifdef FC_USE_GTS
+#  include <gts.h>
+#endif
+
 #include <vector>
 
 #include <Base/Vector3D.h>
@@ -64,13 +67,17 @@ public:
   */
   static MeshCore::MeshKernel* boolean(MeshCore::MeshKernel* Mesh1, MeshCore::MeshKernel* Mesh2, MeshCore::MeshKernel* pResult, int Type=0);
 
+#ifdef FC_USE_GTS
+
   /** Creates a GTS Surface from a MeshKernel
   */
   static GtsSurface* createGTSSurface(MeshCore::MeshKernel* Mesh);
 
   /** Creates a GTS Surface from a MeshKernel
   */
+
   static void fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* pSurface);
+#endif
 
   static void cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh);
 

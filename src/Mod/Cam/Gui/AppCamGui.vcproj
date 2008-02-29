@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="AppCamGui"
 	ProjectGUID="{071D36BB-65CE-4219-847D-005D2C142D46}"
 	>
@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv"
 				PreprocessorDefinitions="_USRDLL;FCAppCamGui;FC_DEBUG;WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -79,6 +79,7 @@
 				OutputFile="../../../../Mod/Cam/CamGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui_d.pdb"
@@ -148,7 +149,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../../"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppCamGui"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -180,6 +181,7 @@
 				OutputFile="../../../../Mod/Cam/CamGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui.pdb"
 				SubSystem="1"
