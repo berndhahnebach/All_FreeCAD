@@ -756,10 +756,8 @@ void PythonConsole::insertFromMimeData (const QMimeData * source)
 {
     if (!source)
         return;
-    if (source->hasText()) {
-        runSourceFromMimeData(source->text());
-        return;
-    }
+    // First check on urls instead of text otherwise it may happen that a url
+    // is handled as text
     if (source->hasUrls()) {
         QList<QUrl> uri = source->urls();
         for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
@@ -777,7 +775,11 @@ void PythonConsole::insertFromMimeData (const QMimeData * source)
                 file.close();
             }
         }
-        
+
+        return;
+    }
+    if (source->hasText()) {
+        runSourceFromMimeData(source->text());
         return;
     }
 }
