@@ -347,7 +347,7 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 
     triangulateio* in = new triangulateio();
     memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new float[points.size() * 2];
+    in->pointlist = new double[points.size() * 2];
     in->numberofpoints = points.size();
 
     // project points to 2D plane
@@ -368,13 +368,16 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 
     for (i = 0; i < (out->numberoftriangles * 3); i += 3)
     {
- 
-      if ((out->trianglelist[i] == out->trianglelist[i+1]) || (out->trianglelist[i] == out->trianglelist[i+2]) || (out->trianglelist[i+1] == out->trianglelist[i+2]))
+      if ((out->trianglelist[i] == out->trianglelist[i+1]) ||
+          (out->trianglelist[i] == out->trianglelist[i+2]) ||
+          (out->trianglelist[i+1] == out->trianglelist[i+2]))
       { // two same triangle corner points
         continue;
       }
   
-      MeshGeomFacet facet(points[out->trianglelist[i]], points[out->trianglelist[i+1]], points[out->trianglelist[i+2]]);
+      MeshGeomFacet facet(points[out->trianglelist[i]],
+                          points[out->trianglelist[i+1]],
+                          points[out->trianglelist[i+2]]);
 
       //if (side == 1)
       // _builder.addSingleTriangle(facet._aclPoints[0], facet._aclPoints[1], facet._aclPoints[2], true, 3, 0, 1, 1);
@@ -384,11 +387,16 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
       //  continue;
       //}
 
-      float dist0 = facet._aclPoints[0].DistanceToLine(facet._aclPoints[1], facet._aclPoints[1] - facet._aclPoints[2]);
-      float dist1 = facet._aclPoints[1].DistanceToLine(facet._aclPoints[0], facet._aclPoints[0] - facet._aclPoints[2]);
-      float dist2 = facet._aclPoints[2].DistanceToLine(facet._aclPoints[0], facet._aclPoints[0] - facet._aclPoints[1]);
+      float dist0 = facet._aclPoints[0].DistanceToLine
+          (facet._aclPoints[1],facet._aclPoints[1] - facet._aclPoints[2]);
+      float dist1 = facet._aclPoints[1].DistanceToLine
+          (facet._aclPoints[0],facet._aclPoints[0] - facet._aclPoints[2]);
+      float dist2 = facet._aclPoints[2].DistanceToLine
+          (facet._aclPoints[0],facet._aclPoints[0] - facet._aclPoints[1]);
 
-      if ((dist0 < _minDistanceToPoint) || (dist1 < _minDistanceToPoint) || (dist2 < _minDistanceToPoint))
+      if ((dist0 < _minDistanceToPoint) ||
+          (dist1 < _minDistanceToPoint) ||
+          (dist2 < _minDistanceToPoint))
       {
         continue;
       }

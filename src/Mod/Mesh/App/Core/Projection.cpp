@@ -192,7 +192,7 @@ void MeshProjection::projectEdgeToEdge( const TopoDS_Edge &aEdge, float fMaxDist
                 Alg.Parameters( 1, fU, fV, fW);
 
                 gp_Pnt P = Alg.Point(1);
-                Vector3f cP0(P.X(), P.Y(), P.Z());
+                Vector3f cP0((float)P.X(), (float)P.Y(), (float)P.Z());
 
                 float l = ( (cP0 - cE0) * (cE1 - cE0) ) / ( (cE1 - cE0) * ( cE1 - cE0) );
 
@@ -220,7 +220,7 @@ void MeshProjection::projectEdgeToEdge( const TopoDS_Edge &aEdge, float fMaxDist
                     Quantity_Parameter fU, fV, fW;
                     Alg.Parameters( j, fU, fV, fW);
                     gp_Pnt P = Alg.Point(j);
-                    cP0.Set(P.X(), P.Y(), P.Z());
+                    cP0.Set((float)P.X(), (float)P.Y(), (float)P.Z());
 
                     float l = ( (cP0 - cE0) * (cE1 - cE0) ) / ( (cE1 - cE0) * ( cE1 - cE0) );
 

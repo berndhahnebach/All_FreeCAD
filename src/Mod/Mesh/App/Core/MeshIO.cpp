@@ -580,9 +580,9 @@ void MeshInput::LoadXML (Base::XMLReader &reader)
     cPoints.resize(Cnt);
     for (int i=0 ;i<Cnt ;i++) {
         reader.readElement("P");
-        cPoints[i].x = reader.getAttributeAsFloat("x");
-        cPoints[i].y = reader.getAttributeAsFloat("y");
-        cPoints[i].z = reader.getAttributeAsFloat("z");
+        cPoints[i].x = (float)reader.getAttributeAsFloat("x");
+        cPoints[i].y = (float)reader.getAttributeAsFloat("y");
+        cPoints[i].z = (float)reader.getAttributeAsFloat("z");
     }
     reader.readEndElement("Points");
 

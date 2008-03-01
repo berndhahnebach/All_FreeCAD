@@ -47,6 +47,8 @@
 
 using namespace Mesh;
 
+float MeshObject::Epsilon = 1.0e-5f;
+
 TYPESYSTEM_SOURCE(Mesh::MeshObject, Data::ComplexGeoData);
 
 MeshObject::MeshObject()
@@ -373,31 +375,36 @@ Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
 
 void MeshObject::unite(const MeshObject& mesh)
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel, MeshCore::SetOperations::Union, 1.0e-5);
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+                                  MeshCore::SetOperations::Union, Epsilon);
     setOp.Do();
 }
 
 void MeshObject::intersect(const MeshObject& mesh)
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel, MeshCore::SetOperations::Intersect, 1.0e-5);
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+                                  MeshCore::SetOperations::Intersect, Epsilon);
     setOp.Do();
 }
 
 void MeshObject::subtract(const MeshObject& mesh)
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel, MeshCore::SetOperations::Difference, 1.0e-5);
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+                                  MeshCore::SetOperations::Difference, Epsilon);
     setOp.Do();
 }
 
 void MeshObject::inner(const MeshObject& mesh)
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel, MeshCore::SetOperations::Inner, 1.0e-5);
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+                                  MeshCore::SetOperations::Inner, Epsilon);
     setOp.Do();
 }
 
 void MeshObject::outer(const MeshObject& mesh)
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel, MeshCore::SetOperations::Outer, 1.0e-5);
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+                                  MeshCore::SetOperations::Outer, Epsilon);
     setOp.Do();
 }
 

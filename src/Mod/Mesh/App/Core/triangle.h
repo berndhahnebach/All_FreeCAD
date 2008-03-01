@@ -249,11 +249,8 @@
 /*****************************************************************************/
 
 // defines made by FreeCad coder
-#define NO_TIMER
-#define TRILIBRARY
 #define ANSI_DECLARATORS
-#define SINGLE
-#define REAL float
+#define REAL double
 #ifndef VOID
 # define VOID void
 #endif
