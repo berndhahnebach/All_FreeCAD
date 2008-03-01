@@ -180,24 +180,22 @@ float MeshPlaneFit::GetStdDeviation() const
   if( !_bIsFitted )
     return FLOAT_MAX;
 
-  float fSumXi  = 0.0f,
-         fSumXi2 = 0.0f,
-         fMean   = 0.0f,  
-         fDist   = 0.0f;
+  float fSumXi = 0.0f, fSumXi2 = 0.0f,
+        fMean  = 0.0f, fDist   = 0.0f;
   
-  unsigned long ulPtCt = CountPoints();
+  float ulPtCt = (float)CountPoints();
   std::list< Base::Vector3f >::const_iterator cIt;
 
-  for( cIt = _vPoints.begin(); cIt != _vPoints.end(); cIt++  )
+  for (cIt = _vPoints.begin(); cIt != _vPoints.end(); cIt++)
   {
     fDist = GetDistanceToPlane( *cIt );
     fSumXi  += fDist;
     fSumXi2 += ( fDist * fDist );
   }
 
-  fMean = 1.0 / ulPtCt * fSumXi;
+  fMean = (1.0f / ulPtCt) * fSumXi;
 
-  return sqrt( ( (float)ulPtCt / ( (float)ulPtCt - 1.0 ) ) * ( ( 1.0 / (float)ulPtCt ) * fSumXi2 - fMean * fMean ) );
+  return (float)sqrt((ulPtCt / (ulPtCt - 1.0)) * ((1.0 / ulPtCt) * fSumXi2 - fMean * fMean));
 }
 
 float MeshPlaneFit::GetSignedStdDeviation() const
@@ -208,14 +206,12 @@ float MeshPlaneFit::GetSignedStdDeviation() const
   if( !_bIsFitted )
     return FLOAT_MAX;
 
-  float fSumXi  = 0.0f,
-         fSumXi2 = 0.0f,
-         fMean   = 0.0f,
-         fDist   = 0.0f;
+  float fSumXi = 0.0f, fSumXi2 = 0.0f,
+        fMean  = 0.0f, fDist   = 0.0f;
   float fMinDist = FLOAT_MAX;
   float fFactor;
          
-  unsigned long ulPtCt = CountPoints();
+  float ulPtCt = (float)CountPoints();
   Base::Vector3f clGravity, clPt;
   std::list<Base::Vector3f>::const_iterator cIt;
   for (cIt = _vPoints.begin(); cIt != _vPoints.end(); cIt++)
@@ -242,7 +238,7 @@ float MeshPlaneFit::GetSignedStdDeviation() const
 
   fMean = 1.0f / ulPtCt * fSumXi;
 
-  return fFactor * sqrt( ( (float)ulPtCt / ( (float)ulPtCt - 3.0 ) ) * ( ( 1.0 / (float)ulPtCt ) * fSumXi2 - fMean * fMean ) );
+  return fFactor * (float)sqrt((ulPtCt / (ulPtCt - 3.0)) * ((1.0 / ulPtCt) * fSumXi2 - fMean * fMean));
 }
 
 void MeshPlaneFit::ProjectToPlane ()
@@ -400,8 +396,8 @@ void MeshQuadraticFit::CalcZValues( float x, float y, float &dZ1, float &dZ2 ) c
   else
     dDisk = sqrt( dDisk );
 
-  dZ1 = 0.5 * ( ( -_fCoeff[3] - _fCoeff[8]*x - _fCoeff[9]*y + dDisk ) / _fCoeff[6] );
-  dZ2 = 0.5 * ( ( -_fCoeff[3] - _fCoeff[8]*x - _fCoeff[9]*y - dDisk ) / _fCoeff[6] );
+  dZ1 = 0.5f * ( ( -_fCoeff[3] - _fCoeff[8]*x - _fCoeff[9]*y + dDisk ) / _fCoeff[6] );
+  dZ2 = 0.5f * ( ( -_fCoeff[3] - _fCoeff[8]*x - _fCoeff[9]*y - dDisk ) / _fCoeff[6] );
 }
 
 // -------------------------------------------------------------------------------
@@ -548,9 +544,9 @@ float MeshSurfaceFit::SurfaceFit()
 
 		if (clGauss.IsDone())
 		{
-			float dU = clUVW(1);
-			float dV = clUVW(2);
-			float dW = clUVW(3);
+			float dU = (float)clUVW(1);
+			float dV = (float)clUVW(2);
+			float dW = (float)clUVW(3);
 
 			float dU2 = dU*dU;
 			float dV2 = dV*dV;
@@ -632,14 +628,14 @@ float MeshSurfaceFit::SurfaceFit()
 	if (!clGaussEqn.IsDone()) 
     return FLOAT_MAX;
 
-  _fCoeff[0] = -clabcdef(6);
-  _fCoeff[1] = -clabcdef(4);
-  _fCoeff[2] = -clabcdef(5);
+  _fCoeff[0] = (float)(-clabcdef(6));
+  _fCoeff[1] = (float)(-clabcdef(4));
+  _fCoeff[2] = (float)(-clabcdef(5));
   _fCoeff[3] = 1.0f;
-  _fCoeff[4] = -clabcdef(1);
-  _fCoeff[5] = -clabcdef(2);
+  _fCoeff[4] = (float)(-clabcdef(1));
+  _fCoeff[5] = (float)(-clabcdef(2));
   _fCoeff[6] = 0.0f;
-  _fCoeff[7] = -clabcdef(3);
+  _fCoeff[7] = (float)(-clabcdef(3));
   _fCoeff[8] = 0.0f;
   _fCoeff[9] = 0.0f;
 

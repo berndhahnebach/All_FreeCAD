@@ -398,7 +398,7 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
 
     triangulateio* in = new triangulateio();
     memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new float[_points.size() * 2];
+    in->pointlist = new double[_points.size() * 2];
     in->numberofpoints = _points.size();
     in->segmentlist = new int[_points.size() * 2];
     in->numberofsegments = _points.size();
@@ -437,8 +437,8 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     if (_points.size() < uMinPts) {
         // get all added points by the algorithm
         for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
-            float x = out->pointlist[index++];
-            float y = out->pointlist[index++];
+            float x = (float)out->pointlist[index++];
+            float y = (float)out->pointlist[index++];
             float z = 0.0f; // get the point on the plane
             Base::Vector3f vertex(x, y, z);
             newPoints.push_back(vertex);
@@ -447,9 +447,9 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     else {
         // get all added points by the algorithm
         for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
-            float x = out->pointlist[index++];
-            float y = out->pointlist[index++];
-            float z = polyFit.Value(x, y);
+            float x = (float)out->pointlist[index++];
+            float y = (float)out->pointlist[index++];
+            float z = (float)polyFit.Value(x, y);
             Base::Vector3f vertex(x, y, z);
             newPoints.push_back(vertex);
         }
@@ -470,8 +470,8 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
         
         for (int j = 0; j < 3; j++) {
             int index = 2 * out->trianglelist[i+j];
-            triangle._aclPoints[j].x = out->pointlist[index];
-            triangle._aclPoints[j].y = out->pointlist[index+1];
+            triangle._aclPoints[j].x = (float)out->pointlist[index];
+            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
             facet._aulPoints[j] = out->trianglelist[i+j];
         }
         

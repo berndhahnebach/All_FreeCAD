@@ -213,6 +213,7 @@ public:
 
 private:
     MeshCore::MeshKernel _kernel;
+    static float Epsilon;
 };
 
 } // namespace Mesh

@@ -216,8 +216,7 @@
 #define NO_TIMER
 #define TRILIBRARY
 #define ANSI_DECLARATORS
-#define SINGLE
-#define REAL float
+//#define SINGLE
 
 
 #ifdef SINGLE

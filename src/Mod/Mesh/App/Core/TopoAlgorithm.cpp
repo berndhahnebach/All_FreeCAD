@@ -118,7 +118,7 @@ bool MeshTopoAlgorithm::SnapVertex(unsigned long ulFacetPos, const Base::Vector3
       if ( cNo3.Length() < FLOAT_EPS )
       {
         unsigned long uCt = _rclMesh.CountFacets();
-        SplitOpenEdge(ulFacetPos, rFace._aulNeighbours[i], rP);
+        SplitOpenEdge(ulFacetPos, i, rP);
         return uCt < _rclMesh.CountFacets();
       }
       else if ( (rP - rPt1)*cNo2 > 0.0f && fD2 >= fTV && fTV >= 0.0f )

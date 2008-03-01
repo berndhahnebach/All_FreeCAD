@@ -255,9 +255,10 @@ PyObject*  MeshPy::addFacet(PyObject *args)
         return NULL;
 
     PY_TRY {
-        Mesh().addFacet(MeshCore::MeshGeomFacet(Base::Vector3f(x1,y1,z1),
-                                                      Base::Vector3f(x2,y2,z2),
-                                                      Base::Vector3f(x3,y3,z3)));
+        Mesh().addFacet(MeshCore::MeshGeomFacet(
+                        Base::Vector3f((float)x1,(float)y1,(float)z1),
+                        Base::Vector3f((float)x2,(float)y2,(float)z2),
+                        Base::Vector3f((float)x3,(float)y3,(float)z3)));
     } PY_CATCH;
 
     Py_Return;
@@ -272,7 +273,7 @@ PyObject*  MeshPy::addFacets(PyObject *args)
         Py_Error(PyExc_Exception, "need list of vectors (3 of them defined a facet)");
         return NULL;
     }
-    
+
     if (PyList_Check(list)) {
         int k = 0;
         MeshCore::MeshGeomFacet facet;
@@ -283,7 +284,7 @@ PyObject*  MeshPy::addFacets(PyObject *args)
                     for (int j = 0; j < 3; j++) {
                         PyObject *val = PyList_GetItem(vec, j);
                         if (PyFloat_Check(val)) {
-                            float f = PyFloat_AsDouble(val);
+                            float f = (float)PyFloat_AsDouble(val);
                             facet._aclPoints[k][j] = f;
                         }
                         else {

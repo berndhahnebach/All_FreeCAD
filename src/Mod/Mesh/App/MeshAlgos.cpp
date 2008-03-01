@@ -522,8 +522,12 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
       // get point and tangent at the position, up is fix for the moment
       prop.SetParameter(fBegin + ((fEnd - fBegin) * float(i)) / float(res-1));
       prop.Tangent(Tangent);
-      Base::Vector3f Tng(Tangent.X(),Tangent.Y(),Tangent.Z());
-      Base::Vector3f Ptn(prop.Value().X(),prop.Value().Y(),prop.Value().Z());
+      Base::Vector3f Tng((float)Tangent.X(),
+                         (float)Tangent.Y(),
+                         (float)Tangent.Z());
+      Base::Vector3f Ptn((float)prop.Value().X(),
+                         (float)prop.Value().Y(),
+                         (float)prop.Value().Z());
       Base::Vector3f Up (up);
       // normalize and calc the third vector of the plane coordinatesystem
       Tng.Normalize(); 

@@ -41,7 +41,7 @@ Facet::Facet(const MeshCore::MeshFacet& face, MeshObject* obj, unsigned long ind
     if (Mesh.IsValid() && index != ULONG_MAX) {
         for (int i=0; i<3; i++) {
             Base::Vector3d vert = Mesh->getPoint(PIndex[i]);
-            _aclPoints[i].Set(vert.x, vert.y, vert.z);
+            _aclPoints[i].Set((float)vert.x, (float)vert.y, (float)vert.z);
         }
     }
 }

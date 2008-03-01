@@ -161,8 +161,8 @@ createPlane(PyObject *self, PyObject *args)
     if(y==0) 
         y=x;
 
-    float hx = x/2.0;
-    float hy = y/2.0;
+    float hx = x/2.0f;
+    float hy = y/2.0f;
 
     PY_TRY {
         std::vector<MeshCore::MeshGeomFacet> TriaList;

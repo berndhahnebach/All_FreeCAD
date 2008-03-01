@@ -93,9 +93,9 @@ App::DocumentObjectExecReturn *SetOperations::execute(void)
         else
             throw new Base::Exception("Operation type must either be 'union' or 'intersection'"
                                       " or 'difference' or 'inner' or 'outer'");
-    
+
         MeshCore::SetOperations setOp(meshKernel1.getKernel(), meshKernel2.getKernel(), 
-            pcKernel->getKernel(), type, 1.0e-5);
+            pcKernel->getKernel(), type, 1.0e-5f);
         setOp.Do();
         Mesh.setValue(pcKernel);
     }
