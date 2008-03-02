@@ -328,7 +328,11 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
         Base::Console().Error("Cannot save BRep file '%s'", fi.filePath().c_str());
     }
 
-    std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
+#ifdef FC_OS_WIN32
+    std::ifstream file(fi.toStdWString().c_str(), std::ios::in | std::ios::binary);
+#else
+    std::ifstream file(fi.filePath().c_str(), std::ios::in | std::ios::binary);
+#endif
     if (file){
         unsigned long ulSize = 0; 
         std::streambuf* buf = file.rdbuf();
@@ -358,7 +362,11 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
     Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
     // read in the ASCII file and write back to the file stream
+#ifdef FC_OS_WIN32
+    std::ofstream file(fi.toStdWString().c_str(), std::ios::out | std::ios::binary);
+#else
     std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
+#endif
     if (reader)
         reader >> file.rdbuf();
     file.close();

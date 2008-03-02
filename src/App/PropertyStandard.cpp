@@ -956,7 +956,7 @@ PyObject *PropertyString::getPyObject(void)
 
 void PropertyString::setPyObject(PyObject *value)
 {
-    if(PyUnicode_Check( value ))
+    if (PyUnicode_Check(value))
         value = PyUnicode_AsUTF8String(value);
 
     if (PyString_Check(value)) {

@@ -12,7 +12,7 @@
 namespace zipios {
 
 /** GZIPOutputStreambuf is a zip output streambuf filter.  */
-class GZIPOutputStreambuf : public DeflateOutputStreambuf {
+class BaseExport GZIPOutputStreambuf : public DeflateOutputStreambuf {
 public:
 
   /** GZIPOutputStreambuf constructor. A newly constructed GZIPOutputStreambuf

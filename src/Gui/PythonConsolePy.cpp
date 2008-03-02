@@ -112,10 +112,24 @@ int PythonStdoutPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStdoutPy,write)
 {
-    char *output;
-    if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
-        return Py_None;                            // Do not provok error messages 
-    pyConsole->insertPythonOutput(QString::fromUtf8(output));
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output)) {
+        PyErr_Clear();
+        Py_INCREF(Py_None);
+        return Py_None; // Do not provoke error messages 
+    }
+
+    if (PyUnicode_Check(output)) {
+        PyObject* unicode = PyUnicode_AsUTF8String(output);
+        const char* string = PyString_AsString(unicode);
+        pyConsole->insertPythonOutput(QString::fromUtf8(string));
+        Py_DECREF(unicode);
+    }
+    else if (PyString_Check(output)) {
+        const char* string = PyString_AsString(output);
+        pyConsole->insertPythonOutput(QString::fromUtf8(string));
+    }
+
     Py_INCREF(Py_None);
     return Py_None;
 } 
@@ -205,10 +219,24 @@ int PythonStderrPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
 //--------------------------------------------------------------------------
 PYFUNCIMP_D(PythonStderrPy,write)
 {
-    char *output;
-    if (!PyArg_ParseTuple(args, "s", &output))     // convert args: Python->C 
-        return Py_None;                            // Do not provok error messages 
-    pyConsole->insertPythonError(QString::fromUtf8(output));
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output)) {
+        PyErr_Clear();
+        Py_INCREF(Py_None);
+        return Py_None; // Do not provoke error messages 
+    }
+
+    if (PyUnicode_Check(output)) {
+        PyObject* unicode = PyUnicode_AsUTF8String(output);
+        const char* string = PyString_AsString(unicode);
+        pyConsole->insertPythonError(QString::fromUtf8(string));
+        Py_DECREF(unicode);
+    }
+    else if (PyString_Check(output)) {
+        const char* string = PyString_AsString(output);
+        pyConsole->insertPythonError(QString::fromUtf8(string));
+    }
+
     Py_INCREF(Py_None);
     return Py_None;
 }

@@ -14,7 +14,7 @@ namespace zipios {
 /** \anchor GZIPOutputStream_anchor
     GZIPOutputStream is an ostream that writes the output to a gz file. The
     interface approximates the interface of the Java GZIPOutputStream. */
-class GZIPOutputStream : public std::ostream {
+class BaseExport GZIPOutputStream : public std::ostream {
 public:
 
   /** GZIPOutputStream constructor.

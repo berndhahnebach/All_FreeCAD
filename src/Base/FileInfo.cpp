@@ -74,7 +74,7 @@ const char *FileInfo::getTempPath(void)
     return tempPath.c_str();
 }
 
-string FileInfo::getTempFileName(void)
+std::string FileInfo::getTempFileName(void)
 {
     //FIXME: To avoid race conditons we should rather return a file pointer
     //than a file name.
@@ -140,6 +140,35 @@ std::string FileInfo::fileNamePure () const
         return temp;
 }
 
+#ifdef FC_OS_WIN32
+std::wstring ConvertToWideString(const std::string& string)
+{
+    int neededSize = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, 0, 0);
+    wchar_t* wideCharString = new wchar_t[neededSize];
+    MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, wideCharString, neededSize);
+    std::wstring wideString(wideCharString);
+    delete [] wideCharString;
+    wideCharString = NULL;
+    return wideString;
+}
+#endif
+
+std::wstring FileInfo::toStdWString() const
+{
+    // As FileName is UTF-8 is encoded we have to convert it
+    // for Windows because the path names are UCS-2 encoded.
+#ifdef FC_OS_WIN32
+    return ConvertToWideString(FileName);
+#else
+    // FIXME: For MacOS the path names are UCS-4 encoded.
+    // For the moment we cannot handle path names containing
+    // non-ASCII characters.
+    // For Linux the paths names are encoded in UTF-8 so we actually
+    // don't need this method therefore.
+    return std::wstring();
+#endif
+}
+
 std::string FileInfo::extension (bool complete) const
 {
     // complete not implemented
@@ -147,44 +176,56 @@ std::string FileInfo::extension (bool complete) const
     return FileName.substr(FileName.find_last_of('.')+1);
 }
 
-bool FileInfo::hasExtension ( const char* Ext) const
+bool FileInfo::hasExtension (const char* Ext) const
 {
-#if defined (__GNUC__)
-    return strcasecmp(Ext,extension().c_str()) == 0;
-#else
+#if defined (_MSC_VER)
     return _stricmp(Ext,extension().c_str()) == 0;
+#elif defined (__GNUC__)
+    return strcasecmp(Ext,extension().c_str()) == 0;
 #endif
 }
 
 bool FileInfo::exists () const
 {
-#if defined (__GNUC__)
+#if defined (_MSC_VER)
+    std::wstring wstr = toStdWString();
+    return _waccess(wstr.c_str(),0) == 0;
+#elif defined (__GNUC__)
     return access(FileName.c_str(),0) == 0;
-#else
-    return _access(FileName.c_str(),0) == 0;
 #endif
 }
 
 bool FileInfo::isReadable () const
 {
-#if defined (__GNUC__)
+#if defined (_MSC_VER)
+    std::wstring wstr = toStdWString();
+    return _waccess(wstr.c_str(),4) == 0;
+#elif defined (__GNUC__)
     return access(FileName.c_str(),4) == 0;
-#else
-    return _access(FileName.c_str(),4) == 0;
 #endif
 }
 
 bool FileInfo::isWritable () const
 {
-#if defined (__GNUC__)
+#if defined (_MSC_VER)
+    std::wstring wstr = toStdWString();
+    return _waccess(wstr.c_str(),2) == 0;
+#elif defined (__GNUC__)
     return access(FileName.c_str(),2) == 0;
-#else
-    return _access(FileName.c_str(),2) == 0;
 #endif
 }
 
 bool FileInfo::isFile () const
 {
+#ifdef _MSC_VER
+    if (exists()) {
+        std::wstring wstr = toStdWString();
+        FILE* fd = _wfopen(wstr.c_str(), L"rb");
+        bool ok = (fd != 0);
+        fclose(fd);
+        return ok;
+    }
+#else
     if (exists()) {
         // If we can open it must be an existing file, otherwise we assume it
         // is a directory (which doesn't need to be true for any cases)
@@ -193,6 +234,7 @@ bool FileInfo::isFile () const
         str.close();
         return true;
     }
+#endif
 
     // TODO: Check for valid file name
     return true;
@@ -203,16 +245,17 @@ bool FileInfo::isDir () const
     if (exists()) {
         // if we can chdir then it must be a directory, otherwise we assume it
         // is a file (which doesn't need to be true for any cases)
-#if defined (__GNUC__)
+#if defined (_MSC_VER)
+        wchar_t cwd[MAX_PATH+1];
+        std::wstring wstr = toStdWString();
+        if (_wgetcwd(cwd,MAX_PATH+1) != 0 && _wchdir(wstr.c_str()) == 0) {
+            _wchdir(cwd);
+            return true;
+        }
+#elif defined (__GNUC__)
         char cwd[PATH_MAX+1];
         if (getcwd(cwd,PATH_MAX+1) != 0 && chdir(FileName.c_str()) == 0) {
             chdir(cwd);
-            return true;
-        }
-#else
-        char cwd[MAX_PATH+1];
-        if (_getcwd(cwd,MAX_PATH+1) != 0 && _chdir(FileName.c_str()) == 0) {
-            _chdir(cwd);
             return true;
         }
 #endif
@@ -233,20 +276,23 @@ unsigned int FileInfo::size () const
 bool FileInfo::deleteFile(void)
 {
 #if defined (_MSC_VER)
-    return DeleteFile(FileName.c_str())>0;
-#elif defined(__GNUC__)
+    std::wstring wstr = toStdWString();
+    return ::_wremove(wstr.c_str()) == 0;
+#elif defined (__GNUC__)
     return (::remove(FileName.c_str())==0);
 #else
-#   error "DeleteFile() not implemented for this platform!"
+#   error "FileInfo::deleteFile() not implemented for this platform!"
 #endif
 }
 
-bool FileInfo::createDirectory( const char* directory ) const
+bool FileInfo::createDirectory(const char* directory) const
 {
 #if defined (_MSC_VER)
-    return _mkdir( directory ) == 0;
-#elif defined(__GNUC__)
-    return mkdir( directory, 0777 ) == 0;
+    FileInfo fi(directory);
+    std::wstring wstr = fi.toStdWString();
+    return _wmkdir(wstr.c_str()) == 0;
+#elif defined (__GNUC__)
+    return mkdir(directory, 0777) == 0;
 #else
 #   error "FileInfo::createDirectory() not implemented for this platform!"
 #endif
