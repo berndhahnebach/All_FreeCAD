@@ -58,11 +58,16 @@ QVariant PropertyFileItem::value(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFile::getClassTypeId()));
 
     std::string value = ((App::PropertyFile*)prop)->getValue();
-    return QVariant(QString(value.c_str()));
+    return QVariant(QString::fromUtf8(value.c_str()));
 }
 
 void PropertyFileItem::setValue(const QVariant& /*value*/)
 {
+}
+
+QVariant PropertyFileItem::toolTip(const App::Property* prop) const
+{
+    return value(prop);
 }
 
 // --------------------------------------------------------------------
