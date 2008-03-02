@@ -11,7 +11,7 @@ using std::streambuf ;
 
 /** A FilterOutputStreambuf is a streambuf that filters the data that is written
     to it before it passes it on to the output streambuf it is connected to. */
-class FilterOutputStreambuf : public streambuf {
+class BaseExport FilterOutputStreambuf : public streambuf {
 public:
 
   /** Constructor.

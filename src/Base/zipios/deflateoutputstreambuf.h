@@ -22,7 +22,7 @@ using std::vector ;
     compression/decompression method used in gzip and zip. The zlib
     library is used to perform the actual deflation, this class only
     wraps the functionality in an output stream filter. */
-class DeflateOutputStreambuf : public FilterOutputStreambuf {
+class BaseExport DeflateOutputStreambuf : public FilterOutputStreambuf {
 public:
 
   /** DeflateOutputStreambuf constructor.

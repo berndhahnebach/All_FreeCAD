@@ -38,6 +38,7 @@
 #include <Base/gzstream.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
+#include <Base/zipios/gzipoutputstream.h>
 
 #include <math.h>
 #include <sstream>
@@ -295,7 +296,12 @@ bool MeshInput::LoadAny(const char* FileName)
     if (!fi.isReadable())
         throw Base::FileException("No permission on the file",FileName);
 
+#ifdef FC_OS_WIN32
+    std::wstring wstr = fi.toStdWString();
+    std::ifstream str(wstr.c_str(), std::ios::in | std::ios::binary);
+#else
     std::ifstream str(FileName, std::ios::in | std::ios::binary);
+#endif
 
     if (fi.hasExtension("bms")) {
         _rclMesh.Read(str);
@@ -893,12 +899,17 @@ bool MeshOutput::SaveAny(const char* FileName) const
     if (fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false)
         throw Base::FileException("No write permission for file",FileName);
 
+#ifdef FC_OS_WIN32
+    std::wstring wstr = fi.toStdWString();
+    std::ofstream str(wstr.c_str(), std::ios::out | std::ios::binary);
+#else
+    std::ofstream str(FileName, std::ios::out | std::ios::binary);
+#endif
+
     if (fi.hasExtension("bms")) {
-        std::ofstream str(FileName, std::ios::out | std::ios::binary);
         _rclMesh.Write( str );
     }
     else if (fi.hasExtension("stl") || fi.hasExtension("ast")) {
-        std::ofstream str(FileName, std::ios::out | std::ios::binary);
         MeshOutput aWriter(_rclMesh);
 
         // write file
@@ -913,31 +924,21 @@ bool MeshOutput::SaveAny(const char* FileName) const
           
     }
     else if (fi.hasExtension("obj")) {
-        std::ofstream str( FileName, std::ios::out | std::ios::binary );
         // write file
         if (!SaveOBJ(str)) 
             throw Base::FileException("Export of OBJ mesh failed",FileName);
-
     }
     else if (fi.hasExtension("iv")) {
-        std::ofstream str( FileName, std::ios::out | std::ios::binary );
-
         // write file
         if (!SaveInventor(str))
             throw Base::FileException("Export of Inventor mesh failed",FileName);
-
     }
     else if (fi.hasExtension("py")) {
-        std::ofstream str( FileName, std::ios::out | std::ios::binary );
-
         // write file
         if (!SavePython(str))
             throw Base::FileException("Export of Python mesh failed",FileName);
-
     }
     else if (fi.hasExtension("wrl") || fi.hasExtension("vrml")) {
-        std::ofstream str( FileName, std::ios::out | std::ios::binary );
-      
         // write file
         App::Material clMat;
         if (!SaveVRML(str, clMat))
@@ -945,17 +946,18 @@ bool MeshOutput::SaveAny(const char* FileName) const
     }
     else if (fi.hasExtension("wrz")) {
         // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
-        Base::ogzstream gzip( FileName, std::ios::out | std::ios::binary );
-
+        // str.close();
+        //Base::ogzstream gzip(FileName, std::ios::out | std::ios::binary);
+        //FIXME: The compression level seems to be higher than with ogzstream
+        //which leads to problems to load the wrz file in debug mode, the
+        //application simply crashes.
+        zipios::GZIPOutputStream gzip(str);
         // write file
         App::Material clMat;
         if (!SaveVRML(gzip, clMat))
             throw Base::FileException("Export of compressed VRML mesh failed",FileName);
-          
     }
     else if (fi.hasExtension("nas") || fi.hasExtension("bdf")) {
-        std::ofstream str( FileName, std::ios::out | std::ios::binary );
-
         // write file
         if (!SaveNastran(str))
             throw Base::FileException("Export of NASTRAN mesh failed",FileName);

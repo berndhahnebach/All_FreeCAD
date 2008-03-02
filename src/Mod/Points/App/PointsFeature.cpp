@@ -116,7 +116,12 @@ App::DocumentObjectExecReturn *Export::execute(void)
       return new App::DocumentObjectExecReturn("No write permission for file");
   }
 
+#ifdef FC_OS_WIN32
+  std::wstring wstr = fi.toStdWString();
+  std::ofstream str(wstr.c_str(), std::ios::out | std::ios::binary );
+#else
   std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+#endif
 
   if ( fi.hasExtension("asc") )
   {

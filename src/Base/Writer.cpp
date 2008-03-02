@@ -150,7 +150,18 @@ void Writer::decInd(void)
 }
 
 ZipWriter::ZipWriter(const char* FileName) 
-: ZipStream(FileName)
+  : ZipStream(FileName)
+{
+#ifdef _MSC_VER
+  ZipStream.imbue(std::locale::empty());
+#else
+  //FIXME: Check whether this is correct
+  ZipStream.imbue(std::locale::classic());
+#endif
+}
+
+ZipWriter::ZipWriter(std::ostream& os) 
+  : ZipStream(os)
 {
 #ifdef _MSC_VER
   ZipStream.imbue(std::locale::empty());

@@ -118,6 +118,7 @@ class BaseExport ZipWriter: public Writer
 public:
   /// opens the file and write the first file
   ZipWriter(const char* FileName);
+  ZipWriter(std::ostream&);
   ~ZipWriter();
 
   virtual void writeFiles(void);

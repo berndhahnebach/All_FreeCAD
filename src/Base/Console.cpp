@@ -367,53 +367,106 @@ PyMethodDef ConsoleSingleton::Methods[] = {
 
 PyObject *ConsoleSingleton::sPyMessage(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output))
+        return NULL;
 
-    PY_TRY{
-    Instance().Message("%s",pstr);				 // process massage 
+    const char* string=0;
+    PyObject* unicode=0;
+    if (PyUnicode_Check(output)) {
+        unicode = PyUnicode_AsUTF8String(output);
+        string = PyString_AsString(unicode);
+    }
+    else if (PyString_Check(output)) {
+        string = PyString_AsString(output);
+    }
+
+    PY_TRY {
+        Instance().Message("%s",string);            // process message
+    } PY_CATCH;
+
+    Py_XDECREF(unicode);
+
     Py_INCREF(Py_None);
-        return Py_None;                              // None: no errors 
-    }PY_CATCH;
+    return Py_None;
 }
 
 PyObject *ConsoleSingleton::sPyWarning(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output))
+        return NULL;
 
-    PY_TRY{
-    Instance().Warning("%s",pstr);				 // process massage 
+    const char* string=0;
+    PyObject* unicode=0;
+    if (PyUnicode_Check(output)) {
+        unicode = PyUnicode_AsUTF8String(output);
+        string = PyString_AsString(unicode);
+    }
+    else if (PyString_Check(output)) {
+        string = PyString_AsString(output);
+    }
+
+    PY_TRY {
+        Instance().Warning("%s",string);            // process message
+    } PY_CATCH;
+
+    Py_XDECREF(unicode);
+
     Py_INCREF(Py_None);
-        return Py_None;                              // None: no errors 
-    }PY_CATCH;
+    return Py_None;
 }
+
 PyObject *ConsoleSingleton::sPyError(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output))
+        return NULL;
 
-    PY_TRY{
-    Instance().Error("%s",pstr);				 // process massage 
+    const char* string=0;
+    PyObject* unicode=0;
+    if (PyUnicode_Check(output)) {
+        unicode = PyUnicode_AsUTF8String(output);
+        string = PyString_AsString(unicode);
+    }
+    else if (PyString_Check(output)) {
+        string = PyString_AsString(output);
+    }
+
+    PY_TRY {
+        Instance().Error("%s",string);            // process message
+    } PY_CATCH;
+
+    Py_XDECREF(unicode);
+
     Py_INCREF(Py_None);
-        return Py_None;                              // None: no errors 
-    }PY_CATCH;
+    return Py_None;
 }
 
 PyObject *ConsoleSingleton::sPyLog(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+    PyObject *output;
+    if (!PyArg_ParseTuple(args, "O", &output))
+        return NULL;
 
-    PY_TRY{
-    Instance().Log("%s",pstr);   				 // process massage 
+    const char* string=0;
+    PyObject* unicode=0;
+    if (PyUnicode_Check(output)) {
+        unicode = PyUnicode_AsUTF8String(output);
+        string = PyString_AsString(unicode);
+    }
+    else if (PyString_Check(output)) {
+        string = PyString_AsString(output);
+    }
+
+    PY_TRY {
+        Instance().Log("%s",string);            // process message
+    } PY_CATCH;
+
+    Py_XDECREF(unicode);
+
     Py_INCREF(Py_None);
-        return Py_None;
-    }PY_CATCH;
+    return Py_None;
 }
 
 PyObject *ConsoleSingleton::sPyGetStatus(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)

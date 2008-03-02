@@ -561,7 +561,6 @@ void Document::Restore(Base::XMLReader &reader)
     if ( NewName != OrigName ) {
         // The document's name has changed. We make sure that this new name is unique then.
         std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
-        Label.setValue(NewUniqueName);
         // Notify the application and all observers
         GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
     }
@@ -663,7 +662,13 @@ bool Document::save (void)
 
     if (*(FileName.getValue()) != '\0') {
         LastModifiedDate.setValue(Base::TimeInfo::currentDateTimeString());
-        Base::ZipWriter writer(FileName.getValue());
+        Base::FileInfo fi(FileName.getValue());
+#ifdef FC_OS_WIN32
+        std::ofstream file(fi.toStdWString().c_str(), std::ios::out | std::ios::binary);
+#else
+        std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
+#endif
+        Base::ZipWriter writer(file);
 
         writer.setComment("FreeCAD Document");
         writer.setLevel( compression );
@@ -699,7 +704,13 @@ void Document::restore (void)
     ObjectMap.clear();
     pActiveObject = 0;
 
-    zipios::ZipInputStream zipstream(FileName.getValue());
+    Base::FileInfo fi(FileName.getValue());
+#ifdef FC_OS_WIN32
+    std::ifstream file(fi.toStdWString().c_str(), std::ios::in | std::ios::binary);
+#else
+    std::ifstream file(fi.filePath().c_str(), std::ios::in | std::ios::binary);
+#endif
+    zipios::ZipInputStream zipstream(file);
     Base::XMLReader reader(FileName.getValue(), zipstream);
 
     if (!reader.isValid())
