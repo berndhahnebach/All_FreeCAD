@@ -100,11 +100,15 @@ const char* AbortException::what() const throw()
 FileException::FileException(const char * sMessage, const char * sFileName)
   : Exception( sMessage ),file(sFileName)
 {
+    _sErrMsg += ": ";
+    _sErrMsg += sFileName;
 }
 
 FileException::FileException(const char * sMessage, const FileInfo& File)
   : Exception( sMessage ),file(File)
 {
+    _sErrMsg += ": ";
+    _sErrMsg += File.fileName();
 }
 
 FileException::FileException()
@@ -116,7 +120,6 @@ FileException::FileException(const FileException &inst)
   : Exception( inst._sErrMsg.c_str() ),file(inst.file)
 {
 }
-
 
 const char* FileException::what() const throw()
 {

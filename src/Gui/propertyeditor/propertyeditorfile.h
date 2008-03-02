@@ -44,6 +44,7 @@ protected:
 
 protected:
     PropertyFileItem();
+    virtual QVariant toolTip(const App::Property*) const;
 };
 
 /**
