@@ -76,7 +76,8 @@ static PyObject * open(PyObject *self, PyObject *args)
         App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
         // The feature checks the file extension
         Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addObject("Mesh::Import",file.fileNamePure().c_str());
-        pcFeature->FileName.setValue( Name );
+        pcFeature->FileName.setValue(Name);
+        pcFeature->Label.setValue(file.fileNamePure().c_str());
         pcDoc->recompute();
     } PY_CATCH;
 
@@ -122,11 +123,12 @@ static PyObject * insert(PyObject *self, PyObject *args)
             Base::FileInfo file(Name);
             Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
             pcFeature->FileName.setValue(Name);
+            pcFeature->Label.setValue(file.fileNamePure().c_str());
             pcDoc->recompute();
         }
     } PY_CATCH;
 
-    Py_Return;    
+    Py_Return;
 }
 /*
 static PyObject * 

@@ -3579,6 +3579,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NavigationStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\NavigationStyle.h"
+				>
+			</File>
+			<File
 				RelativePath="SplitView3DInventor.cpp"
 				>
 				<FileConfiguration

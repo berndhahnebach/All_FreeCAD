@@ -78,6 +78,7 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include <Base/Interpreter.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
+#include <Base/Stream.h>
 
 #include <Base/zipios/zipios-config.h>
 #include <Base/zipios/zipfile.h>
@@ -543,8 +544,15 @@ void Document::Restore(Base::XMLReader &reader)
     reader.readElement("Document");
     long scheme = reader.getAttributeAsInteger("SchemaVersion");
 
+    // When this document was created the FileName and Label properties
+    // were set to the absolute path or file name, respectively. To save
+    // the document to the file it was loaded from or to show the file name
+    // in the tree view we must restore them after loading the file because
+    // they will be overridden.
+    // Note: This does not affect the internal name of the document in any way
+    // that is kept in Application.
     std::string FilePath = FileName.getValue();
-    std::string OrigName = Label.getValue();
+    std::string DocLabel = Label.getValue();
 
     // read the Document Properties
     PropertyContainer::Restore(reader);
@@ -552,18 +560,7 @@ void Document::Restore(Base::XMLReader &reader)
     // We must restore the correct 'FileName' property again because the stored
     // value could be invalid.
     FileName.setValue(FilePath.c_str());
-
-    // When this document has been created it got a preliminary name which might have changed now,
-    // because the document XML file can contain a name different from the original name.
-    // So firstly we must make sure that the new name is unique and secondly we must notify the
-    // application and the observers of this.
-    std::string NewName = Label.getValue();
-    if ( NewName != OrigName ) {
-        // The document's name has changed. We make sure that this new name is unique then.
-        std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
-        // Notify the application and all observers
-        GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
-    }
+    Label.setValue(DocLabel.c_str());
 
     // SchemeVersion "2"
     if ( scheme == 2 ) {
@@ -663,11 +660,7 @@ bool Document::save (void)
     if (*(FileName.getValue()) != '\0') {
         LastModifiedDate.setValue(Base::TimeInfo::currentDateTimeString());
         Base::FileInfo fi(FileName.getValue());
-#ifdef FC_OS_WIN32
-        std::ofstream file(fi.toStdWString().c_str(), std::ios::out | std::ios::binary);
-#else
-        std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
-#endif
+        Base::ofstream file(fi, std::ios::out | std::ios::binary);
         Base::ZipWriter writer(file);
 
         writer.setComment("FreeCAD Document");
@@ -705,11 +698,7 @@ void Document::restore (void)
     pActiveObject = 0;
 
     Base::FileInfo fi(FileName.getValue());
-#ifdef FC_OS_WIN32
-    std::ifstream file(fi.toStdWString().c_str(), std::ios::in | std::ios::binary);
-#else
-    std::ifstream file(fi.filePath().c_str(), std::ios::in | std::ios::binary);
-#endif
+    Base::ifstream file(fi, std::ios::in | std::ios::binary);
     zipios::ZipInputStream zipstream(file);
     Base::XMLReader reader(FileName.getValue(), zipstream);
 

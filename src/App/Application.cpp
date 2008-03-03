@@ -350,7 +350,10 @@ Document* Application::openDocument(const char * FileName)
         }
     }
 
-    Document* newDoc = newDocument(File.fileNamePure().c_str());
+    // Use the same name for the internal and user name.
+    // The file name is UTF-8 encoded which means that the internal name will be modified
+    // to only contain valid ASCII characters but the user name will be kept.
+    Document* newDoc = newDocument(File.fileNamePure().c_str(), File.fileNamePure().c_str());
 
     newDoc->FileName.setValue(File.filePath());
 

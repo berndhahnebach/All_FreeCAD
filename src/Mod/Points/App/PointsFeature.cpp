@@ -29,6 +29,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Stream.h>
 #include <Base/Writer.h>
 
 
@@ -116,14 +117,9 @@ App::DocumentObjectExecReturn *Export::execute(void)
       return new App::DocumentObjectExecReturn("No write permission for file");
   }
 
-#ifdef FC_OS_WIN32
-  std::wstring wstr = fi.toStdWString();
-  std::ofstream str(wstr.c_str(), std::ios::out | std::ios::binary );
-#else
-  std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
-#endif
+  Base::ofstream str(fi, std::ios::out | std::ios::binary);
 
-  if ( fi.hasExtension("asc") )
+  if (fi.hasExtension("asc"))
   {
     const std::vector<App::DocumentObject*>& features = Sources.getValues();
     for ( std::vector<App::DocumentObject*>::const_iterator it = features.begin(); it != features.end(); ++it )
