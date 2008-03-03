@@ -23,7 +23,7 @@
 
 #ifndef GUI_NAVIGATIONSTYLE_H
 #define GUI_NAVIGATIONSTYLE_H
-
+#if 0
 // forward declarations
 class SoEvent;
 
@@ -57,5 +57,5 @@ public:
 };
 
 } // namespace Gui
-
+#endif
 #endif // GUI_NAVIGATIONSTYLE_H 
