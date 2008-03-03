@@ -25,7 +25,7 @@
 
 #ifndef _PreComp_
 #endif
-
+#if 0
 #include "NavigationStyle.h"
 #include "View3DInventorViewer.h"
 
@@ -322,3 +322,4 @@ SbBool ExaminerStyle::processSoEvent(const SoEvent * const ev, View3DInventorVie
 #endif
   return FALSE;
 }
+#endif
