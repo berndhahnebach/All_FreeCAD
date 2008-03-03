@@ -296,12 +296,7 @@ bool MeshInput::LoadAny(const char* FileName)
     if (!fi.isReadable())
         throw Base::FileException("No permission on the file",FileName);
 
-#ifdef FC_OS_WIN32
-    std::wstring wstr = fi.toStdWString();
-    std::ifstream str(wstr.c_str(), std::ios::in | std::ios::binary);
-#else
-    std::ifstream str(FileName, std::ios::in | std::ios::binary);
-#endif
+    Base::ifstream str(fi, std::ios::in | std::ios::binary);
 
     if (fi.hasExtension("bms")) {
         _rclMesh.Read(str);
@@ -899,12 +894,7 @@ bool MeshOutput::SaveAny(const char* FileName) const
     if (fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false)
         throw Base::FileException("No write permission for file",FileName);
 
-#ifdef FC_OS_WIN32
-    std::wstring wstr = fi.toStdWString();
-    std::ofstream str(wstr.c_str(), std::ios::out | std::ios::binary);
-#else
-    std::ofstream str(FileName, std::ios::out | std::ios::binary);
-#endif
+    Base::ofstream str(fi, std::ios::out | std::ios::binary);
 
     if (fi.hasExtension("bms")) {
         _rclMesh.Write( str );

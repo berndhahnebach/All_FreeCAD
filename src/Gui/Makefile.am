@@ -215,6 +215,8 @@ libFreeCADGui_la_SOURCES=\
 		MenuManager.h \
 		MouseModel.cpp \
 		MouseModel.h \
+		NavigationStyle.cpp \
+		NavigationStyle.h \
 		NetworkRetriever.cpp \
 		NetworkRetriever.h \
 		OnlineDocumentation.cpp \

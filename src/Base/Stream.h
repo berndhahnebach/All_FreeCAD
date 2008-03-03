@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Imetric 3D GmbH                                    *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -109,6 +109,36 @@ private:
 
 private:
     std::istream& _in;
+};
+
+// ----------------------------------------------------------------------------
+
+class FileInfo;
+
+/**
+ * The ofstream class is provided for convenience. On Windows
+ * platforms it opens a stream with UCS-2 encoded file name
+ * while on Linux platforms the file name is UTF-8 encoded.
+ * @author Werner Mayer
+ */
+class BaseExport ofstream : public std::ofstream
+{
+public:
+    ofstream(const FileInfo& fi, int mode = std::ios::out | std::ios::binary);
+    virtual ~ofstream();
+};
+
+/**
+ * The ofstream class is provided for convenience. On Windows
+ * platforms it opens a stream with UCS-2 encoded file name
+ * while on Linux platforms the file name is UTF-8 encoded.
+ * @author Werner Mayer
+ */
+class BaseExport ifstream : public std::ifstream
+{
+public:
+    ifstream(const FileInfo& fi, int mode = std::ios::in | std::ios::binary);
+    virtual ~ifstream();
 };
 
 } // namespace Base

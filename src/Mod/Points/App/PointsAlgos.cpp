@@ -37,6 +37,7 @@
 #include <Base/FileInfo.h>
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
+#include <Base/Stream.h>
 
 #include <boost/regex.hpp>
 
@@ -70,12 +71,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     std::string line;
     Base::FileInfo fi(FileName);
 
-#ifdef FC_OS_WIN32
-    std::wstring wstr = fi.toStdWString();
-    std::ifstream tmp_str(wstr.c_str());
-#else
-    std::ifstream tmp_str(FileName);
-#endif
+    Base::ifstream tmp_str(fi);
 
     Base::Sequencer().start("Counting lines...", 10);
     Base::Sequencer().next();
@@ -90,11 +86,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     Base::Sequencer().start( "Loading points...", LineCnt );
 
     // again to the beginning
-#ifdef FC_OS_WIN32
-    std::ifstream file(wstr.c_str());
-#else
-    std::ifstream file(FileName);
-#endif
+    Base::ifstream file(fi);
     LineCnt = 0;
 
     try {

@@ -442,8 +442,10 @@ void CmdMeshImport::activated(int iMsg)
 
     openCommand("Import Mesh");
 #if 1 // feature based
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")", (const char*)fi.baseName().toAscii());
+    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")"
+                 ,(const char*)fi.baseName().toAscii());
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toUtf8());
+    doCommand(Doc,"f.Label = \"%s\"",(const char*)fi.baseName().toUtf8());
 #elif 0 // data based
     doCommand(Doc,"import Mesh");
     doCommand(Doc,"__mesh__ = Mesh.mesh()");

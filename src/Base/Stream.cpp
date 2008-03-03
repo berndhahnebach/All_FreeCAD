@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Imetric 3D GmbH                                    *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -31,6 +31,7 @@
 
 #include "Stream.h"
 #include "Swap.h"
+#include "FileInfo.h"
 
 using namespace Base;
 
@@ -215,3 +216,32 @@ InputStream& InputStream::operator >> (double& d)
     if (_swap) SwapEndian<double>(d);
     return *this;
 }
+
+// ---------------------------------------------------------
+
+Base::ofstream::ofstream(const FileInfo& fi, int mode)
+#ifdef FC_OS_WIN32
+: std::ofstream(fi.toStdWString().c_str(), mode)
+#else
+: std::ofstream(fi.filePath().c_str(), mode)
+#endif
+{
+}
+
+Base::ofstream::~ofstream()
+{
+}
+
+Base::ifstream::ifstream(const FileInfo& fi, int mode)
+#ifdef FC_OS_WIN32
+: std::ifstream(fi.toStdWString().c_str(), mode)
+#else
+: std::ifstream(fi.filePath().c_str(), mode)
+#endif
+{
+}
+
+Base::ifstream::~ifstream()
+{
+}
+
