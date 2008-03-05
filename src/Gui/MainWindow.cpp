@@ -509,6 +509,18 @@ void MainWindow::onWindowsMenuAboutToShow()
   Command* cmd = cMgr.getCommandByName("Std_WindowsMenu");
   QList<QAction*> actions = qobject_cast<ActionGroup*>(cmd->getAction())->actions();
 
+  // do the connection only once
+  static bool firstShow = true;
+  if (firstShow) {
+    firstShow = false;
+    QAction* last = actions.isEmpty() ? 0 : actions.last();
+    for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
+      if (*it == last)
+          break; // this is a separator
+      connect(*it, SIGNAL(triggered()), d->windowMapper, SLOT(map()));
+    }
+  }
+
   int numWindows = std::min<int>(actions.count()-1, windows.count());
   for ( int index = 0; index < numWindows; index++ ) {
     QWidget* child = windows.at(index);
@@ -521,7 +533,6 @@ void MainWindow::onWindowsMenuAboutToShow()
     action->setText(text);
     action->setVisible(true);
     action->setChecked(child == active);
-    connect(action, SIGNAL(triggered()), d->windowMapper, SLOT(map()));
     d->windowMapper->setMapping(action, child);
   }
 
