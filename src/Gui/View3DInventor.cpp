@@ -136,8 +136,6 @@ PyObject *View3DInventor::getPyObject(void)
 
 void View3DInventor::setViewerDefaults(void)
 {
-    Base::Console().Log("Act: View3DInventor::setViewerDefaults()\n");
-
     _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
     _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
     _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
