@@ -52,6 +52,11 @@ double Routines::TrapezoidIntergration(const std::vector<double> &WithRespectTo,
     return m_result;
 }
 
+void Routines::NewtonIter(std::vector<double> &F, std::vector<std::vector<double> > &DF)
+{
+}
+
+
 /*! \brief Cramer-Rule Solver
 
  Cramer-Rule solver for 2x2 Matrix.

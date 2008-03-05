@@ -31,10 +31,10 @@
 using namespace boost::numeric;
 
 
-class UniGridApprox: public Routines
+class AppCamExport UniGridApprox: public Routines
 {
 public:
-    UniGridApprox(const MeshCore::MeshKernel &InputMesh, double offset);
+	UniGridApprox(const MeshCore::MeshKernel &InputMesh, double Tol);
     ~UniGridApprox();
 
     bool Perform(double TOL);
@@ -70,6 +70,7 @@ public:
     int m_vdeg;
     int n_x;
     int n_y;
+	double m_Tol;
 
     TopoDS_Face m_Face;
 

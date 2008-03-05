@@ -26,14 +26,17 @@
 #include "ChangeDyna.h"
 #include <sstream>
 
-ChangeDyna::ChangeDyna(const std::vector<std::pair<float,float> >* properTimes)
+ChangeDyna::ChangeDyna()
 {
-    m_ProperTime = properTimes;
+    m_ProperTime.clear();
 }
 bool ChangeDyna::Read( const std::string & _filename)
 {
     // open file for reading
     std::ifstream input( _filename.c_str() );
+    std::ifstream input2("CurveTimes.k");
+    if(!input2.is_open()) return false;
+    if(!ReadTimes(input2)) return false;
     std::ofstream output("dyna2.str");
     if ( !input.is_open() )
     {
@@ -48,9 +51,33 @@ bool ChangeDyna::Read( const std::string & _filename)
 
     input.close();
     output.close();
+    input2.close();
     return true;
 }
 
+
+bool ChangeDyna::ReadTimes(std::ifstream &input2)
+{
+    input2.seekg(std::ifstream::beg);
+    std::string line;
+    unsigned int i=0;
+    std::pair<float,float> tempPair;
+    std::stringstream astream1;
+    do
+    {
+        std::getline(input2,line);
+        if(line.size() == 0) continue;
+        astream1.str(line);
+        astream1 >> tempPair.first >> tempPair.second;
+        m_ProperTime.push_back(tempPair);
+        astream1.str("");
+        astream1.clear();
+            
+    }
+    while(input2.good());
+    return true;
+
+}
 bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
 {
     input.seekg( std::ifstream::beg );
@@ -89,7 +116,9 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     astream1.str(line.substr(10,5));
                     astream1 >> current_index;
                     //Exchange the Death time. We need a vector of pairs (birth,death)
-                    astream2 << m_ProperTime->at(current_index-2).second;
+                    if((current_index-2) < 0)
+                        return false;
+                    astream2 << m_ProperTime[current_index-2].second;
                     //Now we have to reformat the string to fit exactly 9 digits
                     try
                     {
@@ -107,7 +136,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                 else //we are at the second line and can exchange the Birth-Time
                 {
 
-                    astream2 << m_ProperTime->at(current_index-2).first;
+                    astream2 << m_ProperTime[current_index-2].first;
                     try
                     {
                         ReformatStream(astream2,subline1);

@@ -29,9 +29,12 @@
 
 #include <Base/Vector3D.h>
 #include "cutting_tools.h"
+#include <sstream>
+
 //#include <Base/Builder3D.h>
 
-#define TolDist 2.0
+#define TolDist 3.0
+#define beam      0 
 
 
 class AppCamExport path_simulate
@@ -56,21 +59,26 @@ public:
 
     std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
     std::vector<std::vector<double> > CurvCurvature(const std::vector<std::vector<Base::Vector3d> > &D);
-    bool ConnectPaths_xy(ofstream &anOutputFile, int &c, bool outputstyle);
-    bool ConnectPaths_z(ofstream &anOutputFile, int &c, bool outputstyle);
+    bool ConnectPaths_xy(bool outputstyle);
+    bool ConnectPaths_z(bool outputstyle);
+	bool ConnectPaths_Feat(bool tool, bool robo, bool connection_type);
     bool UpdateParam();
     bool WriteOutput(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle);
-	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle);
-	bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c, bool outputstyle);
+	bool WriteOutput_Feat(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle, bool beamfl);
+	bool WriteTimes();
+	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle, bool tool, bool beamfl);
+	bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c1, int &c2, bool outputstyle,bool beamfl);
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
+	bool MakeSingleRoboPath(bool tool);
 	bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
     bool MakePathSimulate();
-	bool MakePathSimulate_Feat(std::vector<float> flatAreas);
+	bool MakePathSimulate_Feat(std::vector<float> &flatAreas);
     bool MakePathRobot();
+	bool MakePathRobot_Feat(std::vector<float> &flatAreas);
 	bool Integrate(bool b);
 	bool Correction(bool b);
 	bool TimeCorrection();
-	inline const std::vector<std::pair<float,float> >* getPathTimes() { return &m_PathTimes; }
+	int  Detect_FeatCurve(bool tool);
 
 private:
 	bool SortNew(std::vector<gp_Pnt> &CornerPoints, std::vector<Handle_Geom_BSplineCurve> &PlaneCurvesTop, 
@@ -86,7 +94,8 @@ private:
 	std::vector< std::vector<Base::Vector3d> > m_Output2;
     std::vector<Base::Vector3d> m_Output_robo1;
     std::vector<Base::Vector3d> m_Output_robo2;
-	std::vector<int> RoboFlag;
+	std::vector<int> RoboFlag_Master;
+	std::vector<int> RoboFlag_Slave;
     std::vector<double> m_Output_time;
 	std::vector<double> m_Output_time2;
 	std::vector< std::vector<double> > CriBound;
@@ -97,6 +106,8 @@ private:
     double m_dbound;
     double m_t;
 	double m_Sum[3];
+
+	CuttingToolsSettings m_set;
 
 	bool index;
 
@@ -139,12 +150,15 @@ private:
     std::vector<double> GetDistance(double time);
 	double GetDistanceNew(double time);
 	bool CheckConnect();
-	bool FillPathTimes();
+	bool CheckConnect(bool tool);
 	std::vector<std::vector<double> > CompBounds(bool tool);
 	bool CompPath(bool tool);
+	bool StartingTool();
 
-	std::vector<std::pair<float,float> > m_PathTimes;
+	std::vector<std::pair<float,float> > m_PathTimes_Master;
+	std::vector<std::pair<float,float> > m_PathTimes_Slave;
     bool m_conn;
+	bool m_Feat;
 };
 
 

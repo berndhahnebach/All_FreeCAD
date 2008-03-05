@@ -26,6 +26,7 @@
 
 
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include "cutting_tools.h"
 
 class MeshFacet;
 
@@ -92,27 +93,31 @@ struct MeshPntLess
 {
     bool operator()(const Base::Vector3f& _Left, const Base::Vector3f& _Right) const
     {
-        if ( fabs(_Left.x - _Right.x) > 0.001 )
+        if ( fabs(_Left.x - _Right.x) > 0.0001 )
             return _Left.x < _Right.x;
-        else if ( fabs(_Left.y - _Right.y) > 0.001)
+        else if ( fabs(_Left.y - _Right.y) > 0.0001)
             return _Left.y < _Right.y;
-        else if ( fabs(_Left.z - _Right.z) > 0.001 )
+        else if ( fabs(_Left.z - _Right.z) > 0.0001 )
             return _Left.z < _Right.z;
         return false;
 
     }
 };
 
-class SpringbackCorrection : public MeshCore::MeshFacetVisitor
+class AppCamExport SpringbackCorrection : public MeshCore::MeshFacetVisitor
 {
 public:
+	SpringbackCorrection();
     SpringbackCorrection(const TopoDS_Shape& aShape);
     SpringbackCorrection(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
     SpringbackCorrection(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& CadMesh, const MeshCore::MeshKernel& Mesh);
     ~SpringbackCorrection();
+	bool Load(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
     bool Init();
+	bool Init_Setting(struct CuttingToolsSettings& set);
     bool Perform(int deg_Tol);
-    bool CalcCurv();
+    bool SetFixEdges();
+	bool CalcCurv();
     std::vector<double> MeshCurvature(const MeshCore::MeshKernel& mesh);
     bool GetCurvature(TopoDS_Face aFace);
     bool MirrorMesh(std::vector<double> error);
@@ -139,6 +144,8 @@ public:
                             std::vector<MeshCore::MeshFacet> &arr,
                             MeshCore::MeshFacetArray &mFacets);
 
+	bool CorrectScale(double max_zVal);
+
     bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
     std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
     MeshCore::MeshKernel m_Mesh;
@@ -155,6 +162,7 @@ private:
     std::vector< std::vector<unsigned long> > m_RegionVector;
     std::vector< std::vector<unsigned long> > m_Regions;
     std::vector<MeshCore::MeshFacet> m_RegionBounds;
+	CuttingToolsSettings m_set;
 
     int m_RingCurrent;
 private:
@@ -168,6 +176,8 @@ private:
     std::vector<double> m_Offset;
     std::map<Base::Vector3f,MeshPnt,MeshPntLess > MeshMap;
     std::map<TopoDS_Edge, std::vector<double>, Edge_Less> EdgeMap;
+public:
+	std::vector<TopoDS_Face> m_FixFaces;
 };
 
 #endif

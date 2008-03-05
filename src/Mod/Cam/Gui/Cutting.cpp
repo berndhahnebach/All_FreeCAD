@@ -25,7 +25,10 @@
 
 #include "Cutting.h"
 #include <Mod/Cam/App/ChangeDyna.h> //Only for Testing
+#include <Mod/Cam/App/best_fit.h>
 #include <Mod/Cam/App/path_simulate.h>
+#include <Mod/Cam/App/SpringbackCorrection.h>
+#include <Mod/Cam/App/UniGridApprox.h>
 #include <QTimer>
 #include <QByteArray>
 
@@ -53,14 +56,16 @@
 #include <TopoDS_Compound.hxx>
 #include <Mod/Cam/App/cutting_tools.h>
 #include <Mod/Part/App/PartFeature.h>
+#include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
+#include <Mod/Mesh/App/Core/Grid.h>
 
 
 using namespace CamGui;
 
 Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
-        :QDialog(parent,fl),m_Process(NULL),m_PathSimulate(NULL),m_CuttingAlgo(NULL)
+        :QDialog(parent,fl),m_Process(NULL),m_PathSimulate(NULL),m_CuttingAlgo(NULL),m_BestFit(NULL)
 {
     this->setupUi(this);
     m_timer= false;
@@ -71,6 +76,7 @@ Cutting::~Cutting()
     delete m_CuttingAlgo;
     delete m_PathSimulate;
     delete m_Process;
+	delete m_BestFit;
 }
 
 bool Cutting::getProcessOutput()
@@ -108,7 +114,7 @@ void Cutting::on_adaptdynainput_clicked()
     m_Process = new QProcess(this);
     m_Process->start(program, arguments);
     //Now we check if the output is written correctly
-    m_Process->waitForFinished(20000);
+    m_Process->waitForFinished(50000);
     aFileInfo.setFile("dyna.str");
     if (aFileInfo.size() == 0) //the file does not exist
     {
@@ -121,7 +127,7 @@ void Cutting::on_adaptdynainput_clicked()
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
                                  tr("Structured-Dyna gut erzeugt\n"),
                                  QMessageBox::Ok);
-        ChangeDyna aFileChanger(m_PathSimulate->getPathTimes());
+        ChangeDyna aFileChanger;
         if (aFileChanger.Read("dyna.str"))
             start_simulation->show();
     }
@@ -144,7 +150,8 @@ void Cutting::selectShape()
 {
     if (!m_timer)
     {
-        int check_box1=0,check_box2=0;
+
+		int check_box1=0,check_box2=0;
         if (!m_Shape.IsNull())
         {
             check_box1 = QMessageBox::question(this, tr("FreeCAD CamWorkbench"),
@@ -189,11 +196,57 @@ void Cutting::selectShape()
     }
 }
 
+void Cutting::selectMesh()
+{
+    if (!m_timer)
+    {
+        int check_box1=0,check_box2=0;
+        if (m_Mesh.CountPoints() > 0)
+        {
+            check_box1 = QMessageBox::question(this, tr("FreeCAD CamWorkbench"),
+                                               tr("You have already selected a Mesh.\n"
+                                                  "Do you want to make a new Selection?"),
+                                               QMessageBox::Yes, QMessageBox::No);
+        }
+        else
+        {
+            check_box2 = QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
+                                                  tr("You have to select a Mesh.\n"),
+                                                  QMessageBox::Ok, QMessageBox::Cancel);
+        }
+        if ((check_box1 == QMessageBox::Yes) || (check_box2 == QMessageBox::Ok))
+        {
+            //First, remove the old selection from the Gui, so that we do not directly have the same CAD once again.
+            Gui::Selection().clearCompleteSelection();
+            //to make a Selection more easy, hide the dialog
+            this->hide();
+            QTimer::singleShot(100,this,SLOT(selectMesh()));
+            m_timer = true;
+        }
+    }
+    else
+    {
+		std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+        if ( fea.size() == 1)
+        {
+			m_Mesh = static_cast<Mesh::Feature*>(fea.front())->Mesh.getValue().getKernel();
+            //std::vector<Gui::SelectionSingleton::SelObj> aSelection = Gui::Selection().getSelection();
+            this->show();
+            m_timer = false;
+        }
+        else
+        {
+            QTimer::singleShot(100,this,SLOT(selectMesh()));
+            m_timer = true;
+        }
+    }
+}
+
 
 void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, const float z)
 {
     //check if a Shape is selected
-    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
+	std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
     if ( fea.size() == 1)
     {
         int test = aShape.ShapeType();
@@ -214,7 +267,10 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
         {
             if (tempFace.HashCode(IntegerLast()) == anExplorer.Current().HashCode(IntegerLast()))
             {
-                m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
+				if(m_selection == Springback)
+					(m_Spring->m_FixFaces).push_back(TopoDS::Face(anExplorer.Current()));
+				else
+					m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
                 break;
             }
         }
@@ -332,16 +388,7 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
 {
     //Do the actual Cut
     //First transfer the settings to the Cutting_tools class
-    m_CuttingAlgo->m_UserSettings.cad_radius = cad_radius_box->value();
-    m_CuttingAlgo->m_UserSettings.correction_factor = correction_factor_box->value();
-    m_CuttingAlgo->m_UserSettings.level_distance = level_distance_box->value();
-    m_CuttingAlgo->m_UserSettings.limit_angle = limit_angle_box->value();
-    m_CuttingAlgo->m_UserSettings.master_radius = master_radius_box->value();
-    m_CuttingAlgo->m_UserSettings.sheet_thickness = sheet_thickness_box->value();
-    m_CuttingAlgo->m_UserSettings.slave_radius = slave_radius_box->value();
-    m_CuttingAlgo->m_UserSettings.max_Vel = max_vel->value();
-    m_CuttingAlgo->m_UserSettings.max_Acc = max_acc->value();
-    m_CuttingAlgo->m_UserSettings.spring_pretension = spring_pretension->value();
+    m_CuttingAlgo->m_UserSettings = getSettings();
     
     if(!m_CuttingAlgo->arrangecuts_ZLEVEL())
     {std::cout << "Konnte nicht sauber schneiden" << std::endl;}
@@ -383,8 +430,17 @@ void Cutting::on_GenSimOut_clicked()
     QDir::setCurrent(dir);
     if(m_PathSimulate != NULL) delete m_PathSimulate;//If it exists already
     m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings);
-    if (m_PathSimulate->MakePathSimulate())
-        adaptdynainput->setEnabled(true);
+    switch (m_Mode)
+    {
+        case 1:
+		    if (m_PathSimulate->MakePathSimulate())
+			    adaptdynainput->setEnabled(true);
+            break;
+        case 2:
+            if (m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas()))
+			    adaptdynainput->setEnabled(true);
+            break;
+    }
 
 }
 
@@ -396,10 +452,170 @@ void Cutting::on_GenRobotOut_clicked()
     QDir::setCurrent(dir);
     if(m_PathSimulate != NULL) delete m_PathSimulate;
       m_PathSimulate = new path_simulate(*(m_CuttingAlgo->getOutputhigh()),*(m_CuttingAlgo->getOutputlow()),m_CuttingAlgo->m_UserSettings);
-      m_PathSimulate->MakePathRobot();
-    
+      
+	switch (m_Mode)
+    {
+        case 1:
+		    m_PathSimulate->MakePathRobot();
+            break;
+        case 2:
+			m_PathSimulate->MakePathRobot_Feat(m_CuttingAlgo->getFlatAreas());
+            break;
+    }
+}
+
+
+const CuttingToolsSettings& Cutting::getSettings()
+{
+	//First transfer the settings to the Cutting_tools class
+    m_Settings.cad_radius = cad_radius_box->value();
+    m_Settings.correction_factor = correction_factor_box->value();
+    m_Settings.level_distance = level_distance_box->value();
+    m_Settings.limit_angle = limit_angle_box->value();
+    m_Settings.sheet_thickness = sheet_thickness_box->value();
+    m_Settings.master_radius = master_radius_box->value();
+    m_Settings.slave_radius = slave_radius_box->value();
+    m_Settings.max_Vel = max_vel->value();
+    m_Settings.max_Acc = max_acc->value();
+    m_Settings.spring_pretension = spring_pretension->value();
+
+	return m_Settings;
+}
+
+
+void Cutting::on_BestFitButton_clicked()
+{
+	m_selection = BestFit;
+    best_fit_cad_button->setEnabled(true);
+}
+
+void Cutting::on_SpringbackButton_clicked()
+{
+	m_Spring = new SpringbackCorrection();
+	m_selection = Springback;
+    best_fit_cad_button->setEnabled(true);
 
 }
+
+void Cutting::on_Approximate_button_clicked()
+{
+	m_selection = Approximate;
+	best_fit_mesh_button->setEnabled(true);
+}
+
+void Cutting::on_best_fit_cad_button_clicked()
+{
+	 selectShape();
+	 best_fit_mesh_button->setEnabled(true);
+}
+
+void Cutting::on_best_fit_mesh_button_clicked()
+{
+	 selectMesh();
+	 best_fit_go_button->setEnabled(true);
+	 if(m_selection == Springback) {SelectFace_button->setEnabled(true);}
+}
+
+void Cutting::on_SelectFace_button_clicked()
+{
+	if(m_CuttingAlgo == NULL)
+		m_CuttingAlgo = new cutting_tools(m_Shape);
+
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view)
+    {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), zLevelCallback, this);
+        QMessageBox::information(this, tr("FreeCAD CamWorkbench"), tr("You have to pick a face.\n"));
+        this->hide();
+    }
+}
+
+void Cutting::on_best_fit_go_button_clicked()
+{	
+	//First transfer the settings to the Cutting_tools class (-> m_Settings)
+    getSettings();
+
+	switch(m_selection){
+	
+    case BestFit:
+
+		m_BestFit = new best_fit(m_Mesh,m_Shape);
+		m_BestFit->Perform();
+
+		m_Mesh = m_BestFit->m_Mesh;
+
+		best_fit_cad_button->setEnabled(false);
+		best_fit_mesh_button->setEnabled(false);
+		best_fit_go_button->setEnabled(false);
+		
+		DisplayMeshOutput();
+		break;
+	
+	case Springback:
+
+		m_Spring->Load(m_Shape,m_Mesh);
+		m_Spring->Init_Setting(m_Settings);
+		m_Spring->Perform(m_Settings.limit_angle);
+
+		m_Mesh = m_Spring->m_Mesh;
+
+		best_fit_cad_button->setEnabled(false);
+		best_fit_mesh_button->setEnabled(false);
+		best_fit_go_button->setEnabled(false);
+		
+		DisplayMeshOutput();
+		break;
+	
+	case Approximate:
+	    
+		
+		/*MeshCore::MeshPointArray pnts   = m_Mesh.GetPoints();  // file "kleines.stl" hat spitze über der ebene ... nicht kompatibel mit diesem Algo
+		MeshCore::MeshFacetArray facets = m_Mesh.GetFacets();
+
+		for(int i=0; i<pnts.size(); ++i)
+		{
+			if(pnts[i].z >0.0)
+				pnts[i].z *= -1;
+		}
+
+		m_Mesh.Assign(pnts,facets);*/
+
+	    m_Approx = new UniGridApprox(m_Mesh, 1);
+		m_Approx->Perform(0.1);
+
+		BRepBuilderAPI_MakeFace  Face(m_Approx->aAdaptorSurface.Surface());
+		m_Shape = Face.Face();
+		
+		DisplayShapeOutput(); 
+		break;
+	}
+}
+
+void Cutting::DisplayMeshOutput()
+{
+	App::Document* doc = App::GetApplication().getActiveDocument();
+	App::DocumentObject* obj = doc->addObject("Mesh::Feature","Output-Mesh");
+
+	Mesh::Feature* part1 = static_cast<Mesh::Feature*>(obj);
+	part1->Mesh.setValue(m_Mesh);
+
+	//doc->recompute();
+}
+
+void Cutting::DisplayShapeOutput()
+{
+	App::Document* doc = App::GetApplication().getActiveDocument();
+	App::DocumentObject* obj = doc->addObject("Part::Feature","Output-Shape");
+
+	Part::Feature* part1 = static_cast<Part::Feature*>(obj);
+	part1->Shape.setValue(m_Shape);
+
+	//doc->recompute();
+}
+
 void Cutting::DisplayCAMOutput()
 {
     BRep_Builder BB;
@@ -521,5 +737,7 @@ void Cutting::zLevelCallback(void * ud, SoEventCallback * n)
         }
     }
 }
+
+
 
 #include "moc_Cutting.cpp"

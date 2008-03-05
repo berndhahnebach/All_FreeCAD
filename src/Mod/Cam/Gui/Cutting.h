@@ -28,9 +28,14 @@
 
 #include <Base/Vector3D.h>
 #include <QProcess>
+#include <Mod/Mesh/App/Core/Grid.h>
+#include <Mod/Cam/App/cutting_tools.h>
 
+class best_fit;
 class cutting_tools;
 class path_simulate;
+class SpringbackCorrection;
+class UniGridApprox;
 class TopoDS_Shape;
 
 namespace CamGui
@@ -50,7 +55,7 @@ protected Q_SLOTS:
     void on_select_shape_z_level_button_clicked();
     void on_select_shape_feature_based_button_clicked();
     void on_select_shape_spiral_based_button_clicked();
-    void on_toolpath_calculation_highest_level_button_clicked();
+	void on_toolpath_calculation_highest_level_button_clicked();
     void on_toolpath_calculation_middle_level_button_clicked();
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
@@ -58,24 +63,52 @@ protected Q_SLOTS:
     void on_GenRobotOut_clicked();
     void on_adaptdynainput_clicked();
     void on_start_simulation_clicked();
+	void on_BestFitButton_clicked();
+	void on_SpringbackButton_clicked();
+	void on_Approximate_button_clicked();
+	void on_best_fit_cad_button_clicked();
+	void on_best_fit_mesh_button_clicked();
+	void on_SelectFace_button_clicked();
+	void on_best_fit_go_button_clicked();
+	
+	
     void selectShape();
+	void selectMesh();
     bool getProcessOutput();
+	const CuttingToolsSettings& getSettings();
     void setFace(const TopoDS_Shape &aFace, const float , const float,const float);
 
 private:
     static void zLevelCallback(void * ud, SoEventCallback * n);
     void DisplayCAMOutput();
+	void DisplayMeshOutput();
+	void DisplayShapeOutput();
 
 
 private:
-    //Instanz von der cutting-klasse auf dem Heap erzeugen
-    cutting_tools *m_CuttingAlgo;
-    path_simulate *m_PathSimulate;
-    QProcess *m_Process;
+   
+	SpringbackCorrection *m_Spring;
+    cutting_tools        *m_CuttingAlgo;  //Instanz von der cutting-klasse auf dem Heap erzeugen
+    path_simulate        *m_PathSimulate;
+	best_fit             *m_BestFit;
+	UniGridApprox        *m_Approx;
+
+	CuttingToolsSettings m_Settings;
+    
+	QProcess *m_Process;
     TopoDS_Shape m_Shape;
+	MeshCore::MeshKernel m_Mesh;
     bool m_timer;
     //1 means Standard, 2 means Feature Based, 3 means Spiral Based
     unsigned int m_Mode;
+
+	enum support_selection
+	{
+		BestFit,
+		Springback,
+		Approximate
+	};
+	support_selection m_selection;
 
 };
 
