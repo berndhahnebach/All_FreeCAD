@@ -796,12 +796,15 @@ void Document::recompute()
     for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
         VertexMap[It1->second] = It1->first;
 
+#ifdef FC_LOGFEATUREUPDATE
+    std::clog << "make ordering: " << endl;
+#endif
 
-    std::cout << "make ordering: " << endl;
     for (std::list<Vertex>::reverse_iterator i = make_order.rbegin();i != make_order.rend(); ++i) {
         DocumentObject* Cur = VertexMap[*i];
-        std::cout << Cur->getNameInDocument() << " dep on: " ;
-
+#ifdef FC_LOGFEATUREUPDATE
+        std::clog << Cur->getNameInDocument() << " dep on: " ;
+#endif
         bool NeedUpdate = false;
 
         // ask the object if it shut be recomputed
@@ -820,7 +823,9 @@ void Document::recompute()
         std::cout << endl;
         // if one touched recompute
         if (NeedUpdate) {
-            std::cout << "Recompute" << endl;
+#ifdef FC_LOGFEATUREUPDATE
+            std::clog << "Recompute" << endl;
+#endif
             if(_recomputeFeature(Cur))
                 // if somthing happen break execution of recompute
                 return;
@@ -844,7 +849,9 @@ const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
 // call the recompute of the Feature and handle the exceptions and errors.
 bool Document::_recomputeFeature(DocumentObject* Feat)
 {
-    Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getNameInDocument());
+#ifdef FC_LOGFEATUREUPDATE
+    std::clog << "Solv: Executing Feature: " << Feat->getNameInDocument() << std::endl;;
+#endif
 
     //Feat->status.setValue(AbstractFeature::Recompute);
     DocumentObjectExecReturn  *returnCode = 0;
