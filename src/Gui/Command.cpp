@@ -242,7 +242,9 @@ App::DocumentObject* Command::getObject(const char* Name)
 void Command::invoke (int i)
 {
     // Do not query _pcAction since it isn't created necessarily
+#ifdef FC_LOGUSERACTION
     Base::Console().Log("CmdG: %s\n",sName);
+#endif
     // set the application module type for the macro
     getGuiApplication()->macroManager()->setModule(sAppModule);
     try {
@@ -387,9 +389,9 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
         throw;
     }
 
-    //Base::Console().Log("#(%s): %s\n",sName.c_str(),format);
+#ifdef FC_LOGUSERACTION
     Base::Console().Log("CmdC: %s\n",format);
-
+#endif
     free (format);
 }
 

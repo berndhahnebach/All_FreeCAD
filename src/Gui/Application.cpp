@@ -400,43 +400,50 @@ Gui::Document* Application::activeDocument(void) const
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
-  d->_pcActiveDocument = pcDocument;
-  std::string name;
+    d->_pcActiveDocument = pcDocument;
+    std::string name;
  
-  // This adds just a line to the macro file but does not set the active document
-  if(pcDocument){
-    name += "App.setActiveDocument(\"";
-    name += pcDocument->getDocument()->getName(); 
-    name +=  "\")\n";
-    name += "App.ActiveDocument=App.getDocument(\"";
-    name += pcDocument->getDocument()->getName(); 
-    name +=  "\")\n";
-    name += "Gui.ActiveDocument=Gui.getDocument(\"";
-    name += pcDocument->getDocument()->getName(); 
-    name +=  "\")";
-    macroManager()->addLine(MacroManager::Gui,name.c_str());
-  }else{
-    name += "App.setActiveDocument(\"\")\n";
-    name += "App.ActiveDocument=None\n";
-    name += "Gui.ActiveDocument=None";
-    macroManager()->addLine(MacroManager::Gui,name.c_str());
-  }
+    // This adds just a line to the macro file but does not set the active document
+    if (pcDocument){
+        name += "App.setActiveDocument(\"";
+        name += pcDocument->getDocument()->getName(); 
+        name +=  "\")\n";
+        name += "App.ActiveDocument=App.getDocument(\"";
+        name += pcDocument->getDocument()->getName(); 
+        name +=  "\")\n";
+        name += "Gui.ActiveDocument=Gui.getDocument(\"";
+        name += pcDocument->getDocument()->getName(); 
+        name +=  "\")";
+        macroManager()->addLine(MacroManager::Gui,name.c_str());
+    }
+    else {
+        name += "App.setActiveDocument(\"\")\n";
+        name += "App.ActiveDocument=None\n";
+        name += "Gui.ActiveDocument=None";
+        macroManager()->addLine(MacroManager::Gui,name.c_str());
+    }
 
-  // Sets the currently active document
-  try {
-    Base::Interpreter().runString(name.c_str());
-  } catch (const Base::Exception& e) {
-    Base::Console().Warning(e.what());
-    return;
-  }
+    // Sets the currently active document
+    try {
+        Base::Interpreter().runString(name.c_str());
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Warning(e.what());
+        return;
+    }
 
-#ifdef FC_LOGUPDATECHAIN
-  Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
-#endif
+    // May be useful for error detection
+    if (d->_pcActiveDocument) {
+        App::Document* doc = d->_pcActiveDocument->getDocument();
+        Base::Console().Log("Active document is %s (at %p)\n",doc->getName(), doc);
+    }
+    else {
+        Base::Console().Log("No active document\n");
+    }
 
-  // notify all views attached to the application (not views belong to a special document)
-  for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
-    (*It)->setDocument(pcDocument);
+    // notify all views attached to the application (not views belong to a special document)
+    for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
+        (*It)->setDocument(pcDocument);
 }
 
 Gui::Document* Application::getDocument( const char* name ) const
@@ -485,15 +492,15 @@ void Application::onUpdate(void)
 /// Gets called if a view gets activated, this manages the whole activation scheme
 void Application::viewActivated(MDIView* pcView)
 {
-#ifdef FC_LOGUPDATECHAIN
-  Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
-#endif
+    // May be useful for error detection
+    Base::Console().Log("Active view is %s (at %p)\n",
+                 (const char*)pcView->windowTitle().toUtf8(),pcView);
 
-  // set the new active document
-  if(pcView->isPassive())
-    setActiveDocument(0);
-  else
-    setActiveDocument(pcView->getGuiDocument());
+    // set the new active document
+    if (pcView->isPassive())
+        setActiveDocument(0);
+    else
+        setActiveDocument(pcView->getGuiDocument());
 }
 
 
@@ -891,7 +898,10 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
     d->_pcMacroMngr->addLine(MacroManager::Base,format);
   else
     d->_pcMacroMngr->addLine(MacroManager::Gui,format);
+
+#ifdef FC_LOGUSERACTION
   Base::Console().Log("CmdC: %s\n",format);
+#endif
 
   try { 
     Base::Interpreter().runString(format);

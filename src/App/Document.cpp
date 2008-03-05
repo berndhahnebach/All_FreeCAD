@@ -447,8 +447,9 @@ Document::Document(void)
     // have to care about ref counting any more.
     DocumentPythonObject.set(new DocumentPy(this), true);
 
+#ifdef FC_LOGUPDATECHAIN
     Console().Log("+App::Document: %p\n",this);
-
+#endif
 
     ADD_PROPERTY_TYPE(Label,("Unnamed"),0,Prop_None,"The name of the document");
     ADD_PROPERTY_TYPE(FileName,(""),0,Prop_None,"The path to the file where the document is saved to");
@@ -462,13 +463,17 @@ Document::Document(void)
 
 Document::~Document()
 {
+#ifdef FC_LOGUPDATECHAIN
     Console().Log("-App::Document: %s %p\n",getName(), this);
+#endif
 
     clearUndos();
 
     std::map<std::string,DocumentObject*>::iterator it;
 
+#ifdef FC_LOGUPDATECHAIN
     Console().Log("-Delete Features of %s \n",getName());
+#endif
 
     ObjectArray.clear();
     for (it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
