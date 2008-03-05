@@ -89,6 +89,7 @@ private:
     void setup(MenuItem*, QMenu*) const;
     void retranslate(QMenu*) const;
     QAction* findAction(const QList<QAction*>&, const QString&) const;
+    QList<QAction*> findActions(const QList<QAction*>&, const QString&) const;
 
 private:
     static MenuManager* _instance;

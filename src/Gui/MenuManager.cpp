@@ -231,42 +231,58 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
     CommandManager& mgr = Application::Instance->commandManager();
     QList<MenuItem*> items = item->getItems();
     QList<QAction*> actions = menu->actions();
-    for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it)
-    {
+    for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the menu item
-        QAction* action = findAction(actions, (*it)->command());
-        if (!action) {
+        QList<QAction*> used_actions = findActions(actions, (*it)->command());
+        if (used_actions.isEmpty()) {
             if ((*it)->command() == "Separator") {
-                action = menu->addSeparator();
+                QAction* action = menu->addSeparator();
                 action->setObjectName("Separator");
-            } else {
+                // set the menu user data
+                action->setData("Separator");
+                used_actions.append(action);
+            }
+            else {
                 if ((*it)->hasItems()) {
                     // Creste a submenu
                     QByteArray menuName = (*it)->command().toUtf8();
                     QMenu* submenu = menu->addMenu(QObject::trUtf8((const char*)menuName));
-                    action = submenu->menuAction();
+                    QAction* action = submenu->menuAction();
                     submenu->setObjectName((*it)->command());
                     action->setObjectName((*it)->command());
-                } else {
+                    // set the menu user data
+                    action->setData((*it)->command());
+                    used_actions.append(action);
+                }
+                else {
+                    // A command can have more than one QAction
+                    int count = menu->actions().count();
                     // Check if action was added successfully
-                    if (mgr.addTo((const char*)(*it)->command().toAscii(), menu))
-                        action = menu->actions().last();
+                    if (mgr.addTo((const char*)(*it)->command().toAscii(), menu)) {
+                        QList<QAction*> acts = menu->actions();
+                        for (int i=count; i < acts.count(); i++) {
+                            QAction* a = acts[i];
+                            // set the menu user data
+                            a->setData((*it)->command());
+                            used_actions.append(a);
+                        }
+                    }
                 }
             }
-
-            // set the menu user data
-            if (action) action->setData((*it)->command());
-        } else {
-            // put the menu item at the end
-            menu->removeAction(action);
-            menu->addAction(action);
-            int index = actions.indexOf(action);
-            actions.removeAt(index);
+        }
+        else {
+            for (QList<QAction*>::Iterator it = used_actions.begin(); it != used_actions.end(); ++it) {
+                // put the menu item at the end
+                menu->removeAction(*it);
+                menu->addAction(*it);
+                int index = actions.indexOf(*it);
+                actions.removeAt(index);
+            }
         }
 
         // fill up the submenu
         if ((*it)->hasItems())
-            setup(*it, action->menu());
+            setup(*it, used_actions.front()->menu());
     }
 
     // remove all menu items which we don't need for the moment
@@ -287,14 +303,19 @@ void MenuManager::retranslate() const
 
 void MenuManager::retranslate(QMenu* menu) const
 {
-    // Custom actions with a sub-menu do the translation themselves and we must not do that
-    // here. Such actions have the appropriate command name set as user data.
-    // Note: This workaround works as long as a command doesn't match with its menu text
+    // Note: Here we search for all menus and submenus to retranslate their
+    // titles. To ease the translation for each menu the native name is set
+    // as user data. However, there are special menus that are created by
+    // actions for which the name of the according command name is set. For
+    // such menus we have to use the command's menu text instaed. Examples
+    // for such actions are Std_RecentFiles, Std_Workbench or Std_FreezeViews.
     CommandManager& mgr = Application::Instance->commandManager();
     QByteArray menuName = menu->menuAction()->data().toByteArray();
-    if (mgr.getCommandByName(menuName))
-        return;
-    menu->setTitle(QObject::trUtf8(menuName.constData()));
+    Command* cmd = mgr.getCommandByName(menuName);
+    if (cmd)
+        menu->setTitle(QObject::trUtf8(cmd->getMenuText()));
+    else
+        menu->setTitle(QObject::trUtf8(menuName.constData()));
     QList<QAction*> actions = menu->actions();
     for (QList<QAction*>::Iterator it = actions.begin(); it != actions.end(); ++it) {
         if ((*it)->menu()) {
@@ -311,6 +332,26 @@ QAction* MenuManager::findAction(const QList<QAction*>& acts, const QString& ite
     }
 
     return 0; // no item with the user data found
+}
+
+QList<QAction*> MenuManager::findActions(const QList<QAction*>& acts, const QString& item) const
+{
+    // It is possible that the user text of several actions match with 'item'.
+    // But for the first match all following actions must match. For example
+    // the Std_WindowsMenu command provides several actions with the same user
+    // name.
+    bool first_match = false;
+    QList<QAction*> used;
+    for (QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it) {
+        if ((*it)->data().toString() == item) {
+            used.append(*it);
+            first_match = true;
+        }
+        else if (first_match)
+            break;
+    }
+
+    return used;
 }
 
 void MenuManager::setupContextMenu(MenuItem* item, QMenu &menu) const
