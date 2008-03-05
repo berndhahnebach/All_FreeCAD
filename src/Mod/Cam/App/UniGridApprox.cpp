@@ -47,8 +47,8 @@ using namespace boost::numeric::bindings;
 typedef ublas::matrix<double, ublas::column_major> cm_t;
 typedef ublas::symmetric_adaptor<cm_t, ublas::upper> adapt;
 
-UniGridApprox::UniGridApprox(const MeshCore::MeshKernel &mesh, double offset)
-        :m_Mesh(mesh),m_offset(offset),m_udeg(3),m_vdeg(3)
+UniGridApprox::UniGridApprox(const MeshCore::MeshKernel &mesh, double Tol)
+        :m_Mesh(mesh),m_Tol(Tol),m_udeg(3),m_vdeg(3)
 {
 }
 
@@ -101,6 +101,7 @@ bool UniGridApprox::Perform(double TOL)
 
         if ( (uCP > (n_x + m_udeg + 1)) || (vCP > (n_y + m_vdeg + 1)) ) break;
 
+		m_Grid.clear();
         m_Grid = m_GridCopy;
     }
 
@@ -938,7 +939,7 @@ double UniGridApprox::CompMeshError()
     int c=0;
 
     m_err.clear();
-    m_err.resize(m_Mesh.CountPoints(), 0.0);
+    m_err.resize(mesh.CountPoints(), 0.0);
 
     MeshCore::MeshFacetGrid aFacetGrid(m_Mesh);
     MeshCore::MeshAlgorithm malg(m_Mesh);

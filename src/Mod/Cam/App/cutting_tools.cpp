@@ -2347,14 +2347,15 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 if (MasterPointsStorage.size() == 1) //If we have only one PointCloud
-                {
+                {   
+                    MasterPointContainer.clear();
+                    bool first = true;
                     for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                     {
+                        if (i+1 == MasterPointsStorage.begin()->size())
+                        {first = false;i=-1;continue;}
                         MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-                        //We skip the Endpoint as it may be the same point as the start point
-                        if (i+2 == MasterPointsStorage.begin()->size())
-                            i=-1;
-                        if (i +1 == start_index)
+                        if (!first && i == start_index)
                             break;
                     }
                     //Now lets interpolate the Point Cloud
@@ -2486,14 +2487,14 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 MasterPointContainer.clear();
+                bool first = true;
                 for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
                 {
+                    if (i+1 == MasterPointsStorage.begin()->size())
+                       {first = false;i=-1;continue;}
                     MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-                    //We skip the Endpoint as it may be the same point as the start point
-                    if (i+2 == MasterPointsStorage.begin()->size())
-                        i=-1;
-                    if (i +1 == start_index_master)
-                        break;
+                    if (!first && i == start_index_master)
+                            break;
                 }
                 //Now lets interpolate the Point Cloud
                 Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
@@ -2530,14 +2531,14 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 SlavePointContainer.clear();
+                bool first = true;
                 for (unsigned int i=start_index_slave;i<SlavePointsStorage.begin()->size();i++)
                 {
+                   if (i+1 == SlavePointsStorage.begin()->size())
+                       {first = false;i=-1;continue;}
                     SlavePointContainer.push_back(SlavePointsStorage[0][i]);
-                    //We skip the Endpoint as it may be the same point as the start point
-                    if (i+2 == SlavePointsStorage.begin()->size())
-                        i=-1;
-                    if (i+1 == start_index_slave)
-                        break;
+                    if (!first && i == start_index_slave)
+                            break;
                 }
                 //Now Interpolate the Slave, therefore we also have to take the curves normal directions
                 Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
@@ -2613,13 +2614,14 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 if (MasterPointsStorage.size() == 1) //If we have only one PointCloud
                 {
+                    MasterPointContainer.clear();
+                    bool first = true;
                     for (unsigned int i=start_index;i<MasterPointsStorage.begin()->size();i++)
                     {
+                       if (i+1 == MasterPointsStorage.begin()->size())
+                       {first = false;i=-1;continue;}
                         MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-                        //We skip the Endpoint as it may be the same point as the start point
-                        if (i+2 == MasterPointsStorage.begin()->size())
-                            i=-1;
-                        if (i+1 == start_index)
+                        if (!first && i == start_index)
                             break;
                     }
                     //Now lets interpolate the Point Cloud
@@ -2752,14 +2754,14 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 MasterPointContainer.clear();
+                bool first = true;
                 for (unsigned int i=start_index_master;i<MasterPointsStorage.begin()->size();i++)
                 {
+                    if (i+1 == MasterPointsStorage.begin()->size())
+                       {first = false;i=-1;continue;}
                     MasterPointContainer.push_back(MasterPointsStorage[0][i]);
-                    //We skip the Endpoint as it may be the same point as the start point
-                    if (i+2 == MasterPointsStorage.begin()->size())
-                        i=-1;
-                    if (i+1 == start_index_master)
-                        break;
+                    if (!first && i == start_index_master)
+                            break;
                 }
                 //Now lets interpolate the Point Cloud
                 Handle(TColgp_HArray1OfPnt) InterpolationPointsMaster = new TColgp_HArray1OfPnt(1, MasterPointContainer.size());
@@ -2800,14 +2802,14 @@ bool cutting_tools::OffsetWires_FeatureBased()
                 //First we have to divide the first PointCloud as it is for sure that we start
                 //Somewhere in the middle of it. We will then insert the points at the current start
                 SlavePointContainer.clear();
+                bool first = true;
                 for (unsigned int i=start_index_slave;i<SlavePointsStorage.begin()->size();i++)
                 {
+                    if (i+1 == SlavePointsStorage.begin()->size())
+                       {first = false;i=-1;continue;}
                     SlavePointContainer.push_back(SlavePointsStorage[0][i]);
-                    //We skip the Endpoint as it may be the same point as the start point
-                    if (i+2 == SlavePointsStorage.begin()->size())
-                        i=-1;
-                    if (i+1 == start_index_slave)
-                        break;
+                    if (!first && i == start_index_slave)
+                            break;
                 }
                 //Now Interpolate the Slave, therefore we also have to take the curves normal directions
                 Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());

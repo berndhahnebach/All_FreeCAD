@@ -25,6 +25,7 @@
 
 #include "PreCompiled.h"
 #include "best_fit.h"
+#include "routine.h"
 
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Builder.h>
@@ -84,23 +85,121 @@ bool best_fit::Perform()
     cout << "compute normals" << endl;
     m_normals = Comp_Normals(m_Mesh, m_pntInd);
 
-    cout << "correction" << endl;
+	cout << "adjust plane" << endl;
+    AdjustPlane();
+
+	cout << "correction" << endl;
     Coarse_correction();
 
-    cout << "adjust plane" << endl;
-    AdjustPlane();
+	LSM();
 
     cout << "start fitting iteration:" << endl;
     Fit_iter();
+
+	/*MeshCore::MeshPointArray pnts  = m_Mesh.GetPoints();
+	MeshCore::MeshFacetArray faces = m_Mesh.GetFacets();
+
+	for(unsigned int i=0; i<pnts.size(); ++i)
+	{
+		pnts[i].x +=  -m_cad2orig.X();
+		pnts[i].y +=  -m_cad2orig.Y();
+		pnts[i].z +=  -m_cad2orig.Z();
+	}
+
+	m_Mesh.Assign(pnts,faces);*/
+
+	return true;
 
     m_normals.clear();
     m_normals = Comp_Normals(m_CadMesh);
 
     CompTotalError();
 
-
     return true;
 }
+
+// Least Square Matching bzgl. Rotation um z-Achse und Translation in (x,y)-Richtung
+bool best_fit::LSM()
+{
+	double x[3];
+	
+	// Startparameter gleich Nullvektor
+	
+	x[0] = 0.0;  // Winkel Phi für die Rotation
+	x[1] = 0.0;  // Translation in x-Richtung
+	x[2] = 0.0;  // Translation in y-Richtung
+
+	// Rückgabe: Punktesatz für den LS über Projektion der Netzpunkte auf das CAD-Netz
+	std::vector<std::vector<Base::Vector3f> > P = CompError_GetPnts(m_pnts, m_normals);
+	// Rückgabe: Summanden der Fehlerfunktion E = SUM[ (R(phi)*p + t) - q) ]^2
+	std::vector<std::vector<Base::Vector3f> > E = Get_F(x,P);
+	std::vector<std::vector<double> > DF = Get_DF(x,P,E);
+	
+	std::vector<double> F(3,0.0);
+
+	for(unsigned int i=0; i<P.size(); ++i)
+	{
+		E[0][i].Scale(2.0, 2.0, 2.0);
+
+		F[0] += E[0][i]*E[1][i];
+		F[1] += E[0][i].x;
+		F[2] += E[0][i].y;
+
+		E[0][i].Scale(0.5, 0.5, 0.5);
+	}
+
+	Routines::NewtonIter(F,DF);
+
+	return true;
+}
+
+std::vector<std::vector<Base::Vector3f> > best_fit::Get_F(double x[3], std::vector<std::vector<Base::Vector3f> > &p)
+{
+	Base::Vector3f  F(0.0, 0.0, 0.0);
+	std::vector<std::vector<Base::Vector3f> >  E(2);
+	E[0].resize(p.size());
+	E[1].resize(p.size());
+
+	for(unsigned int i=0; i<p.size(); ++i)
+	{
+		E[0][i].x = cos(x[0])*p[0][i].x - sin(x[0])*p[0][i].y             + x[1]  - p[1][i].x;
+		E[0][i].y = sin(x[0])*p[0][i].x + cos(x[0])*p[0][i].y             + x[2]  - p[1][i].y;
+		E[0][i].z =                                            p[0][i].z          - p[1][i].z;
+
+		E[1][i].x = -sin(x[0])*p[0][i].x - cos(x[0])*p[0][i].y;
+		E[1][i].y =  cos(x[0])*p[0][i].x - sin(x[0])*p[0][i].y;
+		E[1][i].z =  0.0;
+	}
+
+	return E;
+}
+
+std::vector<std::vector<double> > best_fit::Get_DF(double x[3], std::vector<std::vector<Base::Vector3f> > &p,
+												                 std::vector<std::vector<Base::Vector3f> > &E)
+{
+	std::vector<std::vector<double> > DF(3);
+	std::vector<Base::Vector3f>       E_phi(p.size());
+	for(unsigned int i=0; i<DF.size(); ++i) {DF[i].resize(3,0.0);}
+
+	for(unsigned int i=0; i<p.size(); ++i)
+	{
+		E_phi[i].x = -cos(x[0])*p[0][i].x + sin(x[0])*p[0][i].y;  
+		E_phi[i].y = -sin(x[0])*p[0][i].x - cos(x[0])*p[0][i].y;
+		E_phi[i].z =  0.0;
+		
+		DF[0][0] += 2*(E[1][i].Sqr() + E[0][i]*E_phi[i]);
+		DF[0][1] += 2*(E[1][i].x);
+		DF[0][2] += 2*(E[1][i].y);
+		DF[1][1] += 2.0;
+	}
+
+	DF[1][0] = DF[0][1];
+    DF[2][0] = DF[0][2];
+	DF[2][2] = DF[1][1];
+
+	return DF;
+}
+
 
 bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
 {
@@ -791,7 +890,7 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
 {
     Base::Builder3D aBuild;
 
-    MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.001;
+    MeshCore::MeshDefinitions::_fMinPointDistanceD1 = 0.0001;
     MeshCore::MeshBuilder builder(mesh);
     builder.Initialize(1000);
     Base::Vector3f Points[3];
@@ -1092,6 +1191,55 @@ double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::
         return 1e+10;
 
     return err_avg/(NumOfPoints-c);
+}
+
+std::vector<std::vector<Base::Vector3f> > best_fit::CompError_GetPnts(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals)
+{
+    double err_avg = 0.0;
+    double err_max = 0.0;
+    double sqrdis = 0.0;
+	
+	std::vector<std::vector<Base::Vector3f> > Out(2);
+
+
+    MeshCore::MeshFacetGrid aFacetGrid(m_CadMesh);
+    MeshCore::MeshAlgorithm malg(m_CadMesh);
+    MeshCore::MeshAlgorithm malg2(m_CadMesh);
+
+    Base::Vector3f origPoint, projPoint, distVec;
+    unsigned long  facetIndex;
+
+    int NumOfPoints = pnts.size();
+    int c = 0;
+
+    for (int i=0; i<NumOfPoints; ++i)
+    {
+        if (!malg.NearestFacetOnRay(pnts[i], normals[i], aFacetGrid, projPoint, facetIndex))  // gridoptimiert
+        {
+            if (malg2.NearestFacetOnRay(pnts[i], normals[i], projPoint, facetIndex))
+            {
+				Out[0].push_back(pnts[i]);
+				Out[1].push_back(projPoint);
+                
+				distVec  = projPoint-pnts[i];
+                sqrdis   = distVec*distVec;
+                err_avg += sqrdis;
+            }
+            else
+                ++c;
+        }
+        else
+        {
+			Out[0].push_back(pnts[i]);
+			Out[1].push_back(projPoint);
+
+            distVec  = projPoint-pnts[i];
+            sqrdis   = distVec*distVec;
+            err_avg += sqrdis;
+        }
+    }
+
+    return Out;
 }
 
 double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot)

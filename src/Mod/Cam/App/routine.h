@@ -68,8 +68,11 @@ typedef struct
  and some NURBS routines from the Nurbs Book or translated from the NURBS
  Toolbox for MATLAB
 */
-class Routines
+class AppCamExport Routines
 {
+public:
+	// mehrdimensionales Newton-Verfahren mit festem Startwert 0
+	static void NewtonIter(std::vector<double> &F, std::vector<std::vector<double> > &DF);
 protected:
     double TrapezoidIntergration(const std::vector<double> &WithRespectTo, const std::vector<double> &Intergral);
     //Matrix and vectors
@@ -100,7 +103,6 @@ protected:
                    double LargerIndNewValue);
     void GenerateUniformKnot(int MaxCntrl, int NurbDegree, std::vector<double> &KnotSequence);
     unsigned long FindCorner(float ParamX, float ParamY, std::vector<unsigned long> &v_neighbour, std::vector <Base::Vector3f> &v_pnts);
-
 private:
     //Variables in Use by Routine TrapezoidIntegration
     double m_h, m_result;

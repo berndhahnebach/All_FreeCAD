@@ -31,18 +31,18 @@
 
 #define TOL1       0.0001  // step-break
 #define TOL2       0.0001  // error-break
-#define ntstep     4       // num of transition steps in one direction
-#define nrstep     4       // num of rotation steps ...
+#define ntstep     3       // num of transition steps in one direction
+#define nrstep     3       // num of rotation steps ...
 #define aref_rot   10      // rotation area in one direction
 #define tpart      1/7     // transition area in proportion to boundingbox-length
-#define rstep_corr 10.0    // z-rotation step for - coarse correction - function
+#define rstep_corr 36.0    // z-rotation step for - coarse correction - function
 #define reject     0.5     // part of the boundary points to get rejected in error computation ( - ComPlaneErr - )
 // starting with maximum error points
 #define thin       200
 #define b_thin     100
 
 
-class best_fit
+class AppCamExport best_fit
 {
 public:
     best_fit(const MeshCore::MeshKernel &InputMesh, TopoDS_Shape &CAD_Shape);
@@ -56,11 +56,15 @@ public:
     bool Perform();
     bool Coarse_correction();
     bool Fit_iter();
-    bool AdjustPlane();
+	bool LSM();  // Least Square Matching
+	std::vector<std::vector<Base::Vector3f> > Get_F (double params[3], std::vector<std::vector<Base::Vector3f> > &pnts); // Hilfsfunktion für LSM
+    std::vector<std::vector<double> >         Get_DF(double params[3], std::vector<std::vector<Base::Vector3f> > &pnts, std::vector<std::vector<Base::Vector3f> > &E);
+	bool AdjustPlane();
     double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals);
     double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot);
     double CompError(std::vector<Base::Vector3f> &pnts,  std::vector<Base::Vector3f> &normals,
                      std::vector<Base::Vector3f> &bpnts, std::vector<Base::Vector3f> &bnormals);
+	std::vector<std::vector<Base::Vector3f> > CompError_GetPnts(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals);
     double CompTotalError();
     static bool Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection);
     static bool Tesselate_Face (const TopoDS_Face  &aface, MeshCore::MeshKernel &mesh, float deflection);
