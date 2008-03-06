@@ -389,17 +389,12 @@ bool Application::sendHasMsgToActiveView(const char* pMsg)
 Gui::Document* Application::activeDocument(void) const
 {
   return d->_pcActiveDocument;
-  /*
-  MDIView* pView = GetActiveView();
-
-  if(pView)
-    return pView->GetGuiDocument();
-  else
-    return 0l;*/
 }
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
+    if (d->_pcActiveDocument == pcDocument)
+        return; // nothing needs to be done
     d->_pcActiveDocument = pcDocument;
     std::string name;
  
@@ -496,10 +491,10 @@ void Application::viewActivated(MDIView* pcView)
     Base::Console().Log("Active view is %s (at %p)\n",
                  (const char*)pcView->windowTitle().toUtf8(),pcView);
 
-    // set the new active document
-    if (pcView->isPassive())
-        setActiveDocument(0);
-    else
+    // Set the new active document which is taken of the activated view. If, however,
+    // this view is passive we let the currently active document unchanged as we would
+    // have no document active which is causing a lot of trouble.
+    if (!pcView->isPassive())
         setActiveDocument(pcView->getGuiDocument());
 }
 
