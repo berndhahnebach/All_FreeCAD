@@ -98,7 +98,12 @@ PyObject *PropertyContainerPy::getCustomAttributes(const char* attr) const
     // search in PropertyList
     Property *prop = getPropertyContainerPtr()->getPropertyByName(attr);
     if (prop) {
-        return prop->getPyObject();
+        PyObject* pyobj = prop->getPyObject();
+        if (!pyobj && PyErr_Occurred()) {
+            // the Python exception is already set
+            throw Py::Exception();
+        }
+        return pyobj;
     }
     else if (Base::streq(attr, "__dict__")) {
         // get the properties to the C++ PropertyContainer class

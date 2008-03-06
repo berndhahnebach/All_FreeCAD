@@ -190,27 +190,29 @@ PyObject *PropertyPath::getPyObject(void)
 
     // Returns a new reference, don't increment it!
     PyObject *p = PyUnicode_DecodeUTF8(_cValue.native_file_string().c_str(),_cValue.native_file_string().size(),0);
-    if(!p)
-        throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+    if (!p) throw Base::Exception("UTF8 conversion failure at PropertyPath::getPyObject()");
     return p;
-
-  //return Py_BuildValue("s", _cValue.c_str());
 }
 
 void PropertyPath::setPyObject(PyObject *value)
 {
-    if (PyUnicode_Check(value))
-        value = PyUnicode_AsUTF8String(value);
-
-    if (PyString_Check(value)) {
-        aboutToSetValue();
-        _cValue = PyString_AsString(value);
-        hasSetValue();
-    } else {
-        std::string error = std::string("type must be str, not ");
+    std::string path;
+    if (PyUnicode_Check(value)) {
+        PyObject* unicode = PyUnicode_AsUTF8String(value);
+        path = PyString_AsString(unicode);
+        Py_DECREF(unicode);
+    }
+    else if (PyString_Check(value)) {
+        path = PyString_AsString(value);
+    }
+    else {
+        std::string error = std::string("type must be str or unicode, not ");
         error += value->ob_type->tp_name;
         throw Py::TypeError(error);
     }
+
+    // assign the path
+    setValue(path.c_str());
 }
 
 
@@ -956,19 +958,23 @@ PyObject *PropertyString::getPyObject(void)
 
 void PropertyString::setPyObject(PyObject *value)
 {
-    if (PyUnicode_Check(value))
-        value = PyUnicode_AsUTF8String(value);
-
-    if (PyString_Check(value)) {
-        aboutToSetValue();
-        _cValue = PyString_AsString(value);
-        hasSetValue();
+    std::string string;
+    if (PyUnicode_Check(value)) {
+        PyObject* unicode = PyUnicode_AsUTF8String(value);
+        string = PyString_AsString(unicode);
+        Py_DECREF(unicode);
+    }
+    else if (PyString_Check(value)) {
+        string = PyString_AsString(value);
     }
     else {
-        std::string error = std::string("type must be string, not ");
+        std::string error = std::string("type must be str or unicode, not ");
         error += value->ob_type->tp_name;
         throw Py::TypeError(error);
     }
+
+    // assign the string
+    setValue(string);
 }
 
 void PropertyString::Save (Writer &writer) const

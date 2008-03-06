@@ -699,6 +699,7 @@ void Application::initTypes(void)
     App ::PropertyColor             ::init();
     App ::PropertyColorList         ::init();
     App ::PropertyMaterial          ::init();
+    App::PropertyPath               ::init();
     App ::PropertyFile              ::init();
     // Document classes
     App ::DocumentObject            ::init();
