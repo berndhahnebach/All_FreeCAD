@@ -797,7 +797,7 @@ void Document::recompute()
         VertexMap[It1->second] = It1->first;
 
 #ifdef FC_LOGFEATUREUPDATE
-    std::clog << "make ordering: " << endl;
+    std::clog << "make ordering: " << std::endl;
 #endif
 
     for (std::list<Vertex>::reverse_iterator i = make_order.rbegin();i != make_order.rend(); ++i) {
@@ -814,17 +814,21 @@ void Document::recompute()
             // update if one of the dependencies is touched
             for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j) {
                 DocumentObject* Test = VertexMap[target(*j, DepList)];
-                std::cout << Test->getNameInDocument() << ", " ;
+#ifdef FC_LOGFEATUREUPDATE
+                std::clog << Test->getNameInDocument() << ", " ;
+#endif
                 if (Test->isTouched()) {
                     NeedUpdate = true;
                     break;
                 }
             }
-        std::cout << endl;
+#ifdef FC_LOGFEATUREUPDATE
+            std::clog << std::endl;
+#endif
         // if one touched recompute
         if (NeedUpdate) {
 #ifdef FC_LOGFEATUREUPDATE
-            std::clog << "Recompute" << endl;
+            std::clog << "Recompute" << std::endl;
 #endif
             if(_recomputeFeature(Cur))
                 // if somthing happen break execution of recompute
