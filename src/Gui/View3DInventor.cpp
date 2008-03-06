@@ -367,6 +367,12 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
   }else  if(strcmp("Redo",pMsg) == 0 ){
     getGuiDocument()->redo(1);
     return true;
+  }else if (strcmp("Save",pMsg) == 0){
+    getGuiDocument()->save();
+    return true;
+  }else if (strcmp("SaveAs",pMsg) == 0){
+    getGuiDocument()->saveAs();
+    return true;
   }else 
 
   return false;
@@ -375,7 +381,11 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 
 bool View3DInventor::onHasMsg(const char* pMsg) const
 {
-  if(strcmp("Undo",pMsg) == 0 ){
+  if(strcmp("Save",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SaveAs",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Undo",pMsg) == 0 ){
     return getAppDocument()->getAvailableUndos() > 0;
   }else if(strcmp("Redo",pMsg) == 0 ){
     return getAppDocument()->getAvailableRedos() > 0; 
