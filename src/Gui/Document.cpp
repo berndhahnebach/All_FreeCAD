@@ -419,22 +419,12 @@ void Document::slotActivatedObject(App::DocumentObject& Obj)
 
 void Document::setModified(bool b)
 {
-  _isModified = b;
-  std::list<MDIView*> mdis = getMDIViews();
-  for ( std::list<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it )
-  {
-    QString cap = (*it)->windowTitle();
-    if ( b && !cap.endsWith(" *") )
-    {
-      cap += " *";
-      (*it)->setWindowTitle(cap);
+    _isModified = b;
+    
+    std::list<MDIView*> mdis = getMDIViews();
+    for (std::list<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
+        (*it)->setWindowModified(b);
     }
-    else if ( !b && cap.endsWith(" *") )
-    {
-      cap = cap.left(cap.length()-2);
-      (*it)->setWindowTitle(cap);
-    }
-  }
 }
 
 /// Save the document
@@ -558,6 +548,9 @@ void Document::RestoreDocFile(Base::Reader &reader)
   }
 
   xmlReader.readEndElement("Document");
+
+  // reset modifeid flag
+  setModified(false);
 }
 
 /**
@@ -643,7 +636,7 @@ void Document::createView(const char* sType)
 
     const char* name = getDocument()->getName();
 
-    QString aName = QString("%1 : %3").arg(name).arg(_iWinCount++);
+    QString aName = QString("%1 : %2[*]").arg(name).arg(_iWinCount++);
 
 
     pcView3D->setWindowTitle(aName);
@@ -707,22 +700,22 @@ void Document::onUpdate(void)
   }
 }
 
-void Document::onRename(void)
+void Document::onRelabel(void)
 {
 #ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::Document::onRename()");
+  Base::Console().Log("Acti: Gui::Document::onRelabel()");
 #endif
 
   std::list<Gui::BaseView*>::iterator It;
 
   for(It = _LpcViews.begin();It != _LpcViews.end();It++)
   {
-    (*It)->onRename(this);
+    (*It)->onRelabel(this);
   }
 
   for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
   {
-    (*It)->onRename(this);
+    (*It)->onRelabel(this);
   }
 }
 

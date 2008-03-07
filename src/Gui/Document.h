@@ -150,8 +150,8 @@ public:
     void detachView(Gui::BaseView* pcView, bool bPassiv=false);
     /// call update on attached all views
     void onUpdate(void);
-    /// call rename to all attached views
-    void onRename(void);
+    /// call relabel to all attached views
+    void onRelabel(void);
     /// close all attached views in order to close the gui document
     void closeAllViews(void);
     /// returns a list of all attached MDI views

@@ -372,11 +372,17 @@ void PythonView::setCurrentFileName(const QString &fileName)
 
     QString shownName;
     if (fileName.isEmpty())
-        shownName = "untitled[*]";
+        shownName = tr("untitled[*]");
     else
-        shownName = fileName + "[*]";
+        shownName = QString("%1[*]").arg(fileName);
+    shownName += tr(" - Python Editor");
     setWindowTitle(shownName);
     setWindowModified(false);
+}
+
+QString PythonView::fileName() const
+{
+    return d->fileName;
 }
 
 /**

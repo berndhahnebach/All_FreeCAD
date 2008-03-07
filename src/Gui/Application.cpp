@@ -190,43 +190,45 @@ Application::~Application()
 
 void Application::open(const char* FileName)
 {
-  WaitCursor wc;
-  Base::FileInfo File(FileName);
-  string te = File.extension();
-  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+    WaitCursor wc;
+    Base::FileInfo File(FileName);
+    string te = File.extension();
+    const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
-  if (Mod != 0) {
-    // issue module loading
-    Command::doCommand(Command::App, "import %s", Mod);
+    if (Mod != 0) {
+        // issue module loading
+        Command::doCommand(Command::App, "import %s", Mod);
 
-    // issue gui module loading
-    try{
-      Command::doCommand(Command::Gui, "import %sGui", Mod);
-    } catch (const Base::PyException&){
-      // ignore this type of exception (e.g. if Mod is already a Gui module)
+        // issue gui module loading
+        try {
+            Command::doCommand(Command::Gui, "import %sGui", Mod);
+        }
+        catch (const Base::PyException&){
+            // ignore this type of exception (e.g. if Mod is already a Gui module)
+        }
+
+        try {
+            // load the file with the module
+            Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
+            // ViewFit
+            if (!File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit"))
+                //Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
+                Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+            // the original file name is required
+            getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
+        }
+        catch (const Base::PyException& e){
+            // Usually thrown if the file is invalid somehow
+            e.ReportException();
+        }
     }
-
-    try {
-      // load the file with the module
-      Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
-      if ( activeDocument() )
-        activeDocument()->setModified(false);
-      // ViewFit
-      if ( !File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit") )
-        //Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
-          Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
-      // the original file name is required
-      getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
-    } catch (const Base::PyException& e){
-      // Usually thrown if the file is invalid somehow
-      e.ReportException();
+    else {
+        wc.restoreCursor();
+        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
+            QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+        wc.setWaitCursor();
+        return;
     }
-  } else {
-    wc.restoreCursor();
-    QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
-    wc.setWaitCursor();
-    return;
-  }
 }
 
 void Application::import(const char* FileName, const char* DocName)
@@ -328,7 +330,7 @@ void Application::slotRelabelDocument(App::Document& Doc)
 #endif
 
   signalRelabelDocument(*doc->second);
-  doc->second->onRename();
+  doc->second->onRelabel();
 }
 
 void Application::slotRenameDocument(App::Document& Doc)

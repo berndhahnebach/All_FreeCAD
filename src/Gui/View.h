@@ -34,7 +34,7 @@
 
 namespace App
 {
-  class Document;
+class Document;
 }
 
 class QSplitter;
@@ -57,7 +57,7 @@ class ViewProvider;
  *  @see Application
  *  @author Juergen Riegel
  */
-class GuiExport BaseView: public Base::BaseClass
+class GuiExport BaseView : public Base::BaseClass
 {
   TYPESYSTEM_HEADER();
 
@@ -90,13 +90,14 @@ public:
   /// indicates if the view is in passive mode
   bool isPassive(void) const {return bIsPassive;}
 
-
   /** @name methods to overrride 
    */
   //@{
   /// get called when the document is updated
   virtual void onUpdate(void)=0;
-  /// get called when the document is updated
+  /// get called when the document is relabeled (change of its user name)
+  virtual void onRelabel(Gui::Document *){};
+  /// get called when the document is renamed (change of its internal name)
   virtual void onRename(Gui::Document *){};
   /// returns the name of the view (important for messages)
   virtual const char *getName(void) const=0;
@@ -113,74 +114,6 @@ protected:
   bool bIsDetached;
   bool bIsPassive;
 };
-
-/** The double view container class
- *  This class can handle two MDIView instances seperated by
- *  a splitter. Usuly its used to show a FCDocTree and a FC3dView
- */
-/*
-class FCDoubleView: public FCViewContainer
-{
-	Q_OBJECT;
-
-public:
-	FCDoubleView( MDIView* pcView1, FCView* pcView2, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCDoubleView();
-
-	// a more sophisticated implementation later
-	virtual MDIView* GetActiveView(void){return _pcView2;}
-private:
-	MDIView *		_pcView1;
-	MDIView *		_pcView2;
-	QSplitter*		_pcSplitter;
-
-};
-*/
-/** The singel view container class
- *  This class can handle one MDIView instances 
- */
-/*
-class FCSingleView: public FCViewContainer
-{
-	Q_OBJECT;
-
-public:
-	FCSingleView( MDIView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCSingleView();
-
-	virtual void resizeEvent ( QResizeEvent * e);
-
-	virtual MDIView* GetActiveView(void){return _pcView;}
-protected:
-	virtual void closeEvent(QCloseEvent *e);
-
-private:
-	MDIView *		_pcView;
-
-};
-*/
-
-/** Holds a single view in a dock bar
- */
-/*
-class FCViewBar: public DockWindow
-{
-	Q_OBJECT;
-
-public:
-	FCViewBar( MDIView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCViewBar();
-
-	virtual MDIView* GetView(void){return _pcView;}
-
-protected:
-	virtual void resizeEvent ( QResizeEvent * e);
-
-private:
-	MDIView *		_pcView;
-
-};
-*/
 
 } // namespace Gui
 

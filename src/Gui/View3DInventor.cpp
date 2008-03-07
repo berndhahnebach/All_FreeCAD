@@ -203,7 +203,6 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
 
 void View3DInventor::onRename(Gui::Document *pDoc)
 {
-    MDIView::onRename(pDoc);
     SoSFString name;
     name.setValue(pDoc->getDocument()->getName());
     SoFCDocumentAction cAct(name);
