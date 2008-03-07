@@ -91,6 +91,7 @@ public:
 
     QStringList undoActions() const;
     QStringList redoActions() const;
+    QString fileName() const;
 
 protected:
     void focusInEvent(QFocusEvent* e);

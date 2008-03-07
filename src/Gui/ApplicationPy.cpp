@@ -165,37 +165,41 @@ PYFUNCIMP_S(Application,sShow)
 
 PYFUNCIMP_S(Application,sOpen)
 {
-  // only used to open Python files
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-  PY_TRY {
-    QString fileName = QString::fromUtf8(Name);
-    QFileInfo fi;
-    fi.setFile(fileName);
-    QString ext = fi.completeSuffix().toLower();
-    MDIView* view = getMainWindow()->getWindowWithCaption(fileName);
-    if ( view ) {
-      view->setFocus();
-    }
-    else if ( ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz" ) {
-      if ( !Application::Instance->activeDocument() )
-        App::GetApplication().newDocument();
-      //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-      QString cmd = QString("App.activeDocument().addObject(\"App::InventorObject\",\"%1\").FileName=\"%2\"\n"
-                            "App.activeDocument().recompute()").arg(fi.baseName()).arg(fi.absoluteFilePath());
-      Base::Interpreter().runString(cmd.toAscii());
-    }
-    else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
-      PythonView* edit = new PythonView(getMainWindow());
-      edit->open(fileName);
-      edit->resize( 400, 300 );
-      getMainWindow()->addWindow( edit );
-    }
-  } PY_CATCH;
+    // only used to open Python files
+    const char* Name;
+    if (! PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
+    PY_TRY {
+        QString fileName = QString::fromUtf8(Name);
+        QFileInfo fi;
+        fi.setFile(fileName);
+        QString ext = fi.completeSuffix().toLower();
+        QList<PythonView*> views = getMainWindow()->findChildren<PythonView*>();
+        for (QList<PythonView*>::Iterator it = views.begin(); it != views.end(); ++it) {
+            if ((*it)->fileName() == fileName) {
+                (*it)->setFocus();
+                Py_Return;
+            }
+        }
 
-	Py_Return;    
-} 
+        if (ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz") {
+            if (!Application::Instance->activeDocument())
+                App::GetApplication().newDocument();
+            //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+            QString cmd = QString("App.activeDocument().addObject(\"App::InventorObject\",\"%1\").FileName=\"%2\"\n"
+                                  "App.activeDocument().recompute()").arg(fi.baseName()).arg(fi.absoluteFilePath());
+            Base::Interpreter().runString(cmd.toAscii());
+        }
+        else if (ext == "py" || ext == "fcmacro" || ext == "fcscript") {
+            PythonView* edit = new PythonView(getMainWindow());
+            edit->open(fileName);
+            edit->resize( 400, 300 );
+            getMainWindow()->addWindow( edit );
+        }
+    } PY_CATCH;
+
+    Py_Return;    
+}
 
 PYFUNCIMP_S(Application,sInsert)
 {

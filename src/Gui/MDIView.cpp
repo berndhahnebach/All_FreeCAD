@@ -26,9 +26,8 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qregexp.h>
-//Added by qt3to4:
-#include <QEvent>
-#include <QCloseEvent>
+# include <QEvent>
+# include <QCloseEvent>
 #endif
 
 
@@ -53,14 +52,13 @@ MDIView::~MDIView()
 {
 }
 
-void MDIView::onRename(Gui::Document *pDoc)
+void MDIView::onRelabel(Gui::Document *pDoc)
 {
-    if(!bIsPassive)
-    {
+    if (!bIsPassive) {
         // Try to separate document name and view number if there is one
         QString cap = windowTitle();
         // Either with dirty flag ...
-        QRegExp rx("(\\s\\:\\s\\d+\\s\\*)$");
+        QRegExp rx("(\\s\\:\\s\\d+\\[\\*\\])$");
         int pos = rx.lastIndexIn(cap);
         if (pos == -1) {
             // ... or not
@@ -73,45 +71,46 @@ void MDIView::onRename(Gui::Document *pDoc)
             setWindowTitle(cap);
         }
         else {
-            setWindowTitle(QString::fromUtf8(pDoc->getDocument()->Label.getValue()));
+            cap = QString::fromUtf8(pDoc->getDocument()->Label.getValue());
+            cap = QString("%1[*]").arg(cap);
+            setWindowTitle(cap);
         }
     }
 }
 
-/// recife a message
+/// receive a message
 bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
 {
-  return false;
+    return false;
 }
 
 bool MDIView::onHasMsg(const char* pMsg) const
 {
-  return false;
+    return false;
 }
 
 void MDIView::closeEvent(QCloseEvent *e)
 {
-  if(bIsPassive){
-    if(canClose() ){
-      e->accept();
-      // avoid flickering
-      getMainWindow()->removeWindow(this);
-      QMainWindow::closeEvent(e);
+    if (bIsPassive){
+        if (canClose()){
+            e->accept();
+            // avoid flickering
+            getMainWindow()->removeWindow(this);
+            QMainWindow::closeEvent(e);
+        }
     }
-  }else{
-    if(getGuiDocument()->isLastView())
-    {
-      getGuiDocument()->canClose(e);
-
-      if(e->isAccepted ())
-      {
-        // avoid flickering
-        getMainWindow()->removeWindow(this);
-        QMainWindow::closeEvent(e);
-      }
-    }else
-      e->accept();
-  }
+    else{
+        if (getGuiDocument()->isLastView()) {
+            getGuiDocument()->canClose(e);
+            if (e->isAccepted()) {
+                // avoid flickering
+                getMainWindow()->removeWindow(this);
+                QMainWindow::closeEvent(e);
+            }
+        }
+        else
+            e->accept();
+    }
 }
 
 void MDIView::windowStateChanged( MDIView* )
