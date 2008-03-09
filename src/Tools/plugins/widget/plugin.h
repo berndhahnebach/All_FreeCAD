@@ -37,3 +37,31 @@ public:
     CustomWidgetPlugin(QObject *parent = 0);
     QList<QDesignerCustomWidgetInterface *> customWidgets () const;
 };
+
+class WizardPlugin : public QObject, 
+                     public QDesignerCustomWidgetInterface
+{
+    Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    WizardPlugin();
+    QWidget *createWidget(QWidget *parent);
+    
+    QString group() const;
+    QIcon icon() const;
+    QString includeFile() const;
+    QString toolTip() const;
+    QString whatsThis() const;
+    bool isContainer() const;
+    QString name() const;
+    bool isInitialized() const;
+    void initialize(QDesignerFormEditorInterface *formEditor);
+    QString domXml() const;
+
+private Q_SLOTS:
+    void currentIndexChanged(int index);
+    void pageTitleChanged(const QString &title);
+
+private:
+    bool initialized;
+};

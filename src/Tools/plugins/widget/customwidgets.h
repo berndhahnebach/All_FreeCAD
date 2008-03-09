@@ -41,123 +41,123 @@ namespace Gui
 
 class UrlLabel : public QLabel
 {
-  Q_OBJECT
-  Q_PROPERTY( QString  url    READ url   WRITE setUrl)
+    Q_OBJECT
+    Q_PROPERTY( QString  url    READ url   WRITE setUrl)
 
 public:
-  UrlLabel ( QWidget * parent = 0, Qt::WFlags f = 0 );
-  virtual ~UrlLabel();
+    UrlLabel ( QWidget * parent = 0, Qt::WFlags f = 0 );
+    virtual ~UrlLabel();
 
-  QString url() const;
+    QString url() const;
 
 public Q_SLOTS:
-  void setUrl( const QString &u );
+    void setUrl( const QString &u );
 
 protected:
-  void enterEvent ( QEvent * );
-  void leaveEvent ( QEvent * );
-  void mouseReleaseEvent ( QMouseEvent * );
+    void enterEvent ( QEvent * );
+    void leaveEvent ( QEvent * );
+    void mouseReleaseEvent ( QMouseEvent * );
 
 private:
-  QString _url;
+    QString _url;
 };
 
 class FileChooser : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_ENUMS( Mode )
-  Q_PROPERTY( Mode mode READ mode WRITE setMode )
-  Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
-  Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
-  Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
+    Q_ENUMS( Mode )
+    Q_PROPERTY( Mode mode READ mode WRITE setMode )
+    Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
+    Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
+    Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
 
 public:
-  enum Mode { File, Directory };
+    enum Mode { File, Directory };
 
-  FileChooser (QWidget *parent = 0);
-  virtual ~FileChooser();
+    FileChooser (QWidget *parent = 0);
+    virtual ~FileChooser();
 
 
-  QString filter() const;
-  QString fileName() const;
-  Mode mode() const;
-  QString buttonText() const;
+    QString filter() const;
+    QString fileName() const;
+    Mode mode() const;
+    QString buttonText() const;
 
 public Q_SLOTS:
-  void setFileName( const QString &fn );
-  void setMode( Mode m );
-  void setFilter ( const QString & );
-  void setButtonText ( const QString & );
+    void setFileName( const QString &fn );
+    void setMode( Mode m );
+    void setFilter ( const QString & );
+    void setButtonText ( const QString & );
 
 Q_SIGNALS:
-  void fileNameChanged( const QString & );
-  void fileNameSelected( const QString & );
+    void fileNameChanged( const QString & );
+    void fileNameSelected( const QString & );
 
 private Q_SLOTS:
-  void chooseFile();
+    void chooseFile();
 
 private:
-  QLineEdit *lineEdit;
-  QPushButton *button;
-  Mode md;
-  QString _filter;
+    QLineEdit *lineEdit;
+    QPushButton *button;
+    Mode md;
+    QString _filter;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefFileChooser : public FileChooser
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefFileChooser ( QWidget * parent = 0 );
-  virtual ~PrefFileChooser();
+    PrefFileChooser ( QWidget * parent = 0 );
+    virtual ~PrefFileChooser();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class AccelLineEdit : public QLineEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  AccelLineEdit ( QWidget * parent=0 );
+    AccelLineEdit ( QWidget * parent=0 );
 
 protected:
-  void keyPressEvent ( QKeyEvent * e);
+    void keyPressEvent ( QKeyEvent * e);
 };
 
 // ------------------------------------------------------------------------------
 
 class CommandIconView : public QListWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  CommandIconView ( QWidget * parent = 0 );
-  virtual ~CommandIconView ();
+    CommandIconView ( QWidget * parent = 0 );
+    virtual ~CommandIconView ();
 
 protected:
-  void startDrag ( Qt::DropActions supportedActions );
+    void startDrag ( Qt::DropActions supportedActions );
 
 protected Q_SLOTS:
-  void onSelectionChanged( QListWidgetItem * item, QListWidgetItem * );
+    void onSelectionChanged( QListWidgetItem * item, QListWidgetItem * );
 
 Q_SIGNALS:
-  void emitSelectionChanged( const QString& );
+    void emitSelectionChanged( const QString& );
 };
 
 // -------------------------------------------------------------
@@ -204,245 +204,222 @@ private:
 
 class PrefSpinBox : public QSpinBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefSpinBox ( QWidget * parent = 0 );
-  virtual ~PrefSpinBox();
+    PrefSpinBox ( QWidget * parent = 0 );
+    virtual ~PrefSpinBox();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class ColorButton : public QPushButton
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QColor color READ color WRITE setColor )
-  Q_PROPERTY( bool allowChangeColor READ allowChangeColor WRITE setAllowChangeColor )
-  Q_PROPERTY( bool drawFrame READ drawFrame WRITE setDrawFrame )
+    Q_PROPERTY( QColor color READ color WRITE setColor )
+    Q_PROPERTY( bool allowChangeColor READ allowChangeColor WRITE setAllowChangeColor )
+    Q_PROPERTY( bool drawFrame READ drawFrame WRITE setDrawFrame )
 
 public:
-  ColorButton( QWidget* parent = 0 );
-  ~ColorButton();
+    ColorButton( QWidget* parent = 0 );
+    ~ColorButton();
 
-  void setColor( const QColor& );
-  QColor color() const;
+    void setColor( const QColor& );
+    QColor color() const;
 
-  void setAllowChangeColor(bool);
-  bool allowChangeColor() const;
+    void setAllowChangeColor(bool);
+    bool allowChangeColor() const;
 
-  void setDrawFrame(bool);
-  bool drawFrame() const;
+    void setDrawFrame(bool);
+    bool drawFrame() const;
 
 public Q_SLOTS:
-  virtual void onChooseColor();
+    virtual void onChooseColor();
 
 Q_SIGNALS:
-  void changed();
+    void changed();
 
 protected:
-  void paintEvent ( QPaintEvent* );
+    void paintEvent ( QPaintEvent* );
 
 private:
-  QColor _col;
-  bool _allowChange;
-  bool _drawFrame;
+    QColor _col;
+    bool _allowChange;
+    bool _drawFrame;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefColorButton : public ColorButton
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefColorButton ( QWidget * parent = 0 );
-  virtual ~PrefColorButton();
+    PrefColorButton ( QWidget * parent = 0 );
+    virtual ~PrefColorButton();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefDoubleSpinBox : public QDoubleSpinBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefDoubleSpinBox ( QWidget * parent = 0 );
-  virtual ~PrefDoubleSpinBox();
+    PrefDoubleSpinBox ( QWidget * parent = 0 );
+    virtual ~PrefDoubleSpinBox();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefLineEdit : public QLineEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefLineEdit ( QWidget * parent = 0 );
-  virtual ~PrefLineEdit();
+    PrefLineEdit ( QWidget * parent = 0 );
+    virtual ~PrefLineEdit();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefComboBox : public QComboBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefComboBox ( QWidget * parent = 0 );
-  virtual ~PrefComboBox();
-
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
-
-private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-/*
-class PrefListBox : public QListBox
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefListBox ( QWidget * parent = 0 );
-  virtual ~PrefListBox();
+    PrefComboBox ( QWidget * parent = 0 );
+    virtual ~PrefComboBox();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
-*/
+
 // ------------------------------------------------------------------------------
 
 class PrefCheckBox : public QCheckBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefCheckBox ( QWidget * parent = 0 );
-  virtual ~PrefCheckBox();
+    PrefCheckBox ( QWidget * parent = 0 );
+    virtual ~PrefCheckBox();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefRadioButton : public QRadioButton
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefRadioButton ( QWidget * parent = 0 );
-  virtual ~PrefRadioButton();
+    PrefRadioButton ( QWidget * parent = 0 );
+    virtual ~PrefRadioButton();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
 class PrefSlider : public QSlider
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+    Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+    Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefSlider ( QWidget * parent = 0 );
-  virtual ~PrefSlider();
+    PrefSlider ( QWidget * parent = 0 );
+    virtual ~PrefSlider();
 
-  QByteArray entryName    () const;
-  QByteArray paramGrpPath () const;
-  void  setEntryName     ( const QByteArray& name );
-  void  setParamGrpPath  ( const QByteArray& name );
+    QByteArray entryName    () const;
+    QByteArray paramGrpPath () const;
+    void  setEntryName     ( const QByteArray& name );
+    void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QByteArray m_sPrefName;
-  QByteArray m_sPrefGrp;
+    QByteArray m_sPrefName;
+    QByteArray m_sPrefGrp;
 };
 
 } // namespace Gui

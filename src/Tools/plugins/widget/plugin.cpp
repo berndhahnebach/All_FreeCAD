@@ -21,8 +21,20 @@
  ***************************************************************************/
 
 
+#include <QtDesigner/QExtensionFactory>
+#include <QtDesigner/QExtensionManager>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QDesignerFormWindowInterface>
+#include <QtDesigner/QDesignerContainerExtension>
+#include <QtDesigner/QDesignerPropertySheetExtension>
+
+#include <QIcon>
+#include <QtGui>
+#include <QtPlugin>
+
 #include "customwidgets.h"
 #include "plugin.h"
+#include "wizard.h"
 
 
 /* XPM */
@@ -63,37 +75,37 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::UrlLabel(parent);
+        return new Gui::UrlLabel(parent);
     }
     QString group() const
     {
-      return QLatin1String("Display Widgets");
+        return QLatin1String("Display Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( urllabel_pixmap ) );
+        return QIcon( QPixmap( urllabel_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/Widgets.h");
+        return QLatin1String("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Url label");
+        return QLatin1String("Url label");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A widget to display a url in a text label.");
+        return QLatin1String("A widget to display a url in a text label.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
 //    QString codeTemplate() const;
 //    QString domXml() const;
     QString name() const
     {
-      return QLatin1String("Gui::UrlLabel");
+        return QLatin1String("Gui::UrlLabel");
     }
 };
 
@@ -140,37 +152,37 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::FileChooser(parent);
+        return new Gui::FileChooser(parent);
     }
     QString group() const
     {
-      return QLatin1String("Input Widgets");
+        return QLatin1String("Input Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( filechooser_pixmap ) );
+        return QIcon( QPixmap( filechooser_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/FileDialog.h");
+        return QLatin1String("Gui/FileDialog.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("File Chooser");
+        return QLatin1String("File Chooser");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A widget to choose a file or directory.");
+        return QLatin1String("A widget to choose a file or directory.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
 //    QString codeTemplate() const;
 //    QString domXml() const;
     QString name() const
     {
-      return QLatin1String("Gui::FileChooser");
+        return QLatin1String("Gui::FileChooser");
     }
 };
 
@@ -183,35 +195,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefFileChooser(parent);
+        return new Gui::PrefFileChooser(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( filechooser_pixmap ) );
+        return QIcon( QPixmap( filechooser_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("File Chooser");
+        return QLatin1String("File Chooser");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A widget to choose a file or directory.");
+        return QLatin1String("A widget to choose a file or directory.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefFileChooser");
+        return QLatin1String("Gui::PrefFileChooser");
     }
 };
 
@@ -256,35 +268,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::AccelLineEdit(parent);
+        return new Gui::AccelLineEdit(parent);
     }
     QString group() const
     {
-      return QLatin1String("Input Widgets");
+        return QLatin1String("Input Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( lineedit_pixmap ) );
+        return QIcon( QPixmap( lineedit_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/Widgets.h");
+        return QLatin1String("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Accelerator Line Edit");
+        return QLatin1String("Accelerator Line Edit");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A widget to specify accelerator keys.");
+        return QLatin1String("A widget to specify accelerator keys.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::AccelLineEdit");
+        return QLatin1String("Gui::AccelLineEdit");
     }
 };
 
@@ -333,35 +345,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::CommandIconView(parent);
+        return new Gui::CommandIconView(parent);
     }
     QString group() const
     {
-      return QLatin1String("View Widgets");
+        return QLatin1String("View Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( iconview_pixmap ) );
+        return QIcon( QPixmap( iconview_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/Widgets.h");
+        return QLatin1String("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Command View");
+        return QLatin1String("Command View");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Area with movable and labeled icons.");
+        return QLatin1String("Area with movable and labeled icons.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::CommandIconView");
+        return QLatin1String("Gui::CommandIconView");
     }
 };
 
@@ -406,35 +418,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::UIntSpinBox(parent);
+        return new Gui::UIntSpinBox(parent);
     }
     QString group() const
     {
-      return QLatin1String("Input Widgets");
+        return QLatin1String("Input Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( spinbox_pixmap ) );
+        return QIcon( QPixmap( spinbox_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/SpinBox.h");
+        return QLatin1String("Gui/SpinBox.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Unsigned Spin Box");
+        return QLatin1String("Unsigned Spin Box");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Spin box widget (spin button).");
+        return QLatin1String("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::UIntSpinBox");
+        return QLatin1String("Gui::UIntSpinBox");
     }
 };
 
@@ -447,35 +459,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefSpinBox(parent);
+        return new Gui::PrefSpinBox(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( spinbox_pixmap ) );
+        return QIcon( QPixmap( spinbox_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Spin Box");
+        return QLatin1String("Spin Box");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Spin box widget (spin button).");
+        return QLatin1String("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefSpinBox");
+        return QLatin1String("Gui::PrefSpinBox");
     }
 };
 
@@ -520,35 +532,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::ColorButton(parent);
+        return new Gui::ColorButton(parent);
     }
     QString group() const
     {
-      return QLatin1String("Buttons");
+        return QLatin1String("Buttons");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( colorbutton_pixmap ) );
+        return QIcon( QPixmap( colorbutton_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/Widgets.h");
+        return QLatin1String("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Color Button");
+        return QLatin1String("Color Button");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A button to choose a color.");
+        return QLatin1String("A button to choose a color.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::ColorButton");
+        return QLatin1String("Gui::ColorButton");
     }
 };
 
@@ -561,35 +573,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefColorButton(parent);
+        return new Gui::PrefColorButton(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( colorbutton_pixmap ) );
+        return QIcon( QPixmap( colorbutton_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Color Button");
+        return QLatin1String("Color Button");
     }
     QString whatsThis() const
     {
-      return QLatin1String("A button to choose a color.");
+        return QLatin1String("A button to choose a color.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefColorButton");
+        return QLatin1String("Gui::PrefColorButton");
     }
 };
 
@@ -633,35 +645,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefSlider(parent);
+        return new Gui::PrefSlider(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( slider_pixmap ) );
+        return QIcon( QPixmap( slider_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Slider");
+        return QLatin1String("Slider");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Vertical or horizontal slider.");
+        return QLatin1String("Vertical or horizontal slider.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefSlider");
+        return QLatin1String("Gui::PrefSlider");
     }
 };
 
@@ -704,35 +716,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefRadioButton(parent);
+        return new Gui::PrefRadioButton(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( radiobutton_pixmap ) );
+        return QIcon( QPixmap( radiobutton_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Radio Button");
+        return QLatin1String("Radio Button");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Radio button with a text or pixmap label.");
+        return QLatin1String("Radio button with a text or pixmap label.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefRadioButton");
+        return QLatin1String("Gui::PrefRadioButton");
     }
 };
 
@@ -775,35 +787,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefCheckBox(parent);
+        return new Gui::PrefCheckBox(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( checkbox_pixmap ) );
+        return QIcon( QPixmap( checkbox_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Check Box");
+        return QLatin1String("Check Box");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Checkbox with a text label.");
+        return QLatin1String("Checkbox with a text label.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefCheckBox");
+        return QLatin1String("Gui::PrefCheckBox");
     }
 };
 
@@ -850,35 +862,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefComboBox(parent);
+        return new Gui::PrefComboBox(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( combobox_pixmap ) );
+        return QIcon( QPixmap( combobox_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Combo Box");
+        return QLatin1String("Combo Box");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Combined button and popup list.");
+        return QLatin1String("Combined button and popup list.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefComboBox");
+        return QLatin1String("Gui::PrefComboBox");
     }
 };
 
@@ -891,35 +903,35 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefLineEdit(parent);
+        return new Gui::PrefLineEdit(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( lineedit_pixmap ) );
+        return QIcon( QPixmap( lineedit_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Line Edit");
+        return QLatin1String("Line Edit");
     }
     QString whatsThis() const
     {
-      return QLatin1String("One-line text editor.");
+        return QLatin1String("One-line text editor.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefLineEdit");
+        return QLatin1String("Gui::PrefLineEdit");
     }
 };
 
@@ -932,37 +944,138 @@ public:
     }
     QWidget *createWidget(QWidget *parent)
     {
-      return new Gui::PrefDoubleSpinBox(parent);
+        return new Gui::PrefDoubleSpinBox(parent);
     }
     QString group() const
     {
-      return QLatin1String("Preference Widgets");
+        return QLatin1String("Preference Widgets");
     }
     QIcon icon() const
     {
-      return QIcon( QPixmap( spinbox_pixmap ) );
+        return QIcon( QPixmap( spinbox_pixmap ) );
     }
     QString includeFile() const
     {
-      return QLatin1String("Gui/PrefWidgets.h");
+        return QLatin1String("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-      return QLatin1String("Double Spin Box");
+        return QLatin1String("Double Spin Box");
     }
     QString whatsThis() const
     {
-      return QLatin1String("Spin box widget that can work with doubles.");
+        return QLatin1String("Spin box widget that can work with doubles.");
     }
     bool isContainer() const
     {
-      return false;
+        return false;
     }
     QString name() const
     {
-      return QLatin1String("Gui::PrefDoubleSpinBox");
+        return QLatin1String("Gui::PrefDoubleSpinBox");
     }
 };
+
+WizardPlugin::WizardPlugin()
+{
+    initialized = false;
+}
+QWidget *WizardPlugin::createWidget(QWidget *parent)
+{
+    Wizard* widget = new Wizard(parent);
+    connect(widget, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(currentIndexChanged(int)));
+    connect(widget, SIGNAL(pageTitleChanged(const QString &)),
+            this, SLOT(pageTitleChanged(const QString &)));
+    widget->backButton()->setObjectName("__qt__passive_back");
+    widget->nextButton()->setObjectName("__qt__passive_next");
+    return widget;
+}
+QString WizardPlugin::group() const
+{
+    return QLatin1String("Wizard [FreeCAD]");
+}
+QIcon WizardPlugin::icon() const
+{
+    return QIcon();
+}
+QString WizardPlugin::includeFile() const
+{
+    return QLatin1String("Gui/Wizard.h");
+}
+QString WizardPlugin::toolTip() const
+{
+    return QLatin1String("Wizard");
+}
+QString WizardPlugin::whatsThis() const
+{
+    return QLatin1String("Wizard");
+}
+bool WizardPlugin::isContainer() const
+{
+    return true;
+}
+QString WizardPlugin::name() const
+{
+    return QLatin1String("Wizard");
+}
+
+bool WizardPlugin::isInitialized() const
+{
+    return initialized;
+}
+
+void WizardPlugin::initialize(QDesignerFormEditorInterface *formEditor)
+{
+    if (initialized)
+        return;
+
+    QExtensionManager *manager = formEditor->extensionManager();
+    QExtensionFactory *factory = new WizardExtensionFactory(manager);
+
+    Q_ASSERT(manager != 0);
+    manager->registerExtensions(factory, Q_TYPEID(QDesignerContainerExtension));
+
+    initialized = true;
+}
+
+QString WizardPlugin::domXml() const
+{
+    return QString("\
+    <widget class=\"Wizard\" name=\"Wizard\">\
+        <widget class=\"QWidget\" name=\"page\" />\
+    </widget>\
+    ");
+}
+
+void WizardPlugin::currentIndexChanged(int index)
+{
+    Wizard *widget = qobject_cast<Wizard*>(sender());
+    if (widget) {
+        QDesignerFormWindowInterface *form;
+        form = QDesignerFormWindowInterface::findFormWindow(widget);
+        if (form)
+            form->emitSelectionChanged();
+    }
+}
+
+void WizardPlugin::pageTitleChanged(const QString &title)
+{
+    Wizard *widget = qobject_cast<Wizard*>(sender());
+    if (widget) {
+        QWidget *page = widget->widget(widget->currentIndex());
+        QDesignerFormWindowInterface *form;
+        form = QDesignerFormWindowInterface::findFormWindow(widget);
+        if (form) {
+            QDesignerFormEditorInterface *editor = form->core();
+            QExtensionManager *manager = editor->extensionManager();
+            QDesignerPropertySheetExtension *sheet;
+            sheet = qt_extension<QDesignerPropertySheetExtension*>(manager, page);
+            int propertyIndex = sheet->indexOf(QLatin1String("windowTitle"));
+            sheet->setChanged(propertyIndex, true);
+        }
+    }
+}
 
 /* XPM */
 /*
@@ -1004,23 +1117,24 @@ CustomWidgetPlugin::CustomWidgetPlugin(QObject *parent)
 
 QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () const
 {
-  QList<QDesignerCustomWidgetInterface *> cw;
-  cw.append(new UrlLabelPlugin);
-  cw.append(new FileChooserPlugin);
-  cw.append(new AccelLineEditPlugin);
-  cw.append(new CommandIconViewPlugin);
-  cw.append(new UIntSpinBoxPlugin);
-  cw.append(new ColorButtonPlugin);
-  cw.append(new PrefFileChooserPlugin);
-  cw.append(new PrefSpinBoxPlugin);
-  cw.append(new PrefColorButtonPlugin);
-  cw.append(new PrefSliderPlugin);
-  cw.append(new PrefRadioButtonPlugin);
-  cw.append(new PrefCheckBoxPlugin);
-  cw.append(new PrefComboBoxPlugin);
-  cw.append(new PrefLineEditPlugin);
-  cw.append(new PrefDoubleSpinBoxPlugin);
-  return cw;
+    QList<QDesignerCustomWidgetInterface *> cw;
+    cw.append(new UrlLabelPlugin);
+    cw.append(new FileChooserPlugin);
+    cw.append(new AccelLineEditPlugin);
+    cw.append(new CommandIconViewPlugin);
+    cw.append(new UIntSpinBoxPlugin);
+    cw.append(new ColorButtonPlugin);
+    cw.append(new PrefFileChooserPlugin);
+    cw.append(new PrefSpinBoxPlugin);
+    cw.append(new PrefColorButtonPlugin);
+    cw.append(new PrefSliderPlugin);
+    cw.append(new PrefRadioButtonPlugin);
+    cw.append(new PrefCheckBoxPlugin);
+    cw.append(new PrefComboBoxPlugin);
+    cw.append(new PrefLineEditPlugin);
+    cw.append(new PrefDoubleSpinBoxPlugin);
+    //cw.append(new WizardPlugin);
+    return cw;
 }
 
 //QString CustomWidgetPlugin::domXml() const
@@ -1044,4 +1158,4 @@ QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () con
 //                         "</widget>\n");
 //}
 
-Q_EXPORT_PLUGIN(CustomWidgetPlugin)
+Q_EXPORT_PLUGIN2(containerextension, CustomWidgetPlugin)

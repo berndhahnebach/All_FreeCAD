@@ -4,7 +4,6 @@
 	Version="8,00"
 	Name="FreeCAD_widgets"
 	ProjectGUID="{50CDC58F-0FF6-3CFA-BF66-E79DA98E7DF0}"
-	Keyword="Qt4VSv1.0"
 	>
 	<Platforms>
 		<Platform
@@ -15,9 +14,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
+			Name="Debug|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="release\"
+			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -42,28 +41,28 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
-				Optimization="2"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)/include/QtCore&quot;;&quot;$(QTDIR)/include/QtGui&quot;;&quot;$(QTDIR)/include&quot;;.;&quot;$(QTDIR)/include/ActiveQt&quot;;release;&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot;"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
+				AdditionalOptions="-Zm200 -EHsc"
+				Optimization="0"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="_WINDOWS,UNICODE,QT_LARGEFILE_SUPPORT,WIN32,_CRT_SECURE_NO_DEPRECATE,_CRT_NONSTDC_NO_DEPRECATE,QT_DLL,QT_PLUGIN,QT_XML_LIB,QT_GUI_LIB,QT_CORE_LIB,QDESIGNER_EXPORT_WIDGETS,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="release\"
-				ObjectFile="release\"
+				AssemblerListingLocation="debug\"
+				ObjectFile="debug\"
 				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="NDEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -71,12 +70,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="&quot;$(QTDIR)\lib\qtmain.lib&quot; &quot;$(QTDIR)\lib\QtGui4.lib&quot; &quot;$(QTDIR)\lib\QtCore4.lib&quot;"
-				OutputFile="release\FreeCAD_widgets.dll"
-				LinkIncremental="2"
+				AdditionalDependencies="QtXmld4.lib QtGuid4.lib QtCored4.lib QtDesignerd4.lib"
+				OutputFile="debug\FreeCAD_widgets.dll"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)\lib&quot;"
-				GenerateDebugInformation="false"
+				AdditionalLibraryDirectories=""
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 			/>
@@ -106,9 +104,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Release|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="debug\"
+			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -133,28 +131,27 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
-				Optimization="4"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)/include/QtCore&quot;;&quot;$(QTDIR)/include/QtGui&quot;;&quot;$(QTDIR)/include&quot;;.;&quot;$(QTDIR)/include/ActiveQt&quot;;debug;&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot;"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				AdditionalOptions="-Zm200 -EHsc"
+				Optimization="2"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="NDEBUG,_WINDOWS,UNICODE,QT_LARGEFILE_SUPPORT,WIN32,_CRT_SECURE_NO_DEPRECATE,_CRT_NONSTDC_NO_DEPRECATE,QT_DLL,QT_NO_DEBUG,QT_PLUGIN,QT_XML_LIB,QT_GUI_LIB,QT_CORE_LIB,QDESIGNER_EXPORT_WIDGETS,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="debug\"
-				ObjectFile="debug\"
+				AssemblerListingLocation="release\"
+				ObjectFile="release\"
 				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="NDEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -162,11 +159,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="&quot;$(QTDIR)\lib\qtmaind.lib&quot; &quot;$(QTDIR)\lib\QtGuid4.lib&quot; &quot;$(QTDIR)\lib\QtCored4.lib&quot;"
-				OutputFile="debug\FreeCAD_widgets.dll"
+				AdditionalDependencies="QtXml4.lib QtGui4.lib QtCore4.lib QtDesigner4.lib"
+				OutputFile="release\FreeCAD_widgets.dll"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)\lib&quot;"
-				GenerateDebugInformation="true"
+				AdditionalLibraryDirectories=""
+				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 			/>
@@ -202,85 +199,16 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
 				RelativePath="customwidgets.cpp"
 				>
 			</File>
 			<File
-				RelativePath="plugin.cpp"
+				RelativePath="release\moc_customwidgets.cpp"
 				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath="customwidgets.h"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies=""
-						Outputs="$(InputDir)Release\moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Debug\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies=""
-						Outputs="$(InputDir)Debug\moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="plugin.h"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies=""
-						Outputs="$(InputDir)Release\moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Debug\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies=""
-						Outputs="$(InputDir)Debug\moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="Generated Files"
-			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
-			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
-			>
-			<File
-				RelativePath="debug\moc_customwidgets.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -289,10 +217,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\moc_customwidgets.cpp"
+				RelativePath="debug\moc_customwidgets.cpp"
 				>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -321,6 +249,121 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_wizard.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_wizard.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="plugin.cpp"
+				>
+			</File>
+			<File
+				RelativePath="wizard.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			>
+			<File
+				RelativePath="customwidgets.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC customwidgets.h"
+						CommandLine="moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; customwidgets.h -o debug\moc_customwidgets.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="debug\moc_customwidgets.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC customwidgets.h"
+						CommandLine="moc.exe -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; customwidgets.h -o release\moc_customwidgets.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="release\moc_customwidgets.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="plugin.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC plugin.h"
+						CommandLine="moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; plugin.h -o debug\moc_plugin.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="debug\moc_plugin.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC plugin.h"
+						CommandLine="moc.exe -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; plugin.h -o release\moc_plugin.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="release\moc_plugin.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="wizard.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC wizard.h"
+						CommandLine="moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; wizard.h -o debug\moc_wizard.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="debug\moc_wizard.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC wizard.h"
+						CommandLine="moc.exe -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -DWIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQDESIGNER_EXPORT_WIDGETS -DQT_THREAD_SUPPORT  -I &quot;$(QTDIR)\include\QtDesigner&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtCore&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtGui&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include\QtXml&quot; -I &quot;$(QTDIR)\include&quot; -I &quot;.&quot; -I &quot;$(QTDIR)\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; wizard.h -o release\moc_wizard.cpp&#x0D;&#x0A;"
+						AdditionalDependencies=""
+						Outputs="release\moc_wizard.cpp"
 					/>
 				</FileConfiguration>
 			</File>
