@@ -39,6 +39,7 @@
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/VectorPy.h>
 #include "Application.h"
+#include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
 
@@ -643,56 +644,78 @@ PYFUNCIMP_D(View3DPy,listStereoTypes)
 
 PYFUNCIMP_D(View3DPy,getCursorPos)
 {
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-  try {
-    QPoint pos = _pcView->mapFromGlobal(QCursor::pos());
-    Py::Tuple tuple(2);
-    tuple.setItem(0, Py::Int(pos.x()));
-    tuple.setItem(1, Py::Int(_pcView->height()-pos.y()-1));
-    return Py::new_reference_to(tuple); // increment ref counter
-  } catch (const Py::Exception&) {
-    return NULL;
-  }
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    try {
+        QPoint pos = _pcView->mapFromGlobal(QCursor::pos());
+        Py::Tuple tuple(2);
+        tuple.setItem(0, Py::Int(pos.x()));
+        tuple.setItem(1, Py::Int(_pcView->height()-pos.y()-1));
+        return Py::new_reference_to(tuple); // increment ref counter
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
 }
 
 PYFUNCIMP_D(View3DPy,getObjectInfo)
 {
-  PyObject* object;
-  if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
 
-  try {
-    //Note: For gcc (4.2) we need the 'const' keyword to avoid the compiler error:
-    //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
-    //We should report this problem to the PyCXX project as in the documentation an 
-    //example without the 'const' keyword is used.
-    //Or we can also write Py::Int x(tuple[0]);
-    const Py::Tuple tuple(object);
-    Py::Int x = tuple[0];
-    Py::Int y = tuple[1];
+    try {
+        //Note: For gcc (4.2) we need the 'const' keyword to avoid the compiler error:
+        //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
+        //We should report this problem to the PyCXX project as in the documentation an 
+        //example without the 'const' keyword is used.
+        //Or we can also write Py::Int x(tuple[0]);
+        const Py::Tuple tuple(object);
+        Py::Int x = tuple[0];
+        Py::Int y = tuple[1];
 
-    Gui::SoFCDocumentObjectEvent ev;
-    ev.setPosition(SbVec2s((long)x,(long)y));
-    SoHandleEventAction action(_pcView->getViewer()->getViewportRegion());
-    action.setEvent(&ev);
-    action.apply(_pcView->getViewer()->getSceneManager()->getSceneGraph());
+        // As this method could be called during a SoHandleEventAction scene
+        // graph traversal we must not use SoFCDocumentObjectEvent together
+        // with a second SoHandleEventAction as we will get Coin warnings
+        // because of multiple scene graph traversals which is regarded as
+        // error-prone.
+        SoRayPickAction action(_pcView->getViewer()->getViewportRegion());
+        action.setPoint(SbVec2s((long)x,(long)y));
+        action.apply(_pcView->getViewer()->getSceneManager()->getSceneGraph());
+        SoPickedPoint *Point = action.getPickedPoint();
 
-    if (action.isHandled()) {
-      Py::Dict dict;
-      dict.setItem("Document", Py::String(ev.getDocumentName().getString()));
-      dict.setItem("Object", Py::String(ev.getObjectName().getString()));
-      dict.setItem("Component", Py::String(ev.getComponentName().getString()));
-      dict.setItem("x", Py::Float(ev.getPoint()[0]));
-      dict.setItem("y", Py::Float(ev.getPoint()[1]));
-      dict.setItem("z", Py::Float(ev.getPoint()[2]));
-      return Py::new_reference_to(dict);  // increment ref counter
-    } else {
-      return Py::new_reference_to(Py::None());
+        Py::Object ret = Py::None();
+        if (Point) {
+            Py::Dict dict;
+            SbVec3f pt = Point->getObjectPoint();
+            dict.setItem("x", Py::Float(pt[0]));
+            dict.setItem("y", Py::Float(pt[1]));
+            dict.setItem("z", Py::Float(pt[2]));
+
+            // search for a SoFCSelection node
+            SoPath* path = Point->getPath();
+            for (int i = 0; i < path->getLength();i++) {
+                SoNode *node = path->getNode(i);
+                if (node->getTypeId() == SoFCSelection::getClassTypeId()) {
+                    SoFCSelection* sel = static_cast<SoFCSelection *>(node);
+                    dict.setItem("Document",
+                        Py::String(sel->documentName.getValue().getString()));
+                    dict.setItem("Object",
+                        Py::String(sel->objectName.getValue().getString()));
+                    dict.setItem("Component",
+                        Py::String(sel->subElementName.getValue().getString()));
+                    // ok, found the node of interest
+                    ret = dict;
+                    break;
+                }
+            }
+        }
+
+        return Py::new_reference_to(ret);  // increment ref counter
     }
-  } catch (const Py::Exception&) {
-    return NULL;
-  }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
 }
 
 PYFUNCIMP_D(View3DPy,getSize)
@@ -1091,11 +1114,11 @@ void View3DPy::eventCallback(void * ud, SoEventCallback * n)
         Py::Object o = Py::type(e);
         if (o.isString()) {
             Py::String s(o);
-            Base::Console().Log("%s\n", s.as_std_string().c_str());
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
         }
         else {
             Py::String s(o.repr());
-            Base::Console().Log("%s\n", s.as_std_string().c_str());
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
         }
         // Prints message to console window if we are in interactive mode
         PyErr_Print();
@@ -1136,11 +1159,11 @@ void View3DPy::eventCallbackSWIG(void * ud, SoEventCallback * n)
         Py::Object o = Py::type(e);
         if (o.isString()) {
             Py::String s(o);
-            Base::Console().Log("%s\n", s.as_std_string().c_str());
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
         }
         else {
             Py::String s(o.repr());
-            Base::Console().Log("%s\n", s.as_std_string().c_str());
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
         }
         // Prints message to console window if we are in interactive mode
         PyErr_Print();
