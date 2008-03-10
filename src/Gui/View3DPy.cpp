@@ -675,10 +675,9 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
         Py::Int y = tuple[1];
 
         // As this method could be called during a SoHandleEventAction scene
-        // graph traversal we must not use SoFCDocumentObjectEvent together
-        // with a second SoHandleEventAction as we will get Coin warnings
-        // because of multiple scene graph traversals which is regarded as
-        // error-prone.
+        // graph traversal we must not use a second SoHandleEventAction as
+        // we will get Coin warnings because of multiple scene graph traversals
+        // which is regarded as error-prone.
         SoRayPickAction action(_pcView->getViewer()->getViewportRegion());
         action.setPoint(SbVec2s((long)x,(long)y));
         action.apply(_pcView->getViewer()->getSceneManager()->getSceneGraph());
@@ -693,21 +692,17 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
             dict.setItem("z", Py::Float(pt[2]));
 
             // search for a SoFCSelection node
-            SoPath* path = Point->getPath();
-            for (int i = 0; i < path->getLength();i++) {
-                SoNode *node = path->getNode(i);
-                if (node->getTypeId() == SoFCSelection::getClassTypeId()) {
-                    SoFCSelection* sel = static_cast<SoFCSelection *>(node);
-                    dict.setItem("Document",
-                        Py::String(sel->documentName.getValue().getString()));
-                    dict.setItem("Object",
-                        Py::String(sel->objectName.getValue().getString()));
-                    dict.setItem("Component",
-                        Py::String(sel->subElementName.getValue().getString()));
-                    // ok, found the node of interest
-                    ret = dict;
-                    break;
-                }
+            SoFCDocumentObjectAction objaction;
+            objaction.apply(Point->getPath());
+            if (objaction.isHandled()) {
+                dict.setItem("Document",
+                    Py::String(objaction.documentName.getString()));
+                dict.setItem("Object",
+                    Py::String(objaction.objectName.getString()));
+                dict.setItem("Component",
+                    Py::String(objaction.componentName.getString()));
+                // ok, found the node of interest
+                ret = dict;
             }
         }
 

@@ -61,7 +61,7 @@ void Gui::SoFCDB::init()
     SoFCEnableHighlightAction       ::initClass();
     SoFCSelectionColorAction        ::initClass();
     SoFCHighlightColorAction        ::initClass();
-    SoFCDocumentObjectEvent         ::initClass();
+    SoFCDocumentObjectAction        ::initClass();
 
 
     PropertyItem                    ::init();
@@ -113,6 +113,7 @@ void Gui::SoFCDB::finish()
     SoFCSelection                   ::finish();
     SoFCSelectionAction             ::finish();
     SoFCDocumentAction              ::finish();
+    SoFCDocumentObjectAction        ::finish();
     SoFCEnableSelectionAction       ::finish();
     SoFCEnableHighlightAction       ::finish();
     SoFCSelectionColorAction        ::finish();
