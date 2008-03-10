@@ -573,63 +573,86 @@ void SoFCDocumentAction::callDoAction(SoAction *action,SoNode *node)
 
 // ---------------------------------------------------------------
 
-SO_EVENT_SOURCE(SoFCDocumentObjectEvent);
+SO_ACTION_SOURCE(SoFCDocumentObjectAction);
 
-void SoFCDocumentObjectEvent::initClass()
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCDocumentObjectAction::initClass()
 {
-  SO_EVENT_INIT_CLASS(SoFCDocumentObjectEvent, SoEvent);
+  SO_ACTION_INIT_CLASS(SoFCDocumentObjectAction,SoAction);
+
+  SO_ENABLE(SoFCDocumentObjectAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCDocumentObjectAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoComplexityElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoCoordinateElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoFontNameElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoFontSizeElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoProfileElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoSwitchElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoUnitsElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCDocumentObjectAction, SoViewportRegionElement);
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
-SoFCDocumentObjectEvent::SoFCDocumentObjectEvent ()
+void SoFCDocumentObjectAction::finish()
 {
-  this->pos.setValue(FLT_MAX, FLT_MAX, FLT_MAX);
+  atexit_cleanup();
 }
 
-SoFCDocumentObjectEvent::~SoFCDocumentObjectEvent()
+SoFCDocumentObjectAction::SoFCDocumentObjectAction () : _handled(FALSE)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCDocumentObjectAction);
+}
+
+SoFCDocumentObjectAction::~SoFCDocumentObjectAction()
 {
 }
 
-void SoFCDocumentObjectEvent::setDocumentName(const SbString& name)
+void SoFCDocumentObjectAction::beginTraversal(SoNode *node)
 {
-  this->documentName = name;
+  traverse(node);
 }
 
-const SbString& SoFCDocumentObjectEvent::getDocumentName() const
+void SoFCDocumentObjectAction::callDoAction(SoAction *action,SoNode *node)
 {
-  return this->documentName;
+  node->doAction(action);
 }
 
-void SoFCDocumentObjectEvent::setObjectName(const SbString& name)
+void SoFCDocumentObjectAction::setHandled()
 {
-  this->objectName = name;
+  this->_handled = TRUE;
 }
 
-const SbString& SoFCDocumentObjectEvent::getObjectName() const
+SbBool SoFCDocumentObjectAction::isHandled() const
 {
-  return this->objectName;
+  return this->_handled;
 }
 
-void SoFCDocumentObjectEvent::setComponentName(const SbString& name)
-{
-  this->componentName = name;
-}
-
-const SbString& SoFCDocumentObjectEvent::getComponentName() const
-{
-  return this->componentName;
-}
-
-void SoFCDocumentObjectEvent::setPoint(const SbVec3f& p)
-{
-  this->pos = p;
-}
-
-const SbVec3f& SoFCDocumentObjectEvent::getPoint() const
-{
-  return this->pos;
-}
-
-SbBool SoFCDocumentObjectEvent::isDocumentObjectEvent(const SoEvent *e)
-{
-  return e->isOfType(SoFCDocumentObjectEvent::getClassTypeId());
-}

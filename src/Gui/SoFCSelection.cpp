@@ -128,63 +128,77 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
 
 void SoFCSelection::doAction( SoAction *action)
 {
-  if ( action->getTypeId() == SoFCDocumentAction::getClassTypeId() ) {
-    SoFCDocumentAction *docaction = (SoFCDocumentAction*)action;
-    this->documentName = docaction->documentName;
-  }
-
-  if ( action->getTypeId() == SoFCEnableHighlightAction::getClassTypeId() ) {
-    SoFCEnableHighlightAction *preaction = (SoFCEnableHighlightAction*)action;
-    if ( preaction->highlight ) {
-      this->highlightMode = SoFCSelection::AUTO;
-    } else {
-      this->highlightMode = SoFCSelection::OFF;
+    if (action->getTypeId() == SoFCDocumentAction::getClassTypeId()) {
+        SoFCDocumentAction *docaction = (SoFCDocumentAction*)action;
+        this->documentName = docaction->documentName;
     }
-  }
 
-  if ( action->getTypeId() == SoFCEnableSelectionAction::getClassTypeId() ) {
-    SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
-    if ( selaction->selection ) {
-      this->selectionMode = SoFCSelection::SEL_ON;
-      this->style = SoFCSelection::EMISSIVE;
-    } else {
-      this->selectionMode = SoFCSelection::SEL_OFF;
-      this->style = SoFCSelection::BOX;
-      this->selected = NOTSELECTED;
+    if (action->getTypeId() == SoFCDocumentObjectAction::getClassTypeId()) {
+        SoFCDocumentObjectAction* objaction = static_cast<SoFCDocumentObjectAction*>(action);
+        objaction->documentName  = this->documentName.getValue();
+        objaction->objectName    = this->objectName.getValue();
+        objaction->componentName = this->subElementName.getValue();
+        objaction->setHandled();
     }
-  }
 
-  if ( action->getTypeId() == SoFCSelectionColorAction::getClassTypeId() ) {
-    SoFCSelectionColorAction *colaction = (SoFCSelectionColorAction*)action;
-    this->colorSelection = colaction->selectionColor;
-  }
-
-  if ( action->getTypeId() == SoFCHighlightColorAction::getClassTypeId() ) {
-    SoFCHighlightColorAction *colaction = (SoFCHighlightColorAction*)action;
-    this->colorHighlight = colaction->highlightColor;
-  }
-
-  if ( selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
-    SoFCSelectionAction *selaction = static_cast<SoFCSelectionAction*>(action);
-
-    if ( selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection ) {
-      if ( documentName.getValue() == selaction->SelChange.pDocName &&
-           objectName.getValue() == selaction->SelChange.pObjectName &&
-           (subElementName.getValue() == selaction->SelChange.pSubName || *(selaction->SelChange.pSubName) == '\0') ) {
-        if ( selaction->SelChange.Type == SelectionChanges::AddSelection )
-        {
-          selected = SELECTED;
-        }else{
-          selected = NOTSELECTED;
+    if (action->getTypeId() == SoFCEnableHighlightAction::getClassTypeId()) {
+        SoFCEnableHighlightAction *preaction = (SoFCEnableHighlightAction*)action;
+        if (preaction->highlight) {
+            this->highlightMode = SoFCSelection::AUTO;
         }
-      }
-    }else if ( selaction->SelChange.Type == SelectionChanges::ClearSelection ){
-      if (documentName.getValue() == selaction->SelChange.pDocName || strcmp(selaction->SelChange.pDocName,"") == 0)
-        selected = NOTSELECTED;
+        else {
+            this->highlightMode = SoFCSelection::OFF;
+        }
     }
-  }
 
-  inherited::doAction( action );
+    if (action->getTypeId() == SoFCEnableSelectionAction::getClassTypeId()) {
+        SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
+        if (selaction->selection) {
+            this->selectionMode = SoFCSelection::SEL_ON;
+            this->style = SoFCSelection::EMISSIVE;
+        }
+        else {
+            this->selectionMode = SoFCSelection::SEL_OFF;
+            this->style = SoFCSelection::BOX;
+            this->selected = NOTSELECTED;
+        }
+    }
+
+    if (action->getTypeId() == SoFCSelectionColorAction::getClassTypeId()) {
+        SoFCSelectionColorAction *colaction = (SoFCSelectionColorAction*)action;
+        this->colorSelection = colaction->selectionColor;
+    }
+
+    if (action->getTypeId() == SoFCHighlightColorAction::getClassTypeId()) {
+        SoFCHighlightColorAction *colaction = (SoFCHighlightColorAction*)action;
+        this->colorHighlight = colaction->highlightColor;
+    }
+
+    if (selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
+        SoFCSelectionAction *selaction = static_cast<SoFCSelectionAction*>(action);
+
+        if (selaction->SelChange.Type == SelectionChanges::AddSelection || 
+            selaction->SelChange.Type == SelectionChanges::RmvSelection) {
+            if (documentName.getValue() == selaction->SelChange.pDocName &&
+                objectName.getValue() == selaction->SelChange.pObjectName &&
+                (subElementName.getValue() == selaction->SelChange.pSubName || 
+                *(selaction->SelChange.pSubName) == '\0') ) {
+                if (selaction->SelChange.Type == SelectionChanges::AddSelection) {
+                    selected = SELECTED;
+                }
+                else {
+                    selected = NOTSELECTED;
+                }
+            }
+        }
+        else if (selaction->SelChange.Type == SelectionChanges::ClearSelection) {
+            if (documentName.getValue() == selaction->SelChange.pDocName ||
+                strcmp(selaction->SelChange.pDocName,"") == 0)
+                selected = NOTSELECTED;
+        }
+    }
+
+    inherited::doAction( action );
 }
 
 
@@ -363,18 +377,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             } // picked point
         } // mouse release
     }
-    else if (event->isOfType(SoFCDocumentObjectEvent::getClassTypeId())) {
-        const SoPickedPoint * pp = action->getPickedPoint();
-        if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-            SoFCDocumentObjectEvent* e = (SoFCDocumentObjectEvent*)event;
-            e->setDocumentName(documentName.getValue());
-            e->setObjectName(objectName.getValue());
-            e->setComponentName(subElementName.getValue());
-            e->setPoint(pp->getPoint());
-            action->setHandled();
-        }
-    }
-    
+
     inherited::handleEvent(action);
 }
 

@@ -36,188 +36,187 @@ namespace Gui {
 class SelectionChanges;
 
 /**
- * The SoFCSelectionAction class is used to inform an SoFCSelection node whether an object gets selected. 
+ * The SoFCSelectionAction class is used to inform an SoFCSelection node
+ * whether an object gets selected. 
  * @author Jürgen Riegel
  */
 class GuiExport SoFCSelectionAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCSelectionAction);
+    SO_ACTION_HEADER(SoFCSelectionAction);
 
 public:
-  SoFCSelectionAction (const SelectionChanges &SelCh);
-	~SoFCSelectionAction();
+    SoFCSelectionAction (const SelectionChanges &SelCh);
+    ~SoFCSelectionAction();
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
-  const SelectionChanges &SelChange;
-
+    const SelectionChanges &SelChange;
 
 protected:
-  virtual void beginTraversal(SoNode *node);
-
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCEnableSelectionAction class is used to inform an SoFCSelection node whether selection is enabled or disabled. 
+ * The SoFCEnableSelectionAction class is used to inform an SoFCSelection node
+ * whether selection is enabled or disabled. 
  * @author Werner Mayer
  */
 class GuiExport SoFCEnableSelectionAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCEnableSelectionAction);
+    SO_ACTION_HEADER(SoFCEnableSelectionAction);
 
 public:
-  SoFCEnableSelectionAction (const SbBool& sel);
-	~SoFCEnableSelectionAction();
+    SoFCEnableSelectionAction (const SbBool& sel);
+    ~SoFCEnableSelectionAction();
 
-  const SbBool& selection;
+    const SbBool& selection;
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
 protected:
-  virtual void beginTraversal(SoNode *node);
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCEnableHighlightAction class is used to inform an SoFCSelection node whether preselection is enabled or disabled. 
+ * The SoFCEnableHighlightAction class is used to inform an SoFCSelection node
+ * whether preselection is enabled or disabled. 
  * @author Werner Mayer
  */
 class GuiExport SoFCEnableHighlightAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCEnableHighlightAction);
+    SO_ACTION_HEADER(SoFCEnableHighlightAction);
 
 public:
-  SoFCEnableHighlightAction (const SbBool& sel);
-	~SoFCEnableHighlightAction();
+    SoFCEnableHighlightAction (const SbBool& sel);
+    ~SoFCEnableHighlightAction();
 
-  const SbBool& highlight;
+    const SbBool& highlight;
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
 protected:
-  virtual void beginTraversal(SoNode *node);
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCSelectionColorAction class is used to inform an SoFCSelection node which selection color is used. 
+ * The SoFCSelectionColorAction class is used to inform an SoFCSelection node
+ * which selection color is used. 
  * @author Werner Mayer
  */
 class GuiExport SoFCSelectionColorAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCSelectionColorAction);
+    SO_ACTION_HEADER(SoFCSelectionColorAction);
 
 public:
-  SoFCSelectionColorAction (const SoSFColor& col);
-	~SoFCSelectionColorAction();
+    SoFCSelectionColorAction (const SoSFColor& col);
+    ~SoFCSelectionColorAction();
 
-  const SoSFColor& selectionColor;
+    const SoSFColor& selectionColor;
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
 protected:
-  virtual void beginTraversal(SoNode *node);
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCHighlightColorAction class is used to inform an SoFCSelection node which preselection color is used. 
+ * The SoFCHighlightColorAction class is used to inform an SoFCSelection node
+ * which preselection color is used. 
  * @author Werner Mayer
  */
 class GuiExport SoFCHighlightColorAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCHighlightColorAction);
+    SO_ACTION_HEADER(SoFCHighlightColorAction);
 
 public:
-  SoFCHighlightColorAction (const SoSFColor& col);
-	~SoFCHighlightColorAction();
+    SoFCHighlightColorAction (const SoSFColor& col);
+    ~SoFCHighlightColorAction();
 
-  const SoSFColor& highlightColor;
+    const SoSFColor& highlightColor;
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
 protected:
-  virtual void beginTraversal(SoNode *node);
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCDocumentAction class is used to inform an SoFCSelection node when a document has been renamed. 
+ * The SoFCDocumentAction class is used to inform an SoFCSelection node
+ * when a document has been renamed. 
  * @author Werner Mayer
  */
 class GuiExport SoFCDocumentAction : public SoAction
 {
-
-  SO_ACTION_HEADER(SoFCDocumentAction);
+    SO_ACTION_HEADER(SoFCDocumentAction);
 
 public:
-  SoFCDocumentAction (const SoSFString& docName);
-	~SoFCDocumentAction();
+    SoFCDocumentAction (const SoSFString& docName);
+    ~SoFCDocumentAction();
 
-  const SoSFString& documentName;
+    const SoSFString& documentName;
 
-  static void initClass();
-  static void finish(void);
+    static void initClass();
+    static void finish(void);
 
 protected:
-  virtual void beginTraversal(SoNode *node);
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  static void callDoAction(SoAction *action,SoNode *node);
+    static void callDoAction(SoAction *action,SoNode *node);
 };
 
 /**
- * The SoFCDocumentObjectEvent class is used to get the name of the document, object and component at a certain 
- * position of an SoFCSelection node. It also returns the appropriate 3d point.
+ * The SoFCDocumentObjectAction class is used to get the name of the document,
+ * object and component at a certain position of an SoFCSelection node.
  * @author Werner Mayer
  */
-class GuiExport SoFCDocumentObjectEvent : public SoEvent
+class GuiExport SoFCDocumentObjectAction : public SoAction
 {
-  SO_EVENT_HEADER();
+    SO_ACTION_HEADER(SoFCDocumentObjectAction);
 
 public:
-  SoFCDocumentObjectEvent ();
-	~SoFCDocumentObjectEvent();
+    SoFCDocumentObjectAction ();
+    ~SoFCDocumentObjectAction();
 
-  void setDocumentName(const SbString&);
-  const SbString& getDocumentName() const;
-  void setObjectName(const SbString&);
-  const SbString& getObjectName() const;
-  void setComponentName(const SbString&);
-  const SbString& getComponentName() const;
-  void setPoint(const SbVec3f&);
-  const SbVec3f& getPoint() const;
+    void setHandled();
+    SbBool isHandled() const;
 
-  static SbBool isDocumentObjectEvent(const SoEvent *e); 
+    static void initClass();
+    static void finish(void);
 
-  static void initClass();
+protected:
+    virtual void beginTraversal(SoNode *node);
 
 private:
-  SbString documentName;
-  SbString objectName;
-  SbString componentName;
-  SbVec3f pos;
+    static void callDoAction(SoAction *action,SoNode *node);
+
+public:
+    SbString documentName;
+    SbString objectName;
+    SbString componentName;
+
+private:
+    SbBool _handled;
 };
 
 } // namespace Gui
