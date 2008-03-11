@@ -160,6 +160,7 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(setAnnotation)
   PYMETHODEDEF(removeAnnotation)
   PYMETHODEDEF(getSceneGraph)
+  PYMETHODEDEF(getViewer)
   PYMETHODEDEF(addEventCallbackSWIG)
   PYMETHODEDEF(removeEventCallbackSWIG)
   {NULL, NULL}		/* Sentinel */
@@ -1290,6 +1291,34 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
     
     PyObject *resultobj = NULL;
     resultobj = SWIG_Python_NewPointerObj((void*)scene,swig_type,1);
+    return resultobj;
+}
+
+PYFUNCIMP_D(View3DPy,getViewer)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+    
+    PyObject *resultobj = NULL;
+    // Note: As there is no ref'counting mechanism for the viewer class we must
+    // pass '0' as the third parameter so that the Python object does not 'own'
+    // the viewer. 
+    // Note: Once we have closed the viewer the Python object must not be used
+    // anymore as it has a dangling pointer.
+    resultobj = SWIG_Python_NewPointerObj((void*)_pcView->getViewer(),swig_type,0);
     return resultobj;
 }
 

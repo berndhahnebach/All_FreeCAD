@@ -84,6 +84,7 @@ public:
     PYFUNCDEF_D(View3DPy,setAnnotation)
     PYFUNCDEF_D(View3DPy,removeAnnotation)
     PYFUNCDEF_D(View3DPy,getSceneGraph)
+    PYFUNCDEF_D(View3DPy,getViewer)
     PYFUNCDEF_D(View3DPy,addEventCallbackSWIG)
     PYFUNCDEF_D(View3DPy,removeEventCallbackSWIG)
 
