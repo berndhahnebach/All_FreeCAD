@@ -35,31 +35,30 @@ using namespace Base;
 TYPESYSTEM_SOURCE(Base::Exception,Base::BaseClass);
 
 
-Exception::Exception(void) : _handled(false)
+Exception::Exception(void)
 {
   _sErrMsg = "FreeCAD Exception";
 }
 
 Exception::Exception(const Exception &inst)
- : BaseClass(),_sErrMsg(inst._sErrMsg), _handled(inst._handled)
+ : BaseClass(),_sErrMsg(inst._sErrMsg)
 {
 }
 
 
 Exception::Exception(const char * sMessage)
- : _sErrMsg(sMessage), _handled(false)
+ : _sErrMsg(sMessage)
 {
 }
 
 Exception::Exception(const std::string& sMessage)
- : _sErrMsg(sMessage), _handled(false)
+ : _sErrMsg(sMessage)
 {
 }
 
 Exception &Exception::operator=(const Exception &inst)
 {
   _sErrMsg = inst._sErrMsg;
-  _handled = inst._handled;
   return *this;
 }
 

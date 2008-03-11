@@ -69,6 +69,7 @@ public:
     PYFUNCDEF_D(View3DPy,getStereoType)
     PYFUNCDEF_D(View3DPy,listStereoTypes)
     PYFUNCDEF_D(View3DPy,saveImage)
+    PYFUNCDEF_D(View3DPy,saveVectorGraphic)
     PYFUNCDEF_D(View3DPy,getCamera)
     PYFUNCDEF_D(View3DPy,setCamera)
     PYFUNCDEF_D(View3DPy,getCameraType)

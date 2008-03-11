@@ -50,11 +50,7 @@ public:
   inline void setMessage(const std::string& sMessage);
   
 protected:
-#ifdef _MSC_VER
-# pragma warning( disable : 4251 )
-#endif
   std::string _sErrMsg;
-  bool _handled;
 };
 
 
