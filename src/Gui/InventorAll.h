@@ -30,6 +30,8 @@
 #include <Inventor/actions/SoSearchAction.h>
 #include <Inventor/actions/SoToVRML2Action.h>
 #include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/annex/HardCopy/SoVectorizePSAction.h>
+#include <Inventor/annex/HardCopy/SoVectorOutput.h>
 #include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/bundles/SoTextureCoordinateBundle.h>
 #include <Inventor/details/SoFaceDetail.h>

@@ -39,6 +39,8 @@
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoToVRML2Action.h>
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/annex/HardCopy/SoVectorizePSAction.h>
+# include <Inventor/annex/HardCopy/SoVectorOutput.h>
 # include <Inventor/manips/SoClipPlaneManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCallback.h> 
@@ -396,7 +398,8 @@ void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
   }
 }
 
-void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const
+void View3DInventorViewer::savePicture(const char* filename, int w, int h,
+                                       int eBackgroundType, const char* comment) const
 {
   // if no valid color use the current background
   bool useBackground = false;
@@ -459,7 +462,45 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   root->unref();
 }
 
-void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
+void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
+                                       int eBackgroundType) const
+{
+    // if no valid color use the current background
+    SbViewportRegion vp(getViewportRegion());
+    SoVectorizePSAction ps;
+    SoVectorOutput * out = ps.getOutput();
+    if (!out->openFile(filename)) {
+        throw Base::FileException("View3DInventorViewer::saveGraphic(): "
+                                  "Cannot open file", filename);
+    }
+
+    // if we use transparency then we must not set a background color
+    switch(eBackgroundType){
+        case Current:
+            ps.setBackgroundColor(true, this->getBackgroundColor());
+            break;
+        case White:
+            ps.setBackgroundColor(true, SbColor(1.0, 1.0, 1.0));
+            break;
+        case Black:
+            ps.setBackgroundColor(true, SbColor(0.0, 0.0, 0.0));
+            break;
+        case Transparent:
+            break; // not supported
+        default:
+            throw Base::Exception("View3DInventorViewer::saveGraphic(): "
+                                  "Unknown parameter");
+    }
+
+    //ps.setOrientation(SoVectorizeAction::LANDSCAPE);
+    ps.beginStandardPage(SoVectorizePSAction::PageSize(pagesize));
+    ps.calibrate(this->getViewportRegion());
+    ps.apply(this->getSceneManager()->getSceneGraph());
+    ps.endPage();
+    out->closeFile();
+}
+
+void View3DInventorViewer::startPicking(View3DInventorViewer::ePickMode mode)
 {
   if (pcMouseModel)
     return;

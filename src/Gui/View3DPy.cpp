@@ -127,6 +127,7 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(setFocalDistance)
   PYMETHODEDEF(getFocalDistance)
   PYMETHODEDEF(saveImage)
+  PYMETHODEDEF(saveVectorGraphic)
   PYMETHODEDEF(getCamera)
   PYMETHODEDEF(setCamera)
   PYMETHODEDEF(getCameraType)
@@ -455,10 +456,25 @@ PYFUNCIMP_D(View3DPy,saveImage)
 #endif
 
     QColor c;
-    _pcView->_viewer->makeScreenShot(cFileName,w,h,t,cComment);
+    _pcView->_viewer->savePicture(cFileName,w,h,t,cComment);
     Py_Return;
 
   }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,saveVectorGraphic)
+{
+    char* filename;
+    int ps=4, t=2;
+
+    if (!PyArg_ParseTuple(args, "s|ii",&filename,&ps,&t))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    PY_TRY {
+        _pcView->_viewer->saveGraphic(filename,ps,t);
+        Py_Return;
+
+    } PY_CATCH;
 }
 
 PYFUNCIMP_D(View3DPy,getCamera)
