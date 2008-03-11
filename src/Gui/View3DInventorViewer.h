@@ -122,6 +122,8 @@ public:
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const;
   SoPickedPoint* pickPoint(const SbVec2s& pos) const;
+  void pubSeekToPoint(const SbVec2s& pos);
+  void pubSeekToPoint(const SbVec3f& pos);
   /**
    * Set up a callback function \a cb which will be invoked for the given eventtype. 
    * \a userdata will be given as the first argument to the callback function. 

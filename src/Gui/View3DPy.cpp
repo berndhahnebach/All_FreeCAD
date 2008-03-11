@@ -122,6 +122,7 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(viewRight)
   PYMETHODEDEF(viewTop)
   PYMETHODEDEF(viewAxometric)
+  PYMETHODEDEF(seekToPoint)
   PYMETHODEDEF(setViewDirection)
   PYMETHODEDEF(getViewDirection)
   PYMETHODEDEF(setFocalDistance)
@@ -351,6 +352,39 @@ PYFUNCIMP_D(View3DPy,viewAxometric)
 
   }PY_CATCH;
 } 
+
+PYFUNCIMP_D(View3DPy,seekToPoint)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+
+    try {
+        const Py::Tuple tuple(object);
+
+        // If the 3d point is given
+        if (tuple.size() == 3) {
+            Py::Float x = tuple[0];
+            Py::Float y = tuple[1];
+            Py::Float z = tuple[2];
+
+            SbVec3f hitpoint((float)x,(float)y,(float)z);
+            _pcView->getViewer()->pubSeekToPoint(hitpoint);
+        }
+        else {
+            Py::Int x = tuple[0];
+            Py::Int y = tuple[1];
+            
+            SbVec2s hitpoint ((long)x,(long)y);
+            _pcView->getViewer()->pubSeekToPoint(hitpoint);
+        }
+
+        return Py::new_reference_to(Py::None());  // increment ref counter
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
+}
 
 PYFUNCIMP_D(View3DPy,setViewDirection)
 {

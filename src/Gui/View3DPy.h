@@ -60,6 +60,7 @@ public:
     PYFUNCDEF_D(View3DPy,viewRight)
     PYFUNCDEF_D(View3DPy,viewTop)
     PYFUNCDEF_D(View3DPy,viewAxometric)
+    PYFUNCDEF_D(View3DPy,seekToPoint)
     PYFUNCDEF_D(View3DPy,setViewDirection)
     PYFUNCDEF_D(View3DPy,getViewDirection)
     PYFUNCDEF_D(View3DPy,setFocalDistance)
