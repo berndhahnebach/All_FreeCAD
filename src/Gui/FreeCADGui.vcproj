@@ -2758,6 +2758,14 @@
 				RelativePath="SoFCSelectionAction.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SoFCVectorizeSVGAction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoFCVectorizeSVGAction.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Language"

@@ -493,7 +493,7 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
     }
 
     //ps.setOrientation(SoVectorizeAction::LANDSCAPE);
-    ps.beginStandardPage(SoVectorizePSAction::PageSize(pagesize));
+    ps.beginStandardPage(SoVectorizeAction::PageSize(pagesize));
     ps.calibrate(this->getViewportRegion());
     ps.apply(this->getSceneManager()->getSceneGraph());
     ps.endPage();
