@@ -265,6 +265,8 @@ libFreeCADGui_la_SOURCES=\
 		SoFCSelection.h \
 		SoFCSelectionAction.cpp \
 		SoFCSelectionAction.h \
+		SoFCVectorizeSVGAction.cpp \
+		SoFCVectorizeSVGAction.h \
 		SpinBox.cpp \
 		SpinBox.h \
 		Splashscreen.cpp \
