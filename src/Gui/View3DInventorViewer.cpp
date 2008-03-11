@@ -1538,6 +1538,16 @@ bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &
     return false;
 }
 
+void View3DInventorViewer::pubSeekToPoint(const SbVec2s& pos)
+{
+    this->seekToPoint(pos);
+}
+
+void View3DInventorViewer::pubSeekToPoint(const SbVec3f& pos)
+{
+    this->seekToPoint(pos);
+}
+
 /**
  * This method is provided for convenience and does basically the same as method above unless that it
  * returns an SoPickedPoint object with additional information.
