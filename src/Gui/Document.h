@@ -102,6 +102,7 @@ public:
 
     /** @name I/O of the document */
     //@{
+    unsigned int getMemSize (void) const;
     /// Save the document
     bool save(void);
     /// Save the document under a new file name
