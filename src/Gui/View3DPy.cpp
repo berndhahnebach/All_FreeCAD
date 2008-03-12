@@ -122,11 +122,6 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(viewRight)
   PYMETHODEDEF(viewTop)
   PYMETHODEDEF(viewAxometric)
-  PYMETHODEDEF(seekToPoint)
-  PYMETHODEDEF(setViewDirection)
-  PYMETHODEDEF(getViewDirection)
-  PYMETHODEDEF(setFocalDistance)
-  PYMETHODEDEF(getFocalDistance)
   PYMETHODEDEF(saveImage)
   PYMETHODEDEF(saveVectorGraphic)
   PYMETHODEDEF(getCamera)
@@ -352,109 +347,6 @@ PYFUNCIMP_D(View3DPy,viewAxometric)
 
   }PY_CATCH;
 } 
-
-PYFUNCIMP_D(View3DPy,seekToPoint)
-{
-    PyObject* object;
-    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
-        return NULL;                       // NULL triggers exception 
-
-    try {
-        const Py::Tuple tuple(object);
-
-        // If the 3d point is given
-        if (tuple.size() == 3) {
-            Py::Float x = tuple[0];
-            Py::Float y = tuple[1];
-            Py::Float z = tuple[2];
-
-            SbVec3f hitpoint((float)x,(float)y,(float)z);
-            _pcView->getViewer()->pubSeekToPoint(hitpoint);
-        }
-        else {
-            Py::Int x = tuple[0];
-            Py::Int y = tuple[1];
-            
-            SbVec2s hitpoint ((long)x,(long)y);
-            _pcView->getViewer()->pubSeekToPoint(hitpoint);
-        }
-
-        return Py::new_reference_to(Py::None());  // increment ref counter
-    }
-    catch (const Py::Exception&) {
-        return NULL;
-    }
-}
-
-PYFUNCIMP_D(View3DPy,setViewDirection)
-{
-    PyObject* object;
-    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
-        return NULL;  // NULL triggers exception 
-
-    try {
-        Py::Tuple tuple(object);
-        Py::Float x(tuple.getItem(0));
-        Py::Float y(tuple.getItem(1));
-        Py::Float z(tuple.getItem(2));
-        SbVec3f dir;
-        dir.setValue((float)x, (float)y, (float)z);
-        if (dir.length() < 0.001f)
-            throw Py::ValueError("Null vector cannot be used to set direction");
-        SoCamera* cam = _pcView->_viewer->getCamera();
-        cam->orientation.setValue(SbRotation(SbVec3f(0, 0, -1), dir));
-    }
-    catch (Py::Exception&) {
-        return NULL;
-    }
-
-    Py_Return;
-}
-
-PYFUNCIMP_D(View3DPy,getViewDirection)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;  // NULL triggers exception 
-
-    try {
-        SoCamera* cam = _pcView->_viewer->getCamera();
-        SbRotation camrot = cam->orientation.getValue();
-        SbVec3f lookat(0, 0, -1); // init to default view direction vector
-        camrot.multVec(lookat, lookat);
-
-        Py::Tuple tuple(3);
-        tuple.setItem(0, Py::Float(lookat[0]));
-        tuple.setItem(1, Py::Float(lookat[1]));
-        tuple.setItem(2, Py::Float(lookat[2]));
-        return Py::new_reference_to(tuple);
-    }
-    catch (Py::Exception&) {
-        return NULL;
-    }
-}
-
-PYFUNCIMP_D(View3DPy,setFocalDistance)
-{
-    float distance;
-    if (!PyArg_ParseTuple(args, "f", &distance))     // convert args: Python->C 
-        return NULL;  // NULL triggers exception 
-
-    PY_TRY {
-        SoCamera* cam = _pcView->_viewer->getCamera();
-        cam->focalDistance.setValue(distance);
-    } PY_CATCH;
-
-    Py_Return;
-}
-
-PYFUNCIMP_D(View3DPy,getFocalDistance)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;  // NULL triggers exception 
-
-    SoCamera* cam = _pcView->_viewer->getCamera();
-    return PyFloat_FromDouble(cam->focalDistance.getValue());
-}
 
 PYFUNCIMP_D(View3DPy,saveImage)
 { 
@@ -1328,6 +1220,242 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
     return resultobj;
 }
 
+// -----------------------------------------------------------------
+
+static PyObject *
+wrap_SoQtViewer_setViewDirection(PyObject *proxy, PyObject *args)
+{
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
+        return NULL;
+    }
+
+    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
+
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    try {
+        Py::Tuple tuple(object);
+        Py::Float x(tuple.getItem(0));
+        Py::Float y(tuple.getItem(1));
+        Py::Float z(tuple.getItem(2));
+        SbVec3f dir;
+        dir.setValue((float)x, (float)y, (float)z);
+        if (dir.length() < 0.001f)
+            throw Py::ValueError("Null vector cannot be used to set direction");
+        SoCamera* cam = viewer->getCamera();
+        cam->orientation.setValue(SbRotation(SbVec3f(0, 0, -1), dir));
+        return Py::new_reference_to(Py::None());
+    }
+    catch (Py::Exception&) {
+        return NULL;
+    }
+}
+
+static PyObject *
+wrap_SoQtViewer_getViewDirection(PyObject *proxy, PyObject *args)
+{
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
+        return NULL;
+    }
+
+    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
+
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    try {
+        SoCamera* cam = viewer->getCamera();
+        SbRotation camrot = cam->orientation.getValue();
+        SbVec3f lookat(0, 0, -1); // init to default view direction vector
+        camrot.multVec(lookat, lookat);
+
+        Py::Tuple tuple(3);
+        tuple.setItem(0, Py::Float(lookat[0]));
+        tuple.setItem(1, Py::Float(lookat[1]));
+        tuple.setItem(2, Py::Float(lookat[2]));
+        return Py::new_reference_to(tuple);
+    }
+    catch (Py::Exception&) {
+        return NULL;
+    }
+}
+
+static PyObject *
+wrap_SoQtViewer_setFocalDistance(PyObject *proxy, PyObject *args)
+{
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
+        return NULL;
+    }
+
+    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
+
+    float distance;
+    if (!PyArg_ParseTuple(args, "f", &distance))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    PY_TRY {
+        SoCamera* cam = viewer->getCamera();
+        cam->focalDistance.setValue(distance);
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+static PyObject *
+wrap_SoQtViewer_getFocalDistance(PyObject *proxy, PyObject *args)
+{
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
+        return NULL;
+    }
+
+    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
+
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+
+    SoCamera* cam = viewer->getCamera();
+    return PyFloat_FromDouble(cam->focalDistance.getValue());
+}
+
+static PyObject *
+wrap_SoQtViewer_seekToPoint(PyObject *proxy, PyObject *args)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module) {
+        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
+        return NULL;
+    }
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery("SoQtViewer *");
+    if (!swig_type) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
+        return NULL;
+    }
+
+    // return value of 0 is on success
+    void* ptr = 0;
+    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
+        return NULL;
+    }
+
+    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
+
+    try {
+        const Py::Tuple tuple(object);
+
+        // If the 3d point is given
+        if (tuple.size() == 3) {
+            Py::Float x = tuple[0];
+            Py::Float y = tuple[1];
+            Py::Float z = tuple[2];
+
+            SbVec3f hitpoint((float)x,(float)y,(float)z);
+            viewer->pubSeekToPoint(hitpoint);
+        }
+        else {
+            Py::Int x = tuple[0];
+            Py::Int y = tuple[1];
+            
+            SbVec2s hitpoint ((long)x,(long)y);
+            viewer->pubSeekToPoint(hitpoint);
+        }
+
+        return Py::new_reference_to(Py::None());  // increment ref counter
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+struct PyMethodDef wrap_SoQtViewer_methods[] = { 
+    {"setViewDirection",wrap_SoQtViewer_setViewDirection,METH_VARARGS,
+     "setViewDirection(tuple) -> None"},
+    {"getViewDirection",wrap_SoQtViewer_getViewDirection,METH_VARARGS,
+     "getViewDirection() -> tuple"},
+    {"setFocalDistance",wrap_SoQtViewer_setFocalDistance,METH_VARARGS,
+     "setFocalDistance(float) -> None"},
+    {"getFocalDistance",wrap_SoQtViewer_getFocalDistance,METH_VARARGS,
+     "getFocalDistance() -> float"},
+    {"seekToPoint",wrap_SoQtViewer_seekToPoint,METH_VARARGS,
+     "seekToPoint(tuple) -> None\n"
+     "Initiate a seek action towards the 3D intersection of the scene and the\n"
+     "ray from the screen coordinate's point and in the same direction as the\n"
+     "camera is pointing"},
+    {NULL, NULL}  /* sentinel */
+};
+
 PYFUNCIMP_D(View3DPy,getViewer)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -1345,14 +1473,32 @@ PYFUNCIMP_D(View3DPy,getViewer)
         PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
         return NULL;
     }
-    
-    PyObject *resultobj = NULL;
+
     // Note: As there is no ref'counting mechanism for the viewer class we must
     // pass '0' as the third parameter so that the Python object does not 'own'
     // the viewer. 
     // Note: Once we have closed the viewer the Python object must not be used
     // anymore as it has a dangling pointer.
+    PyObject *resultobj = NULL;
     resultobj = SWIG_Python_NewPointerObj((void*)_pcView->getViewer(),swig_type,0);
+
+    // Add some additional methods to the viewer's type object
+    static bool first=true;
+    if (first && resultobj) {
+        first = false;
+        PyMethodDef *meth = wrap_SoQtViewer_methods;
+        PyTypeObject *type = resultobj->ob_type;
+        PyObject *dict = type->tp_dict;
+        for (; meth->ml_name != NULL; meth++) {
+            PyObject *descr;
+            descr = PyDescr_NewMethod(type, meth);
+            if (descr == NULL)
+                break;
+            if (PyDict_SetItemString(dict, meth->ml_name, descr) < 0)
+                break;
+            Py_DECREF(descr);
+        }
+    }
     return resultobj;
 }
 
