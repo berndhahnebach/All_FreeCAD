@@ -228,19 +228,19 @@ void Matrix4D::rotZ (float fAngle)
 
 void Matrix4D::rotLine (const Vector3d& rclVct, float fAngle)
 {
-    Vector3f tmp((float)rclVct.x,(float)rclVct.x,(float)rclVct.x);
+    Vector3f tmp((float)rclVct.x,(float)rclVct.y,(float)rclVct.z);
     rotLine(tmp,fAngle);
 }
 
 void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
 {
-  // **** Algorithmus wurde aus einem Mathebuch entnohmen 
+  // **** algorithm was taken from a math book
   Matrix4D  clMA, clMB, clMC, clMRot;
   Vector3f  clRotAxis(rclVct);
   short iz, is;
   float fcos, fsin;
 
-  // alle Eintraege auf "0" gesetzt
+  // set all entries to "0"
   for (iz = 0; iz < 4; iz++)
     for (is = 0; is < 4; is++)  {
       clMA.dMtrx4D[iz][is] = 0;
@@ -248,10 +248,10 @@ void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
       clMC.dMtrx4D[iz][is] = 0;
       }
 
-  // ** normieren der Rotationsachse 
+  // ** normalize the rotation axis
   clRotAxis.Normalize();
   
-  // ** Aufstellen der Rotaionsmatrix (Formel aus einem Mathebuch) */
+  // ** set the rotation matrix (formula taken from a math book) */
   fcos = (float)cos(fAngle);
   fsin = (float)sin(fAngle);
   
