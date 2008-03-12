@@ -258,6 +258,9 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
   if(strcmp("ViewFit",pMsg) == 0 ){
     _viewer->viewAll();
     return true;
+  }else if(strcmp("ViewSelection",pMsg) == 0) {
+    _viewer->viewSelection();
+    return true;
 // comment out on older Inventor
 #if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
   }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
@@ -405,6 +408,8 @@ bool View3DInventor::onHasMsg(const char* pMsg) const
   }else if(strcmp("Example3",pMsg) == 0 ){
     return true;
   }else if(strcmp("ViewFit",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewSelection",pMsg) == 0 ){
     return true;
   }else if(strcmp("ViewBottom",pMsg) == 0 ){
     return true;

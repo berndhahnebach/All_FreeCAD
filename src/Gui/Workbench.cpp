@@ -349,7 +349,8 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
         *StdViews << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
                   << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
 
-        *item << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+        *item << "Std_ViewFitAll" << "Std_ViewFitSelection" << StdViews
+              << "Separator" << "Std_ViewDockUndockFullscreen";
 
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
             *item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_TreeSelection" 
@@ -385,8 +386,10 @@ MenuItem* StdWorkbench::setupMenuBar() const
     // Standard views
     MenuItem* stdviews = new MenuItem;
     stdviews->setCommand(QT_TR_NOOP("Standard views"));
-    *stdviews << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
-              << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
+    *stdviews << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo"
+              << "Separator" << "Std_ViewFront" << "Std_ViewRight"
+              << "Std_ViewTop" << "Separator" << "Std_ViewRear" 
+              << "Std_ViewLeft" << "Std_ViewBottom";
 
     // stereo
     MenuItem* view3d = new MenuItem;
@@ -471,8 +474,9 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
     // View
     ToolBarItem* view = new ToolBarItem( root );
     view->setCommand(QT_TR_NOOP("Standard views"));
-    *view << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
-          << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
+    *view << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo" << "Separator"
+          << "Std_ViewFront" << "Std_ViewRight" << "Std_ViewTop" << "Separator"
+          << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
     // Special Ops
     ToolBarItem* macro = new ToolBarItem( root );
     macro->setCommand(QT_TR_NOOP("Special Ops"));

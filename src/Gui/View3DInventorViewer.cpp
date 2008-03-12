@@ -1669,6 +1669,39 @@ void View3DInventorViewer::viewAll()
   }
 }
 
+void View3DInventorViewer::viewSelection()
+{
+    // Search for all SoFCSelection nodes
+    SoSearchAction searchAction;
+    searchAction.setType(SoFCSelection::getClassTypeId());
+    searchAction.setInterest(SoSearchAction::ALL);
+    searchAction.apply(pcViewProviderRoot);
+
+    SoPathList& paths = searchAction.getPaths();
+    int countPaths = paths.getLength();
+
+    SoGroup* root = new SoGroup();
+    root->ref();
+
+    for (int i=0; i<countPaths;i++) {
+        SoPath* path = paths[i];
+        SoNode* node = path->getTail();
+        if (!node || node->getTypeId() != SoFCSelection::getClassTypeId())
+            continue; // should not happen
+        SoFCSelection* select = static_cast<SoFCSelection *>(node);
+        // Check only document and object name but not sub-element name
+        if (Selection().isSelected(select->documentName.getValue().getString(),
+                                   select->objectName.getValue().getString())
+                                   ) {
+            root->addChild(select);
+        }
+    }
+
+    SoCamera* cam = this->getCamera();
+    if (cam) cam->viewAll(root, this->getViewportRegion());
+    root->unref();
+}
+
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)
 {
    pan(getCamera(),getGLAspectRatio(),panningplane, SbVec2f(0.5,0.5), currpos);
