@@ -702,6 +702,34 @@ bool StdCmdViewFitAll::isActive(void)
 }
 
 //===========================================================================
+// Std_ViewFitSelection
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewFitSelection);
+
+StdCmdViewFitSelection::StdCmdViewFitSelection()
+  : Command("Std_ViewFitSelection")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Fit selection");
+  sToolTipText  = QT_TR_NOOP("Fits the selected content on the screen");
+  sWhatsThis    = QT_TR_NOOP("Fits the selected content on the screen");
+  sStatusTip    = QT_TR_NOOP("Fits the selected content on the screen");
+  iAccel        = 0;
+}
+
+void StdCmdViewFitSelection::activated(int iMsg)
+{
+  //doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
+   doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewSelection\")");
+}
+
+bool StdCmdViewFitSelection::isActive(void)
+{
+  //return isViewOfType(Gui::View3DInventor::getClassTypeId());
+  return getGuiApplication()->sendHasMsgToActiveView("ViewSelection");
+}
+
+//===========================================================================
 // Std_ViewDockUndockFullscreen
 //===========================================================================
 DEF_STD_CMD_AC(StdViewDockUndockFullscreen);
@@ -1336,6 +1364,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdViewTop());
   rcCmdMgr.addCommand(new StdCmdViewAxo());
   rcCmdMgr.addCommand(new StdCmdViewFitAll());
+  rcCmdMgr.addCommand(new StdCmdViewFitSelection());
 
   rcCmdMgr.addCommand(new StdCmdViewExample1());
   rcCmdMgr.addCommand(new StdCmdViewExample2());

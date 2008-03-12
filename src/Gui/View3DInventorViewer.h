@@ -161,6 +161,12 @@ public:
    * Reposition the current camera so we can see the complete scene.
    */
   void viewAll();
+  /**
+   * Reposition the current camera so we can see all selected objects 
+   * of the scene. Therefore we search for all SOFCSelection nodes, if
+   * none of them is selected nothing happens.
+   */
+  void viewSelection();
 
   /** @name Modus handling of the viewer
     * Here the you can switch on/off several features
