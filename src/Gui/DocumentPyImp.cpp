@@ -100,7 +100,7 @@ PyObject*  DocumentPy::update(PyObject *args)
         return NULL;                       // NULL triggers exception 
 
     PY_TRY {
-        getDocumentPtr()->update();
+        getDocumentPtr()->onUpdate();
         Py_Return;
     } PY_CATCH;
 }
@@ -192,6 +192,9 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
     // with the same name as an attribute. If so, we return 0 as other-
     // wise it wouldn't be possible to address this attribute any more.
     // The object must then be addressed by the getObject() method directly.
+    //
+    // FIXME: We must also search for Python members (PyObject_GenericGetAttr
+    // would do that but it seems to leak references!?)
     PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
     if (method) {
         Py_DECREF(method);

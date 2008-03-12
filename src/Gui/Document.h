@@ -70,7 +70,7 @@ class DocumentPy;
 class GuiExport Document : public Base::Persistance
 {
 public:
-    Document(App::Document* pcDocument, Application * app, const char * name=0);
+    Document(App::Document* pcDocument, Application * app);
     ~Document();
 
 protected:
@@ -149,7 +149,7 @@ public:
     void attachView(Gui::BaseView* pcView, bool bPassiv=false);
     /// Detach a view (get called by the MDIView destructor)
     void detachView(Gui::BaseView* pcView, bool bPassiv=false);
-    /// call update on attached all views
+    /// call update on all attached views
     void onUpdate(void);
     /// call relabel to all attached views
     void onRelabel(void);
@@ -177,8 +177,6 @@ public:
     void setHide(const char* name);
     /// set the feature transformation (only viewing)
     void setPos(const char* name, const Base::Matrix4D& rclMtrx);
-    /// updates the view property of all view provider
-    void update(void);
     std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     ViewProvider *getViewProviderByName(const char* name) const;
     //@}
