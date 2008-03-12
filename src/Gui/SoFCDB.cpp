@@ -33,7 +33,7 @@
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCInteractiveElement.h"
-#include "SOFCVectorizeSVGAction.h"
+#include "SoFCVectorizeSVGAction.h"
 
 #include "propertyeditor/propertyeditordate.h"
 #include "propertyeditor/propertyeditorfile.h"
