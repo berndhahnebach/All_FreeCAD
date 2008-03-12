@@ -478,6 +478,17 @@ bool Document::saveAs(void)
   }
 }
 
+unsigned int Document::getMemSize (void) const
+{
+    unsigned int size = 0;
+
+    // size of the view providers in the document
+    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
+    for (it = _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it)
+        size += it->second->getMemSize();
+    return size;
+}
+
 /** 
  * Adds a separate XML file to the projects file that contains information about the view providers.
  */
