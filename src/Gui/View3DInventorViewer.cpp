@@ -465,16 +465,15 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
 void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
                                        int eBackgroundType) const
 {
-    // if no valid color use the current background
     SbViewportRegion vp(getViewportRegion());
     SoVectorizePSAction ps;
+    //ps.setGouraudThreshold(0.0f);
     SoVectorOutput * out = ps.getOutput();
     if (!out->openFile(filename)) {
         throw Base::FileException("View3DInventorViewer::saveGraphic(): "
                                   "Cannot open file", filename);
     }
 
-    // if we use transparency then we must not set a background color
     switch(eBackgroundType){
         case Current:
             ps.setBackgroundColor(true, this->getBackgroundColor());
@@ -492,10 +491,44 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
                                   "Unknown parameter");
     }
 
-    //ps.setOrientation(SoVectorizeAction::LANDSCAPE);
-    ps.beginStandardPage(SoVectorizeAction::PageSize(pagesize));
+    float border = 10.0f;
+    SbVec2s vpsize = this->getViewportRegion().getViewportSizePixels();
+    float vpratio = ((float)vpsize[0]) / ((float)vpsize[1]); 
+
+    if (vpratio > 1.0f) {
+      ps.setOrientation(SoVectorizeAction::LANDSCAPE);
+      vpratio = 1.0f / vpratio;
+    }
+    else {
+      ps.setOrientation(SoVectorizeAction::PORTRAIT);
+    }
+
+    ps.beginStandardPage(SoVectorizeAction::PageSize(pagesize), border);
+
+    // try to fill as much "paper" as possible
+    SbVec2f size = ps.getPageSize();
+
+    float pageratio = size[0] / size[1];
+    float xsize, ysize;
+
+    if (pageratio < vpratio) {
+      xsize = size[0];
+      ysize = xsize / vpratio;
+    }
+    else {
+      ysize = size[1];
+      xsize = ysize * vpratio;
+    }
+
+    float offx = border + (size[0]-xsize) * 0.5f;
+    float offy = border + (size[1]-ysize) * 0.5f;
+
+    ps.beginViewport(SbVec2f(offx, offy), SbVec2f(xsize, ysize));
     ps.calibrate(this->getViewportRegion());
+    
     ps.apply(this->getSceneManager()->getSceneGraph());
+
+    ps.endViewport();    
     ps.endPage();
     out->closeFile();
 }
