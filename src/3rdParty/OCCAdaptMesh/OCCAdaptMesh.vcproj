@@ -695,6 +695,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\BRepUtils.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\MeshAlgoAdapt\MeshAlgoAdapt.cxx"
 				>
 			</File>
