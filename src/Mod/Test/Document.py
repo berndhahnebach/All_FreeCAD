@@ -152,7 +152,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
 
   def testSaveAndRestore(self):
     # saving and restoring
-    SaveName = self.TempPath + os.sep + "Test1.FCStd"
+    SaveName = self.TempPath + os.sep + "SaveRestoreTests.FCStd"
     self.Doc.FileName = SaveName
     self.Doc.save()
     FreeCAD.closeDocument("SaveRestoreTests")
@@ -500,7 +500,7 @@ class DocumentPlatformCases(unittest.TestCase):
     self.Doc = FreeCAD.newDocument("PlatformTests")
     self.Doc.addObject("App::FeatureTest", "Test")
     self.TempPath = tempfile.gettempdir()
-    self.DocName = self.TempPath + os.sep + "Platform.FCStd"
+    self.DocName = self.TempPath + os.sep + "PlatformTests.FCStd"
     self.Doc.FileName = self.DocName
 
   def testFloatList(self):

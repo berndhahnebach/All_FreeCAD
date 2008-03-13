@@ -192,16 +192,12 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
     // with the same name as an attribute. If so, we return 0 as other-
     // wise it wouldn't be possible to address this attribute any more.
     // The object must then be addressed by the getObject() method directly.
-    //
-    // FIXME: We must also search for Python members (PyObject_GenericGetAttr
-    // would do that but it seems to leak references!?)
-    PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
-    if (method) {
-        Py_DECREF(method);
-        return 0;
-    } else if (PyErr_Occurred()) {
-        PyErr_Clear();
+    if (this->ob_type->tp_dict == NULL) {
+        if (PyType_Ready(this->ob_type) < 0)
+            return 0;
     }
+    PyObject* item = PyDict_GetItemString(this->ob_type->tp_dict, attr);
+    if (item) return 0;
     // search for an object with this name
     ViewProvider* obj = getDocumentPtr()->getViewProviderByName(attr);
     return (obj ? obj->getPyObject() : 0);
@@ -214,13 +210,12 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
     // with the same name as an attribute. If so, we return 0 as other-
     // wise it wouldn't be possible to address this attribute any more.
     // The object must then be addressed by the getObject() method directly.
-    PyObject *method = Py_FindMethod(this->Methods, this, attr);
-    if (method) {
-        Py_DECREF(method);
-        return 0;
-    } else if (PyErr_Occurred()) {
-        PyErr_Clear();
+    if (this->ob_type->tp_dict == NULL) {
+        if (PyType_Ready(this->ob_type) < 0)
+            return 0;
     }
+    PyObject* item = PyDict_GetItemString(this->ob_type->tp_dict, attr);
+    if (item) return 0;
     ViewProvider* obj = getDocumentPtr()->getViewProviderByName(attr);
     if (obj) {
         std::stringstream str;

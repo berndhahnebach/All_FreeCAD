@@ -311,13 +311,12 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
     // The object must then be addressed by the getObject() method directly.
     App::Property* prop = getPropertyContainerPtr()->getPropertyByName(attr);
     if (prop) return 0;
-    PyObject *method = Py_FindMethod(this->Methods, const_cast<DocumentPy*>(this), attr);
-    if (method) {
-        Py_DECREF(method);
-        return 0;
-    } else if (PyErr_Occurred()) {
-        PyErr_Clear();
+    if (this->ob_type->tp_dict == NULL) {
+        if (PyType_Ready(this->ob_type) < 0)
+            return 0;
     }
+    PyObject* item = PyDict_GetItemString(this->ob_type->tp_dict, attr);
+    if (item) return 0;
     // search for an object with this name
     DocumentObject* obj = getDocumentPtr()->getObject(attr);
     return (obj ? obj->getPyObject() : 0);
@@ -332,13 +331,12 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *)
     // The object must then be addressed by the getObject() method directly.
     App::Property* prop = getPropertyContainerPtr()->getPropertyByName(attr);
     if (prop) return 0;
-    PyObject *method = Py_FindMethod(this->Methods, this, attr);
-    if (method) {
-        Py_DECREF(method);
-        return 0;
-    } else if (PyErr_Occurred()) {
-        PyErr_Clear();
+    if (this->ob_type->tp_dict == NULL) {
+        if (PyType_Ready(this->ob_type) < 0)
+            return 0;
     }
+    PyObject* item = PyDict_GetItemString(this->ob_type->tp_dict, attr);
+    if (item) return 0;
     DocumentObject* obj = getDocumentPtr()->getObject(attr);
     if (obj)
     {
