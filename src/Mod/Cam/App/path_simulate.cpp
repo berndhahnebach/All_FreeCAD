@@ -78,10 +78,10 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
     m_single=false;
 	
 	m_pretension = m_set.spring_pretension;
-	m_blech = m_set.sheet_thickness;
+	m_blech = float(m_set.sheet_thickness);
 
-	m_amax  = 0.85*m_set.max_Acc;
-	m_vmax  = 0.85*m_set.max_Vel;
+	m_amax  = 0.85*float(m_set.max_Acc);
+	m_vmax  = 0.85*float(m_set.max_Vel);
 	m_a1    = m_amax;
 	m_a2    = m_amax;
 	m_v1    = m_vmax;
@@ -2331,11 +2331,13 @@ bool path_simulate::MakePathRobot()
 	ofstream anOutputFile2;
 
     anOutputFile.open("output_master.k");
-    anOutputFile.precision(7);
+    anOutputFile.precision(5);
+    anOutputFile.setf(ios::fixed,ios::floatfield);
 
 	if(m_single == false){
 		anOutputFile2.open("output_slave.k");
-	    anOutputFile2.precision(7);
+	    anOutputFile2.precision(5);
+        anOutputFile2.setf(ios::fixed,ios::floatfield);
 	}
 
 	anOutputFile  << "none" << std::endl;
@@ -2454,11 +2456,13 @@ bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas)
     ofstream anOutputFile[2];
 
 	anOutputFile[0].open("output_master.k");
-    anOutputFile[0].precision(7);
+    anOutputFile[0].precision(5);
+    anOutputFile[0].setf(ios::fixed,ios::floatfield);
  
 	if(m_single == false){
 		anOutputFile[1].open("output_slave.k");
-	    anOutputFile[1].precision(7);
+	    anOutputFile[1].precision(5);
+        anOutputFile[1].setf(ios::fixed,ios::floatfield);
 	}
 
 	m_it1 = m_BSplineTop.begin();
@@ -2669,13 +2673,13 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 		if(m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
 
 		// erste Zustellung wird noch seperat gehandelt
-		if(i==0)
-		{
-			/**************************************** ZUSTELLUNG 1 **********************************************/
-			ConnectPaths_xy(1);
-			/**************************************** ZUSTELLUNG 2 **********************************************/
-			ConnectPaths_z(1);
-		}
+		//if(i==0)
+		//{
+		//	/**************************************** ZUSTELLUNG 1 **********************************************/
+		//	ConnectPaths_xy(1);
+		//	/**************************************** ZUSTELLUNG 2 **********************************************/
+		//	ConnectPaths_z(1);
+		//}
 
 		if(!tool){
 			it_1 = &m_it1;
@@ -2766,10 +2770,11 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 			anOutputFile[0] << "continuous" << std::endl;
 			anOutputFile[1] << "none" << std::endl;
 		}
-
+        
+		ConnectPaths_Feat(0, 1, 1);		
 		WriteOutput_Feat(anOutputFile[0], anOutputFile[1],f,1,beam);
-
-	    master_file.str("");
+	    
+        master_file.str("");
 		master_file.clear();
 		slave_file.str("");
 		slave_file.clear();
@@ -2777,11 +2782,12 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 		m_Output_robo1.clear();
 		m_Output_robo2.clear();
 
+        
+
 		if(*it_1 == (*curves_1).end()-1 && *it_2 == (*curves_2).end()-1)
 			break;
-
-		ConnectPaths_Feat(0, 1, 1);
-		ConnectPaths_Feat(1, 1, 0);
+    
+        ConnectPaths_Feat(1, 1, 0);
 		++i;
 	}
 
@@ -2902,11 +2908,13 @@ bool path_simulate::MakePathSimulate()
 	ofstream anOutputFile2;
 
     anOutputFile.open("output_master.k");
-    anOutputFile.precision(7);
+    anOutputFile.precision(5);
+    anOutputFile.setf(ios::fixed,ios::floatfield);
 
 	if(m_single == false){
 		anOutputFile2.open("output_slave.k");
-	    anOutputFile2.precision(7);
+	    anOutputFile2.precision(5);
+        anOutputFile2.setf(ios::fixed,ios::floatfield);
 	}
 
 	for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end(); ++m_it1)
@@ -3206,13 +3214,13 @@ bool path_simulate::WriteOutput_Feat(ofstream &anOutputFile, ofstream &anOutputF
         {
             int n1 = m_Output_robo1.size();
 			for (int i=0; i<n1; ++i)
-                anOutputFile  << m_Output_robo1[i].x + 290.0 << "," <<  m_Output_robo1[i].y + 145.0 << "," << m_Output_robo1[i].z  << endl;
+                anOutputFile  << m_Output_robo1[i].x + m_set.x_offset_robot << "," <<  m_Output_robo1[i].y + m_set.y_offset_robot << "," << m_Output_robo1[i].z <<",0" << endl;
 
 			anOutputFile.close();
 
 			int n2 = m_Output_robo2.size();
             for (int i=0; i<n2; ++i)
-                anOutputFile2 << m_Output_robo2[i].x + 290.0 << "," <<  m_Output_robo2[i].y + 145.0 << "," << m_Output_robo2[i].z  << endl;
+                anOutputFile2 << m_Output_robo2[i].x + m_set.x_offset_robot << "," <<  m_Output_robo2[i].y + m_set.y_offset_robot << "," << m_Output_robo2[i].z <<",0" << endl;
 
 			anOutputFile2.close();
         }
@@ -3282,7 +3290,8 @@ bool path_simulate::WriteTimes()
 	ofstream anOutputFile;
 
 	anOutputFile.open("CurveTimes.k");
-    anOutputFile.precision(7);
+    anOutputFile.precision(5);
+    anOutputFile.setf(ios::fixed,ios::floatfield);
 	
 	for(unsigned int i=0; i< m_PathTimes_Master.size(); ++i)
 	{
@@ -3549,13 +3558,13 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 			anOutputFile2 << "3,3,0," << c2+2 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
 			
 			if(beamfl){
-				anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
-				anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-				anOutputFile << pid2 << ",3,0," << c2+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+				anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+				anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+				anOutputFile2 << pid2 << ",3,0," << c2+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
 				
 			}
 			
-			anOutputFile << "*DEFINE_CURVE" << std::endl << c2+2 <<  std::endl;
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2+2 <<  std::endl;
 		
 			for (int i=0; i<n2; ++i)
 			{

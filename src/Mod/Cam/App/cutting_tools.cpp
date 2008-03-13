@@ -1997,7 +1997,9 @@ bool cutting_tools::OffsetWires_Spiral()
     anoutput1.open("c:/spiral.txt");
     std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
     current_flat_level = m_ordered_cuts.begin();
-    gp_Pnt lastPoint(0.0,0.0,0.0);//Set the Beginning to the Origin
+    SpiralHelper lastPoint;
+    lastPoint.SurfacePoint.SetCoord(0.0,0.0,0.0);
+    
     gp_Vec direction_vector(0.0,0.0,1.0),last_direction_vector(0.0,0.0,1.0);//Just to initialize them
     bool direction = true; //for the Robot, this tells the algo that we have to switch the direction
     //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
@@ -2098,11 +2100,9 @@ bool cutting_tools::OffsetWires_Spiral()
                         aSpiralStruct.SurfaceNormal = normalVec;
                         aSpiralStruct.SurfacePoint = aSurfacePoint;
                         TempSpiralPoints.push_back(aSpiralStruct);
-
                     }
                 }
             }
-
             //Now we have to find the shortest distance to the lastPoint of the previous spiral.
             //At the beginning the lastPoint is the Origin
             //This represents our startPoint. If we just started, then we skip this point
@@ -2110,7 +2110,7 @@ bool cutting_tools::OffsetWires_Spiral()
             float dist,distold = FLT_MAX;
             for (unsigned int t=0;t<TempSpiralPoints.size();t++)
             {
-                dist = TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint);
+                dist = TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint.SurfacePoint);
                 if (dist<distold)
                 {
                     start_index = t;
@@ -2118,10 +2118,8 @@ bool cutting_tools::OffsetWires_Spiral()
                 }
             }
             //now we know where to  start at our PointCloud, its the index t
-            double distance=0.0;
             gp_Pnt PreviousPoint = TempSpiralPoints[start_index].SurfacePoint;
-            OffsetSpiralPoints.push_back(TempSpiralPoints[start_index]);
-            //check the current direction we would like to go
+            //check the current direction we would go
             gp_Vec help_Vec(TempSpiralPoints[start_index].SurfacePoint.Coord());
             direction_vector = TempSpiralPoints[start_index+1].SurfacePoint.Coord();
             direction_vector.Subtract(help_Vec);
@@ -2132,25 +2130,40 @@ bool cutting_tools::OffsetWires_Spiral()
             IntCurvesFace_ShapeIntersector anIntersector;
             anIntersector.Load(m_Shape,0.01);
 
-            //We directly start at start+1 as the first point is at the highest level.
+            //We directly start at start+1 as the first point is from the last level.
+            //Insert the first point into the TempSpiralPoints if we have just started
+            std::vector<SpiralHelper> TempSpiralPointsFinal;
+            TempSpiralPointsFinal.clear();
+            gp_Pnt origin(0.0,0.0,0.0);
+            if(!lastPoint.SurfacePoint.IsEqual(origin,0.1)) 
+            {TempSpiralPoints[start_index] = lastPoint;
+            TempSpiralPointsFinal.push_back(TempSpiralPoints[start_index]);}
 
             if (direction)
                 adapted_start_index = start_index+1;
-            else
+            else 
+            {   if(start_index==0)
+                adapted_start_index = TempSpiralPoints.size()-2; //Skip the last Point as its equal to the first one
+                else
                 adapted_start_index = start_index-1;
-            for (unsigned int j=adapted_start_index;j<TempSpiralPoints.size();++j)
+            }
+            double distance=0.0;
+            float current_z_value= (m_ordered_cuts_it-1)->first;
+
+            for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
             {
+                
                 distance = distance + PreviousPoint.Distance(TempSpiralPoints[j].SurfacePoint);
 
                 double delta_z = distance * m_UserSettings.level_distance / CurveLength;
                 //we have to store the currentPoint for the distance calculation
                 //before we change something at its coordinates
                 PreviousPoint = TempSpiralPoints[j].SurfacePoint;
-                float current_z_value= TempSpiralPoints[j].SurfacePoint.Z();
+                
                 TempSpiralPoints[j].SurfacePoint.SetZ(TempSpiralPoints[j].SurfacePoint.Z()-delta_z);
                 //before we shoot we check if the z-level is not exactly the same as the next round
-                if (fabs(TempSpiralPoints[j].SurfacePoint.Z()-current_z_value-m_UserSettings.level_distance)<=0.04)
-                    break; //We have nearly reached the next z-level, therefore we stop here.
+                //if (fabs(current_z_value-m_UserSettings.level_distance-TempSpiralPoints[j].SurfacePoint.Z())<=0.04)
+                //    break; //We have nearly reached the next z-level, therefore we stop here.
                 //Now we have to shoot to get the real Point we want
                 //Therefore we have to generate the Direction Vector where to Shoot
                 gp_Dir Shooting_Direction = getPerpendicularVec(TempSpiralPoints[j].LineD1);
@@ -2175,7 +2188,12 @@ bool cutting_tools::OffsetWires_Spiral()
                             shortestDistanceOld = shortestDistance;
                         }
                     }
+                    //Now we check how far the shortest Distance is. If its more than 5mm then we jump to the 
+                    //next Point
+                    if(shortestDistanceOld>50) 
+                        continue;
                     TempSpiralPoints[j].SurfacePoint = anIntersector.Pnt(current_index);
+
                 }
                 else //We have to try a mesh intersection as the Nurb Intersection does not seem to work
                 {
@@ -2186,78 +2204,91 @@ bool cutting_tools::OffsetWires_Spiral()
                 BRepAdaptor_Surface aFaceAdaptor(anIntersector.Face(current_index));
                 gp_Pnt P;
                 gp_Vec U_Vec,V_Vec;
-                aFaceAdaptor.D1(anIntersector.UParameter(current_index),\
-                                anIntersector.VParameter(current_index),P,U_Vec,V_Vec);
+                aFaceAdaptor.D1(anIntersector.UParameter(current_index),anIntersector.VParameter(current_index),P,U_Vec,V_Vec);
                 U_Vec.Cross(V_Vec);
                 U_Vec.Normalize();
                 if (U_Vec.Z() < 0) U_Vec.Multiply(-1.0);
 
-                U_Vec.Multiply(m_UserSettings.master_radius);
                 TempSpiralPoints[j].SurfaceNormal = U_Vec;
-                //Offset for Master and Slave
-
-                TempSpiralPoints[j].SurfacePoint.SetXYZ(TempSpiralPoints[j].SurfacePoint.XYZ() + TempSpiralPoints[j].SurfaceNormal.XYZ());
-                if (OffsetSpiralPoints.size()>0 && (OffsetSpiralPoints.rbegin()->SurfacePoint.SquareDistance(TempSpiralPoints[j].SurfacePoint)>(Precision::Confusion()*Precision::Confusion())))
-                {
-                    OffsetSpiralPoints.push_back(TempSpiralPoints[j]);
-                    anoutput1 << TempSpiralPoints[j].SurfacePoint.X() <<","<< TempSpiralPoints[j].SurfacePoint.Y() <<","<< TempSpiralPoints[j].SurfacePoint.Z()<<std::endl;
-                }
-                else if (OffsetSpiralPoints.empty())
-                {
-                    OffsetSpiralPoints.push_back(TempSpiralPoints[j]);
-                    anoutput1 << TempSpiralPoints[j].SurfacePoint.X() <<","<< TempSpiralPoints[j].SurfacePoint.Y() <<","<< TempSpiralPoints[j].SurfacePoint.Z()<<std::endl;
-                }
+                TempSpiralPointsFinal.push_back(TempSpiralPoints[j]);
                 //If we reached the end before we processed all points, then we start at the beginning.
-                //Depending on the direction we also have to switch
                 if (direction)
                 {
                     if (j+1==TempSpiralPoints.size())
                     {
                         j=-1;    //-1 because at the for we ++ the variable directly
                     }
-                    else if (j+1==start_index)
+                    else if (j==start_index)
                         break; //Now we have completed all Points
                 }
                 else
                 {
-                    if (j-1==0) //if we are at the beginning
+                    if ((start_index!=0)&& j-1==0) //if the next point is at the beginning and start_index !=0
                     {
                         //As it is pushed +1 at the top
                         j=TempSpiralPoints.size()-2;
                         continue;
                     }
-                    else if (j-1==start_index)
+                    else if (j==start_index)
                         break;
+                    
                     j=j-2;//As the for puts +1 for each step
-
                 }
             }
+            //Offset for Master and Slave
+            OffsetSpiralPoints = OffsetSpiral(TempSpiralPointsFinal);
             //Now store the lastPoint of the currentSpiral as we need it for the next one
-            //we also store the current direction
-            lastPoint = OffsetSpiralPoints.rbegin()->SurfacePoint;
-            gp_Vec temp_vector((OffsetSpiralPoints.rbegin()+1)->SurfacePoint.Coord());
-            last_direction_vector = OffsetSpiralPoints.rbegin()->SurfacePoint.Coord();
+            lastPoint = *(TempSpiralPointsFinal.rbegin());
+            gp_Vec temp_vector((TempSpiralPointsFinal.rbegin()+1)->SurfacePoint.Coord());
+            last_direction_vector = TempSpiralPointsFinal.rbegin()->SurfacePoint.Coord();
             last_direction_vector.Subtract(temp_vector);
             last_direction_vector.Normalize();
-            //Before we Interpolate we have to adapt the first Point in our OffsetSpiralPoints as this point was not offsetted yet :(
-            gp_Vec NormalVec(OffsetSpiralPoints.begin()->SurfaceNormal.XYZ());
-            NormalVec.Multiply(m_UserSettings.master_radius);
-            OffsetSpiralPoints.begin()->SurfacePoint.SetXYZ(OffsetSpiralPoints.begin()->SurfacePoint.XYZ() + NormalVec.XYZ());
             Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1,OffsetSpiralPoints.size());
             TColgp_Array1OfVec Tangents(1,OffsetSpiralPoints.size());
             for (unsigned int t=0;t<OffsetSpiralPoints.size();++t)
             {
                 InterpolationPoints->SetValue(t+1,OffsetSpiralPoints[t].SurfacePoint);
+                anoutput1 << OffsetSpiralPoints[t].SurfacePoint.X() <<","<<OffsetSpiralPoints[t].SurfacePoint.Y()<<","<<OffsetSpiralPoints[t].SurfacePoint.Z()<<std::endl;
             }
+            bool check = CheckPoints(InterpolationPoints);
             //Here we interpolate. If direction == true this means that the rotation is like the initial rotation
             m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
-            if (direction) direction =false; //For the next step we change the direction
         }
     }
 
     return true;
+    anoutput1.close();
 }
 
+
+std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHelper>& SpiralPoints)
+{
+    std::vector<SpiralHelper> OffsetPoints;
+    SpiralHelper OffsetPoint;
+    OffsetPoints.clear();
+    //Offset the Points now
+    
+    for(int i=0;i<SpiralPoints.size();++i)
+    {
+        OffsetPoint = SpiralPoints[i];
+        OffsetPoint.SurfaceNormal.Multiply(m_UserSettings.master_radius);
+        OffsetPoint.SurfacePoint.SetXYZ(OffsetPoint.SurfacePoint.XYZ() + OffsetPoint.SurfaceNormal.XYZ());
+        if (OffsetPoints.size()>0 && (OffsetPoints.rbegin()->SurfacePoint.SquareDistance(OffsetPoint.SurfacePoint)>(Precision::Confusion()*Precision::Confusion())))
+        {
+            OffsetPoints.push_back(OffsetPoint);
+        }
+        else if (OffsetPoints.empty())
+        {
+            OffsetPoints.push_back(OffsetPoint);
+        }
+        else if ((i+1==SpiralPoints.size()) && (OffsetPoints.rbegin()->SurfacePoint.SquareDistance(OffsetPoint.SurfacePoint)<(Precision::Confusion()*Precision::Confusion())))
+        {   //This part is necessary as the last point of the current spiral would otherwise not be offsetted
+            OffsetPoints.pop_back();//Delete the currently last point
+            OffsetPoints.push_back(OffsetPoint);//Add the last point
+        }
+    }
+    return OffsetPoints;
+}
 std::vector<float> cutting_tools::getFlatAreas()
 {
     std::vector<float> FlatAreas;
