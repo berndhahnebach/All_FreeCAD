@@ -478,6 +478,8 @@ const CuttingToolsSettings& Cutting::getSettings()
     m_Settings.max_Vel = max_vel->value();
     m_Settings.max_Acc = max_acc->value();
     m_Settings.spring_pretension = spring_pretension->value();
+    m_Settings.x_offset_robot = xoffset_box->value();
+    m_Settings.y_offset_robot = yoffset_box->value();
 
 	return m_Settings;
 }

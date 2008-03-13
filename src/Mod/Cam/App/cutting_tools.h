@@ -45,6 +45,8 @@ struct CuttingToolsSettings
     double max_Vel;
     double max_Acc;
     int spring_pretension;
+    double y_offset_robot;
+    double x_offset_robot;
 };
 
 struct SpiralHelper
@@ -138,7 +140,7 @@ private:
     //bool checkFlatLevel();
     bool cut(float z_level, float min_level, TopoDS_Shape &aCutShape,float &z_level_corrected);
     bool cut_Mesh(float z_level, float min_level, std::list<std::vector<Base::Vector3f> > &result,float &z_level_corrected);
-
+    std::vector<SpiralHelper> OffsetSpiral(const std::vector<SpiralHelper>& SpiralPoints);
     gp_Dir getPerpendicularVec(gp_Vec& anInput);
     std::vector<std::pair<float,TopoDS_Shape> > m_ordered_cuts;
     std::vector<std::pair<TopoDS_Face,Base::BoundBox3f> > m_face_bboxes;
