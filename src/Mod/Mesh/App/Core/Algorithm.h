@@ -150,7 +150,7 @@ public:
    * introduced new points which are added to the end of \a rPoints.
    */
   bool FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, MeshPointArray& rPoints,
-                  const MeshRefPointToFacets* pP2FStructure=0) const;
+                  int level, const MeshRefPointToFacets* pP2FStructure=0) const;
   /** Sets to all facets in \a raulInds the properties in raulProps. 
    * \note Both arrays must have the same size.
    */
@@ -312,6 +312,7 @@ public:
 
   /// Rebuilds up data structure
   void Rebuild (void);
+  std::set<unsigned long> NeighbourPoints(const std::vector<unsigned long>& , int level) const;
   void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
 
 protected:

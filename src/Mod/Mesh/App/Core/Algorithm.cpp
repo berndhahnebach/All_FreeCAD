@@ -28,6 +28,7 @@
 #endif
 
 #include "Algorithm.h"
+#include "Approximation.h"
 #include "Elements.h"
 #include "Iterator.h"
 #include "Grid.h"
@@ -622,7 +623,7 @@ void MeshAlgorithm::SplitBoundaryLoops( const std::vector<unsigned long>& rBound
 }
 
 bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, 
-                               MeshPointArray& rPoints, const MeshRefPointToFacets* pP2FStructure) const
+                               MeshPointArray& rPoints, int level, const MeshRefPointToFacets* pP2FStructure) const
 {
     // first and last vertex are identical
     if ( boundary.size() < 4 )
@@ -665,9 +666,9 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float
 
     // add points to the polygon
     std::vector<Base::Vector3f> polygon;
-    for ( std::vector<unsigned long>::const_iterator jt = boundary.begin(); jt != boundary.end(); ++jt ) {
-        polygon.push_back( _rclMesh._aclPointArray[*jt] );
-        rPoints.push_back( _rclMesh._aclPointArray[*jt] );
+    for (std::vector<unsigned long>::const_iterator jt = boundary.begin(); jt != boundary.end(); ++jt) {
+        polygon.push_back(_rclMesh._aclPointArray[*jt]);
+        rPoints.push_back(_rclMesh._aclPointArray[*jt]);
     }
 
     // remove the last added point if it is duplicated
@@ -678,16 +679,39 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float
     // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
     // If the scalar product is positive it was a hole, otherwise not.
     MeshPolygonTriangulation cTria;
-    cTria.SetPolygon( polygon );
+    cTria.SetPolygon(polygon);
 
     // Get the inverse transformation to project back to world coordinates
     Base::Matrix4D inverse;
     cTria.TransformToFitPlane(inverse);
+    // For a good approximation we should have enough points, i.e. for 9 parameters
+    // for the fit function we should have at least 50 points.
+    unsigned int uMinPts = 50;
+    // do a polynomial fit on the projected points
+    PolynomialFit polyFit;
+    polyFit.AddPoint(cTria.GetPolygon());
+    if (pP2FStructure && level > 0) {
+        std::set<unsigned long> index = pP2FStructure->NeighbourPoints(boundary, level);
+        Base::Vector3f bs((float)inverse[0][3], (float)inverse[1][3], (float)inverse[2][3]);
+        Base::Vector3f ex((float)inverse[0][0], (float)inverse[1][0], (float)inverse[2][0]);
+        Base::Vector3f ey((float)inverse[0][1], (float)inverse[1][1], (float)inverse[2][1]);
+        for (std::set<unsigned long>::iterator it = index.begin(); it != index.end(); ++it) {
+            Base::Vector3f pt(_rclMesh._aclPointArray[*it]);
+            pt.TransformToCoordinateSystem(bs, ex, ey);
+            polyFit.AddPoint(pt);
+        }
+    }
+    polyFit.Fit();
 
     std::vector<Base::Vector3f> newVertices;
     if ( cTria.ComputeConstrainedDelaunay(fMaxArea, newVertices) ) {
         // get te facets and add the additional points to the array
         rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
+        // if we have enough points then we assume that the fitdelivers good results
+        if (polyFit.CountPoints() >= uMinPts) {
+            for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt)
+                pt->z = (float)polyFit.Value(pt->x, pt->y);
+        }
         for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt) {
             rPoints.push_back(inverse * (*pt));
         }
@@ -1702,6 +1726,33 @@ void MeshRefPointToFacets::Rebuild (void)
     operator[](pFIter->_aulPoints[1]).insert(pFIter);
     operator[](pFIter->_aulPoints[2]).insert(pFIter);
   }
+}
+
+std::set<unsigned long> MeshRefPointToFacets::NeighbourPoints(const std::vector<unsigned long>& pt, int level) const
+{
+    std::set<unsigned long> cp,nb,lp;
+    cp.insert(pt.begin(), pt.end());
+    lp.insert(pt.begin(), pt.end());
+    for (int i=0; i < level; i++) {
+        std::set<unsigned long> cur;
+        for (std::set<unsigned long>::iterator it = lp.begin(); it != lp.end(); ++it) {
+            const std::set<MeshFacetArray::_TConstIterator>& ft = (*this)[*it];
+            for (std::set<MeshFacetArray::_TConstIterator>::const_iterator jt = ft.begin(); jt != ft.end(); ++jt) {
+                for (int j = 0; j < 3; j++) {
+                    unsigned long index = (*jt)->_aulPoints[j];
+                    if (cp.find(index) == cp.end() && nb.find(index) == nb.end()) {
+                        nb.insert(index);
+                        cur.insert(index);
+                    }
+                }
+            }
+        }
+
+        lp = cur;
+        if (lp.empty())
+            break;
+    }
+    return nb;
 }
 
 // ermittelt alle Nachbarn zum Facet deren Schwerpunkt unterhalb der mpx. Distanz befindet. 

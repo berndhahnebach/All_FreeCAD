@@ -1121,7 +1121,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
   _rclMesh.AddFacets(newFacets);
 }
 
-void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea)
+void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea, int level)
 {
     // get the mesh boundaries as an array of point indices
     std::list<std::vector<unsigned long> > aBorders;
@@ -1142,7 +1142,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea)
             continue; // boundary with too many edges
         MeshFacetArray cFacets;
         MeshPointArray cPoints;
-        if (cAlgo.FillupHole(*it, fMaxArea, cFacets, cPoints, &cPt2Fac)) {
+        if (cAlgo.FillupHole(*it, fMaxArea, cFacets, cPoints, level, &cPt2Fac)) {
             if (it->front() == it->back())
                 it->pop_back();
             // the triangulation may produce additional points which we must take into account when appending to the mesh

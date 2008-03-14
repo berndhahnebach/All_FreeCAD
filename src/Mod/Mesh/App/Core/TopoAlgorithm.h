@@ -179,11 +179,18 @@ public:
    */
   void FillupHoles(unsigned long length);
   /**
-   * Fills up holes with maximum \a length vertices. In contrast to the first algorithm this method uses an algorithm to create a 
-   * constrained Delaunay triangulation (CDT) where high quality triangles with a maximum area of \a fMaxArea are created.
-   * This may introduce new vertices into the mesh. 
+   * Fills up holes with maximum \a length vertices. In contrast to the first
+   * algorithm this method uses an algorithm to create a constrained Delaunay
+   * triangulation (CDT) where high quality triangles with a maximum area of
+   * \a fMaxArea are created. This may introduce new vertices into the mesh.
+   *
+   * To get a z value for the newly inserted vertices a polynomial fit is
+   * computed which uses the boundary points and the points of \a level 
+   * rings around the boundary.
+   * If the polynomial fit fails, poosibly due to too less points the average
+   * plane is used, instead.
    */
-  void FillupHoles(unsigned long length, float fMaxArea);
+  void FillupHoles(unsigned long length, float fMaxArea, int level);
   /**
    * Removes topologic indepentent components with maximum \a count facets.
    */

@@ -443,11 +443,12 @@ PyObject*  MeshPy::fillupHoles(PyObject *args)
 {
     unsigned long len;
     float area;
-    if (!PyArg_ParseTuple(args, "kf", &len, &area))
+    int level=0;
+    if (!PyArg_ParseTuple(args, "kf|i", &len, &area, &level))
         return NULL;                         
 
     PY_TRY {
-        Mesh().fillupHoles(len, area);
+        Mesh().fillupHoles(len, area, level);
     } PY_CATCH;
 
     Py_Return; 
