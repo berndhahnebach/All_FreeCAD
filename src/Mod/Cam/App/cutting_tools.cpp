@@ -176,7 +176,7 @@ bool cutting_tools::getShapeBB()
     //Die Cascade-Bounding Box funktioniert nicht richtig
     //Es wird dort wohl ne BoundingBox um dasKontrollnetz gelegt
     //Deshalb wird jetzt kurz das Shape tesseliert und dann die Bounding Box direkt ausgelesen
-    best_fit::Tesselate_Shape(m_Shape,m_CAD_Mesh,0.1);
+    best_fit::Tesselate_Shape(m_Shape,m_CAD_Mesh,float(0.1));
     Base::BoundBox3f aBoundBox = m_CAD_Mesh.GetBoundBox();
     m_maxlevel = aBoundBox.MaxZ;
     m_minlevel = aBoundBox.MinZ;
@@ -211,7 +211,7 @@ bool cutting_tools::fillFaceBBoxes()
         aFaceMesh.Clear();
         aBoundBox.Flush();
         atopo_surface = TopoDS::Face (Explorer.Current());
-        best_fit::Tesselate_Face(atopo_surface,aFaceMesh,0.1);
+        best_fit::Tesselate_Face(atopo_surface,aFaceMesh,float(0.1));
         aBoundBox = aFaceMesh.GetBoundBox();
         aBoundBox.Enlarge(2.0);
         std::pair<TopoDS_Face,Base::BoundBox3f> tempPair;
@@ -946,7 +946,7 @@ bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,
     {
         for (unsigned int k=0;k<MasterPointsStorage[t].size();k++)
         {
-            dist = MasterPointsStorage[t][k].first.SquareDistance(lastPoint);
+            dist = float(MasterPointsStorage[t][k].first.SquareDistance(lastPoint));
             if (dist<distold)
             {
                 start_index = k;
@@ -965,7 +965,7 @@ bool cutting_tools::CheckforLastPoint(const gp_Pnt& lastPoint, int &start_index,
     {
         for (unsigned int k=0;k<SlavePointsStorage[t].size();k++)
         {
-            dist = SlavePointsStorage[t][k].SquareDistance(lastPoint);
+            dist = float(SlavePointsStorage[t][k].SquareDistance(lastPoint));
             if (dist<distold)
             {
                 start_index = k;
@@ -991,7 +991,7 @@ bool cutting_tools::CheckforLastPoint(  const gp_Pnt& lastPoint,
     {
         for (unsigned int k=0;k<MasterPointsStorage[t].size();k++)
         {
-            dist = MasterPointsStorage[t][k].first.SquareDistance(lastPoint);
+            dist = float(MasterPointsStorage[t][k].first.SquareDistance(lastPoint));
             if (dist<distold)
             {
                 start_index_master = k;
@@ -1005,7 +1005,7 @@ bool cutting_tools::CheckforLastPoint(  const gp_Pnt& lastPoint,
     {
         for (unsigned int k=0;k<SlavePointsStorage[t].size();k++)
         {
-            dist = SlavePointsStorage[t][k].SquareDistance(lastPoint);
+            dist = float(SlavePointsStorage[t][k].SquareDistance(lastPoint));
             if (dist<distold)
             {
                 start_index_slave = k;
@@ -1766,9 +1766,9 @@ Base::BoundBox3f cutting_tools::getWireBBox(TopoDS_Wire aWire)
     currentBox.Flush();
     for (int j=1;j<=aProp.NbPoints();++j)
     {
-        aPoint.x = aProp.Value(j).X();
-        aPoint.y = aProp.Value(j).Y();
-        aPoint.z = aProp.Value(j).Z();
+        aPoint.x = float(aProp.Value(j).X());
+        aPoint.y = float(aProp.Value(j).Y());
+        aPoint.z = float(aProp.Value(j).Z());
         currentBox.Add(aPoint);
     }
     return currentBox;
@@ -2096,7 +2096,7 @@ bool cutting_tools::OffsetWires_Spiral()
                         //Mal kurz den Winkel zur Grund-Ebene ausrechnen
                         gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
                         //Den Winkel speichern
-                        float angle = normalVec.Angle(planeVec);
+                        float angle = float(normalVec.Angle(planeVec));
                         aSpiralStruct.SurfaceNormal = normalVec;
                         aSpiralStruct.SurfacePoint = aSurfacePoint;
                         TempSpiralPoints.push_back(aSpiralStruct);
@@ -2110,7 +2110,7 @@ bool cutting_tools::OffsetWires_Spiral()
             float dist,distold = FLT_MAX;
             for (unsigned int t=0;t<TempSpiralPoints.size();t++)
             {
-                dist = TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint.SurfacePoint);
+                dist = float(TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint.SurfacePoint));
                 if (dist<distold)
                 {
                     start_index = t;
@@ -2181,7 +2181,7 @@ bool cutting_tools::OffsetWires_Spiral()
                     for (int g=1;g<=points;g++)
                     {
                         const gp_Pnt& TestPoint = anIntersector.Pnt(g);
-                        shortestDistance = TestPoint.SquareDistance(TempSpiralPoints[j].SurfacePoint);
+                        shortestDistance = float(TestPoint.SquareDistance(TempSpiralPoints[j].SurfacePoint));
                         if (shortestDistance<shortestDistanceOld)
                         {
                             current_index = g;
@@ -2880,8 +2880,8 @@ bool cutting_tools::cut_Mesh(float z_level, float min_level, std::list<std::vect
         {
             cutok = false;
             //Jedes Mal ein wenig mehr Abstand für die Korrektur einfügen
-            factor = factor+0.05;
-            if (factor>=1) factor = 0.95;
+            factor = factor+float(0.05);
+            if (factor>=1) factor = float(0.95);
             //Wenn wir das erste Mal eine Korrektur machen müssen gehts zunächst mal mit Minus rein
             if (direction)
             {
@@ -2940,20 +2940,20 @@ bool cutting_tools::cut(float z_level, float min_level, TopoDS_Shape &aCutShape,
         {
             cutok = false;
             //Jedes Mal ein wenig mehr Abstand für die Korrektur einfügen
-            factor = factor+0.05;
-            if (factor>=1) factor = 0.95;
+            factor = factor+float(0.05);
+            if (factor>=1) factor = float(0.95);
             //Wenn wir das erste Mal eine Korrektur machen müssen gehts zunächst mal mit Minus rein
             if (correction)
             {
                 aPlanePnt.SetZ(z_level-(m_pitch*factor));
-                z_level_corrected = aPlanePnt.Z();
+                z_level_corrected = float(aPlanePnt.Z());
                 correction=false;
                 continue;
             }
             else
             {
                 aPlanePnt.SetZ(z_level+(m_pitch*factor));
-                z_level_corrected = aPlanePnt.Z();
+                z_level_corrected = float(aPlanePnt.Z());
                 correction=true;
                 continue;
             }

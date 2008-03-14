@@ -35,18 +35,18 @@
 
 struct CuttingToolsSettings
 {
-    double limit_angle;
-    double cad_radius;
-    double master_radius;
-    double slave_radius;
-    double level_distance;
-    double correction_factor;
-    double sheet_thickness;
-    double max_Vel;
-    double max_Acc;
+    float limit_angle;
+    float cad_radius;
+    float master_radius;
+    float slave_radius;
+    float level_distance;
+    float correction_factor;
+    float sheet_thickness;
+    float max_Vel;
+    float max_Acc;
     int spring_pretension;
-    double y_offset_robot;
-    double x_offset_robot;
+    float y_offset_robot;
+    float x_offset_robot;
 };
 
 struct SpiralHelper

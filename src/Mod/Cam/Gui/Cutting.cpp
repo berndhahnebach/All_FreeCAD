@@ -269,6 +269,8 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
             {
 				if(m_selection == Springback)
 					(m_Spring->m_FixFaces).push_back(TopoDS::Face(anExplorer.Current()));
+				else if(m_selection == BestFit)
+					(m_BestFit->m_LowFaces).push_back(TopoDS::Face(anExplorer.Current()));
 				else
 					m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
                 break;
@@ -473,13 +475,13 @@ const CuttingToolsSettings& Cutting::getSettings()
     m_Settings.level_distance = level_distance_box->value();
     m_Settings.limit_angle = limit_angle_box->value();
     m_Settings.sheet_thickness = sheet_thickness_box->value();
-    m_Settings.master_radius = master_radius_box->value();
+m_Settings.master_radius = master_radius_box->value();
     m_Settings.slave_radius = slave_radius_box->value();
     m_Settings.max_Vel = max_vel->value();
     m_Settings.max_Acc = max_acc->value();
     m_Settings.spring_pretension = spring_pretension->value();
-    m_Settings.x_offset_robot = xoffset_box->value();
-    m_Settings.y_offset_robot = yoffset_box->value();
+m_Settings.x_offset_robot = xoffset_box->value();
+m_Settings.y_offset_robot = yoffset_box->value();
 
 	return m_Settings;
 }
@@ -488,6 +490,7 @@ const CuttingToolsSettings& Cutting::getSettings()
 void Cutting::on_BestFitButton_clicked()
 {
 	m_selection = BestFit;
+	m_BestFit = new best_fit();
     best_fit_cad_button->setEnabled(true);
 }
 
@@ -515,7 +518,7 @@ void Cutting::on_best_fit_mesh_button_clicked()
 {
 	 selectMesh();
 	 best_fit_go_button->setEnabled(true);
-	 if(m_selection == Springback) {SelectFace_button->setEnabled(true);}
+	 SelectFace_button->setEnabled(true);
 }
 
 void Cutting::on_SelectFace_button_clicked()
@@ -544,16 +547,20 @@ void Cutting::on_best_fit_go_button_clicked()
 	
     case BestFit:
 
-		m_BestFit = new best_fit(m_Mesh,m_Shape);
+		m_BestFit->Load(&m_Mesh,&m_Shape);
+		//m_BestFit->testPro();
 		m_BestFit->Perform();
-
-		m_Mesh = m_BestFit->m_Mesh;
 
 		best_fit_cad_button->setEnabled(false);
 		best_fit_mesh_button->setEnabled(false);
 		best_fit_go_button->setEnabled(false);
-		
+			
+		m_Mesh = *(m_BestFit->m_Mesh);
 		DisplayMeshOutput();
+		
+		/*m_Mesh = m_BestFit->m_CadMesh;
+		DisplayMeshOutput();*/
+
 		break;
 	
 	case Springback:

@@ -27,6 +27,17 @@
 #include <cmath>
 #include "routine.h"
 
+
+///*********BINDINGS********/
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/atlas/clapack.hpp>
+
+using namespace boost::numeric::bindings;
+using namespace boost::numeric;
+
+
+
 /*! \brief Numerical Intergration according to trapezoid rules
 
  This routine assumes that the Intergral values are already corresponding with WithRespectTo
@@ -52,8 +63,38 @@ double Routines::TrapezoidIntergration(const std::vector<double> &WithRespectTo,
     return m_result;
 }
 
-void Routines::NewtonIter(std::vector<double> &F, std::vector<std::vector<double> > &DF)
+std::vector<double> Routines::NewtonStep(std::vector<double> &F,std::vector<std::vector<double> > &DF)
 {
+	// löst folgendes Gleichungssystem: DF*x = F 
+	int siz = (int) F.size();
+	std::vector<double> x_new(siz);
+	std::vector<int> piv(siz);            // pivotelement
+
+	ublas::matrix<double> A(siz, siz);
+	ublas::matrix<double> b(1, siz);
+
+	// füllt blas-matrizen
+	for(unsigned int i=0; i<siz; ++i){
+		b(0,i) = -F[i];
+		for(unsigned int j=0; j<siz; ++j){
+			A(i,j) = DF[i][j];
+		}
+	}
+
+	/*cout << b(0,0) << "," << b(0,1) << "," << b(0,2) << endl;
+	cout << A(0,0) << "," << A(0,1) << "," << A(0,2) << endl;
+	cout << A(1,0) << "," << A(1,1) << "," << A(1,2) << endl;
+	cout << A(2,0) << "," << A(2,1) << "," << A(2,2) << endl;*/
+	
+
+	atlas::lu_factor(A,piv);              // führt LU-Zerlegung durch
+	atlas::getrs(A,piv,b);                // löst Gl.system A*x = b (b wird mit der Lösung überschrieben)
+
+	for(unsigned int i=0; i<siz; ++i){
+		x_new[i] = b(0,i);
+	}
+
+	return x_new;
 }
 
 
