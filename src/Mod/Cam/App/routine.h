@@ -68,11 +68,11 @@ typedef struct
  and some NURBS routines from the Nurbs Book or translated from the NURBS
  Toolbox for MATLAB
 */
-class AppCamExport Routines
+class Routines
 {
 public:
 	// mehrdimensionales Newton-Verfahren mit festem Startwert 0
-	static void NewtonIter(std::vector<double> &F, std::vector<std::vector<double> > &DF);
+	static std::vector<double> NewtonStep(std::vector<double> &F,std::vector<std::vector<double> > &DF);
 protected:
     double TrapezoidIntergration(const std::vector<double> &WithRespectTo, const std::vector<double> &Intergral);
     //Matrix and vectors

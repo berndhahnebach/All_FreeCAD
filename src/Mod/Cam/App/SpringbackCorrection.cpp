@@ -1092,7 +1092,7 @@ bool SpringbackCorrection::Perform(int deg_Tol)
 {
     MeshCore::MeshKernel RefMesh;
     MeshCore::MeshKernel tmpMesh;
-    best_fit befi(m_Mesh, m_Shape);
+    best_fit befi(&m_Mesh, &m_Shape);
 
     //GetFaceAng(m_CadMesh, deg_Tol+1);
     
@@ -1150,7 +1150,7 @@ bool SpringbackCorrection::Perform(int deg_Tol)
 	// übergebe Normalen und CAD-Mesh für Fehlerberechnng
     befi.m_normals = m_normals;
     befi.m_CadMesh = m_CadMesh;
-    befi.m_Mesh    = m_Mesh;
+    befi.m_Mesh    = &m_Mesh;
 
     befi.CompTotalError();  // Fehlerberechnung
 
@@ -1191,7 +1191,7 @@ bool SpringbackCorrection::Perform(int deg_Tol)
     // skalierung der Cad-Normalen
     for (int i=0; i<n; ++i)
     {
-        m_normals[i].Scale(m_Offset[i], m_Offset[i], m_Offset[i]);
+		m_normals[i].Scale(m_set.correction_factor*m_Offset[i], m_set.correction_factor*m_Offset[i], m_set.correction_factor*m_Offset[i]);
     }
 
 

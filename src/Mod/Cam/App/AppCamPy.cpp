@@ -3291,7 +3291,6 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
     Base::Builder3D log3d;
 
     PY_TRY
-
     {
 
         MeshObject *o = pcObject->getMesh();
@@ -3643,26 +3642,10 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
         TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
         MeshCore::MeshKernel mesh  = pcObject->getMesh()->getKernel();  // Input Mesh
 
-        best_fit befi(mesh,cad);
-        befi.MeshFit_Coarse();
-        befi.ShapeFit_Coarse();
+        best_fit befi(&mesh,&cad);
+		befi.Perform();
 
-        cout << "tesselate shape" << endl;
-        befi.Tesselate_Shape(befi.m_Cad, befi.m_CadMesh, 1);
-
-        cout << "compute normals" << endl;
-//  befi.Comp_Normals();
-
-        // befi.mesh_curvature();
-
-        cout << "correction" << endl;
-        befi.Coarse_correction();
-
-        //befi.mesh_curvature();
-
-        cout << "start fitting iteration:" << endl;
-        befi.Fit_iter();
-        MeshObject anObject(befi.m_Mesh);
+		MeshObject anObject(*(befi.m_Mesh));
 
         return new MeshPy(&anObject);
 
@@ -3871,7 +3854,7 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
         best_fit befi(cad);
         befi.ShapeFit_Coarse();
 
-        return new TopoShapePyOld(befi.m_Cad);
+        return new TopoShapePyOld(*(befi.m_Cad));
 
     }PY_CATCH;
 
@@ -4254,6 +4237,7 @@ struct PyMethodDef Cam_methods[] =
 // {"cut", cut, 1},
     {"createPlane" , createPlane, 1},
     {"best_fit_test", best_fit_test,1},
+	{"best_fit_complete", best_fit_complete,1},
     {"best_fit_coarse", best_fit_coarse ,1},
     {"createBox" , createBox, 1},
     {"spring_back", spring_back, 1},
