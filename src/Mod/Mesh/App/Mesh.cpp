@@ -239,10 +239,10 @@ void MeshObject::removeComponents(unsigned long count)
     MeshCore::MeshTopoAlgorithm(_kernel).RemoveComponents(count);
 }
 
-void MeshObject::fillupHoles(unsigned long length, float maxArea)
+void MeshObject::fillupHoles(unsigned long length, float maxArea, int level)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
-    topalg.FillupHoles(length, maxArea);
+    topalg.FillupHoles(length, maxArea, level);
 }
 
 void MeshObject::offset(float fSize)

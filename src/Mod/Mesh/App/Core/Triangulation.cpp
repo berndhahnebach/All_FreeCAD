@@ -30,7 +30,6 @@
 
 #include "Triangulation.h"
 #include "MeshKernel.h"
-#include "Approximation.h"
 #include "triangle.h"
 
 
@@ -403,13 +402,10 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     in->segmentlist = new int[_points.size() * 2];
     in->numberofsegments = _points.size();
 
-    PolynomialFit polyFit;
-
     // build up point list
     int i = 0, j = 0, k = 0;
     int mod = _points.size();
     for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
-        polyFit.AddPoint(*it);
         in->pointlist[i++] = it->x;
         in->pointlist[i++] = it->y;
         in->segmentlist[j++] = k;
@@ -429,30 +425,13 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
     snprintf(szBuf, 50, "pYzqa%.6f", fMaxArea);
     triangulate(szBuf, in, out, NULL);
 
-    polyFit.Fit();
-
-    // For a good approximation we should have enough points, i.e. for 9 parameters
-    // for the fit function we should have at least 50 points.
-    unsigned int uMinPts = 50;
-    if (_points.size() < uMinPts) {
-        // get all added points by the algorithm
-        for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
-            float x = (float)out->pointlist[index++];
-            float y = (float)out->pointlist[index++];
-            float z = 0.0f; // get the point on the plane
-            Base::Vector3f vertex(x, y, z);
-            newPoints.push_back(vertex);
-        }
-    }
-    else {
-        // get all added points by the algorithm
-        for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
-            float x = (float)out->pointlist[index++];
-            float y = (float)out->pointlist[index++];
-            float z = (float)polyFit.Value(x, y);
-            Base::Vector3f vertex(x, y, z);
-            newPoints.push_back(vertex);
-        }
+    // get all added points by the algorithm
+    for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+        float x = (float)out->pointlist[index++];
+        float y = (float)out->pointlist[index++];
+        float z = 0.0f; // get the point on the plane
+        Base::Vector3f vertex(x, y, z);
+        newPoints.push_back(vertex);
     }
 
     // get the triangles
@@ -467,14 +446,14 @@ bool MeshPolygonTriangulation::ComputeConstrainedDelaunay(float fMaxArea, std::v
             succeeded = false;
             break;
         }
-        
+
         for (int j = 0; j < 3; j++) {
             int index = 2 * out->trianglelist[i+j];
             triangle._aclPoints[j].x = (float)out->pointlist[index];
             triangle._aclPoints[j].y = (float)out->pointlist[index+1];
             facet._aulPoints[j] = out->trianglelist[i+j];
         }
-        
+
         _triangles.push_back(triangle);
         _facets.push_back(facet);
     }

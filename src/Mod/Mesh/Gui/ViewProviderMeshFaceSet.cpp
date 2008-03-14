@@ -568,10 +568,15 @@ void ViewProviderMeshFaceSet::faceInfo(unsigned long uFacet)
 
 void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
 {
+    // get parameter from user settings
+    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+    int level = (int)hGrp->GetInt("FillHoleLevel", 2);
+
     // get the boundary to the picked facet
     std::list<unsigned long> aBorder;
     Mesh::Feature* fea = reinterpret_cast<Mesh::Feature*>(this->getObject());
     const MeshCore::MeshKernel& rKernel = fea->Mesh.getValue().getKernel();
+    MeshCore::MeshRefPointToFacets cPt2Fac(rKernel);
     MeshCore::MeshAlgorithm meshAlg(rKernel);
     meshAlg.GetMeshBorder(uFacet, aBorder);
     std::vector<unsigned long> boundary(aBorder.begin(), aBorder.end());
@@ -588,7 +593,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
         boundary = *it;
         MeshCore::MeshFacetArray faces;
         MeshCore::MeshPointArray points;
-        if (meshAlg.FillupHole(boundary, 0.05f, faces, points)) {
+        if (meshAlg.FillupHole(boundary, 0.05f, faces, points, level, &cPt2Fac)) {
             if (boundary.front() == boundary.back())
                 boundary.pop_back();
             // the triangulation may produce additional points which we must take into account when appending to the mesh

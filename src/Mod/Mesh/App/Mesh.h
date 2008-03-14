@@ -120,7 +120,7 @@ public:
     void addFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
-    void fillupHoles(unsigned long, float);
+    void fillupHoles(unsigned long, float, int);
     void offset(float fSize);
     void offsetSpecial2(float fSize);
     void offsetSpecial(float fSize, float zmax, float zmin);

@@ -300,7 +300,7 @@ App::DocumentObjectExecReturn *FillHoles::execute(void)
         Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
-        mesh->fillupHoles(FillupHolesOfLength.getValue(), MaxArea.getValue());
+        mesh->fillupHoles(FillupHolesOfLength.getValue(), MaxArea.getValue(), 1);
         this->Mesh.setValue(mesh.release());
     }
 
