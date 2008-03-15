@@ -16,7 +16,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
+			OutputDirectory="../../../obj/OCCAdaptMesh/Debug"
 			IntermediateDirectory="../../../obj/OCCAdaptMesh/Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -58,9 +58,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="Debug"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="C:/# Projekte/FreeCAD/FreeCAD_0.7/src/3rdParty/OCCAdaptMesh/Debug/OCCAdaptMesh.pdb"
+				AssemblerListingLocation="../../../obj/OCCAdaptMesh/Debug/"
+				ObjectFile="../../../obj/OCCAdaptMesh/Debug/"
+				ProgramDataBaseFileName="../../../obj/OCCAdaptMesh/Debug/"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="2"
@@ -118,7 +118,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
+			OutputDirectory="../../../obj/OCCAdaptMesh/Release"
 			IntermediateDirectory="../../../obj/OCCAdaptMesh/Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -159,9 +159,9 @@
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,WNT,NO_TIMER,_CRT_SECURE_NO_WARNINGS,&quot;CMAKE_INTDIR=\&quot;Release\&quot;&quot;,OCCAdaptMesh_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="Release"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="C:/# Projekte/FreeCAD/FreeCAD_0.7/src/3rdParty/OCCAdaptMesh/Release/OCCAdaptMesh.pdb"
+				AssemblerListingLocation="../../../obj/OCCAdaptMesh/Release/"
+				ObjectFile="../../../obj/OCCAdaptMesh/Release/"
+				ProgramDataBaseFileName="../../../obj/OCCAdaptMesh/Release/"
 				WarningLevel="3"
 				CompileAs="2"
 			/>
