@@ -207,9 +207,9 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
                     gp_Pnt aPnt1 = aPoints(n1);
                     Points[0].Set(float(aPnt1.X()),float(aPnt1.Y()),float(aPnt1.Z()));
                     gp_Pnt aPnt2 = aPoints(n2);
-                    Points[1].Set(aPnt2.X(),aPnt2.Y(),aPnt2.Z());
+                    Points[1].Set(float(aPnt2.X()),float(aPnt2.Y()),float(aPnt2.Z()));
                     gp_Pnt aPnt3 = aPoints(n3);
-                    Points[2].Set(aPnt3.X(),aPnt3.Y(),aPnt3.Z());
+                    Points[2].Set(float(aPnt3.X()),float(aPnt3.Y()),float(aPnt3.Z()));
                     // give the occ faces to the internal mesh structure of freecad
                     MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
                     builder.AddFacet(Face);
@@ -3342,8 +3342,8 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
             }
 
             normal.Normalize();
-            log3d.addSingleArrow(mesh.GetPoint(i),mesh.GetPoint(i) + (normal*offset));
-            mesh.MovePoint(i,(normal*offset));
+            log3d.addSingleArrow(mesh.GetPoint(i),mesh.GetPoint(i) + (normal*float(offset)));
+            mesh.MovePoint(i,(normal*float(offset)));
 
         }
 
@@ -3763,9 +3763,9 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
         {
             gp_Pnt currentPoint = aWireAdapter.Value(first_p+(k*delta_u));
             Base::Vector3f aVector;
-            aVector.x = currentPoint.X();
-            aVector.y = currentPoint.Y();
-            aVector.z = currentPoint.Z();
+            aVector.x = float(currentPoint.X());
+            aVector.y = float(currentPoint.Y());
+            aVector.z = float(currentPoint.Z());
             mesh_input.push_back(aVector);
         }
         MeshCore::MeshKernel ameshkernel;
@@ -3877,7 +3877,6 @@ static PyObject * spring_back(PyObject *self, PyObject *args)
     {
         GProp_GProps prop;
         GProp_PrincipalProps pprop;
-        BRepGProp SurfProp;
         gp_Pnt orig;
 
         pcObject  = (MeshPy*)pcObj;
@@ -3930,7 +3929,7 @@ static PyObject * tess_shape(PyObject *self, PyObject *args)
         //befi.ShapeFit_Coarse();
 
         MeshCore::MeshKernel mesh;
-        best_fit::Tesselate_Shape(cad, mesh, 0.1);
+        best_fit::Tesselate_Shape(cad, mesh, float(0.1));
         MeshObject* anObject = new MeshObject(mesh);
         return new MeshPy(anObject);
 
@@ -4122,9 +4121,9 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
 
                     pnt = shp_int.Pnt(1);
 
-                    tmp_pnt.x = pnt.X();
-                    tmp_pnt.y = pnt.Y();
-                    tmp_pnt.z = pnt.Z();
+                    tmp_pnt.x = float(pnt.X());
+                    tmp_pnt.y = float(pnt.Y());
+                    tmp_pnt.z = float(pnt.Z());
 
                     //point_list.push_back(pnt);
                     log3d.addSinglePoint(tmp_pnt,2,0,0,0);
@@ -4144,9 +4143,9 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
             {
                 mpnt = mesh.GetPoint(i);
 
-                tmp_pnt.x = (R[0][0]*mpnt.x + R[0][1]*mpnt.y + R[0][2]*mpnt.z);
-                tmp_pnt.y = (R[1][0]*mpnt.x + R[1][1]*mpnt.y + R[1][2]*mpnt.z);
-                tmp_pnt.z = (R[2][0]*mpnt.x + R[2][1]*mpnt.y + R[2][2]*mpnt.z);
+                tmp_pnt.x = float(R[0][0]*mpnt.x + R[0][1]*mpnt.y + R[0][2]*mpnt.z);
+                tmp_pnt.y = float(R[1][0]*mpnt.x + R[1][1]*mpnt.y + R[1][2]*mpnt.z);
+                tmp_pnt.z = float(R[2][0]*mpnt.x + R[2][1]*mpnt.y + R[2][2]*mpnt.z);
 
                 mesh.SetPoint(i,tmp_pnt);
             }

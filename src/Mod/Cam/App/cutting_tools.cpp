@@ -2106,7 +2106,8 @@ bool cutting_tools::OffsetWires_Spiral()
             //Now we have to find the shortest distance to the lastPoint of the previous spiral.
             //At the beginning the lastPoint is the Origin
             //This represents our startPoint. If we just started, then we skip this point
-            int start_index = 0,adapted_start_index=0;
+            
+			int start_index = 0,adapted_start_index=0;
             float dist,distold = FLT_MAX;
             for (unsigned int t=0;t<TempSpiralPoints.size();t++)
             {
@@ -2117,6 +2118,7 @@ bool cutting_tools::OffsetWires_Spiral()
                     distold = dist;
                 }
             }
+
             //now we know where to  start at our PointCloud, its the index t
             gp_Pnt PreviousPoint = TempSpiralPoints[start_index].SurfacePoint;
             //check the current direction we would go
@@ -2125,19 +2127,20 @@ bool cutting_tools::OffsetWires_Spiral()
             direction_vector.Subtract(help_Vec);
             //switch the Spiral-direction if the angle between last and current round is bigger
             //then 90°
-            if (direction_vector.Angle(last_direction_vector)>(D_PI*0.5)) direction = true;
-            else direction = false; //we have to switch the direction
-            IntCurvesFace_ShapeIntersector anIntersector;
+            if (direction_vector.Angle(last_direction_vector)<(D_PI*0.5)) 
+				direction = true; //We are already in the wright direction
+            else 
+				direction = false; //we have to switch the direction
+            
+			IntCurvesFace_ShapeIntersector anIntersector;
             anIntersector.Load(m_Shape,0.01);
 
-            //We directly start at start+1 as the first point is from the last level.
             //Insert the first point into the TempSpiralPoints if we have just started
             std::vector<SpiralHelper> TempSpiralPointsFinal;
             TempSpiralPointsFinal.clear();
             gp_Pnt origin(0.0,0.0,0.0);
             if(!lastPoint.SurfacePoint.IsEqual(origin,0.1)) 
-            {TempSpiralPoints[start_index] = lastPoint;
-            TempSpiralPointsFinal.push_back(TempSpiralPoints[start_index]);}
+             TempSpiralPointsFinal.push_back(lastPoint);
 
             if (direction)
                 adapted_start_index = start_index+1;
@@ -2147,14 +2150,12 @@ bool cutting_tools::OffsetWires_Spiral()
                 else
                 adapted_start_index = start_index-1;
             }
+
             double distance=0.0;
-            float current_z_value= (m_ordered_cuts_it-1)->first;
-
-            for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
+            
+			for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
             {
-                
                 distance = distance + PreviousPoint.Distance(TempSpiralPoints[j].SurfacePoint);
-
                 double delta_z = distance * m_UserSettings.level_distance / CurveLength;
                 //we have to store the currentPoint for the distance calculation
                 //before we change something at its coordinates
@@ -2193,7 +2194,6 @@ bool cutting_tools::OffsetWires_Spiral()
                     if(shortestDistanceOld>50) 
                         continue;
                     TempSpiralPoints[j].SurfacePoint = anIntersector.Pnt(current_index);
-
                 }
                 else //We have to try a mesh intersection as the Nurb Intersection does not seem to work
                 {
@@ -2214,24 +2214,20 @@ bool cutting_tools::OffsetWires_Spiral()
                 //If we reached the end before we processed all points, then we start at the beginning.
                 if (direction)
                 {
-                    if (j+1==TempSpiralPoints.size())
-                    {
-                        j=-1;    //-1 because at the for we ++ the variable directly
-                    }
-                    else if (j==start_index)
-                        break; //Now we have completed all Points
+					if(j==start_index)
+					     break; //Now we have completed all Points
+                    else if (j+1==TempSpiralPoints.size())
+					{j=-1; continue;}   //-1 because at the for we ++ the variable directly
+					
                 }
                 else
                 {
-                    if ((start_index!=0)&& j-1==0) //if the next point is at the beginning and start_index !=0
-                    {
-                        //As it is pushed +1 at the top
-                        j=TempSpiralPoints.size()-2;
-                        continue;
-                    }
-                    else if (j==start_index)
-                        break;
-                    
+					if (j==start_index) 
+                         break; //Now we have completed all Points
+					else if (j-1<0)
+					{ j=TempSpiralPoints.size()-3;continue;}	
+					//We switch to the end and skip the last point 
+					//as its the same as the point at j=0;
                     j=j-2;//As the for puts +1 for each step
                 }
             }
@@ -2248,7 +2244,6 @@ bool cutting_tools::OffsetWires_Spiral()
             for (unsigned int t=0;t<OffsetSpiralPoints.size();++t)
             {
                 InterpolationPoints->SetValue(t+1,OffsetSpiralPoints[t].SurfacePoint);
-                anoutput1 << OffsetSpiralPoints[t].SurfacePoint.X() <<","<<OffsetSpiralPoints[t].SurfacePoint.Y()<<","<<OffsetSpiralPoints[t].SurfacePoint.Z()<<std::endl;
             }
             bool check = CheckPoints(InterpolationPoints);
             //Here we interpolate. If direction == true this means that the rotation is like the initial rotation
@@ -2268,7 +2263,7 @@ std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHe
     OffsetPoints.clear();
     //Offset the Points now
     
-    for(int i=0;i<SpiralPoints.size();++i)
+    for(unsigned int i=0;i<SpiralPoints.size();++i)
     {
         OffsetPoint = SpiralPoints[i];
         OffsetPoint.SurfaceNormal.Multiply(m_UserSettings.master_radius);
