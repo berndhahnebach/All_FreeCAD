@@ -1449,24 +1449,24 @@ void Application::ExtractUserPath()
     // Get the default path where we can save our documents. It seems that
     // 'CSIDL_MYDOCUMENTS' doesn't work on all machines, so we use 'CSIDL_PERSONAL'
     // which does the same.
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_MYDOCUMENTS, NULL, 0, szPath))
-		||SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, szPath)))
-	{
-		WideCharToMultiByte( CP_UTF8, 0, szPath, -1,dest, 256, NULL, NULL );
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_MYDOCUMENTS, NULL, 0, szPath)) ||
+        SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, szPath))) {
+        WideCharToMultiByte(CP_UTF8, 0, szPath, -1,dest, 256, NULL, NULL);
         mConfig["UserHomePath"] = dest;
-	}else
+    }
+    else
         mConfig["UserHomePath"] = mConfig["AppHomePath"];
 
     // In the second step we want the directory where user settings of the application can be
     // kept. There we create a directory with name of the vendor and a sub-directory with name
     // of the application.
     if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, szPath))) {
-		// convert to UTF8
-		WideCharToMultiByte( CP_UTF8, 0, szPath, -1,dest, 256, NULL, NULL );
+        // convert to UTF8
+        WideCharToMultiByte(CP_UTF8, 0, szPath, -1,dest, 256, NULL, NULL);
 
         std::string appData = dest;
         Base::FileInfo fi(appData.c_str());
-        if (! fi.exists()) {
+        if (!fi.exists()) {
             // This should never ever happen
             std::stringstream str;
             str << "Application data directory " << appData << " does not exist!";
