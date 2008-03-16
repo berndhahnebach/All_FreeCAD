@@ -1995,11 +1995,12 @@ bool cutting_tools::OffsetWires_Spiral()
 {
     std::ofstream anoutput1;
     anoutput1.open("c:/spiral.txt");
+	Base::Builder3D log;
     std::vector<std::pair<float,TopoDS_Shape> >::iterator current_flat_level;
     current_flat_level = m_ordered_cuts.begin();
     SpiralHelper lastPoint;
     lastPoint.SurfacePoint.SetCoord(0.0,0.0,0.0);
-    
+    bool slave_done= false; //Necessary if the slave is already output
     gp_Vec direction_vector(0.0,0.0,1.0),last_direction_vector(0.0,0.0,1.0);//Just to initialize them
     bool direction = true; //for the Robot, this tells the algo that we have to switch the direction
     //Nicht beim höchsten Anfangen, da wir den nicht mit dem Master fahren wollen
@@ -2007,10 +2008,9 @@ bool cutting_tools::OffsetWires_Spiral()
     {
         std::vector<SpiralHelper> OffsetSpiralPoints,TempSpiralPoints;
         std::vector<gp_Pnt> SlavePointContainer;
-
         OffsetSpiralPoints.clear();
         TempSpiralPoints.clear();
-        SlavePointContainer.clear();
+        
         //Now we have to select which strategy to choose
         //if the current levels is bigger,the same, or less then the previous one
         if (m_ordered_cuts_it->first<(m_ordered_cuts_it-1)->first)
@@ -2103,6 +2103,7 @@ bool cutting_tools::OffsetWires_Spiral()
                     }
                 }
             }
+
             //Now we have to find the shortest distance to the lastPoint of the previous spiral.
             //At the beginning the lastPoint is the Origin
             //This represents our startPoint. If we just started, then we skip this point
@@ -2120,18 +2121,61 @@ bool cutting_tools::OffsetWires_Spiral()
             }
 
             //now we know where to  start at our PointCloud, its the index t
+
+
+			//Calculate the Slave Toolpath for the current flat area
+            if (!slave_done)//if we did not calculate the slave toolpath for the current flat area
+            {
+                SlavePointContainer.clear();
+				for (int i=0;i<TempSpiralPoints.size();++i)
+                {
+                    gp_Pnt SlaveOffsetPoint;
+					SlaveOffsetPoint = TempSpiralPoints[i].SurfacePoint;
+					SlaveOffsetPoint.SetZ(TempSpiralPoints[i].SurfacePoint.Z() - m_UserSettings.sheet_thickness - m_UserSettings.slave_radius);
+                    //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                    if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                        SlavePointContainer.push_back(SlaveOffsetPoint);
+                    else if (SlavePointContainer.empty())
+                        SlavePointContainer.push_back(SlaveOffsetPoint);
+                }
+
+                //Now Interpolate the Slave with reordered points based on the last point
+                Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                adapted_start_index = start_index+1;
+				for (int t=adapted_start_index;t<SlavePointContainer.size();++t)
+				{
+                    InterpolationPoints->SetValue(t+1,SlavePointContainer[t]);
+					if(t==start_index)
+						break;
+					if(t+1==SlavePointContainer.size())
+						t=-1;
+				}
+
+                m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
+                slave_done = true;
+            } //Slave done
+
             gp_Pnt PreviousPoint = TempSpiralPoints[start_index].SurfacePoint;
             //check the current direction we would go
             gp_Vec help_Vec(TempSpiralPoints[start_index].SurfacePoint.Coord());
             direction_vector = TempSpiralPoints[start_index+1].SurfacePoint.Coord();
             direction_vector.Subtract(help_Vec);
-            //switch the Spiral-direction if the angle between last and current round is bigger
-            //then 90°
-            if (direction_vector.Angle(last_direction_vector)<(D_PI*0.5)) 
+			//direction_vector.SetZ(0.0);
+			direction_vector.Normalize();
+			direction_vector.Multiply(10.0);
+            //switch the Spiral-direction if the clockwise flag is checked and  the 
+			//angle between the last and current round is more then 90°
+			double angle = direction_vector.Angle(last_direction_vector);
+			if(m_UserSettings.clockwise && angle<(D_PI*0.5)) 
 				direction = true; //We are already in the wright direction
-            else 
+            else if(m_UserSettings.clockwise && angle >(D_PI*0.5))
 				direction = false; //we have to switch the direction
+			else if(!m_UserSettings.clockwise && angle<(D_PI*0.5))
+				direction = false;
+			else if(!m_UserSettings.clockwise && angle>(D_PI*0.5))
+				direction = true;
             
+			
 			IntCurvesFace_ShapeIntersector anIntersector;
             anIntersector.Load(m_Shape,0.01);
 
@@ -2150,7 +2194,7 @@ bool cutting_tools::OffsetWires_Spiral()
                 else
                 adapted_start_index = start_index-1;
             }
-
+			std::cout<<"Angle ="<< angle<< " Direction = "<< direction << "Start_Index: "<< adapted_start_index <<","<<start_index<<std::endl;
             double distance=0.0;
             
 			for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
@@ -2235,10 +2279,12 @@ bool cutting_tools::OffsetWires_Spiral()
             OffsetSpiralPoints = OffsetSpiral(TempSpiralPointsFinal);
             //Now store the lastPoint of the currentSpiral as we need it for the next one
             lastPoint = *(TempSpiralPointsFinal.rbegin());
-            gp_Vec temp_vector((TempSpiralPointsFinal.rbegin()+1)->SurfacePoint.Coord());
-            last_direction_vector = TempSpiralPointsFinal.rbegin()->SurfacePoint.Coord();
+            gp_Vec temp_vector((OffsetSpiralPoints.rbegin()+5)->SurfacePoint.Coord());
+            last_direction_vector = OffsetSpiralPoints.rbegin()->SurfacePoint.Coord();
             last_direction_vector.Subtract(temp_vector);
+			//last_direction_vector.SetZ(0.0);
             last_direction_vector.Normalize();
+			last_direction_vector.Multiply(10.0);
             Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1,OffsetSpiralPoints.size());
             TColgp_Array1OfVec Tangents(1,OffsetSpiralPoints.size());
             for (unsigned int t=0;t<OffsetSpiralPoints.size();++t)
@@ -2248,15 +2294,306 @@ bool cutting_tools::OffsetWires_Spiral()
             bool check = CheckPoints(InterpolationPoints);
             //Here we interpolate. If direction == true this means that the rotation is like the initial rotation
             m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
-        }
-    }
+		}
+		if (m_ordered_cuts_it->first==(m_ordered_cuts_it-1)->first)
+        {
+            //we only set the new flat level wire here
+            //no Toolpath is calculated
+            current_flat_level = m_ordered_cuts_it;
+            slave_done = false; //This is to generate the next flat level for the slave
+        }//end of current == last
+		//Now lets take the case when we move up again
+		if (m_ordered_cuts_it->first>(m_ordered_cuts_it-1)->first)
+        {
+            //Slave is calculated as Usual, Master stays at the currently highest level
+            //Check if Last Level has got a Wire as we go from the last to the current with our Spiral
+            SpiralHelper aSpiralStruct;
+            double CurveLength = 0.0;
+            if ((m_ordered_cuts_it-1)->second.ShapeType() == TopAbs_WIRE)
+            {
+                WireExplorer aWireExplorer(TopoDS::Wire((m_ordered_cuts_it-1)->second));
+                for (aWireExplorer.Init();aWireExplorer.More();aWireExplorer.Next())
+                {
+                    CurveLength = CurveLength + GetEdgeLength(aWireExplorer.Current());
+                    BRepAdaptor_Curve curveAdaptor(aWireExplorer.Current());
+                    //Adjust the point amount based on the curve length make every 0.3mm a point
+                    //GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,int(GetEdgeLength(aWireExplorer.Current())/0.4));
+                    GCPnts_QuasiUniformAbscissa aProp(curveAdaptor,1000);
+                    for (int i=1;i<=aProp.NbPoints();++i)
+                    {
+                        //Check the direction
+                        if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
+                            curveAdaptor.D1(aProp.Parameter(i),aSpiralStruct.SurfacePoint,aSpiralStruct.LineD1);
+                        else curveAdaptor.D1(aProp.Parameter(aProp.NbPoints()-i+1),aSpiralStruct.SurfacePoint,aSpiralStruct.LineD1);
 
+                        aSpiralStruct.SurfaceNormal.SetCoord(0.0,0.0,1.0);
+                        TempSpiralPoints.push_back(aSpiralStruct);
+                    }
+                }
+            }
+            else
+            {
+                CurveLength = 0.0;
+                Edgesort aCutShapeSorter((m_ordered_cuts_it-1)->second);
+                for (aCutShapeSorter.Init();aCutShapeSorter.More();aCutShapeSorter.Next())
+                {
+                    CurveLength = CurveLength + GetEdgeLength(aCutShapeSorter.Current());
+                    //Get the PCurve and the GeomSurface
+                    Handle_Geom2d_Curve a2DCurve;
+                    Handle_Geom_Surface aSurface;
+                    TopLoc_Location aLoc;
+                    double first2,last2;
+                    bool reversed = false;
+                    BRep_Tool::CurveOnSurface(aCutShapeSorter.Current(),a2DCurve,aSurface,aLoc,first2,last2);
+                    //Jetzt noch die resultierende Surface und die Curve sauber drehen
+                    //(vielleicht wurde ja das TopoDS_Face irgendwie gedreht oder die TopoDS_Edge)
+                    if (aCutShapeSorter.Current().Orientation() == TopAbs_REVERSED)
+                        reversed = true;
+
+                    BRepAdaptor_Curve aCurveAdaptor(aCutShapeSorter.Current());
+                    GCPnts_QuasiUniformAbscissa aPointGenerator(aCurveAdaptor,1000);
+                    int PointSize = aPointGenerator.NbPoints();
+                    //Now get the surface normal to the generated points
+                    for (int i=1;i<=PointSize;++i)
+                    {
+                        gp_Pnt2d a2dParaPoint;
+                        gp_Pnt aSurfacePoint;
+                        TopoDS_Face aFace;
+                        gp_Vec Uvec,Vvec,normalVec;
+                        //If the curve is reversed we also have to reverse the point direction
+                        if (reversed)
+                        {
+                            a2DCurve->D0(aPointGenerator.Parameter(PointSize-i+1),a2dParaPoint);
+                            aCurveAdaptor.D1(aPointGenerator.Parameter(PointSize-i+1),aSurfacePoint,aSpiralStruct.LineD1);
+                        }
+                        else
+                        {
+                            a2DCurve->D0(aPointGenerator.Parameter(i),a2dParaPoint);
+                            aCurveAdaptor.D1(aPointGenerator.Parameter(i),aSurfacePoint,aSpiralStruct.LineD1);
+                        }
+                        GeomAdaptor_Surface aGeom_Adaptor(aSurface);
+                        aGeom_Adaptor.D1(a2dParaPoint.X(),a2dParaPoint.Y(),aSurfacePoint,Uvec,Vvec);
+                        //Jetzt den Normalenvector auf die Fläche ausrechnen
+                        normalVec = Uvec;
+                        normalVec.Cross(Vvec);
+                        normalVec.Normalize();
+                        //Jetzt ist die Normale berechnet und auch normalisiert
+                        //Jetzt noch checken ob die Normale auch wirklich auf die saubere Seite zeigt
+                        //dazu nur checken ob der Z-Wert der Normale größer Null ist (dann im 1.und 2. Quadranten)
+                        if (normalVec.Z()<0)
+                            normalVec.Multiply(-1.0);
+
+                        //Mal kurz den Winkel zur Grund-Ebene ausrechnen
+                        gp_Vec planeVec(normalVec.X(),normalVec.Y(),0.0);
+                        //Den Winkel speichern
+                        float angle = float(normalVec.Angle(planeVec));
+                        aSpiralStruct.SurfaceNormal = normalVec;
+                        aSpiralStruct.SurfacePoint = aSurfacePoint;
+                        TempSpiralPoints.push_back(aSpiralStruct);
+                    }
+                }
+            }
+
+            //Now we have to find the shortest distance to the lastPoint of the previous spiral.
+            //At the beginning the lastPoint is the Origin
+            //This represents our startPoint. If we just started, then we skip this point
+            
+			int start_index = 0,adapted_start_index=0;
+            float dist,distold = FLT_MAX;
+            for (unsigned int t=0;t<TempSpiralPoints.size();t++)
+            {
+                dist = float(TempSpiralPoints[t].SurfacePoint.SquareDistance(lastPoint.SurfacePoint));
+                if (dist<distold)
+                {
+                    start_index = t;
+                    distold = dist;
+                }
+            }
+
+            //now we know where to  start at our PointCloud, its the index t
+
+
+			//Calculate the Master as slave Toolpath for the current flat area
+            if (!slave_done)//if we did not calculate the slave toolpath for the current flat area
+            {
+                SlavePointContainer.clear();
+				for (int i=0;i<TempSpiralPoints.size();++i)
+                {
+                    gp_Pnt SlaveOffsetPoint;
+					SlaveOffsetPoint = TempSpiralPoints[i].SurfacePoint;
+					SlaveOffsetPoint.SetZ(TempSpiralPoints[i].SurfacePoint.Z() + m_UserSettings.master_radius);
+                    //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
+                    if (SlavePointContainer.size()>0 && (SlavePointContainer.rbegin()->SquareDistance(SlaveOffsetPoint)>(Precision::Confusion()*Precision::Confusion())))
+                        SlavePointContainer.push_back(SlaveOffsetPoint);
+                    else if (SlavePointContainer.empty())
+                        SlavePointContainer.push_back(SlaveOffsetPoint);
+                }
+
+                //Now Interpolate the Slave with reordered points based on the last point
+                Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
+                adapted_start_index = start_index+1;
+				for (int t=adapted_start_index;t<SlavePointContainer.size();++t)
+				{
+                    InterpolationPoints->SetValue(t+1,SlavePointContainer[t]);
+					if(t==start_index)
+						break;
+					if(t+1==SlavePointContainer.size())
+						t=-1;
+				}
+
+                m_all_offset_cuts_high.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
+                slave_done = true;
+            } //Slave done
+
+            gp_Pnt PreviousPoint = TempSpiralPoints[start_index].SurfacePoint;
+            //check the current direction we would go
+            gp_Vec help_Vec(TempSpiralPoints[start_index].SurfacePoint.Coord());
+            direction_vector = TempSpiralPoints[start_index+1].SurfacePoint.Coord();
+            direction_vector.Subtract(help_Vec);
+			//direction_vector.SetZ(0.0);
+			direction_vector.Normalize();
+			direction_vector.Multiply(10.0);
+            //switch the Spiral-direction if the clockwise flag is checked and  the 
+			//angle between the last and current round is more then 90°
+			double angle = direction_vector.Angle(last_direction_vector);
+			if(m_UserSettings.clockwise && angle<(D_PI*0.5)) 
+				direction = true; //We are already in the wright direction
+            else if(m_UserSettings.clockwise && angle >(D_PI*0.5))
+				direction = false; //we have to switch the direction
+			else if(!m_UserSettings.clockwise && angle<(D_PI*0.5))
+				direction = false;
+			else if(!m_UserSettings.clockwise && angle>(D_PI*0.5))
+				direction = true;
+            
+			
+			IntCurvesFace_ShapeIntersector anIntersector;
+            anIntersector.Load(m_Shape,0.01);
+
+            //Insert the first point into the TempSpiralPoints if we have just started
+            std::vector<SpiralHelper> TempSpiralPointsFinal;
+            TempSpiralPointsFinal.clear();
+            gp_Pnt origin(0.0,0.0,0.0);
+            if(!lastPoint.SurfacePoint.IsEqual(origin,0.1)) 
+             TempSpiralPointsFinal.push_back(lastPoint);
+
+            if (direction)
+                adapted_start_index = start_index+1;
+            else 
+            {   if(start_index==0)
+                adapted_start_index = TempSpiralPoints.size()-2; //Skip the last Point as its equal to the first one
+                else
+                adapted_start_index = start_index-1;
+            }
+			std::cout<<"Angle ="<< angle<< " Direction = "<< direction << "Start_Index: "<< adapted_start_index <<","<<start_index<<std::endl;
+            double distance=0.0;
+            
+			for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
+            {
+                distance = distance + PreviousPoint.Distance(TempSpiralPoints[j].SurfacePoint);
+                double delta_z = distance * m_UserSettings.level_distance / CurveLength;
+                //we have to store the currentPoint for the distance calculation
+                //before we change something at its coordinates
+                PreviousPoint = TempSpiralPoints[j].SurfacePoint;
+                
+                TempSpiralPoints[j].SurfacePoint.SetZ(TempSpiralPoints[j].SurfacePoint.Z()+delta_z);
+                //before we shoot we check if the z-level is not exactly the same as the next round
+                //if (fabs(current_z_value-m_UserSettings.level_distance-TempSpiralPoints[j].SurfacePoint.Z())<=0.04)
+                //    break; //We have nearly reached the next z-level, therefore we stop here.
+                //Now we have to shoot to get the real Point we want
+                //Therefore we have to generate the Direction Vector where to Shoot
+                gp_Dir Shooting_Direction = getPerpendicularVec(TempSpiralPoints[j].LineD1);
+                gp_Lin aLine(TempSpiralPoints[j].SurfacePoint,Shooting_Direction);
+                anIntersector.Perform(aLine,-RealLast(),RealLast());
+                if (anIntersector.NbPnt()<=1) //Just to debug
+                    anIntersector.Perform(aLine,-RealLast(),RealLast());
+                //Now we set the real Surface Point
+                //How many Points did we get??
+                int current_index;
+                int points = anIntersector.NbPnt();
+                if (points>0)
+                {
+                    float shortestDistance, shortestDistanceOld = FLT_MAX;
+                    for (int g=1;g<=points;g++)
+                    {
+                        const gp_Pnt& TestPoint = anIntersector.Pnt(g);
+                        shortestDistance = float(TestPoint.SquareDistance(TempSpiralPoints[j].SurfacePoint));
+                        if (shortestDistance<shortestDistanceOld)
+                        {
+                            current_index = g;
+                            shortestDistanceOld = shortestDistance;
+                        }
+                    }
+                    //Now we check how far the shortest Distance is. If its more than 5mm then we jump to the 
+                    //next Point
+                    if(shortestDistanceOld>50) 
+                        continue;
+                    TempSpiralPoints[j].SurfacePoint = anIntersector.Pnt(current_index);
+                }
+                else //We have to try a mesh intersection as the Nurb Intersection does not seem to work
+                {
+                    cout << "Big Probleme";
+                    continue;
+                }
+                //Now get the Proper Normal at this point
+                BRepAdaptor_Surface aFaceAdaptor(anIntersector.Face(current_index));
+                gp_Pnt P;
+                gp_Vec U_Vec,V_Vec;
+                aFaceAdaptor.D1(anIntersector.UParameter(current_index),anIntersector.VParameter(current_index),P,U_Vec,V_Vec);
+                U_Vec.Cross(V_Vec);
+                U_Vec.Normalize();
+                if (U_Vec.Z() < 0) U_Vec.Multiply(-1.0);
+
+                TempSpiralPoints[j].SurfaceNormal = U_Vec;
+                TempSpiralPointsFinal.push_back(TempSpiralPoints[j]);
+                //If we reached the end before we processed all points, then we start at the beginning.
+                if (direction)
+                {
+					if(j==start_index)
+					     break; //Now we have completed all Points
+                    else if (j+1==TempSpiralPoints.size())
+					{j=-1; continue;}   //-1 because at the for we ++ the variable directly
+					
+                }
+                else
+                {
+					if (j==start_index) 
+                         break; //Now we have completed all Points
+					else if (j-1<0)
+					{ j=TempSpiralPoints.size()-3;continue;}	
+					//We switch to the end and skip the last point 
+					//as its the same as the point at j=0;
+                    j=j-2;//As the for puts +1 for each step
+                }
+            }
+            //Offset for the slave
+            OffsetSpiralPoints = OffsetSpiral(TempSpiralPointsFinal,false);
+            //Now store the lastPoint of the currentSpiral as we need it for the next one
+            lastPoint = *(TempSpiralPointsFinal.rbegin());
+            gp_Vec temp_vector((OffsetSpiralPoints.rbegin()+5)->SurfacePoint.Coord());
+            last_direction_vector = OffsetSpiralPoints.rbegin()->SurfacePoint.Coord();
+            last_direction_vector.Subtract(temp_vector);
+			//last_direction_vector.SetZ(0.0);
+            last_direction_vector.Normalize();
+			last_direction_vector.Multiply(10.0);
+            Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1,OffsetSpiralPoints.size());
+            TColgp_Array1OfVec Tangents(1,OffsetSpiralPoints.size());
+            for (unsigned int t=0;t<OffsetSpiralPoints.size();++t)
+            {
+                InterpolationPoints->SetValue(t+1,OffsetSpiralPoints[t].SurfacePoint);
+            }
+            bool check = CheckPoints(InterpolationPoints);
+            //Here we interpolate. If direction == true this means that the rotation is like the initial rotation
+            m_all_offset_cuts_low.push_back(InterpolateOrderedPoints(InterpolationPoints,true));
+		}
+    }
+anoutput1.close();
+log.saveToFile("C:/normals.iv");
     return true;
-    anoutput1.close();
+    
 }
 
 
-std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHelper>& SpiralPoints)
+std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHelper>& SpiralPoints,bool master_or_slave)
 {
     std::vector<SpiralHelper> OffsetPoints;
     SpiralHelper OffsetPoint;
@@ -2266,8 +2603,16 @@ std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHe
     for(unsigned int i=0;i<SpiralPoints.size();++i)
     {
         OffsetPoint = SpiralPoints[i];
-        OffsetPoint.SurfaceNormal.Multiply(m_UserSettings.master_radius);
-        OffsetPoint.SurfacePoint.SetXYZ(OffsetPoint.SurfacePoint.XYZ() + OffsetPoint.SurfaceNormal.XYZ());
+		if(master_or_slave)
+		{
+			OffsetPoint.SurfaceNormal.Multiply(m_UserSettings.master_radius);
+			OffsetPoint.SurfacePoint.SetXYZ(OffsetPoint.SurfacePoint.XYZ() + OffsetPoint.SurfaceNormal.XYZ());
+		}
+		else
+		{
+			OffsetPoint.SurfaceNormal.Multiply(m_UserSettings.slave_radius+m_UserSettings.sheet_thickness);
+			OffsetPoint.SurfacePoint.SetXYZ(OffsetPoint.SurfacePoint.XYZ() - OffsetPoint.SurfaceNormal.XYZ());
+		}
         if (OffsetPoints.size()>0 && (OffsetPoints.rbegin()->SurfacePoint.SquareDistance(OffsetPoint.SurfacePoint)>(Precision::Confusion()*Precision::Confusion())))
         {
             OffsetPoints.push_back(OffsetPoint);
@@ -2278,7 +2623,8 @@ std::vector<SpiralHelper> cutting_tools::OffsetSpiral(const std::vector<SpiralHe
         }
         else if ((i+1==SpiralPoints.size()) && (OffsetPoints.rbegin()->SurfacePoint.SquareDistance(OffsetPoint.SurfacePoint)<(Precision::Confusion()*Precision::Confusion())))
         {   //This part is necessary as the last point of the current spiral would otherwise not be offsetted
-            OffsetPoints.pop_back();//Delete the currently last point
+            OffsetPoints.pop_back();//Delete the two currently last points
+			OffsetPoints.pop_back();
             OffsetPoints.push_back(OffsetPoint);//Add the last point
         }
     }
