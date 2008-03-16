@@ -475,13 +475,14 @@ const CuttingToolsSettings& Cutting::getSettings()
     m_Settings.level_distance = level_distance_box->value();
     m_Settings.limit_angle = limit_angle_box->value();
     m_Settings.sheet_thickness = sheet_thickness_box->value();
-m_Settings.master_radius = master_radius_box->value();
+	m_Settings.master_radius = master_radius_box->value();
     m_Settings.slave_radius = slave_radius_box->value();
     m_Settings.max_Vel = max_vel->value();
     m_Settings.max_Acc = max_acc->value();
     m_Settings.spring_pretension = spring_pretension->value();
-m_Settings.x_offset_robot = xoffset_box->value();
-m_Settings.y_offset_robot = yoffset_box->value();
+	m_Settings.x_offset_robot = xoffset_box->value();
+	m_Settings.y_offset_robot = yoffset_box->value();
+	m_Settings.clockwise = clockwise_checkbox->isChecked();
 
 	return m_Settings;
 }
