@@ -87,17 +87,18 @@ bool Cutting::getProcessOutput()
         m_Process->kill();
         QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
                               tr("Fehler bei der Erzeugung\n"),
-                              QMessageBox::Ok);
+                              QMessageBox::Ok, QMessageBox::NoButton);
     }
     else if (result.contains("N o r m a l    t e r m i n a t i o n"))
     {
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
                                  tr("Dyna-Job finished well\n"),
-                                 QMessageBox::Ok);
+                                 QMessageBox::Ok, QMessageBox::NoButton);
     }
 
     return true;
 }
+
 void Cutting::on_adaptdynainput_clicked()
 {
     //First we have to select the LS-Dyna Masterfile and the current working dir
@@ -120,13 +121,13 @@ void Cutting::on_adaptdynainput_clicked()
     {
         QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
                               tr("Fehler bei der Erzeugung vom Struct File\n"),
-                              QMessageBox::Ok);
+                              QMessageBox::Ok, QMessageBox::NoButton);
     }
     else
     {
         QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
                                  tr("Structured-Dyna gut erzeugt\n"),
-                                 QMessageBox::Ok);
+                                 QMessageBox::Ok, QMessageBox::NoButton);
         ChangeDyna aFileChanger;
         if (aFileChanger.Read("dyna.str"))
             start_simulation->show();
@@ -412,7 +413,7 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     {
         QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
                               tr("Irgendwas stimmt nicht. Nochmal alles neu versuchen\n"),
-                              QMessageBox::Ok);
+                              QMessageBox::Ok, QMessageBox::NoButton);
         delete m_CuttingAlgo;
         m_CuttingAlgo = new cutting_tools(m_Shape);
         return;
