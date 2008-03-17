@@ -114,8 +114,8 @@ void SequencerBase::startStep()
 bool SequencerBase::next(bool canAbort)
 {
     nProgress++;
-    size_t uDiv = nTotalSteps > 0 ? nTotalSteps : _nNewSteps;
-    int perc = ((int)(nProgress / uDiv)) * 100;
+    float fDiv = nTotalSteps > 0 ? (float)nTotalSteps : (float)_nNewSteps;
+    int perc = (int)((float)nProgress * (100.0f / fDiv));
 
     // do only an update if we have increased by one percent
     if ( perc > _nLastPercentage ) {
