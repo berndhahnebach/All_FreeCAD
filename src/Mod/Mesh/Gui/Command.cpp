@@ -769,6 +769,11 @@ CmdMeshEvaluation::CmdMeshEvaluation()
 
 void CmdMeshEvaluation::activated(int iMsg)
 {
+  if (MeshGui::DockEvaluateMeshImp::hasInstance()) {
+    MeshGui::DockEvaluateMeshImp::instance()->show();
+    return;
+  }
+
   MeshGui::DlgEvaluateMeshImp* dlg = MeshGui::DockEvaluateMeshImp::instance();
   dlg->setAttribute(Qt::WA_DeleteOnClose);
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
@@ -786,9 +791,7 @@ bool CmdMeshEvaluation::isActive(void)
     App::Document* doc = App::GetApplication().getActiveDocument();
     if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
         return false;
-
-    // Check for the selected mesh feature (all Mesh types)
-    return (!MeshGui::DockEvaluateMeshImp::hasInstance());
+    return true;
 }
 
 //--------------------------------------------------------------------------------------

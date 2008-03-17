@@ -225,71 +225,80 @@ bool MeshFixDuplicatePoints::Fixup()
 /*
  * The facet with the lowset index is regarded as 'less'.
  */
-struct MeshFacet_Less  : public std::binary_function<const MeshFacet&, const MeshFacet&, bool>
+struct MeshFacet_Less  : public std::binary_function<
+    const MeshFacetArray::_TConstIterator&, 
+    const MeshFacetArray::_TConstIterator&, bool>
 {
-  bool operator()(const MeshFacet& x, const MeshFacet& y) const
-  {
-    unsigned long tmp;
-    unsigned long x0 = x._aulPoints[0];
-    unsigned long x1 = x._aulPoints[1];
-    unsigned long x2 = x._aulPoints[2];
-    unsigned long y0 = y._aulPoints[0];
-    unsigned long y1 = y._aulPoints[1];
-    unsigned long y2 = y._aulPoints[2];
+    bool operator()(const MeshFacetArray::_TConstIterator& x, 
+                    const MeshFacetArray::_TConstIterator& y) const
+    {
+        unsigned long tmp;
+        unsigned long x0 = x->_aulPoints[0];
+        unsigned long x1 = x->_aulPoints[1];
+        unsigned long x2 = x->_aulPoints[2];
+        unsigned long y0 = y->_aulPoints[0];
+        unsigned long y1 = y->_aulPoints[1];
+        unsigned long y2 = y->_aulPoints[2];
 
-    if (x0 > x1)
-    { tmp = x0; x0 = x1; x1 = tmp; }
-    if (x0 > x2)
-    { tmp = x0; x0 = x2; x2 = tmp; }
-    if (x1 > x2)
-    { tmp = x1; x1 = x2; x2 = tmp; }
-    if (y0 > y1)
-    { tmp = y0; y0 = y1; y1 = tmp; }
-    if (y0 > y2)
-    { tmp = y0; y0 = y2; y2 = tmp; }
-    if (y1 > y2)
-    { tmp = y1; y1 = y2; y2 = tmp; }
+        if (x0 > x1)
+        { tmp = x0; x0 = x1; x1 = tmp; }
+        if (x0 > x2)
+        { tmp = x0; x0 = x2; x2 = tmp; }
+        if (x1 > x2)
+        { tmp = x1; x1 = x2; x2 = tmp; }
+        if (y0 > y1)
+        { tmp = y0; y0 = y1; y1 = tmp; }
+        if (y0 > y2)
+        { tmp = y0; y0 = y2; y2 = tmp; }
+        if (y1 > y2)
+        { tmp = y1; y1 = y2; y2 = tmp; }
 
-    if      (x0 < y0)  return true;
-    else if (x0 > y0)  return false;
-    else if (x1 < y1)  return true;
-    else if (x1 > y1)  return false;
-    else if (x2 < y2)  return true;
-    else               return false;
-  }
+        if      (x0 < y0)  return true;
+        else if (x0 > y0)  return false;
+        else if (x1 < y1)  return true;
+        else if (x1 > y1)  return false;
+        else if (x2 < y2)  return true;
+        else               return false;
+    }
 };
 
 /*
- * Two facets are equal if all its three point indices refer to the same location in the point array of
- * the mesh kernel they belong to.
+ * Two facets are equal if all its three point indices refer to the same
+ * location in the point array of the mesh kernel they belong to.
  */
-struct MeshFacet_EqualTo  : public std::binary_function<const MeshFacet&, const MeshFacet&, bool>
+struct MeshFacet_EqualTo  : public std::binary_function<const MeshFacet&, 
+                                                        const MeshFacet&, bool>
 {
-  bool operator()(const MeshFacet& x, const MeshFacet& y) const
-  {
-    std::vector<unsigned long> xx;
-    std::vector<unsigned long> yy;
-    for ( int i=0; i<3; i++ )
+    bool operator()(const MeshFacet& x, const MeshFacet& y) const
     {
-      xx.push_back( x._aulPoints[i] );
-      yy.push_back( y._aulPoints[i] );
+        std::vector<unsigned long> xx;
+        std::vector<unsigned long> yy;
+        for (int i=0; i<3; i++)
+        {
+            xx.push_back( x._aulPoints[i] );
+            yy.push_back( y._aulPoints[i] );
+        }
+
+        std::sort(xx.begin(), xx.end());
+        std::sort(yy.begin(), yy.end());
+
+        return ( (xx[0] == yy[0]) && (xx[1] == yy[1]) && (xx[2] == yy[2]) );
     }
-
-    std::sort(xx.begin(), xx.end());
-    std::sort(yy.begin(), yy.end());
-
-    return ( (xx[0] == yy[0]) && (xx[1] == yy[1]) && (xx[2] == yy[2]) );
-  }
 };
 
 bool MeshEvalDuplicateFacets::Evaluate()
 {
-  std::set<MeshFacet, MeshFacet_Less> aFaces;
+  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less> aFaces;
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
-  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it )
-    aFaces.insert( *it );
+  for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it)
+  {
+    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+        pI = aFaces.insert(it);
+    if (!pI.second)
+        return false;
+  }
 
-  return (aFaces.size() == rFaces.size());
+  return true;
 }
 
 std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
@@ -299,11 +308,12 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
   unsigned long uIndex=0;
 
   // get all facets
-  std::set<MeshFacet, MeshFacet_Less > aFaceSet;
-  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
+  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less > aFaceSet;
+  for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++)
   {
-    std::pair<std::set<MeshFacet, MeshFacet_Less>::iterator, bool> pI = aFaceSet.insert(*it);
-    if ( !pI.second )
+    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+        pI = aFaceSet.insert(it);
+    if (!pI.second)
       aInds.push_back(uIndex);
   }
 
@@ -317,11 +327,12 @@ bool MeshFixDuplicateFacets::Fixup()
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
 
   // get all facets
-  std::set<MeshFacet, MeshFacet_Less > aFaceSet;
-  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
+  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less > aFaceSet;
+  for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++)
   {
-    std::pair<std::set<MeshFacet, MeshFacet_Less>::iterator, bool> pI = aFaceSet.insert(*it);
-    if ( !pI.second )
+    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+        pI = aFaceSet.insert(it);
+    if (!pI.second)
       aRemoveFaces.push_back(uIndex);
   }
 
@@ -667,7 +678,9 @@ bool MeshEvalCorruptedFacets::Evaluate()
 
   for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
     // dupicated point indices
-    if ((it->_aulPoints[0] == it->_aulPoints[1]) || (it->_aulPoints[0] == it->_aulPoints[2]) || (it->_aulPoints[1] == it->_aulPoints[2]))
+    if ((it->_aulPoints[0] == it->_aulPoints[1]) || 
+        (it->_aulPoints[1] == it->_aulPoints[2]) || 
+        (it->_aulPoints[2] == it->_aulPoints[0]))
       return false;
   }
 
@@ -681,7 +694,9 @@ std::vector<unsigned long> MeshEvalCorruptedFacets::GetIndices() const
   unsigned long ind=0;
 
   for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, ind++ ) {
-    if ((it->_aulPoints[0] == it->_aulPoints[1]) || (it->_aulPoints[0] == it->_aulPoints[2]) || (it->_aulPoints[1] == it->_aulPoints[2]))
+    if ((it->_aulPoints[0] == it->_aulPoints[1]) || 
+        (it->_aulPoints[1] == it->_aulPoints[2]) || 
+        (it->_aulPoints[2] == it->_aulPoints[0]))
       aInds.push_back(ind);
   }
 

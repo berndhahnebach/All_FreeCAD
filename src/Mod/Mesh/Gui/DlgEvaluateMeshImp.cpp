@@ -230,9 +230,11 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
 
     if (i== 0) {
         cleanInformation();
-    } else if ( !_meshFeature ) {
+    }
+    else if ( !_meshFeature ) {
         on_refreshButton_clicked();
-    } else {
+    }
+    else {
         analyzeOrientationButton->setEnabled(true);
         analyzeDuplicatedFacesButton->setEnabled(true);
         analyzeDuplicatedPointsButton->setEnabled(true);
@@ -334,7 +336,8 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
             checkOrientationButton->setChecked(false);
             repairOrientationButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
-        } else {
+        }
+        else {
             checkOrientationButton->setText( tr("%1 flipped normals").arg(inds.size()) );
             checkOrientationButton->setChecked(true);
             repairOrientationButton->setEnabled(true);
@@ -398,7 +401,8 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
           checkNonmanifoldsButton->setChecked(false);
           repairNonmanifoldsButton->setEnabled(false);
           removeViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
-        } else {
+        }
+        else {
           checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
           checkNonmanifoldsButton->setChecked(true);
           repairNonmanifoldsButton->setEnabled(true);
@@ -458,36 +462,40 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
         qApp->setOverrideCursor(Qt::WaitCursor);
 
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
-        MeshEvalNeighbourhood nb(rMesh);
         MeshEvalRangeFacet rf(rMesh);
         MeshEvalRangePoint rp(rMesh);
         MeshEvalCorruptedFacets cf(rMesh);
+        MeshEvalNeighbourhood nb(rMesh);
         
-        if ( !nb.Evaluate() ) {
-            checkIndicesButton->setText( tr("Invalid neighbour indices") );
-            checkIndicesButton->setChecked(true);
-            repairIndicesButton->setEnabled(true);
-            repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-        } else if ( !rf.Evaluate() ) {
+        if (!rf.Evaluate()) {
             checkIndicesButton->setText( tr("Invalid face indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-        } else if ( !rp.Evaluate() ) {
+        }
+        else if (!rp.Evaluate()) {
             checkIndicesButton->setText( tr("Invalid point indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-        } else if ( !cf.Evaluate() ) {
+        }
+        else if (!cf.Evaluate()) {
             checkIndicesButton->setText( tr("Multiple point indices") );
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
             addViewProvider( "MeshGui::ViewProviderMeshIndices" );
-        } else {
+        }
+        else if (!nb.Evaluate()) {
+            checkIndicesButton->setText( tr("Invalid neighbour indices") );
+            checkIndicesButton->setChecked(true);
+            repairIndicesButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
+            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        }
+        else {
             checkIndicesButton->setText( tr("No invalid indices") );
             checkIndicesButton->setChecked(false);
             repairIndicesButton->setEnabled(false);
@@ -551,7 +559,8 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
             checkDegenerationButton->setChecked(false);
             repairDegeneratedButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
-        } else {
+        }
+        else {
             checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
             checkDegenerationButton->setChecked(true);
             repairDegeneratedButton->setEnabled(true);
@@ -616,7 +625,8 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
             checkDuplicatedFacesButton->setChecked(false);
             repairDuplicatedFacesButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
-        } else {
+        }
+        else {
             checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
             checkDuplicatedFacesButton->setChecked(true);
             repairDuplicatedFacesButton->setEnabled(true);
@@ -681,7 +691,8 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
             checkDuplicatedPointsButton->setChecked(false);
             repairDuplicatedPointsButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
-        } else {
+        }
+        else {
             checkDuplicatedPointsButton->setText( tr("Duplicated points") );
             checkDuplicatedPointsButton->setChecked(true);
             repairDuplicatedPointsButton->setEnabled(true);
@@ -745,7 +756,8 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
             checkSelfIntersectionButton->setChecked(false);
             repairSelfIntersectionButton->setEnabled(false);
             removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
-        } else {
+        }
+        else {
             checkSelfIntersectionButton->setText( tr("Self-intersections") );
             checkSelfIntersectionButton->setChecked(true);
             repairSelfIntersectionButton->setEnabled(true);
@@ -848,8 +860,6 @@ bool DockEvaluateMeshImp::hasInstance()
 DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   : DlgEvaluateMeshImp( parent, fl )
 {
-    // save the current layout of the main window and restore it when we close this window
-    state = Gui::getMainWindow()->saveState(1000);
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     // use Qt macro for preparing for translation stuff (but not translating yet)
@@ -872,10 +882,9 @@ DockEvaluateMeshImp::~DockEvaluateMeshImp()
  */
 void DockEvaluateMeshImp::closeEvent(QCloseEvent* e)
 {
-    // closes the dock window and restores the former layout of the main window
+    // closes the dock window
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     pDockMgr->removeDockWindow(this);
-    Gui::getMainWindow()->restoreState(this->state, 1000);
 }
 
 /**
