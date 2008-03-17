@@ -257,6 +257,11 @@ Example:
 				<UserDocu>Get detailed information about the mesh</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="foraminate">
+			<Documentation>
+				<UserDocu>Get a list of facet indices and intersection points</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Points" ReadOnly="true">
 			<Documentation>
 				<UserDocu>A collection of the mesh points

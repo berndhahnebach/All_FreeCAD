@@ -259,6 +259,8 @@ libFreeCADGui_la_SOURCES=\
 		SoFCDB.h \
 		SoFCInteractiveElement.cpp \
 		SoFCInteractiveElement.h \
+		SoNavigationDragger.cpp \
+		SoNavigationDragger.h \
 		SoFCOffscreenRenderer.cpp \
 		SoFCOffscreenRenderer.h \
 		SoFCSelection.cpp \

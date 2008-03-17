@@ -248,6 +248,7 @@ void DockWindowManager::setup(DockWindowItems* items)
         }
     }
 
+#if 0
     // hide all dock windows which we don't need for the moment
     for (QList<QDockWidget*>::Iterator it = docked.begin(); it != docked.end(); ++it) {
         QByteArray dockName = (*it)->toggleViewAction()->data().toByteArray();
@@ -255,6 +256,7 @@ void DockWindowManager::setup(DockWindowItems* items)
         (*it)->hide();
         (*it)->toggleViewAction()->setVisible(false);
     }
+#endif
 }
 
 void DockWindowManager::saveState()
