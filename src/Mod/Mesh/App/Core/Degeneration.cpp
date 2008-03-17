@@ -94,13 +94,17 @@ namespace MeshCore {
 
 typedef MeshPointArray::_TConstIterator VertexIterator;
 /*
- * When building up a mesh then usually the class MeshBuilder is used. This class uses internally a std::set<MeshPoint> 
- * which uses the '<' operator of MeshPoint to sort the points. Thus to be consistent (and avoid using the '==' operator of MeshPoint) 
- * we use the same operator when comparing the points in the function object.
+ * When building up a mesh then usually the class MeshBuilder is used. This
+ * class uses internally a std::set<MeshPoint> which uses the '<' operator of
+ * MeshPoint to sort the points. Thus to be consistent (and avoid using the
+ * '==' operator of MeshPoint) we use the same operator when comparing the
+ * points in the function object.
  */
-struct Vertex_EqualTo  : public std::binary_function<const VertexIterator&, const VertexIterator&, bool>
+struct Vertex_EqualTo  : public std::binary_function<const VertexIterator&,
+                                                     const VertexIterator&, bool>
 {
-    bool operator()(const VertexIterator& x, const VertexIterator& y) const
+    bool operator()(const VertexIterator& x,
+                    const VertexIterator& y) const
     {
         if ( (*x) < (*y) )
             return false;
@@ -110,9 +114,11 @@ struct Vertex_EqualTo  : public std::binary_function<const VertexIterator&, cons
     }
 };
 
-struct Vertex_Less  : public std::binary_function<const VertexIterator&, const VertexIterator&, bool>
+struct Vertex_Less  : public std::binary_function<const VertexIterator&,
+                                                  const VertexIterator&, bool>
 {
-    bool operator()(const VertexIterator& x, const VertexIterator& y) const
+    bool operator()(const VertexIterator& x,
+                    const VertexIterator& y) const
     {
         return (*x) < (*y);
     }
@@ -222,15 +228,17 @@ bool MeshFixDuplicatePoints::Fixup()
 
 // ----------------------------------------------------------------------
 
+namespace MeshCore {
+
+typedef MeshFacetArray::_TConstIterator FaceIterator;
 /*
  * The facet with the lowset index is regarded as 'less'.
  */
-struct MeshFacet_Less  : public std::binary_function<
-    const MeshFacetArray::_TConstIterator&, 
-    const MeshFacetArray::_TConstIterator&, bool>
+struct MeshFacet_Less  : public std::binary_function<const FaceIterator&, 
+                                                     const FaceIterator&, bool>
 {
-    bool operator()(const MeshFacetArray::_TConstIterator& x, 
-                    const MeshFacetArray::_TConstIterator& y) const
+    bool operator()(const FaceIterator& x, 
+                    const FaceIterator& y) const
     {
         unsigned long tmp;
         unsigned long x0 = x->_aulPoints[0];
@@ -262,37 +270,40 @@ struct MeshFacet_Less  : public std::binary_function<
     }
 };
 
+}
+
 /*
  * Two facets are equal if all its three point indices refer to the same
  * location in the point array of the mesh kernel they belong to.
  */
-struct MeshFacet_EqualTo  : public std::binary_function<const MeshFacet&, 
-                                                        const MeshFacet&, bool>
+struct MeshFacet_EqualTo  : public std::binary_function<const FaceIterator&, 
+                                                        const FaceIterator&, bool>
 {
-    bool operator()(const MeshFacet& x, const MeshFacet& y) const
+    bool operator()(const FaceIterator& x,
+                    const FaceIterator& y) const
     {
-        std::vector<unsigned long> xx;
-        std::vector<unsigned long> yy;
-        for (int i=0; i<3; i++)
-        {
-            xx.push_back( x._aulPoints[i] );
-            yy.push_back( y._aulPoints[i] );
+        for (int i=0; i<3; i++ ) {
+            if (x->_aulPoints[0] == y->_aulPoints[i]) {
+                if (x->_aulPoints[1] == y->_aulPoints[(i+1)%3] && 
+                    x->_aulPoints[2] == y->_aulPoints[(i+2)%3])
+                    return true;
+                else if (x->_aulPoints[1] == y->_aulPoints[(i+2)%3] &&
+                     x->_aulPoints[2] == y->_aulPoints[(i+1)%3])
+                    return true;
+            }
         }
 
-        std::sort(xx.begin(), xx.end());
-        std::sort(yy.begin(), yy.end());
-
-        return ( (xx[0] == yy[0]) && (xx[1] == yy[1]) && (xx[2] == yy[2]) );
+        return false;
     }
 };
 
 bool MeshEvalDuplicateFacets::Evaluate()
 {
-  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less> aFaces;
+  std::set<FaceIterator, MeshFacet_Less> aFaces;
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
   for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it)
   {
-    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+    std::pair<std::set<FaceIterator, MeshFacet_Less>::iterator, bool>
         pI = aFaces.insert(it);
     if (!pI.second)
         return false;
@@ -303,42 +314,68 @@ bool MeshEvalDuplicateFacets::Evaluate()
 
 std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
 {
+#if 1
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    std::vector<FaceIterator> faces;
+    faces.reserve(rFacets.size());
+    for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+        faces.push_back(it);
+    }
+
+    // if there are two adjacent vertices which have the same coordinates
+    std::vector<unsigned long> aInds;
+    MeshFacet_EqualTo pred;
+    std::sort(faces.begin(), faces.end(), MeshFacet_Less());
+
+    std::vector<FaceIterator>::iterator ft = faces.begin();
+    while (ft < faces.end()) {
+        // get first item which adjacent element has the same vertex
+        ft = std::adjacent_find(ft, faces.end(), pred);
+        if (ft < faces.end()) {
+            ft++;
+            aInds.push_back(*ft - rFacets.begin());
+        }
+    }
+
+    return aInds;
+#else
   std::vector<unsigned long> aInds;
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
   unsigned long uIndex=0;
 
   // get all facets
-  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less > aFaceSet;
+  std::set<FaceIterator, MeshFacet_Less > aFaceSet;
   for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++)
   {
-    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+    std::pair<std::set<FaceIterator, MeshFacet_Less>::iterator, bool>
         pI = aFaceSet.insert(it);
     if (!pI.second)
       aInds.push_back(uIndex);
   }
 
   return aInds;
+#endif
 }
 
 bool MeshFixDuplicateFacets::Fixup()
 {
-  unsigned long uIndex=0;
-  std::vector<unsigned long> aRemoveFaces;
-  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+    unsigned long uIndex=0;
+    std::vector<unsigned long> aRemoveFaces;
+    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
 
-  // get all facets
-  std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less > aFaceSet;
-  for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++)
-  {
-    std::pair<std::set<MeshFacetArray::_TConstIterator, MeshFacet_Less>::iterator, bool>
+    // get all facets
+    std::set<FaceIterator, MeshFacet_Less > aFaceSet;
+    for (MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++) {
+        std::pair<std::set<FaceIterator, MeshFacet_Less>::iterator, bool>
         pI = aFaceSet.insert(it);
-    if (!pI.second)
-      aRemoveFaces.push_back(uIndex);
-  }
+        if (!pI.second)
+            aRemoveFaces.push_back(uIndex);
+    }
 
-  _rclMesh.DeleteFacets( aRemoveFaces );
+    _rclMesh.DeleteFacets(aRemoveFaces);
+    _rclMesh.RebuildNeighbours(); // needs to be done
 
-  return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------

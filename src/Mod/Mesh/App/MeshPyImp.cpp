@@ -789,6 +789,41 @@ PyObject*  MeshPy::collapseFacets(PyObject *args)
     Py_Return; 
 }
 
+PyObject*  MeshPy::foraminate(PyObject *args)
+{
+    PyObject* pnt;
+    PyObject* dir;
+    if (!PyArg_ParseTuple(args, "O!O!", &Base::VectorPy::Type, &pnt, 
+                                        &Base::VectorPy::Type, &dir))
+        return NULL;
+
+    Base::Vector3d* pnt_d = static_cast<Base::VectorPy*>(pnt)->getVectorPtr();
+    Base::Vector3d* dir_d = static_cast<Base::VectorPy*>(dir)->getVectorPtr();
+    Base::Vector3f base((float)pnt_d->x,(float)pnt_d->y,(float)pnt_d->z);
+    Base::Vector3f vect((float)dir_d->x,(float)dir_d->y,(float)dir_d->z);
+
+    Base::Vector3f res;
+    MeshCore::MeshFacetIterator f_it(getMeshObjectPtr()->getKernel());
+    int index = 0;
+    try {
+        Py::Dict dict;
+        for (f_it.Begin(); f_it.More(); f_it.Next(), index++) {
+            if (f_it->Foraminate(base, vect, res)) {
+                Py::Tuple tuple(3);
+                tuple.setItem(0, Py::Float(res.x));
+                tuple.setItem(1, Py::Float(res.y));
+                tuple.setItem(2, Py::Float(res.z));
+                dict.setItem(Py::Int(index), tuple);
+            }
+        }
+
+        return Py::new_reference_to(dict);
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+}
+
 Py::Int MeshPy::getCountPoints(void) const
 {
     return Py::Int((long)Mesh().countPoints());
