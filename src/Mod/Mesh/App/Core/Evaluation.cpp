@@ -261,45 +261,81 @@ bool MeshEvalSolid::Evaluate ()
 
 // ----------------------------------------------------
 
+namespace MeshCore {
+
+struct Edge_Index
+{
+    unsigned long p0, p1, f;
+};
+
+struct Edge_Less  : public std::binary_function<const Edge_Index&, 
+                                                const Edge_Index&, bool>
+{
+    bool operator()(const Edge_Index& x, const Edge_Index& y) const
+    {
+        if (x.p0 < y.p0)
+            return true;
+        else if (x.p0 > y.p0)
+            return false;
+        else if (x.p1 < y.p1)
+            return true;
+        else if (x.p1 > y.p1)
+            return false;
+        return false;
+    }
+};
+
+}
+
 bool MeshEvalTopology::Evaluate ()
 {
-  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-  MeshFacetArray::_TConstIterator pI;
+    // Using and sorting a vector seems to be faster and more memory-efficient
+    // than a map.
+    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+    std::vector<Edge_Index> edges;
+    edges.reserve(3*rclFAry.size());
 
-  Base::SequencerLauncher seq("Checking topology...", rclFAry.size());
+    // build up an array of edges
+    MeshFacetArray::_TConstIterator pI;
+    Base::SequencerLauncher seq("Checking topology...", rclFAry.size());
+    for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++) {
+        for (int i = 0; i < 3; i++) {
+            Edge_Index item;
+            item.p0 = std::min<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.p1 = std::max<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.f  = pI - rclFAry.begin();
+            edges.push_back(item);
+        }
 
-  _aclManifoldList.clear();
-
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclHits;
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
-
-  // facet to edge
-  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      aclHits[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
+        Base::Sequencer().next();
     }
 
-    Base::Sequencer().next();
-  }
+    // sort the edges
+    std::sort(edges.begin(), edges.end(), Edge_Less());
 
-  // search for non-manifold edges
-  for (pEdge = aclHits.begin(); pEdge != aclHits.end(); pEdge++)
-  {
-    // Edge that is shared by more than 2 facets
-    if (pEdge->second.size() > 2)
-    {  // found non-manifold edge, add to list
-      _aclManifoldList.push_back( std::make_pair<unsigned long, unsigned long>(pEdge->first.first, pEdge->first.second) );
+    // search for non-manifold edges
+    unsigned long p0 = ULONG_MAX, p1 = ULONG_MAX;
+    _aclManifoldList.clear();
+    int count = 0;
+    std::vector<Edge_Index>::iterator pE;
+    for (pE = edges.begin(); pE != edges.end(); pE++) {
+        if (p0 == pE->p0 && p1 == pE->p1) {
+            count++;
+        }
+        else {
+            if (count > 2) {
+                // Edge that is shared by more than 2 facets
+                _aclManifoldList.push_back(std::make_pair
+                    <unsigned long, unsigned long>(p0, p1));
+            }
+
+            p0 = pE->p0;
+            p1 = pE->p1;
+            count = 1;
+        }
     }
-  }
 
-  if (_aclManifoldList.size() > 0)
-    return false;
-  else
-    return true;
+    return _aclManifoldList.empty();
 }
 
 // generate indexed edge list which tangents non-manifolds
@@ -634,136 +670,254 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<unsigned long >& int
 
 bool MeshEvalNeighbourhood::Evaluate ()
 {
-  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-  MeshFacetArray::_TConstIterator pI;
+    // Note: If more than two facets are attached to the edge then we have a 
+    // non-manifold edge here. 
+    // This means that the neighbourhood cannot be valid, for sure. But we just
+    // want to check whether the neighbourhood is valid for topologic correctly
+    // edges and thus we ignore this case.
+    // Non-manifolds are an own category of errors and are handled by the class
+    // MeshEvalTopology.
+    //
+    // Using and sorting a vector seems to be faster and more memory-efficient
+    // than a map.
+    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+    std::vector<Edge_Index> edges;
+    edges.reserve(3*rclFAry.size());
 
-  Base::SequencerLauncher seq("Checking indices", rclFAry.size());
+    // build up an array of edges
+    MeshFacetArray::_TConstIterator pI;
+    Base::SequencerLauncher seq("Checking indices...", rclFAry.size());
+    for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++) {
+        for (int i = 0; i < 3; i++) {
+            Edge_Index item;
+            item.p0 = std::min<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.p1 = std::max<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.f  = pI - rclFAry.begin();
+            edges.push_back(item);
+        }
 
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > cEdgeList;
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
-
-  // facet to edge
-  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      cEdgeList[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
+        Base::Sequencer().next();
     }
 
-    Base::Sequencer().next();
-  }
+    // sort the edges
+    std::sort(edges.begin(), edges.end(), Edge_Less());
 
-  // search for the attached faces to an edge
-  for (pEdge = cEdgeList.begin(); pEdge != cEdgeList.end(); ++pEdge)
-  {
-    // open edge
-    if (pEdge->second.size() == 1) {
-      unsigned long p0 = pEdge->first.first;
-      unsigned long p1 = pEdge->first.second;
-      const MeshFacet& rFace = rclFAry[pEdge->second.front()];
-      unsigned short side = rFace.Side(p0,p1);
-      // should be "open edge" but isn't marked as such
-      if ( rFace._aulNeighbours[side] != ULONG_MAX )
-        return false;
+    unsigned long p0 = ULONG_MAX, p1 = ULONG_MAX;
+    unsigned long f0 = ULONG_MAX, f1 = ULONG_MAX;
+    int count = 0;
+    std::vector<Edge_Index>::iterator pE;
+    for (pE = edges.begin(); pE != edges.end(); pE++) {
+        if (p0 == pE->p0 && p1 == pE->p1) {
+            f1 = pE->f;
+            count++;
+        }
+        else {
+            // we handle only the cases for 1 and 2, for all higher
+            // values we have a non-manifold that is ignorned here
+            if (count == 2) {
+                const MeshFacet& rFace0 = rclFAry[f0];
+                const MeshFacet& rFace1 = rclFAry[f1];
+                unsigned short side0 = rFace0.Side(p0,p1);
+                unsigned short side1 = rFace1.Side(p0,p1);
+                // Check whether rFace0 and rFace1 reference each other as
+                // neighbours
+                if (rFace0._aulNeighbours[side0]!=f1 ||
+                    rFace1._aulNeighbours[side1]!=f0)
+                    return false;
+            }
+            else if (count == 1) {
+                const MeshFacet& rFace = rclFAry[f0];
+                unsigned short side = rFace.Side(p0,p1);
+                // should be "open edge" but isn't marked as such
+                if (rFace._aulNeighbours[side] != ULONG_MAX)
+                    return false;
+            }
+
+            p0 = pE->p0;
+            p1 = pE->p1;
+            f0 = pE->f;
+            count = 1;
+        }
     }
-    // two-manifolds
-    else if (pEdge->second.size() == 2) {
-      unsigned long p0 = pEdge->first.first;
-      unsigned long p1 = pEdge->first.second;
-      unsigned long f0 = pEdge->second.front();
-      unsigned long f1 = pEdge->second.back();
 
-      const MeshFacet& rFace0 = rclFAry[f0];
-      const MeshFacet& rFace1 = rclFAry[f1];
-      unsigned short side0 = rFace0.Side(p0,p1);
-      unsigned short side1 = rFace1.Side(p0,p1);
-
-      // Check wether rFace0 and rFace1 reference each other as neighbour
-      if ( rFace0._aulNeighbours[side0]!=f1 || rFace1._aulNeighbours[side1]!=f0 )
-        return false;
-    }
-
-    // Note: If more than two facets are attached to the edge then we have a non-manifold edge here. 
-    // This means that the neighbourhood cannot be valid, for sure. But we just want to check whether
-    // the neighbourhood is valid for topologic correctly edges and thus we ignore this case.
-    // Non-manifolds are an own category of errors and are handled by the class MeshEvalTopology.
-  }
-
-  return true;
+    return true;
 }
 
 std::vector<unsigned long> MeshEvalNeighbourhood::GetIndices() const
 {
-  std::vector<unsigned long> inds;
-  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-  MeshFacetArray::_TConstIterator pI;
+    std::vector<unsigned long> inds;
+    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+    std::vector<Edge_Index> edges;
+    edges.reserve(3*rclFAry.size());
 
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > cEdgeList;
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
+    // build up an array of edges
+    MeshFacetArray::_TConstIterator pI;
+    Base::SequencerLauncher seq("Checking indices...", rclFAry.size());
+    for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++) {
+        for (int i = 0; i < 3; i++) {
+            Edge_Index item;
+            item.p0 = std::min<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.p1 = std::max<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.f  = pI - rclFAry.begin();
+            edges.push_back(item);
+        }
 
-  // facet to edge
-  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      cEdgeList[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
-    }
-  }
-
-  // search for the attached faces to an edge
-  for (pEdge = cEdgeList.begin(); pEdge != cEdgeList.end(); ++pEdge)
-  {
-    // open edge
-    if (pEdge->second.size() == 1) {
-      unsigned long p0 = pEdge->first.first;
-      unsigned long p1 = pEdge->first.second;
-      const MeshFacet& rFace = rclFAry[pEdge->second.front()];
-      unsigned short side = rFace.Side(p0,p1);
-      // should be "open edge" but isn't marked as such
-      if ( rFace._aulNeighbours[side] != ULONG_MAX )
-        inds.push_back(pEdge->second.front());
-    }
-    // two-manifolds
-    else if (pEdge->second.size() == 2) {
-      unsigned long p0 = pEdge->first.first;
-      unsigned long p1 = pEdge->first.second;
-      unsigned long f0 = pEdge->second.front();
-      unsigned long f1 = pEdge->second.back();
-
-      const MeshFacet& rFace0 = rclFAry[f0];
-      const MeshFacet& rFace1 = rclFAry[f1];
-      unsigned short side0 = rFace0.Side(p0,p1);
-      unsigned short side1 = rFace1.Side(p0,p1);
-
-      // Check wether rFace0 and rFace1 reference each other as neighbour
-      if ( rFace0._aulNeighbours[side0]!=f1 || rFace1._aulNeighbours[side1]!=f0 )
-      {
-        inds.push_back(pEdge->second.front());
-        inds.push_back(pEdge->second.back());
-      }
+        Base::Sequencer().next();
     }
 
-    // Note: If more than two facets are attached to the edge then we have a non-manifold edge here. 
-    // This means that the neighbourhood cannot be valid, for sure. But we just want to check whether
-    // the neighbourhood is valid for topologic correctly edges and thus we ignore this case.
-    // Non-manifolds are an own category of errors and are handled by the class MeshEvalTopology.
-  }
+    // sort the edges
+    std::sort(edges.begin(), edges.end(), Edge_Less());
 
-  // remove duplicates
-  std::sort(inds.begin(), inds.end());
-  inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+    unsigned long p0 = ULONG_MAX, p1 = ULONG_MAX;
+    unsigned long f0 = ULONG_MAX, f1 = ULONG_MAX;
+    int count = 0;
+    std::vector<Edge_Index>::iterator pE;
+    for (pE = edges.begin(); pE != edges.end(); pE++) {
+        if (p0 == pE->p0 && p1 == pE->p1) {
+            f1 = pE->f;
+            count++;
+        }
+        else {
+            // we handle only the cases for 1 and 2, for all higher
+            // values we have a non-manifold that is ignorned here
+            if (count == 2) {
+                const MeshFacet& rFace0 = rclFAry[f0];
+                const MeshFacet& rFace1 = rclFAry[f1];
+                unsigned short side0 = rFace0.Side(p0,p1);
+                unsigned short side1 = rFace1.Side(p0,p1);
+                // Check whether rFace0 and rFace1 reference each other as
+                // neighbours
+                if (rFace0._aulNeighbours[side0]!=f1 ||
+                    rFace1._aulNeighbours[side1]!=f0) {
+                    inds.push_back(f0);
+                    inds.push_back(f1);
+                }
+            }
+            else if (count == 1) {
+                const MeshFacet& rFace = rclFAry[f0];
+                unsigned short side = rFace.Side(p0,p1);
+                // should be "open edge" but isn't marked as such
+                if (rFace._aulNeighbours[side] != ULONG_MAX)
+                    inds.push_back(f0);
+            }
 
-  return inds;
+            p0 = pE->p0;
+            p1 = pE->p1;
+            f0 = pE->f;
+            count = 1;
+        }
+    }
+
+    // remove duplicates
+    std::sort(inds.begin(), inds.end());
+    inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+
+    return inds;
 }
 
 bool MeshFixNeighbourhood::Fixup()
 {
-  _rclMesh.RebuildNeighbours();
-  return true;
+    _rclMesh.RebuildNeighbours();
+    return true;
+}
+
+void MeshKernel::RebuildNeighbours (void)
+{
+    std::vector<Edge_Index> edges;
+    edges.reserve(3*this->_aclFacetArray.size());
+
+    // build up an array of edges
+    MeshFacetArray::_TConstIterator pI;
+    MeshFacetArray::_TConstIterator pB = this->_aclFacetArray.begin();
+    for (pI = this->_aclFacetArray.begin(); pI != this->_aclFacetArray.end(); pI++) {
+        for (int i = 0; i < 3; i++) {
+            Edge_Index item;
+            item.p0 = std::min<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.p1 = std::max<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
+            item.f  = pI - pB;
+            edges.push_back(item);
+        }
+    }
+
+    // sort the edges
+    std::sort(edges.begin(), edges.end(), Edge_Less());
+
+    unsigned long p0 = ULONG_MAX, p1 = ULONG_MAX;
+    unsigned long f0 = ULONG_MAX, f1 = ULONG_MAX;
+    int count = 0;
+    std::vector<Edge_Index>::iterator pE;
+    for (pE = edges.begin(); pE != edges.end(); pE++) {
+        if (p0 == pE->p0 && p1 == pE->p1) {
+            f1 = pE->f;
+            count++;
+        }
+        else {
+            // we handle only the cases for 1 and 2, for all higher
+            // values we have a non-manifold that is ignorned here
+            if (count == 2) {
+                MeshFacet& rFace0 = this->_aclFacetArray[f0];
+                MeshFacet& rFace1 = this->_aclFacetArray[f1];
+                unsigned short side0 = rFace0.Side(p0,p1);
+                unsigned short side1 = rFace1.Side(p0,p1);
+                rFace0._aulNeighbours[side0] = f1;
+                rFace1._aulNeighbours[side1] = f0;
+            }
+            else if (count == 1) {
+                MeshFacet& rFace = this->_aclFacetArray[f0];
+                unsigned short side = rFace.Side(p0,p1);
+                rFace._aulNeighbours[side] = ULONG_MAX;
+            }
+
+            p0 = pE->p0;
+            p1 = pE->p1;
+            f0 = pE->f;
+            count = 1;
+        }
+    }
+#if 0
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >   aclEdgeMap; // Map<Kante, Liste von Facets>
+
+  // Kantenmap aufbauen
+  unsigned long k = 0;
+  for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, k++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulT0 = pF->_aulPoints[i];
+      unsigned long ulT1 = pF->_aulPoints[(i+1)%3];
+      unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
+      unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
+      aclEdgeMap[std::make_pair(ulP0, ulP1)].push_front(k);
+    }
+  }
+
+  // Nachbarn aufloesen
+  for (std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI = aclEdgeMap.begin(); pI != aclEdgeMap.end(); pI++)
+  {
+    unsigned long ulP0 = pI->first.first;
+    unsigned long ulP1 = pI->first.second;
+    if (pI->second.size() == 1)  // kein Nachbar ==> Randfacet
+    {
+      unsigned long ulF0 = pI->second.front();
+      unsigned short usSide =  _aclFacetArray[ulF0].Side(ulP0, ulP1);
+      assert(usSide != USHRT_MAX);
+      _aclFacetArray[ulF0]._aulNeighbours[usSide] = ULONG_MAX;
+    }
+    else if (pI->second.size() == 2)  // normales Facet mit Nachbar
+    {
+      unsigned long ulF0 = pI->second.front();
+      unsigned long ulF1 = pI->second.back();
+      unsigned short usSide =  _aclFacetArray[ulF0].Side(ulP0, ulP1);
+      assert(usSide != USHRT_MAX);
+      _aclFacetArray[ulF0]._aulNeighbours[usSide] = ulF1;
+      usSide =  _aclFacetArray[ulF1].Side(ulP0, ulP1);
+      assert(usSide != USHRT_MAX);
+      _aclFacetArray[ulF1]._aulNeighbours[usSide] = ulF0;
+    }
+//    else
+//      assert(false);
+  }
+#endif
 }
 
 // ----------------------------------------------------------------

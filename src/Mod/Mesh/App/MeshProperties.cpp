@@ -510,16 +510,8 @@ void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 
 void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 {
-    MeshCore::MeshKernel kernel;
-    kernel.Read(reader);
-
-    // avoid to duplicate the mesh in memory
-    MeshCore::MeshPointArray points;
-    MeshCore::MeshFacetArray facets;
-    kernel.Adopt(points, facets);
-
     aboutToSetValue();
-    _meshObject->getKernel().Adopt(points, facets);
+    _meshObject->load(reader);
     hasSetValue();
 }
 

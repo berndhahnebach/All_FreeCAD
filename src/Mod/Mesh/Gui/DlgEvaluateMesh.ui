@@ -440,7 +440,7 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>None 2-manifolds</string>
+        <string>Non-manifolds</string>
        </property>
       </widget>
      </item>

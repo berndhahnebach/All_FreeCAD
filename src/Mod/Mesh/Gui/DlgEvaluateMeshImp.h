@@ -147,7 +147,6 @@ public:
 
 private:
     static DockEvaluateMeshImp* _instance;
-    QByteArray state;
 };
 
 } // namespace MeshGui

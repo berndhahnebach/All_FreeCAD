@@ -305,7 +305,10 @@ private:
 
 /**
  * The MeshEvalRangeFacet class checks whether a facet points to neighbour
- * facets that are out of range.
+ * facets that are out of range. All errors detected by this class would also
+ * be implicitly found by MeshEvalNeighbourhood. However, MeshEvalRangeFacet
+ * is used for a very fast search while MeshEvalNeighbourhood needs much more
+ * time because it can detect more errors.
  * @see MeshFixRangeFacet
  * @author Werner Mayer
  */

@@ -191,7 +191,7 @@ void MeshObject::Restore(Base::XMLReader &reader)
 
 void MeshObject::RestoreDocFile(Base::Reader &reader)
 {
-    _kernel.Read(reader);
+    load(reader);
 }
 
 void MeshObject::save(const char* file) const
@@ -209,11 +209,47 @@ void MeshObject::load(const char* file)
 {
     MeshCore::MeshInput aReader(_kernel);
     aReader.LoadAny(file);
+
+    try {
+        MeshCore::MeshEvalNeighbourhood nb(_kernel);
+        if (!nb.Evaluate()) {
+            Base::Console().Warning("Errors in neighbourhood of mesh found...");
+            _kernel.RebuildNeighbours();
+            Base::Console().Warning("fixed\n");
+        }
+
+        MeshCore::MeshEvalTopology eval(_kernel);
+        if (!eval.Evaluate()) {
+            Base::Console().Warning("The mesh data structure has some defects\n");
+        }
+    }
+    catch (const Base::MemoryException&) {
+        // ignore memory exceptions and continue
+        Base::Console().Log("Check for defects in mesh data structure failed\n");
+    }
 }
 
 void MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
+
+    try {
+        MeshCore::MeshEvalNeighbourhood nb(_kernel);
+        if (!nb.Evaluate()) {
+            Base::Console().Warning("Errors in neighbourhood of mesh found...");
+            _kernel.RebuildNeighbours();
+            Base::Console().Warning("fixed\n");
+        }
+
+        MeshCore::MeshEvalTopology eval(_kernel);
+        if (!eval.Evaluate()) {
+            Base::Console().Warning("The mesh data structure has some defects\n");
+        }
+    }
+    catch (const Base::MemoryException&) {
+        // ignore memory exceptions and continue
+        Base::Console().Log("Check for defects in mesh data structure failed\n");
+    }
 }
 
 void MeshObject::addFacet(const MeshCore::MeshGeomFacet& facet)
@@ -556,11 +592,10 @@ void MeshObject::removeSelfIntersections()
 
 void MeshObject::validateIndices()
 {
-    MeshCore::MeshEvalNeighbourhood nb(_kernel);
-    if (!nb.Evaluate()) {
-        MeshCore::MeshFixNeighbourhood fix(_kernel);
-        fix.Fixup();
-    }
+    // for invalid neighbour indices we don't need to check first
+    // but start directly with the validation
+    MeshCore::MeshFixNeighbourhood fix(_kernel);
+    fix.Fixup();
 
     MeshCore::MeshEvalRangeFacet rf(_kernel);
     if (!rf.Evaluate()) {
@@ -575,7 +610,7 @@ void MeshObject::validateIndices()
     }
 
     MeshCore::MeshEvalCorruptedFacets cf(_kernel);
-    if (!nb.Evaluate()) {
+    if (!cf.Evaluate()) {
         MeshCore::MeshFixCorruptedFacets fix(_kernel);
         fix.Fixup();
     }
