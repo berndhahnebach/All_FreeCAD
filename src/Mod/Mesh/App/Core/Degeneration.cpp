@@ -322,14 +322,14 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
         faces.push_back(it);
     }
 
-    // if there are two adjacent vertices which have the same coordinates
+    // if there are two adjacent faces which references the same vertices
     std::vector<unsigned long> aInds;
     MeshFacet_EqualTo pred;
     std::sort(faces.begin(), faces.end(), MeshFacet_Less());
 
     std::vector<FaceIterator>::iterator ft = faces.begin();
     while (ft < faces.end()) {
-        // get first item which adjacent element has the same vertex
+        // get first item which adjacent element has the same face
         ft = std::adjacent_find(ft, faces.end(), pred);
         if (ft < faces.end()) {
             ft++;
@@ -373,7 +373,7 @@ bool MeshFixDuplicateFacets::Fixup()
     }
 
     _rclMesh.DeleteFacets(aRemoveFaces);
-    _rclMesh.RebuildNeighbours(); // needs to be done
+    _rclMesh.RebuildNeighbours(); // needs to be done here
 
     return true;
 }

@@ -547,46 +547,47 @@ bool MeshGeomFacet::IntersectWithPlane (const Base::Vector3f &rclBase, const Bas
   return false;
 }
 
-bool MeshGeomFacet::Foraminate (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes, float fMaxAngle) const
+bool MeshGeomFacet::Foraminate (const Base::Vector3f &P, const Base::Vector3f &dir, Base::Vector3f &I, float fMaxAngle) const
 {
-  const float fTolerance = 1e-06f;
-  Base::Vector3f clFacetNormal = GetNormal();
+    const float eps = 1e-06f;
+    Base::Vector3f n = this->GetNormal();
 
-  // check angle between facet normal and the line direction
-  if (rclDir.GetAngle(clFacetNormal) > fMaxAngle)
-    return false;
+    // check angle between facet normal and the line direction, FLOAT_MAX is
+    // returned for degenerated facets
+    if (dir.GetAngle(n) > fMaxAngle)
+        return false;
 
-  float fDenominator = clFacetNormal * rclDir;
-  float fLLenSqr     = rclDir * rclDir;
-  float fNLenSqr     = clFacetNormal * clFacetNormal;
+    float nn = n * n;
+    float nd = n * dir;
+    float dd = dir * dir;
 
-  // the line mustn't be parallel to the facet
-  if ((fDenominator * fDenominator) <= (fTolerance * fLLenSqr * fNLenSqr))
-    return false;
+    // the line mustn't be parallel to the triangle
+    if ((nd * nd) <= (eps * dd * nn))
+        return false;
 
-  Base::Vector3f clE0 = _aclPoints[1] - _aclPoints[0];
-  Base::Vector3f clE1 = _aclPoints[2] - _aclPoints[0];
-  
-  Base::Vector3f clDiff0 = rclPt - _aclPoints[0];
-  float fTime   = -(clFacetNormal * clDiff0) / fDenominator;
-  Base::Vector3f  clDiff1 = clDiff0 + fTime * rclDir;
+    Base::Vector3f u = this->_aclPoints[1] - this->_aclPoints[0];
+    Base::Vector3f v = this->_aclPoints[2] - this->_aclPoints[0];
 
-  float fE00 = clE0 * clE0;
-  float fE01 = clE0 * clE1;
-  float fE11 = clE1 * clE1;
-  float fDet = float(fabs((fE00 * fE11) - (fE01 * fE01)));
-  float fR0  = clE0 * clDiff1;
-  float fR1  = clE1 * clDiff1;
+    Base::Vector3f w0 = P - this->_aclPoints[0];
+    float r = -(n * w0) / nd;
+    Base::Vector3f  w = w0 + r * dir;
 
-  float fS0  = (fE11 * fR0) - (fE01 * fR1);
-  float fS1  = (fE00 * fR1) - (fE01 * fR0);
+    float uu = u * u;
+    float uv = u * v;
+    float vv = v * v;
+    float wu = w * u;
+    float wv = w * v;
+    float det = float(fabs((uu * vv) - (uv * uv)));
 
-  if ((fS0 >= 0.0f) && (fS1 >= 0.0f) && ((fS0 + fS1) <= fDet))
-  {
-    rclRes = clDiff1 + _aclPoints[0];
-    return true;
-  }
-  else
+    float s  = (vv * wu) - (uv * wv);
+    float t  = (uu * wv) - (uv * wu);
+
+    // is the intersection point inside the triangle?
+    if ((s >= 0.0f) && (t >= 0.0f) && ((s + t) <= det)) {
+        I = w + this->_aclPoints[0];
+        return true;
+    }
+
     return false;
 }
 
