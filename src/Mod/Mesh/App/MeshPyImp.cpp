@@ -791,24 +791,28 @@ PyObject*  MeshPy::collapseFacets(PyObject *args)
 
 PyObject*  MeshPy::foraminate(PyObject *args)
 {
-    PyObject* pnt;
-    PyObject* dir;
-    if (!PyArg_ParseTuple(args, "O!O!", &Base::VectorPy::Type, &pnt, 
-                                        &Base::VectorPy::Type, &dir))
+    PyObject* pnt_p;
+    PyObject* dir_p;
+    if (!PyArg_ParseTuple(args, "OO", &pnt_p, &dir_p))
         return NULL;
 
-    Base::Vector3d* pnt_d = static_cast<Base::VectorPy*>(pnt)->getVectorPtr();
-    Base::Vector3d* dir_d = static_cast<Base::VectorPy*>(dir)->getVectorPtr();
-    Base::Vector3f base((float)pnt_d->x,(float)pnt_d->y,(float)pnt_d->z);
-    Base::Vector3f vect((float)dir_d->x,(float)dir_d->y,(float)dir_d->z);
-
-    Base::Vector3f res;
-    MeshCore::MeshFacetIterator f_it(getMeshObjectPtr()->getKernel());
-    int index = 0;
     try {
+        Py::Tuple pnt_t(pnt_p);
+        Py::Tuple dir_t(dir_p);
+        Base::Vector3f pnt((float)Py::Float(pnt_t.getItem(0)),
+                           (float)Py::Float(pnt_t.getItem(1)),
+                           (float)Py::Float(pnt_t.getItem(2)));
+        Base::Vector3f dir((float)Py::Float(dir_t.getItem(0)),
+                           (float)Py::Float(dir_t.getItem(1)),
+                           (float)Py::Float(dir_t.getItem(2)));
+
+        Base::Vector3f res;
+        MeshCore::MeshFacetIterator f_it(getMeshObjectPtr()->getKernel());
+        int index = 0;
+
         Py::Dict dict;
         for (f_it.Begin(); f_it.More(); f_it.Next(), index++) {
-            if (f_it->Foraminate(base, vect, res)) {
+            if (f_it->Foraminate(pnt, dir, res)) {
                 Py::Tuple tuple(3);
                 tuple.setItem(0, Py::Float(res.x));
                 tuple.setItem(1, Py::Float(res.y));
