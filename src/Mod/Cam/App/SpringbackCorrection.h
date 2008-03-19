@@ -107,15 +107,15 @@ struct MeshPntLess
 class AppCamExport SpringbackCorrection : public MeshCore::MeshFacetVisitor
 {
 public:
-	SpringbackCorrection();
+    SpringbackCorrection();
     SpringbackCorrection(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
     ~SpringbackCorrection();
-	bool Load(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
+    bool Load(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
     bool Init();
-	bool Init_Setting(struct CuttingToolsSettings& set);
+    bool Init_Setting(struct CuttingToolsSettings& set);
     bool Perform(int deg_Tol);
     bool SetFixEdges();
-	bool CalcCurv();
+    bool CalcCurv();
     std::vector<double> MeshCurvature(const MeshCore::MeshKernel& mesh);
     bool GetCurvature(TopoDS_Face aFace);
     bool MirrorMesh(std::vector<double> error);
@@ -142,7 +142,7 @@ public:
                             std::vector<MeshCore::MeshFacet> &arr,
                             MeshCore::MeshFacetArray &mFacets);
 
-	bool CorrectScale(double max_zVal);
+    bool CorrectScale(double max_zVal);
 
     bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
     std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
@@ -160,7 +160,7 @@ private:
     std::vector< std::vector<unsigned long> > m_RegionVector;
     std::vector< std::vector<unsigned long> > m_Regions;
     std::vector<MeshCore::MeshFacet> m_RegionBounds;
-	CuttingToolsSettings m_set;
+    CuttingToolsSettings m_set;
 
     int m_RingCurrent;
 private:
@@ -175,7 +175,7 @@ private:
     std::map<Base::Vector3f,MeshPnt,MeshPntLess > MeshMap;
     std::map<TopoDS_Edge, std::vector<double>, Edge_Less> EdgeMap;
 public:
-	std::vector<TopoDS_Face> m_FixFaces;
+    std::vector<TopoDS_Face> m_FixFaces;
 };
 
 #endif

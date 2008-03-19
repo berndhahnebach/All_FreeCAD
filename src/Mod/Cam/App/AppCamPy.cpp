@@ -3852,9 +3852,9 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
         TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
 
 //        best_fit befi(cad);
-       // befi.ShapeFit_Coarse();
+        // befi.ShapeFit_Coarse();
 
-   //     return new TopoShapePyOld(*(befi.m_Cad));
+        //     return new TopoShapePyOld(*(befi.m_Cad));
 
     }PY_CATCH;
 

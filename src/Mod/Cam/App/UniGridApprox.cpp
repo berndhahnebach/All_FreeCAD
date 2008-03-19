@@ -101,7 +101,7 @@ bool UniGridApprox::Perform(double TOL)
 
         if ( (uCP > (n_x + m_udeg + 1)) || (vCP > (n_y + m_vdeg + 1)) ) break;
 
-		m_Grid.clear();
+        m_Grid.clear();
         m_Grid = m_GridCopy;
     }
 
@@ -937,7 +937,7 @@ double UniGridApprox::CompMeshError()
     double tmp = 0.0, sqrdis;
     double errSum = 0.0;
     int c=0;
-    
+
     m_err.clear();
     m_err.resize(mesh.CountPoints(), 0.0);
 

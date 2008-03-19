@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007                                                    *
- *   Joachim Zettler <Joachim.Zettler@gmx.de>          					   *
+ *   Joachim Zettler <Joachim.Zettler@gmx.de>                  *
  *   Human Rezai <Human@web.de>                                            *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -34,7 +34,7 @@
 //#include <Base/Builder3D.h>
 
 #define TolDist 1.0
-#define beam      0 
+#define beam      0
 
 
 class AppCamExport path_simulate
@@ -53,36 +53,36 @@ public:
     bool ParameterCalculationNew(double wirelenghth_1);
     bool ParameterCalculation(double wirelenghth_1, double wirelenghth_2);
 
-	bool MakeRoboOutput();
+    bool MakeRoboOutput();
 
-	std::vector<std::vector<Base::Vector3d> > GetCriticalPoints(std::vector<double> startParam);
+    std::vector<std::vector<Base::Vector3d> > GetCriticalPoints(std::vector<double> startParam);
 
     std::vector<std::vector<Base::Vector3d> > Derivate(const std::vector<std::vector<Base::Vector3d> > &D);
     std::vector<std::vector<double> > CurvCurvature(const std::vector<std::vector<Base::Vector3d> > &D);
     bool ConnectPaths_xy(bool outputstyle);
     bool ConnectPaths_z(bool outputstyle);
-	bool ConnectPaths_Feat(bool tool, bool robo, bool connection_type);
+    bool ConnectPaths_Feat(bool tool, bool robo, bool connection_type);
     bool UpdateParam();
     bool WriteOutput(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle);
-	bool WriteOutput_Feat(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle, bool beamfl);
-	bool WriteTimes();
-	bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle, bool tool, bool beamfl);
-	bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c1, int &c2, bool outputstyle,bool beamfl);
+    bool WriteOutput_Feat(ofstream &m_anOutputFile, ofstream &anOutputFile, int &c, bool outputstyle, bool beamfl);
+    bool WriteTimes();
+    bool WriteOutputSingle(ofstream &m_anOutputFile, int &c, bool outputstyle, bool tool, bool beamfl);
+    bool WriteOutputDouble(ofstream &m_anOutputFile_Master,ofstream &m_anOutputFile_Slave, int &c1, int &c2, bool outputstyle,bool beamfl);
     bool MakeSinglePath(ofstream &anOutputFile, int &c, bool outputstyle);
-	bool MakeSingleRoboPath(bool tool);
-	bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
+    bool MakeSingleRoboPath(bool tool);
+    bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
     bool MakePathSimulate();
-	bool MakePathSimulate_Feat(std::vector<float> &flatAreas);
+    bool MakePathSimulate_Feat(std::vector<float> &flatAreas);
     bool MakePathRobot();
-	bool MakePathRobot_Feat(std::vector<float> &flatAreas);
-	bool Integrate(bool b);
-	bool Correction(bool b);
-	bool TimeCorrection();
-	int  Detect_FeatCurve(bool tool);
+    bool MakePathRobot_Feat(std::vector<float> &flatAreas);
+    bool Integrate(bool b);
+    bool Correction(bool b);
+    bool TimeCorrection();
+    int  Detect_FeatCurve(bool tool);
 
 private:
-	bool SortNew(std::vector<gp_Pnt> &CornerPoints, std::vector<Handle_Geom_BSplineCurve> &PlaneCurvesTop, 
-													std::vector<Handle_Geom_BSplineCurve> &PlaneCurvesBot);
+    bool SortNew(std::vector<gp_Pnt> &CornerPoints, std::vector<Handle_Geom_BSplineCurve> &PlaneCurvesTop,
+                 std::vector<Handle_Geom_BSplineCurve> &PlaneCurvesBot);
 
     std::vector<Handle_Geom_BSplineCurve> m_BSplineTop;
     std::vector<Handle_Geom_BSplineCurve> m_BSplineBottom;
@@ -91,27 +91,27 @@ private:
     std::vector<gp_Vec> m_vecs1;
     std::vector<gp_Vec> m_vecs2;
     std::vector< std::vector<Base::Vector3d> > m_Output;
-	std::vector< std::vector<Base::Vector3d> > m_Output2;
+    std::vector< std::vector<Base::Vector3d> > m_Output2;
     std::vector<Base::Vector3d> m_Output_robo1;
     std::vector<Base::Vector3d> m_Output_robo2;
-	std::vector<int> RoboFlag_Master;
-	std::vector<int> RoboFlag_Slave;
+    std::vector<int> RoboFlag_Master;
+    std::vector<int> RoboFlag_Slave;
     std::vector<double> m_Output_time;
-	std::vector<double> m_Output_time2;
-	std::vector< std::vector<double> > CriBound;
-	std::vector< std::vector<double> > CriBound_Master;
-	std::vector< std::vector<double> > CriBound_Slave;
+    std::vector<double> m_Output_time2;
+    std::vector< std::vector<double> > CriBound;
+    std::vector< std::vector<double> > CriBound_Master;
+    std::vector< std::vector<double> > CriBound_Slave;
     int m_count;
     double m_step;
     double m_dbound;
     double m_t;
-	double m_Sum[3];
+    double m_Sum[3];
 
-	CuttingToolsSettings m_set;
+    CuttingToolsSettings m_set;
 
-	bool index;
+    bool index;
 
-	int runInd;
+    int runInd;
     //Base::Builder3D m_log3d;
 
     std::vector<Handle_Geom_BSplineCurve>::iterator m_it1;   /* iterator über inner-paths */
@@ -119,21 +119,21 @@ private:
     ofstream m_anOutputFile;
     double m_toolrad;
     double m_pretension;
-	float m_blech;
+    float m_blech;
     int  m_clip;
     int  m_NumPaths;
     bool m_single;
     bool m_SingleTop, m_SingleBot;
     bool m_dir;
-	bool m_checka;
+    bool m_checka;
     int  m_ind;        /* index describing current curve */
-	int  m_num;
-	double ratio;
+    int  m_num;
+    double ratio;
     double m_vmax, m_amax;
-	double m_v[3];
-	double m_vS[3];
-	double m_a;
-	double m_aS;
+    double m_v[3];
+    double m_vS[3];
+    double m_a;
+    double m_aS;
     double m_v1, m_v2, m_a1, m_a2;
     std::vector<double> m_c1, m_c2;  /* parameter for the velocity function for the master toolpath ( c_1 )
                                         and the incrementlal die ( c_2 ) */
@@ -146,19 +146,19 @@ private:
 
     std::vector<double> GetAcceleration(double time);
     double GetVelocity(double time);
-	std::vector<double> GetVelocityOld(double time);
+    std::vector<double> GetVelocityOld(double time);
     std::vector<double> GetDistance(double time);
-	double GetDistanceNew(double time);
-	bool CheckConnect();
-	bool CheckConnect(bool tool);
-	std::vector<std::vector<double> > CompBounds(bool tool);
-	bool CompPath(bool tool);
-	bool StartingTool();
+    double GetDistanceNew(double time);
+    bool CheckConnect();
+    bool CheckConnect(bool tool);
+    std::vector<std::vector<double> > CompBounds(bool tool);
+    bool CompPath(bool tool);
+    bool StartingTool();
 
-	std::vector<std::pair<float,float> > m_PathTimes_Master;
-	std::vector<std::pair<float,float> > m_PathTimes_Slave;
+    std::vector<std::pair<float,float> > m_PathTimes_Master;
+    std::vector<std::pair<float,float> > m_PathTimes_Slave;
     bool m_conn;
-	bool m_Feat;
+    bool m_Feat;
 };
 
 
