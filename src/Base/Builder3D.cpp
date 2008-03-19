@@ -459,7 +459,8 @@ void InventorBuilder::addText(const Vector3f &vec,const char * text, float color
 //**************************************************************************
 // line/arrow handling
 
-void InventorBuilder::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize,
+                                    float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -480,7 +481,8 @@ void InventorBuilder::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, sh
          << "  } " << std::endl;
 }
 
-void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short /*linePattern*/)
+void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize,
+                                     float color_r,float color_g,float color_b, unsigned short /*linePattern*/)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
@@ -520,7 +522,8 @@ void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, s
 /** Add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
  * the size of the list must then be even.
  */
-void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short lineSize,
+                                 float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -562,7 +565,8 @@ void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short line
 //**************************************************************************
 // triangle handling
 
-void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2,
+                                        bool filled, short lineSize, float color_r, float color_g, float color_b)
 {
   std::string fs = "";
   if (filled)
@@ -585,7 +589,8 @@ void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1
            << "  } " << std::endl;
 }
 
-void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY, float length, float width, bool filled, short lineSize, 
+void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY,
+                                     float length, float width, bool filled, short lineSize, 
                                      float color_r,float color_g,float color_b)
 {
   Vector3f pt0 = base;
@@ -614,6 +619,43 @@ void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, c
            << "  } " << std::endl;
 }
 
+void InventorBuilder::addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth,
+                                     float color_r,float color_g,float color_b)
+{
+    Base::Vector3f pt[8];
+    pt[0].Set(pt1.x, pt1.y, pt1.z);
+    pt[1].Set(pt1.x, pt1.y, pt2.z);
+    pt[2].Set(pt1.x, pt2.y, pt1.z);
+    pt[3].Set(pt1.x, pt2.y, pt2.z);
+    pt[4].Set(pt2.x, pt1.y, pt1.z);
+    pt[5].Set(pt2.x, pt1.y, pt2.z);
+    pt[6].Set(pt2.x, pt2.y, pt1.z);
+    pt[7].Set(pt2.x, pt2.y, pt2.z);
+
+    result << "  Separator { " << std::endl
+           << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+           << "    DrawStyle { lineWidth " << lineWidth << "} " << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ "
+           << "        " << pt[0].x << " " << pt[0].y << " " << pt[0].z << ",\n"
+           << "        " << pt[1].x << " " << pt[1].y << " " << pt[1].z << ",\n"
+           << "        " << pt[2].x << " " << pt[2].y << " " << pt[2].z << ",\n"
+           << "        " << pt[3].x << " " << pt[3].y << " " << pt[3].z << ",\n"
+           << "        " << pt[4].x << " " << pt[4].y << " " << pt[4].z << ",\n"
+           << "        " << pt[5].x << " " << pt[5].y << " " << pt[5].z << ",\n"
+           << "        " << pt[6].x << " " << pt[6].y << " " << pt[6].z << ",\n"
+           << "        " << pt[7].x << " " << pt[7].y << " " << pt[7].z
+           << "] " << std::endl
+           << "    } " << std::endl
+           << "    IndexedLineSet { coordIndex[ 0, 2, 6, 4, 0, -1\n"
+              "        1, 5, 7, 3, 1, -1,\n"
+              "        5, 4, 6, 7, 5, -1,\n"
+              "        7, 6, 2, 3, 7, -1,\n"
+              "        3, 2, 0, 1, 3, -1,\n"
+              "        5, 1, 0, 4, 5, -1 ] } " << std::endl
+           << "  } " << std::endl;
+}
+
 void InventorBuilder::addTransformation(const Matrix4D& transform)
 {
   Vector3f cAxis, cBase;
@@ -628,8 +670,11 @@ void InventorBuilder::addTransformation(const Matrix4D& transform)
 void InventorBuilder::addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle)
 {
   result << "  Transform {" << std::endl;
-  result << "    translation " << translation.x << " " << translation.y << " " << translation.z << std::endl;
-  result << "    rotation " << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z << " " << fAngle << std::endl;
+  result << "    translation " 
+         << translation.x << " " << translation.y << " " << translation.z << std::endl;
+  result << "    rotation " 
+         << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z 
+         << " " << fAngle << std::endl;
   result << "  }" << std::endl;
 }
 

@@ -31,6 +31,13 @@ work!
 			  </UserDocu>
 		  </Documentation>
 	  </Methode>
+	  <Methode Name="intersect">
+		  <Documentation>
+			  <UserDocu>intersect(Facet) -> list 
+Get a list of intersection points with another triangle.
+			  </UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Attribute Name="Index" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>The index of this facet in the MeshObject</UserDocu>
