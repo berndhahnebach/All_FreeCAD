@@ -44,6 +44,7 @@ class TestCmd:
         QtUnitGui.addTest("Base")
         QtUnitGui.addTest("Document")
         QtUnitGui.addTest("UnicodeTests")
+        QtUnitGui.addTest("MeshTestsApp")
         QtUnitGui.addTest("Workbench")
         QtUnitGui.addTest("Menu")
         QtUnitGui.addTest("Menu.MenuDeleteCases")

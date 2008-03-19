@@ -34,3 +34,38 @@ class MeshTopoTestCases(unittest.TestCase):
 	def testCollapseFacetsAll(self):
 		planarMeshObject = Mesh.Mesh(self.planarMesh)
 		planarMeshObject.collapseFacets(range(18))
+
+
+class MeshGeoTestCases(unittest.TestCase):
+	def setUp(self):
+		# set up a planar face with 2 triangles
+		self.planarMesh = []
+
+
+	def testIntersection(self):
+		self.planarMesh.append( [0.9961,1.5413,4.3943] ) 
+		self.planarMesh.append( [9.4796,10.024,-3.0937] )
+		self.planarMesh.append( [1.4308,11.3841,2.6829] )
+		self.planarMesh.append( [2.6493,2.2536,3.0679] )
+		self.planarMesh.append( [13.1126,0.4857,-4.4417] )
+		self.planarMesh.append( [10.2410,8.9040,-3.5002] )
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+		f1 = planarMeshObject.Facets[0]
+		f2 = planarMeshObject.Facets[1]
+		res=f1.intersect(f2)
+		self.failUnless(len(res) == 0)
+
+
+	def testIntersection2(self):
+		self.planarMesh.append( [-16.097176,-29.891157,15.987688] ) 
+		self.planarMesh.append( [-16.176304,-29.859991,15.947966] )
+		self.planarMesh.append( [-16.071451,-29.900553,15.912505] )
+		self.planarMesh.append( [-16.092241,-29.893408,16.020439] )
+		self.planarMesh.append( [-16.007210,-29.926180,15.967641] )
+		self.planarMesh.append( [-16.064457,-29.904951,16.090832] )
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+		f1 = planarMeshObject.Facets[0]
+		f2 = planarMeshObject.Facets[1]
+		# does definitely NOT intersect
+		res=f1.intersect(f2)
+		self.failUnless(len(res) == 0)

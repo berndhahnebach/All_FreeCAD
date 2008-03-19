@@ -131,77 +131,90 @@ private:
 };
 
 /**
- * This class does basically the same as Builder3D except that it writes the data directly into a given stream without
- * buffering the output data in a string stream.
- * Compared to file streams string streams are quite slow when writing data with more than a few hundred lines. Due to performance 
- * reasons the user should use a file stream in this case.
+ * This class does basically the same as Builder3D except that it writes the data
+ * directly into a given stream without buffering the output data in a string stream.
+ * Compared to file streams string streams are quite slow when writing data with more
+ * than a few hundred lines. Due to performance reasons the user should use a file
+ * stream in this case.
  * @author Werner Mayer
  */
 class BaseExport InventorBuilder
 {
 public:
-  /// Construction
-  InventorBuilder(std::ostream&);
-  /// Destruction
-  virtual ~InventorBuilder();
-  void close();
+    /// Construction
+    InventorBuilder(std::ostream&);
+    /// Destruction
+    virtual ~InventorBuilder();
+    void close();
 
-  /** @name point set handling */
-  //@{
-  /// starts a point set
-  void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
-  /// insert a point in an point set
-  void addPoint(float x, float y, float z);
-  /// add a vector to a point set
-  void addPoint(const Vector3f &vec);
-  /// ends the points set operation
-  void endPoints(void);
-  /// add a singular point (without startPoints() & endPoints() )
-  void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  /// add a singular point (without startPoints() & endPoints() )
-  void addSinglePoint(const Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  //@}
+    /** @name point set handling */
+    //@{
+    /// starts a point set
+    void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+    /// insert a point in an point set
+    void addPoint(float x, float y, float z);
+    /// add a vector to a point set
+    void addPoint(const Vector3f &vec);
+    /// ends the points set operation
+    void endPoints(void);
+    /// add a singular point (without startPoints() & endPoints() )
+    void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    /// add a singular point (without startPoints() & endPoints() )
+    void addSinglePoint(const Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    //@}
 
-  /** @name line/direction handling */
-  //@{
-  /// add a line defined by 2 Vector3D
-  void addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
-  /// add a arrow (directed line) by 2 Vector3D. The arrow shows in direction of point 2.
-  void addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
-  /// add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
-  void addLineSet(const std::vector<Vector3f>& points, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
-  //@}
+    /** @name line/direction handling */
+    //@{
+    /// add a line defined by 2 Vector3D
+    void addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2,
+                       float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+    /// add a arrow (directed line) by 2 Vector3D. The arrow shows in direction of point 2.
+    void addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2,
+                        float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+    /// add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
+    void addLineSet(const std::vector<Vector3f>& points, short lineSize=2,
+                    float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+    //@}
 
-  /** @name triangle handling */
-  //@{
-  /// add a (filled) triangle defined by 3 vectors
-  void addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  void addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY, float length, float width, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  //@}
+    /** @name triangle handling */
+    //@{
+    /// add a (filled) triangle defined by 3 vectors
+    void addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled = true, short lineSize=2,
+                           float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    void addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY, float length, float width, bool filled = true,
+                        short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    //@}
 
-  /** @name Transformation */
-  //@{
-  /// adds a transformation
-  void addTransformation(const Matrix4D&);
-  void addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle);
-  //@}
+    /** @name box handling */
+    //@{
+    void addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth=2, 
+                        float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    //@}
 
-  /** @name text handling */
-  //@{
-  /// add a text
-  void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  /// add a text
-  void addText(const Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-  //@}
+    /** @name Transformation */
+    //@{
+    /// adds a transformation
+    void addTransformation(const Matrix4D&);
+    void addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle);
+    //@}
+
+    /** @name text handling */
+    //@{
+    /// add a text
+    void addText(float pos_x, float pos_y , float pos_z,const char * text,
+                 float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    /// add a text
+    void addText(const Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+    //@}
 
 private:
     InventorBuilder (const InventorBuilder&);
     void operator = (const InventorBuilder&);
 
 private:
-  std::ostream& result;
-  bool bStartEndOpen;
-  bool bClosed;
+    std::ostream& result;
+    bool bStartEndOpen;
+    bool bClosed;
 };
 
 } //namespace Base

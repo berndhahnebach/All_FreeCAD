@@ -2334,7 +2334,17 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="copy $(InputFileName)"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputFileName)&quot; &quot;../../../../Mod/Mesh/&quot;&#x0D;&#x0A;"
+					Outputs="../../../../Mod/Mesh/$(InputFileName)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
 					CommandLine="copy &quot;$(InputFileName)&quot; &quot;../../../../Mod/Mesh/&quot;&#x0D;&#x0A;"
 					Outputs="../../../../Mod/Mesh/$(InputFileName)"
 				/>

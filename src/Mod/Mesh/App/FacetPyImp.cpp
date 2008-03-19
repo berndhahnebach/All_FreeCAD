@@ -92,6 +92,42 @@ Py::Object FacetPy::getNormal(void) const
     return Py::Object(normal);
 }
 
+PyObject*  FacetPy::intersect(PyObject *args)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, "O!", &FacetPy::Type, &object))
+        return NULL;
+    FacetPy  *face = static_cast<FacetPy*>(object);
+    FacetPy::PointerType face_ptr = face->getFacetPtr();
+    FacetPy::PointerType this_ptr = this->getFacetPtr();
+    Base::Vector3f p0, p1;
+    int ret = this_ptr->IntersectWithFacet(*face_ptr, p0, p1);
+
+    try {
+        Py::List sct;
+
+        if (ret > 0) {
+            Py::Tuple pt(3);
+            pt.setItem(0, Py::Float(p0.x));
+            pt.setItem(1, Py::Float(p0.y));
+            pt.setItem(2, Py::Float(p0.z));
+            sct.append(pt);
+        }
+        if (ret > 1) {
+            Py::Tuple pt(3);
+            pt.setItem(0, Py::Float(p1.x));
+            pt.setItem(1, Py::Float(p1.y));
+            pt.setItem(2, Py::Float(p1.z));
+            sct.append(pt);
+        }
+
+        return Py::new_reference_to(sct);
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+}
+
 PyObject *FacetPy::getCustomAttributes(const char* attr) const
 {
     return 0;
