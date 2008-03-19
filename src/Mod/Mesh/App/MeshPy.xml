@@ -262,6 +262,17 @@ Example:
 				<UserDocu>Get a list of facet indices and intersection points</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="nearestFacetOnRay">
+			<Documentation>
+				<UserDocu>nearestFacetOnRay(tuple, tuple) -> dict
+Get the index and intersection point of the nearest facet to a ray.
+The first parameter is a tuple of three floats the base point of the ray,
+the second parameter is ut uple of three floats for the direction.
+The result is a dictionary with an index and the intersection point or
+an empty dictionary if there is no intersection.
+</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Points" ReadOnly="true">
 			<Documentation>
 				<UserDocu>A collection of the mesh points

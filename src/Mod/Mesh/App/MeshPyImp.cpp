@@ -25,13 +25,16 @@
 
 #include <Base/VectorPy.h>
 #include <Base/Handle.h>
+#include <Base/Builder3D.h>
 
 #include "Mesh.h"
 #include "MeshPy.h"
 #include "MeshPointPy.h"
 #include "FacetPy.h"
 #include "MeshPy.cpp"
+#include "Core/Algorithm.h"
 #include "Core/Iterator.h"
+#include "Core/Grid.h"
 
 using namespace Mesh;
 
@@ -820,6 +823,69 @@ PyObject*  MeshPy::foraminate(PyObject *args)
                 dict.setItem(Py::Int(index), tuple);
             }
         }
+
+        return Py::new_reference_to(dict);
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+}
+
+PyObject* MeshPy::nearestFacetOnRay(PyObject *args)
+{
+    PyObject* pnt_p;
+    PyObject* dir_p;
+    if (!PyArg_ParseTuple(args, "OO", &pnt_p, &dir_p))
+        return NULL;
+
+    try {
+        Py::Tuple pnt_t(pnt_p);
+        Py::Tuple dir_t(dir_p);
+        Py::Dict dict;
+        Base::Vector3f pnt((float)Py::Float(pnt_t.getItem(0)),
+                           (float)Py::Float(pnt_t.getItem(1)),
+                           (float)Py::Float(pnt_t.getItem(2)));
+        Base::Vector3f dir((float)Py::Float(dir_t.getItem(0)),
+                           (float)Py::Float(dir_t.getItem(1)),
+                           (float)Py::Float(dir_t.getItem(2)));
+
+        unsigned long index = 0;
+        Base::Vector3f res;
+        MeshCore::MeshAlgorithm alg(getMeshObjectPtr()->getKernel());
+
+#if 0 // for testing only
+        MeshCore::MeshFacetGrid grid(getMeshObjectPtr()->getKernel(),10);
+        // With grids we might search in the opposite direction, too
+        if (alg.NearestFacetOnRay(pnt,  dir, grid, res, index) ||
+            alg.NearestFacetOnRay(pnt, -dir, grid, res, index)) {
+#else
+        if (alg.NearestFacetOnRay(pnt, dir, res, index)) {
+#endif
+            Py::Tuple tuple(3);
+            tuple.setItem(0, Py::Float(res.x));
+            tuple.setItem(1, Py::Float(res.y));
+            tuple.setItem(2, Py::Float(res.z));
+            dict.setItem(Py::Int((int)index), tuple);
+        }
+
+#if 0 // for testing only
+        char szBuf[200];
+        std::ofstream str("grid_test.iv");
+        Base::InventorBuilder builder(str);
+        MeshCore::MeshGridIterator g_it(grid);
+        for (g_it.Init(); g_it.More(); g_it.Next()) {
+            Base::BoundBox3f box = g_it.GetBoundBox();
+            unsigned long uX,uY,uZ;
+            g_it.GetGridPos(uX,uY,uZ);
+            builder.addBoundingBox(Base::Vector3f(box.MinX,box.MinY, box.MinZ),
+                                   Base::Vector3f(box.MaxX,box.MaxY, box.MaxZ));
+            sprintf(szBuf, "(%lu,%lu,%lu)", uX, uY, uZ);
+            builder.addText(box.CalcCenter(), szBuf);
+        }
+        builder.addSingleArrow(pnt-20.0f*dir, pnt+10.0f*dir);
+        builder.close();
+        str.close();
+#endif
 
         return Py::new_reference_to(dict);
     }
