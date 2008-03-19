@@ -2174,17 +2174,17 @@ bool cutting_tools::OffsetWires_Spiral()
                         SlavePointContainer.push_back(SlaveOffsetPoint);
                 }
                 //Now Interpolate the Slave with reordered points based on the last point
-               int index = 0;
-               distold = FLT_MAX;
+                int index = 0;
+                distold = FLT_MAX;
                 for (unsigned int t=0;t<SlavePointContainer.size();t++)
-                 {
+                {
                     dist = float(SlavePointContainer[t].SquareDistance(lastPoint.SurfacePoint));
                     if (dist<distold)
                     {
                         index = t;
                         distold = dist;
                     }
-                 }
+                }
                 Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
                 adapted_start_index = start_index+1;
                 for (int t=index+1;t<SlavePointContainer.size();++t)
@@ -2517,7 +2517,7 @@ bool cutting_tools::OffsetWires_Spiral()
             //switch the Spiral-direction if the clockwise flag is checked and  the
             //angle between the last and current round is more then 90°
             double angle = direction_vector.Angle(last_direction_vector);
-            
+
             if (m_UserSettings.clockwise && angle<(D_PI*0.5))
                 direction = true; //We are already in the wright direction
             else if (m_UserSettings.clockwise && angle >(D_PI*0.5))

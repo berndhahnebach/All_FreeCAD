@@ -55,7 +55,7 @@ protected Q_SLOTS:
     void on_select_shape_z_level_button_clicked();
     void on_select_shape_feature_based_button_clicked();
     void on_select_shape_spiral_based_button_clicked();
-	void on_toolpath_calculation_highest_level_button_clicked();
+    void on_toolpath_calculation_highest_level_button_clicked();
     void on_toolpath_calculation_middle_level_button_clicked();
     void on_toolpath_calculation_lowest_level_button_clicked();
     void on_toolpath_calculation_go_button_clicked();
@@ -63,55 +63,55 @@ protected Q_SLOTS:
     void on_GenRobotOut_clicked();
     void on_adaptdynainput_clicked();
     void on_start_simulation_clicked();
-	void on_BestFitButton_clicked();
-	void on_SpringbackButton_clicked();
-	void on_Approximate_button_clicked();
-	void on_best_fit_cad_button_clicked();
-	void on_best_fit_mesh_button_clicked();
-	void on_SelectFace_button_clicked();
-	void on_best_fit_go_button_clicked();
-	
-	
+    void on_BestFitButton_clicked();
+    void on_SpringbackButton_clicked();
+    void on_Approximate_button_clicked();
+    void on_best_fit_cad_button_clicked();
+    void on_best_fit_mesh_button_clicked();
+    void on_SelectFace_button_clicked();
+    void on_best_fit_go_button_clicked();
+
+
     void selectShape();
-	void selectMesh();
+    void selectMesh();
     bool getProcessOutput();
-	const CuttingToolsSettings& getSettings();
+    const CuttingToolsSettings& getSettings();
     void setFace(const TopoDS_Shape &aFace, const float , const float,const float);
 
 private:
     static void zLevelCallback(void * ud, SoEventCallback * n);
     void DisplayCAMOutput();
-	void DisplayMeshOutput(const MeshCore::MeshKernel &mesh);
-	void DisplayShapeOutput();
+    void DisplayMeshOutput(const MeshCore::MeshKernel &mesh);
+    void DisplayShapeOutput();
 
 
 private:
-   
-	SpringbackCorrection *m_Spring;
+
+    SpringbackCorrection *m_Spring;
     cutting_tools        *m_CuttingAlgo;  //Instanz von der cutting-klasse auf dem Heap erzeugen
     path_simulate        *m_PathSimulate;
-	best_fit             *m_BestFit;
-	UniGridApprox        *m_Approx;
+    best_fit             *m_BestFit;
+    UniGridApprox        *m_Approx;
 
-	CuttingToolsSettings m_Settings;
-    
-	QProcess *m_Process;
+    CuttingToolsSettings m_Settings;
+
+    QProcess *m_Process;
     TopoDS_Shape m_Shape;
-	MeshCore::MeshKernel m_Mesh;
-	MeshCore::MeshKernel m_MeshOut;
-	MeshCore::MeshKernel m_MeshCad;
+    MeshCore::MeshKernel m_Mesh;
+    MeshCore::MeshKernel m_MeshOut;
+    MeshCore::MeshKernel m_MeshCad;
     bool m_timer;
     //1 means Standard, 2 means Feature Based, 3 means Spiral Based
     unsigned int m_Mode;
 
-	enum support_selection
-	{
-		BestFit,
-		Springback,
-		Approximate,
-ToolpathCalculation
-	};
-	support_selection m_selection;
+    enum support_selection
+    {
+        BestFit,
+        Springback,
+        Approximate,
+        ToolpathCalculation
+    };
+    support_selection m_selection;
 
 };
 
