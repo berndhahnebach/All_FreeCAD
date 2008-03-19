@@ -81,7 +81,7 @@ protected Q_SLOTS:
 private:
     static void zLevelCallback(void * ud, SoEventCallback * n);
     void DisplayCAMOutput();
-	void DisplayMeshOutput();
+	void DisplayMeshOutput(const MeshCore::MeshKernel &mesh);
 	void DisplayShapeOutput();
 
 
@@ -98,6 +98,8 @@ private:
 	QProcess *m_Process;
     TopoDS_Shape m_Shape;
 	MeshCore::MeshKernel m_Mesh;
+	MeshCore::MeshKernel m_MeshOut;
+	MeshCore::MeshKernel m_MeshCad;
     bool m_timer;
     //1 means Standard, 2 means Feature Based, 3 means Spiral Based
     unsigned int m_Mode;
@@ -106,7 +108,8 @@ private:
 	{
 		BestFit,
 		Springback,
-		Approximate
+		Approximate,
+ToolpathCalculation
 	};
 	support_selection m_selection;
 

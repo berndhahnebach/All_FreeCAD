@@ -141,8 +141,8 @@ bool UniGridApprox::MeshOffset()
     }
 
     // gittergrößen bestimmung über die bounding-box
-    n_x = (x_max - x_min)/(y_max - y_min)*sqrt((x_max - x_min)*(y_max - y_min));
-    n_y = (y_max - y_min)/(x_max - x_min)*sqrt((x_max - x_min)*(y_max - y_min));
+    n_x = int((x_max - x_min)/(y_max - y_min)*sqrt((x_max - x_min)*(y_max - y_min)));
+    n_y = int((y_max - y_min)/(x_max - x_min)*sqrt((x_max - x_min)*(y_max - y_min)));
 
     st_x = (x_max - x_min)/n_x;
     st_y = (y_max - y_min)/n_y;
@@ -161,7 +161,7 @@ bool UniGridApprox::MeshOffset()
     Base::Vector3f  projPoint, pnt, aNormal(0,0,1.0);
     Base::Builder3D log3d;
 
-    pnt.z = z_max;
+    pnt.z = float(z_max);
 
     //gp_Pnt p;
     //TColgp_Array2OfPnt Input(1,n_x+1,1,n_y+1);
@@ -169,10 +169,10 @@ bool UniGridApprox::MeshOffset()
     for (int i=0; i<n_x+1; ++i)
     {
         cout << double(i)/double(n_x) << endl;
-        pnt.x = x_min + i*st_x;
+        pnt.x = float(x_min + i*st_x);
         for (int j=0; j<n_y+1; ++j)
         {
-            pnt.y = y_min + j*st_y;
+            pnt.y = float(y_min + j*st_y);
             aNormal.z = 1.0;
             if (!malg.NearestFacetOnRay(pnt, aNormal, aFacetGrid, projPoint, facetIndex))
             {
@@ -187,7 +187,7 @@ bool UniGridApprox::MeshOffset()
                         {
                             if (i != 0 && i !=n_x && j != 0 && j!= n_y)
                             {
-                                pnt.x += st_x / 10;
+                                pnt.x += float(st_x / 10.0);
                                 aNormal.Scale(1,1,-1);
                                 if (malg.NearestFacetOnRay(pnt, aNormal, aFacetGrid, projPoint, facetIndex))
                                 {
@@ -200,7 +200,7 @@ bool UniGridApprox::MeshOffset()
                                     log3d.addSinglePoint(pnt, 3, 0,0,0);
                                     pnt.z = 1e+10;
                                     m_Grid[i][j] = pnt;
-                                    pnt.z = z_max;
+                                    pnt.z = (float) z_max;
                                 }
                             }
                             else
@@ -272,7 +272,7 @@ bool UniGridApprox::MeshOffset()
                     c++;
                 }
 
-                m_Grid[i][j].Scale( 1.0 / double(c), 1.0 / double(c), 1.0 / double(c));;
+                m_Grid[i][j].Scale( float(1.0 / double(c)), float(1.0 / double(c)), float(1.0 / double(c)));;
                 log3d.addSinglePoint(m_Grid[i][j], 3, 0,0,0);
             }
         }
@@ -394,7 +394,7 @@ bool UniGridApprox::CompKnots(int u_CP, int v_CP)
     for (int i=1; i<(n - p + 1); ++i)
     {
 
-        ind = i*d;          // abgerundete ganze zahl
+        ind = int(i*d);          // abgerundete ganze zahl
         alp = i*d - ind;    // rest
         m_uknots[p+i] = ((1 - alp) * m_uParam[ind-1]) + (alp * m_uParam[ind]);
     }
@@ -415,7 +415,7 @@ bool UniGridApprox::CompKnots(int u_CP, int v_CP)
     for (int i=1; i<(m - q + 1); ++i)
     {
 
-        ind = i*d;          // abgerundete ganze zahl
+        ind = int(i*d);          // abgerundete ganze zahl
         alp = i*d - ind;    // rest
         m_vknots[q+i] = ((1 - alp) * m_vParam[ind-1]) + (alp * m_vParam[ind]);
     }
@@ -470,7 +470,7 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
         ind = Routines::FindSpan(n, p, m_uParam[i],m_uknots);
         Routines::Basisfun(ind,m_uParam[i],p,m_uknots,output);
 
-        for (int j=0; j<output.size(); ++j)
+        for (unsigned int j=0; j<output.size(); ++j)
         {
             Nu_full(i-1,ind-p+j) = output[j];
         }
@@ -493,7 +493,7 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
         ind = Routines::FindSpan(m, q, m_vParam[i],m_vknots);
         Routines::Basisfun(ind,m_vParam[i],q,m_vknots,output);
 
-        for (int j=0; j<output.size(); ++j)
+        for (unsigned int j=0; j<output.size(); ++j)
         {
             Nv_full(i-1,ind-q+j) = output[j];
         }
@@ -585,13 +585,13 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
         for (int i=0; i<n; ++i)
         {
 
-            pnt.x = uCP_x(i,j);
-            pnt.y = uCP_y(i,j);
-            pnt.z = uCP_z(i,j);
+            pnt.x = (float) uCP_x(i,j);
+            pnt.y = (float) uCP_y(i,j);
+            pnt.z = (float) uCP_z(i,j);
 
-            pnt1.x = uCP_x(i+1,j);
-            pnt1.y = uCP_y(i+1,j);
-            pnt1.z = uCP_z(i+1,j);
+            pnt1.x = (float) uCP_x(i+1,j);
+            pnt1.y = (float) uCP_y(i+1,j);
+            pnt1.z = (float) uCP_z(i+1,j);
 
             log3d.addSingleLine(pnt,pnt1, 1, 1,0,0);
         }
@@ -616,9 +616,9 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
         for (int j=0; j<s+1; ++j)
         {
 
-            m_Grid[i][j].x = uCP_x(i,j);
-            m_Grid[i][j].y = uCP_y(i,j);
-            m_Grid[i][j].z = uCP_z(i,j);
+            m_Grid[i][j].x = (float) uCP_x(i,j);
+            m_Grid[i][j].y = (float) uCP_y(i,j);
+            m_Grid[i][j].z = (float) uCP_z(i,j);
         }
     }
 
@@ -666,13 +666,13 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
             Rv_y[j](k,0) = uCP_y(j,k+1) - Nv_full(k,0)*uCP_y(j,0) - Nv_full(k,m)*uCP_y(j,s);
             Rv_z[j](k,0) = uCP_z(j,k+1) - Nv_full(k,0)*uCP_z(j,0) - Nv_full(k,m)*uCP_z(j,s);
 
-            pnt.x = uCP_x(j,k+1);
-            pnt.y = uCP_y(j,k+1);
-            pnt.z = uCP_z(j,k+1);
+            pnt.x = (float) uCP_x(j,k+1);
+            pnt.y = (float) uCP_y(j,k+1);
+            pnt.z = (float) uCP_z(j,k+1);
 
-            pnt1.x = uCP_x(j,k+2);
-            pnt1.y = uCP_y(j,k+2);
-            pnt1.z = uCP_z(j,k+2);
+            pnt1.x = (float) uCP_x(j,k+2);
+            pnt1.y = (float) uCP_y(j,k+2);
+            pnt1.z = (float) uCP_z(j,k+2);
 
             log.addSingleLine(pnt,pnt1, 1, 0,0,0);
 
@@ -699,9 +699,9 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
             CPy(j,i) = by(0,i-1);
             CPz(j,i) = bz(0,i-1);
 
-            pnt.x = CPx(j,i);
-            pnt.y = CPy(j,i);
-            pnt.z = CPz(j,i);
+            pnt.x = (float) CPx(j,i);
+            pnt.y = (float) CPy(j,i);
+            pnt.z = (float) CPz(j,i);
 
             logo.addSinglePoint(pnt,2,0,0,0);
         }
@@ -758,7 +758,7 @@ bool UniGridApprox::BuildSurf()
     }
 
     int c=1;
-    for (int i=0; i<m_uknots.size()-1; ++i)
+    for (unsigned int i=0; i<m_uknots.size()-1; ++i)
     {
         if (m_uknots[i+1] != m_uknots[i])
         {
@@ -771,7 +771,7 @@ bool UniGridApprox::BuildSurf()
     TColStd_Array1OfInteger UMults(1,c);
 
     c=1;
-    for (int i=0; i<m_vknots.size()-1; ++i)
+    for (unsigned int i=0; i<m_vknots.size()-1; ++i)
     {
         if (m_vknots[i+1] != m_vknots[i])
         {
@@ -785,7 +785,7 @@ bool UniGridApprox::BuildSurf()
 
     int d=0;
     c=1;
-    for (int i=0; i<m_uknots.size(); ++i)
+    for (unsigned int i=0; i<m_uknots.size(); ++i)
     {
         if (m_uknots[i+1] != m_uknots[i])
         {
@@ -810,7 +810,7 @@ bool UniGridApprox::BuildSurf()
 
     d=0;
     c=1;
-    for (int i=0; i<m_vknots.size(); ++i)
+    for (unsigned int i=0; i<m_vknots.size(); ++i)
     {
         if (m_vknots[i+1] != m_vknots[i])
         {
@@ -883,12 +883,12 @@ double UniGridApprox::CompGridError()
 
     mG_err.clear();
     mG_err.resize(m_Grid.size());
-    for (int i=0; i<m_Grid.size(); ++i)
+    for (unsigned int i=0; i<m_Grid.size(); ++i)
         mG_err[i].resize(m_Grid[i].size());
 
-    for (int i=0; i<m_Grid.size(); ++i)
+    for (unsigned int i=0; i<m_Grid.size(); ++i)
     {
-        for (int j=0; j<m_Grid[i].size(); ++j)
+        for (unsigned int j=0; j<m_Grid[i].size(); ++j)
         {
 
             pnt.SetCoord(m_Grid[i][j].x, m_Grid[i][j].y, m_Grid[i][j].z);
@@ -930,14 +930,14 @@ double UniGridApprox::CompMeshError()
     MeshCore::MeshKernel mesh;
     BRepBuilderAPI_MakeFace Face(aAdaptorSurface.BSpline());
     GeomAPI_ProjectPointOnSurf proj;
-    best_fit::Tesselate_Face(Face.Face(), mesh, 0.1);
+    best_fit::Tesselate_Face(Face.Face(), mesh, float(0.1));
     cout << mesh.CountPoints() << endl;
     std::vector<Base::Vector3f> normals =  best_fit::Comp_Normals(mesh);
 
     double tmp = 0.0, sqrdis;
     double errSum = 0.0;
     int c=0;
-
+    
     m_err.clear();
     m_err.resize(mesh.CountPoints(), 0.0);
 

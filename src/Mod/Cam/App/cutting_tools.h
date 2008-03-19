@@ -47,7 +47,7 @@ struct CuttingToolsSettings
     int spring_pretension;
     float y_offset_robot;
     float x_offset_robot;
-	bool clockwise;
+    bool clockwise;
 };
 
 struct SpiralHelper

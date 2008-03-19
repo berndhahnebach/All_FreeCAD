@@ -245,7 +245,7 @@ static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
         TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
 
 
-        best_fit befi(cad);
+        //best_fit befi(cad);
         //best_fit::Tesselate_Shape(pcShape->getShape(),mesh,0.1);
 
         //return new MeshPy(&befi.m_CadMesh);
@@ -3642,12 +3642,12 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
         TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
         MeshCore::MeshKernel mesh  = pcObject->getMesh()->getKernel();  // Input Mesh
 
-        best_fit befi(&mesh,&cad);
-		befi.Perform();
+//        best_fit befi(&mesh,&cad);
+        //befi.Perform();
 
-		MeshObject anObject(*(befi.m_Mesh));
+        //MeshObject anObject(*(befi.m_Mesh));
 
-        return new MeshPy(&anObject);
+        //return new MeshPy(&anObject);
 
     }PY_CATCH;
 
@@ -3675,8 +3675,8 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
         TopExp_Explorer anExplorer;
         TopExp_Explorer aFaceExplorer;
 
-        SpringbackCorrection aShapeTriangulator(pcShape->getShape());
-        aShapeTriangulator.Init();
+        //SpringbackCorrection aShapeTriangulator(pcShape->getShape());
+        //aShapeTriangulator.Init();
         std::vector<TopoDS_Edge> anEdgeList;
         TopoDS_Face first,second;
         anEdgeList.clear();
@@ -3851,10 +3851,10 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
         TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
         TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
 
-        best_fit befi(cad);
-        befi.ShapeFit_Coarse();
+//        best_fit befi(cad);
+       // befi.ShapeFit_Coarse();
 
-        return new TopoShapePyOld(*(befi.m_Cad));
+   //     return new TopoShapePyOld(*(befi.m_Cad));
 
     }PY_CATCH;
 
@@ -4236,7 +4236,7 @@ struct PyMethodDef Cam_methods[] =
 // {"cut", cut, 1},
     {"createPlane" , createPlane, 1},
     {"best_fit_test", best_fit_test,1},
-	{"best_fit_complete", best_fit_complete,1},
+    {"best_fit_complete", best_fit_complete,1},
     {"best_fit_coarse", best_fit_coarse ,1},
     {"createBox" , createBox, 1},
     {"spring_back", spring_back, 1},

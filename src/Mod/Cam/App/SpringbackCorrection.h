@@ -108,9 +108,7 @@ class AppCamExport SpringbackCorrection : public MeshCore::MeshFacetVisitor
 {
 public:
 	SpringbackCorrection();
-    SpringbackCorrection(const TopoDS_Shape& aShape);
     SpringbackCorrection(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
-    SpringbackCorrection(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& CadMesh, const MeshCore::MeshKernel& Mesh);
     ~SpringbackCorrection();
 	bool Load(const TopoDS_Shape& aShape, const MeshCore::MeshKernel& aMesh);
     bool Init();

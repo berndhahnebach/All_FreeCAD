@@ -35,8 +35,8 @@ bool ChangeDyna::Read( const std::string & _filename)
     // open file for reading
     std::ifstream input( _filename.c_str() );
     std::ifstream input2("CurveTimes.k");
-    if(!input2.is_open()) return false;
-    if(!ReadTimes(input2)) return false;
+    if (!input2.is_open()) return false;
+    if (!ReadTimes(input2)) return false;
     std::ofstream output("dyna2.str");
     if ( !input.is_open() )
     {
@@ -66,18 +66,19 @@ bool ChangeDyna::ReadTimes(std::ifstream &input2)
     do
     {
         std::getline(input2,line);
-        if(line.size() == 0) continue;
+        if (line.size() == 0) continue;
         astream1.str(line);
         astream1 >> tempPair.first >> tempPair.second;
         m_ProperTime.push_back(tempPair);
         astream1.str("");
         astream1.clear();
-            
-    }
-    while(input2.good());
-    return true;
 
+    }
+    while (input2.good());
+    return true;
 }
+
+
 bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
 {
     input.seekg( std::ifstream::beg );
@@ -116,7 +117,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     astream1.str(line.substr(10,5));
                     astream1 >> current_index;
                     //Exchange the Death time. We need a vector of pairs (birth,death)
-                    if((current_index-2) < 0)
+                    if ((current_index-2) < 0)
                         return false;
                     astream2 << m_ProperTime[current_index-2].second;
                     //Now we have to reformat the string to fit exactly 9 digits

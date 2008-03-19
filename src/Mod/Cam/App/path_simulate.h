@@ -33,7 +33,7 @@
 
 //#include <Base/Builder3D.h>
 
-#define TolDist 3.0
+#define TolDist 1.0
 #define beam      0 
 
 
