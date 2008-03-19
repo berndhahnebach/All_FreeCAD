@@ -78,10 +78,10 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
     m_single=false;
 	
 	m_pretension = m_set.spring_pretension;
-	m_blech = float(m_set.sheet_thickness);
+	m_blech = (float) m_set.sheet_thickness;
 
-	m_amax  = 0.85*float(m_set.max_Acc);
-	m_vmax  = 0.85*float(m_set.max_Vel);
+	m_amax  = 0.85*m_set.max_Acc;
+	m_vmax  = 0.85*m_set.max_Vel;
 	m_a1    = m_amax;
 	m_a2    = m_amax;
 	m_v1    = m_vmax;
@@ -253,7 +253,6 @@ double path_simulate::FindParamAt(GeomAdaptor_Curve& curve, double dist, double 
 std::vector<double> path_simulate::GetAcceleration(double t)
 {
     std::vector<double> a(2); /* wird gleich mit 0 vorinitialisiert */
-	double c1[2], c2[2];
 
     if ((t>=m_t0) && (t<=m_t1))
     {
@@ -1066,7 +1065,7 @@ bool path_simulate::ConnectPaths_z(bool brob)
 			if(vec_12.Magnitude() != 0.0)
 				vec_12.Normalize();
 
-            N = ceil((m_T - m_t0)/m_step);
+            N = (int) ceil((m_T - m_t0)/m_step);
 
 			if( N != 0)
 			{
@@ -1182,7 +1181,7 @@ bool path_simulate::ConnectPaths_z(bool brob)
         {
             ParameterCalculation(vec_12.Magnitude());
 
-            N = ceil((m_T - m_t0)/m_step);
+            N = (int) ceil((m_T - m_t0)/m_step);
             m_del_t = (m_T - m_t0)/N;
 
             for (int i=0; i<N; ++i)
@@ -1386,7 +1385,7 @@ robo:
 
 std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = Slave, false = Master
 {	
-	int step = ceil(m_vmax*8e-3);  // schrittweite welche bei maximaler geschwindigkeit m_vmax in bogenmass vorkommen kann (*8)
+	int step = (int) ceil(m_vmax*8e-3);  // schrittweite welche bei maximaler geschwindigkeit m_vmax in bogenmass vorkommen kann (*8)
     GeomAdaptor_Curve curve;
 	std::vector<double> hPnts;
 	std::vector<double> bounds;
@@ -1411,7 +1410,7 @@ std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = 
 	gp_Pnt tmp;
 	gp_Vec dtmp1;
 
-	int N = ceil(period);
+	int N = (int) ceil(period);
 
 	// Compute 2.Deriavative
     for (int i=0; i<N; ++i)
@@ -1448,8 +1447,7 @@ std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = 
 	std::vector<double> tmpo2Push;
 
 	Base::Builder3D log;
-	int c;
-		
+
 	if(hPnts.size() > 2){
 		tmpo.push_back(hPnts[0]);
 		tmpo2Push.push_back(hPnts[0]);
@@ -1514,7 +1512,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 	// berechnet auf Basis der aktuellen Kurve die kritischen Bereiche im Parameterraum
 	std::vector<std::vector<double> > CriticalBounds = CompBounds(tool);
 	
-	int step = ceil(m_vmax*8e-3);  // schrittweite für die Abschätzung der max_velocity
+	int step = (int) ceil(m_vmax*8e-3);  // schrittweite für die Abschätzung der max_velocity
 	GeomAdaptor_Curve curve;
 
 	gp_Pnt pnt0;
@@ -1538,14 +1536,14 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 	m_Sum[2] = 0.0;
 
 	double t0 = m_t0;
-	int start = m_StartParam[tool];
+	int start = (int) m_StartParam[tool];
 
 	m_v[0] = 0.0;  // starte immer mit v = 0
 	
 	for(unsigned int i=0; i<CriticalBounds.size(); ++i){
 
 		// gerader Bereich
-		for(int j= m_StartParam[tool]; j<(ceil(CriticalBounds[i][0] - 10.0) + start); ++j){
+		for(int j=(int) m_StartParam[tool]; j<((int) ceil(CriticalBounds[i][0] - 10.0) + start); ++j){
 
 			if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
 			else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
@@ -1588,7 +1586,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
 
 		// kritischer Abschnitt
-		for(int j=(start + ceil(CriticalBounds[i][0] - 10.0)); j<(start + ceil(CriticalBounds[i][1] + 10.0)); ++j){
+		for(int j = int(start + ceil(CriticalBounds[i][0] - 10.0)); j< int(start + ceil(CriticalBounds[i][1] + 10.0)); ++j){
 
 			if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
 			else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
@@ -1644,7 +1642,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 	}
 
 	// letzter nicht-kritischer Abschnitt
-	for(int j = m_StartParam[tool]; j< lParam + start; ++j){
+	for(int j = (int) m_StartParam[tool]; j<int(lParam + start); ++j){
 
 		if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
 		else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);    
@@ -1738,7 +1736,7 @@ bool path_simulate::Correction(bool b)
 
      ParameterCalculation(vec.Magnitude());
      
-	 N = ceil((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
+	 N = (int) ceil((m_T - m_t0)/m_step);  /* anzahl der zu erzeugenden Outputwerte */
 	 m_del_t = (m_T - m_t0)/N;
 
 	 if(N==1){
@@ -2060,8 +2058,8 @@ robo:
 
 			w2 = period2; //GetLength(anAdaptorCurve2, firstParam2, lastParam2);
 
-			if(w1<w2) N = ceil(w1 / double(TolDist));
-			else      N = ceil(w2 / double(TolDist));
+			if(w1<w2) N = (int) ceil(w1 / double(TolDist));
+			else      N = (int) ceil(w2 / double(TolDist));
 
 			if(N<2)
 				throw Base::Exception("thats new ...");
@@ -2331,13 +2329,11 @@ bool path_simulate::MakePathRobot()
 	ofstream anOutputFile2;
 
     anOutputFile.open("output_master.k");
-    anOutputFile.precision(5);
-    anOutputFile.setf(ios::fixed,ios::floatfield);
+    anOutputFile.precision(7);
 
 	if(m_single == false){
 		anOutputFile2.open("output_slave.k");
-	    anOutputFile2.precision(5);
-        anOutputFile2.setf(ios::fixed,ios::floatfield);
+	    anOutputFile2.precision(7);
 	}
 
 	anOutputFile  << "none" << std::endl;
@@ -2392,7 +2388,7 @@ bool path_simulate::TimeCorrection()
 		if(m_Output_time[m_Output_time.size()-1] < m_Output_time2[m_Output_time2.size()-1]){	
 			m_T = m_Output_time2[m_Output_time2.size()-1];
 			
-			int N = ceil((m_Output_time2[m_Output_time2.size()-1] - m_Output_time[m_Output_time.size()-1])/ m_step);					
+			int N = int(ceil((m_Output_time2[m_Output_time2.size()-1] - m_Output_time[m_Output_time.size()-1])/ m_step));					
 			m_del_t = (m_Output_time2[m_Output_time2.size()-1] - m_Output_time[m_Output_time.size()-1])/double(N);		
 			
 			int ind = m_Output_time.size()-1;
@@ -2413,7 +2409,7 @@ bool path_simulate::TimeCorrection()
 		else if(m_Output_time[m_Output_time.size()-1] > m_Output_time2[m_Output_time2.size()-1]){
 			m_T = m_Output_time[m_Output_time.size()-1];
 			
-			int N = ceil((m_Output_time[m_Output_time.size()-1] - m_Output_time2[m_Output_time2.size()-1])/ m_step);		
+			int N = int(ceil((m_Output_time[m_Output_time.size()-1] - m_Output_time2[m_Output_time2.size()-1])/ m_step));		
 			m_del_t = (m_Output_time[m_Output_time.size()-1] - m_Output_time2[m_Output_time2.size()-1])/double(N);
 			
 			int ind = m_Output_time2.size()-1;
@@ -2456,13 +2452,11 @@ bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas)
     ofstream anOutputFile[2];
 
 	anOutputFile[0].open("output_master.k");
-    anOutputFile[0].precision(5);
-    anOutputFile[0].setf(ios::fixed,ios::floatfield);
+    anOutputFile[0].precision(7);
  
 	if(m_single == false){
 		anOutputFile[1].open("output_slave.k");
-	    anOutputFile[1].precision(5);
-        anOutputFile[1].setf(ios::fixed,ios::floatfield);
+	    anOutputFile[1].precision(7);
 	}
 
 	m_it1 = m_BSplineTop.begin();
@@ -2474,7 +2468,6 @@ bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas)
 	c[0] = 1;    // Start Index der Master Kurven
 	c[1] = 2001; // Start Index der Slave  Kurven
 
-	float delta_z,z0,z1,z2;
 	int i = 0;
 
 	while(m_it1 != m_BSplineTop.end() && m_it2 != m_BSplineBottom.end()){
@@ -2673,13 +2666,13 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 		if(m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
 
 		// erste Zustellung wird noch seperat gehandelt
-		//if(i==0)
-		//{
-		//	/**************************************** ZUSTELLUNG 1 **********************************************/
-		//	ConnectPaths_xy(1);
-		//	/**************************************** ZUSTELLUNG 2 **********************************************/
-		//	ConnectPaths_z(1);
-		//}
+		if(i==0)
+		{
+			/**************************************** ZUSTELLUNG 1 **********************************************/
+			ConnectPaths_xy(1);
+			/**************************************** ZUSTELLUNG 2 **********************************************/
+			ConnectPaths_z(1);
+		}
 
 		if(!tool){
 			it_1 = &m_it1;
@@ -2770,11 +2763,10 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 			anOutputFile[0] << "continuous" << std::endl;
 			anOutputFile[1] << "none" << std::endl;
 		}
-        
-		ConnectPaths_Feat(0, 1, 1);		
+
 		WriteOutput_Feat(anOutputFile[0], anOutputFile[1],f,1,beam);
-	    
-        master_file.str("");
+
+	    master_file.str("");
 		master_file.clear();
 		slave_file.str("");
 		slave_file.clear();
@@ -2782,12 +2774,11 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 		m_Output_robo1.clear();
 		m_Output_robo2.clear();
 
-        
-
 		if(*it_1 == (*curves_1).end()-1 && *it_2 == (*curves_2).end()-1)
 			break;
-    
-        ConnectPaths_Feat(1, 1, 0);
+
+		ConnectPaths_Feat(0, 1, 1);
+		ConnectPaths_Feat(1, 1, 0);
 		++i;
 	}
 
@@ -2908,13 +2899,11 @@ bool path_simulate::MakePathSimulate()
 	ofstream anOutputFile2;
 
     anOutputFile.open("output_master.k");
-    anOutputFile.precision(5);
-    anOutputFile.setf(ios::fixed,ios::floatfield);
+    anOutputFile.precision(7);
 
 	if(m_single == false){
 		anOutputFile2.open("output_slave.k");
-	    anOutputFile2.precision(5);
-        anOutputFile2.setf(ios::fixed,ios::floatfield);
+	    anOutputFile2.precision(7);
 	}
 
 	for (m_it1 = m_BSplineTop.begin(); m_it1 < m_BSplineTop.end(); ++m_it1)
@@ -3214,13 +3203,13 @@ bool path_simulate::WriteOutput_Feat(ofstream &anOutputFile, ofstream &anOutputF
         {
             int n1 = m_Output_robo1.size();
 			for (int i=0; i<n1; ++i)
-                anOutputFile  << m_Output_robo1[i].x + m_set.x_offset_robot << "," <<  m_Output_robo1[i].y + m_set.y_offset_robot << "," << m_Output_robo1[i].z <<",0" << endl;
+                anOutputFile  << m_Output_robo1[i].x + 290.0 << "," <<  m_Output_robo1[i].y + 145.0 << "," << m_Output_robo1[i].z  << endl;
 
 			anOutputFile.close();
 
 			int n2 = m_Output_robo2.size();
             for (int i=0; i<n2; ++i)
-                anOutputFile2 << m_Output_robo2[i].x + m_set.x_offset_robot << "," <<  m_Output_robo2[i].y + m_set.y_offset_robot << "," << m_Output_robo2[i].z <<",0" << endl;
+                anOutputFile2 << m_Output_robo2[i].x + 290.0 << "," <<  m_Output_robo2[i].y + 145.0 << "," << m_Output_robo2[i].z  << endl;
 
 			anOutputFile2.close();
         }
@@ -3290,8 +3279,7 @@ bool path_simulate::WriteTimes()
 	ofstream anOutputFile;
 
 	anOutputFile.open("CurveTimes.k");
-    anOutputFile.precision(5);
-    anOutputFile.setf(ios::fixed,ios::floatfield);
+    anOutputFile.precision(7);
 	
 	for(unsigned int i=0; i< m_PathTimes_Master.size(); ++i)
 	{
@@ -3356,8 +3344,8 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
 
 		anOutputFile << Out_time[n-1] - Out_time[0] + 0.1 << "," << Out_val[n-1][0].x << std::endl;
 
-		times.first  = Out_time[0];
-		times.second = Out_time[n-1];
+		times.first  = (float) Out_time[0];
+		times.second = (float) Out_time[n-1];
 
 		if(!tool) m_PathTimes_Master.push_back(times);
 		else      m_PathTimes_Slave.push_back(times);
@@ -3374,8 +3362,8 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
 
 		anOutputFile << Out_time[n-1] - Out_time[0] + 0.1 << "," << Out_val[n-1][0].y << std::endl;
 
-		times.first  = Out_time[0];
-		times.second = Out_time[n-1];
+		times.first  = (float) Out_time[0];
+		times.second = (float) Out_time[n-1];
 
 		if(!tool) m_PathTimes_Master.push_back(times);
 		else      m_PathTimes_Slave.push_back(times);
@@ -3400,8 +3388,8 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
 
 		anOutputFile << Out_time[n-1] - Out_time[0] + 0.1 << "," << Out_val[n-1][0].z<< std::endl;
 
-		times.first  = Out_time[0];
-		times.second = Out_time[n-1];
+		times.first  = (float) Out_time[0];
+		times.second = (float) Out_time[n-1];
 
 		if(!tool) m_PathTimes_Master.push_back(times);
 		else      m_PathTimes_Slave.push_back(times);
@@ -3466,8 +3454,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile << m_Output_time[n-1] - m_Output_time[0] + 0.1 << "," << m_Output[n-1][0].x << std::endl;
 
-			times.first  = m_Output_time[0];
-			times.second = m_Output_time[n-1];
+			times.first  = (float) m_Output_time[0];
+			times.second = (float) m_Output_time[n-1];
 			m_PathTimes_Master.push_back(times);
 			
 			// SLAVE-X
@@ -3484,8 +3472,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << m_Output_time2[n2-1] - m_Output_time2[0] + 0.1 << "," << m_Output2[n2-1][0].x << std::endl;
 
-			times.first  = m_Output_time2[0];
-			times.second = m_Output_time2[n2-1];
+			times.first  = (float) m_Output_time2[0];
+			times.second = (float) m_Output_time2[n2-1];
 			m_PathTimes_Slave.push_back(times);
 
 			// MASTER-Y
@@ -3502,8 +3490,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile << m_Output_time[n-1] - m_Output_time[0] + 0.1 << "," << m_Output[n-1][0].y << std::endl;
 
-			times.first  = m_Output_time[0];
-			times.second = m_Output_time[n-1];
+			times.first  = (float) m_Output_time[0];
+			times.second = (float) m_Output_time[n-1];
 			m_PathTimes_Master.push_back(times);
 
 			// SLAVE-Y
@@ -3520,8 +3508,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << m_Output_time2[n2-1] - m_Output_time2[0] + 0.1 << "," << m_Output2[n2-1][0].y << std::endl;
 
-			times.first  = m_Output_time2[0];
-			times.second = m_Output_time2[n2-1];
+			times.first  = (float) m_Output_time2[0];
+			times.second = (float) m_Output_time2[n2-1];
 			m_PathTimes_Slave.push_back(times);
 
 			// MASTER-Z
@@ -3547,8 +3535,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile << m_Output_time[n-1] - m_Output_time[0] + 0.1 << "," << m_Output[n-1][0].z<< std::endl;
 
-			times.first  = m_Output_time[0];
-			times.second = m_Output_time[n-1];
+			times.first  = (float) m_Output_time[0];
+			times.second = (float) m_Output_time[n-1];
 			m_PathTimes_Master.push_back(times);
 
 			// SLAVE-Z
@@ -3573,8 +3561,8 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
 			anOutputFile2 << m_Output_time2[n2-1] - m_Output_time2[0] + 0.1 << "," << m_Output2[n2-1][0].z << std::endl;
 
-			times.first  = m_Output_time2[0];
-			times.second = m_Output_time2[n2-1];
+			times.first  = (float) m_Output_time2[0];
+			times.second = (float) m_Output_time2[n2-1];
 			m_PathTimes_Slave.push_back(times);
 
 			c1 += 3;

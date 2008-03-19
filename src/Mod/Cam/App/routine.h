@@ -71,8 +71,8 @@ typedef struct
 class Routines
 {
 public:
-	// mehrdimensionales Newton-Verfahren mit festem Startwert 0
-	static std::vector<double> NewtonStep(std::vector<double> &F,std::vector<std::vector<double> > &DF);
+    // mehrdimensionales Newton-Verfahren mit festem Startwert 0
+    static std::vector<double> NewtonStep(std::vector<double> &F,std::vector<std::vector<double> > &DF);
 protected:
     double TrapezoidIntergration(const std::vector<double> &WithRespectTo, const std::vector<double> &Intergral);
     //Matrix and vectors

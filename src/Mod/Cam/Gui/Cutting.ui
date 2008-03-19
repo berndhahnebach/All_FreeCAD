@@ -22,20 +22,11 @@
     </rect>
    </property>
    <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
     <property name="spacing" >
      <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>0</number>
-    </property>
-    <property name="topMargin" >
-     <number>0</number>
-    </property>
-    <property name="rightMargin" >
-     <number>0</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>0</number>
     </property>
     <item>
      <spacer>
@@ -79,54 +70,27 @@
     <string>Main-Functions</string>
    </property>
    <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
     <item>
      <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
         <property name="spacing" >
          <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="select_shape_z_level_button" >
@@ -157,7 +121,9 @@
            <bool>false</bool>
           </property>
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>6</verstretch>
            </sizepolicy>
@@ -187,20 +153,11 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
         <property name="spacing" >
          <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="select_shape_feature_based_button" >
@@ -255,20 +212,11 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
         <property name="spacing" >
          <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="select_shape_spiral_based_button" >
@@ -359,19 +307,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label_13" >
-   <property name="geometry" >
-    <rect>
-     <x>100</x>
-     <y>470</y>
-     <width>155</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Spring Squeeze</string>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="best_fit_box" >
    <property name="enabled" >
     <bool>true</bool>
@@ -388,37 +323,19 @@
     <string>Best-Fit and Springback</string>
    </property>
    <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
     <item>
      <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
       <property name="spacing" >
        <number>7</number>
-      </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
       </property>
       <item>
        <widget class="QPushButton" name="best_fit_cad_button" >
@@ -464,11 +381,297 @@
     </item>
    </layout>
   </widget>
+  <widget class="QGroupBox" name="groupBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>131</width>
+     <height>166</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Selection</string>
+   </property>
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="toolpath_calculation_highest_level_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Highest Level</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="toolpath_calculation_middle_level_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Middle Level</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="toolpath_calculation_lowest_level_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Lowest Level</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="toolpath_calculation_go_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>GO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4" >
+   <property name="geometry" >
+    <rect>
+     <x>300</x>
+     <y>282</y>
+     <width>320</width>
+     <height>94</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Post-Processing</string>
+   </property>
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="GenRobotOut" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Generate Robot-Output</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="GenSimOut" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Generate Simulation-Output</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="adaptdynainput" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>AdaptDynaInput</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_6" >
+   <property name="geometry" >
+    <rect>
+     <x>300</x>
+     <y>383</y>
+     <width>321</width>
+     <height>92</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Simulation-Stuff</string>
+   </property>
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="start_simulation" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Start Simulation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_6" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="toolTip" >
+         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Start Continuous Simulation Mode&lt;/p>&lt;/body>&lt;/html></string>
+        </property>
+        <property name="text" >
+         <string>Cont-Simulation</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_8" >
+   <property name="geometry" >
+    <rect>
+     <x>390</x>
+     <y>490</y>
+     <width>74</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Y-Offset-Robot</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7" >
+   <property name="geometry" >
+    <rect>
+     <x>310</x>
+     <y>490</y>
+     <width>74</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>X-Offset-Robot</string>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="xoffset_box" >
+   <property name="geometry" >
+    <rect>
+     <x>320</x>
+     <y>510</y>
+     <width>62</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum" >
+    <double>1000.000000000000000</double>
+   </property>
+   <property name="value" >
+    <double>290.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="yoffset_box" >
+   <property name="geometry" >
+    <rect>
+     <x>400</x>
+     <y>510</y>
+     <width>62</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum" >
+    <double>1000.000000000000000</double>
+   </property>
+   <property name="value" >
+    <double>145.000000000000000</double>
+   </property>
+  </widget>
   <widget class="QGroupBox" name="groupBox_2" >
    <property name="geometry" >
     <rect>
      <x>10</x>
-     <y>210</y>
+     <y>200</y>
      <width>255</width>
      <height>334</height>
     </rect>
@@ -510,9 +713,6 @@
       <width>73</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="cursor" >
-     <cursorShape>ArrowCursor</cursorShape>
     </property>
     <property name="maximum" >
      <double>99.989999999999995</double>
@@ -692,19 +892,6 @@
      <double>600.000000000000000</double>
     </property>
    </widget>
-   <widget class="QLabel" name="label_12" >
-    <property name="geometry" >
-     <rect>
-      <x>90</x>
-      <y>233</y>
-      <width>155</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Max-Acceleration</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label" >
     <property name="geometry" >
      <rect>
@@ -740,6 +927,32 @@
      <double>20000.000000000000000</double>
     </property>
    </widget>
+   <widget class="QLabel" name="label_12" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>233</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Max-Acceleration</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="clockwise_checkbox" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>291</y>
+      <width>168</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Clockwise Movement</string>
+    </property>
+   </widget>
    <widget class="QDoubleSpinBox" name="spring_pretension" >
     <property name="geometry" >
      <rect>
@@ -762,368 +975,6 @@
      <double>0.000000000000000</double>
     </property>
    </widget>
-   <widget class="QCheckBox" name="clockwise_checkbox" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>291</y>
-      <width>168</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Clockwise Movement</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>131</width>
-     <height>166</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Selection</string>
-   </property>
-   <layout class="QVBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
-    <item>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="toolpath_calculation_highest_level_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Highest Level</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="toolpath_calculation_middle_level_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Middle Level</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="toolpath_calculation_lowest_level_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Lowest Level</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="toolpath_calculation_go_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>GO</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4" >
-   <property name="geometry" >
-    <rect>
-     <x>300</x>
-     <y>282</y>
-     <width>320</width>
-     <height>94</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Post-Processing</string>
-   </property>
-   <layout class="QVBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
-    <item>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="GenRobotOut" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Generate Robot-Output</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="GenSimOut" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Generate Simulation-Output</string>
-        </property>
-        <property name="autoDefault" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="adaptdynainput" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="text" >
-         <string>AdaptDynaInput</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_6" >
-   <property name="geometry" >
-    <rect>
-     <x>300</x>
-     <y>383</y>
-     <width>321</width>
-     <height>92</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Simulation-Stuff</string>
-   </property>
-   <layout class="QVBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
-    <item>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="start_simulation" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Start Simulation</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_6" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Start Continuous Simulation Mode&lt;/p>&lt;/body>&lt;/html></string>
-        </property>
-        <property name="text" >
-         <string>Cont-Simulation</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLabel" name="label_8" >
-   <property name="geometry" >
-    <rect>
-     <x>390</x>
-     <y>490</y>
-     <width>74</width>
-     <height>14</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Y-Offset-Robot</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_7" >
-   <property name="geometry" >
-    <rect>
-     <x>310</x>
-     <y>490</y>
-     <width>74</width>
-     <height>14</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>X-Offset-Robot</string>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="yoffset_box" >
-   <property name="geometry" >
-    <rect>
-     <x>400</x>
-     <y>510</y>
-     <width>62</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="maximum" >
-    <double>1000.000000000000000</double>
-   </property>
-   <property name="value" >
-    <double>145.000000000000000</double>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="xoffset_box" >
-   <property name="geometry" >
-    <rect>
-     <x>320</x>
-     <y>510</y>
-     <width>62</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="maximum" >
-    <double>1000.000000000000000</double>
-   </property>
-   <property name="value" >
-    <double>290.000000000000000</double>
-   </property>
   </widget>
  </widget>
  <resources/>

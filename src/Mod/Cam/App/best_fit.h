@@ -39,12 +39,9 @@ class AppCamExport best_fit
 {
 public:
 	best_fit();
-    best_fit(MeshCore::MeshKernel *InputMesh, TopoDS_Shape *CAD_Shape);
-    best_fit(MeshCore::MeshKernel &InputMesh);
-    best_fit(TopoDS_Shape &CAD_Shape);
     ~best_fit();
 
-	void Load(MeshCore::MeshKernel *InputMesh, TopoDS_Shape *CAD_Shape);
+	void Load(const MeshCore::MeshKernel &InputMesh,const TopoDS_Shape &CAD_Shape);
     bool MeshFit_Coarse();
     bool ShapeFit_Coarse();
     bool Perform();
@@ -58,10 +55,13 @@ public:
     static bool Tesselate_Face (const TopoDS_Face  &aface, MeshCore::MeshKernel &mesh, float deflection);
  
     static std::vector<Base::Vector3f> Comp_Normals(MeshCore::MeshKernel &M);
+	bool Coarse_correction();
+	double ANN();
 
-	TopoDS_Shape *m_Cad;              // CAD-Geometrie
-    MeshCore::MeshKernel *m_Mesh;     // das zu fittende Netz
-    MeshCore::MeshKernel  m_CadMesh;  // Netz aus CAD-Triangulierung
+	TopoDS_Shape m_Cad;              // CAD-Geometrie
+    MeshCore::MeshKernel m_Mesh;     // das zu fittende Netz
+	MeshCore::MeshKernel m_MeshWork;
+    MeshCore::MeshKernel m_CadMesh;  // Netz aus CAD-Triangulierung
 
 	std::vector<Base::Vector3f> m_pnts;
     std::vector<Base::Vector3f> m_normals;
@@ -83,7 +83,7 @@ private:
 									 std::vector<Base::Vector3f> &normals,
 									 Base::Matrix4D              &M);
 	inline bool PointTransform(std::vector<Base::Vector3f> &pnts, 
-		                Base::Matrix4D &M);
+		                       Base::Matrix4D &M);
 	bool Comp_Weights();
 	bool LSM();  // Least Square Matching
 	std::vector<double>               Comp_Jacobi(const std::vector<double> &params);

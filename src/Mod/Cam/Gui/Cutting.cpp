@@ -98,7 +98,6 @@ bool Cutting::getProcessOutput()
 
     return true;
 }
-
 void Cutting::on_adaptdynainput_clicked()
 {
     //First we have to select the LS-Dyna Masterfile and the current working dir
@@ -272,7 +271,7 @@ void Cutting::setFace(const TopoDS_Shape& aShape, const float x, const float y, 
 					(m_Spring->m_FixFaces).push_back(TopoDS::Face(anExplorer.Current()));
 				else if(m_selection == BestFit)
 					(m_BestFit->m_LowFaces).push_back(TopoDS::Face(anExplorer.Current()));
-				else
+				else if(m_selection == ToolpathCalculation)
 					m_CuttingAlgo->SetMachiningOrder(TopoDS::Face(anExplorer.Current()),x,y,z);
                 break;
             }
@@ -294,6 +293,7 @@ void Cutting::on_CalculateZLevel_clicked()
     CalculateFeatureBased->setEnabled(false);
     CalculateSpiralBased->setEnabled(false);
     toolpath_calculation_highest_level_button->setEnabled(true);
+m_selection = ToolpathCalculation;
 }
 
 void Cutting::on_CalculateFeatureBased_clicked()
@@ -307,6 +307,7 @@ void Cutting::on_CalculateFeatureBased_clicked()
     }
     m_Mode = 2;
     toolpath_calculation_highest_level_button->setEnabled(true);
+m_selection = ToolpathCalculation;
     CalculateZLevel->setEnabled(false);
     CalculateSpiralBased->setEnabled(false);
 }
@@ -322,6 +323,7 @@ void Cutting::on_CalculateSpiralBased_clicked()
     }
     m_Mode = 3;//
     toolpath_calculation_highest_level_button->setEnabled(true);
+m_selection = ToolpathCalculation;
     CalculateZLevel->setEnabled(false);
     CalculateFeatureBased->setEnabled(false);
 
@@ -397,6 +399,7 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     {std::cout << "Konnte nicht sauber schneiden" << std::endl;}
 
     bool ok = true; 
+try{
     switch (m_Mode)
     {
     case 1:
@@ -408,6 +411,9 @@ void Cutting::on_toolpath_calculation_go_button_clicked()
     case 3:
         ok = m_CuttingAlgo->OffsetWires_Spiral();
         break;
+    }
+ }catch(...){
+        std::cout<<"Fehler"<<std::endl;
     }
     if(!ok)
     {
@@ -476,12 +482,12 @@ const CuttingToolsSettings& Cutting::getSettings()
     m_Settings.level_distance = level_distance_box->value();
     m_Settings.limit_angle = limit_angle_box->value();
     m_Settings.sheet_thickness = sheet_thickness_box->value();
-	m_Settings.master_radius = master_radius_box->value();
     m_Settings.slave_radius = slave_radius_box->value();
+    m_Settings.master_radius = master_radius_box->value();
     m_Settings.max_Vel = max_vel->value();
     m_Settings.max_Acc = max_acc->value();
     m_Settings.spring_pretension = spring_pretension->value();
-	m_Settings.x_offset_robot = xoffset_box->value();
+m_Settings.x_offset_robot = xoffset_box->value();
 	m_Settings.y_offset_robot = yoffset_box->value();
 	m_Settings.clockwise = clockwise_checkbox->isChecked();
 
@@ -525,8 +531,7 @@ void Cutting::on_best_fit_mesh_button_clicked()
 
 void Cutting::on_SelectFace_button_clicked()
 {
-	if(m_CuttingAlgo == NULL)
-		m_CuttingAlgo = new cutting_tools(m_Shape);
+
 
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
@@ -549,19 +554,18 @@ void Cutting::on_best_fit_go_button_clicked()
 	
     case BestFit:
 
-		m_BestFit->Load(&m_Mesh,&m_Shape);
-		//m_BestFit->testPro();
+		m_BestFit->Load(m_Mesh,m_Shape);
+	  //m_BestFit->testPro();
 		m_BestFit->Perform();
 
-		best_fit_cad_button->setEnabled(false);
+		best_fit_cad_button ->setEnabled(false);
 		best_fit_mesh_button->setEnabled(false);
-		best_fit_go_button->setEnabled(false);
+		best_fit_go_button  ->setEnabled(false);
 			
-		m_Mesh = *(m_BestFit->m_Mesh);
-		DisplayMeshOutput();
-		
-		/*m_Mesh = m_BestFit->m_CadMesh;
-		DisplayMeshOutput();*/
+		m_MeshOut = m_BestFit->m_MeshWork;
+		m_MeshCad = m_BestFit->m_CadMesh;
+		DisplayMeshOutput(m_MeshOut);
+		DisplayMeshOutput(m_MeshCad);
 
 		break;
 	
@@ -571,13 +575,15 @@ void Cutting::on_best_fit_go_button_clicked()
 		m_Spring->Init_Setting(m_Settings);
 		m_Spring->Perform(m_Settings.limit_angle);
 
-		m_Mesh = m_Spring->m_Mesh;
+		m_MeshCad = m_Spring->m_CadMesh;
+		m_MeshOut = m_Spring->m_Mesh;
 
-		best_fit_cad_button->setEnabled(false);
+		best_fit_cad_button ->setEnabled(false);
 		best_fit_mesh_button->setEnabled(false);
-		best_fit_go_button->setEnabled(false);
+		best_fit_go_button  ->setEnabled(false);
 		
-		DisplayMeshOutput();
+		DisplayMeshOutput(m_MeshCad);
+		DisplayMeshOutput(m_MeshOut);
 		break;
 	
 	case Approximate:
@@ -605,13 +611,13 @@ void Cutting::on_best_fit_go_button_clicked()
 	}
 }
 
-void Cutting::DisplayMeshOutput()
+void Cutting::DisplayMeshOutput(const MeshCore::MeshKernel &mesh)
 {
 	App::Document* doc = App::GetApplication().getActiveDocument();
 	App::DocumentObject* obj = doc->addObject("Mesh::Feature","Output-Mesh");
 
 	Mesh::Feature* part1 = static_cast<Mesh::Feature*>(obj);
-	part1->Mesh.setValue(m_Mesh);
+	part1->Mesh.setValue(mesh);
 
 	//doc->recompute();
 }
