@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "All", "src\All.vcproj", "{E95B1D77-A7C8-476E-9300-5C108B74D039}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7B8E34F9-2DED-460A-B147-E7E5610F1FAC} = {7B8E34F9-2DED-460A-B147-E7E5610F1FAC}
@@ -181,6 +181,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppCamGui", "src\Mod\Cam\Gu
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OCCAdaptMesh", "src\3rdParty\OCCAdaptMesh\OCCAdaptMesh.vcproj", "{27D97BC0-8653-4313-BF81-96BD114DD66A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dll", "src\3rdParty\ANN\MS_Win32\dll\dll.vcproj", "{A7D00B21-CB9C-4BBB-8DEE-51025104F867}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -398,6 +400,14 @@ Global
 		{27D97BC0-8653-4313-BF81-96BD114DD66A}.Release|Win32.Build.0 = Release|Win32
 		{27D97BC0-8653-4313-BF81-96BD114DD66A}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{27D97BC0-8653-4313-BF81-96BD114DD66A}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.Debug|Win32.Build.0 = Debug|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.Release|Win32.ActiveCfg = Release|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.Release|Win32.Build.0 = Release|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{A7D00B21-CB9C-4BBB-8DEE-51025104F867}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
