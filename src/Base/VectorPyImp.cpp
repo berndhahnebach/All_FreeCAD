@@ -39,14 +39,26 @@ int VectorPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
     if (PyArg_ParseTuple(args, "|ddd", &x,&y,&z)) {
         ptr->Set(x,y,z);
-    } 
+    }
     else if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
         PyErr_Clear(); // set by PyArg_ParseTuple()
         // Note: must be static_cast, not reinterpret_cast
         *ptr = *(static_cast<Base::VectorPy*>(object)->getVectorPtr());
     }
+    else if (PyArg_ParseTuple(args,"O!",&(PyTuple_Type), &object)) {
+        PyErr_Clear(); // set by PyArg_ParseTuple()
+        try {
+            Py::Tuple tuple(object);
+            ptr->x = (float)Py::Float(tuple.getItem(0));
+            ptr->y = (float)Py::Float(tuple.getItem(1));
+            ptr->z = (float)Py::Float(tuple.getItem(2));
+        }
+        catch (const Py::Exception&) {
+            return -1;
+        }
+    }
     else {
-        PyErr_SetString(PyExc_TypeError, "Either three floats or instance of Vector expected");
+        PyErr_SetString(PyExc_TypeError, "Either three floats, tuple or Vector expected");
         return -1;
     }
 

@@ -748,32 +748,76 @@ bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
  * http://www.acm.org/jgt/papers/Moller97/tritri.html
  * http://www.cs.lth.se/home/Tomas_Akenine_Moller/code/
  */
-int MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
+int MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, 
+                                       Base::Vector3f& rclPt0, 
+                                       Base::Vector3f& rclPt1) const
 {
-  float V[3][3], U[3][3];
-  int coplanar = 0;
-  float isectpt1[3], isectpt2[3];
+    float V[3][3], U[3][3];
+    int coplanar = 0;
+    float isectpt1[3], isectpt2[3];
 
-  for (int i = 0; i < 3; i++)
-  {
-    V[i][0] = _aclPoints[i].x;
-    V[i][1] = _aclPoints[i].y;
-    V[i][2] = _aclPoints[i].z;
-    U[i][0] = rclFacet._aclPoints[i].x;
-    U[i][1] = rclFacet._aclPoints[i].y;
-    U[i][2] = rclFacet._aclPoints[i].z;
-  }
+    for (int i = 0; i < 3; i++)
+    {
+        V[i][0] = _aclPoints[i].x;
+        V[i][1] = _aclPoints[i].y;
+        V[i][2] = _aclPoints[i].z;
+        U[i][0] = rclFacet._aclPoints[i].x;
+        U[i][1] = rclFacet._aclPoints[i].y;
+        U[i][2] = rclFacet._aclPoints[i].z;
+    }
 
-  if (tri_tri_intersect_with_isectline(V[0], V[1], V[2], U[0], U[1], U[2], &coplanar, isectpt1, isectpt2) == 0)
-    return 0; // no intersections
+    if (tri_tri_intersect_with_isectline(V[0], V[1], V[2], U[0], U[1], U[2], 
+                                         &coplanar, isectpt1, isectpt2) == 0)
+        return 0; // no intersections
 
-  rclPt0.x = isectpt1[0]; rclPt0.y = isectpt1[1]; rclPt0.z = isectpt1[2];
-  rclPt1.x = isectpt2[0]; rclPt1.y = isectpt2[1]; rclPt1.z = isectpt2[2];
+    rclPt0.x = isectpt1[0]; rclPt0.y = isectpt1[1]; rclPt0.z = isectpt1[2];
+    rclPt1.x = isectpt2[0]; rclPt1.y = isectpt2[1]; rclPt1.z = isectpt2[2];
 
-  if (rclPt0 == rclPt1)
-    return 1;
-  else
-    return 2;
+    // Note: The algorithm delivers sometimes false-positives, i.e. it claims
+    // that the two triangles intersect but they don't. It seems that this bad
+    // behaviour occurs if the triangles are nearly co-planar
+    if (rclPt0 == rclPt1) {
+        if (this->IsPointOf(rclPt0) && rclFacet.IsPointOf(rclPt0))
+            return 1;
+    }
+    else {
+        if (this->IsPointOf(rclPt0) && rclFacet.IsPointOf(rclPt0) &&
+            this->IsPointOf(rclPt1) && rclFacet.IsPointOf(rclPt1))
+            return 2;
+    }
+
+    // the intersection algorithm delivered a false-positive
+    return 0;
+}
+
+bool MeshGeomFacet::IsPointOf (const Base::Vector3f &P) const
+{
+    Base::Vector3f u = this->_aclPoints[1] - this->_aclPoints[0];
+    Base::Vector3f v = this->_aclPoints[2] - this->_aclPoints[0];
+    Base::Vector3f w = P - this->_aclPoints[0];
+
+    float uu = u * u;
+    float uv = u * v;
+    float vv = v * v;
+    float wu = w * u;
+    float wv = w * v;
+    float det = float(fabs((uu * vv) - (uv * uv)));
+
+    // Note: Due to roundoff errros it can happen that we get very small
+    // negative values for s or t. This e.g. can happen if the point lies
+    // at the border of the facet. And as det could also become very small
+    // we need an adaptive tolerance. 
+    const float eps=std::min<float>(1.0e-6f, det*det);
+
+    float s  = (vv * wu) - (uv * wv);
+    float t  = (uu * wv) - (uv * wu);
+
+    // is the point inside the triangle?
+    if ((s >= -eps) && (t >= -eps) && ((s + t) <= det+eps)) {
+        return true;
+    }
+
+    return false;
 }
 
 float MeshGeomFacet::CenterOfInscribedCircle(Base::Vector3f& rclCenter) const
