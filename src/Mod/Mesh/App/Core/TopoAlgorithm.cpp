@@ -41,7 +41,7 @@
 using namespace MeshCore;
 
 MeshTopoAlgorithm::MeshTopoAlgorithm (MeshKernel &rclM)
-: _rclMesh(rclM), _needsCleanup(false)
+: _rclMesh(rclM), _needsCleanup(false), _cache(0)
 {
 }
 
@@ -49,6 +49,7 @@ MeshTopoAlgorithm::~MeshTopoAlgorithm (void)
 {
   if ( _needsCleanup )
     Cleanup();
+  EndCache();
 }
 
 bool MeshTopoAlgorithm::InsertVertex(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint)
@@ -58,7 +59,7 @@ bool MeshTopoAlgorithm::InsertVertex(unsigned long ulFacetPos, const Base::Vecto
 
   // insert new point
   unsigned long ulPtCnt = _rclMesh._aclPointArray.size();
-  unsigned long ulPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rclPoint);
+  unsigned long ulPtInd = this->GetOrAddIndex(rclPoint);
   unsigned long ulSize  = _rclMesh._aclFacetArray.size();
 
   if ( ulPtInd < ulPtCnt )
@@ -124,7 +125,7 @@ bool MeshTopoAlgorithm::SnapVertex(unsigned long ulFacetPos, const Base::Vector3
       else if ( (rP - rPt1)*cNo2 > 0.0f && fD2 >= fTV && fTV >= 0.0f )
       {
         MeshFacet cTria;
-        cTria._aulPoints[0] = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+        cTria._aulPoints[0] = this->GetOrAddIndex(rP);
         cTria._aulPoints[1] = rFace._aulPoints[(i+1)%3];
         cTria._aulPoints[2] = rFace._aulPoints[i];
         cTria._aulNeighbours[1] = ulFacetPos;
@@ -526,7 +527,7 @@ void MeshTopoAlgorithm::SwapEdge(unsigned long ulFacetPos, unsigned long ulNeigh
   rclN._aulNeighbours[(uNSide+1)%3] = ulFacetPos;
 }
 
-void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, unsigned long ulNeighbour, const Base::Vector3f& rP)
+bool MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, unsigned long ulNeighbour, const Base::Vector3f& rP)
 {
   MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
   MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
@@ -535,14 +536,16 @@ void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, unsigned long ulNeig
   unsigned short uNSide = rclN.Side(rclF);
 
   if (uFSide == USHRT_MAX || uNSide == USHRT_MAX) 
-    return; // not neighbours
+    return false; // not neighbours
 
   unsigned long uPtCnt = _rclMesh._aclPointArray.size();
-  unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+  unsigned long uPtInd = this->GetOrAddIndex(rP);
   unsigned long ulSize = _rclMesh._aclFacetArray.size();
 
-  if ( uPtInd < uPtCnt )
-    return; // the given point is already part of the mesh => creating new facets would be an illegal operation
+  // the given point is already part of the mesh => creating new facets would
+  // be an illegal operation
+  if (uPtInd < uPtCnt)
+    return false;
 
   // adjust the neighbourhood
   if (rclF._aulNeighbours[(uFSide+1)%3] != ULONG_MAX)
@@ -574,6 +577,8 @@ void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, unsigned long ulNeig
   // insert new facets
   _rclMesh._aclFacetArray.push_back(cNew1);
   _rclMesh._aclFacetArray.push_back(cNew2);
+
+  return true;
 }
 
 void MeshTopoAlgorithm::SplitOpenEdge(unsigned long ulFacetPos, unsigned short uSide, const Base::Vector3f& rP)
@@ -583,7 +588,7 @@ void MeshTopoAlgorithm::SplitOpenEdge(unsigned long ulFacetPos, unsigned short u
     return; // not open
 
   unsigned long uPtCnt = _rclMesh._aclPointArray.size();
-  unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+  unsigned long uPtInd = this->GetOrAddIndex(rP);
   unsigned long ulSize = _rclMesh._aclFacetArray.size();
 
   if ( uPtInd < uPtCnt )
@@ -607,6 +612,51 @@ void MeshTopoAlgorithm::SplitOpenEdge(unsigned long ulFacetPos, unsigned short u
 
   // insert new facets
   _rclMesh._aclFacetArray.push_back(cNew);
+}
+
+bool MeshTopoAlgorithm::Vertex_Less::operator ()(const Base::Vector3f& u,
+                                                 const Base::Vector3f& v) const
+{
+    if (fabs (u.x - v.x) > FLOAT_EPS)
+        return u.x < v.x;
+    if (fabs (u.y - v.y) > FLOAT_EPS)
+        return u.y < v.y;
+    if (fabs (u.z - v.z) > FLOAT_EPS)
+        return u.z < v.z;
+    return false;
+}
+
+void MeshTopoAlgorithm::BeginCache()
+{
+    if (_cache) {
+        delete _cache;
+    }
+    _cache = new tCache();
+    unsigned long nbPoints = _rclMesh._aclPointArray.size();
+    for (unsigned int pntCpt = 0 ; pntCpt < nbPoints ; ++pntCpt) {
+        _cache->insert(make_pair(_rclMesh._aclPointArray[pntCpt],pntCpt));
+    }
+}
+
+void MeshTopoAlgorithm::EndCache()
+{
+    if (_cache) {
+        _cache->clear();
+        delete _cache;
+        _cache = 0;
+    }
+}
+
+unsigned long MeshTopoAlgorithm::GetOrAddIndex (const MeshPoint &rclPoint)
+{
+    if (!_cache)
+        return _rclMesh._aclPointArray.GetOrAddIndex(rclPoint);
+
+    unsigned long sz = _rclMesh._aclPointArray.size();
+    std::pair<tCache::iterator,bool> retval = _cache->insert(std::make_pair(rclPoint,sz));
+    if (retval.second)
+        _rclMesh._aclPointArray.push_back(rclPoint);
+    return retval.first->second;
 }
 
 std::vector<unsigned long> MeshTopoAlgorithm::GetFacetsToPoint(unsigned long uFacetPos, unsigned long uPointPos) const
@@ -904,7 +954,7 @@ void MeshTopoAlgorithm::SplitNeighbourFacet(unsigned long ulFacetPos, unsigned s
   unsigned short uNSide = rclN.Side(rclF);
 
   //unsigned long uPtCnt = _rclMesh._aclPointArray.size();
-  unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rPoint);
+  unsigned long uPtInd = this->GetOrAddIndex(rPoint);
   unsigned long ulSize = _rclMesh._aclFacetArray.size();
 
   // adjust the neighbourhood

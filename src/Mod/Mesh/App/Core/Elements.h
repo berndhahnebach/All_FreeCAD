@@ -508,50 +508,51 @@ typedef std::vector<MeshFacet>  TMeshFacetArray;
 class MeshExport MeshFacetArray: public TMeshFacetArray
 {
 public:
-  // Iterator interface
-  typedef std::vector<MeshFacet>::iterator        _TIterator;
-  typedef std::vector<MeshFacet>::const_iterator  _TConstIterator;
+    // Iterator interface
+    typedef std::vector<MeshFacet>::iterator        _TIterator;
+    typedef std::vector<MeshFacet>::const_iterator  _TConstIterator;
 
-  /** @name Construction */
-  //@{
-  /// constructor
-  MeshFacetArray (void) { }
-  /// constructor
-  MeshFacetArray (unsigned long ulSize) : TMeshFacetArray(ulSize) { }
-  /// destructor
-  ~MeshFacetArray (void) { }
-  //@}
+    /** @name Construction */
+    //@{
+    /// constructor
+    MeshFacetArray (void) { }
+    /// constructor
+    MeshFacetArray (unsigned long ulSize) : TMeshFacetArray(ulSize) { }
+    /// destructor
+    ~MeshFacetArray (void) { }
+    //@}
 
-  /** @name Flag state
-   * @note All flag methods are const as they do NOT change the actual properties of the object
-   */
-  //@{
-  /// Sets the flag for all facets. 
-  void SetFlag (MeshFacet::TFlagType tF) const;
-  /// Resets the flag for all facets. 
-  void ResetFlag (MeshFacet::TFlagType tF) const;
-  /// Sets all facets invalid
-  void ResetInvalid (void) const;
-  /// Sets the property for all facets
-  void SetProperty (unsigned long ulVal) const;
-  //@}
+    /** @name Flag state
+    * @note All flag methods are const as they do NOT change the actual properties
+    * of the object
+    */
+    //@{
+    /// Sets the flag for all facets. 
+    void SetFlag (MeshFacet::TFlagType tF) const;
+    /// Resets the flag for all facets. 
+    void ResetFlag (MeshFacet::TFlagType tF) const;
+    /// Sets all facets invalid
+    void ResetInvalid (void) const;
+    /// Sets the property for all facets
+    void SetProperty (unsigned long ulVal) const;
+    //@}
 
-  // Assignment
-  MeshFacetArray& operator = (const MeshFacetArray &rclFAry);
+    // Assignment
+    MeshFacetArray& operator = (const MeshFacetArray &rclFAry);
 
-  /**
-   * Removes the facet from the array the iterator points to. All neighbour
-   * indices of the other facets get adjusted.
-   */
-  void Erase (_TIterator pIter);
-  /**
-   * Checks and flips the point indices if needed. @see MeshFacet::Transpose().
-   */
-  void TransposeIndices (unsigned long ulOrig, unsigned long ulNew);
-  /**
-   * Decrements all point indices that are higher than \a ulIndex.
-   */
-  void DecrementIndices (unsigned long ulIndex);
+    /**
+     * Removes the facet from the array the iterator points to. All neighbour
+     * indices of the other facets get adjusted.
+     */
+    void Erase (_TIterator pIter);
+    /**
+     * Checks and flips the point indices if needed. @see MeshFacet::Transpose().
+     */
+    void TransposeIndices (unsigned long ulOrig, unsigned long ulNew);
+    /**
+     * Decrements all point indices that are higher than \a ulIndex.
+     */
+    void DecrementIndices (unsigned long ulIndex);
 };
 
 inline MeshPoint::MeshPoint (const Base::Vector3f &rclPt)
@@ -579,348 +580,341 @@ inline MeshPoint::MeshPoint (const MeshPoint &rclPt)
 inline MeshPoint& MeshPoint::operator = (const MeshPoint &rclPt)
 {
 #ifdef _MSC_VER
-  Vector3f::operator=(rclPt);
+    Vector3f::operator=(rclPt);
 #else
-  Base::Vector3f::operator=(rclPt);
+    Base::Vector3f::operator=(rclPt);
 #endif
-  _ucFlag = rclPt._ucFlag;
-  _ulProp = rclPt._ulProp;
-  return *this;
+    _ucFlag = rclPt._ucFlag;
+    _ulProp = rclPt._ulProp;
+    return *this;
 }
 
 inline bool MeshPoint::operator == (const MeshPoint &rclPt) const
 {
-  return Base::DistanceP2(*this, rclPt) < MeshDefinitions::_fMinPointDistanceP2;
+    return Base::DistanceP2(*this, rclPt) < MeshDefinitions::_fMinPointDistanceP2;
 }
 
 inline bool MeshPoint::operator == (const Base::Vector3f &rclV) const
 {
-  return Base::DistanceP2(*this, rclV) < MeshDefinitions::_fMinPointDistanceP2;
+    return Base::DistanceP2(*this, rclV) < MeshDefinitions::_fMinPointDistanceP2;
 }
 
 inline bool MeshPoint::operator < (const MeshPoint &rclPt) const
 {
-  if (fabs(x - rclPt.x) < MeshDefinitions::_fMinPointDistanceD1)
-  {
-    if (fabs(y - rclPt.y) < MeshDefinitions::_fMinPointDistanceD1)
-    {
-      if (fabs(z - rclPt.z) < MeshDefinitions::_fMinPointDistanceD1)
-        return false;
-      else
-        return z < rclPt.z;
-    }
-    else
-      return y < rclPt.y;
-  }
-  else
-    return x < rclPt.x;
+    if (fabs ( this->x - rclPt.x ) >= MeshDefinitions::_fMinPointDistanceD1)
+        return this->x < rclPt.x;
+    if (fabs ( this->y - rclPt.y ) >= MeshDefinitions::_fMinPointDistanceD1)
+        return this->y < rclPt.y;
+    if (fabs ( this->z - rclPt.z ) >= MeshDefinitions::_fMinPointDistanceD1)
+        return this->z < rclPt.z;
+    return false; // points are considered to be equal
 }
 
 inline float MeshGeomFacet::DistancePlaneToPoint (const Base::Vector3f &rclPoint) const
 {
-  // force internal normal to be computed if not done yet
-  Base::Vector3f clNorm(GetNormal());
-  clNorm.Normalize();
-  return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], clNorm)));
+    // force internal normal to be computed if not done yet
+    Base::Vector3f clNorm(GetNormal());
+    clNorm.Normalize();
+    return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], clNorm)));
 }
 
 inline void MeshGeomFacet::CalcNormal (void)
 {
-  _clNormal = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
-  _clNormal.Normalize();
-  _bNormalCalculated = true;
+    _clNormal = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
+    _clNormal.Normalize();
+    _bNormalCalculated = true;
 }
 
 inline Base::Vector3f MeshGeomFacet::GetNormal (void) const
 {
-  if (_bNormalCalculated == false)
-    const_cast<MeshGeomFacet*>(this)->CalcNormal();
-
-  return _clNormal;
+    if (_bNormalCalculated == false)
+        const_cast<MeshGeomFacet*>(this)->CalcNormal();
+    return _clNormal;
 }
 
 inline void MeshGeomFacet::SetNormal (const Base::Vector3f &rclNormal)
 {
-  _clNormal = rclNormal;
-  _bNormalCalculated = true;
+    _clNormal = rclNormal;
+    _bNormalCalculated = true;
 }
 
 inline void MeshGeomFacet::ArrangeNormal (const Base::Vector3f &rclN)
 {
-  // force internal normal to be computed if not done yet
-  if ((rclN * GetNormal()) < 0.0f)
-    _clNormal = -_clNormal;
+    // force internal normal to be computed if not done yet
+    if ((rclN * GetNormal()) < 0.0f)
+        _clNormal = -_clNormal;
 }
 
 inline Base::Vector3f MeshGeomFacet::GetGravityPoint (void) const
 {
-  return (1.0f / 3.0f) * (_aclPoints[0] + _aclPoints[1] + _aclPoints[2]);
+    return (1.0f / 3.0f) * (_aclPoints[0] + _aclPoints[1] + _aclPoints[2]);
 }
 
 inline void MeshGeomFacet::AdjustCirculationDirection (void)
 {
-  Base::Vector3f clN = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
-  if ((clN * _clNormal) < 0.0f)
-    std::swap(_aclPoints[1], _aclPoints[2]);
+    Base::Vector3f clN = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
+    if ((clN * _clNormal) < 0.0f)
+        std::swap(_aclPoints[1], _aclPoints[2]);
 }
 
 inline Base::BoundBox3f MeshGeomFacet::GetBoundBox (void) const
 {
-  return Base::BoundBox3f(_aclPoints, 3);
+    return Base::BoundBox3f(_aclPoints, 3);
 }
 
 inline float MeshGeomFacet::Perimeter() const
 {
-  float perimeter=0.0f;
-  perimeter += Base::Distance(_aclPoints[0], _aclPoints[1]);
-  perimeter += Base::Distance(_aclPoints[1], _aclPoints[2]);
-  perimeter += Base::Distance(_aclPoints[2], _aclPoints[0]);
-  return perimeter;
+    float perimeter=0.0f;
+    perimeter += Base::Distance(_aclPoints[0], _aclPoints[1]);
+    perimeter += Base::Distance(_aclPoints[1], _aclPoints[2]);
+    perimeter += Base::Distance(_aclPoints[2], _aclPoints[0]);
+    return perimeter;
 }
 
 inline float MeshGeomFacet::Area () const
 {
-  return ((_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0])).Length() / 2.0f;
+    return ((_aclPoints[1] - _aclPoints[0]) % 
+            (_aclPoints[2] - _aclPoints[0])).Length() / 2.0f;
 }
 
 inline bool MeshGeomFacet::ContainedByOrIntersectBoundingBox ( const Base::BoundBox3f &rclBB ) const
 {
-  // Test, ob alle Eckpunkte des Facets sich auf einer der 6 Seiten der BB befinden
-  if ((GetBoundBox() && rclBB) == false)
+     // Test, ob alle Eckpunkte des Facets sich auf einer der 6 Seiten der BB befinden
+    if ((GetBoundBox() && rclBB) == false)
+        return false;
+
+    // Test, ob Facet-BB komplett in BB liegt
+    if (rclBB.IsInBox(GetBoundBox()))
+        return true;
+
+    // Test, ob einer der Eckpunkte in BB liegt
+    for (int i=0;i<3;i++) {
+        if (rclBB.IsInBox(_aclPoints[i]))
+            return true;
+    }
+
+    // "echter" Test auf Schnitt
+    if (IntersectBoundingBox(rclBB))
+        return true;
+
     return false;
-
-  // Test, ob Facet-BB komplett in BB liegt
-  if (rclBB.IsInBox(GetBoundBox()))
-    return true;
-
-  // Test, ob einer der Eckpunkte in BB liegt
-  for (int i=0;i<3;i++)
-  {
-    if (rclBB.IsInBox(_aclPoints[i]))
-      return true;
-  }
-
-  // "echter" Test auf Schnitt
-  if (IntersectBoundingBox(rclBB))
-    return true;
-
-  return false;
 }
 
 inline bool MeshGeomFacet::IntersectWithPlane (const Base::Vector3f &rclBase, const Base::Vector3f &rclNormal) const
 {
-  bool bD0 = (_aclPoints[0].DistanceToPlane(rclBase, rclNormal) > 0.0f); 
-  return !((bD0 == (_aclPoints[1].DistanceToPlane(rclBase, rclNormal) > 0.0f)) &&
-           (bD0 == (_aclPoints[2].DistanceToPlane(rclBase, rclNormal) > 0.0f)));
+    bool bD0 = (_aclPoints[0].DistanceToPlane(rclBase, rclNormal) > 0.0f); 
+    return !((bD0 == (_aclPoints[1].DistanceToPlane(rclBase, rclNormal) > 0.0f)) &&
+             (bD0 == (_aclPoints[2].DistanceToPlane(rclBase, rclNormal) > 0.0f)));
 }
 
 inline MeshFacet::MeshFacet (void)
 : _ucFlag(0),
   _ulProp(0)
 {
-  memset(_aulNeighbours, ULONG_MAX, sizeof(ULONG_MAX) * 3);
-  memset(_aulPoints, ULONG_MAX, sizeof(ULONG_MAX) * 3);
+    memset(_aulNeighbours, ULONG_MAX, sizeof(ULONG_MAX) * 3);
+    memset(_aulPoints, ULONG_MAX, sizeof(ULONG_MAX) * 3);
 }
 
 inline MeshFacet::MeshFacet(const MeshFacet &rclF)
 : _ucFlag(rclF._ucFlag),
   _ulProp(rclF._ulProp)
 {
-  _aulPoints[0] = rclF._aulPoints[0];
-  _aulPoints[1] = rclF._aulPoints[1];
-  _aulPoints[2] = rclF._aulPoints[2];
+    _aulPoints[0] = rclF._aulPoints[0];
+    _aulPoints[1] = rclF._aulPoints[1];
+    _aulPoints[2] = rclF._aulPoints[2];
 
-  _aulNeighbours[0] = rclF._aulNeighbours[0];
-  _aulNeighbours[1] = rclF._aulNeighbours[1];
-  _aulNeighbours[2] = rclF._aulNeighbours[2];
+    _aulNeighbours[0] = rclF._aulNeighbours[0];
+    _aulNeighbours[1] = rclF._aulNeighbours[1];
+    _aulNeighbours[2] = rclF._aulNeighbours[2];
 }
-inline MeshFacet::MeshFacet(unsigned long p1,unsigned long p2,unsigned long p3,unsigned long n1,unsigned long n2,unsigned long n3)
+
+inline MeshFacet::MeshFacet(unsigned long p1,unsigned long p2,unsigned long p3,
+                            unsigned long n1,unsigned long n2,unsigned long n3)
 : _ucFlag(0),
   _ulProp(0)
 {
-  _aulPoints[0] = p1;
-  _aulPoints[1] = p2;
-  _aulPoints[2] = p3;
+    _aulPoints[0] = p1;
+    _aulPoints[1] = p2;
+    _aulPoints[2] = p3;
 
-  _aulNeighbours[0] = n1;
-  _aulNeighbours[1] = n2;
-  _aulNeighbours[2] = n3;
+    _aulNeighbours[0] = n1;
+    _aulNeighbours[1] = n2;
+    _aulNeighbours[2] = n3;
 }
 
 inline MeshFacet& MeshFacet::operator = (const MeshFacet &rclF)
 {
-  _ucFlag          = rclF._ucFlag;
-  _ulProp          = rclF._ulProp;
+    _ucFlag          = rclF._ucFlag;
+    _ulProp          = rclF._ulProp;
 
-  _aulPoints[0]    = rclF._aulPoints[0];
-  _aulPoints[1]    = rclF._aulPoints[1];
-  _aulPoints[2]    = rclF._aulPoints[2];
+    _aulPoints[0]    = rclF._aulPoints[0];
+    _aulPoints[1]    = rclF._aulPoints[1];
+    _aulPoints[2]    = rclF._aulPoints[2];
 
-  _aulNeighbours[0] = rclF._aulNeighbours[0];
-  _aulNeighbours[1] = rclF._aulNeighbours[1];
-  _aulNeighbours[2] = rclF._aulNeighbours[2];
+    _aulNeighbours[0] = rclF._aulNeighbours[0];
+    _aulNeighbours[1] = rclF._aulNeighbours[1];
+    _aulNeighbours[2] = rclF._aulNeighbours[2];
 
-  return *this;
+    return *this;
 }
 
 inline void MeshFacet::GetEdge (unsigned short usSide, MeshHelpEdge &rclEdge) const
 {
-  rclEdge._ulIndex[0] = _aulPoints[usSide];
-  rclEdge._ulIndex[1] = _aulPoints[(usSide+1) % 3];
+    rclEdge._ulIndex[0] = _aulPoints[usSide];
+    rclEdge._ulIndex[1] = _aulPoints[(usSide+1) % 3];
 }
 
 inline std::pair<unsigned long, unsigned long> MeshFacet::GetEdge (unsigned short usSide) const
 {
-  return std::pair<unsigned long, unsigned long>(_aulPoints[usSide], _aulPoints[(usSide+1)%3]);
+    return std::pair<unsigned long, unsigned long>(_aulPoints[usSide], _aulPoints[(usSide+1)%3]);
 }
 
 inline void MeshFacet::Transpose (unsigned long ulOrig, unsigned long ulNew)
 {
-  if (_aulPoints[0] == ulOrig)
-    _aulPoints[0] = ulNew;
-  else if (_aulPoints[1] == ulOrig)
-    _aulPoints[1] = ulNew;
-  else if (_aulPoints[2] == ulOrig)
-    _aulPoints[2] = ulNew;
+    if (_aulPoints[0] == ulOrig)
+        _aulPoints[0] = ulNew;
+    else if (_aulPoints[1] == ulOrig)
+        _aulPoints[1] = ulNew;
+    else if (_aulPoints[2] == ulOrig)
+        _aulPoints[2] = ulNew;
 }
 
 inline void MeshFacet::Decrement (unsigned long ulIndex)
 {
-  if (_aulPoints[0] > ulIndex) _aulPoints[0]--;
-  if (_aulPoints[1] > ulIndex) _aulPoints[1]--;
-  if (_aulPoints[2] > ulIndex) _aulPoints[2]--;
+    if (_aulPoints[0] > ulIndex) _aulPoints[0]--;
+    if (_aulPoints[1] > ulIndex) _aulPoints[1]--;
+    if (_aulPoints[2] > ulIndex) _aulPoints[2]--;
 }
 
 inline void MeshFacet::ReplaceNeighbour (unsigned long ulOrig, unsigned long ulNew)
 {
-  if (_aulNeighbours[0] == ulOrig)
-    _aulNeighbours[0] = ulNew;
-  else if (_aulNeighbours[1] == ulOrig)
-    _aulNeighbours[1] = ulNew;
-  else if (_aulNeighbours[2] == ulOrig)
-    _aulNeighbours[2] = ulNew;
+    if (_aulNeighbours[0] == ulOrig)
+        _aulNeighbours[0] = ulNew;
+    else if (_aulNeighbours[1] == ulOrig)
+        _aulNeighbours[1] = ulNew;
+    else if (_aulNeighbours[2] == ulOrig)
+        _aulNeighbours[2] = ulNew;
 }
 
 inline unsigned short MeshFacet::CountOpenEdges() const
 {
-  unsigned short ct=0;
-  for ( unsigned short i=0; i<3; i++ ) 
-  { if ( !HasNeighbour(i) ) ct++; }
-  return ct;
+    unsigned short ct=0;
+    for (unsigned short i=0; i<3; i++)
+    { if ( !HasNeighbour(i) ) ct++; }
+    return ct;
 }
 
 inline bool MeshFacet::HasOpenEdge() const
 {
-  return (CountOpenEdges() != 0);
+    return (CountOpenEdges() != 0);
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
 {
-  if (_aulNeighbours[0] == ulNIndex)
-    return 0;
-  else if (_aulNeighbours[1] == ulNIndex)
-    return 1;
-  else if (_aulNeighbours[2] == ulNIndex)
-    return 2;
-  else
-    return USHRT_MAX;
+    if (_aulNeighbours[0] == ulNIndex)
+        return 0;
+    else if (_aulNeighbours[1] == ulNIndex)
+        return 1;
+    else if (_aulNeighbours[2] == ulNIndex)
+        return 2;
+    else
+        return USHRT_MAX;
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulP0, unsigned long ulP1) const
 {
-  if (_aulPoints[0] == ulP0)
-  {
-    if (_aulPoints[1] == ulP1)
-      return 0;  // Kante 0-1 ==> 0
-    else if (_aulPoints[2] == ulP1)
-      return 2;  // Kante 0-2 ==> 2
-  }
-  else if (_aulPoints[1] == ulP0)
-  {
-    if (_aulPoints[0] == ulP1)
-      return 0; // Kante 1-0 ==> 0
-    else if (_aulPoints[2] == ulP1)
-      return 1; // Kante 1-2 ==> 1
-  }
-  else if (_aulPoints[2] == ulP0)
-  {
-    if (_aulPoints[0] == ulP1)
-      return 2; // Kante 2-0 ==> 2
-    else if (_aulPoints[1] == ulP1)
-      return 1; // Kante 2-1 ==> 1
-  }
-  
-  return USHRT_MAX;
+    if (_aulPoints[0] == ulP0) {
+        if (_aulPoints[1] == ulP1)
+            return 0;  // Kante 0-1 ==> 0
+        else if (_aulPoints[2] == ulP1)
+            return 2;  // Kante 0-2 ==> 2
+    }
+    else if (_aulPoints[1] == ulP0) {
+        if (_aulPoints[0] == ulP1)
+            return 0; // Kante 1-0 ==> 0
+        else if (_aulPoints[2] == ulP1)
+            return 1; // Kante 1-2 ==> 1
+    }
+    else if (_aulPoints[2] == ulP0) {
+        if (_aulPoints[0] == ulP1)
+            return 2; // Kante 2-0 ==> 2
+        else if (_aulPoints[1] == ulP1)
+            return 1; // Kante 2-1 ==> 1
+    }
+
+    return USHRT_MAX;
 }
 
 inline unsigned short MeshFacet::Side (const MeshFacet& rFace) const
 {
-  unsigned short side;
-  for ( int i=0; i<3;i++ ){
-    side = Side(rFace._aulPoints[i], rFace._aulPoints[(i+1)%3]);
-    if ( side != USHRT_MAX )
-      return side;
-  }
-  
-  return USHRT_MAX;
+    unsigned short side;
+    for (int i=0; i<3;i++){
+        side = Side(rFace._aulPoints[i], rFace._aulPoints[(i+1)%3]);
+        if (side != USHRT_MAX)
+            return side;
+    }
+
+    return USHRT_MAX;
 }
 
 inline bool MeshFacet::IsEqual (const MeshFacet& rcFace) const
 {
-  for ( int i=0; i<3; i++ ) {
-    if ( this->_aulPoints[0] == rcFace._aulPoints[i] ) {
-      if ( this->_aulPoints[1] == rcFace._aulPoints[(i+1)%3] && this->_aulPoints[2] == rcFace._aulPoints[(i+2)%3] )
-        return true;
-      else if ( this->_aulPoints[1] == rcFace._aulPoints[(i+2)%3] && this->_aulPoints[2] == rcFace._aulPoints[(i+1)%3] )
-        return true;
+    for (int i=0; i<3; i++) {
+        if (this->_aulPoints[0] == rcFace._aulPoints[i]) {
+            if (this->_aulPoints[1] == rcFace._aulPoints[(i+1)%3] &&
+                this->_aulPoints[2] == rcFace._aulPoints[(i+2)%3])
+                return true;
+            else if (this->_aulPoints[1] == rcFace._aulPoints[(i+2)%3] &&
+                     this->_aulPoints[2] == rcFace._aulPoints[(i+1)%3])
+                return true;
+        }
     }
-  }
 
-  return false;
+    return false;
 }
 
 /**
  * Binary function to query the flags for use with generic STL functions..
  */
 template <class TCLASS>
-class MeshIsFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
+class MeshIsFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-  { return rclElem.IsFlag(tFlag); }
+    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    { return rclElem.IsFlag(tFlag); }
 };
 
 /**
  * Binary function to query the flags for use with generic STL functions..
  */
 template <class TCLASS>
-class MeshIsNotFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
+class MeshIsNotFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-  { return !rclElem.IsFlag(tFlag); }
+    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    { return !rclElem.IsFlag(tFlag); }
 };
 
 /**
  * Binary function to set the flags for use with generic STL functions..
  */
 template <class TCLASS>
-class MeshSetFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
+class MeshSetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-  { rclElem.SetFlag(tFlag); return true; }
+    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    { rclElem.SetFlag(tFlag); return true; }
 };
 
 /**
  * Binary function to reset the flags for use with generic STL functions..
  */
 template <class TCLASS>
-class MeshResetFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
+class MeshResetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-  { rclElem.ResetFlag(tFlag); return true; }
+    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    { rclElem.ResetFlag(tFlag); return true; }
 };
 
 } // namespace MeshCore
