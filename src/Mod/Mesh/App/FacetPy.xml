@@ -56,5 +56,11 @@ Get a list of intersection points with another triangle.
 		  </Documentation>
 		  <Parameter Name="Normal" Type="Object"/>
 	  </Attribute>
-	</PythonExport>
+	  <Attribute Name="Points" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>A list of points of the facet</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Points" Type="List"/>
+	  </Attribute>
+  </PythonExport>
 </GenerateModel>

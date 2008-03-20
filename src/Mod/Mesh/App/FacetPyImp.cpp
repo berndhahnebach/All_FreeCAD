@@ -128,6 +128,22 @@ PyObject*  FacetPy::intersect(PyObject *args)
     }
 }
 
+Py::List FacetPy::getPoints(void) const
+{
+    FacetPy::PointerType face = this->getFacetPtr();
+
+    Py::List pts;
+    for (int i=0; i<3; i++) {
+        Py::Tuple pt(3);
+        pt.setItem(0, Py::Float(face->_aclPoints[i].x));
+        pt.setItem(1, Py::Float(face->_aclPoints[i].y));
+        pt.setItem(2, Py::Float(face->_aclPoints[i].z));
+        pts.append(pt);
+    }
+
+    return pts;
+}
+
 PyObject *FacetPy::getCustomAttributes(const char* attr) const
 {
     return 0;

@@ -284,6 +284,12 @@ public:
    * in the facet normal direction is inside the triangle.
    */
   bool IsPointOf (const Base::Vector3f &rclPoint, float fDistance) const;
+  /**
+   * Checks if the point is inside or at the border of the facet. The point
+   * must already exactly lie on the plane defined by the facet, which is not
+   * checked. This method is very efficient.
+   */
+  bool IsPointOf (const Base::Vector3f &rclPoint) const;
   /** Checks whether the given point is inside the facet with tolerance \a fDistance. 
    * This method does actually the same as IsPointOf() but this implementation 
    * is done more effective through comparison of normals.
