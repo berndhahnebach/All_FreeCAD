@@ -99,6 +99,65 @@ void StdCmdOpen::activated(int iMsg)
 }
 
 //===========================================================================
+// Std_Import
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdImport);
+
+StdCmdImport::StdCmdImport()
+  : Command("Std_Import")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Import...");
+    sToolTipText  = QT_TR_NOOP("Import a file in the active document");
+    sWhatsThis    = QT_TR_NOOP("Import a file in the active document");
+    sStatusTip    = QT_TR_NOOP("Import a file in the active document");
+    sPixmap       = "Open";
+    iAccel        = Qt::CTRL+Qt::Key_I;
+}
+
+void StdCmdImport::activated(int iMsg)
+{
+    // fill the list of registered endings
+    QString formatList;
+    const char* supported = QT_TR_NOOP("Supported formats");
+    const char* allFiles = QT_TR_NOOP("All files (*.*)");
+    formatList = QObject::tr(supported);
+    formatList += " (";
+
+    std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
+    std::map<std::string,std::string>::const_iterator It;
+    for(It=EndingMap.begin();It != EndingMap.end();It++)
+    {
+        formatList += " *.";
+        formatList += It->first.c_str();
+    }
+
+    formatList += ");;";
+
+    std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
+    std::vector<std::string>::const_iterator Jt;
+    for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
+    {
+        formatList += (*Jt).c_str();
+        formatList += ";;";
+    }
+    formatList += QObject::tr(allFiles);
+
+    QStringList FileList = FileDialog::getOpenFileNames(getMainWindow(), QObject::tr("Import file"), QString(), formatList);
+    for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
+        getGuiApplication()->import((*it).toUtf8(),getActiveGuiDocument()->getDocument()->getName());
+    }
+}
+
+bool StdCmdImport::isActive(void)
+{
+  return ( getActiveGuiDocument() ? true : false );
+}
+
+
+//===========================================================================
 // Std_New
 //===========================================================================
 
@@ -563,6 +622,7 @@ void CreateDocCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdNew());
   rcCmdMgr.addCommand(new StdCmdOpen());
+  rcCmdMgr.addCommand(new StdCmdImport());
 
   rcCmdMgr.addCommand(new StdCmdSave());
   rcCmdMgr.addCommand(new StdCmdSaveAs());
