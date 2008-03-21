@@ -53,7 +53,8 @@ PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
 
        
-ViewProvider::ViewProvider() : _iActualMode(-1), _pyObject(0)
+ViewProvider::ViewProvider() 
+ : _iActualMode(-1), _pyObject(0), pcAnnotation(0)
 {
   pcRoot = new SoSeparator();
   pcRoot->ref();
@@ -79,6 +80,17 @@ ViewProvider::~ViewProvider()
   pcRoot->unref();
   pcTransform->unref();
   pcModeSwitch->unref();
+  if(pcAnnotation) pcAnnotation->unref();
+}
+
+SoSeparator* ViewProvider::getAnnotation(void)
+{
+	if(!pcAnnotation){
+		pcAnnotation = new SoSeparator();
+		pcAnnotation->ref();
+		pcRoot->addChild(pcAnnotation);
+	}
+	return pcAnnotation;
 }
 
 void ViewProvider::update(const App::Property* prop)
