@@ -634,7 +634,7 @@ void MeshTopoAlgorithm::BeginCache()
     _cache = new tCache();
     unsigned long nbPoints = _rclMesh._aclPointArray.size();
     for (unsigned int pntCpt = 0 ; pntCpt < nbPoints ; ++pntCpt) {
-        _cache->insert(make_pair(_rclMesh._aclPointArray[pntCpt],pntCpt));
+        _cache->insert(std::make_pair(_rclMesh._aclPointArray[pntCpt],pntCpt));
     }
 }
 
