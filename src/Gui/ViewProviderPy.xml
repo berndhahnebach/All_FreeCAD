@@ -38,10 +38,17 @@
         <UserDocu>Show a list of all display modes</UserDocu>
       </Documentation>
     </Methode>
-	  <Methode Name="toString">
+	<Methode Name="toString">
 		  <Documentation>
 			  <UserDocu>Return a string representation of the Inventor node</UserDocu>
 		  </Documentation>
-	  </Methode>
+	</Methode>
+	<Attribute Name="Annotation" ReadOnly="false">
+		<Documentation>
+		  <UserDocu>A pivy Separator to add a custom scene graph to this ViewProvider</UserDocu>
+		</Documentation>
+		<Parameter Name="Annotation" Type="Object" />
+	</Attribute>
+
   </PythonExport>
 </GenerateModel>

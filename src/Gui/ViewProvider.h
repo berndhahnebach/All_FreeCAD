@@ -71,6 +71,8 @@ public:
 
     // returns the root node of the Provider (3D)
     virtual SoSeparator* getRoot(void){return pcRoot;}
+    // returns the root for the Annotations. 
+    SoSeparator* getAnnotation(void);
     // returns the root node of the Provider (3D)
     virtual SoSeparator* getFrontRoot(void) const {return 0;}
     // returns the root node of the Provider (3D)
@@ -91,23 +93,6 @@ public:
     std::string toString() const;
     PyObject* getPyObject();
 
-protected:
-    /** @name Display mask modes
-     * Mainly controls an SoSwitch node which selects the display mask modes.
-     * The number of display mask modes doesn't necessarily match with the number of display modes.
-     * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
-     * by one display mask mode that handles color values.
-     */
-    //@{
-    /// Adds a new display mask mode 
-    void addDisplayMaskMode( SoNode *node, const char* type );
-    /// Activates the display mask mode \a type
-    void setDisplayMaskMode( const char* type );
-    /// Returns a list of added display mask modes
-    std::vector<std::string> getDisplayMaskModes() const;
-    //@}
-
-public:
     /** @name Display mode methods 
      */
     //@{
@@ -142,12 +127,30 @@ public:
     //@}
 
 protected:
+    /** @name Display mask modes
+     * Mainly controls an SoSwitch node which selects the display mask modes.
+     * The number of display mask modes doesn't necessarily match with the number of display modes.
+     * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
+     * by one display mask mode that handles color values.
+     */
+    //@{
+    /// Adds a new display mask mode 
+    void addDisplayMaskMode( SoNode *node, const char* type );
+    /// Activates the display mask mode \a type
+    void setDisplayMaskMode( const char* type );
+    /// Returns a list of added display mask modes
+    std::vector<std::string> getDisplayMaskModes() const;
+    //@}
+	/// The root Separator of the ViewProvider
     SoSeparator *pcRoot;
     /// this is transformation for the provider
     SoTransform *pcTransform;
     const char* sPixmap;
     /// this is the mode switch, all the different viewing modes are collected here
     SoSwitch    *pcModeSwitch;
+	/// The root Separator for Annotations
+    SoSeparator *pcAnnotation;
+
 
 private:
     int _iActualMode;

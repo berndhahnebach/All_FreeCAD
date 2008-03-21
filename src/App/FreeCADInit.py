@@ -47,6 +47,7 @@ def InitApplications():
 		print "No modules found in " + ModDir
 		return
 	sys.path.append( '..\\bin' )
+	sys.path.append( '..\\bin\\Lib' )
 	sys.path.append( ModDir )
 	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
 		sys.path.append( FreeCAD.ConfigGet("AppHomePath")+'src\\Tools' )

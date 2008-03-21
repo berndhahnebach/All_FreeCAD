@@ -28,6 +28,7 @@
 // inclusion of the generated files (generated out of ViewProviderPy2.xml)
 #include "ViewProviderPy.h"
 #include "ViewProviderPy.cpp"
+#include <Base/Interpreter.h>
 
 using namespace Gui;
 
@@ -112,4 +113,15 @@ PyObject *ViewProviderPy::getCustomAttributes(const char* attr) const
 int ViewProviderPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
 	return 0; 
+}
+
+Py::Object ViewProviderPy::getAnnotation(void) const
+{
+	void* Ptr = Base::Interpreter().creatSWIGPointerObj("SoSeparator *",getViewProviderPtr()->getAnnotation());
+	return Py::Object((PyObject*)Ptr);
+}
+
+void  ViewProviderPy::setAnnotation(Py::Object arg)
+{
+
 }
