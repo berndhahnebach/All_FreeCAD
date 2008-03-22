@@ -129,9 +129,10 @@ public:
 protected:
     /** @name Display mask modes
      * Mainly controls an SoSwitch node which selects the display mask modes.
-     * The number of display mask modes doesn't necessarily match with the number of display modes.
-     * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
-     * by one display mask mode that handles color values.
+     * The number of display mask modes doesn't necessarily match with the number
+     * of display modes.
+     * E.g. various display modes like Gaussian curvature, mean curvature or gray
+     * values are displayed by one display mask mode that handles color values.
      */
     //@{
     /// Adds a new display mask mode 
@@ -148,9 +149,8 @@ protected:
     const char* sPixmap;
     /// this is the mode switch, all the different viewing modes are collected here
     SoSwitch    *pcModeSwitch;
-	/// The root Separator for Annotations
+    /// The root separator for annotations
     SoSeparator *pcAnnotation;
-
 
 private:
     int _iActualMode;

@@ -447,17 +447,17 @@ PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::strin
 
 }
 
-void * InterpreterSingleton::creatSWIGPointerObj(const char* TypeName, void* Pointer)
+void * InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void* Pointer)
 {
-   swig_module_info *module = SWIG_GetModule(NULL);
-   if (!module) 
-	   throw Base::Exception("No SWIG wrapped library loaded");
- 
+    swig_module_info *module = SWIG_GetModule(NULL);
+    if (!module)
+        throw Base::Exception("No SWIG wrapped library loaded");
 
-   swig_type_info * swig_type = 0;
-   swig_type = SWIG_TypeQuery(TypeName);
+
+    swig_type_info * swig_type = 0;
+    swig_type = SWIG_TypeQuery(TypeName);
     if (!swig_type) 
-        throw Base::Exception("Cannot find type information for requested Type");
+        throw Base::Exception("Cannot find type information for requested type");
     
     PyObject *resultobj = NULL;
     resultobj = SWIG_Python_NewPointerObj(Pointer,swig_type,1);

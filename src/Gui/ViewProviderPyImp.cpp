@@ -98,7 +98,7 @@ PyObject*  ViewProviderPy::listDisplayModes(PyObject *args)
 PyObject*  ViewProviderPy::toString(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                       // NULL triggers exception 
+        return NULL;                     // NULL triggers exception 
     PY_TRY {
         std::string buffer = getViewProviderPtr()->toString();
         return Py::new_reference_to(Py::String(buffer));
@@ -107,18 +107,24 @@ PyObject*  ViewProviderPy::toString(PyObject *args)
 
 PyObject *ViewProviderPy::getCustomAttributes(const char* attr) const
 {
-	return 0;
+    return 0;
 }
 
 int ViewProviderPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-	return 0; 
+    return 0; 
 }
 
 Py::Object ViewProviderPy::getAnnotation(void) const
 {
-	void* Ptr = Base::Interpreter().creatSWIGPointerObj("SoSeparator *",getViewProviderPtr()->getAnnotation());
-	return Py::Object((PyObject*)Ptr);
+    try {
+        void* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
+                    getViewProviderPtr()->getAnnotation());
+        return Py::Object((PyObject*)Ptr);
+    }
+    catch (const Base::Exception& e) {
+        throw Py::Exception(e.what());
+    }
 }
 
 void  ViewProviderPy::setAnnotation(Py::Object arg)
