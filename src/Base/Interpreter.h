@@ -160,13 +160,13 @@ public:
     static void Destruct(void);
     //@}
 
-	/** @name externel wrapper wrapper
-	 *  here we can acces externel dynamcly loaded wrapper libs
-	 *  done e.g. by SWIG or SIP
-	 */
+    /** @name external wrapper libs
+     *  here we can access external dynamically loaded wrapper libs
+     *  done e.g. by SWIG or SIP
+     */
     //@{
-	/// generate a SWIG object
-	void * creatSWIGPointerObj(const char* TypeName, void* Pointer);
+    /// generate a SWIG object
+    void * createSWIGPointerObj(const char* TypeName, void* Pointer);
     //@}
 
     /** @name std container to Python container helpers

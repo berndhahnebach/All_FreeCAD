@@ -562,7 +562,7 @@ const char *@self.export.Name@::representation(void) const
 }
 + for i in self.export.Methode:
 
-PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
+PyObject* @self.export.Name@::@i.Name@(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -628,7 +628,7 @@ int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 + for i in self.export.Methode:
 
-PyObject*  @self.export.Name@::@i.Name@(PyObject * /*args*/)
+PyObject* @self.export.Name@::@i.Name@(PyObject * /*args*/)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -643,7 +643,7 @@ Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 + if (i.ReadOnly):
 = else:
 
-void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ /*arg*/)
+void @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ /*arg*/)
 {
 
 }

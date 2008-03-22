@@ -85,12 +85,12 @@ ViewProvider::~ViewProvider()
 
 SoSeparator* ViewProvider::getAnnotation(void)
 {
-	if(!pcAnnotation){
-		pcAnnotation = new SoSeparator();
-		pcAnnotation->ref();
-		pcRoot->addChild(pcAnnotation);
-	}
-	return pcAnnotation;
+    if (!pcAnnotation) {
+        pcAnnotation = new SoSeparator();
+        pcAnnotation->ref();
+        pcRoot->addChild(pcAnnotation);
+    }
+    return pcAnnotation;
 }
 
 void ViewProvider::update(const App::Property* prop)
