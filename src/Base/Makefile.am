@@ -131,6 +131,8 @@ libFreeCADBase_la_SOURCES=\
 		Stream.h \
 		Swap.cpp \
 		Swap.h \
+		swigpyrun_1.3.25.h \
+		swigpyrun_1.3.33.h \
 		TimeInfo.cpp \
 		TimeInfo.h \
 		Type.cpp \
