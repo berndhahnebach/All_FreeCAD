@@ -334,7 +334,7 @@ Document* Application::openDocument(const char * FileName)
 {
     FileInfo File(FileName);
 
-    if ( !File.exists() ) {
+    if (!File.exists()) {
         std::stringstream str;
         str << "File '" << FileName << "' does not exist!";
         throw Base::Exception(str.str().c_str());
@@ -342,8 +342,10 @@ Document* Application::openDocument(const char * FileName)
 
     // Before creating a new document we check whether the document is already open
     std::string filepath = File.filePath();
-    for ( std::map<std::string,Document*>::iterator it = DocMap.begin(); it != DocMap.end(); ++it ) {
-        if ( filepath == it->second->FileName.getValue() ) {
+    for (std::map<std::string,Document*>::iterator it = DocMap.begin(); it != DocMap.end(); ++it) {
+        // get unique path separators
+        std::string fi = FileInfo(it->second->FileName.getValue()).filePath();
+        if (filepath == fi) {
             std::stringstream str;
             str << "The project '" << FileName << "' is already open!";
             throw Base::Exception(str.str().c_str());
@@ -745,11 +747,11 @@ void Application::initConfig(int argc, char ** argv)
     mConfig["Debug"] = "0";
 #   endif
 
-    // Parse the options which have impact to the init process
-    ParseOptions(argc,argv);
-
     // init python
     mConfig["PythonSearchPath"] = Interpreter().init(argc,argv);
+
+    // Parse the options which have impact to the init process
+    ParseOptions(argc,argv);
 
     // Init console ===========================================================
     _pConsoleObserverStd = new ConsoleObserverStd();
@@ -1037,8 +1039,8 @@ void Application::ParseOptions(int ac, char ** av)
     ("help,h", "print help message")
     ("console,c", "start in console mode")
     ("response-file", value<string>(),"can be specified with '@name', too")
-
     ;
+
     // Declare a group of options that will be
     // allowed both on command line and in
     // config file
@@ -1139,7 +1141,6 @@ void Application::ParseOptions(int ac, char ** av)
                options(cmdline_options).positional(p).extra_parser(customSyntax).run(), vm);
     }
 
-
     if (vm.count("version")) {
         cout << "FreeCAD\n";
         exit( 0);
@@ -1147,24 +1148,21 @@ void Application::ParseOptions(int ac, char ** av)
 
     if (vm.count("console")) {
         mConfig["RunMode"] = "Cmd";
-
     }
 
     if (vm.count("module-path")) {
         vector<string> Mods = vm["module-path"].as< vector<string> >();
         string temp;
-        for ( vector<string>::const_iterator It= Mods.begin();It != Mods.end();++It)
+        for (vector<string>::const_iterator It= Mods.begin();It != Mods.end();++It)
             temp += *It + ";";
         temp.erase(temp.end()-1);
-
         mConfig["AdditionalModulePaths"] = temp;
     }
 
     if (vm.count("python-path")) {
         vector<string> Paths = vm["python-path"].as< vector<string> >();
-        string temp;
-        for ( vector<string>::const_iterator It= Paths.begin();It != Paths.end();++It)
-            Base::Interpreter().addPythonPaths( It->c_str());
+        for (vector<string>::const_iterator It= Paths.begin();It != Paths.end();++It)
+            Base::Interpreter().addPythonPath(It->c_str());
     }
 
     if (vm.count("input-file")) {

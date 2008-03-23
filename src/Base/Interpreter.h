@@ -130,8 +130,8 @@ public:
     /* Loads a module
      */
     bool loadModule(const char* psModName);
-    /// Adds addtional pyhton paths
-    void addPythonPaths(const char* Path);
+    /// Add an addtional pyhton path
+    void addPythonPath(const char* Path);
     //@}
 
     /** @name Cleanup
