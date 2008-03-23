@@ -247,10 +247,14 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     return true;
 }
 
-void InterpreterSingleton::addPythonPaths(const char* /*Path*/)
+void InterpreterSingleton::addPythonPath(const char* Path)
 {
-    // not implemented so far
-    assert(0);
+    PyGILStateLocker locker;
+    PyObject *list = PySys_GetObject("path");
+    PyObject *path = PyString_FromString(Path);
+    PyList_Append(list, path);
+    Py_DECREF(path);
+    PySys_SetObject("path", list);
 }
 
 int InterpreterSingleton::cleanup(void (*func)(void))

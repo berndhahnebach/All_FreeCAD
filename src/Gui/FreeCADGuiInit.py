@@ -131,15 +131,16 @@ def InitApplications():
 		print "No modules found in " + ModDir
 		return
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
+	# (additional module paths are already cached)
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
 	Log('Init:   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
-		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
+		if ((Dir != 'CVS') & (Dir != '__init__.py')):
 			Log('Init:      Initializing ' + Dir + '... ')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
-			if ( os.path.exists(InstallFile) ):
+			if (os.path.exists(InstallFile)):
 				try:
 					execfile(InstallFile)
 				except Exception, inst:
@@ -148,7 +149,7 @@ def InitApplications():
 					Log('done\n')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
- 
+
 
 Log ('Init: Running FreeCADGuiInit.py start script...\n')
 
