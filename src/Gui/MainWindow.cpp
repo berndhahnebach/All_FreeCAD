@@ -870,13 +870,37 @@ void MainWindow::customEvent( QEvent* e )
 // ----------------------------------------------------------
 
 StatusBarObserver::StatusBarObserver()
+  : WindowParameter("OutputWindow")
 {
+    msg = "#000000"; // black
+    wrn = "#ffaa00"; // orange
+    err = "#ff0000"; // red
     Base::Console().AttachObserver(this);
+    getWindowParameter()->Attach(this);
+    getWindowParameter()->NotifyAll();
 }
 
 StatusBarObserver::~StatusBarObserver()
 {
+    getWindowParameter()->Detach(this);
     Base::Console().DetachObserver(this);
+}
+
+void StatusBarObserver::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
+{
+    ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    if (strcmp(sReason, "colorText") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        this->msg = QColor((col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff).name();
+    }
+    else if (strcmp(sReason, "colorWarning") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        this->wrn = QColor((col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff).name();
+    }
+    else if (strcmp(sReason, "colorError") == 0) {
+        unsigned long col = rclGrp.GetUnsigned( sReason );
+        this->err = QColor((col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff).name();
+    }
 }
 
 /** Get called when a message is issued. 
@@ -885,8 +909,8 @@ StatusBarObserver::~StatusBarObserver()
 void StatusBarObserver::Message(const char * m)
 {
     // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-    QString msg = QString("<font color=\"#000000\">%1</font>").arg(QString::fromUtf8(m));
-    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Msg, msg);
+    QString txt = QString("<font color=\"%1\">%2</font>").arg(this->msg).arg(QString::fromUtf8(m));
+    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Msg, txt);
     QApplication::postEvent(getMainWindow(), ev);
 }
 
@@ -896,8 +920,8 @@ void StatusBarObserver::Message(const char * m)
 void StatusBarObserver::Warning(const char *m)
 {
     // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-    QString msg = QString("<font color=\"#ffaa00\">%1</font>").arg(QString::fromUtf8(m));
-    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Wrn, msg);
+    QString txt = QString("<font color=\"%1\">%2</font>").arg(this->wrn).arg(QString::fromUtf8(m));
+    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Wrn, txt);
     QApplication::postEvent(getMainWindow(), ev);
 }
 
@@ -907,8 +931,8 @@ void StatusBarObserver::Warning(const char *m)
 void StatusBarObserver::Error  (const char *m)
 {
     // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-    QString msg = QString("<font color=\"#ff0000\">%1</font>").arg(QString::fromUtf8(m));
-    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Err, msg);
+    QString txt = QString("<font color=\"%1\">%2</font>").arg(this->err).arg(QString::fromUtf8(m));
+    CustomMessageEvent* ev = new CustomMessageEvent(CustomMessageEvent::Err, txt);
     QApplication::postEvent(getMainWindow(), ev);
 }
 

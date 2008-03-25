@@ -24,6 +24,7 @@
 #ifndef GUI_MAINWINDOW_H
 #define GUI_MAINWINDOW_H
 
+#include "Window.h"
 #include <Base/Console.h>
 #include <string>
 #include <vector>
@@ -248,22 +249,28 @@ inline GuiExport MainWindow* getMainWindow()
  * @see ConsoleObserver
  * @author Werner Mayer
  */
-class StatusBarObserver: public Base::ConsoleObserver
+class StatusBarObserver: public WindowParameter, public Base::ConsoleObserver
 {
 public:
-  StatusBarObserver();
-  virtual ~StatusBarObserver();
+    StatusBarObserver();
+    virtual ~StatusBarObserver();
 
-  /// get called when a Warning is issued
-  virtual void Warning(const char *m);
-  /// get called when a Message is issued
-  virtual void Message(const char * m);
-  /// get called when a Error is issued
-  virtual void Error  (const char *m);
-  /// get called when a Log Message is issued
-  virtual void Log    (const char *);
-  /// name of the observer
-  virtual const char *Name(void){return "StatusBar";}
+    /** Observes its parameter group. */
+    void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
+
+    /// get called when a Warning is issued
+    void Warning(const char *m);
+    /// get called when a Message is issued
+    void Message(const char * m);
+    /// get called when a Error is issued
+    void Error  (const char *m);
+    /// get called when a Log Message is issued
+    void Log    (const char *);
+    /// name of the observer
+    const char *Name(void){return "StatusBar";}
+
+private:
+    QString msg, wrn, err;
 };
 
 } // namespace Gui
