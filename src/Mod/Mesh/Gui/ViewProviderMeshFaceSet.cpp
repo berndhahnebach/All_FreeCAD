@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <algorithm>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/nodes/SoBaseColor.h>
@@ -339,7 +340,8 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
 {
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon();
+    SbBool clip_inner;
+    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
     if (clPoly.size() < 3)
         return;
     if (clPoly.front() != clPoly.back())
@@ -350,7 +352,7 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
         ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(*it);
         if (that->m_bEdit) {
             that->unsetEdit();
-            that->cutMesh(clPoly, *view);
+            that->cutMesh(clPoly, *view, clip_inner);
         }
     }
 
@@ -359,7 +361,19 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
     view->render();
 }
 
-void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
+namespace MeshGui {
+template <class T>
+struct iotaGen {
+public:
+    T operator()() { return n++; }
+    iotaGen(T v) : n(v) {}
+
+private:
+    T n;
+};
+}
+
+void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner)
 {
     // get the normal of the front clipping plane
     Base::Vector3f cPoint, cNormal;
@@ -381,6 +395,16 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
     MeshCore::MeshFacetGrid cGrid(meshProp.getValue().getKernel());
     MeshCore::MeshAlgorithm cAlg(meshProp.getValue().getKernel());
     cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
+    if (!inner) {
+        // get the indices that are completely outside
+        std::vector<unsigned long> complete(meshProp.getValue().countFacets());
+        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::sort(indices.begin(), indices.end());
+        std::vector<unsigned long> complementary;
+        std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
+        std::set_difference(complete.begin(), complete.end(), indices.begin(), indices.end(), biit);
+        indices = complementary;
+    }
 
     //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
     Gui::Application::Instance->activeDocument()->openCommand("Cut");

@@ -71,6 +71,7 @@ public:
   void grabMouseModel(Gui::View3DInventorViewer*);
   void releaseMouseModel(void);
   const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
+  SbBool isInner() const { return m_bInner; }
 
   virtual void redraw() = 0;
 
@@ -92,6 +93,7 @@ protected:
   QCursor m_cPrevCursor;
   int  m_iXold, m_iYold;
   int  m_iXnew, m_iYnew;
+  SbBool m_bInner;
 
 private:
   std::vector<SbVec2f> _clPoly;
@@ -137,11 +139,29 @@ protected:
 
   /// draw the polygon
   virtual void draw ();
+  virtual int popupMenu();
 
 protected:
   std::vector<QPoint> _cNodeVector;
   int  m_iRadius, m_iNodes;
   bool m_bWorking;
+};
+
+// -----------------------------------------------------------------------------------
+
+/**
+ * The poly clip mouse model class
+ * Create a polygon
+ * \author Werner Mayer
+ */
+class GuiExport PolyClipMouseModel : public PolyPickerMouseModel
+{
+public:
+    PolyClipMouseModel();
+    virtual ~PolyClipMouseModel();
+
+protected:
+    virtual int popupMenu();
 };
 
 // -----------------------------------------------------------------------------------
