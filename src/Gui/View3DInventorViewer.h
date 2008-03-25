@@ -103,11 +103,12 @@ public:
     Lasso       = 0,  /**< Select objects using a lasso. */
     Rectangle   = 1,  /**< Select objects using a rectangle. */
     BoxZoom     = 2,  /**< Perform a box zoom. */
+    Clip        = 3,  /**< Clip objects using a lasso. */
   };
   void startPicking( ePickMode = Lasso );
   void stopPicking();
   bool isPicking() const;
-  const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
+  const std::vector<SbVec2f>& getPickedPolygon(SbBool* clip_inner=0) const;
   std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
 
   void setEditing(SbBool edit);
@@ -248,6 +249,7 @@ private:
   SoEventCallback* pEventCallback;
   AbstractMouseModel* pcMouseModel;
   std::vector<SbVec2f> pcPolygon;
+  SbBool clipInner;
 
   // Seek functionality
   SoTimerSensor * seeksensor;

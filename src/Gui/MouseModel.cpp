@@ -45,6 +45,7 @@ using namespace Gui;
 
 AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)
 {
+  m_bInner     = true;
 }
 
 void AbstractMouseModel::grabMouseModel( Gui::View3DInventorViewer* viewer )
@@ -330,6 +331,23 @@ PolyPickerMouseModel::~PolyPickerMouseModel()
 {
 }
 
+int PolyPickerMouseModel::popupMenu()
+{
+    QMenu menu;
+    QAction* fi = menu.addAction("Finish");
+    menu.addAction("Clear");
+    QAction* ca = menu.addAction("Cancel");
+    if (getPolygon().size() < 3)
+        fi->setEnabled(false);
+    QAction* id = menu.exec(QCursor::pos());
+    if (id == fi)
+        return Finish;
+    else if (id == ca)
+        return Cancel;
+    else
+        return Restart;
+}
+
 int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
 {
   const int button = e->getButton();
@@ -369,34 +387,18 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
         QCursor cur = _pcView3D->getWidget()->cursor();
         _pcView3D->getWidget()->setCursor(m_cPrevCursor);
 //        _pcView3D->getGLWidget()->releaseMouse();
-      
-        QMenu menu;
-        QAction* fi = menu.addAction("Finish");
-        menu.addAction("Clear");
-        QAction* ca = menu.addAction("Cancel");
-        if ( getPolygon().size() < 3 )
-            fi->setEnabled(false);
-        QAction* id = menu.exec(QCursor::pos());
-        
-//        _pcView3D->getGLWidget()->grabMouse();
-    
-        if ( id == fi )
-        {
+
+        int id = popupMenu();
+        if (id == Finish || id == Cancel) {
           releaseMouseModel();
-          return Finish;
         }
-        else if ( id == ca )
-        {
-          releaseMouseModel();
-          return Cancel;
-        }
-        else
+        else if (id == Restart)
         {
           m_bWorking = false;
           m_iNodes = 0;
           _pcView3D->getWidget()->setCursor(cur);
-          return Restart;
         }
+        return id;
       } break;
     default:
       {
@@ -445,6 +447,41 @@ int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const
 int PolyPickerMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
 {
   return Continue;
+}
+
+// -----------------------------------------------------------------------------------
+
+PolyClipMouseModel::PolyClipMouseModel() 
+{
+}
+
+PolyClipMouseModel::~PolyClipMouseModel()
+{
+}
+
+int PolyClipMouseModel::popupMenu()
+{
+    QMenu menu;
+    QAction* ci = menu.addAction("Inner");
+    QAction* co = menu.addAction("Outer");
+    QAction* ca = menu.addAction("Cancel");
+    if (getPolygon().size() < 3) {
+        ci->setEnabled(false);
+        co->setEnabled(false);
+    }
+    QAction* id = menu.exec(QCursor::pos());
+    if (id == ci) {
+        m_bInner = true;
+        return Finish;
+    }
+    else if (id == co) {
+        m_bInner = false;
+        return Finish;
+    }
+    else if (id == ca)
+        return Cancel;
+    else
+        return Restart;
 }
 
 // -----------------------------------------------------------------------------------

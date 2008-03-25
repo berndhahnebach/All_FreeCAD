@@ -92,8 +92,8 @@ protected:
     /// get called by the container whenever a proptery has been changed
     void onChanged(const App::Property* prop);
     void showOpenEdges( bool );
-    void setOpenEdgeColorFrom( const App::Color& col );
-    virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
+    void setOpenEdgeColorFrom(const App::Color& col);
+    virtual void cutMesh(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner);
 
     SoTransform      * pcComplexData;
     SoFCMeshVertex   * pcVertexNode;

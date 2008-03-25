@@ -549,6 +549,9 @@ void View3DInventorViewer::startPicking(View3DInventorViewer::ePickMode mode)
   case BoxZoom:
     pcMouseModel = new BoxZoomMouseModel();
     break;
+  case Clip:
+    pcMouseModel = new PolyClipMouseModel();
+    break;
   default:
     break;
   }
@@ -567,6 +570,13 @@ void View3DInventorViewer::stopPicking()
 bool View3DInventorViewer::isPicking() const
 {
     return (pcMouseModel ? true : false);
+}
+
+const std::vector<SbVec2f>& View3DInventorViewer::getPickedPolygon(SbBool* clip_inner) const
+{
+    if (clip_inner)
+        *clip_inner = this->clipInner;
+    return pcPolygon;
 }
 
 void View3DInventorViewer::tessCB(void * v0, void * v1, void * v2, void * cbdata)
@@ -867,6 +877,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       return TRUE;
     } else if (hd==AbstractMouseModel::Finish) {
       pcPolygon = pcMouseModel->getPolygon();
+      clipInner = pcMouseModel->isInner();
       delete pcMouseModel; pcMouseModel = 0;
     } else if (hd==AbstractMouseModel::Cancel) {
       setEditing(false);
@@ -1378,6 +1389,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
         processed = true;
       } else if (hd==AbstractMouseModel::Finish) {
         pcPolygon = pcMouseModel->getPolygon();
+        clipInner = pcMouseModel->isInner();
         delete pcMouseModel; pcMouseModel = 0;
       } else if (hd==AbstractMouseModel::Cancel) {
         pcPolygon.clear();

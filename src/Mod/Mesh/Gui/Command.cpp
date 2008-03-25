@@ -669,7 +669,7 @@ void CmdMeshPolyCut::activated(int iMsg)
             if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
                 Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
                 viewer->setEditing(true);
-                viewer->startPicking(Gui::View3DInventorViewer::Lasso);
+                viewer->startPicking(Gui::View3DInventorViewer::Clip);
                 viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::clipMeshCallback);
             }
             else {
