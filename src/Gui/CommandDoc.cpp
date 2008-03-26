@@ -542,7 +542,7 @@ bool StdCmdPaste::isActive(void)
 // Std_SelectAll
 //===========================================================================
 
-DEF_STD_CMD(StdCmdSelectAll);
+DEF_STD_CMD_A(StdCmdSelectAll);
 
 StdCmdSelectAll::StdCmdSelectAll()
   : Command("Std_SelectAll")
@@ -557,17 +557,18 @@ StdCmdSelectAll::StdCmdSelectAll()
 
 void StdCmdSelectAll::activated(int iMsg)
 {
-    // go through all documents
     SelectionSingleton& rSel = Selection();
-    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
-        std::vector<App::DocumentObject*> sel = (*it)->getObjectsOfType(App::DocumentObject::
-            getClassTypeId());
-            for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
-                if (!rSel.isSelected((*it)->getName(), (*ft)->getNameInDocument()))
-                    rSel.addSelection((*it)->getName(), (*ft)->getNameInDocument());
-            }
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    std::vector<App::DocumentObject*> objs = doc->getObjectsOfType(App::DocumentObject::getClassTypeId());
+    for(std::vector<App::DocumentObject*>::const_iterator it=objs.begin();it!=objs.end();++it) {
+        if (!rSel.isSelected(doc->getName(), (*it)->getNameInDocument()))
+            rSel.addSelection(doc->getName(), (*it)->getNameInDocument());
     }
+}
+
+bool StdCmdSelectAll::isActive(void)
+{
+    return App::GetApplication().getActiveDocument() != 0;
 }
 
 //===========================================================================
