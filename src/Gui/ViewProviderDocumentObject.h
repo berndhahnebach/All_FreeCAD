@@ -43,46 +43,49 @@ namespace Gui {
 
 class GuiExport ViewProviderDocumentObject : public ViewProvider
 {
-  PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
+    PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
 
 public:
-  /// constructor.
-  ViewProviderDocumentObject();
+    /// constructor.
+    ViewProviderDocumentObject();
 
-  /// destructor.
-  virtual ~ViewProviderDocumentObject();
+    /// destructor.
+    virtual ~ViewProviderDocumentObject();
 
-  // Display properties
-  App::PropertyEnumeration DisplayMode;
-  App::PropertyBool Visibility;
+    // Display properties
+    App::PropertyEnumeration DisplayMode;
+    App::PropertyBool Visibility;
 
-  virtual void attach(App::DocumentObject *pcObject);
-  /// get the default display mode
-  virtual const char* getDefaultDisplayMode() const;
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Sets the active mode, i.e. the first item of the 'Display' property.
-  void setActiveMode();
+    virtual void attach(App::DocumentObject *pcObject);
+    /// get the default display mode
+    virtual const char* getDefaultDisplayMode() const;
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
+    /// Sets the active mode, i.e. the first item of the 'Display' property.
+    void setActiveMode();
 
-  virtual void updateData(const App::Property*){};
-  App::DocumentObject *getObject(void) const {return pcObject;}
-
-protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
-  /** Searches in all view providers that are attached to an object that is part of the same document as the object this
-   * view provider is attached to for an front root of \a type.
-   * Before calling this function this view provider has to be attached to an object.
-   * The method returns after the first front root node matches. If no front root node matches, 0 is returned.
-   */
-  SoSeparator* findFrontRootOfType(const SoType& type) const;
+    virtual void updateData(const App::Property*){};
+    App::DocumentObject *getObject(void) const {return pcObject;}
+    PyObject* getPyObject();
 
 protected:
-  App::DocumentObject *pcObject;
+    /// get called by the container whenever a property has been changed
+    virtual void onChanged(const App::Property* prop);
+    /** Searches in all view providers that are attached to an object that
+     * is part of the same document as the object this view provider is
+     * attached to for an front root of \a type.
+     * Before calling this function this view provider has to be attached
+     * to an object. The method returns after the first front root node 
+     * matches. If no front root node matches, 0 is returned.
+     */
+    SoSeparator* findFrontRootOfType(const SoType& type) const;
+
+protected:
+    App::DocumentObject *pcObject;
 
 private:
-  std::vector<const char*> aDisplayEnumsArray;
-  std::vector<std::string> aDisplayModesArray;
+    std::vector<const char*> aDisplayEnumsArray;
+    std::vector<std::string> aDisplayModesArray;
 };
 
 
