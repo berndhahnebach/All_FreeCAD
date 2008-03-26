@@ -380,7 +380,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* edit = new MenuItem( menuBar );
     edit->setCommand(QT_TR_NOOP("&Edit"));
     *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" 
-          << "Separator" << "Std_Refresh" << "Std_Delete"
+          << "Separator" << "Std_Refresh" << "Std_SelectAll" << "Std_Delete"
           << "Separator" << "Std_DlgPreferences";
 
     // Standard views

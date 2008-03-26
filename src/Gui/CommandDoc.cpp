@@ -539,6 +539,38 @@ bool StdCmdPaste::isActive(void)
 }
 
 //===========================================================================
+// Std_SelectAll
+//===========================================================================
+
+DEF_STD_CMD(StdCmdSelectAll);
+
+StdCmdSelectAll::StdCmdSelectAll()
+  : Command("Std_SelectAll")
+{
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("Select &All");
+    sToolTipText  = QT_TR_NOOP("Select all");
+    sWhatsThis    = QT_TR_NOOP("Select all");
+    sStatusTip    = QT_TR_NOOP("Select all");
+    iAccel        = Qt::CTRL+Qt::Key_A;
+}
+
+void StdCmdSelectAll::activated(int iMsg)
+{
+    // go through all documents
+    SelectionSingleton& rSel = Selection();
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        std::vector<App::DocumentObject*> sel = (*it)->getObjectsOfType(App::DocumentObject::
+            getClassTypeId());
+            for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+                if (!rSel.isSelected((*it)->getName(), (*ft)->getNameInDocument()))
+                    rSel.addSelection((*it)->getName(), (*ft)->getNameInDocument());
+            }
+    }
+}
+
+//===========================================================================
 // Std_Delete
 //===========================================================================
 DEF_STD_CMD_A(StdCmdDelete);
@@ -618,25 +650,26 @@ namespace Gui {
 
 void CreateDocCommands(void)
 {
-  CommandManager &rcCmdMgr = Application::Instance->commandManager();
+    CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
-  rcCmdMgr.addCommand(new StdCmdNew());
-  rcCmdMgr.addCommand(new StdCmdOpen());
-  rcCmdMgr.addCommand(new StdCmdImport());
+    rcCmdMgr.addCommand(new StdCmdNew());
+    rcCmdMgr.addCommand(new StdCmdOpen());
+    rcCmdMgr.addCommand(new StdCmdImport());
 
-  rcCmdMgr.addCommand(new StdCmdSave());
-  rcCmdMgr.addCommand(new StdCmdSaveAs());
-  rcCmdMgr.addCommand(new StdCmdProjectInfo());
-  rcCmdMgr.addCommand(new StdCmdUndo());
-  rcCmdMgr.addCommand(new StdCmdRedo());
-  rcCmdMgr.addCommand(new StdCmdPrint());
-  rcCmdMgr.addCommand(new StdCmdPrintPdf());
-  rcCmdMgr.addCommand(new StdCmdQuit());
-  rcCmdMgr.addCommand(new StdCmdCut());
-  rcCmdMgr.addCommand(new StdCmdCopy());
-  rcCmdMgr.addCommand(new StdCmdPaste());
-  rcCmdMgr.addCommand(new StdCmdDelete());
-  rcCmdMgr.addCommand(new StdCmdRefresh());
+    rcCmdMgr.addCommand(new StdCmdSave());
+    rcCmdMgr.addCommand(new StdCmdSaveAs());
+    rcCmdMgr.addCommand(new StdCmdProjectInfo());
+    rcCmdMgr.addCommand(new StdCmdUndo());
+    rcCmdMgr.addCommand(new StdCmdRedo());
+    rcCmdMgr.addCommand(new StdCmdPrint());
+    rcCmdMgr.addCommand(new StdCmdPrintPdf());
+    rcCmdMgr.addCommand(new StdCmdQuit());
+    rcCmdMgr.addCommand(new StdCmdCut());
+    rcCmdMgr.addCommand(new StdCmdCopy());
+    rcCmdMgr.addCommand(new StdCmdPaste());
+    rcCmdMgr.addCommand(new StdCmdSelectAll());
+    rcCmdMgr.addCommand(new StdCmdDelete());
+    rcCmdMgr.addCommand(new StdCmdRefresh());
 }
 
 } // namespace Gui
