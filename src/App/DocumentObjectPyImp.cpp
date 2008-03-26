@@ -2,6 +2,7 @@
 #include "PreCompiled.h"
 
 #include "DocumentObject.h"
+#include "Document.h"
 
 // inclusion of the generated files (generated out of DocumentObjectPy.xml)
 #include "DocumentObjectPy.h"
@@ -48,6 +49,30 @@ Py::List DocumentObjectPy::getState(void) const
         list.append(Py::String("Up-to-date"));
     }
     return list;
+}
+
+Py::Object DocumentObjectPy::getViewObject(void) const
+{
+    try {
+        Py::Module module(PyImport_ImportModule("FreeCADGui"));
+        Py::Callable method(module.getAttr("getDocument"));
+        Py::Tuple arg(1);
+        arg.setItem(0, Py::String(getDocumentObjectPtr()->getDocument().getName()));
+        Py::Object doc = method.apply(arg);
+        method = doc.getAttr("getObject");
+        arg.setItem(0, Py::String(getDocumentObjectPtr()->getNameInDocument()));
+        Py::Object obj = method.apply(arg);
+        return obj;
+    }
+    catch (Py::Exception& e) {
+        if (PyErr_ExceptionMatches(PyExc_ImportError)) {
+            // the GUI is not up, hence None is returned
+            e.clear();
+            return Py::None();
+        }
+        // FreeCADGui is loaded, so there must be something else wrong
+        throw; // re-throw
+    }
 }
 
 PyObject *DocumentObjectPy::getCustomAttributes(const char* /*attr*/) const

@@ -54,33 +54,33 @@ PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
        
 ViewProvider::ViewProvider() 
- : _iActualMode(-1), _pyObject(0), pcAnnotation(0)
+ : _iActualMode(-1), pcAnnotation(0), pyViewObject(0)
 {
-  pcRoot = new SoSeparator();
-  pcRoot->ref();
-  pcModeSwitch = new SoSwitch();
-  pcModeSwitch->ref();
-  pcTransform  = new SoTransform();
-  pcTransform->ref();
-  pcRoot->addChild(pcTransform);
-  pcRoot->addChild(pcModeSwitch);
-  sPixmap = "px";
-  pcModeSwitch->whichChild = _iActualMode;
+    pcRoot = new SoSeparator();
+    pcRoot->ref();
+    pcModeSwitch = new SoSwitch();
+    pcModeSwitch->ref();
+    pcTransform  = new SoTransform();
+    pcTransform->ref();
+    pcRoot->addChild(pcTransform);
+    pcRoot->addChild(pcModeSwitch);
+    sPixmap = "px";
+    pcModeSwitch->whichChild = _iActualMode;
 }
 
 
 ViewProvider::~ViewProvider()
 {
-  if (_pyObject)
-  {
-    _pyObject->setInvalid();
-    _pyObject->DecRef();
-  }
+    if (pyViewObject) {
+        pyViewObject->setInvalid();
+        pyViewObject->DecRef();
+    }
 
-  pcRoot->unref();
-  pcTransform->unref();
-  pcModeSwitch->unref();
-  if(pcAnnotation) pcAnnotation->unref();
+    pcRoot->unref();
+    pcTransform->unref();
+    pcModeSwitch->unref();
+    if(pcAnnotation)
+        pcAnnotation->unref();
 }
 
 SoSeparator* ViewProvider::getAnnotation(void)
@@ -104,87 +104,88 @@ void ViewProvider::update(const App::Property* prop)
 
 QIcon ViewProvider::getIcon(void) const
 {
-  return Gui::BitmapFactory().pixmap(sPixmap);
+    return Gui::BitmapFactory().pixmap(sPixmap);
 }
 
 void ViewProvider::setTransformation(const Base::Matrix4D &rcMatrix)
 {
-  double dMtrx[16];
-  rcMatrix.getGLMatrix(dMtrx);
+    double dMtrx[16];
+    rcMatrix.getGLMatrix(dMtrx);
 
-  pcTransform->setMatrix(SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
-                                  dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
-                                  dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
-                                  dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]));
+    pcTransform->setMatrix(SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
+                                    dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
+                                    dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
+                                    dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]));
 }
 
 void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
 {
-  pcTransform->setMatrix(rcMatrix);
+    pcTransform->setMatrix(rcMatrix);
 }
 
 SbMatrix ViewProvider::convert(const Base::Matrix4D &rcMatrix) const
 {
-  double dMtrx[16];
-  rcMatrix.getGLMatrix(dMtrx);
-  return SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
-                  dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
-                  dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
-                  dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]);
+    double dMtrx[16];
+    rcMatrix.getGLMatrix(dMtrx);
+    return SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
+                    dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
+                    dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
+                    dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]);
 }
 
 void ViewProvider::addDisplayMaskMode( SoNode *node, const char* type )
 {
-  _sDisplayMaskModes[ type ] = pcModeSwitch->getNumChildren();
-  pcModeSwitch->addChild( node );
+    _sDisplayMaskModes[ type ] = pcModeSwitch->getNumChildren();
+    pcModeSwitch->addChild( node );
 }
 
 void ViewProvider::setDisplayMaskMode( const char* type )
 {
-  std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.find( type );
-  if ( it != _sDisplayMaskModes.end() )
-    pcModeSwitch->whichChild = it->second;
-  else
-    pcModeSwitch->whichChild = -1;
-  _iActualMode = pcModeSwitch->whichChild.getValue();
+    std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.find( type );
+    if ( it != _sDisplayMaskModes.end() )
+        pcModeSwitch->whichChild = it->second;
+    else
+        pcModeSwitch->whichChild = -1;
+    _iActualMode = pcModeSwitch->whichChild.getValue();
 }
 
 std::vector<std::string> ViewProvider::getDisplayMaskModes() const
 {
-  std::vector<std::string> types;
-  for ( std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.begin(); it != _sDisplayMaskModes.end(); ++it )
-    types.push_back( it->first );
-  return types;
+    std::vector<std::string> types;
+    for (std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.begin();
+         it != _sDisplayMaskModes.end(); ++it)
+        types.push_back( it->first );
+    return types;
 }
 
 /**
- * If you add new viewing modes in @ref getModes() then you need to reimplement also setMode() to handle these
- * new modes by setting the appropriate display mode.
+ * If you add new viewing modes in @ref getModes() then you need to reimplement
+ * also setMode() to handle these new modes by setting the appropriate display
+ * mode.
  */
 void ViewProvider::setDisplayMode(const char* ModeName)
 {
-  _sCurrentMode = ModeName;
+    _sCurrentMode = ModeName;
 }
 
 std::string ViewProvider::getActiveDisplayMode(void) const
 {
-  return _sCurrentMode;
+    return _sCurrentMode;
 }
 
 void ViewProvider::hide(void)
 {
-  pcModeSwitch->whichChild = -1;
+    pcModeSwitch->whichChild = -1;
 }
 
 void ViewProvider::show(void)
 {
-  pcModeSwitch->whichChild = _iActualMode;
+    pcModeSwitch->whichChild = _iActualMode;
 }
 
 bool ViewProvider::isShow(void) const
 {
-  return pcModeSwitch->whichChild.getValue() != -1;
-
+    return pcModeSwitch->whichChild.getValue() != -1;
 }
 
 std::string ViewProvider::toString() const
@@ -194,9 +195,8 @@ std::string ViewProvider::toString() const
 
 PyObject* ViewProvider::getPyObject()
 {
-  if (!_pyObject)
-    _pyObject = new ViewProviderPy(this);
-  _pyObject->IncRef();
-  return _pyObject;
+    if (!pyViewObject)
+        pyViewObject = new ViewProviderPy(this);
+    pyViewObject->IncRef();
+    return pyViewObject;
 }
-

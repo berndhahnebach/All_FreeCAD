@@ -142,7 +142,7 @@ protected:
     /// Returns a list of added display mask modes
     std::vector<std::string> getDisplayMaskModes() const;
     //@}
-	/// The root Separator of the ViewProvider
+    /// The root Separator of the ViewProvider
     SoSeparator *pcRoot;
     /// this is transformation for the provider
     SoTransform *pcTransform;
@@ -151,12 +151,12 @@ protected:
     SoSwitch    *pcModeSwitch;
     /// The root separator for annotations
     SoSeparator *pcAnnotation;
+    ViewProviderPy* pyViewObject;
 
 private:
     int _iActualMode;
     std::string _sCurrentMode;
     std::map<std::string, int> _sDisplayMaskModes;
-    ViewProviderPy* _pyObject;
 };
 
 } // namespace Gui
