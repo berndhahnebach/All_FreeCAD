@@ -130,7 +130,7 @@ template <typename PW>
 void PreferenceUiForm::loadPrefWidgets(void)
 {
     QList<PW> pw = form->findChildren<PW>();
-    for (QList<PW>::iterator it = pw.begin(); it != pw.end(); ++it)
+    for (typename QList<PW>::iterator it = pw.begin(); it != pw.end(); ++it)
         (*it)->onRestore();
 }
 
@@ -138,7 +138,7 @@ template <typename PW>
 void PreferenceUiForm::savePrefWidgets(void)
 {
     QList<PW> pw = form->findChildren<PW>();
-    for (QList<PW>::iterator it = pw.begin(); it != pw.end(); ++it)
+    for (typename QList<PW>::iterator it = pw.begin(); it != pw.end(); ++it)
         (*it)->onSave();
 }
 

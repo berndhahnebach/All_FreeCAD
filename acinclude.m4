@@ -210,7 +210,7 @@ case $host_os in
   *)  # UNIX/Linux based
     AC_PATH_XTRA
     QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg -lQtXml $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg $X_CFLAGS"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg -I$fc_qt4_include/QtUiTools $X_CFLAGS"
     ;;
 esac
 
