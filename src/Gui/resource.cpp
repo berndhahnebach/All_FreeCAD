@@ -74,13 +74,14 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     // ADD YOUR PREFERENCE WIDGETS HERE
     //
     //
-    new WidgetProducer<PrefSpinBox>;
-    new WidgetProducer<PrefLineEdit>;
-    new WidgetProducer<PrefComboBox>;
-    new WidgetProducer<PrefCheckBox>;
-    new WidgetProducer<PrefRadioButton>;
-    new WidgetProducer<PrefSlider>;
-    new WidgetProducer<CommandIconView>;
-    new WidgetProducer<AccelLineEdit>;
-    new WidgetProducer<ColorButton>;
+    new WidgetProducer<Gui::PrefSpinBox>;
+    new WidgetProducer<Gui::PrefDoubleSpinBox>;
+    new WidgetProducer<Gui::PrefLineEdit>;
+    new WidgetProducer<Gui::PrefComboBox>;
+    new WidgetProducer<Gui::PrefCheckBox>;
+    new WidgetProducer<Gui::PrefRadioButton>;
+    new WidgetProducer<Gui::PrefSlider>;
+    new WidgetProducer<Gui::CommandIconView>;
+    new WidgetProducer<Gui::AccelLineEdit>;
+    new WidgetProducer<Gui::ColorButton>;
 }

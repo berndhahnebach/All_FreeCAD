@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FC_WIDGET_FACTORY_H__
-#define __FC_WIDGET_FACTORY_H__
+#ifndef GUI_WIDGETFACTORY_H
+#define GUI_WIDGETFACTORY_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -34,6 +34,7 @@
 #include <Base/PyObjectBase.h>
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
+#include "PropertyPage.h"
 
 namespace Gui {
   namespace Dialog{
@@ -49,24 +50,46 @@ namespace Gui {
 class GuiExport WidgetFactoryInst : public Base::Factory
 {
 public:
-  static WidgetFactoryInst& instance();
-  static void destruct ();
+    static WidgetFactoryInst& instance();
+    static void destruct ();
 
-  QWidget* createWidget (const char* sName, QWidget* parent=0) const;
-  Gui::Dialog::PreferencePage* createPreferencePage (const char* sName, QWidget* parent=0) const;
-  QWidget* createPrefWidget(const char* sName, QWidget* parent, const char* sPref);
+    QWidget* createWidget (const char* sName, QWidget* parent=0) const;
+    Gui::Dialog::PreferencePage* createPreferencePage (const char* sName, QWidget* parent=0) const;
+    QWidget* createPrefWidget(const char* sName, QWidget* parent, const char* sPref);
 
 private:
-  static WidgetFactoryInst* _pcSingleton;
+    static WidgetFactoryInst* _pcSingleton;
 
-  WidgetFactoryInst(){}
-  ~WidgetFactoryInst(){}
+    WidgetFactoryInst(){}
+    ~WidgetFactoryInst(){}
 };
 
 inline GuiExport WidgetFactoryInst& WidgetFactory()
 {
-  return WidgetFactoryInst::instance();
+    return WidgetFactoryInst::instance();
 }
+
+// --------------------------------------------------------------------
+
+/**
+ * The UiLoader class provides the abitlity to use the widget factory 
+ * framework of FreeCAD within the framework provided by Qt. This class
+ * extends QUiLoader by the creation of FreeCAD specific widgets.
+ * @author Werner Mayer
+ */
+class UiLoader : public QUiLoader
+{
+public:
+    UiLoader(QObject* parent=0);
+    virtual ~UiLoader();
+
+    /**
+     * Creates a widget of the type \a className withe the parent \a parent.
+     * Fore more details see the documentation to QWidgetFactory.
+     */
+    QWidget* createWidget(const QString & className, QWidget * parent=0, 
+                          const QString& name =QString());
+};
 
 // --------------------------------------------------------------------
 
@@ -76,26 +99,26 @@ inline GuiExport WidgetFactoryInst& WidgetFactory()
  * \author Werner Mayer
  */
 template <class CLASS>
-class WidgetProducer: public Base::AbstractProducer
+class WidgetProducer : public Base::AbstractProducer
 {
 public:
-  /** 
-   * Register a special type of widget to the WidgetFactoryInst.
-   */
-  WidgetProducer ()
-  {
-    WidgetFactoryInst::instance().AddProducer(typeid(CLASS).name(), this);
-  }
+    /** 
+     * Register a special type of widget to the WidgetFactoryInst.
+     */
+    WidgetProducer ()
+    {
+        WidgetFactoryInst::instance().AddProducer(typeid(CLASS).name(), this);
+    }
 
-  virtual ~WidgetProducer (){}
+    virtual ~WidgetProducer (){}
 
-  /** 
-   * Creates an instance of the specified widget.
-   */
-  virtual void* Produce () const
-  {
-    return (void*)(new CLASS);
-  }
+    /** 
+     * Creates an instance of the specified widget.
+     */
+    virtual void* Produce () const
+    {
+        return (void*)(new CLASS);
+    }
 };
 
 // --------------------------------------------------------------------
@@ -106,27 +129,49 @@ public:
  * \author Werner Mayer
  */
 template <class CLASS>
-class PrefPageProducer: public Base::AbstractProducer
+class PrefPageProducer : public Base::AbstractProducer
 {
 public:
-  /** 
-   * Register a special type of preference page to the WidgetFactoryInst.
-   */
-  PrefPageProducer (const char* group)
-  {
-    WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
-    Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );
-  }
+    /** 
+     * Register a special type of preference page to the WidgetFactoryInst.
+     */
+    PrefPageProducer (const char* group)
+    {
+        WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
+        Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );
+    }
 
-  virtual ~PrefPageProducer (){}
+    virtual ~PrefPageProducer (){}
 
-  /** 
-   * Creates an instance of the specified widget.
-   */
-  virtual void* Produce () const
-  {
-    return (void*)(new CLASS);
-  }
+    /**
+     * Creates an instance of the specified widget.
+     */
+    virtual void* Produce () const
+    {
+        return (void*)(new CLASS);
+    }
+};
+
+/**
+ * The PrefPageUiProducer class provides the ability to create preference pages
+ * dynamically from an external UI file.
+ * @author Werner Mayer
+ */
+class GuiExport PrefPageUiProducer : public Base::AbstractProducer
+{
+public:
+    /** 
+     * Register a special type of preference page to the WidgetFactoryInst.
+     */
+    PrefPageUiProducer (const char* filename, const char* group);
+    virtual ~PrefPageUiProducer ();
+    /**
+     * Creates an instance of the specified widget.
+     */
+    virtual void* Produce () const;
+
+private:
+    QString fn;
 };
 
 // --------------------------------------------------------------------
@@ -137,27 +182,27 @@ public:
  * \author Werner Mayer
  */
 template <class CLASS>
-class CustomPageProducer: public Base::AbstractProducer
+class CustomPageProducer : public Base::AbstractProducer
 {
 public:
-  /** 
-   * Register a special type of customize page to the WidgetFactoryInst.
-   */
-  CustomPageProducer ()
-  {
-    WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
-    Gui::Dialog::DlgCustomizeImp::addPage( typeid(CLASS).name() );
-  }
+    /** 
+     * Register a special type of customize page to the WidgetFactoryInst.
+     */
+    CustomPageProducer ()
+    {
+        WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
+        Gui::Dialog::DlgCustomizeImp::addPage( typeid(CLASS).name() );
+    }
 
-  virtual ~CustomPageProducer (){}
+    virtual ~CustomPageProducer (){}
 
-  /** 
-   * Creates an instance of the specified widget.
-   */
-  virtual void* Produce () const
-  {
-    return (void*)(new CLASS);
-  }
+    /** 
+     * Creates an instance of the specified widget.
+     */
+    virtual void* Produce () const
+    {
+        return (void*)(new CLASS);
+    }
 };
 
 // --------------------------------------------------------------------
@@ -170,19 +215,19 @@ public:
 class WidgetFactorySupplier
 {
 private:
-  // Singleton
-  WidgetFactorySupplier();
-  static WidgetFactorySupplier *_pcSingleton;
+    // Singleton
+    WidgetFactorySupplier();
+    static WidgetFactorySupplier *_pcSingleton;
 
 public:
-  static WidgetFactorySupplier &instance();
-  static void destruct();
-  friend WidgetFactorySupplier &GetWidgetFactorySupplier();
+    static WidgetFactorySupplier &instance();
+    static void destruct();
+    friend WidgetFactorySupplier &GetWidgetFactorySupplier();
 };
 
 inline WidgetFactorySupplier &GetWidgetFactorySupplier()
 {
-  return WidgetFactorySupplier::instance();
+    return WidgetFactorySupplier::instance();
 }
 
 // ----------------------------------------------------
@@ -195,17 +240,17 @@ inline WidgetFactorySupplier &GetWidgetFactorySupplier()
  */
 class ContainerDialog : public QDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ContainerDialog( QWidget* templChild );
-  ~ContainerDialog();
+    ContainerDialog( QWidget* templChild );
+    ~ContainerDialog();
 
-  QPushButton* buttonOk; /**< The Ok button. */
-  QPushButton* buttonCancel; /**< The cancel button. */
+    QPushButton* buttonOk; /**< The Ok button. */
+    QPushButton* buttonCancel; /**< The cancel button. */
 
 private:
-  QGridLayout* MyDialogLayout;
+    QGridLayout* MyDialogLayout;
 };
 
 // ----------------------------------------------------
@@ -264,37 +309,37 @@ private:
  */
 class PyResource : public Base::PyObjectBase
 {
-  // always start with Py_Header
-  Py_Header;
+    // always start with Py_Header
+    Py_Header;
 
 protected:
-  ~PyResource();
+    ~PyResource();
 
 public:
-  PyResource(PyTypeObject *T = &Type);
+    PyResource(PyTypeObject *T = &Type);
 
-  void load(const char* name);
-  bool connect(const char* sender, const char* signal, PyObject* cb);
+    void load(const char* name);
+    bool connect(const char* sender, const char* signal, PyObject* cb);
 
-  /// for construction in Python
-  static PyObject *PyMake(PyObject *, PyObject *);
+    /// for construction in Python
+    static PyObject *PyMake(PyObject *, PyObject *);
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-  //---------------------------------------------------------------------
-  PyObject *_getattr(char *attr);             // __getattr__ function
-  // getter setter
-  int _setattr(char *attr, PyObject *value);  // __setattr__ function
+    //---------------------------------------------------------------------
+    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+    //---------------------------------------------------------------------
+    PyObject *_getattr(char *attr);             // __getattr__ function
+    // getter setter
+    int _setattr(char *attr, PyObject *value);  // __setattr__ function
 
-  // methods
-  PYFUNCDEF_D(PyResource, value);
-  PYFUNCDEF_D(PyResource, setValue);
-  PYFUNCDEF_D(PyResource, show);
-  PYFUNCDEF_D(PyResource, connect);
+    // methods
+    PYFUNCDEF_D(PyResource, value);
+    PYFUNCDEF_D(PyResource, setValue);
+    PYFUNCDEF_D(PyResource, show);
+    PYFUNCDEF_D(PyResource, connect);
 
 private:
-  std::vector<class SignalConnect*> mySingals;
-  QDialog* myDlg;
+    std::vector<class SignalConnect*> mySingals;
+    QDialog* myDlg;
 };
 
 /**
@@ -305,46 +350,21 @@ private:
  */
 class SignalConnect : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  SignalConnect( Base::PyObjectBase* res, PyObject* cb, QObject* sender);
-  ~SignalConnect();
+    SignalConnect( Base::PyObjectBase* res, PyObject* cb, QObject* sender);
+    ~SignalConnect();
 
 public Q_SLOTS:
-  void onExecute();
+    void onExecute();
 
 private:
-  PyObject* myResource;
-  PyObject* myCallback;
-  QObject*  mySender;
-};
-
-/**
- * The QtWidgetFactory class provides the abitlity to use the widget factory 
- * framework of FreeCAD within the framework provided by Qt. This class extends
- * the QWidgetFactory by the creation of FreeCAD specific widgets.
- * \author Werner Mayer
- */
-class QtWidgetFactory : public QFormBuilder
-{
-public:
-  QtWidgetFactory() : QFormBuilder(){}
-  ~QtWidgetFactory(){}
-
-  /**
-   * Creates a widget of the type \a className withe the parent \a parent.
-   * Fore more details see the documentation to QWidgetFactory.
-   */
-  QWidget* createWidget( const QString & className, QWidget * parent, const char * name ) const
-  {
-    // TODO replace with an new mechanismus
-    //QString cname = QString("class %1").arg(className);
-    //return WidgetFactory().createWidget( cname.latin1(), parent );
-    return 0;
-  }
+    PyObject* myResource;
+    PyObject* myCallback;
+    QObject*  mySender;
 };
 
 } // namespace Gui
 
-#endif // __FC_WIDGET_FACTORY_H__
+#endif // GUI_WIDGETFACTORY_H

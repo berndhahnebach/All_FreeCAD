@@ -352,6 +352,7 @@ libFreeCADGui_la_LIBADD   =\
 		Language/libLanguage.la \
 		propertyeditor/libpropertyeditor.la \
 		-l@PYTHON_LIB@ \
+		-lQtUiTools \
 		-lxerces-c \
 		-lboost_filesystem \
 		-lboost_signals \
