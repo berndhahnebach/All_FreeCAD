@@ -77,6 +77,30 @@ public Q_SLOTS:
     virtual void saveSettings()=0;
 };
 
+/** Subclass that embeds a form from a UI file.
+ * \author Werner Mayer
+ */
+class GuiExport PreferenceUiForm : public PreferencePage
+{
+    Q_OBJECT
+
+public:
+    PreferenceUiForm(const QString& fn, QWidget* parent = 0);
+    virtual ~PreferenceUiForm();
+
+    void loadSettings();
+    void saveSettings();
+
+private:
+    template <typename PW>
+    void loadPrefWidgets();
+    template <typename PW>
+    void savePrefWidgets();
+
+private:
+    QWidget* form;
+};
+
 /** Base class for custom pages.
  * \author Werner Mayer
  */

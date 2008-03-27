@@ -39,7 +39,6 @@
 #include <QDockWidget>
 #include <qdrawutil.h>
 #include <qevent.h>
-#include <QtDesigner/QFormBuilder>
 #include <QFileDialog>
 #include <QFileIconProvider>
 #include <qfontdatabase.h>
@@ -112,6 +111,9 @@
 // QtSvg
 #include <QSvgRenderer>
 #include <QSvgWidget>
+// QtUiTools
+#include <QUiLoader>
+#include <QtDesigner/QFormBuilder>
 
 
 #endif

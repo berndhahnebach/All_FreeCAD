@@ -76,6 +76,10 @@ PyMethodDef Application::Methods[] = {
    "Update the main window and all its windows"},
   {"createDialog",            (PyCFunction) Application::sCreateDialog,     1,
    "createDialog(string) -- Open a UI file"},
+  {"addPreferencePage",       (PyCFunction) Application::sAddPreferencePage,1,
+   "addPreferencePage(string,string) -- Add a UI form to the\n"
+   "preferences dialog. The first argument specifies the file name"
+   "and the second specifies the group name"},
   {"addCommand",              (PyCFunction) Application::sAddCommand,       1,
    "addCommand(string, object) -> None\n\n"
    "Add a command object"},
@@ -276,6 +280,25 @@ PYFUNCIMP_S(Application,sCreateDialog)
   }
 
   return pPyResource;
+} 
+
+PYFUNCIMP_S(Application,sAddPreferencePage)
+{
+    char *fn, *grp;
+    if (!PyArg_ParseTuple(args, "ss", &fn,&grp))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
+
+    Base::FileInfo fi(fn);
+    if (!fi.exists()) {
+        PyErr_SetString(PyExc_RuntimeError, "UI file does not exist");
+        return 0;
+    }
+
+    // add to the preferences dialog
+    new PrefPageUiProducer(fn, grp);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
 PYFUNCIMP_S(Application,sActivateWorkbenchHandler)
