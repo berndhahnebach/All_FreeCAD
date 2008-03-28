@@ -81,7 +81,12 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     new WidgetProducer<Gui::PrefCheckBox>;
     new WidgetProducer<Gui::PrefRadioButton>;
     new WidgetProducer<Gui::PrefSlider>;
+    new WidgetProducer<Gui::PrefFileChooser>;
+    new WidgetProducer<Gui::PrefColorButton>;
     new WidgetProducer<Gui::CommandIconView>;
     new WidgetProducer<Gui::AccelLineEdit>;
     new WidgetProducer<Gui::ColorButton>;
+    new WidgetProducer<Gui::UrlLabel>;
+    new WidgetProducer<Gui::FileChooser>;
+    new WidgetProducer<Gui::UIntSpinBox>;
 }
