@@ -35,7 +35,7 @@ def cpall(dirFrom, dirTo):
     """
     global dcount, fcount
     for file in os.listdir(dirFrom):                      # for files/dirs here
-        print file
+        #print file
         pathFrom = os.path.join(dirFrom, file)
         pathTo   = os.path.join(dirTo,   file)            # extend both paths
         if not os.path.isdir(pathFrom):                   # copy simple files
