@@ -170,6 +170,10 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
 UiLoader::UiLoader(QObject* parent)
   : QUiLoader(parent)
 {
+    // do not use the plugins for additional widgets as we don't need them and
+    // the application may crash under Linux (tested on Ubuntu 7.04 & 7.10).
+    clearPluginPaths();
+    this->cw = availableWidgets();
 }
 
 UiLoader::~UiLoader()
@@ -179,12 +183,11 @@ UiLoader::~UiLoader()
 QWidget* UiLoader::createWidget(const QString & className, QWidget * parent,
                                 const QString& name)
 {
-    if (this->availableWidgets().contains(className))
+    if (this->cw.contains(className))
         return QUiLoader::createWidget(className, parent, name);
-    QString cname = QString("class %1").arg(className);
     QWidget* w = 0;
-    if (WidgetFactory().CanProduce((const char*)cname.toAscii()))
-        w = WidgetFactory().createWidget((const char*)cname.toAscii(), parent);
+    if (WidgetFactory().CanProduce((const char*)className.toAscii()))
+        w = WidgetFactory().createWidget((const char*)className.toAscii(), parent);
     if (w) w->setObjectName(name);
     return w;
 }

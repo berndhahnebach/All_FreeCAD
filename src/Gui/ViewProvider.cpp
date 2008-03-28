@@ -51,10 +51,8 @@ using namespace Gui;
 
 PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
-
-       
 ViewProvider::ViewProvider() 
- : _iActualMode(-1), pcAnnotation(0), pyViewObject(0)
+  : pcAnnotation(0), pyViewObject(0), _iActualMode(-1)
 {
     pcRoot = new SoSeparator();
     pcRoot->ref();
@@ -67,7 +65,6 @@ ViewProvider::ViewProvider()
     sPixmap = "px";
     pcModeSwitch->whichChild = _iActualMode;
 }
-
 
 ViewProvider::~ViewProvider()
 {

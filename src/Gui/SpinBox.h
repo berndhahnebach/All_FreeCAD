@@ -73,7 +73,7 @@ class GuiExport UIntSpinBox : public QSpinBox
     Q_OVERRIDE( uint value READ value WRITE setValue )
 
 public:
-    UIntSpinBox ( QWidget* parent );
+    UIntSpinBox ( QWidget* parent=0 );
     virtual ~UIntSpinBox();
 
     void setRange( uint minVal, uint maxVal );

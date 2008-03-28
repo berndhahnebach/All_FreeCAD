@@ -89,6 +89,8 @@ public:
      */
     QWidget* createWidget(const QString & className, QWidget * parent=0, 
                           const QString& name =QString());
+private:
+    QStringList cw;
 };
 
 // --------------------------------------------------------------------
@@ -107,7 +109,8 @@ public:
      */
     WidgetProducer ()
     {
-        WidgetFactoryInst::instance().AddProducer(typeid(CLASS).name(), this);
+        const char* cname = CLASS::staticMetaObject.className();
+        WidgetFactoryInst::instance().AddProducer(cname, this);
     }
 
     virtual ~WidgetProducer (){}
@@ -137,8 +140,9 @@ public:
      */
     PrefPageProducer (const char* group)
     {
-        WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
-        Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );
+        const char* cname = CLASS::staticMetaObject.className();
+        WidgetFactoryInst::instance().AddProducer(cname, this);
+        Gui::Dialog::DlgPreferencesImp::addPage(cname, group);
     }
 
     virtual ~PrefPageProducer (){}
@@ -190,8 +194,9 @@ public:
      */
     CustomPageProducer ()
     {
-        WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
-        Gui::Dialog::DlgCustomizeImp::addPage( typeid(CLASS).name() );
+        const char* cname = CLASS::staticMetaObject.className();
+        WidgetFactoryInst::instance().AddProducer(cname, this);
+        Gui::Dialog::DlgCustomizeImp::addPage(cname);
     }
 
     virtual ~CustomPageProducer (){}
