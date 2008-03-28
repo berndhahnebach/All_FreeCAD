@@ -121,6 +121,16 @@ def CheckOut():
 	sys.stdout.write('done\n')
 	
 def BuildAll():
+	import fcbt.FileTools
+	LibPack = Config.get('Libs','FreeCADLib')
+	
+	os.mkdir('./bin')
+	fcbt.FileTools.cpall(LibPack + '/bin','./bin')
+	os.mkdir('./include')
+	fcbt.FileTools.cpall(LibPack + '/include','./include')
+	os.mkdir('./lib')
+	fcbt.FileTools.cpall(LibPack + '/lib','./lib')
+	
 	CallProcess(["BuildAll.bat"],
 				 "6) Build all")
 
@@ -181,6 +191,7 @@ def HelpFile():
 				'-R', '*title=Talk*',
 				'-R', '*oldid=*',
 				'-R', '*printable=yes*',
+				'--domains=juergen-riegel.net',
 				'--append-output=doc/tmp/wget.log',
 				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
 				 "8) Download docu")
@@ -251,12 +262,12 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		CheckOut()
-		PackSourceZip()
-		PackSourceTar()
+		#CheckOut()
+		#PackSourceZip()
+		#PackSourceTar()
 		BuildAll()
-		HelpFile()
-		CompileHelp()
+		#HelpFile()
+		#CompileHelp()
 	except:
 		Log.close()
 		ErrLog.close()

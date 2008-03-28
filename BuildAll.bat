@@ -3,7 +3,7 @@ rem   Build script, uses vcbuild to completetly build FreeCAD
 
 rem  set the aprobiated Variables here or outside in the system
 if NOT DEFINED QMAKESPEC set QMAKESPEC=win32-msvc2005
-if NOT DEFINED QTDIR set QTDIR=C:\Libs\FreeCADLibs\FreeCADLibs5
+if NOT DEFINED QTDIR set QTDIR=C:\Libs\FreeCADLibs\FreeCADLibs6.0
 if NOT DEFINED FREECADLIB set FREECADLIB=C:\Libs\FreeCADLibs\FreeCADLibs5
 
 set PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem
@@ -19,30 +19,27 @@ rem Set Standard include paths
 set INCLUDE=%INCLUDE%;%FrameworkSDKDir%\include
 set INCLUDE=%INCLUDE%;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\boost-1_33_1
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\coin245
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\gts070_glib
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCascade62
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\python25
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\soqt141
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\Wm3_VC8
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\xerces260
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\zlib123
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\Qt
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\Qt3Support
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtAssistent
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtCore
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtDeigner
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtGui
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtNetwork
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtOpenGL
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtSql
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtSvg
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtTest
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtUITools
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtXml
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCV10
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\boost
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\coin
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCascade
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\python
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\soqt
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\xerces
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\zlib
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\Qt
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtAssistent
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtCore
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtDeigner
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtGui
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtNetwork
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtOpenGL
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtSql
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtSvg
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtTest
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtUITools
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt\QtXml
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\OpenCV
 set INCLUDE=%INCLUDE%;.\include\
 
 rem Set lib Pathes
