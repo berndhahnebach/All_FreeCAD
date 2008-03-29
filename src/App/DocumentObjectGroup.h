@@ -65,6 +65,11 @@ public:
      * Checks whether the object \a obj is part of this group.
      */
     bool hasObject(DocumentObject* obj) const;
+    /**
+     * Checks whether this group object is a child (or sub-child)
+     * of the given group object.
+     */
+    bool isChildOf(DocumentObjectGroup*) const;
     /** Returns a list of all objects this group does have.
      */
     std::vector<DocumentObject*> getObjects() const;

@@ -105,9 +105,24 @@ DocumentObject *DocumentObjectGroup::getObject(const char *Name) const
 bool DocumentObjectGroup::hasObject(DocumentObject* obj) const
 {
     const std::vector<DocumentObject*>& grp = Group.getValues();
-    for ( std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it ) {
+    for (std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
         if (*it == obj)
             return true;
+    }
+
+    return false;
+}
+
+bool DocumentObjectGroup::isChildOf(DocumentObjectGroup* group) const
+{
+    const std::vector<DocumentObject*>& grp = group->Group.getValues();
+    for (std::vector<DocumentObject*>::const_iterator it = grp.begin(); it != grp.end(); ++it) {
+        if (*it == this)
+            return true;
+        if ((*it)->getTypeId().isDerivedFrom(DocumentObjectGroup::getClassTypeId())) {
+            if (this->isChildOf(static_cast<DocumentObjectGroup*>(*it)))
+                return true;
+        }
     }
 
     return false;
@@ -145,8 +160,8 @@ int DocumentObjectGroup::countObjectsOfType(const Base::Type& typeId) const
 DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
 {
     const Document& doc = obj->getDocument();
-    std::vector<DocumentObject*> grps = doc.getObjectsOfType( DocumentObjectGroup::getClassTypeId() );
-    for ( std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it ) {
+    std::vector<DocumentObject*> grps = doc.getObjectsOfType(DocumentObjectGroup::getClassTypeId());
+    for (std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it) {
         DocumentObjectGroup* grp = (DocumentObjectGroup*)(*it);
         if (grp->hasObject(obj))
             return grp;

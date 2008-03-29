@@ -40,6 +40,9 @@ namespace Gui {
 class ViewProviderDocumentObject;
 class DocumentObjectItem;
 
+/** Tree view that allows drag & drop of document objects.
+ * @author Werner Mayer
+ */
 class TreeWidget : public QTreeWidget
 {
     Q_OBJECT
@@ -48,10 +51,25 @@ public:
     TreeWidget(QWidget* parent=0);
     ~TreeWidget();
 
+    static const int DocumentType;
     static const int ObjectType;
 
 protected:
+    void contextMenuEvent (QContextMenuEvent * e);
     void drawRow(QPainter *, const QStyleOptionViewItem &, const QModelIndex &) const;
+    bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data,
+                      Qt::DropAction action);
+    Qt::DropActions supportedDropActions () const;
+    QMimeData * mimeData (const QList<QTreeWidgetItem *> items) const;
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+
+protected Q_SLOTS:
+    void onCreateGroup();
+
+private:
+    QAction* createGroupAction;
+    QTreeWidgetItem* contextItem;
 };
 
 /** The link between the tree and a document.
@@ -65,6 +83,7 @@ public:
     DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent);
     ~DocumentItem();
 
+    Gui::Document* document() const;
     void setObjectHighlighted(const char*, bool);
     void setObjectSelected(const char*, bool);
     void clearSelection(void);
@@ -141,7 +160,6 @@ protected:
     void slotActiveDocument(Gui::Document&);
     void slotRelabelDocument(Gui::Document&);
 
-    void contextMenuEvent ( QContextMenuEvent * e );
     void changeEvent(QEvent *e);
 
 private:
