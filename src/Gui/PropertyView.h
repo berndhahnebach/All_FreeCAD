@@ -73,7 +73,8 @@ public:
   virtual ~PropertyView();
 
   /// Observer message from the Selection
-  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
+  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                        Gui::SelectionSingleton::MessageType Reason);
 
 
   bool onMsg(const char* pMsg);

@@ -883,32 +883,67 @@ CommandManager &Application::commandManager(void)
 
 void Application::runCommand(bool bForce, const char* sCmd,...)
 {
-  // temp buffer
+    // temp buffer
     size_t format_len = std::strlen(sCmd)+4024;
-  char* format = (char*) malloc(format_len);
-  va_list namelessVars;
-  va_start(namelessVars, sCmd);  // Get the "..." vars
-  vsnprintf(format, format_len, sCmd, namelessVars);
-  va_end(namelessVars);
+    char* format = (char*) malloc(format_len);
+    va_list namelessVars;
+    va_start(namelessVars, sCmd);  // Get the "..." vars
+    vsnprintf(format, format_len, sCmd, namelessVars);
+    va_end(namelessVars);
 
-  if (bForce)
-    d->_pcMacroMngr->addLine(MacroManager::Base,format);
-  else
-    d->_pcMacroMngr->addLine(MacroManager::Gui,format);
+    if (bForce)
+        d->_pcMacroMngr->addLine(MacroManager::Base,format);
+    else
+        d->_pcMacroMngr->addLine(MacroManager::Gui,format);
 
-#ifdef FC_LOGUSERACTION
-  Base::Console().Log("CmdC: %s\n",format);
-#endif
+    try { 
+        Base::Interpreter().runString(format);
+    }
+    catch (...) {
+        // free memory to avoid a leak if an exception occurred
+        free (format);
+        throw;
+    }
 
-  try { 
-    Base::Interpreter().runString(format);
-  } catch (...) {
-    // free memory to avoid a leak if an exception occurred
     free (format);
-    throw;
-  }
+}
 
-  free (format);
+bool Application::runPythonCode(const char* cmd, bool gui)
+{
+    if (gui)
+        d->_pcMacroMngr->addLine(MacroManager::Gui,cmd);
+    else
+        d->_pcMacroMngr->addLine(MacroManager::Base,cmd);
+
+    try {
+        Base::Interpreter().runString(cmd);
+        return true;
+    }
+    catch (Base::PyException &e) {
+        e.ReportException();
+        Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
+    }
+    catch (Base::AbortException&) {
+    }
+    catch (Base::Exception &e) {
+        e.ReportException();
+    }
+    catch (std::exception &e) {
+        std::string str;
+        str += "C++ exception thrown (";
+        str += e.what();
+        str += ")";
+        Base::Console().Error(str.c_str());
+    }
+    catch (const char* e) {
+        Base::Console().Error("%s\n", e);
+    }
+#ifndef FC_DEBUG
+    catch (...) {
+        Base::Console().Error("Unknown C++ exception in command thrown\n");
+    }
+#endif
+    return false;
 }
 
 //**************************************************************************

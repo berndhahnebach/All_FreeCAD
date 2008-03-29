@@ -100,7 +100,8 @@ PropertyView::~PropertyView()
 }
 
 
-void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
+void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                            Gui::SelectionSingleton::MessageType Reason)
 {
   //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
   //

@@ -50,7 +50,239 @@
 using namespace Gui;
 
 QPixmap* TreeDockWidget::documentPixmap = 0;
-const int TreeWidget::ObjectType = 1000;
+const int TreeWidget::DocumentType = 1000;
+const int TreeWidget::ObjectType = 1001;
+
+TreeWidget::TreeWidget(QWidget* parent)
+    : QTreeWidget(parent)
+{
+    this->setDragEnabled(true);
+    this->setAcceptDrops(true);
+    this->setDropIndicatorShown(false);
+
+    this->createGroupAction = new QAction(this);
+    this->createGroupAction->setText(tr("Create group..."));
+    this->createGroupAction->setStatusTip(tr("Create a group"));
+    connect(this->createGroupAction, SIGNAL(triggered()),
+            this, SLOT(onCreateGroup()));
+}
+
+TreeWidget::~TreeWidget()
+{
+}
+
+void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
+{
+    // ask workbenches and view provider, ...
+    MenuItem* view = new MenuItem;
+    Gui::Application::Instance->setupContextMenu("Tree", view);
+
+    QMenu contextMenu;
+    MenuManager::getInstance()->setupContextMenu(view, contextMenu);
+
+    // get the current item
+    this->contextItem = itemAt(e->pos());
+    if (this->contextItem && this->contextItem->type() == DocumentType) {
+        contextMenu.addAction(this->createGroupAction);
+    }
+    else if (this->contextItem && this->contextItem->type() == ObjectType) {
+        DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
+            (this->contextItem);
+        if (objitem->object()->getObject()->isDerivedFrom(App::DocumentObjectGroup
+            ::getClassTypeId())) {
+            QList<QAction*> acts = contextMenu.actions();
+            if (!acts.isEmpty()) {
+                QAction* first = acts.front();
+                QAction* sep = contextMenu.insertSeparator(first);
+                contextMenu.insertAction(sep, this->createGroupAction);
+            }
+            else
+                contextMenu.addAction(this->createGroupAction);
+        }
+    }
+    delete view;
+    if (contextMenu.actions().count() > 0)
+        contextMenu.exec(QCursor::pos());
+}
+
+void TreeWidget::onCreateGroup()
+{
+    bool ok;
+    QString name = QInputDialog::getText(this, tr("Create group"), tr("Name of the group:"),
+                                         QLineEdit::Normal, tr("Group"),&ok);
+    if (ok && !name.isEmpty()) {
+        if (this->contextItem->type() == DocumentType) {
+            DocumentItem* docitem = static_cast<DocumentItem*>(this->contextItem);
+            App::Document* doc = docitem->document()->getDocument();
+            QString cmd = QString("App.getDocument(\"%1\").addObject"
+                                  "(\"App::DocumentObjectGroup\",\"%2\")")
+                                 .arg(doc->getName()).arg(name);
+            Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
+            gui->openCommand("Create group");
+            Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+            gui->commitCommand();
+        }
+        else if (this->contextItem->type() == ObjectType) {
+            DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
+                (this->contextItem);
+            App::DocumentObject* obj = objitem->object()->getObject();
+            App::Document& doc = obj->getDocument();
+            QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\")"
+                                  ".newObject(\"App::DocumentObjectGroup\",\"%3\")")
+                                  .arg(doc.getName())
+                                  .arg(obj->getNameInDocument())
+                                  .arg(name);
+            Gui::Document* gui = Gui::Application::Instance->getDocument(&doc);
+            gui->openCommand("Create group");
+            Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+            gui->commitCommand();
+        }
+    }
+}
+
+bool TreeWidget::dropMimeData(QTreeWidgetItem *parent, int index,
+                              const QMimeData *data, Qt::DropAction action)
+{
+    return QTreeWidget::dropMimeData(parent, index, data, action);
+}
+
+Qt::DropActions TreeWidget::supportedDropActions () const
+{
+    return QTreeWidget::supportedDropActions();
+}
+
+QMimeData * TreeWidget::mimeData (const QList<QTreeWidgetItem *> items) const
+{
+    // all selected items must reference an object from the same document
+    App::Document* doc=0;
+    for (QList<QTreeWidgetItem *>::ConstIterator it = items.begin(); it != items.end(); ++it) {
+        if ((*it)->type() != TreeWidget::ObjectType)
+            return 0;
+        App::DocumentObject* obj = static_cast<DocumentObjectItem *>(*it)->object()->getObject();
+        if (!doc)
+            doc = &obj->getDocument();
+        else if (doc != &obj->getDocument())
+            return 0;
+    }
+    return QTreeWidget::mimeData(items);
+}
+
+void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTreeWidget::dragMoveEvent(event);
+    if (!event->isAccepted())
+        return;
+
+    QTreeWidgetItem* item = itemAt(event->pos());
+    if (!item) {
+        event->ignore();
+    }
+    else if (item->type() == TreeWidget::DocumentType) {
+        QList<QModelIndex> idxs = selectedIndexes();
+        App::Document* doc = static_cast<DocumentItem*>(item)->document()->getDocument();
+        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+            QTreeWidgetItem* item = itemFromIndex(*it);
+            if (item->type() != TreeWidget::ObjectType) {
+                event->ignore();
+                return;
+            }
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)->
+                object()->getObject();
+            if (doc != &obj->getDocument()) {
+                event->ignore();
+                return;
+            }
+        }
+    }
+    else if (item->type() == TreeWidget::ObjectType) {
+        App::DocumentObject* grp = static_cast<DocumentObjectItem*>(item)->
+            object()->getObject();
+        if (!grp->getTypeId().isDerivedFrom(App::DocumentObjectGroup::
+            getClassTypeId()))
+            event->ignore();
+        App::Document* doc = &grp->getDocument();
+        QList<QModelIndex> idxs = selectedIndexes();
+        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+            QTreeWidgetItem* item = itemFromIndex(*it);
+            if (item->type() != TreeWidget::ObjectType) {
+                event->ignore();
+                return;
+            }
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)->
+                object()->getObject();
+            if (doc != &obj->getDocument()) {
+                event->ignore();
+                return;
+            }
+            if (obj->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+                if (static_cast<App::DocumentObjectGroup*>(grp)->isChildOf(
+                    static_cast<App::DocumentObjectGroup*>(obj))) {
+                    event->ignore();
+                    return;
+                }
+            }
+        }
+    }
+    else {
+        event->ignore();
+    }
+}
+
+void TreeWidget::dropEvent(QDropEvent *event)
+{
+    return;
+    QTreeWidgetItem* targetitem = itemAt(event->pos());
+    if (targetitem->type() == TreeWidget::ObjectType) {
+        // add object to group
+        App::DocumentObject* grp = static_cast<DocumentObjectItem*>(targetitem)
+            ->object()->getObject();
+        if (!grp->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()))
+            return; // no group object
+        App::Document* doc = &grp->getDocument();
+        QList<QModelIndex> idxs = selectedIndexes();
+
+        // Open command
+        Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
+        gui->openCommand("Move object");
+        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+            // get document object
+            QTreeWidgetItem* item = itemFromIndex(*it);
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)
+                ->object()->getObject();
+
+            // build Python command for execution
+            QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").addObject("
+                                  "App.getDocument(\"%1\").getObject(\"%3\"))")
+                                  .arg(doc->getName())
+                                  .arg(grp->getNameInDocument())
+                                  .arg(obj->getNameInDocument());
+            Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+        }
+        gui->commitCommand();
+    }
+    else if (targetitem->type() == TreeWidget::DocumentType) {
+    }
+}
+
+void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options, const QModelIndex &index) const
+{
+    QTreeWidget::drawRow(painter, options, index);
+    // Set the text and highlighted text color of a hidden object to a dark
+    //QTreeWidgetItem * item = itemFromIndex(index);
+    //if (item->type() == ObjectType && !(static_cast<DocumentObjectItem*>(item)->previousStatus & 1)) {
+    //    QStyleOptionViewItem opt(options);
+    //    opt.state ^= QStyle::State_Enabled;
+    //    QColor c = opt.palette.color(QPalette::Inactive, QPalette::Dark);
+    //    opt.palette.setColor(QPalette::Inactive, QPalette::Text, c);
+    //    opt.palette.setColor(QPalette::Inactive, QPalette::HighlightedText, c);
+    //    QTreeWidget::drawRow(painter, opt, index);
+    //}
+    //else {
+    //    QTreeWidget::drawRow(painter, options, index);
+    //}
+}
+
+// ----------------------------------------------------------------------------
 
 TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
   : DockWindow(pcDocument,parent), fromOutside(false)
@@ -79,6 +311,7 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     // Add the first main label
     this->rootItem = new QTreeWidgetItem(this->treeWidget);
     this->rootItem->setText(0, tr("Application"));
+    this->rootItem->setFlags(Qt::ItemIsEnabled);
     this->treeWidget->expandItem(this->rootItem);
     this->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->treeWidget->setMouseTracking(true); // needed for itemEntered() to work
@@ -194,19 +427,6 @@ void TreeDockWidget::scrollItemToTop(Gui::Document* doc)
     }
 }
 
-void TreeDockWidget::contextMenuEvent ( QContextMenuEvent * e )
-{
-    // ask workbenches and view provider, ...
-    MenuItem* view = new MenuItem;
-    Gui::Application::Instance->setupContextMenu("Tree", view);
-
-    QMenu contextMenu;
-    MenuManager::getInstance()->setupContextMenu(view, contextMenu);
-    delete view;
-    if (contextMenu.actions().count() > 0)
-        contextMenu.exec(QCursor::pos());
-}
-
 void TreeDockWidget::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
@@ -258,37 +478,8 @@ void TreeDockWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui:
 
 // ----------------------------------------------------------------------------
 
-TreeWidget::TreeWidget(QWidget* parent)
-    : QTreeWidget(parent)
-{
-}
-
-TreeWidget::~TreeWidget()
-{
-}
-
-void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options, const QModelIndex &index) const
-{
-    QTreeWidget::drawRow(painter, options, index);
-    // Set the text and highlighted text color of a hidden object to a dark
-    //QTreeWidgetItem * item = itemFromIndex(index);
-    //if (item->type() == ObjectType && !(static_cast<DocumentObjectItem*>(item)->previousStatus & 1)) {
-    //    QStyleOptionViewItem opt(options);
-    //    opt.state ^= QStyle::State_Enabled;
-    //    QColor c = opt.palette.color(QPalette::Inactive, QPalette::Dark);
-    //    opt.palette.setColor(QPalette::Inactive, QPalette::Text, c);
-    //    opt.palette.setColor(QPalette::Inactive, QPalette::HighlightedText, c);
-    //    QTreeWidget::drawRow(painter, opt, index);
-    //}
-    //else {
-    //    QTreeWidget::drawRow(painter, options, index);
-    //}
-}
-
-// ----------------------------------------------------------------------------
-
 DocumentItem::DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent)
-    : QTreeWidgetItem(parent), pDocument(doc)
+    : QTreeWidgetItem(parent, TreeWidget::DocumentType), pDocument(doc)
 {
     // Setup connections
     doc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
@@ -296,6 +487,8 @@ DocumentItem::DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent)
     doc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
     doc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
     doc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
+
+    setFlags(Qt::ItemIsEnabled/*|Qt::ItemIsEditable*/);
 }
 
 DocumentItem::~DocumentItem()
@@ -420,6 +613,11 @@ void DocumentItem::slotActiveObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
+Gui::Document* DocumentItem::document() const
+{
+    return this->pDocument;
+}
+
 void DocumentItem::testStatus(void)
 {
     for (std::map<std::string,DocumentObjectItem*>::iterator pos = ObjectMap.begin();pos!=ObjectMap.end();++pos) {
@@ -540,11 +738,11 @@ void DocumentObjectItem::testStatus()
         // Note: By default the foreground, i.e. text color is invalid
         // to make use of the default color of the tree widget's palette.
         // If we temporarily set this color to dark and reset to an invalid
-        // color again we cannot do it with setTextColor() or setForeground(), 
-        // respectively, because for any reason the color would always switch 
-        // to black which will lead to unreadable text if the system background 
+        // color again we cannot do it with setTextColor() or setForeground(),
+        // respectively, because for any reason the color would always switch
+        // to black which will lead to unreadable text if the system background
         // hss already a dark color.
-        // However, it works if we set the appropriate role to an empty QVariant().  
+        // However, it works if we set the appropriate role to an empty QVariant().
 #if QT_VERSION >= 0x040200
         this->setData(0, Qt::ForegroundRole,QVariant());
 #else

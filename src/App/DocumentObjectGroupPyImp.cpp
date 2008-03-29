@@ -73,6 +73,13 @@ PyObject*  DocumentObjectGroupPy::addObject(PyObject *args)
         PyErr_SetString(PyExc_Exception, "Cannot add a group object to itself");
         return NULL;
     }
+    if (docObj->getDocumentObjectPtr()->getTypeId().isDerivedFrom(DocumentObjectGroup::getClassTypeId())) {
+        App::DocumentObjectGroup* docGrp = static_cast<DocumentObjectGroup*>(docObj->getDocumentObjectPtr());
+        if (this->getDocumentObjectGroupPtr()->isChildOf(docGrp)) {
+            PyErr_SetString(PyExc_Exception, "Cannot add a group object to a child group");
+            return NULL;
+        }
+    }
 
     getDocumentObjectGroupPtr()->addObject(docObj->getDocumentObjectPtr());
     Py_Return;

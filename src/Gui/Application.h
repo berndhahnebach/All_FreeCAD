@@ -137,7 +137,7 @@ public:
     bool isClosing(void);
 
     /** @name workbench handling */
-    //@{	
+    //@{
     /// Activate a named workbench
     bool activateWorkbench(const char* name);
     QPixmap workbenchIcon(const QString&) const;
@@ -155,6 +155,7 @@ public:
     Gui::CommandManager &commandManager(void);
     /// Run a Python command
     void runCommand(bool bForce, const char* sCmd,...);
+    bool runPythonCode(const char* cmd, bool gui=false);
     /// helper which create the commands
     void createStandardOperations();
     //@}
