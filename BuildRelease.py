@@ -83,7 +83,7 @@ def CallProcess(args,Msg,ret=True):
 		print "Process returns: ",SVN.returncode
 		raise
 
-
+# Step 2 & 3
 def CheckOut():
 	
 	CallProcess([Config.get('Tools','svn'), 
@@ -119,22 +119,9 @@ def CheckOut():
 	Version.close()
 	
 	sys.stdout.write('done\n')
-	
-def BuildAll():
-	import fcbt.FileTools
-	LibPack = Config.get('Libs','FreeCADLib')
-	
-	os.mkdir('./bin')
-	fcbt.FileTools.cpall(LibPack + '/bin','./bin')
-	os.mkdir('./include')
-	fcbt.FileTools.cpall(LibPack + '/include','./include')
-	os.mkdir('./lib')
-	fcbt.FileTools.cpall(LibPack + '/lib','./lib')
-	
-	CallProcess(["BuildAll.bat"],
-				 "6) Build all")
 
 
+#Step 4
 def PackSourceZip():
 
 	def addAll(dirFrom, ZipSrcFile):
@@ -154,7 +141,8 @@ def PackSourceZip():
 	SourceFile.close()
 	
 	sys.stdout.write("done \n")
-	
+
+# Step 5
 def PackSourceTar():
 
 	def addAll(dirFrom, ZipTarFile):
@@ -174,6 +162,26 @@ def PackSourceTar():
 	SourceFile.close()
 	
 	sys.stdout.write("done \n")
+
+
+# Step 6 & 7	
+def BuildAll():
+	import fcbt.FileTools
+	LibPack = Config.get('Libs','FreeCADLib')
+	
+	sys.stdout.write('6) Copy resources: ')
+	os.mkdir('./bin')
+	fcbt.FileTools.cpall(LibPack + '/bin','./bin')
+	os.mkdir('./include')
+	fcbt.FileTools.cpall(LibPack + '/include','./include')
+	os.mkdir('./lib')
+	fcbt.FileTools.cpall(LibPack + '/lib','./lib')
+	os.mkdir('./doc')
+	fcbt.FileTools.cpall(LibPack + '/doc','./doc')
+	sys.stdout.write('done\n')
+	
+	CallProcess(["BuildAll.bat"],
+				 "7) Build all")
 	
 def BuildInstaller():
 	print ""
@@ -262,12 +270,12 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		#CheckOut()
-		#PackSourceZip()
-		#PackSourceTar()
+		CheckOut()
+		PackSourceZip()
+		PackSourceTar()
 		BuildAll()
-		#HelpFile()
-		#CompileHelp()
+		HelpFile()
+		CompileHelp()
 	except:
 		Log.close()
 		ErrLog.close()
