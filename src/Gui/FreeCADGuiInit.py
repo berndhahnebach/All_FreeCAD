@@ -148,7 +148,7 @@ def InitApplications():
 				else:
 					Log('done\n')
 			else:
-				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
+				Log("InitGui.py not found! "+Dir+" not initialized!\n")
 
 
 Log ('Init: Running FreeCADGuiInit.py start script...\n')

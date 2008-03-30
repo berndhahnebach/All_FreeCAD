@@ -77,7 +77,7 @@ def InitApplications():
 				else:
 					Log('done\n')
 			else:
-				Wrn("Init.py not found! "+Dir+" not initialized!\n")
+				Log("Init.py not found! "+Dir+" not initialized!\n")
 	os.environ["PATH"] += PathExtension
 	#Log("PATH after addition: " + os.environ["PATH"] + "\n")
 	#Log("path extension: " + PathExtension + "\n")
