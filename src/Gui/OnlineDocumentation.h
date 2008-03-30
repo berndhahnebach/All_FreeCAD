@@ -33,6 +33,9 @@
 
 namespace Gui {
 
+/// opens an URL in the system Browser
+bool OpenURLInBrowser(const char * URL);
+
 /**
  * Returns the content of an HTML page which gets sent to 
  * the client to be displayed.

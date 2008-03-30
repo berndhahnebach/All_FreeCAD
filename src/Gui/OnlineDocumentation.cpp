@@ -441,6 +441,40 @@ void StdCmdPythonHelp::activated(int iMsg)
   }
 }
 
+
+bool Gui::OpenURLInBrowser(const char * URL)
+{
+  // The webbrowser Python module allows to start the system browser in an OS-independent way
+  bool failed = true;
+  PyObject* module = PyImport_ImportModule("webbrowser");
+  if ( module ) {
+    // get the methods dictionary and search for the 'open' method
+    PyObject* dict = PyModule_GetDict(module);
+    PyObject* func = PyDict_GetItemString(dict, "open");
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(s)", URL);
+      PyObject* result = PyEval_CallObject(func,args);
+      if (result)
+        failed = false;
+        
+      // decrement the args and module reference
+      Py_XDECREF(result);
+      Py_DECREF(args);
+      Py_DECREF(module);
+    }
+  } 
+
+  // print error message on failure
+  if (failed) {
+    QMessageBox::critical(Gui::getMainWindow(), QObject::tr("No Browser"), 
+      QObject::tr("Unable to open your system browser."));
+	return false;
+  }
+  return true;
+}
+
+
+
 StdCmdOnlineHelp::StdCmdOnlineHelp()
   :Command("Std_OnlineHelp")
 {
@@ -451,7 +485,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
   sStatusTip    = QT_TR_NOOP("Help");
   sPixmap       = "help";
 }
-
+/*
 void StdCmdOnlineHelp::activated(int iMsg)
 {
   // The webbrowser Python module allows to start the system browser in an OS-independent way
@@ -481,6 +515,12 @@ void StdCmdOnlineHelp::activated(int iMsg)
     QMessageBox::critical(Gui::getMainWindow(), QObject::tr("No Browser"), 
       QObject::tr("Unable to open your system browser."));
   }
+}*/
+void StdCmdOnlineHelp::activated(int iMsg)
+{
+   ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+   std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+   OpenURLInBrowser(url.c_str());
 }
 
 #include "moc_OnlineDocumentation.cpp"
