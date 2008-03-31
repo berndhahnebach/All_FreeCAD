@@ -230,7 +230,6 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
 
 void TreeWidget::dropEvent(QDropEvent *event)
 {
-    return;
     QTreeWidgetItem* targetitem = itemAt(event->pos());
     if (targetitem->type() == TreeWidget::ObjectType) {
         // add object to group
@@ -247,8 +246,21 @@ void TreeWidget::dropEvent(QDropEvent *event)
         for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
             // get document object
             QTreeWidgetItem* item = itemFromIndex(*it);
+            if (item->parent() == targetitem)
+                continue; // nothing needs to be done
             App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)
                 ->object()->getObject();
+            App::DocumentObjectGroup* par = App::DocumentObjectGroup
+                ::getGroupOfObject(obj);
+            if (par) {
+                // allow an object to be in one group only
+                QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
+                                      "App.getDocument(\"%1\").getObject(\"%3\"))")
+                                      .arg(doc->getName())
+                                      .arg(par->getNameInDocument())
+                                      .arg(obj->getNameInDocument());
+                Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+            }
 
             // build Python command for execution
             QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").addObject("
@@ -261,6 +273,27 @@ void TreeWidget::dropEvent(QDropEvent *event)
         gui->commitCommand();
     }
     else if (targetitem->type() == TreeWidget::DocumentType) {
+        App::Document* doc = static_cast<DocumentItem*>(targetitem)->document()->getDocument();
+        QList<QModelIndex> idxs = selectedIndexes();
+        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+            // get document object
+            QTreeWidgetItem* item = itemFromIndex(*it);
+            if (item->parent() == targetitem)
+                continue; // nothing needs to be done
+            // there must be a group that references this object
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)
+                ->object()->getObject();
+            App::DocumentObjectGroup* grp = App::DocumentObjectGroup
+                ::getGroupOfObject(obj);
+            if (grp) {
+                QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
+                                      "App.getDocument(\"%1\").getObject(\"%3\"))")
+                                      .arg(doc->getName())
+                                      .arg(grp->getNameInDocument())
+                                      .arg(obj->getNameInDocument());
+                Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+            }
+        }
     }
 }
 

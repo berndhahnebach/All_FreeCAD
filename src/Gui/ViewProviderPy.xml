@@ -49,5 +49,11 @@
 			</Documentation>
 			<Parameter Name="Annotation" Type="Object" />
 		</Attribute>
+		<Attribute Name="RootNode" ReadOnly="false">
+			<Documentation>
+				<UserDocu>A pivy Separator with the root of this ViewProvider</UserDocu>
+			</Documentation>
+			<Parameter Name="RootNode" Type="Object" />
+		</Attribute>
 	</PythonExport>
 </GenerateModel>
