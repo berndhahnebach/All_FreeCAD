@@ -185,6 +185,11 @@ bool ViewProvider::isShow(void) const
     return pcModeSwitch->whichChild.getValue() != -1;
 }
 
+void ViewProvider::setDefaultMode(int val)
+{
+    _iActualMode = val;
+}
+
 std::string ViewProvider::toString() const
 {
     return View3DInventor::writeNodesToString(pcRoot);

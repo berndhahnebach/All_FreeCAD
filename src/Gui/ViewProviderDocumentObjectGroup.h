@@ -33,27 +33,30 @@
 
 namespace Gui {
 
-class GuiExport ViewProviderDocumentObjectGroup:public ViewProviderDocumentObject
+class GuiExport ViewProviderDocumentObjectGroup : public ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(Gui::ViewProviderDocumentObjectGroup);
+    PROPERTY_HEADER(Gui::ViewProviderDocumentObjectGroup);
 
 public:
-  /// constructor.
-  ViewProviderDocumentObjectGroup();
+    /// constructor.
+    ViewProviderDocumentObjectGroup();
+    /// destructor.
+    virtual ~ViewProviderDocumentObjectGroup();
 
-  /// destructor.
-  virtual ~ViewProviderDocumentObjectGroup();
-
-  virtual void attach(App::DocumentObject *pcObject);
-  virtual QIcon getIcon(void) const;
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  bool isShow(void) const;
+    void attach(App::DocumentObject *pcObject);
+    void updateData(const App::Property*);
+    QIcon getIcon(void) const;
+    /// returns a list of all possible modes
+    std::vector<std::string> getDisplayModes(void) const;
+    bool isShow(void) const;
 
 protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
-  void getViewProviders(std::vector<ViewProviderDocumentObject*>&) const;
+    /// get called by the container whenever a property has been changed
+    void onChanged(const App::Property* prop);
+    void getViewProviders(std::vector<ViewProviderDocumentObject*>&) const;
+
+private:
+    std::vector<ViewProvider*> nodes;
 };
 
 

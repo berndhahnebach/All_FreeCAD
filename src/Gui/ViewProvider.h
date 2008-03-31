@@ -141,6 +141,7 @@ protected:
     void setDisplayMaskMode( const char* type );
     /// Returns a list of added display mask modes
     std::vector<std::string> getDisplayMaskModes() const;
+    void setDefaultMode(int);
     //@}
     /// The root Separator of the ViewProvider
     SoSeparator *pcRoot;
