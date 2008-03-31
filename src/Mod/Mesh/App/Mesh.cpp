@@ -232,7 +232,7 @@ void MeshObject::load(const char* file)
 void MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
-
+#if 0
     try {
         MeshCore::MeshEvalNeighbourhood nb(_kernel);
         if (!nb.Evaluate()) {
@@ -250,6 +250,7 @@ void MeshObject::load(std::istream& in)
         // ignore memory exceptions and continue
         Base::Console().Log("Check for defects in mesh data structure failed\n");
     }
+#endif
 }
 
 void MeshObject::addFacet(const MeshCore::MeshGeomFacet& facet)
