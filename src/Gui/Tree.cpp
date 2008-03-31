@@ -173,13 +173,14 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
     if (!event->isAccepted())
         return;
 
-    QTreeWidgetItem* item = itemAt(event->pos());
-    if (!item) {
+    QTreeWidgetItem* targetitem = itemAt(event->pos());
+    if (!targetitem || this->isItemSelected(targetitem)) {
         event->ignore();
     }
-    else if (item->type() == TreeWidget::DocumentType) {
+    else if (targetitem->type() == TreeWidget::DocumentType) {
         QList<QModelIndex> idxs = selectedIndexes();
-        App::Document* doc = static_cast<DocumentItem*>(item)->document()->getDocument();
+        App::Document* doc = static_cast<DocumentItem*>(targetitem)->
+            document()->getDocument();
         for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
             QTreeWidgetItem* item = itemFromIndex(*it);
             if (item->type() != TreeWidget::ObjectType) {
@@ -194,8 +195,8 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
             }
         }
     }
-    else if (item->type() == TreeWidget::ObjectType) {
-        App::DocumentObject* grp = static_cast<DocumentObjectItem*>(item)->
+    else if (targetitem->type() == TreeWidget::ObjectType) {
+        App::DocumentObject* grp = static_cast<DocumentObjectItem*>(targetitem)->
             object()->getObject();
         if (!grp->getTypeId().isDerivedFrom(App::DocumentObjectGroup::
             getClassTypeId()))
@@ -231,24 +232,42 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
 void TreeWidget::dropEvent(QDropEvent *event)
 {
     QTreeWidgetItem* targetitem = itemAt(event->pos());
+    // not dropped onto an item
+    if (!targetitem)
+        return;
+    // one of the source items is also the destination item, that's not allowed
+    if (this->isItemSelected(targetitem))
+        return;
+    
+    // filter out the selected items we cannot handle
+    QList<QTreeWidgetItem*> items;
+    QList<QModelIndex> idxs = selectedIndexes();
+    for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+        QTreeWidgetItem* item = itemFromIndex(*it);
+        if (item == targetitem)
+            continue;
+        if (item->parent() == targetitem)
+            continue;
+        items.push_back(item);
+    }
+
+    if (items.isEmpty())
+        return; // nothing needs to be done
+
     if (targetitem->type() == TreeWidget::ObjectType) {
         // add object to group
         App::DocumentObject* grp = static_cast<DocumentObjectItem*>(targetitem)
             ->object()->getObject();
         if (!grp->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()))
             return; // no group object
-        App::Document* doc = &grp->getDocument();
-        QList<QModelIndex> idxs = selectedIndexes();
 
         // Open command
+        App::Document* doc = &grp->getDocument();
         Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
         gui->openCommand("Move object");
-        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+        for (QList<QTreeWidgetItem*>::Iterator it = items.begin(); it != items.end(); ++it) {
             // get document object
-            QTreeWidgetItem* item = itemFromIndex(*it);
-            if (item->parent() == targetitem)
-                continue; // nothing needs to be done
-            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(*it)
                 ->object()->getObject();
             App::DocumentObjectGroup* par = App::DocumentObjectGroup
                 ::getGroupOfObject(obj);
@@ -273,15 +292,14 @@ void TreeWidget::dropEvent(QDropEvent *event)
         gui->commitCommand();
     }
     else if (targetitem->type() == TreeWidget::DocumentType) {
+        // Open command
         App::Document* doc = static_cast<DocumentItem*>(targetitem)->document()->getDocument();
-        QList<QModelIndex> idxs = selectedIndexes();
-        for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
+        Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
+        gui->openCommand("Move object");
+        for (QList<QTreeWidgetItem*>::Iterator it = items.begin(); it != items.end(); ++it) {
             // get document object
-            QTreeWidgetItem* item = itemFromIndex(*it);
-            if (item->parent() == targetitem)
-                continue; // nothing needs to be done
             // there must be a group that references this object
-            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)
+            App::DocumentObject* obj = static_cast<DocumentObjectItem*>(*it)
                 ->object()->getObject();
             App::DocumentObjectGroup* grp = App::DocumentObjectGroup
                 ::getGroupOfObject(obj);
@@ -294,6 +312,7 @@ void TreeWidget::dropEvent(QDropEvent *event)
                 Gui::Application::Instance->runPythonCode(cmd.toUtf8());
             }
         }
+        gui->commitCommand();
     }
 }
 
@@ -347,7 +366,9 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     this->rootItem->setFlags(Qt::ItemIsEnabled);
     this->treeWidget->expandItem(this->rootItem);
     this->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+#if 0 // causes unexpected drop events (possibly only with Qt4.1.x)
     this->treeWidget->setMouseTracking(true); // needed for itemEntered() to work
+#endif
 
     this->statusTimer = new QTimer(this);
 
