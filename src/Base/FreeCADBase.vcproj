@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2D.lib zlib1.lib python25_d.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2D.lib zlib1.lib python25_d.lib Shell32.lib"
 				OutputFile="../../bin/FreeCADBaseD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

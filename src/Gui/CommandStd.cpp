@@ -23,8 +23,8 @@
 
 #include "PreCompiled.h"
 
-#include <shellapi.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
 #include <App/Document.h>
@@ -534,9 +534,8 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
 
 void StdCmdOnlineHelp::activated(int iMsg)
 {
-    std::string path = App::Application::Config()["AppHomePath"];
-    path += "doc/FreeCAD.chm";
-    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+	Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm");
+    ChmFile.RunFile();
  
 }
 
@@ -559,10 +558,8 @@ StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
 
 void StdCmdOnlineHelpPython::activated(int iMsg)
 {
-    std::string path = App::Application::Config()["AppHomePath"];
-    path += "doc/Python25.chm";
-    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
- 
+	Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/Python25.chm");
+    ChmFile.RunFile();
 }
 
 //===========================================================================
@@ -585,8 +582,50 @@ StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
 void StdCmdOnlineHelpWebsite::activated(int iMsg)
 {
    ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-   std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+   std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc");
    OpenURLInBrowser(url.c_str());
+}
+//===========================================================================
+// Std_FreeCADWebsite
+//===========================================================================
+
+DEF_STD_CMD(StdCmdFreeCADWebsite);
+
+StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
+  :Command("Std_FreeCADWebsite")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("FreeCAD Website");
+  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
+  sWhatsThis    = QT_TR_NOOP("FreeCAD Website");
+  sStatusTip    = QT_TR_NOOP("FreeCAD Website");
+  sPixmap       = "help";
+}
+
+void StdCmdFreeCADWebsite::activated(int iMsg)
+{
+   OpenURLInBrowser("http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+}
+//===========================================================================
+// Std_PythonWebsite
+//===========================================================================
+
+DEF_STD_CMD(StdCmdPythonWebsite);
+
+StdCmdPythonWebsite::StdCmdPythonWebsite()
+  :Command("Std_PythonWebsite")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Python Website");
+  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
+  sWhatsThis    = QT_TR_NOOP("Python Website");
+  sStatusTip    = QT_TR_NOOP("Python Website");
+  sPixmap       = "help";
+}
+
+void StdCmdPythonWebsite::activated(int iMsg)
+{
+   OpenURLInBrowser("http://python.org");
 }
 
 namespace Gui {
@@ -613,6 +652,8 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdOnlineHelpPython());
   rcCmdMgr.addCommand(new StdCmdOnlineHelpWebsite());
+  rcCmdMgr.addCommand(new StdCmdFreeCADWebsite());
+  rcCmdMgr.addCommand(new StdCmdPythonWebsite());
   //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
   rcCmdMgr.addCommand(new StdCmdDescription());
