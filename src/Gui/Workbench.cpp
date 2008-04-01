@@ -432,9 +432,13 @@ MenuItem* StdWorkbench::setupMenuBar() const
     sep->setCommand( "Separator" );
 
     // Help
+    MenuItem* helpWebsites = new MenuItem( menuBar );
+    helpWebsites->setCommand(QT_TR_NOOP("Help &online"));
+    *helpWebsites << "Std_OnlineHelpWebsite" << "Std_OnlineHelpPython";
+    
     MenuItem* help = new MenuItem( menuBar );
     help->setCommand(QT_TR_NOOP("&Help"));
-    *help << "Std_OnlineHelp" << "Std_PythonHelp" << "Std_TipOfTheDay" << "Separator" << "Std_About" 
+    *help << "Std_OnlineHelp" << "Std_PythonHelp" << "Std_TipOfTheDay" << helpWebsites << "Separator" << "Std_About" 
           << "Std_AboutQt" << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
 
     return menuBar;
