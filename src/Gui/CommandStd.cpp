@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 
+#include <shellapi.h>
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
@@ -514,6 +515,80 @@ void StdCmdCommandLine::activated(int iMsg)
   qApp->processEvents();
 }
 
+//===========================================================================
+// Std_OnlineHelp
+//===========================================================================
+
+DEF_STD_CMD(StdCmdOnlineHelp);
+
+StdCmdOnlineHelp::StdCmdOnlineHelp()
+  :Command("Std_OnlineHelp")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Help");
+  sToolTipText  = QT_TR_NOOP("Show help to the application");
+  sWhatsThis    = QT_TR_NOOP("Help");
+  sStatusTip    = QT_TR_NOOP("Help");
+  sPixmap       = "help";
+}
+
+void StdCmdOnlineHelp::activated(int iMsg)
+{
+    std::string path = App::Application::Config()["AppHomePath"];
+    path += "doc/FreeCAD.chm";
+    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+ 
+}
+
+//===========================================================================
+// Std_OnlineHelpPython
+//===========================================================================
+
+DEF_STD_CMD(StdCmdOnlineHelpPython);
+
+StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
+  :Command("Std_OnlineHelpPython")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Help on Python");
+  sToolTipText  = QT_TR_NOOP("Show help to the application");
+  sWhatsThis    = QT_TR_NOOP("Help on Python");
+  sStatusTip    = QT_TR_NOOP("Help on Python");
+  sPixmap       = "help";
+}
+
+void StdCmdOnlineHelpPython::activated(int iMsg)
+{
+    std::string path = App::Application::Config()["AppHomePath"];
+    path += "doc/Python25.chm";
+    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+ 
+}
+
+//===========================================================================
+// Std_OnlineHelpWebsite
+//===========================================================================
+
+DEF_STD_CMD(StdCmdOnlineHelpWebsite);
+
+StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
+  :Command("Std_OnlineHelpWebsite")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Help Website");
+  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
+  sWhatsThis    = QT_TR_NOOP("Help Website");
+  sStatusTip    = QT_TR_NOOP("Help Website");
+  sPixmap       = "help";
+}
+
+void StdCmdOnlineHelpWebsite::activated(int iMsg)
+{
+   ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+   std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+   OpenURLInBrowser(url.c_str());
+}
+
 namespace Gui {
 
 void CreateStdCommands(void)
@@ -536,6 +611,8 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdWhatsThis());
   rcCmdMgr.addCommand(new StdCmdPythonHelp());
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
+  rcCmdMgr.addCommand(new StdCmdOnlineHelpPython());
+  rcCmdMgr.addCommand(new StdCmdOnlineHelpWebsite());
   //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
   rcCmdMgr.addCommand(new StdCmdDescription());

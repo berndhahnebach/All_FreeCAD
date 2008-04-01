@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Include;..\..\..\Include\Python;..\..\..\Include\Coin;..\..\..\Include\SoQt;..\..\..\Include\QT\Qt;..\..\..\Include\QT"
+				AdditionalIncludeDirectories="..\..\..\include\python;..\..\..\include;..\..\..\include\zlib;..\..\..\include\qt;..\..\..\include\qt\Qt;..\..\..\include\qt\QtCore;..\..\..\include\qt\QtDesigner;..\..\..\include\qt\QtSvg;..\..\..\include\qt\QtNetwork;..\..\..\include\qt\QtGui;..\..\..\include\qt\QtSql;..\..\..\include\qt\QtTest;..\..\..\include\qt\QtUiTools;..\..\..\include\qt\QtXml;..\..\..\include\qt\QtOpenGl..;..\..\..\include\qt\QtOpenGl;..\..\..\include\coin;..\..\..\include\soqt;..\..\..\src\Gui"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;SOQT_DLL;COIN_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Include;..\..\..\Include\Python;..\..\..\Include\Coin;..\..\..\Include\SoQt;..\..\..\Include\QT\Qt;..\..\..\Include\QT"
+				AdditionalIncludeDirectories="..\..\..\include\python;..\..\..\include;..\..\..\include\zlib;..\..\..\include\qt;..\..\..\include\qt\Qt;..\..\..\include\qt\QtCore;..\..\..\include\qt\QtDesigner;..\..\..\include\qt\QtSvg;..\..\..\include\qt\QtNetwork;..\..\..\include\qt\QtGui;..\..\..\include\qt\QtSql;..\..\..\include\qt\QtTest;..\..\..\include\qt\QtUiTools;..\..\..\include\qt\QtXml;..\..\..\include\qt\QtOpenGl..;..\..\..\include\qt\QtOpenGl;..\..\..\include\coin;..\..\..\include\soqt;..\..\..\src\Gui"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;SOQT_DLL;COIN_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -188,7 +188,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -198,7 +198,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -212,7 +212,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -222,7 +222,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
