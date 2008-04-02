@@ -359,7 +359,7 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
     else if (strcmp(recipient,"Tree") == 0)
     {
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-            *item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" 
+            *item << "Std_SetMaterial" << "Std_ToggleVisibility" 
                   << "Std_RandomColor" << "Separator" << "Std_Delete";
     }
 }
@@ -433,12 +433,13 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Help
     MenuItem* helpWebsites = new MenuItem;
-    helpWebsites->setCommand(QT_TR_NOOP("Help &online"));
+    helpWebsites->setCommand(QT_TR_NOOP("&Online-help"));
     *helpWebsites << "Std_OnlineHelpWebsite" << "Std_FreeCADWebsite" << "Std_PythonWebsite";
     
     MenuItem* help = new MenuItem( menuBar );
     help->setCommand(QT_TR_NOOP("&Help"));
-    *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp" << "Std_TipOfTheDay" << helpWebsites << "Separator" << "Std_About" 
+    *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp"
+          << helpWebsites  << "Std_TipOfTheDay"<< "Separator" << "Std_About"
           << "Std_AboutQt" << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
 
     return menuBar;

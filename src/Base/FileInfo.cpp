@@ -58,7 +58,7 @@ FileInfo::FileInfo (const char* _FileName)
 
 FileInfo::FileInfo (const std::string &_FileName)
 {
-	setFile(_FileName.c_str());
+    setFile(_FileName.c_str());
 }
 
 const char *FileInfo::getTempPath(void)
@@ -303,27 +303,25 @@ bool FileInfo::createDirectory(const char* directory) const
 #endif
 }
 
-int FileInfo::RunFile(void) const
+bool FileInfo::RunFile(void) const
 {
 #if defined (_MSC_VER)
     std::wstring wstr = this->toStdWString();
-    return (int)ShellExecuteW(NULL, NULL, wstr.c_str(), NULL, NULL, SW_SHOWNORMAL);
+    return (32 < (int)ShellExecuteW(NULL, NULL, wstr.c_str(), NULL, NULL, SW_SHOWNORMAL));
 #elif defined (__GNUC__)
 #   error "FileInfo::RunFile() not implemented for this platform!"
 #else
 #   error "FileInfo::RunFile() not implemented for this platform!"
 #endif
-
 }
 
-int FileInfo::RunFile(const char* FileName)
+bool FileInfo::RunFile(const char* FileName)
 {
 #if defined (_MSC_VER)
-    return (int)ShellExecute(NULL, NULL, FileName, NULL, NULL, SW_SHOWNORMAL);
+    return (32 < (int)ShellExecute(NULL, NULL, FileName, NULL, NULL, SW_SHOWNORMAL));
 #elif defined (__GNUC__)
 #   error "FileInfo::RunFile() not implemented for this platform!"
 #else
 #   error "FileInfo::RunFile() not implemented for this platform!"
 #endif
-
 }

@@ -524,19 +524,20 @@ DEF_STD_CMD(StdCmdOnlineHelp);
 StdCmdOnlineHelp::StdCmdOnlineHelp()
   :Command("Std_OnlineHelp")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("Help");
-  sToolTipText  = QT_TR_NOOP("Show help to the application");
-  sWhatsThis    = QT_TR_NOOP("Help");
-  sStatusTip    = QT_TR_NOOP("Help");
-  sPixmap       = "help";
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("Help");
+    sToolTipText  = QT_TR_NOOP("Show help to the application");
+    sWhatsThis    = QT_TR_NOOP("Help");
+    sStatusTip    = QT_TR_NOOP("Help");
+    sPixmap       = "help";
 }
 
 void StdCmdOnlineHelp::activated(int iMsg)
 {
-	Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm");
-    ChmFile.RunFile();
- 
+    Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm");
+    if (!ChmFile.RunFile())
+        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
+            QObject::tr("File %1 not found").arg(ChmFile.filePath().c_str()));
 }
 
 //===========================================================================
@@ -548,18 +549,20 @@ DEF_STD_CMD(StdCmdOnlineHelpPython);
 StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
   :Command("Std_OnlineHelpPython")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("Help on Python");
-  sToolTipText  = QT_TR_NOOP("Show help to the application");
-  sWhatsThis    = QT_TR_NOOP("Help on Python");
-  sStatusTip    = QT_TR_NOOP("Help on Python");
-  sPixmap       = "help";
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("Python Manuals");
+    sToolTipText  = QT_TR_NOOP("Show the Python documentation");
+    sWhatsThis    = QT_TR_NOOP("Show the Python documentation");
+    sStatusTip    = QT_TR_NOOP("Show the Python documentation");
+    sPixmap       = "python";
 }
 
 void StdCmdOnlineHelpPython::activated(int iMsg)
 {
-	Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/Python25.chm");
-    ChmFile.RunFile();
+    Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/Python25.chm");
+    if (!ChmFile.RunFile())
+        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
+            QObject::tr("File %1 not found").arg(ChmFile.filePath().c_str()));
 }
 
 //===========================================================================
@@ -571,20 +574,21 @@ DEF_STD_CMD(StdCmdOnlineHelpWebsite);
 StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
   :Command("Std_OnlineHelpWebsite")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("Help Website");
-  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
-  sWhatsThis    = QT_TR_NOOP("Help Website");
-  sStatusTip    = QT_TR_NOOP("Help Website");
-  sPixmap       = "help";
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("Help Website");
+    sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
+    sWhatsThis    = QT_TR_NOOP("Help Website");
+    sStatusTip    = QT_TR_NOOP("Help Website");
+    sPixmap       = "help";
 }
 
 void StdCmdOnlineHelpWebsite::activated(int iMsg)
 {
-   ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-   std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc");
-   OpenURLInBrowser(url.c_str());
+    ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+    std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc");
+    OpenURLInBrowser(url.c_str());
 }
+
 //===========================================================================
 // Std_FreeCADWebsite
 //===========================================================================
@@ -594,18 +598,19 @@ DEF_STD_CMD(StdCmdFreeCADWebsite);
 StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
   :Command("Std_FreeCADWebsite")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("FreeCAD Website");
-  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
-  sWhatsThis    = QT_TR_NOOP("FreeCAD Website");
-  sStatusTip    = QT_TR_NOOP("FreeCAD Website");
-  sPixmap       = "help";
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("FreeCAD Website");
+    sToolTipText  = QT_TR_NOOP("The FreeCAD website");
+    sWhatsThis    = QT_TR_NOOP("FreeCAD Website");
+    sStatusTip    = QT_TR_NOOP("FreeCAD Website");
+    sPixmap       = "help";
 }
 
 void StdCmdFreeCADWebsite::activated(int iMsg)
 {
-   OpenURLInBrowser("http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+    OpenURLInBrowser("http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
 }
+
 //===========================================================================
 // Std_PythonWebsite
 //===========================================================================
@@ -615,48 +620,48 @@ DEF_STD_CMD(StdCmdPythonWebsite);
 StdCmdPythonWebsite::StdCmdPythonWebsite()
   :Command("Std_PythonWebsite")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("Python Website");
-  sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
-  sWhatsThis    = QT_TR_NOOP("Python Website");
-  sStatusTip    = QT_TR_NOOP("Python Website");
-  sPixmap       = "help";
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("Python Website");
+    sToolTipText  = QT_TR_NOOP("The official Python website");
+    sWhatsThis    = QT_TR_NOOP("Python Website");
+    sStatusTip    = QT_TR_NOOP("Python Website");
+    sPixmap       = "python";
 }
 
 void StdCmdPythonWebsite::activated(int iMsg)
 {
-   OpenURLInBrowser("http://python.org");
+    OpenURLInBrowser("http://python.org");
 }
 
 namespace Gui {
 
 void CreateStdCommands(void)
 {
-  CommandManager &rcCmdMgr = Application::Instance->commandManager();
+    CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
-  rcCmdMgr.addCommand(new StdCmdAbout());
-  rcCmdMgr.addCommand(new StdCmdAboutQt());
+    rcCmdMgr.addCommand(new StdCmdAbout());
+    rcCmdMgr.addCommand(new StdCmdAboutQt());
 
-  rcCmdMgr.addCommand(new StdCmdDlgParameter());
-  rcCmdMgr.addCommand(new StdCmdDlgPreferences());
-  rcCmdMgr.addCommand(new StdCmdDlgMacroRecord());
-  rcCmdMgr.addCommand(new StdCmdDlgMacroExecute());
-  rcCmdMgr.addCommand(new StdCmdDlgMacroExecuteDirect());
-  rcCmdMgr.addCommand(new StdCmdMacroStop());
-  rcCmdMgr.addCommand(new StdCmdDlgCustomize());
-  rcCmdMgr.addCommand(new StdCmdCommandLine());
-  rcCmdMgr.addCommand(new StdCmdWorkbench());
-  rcCmdMgr.addCommand(new StdCmdRecentFiles());
-  rcCmdMgr.addCommand(new StdCmdWhatsThis());
-  rcCmdMgr.addCommand(new StdCmdPythonHelp());
-  rcCmdMgr.addCommand(new StdCmdOnlineHelp());
-  rcCmdMgr.addCommand(new StdCmdOnlineHelpPython());
-  rcCmdMgr.addCommand(new StdCmdOnlineHelpWebsite());
-  rcCmdMgr.addCommand(new StdCmdFreeCADWebsite());
-  rcCmdMgr.addCommand(new StdCmdPythonWebsite());
-  //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
-  rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
-  rcCmdMgr.addCommand(new StdCmdDescription());
+    rcCmdMgr.addCommand(new StdCmdDlgParameter());
+    rcCmdMgr.addCommand(new StdCmdDlgPreferences());
+    rcCmdMgr.addCommand(new StdCmdDlgMacroRecord());
+    rcCmdMgr.addCommand(new StdCmdDlgMacroExecute());
+    rcCmdMgr.addCommand(new StdCmdDlgMacroExecuteDirect());
+    rcCmdMgr.addCommand(new StdCmdMacroStop());
+    rcCmdMgr.addCommand(new StdCmdDlgCustomize());
+    rcCmdMgr.addCommand(new StdCmdCommandLine());
+    rcCmdMgr.addCommand(new StdCmdWorkbench());
+    rcCmdMgr.addCommand(new StdCmdRecentFiles());
+    rcCmdMgr.addCommand(new StdCmdWhatsThis());
+    rcCmdMgr.addCommand(new StdCmdPythonHelp());
+    rcCmdMgr.addCommand(new StdCmdOnlineHelp());
+    rcCmdMgr.addCommand(new StdCmdOnlineHelpPython());
+    rcCmdMgr.addCommand(new StdCmdOnlineHelpWebsite());
+    rcCmdMgr.addCommand(new StdCmdFreeCADWebsite());
+    rcCmdMgr.addCommand(new StdCmdPythonWebsite());
+    //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
+    rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
+    rcCmdMgr.addCommand(new StdCmdDescription());
 }
 
 } // namespace Gui

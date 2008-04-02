@@ -84,14 +84,12 @@ public:
   /// Returns the number of facets
   unsigned long CountFacets (void) const
   { return (unsigned long)(_aclFacetArray.size()); }
-
   /// Returns the number of edge
   unsigned long CountEdges (void) const;
-
   // Returns the number of points
   unsigned long CountPoints (void) const
   { return (unsigned long)(_aclPointArray.size()); }
-
+  /// Returns the number of required memory in bytes
   unsigned int GetMemSize (void) const
   { return _aclPointArray.size() * sizeof(MeshPoint) +
            _aclFacetArray.size() * sizeof(MeshFacet); }
@@ -145,7 +143,8 @@ public:
   const MeshFacetArray& GetFacets (void) const { return _aclFacetArray; }
 
   /** Returns the array of all edges.
-   *  Notice: The Edgelist will be temporary generated. Changes on the mesh structure does not affect the Edgelist
+   *  Notice: The Edgelist will be temporary generated. Changes on the mesh
+   * structure does not affect the Edgelist
    */
   void GetEdges (std::vector<MeshGeomEdge>&) const;
   //@}
@@ -364,6 +363,8 @@ public:
   inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
   /** Sets the point at the given index to the new \a rPoint. */
   inline void SetPoint (unsigned long ulPtIndex, const Base::Vector3f &rPoint);
+  /** Smothes the mesh kernel. */
+  void Smooth(int iterations, float d_max);
   /**
    * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
    * The facets to be deleted are returned with their geometric reprsentation.

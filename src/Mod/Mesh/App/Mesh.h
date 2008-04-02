@@ -129,6 +129,7 @@ public:
     void transformToEigenSystem();
     void movePoint(unsigned long, const Base::Vector3d& v);
     void setPoint(unsigned long, const Base::Vector3d& v);
+    void smooth(int iterations, float d_max);
     Base::Vector3d getPointNormal(unsigned long) const;
     //@}
 
