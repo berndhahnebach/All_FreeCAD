@@ -132,22 +132,41 @@ bool MeshPointFit::Done() const
 
 float MeshPlaneFit::Fit()
 {
-  float fResult = FLOAT_MAX;
- 
-  if( CountPoints() > 2 )
-  {
-    std::vector< Wm4::Vector3<float> > cPts;
-    GetMgcVectorArray( cPts );
-    Plane3<float > akPln = OrthogonalPlaneFit3<float>( CountPoints(), &(cPts[0]) );
-    Convert( akPln.Normal, _vNormal );
-    _vBase = GetGravity();
+    float fResult = FLOAT_MAX;
+    if (CountPoints() < 3)
+        return fResult;
 
-    _fLastResult = fResult;
+    float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
+    sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
+
+    for (std::list<Base::Vector3f>::iterator it = _vPoints.begin(); it!=_vPoints.end(); ++it) {
+        sxx += it->x * it->x; sxy += it->x * it->y;
+        sxz += it->x * it->z; syy += it->y * it->y;
+        syz += it->y * it->z; szz += it->z * it->z;
+        mx  += it->x;   my += it->y;   mz += it->z;
+    }
+
+    unsigned int nSize = _vPoints.size();
+    sxx = sxx - mx*mx/((float)nSize);
+    sxy = sxy - mx*my/((float)nSize);
+    sxz = sxz - mx*mz/((float)nSize);
+    syy = syy - my*my/((float)nSize);
+    syz = syz - my*mz/((float)nSize);
+    szz = szz - mz*mz/((float)nSize);
+
+    // Kovarianzmatrix
+    Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+    Wm4::Matrix3<float> rkRot, rkDiag;
+    akMat.EigenDecomposition(rkRot, rkDiag);
+
+    Wm4::Vector3<float> W = rkRot.GetColumn(0);
+    _vNormal.Set(W.X(), W.Y(), W.Z());
+    _vBase.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
+
     fResult = GetStdDeviation();
+    _fLastResult = fResult;
     _bIsFitted = true;
-  }
-
-  return fResult;
+    return fResult;
 }
 
 Base::Vector3f MeshPlaneFit::GetNormal() const

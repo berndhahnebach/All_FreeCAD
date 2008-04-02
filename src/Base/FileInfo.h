@@ -40,7 +40,7 @@ class BaseExport FileInfo
 public:
     /// Constrction
     FileInfo (const char* _FileName="");
-	FileInfo (const std::string &_FileName);
+    FileInfo (const std::string &_FileName);
     /// set a new file name
     void setFile(const char* name);
     /// set a new file name
@@ -91,14 +91,14 @@ public:
     static std::string getTempFileName(void);
     /// delete the file
     bool deleteFile(void);
-	/** Run the file by the shell
-	 *  Give the File to the Operatingsystem shell
-	 *  which exectute the file or run a associatet 
-	 *  application. Its the same as a double click 
-	 *  in a file explorer.
-	 */
-	int RunFile(void)const ;
-	static int RunFile(const char* FileName);
+    /** Run the file by the shell
+     *  Give the File to the Operatingsystem shell
+     *  which exectute the file or run a associatet 
+     *  application. Its the same as a double click 
+     *  in a file explorer.
+     */
+    bool RunFile(void)const ;
+    static bool RunFile(const char* FileName);
 
 protected:
     std::string FileName;

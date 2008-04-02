@@ -396,6 +396,11 @@ void MeshObject::setPoint(unsigned long index, const Base::Vector3d& p)
     _kernel.SetPoint(index,transformToInside(p));
 }
 
+void MeshObject::smooth(int iterations, float d_max)
+{
+    _kernel.Smooth(iterations, d_max);
+}
+
 Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
 {
     std::vector<Base::Vector3f> temp = _kernel.CalcVertexNormals();

@@ -831,6 +831,20 @@ PyObject*  MeshPy::foraminate(PyObject *args)
     }
 }
 
+PyObject*  MeshPy::smooth(PyObject *args)
+{
+    int iter=1;
+    float d_max=FLOAT_MAX;
+    if (!PyArg_ParseTuple(args, "|if", &iter,&d_max))
+        return NULL;
+
+    PY_TRY {
+        getMeshObjectPtr()->smooth(iter, d_max);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
 PyObject* MeshPy::nearestFacetOnRay(PyObject *args)
 {
     PyObject* pnt_p;

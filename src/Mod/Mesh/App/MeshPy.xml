@@ -262,6 +262,11 @@ Example:
 				<UserDocu>Get a list of facet indices and intersection points</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="smooth">
+			<Documentation>
+				<UserDocu>Smooth the mesh</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="nearestFacetOnRay">
 			<Documentation>
 				<UserDocu>nearestFacetOnRay(tuple, tuple) -> dict
