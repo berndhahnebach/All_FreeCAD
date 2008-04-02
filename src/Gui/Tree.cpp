@@ -366,7 +366,8 @@ TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
     this->rootItem->setFlags(Qt::ItemIsEnabled);
     this->treeWidget->expandItem(this->rootItem);
     this->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
-#if 0 // causes unexpected drop events (possibly only with Qt4.1.x)
+#if QT_VERSION >= 0x040200
+    // causes unexpected drop events (possibly only with Qt4.1.x)
     this->treeWidget->setMouseTracking(true); // needed for itemEntered() to work
 #endif
 

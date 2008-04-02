@@ -302,26 +302,3 @@ bool FileInfo::createDirectory(const char* directory) const
 #   error "FileInfo::createDirectory() not implemented for this platform!"
 #endif
 }
-
-bool FileInfo::RunFile(void) const
-{
-#if defined (_MSC_VER)
-    std::wstring wstr = this->toStdWString();
-    return (32 < (int)ShellExecuteW(NULL, NULL, wstr.c_str(), NULL, NULL, SW_SHOWNORMAL));
-#elif defined (__GNUC__)
-#   error "FileInfo::RunFile() not implemented for this platform!"
-#else
-#   error "FileInfo::RunFile() not implemented for this platform!"
-#endif
-}
-
-bool FileInfo::RunFile(const char* FileName)
-{
-#if defined (_MSC_VER)
-    return (32 < (int)ShellExecute(NULL, NULL, FileName, NULL, NULL, SW_SHOWNORMAL));
-#elif defined (__GNUC__)
-#   error "FileInfo::RunFile() not implemented for this platform!"
-#else
-#   error "FileInfo::RunFile() not implemented for this platform!"
-#endif
-}
