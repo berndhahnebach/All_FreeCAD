@@ -368,6 +368,13 @@ void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces,
     hasSetValue();
 }
 
+void PropertyMeshKernel::smooth(int iter, float d_max)
+{
+    aboutToSetValue();
+    _meshObject->smooth(iter, d_max);
+    hasSetValue();
+}
+
 void PropertyMeshKernel::clear()
 {
     // clear the underlying mesh kernel and free any allocated memory
