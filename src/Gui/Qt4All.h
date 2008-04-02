@@ -35,6 +35,9 @@
 #include <qcolordialog.h>
 #include <qcombobox.h>
 #include <qcursor.h>
+#if QT_VERSION >= 0x040200
+#include <QDesktopServices>
+#endif
 #include <QDesktopWidget> 
 #include <QDockWidget>
 #include <qdrawutil.h>

@@ -534,10 +534,20 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
 
 void StdCmdOnlineHelp::activated(int iMsg)
 {
-    Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm");
-    if (!ChmFile.RunFile())
+    std::string url = App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm";
+#if QT_VERSION >= 0x040200
+    bool ok = QDesktopServices::openUrl(QString(url.c_str()));
+#elif defined(Q_WS_WIN)
+    std::wstring wstr = Base::FileInfo(url).toStdWString();
+    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
+                                                   NULL, SW_SHOWNORMAL)) > 32);
+#else
+
+#endif
+    if (!ok) {
         QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("File %1 not found").arg(ChmFile.filePath().c_str()));
+            QObject::tr("Cannot open file %1").arg(url.c_str()));
+    }
 }
 
 //===========================================================================
@@ -559,10 +569,20 @@ StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
 
 void StdCmdOnlineHelpPython::activated(int iMsg)
 {
-    Base::FileInfo ChmFile(App::Application::Config()["AppHomePath"]+ "doc/Python25.chm");
-    if (!ChmFile.RunFile())
+    std::string url = App::Application::Config()["AppHomePath"]+ "doc/Python25.chm";
+#if QT_VERSION >= 0x040200
+    bool ok = QDesktopServices::openUrl(QString(url.c_str()));
+#elif defined(Q_WS_WIN)
+    std::wstring wstr = Base::FileInfo(url).toStdWString();
+    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
+                                                   NULL, SW_SHOWNORMAL)) > 32);
+#else
+
+#endif
+    if (!ok) {
         QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("File %1 not found").arg(ChmFile.filePath().c_str()));
+            QObject::tr("Cannot open file %1").arg(url.c_str()));
+    }
 }
 
 //===========================================================================

@@ -91,14 +91,6 @@ public:
     static std::string getTempFileName(void);
     /// delete the file
     bool deleteFile(void);
-    /** Run the file by the shell
-     *  Give the File to the Operatingsystem shell
-     *  which exectute the file or run a associatet 
-     *  application. Its the same as a double click 
-     *  in a file explorer.
-     */
-    bool RunFile(void)const ;
-    static bool RunFile(const char* FileName);
 
 protected:
     std::string FileName;
