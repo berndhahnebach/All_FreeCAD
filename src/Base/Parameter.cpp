@@ -1096,7 +1096,7 @@ bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
     FileInfo file(sFileName);
     
-    if(file.exists()){
+    if (file.exists()) {
         LoadDocument(sFileName);
         return false;
     }
@@ -1106,11 +1106,13 @@ bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
     }
 }
 
-
-
 int  ParameterManager::LoadDocument(const char* sFileName)
 {
+#if defined (FC_OS_WIN32)
     std::wstring gXmlFile = FileInfo(sFileName).toStdWString();
+#else
+    std::string gXmlFile = FileInfo(sFileName).filePath();
+#endif
  
     //
     //  Create our parser, then attach an error handler to the parser.
@@ -1133,7 +1135,11 @@ int  ParameterManager::LoadDocument(const char* sFileName)
     //
     bool errorsOccured = false;
     try {
+#if defined (FC_OS_WIN32)
         parser->parse((XMLCh*)gXmlFile.c_str());
+#else
+        parser->parse(gXmlFile.c_str());
+#endif
     }
 
     catch (const XMLException& e) {
