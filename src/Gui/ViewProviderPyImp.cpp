@@ -118,9 +118,9 @@ int ViewProviderPy::setCustomAttributes(const char* attr, PyObject *obj)
 Py::Object ViewProviderPy::getAnnotation(void) const
 {
     try {
-        void* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
+        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
                     getViewProviderPtr()->getAnnotation(), 1);
-        return Py::Object((PyObject*)Ptr);
+        return Py::Object(Ptr);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -135,9 +135,9 @@ void  ViewProviderPy::setAnnotation(Py::Object arg)
 Py::Object ViewProviderPy::getRootNode(void) const
 {
     try {
-        void* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
+        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
                     getViewProviderPtr()->getRoot(), 1);
-        return Py::Object((PyObject*)Ptr);
+        return Py::Object(Ptr);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());

@@ -156,32 +156,34 @@ Application::Application()
 
 Application::~Application()
 {
-  Base::Console().Log("Destruct Gui::Application\n");
-  WorkbenchManager::destruct();
-  SelectionSingleton::destruct();
-  Translator::destruct();
-  WidgetFactorySupplier::destruct();
-  BitmapFactoryInst::destruct();
+    Base::Console().Log("Destruct Gui::Application\n");
+    WorkbenchManager::destruct();
+    SelectionSingleton::destruct();
+    Translator::destruct();
+    WidgetFactorySupplier::destruct();
+    BitmapFactoryInst::destruct();
 
-  // finish also Inventor subsystem
-  View3DPy::cleanupSWIG();
-  SoFCDB::finish();
-  SoQt::done();
+    // we must run the garbage collector before shutting down the SoDB or SoQt 
+    // subsystem because we may reference some class objects of them in Python
+    Base::Interpreter().cleanupSWIG("SoBase *");
+    // finish also Inventor subsystem
+    SoFCDB::finish();
+    SoQt::done();
 
 #if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
-  SoDB::finish();
+    SoDB::finish();
 #elif (COIN_MAJOR_VERSION >= 3)
-  SoDB::finish();
+    SoDB::finish();
 #else
-  SoDB::cleanup();
+    SoDB::cleanup();
 #endif
 
-  // save macros
-  MacroCommand::save();
-  //App::GetApplication().Detach(this);
+    // save macros
+    MacroCommand::save();
+    //App::GetApplication().Detach(this);
 
-  delete d;
-  Instance = 0;
+    delete d;
+    Instance = 0;
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
