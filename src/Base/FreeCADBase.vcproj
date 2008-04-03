@@ -1527,6 +1527,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\swigpyrun_1.3.25.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\swigpyrun_1.3.33.cpp"
+			>
+		</File>
+		<File
 			RelativePath="TimeInfo.cpp"
 			>
 			<FileConfiguration

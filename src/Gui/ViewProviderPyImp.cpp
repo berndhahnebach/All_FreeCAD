@@ -119,7 +119,7 @@ Py::Object ViewProviderPy::getAnnotation(void) const
 {
     try {
         void* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
-                    getViewProviderPtr()->getAnnotation());
+                    getViewProviderPtr()->getAnnotation(), 1);
         return Py::Object((PyObject*)Ptr);
     }
     catch (const Base::Exception& e) {
@@ -136,7 +136,7 @@ Py::Object ViewProviderPy::getRootNode(void) const
 {
     try {
         void* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *",
-                    getViewProviderPtr()->getRoot());
+                    getViewProviderPtr()->getRoot(), 1);
         return Py::Object((PyObject*)Ptr);
     }
     catch (const Base::Exception& e) {

@@ -166,7 +166,8 @@ public:
      */
     //@{
     /// generate a SWIG object
-    void * createSWIGPointerObj(const char* TypeName, void* Pointer);
+    PyObject* createSWIGPointerObj(const char* TypeName, void* Pointer, int own);
+    bool convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags);
     //@}
 
     /** @name std container to Python container helpers
@@ -215,6 +216,7 @@ protected:
     static InterpreterSingleton *_pcSingelton;
     friend InterpreterSingleton &GetInterpreter(void);
 
+private:
     std::string _cDebugFileName;
 };
 
