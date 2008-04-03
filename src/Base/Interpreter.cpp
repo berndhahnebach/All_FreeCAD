@@ -37,12 +37,6 @@
 #include "PyObjectBase.h"
 
 
-#ifndef USE_SWIG_1_3_25
-#  include "swigpyrun_1.3.33.h"
-#else
-#  include "swigpyrun_1.3.25.h"
-#endif
-
 char format2[1024];  //Warning! Can't go over 512 characters!!!
 unsigned int format2_len = 1024;
 
@@ -451,19 +445,35 @@ PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::strin
 
 }
 
-void * InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void* Pointer)
+// --------------------------------------------------------------------
+
+extern int createSWIGPointerObj_1_3_25(const char* TypeName, void* obj, PyObject** ptr, int own);
+extern int createSWIGPointerObj_1_3_33(const char* TypeName, void* obj, PyObject** ptr, int own);
+
+PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void* Pointer, int own)
 {
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module)
-        throw Base::Exception("No SWIG wrapped library loaded");
+    int result = 0;
+    PyObject* proxy=0;
+    result = createSWIGPointerObj_1_3_25(TypeName, Pointer, &proxy, own);
+    if (result == 0) return proxy;
+    result = createSWIGPointerObj_1_3_33(TypeName, Pointer, &proxy, own);
+    if (result == 0) return proxy;
 
+    // none of the SWIG's succeeded
+    throw Base::Exception("No SWIG wrapped library loaded");
+}
 
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery(TypeName);
-    if (!swig_type) 
-        throw Base::Exception("Cannot find type information for requested type");
-    
-    PyObject *resultobj = NULL;
-    resultobj = SWIG_Python_NewPointerObj(Pointer,swig_type,1);
-    return resultobj;
+extern int convertSWIGPointerObj_1_3_25(const char* TypeName, PyObject* obj, void** ptr, int flags);
+extern int convertSWIGPointerObj_1_3_33(const char* TypeName, PyObject* obj, void** ptr, int flags);
+
+bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags)
+{
+    int result = 0;
+    result = convertSWIGPointerObj_1_3_25(TypeName, obj, ptr, flags);
+    if (result == 0) return true;
+    result = convertSWIGPointerObj_1_3_33(TypeName, obj, ptr, flags);
+    if (result == 0) return true;
+
+    // none of the SWIG's succeeded
+    throw Base::Exception("No SWIG wrapped library loaded");
 }
