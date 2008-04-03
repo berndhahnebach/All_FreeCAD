@@ -77,7 +77,16 @@ void cleanupSWIG_1_3_33(const char* TypeName)
     if (!swig_type)
         return;
 
-    PyObject* module = PyImport_AddModule("__main__");
+    PyObject *module, *dict;
+    PyInterpreterState *interp = PyThreadState_GET()->interp;
+    PyObject *modules = interp->modules;
+    module = PyDict_GetItemString(modules, "__builtin__");
+    if (module != NULL && PyModule_Check(module)) {
+        dict = PyModule_GetDict(module);
+        PyDict_SetItemString(dict, "_", Py_None);
+    }
+
+    module = PyDict_GetItemString(modules, "__main__");
     if (module != NULL && PyModule_Check(module)) {
         PyObject* dict = PyModule_GetDict(module);
         if (!dict) return;
@@ -87,7 +96,6 @@ void cleanupSWIG_1_3_33(const char* TypeName)
         pos = 0;
         while (PyDict_Next(dict, &pos, &key, &value)) {
             if (value != Py_None && PyString_Check(key)) {
-                //char *s = PyString_AsString(key);
                 void* ptr = 0;
                 if (Swig_1_3_33::SWIG_ConvertPtr(value, &ptr, 0, 0) == 0)
                     PyDict_SetItem(dict, key, Py_None);
