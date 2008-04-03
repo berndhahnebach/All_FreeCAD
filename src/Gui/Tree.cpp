@@ -107,36 +107,32 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
 
 void TreeWidget::onCreateGroup()
 {
-    bool ok;
-    QString name = QInputDialog::getText(this, tr("Create group"), tr("Name of the group:"),
-                                         QLineEdit::Normal, tr("Group"),&ok);
-    if (ok && !name.isEmpty()) {
-        if (this->contextItem->type() == DocumentType) {
-            DocumentItem* docitem = static_cast<DocumentItem*>(this->contextItem);
-            App::Document* doc = docitem->document()->getDocument();
-            QString cmd = QString("App.getDocument(\"%1\").addObject"
-                                  "(\"App::DocumentObjectGroup\",\"%2\")")
-                                 .arg(doc->getName()).arg(name);
-            Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
-            gui->openCommand("Create group");
-            Gui::Application::Instance->runPythonCode(cmd.toUtf8());
-            gui->commitCommand();
-        }
-        else if (this->contextItem->type() == ObjectType) {
-            DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
-                (this->contextItem);
-            App::DocumentObject* obj = objitem->object()->getObject();
-            App::Document& doc = obj->getDocument();
-            QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\")"
-                                  ".newObject(\"App::DocumentObjectGroup\",\"%3\")")
-                                  .arg(doc.getName())
-                                  .arg(obj->getNameInDocument())
-                                  .arg(name);
-            Gui::Document* gui = Gui::Application::Instance->getDocument(&doc);
-            gui->openCommand("Create group");
-            Gui::Application::Instance->runPythonCode(cmd.toUtf8());
-            gui->commitCommand();
-        }
+    QString name = tr("Group");
+    if (this->contextItem->type() == DocumentType) {
+        DocumentItem* docitem = static_cast<DocumentItem*>(this->contextItem);
+        App::Document* doc = docitem->document()->getDocument();
+        QString cmd = QString("App.getDocument(\"%1\").addObject"
+                              "(\"App::DocumentObjectGroup\",\"%2\")")
+                             .arg(doc->getName()).arg(name);
+        Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
+        gui->openCommand("Create group");
+        Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+        gui->commitCommand();
+    }
+    else if (this->contextItem->type() == ObjectType) {
+        DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
+            (this->contextItem);
+        App::DocumentObject* obj = objitem->object()->getObject();
+        App::Document& doc = obj->getDocument();
+        QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\")"
+                              ".newObject(\"App::DocumentObjectGroup\",\"%3\")")
+                              .arg(doc.getName())
+                              .arg(obj->getNameInDocument())
+                              .arg(name);
+        Gui::Document* gui = Gui::Application::Instance->getDocument(&doc);
+        gui->openCommand("Create group");
+        Gui::Application::Instance->runPythonCode(cmd.toUtf8());
+        gui->commitCommand();
     }
 }
 
@@ -680,6 +676,16 @@ void DocumentItem::testStatus(void)
     }
 }
 
+void DocumentItem::setData (int column, int role, const QVariant & value)
+{
+    if (role == Qt::EditRole) {
+        QString label = value.toString();
+        pDocument->getDocument()->Label.setValue((const char*)label.toUtf8());
+    }
+
+    QTreeWidgetItem::setData(column, role, value);
+}
+
 void DocumentItem::setObjectHighlighted(const char* name, bool select)
 {
     std::map<std::string,DocumentObjectItem*>::iterator pos;
@@ -726,6 +732,7 @@ void DocumentItem::updateSelection(void)
 DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewProvider, QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent, TreeWidget::ObjectType), previousStatus(-1), viewObject(pcViewProvider)
 {
+    setFlags(flags()|Qt::ItemIsEditable);
 }
 
 DocumentObjectItem::~DocumentObjectItem()
@@ -846,6 +853,15 @@ void DocumentObjectItem::displayStatusInfo()
    
 }
 
+void DocumentObjectItem::setData (int column, int role, const QVariant & value)
+{
+    if (role == Qt::EditRole) {
+        QString label = value.toString();
+        viewObject->getObject()->Label.setValue((const char*)label.toUtf8());
+    }
+
+    QTreeWidgetItem::setData(column, role, value);
+}
 
 #include "moc_Tree.cpp"
 

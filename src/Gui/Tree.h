@@ -89,6 +89,7 @@ public:
     void clearSelection(void);
     void updateSelection(void);
     void testStatus(void);
+    void setData(int column, int role, const QVariant & value);
 
 protected:
     /** Adds a view provider to the document item.
@@ -122,6 +123,7 @@ public:
     Gui::ViewProviderDocumentObject* object() const;
     void testStatus();
     void displayStatusInfo();
+    void setData(int column, int role, const QVariant & value);
 
 private:
     int previousStatus;
