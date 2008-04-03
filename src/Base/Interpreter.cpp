@@ -477,3 +477,12 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject*
     // none of the SWIG's succeeded
     throw Base::Exception("No SWIG wrapped library loaded");
 }
+
+extern void cleanupSWIG_1_3_25(const char* TypeName);
+extern void cleanupSWIG_1_3_33(const char* TypeName);
+
+void InterpreterSingleton::cleanupSWIG(const char* TypeName)
+{
+    cleanupSWIG_1_3_25(TypeName);
+    cleanupSWIG_1_3_33(TypeName);
+}

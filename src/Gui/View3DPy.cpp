@@ -36,6 +36,7 @@
 #include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Interpreter.h>
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/VectorPy.h>
 #include "Application.h"
@@ -1063,51 +1064,6 @@ void View3DPy::eventCallback(void * ud, SoEventCallback * n)
     }
 }
 
-void View3DPy::eventCallbackSWIG(void * ud, SoEventCallback * n)
-{
-    const SoEvent* e = n->getEvent();
-    std::string type = e->getTypeId().getName().getString();
-    type += " *";
-
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        // No Python binding for Coin loaded
-        return;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery(type.c_str());
-    if (!swig_type) {
-        // Cannot find type information for event type
-        return;
-    }
-    
-    try {
-        PyObject *resultobj = NULL;
-        resultobj = SWIG_Python_NewPointerObj((void*)e,swig_type,0);
-
-        // now run the method
-        Py::Object event(resultobj,true);
-        Py::Callable method(reinterpret_cast<PyObject*>(ud));
-        Py::Tuple args(1);
-        args.setItem(0, event);
-        method.apply(args);
-    }
-    catch (const Py::Exception& e) {
-        Py::Object o = Py::type(e);
-        if (o.isString()) {
-            Py::String s(o);
-            Base::Console().Warning("%s\n", s.as_std_string().c_str());
-        }
-        else {
-            Py::String s(o.repr());
-            Base::Console().Warning("%s\n", s.as_std_string().c_str());
-        }
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-    }
-}
-
 PYFUNCIMP_D(View3DPy,addEventCallback)
 {
     char* eventtype;
@@ -1199,25 +1155,17 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
 
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
-        return NULL;
+    try {
+        SoNode* scene = _pcView->getViewer()->getSceneGraph();
+        PyObject* proxy = 0;
+        proxy = Base::Interpreter().createSWIGPointerObj("SoSeparator *", (void*)scene, 1);
+        scene->ref();
+        return proxy;
     }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoSeparator *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoSeparator'");
-        return NULL;
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
     }
-
-    SoNode* scene = _pcView->getViewer()->getSceneGraph();
-    scene->ref();
-    
-    PyObject *resultobj = NULL;
-    resultobj = SWIG_Python_NewPointerObj((void*)scene,swig_type,1);
-    return resultobj;
 }
 
 // -----------------------------------------------------------------
@@ -1225,32 +1173,20 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
 static PyObject *
 wrap_SoQtViewer_setViewDirection(PyObject *proxy, PyObject *args)
 {
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
-    void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
-        return NULL;
-    }
-
-    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
-
     PyObject* object;
     if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
 
+    void* ptr = 0;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
+    }
+
+    SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     try {
         Py::Tuple tuple(object);
         Py::Float x(tuple.getItem(0));
@@ -1272,31 +1208,19 @@ wrap_SoQtViewer_setViewDirection(PyObject *proxy, PyObject *args)
 static PyObject *
 wrap_SoQtViewer_getViewDirection(PyObject *proxy, PyObject *args)
 {
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
-    void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
-        return NULL;
-    }
-
-    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
-
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
 
+    void* ptr = 0;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
+    }
+
+    SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     try {
         SoCamera* cam = viewer->getCamera();
         SbRotation camrot = cam->orientation.getValue();
@@ -1317,32 +1241,20 @@ wrap_SoQtViewer_getViewDirection(PyObject *proxy, PyObject *args)
 static PyObject *
 wrap_SoQtViewer_setFocalDistance(PyObject *proxy, PyObject *args)
 {
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
-    void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
-        return NULL;
-    }
-
-    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
-
     float distance;
     if (!PyArg_ParseTuple(args, "f", &distance))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
 
+    void* ptr = 0;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
+    }
+
+    SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     PY_TRY {
         SoCamera* cam = viewer->getCamera();
         cam->focalDistance.setValue(distance);
@@ -1354,31 +1266,19 @@ wrap_SoQtViewer_setFocalDistance(PyObject *proxy, PyObject *args)
 static PyObject *
 wrap_SoQtViewer_getFocalDistance(PyObject *proxy, PyObject *args)
 {
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
-    void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
-        return NULL;
-    }
-
-    View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
-
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
 
+    void* ptr = 0;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
+    }
+
+    SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     SoCamera* cam = viewer->getCamera();
     return PyFloat_FromDouble(cam->focalDistance.getValue());
 }
@@ -1390,28 +1290,16 @@ wrap_SoQtViewer_seekToPoint(PyObject *proxy, PyObject *args)
     if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
 
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
     void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert to SoQtViewer");
-        return NULL;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
     }
 
     View3DInventorViewer* viewer = reinterpret_cast<View3DInventorViewer*>(ptr);
-
     try {
         const Py::Tuple tuple(object);
 
@@ -1461,33 +1349,27 @@ PYFUNCIMP_D(View3DPy,getViewer)
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
 
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for SoQt loaded");
-        return NULL;
+    PyObject* proxy = 0;
+    try {
+        // Note: As there is no ref'counting mechanism for the viewer class we must
+        // pass '0' as the third parameter so that the Python object does not 'own'
+        // the viewer. 
+        // Note: Once we have closed the viewer the Python object must not be used
+        // anymore as it has a dangling pointer.
+        SoQtViewer* view = _pcView->getViewer();
+        proxy = Base::Interpreter().createSWIGPointerObj("SoQtViewer *", (void*)view, 0);
     }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoQtViewer *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoQtViewer'");
-        return NULL;
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
     }
-
-    // Note: As there is no ref'counting mechanism for the viewer class we must
-    // pass '0' as the third parameter so that the Python object does not 'own'
-    // the viewer. 
-    // Note: Once we have closed the viewer the Python object must not be used
-    // anymore as it has a dangling pointer.
-    PyObject *resultobj = NULL;
-    resultobj = SWIG_Python_NewPointerObj((void*)_pcView->getViewer(),swig_type,0);
 
     // Add some additional methods to the viewer's type object
     static bool first=true;
-    if (first && resultobj) {
+    if (first && proxy) {
         first = false;
         PyMethodDef *meth = wrap_SoQtViewer_methods;
-        PyTypeObject *type = resultobj->ob_type;
+        PyTypeObject *type = proxy->ob_type;
         PyObject *dict = type->tp_dict;
         for (; meth->ml_name != NULL; meth++) {
             PyObject *descr;
@@ -1499,7 +1381,41 @@ PYFUNCIMP_D(View3DPy,getViewer)
             Py_DECREF(descr);
         }
     }
-    return resultobj;
+    return proxy;
+}
+
+void View3DPy::eventCallbackSWIG(void * ud, SoEventCallback * n)
+{
+    const SoEvent* e = n->getEvent();
+    std::string type = e->getTypeId().getName().getString();
+    type += " *";
+
+    PyObject* proxy = 0;
+    try {
+        proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)e, 0);
+        // now run the method
+        Py::Object event(proxy,true);
+        Py::Callable method(reinterpret_cast<PyObject*>(ud));
+        Py::Tuple args(1);
+        args.setItem(0, event);
+        method.apply(args);
+    }
+    catch (const Base::Exception&) {
+        return;
+    }
+    catch (const Py::Exception& e) {
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
+        }
+        else {
+            Py::String s(o.repr());
+            Base::Console().Warning("%s\n", s.as_std_string().c_str());
+        }
+        // Prints message to console window if we are in interactive mode
+        PyErr_Print();
+    }
 }
 
 PYFUNCIMP_D(View3DPy,addEventCallbackSWIG)
@@ -1508,25 +1424,14 @@ PYFUNCIMP_D(View3DPy,addEventCallbackSWIG)
     PyObject* method;
     if (!PyArg_ParseTuple(args, "OO", &proxy, &method))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
-    
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
-        return NULL;
-    }
 
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoType *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoType'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
     void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert into SoType");
-        return NULL;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoType *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
     }
 
     SoType* eventId = reinterpret_cast<SoType*>(ptr);
@@ -1555,25 +1460,14 @@ PYFUNCIMP_D(View3DPy,removeEventCallbackSWIG)
     PyObject* method;
     if (!PyArg_ParseTuple(args, "OO", &proxy, &method))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
-    
-    swig_module_info *module = SWIG_GetModule(NULL);
-    if (!module) {
-        PyErr_SetString(PyExc_RuntimeError, "No Python binding for Coin loaded");
-        return NULL;
-    }
 
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoType *");
-    if (!swig_type) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot find type information for 'SoType'");
-        return NULL;
-    }
-
-    // return value of 0 is on success
     void* ptr = 0;
-    if (SWIG_ConvertPtr(proxy, &ptr, swig_type, 0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Cannot convert into SoType");
-        return NULL;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("SoType *", proxy, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
     }
 
     SoType* eventId = reinterpret_cast<SoType*>(ptr);
@@ -1595,42 +1489,3 @@ PYFUNCIMP_D(View3DPy,removeEventCallbackSWIG)
         return NULL;
     }
 }
-
-void View3DPy::cleanupSWIG()
-{
-    swig_module_info *swig_module = SWIG_GetModule(NULL);
-    if (!swig_module) {
-        // No Python binding for Coin loaded
-        return;
-    }
-
-    swig_type_info * swig_type = 0;
-    swig_type = SWIG_TypeQuery("SoBase *");
-    if (!swig_type) {
-        // Cannot find type information for event type
-        return;
-    }
-
-    PyObject* module = PyImport_AddModule("__main__");
-    if (module != NULL && PyModule_Check(module)) {
-        PyObject* dict = PyModule_GetDict(module);
-        if (!dict) return;
-
-        Py_ssize_t pos;
-        PyObject *key, *value;
-        pos = 0;
-        while (PyDict_Next(dict, &pos, &key, &value)) {
-            if (value != Py_None && PyString_Check(key)) {
-                //char *s = PyString_AsString(key);
-                void* ptr = 0;
-                if (SWIG_ConvertPtr(value, &ptr, 0, 0) == 0)
-                    PyDict_SetItem(dict, key, Py_None);
-            }
-        }
-    }
-
-    // we must run the garbage collector before shutting down the SoDB or SoQt 
-    // system because we may reference some class objects of them via Python
-    PyGC_Collect();
-}
-

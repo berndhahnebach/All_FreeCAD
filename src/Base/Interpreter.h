@@ -168,6 +168,7 @@ public:
     /// generate a SWIG object
     PyObject* createSWIGPointerObj(const char* TypeName, void* Pointer, int own);
     bool convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags);
+    void cleanupSWIG(const char* TypeName);
     //@}
 
     /** @name std container to Python container helpers
