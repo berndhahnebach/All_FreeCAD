@@ -183,9 +183,7 @@ def BuildAll():
 	CallProcess(["BuildAll.bat"],
 				 "7) Build all")
 	
-def BuildInstaller():
-	print ""
-	
+
 def HelpFile():
 	import wiki2chm
 	if not os.path.isdir('doc'):
@@ -220,6 +218,13 @@ def HelpFile():
 	
 def CompileHelp():
 	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:',False) 
+
+def BuildInstaller():
+	# candle -out FreeCADBase.wxobj    FreeCADBase.wxs
+	CallProcess([Config.get('Tools','candle'),
+	             '-out','installer\\FreeCAD.wxobj',
+	             'installer\\FreeCAD.wxs',
+				 ],'7)Build installer:',False) 
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
@@ -270,12 +275,13 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		CheckOut()
-		PackSourceZip()
-		PackSourceTar()
-		BuildAll()
-		HelpFile()
-		CompileHelp()
+		#CheckOut()
+		#PackSourceZip()
+		#PackSourceTar()
+		#BuildAll()
+		BuildInstaller()
+		#HelpFile()
+		#CompileHelp()
 	except:
 		Log.close()
 		ErrLog.close()
@@ -285,6 +291,9 @@ def main():
 		raise
 	
 	os.chdir(OldCwd)
+	Log.close()
+	ErrLog.close()
+
 	print "Press any key"
 	sys.stdin.readline()
 	

@@ -1094,9 +1094,8 @@ void ParameterManager::Init(void)
 
 bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-    FileInfo file(sFileName);
-    
-    if (file.exists()) {
+	Base::FileInfo file(sFileName);
+	if(file.exists()){
         LoadDocument(sFileName);
         return false;
     }
@@ -1106,14 +1105,12 @@ bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
     }
 }
 
+
+
 int  ParameterManager::LoadDocument(const char* sFileName)
 {
-#if defined (FC_OS_WIN32)
-    std::wstring gXmlFile = FileInfo(sFileName).toStdWString();
-#else
-    std::string gXmlFile = FileInfo(sFileName).filePath();
-#endif
- 
+	Base::FileInfo file(sFileName);
+    
     //
     //  Create our parser, then attach an error handler to the parser.
     //  The parser will call back to methods of the ErrorHandler if it
@@ -1135,11 +1132,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
     //
     bool errorsOccured = false;
     try {
-#if defined (FC_OS_WIN32)
-        parser->parse((XMLCh*)gXmlFile.c_str());
-#else
-        parser->parse(gXmlFile.c_str());
-#endif
+        parser->parse((XMLCh*)file.toStdWString().c_str());
     }
 
     catch (const XMLException& e) {
@@ -1181,7 +1174,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 void  ParameterManager::SaveDocument(const char* sFileName) const
 {
     DOMPrintFilter   *myFilter = 0;
-
+	Base::FileInfo file(sFileName);
 
     try {
         // get a serializer, an instance of DOMWriter
@@ -1232,7 +1225,7 @@ void  ParameterManager::SaveDocument(const char* sFileName) const
         // LocalFileFormatTarget prints the resultant XML stream
         // to a file once it receives any thing from the serializer.
         //
-        XMLFormatTarget *myFormTarget = new LocalFileFormatTarget (sFileName);
+        XMLFormatTarget *myFormTarget = new LocalFileFormatTarget ((XMLCh*)file.toStdWString().c_str());
 
         //
         // do the serialization through DOMWriter::writeNode();
