@@ -1094,17 +1094,9 @@ void ParameterManager::Init(void)
 
 bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-#if defined (__GNUC__)
-    int i=open(sFileName,O_RDONLY);
-#else
-    int i=_open(sFileName,O_RDONLY);
-#endif
-    if ( i != -1) {
-#if defined (__GNUC__)
-        close(i);
-#else
-        _close(i);
-#endif
+    FileInfo file(sFileName);
+    
+    if(file.exists()){
         LoadDocument(sFileName);
         return false;
     }
@@ -1118,8 +1110,8 @@ bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 
 int  ParameterManager::LoadDocument(const char* sFileName)
 {
-    const char *gXmlFile = sFileName;
-
+    std::wstring gXmlFile = FileInfo(sFileName).toStdWString();
+ 
     //
     //  Create our parser, then attach an error handler to the parser.
     //  The parser will call back to methods of the ErrorHandler if it
@@ -1141,7 +1133,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
     //
     bool errorsOccured = false;
     try {
-        parser->parse(gXmlFile);
+        parser->parse((XMLCh*)gXmlFile.c_str());
     }
 
     catch (const XMLException& e) {
