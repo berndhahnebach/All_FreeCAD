@@ -35,6 +35,6 @@ Log ("FreeCAD test running...\n\n")
 import TestApp;TestApp.TestText("TestApp.All")
 
 
-FreeCAD.PrintLog ("FreeCAD test done\n")
+Log ("FreeCAD test done\n")
 
 

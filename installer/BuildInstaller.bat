@@ -1,17 +1,10 @@
 
-set FREECADLIB    = D:\Develop\Projekte\FreeCAD\FreeCADLibPack\FreeCADLibs4
 
-SubWCRev .. Version.wxi.in Version.wxi
-
-candle -out FreeCADBase.wxobj    FreeCADBase.wxs
-candle -out LibPack4.wxobj       LibPack4.wxs
+C:\Libs\Libs\wix_30\candle.exe -out FreeCADBase.wxobj    FreeCADBase.wxs
+C:\Libs\Libs\wix_30\candle.exe -out LibPack.wxobj       LibPack.wxs
 rem candle -out FreeCADDoc.wxobj     FreeCADDoc.wxs
-candle -out FreeCADModules.wxobj FreeCADModules.wxs
-candle -out FreeCAD.wxobj        FreeCAD.wxs
+C:\Libs\Libs\wix_30\candle.exe -out FreeCADModules.wxobj FreeCADModules.wxs
+C:\Libs\Libs\wix_30\candle.exe -out FreeCAD.wxobj        FreeCAD.wxs
 
-light  -ext WixUIExtension -cultures:en-us -out FreeCAD.msi *.wxobj
-
-SubWCRev .. CopyRelease.bat.in CopyRelease.bat
-call CopyRelease.bat
-del *.wxobj CopyRelease.bat Version.wxi FreeCAD.msi
+C:\Libs\Libs\wix_30\light.exe  -ext WixUIExtension -cultures:en-us -out FreeCAD.msi *.wxobj
 

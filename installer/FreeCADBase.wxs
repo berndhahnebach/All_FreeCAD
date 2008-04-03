@@ -23,41 +23,38 @@
    Juergen Riegel 2005                                                 
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADBase">
-        <DirectoryRef Id="BinDir" FileSource="../bin/">
-            <Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7">
-                <File Id="Exe" Name="FreeCAD.exe" >
-                    <Shortcut Id="FCShortcut" 
-										          Directory="MenuDir"  
-															Name="FreeCAD" 
-															Arguments="" 
-															Description="FreeCAD the one and only open source CAD package" 
-															WorkingDirectory="BinDir" 
-															Advertise="yes" />
-                    <Shortcut Id="FCShortcutDesk" 
-										          Directory="DesktopFolder"  
-															Name="FreeCAD" 
-															Arguments="" 
-															Description="FreeCAD the one and only open source CAD package" 
-															WorkingDirectory="BinDir"
-															Advertise="yes" />
-                </File>
-                <File Id="CmdExe" Name="FreeCADCmd.exe">
-                    <Shortcut Id="FCCmdShortcut" 
-										          Directory="MenuDir" 
-															ShortName="FreeCAD" 
-															Name="command line" 
-															Arguments="" 
-															Description="FreeCAD the one and only open source CAD package" 
-															WorkingDirectory="BinDir" 
-															Advertise="yes" />
-                </File>
-                <File Id="PyModule" Name="FreeCAD.pyd"     />
-                <File Id="AppDll"   Name="FreeCADApp.dll"  />
-                <File Id="BaseDll"  Name="FreeCADBase.dll" />
-                <File Id="GuiDll"   Name="FreeCADGui.dll"  />
+	<Fragment Id="FreeCADBase">
+		<DirectoryRef Id="BinDir" FileSource="../bin/">
+			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7">
+				<File Id="Exe" Name="FreeCAD.exe" >
+					<Shortcut Id="FCShortcut" 
+						Directory="MenuDir"  
+						Name="FreeCAD" 
+						Description="FreeCAD the one and only open source CAD package" 
+						WorkingDirectory="BinDir" 
+						Advertise="yes" />
+					<Shortcut Id="FCShortcutDesk" 
+						Directory="DesktopFolder"  
+						Name="FreeCAD" 
+						Description="FreeCAD the one and only open source CAD package" 
+						WorkingDirectory="BinDir"
+						Advertise="yes" />
+				</File>
+				<File Id="CmdExe" Name="FreeCADCmd.exe">
+					<Shortcut Id="FCCmdShortcut" 
+						Directory="MenuDir" 
+						ShortName="FreeCAD" 
+						Name="command line" 
+						Description="FreeCAD the one and only open source CAD package" 
+						WorkingDirectory="BinDir" 
+						Advertise="yes" />
+				</File>
+				<File Id="PyModule" Name="FreeCAD.pyd"     />
+				<File Id="AppDll"   Name="FreeCADApp.dll"  />
+				<File Id="BaseDll"  Name="FreeCADBase.dll" />
+				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
 								<RemoveFolder Id="RmvMenuFolder" Directory="MenuDir" On="uninstall"/>
-            </Component>
-        </DirectoryRef>
-    </Fragment>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
 </Wix>
