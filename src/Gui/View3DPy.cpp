@@ -44,8 +44,6 @@
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
 
-#include "swigpyrun.h"
-
 #include <Base/PyCXX/Objects.hxx>
 
 using Base::Console;
