@@ -9,7 +9,7 @@ EXTRA_DIST = \
 		installer/FreeCADDoc.wxs \
 		installer/FreeCADModules.wxs \
 		installer/LibPackDll.wxi \
-		installer/LibPack4.wxs \
+		installer/LibPack.wxs \
 		installer/License.rtf \
 		installer/ModImage.wxi \
 		installer/ModMesh.wxi \
