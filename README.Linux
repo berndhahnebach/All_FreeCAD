@@ -16,10 +16,10 @@ o SoQt (http://www.coin3d.org), >= 1.2.x
 o Xerces-c (http://xml.apache.org/dist/xerces-c/), >= 2.6
 o zlib (http://www.zlib.net/)
 
-And for the Mesh module of FreeCAD the additional libraries
-o GTS Library (http://gts.sourceforge.net)
+And for the some FreeCAD modules the additional libraries
 o OpenCascade (http://www.opencascade.org), >= 5.2
-are required. OpenCascade is also needed by the Part module.
+o OpenCV (http://opencvlibrary.sourceforge.net), >= 0.9.7
+are required.
 
 Note: zlib might be already on your system, as this is a library that is used 
       by a lot of libraries, too.
@@ -31,7 +31,7 @@ Note: If possible you should enable thread support for the libraries. At least f
       Qt thread support is strongly recommended, otherwise you will run into linker
       errors at build time of FreeCAD.
 
-Note: The package for SoQt for Debian based systems lacks of the soqt.m4 macro file.
+Note: The package for SoQt for Debian based systems may lack of the soqt.m4 macro file.
       You should download the file from www.coin3d.org and copy it to /usr/share/aclocal.
 
 Note: The package for SoQt (at least for Debian based systems) is usually built to link 
@@ -43,6 +43,20 @@ Note: The package for SoQt (at least for Debian based systems) is usually built 
       than the installed SoQt to avoid to corrupt your package database and/or to keep other 
       applications working. When configuring FreeCAD you have to use the '--with-soqt=DIR' 
       switch specifying the path of the newly installed SoQt.
+
+Note: For OpenCascade there does not exist an official .deb package for Debian based systems,
+      so you have to download the latest version from www.opencascade.org.
+      Install the package normally, be aware that the installer is a java program that requires
+      the official java runtime edition from Sun, not the open-source java (gij) that is bundled
+      with Debian or Ubuntu. Install it if needed:
+
+      sudo apt-get remove gij
+      sudo apt-get install sun-java5-bin
+
+      Be careful, if you use gij java with other things like a browser plugin, they won't work
+      anymore. Now start the installer with
+      java -jar setup.jar
+
 
 During the compilation some Python scripts get executed. So the Python interpreter has
 to work properly.
@@ -87,91 +101,6 @@ Note: In the past there were a lot of problems that the Part workbench couldn't 
 So, just have fun!
 
 
-Known problems
---------------
-
-Here I have added a list of known problems concerning installation of libraries or the build
-process of FreeCAD. If you encounter any problems please read this section, first.
-
-
-Worth noting up front that OpenCascade requires at least 500Mb of swap space
-( according to their documentation ). Linux uses a separate partition for
-the swap space, so you might have to re-partition the hard drive to achieve this
-and it is worth doing that before the rest of the install!
-
-Problem:
-OCC install wizard doesn't work - just prints a few lines of dots and then stops.
-
-Solution:
-Export the display so that root can connect to it, and then run the java script
-manually as root:
-> xhost +      // Allow root to access our display
-> su           // Change user to root
-> /usr/lib/java/jre/bin/java -jar ./Linux/setup.jar
-
-
-Problem:
-My unix configure script runs with the following error:
-configure: checking Python...
-checking for /usr/include/python2.5/Python.h... yes
-checking for /usr/lib/libpython2.5.so... no
-checking for /usr/local/lib/libpython2.5.so... no
-configure: error:
-        **** Could not find Python library files.
-         Please check your installation. ****
-
-Now my system does contain a libpython2.5.a but NOT libpython2.5.so
-
-Solution:
-To run the configure script successfully you have to rebuild Python creating also dynamic libraries.
-FreeCAD is designed to have a core system consisting of FreeCADBase, FreeCADApp, FreeCADGui and the main program
-FreeCAD for the Gui part or FreeCADCmd for the commandline version respectively and modules for further funcionality.
-These modules are written as plugin and get loaded at runtime. To avoid linker errors at build time for the modules we
-strongly need dynamic libraries only.
-
-
-Problem:
-If I don't set the CASROOT environment variable then configure fails.
-e.g. export CASROOT=/opt/OpenCASCADE5.2/ros
-
-Solution:
-Usually if you install OpenCascade (OCC) on your system you have to set several environment variables among them CASROOT. 
-But it's also possible to split the OCC library and put its header files e.g. to /usr/local/incude put and the libraries 
-to /usr/local/lib. This is mainly common under Debian based systems.
-In order to run the configure script successfully in this case you have to specify the --with-occ-include and --with-occ-lib
-options. The configure scripts then checks for the file Standard.hxx.
-
-
-Problem:
-The ./configure can't find a file named "Python.h" but I don't have any file named
-like that and Python is perfectly running on the computer.
-
-Solution:
-You need to have installed the devel package of Python, too. The Python interpreter (or any other application)
-doesn't need header files at runtime, but to build an application using Python then you need the header files.
-
-
-
-Known Bugs
-----------
-
-The following problems are Linux specific, i.e. under Windows they do not appear.
-
-1: Conflicts between OpenCascade 5.2 and GTS library.
-  The library libTKTopAlgo.so (OpenCascade) and GTS provide the global function 'orient3d()'. This leads to a segmentation fault when
-  using GTS functionality from within the Mesh module.
-  To avoid the problem you can rename 'orient3d' to 'gts_orient3d' in GTS and recompile the library.
-  Note: The problem may occur with older versions of OpenCascade than 5.2.
-
-
-2: Problems when loading CAD files.
-  CAD files can be loaded from the Part module. But there is somehow a conflict caused by the global function 'locate()' in libTKTopAlgo.so
-  when the Mesh module has been loaded before the Part module. If the Part module has been loaded first the problem does not appear.
-  This problem arised with FreeCAD version 0.5 but isn't fixed yet.
-
-Using later version of OpenCascade these problems might disappear.
-
-
 
 Werner Mayer <wmayer@users.sourceforge.net>
-April 2007
+April 2008
