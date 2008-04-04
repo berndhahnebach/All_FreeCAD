@@ -26,34 +26,34 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
-#	include <xercesc/util/PlatformUtils.hpp>
-#	include <xercesc/dom/DOM.hpp>
-#	include <xercesc/dom/DOMImplementation.hpp>
-#	include <xercesc/dom/DOMImplementationLS.hpp>
-#	include <xercesc/dom/DOMWriter.hpp>
-#	include <xercesc/framework/StdOutFormatTarget.hpp>
-#	include <xercesc/framework/LocalFileFormatTarget.hpp>
-#	include <xercesc/parsers/XercesDOMParser.hpp>
-#	include <xercesc/util/XMLUni.hpp>
-# include <xercesc/util/XMLUniDefs.hpp>
-# include <xercesc/util/XMLString.hpp>
-#	include <xercesc/sax/ErrorHandler.hpp>
-#	include <xercesc/sax/SAXParseException.hpp>
-#	include <fcntl.h>
-#	include <sys/types.h>
-#	include <sys/stat.h>
-#	ifdef FC_OS_WIN32
-#	include <io.h>
-#	endif
-# include <sstream>
-#	include <stdio.h>
+#   include <assert.h>
+#   include <xercesc/util/PlatformUtils.hpp>
+#   include <xercesc/dom/DOM.hpp>
+#   include <xercesc/dom/DOMImplementation.hpp>
+#   include <xercesc/dom/DOMImplementationLS.hpp>
+#   include <xercesc/dom/DOMWriter.hpp>
+#   include <xercesc/framework/StdOutFormatTarget.hpp>
+#   include <xercesc/framework/LocalFileFormatTarget.hpp>
+#   include <xercesc/parsers/XercesDOMParser.hpp>
+#   include <xercesc/util/XMLUni.hpp>
+#   include <xercesc/util/XMLUniDefs.hpp>
+#   include <xercesc/util/XMLString.hpp>
+#   include <xercesc/sax/ErrorHandler.hpp>
+#   include <xercesc/sax/SAXParseException.hpp>
+#   include <fcntl.h>
+#   include <sys/types.h>
+#   include <sys/stat.h>
+#   ifdef FC_OS_WIN32
+#   include <io.h>
+#   endif
+#   include <sstream>
+#   include <stdio.h>
 #endif
 
 
 #include <fcntl.h>
 #ifdef FC_OS_LINUX
-#	include <unistd.h>
+#   include <unistd.h>
 #endif
 
 #include "Parameter.h"
@@ -62,7 +62,7 @@
 
 
 //#ifdef XERCES_HAS_CPP_NAMESPACE
-//	using namespace xercesc;
+//  using namespace xercesc;
 //#endif
 
 XERCES_CPP_NAMESPACE_USE
@@ -180,13 +180,6 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 }
 
 
-
-
-
-
-
-
-
 //**************************************************************************
 //**************************************************************************
 // ParameterManager
@@ -216,7 +209,6 @@ ParameterGrp::~ParameterGrp()
 
 //**************************************************************************
 // Access methods
-
 
 void ParameterGrp::copyTo(Base::Reference<ParameterGrp> Grp)
 {
@@ -299,10 +291,6 @@ void ParameterGrp::insert(const char* FileName)
     Mngr.GetGroup("root")->insertTo(Base::Reference<ParameterGrp>(this));
 
 }
-
-
-
-
 
 Base::Reference<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
 {
@@ -407,8 +395,6 @@ bool ParameterGrp::HasGroup(const char* Name) const
     return false;
 
 }
-
-
 
 bool ParameterGrp::GetBool(const char* Name, bool bPreset) const
 {
@@ -713,7 +699,6 @@ std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset) const
 
     else
         return std::string(pPreset);
-
 }
 
 std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter) const
@@ -890,12 +875,8 @@ void ParameterGrp::Clear(void)
     Notify(0);
 }
 
-
-
-
 //**************************************************************************
 // Access methods
-
 
 DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name) const
 {
@@ -988,7 +969,6 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 //**************************************************************************
 // Construction/Destruction
 
-
 /** Defauld construction
   * Does not much
   */
@@ -1059,7 +1039,6 @@ ParameterManager::~ParameterManager()
 {
 }
 
-
 void ParameterManager::Init(void)
 {
     static bool Init = false;
@@ -1094,8 +1073,8 @@ void ParameterManager::Init(void)
 
 bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-	Base::FileInfo file(sFileName);
-	if(file.exists()){
+    Base::FileInfo file(sFileName);
+    if (file.exists()) {
         LoadDocument(sFileName);
         return false;
     }
@@ -1105,11 +1084,9 @@ bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
     }
 }
 
-
-
 int  ParameterManager::LoadDocument(const char* sFileName)
 {
-	Base::FileInfo file(sFileName);
+    Base::FileInfo file(sFileName);
     
     //
     //  Create our parser, then attach an error handler to the parser.
@@ -1132,7 +1109,11 @@ int  ParameterManager::LoadDocument(const char* sFileName)
     //
     bool errorsOccured = false;
     try {
+#if defined (FC_OS_WIN32)
         parser->parse((XMLCh*)file.toStdWString().c_str());
+#else
+        parser->parse(file.filePath().c_str());
+#endif
     }
 
     catch (const XMLException& e) {
@@ -1174,7 +1155,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 void  ParameterManager::SaveDocument(const char* sFileName) const
 {
     DOMPrintFilter   *myFilter = 0;
-	Base::FileInfo file(sFileName);
+    Base::FileInfo file(sFileName);
 
     try {
         // get a serializer, an instance of DOMWriter
@@ -1225,7 +1206,11 @@ void  ParameterManager::SaveDocument(const char* sFileName) const
         // LocalFileFormatTarget prints the resultant XML stream
         // to a file once it receives any thing from the serializer.
         //
+#if defined (FC_OS_WIN32)
         XMLFormatTarget *myFormTarget = new LocalFileFormatTarget ((XMLCh*)file.toStdWString().c_str());
+#else
+        XMLFormatTarget *myFormTarget = new LocalFileFormatTarget (file.filePath().c_str());
+#endif
 
         //
         // do the serialization through DOMWriter::writeNode();
@@ -1278,8 +1263,6 @@ void  ParameterManager::CheckDocument() const
 }
 
 
-
-
 //**************************************************************************
 //**************************************************************************
 // DOMTreeErrorReporter
@@ -1316,14 +1299,10 @@ void DOMTreeErrorReporter::resetErrors()
 }
 
 
-
-
 //**************************************************************************
 //**************************************************************************
 // DOMPrintFilter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
 DOMPrintFilter::DOMPrintFilter(unsigned long whatToShow)
         :fWhatToShow(whatToShow)
@@ -1406,8 +1385,6 @@ short DOMPrintFilter::acceptNode(const DOMNode* node) const
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-
-
 bool DOMPrintErrorHandler::handleError(const DOMError &domError)
 {
     // Display whatever error message passed from the serializer
@@ -1418,8 +1395,6 @@ bool DOMPrintErrorHandler::handleError(const DOMError &domError)
     // Instructs the serializer to continue serialization if possible.
     return true;
 }
-
-
 
 
 //**************************************************************************
