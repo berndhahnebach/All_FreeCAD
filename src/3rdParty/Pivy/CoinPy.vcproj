@@ -68,6 +68,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="..\..\..\lib\_coin_d.lib"
 				TargetMachine="1"
 			/>
@@ -147,6 +148,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\_coin.lib"
@@ -190,7 +192,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -200,7 +202,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -214,7 +216,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -224,7 +226,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -246,7 +248,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>
@@ -256,7 +258,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying $(InputName).py ..."
-					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;"
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(TargetDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 					Outputs="$(TargetDir)\$(InputName).py"
 				/>
 			</FileConfiguration>

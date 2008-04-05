@@ -83,6 +83,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/Mesh.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Mesh.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/Mesh_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Mesh_d.lib"
 				TargetMachine="1"
 			/>

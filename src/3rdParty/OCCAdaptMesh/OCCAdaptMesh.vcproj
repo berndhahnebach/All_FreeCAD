@@ -88,6 +88,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\OCCAdaptMesh.pdb"
 				StackReserveSize="10000000"
+				LargeAddressAware="2"
 				ImportLibrary="../../../lib/OCCAdaptMesh_d.lib"
 			/>
 			<Tool
@@ -187,6 +188,7 @@
 				GenerateManifest="true"
 				ProgramDatabaseFile="$(OutDir)\OCCAdaptMesh.pdb"
 				StackReserveSize="10000000"
+				LargeAddressAware="2"
 				ImportLibrary="../../../lib/OCCAdaptMesh.lib"
 			/>
 			<Tool

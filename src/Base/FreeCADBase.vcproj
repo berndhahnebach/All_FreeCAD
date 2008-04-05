@@ -84,6 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADBaseD.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADBaseD.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADBase.pdb"
 				GenerateMapFile="true"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADBase.lib"
 				TargetMachine="1"
 			/>

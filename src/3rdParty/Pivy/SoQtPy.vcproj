@@ -67,6 +67,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="..\..\..\lib\_soqt_d.lib"
 				TargetMachine="1"
 			/>
@@ -145,6 +146,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\_soqt.lib"

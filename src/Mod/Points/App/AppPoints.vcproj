@@ -83,6 +83,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Points/Points.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Points.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Points/Points_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Points_d.lib"
 				TargetMachine="1"
 			/>

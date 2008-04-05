@@ -85,6 +85,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADGuiD.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADGuiD.lib"
 				TargetMachine="1"
 			/>
@@ -186,6 +187,7 @@
 				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADGui.lib"
 				TargetMachine="1"
 			/>
@@ -4200,7 +4202,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -4209,7 +4211,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>

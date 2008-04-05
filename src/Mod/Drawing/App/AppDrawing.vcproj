@@ -85,6 +85,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Drawing/Drawing_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Drawing_d.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Drawing/Drawing.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Drawing.lib"
 				TargetMachine="1"
 			/>

@@ -59,6 +59,7 @@
 				Name="VCLinkerTool"
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				GenerateDebugInformation="true"
+				LargeAddressAware="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -129,6 +130,7 @@
 				Name="VCLinkerTool"
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				GenerateDebugInformation="true"
+				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"

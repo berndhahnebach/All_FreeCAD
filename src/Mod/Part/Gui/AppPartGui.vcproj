@@ -82,6 +82,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Part/PartGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/PartGui.lib"
 				TargetMachine="1"
 			/>
@@ -183,6 +184,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Part/PartGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/PartGui_d.lib"
 				TargetMachine="1"
 			/>

@@ -82,6 +82,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADDCmdPy.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCAD_d.lib"
 				TargetMachine="1"
 			/>
@@ -181,6 +182,7 @@
 				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADCmdPy.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCAD.lib"
 				TargetMachine="1"
 			/>
