@@ -84,6 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Drawing/DrawingGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/DrawingGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -184,6 +185,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Drawing/DrawingGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/DrawingGui.lib"
 				TargetMachine="1"
 			/>

@@ -86,6 +86,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Part/Part_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Part_d.lib"
 				TargetMachine="1"
 			/>
@@ -186,6 +187,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Part/Part.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Part.lib"
 				TargetMachine="1"
 			/>

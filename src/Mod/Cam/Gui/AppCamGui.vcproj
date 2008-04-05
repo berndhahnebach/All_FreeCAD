@@ -84,6 +84,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui_d.pdb"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/CamGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/CamGui.pdb"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/CamGui.lib"
 				TargetMachine="1"
 			/>

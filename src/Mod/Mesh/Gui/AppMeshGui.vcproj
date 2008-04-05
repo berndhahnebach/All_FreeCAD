@@ -82,6 +82,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/MeshGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/MeshGui.lib"
 				TargetMachine="1"
 			/>
@@ -184,6 +185,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Mesh/MeshGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/MeshGui_d.lib"
 				TargetMachine="1"
 			/>

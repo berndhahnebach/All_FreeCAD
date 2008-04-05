@@ -83,6 +83,7 @@
 				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCADApp.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADApp.lib"
 				TargetMachine="1"
 			/>
@@ -184,6 +185,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADAppD.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../lib/FreeCADAppD.lib"
 				TargetMachine="1"
 			/>

@@ -85,6 +85,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Test/DebugGui/QtUnitGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/QtUnitGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Test/ReleaseGui/QtUnitGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/QtUnitGui.lib"
 				TargetMachine="1"
 			/>

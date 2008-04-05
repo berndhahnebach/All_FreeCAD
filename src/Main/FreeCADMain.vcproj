@@ -80,6 +80,7 @@
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../bin/FreeCAD.pdb"
 				SubSystem="2"
+				LargeAddressAware="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -181,6 +182,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../bin/FreeCADD.pdb"
 				SubSystem="2"
+				LargeAddressAware="2"
 				TargetMachine="1"
 			/>
 			<Tool

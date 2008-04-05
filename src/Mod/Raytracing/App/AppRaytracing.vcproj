@@ -83,6 +83,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/Raytracing.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Raytracing.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/Raytracing_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Raytracing_d.lib"
 				TargetMachine="1"
 			/>

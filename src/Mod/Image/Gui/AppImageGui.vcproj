@@ -84,6 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Image/ImageGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/ImageGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -184,6 +185,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Image/ImageGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/ImageGui.lib"
 				TargetMachine="1"
 			/>

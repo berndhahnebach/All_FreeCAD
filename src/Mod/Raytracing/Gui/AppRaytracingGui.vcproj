@@ -84,6 +84,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/RaytracingGui_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/RaytracingGui_d.lib"
 				TargetMachine="1"
 			/>
@@ -184,6 +185,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Raytracing/RaytracingGui.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/RaytracingGui.lib"
 				TargetMachine="1"
 			/>

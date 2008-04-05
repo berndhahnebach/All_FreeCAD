@@ -88,6 +88,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam_d.pdb"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Cam_d.lib"
 				TargetMachine="1"
 			/>
@@ -192,6 +193,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Cam/Cam.pdb"
 				SubSystem="1"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Cam.lib"
 				TargetMachine="1"
 			/>

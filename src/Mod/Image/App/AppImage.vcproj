@@ -85,6 +85,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/Image/Image_d.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Image_d.lib"
 				TargetMachine="1"
 			/>
@@ -185,6 +186,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/Image/Image.pdb"
+				LargeAddressAware="2"
 				ImportLibrary="../../../../lib/Image.lib"
 				TargetMachine="1"
 			/>
