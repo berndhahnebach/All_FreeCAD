@@ -29,10 +29,13 @@ else
 	CFLAGS += -O2
 endif
 
+configure: autogen.sh
+	./autogen.sh
+
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --disable-debug --with-occ-include=$(OCC_INC_DIR) --with-occ-lib=$(OCC_LIB_DIR) --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --with-occ-include=$(OCC_INC_DIR) --with-occ-lib=$(OCC_LIB_DIR) --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 build: build-stamp
