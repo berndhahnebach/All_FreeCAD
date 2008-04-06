@@ -57,6 +57,18 @@ Note: For OpenCascade there does not exist an official .deb package for Debian b
       anymore. Now start the installer with
       java -jar setup.jar
 
+Note: Especially for Debian Etch users the packages for OpenCV (libcv-dev, libcvaux-dev and
+      libhighgui-dev) provides library names with appended version name.
+      In newer Debian versions and other Linux distributions these library names don't have
+      longer embedded the version name. To make the build process working for Debian Etch you
+      either have to replace in the Makefile in src/Mod/Image/App and src/Mod/Image/Gui
+      -lcxcore -lcv -lhighgui -lcvaux \ with
+      -lcxcore0.9.7 -lcv0.9.7 -lhighgui0.9.7 -lcvaux0.9.7 \ or create the symbolic links
+      ln -s libcxcore0.9.7.so libcxcore.so
+      ln -s libcv0.9.7.so libcv.so
+      ln -s libhighgui0.9.7.so libhighgui.so
+      ln -s libcvaux0.9.7.so libcvaux.so
+
 
 During the compilation some Python scripts get executed. So the Python interpreter has
 to work properly.

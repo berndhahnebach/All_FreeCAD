@@ -239,14 +239,14 @@ EOF
 
 cat > myqt.cpp << EOF
 #include "myqt.h"
-#include <QApplication>
+#include <QCoreApplication>
 #include <QByteArray>
 #include <QGlobalStatic>
 #include <QStringList>
 #include <stdio.h>
 int main( int argc, char **argv )
 {
-  QApplication app( argc, argv );
+  QCoreApplication app( argc, argv );
   Test t;
   QObject::connect( &t, SIGNAL(send()), &t, SLOT(receive()) );
 
@@ -285,7 +285,10 @@ AC_TRY_EVAL(bnv_try_3)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to compile Qt test app, bye...])
 fi
-bnv_try_4="$CXX $QT_LIBS $LIBS -o myqt myqt.o moc_myqt.o"
+
+# Make sure not link against X11 libs so that configure succeeds whithout xserver started
+#bnv_try_4="$CXX $QT_LIBS $LIBS -o myqt myqt.o moc_myqt.o"
+bnv_try_4="$CXX -L$fc_qt4_lib -lQtCore $LIBS -o myqt myqt.o moc_myqt.o"
 AC_TRY_EVAL(bnv_try_4)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to link with Qt, bye...])
