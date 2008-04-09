@@ -654,6 +654,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\ImportStep.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ImportStep.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
