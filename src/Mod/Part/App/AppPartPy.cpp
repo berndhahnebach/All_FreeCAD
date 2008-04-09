@@ -50,6 +50,7 @@
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
+#include "ImportStep.h"
 
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -83,8 +84,12 @@ static PyObject * open(PyObject *self, PyObject *args)
         if (file.hasExtension("stp") || file.hasExtension("step")) {
             // create new document and add Import feature
             App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+#if 0
+            ImportStepParts(pcDoc,Name);
+#else
             Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
             pcFeature->FileName.setValue(Name);
+#endif 
             pcDoc->recompute();
         }
         else if (file.hasExtension("igs") || file.hasExtension("iges")) {
