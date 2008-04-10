@@ -346,6 +346,9 @@ QList<QAction*> MenuManager::findActions(const QList<QAction*>& acts, const QStr
         if ((*it)->data().toString() == item) {
             used.append(*it);
             first_match = true;
+            // get only one separator per request
+            if (item == "Separator")
+                break;
         }
         else if (first_match)
             break;

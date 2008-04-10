@@ -44,6 +44,8 @@ libPart_la_SOURCES=\
 		FeaturePartPolygon.h \
 		FeaturePartSection.cpp \
 		FeaturePartSection.h \
+		ImportStep.cpp \
+		ImportStep.h \
 		LinePy.cpp \
 		LinePy.h \
 		PartFeature.cpp \
