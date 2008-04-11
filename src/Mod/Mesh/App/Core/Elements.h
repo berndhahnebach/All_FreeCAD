@@ -880,7 +880,7 @@ template <class TCLASS>
 class MeshIsFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    bool operator () (const TCLASS& rclElem, typename TCLASS::TFlagType tFlag) const
     { return rclElem.IsFlag(tFlag); }
 };
 
@@ -891,7 +891,7 @@ template <class TCLASS>
 class MeshIsNotFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    bool operator () (const TCLASS& rclElem, typename TCLASS::TFlagType tFlag) const
     { return !rclElem.IsFlag(tFlag); }
 };
 
@@ -902,7 +902,7 @@ template <class TCLASS>
 class MeshSetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    bool operator () (const TCLASS& rclElem, typename TCLASS::TFlagType tFlag) const
     { rclElem.SetFlag(tFlag); return true; }
 };
 
@@ -913,7 +913,7 @@ template <class TCLASS>
 class MeshResetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
 public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+    bool operator () (const TCLASS& rclElem, typename TCLASS::TFlagType tFlag) const
     { rclElem.ResetFlag(tFlag); return true; }
 };
 
