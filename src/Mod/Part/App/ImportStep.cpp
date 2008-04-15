@@ -32,10 +32,12 @@
 
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
+#include <App/Document.h>
 #include <StepData_StepModel.hxx>
 
 
 #include "ImportStep.h"
+#include "PartFeature.h"
 
 using namespace Part;
 
@@ -75,16 +77,27 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
             throw Base::Exception("No shapes found in file ");
         }
         else {
+            //
+            assert(nbs==1);
             for (Standard_Integer i =1; i<=nbs; i++) {
                 Base::Console().Log("STEP:   Transfering Shape %d\n",n);
                 aShape=aReader.Shape(i);
                 //Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
                 aHSequenceOfShape->Append(aShape);
+
+                TopExp_Explorer ex;
+
+                for (ex.Init(aShape, TopAbs_SOLID); ex.More(); ex.Next())
+                {
+                    // get the shape 
+                    const TopoDS_Solid& aSolid = TopoDS::Solid(ex.Current());
+                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",Name);
+                    pcFeature->Shape.setValue(aSolid);
+
+                }
             }
         }
     }
-
-    //setShape(aShape);
 
     return 0;
 }

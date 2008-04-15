@@ -84,7 +84,7 @@ static PyObject * open(PyObject *self, PyObject *args)
         if (file.hasExtension("stp") || file.hasExtension("step")) {
             // create new document and add Import feature
             App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-#if 0
+#if 1
             ImportStepParts(pcDoc,Name);
 #else
             Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
