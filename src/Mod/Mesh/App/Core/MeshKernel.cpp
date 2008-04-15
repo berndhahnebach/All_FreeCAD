@@ -67,6 +67,19 @@ MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
     return *this;
 }
 
+MeshKernel& MeshKernel::operator = (const std::vector<MeshGeomFacet> &rclFAry)
+{
+    MeshBuilder builder(*this);
+    builder.Initialize(rclFAry.size());
+
+    for (std::vector<MeshGeomFacet>::const_iterator it = rclFAry.begin(); it != rclFAry.end(); it++)
+        builder.AddFacet(*it);
+
+    builder.Finish();
+
+    return *this;
+}
+
 void MeshKernel::Assign(const MeshPointArray& rPoints, const MeshFacetArray& rFacets, bool checkNeighbourHood)
 {
     _aclPointArray = rPoints;
@@ -94,86 +107,71 @@ void MeshKernel::Swap(MeshKernel& mesh)
 
 MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 {
-    unsigned long i;
-    MeshFacet clFacet;
-
-    // Eckpunkte einfuegen
-    for (i = 0; i < 3; i++) {
-        _clBoundBox &= rclSFacet._aclPoints[i];
-        clFacet._aulPoints[i] = _aclPointArray.GetOrAddIndex(rclSFacet._aclPoints[i]);
-    }
-
-    // Umlaufrichtung der Normale anpassen
-    AdjustNormal(clFacet, rclSFacet.GetNormal());
-
-    unsigned long ulCt = _aclFacetArray.size();
-
-    // Nachbarschaften setzen
-    unsigned long ulP0 = clFacet._aulPoints[0];
-    unsigned long ulP1 = clFacet._aulPoints[1];
-    unsigned long ulP2 = clFacet._aulPoints[2];
-    unsigned long ulCC = 0;
-    for (TMeshFacetArray::iterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, ulCC++) {
-        for (int i = 0; i < 2; i++) {
-            unsigned long ulP = pF->_aulPoints[i];
-            if ((ulP == ulP0) || (ulP == ulP1) || (ulP == ulP2)) {
-                unsigned long ulPInc = pF->_aulPoints[i+1];
-                if (ulP == ulP0) {
-                    if (ulPInc == ulP1) {
-                        unsigned short usSide = clFacet.Side(ulP0, ulP1);
-                        clFacet._aulNeighbours[usSide] = ulCC;
-                        usSide = pF->Side(ulP, ulPInc);
-                        pF->_aulNeighbours[usSide] = ulCt;
-                    }
-                    else if (ulPInc == ulP2) {
-                        unsigned short usSide = clFacet.Side(ulP0, ulP2);
-                        clFacet._aulNeighbours[usSide] = ulCC;
-                        usSide = pF->Side(ulP, ulPInc);
-                        pF->_aulNeighbours[usSide] = ulCt;
-                    }
-                }
-                else if (ulP == ulP1) {
-                    if (ulPInc == ulP2) {
-                        unsigned short usSide = clFacet.Side(ulP1, ulP2);
-                        clFacet._aulNeighbours[usSide] = ulCC;
-                        usSide = pF->Side(ulP, ulPInc);
-                        pF->_aulNeighbours[usSide] = ulCt;
-                    }
-                }
-            }
-        }
-    }
-
-    // Facet ins Facet-Array einfuegen
-    _aclFacetArray.push_back(clFacet);
-
+    this->AddFacet(rclSFacet);
     return *this;
 }
 
 void MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
 {
-    *this += rclSFacet;
-    RebuildNeighbours();
+    unsigned long i;
+    MeshFacet clFacet;
+
+    // set corner points
+    for (i = 0; i < 3; i++) {
+        _clBoundBox &= rclSFacet._aclPoints[i];
+        clFacet._aulPoints[i] = _aclPointArray.GetOrAddIndex(rclSFacet._aclPoints[i]);
+    }
+
+    // adjust orientation to normal
+    AdjustNormal(clFacet, rclSFacet.GetNormal());
+
+    unsigned long ulCt = _aclFacetArray.size();
+
+    // set neighbourhood
+    unsigned long ulP0 = clFacet._aulPoints[0];
+    unsigned long ulP1 = clFacet._aulPoints[1];
+    unsigned long ulP2 = clFacet._aulPoints[2];
+    unsigned long ulCC = 0;
+    for (TMeshFacetArray::iterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, ulCC++) {
+        for (int i=0; i<3;i++) {
+            unsigned long ulP = pF->_aulPoints[i];
+            unsigned long ulQ = pF->_aulPoints[(i+1)%3];
+            if (ulQ == ulP0 && ulP == ulP1) {
+                clFacet._aulNeighbours[0] = ulCC;
+                pF->_aulNeighbours[i] = ulCt;
+            }
+            else if (ulQ == ulP1 && ulP == ulP2) {
+                clFacet._aulNeighbours[1] = ulCC;
+                pF->_aulNeighbours[i] = ulCt;
+            }
+            else if (ulQ == ulP2 && ulP == ulP0) {
+                clFacet._aulNeighbours[2] = ulCC;
+                pF->_aulNeighbours[i] = ulCt;
+            }
+        }
+    }
+
+    // insert facet into array
+    _aclFacetArray.push_back(clFacet);
 }
 
-MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
+MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclFAry)
+{
+    this->AddFacets(rclFAry);
+    return *this;
+}
+
+void MeshKernel::AddFacets(const std::vector<MeshGeomFacet> &rclFAry)
 {
     // Create a temp. kernel to get the topology of the passed triangles
     // and merge them with this kernel. This keeps properties and flags 
     // of this mesh.
     MeshKernel tmp;
-    tmp = rclVAry;
+    tmp = rclFAry;
     Merge(tmp);
-    
-    return *this;
 }
 
-void MeshKernel::AddFacets(const std::vector<MeshGeomFacet> &rclVAry)
-{
-    *this += rclVAry;
-}
-
-unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
+unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclFAry)
 {
     // Build map of edges of the referencing facets we want to append
 #ifdef FC_DEBUG
@@ -182,7 +180,7 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
     this->_aclPointArray.ResetInvalid();
     unsigned long k = CountFacets();
     std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > edgeMap;
-    for (std::vector<MeshFacet>::const_iterator pF = rclVAry.begin(); pF != rclVAry.end(); pF++, k++) {
+    for (std::vector<MeshFacet>::const_iterator pF = rclFAry.begin(); pF != rclFAry.end(); pF++, k++) {
         // reset INVALID flag for all candidates
         pF->ResetFlag(MeshFacet::INVALID);
         for (int i=0; i<3; i++) {
@@ -234,19 +232,20 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
                 if (*it >= countFacets) {
                     // this is a candidate
                     unsigned long index = *it - countFacets;
-                    rclVAry[index].SetFlag(MeshFacet::INVALID);
+                    rclFAry[index].SetFlag(MeshFacet::INVALID);
                 }
             }
         }
     }
 
-    // Do not insert directly to the data structure because we should get the correct size of new facets,
-    // otherwise std::vector reallocates too much memory which can't be freed so easily
-    unsigned long countValid = std::count_if(rclVAry.begin(), rclVAry.end(), std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::INVALID));
+    // Do not insert directly to the data structure because we should get the correct size of new
+    // facets, otherwise std::vector reallocates too much memory which can't be freed so easily
+    unsigned long countValid = std::count_if(rclFAry.begin(), rclFAry.end(),
+        std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::INVALID));
     _aclFacetArray.reserve( _aclFacetArray.size() + countValid );
     // now start inserting the facets to the data structure and set the correct neighbourhood as well
     unsigned long startIndex = CountFacets();
-    for (std::vector<MeshFacet>::const_iterator pF = rclVAry.begin(); pF != rclVAry.end(); pF++) {
+    for (std::vector<MeshFacet>::const_iterator pF = rclFAry.begin(); pF != rclFAry.end(); pF++) {
         if (!pF->IsFlag(MeshFacet::INVALID)) {
             _aclFacetArray.push_back(*pF);
             pF->SetProperty(startIndex++);
@@ -263,7 +262,7 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
             unsigned long ulF0 = pE->second.front();
             if (ulF0 >= countFacets) {
                 ulF0 -= countFacets;
-                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF0;
+                std::vector<MeshFacet>::const_iterator pF = rclFAry.begin() + ulF0;
                 if (!pF->IsFlag(MeshFacet::INVALID))
                     ulF0 = pF->_ulProp;
                 else
@@ -282,7 +281,7 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
             unsigned long ulF0 = pE->second.front();
             if (ulF0 >= countFacets) {
                 ulF0 -= countFacets;
-                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF0;
+                std::vector<MeshFacet>::const_iterator pF = rclFAry.begin() + ulF0;
                 if (!pF->IsFlag(MeshFacet::INVALID))
                     ulF0 = pF->_ulProp;
                 else
@@ -291,7 +290,7 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
             unsigned long ulF1 = pE->second.back();
             if (ulF1 >= countFacets) {
                 ulF1 -= countFacets;
-                std::vector<MeshFacet>::const_iterator pF = rclVAry.begin() + ulF1;
+                std::vector<MeshFacet>::const_iterator pF = rclFAry.begin() + ulF1;
                 if (!pF->IsFlag(MeshFacet::INVALID))
                     ulF1 = pF->_ulProp;
                 else
@@ -315,86 +314,71 @@ unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry)
     return _aclFacetArray.size();
 }
 
-unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclVAry, const std::vector<Base::Vector3f>& rclPAry)
+unsigned long MeshKernel::AddFacets(const std::vector<MeshFacet> &rclFAry, const std::vector<Base::Vector3f>& rclPAry)
 {
     for (std::vector<Base::Vector3f>::const_iterator it = rclPAry.begin(); it != rclPAry.end(); ++it)
         _clBoundBox &= *it;
     this->_aclPointArray.insert(this->_aclPointArray.end(), rclPAry.begin(), rclPAry.end());
-    return this->AddFacets(rclVAry);
+    return this->AddFacets(rclFAry);
 }
 
 void MeshKernel::Merge(const MeshKernel& rKernel)
 {
-    const MeshPointArray& rPoints = rKernel._aclPointArray;
-    const MeshFacetArray& rFacets  = rKernel._aclFacetArray;
-    Merge(rPoints, rFacets);
+    if (this != &rKernel) {
+        const MeshPointArray& rPoints = rKernel._aclPointArray;
+        const MeshFacetArray& rFacets  = rKernel._aclFacetArray;
+        Merge(rPoints, rFacets);
+    }
 }
 
 void MeshKernel::Merge(const MeshPointArray& rPoints, const MeshFacetArray& rFaces)
 {
-    // Create a map <point index -> face indices>. The size of the map is the number of points we have to append 
-    std::map<unsigned long, std::vector<unsigned long> > point2Faces;
+    if (rPoints.empty() || rFaces.empty())
+        return; // nothing to do
+    std::vector<unsigned long> increments(rPoints.size());
 
-    // Copy the new faces immediately to the current array
-    this->_aclFacetArray.reserve( this->_aclFacetArray.size() + rFaces.size() );
+    unsigned long countFacets = this->_aclFacetArray.size();
+    // Reserve the additional memory to append the new facets
+    this->_aclFacetArray.reserve(this->_aclFacetArray.size() + rFaces.size());
+
+    // Copy the new faces immediately to the facet array
     MeshFacet face;
     for(MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it) {
         face = *it;
         for (int i=0; i<3; i++) {
-            point2Faces[it->_aulPoints[i]].push_back( this->_aclFacetArray.size() );
-            // We must reset the neighbourhood indices to ULONG_MAX as we set the correct indices at the end
-            face._aulNeighbours[i] = ULONG_MAX;
+            increments[it->_aulPoints[i]]++;
+            // set the new neighbour index
+            if (face._aulNeighbours[i] != ULONG_MAX)
+                face._aulNeighbours[i] += countFacets;
         }
 
-        this->_aclFacetArray.push_back( face );
+        // append to the facet array
+        this->_aclFacetArray.push_back(face);
     }
 
+    unsigned long countNewPoints = std::count_if(increments.begin(), increments.end(),
+                                   std::bind2nd(std::greater<unsigned long>(), 0));
     // Reserve the additional memory to append the new points
-    this->_aclPointArray.reserve(this->_aclPointArray.size() + point2Faces.size());
-  
+    unsigned long index = this->_aclPointArray.size();
+    this->_aclPointArray.reserve(this->_aclPointArray.size() + countNewPoints);
+    
     // Now we can start inserting the points and adjust the point indices of the faces
-    unsigned long cnt = this->_aclPointArray.size();
-    for (std::map<unsigned long, std::vector<unsigned long> >::iterator pM = point2Faces.begin(); pM != point2Faces.end(); ++pM) {
-        unsigned long iPos = pM->first;
-
-        // copy the mesh vertex
-        this->_aclPointArray.push_back(rPoints[iPos]);
-
-        // adjust the point indices of the referenced faces
-        std::vector<unsigned long>& pt2Faces = pM->second;
-        for (std::vector<unsigned long>::iterator pF = pt2Faces.begin(); pF != pt2Faces.end(); ++pF) {
-            for (int i=0; i<3; i++) {
-                if (this->_aclFacetArray[*pF]._aulPoints[i] == iPos)
-                    this->_aclFacetArray[*pF]._aulPoints[i] = cnt;
-            }
-        }
-
-        cnt++;
-    }
-
-    // Here we have adjusted the point indices, now we can also setup the neighbourhood
-    for (std::map<unsigned long, std::vector<unsigned long> >::iterator pM2 = point2Faces.begin(); pM2 != point2Faces.end(); ++pM2) {
-        std::vector<unsigned long>& pt2Faces = pM2->second;
-        for (std::vector<unsigned long>::iterator pF1 = pt2Faces.begin(); pF1 != pt2Faces.end(); ++pF1) {
-            for (std::vector<unsigned long>::iterator pF2 = pt2Faces.begin(); pF2 != pt2Faces.end(); ++pF2) {
-                // compare all faces each other
-                if (*pF1 != *pF2){
-                    MeshCore::MeshFacet& rFace1 = this->_aclFacetArray[*pF1];
-                    MeshCore::MeshFacet& rFace2 = this->_aclFacetArray[*pF2];
-                    unsigned short side = rFace1.Side(rFace2);
-                    // both faces share a common edge
-                    if (side != USHRT_MAX) {
-                        rFace1._aulNeighbours[side] = *pF2;
-                        side = rFace2.Side(rFace1);
-                        rFace2._aulNeighbours[side] = *pF1;
-                    }
-                }
-            }
+    for (std::vector<unsigned long>::iterator it = increments.begin(); it != increments.end(); ++it) {
+        if (*it > 0) {
+            // set the index of the point array
+            *it = index++;
+            const MeshPoint& rPt = rPoints[it-increments.begin()];
+            this->_aclPointArray.push_back(rPt);
+            _clBoundBox &= rPt;
         }
     }
 
-    // finally recompute the bounding box
-    this->RecalcBoundBox();
+    for (MeshFacetArray::_TIterator pF = this->_aclFacetArray.begin()+countFacets;
+        pF != this->_aclFacetArray.end(); ++pF) {
+        for (int i=0; i<3; i++) {
+            pF->_aulPoints[i] = increments[pF->_aulPoints[i]];
+        }
+    }
 }
 
 void MeshKernel::Clear (void)
@@ -402,24 +386,11 @@ void MeshKernel::Clear (void)
     _aclPointArray.clear();
     _aclFacetArray.clear();
 
-    // auch Speicher freigeben
+    // release memory
     MeshPointArray().swap(_aclPointArray);
     MeshFacetArray().swap(_aclFacetArray);
 
     _clBoundBox.Flush();
-}
-
-MeshKernel& MeshKernel::operator = (const std::vector<MeshGeomFacet> &rclVAry)
-{
-    MeshBuilder builder(*this);
-    builder.Initialize(rclVAry.size());
-
-    for (std::vector<MeshGeomFacet>::const_iterator it = rclVAry.begin(); it != rclVAry.end(); it++)
-        builder.AddFacet(*it);
-
-    builder.Finish();
-
-    return *this;
 }
 
 bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
@@ -429,13 +400,12 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
     if (rclIter._clIter >= _aclFacetArray.end())
         return false;
 
-    // Index des zu loeschenden Facet
+    // index of the facet to delete
     ulInd = rclIter._clIter - _aclFacetArray.begin(); 
 
-    // Nachbar-Indizies der Nachbar-Facets auf dieses Facet als ungueltigt setzen
-    // gleichzeitig Kanten loeschen oder umbiegen auf Nachbarfacet
+    // invalidate neighbour indices of the neighbour facet to this facet
     for (i = 0; i < 3; i++) {
-        ulNFacet = rclIter._clIter->_aulNeighbours[i];  // Index: Nachbar-Facet
+        ulNFacet = rclIter._clIter->_aulNeighbours[i];
         if (ulNFacet != ULONG_MAX) {
             for (j = 0; j < 3; j++) {
                 if (_aclFacetArray[ulNFacet]._aulNeighbours[j] == ulInd) {
@@ -446,16 +416,16 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
         }
     }
 
-    // Eckpunkte gegenfalls loeschen
+    // erase corner point if needed
     for (i = 0; i < 3; i++) {
         if ((rclIter._clIter->_aulNeighbours[i] == ULONG_MAX) &&
-            (rclIter._clIter->_aulNeighbours[(i+1)%3] == ULONG_MAX))
-        {  // keine Nachbarn, evt. Punkt loeschen
+            (rclIter._clIter->_aulNeighbours[(i+1)%3] == ULONG_MAX)) {
+            // no neighbours, possibly delete point
             ErasePoint(rclIter._clIter->_aulPoints[(i+1)%3], ulInd);
         }
     }
 
-    // Facet aus Array loeschen
+    // remove facet from array
     _aclFacetArray.Erase(_aclFacetArray.begin() + rclIter.Position());
 
     return true;
@@ -470,6 +440,38 @@ bool MeshKernel::DeleteFacet (unsigned long ulInd)
     clIter.Set(ulInd);
 
     return DeleteFacet(clIter);
+}
+
+void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
+{
+    _aclPointArray.SetProperty(0);
+
+    // number of referencing facets per point
+    for (MeshFacetArray::_TConstIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++) {
+        _aclPointArray[pF->_aulPoints[0]]._ulProp++;
+        _aclPointArray[pF->_aulPoints[1]]._ulProp++;
+        _aclPointArray[pF->_aulPoints[2]]._ulProp++;
+    }
+
+    // invalidate facet and adjust number of point references
+    _aclFacetArray.ResetInvalid();
+    for (std::vector<unsigned long>::const_iterator pI = raulFacets.begin(); pI != raulFacets.end(); pI++) {
+        MeshFacet &rclFacet = _aclFacetArray[*pI];
+        rclFacet.SetInvalid();
+        _aclPointArray[rclFacet._aulPoints[0]]._ulProp--;
+        _aclPointArray[rclFacet._aulPoints[1]]._ulProp--;
+        _aclPointArray[rclFacet._aulPoints[2]]._ulProp--;
+    }
+
+    // invalidate all unreferenced points
+    _aclPointArray.ResetInvalid();
+    for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++) {
+        if (pP->_ulProp == 0)
+            pP->SetInvalid();
+    }
+
+    RemoveInvalids();
+    RecalcBoundBox();
 }
 
 bool MeshKernel::DeletePoint (unsigned long ulInd)
@@ -489,13 +491,13 @@ bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
     std::vector<MeshFacetIterator>  clToDel; 
     unsigned long i, ulInd;
 
-    // Index des zu loeschenden Punkts
+    // index of the point to delete
     ulInd = rclIter._clIter - _aclPointArray.begin(); 
  
-    // Eckpunkte aller Facets ueberpruefen
     pFIter.Begin();
     pFEnd.End();
 
+    // check corner points of all facets
     while (pFIter < pFEnd) {
         for (i = 0; i < 3; i++) {
             if (ulInd == pFIter._clIter->_aulPoints[i])
@@ -504,92 +506,14 @@ bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
         ++pFIter;
     }
 
-    // Iteratoren (Facets) nach Index sortieren
+    // iterators (facets) sort by index
     std::sort(clToDel.begin(), clToDel.end());
 
-    // jedes einzelne Facet loeschen (von hinten nach vorne, so
-    // dass Iteratoren nicht ungültig werden)
+    // delete each facet separately (from back to front to avoid to
+    // invalidate the iterators)
     for (i = clToDel.size(); i > 0; i--)
         DeleteFacet(clToDel[i-1]); 
     return true;
-}
-
-void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid)
-{
-    unsigned long  i;
-    std::vector<MeshFacet>::iterator pFIter, pFEnd, pFNot;
-
-    pFIter = _aclFacetArray.begin();
-    pFNot  = _aclFacetArray.begin() + ulFacetIndex;
-    pFEnd  = _aclFacetArray.end();
- 
-    // pruefe alle Facets
-    while (pFIter < pFNot) {
-        for (i = 0; i < 3; i++) {
-            if (pFIter->_aulPoints[i] == ulIndex)
-                return; // Punkt noch zugeordnet ==> nicht loeschen
-        }
-        pFIter++;
-    }
-
-    pFIter++;
-    while (pFIter < pFEnd) {
-        for (i = 0; i < 3; i++) {
-            if (pFIter->_aulPoints[i] == ulIndex)
-                return; // Punkt noch zugeordnet ==> nicht loeschen
-        }
-        pFIter++;
-    }
-
-
-    if (bOnlySetInvalid == false) {
-        // Punkt komplett loeschen
-        _aclPointArray.erase(_aclPointArray.begin() + ulIndex);
-
-        // Punkt-Indizies der Facets korrigieren
-        pFIter = _aclFacetArray.begin();
-        while (pFIter < pFEnd) {
-            for (i = 0; i < 3; i++) {
-                if (pFIter->_aulPoints[i] > ulIndex)
-                    pFIter->_aulPoints[i]--;
-            }
-            pFIter++;
-        }
-    }
-    else // nur invalid setzen
-        _aclPointArray[ulIndex].SetInvalid();
-}
-
-void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
-{
-    _aclPointArray.SetProperty(0);
-
-    // Anzahl der ref. Facet pro Punkt
-    for (MeshFacetArray::_TConstIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++) {
-        _aclPointArray[pF->_aulPoints[0]]._ulProp++;
-        _aclPointArray[pF->_aulPoints[1]]._ulProp++;
-        _aclPointArray[pF->_aulPoints[2]]._ulProp++;
-    }
-
-    // Facet ungueltig markieren und Punkt-Ref. abstimmen
-    _aclFacetArray.ResetInvalid();
-    for (std::vector<unsigned long>::const_iterator pI = raulFacets.begin(); pI != raulFacets.end(); pI++) {
-        MeshFacet &rclFacet = _aclFacetArray[*pI];
-        rclFacet.SetInvalid();
-        _aclPointArray[rclFacet._aulPoints[0]]._ulProp--;
-        _aclPointArray[rclFacet._aulPoints[1]]._ulProp--;
-        _aclPointArray[rclFacet._aulPoints[2]]._ulProp--;
-    }
-
-    // Alle Punkte die kein Facet mehr ref. ungueltig setzen
-    _aclPointArray.ResetInvalid();
-    for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++) {
-        if (pP->_ulProp == 0)
-            pP->SetInvalid();
-    }
-
-    RemoveInvalids();
-    RecalcBoundBox();
 }
 
 void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
@@ -598,7 +522,7 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
     for (std::vector<unsigned long>::const_iterator pI = raulPoints.begin(); pI != raulPoints.end(); pI++)
         _aclPointArray[*pI].SetInvalid();
 
-    // Facets loeschen, wenn mind. 1 Eckpunkt Invalid ist
+    // delete facets if at least one corner point is invalid
     _aclPointArray.SetProperty(0);
     for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++) {
         MeshPoint &rclP0 = _aclPointArray[pF->_aulPoints[0]];
@@ -616,7 +540,7 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
         }
     }
 
-    // alle einzelne Punkte (ohne Ref. zu Facet) loeschen
+    // invalidate all unreferenced points to delete them
     for (MeshPointArray::_TIterator pP = _aclPointArray.begin(); pP != _aclPointArray.end(); pP++) {
         if (pP->_ulProp == 0)
             pP->SetInvalid();
@@ -626,70 +550,63 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
     RecalcBoundBox();
 }
 
-void MeshKernel::Smooth(int iterations, float d_max)
+void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid)
 {
-    MeshCore::MeshPoint center;
-    MeshCore::MeshPointArray PointArray = this->GetPoints();
+    unsigned long  i;
+    std::vector<MeshFacet>::iterator pFIter, pFEnd, pFNot;
 
-    MeshCore::MeshPointIterator v_it(*this);
-    MeshCore::MeshRefPointToPoints vv_it(*this);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> cv;// circulator
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator cv_it;
-
-    for (int i=0; i<iterations; i++) {
-        Base::Vector3f N, L;
-        for (v_it.Begin(); v_it.More(); v_it.Next()) {
-            MeshPlaneFit pf;
-            pf.AddPoint(*v_it);
-            center = *v_it;
-            cv = vv_it[v_it.Position()];
-            if (cv.size() < 3)
-                continue;
-
-            for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
-                pf.AddPoint((*cv_it)[0]);
-                center += (*cv_it)[0];
-            }
-
-            float scale = 1.0f/((float)cv.size()+1.0f);
-            center.Scale(scale,scale,scale);
-
-            // get the mean plane of the current vertex with the surrounding vertices
-            pf.Fit();
-            N = pf.GetNormal();
-            N.Normalize();
-
-            // look in which direction we should move the vertex
-            L.Set(v_it->x - center.x, v_it->y - center.y, v_it->z - center.z);
-            if (N*L < 0.0)
-                N.Scale(-1.0, -1.0, -1.0);
-
-            // maximum value to move is distance to mean plane
-            float d = std::min<float>((float)fabs(d_max),(float)fabs(N*L));
-            N.Scale(d,d,d);
-
-            PointArray[v_it.Position()].Set(v_it->x - N.x, v_it->y - N.y, v_it->z - N.z);
+    pFIter = _aclFacetArray.begin();
+    pFNot  = _aclFacetArray.begin() + ulFacetIndex;
+    pFEnd  = _aclFacetArray.end();
+ 
+    // check all facets
+    while (pFIter < pFNot) {
+        for (i = 0; i < 3; i++) {
+            if (pFIter->_aulPoints[i] == ulIndex)
+                return; // point still referenced ==> do not delete
         }
+        pFIter++;
+    }
 
-        // assign values without affecting iterators
-        unsigned long count = this->_aclPointArray.size();
-        for (unsigned long idx = 0; idx < count; idx++) {
-            this->_aclPointArray[idx] = PointArray[idx];
+    pFIter++;
+    while (pFIter < pFEnd) {
+        for (i = 0; i < 3; i++) {
+            if (pFIter->_aulPoints[i] == ulIndex)
+                return; // point still referenced ==> do not delete
+        }
+        pFIter++;
+    }
+
+
+    if (bOnlySetInvalid == false) {
+        // completely remove point
+        _aclPointArray.erase(_aclPointArray.begin() + ulIndex);
+
+        // correct point indices of the facets
+        pFIter = _aclFacetArray.begin();
+        while (pFIter < pFEnd) {
+            for (i = 0; i < 3; i++) {
+                if (pFIter->_aulPoints[i] > ulIndex)
+                    pFIter->_aulPoints[i]--;
+            }
+            pFIter++;
         }
     }
+    else // only invalidate
+        _aclPointArray[ulIndex].SetInvalid();
 }
 
 void MeshKernel::RemoveInvalids ()
 {
     std::vector<unsigned long> aulDecrements;
-    std::vector<unsigned long>::iterator       pDIter;
+    std::vector<unsigned long>::iterator pDIter;
     unsigned long ulDec, i, k, ulSteps;
     MeshPointArray::_TIterator pPIter, pPEnd;
     MeshFacetArray::_TIterator pFIter, pFEnd;
 
     ulSteps = 0;
 
-    // Array mit Dekrements generieren
+    // generate array of decrements
     aulDecrements.resize(_aclPointArray.size());
     pDIter = aulDecrements.begin();
     ulDec  = 0;
@@ -700,7 +617,7 @@ void MeshKernel::RemoveInvalids ()
             ulDec++;
     }
 
-    // Punkt-Indizies der Facets korrigieren
+    // correct point indices of the facets
     pFEnd  = _aclFacetArray.end();
     for (pFIter = _aclFacetArray.begin(); pFIter != pFEnd; pFIter++) {
         if (pFIter->IsValid() == true) {
@@ -710,11 +627,10 @@ void MeshKernel::RemoveInvalids ()
         }
     }
 
-    // Punkte loeschen
-    // Anzahl der noch gueltigen Punkte
+    // delete point, number of valid points
     unsigned long ulNewPts = std::count_if(_aclPointArray.begin(), _aclPointArray.end(),
         std::mem_fun_ref(&MeshPoint::IsValid));
-    // temp. Punktarray
+    // tmp. point array
     MeshPointArray  aclTempPt(ulNewPts);
     MeshPointArray::_TIterator pPTemp = aclTempPt.begin();
     pPEnd = _aclPointArray.end();
@@ -722,10 +638,14 @@ void MeshKernel::RemoveInvalids ()
         if (pPIter->IsValid() == true)
             *pPTemp++ = *pPIter;
     }
-    _aclPointArray = aclTempPt;
-    aclTempPt.clear();
 
-    // Array mit Facet-Decrements generieren
+    // free memory
+    //_aclPointArray = aclTempPt;
+    //aclTempPt.clear();
+    _aclPointArray.swap(aclTempPt);
+    MeshPointArray().swap(aclTempPt);
+
+    // generate array of facet decrements
     aulDecrements.resize(_aclFacetArray.size());
     pDIter = aulDecrements.begin();
     ulDec  = 0;
@@ -736,7 +656,7 @@ void MeshKernel::RemoveInvalids ()
             ulDec++;
     }
 
-    // Nachbar-Indizies der Facets korrigieren
+    // correct neighbour indices of the facets
     pFEnd = _aclFacetArray.end();
     for (pFIter = _aclFacetArray.begin(); pFIter != pFEnd; pFIter++) {
         if (pFIter->IsValid() == true) {
@@ -745,15 +665,14 @@ void MeshKernel::RemoveInvalids ()
                 if (k != ULONG_MAX) {
                     if (_aclFacetArray[k].IsValid() == true)
                         pFIter->_aulNeighbours[i] -= aulDecrements[k];
-                    else      
+                    else
                         pFIter->_aulNeighbours[i] = ULONG_MAX;
                 }
             }
         }
     }
 
-    // Facets loeschen
-    // Anzahl der noch gueltigen Facets
+    // delete facets, number of valid facets
     unsigned long ulDelFacets = std::count_if(_aclFacetArray.begin(), _aclFacetArray.end(),
         std::mem_fun_ref(&MeshFacet::IsValid));
     MeshFacetArray aclFArray(ulDelFacets);
@@ -763,7 +682,10 @@ void MeshKernel::RemoveInvalids ()
         if (pFIter->IsValid() == true)
             *pFTemp++ = *pFIter;
     }
-    _aclFacetArray = aclFArray;
+
+    // free memory
+    //_aclFacetArray = aclFArray;
+    _aclFacetArray.swap(aclFArray);
 }
 
 void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj, 
@@ -935,6 +857,11 @@ void MeshKernel::Read (std::istream &rclIn)
 
 void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
 {
+    this->Transform(rclMat);
+}
+
+void MeshKernel::Transform (const Base::Matrix4D &rclMat)
+{
     MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
     Base::Matrix4D clMatrix(rclMat);
 
@@ -946,9 +873,57 @@ void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
     }
 }
 
-void MeshKernel::Transform (const Base::Matrix4D &rclMat)
+void MeshKernel::Smooth(int iterations, float d_max)
 {
-    (*this) *= rclMat;
+    MeshCore::MeshPoint center;
+    MeshCore::MeshPointArray PointArray = this->GetPoints();
+
+    MeshCore::MeshPointIterator v_it(*this);
+    MeshCore::MeshRefPointToPoints vv_it(*this);
+    std::set<MeshCore::MeshPointArray::_TConstIterator> cv;// circulator
+    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator cv_it;
+
+    for (int i=0; i<iterations; i++) {
+        Base::Vector3f N, L;
+        for (v_it.Begin(); v_it.More(); v_it.Next()) {
+            MeshPlaneFit pf;
+            pf.AddPoint(*v_it);
+            center = *v_it;
+            cv = vv_it[v_it.Position()];
+            if (cv.size() < 3)
+                continue;
+
+            for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
+                pf.AddPoint((*cv_it)[0]);
+                center += (*cv_it)[0];
+            }
+
+            float scale = 1.0f/((float)cv.size()+1.0f);
+            center.Scale(scale,scale,scale);
+
+            // get the mean plane of the current vertex with the surrounding vertices
+            pf.Fit();
+            N = pf.GetNormal();
+            N.Normalize();
+
+            // look in which direction we should move the vertex
+            L.Set(v_it->x - center.x, v_it->y - center.y, v_it->z - center.z);
+            if (N*L < 0.0)
+                N.Scale(-1.0, -1.0, -1.0);
+
+            // maximum value to move is distance to mean plane
+            float d = std::min<float>((float)fabs(d_max),(float)fabs(N*L));
+            N.Scale(d,d,d);
+
+            PointArray[v_it.Position()].Set(v_it->x - N.x, v_it->y - N.y, v_it->z - N.z);
+        }
+
+        // assign values without affecting iterators
+        unsigned long count = this->_aclPointArray.size();
+        for (unsigned long idx = 0; idx < count; idx++) {
+            this->_aclPointArray[idx] = PointArray[idx];
+        }
+    }
 }
 
 void MeshKernel::RecalcBoundBox (void)
@@ -971,7 +946,7 @@ std::vector<Base::Vector3f> MeshKernel::CalcVertexNormals() const
     unsigned int ct = CountFacets();
     for (unsigned int pFIter = 0;pFIter < ct; pFIter++) {
         GetFacetPoints(pFIter,p1,p2,p3);
-        Base::Vector3f Norm = (GetPoint(p2)-GetPoint(p1) ) % (GetPoint(p3)-GetPoint(p1));
+        Base::Vector3f Norm = (GetPoint(p2)-GetPoint(p1)) % (GetPoint(p3)-GetPoint(p1));
 
         normals[p1] += Norm;
         normals[p2] += Norm;
