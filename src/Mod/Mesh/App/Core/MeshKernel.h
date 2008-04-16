@@ -345,6 +345,8 @@ public:
      * @note This method overwrites the free usable property of each mesh point.
      */
     void DeletePoints (const std::vector<unsigned long> &raulPoints);
+    /** Rebuilds the neighbour indices for all facets. */
+    void RebuildNeighbours (void);
     /** Clears the whole data structure. */
     void Clear (void);
     /** Replaces the current data structure with the structure built up of the array 
@@ -392,10 +394,9 @@ public:
                     bool bCutInner, std::vector<unsigned long> &raclCutted);
     //@}
 
-    /// Rebuilds the neighbour indices for all facets.
-    void RebuildNeighbours (void);
-
 protected:
+    /** Rebuilds the neighbour indices for subset of all facets from index \a index on. */
+    void RebuildNeighbours (unsigned long);
     /** Removes all as INVALID marked points and facets from the structure. */
     void RemoveInvalids ();
     /** Checks if this point is associated to no other facet and deletes if so.

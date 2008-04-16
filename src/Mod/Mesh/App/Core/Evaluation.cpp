@@ -821,15 +821,15 @@ bool MeshFixNeighbourhood::Fixup()
     return true;
 }
 
-void MeshKernel::RebuildNeighbours (void)
+void MeshKernel::RebuildNeighbours (unsigned long index)
 {
     std::vector<Edge_Index> edges;
-    edges.reserve(3*this->_aclFacetArray.size());
+    edges.reserve(3 * (this->_aclFacetArray.size() - index));
 
     // build up an array of edges
     MeshFacetArray::_TConstIterator pI;
     MeshFacetArray::_TConstIterator pB = this->_aclFacetArray.begin();
-    for (pI = this->_aclFacetArray.begin(); pI != this->_aclFacetArray.end(); pI++) {
+    for (pI = pB + index; pI != this->_aclFacetArray.end(); pI++) {
         for (int i = 0; i < 3; i++) {
             Edge_Index item;
             item.p0 = std::min<unsigned long>(pI->_aulPoints[i], pI->_aulPoints[(i+1)%3]);
@@ -874,50 +874,12 @@ void MeshKernel::RebuildNeighbours (void)
             count = 1;
         }
     }
-#if 0
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >   aclEdgeMap; // Map<Kante, Liste von Facets>
+}
 
-  // Kantenmap aufbauen
-  unsigned long k = 0;
-  for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, k++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulT0 = pF->_aulPoints[i];
-      unsigned long ulT1 = pF->_aulPoints[(i+1)%3];
-      unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
-      unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
-      aclEdgeMap[std::make_pair(ulP0, ulP1)].push_front(k);
-    }
-  }
-
-  // Nachbarn aufloesen
-  for (std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI = aclEdgeMap.begin(); pI != aclEdgeMap.end(); pI++)
-  {
-    unsigned long ulP0 = pI->first.first;
-    unsigned long ulP1 = pI->first.second;
-    if (pI->second.size() == 1)  // kein Nachbar ==> Randfacet
-    {
-      unsigned long ulF0 = pI->second.front();
-      unsigned short usSide =  _aclFacetArray[ulF0].Side(ulP0, ulP1);
-      assert(usSide != USHRT_MAX);
-      _aclFacetArray[ulF0]._aulNeighbours[usSide] = ULONG_MAX;
-    }
-    else if (pI->second.size() == 2)  // normales Facet mit Nachbar
-    {
-      unsigned long ulF0 = pI->second.front();
-      unsigned long ulF1 = pI->second.back();
-      unsigned short usSide =  _aclFacetArray[ulF0].Side(ulP0, ulP1);
-      assert(usSide != USHRT_MAX);
-      _aclFacetArray[ulF0]._aulNeighbours[usSide] = ulF1;
-      usSide =  _aclFacetArray[ulF1].Side(ulP0, ulP1);
-      assert(usSide != USHRT_MAX);
-      _aclFacetArray[ulF1]._aulNeighbours[usSide] = ulF0;
-    }
-//    else
-//      assert(false);
-  }
-#endif
+void MeshKernel::RebuildNeighbours (void)
+{
+    // complete rebuild
+    RebuildNeighbours(0);
 }
 
 // ----------------------------------------------------------------
