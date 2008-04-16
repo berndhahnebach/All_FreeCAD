@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>Gui::Dialog::DlgGeneral</class>
  <widget class="QWidget" name="Gui::Dialog::DlgGeneral" >
   <property name="geometry" >
@@ -65,7 +68,7 @@
             <bool>true</bool>
            </property>
            <property name="prefEntry" stdset="0" >
-            <cstring>AllowSplasher</cstring>
+            <cstring>ShowSplasher</cstring>
            </property>
            <property name="prefPath" stdset="0" >
             <cstring>General</cstring>
@@ -240,16 +243,22 @@
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefSpinBox</class>
    <extends>QSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefComboBox</class>
    <extends>QComboBox</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
