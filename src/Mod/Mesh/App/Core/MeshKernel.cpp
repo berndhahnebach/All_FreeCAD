@@ -347,9 +347,6 @@ void MeshKernel::Merge(const MeshPointArray& rPoints, const MeshFacetArray& rFac
         face = *it;
         for (int i=0; i<3; i++) {
             increments[it->_aulPoints[i]]++;
-            // set the new neighbour index
-            if (face._aulNeighbours[i] != ULONG_MAX)
-                face._aulNeighbours[i] += countFacets;
         }
 
         // append to the facet array
@@ -379,6 +376,12 @@ void MeshKernel::Merge(const MeshPointArray& rPoints, const MeshFacetArray& rFac
             pF->_aulPoints[i] = increments[pF->_aulPoints[i]];
         }
     }
+
+    // Since rFaces could consist of a subset of the actual facet array the
+    // neighbour indices could be totally wrong so they must be rebuilt from
+    // scratch. Fortunately, this needs only to be done for the newly inserted
+    // facets -- not for all
+    RebuildNeighbours(countFacets);
 }
 
 void MeshKernel::Clear (void)
