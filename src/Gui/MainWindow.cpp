@@ -710,14 +710,16 @@ void MainWindow::startSplasher(void)
          (App::Application::Config()["RunMode"] == "Gui")) {
         ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().
             GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-#ifdef FC_DEBUG
-        bool splash = false;
-#else
-        bool splash = true;
-#endif
-        if (hGrp->GetBool("AllowSplasher", splash)) {
-            d->splashscreen = new SplashScreen( Gui::BitmapFactory().
-                pixmap(App::Application::Config()["SplashPicture"].c_str()));
+        // first search for an external imahe file
+        if (hGrp->GetBool("ShowSplasher", true)) {
+            QPixmap splash_image;
+            QDir dir(QString::fromUtf8(App::Application::Config()["UserAppData"].c_str()));
+            QFileInfo fi(dir.filePath("pixmaps/splash_image.png"));
+            if (fi.isFile() && fi.exists())
+                splash_image.load(fi.filePath(), "PNG");
+            if (splash_image.isNull())
+                splash_image = Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str());
+            d->splashscreen = new SplashScreen(splash_image);
             d->splashscreen->show();
         }
         else
