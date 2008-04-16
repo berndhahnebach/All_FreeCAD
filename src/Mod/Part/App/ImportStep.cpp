@@ -48,9 +48,8 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
 {
     STEPControl_Reader aReader;
     TopoDS_Shape aShape;
-
-
     Base::FileInfo fi(Name);
+
     if (!fi.isReadable()) {
         Base::Console().Log("ImportStep() not able to open %s!\n",Name);
         throw Base::Exception("Cannot open file Step file");
@@ -94,7 +93,7 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
                 {
                     // get the shape 
                     const TopoDS_Solid& aSolid = TopoDS::Solid(ex.Current());
-                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",Name);
+                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",fi.fileNamePure().c_str());
                     pcFeature->Shape.setValue(aSolid);
 
                 }
