@@ -72,188 +72,218 @@ void SoFCOffscreenRenderer::writeToImage (QImage& img) const
 
 SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName& filetypeextension) const
 {
-  if ( isWriteSupported( filetypeextension ) )
-  {
-    return writeToFile( filename, filetypeextension );
-  }
-  else if ( strcmp(filetypeextension.getString(), "EPS") == 0 || strcmp(filetypeextension.getString(), "PS") == 0 )
-  {
-    return writeToPostScript( filename.getString() );
-  }
-  else if ( strcmp(filetypeextension.getString(), "RGB") == 0 || strcmp(filetypeextension.getString(), "SGI") == 0 )
-  {
-    return writeToRGB( filename.getString() );
-  }
-  else // try to convert into a QImage and save then
-  {
-    QImage img;
-    writeToImage(img);
-    return img.save(filename.getString(), filetypeextension.getString());
-  }
+    Base::FileInfo file(filename.getString());
+    if (isWriteSupported(filetypeextension)) {
+        return writeToFile(filename, filetypeextension);
+    }
+    else if (strcmp(filetypeextension.getString(), "EPS") == 0 ||
+             strcmp(filetypeextension.getString(), "PS") == 0) {
+#ifdef FC_OS_WIN32
+        FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
+#else
+        FILE* fd = fopen(filename, "w");
+#endif
+        bool ok = writeToPostScript(fd);
+        fclose(fd);
+        return ok;
+    }
+    else if (strcmp(filetypeextension.getString(), "RGB") == 0 ||
+             strcmp(filetypeextension.getString(), "SGI") == 0) {
+#ifdef FC_OS_WIN32
+        FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
+#else
+        FILE* fd = fopen(filename, "w");
+#endif
+        bool ok = writeToRGB(fd);
+        fclose(fd);
+        return ok;
+    }
+    else { // try to convert into a QImage and save then
+        QImage img;
+        writeToImage(img);
+        return img.save(QString::fromUtf8(filename.getString()), filetypeextension.getString());
+    }
 
-  return false;
+    return false;
 }
 
 void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* comment) const
 {
-  Base::FileInfo file(filename);
-  if (file.hasExtension("JPG") || file.hasExtension("JPEG")) {
-    QImage img;
-    writeToImage(img);
+    Base::FileInfo file(filename);
+    if (file.hasExtension("JPG") || file.hasExtension("JPEG")) {
+        QImage img;
+        writeToImage(img);
 
-    const char* format = "JPEG";;
-    if (!img.save((file.filePath()+"_temp").c_str(), format))
-      throw Base::Exception();
+        const char* format = "JPEG";;
+        if (!img.save(QString::fromUtf8((file.filePath()+"_temp").c_str()), format))
+            throw Base::Exception();
 
-    // writing comment in case of jpeg (Qt ignores setText() in case of jpeg)
-    if (strcmp(comment,"")==0)
-      writeJPEGComment( (file.filePath()+"_temp").c_str(),file.filePath().c_str(), "Screenshot created by FreeCAD");   
-    else if (strcmp(comment,"$MIBA")==0)
-      writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), createMIBA().c_str());   
-    else 
-      writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), comment);
-
-    // delete temporary file
-    Base::FileInfo tmp((file.filePath()+"_temp").c_str());
-    tmp.deleteFile();
-  } else {
-    // check for all QImage formats
-    bool supported = false;
-    QByteArray format;
-    QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
-    for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
-      if (file.hasExtension((*it).data())) {
-        format = *it;
-        supported = true;
-        break;
-      }
-    }
-    
-    // Supported by Qt
-    if (supported) {
-      QImage img;
-      writeToImage(img);
-      // set keywords for PNG format
-      if (file.hasExtension("PNG")) {
-        img.setText("Title", filename);
-        img.setText("Author", "FreeCAD (http://free-cad.sourceforge.net)");
-        if(strcmp(comment,"")==0)
-          img.setText("Description", "Screenshot created by FreeCAD");   
-        else if(strcmp(comment,"$MIBA")==0)
-          img.setText("Description", createMIBA().c_str());   
+        // writing comment in case of jpeg (Qt ignores setText() in case of jpeg)
+        if (strcmp(comment,"")==0)
+            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), "Screenshot created by FreeCAD");   
+        else if (strcmp(comment,"$MIBA")==0)
+            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), createMIBA().c_str());   
         else 
-          img.setText("Description", comment);
-        img.setText("Creation Time", QDateTime::currentDateTime().toString());
-        img.setText("Software", App::Application::Config()["ExeName"].c_str());
-      }
+            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), comment);
 
-      QFile f(QString::fromUtf8(filename));
-      if (f.open(QFile::WriteOnly)) {
-        if (img.save(&f, format.data())) {
-          f.close();
-        } else {
-          f.close();
-          std::stringstream str;
-          str << "Cannot save image to file '" << filename << "'.";
-          throw Base::Exception(str.str());
-        }
-      } else {
-        std::stringstream str;
-        str << "Cannot open file '" << filename << "' for writing.";
-        throw Base::Exception(str.str());
-      }
-    } else if (isWriteSupported(file.extension().c_str())) {
-      // Any format which is supported by Coin only
-      if (!writeToFile( filename, file.extension().c_str()))
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-    } else if (file.hasExtension("EPS") || file.hasExtension("PS")) {
-      // Any format which is supported by Coin only
-      if(! writeToPostScript( filename ))
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-    } else if (file.hasExtension("RGB") || file.hasExtension("SGI")) {
-      // Any format which is supported by Coin only
-      if(!writeToRGB(filename))
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
+        // delete temporary file
+        Base::FileInfo tmp((file.filePath()+"_temp").c_str());
+        tmp.deleteFile();
     }
-  }
+    else {
+        // check for all QImage formats
+        bool supported = false;
+        QByteArray format;
+        QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
+        for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
+            if (file.hasExtension((*it).data())) {
+                format = *it;
+                supported = true;
+                break;
+            }
+        }
+
+        // Supported by Qt
+        if (supported) {
+            QImage img;
+            writeToImage(img);
+            // set keywords for PNG format
+            if (file.hasExtension("PNG")) {
+                img.setText("Title", filename);
+                img.setText("Author", "FreeCAD (http://free-cad.sourceforge.net)");
+                if (strcmp(comment,"")==0)
+                    img.setText("Description", "Screenshot created by FreeCAD");   
+                else if (strcmp(comment,"$MIBA")==0)
+                    img.setText("Description", createMIBA().c_str());   
+                else 
+                    img.setText("Description", comment);
+                img.setText("Creation Time", QDateTime::currentDateTime().toString());
+                img.setText("Software", App::Application::Config()["ExeName"].c_str());
+            }
+
+            QFile f(QString::fromUtf8(filename));
+            if (f.open(QFile::WriteOnly)) {
+                if (img.save(&f, format.data())) {
+                    f.close();
+                }
+                else {
+                    f.close();
+                    std::stringstream str;
+                    str << "Cannot save image to file '" << filename << "'.";
+                    throw Base::Exception(str.str());
+                }
+            }
+            else {
+                std::stringstream str;
+                str << "Cannot open file '" << filename << "' for writing.";
+                throw Base::Exception(str.str());
+            }
+        }
+        else if (isWriteSupported(file.extension().c_str())) {
+            // Any format which is supported by Coin only
+            if (!writeToFile(filename, file.extension().c_str()))
+                throw Base::FileException("Error writing image file", filename);
+        }
+        else if (file.hasExtension("EPS") || file.hasExtension("PS")) {
+            // Any format which is supported by Coin only
+#ifdef FC_OS_WIN32
+            FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
+#else
+            FILE* fd = fopen(filename, "w");
+#endif
+            bool ok = writeToPostScript(fd);
+            fclose(fd);
+            if (!ok)
+                throw Base::FileException("Error writing image file", filename);
+        }
+        else if (file.hasExtension("RGB") || file.hasExtension("SGI")) {
+            // Any format which is supported by Coin only
+#ifdef FC_OS_WIN32
+            FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
+#else
+            FILE* fd = fopen(filename, "w");
+#endif
+            bool ok = writeToRGB(fd);
+            fclose(fd);
+            if (!ok)
+                throw Base::FileException("Error writing image file", filename);
+        }
+    }
 }
 
 QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
 {
-  QStringList formats;
+    QStringList formats;
 
-  // get all supported formats by Coin3D
-  int num = getNumWriteFiletypes();
-  for (int i=0; i < num; i++)
-  {
+    // get all supported formats by Coin3D
+    int num = getNumWriteFiletypes();
+    for (int i=0; i < num; i++) {
 #if   (COIN_MAJOR_VERSION < 2) // Coin3D <= 1.x
-    SbList<SbName> extlist;
+        SbList<SbName> extlist;
 #elif (COIN_MAJOR_VERSION < 3) // Coin3D <= 2.x
 # if  (COIN_MINOR_VERSION < 3) // Coin3D <= 2.2.x
-    SbList<SbName> extlist;
+        SbList<SbName> extlist;
 # else                         // Coin3D >= 2.3.x
-    SbPList extlist;
+        SbPList extlist;
 # endif                        
 #else                          // Coin3D >= 3.x
-    SbPList extlist;
+        SbPList extlist;
 #endif
 
-    SbString fullname, description;
-    getWriteFiletypeInfo(i, extlist, fullname, description);
+        SbString fullname, description;
+        getWriteFiletypeInfo(i, extlist, fullname, description);
 
-    for (int j=0; j < extlist.getLength(); j++)
-    {
-      QString ext = (const char*) extlist[j];
-      if ( formats.indexOf( ext.toUpper() ) == -1 )
-        formats << ext.toUpper();
+        for (int j=0; j < extlist.getLength(); j++) {
+            QString ext = (const char*) extlist[j];
+            if (formats.indexOf(ext.toUpper()) == -1)
+                formats << ext.toUpper();
+        }
     }
-  }
 
-  // add now all further QImage formats
-  QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
-  for ( QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
-  {
-    // not supported? then append
-    if ( isWriteSupported( (*it).data() ) == false && formats.indexOf(*it) == -1 )
-      formats << *it;
-  }
+    // add now all further QImage formats
+    QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
+    for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
+        // not supported? then append
+        if (isWriteSupported( (*it).data() ) == false && formats.indexOf(*it) == -1)
+            formats << *it;
+    }
 
-  // now add PostScript and SGI RGB
-  if ( formats.indexOf("EPS") == -1 )
-    formats << "EPS";
-  else if ( formats.indexOf("SGI") == -1 )
-    formats << "SGI";
+    // now add PostScript and SGI RGB
+    if (formats.indexOf("EPS") == -1)
+        formats << "EPS";
+    else if (formats.indexOf("SGI") == -1)
+        formats << "SGI";
 
-  formats.sort();
+    formats.sort();
 
-  return formats;
+    return formats;
 }
 
 std::string SoFCOffscreenRenderer::createMIBA() const
 {
-  std::stringstream com;
+    std::stringstream com;
 
-  com << setw(7) << setfill(' ') << fixed;
-  com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
-  com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://juergen-riegel.net/Miba/Miba2.xsd\" Version=\"2\"> \n" ;
-  com << " <View>\n"; 
-  com << "  <Matrix \n"; 
-  com << "     a11=\"" << _Matrix[0][0] <<"\" a12=\"" << _Matrix[1][0] <<"\" a13=\"" << _Matrix[2][0] <<"\" a14=\"" << _Matrix[3][0] << "\"\n";
-  com << "     a21=\"" << _Matrix[0][1] <<"\" a22=\"" << _Matrix[1][1] <<"\" a23=\"" << _Matrix[2][1] <<"\" a24=\"" << _Matrix[3][1] << "\"\n";
-  com << "     a31=\"" << _Matrix[0][2] <<"\" a32=\"" << _Matrix[1][2] <<"\" a33=\"" << _Matrix[2][2] <<"\" a34=\"" << _Matrix[3][2] << "\"\n";
-  com << "     a41=\"" << _Matrix[0][3] <<"\" a42=\"" << _Matrix[1][3] <<"\" a43=\"" << _Matrix[2][3] <<"\" a44=\"" << _Matrix[3][3] << "\"\n";
-  com << "   />\n" ; 
-  com << " </View>\n" ; 
-  com << " <Source>\n" ; 
-  com << "  <Creator>Unknown</Creator>\n" ;  
-  com << "  <CreationDate>2006-07-05T01:11:00</CreationDate>\n" ;  
-  com << "  <CreatingSystem>FreeCAD 0.5</CreatingSystem>\n" ;
-  com << "  <PartNumber>Unknown</PartNumber>\n";
-  com << "  <Revision>1.0</Revision>\n";
-  com << " </Source>\n" ;
-  com << "</MIBA>\n" ;
+    com << setw(7) << setfill(' ') << fixed;
+    com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
+    com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://juergen-riegel.net/Miba/Miba2.xsd\" Version=\"2\"> \n" ;
+    com << " <View>\n"; 
+    com << "  <Matrix \n"; 
+    com << "     a11=\"" << _Matrix[0][0] <<"\" a12=\"" << _Matrix[1][0] <<"\" a13=\"" << _Matrix[2][0] <<"\" a14=\"" << _Matrix[3][0] << "\"\n";
+    com << "     a21=\"" << _Matrix[0][1] <<"\" a22=\"" << _Matrix[1][1] <<"\" a23=\"" << _Matrix[2][1] <<"\" a24=\"" << _Matrix[3][1] << "\"\n";
+    com << "     a31=\"" << _Matrix[0][2] <<"\" a32=\"" << _Matrix[1][2] <<"\" a33=\"" << _Matrix[2][2] <<"\" a34=\"" << _Matrix[3][2] << "\"\n";
+    com << "     a41=\"" << _Matrix[0][3] <<"\" a42=\"" << _Matrix[1][3] <<"\" a43=\"" << _Matrix[2][3] <<"\" a44=\"" << _Matrix[3][3] << "\"\n";
+    com << "   />\n" ; 
+    com << " </View>\n" ; 
+    com << " <Source>\n" ; 
+    com << "  <Creator>Unknown</Creator>\n" ;  
+    com << "  <CreationDate>2006-07-05T01:11:00</CreationDate>\n" ;  
+    com << "  <CreatingSystem>FreeCAD 0.5</CreatingSystem>\n" ;
+    com << "  <PartNumber>Unknown</PartNumber>\n";
+    com << "  <Revision>1.0</Revision>\n";
+    com << " </Source>\n" ;
+    com << "</MIBA>\n" ;
 
-  return com.str();
+    return com.str();
 }
 
 //===========================================================================
@@ -296,11 +326,21 @@ extern void * malloc ();
 #endif
 
 #ifdef DONT_USE_B_MODE		/* define mode parameters for fopen() */
+#ifdef FC_OS_WIN32
+#define READ_BINARY	L"r"
+#define WRITE_BINARY	L"w"
+#else
 #define READ_BINARY	"r"
 #define WRITE_BINARY	"w"
+#endif
+#else
+#ifdef FC_OS_WIN32
+#define READ_BINARY	L"rb"
+#define WRITE_BINARY	L"wb"
 #else
 #define READ_BINARY	"rb"
 #define WRITE_BINARY	"wb"
+#endif
 #endif
 
 #ifndef EXIT_FAILURE		/* define exit() codes if not provided */
@@ -635,12 +675,20 @@ void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comme
     comment_length = (unsigned int)std::strlen(comment_arg);
 
 
+#ifdef FC_OS_WIN32
+    if ((infile = _wfopen(Base::FileInfo(InFile).toStdWString().c_str(), READ_BINARY)) == NULL) {
+#else
     if ((infile = fopen(InFile, READ_BINARY)) == NULL) {
+#endif
         //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn]);
         return;
     }
 
+#ifdef FC_OS_WIN32
+    if ((outfile = _wfopen(Base::FileInfo(OutFile).toStdWString().c_str(), WRITE_BINARY)) == NULL) {
+#else
     if ((outfile = fopen(OutFile, WRITE_BINARY)) == NULL) {
+#endif
         //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn+1]);
         return;
     }

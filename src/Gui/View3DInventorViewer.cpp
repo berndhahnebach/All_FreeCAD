@@ -457,7 +457,7 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
   renderer._Matrix = camera->getViewVolume().getMatrix();
 
   //bool ok = renderer.writeToImageFile( filename, filetypeextension );
-  renderer.writeToImageFile( filename, comment);
+  renderer.writeToImageFile(filename, comment);
 
   root->unref();
 }
