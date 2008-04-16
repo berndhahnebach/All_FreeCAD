@@ -23,40 +23,40 @@
    Juergen Riegel 2005                                                 
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include Version.wxi ?>
-    <Product Id="0C6EC504-2794-4992-BE14-2F57378C1183" 
-		         UpgradeCode="D898BEFD-CFFA-4163-A624-AB36B2C7A710" 
-						 Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
-						 Language="1033" Version="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" 
-						 Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
+	<?include Version.wxi ?>
+	<Product Id="0C6EC504-2794-4992-BE14-2F57378C1183" 
+				UpgradeCode="D898BEFD-CFFA-4163-A624-AB36B2C7A710" 
+				Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
+				Language="1033" Version="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" 
+				Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
         <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" 
-				         Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
-								 InstallerVersion="100" 
-								 Compressed="yes" />
+				Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
+				InstallerVersion="100" 
+				Compressed="yes" />
 
-        <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+		<Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
 
-        <Property Id="ARPCOMMENTS">any comments</Property>
-        <Property Id="ARPCONTACT">Juergen Riegel (juergen.riegel@web.de)</Property>
-        <Property Id="ARPHELPLINK">http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
-        <Property Id="ARPURLINFOABOUT">http://free-cad.sourceforge.net/</Property>
-        <Property Id="ARPURLUPDATEINFO">http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
-        <Property Id="ALLUSERS">1</Property>
+		<Property Id="ARPCOMMENTS">any comments</Property>
+		<Property Id="ARPCONTACT">Juergen Riegel (juergen.riegel@web.de)</Property>
+		<Property Id="ARPHELPLINK">http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
+		<Property Id="ARPURLINFOABOUT">http://free-cad.sourceforge.net/</Property>
+		<Property Id="ARPURLUPDATEINFO">http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
+		<Property Id="ALLUSERS">1</Property>
 
 
 
         <Directory Id="TARGETDIR" Name="SourceDir">
- 					<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
-					<Merge  Id="CRT"
-                    Language="0"
-                    SourceFile='$(env.CommonProgramFiles)\MergeModules\Microsoft_VC80_CRT_x86.msm' 
-										DiskId="1"/>
-          <Merge  Id="CRT Policy"
-                    Language="0"
-                    SourceFile='$(env.CommonProgramFiles)\MergeModules\Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
-										DiskId="1"/>
-          <!-- End of Visual C++ 8.0 Runtime Libraries -->
-          <Directory Id="ProgramFilesFolder" Name="PFiles">
+ 			<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
+			<Merge  Id="CRT"
+				Language="0"
+				SourceFile='Microsoft_VC80_CRT_x86.msm' 
+				DiskId="1"/>
+			<!-- <Merge  Id="CRT_Policy"
+				Language="0"
+				SourceFile='$(env.CommonProgramFiles)\MergeModules\Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
+				DiskId="1"/>-->
+			<!-- End of Visual C++ 8.0 Runtime Libraries -->
+			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
                     <Directory Id="BinDir" Name="bin" />
                     <Directory Id="ModDir" Name="Mod" />
@@ -68,9 +68,17 @@
             </Directory>
             <Directory Id="DesktopFolder" Name="Desktop" />
         </Directory>
-        <Feature Id="Complete" Title="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" Description="The Base system and standard modules" Display="expand" Level="1" Absent="disallow" ConfigurableDirectory="INSTALLDIR">
+        <Feature Id="Complete" 
+				Title="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
+				Description="The Base system and standard modules" 
+				Display="expand" 
+				Level="1" 
+				Absent="disallow" 
+				ConfigurableDirectory="INSTALLDIR">
             <ComponentRef Id="Base" />
-            <ComponentRef Id="LibPack4Binaries" />
+            <MergeRef Id="CRT" />
+            <!--<MergeRef Id="CRT_Policy" />-->
+            <ComponentRef Id="LibPackBinaries" />
             <ComponentRef Id="CompModPart" />
             <ComponentRef Id="CompModMesh" />
             <ComponentRef Id="CompModPoints" />

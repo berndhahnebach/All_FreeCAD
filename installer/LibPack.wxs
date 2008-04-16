@@ -23,9 +23,9 @@
    Juergen Riegel 2005                                                 
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Fragment Id="LibPack4">
+	<Fragment Id="LibPack">
 		<DirectoryRef Id="BinDir" FileSource="..\bin\">
-			<Component Id="LibPack4Binaries" Guid="515D7157-403B-4085-AC2F-0DC95A47F2D4">
+			<Component Id="LibPackBinaries" Guid="515D7157-403B-4085-AC2F-0DC95A47F2D4">
 				<File Id="PythonExe" Name="python.exe">
 					<Shortcut Id="PythonShortcut" 
 						Directory="MenuDir" 
@@ -45,10 +45,8 @@
 				<File Id="LibPack8" Name="boost_thread-vc80-mt-1_34_1.dll" />
 				<File Id="LibPack9" Name="boost_wserialization-vc80-mt-1_34_1.dll"  />
 				<File Id="LibPack13" Name="coin2.dll"  />
-				<File Id="LibPack14" Name="glib-1.3.dll"/>
 				<File Id="LibPack26" Name="python25.dll"   />
 				<File Id="LibPack27" Name="python25.zip"   />
-				<File Id="LibPack28" Name="simage1.dll"   />
 				<File Id="LibPack29" Name="soqt1.dll"   />
 				<File Id="LibPack40" Name="Qt3Support4.dll"  DefaultLanguage="1033" />
 				<File Id="LibPack41" Name="QtCore4.dll"   />
@@ -86,10 +84,8 @@
 				<File Id="LibPack83" Name="TKSTL.dll"   />
 				<File Id="LibPack84" Name="TKTopAlgo.dll"   />
 				<File Id="LibPack85" Name="TKXSBase.dll"   />
-				<File Id="LibPack86" Name="Wm3Foundation80.dll"   />
-				<File Id="LibPack87" Name="xerces-c_2_6.dll"   />
+				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
 				<File Id="LibPack88" Name="zlib1.dll"   />
-				<File Id="LibPack90" Name="wget.exe"   />
 			</Component>
 		</DirectoryRef>
 	</Fragment>

@@ -53,7 +53,7 @@
 				<File Id="AppDll"   Name="FreeCADApp.dll"  />
 				<File Id="BaseDll"  Name="FreeCADBase.dll" />
 				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
-								<RemoveFolder Id="RmvMenuFolder" Directory="MenuDir" On="uninstall"/>
+				<RemoveFolder Id="RmvMenuFolder" Directory="MenuDir" On="uninstall"/>
 			</Component>
 		</DirectoryRef>
 	</Fragment>
