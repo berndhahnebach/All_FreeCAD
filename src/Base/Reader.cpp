@@ -60,170 +60,182 @@ using namespace std;
 Base::XMLReader::XMLReader(const char* FileName, std::istream& str) : _File(FileName) 
 {
 #ifdef _MSC_VER
-  str.imbue(std::locale::empty());
+    str.imbue(std::locale::empty());
 #else
-  //FIXME: Check whether this is correct
-  str.imbue(std::locale::classic());
+    //FIXME: Check whether this is correct
+    str.imbue(std::locale::classic());
 #endif
 
-  // create the parser
-  parser = XMLReaderFactory::createXMLReader();
-  //parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false);
-  //parser->setFeature(XMLUni::fgXercesSchema, false);
-  //parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
-  //parser->setFeature(XMLUni::fgXercesIdentityConstraintChecking, false);
-  //parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);
-  //parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
-  //parser->setFeature(XMLUni::fgXercesDynamic, true);
+    // create the parser
+    parser = XMLReaderFactory::createXMLReader();
+    //parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false);
+    //parser->setFeature(XMLUni::fgXercesSchema, false);
+    //parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
+    //parser->setFeature(XMLUni::fgXercesIdentityConstraintChecking, false);
+    //parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);
+    //parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
+    //parser->setFeature(XMLUni::fgXercesDynamic, true);
 
-  parser->setContentHandler(this);
-  parser->setErrorHandler(this);
+    parser->setContentHandler(this);
+    parser->setErrorHandler(this);
 
-  try
-  {
-    StdInputSource file(str, _File.filePath().c_str());
-    _valid = parser->parseFirst( file,token);
-  }
-  catch (const XMLException& toCatch) {
-      char* message = XMLString::transcode(toCatch.getMessage());
-      cout << "Exception message is: \n"
-           << message << "\n";
-      XMLString::release(&message);
-  }
-  catch (const SAXParseException& toCatch) {
-      char* message = XMLString::transcode(toCatch.getMessage());
-      cout << "Exception message is: \n"
-           << message << "\n";
-      XMLString::release(&message);
-  }
+    try {
+        StdInputSource file(str, _File.filePath().c_str());
+        _valid = parser->parseFirst( file,token);
+    }
+    catch (const XMLException& toCatch) {
+        char* message = XMLString::transcode(toCatch.getMessage());
+        cerr << "Exception message is: \n"
+             << message << "\n";
+        XMLString::release(&message);
+    }
+    catch (const SAXParseException& toCatch) {
+        char* message = XMLString::transcode(toCatch.getMessage());
+        cerr << "Exception message is: \n"
+             << message << "\n";
+        XMLString::release(&message);
+    }
 #ifndef FC_DEBUG
-  catch (...) {
-      cout << "Unexpected Exception \n";
-      Base::Exception("Unknown Exception in Base::XMLReader::XMLReader()");
-  }
+    catch (...) {
+        cerr << "Unexpected Exception \n";
+    }
 #endif
 }
 
 Base::XMLReader::~XMLReader()
 {
-  //  Delete the parser itself.  Must be done prior to calling Terminate, below.
-  delete parser;
+    //  Delete the parser itself.  Must be done prior to calling Terminate, below.
+    delete parser;
 }
 
-const char* Base::XMLReader::localName(void)
+const char* Base::XMLReader::localName(void) const
 {
-  return LocalName.c_str();
+    return LocalName.c_str();
 }
 
 unsigned int Base::XMLReader::getAttributeCount(void) const
 {
-  return (unsigned int)AttrMap.size();
+    return (unsigned int)AttrMap.size();
 }
 
 long Base::XMLReader::getAttributeAsInteger(const char* AttrName) const
 {
-  AttrMapType::const_iterator pos = AttrMap.find(AttrName);
+    AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
-  if(pos != AttrMap.end())
-    return atol(pos->second.c_str());
-  else
-    // wrong name, use hasAttribute if not shure!
-    assert(0);
+    if (pos != AttrMap.end())
+        return atol(pos->second.c_str());
+    else
+        // wrong name, use hasAttribute if not shure!
+        assert(0);
 
-  return 0;
+    return 0;
 }
 
 unsigned long Base::XMLReader::getAttributeAsUnsigned(const char* AttrName) const
 {
-  AttrMapType::const_iterator pos = AttrMap.find(AttrName);
+    AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
-  if(pos != AttrMap.end())
-    return strtoul(pos->second.c_str(),0,10);
-  else
-    // wrong name, use hasAttribute if not shure!
-    assert(0);
+    if (pos != AttrMap.end())
+        return strtoul(pos->second.c_str(),0,10);
+    else
+        // wrong name, use hasAttribute if not shure!
+        assert(0);
 
-  return 0;
+    return 0;
 }
 
 double Base::XMLReader::getAttributeAsFloat  (const char* AttrName) const
 {
-  AttrMapType::const_iterator pos = AttrMap.find(AttrName);
+    AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
-  if(pos != AttrMap.end())
-    return atof(pos->second.c_str());
-  else
-    // wrong name, use hasAttribute if not shure!
-    assert(0);
+    if (pos != AttrMap.end())
+        return atof(pos->second.c_str());
+    else
+        // wrong name, use hasAttribute if not shure!
+        assert(0);
 
-  return 0.0;
-
+    return 0.0;
 }
 
 const char*  Base::XMLReader::getAttribute (const char* AttrName) const
 {
-  AttrMapType::const_iterator pos = AttrMap.find(AttrName);
+    AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
-  if(pos != AttrMap.end())
-    return pos->second.c_str();
-  else
-    // wrong name, use hasAttribute if not shure!
-    assert(0);
+    if (pos != AttrMap.end())
+        return pos->second.c_str();
+    else
+        // wrong name, use hasAttribute if not shure!
+        assert(0);
 
-  return ""; 
+    return ""; 
 }
 
 bool Base::XMLReader::hasAttribute (const char* AttrName) const
 {
-  return AttrMap.find(AttrName) != AttrMap.end();
+    return AttrMap.find(AttrName) != AttrMap.end();
 }
-
-
 
 bool Base::XMLReader::read(void)
 {
-  ReadType = None;
+    ReadType = None;
 
-  try
-  {
-      parser->parseNext(token);
-  }
-  catch (const XMLException& toCatch) {
-      char* message = XMLString::transcode(toCatch.getMessage());
-      cout << "Exception message is: \n"
-           << message << "\n";
-      XMLString::release(&message);
-      return false;
-  }
-  catch (const SAXParseException& toCatch) {
-      char* message = XMLString::transcode(toCatch.getMessage());
-      cout << "Exception message is: \n"
-           << message << "\n";
-      XMLString::release(&message);
-      return false;
-  }
-  catch (...) {
-      cout << "Unexpected Exception \n" ;
-      return false;
-  }
+    try {
+        parser->parseNext(token);
+    }
+    catch (const XMLException& toCatch) {
+#if 0
+        char* message = XMLString::transcode(toCatch.getMessage());
+        cerr << "Exception message is: \n"
+             << message << "\n";
+        XMLString::release(&message);
+        return false;
+#else
+        char* message = XMLString::transcode(toCatch.getMessage());
+        std::string what = message;
+        XMLString::release(&message);
+        throw Base::Exception(what);
+#endif
+    }
+    catch (const SAXParseException& toCatch) {
+#if 0
+        char* message = XMLString::transcode(toCatch.getMessage());
+        cerr << "Exception message is: \n"
+             << message << "\n";
+        XMLString::release(&message);
+        return false;
+#else
+        char* message = XMLString::transcode(toCatch.getMessage());
+        std::string what = message;
+        XMLString::release(&message);
+        throw Base::Exception(what);
+#endif
+    }
+    catch (...) {
+#if 0
+        cerr << "Unexpected Exception \n" ;
+        return false;
+#else
+        throw Base::Exception("Unexpected XML exception");
+#endif
+    }
 
-  return true;
+    return true;
 }
 
 void Base::XMLReader::readElement(const char* ElementName)
 {
-  bool ok;
-  do {
-    ok = read(); if (!ok) break;
-  } while( (ReadType != StartElement && ReadType != StartEndElement) || (ElementName && LocalName != ElementName));
+    bool ok;
+    do {
+        ok = read(); if (!ok) break;
+    } while( (ReadType != StartElement && ReadType != StartEndElement) || (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readEndElement(const char* ElementName)
 {
-  bool ok;
-  do {
-    ok = read(); if (!ok) break;
-  } while(ReadType != EndElement || (ElementName && LocalName != ElementName));
+    bool ok;
+    do {
+        ok = read(); if (!ok) break;
+    } while(ReadType != EndElement || (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readCharacters(void)
@@ -270,52 +282,35 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
         // In either case we must go to the next entry
         entry = zipstream.getNextEntry();
     }
-/*
-
-    for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it) {
-        zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-
-        // Check if the current file is registered, otherwise check the next files as soon as
-        // both file names match.
-        while (entry->isValid() && entry->getName() != it->FileName)
-            entry = zipstream.getNextEntry();
-        if (entry->isValid())
-            it->Object->RestoreDocFile( zipstream );
-        else
-            throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
-    }*/
 }
 
 const char *Base::XMLReader::addFile(const char* Name, Base::Persistance *Object)
 {
-  FileEntry temp;
-  temp.FileName = Name;
-  temp.Object = Object;
-  
-  FileList.push_back(temp);
+    FileEntry temp;
+    temp.FileName = Name;
+    temp.Object = Object;
 
-  FileNames.push_back( temp.FileName );
+    FileList.push_back(temp);
+    FileNames.push_back( temp.FileName );
 
-  return Name;
+    return Name;
 }
 
 const std::vector<std::string>& Base::XMLReader::getFilenames() const
 {
-  return FileNames;
+    return FileNames;
 }
 
 bool Base::XMLReader::isRegistered(Base::Persistance *Object) const
 {
-  if ( Object )
-  {
-    for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
-    {
-      if ( it->Object == Object )
-        return true;
+    if (Object) {
+        for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it) {
+            if (it->Object == Object)
+                return true;
+        }
     }
-  }
 
-  return false;
+    return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -323,32 +318,32 @@ bool Base::XMLReader::isRegistered(Base::Persistance *Object) const
 // ---------------------------------------------------------------------------
 void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* const localname, const XMLCh* const /*qname*/, const Attributes& attrs)
 {
-  LocalName = StrX(localname).c_str();
+    LocalName = StrX(localname).c_str();
 
-  // saving attributes
-  for (unsigned int i = 0; i < attrs.getLength(); i++) {
-    AttrMap[StrX(attrs.getQName(i)).c_str()] = StrXUTF8(attrs.getValue(i)).c_str();
-  }
+    // saving attributes
+    for (unsigned int i = 0; i < attrs.getLength(); i++) {
+        AttrMap[StrX(attrs.getQName(i)).c_str()] = StrXUTF8(attrs.getValue(i)).c_str();
+    }
 
-  ReadType = StartElement;
+    ReadType = StartElement;
 }
 
 void Base::XMLReader::endElement  (const XMLCh* const /*uri*/, const XMLCh *const localname, const XMLCh *const /*qname*/)
 {
-  LocalName = StrX(localname).c_str();
+    LocalName = StrX(localname).c_str();
 
-  if(ReadType == StartElement)
-    ReadType = StartEndElement;
-  else
-    ReadType = EndElement;
+    if (ReadType == StartElement)
+        ReadType = StartEndElement;
+    else
+        ReadType = EndElement;
 }
 
 
 void Base::XMLReader::characters(const   XMLCh* const chars, const unsigned int length)
 {
-  Characters = StrX(chars).c_str();
-  ReadType = Chars;
-  CharacterCount += length;
+    Characters = StrX(chars).c_str();
+    ReadType = Chars;
+    CharacterCount += length;
 }
 
 void Base::XMLReader::ignorableWhitespace( const   XMLCh* const /*chars*/, const unsigned int /*length*/)
@@ -370,26 +365,32 @@ void Base::XMLReader::resetDocument()
 // ---------------------------------------------------------------------------
 void Base::XMLReader::error(const SAXParseException& e)
 {
-    cerr << "\nError at file " << StrX(e.getSystemId())
+    // print some details to error output and throw an
+    // exception to abort the parsing
+    cerr << "Error at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()
-         << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
+         << ", char " << e.getColumnNumber() << endl;
+    throw e;
 }
 
 void Base::XMLReader::fatalError(const SAXParseException& e)
 {
-    cerr << "\nFatal Error at file " << StrX(e.getSystemId())
+    // print some details to error output and throw an
+    // exception to abort the parsing
+    cerr << "Fatal Error at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()
-         << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
+         << ", char " << e.getColumnNumber() << endl;
+    throw e;
 }
 
 void Base::XMLReader::warning(const SAXParseException& e)
 {
-   cerr << "\nWarning at file " << StrX(e.getSystemId())
+    // print some details to error output and throw an
+    // exception to abort the parsing
+   cerr << "Warning at file " << StrX(e.getSystemId())
         << ", line " << e.getLineNumber()
-        << ", char " << e.getColumnNumber()
-        << "\n  Message: " << StrX(e.getMessage()) <<  endl;         
+        << ", char " << e.getColumnNumber() << endl;
+   throw e;
 }
 
 void Base::XMLReader::resetErrors()

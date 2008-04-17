@@ -45,65 +45,65 @@ namespace Base
 
 
 /** The XML reader class 
- * This is a important helper class for the store and retrivel system
- * of objects in FreeCAD. This classes a mainly inhereting the App::Persitance 
- * base class and implement the Restore() mthode.
+ * This is an important helper class for the store and retrieval system
+ * of objects in FreeCAD. These classes mainly inherit the App::Persitance 
+ * base class and implement the Restore() method.
  *  \par
- * The reader gets mainly initialized by the App::Document on retriving a 
- * document out of a file. From there supsequentli the Restore() methode will
+ * The reader gets mainly initialized by the App::Document on retrieving a 
+ * document out of a file. From there subsequently the Restore() method will
  * by called on all object stored. 
  *  \par
- * A simple Example is the Restore of App::PropertyString:
+ * A simple example is the Restore of App::PropertyString:
  *  \code
 void PropertyString::Save (short indent,std::ostream &str)
 {
-  str << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
+    str << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
 }
 
 void PropertyString::Restore(Base::Reader &reader)
 {
-  // read my Element
-  reader.readElement("String");
-  // get the value of my Attribute
-  _cValue = reader.getAttribute("value");
+    // read my Element
+    reader.readElement("String");
+    // get the value of my Attribute
+    _cValue = reader.getAttribute("value");
 }
 
  *  \endcode
  *  \par
- *  An more complicated example is the retrival of the App::PropertyContainer:
+ *  An more complicated example is the retrieval of the App::PropertyContainer:
  *  \code
 void PropertyContainer::Save (short indent,std::ostream &str)
 {
-  std::map<std::string,Property*> Map;
-  getPropertyMap(Map);
+    std::map<std::string,Property*> Map;
+    getPropertyMap(Map);
 
-  str << ind(indent) << "<Properties Count=\"" << Map.size() << "\">" << endl;
-  std::map<std::string,Property*>::iterator it;
-  for(it = Map.begin(); it != Map.end(); ++it)
-  {
-    str << ind(indent+1) << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" ;    
-    it->second->Save(indent+2,str);
-    str << "</Property>" << endl;    
-  }
-  str << ind(indent) << "</Properties>" << endl;
+    str << ind(indent) << "<Properties Count=\"" << Map.size() << "\">" << endl;
+    std::map<std::string,Property*>::iterator it;
+    for(it = Map.begin(); it != Map.end(); ++it)
+    {
+        str << ind(indent+1) << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" ;    
+        it->second->Save(indent+2,str);
+        str << "</Property>" << endl;    
+    }
+    str << ind(indent) << "</Properties>" << endl;
 }
 
 void PropertyContainer::Restore(Base::Reader &reader)
 {
-  reader.readElement("Properties");
-  int Cnt = reader.getAttributeAsInteger("Count");
+    reader.readElement("Properties");
+    int Cnt = reader.getAttributeAsInteger("Count");
 
-  for(int i=0 ;i<Cnt ;i++)
-  {
-    reader.readElement("Property");
-    string PropName = reader.getAttribute("name");
-    Property* prop = getPropertyByName(PropName.c_str());
-    if(prop)
-      prop->Restore(reader);
+    for(int i=0 ;i<Cnt ;i++)
+    {
+        reader.readElement("Property");
+        string PropName = reader.getAttribute("name");
+        Property* prop = getPropertyByName(PropName.c_str());
+        if(prop)
+            prop->Restore(reader);
 
-    reader.readEndElement("Property");
-  }
-  reader.readEndElement("Properties");
+        reader.readEndElement("Property");
+    }
+    reader.readEndElement("Properties");
 }
  *  \endcode
  * \see App::Persistance
@@ -112,100 +112,100 @@ void PropertyContainer::Restore(Base::Reader &reader)
 class BaseExport XMLReader : public XERCES_CPP_NAMESPACE_QUALIFIER DefaultHandler
 {
 public:
-    /// opens the file and read the first element
-  XMLReader(const char* FileName, std::istream&);
-  ~XMLReader();
+    /// open the file and read the first element
+    XMLReader(const char* FileName, std::istream&);
+    ~XMLReader();
 
-  bool isValid() const { return _valid; }
+    bool isValid() const { return _valid; }
 
-  /** @name Parser handling */
-  //@{
-  /// read the next element
-  bool read(void);
-  /// get the local name of the current Element
-  const char* localName(void);
-  /// reads until it findes a start element (<name>) or start-end element (<name/>) (with special name if given)
-  void readElement   (const char* ElementName=0);
-  /// reads until it findes a end element (with special name if given)
-  void readEndElement(const char* ElementName=0);
-  /// reads until it findes characters
-  void readCharacters(void);
-	//@}
+    /** @name Parser handling */
+    //@{
+    /// get the local name of the current Element
+    const char* localName(void) const;
+    /// read until a start element is found (<name>) or start-end element (<name/>) (with special name if given)
+    void readElement   (const char* ElementName=0);
+    /// read until an end element is found (with special name if given)
+    void readEndElement(const char* ElementName=0);
+    /// read until characters are found
+    void readCharacters(void);
+    //@}
 
-  /** @name Attribute handling */
-  //@{
-  /// get the numbers of attributes of the current Element
-  unsigned int getAttributeCount    (void) const;
-  /// check if the read element has a special attribute
-  bool         hasAttribute (const char* AttrName) const;
-  /// returns the named attribute as an interer (does type checking)
-  long         getAttributeAsInteger(const char* AttrName) const;
-  unsigned long getAttributeAsUnsigned(const char* AttrName) const;
-  /// returns the named attribute as an double floating point (does type checking)
-  double       getAttributeAsFloat  (const char* AttrName) const;
-  /// returns the named attribute as an double floating point (does type checking)
-  const char*  getAttribute         (const char* AttrName) const;
-  //@}
+    /** @name Attribute handling */
+    //@{
+    /// get the number of attributes of the current element
+    unsigned int getAttributeCount(void) const;
+    /// check if the read element has a special attribute
+    bool hasAttribute(const char* AttrName) const;
+    /// return the named attribute as an interer (does type checking)
+    long getAttributeAsInteger(const char* AttrName) const;
+    unsigned long getAttributeAsUnsigned(const char* AttrName) const;
+    /// return the named attribute as a double floating point (does type checking)
+    double getAttributeAsFloat(const char* AttrName) const;
+    /// return the named attribute as a double floating point (does type checking)
+    const char* getAttribute(const char* AttrName) const;
+    //@}
 
-   /** @name additional file reading */
-  //@{
-  /// add a read request of a persistent object
-  const char *addFile(const char* Name, Base::Persistance *Object);
-  /// process the requested file writes
-  void readFiles(zipios::ZipInputStream &zipstream) const;
-  /// get all registered file names
-  const std::vector<std::string>& getFilenames() const;
-  bool isRegistered(Base::Persistance *Object) const;
-  //@}
+    /** @name additional file reading */
+    //@{
+    /// add a read request of a persistent object
+    const char *addFile(const char* Name, Base::Persistance *Object);
+    /// process the requested file writes
+    void readFiles(zipios::ZipInputStream &zipstream) const;
+    /// get all registered file names
+    const std::vector<std::string>& getFilenames() const;
+    bool isRegistered(Base::Persistance *Object) const;
+    //@}
 
 private:
+    /// read the next element
+    bool read(void);
 
-  // -----------------------------------------------------------------------
-  //  Handlers for the SAX ContentHandler interface
-  // -----------------------------------------------------------------------
-  virtual void startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs);
-  virtual void endElement  (const XMLCh* const uri, const XMLCh *const localname, const XMLCh *const qname);
-  virtual void characters  (const XMLCh* const chars, const unsigned int length);
-  virtual void ignorableWhitespace(const XMLCh* const chars, const unsigned int length);
-  virtual void resetDocument();
-
-
-  // -----------------------------------------------------------------------
-  //  Handlers for the SAX ErrorHandler interface
-  // -----------------------------------------------------------------------
-  void warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
-  void error(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
-  void fatalError(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
-  void resetErrors();
+    // -----------------------------------------------------------------------
+    //  Handlers for the SAX ContentHandler interface
+    // -----------------------------------------------------------------------
+    virtual void startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs);
+    virtual void endElement  (const XMLCh* const uri, const XMLCh *const localname, const XMLCh *const qname);
+    virtual void characters  (const XMLCh* const chars, const unsigned int length);
+    virtual void ignorableWhitespace(const XMLCh* const chars, const unsigned int length);
+    virtual void resetDocument();
 
 
-  std::string LocalName;
-  std::string Characters;
-  unsigned int CharacterCount;
-
-  std::map<std::string,std::string> AttrMap;
-  typedef std::map<std::string,std::string> AttrMapType;
-
-  enum {
-    None = 0,
-    Chars,
-    StartElement,
-    StartEndElement,
-    EndElement
-  } ReadType;
+    // -----------------------------------------------------------------------
+    //  Handlers for the SAX ErrorHandler interface
+    // -----------------------------------------------------------------------
+    void warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+    void error(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+    void fatalError(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+    void resetErrors();
 
 
-  FileInfo _File;
-  XERCES_CPP_NAMESPACE_QUALIFIER SAX2XMLReader* parser;
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLPScanToken token;
-  bool _valid;
+    std::string LocalName;
+    std::string Characters;
+    unsigned int CharacterCount;
 
-  struct FileEntry {
-    std::string FileName;
-    Base::Persistance *Object;
-  };
-  std::vector<FileEntry> FileList;
-  std::vector<std::string> FileNames;
+    std::map<std::string,std::string> AttrMap;
+    typedef std::map<std::string,std::string> AttrMapType;
+
+    enum {
+        None = 0,
+        Chars,
+        StartElement,
+        StartEndElement,
+        EndElement
+    }   ReadType;
+
+
+    FileInfo _File;
+    XERCES_CPP_NAMESPACE_QUALIFIER SAX2XMLReader* parser;
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLPScanToken token;
+    bool _valid;
+
+    struct FileEntry {
+        std::string FileName;
+        Base::Persistance *Object;
+    };
+    std::vector<FileEntry> FileList;
+    std::vector<std::string> FileNames;
 };
 
 }
