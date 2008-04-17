@@ -97,6 +97,14 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
                     pcFeature->Shape.setValue(aSolid);
 
                 }
+                for (ex.Init(aShape, TopAbs_SHELL); ex.More(); ex.Next())
+                {
+                    // get the shape 
+                    const TopoDS_Shell& aShell = TopoDS::Shell(ex.Current());
+                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",fi.fileNamePure().c_str());
+                    pcFeature->Shape.setValue(aShell);
+
+                }
             }
         }
     }
