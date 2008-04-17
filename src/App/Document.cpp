@@ -710,7 +710,12 @@ void Document::restore (void)
     if (!reader.isValid())
         throw Base::FileException("Document::open(): Error reading file",FileName.getValue());
 
-    Document::Restore(reader);
+    try {
+        Document::Restore(reader);
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("Invalid Document.xml: %s\n", e.what());
+    }
 
     // Special handling for Gui document, the view representations must already
     // exist, what is done in Restore().
