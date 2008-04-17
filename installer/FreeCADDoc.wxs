@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
@@ -24,10 +24,13 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment Id="FreeCADDoc">
-        <DirectoryRef Id="DocDir" FileSource="../../doc/">
+        <DirectoryRef Id="DocDir" FileSource="../doc">
             <Component Id="DocComp" Guid="8A17000C-47B0-46f7-9C17-10BC167580ED">
-                <File Id="DocPdf" ShortName="doc.pdf" Name="FreeCAD-SpecsDesign.pdf" DiskId="1">
-                    <Shortcut Id="FCDocShortcut" Directory="MenuDir" ShortName="Doc" Name="User manual" Description="FreeCAD the one and only open source CAD package" Advertise="no" />
+                <File Id="DocFreeCAD" Name="FreeCAD.chm" DiskId="1">
+                    <Shortcut Id="FCDocShortcut1" Directory="MenuDir" ShortName="Doc" Name="User manual" Description="Documentation to the FreeCAD package" Advertise="yes" />
+                </File>
+                <File Id="DocPython" Name="Python25.chm" DiskId="1">
+                   <!-- <Shortcut Id="FCDocShortcut2" Directory="MenuDir" ShortName="Doc" Name="User manual" Description="Documentation to the FreeCAD package" Advertise="no" /> -->
                 </File>
             </Component>
         </DirectoryRef>

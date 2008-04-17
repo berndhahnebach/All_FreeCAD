@@ -43,6 +43,7 @@
 		<Property Id="ARPURLUPDATEINFO">http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
 		<Property Id="ALLUSERS">1</Property>
 
+		<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
 
         <Directory Id="TARGETDIR" Name="SourceDir">
@@ -51,10 +52,10 @@
 				Language="0"
 				SourceFile='Microsoft_VC80_CRT_x86.msm' 
 				DiskId="1"/>
-			<!-- <Merge  Id="CRT_Policy"
+			<Merge  Id="CRT_Policy"
 				Language="0"
-				SourceFile='$(env.CommonProgramFiles)\MergeModules\Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
-				DiskId="1"/>-->
+				SourceFile='Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
+				DiskId="1"/>
 			<!-- End of Visual C++ 8.0 Runtime Libraries -->
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
@@ -77,7 +78,7 @@
 				ConfigurableDirectory="INSTALLDIR">
             <ComponentRef Id="Base" />
             <MergeRef Id="CRT" />
-            <!--<MergeRef Id="CRT_Policy" />-->
+            <MergeRef Id="CRT_Policy" />
             <ComponentRef Id="LibPackBinaries" />
             <ComponentRef Id="CompModPart" />
             <ComponentRef Id="CompModMesh" />
@@ -88,11 +89,11 @@
             <Feature Id="FeatModRaytracing" Title="The Raytracing module" Description="Module to work with the Populat PovRay raytracer. (Experimental)" Level="1">
                 <ComponentRef Id="CompModRaytracing" />
             </Feature>
-<!--
+
             <Feature Id="Documentation" Title="Documentation" Description="The manuals." Level="1">
                 <ComponentRef Id="DocComp" />
             </Feature>
-						-->
+						
 						
         </Feature>
 
