@@ -1,8 +1,8 @@
 
 
 C:\Libs\Libs\wix_30\candle.exe -out FreeCADBase.wxobj    FreeCADBase.wxs
-C:\Libs\Libs\wix_30\candle.exe -out LibPack.wxobj       LibPack.wxs
-rem candle -out FreeCADDoc.wxobj     FreeCADDoc.wxs
+C:\Libs\Libs\wix_30\candle.exe -out LibPack.wxobj        LibPack.wxs
+C:\Libs\Libs\wix_30\candle.exe -out FreeCADDoc.wxobj     FreeCADDoc.wxs
 C:\Libs\Libs\wix_30\candle.exe -out FreeCADModules.wxobj FreeCADModules.wxs
 C:\Libs\Libs\wix_30\candle.exe -out FreeCAD.wxobj        FreeCAD.wxs
 
