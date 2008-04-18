@@ -38,6 +38,7 @@
 #include "gzstream.h"
 #include "InputSource.h"
 #include "Console.h"
+#include "Sequencer.h"
 
 #include "zipios/zipios-config.h"
 #include "zipios/zipfile.h"
@@ -242,7 +243,6 @@ void Base::XMLReader::readCharacters(void)
 {
 }
 
-
 void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
 {
     // It's possible that not all objects inside the document could be created, e.g. if a module
@@ -255,6 +255,7 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
     // In either case it's guaranteed that the order of the files is kept.
     zipios::ConstEntryPointer entry = zipstream.getNextEntry();
     std::vector<FileEntry>::const_iterator it = FileList.begin();
+    Base::SequencerLauncher seq("Importing project files...", FileList.size());
     while (entry->isValid() && it != FileList.end()) {
         std::vector<FileEntry>::const_iterator jt = it; 
         // Check if the current entry is registered, otherwise check the next registered files as soon as
@@ -281,6 +282,7 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
 
         // In either case we must go to the next entry
         entry = zipstream.getNextEntry();
+        Base::Sequencer().next();
     }
 }
 

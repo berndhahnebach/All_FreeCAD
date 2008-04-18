@@ -39,7 +39,7 @@ class SbVec3f;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderGeometryObject
+class AppPartGuiExport ViewProviderPart : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(PartGui::ViewProviderPart);
 
@@ -52,9 +52,6 @@ public:
     // Display properties
     App::PropertyFloatConstraint LineWidth;
     App::PropertyFloatConstraint PointSize;
-    App::PropertyFloatConstraint Deviation;
-    App::PropertyBool NoPerVertexNormals;
-    App::PropertyBool QualityNormals;
     App::PropertyColor LineColor;
     App::PropertyColor PointColor;
     App::PropertyMaterial LineMaterial;
@@ -65,8 +62,8 @@ public:
     virtual void setDisplayMode(const char* ModeName);
     /// returns a list of all possible modes
     virtual std::vector<std::string> getDisplayModes(void) const;
-    /// Update the Part representation
-    //virtual void update(const ChangeType&);
+    /// Update the view representation
+    void reload();
 
     virtual void updateData(const App::Property*);
     TopoDS_Shape getShape(const SoPickedPoint*) const;
@@ -75,11 +72,13 @@ public:
 protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
+    void loadParameter();
     Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
+    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
+         int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
 
     // nodes for the data representation
     SoSeparator *EdgeRoot;
@@ -91,8 +90,11 @@ protected:
     SoDrawStyle *pcPointStyle;
 
 private:
+    // settings stuff
+    float meshDeviation;
+    bool noPerVertexNormals;
+    bool qualityNormals;
     static App::PropertyFloatConstraint::Constraints floatRange;
-    static App::PropertyFloatConstraint::Constraints floatRangeDeviation;
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 

@@ -62,7 +62,6 @@
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
-#include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -86,7 +85,6 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 // Construction/Destruction
 
 App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
-App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRangeDeviation = {0.01f,100.00f,0.10f};
 
 ViewProviderPart::ViewProviderPart()
 {
@@ -130,13 +128,8 @@ ViewProviderPart::ViewProviderPart()
     pcPointStyle->style = SoDrawStyle::POINTS;
     pcPointStyle->pointSize = PointSize.getValue();
 
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
-    ADD_PROPERTY(Deviation,(hGrp->GetFloat("MeshDeviation",0.2)));
-    Deviation.setConstraints(&floatRangeDeviation);
-    ADD_PROPERTY(NoPerVertexNormals,(hGrp->GetBool("NoPerVertexNormals",false)));
-    ADD_PROPERTY(QualityNormals,(hGrp->GetBool("QualityNormals",false)));
-
     sPixmap = "PartFeature";
+    loadParameter();
 }
 
 ViewProviderPart::~ViewProviderPart()
@@ -191,18 +184,6 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
         pcPointMaterial->shininess.setValue(Mat.shininess);
         pcPointMaterial->transparency.setValue(Mat.transparency);
-    }
-    else if (prop == &Deviation) {
-        App::Property* shape = pcObject->getPropertyByName("Shape");
-        if (shape) update(shape);
-    }
-    else if (prop == &NoPerVertexNormals) {
-        App::Property* shape = pcObject->getPropertyByName("Shape");
-        if (shape) update(shape);
-    }
-    else if (prop == &QualityNormals) {
-        App::Property* shape = pcObject->getPropertyByName("Shape");
-        if (shape) update(shape);
     }
     else {
         ViewProviderGeometryObject::onChanged(prop);
@@ -324,6 +305,22 @@ TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
     return TopoDS_Shape();
 }
 
+void ViewProviderPart::loadParameter()
+{
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/Mod/Part");
+    this->meshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
+    this->noPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+    this->qualityNormals     = hGrp->GetBool("QualityNormals",false);
+}
+
+void ViewProviderPart::reload()
+{
+    loadParameter();
+    App::Property* shape     = pcObject->getPropertyByName("Shape");
+    if (shape) update(shape);
+}
+
 void ViewProviderPart::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
@@ -340,7 +337,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
 
         try {
             // creating the mesh on the data structure
-            BRepMesh::Mesh(cShape,Deviation.getValue());
+            BRepMesh::Mesh(cShape,this->meshDeviation);
             //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
             //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
             computeFaces   (FaceRoot,cShape);
@@ -519,12 +516,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 
 //  BRepMesh::Mesh(myShape,1.0);
 //  BRepMesh_Discret MESH(1.0,myShape,20.0);
-    BRepMesh_IncrementalMesh MESH(myShape,Deviation.getValue());
-
-    // counting faces and start sequencer
-    int l = 1;
-    for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-    Base::SequencerLauncher cSeq("Creating view representation...", l);
+    BRepMesh_IncrementalMesh MESH(myShape,this->meshDeviation);
 
     int i = 0;
     for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
@@ -543,7 +535,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         if (!vertices)
             break;
 
-        if (!NoPerVertexNormals.getValue()) {
+        if (!this->noPerVertexNormals) {
             // define normals (this is optional)
             SoNormal * norm = new SoNormal;
             norm->vector.setValues(0, nbNodesInFace, vertexnormals);
@@ -595,9 +587,6 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         delete [] vertexnormals;
         delete [] vertices;
         delete [] cons;
-
-        Base::Sequencer().next();
-
     } // end of face loop
 
     return true;
@@ -663,7 +652,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
             V3.Transform(myTransf);
         }
 
-        if (!NoPerVertexNormals.getValue()) {
+        if (!this->noPerVertexNormals) {
             // Calculate triangle normal
             gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
             gp_Vec Normal = (v2-v1)^(v3-v1); 
@@ -687,7 +676,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
 
     // normalize all vertex normals
     for(i=0;i < nbNodesInFace;i++) {
-        if (QualityNormals.getValue()) {
+        if (this->qualityNormals) {
             gp_Dir clNormal;
 
             try {

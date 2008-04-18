@@ -27,7 +27,7 @@
 #define PART_FEATURE_H
 
 #include "TopoShape.h"
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/PropertyGeo.h>
 
 class PyObjectBase;
@@ -90,7 +90,7 @@ private:
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppPartExport Feature: public App::AbstractFeature
+class AppPartExport Feature: public App::DocumentObject
 {
     PROPERTY_HEADER(Part::Feature);
 
@@ -105,6 +105,7 @@ public:
     //@{
     /// recalculate the Feature
     virtual App::DocumentObjectExecReturn *execute(void);
+    virtual short mustExecute(void) const;
     //@}
 
     /// returns the type name of the ViewProvider
