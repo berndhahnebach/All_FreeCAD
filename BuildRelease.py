@@ -218,17 +218,34 @@ def HelpFile():
 	
 # Step 10
 def CompileHelp():
-	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:',False) 
+	import fcbt.FileTools
+	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:',False)
+	fcbt.FileTools.cpfile('doc/tmp/FreeCAD.chm','doc/FreeCAD.chm')
 
 def BuildInstaller():
-	# candle -out FreeCADBase.wxobj    FreeCADBase.wxs
+	import fcbt.FileTools
+	LibPack = Config.get('Libs','FreeCADLib')
+	
+	fcbt.FileTools.cpfile('lib/Microsoft_VC80_CRT_x86.msm','installer/Microsoft_VC80_CRT_x86.msm')
+	fcbt.FileTools.cpfile('lib/policy_8_0_Microsoft_VC80_CRT_x86.msm','installer/policy_8_0_Microsoft_VC80_CRT_x86.msm')
 	CallProcess([Config.get('Tools','candle'),
+				 '-out', 'installer\\',
 	             'installer\\FreeCAD.wxs',
 	             'installer\\FreeCADBase.wxs',
 	             'installer\\LibPack.wxs',
 	             'installer\\FreeCADDoc.wxs',
 	             'installer\\FreeCADModules.wxs',
-				 ],'7)Build installer:',False) 
+				 ],'11)Compile installer:',False) 
+	CallProcess([Config.get('Tools','light'),
+				 '-ext', 'WixUIExtension',
+				 '-cultures:en-us',
+				 '-out', 'installer\\FreeCAD.msi',
+	             'installer\\FreeCAD.wixobj',
+	             'installer\\FreeCADBase.wixobj',
+	             'installer\\LibPack.wixobj',
+	             'installer\\FreeCADDoc.wixobj',
+	             'installer\\FreeCADModules.wixobj',
+				 ],'12)Build installer:',False) 
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
