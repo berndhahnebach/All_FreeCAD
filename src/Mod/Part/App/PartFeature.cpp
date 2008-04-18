@@ -384,7 +384,7 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
+PROPERTY_SOURCE(Part::Feature, App::DocumentObject)
 
 
 Feature::Feature(void) 
@@ -394,6 +394,11 @@ Feature::Feature(void)
 
 Feature::~Feature()
 {
+}
+
+short Feature::mustExecute(void) const
+{
+    return 0;
 }
 
 App::DocumentObjectExecReturn *Feature::execute(void)

@@ -29,7 +29,7 @@
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
 
-#include "../../Part/App/PartFeature.h"
+#include <App/Feature.h>
 
 class PyObjectBase;
 class FeaturePy;

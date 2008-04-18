@@ -68,12 +68,7 @@ void DlgSettings3DViewPartImp::saveSettings()
         Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
         std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
         for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
-            if (static_cast<ViewProviderPart*>(*jt)->Deviation.getValue() != deviation)
-                static_cast<ViewProviderPart*>(*jt)->Deviation.setValue(deviation);
-            if (static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.getValue() != nonormal)
-                static_cast<ViewProviderPart*>(*jt)->NoPerVertexNormals.setValue(nonormal);
-            if (static_cast<ViewProviderPart*>(*jt)->QualityNormals.getValue() != quality)
-                static_cast<ViewProviderPart*>(*jt)->QualityNormals.setValue(quality);
+            static_cast<ViewProviderPart*>(*jt)->reload();
         }
     }
 }
