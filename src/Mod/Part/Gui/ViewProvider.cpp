@@ -428,6 +428,8 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
 
             // this holds the indices of the edge's triangulation to the actual points
             Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(aEdge, aPolyTria, aLoc);
+            if (aPoly.IsNull())
+                continue; // polygon does not exist
 
             // getting size and create the array
             nbNodesInFace = aPoly->NbNodes();
@@ -601,7 +603,8 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
     return true;
 }
 
-void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
+                                       int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
 {
     TopLoc_Location aLoc;
 
@@ -611,10 +614,10 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     //if (aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
     if (aPoly.IsNull()) return;
 
-        // geting the transformation of the shape/face
-        gp_Trsf myTransf;
-        Standard_Boolean identity = true;
-        if(!aLoc.IsIdentity())  {
+    // geting the transformation of the shape/face
+    gp_Trsf myTransf;
+    Standard_Boolean identity = true;
+    if(!aLoc.IsIdentity())  {
         identity = false;
         myTransf = aLoc.Transformation();
     }
