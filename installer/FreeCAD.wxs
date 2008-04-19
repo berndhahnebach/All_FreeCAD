@@ -24,19 +24,43 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<?include Version.wxi ?>
-	<Product Id="0C6EC504-2794-4992-BE14-2F57378C1183" 
-				UpgradeCode="D898BEFD-CFFA-4163-A624-AB36B2C7A710" 
+	<?define RTMProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).0" ?>
+	<?define ProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" ?>
+	<?define UpgradeCode="{D898BEFD-CFFA-4163-A624-AB36B2C7A710}"?>
+	<?define PackageCode="{????????-????-????-????-????????????}"?>
+
+
+	<Product Id='0C6EC504-2794-4992-BE14-2F57378C1183' 
+				UpgradeCode='$(var.UpgradeCode)' 
 				Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
-				Language="1033" Version="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" 
+				Language="1033" 
+				Version='$(var.ProductVersion)' 
 				Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
         <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" 
 				Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
-				InstallerVersion="100" 
-				Compressed="yes" />
+				InstallerVersion="200" 
+				Compressed="yes"
+				AdminImage='no'
+				Platforms='Intel'
+				ReadOnly='yes'
+				Keywords='FreeCAD,Installer,MSI' />
 
 		<Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion Minimum="$(var.ProductVersion)"
+							IncludeMinimum="no"
+							OnlyDetect="yes"
+							Language="1033"
+							Property="NEWPRODUCTFOUND" />
+			<UpgradeVersion Minimum="$(var.RTMProductVersion)"
+							IncludeMinimum="yes"
+							Maximum="$(var.ProductVersion)"
+							IncludeMaximum="no"
+							Language="1033"
+							Property="UPGRADEFOUND" />
+		</Upgrade>
 
-		<Property Id="ARPCOMMENTS">any comments</Property>
+		<Property Id="ARPCOMMENTS">Greatest CAD ever ;-)</Property>
 		<Property Id="ARPCONTACT">Juergen Riegel (juergen.riegel@web.de)</Property>
 		<Property Id="ARPHELPLINK">http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
 		<Property Id="ARPURLINFOABOUT">http://free-cad.sourceforge.net/</Property>
@@ -48,20 +72,17 @@
 
         <Directory Id="TARGETDIR" Name="SourceDir">
  			<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
-			<Merge  Id="CRT"
-				Language="0"
-				SourceFile='Microsoft_VC80_CRT_x86.msm' 
-				DiskId="1"/>
-			<Merge  Id="CRT_Policy"
-				Language="0"
-				SourceFile='Policy_8_0_Microsoft_VC80_CRT_x86.msm' 
-				DiskId="1"/>
-			<!-- End of Visual C++ 8.0 Runtime Libraries -->
+			<Merge  Id="CRT" Language="0" SourceFile='Microsoft_VC80_CRT_x86.msm' DiskId="1"/>
+			<Merge  Id="CRT_Policy" Language="0" SourceFile='Policy_8_0_Microsoft_VC80_CRT_x86.msm' DiskId="1"/>
+			
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
                     <Directory Id="BinDir" Name="bin" />
                     <Directory Id="ModDir" Name="Mod" />
                     <Directory Id="DocDir" Name="doc" />
+					<Directory Id="DataDir" Name="data" >
+						<Directory Id="ExamplesDir" Name="examples" />
+					</Directory>
                 </Directory>
             </Directory>
             <Directory Id="ProgramMenuFolder">
@@ -80,6 +101,14 @@
             <MergeRef Id="CRT" />
             <MergeRef Id="CRT_Policy" />
             <ComponentRef Id="LibPackBinaries" />
+            <ComponentRef Id="PyQtTop" />
+            <ComponentRef Id="PyQtUic" />
+            <ComponentRef Id="PyQtCompiler" />
+            <ComponentRef Id="PyQtLoader" />
+            <ComponentRef Id="PyQtWidgetPlugins" />
+            <ComponentRef Id="PyQtQwt5" />
+            <ComponentRef Id="PivyGui" />
+            <ComponentRef Id="PivyTop" />
             <ComponentRef Id="CompModPart" />
             <ComponentRef Id="CompModMesh" />
             <ComponentRef Id="CompModPoints" />
@@ -100,6 +129,17 @@
         <Icon Id="FreeCADIcon" SourceFile="../bin/FreeCAD.exe" />
         <Property Id="ARPPRODUCTICON">FreeCADIcon</Property>
         <UIRef Id="WixUI_Mondo" />
+		
+		<!-- Prevent downgrading -->
+		<CustomAction Id="PreventDowngrading" Error="Newer version already installed." />
+		<!-- Sequences -->
+		<InstallExecuteSequence>
+			<Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
+			<RemoveExistingProducts After="InstallFinalize" />
+		</InstallExecuteSequence>
+		<InstallUISequence>
+			<Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
+		</InstallUISequence>
 
     </Product>
 </Wix>

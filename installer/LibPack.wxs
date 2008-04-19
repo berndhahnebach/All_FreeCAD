@@ -48,7 +48,7 @@
 				<File Id="LibPack26" Name="python25.dll"   />
 				<File Id="LibPack27" Name="python25.zip"   />
 				<File Id="LibPack29" Name="soqt1.dll"   />
-				<File Id="LibPack40" Name="Qt3Support4.dll"  DefaultLanguage="1033" />
+				<File Id="LibPack40" Name="Qt3Support4.dll"/>
 				<File Id="LibPack41" Name="QtCore4.dll"   />
 				<File Id="LibPack42" Name="QtDesigner4.dll"   />
 				<File Id="LibPack43" Name="QtDesignerComponents4.dll"   />
@@ -87,6 +87,82 @@
 				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
 				<File Id="LibPack88" Name="zlib1.dll"   />
 			</Component>
+			<Directory Id="PivyDir" Name="pivy" FileSource="../bin/pivy" >
+				<Component Id="PivyTop"  Guid="b18123c0-3fb0-4cc0-85e8-f71038172b34">
+					<File Id="Pivy1" Name="__init__.py"   />
+					<File Id="Pivy2" Name="_coin.pdb"   />
+					<File Id="Pivy3" Name="coin.py"   />
+					<File Id="Pivy4" Name="sogui.py"   />
+				</Component>
+				<Directory Id="PivyGuiDir" Name="gui" FileSource="../bin/pivy/gui" >
+					<Component Id="PivyGui"  Guid="9829370b-fad4-4606-9802-6ff90ad8474e">
+						<File Id="Pivy5" Name="__init__.py"   />
+						<File Id="Pivy6" Name="_soqt.pdb"   />
+						<File Id="Pivy7" Name="soqt.py"   />
+					</Component>
+				</Directory>
+			</Directory>
+			<Directory Id="PyQtDir" Name="PyQt4" FileSource="../bin/PyQt4" >
+				<Component Id="PyQtTop"  Guid="17b2fc4c-61e2-447e-95af-5b65cad125aa">
+					<File Id="PyQt1" Name="__init__.py"   />
+					<File Id="PyQt2" Name="_qt.pyd"   />
+					<File Id="PyQt3" Name="LICENSE"   />
+					<File Id="PyQt4" Name="pyqtconfig.py"   />
+					<File Id="PyQt5" Name="Qsci.pyd"   />
+					<File Id="PyQt6" Name="Qt.pyd"   />
+					<File Id="PyQt7" Name="QtAssistant.pyd"   />
+					<File Id="PyQt8" Name="QtCore.pyd"   />
+					<File Id="PyQt9" Name="QtDesigner.pyd"   />
+					<File Id="PyQt10" Name="QtGui.pyd"   />
+					<File Id="PyQt11" Name="QtNetwork.pyd"   />
+					<File Id="PyQt12" Name="QtOpenGL.pyd"   />
+					<File Id="PyQt13" Name="QtScript.pyd"   />
+					<File Id="PyQt14" Name="QtSql.pyd"   />
+					<File Id="PyQt15" Name="QtSvg.pyd"   />
+					<File Id="PyQt16" Name="QtTest.pyd"   />
+					<File Id="PyQt17" Name="QtXml.pyd"   />
+				</Component>
+				<Directory Id="PyQtUicDir" Name="uic" FileSource="../bin/PyQt4/uic" >
+					<Component Id="PyQtUic"  Guid="c81a900c-8292-4631-9b52-25ac825b99c8">
+						<File Id="PyQt18" Name="__init__.py"   />
+						<File Id="PyQt19" Name="exceptions.py"   />
+						<File Id="PyQt20" Name="objcreator.py"   />
+						<File Id="PyQt21" Name="properties.py"   />
+						<File Id="PyQt22" Name="pyuic.py"   />
+						<File Id="PyQt23" Name="uiparser.py"   />
+					</Component>
+					<Directory Id="PyQtCompilerDir" Name="Compiler" FileSource="../bin/PyQt4/uic/Compiler" >
+						<Component Id="PyQtCompiler"  Guid="f20f3c7f-5550-48e4-b769-5d6658a1fb4e">
+							<File Id="PyQt24" Name="__init__.py"   />
+							<File Id="PyQt25" Name="compiler.py"   />
+							<File Id="PyQt26" Name="indenter.py"   />
+							<File Id="PyQt27" Name="qobjectcreator.py"   />
+							<File Id="PyQt28" Name="qtproxies.py"   />
+						</Component>											
+					</Directory>
+					<Directory Id="PyQtLoaderDir" Name="Loader" FileSource="../bin/PyQt4/uic/Loader" >
+						<Component Id="PyQtLoader"  Guid="3f0dfb67-fd56-4928-83f4-148a7f4bf115">
+							<File Id="PyQt29" Name="__init__.py"   />
+							<File Id="PyQt30" Name="loader.py"   />
+							<File Id="PyQt31" Name="qobjectcreator.py"   />
+						</Component>											
+					</Directory>
+					<Directory Id="PyQtWidgetPluginsDir" Name="widget-plugins" FileSource="../bin/PyQt4/uic/widget-plugins" >
+						<Component Id="PyQtWidgetPlugins"  Guid="6f4ee199-1574-4989-86c9-2f05036a3a44">
+							<File Id="PyQt32" Name="qaxcontainer.py"   />
+							<File Id="PyQt33" Name="qscintilla.py"   />
+							<File Id="PyQt34" Name="qwt.py"   />
+						</Component>											
+					</Directory>
+				</Directory>
+				<Directory Id="PyQtQwt5Dir" Name="Qwt5" FileSource="../bin/PyQt4/Qwt5" >
+					<Component Id="PyQtQwt5"  Guid="40fefaa5-e488-429f-a360-170aef59814c">
+						<File Id="PyQt35" Name="__init__.py"   />
+						<File Id="PyQt36" Name="anynumpy.py"   />
+						<File Id="PyQt37" Name="Qwt.pyd"   />
+					</Component>
+				</Directory>
+			</Directory>
 		</DirectoryRef>
 	</Fragment>
 </Wix>
