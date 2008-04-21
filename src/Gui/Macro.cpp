@@ -180,26 +180,8 @@ void MacroManager::run(MacroType eType,const char *sName)
 {
     try
     {
-        //FIXME: The given path name is expected to be Utf-8 but std::ifstream isn't able to open
-        //the file if contains non-ASCII characters. So, we open it with QFile which works reliably.
-        //Base::Interpreter().runFile(sName);
-        QString fileName = QString::fromUtf8(sName);
-        QFile file(fileName);
-        if (file.open(QFile::ReadOnly))
-        {
-            QTextStream str(&file);
-            QString content = str.readAll();
-            // Need to convert CRLF to LF
-            content.replace( "\r\n", "\n" );
-            Base::Interpreter().runString(content.toAscii());
-        }
-        else
-        {
-            std::string err = "Unknown file: ";
-            err += sName;
-            err += "\n";
-            throw Base::Exception(err);
-        }
+        //The given path name is expected to be Utf-8
+        Base::Interpreter().runFile(sName);
     }
     catch (const Base::Exception& e)
     {

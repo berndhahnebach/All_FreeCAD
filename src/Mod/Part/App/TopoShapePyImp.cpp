@@ -52,7 +52,7 @@ PyObject*  TopoShapePy::exportIges(PyObject *args)
 PyObject*  TopoShapePy::exportStep(PyObject *args)
 {
   char* filename;
-  if (!PyArg_ParseTuple(args, "s", &filename ))   
+  if (!PyArg_ParseTuple(args, "s", &filename))
     return NULL;
 
   // write step file
@@ -76,7 +76,7 @@ PyObject*  TopoShapePy::exportStep(PyObject *args)
 PyObject*  TopoShapePy::exportBrep(PyObject *args)
 {
 	  char* filename;
-  if (!PyArg_ParseTuple(args, "s", &filename ))
+  if (!PyArg_ParseTuple(args, "s", &filename))
     return NULL;
 
   // read brep file
@@ -96,7 +96,7 @@ PyObject*  TopoShapePy::exportStl(PyObject *args)
 
 PyObject*  TopoShapePy::check(PyObject *args)
 {
-	  if (!PyArg_ParseTuple(args, "" ))   
+	  if (!PyArg_ParseTuple(args, ""))
     return NULL;
   if ( !getTopoShapePtr()->_Shape.IsNull() )
   {

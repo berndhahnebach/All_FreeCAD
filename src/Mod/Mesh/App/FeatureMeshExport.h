@@ -45,10 +45,8 @@ public:
     App::PropertyLink   Source;
     App::PropertyString FileName;
     App::PropertyString Format;
-    //FIXME: We should have an empty view provider which just does nothing
-    //or even allow to have objects with no view provider related.
     const char* getViewProviderName(void) const {
-    return "MeshGui::ViewProviderExport";
+        return "MeshGui::ViewProviderExport";
     }
 
     /** @name methods override feature */
