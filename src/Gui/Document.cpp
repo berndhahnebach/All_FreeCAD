@@ -690,39 +690,39 @@ bool Document::isLastView(void)
 }
 
 /** 
- *  This method check if the Document can close. It checks on 
- *  the save state of the document and is abel to abort the close!
+ *  This method checks if the document can be closed. It checks on
+ *  the save state of the document and is able to abort the closeing.
  */
-void Document::canClose ( QCloseEvent * e )
+void Document::canClose (QCloseEvent * e)
 {
-  if(/*! _pcDocument->isSaved() ||*/ isModified() // at the moment we cannot determine if a saved document has been modified
-    //&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
-    //&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK
-      )
-  {
-#   ifndef FC_DEBUG
-    switch(QMessageBox::question( getActiveView(), QObject::tr("Unsaved document"),QObject::tr("Save document before close?"),
-        QMessageBox::Yes|QMessageBox::Default,QMessageBox::No,QMessageBox::Cancel|QMessageBox::Escape ))
-      {
-      case QMessageBox::Yes: // "Yes" was pressed
-        //GetApplication().
-        if (save())
-          e->accept(); // -> can be closed. document was saved
-        else
-          e->ignore(); // -> abort, because saving of document was aborted
-        break;
-      case QMessageBox::No: // "No" was pressed
-        e->accept();   // -> can be closed without saving
-        break;
-      case QMessageBox::Cancel: // "Cancel" was pressed
-        e->ignore();   // -> abort
-        break;
-      }
-#   else
-      e->accept();
-#   endif
-  }else
-    e->accept();
+    if (isModified()) {
+#ifndef FC_DEBUG
+        switch(QMessageBox::question(getActiveView(),
+            QObject::tr("Unsaved document"),
+            QObject::tr("Save document before close?"),
+            QMessageBox::Yes|QMessageBox::Default,
+            QMessageBox::No,
+            QMessageBox::Cancel|QMessageBox::Escape))
+        {
+        case QMessageBox::Yes: // "Yes" was pressed
+            if (save())
+                e->accept(); // -> can be closed. document was saved
+            else
+                e->ignore(); // -> abort, because saving of document was aborted
+                break;
+        case QMessageBox::No: // "No" was pressed
+            e->accept();   // -> can be closed without saving
+            break;
+        case QMessageBox::Cancel: // "Cancel" was pressed
+            e->ignore();   // -> abort
+            break;
+        }
+#else
+        e->accept();
+#endif
+    }
+    else
+        e->accept();
 }
 
 void Document::closeEvent ( QCloseEvent * e )

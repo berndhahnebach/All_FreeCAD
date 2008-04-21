@@ -32,6 +32,8 @@
 
 #include "Console.h"
 #include "Interpreter.h"
+#include "FileInfo.h"
+#include "Stream.h"
 #include "PyTools.h"
 #include "Exception.h"
 #include "PyObjectBase.h"
@@ -207,8 +209,8 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 
 void InterpreterSingleton::runFile(const char*pxFileName)
 {
-    std::ifstream file;
-    file.open(pxFileName);
+    FileInfo fi(pxFileName);
+    Base::ifstream file(fi);
     if (file) {
         std::stringbuf buf;
         file >> &buf;

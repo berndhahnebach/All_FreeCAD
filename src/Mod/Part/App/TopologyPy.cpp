@@ -633,7 +633,7 @@ PyObject *TopoShapePyOld::importSTEP(PyObject *args)
 PyObject *TopoShapePyOld::exportSTEP(PyObject *args)
 {
   char* filename;
-  if (!PyArg_ParseTuple(args, "s", &filename ))   
+  if (!PyArg_ParseTuple(args, "s", &filename))
     return NULL;
 
   PY_TRY {
