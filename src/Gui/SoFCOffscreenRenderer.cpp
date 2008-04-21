@@ -81,7 +81,7 @@ SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const
 #ifdef FC_OS_WIN32
         FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
 #else
-        FILE* fd = fopen(filename, "w");
+        FILE* fd = fopen(filename.getString(), "w");
 #endif
         bool ok = writeToPostScript(fd);
         fclose(fd);
@@ -92,7 +92,7 @@ SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const
 #ifdef FC_OS_WIN32
         FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
 #else
-        FILE* fd = fopen(filename, "w");
+        FILE* fd = fopen(filename.getString(), "w");
 #endif
         bool ok = writeToRGB(fd);
         fclose(fd);
