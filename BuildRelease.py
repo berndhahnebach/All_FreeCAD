@@ -245,7 +245,26 @@ def BuildInstaller():
 	             'installer\\LibPack.wixobj',
 	             'installer\\FreeCADDoc.wixobj',
 	             'installer\\FreeCADModules.wixobj',
-				 ],'12)Build installer:',False) 
+				 ],'12)Build installer:',False)
+				 
+	fcbt.FileTools.cpfile('installer/FreeCAD.msi',FileName+'_installer.msi')
+	
+def SendFTP():
+	from ftplib import FTP
+	ftp = FTP('upload.sf.net')
+	ftp.login() 
+	ftp.cwd("/incoming")
+	sys.stdout.write('13) Send source ZIP: ')
+	f = open(FileName+'_source.zip', "r") 
+	ftp.storbinary('STOR '+ FileName+'_source.zip.msi', f) 
+	sys.stdout.write('done\n14) Send source tgz: ')
+	f = open(FileName+'_source.tgz', "r") 
+	ftp.storbinary('STOR '+ FileName+'_source.tgz', f) 
+	sys.stdout.write('done\n15) Send installer: ')
+	f = open(FileName+'_installer.msi', "r") 
+	ftp.storbinary('STOR '+ FileName+'_installer.msi', f) 
+	f.close()
+	ftp.close()
 	
 def main():
 	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
@@ -296,13 +315,14 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		CheckOut()
-		PackSourceZip()
-		PackSourceTar()
-		BuildAll()
-		HelpFile()
-		CompileHelp()
-		BuildInstaller()
+		#CheckOut()
+		#PackSourceZip()
+		#PackSourceTar()
+		#BuildAll()
+		#HelpFile()
+		#CompileHelp()
+		#BuildInstaller()
+		SendFTP()
 	except:
 		Log.close()
 		ErrLog.close()
