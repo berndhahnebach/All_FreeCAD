@@ -315,13 +315,13 @@ def main():
 	ErrLog = open("BuildReleaseErrors.log","w")
 	
 	try:
-		#CheckOut()
-		#PackSourceZip()
-		#PackSourceTar()
-		#BuildAll()
-		#HelpFile()
-		#CompileHelp()
-		#BuildInstaller()
+		CheckOut()
+		PackSourceZip()
+		PackSourceTar()
+		BuildAll()
+		HelpFile()
+		CompileHelp()
+		BuildInstaller()
 		SendFTP()
 	except:
 		Log.close()
