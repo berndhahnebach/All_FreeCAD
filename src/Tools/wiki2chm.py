@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 # (c) 2007 Juergen Riegel GPL
 
-Usage = """wiki2chm - conect to a wiki and spider the docu
+Usage = """wiki2chm - connect to a wiki and spider the docu
 
 Usage:
-   wiki2chm [Optionen] WikiBaseUrl TocPageName
+   wiki2chm [Options] WikiBaseUrl TocPageName
    
 Options:
  -p, --proxy=ProxyUrl     specify a proxy
- -o  --out-path=BASPATH   use this base path the HTML Project
+ -o  --out-path=BASEPATH  use this base path to the HTML project
  -h, --help               print this help
  
 Exit:
@@ -18,13 +18,13 @@ Exit:
  2      Run delivers Warnings (printed on standard error)
  10     Run stops with an error (printed on standard error)
  
-This programm read the wiki and generate all nececary files
-to generat a .chm file.
+This programm reads the wiki and generates all necessary files
+to generate a .chm file.
 The TocPageName is a special page in the Wiki, which is used
 to generate the content for the .chm.
 This programm is part of the FreeCAD Build system and at the
-moment not realy in shape to use outside of FreeCAD. 
-There fore some changes have to be made (e.g. fix paths).
+moment not really in shape to use outside of FreeCAD. 
+Therefore some changes have to be made (e.g. fix paths).
 
 Examples:
   
@@ -79,7 +79,7 @@ Output = sys.stdout
 
 def runWget():
 	cmdLine = Wget + " "
-	cmdLine += "-k -r "    # konvert to local links and do recursive
+	cmdLine += "-k -r "    # convert to local links and do recursive
 	cmdLine += "-P tmp "   # write in this subdir
 	cmdLine += "-nd "      # flat (no subdirs)
 	cmdLine += '-R "*action=*" '      # Reject all action links
