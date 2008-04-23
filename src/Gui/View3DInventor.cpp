@@ -100,7 +100,6 @@ View3DInventor::~View3DInventor()
 {
     hGrp->Detach(this);
 
-    //FIXME: This workaround can be removed after we have done the redesign with BaseView.
     //If we destroy this viewer by calling 'delete' directly the focus proxy widget which is defined 
     //by a widget in SoQtViewer isn't resetted. This widget becomes to a dangling pointer and makes
     //the application crash. (Probably it's better to destroy this viewer by calling close().)
@@ -108,12 +107,13 @@ View3DInventor::~View3DInventor()
     QWidget* foc = qApp->focusWidget();
     if (foc) {
         QWidget* par = foc->parentWidget();
-        while ( par ) {
-            if ( par == this ) { 
-                foc->setFocusProxy(0); foc->clearFocus(); break;
-            } else {
-                par = par->parentWidget();
+        while (par) {
+            if (par == this) {
+                foc->setFocusProxy(0);
+                foc->clearFocus();
+                break;
             }
+            par = par->parentWidget();
         }
     }
 
@@ -122,7 +122,7 @@ View3DInventor::~View3DInventor()
         Py_DECREF(_viewerPy);
     }
 
-  delete _viewer;
+    delete _viewer;
 }
 
 PyObject *View3DInventor::getPyObject(void)

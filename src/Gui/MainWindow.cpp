@@ -83,7 +83,8 @@ struct MainWindowP
     QLabel* sizeLabel;
     QLabel* actionLabel;
     QTimer* actionTimer;
-    QTimer* activityTimer; 
+    QTimer* activityTimer;
+    QTimer* visibleTimer;
     QWorkspace* workspace;
     QTabBar* tabs;
     QPointer<MDIView> activeView;
@@ -184,10 +185,15 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     connect(d->actionTimer, SIGNAL(timeout()), d->actionLabel, SLOT(clear()));
 
     // update gui timer
-    d->activityTimer = new QTimer( this );
-    connect( d->activityTimer, SIGNAL(timeout()),this, SLOT(updateActions()) );
+    d->activityTimer = new QTimer(this);
+    connect(d->activityTimer, SIGNAL(timeout()),this, SLOT(updateActions()));
     d->activityTimer->setSingleShot(true);
     d->activityTimer->start(300);
+
+    // show main window timer
+    d->visibleTimer = new QTimer(this);
+    connect(d->visibleTimer, SIGNAL(timeout()),this, SLOT(showMainWindow()));
+    d->visibleTimer->setSingleShot(true);
 
     d->windowMapper = new QSignalMapper(this);
 
@@ -370,8 +376,10 @@ void MainWindow::addWindow(MDIView* view)
 void MainWindow::removeWindow(Gui::MDIView* view)
 {
     // free all connections
-    disconnect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
-    disconnect( this, SIGNAL( windowStateChanged(MDIView*) ), view, SLOT( windowStateChanged(MDIView*) ) );
+    disconnect(view, SIGNAL(message(const QString&, int)),
+               statusBar(), SLOT(message(const QString&, int )));
+    disconnect(this, SIGNAL(windowStateChanged(MDIView*)),
+               view, SLOT(windowStateChanged(MDIView*)));
     view->removeEventFilter(this);
 
     for (int i = 0; i < d->tabs->count(); i++) {
@@ -380,6 +388,19 @@ void MainWindow::removeWindow(Gui::MDIView* view)
             if (d->tabs->count() == 0)
                 d->tabs->hide(); // no view open any more
             break;
+        }
+    }
+
+    // check if the focus widget is a child of the view
+    QWidget* foc = this->focusWidget();
+    if (foc) {
+        QWidget* par = foc->parentWidget();
+        while (par) {
+            if (par == view) {
+                foc->clearFocus();
+                break;
+            }
+            par = par->parentWidget();
         }
     }
 
@@ -582,19 +603,8 @@ void MainWindow::setActiveWindow(MDIView* view)
 
 void MainWindow::closeEvent ( QCloseEvent * e )
 {
-    //TODO Reimplement the fullscreen mode stuff
     Application::Instance->tryClose(e);
     if (e->isAccepted()) {
-        // Before closing the main window we must make sure that all views are
-        // in 'Normal' mode otherwise the 'lastWindowClosed()' signal doesn't
-        // get emitted from QApplication later on. Just destroying these views
-        // doesn't work either.
-        for (int i = 0; i < d->tabs->count(); i++) {
-            MDIView* view = qobject_cast<MDIView*>(d->tabs->tabData(i).value<QWidget*>());
-            if (view->currentViewMode() != MDIView::Child)
-                view ->setCurrentViewMode(MDIView::Child);
-        }
-
         d->activityTimer->stop();
         saveWindowSettings();
         QMainWindow::closeEvent( e );
@@ -605,12 +615,26 @@ void MainWindow::showEvent(QShowEvent  * /*e*/)
 {
     // needed for logging
     std::clog << "Show main window" << std::endl;
+    d->visibleTimer->start(10000);
 }
 
 void MainWindow::hideEvent(QHideEvent  * /*e*/)
 {
     // needed for logging
     std::clog << "Hide main window" << std::endl;
+    d->visibleTimer->stop();
+}
+
+void MainWindow::showMainWindow()
+{
+    // Under certain circumstances it can happen that at startup the main window
+    // appears for a short moment and disappears immediately. The workaround
+    // starts a timer to check for the visibility of the main window and call
+    // show() if needed
+    if (!isVisible()) {
+        show();
+        std::clog << "Force to show main window" << std::endl;
+    }
 }
 
 void MainWindow::appendRecentFile(const QString& filename)

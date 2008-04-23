@@ -508,71 +508,58 @@ void Application::updateActive(void)
   activeDocument()->onUpdate();
 }
 
-void Application::tryClose ( QCloseEvent * e )
+void Application::tryClose(QCloseEvent * e)
 {
-  if(d->lpcDocuments.size() == 0)
-  {
-    e->accept();
-  }else{
-    // ask all documents if closable
-    for (map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-    {
+    if (d->lpcDocuments.size() == 0) {
+        e->accept();
+    }
+    else {
+        // ask all documents if closable
+        for (std::map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++) {
 #ifndef FC_DEBUG
-      MDIView* active = It->second->getActiveView();
-      active->setFocus(); // raises the view to front
+            MDIView* active = It->second->getActiveView();
+            active->setFocus(); // raises the view to front
 #endif
 
-      It->second->canClose ( e );
-      if(! e->isAccepted() ) return;
-    }
-  }
-
-  // ask all passive views if closable
-  for (list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
-  {
-    if((*It2)->canClose() )
-      e->accept();
-    else 
-      e->ignore();
-
-    if(! e->isAccepted() ) return;
-  }
-
-  if( e->isAccepted() )
-  {
-    d->_bIsClosing = true;
-
-    map<App::Document*, Gui::Document*>::iterator It;
-
-    // close all views belonging to a document
-    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-    {
-      It->second->closeAllViews();
+            It->second->canClose(e);
+            if (! e->isAccepted())
+                return;
+        }
     }
 
-    //detach the passive views
-    //SetActiveDocument(0);
-    list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
-    while (It2!=d->_LpcViews.end())
-    {
-      (*It2)->onClose();
-      It2 = d->_LpcViews.begin();
+    // ask all passive views if closable
+    for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++) {
+        if ((*It2)->canClose())
+            e->accept();
+        else 
+            e->ignore();
+
+        if (!e->isAccepted())
+            return;
     }
 
-    // remove all documents
-    size_t cnt = d->lpcDocuments.size();
-    while ( d->lpcDocuments.size() > 0 && cnt > 0 )
-    {
-      // destroys also the Gui document
-      It = d->lpcDocuments.begin();
-      App::GetApplication().closeDocument(It->second->getDocument()->getName());
-      --cnt; // avoid infinite loop
+    if (e->isAccepted()) {
+        d->_bIsClosing = true;
+
+        std::map<App::Document*, Gui::Document*>::iterator It;
+
+        //detach the passive views
+        //SetActiveDocument(0);
+        std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
+        while (It2!=d->_LpcViews.end()) {
+            (*It2)->onClose();
+            It2 = d->_LpcViews.begin();
+        }
+
+        // remove all documents
+        size_t cnt = d->lpcDocuments.size();
+        while (d->lpcDocuments.size() > 0 && cnt > 0) {
+            // destroys also the Gui document
+            It = d->lpcDocuments.begin();
+            App::GetApplication().closeDocument(It->second->getDocument()->getName());
+            --cnt; // avoid infinite loop
+        }
     }
-//    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-//    {
-//      delete It->second;
-//    }
-  }
 }
 
 /**
