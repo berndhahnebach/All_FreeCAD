@@ -166,10 +166,6 @@ public Q_SLOTS:
    * Starts the what's this mode.
    */
   void whatsThis();
-  /** 
-   * This method gets frequently activated and test the commands if they are still active.
-   */
-  void updateActions();
   void switchToTopLevelMode();
   void switchToDockedMode();
 
@@ -195,13 +191,13 @@ protected:
    * QTranslator object has been installed. This allows to translate all
    * relevant user visible text.
    */
-  void changeEvent( QEvent *e );
+  void changeEvent(QEvent *e);
 
 private Q_SLOTS:
   /**
    * Activates the associated tab to this widget.
    */
-  void onWindowActivated( QWidget* );
+  void onWindowActivated(QWidget*);
   /**
    * Fills up the menu with the current windows in the workspace.
    */
@@ -221,7 +217,15 @@ private Q_SLOTS:
   /**
    * Activates the associated window to the tab with \a id.
    */
-  void onTabSelected( int i);
+  void onTabSelected(int i);
+  /** 
+   * This method gets frequently activated and test the commands if they are still active.
+   */
+  void updateActions();
+  /**
+   * \internal
+   */
+  void showMainWindow();
 
 Q_SIGNALS:
   void timeEvent();

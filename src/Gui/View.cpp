@@ -50,64 +50,56 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::BaseView,Base::BaseClass);
 BaseView::BaseView( Gui::Document* pcDocument)
   :_pcDocument(pcDocument), bIsDetached(false)
 {
-  if(pcDocument){
-    pcDocument->attachView(this);
-    bIsPassive = false;
-  }else{
-    Application::Instance->attachView(this);
-    bIsPassive = true;
-  }
+    if (pcDocument){
+        pcDocument->attachView(this);
+        bIsPassive = false;
+    }
+    else{
+        Application::Instance->attachView(this);
+        bIsPassive = true;
+    }
 }
 
 BaseView::~BaseView()
 {
-//  assert (bIsDetached);
-  if(!bIsDetached && !Application::Instance->isClosing() )
-  {
     onClose();
-  }
 }
 
 void BaseView::onClose(void)
 {
-  if(bIsDetached) return;
+    if (bIsDetached)
+        return;
 
-  if(bIsPassive){
-    Application::Instance->detachView(this);
-    if(_pcDocument)
-      _pcDocument->detachView(this, true);
-  }else{
-    if(_pcDocument)
-      _pcDocument->detachView(this);
-  }
+    if (bIsPassive) {
+        Application::Instance->detachView(this);
+        if (_pcDocument)
+            _pcDocument->detachView(this, true);
+    }
+    else {
+        if (_pcDocument)
+            _pcDocument->detachView(this);
+    }
 
-  _pcDocument = 0;
-  bIsDetached = true;
-  /*
-  if(_pcDocument)
-    _pcDocument->DetachView(this);
-  else
-    Application::Instance->DetachView(this);
-*/
+    _pcDocument = 0;
+    bIsDetached = true;
 }
 
 void BaseView::setDocument(Gui::Document* pcDocument)
 {
-  Gui::Document* pcOldDocument;
-  // detaches and attaches the observer
-  if(_pcDocument)
-    _pcDocument->detachView(this, true);
-  if(pcDocument)
-    pcDocument->attachView(this,true);	
+    if (_pcDocument == pcDocument)
+        return;
+    // detaches and attaches the observer
+    if (_pcDocument)
+        _pcDocument->detachView(this, true);
+    if (pcDocument)
+        pcDocument->attachView(this,true);	
 
-  // set the new document as the active one
-  pcOldDocument = _pcDocument;
-  _pcDocument = pcDocument;
+    // set the new document as the active one
+    _pcDocument = pcDocument;
 }
 
 /// returns the document the view is attached to
 App::Document* BaseView::getAppDocument() const
 {
-  if(!_pcDocument) return 0;
-  return _pcDocument->getDocument();
+    return _pcDocument ? _pcDocument->getDocument() : 0;
 }

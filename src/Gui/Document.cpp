@@ -97,25 +97,9 @@ Document::~Document()
 {
     // e.g. if document gets closed from within a Python command
     _isClosing = true;
-    //FIXME: Needs a redesign here because we shouldn't delete the views directly that inhert from QWidget
-    //because this might cause serious problems in Qt internals. It's better to call their close() method.
-    //Maybe MDIView shouldn't inherit BaseView but BaseView should have an MDIView...
-#if 0
-  while ( _LpcViews.size() > 0 ) {
-    QWidget* w = dynamic_cast<QWidget*>(_LpcViews.front());
-    if (w) {
-      w->close(); _LpcViews.pop_front();
-    } else {
-      delete _LpcViews.front();
-    }
-  }
-
-  qApp->processEvents();
-#else
     // Calls Document::detachView()
     while ( _LpcViews.size() > 0 )
         delete _LpcViews.front();
-#endif
 
     std::map<App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
     for (it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
@@ -728,16 +712,6 @@ void Document::canClose (QCloseEvent * e)
 void Document::closeEvent ( QCloseEvent * e )
 {
     canClose(e);
-}
-
-void Document::closeAllViews(void)
-{
-    std::list<Gui::BaseView*>::iterator It;
-    while ( (It = _LpcViews.begin()) != _LpcViews.end()) {
-        (*It)->onClose();
-    }
-
-    assert(_LpcViews.size() == 0);
 }
 
 std::list<MDIView*> Document::getMDIViews() const

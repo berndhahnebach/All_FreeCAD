@@ -167,7 +167,8 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                 if (this->currentMode == FullScreen) {
                     showNormal();
                     setWindowFlags(windowFlags() & ~Qt::Window);
-                } else if (this->currentMode == TopLevel) {
+                }
+                else if (this->currentMode == TopLevel) {
                     this->wstate = windowState();
                     setWindowFlags( windowFlags() & ~Qt::Window );
                 }
@@ -197,7 +198,8 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                     qt_x11_wait_for_window_manager(this);
 #endif
                     activateWindow();
-                } else if (this->currentMode == FullScreen) {
+                }
+                else if (this->currentMode == FullScreen) {
                     if (this->wstate & Qt::WindowMaximized)
                         showMaximized();
                     else
@@ -215,7 +217,8 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                     setWindowFlags(windowFlags() | Qt::Window);
                     setParent(0, Qt::Window);
                     showFullScreen();
-                } else if (this->currentMode == TopLevel) {
+                }
+                else if (this->currentMode == TopLevel) {
                     this->wstate = windowState();
                     showFullScreen();
                 }
