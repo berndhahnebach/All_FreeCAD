@@ -29,6 +29,7 @@
 # include <STEPControl_Reader.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Shape.hxx>
+# include <TopoDS_Shell.hxx>
 # include <TopoDS_Solid.hxx>
 # include <TopExp_Explorer.hxx>
 #endif
