@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,18 +19,15 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2008                                                  
 -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADModules">
-        <DirectoryRef Id="ModDir">
-            <?include ModMesh.wxi ?>
-            <?include ModPart.wxi ?>
-            <?include ModPoints.wxi ?>
-            <?include ModImage.wxi ?>
-            <?include ModRaytracing.wxi ?>
-            <?include ModCam.wxi ?>
-            <?include ModTest.wxi ?>
-        </DirectoryRef>
-    </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModCam" Name="Cam" FileSource="..\Mod\Cam">
+        <Component Id="CompModCam" Guid="1e198527-7b8c-4113-abd4-a116c8f8c849">
+            <File Id="CamInitPy" Name="Init.py" DiskId="1" />
+            <File Id="CamInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Campyd" Name="Cam.pyd" DiskId="1" />
+            <File Id="CamGuipyd" Name="CamGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>

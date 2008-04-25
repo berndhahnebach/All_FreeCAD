@@ -90,14 +90,14 @@
 			<Directory Id="PivyDir" Name="pivy" FileSource="../bin/pivy" >
 				<Component Id="PivyTop"  Guid="b18123c0-3fb0-4cc0-85e8-f71038172b34">
 					<File Id="Pivy1" Name="__init__.py"   />
-					<File Id="Pivy2" Name="_coin.pdb"   />
+					<File Id="Pivy2" Name="_coin.pyd"   />
 					<File Id="Pivy3" Name="coin.py"   />
 					<File Id="Pivy4" Name="sogui.py"   />
 				</Component>
 				<Directory Id="PivyGuiDir" Name="gui" FileSource="../bin/pivy/gui" >
 					<Component Id="PivyGui"  Guid="9829370b-fad4-4606-9802-6ff90ad8474e">
 						<File Id="Pivy5" Name="__init__.py"   />
-						<File Id="Pivy6" Name="_soqt.pdb"   />
+						<File Id="Pivy6" Name="_soqt.pyd"   />
 						<File Id="Pivy7" Name="soqt.py"   />
 					</Component>
 				</Directory>
