@@ -260,6 +260,20 @@ void DlgDisplayPropertiesImp::setDisplayModes(const std::vector<Gui::ViewProvide
     changeMode->clear();
     changeMode->addItems(commonModes);
     changeMode->setDisabled(commonModes.isEmpty());
+
+    // find the display mode to activate
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("DisplayMode");
+        if (prop && prop->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
+            App::PropertyEnumeration* display = static_cast<App::PropertyEnumeration*>(prop);
+            QString activeMode = display->getValueAsString();
+            int index = changeMode->findText(activeMode);
+            if (index != -1) {
+                changeMode->setCurrentIndex(index);
+                break;
+            }
+        }
+    }
 }
 
 void DlgDisplayPropertiesImp::setMaterial(const std::vector<Gui::ViewProvider*>& views)
