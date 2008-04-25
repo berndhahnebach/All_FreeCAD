@@ -15,9 +15,6 @@
   <property name="windowTitle" >
    <string>Display properties</string>
   </property>
-  <property name="modal" >
-   <bool>true</bool>
-  </property>
   <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>

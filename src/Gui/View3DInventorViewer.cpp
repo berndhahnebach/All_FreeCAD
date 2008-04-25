@@ -166,16 +166,15 @@ View3DInventorViewer::seekToCamera(const SbVec3f & scenepos)
   //this->interactiveCountInc();
 }
 
-
 void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
-  SoFCSelectionAction cAct(Reason);
-
-  if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection || Reason.Type == SelectionChanges::ClearSelection)
-    cAct.apply(pcViewProviderRoot);
+    if (Reason.Type == SelectionChanges::AddSelection ||
+        Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::ClrSelection) {
+        SoFCSelectionAction cAct(Reason);
+        cAct.apply(pcViewProviderRoot);
+    }
 }
-
-
 
 /// adds an ViewProvider to the view, e.g. from a feature
 void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)

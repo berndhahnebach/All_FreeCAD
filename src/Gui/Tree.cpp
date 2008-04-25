@@ -490,7 +490,7 @@ void TreeDockWidget::changeEvent(QEvent *e)
 void TreeDockWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
     fromOutside = true;
-    if (Reason.Type != SelectionChanges::ClearSelection) {
+    if (Reason.Type != SelectionChanges::ClrSelection) {
         Gui::Document* pDoc = Application::Instance->getDocument( Reason.pDocName );
         std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find( pDoc );
 

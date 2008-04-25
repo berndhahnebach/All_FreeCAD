@@ -324,7 +324,7 @@ void SelectionSingleton::clearSelection(const char* pDocName)
         _SelList = selList;
 
         SelectionChanges Chng;
-        Chng.Type = SelectionChanges::ClearSelection;
+        Chng.Type = SelectionChanges::ClrSelection;
         Chng.pDocName = docName.c_str();
 
         Notify(Chng);
@@ -338,7 +338,7 @@ void SelectionSingleton::clearCompleteSelection()
     _SelList.clear();
 
     SelectionChanges Chng;
-    Chng.Type = SelectionChanges::ClearSelection;
+    Chng.Type = SelectionChanges::ClrSelection;
     Chng.pDocName = "";
 
 

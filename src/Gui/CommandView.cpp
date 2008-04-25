@@ -498,24 +498,28 @@ DEF_STD_CMD_A(StdCmdSetMaterial);
 StdCmdSetMaterial::StdCmdSetMaterial()
   : Command("Std_SetMaterial")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Display...");
-  sToolTipText  = QT_TR_NOOP("Sets the display properties of the selected object");
-  sWhatsThis    = QT_TR_NOOP("Sets the display properties of the selected object");
-  sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");
-  sPixmap       = "Std_Tool1";
-  iAccel        = Qt::CTRL+Qt::Key_D;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Display...");
+    sToolTipText  = QT_TR_NOOP("Sets the display properties of the selected object");
+    sWhatsThis    = QT_TR_NOOP("Sets the display properties of the selected object");
+    sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");
+    sPixmap       = "Std_Tool1";
+    iAccel        = Qt::CTRL+Qt::Key_D;
 }
 
 void StdCmdSetMaterial::activated(int iMsg)
 {
-  Gui::Dialog::DlgDisplayPropertiesImp dlg(getMainWindow()->activeWindow());
-  dlg.exec();
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new Gui::Dialog::DlgDisplayPropertiesImp(getMainWindow());
+    dlg->setModal(false);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }
 
 bool StdCmdSetMaterial::isActive(void)
 {
-  return Gui::Selection().size() != 0;
+    return Gui::Selection().size() != 0;
 }
 
 //===========================================================================

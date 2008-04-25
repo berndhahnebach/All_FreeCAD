@@ -150,12 +150,12 @@ public:
     void OnChange(Gui::SelectionSingleton::SubjectType &,Gui::SelectionSingleton::MessageType);
     void scrollItemToTop(Gui::Document*);
 
-public Q_SLOTS:
+private Q_SLOTS:
     void onItemSelectionChanged(void);
     void onItemEntered(QTreeWidgetItem * item);
     void onTestStatus(void);
 
-protected:
+private:
     void slotNewDocument(Gui::Document&);
     void slotDeleteDocument(Gui::Document&);
     void slotRenameDocument(Gui::Document&);
