@@ -137,9 +137,13 @@ static PyObject * insert(PyObject *self, PyObject *args)
         }
 
         if (file.hasExtension("stp") || file.hasExtension("step")) {
+#if 1
+            ImportStepParts(pcDoc,Name);
+#else
             // add Import feature
             Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
             pcFeature->FileName.setValue(Name);
+#endif 
             pcDoc->recompute();
         }
         else if (file.hasExtension("igs") || file.hasExtension("iges")) {

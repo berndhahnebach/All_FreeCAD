@@ -126,7 +126,7 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
   SoFCSelection::turnoffcurrent(action);
 }
 
-void SoFCSelection::doAction( SoAction *action)
+void SoFCSelection::doAction(SoAction *action)
 {
     if (action->getTypeId() == SoFCDocumentAction::getClassTypeId()) {
         SoFCDocumentAction *docaction = (SoFCDocumentAction*)action;
@@ -191,7 +191,7 @@ void SoFCSelection::doAction( SoAction *action)
                 }
             }
         }
-        else if (selaction->SelChange.Type == SelectionChanges::ClearSelection) {
+        else if (selaction->SelChange.Type == SelectionChanges::ClrSelection) {
             if (documentName.getValue() == selaction->SelChange.pDocName ||
                 strcmp(selaction->SelChange.pDocName,"") == 0)
                 selected = NOTSELECTED;

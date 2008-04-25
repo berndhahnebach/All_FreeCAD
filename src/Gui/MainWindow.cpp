@@ -786,6 +786,7 @@ void MainWindow::dropEvent (QDropEvent* e)
     const QMimeData* data = e->mimeData();
     if (data->hasUrls()) {
         QList<QUrl> uri = data->urls();
+        App::Document* pDoc = App::GetApplication().newDocument();
         for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
             QFileInfo info((*it).toLocalFile());
             if (info.exists() && info.isFile()) {
@@ -793,10 +794,10 @@ void MainWindow::dropEvent (QDropEvent* e)
                     info.setFile(info.readLink());
                 // First check the complete extension
                 if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
-                    Application::Instance->open(info.absoluteFilePath().toUtf8());
+                    Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
                 // Don't get the complete extension
                 else if (App::GetApplication().hasOpenType(info.suffix().toAscii()))
-                    Application::Instance->open(info.absoluteFilePath().toUtf8());
+                    Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
             }
         }
     }

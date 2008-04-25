@@ -57,43 +57,43 @@ namespace DockWnd {
  */
 class PropertyView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  PropertyView(Gui::Document*  pcDocument, QWidget *parent=0);
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyView(Gui::Document*  pcDocument, QWidget *parent=0);
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~PropertyView();
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+    */
+    virtual ~PropertyView();
 
-  /// Observer message from the Selection
-  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                        Gui::SelectionSingleton::MessageType Reason);
+    /// Observer message from the Selection
+    virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                          Gui::SelectionSingleton::MessageType Reason);
 
 
-  bool onMsg(const char* pMsg);
+    bool onMsg(const char* pMsg);
 
-  virtual const char *getName(void) const {return "PropertyView";}
+    virtual const char *getName(void) const {return "PropertyView";}
 
-  /// get called when the document is changed or updated
-  virtual void onUpdate(void);
+    /// get called when the document is changed or updated
+    virtual void onUpdate(void);
 
-  static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
+    static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  Gui::PropertyEditor::PropertyEditor* propertyEditorView;
-  Gui::PropertyEditor::PropertyEditor* propertyEditorData;
+    Gui::PropertyEditor::PropertyEditor* propertyEditorView;
+    Gui::PropertyEditor::PropertyEditor* propertyEditorData;
 
 protected:
-  void changeEvent( QEvent *e );
+    void changeEvent(QEvent *e);
 
 private:
-  QTabWidget* tabs;
+    QTabWidget* tabs;
 };
 
 } // namespace DockWnd

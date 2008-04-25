@@ -70,28 +70,33 @@ DEF_STD_CMD_A(StdCmdRandomColor);
 StdCmdRandomColor::StdCmdRandomColor()
   :Command("Std_RandomColor")
 {
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("Random color");
-  sToolTipText  = QT_TR_NOOP("Random color");
-  sWhatsThis    = QT_TR_NOOP("Random color");
-  sStatusTip    = QT_TR_NOOP("Random color");
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("Random color");
+    sToolTipText  = QT_TR_NOOP("Random color");
+    sWhatsThis    = QT_TR_NOOP("Random color");
+    sStatusTip    = QT_TR_NOOP("Random color");
 }
 
 void StdCmdRandomColor::activated(int iMsg)
 {
-  // get the complete selection
-  std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
-  for ( std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it ) {
-    const char* docName = it->pDoc->getName();
-    const char* objName = it->pObject->getNameInDocument();
-    float fMax = (float)RAND_MAX;
-    float fRed = (float)rand()/fMax;
-    float fGrn = (float)rand()/fMax;
-    float fBlu = (float)rand()/fMax;
+    // get the complete selection
+    std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
+    for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+        const char* docName = it->pDoc->getName();
+        const char* objName = it->pObject->getNameInDocument();
+        float fMax = (float)RAND_MAX;
+        float fRed = (float)rand()/fMax;
+        float fGrn = (float)rand()/fMax;
+        float fBlu = (float)rand()/fMax;
 
-    // get the view provider of the selected object and set the shape color
-    doCommand(Gui, "Gui.getDocument(\"%s\").getObject(\"%s\").ShapeColor=(%.2f,%.2f,%.2f)", docName, objName, fRed, fGrn, fBlu);
-  }
+        ViewProvider* view = Application::Instance->getDocument(it->pDoc)->getViewProvider(it->pObject);
+        App::Property* color = view->getPropertyByName("ShapeColor");
+        if (color && color->getTypeId() == App::PropertyColor::getClassTypeId()) {
+            // get the view provider of the selected object and set the shape color
+            doCommand(Gui, "Gui.getDocument(\"%s\").getObject(\"%s\").ShapeColor=(%.2f,%.2f,%.2f)"
+                         , docName, objName, fRed, fGrn, fBlu);
+        }
+    }
 }
 
 bool StdCmdRandomColor::isActive(void)

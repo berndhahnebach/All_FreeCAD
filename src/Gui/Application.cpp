@@ -82,76 +82,76 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-  ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true)
-  {
-    // create the macro manager
-    _pcMacroMngr = new MacroManager();
-  }
+    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true)
+    {
+        // create the macro manager
+        _pcMacroMngr = new MacroManager();
+    }
 
-  ~ApplicationP()
-  {
-    delete _pcMacroMngr;
-  }
+    ~ApplicationP()
+    {
+        delete _pcMacroMngr;
+    }
 
-  /// list of all handled documents
-  map<App::Document*, Gui::Document*> lpcDocuments;
-  /// Active document
-  Gui::Document*   _pcActiveDocument;
-  MacroManager*  _pcMacroMngr;
-  /// List of all registered views
-  list<Gui::BaseView*>					_LpcViews;
-  bool _bIsClosing;
-  bool _bStartingUp;
-  /// Handles all commands 
-  CommandManager _cCommandManager;
+    /// list of all handled documents
+    std::map<App::Document*, Gui::Document*> lpcDocuments;
+    /// Active document
+    Gui::Document*   _pcActiveDocument;
+    MacroManager*  _pcMacroMngr;
+    /// List of all registered views
+    std::list<Gui::BaseView*>   _LpcViews;
+    bool _bIsClosing;
+    bool _bStartingUp;
+    /// Handles all commands 
+    CommandManager _cCommandManager;
 };
 
 } // namespace Gui
 
 Application::Application()
 {
-  //App::GetApplication().Attach(this);
-  App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
-  App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
-  App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
-  App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
-  App::GetApplication().signalRelabelDocument.connect(boost::bind(&Gui::Application::slotRelabelDocument, this, _1));
+    //App::GetApplication().Attach(this);
+    App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
+    App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
+    App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
+    App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
+    App::GetApplication().signalRelabelDocument.connect(boost::bind(&Gui::Application::slotRelabelDocument, this, _1));
 
 
-  // install the last active language
-  ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-  Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
-  GetWidgetFactorySupplier();
+    // install the last active language
+    ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+    hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
+    Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
+    GetWidgetFactorySupplier();
 
-  // setting up Python binding
-  PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
-    "The functions in the FreeCADGui module allow working with GUI documents,\n"
-    "view providers, views, workbenches and much more.\n\n"
-    "The FreeCADGui instance provides a list of references of GUI documents which\n"
-    "can be addressed by a string. These documents contain the view providers for\n"
-    "objects in the associated App document. An App and GUI document can be\n"
-    "accessed with the same name.\n\n"
-    "The FreeCADGui module also provides a set of functions to work with so called\n"
-    "workbenches.");
-  Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
+    // setting up Python binding
+    PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
+        "The functions in the FreeCADGui module allow working with GUI documents,\n"
+        "view providers, views, workbenches and much more.\n\n"
+        "The FreeCADGui instance provides a list of references of GUI documents which\n"
+        "can be addressed by a string. These documents contain the view providers for\n"
+        "objects in the associated App document. An App and GUI document can be\n"
+        "accessed with the same name.\n\n"
+        "The FreeCADGui module also provides a set of functions to work with so called\n"
+        "workbenches.");
+    Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
 
-  //insert Selection module
-  PyObject* pSelectionModule = Py_InitModule3("Selection", SelectionSingleton::Methods,
-    "Selection module");
-  Py_INCREF(pSelectionModule);
-  PyModule_AddObject(module, "Selection", pSelectionModule);
+    //insert Selection module
+    PyObject* pSelectionModule = Py_InitModule3("Selection", SelectionSingleton::Methods,
+        "Selection module");
+    Py_INCREF(pSelectionModule);
+    PyModule_AddObject(module, "Selection", pSelectionModule);
 
-  d = new ApplicationP;
+    d = new ApplicationP;
 
-  // global access 
-  Instance = this;
+    // global access 
+    Instance = this;
 
-  // instanciate the workbench dictionary
-  _pcWorkbenchDictionary = PyDict_New();
+    // instanciate the workbench dictionary
+    _pcWorkbenchDictionary = PyDict_New();
 
-  createStandardOperations();
-  MacroCommand::load();
+    createStandardOperations();
+    MacroCommand::load();
 }
 
 Application::~Application()
@@ -235,164 +235,157 @@ void Application::open(const char* FileName)
 
 void Application::import(const char* FileName, const char* DocName)
 {
-  WaitCursor wc;
-  Base::FileInfo File(FileName);
-  string te = File.extension();
-  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+    WaitCursor wc;
+    Base::FileInfo File(FileName);
+    std::string te = File.extension();
+    const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
-  if (Mod != 0) {
-    // issue module loading
-    Command::doCommand(Command::App, "import %s", Mod);
+    if (Mod != 0) {
+        // issue module loading
+        Command::doCommand(Command::App, "import %s", Mod);
 
-    // issue gui module loading
-    try{
-      Command::doCommand(Command::Gui, "import %sGui", Mod);
-    } catch (const Base::PyException&){
-      // ignore this type of exception (e.g. if Mod is already a Gui module)
+        // issue gui module loading
+        try {
+            Command::doCommand(Command::Gui, "import %sGui", Mod);
+        }
+        catch (const Base::PyException&) {
+            // ignore this type of exception (e.g. if Mod is already a Gui module)
+        }
+
+        try {
+            // load the file with the module
+            if (File.hasExtension("FCStd")) {
+                Command::doCommand(Command::App, "%s.open(\"%s\")"
+                                               , Mod, File.filePath().c_str());
+                if (activeDocument())
+                    activeDocument()->setModified(false);
+            }
+            else {
+                Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")"
+                                               , Mod, File.filePath().c_str(), DocName);
+                getDocument(DocName)->setModified(true);
+            }
+
+            // the original file name is required
+            getMainWindow()->appendRecentFile(File.filePath().c_str());
+        }
+        catch (const Base::PyException& e){
+            // Usually thrown if the file is invalid somehow
+            e.ReportException();
+        }
     }
-
-    try {
-      // load the file with the module
-      if ( File.hasExtension("FCStd") )
-      {
-        Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
-        if ( activeDocument() )
-          activeDocument()->setModified(false);
-      }
-      else
-      {
-        Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")", Mod, File.filePath().c_str(), DocName);
-        if ( activeDocument() )
-          activeDocument()->setModified(true);
-      }
-
-      // the original file name is required
-      getMainWindow()->appendRecentFile( File.filePath().c_str() );
-    } catch (const Base::PyException& e){
-      // Usually thrown if the file is invalid somehow
-      e.ReportException();
+    else {
+        wc.restoreCursor();
+        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
+            QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+        wc.setWaitCursor();
     }
-  } else {
-    wc.restoreCursor();
-    QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
-    wc.setWaitCursor();
-    return;
-  }
 }
 
 void Application::createStandardOperations()
 {
-  // register the application Standard commands from CommandStd.cpp
-  Gui::CreateStdCommands();
-  Gui::CreateDocCommands();
-  Gui::CreateFeatCommands();
-  Gui::CreateViewStdCommands();
-  Gui::CreateWindowStdCommands();
-  Gui::CreateTestCommands();
+    // register the application Standard commands from CommandStd.cpp
+    Gui::CreateStdCommands();
+    Gui::CreateDocCommands();
+    Gui::CreateFeatCommands();
+    Gui::CreateViewStdCommands();
+    Gui::CreateWindowStdCommands();
+    Gui::CreateTestCommands();
 }
 
 void Application::slotNewDocument(App::Document& Doc)
 {
 #ifdef FC_DEBUG
-  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
-  assert(it==d->lpcDocuments.end());
+    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
+    assert(it==d->lpcDocuments.end());
 #endif
-  Gui::Document* pDoc = new Gui::Document(&Doc,this);
-  d->lpcDocuments[&Doc] = pDoc;
-  signalNewDocument(*pDoc);
-  pDoc->createView("View3DIv");
+    Gui::Document* pDoc = new Gui::Document(&Doc,this);
+    d->lpcDocuments[&Doc] = pDoc;
+    signalNewDocument(*pDoc);
+    pDoc->createView("View3DIv");
 }
 
 void Application::slotDeleteDocument(App::Document& Doc)
 {
-  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
-  assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->lpcDocuments.end());
 #endif
-  
 
-  // We must clear the selection here to notify all observers
-  Gui::Selection().clearSelection(doc->second->getDocument()->getName());
-  signalDeleteDocument(*doc->second);
+    // We must clear the selection here to notify all observers
+    Gui::Selection().clearSelection(doc->second->getDocument()->getName());
+    signalDeleteDocument(*doc->second);
 
-  // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
-  // view that becomes active sets the active document again. So, we needn't worry about this.
-  if ( d->_pcActiveDocument == doc->second )
-    setActiveDocument(0);
+    // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
+    // view that becomes active sets the active document again. So, we needn't worry about this.
+    if ( d->_pcActiveDocument == doc->second )
+        setActiveDocument(0);
 
-  delete doc->second; // destroy the Gui document
-  d->lpcDocuments.erase(doc);
+    delete doc->second; // destroy the Gui document
+    d->lpcDocuments.erase(doc);
 }
 
 void Application::slotRelabelDocument(App::Document& Doc)
 {
-  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
-  assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->lpcDocuments.end());
 #endif
 
-  signalRelabelDocument(*doc->second);
-  doc->second->onRelabel();
+    signalRelabelDocument(*doc->second);
+    doc->second->onRelabel();
 }
 
 void Application::slotRenameDocument(App::Document& Doc)
 {
-  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
-  assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->lpcDocuments.end());
 #endif
 
-  signalRenameDocument(*doc->second);
+    signalRenameDocument(*doc->second);
 }
 
 void Application::slotActiveDocument(App::Document& Doc)
 {
-  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
-  assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->lpcDocuments.end());
 #endif
 
-  signalActiveDocument(*doc->second);
+    signalActiveDocument(*doc->second);
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
 {
-  if(!d->_bIsClosing && pcDoc)
-  {
-    try {
-      // Call the closing mechanism from Python. This also checks whether pcDoc is the last open document.
-      Command::doCommand(Command::Doc, "App.closeDocument(\"%s\")", pcDoc->getDocument()->getName());
-    } catch (const Base::PyException& e) {
-      e.ReportException();
+    if (!d->_bIsClosing && pcDoc) {
+        try {
+            // Call the closing mechanism from Python. This also checks whether pcDoc is the last open document.
+            Command::doCommand(Command::Doc, "App.closeDocument(\"%s\")", pcDoc->getDocument()->getName());
+        }
+        catch (const Base::PyException& e) {
+            e.ReportException();
+        }
     }
-  }
 }
 
 /// send Messages to the active view
 bool Application::sendMsgToActiveView(const char* pMsg, const char** ppReturn)
 {
-  MDIView* pView = getMainWindow()->activeWindow();
-
-  if(pView){
-    return pView->onMsg(pMsg,ppReturn);
-  }else
-    return false;
+    MDIView* pView = getMainWindow()->activeWindow();
+    return pView ? pView->onMsg(pMsg,ppReturn) : false;
 }
 
 bool Application::sendHasMsgToActiveView(const char* pMsg)
 {
-  MDIView* pView = getMainWindow()->activeWindow();
-
-  if(pView){
-    return pView->onHasMsg(pMsg);
-  }else
-    return false;
+    MDIView* pView = getMainWindow()->activeWindow();
+    return pView ? pView->onHasMsg(pMsg) : false;
 }
 
 /// Geter for the Active View
 Gui::Document* Application::activeDocument(void) const
 {
-  return d->_pcActiveDocument;
+    return d->_pcActiveDocument;
 }
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
@@ -447,45 +440,41 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
 
 Gui::Document* Application::getDocument( const char* name ) const
 {
-  App::Document* pDoc = App::GetApplication().getDocument( name );
-  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
-  if ( it!=d->lpcDocuments.end() )
-    return it->second;
-  else
-    return 0;
+    App::Document* pDoc = App::GetApplication().getDocument( name );
+    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+    if ( it!=d->lpcDocuments.end() )
+        return it->second;
+    else
+        return 0;
 }
 
 Gui::Document* Application::getDocument(App::Document* pDoc) const
 {
-  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
-  if ( it!=d->lpcDocuments.end() )
-    return it->second;
-  else
-    return 0;
+    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+    if ( it!=d->lpcDocuments.end() )
+        return it->second;
+    else
+        return 0;
 }
 
 void Application::attachView(Gui::BaseView* pcView)
 {
-  d->_LpcViews.push_back(pcView);
+    d->_LpcViews.push_back(pcView);
 }
 
 void Application::detachView(Gui::BaseView* pcView)
 {
-  d->_LpcViews.remove(pcView);
+    d->_LpcViews.remove(pcView);
 }
 
 void Application::onUpdate(void)
 {
-  // update all documents
-  for(map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
-  {
-    It->second->onUpdate();
-  }
-  // update all the independed views
-  for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
-  {
-    (*It2)->onUpdate();
-  }
+    // update all documents
+    for (map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+        It->second->onUpdate();
+    // update all the independed views
+    for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
+        (*It2)->onUpdate();
 }
 
 /// Gets called if a view gets activated, this manages the whole activation scheme
@@ -505,7 +494,7 @@ void Application::viewActivated(MDIView* pcView)
 
 void Application::updateActive(void)
 {
-  activeDocument()->onUpdate();
+    activeDocument()->onUpdate();
 }
 
 void Application::tryClose(QCloseEvent * e)
@@ -782,50 +771,51 @@ QString Application::workbenchMenuText(const QString& wb) const
 
 QStringList Application::workbenches(void) const
 {
-  // If neither 'HiddenWorkbench' nor 'ExtraWorkbench' is set then all workbenches are returned.
-  const std::map<std::string,std::string>& config = App::Application::Config();
-  std::map<std::string, std::string>::const_iterator ht = config.find("HiddenWorkbench");
-  std::map<std::string, std::string>::const_iterator et = config.find("ExtraWorkbench");
-  std::map<std::string, std::string>::const_iterator st = config.find("StartWorkbench");
-  const char* start = (st != config.end() ? st->second.c_str() : "<none>");
-  QStringList hidden, extra;
-  if (ht != config.end()) { 
-    QString items = ht->second.c_str();
-    hidden = items.split(';', QString::SkipEmptyParts);
-    if (hidden.isEmpty())
-      hidden.push_back("");
-  }
-  if (et != config.end()) { 
-    QString items = et->second.c_str();
-    extra = items.split(';', QString::SkipEmptyParts);
-    if (extra.isEmpty())
-      extra.push_back("");
-  }
+    // If neither 'HiddenWorkbench' nor 'ExtraWorkbench' is set then all workbenches are returned.
+    const std::map<std::string,std::string>& config = App::Application::Config();
+    std::map<std::string, std::string>::const_iterator ht = config.find("HiddenWorkbench");
+    std::map<std::string, std::string>::const_iterator et = config.find("ExtraWorkbench");
+    std::map<std::string, std::string>::const_iterator st = config.find("StartWorkbench");
+    const char* start = (st != config.end() ? st->second.c_str() : "<none>");
+    QStringList hidden, extra;
+    if (ht != config.end()) { 
+        QString items = ht->second.c_str();
+        hidden = items.split(';', QString::SkipEmptyParts);
+        if (hidden.isEmpty())
+            hidden.push_back("");
+    }
+    if (et != config.end()) { 
+        QString items = et->second.c_str();
+        extra = items.split(';', QString::SkipEmptyParts);
+        if (extra.isEmpty())
+            extra.push_back("");
+    }
 
-  PyObject *key, *value;
-  Py_ssize_t pos = 0;
-  QStringList wb;
-  // insert all items
-  while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
-    /* do something interesting with the values... */
-    const char* wbName = PyString_AsString(key);
-    // add only allowed workbenches
-    bool ok = true;
-    if (!extra.isEmpty()&&ok) {
-      ok = (extra.indexOf(wbName) != -1);
-    }
-    if (!hidden.isEmpty()&&ok) {
-      ok = (hidden.indexOf(wbName) == -1);
-    }
+    PyObject *key, *value;
+    Py_ssize_t pos = 0;
+    QStringList wb;
+    // insert all items
+    while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
+        /* do something interesting with the values... */
+        const char* wbName = PyString_AsString(key);
+        // add only allowed workbenches
+        bool ok = true;
+        if (!extra.isEmpty()&&ok) {
+          ok = (extra.indexOf(wbName) != -1);
+        }
+        if (!hidden.isEmpty()&&ok) {
+            ok = (hidden.indexOf(wbName) == -1);
+        }
     
-    // okay the item is visible
-    if (ok)
-      wb.push_back( wbName );
-    else if ( strcmp(wbName, start) == 0 ) // also allow start workbench in case it is hidden
-      wb.push_back( wbName );
-  }
+        // okay the item is visible
+        if (ok)
+            wb.push_back( wbName );
+        // also allow start workbench in case it is hidden
+        else if (strcmp(wbName, start) == 0)
+            wb.push_back(wbName);
+    }
 
-  return wb;
+    return wb;
 }
 
 void Application::setupContextMenu(const char* recipient, MenuItem* items) const
@@ -857,17 +847,17 @@ void Application::setupContextMenu(const char* recipient, MenuItem* items) const
 
 bool Application::isClosing(void)
 {
-  return d->_bIsClosing;
+    return d->_bIsClosing;
 }
 
 MacroManager *Application::macroManager(void)
 {
-  return d->_pcMacroMngr;
+    return d->_pcMacroMngr;
 }
 
 CommandManager &Application::commandManager(void)
 {
-  return d->_cCommandManager;
+    return d->_cCommandManager;
 }
 
 void Application::runCommand(bool bForce, const char* sCmd,...)
@@ -940,213 +930,174 @@ bool Application::runPythonCode(const char* cmd, bool gui)
 
 void Application::initApplication(void)
 {
-  try {
-    initTypes();
-    new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-  } catch (...) {
-    // force to flush the log
-    App::Application::destructObserver();
-    throw;
-  }
+    try {
+        initTypes();
+        new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+    }
+    catch (...) {
+        // force to flush the log
+        App::Application::destructObserver();
+        throw;
+    }
 }
 
 void Application::initTypes(void)
 {
-  // views
-  Gui::BaseView                              ::init();
-  Gui::MDIView                               ::init();
-  Gui::View3DInventor                        ::init();
-  // View Provider
-  Gui::ViewProvider                          ::init();
-  Gui::ViewProviderExtern                    ::init();
-  Gui::ViewProviderDocumentObject            ::init();
-  Gui::ViewProviderFeature                   ::init();
-  Gui::ViewProviderPythonFeature             ::init();
-  Gui::ViewProviderDocumentObjectGroup       ::init();
-  Gui::ViewProviderGeometryObject            ::init();
-  Gui::ViewProviderInventorObject            ::init();
+    // views
+    Gui::BaseView                              ::init();
+    Gui::MDIView                               ::init();
+    Gui::View3DInventor                        ::init();
+    // View Provider
+    Gui::ViewProvider                          ::init();
+    Gui::ViewProviderExtern                    ::init();
+    Gui::ViewProviderDocumentObject            ::init();
+    Gui::ViewProviderFeature                   ::init();
+    Gui::ViewProviderPythonFeature             ::init();
+    Gui::ViewProviderDocumentObjectGroup       ::init();
+    Gui::ViewProviderGeometryObject            ::init();
+    Gui::ViewProviderInventorObject            ::init();
 
-  // Workbench
-  Gui::Workbench                             ::init();
-  Gui::StdWorkbench                          ::init();
-  Gui::NoneWorkbench                         ::init();
-  Gui::TestWorkbench                         ::init();
-  Gui::PythonWorkbench                       ::init();
+    // Workbench
+    Gui::Workbench                             ::init();
+    Gui::StdWorkbench                          ::init();
+    Gui::NoneWorkbench                         ::init();
+    Gui::TestWorkbench                         ::init();
+    Gui::PythonWorkbench                       ::init();
 }
 
-void messageHandler( QtMsgType type, const char *msg )
+void messageHandler(QtMsgType type, const char *msg)
 {
 #ifdef FC_DEBUG
-  switch ( type )
-  {
+    switch (type)
+    {
     case QtDebugMsg:
-      Base::Console().Message( msg );
-      break;
+        Base::Console().Message( msg );
+        break;
     case QtWarningMsg:
-      Base::Console().Warning( msg );
-      break;
+        Base::Console().Warning( msg );
+        break;
     case QtFatalMsg:
-      Base::Console().Error( msg );
-      abort();                    // deliberately core dump
-  }
+        Base::Console().Error( msg );
+        abort();                    // deliberately core dump
+    }
 #else
-  // do not stress user with Qt internals but write to log file if enabled
-  Base::Console().Log( "%s\n", msg );
+    // do not stress user with Qt internals but write to log file if enabled
+    Base::Console().Log( "%s\n", msg );
 #endif
 }
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
-void messageHandlerCoin( const SoError * error, void * userdata )
+void messageHandlerCoin(const SoError * error, void * userdata)
 {
-  if ( error && error->getTypeId() == SoDebugError::getClassTypeId() )
-  {
-    const SoDebugError* dbg = static_cast<const SoDebugError*>(error);
-    const char* msg = error->getDebugString().getString();
-    switch ( dbg->getSeverity() )
-    {
-    case SoDebugError::INFO:
-      Base::Console().Message( msg );
-      break;
-    case SoDebugError::WARNING:
-      Base::Console().Warning( msg );
-      break;
-    default: // error
-      Base::Console().Error( msg );
-      break;
+    if (error && error->getTypeId() == SoDebugError::getClassTypeId()) {
+        const SoDebugError* dbg = static_cast<const SoDebugError*>(error);
+        const char* msg = error->getDebugString().getString();
+        switch (dbg->getSeverity())
+        {
+        case SoDebugError::INFO:
+            Base::Console().Message( msg );
+            break;
+        case SoDebugError::WARNING:
+            Base::Console().Warning( msg );
+            break;
+        default: // error
+            Base::Console().Error( msg );
+            break;
+        }
     }
-  }
-  else if ( error )
-  {
-    const char* msg = error->getDebugString().getString();
-    Base::Console().Log( msg );
-  }
+    else if (error) {
+        const char* msg = error->getDebugString().getString();
+        Base::Console().Log( msg );
+    }
 }
 
-void messageHandlerSoQt( const SbString errmsg, SoQt::FatalErrors errcode, void *userdata )
+void messageHandlerSoQt(const SbString errmsg, SoQt::FatalErrors errcode, void *userdata)
 {
-  Base::Console().Error( errmsg.getString() );
+    Base::Console().Error( errmsg.getString() );
 }
 #endif
-
-/**
- * This method gets called for Coin internal processes that take a long time.
- * Unfortunately, this framework doesn't seem to work why this method is commented out at the moment.
- */
-/*
-SbBool progressCallbackHandler(const SbName & itemid, float fraction, SbBool interruptible, void * userdata)
-{
-  if ( fraction < 0.0f )
-    Base::Sequencer().halt();
-  else if ( fraction == 0.0f )
-    Base::Sequencer().start(itemid, 100);
-  else if ( fraction == 1.0f )
-    Base::Sequencer().stop();
-  else
-    Base::Sequencer().next();
-  return true;
-}*/
 
 void Application::runApplication(void)
 {
-  // add resources
-  Q_INIT_RESOURCE(resource);
-  Q_INIT_RESOURCE(translation);
+    // add resources
+    Q_INIT_RESOURCE(resource);
+    Q_INIT_RESOURCE(translation);
 
-  // A new QApplication
-  Base::Console().Log("Init: Creating Gui::Application and QApplication\n");
-  // if application not yet created by the splasher
-  int argc = App::Application::GetARGC();
-  qInstallMsgHandler( messageHandler );
-  QApplication mainApp(argc, App::Application::GetARGV());
+    // A new QApplication
+    Base::Console().Log("Init: Creating Gui::Application and QApplication\n");
+    // if application not yet created by the splasher
+    int argc = App::Application::GetARGC();
+    qInstallMsgHandler( messageHandler );
+    QApplication mainApp(argc, App::Application::GetARGV());
 
-  Application app;
-  MainWindow mw;
+    Application app;
+    MainWindow mw;
 
-  // init the Inventor subsystem
-  SoDB::init();
-  SoQt::init(&mw);
-  SoFCDB::init();
+    // init the Inventor subsystem
+    SoDB::init();
+    SoQt::init(&mw);
+    SoFCDB::init();
 
-  // show splasher while initializing the GUI
-  mw.startSplasher();
+    // show splasher while initializing the GUI
+    mw.startSplasher();
 
-  // running the GUI init script
-  Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
-  
-  // stop splash screen and set immediately the active window that may be of interest
-  // for scripts using Python binding for Qt
-  mw.stopSplasher();
-  mainApp.setActiveWindow(&mw);
+    // running the GUI init script
+    Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
 
-  // Activate the correct workbench
-  Base::Console().Log("Init: Activating default workbench\n");
-  std::string start = App::Application::Config()["StartWorkbench"];
-  start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+    // stop splash screen and set immediately the active window that may be of interest
+    // for scripts using Python binding for Qt
+    mw.stopSplasher();
+    mainApp.setActiveWindow(&mw);
+
+    // Activate the correct workbench
+    Base::Console().Log("Init: Activating default workbench\n");
+    std::string start = App::Application::Config()["StartWorkbench"];
+    start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
                            GetASCII("AutoloadModule", start.c_str());
-  // if the auto workbench is not visible then force to use the default workbech
-  // and replace the wrong entry in the parameters
-  QStringList wb = app.workbenches();
-  if (!wb.contains(start.c_str())) {
-      start = App::Application::Config()["StartWorkbench"];
-      App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
-                            SetASCII("AutoloadModule", start.c_str());
-  }
+    // if the auto workbench is not visible then force to use the default workbech
+    // and replace the wrong entry in the parameters
+    QStringList wb = app.workbenches();
+    if (!wb.contains(start.c_str())) {
+        start = App::Application::Config()["StartWorkbench"];
+        App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                              SetASCII("AutoloadModule", start.c_str());
+    }
 
-  app.activateWorkbench(start.c_str());
+    app.activateWorkbench(start.c_str());
 
-  // show the main window
-  Base::Console().Log("Init: Showing main window\n");
-  mw.loadWindowSettings();
+    // show the main window
+    Base::Console().Log("Init: Showing main window\n");
+    mw.loadWindowSettings();
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
-  SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
-  SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
+    SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
+    SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-  // open the 'Iip of the day' dialog if needed
-  mw.showTipOfTheDay();
-  Instance->d->_bStartingUp = false;
+    // open the 'Iip of the day' dialog if needed
+    mw.showTipOfTheDay();
+    Instance->d->_bStartingUp = false;
 
-  //Base::Console().Log("Init: Processing command line files\n");
-  //unsigned short count = 0;
-  //count = atoi(App::Application::Config()["OpenFileCount"].c_str());
+    // processing all command line files
+    App::Application::processCmdLineFiles();
 
-  //std::string File;
-  //for (unsigned short i=0; i<count; i++)
-  //{
-  //  // getting file name
-  //  std::stringstream temp;
-  //  temp << "OpenFile" << i;
+    // Create new document?
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
+    if (hGrp->GetBool("CreateNewDoc", false)) {
+        App::GetApplication().newDocument();
+    }
 
-  //  File = App::Application::Config()[temp.str()];
+    // run the Application event loop
+    Base::Console().Log("Init: Entering event loop\n");
 
-  //  // try to open
-  //  try {
-  //    app.open(File.c_str());
-  //  } catch(...) {
-  //    Base::Console().Error("Can't open file %s \n",File.c_str());
-  //  }
-  //}
+    try {
+        mainApp.exec();
+    }
+    catch(...) {
+        // catching nasty stuff coming out of the event loop
+        App::Application::destructObserver();
+        throw;
+    }
 
-  // processing all command line files
-  App::Application::processCmdLineFiles();
-
-  // Create new document?
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
-  if ( hGrp->GetBool("CreateNewDoc", false) ) {
-    App::GetApplication().newDocument();
-  }
-
-  // run the Application event loop
-  Base::Console().Log("Init: Entering event loop\n");
-
-  try {
-    mainApp.exec();
-  } catch(...) {
-    // catching nasty stuff coming out of the event loop
-    App::Application::destructObserver();
-    throw;
-  }
-
-  Base::Console().Log("Init: event loop left\n");
+    Base::Console().Log("Init: event loop left\n");
 }

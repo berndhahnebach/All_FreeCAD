@@ -93,63 +93,62 @@ PropertyView::PropertyView(Gui::Document* pcDocument, QWidget *parent)
 
 PropertyView::~PropertyView()
 {
-  Gui::Selection().Detach(this);
-  delete pcLabelOpen;
-  delete pcLabelClosed;
-  delete pcAttribute;
+    Gui::Selection().Detach(this);
+    delete pcLabelOpen;
+    delete pcLabelClosed;
+    delete pcAttribute;
 }
-
 
 void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                             Gui::SelectionSingleton::MessageType Reason)
 {
-  //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
-  //
+    //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
+    //
 
-  if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection || Reason.Type == SelectionChanges::ClearSelection)
-  {
-    // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
-    // documents other than the currently active one.
+    if (Reason.Type == SelectionChanges::AddSelection ||
+        Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::ClrSelection) {
+        // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
+        // documents other than the currently active one.
 
-    // group the properties by <name,id>
-    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
-    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
-    vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
-    for ( vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it )
-    {
-      std::map<std::string,App::Property*> dataMap;
-      std::map<std::string,App::Property*> viewMap;
-      if ( (*it).pObject ) {
-        (*it).pObject->getPropertyMap(dataMap);
+        // group the properties by <name,id>
+        std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
+        std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
+        std::vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
+        for (std::vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it) {
+            std::map<std::string,App::Property*> dataMap;
+            std::map<std::string,App::Property*> viewMap;
+            if ((*it).pObject) {
+                (*it).pObject->getPropertyMap(dataMap);
 
-        // get also the properties of the associated view provider
-        Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
-        ViewProvider* vp = doc->getViewProvider((*it).pObject);
-        if(!vp) continue;
-        vp->getPropertyMap(viewMap);
-      }
-      else if ( (*it).pDoc ) {
-        (*it).pDoc->getPropertyMap(dataMap);
-      }
+                // get also the properties of the associated view provider
+                Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
+                ViewProvider* vp = doc->getViewProvider((*it).pObject);
+                if(!vp) continue;
+                vp->getPropertyMap(viewMap);
+            }
+            else if ((*it).pDoc) {
+                (*it).pDoc->getPropertyMap(dataMap);
+            }
 
-      // store the properties with <name,id> as key in a map
-      std::map<std::string,App::Property*>::iterator pt;
-      for( pt = dataMap.begin(); pt != dataMap.end(); ++pt )
-      {
-        std::pair<std::string, int> nameType = std::make_pair<std::string, int>( pt->first, pt->second->getTypeId().getKey());
-        propDataMap[nameType].push_back(pt->second);
-      }
-      // the same for the view properties
-      for( pt = viewMap.begin(); pt != viewMap.end(); ++pt )
-      {
-        std::pair<std::string, int> nameType = std::make_pair<std::string, int>( pt->first, pt->second->getTypeId().getKey());
-        propViewMap[nameType].push_back(pt->second);
-      }
+            // store the properties with <name,id> as key in a map
+            std::map<std::string,App::Property*>::iterator pt;
+            for (pt = dataMap.begin(); pt != dataMap.end(); ++pt) {
+                std::pair<std::string, int> nameType = std::make_pair
+                    <std::string, int>(pt->first, pt->second->getTypeId().getKey());
+                propDataMap[nameType].push_back(pt->second);
+            }
+            // the same for the view properties
+            for(pt = viewMap.begin(); pt != viewMap.end(); ++pt) {
+                std::pair<std::string, int> nameType = std::make_pair
+                    <std::string, int>( pt->first, pt->second->getTypeId().getKey());
+                propViewMap[nameType].push_back(pt->second);
+            }
+        }
+
+        propertyEditorView->buildUp(propViewMap, array.size());
+        propertyEditorData->buildUp(propDataMap, array.size());
     }
-
-    propertyEditorView->buildUp(propViewMap, array.size());
-    propertyEditorData->buildUp(propDataMap, array.size());
-  }
 }
 
 void PropertyView::onUpdate(void)
@@ -158,18 +157,18 @@ void PropertyView::onUpdate(void)
 
 bool PropertyView::onMsg(const char* pMsg)
 {
-  // no messages yet
-  return false;
+    // no messages yet
+    return false;
 }
 
 void PropertyView::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    tabs->setTabText(0, trUtf8("View"));
-    tabs->setTabText(1, trUtf8("Data"));
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        tabs->setTabText(0, trUtf8("View"));
+        tabs->setTabText(1, trUtf8("Data"));
+    }
 
-  DockWindow::changeEvent(e);
+    DockWindow::changeEvent(e);
 }
 
 #include "moc_PropertyView.cpp"

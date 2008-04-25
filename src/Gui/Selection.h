@@ -46,22 +46,22 @@ namespace Gui
 {
 
 
-/** transport the changes of the Selection
- *  This class transport closer information what was changed in a
- *  Selection. Its a optional information and not all commands set this
- *  information. If not set all observer of the selection assume a full change
- *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only
- *  a small parameter whas changed. There for one can use this class and make the
- *  update of the document much faster!
- *@see FCObserver
+/** Transport the changes of the Selection
+ * This class transports closer information what was changed in the
+ * selection. It's an optional information and not all commands set this
+ * information. If not set all observer of the selection assume a full change
+ * and update everything (e.g 3D view). This is not a very good idea if, e.g. only
+ * a small parameter has changed. Therefore one can use this class and make the
+ * update of the document much faster!
+ * @see FCObserver
  */
 class GuiExport SelectionChanges
 {
 public:
-        enum MsgType {
+    enum MsgType {
         AddSelection,
         RmvSelection,
-        ClearSelection,
+        ClrSelection,
         SetPreselect,
         RmvPreselect
     };
@@ -101,17 +101,17 @@ namespace Gui
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>//, public App::Document::ObserverType
 {
 public:
-    /// Add a selection 
+    /// Add to selection 
     bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
-    /// Remove a selection (for internal use)
+    /// Remove from selection (for internal use)
     void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
-    /// Clears the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
+    /// Clear the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
     void clearSelection(const char* pDocName=0);
-    /// Clears the selection of all documents
+    /// Clear the selection of all documents
     void clearCompleteSelection();
-    /// checks if selected
+    /// Check if selected
     bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
-    /// checks if selected
+    /// Check if selected
     bool isSelected(App::DocumentObject*) const;
 
     bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
@@ -163,7 +163,7 @@ public:
     /** Returns a vector of all selection objects of all documents. */
     std::vector<SelObj> getCompleteSelection() const;
 
-    /// size of selcted enteties for all docuements
+    /// size of selcted entities for all docuements
     unsigned int size(void) const {return _SelList.size();}
 
     static SelectionSingleton& instance(void);
@@ -188,10 +188,6 @@ protected:
     /// Observer message from the App doc
     void slotRenamedObject(App::DocumentObject&);
     void slotDeletedObject(App::DocumentObject&);
-
-    /// Observer message from the App doc
-    //virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
-
 
     /// helper to retrieve document by name
     App::Document* getDocument(const char* pDocName=0) const;
