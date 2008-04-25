@@ -288,7 +288,7 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
       }
     }
   }
-  else if ( strcmp("Point",ModeName)==0 )
+  else if ( strcmp("Points",ModeName)==0 )
   {
     setDisplayMaskMode("Point");
   }
@@ -299,7 +299,7 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
 std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const
 {
   std::vector<std::string> StrList;
-  StrList.push_back("Point");
+  StrList.push_back("Points");
 
   if ( pcObject )
   {

@@ -111,7 +111,17 @@
          </spacer>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="spinLineWidth" />
+         <widget class="QSpinBox" name="spinLineWidth" >
+          <property name="maximum" >
+           <number>64</number>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="value" >
+           <number>2</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -147,7 +157,17 @@
          </spacer>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="spinPointSize" />
+         <widget class="QSpinBox" name="spinPointSize" >
+          <property name="maximum" >
+           <number>64</number>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="value" >
+           <number>2</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

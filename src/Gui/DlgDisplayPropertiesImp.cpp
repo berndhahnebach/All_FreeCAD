@@ -25,6 +25,7 @@
 
 #include "DlgDisplayPropertiesImp.h"
 #include "DlgMaterialPropertiesImp.h"
+#include "DockWindowManager.h"
 #include "View3DInventorViewer.h"
 #include "View3DInventor.h"
 #include "Command.h"
@@ -57,207 +58,227 @@ using namespace std;
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl )
 {
-  this->setupUi(this);
-  QStringList commonModeList;
-  QString activeMode;
-  int transparency = -1;
-  QColor shapeColor;
-  float pointsize = -1.0f;
-  float linewidth = -1.0f;
-  float fPointSizeGranularity=0.125f;
-  SbVec2f pointSizeRange(1.0f,1.0f);
-  float fLineWidthGranularity=0.125f;
-  SbVec2f lineWidthRange(1.0f,1.0f);
-  App::Material::MaterialType cMatType = App::Material::DEFAULT;
+    this->setupUi(this);
+    textLabel1_3->hide();
+    changePlot->hide();
 
-  bool viewerLimits=false;
-  bool bMaterial = false;
-  bool bDisplay = true;
-  bool bTransparency = true;
-  bool bShapeColor = true;
-  bool bPointSize = true;
-  bool bLineWidth = true;
-  bool bShapeMaterial = true;
+    std::vector<Gui::ViewProvider*> views = getSelection();
+    setDisplayModes(views);
+    fillupMaterials();
+    setMaterial(views);
+    setShapeColor(views);
+    setPointSize(views);
+    setLineWidth(views);
+    setTransparency(views);
 
-  std::vector<SelectionSingleton::SelObj> obj = Gui::Selection().getCompleteSelection();
-  for ( std::vector<SelectionSingleton::SelObj>::iterator so = obj.begin(); so != obj.end(); ++so )
-  {
-    Gui::Document* doc = Application::Instance->getDocument(so->pDoc);
-    if ( viewerLimits == false ) {
-      View3DInventor* activeView = dynamic_cast<View3DInventor*>(doc->getActiveView());
-      if (activeView)
-      {
-        View3DInventorViewer* viewer = activeView->getViewer();
-        viewer->getPointSizeLimits(pointSizeRange,fPointSizeGranularity);
-        viewer->getLineWidthLimits(lineWidthRange,fLineWidthGranularity);
-        viewerLimits = true;
-      }
+    // embed this dialog into a dockable widget container
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    QDockWidget* dw = pDockMgr->addDockWindow(this->windowTitle(), this, Qt::AllDockWidgetAreas);
+    dw->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    dw->setAllowedAreas(Qt::DockWidgetAreas());
+    dw->setFloating(true);
+    dw->show();
+
+    Gui::Selection().Attach(this);
+}
+
+/** 
+ *  Destroys the object and frees any allocated resources
+ */
+DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
+{
+    // no need to delete child widgets, Qt does it all for us
+    Gui::Selection().Detach(this);
+}
+
+void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                                       Gui::SelectionSingleton::MessageType Reason)
+{
+    if (Reason.Type == SelectionChanges::AddSelection ||
+        Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::ClrSelection) {
+        std::vector<Gui::ViewProvider*> views = getSelection();
+        setDisplayModes(views);
+        setMaterial(views);
+        setShapeColor(views);
+        setPointSize(views);
+        setLineWidth(views);
+        setTransparency(views);
+    }
+}
+
+/**
+ * Destroys the dock window this object is embedded into without destroying itself.
+ */
+void DlgDisplayPropertiesImp::reject()
+{
+    // closes the dock window
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    pDockMgr->removeDockWindow(this);
+    QDialog::reject();
+}
+
+/**
+ * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_buttonUserDefinedMaterial_clicked()
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    DlgMaterialPropertiesImp dlg(this);
+    dlg.setViewProviders(Provider);
+    dlg.exec();
+
+    buttonColor->setColor(dlg.diffuseColor->color());
+}
+
+/**
+ * Sets the 'ShapeMaterial' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_changeMaterial_activated(const QString& material)
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    App::Material mat(Materials[material]);
+    App::Color diffuseColor = mat.diffuseColor;
+    buttonColor->setColor(QColor((int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f)));
+
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("ShapeMaterial");
+        if (prop && prop->getTypeId() == App::PropertyMaterial::getClassTypeId()) {
+            App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+            ShapeMaterial->setValue(mat);
+        }
+    }
+}
+
+/**
+ * Sets the 'Display' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_changeMode_activated(const QString& s)
+{
+    Gui::WaitCursor wc;
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("DisplayMode");
+        if (prop && prop->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
+            App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
+            Display->setValue((const char*)s.toAscii());
+        }
+    }
+}
+
+void DlgDisplayPropertiesImp::on_changePlot_activated(const QString&s)
+{
+    Base::Console().Log("Plot = %s\n",(const char*)s.toAscii());
+}
+
+/**
+ * Sets the 'ShapeColor' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_buttonColor_changed()
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    QColor s = buttonColor->color();
+    App::Color c(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("ShapeColor");
+        if (prop && prop->getTypeId() == App::PropertyColor::getClassTypeId()) {
+            App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
+            ShapeColor->setValue(c);
+        }
+    }
+}
+
+/**
+ * Sets the 'Transparency' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_spinTransparency_valueChanged(int transparency)
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("Transparency");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
+            Transparency->setValue(transparency);
+        }
+    }
+}
+
+/**
+ * Sets the 'PointSize' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_spinPointSize_valueChanged(int pointsize)
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("PointSize");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            App::PropertyFloat* PointSize = (App::PropertyFloat*)prop;
+            PointSize->setValue((float)pointsize);
+        }
+    }
+}
+
+/**
+ * Sets the 'LineWidth' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_spinLineWidth_valueChanged(int linewidth)
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("LineWidth");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            App::PropertyFloat* LineWidth = (App::PropertyFloat*)prop;
+            LineWidth->setValue((float)linewidth);
+        }
+    }
+}
+
+void DlgDisplayPropertiesImp::setDisplayModes(const std::vector<Gui::ViewProvider*>& views)
+{
+    QStringList commonModes, modes;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("DisplayMode");
+        if (prop && prop->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
+            App::PropertyEnumeration* display = static_cast<App::PropertyEnumeration*>(prop);
+            const std::vector<std::string>& value = display->getEnumVector();
+            if (it == views.begin()) {
+                for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt)
+                    commonModes << jt->c_str();
+            }
+            else {
+                for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt) {
+                    if (commonModes.contains(jt->c_str()))
+                        modes << jt->c_str();
+                }
+
+                commonModes = modes;
+                modes.clear();
+            }
+        }
     }
 
-    ViewProvider *pcProv = doc->getViewProvider(so->pObject);
-    if ( pcProv )
-    {
-      Provider.push_back(pcProv);
+    changeMode->clear();
+    changeMode->addItems(commonModes);
+    changeMode->setDisabled(commonModes.isEmpty());
+}
 
-      // 'Display' property
-      if ( bDisplay )
-      {
-        App::Property* prop = pcProv->getPropertyByName("DisplayMode");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
-        {
-          App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
-          const std::vector<std::string>& modes = Display->getEnumVector();
-
-          if ( commonModeList.isEmpty() ) {
-            for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it )
-              commonModeList << it->c_str();
-            // currently active mode is the first item and can be popped
-            if ( !commonModeList.isEmpty() ) {
-              activeMode = Display->getValueAsString();
-            } else {
-              bDisplay = false;
-            }
-          } else {
-            QStringList modeList;
-            for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it ) {
-              if ( commonModeList.contains(it->c_str()) )
-                modeList << it->c_str();
-            }
-
-            // intersection of both lists
-            if ( !modeList.isEmpty() ) {
-              commonModeList = modeList;
-            } else {
-              bDisplay = false;
-            }
-          }
+void DlgDisplayPropertiesImp::setMaterial(const std::vector<Gui::ViewProvider*>& views)
+{
+    bool material = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+        if (prop && prop->getTypeId() == App::PropertyMaterial::getClassTypeId()) {
+            material = true;
+            break;
         }
-        else
-          bDisplay = false;
-      }
-
-      // 'Transparency' property
-      if ( bTransparency )
-      {
-        App::Property* prop = pcProv->getPropertyByName("Transparency");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()))
-        {
-          App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
-          transparency = Transparency->getValue();
-        }
-        else
-          bTransparency = false;
-      }
-
-      // 'ShapeColor' property
-      if ( bShapeColor )
-      {
-        App::Property* prop = pcProv->getPropertyByName("ShapeColor");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()))
-        {
-          App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
-          App::Color c = ShapeColor->getValue();
-          shapeColor.setRgb((int)(c.r*255.0f), (int)(c.g*255.0f),(int)(c.b*255.0f));
-        }
-        else
-          bShapeColor = false;
-      }
-
-      // 'PointSize' property
-      if ( bPointSize )
-      {
-        App::Property* prop = pcProv->getPropertyByName("PointSize");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
-        {
-          App::PropertyFloat* PointSize = (App::PropertyFloat*)prop;
-          pointsize = PointSize->getValue();
-        }
-        else
-          bPointSize = false;
-      }
-
-      // 'LineWidth' property
-      if ( bLineWidth )
-      {
-        App::Property* prop = pcProv->getPropertyByName("LineWidth");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
-        {
-          App::PropertyFloat* LineWidth = (App::PropertyFloat*)prop;
-          linewidth = LineWidth->getValue();
-        }
-        else
-          bLineWidth = false;
-      }
-
-      // 'ShapeMaterial' property
-      if ( bShapeMaterial )
-      {
-        App::Property* prop = pcProv->getPropertyByName("ShapeMaterial");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
-        {
-          App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
-          App::Material mat = ShapeMaterial->getValue();
-          if ( bMaterial == false ) {
-            cMatType = mat.getType();
-            bMaterial = true;
-          } else if ( cMatType != mat.getType() ) {
-            cMatType = App::Material::USER_DEFINED;
-          }
-        }
-      }
     }
-  }
 
-  // set dialog stuff
-  //
-  if ( !bDisplay ) {
-    changeMode->setDisabled(true);
-  } else {
-    changeMode->insertItems(0, commonModeList);
-    changeMode->setCurrentIndex(changeMode->findText(activeMode));
-  }
+    changeMaterial->setEnabled(material);
+    buttonUserDefinedMaterial->setEnabled(material);
+}
 
-  if ( !bTransparency ) {
-    horizontalSlider->setDisabled(true);
-    spinTransparency->setDisabled(true);
-    textLabel1_2->setDisabled(true);
-  } else {
-    horizontalSlider->setValue(transparency);
-    spinTransparency->setValue(transparency);
-  }
-
-  if ( bShapeColor ) {
-    buttonColor->setColor(shapeColor);
-  } else {
-    buttonColor->setDisabled(true);
-  }
-
-  if ( !bPointSize ) {
-    spinPointSize->setDisabled(true);
-    textLabel2->setDisabled(true);
-  } else {
-    spinPointSize->blockSignals(true);
-    spinPointSize->setMaximum(pointSizeRange[1]);
-    spinPointSize->setMinimum(pointSizeRange[0]);
-    spinPointSize->setSingleStep(fPointSizeGranularity);
-    spinPointSize->setValue(pointsize);
-    spinPointSize->blockSignals(false);
-  }
-
-  if ( !bLineWidth ) {
-    spinLineWidth->setDisabled(true);
-    textLabel3->setDisabled(true);
-  } else {
-    spinLineWidth->blockSignals(true);
-    spinLineWidth->setMaximum(lineWidthRange[1]);
-    spinLineWidth->setMinimum(lineWidthRange[0]);
-    spinLineWidth->setSingleStep(fLineWidthGranularity);
-    spinLineWidth->setValue(linewidth);
-    spinLineWidth->blockSignals(false);
-  }
-
-  if ( bShapeMaterial )
-  {
+void DlgDisplayPropertiesImp::fillupMaterials()
+{
     Materials["Brass"]         = App::Material::BRASS;
     Materials["Bronze"]        = App::Material::BRONZE;
     Materials["Copper"]        = App::Material::COPPER;
@@ -282,162 +303,90 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
 
     QStringList material = Materials.keys();
     material.sort();
-    changeMaterial->insertItem(0, "Default");
-    changeMaterial->insertItems(1, material);
+    changeMaterial->addItem("Default");
+    changeMaterial->addItems(material);
     Materials["Default"]       = App::Material::DEFAULT;
-    for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
-    {
-      if (it.value() == cMatType) {
-        changeMaterial->setCurrentIndex(changeMaterial->findText(it.key()));
-        break;
-      }
+}
+
+void DlgDisplayPropertiesImp::setShapeColor(const std::vector<Gui::ViewProvider*>& views)
+{
+    bool shapeColor = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("ShapeColor");
+        if (prop && prop->getTypeId() == App::PropertyColor::getClassTypeId()) {
+            App::Color c = static_cast<App::PropertyColor*>(prop)->getValue();
+            QColor shape;
+            shape.setRgb((int)(c.r*255.0f), (int)(c.g*255.0f),(int)(c.b*255.0f));
+            buttonColor->setColor(shape);
+            shapeColor = true;
+            break;
+        }
     }
-  }
-  else
-  {
-    changeMaterial->setDisabled(true);
-    buttonUserDefinedMaterial->setDisabled(true);
-  }
+
+    buttonColor->setEnabled(shapeColor);
 }
 
-/** 
- *  Destroys the object and frees any allocated resources
- */
-DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
+void DlgDisplayPropertiesImp::setPointSize(const std::vector<Gui::ViewProvider*>& views)
 {
-  // no need to delete child widgets, Qt does it all for us
-}
-
-/**
- * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_buttonUserDefinedMaterial_clicked()
-{
-  DlgMaterialPropertiesImp dlg(this);
-  dlg.setViewProviders(Provider);
-  dlg.exec();
-
-  buttonColor->setColor(dlg.diffuseColor->color());
-}
-
-/**
- * Sets the 'ShapeMaterial' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_changeMaterial_activated(const QString& material)
-{
-  App::Material mat(Materials[material]);
-  App::Color diffuseColor = mat.diffuseColor;
-  buttonColor->setColor(QColor( (int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f) ));
-
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("ShapeMaterial");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
-    {
-      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
-      ShapeMaterial->setValue(mat);
+    bool pointSize = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("PointSize");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            spinPointSize->setValue((int)static_cast<App::PropertyFloat*>(prop)->getValue());
+            pointSize = true;
+            break;
+        }
     }
-  }
+
+    spinPointSize->setEnabled(pointSize);
 }
 
-/**
- * Sets the 'Display' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_changeMode_activated(const QString& s)
+void DlgDisplayPropertiesImp::setLineWidth(const std::vector<Gui::ViewProvider*>& views)
 {
-  Gui::WaitCursor wc;
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("DisplayMode");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
-    {
-      App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
-      Display->setValue((const char*)s.toAscii());
+    bool lineWidth = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("LineWidth");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            spinLineWidth->setValue((int)static_cast<App::PropertyFloat*>(prop)->getValue());
+            lineWidth = true;
+            break;
+        }
     }
-  }
+
+    spinLineWidth->setEnabled(lineWidth);
 }
 
-void DlgDisplayPropertiesImp::on_changePlot_activated(const QString&s)
+void DlgDisplayPropertiesImp::setTransparency(const std::vector<Gui::ViewProvider*>& views)
 {
-  Base::Console().Log("Plot = %s\n",(const char*)s.toAscii());
-}
-
-/**
- * Sets the 'ShapeColor' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_buttonColor_changed()
-{
-  QColor s = buttonColor->color();
-  App::Color c(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("ShapeColor");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()))
-    {
-      App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
-      ShapeColor->setValue(c);
+    bool transparency = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("Transparency");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            spinTransparency->setValue(static_cast<App::PropertyInteger*>(prop)->getValue());
+            transparency = true;
+            break;
+        }
     }
-  }
+
+    spinTransparency->setEnabled(transparency);
+    horizontalSlider->setEnabled(transparency);
 }
 
-/**
- * Sets the 'Transparency' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_spinTransparency_valueChanged(int transparency)
+std::vector<Gui::ViewProvider*> DlgDisplayPropertiesImp::getSelection() const
 {
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("Transparency");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()))
-    {
-      App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
-      Transparency->setValue(transparency);
+    std::vector<Gui::ViewProvider*> views;
+
+    // get the complete selection
+    std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
+    for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+        const char* docName = it->pDoc->getName();
+        const char* objName = it->pObject->getNameInDocument();
+        Gui::ViewProvider* view = Application::Instance->getDocument(it->pDoc)->getViewProvider(it->pObject);
+        views.push_back(view);
     }
-  }
-}
 
-/**
- * Sets the 'PointSize' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_spinPointSize_valueChanged(double pointsize)
-{
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("PointSize");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
-    {
-      App::PropertyFloat* PointSize = (App::PropertyFloat*)prop;
-      PointSize->setValue((float)pointsize);
-    }
-  }
+    return views;
 }
-
-/**
- * Sets the 'LineWidth' property of all selected view providers.
- */
-void DlgDisplayPropertiesImp::on_spinLineWidth_valueChanged(double linewidth)
-{
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    App::Property* prop = (*It)->getPropertyByName("LineWidth");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
-    {
-      App::PropertyFloat* LineWidth = (App::PropertyFloat*)prop;
-      LineWidth->setValue((float)linewidth);
-    }
-  }
-}
-
-void DlgDisplayPropertiesImp::accept()
-{
-  QDialog::accept();
-}
-
-void DlgDisplayPropertiesImp::reject()
-{
-  QDialog::reject();
-}
-
 
 #include "moc_DlgDisplayPropertiesImp.cpp"
 
