@@ -1,4 +1,4 @@
-freecad (0.7.1316-1) unstable; urgency=low
+freecad (0.8.1316-1) unstable; urgency=low
 
   * Support of pivy (Python binding for Coin/SoQt)
   * Support of PyQt4

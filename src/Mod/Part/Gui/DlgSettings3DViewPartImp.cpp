@@ -58,10 +58,6 @@ void DlgSettings3DViewPartImp::saveSettings()
     prefCheckBox8->onSave();
     prefCheckBox3->onSave();
 
-    float deviation = (float)prefFloatSpinBox1->value();
-    bool nonormal = prefCheckBox8->isChecked();
-    bool quality = prefCheckBox3->isChecked();
-
     // search for Part view providers and apply the new settings
     std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
