@@ -393,8 +393,6 @@ std::vector<Gui::ViewProvider*> DlgDisplayPropertiesImp::getSelection() const
     // get the complete selection
     std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
     for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
-        const char* docName = it->pDoc->getName();
-        const char* objName = it->pObject->getNameInDocument();
         Gui::ViewProvider* view = Application::Instance->getDocument(it->pDoc)->getViewProvider(it->pObject);
         views.push_back(view);
     }
