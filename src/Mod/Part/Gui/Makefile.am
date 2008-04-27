@@ -58,7 +58,6 @@ libPartGui_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKShHealing \
@@ -83,7 +82,6 @@ libPartGui_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKShHealing \
