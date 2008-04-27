@@ -80,7 +80,6 @@ libPart_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKSTL \

@@ -317,7 +317,6 @@ libMesh_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKService \
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lTKBRep \

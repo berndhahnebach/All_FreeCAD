@@ -26,12 +26,11 @@ libDrawing_la_LIBADD   = \
 		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
-                -lPart \
+		-lPart \
 		-lTKernel \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKSTL \
