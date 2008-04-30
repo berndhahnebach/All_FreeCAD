@@ -38,7 +38,7 @@ SO_NODE_ABSTRACT_SOURCE(SoFCColorBarBase);
 */
 SoFCColorBarBase::SoFCColorBarBase()
 {
-  SO_NODE_CONSTRUCTOR(SoFCColorBarBase);
+    SO_NODE_CONSTRUCTOR(SoFCColorBarBase);
 }
 
 /*!
@@ -46,30 +46,29 @@ SoFCColorBarBase::SoFCColorBarBase()
 */
 SoFCColorBarBase::~SoFCColorBarBase()
 {
-  //delete THIS;
+    //delete THIS;
 }
 
 // doc from parent
 void SoFCColorBarBase::initClass(void)
 {
-  SO_NODE_INIT_ABSTRACT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
+    SO_NODE_INIT_ABSTRACT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
 }
 
 void SoFCColorBarBase::finish()
 {
-  atexit_cleanup();
+    atexit_cleanup();
 }
 
-void SoFCColorBarBase::GLRenderBelowPath  (  SoGLRenderAction *  action   )
+void SoFCColorBarBase::GLRenderBelowPath(SoGLRenderAction *  action)
 {
-  const SbViewportRegion& vp = action->getViewportRegion();
-  const SbVec2s&  size = vp.getWindowSize();
-  if ( _windowSize != size )
-  {
-    _windowSize = size;
-    setViewportSize(size);
-  }
-  SoSeparator::GLRenderBelowPath(action);
+    const SbViewportRegion& vp = action->getViewportRegion();
+    const SbVec2s&  size = vp.getWindowSize();
+    if (_windowSize != size) {
+        _windowSize = size;
+        setViewportSize(size);
+    }
+    SoSeparator::GLRenderBelowPath(action);
 }
 
 // --------------------------------------------------------------------------
@@ -81,21 +80,21 @@ SO_NODE_SOURCE(SoFCColorBar);
 */
 SoFCColorBar::SoFCColorBar()
 {
-  SO_NODE_CONSTRUCTOR(SoFCColorBar);
+    SO_NODE_CONSTRUCTOR(SoFCColorBar);
 
 //  SoEventCallback * cb = new SoEventCallback;
 //  cb->addEventCallback(SoMouseButtonEvent::getClassTypeId(), eventCallback, this);
 //  insertChild(cb, 0);
 
-  pColorMode = new SoSwitch;
-  addChild(pColorMode);
+    pColorMode = new SoSwitch;
+    addChild(pColorMode);
 
-  _colorBars.push_back( new SoFCColorGradient );
-  _colorBars.push_back( new SoFCColorLegend );
+    _colorBars.push_back( new SoFCColorGradient );
+    _colorBars.push_back( new SoFCColorLegend );
 
-  for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
-    pColorMode->addChild( *it );
-  pColorMode->whichChild = 0;
+    for (std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it)
+        pColorMode->addChild( *it );
+    pColorMode->whichChild = 0;
 }
 
 /*!
@@ -103,160 +102,153 @@ SoFCColorBar::SoFCColorBar()
 */
 SoFCColorBar::~SoFCColorBar()
 {
-  //delete THIS;
+    //delete THIS;
 }
 
 // doc from parent
 void SoFCColorBar::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorBar,SoFCColorBarBase,"Separator");
+    SO_NODE_INIT_CLASS(SoFCColorBar,SoFCColorBarBase,"Separator");
 }
 
 void SoFCColorBar::finish()
 {
-  atexit_cleanup();
+    atexit_cleanup();
 }
 
 SoFCColorBarBase* SoFCColorBar::getActiveBar() const
 {
-  int child = pColorMode->whichChild.getValue();
-  return _colorBars[child];
+    int child = pColorMode->whichChild.getValue();
+    return _colorBars[child];
 }
 
 void SoFCColorBar::setViewportSize( const SbVec2s& size )
 {
-  // don't know why the parameter range isn't between [-1,+1]
-  float fRatio = ((float)size[0])/((float)size[1]);
-  _fMinX=  4.0f, _fMaxX=4.5f;
-  _fMinY= -4.0f, _fMaxY=4.0f;
-  if ( fRatio > 1.0f )
-  {
-    _fMinX = 4.0f * fRatio;
-    _fMaxX = _fMinX+0.5f;
-  }
-  else if ( fRatio < 1.0f )
-  {
-    _fMinY =  -4.0f / fRatio;
-    _fMaxY =   4.0f / fRatio;
-  }
+    // don't know why the parameter range isn't between [-1,+1]
+    float fRatio = ((float)size[0])/((float)size[1]);
+    _fMinX=  4.0f, _fMaxX=4.5f;
+    _fMinY= -4.0f, _fMaxY=4.0f;
+    if (fRatio > 1.0f) {
+        _fMinX = 4.0f * fRatio;
+        _fMaxX = _fMinX+0.5f;
+    }
+    else if (fRatio < 1.0f) {
+        _fMinY =  -4.0f / fRatio;
+        _fMaxY =   4.0f / fRatio;
+    }
 }
 
 void SoFCColorBar::setRange( float fMin, float fMax, int prec )
 {
-  for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
-    (*it)->setRange( fMin, fMax, prec );
+    for (std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it)
+        (*it)->setRange(fMin, fMax, prec);
 }
 
-bool SoFCColorBar::isVisible ( float fVal ) const
+bool SoFCColorBar::isVisible (float fVal) const
 {
-  return this->getActiveBar()->isVisible( fVal );
+    return this->getActiveBar()->isVisible(fVal);
 }
 
 float SoFCColorBar::getMinValue (void) const
 {
-  return this->getActiveBar()->getMinValue();
+    return this->getActiveBar()->getMinValue();
 }
 
 float SoFCColorBar::getMaxValue (void) const
 {
-  return this->getActiveBar()->getMaxValue();
+    return this->getActiveBar()->getMaxValue();
 }
 
 bool SoFCColorBar::customize()
 {
-  return this->getActiveBar()->customize();
+    return this->getActiveBar()->customize();
 }
 
 App::Color SoFCColorBar::getColor( float fVal ) const
 {
-  return this->getActiveBar()->getColor( fVal );
+    return this->getActiveBar()->getColor( fVal );
 }
 
 void SoFCColorBar::eventCallback(void * userdata, SoEventCallback * node)
 {
-  const SoEvent * event = node->getEvent();
-  if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
-    if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
-      if (e->getState() == SoButtonEvent::UP) {
-      }
+    const SoEvent * event = node->getEvent();
+    if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+        const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
+        if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
+            if (e->getState() == SoButtonEvent::UP) {
+            }
+        }
     }
-  }
 }
 
 void SoFCColorBar::handleEvent (SoHandleEventAction *action) 
 {
-  const SoEvent * event = action->getEvent();
+    const SoEvent * event = action->getEvent();
 
-  // check for mouse button events
-  if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
+    // check for mouse button events
+    if (event->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+        const SoMouseButtonEvent*  e = static_cast<const SoMouseButtonEvent*>(event);
 
-    // calculate the mouse position relative to the colorbar
-    //
-    const SbViewportRegion&  vp = action->getViewportRegion(); 
-    float fRatio = vp.getViewportAspectRatio();
-    SbVec2f pos = event->getNormalizedPosition(vp);
-    float pX,pY; pos.getValue(pX,pY);
+        // calculate the mouse position relative to the colorbar
+        //
+        const SbViewportRegion&  vp = action->getViewportRegion(); 
+        float fRatio = vp.getViewportAspectRatio();
+        SbVec2f pos = event->getNormalizedPosition(vp);
+        float pX,pY; pos.getValue(pX,pY);
 
-    pX = pX*10.0f-5.0f;
-    pY = pY*10.0f-5.0f;
+        pX = pX*10.0f-5.0f;
+        pY = pY*10.0f-5.0f;
 
-    // now calculate the real points respecting aspect ratio information
-    //
-    if ( fRatio > 1.0f )
-    {
-      pX = pX * fRatio;
-    }
-    else if ( fRatio < 1.0f )
-    {
-      pY = pY / fRatio;
-    }
+        // now calculate the real points respecting aspect ratio information
+        //
+        if (fRatio > 1.0f) {
+            pX = pX * fRatio;
+        }
+        else if (fRatio < 1.0f) {
+            pY = pY / fRatio;
+        }
 
-    // check if the cursor is near to the color bar
-    if ( _fMinX > pX || pX > _fMaxX || _fMinY > pY || pY > _fMaxY )
-      return; // not inside the rectangle
+        // check if the cursor is near to the color bar
+        if (_fMinX > pX || pX > _fMaxX || _fMinY > pY || pY > _fMaxY)
+            return; // not inside the rectangle
 
-    // left mouse pressed
-    if ((e->getButton() == SoMouseButtonEvent::BUTTON1)) {
-      if (e->getState() == SoButtonEvent::DOWN) {
-        // double click event
+        // left mouse pressed
         action->setHandled();
-        if ( _timer.restart() < QApplication::doubleClickInterval() )
-        {
-          if ( getActiveBar()->customize() )
-            Notify(0);
+        if ((e->getButton() == SoMouseButtonEvent::BUTTON1)) {
+            if (e->getState() == SoButtonEvent::DOWN) {
+                // double click event
+                if (_timer.restart() < QApplication::doubleClickInterval()) {
+                    if (getActiveBar()->customize())
+                        Notify(0);
+                }
+            }
         }
-      }
-    }
-    // right mouse pressed
-    else if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
-      if (e->getState() == SoButtonEvent::UP) {
-        action->setHandled();
+        // right mouse pressed
+        else if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
+            if (e->getState() == SoButtonEvent::UP) {
+                SoFCColorBarBase* current = getActiveBar();
+                QMenu menu;
+                int i=0;
+                for (std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it) {
+                    QAction* item = menu.addAction( (*it)->getColorBarName() );
+                    item->setCheckable(true);
+                    item->setChecked((*it) == current);
+                    item->setData(QVariant(i++));
+                }
 
-        SoFCColorBarBase* current = getActiveBar();
-        QMenu menu;
-        int i=0;
-        for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
-        {
-          QAction* item = menu.addAction( (*it)->getColorBarName() );
-          item->setCheckable(true);
-          item->setChecked((*it) == current);
-          item->setData(QVariant(i++));
-        }
-        
-        menu.addSeparator();
-        QAction* option = menu.addAction(QObject::tr("Options..."));
-        QAction* action = menu.exec(QCursor::pos());
+                menu.addSeparator();
+                QAction* option = menu.addAction(QObject::tr("Options..."));
+                QAction* action = menu.exec(QCursor::pos());
 
-        if ( action == option ) {
-          if ( customize() )
-            Notify(0);
-        } else if ( action ) {
-          int id = action->data().toInt();
-          pColorMode->whichChild = id;
+                if (action == option) {
+                    if (customize())
+                        Notify(0);
+                }
+                else if (action) {
+                    int id = action->data().toInt();
+                    pColorMode->whichChild = id;
+                }
+            }
         }
-      }
     }
-  }
 }

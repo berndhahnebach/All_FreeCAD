@@ -196,6 +196,11 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
     pcFaceSet = new SoFCMeshFaceSet;
     pcHighlight->addChild(pcFaceSet);
 
+    // read the threshold from the preferences
+    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+    int size = hGrp->GetInt("RenderTriangleLimit", -1);
+    if (size > 0) pcFaceSet->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
 
@@ -339,7 +344,12 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 
 void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
 {
+    // When this callback function is invoked we must in either case leave the edit mode
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    view->setEditing(false);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipMeshCallback);
+    n->setHandled();
+
     SbBool clip_inner;
     std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
     if (clPoly.size() < 3)
@@ -356,8 +366,6 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
         }
     }
 
-    view->setEditing(false);
-    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipMeshCallback);
     view->render();
 }
 
