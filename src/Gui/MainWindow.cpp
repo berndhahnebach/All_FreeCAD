@@ -631,9 +631,14 @@ void MainWindow::showMainWindow()
     // appears for a short moment and disappears immediately. The workaround
     // starts a timer to check for the visibility of the main window and call
     // show() if needed
+    std::clog << "Check visibility of main window...";
     if (!isVisible()) {
         show();
-        std::clog << "Force to show main window" << std::endl;
+        QMessageBox::information(0, "Show window","MainWindow::showMainWindow()");
+        std::clog << "invisible, force to show" << std::endl;
+    }
+    else {
+        std::clog << "visible" << std::endl;
     }
 }
 
