@@ -380,7 +380,7 @@ void SoFCMeshFacet::getPrimitiveCount(SoGetPrimitiveCountAction * action)
  * and the user does some intersections (e.g. moving, rotating, zooming, spinning, etc.) with the mesh then the GLRender() method renders 
  * only the gravity points of a subset of the triangles.
  * If there is no user interaction with the mesh then all triangles are rendered.
- * The limit of maximum allowed triangles can be specified in \a MaximumTriangles, the default value is set to 500.000.
+ * The limit of maximum allowed triangles can be specified in \a MaximumTriangles, the default value is set to 100.000.
  *
  * The GLRender() method checks the status of the SoFCInteractiveElement to decide to be in interactive mode or not.
  * To take advantage of this facility the client programmer must set the status of the SoFCInteractiveElement to \a true
@@ -423,7 +423,7 @@ void SoFCMeshFaceSet::initClass()
   SO_NODE_INIT_CLASS(SoFCMeshFaceSet, SoShape, "Shape");
 }
 
-SoFCMeshFaceSet::SoFCMeshFaceSet() : MaximumTriangles(500000), meshChanged(true)
+SoFCMeshFaceSet::SoFCMeshFaceSet() : MaximumTriangles(100000), meshChanged(true)
 {
   SO_NODE_CONSTRUCTOR(SoFCMeshFaceSet);
 }
