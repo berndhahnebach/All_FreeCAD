@@ -45,10 +45,7 @@ class SoLocation2Event;
 class SoKeyboardEvent;
 
 namespace Gui {
-  class View3DInventorViewer;
-}
-
-namespace Gui {
+class View3DInventorViewer;
 
 /**
  * The mouse model base class
@@ -60,43 +57,44 @@ namespace Gui {
 class GuiExport AbstractMouseModel
 {
 public:
-  enum { Continue=0, Restart=1, Finish=2, Cancel=3 };
+    enum { Continue=0, Restart=1, Finish=2, Cancel=3 };
 
-  AbstractMouseModel();
-  virtual ~AbstractMouseModel(void){}
-  /// implement this in derived classes
-  virtual void initialize() = 0;
-  /// implement this in derived classes
-  virtual void terminate () = 0;
-  void grabMouseModel(Gui::View3DInventorViewer*);
-  void releaseMouseModel(void);
-  const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
-  SbBool isInner() const { return m_bInner; }
+    AbstractMouseModel();
+    virtual ~AbstractMouseModel(void){}
+    /// implement this in derived classes
+    virtual void initialize() = 0;
+    /// implement this in derived classes
+    virtual void terminate () = 0;
+    void grabMouseModel(Gui::View3DInventorViewer*);
+    void releaseMouseModel(void);
+    const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
+    SbBool isInner() const { return m_bInner; }
 
-  virtual void redraw() = 0;
+    void redraw();
 
-  /** @name Mouse events*/
-  //@{
-  int handleEvent( const SoEvent * const ev, const SbViewportRegion& vp );
-  //@}
-
-protected:
-  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos ){ return 0; };
-  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos ){ return 0; };
-  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e )                   { return 0; };
-
-  /// drawing stuff
-  virtual void draw (){};
+    /** @name Mouse events*/
+    //@{
+    int handleEvent(const SoEvent * const ev, const SbViewportRegion& vp);
+    //@}
 
 protected:
-  Gui::View3DInventorViewer*_pcView3D;
-  QCursor m_cPrevCursor;
-  int  m_iXold, m_iYold;
-  int  m_iXnew, m_iYnew;
-  SbBool m_bInner;
+    virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos ){ return 0; };
+    virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos ){ return 0; };
+    virtual int keyboardEvent   ( const SoKeyboardEvent    * const e )                   { return 0; };
+
+    /// drawing stuff
+    virtual void draw (){};
+
+protected:
+    Gui::View3DInventorViewer*_pcView3D;
+    QCursor m_cPrevCursor;
+    int  m_iXold, m_iYold;
+    int  m_iXnew, m_iYnew;
+    SbBool m_bInner;
+    SbBool mustRedraw;
 
 private:
-  std::vector<SbVec2f> _clPoly;
+    std::vector<SbVec2f> _clPoly;
 };
 
 // -----------------------------------------------------------------------------------
@@ -108,8 +106,8 @@ private:
 class GuiExport BaseMouseModel : public AbstractMouseModel
 {
 public:
-  BaseMouseModel();
-  virtual ~BaseMouseModel(){}
+    BaseMouseModel();
+    virtual ~BaseMouseModel(){}
 };
 
 // -----------------------------------------------------------------------------------
@@ -122,29 +120,27 @@ public:
 class GuiExport PolyPickerMouseModel : public BaseMouseModel
 {
 public:
-  PolyPickerMouseModel();
-  virtual ~PolyPickerMouseModel();
+    PolyPickerMouseModel();
+    virtual ~PolyPickerMouseModel();
 
-  /// set the new mouse cursor
-  virtual void initialize();
-  /// do nothing
-  virtual void terminate();
-
-  virtual void redraw();
+    /// set the new mouse cursor
+    virtual void initialize();
+    /// do nothing
+    virtual void terminate();
 
 protected:
-  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
-  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
-  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
+    virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
+    virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
+    virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
 
-  /// draw the polygon
-  virtual void draw ();
-  virtual int popupMenu();
+    /// draw the polygon
+    virtual void draw ();
+    virtual int popupMenu();
 
 protected:
-  std::vector<QPoint> _cNodeVector;
-  int  m_iRadius, m_iNodes;
-  bool m_bWorking;
+    std::vector<QPoint> _cNodeVector;
+    int  m_iRadius, m_iNodes;
+    bool m_bWorking;
 };
 
 // -----------------------------------------------------------------------------------
@@ -174,26 +170,24 @@ protected:
 class GuiExport SelectionMouseModel : public BaseMouseModel 
 {
 public:
-  SelectionMouseModel();
-  virtual ~SelectionMouseModel();
+    SelectionMouseModel();
+    virtual ~SelectionMouseModel();
 
-  /// do nothing
-  virtual void initialize();
-  /// do nothing
-  virtual void terminate();
-
-  virtual void redraw();
+    /// do nothing
+    virtual void initialize();
+    /// do nothing
+    virtual void terminate();
 
 protected:
-  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
-  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
-  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
+    virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
+    virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
+    virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
 
-  /// draw the rectangle
-  virtual void draw ();
+    /// draw the rectangle
+    virtual void draw ();
 
 private:
-  bool m_bWorking;
+    bool m_bWorking;
 };
 
 // -----------------------------------------------------------------------------------
@@ -206,9 +200,9 @@ private:
 class GuiExport BoxZoomMouseModel : public SelectionMouseModel 
 {
 public:
-  BoxZoomMouseModel();
-  ~BoxZoomMouseModel();
-  void terminate();
+    BoxZoomMouseModel();
+    ~BoxZoomMouseModel();
+    void terminate();
 };
 
 } // namespace Gui

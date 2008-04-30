@@ -519,21 +519,14 @@ PrefSlider::~PrefSlider()
 
 void PrefSlider::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if ( getWindowParameter().IsNull() )
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
-  int o = hPrefs->GetInt("Orientation", orientation());
-  setOrientation(Qt::Orientation(o));
-  int min = hPrefs->GetInt("MinValue", minimum());
-  int max = hPrefs->GetInt("MaxValue", maximum());
-  int val = hPrefs->GetInt("Value", value());
-  setMinimum(min);
-  setMaximum(max);
-  setValue(val);
+  int nVal = getWindowParameter()->GetInt(entryName(), QSlider::value());
+  setValue(nVal);
 }
 
 void PrefSlider::savePreferences()
@@ -544,11 +537,7 @@ void PrefSlider::savePreferences()
     return;
   }
 
-  ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
-  hPrefs->SetInt("Orientation", int(orientation()));
-  hPrefs->SetInt("MinValue", minimum());
-  hPrefs->SetInt("MaxValue", maximum());
-  hPrefs->SetInt("Value", value());
+  getWindowParameter()->SetInt(entryName() , (int)value());
 }
 
 QByteArray PrefSlider::entryName () const

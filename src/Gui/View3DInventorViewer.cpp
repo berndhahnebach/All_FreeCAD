@@ -775,6 +775,8 @@ void View3DInventorViewer::actualRedraw(void)
     if (this->isAnimating()) { this->scheduleRedraw(); }
 
     printDimension();
+    if (pcMouseModel)
+        pcMouseModel->redraw();
 }
 
 void View3DInventorViewer::setSeekMode(SbBool on)
@@ -878,10 +880,11 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       pcPolygon = pcMouseModel->getPolygon();
       clipInner = pcMouseModel->isInner();
       delete pcMouseModel; pcMouseModel = 0;
+      return inherited::processSoEvent(ev);
     } else if (hd==AbstractMouseModel::Cancel) {
-      setEditing(false);
       pcPolygon.clear();
       delete pcMouseModel; pcMouseModel = 0;
+      return inherited::processSoEvent(ev);
     }
   }
   // Events when in "ready-to-seek" mode are ignored, except those
@@ -905,9 +908,6 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
   // at all.
   SbBool processed = FALSE;
 
-  if (processed)
-    return TRUE;
-
   const ViewerMode currentmode = this->currentmode;
   ViewerMode newmode = currentmode;
 
@@ -918,6 +918,17 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
   }
   if (this->shiftdown != ev->wasShiftDown()) {
     this->shiftdown = ev->wasShiftDown();
+  }
+
+  // give the nodes in the foreground root the chance to handle events (e.g color bar)
+  if (!processed && !this->editing)
+  {
+    SoHandleEventAction action(getViewportRegion());
+    action.setEvent(ev);
+    action.apply(foregroundroot);
+    processed = action.isHandled();
+    if (processed)
+        return TRUE;
   }
 
   // Keyboard handling
@@ -956,8 +967,6 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
 
   // Mouse Button / Spaceball Button handling
   if (type.isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    processed = TRUE;
-
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
     const int button = event->getButton();
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
@@ -969,21 +978,19 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       if (press && (this->currentmode == View3DInventorViewer::SEEK_WAIT_MODE)) {
         newmode = View3DInventorViewer::SEEK_MODE;
         this->seekToPoint(pos); // implicitly calls interactiveCountInc()
+        processed = TRUE;
       } else if (press && (this->currentmode == View3DInventorViewer::IDLE)) {
         setViewing(true);
+        processed = TRUE;
       } else if (!press && (this->currentmode == View3DInventorViewer::DRAGGING)) {
         setViewing(false);
-      } else if (this->currentmode == View3DInventorViewer::SELECTION) {
-        processed = FALSE;
+        processed = TRUE;
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
       // If we are in edit mode then simply ignore the RMB events
       // to pass the event to the base class.
-      if (this->editing) {
-        processed = FALSE;
-      }
-      else {
+      if (!this->editing) {
         // If we are in zoom or pan mode ignore RMB events otherwise
         // the canvas doesn't get any release events 
         if (this->currentmode != View3DInventorViewer::ZOOMING && 
@@ -999,10 +1006,12 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       this->button3down = press;
       break;
     case SoMouseButtonEvent::BUTTON4:
-      if (press) zoom(this->getCamera(), 0.05f);
+      zoom(this->getCamera(), 0.05f);
+      processed = TRUE;
       break;
     case SoMouseButtonEvent::BUTTON5:
-      if (press) zoom(this->getCamera(), -0.05f);
+      zoom(this->getCamera(), -0.05f);
+      processed = TRUE;
       break;
     default:
       break;
@@ -1012,19 +1021,16 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
   // Mouse Movement handling
   if (type.isDerivedFrom(SoLocation2Event::getClassTypeId())) {
     const SoLocation2Event * const event = (const SoLocation2Event *) ev;
-
-    processed = TRUE;
-
     if (this->currentmode == View3DInventorViewer::ZOOMING) {
       this->zoomByCursor(posn, prevnormalized);
+      processed = TRUE;
     } else if (this->currentmode == View3DInventorViewer::PANNING) {
       pan(this->getCamera(), this->getGLAspectRatio(), this->panningplane, posn, prevnormalized);
+      processed = TRUE;
     } else if (this->currentmode == View3DInventorViewer::DRAGGING) {
       this->addToLog(event->getPosition(), event->getTime());
       this->spin(posn);
-    }
-    else {
-      processed = FALSE;
+      processed = TRUE;
     }
   }
 
@@ -1121,16 +1127,6 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
 
   if (newmode != currentmode) {
     this->setMode(newmode);
-  }
-
-  // give the nodes in the foreground root the chance to handle events (e.g color bar)
-  // Note: this must be done _before_ ceding to the base class  
-  if (!processed)
-  {
-    SoHandleEventAction action(getViewportRegion());
-    action.setEvent(ev);
-    action.apply(foregroundroot);
-    processed = action.isHandled();
   }
 
   // If not handled in this class, pass on upwards in the inheritance
@@ -1934,7 +1930,7 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
     glEnable(GL_COLOR_MATERIAL);
     glDisable(GL_BLEND);
 
-    glLineWidth(2.0f);
+    glLineWidth(1.0f);
     glColor4f(1.0, 1.0, 1.0, 0.0);
     glViewport(0, 0, view[0], view[1]);
 

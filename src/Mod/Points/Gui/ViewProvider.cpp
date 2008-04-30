@@ -373,7 +373,12 @@ void ViewProviderPoints::unsetEdit(void)
 
 void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
 {
+    // When this callback function is invoked we must in either case leave the edit mode
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    view->setEditing(false);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipPointsCallback);
+    n->setHandled();
+
     std::vector<SbVec2f> clPoly = view->getPickedPolygon();
     if (clPoly.size() < 3)
         return;
@@ -389,8 +394,6 @@ void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
         }
     }
 
-    view->setEditing(false);
-    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipPointsCallback);
     view->render();
 }
 
