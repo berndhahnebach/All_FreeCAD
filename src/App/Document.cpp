@@ -737,6 +737,19 @@ bool Document::isSaved() const
     return !name.empty();
 }
 
+/** Label is the visible name of a document shown e.g. in the windows title
+ * or in the tree view. The label almost (but not always e.g. if you manually change it)
+ * matches with the file name where the document is stored to.
+ * In contrast to Label the method getName() returns the internal name of the document that only
+ * matches with Label when loading or creating a document because then both are set to the same value.
+ * Since the internal name cannot be changed during runtime it must differ from the Label after saving 
+ * the document the first time or saving it under a new file name.
+ * @ note More than one document can have the same label name.
+ * @ note The internal is always guaranteed to be unique because @ref Application::newDocument() checks
+ * for a document with the same name and makes it unique if needed. Hence you cannot rely on that the
+ * internal name matches with the name you passed to Application::newDoument(). You should use the
+ * method getName() instead.
+ */
 const char* Document::getName() const
 {
     return GetApplication().getDocumentName(this);
