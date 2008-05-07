@@ -3837,6 +3837,26 @@
 			<File
 				RelativePath=".\DockWindowManager.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MenuManager.cpp"

@@ -28,6 +28,7 @@ BUILT_SOURCES=\
 		moc_DlgToolbarsImp.cpp \
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
+		moc_DockWindowManager.cpp \
 		moc_FileDialog.cpp \
 		moc_Flag.cpp \
 		moc_HelpView.cpp \

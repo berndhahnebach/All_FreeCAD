@@ -49,8 +49,10 @@ private:
  * Class that manages the widgets inside a QDockWidget.
  * \author Werner Mayer
  */
-class GuiExport DockWindowManager
+class GuiExport DockWindowManager : QObject
 {
+    Q_OBJECT
+
 public:
     /** Creates the only instance of the DockWindowManager. */
     static DockWindowManager* instance();
@@ -68,6 +70,16 @@ public:
 
     void saveState();
     void retranslate();
+
+private Q_SLOTS:
+   /**
+    * \internal
+    */
+    void onDockWidgetDestroyed(QObject*);
+   /**
+    * \internal
+    */
+    void onWidgetDestroyed(QObject*);
 
 private:
     QDockWidget* findDockWidget(const QList<QDockWidget*>&, const QString&) const;
