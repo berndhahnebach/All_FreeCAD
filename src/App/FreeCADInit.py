@@ -42,9 +42,10 @@ def InitApplications():
 		raise
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
+	ModDir = os.path.realpath(ModDir)
 	#print FreeCAD.ConfigGet("AppHomePath")
 	if not os.path.isdir(ModDir):
-		print "No modules found in " + ModDir
+		Log ("No modules found in " + ModDir + "\n")
 		return
 	sys.path.append( '..\\bin' )
 	sys.path.append( '..\\bin\\Lib' )
@@ -67,7 +68,7 @@ def InitApplications():
 			Log('Init:      Initializing: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
 			sys.path.append(os.path.join(ModDir,Dir))
-			PathExtension += ";" + os.path.join(ModDir,Dir)
+			PathExtension += os.path.join(ModDir,Dir) + ";"
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if (os.path.exists(InstallFile)):
 				try:
@@ -78,7 +79,8 @@ def InitApplications():
 					Log('done\n')
 			else:
 				Log("Init.py not found! "+Dir+" not initialized!\n")
-	os.environ["PATH"] += PathExtension
+	# new paths must be prepended to avoid to load a wrong version of a library
+	os.environ["PATH"] = PathExtension + os.environ["PATH"]
 	#Log("PATH after addition: " + os.environ["PATH"] + "\n")
 	#Log("path extension: " + PathExtension + "\n")
 
