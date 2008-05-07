@@ -112,9 +112,12 @@ void Translator::destruct (void)
 Translator::Translator()
 {
     // This is needed for Qt's lupdate
-    mapLanguageTopLevelDomain[QT_TR_NOOP("English")] = "en";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("German" )] = "de";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("French" )] = "fr";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("English" )] = "en";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("German"  )] = "de";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("French"  )] = "fr";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("Italian" )] = "it";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
+    mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese" )] = "cn";
     activatedLanguage = "English";
 }
 
@@ -154,7 +157,8 @@ void Translator::activateLanguage (const QString& lang)
             if (translator->load(dir.filePath(*it))) {
                 qApp->installTranslator(translator);
                 translators.push_back(translator);
-            } else {
+            }
+            else {
                 delete translator;
             }
         }
@@ -182,7 +186,7 @@ void Translator::refresh()
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
         bool ok=false;
         for (QList<QTranslator*>::ConstIterator tt = translators.begin(); tt != translators.end(); ++tt) {
-            if ( (*tt)->objectName() == *it ) {
+            if ((*tt)->objectName() == *it) {
                 ok = true; // this file is already installed
                 break;
             }
@@ -195,7 +199,8 @@ void Translator::refresh()
             if (translator->load(dir.filePath(*it))) {
                 qApp->installTranslator(translator);
                 translators.push_back(translator);
-            } else {
+            }
+            else {
                 delete translator;
             }
         }
