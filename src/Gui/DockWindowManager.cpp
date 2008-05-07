@@ -309,6 +309,14 @@ void DockWindowManager::onDockWidgetDestroyed(QObject* dw)
 void DockWindowManager::onWidgetDestroyed(QObject* widget)
 {
     for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        // make sure that the dock widget is not about to being deleted
+        if ((*it)->metaObject() != &QDockWidget::staticMetaObject) {
+            disconnect(*it, SIGNAL(destroyed(QObject*)),
+                       this, SLOT(onDockWidgetDestroyed(QObject*)));
+            d->_dockedWindows.erase(it);
+            break;
+        }
+
         if ((*it)->widget() == widget) {
             QDockWidget* dw = *it;
             dw->setWidget(0);

@@ -59,7 +59,11 @@ def InitApplications():
 	for i in AddPath: ModDirs.append(i)
 	#AddModPaths = App.ParamGet("System parameter:AdditionalModulePaths")
 	#Err( AddModPaths)
-	PathExtension = ""
+	# add also this path so that all modules search for libraries
+	# they depend on first here
+	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
+	BinDir = os.path.realpath(BinDir)
+	PathExtension = BinDir + ";"
 	#print ModDirs
 	Log('Init:   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
