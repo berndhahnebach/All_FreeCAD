@@ -97,6 +97,10 @@ QDockWidget* DockWindowManager::addDockWindow(const QString& name, QWidget* widg
     // MainWindow::loadLayoutSettings() is called to restore the layout.
     dw->hide();
     mw->addDockWidget(pos, dw);
+    connect(dw, SIGNAL(destroyed(QObject*)),
+            this, SLOT(onDockWidgetDestroyed(QObject*)));
+    connect(widget, SIGNAL(destroyed(QObject*)),
+            this, SLOT(onWidgetDestroyed(QObject*)));
 
     // add the widget to the dock widget
     widget->setParent(dw);
@@ -151,6 +155,10 @@ QWidget* DockWindowManager::removeDockWindow(const QString& name)
             widget = dw->widget();
             widget->setParent(0);
             dw->setWidget(0);
+            disconnect(dw, SIGNAL(destroyed(QObject*)),
+                       this, SLOT(onDockWidgetDestroyed(QObject*)));
+            disconnect(widget, SIGNAL(destroyed(QObject*)),
+                       this, SLOT(onWidgetDestroyed(QObject*)));
             delete dw; // destruct the QDockWidget, i.e. the parent of the widget
             break;
         }
@@ -173,6 +181,10 @@ void DockWindowManager::removeDockWindow(QWidget* widget)
             // avoid to destruct the embedded widget
             widget->setParent(0);
             dw->setWidget(0);
+            disconnect(dw, SIGNAL(destroyed(QObject*)),
+                       this, SLOT(onDockWidgetDestroyed(QObject*)));
+            disconnect(widget, SIGNAL(destroyed(QObject*)),
+                       this, SLOT(onWidgetDestroyed(QObject*)));
             delete dw; // destruct the QDockWidget, i.e. the parent of the widget
             break;
         }
@@ -283,3 +295,26 @@ QDockWidget* DockWindowManager::findDockWidget(const QList<QDockWidget*>& dw, co
 
     return 0;
 }
+
+void DockWindowManager::onDockWidgetDestroyed(QObject* dw)
+{
+    for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        if (*it == dw) {
+            d->_dockedWindows.erase(it);
+            break;
+        }
+    }
+}
+
+void DockWindowManager::onWidgetDestroyed(QObject* widget)
+{
+    for (QList<QDockWidget*>::Iterator it = d->_dockedWindows.begin(); it != d->_dockedWindows.end(); ++it) {
+        if ((*it)->widget() == widget) {
+            QDockWidget* dw = *it;
+            dw->setWidget(0);
+            break;
+        }
+    }
+}
+
+#include "moc_DockWindowManager.cpp"
