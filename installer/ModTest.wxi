@@ -34,6 +34,7 @@
             <File Id="TestMenu" Name="Menu.py" DiskId="1" />
             <File Id="TestWorkbench" Name="Workbench.py" DiskId="1" />
             <File Id="TestUnittestgui" Name="unittestgui.py" DiskId="1" />
+            <File Id="TestUnicode" Name="UnicodeTests.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
