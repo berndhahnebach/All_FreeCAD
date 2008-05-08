@@ -52,6 +52,9 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 
+#include <QDomDocument>
+#include <QDomElement>
+
 using namespace Gui;
 using Gui::Dialog::DlgSettingsImageImp;
 
@@ -264,7 +267,8 @@ void StdCmdFreezeViews::activated(int iMsg)
 void StdCmdFreezeViews::onSaveViews()
 {
     // Save the views to an XML file
-    QString fn = FileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save frozen views"), QString(), QObject::tr("Frozen views (*.cam)"));
+    QString fn = FileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save frozen views"),
+                                             QString(), QObject::tr("Frozen views (*.cam)"));
     if (fn.isEmpty())
         return;
     QFile file(fn);
@@ -306,46 +310,75 @@ void StdCmdFreezeViews::onRestoreViews()
     if ( savedViews > 0 ) {
         int ret = QMessageBox::question(getMainWindow(), QObject::tr("Restore views"), 
             QObject::tr("Importing the restored views would clear the already stored views.\n"
-                        "Do you want to continue?"), QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape); 
+                        "Do you want to continue?"), QMessageBox::Yes|QMessageBox::Default,
+                                                     QMessageBox::No|QMessageBox::Escape); 
         if (ret!=QMessageBox::Yes)
             return;
     }
 
     // Restore the views from an XML file
-    QString fn = FileDialog::getOpenFileName(getMainWindow(), QObject::tr("Restore frozen views"), QString(), QObject::tr("Frozen views (*.cam)"));
+    QString fn = FileDialog::getOpenFileName(getMainWindow(), QObject::tr("Restore frozen views"),
+                                             QString(), QObject::tr("Frozen views (*.cam)"));
     if (fn.isEmpty())
         return;
     QFile file(fn);
-    std::stringstream str;
-    if (file.open(QFile::ReadOnly)) {
-        QTextStream textstr(&file);
-        QString content = textstr.readAll();
-        str << (const char*)content.toAscii();
+    if (!file.open(QFile::ReadOnly)) {
+        QMessageBox::critical(getMainWindow(), QObject::tr("Restore views"),
+            QObject::tr("Cannot open file '%1'.").arg(fn));
+        return;
     }
 
-    Base::XMLReader xmlReader(fn.toUtf8(), str);
-    xmlReader.readElement("FrozenViews");
-    long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
+    QDomDocument xmlDocument;
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+    // evaluate the XML content
+    if (!xmlDocument.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
+        std::cerr << "Parse error in XML content at line " << errorLine
+                  << ", column " << errorColumn << ": "
+                  << (const char*)errorStr.toAscii() << std::endl;
+        return;
+    }
+
+    // get the root element
+    QDomElement root = xmlDocument.documentElement();
+    if (root.tagName() != "FrozenViews") {
+        std::cerr << "Unexpected XML structure" << std::endl;
+        return;
+    }
+
+    bool ok;
+    int scheme = root.attribute("SchemaVersion").toInt(&ok);
+    if (!ok) return;
     // SchemeVersion "1"
-    if ( scheme == 1 ) {
-        // read the views itself
-        xmlReader.readElement("Views");
-        int ct = xmlReader.getAttributeAsInteger("Count");
+    if (scheme == 1) {
+        // read the views, ignore the attribute 'Count'
+        QDomElement child = root.firstChildElement("Views");
+        QDomElement views = child.firstChildElement("Camera");
+        QStringList cameras;
+        while (!views.isNull()) {
+            QString setting = views.attribute("settings");
+            cameras << setting;
+            views = views.nextSiblingElement("Camera");
+        }
+
+        // use this rather than the attribute 'Count' because it could be
+        // changed from outside
+        int ct = cameras.count();
         ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
         QList<QAction*> acts = pcAction->actions();      
 
         int numRestoredViews = std::min<int>(ct, acts.size()-offset);
         savedViews = numRestoredViews;
-      
+
         if (numRestoredViews > 0)
             separator->setVisible(true);
-        for(int i=0; i<numRestoredViews; i++)
-        {
-            xmlReader.readElement("Camera");
-            const char* camera = xmlReader.getAttribute("settings");
+        for(int i=0; i<numRestoredViews; i++) {
+            QString setting = cameras[i];
             QString viewnr = QString(QObject::tr("Restore view &%1")).arg(i+1);
             acts[i+offset]->setText(viewnr);
-            acts[i+offset]->setToolTip(camera);
+            acts[i+offset]->setToolTip(setting);
             acts[i+offset]->setVisible(true);
             if ( i < 9 ) {
                 int accel = Qt::CTRL+Qt::Key_1;
@@ -353,14 +386,10 @@ void StdCmdFreezeViews::onRestoreViews()
             }
         }
 
-        xmlReader.readEndElement("Views");
-
         // if less views than actions
         for (int index = numRestoredViews+offset; index < acts.count(); index++)
             acts[index]->setVisible(false);
     }
- 
-    xmlReader.readEndElement("FrozenViews");
 }
 
 bool StdCmdFreezeViews::isActive(void)

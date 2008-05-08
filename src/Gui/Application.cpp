@@ -303,6 +303,7 @@ void Application::slotNewDocument(App::Document& Doc)
     d->lpcDocuments[&Doc] = pDoc;
     signalNewDocument(*pDoc);
     pDoc->createView("View3DIv");
+    qApp->processEvents(); // make sure to show the window stuff on the right place
 }
 
 void Application::slotDeleteDocument(App::Document& Doc)
