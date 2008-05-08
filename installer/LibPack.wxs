@@ -30,7 +30,6 @@
 					<Shortcut Id="PythonShortcut" 
 						Directory="MenuDir" 
 						Name="Python console" 
-						Arguments="-l" 
 						Description="Starts directly the python console" 
 						WorkingDirectory="BinDir"
 						Advertise="yes" />

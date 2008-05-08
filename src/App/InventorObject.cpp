@@ -31,7 +31,7 @@
 
 using namespace App;
 
-PROPERTY_SOURCE(App::InventorObject, App::AbstractFeature)
+PROPERTY_SOURCE(App::InventorObject, App::DocumentObject)
 
 
 InventorObject::InventorObject() 
@@ -42,6 +42,11 @@ InventorObject::InventorObject()
 
 InventorObject::~InventorObject()
 {
+}
+
+short InventorObject::mustExecute(void) const
+{
+    return 0;
 }
 
 PyObject *InventorObject::getPyObject()

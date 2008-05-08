@@ -25,14 +25,13 @@
 #define APP_INVENTOROBJECT_H
 
 #include "DocumentObject.h"
-#include "Feature.h"
 #include "PropertyStandard.h"
 
 
 namespace App
 {
 
-class AppExport InventorObject : public AbstractFeature/*DocumentObject*/
+class AppExport InventorObject : public DocumentObject
 {
     PROPERTY_HEADER(App::InventorObject);
 
@@ -48,6 +47,7 @@ public:
     virtual DocumentObjectExecReturn *execute(void) {
         return DocumentObject::StdReturn;
     }
+    virtual short mustExecute(void) const;
     virtual PyObject *getPyObject(void);
 
     PropertyString Buffer;

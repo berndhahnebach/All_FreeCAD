@@ -261,7 +261,9 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
         return true;
     }
     else { // neither an existing nor active document available 
-        assert(0);
+        //assert(0);
+        // this can often happen when importing .iv files
+        Base::Console().Error("Cannot add to selection: no document '%s' found.\n", pDocName);
         return false;
     }
 }

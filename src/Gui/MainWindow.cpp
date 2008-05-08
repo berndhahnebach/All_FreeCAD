@@ -791,19 +791,29 @@ void MainWindow::dropEvent (QDropEvent* e)
     const QMimeData* data = e->mimeData();
     if (data->hasUrls()) {
         QList<QUrl> uri = data->urls();
-        App::Document* pDoc = App::GetApplication().newDocument();
+        QStringList files;
+        App::Document* pDoc = 0;
+
+        // get the files which we support
         for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
             QFileInfo info((*it).toLocalFile());
             if (info.exists() && info.isFile()) {
                 if (info.isSymLink())
                     info.setFile(info.readLink());
-                // First check the complete extension
-                if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
-                    Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
-                // Don't get the complete extension
-                else if (App::GetApplication().hasOpenType(info.suffix().toAscii()))
-                    Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()) ||
+                    App::GetApplication().hasOpenType(info.suffix().toAscii())) {
+                    // ok, we support files with this extension
+                    files << info.absoluteFilePath();
+                    // we load non-project files, i.e. we must create a new document
+                    if (!pDoc && info.suffix().toLower() != "fcstd")
+                        pDoc = App::GetApplication().newDocument();
+                }
             }
+        }
+
+        const char *docName = pDoc ? pDoc->getName() : "";
+        for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) {
+            Application::Instance->import(it->toUtf8(), docName);
         }
     }
     else {
