@@ -61,9 +61,8 @@ PyDoc_STRVAR(module_doc,
 extern "C" {
 void MeshExport initMesh() 
 {
-    Base::Console().Log("Mod: Loading Mesh module... done\n");
-
     PyObject* meshModule = Py_InitModule3("Mesh", Mesh_Import_methods, module_doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading Mesh module... done\n");
 
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
@@ -122,8 +121,6 @@ void MeshExport initMesh()
     Mesh::Cone                  ::init();
     Mesh::Torus                 ::init();
     Mesh::Cube                  ::init();
-
-    return;
 }
 
 

@@ -26,9 +26,9 @@ void CreateImageCommands(void);
 
 void loadImageResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Image);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Image);
+    Gui::Translator::instance()->refresh();
 }
 
 /* registration table  */
@@ -37,23 +37,22 @@ extern struct PyMethodDef ImageGui_Import_methods[];
 
 /* Python entry */
 extern "C" {
-void ImageGuiExport initImageGui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
-    return;
-  }
+void ImageGuiExport initImageGui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
 
-  (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
-  Base::Console().Log("Mod: Loading GUI of Image module... done\n");
+    (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Image module... done\n");
 
-  // instanciating the commands
-  CreateImageCommands();
-  ImageGui::Workbench::init();
+    // instanciating the commands
+    CreateImageCommands();
+    ImageGui::Workbench::init();
 
-  // add resources and reloads the translators
-  loadImageResource();
-
-  return;
+    // add resources and reloads the translators
+    loadImageResource();
 }
+
 } // extern "C" {

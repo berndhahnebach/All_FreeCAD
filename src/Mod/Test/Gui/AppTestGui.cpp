@@ -28,62 +28,66 @@
 
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
-#include <Gui/Language/Translator.h>
 #include "qrc_Test.cpp"
+
+#include <Gui/Language/Translator.h>
+#include <Base/Console.h>
 
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
-  char *pstr=0;
-  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception
+    char *pstr=0;
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception
 
-  TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
-  if (pstr)
-    dlg->addUnitTest(pstr);
-  dlg->show();
-  dlg->raise();
-  Py_Return;       
+    TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
+    if (pstr)
+        dlg->addUnitTest(pstr);
+    dlg->show();
+    dlg->raise();
+    Py_Return;       
 }
 
 static PyObject* setTest(PyObject *self, PyObject *args)          
 {
-  char *pstr=0;
-  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception
+    char *pstr=0;
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception
 
-  TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
-  if (pstr)
-    dlg->setUnitTest(pstr);
-  dlg->show();
-  dlg->raise();
-  Py_Return;       
+    TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
+    if (pstr)
+        dlg->setUnitTest(pstr);
+    dlg->show();
+    dlg->raise();
+    Py_Return;       
 }
 
 /* registration table  */
 static struct PyMethodDef TestGui_methods[] = {
-  {"addTest", addTest, 1},       
-  {"setTest", setTest, 1},       
-  {NULL, NULL}                   /* end of table marker */
+    {"addTest", addTest, 1},       
+    {"setTest", setTest, 1},       
+    {NULL, NULL}                   /* end of table marker */
 };
 
 void loadTestResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Test);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Test);
+    Gui::Translator::instance()->refresh();
 }
 
 /* Python entry */
 extern "C" {
-void AppTestGuiExport initQtUnitGui() {
-  if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;
-  PyObject* pyModule = Py_InitModule("QtUnitGui", TestGui_methods);   /* mod name, table ptr */
-  union PyType_Object pyDlgType = {&TestGui::UnitTestPy::Type};
-  PyModule_AddObject(pyModule, "UnitTest", pyDlgType.o);
+void AppTestGuiExport initQtUnitGui()
+{
+    if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;
+    PyObject* pyModule = Py_InitModule("QtUnitGui", TestGui_methods);   /* mod name, table ptr */
+    union PyType_Object pyDlgType = {&TestGui::UnitTestPy::Type};
+    PyModule_AddObject(pyModule, "UnitTest", pyDlgType.o);
+    Base::Console().Log("Loading GUI of Test module... done\n");
 
-  // add resources and reloads the translators
-  loadTestResource();
-  return;
+    // add resources and reloads the translators
+    loadTestResource();
+    return;
 }
 
 } // extern "C"

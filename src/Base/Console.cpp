@@ -550,6 +550,7 @@ void ConsoleObserverFile::Warning(const char *sWarn)
     cFileStream << "Wrn: " << sWarn;
     cFileStream.flush();
 }
+
 void ConsoleObserverFile::Message(const char *sMsg)
 {
     cFileStream << "Msg: " << sMsg;

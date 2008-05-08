@@ -193,7 +193,6 @@ class ImageWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Image module...')
 		import ImageGui
 	def GetClassName(self):
 		return "ImageGui::Workbench"

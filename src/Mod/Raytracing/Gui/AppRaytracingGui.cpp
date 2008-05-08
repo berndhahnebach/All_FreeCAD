@@ -41,9 +41,9 @@ void CreateRaytracingCommands(void);
 
 void loadRaytracingResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Raytracing);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Raytracing);
+    Gui::Translator::instance()->refresh();
 }
 
 using namespace RaytracingGui;
@@ -55,28 +55,32 @@ static struct PyMethodDef RaytracingGui_methods[] = {
 };
 
 extern "C" {
-void AppRaytracingGuiExport initRaytracingGui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
-    return;
-  }
+void AppRaytracingGuiExport initRaytracingGui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
 
-  Base::Console().Log("Mod: Loading GUI of Raytracing module... done\n");
-  (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
-  Base::Interpreter().loadModule("Raytracing");
+    try {
+        Base::Interpreter().loadModule("Raytracing");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
+    (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Raytracing module... done\n");
 
-  // instanciating the commands
-  CreateRaytracingCommands();
-  RaytracingGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RaytracingGui::Workbench>);
+    // instanciating the commands
+    CreateRaytracingCommands();
+    RaytracingGui::Workbench::init();
 
-  // register preferences pages
-  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
+    // register preferences pages
+    new Gui::PrefPageProducer<DlgSettingsRayImp> ("Raytracing");
 
-  // add resources and reloads the translators
-  loadRaytracingResource();
-
-  return;
+    // add resources and reloads the translators
+    loadRaytracingResource();
 }
+
 } // extern "C" {

@@ -61,7 +61,6 @@ class CamWorkbench ( Workbench ):
 	ToolTip = "Cam"
 
 	def Initialize(self):
-		Log ('Loading GUI of Cam module...')
 		import CamGui
 		import Cam
 	def GetClassName(self):

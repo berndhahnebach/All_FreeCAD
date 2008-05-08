@@ -43,10 +43,10 @@ PyDoc_STRVAR(module_part_doc,
 "This is a module working with shapes.");
 
 extern "C" {
-void AppPartExport initPart() {
-
-    Base::Console().Log("Mod: Loading Part module... done\n");
+void AppPartExport initPart()
+{
     PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading Part module... done\n");
 
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
@@ -88,8 +88,6 @@ void AppPartExport initPart() {
     Part::Cylinder            ::init();
     Part::Cone                ::init();
     Part::Torus               ::init();
-
-    return;
 }
 
 } // extern "C"

@@ -57,7 +57,6 @@ class TestWorkbench ( Workbench ):
 	ToolTip = "Test framework"
 	
 	def Initialize(self):
-		Log ('Loading GUI of Test module...\n')
 		import TestGui
 
 		list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
@@ -96,7 +95,5 @@ class TestWorkbench ( Workbench ):
 			self.appendMenu("Mesh",list)
 		except:
 			Err('Cannot load Mesh module\n')
-
-		Log ('Loading GUI of Test module... done\n')
 
 Gui.addWorkbench(TestWorkbench())

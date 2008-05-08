@@ -105,7 +105,7 @@ context menu and dockable windows of the main window.
 	def Initialize(self):
 		"""Initialize this workbench."""
 		# load the module
-		Log ('Init: Loading FreeCAD GUI')
+		Log ('Init: Loading FreeCAD GUI\n')
 	def GetClassName(self):
 		"""Return the name of the associated C++ class."""
 		return "Gui::StdWorkbench"
@@ -117,7 +117,7 @@ class NoneWorkbench ( Workbench ):
 	def Initialize(self):
 		"""Initialize this workbench."""
 		# load the module
-		Log ('Init: Loading FreeCAD GUI')
+		Log ('Init: Loading FreeCAD GUI\n')
 	def GetClassName(self):
 		"""Return the name of the associated C++ class."""
 		return "Gui::NoneWorkbench"
@@ -126,6 +126,7 @@ def InitApplications():
 	import sys,os,dircache
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
+	ModDir = os.path.realpath(ModDir)
 	#print FreeCAD.ConfigGet("AppHomePath")
 	if not os.path.isdir(ModDir):
 		print "No modules found in " + ModDir
@@ -137,18 +138,18 @@ def InitApplications():
 	Log('Init:   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
-		if ((Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('Init:      Initializing ' + Dir + '... ')
+		if ((Dir != '') & (Dir != 'CVS') & (Dir != '__init__.py')):
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if (os.path.exists(InstallFile)):
 				try:
 					execfile(InstallFile)
 				except Exception, inst:
-					Err("During initialization the error " + str(inst) + " occurred in " + InstallFile + "\n")
+					Log('Init:      Initializing ' + Dir + '... failed\n')
+					Err('During initialization the error ' + str(inst) + ' occurred in ' + InstallFile + '\n')
 				else:
-					Log('done\n')
+					Log('Init:      Initializing ' + Dir + '... done\n')
 			else:
-				Log("InitGui.py not found! "+Dir+" not initialized!\n")
+				Log('Init:      Initializing ' + Dir + '(InitGui.py not found)... ignore\n')
 
 
 Log ('Init: Running FreeCADGuiInit.py start script...\n')

@@ -63,7 +63,6 @@ class MeshWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Mesh module...')
 		import MeshGui
 	def GetClassName(self):
 		return "MeshGui::Workbench"

@@ -30,25 +30,29 @@ PyDoc_STRVAR(module_drawing_doc,
 
 /* Python entry */
 extern "C" {
-void AppDrawingExport initDrawing() {
-  Base::Console().Log("Mod: Loading Drawing module... done\n");
-  Py_InitModule3("Drawing", Drawing_methods, module_drawing_doc);   /* mod name, table ptr */
+void AppDrawingExport initDrawing()
+{
+    // load dependend module
+    try {
+        Base::Interpreter().loadModule("Part");
+        //Base::Interpreter().loadModule("Mesh");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
+    Py_InitModule3("Drawing", Drawing_methods, module_drawing_doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading Drawing module... done\n");
 
-  // load dependend module
-  Base::Interpreter().loadModule("Part");
-  //Base::Interpreter().loadModule("Mesh");
 
-  // NOTE: To finish the initialization of our own type objects we must
-  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-  // This function is responsible for adding inherited slots from a type's base class.
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
  
-  Drawing::FeaturePage            ::init();
-  Drawing::FeatureView            ::init();
-  Drawing::FeatureViewPart        ::init();
-  Drawing::PageGroup              ::init();
-
-	return;
+    Drawing::FeaturePage            ::init();
+    Drawing::FeatureView            ::init();
+    Drawing::FeatureViewPart        ::init();
+    Drawing::PageGroup              ::init();
 }
-
 
 } // extern "C"
