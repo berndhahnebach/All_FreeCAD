@@ -54,9 +54,9 @@ void CreateMeshCommands(void);
 
 void loadMeshResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Mesh);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Mesh);
+    Gui::Translator::instance()->refresh();
 }
 
 /* registration table  */
@@ -66,65 +66,70 @@ static struct PyMethodDef MeshGui_methods[] = {
 
 /* Python entry */
 extern "C" {
-void MeshGuiExport initMeshGui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
-    return;
-  }
+void MeshGuiExport initMeshGui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
 
-  (void) Py_InitModule("MeshGui", MeshGui_methods);   /* mod name, table ptr */
+    // load needed modules
+    // load dependend module
+    try {
+        Base::Interpreter().loadModule("Mesh");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
+    (void) Py_InitModule("MeshGui", MeshGui_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Mesh module... done\n");
 
-  // load needed modules
-  Base::Console().Log("Mod: Loading GUI of Mesh module... done\n");
-  Base::Interpreter().loadModule("Mesh");
+    // Register icons
+    Gui::BitmapFactory().addXPM("curv_info", curv_info);
+    Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
+    Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
+    Gui::BitmapFactory().addXPM("solid_mesh", solid_mesh);
+    Gui::BitmapFactory().addXPM("mesh_fillhole", mesh_fillhole);
+    Gui::BitmapFactory().addXPM("mesh_pipette", mesh_pipette);
 
-  // Register icons
-  Gui::BitmapFactory().addXPM("curv_info", curv_info);
-  Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
-  Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
-  Gui::BitmapFactory().addXPM("solid_mesh", solid_mesh);
-  Gui::BitmapFactory().addXPM("mesh_fillhole", mesh_fillhole);
-  Gui::BitmapFactory().addXPM("mesh_pipette", mesh_pipette);
+    // instanciating the commands
+    CreateMeshCommands();
+    new MeshGui::CleanupHandler;
 
-  // instanciating the commands
-  CreateMeshCommands();
-  new MeshGui::CleanupHandler;
-
-  MeshGui::SoFCMeshNode                      ::initClass();
-  MeshGui::SoFCMeshOpenEdge                  ::initClass();
-  MeshGui::SoFCMeshVertexElement             ::initClass();
-  MeshGui::SoFCMeshFacetElement              ::initClass();
-  MeshGui::SoSFMeshPointArray                ::initClass();
-  MeshGui::SoFCMeshVertex                    ::initClass();
-  MeshGui::SoFCMeshFacet                     ::initClass();
-  MeshGui::SoSFMeshFacetArray                ::initClass();
-  MeshGui::SoFCMeshFaceSet                   ::initClass();
-  MeshGui::SoFCMeshOpenEdgeSet               ::initClass();
+    MeshGui::SoFCMeshNode                      ::initClass();
+    MeshGui::SoFCMeshOpenEdge                  ::initClass();
+    MeshGui::SoFCMeshVertexElement             ::initClass();
+    MeshGui::SoFCMeshFacetElement              ::initClass();
+    MeshGui::SoSFMeshPointArray                ::initClass();
+    MeshGui::SoFCMeshVertex                    ::initClass();
+    MeshGui::SoFCMeshFacet                     ::initClass();
+    MeshGui::SoSFMeshFacetArray                ::initClass();
+    MeshGui::SoFCMeshFaceSet                   ::initClass();
+    MeshGui::SoFCMeshOpenEdgeSet               ::initClass();
 #if 0
-  MeshGui::PropertyEditorMesh                ::init();
+    MeshGui::PropertyEditorMesh                ::init();
 #endif
-  MeshGui::PropertyMeshKernelItem            ::init();
-  MeshGui::ViewProviderMesh                  ::init();
-  MeshGui::ViewProviderMeshNode              ::init();
-  MeshGui::ViewProviderMeshFaceSet           ::init();
-  MeshGui::ViewProviderExport                ::init();
-  MeshGui::ViewProviderMeshCurvature         ::init();
-  MeshGui::ViewProviderMeshTransform         ::init();
-  MeshGui::ViewProviderMeshTransformDemolding::init();
-  MeshGui::ViewProviderMeshDefects           ::init();
-  MeshGui::ViewProviderMeshOrientation       ::init();
-  MeshGui::ViewProviderMeshNonManifolds      ::init();
-  MeshGui::ViewProviderMeshDuplicatedFaces   ::init();
-  MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
-  MeshGui::ViewProviderMeshDegenerations     ::init();
-  MeshGui::ViewProviderMeshIndices           ::init();
-  MeshGui::ViewProviderMeshSelfIntersections ::init();
-  MeshGui::Workbench                         ::init();
+    MeshGui::PropertyMeshKernelItem            ::init();
+    MeshGui::ViewProviderMesh                  ::init();
+    MeshGui::ViewProviderMeshNode              ::init();
+    MeshGui::ViewProviderMeshFaceSet           ::init();
+    MeshGui::ViewProviderExport                ::init();
+    MeshGui::ViewProviderMeshCurvature         ::init();
+    MeshGui::ViewProviderMeshTransform         ::init();
+    MeshGui::ViewProviderMeshTransformDemolding::init();
+    MeshGui::ViewProviderMeshDefects           ::init();
+    MeshGui::ViewProviderMeshOrientation       ::init();
+    MeshGui::ViewProviderMeshNonManifolds      ::init();
+    MeshGui::ViewProviderMeshDuplicatedFaces   ::init();
+    MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
+    MeshGui::ViewProviderMeshDegenerations     ::init();
+    MeshGui::ViewProviderMeshIndices           ::init();
+    MeshGui::ViewProviderMeshSelfIntersections ::init();
+    MeshGui::Workbench                         ::init();
 
-  // add resources and reloads the translators
-  loadMeshResource();
-
-  return;
+    // add resources and reloads the translators
+    loadMeshResource();
 }
+
 } // extern "C" {

@@ -235,7 +235,7 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     PyGILStateLocker locker;
     module = PP_Load_Module(psModName);
 
-    if (!module )
+    if (!module)
         throw PyException();
 
     Py_XINCREF(module);

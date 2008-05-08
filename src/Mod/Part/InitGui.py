@@ -62,7 +62,6 @@ class PartWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Part module...')
 		import PartGui
 		import Part
 	def GetClassName(self):

@@ -41,26 +41,23 @@ extern struct PyMethodDef Points_Import_methods[];
 
 /* Python entry */
 extern "C" {
-void PointsAppExport initPoints() {
+void PointsAppExport initPoints()
+{
+    (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading Points module... done\n");
 
-  Base::Console().Log("Mod: Loading Points module... done\n");
-  (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
+    // add properties
+    Points::PropertyGreyValue     ::init();
+    Points::PropertyGreyValueList ::init();
+    Points::PropertyNormalList    ::init();
+    Points::PropertyCurvatureList ::init();
+    Points::PropertyPointKernel   ::init();
 
-  // add properties
-  Points::PropertyGreyValue     ::init();
-  Points::PropertyGreyValueList ::init();
-  Points::PropertyNormalList    ::init();
-  Points::PropertyCurvatureList ::init();
-  Points::PropertyPointKernel   ::init();
-
-  // add data types
-  Points::Feature               ::init();
-  Points::Export                ::init();
-  Points::Transform             ::init();
-  Points::ImportAscii           ::init();
-
-  return;
+    // add data types
+    Points::Feature               ::init();
+    Points::Export                ::init();
+    Points::Transform             ::init();
+    Points::ImportAscii           ::init();
 }
-
 
 } // extern "C"

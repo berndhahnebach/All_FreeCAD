@@ -582,12 +582,13 @@ char ** Application::_argv;
 void Application::destruct(void)
 {
     // saving system parameter
-    Console().Log("Saving system parameter...");
+    Console().Log("Saving system parameter...\n");
     _pcSysParamMngr->SaveDocument(mConfig["SystemParameter"].c_str());
     // saving the User parameter
-    Console().Log("done\nSaving user parameter...");
+    Console().Log("Saving system parameter...done\n");
+    Console().Log("Saving user parameter...\n");
     _pcUserParamMngr->SaveDocument(mConfig["UserParameter"].c_str());
-    Console().Log("done\n");
+    Console().Log("Saving user parameter...done\n");
     // clean up
     delete _pcSysParamMngr;
     delete _pcUserParamMngr;
@@ -824,7 +825,7 @@ void Application::initApplication(void)
     new ScriptProducer( "FreeCADTest",    FreeCADTest    );
 
     // creating the application
-    if (!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
+    if (!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application\n");
     Application::_pcSingleton = new Application(0,0,mConfig);
 
     // starting the init script
@@ -913,10 +914,10 @@ void Application::logStatus()
 {
     time_t now;
     time(&now);
-    Console().Log("Init: Time: %s\n", ctime(&now));
+    Console().Log("Time = %s", ctime(&now));
 
     for (std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++) {
-        Console().Log("%s\t= %s\n",It->first.c_str(),It->second.c_str());
+        Console().Log("%s = %s\n",It->first.c_str(),It->second.c_str());
     }
 }
 

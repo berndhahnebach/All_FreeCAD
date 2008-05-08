@@ -63,29 +63,32 @@ def InitApplications():
 	# they depend on first here
 	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
 	BinDir = os.path.realpath(BinDir)
-	PathExtension = BinDir + ";"
+	PathExtension = BinDir + os.pathsep
 	#print ModDirs
 	Log('Init:   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
-		if ((Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('Init:      Initializing: ' + Dir + '... ')
+		if ((Dir != '') & (Dir != 'CVS') & (Dir != '__init__.py')):
 			ModGrp = ModPar.GetGroup(Dir)
 			sys.path.append(os.path.join(ModDir,Dir))
-			PathExtension += os.path.join(ModDir,Dir) + ";"
+			PathExtension += os.path.join(ModDir,Dir) + os.pathsep
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if (os.path.exists(InstallFile)):
 				try:
 					execfile(InstallFile)
-				except:
-					Err("Unexpected error in : " + InstallFile + " not initialized!\n")
+				except Exception, inst:
+					Log('Init:      Initializing ' + Dir + '... failed\n')
+					Err('During initialization the error ' + str(inst) + ' occurred in ' + InstallFile + '\n')
 				else:
-					Log('done\n')
+					Log('Init:      Initializing ' + Dir + '... done\n')
 			else:
-				Log("Init.py not found! "+Dir+" not initialized!\n")
+				Log('Init:      Initializing ' + Dir + '(Init.py not found)... ignore\n')
 	# new paths must be prepended to avoid to load a wrong version of a library
 	os.environ["PATH"] = PathExtension + os.environ["PATH"]
-	#Log("PATH after addition: " + os.environ["PATH"] + "\n")
+	path = os.environ["PATH"].split(os.pathsep)
+	Log("System path after init:\n")
+	for i in path:
+		Log("   " + i + "\n")
 	#Log("path extension: " + PathExtension + "\n")
 
 #			else:
@@ -104,7 +107,7 @@ Msg = FreeCAD.Console.PrintMessage
 Err = FreeCAD.Console.PrintError
 Wrn = FreeCAD.Console.PrintWarning
 
-Log ('\nInit: starting App::FreeCADInit.py\n')
+Log ('Init: starting App::FreeCADInit.py\n')
 
 # init every application by importing Init.py
 InitApplications()
@@ -117,7 +120,7 @@ App.GuiUp = 0
 # clean up namespace
 del(InitApplications)
 
-Log ('\nInit: App::FreeCADInit.py done\n')
+Log ('Init: App::FreeCADInit.py done\n')
 
 
 

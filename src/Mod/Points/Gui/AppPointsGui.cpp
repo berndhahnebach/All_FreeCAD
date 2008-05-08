@@ -39,9 +39,9 @@ void CreatePointsCommands(void);
 
 void loadPointsResource()
 {
-  // add resources and reloads the translators
-  Q_INIT_RESOURCE(Points);
-  Gui::Translator::instance()->refresh();
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Points);
+    Gui::Translator::instance()->refresh();
 }
 
 
@@ -52,27 +52,33 @@ static struct PyMethodDef PointsGui_methods[] = {
 
 /* Python entry */
 extern "C" {
-void PointsGuiExport initPointsGui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
-    return;
-  }
+void PointsGuiExport initPointsGui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
 
-  Base::Console().Log("Mod: Loading GUI of Points module... done\n");
-  (void) Py_InitModule("PointsGui", PointsGui_methods);   /* mod name, table ptr */
+    // load dependend module
+    try {
+        Base::Interpreter().loadModule("Points");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
 
-  Base::Interpreter().loadModule("Points");
+    Base::Console().Log("Loading GUI of Points module... done\n");
+    (void) Py_InitModule("PointsGui", PointsGui_methods);   /* mod name, table ptr */
 
-  // instanciating the commands
-  CreatePointsCommands();
+    // instanciating the commands
+    CreatePointsCommands();
 
-  PointsGui::ViewProviderPoints::init();
-  PointsGui::Workbench         ::init();
+    PointsGui::ViewProviderPoints::init();
+    PointsGui::Workbench         ::init();
 
-  // add resources and reloads the translators
-  loadPointsResource();
-
-  return;
+    // add resources and reloads the translators
+    loadPointsResource();
 }
+
 } // extern "C"

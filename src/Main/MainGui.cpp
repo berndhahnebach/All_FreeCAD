@@ -148,12 +148,12 @@ int main( int argc, char ** argv )
     }
 
     // Destruction phase ===========================================================
-    Base::Console().Log("%s terminating...\n\n",App::Application::Config()["ExeName"].c_str());
+    Base::Console().Log("%s terminating...\n",App::Application::Config()["ExeName"].c_str());
 
     // cleans up 
     App::Application::destruct();
 
-    Base::Console().Log("%s completely terminated\n\n",App::Application::Config()["ExeName"].c_str());
+    Base::Console().Log("%s completely terminated\n",App::Application::Config()["ExeName"].c_str());
 
     return 0;
 }

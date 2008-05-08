@@ -61,7 +61,6 @@ class PointsWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Points module...')
 		import PointsGui
 	def GetClassName(self):
 		return "PointsGui::Workbench"

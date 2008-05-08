@@ -52,17 +52,22 @@ static struct PyMethodDef PartGui_methods[] = {
 extern "C" {
 void AppPartGuiExport initPartGui()
 {
-    if (!Gui::Application::Instance)
-    {
+    if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
         return;
     }
 
-    Base::Console().Log("Mod: Loading GUI of Part module... done\n");
-    (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
-
     // load needed modules
-    Base::Interpreter().loadModule("Part");
+    try {
+        Base::Interpreter().loadModule("Part");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
+
+    (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Part module... done\n");
 
     PartGui::ViewProviderPart    ::init();
     PartGui::ViewProviderBox     ::init();
@@ -84,7 +89,5 @@ void AppPartGuiExport initPartGui()
     Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
     rclBmpFactory.addXPM("PartFeature",(const char**) PartFeature_xpm);
     rclBmpFactory.addXPM("PartFeatureImport",(const char**) PartFeatureImport_xpm);
-
-    return;
 }
 } // extern "C"

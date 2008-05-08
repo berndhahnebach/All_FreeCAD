@@ -108,7 +108,6 @@ class DrawingWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Drawing module...')
 		import DrawingGui
 	def GetClassName(self):
 		return "DrawingGui::Workbench"

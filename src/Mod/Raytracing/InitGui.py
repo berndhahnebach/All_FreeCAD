@@ -62,7 +62,6 @@ class RaytracingWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of Raytracing module...')
 		import PartGui
 		import RaytracingGui
 	def GetClassName(self):

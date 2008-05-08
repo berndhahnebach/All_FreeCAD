@@ -39,13 +39,18 @@ extern "C"
 {
     void AppCamExport initCam()
     {
-
-        Base::Console().Log("Mod: Loading Cam module... done\n");
-        Py_InitModule3("Cam", Cam_methods, module_part_doc);   /* mod name, table ptr */
-
         // load dependend module
-        Base::Interpreter().loadModule("Part");
-        Base::Interpreter().loadModule("Mesh");
+        try {
+            Base::Interpreter().loadModule("Part");
+            Base::Interpreter().loadModule("Mesh");
+        }
+        catch(const Base::Exception& e) {
+            PyErr_SetString(PyExc_ImportError, e.what());
+            return;
+        }
+
+        Py_InitModule3("Cam", Cam_methods, module_part_doc);   /* mod name, table ptr */
+        Base::Console().Log("Loading Cam module... done\n");
 
         // NOTE: To finish the initialization of our own type objects we must
         // call PyType_Ready, otherwise we run into a segmentation fault, later on.

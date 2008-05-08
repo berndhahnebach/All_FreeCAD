@@ -55,11 +55,17 @@ extern "C"
             return;
         }
 
-        Base::Console().Log("Mod: Loading GUI of Cam module... done\n");
-        (void) Py_InitModule("CamGui", CamGui_methods);   /* mod name, table ptr */
+        // load dependend module
+        try {
+            Base::Interpreter().loadModule("Cam");
+        }
+        catch(const Base::Exception& e) {
+            PyErr_SetString(PyExc_ImportError, e.what());
+            return;
+        }
 
-        // load needed modules
-        Base::Interpreter().loadModule("Cam");
+        (void) Py_InitModule("CamGui", CamGui_methods);   /* mod name, table ptr */
+        Base::Console().Log("Loading GUI of Cam module... done\n");
 
         CamGui::Workbench           ::init();
 

@@ -32,7 +32,6 @@ class TemplatePyModWorkbench ( Workbench ):
 	ToolTip = "Python template workbench"
 	
 	def Initialize(self):
-		Log ('Loading GUI of TemplatePyMod module...\n')
 		import Commands
 
 		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3"])
@@ -42,7 +41,7 @@ class TemplatePyModWorkbench ( Workbench ):
 		self.appendCommandbar("PyModuleCommands",list)
 		self.appendMenu(menu,list)
 
-		Log ('Loading GUI of Test module... done\n')
+		Log ('Loading TemplatePyMod module... done\n')
 	def Activated(self):
 		Msg("TemplatePyModWorkbench::Activated()\n")
 	def Deactivated(self):
