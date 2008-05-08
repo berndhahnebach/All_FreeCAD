@@ -97,9 +97,10 @@
 				Level="1" 
 				Absent="disallow" 
 				ConfigurableDirectory="INSTALLDIR">
-            <ComponentRef Id="Base" />
             <MergeRef Id="CRT" />
             <MergeRef Id="CRT_Policy" />
+            <ComponentRef Id="Base" />
+            <ComponentRef Id="BaseCmd" />
             <ComponentRef Id="LibPackBinaries" />
             <ComponentRef Id="PyQtTop" />
             <ComponentRef Id="PyQtUic" />
@@ -128,7 +129,6 @@
 						
         </Feature>
 
-        <Icon Id="FreeCADIcon" SourceFile="../bin/FreeCAD.exe" />
         <Property Id="ARPPRODUCTICON">FreeCADIcon</Property>
         <UIRef Id="WixUI_Mondo" />
 		

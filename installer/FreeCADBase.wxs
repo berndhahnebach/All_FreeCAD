@@ -30,29 +30,40 @@
 					<Shortcut Id="FCShortcut" 
 						Directory="MenuDir"  
 						Name="FreeCAD" 
+						Icon="FreeCADIcon.exe"
 						Description="FreeCAD the one and only open source CAD package" 
 						WorkingDirectory="BinDir" 
-						Advertise="yes" />
-					<Shortcut Id="FCShortcutDesk" 
+						Advertise="yes" >
+						<Icon Id="FreeCADIcon.exe"
+					          SourceFile="../bin/FreeCAD.exe" />
+					</Shortcut>
+
+<!--					<Shortcut Id="FCShortcutDesk" 
 						Directory="DesktopFolder"  
 						Name="FreeCAD" 
 						Description="FreeCAD the one and only open source CAD package" 
 						WorkingDirectory="BinDir"
-						Advertise="yes" />
+						Advertise="yes" />  -->
 				</File>
+				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
+			</Component>
+			<Component Id="BaseCmd" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F8">
 				<File Id="CmdExe" Name="FreeCADCmd.exe">
 					<Shortcut Id="FCCmdShortcut" 
 						Directory="MenuDir" 
-						ShortName="FreeCAD" 
 						Name="command line" 
-						Description="FreeCAD the one and only open source CAD package" 
+						Icon="FreeCADCMDIcon.exe"
+						Description="FreeCAD command line version" 
 						WorkingDirectory="BinDir" 
-						Advertise="yes" />
+						Advertise="yes" >
+						<Icon Id="FreeCADCMDIcon.exe"
+					          SourceFile="../bin/FreeCADCmd.exe" />
+					</Shortcut>
+
 				</File>
 				<File Id="PyModule" Name="FreeCAD.pyd"     />
 				<File Id="AppDll"   Name="FreeCADApp.dll"  />
 				<File Id="BaseDll"  Name="FreeCADBase.dll" />
-				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
 				<RemoveFolder Id="RmvMenuFolder" Directory="MenuDir" On="uninstall"/>
 			</Component>
 		</DirectoryRef>

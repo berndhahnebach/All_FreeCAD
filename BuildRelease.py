@@ -252,7 +252,7 @@ def BuildInstaller():
 def SendFTP():
 	from ftplib import FTP
 	ftp = FTP('upload.sf.net')
-	Log.write(ftp.login() + '\n')  + '\n')
+	Log.write(ftp.login() + '\n')
 	Log.write(ftp.cwd("/incoming") + '\n')
 	Log.write(ftp.sendcmd('PASV') + '\n')
 	Log.write(ftp.sendcmd('TYPE I') + '\n')

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -28,7 +28,8 @@
             <File Id="MeshInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Meshpyd" Name="Mesh.pyd" DiskId="1" />
             <File Id="MeshGuipyd" Name="MeshGui.pyd" DiskId="1" />
-            <File Id="BuildRegpy" ShortName="BldRegGe.py" Name="BuildRegularGeoms.py" DiskId="1" />
+            <File Id="BuildRegpy" Name="BuildRegularGeoms.py" DiskId="1" />
+            <File Id="MeshTest" Name="MeshTestsApp.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
