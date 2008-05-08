@@ -634,8 +634,12 @@ void MainWindow::showMainWindow()
     std::clog << "Check visibility of main window...";
     if (!isVisible()) {
         show();
-        QMessageBox::information(0, "Show window","MainWindow::showMainWindow()");
         std::clog << "invisible, force to show" << std::endl;
+        // FIXME: keep this until we know this workaround fixes the problem
+        if (App::Application::Config()["ExeName"] == "FreeCAD")
+            QMessageBox::information(0, "Show window","MainWindow::showMainWindow()");
+        else
+            std::cerr << "Force to show invisible main window" << std::endl;
     }
     else {
         std::clog << "visible" << std::endl;
