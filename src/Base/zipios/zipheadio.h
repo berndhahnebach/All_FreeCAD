@@ -79,7 +79,9 @@ inline uint32 readUint32 ( istream &is ) {
   static const int buf_len = sizeof ( uint32 ) ;
   unsigned char buf [ buf_len ] ;
   int rsf = 0 ;
-  while ( rsf < buf_len ) {
+  // fix endless loop on (almost) empty streams, 20080509 wmayer
+  int cnt = 0;
+  while ( rsf < buf_len && (cnt++ < buf_len) ) {
     is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
     rsf += is.gcount () ;
   }

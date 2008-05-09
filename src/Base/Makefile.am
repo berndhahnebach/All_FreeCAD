@@ -142,6 +142,7 @@ libFreeCADBase_la_SOURCES=\
 		Tools2D.cpp \
 		Tools2D.h \
 		VectorPyImp.cpp \
+		Vector3D.cpp \
 		Vector3D.h \
 		ViewProj.h \
 		Writer.cpp \
