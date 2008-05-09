@@ -37,7 +37,6 @@ class _TEMPLATE_Workbench ( Workbench ):
 	ToolTip = "_TEMPLATE_ workbench"
 	def Initialize(self):
 		# load the module
-		Log ('Loading GUI of _TEMPLATE_ module...')
 		import _TEMPLATE_Gui
 	def GetClassName(self):
 		return "_TEMPLATE_Gui::Workbench"
