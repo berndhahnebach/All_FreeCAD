@@ -27,6 +27,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <stdexcept>
 #endif
 
 
@@ -116,8 +117,13 @@ PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObjec
         // return new document
         return (GetApplication().openDocument(pstr)->getPyObject());
     }
-    catch (Base::Exception e) {
+    catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_IOError, e.what());
+        return 0L;
+    }
+    catch (const std::exception& e) {
+        // might be subclass from zipios
+        PyErr_Format(PyExc_IOError, "Invalid project file %s: %s\n", pstr, e.what());
         return 0L;
     }
 }

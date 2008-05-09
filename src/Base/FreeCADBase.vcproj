@@ -1608,6 +1608,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Vector3D.cpp"
+			>
+		</File>
+		<File
 			RelativePath="Vector3D.h"
 			>
 		</File>

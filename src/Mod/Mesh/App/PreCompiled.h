@@ -22,7 +22,8 @@
 #   pragma warning( disable : 4503 )
 #   pragma warning( disable : 4275 )
 #   pragma warning( disable : 4786 )  // specifier longer then 255 chars
-#endif
+#   pragma warning( disable : 4661 )  // no suitable definition provided for explicit
+#endif                                // template instantiation request
 
 #ifdef FC_OS_WIN32
 #   include <windows.h>
