@@ -1047,7 +1047,8 @@ void Application::ParseOptions(int ac, char ** av)
     // config file
     boost::program_options::options_description config("Configuration");
     config.add_options()
-    ("write-log,l", value<string>(), "write a log file")
+    //("write-log,l", value<string>(), "write a log file")
+    ("write-log,l", "write a log file")
     ("run-test,t",   value<int>()   ,"test level")
     ("module-path,M", value< vector<string> >()->composing(),"additional module paths")
     ("python-path,P", value< vector<string> >()->composing(),"additional python paths")
@@ -1186,7 +1187,8 @@ void Application::ParseOptions(int ac, char ** av)
 
     if (vm.count("write-log")) {
         mConfig["LoggingFile"] = "1";
-        mConfig["LoggingFileName"] = vm["write-log"].as<string>();
+        //mConfig["LoggingFileName"] = vm["write-log"].as<string>();
+        mConfig["LoggingFileName"] = mConfig["UserAppData"] + "FreeCAD.log";
     }
 
     if (vm.count("run-test")) {
