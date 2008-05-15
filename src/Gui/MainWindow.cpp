@@ -697,17 +697,24 @@ void MainWindow::loadWindowSettings()
     QString application = App::Application::Config()["ExeName"].c_str();
     QString version = App::Application::Config()["ExeVersion"].c_str();
     QSettings config(vendor, application);
-    
+
     config.beginGroup(version);
     this->resize(config.value("Size", this->size()).toSize());
-    this->move(config.value("Position", this->pos()).toPoint());
-    
+    QPoint pos = config.value("Position", this->pos()).toPoint();
+    QRect rect = QApplication::desktop()->availableGeometry();
+    int x1,x2,y1,y2;
+    // make sure that the main window is not totally out of the visible rectangle
+    rect.getCoords(&x1, &y1, &x2, &y2);
+    pos.setX(qMin(qMax(pos.x(),x1-this->width()+30),x2-30));
+    pos.setY(qMin(qMax(pos.y(),y1-10),y2-10));
+    this->move(pos);
+
     // tmp. disable the report window to suppress some bothering warnings
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     this->restoreState(config.value("MainWindowState").toByteArray());
     std::clog << "Main window restored" << std::endl;
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
-    
+
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
