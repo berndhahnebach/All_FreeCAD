@@ -615,7 +615,7 @@ void MainWindow::showEvent(QShowEvent  * /*e*/)
 {
     // needed for logging
     std::clog << "Show main window" << std::endl;
-    d->visibleTimer->start(10000);
+    d->visibleTimer->start(5000);
 }
 
 void MainWindow::hideEvent(QHideEvent  * /*e*/)
@@ -630,20 +630,19 @@ void MainWindow::showMainWindow()
     // Under certain circumstances it can happen that at startup the main window
     // appears for a short moment and disappears immediately. The workaround
     // starts a timer to check for the visibility of the main window and call
-    // show() if needed
-    std::clog << "Check visibility of main window...";
-    if (!isVisible()) {
-        show();
-        std::clog << "invisible, force to show" << std::endl;
+    // ShowWindow() if needed.
+    // So far, this phenomena only appeared with Qt4.1.4
+#ifdef Q_WS_WIN
+    WId id = this->winId();
+    if (!IsWindowVisible(id)) {
+        ShowWindow(id, SW_SHOW);
         // FIXME: keep this until we know this workaround fixes the problem
         if (App::Application::Config()["ExeName"] == "FreeCAD")
             QMessageBox::information(0, "Show window","MainWindow::showMainWindow()");
         else
             std::cerr << "Force to show invisible main window" << std::endl;
     }
-    else {
-        std::clog << "visible" << std::endl;
-    }
+#endif
 }
 
 void MainWindow::appendRecentFile(const QString& filename)
