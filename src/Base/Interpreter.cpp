@@ -261,9 +261,11 @@ int InterpreterSingleton::cleanup(void (*func)(void))
 void InterpreterSingleton::finalize()
 {
     try {
+        PyEval_RestoreThread(this->_global);
         Py_Finalize();
     }
-    catch (...) {}
+    catch (...) {
+    }
 }
 
 void InterpreterSingleton::runStringArg(const char * psCom,...)
@@ -304,10 +306,14 @@ void InterpreterSingleton::Destruct(void)
 
 const char* InterpreterSingleton::init(int argc,char *argv[])
 {
-    Py_SetProgramName(argv[0]);
-    PyEval_InitThreads();
-    Py_Initialize();
-    PySys_SetArgv(argc, argv);
+    if (!Py_IsInitialized()) {
+        Py_SetProgramName(argv[0]);
+        PyEval_InitThreads();
+        Py_Initialize();
+        PySys_SetArgv(argc, argv);
+        this->_global = PyEval_SaveThread();
+    }
+
     return Py_GetPath();
 }
 
@@ -456,6 +462,7 @@ PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void*
 {
     int result = 0;
     PyObject* proxy=0;
+    PyGILStateLocker locker;
     result = createSWIGPointerObj_1_3_25(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
     result = createSWIGPointerObj_1_3_33(TypeName, Pointer, &proxy, own);
@@ -471,6 +478,7 @@ extern int convertSWIGPointerObj_1_3_33(const char* TypeName, PyObject* obj, voi
 bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags)
 {
     int result = 0;
+    PyGILStateLocker locker;
     result = convertSWIGPointerObj_1_3_25(TypeName, obj, ptr, flags);
     if (result == 0) return true;
     result = convertSWIGPointerObj_1_3_33(TypeName, obj, ptr, flags);
@@ -485,6 +493,7 @@ extern void cleanupSWIG_1_3_33(const char* TypeName);
 
 void InterpreterSingleton::cleanupSWIG(const char* TypeName)
 {
+    PyGILStateLocker locker;
     cleanupSWIG_1_3_25(TypeName);
     cleanupSWIG_1_3_33(TypeName);
 }

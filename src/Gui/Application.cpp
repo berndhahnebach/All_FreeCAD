@@ -125,6 +125,7 @@ Application::Application()
     GetWidgetFactorySupplier();
 
     // setting up Python binding
+    Base::PyGILStateLocker lock;
     PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
         "The functions in the FreeCADGui module allow working with GUI documents,\n"
         "view providers, views, workbenches and much more.\n\n"
@@ -577,6 +578,7 @@ bool Application::activateWorkbench(const char* name)
     }
 
     // get the python workbench object from the dictionary
+    Base::PyGILStateLocker lock;
     PyObject* pcWorkbench = 0;
     pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, name);
     // test if the workbench exists
@@ -585,7 +587,6 @@ bool Application::activateWorkbench(const char* name)
 
     try {
         QString type;
-        Base::PyGILStateLocker lock;
         Py::Object handler(pcWorkbench);
         if (!handler.hasAttr(std::string("__Workbench__"))) {
             // call its GetClassName method if possible
