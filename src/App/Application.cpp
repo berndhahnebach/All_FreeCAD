@@ -151,6 +151,7 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
 
 
     // setting up Python binding
+    Base::PyGILStateLocker lock;
     PyObject* pAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
     Py::Module(pAppModule).setAttr(std::string("ActiveDocument"),Py::None());
 
@@ -755,6 +756,7 @@ void Application::initConfig(int argc, char ** argv)
     ParseOptions(argc,argv);
 
     // Init console ===========================================================
+    Base::PyGILStateLocker lock;
     _pConsoleObserverStd = new ConsoleObserverStd();
     Console().AttachObserver(_pConsoleObserverStd);
     if (mConfig["Verbose"] == "Strict")

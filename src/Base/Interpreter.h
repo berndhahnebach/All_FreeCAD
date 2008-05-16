@@ -219,6 +219,7 @@ protected:
 
 private:
     std::string _cDebugFileName;
+    PyThreadState* _global;
 };
 
 
