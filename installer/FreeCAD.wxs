@@ -115,6 +115,9 @@
             <ComponentRef Id="CompModPoints" />
             <ComponentRef Id="CompModTest" />
             <ComponentRef Id="CompModCam" />
+	        <ComponentRef Id="CompModDrawingTemplates" />
+            <ComponentRef Id="CompModDrawing" />
+		
             <Feature Id="FeatModImage" Title="The Image module" Description="Module to handle pictures" Level="1">
                 <ComponentRef Id="CompModImage" />
             </Feature>
