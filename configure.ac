@@ -6,7 +6,7 @@ dnl **************************************************************************
 dnl release version number info
 m4_define([FREECAD_MAJOR], [0])
 m4_define([FREECAD_MINOR], [8])
-m4_define([FREECAD_MICRO], [1316])
+m4_define([FREECAD_MICRO], [1342])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
 AM_INIT_AUTOMAKE([tar-ustar foreign])
@@ -300,8 +300,8 @@ if test x"$CASROOT" != x; then
   fc_occ_incs_test="$CASROOT/inc"
   fc_occ_libs_test="$CASROOT/Linux/lib"
 else
-  fc_occ_incs_test=/usr/include/OCC
-  fc_occ_libs_test=/usr/lib/OCC
+  fc_occ_incs_test=/usr/include/opencascade
+  fc_occ_libs_test=/usr/lib
 fi
 
 AC_CHECKING([OpenCascade])
