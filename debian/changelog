@@ -1,3 +1,16 @@
+freecad (0.8.1343-1) unstable; urgency=low
+
+  * Embed required OpenCASCADE libs into this package as long as no official
+    Debian package is available  
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 20 May 2008 00:40:39 +0200
+
+freecad (0.8.1342-1) unstable; urgency=low
+
+  * Switch to new versioning scheme of OpenCASCADE packages 
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Mon, 19 May 2008 23:55:31 +0200
+
 freecad (0.8.1316-1) unstable; urgency=low
 
   * Support of pivy (Python binding for Coin/SoQt)
