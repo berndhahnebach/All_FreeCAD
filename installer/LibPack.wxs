@@ -56,7 +56,8 @@
 				<File Id="LibPack15" Name="cvaux100.dll"  />
 				<File Id="LibPack16" Name="cxcore100.dll"  />
 				<File Id="LibPack17" Name="cxts001.dll"  />
-				<File Id="LibPack18" Name="OCCAdaptMesh.dll"  />
+				<File Id="LibPack18" Name="highgui100.dll"  />
+				<File Id="LibPack19" Name="OCCAdaptMesh.dll"  />
 				<File Id="LibPack26" Name="python25.dll"   />
 				<File Id="LibPack27" Name="python25.zip"   />
 				<File Id="LibPack29" Name="soqt1.dll"   />

@@ -612,7 +612,7 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 
 using namespace @self.export.Namespace@;
 
-// returns a string which represent the object e.g. when printed in python
+// returns a string which represents the object e.g. when printed in python
 const char *@self.export.Name@::representation(void) const
 {
     return "<@self.export.Twin@ object>";
