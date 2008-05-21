@@ -37,41 +37,41 @@ namespace TestGui {
 
 class UnitTestDialog : public QDialog, public Ui_UnitTest
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  void showErrorDialog(const char* title, const char* message);
-  void addUnitTest( const QString& unit );
-  void setUnitTest( const QString& unit );
-  QString getUnitTest() const;
-  void setStatusText( const QString& text );
-  void setProgressFraction( float fraction, const QString& = QString::null );
-  void clearErrorList();
-  void insertError( const QString& failure, const QString& details );
-  void setRunCount(int);
-  void setFailCount(int);
-  void setErrorCount(int);
-  void setRemainCount(int);
-  void reset();
-  void reject();
+    void showErrorDialog(const char* title, const char* message);
+    void addUnitTest( const QString& unit );
+    void setUnitTest( const QString& unit );
+    QString getUnitTest() const;
+    void setStatusText( const QString& text );
+    void setProgressFraction( float fraction, const QString& = QString::null );
+    void clearErrorList();
+    void insertError( const QString& failure, const QString& details );
+    void setRunCount(int);
+    void setFailCount(int);
+    void setErrorCount(int);
+    void setRemainCount(int);
+    void reset();
+    void reject();
 
-  static UnitTestDialog* instance();
-  static void destruct();
-  static bool hasInstance();
+    static UnitTestDialog* instance();
+    static void destruct();
+    static bool hasInstance();
 
 protected:
-  UnitTestDialog( QWidget* parent = 0, Qt::WFlags f = 0 );
-  ~UnitTestDialog();
-  void setProgressColor( const QColor& col);
-  
+    UnitTestDialog( QWidget* parent = 0, Qt::WFlags f = 0 );
+    ~UnitTestDialog();
+    void setProgressColor( const QColor& col);
+
 public Q_SLOTS:
-  void on_treeViewFailure_itemDoubleClicked ( QTreeWidgetItem * item, int column );
-  void on_helpButton_clicked();
-  void on_aboutButton_clicked();
-  void on_startButton_clicked();
+    void on_treeViewFailure_itemDoubleClicked ( QTreeWidgetItem * item, int column );
+    void on_helpButton_clicked();
+    void on_aboutButton_clicked();
+    void on_startButton_clicked();
 
 private:
-  static UnitTestDialog* _instance;
+    static UnitTestDialog* _instance;
 };
 
 } // namespace TestGui
