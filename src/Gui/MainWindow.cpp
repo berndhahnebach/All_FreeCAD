@@ -696,9 +696,13 @@ void MainWindow::loadWindowSettings()
     QString vendor = App::Application::Config()["ExeVendor"].c_str();
     QString application = App::Application::Config()["ExeName"].c_str();
     QString version = App::Application::Config()["ExeVersion"].c_str();
+    int major = (QT_VERSION >> 0x10) & 0xff;
+    int minor = (QT_VERSION >> 0x08) & 0xff;
+    QString qtver = QString("Qt%1.%2").arg(major).arg(minor);
     QSettings config(vendor, application);
 
     config.beginGroup(version);
+    config.beginGroup(qtver);
     this->resize(config.value("Size", this->size()).toSize());
     QPoint pos = config.value("Position", this->pos()).toPoint();
     QRect rect = QApplication::desktop()->availableGeometry();
@@ -718,6 +722,7 @@ void MainWindow::loadWindowSettings()
     bool max = config.value("Maximized", false).toBool();
     max ? showMaximized() : show();
     config.endGroup();
+    config.endGroup();
 
     ToolBarManager::getInstance()->restoreState();
     std::clog << "Toolbars restored" << std::endl;
@@ -728,13 +733,18 @@ void MainWindow::saveWindowSettings()
     QString vendor = App::Application::Config()["ExeVendor"].c_str();
     QString application = App::Application::Config()["ExeName"].c_str();
     QString version = App::Application::Config()["ExeVersion"].c_str();
+    int major = (QT_VERSION >> 0x10) & 0xff;
+    int minor = (QT_VERSION >> 0x08) & 0xff;
+    QString qtver = QString("Qt%1.%2").arg(major).arg(minor);
     QSettings config(vendor, application);
-    
+
     config.beginGroup(version);
+    config.beginGroup(qtver);
     config.setValue("Size", this->size());
     config.setValue("Position", this->pos());
     config.setValue("Maximized", this->isMaximized());
     config.setValue("MainWindowState", this->saveState());
+    config.endGroup();
     config.endGroup();
 
     DockWindowManager::instance()->saveState();
