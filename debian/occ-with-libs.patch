@@ -1,0 +1,75 @@
+Index: debian/rules
+===================================================================
+--- debian/rules	(Revision 1345)
++++ debian/rules	(Arbeitskopie)
+@@ -9,6 +9,10 @@
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
+ 
++# Preliminary only as long as no official debian package for
++# OpenCascade is available
++DESTOCCDIR=$(shell pwd)/debian/freecad/usr/lib/freecad/lib
++
+ # These are used for cross-compiling and for saving the configure script
+ # from having to guess our platform (since we know it already)
+ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+@@ -93,6 +97,31 @@
+ #	dh_installinfo
+ 	dh_installman debian/freecad.1
+ 	dh_link
++# Preliminary only as long as no official debian package for
++# OpenCascade is available
++	install -m777 /usr/lib/libTKernel-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKMath-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKG2d-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKG3d-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKGeomBase-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKBRep-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKGeomAlgo-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKTopAlgo-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKPrim-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKBO-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKBool-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKShHealing-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKXSBase-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKSTEPBase-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKSTEPAttr-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKSTEP209-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKSTEP-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKFillet-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKOffset-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKIGES-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKMesh-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKHLR-6.2.so $(DESTOCCDIR)
++	install -m777 /usr/lib/libTKSTL-6.2.so $(DESTOCCDIR)
+ 	dh_strip
+ 	dh_compress
+ 	dh_fixperms
+Index: debian/shlibs.local
+===================================================================
+--- debian/shlibs.local	(Revision 0)
++++ debian/shlibs.local	(Revision 0)
+@@ -0,0 +1,23 @@
++libTKernel 6.2 freecad
++libTKMath 6.2 freecad
++libTKG2d 6.2 freecad
++libTKG3d 6.2 freecad
++libTKGeomBase 6.2 freecad
++libTKBRep 6.2 freecad
++libTKGeomAlgo 6.2 freecad
++libTKTopAlgo 6.2 freecad
++libTKPrim 6.2 freecad
++libTKBO 6.2 freecad
++libTKBool 6.2 freecad
++libTKShHealing 6.2 freecad
++libTKXSBase 6.2 freecad
++libTKSTEPAttr 6.2 freecad
++libTKSTEPBase 6.2 freecad
++libTKSTEP209 6.2 freecad
++libTKSTEP 6.2 freecad
++libTKFillet 6.2 freecad
++libTKOffset 6.2 freecad
++libTKIGES 6.2 freecad
++libTKMesh 6.2 freecad
++libTKHLR 6.2 freecad
++libTKSTL 6.2 freecad
