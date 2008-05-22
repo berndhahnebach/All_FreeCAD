@@ -50,26 +50,26 @@ Index: debian/shlibs.local
 --- debian/shlibs.local	(Revision 0)
 +++ debian/shlibs.local	(Revision 0)
 @@ -0,0 +1,23 @@
-+libTKernel 6.2 freecad
-+libTKMath 6.2 freecad
-+libTKG2d 6.2 freecad
-+libTKG3d 6.2 freecad
-+libTKGeomBase 6.2 freecad
-+libTKBRep 6.2 freecad
-+libTKGeomAlgo 6.2 freecad
-+libTKTopAlgo 6.2 freecad
-+libTKPrim 6.2 freecad
-+libTKBO 6.2 freecad
-+libTKBool 6.2 freecad
-+libTKShHealing 6.2 freecad
-+libTKXSBase 6.2 freecad
-+libTKSTEPAttr 6.2 freecad
-+libTKSTEPBase 6.2 freecad
-+libTKSTEP209 6.2 freecad
-+libTKSTEP 6.2 freecad
-+libTKFillet 6.2 freecad
-+libTKOffset 6.2 freecad
-+libTKIGES 6.2 freecad
-+libTKMesh 6.2 freecad
-+libTKHLR 6.2 freecad
-+libTKSTL 6.2 freecad
++libTKernel 6.2
++libTKMath 6.2
++libTKG2d 6.2
++libTKG3d 6.2
++libTKGeomBase 6.2
++libTKBRep 6.2
++libTKGeomAlgo 6.2
++libTKTopAlgo 6.2
++libTKPrim 6.2
++libTKBO 6.2
++libTKBool 6.2
++libTKShHealing 6.2
++libTKXSBase 6.2
++libTKSTEPAttr 6.2
++libTKSTEPBase 6.2
++libTKSTEP209 6.2
++libTKSTEP 6.2
++libTKFillet 6.2
++libTKOffset 6.2
++libTKIGES 6.2
++libTKMesh 6.2
++libTKHLR 6.2
++libTKSTL 6.2
