@@ -324,7 +324,7 @@ def main():
 		HelpFile()
 		CompileHelp()
 		BuildInstaller()
-		SendFTP()
+		#SendFTP()
 	except:
 		Log.close()
 		ErrLog.close()

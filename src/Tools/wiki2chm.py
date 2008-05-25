@@ -11,6 +11,7 @@ Options:
  -p, --proxy=ProxyUrl     specify a proxy
  -o  --out-path=BASEPATH  use this base path to the HTML project
  -h, --help               print this help
+ -w, --wget-path=WGETPATH full path to wget (if not in system path)
  
 Exit:
  0      No Error or Warning found
@@ -22,21 +23,19 @@ This programm reads the wiki and generates all necessary files
 to generate a .chm file.
 The TocPageName is a special page in the Wiki, which is used
 to generate the content for the .chm.
-This programm is part of the FreeCAD Build system and at the
-moment not really in shape to use outside of FreeCAD. 
-Therefore some changes have to be made (e.g. fix paths).
 
 Examples:
   
    wiki2chm  "http://juergen-riegel.net/FreeCAD/Docu/" Online_Help_Toc
+   wiki2chm  -w "C:/Libs/FreeCADLibs/FreeCADLibs6.1/bin/wget.exe" "http://juergen-riegel.net/FreeCAD/Docu/" Online_Help_Toc
  
 Autor:
-  (c) 2007 Juergen Riegel
-  juergen.riegel@web.de
+  (c) 2007-2008 Juergen Riegel
+  mail@juergen-riegel.net	
   Licence: GPL
 
 Version:
-  0.2
+  0.3
 """
 
 import os,sys,string,re,getopt,codecs,binascii,datetime,urllib,glob,time
@@ -78,10 +77,12 @@ Language=0x409 Englisch (USA)
 Output = sys.stdout
 
 def runWget():
+	global Wget
 	cmdLine = Wget + " "
 	cmdLine += "-k -r "    # convert to local links and do recursive
 	cmdLine += "-P tmp "   # write in this subdir
 	cmdLine += "-nd "      # flat (no subdirs)
+	cmdLine += "-l5 "      # max link follow depth
 	cmdLine += '-R "*action=*" '      # Reject all action links
 	cmdLine += '-R "*title=Special*" '# Reject all special pages
 	cmdLine += '-R "*title=Talk*" '   # Reject all Talk pages
@@ -199,7 +200,7 @@ def replaceCSS():
 		os.rename(file + '_temp',file)
 		
 def main():
-	global proxies,WikiBaseUrl,TocPageName,BasePath
+	global proxies,WikiBaseUrl,TocPageName,BasePath, Wget
 	Proxy = ""
 	Qout = None
 	DFQout = None
@@ -207,7 +208,7 @@ def main():
 	NoOut  = 0
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hwp:o:", ["help", "warnoff",  "proxy=","out-path="])
+		opts, args = getopt.getopt(sys.argv[1:], "hw:p:o:", ["help", "weget-path=",  "proxy=","out-path="])
 	except getopt.GetoptError:
 		# print help information and exit:
 		sys.stderr.write(Usage)
@@ -220,8 +221,8 @@ def main():
 		if o in ("-h", "--help"):
 			sys.stderr.write(Usage)
 			sys.exit()
-		if o in ("-w", "--warnoff"):
-			Woff = 1
+		if o in ("-w", "--weget-path"):
+			Wget = a
 		if o in ("-p", "--proxy"):
 			Proxy = a
 		if o in ("-o", "--out-path"):
