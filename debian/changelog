@@ -1,6 +1,18 @@
-freecad (0.7.1350-1ubuntu1) feisty; urgency=low
+freecad (0.7.1350-1hardy1) hardy; urgency=low
 
-  * Backport for Ubuntu Feisty
+  * Package for Ubuntu 8.04 (Hardy Heron)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Thu, 29 May 2008 11:11:20 +0200
+
+freecad (0.7.1350-1gutsy1) gutsy; urgency=low
+
+  * Backport to Ubuntu 7.10 (Gutsy Gibbon)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 24 May 2008 01:54:39 +0200
+
+freecad (0.7.1350-1feisty1) feisty; urgency=low
+
+  * Backport to Ubuntu 7.04 (Feisty Fawn)
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 24 May 2008 00:09:08 +0200
 
