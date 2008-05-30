@@ -114,6 +114,8 @@ public:
   void setEditing(SbBool edit);
   SbBool isEditing() const { return this->editing; }
   void setEditingCursor (const SoQtCursor& cursor);
+  void setRedirectToSceneGraph(SbBool redirect) { this->redirected = redirect; }
+  SbBool isRedirectedToSceneGraph() const { return this->redirected; }
 
   /**
    * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
@@ -302,6 +304,7 @@ private:
   SbBool ctrldown, shiftdown;
   SbBool editing;
   QCursor editCursor;
+  SbBool redirected;
 
   void clearLog(void);
   void addToLog(const SbVec2s pos, const SbTime time);

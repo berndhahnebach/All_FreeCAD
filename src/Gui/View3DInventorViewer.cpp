@@ -202,7 +202,9 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),_iMouseModel(1), editing(FALSE)
+  : inherited (parent, name, embed, type, build),
+    MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),
+    _iMouseModel(1), editing(FALSE), redirected(FALSE)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
@@ -859,12 +861,14 @@ void View3DInventorViewer::processEvent(QEvent * event)
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
-  switch(_iMouseModel)
-  {
-    case 0:return processSoEvent2(ev);break;
-    case 1:return processSoEvent1(ev);break;
-    default:return processSoEvent1(ev);
-  }
+    if (isRedirectedToSceneGraph())
+        return SoQtRenderArea::processSoEvent(ev);
+    switch(_iMouseModel)
+    {
+        case 0:return processSoEvent2(ev);break;
+        case 1:return processSoEvent1(ev);break;
+        default:return processSoEvent1(ev);
+    }
 }
 
 
