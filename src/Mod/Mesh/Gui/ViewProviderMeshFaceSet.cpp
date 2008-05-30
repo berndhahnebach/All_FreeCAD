@@ -55,6 +55,7 @@
 #include <Gui/MainWindow.h>
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
+#include <Gui/WaitCursor.h>
 #include <Gui/Window.h>
 #include <Gui/Flag.h>
 #include <Gui/View3DInventor.h>
@@ -344,6 +345,9 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 
 void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
 {
+    // show the wait cursor because this could take quite some time
+    Gui::WaitCursor wc;
+
     // When this callback function is invoked we must in either case leave the edit mode
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
     view->setEditing(false);
@@ -399,7 +403,9 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
     // Get the facet indices inside the tool mesh
     std::vector<unsigned long> indices;
     MeshCore::MeshKernel cToolMesh;
+    bool locked = Base::Sequencer().setLocked(true);
     cToolMesh = aFaces;
+    Base::Sequencer().setLocked(locked);
     MeshCore::MeshFacetGrid cGrid(meshProp.getValue().getKernel());
     MeshCore::MeshAlgorithm cAlg(meshProp.getValue().getKernel());
     cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);

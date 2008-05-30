@@ -68,6 +68,9 @@ public:
     ~WaitCursor();
     void setWaitCursor();
     void restoreCursor();
+
+private:
+    static int instances;
 };
 
 } // namespace Gui

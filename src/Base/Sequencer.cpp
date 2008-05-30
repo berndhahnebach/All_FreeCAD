@@ -166,9 +166,11 @@ void SequencerBase::resume()
 {
 }
 
-void SequencerBase::setLocked( bool bLocked )
+bool SequencerBase::setLocked( bool bLocked )
 {
+    bool old = _bLocked;
     _bLocked = bLocked;
+    return old;
 }
 
 bool SequencerBase::isLocked() const

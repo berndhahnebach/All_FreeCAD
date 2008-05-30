@@ -162,9 +162,10 @@ public:
      */
     virtual void resume();
     /** If \a bLock is true then the sequencer gets locked. startStep() and nextStep()
-     * don't get invoked any more on until the sequencer gets unlocked again.
+     * don't get invoked any more until the sequencer gets unlocked again.
+     * This method returns the previous lock state.
      */
-    void setLocked( bool bLock );
+    bool setLocked( bool bLock );
     /** Returns true if the sequencer was locked, false otherwise. */
     bool isLocked() const;
     /** Returns true if the sequencer is running, otherwise returns false. */

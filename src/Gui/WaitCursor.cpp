@@ -39,15 +39,15 @@ namespace Gui {
 class WaitCursorP : public QObject
 {
 public:
-  static void setBusy( bool );
+    static void setBusy(bool);
 
 protected:
-  bool eventFilter( QObject*, QEvent* );
+    bool eventFilter(QObject*, QEvent*);
 
 private:
-  WaitCursorP(); // Disable constructor
-  static WaitCursorP* _instance;
-  bool _isOn;
+    WaitCursorP(); // Disable constructor
+    static WaitCursorP* _instance;
+    bool _isOn;
 };
 } // namespace Gui
 
@@ -57,38 +57,40 @@ WaitCursorP::WaitCursorP() : QObject(0), _isOn( false )
 {
 }
 
-void WaitCursorP::setBusy( bool on )
+void WaitCursorP::setBusy(bool on)
 {
-  if ( _instance == 0 )
-    _instance = new WaitCursorP();
+    if (_instance == 0)
+        _instance = new WaitCursorP();
 
-  if( on == _instance->_isOn )
-	  return;
+    if (on == _instance->_isOn)
+        return;
 
-  if ( on ) {
-    qApp->installEventFilter( _instance );
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-  }
-  else {
-    qApp->removeEventFilter( _instance );
-    QApplication::restoreOverrideCursor();
-  }
+    if (on) {
+        qApp->installEventFilter(_instance);
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+    }
+    else {
+        qApp->removeEventFilter(_instance);
+        QApplication::restoreOverrideCursor();
+    }
 
   _instance->_isOn = on;
 }
 
-bool WaitCursorP::eventFilter( QObject*, QEvent* e)
+bool WaitCursorP::eventFilter(QObject*, QEvent* e)
 {
-  // Note: This might cause problems when we want to open a modal dialog at the lifetime 
-  // of a WaitCursor instance because the incoming events are still filtered.
-  if ( e->type() == QEvent::KeyPress ||
-       e->type() == QEvent::KeyRelease ||
-       e->type() == QEvent::MouseButtonPress ||
-       e->type() == QEvent::MouseButtonRelease ||
-       e->type() == QEvent::MouseButtonDblClick )
-    return true;
-  return false;
+    // Note: This might cause problems when we want to open a modal dialog at the lifetime 
+    // of a WaitCursor instance because the incoming events are still filtered.
+    if (e->type() == QEvent::KeyPress ||
+        e->type() == QEvent::KeyRelease ||
+        e->type() == QEvent::MouseButtonPress ||
+        e->type() == QEvent::MouseButtonRelease ||
+        e->type() == QEvent::MouseButtonDblClick )
+        return true;
+    return false;
 }
+
+int WaitCursor::instances = 0;
 
 /**
  * Constructs this object and shows the wait cursor immediately. If you need to open a dialog as 
@@ -98,13 +100,15 @@ bool WaitCursorP::eventFilter( QObject*, QEvent* e)
  */
 WaitCursor::WaitCursor()
 {
-  setWaitCursor();
+    if (instances++ == 0)
+        setWaitCursor();
 }
 
 /** Restores the last cursor again. */
 WaitCursor::~WaitCursor()
 {
-  restoreCursor();
+    if (--instances == 0)
+        restoreCursor();
 }
 
 /**
@@ -112,7 +116,7 @@ WaitCursor::~WaitCursor()
  */
 void WaitCursor::setWaitCursor()
 {
-  WaitCursorP::setBusy(true);
+    WaitCursorP::setBusy(true);
 }
 
 /**
@@ -120,5 +124,5 @@ void WaitCursor::setWaitCursor()
  */
 void WaitCursor::restoreCursor()
 {
-  WaitCursorP::setBusy(false);
+    WaitCursorP::setBusy(false);
 }
