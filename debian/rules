@@ -23,6 +23,7 @@ else
 endif
 
 configure: autogen.sh
+	chmod u+x autogen.sh
 	./autogen.sh
 
 config.status: configure
@@ -70,6 +71,10 @@ install: build
 
 # Add here commands to install the package into debian/freecad.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/freecad
+	
+# Remove testing modules we don't want to have in the deb
+	rm -rf debian/freecad/usr/lib/freecad/Mod/_TEMPLATE_
+	rm -rf debian/freecad/usr/lib/freecad/Mod/TemplatePyMod
 
 # Make the Python script executable
 	#chmod a+x $(CURDIR)/debian/freecad/usr/lib/freecad/Mod/Test/unittestgui.py
