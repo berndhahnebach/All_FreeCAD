@@ -3,8 +3,8 @@
 # Run this script to generate all initial makefiles.
 
 # Create Version.h with Python script
-echo "creating Version.h"
-python src/Tools/SubWCRev.py
+#echo "creating Version.h"
+#python src/Tools/SubWCRev.py
 
 echo "calling libtoolize"
 libtoolize --force --copy
