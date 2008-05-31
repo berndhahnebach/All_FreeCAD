@@ -13,7 +13,7 @@ Index: debian/rules
  # These are used for cross-compiling and for saving the configure script
  # from having to guess our platform (since we know it already)
  DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -93,6 +97,31 @@
+@@ -98,6 +102,31 @@
  #	dh_installinfo
  	dh_installman debian/freecad.1
  	dh_link
