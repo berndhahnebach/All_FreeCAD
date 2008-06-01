@@ -1,0 +1,21 @@
+Index: debian/control
+===================================================================
+--- debian/control	(Revision 1362)
++++ debian/control	(Arbeitskopie)
+@@ -10,7 +10,7 @@
+  libsoqt4-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, 
+  libx11-dev, libxext-dev, libgts-dev, libcv-dev, python-opencv,
+  libopencascade-dev
+-Standards-Version: 3.7.3
++Standards-Version: 3.7.2
+ 
+ Package: freecad
+ Architecture: any
+Index: debian/menu
+===================================================================
+--- debian/menu	(Revision 1362)
++++ debian/menu	(Arbeitskopie)
+@@ -1,2 +1,2 @@
+-?package(freecad):needs="X11" section="Applications/Science/Engineering"\
++?package(freecad):needs="X11" section="Apps/Science/Engineering"\
+   title="FreeCAD" command="/usr/lib/freecad/bin/FreeCAD" icon="/usr/share/freecad/FCIcon.xpm"
