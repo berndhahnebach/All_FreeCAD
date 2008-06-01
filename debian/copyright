@@ -3,9 +3,12 @@ Tue, 26 Sep 2006 16:55:15 +0200.
 
 It was downloaded from http://sourceforge.net/projects/free-cad
 
-Upstream Author: Werner Mayer <wmayer@users.sourceforge.net>
+Upstream Author: Juergen Riegel <juergen.riegel@web.de>
 
-Copyright:
+Copyright: Copyright (C) 2001-2008 by Juergen Riegel
+           Copyright (C) 2001-2008 by Werner Mayer
+
+License: LGPL
 
     This package is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

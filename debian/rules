@@ -51,7 +51,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -f configure
 	dh_clean
 	find -name 'Makefile.in' | xargs rm -f
@@ -92,6 +92,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install debian/freecad.desktop usr/share/applications
+	dh_desktop
 	dh_installmenu
 #	dh_installmime
 #	dh_python
