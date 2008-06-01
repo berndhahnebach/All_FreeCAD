@@ -10,9 +10,5 @@ EXTRA_DIST = \
 		freecad.desktop \
 		freecad.links \
 		menu \
-		postinst \
-		postrm \
-		preinst \
-		prerm \
 		README.Debian \
 		rules

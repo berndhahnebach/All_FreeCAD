@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3),
  libsoqt4-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, 
  libx11-dev, libxext-dev, libgts-dev, libcv-dev, python-opencv,
  libopencascade-dev
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 
 Package: freecad
 Architecture: any
