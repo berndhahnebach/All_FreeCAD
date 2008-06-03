@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include <Base/Exception.h>
+#include <Base/Interpreter.h>
 
 #include "Widgets.h"
 #include "Application.h"
@@ -38,8 +39,8 @@ using namespace Gui;
 CommandIconView::CommandIconView ( QWidget * parent )
   : QListWidget(parent)
 {
-  connect(this, SIGNAL (currentItemChanged(QListWidgetItem *, QListWidgetItem *)), 
-          this, SLOT (onSelectionChanged(QListWidgetItem *, QListWidgetItem *)) );
+    connect(this, SIGNAL (currentItemChanged(QListWidgetItem *, QListWidgetItem *)), 
+            this, SLOT (onSelectionChanged(QListWidgetItem *, QListWidgetItem *)) );
 }
 
 /**
@@ -54,26 +55,26 @@ CommandIconView::~CommandIconView ()
  */
 void CommandIconView::startDrag ( Qt::DropActions supportedActions )
 {
-  QList<QListWidgetItem*> items = selectedItems();
-  QByteArray itemData;
-  QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+    QList<QListWidgetItem*> items = selectedItems();
+    QByteArray itemData;
+    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
 
-  QPixmap pixmap;
-  dataStream << items.count();
-  for (QList<QListWidgetItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
-    if (it == items.begin())
-      pixmap = qVariantValue<QPixmap>((*it)->data(Qt::UserRole));
-    dataStream << (*it)->text();
-  }
+    QPixmap pixmap;
+    dataStream << items.count();
+    for (QList<QListWidgetItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
+        if (it == items.begin())
+            pixmap = qVariantValue<QPixmap>((*it)->data(Qt::UserRole));
+        dataStream << (*it)->text();
+    }
 
-  QMimeData *mimeData = new QMimeData;
-  mimeData->setData("text/x-action-items", itemData);
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData("text/x-action-items", itemData);
 
-  QDrag *drag = new QDrag(this);
-  drag->setMimeData(mimeData);
-  drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
-  drag->setPixmap(pixmap);
-  drag->start(Qt::MoveAction);
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+    drag->setPixmap(pixmap);
+    drag->start(Qt::MoveAction);
 }
 
 /**
@@ -83,8 +84,8 @@ void CommandIconView::startDrag ( Qt::DropActions supportedActions )
  */
 void CommandIconView::onSelectionChanged(QListWidgetItem * item, QListWidgetItem *)
 {
-  if (item)
-    emitSelectionChanged(item->toolTip());
+    if (item)
+        emitSelectionChanged(item->toolTip());
 }
 
 // ------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ void CommandIconView::onSelectionChanged(QListWidgetItem * item, QListWidgetItem
 AccelLineEdit::AccelLineEdit ( QWidget * parent )
   : QLineEdit(parent)
 {
-  setText(tr("none"));
+    setText(tr("none"));
 }
 
 /**
@@ -106,72 +107,72 @@ AccelLineEdit::AccelLineEdit ( QWidget * parent )
  */
 void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
 {
-  QString txt;
-  setText(tr("none"));
+    QString txt;
+    setText(tr("none"));
 
-  int key = e->key();
-  Qt::KeyboardModifiers state = e->modifiers();
+    int key = e->key();
+    Qt::KeyboardModifiers state = e->modifiers();
 
-  if ( key == Qt::Key_Control )
-    return;
-  else if ( key == Qt::Key_Shift )
-    return;
-  else if ( key == Qt::Key_Alt )
-    return;
-  else if ( state == Qt::NoModifier && key == Qt::Key_Backspace )
-    return; // clears the edit field
+    if (key == Qt::Key_Control)
+        return;
+    else if (key == Qt::Key_Shift)
+        return;
+    else if (key == Qt::Key_Alt)
+        return;
+    else if (state == Qt::NoModifier && key == Qt::Key_Backspace)
+        return; // clears the edit field
 
-  switch( state )
-  {
-  case Qt::ControlModifier:
+    switch(state)
     {
-      QKeySequence ks(Qt::CTRL+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::AltModifier:
-    {
-      QKeySequence ks(Qt::ALT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::ShiftModifier:
-    {
-      QKeySequence ks(Qt::SHIFT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::ControlModifier+Qt::AltModifier:
-    {
-      QKeySequence ks(Qt::CTRL+Qt::ALT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::ControlModifier+Qt::ShiftModifier:
-    {
-      QKeySequence ks(Qt::CTRL+Qt::SHIFT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::ShiftModifier+Qt::AltModifier:
-    {
-      QKeySequence ks(Qt::SHIFT+Qt::ALT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  case Qt::ControlModifier+Qt::AltModifier+Qt::ShiftModifier:
-    {
-      QKeySequence ks(Qt::CTRL+Qt::ALT+Qt::SHIFT+key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  default:
-    {
-      QKeySequence ks(key);
-      txt += (QString)(ks);
-      setText(txt);
-    } break;
-  }
+    case Qt::ControlModifier:
+        {
+            QKeySequence ks(Qt::CTRL+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::AltModifier:
+        {
+            QKeySequence ks(Qt::ALT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::ShiftModifier:
+        {
+            QKeySequence ks(Qt::SHIFT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::ControlModifier+Qt::AltModifier:
+        {
+            QKeySequence ks(Qt::CTRL+Qt::ALT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::ControlModifier+Qt::ShiftModifier:
+        {
+            QKeySequence ks(Qt::CTRL+Qt::SHIFT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::ShiftModifier+Qt::AltModifier:
+        {
+            QKeySequence ks(Qt::SHIFT+Qt::ALT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    case Qt::ControlModifier+Qt::AltModifier+Qt::ShiftModifier:
+        {
+            QKeySequence ks(Qt::CTRL+Qt::ALT+Qt::SHIFT+key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    default:
+        {
+            QKeySequence ks(key);
+            txt += (QString)(ks);
+            setText(txt);
+        }   break;
+    }
 }
 
 // ------------------------------------------------------------------------------
@@ -254,8 +255,8 @@ void CheckListDialog::accept ()
 ColorButton::ColorButton( QWidget* parent )
     : QPushButton( parent ), _allowChange(true), _drawFrame(true)
 {
-  _col = palette().color(QPalette::Active,QPalette::Midlight);
-  connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
+    _col = palette().color(QPalette::Active,QPalette::Midlight);
+    connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
 }
 
 /**
@@ -270,8 +271,8 @@ ColorButton::~ColorButton()
  */
 void ColorButton::setColor( const QColor& c )
 {
-  _col = c;
-  update();
+    _col = c;
+    update();
 }
 
 /** 
@@ -279,7 +280,7 @@ void ColorButton::setColor( const QColor& c )
  */
 QColor ColorButton::color() const
 {
-  return _col;
+    return _col;
 }
 
 void ColorButton::setAllowChangeColor(bool ok)
@@ -341,14 +342,13 @@ void ColorButton::paintEvent (QPaintEvent * e)
  */
 void ColorButton::onChooseColor()
 {
-  if (!_allowChange)
-      return;
-  QColor c = QColorDialog::getColor( _col, this );
-  if ( c.isValid() )
-  {
-    setColor( c );
-    changed();
-  }
+    if (!_allowChange)
+        return;
+    QColor c = QColorDialog::getColor( _col, this );
+    if (c.isValid()) {
+        setColor( c );
+        changed();
+    }
 }
 
 // ------------------------------------------------------------------------------
@@ -356,8 +356,8 @@ void ColorButton::onChooseColor()
 UrlLabel::UrlLabel ( QWidget * parent, Qt::WFlags f )
   : QLabel("TextLabel", parent, f)
 {
-  _url = "http://localhost";
-  setToolTip(this->_url);
+    _url = "http://localhost";
+    setToolTip(this->_url);
 }
 
 UrlLabel::~UrlLabel()
@@ -366,42 +366,43 @@ UrlLabel::~UrlLabel()
 
 void UrlLabel::enterEvent ( QEvent * )
 {
-  setCursor(Qt::PointingHandCursor);
+    setCursor(Qt::PointingHandCursor);
 }
 
 void UrlLabel::leaveEvent ( QEvent * )
 {
-  setCursor(Qt::ArrowCursor);
+    setCursor(Qt::ArrowCursor);
 }
 
 void UrlLabel::mouseReleaseEvent ( QMouseEvent * )
 {
-  // The webbrowser Python module allows to start the system browser in an OS-independent way
-  PyObject* module = PyImport_ImportModule("webbrowser");
-  if ( module ) {
-    // get the methods dictionary and search for the 'open' method
-    PyObject* dict = PyModule_GetDict(module);
-    PyObject* func = PyDict_GetItemString(dict, "open");
-    if ( func ) {
-      PyObject* args = Py_BuildValue("(s)", (const char*)this->_url.toAscii());
-      PyObject* result = PyEval_CallObject(func,args);
-      // decrement the args and module reference
-      Py_XDECREF(result);
-      Py_DECREF(args);
-      Py_DECREF(module);
+    // The webbrowser Python module allows to start the system browser in an OS-independent way
+    Base::PyGILStateLocker lock;
+    PyObject* module = PyImport_ImportModule("webbrowser");
+    if (module) {
+        // get the methods dictionary and search for the 'open' method
+        PyObject* dict = PyModule_GetDict(module);
+        PyObject* func = PyDict_GetItemString(dict, "open");
+        if (func) {
+            PyObject* args = Py_BuildValue("(s)", (const char*)this->_url.toAscii());
+            PyObject* result = PyEval_CallObject(func,args);
+            // decrement the args and module reference
+            Py_XDECREF(result);
+            Py_DECREF(args);
+            Py_DECREF(module);
+        }
     }
-  } 
 }
 
 QString UrlLabel::url() const
 {
-  return this->_url;
+    return this->_url;
 }
 
 void UrlLabel::setUrl(const QString& u)
 {
-  this->_url = u;
-  setToolTip(this->_url);
+    this->_url = u;
+    setToolTip(this->_url);
 }
 
 #include "moc_Widgets.cpp"
