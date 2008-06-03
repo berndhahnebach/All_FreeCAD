@@ -225,6 +225,11 @@ bool DrawingView::onHasMsg(const char* pMsg) const
   return false;
 }
 
+void DrawingView::viewAll()
+{
+    fitDrawing();
+}
+
 void DrawingView::load (const QString & file)
 {
     QFileInfo fi(file);

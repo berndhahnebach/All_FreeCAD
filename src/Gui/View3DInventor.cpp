@@ -218,6 +218,11 @@ void View3DInventor::onUpdate(void)
     _viewer->render();
 }
 
+void View3DInventor::viewAll()
+{
+    _viewer->viewAll();
+}
+
 const char *View3DInventor::getName(void) const
 {
     return "View3DInventor";

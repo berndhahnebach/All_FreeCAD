@@ -59,6 +59,7 @@ public:
     /// get called when the document is updated
     virtual void onRename(Gui::Document *pDoc);
     virtual void onUpdate(void);
+    virtual void viewAll();
     virtual const char *getName(void) const;
 
     virtual PyObject *getPyObject(void);

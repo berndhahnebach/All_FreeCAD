@@ -68,6 +68,7 @@ public:
     virtual void onUpdate(void)=0;
     /// get called when the document is updated
     virtual void onRelabel(Gui::Document *pDoc);
+    virtual void viewAll();
 
     /// Mesage handler
     virtual bool onMsg(const char* pMsg,const char** ppReturn);

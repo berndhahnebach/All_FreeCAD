@@ -43,6 +43,7 @@ public:
 
     bool onMsg(const char* pMsg,const char** ppReturn);
     bool onHasMsg(const char* pMsg) const ;
+    void viewAll();
 
     //virtual void clearDrawing();
     //virtual int createDrawingCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
@@ -129,7 +130,7 @@ protected:
 
     // Flag for status bar enablement
     bool _statusBarEnabled;
-	bool _mouseEventsEnabled;
+    bool _mouseEventsEnabled;
 
 };
 
