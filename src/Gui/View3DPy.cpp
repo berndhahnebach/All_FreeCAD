@@ -240,7 +240,7 @@ PYFUNCIMP_D(View3DPy,fitAll)
 
   PY_TRY {
    
-    _pcView->_viewer->viewAll();
+    _pcView->viewAll();
     Py_Return;
 
   }PY_CATCH;
@@ -710,6 +710,7 @@ PYFUNCIMP_D(View3DPy,getPoint)
 
 void View3DPy::eventCallback(void * ud, SoEventCallback * n)
 {
+    Base::PyGILStateLocker lock;
     try {
         Py::Dict dict;
         const SoEvent* e = n->getEvent();
@@ -1384,6 +1385,7 @@ PYFUNCIMP_D(View3DPy,getViewer)
 
 void View3DPy::eventCallbackSWIG(void * ud, SoEventCallback * n)
 {
+    Base::PyGILStateLocker lock;
     const SoEvent* e = n->getEvent();
     std::string type = e->getTypeId().getName().getString();
     type += " *";

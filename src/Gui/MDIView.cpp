@@ -78,6 +78,10 @@ void MDIView::onRelabel(Gui::Document *pDoc)
     }
 }
 
+void MDIView::viewAll()
+{
+}
+
 /// receive a message
 bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
 {
