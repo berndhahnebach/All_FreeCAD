@@ -418,6 +418,7 @@ void StdCmdPythonHelp::activated(int iMsg)
 
         // The webbrowser Python module allows to start the system browser in an 
         // OS-independent way
+        Base::PyGILStateLocker lock;
         PyObject* module = PyImport_ImportModule("webbrowser");
         if (module) {
             // get the methods dictionary and search for the 'open' method
