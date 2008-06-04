@@ -65,6 +65,91 @@ int VectorPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject*  VectorPy::add(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return 0;
+
+    VectorPy* vec = static_cast<VectorPy*>(obj);
+
+    VectorPy::PointerType this_ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    VectorPy::PointerType vect_ptr = reinterpret_cast<VectorPy::PointerType>(vec->_pcTwinPointer);
+
+    Base::Vector3d v = (*this_ptr) + (*vect_ptr);
+    return new VectorPy(v);
+}
+
+PyObject*  VectorPy::sub(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return 0;
+
+    VectorPy* vec = static_cast<VectorPy*>(obj);
+
+    VectorPy::PointerType this_ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    VectorPy::PointerType vect_ptr = reinterpret_cast<VectorPy::PointerType>(vec->_pcTwinPointer);
+
+    Base::Vector3d v = (*this_ptr) - (*vect_ptr);
+    return new VectorPy(v);
+}
+
+PyObject*  VectorPy::scale(PyObject *args)
+{
+    double factorX, factorY, factorZ;
+    if (!PyArg_ParseTuple(args, "ddd", &factorX, &factorY, &factorZ))
+        return 0;
+    VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    ptr->Scale(factorX, factorY, factorZ);
+    Py_Return;
+}
+
+PyObject*  VectorPy::dot(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return 0;
+
+    VectorPy* vec = static_cast<VectorPy*>(obj);
+
+    VectorPy::PointerType this_ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    VectorPy::PointerType vect_ptr = reinterpret_cast<VectorPy::PointerType>(vec->_pcTwinPointer);
+
+    Py::Float mult((*this_ptr) * (*vect_ptr));
+    return Py::new_reference_to(mult);
+}
+
+PyObject*  VectorPy::cross(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return 0;
+
+    VectorPy* vec = static_cast<VectorPy*>(obj);
+
+    VectorPy::PointerType this_ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    VectorPy::PointerType vect_ptr = reinterpret_cast<VectorPy::PointerType>(vec->_pcTwinPointer);
+
+    Base::Vector3d v = (*this_ptr) % (*vect_ptr);
+    return new VectorPy(v);
+}
+
+PyObject*  VectorPy::getAngle(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return 0;
+
+    VectorPy* vec = static_cast<VectorPy*>(obj);
+
+    VectorPy::PointerType this_ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    VectorPy::PointerType vect_ptr = reinterpret_cast<VectorPy::PointerType>(vec->_pcTwinPointer);
+
+    Py::Float angle(this_ptr->GetAngle(*vect_ptr));
+    return Py::new_reference_to(angle);
+}
+
 PyObject*  VectorPy::normalize(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
