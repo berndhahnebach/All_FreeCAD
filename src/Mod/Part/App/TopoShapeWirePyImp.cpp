@@ -15,13 +15,6 @@ const char *TopoShapeWirePy::representation(void) const
     return "<TopoShape object>";
 }
 
-
-
-Py::Object TopoShapeWirePy::getWire(void) const
-{
-    return Py::Object();
-}
-
 PyObject *TopoShapeWirePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
