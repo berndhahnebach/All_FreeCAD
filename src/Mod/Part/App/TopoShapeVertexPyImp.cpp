@@ -1,11 +1,18 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <gp_Pnt.hxx>
+# include <BRep_Tool.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Vertex.hxx>
+#endif
+
 #include <Mod/Part/App/TopoShape.h>
 #include <Base/VectorPy.h>
 #include <Base/Vector3D.h>
 
-#include "BRepBuilderAPI_MakeVertex.hxx"
+#include <BRepBuilderAPI_MakeVertex.hxx>
 // inclusion of the generated files (generated out of TopoShapeVertexPy.xml)
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeVertexPy.cpp"
@@ -21,10 +28,10 @@ const char *TopoShapeVertexPy::representation(void) const
 // constructor method
 int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    double  x=0.0,y=0.0,z=0.0;
+    double x=0.0,y=0.0,z=0.0;
     PyObject *object;
     if (PyArg_ParseTuple(args, "|ddd", &x,&y,&z)) {
-        (x,y,z);
+        //(x,y,z);
     }
     else if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
         PyErr_Clear(); // set by PyArg_ParseTuple()
