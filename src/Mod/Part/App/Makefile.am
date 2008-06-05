@@ -4,12 +4,26 @@ lib_LTLIBRARIES=libPart.la Part.la
 
 BUILT_SOURCES=\
 		PartFeaturePy.cpp \
+		TopoShapeCompoundPy.cpp \
+		TopoShapeCompSolidPy.cpp \
+		TopoShapeEdgePy.cpp \
 		TopoShapeFacePy.cpp \
+		TopoShapeShellPy.cpp \
+		TopoShapeSolidPy.cpp \
+		TopoShapeVertexPy.cpp \
+		TopoShapeWirePy.cpp \
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
 		PartFeaturePy.h \
+		TopoShapeCompoundPy.h \
+		TopoShapeCompSolidPy.h \
+		TopoShapeEdgePy.h \
 		TopoShapeFacePy.h \
+		TopoShapeShellPy.h \
+		TopoShapeSolidPy.h \
+		TopoShapeVertexPy.h \
+		TopoShapeWirePy.h \
 		TopoShapePy.h
 
 libPart_la_SOURCES=\
@@ -59,9 +73,18 @@ libPart_la_SOURCES=\
 		PropertyCircle.h \
 		PropertyLine.cpp \
 		PropertyLine.h \
+		PropertyTopoShape.cpp \
+		PropertyTopoShape.h \
 		TopoShape.cpp \
 		TopoShape.h \
+		TopoShapeCompoundPyImp.cpp \
+		TopoShapeCompSolidPyImp.cpp \
+		TopoShapeEdgePyImp.cpp \
 		TopoShapeFacePyImp.cpp \
+		TopoShapeShellPyImp.cpp \
+		TopoShapeSolidPyImp.cpp \
+		TopoShapeVertexPyImp.cpp \
+		TopoShapeWirePyImp.cpp \
 		TopoShapePyImp.cpp \
 		TopologyPy.cpp \
 		TopologyPy.h
@@ -126,5 +149,12 @@ EXTRA_DIST = \
 		OpenCascadeAll.h \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
+		TopoShapeCompSolidPy.xml \
+		TopoShapeCompoundPy.xml \
+		TopoShapeEdgePy.xml \
 		TopoShapeFacePy.xml \
+		TopoShapeShellPy.xml \
+		TopoShapeSolidPy.xml \
+		TopoShapeVertexPy.xml \
+		TopoShapeWirePy.xml \
 		AppPart.vcproj
