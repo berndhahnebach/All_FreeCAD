@@ -10,6 +10,7 @@
 # include <BRepCheck_Result.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS_Iterator.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
 #endif
 
 
@@ -25,6 +26,7 @@
 #include "TopoShapeWirePy.h"
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeSolidPy.h"
+#include "TopoShapeShellPy.h"
 #include "TopoShapeCompSolidPy.h"
 #include "TopoShapeCompoundPy.h"
 
@@ -248,14 +250,19 @@ Py::Int TopoShapePy::getValid(void) const
 Py::List TopoShapePy::getFaces(void) const
 {
 	Py::List ret;
+	TopTools_IndexedMapOfShape M;
 
 	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_FACE);
-	while (Ex.More()) {
-		//BRepBuilderAPI_Copy copy(Ex.Current());
-		//TopoDS_Shape shape = copy.Shape();
-		TopoDS_Shape shape = Ex.Current();
-		ret.append(Py::Object(new TopoShapeFacePy(new TopoShape(shape)),true));
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
 		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeFacePy(new TopoShape(shape)),true));
 	}
 
 	return ret;
@@ -264,35 +271,103 @@ Py::List TopoShapePy::getFaces(void) const
 Py::List TopoShapePy::getVertexes(void) const
 {
 	Py::List ret;
+	TopTools_IndexedMapOfShape M;
 
 	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_VERTEX);
-	while (Ex.More()) {
-		//BRepBuilderAPI_Copy copy(Ex.Current());
-		//TopoDS_Shape shape = copy.Shape();
-		TopoDS_Shape shape = Ex.Current();
-		ret.append(Py::Object(new TopoShapeVertexPy(new TopoShape(shape)),true));
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
 		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeVertexPy(new TopoShape(shape)),true));
 	}
 
 	return ret;
 }
 
-Py::List TopoShapePy::getShapes(void) const
+Py::List TopoShapePy::getShells(void) const
 {
-	return Py::List();
+	Py::List ret;
+	TopTools_IndexedMapOfShape M;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_SHELL);
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
+		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeShellPy(new TopoShape(shape)),true));
+	}
+
+	return ret;
+}
+
+Py::List TopoShapePy::getSolids(void) const
+{
+	Py::List ret;
+	TopTools_IndexedMapOfShape M;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_SOLID);
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
+		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeSolidPy(new TopoShape(shape)),true));
+	}
+
+	return ret;
+}
+
+Py::List TopoShapePy::getCompSolids(void) const
+{
+	Py::List ret;
+	TopTools_IndexedMapOfShape M;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_COMPSOLID);
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
+		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeCompSolidPy(new TopoShape(shape)),true));
+	}
+
+	return ret;
 }
 
 Py::List TopoShapePy::getEdges(void) const
 {
 	Py::List ret;
+	TopTools_IndexedMapOfShape M;
 
 	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_EDGE);
-	while (Ex.More()) {
-		//BRepBuilderAPI_Copy copy(Ex.Current());
-		//TopoDS_Shape shape = copy.Shape();
-		TopoDS_Shape shape = Ex.Current();
-		ret.append(Py::Object(new TopoShapeEdgePy(new TopoShape(shape)),true));
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
 		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeEdgePy(new TopoShape(shape)),true));
 	}
 
 	return ret;
@@ -301,14 +376,19 @@ Py::List TopoShapePy::getEdges(void) const
 Py::List TopoShapePy::getWires(void) const
 {
 	Py::List ret;
+	TopTools_IndexedMapOfShape M;
 
 	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_WIRE);
-	while (Ex.More()) {
-		//BRepBuilderAPI_Copy copy(Ex.Current());
-		//TopoDS_Shape shape = copy.Shape();
-		TopoDS_Shape shape = Ex.Current();
-		ret.append(Py::Object(new TopoShapeWirePy(new TopoShape(shape)),true));
+	while (Ex.More()) 
+	{
+		M.Add(Ex.Current());
 		Ex.Next();
+	}
+
+    for ( Standard_Integer k = 1; k <= M.Extent(); k++ ) 
+	{
+		const TopoDS_Shape& shape = M(k);
+		ret.append(Py::Object(new TopoShapeWirePy(new TopoShape(shape)),true));
 	}
 
 	return ret;

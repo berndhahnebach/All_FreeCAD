@@ -35,7 +35,7 @@ namespace Part
 {
 
 
-/** The part shape property
+/** The representation for a CAD Shape
  */
 class AppPartExport TopoShape : public Data::ComplexGeoData
 {
@@ -49,7 +49,7 @@ public:
 
   static TopoDS_Shape read(const char *FileName);
 
-  const TopoDS_Shape _Shape;
+  TopoDS_Shape _Shape;
 };
 
 

@@ -175,6 +175,31 @@ static PyObject * read(PyObject *self, PyObject *args)
     } PY_CATCH;
 }
 
+
+static PyObject * 
+show(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+        App::Document *pcDoc = App::GetApplication().getActiveDocument(); 	 
+        if (!pcDoc)
+            pcDoc = App::GetApplication().newDocument();
+        TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObj);
+        Part::Feature *pcFeature = (Part::Feature *)pcDoc->addObject("Part::Feature", "Shape");
+        // copy the data
+        //TopoShape* shape = new MeshObject(*pShape->getTopoShapeObjectPtr());
+        pcFeature->Shape.setValue(pShape->getTopoShapePtr()->_Shape);
+        pcDoc->recompute();
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+
+
 /* Approximate test function */
 
 
@@ -217,6 +242,7 @@ struct PyMethodDef Part_methods[] = {
     {"open"   , open,    1},
     {"insert" , insert,  1},
     {"read"   , read,  1},
+    {"show"   , show,  1},
     {"createPlane" , createPlane, 1},
     {"createBox" , createBox, 1},
     {NULL     , NULL      }        /* end of table marker */

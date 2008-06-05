@@ -56,18 +56,30 @@
       </Documentation>
       <Parameter Name="Vertexes" Type="List"/>
     </Attribute>
-    <Attribute Name="Shapes" ReadOnly="true">
+	  <Attribute Name="Shells" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>List of subsequent shapes in this shape.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Shells" Type="List"/>
+	  </Attribute>
+	  <Attribute Name="Solids" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>List of subsequent shapes in this shape.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Solids" Type="List"/>
+	  </Attribute>
+	  <Attribute Name="CompSolids" ReadOnly="true">
+	  <Documentation>
+		  <UserDocu>List of subsequent shapes in this shape.</UserDocu>
+	  </Documentation>
+	  <Parameter Name="CompSolids" Type="List"/>
+	</Attribute>
+	<Attribute Name="Edges" ReadOnly="true">
       <Documentation>
-        <UserDocu>List of subsequent shapes in this shape.</UserDocu>
-      </Documentation>
-      <Parameter Name="Shapes" Type="List"/>
-    </Attribute>
-    <Attribute Name="Edges" ReadOnly="true">
-      <Documentation>
-        <UserDocu>List of Edges in this shape.</UserDocu>
+       <UserDocu>List of Edges in this shape.</UserDocu>
       </Documentation>
       <Parameter Name="Edges" Type="List"/>
-    </Attribute>
+   </Attribute>
     <Attribute Name="Wires" ReadOnly="true">
       <Documentation>
         <UserDocu>List of wires in this shape.</UserDocu>

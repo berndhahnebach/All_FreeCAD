@@ -12,7 +12,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *TopoShapeSolidPy::representation(void) const
 {
-    return "<TopoShape object>";
+    return "<TopoShapeSolid>";
 }
 
 

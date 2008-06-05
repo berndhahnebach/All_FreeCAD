@@ -6,6 +6,7 @@
       Twin="TopoShape" 
       TwinPointer="TopoShape" 
       Include="Mod/Part/App/TopoShape.h" 
+  	  Constructor="true"
       Namespace="Part" 
       FatherInclude="Mod/Part/App/TopoShapePy.h" 
       FatherNamespace="Part">
@@ -13,5 +14,30 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
     </Documentation>
+	  <Attribute Name="X" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>X component of this Vertex.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="X" Type="Float"/>
+	  </Attribute>
+	  <Attribute Name="Y" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Y component of this Vertex.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Y" Type="Float"/>
+	  </Attribute>
+	  <Attribute Name="Z" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Z component of this Vertex.</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Z" Type="Float"/>
+	  </Attribute>
+	  <Attribute Name="Point" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Position of this Vertex as a Vector</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Point" Type="Object"/>
+	  </Attribute>
+
   </PythonExport>
 </GenerateModel>
