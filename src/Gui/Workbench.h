@@ -54,54 +54,58 @@ class GuiExport Workbench : public Base::BaseClass
     TYPESYSTEM_HEADER();
 
 public:
-  /** Constructs a workbench object. */
-  Workbench();
-  virtual ~Workbench();
-  /**
-   * Returns the name of the workbench object.
-   */
-  QString name() const;
-  /**
-   * Set the name to the workbench object.
-   */
-  void setName( const QString& );
-  /**
-   * The default implementation returns an instance of @ref WorkbenchPy.
-   */
-  PyObject* getPyObject();
-  /** Sets up the contextmenu for this workbench. 
-   * The default implementation does nothing.
-   */
-  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
-  /** 
-   * Activates the workbench and adds/removes GUI elements.
-   */
-  bool activate();
-  /**
-   * Translates the window titles of all menus, toolbars and dock windows.
-   */
-  void retranslate() const;
+    /** Constructs a workbench object. */
+    Workbench();
+    virtual ~Workbench();
+    /**
+     * Returns the name of the workbench object.
+     */
+    QString name() const;
+    /**
+     * Set the name to the workbench object.
+     */
+    void setName( const QString& );
+    /**
+     * The default implementation returns an instance of @ref WorkbenchPy.
+     */
+    PyObject* getPyObject();
+    /** Sets up the contextmenu for this workbench. 
+     * The default implementation does nothing.
+     */
+    virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    /** 
+     * Activates the workbench and adds/removes GUI elements.
+     */
+    bool activate();
+    /**
+     * Translates the window titles of all menus, toolbars and dock windows.
+     */
+    void retranslate() const;
+    /** Run some actions when the workbench gets activated. */
+    virtual void activated();
+    /** Run some actions when the workbench gets deactivated. */
+    virtual void deactivated();
 
 protected:
-  /** Returns a MenuItem tree structure of menus for this workbench. */
-  virtual MenuItem* setupMenuBar() const=0;
-  /** Returns a ToolBarItem tree structure of toolbars for this workbench. */
-  virtual ToolBarItem* setupToolBars() const=0;
-  /** Returns a ToolBarItem tree structure of command bars for this workbench. */
-  virtual ToolBarItem* setupCommandBars() const=0;
-  /** Returns a DockWindowItems structure of dock windows this workbench. */
-  virtual DockWindowItems* setupDockWindows() const=0;
+    /** Returns a MenuItem tree structure of menus for this workbench. */
+    virtual MenuItem* setupMenuBar() const=0;
+    /** Returns a ToolBarItem tree structure of toolbars for this workbench. */
+    virtual ToolBarItem* setupToolBars() const=0;
+    /** Returns a ToolBarItem tree structure of command bars for this workbench. */
+    virtual ToolBarItem* setupCommandBars() const=0;
+    /** Returns a DockWindowItems structure of dock windows this workbench. */
+    virtual DockWindowItems* setupDockWindows() const=0;
 
 private:
-  /**
-   * The method imports the user defined toolbars or toolbox bars and creates
-   * a ToolBarItem tree structure.
-   */
-  void setupCustomToolbars(ToolBarItem* root, const char* toolbar) const;
-  void setupCustomShortcuts() const;
+    /**
+     * The method imports the user defined toolbars or toolbox bars and creates
+     * a ToolBarItem tree structure.
+     */
+    void setupCustomToolbars(ToolBarItem* root, const char* toolbar) const;
+    void setupCustomShortcuts() const;
 
 private:
-  QString _name;
+    QString _name;
 };
 
 /**
@@ -115,22 +119,22 @@ class GuiExport StdWorkbench : public Workbench
     TYPESYSTEM_HEADER();
 
 public:
-  StdWorkbench();
-  virtual ~StdWorkbench();
+    StdWorkbench();
+    virtual ~StdWorkbench();
 
 public:
-  /** Defines the standard context menu. */
-  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    /** Defines the standard context menu. */
+    virtual void setupContextMenu(const char* recipient,MenuItem*) const;
 
 protected:
-  /** Defines the standard menus. */
-  virtual MenuItem* setupMenuBar() const;
-  /** Defines the standard toolbars. */
-  virtual ToolBarItem* setupToolBars() const;
-  /** Defines the standard command bars. */
-  virtual ToolBarItem* setupCommandBars() const;
-  /** Returns a DockWindowItems structure of dock windows this workbench. */
-  virtual DockWindowItems* setupDockWindows() const;
+    /** Defines the standard menus. */
+    virtual MenuItem* setupMenuBar() const;
+    /** Defines the standard toolbars. */
+    virtual ToolBarItem* setupToolBars() const;
+    /** Defines the standard command bars. */
+    virtual ToolBarItem* setupCommandBars() const;
+    /** Returns a DockWindowItems structure of dock windows this workbench. */
+    virtual DockWindowItems* setupDockWindows() const;
 };
 
 /**
@@ -142,22 +146,21 @@ class GuiExport NoneWorkbench : public StdWorkbench
     TYPESYSTEM_HEADER();
 
 public:
-  NoneWorkbench();
-  virtual ~NoneWorkbench();
+    NoneWorkbench();
+    virtual ~NoneWorkbench();
 
-public:
-  /** Defines the standard context menu. */
-  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    /** Defines the standard context menu. */
+    virtual void setupContextMenu(const char* recipient,MenuItem*) const;
 
 protected:
-  /** Defines the standard menus. */
-  virtual MenuItem* setupMenuBar() const;
-  /** Defines the standard toolbars. */
-  virtual ToolBarItem* setupToolBars() const;
-  /** Defines the standard command bars. */
-  virtual ToolBarItem* setupCommandBars() const;
-  /** Returns a DockWindowItems structure of dock windows this workbench. */
-  virtual DockWindowItems* setupDockWindows() const;
+    /** Defines the standard menus. */
+    virtual MenuItem* setupMenuBar() const;
+    /** Defines the standard toolbars. */
+    virtual ToolBarItem* setupToolBars() const;
+    /** Defines the standard command bars. */
+    virtual ToolBarItem* setupCommandBars() const;
+    /** Returns a DockWindowItems structure of dock windows this workbench. */
+    virtual DockWindowItems* setupDockWindows() const;
 };
 
 class GuiExport TestWorkbench : public StdWorkbench
@@ -165,13 +168,13 @@ class GuiExport TestWorkbench : public StdWorkbench
     TYPESYSTEM_HEADER();
 
 public:
-  TestWorkbench();
-  ~TestWorkbench();
+    TestWorkbench();
+    ~TestWorkbench();
 
 protected:
-  MenuItem* setupMenuBar() const;
-  ToolBarItem* setupToolBars() const;
-  ToolBarItem* setupCommandBars() const;
+    MenuItem* setupMenuBar() const;
+    ToolBarItem* setupToolBars() const;
+    ToolBarItem* setupCommandBars() const;
 };
 
 /**
@@ -184,55 +187,55 @@ class GuiExport PythonWorkbench : public StdWorkbench
     TYPESYSTEM_HEADER();
 
 public:
-  PythonWorkbench();
-  ~PythonWorkbench();
-  /**
-   * Creates and returns immediately the corresponding Python workbench object.
-   */
-  PyObject* getPyObject();
+    PythonWorkbench();
+    ~PythonWorkbench();
+    /**
+     * Creates and returns immediately the corresponding Python workbench object.
+     */
+    PyObject* getPyObject();
 
-  /** @name Manipulation methods */
-  //@{
-  /// Appends a new menu
-  void appendMenu(const QStringList& menu, const QStringList& items) const;
-  /// Removes a menu
-  void removeMenu(const QString& menu ) const;
-  //// Shows a list of all menus
-  QStringList listMenus() const;
+    /** @name Manipulation methods */
+    //@{
+    /// Appends a new menu
+    void appendMenu(const QStringList& menu, const QStringList& items) const;
+    /// Removes a menu
+    void removeMenu(const QString& menu ) const;
+    //// Shows a list of all menus
+    QStringList listMenus() const;
 
-  /// Appends new context menu items
-  void appendContextMenu(const QStringList& menu, const QStringList& items) const;
-  /// Removes a context menu
-  void removeContextMenu(const QString& menu ) const;
-  void setupContextMenu(const char* recipient,MenuItem*) const;
-  void clearContextMenu();
+    /// Appends new context menu items
+    void appendContextMenu(const QStringList& menu, const QStringList& items) const;
+    /// Removes a context menu
+    void removeContextMenu(const QString& menu ) const;
+    void setupContextMenu(const char* recipient,MenuItem*) const;
+    void clearContextMenu();
 
-  /// Appends a new toolbar
-  void appendToolbar(const QString& bar, const QStringList& items) const;
-  /// Removes a toolbar
-  void removeToolbar(const QString& bar) const;
-  //// Shows a list of all toolbars
-  QStringList listToolbars() const;
+    /// Appends a new toolbar
+    void appendToolbar(const QString& bar, const QStringList& items) const;
+    /// Removes a toolbar
+    void removeToolbar(const QString& bar) const;
+    //// Shows a list of all toolbars
+    QStringList listToolbars() const;
 
-  /// Appends a new command bar
-  void appendCommandbar(const QString& bar, const QStringList& items) const;
-  /// Removes a command bar
-  void removeCommandbar(const QString& bar) const;
-  //// Shows a list of all command bars
-  QStringList listCommandbars() const;
-  //@}
+    /// Appends a new command bar
+    void appendCommandbar(const QString& bar, const QStringList& items) const;
+    /// Removes a command bar
+    void removeCommandbar(const QString& bar) const;
+    //// Shows a list of all command bars
+    QStringList listCommandbars() const;
+    //@}
 
 protected:
-  MenuItem* setupMenuBar() const;
-  ToolBarItem* setupToolBars() const;
-  ToolBarItem* setupCommandBars() const;
+    MenuItem* setupMenuBar() const;
+    ToolBarItem* setupToolBars() const;
+    ToolBarItem* setupCommandBars() const;
 
 private:
-  MenuItem* _menuBar;
-  MenuItem* _contextMenu;
-  ToolBarItem* _toolBar;
-  ToolBarItem* _commandBar;
-  Base::PyObjectBase* _workbenchPy;
+    MenuItem* _menuBar;
+    MenuItem* _contextMenu;
+    ToolBarItem* _toolBar;
+    ToolBarItem* _commandBar;
+    Base::PyObjectBase* _workbenchPy;
 };
 
 } // namespace Gui

@@ -288,6 +288,14 @@ void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
 }
 
+void Workbench::activated()
+{
+}
+
+void Workbench::deactivated()
+{
+}
+
 bool Workbench::activate()
 {
     ToolBarItem* tb = setupToolBars();
