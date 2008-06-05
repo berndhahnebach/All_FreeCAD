@@ -21,6 +21,12 @@
 #include "TopoShapePy.cpp"
 
 #include "TopoShapeFacePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeWirePy.h"
+#include "TopoShapeVertexPy.h"
+#include "TopoShapeSolidPy.h"
+#include "TopoShapeCompSolidPy.h"
+#include "TopoShapeCompoundPy.h"
 
 using namespace Part;
 
@@ -264,7 +270,7 @@ Py::List TopoShapePy::getVertexes(void) const
 		//BRepBuilderAPI_Copy copy(Ex.Current());
 		//TopoDS_Shape shape = copy.Shape();
 		TopoDS_Shape shape = Ex.Current();
-		ret.append(Py::Object(new TopoShapePy(new TopoShape(shape)),true));
+		ret.append(Py::Object(new TopoShapeVertexPy(new TopoShape(shape)),true));
 		Ex.Next();
 	}
 
@@ -278,12 +284,35 @@ Py::List TopoShapePy::getShapes(void) const
 
 Py::List TopoShapePy::getEdges(void) const
 {
-	return Py::List();
+	Py::List ret;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_EDGE);
+	while (Ex.More()) {
+		//BRepBuilderAPI_Copy copy(Ex.Current());
+		//TopoDS_Shape shape = copy.Shape();
+		TopoDS_Shape shape = Ex.Current();
+		ret.append(Py::Object(new TopoShapeEdgePy(new TopoShape(shape)),true));
+		Ex.Next();
+	}
+
+	return ret;
 }
 
 Py::List TopoShapePy::getWires(void) const
 {
-	return Py::List();
+	Py::List ret;
+
+	TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_WIRE);
+	while (Ex.More()) {
+		//BRepBuilderAPI_Copy copy(Ex.Current());
+		//TopoDS_Shape shape = copy.Shape();
+		TopoDS_Shape shape = Ex.Current();
+		ret.append(Py::Object(new TopoShapeWirePy(new TopoShape(shape)),true));
+		Ex.Next();
+	}
+
+	return ret;
+
 }
 
 PyObject *TopoShapePy::getCustomAttributes(const char* attr) const

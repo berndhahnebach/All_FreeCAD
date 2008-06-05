@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,64 +23,67 @@
  
 
 
-#ifndef PART_FEATURE_H
-#define PART_FEATURE_H
+#ifndef PROPERTYTOPOSHAPE_H
+#define PROPERTYTOPOSHAPE_H
 
 #include "TopoShape.h"
-#include "PropertyTopoShape.h"
 #include <App/DocumentObject.h>
 #include <App/PropertyGeo.h>
 
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
 
 namespace Part
 {
 
-class PartFeaturePy;
+class Property;
 
-/** Base class of all Feature classes in FreeCAD
+/** The part shape property
  */
-class AppPartExport Feature: public App::DocumentObject
+class AppPartExport PropertyPartShape : public App::PropertyComplexGeoData
 {
-    PROPERTY_HEADER(Part::Feature);
+    TYPESYSTEM_HEADER();
 
 public:
-    /// Constructor
-    Feature(void);
-    virtual ~Feature();
+    PropertyPartShape();
+    ~PropertyPartShape();
 
-    PropertyPartShape Shape;
-
-    /** @name methods overide Feature */
+    /** @name Getter/setter */
     //@{
-    /// recalculate the Feature
-    virtual App::DocumentObjectExecReturn *execute(void);
-    virtual short mustExecute(void) const;
+    /// set the part shape
+    void setValue( TopoDS_Shape );
+    /// get the part shape
+    TopoDS_Shape getValue(void) const;
+    Base::BoundBox3f getBoundingBox() const;
     //@}
 
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "PartGui::ViewProviderPart";
-    }
-
-    /** @name methods for handling the result shape */
+    /** @name Python interface */
     //@{
-    /** Set the result shape
-     */
-    void setShape(const TopoDS_Shape &Shape);
-    /** Get the actual result shape
-     */
-    TopoDS_Shape getShape(void);
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
     //@}
-    virtual PyObject* getPyObject(void);
+
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
+
+private:
+    /** Recursive counting of multiple referenced shape elements. */
+    unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
+    TopoDS_Shape _Shape;
+    //TopoShape _Shape;
 };
+
+
 
 } //namespace Part
 
 
-#endif // PART_FEATURE_H
+#endif // PROPERTYTOPOSHAPE_H
