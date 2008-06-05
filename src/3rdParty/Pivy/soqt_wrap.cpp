@@ -11,8 +11,10 @@
 #define SWIGPYTHON
 #define SWIG_PYTHON_DIRECTOR_NO_VTABLE
 
+#ifdef _MSC_VER
 #pragma warning(disable:4312)
 #pragma warning(disable:4311)
+#endif
  
 
 #ifdef __cplusplus
