@@ -39,15 +39,15 @@ WorkbenchManager* WorkbenchManager::_instance = 0;
 
 WorkbenchManager* WorkbenchManager::instance()
 {
-  if ( _instance == 0 )
-    _instance = new WorkbenchManager;
-  return _instance;
+    if (_instance == 0)
+        _instance = new WorkbenchManager;
+    return _instance;
 }
 
 void WorkbenchManager::destruct()
 {
-  delete _instance;
-  _instance = 0;
+    delete _instance;
+    _instance = 0;
 }
 
 WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
@@ -56,80 +56,76 @@ WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
 
 WorkbenchManager::~WorkbenchManager()
 {
-  for ( QMap<QString, Workbench*>::Iterator it = _workbenches.begin(); it != _workbenches.end(); ++it ) {
-    Workbench* wb = it.value();
-    delete wb;
-  }
+    for (QMap<QString, Workbench*>::Iterator it = _workbenches.begin(); it != _workbenches.end(); ++it) {
+        Workbench* wb = it.value();
+        delete wb;
+    }
 
-  MenuManager::destruct();
-  ToolBarManager::destruct();
-  CommandBarManager::destruct();
-  DockWindowManager::destruct();
+    MenuManager::destruct();
+    ToolBarManager::destruct();
+    CommandBarManager::destruct();
+    DockWindowManager::destruct();
 }
 
 Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QString& className )
 {
-  Workbench* wb = getWorkbench( name );
+    Workbench* wb = getWorkbench(name);
 
-  if ( !wb )
-  {
-    // try to create an instance now
-    wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toAscii(),false);
-    if ( wb )
-    {
-      if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId()))
-      {
-        delete wb;
-        QString error = QString("'%1' is not a workbench type").arg(className);
-        throw Base::Exception((const char*)error.toAscii());
-      }
+    if (!wb) {
+        // try to create an instance now
+        wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toAscii(),false);
+        if (wb) {
+            if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId())) {
+                delete wb;
+                QString error = QString("'%1' is not a workbench type").arg(className);
+                throw Base::Exception((const char*)error.toAscii());
+            }
 
-      wb->setName( name );
-      _workbenches[ name ] = wb;
-    }else
-      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "
-      "Workbench instance with type: %s\n",(const char*)className.toAscii());
-  }
-  
-  return wb;
+            wb->setName( name );
+            _workbenches[ name ] = wb;
+        }
+        else
+            Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "
+                "Workbench instance with type: %s\n",(const char*)className.toAscii());
+    }
+
+    return wb;
 }
 
 Workbench* WorkbenchManager::getWorkbench ( const QString& name )
 {
-  Workbench* wb=0;
+    Workbench* wb=0;
 
-  QMap<QString, Workbench*>::Iterator it = _workbenches.find( name );
-  if ( it != _workbenches.end() )
-  {
-    // returns the already created object
-    wb = it.value();
-  }
-  
-  return wb;
+    QMap<QString, Workbench*>::Iterator it = _workbenches.find(name);
+    if (it != _workbenches.end()) {
+        // returns the already created object
+        wb = it.value();
+    }
+
+    return wb;
 }
 
 bool WorkbenchManager::activate( const QString& name, const QString& className )
 {
-  Workbench* wb = createWorkbench( name, className );
-  if ( wb ) 
-  {
-    _activeWorkbench = wb;
-    wb->activate();
-    return true;
-  }
+    Workbench* wb = createWorkbench(name, className);
+    if (wb) {
+        _activeWorkbench = wb;
+        wb->activate();
+        return true;
+    }
   
-  return false;
+    return false;
 }
 
 Workbench* WorkbenchManager::active() const
 {
-  return _activeWorkbench;
+    return _activeWorkbench;
 }
 
 QStringList WorkbenchManager::workbenches() const
 {
-  QStringList wb;
-  for ( QMap<QString, Workbench*>::ConstIterator it = _workbenches.begin(); it != _workbenches.end(); ++it )
-    wb << it.key();
-  return wb;
+    QStringList wb;
+    for (QMap<QString, Workbench*>::ConstIterator it = _workbenches.begin(); it != _workbenches.end(); ++it)
+        wb << it.key();
+    return wb;
 }
