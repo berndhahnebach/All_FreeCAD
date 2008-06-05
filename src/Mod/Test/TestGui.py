@@ -127,17 +127,15 @@ class TestWorkbenchCmd:
     def Activated(self):
         i=0
         while (i<20):
-            FreeCADGui.activateWorkbench("Mesh design")
+            FreeCADGui.activateWorkbench("MeshWorkbench")
             FreeCADGui.updateGui()
-            FreeCADGui.activateWorkbench("<none>")
+            FreeCADGui.activateWorkbench("NoneWorkbench")
             FreeCADGui.updateGui()
-            FreeCADGui.activateWorkbench("Part design")
-            FreeCADGui.updateGui()
-            FreeCADGui.activateWorkbench("Raytracing")
+            FreeCADGui.activateWorkbench("PartWorkbench")
             FreeCADGui.updateGui()
             print i
             i=i+1
-        FreeCADGui.activateWorkbench("Test framework")
+        FreeCADGui.activateWorkbench("TestWorkbench")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
@@ -147,7 +145,7 @@ class TestWorkbenchCmd:
 class TestCreateMenuCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestGui("Menu.MenuCreateCases")
+        TestApp.TestText("Menu.MenuCreateCases")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
@@ -157,7 +155,7 @@ class TestCreateMenuCmd:
 class TestDeleteMenuCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestGui("Menu.MenuDeleteCases")
+        TestApp.TestText("Menu.MenuDeleteCases")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',

@@ -615,7 +615,7 @@ void MainWindow::showEvent(QShowEvent  * /*e*/)
 {
     // needed for logging
     std::clog << "Show main window" << std::endl;
-    d->visibleTimer->start(5000);
+    d->visibleTimer->start(15000);
 }
 
 void MainWindow::hideEvent(QHideEvent  * /*e*/)
@@ -632,16 +632,10 @@ void MainWindow::showMainWindow()
     // starts a timer to check for the visibility of the main window and call
     // ShowWindow() if needed.
     // So far, this phenomena only appeared with Qt4.1.4
-#ifdef Q_WS_WIN
+#if defined(Q_WS_WIN) && (QT_VERSION == 0x040104)
     WId id = this->winId();
-    if (!IsWindowVisible(id)) {
-        ShowWindow(id, SW_SHOW);
-        // FIXME: keep this until we know this workaround fixes the problem
-        if (App::Application::Config()["ExeName"] == "FreeCAD")
-            QMessageBox::information(0, "Show window","MainWindow::showMainWindow()");
-        else
-            std::cerr << "Force to show invisible main window" << std::endl;
-    }
+    ShowWindow(id, SW_SHOW);
+    std::cout << "Force to show main window" << std::endl;
 #endif
 }
 

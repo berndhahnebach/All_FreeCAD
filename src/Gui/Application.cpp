@@ -604,9 +604,9 @@ bool Application::activateWorkbench(const char* name)
             activate.apply(args);
         }
 
-        // the Python workbench handler has changed the workbench
-        Workbench* newWb = WorkbenchManager::instance()->active();
-        if (newWb && newWb->name() == name)
+        // does the Python workbench handler have changed the workbench?
+        Workbench* curWb = WorkbenchManager::instance()->active();
+        if (curWb && curWb->name() == name)
             ok = true; // already active
         // now try to create and activate the matching workbench object
         else if (WorkbenchManager::instance()->activate(name, type)) {
@@ -635,6 +635,9 @@ bool Application::activateWorkbench(const char* name)
             }
         }
 
+        if (oldWb)
+            oldWb->deactivated();
+
         // If the method Activate is available we call it
         if (handler.hasAttr(std::string("Activated"))) {
             Py::Object method(handler.getAttr(std::string("Activated")));
@@ -644,6 +647,11 @@ bool Application::activateWorkbench(const char* name)
                 activate.apply(args);
             }
         }
+
+        // now get the newly activated workbench
+        Workbench* newWb = WorkbenchManager::instance()->active();
+        if (newWb)
+            newWb->activated();
     }
     catch (Py::Exception& e) {
         Py::Object o = Py::type(e);
@@ -828,6 +836,7 @@ void Application::setupContextMenu(const char* recipient, MenuItem* items) const
         // 'ContextMenu' of the handler object
         if (actWb->getTypeId().isDerivedFrom(PythonWorkbench::getClassTypeId())) {
             static_cast<PythonWorkbench*>(actWb)->clearContextMenu();
+            Base::PyGILStateLocker lock;
             PyObject* pWorkbench = 0;
             pWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, actWb->name().toAscii());
 
@@ -840,7 +849,12 @@ void Application::setupContextMenu(const char* recipient, MenuItem* items) const
                 method.apply(args);
             }
             catch (Py::Exception& e) {
+                Py::Object o = Py::type(e);
                 e.clear();
+                if (o.isString()) {
+                    Py::String s(o);
+                    std::clog << "Application::setupContextMenu: " << s.as_std_string() << std::endl;
+                }
             }
         }
         actWb->setupContextMenu(recipient, items);
