@@ -24,39 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <sstream>
-# include <BRepAdaptor_Curve.hxx>
-# include <BRepAdaptor_Surface.hxx>
-# include <BRepBndLib.hxx>
-# include <Bnd_Box.hxx>
-# include <BRepTools.hxx>
-# include <BRepTools_ShapeSet.hxx>
-# include <BRepBuilderAPI_Copy.hxx>
-# include <TopTools_HSequenceOfShape.hxx>
-# include <STEPControl_Writer.hxx>
-# include <STEPControl_Reader.hxx>
-# include <TopTools_MapOfShape.hxx>
-# include <TopoDS.hxx>
-# include <TopoDS_Iterator.hxx>
-# include <TopExp.hxx>
-# include <Geom_BezierCurve.hxx>
-# include <Geom_BezierSurface.hxx>
-# include <Geom_BSplineCurve.hxx>
-# include <Geom_BSplineSurface.hxx>
-# include <Geom_SurfaceOfLinearExtrusion.hxx>
-# include <Geom_SurfaceOfRevolution.hxx>
-# include <Geom_Circle.hxx>
-# include <Geom_ConicalSurface.hxx>
-# include <Geom_CylindricalSurface.hxx>
-# include <Geom_Ellipse.hxx>
-# include <Geom_Hyperbola.hxx>
-# include <Geom_Line.hxx>
-# include <Geom_Parabola.hxx>
-# include <Geom_Plane.hxx>
-# include <Geom_CartesianPoint.hxx>
-# include <Geom_SphericalSurface.hxx>
-# include <Geom_ToroidalSurface.hxx>
-# include <Standard_Failure.hxx>
 #endif
 
 
