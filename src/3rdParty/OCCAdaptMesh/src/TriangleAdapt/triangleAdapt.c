@@ -1347,10 +1347,10 @@ int triunsuitable(vertex triorg, vertex tridest, vertex triapex, REAL area);
 #endif
 
 /* Open CASCADE Support : Use Open CASCADE exceptions */
-#if defined(__GNUC__)
-extern void occinternalerrorAdapt ();
-#else
+#if (defined(_MSC_VER) && (_MSC_VER < 1500))
 extern "C" void occinternalerrorAdapt ();
+#else
+extern void occinternalerrorAdapt ();
 #endif
 
 /********* Memory allocation wrappers begin here                     *********/

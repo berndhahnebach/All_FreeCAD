@@ -971,7 +971,7 @@ void Application::LoadParameters(void)
 
 #if 1
 
-#if defined(FC_OS_WIN32)
+#if (defined(_MSC_VER) && (_MSC_VER < 1500))
 // fix weird error while linking boost???
 namespace boost
 {
