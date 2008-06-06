@@ -16,6 +16,12 @@ _coin_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		$(sim_ac_coin_libs)
 
+_coindir = $(prefix)/bin/pivy
+_coin_DATA = \
+		__init__.py \
+		coin.py \
+		sogui.py
+
 #--------------------------------------------------------------------------------------
 # SoQt
 
@@ -31,14 +37,27 @@ _soqt_la_LIBADD   = \
 		$(sim_ac_coin_libs) \
 		$(sim_ac_soqt_libs)
 
+_soqt.la: $(_soqt_la_OBJECTS) $(_soqt_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir)/gui $(_soqt_la_LDFLAGS) $(_soqt_la_OBJECTS) $(_soqt_la_LIBADD) $(LIBS)
+
+_soqtdir = $(prefix)/bin/pivy/gui
+_soqt_DATA = \
+		__init__.py \
+		soqt.py
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 libdir = $(prefix)/bin/pivy
-datadir = $(prefix)/bin/pivy
-data_DATA = __init__.py \
+install-exec-hook:
+		$(mkdir_p) $(DESTDIR)$(libdir)/gui
+		mv $(DESTDIR)$(libdir)/_soqt.* \
+		   $(DESTDIR)$(libdir)/gui/
+
+data_DATA = \
+		__init__.py \
 		coin.py \
 		sogui.py \
 		soqt.py
