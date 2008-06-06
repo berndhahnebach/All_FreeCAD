@@ -1,33 +1,29 @@
-project(OCCAdaptMesh)
-
-
 
 set(OCCAdaptMesh_Include
 ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
 
-include_directories(${OCCAdaptMesh_Include} ${OCC_Includes})
+include_directories(${OCCAdaptMesh_Include} ${OCC_INCLUDE_DIR})
 
 
-add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
-
-
+if(WIN32)
+add_definitions(-DWNT -DNO_TIMER -D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE -DOCCAdaptMesh_EXPORTS)
+endif(WIN32)
 
 
 
 set(OCC_Libs
-TKBRep.lib
-TKernel.lib
-TKG2d.lib
-TKG3d.lib
-TKGeomAlgo.lib
-TKGeomBase.lib
-TKMath.lib
-TKMesh.lib
-TKTopAlgo.lib
+TKBRep
+TKernel
+TKG2d
+TKG3d
+TKGeomAlgo
+TKGeomBase
+TKMath
+TKMesh
+TKTopAlgo
 
 )
-
 
 
 set(OCCAdaptMesh_BRepMeshAdapt_SRCS
@@ -309,7 +305,8 @@ ${OCCAdaptMesh_BREPUTILS_HDRS}
 
 
 
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
 
-ADD_LIBRARY(OCCAdaptMesh SHARED ${OCCAdaptMesh_SRCS} ${OCCAdaptMesh_HDRS})
+add_library(OCCAdaptMesh SHARED ${OCCAdaptMesh_SRCS} ${OCCAdaptMesh_HDRS})
 
 target_link_libraries(OCCAdaptMesh ${OCC_Libs})
