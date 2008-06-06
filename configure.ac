@@ -575,6 +575,7 @@ AC_CONFIG_FILES([Makefile
 src/Makefile 
 src/3rdParty/Makefile 
 src/3rdParty/OCCAdaptMesh/Makefile 
+src/3rdParty/Pivy/Makefile 
 src/Base/Makefile 
 src/App/Makefile 
 src/Gui/Makefile 
