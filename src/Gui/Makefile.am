@@ -124,18 +124,12 @@ libFreeCADGui_la_BUILT=\
 
 libFreeCADGui_la_SOURCES=\
 		Action.cpp \
-		Action.h \
 		Application.cpp \
 		ApplicationPy.cpp \
-		Application.h \
 		BitmapFactory.cpp \
-		BitmapFactory.h \
 		CallTips.cpp \
-		CallTips.h \
 		Command.cpp \
-		Command.h \
 		CommandBarManager.cpp \
-		CommandBarManager.h \
 		CommandDoc.cpp  \
 		CommandFeat.cpp  \
 		CommandStd.cpp  \
@@ -193,149 +187,161 @@ libFreeCADGui_la_SOURCES=\
 		DlgUndoRedo.cpp \
 		DlgUndoRedo.h \
 		DockWindow.cpp \
-		DockWindow.h \
 		DockWindowManager.cpp \
-		DockWindowManager.h \
 		Document.cpp \
-		Document.h \
 		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		FileDialog.cpp \
-		FileDialog.h \
 		Flag.cpp \
-		Flag.h \
 		GuiConsole.cpp \
 		GuiConsole.h \
 		HelpView.cpp \
-		HelpView.h \
 		Macro.cpp \
-		Macro.h \
 		MainWindow.cpp \
-		MainWindow.h \
 		MDIView.cpp \
-		MDIView.h \
 		MenuManager.cpp \
-		MenuManager.h \
 		MouseModel.cpp \
-		MouseModel.h \
 		NavigationStyle.cpp \
-		NavigationStyle.h \
 		NetworkRetriever.cpp \
-		NetworkRetriever.h \
 		OnlineDocumentation.cpp \
 		OnlineDocumentation.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrefWidgets.cpp \
-		PrefWidgets.h \
 		ProgressBar.cpp \
-		ProgressBar.h \
 		PropertyPage.cpp \
-		PropertyPage.h \
 		PropertyView.cpp \
-		PropertyView.h \
 		PythonConsole.cpp \
-		PythonConsole.h \
 		PythonConsolePy.cpp \
 		PythonConsolePy.h \
 		PythonEditor.cpp \
-		PythonEditor.h \
 		PythonView.cpp \
-		PythonView.h \
 		PythonWorkbenchPyImp.cpp \
 		ReportView.cpp \
-		ReportView.h \
 		resource.cpp \
 		Selection.cpp \
-		Selection.h \
 		SoFCBackgroundGradient.cpp \
-		SoFCBackgroundGradient.h \
 		SoFCBoundingBox.cpp \
-		SoFCBoundingBox.h \
 		SoFCColorBar.cpp \
-		SoFCColorBar.h \
 		SoFCColorGradient.cpp \
-		SoFCColorGradient.h \
 		SoFCColorLegend.cpp \
-		SoFCColorLegend.h \
 		SoFCDB.cpp \
 		SoFCDB.h \
 		SoFCInteractiveElement.cpp \
-		SoFCInteractiveElement.h \
 		SoNavigationDragger.cpp \
-		SoNavigationDragger.h \
 		SoFCOffscreenRenderer.cpp \
-		SoFCOffscreenRenderer.h \
 		SoFCSelection.cpp \
-		SoFCSelection.h \
 		SoFCSelectionAction.cpp \
-		SoFCSelectionAction.h \
 		SoFCVectorizeSVGAction.cpp \
-		SoFCVectorizeSVGAction.h \
 		SpinBox.cpp \
-		SpinBox.h \
 		Splashscreen.cpp \
-		Splashscreen.h \
 		SplitView3DInventor.cpp \
-		SplitView3DInventor.h \
 		TextEdit.cpp \
-		TextEdit.h \
 		ToolBarManager.cpp \
-		ToolBarManager.h \
 		ToolBox.cpp \
-		ToolBox.h \
 		Tree.cpp \
-		Tree.h \
 		View.cpp \
-		View.h \
 		View3DInventor.cpp \
-		View3DInventor.h \
 		View3DInventorExamples.cpp \
 		View3DInventorExamples.h \
 		View3DInventorViewer.cpp \
-		View3DInventorViewer.h \
 		View3DPy.cpp \
-		View3DPy.h \
 		ViewProvider.cpp \
-		ViewProvider.h \
 		ViewProviderDocumentObject.cpp \
-		ViewProviderDocumentObject.h \
 		ViewProviderDocumentObjectGroup.cpp \
-		ViewProviderDocumentObjectGroup.h \
 		ViewProviderExtern.cpp \
-		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \
-		ViewProviderFeature.h \
 		ViewProviderGeometryObject.cpp \
-		ViewProviderGeometryObject.h \
 		ViewProviderInventorObject.cpp \
-		ViewProviderInventorObject.h \
 		ViewProviderPyImp.cpp \
 		ViewProviderDocumentObjectPyImp.cpp \
 		ViewProviderPythonFeature.cpp \
-		ViewProviderPythonFeature.h \
 		WaitCursor.cpp \
-		WaitCursor.h \
 		WhatsThis.cpp \
-		WhatsThis.h \
 		WidgetFactory.cpp \
-		WidgetFactory.h \
 		Widgets.cpp \
-		Widgets.h \
 		Window.cpp \
-		Window.h \
 		Workbench.cpp \
-		Workbench.h \
 		WorkbenchFactory.cpp \
-		WorkbenchFactory.h \
 		WorkbenchManager.cpp \
-		WorkbenchManager.h \
 		WorkbenchPyImp.cpp 
+
+includedir = @includedir@/Gui
+nodist_include_HEADERS=\
+		$(libFreeCADGui_la_BUILT)
+
+include_HEADERS=\
+		Qt4All.h \
+		InventorAll.h \
+		Action.h \
+		Application.h \
+		BitmapFactory.h \
+		CallTips.h \
+		Command.h \
+		CommandBarManager.h \
+		DockWindow.h \
+		DockWindowManager.h \
+		Document.h \
+		FileDialog.h \
+		Flag.h \
+		HelpView.h \
+		Macro.h \
+		MainWindow.h \
+		MDIView.h \
+		MenuManager.h \
+		MouseModel.h \
+		NavigationStyle.h \
+		NetworkRetriever.h \
+		PrefWidgets.h \
+		ProgressBar.h \
+		PropertyPage.h \
+		PropertyView.h \
+		PythonConsole.h \
+		PythonEditor.h \
+		PythonView.h \
+		ReportView.h \
+		Selection.h \
+		SoFCBackgroundGradient.h \
+		SoFCBoundingBox.h \
+		SoFCColorBar.h \
+		SoFCColorGradient.h \
+		SoFCColorLegend.h \
+		SoFCInteractiveElement.h \
+		SoNavigationDragger.h \
+		SoFCOffscreenRenderer.h \
+		SoFCSelection.h \
+		SoFCSelectionAction.h \
+		SoFCVectorizeSVGAction.h \
+		SpinBox.h \
+		Splashscreen.h \
+		SplitView3DInventor.h \
+		TextEdit.h \
+		ToolBarManager.h \
+		ToolBox.h \
+		Tree.h \
+		View.h \
+		View3DInventor.h \
+		View3DInventorViewer.h \
+		View3DPy.h \
+		ViewProvider.h \
+		ViewProviderDocumentObject.h \
+		ViewProviderDocumentObjectGroup.h \
+		ViewProviderExtern.h \
+		ViewProviderFeature.h \
+		ViewProviderGeometryObject.h \
+		ViewProviderInventorObject.h \
+		ViewProviderPythonFeature.h \
+		WaitCursor.h \
+		WhatsThis.h \
+		WidgetFactory.h \
+		Widgets.h \
+		Window.h \
+		Workbench.h \
+		WorkbenchFactory.h \
+		WorkbenchManager.h
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
-		Qt4All.h \
-		InventorAll.h \
 		FreeCADGuiInit.py \
 		DocumentPy.xml \
 		PythonWorkbenchPy.xml \

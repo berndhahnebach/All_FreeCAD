@@ -56,6 +56,9 @@ install-exec-hook:
 		mv $(DESTDIR)$(libdir)/_soqt.* \
 		   $(DESTDIR)$(libdir)/gui/
 
+uninstall-hook:
+		rm -r $(DESTDIR)$(libdir)/gui
+
 data_DATA = \
 		__init__.py \
 		coin.py \

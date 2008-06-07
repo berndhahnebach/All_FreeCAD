@@ -23,57 +23,64 @@ libFreeCADApp_la_BUILT=\
 
 libFreeCADApp_la_SOURCES=\
 		Application.cpp \
-		Application.h \
 		ApplicationPy.cpp \
 		ColorModel.cpp \
-		ColorModel.h \
 		ComplexGeoData.cpp \
-		ComplexGeoData.h \
 		ComplexGeoDataPyImp.cpp \
 		Document.cpp \
-		Document.h \
 		DocumentObject.cpp \
-		DocumentObject.h \
 		DocumentObjectGroup.cpp \
-		DocumentObjectGroup.h \
 		DocumentObjectGroupPyImp.cpp \
 		DocumentObjectPyImp.cpp \
 		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		Feature.cpp \
-		Feature.h \
 		FeaturePyImp.cpp \
 		FeaturePython.cpp \
-		FeaturePython.h \
 		FeaturePythonPyImp.cpp \
 		FeatureTest.cpp \
-		FeatureTest.h \
 		GeoFeature.cpp \
-		GeoFeature.h \
 		InventorObject.cpp \
-		InventorObject.h \
 		Material.cpp \
-		Material.h \
 		MaterialPy.cpp \
-		MaterialPy.h \
 		MatrixPy.cpp \
-		MatrixPy.h \
 		Placement.cpp \
-		Placement.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Property.cpp \
-		Property.h \
 		PropertyGeo.cpp \
-		PropertyGeo.h \
 		PropertyContainer.cpp \
-		PropertyContainer.h \
 		PropertyContainerPyImp.cpp \
 		PropertyLinks.cpp \
-		PropertyLinks.h \
 		PropertyStandard.cpp \
+		Transactions.cpp
+
+includedir = @includedir@/App
+
+nodist_include_HEADERS=\
+		$(libFreeCADApp_la_BUILT)
+
+include_HEADERS=\
+		Application.h \
+		ColorModel.h \
+		ComplexGeoData.h \
+		Document.h \
+		DocumentObject.h \
+		DocumentObjectGroup.h \
+		Feature.h \
+		FeaturePython.h \
+		FeatureTest.h \
+		GeoFeature.h \
+		InventorObject.h \
+		Material.h \
+		MaterialPy.h \
+		MatrixPy.h \
+		Placement.h \
+		Property.h \
+		PropertyGeo.h \
+		PropertyContainer.h \
+		PropertyLinks.h \
 		PropertyStandard.h \
-		Transactions.cpp \
 		Transactions.h
 
 %Script.h: FreeCAD%.py
