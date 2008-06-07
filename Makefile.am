@@ -24,6 +24,5 @@ debian-package:
 	version=`dpkg-parsechangelog | grep '^Version:' | cut -d' ' -f2 | cut -d'-' -f1` && \
 	cd .. && $(RM) -r $$package-$$version && \
 	mv $(PACKAGE)-$(VERSION) $$package-$$version && \
-	tar czf $$package"_"$$version.orig.tar.gz $$package-$$version && \
 	cd $$package-$$version && \
 	debuild
