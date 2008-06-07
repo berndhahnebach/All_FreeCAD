@@ -6,20 +6,24 @@ BUILT_SOURCES=\
 
 libpropertyeditor_la_SOURCES=\
 		propertyeditor.cpp \
-		propertyeditor.h \
 		propertyeditoritem.cpp \
-		propertyeditoritem.h \
 		propertyeditordate.cpp \
-		propertyeditordate.h \
 		propertyeditorfile.cpp \
-		propertyeditorfile.h \
 		propertyeditorfont.cpp \
-		propertyeditorfont.h \
 		propertyeditorinput.cpp \
-		propertyeditorinput.h \
-		propertyeditorlist.cpp \
-		propertyeditorlist.h
+		propertyeditorlist.cpp
 
+
+includedir = @includedir@/Gui/propertyeditor
+
+include_HEADERS=\
+		propertyeditor.h \
+		propertyeditoritem.h \
+		propertyeditordate.h \
+		propertyeditorfile.h \
+		propertyeditorfont.h \
+		propertyeditorinput.h \
+		propertyeditorlist.h
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h

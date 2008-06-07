@@ -75,80 +75,122 @@ libFreeCADBase_la_SOURCES=\
 		PyCXX/IndirectPythonInterface.hxx \
 		PyCXX/Objects.hxx \
 		BaseClass.cpp \
-		BaseClass.h \
 		BaseClassPyImp.cpp \
 		BoundBoxPyImp.cpp \
-		BoundBox.h \
 		Builder3D.cpp \
-		Builder3D.h \
 		Console.cpp \
-		Console.h \
 		Doxygen.cpp \
 		Exception.cpp \
-		Exception.h \
 		Factory.cpp \
-		Factory.h \
 		FileInfo.cpp \
-		FileInfo.h \
 		FileTemplate.cpp \
 		FileTemplate.h \
 		gzstream.cpp \
-		gzstream.h \
 		Handle.cpp \
-		Handle.h \
 		InputSource.cpp \
-		InputSource.h \
 		Interpreter.cpp \
-		Interpreter.h \
 		Matrix.cpp \
-		Matrix.h \
 		MemDebug.cpp \
 		MemDebug.h \
-		Observer.h \
 		Parameter.cpp \
-		Parameter.h \
 		ParameterPy.cpp \
 		Persistance.cpp \
-		Persistance.h \
 		PersistancePyImp.cpp \
 		Placement.cpp \
-		Placement.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PyExport.cpp \
-		PyExport.h \
 		PyObjectBase.cpp \
-		PyObjectBase.h \
 		PyTools.c \
 		PyTools.h \
 		Reader.cpp \
-		Reader.h \
 		Rotation.cpp \
-		Rotation.h \
 		Sequencer.cpp \
-		Sequencer.h \
 		Stream.cpp \
-		Stream.h \
 		Swap.cpp \
-		Swap.h \
 		swigpyrun_1.3.25.cpp \
 		swigpyrun_1.3.25.h \
 		swigpyrun_1.3.33.cpp \
 		swigpyrun_1.3.33.h \
 		TimeInfo.cpp \
-		TimeInfo.h \
 		Type.cpp \
-		Type.h \
 		Tools2D.cpp \
-		Tools2D.h \
 		VectorPyImp.cpp \
 		Vector3D.cpp \
+		Writer.cpp \
+		XMLTools.cpp
+
+includedir = @includedir@/Base
+nodist_include_HEADERS=\
+		$(libFreeCADBase_la_BUILT)
+
+include_HEADERS=\
+		BaseClass.h \
+		BoundBox.h \
+		Builder3D.h \
+		Console.h \
+		Exception.h \
+		Factory.h \
+		FileInfo.h \
+		gzstream.h \
+		Handle.h \
+		InputSource.h \
+		Interpreter.h \
+		Matrix.h \
+		Observer.h \
+		Parameter.h \
+		Persistance.h \
+		Placement.h \
+		PyExport.h \
+		PyObjectBase.h \
+		Reader.h \
+		Rotation.h \
+		Sequencer.h \
+		Stream.h \
+		Swap.h \
+		TimeInfo.h \
+		Type.h \
+		Tools2D.h \
 		Vector3D.h \
 		ViewProj.h \
-		Writer.cpp \
 		Writer.h \
-		XMLTools.cpp \
 		XMLTools.h
+
+nobase_include_HEADERS = \
+		zipios/backbuffer.h \
+		zipios/basicentry.h \
+		zipios/collcoll.h \
+		zipios/deflateoutputstreambuf.h \
+		zipios/dircoll.h \
+		zipios/directory.h \
+		zipios/fcoll.h \
+		zipios/fcollexceptions.h \
+		zipios/fileentry.h \
+		zipios/filepath.h \
+		zipios/filterinputstreambuf.h \
+		zipios/filteroutputstreambuf.h \
+		zipios/gzipoutputstream.h \
+		zipios/gzipoutputstreambuf.h \
+		zipios/inflateinputstreambuf.h \
+		zipios/meta-iostreams.h \
+		zipios/outputstringstream.h \
+		zipios/simplesmartptr.h \
+		zipios/virtualseeker.h \
+		zipios/zipfile.h \
+		zipios/ziphead.h \
+		zipios/zipheadio.h \
+		zipios/zipinputstream.h \
+		zipios/zipinputstreambuf.h \
+		zipios/zipios_common.h \
+		zipios/zipios-config.h \
+		zipios/zipios_defs.h \
+		zipios/zipoutputstreambuf.h \
+		zipios/zipoutputstream.h \
+		PyCXX/Config.hxx \
+		PyCXX/Exception.hxx \
+		PyCXX/Extensions.hxx \
+		PyCXX/IndirectPythonInterface.hxx \
+		PyCXX/Objects.hxx
 
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
