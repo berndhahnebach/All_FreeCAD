@@ -20,28 +20,30 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \
-		PropertyEditorMesh.h \
 		SoFCMeshFaceSet.cpp \
-		SoFCMeshFaceSet.h \
 		SoFCMeshNode.cpp \
-		SoFCMeshNode.h \
 		SoFCMeshVertex.cpp \
-		SoFCMeshVertex.h \
 		ViewProvider.cpp \
-		ViewProvider.h \
 		ViewProviderMeshNode.cpp \
-		ViewProviderMeshNode.h \
 		ViewProviderMeshFaceSet.cpp \
-		ViewProviderMeshFaceSet.h \
 		ViewProviderCurvature.cpp \
-		ViewProviderCurvature.h \
 		ViewProviderDefects.cpp \
-		ViewProviderDefects.h \
 		ViewProviderTransform.cpp \
-		ViewProviderTransform.h \
 		ViewProviderTransformDemolding.cpp \
+		Workbench.cpp
+
+include_HEADERS=\
+		PropertyEditorMesh.h \
+		SoFCMeshFaceSet.h \
+		SoFCMeshNode.h \
+		SoFCMeshVertex.h \
+		ViewProvider.h \
+		ViewProviderMeshNode.h \
+		ViewProviderMeshFaceSet.h \
+		ViewProviderCurvature.h \
+		ViewProviderDefects.h \
+		ViewProviderTransform.h \
 		ViewProviderTransformDemolding.h \
-		Workbench.cpp \
 		Workbench.h
 
 # the library search path.
@@ -94,6 +96,7 @@ INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I$(top_srcd
 endif
 endif
 
+includedir = @includedir@/Mod/Mesh/Gui
 libdir = $(prefix)/Mod/Mesh
 
 CLEANFILES = $(BUILT_SOURCES)

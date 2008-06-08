@@ -254,49 +254,75 @@ libMesh_la_SOURCES=\
 		WildMagic4/Wm4Vector4.inl \
 		AppMeshPy.cpp \
 		CurveProjector.cpp \
-		CurveProjector.h \
 		Doxygen.cpp \
 		Facet.cpp \
-		Facet.h \
 		FacetPyImp.cpp \
 		FeatureMeshCurvature.cpp \
-		FeatureMeshCurvature.h \
 		FeatureMeshExport.cpp \
-		FeatureMeshExport.h \
 		FeatureMeshDefects.cpp \
 		FeatureMeshDefects.h \
 		FeatureMeshImport.cpp \
-		FeatureMeshImport.h \
 		FeatureMeshSegmentByMesh.cpp \
-		FeatureMeshSegmentByMesh.h \
 		FeatureMeshSetOperations.cpp \
-		FeatureMeshSetOperations.h \
 		FeatureMeshSolid.cpp \
-		FeatureMeshSolid.h \
 		FeatureMeshTransform.cpp \
-		FeatureMeshTransform.h \
 		FeatureMeshTransformDemolding.cpp \
-		FeatureMeshTransformDemolding.h \
 		Mesh.cpp \
-		Mesh.h \
 		MeshAlgos.cpp \
 		MeshAlgos.h \
 		MeshCurvature.cpp \
 		MeshCurvature.h \
 		MeshFeature.cpp \
-		MeshFeature.h \
 		MeshFeaturePyImp.cpp \
 		MeshPointPyImp.cpp \
-		MeshPoint.h \
 		MeshProperties.cpp \
-		MeshProperties.h \
 		MeshPyImp.cpp \
 		GTSAlgos.cpp \
 		GTSAlgos.h \
 		Segment.cpp \
-		Segment.h \
 		PreCompiled.cpp \
 		PreCompiled.h
+
+nodist_include_HEADERS=\
+		$(libMesh_la_BUILT)
+
+include_HEADERS=\
+		CurveProjector.h \
+		Facet.h \
+		FeatureMeshCurvature.h \
+		FeatureMeshExport.h \
+		FeatureMeshImport.h \
+		FeatureMeshSegmentByMesh.h \
+		FeatureMeshSetOperations.h \
+		FeatureMeshSolid.h \
+		FeatureMeshTransform.h \
+		FeatureMeshTransformDemolding.h \
+		Mesh.h \
+		MeshFeature.h \
+		MeshPoint.h \
+		MeshProperties.h \
+		Segment.h
+
+nobase_include_HEADERS = \
+		Core/Algorithm.h \
+		Core/Approximation.h \
+		Core/Builder.h \
+		Core/Definitions.h \
+		Core/Degeneration.h \
+		Core/Elements.h \
+		Core/Evaluation.h \
+		Core/Grid.h \
+		Core/Helpers.h \
+		Core/Info.h \
+		Core/Iterator.h \
+		Core/MeshKernel.h \
+		Core/MeshIO.h \
+		Core/Projection.h \
+		Core/SetOperations.h \
+		Core/Triangulation.h \
+		Core/Tools.h \
+		Core/TopoAlgorithm.h \
+		Core/Visitor.h
 
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
@@ -344,6 +370,7 @@ INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top
 endif
 endif
 
+includedir = @includedir@/Mod/Mesh/App
 libdir = $(prefix)/Mod/Mesh
 datadir = $(prefix)/Mod/Mesh
 data_DATA = MeshTestsApp.py 

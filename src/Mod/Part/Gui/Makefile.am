@@ -33,14 +33,16 @@ libPartGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
-		ViewProvider.h \
 		ViewProviderBox.cpp \
-		ViewProviderBox.h \
 		ViewProviderCurveNet.cpp \
-		ViewProviderCurveNet.h \
 		ViewProviderImport.cpp \
+		Workbench.cpp
+
+include_HEADERS=\
+		ViewProvider.h \
+		ViewProviderBox.h \
+		ViewProviderCurveNet.h \
 		ViewProviderImport.h \
-		Workbench.cpp \
 		Workbench.h
 
 # the library search path.
@@ -133,6 +135,7 @@ INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I$(top_srcdir)/src -I$(to
 
 endif
 
+includedir = @includedir@/Mod/Part/Gui
 libdir = $(prefix)/Mod/Part
 
 CLEANFILES = $(BUILT_SOURCES)
