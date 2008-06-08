@@ -13,8 +13,12 @@ libPointsGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
+		Workbench.cpp
+
+includedir = @includedir@/Mod/Points/Gui
+
+include_HEADERS=\
 		ViewProvider.h \
-		Workbench.cpp \
 		Workbench.h
 
 # the library search path.

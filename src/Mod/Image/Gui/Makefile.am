@@ -10,12 +10,16 @@ libImageGui_la_SOURCES=\
 		AppImageGuiPy.cpp \
 		Command.cpp \
 		GLImageBox.cpp \
-		GLImageBox.h \
 		ImageView.cpp \
-		ImageView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
-		Workbench.cpp \
+		Workbench.cpp
+
+includedir = @includedir@/Mod/Image/Gui
+
+include_HEADERS=\
+		GLImageBox.h \
+		ImageView.h \
 		Workbench.h
 
 # the library search path.

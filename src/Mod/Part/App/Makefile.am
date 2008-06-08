@@ -29,54 +29,31 @@ libPart_la_BUILT=\
 libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		CirclePy.cpp \
-		CirclePy.h \
 		FeaturePartBoolean.cpp \
-		FeaturePartBoolean.h \
 		FeaturePartBox.cpp \
-		FeaturePartBox.h \
 		FeaturePartCircle.cpp \
-		FeaturePartCircle.h \
 		FeaturePartCurveNet.cpp \
-		FeaturePartCurveNet.h \
 		FeaturePartCommon.cpp \
-		FeaturePartCommon.h \
 		FeaturePartCut.cpp \
-		FeaturePartCut.h \
 		FeaturePartFuse.cpp \
-		FeaturePartFuse.h \
 		FeaturePartImportBrep.cpp \
-		FeaturePartImportBrep.h \
 		FeaturePartImportIges.cpp \
-		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \
-		FeaturePartImportStep.h \
 		FeaturePartLine.cpp \
-		FeaturePartLine.h \
 		FeaturePartLineSet.cpp \
-		FeaturePartLineSet.h \
 		FeaturePartPolygon.cpp \
-		FeaturePartPolygon.h \
 		FeaturePartSection.cpp \
-		FeaturePartSection.h \
 		ImportStep.cpp \
-		ImportStep.h \
 		LinePy.cpp \
-		LinePy.h \
 		PartFeature.cpp \
-		PartFeature.h \
 		PartFeaturePyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
-		PrimitiveFeature.h \
 		PropertyCircle.cpp \
-		PropertyCircle.h \
 		PropertyLine.cpp \
-		PropertyLine.h \
 		PropertyTopoShape.cpp \
-		PropertyTopoShape.h \
 		TopoShape.cpp \
-		TopoShape.h \
 		TopoShapeCompoundPyImp.cpp \
 		TopoShapeCompSolidPyImp.cpp \
 		TopoShapeEdgePyImp.cpp \
@@ -86,8 +63,37 @@ libPart_la_SOURCES=\
 		TopoShapeVertexPyImp.cpp \
 		TopoShapeWirePyImp.cpp \
 		TopoShapePyImp.cpp \
-		TopologyPy.cpp \
+		TopologyPy.cpp
+
+nodist_include_HEADERS=\
+		$(libPart_la_BUILT)
+
+include_HEADERS=\
+		CirclePy.h \
+		FeaturePartBoolean.h \
+		FeaturePartBox.h \
+		FeaturePartCircle.h \
+		FeaturePartCurveNet.h \
+		FeaturePartCommon.h \
+		FeaturePartCut.h \
+		FeaturePartFuse.h \
+		FeaturePartImportBrep.h \
+		FeaturePartImportIges.h \
+		FeaturePartImportStep.h \
+		FeaturePartLine.h \
+		FeaturePartLineSet.h \
+		FeaturePartPolygon.h \
+		FeaturePartSection.h \
+		ImportStep.h \
+		LinePy.h \
+		PartFeature.h \
+		PrimitiveFeature.h \
+		PropertyCircle.h \
+		PropertyLine.h \
+		PropertyTopoShape.h \
+		TopoShape.h \
 		TopologyPy.h
+
 
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -141,6 +147,7 @@ INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 endif
 
+includedir = @includedir@/Mod/Part/App
 libdir = $(prefix)/Mod/Part
 
 CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)

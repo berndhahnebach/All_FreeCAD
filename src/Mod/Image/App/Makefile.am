@@ -3,12 +3,15 @@ lib_LTLIBRARIES=libImage.la Image.la
 
 libImage_la_SOURCES=\
 		CaptureClass.cpp \
-		CaptureClass.h \
 		ImageBase.cpp \
-		ImageBase.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
+includedir = @includedir@/Mod/Image/App
+
+include_HEADERS=\
+		CaptureClass.h \
+		ImageBase.h
 
 # the library search path.
 libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

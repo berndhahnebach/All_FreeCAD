@@ -1,10 +1,12 @@
 SUBDIRS=3rdParty Base App Gui Main Mod Tools
 
+include_HEADERS=\
+		Build/Version.h \
+		FCConfig.h
 EXTRA_DIST = \
 		Build/BuildVersion.bat \
 		Build/Version.h.in \
-		Build/Version.h \
 		All.vcproj \
 		AllCmdFiles.vcproj \
-		fc.sh \
-		FCConfig.h
+		fc.sh
+

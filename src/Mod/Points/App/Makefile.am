@@ -4,23 +4,27 @@ lib_LTLIBRARIES=libPoints.la Points.la
 libPoints_la_SOURCES=\
 		AppPointsPy.cpp \
 		FeaturePointsImportAscii.cpp \
-		FeaturePointsImportAscii.h \
 		Points.cpp \
-		Points.h \
 		PointsPy.cpp \
-		PointsPy.h \
 		PointsAlgos.cpp \
-		PointsAlgos.h \
 		PointsFeature.cpp \
-		PointsFeature.h \
 		PointsFeaturePy.cpp \
-		PointsFeaturePy.h \
 		PointsGrid.cpp \
-		PointsGrid.h \
 		PropertyPointKernel.cpp \
-		PropertyPointKernel.h \
 		PreCompiled.cpp \
 		PreCompiled.h
+
+includedir = @includedir@/Mod/Points/App
+
+include_HEADERS=\
+		FeaturePointsImportAscii.h \
+		Points.h \
+		PointsPy.h \
+		PointsAlgos.h \
+		PointsFeature.h \
+		PointsFeaturePy.h \
+		PointsGrid.h \
+		PropertyPointKernel.h
 
 
 # the library search path.
