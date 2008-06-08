@@ -59,21 +59,16 @@ install-exec-hook:
 uninstall-hook:
 		rm -r $(DESTDIR)$(libdir)/gui
 
-data_DATA = \
-		__init__.py \
-		coin.py \
-		sogui.py \
-		soqt.py
-
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		$(data_DATA) \
+		__init__.py \
+		coin.py \
+		sogui.py \
+		soqt.py \
 		AUTHORS \
 		LICENSE \
 		README \
 		CoinBinding.sln \
 		CoinPy.vcproj \
 		SoQtPy.vcproj
-
-
