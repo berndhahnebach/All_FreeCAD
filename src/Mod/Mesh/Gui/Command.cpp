@@ -591,7 +591,7 @@ void CmdMeshVertexCurvatureInfo::activated(int iMsg)
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
-        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshCurvature::curvatureInfoCallback);
      }
 }
@@ -817,7 +817,7 @@ void CmdMeshEvaluateFacet::activated(int iMsg)
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
-        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::faceInfoCallback);
      }
 }
@@ -1328,7 +1328,7 @@ void CmdMeshFillInteractiveHole::activated(int iMsg)
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
-        viewer->getWidget()->setCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_fillhole"),5,5));
+        viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_fillhole"),5,5));
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::fillHoleCallback);
      }
 }

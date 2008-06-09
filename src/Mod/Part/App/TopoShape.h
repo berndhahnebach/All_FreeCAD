@@ -20,42 +20,44 @@
  *                                                                         *
  ***************************************************************************/
 
- 
 
+#ifndef PART_TOPOSHAPE_H
+#define PART_TOPOSHAPE_H
 
-#ifndef _TopoShape_h_
-#define _TopoShape_h_
-
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
 #include <TopoDS_Shape.hxx>
 #include <App/ComplexGeoData.h>
 
 namespace Part
 {
 
-
 /** The representation for a CAD Shape
  */
 class AppPartExport TopoShape : public Data::ComplexGeoData
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-	TopoShape(const TopoDS_Shape&);
-	TopoShape();
-	~TopoShape();
-    virtual Base::BoundBox3d getBoundBox(void)const{return Base::BoundBox3d();}
+    TopoShape(const TopoDS_Shape&);
+    TopoShape();
+    ~TopoShape();
 
-  static TopoDS_Shape read(const char *FileName);
+    Base::BoundBox3d getBoundBox(void)const;
+    static TopoDS_Shape read(const char *FileName);
 
-  TopoDS_Shape _Shape;
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
+    unsigned int getMemSize (void) const;
+    //@}
+
+    TopoDS_Shape _Shape;
 };
-
-
 
 } //namespace Part
 
 
-
-#endif
+#endif // PART_TOPOSHAPE_H

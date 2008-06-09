@@ -326,7 +326,7 @@ Base::BoundBox3f PropertyMeshKernel::getBoundingBox() const
 unsigned int PropertyMeshKernel::getMemSize (void) const
 {
     unsigned int size = 0;
-    size += _meshObject->getKernel().GetMemSize();
+    size += _meshObject->getMemSize();
     
     return size;
 }

@@ -35,7 +35,8 @@
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoTransform.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
-# include <qmessagebox.h>
+# include <QAction>
+# include <QMenu>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -443,10 +444,17 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
     n->getAction()->setHandled();
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
         n->setHandled();
-        view->setEditing(false);
-        view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
-        view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback);
-    } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+        // context-menu
+        QMenu menu;
+        QAction* cl = menu.addAction(QObject::tr("Leave info mode"));
+        QAction* id = menu.exec(QCursor::pos());
+        if (cl == id) {
+            view->setEditing(false);
+            view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback);
+        }
+    }
+    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
         const SoPickedPoint * point = n->getPickedPoint();
         if (point == NULL) {
             Base::Console().Message("No facet picked.\n");
@@ -483,10 +491,17 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
     n->getAction()->setHandled();
     if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
         n->setHandled();
-        view->setEditing(false);
-        view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
-        view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback);
-    } else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+        // context-menu
+        QMenu menu;
+        QAction* cl = menu.addAction(QObject::tr("Leave hole-filling mode"));
+        QAction* id = menu.exec(QCursor::pos());
+        if (cl == id) {
+            view->setEditing(false);
+            view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback);
+        }
+    }
+    else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
         const SoPickedPoint * point = n->getPickedPoint();
         if (point == NULL) {
             Base::Console().Message("No facet picked.\n");
@@ -521,12 +536,18 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
         n->getAction()->setHandled();
         if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
             n->setHandled();
-            view->setEditing(false);
-            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), markPartCallback);
+            // context-menu
+            QMenu menu;
+            QAction* cl = menu.addAction(QObject::tr("Leave removal mode"));
+            QAction* id = menu.exec(QCursor::pos());
+            if (cl == id) {
+                view->setEditing(false);
+                view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), markPartCallback);
 
-            std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
-            for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-                static_cast<ViewProviderMeshFaceSet*>(*it)->unmarkParts();
+                std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
+                for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                    static_cast<ViewProviderMeshFaceSet*>(*it)->unmarkParts();
+                }
             }
         }
         else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
