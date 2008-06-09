@@ -336,6 +336,9 @@ void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
         if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
             signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
     }
+
+    // a property of an object has changed
+    setModified(true);
 }
 
 void Document::slotRenamedObject(App::DocumentObject& Obj)

@@ -2465,6 +2465,16 @@ void View3DInventorViewer::setEditingCursor (const SoQtCursor& cursor)
   this->editCursor = this->getWidget()->cursor();
 }
 
+void View3DInventorViewer::setEditingCursor (const QCursor& cursor)
+{
+  //Note: Coin caches the pointer to the CustomCursor instance with
+  //the QCursor instance in a dictionary. So we must not store the
+  //SoQtCursor object here but the QCursor object, otherwise we might
+  //restore the wrong QCursor from the dictionary. 
+  this->getWidget()->setCursor(cursor);
+  this->editCursor = cursor;
+}
+
 void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
 {
     ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);

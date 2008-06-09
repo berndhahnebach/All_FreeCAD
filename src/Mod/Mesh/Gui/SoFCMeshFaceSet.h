@@ -133,6 +133,7 @@ protected:
   virtual void GLRender(SoGLRenderAction *action);
   virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
   virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+  virtual void  rayPick (SoRayPickAction *action);
   virtual void generatePrimitives(SoAction *action);
   virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
                                           const SoPrimitiveVertex * v1,

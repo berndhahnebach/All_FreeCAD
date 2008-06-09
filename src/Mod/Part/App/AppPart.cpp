@@ -16,6 +16,7 @@
 
 #include <Base/Console.h>
 
+#include "TopoShape.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartBoolean.h"
 #include "FeaturePartCommon.h"
@@ -63,6 +64,7 @@ void AppPartExport initPart()
     union PyType_Object pyCircType = {&Part::CirclePy::Type};
     PyModule_AddObject(partModule, "circle", pyCircType.o);
 
+    Part::TopoShape           ::init();
     Part::PropertyPartShape   ::init();
     Part::PropertyLine        ::init();
     Part::PropertyLineSet     ::init();

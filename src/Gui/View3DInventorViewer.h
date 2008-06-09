@@ -114,6 +114,7 @@ public:
   void setEditing(SbBool edit);
   SbBool isEditing() const { return this->editing; }
   void setEditingCursor (const SoQtCursor& cursor);
+  void setEditingCursor (const QCursor& cursor);
   void setRedirectToSceneGraph(SbBool redirect) { this->redirected = redirect; }
   SbBool isRedirectedToSceneGraph() const { return this->redirected; }
 
