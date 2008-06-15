@@ -1,19 +1,19 @@
 Index: debian/control
 ===================================================================
---- debian/control	(Revision 1362)
+--- debian/control	(Revision 1385)
 +++ debian/control	(Arbeitskopie)
 @@ -10,7 +10,7 @@
   libsoqt4-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, 
   libx11-dev, libxext-dev, libgts-dev, libcv-dev, python-opencv,
-  libopencascade-dev
+  libopencascade-dev, python, python-central (>= 0.5.6)
 -Standards-Version: 3.7.3
 +Standards-Version: 3.7.2
+ XS-Python-Version: current
  
  Package: freecad
- Architecture: any
 Index: debian/menu
 ===================================================================
---- debian/menu	(Revision 1362)
+--- debian/menu	(Revision 1384)
 +++ debian/menu	(Arbeitskopie)
 @@ -1,2 +1,2 @@
 -?package(freecad):needs="X11" section="Applications/Science/Engineering"\
