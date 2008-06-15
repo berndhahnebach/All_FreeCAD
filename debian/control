@@ -32,6 +32,7 @@ Package: freecad-dev
 Architecture: any
 Section: libdevel
 Depends: freecad (>= ${source:Version})
+XB-Python-Version: ${python:Versions}
 Description: FreeCAD development files
  FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
  It features some key concepts like macro recording, workbenches, ability
