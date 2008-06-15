@@ -115,7 +115,7 @@ binary-arch: build install
 	dh_desktop
 	dh_installmenu
 #	dh_installmime
-#	dh_python
+	dh_pycentral
 #	dh_installinfo
 	dh_installman debian/freecad.1
 	dh_link
