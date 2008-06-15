@@ -18,7 +18,6 @@ Architecture: any
 Section: x11
 Depends: ${shlibs:Depends} ${python:Depends}
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}
 Conflicts: freecad (<= 0.6.472-1)
 Suggests: gnochm|kchmviewer|kchmviewer-nokde|xchm
 Description: An extensible Open Source CAx program for Unix/X11
