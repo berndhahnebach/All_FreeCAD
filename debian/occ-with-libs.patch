@@ -1,10 +1,10 @@
 Index: debian/rules
 ===================================================================
---- debian/rules	(Revision 1362)
+--- debian/rules	(Revision 1386)
 +++ debian/rules	(Arbeitskopie)
-@@ -9,6 +9,10 @@
- # Uncomment this to turn on verbose mode.
- #export DH_VERBOSE=1
+@@ -11,6 +11,10 @@
+ 
+ MODULES = Part Mesh Points Raytracing Image Drawing Test
  
 +# Preliminary only as long as no official debian package for
 +# OpenCascade is available
@@ -13,10 +13,10 @@ Index: debian/rules
  # These are used for cross-compiling and for saving the configure script
  # from having to guess our platform (since we know it already)
  DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -99,6 +103,31 @@
- #	dh_installinfo
- 	dh_installman debian/freecad.1
- 	dh_link
+@@ -85,6 +89,32 @@
+ 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/FreeCAD.so usr/lib/freecad/lib
+ 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/lib*.so.* usr/lib/freecad/lib
+ 
 +# Preliminary only as long as no official debian package for
 +# OpenCascade is available
 +	install -m777 /usr/lib/libTKernel-6.2.so $(DESTOCCDIR)
@@ -42,9 +42,10 @@ Index: debian/rules
 +	install -m777 /usr/lib/libTKMesh-6.2.so $(DESTOCCDIR)
 +	install -m777 /usr/lib/libTKHLR-6.2.so $(DESTOCCDIR)
 +	install -m777 /usr/lib/libTKSTL-6.2.so $(DESTOCCDIR)
- 	dh_strip
- 	dh_compress
- 	dh_fixperms
++
+ # install the modules
+ 	$(foreach MODULE,$(MODULES), \
+ 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/$(MODULE)*.so usr/lib/freecad/Mod/$(MODULE); \
 Index: debian/shlibs.local
 ===================================================================
 --- debian/shlibs.local	(Revision 0)
