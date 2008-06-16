@@ -26,6 +26,12 @@
 # include <TopoDS_Face.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <BRep_Builder.hxx>
+# include <BRepBuilderAPI_MakeEdge.hxx>
+# include <Geom_Line.hxx>
+# include <gp_Pnt.hxx>
+# include <gp_Lin.hxx>
+# include <TopoDS_Edge.hxx>
 #endif
 
 #include <stdio.h>
@@ -225,15 +231,71 @@ static PyObject * createBox(PyObject *self, PyObject *args)
     double X, Y, Z , L, H, W ;
 
     //const char* Name;
-    if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))			 
+    if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))
         return NULL;                         
 
     PY_TRY {
         // Build a box using the dimension and position attributes
-        BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
+        BRepPrimAPI_MakeBox mkBox(gp_Pnt( X, Y, Z ), L, H, W);
         TopoDS_Shape ResultShape = mkBox.Shape();
         return new TopoShapePy(new TopoShape(ResultShape)); 
     } PY_CATCH;
+}
+
+static PyObject * createLine(PyObject *self, PyObject *args)
+{
+    PyObject *obj1, *obj2;
+    if (!PyArg_ParseTuple(args, "OO", &obj1, &obj2))
+        return NULL;                         
+
+    try {
+        Py::Tuple p1(obj1), p2(obj2);
+        // Convert into OCC representation
+        gp_Pnt pnt1 = gp_Pnt((double)Py::Float(p1[0]),
+                             (double)Py::Float(p1[1]),
+                             (double)Py::Float(p1[2]));
+        gp_Pnt pnt2 = gp_Pnt((double)Py::Float(p2[0]),
+                             (double)Py::Float(p2[1]),
+                             (double)Py::Float(p2[2]));
+        // Create directly the underlying line geometry
+        BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
+
+        const char *error=0;
+        switch ( makeEdge.Error() )
+        {
+        case BRepBuilderAPI_EdgeDone:
+            break; // ok
+        case BRepBuilderAPI_PointProjectionFailed:
+            error = "Point projection failed";
+            break;
+        case BRepBuilderAPI_ParameterOutOfRange:
+            error = "Parameter out of range";
+            break;
+        case BRepBuilderAPI_DifferentPointsOnClosedCurve:
+            error = "Different points on closed curve";
+            break;
+        case BRepBuilderAPI_PointWithInfiniteParameter:
+            error = "Point with infinite parameter";
+            break;
+        case BRepBuilderAPI_DifferentsPointAndParameter:
+            error = "Different point and parameter";
+            break;
+        case BRepBuilderAPI_LineThroughIdenticPoints:
+            error = "Line through identic points";
+            break;
+        }
+        // Error 
+        if (error) {
+            PyErr_SetString(PyExc_RuntimeError, error);
+            return NULL;
+        }
+
+        TopoDS_Edge edge = makeEdge.Edge();
+        return new TopoShapePy(new TopoShape(edge)); 
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
 }
 
 
@@ -245,12 +307,6 @@ struct PyMethodDef Part_methods[] = {
     {"show"   , show,  1},
     {"createPlane" , createPlane, 1},
     {"createBox" , createBox, 1},
+    {"createLine" , createLine, 1},
     {NULL     , NULL      }        /* end of table marker */
 };
-
-
-
-
-
-
-

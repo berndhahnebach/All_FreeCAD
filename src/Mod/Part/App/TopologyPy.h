@@ -25,7 +25,7 @@
 
 #ifndef __TOPOLOGY_H__
 #define __TOPOLOGY_H__
-
+#if 0
 // Std. configurations
 
 #include <Base/PyObjectBase.h>
@@ -101,5 +101,5 @@ protected:
 
 
 } //namespace App
-
+#endif
 #endif // __TOPOLOGY_H__

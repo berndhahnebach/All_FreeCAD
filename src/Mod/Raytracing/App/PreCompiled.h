@@ -1,15 +1,11 @@
 #ifndef __PRECOMPILED__
-
 #define __PRECOMPILED__
 
-
-
-#include "../../../FCConfig.h"
-
-
+#include <FCConfig.h>
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
+# define PartExport          __declspec(dllimport)
 # define AppPartExport       __declspec(dllimport)
 # define AppRaytracingExport __declspec(dllexport)
 #else // for Linux
@@ -96,6 +92,3 @@
 #endif //_PreComp_
 
 #endif
-
-
-

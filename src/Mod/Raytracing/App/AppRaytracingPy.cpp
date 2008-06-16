@@ -32,20 +32,21 @@
 // automatecly generated.....
 #include "FreeCADpov.h"
 
-#include <Mod/Part/App/TopologyPy.h>
+#include <Mod/Part/App/TopoShape.h>
+#include <Mod/Part/App/TopoShapePy.h>
 #include <App/Application.h>
 
 using namespace Raytracing;
 
 
 /// write empty project file
-static PyObject *                                
-writeProjectFile(PyObject *self, PyObject *args)          
-{                                                
+static PyObject * 
+writeProjectFile(PyObject *self, PyObject *args)
+{
     char *fromPython;
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython)) 
-        return NULL;                             
-    
+    if (! PyArg_ParseTuple(args, "(s)", &fromPython))
+        return NULL;
+
     std::ofstream fout;
     if(fromPython)
       fout.open(fromPython);
@@ -54,91 +55,84 @@ writeProjectFile(PyObject *self, PyObject *args)
 
     fout << FreeCAD ;
     fout.close();
-  
+
     Py_Return;
 }
 
 /// write project file
-static PyObject *                                
-getProjectFile(PyObject *self, PyObject *args)          
-{                                                
-    return Py_BuildValue("s", FreeCAD);       
+static PyObject *
+getProjectFile(PyObject *self, PyObject *args)
+{
+    return Py_BuildValue("s", FreeCAD);
 }
 
 /// write project file
-static PyObject *                                
-writePartFile(PyObject *self, PyObject *args)          
-{      
+static PyObject *
+writePartFile(PyObject *self, PyObject *args)
+{
 #if 1
     PyObject *ShapeObject;
     const char *FileName,*PartName;
-    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePyOld::Type), &ShapeObject)) 
-        return NULL;                             
+    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,
+        &(Part::TopoShapePy::Type), &ShapeObject)) 
+        return NULL;
 
-    TopoDS_Shape &aShape = ((Part::TopoShapePyOld *)ShapeObject)->getShape();
+    TopoDS_Shape &aShape = static_cast<Part::TopoShapePy *>(ShapeObject)->getTopoShapePtr()->_Shape;
     
     PovTools::writeShape(FileName,PartName,aShape,(float)0.1);
 #else
     Base::Console().Error("Linker error: Part::TopoShapePy\n");
 #endif
 
-    Py_Return;       
+    Py_Return;
 }
 
 /// write project file
-static PyObject *                                
-writePartFileCSV(PyObject *self, PyObject *args)          
-{      
+static PyObject *
+writePartFileCSV(PyObject *self, PyObject *args)
+{
     PyObject *ShapeObject;
     const char *FileName;
     float Acur,Length;
-    if (! PyArg_ParseTuple(args, "O!sff",&(Part::TopoShapePyOld::Type), &ShapeObject,&FileName,&Acur,&Length  )) 
-        return NULL;                             
+    if (! PyArg_ParseTuple(args, "O!sff",&(Part::TopoShapePy::Type),
+        &ShapeObject,&FileName,&Acur,&Length))
+        return NULL;
 
-    TopoDS_Shape &aShape = ((Part::TopoShapePyOld *)ShapeObject)->getShape();
-    
-    PovTools::writeShapeCSV(FileName,aShape,Acur,Length );
-
-    Py_Return;       
+    TopoDS_Shape aShape = static_cast<Part::TopoShapePy *>(ShapeObject)->getTopoShapePtr()->_Shape;
+    PovTools::writeShapeCSV(FileName,aShape,Acur,Length);
+    Py_Return;
 }
 
-
 /// write project file
-static PyObject *                                
-writeCameraFile(PyObject *self, PyObject *args)          
-{      
+static PyObject *
+writeCameraFile(PyObject *self, PyObject *args)
+{
     PyObject *Arg[4];
     const char *FileName;
     double vecs[4][3];
-    if (! PyArg_ParseTuple(args, "sO!O!O!O!",&FileName,&PyTuple_Type, &Arg[0],&PyTuple_Type, &Arg[1],&PyTuple_Type, &Arg[2],&PyTuple_Type, &Arg[3])) 
+    if (! PyArg_ParseTuple(args, "sO!O!O!O!",&FileName,&PyTuple_Type,
+        &Arg[0],&PyTuple_Type, &Arg[1],&PyTuple_Type, &Arg[2],&PyTuple_Type, &Arg[3])) 
         return NULL;                             
 
     // go throug the Tuple of Tupls
-    for(int i=0;i<4;i++)
-    {
-      // check the right size of the Tuple of floats
-      if(PyTuple_GET_SIZE(Arg[i]) != 3)
-        Py_Error(PyExc_Exception,"Wrong parameter format, four Tuple of three floats needed!");
+    for(int i=0;i<4;i++) {
+        // check the right size of the Tuple of floats
+        if(PyTuple_GET_SIZE(Arg[i]) != 3)
+            Py_Error(PyExc_Exception,"Wrong parameter format, four Tuple of three floats needed!");
 
-      // go through the Tuple of floats
-      for(int l=0;l<3;l++)
-      {
-        PyObject* temp = PyTuple_GetItem(Arg[i],l);
-
-        // check Type
-        if( PyFloat_Check(temp))
-          vecs[i][l] = PyFloat_AsDouble(temp);
-        else
-          if( PyLong_Check(temp))
-            vecs[i][l] = (double) PyLong_AsLong(temp);
-          else
-            if( PyInt_Check(temp))
-              vecs[i][l] = (double)  PyInt_AsLong(temp);
+        // go through the Tuple of floats
+        for(int l=0;l<3;l++) {
+            PyObject* temp = PyTuple_GetItem(Arg[i],l);
+            // check Type
+            if (PyFloat_Check(temp))
+                vecs[i][l] = PyFloat_AsDouble(temp);
+            else if (PyLong_Check(temp))
+                vecs[i][l] = (double) PyLong_AsLong(temp);
+            else if (PyInt_Check(temp))
+                vecs[i][l] = (double)  PyInt_AsLong(temp);
             else
-              Py_Error(PyExc_Exception,"Wrong parameter format, four Tuple of three floats needed!");
-
-        // build up the vector of vectors
-      }
+                Py_Error(PyExc_Exception,"Wrong parameter format, four Tuple of three floats needed!");
+        }
     }
 
     // call the write method of PovTools....
@@ -147,16 +141,16 @@ writeCameraFile(PyObject *self, PyObject *args)
                                           gp_Vec(vecs[2][0],vecs[2][1],vecs[2][2]),
                                           gp_Vec(vecs[3][0],vecs[3][1],vecs[3][2])));
 
-    Py_Return;       
+    Py_Return;
 }
 
 /// write project file
-static PyObject *                                
-copyResource(PyObject *self, PyObject *args)          
-{      
+static PyObject *
+copyResource(PyObject *self, PyObject *args)
+{
     const char *FileName,*DestDir;
-    if (! PyArg_ParseTuple(args, "ss",&FileName,&DestDir)) 
-        return NULL;                             
+    if (! PyArg_ParseTuple(args, "ss",&FileName,&DestDir))
+        return NULL;
 
     std::string resName = App::GetApplication().GetHomePath(); 
     resName += "Mod"; 
@@ -171,20 +165,16 @@ copyResource(PyObject *self, PyObject *args)
 
     // This command should create the povray scene file, but does currently do nothing.
 
-    Py_Return;       
+    Py_Return;
 }
-
-
 
 /* registration table  */
 struct PyMethodDef Raytracing_methods[] = {
-    {"writeProjectFile", writeProjectFile, 1},       
-    {"getProjectFile",   getProjectFile  , 1},       
-    {"writePartFile",    writePartFile   , 1},       
-    {"writePartFileCSV", writePartFileCSV, 1},       
-    {"writeCameraFile",  writeCameraFile , 1},       
-    {"copyResource",     copyResource    , 1},       
-    {NULL, NULL}                   
+    {"writeProjectFile", writeProjectFile, 1},
+    {"getProjectFile",   getProjectFile  , 1},
+    {"writePartFile",    writePartFile   , 1},
+    {"writePartFileCSV", writePartFileCSV, 1},
+    {"writeCameraFile",  writeCameraFile , 1},
+    {"copyResource",     copyResource    , 1},
+    {NULL, NULL}
 };
-
-

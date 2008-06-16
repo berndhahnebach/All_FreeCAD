@@ -25,7 +25,7 @@
 
 
 #include "PreCompiled.h"
-
+#if 0
 #ifndef _PreComp_
 # include <assert.h>
 # include <sstream>
@@ -714,3 +714,4 @@ PyObject *TopoShapePyOld::exportSTL(PyObject *args)
   Py_Return; 
 }
 
+#endif
