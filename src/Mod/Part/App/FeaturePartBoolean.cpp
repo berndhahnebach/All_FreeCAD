@@ -61,13 +61,13 @@ App::DocumentObjectExecReturn *Boolean::execute(void)
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
 
     // Now, let's get the TopoDS_Shape
-    TopoDS_Shape BaseShape = base->getShape();
-    TopoDS_Shape ToolShape = tool->getShape();
+    TopoDS_Shape BaseShape = base->Shape.getValue();
+    TopoDS_Shape ToolShape = tool->Shape.getValue();
 
     TopoDS_Shape resShape = runOperation(BaseShape, ToolShape);
     if (resShape.IsNull())
         return new App::DocumentObjectExecReturn("Resulting shape is invalid");
-    setShape(resShape);
+    this->Shape.setValue(resShape);
     return App::DocumentObject::StdReturn;
 }
 

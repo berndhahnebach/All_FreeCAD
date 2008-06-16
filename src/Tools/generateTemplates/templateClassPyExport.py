@@ -372,7 +372,7 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
 + if (self.export.Constructor):
 PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
-    // creat a new instance of @self.export.Name@ and the Twin object 
+    // create a new instance of @self.export.Name@ and the Twin object 
     return new @self.export.Name@(new @self.export.TwinPointer@);
 }
 = else:

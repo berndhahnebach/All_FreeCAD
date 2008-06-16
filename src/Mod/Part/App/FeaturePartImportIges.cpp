@@ -82,8 +82,7 @@ App::DocumentObjectExecReturn *ImportIges::execute(void)
     aReader.TransferRoots();
     // one shape, who contain's all subshapes
     aShape = aReader.OneShape();
-
-    setShape(aShape);
+    this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;
 }

@@ -97,7 +97,7 @@ App::DocumentObjectExecReturn *Line::execute(void)
         return new App::DocumentObjectExecReturn(error);
 
     TopoDS_Edge edge = makeEdge.Edge();
-    setShape(edge);
+    this->Shape.setValue(edge);
 
     return App::DocumentObject::StdReturn;
 }

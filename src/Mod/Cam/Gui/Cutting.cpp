@@ -669,8 +669,8 @@ void Cutting::DisplayCAMOutput()
 
     Part::Feature* part1 = static_cast<Part::Feature*>(obj);
     Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
-    part1->setShape(aCompound1);
-    part2->setShape(aCompound2);
+    part1->Shape.setValue(aCompound1);
+    part2->Shape.setValue(aCompound2);
 
 
 

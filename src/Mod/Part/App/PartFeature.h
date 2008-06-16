@@ -45,7 +45,7 @@ class PartFeaturePy;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppPartExport Feature: public App::DocumentObject
+class AppPartExport Feature : public App::DocumentObject
 {
     PROPERTY_HEADER(Part::Feature);
 
@@ -68,15 +68,6 @@ public:
         return "PartGui::ViewProviderPart";
     }
 
-    /** @name methods for handling the result shape */
-    //@{
-    /** Set the result shape
-     */
-    void setShape(const TopoDS_Shape &Shape);
-    /** Get the actual result shape
-     */
-    TopoDS_Shape getShape(void);
-    //@}
     virtual PyObject* getPyObject(void);
 };
 

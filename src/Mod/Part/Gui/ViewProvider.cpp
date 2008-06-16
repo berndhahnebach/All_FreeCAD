@@ -533,7 +533,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
 
         if (!vertices)
-            break;
+            continue;
 
         if (!this->noPerVertexNormals) {
             // define normals (this is optional)
