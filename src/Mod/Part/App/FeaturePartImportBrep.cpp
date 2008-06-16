@@ -74,8 +74,7 @@ App::DocumentObjectExecReturn *ImportBrep::execute(void)
 
     // read brep-file
     BRepTools::Read(aShape,(const Standard_CString)FileName.getValue(),aBuilder);
-
-    setShape(aShape);
+    this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;
 }

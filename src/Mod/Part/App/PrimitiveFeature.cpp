@@ -120,7 +120,7 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
                                     Angle2.getValue()/180.0f*F_PI,
                                     Angle3.getValue()/180.0f*F_PI);
     TopoDS_Shape ResultShape = mkSphere.Shape();
-    setShape(ResultShape);
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }
@@ -154,7 +154,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
                                     Height.getValue(),
                                     Angle.getValue()/180.0f*F_PI);
     TopoDS_Shape ResultShape = mkCylr.Shape();
-    setShape(ResultShape);
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }
@@ -191,7 +191,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
                                 Height.getValue(),
                                 Angle.getValue()/180.0f*F_PI);
     TopoDS_Shape ResultShape = mkCone.Shape();
-    setShape(ResultShape);
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }
@@ -236,7 +236,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
                                   Angle2.getValue()/180.0f*F_PI,
                                   Angle3.getValue()/180.0f*F_PI);
     TopoDS_Shape ResultShape = mkTorus.Shell();
-    setShape(ResultShape);
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }

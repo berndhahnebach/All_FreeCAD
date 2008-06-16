@@ -106,7 +106,7 @@ App::DocumentObjectExecReturn *LineSet::execute(void)
         aBuilder.Add(aCompound, edge);
     }
 
-    setShape(aCompound);
+    this->Shape.setValue(aCompound);
 
     return App::DocumentObject::StdReturn;
 }

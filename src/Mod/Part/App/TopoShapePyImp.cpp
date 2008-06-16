@@ -32,29 +32,48 @@
 
 using namespace Part;
 
-// returns a string which represent the object e.g. when printed in python
+// returns a string which represents the object e.g. when printed in python
 const char *TopoShapePy::representation(void) const
 {
-	return "<shape object>";
+    return "<shape object>";
 }
 
+int TopoShapePy::PyInit(PyObject* args, PyObject*)
+{
+    PyObject *pcObj=0;
+    if (!PyArg_ParseTuple(args, "|O", &pcObj))     // convert args: Python->C 
+        return -1;                             // NULL triggers exception
+
+    // if no shape is given
+    if (!pcObj) return 0;
+    if (PyObject_TypeCheck(pcObj, &(TopoShapePy::Type))) {
+        TopoDS_Shape sh = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        getTopoShapePtr()->_Shape = sh;
+    }
+    else {
+        PyErr_SetString(PyExc_Exception, "shape expected");
+        return -1;
+    }
+
+    return 0;
+}
 
 PyObject*  TopoShapePy::exportIges(PyObject *args)
 {
-  char* filename;
-  if (!PyArg_ParseTuple(args, "s", &filename ))   
-    return NULL;
-  // write iges file
-  IGESControl_Controller::Init();
-  IGESControl_Writer aWriter;
-  aWriter.AddShape(getTopoShapePtr()->_Shape);
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s", &filename ))   
+        return NULL;
+    // write iges file
+    IGESControl_Controller::Init();
+    IGESControl_Writer aWriter;
+    aWriter.AddShape(getTopoShapePtr()->_Shape);
 
-  if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
-    PyErr_SetString(PyExc_Exception,"Writing IGES failed");
-    return NULL;
-  }
+    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+        PyErr_SetString(PyExc_Exception,"Writing IGES failed");
+        return NULL;
+    }
 
-  Py_Return; 
+    Py_Return; 
 }
 
 PyObject*  TopoShapePy::exportStep(PyObject *args)

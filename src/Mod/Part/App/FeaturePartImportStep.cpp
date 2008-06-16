@@ -99,7 +99,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
         }
     }
 
-    setShape(aShape);
+    this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;
 }

@@ -70,7 +70,7 @@ App::DocumentObjectExecReturn *Polygon::execute(void)
     if (!poly.IsDone())
         throw Base::Exception("Cannot create polygon because less than two vetices are given");
     TopoDS_Wire wire = poly.Wire();
-    setShape(wire);
+    this->Shape.setValue(wire);
 
     return App::DocumentObject::StdReturn;
 }

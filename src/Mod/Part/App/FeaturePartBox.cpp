@@ -80,7 +80,7 @@ App::DocumentObjectExecReturn *Box::execute(void)
     // Build a box using the dimension and position attributes
     BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
     TopoDS_Shape ResultShape = mkBox.Shape();
-    setShape(ResultShape);
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }

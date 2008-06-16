@@ -64,17 +64,6 @@ App::DocumentObjectExecReturn *Feature::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-
-void Feature::setShape(const TopoDS_Shape &Shape)
-{
-    this->Shape.setValue(Shape);
-}
-
-TopoDS_Shape Feature::getShape(void)
-{
-    return Shape.getValue();
-}
-
 PyObject *Feature::getPyObject(void)
 {
     if (PythonObject.is(Py::_None())){
@@ -83,4 +72,3 @@ PyObject *Feature::getPyObject(void)
     }
     return Py::new_reference_to(PythonObject); 
 }
-

@@ -8,7 +8,8 @@
       Include="Mod/Part/App/TopoShape.h" 
       Namespace="Part" 
       FatherInclude="App/ComplexGeoDataPy.h" 
-      FatherNamespace="Data">
+      FatherNamespace="Data"
+      Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShape is the OpenCasCade topological shape wrapper</UserDocu>

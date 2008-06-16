@@ -49,7 +49,9 @@ public:
     /** @name Getter/setter */
     //@{
     /// set the part shape
-    void setValue( TopoDS_Shape );
+    void setValue(const TopoShape&);
+    /// set the part shape
+    void setValue(TopoDS_Shape);
     /// get the part shape
     TopoDS_Shape getValue(void) const;
     Base::BoundBox3f getBoundingBox() const;
@@ -75,10 +77,7 @@ public:
     //@}
 
 private:
-    /** Recursive counting of multiple referenced shape elements. */
-    unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
-    TopoDS_Shape _Shape;
-    //TopoShape _Shape;
+    TopoShape _Shape;
 };
 
 
