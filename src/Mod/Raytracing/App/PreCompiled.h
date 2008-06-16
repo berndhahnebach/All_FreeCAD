@@ -9,6 +9,7 @@
 # define AppPartExport       __declspec(dllimport)
 # define AppRaytracingExport __declspec(dllexport)
 #else // for Linux
+# define PartExport
 # define AppPartExport
 # define AppRaytracingExport
 #endif
