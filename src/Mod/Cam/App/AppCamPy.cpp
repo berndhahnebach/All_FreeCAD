@@ -39,7 +39,6 @@
 
 
 //Part Stuff
-#include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
 
@@ -155,10 +154,10 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
     PyObject *pcObj;
     float aDeflection;
     //PyObject *pcObj2;
-    if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePy::Type), &pcObj, &aDeflection))    // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Surface oder Step-File wird übergeben
+    TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj); //Surface oder Step-File wird übergeben
 
 
     Base::Builder3D aBuild;
@@ -172,14 +171,15 @@ static PyObject * tesselateShape(PyObject *self, PyObject *args)
     {
         // removes all the triangulations of the faces ,
         //and all the polygons on the triangulations of the edges:
-        BRepTools::Clean(pcShape->getShape());
+        TopoDS_Shape aShape = pcShape->getTopoShapePtr()->_Shape;
+        BRepTools::Clean(aShape);
 
         // adds a triangulation of the shape aShape with the deflection aDeflection:
         //BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
 
-        BRepMesh::Mesh(pcShape->getShape(),aDeflection);
+        BRepMesh::Mesh(aShape,aDeflection);
         TopExp_Explorer aExpFace;
-        for (aExpFace.Init(pcShape->getShape(),TopAbs_FACE);aExpFace.More();aExpFace.Next())
+        for (aExpFace.Init(aShape,TopAbs_FACE);aExpFace.More();aExpFace.Next())
         {
             TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
             TopLoc_Location aLocation;
@@ -235,14 +235,14 @@ static PyObject * best_fit_coarse(PyObject *self, PyObject *args)
 {
     PyObject *pcObj2;
 
-    if (!PyArg_ParseTuple(args, "O!; Need one Mesh objects and one toposhape", &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!; Need one Mesh objects and one toposhape", &(TopoShapePy::Type), &pcObj2))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
     {
 
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
-        TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Shape wird übergeben
+        TopoDS_Shape cad           = pcShape->getTopoShapePtr()->_Shape;  // Input CAD
 
 
         //best_fit befi(cad);
@@ -352,16 +352,17 @@ static PyObject * offset(PyObject *self,PyObject *args)
 {
     float offset;
     PyObject *pcObj;
-    if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePyOld::Type), &pcObj,&offset ))
+    if (!PyArg_ParseTuple(args, "O!f",&(TopoShapePy::Type), &pcObj,&offset ))
         return NULL;
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Original-Shape wird hier übergeben
+    TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj); //Original-Shape wird hier übergeben
 
     PY_TRY
     {
 
-        BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getShape(),offset,0.001,BRepOffset_Skin);
-        return new TopoShapePyOld(MakeOffsetShape.Shape());
+        BRepOffsetAPI_MakeOffsetShape MakeOffsetShape (pcShape->getTopoShapePtr()->_Shape,
+            offset,0.001,BRepOffset_Skin);
+        return new TopoShapePy(new TopoShape(MakeOffsetShape.Shape()));
 
 
     } PY_CATCH;
@@ -520,7 +521,7 @@ static PyObject * createTestApproximate(PyObject *self, PyObject *args)
 
         BRepBuilderAPI_MakeFace  Face(Final_Approx);
 
-        return new TopoShapePyOld(Face.Face());
+        return new TopoShapePy(new TopoShape(Face.Face()));
     } PY_CATCH;
 }
 /* BREP test function */
@@ -3055,7 +3056,7 @@ createTestBSPLINE(PyObject *self, PyObject *args)
 
         BRepBuilderAPI_MakeFace  Face(Surface);
 
-        return new TopoShapePyOld(Face.Face());
+        return new TopoShapePy(new TopoShape(Face.Face()));
     } PY_CATCH;
 }
 
@@ -3078,7 +3079,7 @@ static PyObject * createPlane(PyObject *self, PyObject *args)
         Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
         BRepBuilderAPI_MakeFace  Face(aPlane);
 
-        return new TopoShapePyOld(Face.Face());
+        return new TopoShapePy(new TopoShape(Face.Face()));
     } PY_CATCH;
 }
 
@@ -3628,7 +3629,7 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
     PyObject *pcObj;
     PyObject *pcObj2;
 
-    if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePy::Type), &pcObj2))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
@@ -3638,8 +3639,8 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
         gp_Pnt orig;
 
         pcObject  = (MeshPy*)pcObj;
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
-        TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Shape wird übergeben
+        TopoDS_Shape cad           = pcShape->getTopoShapePtr()->_Shape;  // Input CAD
         MeshCore::MeshKernel mesh  = pcObject->getMesh()->getKernel();  // Input Mesh
 
 //        best_fit befi(&mesh,&cad);
@@ -3665,13 +3666,14 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
     PyObject *pcObj;
 
 
-    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePyOld::Type), &pcObj))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
     {
 
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //Shape wird übergeben
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj); //Shape wird übergeben
+        TopoDS_Shape aShape = pcShape->getTopoShapePtr()->_Shape;
         TopExp_Explorer anExplorer;
         TopExp_Explorer aFaceExplorer;
 
@@ -3682,7 +3684,7 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
         anEdgeList.clear();
         bool firstrun=true;
         bool finished=false;
-        for (anExplorer.Init(pcShape->getShape(),TopAbs_FACE);anExplorer.More();anExplorer.Next())
+        for (anExplorer.Init(aShape,TopAbs_FACE);anExplorer.More();anExplorer.Next())
         {
             if (finished) break;
             for (aFaceExplorer.Init(anExplorer.Current(),TopAbs_EDGE);aFaceExplorer.More();aFaceExplorer.Next())
@@ -3839,7 +3841,7 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
 {
     PyObject *pcObj;
 
-    if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePyOld::Type), &pcObj))  // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!; Need one toposhape", &(TopoShapePy::Type), &pcObj))  // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
@@ -3848,8 +3850,8 @@ static PyObject * shape2orig(PyObject *self, PyObject *args)
         GProp_PrincipalProps pprop;
         gp_Pnt orig;
 
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
-        TopoDS_Shape cad           = pcShape->getShape();  // Input CAD
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj); //shape wird übergeben
+        TopoDS_Shape cad           = pcShape->getTopoShapePtr()->_Shape;  // Input CAD
 
 //        best_fit befi(cad);
         // befi.ShapeFit_Coarse();
@@ -3870,7 +3872,7 @@ static PyObject * spring_back(PyObject *self, PyObject *args)
     PyObject *pcObj;
     PyObject *pcObj2;
 
-    if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!O!; Need one Mesh objects and one toposhape", &(MeshPy::Type), &pcObj, &(TopoShapePy::Type), &pcObj2))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
@@ -3880,8 +3882,8 @@ static PyObject * spring_back(PyObject *self, PyObject *args)
         gp_Pnt orig;
 
         pcObject  = (MeshPy*)pcObj;
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Shape wird übergeben
-        TopoDS_Shape cad              = pcShape->getShape();            // Input CAD
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Shape wird übergeben
+        TopoDS_Shape cad              = pcShape->getTopoShapePtr()->_Shape;            // Input CAD
         MeshObject* anObject          = pcObject->getMesh();            // Input Mesh
         MeshCore::MeshKernel mesh     = anObject->getKernel();
 
@@ -3916,14 +3918,14 @@ static PyObject * tess_shape(PyObject *self, PyObject *args)
     PyObject *pcObj;
     float aDeflection;
     //PyObject *pcObj2;
-    if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePyOld::Type), &pcObj, &aDeflection))    // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!f", &(TopoShapePy::Type), &pcObj, &aDeflection))    // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY
     {
 
-        TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj); //shape wird übergeben
-        TopoDS_Shape cad        = pcShape->getShape();  // Input CAD
+        TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj); //shape wird übergeben
+        TopoDS_Shape cad        = pcShape->getTopoShapePtr()->_Shape;  // Input CAD
 
         //best_fit befi(cad);
         //befi.ShapeFit_Coarse();
@@ -4018,15 +4020,14 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
     PyObject *pcObj;
     PyObject *pcObj2;
 
-    if (!PyArg_ParseTuple(args, "O!O!; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &(TopoShapePyOld::Type), &pcObj2))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!O!; Need exatly one Mesh object", &(MeshPy::Type), &pcObj, &(TopoShapePy::Type), &pcObj2))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    TopoShapePyOld *pcShape = static_cast<TopoShapePyOld*>(pcObj2); //Surface wird übergeben
+    TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Surface wird übergeben
+    TopoDS_Shape cad = pcShape->getTopoShapePtr()->_Shape;
 
     TopExp_Explorer Ex;
-    Ex.Init(pcShape->getShape(),TopAbs_FACE);  // initialisiere cad-geometrie (trimmed surface)
-
-    TopoDS_Shape cad = pcShape->getShape();
+    Ex.Init(cad,TopAbs_FACE);  // initialisiere cad-geometrie (trimmed surface)
 
     pcObject = (MeshPy*)pcObj;
 

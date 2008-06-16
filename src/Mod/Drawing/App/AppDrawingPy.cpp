@@ -43,11 +43,8 @@
 #include <App/Document.h>
 
 // Things from the part module
-#include <Mod/Part/App/TopologyPy.h>
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
-
-
 
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -64,107 +61,83 @@ using namespace std;
 
 
 /* module functions */
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-    
-  PY_TRY {
-
-
-  } PY_CATCH;
-
-	Py_Return;    
-}
-
-
-/* module functions */
-static PyObject *                        
-insert(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  const char* DocName;
-  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
-    return NULL;                         
-    
-  PY_TRY {
-
-  } PY_CATCH;
-
-	Py_Return;    
-}
-
-/* module functions */
-static PyObject *                        
-read(PyObject *self, PyObject *args)
+static PyObject * open(PyObject *self, PyObject *args)
 {
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-  PY_TRY {
- 
-  } PY_CATCH;
-  Py_Return;
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
+
+    PY_TRY {
+    } PY_CATCH;
+
+    Py_Return;
 }
 
+/* module functions */
+static PyObject * insert(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    const char* DocName;
+    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+        return NULL;
 
+    PY_TRY {
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+/* module functions */
+static PyObject * read(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
+    PY_TRY {
+    } PY_CATCH;
+  
+    Py_Return;
+}
 
 static PyObject * createPlane(PyObject *self, PyObject *args)
 {
-		double z_level;
+    double z_level;
 
-  //const char* Name;
-  if (! PyArg_ParseTuple(args, "d", &z_level))			 
-    return NULL;                         
+    //const char* Name;
+    if (! PyArg_ParseTuple(args, "d", &z_level))
+        return NULL;                         
 
-  
-  PY_TRY {
-  
-  gp_Pnt aPlanePnt(0,0,z_level);
-  gp_Dir aPlaneDir(0,0,1);
-  Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
-  BRepBuilderAPI_MakeFace 	Face(aPlane);
-
-    return new TopoShapePyOld(Face.Face()); 
-  } PY_CATCH;
+    PY_TRY {
+        gp_Pnt aPlanePnt(0,0,z_level);
+        gp_Dir aPlaneDir(0,0,1);
+        Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+        BRepBuilderAPI_MakeFace 	Face(aPlane);
+        return new TopoShapePy(new TopoShape(Face.Face())); 
+    } PY_CATCH;
 }
 
 static PyObject * createBox(PyObject *self, PyObject *args)
 {
-		double X, Y, Z , L, H, W ;
+    double X, Y, Z , L, H, W ;
 
-  //const char* Name;
-  if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))			 
-    return NULL;                         
+    //const char* Name;
+    if (!PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W))
+        return NULL;                         
 
-  
-  PY_TRY {
-  	// Build a box using the dimension and position attributes
-	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
-
-    TopoDS_Shape ResultShape = mkBox.Shape();
-
-    return new TopoShapePy(new TopoShape(ResultShape)); 
-  } PY_CATCH;
+    PY_TRY {
+        // Build a box using the dimension and position attributes
+        BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
+        TopoDS_Shape ResultShape = mkBox.Shape();
+        return new TopoShapePy(new TopoShape(ResultShape)); 
+    } PY_CATCH;
 }
-
-
 
 /* registration table  */
 struct PyMethodDef Drawing_methods[] = {
-    {"open"   , open,    1},       
-    {"insert" , insert,  1},       
-    {"read"   , read,  1},       
-	  {"createPlane" , createPlane, 1},
-	  {"createBox" , createBox, 1},
-    {NULL     , NULL      }        /* end of table marker */
+    {"open"   , open,    1},
+    {"insert" , insert,  1},
+    {"read"   , read,  1},
+    {"createPlane" , createPlane, 1},
+    {"createBox" , createBox, 1},
+    {NULL, NULL}        /* end of table marker */
 };
-
-
-
-
-
-
-
