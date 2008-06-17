@@ -28,6 +28,8 @@
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRepPrimAPI_MakeTorus.hxx>
+# include <Geom_Plane.hxx>
+# include <Handle_Geom_Plane.hxx>
 #endif
 
 
