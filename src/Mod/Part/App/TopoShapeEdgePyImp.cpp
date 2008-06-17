@@ -15,8 +15,6 @@ const char *TopoShapeEdgePy::representation(void) const
     return "<TopoShapeEdge>";
 }
 
-
-
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
@@ -26,5 +24,3 @@ int TopoShapeEdgePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/
 {
     return 0; 
 }
-
-

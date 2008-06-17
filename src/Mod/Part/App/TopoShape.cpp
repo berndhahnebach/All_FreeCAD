@@ -28,6 +28,11 @@
 # include <BRep_Builder.hxx>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <BRepAlgoAPI_Common.hxx>
+# include <BRepAlgoAPI_Cut.hxx>
+# include <BRepAlgoAPI_Fuse.hxx>
+# include <BRepAlgoAPI_Section.hxx>
+# include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <Bnd_Box.hxx>
 # include <BRepTools.hxx>
@@ -35,6 +40,8 @@
 # include <BRepBuilderAPI_Copy.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
+# include <IGESControl_Controller.hxx>
+# include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
@@ -60,6 +67,7 @@
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
 # include <Standard_Failure.hxx>
+# include <StlAPI_Writer.hxx>
 #endif
 
 #include <Base/FileInfo.h>
@@ -84,7 +92,15 @@ TopoShape::~TopoShape()
 {
 }
 
-TopoDS_Shape TopoShape::read(const char *FileName)
+void TopoShape::operator = (const TopoShape& sh)
+{
+    if (this != &sh) {
+        this->_Mtrx  = sh._Mtrx;
+        this->_Shape = sh._Shape;
+    }
+}
+
+void TopoShape::read(const char *FileName)
 {
     Base::FileInfo File(FileName);
   
@@ -95,7 +111,7 @@ TopoDS_Shape TopoShape::read(const char *FileName)
     TopoDS_Shape aShape;
 
     if (File.hasExtension("igs") || File.hasExtension("iges")) {
-        // read iges-file
+        // read iges file
         IGESControl_Reader aReader;
 
         if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
@@ -142,7 +158,49 @@ TopoDS_Shape TopoShape::read(const char *FileName)
         throw Base::Exception("Unknown extension");
     }
 
-    return aShape; 
+    _Shape = aShape; 
+}
+
+bool TopoShape::exportIges(const char *filename) const
+{
+    // write iges file
+    IGESControl_Controller::Init();
+    IGESControl_Writer aWriter;
+    aWriter.AddShape(this->_Shape);
+
+    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
+        return false;
+
+    return true;
+}
+
+bool TopoShape::exportStep(const char *filename) const
+{
+    // write step file
+    STEPControl_Writer aWriter;
+
+    //FIXME: Does not work this way!!!
+    if (aWriter.Transfer(this->_Shape, STEPControl_AsIs))
+        return false;
+
+    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
+        return false;
+
+    return true;
+}
+
+bool TopoShape::exportBrep(const char *filename) const
+{
+    if (!BRepTools::Write(this->_Shape,(const Standard_CString)filename))
+        return false;
+    return true;
+}
+
+bool TopoShape::exportStl(const char *filename) const
+{
+    StlAPI_Writer writer;
+    writer.Write(this->_Shape,(const Standard_CString)filename);
+    return true;
 }
 
 Base::BoundBox3d TopoShape::getBoundBox(void) const
@@ -321,3 +379,37 @@ unsigned int TopoShape::getMemSize (void) const
     return sizeof(TopoDS_Shape);
 }
 
+bool TopoShape::isNull() const
+{
+    return this->_Shape.IsNull() ? true : false;
+}
+
+bool TopoShape::isValid() const
+{
+    BRepCheck_Analyzer aChecker(this->_Shape);
+    return aChecker.IsValid() ? true : false;
+}
+
+TopoDS_Shape TopoShape::cut(TopoDS_Shape shape) const
+{
+    BRepAlgoAPI_Cut mkCut(this->_Shape, shape);
+    return mkCut.Shape();
+}
+
+TopoDS_Shape TopoShape::common(TopoDS_Shape shape) const
+{
+    BRepAlgoAPI_Common mkCommon(this->_Shape, shape);
+    return mkCommon.Shape();
+}
+
+TopoDS_Shape TopoShape::fuse(TopoDS_Shape shape) const
+{
+    BRepAlgoAPI_Fuse mkFuse(this->_Shape, shape);
+    return mkFuse.Shape();
+}
+
+TopoDS_Shape TopoShape::section(TopoDS_Shape shape) const
+{
+    BRepAlgoAPI_Section mkSection(this->_Shape, shape);
+    return mkSection.Shape();
+}

@@ -62,8 +62,7 @@ libPart_la_SOURCES=\
 		TopoShapeSolidPyImp.cpp \
 		TopoShapeVertexPyImp.cpp \
 		TopoShapeWirePyImp.cpp \
-		TopoShapePyImp.cpp \
-		TopologyPy.cpp
+		TopoShapePyImp.cpp
 
 nodist_include_HEADERS=\
 		$(libPart_la_BUILT)
@@ -91,8 +90,7 @@ include_HEADERS=\
 		PropertyCircle.h \
 		PropertyLine.h \
 		PropertyTopoShape.h \
-		TopoShape.h \
-		TopologyPy.h
+		TopoShape.h
 
 
 # the library search path.

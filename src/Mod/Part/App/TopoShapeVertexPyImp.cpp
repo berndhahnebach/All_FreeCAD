@@ -31,16 +31,15 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double x=0.0,y=0.0,z=0.0;
     PyObject *object;
     if (PyArg_ParseTuple(args, "|ddd", &x,&y,&z)) {
-        //(x,y,z);
+        // do nothing here
     }
     else if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
         PyErr_Clear(); // set by PyArg_ParseTuple()
         // Note: must be static_cast, not reinterpret_cast
-		Base::Vector3d* ptr = static_cast<Base::VectorPy*>(object)->getVectorPtr();
-		x = ptr->x;
-		y = ptr->y;
-		z = ptr->z;
-
+        Base::Vector3d* ptr = static_cast<Base::VectorPy*>(object)->getVectorPtr();
+        x = ptr->x;
+        y = ptr->y;
+        z = ptr->z;
     }
     else if (PyArg_ParseTuple(args,"O!",&(PyTuple_Type), &object)) {
         PyErr_Clear(); // set by PyArg_ParseTuple()
@@ -55,44 +54,41 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
     else {
-        PyErr_SetString(PyExc_TypeError, "Either three floats, tuple or Vector expected");
+        PyErr_SetString(PyExc_TypeError, "Either three floats, tuple or vector expected");
         return -1;
     }
 
     TopoShapeVertexPy::PointerType ptr = reinterpret_cast<TopoShapeVertexPy::PointerType>(_pcTwinPointer);
-	BRepBuilderAPI_MakeVertex aBuilder(gp_Pnt(x,y,z));
-	TopoDS_Shape s = aBuilder.Vertex();
-	ptr->_Shape = s;
+    BRepBuilderAPI_MakeVertex aBuilder(gp_Pnt(x,y,z));
+    TopoDS_Shape s = aBuilder.Vertex();
+    ptr->_Shape = s;
 
     return 0;
 }
 
 Py::Float TopoShapeVertexPy::getX(void) const
 {
-	TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
-	//BRep_Tool::Pnt(v).X();
+    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).X());
 }
 
 Py::Float TopoShapeVertexPy::getY(void) const
 {
-	TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
-	//BRep_Tool::Pnt(v).X();
+    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).Y());
 }
 
 Py::Float TopoShapeVertexPy::getZ(void) const
 {
-	TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
-	//BRep_Tool::Pnt(v).X();
+    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).Z());
 }
 
 Py::Object TopoShapeVertexPy::getPoint(void) const
 {
-	TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
-	gp_Pnt p = BRep_Tool::Pnt(v);
-	return Py::Object(new Base::VectorPy(new Base::Vector3d(p.X(),p.Y(),p.Z())));
+    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    gp_Pnt p = BRep_Tool::Pnt(v);
+    return Py::Object(new Base::VectorPy(new Base::Vector3d(p.X(),p.Y(),p.Z())));
 }
 
 PyObject *TopoShapeVertexPy::getCustomAttributes(const char* /*attr*/) const
@@ -104,5 +100,3 @@ int TopoShapeVertexPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj
 {
     return 0; 
 }
-
-

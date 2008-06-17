@@ -53,8 +53,6 @@
 
 #include "PropertyTopoShape.h"
 #include "TopoShapePy.h"
-// !!! Legacy:
-#include "TopologyPy.h"
 
 using namespace Part;
 
@@ -62,7 +60,6 @@ TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::PropertyComplexGeoData);
 
 PropertyPartShape::PropertyPartShape()
 {
-
 }
 
 PropertyPartShape::~PropertyPartShape()
@@ -158,7 +155,9 @@ void PropertyPartShape::Save (Base::Writer &writer) const
 {
     if(!writer.isForceXML()) {
         //See SaveDocFile(), RestoreDocFile()
-        writer.Stream() << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
+        writer.Stream() << writer.ind() << "<Part file=\"" 
+                        << writer.addFile("PartShape.brp", this)
+                        << "\"/>" << std::endl;
     }
 }
 

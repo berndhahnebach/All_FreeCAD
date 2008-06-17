@@ -35,6 +35,7 @@
 #include "PropertyLine.h"
 #include "PropertyCircle.h"
 #include "TopoShapePy.h"
+#include "TopoShapeVertexPy.h"
 #include "LinePy.h"
 #include "CirclePy.h"
 
@@ -55,6 +56,9 @@ void AppPartExport initPart()
     if(PyType_Ready(&Part::TopoShapePy::Type) < 0) return;
     union PyType_Object pyPartType = {&Part::TopoShapePy::Type};
     PyModule_AddObject(partModule, "Shape", pyPartType.o);
+    if(PyType_Ready(&Part::TopoShapeVertexPy::Type) < 0) return;
+    union PyType_Object pyVertexType = {&Part::TopoShapeVertexPy::Type};
+    PyModule_AddObject(partModule, "Vertex", pyVertexType.o);
     // Append line() method
     if(PyType_Ready(&Part::LinePy::Type) < 0) return;
     union PyType_Object pyLineType = {&Part::LinePy::Type};

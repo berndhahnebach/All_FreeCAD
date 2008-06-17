@@ -41,8 +41,9 @@ public:
     TopoShape();
     ~TopoShape();
 
+    void operator = (const TopoShape&);
+
     Base::BoundBox3d getBoundBox(void)const;
-    static TopoDS_Shape read(const char *FileName);
 
     /** @name Save/restore */
     //@{
@@ -52,6 +53,29 @@ public:
     void SaveDocFile (Base::Writer &writer) const;
     void RestoreDocFile(Base::Reader &reader);
     unsigned int getMemSize (void) const;
+    //@}
+
+    /** @name Input/Output */
+    //@{
+    void read(const char *FileName);
+    bool exportIges(const char *FileName) const;
+    bool exportStep(const char *FileName) const;
+    bool exportBrep(const char *FileName) const;
+    bool exportStl(const char *FileName) const;
+    //@}
+
+    /** @name Query*/
+    //@{
+    bool isNull() const;
+    bool isValid() const;
+    //@}
+
+    /** @name Boolean operation*/
+    //@{
+    TopoDS_Shape cut(TopoDS_Shape) const;
+    TopoDS_Shape common(TopoDS_Shape) const;
+    TopoDS_Shape fuse(TopoDS_Shape) const;
+    TopoDS_Shape section(TopoDS_Shape) const;
     //@}
 
     TopoDS_Shape _Shape;

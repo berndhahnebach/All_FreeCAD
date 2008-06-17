@@ -37,7 +37,6 @@
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"
-#include "TopologyPy.h"
 
 using namespace Part;
 

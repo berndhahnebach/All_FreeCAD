@@ -101,4 +101,3 @@ App::DocumentObjectExecReturn *Line::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-

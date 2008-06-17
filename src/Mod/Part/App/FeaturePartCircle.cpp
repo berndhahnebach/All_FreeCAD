@@ -65,4 +65,3 @@ App::DocumentObjectExecReturn *Circle::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-

@@ -74,4 +74,3 @@ App::DocumentObjectExecReturn *Polygon::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-

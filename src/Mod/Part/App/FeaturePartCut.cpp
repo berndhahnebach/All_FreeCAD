@@ -49,5 +49,3 @@ TopoDS_Shape Cut::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
         throw Base::Exception("Cut failed");
     return mkCut.Shape();
 }
-
-

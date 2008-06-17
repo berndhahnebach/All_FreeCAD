@@ -48,7 +48,6 @@
 #include <App/Application.h>
 #include <App/Document.h>
 
-#include "TopologyPy.h"
 #include "TopoShape.h"
 #include "TopoShapePy.h"
 #include "FeaturePartBox.h"
@@ -177,7 +176,9 @@ static PyObject * read(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s",&Name))
         return NULL;                         
     PY_TRY {
-        return new TopoShapePy(new TopoShape((TopoShape::read(Name)))); 
+        TopoShape* shape = new TopoShape();
+        shape->read(Name);
+        return new TopoShapePy(shape); 
     } PY_CATCH;
 }
 
@@ -204,24 +205,27 @@ show(PyObject *self, PyObject *args)
     Py_Return;
 }
 
-
-
-/* Approximate test function */
-
-
-static PyObject * createPlane(PyObject *self, PyObject *args)
+static PyObject * makePlane(PyObject *self, PyObject *args)
 {
-    double z_level;
+    double length, width;
 
-    //const char* Name;
-    if (!PyArg_ParseTuple(args, "d", &z_level))
-        return NULL;                         
+    if (!PyArg_ParseTuple(args, "dd", &length, &width))
+        return NULL;
+
+    if (length < gp::Resolution()) {
+        PyErr_SetString(PyExc_Exception, "length of plane too small");
+        return NULL;
+    }
+    if (width < gp::Resolution()) {
+        PyErr_SetString(PyExc_Exception, "width of plane too small");
+        return NULL;
+    }
 
     PY_TRY {
-        gp_Pnt aPlanePnt(0,0,z_level);
+        gp_Pnt aPlanePnt(0,0,0);
         gp_Dir aPlaneDir(0,0,1);
         Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
-        BRepBuilderAPI_MakeFace 	Face(aPlane);
+        BRepBuilderAPI_MakeFace Face(aPlane, 0.0, length, 0.0, width);
         return new TopoShapePy(new TopoShape((Face.Face()))); 
     } PY_CATCH;
 }
@@ -234,19 +238,23 @@ static PyObject * createBox(PyObject *self, PyObject *args)
     if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))
         return NULL;                         
 
-    PY_TRY {
+    try {
         // Build a box using the dimension and position attributes
         BRepPrimAPI_MakeBox mkBox(gp_Pnt( X, Y, Z ), L, H, W);
         TopoDS_Shape ResultShape = mkBox.Shape();
         return new TopoShapePy(new TopoShape(ResultShape)); 
-    } PY_CATCH;
+    }
+    catch (const Standard_DomainError&) {
+        PyErr_SetString(PyExc_StandardError, "cannot create flat box");
+        return NULL;
+    }
 }
 
-static PyObject * createLine(PyObject *self, PyObject *args)
+static PyObject * makeLine(PyObject *self, PyObject *args)
 {
     PyObject *obj1, *obj2;
     if (!PyArg_ParseTuple(args, "OO", &obj1, &obj2))
-        return NULL;                         
+        return NULL;
 
     try {
         Py::Tuple p1(obj1), p2(obj2);
@@ -298,6 +306,38 @@ static PyObject * createLine(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeCircle(PyObject *self, PyObject *args)
+{
+    PyObject *obj1, *obj2;
+    double radius, angle0=0.0, angle1=2.0*F_PI;
+    if (!PyArg_ParseTuple(args, "OOd|dd", &obj1, &obj2, &radius, &angle0, &angle1))
+        return NULL;
+
+    try {
+        Py::Tuple p1(obj1), p2(obj2);
+        // Convert into OCC representation
+        gp_Pnt loc = gp_Pnt((double)Py::Float(p1[0]),
+                            (double)Py::Float(p1[1]),
+                            (double)Py::Float(p1[2]));
+        gp_Dir dir = gp_Dir((double)Py::Float(p2[0]),
+                            (double)Py::Float(p2[1]),
+                            (double)Py::Float(p2[2]));
+
+        gp_Ax1 axis(loc, dir);
+        gp_Circ circle;
+        circle.SetAxis(axis);
+        circle.SetRadius(radius);
+
+        Handle_Geom_Circle hCircle = new Geom_Circle (circle);
+        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle0, angle1);
+        TopoDS_Edge edge = aMakeEdge.Edge();
+        return new TopoShapePy(new TopoShape(edge)); 
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
 
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
@@ -305,8 +345,10 @@ struct PyMethodDef Part_methods[] = {
     {"insert" , insert,  1},
     {"read"   , read,  1},
     {"show"   , show,  1},
-    {"createPlane" , createPlane, 1},
-    {"createBox" , createBox, 1},
-    {"createLine" , createLine, 1},
+    {"makePlane" , makePlane, 1},
+    {"createBox" , createBox, 1}, // obsolete
+    {"makeBox" , createBox, 1},
+    {"makeLine" , makeLine, 1},
+    {"makeCircle" , makeCircle, 1},
     {NULL     , NULL      }        /* end of table marker */
 };

@@ -20,8 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 
- 
-
 
 #ifndef PROPERTYTOPOSHAPE_H
 #define PROPERTYTOPOSHAPE_H
@@ -36,7 +34,8 @@ namespace Part
 
 class Property;
 
-/** The part shape property
+/** The part shape property class.
+ * @author Werner Mayer
  */
 class AppPartExport PropertyPartShape : public App::PropertyComplexGeoData
 {
@@ -79,8 +78,6 @@ public:
 private:
     TopoShape _Shape;
 };
-
-
 
 } //namespace Part
 

@@ -175,6 +175,7 @@ public:
     long GetReferenceCount(void) const {
         return _lRefCount;
     }
+    const Handled& operator = (const Handled&);
 
 private:
     long _lRefCount;

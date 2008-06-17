@@ -15,8 +15,6 @@ const char *TopoShapeCompoundPy::representation(void) const
     return "<TopoShape object>";
 }
 
-
-
 PyObject *TopoShapeCompoundPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
@@ -26,5 +24,3 @@ int TopoShapeCompoundPy::setCustomAttributes(const char* /*attr*/, PyObject* /*o
 {
     return 0; 
 }
-
-

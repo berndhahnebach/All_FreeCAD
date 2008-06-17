@@ -77,6 +77,8 @@ void  Handled::DetachRef(void* /*pHandle*/)
     }
 }
 
-
-
-
+const Handled& Handled::operator = (const Handled&)
+{
+    // we must not assign _lRefCount
+    return *this;
+}

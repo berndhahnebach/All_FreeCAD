@@ -15,8 +15,6 @@ const char *TopoShapeShellPy::representation(void) const
     return "<TopoShape object>";
 }
 
-
-
 Py::Object TopoShapeShellPy::getWire(void) const
 {
     return Py::Object();
@@ -31,5 +29,3 @@ int TopoShapeShellPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*
 {
     return 0; 
 }
-
-

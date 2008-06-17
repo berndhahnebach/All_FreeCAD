@@ -14,6 +14,11 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShape is the OpenCasCade topological shape wrapper</UserDocu>
     </Documentation>
+    <Methode Name="read">
+      <Documentation>
+        <UserDocu>Read in an IGES, STEP or BREP file.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="exportIges">
       <Documentation>
         <UserDocu>Export the content of this shape to an IGES file.</UserDocu>
@@ -36,7 +41,8 @@
     </Methode>
     <Methode Name="check">
       <Documentation>
-        <UserDocu>Checks the shape and report errors in the shape structure.</UserDocu>
+        <UserDocu>Checks the shape and report errors in the shape structure.
+This is a more detailed check as done in isValid().</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="fuse">
@@ -59,18 +65,41 @@
         <UserDocu>Difference of this and a given topo shape.</UserDocu>
       </Documentation>
     </Methode>
-    <Attribute Name="Null" ReadOnly="true">
+    <Methode Name="translate">
+      <Documentation>
+        <UserDocu>Apply the translation to the current location of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="rotate">
+      <Documentation>
+        <UserDocu>Apply the rotation to the current location of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isClosed">
+      <Documentation>
+        <UserDocu>Checks if the shape is closed.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isSame">
+      <Documentation>
+        <UserDocu>Checks if both shapes share the same geometry.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isEqual">
+      <Documentation>
+        <UserDocu>Checks if both shapes are equal.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isNull">
       <Documentation>
         <UserDocu>Checks if the shape is null.</UserDocu>
       </Documentation>
-      <Parameter Name="null" Type="Bool"/>
-    </Attribute>
-    <Attribute Name="Valid" ReadOnly="true">
+    </Methode>
+    <Methode Name="isValid">
       <Documentation>
-        <UserDocu>Shows if the Shape is valid. That means not null, empty or corrupted.</UserDocu>
+        <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
-      <Parameter Name="Valid" Type="Bool"/>
-    </Attribute>
+    </Methode>
     <Attribute Name="Faces" ReadOnly="true">
       <Documentation>
         <UserDocu>List of faces in this shape.</UserDocu>
