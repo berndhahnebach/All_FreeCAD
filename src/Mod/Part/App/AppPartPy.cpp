@@ -23,15 +23,18 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Face.hxx>
-# include <Geom_Plane.hxx>
-# include <Handle_Geom_Plane.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
-# include <Geom_Line.hxx>
+# include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
+# include <Geom_Circle.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_Plane.hxx>
+# include <Handle_Geom_Circle.hxx>
+# include <Handle_Geom_Plane.hxx>
 # include <TopoDS_Edge.hxx>
+# include <TopoDS_Face.hxx>
 #endif
 
 #include <stdio.h>

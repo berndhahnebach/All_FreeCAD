@@ -1,15 +1,16 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepTools.hxx>
+# include <BRepBuilderAPI_Copy.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 # include <BRepCheck_Result.hxx>
+# include <BRepTools.hxx>
+# include <gp_Ax1.hxx>
+# include <gp_Trsf.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
-# include <BRepBuilderAPI_Copy.hxx>
-# include <gp_Trsf.hxx>
 # include <TopLoc_Location.hxx>
 #endif
 
