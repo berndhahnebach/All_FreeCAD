@@ -39,11 +39,37 @@
         <UserDocu>Checks the shape and report errors in the shape structure.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="fuse">
+      <Documentation>
+        <UserDocu>Union of this and a given topo shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="common">
+      <Documentation>
+        <UserDocu>Intersection of this and a given topo shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="section">
+      <Documentation>
+        <UserDocu>Section of this with a given topo shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="cut">
+      <Documentation>
+        <UserDocu>Difference of this and a given topo shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Null" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Checks if the shape is null.</UserDocu>
+      </Documentation>
+      <Parameter Name="null" Type="Bool"/>
+    </Attribute>
     <Attribute Name="Valid" ReadOnly="true">
       <Documentation>
-        <UserDocu>Shows if the Shape is valid. That mean not null, empty or corupted.</UserDocu>
+        <UserDocu>Shows if the Shape is valid. That means not null, empty or corrupted.</UserDocu>
       </Documentation>
-      <Parameter Name="Valid" Type="Int"/>
+      <Parameter Name="Valid" Type="Bool"/>
     </Attribute>
     <Attribute Name="Faces" ReadOnly="true">
       <Documentation>
