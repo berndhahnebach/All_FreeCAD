@@ -17,7 +17,7 @@ using namespace Part;
 // returns a string which represent the object e.g. when printed in python
 const char *TopoShapeFacePy::representation(void) const
 {
-    return "<TopoShape object>";
+    return "<Face object>";
 }
 
 Py::Object TopoShapeFacePy::getWire(void) const
