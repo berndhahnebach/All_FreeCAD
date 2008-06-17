@@ -27,7 +27,7 @@
 #endif
 
 
-#include "../../../Base/Console.h"
+#include <Base/Console.h>
 #include "FeaturePartBox.h"
 
 
@@ -84,6 +84,3 @@ App::DocumentObjectExecReturn *Box::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-
-
-

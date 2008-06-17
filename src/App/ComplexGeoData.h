@@ -59,22 +59,22 @@ public:
     /** Override the current transformation with the new one. */
     void setTransform(const Base::Matrix4D& rclTrf);
     const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
-	//@}
+    //@}
 
     /** @name Getting basic geometric entities */
     //@{
-	struct LineTopo {uint32_t I1; uint32_t I2;};
-	struct FacetTopo {uint32_t I1; uint32_t I2; uint32_t I3;};
-	/// Get the bound box
+    struct LineTopo {uint32_t I1; uint32_t I2;};
+    struct FacetTopo {uint32_t I1; uint32_t I2; uint32_t I3;};
+    /// Get the bound box
     virtual Base::BoundBox3d getBoundBox(void)const=0;
-	/** Get Point from Line object intersection  */
-	Base::Vector3d getPointFromLineIntersection(Base::Vector3f Base, Base::Vector3f Dir){return Base::Vector3d();}
-	/** Get Points from object with given Accuracy */
-	void GetPoints(std::vector<Base::Vector3d> &Points,float Accuracy, uint16_t flags=0){};
-	/** Get Polylines from object with given Accuracy */
-	void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<LineTopo> &Topo,float Accuracy, uint16_t flags=0){};
-	/** Get Polylines from object with given Accuracy */
-	void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,float Accuracy, uint16_t flags=0){};
+    /** Get Point from Line object intersection  */
+    Base::Vector3d getPointFromLineIntersection(Base::Vector3f Base, Base::Vector3f Dir){return Base::Vector3d();}
+    /** Get Points from object with given Accuracy */
+    void GetPoints(std::vector<Base::Vector3d> &Points,float Accuracy, uint16_t flags=0){};
+    /** Get Polylines from object with given Accuracy */
+    void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<LineTopo> &Topo,float Accuracy, uint16_t flags=0){};
+    /** Get Polylines from object with given Accuracy */
+    void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,float Accuracy, uint16_t flags=0){};
     //@}
 
 protected:
@@ -85,7 +85,7 @@ protected:
         return _Mtrx * Base::Vector3d(vec.x,vec.y,vec.z);
     }
 
-   /// from local to outside
+    /// from local to inside
     inline Base::Vector3f transformToInside(const Base::Vector3d& vec) const
     {
         Base::Matrix4D tmpM(_Mtrx); 

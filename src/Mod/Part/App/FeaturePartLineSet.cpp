@@ -110,4 +110,3 @@ App::DocumentObjectExecReturn *LineSet::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-

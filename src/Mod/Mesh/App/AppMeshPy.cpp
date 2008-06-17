@@ -33,7 +33,6 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <App/Property.h>
-#include <Mod/Part/App/TopologyPy.h>
 
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
@@ -346,8 +345,7 @@ loftOnCurve(PyObject *self, PyObject *args)
 
   return new MeshPy(M);
 */
- 	Py_Return;    
-
+    Py_Return;
 }
 
 PyDoc_STRVAR(open_doc,

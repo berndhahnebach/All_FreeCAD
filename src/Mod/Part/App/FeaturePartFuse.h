@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 
-
 #ifndef PART_FEATUREPARTFUSE_H
 #define PART_FEATUREPARTFUSE_H
 
@@ -31,7 +30,6 @@
 
 namespace Part
 {
-
 
 class Fuse : public Boolean
 {
@@ -49,6 +47,5 @@ protected:
 };
 
 }
-
 
 #endif // PART_FEATUREPARTFUSE_H

@@ -31,7 +31,6 @@
 namespace Part
 {
 
-
 class Cut : public Boolean
 {
     PROPERTY_HEADER(Part::Cut);
@@ -48,6 +47,5 @@ protected:
 };
 
 }
-
 
 #endif // PART_FEATUREPARTCUT_H

@@ -603,7 +603,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     //if (aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
     if (aPoly.IsNull()) return;
 
-    // geting the transformation of the shape/face
+    // getting the transformation of the shape/face
     gp_Trsf myTransf;
     Standard_Boolean identity = true;
     if(!aLoc.IsIdentity())  {

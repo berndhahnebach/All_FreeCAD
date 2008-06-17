@@ -20,17 +20,16 @@ const char *TopoShapeFacePy::representation(void) const
     return "<TopoShape object>";
 }
 
-
 Py::Object TopoShapeFacePy::getWire(void) const
 {
     TopoDS_Shape clSh = getTopoShapePtr()->_Shape;
-    if (clSh.ShapeType() == TopAbs_FACE)
-    {
-		TopoDS_Face clFace = (TopoDS_Face&)clSh;
-		TopoDS_Wire clWire = ShapeAnalysis::OuterWire(clFace);
-		return Py::Object(new TopoShapePy(new TopoShape(clWire)),true);
-	}else
-		throw "Internal error, TopoDS_SHape is not a face!";
+    if (clSh.ShapeType() == TopAbs_FACE) {
+        TopoDS_Face clFace = (TopoDS_Face&)clSh;
+        TopoDS_Wire clWire = ShapeAnalysis::OuterWire(clFace);
+        return Py::Object(new TopoShapePy(new TopoShape(clWire)),true);
+    }
+    else
+        throw "Internal error, TopoDS_Shape is not a face!";
 
     return Py::Object();
 }
@@ -44,5 +43,3 @@ int TopoShapeFacePy::setCustomAttributes(const char* attr, PyObject *obj)
 {
     return 0; 
 }
-
-

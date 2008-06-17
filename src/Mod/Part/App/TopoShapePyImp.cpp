@@ -1,9 +1,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <IGESControl_Controller.hxx>
-# include <IGESControl_Writer.hxx>
-# include <STEPControl_Writer.hxx>
 # include <BRepTools.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -11,10 +8,9 @@
 # include <TopExp_Explorer.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
-# include <BRepAlgoAPI_Common.hxx>
-# include <BRepAlgoAPI_Cut.hxx>
-# include <BRepAlgoAPI_Fuse.hxx>
-# include <BRepAlgoAPI_Section.hxx>
+# include <BRepBuilderAPI_Copy.hxx>
+# include <gp_Trsf.hxx>
+# include <TopLoc_Location.hxx>
 #endif
 
 
@@ -45,39 +41,42 @@ const char *TopoShapePy::representation(void) const
 int TopoShapePy::PyInit(PyObject* args, PyObject*)
 {
     PyObject *pcObj=0;
-    if (!PyArg_ParseTuple(args, "|O", &pcObj))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, "|O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
         return -1;                             // NULL triggers exception
 
-    // if no shape is given
-    if (!pcObj) return 0;
-    if (PyObject_TypeCheck(pcObj, &(TopoShapePy::Type))) {
+    // if a shape is given
+    if (pcObj) {
         TopoDS_Shape sh = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-        getTopoShapePtr()->_Shape = sh;
-    }
-    else {
-        PyErr_SetString(PyExc_Exception, "shape expected");
-        return -1;
+        BRepBuilderAPI_Copy copy(sh);
+        getTopoShapePtr()->_Shape = copy.Shape();
     }
 
     return 0;
 }
 
+PyObject*  TopoShapePy::read(PyObject *args)
+{
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+
+    getTopoShapePtr()->read(filename);
+    Py_Return;
+}
+
 PyObject*  TopoShapePy::exportIges(PyObject *args)
 {
     char* filename;
-    if (!PyArg_ParseTuple(args, "s", &filename ))   
+    if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
-    // write iges file
-    IGESControl_Controller::Init();
-    IGESControl_Writer aWriter;
-    aWriter.AddShape(getTopoShapePtr()->_Shape);
 
-    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+    // write iges file
+    if (!getTopoShapePtr()->exportIges(filename)) {
         PyErr_SetString(PyExc_Exception,"Writing IGES failed");
         return NULL;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject*  TopoShapePy::exportStep(PyObject *args)
@@ -87,20 +86,12 @@ PyObject*  TopoShapePy::exportStep(PyObject *args)
         return NULL;
 
     // write step file
-    STEPControl_Writer aWriter;
-
-    //FIXME: Does not work this way!!!
-    if (aWriter.Transfer(getTopoShapePtr()->_Shape, STEPControl_AsIs)) {
-        PyErr_SetString(PyExc_Exception,"Transferring STEP failed");
-        return NULL;
-    }
-
-    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+    if (!getTopoShapePtr()->exportStep(filename)) {
         PyErr_SetString(PyExc_Exception,"Writing STEP failed");
         return NULL;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject*  TopoShapePy::exportBrep(PyObject *args)
@@ -109,19 +100,24 @@ PyObject*  TopoShapePy::exportBrep(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    // read brep file
-    if (!BRepTools::Write(getTopoShapePtr()->_Shape,(const Standard_CString)filename)) {
+    // write brep file
+    if (!getTopoShapePtr()->exportBrep(filename)) {
         PyErr_SetString(PyExc_Exception,"Writing BREP failed");
         return NULL;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject*  TopoShapePy::exportStl(PyObject *args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+
+    // write stl file
+    getTopoShapePtr()->exportStl(filename);
+    Py_Return;
 }
 
 PyObject*  TopoShapePy::check(PyObject *args)
@@ -264,18 +260,16 @@ PyObject*  TopoShapePy::fuse(PyObject *args)
     if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
         return NULL;
 
-    TopoDS_Shape self = this->getTopoShapePtr()->_Shape;
-    TopoDS_Shape that = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-
-    // Let's call algorithm computing a fuse operation:
-    BRepAlgoAPI_Fuse mkFuse(self, that);
-    // Let's check if the cut has been successful
-    if (!mkFuse.IsDone()) {
-        PyErr_SetString(PyExc_Exception, "operation failed");
-        return 0;
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    try {
+        // Let's call algorithm computing a fuse operation:
+        TopoDS_Shape fusShape = this->getTopoShapePtr()->fuse(shape);
+        return new TopoShapePy(new TopoShape(fusShape));
     }
-
-    return new TopoShapePy(new TopoShape(mkFuse.Shape()));
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "fuse operation failed");
+        return NULL;
+    }
 }
 
 PyObject*  TopoShapePy::common(PyObject *args)
@@ -284,18 +278,16 @@ PyObject*  TopoShapePy::common(PyObject *args)
     if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
         return NULL;
 
-    TopoDS_Shape self = this->getTopoShapePtr()->_Shape;
-    TopoDS_Shape that = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-
-    // Let's call algorithm computing a intersection operation:
-    BRepAlgoAPI_Common mkCommon(self, that);
-    // Let's check if the cut has been successful
-    if (!mkCommon.IsDone()) {
-        PyErr_SetString(PyExc_Exception, "operation failed");
-        return 0;
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    try {
+        // Let's call algorithm computing a common operation:
+        TopoDS_Shape comShape = this->getTopoShapePtr()->common(shape);
+        return new TopoShapePy(new TopoShape(comShape));
     }
-
-    return new TopoShapePy(new TopoShape(mkCommon.Shape()));
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "common operation failed");
+        return NULL;
+    }
 }
 
 PyObject*  TopoShapePy::section(PyObject *args)
@@ -304,18 +296,16 @@ PyObject*  TopoShapePy::section(PyObject *args)
     if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
         return NULL;
 
-    TopoDS_Shape self = this->getTopoShapePtr()->_Shape;
-    TopoDS_Shape that = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-
-    // Let's call algorithm computing a section operation:
-    BRepAlgoAPI_Section mkSection(self, that);
-    // Let's check if the cut has been successful
-    if (!mkSection.IsDone()) {
-        PyErr_SetString(PyExc_Exception, "operation failed");
-        return 0;
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    try {
+        // Let's call algorithm computing a section operation:
+        TopoDS_Shape secShape = this->getTopoShapePtr()->section(shape);
+        return new TopoShapePy(new TopoShape(secShape));
     }
-
-    return new TopoShapePy(new TopoShape(mkSection.Shape()));
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "section operation failed");
+        return NULL;
+    }
 }
 
 PyObject*  TopoShapePy::cut(PyObject *args)
@@ -324,30 +314,125 @@ PyObject*  TopoShapePy::cut(PyObject *args)
     if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
         return NULL;
 
-    TopoDS_Shape self = this->getTopoShapePtr()->_Shape;
-    TopoDS_Shape that = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    try {
+        // Let's call algorithm computing a cut operation:
+        TopoDS_Shape cutShape = this->getTopoShapePtr()->cut(shape);
+        return new TopoShapePy(new TopoShape(cutShape));
+    }
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "cut operation failed");
+        return NULL;
+    }
+}
 
-    // Let's call algorithm computing a cut operation:
-    BRepAlgoAPI_Cut mkCut(self, that);
-    // Let's check if the cut has been successful
-    if (!mkCut.IsDone()) {
-        PyErr_SetString(PyExc_Exception, "operation failed");
-        return 0;
+PyObject*  TopoShapePy::translate(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O", &obj))
+        return NULL;
+
+    try {
+        Py::Tuple p(obj);
+        // Convert into OCC representation
+        gp_Vec vec = gp_Vec((double)Py::Float(p[0]),
+                            (double)Py::Float(p[1]),
+                            (double)Py::Float(p[2]));
+        gp_Trsf mov;
+        mov.SetTranslation(vec);
+        TopLoc_Location loc(mov);
+            getTopoShapePtr()->_Shape.Move(loc);
+        Py_Return;
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::rotate(PyObject *args)
+{
+    PyObject *obj1, *obj2;
+    double angle;
+    if (!PyArg_ParseTuple(args, "OOd", &obj1, &obj2, &angle))
+        return NULL;
+
+    try {
+        Py::Tuple p1(obj1), p2(obj2);
+        // Convert into OCC representation
+        gp_Pnt pos = gp_Pnt((double)Py::Float(p1[0]),
+                            (double)Py::Float(p1[1]),
+                            (double)Py::Float(p1[2]));
+        gp_Dir dir = gp_Dir((double)Py::Float(p2[0]),
+                            (double)Py::Float(p2[1]),
+                            (double)Py::Float(p2[2]));
+
+        gp_Ax1 axis(pos, dir);
+        gp_Trsf mov;
+        mov.SetRotation(axis, angle);
+        TopLoc_Location loc(mov);
+        getTopoShapePtr()->_Shape.Move(loc);
+        Py_Return;
+    }
+    catch (const Py::Exception&) {
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::isNull(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    bool null = getTopoShapePtr()->isNull();
+    return Py_BuildValue("O", (null ? Py_True : Py_False));
+}
+
+PyObject*  TopoShapePy::isClosed(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    TopoDS_Shape shape = getTopoShapePtr()->_Shape;
+    if (shape.IsNull()) {
+        PyErr_SetString(PyExc_Exception, "shape is empty");
+        return NULL;
     }
 
-    return new TopoShapePy(new TopoShape(mkCut.Shape()));
+    Standard_Boolean test = shape.Closed();
+    return Py_BuildValue("O", (test ? Py_True : Py_False));
 }
 
-Py::Bool TopoShapePy::getNull(void) const
+PyObject*  TopoShapePy::isEqual(PyObject *args)
 {
-    Standard_Boolean null = getTopoShapePtr()->_Shape.IsNull();
-    return Py::Bool(null ? true : false);
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
+        return NULL;
+
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    Standard_Boolean test = (getTopoShapePtr()->_Shape == shape);
+    return Py_BuildValue("O", (test ? Py_True : Py_False));
 }
 
-Py::Bool TopoShapePy::getValid(void) const
+PyObject*  TopoShapePy::isSame(PyObject *args)
 {
-    throw Py::Exception(PyExc_NotImplementedError, "Valid not implemented");
-    //return Py::Bool(false);
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
+        return NULL;
+
+    TopoDS_Shape shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    Standard_Boolean test = getTopoShapePtr()->_Shape.IsSame(shape);
+    return Py_BuildValue("O", (test ? Py_True : Py_False));
+}
+
+PyObject*  TopoShapePy::isValid(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    try {
+        return Py_BuildValue("O", (getTopoShapePtr()->isValid() ? Py_True : Py_False));
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_RuntimeError, "check failed, shape may be empty");
+        return NULL;
+    }
 }
 
 Py::List TopoShapePy::getFaces(void) const
@@ -482,7 +567,7 @@ Py::List TopoShapePy::getWires(void) const
     TopTools_IndexedMapOfShape M;
 
     TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_WIRE);
-    while (Ex.More()) 
+    while (Ex.More())
     {
         M.Add(Ex.Current());
         Ex.Next();

@@ -21,17 +21,14 @@
  ***************************************************************************/
 
 
-
 #ifndef PART_FEATUREPARTBOOLEAN_H
 #define PART_FEATUREPARTBOOLEAN_H
 
 #include <App/PropertyLinks.h>
-
 #include "PartFeature.h"
 
 namespace Part
 {
-
 
 class Boolean : public Part::Feature
 {
@@ -42,7 +39,6 @@ public:
 
     App::PropertyLink Base;
     App::PropertyLink Tool;
-
 
     /** @name methods overide Feature */
     //@{
@@ -56,6 +52,5 @@ protected:
 };
 
 }
-
 
 #endif // PART_FEATUREPARTBOOLEAN_H

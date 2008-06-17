@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
@@ -61,26 +62,49 @@ short Plane::mustExecute() const
 
 App::DocumentObjectExecReturn *Plane::execute(void)
 {
-    //double X = x.getValue();
-    //double Y = y.getValue();
-    //double Z = z.getValue();
-    //double L = l.getValue();
-    //double H = h.getValue();
-    //double W = w.getValue();
+    double L = this->Length.getValue();
+    double W = this->Width.getValue();
 
-    //if (L < gp::Resolution())
-    //    return new App::DocumentObjectExecReturn("Length of L too small");
+    if (L < gp::Resolution())
+        return new App::DocumentObjectExecReturn("Length of plane too small");
+    if (W < gp::Resolution())
+      return new App::DocumentObjectExecReturn("Width of plane too small");
 
-    //if (H < gp::Resolution())
-    //    return new App::DocumentObjectExecReturn("Height of H too small");
+    gp_Pnt aPlanePnt(0,0,0);
+    gp_Dir aPlaneDir(0,0,1);
+    Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+    BRepBuilderAPI_MakeFace mkFace(aPlane, 0.0, L, 0.0, W);
 
-    //if ( W < gp::Resolution() ) 
-    //  return new App::DocumentObjectExecReturn("Width of W too small");
+    const char *error=0;
+    switch (mkFace.Error())
+    {
+    case BRepBuilderAPI_FaceDone:
+        break; // ok
+    case BRepBuilderAPI_NoFace:
+        error = "no face";
+        break;
+    case BRepBuilderAPI_NotPlanar:
+        error = "not planar";
+        break;
+    case BRepBuilderAPI_CurveProjectionFailed:
+        break;
+    case BRepBuilderAPI_ParametersOutOfRange:
+        error = "parameters out of range";
+        break;
+    case BRepBuilderAPI_SurfaceNotC2:
+        error = "surface not C2";
+        break;
+    default:
+        error = "unknown error";
+        break;
+    }
+    // Error ?
+    if (error) {
+        return new App::DocumentObjectExecReturn(error);
+    }
 
-    //// Build a box using the dimension and position attributes
-    //BRepPrimAPI_MakeBox mkBox(gp_Pnt( X, Y, Z ), L, H, W);
-    //TopoDS_Shape ResultShape = mkBox.Shape();
-    //setShape(ResultShape);
+    TopoDS_Shape ResultShape = mkFace.Shape();
+    this->Shape.setValue(ResultShape);
 
     return App::DocumentObject::StdReturn;
 }

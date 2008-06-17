@@ -21,11 +21,9 @@
  ***************************************************************************/
 
 
-
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
-
 
 #include "FeaturePartBoolean.h"
 
@@ -70,4 +68,3 @@ App::DocumentObjectExecReturn *Boolean::execute(void)
     this->Shape.setValue(resShape);
     return App::DocumentObject::StdReturn;
 }
-

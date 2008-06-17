@@ -32,8 +32,6 @@
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 
-#include <Mod/Part/App/TopologyPy.h>
-
 #include "Core/MeshIO.h"
 
 #include "MeshFeature.h"

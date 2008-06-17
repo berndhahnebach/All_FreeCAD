@@ -60,55 +60,61 @@ void DlgPrimitives::accept()
             return;
         }
         if (comboBox1->currentIndex() == 0) {         // plane
-            QMessageBox::warning(this, "Plane", "Not implemented yet");
+            name = doc->getUniqueObjectName("Plane").c_str();
+            cmd = QString(
+                "App.ActiveDocument.addObject(\"Part::Plane\",\"%1\")\n"
+                "App.ActiveDocument.%1.Length=%2\n"
+                "App.ActiveDocument.%1.Width=%3\n")
+                .arg(name).arg(planeLength->value(),0,'f',2)
+                .arg(planeWidth->value(),0,'f',2);
         }
         else if (comboBox1->currentIndex() == 1) {         // box
             name = doc->getUniqueObjectName("Box").c_str();
             cmd = QString(
                 "App.ActiveDocument.addObject(\"Part::Box\",\"%1\")\n"
-                "App.ActiveDocument.%2.l=%3\n"
-                "App.ActiveDocument.%4.w=%5\n"
-                "App.ActiveDocument.%6.h=%7\n")
-                .arg(name).arg(name).arg(boxLength->value(),0,'f',2)
-                .arg(name).arg(boxWidth->value(),0,'f',2)
-                .arg(name).arg(boxHeight->value(),0,'f',2);
+                "App.ActiveDocument.%1.l=%2\n"
+                "App.ActiveDocument.%1.w=%3\n"
+                "App.ActiveDocument.%1.h=%4\n")
+                .arg(name).arg(boxLength->value(),0,'f',2)
+                .arg(boxWidth->value(),0,'f',2)
+                .arg(boxHeight->value(),0,'f',2);
         }
         else if (comboBox1->currentIndex() == 2) {  // cylinder
             name = doc->getUniqueObjectName("Cylinder").c_str();
             cmd = QString(
                 "App.ActiveDocument.addObject(\"Part::Cylinder\",\"%1\")\n"
-                "App.ActiveDocument.%2.Radius=%3\n"
-                "App.ActiveDocument.%4.Height=%5\n"
-                "App.ActiveDocument.%6.Angle=%7\n")
-                .arg(name).arg(name).arg(cylinderRadius->value(),0,'f',2)
-                .arg(name).arg(cylinderHeight->value(),0,'f',2)
-                .arg(name).arg(cylinderAngle->value(),0,'f',2);
+                "App.ActiveDocument.%1.Radius=%2\n"
+                "App.ActiveDocument.%1.Height=%3\n"
+                "App.ActiveDocument.%1.Angle=%4\n")
+                .arg(name).arg(cylinderRadius->value(),0,'f',2)
+                .arg(cylinderHeight->value(),0,'f',2)
+                .arg(cylinderAngle->value(),0,'f',2);
         }
         else if (comboBox1->currentIndex() == 3) {  // cone
             name = doc->getUniqueObjectName("Cone").c_str();
             cmd = QString(
                 "App.ActiveDocument.addObject(\"Part::Cone\",\"%1\")\n"
-                "App.ActiveDocument.%2.Radius1=%3\n"
-                "App.ActiveDocument.%4.Radius2=%5\n"
-                "App.ActiveDocument.%6.Height=%7\n"
-                "App.ActiveDocument.%8.Angle=%9\n")
-                .arg(name).arg(name).arg(coneRadius1->value(),0,'f',2)
-                .arg(name).arg(coneRadius2->value(),0,'f',2)
-                .arg(name).arg(coneHeight->value(),0,'f',2)
-                .arg(name).arg(coneAngle->value(),0,'f',2);
+                "App.ActiveDocument.%1.Radius1=%2\n"
+                "App.ActiveDocument.%1.Radius2=%3\n"
+                "App.ActiveDocument.%1.Height=%4\n"
+                "App.ActiveDocument.%1.Angle=%5\n")
+                .arg(name).arg(coneRadius1->value(),0,'f',2)
+                .arg(coneRadius2->value(),0,'f',2)
+                .arg(coneHeight->value(),0,'f',2)
+                .arg(coneAngle->value(),0,'f',2);
         }
         else if (comboBox1->currentIndex() == 4) {  // sphere
             name = doc->getUniqueObjectName("Sphere").c_str();
             cmd = QString(
                 "App.ActiveDocument.addObject(\"Part::Sphere\",\"%1\")\n"
-                "App.ActiveDocument.%2.Radius=%3\n"
-                "App.ActiveDocument.%4.Angle1=%5\n"
-                "App.ActiveDocument.%6.Angle2=%7\n"
-                "App.ActiveDocument.%8.Angle3=%9\n")
-                .arg(name).arg(name).arg(sphereRadius->value(),0,'f',2)
-                .arg(name).arg(sphereAngle1->value(),0,'f',2)
-                .arg(name).arg(sphereAngle2->value(),0,'f',2)
-                .arg(name).arg(sphereAngle3->value(),0,'f',2);
+                "App.ActiveDocument.%1.Radius=%2\n"
+                "App.ActiveDocument.%1.Angle1=%3\n"
+                "App.ActiveDocument.%1.Angle2=%4\n"
+                "App.ActiveDocument.%1.Angle3=%5\n")
+                .arg(name).arg(sphereRadius->value(),0,'f',2)
+                .arg(sphereAngle1->value(),0,'f',2)
+                .arg(sphereAngle2->value(),0,'f',2)
+                .arg(sphereAngle3->value(),0,'f',2);
         }
         else if (comboBox1->currentIndex() == 5) {  // ellipsoid
             QMessageBox::warning(this, "Ellipsoid", "Not implemented yet");
@@ -117,16 +123,16 @@ void DlgPrimitives::accept()
             name = doc->getUniqueObjectName("Torus").c_str();
             cmd = QString(
                 "App.ActiveDocument.addObject(\"Part::Torus\",\"%1\")\n"
-                "App.ActiveDocument.%2.Radius1=%3\n"
-                "App.ActiveDocument.%4.Radius2=%5\n"
-                "App.ActiveDocument.%6.Angle1=%7\n"
-                "App.ActiveDocument.%8.Angle2=%9\n"
-                "App.ActiveDocument.%10.Angle3=%11\n")
-                .arg(name).arg(name).arg(torusRadius1->value(),0,'f',2)
-                .arg(name).arg(torusRadius2->value(),0,'f',2)
-                .arg(name).arg(torusAngle1->value(),0,'f',2)
-                .arg(name).arg(torusAngle2->value(),0,'f',2)
-                .arg(name).arg(torusAngle3->value(),0,'f',2);
+                "App.ActiveDocument.%1.Radius1=%2\n"
+                "App.ActiveDocument.%1.Radius2=%3\n"
+                "App.ActiveDocument.%1.Angle1=%4\n"
+                "App.ActiveDocument.%1.Angle2=%5\n"
+                "App.ActiveDocument.%1.Angle3=%6\n")
+                .arg(name).arg(torusRadius1->value(),0,'f',2)
+                .arg(torusRadius2->value(),0,'f',2)
+                .arg(torusAngle1->value(),0,'f',2)
+                .arg(torusAngle2->value(),0,'f',2)
+                .arg(torusAngle3->value(),0,'f',2);
         }
 
         // Execute the Python block

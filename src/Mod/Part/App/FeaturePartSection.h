@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 
-
 #ifndef PART_FEATUREPARTSECTION_H
 #define PART_FEATUREPARTSECTION_H
 
@@ -31,7 +30,6 @@
 
 namespace Part
 {
-
 
 class Section : public Boolean
 {
@@ -49,6 +47,5 @@ protected:
 };
 
 }
-
 
 #endif // PART_FEATUREPARTSECTION_H

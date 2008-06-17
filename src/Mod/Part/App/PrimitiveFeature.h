@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 
-
 #ifndef PART_PRIMITIVEFEATURE_H
 #define PART_PRIMITIVEFEATURE_H
 
