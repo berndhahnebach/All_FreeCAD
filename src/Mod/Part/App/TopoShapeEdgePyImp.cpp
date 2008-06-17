@@ -12,7 +12,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *TopoShapeEdgePy::representation(void) const
 {
-    return "<TopoShapeEdge>";
+    return "<Edge object>";
 }
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const

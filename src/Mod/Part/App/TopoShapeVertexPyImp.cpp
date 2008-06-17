@@ -22,7 +22,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *TopoShapeVertexPy::representation(void) const
 {
-    return "<TopoShapeVertex>";
+    return "<Vertex object>";
 }
 
 // constructor method

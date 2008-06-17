@@ -36,7 +36,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *TopoShapePy::representation(void) const
 {
-    return "<shape object>";
+    return "<Shape object>";
 }
 
 int TopoShapePy::PyInit(PyObject* args, PyObject*)
