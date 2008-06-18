@@ -36,6 +36,13 @@
 #include "PropertyCircle.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
+#include "TopoShapeFacePy.h"
+#include "TopoShapeWirePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeSolidPy.h"
+#include "TopoShapeCompoundPy.h"
+#include "TopoShapeCompSolidPy.h"
+#include "TopoShapeShellPy.h"
 #include "LinePy.h"
 #include "CirclePy.h"
 
@@ -44,29 +51,34 @@ extern struct PyMethodDef Part_methods[];
 PyDoc_STRVAR(module_part_doc,
 "This is a module working with shapes.");
 
+inline void AddType(PyTypeObject* Type,PyObject* Module, const char * Name){
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if(PyType_Ready(Type) < 0) return;
+    union PyType_Object pyPartType = {Type};
+    PyModule_AddObject(Module, Name, pyPartType.o);
+}
+
 extern "C" {
 void AppPartExport initPart()
 {
     PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Part module... done\n");
 
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
-    if(PyType_Ready(&Part::TopoShapePy::Type) < 0) return;
-    union PyType_Object pyPartType = {&Part::TopoShapePy::Type};
-    PyModule_AddObject(partModule, "Shape", pyPartType.o);
-    if(PyType_Ready(&Part::TopoShapeVertexPy::Type) < 0) return;
-    union PyType_Object pyVertexType = {&Part::TopoShapeVertexPy::Type};
-    PyModule_AddObject(partModule, "Vertex", pyVertexType.o);
-    // Append line() method
-    if(PyType_Ready(&Part::LinePy::Type) < 0) return;
-    union PyType_Object pyLineType = {&Part::LinePy::Type};
-    PyModule_AddObject(partModule, "line", pyLineType.o);
-    // Append circle() method
-    if(PyType_Ready(&Part::CirclePy::Type) < 0) return;
-    union PyType_Object pyCircType = {&Part::CirclePy::Type};
-    PyModule_AddObject(partModule, "circle", pyCircType.o);
+    // Add Types to module
+    AddType(&Part::TopoShapePy         ::Type,partModule,"Shape");
+    AddType(&Part::TopoShapeVertexPy   ::Type,partModule,"Vertex");
+    AddType(&Part::TopoShapeWirePy     ::Type,partModule,"Wire");
+    AddType(&Part::TopoShapeEdgePy     ::Type,partModule,"Edge");
+    AddType(&Part::TopoShapeSolidPy    ::Type,partModule,"Solid");
+    AddType(&Part::TopoShapeFacePy     ::Type,partModule,"Face");
+    AddType(&Part::TopoShapeCompoundPy ::Type,partModule,"Compound");
+    AddType(&Part::TopoShapeCompSolidPy::Type,partModule,"CompSolid");
+    AddType(&Part::TopoShapeShellPy    ::Type,partModule,"Shell");
+
+    AddType(&Part::LinePy   ::Type,partModule,"Line");
+    AddType(&Part::CirclePy ::Type,partModule,"Circle");
 
     Part::TopoShape           ::init();
     Part::PropertyPartShape   ::init();
