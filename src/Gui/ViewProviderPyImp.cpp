@@ -67,16 +67,6 @@ PyObject*  ViewProviderPy::isVisible(PyObject *args)
     } PY_CATCH;
 }
 
-PyObject*  ViewProviderPy::update(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                       // NULL triggers exception 
-    PY_TRY {
-        //getViewProviderPtr()->update();  
-        Py_Return;
-    } PY_CATCH;
-}
-
 PyObject*  ViewProviderPy::listDisplayModes(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 

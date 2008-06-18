@@ -259,12 +259,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
         try {
             // if succesfully created set the right name and calculate the view
             pcProvider->attach(&Obj);
-            std::map<std::string, App::Property*> Map;
-            Obj.getPropertyMap(Map);
-            for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
-                pcProvider->updateData(it->second);
-            }
-      
+            pcProvider->updateView();
             pcProvider->setActiveMode();
         }
         catch(const Base::MemoryException& e){

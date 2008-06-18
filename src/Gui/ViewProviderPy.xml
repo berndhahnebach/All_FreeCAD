@@ -28,11 +28,6 @@
 				<UserDocu>Check if the object is visible</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="update">
-			<Documentation>
-				<UserDocu>Update the view representation of the object</UserDocu>
-			</Documentation>
-		</Methode>
 		<Methode Name="listDisplayModes">
 			<Documentation>
 				<UserDocu>Show a list of all display modes</UserDocu>

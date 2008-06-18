@@ -23,6 +23,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
+# include <BRepPrimAPI_MakeCylinder.hxx>
+# include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <gp_Circ.hxx>
@@ -311,32 +313,59 @@ static PyObject * makeLine(PyObject *self, PyObject *args)
 
 static PyObject * makeCircle(PyObject *self, PyObject *args)
 {
-    PyObject *obj1, *obj2;
-    double radius, angle0=0.0, angle1=2.0*F_PI;
-    if (!PyArg_ParseTuple(args, "OOd|dd", &obj1, &obj2, &radius, &angle0, &angle1))
+    double radius, angle1=0.0, angle2=2.0*F_PI;
+    if (!PyArg_ParseTuple(args, "d|dd", &radius, &angle1, &angle2))
         return NULL;
 
     try {
-        Py::Tuple p1(obj1), p2(obj2);
-        // Convert into OCC representation
-        gp_Pnt loc = gp_Pnt((double)Py::Float(p1[0]),
-                            (double)Py::Float(p1[1]),
-                            (double)Py::Float(p1[2]));
-        gp_Dir dir = gp_Dir((double)Py::Float(p2[0]),
-                            (double)Py::Float(p2[1]),
-                            (double)Py::Float(p2[2]));
-
+        gp_Pnt loc = gp_Pnt(0,0,0);
+        gp_Dir dir = gp_Dir(0,0,1);
         gp_Ax1 axis(loc, dir);
         gp_Circ circle;
         circle.SetAxis(axis);
         circle.SetRadius(radius);
 
         Handle_Geom_Circle hCircle = new Geom_Circle (circle);
-        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle0, angle1);
+        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1, angle2);
         TopoDS_Edge edge = aMakeEdge.Edge();
         return new TopoShapePy(new TopoShape(edge)); 
     }
-    catch (const Py::Exception&) {
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "creation of circle failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeSphere(PyObject *self, PyObject *args)
+{
+    double radius, angle1=-F_PI/2.0, angle2=F_PI/2.0, angle3=2.0*F_PI;
+    if (!PyArg_ParseTuple(args, "d|ddd", &radius, &angle1, &angle2, &angle3))
+        return NULL;
+
+    try {
+        BRepPrimAPI_MakeSphere mkSphere(radius, angle1, angle2, angle3);
+        TopoDS_Shape shape = mkSphere.Shape();
+        return new TopoShapePy(new TopoShape(shape));
+    }
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "creation of sphere failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeCylinder(PyObject *self, PyObject *args)
+{
+    double radius, height, angle=2.0*F_PI;
+    if (!PyArg_ParseTuple(args, "dd|d", &radius, &height, &angle))
+        return NULL;
+
+    try {
+        BRepPrimAPI_MakeCylinder mkCyl(radius, height, angle);
+        TopoDS_Shape shape = mkCyl.Shape();
+        return new TopoShapePy(new TopoShape(shape));
+    }
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "creation of cylinder failed");
         return NULL;
     }
 }
@@ -344,14 +373,29 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
 
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
-    {"open"   , open,    1},
-    {"insert" , insert,  1},
-    {"read"   , read,  1},
-    {"show"   , show,  1},
-    {"makePlane" , makePlane, 1},
-    {"createBox" , createBox, 1}, // obsolete
-    {"makeBox" , createBox, 1},
-    {"makeLine" , makeLine, 1},
-    {"makeCircle" , makeCircle, 1},
-    {NULL     , NULL      }        /* end of table marker */
+    {"open"       ,open      ,METH_VARARGS,
+     "open(string) -- Create a new document and load the file into the document."},
+    {"insert"     ,insert    ,METH_VARARGS,
+     "insert(string,string) -- Insert the file into the given document."},
+    {"read"       ,read      ,METH_VARARGS,
+     "read(string) -- Load the file and return the shape."},
+    {"show"       ,show      ,METH_VARARGS,
+     "show(shape) -- Add the shape to the active document or create one if it does not exist."},
+    {"makePlane"  ,makePlane ,METH_VARARGS,
+     "makePlane(lenght,width) -- Make a plane"},
+    {"createBox"  ,createBox ,METH_VARARGS}, // obsolete
+    {"makeBox"    ,createBox ,METH_VARARGS,
+     "makeBox(x,y,z,l,w,h) -- Make a box located in (x,y,z) with the dimensions (l,w,h)"},
+    {"makeLine"   ,makeLine  ,METH_VARARGS,
+     "makeLine((x1,y1,z1),(x2,y2,z2)) -- Make a line of two points"},
+    {"makeCircle" ,makeCircle,METH_VARARGS,
+     "makeCircle(radius,[angle1,angle2]) -- Make a circle with a given radius\n"
+     "By default angle1=0 and angle2=2*PI"},
+    {"makeSphere" ,makeSphere,METH_VARARGS,
+     "makeSphere(radius,[angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
+     "By default angle1=0, angle2=0.5*PI and angle3=2*PI"},
+    {"makeCylinder" ,makeCylinder,METH_VARARGS,
+     "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
+     "By default angle=2*PI"},
+    {NULL, NULL}        /* end of table marker */
 };

@@ -13,6 +13,11 @@
 			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
 			<UserDocu>This is the ViewProvider base class</UserDocu>
 		</Documentation>
+		<Methode Name="update">
+			<Documentation>
+				<UserDocu>Update the view representation of the object</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Object" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Return the associated data object</UserDocu>
