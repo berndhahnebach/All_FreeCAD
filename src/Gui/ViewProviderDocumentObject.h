@@ -64,6 +64,7 @@ public:
     /// Sets the active mode, i.e. the first item of the 'Display' property.
     void setActiveMode();
 
+    void updateView();
     virtual void updateData(const App::Property*){};
     App::DocumentObject *getObject(void) const {return pcObject;}
     PyObject* getPyObject();

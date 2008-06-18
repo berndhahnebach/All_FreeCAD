@@ -75,6 +75,28 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Apply the rotation to the current location of this shape.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="scale">
+      <Documentation>
+        <UserDocu>Apply scaling with point and factor to this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="reverse">
+      <Documentation>
+        <UserDocu>Reverses the orientation of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="complement">
+      <Documentation>
+        <UserDocu>Computes the complement of the orientation of this shape,
+i.e. reverses the interior/exterior status of boundaries of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="nullify">
+      <Documentation>
+        <UserDocu>Destroys the reference to the underlying shape stored in this shape.
+As a result, this shape becomes null.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="isClosed">
       <Documentation>
         <UserDocu>Checks if the shape is closed.</UserDocu>
@@ -100,6 +122,18 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
     </Methode>
+    <Attribute Name="Location" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Gets or sets the local coordinate system of this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Location" Type="Object"/>
+    </Attribute>
+    <Attribute Name="ShapeType" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Returns the type of the shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="ShapeType" Type="String"/>
+    </Attribute>
     <Attribute Name="Faces" ReadOnly="true">
       <Documentation>
         <UserDocu>List of faces in this shape.</UserDocu>

@@ -1,6 +1,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <sstream>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -16,6 +17,9 @@
 
 
 #include <Base/PyCXX/Objects.hxx>
+#include <Base/Matrix.h>
+#include <Base/Rotation.h>
+#include <App/MatrixPy.h>
 #include "TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapePy.xml)
@@ -36,7 +40,18 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *TopoShapePy::representation(void) const
 {
-    return "<Shape object>";
+    // Note: As the return type is 'const char*' we cannot create a temporary
+    // char array neither on the stack because the array would be freed when
+    // leaving the scope nor on the heap because we would have a memory leak.
+    // So we use a static array that is used by all instances of this class.
+    // This, however, is not a problem as long as we only use this method in
+    // _repr().
+
+    std::stringstream str;
+    str << "<Shape object at " << getTopoShapePtr() << ">";
+    static std::string buf;
+    buf = str.str();
+    return buf.c_str();
 }
 
 int TopoShapePy::PyInit(PyObject* args, PyObject*)
@@ -48,8 +63,7 @@ int TopoShapePy::PyInit(PyObject* args, PyObject*)
     // if a shape is given
     if (pcObj) {
         TopoDS_Shape sh = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-        BRepBuilderAPI_Copy copy(sh);
-        getTopoShapePtr()->_Shape = copy.Shape();
+        getTopoShapePtr()->_Shape = sh;
     }
 
     return 0;
@@ -379,6 +393,57 @@ PyObject*  TopoShapePy::rotate(PyObject *args)
     }
 }
 
+PyObject*  TopoShapePy::scale(PyObject *args)
+{
+    double factor;
+    if (!PyArg_ParseTuple(args, "d", &factor))
+        return NULL;
+
+    if (fabs(factor) < gp::Resolution()) {
+        PyErr_SetString(PyExc_Exception, "scale factor too small");
+        return NULL;
+    }
+
+    try {
+        gp_Trsf scl;
+        scl.SetScaleFactor(factor);
+        TopLoc_Location loc(scl);
+        getTopoShapePtr()->_Shape.Move(loc);
+        Py_Return;
+    }
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "scaling failed");
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::reverse(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    getTopoShapePtr()->_Shape.Reverse();
+    Py_Return;
+}
+
+PyObject*  TopoShapePy::complement(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    getTopoShapePtr()->_Shape.Complement();
+    Py_Return;
+}
+
+PyObject*  TopoShapePy::nullify(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    getTopoShapePtr()->_Shape.Nullify();
+    Py_Return;
+}
+
 PyObject*  TopoShapePy::isNull(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -434,6 +499,91 @@ PyObject*  TopoShapePy::isValid(PyObject *args)
         PyErr_SetString(PyExc_RuntimeError, "check failed, shape may be empty");
         return NULL;
     }
+}
+
+Py::Object TopoShapePy::getLocation(void) const
+{
+    const TopLoc_Location& loc = getTopoShapePtr()->_Shape.Location();
+    gp_Trsf trf = (gp_Trsf)loc;
+    Base::Matrix4D mat;
+    mat[0][0] = trf.Value(1,1);
+    mat[0][1] = trf.Value(1,2);
+    mat[0][2] = trf.Value(1,3);
+    mat[0][3] = trf.Value(1,4);
+    
+    mat[1][0] = trf.Value(2,1);
+    mat[1][1] = trf.Value(2,2);
+    mat[1][2] = trf.Value(2,3);
+    mat[1][3] = trf.Value(2,4);
+    
+    mat[2][0] = trf.Value(3,1);
+    mat[2][1] = trf.Value(3,2);
+    mat[2][2] = trf.Value(3,3);
+    mat[2][3] = trf.Value(3,4);
+    return Py::Object(new App::MatrixPy(mat));
+}
+
+void TopoShapePy::setLocation(Py::Object o)
+{
+    PyObject* p = o.ptr();
+    if (PyObject_TypeCheck(p, &(App::MatrixPy::Type))) {
+        Base::Matrix4D mat = static_cast<App::MatrixPy*>(p)->value();
+        Base::Rotation rot(mat);
+        Base::Vector3d axis;
+        double angle;
+        rot.getValue(axis, angle);
+        gp_Trsf trf;
+        trf.SetRotation(gp_Ax1(gp_Pnt(), gp_Dir(axis.x, axis.y, axis.z)), angle);
+        trf.SetTranslationPart(gp_Vec(mat[0][3],mat[1][3],mat[2][3]));
+        TopLoc_Location loc(trf);
+        getTopoShapePtr()->_Shape.Location(loc);
+    }
+    else {
+        std::string error = std::string("type must be 'Matrix', not ");
+        error += p->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+}
+
+Py::String TopoShapePy::getShapeType(void) const
+{
+    TopoDS_Shape sh = getTopoShapePtr()->_Shape;
+    if (sh.IsNull())
+        throw Py::Exception(PyExc_Exception, "cannot determine type of null shape");
+    TopAbs_ShapeEnum type = sh.ShapeType();
+    std::string name;
+    switch (type)
+    {
+    case TopAbs_COMPOUND:
+        name = "Compund";
+        break;
+    case TopAbs_COMPSOLID:
+        name = "CompSolid";
+        break;
+    case TopAbs_SOLID:
+        name = "Solid";
+        break;
+    case TopAbs_SHELL:
+        name = "Shell";
+        break;
+    case TopAbs_FACE:
+        name = "Face";
+        break;
+    case TopAbs_WIRE:
+        name = "Wire";
+        break;
+    case TopAbs_EDGE:
+        name = "Edge";
+        break;
+    case TopAbs_VERTEX:
+        name = "Vertex";
+        break;
+    case TopAbs_SHAPE:
+        name = "Shape";
+        break;
+    }
+
+    return Py::String(name);
 }
 
 Py::List TopoShapePy::getFaces(void) const

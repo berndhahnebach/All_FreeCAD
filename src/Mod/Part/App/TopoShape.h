@@ -37,8 +37,9 @@ class AppPartExport TopoShape : public Data::ComplexGeoData
     TYPESYSTEM_HEADER();
 
 public:
-    TopoShape(const TopoDS_Shape&);
     TopoShape();
+    TopoShape(const TopoDS_Shape&);
+    TopoShape(const TopoShape&);
     ~TopoShape();
 
     void operator = (const TopoShape&);

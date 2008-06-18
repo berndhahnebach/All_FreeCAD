@@ -53,6 +53,16 @@ const char *ViewProviderDocumentObjectPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject* ViewProviderDocumentObjectPy::update(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
+    PY_TRY {
+        getViewProviderDocumentObjectPtr()->updateView();
+        Py_Return;
+    } PY_CATCH;
+}
+
 Py::Object ViewProviderDocumentObjectPy::getObject(void) const
 {
     App::DocumentObject* obj = getViewProviderDocumentObjectPtr()->getObject();

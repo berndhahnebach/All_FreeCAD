@@ -79,12 +79,17 @@ using namespace Part;
 
 TYPESYSTEM_SOURCE(Part::TopoShape , Data::ComplexGeoData);
 
+TopoShape::TopoShape()
+{
+}
+
 TopoShape::TopoShape(const TopoDS_Shape& shape)
   : _Shape(shape)
 {
 }
 
-TopoShape::TopoShape()
+TopoShape::TopoShape(const TopoShape& shape)
+  : ComplexGeoData(shape._Mtrx),_Shape(shape._Shape)
 {
 }
 

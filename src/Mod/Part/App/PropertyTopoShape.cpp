@@ -129,14 +129,14 @@ void PropertyPartShape::setPyObject(PyObject *value)
 
 App::Property *PropertyPartShape::Copy(void) const
 {
-    PropertyPartShape *p= new PropertyPartShape();
-  
+    PropertyPartShape *prop = new PropertyPartShape();
+    prop->_Shape = this->_Shape;
     if (!_Shape._Shape.IsNull()) {
         BRepBuilderAPI_Copy copy(_Shape._Shape);
-        p->_Shape = copy.Shape();
+        prop->_Shape._Shape = copy.Shape();
     }
 
-    return p;
+    return prop;
 }
 
 void PropertyPartShape::Paste(const App::Property &from)
