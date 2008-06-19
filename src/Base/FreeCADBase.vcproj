@@ -1210,6 +1210,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MatrixPy.xml"
+			>
+		</File>
+		<File
 			RelativePath=".\MemDebug.cpp"
 			>
 		</File>
@@ -1321,6 +1325,10 @@
 		</File>
 		<File
 			RelativePath="Placement.h"
+			>
+		</File>
+		<File
+			RelativePath=".\PlacementPy.xml"
 			>
 		</File>
 		<File
