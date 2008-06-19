@@ -54,8 +54,15 @@ else(WIN32)
 endif(WIN32)
 
 generate_from_xml(PartFeaturePy)
-generate_from_xml(TopoShapeFacePy)
 generate_from_xml(TopoShapePy)
+generate_from_xml(TopoShapeCompoundPy)
+generate_from_xml(TopoShapeCompSolidPy)
+generate_from_xml(TopoShapeEdgePy)
+generate_from_xml(TopoShapeFacePy)
+generate_from_xml(TopoShapeShellPy)
+generate_from_xml(TopoShapeSolidPy)
+generate_from_xml(TopoShapeVertexPy)
+generate_from_xml(TopoShapeWirePy)
 
 SET(Features_SRCS
 		 FeaturePartBoolean.cpp
@@ -98,6 +105,8 @@ SET(Properties_SRCS
 		 PropertyCircle.h
 		 PropertyLine.cpp
 		 PropertyLine.h
+		 PropertyTopoShape.cpp
+		 PropertyTopoShape.h
 )
 SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
 
@@ -129,6 +138,20 @@ SET(Part_SRCS
 		 TopoShapeFacePyImp.cpp
 		 TopoShapePy.xml
 		 TopoShapePyImp.cpp
+		 TopoShapeCompSolidPy.xml
+		 TopoShapeCompSolidPyImp.cpp
+		 TopoShapeCompoundPy.xml
+		 TopoShapeCompoundPyImp.cpp
+		 TopoShapeEdgePy.xml
+		 TopoShapeEdgePyImp.cpp
+		 TopoShapeShellPy.xml
+		 TopoShapeShellPyImp.cpp
+		 TopoShapeSolidPy.xml
+		 TopoShapeSolidPyImp.cpp
+		 TopoShapeVertexPy.xml
+		 TopoShapeVertexPyImp.cpp
+		 TopoShapeWirePy.xml
+		 TopoShapeWirePyImp.cpp
 )
 
 add_library(Part SHARED ${Part_SRCS})
