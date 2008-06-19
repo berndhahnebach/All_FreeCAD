@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport
+		Father="PyObjectBase"
+		Name="MatrixPy"
+		Twin="Vector"
+		TwinPointer="Matrix4D"
+		Include="Base/Matrix.h"
+		FatherInclude="Base/PyObjectBase.h"
+		Namespace="Base"
+		Constructor="true"
+		Delete="true"
+		FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <DeveloperDocu>This is the Vector export class</DeveloperDocu>
+      <UserDocu>A 4x4 Matrix</UserDocu>
+    </Documentation>
+    <Methode Name="move">
+      <Documentation>
+        <UserDocu>
+          move(Vector)
+          Move the matrix along the vector
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="scale">
+      <Documentation>
+        <UserDocu>
+          scale(Vector)
+          Scale the matrix with the vector
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="unity">
+      <Documentation>
+        <UserDocu>unity() - make this matrix to unity</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="transform">
+      <Documentation>
+        <UserDocu>transform(Vector,Matrix) - return the dot product of the two vectors</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="rotateX">
+      <Documentation>
+        <UserDocu>rotateX(float) - rotate around X</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="rotateY">
+      <Documentation>
+        <UserDocu>rotateX(float) - rotate around Y</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="rotateZ">
+      <Documentation>
+        <UserDocu>rotateZ(float) - rotate around Z</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="A" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A" Type="List" />
+    </Attribute>
+    <ClassDeclarations>
+      public:
+      MatrixPy(const Matrix4D &amp; mat, PyTypeObject *T = &amp;Type)
+      :PyObjectBase(new Matrix4D(mat),T){}
+    </ClassDeclarations>
+  </PythonExport>
+</GenerateModel>

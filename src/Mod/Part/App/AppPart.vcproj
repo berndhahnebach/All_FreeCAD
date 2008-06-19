@@ -591,40 +591,6 @@
 				>
 			</File>
 			<File
-				RelativePath="TopologyPy.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="TopologyPy.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShape.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShape.h"
-				>
-			</File>
-			<File
 				RelativePath=".\TopoShapeCompoundPy.xml"
 				>
 				<FileConfiguration
@@ -859,10 +825,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="ShapeObjects"
-			>
-		</Filter>
 		<File
 			RelativePath="AppPart.cpp"
 			>
@@ -941,6 +903,14 @@
 		</File>
 		<File
 			RelativePath="PreCompiled.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TopoShape.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TopoShape.h"
 			>
 		</File>
 	</Files>
