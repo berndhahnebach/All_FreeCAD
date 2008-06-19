@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeEdge.hxx>
-# include <Geom_Circle.hxx>
+# include <gp_Circ.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
 #endif
@@ -38,9 +38,9 @@ PROPERTY_SOURCE(Part::Circle, Part::Feature)
 
 Circle::Circle()
 {
-    ADD_PROPERTY(Angle0,(0.0f));
-    ADD_PROPERTY(Angle1,(2*F_PI));
-    ADD_PROPERTY(Circ,(gp_Circ()));
+    ADD_PROPERTY(Radius,(2.0f));
+    ADD_PROPERTY(Angle1,(0.0f));
+    ADD_PROPERTY(Angle2,(2*F_PI));
 }
 
 Circle::~Circle()
@@ -49,17 +49,26 @@ Circle::~Circle()
 
 short Circle::mustExecute() const
 {
-    if (Angle0.isTouched() ||
-        Angle1.isTouched() ||
-        Circ.isTouched())
+    if (Angle1.isTouched() ||
+        Angle2.isTouched() ||
+        Radius.isTouched())
         return 1;
-    return 0;
+    return Part::Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Circle::execute(void)
 {
-    Handle_Geom_Circle hCircle = new Geom_Circle (Circ.getValue());
-    BRepBuilderAPI_MakeEdge clMakeEdge(hCircle, this->Angle0.getValue(), this->Angle1.getValue());
+    Base::Vector3f loc = this->Location.getValue();
+    Base::Vector3f dir = this->Axis.getValue();
+
+    gp_Ax1 axis;
+    axis.SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+    axis.SetDirection(gp_Dir(dir.x, dir.y, dir.z));
+    gp_Circ circle;
+    circle.SetAxis(axis);
+    circle.SetRadius(this->Radius.getValue());
+    
+    BRepBuilderAPI_MakeEdge clMakeEdge(circle, this->Angle1.getValue(), this->Angle2.getValue());
     TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
     this->Shape.setValue(edge);
 

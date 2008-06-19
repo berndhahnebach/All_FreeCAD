@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <gp_Trsf.hxx>
 #endif
 
 
@@ -34,6 +35,8 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
+#include <Base/Placement.h>
+#include <Base/Rotation.h>
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"
@@ -41,11 +44,13 @@
 using namespace Part;
 
 
-PROPERTY_SOURCE(Part::Feature, App::DocumentObject)
+PROPERTY_SOURCE(Part::Feature, App::GeoFeature)
 
 
 Feature::Feature(void) 
 {
+    ADD_PROPERTY(Location,(Base::Vector3f()));
+    ADD_PROPERTY(Axis,(Base::Vector3f(0.0f,0.0f,1.0f)));
     ADD_PROPERTY(Shape, (TopoDS_Shape()));
 }
 
@@ -55,6 +60,9 @@ Feature::~Feature()
 
 short Feature::mustExecute(void) const
 {
+    if (Location.isTouched() ||
+        Axis.isTouched())
+        return 1;
     return 0;
 }
 
@@ -70,4 +78,17 @@ PyObject *Feature::getPyObject(void)
         PythonObject.set(new PartFeaturePy(this),true);
     }
     return Py::new_reference_to(PythonObject); 
+}
+
+TopLoc_Location Feature::getLocation() const
+{
+    Base::Placement pl = this->Placement.getValue();
+    Base::Rotation rot(pl._q);
+    Base::Vector3d axis;
+    double angle;
+    rot.getValue(axis, angle);
+    gp_Trsf trf;
+    trf.SetRotation(gp_Ax1(gp_Pnt(), gp_Dir(axis.x, axis.y, axis.z)), angle);
+    trf.SetTranslationPart(gp_Vec(pl._pos.x,pl._pos.y,pl._pos.z));
+    return TopLoc_Location(trf);
 }

@@ -25,7 +25,6 @@
 #define PART_FEATUREPARTLINE_H
 
 #include "PartFeature.h"
-#include "PropertyLine.h"
 
 namespace Part
 {
@@ -38,7 +37,8 @@ public:
     Line();
     virtual ~Line();
 
-    PropertyLine Line_;
+    App::PropertyFloat P1;
+    App::PropertyFloat P2;
 
     /** @name methods override feature */
     //@{

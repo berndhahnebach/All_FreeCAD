@@ -26,7 +26,7 @@
 
 #include "TopoShape.h"
 #include "PropertyTopoShape.h"
-#include <App/DocumentObject.h>
+#include <App/GeoFeature.h>
 #include <App/PropertyGeo.h>
 
 class PyObjectBase;
@@ -41,9 +41,9 @@ namespace Part
 
 class PartFeaturePy;
 
-/** Base class of all Feature classes in FreeCAD
+/** Base class of all shape feature classes in FreeCAD
  */
-class AppPartExport Feature : public App::DocumentObject
+class AppPartExport Feature : public App::GeoFeature
 {
     PROPERTY_HEADER(Part::Feature);
 
@@ -52,11 +52,14 @@ public:
     Feature(void);
     virtual ~Feature();
 
+    // Note: Location and Axis is different to Placement
+    App::PropertyVector Location;
+    App::PropertyVector Axis;
     PropertyPartShape Shape;
 
-    /** @name methods overide Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     virtual App::DocumentObjectExecReturn *execute(void);
     virtual short mustExecute(void) const;
     //@}
@@ -67,6 +70,9 @@ public:
     }
 
     virtual PyObject* getPyObject(void);
+
+protected:
+    TopLoc_Location getLocation() const;
 };
 
 } //namespace Part

@@ -40,7 +40,8 @@ PROPERTY_SOURCE(Part::Line, Part::Feature)
 
 Line::Line()
 {
-    ADD_PROPERTY(Line_,(Line3f()));
+    ADD_PROPERTY(P1,(0.0f));
+    ADD_PROPERTY(P2,(1.0f));
 }
 
 Line::~Line()
@@ -49,28 +50,33 @@ Line::~Line()
 
 short Line::mustExecute() const
 {
-    if (Line_.isTouched())
+    if (P1.isTouched() || P2.isTouched())
         return 1;
-    return 0;
+    return Part::Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Line::execute(void)
 {
-    const Line3f& line = Line_.getValue();
+    Base::Vector3f loc = this->Location.getValue();
+    Base::Vector3f dir = this->Axis.getValue();
 
     // Convert into OCC representation
-    gp_Pnt pnt1 = gp_Pnt(line.first.x,line.first.y,line.first.z);
-    gp_Pnt pnt2 = gp_Pnt(line.second.x,line.second.y,line.second.z);
+    gp_Lin line;
+    try {
+        line.SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        line.SetDirection(gp_Dir(dir.x, dir.y, dir.z));
+    }
+    catch (const Standard_Failure&) {
+        return new App::DocumentObjectExecReturn("Cannot create line");
+    }
 
     // Create directly the underlying line geometry
-    BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
+    BRepBuilderAPI_MakeEdge makeEdge(line, this->P1.getValue(), this->P2.getValue());
 
-    bool ok = false;
     const char *error=0;
     switch ( makeEdge.Error() )
     {
     case BRepBuilderAPI_EdgeDone:
-        ok = true;
         break; // ok
     case BRepBuilderAPI_PointProjectionFailed:
         error = "Point projection failed";
@@ -93,7 +99,7 @@ App::DocumentObjectExecReturn *Line::execute(void)
     }
 
     // Error 
-    if ( !ok ) 
+    if (error)
         return new App::DocumentObjectExecReturn(error);
 
     TopoDS_Edge edge = makeEdge.Edge();
