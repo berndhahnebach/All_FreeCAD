@@ -45,7 +45,7 @@ class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
 public:
     /// Constructor
     ComplexGeoData(void);
-    ComplexGeoData(const Base::Matrix4D &mtrx):_Mtrx(mtrx){}
+  
     virtual ~ComplexGeoData();
 
     /** @name Placment control */
@@ -56,9 +56,18 @@ public:
     void applyTranslation(const Base::Vector3d&);
     /** Applies an additional rotation to the current transformation. */
     void applyRotation(const Base::Rotation&);
-    /** Override the current transformation with the new one. */
-    void setTransform(const Base::Matrix4D& rclTrf);
-    const Base::Matrix4D& getMatrix(void) const {return _Mtrx;}
+    /** Override the current transformation with a Placement */
+    void setPlacement(const Base::Placement& rclPlacement);
+    /** Override the current transformation with the new one. 
+	*   This methode have to be handled from the child classes.
+	*   the actual placement and matrix is not part of this class.
+	*/
+    virtual void setTransform(const Base::Matrix4D& rclTrf)=0;
+ 	/** returns the current Matrix
+	*   This methode have to be handled from the child classes.
+	*   the actual placement and matrix is not part of this class.
+	*/
+    virtual Base::Matrix4D getMatrix(void) const = 0;
     //@}
 
     /** @name Getting basic geometric entities */
@@ -94,7 +103,7 @@ protected:
         return Base::Vector3f((float)tmp.x,(float)tmp.y,(float)tmp.z);
     }
 
-    Base::Matrix4D _Mtrx;
+    //Base::Matrix4D _Mtrx;
 };
 
 } //namespace App
