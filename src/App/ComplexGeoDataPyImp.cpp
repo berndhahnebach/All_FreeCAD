@@ -17,16 +17,32 @@ const char *ComplexGeoDataPy::representation(void) const
     return "<ComplexGeoData object>";
 }
 
-PyObject*  ComplexGeoDataPy::setPlacement(PyObject * /*args*/)
-{
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
-}
 
 Py::Object ComplexGeoDataPy::getBoundBox(void) const
 {
     return Py::Object(new BoundBoxPy(new BoundBox3d(getComplexGeoDataPtr()->getBoundBox())));
 }
+
+Py::Object ComplexGeoDataPy::getPlacement(void) const
+{
+    return Py::Object();
+}
+
+void  ComplexGeoDataPy::setPlacement(Py::Object arg)
+{
+
+}
+
+Py::Object ComplexGeoDataPy::getMatrix(void) const
+{
+    return Py::Object();
+}
+
+void  ComplexGeoDataPy::setMatrix(Py::Object arg)
+{
+
+}
+
 
 PyObject *ComplexGeoDataPy::getCustomAttributes(const char* /*attr*/) const
 {
