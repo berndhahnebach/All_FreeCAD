@@ -66,6 +66,11 @@ public:
     ~MeshObject();
 
     void operator = (const MeshObject&);
+
+
+    void setTransform(const Base::Matrix4D& rclTrf);
+    Base::Matrix4D getMatrix(void) const;
+
     /**
      * Swaps the content of \a Kernel and the internal mesh kernel.
      */
@@ -213,6 +218,7 @@ public:
     { return FacetIter(this, countFacets()); }
 
 private:
+	Base::Matrix4D _Mtrx;
     MeshCore::MeshKernel _kernel;
     static float Epsilon;
 };

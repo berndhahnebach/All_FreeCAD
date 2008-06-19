@@ -62,13 +62,13 @@ MeshObject::MeshObject(const MeshCore::MeshKernel& Kernel)
 }
 
 MeshObject::MeshObject(const MeshCore::MeshKernel& Kernel, const Base::Matrix4D &Mtrx)
-  : ComplexGeoData(Mtrx),_kernel(Kernel)
+  : _Mtrx(Mtrx),_kernel(Kernel)
 {
     // copy the mesh structure
 }
 
 MeshObject::MeshObject(const MeshObject& mesh)
-  : ComplexGeoData(mesh._Mtrx),_kernel(mesh._kernel)
+  : _Mtrx(mesh._Mtrx),_kernel(mesh._kernel)
 {
     // copy the mesh structure
 }
@@ -76,6 +76,17 @@ MeshObject::MeshObject(const MeshObject& mesh)
 MeshObject::~MeshObject()
 {
 }
+
+void MeshObject::setTransform(const Base::Matrix4D& rclTrf)
+{
+	_Mtrx = rclTrf;
+}
+
+Base::Matrix4D MeshObject::getMatrix(void) const
+{
+	return _Mtrx;
+}
+
 
 Base::BoundBox3d MeshObject::getBoundBox(void)const
 {   
