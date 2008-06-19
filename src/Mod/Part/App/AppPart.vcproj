@@ -227,14 +227,6 @@
 			Name="Properties"
 			>
 			<File
-				RelativePath=".\PropertyCircle.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PropertyCircle.h"
-				>
-			</File>
-			<File
 				RelativePath=".\PropertyLine.cpp"
 				>
 			</File>
