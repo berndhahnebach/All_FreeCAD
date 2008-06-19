@@ -1,6 +1,7 @@
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_BINARY_DIR}/src
+		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
@@ -25,6 +26,12 @@ else(WIN32)
 #		 		 -lCam
 )
 endif(WIN32)
+
+set(CamGui_MOC_HDRS
+		 Cutting.h
+)
+fc_wrap_cpp(CamGui_MOC_SRCS ${CamGui_MOC_HDRS})
+SOURCE_GROUP("Moc" FILES ${CamGui_MOC_SRCS})
 
 set(CamGui_UIC_SRCS
 		 Cutting.ui
