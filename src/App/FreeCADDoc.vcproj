@@ -994,32 +994,6 @@
 			>
 		</File>
 		<File
-			RelativePath="MatrixPy.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="MatrixPy.h"
-			>
-		</File>
-		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

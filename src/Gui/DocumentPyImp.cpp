@@ -6,7 +6,7 @@
 #endif
 
 #include <Base/Matrix.h>
-#include <App/MatrixPy.h>
+#include <Base/MatrixPy.h>
 
 #include "Document.h"
 #include "ViewProviderExtern.h"
@@ -64,10 +64,10 @@ PyObject*  DocumentPy::setPos(PyObject *args)
     PyObject *pcMatObj;
     if (!PyArg_ParseTuple(args, "sO!;Name of the Feature and the transformation matrix have to be given!",
                           &psFeatStr,
-                          &(App::MatrixPy::Type), &pcMatObj))     // convert args: Python->C 
+                          &(Base::MatrixPy::Type), &pcMatObj))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
 
-    mat = ((App::MatrixPy*)pcMatObj)->value();
+    mat = static_cast<Base::MatrixPy*>(pcMatObj)->value();
 
     PY_TRY {
         getDocumentPtr()->setPos(psFeatStr,mat);  
