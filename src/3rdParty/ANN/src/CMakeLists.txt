@@ -13,4 +13,4 @@ set(ANN_SRCS
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
 
-add_library(ANN ${ANN_SRCS})
+add_library(ANN SHARED ${ANN_SRCS})
