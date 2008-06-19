@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport
+		Father="PyObjectBase"
+		Name="RotationPy"
+		Twin="Rotation"
+		TwinPointer="Rotation"
+		Include="Base/Rotation.h"
+		FatherInclude="Base/PyObjectBase.h"
+		Namespace="Base"
+		Constructor="true"
+		Delete="true"
+		FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <DeveloperDocu>This is the Rotation export class</DeveloperDocu>
+      <UserDocu>A Rotation</UserDocu>
+    </Documentation>
+    <Methode Name="invert">
+      <Documentation>
+        <UserDocu>
+          move(Vector)
+          Move the matrix along the vector
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Q" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The rotation elements (as quaternion)</UserDocu>
+      </Documentation>
+      <Parameter Name="Q" Type="List" />
+    </Attribute>
+    <ClassDeclarations>
+      public:
+      RotationPy(const Rotation &amp; mat, PyTypeObject *T = &amp;Type)
+      :PyObjectBase(new Rotation(mat),T){}
+    </ClassDeclarations>
+  </PythonExport>
+</GenerateModel>
