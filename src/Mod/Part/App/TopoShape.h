@@ -44,6 +44,10 @@ public:
 
     void operator = (const TopoShape&);
 
+    void setTransform(const Base::Matrix4D& rclTrf);
+    Base::Matrix4D getMatrix(void) const;
+
+
     Base::BoundBox3d getBoundBox(void)const;
 
     /** @name Save/restore */
