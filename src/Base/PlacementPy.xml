@@ -13,30 +13,31 @@
 		FatherNamespace="Base">
 	<Documentation>
 		<Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-		<DeveloperDocu>This is the Placement export class</DeveloperDocu>
-		<UserDocu>Placement</UserDocu>
+		<DeveloperDocu>This is the Vector export class</DeveloperDocu>
+		<UserDocu>A 4x4 Matrix</UserDocu>
 	</Documentation>
-	<Methode Name="move">
-		<Documentation>
-			<UserDocu>move(Vector) 
-Move the matrix along the vector</UserDocu>
-		</Documentation>
-	</Methode>
-	<Attribute Name="Base" ReadOnly="false">
-		<Documentation>
-			<UserDocu>Base vector of the Placement</UserDocu>
-		</Documentation>
-		<Parameter Name="Base" Type="Object" />
-	</Attribute>
-	<Attribute Name="Rotation" ReadOnly="false">
-		<Documentation>
-			<UserDocu>Rotation of the placement</UserDocu>
-		</Documentation>
-		<Parameter Name="Rotation" Type="List" />
-	</Attribute>
-	<ClassDeclarations>public:
-    PlacementPy(const Placement &amp; mat, PyTypeObject *T = &amp;Type)
-      :PyObjectBase(new Placement(mat),T){}
+		<Methode Name="move">
+			<Documentation>
+				<UserDocu>move(Vector) 
+Move the Placement along the vector            
+        </UserDocu>
+			</Documentation>
+		</Methode>
+    <Attribute Name="Base" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Base vector of the Placement</UserDocu>
+      </Documentation>
+      <Parameter Name="Base" Type="Object" />
+    </Attribute>
+    <Attribute Name="Rotation" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Rotation of the placement</UserDocu>
+      </Documentation>
+      <Parameter Name="Rotation" Type="List" />
+    </Attribute>
+    <ClassDeclarations>public:
+    PlacementPy(const Placement &amp; p, PyTypeObject *T = &amp;Type)
+		:PyObjectBase(new Placement(p),T){}
 	</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>
