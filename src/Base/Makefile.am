@@ -4,14 +4,18 @@ lib_LTLIBRARIES=libFreeCADBase.la
 BUILT_SOURCES=\
 		BaseClassPy.cpp \
 		BoundBoxPy.cpp \
+		MatrixPy.cpp \
 		PersistancePy.cpp \
+		PlacementPy.cpp \
 		VectorPy.cpp
 
 
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
 		BoundBoxPy.h \
+		MatrixPy.h \
 		PersistancePy.h \
+		PlacementPy.h \
 		VectorPy.h
 
 libFreeCADBase_la_SOURCES=\
@@ -90,6 +94,7 @@ libFreeCADBase_la_SOURCES=\
 		InputSource.cpp \
 		Interpreter.cpp \
 		Matrix.cpp \
+		MatrixPyImp.cpp \
 		MemDebug.cpp \
 		MemDebug.h \
 		Parameter.cpp \
@@ -97,6 +102,7 @@ libFreeCADBase_la_SOURCES=\
 		Persistance.cpp \
 		PersistancePyImp.cpp \
 		Placement.cpp \
+		PlacementPyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PyExport.cpp \
@@ -216,6 +222,8 @@ EXTRA_DIST = \
 		FreeCADBase.vcproj \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \
+		MatrixPy.xml \
 		PersistancePy.xml \
+		PlacementPy.xml \
 		VectorPy.xml
 
