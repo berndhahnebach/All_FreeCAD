@@ -59,10 +59,10 @@
 #include <Base/BaseClass.h>
 #include <Base/Persistance.h>
 #include <Base/Reader.h>
+#include <Base/MatrixPy.h>
 #include <Base/VectorPy.h>
 #include <Base/BoundBoxPy.h>
 
-#include "MatrixPy.h"
 #include "Feature.h"
 #include "GeoFeature.h"
 #include "FeatureTest.h"
@@ -166,9 +166,9 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     union PyType_Object pyVecType = {&Base::VectorPy::Type};
     PyModule_AddObject(pAppModule, "Vector", pyVecType.o);
 
-    if (PyType_Ready(&App::MatrixPy::Type) < 0) return;
-    union PyType_Object pyMatType = {&App::MatrixPy::Type};
-    PyModule_AddObject(pAppModule, "Matrix", pyMatType.o);
+    if (PyType_Ready(&Base::MatrixPy::Type) < 0) return;
+    union PyType_Object pyMtxType = {&Base::MatrixPy::Type};
+    PyModule_AddObject(pAppModule, "Matrix", pyMtxType.o);
 
     if (PyType_Ready(&Base::BoundBoxPy::Type) < 0) return;
     union PyType_Object pyBoundBoxType = {&Base::BoundBoxPy::Type};

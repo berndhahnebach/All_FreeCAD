@@ -35,8 +35,8 @@
 #include <Base/Stream.h>
 #include <Base/Rotation.h>
 #include <Base/VectorPy.h>
+#include <Base/MatrixPy.h>
 
-#include "MatrixPy.h"
 #include "Placement.h"
 
 #include "PropertyGeo.h"
@@ -359,13 +359,13 @@ const Base::Matrix4D & PropertyMatrix::getValue(void)const
 
 PyObject *PropertyMatrix::getPyObject(void)
 {
-    return new MatrixPy(_cMat);
+    return new Base::MatrixPy(_cMat);
 }
 
 void PropertyMatrix::setPyObject(PyObject *value)
 {
-    if (PyObject_TypeCheck(value, &(MatrixPy::Type))) {
-        MatrixPy  *pcObject = (MatrixPy*)value;
+    if (PyObject_TypeCheck(value, &(Base::MatrixPy::Type))) {
+        Base::MatrixPy  *pcObject = (Base::MatrixPy*)value;
         setValue( pcObject->value() );
     }
     else if (PyTuple_Check(value)&&PyTuple_Size(value)==16) {
@@ -487,13 +487,13 @@ const Base::Placement & PropertyPlacement::getValue(void)const
 PyObject *PropertyPlacement::getPyObject(void)
 {
     Base::Matrix4D mat = _cPos.getAsMatrix();
-    return new MatrixPy(mat);
+    return new Base::MatrixPy(mat);
 }
 
 void PropertyPlacement::setPyObject(PyObject *value)
 {
-    if (PyObject_TypeCheck(value, &(MatrixPy::Type))) {
-        MatrixPy  *pcObject = (MatrixPy*)value;
+    if (PyObject_TypeCheck(value, &(Base::MatrixPy::Type))) {
+        Base::MatrixPy  *pcObject = (Base::MatrixPy*)value;
         Base::Matrix4D mat = pcObject->value();
         Base::Rotation rot(mat);
         double q0,q1,q2,q3;

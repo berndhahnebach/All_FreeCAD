@@ -19,7 +19,7 @@
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/Matrix.h>
 #include <Base/Rotation.h>
-#include <App/MatrixPy.h>
+#include <Base/MatrixPy.h>
 #include "TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapePy.xml)
@@ -520,14 +520,14 @@ Py::Object TopoShapePy::getLocation(void) const
     mat[2][1] = trf.Value(3,2);
     mat[2][2] = trf.Value(3,3);
     mat[2][3] = trf.Value(3,4);
-    return Py::Object(new App::MatrixPy(mat));
+    return Py::Object(new Base::MatrixPy(mat));
 }
 
 void TopoShapePy::setLocation(Py::Object o)
 {
     PyObject* p = o.ptr();
-    if (PyObject_TypeCheck(p, &(App::MatrixPy::Type))) {
-        Base::Matrix4D mat = static_cast<App::MatrixPy*>(p)->value();
+    if (PyObject_TypeCheck(p, &(Base::MatrixPy::Type))) {
+        Base::Matrix4D mat = static_cast<Base::MatrixPy*>(p)->value();
         Base::Rotation rot(mat);
         Base::Vector3d axis;
         double angle;

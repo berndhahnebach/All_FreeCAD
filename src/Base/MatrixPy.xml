@@ -3,7 +3,7 @@
   <PythonExport
 		Father="PyObjectBase"
 		Name="MatrixPy"
-		Twin="Vector"
+		Twin="Matrix"
 		TwinPointer="Matrix4D"
 		Include="Base/Matrix.h"
 		FatherInclude="Base/PyObjectBase.h"
@@ -13,7 +13,7 @@
 		FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-      <DeveloperDocu>This is the Vector export class</DeveloperDocu>
+      <DeveloperDocu>This is the Matrix export class</DeveloperDocu>
       <UserDocu>A 4x4 Matrix</UserDocu>
     </Documentation>
     <Methode Name="move">
@@ -57,16 +57,113 @@
         <UserDocu>rotateZ(float) - rotate around Z</UserDocu>
       </Documentation>
     </Methode>
+    <Attribute Name="A11" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A11" Type="Float" />
+    </Attribute>
+    <Attribute Name="A12" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A12" Type="Float" />
+    </Attribute>
+    <Attribute Name="A13" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A13" Type="Float" />
+    </Attribute>
+    <Attribute Name="A14" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A14" Type="Float" />
+    </Attribute>
+    <Attribute Name="A21" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A21" Type="Float" />
+    </Attribute>
+    <Attribute Name="A22" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A22" Type="Float" />
+    </Attribute>
+    <Attribute Name="A23" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A23" Type="Float" />
+    </Attribute>
+    <Attribute Name="A24" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A24" Type="Float" />
+    </Attribute>
+    <Attribute Name="A31" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A31" Type="Float" />
+    </Attribute>
+    <Attribute Name="A32" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A32" Type="Float" />
+    </Attribute>
+    <Attribute Name="A33" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A33" Type="Float" />
+    </Attribute>
+    <Attribute Name="A34" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A34" Type="Float" />
+    </Attribute>
+    <Attribute Name="A41" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A41" Type="Float" />
+    </Attribute>
+    <Attribute Name="A42" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A42" Type="Float" />
+    </Attribute>
+    <Attribute Name="A43" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A43" Type="Float" />
+    </Attribute>
+    <Attribute Name="A44" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The matrix elements</UserDocu>
+      </Documentation>
+      <Parameter Name="A44" Type="Float" />
+    </Attribute>
     <Attribute Name="A" ReadOnly="false">
       <Documentation>
         <UserDocu>The matrix elements</UserDocu>
       </Documentation>
       <Parameter Name="A" Type="List" />
     </Attribute>
-    <ClassDeclarations>
-      public:
+    <ClassDeclarations>public:
       MatrixPy(const Matrix4D &amp; mat, PyTypeObject *T = &amp;Type)
       :PyObjectBase(new Matrix4D(mat),T){}
+      Matrix4D value() const
+      { return *(getMatrixPtr()); }
     </ClassDeclarations>
   </PythonExport>
 </GenerateModel>

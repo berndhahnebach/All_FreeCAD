@@ -43,7 +43,6 @@ libFreeCADApp_la_SOURCES=\
 		InventorObject.cpp \
 		Material.cpp \
 		MaterialPy.cpp \
-		MatrixPy.cpp \
 		Placement.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -74,7 +73,6 @@ include_HEADERS=\
 		InventorObject.h \
 		Material.h \
 		MaterialPy.h \
-		MatrixPy.h \
 		Placement.h \
 		Property.h \
 		PropertyGeo.h \
