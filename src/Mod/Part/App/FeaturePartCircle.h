@@ -25,7 +25,6 @@
 #define PART_FEATUREPARTCIRCLE_H
 
 #include <App/PropertyStandard.h>
-#include "PropertyCircle.h"
 #include "PartFeature.h"
 
 namespace Part
@@ -39,9 +38,9 @@ public:
     Circle();
     virtual ~Circle();
 
-    App::PropertyAngle Angle0;
+    App::PropertyFloat Radius;
     App::PropertyAngle Angle1;
-    PropertyCircle Circ;
+    App::PropertyAngle Angle2;
 
     /** @name methods override feature */
     //@{

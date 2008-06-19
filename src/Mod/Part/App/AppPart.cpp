@@ -33,7 +33,6 @@
 #include "FeaturePartPolygon.h"
 #include "PrimitiveFeature.h"
 #include "PropertyLine.h"
-#include "PropertyCircle.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeFacePy.h"
@@ -84,7 +83,6 @@ void AppPartExport initPart()
     Part::PropertyPartShape   ::init();
     Part::PropertyLine        ::init();
     Part::PropertyLineSet     ::init();
-    Part::PropertyCircle      ::init();
 
     Part::Feature             ::init();
     Part::Box                 ::init();

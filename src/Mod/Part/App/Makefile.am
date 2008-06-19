@@ -50,7 +50,6 @@ libPart_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
-		PropertyCircle.cpp \
 		PropertyLine.cpp \
 		PropertyTopoShape.cpp \
 		TopoShape.cpp \
@@ -87,7 +86,6 @@ include_HEADERS=\
 		LinePy.h \
 		PartFeature.h \
 		PrimitiveFeature.h \
-		PropertyCircle.h \
 		PropertyLine.h \
 		PropertyTopoShape.h \
 		TopoShape.h

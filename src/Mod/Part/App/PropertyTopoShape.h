@@ -28,7 +28,6 @@
 #include <App/DocumentObject.h>
 #include <App/PropertyGeo.h>
 
-
 namespace Part
 {
 
@@ -54,6 +53,7 @@ public:
     /// get the part shape
     TopoDS_Shape getValue(void) const;
     Base::BoundBox3f getBoundingBox() const;
+    void setLocation(const TopLoc_Location&);
     //@}
 
     /** @name Python interface */

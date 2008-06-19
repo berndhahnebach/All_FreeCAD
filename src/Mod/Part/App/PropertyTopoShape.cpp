@@ -109,6 +109,15 @@ Base::BoundBox3f PropertyPartShape::getBoundingBox() const
     return box;
 }
 
+void PropertyPartShape::setLocation(const TopLoc_Location& loc)
+{
+    // Note: The internal shapes do not chnage but the internal location only,
+    // we actually do not need to save the shapes.
+    //aboutToSetValue();
+    _Shape._Shape.Location(loc);
+    //hasSetValue();
+}
+
 PyObject *PropertyPartShape::getPyObject(void)
 {
     return new TopoShapePy(new TopoShape(_Shape._Shape));
