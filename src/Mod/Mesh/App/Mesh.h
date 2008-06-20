@@ -39,8 +39,10 @@
 
 #include "Core/MeshKernel.h"
 #include "Core/Iterator.h"
+#include "MeshPoint.h"
 #include "Facet.h"
 #include "MeshPoint.h"
+#include "Segment.h"
 
 namespace Py {
 class List;
@@ -179,6 +181,12 @@ public:
     void removeSelfIntersections();
     //@}
 
+    /** @name Mesh segments */
+    //@{
+    void addSegment(const Segment&);
+    void addSegment(const std::vector<unsigned long>&);
+    //@}
+
     /** @name Primitives */
     //@{
     static MeshObject* createMeshFromList(Py::List& list);
@@ -191,6 +199,32 @@ public:
     //@}
 
 public:
+    class MeshExport PointIter
+    {
+    public:
+        PointIter(MeshObject*, unsigned long index);
+        PointIter(const PointIter& pi);
+        ~PointIter();
+
+        PointIter& operator=(const PointIter& fi);
+        MeshPoint& operator*();
+        MeshPoint* operator->();
+        bool operator==(const PointIter& fi) const;
+        bool operator!=(const PointIter& fi) const;
+        PointIter& operator++();
+        PointIter& operator--();
+    private:
+        void dereference();
+        MeshObject* _mesh;
+        MeshPoint _point;
+        MeshCore::MeshPointIterator _p_it;
+    };
+
+    PointIter points_begin()
+    { return PointIter(this, 0); }
+    PointIter points_end()
+    { return PointIter(this, countPoints()); }
+
     class MeshExport FacetIter
     {
     public:
@@ -216,10 +250,35 @@ public:
     { return FacetIter(this, 0); }
     FacetIter facets_end()
     { return FacetIter(this, countFacets()); }
+#if 0
+    class MeshExport SegmentIter
+    {
+    public:
+        SegmentIter(MeshObject*, unsigned long index);
+        SegmentIter(const SegmentIter& fi);
+        ~SegmentIter();
 
+        SegmentIter& operator=(const SegmentIter& fi);
+        Segment& operator*();
+        Segment* operator->();
+        bool operator==(const SegmentIter& fi) const;
+        bool operator!=(const SegmentIter& fi) const;
+        SegmentIter& operator++();
+        SegmentIter& operator--();
+    private:
+        void dereference();
+        MeshObject* _mesh;
+    };
+
+    SegmentIter segments_begin()
+    { return SegmentIter(this, 0); }
+    SegmentIter segments_end()
+    { return SegmentIter(this, _segments.size()); }
+#endif
 private:
     Base::Matrix4D _Mtrx;
     MeshCore::MeshKernel _kernel;
+    std::vector<Segment> _segments;
     static float Epsilon;
 };
 
