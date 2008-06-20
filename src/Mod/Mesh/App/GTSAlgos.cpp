@@ -263,7 +263,7 @@ GtsSurface* GTSAlgos::createGTSSurface(const Mesh::MeshObject& Mesh)
   for (unsigned int PIter = 0;PIter < Mesh.getKernel().CountPoints(); PIter++)
   {
     // Transform the point in the global coordinate system
-    Vertex = Mesh.getMatrix() * Mesh.getKernel().GetPoint(PIter);
+    Vertex = Mesh.getTransform() * Mesh.getKernel().GetPoint(PIter);
 
     aVertex[PIter] = gts_vertex_new (gts_vertex_class (), Vertex.x, Vertex.y, Vertex.z);
   }
