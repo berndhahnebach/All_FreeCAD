@@ -240,7 +240,7 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
         const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
-        this->pcComplexData->setMatrix(convert(mesh->getValue().getMatrix()));
+        this->pcComplexData->setMatrix(convert(mesh->getValue().getTransform()));
         const MeshCore::MeshPointArray& rPAry = mesh->getValue().getKernel().GetPoints();
         this->pcVertexNode->point.setValue(rPAry);
         const MeshCore::MeshFacetArray& rFAry = mesh->getValue().getKernel().GetFacets();

@@ -59,7 +59,7 @@ Segment::FacetIter::FacetIter(const Segment* segm, std::vector<unsigned long>::c
   : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
 {
     this->_f_it.Set(0);
-    this->_f_it.Transform(_segment->_mesh->getMatrix());
+    this->_f_it.Transform(_segment->_mesh->getTransform());
     this->_facet.Mesh = _segment->_mesh;
 }
 
@@ -133,7 +133,7 @@ Segment::ConstFacetIter::ConstFacetIter(const Segment* segm, std::vector<unsigne
   : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
 {
     this->_f_it.Set(0);
-    this->_f_it.Transform(_segment->_mesh->getMatrix());
+    this->_f_it.Transform(_segment->_mesh->getTransform());
     this->_facet.Mesh = _segment->_mesh;
 }
 

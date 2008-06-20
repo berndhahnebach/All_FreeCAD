@@ -106,54 +106,51 @@ void TopoShape::operator = (const TopoShape& sh)
 
 void TopoShape::setTransform(const Base::Matrix4D& rclTrf)
 {
-	gp_Trsf mov;
-	mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
-		          rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
-				  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
-				  0.00001,0.00001);
-	mov.SetScaleFactor(rclTrf[3][3]);
+    gp_Trsf mov;
+    mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+                  0.00001,0.00001);
+    mov.SetScaleFactor(rclTrf[3][3]);
 
     TopLoc_Location loc(mov);
     _Shape.Location(loc);
-
 }
 
-Base::Matrix4D TopoShape::getMatrix(void) const
+Base::Matrix4D TopoShape::getTransform(void) const
 {
-	Base::Matrix4D mtrx;
-	gp_Trsf Trf = _Shape.Location().Transformation();
+    Base::Matrix4D mtrx;
+    gp_Trsf Trf = _Shape.Location().Transformation();
 
-	gp_Mat m = Trf._CSFDB_Getgp_Trsfmatrix();
-	gp_XYZ p = Trf._CSFDB_Getgp_Trsfloc();
+    gp_Mat m = Trf._CSFDB_Getgp_Trsfmatrix();
+    gp_XYZ p = Trf._CSFDB_Getgp_Trsfloc();
 
-	// set Rotation matrix
-	mtrx[0][0] = m._CSFDB_Getgp_Matmatrix(1,1);
-	mtrx[0][1] = m._CSFDB_Getgp_Matmatrix(1,2);
-	mtrx[0][2] = m._CSFDB_Getgp_Matmatrix(1,3);
+    // set Rotation matrix
+    mtrx[0][0] = m._CSFDB_Getgp_Matmatrix(0,0);
+    mtrx[0][1] = m._CSFDB_Getgp_Matmatrix(0,1);
+    mtrx[0][2] = m._CSFDB_Getgp_Matmatrix(0,2);
 
-	mtrx[1][0] = m._CSFDB_Getgp_Matmatrix(2,1);
-	mtrx[1][1] = m._CSFDB_Getgp_Matmatrix(2,2);
-	mtrx[1][2] = m._CSFDB_Getgp_Matmatrix(2,3);
+    mtrx[1][0] = m._CSFDB_Getgp_Matmatrix(1,0);
+    mtrx[1][1] = m._CSFDB_Getgp_Matmatrix(1,1);
+    mtrx[1][2] = m._CSFDB_Getgp_Matmatrix(1,2);
 
-	mtrx[2][0] = m._CSFDB_Getgp_Matmatrix(3,1);
-	mtrx[2][1] = m._CSFDB_Getgp_Matmatrix(3,2);
-	mtrx[2][2] = m._CSFDB_Getgp_Matmatrix(3,3);
+    mtrx[2][0] = m._CSFDB_Getgp_Matmatrix(2,0);
+    mtrx[2][1] = m._CSFDB_Getgp_Matmatrix(2,1);
+    mtrx[2][2] = m._CSFDB_Getgp_Matmatrix(2,2);
 
-	// set pos vector
-	mtrx[0][3] = p._CSFDB_Getgp_XYZx();
-	mtrx[1][3] = p._CSFDB_Getgp_XYZy();
-	mtrx[2][3] = p._CSFDB_Getgp_XYZz();
+    // set pos vector
+    mtrx[0][3] = p._CSFDB_Getgp_XYZx();
+    mtrx[1][3] = p._CSFDB_Getgp_XYZy();
+    mtrx[2][3] = p._CSFDB_Getgp_XYZz();
 
-	// and the rest
-	mtrx[3][0] = 0.0;
-	mtrx[3][1] = 0.0;
-	mtrx[3][2] = 0.0;
-	mtrx[3][3] = Trf._CSFDB_Getgp_Trsfscale();
+    // and the rest
+    mtrx[3][0] = 0.0;
+    mtrx[3][1] = 0.0;
+    mtrx[3][2] = 0.0;
+    mtrx[3][3] = Trf._CSFDB_Getgp_Trsfscale();
 
-	
-	return mtrx;
+    return mtrx;
 }
-
 
 void TopoShape::read(const char *FileName)
 {

@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		MatrixPy.cpp \
 		PersistancePy.cpp \
 		PlacementPy.cpp \
+		RotationPy.cpp \
 		VectorPy.cpp
 
 
@@ -16,6 +17,7 @@ libFreeCADBase_la_BUILT=\
 		MatrixPy.h \
 		PersistancePy.h \
 		PlacementPy.h \
+		RotationPy.h \
 		VectorPy.h
 
 libFreeCADBase_la_SOURCES=\
@@ -111,6 +113,7 @@ libFreeCADBase_la_SOURCES=\
 		PyTools.h \
 		Reader.cpp \
 		Rotation.cpp \
+		RotationPyImp.cpp \
 		Sequencer.cpp \
 		Stream.cpp \
 		Swap.cpp \
@@ -225,5 +228,6 @@ EXTRA_DIST = \
 		MatrixPy.xml \
 		PersistancePy.xml \
 		PlacementPy.xml \
+		RotationPy.xml \
 		VectorPy.xml
 

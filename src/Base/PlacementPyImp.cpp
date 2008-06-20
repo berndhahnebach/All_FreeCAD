@@ -6,13 +6,24 @@
 // inclusion of the generated files (generated out of PlacementPy.xml)
 #include "PlacementPy.h"
 #include "PlacementPy.cpp"
+#include "VectorPy.h"
 
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
 const char *PlacementPy::representation(void) const
 {
-    return "<Placement object>";
+    PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
+    std::stringstream str;
+    str << "Placement ((";
+    str << ptr->_q[0] << ","<< ptr->_q[1] << "," << ptr->_q[2] << "," << ptr->_q[3];
+    str << "),(";
+    str << ptr->_pos.x << ","<< ptr->_pos.y << "," << ptr->_pos.z;
+    str << "))";
+
+    static std::string buf;
+    buf = str.str();
+    return buf.c_str();
 }
 
 // constructor method
@@ -21,30 +32,45 @@ int PlacementPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
-PyObject* PlacementPy::move(PyObject * /*args*/)
+PyObject* PlacementPy::move(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    PyObject *vec;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &vec))
+        return NULL;
+    getPlacementPtr()->_pos += static_cast<VectorPy*>(vec)->value();
+    Py_Return;
 }
 
 Py::Object PlacementPy::getBase(void) const
 {
-    return Py::Object();
+    return Py::Object(new VectorPy(getPlacementPtr()->_pos));
 }
 
-void PlacementPy::setBase(Py::Object /*arg*/)
+void PlacementPy::setBase(Py::Object arg)
 {
-
+    PyObject* p = arg.ptr();
+    if (PyObject_TypeCheck(p, &(VectorPy::Type))) {
+        getPlacementPtr()->_pos = static_cast<VectorPy*>(p)->value();
+    }
+    else {
+        std::string error = std::string("type must be 'Vector', not ");
+        error += p->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
 }
 
 Py::List PlacementPy::getRotation(void) const
 {
-    return Py::List();
+    Py::List rot;
+    for (int i=0; i<4; i++)
+        rot.append(Py::Float(getPlacementPtr()->_q[i]));
+    return rot;
 }
 
-void PlacementPy::setRotation(Py::List /*arg*/)
+void PlacementPy::setRotation(Py::List arg)
 {
-
+    for (int i=0; i<4; i++)
+        getPlacementPtr()->_q[i] = (double)Py::Float(arg[i]);
 }
 
 PyObject *PlacementPy::getCustomAttributes(const char* /*attr*/) const

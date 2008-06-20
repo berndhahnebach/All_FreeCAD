@@ -37,8 +37,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistance);
 
 ComplexGeoData::ComplexGeoData(void)
 {
-
-}	
+}
 
 ComplexGeoData::~ComplexGeoData(void)
 {
@@ -46,24 +45,36 @@ ComplexGeoData::~ComplexGeoData(void)
 
 void ComplexGeoData::applyTransform(const Base::Matrix4D& rclTrf)
 {
-	 setTransform( rclTrf * getMatrix());
+    setTransform(rclTrf * getTransform());
 }
 
 void ComplexGeoData::applyTranslation(const Base::Vector3d& mov)
 {
     Base::Matrix4D mat;
     mat.move(mov);
-    setTransform( mat * getMatrix());
+    setTransform(mat * getTransform());
 }
 
 void ComplexGeoData::applyRotation(const Base::Rotation& rot)
 {
     Base::Matrix4D mat;
     rot.getValue(mat);
-    setTransform( mat * getMatrix());
+    setTransform(mat * getTransform());
 }
 
 void ComplexGeoData::setPlacement(const Base::Placement& rclPlacement)
 {
-    setTransform( rclPlacement.getAsMatrix());
+    setTransform(rclPlacement.getAsMatrix());
+}
+
+Base::Placement ComplexGeoData::getPlacement() const
+{
+    Base::Placement trf;
+    Base::Matrix4D mat = getTransform();
+    Base::Rotation rot(mat);
+    rot.getValue(trf._q[0],trf._q[1],trf._q[2],trf._q[3]);
+    trf._pos.x = mat[0][3];
+    trf._pos.y = mat[1][3];
+    trf._pos.z = mat[2][3];
+    return trf;
 }

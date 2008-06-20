@@ -22,16 +22,15 @@
 	  </Attribute>
 	  <Attribute Name="Placement" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>Get the BoundBox of the object</UserDocu>
+			  <UserDocu>Get the current transformation of the object as placement</UserDocu>
 		  </Documentation>
 		  <Parameter Name="Placement" Type="Object" />
 	  </Attribute>
 	  <Attribute Name="Matrix" ReadOnly="false">
 		  <Documentation>
-			  <UserDocu>Get the BoundBox of the object</UserDocu>
+			  <UserDocu>Get the current transformation of the object as matrix</UserDocu>
 		  </Documentation>
 		  <Parameter Name="Matrix" Type="Object" />
 	  </Attribute>
-
   </PythonExport>
 </GenerateModel>

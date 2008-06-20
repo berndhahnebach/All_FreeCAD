@@ -13,8 +13,8 @@
 		FatherNamespace="Base">
 	<Documentation>
 		<Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-		<DeveloperDocu>This is the Vector export class</DeveloperDocu>
-		<UserDocu>A 4x4 Matrix</UserDocu>
+		<DeveloperDocu>This is the Placement export class</DeveloperDocu>
+		<UserDocu>A placement holds a rotation and translation part</UserDocu>
 	</Documentation>
 		<Methode Name="move">
 			<Documentation>
