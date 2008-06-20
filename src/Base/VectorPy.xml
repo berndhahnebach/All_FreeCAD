@@ -100,6 +100,8 @@
     :PyObjectBase(new Vector3d(vec),T){}
     VectorPy(const Vector3f &amp; vec, PyTypeObject *T = &amp;Type)
     :PyObjectBase(new Vector3d(vec.x,vec.y,vec.z),T){}
+    Vector3d value() const
+    { return *(getVectorPtr()); }
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>

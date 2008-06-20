@@ -56,18 +56,24 @@ public:
     void applyTranslation(const Base::Vector3d&);
     /** Applies an additional rotation to the current transformation. */
     void applyRotation(const Base::Rotation&);
-    /** Override the current transformation with a Placement */
+    /** Override the current transformation with a placement
+     * using the setTransform() method.
+     */
     void setPlacement(const Base::Placement& rclPlacement);
+    /** Return the current transformation as placement using 
+     * getTransform().
+     */
+    Base::Placement getPlacement() const;
     /** Override the current transformation with the new one. 
-	*   This methode have to be handled from the child classes.
-	*   the actual placement and matrix is not part of this class.
-	*/
+     * This method has to be handled by the child classes.
+     * the actual placement and matrix is not part of this class.
+     */
     virtual void setTransform(const Base::Matrix4D& rclTrf)=0;
- 	/** returns the current Matrix
-	*   This methode have to be handled from the child classes.
-	*   the actual placement and matrix is not part of this class.
-	*/
-    virtual Base::Matrix4D getMatrix(void) const = 0;
+    /** Return the current matrix
+     * This method has to be handled by the child classes.
+     * the actual placement and matrix is not part of this class.
+     */
+    virtual Base::Matrix4D getTransform(void) const = 0;
     //@}
 
     /** @name Getting basic geometric entities */
@@ -91,13 +97,13 @@ protected:
     /// from local to outside
     inline Base::Vector3d transformToOutside(const Base::Vector3f& vec) const
     {
-        return getMatrix() * Base::Vector3d(vec.x,vec.y,vec.z);
+        return getTransform() * Base::Vector3d(vec.x,vec.y,vec.z);
     }
 
     /// from local to inside
     inline Base::Vector3f transformToInside(const Base::Vector3d& vec) const
     {
-        Base::Matrix4D tmpM(getMatrix()); 
+        Base::Matrix4D tmpM(getTransform()); 
         tmpM.inverse();
         Base::Vector3d tmp = tmpM * vec;
         return Base::Vector3f((float)tmp.x,(float)tmp.y,(float)tmp.z);

@@ -79,17 +79,17 @@ MeshObject::~MeshObject()
 
 void MeshObject::setTransform(const Base::Matrix4D& rclTrf)
 {
-	_Mtrx = rclTrf;
+    _Mtrx = rclTrf;
 }
 
-Base::Matrix4D MeshObject::getMatrix(void) const
+Base::Matrix4D MeshObject::getTransform(void) const
 {
-	return _Mtrx;
+    return _Mtrx;
 }
 
 
 Base::BoundBox3d MeshObject::getBoundBox(void)const
-{   
+{
     const_cast<MeshCore::MeshKernel&>(_kernel).RecalcBoundBox();
     Base::BoundBox3f Bnd = _kernel.GetBoundBox();
     
