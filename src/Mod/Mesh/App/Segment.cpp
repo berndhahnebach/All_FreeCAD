@@ -53,6 +53,19 @@ const std::vector<unsigned long>& Segment::getIndices() const
     return _indices;
 }
 
+const Segment& Segment::operator = (const Segment& s)
+{
+    // Do not copy the MeshObject pointer
+    if (this != &s)
+        this->_indices = s._indices;
+    return *this;
+}
+
+bool Segment::operator == (const Segment& s) const
+{
+    return this->_indices == s._indices;
+}
+
 // ----------------------------------------------------------------------------
 
 Segment::FacetIter::FacetIter(const Segment* segm, std::vector<unsigned long>::const_iterator it)

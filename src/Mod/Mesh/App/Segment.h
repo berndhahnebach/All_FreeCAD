@@ -41,6 +41,9 @@ public:
     void addIndices(const std::vector<unsigned long>& inds);
     const std::vector<unsigned long>& getIndices() const;
 
+    const Segment& operator = (const Segment&);
+    bool operator == (const Segment&) const;
+
 private:
     MeshObject* _mesh;
     std::vector<unsigned long> _indices;

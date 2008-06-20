@@ -71,6 +71,7 @@ MeshObject::MeshObject(const MeshObject& mesh)
   : _Mtrx(mesh._Mtrx),_kernel(mesh._kernel)
 {
     // copy the mesh structure
+    this->_segments = mesh._segments;
 }
 
 MeshObject::~MeshObject()
@@ -86,7 +87,6 @@ Base::Matrix4D MeshObject::getTransform(void) const
 {
     return _Mtrx;
 }
-
 
 Base::BoundBox3d MeshObject::getBoundBox(void)const
 {
@@ -106,12 +106,14 @@ void MeshObject::operator = (const MeshObject& mesh)
         // copy the mesh structure
         setTransform(mesh._Mtrx);
         this->_kernel = mesh._kernel;
+        this->_segments.clear();
     }
 }
 
 void MeshObject::swap(MeshCore::MeshKernel& Kernel)
 {
     this->_kernel.Swap(Kernel);
+    this->_segments.clear();
 }
 
 std::string MeshObject::representation() const
@@ -220,6 +222,7 @@ void MeshObject::load(const char* file)
 {
     MeshCore::MeshInput aReader(_kernel);
     aReader.LoadAny(file);
+    this->_segments.clear();
 
     try {
         MeshCore::MeshEvalNeighbourhood nb(_kernel);
@@ -243,6 +246,7 @@ void MeshObject::load(const char* file)
 void MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
+    this->_segments.clear();
 #if 0
     try {
         MeshCore::MeshEvalNeighbourhood nb(_kernel);
@@ -285,6 +289,8 @@ unsigned long MeshObject::countComponents() const
 void MeshObject::removeComponents(unsigned long count)
 {
     MeshCore::MeshTopoAlgorithm(_kernel).RemoveComponents(count);
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::fillupHoles(unsigned long length, float maxArea, int level)
@@ -381,6 +387,7 @@ void MeshObject::offsetSpecial(float fSize, float zmax, float zmin)
 void MeshObject::clear(void)
 {
     _kernel.Clear();
+    this->_segments.clear();
     setTransform(Base::Matrix4D());
 }
 
@@ -431,6 +438,8 @@ void MeshObject::unite(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Union, Epsilon);
     setOp.Do();
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::intersect(const MeshObject& mesh)
@@ -438,6 +447,8 @@ void MeshObject::intersect(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Intersect, Epsilon);
     setOp.Do();
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::subtract(const MeshObject& mesh)
@@ -445,6 +456,8 @@ void MeshObject::subtract(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Difference, Epsilon);
     setOp.Do();
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::inner(const MeshObject& mesh)
@@ -452,6 +465,8 @@ void MeshObject::inner(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Inner, Epsilon);
     setOp.Do();
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::outer(const MeshObject& mesh)
@@ -459,6 +474,8 @@ void MeshObject::outer(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Outer, Epsilon);
     setOp.Do();
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::refine()
@@ -471,6 +488,8 @@ void MeshObject::refine()
         if (!cF->IsDeformed())
             topalg.InsertVertexAndSwapEdge(i, cF->GetGravityPoint(), 0.1f);
     }
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::optimizeTopology(float fMaxAngle)
@@ -510,6 +529,8 @@ void MeshObject::splitEdges()
         Base::Vector3f mid = 0.5f*(cIter->_aclPoints[0]+cIter->_aclPoints[2]);
         topalg.SplitEdge(it->first, it->second, mid);
     }
+    //FIXME: Update the segments
+    this->_segments.clear();
 }
 
 void MeshObject::splitEdge(unsigned long facet, unsigned long neighbour, const Base::Vector3f& v)
@@ -809,6 +830,85 @@ MeshObject* MeshObject::createCube(float length, float width, float height)
     }
 
     return 0;
+}
+
+void MeshObject::addSegment(const Segment& s)
+{
+    this->_segments.push_back(Segment(this,s.getIndices()));
+}
+
+void MeshObject::addSegment(const std::vector<unsigned long>& inds)
+{
+    this->_segments.push_back(Segment(this,inds));
+}
+
+// ----------------------------------------------------------------------------
+
+MeshObject::PointIter::PointIter(MeshObject* mesh, unsigned long index)
+  : _mesh(mesh), _p_it(mesh->getKernel())
+{
+    this->_p_it.Set(index);
+    this->_p_it.Transform(_mesh->_Mtrx);
+    this->_point.Mesh = _mesh;
+}
+
+MeshObject::PointIter::PointIter(const MeshObject::PointIter& fi)
+  : _mesh(fi._mesh), _point(fi._point), _p_it(fi._p_it)
+{
+}
+
+MeshObject::PointIter::~PointIter()
+{
+}
+
+MeshObject::PointIter& MeshObject::PointIter::operator=(const MeshObject::PointIter& pi)
+{
+    this->_mesh  = pi._mesh;
+    this->_point = pi._point;
+    this->_p_it  = pi._p_it;
+    return *this;
+}
+
+void MeshObject::PointIter::dereference()
+{
+    this->_point.x = _p_it->x;
+    this->_point.y = _p_it->y;
+    this->_point.z = _p_it->z;
+    this->_point.Index = _p_it.Position();
+}
+
+MeshPoint& MeshObject::PointIter::operator*()
+{
+    dereference();
+    return this->_point;
+}
+
+MeshPoint* MeshObject::PointIter::operator->()
+{
+    dereference();
+    return &(this->_point);
+}
+
+bool MeshObject::PointIter::operator==(const MeshObject::PointIter& pi) const
+{
+    return (this->_mesh == pi._mesh) && (this->_p_it == pi._p_it);
+}
+
+bool MeshObject::PointIter::operator!=(const MeshObject::PointIter& pi) const 
+{
+    return !operator==(pi);
+}
+
+MeshObject::PointIter& MeshObject::PointIter::operator++()
+{
+    ++(this->_p_it);
+    return *this;
+}
+
+MeshObject::PointIter& MeshObject::PointIter::operator--()
+{
+    --(this->_p_it);
+    return *this;
 }
 
 // ----------------------------------------------------------------------------
