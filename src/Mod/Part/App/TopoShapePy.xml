@@ -122,13 +122,15 @@ As a result, this shape becomes null.</UserDocu>
         <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
     </Methode>
+<!--
     <Attribute Name="Location" ReadOnly="false">
       <Documentation>
         <UserDocu>Gets or sets the local coordinate system of this shape.</UserDocu>
       </Documentation>
       <Parameter Name="Location" Type="Object"/>
     </Attribute>
-    <Attribute Name="ShapeType" ReadOnly="true">
+-->
+	<Attribute Name="ShapeType" ReadOnly="true">
       <Documentation>
         <UserDocu>Returns the type of the shape.</UserDocu>
       </Documentation>

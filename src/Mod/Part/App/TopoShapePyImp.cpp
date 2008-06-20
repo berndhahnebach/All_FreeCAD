@@ -501,6 +501,7 @@ PyObject*  TopoShapePy::isValid(PyObject *args)
     }
 }
 
+#if 0 // see ComplexGeoDataPy::Matrix which does the same
 Py::Object TopoShapePy::getLocation(void) const
 {
     const TopLoc_Location& loc = getTopoShapePtr()->_Shape.Location();
@@ -544,6 +545,7 @@ void TopoShapePy::setLocation(Py::Object o)
         throw Py::TypeError(error);
     }
 }
+#endif
 
 Py::String TopoShapePy::getShapeType(void) const
 {
