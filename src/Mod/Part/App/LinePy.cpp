@@ -110,14 +110,29 @@ PyObject* LinePy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)
 
 int LinePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 {
-    PyObject *pcObj=0;
-    if (!PyArg_ParseTuple(args, "|O!", &(LinePy::Type), &pcObj))     // convert args: Python->C 
-        return -1;                             // NULL triggers exception 
-
-    if (pcObj) {
-        LinePy* pcLine = (LinePy*)pcObj;
-        ((LinePy*)self)->_Line = pcLine->_Line;
+    PyObject *pLine;
+    PyObject *pV1, *pV2;
+    if (PyArg_ParseTuple(args, "O!", &(LinePy::Type), &pLine)) {
+        LinePy* pcLine = static_cast<LinePy*>(pLine);
+        static_cast<LinePy*>(self)->_Line = pcLine->_Line;
     }
+    else if (PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type), &pV1,
+                                            &(Base::VectorPy::Type), &pV2)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        PyErr_Clear();
+        static_cast<LinePy*>(self)->_Line.first.x = (float)v1.x;
+        static_cast<LinePy*>(self)->_Line.first.y = (float)v1.y;
+        static_cast<LinePy*>(self)->_Line.first.z = (float)v1.z;
+        static_cast<LinePy*>(self)->_Line.second.x = (float)v2.x;
+        static_cast<LinePy*>(self)->_Line.second.y = (float)v2.y;
+        static_cast<LinePy*>(self)->_Line.second.z = (float)v2.z;
+    }
+    else if (PyArg_ParseTuple(args, "")) {
+        PyErr_Clear();
+    }
+    else 
+        return -1;
 
     return 0;
 }
@@ -161,7 +176,7 @@ PyObject *LinePy::_repr(void)
 PyObject *LinePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
     _getattr_up(PyObjectBase);
-} 
+}
 
 int LinePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 {

@@ -39,8 +39,10 @@ PROPERTY_SOURCE(Part::Circle, Part::Feature)
 Circle::Circle()
 {
     ADD_PROPERTY(Radius,(2.0f));
-    ADD_PROPERTY(Angle1,(0.0f));
-    ADD_PROPERTY(Angle2,(2*F_PI));
+    ADD_PROPERTY(Angle0,(0.0f));
+    ADD_PROPERTY(Angle1,(2*F_PI));
+    gp_Circ c;c.SetRadius(1.0);
+    ADD_PROPERTY(Circ,(c));
 }
 
 Circle::~Circle()
@@ -49,9 +51,11 @@ Circle::~Circle()
 
 short Circle::mustExecute() const
 {
-    if (Angle1.isTouched() ||
-        Angle2.isTouched() ||
+    if (Angle0.isTouched() ||
+        Angle1.isTouched() ||
         Radius.isTouched())
+        return 1;
+    if (Circ.isTouched())
         return 1;
     return Part::Feature::mustExecute();
 }
@@ -68,9 +72,125 @@ App::DocumentObjectExecReturn *Circle::execute(void)
     circle.SetAxis(axis);
     circle.SetRadius(this->Radius.getValue());
     
-    BRepBuilderAPI_MakeEdge clMakeEdge(circle, this->Angle1.getValue(), this->Angle2.getValue());
+    BRepBuilderAPI_MakeEdge clMakeEdge(circle, this->Angle0.getValue(), this->Angle1.getValue());
     TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
     this->Shape.setValue(edge);
 
     return App::DocumentObject::StdReturn;
 }
+
+void Circle::onChanged(const App::Property* prop)
+{
+    if (prop == &Circ) {
+        this->Radius.setValue((float)Circ.getValue().Radius());
+        gp_Pnt loc = Circ.getValue().Location();
+        this->Location.setValue((float)loc.X(),(float)loc.Y(),(float)loc.Z());
+        gp_Ax1 axis = Circ.getValue().Axis();
+        gp_Dir dir = axis.Direction();
+        this->Axis.setValue((float)dir.X(),(float)dir.Y(),(float)dir.Z());
+    }
+
+    Part::Feature::onChanged(prop);
+}
+
+#if 1
+#include <Base/Writer.h>
+#include <Base/Reader.h>
+#include <Base/Exception.h>
+
+#include "CirclePy.h"
+
+using namespace Part;
+
+TYPESYSTEM_SOURCE(Part::PropertyCircle , App::Property);
+
+PropertyCircle::PropertyCircle()
+{
+}
+
+PropertyCircle::~PropertyCircle()
+{
+}
+
+void PropertyCircle::setValue(const gp_Circ& circ)
+{
+    aboutToSetValue();
+    _circle = circ;
+    hasSetValue();
+}
+
+const gp_Circ& PropertyCircle::getValue(void) const 
+{
+    return _circle;
+}
+
+PyObject *PropertyCircle::getPyObject(void)
+{
+    return new CirclePy(this->_circle);
+}
+
+void PropertyCircle::setPyObject(PyObject *value)
+{
+    if (PyObject_TypeCheck(value, &(CirclePy::Type))) {
+        CirclePy  *pcObject = (CirclePy*)value;
+        setValue( pcObject->value() );
+    } 
+    else {
+        std::string error = std::string("type must be 'Circle', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+}
+
+App::Property *PropertyCircle::Copy(void) const
+{
+    PropertyCircle* p = new PropertyCircle();
+    p->_circle = this->_circle;
+    return p;
+}
+
+void PropertyCircle::Paste(const App::Property &from)
+{
+    aboutToSetValue();
+    _circle = dynamic_cast<const PropertyCircle&>(from)._circle;
+    hasSetValue();
+}
+
+unsigned int PropertyCircle::getMemSize (void) const
+{
+    return sizeof(gp_Circ);
+}
+
+void PropertyCircle::Save (Base::Writer &writer) const
+{
+    gp_Ax1 axis = _circle.Axis();
+    gp_Dir dir = axis.Direction();
+    gp_Pnt loc = axis.Location();
+    Standard_Real fRad = _circle.Radius();
+    writer.Stream() << writer.ind() << "<PropertyCircle Radius=\"" <<  fRad << "\" PosX=\"" <<  loc.X() << "\" PosY=\"" <<  loc.Y() << "\" PosZ=\"" <<  loc.Z() 
+                    << writer.ind() << "\" DirX=\"" <<  dir.X() << "\" DirY=\"" <<  dir.Y() << "\" DirZ=\"" <<  dir.Z() <<"\"/>" << std::endl;
+}
+
+void PropertyCircle::Restore(Base::XMLReader &reader)
+{
+    // read my element
+    reader.readElement("PropertyCircle");
+
+    // get the value of my Attribute
+    Standard_Real fR = reader.getAttributeAsFloat("Radius");
+    Standard_Real pX = reader.getAttributeAsFloat("PosX");
+    Standard_Real pY = reader.getAttributeAsFloat("PosY");
+    Standard_Real pZ = reader.getAttributeAsFloat("PosZ");
+    Standard_Real dX = reader.getAttributeAsFloat("DirX");
+    Standard_Real dY = reader.getAttributeAsFloat("DirY");
+    Standard_Real dZ = reader.getAttributeAsFloat("DirZ");
+
+    gp_Dir dir(dX, dY, dZ);
+    gp_Pnt loc(pX, pY, pZ);
+    gp_Ax1 axis(loc, dir);
+    aboutToSetValue();
+    _circle.SetAxis(axis);
+    _circle.SetRadius(fR);
+    hasSetValue();
+}
+#endif
