@@ -173,8 +173,18 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     if (PyType_Ready(&Base::BoundBoxPy::Type) < 0) return;
     union PyType_Object pyBoundBoxType = {&Base::BoundBoxPy::Type};
     PyModule_AddObject(pAppModule, "BoundBox", pyBoundBoxType.o);
-    
-    //insert Console
+
+    // Note: Create an own module 'Base' which should provide the python
+    // binding classes from the base module. At a later stage we should 
+    // remove these types from the FreeCAD module.
+    PyObject* pBaseModule = Py_InitModule3("Base", NULL, NULL);
+    PyModule_AddObject(pBaseModule, "Vector", pyVecType.o);
+    PyModule_AddObject(pBaseModule, "Matrix", pyMtxType.o);
+    PyModule_AddObject(pBaseModule, "BoundBox", pyBoundBoxType.o);
+
+    //insert Base and Console
+    Py_INCREF(pBaseModule);
+    PyModule_AddObject(pAppModule, "Base", pBaseModule);
     Py_INCREF(pConsoleModule);
     PyModule_AddObject(pAppModule, "Console", pConsoleModule);
 }

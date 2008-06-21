@@ -27,9 +27,53 @@
 #include <App/PropertyStandard.h>
 #include "PartFeature.h"
 
+#if 1
+#include <App/PropertyGeo.h>
+#include <gp_Circ.hxx>
+#endif
+
 namespace Part
 {
+#if 1
+/** The line property class.
+ * @author Werner Mayer
+ */
+class AppPartExport PropertyCircle : public App::Property
+{
+    TYPESYSTEM_HEADER();
 
+public:
+    PropertyCircle();
+    ~PropertyCircle();
+
+    /** @name Getter/setter */
+    //@{
+    /// set the line
+    void setValue( const gp_Circ& circle );
+    /// get the line
+    const gp_Circ& getValue(void) const;
+    //@}
+
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
+
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
+
+private:
+    gp_Circ _circle;
+};
+#endif 
 class Circle : public Part::Feature
 {
     PROPERTY_HEADER(Part::Circle);
@@ -39,14 +83,18 @@ public:
     virtual ~Circle();
 
     App::PropertyFloat Radius;
+    App::PropertyAngle Angle0;
     App::PropertyAngle Angle1;
-    App::PropertyAngle Angle2;
+#if 1
+    PropertyCircle Circ;
+#endif
 
     /** @name methods override feature */
     //@{
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
+    void onChanged(const App::Property*);
     //@}
 };
 

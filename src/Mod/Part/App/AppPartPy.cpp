@@ -187,7 +187,6 @@ static PyObject * read(PyObject *self, PyObject *args)
     } PY_CATCH;
 }
 
-
 static PyObject * 
 show(PyObject *self, PyObject *args)
 {
@@ -208,6 +207,18 @@ show(PyObject *self, PyObject *args)
     } PY_CATCH;
 
     Py_Return;
+}
+
+static PyObject * 
+makeShape(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+        return new TopoShapePy(new TopoShape);
+    } PY_CATCH;
 }
 
 static PyObject * makePlane(PyObject *self, PyObject *args)
@@ -381,6 +392,8 @@ struct PyMethodDef Part_methods[] = {
      "read(string) -- Load the file and return the shape."},
     {"show"       ,show      ,METH_VARARGS,
      "show(shape) -- Add the shape to the active document or create one if it does not exist."},
+    {"makeShape"  ,makeShape ,METH_VARARGS,
+     "makeShape(list) -- Create a shape out of a list of geometries."},
     {"makePlane"  ,makePlane ,METH_VARARGS,
      "makePlane(lenght,width) -- Make a plane"},
     {"createBox"  ,createBox ,METH_VARARGS}, // obsolete

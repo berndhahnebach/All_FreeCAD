@@ -25,6 +25,7 @@
 
 #include "CirclePy.h"
 #include <Base/VectorPy.h>
+#include <GC_MakeCircle.hxx>
 
 using namespace Part;
 
@@ -113,14 +114,33 @@ PyObject* CirclePy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwd
 
 int CirclePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 {
-    PyObject *pcObj=0;
-    if (!PyArg_ParseTuple(args, "|O!", &(CirclePy::Type), &pcObj))     // convert args: Python->C 
-        return -1;                             // NULL triggers exception 
-
-    if (pcObj) {
-        CirclePy* pcCircle = (CirclePy*)pcObj;
-        ((CirclePy*)self)->_circle = pcCircle->_circle;
+    PyObject *pCirc;
+    PyObject *pV1, *pV2, *pV3;
+    if (PyArg_ParseTuple(args, "O!", &(CirclePy::Type), &pCirc)) {
+        CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
+        static_cast<CirclePy*>(self)->_circle = pcCircle->_circle;
     }
+    else if (PyArg_ParseTuple(args, "O!O!O!", &(Base::VectorPy::Type), &pV1,
+                                              &(Base::VectorPy::Type), &pV2,
+                                              &(Base::VectorPy::Type), &pV3)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
+        GC_MakeCircle mc(gp_Pnt(v1.x,v1.y,v1.z),
+                         gp_Pnt(v2.x,v2.y,v2.z),
+                         gp_Pnt(v3.x,v3.y,v3.z));
+        if (mc.Value().IsNull()) {
+            PyErr_SetString(PyExc_Exception, "cannot create circle with collinear points");
+            return -1;
+        }
+        static_cast<CirclePy*>(self)->_circle = mc.Value()->Circ();
+        PyErr_Clear();
+    }
+    else if (PyArg_ParseTuple(args, "")) {
+        PyErr_Clear();
+    }
+    else 
+        return -1;
 
     return 0;
 }

@@ -79,10 +79,18 @@ void AppPartExport initPart()
     AddType(&Part::LinePy   ::Type,partModule,"Line");
     AddType(&Part::CirclePy ::Type,partModule,"Circle");
 
+#if 1
+    Py::Module mod(partModule);
+    mod.setAttr(std::string("circle"),mod.getAttr("Circle"));
+#endif
+
     Part::TopoShape           ::init();
     Part::PropertyPartShape   ::init();
     Part::PropertyLine        ::init();
     Part::PropertyLineSet     ::init();
+#if 1
+    Part::PropertyCircle      ::init();
+#endif
 
     Part::Feature             ::init();
     Part::Box                 ::init();
