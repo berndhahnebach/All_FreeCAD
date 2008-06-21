@@ -25,6 +25,7 @@
 
 #include "CirclePy.h"
 #include <Base/VectorPy.h>
+#include <Geom_Circle.hxx>
 #include <GC_MakeCircle.hxx>
 
 using namespace Part;
