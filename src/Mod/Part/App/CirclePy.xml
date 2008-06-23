@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+      Father="PyObjectBase" 
+      Name="CirclePy" 
+      Twin="gp_Circ" 
+      TwinPointer="gp_Circ" 
+      Include="gp_Circ.hxx" 
+      Namespace="Part" 
+      FatherInclude="Base/PyObjectBase.h" 
+      FatherNamespace="Base"
+      Constructor="true">
+    <Documentation>
+      <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+      <UserDocu>TopoShape is the OpenCasCade topological shape wrapper</UserDocu>
+    </Documentation>
+    <Methode Name="setAxis">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="axis">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="setPosition">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="position">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="setRadius">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="radius">
+      <Documentation>
+        <UserDocu></UserDocu>
+      </Documentation>
+    </Methode>
+    <!--
+    <Attribute Name="Radius" ReadOnly="false">
+      <Documentation>
+        <UserDocu>List of vertexes in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Radius" Type="Float"/>
+    </Attribute>
+    <Attribute Name="Location" ReadOnly="false">
+      <Documentation>
+        <UserDocu>List of vertexes in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Location" Type="Object"/>
+    </Attribute>
+    <Attribute Name="Axis" ReadOnly="false">
+      <Documentation>
+        <UserDocu>List of vertexes in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Axis" Type="Object"/>
+    </Attribute>
+	-->
+	<ClassDeclarations>
+public:
+      CirclePy(const gp_Circ &amp; circ, PyTypeObject *T = &amp;Type)
+      :PyObjectBase(new gp_Circ(circ),T){}
+    const gp_Circ &amp; value(void) const {return *getgp_CircPtr();}
+	</ClassDeclarations>
+  </PythonExport>
+</GenerateModel>
