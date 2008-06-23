@@ -549,7 +549,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 
 + if (self.export.Constructor):
 // constructor method
-int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/
+int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
 }
