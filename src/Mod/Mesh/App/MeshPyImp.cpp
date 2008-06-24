@@ -73,6 +73,12 @@ const char *MeshPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *MeshPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of MeshPy and the Twin object 
+    return new MeshPy(new MeshObject);
+}
+
 PyObject*  MeshPy::read(PyObject *args)
 {
     const char* Name;

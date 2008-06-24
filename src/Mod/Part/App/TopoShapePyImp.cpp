@@ -54,6 +54,12 @@ const char *TopoShapePy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *TopoShapePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of TopoShapePy and the Twin object 
+    return new TopoShapePy(new TopoShape);
+}
+
 int TopoShapePy::PyInit(PyObject* args, PyObject*)
 {
     PyObject *pcObj=0;

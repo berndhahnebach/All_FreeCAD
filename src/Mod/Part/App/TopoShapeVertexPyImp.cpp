@@ -36,6 +36,12 @@ const char *TopoShapeVertexPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *TopoShapeVertexPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of TopoShapeVertexPy and the Twin object 
+    return new TopoShapeVertexPy(new TopoShape);
+}
+
 // constructor method
 int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {

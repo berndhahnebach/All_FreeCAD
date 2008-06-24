@@ -23,17 +23,55 @@
 
 #include "PreCompiled.h"
 
-#include "gp_Circ.hxx"
-
-// inclusion of the generated files (generated out of CirclePy.xml)
 #include "CirclePy.h"
 #include "CirclePy.cpp"
+#include "ArcPy.h"
 
 #include <Base/VectorPy.h>
+
+#include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
 #include <GC_MakeCircle.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 
 using namespace Part;
+
+const char* gce_ErrorStatusText(gce_ErrorType et)
+{
+    switch (et)
+    {
+    case gce_Done:
+        return "Construction was successful";
+    case gce_ConfusedPoints:
+        return "Two points are coincident";
+    case gce_NegativeRadius:
+        return "Radius value is negative";
+    case gce_ColinearPoints:
+        return "Three points are collinear";
+    case gce_IntersectionError:
+        return "Intersection cannot be computed";
+    case gce_NullAxis:
+        return "Axis is undefined";
+    case gce_NullAngle:
+        return "Angle value is invalid (usually null)";
+    case gce_NullRadius:
+        return "Radius is null";
+    case gce_InvertAxis:
+        return "Axis value is invalid";
+    case gce_BadAngle:
+        return "Angle value is invalid";
+    case gce_InvertRadius:
+        return "Radius value is incorrect (usually with respect to another radius)";
+    case gce_NullFocusLength:
+        return "Focal distance is null";
+    case gce_NullVector:
+        return "Vector is null";
+    case gce_BadEquation:
+        return "Coefficients are incorrect (applies to the equation of a geometric object)";
+    default:
+        return "Creation of geometry failed";
+    }
+}
 
 // returns a string which represents the object e.g. when printed in python
 const char *CirclePy::representation(void) const
@@ -41,19 +79,25 @@ const char *CirclePy::representation(void) const
     CirclePy::PointerType ptr = reinterpret_cast<CirclePy::PointerType>(_pcTwinPointer);
     std::stringstream str;
 
-    gp_Ax1 axis = getgp_CircPtr()->Axis();
+    gp_Ax1 axis = getGeom_CirclePtr()->Axis();
     gp_Dir dir = axis.Direction();
     gp_Pnt loc = axis.Location();
-    Standard_Real fRad = getgp_CircPtr()->Radius();
-    str << "Part.Circle (";
+    Standard_Real fRad = getGeom_CirclePtr()->Radius();
+    str << "Circle (";
     str << "Radius : " << fRad << ", "; 
     str << "Position : (" << loc.X() << ", "<< loc.Y() << ", "<< loc.Z() << "), "; 
-    str << "Direction : (" << dir.X() << ", "<< dir.Y() << ", "<< dir.Z() << "), "; 
+    str << "Direction : (" << dir.X() << ", "<< dir.Y() << ", "<< dir.Z() << ")"; 
     str << ")";
 
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *CirclePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of CirclePy and the Twin object 
+    return new CirclePy(new Geom_Circle(gp_Circ()));
 }
 
 // constructor method
@@ -64,22 +108,46 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double dist;
     if (PyArg_ParseTuple(args, "O!d", &(CirclePy::Type), &pCirc, &dist)) {
         CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
-        GC_MakeCircle mc(pcCircle->value(), dist);
-        if (mc.Value().IsNull()) {
-            PyErr_SetString(PyExc_Exception, "creation of circle failed");
+        GC_MakeCircle mc(pcCircle->value().Circ(), dist);
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
             return -1;
         }
 
         CirclePy::PointerType ptr = reinterpret_cast<CirclePy::PointerType>(_pcTwinPointer);
         *ptr = mc.Value()->Circ();
+        return 0;
     }
-    else if (PyArg_ParseTuple(args, "O!", &(CirclePy::Type), &pCirc)) {
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!O!d", &(Base::VectorPy::Type), &pV1,
+                                             &(Base::VectorPy::Type), &pV2,
+                                             &dist)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        GC_MakeCircle mc(gp_Pnt(v1.x,v1.y,v1.z),
+                         gp_Dir(v2.x,v2.y,v2.z),
+                         dist);
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        CirclePy::PointerType ptr = reinterpret_cast<CirclePy::PointerType>(_pcTwinPointer);
+        *ptr = mc.Value()->Circ();
+        return 0;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(CirclePy::Type), &pCirc)) {
         CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
         CirclePy::PointerType ptr = reinterpret_cast<CirclePy::PointerType>(_pcTwinPointer);
         *ptr = pcCircle->value();
-        PyErr_Clear();
+        return 0;
     }
-    else if (PyArg_ParseTuple(args, "O!O!O!", &(Base::VectorPy::Type), &pV1,
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!O!O!", &(Base::VectorPy::Type), &pV1,
                                               &(Base::VectorPy::Type), &pV2,
                                               &(Base::VectorPy::Type), &pV3)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
@@ -88,44 +156,67 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         GC_MakeCircle mc(gp_Pnt(v1.x,v1.y,v1.z),
                          gp_Pnt(v2.x,v2.y,v2.z),
                          gp_Pnt(v3.x,v3.y,v3.z));
-        if (mc.Value().IsNull()) {
-            PyErr_SetString(PyExc_Exception, "cannot create circle with collinear points");
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
             return -1;
         }
 
         CirclePy::PointerType ptr = reinterpret_cast<CirclePy::PointerType>(_pcTwinPointer);
         *ptr = mc.Value()->Circ();
-        PyErr_Clear();
-    }
-    else if (PyArg_ParseTuple(args, "")) {
-        PyErr_Clear();
-        getgp_CircPtr()->SetRadius(1.0);
-    }
-    else {
-        PyErr_SetString(PyExc_TypeError, "Circle constructor accepts:\n"
-            "-- empty parameter list\n"
-            "-- Circle\n"
-            "-- Circle, double\n"
-            "-- Vector, Vector, Vector");
-        return -1;
+        return 0;
     }
 
-    return 0;
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "")) {
+        getGeom_CirclePtr()->SetRadius(1.0);
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Circle constructor accepts:\n"
+        "-- empty parameter list\n"
+        "-- Circle\n"
+        "-- Circle, double\n"
+        "-- Vector, Vector, double\n"
+        "-- Vector, Vector, Vector");
+    return -1;
 }
+
+PyObject* CirclePy::trim(PyObject *args)
+{
+    double u1, u2;
+    int sense=1;
+    if (! PyArg_ParseTuple(args, "dd|i", &u1, &u2, &sense))
+        return NULL;
+    try {
+        GC_MakeArcOfCircle arc(getGeom_CirclePtr()->Circ(), u1, u2, sense);
+        if (!arc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+            return 0;
+        }
+
+//        return new ArcPy(new Geom_TrimmedCurve(getGeom_CirclePtr(),u1,u2,sense));
+        return new ArcPy(const_cast<Geom_TrimmedCurve*>(static_cast<const Geom_TrimmedCurve*>(arc.Value().Access())));
+    }
+    catch (const Standard_Failure&) {
+        PyErr_SetString(PyExc_Exception, "Cannot create arc of circle");
+        return 0;
+    }
+}
+
 #if 0 // for later use
 Py::Float CirclePy::getRadius(void) const
 {
-    return Py::Float(getgp_CircPtr()->Radius());
+    return Py::Float(getGeom_CirclePtr()->Radius());
 }
 
 void  CirclePy::setRadius(Py::Float arg)
 {
-    getgp_CircPtr()->SetRadius((double)arg);
+    getGeom_CirclePtr()->SetRadius((double)arg);
 }
 
 Py::Object CirclePy::getLocation(void) const
 {
-    gp_Pnt loc = getgp_CircPtr()->Location();
+    gp_Pnt loc = getGeom_CirclePtr()->Location();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return Py::Object(vec);
@@ -136,7 +227,7 @@ void  CirclePy::setLocation(Py::Object arg)
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d loc = static_cast<Base::VectorPy*>(p)->value();
-        getgp_CircPtr()->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        getGeom_CirclePtr()->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -147,7 +238,7 @@ void  CirclePy::setLocation(Py::Object arg)
 
 Py::Object CirclePy::getAxis(void) const
 {
-    gp_Ax1 axis = getgp_CircPtr()->Axis();
+    gp_Ax1 axis = getGeom_CirclePtr()->Axis();
     gp_Dir dir = axis.Direction();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
@@ -160,10 +251,10 @@ void  CirclePy::setAxis(Py::Object arg)
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
         gp_Ax1 axis;
-        axis.SetLocation(getgp_CircPtr()->Location());
+        axis.SetLocation(getGeom_CirclePtr()->Location());
         axis.SetDirection(gp_Dir(val.x, val.y, val.z));
         gp_Dir dir = axis.Direction();
-        getgp_CircPtr()->SetAxis(axis);
+        getGeom_CirclePtr()->SetAxis(axis);
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -181,10 +272,10 @@ PyObject* CirclePy::setAxis(PyObject *args)
             Base::Vector3d* val = pcObject->getVectorPtr();
             Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
             gp_Ax1 axis;
-            axis.SetLocation(getgp_CircPtr()->Location());
+            axis.SetLocation(getGeom_CirclePtr()->Location());
             axis.SetDirection(gp_Dir(v.x, v.y, v.z));
             gp_Dir dir = axis.Direction();
-            getgp_CircPtr()->SetAxis(axis);
+            getGeom_CirclePtr()->SetAxis(axis);
         }
         else {
             return NULL;
@@ -201,7 +292,7 @@ PyObject* CirclePy::axis(PyObject *args)
 {
     if (! PyArg_ParseTuple(args, ""))
         return NULL;
-    gp_Ax1 axis = getgp_CircPtr()->Axis();
+    gp_Ax1 axis = getGeom_CirclePtr()->Axis();
     gp_Dir dir = axis.Direction();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return vec; 
@@ -215,7 +306,7 @@ PyObject* CirclePy::setPosition(PyObject *args)
             Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
             Base::Vector3d* val = pcObject->getVectorPtr();
             Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
-            getgp_CircPtr()->SetLocation(gp_Pnt(v.x, v.y, v.z));
+            getGeom_CirclePtr()->SetLocation(gp_Pnt(v.x, v.y, v.z));
         }
         else {
             return NULL;
@@ -232,7 +323,7 @@ PyObject* CirclePy::position(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
-    gp_Pnt loc = getgp_CircPtr()->Location();
+    gp_Pnt loc = getGeom_CirclePtr()->Location();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return vec; 
 }
@@ -242,7 +333,7 @@ PyObject* CirclePy::setRadius(PyObject *args)
     double Float;
     if (!PyArg_ParseTuple(args, "d",&Float))
         return NULL;
-    getgp_CircPtr()->SetRadius(Float);
+    getGeom_CirclePtr()->SetRadius(Float);
     Py_Return; 
 }
 
@@ -250,7 +341,7 @@ PyObject* CirclePy::radius(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
         return NULL;                         
-    return Py_BuildValue("d",getgp_CircPtr()->Radius()); 
+    return Py_BuildValue("d",getGeom_CirclePtr()->Radius()); 
 }
 #endif
 PyObject *CirclePy::getCustomAttributes(const char* attr) const

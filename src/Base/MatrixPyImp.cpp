@@ -27,6 +27,12 @@ const char *MatrixPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *MatrixPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of MatrixPy and the Twin object 
+    return new MatrixPy(new Matrix4D);
+}
+
 // constructor method
 int MatrixPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {

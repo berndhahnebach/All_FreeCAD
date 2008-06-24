@@ -26,6 +26,12 @@ const char *PlacementPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *PlacementPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of PlacementPy and the Twin object 
+    return new PlacementPy(new Placement);
+}
+
 // constructor method
 int PlacementPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {

@@ -34,6 +34,12 @@ const char *MeshPointPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *MeshPointPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of MeshPointPy and the Twin object 
+    return new MeshPointPy(new MeshPoint);
+}
+
 // constructor method
 int MeshPointPy::PyInit(PyObject* args, PyObject*k)
 {

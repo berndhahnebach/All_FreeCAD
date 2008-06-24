@@ -29,7 +29,7 @@
 
 #if 1
 #include <App/PropertyGeo.h>
-#include <gp_Circ.hxx>
+#include <Geom_Circle.hxx>
 #endif
 
 namespace Part
@@ -49,9 +49,9 @@ public:
     /** @name Getter/setter */
     //@{
     /// set the line
-    void setValue( const gp_Circ& circle );
+    void setValue( const Geom_Circle& circle );
     /// get the line
-    const gp_Circ& getValue(void) const;
+    const Geom_Circle& getValue(void) const;
     //@}
 
     /** @name Python interface */
@@ -71,7 +71,7 @@ public:
     //@}
 
 private:
-    gp_Circ _circle;
+    Geom_Circle _circle;
 };
 #endif 
 class Circle : public Part::Feature
