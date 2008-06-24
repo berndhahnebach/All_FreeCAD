@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libPart.la Part.la
 BUILT_SOURCES=\
 		ArcPy.cpp \
 		CirclePy.cpp \
+		GeometryPy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
@@ -19,6 +20,7 @@ BUILT_SOURCES=\
 libPart_la_BUILT=\
 		ArcPy.h \
 		CirclePy.h \
+		GeometryPy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
@@ -34,6 +36,7 @@ libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
+		GeometryPyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -158,6 +161,7 @@ EXTRA_DIST = \
 		OpenCascadeAll.h \
 		ArcPy.xml \
 		CirclePy.xml \
+		GeometryPy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \

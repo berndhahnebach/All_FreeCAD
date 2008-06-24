@@ -541,66 +541,6 @@
 			Name="PythonObjects"
 			>
 			<File
-				RelativePath=".\ArcPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ArcPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CirclePy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\CirclePyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LinePy.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LinePy.h"
-				>
-			</File>
-			<File
 				RelativePath=".\PartFeaturePy.xml"
 				>
 				<FileConfiguration
@@ -860,6 +800,96 @@
 				RelativePath=".\TopoShapeWirePyImp.cpp"
 				>
 			</File>
+			<Filter
+				Name="Geom"
+				>
+				<File
+					RelativePath=".\ArcPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ArcPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CirclePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\CirclePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\GeometryPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\GeometryPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LinePy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LinePy.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="AppPart.cpp"
