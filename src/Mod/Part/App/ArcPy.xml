@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="PyObjectBase" 
+      Father="GeometryPy" 
       Name="ArcPy" 
-      Twin="Geom_TrimmedCurve" 
-      TwinPointer="Geom_TrimmedCurve" 
-      Include="Geom_TrimmedCurve.hxx" 
+      Twin="GeomTrimmedCurve" 
+      TwinPointer="GeomTrimmedCurve" 
+      Include="Mod/Part/App/Geometry.h" 
       Namespace="Part" 
-      FatherInclude="Base/PyObjectBase.h" 
-      FatherNamespace="Base"
+      FatherInclude="Mod/Part/App/GeometryPy.h" 
+      FatherNamespace="Part"
       Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />

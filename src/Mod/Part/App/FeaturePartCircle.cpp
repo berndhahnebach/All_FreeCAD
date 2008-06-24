@@ -133,8 +133,10 @@ PyObject *PropertyCircle::getPyObject(void)
 void PropertyCircle::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(CirclePy::Type))) {
-        CirclePy  *pcObject = (CirclePy*)value;
-        setValue( pcObject->value() );
+        CirclePy  *pcObject = static_cast<CirclePy*>(value);
+        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast
+            (pcObject->getGeomCirclePtr()->handle());
+        setValue(Geom_Circle(circle->Circ()));
     } 
     else {
         std::string error = std::string("type must be 'Circle', not ");

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="PyObjectBase" 
+      Father="GeometryPy" 
       Name="CirclePy" 
-      Twin="Geom_Circle" 
-      TwinPointer="Geom_Circle" 
-      Include="Geom_Circle.hxx" 
+      Twin="GeomCircle" 
+      TwinPointer="GeomCircle" 
+      Include="Mod/Part/App/Geometry.h" 
       Namespace="Part" 
-      FatherInclude="Base/PyObjectBase.h" 
-      FatherNamespace="Base"
+      FatherInclude="Mod/Part/App/GeometryPy.h" 
+      FatherNamespace="Part"
       Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
@@ -44,11 +44,6 @@
         <UserDocu></UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="trim">
-      <Documentation>
-        <UserDocu>Create an arc of circle</UserDocu>
-      </Documentation>
-    </Methode>
     <!--
     <Attribute Name="Radius" ReadOnly="false">
       <Documentation>
@@ -71,8 +66,7 @@
 	-->
 	<ClassDeclarations>public:
       CirclePy(const Geom_Circle &amp; circ, PyTypeObject *T = &amp;Type)
-      :PyObjectBase(new Geom_Circle(circ),T){}
-    const Geom_Circle &amp; value(void) const {return *getGeom_CirclePtr();}
+      :GeometryPy(new GeomCircle(new Geom_Circle(circ)),T){}
 	</ClassDeclarations>
   </PythonExport>
 </GenerateModel>
