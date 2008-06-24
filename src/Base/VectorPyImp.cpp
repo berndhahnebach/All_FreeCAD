@@ -31,6 +31,12 @@ const char *VectorPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *VectorPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of VectorPy and the Twin object 
+    return new VectorPy(new Vector3d);
+}
+
 // constructor method
 int VectorPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {

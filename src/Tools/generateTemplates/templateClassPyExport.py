@@ -369,18 +369,11 @@ PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Namespace@@
 -
 }
 
-+ if (self.export.Constructor):
-PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
-{
-    // create a new instance of @self.export.Name@ and the Twin object 
-    return new @self.export.Name@(new @self.export.TwinPointer@);
-}
-= else:
++ if not (self.export.Constructor):
 PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
     // never create such objects with the constructor
-    PyErr_SetString(PyExc_RuntimeError, "You cannot create directly an instance of '@self.export.Name@'.\\n"
-    "You must have created a document where you can create an instance with addObject('@self.export.Namespace@::@self.export.Twin@').");
+    PyErr_SetString(PyExc_RuntimeError, "You cannot create directly an instance of '@self.export.Name@'.");
  
     return 0;
 }
@@ -548,6 +541,12 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
  */
 
 + if (self.export.Constructor):
+PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of @self.export.Name@ and the Twin object 
+    return new @self.export.Name@(new @self.export.TwinPointer@);
+}
+
 // constructor method
 int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
@@ -619,6 +618,12 @@ const char *@self.export.Name@::representation(void) const
 }
 
 + if (self.export.Constructor):
+PyObject *@self.export.Name@::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of @self.export.Name@ and the Twin object 
+    return new @self.export.Name@(new @self.export.TwinPointer@);
+}
+
 // constructor method
 int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {

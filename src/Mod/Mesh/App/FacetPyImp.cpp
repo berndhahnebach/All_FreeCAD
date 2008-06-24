@@ -60,6 +60,12 @@ const char *FacetPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *FacetPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of FacetPy and the Twin object 
+    return new FacetPy(new Facet);
+}
+
 // constructor method
 int FacetPy::PyInit(PyObject* args, PyObject*k)
 {

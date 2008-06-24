@@ -32,6 +32,12 @@ const char *BoundBoxPy::representation(void) const
     return buf.c_str();
 }
 
+PyObject *BoundBoxPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of BoundBoxPy and the Twin object 
+    return new BoundBoxPy(new BoundBox3d);
+}
+
 // constructor method
 int BoundBoxPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {

@@ -15,6 +15,12 @@ const char *RotationPy::representation(void) const
     return "<Rotation object>";
 }
 
+PyObject *RotationPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of RotationPy and the Twin object 
+    return new RotationPy(new Rotation);
+}
+
 // constructor method
 int RotationPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {

@@ -105,6 +105,7 @@ using namespace Part;
 TYPESYSTEM_SOURCE(Part::PropertyCircle , App::Property);
 
 PropertyCircle::PropertyCircle()
+  : _circle(gp_Circ())
 {
 }
 
@@ -112,14 +113,14 @@ PropertyCircle::~PropertyCircle()
 {
 }
 
-void PropertyCircle::setValue(const gp_Circ& circ)
+void PropertyCircle::setValue(const Geom_Circle& circ)
 {
     aboutToSetValue();
     _circle = circ;
     hasSetValue();
 }
 
-const gp_Circ& PropertyCircle::getValue(void) const 
+const Geom_Circle& PropertyCircle::getValue(void) const 
 {
     return _circle;
 }

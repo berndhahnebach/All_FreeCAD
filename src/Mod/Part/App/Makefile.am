@@ -3,6 +3,7 @@ if OCC_LIBRARY_FILES
 lib_LTLIBRARIES=libPart.la Part.la
 
 BUILT_SOURCES=\
+		ArcPy.cpp \
 		CirclePy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
@@ -16,6 +17,7 @@ BUILT_SOURCES=\
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
+		ArcPy.h \
 		CirclePy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
@@ -30,6 +32,7 @@ libPart_la_BUILT=\
 
 libPart_la_SOURCES=\
 		AppPartPy.cpp \
+		ArcPyImp.cpp \
 		CirclePyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
@@ -45,6 +48,7 @@ libPart_la_SOURCES=\
 		FeaturePartLineSet.cpp \
 		FeaturePartPolygon.cpp \
 		FeaturePartSection.cpp \
+		Geometry.cpp \
 		ImportStep.cpp \
 		LinePy.cpp \
 		PartFeature.cpp \
@@ -83,6 +87,7 @@ include_HEADERS=\
 		FeaturePartLineSet.h \
 		FeaturePartPolygon.h \
 		FeaturePartSection.h \
+		Geometry.h \
 		ImportStep.h \
 		LinePy.h \
 		PartFeature.h \
@@ -151,6 +156,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)
 
 EXTRA_DIST = \
 		OpenCascadeAll.h \
+		ArcPy.xml \
 		CirclePy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
