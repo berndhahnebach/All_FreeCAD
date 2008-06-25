@@ -25,6 +25,7 @@
 #define PART_PROPERTYLINE_H
 
 #include <App/PropertyGeo.h>
+# include <Geom_Line.hxx>
 #include <gp_Lin.hxx>
 
 namespace Part

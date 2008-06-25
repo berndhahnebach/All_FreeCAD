@@ -22,6 +22,8 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
 
 #include <Base/Stream.h>
 #include <Base/Writer.h>
