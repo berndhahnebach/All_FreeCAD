@@ -25,6 +25,12 @@
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
+# include <Geom_Circle.hxx>
+# include <Geom_Curve.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_Surface.hxx>
+# include <gp_Circ.hxx>
+# include <gp_Lin.hxx>
 #endif
 
 #include "Geometry.h"

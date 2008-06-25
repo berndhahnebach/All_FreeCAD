@@ -1,16 +1,16 @@
 
 #include "PreCompiled.h"
 
+#include <Geom_Circle.hxx>
+#include <gp_Circ.hxx>
+#include <GC_MakeArcOfCircle.hxx>
+
 #include "Geom_TrimmedCurve.hxx"
 
 // inclusion of the generated files (generated out of ArcPy.xml)
 #include "ArcPy.h"
 #include "ArcPy.cpp"
 #include "CirclePy.h"
-
-#include <Geom_Circle.hxx>
-#include <gp_Circ.hxx>
-#include <GC_MakeArcOfCircle.hxx>
 
 using namespace Part;
 
