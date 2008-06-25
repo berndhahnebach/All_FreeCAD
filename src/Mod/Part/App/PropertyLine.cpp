@@ -36,6 +36,7 @@ using namespace Part;
 TYPESYSTEM_SOURCE(Part::PropertyLine , App::Property);
 
 PropertyLine::PropertyLine()
+  : _line(gp_Lin())
 {
 }
 
@@ -43,14 +44,14 @@ PropertyLine::~PropertyLine()
 {
 }
 
-void PropertyLine::setValue(const Line3f& line)
+void PropertyLine::setValue(const Geom_Line& line)
 {
     aboutToSetValue();
     _line = line;
     hasSetValue();
 }
 
-const Line3f& PropertyLine::getValue(void) const 
+const Geom_Line& PropertyLine::getValue(void) const 
 {
     return _line;
 }
@@ -58,14 +59,17 @@ const Line3f& PropertyLine::getValue(void) const
 PyObject *PropertyLine::getPyObject(void)
 {
     return new LinePy(this->_line);
+    return 0;
 }
 
 void PropertyLine::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(LinePy::Type))) {
-        LinePy  *pcObject = (LinePy*)value;
-        setValue( pcObject->value() );
-    }
+        LinePy  *pcObject = static_cast<LinePy*>(value);
+        Handle_Geom_Line line = Handle_Geom_Line::DownCast
+            (pcObject->getGeomLinePtr()->handle());
+        setValue(Geom_Line(line->Lin()));
+    } 
     else {
         std::string error = std::string("type must be 'Line', not ");
         error += value->ob_type->tp_name;
@@ -94,15 +98,18 @@ unsigned int PropertyLine::getMemSize (void) const
 
 void PropertyLine::Save (Base::Writer &writer) const
 {
+#if 0
     const Base::Vector3f& pt1 = _line.first;
     const Base::Vector3f& pt2 = _line.second;
     writer.Stream() << writer.ind() << "<PropertyLine bX=\"" 
                     <<  pt1.x << "\" bY=\"" << pt1.y << "\" bZ=\"" << pt1.z << writer.ind() 
                     << "\" eX=\"" << pt2.x << "\" eY=\"" << pt2.y << "\" eZ=\"" << pt2.z <<"\"/>" << std::endl;
+#endif
 }
 
 void PropertyLine::Restore(Base::XMLReader &reader)
 {
+#if 0
     // read my element
     reader.readElement("PropertyLine");
 
@@ -116,6 +123,7 @@ void PropertyLine::Restore(Base::XMLReader &reader)
     line.second.z = float(reader.getAttributeAsFloat("eZ"));
 
     setValue(line);
+#endif
 }
 
 // --------------------------------------------------------
@@ -148,8 +156,8 @@ void PropertyLineSet::setValues(const std::vector<Line3f>& values)
 PyObject *PropertyLineSet::getPyObject(void)
 {
     PyObject* list = PyList_New(	getSize() );
-    for(int i = 0;i<getSize(); i++)
-        PyList_SetItem( list, i, new LinePy(_lValueList[i]));
+//    for(int i = 0;i<getSize(); i++)
+//        PyList_SetItem( list, i, new LinePy(_lValueList[i]));
     return list;
 }
 
@@ -164,14 +172,14 @@ void PropertyLineSet::setPyObject(PyObject *value)
             PyObject* item = PyList_GetItem(value, i);
             PropertyLine val;
             val.setPyObject(item);
-            lines[i] = val.getValue();
+//            lines[i] = val.getValue();
         }
 
         setValues(lines);
     }
     else if (PyObject_TypeCheck(value, &(LinePy::Type))) {
         LinePy  *pcObject = (LinePy*)value;
-        setValue(pcObject->value());
+//        setValue(pcObject->value());
     }
     else {
         std::string error = std::string("type must be 'Line' or list of 'Line', not ");

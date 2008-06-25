@@ -882,11 +882,29 @@
 					>
 				</File>
 				<File
-					RelativePath=".\LinePy.cpp"
+					RelativePath=".\LinePy.xml"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\LinePy.h"
+					RelativePath=".\LinePyImp.cpp"
 					>
 				</File>
 			</Filter>

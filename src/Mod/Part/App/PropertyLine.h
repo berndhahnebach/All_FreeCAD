@@ -46,9 +46,9 @@ public:
     /** @name Getter/setter */
     //@{
     /// set the line
-    void setValue( const Line3f& line );
+    void setValue( const Geom_Line& line );
     /// get the line
-    const Line3f& getValue(void) const;
+    const Geom_Line& getValue(void) const;
     //@}
 
     /** @name Python interface */
@@ -69,7 +69,8 @@ public:
 
 private:
     // start and end point of the line
-    Line3f _line;
+    //Line3f _line;
+    Geom_Line _line;
 };
 
 /** The line set property class.

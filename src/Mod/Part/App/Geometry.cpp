@@ -158,6 +158,13 @@ Handle_Geom_Geometry GeomParabola::handle() const
 
 GeomLine::GeomLine()
 {
+    Handle_Geom_Line c = new Geom_Line(gp_Lin());
+    this->myCurve = c;
+}
+
+GeomLine::GeomLine(const Handle_Geom_Line& c)
+{
+    this->myCurve = c;
 }
 
 GeomLine::~GeomLine()

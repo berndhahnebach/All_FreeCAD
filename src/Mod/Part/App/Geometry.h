@@ -141,6 +141,7 @@ class GeomLine : public GeomCurve
 {
 public:
     GeomLine();
+    GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
 
     Handle_Geom_Geometry handle() const;
