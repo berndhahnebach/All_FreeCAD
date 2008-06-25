@@ -19,9 +19,10 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
@@ -33,10 +34,16 @@
 # include <Geom_Circle.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_BSplineSurface.hxx>
+# include <Geom_OffsetSurface.hxx>
+# include <GeomAPI_PointsToBSplineSurface.hxx>
 # include <Handle_Geom_Circle.hxx>
 # include <Handle_Geom_Plane.hxx>
 # include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
+# include <TColgp_HArray2OfPnt.hxx>
+# include <TColStd_Array1OfReal.hxx>
+# include <TColStd_Array1OfInteger.hxx>
 #endif
 
 #include <stdio.h>
@@ -62,15 +69,6 @@
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
 #include "ImportStep.h"
-
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
 
 using Base::Console;
 using namespace Part;

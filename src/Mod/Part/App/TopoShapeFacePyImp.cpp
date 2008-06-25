@@ -1,12 +1,12 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <ShapeAnalysis.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 #endif
 
 #include "Mod/Part/App/TopoShape.h"
-#include <ShapeAnalysis.hxx>
 
 // inclusion of the generated files (generated out of TopoShapeFacePy.xml)
 #include "TopoShapeFacePy.h"

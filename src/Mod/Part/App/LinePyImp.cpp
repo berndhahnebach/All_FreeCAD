@@ -1,9 +1,33 @@
+/***************************************************************************
+ *   Copyright (c) 2008 Werner Mayer <wmayer@users.sourceforge.net>        *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include "PreCompiled.h"
-
-#include <gp_Lin.hxx>
-#include <Geom_Line.hxx>
-#include <GC_MakeLine.hxx>
+#ifndef _PreComp_
+# include <gp_Lin.hxx>
+# include <Geom_Line.hxx>
+# include <GC_MakeLine.hxx>
+# include <GC_MakeSegment.hxx>
+#endif
 
 #include "Mod/Part/App/Geometry.h"
 #include <Base/VectorPy.h>
@@ -31,42 +55,71 @@ PyObject *LinePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Pytho
 // constructor method
 int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    return 0;
-#if 0
-    PyObject *pLine;
-    PyObject *pV1, *pV2;
-    if (PyArg_ParseTuple(args, "O!", &(LinePy::Type), &pLine)) {
-        //LinePy* pcLine = static_cast<LinePy*>(pLine);
-        //static_cast<LinePy*>(self)->_Line = pcLine->_Line;
-        LinePy* pcLine = static_cast<LinePy*>(pLine);
-        Handle_Geom_Line lin1 = Handle_Geom_Line::DownCast
-            (pcLine->getGeomLineSegmentPtr()->handle());
-        Handle_Geom_Line lin2 = Handle_Geom_Line::DownCast
-            (this->getGeomLineSegmentPtr()->handle());
-        lin2->SetLin(lin1->Lin());
+    if (PyArg_ParseTuple(args, "")) {
+        // default line
         return 0;
     }
 
     PyErr_Clear();
+    PyObject *pLine;
+    if (PyArg_ParseTuple(args, "O!", &(LinePy::Type), &pLine)) {
+        // Copy line
+        LinePy* pcLine = static_cast<LinePy*>(pLine);
+        // get Geom_Line of line segment
+        Handle_Geom_TrimmedCurve that_curv = Handle_Geom_TrimmedCurve::DownCast
+            (pcLine->getGeomLineSegmentPtr()->handle());
+        Handle_Geom_Line that_line = Handle_Geom_Line::DownCast
+            (that_curv->BasisCurve());
+        // get Geom_Line of line segment
+        Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+            (this->getGeomLineSegmentPtr()->handle());
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+
+        // Assign the lines
+        this_line->SetLin(that_line->Lin());
+        this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+        return 0;
+    }
+
+    PyErr_Clear();
+    PyObject *pV1, *pV2;
     if (PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type), &pV1,
                                        &(Base::VectorPy::Type), &pV2)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
         Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
-        GC_MakeLine ml(gp_Pnt(v1.x,v1.y,v1.z),
-                       gp_Dir(v2.x,v2.y,v2.z));
-        if (!ml.IsDone()) {
-            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(ml.Status()));
+        try {
+            // Create line out of two points
+            if (v1 == v2) throw Base::Exception();
+            GC_MakeSegment ms(gp_Pnt(v1.x,v1.y,v1.z),
+                              gp_Pnt(v2.x,v2.y,v2.z));
+            if (!ms.IsDone()) {
+                PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(ms.Status()));
+                return -1;
+            }
+
+            // get Geom_Line of line segment
+            Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+                (this->getGeomLineSegmentPtr()->handle());
+            Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+                (this_curv->BasisCurve());
+            Handle_Geom_TrimmedCurve that_curv = ms.Value();
+            Handle_Geom_Line that_line = Handle_Geom_Line::DownCast(that_curv->BasisCurve());
+            this_line->SetLin(that_line->Lin());
+            this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+            return 0;
+        }
+#if OCC_HEX_VERSION > 0x060100
+        catch (const Standard_Failure& e) {
+            // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
+            PyErr_SetString(PyExc_Exception, e.GetMessageString());
             return -1;
         }
-
-        Handle_Geom_Line line = Handle_Geom_Line::DownCast(getGeomLineSegmentPtr()->handle());
-        line->SetLin(ml.Value()->Lin());
-        return 0;
-    }
-
-    PyErr_Clear();
-    if (PyArg_ParseTuple(args, "")) {
-        return 0;
+#endif
+        catch (...) {
+            PyErr_SetString(PyExc_Exception, "creation of line failed");
+            return -1;
+        }
     }
 
     PyErr_SetString(PyExc_TypeError, "Line constructor accepts:\n"
@@ -74,19 +127,52 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         "-- Line\n"
         "-- Vector, Vector");
     return -1;
+}
+
+PyObject* LinePy::setParameterRange(PyObject *args)
+{
+    double first, last;
+    if (!PyArg_ParseTuple(args, "dd", &first, &last))
+        return NULL;
+
+    try {
+        Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
+            (this->getGeomLineSegmentPtr()->handle());
+        this_curve->SetTrim(first, last);
+    }
+#if OCC_HEX_VERSION > 0x060100
+    catch (const Standard_Failure& e) {
+        // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
+        PyErr_SetString(PyExc_Exception, e.GetMessageString());
+        return NULL;
+    }
 #endif
+    catch (...) {
+        PyErr_SetString(PyExc_Exception, "cannot set parameter range");
+        return NULL;
+    }
+
+    Py_Return; 
 }
 
-PyObject* LinePy::setStartPoint(PyObject * /*args*/)
+Py::Object LinePy::getStartPoint(void) const
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
+        (this->getGeomLineSegmentPtr()->handle());
+    gp_Pnt pnt = this_curve->StartPoint();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
+        (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
+    return Py::Object(vec);
 }
 
-PyObject* LinePy::setEndPoint(PyObject * /*args*/)
+Py::Object LinePy::getEndPoint(void) const
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
+        (this->getGeomLineSegmentPtr()->handle());
+    gp_Pnt pnt = this_curve->EndPoint();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
+        (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
+    return Py::Object(vec);
 }
 
 PyObject *LinePy::getCustomAttributes(const char* /*attr*/) const

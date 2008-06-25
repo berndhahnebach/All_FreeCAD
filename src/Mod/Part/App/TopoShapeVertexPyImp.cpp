@@ -6,13 +6,13 @@
 # include <BRep_Tool.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Vertex.hxx>
+# include <BRepBuilderAPI_MakeVertex.hxx>
 #endif
 
 #include <Mod/Part/App/TopoShape.h>
 #include <Base/VectorPy.h>
 #include <Base/Vector3D.h>
 
-#include <BRepBuilderAPI_MakeVertex.hxx>
 // inclusion of the generated files (generated out of TopoShapeVertexPy.xml)
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeVertexPy.cpp"

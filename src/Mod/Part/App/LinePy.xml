@@ -14,15 +14,22 @@
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>Describes an infinite line</UserDocu>
     </Documentation>
-    <Methode Name="setStartPoint">
+    <Methode Name="setParameterRange">
       <Documentation>
-        <UserDocu></UserDocu>
+        <UserDocu>Set the parameter range of the underlying line geometry</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="setEndPoint">
+    <Attribute Name="StartPoint" ReadOnly="true">
       <Documentation>
-        <UserDocu></UserDocu>
+        <UserDocu>Returns the start point of this line.</UserDocu>
       </Documentation>
-    </Methode>
+      <Parameter Name="StartPoint" Type="Object"/>
+    </Attribute>
+    <Attribute Name="EndPoint" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Returns the end point point of this line.</UserDocu>
+      </Documentation>
+      <Parameter Name="EndPoint" Type="Object"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>
