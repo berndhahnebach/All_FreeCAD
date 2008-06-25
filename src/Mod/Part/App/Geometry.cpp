@@ -27,10 +27,12 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
+# include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Lin.hxx>
+# include <Standard_Real.hxx>
 #endif
 
 #include "Geometry.h"
@@ -178,6 +180,23 @@ GeomLine::~GeomLine()
 }
 
 Handle_Geom_Geometry GeomLine::handle() const
+{
+    return myCurve;
+}
+
+// -------------------------------------------------
+
+GeomLineSegment::GeomLineSegment()
+{
+    Handle_Geom_Line c = new Geom_Line(gp_Lin());
+    this->myCurve = new Geom_TrimmedCurve(c, RealFirst(),RealLast());
+}
+
+GeomLineSegment::~GeomLineSegment()
+{
+}
+
+Handle_Geom_Geometry GeomLineSegment::handle() const
 {
     return myCurve;
 }

@@ -23,11 +23,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepAlgoAPI_Fuse.hxx>
 #endif
 
 
 #include "FeaturePartFuse.h"
-#include <BRepAlgoAPI_Fuse.hxx>
 
 #include <Base/Exception.h>
 

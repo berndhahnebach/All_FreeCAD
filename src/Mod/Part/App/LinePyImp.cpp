@@ -25,12 +25,14 @@ const char *LinePy::representation(void) const
 PyObject *LinePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
     // create a new instance of LinePy and the Twin object 
-    return new LinePy(new GeomLine);
+    return new LinePy(new GeomLineSegment);
 }
 
 // constructor method
 int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
+    return 0;
+#if 0
     PyObject *pLine;
     PyObject *pV1, *pV2;
     if (PyArg_ParseTuple(args, "O!", &(LinePy::Type), &pLine)) {
@@ -38,9 +40,9 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         //static_cast<LinePy*>(self)->_Line = pcLine->_Line;
         LinePy* pcLine = static_cast<LinePy*>(pLine);
         Handle_Geom_Line lin1 = Handle_Geom_Line::DownCast
-            (pcLine->getGeomLinePtr()->handle());
+            (pcLine->getGeomLineSegmentPtr()->handle());
         Handle_Geom_Line lin2 = Handle_Geom_Line::DownCast
-            (this->getGeomLinePtr()->handle());
+            (this->getGeomLineSegmentPtr()->handle());
         lin2->SetLin(lin1->Lin());
         return 0;
     }
@@ -57,7 +59,7 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             return -1;
         }
 
-        Handle_Geom_Line line = Handle_Geom_Line::DownCast(getGeomLinePtr()->handle());
+        Handle_Geom_Line line = Handle_Geom_Line::DownCast(getGeomLineSegmentPtr()->handle());
         line->SetLin(ml.Value()->Lin());
         return 0;
     }
@@ -72,6 +74,7 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         "-- Line\n"
         "-- Vector, Vector");
     return -1;
+#endif
 }
 
 PyObject* LinePy::setStartPoint(PyObject * /*args*/)

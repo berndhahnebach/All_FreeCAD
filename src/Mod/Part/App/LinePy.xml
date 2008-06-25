@@ -3,8 +3,8 @@
   <PythonExport 
       Father="GeometryPy" 
       Name="LinePy" 
-      Twin="GeomLine" 
-      TwinPointer="GeomLine" 
+      Twin="GeomLineSegment" 
+      TwinPointer="GeomLineSegment" 
       Include="Mod/Part/App/Geometry.h" 
       Namespace="Part" 
       FatherInclude="Mod/Part/App/GeometryPy.h" 
@@ -24,9 +24,5 @@
         <UserDocu></UserDocu>
       </Documentation>
     </Methode>
-	<ClassDeclarations>public:
-      LinePy(const Geom_Line &amp; line, PyTypeObject *T = &amp;Type)
-      :GeometryPy(new GeomLine(new Geom_Line(line)),T){}
-	</ClassDeclarations>
   </PythonExport>
 </GenerateModel>
