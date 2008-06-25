@@ -24,11 +24,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepAlgoAPI_Common.hxx>
 #endif
 
 
 #include "FeaturePartCommon.h"
-#include <BRepAlgoAPI_Common.hxx>
 
 #include <Base/Exception.h>
 

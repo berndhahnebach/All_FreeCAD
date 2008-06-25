@@ -27,12 +27,9 @@
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
 #include "FeaturePartCurveNet.h"
-#include "FeaturePartLine.h"
-#include "FeaturePartLineSet.h"
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
 #include "PrimitiveFeature.h"
-#include "PropertyLine.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeFacePy.h"
@@ -88,8 +85,6 @@ void AppPartExport initPart()
 
     Part::TopoShape           ::init();
     Part::PropertyPartShape   ::init();
-    Part::PropertyLine        ::init();
-    Part::PropertyLineSet     ::init();
 #if 1
     Part::PropertyCircle      ::init();
 #endif
@@ -105,8 +100,6 @@ void AppPartExport initPart()
     Part::ImportIges          ::init();
     Part::ImportBrep          ::init();
     Part::CurveNet            ::init();
-    Part::Line                ::init();
-    Part::LineSet             ::init();
     Part::Polygon             ::init();
     Part::Circle              ::init();
     Part::Plane               ::init();

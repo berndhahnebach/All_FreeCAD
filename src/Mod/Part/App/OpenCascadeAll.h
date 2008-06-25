@@ -2,8 +2,6 @@
 #define __OpenCascadeAll__
 
 // OpenCASCADE
-#include <Standard_Failure.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_AbortiveTransaction.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_AncestorIterator.hxx>
@@ -67,12 +65,24 @@
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_Underflow.hxx>
 #include <Standard_UUID.hxx>
+#include <Standard_Version.hxx>
 #include <Standard_WayOfLife.hxx>
 
- 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -100,18 +110,19 @@
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 
-#include <Standard_DefineHandle.hxx> 
 #include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
-#include <Geom_Axis2Placement.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Surface.hxx>
+
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -130,6 +141,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomTools_Curve2dSet.hxx>
+
 #include <gp_Ax2d.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
@@ -148,31 +160,7 @@
 #include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <MMgt_TShared.hxx>
-#include <Precision.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Quantity_PhysicalQuantity.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_TypeOfColor.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_IStream.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_OStream.hxx>
-#include <Standard_Real.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
-#include <TColStd_MapOfTransient.hxx>
-#include <TopExp_Explorer.hxx>
+
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
@@ -181,12 +169,16 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+
+#include <MMgt_TShared.hxx>
+#include <Precision.hxx>
 #include <UnitsAPI.hxx>
+#include <Quantity_Factor.hxx>
+#include <Quantity_Length.hxx>
+#include <Quantity_NameOfColor.hxx>
+#include <Quantity_PhysicalQuantity.hxx>
+#include <Quantity_PlaneAngle.hxx>
+#include <Quantity_TypeOfColor.hxx>
 
 // Import
 #include <STEPControl_Writer.hxx>

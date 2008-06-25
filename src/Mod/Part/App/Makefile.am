@@ -50,8 +50,6 @@ libPart_la_SOURCES=\
 		FeaturePartImportBrep.cpp \
 		FeaturePartImportIges.cpp \
 		FeaturePartImportStep.cpp \
-		FeaturePartLine.cpp \
-		FeaturePartLineSet.cpp \
 		FeaturePartPolygon.cpp \
 		FeaturePartSection.cpp \
 		Geometry.cpp \
@@ -61,7 +59,6 @@ libPart_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
-		PropertyLine.cpp \
 		PropertyTopoShape.cpp \
 		TopoShape.cpp \
 		TopoShapeCompoundPyImp.cpp \
@@ -88,15 +85,12 @@ include_HEADERS=\
 		FeaturePartImportBrep.h \
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.h \
-		FeaturePartLine.h \
-		FeaturePartLineSet.h \
 		FeaturePartPolygon.h \
 		FeaturePartSection.h \
 		Geometry.h \
 		ImportStep.h \
 		PartFeature.h \
 		PrimitiveFeature.h \
-		PropertyLine.h \
 		PropertyTopoShape.h \
 		TopoShape.h
 

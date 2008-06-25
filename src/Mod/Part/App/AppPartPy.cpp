@@ -236,9 +236,17 @@ makeShape(PyObject *self, PyObject *args)
                 }
             }
         }
+#if OCC_HEX_VERSION > 0x060100
         catch (const Standard_Failure& e) {
             delete shape;
+            // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
             PyErr_SetString(PyExc_Exception, e.GetMessageString());
+            return 0;
+        }
+#endif
+        catch (...) {
+            delete shape;
+            PyErr_SetString(PyExc_Exception, "creation of shape failed");
             return 0;
         }
 

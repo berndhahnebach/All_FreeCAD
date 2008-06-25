@@ -150,6 +150,18 @@ private:
     Handle_Geom_Line myCurve;
 };
 
+class GeomLineSegment : public GeomCurve
+{
+public:
+    GeomLineSegment();
+    virtual ~GeomLineSegment();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_TrimmedCurve myCurve;
+};
+
 class GeomTrimmedCurve : public GeomCurve
 {
 public:
