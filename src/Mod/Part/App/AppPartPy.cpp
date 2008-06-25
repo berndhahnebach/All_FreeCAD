@@ -55,6 +55,7 @@
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
+#include "GeometryPy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
@@ -217,7 +218,31 @@ makeShape(PyObject *self, PyObject *args)
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
-        return new TopoShapePy(new TopoShape);
+        TopoShape* shape = new TopoShape;
+        try {
+            Py::List list(pcObj);
+            bool first = true;
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
+                    TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
+                        getGeometryPtr()->toShape();
+                    if (first) {
+                        first = false;
+                        shape->_Shape = sh;
+                    }
+                    else {
+                        shape->_Shape = shape->fuse(sh);
+                    }
+                }
+            }
+        }
+        catch (const Standard_Failure& e) {
+            delete shape;
+            PyErr_SetString(PyExc_Exception, e.GetMessageString());
+            return 0;
+        }
+
+        return new TopoShapePy(shape);
     } PY_CATCH;
 }
 

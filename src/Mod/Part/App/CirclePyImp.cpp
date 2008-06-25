@@ -23,15 +23,15 @@
 
 #include "PreCompiled.h"
 
+#include <gp_Circ.hxx>
+#include <Geom_Circle.hxx>
+#include <GC_MakeCircle.hxx>
+
 #include "CirclePy.h"
 #include "CirclePy.cpp"
 #include "ArcPy.h"
 
 #include <Base/VectorPy.h>
-
-#include <gp_Circ.hxx>
-#include <Geom_Circle.hxx>
-#include <GC_MakeCircle.hxx>
 
 using namespace Part;
 
@@ -123,8 +123,8 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
     if (PyArg_ParseTuple(args, "O!O!d", &(Base::VectorPy::Type), &pV1,
-                                             &(Base::VectorPy::Type), &pV2,
-                                             &dist)) {
+                                        &(Base::VectorPy::Type), &pV2,
+                                        &dist)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
         Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
         GC_MakeCircle mc(gp_Pnt(v1.x,v1.y,v1.z),
@@ -273,7 +273,7 @@ PyObject* CirclePy::setAxis(PyObject *args)
 
 PyObject* CirclePy::axis(PyObject *args)
 {
-    if (! PyArg_ParseTuple(args, ""))
+    if (!PyArg_ParseTuple(args, ""))
         return NULL;
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
     gp_Ax1 axis = circle->Axis();
@@ -285,7 +285,7 @@ PyObject* CirclePy::axis(PyObject *args)
 PyObject* CirclePy::setPosition(PyObject *args)
 {
     PyObject *pyObject;
-    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pyObject))
+    if (!PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pyObject))
         return NULL;
     Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
     Base::Vector3d* val = pcObject->getVectorPtr();

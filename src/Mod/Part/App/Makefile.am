@@ -6,6 +6,7 @@ BUILT_SOURCES=\
 		ArcPy.cpp \
 		CirclePy.cpp \
 		GeometryPy.cpp \
+		LinePy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
@@ -21,6 +22,7 @@ libPart_la_BUILT=\
 		ArcPy.h \
 		CirclePy.h \
 		GeometryPy.h \
+		LinePy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
@@ -37,6 +39,7 @@ libPart_la_SOURCES=\
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
 		GeometryPyImp.cpp \
+		LinePyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -53,7 +56,6 @@ libPart_la_SOURCES=\
 		FeaturePartSection.cpp \
 		Geometry.cpp \
 		ImportStep.cpp \
-		LinePy.cpp \
 		PartFeature.cpp \
 		PartFeaturePyImp.cpp \
 		PreCompiled.cpp \
@@ -92,7 +94,6 @@ include_HEADERS=\
 		FeaturePartSection.h \
 		Geometry.h \
 		ImportStep.h \
-		LinePy.h \
 		PartFeature.h \
 		PrimitiveFeature.h \
 		PropertyLine.h \
@@ -162,6 +163,7 @@ EXTRA_DIST = \
 		ArcPy.xml \
 		CirclePy.xml \
 		GeometryPy.xml \
+		LinePy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \
