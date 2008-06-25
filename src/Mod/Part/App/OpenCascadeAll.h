@@ -70,12 +70,15 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
 
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -97,6 +100,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -109,9 +113,14 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <ShapeAnalysis.hxx>
 
 #include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
+#include <GC_MakeArcOfCircle.hxx>
+#include <GC_MakeCircle.hxx>
+#include <GC_MakeLine.hxx>
+#include <GC_MakeSegment.hxx>
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -134,12 +143,14 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 
 #include <gp_Ax2d.hxx>
@@ -183,6 +194,7 @@
 // Import
 #include <STEPControl_Writer.hxx>
 #include <STEPControl_Reader.hxx>
+#include <StepData_StepModel.hxx>
 #include <IGESControl_Controller.hxx>
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Reader.hxx>

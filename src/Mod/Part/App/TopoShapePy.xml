@@ -178,5 +178,11 @@ As a result, this shape becomes null.</UserDocu>
       </Documentation>
       <Parameter Name="Wires" Type="List"/>
     </Attribute>
+    <Attribute Name="Compounds" ReadOnly="true">
+      <Documentation>
+        <UserDocu>List of coumpounds in this shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Compounds" Type="List"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

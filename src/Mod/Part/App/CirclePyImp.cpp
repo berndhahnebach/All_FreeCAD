@@ -22,10 +22,11 @@
 
 
 #include "PreCompiled.h"
-
-#include <gp_Circ.hxx>
-#include <Geom_Circle.hxx>
-#include <GC_MakeCircle.hxx>
+#ifndef _PreComp_
+# include <gp_Circ.hxx>
+# include <Geom_Circle.hxx>
+# include <GC_MakeCircle.hxx>
+#endif
 
 #include "CirclePy.h"
 #include "CirclePy.cpp"

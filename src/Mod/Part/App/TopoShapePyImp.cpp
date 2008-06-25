@@ -741,6 +741,27 @@ Py::List TopoShapePy::getWires(void) const
     return ret;
 }
 
+Py::List TopoShapePy::getCompounds(void) const
+{
+    Py::List ret;
+    TopTools_IndexedMapOfShape M;
+
+    TopExp_Explorer Ex(getTopoShapePtr()->_Shape,TopAbs_COMPOUND);
+    while (Ex.More())
+    {
+        M.Add(Ex.Current());
+        Ex.Next();
+    }
+
+    for (Standard_Integer k = 1; k <= M.Extent(); k++)
+    {
+        const TopoDS_Shape& shape = M(k);
+        ret.append(Py::Object(new TopoShapeCompoundPy(new TopoShape(shape)),true));
+    }
+
+    return ret;
+}
+
 PyObject *TopoShapePy::getCustomAttributes(const char* attr) const
 {
     return 0;

@@ -188,8 +188,11 @@ Handle_Geom_Geometry GeomLine::handle() const
 
 GeomLineSegment::GeomLineSegment()
 {
-    Handle_Geom_Line c = new Geom_Line(gp_Lin());
-    this->myCurve = new Geom_TrimmedCurve(c, RealFirst(),RealLast());
+    gp_Lin line;
+    line.SetLocation(gp_Pnt(0.0,0.0,0.0));
+    line.SetDirection(gp_Dir(0.0,0.0,1.0));
+    Handle_Geom_Line c = new Geom_Line(line);
+    this->myCurve = new Geom_TrimmedCurve(c, 0.0,1.0);
 }
 
 GeomLineSegment::~GeomLineSegment()

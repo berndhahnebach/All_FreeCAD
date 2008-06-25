@@ -27,6 +27,7 @@
 # include <TopTools_HSequenceOfShape.hxx>
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
+# include <StepData_StepModel.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Shape.hxx>
 # include <TopoDS_Shell.hxx>
@@ -37,7 +38,6 @@
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 #include <App/Document.h>
-#include <StepData_StepModel.hxx>
 
 
 #include "ImportStep.h"
