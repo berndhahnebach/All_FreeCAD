@@ -37,6 +37,7 @@ class path_simulate;
 class SpringbackCorrection;
 class UniGridApprox;
 class TopoDS_Shape;
+class Approximate;
 
 namespace CamGui
 {
@@ -68,6 +69,7 @@ protected Q_SLOTS:
     void on_Approximate_button_clicked();
     void on_best_fit_cad_button_clicked();
     void on_best_fit_mesh_button_clicked();
+void on_best_fit_mesh2_button_clicked();
     void on_SelectFace_button_clicked();
     void on_best_fit_go_button_clicked();
 
@@ -92,6 +94,7 @@ private:
     path_simulate        *m_PathSimulate;
     best_fit             *m_BestFit;
     UniGridApprox        *m_Approx;
+Approximate          *m_App;
 
     CuttingToolsSettings m_Settings;
 
@@ -108,7 +111,7 @@ private:
     {
         BestFit,
         Springback,
-        Approximate,
+        Approx,
         ToolpathCalculation
     };
     support_selection m_selection;

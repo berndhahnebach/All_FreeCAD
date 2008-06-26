@@ -46,21 +46,24 @@ using namespace boost::numeric;
 /*! \class Approximate
  \brief The main class for the approximate routine
 
- Inheriting the Routines class defined in Routines.h,it takes a mesh structure and tolerance level as it's input parameter.
+ Inheriting the Routines class defined in Routines.h, it takes a mesh structure and tolerance level as it's input parameter.
 
  As output, it gives out the following NURBS info:-
-  Control Points, Knot U, Knot V, Order U, Order V
+ Control Points, Knot U, Knot V, Order U, Order V
 
  where Control Points, Knot U, Knot V are of type std::vectors, Order U and Order V of type int
 
  In this program, it will be directly converted into a topo surface from the given information
  */
-class Approximate : protected Routines
+class AppCamExport Approximate : protected Routines
 {
 public:
     Approximate(const MeshCore::MeshKernel &m, std::vector<double> &_Cntrl, std::vector<double> &_KnotU, std::vector<double> &_KnotV,
                 int &_OrderU, int &_OrderV, double tol);
+	~Approximate();
+	MeshCore::MeshKernel MeshParam;
 
+	GeomAdaptor_Surface aAdaptorSurface;
 protected:
     void ParameterBoundary();
     void ParameterInnerPoints();
@@ -76,25 +79,43 @@ protected:
     //void RemakeList(std::vector<MyMesh::VertexHandle> &v_neighbour);
 
 private:
+	/** @brief Local Mesh */
     MeshCore::MeshKernel LocalMesh;  //Local Mesh
+	/** @brief Parameterized Mesh */
     MeshCore::MeshKernel ParameterMesh;   //Parameterized Mesh - ONLY USED FOR VISUALIZING TO CHECK FOR PARAMETERIZATION ERRORS
-    int NumOfPoints;    //Info about the Mesh
+    /** @brief total number of mesh-points */
+	int NumOfPoints;    //Info about the Mesh
+	/** @brief number of inner mesh-points */
     int NumOfInnerPoints;
+	/** @brief number of boundary mesh-points */
     int NumOfOuterPoints;
+	/** @brief error-tolerance */
     double tolerance;  //error level
+	/** @brief Parametervalues in x-direction*/
     ublas::vector<double> ParameterX;   //Parameterized Coordinate Lists
+	/** @brief Parametervalues in y-direction*/
     ublas::vector<double> ParameterY;
+	/** @brief Parametervalues of the boundary-points in x-direction*/
     ublas::vector<double> BoundariesX;  //Parametrized Boundaries' Coordinate List
+	/** @brief Parametervalues of the boundary-points in y-direction*/
     ublas::vector<double> BoundariesY;
+	/** @brief Original Boundaries' Coordinate List in x-direction*/
     std::vector<double> UnparamBoundariesX;   //Original Boundaries' Coordinate List
+		/** @brief Original Boundaries' Coordinate List in y-direction*/
     std::vector<double> UnparamBoundariesY;
+		/** @brief Original Boundaries' Coordinate List in z-direction*/
     std::vector<double> UnparamBoundariesZ;
+	/** @brief Original Coordinate List in x-direction*/
     std::vector<double> UnparamX; //Original Coordinate Lists
+	/** @brief Original Coordinate List in y-direction*/
     std::vector<double> UnparamY;
+	/** @brief Original Coordinate List in z-direction*/
     std::vector<double> UnparamZ;
 
     std::vector<int> mapper;
+	/** @brief List of indicies of the boundary points*/
     std::list< std::vector <unsigned long> > BoundariesIndex;
+	/** @brief List of point-coordinates of the boundary points*/
     std::list< std::vector <Base::Vector3f> > BoundariesPoints;
 
     //NURBS

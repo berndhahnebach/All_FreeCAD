@@ -307,80 +307,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="best_fit_box" >
-   <property name="enabled" >
-    <bool>true</bool>
-   </property>
-   <property name="geometry" >
-    <rect>
-     <x>150</x>
-     <y>10</y>
-     <width>132</width>
-     <height>166</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Best-Fit and Springback</string>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>7</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="best_fit_cad_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>CAD-Part</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="best_fit_mesh_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Scanned Mesh</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="SelectFace_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Select Face</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="best_fit_go_button" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>GO</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
   <widget class="QGroupBox" name="groupBox" >
    <property name="geometry" >
     <rect>
@@ -666,6 +592,90 @@ p, li { white-space: pre-wrap; }
    <property name="value" >
     <double>145.000000000000000</double>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="best_fit_box" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>132</width>
+     <height>194</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Best-Fit and Springback</string>
+   </property>
+   <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>7</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="best_fit_cad_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>CAD-Part</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="best_fit_mesh_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Scanned Mesh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="best_fit_mesh2_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Scanned Mesh 2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="SelectFace_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Select Face</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="best_fit_go_button" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>GO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QGroupBox" name="groupBox_2" >
    <property name="geometry" >

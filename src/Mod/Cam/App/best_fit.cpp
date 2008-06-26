@@ -22,6 +22,12 @@
  *                                                                         *
  ***************************************************************************/
 
+/*****************best_fit.CPP*****************
+* Contains implementations from best_fit.h
+*
+*
+*********************************************/
+
 
 #include "PreCompiled.h"
 #include "best_fit.h"
@@ -61,7 +67,7 @@ best_fit::~best_fit()
 {
 }
 
-void best_fit::Load(const MeshCore::MeshKernel &mesh,const TopoDS_Shape &cad)
+void best_fit::Load(const MeshCore::MeshKernel &mesh, const TopoDS_Shape &cad)
 {
     m_Mesh = mesh;
     m_Cad  = cad;
@@ -69,7 +75,6 @@ void best_fit::Load(const MeshCore::MeshKernel &mesh,const TopoDS_Shape &cad)
     m_MeshWork = m_Mesh;
 
 }
-
 
 double best_fit::ANN()
 {
@@ -79,6 +84,8 @@ double best_fit::ANN()
     ANNdistArray    dists;                    // near neighbor distances
     ANNkd_tree*     kdTree;                    // search structure
 
+	Base::Builder3D log_error;
+
     MeshCore::MeshPointArray meshPnts = m_MeshWork.GetPoints();
     Base::Vector3f projPoint;
 
@@ -86,7 +93,7 @@ double best_fit::ANN()
 
     int a_dim = 3;
     int a_nbPnts =(int) meshPnts.size(); //Size vom eingescanntem Netz
-    int a_nbNear = 1;               //anzahl der rückgabewerte
+    int a_nbNear = 1;                    //anzahl der rückgabewerte
     queryPt = annAllocPt(a_dim);                    // allocate query point storage
     dataPts = annAllocPts(a_nbPnts, a_dim);         // allocate data points storage
     nnIdx = new ANNidx[a_nbNear];                   // allocate near neigh indices
@@ -124,9 +131,21 @@ double best_fit::ANN()
         m_LSPnts[1].push_back(m_pnts[i]);
         m_LSPnts[0].push_back(meshPnts[nnIdx[0]]);
 
-        error += dists[0];
+		if(m_pnts[i].z <= meshPnts[nnIdx[0]].z)
+		{
+			log_error.addSingleLine(m_pnts[i],meshPnts[nnIdx[0]],8,1,0,0);
+		}
+		else
+		{
+			log_error.addSingleLine(m_pnts[i],meshPnts[nnIdx[0]],8,0,1,0);
+		}
+
+		//if(dists[0] > error)
+			error += dists[0];
 
     }
+
+	log_error.saveToFile("c:/errorVec_fit.iv");
 
     error /= double(m_pnts.size());
     m_weights_loc = m_weights;
@@ -146,13 +165,32 @@ bool best_fit::Perform()
 
     cout << "tesselate shape" << endl;
     Tesselate_Shape(m_Cad, m_CadMesh, 1);
+	return true;
     Comp_Weights();
+
+	/*RotMat(M, 180, 1);
+    m_MeshWork.Transform(M);
+	return true;*/
+
+
+	//MeshCore::MeshPointArray pntarr = m_MeshWork.GetPoints();
+	//MeshCore::MeshFacetArray facetarr = m_MeshWork.GetFacets();
+
+	//for(int i=0; i<pntarr.size(); ++i)
+	//{
+	//	pntarr[i].x -= 200;
+	//	pntarr[i].y -= 200;
+	//	pntarr[i].z += 50;
+	//}
+
+	//m_MeshWork.Assign(pntarr,facetarr);
+
 
     cout << "trafo2origin" << endl;
     MeshFit_Coarse();
     ShapeFit_Coarse();
 
-
+	
     M.unity();
     M[0][3] = m_cad2orig.X();
     M[1][3] = m_cad2orig.Y();
@@ -161,10 +199,10 @@ bool best_fit::Perform()
     m_CadMesh.Transform(M);
     PointTransform(m_pnts,M);
 
-    cout << "error: " << ANN() << endl;;
+    cout << "error: " << ANN() << endl;
 
     Coarse_correction();
-
+	//return true;
     time_t seconds1, seconds2;
     seconds1 = time(NULL);
 
@@ -182,11 +220,15 @@ bool best_fit::Perform()
     m_MeshWork.Transform(T);
     m_CadMesh.Transform(T);
 
+	m_Mesh = m_MeshWork;
+    CompTotalError();
+
     return true;
 
 
 }
 
+/*
 bool best_fit::Intersect(const Base::Vector3f &normal,const MeshCore::MeshKernel &mesh, Base::Vector3f &P, Base::Vector3f &I)
 {
     MeshCore::MeshFacetIterator f_it(mesh);
@@ -257,6 +299,7 @@ int best_fit::intersect_RayTriangle(const Base::Vector3f &normal,const MeshCore:
 
     return 1;                      // I is in T
 }
+*/
 
 bool best_fit::Coarse_correction()
 {
@@ -289,19 +332,26 @@ bool best_fit::Coarse_correction()
     }
 
     m_MeshWork.Transform(T);
+	/*RotMat(M, 180, 1);
+    m_MeshWork.Transform(M);
+	RotMat(M, 180, 2);
+    m_MeshWork.Transform(M);*/
 
     return true;
 }
 
-// Least Square Matching bzgl. Rotation um z-Achse und Translation in (x,y)-Richtung
 bool best_fit::LSM()
 {
     double TOL  = 0.01;          // Abbruchkriterium des Newton-Verfahren
-    int maxIter = 200;           // maximale Anzahl von Iterationen für den Fall,
+    int maxIter = 250;           // maximale Anzahl von Iterationen für den Fall,
     // dass das Abbruchkriterium nicht erfüllt wird
 
     double val, tmp;
     Base::Matrix4D Tx,Ty,Tz,Rx,Ry,Rz,M;   // Transformaitonsmatrizen
+
+	ofstream anOutputFile;
+	anOutputFile.open("c:/outputBestFit.txt");
+    anOutputFile.precision(7);
 
     int c=0;
     int mult;
@@ -310,7 +360,7 @@ bool best_fit::LSM()
     std::vector<double> del_x(3,0.0);
     std::vector<double>     x(3,0.0); // Startparameter entspricht Nullvektor
 
-    Base::Vector3f centr_l,centr_r;  // Schwerpunkte der Punktesätze
+    Base::Vector3f centr_l,centr_r, cent;  // Schwerpunkte der Punktesätze
 
     // Newton Verfahren: 1. Löse  H*del_x = -J
     //                   2. Setze x = x + del_x
@@ -337,7 +387,8 @@ bool best_fit::LSM()
         //errVec = CompError_GetPnts(m_pnts, m_normals);   // hier: - Berechnung der LS-Punktesätze
         //       - Berechnung der zugehörigen Gewichtungen
 
-        errVec[0] = ANN();
+		m_Mesh = m_MeshWork;
+        errVec[0] = /* CompTotalError();//*/ANN();
         /*
         seconds2 = time(NULL);
               cout << "laufzeit projection: " << seconds2-seconds1 << " sec" << endl;
@@ -345,7 +396,8 @@ bool best_fit::LSM()
 
         seconds2 = time(NULL);
         std::cout << "Iter.: " << c << " AVG. : " << errVec[0] << "   " << "MAX. : " << errVec[1] <<  " Time: " <<  seconds2-seconds1 << " sec" << endl;
-        seconds1 = time(NULL);
+        anOutputFile << c << ", " << errVec[0] << ", " << errVec[1] << endl;
+		seconds1 = time(NULL);
 
         for (unsigned int i=0; i<x.size(); ++i) x[i] = 0.0; // setze startwerte auf null
 
@@ -354,7 +406,7 @@ bool best_fit::LSM()
         centr_r.Scale(0.0,0.0,0.0);
 
         Base::Vector3f p,q;
-
+		double Sum = 0.0;
         for (unsigned int i=0; i<m_LSPnts[0].size(); ++i)
         {
             p = m_LSPnts[0][i];
@@ -363,15 +415,21 @@ bool best_fit::LSM()
             p.Scale((float) m_weights_loc[i],(float) m_weights_loc[i],(float) m_weights_loc[i]);
             q.Scale((float) m_weights_loc[i],(float) m_weights_loc[i],(float) m_weights_loc[i]);
 
+			Sum += m_weights_loc[i];
             centr_l += p;
             centr_r += q;
         }
 
-        float s = (float) m_LSPnts[0].size();
+		centr_l.Scale(-1.0/Sum, -1.0/Sum, -1.0/Sum);
+		centr_r.Scale(-1.0/Sum, -1.0/Sum, -1.0/Sum);
+
+       /* float s = (float) m_LSPnts[0].size();
         s = float(-1.0/s);
 
         centr_l.Scale(s,s,s);
-        centr_r.Scale(s,s,s);
+        centr_r.Scale(s,s,s);*/
+
+
 
         // Verschiebung der Schwerpunkte zum Ursprung
         TransMat(Tx,centr_l.x,1);
@@ -389,7 +447,7 @@ bool best_fit::LSM()
         M = Tx*Ty*Tz;
         PointTransform(m_LSPnts[1],M);
         PointNormalTransform(m_pnts, m_normals, M);
-        //m_CadMesh.Transform(M);
+        m_CadMesh.Transform(M);
 
         tmp  = 1e+10;
         mult = 2;
@@ -437,19 +495,33 @@ bool best_fit::LSM()
         RotMat  (Rx,(x[0]*180.0/PI),1);
         RotMat  (Ry,(x[1]*180.0/PI),2);
         RotMat  (Rz,(x[2]*180.0/PI),3);
-        TransMat(Tx, -centr_r.x, 1);
-        TransMat(Ty, -centr_r.y, 2);
-        TransMat(Tz, -centr_r.z, 3);
+
+		Base::Matrix4D R = Rx*Ry*Rz;
+		centr_l.Scale(-1.0, -1.0, -1.0);
+
+		cent.x = (R[0][0]*centr_l.x + R[0][1]*centr_l.y + R[0][2]*centr_l.z);
+		cent.y = (R[1][0]*centr_l.x + R[1][1]*centr_l.y + R[1][2]*centr_l.z);
+		cent.z = (R[2][0]*centr_l.x + R[2][1]*centr_l.y + R[2][2]*centr_l.z);
+			 
+		TransMat(Tx, -centr_r.x - cent.x + centr_l.x, 1);
+        TransMat(Ty, -centr_r.y - cent.y + centr_l.y, 2);
+		TransMat(Tz, -centr_r.z - cent.z + centr_l.z, 3);
 
         M = Tx*Ty*Tz*Rx*Ry*Rz; // Rotiere zuerst !!! (Rotationen stets um den Nullpunkt...)
         m_MeshWork.Transform(M);
 
+		TransMat(Tx, -centr_r.x, 1);
+		TransMat(Ty, -centr_r.y, 2);
+		TransMat(Tz, -centr_r.z, 3);
+
         M = Tx*Ty*Tz;
-        //m_CadMesh.Transform(M);
+        m_CadMesh.Transform(M);
         PointNormalTransform(m_pnts, m_normals, M);
 
         ++c;
     }
+
+	anOutputFile.close();
 
     /*TransMat(Tx,-centr_l.x,1);
        TransMat(Ty,-centr_l.y,2);
@@ -474,6 +546,7 @@ bool best_fit::LSM()
 
     return true;
 }
+
 
 std::vector<double> best_fit::Comp_Jacobi(const std::vector<double> &x)
 {
@@ -640,7 +713,7 @@ bool best_fit::Comp_Weights()
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
         m_pnts.push_back(pnts[i]);
-        m_weights.push_back(1);
+        m_weights.push_back(0.2);
     }
 
     pnts = mesh2.GetPoints();
@@ -648,7 +721,7 @@ bool best_fit::Comp_Weights()
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
         m_pnts.push_back(pnts[i]);
-        m_weights.push_back(0.15);
+        m_weights.push_back(1);
     }
 
     m_normals = Comp_Normals(mesh1);
@@ -661,8 +734,6 @@ bool best_fit::Comp_Weights()
 
     return true;
 }
-
-
 
 bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
 {
@@ -760,6 +831,7 @@ bool best_fit::PointTransform(std::vector<Base::Vector3f> &pnts, Base::Matrix4D 
     return true;
 }
 
+
 bool best_fit::MeshFit_Coarse()
 {
 
@@ -774,12 +846,20 @@ bool best_fit::MeshFit_Coarse()
     gp_Vec v1,v2,v3,v,vec; // Hauptachsenrichtungen
     gp_Trsf trafo;
 
-    BRepGProp::SurfaceProperties(m_Cad, prop);
+   /* BRepGProp::SurfaceProperties(m_Cad, prop);
     pprop = prop.PrincipalProperties();
 
     v1 = pprop.FirstAxisOfInertia();
     v2 = pprop.SecondAxisOfInertia();
-    v3 = pprop.ThirdAxisOfInertia();
+    v3 = pprop.ThirdAxisOfInertia();*/
+
+	MeshCore::MeshEigensystem pca(m_CadMesh);
+    pca.Evaluate();
+    Base::Matrix4D T5 =  pca.Transform();
+
+	v1.SetX(T5[0][0]);v1.SetY(T5[0][1]);v1.SetZ(T5[0][2]);
+    v2.SetX(T5[1][0]);v2.SetY(T5[1][1]);v2.SetZ(T5[1][2]);
+    v3.SetX(T5[2][0]);v3.SetY(T5[2][1]);v3.SetZ(T5[2][2]);
 
     v1.Normalize();
     v2.Normalize();
@@ -795,7 +875,11 @@ bool best_fit::MeshFit_Coarse()
     if ( v.Dot(v3) < 0.0 )
         v3 *= -1;
 
-    orig  = prop.CentreOfMass();
+
+	    T5.inverse();
+
+    orig.SetX(T5[0][3]);orig.SetY(T5[1][3]);orig.SetZ(T5[2][3]);
+    //orig  = prop.CentreOfMass();
 
     Base::Matrix4D M;
 
@@ -818,40 +902,44 @@ bool best_fit::MeshFit_Coarse()
 
     M.inverse();
 
-    MeshCore::MeshEigensystem pca(m_MeshWork);
-    pca.Evaluate();
-    Base::Matrix4D T1 =  pca.Transform();
-    m_MeshWork.Transform(M*T1);
+    MeshCore::MeshEigensystem pca2(m_MeshWork);
+    pca2.Evaluate();
+    Base::Matrix4D T1 =  pca2.Transform();
+    m_MeshWork.Transform(T5*T1);
 
     // plot CAD -> local coordinate system
 
-    /*x.x = 500*v1.X()+orig.X();x.y = 500*v1.Y()+orig.Y();x.z = 500*v1.Z()+orig.Z();
-    y.x = 500*v2.X()+orig.X();y.y = 500*v2.Y()+orig.Y();y.z = 500*v2.Z()+orig.Z();
-    z.x = 500*v3.X()+orig.X();z.y = 500*v3.Y()+orig.Y();z.z = 500*v3.Z()+orig.Z();
+    x.x = 50*v1.X()+orig.X();x.y = 50*v1.Y()+orig.Y();x.z = 50*v1.Z()+orig.Z();
+    y.x = 50*v2.X()+orig.X();y.y = 50*v2.Y()+orig.Y();y.z = 50*v2.Z()+orig.Z();
+    z.x = -50*v3.X()+orig.X();z.y = -50*v3.Y()+orig.Y();z.z = -50*v3.Z()+orig.Z();
 
     pnt.x = orig.X();pnt.y = orig.Y();pnt.z = orig.Z();
 
-    log3d_cad.addSingleLine(pnt,x,3,0,0,0);log3d_cad.addSingleLine(pnt,y,3,1,0,0);log3d_cad.addSingleLine(pnt,z,3,1,1,1);
-    log3d_cad.saveToFile("c:/CAD_CoordSys.iv");*/
+	log3d_cad.addSingleArrow(pnt,x,3,1,0,0);log3d_cad.addSingleArrow(pnt,y,3,1,0,0);log3d_cad.addSingleArrow(pnt,z,3,1,0,0);
+	//log3d_cad.addSinglePoint(pnt,6,1,1,1);
+	log3d_cad.saveToFile("c:/CAD_CoordSys.iv");
 
     // plot Mesh -> local coordinate system
 
-    /*v1.SetX(T1[0][0]);v1.SetY(T1[0][1]);v1.SetZ(T1[0][2]);
+	
+    v1.SetX(T1[0][0]);v1.SetY(T1[0][1]);v1.SetZ(T1[0][2]);
     v2.SetX(T1[1][0]);v2.SetY(T1[1][1]);v2.SetZ(T1[1][2]);
     v3.SetX(T1[2][0]);v3.SetY(T1[2][1]);v3.SetZ(T1[2][2]);
 
-    T1.inverse();
 
+    
+    T1.inverse();
     orig.SetX(T1[0][3]);orig.SetY(T1[1][3]);orig.SetZ(T1[2][3]);
 
-    x.x = 500*v1.X()+orig.X();x.y = 500*v1.Y()+orig.Y();x.z = 500*v1.Z()+orig.Z();
-    y.x = 500*v2.X()+orig.X();y.y = 500*v2.Y()+orig.Y();y.z = 500*v2.Z()+orig.Z();
-    z.x = 500*v3.X()+orig.X();z.y = 500*v3.Y()+orig.Y();z.z = 500*v3.Z()+orig.Z();
+    x.x = -50*v1.X()+orig.X();x.y = -50*v1.Y()+orig.Y();x.z = -50*v1.Z()+orig.Z();
+    y.x = 50*v2.X()+orig.X();y.y = 50*v2.Y()+orig.Y();y.z = 50*v2.Z()+orig.Z();
+    z.x = 50*v3.X()+orig.X();z.y = 50*v3.Y()+orig.Y();z.z = 50*v3.Z()+orig.Z();
 
     pnt.x = orig.X();pnt.y = orig.Y();pnt.z = orig.Z();
 
-    log3d_mesh.addSingleLine(pnt,x,3,0,0,0);log3d_mesh.addSingleLine(pnt,y,3,1,0,0);log3d_mesh.addSingleLine(pnt,z,3,1,1,1);
-    log3d_mesh.saveToFile("c:/Mesh_CoordSys.iv");*/
+	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,1,0,0);log3d_mesh.addSingleArrow(pnt,z,3,1,0,0);
+    //log3d_mesh.addSinglePoint(pnt,6,0,0,0);
+	log3d_mesh.saveToFile("c:/Mesh_CoordSys.iv");
 
     return true;
 }
@@ -978,9 +1066,11 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
 
     TriangleAdapt_Parameters MeshParams;
     MeshParams._minAngle = 30.0;
-    MeshParams._minNbPntsPerEdgeLine = 10;
-    MeshParams._minNbPntsPerEdgeOther = 10;
-    MeshParams._minEdgeSplit = 10;
+    //MeshParams._minNbPntsPerEdgeLine = 3;
+    //MeshParams._minNbPntsPerEdgeOther = 3;
+    //MeshParams._minEdgeSplit = 3;
+	MeshParams._maxTriangleSideSize = 10; //10
+	MeshParams._maxArea = 10; //50
     BRepMeshAdapt::Mesh(shape,deflection,MeshParams);
     //BRepMesh::Mesh(shape,deflection);
     TopExp_Explorer aExpFace;
@@ -1095,6 +1185,7 @@ std::vector<Base::Vector3f> best_fit::Comp_Normals(MeshCore::MeshKernel &M)
     return normals;
 }
 
+/*
 double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals)
 {
     double err_avg = 0.0;
@@ -1164,8 +1255,8 @@ std::vector<double> best_fit::CompError_GetPnts(std::vector<Base::Vector3f> pnts
 
     for (unsigned int i=0; i<NumOfPoints; ++i)
     {
-        if (!malg.NearestFacetOnRay(pnts[i], normals[i], aFacetGrid, projPoint, facetIndex)
-                /*!Intersect(normals[i], *m_Mesh, pnts[i], projPoint)*/)  // gridoptimiert
+        if (!malg.NearestFacetOnRay(pnts[i], normals[i], aFacetGrid, projPoint, facetIndex))
+               // !Intersect(normals[i], *m_Mesh, pnts[i], projPoint)  // gridoptimiert
         {
             ++c;
         }
@@ -1256,7 +1347,7 @@ double best_fit::CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::
         return err_avg/(NumOfPoints-c);
     }
 }
-
+*/
 
 double best_fit::CompTotalError()
 {
@@ -1280,13 +1371,19 @@ double best_fit::CompTotalError()
     unsigned int c=0;
     int i=0;
 
+	
+    m_LSPnts[0].clear();
+    m_LSPnts[1].clear();
     for (p_it.Begin(); p_it.More(); p_it.Next())
     {
         if (malg.NearestFacetOnRay(*p_it, m_normals[i], aFacetGrid, projPoint, facetIndex))   // gridoptimiert
         {
-            //log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
+            log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
             distVec  = projPoint - *p_it;
             sqrdis   = distVec*distVec;
+
+			m_LSPnts[1].push_back(*p_it);
+            m_LSPnts[0].push_back(projPoint);
 
             if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
                 m_error[i] = sqrt(sqrdis);
@@ -1297,20 +1394,33 @@ double best_fit::CompTotalError()
         }
         else
         {
-            m_normals[i].Scale(-1,-1,-1);
 
-            if (!malg.NearestFacetOnRay(*p_it, m_normals[i], aFacetGrid, projPoint, facetIndex))   // gridoptimiert
+            if (!malg2.NearestFacetOnRay(*p_it, m_normals[i], projPoint, facetIndex))   // nicht gridoptimiert
             {
                 c++;
-                m_normals[i].Scale(-10,-10,-10);
+                //m_normals[i].Scale(-10,-10,-10);
                 text << p_it->x << ", " << p_it->y << ", " << p_it->z << "; " << m_normals[i].x << ", " << m_normals[i].y << ", " << m_normals[i].z;
-                log3d.addSingleArrow(*p_it, *p_it + m_normals[i], 1, 1,0,0);
-                log3d.addText(*p_it,(text.str()).c_str());
+                //log3d.addSingleArrow(*p_it, *p_it + m_normals[i], 4, 1,0,0);
+                //log3d.addText(*p_it,(text.str()).c_str());
             }
-            /*else
-             log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);*/
+            else
+			{
+				log3d.addSingleArrow(*p_it, projPoint, 3, 0,0,0);
+				distVec  = projPoint - *p_it;
+				sqrdis   = distVec*distVec;
 
-        }
+				m_LSPnts[1].push_back(*p_it);
+				m_LSPnts[0].push_back(projPoint);
+
+				if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
+					m_error[i] = sqrt(sqrdis);
+				else
+					m_error[i] = -sqrt(sqrdis);
+
+				err_avg += sqrdis;
+			}
+		}
+        
 
         ++i;
     }
@@ -1400,4 +1510,93 @@ double best_fit::CompTotalError()
 
     return err_avg/(m_CadMesh.CountPoints()-c);
 
+}
+
+double best_fit::CompTotalError(MeshCore::MeshKernel &mesh)
+{
+    double err_avg = 0.0;
+    double err_max = 0.0;
+    double sqrdis  = 0.0;
+
+    std::vector<int> FailProj;
+
+    MeshCore::MeshFacetGrid aFacetGrid(mesh,10);
+    MeshCore::MeshAlgorithm malg(mesh);
+    MeshCore::MeshAlgorithm malg2(mesh);
+    MeshCore::MeshPointIterator p_it(m_CadMesh);
+
+    Base::Vector3f projPoint, distVec, projPoint2;
+    unsigned long  facetIndex;
+    stringstream text;
+    m_error.resize(m_CadMesh.CountPoints());
+
+    unsigned int c=0;
+    int i=0;
+
+    for (p_it.Begin(); p_it.More(); p_it.Next())
+    {
+        if (malg.NearestFacetOnRay(*p_it, m_normals[i], aFacetGrid, projPoint, facetIndex))   // gridoptimiert
+        {
+            distVec  = projPoint - *p_it;
+            sqrdis   = distVec*distVec;
+
+            if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
+                m_error[i] += sqrt(sqrdis);
+            else
+                m_error[i] += -sqrt(sqrdis);
+
+            err_avg += sqrdis;
+        }
+        else
+        {
+
+            if (!malg2.NearestFacetOnRay(*p_it, m_normals[i], projPoint, facetIndex))   // nicht gridoptimiert
+            {
+                c++;
+				FailProj.push_back(i);
+            }
+            else
+			{
+				distVec  = projPoint - *p_it;
+				sqrdis   = distVec*distVec;
+
+				if (((projPoint.z - p_it->z) / m_normals[i].z ) > 0)
+					m_error[i] += sqrt(sqrdis);
+				else
+					m_error[i] += -sqrt(sqrdis);
+
+				err_avg += sqrdis;
+			}
+		}
+        
+
+        ++i;
+    }
+
+	std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator v_it;
+    MeshCore::MeshRefPointToPoints vv_it(m_CadMesh);
+
+    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
+	double error;
+    for (unsigned int i=0; i<FailProj.size(); ++i)
+    {
+        PntNei = vv_it[FailProj[i]];
+		error = 0.0;
+
+
+        for (v_it = PntNei.begin(); v_it !=PntNei.end(); ++v_it)
+        {
+			error += m_error[(*v_it)[0]._ulProp];
+        }
+
+		error /= double(PntNei.size());
+        m_error[FailProj[i]] += error;
+        PntNei.clear();
+    }
+
+
+    if (c>(m_CadMesh.CountPoints()/2))
+        return 1e+10;
+
+    return err_avg/(m_CadMesh.CountPoints()-c);
 }
