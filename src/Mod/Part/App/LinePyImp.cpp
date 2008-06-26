@@ -90,7 +90,7 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
         try {
             // Create line out of two points
-            if (v1 == v2) throw Base::Exception();
+            if (v1 == v2) Standard_Failure::Raise("Both points are equal");
             GC_MakeSegment ms(gp_Pnt(v1.x,v1.y,v1.z),
                               gp_Pnt(v2.x,v2.y,v2.z));
             if (!ms.IsDone()) {
@@ -109,13 +109,11 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
             return 0;
         }
-#if OCC_HEX_VERSION > 0x060100
-        catch (const Standard_Failure& e) {
-            // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
-            PyErr_SetString(PyExc_Exception, e.GetMessageString());
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
             return -1;
         }
-#endif
         catch (...) {
             PyErr_SetString(PyExc_Exception, "creation of line failed");
             return -1;
@@ -140,15 +138,9 @@ PyObject* LinePy::setParameterRange(PyObject *args)
             (this->getGeomLineSegmentPtr()->handle());
         this_curve->SetTrim(first, last);
     }
-#if OCC_HEX_VERSION > 0x060100
-    catch (const Standard_Failure& e) {
-        // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
-        PyErr_SetString(PyExc_Exception, e.GetMessageString());
-        return NULL;
-    }
-#endif
-    catch (...) {
-        PyErr_SetString(PyExc_Exception, "cannot set parameter range");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 

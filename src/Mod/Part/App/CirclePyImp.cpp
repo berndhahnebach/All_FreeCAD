@@ -264,7 +264,7 @@ PyObject* CirclePy::setAxis(PyObject *args)
         gp_Dir dir = axis.Direction();
         circle->SetAxis(axis);
     }
-    catch (const Standard_Failure&) {
+    catch (Standard_Failure) {
         PyErr_SetString(PyExc_Exception, "cannot set axis");
         return NULL;
     }

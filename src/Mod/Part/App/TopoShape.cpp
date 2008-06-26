@@ -273,7 +273,7 @@ Base::BoundBox3d TopoShape::getBoundBox(void) const
         box.MinZ = zMin;
         box.MaxZ = zMax;
     }
-    catch (const Standard_Failure&) {
+    catch (Standard_Failure) {
     }
 
     return box;

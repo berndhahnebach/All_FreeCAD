@@ -70,16 +70,14 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             getGeomTrimmedCurvePtr()->setHandle(arc.Value());
             return 0;
         }
-#if OCC_HEX_VERSION > 0x060100
-        catch (const Standard_Failure& e) {
-            // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
-            PyErr_SetString(PyExc_Exception, e.GetMessageString());
-            return 0;
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
         }
-#endif
         catch (...) {
             PyErr_SetString(PyExc_Exception, "creation of arc failed");
-            return 0;
+            return -1;
         }
     }
 
