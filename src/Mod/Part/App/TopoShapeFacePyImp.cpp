@@ -3,6 +3,7 @@
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 #endif
@@ -49,11 +50,18 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     PyObject *pW;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
-        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
-        if (sh.ShapeType() == TopAbs_WIRE) {
-            BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
-            getTopoShapePtr()->_Shape = mkFace.Face();
-            return 0;
+        try {
+            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
+            if (sh.ShapeType() == TopAbs_WIRE) {
+                BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
+                getTopoShapePtr()->_Shape = mkFace.Face();
+                return 0;
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
         }
     }
 

@@ -3,6 +3,7 @@
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeWire.hxx>
 # include <TopoDS.hxx>
+# include <TopoDS_Wire.hxx>
 #endif
 
 #include "Mod/Part/App/TopoShape.h"
