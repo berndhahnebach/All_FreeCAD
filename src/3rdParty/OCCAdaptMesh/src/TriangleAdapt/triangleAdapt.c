@@ -16385,6 +16385,7 @@ void triangleAdapt_InitBehavior(double minangle, double maxarea)
 	b->usesegments = 1;
 
 	b->order = 1;
+    //Changed by JZ
 	b->steiner = -1;
 	b->nobisect = 0;
 
