@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKMesh.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKMesh.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKFillet.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
 				OutputFile="../../../../Mod/Part/Part_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

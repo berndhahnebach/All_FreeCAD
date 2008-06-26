@@ -8,7 +8,8 @@
       Include="Mod/Part/App/TopoShape.h" 
       Namespace="Part" 
       FatherInclude="Mod/Part/App/TopoShapePy.h" 
-      FatherNamespace="Part">
+      FatherNamespace="Part"
+      Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>

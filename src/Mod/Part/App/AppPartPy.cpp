@@ -25,6 +25,7 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
+# include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
@@ -59,6 +60,7 @@
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/VectorPy.h>
 #include <App/Application.h>
 #include <App/Document.h>
 
@@ -412,6 +414,20 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makePrism(PyObject *self, PyObject *args)
+{
+    PyObject *pS, *pVec;
+    if (PyArg_ParseTuple(args, "O!O!", &(Part::TopoShapePy::Type), &pS, &(Base::VectorPy::Type), &pVec)) {
+        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pS)->getTopoShapePtr()->_Shape;
+        Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+        BRepPrimAPI_MakePrism mkPrism(sh, gp_Vec(vec.x,vec.y,vec.z));
+        TopoDS_Shape shape = mkPrism.Shape();
+        return new TopoShapePy(new TopoShape(shape));
+    }
+
+    return 0;
+}
+
 
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
@@ -441,5 +457,7 @@ struct PyMethodDef Part_methods[] = {
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
      "By default angle=2*PI"},
+    {"makePrism" ,makePrism,METH_VARARGS,
+     "makePrism(Shape,Vector) -- Make a prism by sweeping a shape along a vector"},
     {NULL, NULL}        /* end of table marker */
 };

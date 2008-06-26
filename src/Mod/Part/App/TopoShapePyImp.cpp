@@ -351,6 +351,24 @@ PyObject*  TopoShapePy::cut(PyObject *args)
     }
 }
 
+PyObject*  TopoShapePy::transform(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(Base::MatrixPy::Type),&obj))
+        return NULL;
+
+    Base::Matrix4D mat = static_cast<Base::MatrixPy*>(obj)->value();
+    try {
+        TopoDS_Shape shape = this->getTopoShapePtr()->transform(mat);
+        return new TopoShapePy(new TopoShape(shape));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 PyObject*  TopoShapePy::translate(PyObject *args)
 {
     PyObject *obj;
