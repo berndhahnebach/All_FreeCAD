@@ -400,11 +400,18 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
 static PyObject * makeCylinder(PyObject *self, PyObject *args)
 {
     double radius, height, angle=2.0*F_PI;
-    if (!PyArg_ParseTuple(args, "dd|d", &radius, &height, &angle))
+    PyObject *pPnt, *pDir;
+    if (!PyArg_ParseTuple(args, "O!O!dd|d", &(Base::VectorPy::Type), &pPnt,
+                                            &(Base::VectorPy::Type), &pDir,
+                                            &radius, &height, &angle))
         return NULL;
 
     try {
-        BRepPrimAPI_MakeCylinder mkCyl(radius, height, angle);
+        Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+        Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+        gp_Pnt p(pnt.x, pnt.y, pnt.z);
+        gp_Dir d(vec.x, vec.y, vec.z);
+        BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle);
         TopoDS_Shape shape = mkCyl.Shape();
         return new TopoShapePy(new TopoShape(shape));
     }

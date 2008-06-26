@@ -32,6 +32,7 @@
 # include <BRepAlgoAPI_Cut.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
+# include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <Bnd_Box.hxx>
@@ -477,4 +478,19 @@ TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
     mov.SetScaleFactor(rclTrf[3][3]);
     BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
     return mkTrf.Shape();
+}
+
+TopoDS_Shape TopoShape::makeFillet(double radius) const
+{
+    BRepFilletAPI_MakeFillet mkFillet(this->_Shape);
+    TopExp_Explorer aEdgeExplorer(this->_Shape , TopAbs_EDGE);
+
+    while(aEdgeExplorer.More()) {
+        TopoDS_Edge aEdge = TopoDS::Edge(aEdgeExplorer.Current());
+        //Add edge to fillet algorithm
+        mkFillet.Add(radius, aEdge);
+        aEdgeExplorer.Next();
+    }
+
+    return mkFillet.Shape();
 }

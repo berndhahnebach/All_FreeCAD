@@ -81,7 +81,12 @@ public:
     TopoDS_Shape fuse(TopoDS_Shape) const;
     TopoDS_Shape section(TopoDS_Shape) const;
     //@}
+
+    /** @name Manipulation*/
+    //@{
     TopoDS_Shape transform(const Base::Matrix4D&) const;
+    TopoDS_Shape makeFillet(double radius) const;
+    //@}
 
     TopoDS_Shape _Shape;
 };

@@ -7,7 +7,6 @@ def makeBottle(myWidth, myHeight, myThickness):
 	aPnt3=Base.Vector(0,-myThickness/2.,0)
 	aPnt4=Base.Vector(myWidth/2.,-myThickness/4.,0)
 	aPnt5=Base.Vector(myWidth/2.,0,0)
-	aPrismVec=Base.Vector(0,0,myHeight)
 	
 	aArcOfCircle = Part.Arc(Part.Circle,aPnt2,aPnt3,aPnt4)
 	aSegment1=Part.Line(aPnt1,aPnt2)
@@ -25,7 +24,18 @@ def makeBottle(myWidth, myHeight, myThickness):
 	myWireProfile=Part.Wire([aWire,aMirroredWire])
 	
 	myFaceProfile=Part.Face(myWireProfile)
+	aPrismVec=Base.Vector(0,0,myHeight)
 	myBody=Part.makePrism(myFaceProfile,aPrismVec)
+	
+	myBody=myBody.fillet(myThickness/12.0)
+	
+	neckLocation=Base.Vector(0,0,myHeight)
+	neckNormal=Base.Vector(0,0,1)
+	
+	myNeckRadius = myThickness / 4.
+	myNeckHeight = myHeight / 10
+	myNeck = Part.makeCylinder(neckLocation,neckNormal,myNeckRadius,myNeckHeight)	
+	myBody = myBody.fuse(myNeck)
 	
 	return myBody
 
