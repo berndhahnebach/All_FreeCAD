@@ -33,6 +33,7 @@
 #include "ArcPy.h"
 #include "ArcPy.cpp"
 #include "CirclePy.h"
+#include <Base/VectorPy.h>
 
 using namespace Part;
 
@@ -56,7 +57,6 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyObject* o;
     double u1, u2;
     int sense=1;
-
     if (PyArg_ParseTuple(args, "O!dd|i", &(Part::CirclePy::Type), &o, &u1, &u2, &sense)) {
         try {
             Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast
@@ -78,6 +78,31 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         catch (...) {
             PyErr_SetString(PyExc_Exception, "creation of arc failed");
             return -1;
+        }
+    }
+
+    PyErr_Clear();
+    PyObject* type;
+    PyObject *pV1, *pV2, *pV3;
+    if (PyArg_ParseTuple(args, "O!O!O!O!", &(PyType_Type), &type,
+                                           &(Base::VectorPy::Type), &pV1,
+                                           &(Base::VectorPy::Type), &pV2,
+                                           &(Base::VectorPy::Type), &pV3)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
+        union PyType_Object circleType = {&Part::CirclePy::Type};
+        if (type == circleType.o) {
+            GC_MakeArcOfCircle arc(gp_Pnt(v1.x,v1.y,v1.z),
+                                   gp_Pnt(v2.x,v2.y,v2.z),
+                                   gp_Pnt(v3.x,v3.y,v3.z));
+            if (!arc.IsDone()) {
+                PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+                return -1;
+            }
+
+            getGeomTrimmedCurvePtr()->setHandle(arc.Value());
+            return 0;
         }
     }
 

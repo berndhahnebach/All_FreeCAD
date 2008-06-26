@@ -38,6 +38,7 @@
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
+# include <BRepBuilderAPI_Transform.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <IGESControl_Controller.hxx>
@@ -464,4 +465,16 @@ TopoDS_Shape TopoShape::section(TopoDS_Shape shape) const
 {
     BRepAlgoAPI_Section mkSection(this->_Shape, shape);
     return mkSection.Shape();
+}
+
+TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
+{
+    gp_Trsf mov;
+    mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+                  0.00001,0.00001);
+    mov.SetScaleFactor(rclTrf[3][3]);
+    BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
+    return mkTrf.Shape();
 }

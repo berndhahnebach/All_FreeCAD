@@ -1,6 +1,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
@@ -29,6 +30,33 @@ const char *TopoShapeFacePy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *TopoShapeFacePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+{
+    // create a new instance of TopoShapeFacePy and the Twin object 
+    return new TopoShapeFacePy(new TopoShape);
+}
+
+// constructor method
+int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
+{
+    if (PyArg_ParseTuple(args, "")) {
+        getTopoShapePtr()->_Shape = TopoDS_Face();
+        return 0;
+    }
+
+    PyObject *pW;
+    if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
+        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
+        if (sh.ShapeType() == TopAbs_WIRE) {
+            BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
+            getTopoShapePtr()->_Shape = mkFace.Face();
+            return 0;
+        }
+    }
+
+    return 0;
 }
 
 Py::Object TopoShapeFacePy::getWire(void) const
