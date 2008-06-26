@@ -106,6 +106,7 @@ libPart_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lTKernel \
+		-lTKFillet \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \

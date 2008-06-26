@@ -4,7 +4,7 @@ SUBDIRS=App Gui
 datadir = $(prefix)/Mod/Part
 
 if OCC_LIBRARY_FILES
-data_DATA = Init.py InitGui.py
+data_DATA = Init.py InitGui.py MakeBottle.py
 endif
 
 EXTRA_DIST = \

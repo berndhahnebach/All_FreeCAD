@@ -425,11 +425,19 @@ static PyObject * makePrism(PyObject *self, PyObject *args)
 {
     PyObject *pS, *pVec;
     if (PyArg_ParseTuple(args, "O!O!", &(Part::TopoShapePy::Type), &pS, &(Base::VectorPy::Type), &pVec)) {
-        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pS)->getTopoShapePtr()->_Shape;
-        Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
-        BRepPrimAPI_MakePrism mkPrism(sh, gp_Vec(vec.x,vec.y,vec.z));
-        TopoDS_Shape shape = mkPrism.Shape();
-        return new TopoShapePy(new TopoShape(shape));
+        try {
+            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pS)->getTopoShapePtr()->_Shape;
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            if (sh.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+            BRepPrimAPI_MakePrism mkPrism(sh, gp_Vec(vec.x,vec.y,vec.z));
+            TopoDS_Shape shape = mkPrism.Shape();
+            return new TopoShapePy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
     }
 
     return 0;

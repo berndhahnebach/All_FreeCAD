@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <gp_Lin.hxx>
 # include <Geom_Line.hxx>
+# include <Geom_TrimmedCurve.hxx>
 # include <GC_MakeLine.hxx>
 # include <GC_MakeSegment.hxx>
 #endif
