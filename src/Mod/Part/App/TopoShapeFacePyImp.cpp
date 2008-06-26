@@ -46,6 +46,7 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    PyErr_Clear();
     PyObject *pW;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
         TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
@@ -56,7 +57,8 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
 
-    return 0;
+    PyErr_SetString(PyExc_Exception, "wire expected");
+    return -1;
 }
 
 Py::Object TopoShapeFacePy::getWire(void) const

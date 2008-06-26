@@ -85,6 +85,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Apply scaling with point and factor to this shape.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="fillet">
+      <Documentation>
+        <UserDocu>Make fillet.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="reverse">
       <Documentation>
         <UserDocu>Reverses the orientation of this shape.</UserDocu>

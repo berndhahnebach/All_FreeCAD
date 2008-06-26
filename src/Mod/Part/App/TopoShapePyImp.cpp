@@ -384,7 +384,7 @@ PyObject*  TopoShapePy::translate(PyObject *args)
         gp_Trsf mov;
         mov.SetTranslation(vec);
         TopLoc_Location loc(mov);
-            getTopoShapePtr()->_Shape.Move(loc);
+        getTopoShapePtr()->_Shape.Move(loc);
         Py_Return;
     }
     catch (const Py::Exception&) {
@@ -438,6 +438,23 @@ PyObject*  TopoShapePy::scale(PyObject *args)
         TopLoc_Location loc(scl);
         getTopoShapePtr()->_Shape.Move(loc);
         Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
+PyObject* TopoShapePy::fillet(PyObject *args)
+{
+    double radius;
+    if (!PyArg_ParseTuple(args, "d", &radius))
+        return NULL;
+
+    try {
+        TopoDS_Shape shape = this->getTopoShapePtr()->makeFillet(radius);
+        return new TopoShapePy(new TopoShape(shape));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
