@@ -29,6 +29,7 @@
 #include <Mod/Cam/App/path_simulate.h>
 #include <Mod/Cam/App/SpringbackCorrection.h>
 #include <Mod/Cam/App/UniGridApprox.h>
+#include <Mod/Cam/App/Approx.h>
 #include <QTimer>
 #include <QByteArray>
 
@@ -59,6 +60,14 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <GCPnts_QuasiUniformAbscissa.hxx>
+
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <Mod/Mesh/App/Core/Grid.h>
 
 
@@ -103,34 +112,48 @@ void Cutting::on_adaptdynainput_clicked()
     //First we have to select the LS-Dyna Masterfile and the current working dir
     QString filename, path, program;
     QStringList arguments;
-    filename = QFileDialog::getOpenFileName( this, "OpenDynaMaster",filename,"Ls-Dyna Keywords (*.k)" );
+    QString strcheck("dyna.str");
+    filename = QFileDialog::getOpenFileName( this, "Open Dyna.Str or Master-Key File",filename,"Ls-Dyna Keywords (*.k) (*.str)" );
     if (filename.isNull())
         return;
     QFileInfo aFileInfo(filename);
     path = aFileInfo.absolutePath();
     QDir::setCurrent(path);
     program = "c:/Program Files/lsdyna/ls971d";
-    arguments << " i="<< aFileInfo.fileName();
-    m_Process = new QProcess(this);
-    m_Process->start(program, arguments);
-    //Now we check if the output is written correctly
-    m_Process->waitForFinished(50000);
-    aFileInfo.setFile("dyna.str");
-    if (aFileInfo.size() == 0) //the file does not exist
-    {
-        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
-                              tr("Fehler bei der Erzeugung vom Struct File\n"),
-                              QMessageBox::Ok, QMessageBox::NoButton);
-    }
-    else
-    {
-        QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
-                                 tr("Structured-Dyna gut erzeugt\n"),
-                                 QMessageBox::Ok, QMessageBox::NoButton);
-        ChangeDyna aFileChanger;
-        if (aFileChanger.Read("dyna.str"))
-            start_simulation->show();
-    }
+    //As the new Versions already account for a proper curve file we no longer have to adapt the input
+    //if we already have a str File we will not step into the next if-case
+    //if(!aFileInfo.fileName().contains("dyna.str"))
+    //{
+    //    arguments << " i="<< aFileInfo.fileName();
+    //    m_Process = new QProcess(this);
+    //    m_Process->start(program, arguments);
+    //    //Now we check if the output is written correctly
+    //    m_Process->waitForFinished(50000);
+    //    aFileInfo.setFile("dyna.str");
+    //    if (aFileInfo.size() == 0) //the file does not exist
+    //    {
+    //        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
+    //                          tr("Fehler bei der Erzeugung vom Struct File\n"),
+    //                          QMessageBox::Ok, QMessageBox::NoButton);
+    //        return;
+    //    }
+    //    else
+    //    {
+    //        QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
+    //                             tr("Structured-Dyna gut erzeugt\n"),
+    //                             QMessageBox::Ok, QMessageBox::NoButton);
+    //    }
+    //}
+    //ChangeDyna aFileChanger;
+    //if (aFileChanger.Read("dyna.str"))
+    // start_simulation->show();
+    //else{
+    //        QMessageBox::critical(this, tr("FreeCAD CamWorkbench"),
+    //                          tr("Error while parsing the str File\n"),
+    //                          QMessageBox::Ok, QMessageBox::NoButton);
+    //        return;
+    //}
+
 }
 
 void Cutting::on_start_simulation_clicked()
@@ -517,7 +540,7 @@ void Cutting::on_SpringbackButton_clicked()
 
 void Cutting::on_Approximate_button_clicked()
 {
-    m_selection = Approximate;
+    m_selection = Approx;
     best_fit_mesh_button->setEnabled(true);
 }
 
@@ -529,9 +552,21 @@ void Cutting::on_best_fit_cad_button_clicked()
 
 void Cutting::on_best_fit_mesh_button_clicked()
 {
+if(m_selection == Springback)
+	{
+		best_fit_mesh2_button->setEnabled(true);
+		m_Spring->Load(m_Shape);
+	}
     selectMesh();
     best_fit_go_button->setEnabled(true);
     SelectFace_button->setEnabled(true);
+if(m_selection == Springback)
+		best_fit_mesh2_button->setEnabled(true);
+}
+void Cutting::on_best_fit_mesh2_button_clicked()
+{
+	m_Spring->Load(m_Mesh);
+    selectMesh();
 }
 
 void Cutting::on_SelectFace_button_clicked()
@@ -577,24 +612,25 @@ void Cutting::on_best_fit_go_button_clicked()
 
     case Springback:
 
-        m_Spring->Load(m_Shape,m_Mesh);
+      	m_Spring->Load(m_Mesh);
         m_Spring->Init_Setting(m_Settings);
-        m_Spring->Perform(m_Settings.limit_angle);
+        m_Spring->Init();
+ m_Spring->Perform(m_Settings.limit_angle);
+         m_MeshCad = m_Spring->m_CadMesh;
 
-        m_MeshCad = m_Spring->m_CadMesh;
-        m_MeshOut = m_Spring->m_Mesh;
+
 
         best_fit_cad_button ->setEnabled(false);
         best_fit_mesh_button->setEnabled(false);
         best_fit_go_button  ->setEnabled(false);
 
         DisplayMeshOutput(m_MeshCad);
-        DisplayMeshOutput(m_MeshOut);
+       		DisplayMeshOutput(m_Spring->m_Mesh_vis);
+		DisplayMeshOutput(m_Spring->m_Mesh_vis2);
+best_fit_mesh2_button->setEnabled(true);
         break;
 
-    case Approximate:
-
-
+    case Approx:
         /*MeshCore::MeshPointArray pnts   = m_Mesh.GetPoints();  // file "kleines.stl" hat spitze über der ebene ... nicht kompatibel mit diesem Algo
         MeshCore::MeshFacetArray facets = m_Mesh.GetFacets();
 
@@ -606,12 +642,21 @@ void Cutting::on_best_fit_go_button_clicked()
 
         m_Mesh.Assign(pnts,facets);*/
 
-        m_Approx = new UniGridApprox(m_Mesh, 1);
-        m_Approx->Perform(0.1);
+		std::vector<double> CtrlPnts, U_knot, V_knot;
+		int degU,degV;	
+		m_App = new Approximate(m_Mesh,CtrlPnts,U_knot,V_knot,degU,degV,1000);
 
-        BRepBuilderAPI_MakeFace  Face(m_Approx->aAdaptorSurface.Surface());
+        //m_Approx = new UniGridApprox(m_Mesh, 1);
+        //m_Approx->Perform(0.1);
+
+        BRepBuilderAPI_MakeFace  Face(m_App->aAdaptorSurface.Surface());
         m_Shape = Face.Face();
-
+		
+		ofstream anOutputFile;
+	    anOutputFile.open("c:/approx_log.txt");
+		anOutputFile << "face zugewiesen" << endl;
+		
+		DisplayMeshOutput(m_App->MeshParam);
         DisplayShapeOutput();
         break;
     }
@@ -690,26 +735,31 @@ void Cutting::DisplayCAMOutput()
     //std::vector<Handle_Geom_BSplineCurve>::iterator an_it;
     //topCurves = *(anewCuttingEnv.getOutputhigh());
     //botCurves = *(anewCuttingEnv.getOutputlow());
-    //for (unsigned int i=0;i<topCurves.size();++i)
-    //{
-    //    GeomAdaptor_Curve aCurveAdaptor(topCurves[i]);
-    //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-    //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
-    //    {
-    //        anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-    //    }
-    //}
-    //for (unsigned int i=0;i<botCurves.size();++i)
-    //{
-    //    GeomAdaptor_Curve aCurveAdaptor(botCurves[i]);
-    //    GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
-    //    for (int t=1;t<=aPointGenerator.NbPoints();++t)
-    //    {
-    //        anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
-    //    }
-    //}
-    //anoutput.close();
-    //anoutput2.close();
+  
+	ofstream anoutput;
+	ofstream anoutput2;
+	anoutput.open("c:/topCurves.txt");
+	anoutput2.open("c:/botCurves.txt");
+    for (an_it1 = topCurves->begin();an_it1!=topCurves->end();an_it1++)
+    {
+		GeomAdaptor_Curve aCurveAdaptor(*an_it1);
+        GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+        for (int t=1;t<=aPointGenerator.NbPoints();++t)
+        {
+            anoutput << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+        }
+    }
+    for (an_it1 = botCurves->begin();an_it1!=botCurves->end();an_it1++)
+    {
+        GeomAdaptor_Curve aCurveAdaptor(*an_it1);
+        GCPnts_QuasiUniformDeflection aPointGenerator(aCurveAdaptor,0.1);
+        for (int t=1;t<=aPointGenerator.NbPoints();++t)
+        {
+            anoutput2 << (aPointGenerator.Value(t)).X() <<","<< (aPointGenerator.Value(t)).Y() <<","<<(aPointGenerator.Value(t)).Z()<<std::endl;
+        }
+    }
+    anoutput.close();
+    anoutput2.close();
 
 }
 

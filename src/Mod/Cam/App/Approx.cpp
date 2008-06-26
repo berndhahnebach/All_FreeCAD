@@ -37,6 +37,15 @@
 #include <algorithm>
 #include <Base/Exception.h>
 
+
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Handle_Geom_BSplineSurface.hxx>
+
 /*************BOOST***************/
 
 /********UBLAS********/
@@ -75,6 +84,11 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
     MainNurb.MaxKnotV = MainNurb.KnotV.size();
     //GOTO Main program
     ApproxMain();
+
+	ofstream anOutputFile;
+	anOutputFile.open("c:/approx_build_surface.txt");
+	
+	anOutputFile << "start building surface" << endl;
     //Copying the Output
     //mesh = ParameterMesh;
     _Cntrl = MainNurb.CntrlArray;
@@ -83,18 +97,158 @@ Approximate::Approximate(const MeshCore::MeshKernel &m,std::vector<double> &_Cnt
     _OrderU = MainNurb.DegreeU + 1;
     _OrderV = MainNurb.DegreeV + 1;
 
+	gp_Pnt pnt;
+    TColgp_Array2OfPnt Poles(1,MainNurb.MaxU+1, 1,MainNurb.MaxV+1);
 
+    for(int j=0; j< (MainNurb.MaxV+1); ++j)
+	{	
+		for(int i=0; i < (MainNurb.MaxU+1); ++i)
+		{
+			pnt.SetX(_Cntrl[3*i   + j*3*(MainNurb.MaxU+1)]);
+			pnt.SetY(_Cntrl[3*i+1 + j*3*(MainNurb.MaxU+1)]);
+			pnt.SetZ(_Cntrl[3*i+2 + j*3*(MainNurb.MaxU+1)]);
+
+			Poles.SetValue(i+1,j+1,pnt);
+		}
+    }
+
+	anOutputFile << "control points done" << endl;
+
+    int c=1;
+    for (unsigned int i=0; i<_KnotU.size()-1; ++i)
+    {
+        if (_KnotU[i+1] != _KnotU[i])
+        {
+            ++c;
+        }
+    }
+
+
+    TColStd_Array1OfReal    UKnots(1,c);
+    TColStd_Array1OfInteger UMults(1,c);
+
+    c=1;
+    for (unsigned int i=0; i<_KnotV.size()-1; ++i)
+    {
+        if (_KnotV[i+1] != _KnotV[i])
+        {
+            ++c;
+        }
+    }
+
+
+    TColStd_Array1OfReal    VKnots(1,c);
+    TColStd_Array1OfInteger VMults(1,c);
+
+    int d=0;
+    c=1;
+    for (unsigned int i=0; i<_KnotU.size(); ++i)
+    {
+        if (_KnotU[i+1] != _KnotU[i])
+        {
+            UKnots.SetValue(d+1,_KnotU[i]);
+            UMults.SetValue(d+1,c);
+            ++d;
+            c=1;
+
+        }
+        else
+        {
+            ++c;
+        }
+
+        if (i==(_KnotU.size()-2))
+        {
+            UKnots.SetValue(d+1,_KnotU[i+1]);
+            UMults.SetValue(d+1,c);
+            break;
+        }
+    }
+
+    d=0;
+    c=1;
+    for (unsigned int i=0; i<_KnotV.size(); ++i)
+    {
+        if (_KnotV[i+1] != _KnotV[i])
+        {
+            VKnots.SetValue(d+1,_KnotV[i]);
+            VMults.SetValue(d+1,c);
+            ++d;
+            c=1;
+
+        }
+        else
+        {
+            ++c;
+        }
+
+        if (i==(_KnotV.size()-2))
+        {
+            VKnots.SetValue(d+1,_KnotV[i+1]);
+            VMults.SetValue(d+1,c);
+            break;
+        }
+    }
+
+    /*cout << "UKnots: " << endl;
+    for(int i=0; i<UKnots.Upper(); ++i)
+     cout << UKnots.Value(i+1) << ", ";
+    cout << endl;
+
+
+    cout << "UMults: " << endl;
+    for(int i=0; i<UMults.Upper(); ++i)
+     cout << UMults.Value(i+1) << ", ";
+    cout << endl;
+
+
+    cout << "VKnots: " << endl;
+    for(int i=0; i<VKnots.Upper(); ++i)
+     cout << VKnots.Value(i+1) << ", ";
+    cout << endl;
+
+
+    cout << "VMults: " << endl;
+    for(int i=0; i<VMults.Upper(); ++i)
+     cout << VMults.Value(i+1) << ", ";
+    cout << endl;*/
+
+
+
+
+    const Handle(Geom_BSplineSurface) surface = new Geom_BSplineSurface(
+        Poles,        // const TColgp_Array2OfPnt &    Poles,
+        UKnots,       // const TColStd_Array1OfReal &   UKnots,
+        VKnots,       // const TColStd_Array1OfReal &   VKnots,
+        UMults,       // const TColStd_Array1OfInteger &   UMults,
+        VMults,       // const TColStd_Array1OfInteger &   VMults,
+        3,            // const Standard_Integer   UDegree,
+        3             // const Standard_Integer   VDegree,
+        // const Standard_Boolean   UPeriodic = Standard_False,
+        // const Standard_Boolean   VPeriodic = Standard_False
+    );
+
+    aAdaptorSurface.Load(surface);
+
+	
+	
+}
+
+Approximate::~Approximate()
+{
 }
 /*! \brief Main Approximation Program.
 */
 void Approximate::ApproxMain()
 {
-    std::cout << "BEGIN COMPUTE NURB" << std::endl;
+    std::cout << "BEGIN COMPUTE NURB" << std::endl;  
     ParameterBoundary();
     ParameterInnerPoints();
+
     ErrorApprox();
     std::cout << "END COMPUTE NURB" << std::endl;
 }
+
 
 /*! \brief Parameterizing the Boundary Points
 
@@ -207,7 +361,7 @@ void Approximate::ParameterBoundary()
         g++;
     }
 
-    //Secure the counters and reinitialize´the things we needed
+    //Secure the counters and reinitialize the things we needed
     g = temp1;
     temp2 = g;
     Pointdistance.clear();
@@ -569,36 +723,63 @@ void Approximate::ParameterInnerPoints()
     ublas::vector<double> MultResult(NumOfInnerPoints);
     ublas::vector<double> yResult(NumOfInnerPoints);
 
-
+	ofstream anOutputFile;
+	anOutputFile.open("c:/approx_param_log.txt");
+	anOutputFile << 1 << endl;
     //Solving the X Term
     std::cout << "Solving the X Term..." << std::endl;
     //atlas::gemm and atlas::gemv can't work with sparse matrices it seems, therefore using axpy_prod
     ublas::axpy_prod(OutLambda, ParameterX, MultResult);
+	anOutputFile << 2 << endl;
     bindings::umfpack::umf_solve (UpperTerm, xResult,MultResult );  //umfpack to solve sparse matrices equations
-
+	anOutputFile << 3 << endl;
     //Solving the Y Term
     std::cout << "Solving the Y Term..." << std::endl;
     ublas::axpy_prod(OutLambda, ParameterY, MultResult);
+	anOutputFile << 4 << endl;
     bindings::umfpack::umf_solve (UpperTerm, yResult, MultResult);
+	anOutputFile << 5 << endl;
     std::cout << "Replacing the results.." << std::endl;
+
+	
 
     //Another counter, temporary storage for old ParameterX and ParameterY, and resizing to include ALL points now
     unsigned int s = 0;
     unsigned int b = 0;
+
     ublas::vector<double> tempox = ParameterX;
     ublas::vector<double> tempoy = ParameterY;
     ParameterX.clear(), ParameterX.resize(NumOfPoints);
     ParameterY.clear(), ParameterY.resize(NumOfPoints);
     UnparamX.resize(NumOfPoints), UnparamY.resize(NumOfPoints),UnparamZ.resize(NumOfPoints);
     //Reextract the boundaries list
+	anOutputFile << 6 << endl;
     std::vector <unsigned long> boundarieslist = *bInd;
-    for (v_it.Begin(); !v_it.EndReached(); ++v_it)
+
+	anOutputFile << 7 << endl;
+
+
+
+	/**************************/
+	MeshParam = LocalMesh;
+	MeshCore::MeshPointArray pntArr= MeshParam.GetPoints();
+	MeshCore::MeshFacetArray fctArr= MeshParam.GetFacets();
+	/**************************/
+    
+	
+	for (v_it.Begin(); !v_it.EndReached(); ++v_it)
     {
+		anOutputFile << 0 << endl;
         //Inner Points goes into the beginning of the list
         if ((vec_it = find(boundarieslist.begin(), boundarieslist.end(), v_it.Position())) == boundarieslist.end())
         {
             ParameterX[s] = xResult[s];
             ParameterY[s] = yResult[s];
+
+			pntArr[v_it.Position()].x = ParameterX[s];
+			pntArr[v_it.Position()].y = ParameterY[s];
+			pntArr[v_it.Position()].z = 0;
+
             UnparamX[s] = LocalMesh.GetPoint(v_it.Position())[0];
             UnparamY[s] = LocalMesh.GetPoint(v_it.Position())[1];
             UnparamZ[s] = LocalMesh.GetPoint(v_it.Position())[2];
@@ -609,12 +790,21 @@ void Approximate::ParameterInnerPoints()
         {
             ParameterX[NumOfInnerPoints+b] = tempox[b];
             ParameterY[NumOfInnerPoints+b] = tempoy[b];
+
+			pntArr[v_it.Position()].x = ParameterX[NumOfInnerPoints+b];
+			pntArr[v_it.Position()].y = ParameterY[NumOfInnerPoints+b];
+			pntArr[v_it.Position()].z = 0;
+
             UnparamX[NumOfInnerPoints+b] = LocalMesh.GetPoint(v_it.Position())[0];
             UnparamY[NumOfInnerPoints+b] = LocalMesh.GetPoint(v_it.Position())[1];
             UnparamZ[NumOfInnerPoints+b] = LocalMesh.GetPoint(v_it.Position())[2];
             b++;
         }
     }
+
+	anOutputFile << 8 << endl;
+	MeshParam.Assign(pntArr,fctArr);
+    anOutputFile << 9 << endl;
 
     std::cout << "DONE" << std::endl;
     std::cout << "Information about the meshes:-" << std::endl;
@@ -623,8 +813,10 @@ void Approximate::ParameterInnerPoints()
     std::cout << "Number of Outer Points: " << NumOfOuterPoints << std::endl;
     //clear the mesh, we will continue working with the lists we have made
     ParameterMesh.Clear();
+	anOutputFile << 10 << endl;
     LocalMesh.Clear();
-
+	anOutputFile << 11 << endl;
+	anOutputFile.close();
 
 }
 
@@ -635,29 +827,42 @@ void Approximate::ParameterInnerPoints()
 */
 void Approximate::ErrorApprox()
 {
-    std::cout << "Begin constructing NURB for first pass" << std::endl;
+	ofstream anOutputFile;
+	anOutputFile.open("c:/approx_param_log.txt");
+
+
+    anOutputFile << "Begin constructing NURB for first pass" << std::endl;
     double max_err = 0;
     bool ErrThere = true;  //for breaking the while
     int h = 0;
+	int cnt = 0;
     int test = 0;
     double av = 0, c2 = 0;
-    std::cout << "Constructing" << std::endl;
+	double lam;
+    anOutputFile << "Constructing" << std::endl;
     ublas::matrix<double> C_Temp(NumOfPoints,3);
-    std::cout << "C_Temp succesfully constructed" << std::endl;
+    anOutputFile << "C_Temp succesfully constructed" << std::endl;
     //Time saving... C_Temp matrix is constant for all time
 
-
+	anOutputFile << "number of points: " << NumOfPoints << std::endl;
     std::vector <double> err_w(NumOfPoints);
-
+	anOutputFile << "checkpoint 1 " << std::endl;
     for (int i=1; i<NumOfPoints; i++)
         err_w[i] = 1;
 
+	anOutputFile << "checkpoint 2 " << std::endl;
+	int g = 1;
+	int ct = 1;
 
-    while (ErrThere)
+    while(ErrThere)
     {
+		anOutputFile << "checkpoint 3 " << std::endl;
+		anOutputFile << "checkpoint 3 " << std::endl;
+		anOutputFile << "size(B_Matrix): " <<  NumOfPoints << " x " << (MainNurb.MaxU+1)*(MainNurb.MaxV+1) << std::endl;
         ublas::matrix<double> B_Matrix(NumOfPoints,(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-        std::cout << "B_Matrix succesfully constructed" << std::endl;
-        std::cout << "Preparing B-Matrix..." << std::endl;
+		anOutputFile << "********************************" << endl;
+        anOutputFile << "B_Matrix succesfully constructed" << std::endl;
+        anOutputFile << "Preparing B-Matrix..." << std::endl;
 
         std::vector<double> N_u(MainNurb.MaxU+1, 0.0);
         std::vector<double> N_v(MainNurb.MaxV+1, 0.0);
@@ -721,35 +926,43 @@ void Approximate::ErrorApprox()
         //Destroying
         //B_Matrix.resize(1,1, false);
         //B_Matrix.clear();
-        std::cout << "Preparing the A_Matrix" << std::endl;
+        anOutputFile << "Preparing the A_Matrix" << std::endl;
         //ublas::matrix<double> G_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
         ublas::compressed_matrix<double, ublas::column_major, 0, ublas::unbounded_array<int>, ublas::unbounded_array<double> >
         A_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1),(MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-        std::cout << "Multiply..." << std::endl;
+        anOutputFile << "Multiply..." << std::endl;
 
 
-        std::cout << "Euclidean Norm" << std::endl;
+        anOutputFile << "Euclidean Norm" << std::endl;
         A_Matrix = G_Matrix;
-        double lam = ublas::norm_frobenius(G_Matrix);
+		
+		if(true)//cnt == 0)
+			lam = ublas::norm_frobenius(G_Matrix);
+		else;
+			//lam /= 2;
+
+		++cnt;
+
         G_Matrix.resize(1,1, false);
         G_Matrix.clear();
         ublas::compressed_matrix<double> E_Matrix((MainNurb.MaxU+1)*(MainNurb.MaxV+1), (MainNurb.MaxU+1)*(MainNurb.MaxV+1));
-        std::cout << "E_Matrix succesfully constructed" << std::endl;
-        std::cout << "Smoothing..." << std::endl;
+        anOutputFile << "E_Matrix succesfully constructed" << std::endl;
+        anOutputFile << "Smoothing..." << std::endl;
         eFair2(E_Matrix);
         lam = lam / ublas::norm_frobenius(E_Matrix);
+		anOutputFile << "lam: " << lam << std::endl;
         A_Matrix = A_Matrix + (E_Matrix*lam);
         //Destroying the unneeded matrix
         E_Matrix.resize(1,1,false);
         E_Matrix.clear();
-        std::cout << "Preparing the C_Matrix" << std::endl;
+        anOutputFile << "Preparing the C_Matrix" << std::endl;
         std::vector< std::vector<double> > Solver;
         std::vector<double> TempoSolv((MainNurb.MaxU+1)*(MainNurb.MaxV+1));
         std::vector<double> TempoB;
 
 
 
-        std::cout << "Solving" << std::endl;
+        anOutputFile << "Solving" << std::endl;
         for (unsigned int i = 0; i < 3; i++) //Since umfpack can only solve Ax = B, where x and B are vectors
             //instead of matrices...
         {
@@ -762,171 +975,184 @@ void Approximate::ErrorApprox()
             TempoB.clear();
         }
         MainNurb.CntrlArray.clear();
-        std::cout << "Loading the Control Points" << std::endl;
+        anOutputFile << "Loading the Control Points" << std::endl;
         for (int i = 0; i < (MainNurb.MaxU+1)*(MainNurb.MaxV+1); i++) //now load the control points
         {
             MainNurb.CntrlArray.push_back(Solver[0][i]); //X
             MainNurb.CntrlArray.push_back(Solver[1][i]); //Y
             MainNurb.CntrlArray.push_back(Solver[2][i]); //Z
         }
-        std::cout << "Cntrl Count" << std::endl;
-        std::cout << "U: " << MainNurb.MaxU + 1 << std::endl;
-        std::cout << "V: " << MainNurb.MaxV + 1 << std::endl;
 
-        ComputeError(h, 0.1, 0.1, max_err,av, c2, err_w);
+		std::vector<double> ContrArr = MainNurb.CntrlArray;
 
-        std::cout << "Maximum error is " << max_err <<std::endl;
-        std::cout << "Average error: " << av << std::endl;
-        std::cout << "Average points in error: " << c2 << std::endl;
+        anOutputFile << "Cntrl Count" << std::endl;
+        anOutputFile << "U: " << MainNurb.MaxU + 1 << std::endl;
+        anOutputFile << "V: " << MainNurb.MaxV + 1 << std::endl;
+
+        //ComputeError(h, 0.1, 0.1, max_err,av, c2, err_w);
+
+        anOutputFile << "Maximum error is " << max_err <<std::endl;
+        anOutputFile << "Average error: " << av << std::endl;
+        anOutputFile << "Average points in error: " << c2 << std::endl;
 
 
-        if (max_err > (1.2*tolerance))//Error still bigger than our tolerance?
+        if (ct < 0)//(max_err > (1.2*tolerance))//Error still bigger than our tolerance?
         {
-
+			ct++;
+			anOutputFile << "Reparameterize ..." <<  std::endl;
             Reparam();   //Reparameterize
+			anOutputFile << "End Reparameterize" <<  std::endl;
 
 
-            if (NumOfPoints>8000)
-            {
-                if (max_err > (15*tolerance))
-                {
+			if(false)
+			{
+				if(NumOfPoints>8000)
+				{
+					if (max_err > (15*tolerance))
+					{
 
-                    MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
 
-                    /*MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
-                    */
+						/*MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						*/
 
-                }
-                else if (max_err > 5*tolerance)
-                {
-                    ExtendNurb(c2,h);
-                    ExtendNurb(c2,h);
+					}
+					else if (max_err > 5*tolerance)
+					{
+						ExtendNurb(c2,h);
+						ExtendNurb(c2,h);
 
-                }
-                else
-                {
-                    ExtendNurb(c2,h);
-                }
-            }
-            else if (NumOfPoints > 4000)
-            {
-                if ((max_err > (10*tolerance)))
-                {
+					}
+					else
+					{
+						ExtendNurb(c2,h);
+					}
+				}
+				else if (NumOfPoints > 4000)
+				{
+					if ((max_err > (10*tolerance)))
+					{
 
-                    MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
 
-                }
-                else if (max_err > (3*tolerance))
-                {
+					}
+					else if (max_err > (3*tolerance))
+					{
 
-                    MainNurb.MaxU += 6;
-                    MainNurb.MaxV += 6;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						MainNurb.MaxU += 6;
+						MainNurb.MaxV += 6;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
 
-                    /*MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
-                    */
+						/*MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						*/
 
-                }
-                else if (max_err > 2*tolerance)
-                {
-                    ExtendNurb(c2,h);
-                    ExtendNurb(c2,h);
-                    ExtendNurb(c2,h);
+					}
+					else if (max_err > 2*tolerance)
+					{
+						ExtendNurb(c2,h);
+						ExtendNurb(c2,h);
+						ExtendNurb(c2,h);
 
-                }
-                else
-                {
-                    ExtendNurb(c2,h);
-                    ExtendNurb(c2,h);
+					}
+					else
+					{
+						ExtendNurb(c2,h);
+						ExtendNurb(c2,h);
 
-                }
-            }
-            else
-            {
-                if ((max_err > (10*tolerance)))
-                {
-                    MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
+					}
+				}
+				else
+				{
+					if ((max_err > (10*tolerance)))
+					{
+						MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
 
-                }
-                else if (max_err > (3*tolerance))
-                {
+					}
+					else if (max_err > (3*tolerance))
+					{
 
-                    MainNurb.MaxU += 4;
-                    MainNurb.MaxV += 4;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						MainNurb.MaxU += 4;
+						MainNurb.MaxV += 4;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
 
-                    /*MainNurb.MaxU += 10;
-                    MainNurb.MaxV += 10;
-                    GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-                    GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-                    MainNurb.MaxKnotU = MainNurb.KnotU.size();
-                    MainNurb.MaxKnotV = MainNurb.KnotV.size();
-                    */
+						/*MainNurb.MaxU += 10;
+						MainNurb.MaxV += 10;
+						GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+						GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+						MainNurb.MaxKnotU = MainNurb.KnotU.size();
+						MainNurb.MaxKnotV = MainNurb.KnotV.size();
+						*/
 
-                }
-                else if (max_err > 2*tolerance)
-                {
-                    ExtendNurb(c2,h);
-                    ExtendNurb(c2,h);
-                }
-                else
-                {
-                    ExtendNurb(c2,h);
-                }
-            }
+					}
+					else if (max_err > 2*tolerance)
+					{
+						ExtendNurb(c2,h);
+						ExtendNurb(c2,h);
+					}
+					else
+					{
+						ExtendNurb(c2,h);
+					}
+				}
 
-            /*MainNurb.MaxU += 5;
-            MainNurb.MaxV += 5;
-            GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
-            GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
-            MainNurb.MaxKnotU = MainNurb.KnotU.size();
-            MainNurb.MaxKnotV = MainNurb.KnotV.size();
-            */
+				/*MainNurb.MaxU += 5;
+				MainNurb.MaxV += 5;
+				GenerateUniformKnot(MainNurb.MaxU,MainNurb.DegreeU,MainNurb.KnotU);
+				GenerateUniformKnot(MainNurb.MaxV,MainNurb.DegreeV,MainNurb.KnotV);
+				MainNurb.MaxKnotU = MainNurb.KnotU.size();
+				MainNurb.MaxKnotV = MainNurb.KnotV.size();
+				*/
 
 
-        }
+			}
+		}
         else ErrThere = false;
         test++;
 
 
     }
+
+	anOutputFile.close();
 }
 
 /*! \brief Smoothing
 */
 void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
 {
+	ofstream anOutputFile;
+	anOutputFile.open("c:/approx_param_log_efair.txt");
+
     int precision = 100;
     std::vector<double> U(precision+1, 0);
     std::vector<double> V(precision+1, 0);
@@ -988,7 +1214,7 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
     for (int a = 0; a < MainNurb.MaxV+1; a++)
     {
 
-        std::cout << "\r" << ceil(100.0*((double) a/(double) MainNurb.MaxV)) << "%" << " ";
+        anOutputFile << "\r" << ceil(100.0*((double) a/(double) MainNurb.MaxV)) << "%" << " ";
         for (int b = 0; b < MainNurb.MaxU+1; b++)
         {
             for (int c = 0; c < MainNurb.MaxV+1; c++)
@@ -1031,7 +1257,8 @@ void Approximate::eFair2(ublas::compressed_matrix<double> &E_Matrix)
             }
         }
     }
-    std::cout << std::endl;
+    anOutputFile << std::endl;
+	anOutputFile.close();
 }
 
 /*! \brief This function will compute the current error
@@ -1226,6 +1453,9 @@ void Approximate::ComputeError(int &h, double eps_1, double eps_2, double &max_e
 */
 void Approximate::Reparam()
 {
+	MeshCore::MeshPointArray pntArr = MeshParam.GetPoints();
+	MeshCore::MeshFacetArray fctArr = MeshParam.GetFacets();
+
     std::cout << "Reparameterization...";
     for (int i = 0; i < NumOfPoints; i++)
     {
@@ -1312,7 +1542,39 @@ void Approximate::Reparam()
         else if (ParameterY[i] + delt[1] >= 1)
             ParameterY[i] = 1;
         else ParameterY[i] += delt[1];
+
     }
+
+	MeshCore::MeshPointIterator v_it(MeshParam);
+	std::list< std::vector <unsigned long> >::iterator bInd = BoundariesIndex.begin();
+	std::vector <unsigned long> boundarieslist = *bInd;
+    std::vector <unsigned long>::iterator vec_it;
+	int s=0;
+	int b=0;
+	for (v_it.Begin(); !v_it.EndReached(); ++v_it)
+    {
+        //Inner Points goes into the beginning of the list
+        if ((vec_it = find(boundarieslist.begin(), boundarieslist.end(), v_it.Position())) == boundarieslist.end())
+        {
+
+			pntArr[v_it.Position()].x = ParameterX[s];
+			pntArr[v_it.Position()].y = ParameterY[s];
+            s++;
+        }
+        //Boundaries goes into the end of the list
+        else
+        {
+
+			pntArr[v_it.Position()].x = ParameterX[NumOfInnerPoints+b];
+			pntArr[v_it.Position()].y = ParameterY[NumOfInnerPoints+b];
+
+            b++;
+        }
+    }
+
+
+	MeshParam.Assign(pntArr,fctArr);
+
     std::cout << "DONE" << std::endl;
 }
 

@@ -31,24 +31,27 @@
 #include <Base/Builder3D.h>
 #include <GCPnts_AbscissaPoint.hxx>
 
-#define curvTOL 20.0
+#define curvTOL  30.0
+#define boundTOL 20.0
 
-/* Konstruktor mit einer Bahnfolge (master tool) als Input */
+// Konstruktor mit einer Bahnfolge (master tool) als Input
+
+/*
 path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplineTop, double a_max, double v_max)
         :m_BSplineTop(BSplineTop),m_amax(0.85*a_max),m_vmax(0.85*v_max),m_a1(0.85*a_max),m_v1(0.85*v_max),
         m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000)
 {
     m_single = true;
 
-    m_it1 = m_BSplineTop.begin();
+    m_it1 = m_BSplineTop.begin(); 
     m_NumPaths = m_BSplineTop.size();
 
     gp_Pnt p;
-    gp_Pnt q(0,0,1); /* startpunkt master tool */
+    gp_Pnt q(0,0,1); // startpunkt master tool 
 
-    (*m_it1)->D0((*m_it1)->FirstParameter(),p); /* startpunkt auf der Kurve */
+    (*m_it1)->D0((*m_it1)->FirstParameter(),p); // startpunkt auf der Kurve
 
-    q.SetZ(p.Z() + 2);  /* initial-z-level 2mm über dem ersten Kurvenstartpunkt */
+    q.SetZ(p.Z() + 2);  // initial-z-level 2mm über dem ersten Kurvenstartpunkt
 
     m_StartPnts1.push_back(q);
     m_StartPnts1.push_back(p);
@@ -58,8 +61,8 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplin
 
     //EstimateMaxAcceleration();
 
-    /*vorläufige startparameter*/
-    /*master tool*/
+    //vorläufige startparameter
+    //master tool
     m_c1.push_back(m_a1/2);
     m_c1.push_back(PI*m_a1/m_v1);
 
@@ -67,18 +70,22 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve>& BSplin
     m_t2 = m_t1;
     m_T = 2*m_t1;
 }
+*/
 
 /* Konstruktor mit zwei Bahnfolgen (master tool & supporting die) als Input */
 path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplineTop,
                              const std::vector<Handle_Geom_BSplineCurve> &BSplineBottom,
                              struct CuttingToolsSettings& set)
         :m_BSplineTop(BSplineTop),m_BSplineBottom(BSplineBottom),m_set(set),
-        m_t0(0.0),m_step(1e-3),m_t(0.0),m_count(1),m_clip(90000)
+        m_t0(0.0),m_step(1e-3),m_clip(90000)
 {
     m_single=false;
 
     m_pretension = m_set.spring_pretension;
     m_blech = (float) m_set.sheet_thickness;
+
+	if(m_pretension > 0) beam = true;
+	else           		 beam = false;
 
     m_amax  = 0.85*m_set.max_Acc;
     m_vmax  = 0.85*m_set.max_Vel;
@@ -131,7 +138,7 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
     /*Slave finished here*/
 
 
-    //Other stuff.....!!!!HUman bitte was dazu schreiben
+    //Other stuff.....!!!!Human bitte was dazu schreiben
     m_StartParam.push_back((*m_it1)->FirstParameter());
     m_StartParam.push_back((*m_it2)->FirstParameter());
     m_c1.push_back(m_a1/2);
@@ -142,6 +149,7 @@ path_simulate::path_simulate(const std::vector<Handle_Geom_BSplineCurve> &BSplin
 path_simulate::~path_simulate()
 {
 }
+
 
 double path_simulate::GetLength(GeomAdaptor_Curve& curve, const Standard_Real startParameter,const Standard_Real endParameter)
 {
@@ -169,7 +177,7 @@ double path_simulate::GetLength(GeomAdaptor_Curve& curve, const Standard_Real st
     }
 
 
-    return GCPnts_AbscissaPoint::Length(curve,sParam,eParam);   /* genauigkeitssteuerung über parameter TOL nach eParam */
+    return GCPnts_AbscissaPoint::Length(curve,sParam,eParam);   // genauigkeitssteuerung über parameter TOL nach eParam 
 }
 
 
@@ -602,9 +610,9 @@ bool path_simulate::ParameterCalculation(double S1)
 
 bool path_simulate::ParameterCalculationNew(double S1)
 {
-    m_t1 = m_t0 + 2*(m_v[1]-m_v[0])/m_a;
+    m_t1 = m_t0 + 2*(abs(m_v[1]-m_v[0]))/m_a;
     m_t2 = m_t1;
-    m_T  = m_t1 + 2*(m_v[1]-m_v[2])/m_a;
+    m_T  = m_t1 + 2*(abs(m_v[1]-m_v[2]))/m_a;
 
     double tmp;
     tmp = GetDistanceNew(m_T);
@@ -616,16 +624,17 @@ bool path_simulate::ParameterCalculationNew(double S1)
     else                                  /*Fall 2*/
     {
         m_v[1] = sqrt((m_a*S1 + m_v[0]*m_v[0] + m_v[2]*m_v[2])/2.0);
-        m_t1 = m_t0 + 2*(m_v[1]-m_v[0])/m_a;
+        m_t1 = m_t0 + 2*(abs(m_v[1]-m_v[0]))/m_a;
         m_t2 = m_t1;
     }
 
-    m_T = m_t2 + 2*(m_v[1]-m_v[2])/m_a;
+    m_T = m_t2 + 2*(abs(m_v[1]-m_v[2]))/m_a;
 
     return true;
 }
 
-/* berechnet die diskrete Ableitung einer Punktefolge über symmetrische Differenzen */
+/*
+// berechnet die diskrete Ableitung einer Punktefolge über symmetrische Differenzen 
 std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vector<std::vector<Base::Vector3d> > &D0)
 {
     std::vector<std::vector<Base::Vector3d> > D1 = D0;
@@ -640,21 +649,21 @@ std::vector<std::vector<Base::Vector3d> > path_simulate::Derivate(const std::vec
 
     D1[0][N-1] = (D0[0][0]-D0[0][N-2])/(2*m_del_t);
 
-    /*if(m_single == false)
-    {
-     D1[0][1] = (D0[1][1]-D0[N-1][1])/(2*m_del_t);
+    //if(m_single == false)
+      {
+         D1[0][1] = (D0[1][1]-D0[N-1][1])/(2*m_del_t);
+    
+	    //for (int i=1; i<N-1; ++i)
+        //{
+	       //D1[1][i] = (D0[i+1][1]-D0[i-1][1])/(2*m_del_t);
+        //}
      
-     for (int i=1; i<N-1; ++i)
-     {
-      D1[1][i] = (D0[i+1][1]-D0[i-1][1])/(2*m_del_t);
-     }
-     
-     D1[N-1][1] = (D0[0][1]-D0[N-2][1])/(2*m_del_t);
-    }*/
+      //D1[N-1][1] = (D0[0][1]-D0[N-2][1])/(2*m_del_t);
+    //}
 
     return D1;
 }
-
+*/
 std::vector<std::vector<double> > path_simulate::CurvCurvature(const std::vector<std::vector<Base::Vector3d> > &D1)
 {
     std::vector<std::vector<Base::Vector3d> > D2  = D1;
@@ -1486,7 +1495,7 @@ std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = 
 
     // lade aktuelle kurve
     if (!tool)  curve.Load(*m_it1);
-    else       curve.Load(*m_it2);
+    else        curve.Load(*m_it2);
 
     double fParam = curve.FirstParameter(),
                     lParam = curve.LastParameter();
@@ -1578,20 +1587,88 @@ std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = 
         }
     }
 
+	if( CriticalBounds.size() > 0)
+	{
+		for(int i=0; i<CriticalBounds.size(); ++i)
+		{
+		if(CriticalBounds[i][0] < (boundTOL + step + 1.0))
+			CriticalBounds[i][0] = boundTOL + step + 1.0;
+		
+		if(CriticalBounds[i][1] < (boundTOL + step + 1.0))
+			CriticalBounds[i][1] = boundTOL + step + 1.0;
+		
+		if(CriticalBounds[i][1] > (lParam - boundTOL - step - 1.0))
+			CriticalBounds[i][1] = (lParam - boundTOL - step - 1.0);
+
+		if(CriticalBounds[i][0] > (lParam - boundTOL - step - 1.0))
+			CriticalBounds[i][0] = (lParam - boundTOL - step - 1.0);
+		}
+	}
+
+	std::vector<double> tmpos1;
+	std::vector<std::vector<double> > tmppos;
+	std::vector<std::vector<double> > bndEnd;
+
+	int ind = 0;
+	int j = 0;
+	while((ind+1)<CriticalBounds.size())
+	{
+		j = ind;
+		while(j<(CriticalBounds.size()-1))
+		{
+			if((CriticalBounds[j+1][0] - CriticalBounds[j][1])< (2*boundTOL + step + 1.0))
+			{
+				j++;
+			}
+			else
+				break;
+		}
+
+		tmpos1.push_back(CriticalBounds[ind][0]);
+	    tmpos1.push_back(CriticalBounds[j][1]);
+		tmppos.push_back(tmpos1);
+		tmpos1.clear();
+
+		ind = j+1;
+
+	}
+
+	if(j==CriticalBounds.size()-2 && ind > 0)
+	{
+		tmpos1.push_back(CriticalBounds[j+1][0]);
+	    tmpos1.push_back(CriticalBounds[j+1][1]);
+		tmppos.push_back(tmpos1);
+		tmpos1.clear();
+	}
+
+	if(tmppos.size() != 0)
+		CriticalBounds = tmppos;
+
+
+
+
     if (CriticalBounds.size() == 1)
     {
         double len = 0.0;
         len += CriticalBounds[0][0] + m_StartParam[tool];
 
-        if (len < 10.0)
-            CriticalBounds[0][0] = m_StartParam[0];
+        if (CriticalBounds[0][0] < boundTOL + step + 1.0)
+		{
+			CriticalBounds[0][0] = boundTOL + step + 1.0;
+		}
+
+		if(CriticalBounds[0][1] < boundTOL + step + 1.0)
+		{
+			CriticalBounds[0][1] = boundTOL + step + 1.0;
+		}
+
 
         if (lParam < (m_StartParam[0] + CriticalBounds[0][1]))
             len = CriticalBounds[0][1] + m_StartParam[0] - lParam;
         else
             len = lParam - CriticalBounds[0][1];
 
-        if (len < 10.0)
+        if (len < boundTOL)
             CriticalBounds[0][1] = m_StartParam[0];
 
         if (CriticalBounds[0][0] == CriticalBounds[0][1])
@@ -1604,14 +1681,20 @@ std::vector<std::vector<double> > path_simulate::CompBounds(bool tool) //true = 
 bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 // tool = 1  -> Slave
 {
-    // berechnet auf Basis der aktuellen Kurve die kritischen Bereiche im Parameterraum
+	int step = (int) ceil(m_vmax*8e-3);  // schrittweite für die Abschätzung der max_velocity
+   
+	// berechnet auf Basis der aktuellen Kurve die kritischen Bereiche im Parameterraum
     std::vector<std::vector<double> > CriticalBounds = CompBounds(tool);
 
-    int step = (int) ceil(m_vmax*8e-3);  // schrittweite für die Abschätzung der max_velocity
+	double cur = 0.1;
+	m_amax = 2000;
+   
     GeomAdaptor_Curve curve;
 
     gp_Pnt pnt0;
     gp_Vec pnt1;
+	gp_Vec pnt2;
+	gp_Vec pnt;
     Base::Vector3d Pnt1;
     std::vector<Base::Vector3d> Pnt1Vec;
 
@@ -1623,7 +1706,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
                     lParam = curve.LastParameter();
 
     double period = lParam - fParam;
-    double D1_Max[3], D1_Min[3], d2, length, velo;
+    double D1_Max[3], D1_Min[3], d2, length, velo, tetha, S;
 
     // Iniitialisierung für die Nachkorrektur
     m_Sum[0] = 0.0;
@@ -1634,120 +1717,97 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
     int start = (int) m_StartParam[tool];
 
     m_v[0] = 0.0;  // starte immer mit v = 0
-
+	d2 = 0.0;
     for (unsigned int i=0; i<CriticalBounds.size(); ++i)
     {
 
+		S = CriticalBounds[i][0] - boundTOL + start - m_StartParam[tool];
+		length = CriticalBounds[i][0] - boundTOL - m_StartParam[tool] + start;
         // gerader Bereich
-        for (int j=(int) m_StartParam[tool]; j<((int) ceil(CriticalBounds[i][0] - 10.0) + start); ++j)
+        for (int j=(int) m_StartParam[tool]; j<((int) ceil(CriticalBounds[i][0] - boundTOL) + start); ++j)
         {
 
-            if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
-            else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);
-            else                    curve.D1(j         , pnt0, pnt1);
+            if      ( j > lParam )  curve.D2(j - period, pnt0, pnt1, pnt2);
+            else if ( j < fParam )  curve.D2(j + period, pnt0, pnt1, pnt2);
+            else                    curve.D2(j         , pnt0, pnt1, pnt2);
 
-            Pnt1.x = pnt1.X();
-            Pnt1.y = pnt1.Y();
-            Pnt1.z = pnt1.Z();
-            Pnt1.Normalize();
-            Pnt1Vec.push_back(Pnt1);
+            Pnt1.x = pnt2.X();
+            Pnt1.y = pnt2.Y();
+            Pnt1.z = pnt2.Z();
+
+			if(d2 < Pnt1.Length()) d2 = Pnt1.Length();
         }
 
-        d2 = 0;
-
-        for (unsigned int j=0; j<Pnt1Vec.size() - step; ++j)
-        {
-            D1_Max[0] = -1e+10;
-            D1_Max[1] = -1e+10;
-            D1_Max[2] = -1e+10;
-            D1_Min[0] =  1e+10;
-            D1_Min[1] =  1e+10;
-            D1_Min[2] =  1e+10;
-
-            for (int k=0; k<step+1; ++k)
-            {
-                if (Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-                if (Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-                if (Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-                if (Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-                if (Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-                if (Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-            }
-
-            if ( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-            if ( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-            if ( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-        }
-
-        Pnt1Vec.clear();
-
-        // berechen Parameter für den geraden Abschnitt
-        d2 /= 2e-3;
-        velo = (m_amax/d2);
-        if (velo > m_vmax) velo = m_vmax;
-
-        m_v[1] = velo;
-        m_a    = m_amax - (velo*d2/2.0);
 
 
-        // kritischer Abschnitt
-        for (int j = int(start + ceil(CriticalBounds[i][0] - 10.0)); j< int(start + ceil(CriticalBounds[i][1] + 10.0)); ++j)
+		tetha  = min(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = tetha*3/4;
+		velo   = tetha*(sqrt(m_amax/cur));
+		m_a    = m_amax*(1 - tetha*tetha);
+		m_v[1] = velo;
+
+		d2 = 0;
+        
+		double st = start + CriticalBounds[i][0] - boundTOL;
+		double delta = st/1000;
+		// kritischer Abschnitt
+        while(st <  start + CriticalBounds[i][1] + boundTOL)
         {
 
-            if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
-            else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);
-            else                     curve.D1(j         , pnt0, pnt1);
+            if      ( st > lParam )  curve.D2(st - period, pnt0, pnt1, pnt2);
+            else if ( st < fParam )  curve.D2(st + period, pnt0, pnt1, pnt2);
+            else                     curve.D2(st         , pnt0, pnt1, pnt2);
 
-            Pnt1.x = pnt1.X();
-            Pnt1.y = pnt1.Y();
-            Pnt1.z = pnt1.Z();
-            Pnt1.Normalize();
-            Pnt1Vec.push_back(Pnt1);
+            Pnt1.x = pnt2.X();
+            Pnt1.y = pnt2.Y();
+            Pnt1.z = pnt2.Z();
+
+			pnt = pnt1;
+			pnt1.Cross(pnt2);
+			double tmp = (pnt1.Magnitude()/(pow(pnt.Magnitude(),3)));
+ 
+			if(d2 < Pnt1.Length())
+			{
+				velo = tmp;
+				d2 = Pnt1.Length();
+			}
+			st += delta;
         }
 
-        d2 = 0;
+		velo   = tetha*(sqrt(m_amax/d2));
+		d2 = 0;
 
-        for (unsigned int j=0; j<Pnt1Vec.size() - step; ++j)
-        {
-            D1_Max[0] = -1e+10;
-            D1_Max[1] = -1e+10;
-            D1_Max[2] = -1e+10;
-            D1_Min[0] =  1e+10;
-            D1_Min[1] =  1e+10;
-            D1_Min[2] =  1e+10;
+		if(velo < m_v[0] && m_v[0] != 0) velo = m_v[0];
 
-            for (int k=0; k<step+1; ++k)
-            {
-                if (Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-                if (Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-                if (Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-                if (Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-                if (Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-                if (Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-            }
+		if(S < (4*PI*m_v[1] - 2*PI*(m_v[0] + velo))/m_a)
+		{
+			m_v[1] = (S*m_a/(4*PI)) + ((m_v[0] + velo)/(2));
 
-            if ( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-            if ( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-            if ( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-        }
+			while(m_v[1] < velo) 
+			{
+				velo /= 2;
+				m_v[1] = (S*m_a/(4*PI)) + ((m_v[0] + velo)/(2));
 
-        Pnt1Vec.clear();
+				if(velo < m_v[0])
+				{
+					velo = m_v[0];
+					m_v[1] = (S*m_a/(4*PI)) + ((m_v[0] + velo)/(2));
+					break;
+				}
+			}
+		}
 
-        // berechen Parameter für den kritischen Abschnitt
-        d2 /= 2e-3;
-        velo = (m_amax/d2);
-        if (velo > m_vmax) velo = m_vmax;
-
+		velo = 60;
         m_v[2] = velo;
 
         // gerader Bereich
-        length = CriticalBounds[i][0] - 10.0 - m_StartParam[tool] + start;
+        length = CriticalBounds[i][0] - boundTOL - m_StartParam[tool] + start;
         MakeSinglePathNew(1, length, 0,tool); // erzeuge Output
         m_t0 = m_T;
         m_StartParam[tool] += length;
 
         // gekrümmter Bereich
-        length = CriticalBounds[i][1] - CriticalBounds[i][0] + 20.0;
+        length = CriticalBounds[i][1] - CriticalBounds[i][0] + 2*boundTOL;
         MakeSinglePathNew(1, length, 1,tool); // erzeuge Output
         m_t0 = m_T;
         m_StartParam[tool] += length;
@@ -1756,60 +1816,39 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
     }
 
     // letzter nicht-kritischer Abschnitt
-    for (int j = (int) m_StartParam[tool]; j<int(lParam + start); ++j)
-    {
+	if(m_StartParam[tool] < lParam-1e-4 || m_StartParam[tool] > lParam+1e-4)
+	{
+		S = lParam + start - m_StartParam[tool];
+		d2 = 0;
+		for (int j = (int) m_StartParam[tool]; j<int(lParam + start); ++j)
+		{
 
-        if      ( j > lParam )  curve.D1(j - period, pnt0, pnt1);
-        else if ( j < fParam )  curve.D1(j + period, pnt0, pnt1);
-        else                    curve.D1(j         , pnt0, pnt1);
+            if      ( j > lParam )  curve.D2(j - period, pnt0, pnt1, pnt2);
+            else if ( j < fParam )  curve.D2(j + period, pnt0, pnt1, pnt2);
+            else                    curve.D2(j         , pnt0, pnt1, pnt2);
 
-        Pnt1.x = pnt1.X();
-        Pnt1.y = pnt1.Y();
-        Pnt1.z = pnt1.Z();
-        Pnt1.Normalize();
-        Pnt1Vec.push_back(Pnt1);
-    }
+            Pnt1.x = pnt2.X();
+            Pnt1.y = pnt2.Y();
+            Pnt1.z = pnt2.Z();
+ 
+			if(d2 < Pnt1.Length()) d2 = Pnt1.Length();
+        
+		}
 
-    d2 = 0;
+    
 
-    for (unsigned int j=0; j<Pnt1Vec.size() - step; ++j)
-    {
-        D1_Max[0] = -1e+10;
-        D1_Max[1] = -1e+10;
-        D1_Max[2] = -1e+10;
-        D1_Min[0] =  1e+10;
-        D1_Min[1] =  1e+10;
-        D1_Min[2] =  1e+10;
-
-        for (int k=0; k<step+1; ++k)
-        {
-            if (Pnt1Vec[j+k].x < D1_Min[0]) D1_Min[0] = Pnt1Vec[j+k].x;
-            if (Pnt1Vec[j+k].x > D1_Max[0]) D1_Max[0] = Pnt1Vec[j+k].x;
-            if (Pnt1Vec[j+k].y < D1_Min[1]) D1_Min[1] = Pnt1Vec[j+k].y;
-            if (Pnt1Vec[j+k].y > D1_Max[1]) D1_Max[1] = Pnt1Vec[j+k].y;
-            if (Pnt1Vec[j+k].z < D1_Min[2]) D1_Min[2] = Pnt1Vec[j+k].z;
-            if (Pnt1Vec[j+k].z > D1_Max[2]) D1_Max[2] = Pnt1Vec[j+k].z;
-        }
-
-        if ( abs(D1_Max[0] - D1_Min[0]) > d2) d2 = abs(D1_Max[0] - D1_Min[0]);
-        if ( abs(D1_Max[1] - D1_Min[1]) > d2) d2 = abs(D1_Max[1] - D1_Min[1]);
-        if ( abs(D1_Max[2] - D1_Min[2]) > d2) d2 = abs(D1_Max[2] - D1_Min[2]);
-    }
-
-    Pnt1Vec.clear();
-
-    // berechne Parameter für den letzen Abschnitt
-    d2 /= 2e-3;
-    velo = (m_amax/d2);
-    if (velo > m_vmax) velo = m_vmax;
-
-    m_v[1] = velo;
-    m_v[2] = 0.0;
-    m_a = m_amax - (velo*d2/2.0);
-
-    length = lParam - m_StartParam[tool] + start;
-    MakeSinglePathNew(1, length, 0,tool); // erzeuge Output für den letzen Abschnitt
-    m_t0 = m_T;
+		tetha  = min(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = tetha*3/4;
+		velo   = tetha*(sqrt(m_amax/cur));
+		m_a    = m_amax*(1 - tetha*tetha);
+		m_v[1] = velo;
+		m_v[2] = 0.0;
+   
+		d2 = 0;
+		length = lParam - m_StartParam[tool] + start;
+		MakeSinglePathNew(1, length, 0,tool); // erzeuge Output für den letzen Abschnitt
+		m_t0 = m_T;
+	}
 
     // Korrektur des Weges
     Integrate(tool);
@@ -2412,6 +2451,9 @@ bool path_simulate::MakeSinglePathNew(bool brob, double length, bool part, bool 
                 dtmp1.SetY(0.0);
             }
 
+			times_tmp.push_back(t);
+		    velo_tmp.push_back(m_v[2]);
+
             tmp2.x = dtmp1.X()*m_v[2];
             tmp2.y = dtmp1.Y()*m_v[2];
             tmp2.z = dtmp1.Z()*m_v[2];
@@ -2465,6 +2507,9 @@ bool path_simulate::MakeSinglePathNew(bool brob, double length, bool part, bool 
             dtmp1.SetY(0.0);
         }
 
+		times_tmp.push_back(t);
+		velo_tmp.push_back((GetVelocity(t)));
+
         tmp2.x = dtmp1.X()*(GetVelocity(t));
         tmp2.y = dtmp1.Y()*(GetVelocity(t));
         tmp2.z = dtmp1.Z()*(GetVelocity(t));
@@ -2483,7 +2528,6 @@ bool path_simulate::MakeSinglePathNew(bool brob, double length, bool part, bool 
 bool path_simulate::MakePathRobot()
 {
     int c=1;
-    runInd=0;
 
     ofstream anOutputFile;
     ofstream anOutputFile2;
@@ -2965,7 +3009,7 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
             anOutputFile[1] << "none" << std::endl;
         }
 
-        WriteOutput_Feat(anOutputFile[0], anOutputFile[1],f,1,beam);
+        WriteOutput_Feat(anOutputFile[0], anOutputFile[1],f,1);
 
         master_file.str("");
         master_file.clear();
@@ -3160,6 +3204,17 @@ bool path_simulate::MakePathSimulate()
             ++m_it2;
     }
 
+	ofstream anOutputvelocity;
+
+    anOutputvelocity.open("output_velocity.k");
+    anOutputvelocity.precision(7);
+
+	for(int i=0; i<times_tmp.size(); ++i)
+	{
+		anOutputvelocity << times_tmp[i] << ", " << velo_tmp[i] << endl;
+	}
+
+
     anOutputFile  << "*END" << endl;
     anOutputFile.close();
     anOutputFile2 << "*END" << endl;
@@ -3328,7 +3383,7 @@ bool path_simulate::WriteOutput(ofstream &anOutputFile, ofstream &anOutputFile2,
     return true;
 }
 
-bool path_simulate::WriteOutput_Feat(ofstream &anOutputFile, ofstream &anOutputFile2, int &c, bool brob, bool beamfl)
+bool path_simulate::WriteOutput_Feat(ofstream &anOutputFile, ofstream &anOutputFile2, int &c, bool brob)
 {
     if (m_single == false)
     {
@@ -3636,20 +3691,12 @@ robo:  //--------- ROBOTER OUTPUT --------------
 bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutputFile2, int &c1, int &c2, bool brob, bool beamfl)
 {
     std::pair<float,float> times;
-    int pid1,pid2;
+    int pid1 = 2; // Master
+	int pid2 = 3; // Slave
+	int pid3 = 4; // Platte
 
-    if (beamfl)
-    {
-        pid1 = 4;
-        pid2 = 5;
-    }
-    else
-    {
-        pid1 = 2;
-        pid2 = 3;
-    }
 
-    if (brob == false)
+    if (brob == false) // simulation-output (brob == true -> roboter-ouput)
     {
         int n = m_Output.size();
         int n2 = m_Output2.size();
@@ -3673,14 +3720,25 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
 
             times.first  = (float) m_Output_time[0];
             times.second = (float) m_Output_time[n-1];
-            m_PathTimes_Master.push_back(times);
+            m_PathTimes_Master.push_back(times);       // fülle vektor für curve-times
 
-            // SLAVE-X
+            
+			
+			
+			// SLAVE-X
 
             anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
             anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
             anOutputFile2 << pid2 << ",1,0," << c2 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-            anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2 << std::endl;
+			
+			if (beamfl) // wenn auf true, dann füge neuen part mit ein
+            {
+                anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+                anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+                anOutputFile2 << pid3 << ",1,0," << c2<<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+            }
+
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2 << std::endl;
 
             for (int i=0; i<n2; ++i)
             {
@@ -3693,7 +3751,11 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
             times.second = (float) m_Output_time2[n2-1];
             m_PathTimes_Slave.push_back(times);
 
-            // MASTER-Y
+            
+			
+			
+			
+			// MASTER-Y
 
             anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
             anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
@@ -3711,12 +3773,23 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
             times.second = (float) m_Output_time[n-1];
             m_PathTimes_Master.push_back(times);
 
-            // SLAVE-Y
+            
+			
+			
+			// SLAVE-Y
 
             anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
             anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
             anOutputFile2 << pid2 << ",2,0," << c2+1 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-            anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2+1 << std::endl;
+            
+			if (beamfl) // wenn auf true, dann füge neuen part mit ein
+            {
+                anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+                anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+                anOutputFile2 << pid3 << ",2,0," << c2+1 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+            }
+			
+			anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2+1 << std::endl;
 
             for (int i=0; i<n2; ++i)
             {
@@ -3729,20 +3802,14 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
             times.second = (float) m_Output_time2[n2-1];
             m_PathTimes_Slave.push_back(times);
 
-            // MASTER-Z
-
-            anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
-            anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-            anOutputFile << "2,3,0," << c1+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
-
-            if (beamfl)
-            {
-                anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
-                anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-                anOutputFile << pid1 << ",3,0," << c1+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
-
-            }
-
+            
+			
+			
+			
+			// MASTER-Z
+			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+			anOutputFile << pid1 << ",3,0," << c1+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
             anOutputFile << "*DEFINE_CURVE" << std::endl << c1+2 <<  std::endl;
 
 
@@ -3757,19 +3824,25 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
             times.second = (float) m_Output_time[n-1];
             m_PathTimes_Master.push_back(times);
 
-            // SLAVE-Z
+            
+			
+			
+			
+			// SLAVE-Z
 
-            anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
-            anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-            anOutputFile2 << "3,3,0," << c2+2 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
-
-            if (beamfl)
+			if (beamfl)
             {
                 anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
                 anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-                anOutputFile2 << pid2 << ",3,0," << c2+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
+                anOutputFile2 << pid3 << ",3,0," << c2+2 <<  ",1.000000, ," << m_Output_time[n-1] << "," << m_Output_time[0] << std::endl;
 
             }
+			else
+			{
+				anOutputFile2 << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+				anOutputFile2 << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+				anOutputFile2 << pid2 << ",3,0," << c2+2 <<  ",1.000000, ," << m_Output_time2[n2-1] << ","  << m_Output_time2[0] << std::endl;
+			}
 
             anOutputFile2 << "*DEFINE_CURVE" << std::endl << c2+2 <<  std::endl;
 

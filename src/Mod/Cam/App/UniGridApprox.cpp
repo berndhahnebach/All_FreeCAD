@@ -35,6 +35,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Handle_Geom_BSplineSurface.hxx>
 
 //
 ///*********BINDINGS********/
@@ -170,7 +172,7 @@ bool UniGridApprox::MeshOffset()
     {
         cout << double(i)/double(n_x) << endl;
         pnt.x = float(x_min + i*st_x);
-        for (int j=0; j<n_y+1; ++j)
+        for (int j=0; j<n_y+1 - 10; ++j)
         {
             pnt.y = float(y_min + j*st_y);
             aNormal.z = 1.0;
@@ -621,9 +623,6 @@ bool UniGridApprox::MatComp(int u_CP, int v_CP)
             m_Grid[i][j].z = (float) uCP_z(i,j);
         }
     }
-
-    // hier müssten eigentlich die parameterwerte der neu berechneten
-    // kontrollpunkte berechnet werden, da diese approximiert werden sollen
 
     //SurfMeshParam();
 

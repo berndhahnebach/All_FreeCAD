@@ -34,6 +34,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 
+
 Edgesort::Edgesort(const TopoDS_Shape& aShape)
         :m_shape(aShape),m_done(false)
 {

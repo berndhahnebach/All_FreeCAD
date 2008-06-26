@@ -20,23 +20,41 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
+/**\file
+\brief Mostly functors for less operators can be found here
+*/
 
 #ifndef STUFF_H
 #define STUFF_H
 
-//Funktor für sort von pair<float,TopoDS_Compound> damit die Pairs von groß nach klein sortiert werden
+/**\brief Functor to sort a pair of type pair<float,TopoDS_Wire> 
+
+Mostly used in the cutting class as a sorting of the different resulting wires is necessary if there is
+more then one resulting cutting curve
+\param _Left A pair which consists of a float value (mostly here the Z-Level is stored) and a TopoDS_Wire
+\param _Right Exactly the same as _Left but here it is used to compare with _First
+\return A Boolean Value which is either true != 0 or false == 0 depending which Z-Level is higher or lower
+*/
 bool inline FloatWirePairHuge(const std::pair<float,TopoDS_Wire>& _Left, const std::pair<float,TopoDS_Wire>& _Right)
 {
     return _Left.first > _Right.first;
 }
 
 
+/**\brief Functor to sort two float values 
 
+Just a test function which is able to sort also from high to low and not only from low to high 
+(like the less operator is normally doing it)
+\param _Left A float value
+\param _Right A float value for the comparison with the _Left
+\return A Boolean Value which is either true != 0 or false == 0 depending which float value is higher
+*/
 bool inline FloatHuge(const float _Left, const float _Right)
 {
     return _Left > _Right;
 }
 
+/**\brief A container to have an easy access to an edge with start and endpoint*/
 struct edge_container
 {
     TopoDS_Edge edge;
@@ -45,6 +63,7 @@ struct edge_container
 
 };
 
+/**\brief A container used for projecting points on faces along a normal vector*/
 struct projectPointContainer
 {
     gp_Pnt point;
@@ -52,5 +71,5 @@ struct projectPointContainer
     TopoDS_Face face;
 };
 
-#endif
+#endif /*DEFINE STUFF_H*/
 

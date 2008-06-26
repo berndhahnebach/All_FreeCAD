@@ -20,7 +20,11 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
+/**\file
+\brief Here you can find the header file for all the cutting stuff.
 
+This is the place where all the prototypes are declared and the members are defined
+*/
 #ifndef Cutting_Tools
 #define Cutting_Tools
 
@@ -32,28 +36,51 @@
 
 #include "stuff.h"
 
+/**\brief A Container to transfer the GUI settings
 
+This struct can be used to transfer the settings of the CAM-Workbench GUI to other functions if required.
+It provides members for all fields of the GUI settings window.
+*/
 struct CuttingToolsSettings
 {
-    float limit_angle;
-    float cad_radius;
-    float master_radius;
+    /**This represents the maximum allowed angle for the springback functions*/
+    float limit_angle; 
+    /**This represents the minimum CAD-Radius of the forming shape. This is necessary for the springback
+    to avoid the generation of radii which are below that value*/
+    float cad_radius; 
+    /**This represents the radius of the Master Tool*/
+    float master_radius; 
+    /**This represents the radius of the Slave Tool*/
     float slave_radius;
+    /**This represents the cutting distance between two levels (the pitch)*/
     float level_distance;
+    /**This represents the springback correction factor used for the mirror part*/
     float correction_factor;
+    /**This represents the sheet thickness*/
     float sheet_thickness;
+    /**This represents the maximum velocity for the simulation output*/
     float max_Vel;
+    /**This represents the maximum acceleration for the simulation output*/
     float max_Acc;
+    /**This represents the pretension of the spring if used during simulation in mm*/
     int spring_pretension;
+    /**This represents the Y-Offset value for the robot output*/
     float y_offset_robot;
+    /**This represents the X-Offset value for the robot output*/
     float x_offset_robot;
+    /**This value is necessary to tell some special functions if we move zig/zag or clockwise/counterclockwise
+    without changing direction after each step*/
     bool clockwise;
 };
 
+/**\brief A Container used for the Spiral-Toolpath Generation*/
 struct SpiralHelper
 {
+    /**This represents the SurfacePoint of the CAD-Surface*/
     gp_Pnt SurfacePoint;
+    /**This represents the direction vector between two following points*/
     gp_Vec LineD1;
+    /**This represents the SurfaceNormal at the SurfacePoint*/
     gp_Vec SurfaceNormal;
 };
 
@@ -77,12 +104,30 @@ struct Face_Less
 
 
 
+
+/**\brief This class is the main class for the cutting Algorithms. 
+
+Its idea is to provide the basic functionality for cutting CAD surfaces. In this class you can also find 
+functions useful for generating spiral and feature based toolpaths
+*/
 class AppCamExport cutting_tools
 {
 public:
+	/**\brief The standard constructor 
+	
+	\param aShape A TopoDS_Shape 
+	*/ 
     cutting_tools(TopoDS_Shape aShape);
+
+    /**\brief The second standard constructor
+
+    This one gets a vertical step down value as well
+	\param aShape A TopoDS_Shape 
+    \param pitch A vertical step down in[mm]
+	*/ 
     cutting_tools(TopoDS_Shape aShape, float pitch);
 
+    /**\brief The standard destructor*/
     ~cutting_tools();
 
     TopoDS_Wire ordercutShape(const TopoDS_Shape &aShape);
@@ -97,6 +142,7 @@ public:
     wo alle flachen bereiche drin sind
     */
 
+	/*! \brief Hier finden wir eine tolle Funktion */ 
     bool arrangecuts_ZLEVEL();
     //bool checkPointIntersection(std::vector<projectPointContainer> &finalPoints);
     bool calculateAccurateSlaveZLevel(std::vector<std::pair<gp_Pnt,double> >&OffsetPoints, double current_z_level, double &slave_z_level, double &average_sheet_thickness,double &average_angle, bool &cutpos);

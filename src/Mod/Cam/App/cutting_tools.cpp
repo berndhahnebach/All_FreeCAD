@@ -21,7 +21,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PreCompiled.h"
+
+//Because we ommit the PreCompiled Header we have to define some stuff here
+#include "../../../FCConfig.h"
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+# define AppCamExport   __declspec(dllexport)
+# define CamExport      __declspec(dllexport)
+# define AppPartExport  __declspec(dllimport)
+# define PartExport     __declspec(dllimport)
+# define AppMeshExport  __declspec(dllimport)
+# define MeshExport     __declspec(dllimport)
+#else // for Linux
+# define AppCamExport
+# define CamExport
+# define AppPartExport
+# define PartExport
+# define AppMeshExport
+# define MeshExport
+#endif
+
+
 
 //Mesh Stuff
 #include <Mod/Mesh/App/Core/MeshKernel.h>
@@ -32,6 +52,7 @@
 #include <Mod/Mesh/App/MeshAlgos.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Grid.h>
+
 
 //FreeCAD Stuff
 #include <Base/Builder3D.h>
@@ -64,6 +85,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Handle_TColStd_HArray1OfBoolean.hxx>
 #include <BSplCLib.hxx>
@@ -75,6 +97,7 @@
 #include "edgesort.h"
 #include "wireexplorer.h"
 #include "BRepAdaptor_CompCurve2.h"
+//#include "MeshInterface.h"
 
 
 
@@ -171,6 +194,9 @@ bool cutting_tools::fillFaceWireMap()
     return true;
 }
 
+
+
+
 bool cutting_tools::getShapeBB()
 {
     //Die Cascade-Bounding Box funktioniert nicht richtig
@@ -180,6 +206,37 @@ bool cutting_tools::getShapeBB()
     Base::BoundBox3f aBoundBox = m_CAD_Mesh.GetBoundBox();
     m_maxlevel = aBoundBox.MaxZ;
     m_minlevel = aBoundBox.MinZ;
+
+ //   //Hier testen wir noch ein paar OpenMesh Funktionen
+ //   typedef OpenMesh::DefaultTraits MyTraits;
+ //   typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  MyMesh;
+
+	//////// Mesh::Interface erbt von MyMesh , so dass das Objekt 'mesh' direkt in den OpenMesh-Funktionen genutzt werden kann
+ //  Mesh::Interface<MyMesh> mesh(m_CAD_Mesh);
+	////// proceed with mesh, e.g. refining
+ //  MyMesh::EdgeIter e_it,e_end(mesh.edges_end());
+ //  MyMesh::EdgeHandle eh;
+ //  MyMesh::Scalar dist;
+ //  MyMesh::Point startPoint,midPoint,endPoint;
+
+ //  for ( e_it = mesh.edges_begin() ; e_it != e_end ; ++e_it )
+ //  {
+ //       eh = e_it.handle();
+ //       dist = mesh.calc_edge_length(eh);  //get the length of the current edge
+ //       if(dist>2.6) //Split the Edge now
+ //       {
+ //        
+ //           //Get the Start and EndPoints of the Edge
+ //          
+ //       }
+
+ //   }
+ ////// throw away all tagged edges
+ ////mesh.garbage_collection(); //Function from OpenMesh
+ //mesh.release(m_CAD_Mesh);    //Function from MeshInterface to convert the Input Kernel back
+
+
+   
     /* Hier ist die alte OCC BoundingBox Funktion
     Bnd_Box currentBBox;
     Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
@@ -1059,7 +1116,8 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         if (aWireExplorer.Current().Orientation() != TopAbs_REVERSED)
                             curveAdaptor.D0(aProp.Parameter(i),aTempPair.first);
                         else curveAdaptor.D0(aProp.Parameter(aProp.NbPoints()-i+1),aTempPair.first);
-                        aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
+                        //aTempPair.first.SetZ(aTempPair.first.Z() + m_UserSettings.master_radius);
+						aTempPair.first.SetZ(aTempPair.first.Z() );
                         aTempPair.second = 0.0; //Initialize of Angle
                         //checken ob der neue Punkt zu nahe am alten ist. Wenn ja, dann kein push_back
                         if (MasterPointContainer.size()>0 && (MasterPointContainer.rbegin()->first.SquareDistance(aTempPair.first)>(Precision::Confusion()*Precision::Confusion())))
@@ -1263,7 +1321,8 @@ bool cutting_tools::OffsetWires_Standard() //Version wo nur in X,Y-Ebene verscho
                         //Jetzt die Richtung umdrehen
                         NormalVecSlave.Multiply(-1.0);
                         //Jetzt den OffsetPunkt berechnen
-                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
+                        PointContactPair.first.SetXYZ(aSurfacePoint.XYZ());
+						//PointContactPair.first.SetXYZ(aSurfacePoint.XYZ() + normalVec.XYZ());
                         SlavePoint.SetXYZ(aSurfacePoint.XYZ() + NormalVecSlave.XYZ());
                         //PointContactPair.first.SetZ(PointContactPair.first.Z() + m_UserSettings.master_radius);
                         //Damit wir keine Punkte bekommen die zu nahe beieinander liegen
@@ -2284,10 +2343,10 @@ bool cutting_tools::OffsetWires_Spiral()
                             shortestDistanceOld = shortestDistance;
                         }
                     }
-                    //Now we check how far the shortest Distance is. If its more than 5mm then we jump to the
+                    //Now we check how far the shortest Distance is. If its more then 14mm then we jump to the
                     //next Point
 
-                    if (shortestDistanceOld>50)
+                    if (shortestDistanceOld>156)//The point is more then 14mm away (square distance)
                         continue;
                     TempSpiralPoints[j].SurfacePoint = anIntersector.Pnt(current_index);
                 }
@@ -2660,7 +2719,6 @@ bool cutting_tools::OffsetWires_Spiral()
     anoutput1.close();
     log.saveToFile("C:/normals.iv");
     return true;
-
 }
 
 
