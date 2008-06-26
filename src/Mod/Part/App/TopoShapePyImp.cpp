@@ -287,8 +287,9 @@ PyObject*  TopoShapePy::fuse(PyObject *args)
         TopoDS_Shape fusShape = this->getTopoShapePtr()->fuse(shape);
         return new TopoShapePy(new TopoShape(fusShape));
     }
-    catch (const Standard_Failure&) {
-        PyErr_SetString(PyExc_Exception, "fuse operation failed");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 }
@@ -305,8 +306,9 @@ PyObject*  TopoShapePy::common(PyObject *args)
         TopoDS_Shape comShape = this->getTopoShapePtr()->common(shape);
         return new TopoShapePy(new TopoShape(comShape));
     }
-    catch (const Standard_Failure&) {
-        PyErr_SetString(PyExc_Exception, "common operation failed");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 }
@@ -323,8 +325,9 @@ PyObject*  TopoShapePy::section(PyObject *args)
         TopoDS_Shape secShape = this->getTopoShapePtr()->section(shape);
         return new TopoShapePy(new TopoShape(secShape));
     }
-    catch (const Standard_Failure&) {
-        PyErr_SetString(PyExc_Exception, "section operation failed");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 }
@@ -341,8 +344,9 @@ PyObject*  TopoShapePy::cut(PyObject *args)
         TopoDS_Shape cutShape = this->getTopoShapePtr()->cut(shape);
         return new TopoShapePy(new TopoShape(cutShape));
     }
-    catch (const Standard_Failure&) {
-        PyErr_SetString(PyExc_Exception, "cut operation failed");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 }
@@ -417,8 +421,9 @@ PyObject*  TopoShapePy::scale(PyObject *args)
         getTopoShapePtr()->_Shape.Move(loc);
         Py_Return;
     }
-    catch (const Standard_Failure&) {
-        PyErr_SetString(PyExc_Exception, "scaling failed");
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
 }

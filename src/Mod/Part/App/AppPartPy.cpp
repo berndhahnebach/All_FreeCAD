@@ -39,6 +39,8 @@
 # include <GeomAPI_PointsToBSplineSurface.hxx>
 # include <Handle_Geom_Circle.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <Standard_ConstructionError.hxx>
+# include <Standard_DomainError.hxx>
 # include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
 # include <TColgp_HArray2OfPnt.hxx>
@@ -234,14 +236,12 @@ makeShape(PyObject *self, PyObject *args)
                 }
             }
         }
-#if OCC_HEX_VERSION > 0x060100
-        catch (const Standard_Failure& e) {
+        catch (Standard_Failure) {
             delete shape;
-            // With OCC 6.1 (and older) the string from e.GetMessageString() gives trash
-            PyErr_SetString(PyExc_Exception, e.GetMessageString());
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
             return 0;
         }
-#endif
         catch (...) {
             delete shape;
             PyErr_SetString(PyExc_Exception, "creation of shape failed");
@@ -291,7 +291,7 @@ static PyObject * createBox(PyObject *self, PyObject *args)
         TopoDS_Shape ResultShape = mkBox.Shape();
         return new TopoShapePy(new TopoShape(ResultShape)); 
     }
-    catch (const Standard_DomainError&) {
+    catch (Standard_Failure) {
         PyErr_SetString(PyExc_StandardError, "cannot create flat box");
         return NULL;
     }
@@ -372,7 +372,7 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
         TopoDS_Edge edge = aMakeEdge.Edge();
         return new TopoShapePy(new TopoShape(edge)); 
     }
-    catch (const Standard_Failure&) {
+    catch (Standard_Failure) {
         PyErr_SetString(PyExc_Exception, "creation of circle failed");
         return NULL;
     }
@@ -389,7 +389,7 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
         TopoDS_Shape shape = mkSphere.Shape();
         return new TopoShapePy(new TopoShape(shape));
     }
-    catch (const Standard_Failure&) {
+    catch (Standard_DomainError) {
         PyErr_SetString(PyExc_Exception, "creation of sphere failed");
         return NULL;
     }
@@ -406,7 +406,7 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
         TopoDS_Shape shape = mkCyl.Shape();
         return new TopoShapePy(new TopoShape(shape));
     }
-    catch (const Standard_Failure&) {
+    catch (Standard_DomainError) {
         PyErr_SetString(PyExc_Exception, "creation of cylinder failed");
         return NULL;
     }
