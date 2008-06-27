@@ -4163,6 +4163,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ViewProviderAnnotation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ViewProviderAnnotation.h"
+				>
+			</File>
+			<File
 				RelativePath="ViewProviderDocumentObject.cpp"
 				>
 				<FileConfiguration
