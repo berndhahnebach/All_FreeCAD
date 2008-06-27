@@ -65,6 +65,7 @@
 #include "ViewProviderDocumentObjectGroup.h"
 #include "ViewProviderGeometryObject.h"
 #include "ViewProviderInventorObject.h"
+#include "ViewProviderAnnotation.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -960,25 +961,26 @@ void Application::initApplication(void)
 void Application::initTypes(void)
 {
     // views
-    Gui::BaseView                              ::init();
-    Gui::MDIView                               ::init();
-    Gui::View3DInventor                        ::init();
+    Gui::BaseView                               ::init();
+    Gui::MDIView                                ::init();
+    Gui::View3DInventor                         ::init();
     // View Provider
-    Gui::ViewProvider                          ::init();
-    Gui::ViewProviderExtern                    ::init();
-    Gui::ViewProviderDocumentObject            ::init();
-    Gui::ViewProviderFeature                   ::init();
-    Gui::ViewProviderPythonFeature             ::init();
-    Gui::ViewProviderDocumentObjectGroup       ::init();
-    Gui::ViewProviderGeometryObject            ::init();
-    Gui::ViewProviderInventorObject            ::init();
+    Gui::ViewProvider                           ::init();
+    Gui::ViewProviderExtern                     ::init();
+    Gui::ViewProviderDocumentObject             ::init();
+    Gui::ViewProviderFeature                    ::init();
+    Gui::ViewProviderPythonFeature              ::init();
+    Gui::ViewProviderDocumentObjectGroup        ::init();
+    Gui::ViewProviderGeometryObject             ::init();
+    Gui::ViewProviderInventorObject             ::init();
+    Gui::ViewProviderAnnotation                 ::init();
 
     // Workbench
-    Gui::Workbench                             ::init();
-    Gui::StdWorkbench                          ::init();
-    Gui::NoneWorkbench                         ::init();
-    Gui::TestWorkbench                         ::init();
-    Gui::PythonWorkbench                       ::init();
+    Gui::Workbench                              ::init();
+    Gui::StdWorkbench                           ::init();
+    Gui::NoneWorkbench                          ::init();
+    Gui::TestWorkbench                          ::init();
+    Gui::PythonWorkbench                        ::init();
 }
 
 void messageHandler(QtMsgType type, const char *msg)

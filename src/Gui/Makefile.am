@@ -247,6 +247,7 @@ libFreeCADGui_la_SOURCES=\
 		View3DInventorViewer.cpp \
 		View3DPy.cpp \
 		ViewProvider.cpp \
+		ViewProviderAnnotation.cpp \
 		ViewProviderDocumentObject.cpp \
 		ViewProviderDocumentObjectGroup.cpp \
 		ViewProviderExtern.cpp \
@@ -324,6 +325,7 @@ include_HEADERS=\
 		View3DInventorViewer.h \
 		View3DPy.h \
 		ViewProvider.h \
+		ViewProviderAnnotation.h \
 		ViewProviderDocumentObject.h \
 		ViewProviderDocumentObjectGroup.h \
 		ViewProviderExtern.h \

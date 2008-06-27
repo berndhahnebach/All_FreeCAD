@@ -75,6 +75,8 @@
 #include "Document.h"
 #include "DocumentObjectGroup.h"
 #include "InventorObject.h"
+#include "Annotation.h"
+
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include <Build/Version.h>
@@ -725,6 +727,7 @@ void Application::initTypes(void)
     App ::Document                  ::init();
     App ::DocumentObjectGroup       ::init();
     App ::InventorObject            ::init();
+    App::Annotation                 ::init();
 }
 
 void Application::initConfig(int argc, char ** argv)

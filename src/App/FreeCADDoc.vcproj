@@ -389,6 +389,14 @@
 			Name="Document"
 			>
 			<File
+				RelativePath=".\Annotation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Annotation.h"
+				>
+			</File>
+			<File
 				RelativePath="Document.cpp"
 				>
 				<FileConfiguration

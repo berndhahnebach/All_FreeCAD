@@ -22,6 +22,8 @@ libFreeCADApp_la_BUILT=\
 		PropertyContainerPy.h
 
 libFreeCADApp_la_SOURCES=\
+		Annotation.cpp \
+		Annotation.h \
 		Application.cpp \
 		ApplicationPy.cpp \
 		ColorModel.cpp \
