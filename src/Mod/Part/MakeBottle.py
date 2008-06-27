@@ -15,15 +15,15 @@ def makeBottle(myWidth, myHeight, myThickness):
 	aEdge1=aSegment1.toShape()
 	aEdge2=aArcOfCircle.toShape()
 	aEdge3=aSegment2.toShape()
-	aWire=Part.Wire(aEdge1,aEdge2,aEdge3)
+	aWire=Part.makeWire([aEdge1,aEdge2,aEdge3])
 	
 	aTrsf=Base.Matrix()
 	aTrsf.rotateX(math.pi)
-	
+
 	aMirroredWire=aWire.transform(aTrsf)
-	myWireProfile=Part.Wire([aWire,aMirroredWire])
+	myWireProfile=Part.makeWire([aWire,aMirroredWire])
 	
-	myFaceProfile=Part.Face(myWireProfile)
+	myFaceProfile=Part.makeFace(myWireProfile)
 	aPrismVec=Base.Vector(0,0,myHeight)
 	myBody=Part.makePrism(myFaceProfile,aPrismVec)
 	

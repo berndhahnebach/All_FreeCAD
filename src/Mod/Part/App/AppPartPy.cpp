@@ -28,7 +28,9 @@
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
+# include <BRepBuilderAPI_MakeWire.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
@@ -42,8 +44,10 @@
 # include <Handle_Geom_Plane.hxx>
 # include <Standard_ConstructionError.hxx>
 # include <Standard_DomainError.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
+# include <TopoDS_Wire.hxx>
 # include <TColgp_HArray2OfPnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array1OfInteger.hxx>
@@ -421,6 +425,93 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeWire(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj)) {
+        BRepBuilderAPI_MakeWire mkWire;
+        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        if (sh.ShapeType() == TopAbs_EDGE)
+            mkWire.Add(TopoDS::Edge(sh));
+        else if (sh.ShapeType() == TopAbs_WIRE)
+            mkWire.Add(TopoDS::Wire(sh));
+        else {
+            PyErr_SetString(PyExc_TypeError, "shape is neither edge nor wire");
+            return 0;
+        }
+
+        try {
+            TopoDS_Wire wire = mkWire.Wire();
+            return new TopoShapePy(new TopoShape(wire));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj)) {
+        BRepBuilderAPI_MakeWire mkWire;
+        Py::List list(pcObj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            PyObject* item = (*it).ptr();
+            if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
+                TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                if (sh.ShapeType() == TopAbs_EDGE)
+                    mkWire.Add(TopoDS::Edge(sh));
+                else if (sh.ShapeType() == TopAbs_WIRE)
+                    mkWire.Add(TopoDS::Wire(sh));
+                else {
+                    PyErr_SetString(PyExc_TypeError, "shape is neither edge nor wire");
+                    return 0;
+                }
+            }
+            else {
+                PyErr_SetString(PyExc_TypeError, "shape is not a shape");
+                return 0;
+            }
+        }
+
+        try {
+            TopoDS_Wire wire = mkWire.Wire();
+            return new TopoShapePy(new TopoShape(wire));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    PyErr_SetString(PyExc_TypeError, "edge or list of edges and wires expected");
+    return 0;
+}
+
+static PyObject * makeFace(PyObject *self, PyObject *args)
+{
+    PyObject *pW;
+    if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
+        try {
+            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
+            if (sh.ShapeType() == TopAbs_WIRE) {
+                BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
+                TopoDS_Face face = mkFace.Face();
+                return new TopoShapePy(new TopoShape(face));
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    PyErr_SetString(PyExc_Exception, "wire expected");
+    return 0;
+}
+
 static PyObject * makePrism(PyObject *self, PyObject *args)
 {
     PyObject *pS, *pVec;
@@ -472,6 +563,10 @@ struct PyMethodDef Part_methods[] = {
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
      "By default angle=2*PI"},
+    {"makeWire" ,makeWire,METH_VARARGS,
+     "makeWire(list) -- Make a wire out of wires and edges"},
+    {"makeFace" ,makeFace,METH_VARARGS,
+     "makeFace(wire) -- Make a face out of a wire"},
     {"makePrism" ,makePrism,METH_VARARGS,
      "makePrism(Shape,Vector) -- Make a prism by sweeping a shape along a vector"},
     {NULL, NULL}        /* end of table marker */
