@@ -22,7 +22,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
@@ -82,6 +81,7 @@ using Base::Console;
 using namespace Part;
 using namespace std;
 
+extern const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError fe);
 
 /* module functions */
 static PyObject * open(PyObject *self, PyObject *args)
@@ -497,6 +497,11 @@ static PyObject * makeFace(PyObject *self, PyObject *args)
             TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
             if (sh.ShapeType() == TopAbs_WIRE) {
                 BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
+                if (!mkFace.IsDone()) {
+                    PyErr_SetString(PyExc_Exception, BRepBuilderAPI_FaceErrorText(mkFace.Error()));
+                    return 0;
+                }
+
                 TopoDS_Face face = mkFace.Face();
                 return new TopoShapePy(new TopoShape(face));
             }
@@ -533,7 +538,6 @@ static PyObject * makePrism(PyObject *self, PyObject *args)
 
     return 0;
 }
-
 
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
