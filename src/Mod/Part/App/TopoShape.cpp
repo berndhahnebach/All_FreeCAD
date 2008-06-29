@@ -38,6 +38,7 @@
 # include <Bnd_Box.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
+# include <BRepBuilderAPI_FaceError.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepBuilderAPI_Transform.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
@@ -79,6 +80,29 @@
 #include "TopoShape.h"
 
 using namespace Part;
+
+const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError et)
+{
+    switch (et)
+    {
+    case BRepBuilderAPI_FaceDone:
+        return "Construction was successful";
+    case BRepBuilderAPI_NoFace:
+        return "No face";
+    case BRepBuilderAPI_NotPlanar:
+        return "Face is not planar";
+    case BRepBuilderAPI_CurveProjectionFailed:
+        return "Curve projection failed";
+    case BRepBuilderAPI_ParametersOutOfRange:
+        return "Parameters out of range";
+    case BRepBuilderAPI_SurfaceNotC2:
+        return "Surface not C2-continous";
+    default:
+        return "Unknown creation error";
+    }
+}
+
+// ------------------------------------------------
 
 TYPESYSTEM_SOURCE(Part::TopoShape , Data::ComplexGeoData);
 
