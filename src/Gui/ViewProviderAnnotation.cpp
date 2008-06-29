@@ -25,6 +25,10 @@
 
 #ifndef _PreComp_
 # include <Inventor/nodes/SoAnnotation.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoFontStyle.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/nodes/SoTranslation.h>
 #endif
 # include <Inventor/nodes/SoAnnotation.h>
 
