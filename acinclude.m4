@@ -244,6 +244,7 @@ cat > myqt.cpp << EOF
 #include <QGlobalStatic>
 #include <QStringList>
 #include <stdio.h>
+#include <stdlib.h>
 int main( int argc, char **argv )
 {
   QCoreApplication app( argc, argv );

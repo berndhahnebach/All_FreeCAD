@@ -66,6 +66,7 @@
 #include "ViewProviderGeometryObject.h"
 #include "ViewProviderInventorObject.h"
 #include "ViewProviderAnnotation.h"
+#include "ViewProviderMeasureDistance.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -974,6 +975,7 @@ void Application::initTypes(void)
     Gui::ViewProviderGeometryObject             ::init();
     Gui::ViewProviderInventorObject             ::init();
     Gui::ViewProviderAnnotation                 ::init();
+    Gui::ViewProviderMeasureDistance            ::init();
 
     // Workbench
     Gui::Workbench                              ::init();

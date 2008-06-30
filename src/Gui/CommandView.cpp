@@ -44,12 +44,14 @@
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "WaitCursor.h"
+#include "ViewProviderMeasureDistance.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Reader.h>
 #include <App/Document.h>
+#include <App/MeasureDistance.h>
 #include <App/Feature.h>
 
 #include <QDomDocument>
@@ -1376,6 +1378,34 @@ void StdCmdTreeSelection::activated(int iMsg)
     }
 }
 
+//===========================================================================
+// Std_MeasureDistance
+//===========================================================================
+
+DEF_STD_CMD(StdCmdMeasureDistance);
+
+StdCmdMeasureDistance::StdCmdMeasureDistance()
+  : Command("Std_MeasureDistance")
+{
+    sGroup        = QT_TR_NOOP("View");
+    sMenuText     = QT_TR_NOOP("Measure distance");
+    sToolTipText  = QT_TR_NOOP("Measure distance");
+    sWhatsThis    = QT_TR_NOOP("Measure distance");
+    sStatusTip    = QT_TR_NOOP("Measure distance");
+    iAccel        = 0;
+}
+
+void StdCmdMeasureDistance::activated(int iMsg)
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        App::DocumentObject* obj = doc->getDocument()->addObject(App::MeasureDistance::getClassTypeId().getName(),"Distance");
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), ViewProviderMeasureDistance::measureDistanceCallback, obj);
+     }
+}
+
 
 //===========================================================================
 // Instanciation
@@ -1425,6 +1455,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewZoomOut());
   rcCmdMgr.addCommand(new StdViewBoxZoom());
   rcCmdMgr.addCommand(new StdCmdTreeSelection());
+  rcCmdMgr.addCommand(new StdCmdMeasureDistance());
 }
 
 } // namespace Gui
