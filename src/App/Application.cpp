@@ -76,6 +76,7 @@
 #include "DocumentObjectGroup.h"
 #include "InventorObject.h"
 #include "Annotation.h"
+#include "MeasureDistance.h"
 
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
@@ -727,7 +728,8 @@ void Application::initTypes(void)
     App ::Document                  ::init();
     App ::DocumentObjectGroup       ::init();
     App ::InventorObject            ::init();
-    App::Annotation                 ::init();
+    App ::Annotation                ::init();
+    App ::MeasureDistance           ::init();
 }
 
 void Application::initConfig(int argc, char ** argv)

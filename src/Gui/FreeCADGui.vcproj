@@ -4317,6 +4317,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ViewProviderMeasureDistance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ViewProviderMeasureDistance.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ViewProviderPy.xml"
 				>
 				<FileConfiguration

@@ -717,6 +717,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MeasureDistance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MeasureDistance.h"
+				>
+			</File>
+			<File
 				RelativePath="Placement.cpp"
 				>
 				<FileConfiguration
