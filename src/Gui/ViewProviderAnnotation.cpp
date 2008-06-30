@@ -30,7 +30,6 @@
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoTranslation.h>
 #endif
-# include <Inventor/nodes/SoAnnotation.h>
 
 #include "ViewProviderAnnotation.h"
 #include <App/PropertyGeo.h>
