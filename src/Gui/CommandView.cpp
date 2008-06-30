@@ -51,6 +51,7 @@
 #include <Base/FileInfo.h>
 #include <Base/Reader.h>
 #include <App/Document.h>
+#include <App/GeoFeature.h>
 #include <App/MeasureDistance.h>
 #include <App/Feature.h>
 
