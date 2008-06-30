@@ -1382,7 +1382,7 @@ void StdCmdTreeSelection::activated(int iMsg)
 // Std_MeasureDistance
 //===========================================================================
 
-DEF_STD_CMD(StdCmdMeasureDistance);
+DEF_STD_CMD_A(StdCmdMeasureDistance);
 
 StdCmdMeasureDistance::StdCmdMeasureDistance()
   : Command("Std_MeasureDistance")
@@ -1404,6 +1404,14 @@ void StdCmdMeasureDistance::activated(int iMsg)
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), ViewProviderMeasureDistance::measureDistanceCallback, obj);
      }
+}
+
+bool StdCmdMeasureDistance::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (doc && doc->countObjectsOfType(App::GeoFeature::getClassTypeId()) > 0)
+        return true;
+    return false;
 }
 
 

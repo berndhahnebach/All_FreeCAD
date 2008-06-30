@@ -52,7 +52,8 @@
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoClipPlaneManip.h>
-#include <Inventor/manips/SoTransformerManip.h> 
+#include <Inventor/manips/SoTransformerManip.h>
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoAntiSquish.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCallback.h> 
