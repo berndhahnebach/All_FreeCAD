@@ -21,41 +21,83 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERDrawing_H__
-#define __VIEWPROVIDERDrawing_H__
+#include "PreCompiled.h"
 
-#include <Gui/ViewProviderFeature.h>
+#ifndef _PreComp_
+
+#endif
+
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include <Base/Console.h>
+#include <Base/Parameter.h>
+#include <Base/Exception.h>
+#include <Base/Sequencer.h>
+#include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
+#include <App/Feature.h>
+#include <Gui/SoFCSelection.h>
+#include <Gui/Selection.h>
 
 
-namespace DrawingGui {
+#include "ViewProviderPage.h"
+
+//#include <Mod/Drawing/App/DrawingFeature.h>
 
 
-class DrawingGuiExport ViewProviderDrawing:public Gui::ViewProviderDocumentObject
+//#include "Tree.h"
+
+
+
+using namespace DrawingGui;
+
+PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentObject)
+
+
+//**************************************************************************
+// Construction/Destruction
+
+       
+ViewProviderDrawingPage::ViewProviderDrawingPage()
 {
-  PROPERTY_HEADER(DrawingGui::ViewProviderDrawing);
-
-public:
-  /// constructor
-  ViewProviderDrawing();
-  /// destructor
-  virtual ~ViewProviderDrawing();
 
 
-  virtual void attach(App::DocumentObject *);
-  virtual void setDisplayMode(const char* ModeName);
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Update the Drawing representation
-  //virtual void update(const ChangeType&);
+  sPixmap = "Page";
 
-  virtual void updateData(const App::Property*);
+}
 
-protected:
-
-};
-
-} // namespace DrawingGui
+ViewProviderDrawingPage::~ViewProviderDrawingPage()
+{
+}
 
 
-#endif // __VIEWPROVIDERDrawing_H__
+void ViewProviderDrawingPage::attach(App::DocumentObject *pcFeat)
+{
+  // call parent attach method
+  ViewProviderDocumentObject::attach(pcFeat);
+
+ 
+}
+
+void ViewProviderDrawingPage::setDisplayMode(const char* ModeName)
+{
+ 
+  ViewProviderDocumentObject::setDisplayMode( ModeName );
+}
+
+std::vector<std::string> ViewProviderDrawingPage::getDisplayModes(void) const
+{
+  // get the modes of the father
+  std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
+
+ 
+  return StrList;
+}
+
+void ViewProviderDrawingPage::updateData(const App::Property*)
+{
+
+
+}
+
 

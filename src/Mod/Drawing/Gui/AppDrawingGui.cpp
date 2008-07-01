@@ -19,7 +19,8 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
-#include "ViewProvider.h"
+#include "ViewProviderPage.h"
+#include "ViewProviderView.h"
 //#include "resources/qrc_Drawing.cpp"
 
 // use a different name to CreateCommand()
@@ -52,7 +53,8 @@ void DrawingGuiExport initDrawingGui()
     CreateDrawingCommands();
     DrawingGui::Workbench::init();
 
-    DrawingGui::ViewProviderDrawing::init();
+    DrawingGui::ViewProviderDrawingPage::init();
+    DrawingGui::ViewProviderDrawingView::init();
 
     // add resources and reloads the translators
     loadDrawingResource();
