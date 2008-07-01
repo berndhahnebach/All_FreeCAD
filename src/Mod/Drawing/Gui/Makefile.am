@@ -14,8 +14,10 @@ libDrawingGui_la_SOURCES=\
 		DrawingView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
-		ViewProvider.cpp \
-		ViewProvider.h \
+		ViewProviderPage.cpp \
+		ViewProviderPage.h \
+		ViewProviderView.cpp \
+		ViewProviderView.h \
 		Workbench.cpp \
 		Workbench.h
 
