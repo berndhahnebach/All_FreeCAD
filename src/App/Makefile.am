@@ -45,6 +45,7 @@ libFreeCADApp_la_SOURCES=\
 		InventorObject.cpp \
 		Material.cpp \
 		MaterialPy.cpp \
+		MeasureDistance.cpp \
 		Placement.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -75,6 +76,7 @@ include_HEADERS=\
 		InventorObject.h \
 		Material.h \
 		MaterialPy.h \
+		MeasureDistance.h \
 		Placement.h \
 		Property.h \
 		PropertyGeo.h \
