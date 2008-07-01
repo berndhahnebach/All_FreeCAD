@@ -256,6 +256,7 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderInventorObject.cpp \
 		ViewProviderPyImp.cpp \
 		ViewProviderDocumentObjectPyImp.cpp \
+		ViewProviderMeasureDistance.cpp \
 		ViewProviderPythonFeature.cpp \
 		WaitCursor.cpp \
 		WhatsThis.cpp \
@@ -328,6 +329,7 @@ include_HEADERS=\
 		ViewProviderAnnotation.h \
 		ViewProviderDocumentObject.h \
 		ViewProviderDocumentObjectGroup.h \
+		ViewProviderMeasureDistance.h \
 		ViewProviderExtern.h \
 		ViewProviderFeature.h \
 		ViewProviderGeometryObject.h \

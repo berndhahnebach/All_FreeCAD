@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoFontStyle.h>
