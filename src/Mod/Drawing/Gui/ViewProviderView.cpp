@@ -40,7 +40,7 @@
 #include <Gui/Selection.h>
 
 
-#include "ViewProvider.h"
+#include "ViewProviderView.h"
 
 //#include <Mod/Drawing/App/DrawingFeature.h>
 
@@ -51,14 +51,14 @@
 
 using namespace DrawingGui;
 
-PROPERTY_SOURCE(DrawingGui::ViewProviderDrawing, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingView, Gui::ViewProviderDocumentObject)
 
 
 //**************************************************************************
 // Construction/Destruction
 
        
-ViewProviderDrawing::ViewProviderDrawing()
+ViewProviderDrawingView::ViewProviderDrawingView()
 {
 
 
@@ -66,12 +66,12 @@ ViewProviderDrawing::ViewProviderDrawing()
 
 }
 
-ViewProviderDrawing::~ViewProviderDrawing()
+ViewProviderDrawingView::~ViewProviderDrawingView()
 {
 }
 
 
-void ViewProviderDrawing::attach(App::DocumentObject *pcFeat)
+void ViewProviderDrawingView::attach(App::DocumentObject *pcFeat)
 {
   // call parent attach method
   ViewProviderDocumentObject::attach(pcFeat);
@@ -79,13 +79,13 @@ void ViewProviderDrawing::attach(App::DocumentObject *pcFeat)
  
 }
 
-void ViewProviderDrawing::setDisplayMode(const char* ModeName)
+void ViewProviderDrawingView::setDisplayMode(const char* ModeName)
 {
  
   ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderDrawing::getDisplayModes(void) const
+std::vector<std::string> ViewProviderDrawingView::getDisplayModes(void) const
 {
   // get the modes of the father
   std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
@@ -94,7 +94,7 @@ std::vector<std::string> ViewProviderDrawing::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderDrawing::updateData(const App::Property*)
+void ViewProviderDrawingView::updateData(const App::Property*)
 {
 
 

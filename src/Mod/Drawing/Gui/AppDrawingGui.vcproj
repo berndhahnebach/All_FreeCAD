@@ -406,11 +406,19 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\ViewProvider.cpp"
+			RelativePath=".\ViewProviderPage.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\ViewProvider.h"
+			RelativePath=".\ViewProviderPage.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ViewProviderView.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ViewProviderView.h"
 			>
 		</File>
 		<File

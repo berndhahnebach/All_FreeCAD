@@ -103,7 +103,8 @@ public:
     virtual const char* getDefaultDisplayMode() const=0;
     /// returns a list of all possible display modes
     virtual std::vector<std::string> getDisplayModes(void) const=0;
-
+	/// is called wenn the view provider shut be edited. reeturns false if no edit possible.
+	virtual bool edit(void){return false;}
     virtual void setEdit(void){};
     virtual void unsetEdit(void){};
     virtual const char* getEditModeName(void){return 0;}
