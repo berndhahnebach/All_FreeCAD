@@ -50,6 +50,22 @@ MDIView::MDIView(Gui::Document* pcDocument,QWidget* parent, Qt::WFlags wflags)
 
 MDIView::~MDIView()
 {
+    //This view might be the focus widget of the main window. In this case we must
+    //clear the focus and e.g. set the focus directly to the main window, otherwise
+    //the application crashes when accessing this deleted view.
+    //This effect only occurs if this widget is not in Child mode, because otherwise
+    //the focus stuff is done correctly.
+    QWidget* foc = getMainWindow()->focusWidget();
+    if (foc) {
+        QWidget* par = foc;
+        while (par) {
+            if (par == this) {
+                getMainWindow()->setFocus();
+                break;
+            }
+            par = par->parentWidget();
+        }
+    }
 }
 
 void MDIView::onRelabel(Gui::Document *pDoc)
