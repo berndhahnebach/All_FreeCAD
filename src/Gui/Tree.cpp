@@ -149,13 +149,14 @@ Qt::DropActions TreeWidget::supportedDropActions () const
 
 void TreeWidget::mouseDoubleClickEvent ( QMouseEvent * event ) 
 {
-	QTreeWidgetItem* Item = itemAt(event->pos());
-	if (Item->type() == TreeWidget::DocumentType) {
-		QTreeWidget::mouseDoubleClickEvent(event);
-	}else if (Item->type() == TreeWidget::ObjectType) {
-		if(! (static_cast<DocumentObjectItem*>(Item)->object())->edit() )
-			QTreeWidget::mouseDoubleClickEvent(event);
-	}
+    QTreeWidgetItem* Item = itemAt(event->pos());
+    if (Item->type() == TreeWidget::DocumentType) {
+        QTreeWidget::mouseDoubleClickEvent(event);
+    }
+    else if (Item->type() == TreeWidget::ObjectType) {
+        if(!(static_cast<DocumentObjectItem*>(Item)->object())->edit())
+            QTreeWidget::mouseDoubleClickEvent(event);
+    }
 }
 
 QMimeData * TreeWidget::mimeData (const QList<QTreeWidgetItem *> items) const
