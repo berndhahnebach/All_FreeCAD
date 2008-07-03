@@ -30,6 +30,20 @@
 namespace Part
 {
 
+class AppPartExport ShapeSegment:public Data::Segment
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    ShapeSegment(const TopoDS_Shape &ShapeIn):Shape(ShapeIn){}
+    ShapeSegment(){}
+    virtual std::string getName();
+
+    TopoDS_Shape Shape;
+};
+
+
+
 /** The representation for a CAD Shape
  */
 class AppPartExport TopoShape : public Data::ComplexGeoData
@@ -44,10 +58,26 @@ public:
 
     void operator = (const TopoShape&);
 
+    /** @name Placment control */
+    //@{
+    /// set the transformation of the CasCade Shape
     void setTransform(const Base::Matrix4D& rclTrf);
+    /// get the transformation of the CasCade Shape
     Base::Matrix4D getTransform(void) const;
-
+    /// Bound box from the CasCade shape
     Base::BoundBox3d getBoundBox(void)const;
+    //@}
+
+    /** @name Subelement management
+    //@{
+    /** Sub type list
+     *  List of different sub element types
+     *  its NOT a list of the supelments itself
+     */
+    virtual std::vector<const char*> getElementTypes(void);
+    /// get the subelement by type and number
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long);
+    //@}
 
     /** @name Save/restore */
     //@{

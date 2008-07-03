@@ -31,6 +31,8 @@
 
 using namespace Data;
 
+TYPESYSTEM_SOURCE_ABSTRACT(Data::Segment , Base::BaseClass);
+
 
 TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistance);
 
@@ -41,6 +43,21 @@ ComplexGeoData::ComplexGeoData(void)
 
 ComplexGeoData::~ComplexGeoData(void)
 {
+}
+
+Data::Segment* ComplexGeoData::getSubElementByName(const char* Name)
+{
+    int i=0;
+    std::string temp;
+    while (Name[i] != 0)
+    {
+        if(Name[i]>=48 && Name[i]<=57)
+            break;
+        temp.push_back(Name[i]);
+        i++;
+    }
+    int n = atoi(&(Name[i]));
+    return getSubElement(temp.c_str(),n);
 }
 
 void ComplexGeoData::applyTransform(const Base::Matrix4D& rclTrf)

@@ -35,6 +35,19 @@
 namespace Data
 {
 
+/** Segments
+ *  Subelemenent type of the ComplexGeoData type
+ *  Its used to split a object in further sub parts
+ */
+class AppExport Segment: public Base::BaseClass
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    virtual std::string getName()=0;
+};
+
+
 /** Placement Object
  *  Handles the repositioning of data. Also can do grouping
  */
@@ -45,8 +58,21 @@ class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
 public:
     /// Constructor
     ComplexGeoData(void);
-  
+    /// Destructor
     virtual ~ComplexGeoData();
+
+    /** @name Subelement management
+    //@{
+    /** Sub type list
+     *  List of different sub element types
+     *  its NOT a list of the supelments itself
+     */
+    virtual std::vector<const char*> getElementTypes(void)=0;
+    /// get the subelement by type and number
+    virtual Segment* getSubElement(const char* Type, unsigned long)=0;
+    /// get subelent by combined name
+    virtual Segment* getSubElementByName(const char* Name);
+    //@}
 
     /** @name Placment control */
     //@{

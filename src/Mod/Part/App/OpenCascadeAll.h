@@ -81,8 +81,18 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Iterator.hxx>
+
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -176,15 +186,6 @@
 #include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_ListIteratorOfListOfShape.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
 
 #include <MMgt_TShared.hxx>
 #include <Precision.hxx>
