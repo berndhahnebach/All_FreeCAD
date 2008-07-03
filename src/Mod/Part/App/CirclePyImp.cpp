@@ -188,31 +188,33 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-#if 0 // for later use
 Py::Float CirclePy::getRadius(void) const
 {
-    return Py::Float(getGeom_CirclePtr()->Radius());
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+    return Py::Float(circle->Radius()); 
 }
 
 void  CirclePy::setRadius(Py::Float arg)
 {
-    getGeom_CirclePtr()->SetRadius((double)arg);
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+    circle->SetRadius((double)arg);
 }
 
-Py::Object CirclePy::getLocation(void) const
+Py::Object CirclePy::getCenter(void) const
 {
-    gp_Pnt loc = getGeom_CirclePtr()->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+    gp_Pnt loc = circle->Location();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return Py::Object(vec);
 }
 
-void  CirclePy::setLocation(Py::Object arg)
+void  CirclePy::setCenter(Py::Object arg)
 {
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d loc = static_cast<Base::VectorPy*>(p)->value();
-        getGeom_CirclePtr()->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+        circle->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -223,10 +225,10 @@ void  CirclePy::setLocation(Py::Object arg)
 
 Py::Object CirclePy::getAxis(void) const
 {
-    gp_Ax1 axis = getGeom_CirclePtr()->Axis();
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+    gp_Ax1 axis = circle->Axis();
     gp_Dir dir = axis.Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return Py::Object(vec);
 }
 
@@ -235,11 +237,17 @@ void  CirclePy::setAxis(Py::Object arg)
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
-        gp_Ax1 axis;
-        axis.SetLocation(getGeom_CirclePtr()->Location());
-        axis.SetDirection(gp_Dir(val.x, val.y, val.z));
-        gp_Dir dir = axis.Direction();
-        getGeom_CirclePtr()->SetAxis(axis);
+        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+        try {
+            gp_Ax1 axis;
+            axis.SetLocation(circle->Location());
+            axis.SetDirection(gp_Dir(val.x, val.y, val.z));
+            gp_Dir dir = axis.Direction();
+            circle->SetAxis(axis);
+        }
+        catch (Standard_Failure) {
+            throw Py::Exception("cannot set axis");
+        }
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -247,84 +255,7 @@ void  CirclePy::setAxis(Py::Object arg)
         throw Py::TypeError(error);
     }
 }
-#else // once redesigned remove this
-PyObject* CirclePy::setAxis(PyObject *args)
-{
-    PyObject *pyObject;
-    if (!PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type),&pyObject))
-        return NULL;
-    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
-    Base::Vector3d* val = pcObject->getVectorPtr();
-    Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    try {
-        gp_Ax1 axis;
-        axis.SetLocation(circle->Location());
-        axis.SetDirection(gp_Dir(v.x, v.y, v.z));
-        gp_Dir dir = axis.Direction();
-        circle->SetAxis(axis);
-    }
-    catch (Standard_Failure) {
-        PyErr_SetString(PyExc_Exception, "cannot set axis");
-        return NULL;
-    }
 
-    Py_Return; 
-}
-
-PyObject* CirclePy::axis(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))
-        return NULL;
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    gp_Ax1 axis = circle->Axis();
-    gp_Dir dir = axis.Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return vec; 
-}
-
-PyObject* CirclePy::setPosition(PyObject *args)
-{
-    PyObject *pyObject;
-    if (!PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pyObject))
-        return NULL;
-    Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pyObject);
-    Base::Vector3d* val = pcObject->getVectorPtr();
-    Base::Vector3f v((float)val->x,(float)val->y,(float)val->z);
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    circle->SetLocation(gp_Pnt(v.x, v.y, v.z));
-
-    Py_Return; 
-}
-
-PyObject* CirclePy::position(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))
-        return NULL;
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    gp_Pnt loc = circle->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return vec; 
-}
-
-PyObject* CirclePy::setRadius(PyObject *args)
-{
-    double Float;
-    if (!PyArg_ParseTuple(args, "d",&Float))
-        return NULL;
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    circle->SetRadius(Float);
-    Py_Return; 
-}
-
-PyObject* CirclePy::radius(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))
-        return NULL;                         
-    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-    return Py_BuildValue("d",circle->Radius()); 
-}
-#endif
 PyObject *CirclePy::getCustomAttributes(const char* attr) const
 {
     return 0;

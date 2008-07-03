@@ -102,9 +102,10 @@ const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError et)
     }
 }
 // ------------------------------------------------
+
 TYPESYSTEM_SOURCE(Part::ShapeSegment , Data::Segment);
 
-std::string ShapeSegment::getName()
+std::string ShapeSegment::getName() const
 {
     return std::string();
 }
@@ -131,7 +132,7 @@ TopoShape::TopoShape(const TopoShape& shape)
 {
 }
 
-std::vector<const char*> TopoShape::getElementTypes(void)
+std::vector<const char*> TopoShape::getElementTypes(void) const
 {
     std::vector<const char*> temp(3);
     temp.push_back("Vertex");
@@ -141,7 +142,7 @@ std::vector<const char*> TopoShape::getElementTypes(void)
     return temp;
 }
 
-Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n)
+Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
 {
     unsigned long i = 1;
 

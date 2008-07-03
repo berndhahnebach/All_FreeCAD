@@ -45,13 +45,13 @@ ComplexGeoData::~ComplexGeoData(void)
 {
 }
 
-Data::Segment* ComplexGeoData::getSubElementByName(const char* Name)
+Data::Segment* ComplexGeoData::getSubElementByName(const char* Name) const
 {
     int i=0;
     std::string temp;
     while (Name[i] != 0)
     {
-        if(Name[i]>=48 && Name[i]<=57)
+        if (Name[i]>=48 && Name[i]<=57)
             break;
         temp.push_back(Name[i]);
         i++;
