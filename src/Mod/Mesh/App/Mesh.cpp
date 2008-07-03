@@ -78,6 +78,44 @@ MeshObject::~MeshObject()
 {
 }
 
+std::vector<const char*> MeshObject::getElementTypes(void)
+{
+    std::vector<const char*> temp(1);
+    temp.push_back("Segment");
+
+    return temp;
+}
+
+Data::Segment* MeshObject::getSubElement(const char* Type, unsigned long n)
+{
+    unsigned long i = 1;
+
+    if ( Type[0]== 'S' && 
+         Type[1]== 'e' && 
+         Type[2]== 'g' && 
+         Type[3]== 'm' && 
+         Type[3]== 'e' && 
+         Type[3]== 'n' && 
+         Type[3]== 't' && 
+         Type[4]== '\0'){
+
+
+        // not implemented
+        assert(0);
+        return 0;
+        //TopExp_Explorer Ex(_Shape,TopAbs_FACE);
+        //while (Ex.More()) 
+        //{
+        //    if(i==n)
+        //        return new ShapeSegment(Ex.Current());
+        //    //M.Add(Ex.Current());
+        //    Ex.Next();
+        //    i++;
+        //}
+    } 
+    return 0;
+}
+
 void MeshObject::setTransform(const Base::Matrix4D& rclTrf)
 {
     _Mtrx = rclTrf;

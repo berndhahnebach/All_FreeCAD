@@ -686,8 +686,11 @@ void Application::initTypes(void)
     Base::BaseClass                 ::init();
     Base::Exception                 ::init();
     Base::Persistance               ::init();
+
     // Complex data classes
     Data::ComplexGeoData            ::init();
+    Data::Segment                   ::init();
+
     // Properties
     App ::Property                  ::init();
     App ::PropertyContainer         ::init();

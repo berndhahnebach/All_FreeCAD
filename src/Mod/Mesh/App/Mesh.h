@@ -69,6 +69,17 @@ public:
 
     void operator = (const MeshObject&);
 
+    /** @name Subelement management
+    //@{
+    /** Sub type list
+     *  List of different sub element types
+     *  its NOT a list of the supelments itself
+     */
+    virtual std::vector<const char*> getElementTypes(void);
+    /// get the subelement by type and number
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long);
+    //@}
+
 
     void setTransform(const Base::Matrix4D& rclTrf);
     Base::Matrix4D getTransform(void) const;

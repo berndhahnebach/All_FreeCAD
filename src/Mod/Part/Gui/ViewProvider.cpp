@@ -368,7 +368,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
     TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
     TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
 
-    int i=0;
+    int i=1;
     for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
         // get the shape and mesh it
         const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
@@ -485,7 +485,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
 
     coords->point.setNum(iCnt);
 
-    int i=0;
+    int i=1;
     for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
         // get the shape
         const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
@@ -518,7 +518,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 //  BRepMesh_Discret MESH(1.0,myShape,20.0);
     BRepMesh_IncrementalMesh MESH(myShape,this->meshDeviation);
 
-    int i = 0;
+    int i = 1;
     for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
         // get the shape and mesh it
         const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
