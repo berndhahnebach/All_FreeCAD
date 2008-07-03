@@ -37,7 +37,7 @@ class AppPartExport ShapeSegment:public Data::Segment
 public:
     ShapeSegment(const TopoDS_Shape &ShapeIn):Shape(ShapeIn){}
     ShapeSegment(){}
-    virtual std::string getName();
+    virtual std::string getName() const;
 
     TopoDS_Shape Shape;
 };
@@ -58,7 +58,7 @@ public:
 
     void operator = (const TopoShape&);
 
-    /** @name Placment control */
+    /** @name Placement control */
     //@{
     /// set the transformation of the CasCade Shape
     void setTransform(const Base::Matrix4D& rclTrf);
@@ -71,12 +71,12 @@ public:
     /** @name Subelement management
     //@{
     /** Sub type list
-     *  List of different sub element types
-     *  its NOT a list of the supelments itself
+     *  List of different subelement types
+     *  it is NOT a list of the subelements itself
      */
-    virtual std::vector<const char*> getElementTypes(void);
+    virtual std::vector<const char*> getElementTypes(void) const;
     /// get the subelement by type and number
-    virtual Data::Segment* getSubElement(const char* Type, unsigned long);
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
 
     /** @name Save/restore */

@@ -14,56 +14,24 @@
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>Describes a circle in 3D space</UserDocu>
     </Documentation>
-    <Methode Name="setAxis">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="axis">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="setPosition">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="position">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="setRadius">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="radius">
-      <Documentation>
-        <UserDocu></UserDocu>
-      </Documentation>
-    </Methode>
-    <!--
     <Attribute Name="Radius" ReadOnly="false">
       <Documentation>
-        <UserDocu>List of vertexes in this shape.</UserDocu>
+        <UserDocu>The radius of the circle.</UserDocu>
       </Documentation>
       <Parameter Name="Radius" Type="Float"/>
     </Attribute>
-    <Attribute Name="Location" ReadOnly="false">
+    <Attribute Name="Center" ReadOnly="false">
       <Documentation>
         <UserDocu>List of vertexes in this shape.</UserDocu>
       </Documentation>
-      <Parameter Name="Location" Type="Object"/>
+      <Parameter Name="Center" Type="Object"/>
     </Attribute>
     <Attribute Name="Axis" ReadOnly="false">
       <Documentation>
-        <UserDocu>List of vertexes in this shape.</UserDocu>
+        <UserDocu>The axis direction of the circle</UserDocu>
       </Documentation>
       <Parameter Name="Axis" Type="Object"/>
     </Attribute>
-	-->
 	<ClassDeclarations>public:
       CirclePy(const Geom_Circle &amp; circ, PyTypeObject *T = &amp;Type)
       :GeometryPy(new GeomCircle(new Geom_Circle(circ)),T){}

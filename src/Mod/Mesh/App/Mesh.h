@@ -75,9 +75,9 @@ public:
      *  List of different sub element types
      *  its NOT a list of the supelments itself
      */
-    virtual std::vector<const char*> getElementTypes(void);
+    virtual std::vector<const char*> getElementTypes(void) const;
     /// get the subelement by type and number
-    virtual Data::Segment* getSubElement(const char* Type, unsigned long);
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
 
 

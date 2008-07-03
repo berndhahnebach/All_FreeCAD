@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <gp.hxx>
 # include <gp_Lin.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
@@ -158,6 +159,54 @@ Py::Object LinePy::getStartPoint(void) const
     return Py::Object(vec);
 }
 
+void LinePy::setStartPoint(Py::Object arg)
+{
+    gp_Pnt p1, p2;
+    Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+        (this->getGeomLineSegmentPtr()->handle());
+    p2 = this_curv->EndPoint();
+
+    PyObject *p = arg.ptr();
+    if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
+        Base::Vector3d v = static_cast<Base::VectorPy*>(p)->value();
+        p1.SetX(v.x);
+        p1.SetY(v.y);
+        p1.SetZ(v.z);
+    }
+    else if (PyTuple_Check(p)) {
+        Py::Tuple tuple(arg);
+        p1.SetX((double)Py::Float(tuple.getItem(0)));
+        p1.SetY((double)Py::Float(tuple.getItem(1)));
+        p1.SetZ((double)Py::Float(tuple.getItem(2)));
+    }
+    else {
+        std::string error = std::string("type must be 'Vector' or tuple, not ");
+        error += p->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+
+    try {
+        // Create line out of two points
+        if (p1.Distance(p2) < gp::Resolution()) Standard_Failure::Raise("Both points are equal");
+        GC_MakeSegment ms(p1, p2);
+        if (!ms.IsDone()) {
+            throw Py::Exception(gce_ErrorStatusText(ms.Status()));
+        }
+
+        // get Geom_Line of line segment
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        Handle_Geom_TrimmedCurve that_curv = ms.Value();
+        Handle_Geom_Line that_line = Handle_Geom_Line::DownCast(that_curv->BasisCurve());
+        this_line->SetLin(that_line->Lin());
+        this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Py::Exception(e->GetMessageString());
+    }
+}
+
 Py::Object LinePy::getEndPoint(void) const
 {
     Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
@@ -166,6 +215,54 @@ Py::Object LinePy::getEndPoint(void) const
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
     return Py::Object(vec);
+}
+
+void LinePy::setEndPoint(Py::Object arg)
+{
+    gp_Pnt p1, p2;
+    Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+        (this->getGeomLineSegmentPtr()->handle());
+    p1 = this_curv->StartPoint();
+
+    PyObject *p = arg.ptr();
+    if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
+        Base::Vector3d v = static_cast<Base::VectorPy*>(p)->value();
+        p2.SetX(v.x);
+        p2.SetY(v.y);
+        p2.SetZ(v.z);
+    }
+    else if (PyTuple_Check(p)) {
+        Py::Tuple tuple(arg);
+        p2.SetX((double)Py::Float(tuple.getItem(0)));
+        p2.SetY((double)Py::Float(tuple.getItem(1)));
+        p2.SetZ((double)Py::Float(tuple.getItem(2)));
+    }
+    else {
+        std::string error = std::string("type must be 'Vector' or tuple, not ");
+        error += p->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+
+    try {
+        // Create line out of two points
+        if (p1.Distance(p2) < gp::Resolution()) Standard_Failure::Raise("Both points are equal");
+        GC_MakeSegment ms(p1, p2);
+        if (!ms.IsDone()) {
+            throw Py::Exception(gce_ErrorStatusText(ms.Status()));
+        }
+
+        // get Geom_Line of line segment
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        Handle_Geom_TrimmedCurve that_curv = ms.Value();
+        Handle_Geom_Line that_line = Handle_Geom_Line::DownCast(that_curv->BasisCurve());
+        this_line->SetLin(that_line->Lin());
+        this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Py::Exception(e->GetMessageString());
+    }
 }
 
 PyObject *LinePy::getCustomAttributes(const char* /*attr*/) const
