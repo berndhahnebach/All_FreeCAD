@@ -79,35 +79,35 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             PyErr_SetString(PyExc_Exception, "creation of arc failed");
             return -1;
         }
-    }
+	}else {
 
-    PyErr_Clear();
-    PyObject* type;
-    PyObject *pV1, *pV2, *pV3;
-    if (PyArg_ParseTuple(args, "O!O!O!O!", &(PyType_Type), &type,
-                                           &(Base::VectorPy::Type), &pV1,
-                                           &(Base::VectorPy::Type), &pV2,
-                                           &(Base::VectorPy::Type), &pV3)) {
-        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
-        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
-        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
-        union PyType_Object circleType = {&Part::CirclePy::Type};
-        if (type == circleType.o) {
-            GC_MakeArcOfCircle arc(gp_Pnt(v1.x,v1.y,v1.z),
-                                   gp_Pnt(v2.x,v2.y,v2.z),
-                                   gp_Pnt(v3.x,v3.y,v3.z));
-            if (!arc.IsDone()) {
-                PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
-                return -1;
-            }
+		PyErr_Clear();
+		PyObject *pV1, *pV2, *pV3;
+		if (PyArg_ParseTuple(args, "O!O!O!", 
+											   &(Base::VectorPy::Type), &pV1,
+											   &(Base::VectorPy::Type), &pV2,
+											   &(Base::VectorPy::Type), &pV3)) {
+			Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+			Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+			Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
 
-            getGeomTrimmedCurvePtr()->setHandle(arc.Value());
-            return 0;
-        }
-    }
+			GC_MakeArcOfCircle arc(gp_Pnt(v1.x,v1.y,v1.z),
+								   gp_Pnt(v2.x,v2.y,v2.z),
+								   gp_Pnt(v3.x,v3.y,v3.z));
+			if (!arc.IsDone()) {
+				PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+				return -1;
+			}
 
-    PyErr_SetString(PyExc_TypeError, "Arc constructor expects a curve and a parameter range");
-    return -1;
+			getGeomTrimmedCurvePtr()->setHandle(arc.Value());
+			return 0;
+			
+		} else {
+
+			PyErr_SetString(PyExc_TypeError, "Arc constructor expects a curve and a parameter range");
+			return -1;
+		}
+	}
 }
 
 PyObject *ArcPy::getCustomAttributes(const char* /*attr*/) const

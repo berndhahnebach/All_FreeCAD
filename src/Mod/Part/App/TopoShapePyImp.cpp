@@ -603,7 +603,7 @@ Py::String TopoShapePy::getShapeType(void) const
     switch (type)
     {
     case TopAbs_COMPOUND:
-        name = "Compund";
+        name = "Compound";
         break;
     case TopAbs_COMPSOLID:
         name = "CompSolid";
