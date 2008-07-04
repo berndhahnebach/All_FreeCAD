@@ -255,20 +255,19 @@ PyObject* Application::sGetParam(PyObject * /*self*/, PyObject *args,PyObject * 
 
 PyObject* Application::sGetConfig(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-    char *pstr=0;
+    char *pstr;
 
-    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
-    if (pstr) // if parameter give deticated group
-        return Py_BuildValue("s",GetApplication()._mConfig[pstr].c_str());
-    else {
-        PyObject *pDict = PyDict_New();
-        for (std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();
-             It!=GetApplication()._mConfig.end();It++) {
-            PyDict_SetItemString(pDict,It->first.c_str(),PyString_FromString(It->second.c_str()));
-        }
-        return pDict;
+    const std::map<std::string, std::string>& Map = GetApplication().Config();
 
+    std::map<std::string, std::string>::const_iterator it = Map.find(pstr);
+    if (it != Map.end()) {
+        return Py_BuildValue("s",it->second.c_str());
+    }
+    else {
+        // do not set an error because this may break existing python code
+        return PyString_FromString("");
     }
 }
 

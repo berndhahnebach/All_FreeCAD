@@ -852,7 +852,7 @@ Command* CommandManager::getCommandByName(const char* sName) const
     return ( it != _sCommands.end() ) ? it->second : 0;
 }
 
-void CommandManager::runCommandByName (const char* sName)
+void CommandManager::runCommandByName (const char* sName) const
 {
     Command* pCmd = getCommandByName(sName);
 
