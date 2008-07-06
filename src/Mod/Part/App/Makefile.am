@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libPart.la Part.la
 BUILT_SOURCES=\
 		ArcPy.cpp \
 		CirclePy.cpp \
+		EllipsePy.cpp \
 		GeometryPy.cpp \
 		LinePy.cpp \
 		PartFeaturePy.cpp \
@@ -21,6 +22,7 @@ BUILT_SOURCES=\
 libPart_la_BUILT=\
 		ArcPy.h \
 		CirclePy.h \
+		EllipsePy.h \
 		GeometryPy.h \
 		LinePy.h \
 		PartFeaturePy.h \
@@ -38,6 +40,7 @@ libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
+		EllipsePyImp.cpp \
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
 		FeaturePartBoolean.cpp \
@@ -157,6 +160,7 @@ EXTRA_DIST = \
 		OpenCascadeAll.h \
 		ArcPy.xml \
 		CirclePy.xml \
+		EllipsePy.xml \
 		GeometryPy.xml \
 		LinePy.xml \
 		PartFeaturePy.xml \

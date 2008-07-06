@@ -36,42 +36,7 @@
 
 using namespace Part;
 
-const char* gce_ErrorStatusText(gce_ErrorType et)
-{
-    switch (et)
-    {
-    case gce_Done:
-        return "Construction was successful";
-    case gce_ConfusedPoints:
-        return "Two points are coincident";
-    case gce_NegativeRadius:
-        return "Radius value is negative";
-    case gce_ColinearPoints:
-        return "Three points are collinear";
-    case gce_IntersectionError:
-        return "Intersection cannot be computed";
-    case gce_NullAxis:
-        return "Axis is undefined";
-    case gce_NullAngle:
-        return "Angle value is invalid (usually null)";
-    case gce_NullRadius:
-        return "Radius is null";
-    case gce_InvertAxis:
-        return "Axis value is invalid";
-    case gce_BadAngle:
-        return "Angle value is invalid";
-    case gce_InvertRadius:
-        return "Radius value is incorrect (usually with respect to another radius)";
-    case gce_NullFocusLength:
-        return "Focal distance is null";
-    case gce_NullVector:
-        return "Vector is null";
-    case gce_BadEquation:
-        return "Coefficients are incorrect (applies to the equation of a geometric object)";
-    default:
-        return "Creation of geometry failed";
-    }
-}
+extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
 const char *CirclePy::representation(void) const
