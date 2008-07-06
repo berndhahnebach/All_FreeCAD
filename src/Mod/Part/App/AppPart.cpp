@@ -41,6 +41,7 @@
 #include "TopoShapeShellPy.h"
 #include "LinePy.h"
 #include "CirclePy.h"
+#include "EllipsePy.h"
 #include "ArcPy.h"
 
 extern struct PyMethodDef Part_methods[];
@@ -76,6 +77,7 @@ void AppPartExport initPart()
 
     AddType(&Part::LinePy   ::Type,partModule,"Line");
     AddType(&Part::CirclePy ::Type,partModule,"Circle");
+    AddType(&Part::EllipsePy::Type,partModule,"Ellipse");
     AddType(&Part::ArcPy    ::Type,partModule,"Arc");
 
 #if 1

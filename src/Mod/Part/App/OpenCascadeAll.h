@@ -133,7 +133,9 @@
 #include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GC_MakeArcOfCircle.hxx>
+#include <GC_MakeArcOfEllipse.hxx>
 #include <GC_MakeCircle.hxx>
+#include <GC_MakeEllipse.hxx>
 #include <GC_MakeLine.hxx>
 #include <GC_MakeSegment.hxx>
 

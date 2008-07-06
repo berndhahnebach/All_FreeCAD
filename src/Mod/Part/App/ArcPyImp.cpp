@@ -27,12 +27,14 @@
 # include <Geom_Circle.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <GC_MakeArcOfCircle.hxx>
+# include <GC_MakeArcOfEllipse.hxx>
 #endif
 
 // inclusion of the generated files (generated out of ArcPy.xml)
 #include "ArcPy.h"
 #include "ArcPy.cpp"
 #include "CirclePy.h"
+#include "EllipsePy.h"
 #include <Base/VectorPy.h>
 
 using namespace Part;
@@ -102,8 +104,33 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!dd|i", &(Part::EllipsePy::Type), &o, &u1, &u2, &sense)) {
+        try {
+            Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast
+                (static_cast<EllipsePy*>(o)->getGeomEllipsePtr()->handle());
+            GC_MakeArcOfEllipse arc(ellipse->Elips(), u1, u2, sense);
+            if (!arc.IsDone()) {
+                PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+                return -1;
+            }
+
+            getGeomTrimmedCurvePtr()->setHandle(arc.Value());
+            return 0;
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
+        }
+        catch (...) {
+            PyErr_SetString(PyExc_Exception, "creation of arc failed");
+            return -1;
+        }
+    }
+
     // All checks failed
-    PyErr_SetString(PyExc_TypeError, "Arc constructor expects a curve and a parameter range");
+    PyErr_SetString(PyExc_TypeError, "Arc constructor expects a conic curve and a parameter range");
     return -1;
 }
 

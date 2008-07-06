@@ -22,7 +22,7 @@
     </Attribute>
     <Attribute Name="Center" ReadOnly="false">
       <Documentation>
-        <UserDocu>List of vertexes in this shape.</UserDocu>
+        <UserDocu>Center of the circle.</UserDocu>
       </Documentation>
       <Parameter Name="Center" Type="Object"/>
     </Attribute>
