@@ -27,11 +27,13 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
+# include <Geom_Ellipse.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
+# include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
 # include <Standard_Real.hxx>
 #endif

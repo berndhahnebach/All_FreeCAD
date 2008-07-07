@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 # include <gp_Circ.hxx>
 # include <Geom_Circle.hxx>
+# include <gp_Elips.hxx>
+# include <Geom_Ellipse.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <GC_MakeArcOfCircle.hxx>
 # include <GC_MakeArcOfEllipse.hxx>

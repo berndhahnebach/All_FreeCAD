@@ -60,7 +60,7 @@ public:
     /// Destructor
     virtual ~ComplexGeoData();
 
-    /** @name Subelement management
+    /** @name Subelement management */
     //@{
     /** Sub type list
      *  List of different subelement types
