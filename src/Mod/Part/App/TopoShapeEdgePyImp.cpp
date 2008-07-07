@@ -2,6 +2,10 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeEdge.hxx>
+# include <Geom_Curve.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TopoDS_Edge.hxx>
+# include <Standard_Failure.hxx>
 #endif
 
 #include "Mod/Part/App/TopoShape.h"

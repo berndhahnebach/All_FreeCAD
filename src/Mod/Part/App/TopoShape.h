@@ -68,7 +68,7 @@ public:
     Base::BoundBox3d getBoundBox(void)const;
     //@}
 
-    /** @name Subelement management
+    /** @name Subelement management */
     //@{
     /** Sub type list
      *  List of different subelement types
