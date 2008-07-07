@@ -6,6 +6,7 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 # include <BRepCheck_Result.hxx>
+# include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepTools.hxx>
 # include <gp_Ax1.hxx>
 # include <gp_Trsf.hxx>
@@ -20,12 +21,14 @@
 #include <Base/Matrix.h>
 #include <Base/Rotation.h>
 #include <Base/MatrixPy.h>
-#include "TopoShape.h"
+#include <Base/Vector3D.h>
+#include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of TopoShapePy.xml)
+#include "TopoShape.h"
 #include "TopoShapePy.h"
 #include "TopoShapePy.cpp"
 
+#include "GeometryPy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeEdgePy.h"
 #include "TopoShapeWirePy.h"
@@ -62,16 +65,35 @@ PyObject *TopoShapePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // 
 
 int TopoShapePy::PyInit(PyObject* args, PyObject*)
 {
-    PyObject *pcObj=0;
-    if (!PyArg_ParseTuple(args, "|O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
-        return -1;                             // NULL triggers exception
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))
+        return -1;
 
-    // if a shape is given
-    if (pcObj) {
-        TopoDS_Shape sh = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-        getTopoShapePtr()->_Shape = sh;
+    TopoShape shape;
+    try {
+        Py::List list(pcObj);
+        bool first = true;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
+                TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
+                    getGeometryPtr()->toShape();
+                if (first) {
+                    first = false;
+                    shape._Shape = sh;
+                }
+                else {
+                    shape._Shape = shape.fuse(sh);
+                }
+            }
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return -1;
     }
 
+    getTopoShapePtr()->_Shape = shape._Shape;
     return 0;
 }
 
@@ -461,6 +483,28 @@ PyObject* TopoShapePy::fillet(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
+}
+
+PyObject* TopoShapePy::toPrism(PyObject *args)
+{
+    PyObject *pVec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
+        try {
+            TopoDS_Shape shape = this->getTopoShapePtr()->_Shape;
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            if (shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+            BRepPrimAPI_MakePrism mkPrism(shape, gp_Vec(vec.x,vec.y,vec.z));
+            shape = mkPrism.Shape();
+            return new TopoShapePy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
 }
 
 PyObject*  TopoShapePy::reverse(PyObject *args)

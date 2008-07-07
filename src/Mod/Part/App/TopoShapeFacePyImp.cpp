@@ -42,16 +42,15 @@ PyObject *TopoShapeFacePy::PyMake(struct _typeobject *, PyObject *, PyObject *) 
 // constructor method
 int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    if (PyArg_ParseTuple(args, "")) {
-        getTopoShapePtr()->_Shape = TopoDS_Face();
-        return 0;
-    }
-
-    PyErr_Clear();
     PyObject *pW;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
         try {
             TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
+            if (sh.IsNull()) {
+                PyErr_SetString(PyExc_Exception, "cannot create face out of empty wire");
+                return -1;
+            }
+
             if (sh.ShapeType() == TopAbs_WIRE) {
                 BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
                 getTopoShapePtr()->_Shape = mkFace.Face();
