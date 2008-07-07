@@ -90,6 +90,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Make fillet.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="toPrism">
+      <Documentation>
+        <UserDocu>Make a prism by sweeping along a direction.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="reverse">
       <Documentation>
         <UserDocu>Reverses the orientation of this shape.</UserDocu>
