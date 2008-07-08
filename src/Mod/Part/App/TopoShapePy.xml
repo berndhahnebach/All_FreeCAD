@@ -85,14 +85,19 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Apply scaling with point and factor to this shape.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="fillet">
+    <Methode Name="makeFillet">
       <Documentation>
         <UserDocu>Make fillet.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="toPrism">
+    <Methode Name="makePrism">
       <Documentation>
         <UserDocu>Make a prism by sweeping along a direction.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="makePipe">
+      <Documentation>
+        <UserDocu>Make a pip by sweeping along a wire.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="reverse">

@@ -581,18 +581,3 @@ TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
     BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
     return mkTrf.Shape();
 }
-
-TopoDS_Shape TopoShape::makeFillet(double radius) const
-{
-    BRepFilletAPI_MakeFillet mkFillet(this->_Shape);
-    TopExp_Explorer aEdgeExplorer(this->_Shape , TopAbs_EDGE);
-
-    while(aEdgeExplorer.More()) {
-        TopoDS_Edge aEdge = TopoDS::Edge(aEdgeExplorer.Current());
-        //Add edge to fillet algorithm
-        mkFillet.Add(radius, aEdge);
-        aEdgeExplorer.Next();
-    }
-
-    return mkFillet.Shape();
-}

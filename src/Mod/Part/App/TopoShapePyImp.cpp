@@ -6,11 +6,14 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 # include <BRepCheck_Result.hxx>
+# include <BRepFilletAPI_MakeFillet.hxx>
+# include <BRepOffsetAPI_MakePipe.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepTools.hxx>
 # include <gp_Ax1.hxx>
 # include <gp_Trsf.hxx>
 # include <TopExp_Explorer.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
 # include <TopLoc_Location.hxx>
@@ -468,24 +471,67 @@ PyObject*  TopoShapePy::scale(PyObject *args)
     }
 }
 
-PyObject* TopoShapePy::fillet(PyObject *args)
+PyObject* TopoShapePy::makeFillet(PyObject *args)
 {
+    // use one radius for all edges
     double radius;
-    if (!PyArg_ParseTuple(args, "d", &radius))
-        return NULL;
+    PyObject *obj;
+    if (PyArg_ParseTuple(args, "dO!", &radius, &(PyList_Type), &obj)) {
+        try {
+            const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+            BRepFilletAPI_MakeFillet mkFillet(shape);
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& edge = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    if (edge.ShapeType() == TopAbs_EDGE) {
+                        //Add edge to fillet algorithm
+                        mkFillet.Add(radius, TopoDS::Edge(edge));
+                    }
+                }
+            }
+            return new TopoShapePy(new TopoShape(mkFillet.Shape()));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return NULL;
+        }
+    }
 
-    try {
-        TopoDS_Shape shape = this->getTopoShapePtr()->makeFillet(radius);
-        return new TopoShapePy(new TopoShape(shape));
+    // use two radii for all edges
+    PyErr_Clear();
+    double radius1, radius2;
+    if (PyArg_ParseTuple(args, "ddO!", &radius1, &radius2, &(PyList_Type), &obj)) {
+        try {
+            const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+            BRepFilletAPI_MakeFillet mkFillet(shape);
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& edge = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    if (edge.ShapeType() == TopAbs_EDGE) {
+                        //Add edge to fillet algorithm
+                        mkFillet.Add(radius1, radius2, TopoDS::Edge(edge));
+                    }
+                }
+            }
+            return new TopoShapePy(new TopoShape(mkFillet.Shape()));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return NULL;
+        }
     }
-    catch (Standard_Failure) {
-        Handle_Standard_Failure e = Standard_Failure::Caught();
-        PyErr_SetString(PyExc_Exception, e->GetMessageString());
-        return NULL;
-    }
+
+    PyErr_SetString(PyExc_TypeError, "This method accepts:\n"
+        "-- one radius and a list of edges\n"
+        "-- two radii and a list of edges");
+    return NULL;
 }
 
-PyObject* TopoShapePy::toPrism(PyObject *args)
+PyObject* TopoShapePy::makePrism(PyObject *args)
 {
     PyObject *pVec;
     if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
@@ -495,6 +541,31 @@ PyObject* TopoShapePy::toPrism(PyObject *args)
             if (shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
             BRepPrimAPI_MakePrism mkPrism(shape, gp_Vec(vec.x,vec.y,vec.z));
             shape = mkPrism.Shape();
+            return new TopoShapePy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+PyObject* TopoShapePy::makePipe(PyObject *args)
+{
+    PyObject *pShape;
+    if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pShape)) {
+        try {
+            TopoDS_Shape shape = this->getTopoShapePtr()->_Shape;
+            if (shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+            TopoDS_Shape wire = static_cast<TopoShapePy*>(pShape)->getTopoShapePtr()->_Shape;
+            if (wire.IsNull()) Standard_Failure::Raise("cannot sweep along empty wire");
+            if (wire.ShapeType() != TopAbs_WIRE)
+                Standard_Failure::Raise("spine shape is not a wire");
+            BRepOffsetAPI_MakePipe mkPipe(TopoDS::Wire(wire),shape);
+            shape = mkPipe.Shape();
             return new TopoShapePy(new TopoShape(shape));
         }
         catch (Standard_Failure) {
