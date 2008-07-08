@@ -115,7 +115,6 @@ public:
     /** @name Manipulation*/
     //@{
     TopoDS_Shape transform(const Base::Matrix4D&) const;
-    TopoDS_Shape makeFillet(double radius) const;
     //@}
 
     TopoDS_Shape _Shape;

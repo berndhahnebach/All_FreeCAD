@@ -69,7 +69,7 @@ public:
 
     void operator = (const MeshObject&);
 
-    /** @name Subelement management
+    /** @name Subelement management */
     //@{
     /** Sub type list
      *  List of different sub element types

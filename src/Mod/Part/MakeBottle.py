@@ -27,7 +27,7 @@ def makeBottle(myWidth, myHeight, myThickness):
 	aPrismVec=Base.Vector(0,0,myHeight)
 	myBody=Part.makePrism(myFaceProfile,aPrismVec)
 	
-	myBody=myBody.fillet(myThickness/12.0)
+	myBody=myBody.makeFillet(myThickness/12.0,myBody.Edges)
 	
 	neckLocation=Base.Vector(0,0,myHeight)
 	neckNormal=Base.Vector(0,0,1)
