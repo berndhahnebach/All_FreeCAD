@@ -28,7 +28,10 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <fstream>
+# include <climits>
+# include <cstring>
 # if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 # include <unistd.h>
 # include <sys/stat.h>
@@ -48,8 +51,6 @@
 #define new DEBUG_CLIENTBLOCK
 
 using namespace Base;
-using namespace std;
-
 
 FileInfo::FileInfo (const char* _FileName)
 {
@@ -87,12 +88,12 @@ std::string FileInfo::getTempFileName(void)
     char buf[MAX_PATH + 2];
     // this already creates the file
     GetTempFileName(getTempPath(),"FCTempFile",0,buf);
-    return string(buf);
+    return std::string(buf);
 #else
     char buf[PATH_MAX+1];
-    strncpy(buf, getTempPath(), PATH_MAX);
+    std::strncpy(buf, getTempPath(), PATH_MAX);
     buf[PATH_MAX] = 0; // null termination needed
-    strcat(buf, "/fileXXXXXX");
+    std::strcat(buf, "/fileXXXXXX");
     /*int id =*/ mkstemp(buf);
     //FILE* file = fdopen(id, "w");
     return std::string(buf);
@@ -139,7 +140,7 @@ std::string FileInfo::fileNamePure () const
     std::string temp = fileName();
     std::string::size_type pos = temp.find_last_of('.');
   
-    if (pos != string::npos)
+    if (pos != std::string::npos)
         return temp.substr(0,pos);
     else 
         return temp;

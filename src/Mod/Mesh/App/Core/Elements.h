@@ -26,6 +26,8 @@
 
 #include <functional>
 #include <vector>
+#include <climits>
+#include <cstring>
 
 #include "Definitions.h"
 

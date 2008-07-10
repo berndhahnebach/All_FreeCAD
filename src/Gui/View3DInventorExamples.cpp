@@ -37,8 +37,8 @@
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/draggers/SoTransformerDragger.h>
 
-#include <float.h>
-
+# include <float.h>
+# include <cstring>
 #endif
 
 #include "../Base/Console.h"

@@ -26,6 +26,7 @@
 # include <stdio.h>
 # include <math.h>
 # include <memory>
+# include <cstring>
 #endif
 
 

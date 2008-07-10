@@ -30,6 +30,7 @@
 
 #include <assert.h>
 #include <set>
+#include <cstring>
 
 
 namespace Base
