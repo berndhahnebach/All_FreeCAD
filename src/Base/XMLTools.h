@@ -30,6 +30,7 @@
 
 
 // Include files
+#include <memory>
 #include <iostream>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/util/XMLString.hpp>

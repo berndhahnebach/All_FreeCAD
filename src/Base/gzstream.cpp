@@ -29,7 +29,8 @@
 
 #include "gzstream.h"
 #include <assert.h>
-#include <string>  // for memcpy
+#include <string>
+#include <cstring>  // for memcpy
 
 
 namespace Base {

@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <stdio.h>
+# include <algorithm>
 #endif
 
 #include "Sequencer.h"

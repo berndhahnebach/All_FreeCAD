@@ -718,7 +718,7 @@ Action * PythonCommand::createAction(void)
     pcAction->setToolTip(getResource("ToolTip"));
     pcAction->setStatusTip(getResource("StatusTip"));
     pcAction->setWhatsThis(getResource("WhatsThis"));
-    if (getResource("Pixmap") != "")
+    if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
 
     if ( pcAction->statusTip().isEmpty() )

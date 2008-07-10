@@ -28,6 +28,7 @@
 #include "Elements.h"
 #include <Base/Matrix.h>
 #include <Base/Vector3D.h>
+#include <climits>
 
 namespace MeshCore {
 
