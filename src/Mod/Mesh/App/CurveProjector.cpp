@@ -43,6 +43,7 @@
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 
+#if FC_USE_OCC
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <Geom_Curve.hxx>
@@ -672,10 +673,4 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
 }
 
-
-
-
-
-
-
-
+#endif

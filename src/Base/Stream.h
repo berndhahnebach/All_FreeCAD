@@ -25,14 +25,12 @@
 #define BASE_STREAM_H
 
 
-#ifndef _PreComp_
-# include <fstream>
-# include <ios>
-# include <iostream>
-# include <sstream>
-# include <string>
-# include <vector>
-#endif
+#include <fstream>
+#include <ios>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace Base {
 

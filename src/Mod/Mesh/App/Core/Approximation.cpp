@@ -25,10 +25,6 @@
 #include "Approximation.h"
 
 #ifndef _PreComp_
-# include <math_Matrix.hxx>
-# include <gp_Ax2.hxx>
-# include <gp_Dir.hxx>
-# include <math_Gauss.hxx>
 #endif
 
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprQuadraticFit3.h>
@@ -448,7 +444,6 @@ bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, flo
     return bResult;
 }
 
-
 bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, float &rfCurv1 )
 {
     assert( _bIsFitted );
@@ -462,6 +457,14 @@ bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, flo
     return bResult;
 }
 
+//FIXME: Replace with non-OCC classes
+//FIXME: Move Projection to Part module
+//FIXME: Move CurveProjector to Part module
+//FIXME: MOve MeshAlgos to Part module
+# include <math_Matrix.hxx>
+# include <gp_Ax2.hxx>
+# include <gp_Dir.hxx>
+# include <math_Gauss.hxx>
 float SurfaceFit::PolynomFit()
 {
     if (PlaneFit::Fit() == FLOAT_MAX)
