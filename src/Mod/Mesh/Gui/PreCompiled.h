@@ -46,9 +46,6 @@
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
-// OCC
-#include <TopoDS_Edge.hxx>
-
 #include <Python.h>
 #ifdef FC_OS_WIN32
 # include <windows.h>
