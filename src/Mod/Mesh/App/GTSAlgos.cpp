@@ -44,18 +44,6 @@
 #include <Base/FileInfo.h>
 #include <Base/Console.h>
 
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <BRep_Tool.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <GeomLProp_CLProps.hxx>
-
 using namespace Mesh;
 using namespace MeshCore;
 

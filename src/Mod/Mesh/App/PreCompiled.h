@@ -63,27 +63,6 @@
 // Python
 #include <Python.h>
 
-// OpenCASCADE
-#include <Bnd_Box.hxx>
-#include <BndLib_Add3dCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepMesh_Discret.hxx>
-#include <BRepMesh_Triangle.hxx>
-#include <BRepMesh_Edge.hxx>
-#include <GCPnts_UniformDeflection.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <math_Gauss.hxx>
-#include <math_Matrix.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shape.hxx>
-
 
 #endif //_PreComp_
 

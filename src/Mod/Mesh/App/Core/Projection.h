@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <Base/Vector3D.h>
-
+#ifdef FC_USE_OCC
 using Base::Vector3f;
 
 class TopoDS_Edge;
@@ -80,6 +80,6 @@ private:
 };
 
 } // namespace MeshCore
-
+#endif
 
 #endif  // MESH_PROJECTION_H 

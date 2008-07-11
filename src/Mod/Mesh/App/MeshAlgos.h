@@ -79,6 +79,7 @@ public:
   static void fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* pSurface);
 #endif
 
+#ifdef FC_USE_OCC
   static void cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh);
 
   /// helper to discredicice a Edge...
@@ -104,11 +105,10 @@ public:
 /*
   static bool projectPointToMesh(MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex);
 */
-
+#endif
 
 };
 
-
-
 } // namespace Mesh
+
 #endif 

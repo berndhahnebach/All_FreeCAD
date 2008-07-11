@@ -28,6 +28,7 @@
 #  include <gts.h>
 #endif
 
+#ifdef FC_USE_OCC
 #include <gp_Pln.hxx>
 
 #include <Base/Vector3D.h>
@@ -154,7 +155,8 @@ protected:
   virtual void Do();
 };
 
-
-
 } // namespace Mesh
-#endif 
+
+#endif // FC_USE_OCC
+
+#endif

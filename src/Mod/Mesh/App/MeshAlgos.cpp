@@ -45,18 +45,6 @@
 #include <Base/Console.h>
 #include <Base/Builder3D.h>
 
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <BRep_Tool.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <GeomLProp_CLProps.hxx>
-
 using namespace Mesh;
 using namespace MeshCore;
 
@@ -418,6 +406,20 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* 
 
 #endif
 
+#if FC_USE_OCC
+
+#include <TopExp_Explorer.hxx>
+#include <TopExp.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomAPI_IntCS.hxx>
+#include <GeomLProp_CLProps.hxx>
+
 void MeshAlgos::cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh)
 {
 
@@ -583,3 +585,4 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
 
 }
 
+#endif
