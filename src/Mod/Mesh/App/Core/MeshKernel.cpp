@@ -889,7 +889,7 @@ void MeshKernel::Smooth(int iterations, float d_max)
     for (int i=0; i<iterations; i++) {
         Base::Vector3f N, L;
         for (v_it.Begin(); v_it.More(); v_it.Next()) {
-            MeshPlaneFit pf;
+            MeshCore::PlaneFit pf;
             pf.AddPoint(*v_it);
             center = *v_it;
             cv = vv_it[v_it.Position()];
