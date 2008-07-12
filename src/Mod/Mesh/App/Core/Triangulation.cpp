@@ -25,10 +25,8 @@
 #ifndef _PreComp_
 #endif
 
-#include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
-#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
-
 #include "Triangulation.h"
+#include "Approximation.h"
 #include "MeshKernel.h"
 #include "triangle.h"
 
@@ -486,46 +484,25 @@ std::vector<Base::Vector3f> MeshPolygonTriangulation::GetPolygon() const
 
 Base::Vector3f MeshPolygonTriangulation::TransformToFitPlane(Base::Matrix4D& rInverse)
 {
-    float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
-    sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
+    PlaneFit planeFit;
+    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it!=_points.end(); ++it)
+        planeFit.AddPoint(*it);
 
-    for ( std::vector<Base::Vector3f>::iterator it = _points.begin(); it!=_points.end(); ++it) {
-        sxx += it->x * it->x; sxy += it->x * it->y;
-        sxz += it->x * it->z; syy += it->y * it->y;
-        syz += it->y * it->z; szz += it->z * it->z;
-        mx += it->x; my += it->y; mz += it->z;
-    }
+    planeFit.Fit();
 
-    unsigned int nSize = _points.size();
-    sxx = sxx - mx*mx/((float)nSize);
-    sxy = sxy - mx*my/((float)nSize);
-    sxz = sxz - mx*mz/((float)nSize);
-    syy = syy - my*my/((float)nSize);
-    syz = syz - my*mz/((float)nSize);
-    szz = szz - mz*mz/((float)nSize);
+    Base::Vector3f bs = planeFit.GetBase();
+    Base::Vector3f ex = planeFit.GetDirU();
+    Base::Vector3f ey = planeFit.GetDirV();
+    Base::Vector3f ez = planeFit.GetNormal();
 
-    // Kovarianzmatrix
-    Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-    Wm4::Matrix3<float> rkRot, rkDiag;
-    akMat.EigenDecomposition(rkRot, rkDiag);
-
-    Wm4::Vector3<float> U = rkRot.GetColumn(1);
-    Wm4::Vector3<float> V = rkRot.GetColumn(2);
-    Wm4::Vector3<float> W = rkRot.GetColumn(0);
-    Wm4::Vector3<float> B = Wm4::Vector3<float>(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
-
-    Base::Vector3f bs(B.X(), B.Y(), B.Z());
-    Base::Vector3f ex(U.X(), U.Y(), U.Z());
-    Base::Vector3f ey(V.X(), V.Y(), V.Z());
-
-    for ( std::vector<Base::Vector3f>::iterator jt = _points.begin(); jt!=_points.end(); ++jt )
+    for (std::vector<Base::Vector3f>::iterator jt = _points.begin(); jt!=_points.end(); ++jt)
         jt->TransformToCoordinateSystem(bs, ex, ey);
 
     // build the matrix for the inverse transformation
     rInverse.unity();
-    rInverse[0][0] = U.X(); rInverse[0][1] = V.X(); rInverse[0][2] = W.X(); rInverse[0][3] = bs.x;
-    rInverse[1][0] = U.Y(); rInverse[1][1] = V.Y(); rInverse[1][2] = W.Y(); rInverse[1][3] = bs.y;
-    rInverse[2][0] = U.Z(); rInverse[2][1] = V.Z(); rInverse[2][2] = W.Z(); rInverse[2][3] = bs.z;
+    rInverse[0][0] = ex.x; rInverse[0][1] = ey.x; rInverse[0][2] = ez.x; rInverse[0][3] = bs.x;
+    rInverse[1][0] = ex.y; rInverse[1][1] = ey.y; rInverse[1][2] = ez.y; rInverse[1][3] = bs.y;
+    rInverse[2][0] = ex.z; rInverse[2][1] = ey.z; rInverse[2][2] = ez.z; rInverse[2][3] = bs.z;
 
-    return Base::Vector3f(W.X(), W.Y(), W.Z());
+    return ez;
 }

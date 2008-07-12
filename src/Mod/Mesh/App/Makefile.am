@@ -338,15 +338,7 @@ libMesh_la_LIBADD   = \
 		-lboost_filesystem \
 		-lboost_regex \
 		-lFreeCADBase \
-		-lFreeCADApp \
-		-lTKernel \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKMath \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKBRep \
-		-lTKTopAlgo
+		-lFreeCADApp
 
 #--------------------------------------------------------------------------------------
 # Loader of libMesh
@@ -365,7 +357,7 @@ Mesh_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I$(top_srcdir)/src/3rdParty $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 endif
 endif
