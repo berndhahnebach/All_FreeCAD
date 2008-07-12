@@ -132,6 +132,9 @@ public:
      * Destruction
      */
     virtual ~PlaneFit(){};
+    Base::Vector3f GetBase() const;
+    Base::Vector3f GetDirU() const;
+    Base::Vector3f GetDirV() const;
     /**
      * Returns the normal of the fitted plane. If Fit() has not been called the null vector is
      * returned.
@@ -164,7 +167,9 @@ public:
 
 protected:
     Base::Vector3f _vBase; /**< Base vector of the plane. */
-    Base::Vector3f _vNormal; /**< Normal of the plane. */
+    Base::Vector3f _vDirU;
+    Base::Vector3f _vDirV;
+    Base::Vector3f _vDirW; /**< Normal of the plane. */
 };
 
 // -------------------------------------------------------------------------------
@@ -269,6 +274,7 @@ public:
                           Base::Vector3f &rkDir0, Base::Vector3f &rkDir1, float &dDistance);
     bool GetCurvatureInfo(float x, float y, float z, float &rfCurv0, float &rfcurv1);
     float Fit();
+    float Value(float x, float y) const;
 
 protected:
     float PolynomFit();

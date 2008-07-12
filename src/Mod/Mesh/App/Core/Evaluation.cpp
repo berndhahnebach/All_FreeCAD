@@ -34,6 +34,7 @@
 #include "Evaluation.h"
 #include "Iterator.h"
 #include "Algorithm.h"
+#include "Approximation.h"
 #include "MeshIO.h"
 #include "Helpers.h"
 #include "Grid.h"
@@ -885,269 +886,143 @@ void MeshKernel::RebuildNeighbours (void)
 // ----------------------------------------------------------------
 
 MeshEigensystem::MeshEigensystem (const MeshKernel &rclB)
- : MeshEvaluation(rclB), _cU(1.0f, 0.0f, 0.0f), _cV(0.0f, 1.0f, 0.0f), _cW(0.0f, 0.0f, 1.0f)
+  : MeshEvaluation(rclB), _cU(1.0f, 0.0f, 0.0f), _cV(0.0f, 1.0f, 0.0f), _cW(0.0f, 0.0f, 1.0f)
 {
-  // use the values of world coordinates as default
-  Base::BoundBox3f box = _rclMesh.GetBoundBox();
-  _fU = box.LengthX();
-  _fV = box.LengthY();
-  _fW = box.LengthZ();
+    // use the values of world coordinates as default
+    Base::BoundBox3f box = _rclMesh.GetBoundBox();
+    _fU = box.LengthX();
+    _fV = box.LengthY();
+    _fW = box.LengthZ();
 }
 
 Base::Matrix4D MeshEigensystem::Transform() const
 {
-  // x,y,c ... vectors
-  // R,Q   ... matrices (R is orthonormal so its transposed(=inverse) is equal to Q)
-  //
-  // from local (x) to world (y,c) coordinates we have the equation
-  // y = R * x  + c
-  //     <==> 
-  // x = Q * y - Q * c
-  Base::Matrix4D clTMat;
-  // rotation part
-  clTMat[0][0] = _cU.x; clTMat[0][1] = _cU.y; clTMat[0][2] = _cU.z; clTMat[0][3] = 0.0f;
-  clTMat[1][0] = _cV.x; clTMat[1][1] = _cV.y; clTMat[1][2] = _cV.z; clTMat[1][3] = 0.0f;
-  clTMat[2][0] = _cW.x; clTMat[2][1] = _cW.y; clTMat[2][2] = _cW.z; clTMat[2][3] = 0.0f;
-  clTMat[3][0] =  0.0f; clTMat[3][1] =  0.0f; clTMat[3][2] =  0.0f; clTMat[3][3] = 1.0f;
+    // x,y,c ... vectors
+    // R,Q   ... matrices (R is orthonormal so its transposed(=inverse) is equal to Q)
+    //
+    // from local (x) to world (y,c) coordinates we have the equation
+    // y = R * x  + c
+    //     <==> 
+    // x = Q * y - Q * c
+    Base::Matrix4D clTMat;
+    // rotation part
+    clTMat[0][0] = _cU.x; clTMat[0][1] = _cU.y; clTMat[0][2] = _cU.z; clTMat[0][3] = 0.0f;
+    clTMat[1][0] = _cV.x; clTMat[1][1] = _cV.y; clTMat[1][2] = _cV.z; clTMat[1][3] = 0.0f;
+    clTMat[2][0] = _cW.x; clTMat[2][1] = _cW.y; clTMat[2][2] = _cW.z; clTMat[2][3] = 0.0f;
+    clTMat[3][0] =  0.0f; clTMat[3][1] =  0.0f; clTMat[3][2] =  0.0f; clTMat[3][3] = 1.0f;
 
-  Base::Vector3f c(_cC);
-  c = clTMat * c;
+    Base::Vector3f c(_cC);
+    c = clTMat * c;
 
-  // translation part
-  clTMat[0][3] = -c.x; clTMat[1][3] = -c.y; clTMat[2][3] = -c.z;
+    // translation part
+    clTMat[0][3] = -c.x; clTMat[1][3] = -c.y; clTMat[2][3] = -c.z;
 
-  return clTMat;
+    return clTMat;
 }
 
 bool MeshEigensystem::Evaluate()
 {
-  CalculateLocalSystem();
+    CalculateLocalSystem();
 
-  float xmin=0.0f, xmax=0.0f, ymin=0.0f, ymax=0.0f, zmin=0.0f, zmax=0.0f;
+    float xmin=0.0f, xmax=0.0f, ymin=0.0f, ymax=0.0f, zmin=0.0f, zmax=0.0f;
 
-  Base::Vector3f clVect, clProj;
-  float fH;
+    Base::Vector3f clVect, clProj;
+    float fH;
 
-  const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
-  for (MeshPointArray::_TConstIterator it = aclPoints.begin(); it!=aclPoints.end(); ++it)
-  {
-    // u-Richtung
-    clVect = *it - _cC;
-    clProj.ProjToLine(clVect, _cU);
-    clVect = clVect + clProj;
-    fH = clVect.Length();
+    const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
+    for (MeshPointArray::_TConstIterator it = aclPoints.begin(); it!=aclPoints.end(); ++it) {
+        // u-Richtung
+        clVect = *it - _cC;
+        clProj.ProjToLine(clVect, _cU);
+        clVect = clVect + clProj;
+        fH = clVect.Length();
+      
+        // zeigen Vektoren in die gleiche Richtung ?
+        if ((clVect * _cU) < 0.0f)
+            fH = -fH;
+
+        xmax = std::max<float>(xmax, fH);
+        xmin = std::min<float>(xmin, fH);
+
+        // v-Richtung
+        clVect = *it - _cC;
+        clProj.ProjToLine(clVect, _cV);
+        clVect = clVect + clProj;
+        fH = clVect.Length();
   
-    // zeigen Vektoren in die gleiche Richtung ?
-    if ( (clVect * _cU) < 0.0f)
-      fH = -fH;
+        // zeigen Vektoren in die gleiche Richtung ?
+        if ((clVect * _cV) < 0.0f)
+          fH = -fH;
 
-    xmax = std::max<float>(xmax, fH);
-    xmin = std::min<float>(xmin, fH);
+        ymax = std::max<float>(ymax, fH);
+        ymin = std::min<float>(ymin, fH);
 
-    // v-Richtung
-    clVect = *it - _cC;
-    clProj.ProjToLine(clVect, _cV);
-    clVect = clVect + clProj;
-    fH = clVect.Length();
+        // w-Richtung
+        clVect = *it - _cC;
+        clProj.ProjToLine(clVect, _cW);
+        clVect = clVect + clProj;
+        fH = clVect.Length();
   
-    // zeigen Vektoren in die gleiche Richtung ?
-    if ( (clVect * _cV) < 0.0f)
-      fH = -fH;
+        // zeigen Vektoren in die gleiche Richtung ?
+        if ((clVect * _cW) < 0.0f)
+            fH = -fH;
 
-    ymax = std::max<float>(ymax, fH);
-    ymin = std::min<float>(ymin, fH);
+        zmax = std::max<float>(zmax, fH);
+        zmin = std::min<float>(zmin, fH);
+    }
 
-    // w-Richtung
-    clVect = *it - _cC;
-    clProj.ProjToLine(clVect, _cW);
-    clVect = clVect + clProj;
-    fH = clVect.Length();
-  
-    // zeigen Vektoren in die gleiche Richtung ?
-    if ( (clVect * _cW) < 0.0f)
-      fH = -fH;
+    _fU = xmax - xmin;
+    _fV = ymax - ymin;
+    _fW = zmax - zmin;
 
-    zmax = std::max<float>(zmax, fH);
-    zmin = std::min<float>(zmin, fH);
-  }
-
-  _fU = xmax - xmin;
-  _fV = ymax - ymin;
-  _fW = zmax - zmin;
-
-  return false; // to call Fixup() if needed
+    return false; // to call Fixup() if needed
 }
 
 Base::Vector3f MeshEigensystem::GetBoundings() const
 {
-  return Base::Vector3f ( _fU, _fV, _fW );
+    return Base::Vector3f ( _fU, _fV, _fW );
 }
 
 void MeshEigensystem::CalculateLocalSystem()
 {
-  // at least one facet is needed
-  if ( _rclMesh.CountFacets() < 1 )
-    return; // cannot continue calculation
-#if 0
-/*
-  std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  std::vector<MeshPoint>::iterator it;
+    // at least one facet is needed
+    if (_rclMesh.CountFacets() < 1)
+        return; // cannot continue calculation
 
-  float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-  m00 = m01 = m02 = 0.0f;
-  m10 = m11 = m12 = 0.0f;
-  m20 = m21 = m22 = 0.0f;
+    const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
+    MeshPointArray::_TConstIterator it;
 
-  float fSumArea=0.0f;
-  Vector3f cGravity;
+    PlaneFit planeFit;
+    for (it = aclPoints.begin(); it!=aclPoints.end(); ++it)
+        planeFit.AddPoint(*it);
 
-  // get the center of mass for the mesh
-  MeshFacetIterator cIter( _rclMesh );
-  for ( cIter.Init(); cIter.More(); cIter.Next() )
-  {
-    float fArea = MeshFacetFunc::Area( *cIter );
-    fSumArea += fArea;
-    cGravity += (fArea * cIter->GetGravityPoint());
-  }
+    planeFit.Fit();
+    _cC = planeFit.GetBase();
+    _cU = planeFit.GetDirU();
+    _cV = planeFit.GetDirV();
+    _cW = planeFit.GetNormal();
 
-  cGravity = cGravity / fSumArea;
-
-  for ( cIter.Init(); cIter.More(); cIter.Next() )
-  {
-    Vector3f d = ( cIter->GetGravityPoint() - cGravity );
-    float fArea = MeshFacetFunc::Area( *cIter );
-    m00 += fArea * d.x * d.x; m01 += fArea * d.x * d.y; m02 += fArea * d.x * d.z;
-    m10 += fArea * d.y * d.x; m11 += fArea * d.y * d.y; m12 += fArea * d.y * d.z;
-    m20 += fArea * d.z * d.x; m21 += fArea * d.z * d.y; m22 += fArea * d.z * d.z;
-  }
-
-  Matrix3<float> akMat(m00,m01,m02,m10,m11,m12,m20,m21,m22);
-
-  unsigned nSize = 1;
-  float mx = cGravity.x;
-  float my = cGravity.y;
-  float mz = cGravity.z;
-
-#elif 1
-
-  float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-  m00 = m01 = m02 = 0.0f;
-  m10 = m11 = m12 = 0.0f;
-  m20 = m21 = m22 = 0.0f;
-
-  float fSumArea=0.0f;
-  Vector3f cGravity;
-  MeshRefPointToFacets cPt2Fac( _rclMesh );
-  MeshPointIterator cP (_rclMesh);
-  std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  std::vector<MeshPoint>::iterator it;
-
-  unsigned long pos=0;
-  for ( MeshRefPointToFacets::iterator it2 = cPt2Fac.begin(); it2 != cPt2Fac.end(); it2++ )
-  {
-    float fArea = 0.0f;
-    const std::set<MeshFacetArray::_TIterator>& facs = *it2;
-    for ( std::set<MeshFacetArray::_TIterator>::const_iterator cI = facs.begin(); cI != facs.end(); cI++ )
+    // set the sign for the vectors
+    float fSumU, fSumV, fSumW;
+    fSumU = fSumV = fSumW = 0.0f;
+    for (it = aclPoints.begin(); it!=aclPoints.end(); ++it)
     {
-      fArea += MeshFacetFunc::Area( MeshFacetFunc::ToGeomFacet(_rclMesh, **cI) );
+        float fU = _cU * (*it - _cC);
+        float fV = _cV * (*it - _cC);
+        float fW = _cW * (*it - _cC);
+        fSumU += (fU > 0 ? fU * fU : -fU * fU);
+        fSumV += (fV > 0 ? fV * fV : -fV * fV);
+        fSumW += (fW > 0 ? fW * fW : -fW * fW);
     }
 
-    cP.Set( pos++ );
-    cGravity += fArea * (*cP);
-  }
+    // avoid ambiguities concerning directions
+    if (fSumU < 0.0f)
+        _cU *= -1.0f;
+    if (fSumV < 0.0f)
+        _cV *= -1.0f;
+    if (fSumW < 0.0f)
+        _cW *= -1.0f;
 
-  MeshFacetIterator cIter(_rclMesh);
-  for ( cIter.Init(); cIter.More(); cIter.Next() )
-  {
-    float fArea = MeshFacetFunc::Area( *cIter );
-    fSumArea += fArea;
-  }
-
-  cGravity = cGravity / (3.0f*fSumArea);
-
-  pos=0;
-  for ( it2 = cPt2Fac.begin(); it2 != cPt2Fac.end(); it2++ )
-  {
-    cP.Set( pos++ );
-    Vector3f d = ( *cP - cGravity );
-    float fArea = 0.0f;
-    const std::set<MeshFacetArray::_TIterator>& facs = *it2;
-    for ( std::set<MeshFacetArray::_TIterator>::const_iterator cI = facs.begin(); cI != facs.end(); cI++ )
-    {
-      fArea += MeshFacetFunc::Area( MeshFacetFunc::ToGeomFacet(_rclMesh, **cI) );
-    }
-    m00 += fArea * d.x * d.x; m01 += fArea * d.x * d.y; m02 += fArea * d.x * d.z;
-    m10 += fArea * d.y * d.x; m11 += fArea * d.y * d.y; m12 += fArea * d.y * d.z;
-    m20 += fArea * d.z * d.x; m21 += fArea * d.z * d.y; m22 += fArea * d.z * d.z;
-  }
-
-  Matrix3<float> akMat(m00,m01,m02,m10,m11,m12,m20,m21,m22);
-
-  unsigned nSize = 1;
-  float mx = cGravity.x;
-  float my = cGravity.y;
-  float mz = cGravity.z;
-*/
-#else
-
-  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
-  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
-
-  const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
-  MeshPointArray::_TConstIterator it;
-  for ( it = aclPoints.begin(); it!=aclPoints.end(); ++it)
-  {
-    sxx += it->x * it->x; sxy += it->x * it->y;
-    sxz += it->x * it->z; syy += it->y * it->y;
-    syz += it->y * it->z; szz += it->z * it->z;
-    mx += it->x; my += it->y; mz += it->z;
-  }
-
-  unsigned nSize = aclPoints.size();
-  sxx = sxx - mx*mx/((float)nSize);
-  sxy = sxy - mx*my/((float)nSize);
-  sxz = sxz - mx*mz/((float)nSize);
-  syy = syy - my*my/((float)nSize);
-  syz = syz - my*mz/((float)nSize);
-  szz = szz - mz*mz/((float)nSize);
-
-  // Kovarianzmatrix
-  Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-#endif
-
-  Wm4::Matrix3<float> rkRot, rkDiag;
-  akMat.EigenDecomposition(rkRot, rkDiag);
-
-  Wm4::Vector3<float> U = rkRot.GetColumn(0);
-  Wm4::Vector3<float> V = rkRot.GetColumn(1);
-  Wm4::Vector3<float> W = rkRot.GetColumn(2);
-
-  _cC.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
-  _cU.Set(U.X(), U.Y(), U.Z());
-  _cV.Set(V.X(), V.Y(), V.Z());
-  _cW.Set(W.X(), W.Y(), W.Z());
-
-  // set the sign for the vectors
-  float fSumU, fSumV, fSumW;
-  fSumU = fSumV = fSumW = 0.0f;
-  for ( it = aclPoints.begin(); it!=aclPoints.end(); ++it )
-  {
-    float fU = _cU * ( *it - _cC );
-    float fV = _cV * ( *it - _cC );
-    float fW = _cW * ( *it - _cC );
-    fSumU += (fU > 0 ? fU * fU : -fU * fU);
-    fSumV += (fV > 0 ? fV * fV : -fV * fV);
-    fSumW += (fW > 0 ? fW * fW : -fW * fW);
-  }
-
-  // avoid ambiguities concerning directions
-  if ( fSumU < 0.0f )
-    _cU *= -1.0f;
-  if ( fSumV < 0.0f )
-    _cV *= -1.0f;
-  if ( fSumW < 0.0f )
-    _cW *= -1.0f;
-
-  if ((_cU%_cV)*_cW < 0.0f)
-    _cW = -_cW; // make a right-handed system
+    if ((_cU%_cV)*_cW < 0.0f)
+        _cW = -_cW; // make a right-handed system
 }
