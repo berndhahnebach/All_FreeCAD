@@ -386,7 +386,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -395,7 +395,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+						CommandLine="python ../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -752,30 +752,6 @@
 			</File>
 			<File
 				RelativePath="InputSource.h"
-				>
-			</File>
-			<File
-				RelativePath="Interpreter.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Interpreter.h"
 				>
 			</File>
 			<File
@@ -1560,6 +1536,30 @@
 		<Filter
 			Name="Python"
 			>
+			<File
+				RelativePath="Interpreter.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Interpreter.h"
+				>
+			</File>
 			<File
 				RelativePath="PyExport.cpp"
 				>

@@ -6,6 +6,8 @@
 // inclusion of the generated files (generated out of PlacementPy.xml)
 #include "PlacementPy.h"
 #include "PlacementPy.cpp"
+#include "Matrix.h"
+#include "MatrixPy.h"
 #include "VectorPy.h"
 
 using namespace Base;
@@ -33,9 +35,33 @@ PyObject *PlacementPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // 
 }
 
 // constructor method
-int PlacementPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    return 0;
+    PyObject* o;
+    if (PyArg_ParseTuple(args, "")) {
+        return 0;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(Base::MatrixPy::Type), &o)) {
+        Base::Matrix4D mat = static_cast<Base::MatrixPy*>(o)->value();
+        getPlacementPtr()->fromMatrix(mat);
+        return 0;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
+        Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
+        getPlacementPtr()->_pos = plm->_pos;
+        getPlacementPtr()->_q[0] = plm->_q[0];
+        getPlacementPtr()->_q[1] = plm->_q[1];
+        getPlacementPtr()->_q[2] = plm->_q[2];
+        getPlacementPtr()->_q[3] = plm->_q[3];
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "empty parameter list, matrix or placement expected");
+    return -1;
 }
 
 PyObject* PlacementPy::move(PyObject * args)

@@ -43,6 +43,20 @@
 #include "CirclePy.h"
 #include "EllipsePy.h"
 #include "ArcPy.h"
+//#include "BezierCurvePy.h"
+//#include "BSplineCurvePy.h"
+//#include "HyperbolaPy.h"
+//#include "OffsetCurvePy.h"
+//#include "ParabolaPy.h"
+//#include "BezierSurfacePy.h"
+//#include "BSplineSurfacePy.h"
+//#include "CylinderPy.h"
+//#include "OffsetSurfacePy.h"
+//#include "PlanePy.h"
+//#include "SpherePy.h"
+//#include "SurfaceOfLinearExtrusionPy.h"
+//#include "SurfaceOfRevolutionPy.h"
+//#include "ToroidPy.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -65,20 +79,20 @@ void AppPartExport initPart()
     Base::Console().Log("Loading Part module... done\n");
 
     // Add Types to module
-    AddType(&Part::TopoShapePy         ::Type,partModule,"Shape");
-    AddType(&Part::TopoShapeVertexPy   ::Type,partModule,"Vertex");
-    AddType(&Part::TopoShapeWirePy     ::Type,partModule,"Wire");
-    AddType(&Part::TopoShapeEdgePy     ::Type,partModule,"Edge");
-    AddType(&Part::TopoShapeSolidPy    ::Type,partModule,"Solid");
-    AddType(&Part::TopoShapeFacePy     ::Type,partModule,"Face");
-    AddType(&Part::TopoShapeCompoundPy ::Type,partModule,"Compound");
-    AddType(&Part::TopoShapeCompSolidPy::Type,partModule,"CompSolid");
-    AddType(&Part::TopoShapeShellPy    ::Type,partModule,"Shell");
+    AddType(&Part::TopoShapePy          ::Type,partModule,"Shape");
+    AddType(&Part::TopoShapeVertexPy    ::Type,partModule,"Vertex");
+    AddType(&Part::TopoShapeWirePy      ::Type,partModule,"Wire");
+    AddType(&Part::TopoShapeEdgePy      ::Type,partModule,"Edge");
+    AddType(&Part::TopoShapeSolidPy     ::Type,partModule,"Solid");
+    AddType(&Part::TopoShapeFacePy      ::Type,partModule,"Face");
+    AddType(&Part::TopoShapeCompoundPy  ::Type,partModule,"Compound");
+    AddType(&Part::TopoShapeCompSolidPy ::Type,partModule,"CompSolid");
+    AddType(&Part::TopoShapeShellPy     ::Type,partModule,"Shell");
 
-    AddType(&Part::LinePy   ::Type,partModule,"Line");
-    AddType(&Part::CirclePy ::Type,partModule,"Circle");
-    AddType(&Part::EllipsePy::Type,partModule,"Ellipse");
-    AddType(&Part::ArcPy    ::Type,partModule,"Arc");
+    AddType(&Part::LinePy               ::Type,partModule,"Line");
+    AddType(&Part::CirclePy             ::Type,partModule,"Circle");
+    AddType(&Part::EllipsePy            ::Type,partModule,"Ellipse");
+    AddType(&Part::ArcPy                ::Type,partModule,"Arc");
 
 #if 1
     Py::Module mod(partModule);

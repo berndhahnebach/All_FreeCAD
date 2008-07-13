@@ -23,5 +23,30 @@ It describes the common behavior of these objects when:
         <UserDocu>Create a shape from the geometry</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="mirror">
+      <Documentation>
+        <UserDocu>Performs the symmetrical transformation of this geometric object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="rotate">
+      <Documentation>
+        <UserDocu>Rotates this geometric object at angle Ang (in radians) about axis</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="scale">
+      <Documentation>
+        <UserDocu>Applies a scaling transformation on this geometric object with a center and scaling factor</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="transform">
+      <Documentation>
+        <UserDocu>Applies a transformation to this geometric object</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="translate">
+      <Documentation>
+        <UserDocu>Translates this geometric object</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>

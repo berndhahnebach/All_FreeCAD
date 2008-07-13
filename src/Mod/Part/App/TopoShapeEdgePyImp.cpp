@@ -1,6 +1,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRep_Tool.hxx>
+# include <BRepAdaptor_Curve.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <Geom_Curve.hxx>
 # include <TopoDS_Shape.hxx>
@@ -16,6 +18,9 @@
 
 #include "Geometry.h"
 #include "GeometryPy.h"
+#include "LinePy.h"
+#include "CirclePy.h"
+#include "EllipsePy.h"
 
 using namespace Part;
 
@@ -74,6 +79,59 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_SetString(PyExc_Exception, "a curve expected");
     return -1;
+}
+
+PyObject* TopoShapeEdgePy::curve(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+    switch(adapt.GetType())
+    {
+    case GeomAbs_Line:
+        {
+            GeomLineSegment* line = new GeomLineSegment();
+            Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+                (line->handle());
+            Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+                (this_curv->BasisCurve());
+            this_line->SetLin(adapt.Line());
+            this_curv->SetTrim(adapt.FirstParameter(), adapt.LastParameter());
+            return new LinePy(line);
+        }
+    case GeomAbs_Circle:
+        {
+            GeomCircle* circle = new GeomCircle();
+            Handle_Geom_Circle this_curv = Handle_Geom_Circle::DownCast
+                (circle->handle());
+            this_curv->SetCirc(adapt.Circle());
+            Standard_Real dd = adapt.FirstParameter();
+            Standard_Real ee = adapt.LastParameter();
+            return new CirclePy(circle);
+        }
+    case GeomAbs_Ellipse:
+        {
+            GeomEllipse* elips = new GeomEllipse();
+            Handle_Geom_Ellipse this_curv = Handle_Geom_Ellipse::DownCast
+                (elips->handle());
+            this_curv->SetElips(adapt.Ellipse());
+            return new EllipsePy(elips);
+        }
+    case GeomAbs_Hyperbola:
+        break;
+    case GeomAbs_Parabola:
+        break;
+    case GeomAbs_BezierCurve:
+        break;
+    case GeomAbs_BSplineCurve:
+        break;
+    case GeomAbs_OtherCurve:
+        break;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "undefined curve type");
+    return 0;
 }
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const
