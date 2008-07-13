@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMesh.la Mesh.la
@@ -359,7 +358,6 @@ Mesh_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/src/3rdParty $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
-endif
 endif
 
 includedir = @includedir@/Mod/Mesh/App
