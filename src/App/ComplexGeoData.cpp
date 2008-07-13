@@ -81,7 +81,7 @@ void ComplexGeoData::applyRotation(const Base::Rotation& rot)
 
 void ComplexGeoData::setPlacement(const Base::Placement& rclPlacement)
 {
-    setTransform(rclPlacement.getAsMatrix());
+    setTransform(rclPlacement.toMatrix());
 }
 
 Base::Placement ComplexGeoData::getPlacement() const

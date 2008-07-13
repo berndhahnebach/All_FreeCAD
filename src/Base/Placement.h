@@ -43,7 +43,8 @@ public:
     /// Destruction
     ~Placement () {};
 
-    Base::Matrix4D getAsMatrix(void) const;
+    Base::Matrix4D toMatrix(void) const;
+    void fromMatrix(const Base::Matrix4D& m);
 
     Vector3<double> _pos;
     double _q[4];

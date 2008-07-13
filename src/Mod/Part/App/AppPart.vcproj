@@ -524,240 +524,6 @@
 				RelativePath=".\PartFeaturePyImp.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\TopoShapeCompoundPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeCompoundPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeCompSolidPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeCompSolidPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeEdgePy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeEdgePyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeFacePy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeFacePyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapePy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapePyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeShellPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeShellPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeSolidPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeSolidPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeVertexPy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeVertexPyImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoShapeWirePy.xml"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TopoShapeWirePyImp.cpp"
-				>
-			</File>
 			<Filter
 				Name="Geom"
 				>
@@ -821,7 +587,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -830,7 +596,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -889,6 +655,244 @@
 				</File>
 				<File
 					RelativePath=".\LinePyImp.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Shape"
+				>
+				<File
+					RelativePath=".\TopoShapeCompoundPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeCompoundPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeCompSolidPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeCompSolidPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeEdgePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeEdgePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeFacePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeFacePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeShellPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeShellPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeSolidPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeSolidPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeVertexPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeVertexPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TopoShapeWirePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TopoShapeWirePyImp.cpp"
 					>
 				</File>
 			</Filter>

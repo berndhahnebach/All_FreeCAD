@@ -210,6 +210,7 @@ public:
     /// replaces all char with escapes for usage in python console
     static const std::string strToPython(const char* Str);
     static const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());}
+    static void addType(PyTypeObject* Type,PyObject* Module, const char * Name);
     //@}
 
 protected:

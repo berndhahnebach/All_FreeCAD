@@ -3,6 +3,7 @@
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
+# include <BRepAdaptor_Surface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
@@ -66,6 +67,42 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_SetString(PyExc_Exception, "wire expected");
     return -1;
+}
+
+PyObject* TopoShapeFacePy::surface(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+    switch(adapt.GetType())
+    {
+    case GeomAbs_Plane:
+        break;
+    case GeomAbs_Cylinder:
+        break;
+    case GeomAbs_Cone:
+        break;
+    case GeomAbs_Sphere:
+        break;
+    case GeomAbs_Torus:
+        break;
+    case GeomAbs_BezierSurface:
+        break;
+    case GeomAbs_BSplineSurface:
+        break;
+    case GeomAbs_SurfaceOfRevolution:
+        break;
+    case GeomAbs_SurfaceOfExtrusion:
+        break;
+    case GeomAbs_OffsetSurface:
+        break;
+    case GeomAbs_OtherSurface:
+        break;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "undefined surface type");
+    return 0;
 }
 
 Py::Object TopoShapeFacePy::getWire(void) const

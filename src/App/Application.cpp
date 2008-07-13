@@ -62,6 +62,8 @@
 #include <Base/MatrixPy.h>
 #include <Base/VectorPy.h>
 #include <Base/BoundBoxPy.h>
+#include <Base/PlacementPy.h>
+#include <Base/RotationPy.h>
 
 #include "Feature.h"
 #include "GeoFeature.h"
@@ -184,6 +186,9 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     PyModule_AddObject(pBaseModule, "Vector", pyVecType.o);
     PyModule_AddObject(pBaseModule, "Matrix", pyMtxType.o);
     PyModule_AddObject(pBaseModule, "BoundBox", pyBoundBoxType.o);
+
+    Base::Interpreter().addType(&Base::PlacementPy  ::Type,pBaseModule,"Placement");
+    Base::Interpreter().addType(&Base::RotationPy   ::Type,pBaseModule,"Rotation");
 
     //insert Base and Console
     Py_INCREF(pBaseModule);

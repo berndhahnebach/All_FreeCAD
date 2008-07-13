@@ -437,6 +437,15 @@ const std::string InterpreterSingleton::strToPython(const char* Str)
     return result;
 }
 
+void InterpreterSingleton::addType(PyTypeObject* Type,PyObject* Module, const char * Name)
+{
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if (PyType_Ready(Type) < 0) return;
+    union PyType_Object pyType = {Type};
+    PyModule_AddObject(Module, Name, pyType.o);
+}
 
 PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::string> &StringMap)
 {

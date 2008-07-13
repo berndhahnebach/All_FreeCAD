@@ -36,7 +36,7 @@ Placement::Placement()
     _q[0]=_q[1]=_q[2]=0.0;_q[3]=1.0;
 }
 
-Base::Matrix4D Placement::getAsMatrix(void) const
+Base::Matrix4D Placement::toMatrix(void) const
 {
     Base::Rotation rot((float)this->_q[0],(float)this->_q[1],(float)this->_q[2],(float)this->_q[3]);
     Base::Matrix4D matrix;
@@ -45,4 +45,13 @@ Base::Matrix4D Placement::getAsMatrix(void) const
     matrix[1][3] = this->_pos.y;
     matrix[2][3] = this->_pos.z;
     return matrix;
+}
+
+void Placement::fromMatrix(const Base::Matrix4D& matrix)
+{
+    Base::Rotation rot(matrix);
+    rot.getValue(this->_q[0],this->_q[1],this->_q[2],this->_q[3]);
+    this->_pos.x = matrix[0][3];
+    this->_pos.y = matrix[1][3];
+    this->_pos.z = matrix[2][3];
 }
