@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshGui.la MeshGui.la
@@ -93,7 +92,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
-endif
 endif
 
 includedir = @includedir@/Mod/Mesh/Gui
