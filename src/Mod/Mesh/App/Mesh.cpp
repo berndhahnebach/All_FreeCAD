@@ -299,6 +299,12 @@ void MeshObject::addFacets(const std::vector<MeshCore::MeshGeomFacet>& facets)
     _kernel.AddFacets(facets);
 }
 
+void MeshObject::addFacets(const std::vector<MeshCore::MeshFacet> &facets,
+                           const std::vector<Base::Vector3f>& points)
+{
+    _kernel.AddFacets(facets, points);
+}
+
 unsigned long MeshObject::countComponents() const
 {
     std::vector<std::vector<unsigned long> > segments;

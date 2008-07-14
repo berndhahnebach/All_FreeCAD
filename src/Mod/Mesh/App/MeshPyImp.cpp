@@ -34,6 +34,7 @@
 #include "MeshPy.cpp"
 #include "Core/Algorithm.h"
 #include "Core/Iterator.h"
+#include "Core/Elements.h"
 #include "Core/Grid.h"
 
 using namespace Mesh;
@@ -51,6 +52,9 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
         Mesh() = static_cast<MeshPy*>(pcObj)->Mesh();
     }
     else if (PyList_Check(pcObj)) {
+        addFacets(args);
+    }
+    else if (PyTuple_Check(pcObj)) {
         addFacets(args);
     }
     else if (PyString_Check(pcObj)) {
@@ -276,16 +280,10 @@ PyObject*  MeshPy::addFacet(PyObject *args)
 PyObject*  MeshPy::addFacets(PyObject *args)
 {
     PyObject *list;
-
-    std::vector<MeshCore::MeshGeomFacet> facets;
-    if (!PyArg_ParseTuple(args, "O!: list of vectors (3 of them defined a facet)", &PyList_Type, &list)) {
-        Py_Error(PyExc_Exception, "need list of vectors (3 of them defined a facet)");
-        return NULL;
-    }
-
-    if (PyList_Check(list)) {
-        int k = 0;
+    if (PyArg_ParseTuple(args, "O!", &PyList_Type, &list)) {
+        std::vector<MeshCore::MeshGeomFacet> facets;
         MeshCore::MeshGeomFacet facet;
+        int k = 0;
         for (int i = 0; i < PyList_Size(list); i++) {
             PyObject *vec = PyList_GetItem(list, i);
             if (PyList_Check(vec)) {
@@ -319,15 +317,45 @@ PyObject*  MeshPy::addFacets(PyObject *args)
                 facets.push_back(facet);
             }
         }
-    }
-    else {
-        Py_Error(PyExc_Exception, "need a list of 3 double values");
-        return NULL; // not a list
+
+        getMeshObjectPtr()->addFacets(facets);
+        Py_Return;
     }
 
     PyErr_Clear();
-    Mesh().addFacets(facets);
-    Py_Return;
+    if (PyArg_ParseTuple(args, "O!", &PyTuple_Type, &list)) {
+        Py::Tuple tuple(list);
+        Py::List list_v(tuple.getItem(0));
+        std::vector<Base::Vector3f> vertices;
+        union PyType_Object pyVertType = {&(Base::VectorPy::Type)};
+        Py::Type vType(pyVertType.o);
+        for (Py::List::iterator it = list_v.begin(); it != list_v.end(); ++it) {
+            if ((*it).isType(vType)) {
+                Base::Vector3d v = static_cast<Base::VectorPy*>((*it).ptr())->value();
+                vertices.push_back(Base::Vector3f((float)v.x,(float)v.y,(float)v.z));
+            }
+        }
+
+        Py::List list_f(tuple.getItem(1));
+        MeshCore::MeshFacetArray faces;
+        for (Py::List::iterator it = list_f.begin(); it != list_f.end(); ++it) {
+            Py::Tuple f(*it);
+            MeshCore::MeshFacet face;
+            face._aulPoints[0] = (long)Py::Int(f.getItem(0));
+            face._aulPoints[1] = (long)Py::Int(f.getItem(1));
+            face._aulPoints[2] = (long)Py::Int(f.getItem(2));
+            faces.push_back(face);
+        }
+
+        getMeshObjectPtr()->addFacets(faces, vertices);
+
+        Py_Return;
+    }
+
+    PyErr_SetString(PyExc_Exception, "either expect\n"
+        "-- [Vector] (3 of them define a facet)\n"
+        "-- ([Vector],[(int,int,int)])");
+    return NULL;
 }
 
 PyObject*  MeshPy::clear(PyObject *args)
