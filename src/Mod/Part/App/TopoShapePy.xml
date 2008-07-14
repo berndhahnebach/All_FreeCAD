@@ -144,6 +144,11 @@ As a result, this shape becomes null.</UserDocu>
         <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="tessellate">
+      <Documentation>
+        <UserDocu>Tessellate the the shape and return a list of vertices and face indices</UserDocu>
+      </Documentation>
+    </Methode>
 <!--
     <Attribute Name="Location" ReadOnly="false">
       <Documentation>

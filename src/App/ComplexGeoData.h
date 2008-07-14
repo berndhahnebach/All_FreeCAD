@@ -107,14 +107,20 @@ public:
     struct FacetTopo {uint32_t I1; uint32_t I2; uint32_t I3;};
     /// Get the bound box
     virtual Base::BoundBox3d getBoundBox(void)const=0;
-    /** Get Point from Line object intersection  */
-    Base::Vector3d getPointFromLineIntersection(Base::Vector3f Base, Base::Vector3f Dir){return Base::Vector3d();}
-    /** Get Points from object with given Accuracy */
-    void GetPoints(std::vector<Base::Vector3d> &Points,float Accuracy, uint16_t flags=0){};
-    /** Get Polylines from object with given Accuracy */
-    void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<LineTopo> &Topo,float Accuracy, uint16_t flags=0){};
-    /** Get Polylines from object with given Accuracy */
-    void GetPoints(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,float Accuracy, uint16_t flags=0){};
+    /** Get point from line object intersection  */
+    virtual Base::Vector3d getPointFromLineIntersection(
+        const Base::Vector3f& Base,
+        const Base::Vector3f& Dir) const
+    { return Base::Vector3d(); }
+    /** Get points from object with given accuracy */
+    virtual void getPoints(std::vector<Base::Vector3d> &Points,
+        float Accuracy, uint16_t flags=0) const {};
+    /** Get lines from object with given accuracy */
+    virtual void getLines(std::vector<Base::Vector3d> &Points,std::vector<LineTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const {};
+    /** Get faces from object with given accuracy */
+    virtual void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const {};
     //@}
 
 protected:
