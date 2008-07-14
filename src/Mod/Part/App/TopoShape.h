@@ -115,6 +115,8 @@ public:
     /** Sweeping */
     //@{
     TopoDS_Shape makePrism(const gp_Vec&) const;
+    TopoDS_Shape makeThickSolid(const TopTools_ListOfShape& remFace,
+        Standard_Real offset, Standard_Real tolerance) const;
     //@}
 
     /** @name Manipulation*/

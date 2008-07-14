@@ -33,6 +33,7 @@
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
+# include <BRepOffsetAPI_MakeThickSolid.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
@@ -577,6 +578,13 @@ TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const
     if (this->_Shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
     BRepPrimAPI_MakePrism mkPrism(this->_Shape, vec);
     return mkPrism.Shape();
+}
+
+TopoDS_Shape TopoShape::makeThickSolid(const TopTools_ListOfShape& remFace,
+                                       Standard_Real offset, Standard_Real tolerance) const
+{
+    BRepOffsetAPI_MakeThickSolid mkThick(this->_Shape, remFace, offset, tolerance);
+    return mkThick.Shape();
 }
 
 TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const

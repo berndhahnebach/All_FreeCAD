@@ -31,10 +31,12 @@
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
+# include <Geom_Plane.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
+# include <gp_Pln.hxx>
 # include <Standard_Real.hxx>
 #endif
 
@@ -371,6 +373,8 @@ Handle_Geom_Geometry GeomSphere::handle() const
 
 GeomPlane::GeomPlane()
 {
+    Handle_Geom_Plane s = new Geom_Plane(gp_Pln());
+    this->mySurface = s;
 }
 
 GeomPlane::~GeomPlane()

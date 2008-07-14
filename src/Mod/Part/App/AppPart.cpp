@@ -52,7 +52,7 @@
 //#include "BSplineSurfacePy.h"
 //#include "CylinderPy.h"
 //#include "OffsetSurfacePy.h"
-//#include "PlanePy.h"
+#include "PlanePy.h"
 //#include "SpherePy.h"
 //#include "SurfaceOfLinearExtrusionPy.h"
 //#include "SurfaceOfRevolutionPy.h"
@@ -94,6 +94,7 @@ void AppPartExport initPart()
     AddType(&Part::EllipsePy            ::Type,partModule,"Ellipse");
     AddType(&Part::ArcPy                ::Type,partModule,"Arc");
 
+    AddType(&Part::PlanePy              ::Type,partModule,"Plane");
 #if 1
     Py::Module mod(partModule);
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));

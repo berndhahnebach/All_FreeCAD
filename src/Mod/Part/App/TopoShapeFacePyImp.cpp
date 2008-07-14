@@ -16,6 +16,8 @@
 #include "TopoShapeFacePy.h"
 #include "TopoShapeFacePy.cpp"
 
+#include "PlanePy.h"
+
 using namespace Part;
 
 // returns a string which represent the object e.g. when printed in python
@@ -96,7 +98,13 @@ Py::Object TopoShapeFacePy::getSurface() const
     switch(adapt.GetType())
     {
     case GeomAbs_Plane:
-        break;
+        {
+            GeomPlane* plane = new GeomPlane();
+            Handle_Geom_Plane this_surf = Handle_Geom_Plane::DownCast
+                (plane->handle());
+            this_surf->SetPln(adapt.Plane());
+            return Py::Object(new PlanePy(plane));
+        }
     case GeomAbs_Cylinder:
         break;
     case GeomAbs_Cone:
