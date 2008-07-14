@@ -86,12 +86,14 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Iterator.hxx>
 
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
@@ -123,6 +125,11 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
+#include <BRepMesh.hxx>
+#include <BRepMesh_Discret.hxx>
+#include <BRepMesh_Edge.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepMesh_Triangle.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools_ShapeSet.hxx>
@@ -130,6 +137,9 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Polygon3D.hxx>
 #include <ShapeAnalysis.hxx>
 
 #include <GCE2d_MakeSegment.hxx>
@@ -140,6 +150,7 @@
 #include <GC_MakeEllipse.hxx>
 #include <GC_MakeLine.hxx>
 #include <GC_MakeSegment.hxx>
+#include <GCPnts_UniformDeflection.hxx>
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -170,6 +181,8 @@
 #include <Geom_Plane.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomLProp_SLProps.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 
 #include <gp_Ax2d.hxx>
@@ -188,6 +201,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 

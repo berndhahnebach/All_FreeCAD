@@ -124,6 +124,12 @@ public:
     TopoDS_Shape transform(const Base::Matrix4D&) const;
     //@}
 
+    /** @name Getting basic geometric entities */
+    //@{
+    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const;
+    //@}
+
     TopoDS_Shape _Shape;
 };
 

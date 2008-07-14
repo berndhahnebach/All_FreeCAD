@@ -667,6 +667,22 @@ PyObject*  TopoShapePy::isValid(PyObject *args)
     }
 }
 
+PyObject* TopoShapePy::tessellate(PyObject *args)
+{
+    float tolerance;
+    if (!PyArg_ParseTuple(args, "f",&tolerance))
+        return 0;
+    std::vector<Base::Vector3d> Points;
+    std::vector<Data::ComplexGeoData::FacetTopo> Facets;
+    getTopoShapePtr()->getFaces(Points, Facets,tolerance);
+    Py::Tuple tuple(2);
+    Py::List vertex;
+    Py::List facet;
+    tuple.setItem(0, vertex);
+    tuple.setItem(1, facet);
+    return Py::new_reference_to(tuple);
+}
+
 #if 0 // see ComplexGeoDataPy::Matrix which does the same
 Py::Object TopoShapePy::getLocation(void) const
 {

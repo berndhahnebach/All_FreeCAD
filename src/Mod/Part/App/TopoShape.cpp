@@ -37,6 +37,10 @@
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
+# include <BRepMesh.hxx>
+# include <BRepMesh_IncrementalMesh.hxx>
+# include <BRepMesh_Triangle.hxx>
+# include <BRepMesh_Edge.hxx>
 # include <Bnd_Box.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
@@ -76,6 +80,7 @@
 # include <StlAPI_Writer.hxx>
 # include <Standard_Failure.hxx>
 #endif
+# include <BRepMesh.hxx>
 
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
@@ -597,4 +602,108 @@ TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
     mov.SetScaleFactor(rclTrf[3][3]);
     BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
     return mkTrf.Shape();
+}
+
+void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
+                         std::vector<FacetTopo> &aTopo,
+                         float accuracy, uint16_t flags) const
+{
+#if 1
+    BRepMesh::Mesh(this->_Shape,accuracy);
+    //BRepMesh_IncrementalMesh MESH(this->_Shape,accuracy);
+
+    int i = 1;
+    TopExp_Explorer ex;
+    TopLoc_Location aLoc;
+    for (ex.Init(this->_Shape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
+        // get the shape and mesh it
+        const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+        Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
+        if (aPoly.IsNull()) continue;
+
+        // getting the transformation of the face
+        gp_Trsf myTransf;
+        Standard_Boolean identity = true;
+        if(!aLoc.IsIdentity())  {
+            identity = false;
+            myTransf = aLoc.Transformation();
+        }
+
+        // check orientation
+        TopAbs_Orientation orient = aFace.Orientation();
+
+        // cycling through the poly mesh
+        Standard_Integer nbNodesInFace = aPoly->NbNodes();
+        aPoints.resize(nbNodesInFace);
+        const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
+        for (Standard_Integer i=1;i<=nbNodesInFace;i++) {
+            gp_Pnt pnt = aNodes(i);
+            if (!identity)
+                pnt.Transform(myTransf);
+            aPoints[i-1].Set(pnt.X(),pnt.Y(),pnt.Z());
+        }
+
+        Standard_Integer nbTriInFace = aPoly->NbTriangles();
+        aTopo.resize(nbTriInFace);
+        const Poly_Array1OfTriangle& aTriangles = aPoly->Triangles();
+        for (Standard_Integer i=1;i<=nbTriInFace;i++) {
+            // Get the triangle
+            Standard_Integer N1,N2,N3;
+            aTriangles(i).Get(N1,N2,N3);
+
+            // change orientation of the triangles
+            if ( orient != TopAbs_FORWARD ) {
+                Standard_Integer tmp = N1;
+                N1 = N2;
+                N2 = tmp;
+            }
+
+            aTopo[i-1].I1 = N1;
+            aTopo[i-1].I2 = N2;
+            aTopo[i-1].I3 = N3;
+        }
+    }
+
+    BRepTools::Clean(this->_Shape); // remove triangulation
+#else
+    Standard_Integer e1,e2,e3,i1,i2,i3;
+    Standard_Boolean b1,b2,b3;
+
+    try {
+        BRepMesh_Discret mesh(accuracy,this->_Shape);
+        int NbTri = mesh.NbTriangles() ;
+        for (int nbt = 1, i = 1 ;nbt <= NbTri;nbt++, i += 3) {
+            BRepMesh_Triangle tri = mesh.Triangle(nbt);
+            tri.Edges(e1,e2,e3,b1,b2,b3);
+            if (b1) {
+                i1 = mesh.Edge(e1).FirstNode() ;
+                i2 = mesh.Edge(e1).LastNode() ;
+            }
+            else {
+                i1 = mesh.Edge(e1).LastNode() ;
+                i2 = mesh.Edge(e1).FirstNode() ;
+            }
+
+            if (b2) {
+                i3 = mesh.Edge(e2).LastNode();
+            }
+            else {
+                i3 = mesh.Edge(e2).FirstNode() ;
+            }
+
+            //cSimpleFacet._aclPoints[0].x = float(mesh.Pnt( i1 ).X());
+            //cSimpleFacet._aclPoints[0].y = float(mesh.Pnt( i1 ).Y());
+            //cSimpleFacet._aclPoints[0].z = float(mesh.Pnt( i1 ).Z());
+            //cSimpleFacet._aclPoints[1].x = float(mesh.Pnt( i2 ).X());
+            //cSimpleFacet._aclPoints[1].y = float(mesh.Pnt( i2 ).Y());
+            //cSimpleFacet._aclPoints[1].z = float(mesh.Pnt( i2 ).Z());
+            //cSimpleFacet._aclPoints[2].x = float(mesh.Pnt( i3 ).X());
+            //cSimpleFacet._aclPoints[2].y = float(mesh.Pnt( i3 ).Y());
+            //cSimpleFacet._aclPoints[2].z = float(mesh.Pnt( i3 ).Z());
+
+            //vFacets.push_back(cSimpleFacet);
+        }
+    } catch(...) {
+    }
+#endif
 }
