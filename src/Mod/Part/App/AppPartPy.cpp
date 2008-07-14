@@ -46,6 +46,7 @@
 # include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <TopoDS_Compound.hxx>
 # include <TColgp_HArray2OfPnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array1OfInteger.hxx>
@@ -71,6 +72,7 @@
 #include "TopoShapePy.h"
 #include "TopoShapeEdgePy.h"
 #include "TopoShapeFacePy.h"
+#include "TopoShapeCompoundPy.h"
 #include "TopoShapeSolidPy.h"
 #include "GeometryPy.h"
 #include "FeaturePartBox.h"
@@ -220,44 +222,34 @@ show(PyObject *self, PyObject *args)
 }
 
 static PyObject * 
-makeShape(PyObject *self, PyObject *args)
+makeCompound(PyObject *self, PyObject *args)
 {
     PyObject *pcObj;
     if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
-        TopoShape* shape = new TopoShape;
+        BRep_Builder builder;
+        TopoDS_Compound Comp;
+        builder.MakeCompound(Comp);
+        
         try {
             Py::List list(pcObj);
-            bool first = true;
             for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
                 if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
                     TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
                         getGeometryPtr()->toShape();
-                    if (first) {
-                        first = false;
-                        shape->_Shape = sh;
-                    }
-                    else {
-                        shape->_Shape = shape->fuse(sh);
-                    }
+                    builder.Add(Comp, sh);
                 }
             }
         }
         catch (Standard_Failure) {
-            delete shape;
             Handle_Standard_Failure e = Standard_Failure::Caught();
             PyErr_SetString(PyExc_Exception, e->GetMessageString());
             return 0;
         }
-        catch (...) {
-            delete shape;
-            PyErr_SetString(PyExc_Exception, "creation of shape failed");
-            return 0;
-        }
 
-        return new TopoShapePy(shape);
+        return new TopoShapeCompoundPy(new TopoShape(Comp));
     } PY_CATCH;
 }
 
@@ -438,8 +430,8 @@ struct PyMethodDef Part_methods[] = {
      "read(string) -- Load the file and return the shape."},
     {"show"       ,show      ,METH_VARARGS,
      "show(shape) -- Add the shape to the active document or create one if it does not exist."},
-    {"makeShape"  ,makeShape ,METH_VARARGS,
-     "makeShape(list) -- Create a shape out of a list of geometries."},
+    {"makeCompound"  ,makeCompound ,METH_VARARGS,
+     "makeCompound(list) -- Create a compound out of a list of geometries."},
     {"makePlane"  ,makePlane ,METH_VARARGS,
      "makePlane(lenght,width) -- Make a plane"},
     {"createBox"  ,createBox ,METH_VARARGS}, // obsolete
