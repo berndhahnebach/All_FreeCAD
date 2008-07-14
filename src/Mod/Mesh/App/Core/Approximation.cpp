@@ -493,27 +493,18 @@ bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, flo
 //FIXME: Move Projection to Part module
 //FIXME: Move CurveProjector to Part module
 //FIXME: Move MeshAlgos to Part module
-#if defined(FC_USE_OCC)
-# include <math_Matrix.hxx>
-# include <gp_Ax2.hxx>
-# include <gp_Dir.hxx>
-# include <math_Gauss.hxx>
-#elif defined(FC_USE_OCC)
+#if defined(FC_USE_BOOST)
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector2.hpp>
+
+#define BOOST_NUMERIC_BINDINGS_USE_CLAPACK
 #include <boost/numeric/bindings/lapack/gesv.hpp> 
 
 namespace ublas = boost::numeric::ublas; 
-extern "C" void dgesv_ (int const* n, int const* nrhs, 
+extern "C" void LAPACK_DGESV (int const* n, int const* nrhs, 
                      double* a, int const* lda, int* ipiv, 
                      double* b, int const* ldb, int* info);
-void LAPACK_DGESV (int const* n, int const* nrhs, 
-                     double* a, int const* lda, int* ipiv, 
-                     double* b, int const* ldb, int* info)
-{
-    dgesv_(n,nrhs,a,lda,ipiv,b,ldb,info);
-}
 #endif
 
 float SurfaceFit::PolynomFit()
@@ -521,170 +512,7 @@ float SurfaceFit::PolynomFit()
     if (PlaneFit::Fit() == FLOAT_MAX)
         return FLOAT_MAX;
 
-#if defined(FC_USE_OCC)
-    // Calculate gravity
-    //
-    Base::Vector3f clBasePoint(GetGravity());
-
-
-    // =============================================================
-    // Create local CoordSystem based on FitPlane and ProjectionAxis
-    // =============================================================
-    //
-    // Get Base and Axis
-    //
-    Base::Vector3f clWVector(GetNormal());
-
-    gp_Ax2 clLocalCoord (gp_Pnt(clBasePoint.x,clBasePoint.y,clBasePoint.z),gp_Dir(clWVector.x,clWVector.y,clWVector.z));
-
-
-    // =============================================================
-    // Setup Mtx
-    // =============================================================
-    //
-    // u*Up + v*Vp + w*Wp + P0 = X
-    //
-    // u*Up + v*Vp + w*Wp      = X - P0
-    //
-    gp_Dir LocW      =  clLocalCoord.Direction ();
-    gp_Dir LocU      =  clLocalCoord.XDirection();
-    gp_Dir LocV      =  clLocalCoord.YDirection();
-
-
-    math_Matrix  clMat (1,3,1,3);
-
-    clMat(1,1) = LocU.X();
-    clMat(2,1) = LocU.Y();
-    clMat(3,1) = LocU.Z();
-    clMat(1,2) = LocV.X();
-    clMat(2,2) = LocV.Y();
-    clMat(3,2) = LocV.Z();
-    clMat(1,3) = LocW.X();
-    clMat(2,3) = LocW.Y();
-    clMat(3,3) = LocW.Z();
-
-    math_Vector clB   (1,3);
-
-    math_Vector clUVW (1,3);
-
-    math_Gauss clGauss(clMat);
-
-
-    // EQN
-    //
-    math_Matrix clMatEqn (1,6,1,6);
-
-
-    math_Vector clBEqn   (1,6);
-
-    clMatEqn.Init(0.0);
-    clBEqn  .Init(0.0);
-
-    for (std::list<Base::Vector3f>::iterator it = _vPoints.begin(); it != _vPoints.end(); it++) {
-        Base::Vector3f clPoint = *it;
-
-        clB(1) = (clPoint    .x - clBasePoint.x);
-        clB(2) = (clPoint    .y - clBasePoint.y);
-        clB(3) = (clPoint    .z - clBasePoint.z);
-
-        clGauss.Solve(clB,clUVW);
-
-        if (clGauss.IsDone()) {
-            float dU = (float)clUVW(1);
-            float dV = (float)clUVW(2);
-            float dW = (float)clUVW(3);
-
-            float dU2 = dU*dU;
-            float dV2 = dV*dV;
-            float dUV = dU*dV;
-
-
-            clMatEqn(1,1) = clMatEqn(1,1) + dU2*dU2;
-            clMatEqn(1,2) = clMatEqn(1,2) + dU2*dV2;
-            clMatEqn(1,3) = clMatEqn(1,3) + dU2*dUV;
-            clMatEqn(1,4) = clMatEqn(1,4) + dU2*dU ;
-            clMatEqn(1,5) = clMatEqn(1,5) + dU2*dV ;
-            clMatEqn(1,6) = clMatEqn(1,6) + dU2    ;
-
-            clBEqn  (1  ) = clBEqn  (1  ) + dU2    * dW;
-
-            clMatEqn(2,2) = clMatEqn(2,2) + dV2*dV2;
-            clMatEqn(2,3) = clMatEqn(2,3) + dV2*dUV;
-            clMatEqn(2,4) = clMatEqn(2,4) + dV2*dU ;
-            clMatEqn(2,5) = clMatEqn(2,5) + dV2*dV ;
-            clMatEqn(2,6) = clMatEqn(2,6) + dV2    ;
-
-            clBEqn  (2  ) = clBEqn  (2  ) + dV2    * dW;
-
-            clMatEqn(3,3) = clMatEqn(3,3) + dUV*dUV;
-            clMatEqn(3,4) = clMatEqn(3,4) + dUV*dU ;
-            clMatEqn(3,5) = clMatEqn(3,5) + dUV*dV ;
-            clMatEqn(3,6) = clMatEqn(3,6) + dUV    ;
-
-            clBEqn  (3  ) = clBEqn  (3  ) + dUV    * dW;
-
-
-            clMatEqn(4,4) = clMatEqn(4,4) + dU *dU ;
-            clMatEqn(4,5) = clMatEqn(4,5) + dU *dV ;
-            clMatEqn(4,6) = clMatEqn(4,6) + dU     ;
-
-            clBEqn  (4  ) = clBEqn  (4  ) + dU     * dW;
-
-            clMatEqn(5,5) = clMatEqn(5,5) + dV *dV ;
-            clMatEqn(5,6) = clMatEqn(5,6) + dV     ;
-
-            clBEqn  (5  ) = clBEqn  (5  ) + dV     * dW;
-
-            clMatEqn(6,6) = clMatEqn(6,6) + 1      ;
-
-            clBEqn  (6  ) = clBEqn  (6  ) + 1      * dW;
-        }
-    }
-
-    // Mat is symmetric
-    //
-    clMatEqn(2,1) = clMatEqn(1,2);
-    clMatEqn(3,1) = clMatEqn(1,3);
-    clMatEqn(4,1) = clMatEqn(1,4);
-    clMatEqn(5,1) = clMatEqn(1,5);
-    clMatEqn(6,1) = clMatEqn(1,6);
-
-    clMatEqn(3,2) = clMatEqn(2,3);
-    clMatEqn(4,2) = clMatEqn(2,4);
-    clMatEqn(5,2) = clMatEqn(2,5);
-    clMatEqn(6,2) = clMatEqn(2,6);
-
-    clMatEqn(4,3) = clMatEqn(3,4);
-    clMatEqn(5,3) = clMatEqn(3,5);
-    clMatEqn(6,3) = clMatEqn(3,6);
-
-    clMatEqn(5,4) = clMatEqn(4,5);
-    clMatEqn(6,4) = clMatEqn(4,6);
-
-    clMatEqn(6,5) = clMatEqn(5,6);
-
-
-    // Solve 
-    //
-    math_Gauss  clGaussEqn(clMatEqn);
-    math_Vector clabcdef  (1,6);
-
-    clGaussEqn.Solve(clBEqn,clabcdef);
-
-    if (!clGaussEqn.IsDone()) 
-        return FLOAT_MAX;
-
-    _fCoeff[0] = (float)(-clabcdef(6));
-    _fCoeff[1] = (float)(-clabcdef(4));
-    _fCoeff[2] = (float)(-clabcdef(5));
-    _fCoeff[3] = 1.0f;
-    _fCoeff[4] = (float)(-clabcdef(1));
-    _fCoeff[5] = (float)(-clabcdef(2));
-    _fCoeff[6] = 0.0f;
-    _fCoeff[7] = (float)(-clabcdef(3));
-    _fCoeff[8] = 0.0f;
-    _fCoeff[9] = 0.0f;
-#elif defined(FC_USE_OCC)
+#if defined(FC_USE_BOOST)
     Base::Vector3d bs(this->_vBase.x,this->_vBase.y,this->_vBase.z);
     Base::Vector3d ex(this->_vDirU.x,this->_vDirU.y,this->_vDirU.z);
     Base::Vector3d ey(this->_vDirV.x,this->_vDirV.y,this->_vDirV.z);
