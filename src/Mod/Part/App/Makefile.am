@@ -7,8 +7,8 @@ BUILT_SOURCES=\
 		CirclePy.cpp \
 		EllipsePy.cpp \
 		GeometryPy.cpp \
-		LinePy.cpp
-		PlanePy.cpp \ \
+		LinePy.cpp \
+		PlanePy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \

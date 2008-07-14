@@ -4,9 +4,11 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <Geom_Plane.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <gp_Pln.hxx>
 #endif
 
 #include <Base/VectorPy.h>

@@ -6,6 +6,7 @@
 # include <gp_Pnt.hxx>
 # include <gp_Vec.hxx>
 # include <gp_Trsf.hxx>
+# include <Geom_Geometry.hxx>
 #endif
 
 #include <Base/Matrix.h>

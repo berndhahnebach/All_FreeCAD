@@ -4,7 +4,15 @@
 # include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
+# include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
+# include <Geom_Ellipse.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_TrimmedCurve.hxx>
+# include <gp_Circ.hxx>
+# include <gp_Elips.hxx>
+# include <gp_Lin.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Shape.hxx>
 # include <TopoDS_Edge.hxx>
 # include <Standard_Failure.hxx>
@@ -124,8 +132,8 @@ Py::Object TopoShapeEdgePy::getCurve() const
             Handle_Geom_Circle this_curv = Handle_Geom_Circle::DownCast
                 (circle->handle());
             this_curv->SetCirc(adapt.Circle());
-            Standard_Real dd = adapt.FirstParameter();
-            Standard_Real ee = adapt.LastParameter();
+            //Standard_Real dd = adapt.FirstParameter();
+            //Standard_Real ee = adapt.LastParameter();
             return Py::Object(new CirclePy(circle));
         }
     case GeomAbs_Ellipse:
