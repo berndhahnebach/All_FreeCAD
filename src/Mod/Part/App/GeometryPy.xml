@@ -18,11 +18,6 @@ It describes the common behavior of these objects when:
 - applying geometric transformations to objects, and
 - constructing objects by geometric transformation (including copying).</UserDocu>
     </Documentation>
-    <Methode Name="toShape">
-      <Documentation>
-        <UserDocu>Create a shape from the geometry</UserDocu>
-      </Documentation>
-    </Methode>
     <Methode Name="mirror">
       <Documentation>
         <UserDocu>Performs the symmetrical transformation of this geometric object</UserDocu>

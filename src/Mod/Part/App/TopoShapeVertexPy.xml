@@ -14,6 +14,11 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
     </Documentation>
+	  <Methode Name="extrude">
+		  <Documentation>
+			  <UserDocu>Make an edge by sweeping along a direction.</UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Attribute Name="X" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>X component of this Vertex.</UserDocu>

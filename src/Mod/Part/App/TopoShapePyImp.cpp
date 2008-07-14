@@ -8,7 +8,6 @@
 # include <BRepCheck_Result.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
-# include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepTools.hxx>
 # include <gp_Ax1.hxx>
 # include <gp_Trsf.hxx>
@@ -17,6 +16,7 @@
 # include <TopoDS_Iterator.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
 # include <TopLoc_Location.hxx>
+# include <Precision.hxx>
 #endif
 
 
@@ -452,7 +452,7 @@ PyObject*  TopoShapePy::scale(PyObject *args)
     if (!PyArg_ParseTuple(args, "d", &factor))
         return NULL;
 
-    if (fabs(factor) < gp::Resolution()) {
+    if (fabs(factor) < Precision::Confusion()) {
         PyErr_SetString(PyExc_Exception, "scale factor too small");
         return NULL;
     }
@@ -529,28 +529,6 @@ PyObject* TopoShapePy::makeFillet(PyObject *args)
         "-- one radius and a list of edges\n"
         "-- two radii and a list of edges");
     return NULL;
-}
-
-PyObject* TopoShapePy::makePrism(PyObject *args)
-{
-    PyObject *pVec;
-    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
-        try {
-            TopoDS_Shape shape = this->getTopoShapePtr()->_Shape;
-            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
-            if (shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
-            BRepPrimAPI_MakePrism mkPrism(shape, gp_Vec(vec.x,vec.y,vec.z));
-            shape = mkPrism.Shape();
-            return new TopoShapePy(new TopoShape(shape));
-        }
-        catch (Standard_Failure) {
-            Handle_Standard_Failure e = Standard_Failure::Caught();
-            PyErr_SetString(PyExc_Exception, e->GetMessageString());
-            return 0;
-        }
-    }
-
-    return 0;
 }
 
 PyObject* TopoShapePy::makePipe(PyObject *args)

@@ -45,14 +45,6 @@ int GeometryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
-PyObject* GeometryPy::toShape(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))
-        return 0;
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    return new TopoShapePy(new TopoShape(sh));
-}
-
 PyObject* GeometryPy::mirror(PyObject *args)
 {
     PyObject* o;

@@ -15,9 +15,9 @@ def makeBottle(myWidth=50, myHeight=70, myThickness=30):
 	aSegment1=Part.Line(aPnt1,aPnt2)
 	aSegment2=Part.Line(aPnt4,aPnt5)
 
-	aEdge1=aSegment1.toShape()
-	aEdge2=aArcOfCircle.toShape()
-	aEdge3=aSegment2.toShape()
+	aEdge1=aSegment1.Edge
+	aEdge2=aArcOfCircle.Edge
+	aEdge3=aSegment2.Edge
 	aWire=Part.Wire([aEdge1,aEdge2,aEdge3])
 	
 	aTrsf=Base.Matrix()
@@ -28,7 +28,7 @@ def makeBottle(myWidth=50, myHeight=70, myThickness=30):
 	
 	myFaceProfile=Part.Face(myWireProfile)
 	aPrismVec=Base.Vector(0,0,myHeight)
-	myBody=Part.makePrism(myFaceProfile,aPrismVec)
+	myBody=myFaceProfile.extrude(aPrismVec)
 	
 	myBody=myBody.makeFillet(myThickness/12.0,myBody.Edges)
 	
@@ -66,7 +66,7 @@ def makeBoreHole():
 
 	W=Part.Wire(S1.Edges)
 	F=Part.Face(W)
-	P=F.makePrism(Base.Vector(0,0,5))
+	P=F.extrude(Base.Vector(0,0,5))
 
 	# add objects with the shape
 	Wire=Group.newObject("Part::Feature","Wire")
@@ -77,9 +77,9 @@ def makeBoreHole():
 	Prism.Shape=P
 
 	c=Part.Circle(Base.Vector(0,0,-1),Base.Vector(0,0,1),2.0)
-	w=Part.Wire(c.toShape())
+	w=Part.Wire(c.Edge)
 	f=Part.Face(w)
-	p=f.makePrism(Base.Vector(0,0,7))
+	p=f.extrude(Base.Vector(0,0,7))
 	P=P.cut(p)
 
 	# add first borer
@@ -89,9 +89,9 @@ def makeBoreHole():
 	Hole1.Shape=P
 
 	c=Part.Circle(Base.Vector(0,-11,2.5),Base.Vector(0,1,0),1.0)
-	w=Part.Wire(c.toShape())
+	w=Part.Wire(c.Edge)
 	f=Part.Face(w)
-	p=f.makePrism(Base.Vector(0,22,0))
+	p=f.extrude(Base.Vector(0,22,0))
 	P=P.cut(p)
 
 	# add second borer

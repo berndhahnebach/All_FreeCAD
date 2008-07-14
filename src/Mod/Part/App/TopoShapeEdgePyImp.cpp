@@ -10,9 +10,10 @@
 # include <Standard_Failure.hxx>
 #endif
 
-#include "Mod/Part/App/TopoShape.h"
+#include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of TopoShapeEdgePy.xml)
+#include "TopoShape.h"
+#include "TopoShapeFacePy.h"
 #include "TopoShapeEdgePy.h"
 #include "TopoShapeEdgePy.cpp"
 
@@ -81,10 +82,27 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-PyObject* TopoShapeEdgePy::curve(PyObject *args)
+PyObject* TopoShapeEdgePy::extrude(PyObject *args)
 {
-    if (!PyArg_ParseTuple(args, ""))
-        return 0;
+    PyObject *pVec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
+        try {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
+            return new TopoShapeFacePy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+Py::Object TopoShapeEdgePy::getCurve() const
+{
     TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
     BRepAdaptor_Curve adapt(e);
     switch(adapt.GetType())
@@ -98,7 +116,7 @@ PyObject* TopoShapeEdgePy::curve(PyObject *args)
                 (this_curv->BasisCurve());
             this_line->SetLin(adapt.Line());
             this_curv->SetTrim(adapt.FirstParameter(), adapt.LastParameter());
-            return new LinePy(line);
+            return Py::Object(new LinePy(line));
         }
     case GeomAbs_Circle:
         {
@@ -108,7 +126,7 @@ PyObject* TopoShapeEdgePy::curve(PyObject *args)
             this_curv->SetCirc(adapt.Circle());
             Standard_Real dd = adapt.FirstParameter();
             Standard_Real ee = adapt.LastParameter();
-            return new CirclePy(circle);
+            return Py::Object(new CirclePy(circle));
         }
     case GeomAbs_Ellipse:
         {
@@ -116,7 +134,7 @@ PyObject* TopoShapeEdgePy::curve(PyObject *args)
             Handle_Geom_Ellipse this_curv = Handle_Geom_Ellipse::DownCast
                 (elips->handle());
             this_curv->SetElips(adapt.Ellipse());
-            return new EllipsePy(elips);
+            return Py::Object(new EllipsePy(elips));
         }
     case GeomAbs_Hyperbola:
         break;
@@ -130,8 +148,7 @@ PyObject* TopoShapeEdgePy::curve(PyObject *args)
         break;
     }
 
-    PyErr_SetString(PyExc_TypeError, "undefined curve type");
-    return 0;
+    throw Py::TypeError("undefined curve type");
 }
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const

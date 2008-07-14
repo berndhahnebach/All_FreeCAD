@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
+# include <Precision.hxx>
 #endif
 
 
@@ -68,13 +69,13 @@ App::DocumentObjectExecReturn *Box::execute(void)
     double H = h.getValue();
     double W = w.getValue();
 
-    if ( L < gp::Resolution() ) 
+    if (L < Precision::Confusion())
         return new App::DocumentObjectExecReturn("Length of L too small");
 
-    if ( H < gp::Resolution() ) 
+    if (H < Precision::Confusion())
         return new App::DocumentObjectExecReturn("Height of H too small");
 
-    if ( W < gp::Resolution() ) 
+    if (W < Precision::Confusion())
       return new App::DocumentObjectExecReturn("Width of W too small");
 
     // Build a box using the dimension and position attributes

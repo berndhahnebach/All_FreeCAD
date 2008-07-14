@@ -24,7 +24,6 @@
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
-# include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
@@ -50,6 +49,7 @@
 # include <TColgp_HArray2OfPnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array1OfInteger.hxx>
+# include <Precision.hxx>
 #endif
 
 #include <stdio.h>
@@ -69,6 +69,9 @@
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeFacePy.h"
+#include "TopoShapeSolidPy.h"
 #include "GeometryPy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
@@ -265,11 +268,11 @@ static PyObject * makePlane(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "dd", &length, &width))
         return NULL;
 
-    if (length < gp::Resolution()) {
+    if (length < Precision::Confusion()) {
         PyErr_SetString(PyExc_Exception, "length of plane too small");
         return NULL;
     }
-    if (width < gp::Resolution()) {
+    if (width < Precision::Confusion()) {
         PyErr_SetString(PyExc_Exception, "width of plane too small");
         return NULL;
     }
@@ -279,7 +282,7 @@ static PyObject * makePlane(PyObject *self, PyObject *args)
         gp_Dir aPlaneDir(0,0,1);
         Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
         BRepBuilderAPI_MakeFace Face(aPlane, 0.0, length, 0.0, width);
-        return new TopoShapePy(new TopoShape((Face.Face()))); 
+        return new TopoShapeFacePy(new TopoShape((Face.Face()))); 
     } PY_CATCH;
 }
 
@@ -295,7 +298,7 @@ static PyObject * createBox(PyObject *self, PyObject *args)
         // Build a box using the dimension and position attributes
         BRepPrimAPI_MakeBox mkBox(gp_Pnt( X, Y, Z ), L, H, W);
         TopoDS_Shape ResultShape = mkBox.Shape();
-        return new TopoShapePy(new TopoShape(ResultShape)); 
+        return new TopoShapeSolidPy(new TopoShape(ResultShape)); 
     }
     catch (Standard_Failure) {
         PyErr_SetString(PyExc_StandardError, "cannot create flat box");
@@ -352,7 +355,7 @@ static PyObject * makeLine(PyObject *self, PyObject *args)
         }
 
         TopoDS_Edge edge = makeEdge.Edge();
-        return new TopoShapePy(new TopoShape(edge)); 
+        return new TopoShapeEdgePy(new TopoShape(edge)); 
     }
     catch (const Py::Exception&) {
         return NULL;
@@ -376,7 +379,7 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
         Handle_Geom_Circle hCircle = new Geom_Circle (circle);
         BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1, angle2);
         TopoDS_Edge edge = aMakeEdge.Edge();
-        return new TopoShapePy(new TopoShape(edge)); 
+        return new TopoShapeEdgePy(new TopoShape(edge)); 
     }
     catch (Standard_Failure) {
         PyErr_SetString(PyExc_Exception, "creation of circle failed");
@@ -393,7 +396,7 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
     try {
         BRepPrimAPI_MakeSphere mkSphere(radius, angle1, angle2, angle3);
         TopoDS_Shape shape = mkSphere.Shape();
-        return new TopoShapePy(new TopoShape(shape));
+        return new TopoShapeSolidPy(new TopoShape(shape));
     }
     catch (Standard_DomainError) {
         PyErr_SetString(PyExc_Exception, "creation of sphere failed");
@@ -417,34 +420,12 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
         gp_Dir d(vec.x, vec.y, vec.z);
         BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle);
         TopoDS_Shape shape = mkCyl.Shape();
-        return new TopoShapePy(new TopoShape(shape));
+        return new TopoShapeSolidPy(new TopoShape(shape));
     }
     catch (Standard_DomainError) {
         PyErr_SetString(PyExc_Exception, "creation of cylinder failed");
         return NULL;
     }
-}
-
-static PyObject * makePrism(PyObject *self, PyObject *args)
-{
-    PyObject *pS, *pVec;
-    if (PyArg_ParseTuple(args, "O!O!", &(Part::TopoShapePy::Type), &pS, &(Base::VectorPy::Type), &pVec)) {
-        try {
-            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pS)->getTopoShapePtr()->_Shape;
-            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
-            if (sh.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
-            BRepPrimAPI_MakePrism mkPrism(sh, gp_Vec(vec.x,vec.y,vec.z));
-            TopoDS_Shape shape = mkPrism.Shape();
-            return new TopoShapePy(new TopoShape(shape));
-        }
-        catch (Standard_Failure) {
-            Handle_Standard_Failure e = Standard_Failure::Caught();
-            PyErr_SetString(PyExc_Exception, e->GetMessageString());
-            return 0;
-        }
-    }
-
-    return 0;
 }
 
 /* registration table  */
@@ -475,7 +456,5 @@ struct PyMethodDef Part_methods[] = {
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
      "By default angle=2*PI"},
-    {"makePrism" ,makePrism,METH_VARARGS,
-     "makePrism(Shape,Vector) -- Make a prism by sweeping a shape along a vector"},
     {NULL, NULL}        /* end of table marker */
 };

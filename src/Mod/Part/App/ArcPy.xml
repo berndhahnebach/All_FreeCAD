@@ -14,6 +14,12 @@
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>Describes a portion of a curve</UserDocu>
     </Documentation>
+    <Attribute Name="Edge" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Return the edge for the geometry.</UserDocu>
+      </Documentation>
+      <Parameter Name="Edge" Type="Object"/>
+    </Attribute>
 	<!--
 	<ClassDeclarations>public:
       ArcPy(const Geom_Circle &amp; circ, PyTypeObject *T = &amp;Type)

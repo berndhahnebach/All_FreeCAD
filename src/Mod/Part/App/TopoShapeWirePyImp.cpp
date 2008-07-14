@@ -6,9 +6,10 @@
 # include <TopoDS_Wire.hxx>
 #endif
 
-#include "Mod/Part/App/TopoShape.h"
+#include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of TopoShapeWirePy.xml)
+#include "TopoShape.h"
+#include "TopoShapeShellPy.h"
 #include "TopoShapeWirePy.h"
 #include "TopoShapeWirePy.cpp"
 
@@ -100,6 +101,25 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_SetString(PyExc_Exception, "edge or wire or list of edges and wires expected");
     return -1;
+}
+
+PyObject* TopoShapeWirePy::extrude(PyObject *args)
+{
+    PyObject *pVec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
+        try {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
+            return new TopoShapeShellPy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
 }
 
 PyObject *TopoShapeWirePy::getCustomAttributes(const char* /*attr*/) const

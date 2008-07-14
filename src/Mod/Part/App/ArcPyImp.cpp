@@ -32,7 +32,7 @@
 # include <GC_MakeArcOfEllipse.hxx>
 #endif
 
-// inclusion of the generated files (generated out of ArcPy.xml)
+#include "TopoShapeEdgePy.h"
 #include "ArcPy.h"
 #include "ArcPy.cpp"
 #include "CirclePy.h"
@@ -134,6 +134,13 @@ int ArcPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     // All checks failed
     PyErr_SetString(PyExc_TypeError, "Arc constructor expects a conic curve and a parameter range");
     return -1;
+}
+
+Py::Object ArcPy::getEdge(void) const
+{
+    TopoDS_Shape sh = getGeometryPtr()->toShape();
+    TopoShapeEdgePy* edge = new TopoShapeEdgePy(new TopoShape(sh));
+    return Py::Object(edge);
 }
 
 PyObject *ArcPy::getCustomAttributes(const char* /*attr*/) const
