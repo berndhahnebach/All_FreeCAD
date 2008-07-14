@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+      Father="GeometryPy" 
+      Name="PlanePy" 
+      Twin="GeomPlane" 
+      TwinPointer="GeomPlane" 
+      Include="Mod/Part/App/Geometry.h" 
+      Namespace="Part" 
+      FatherInclude="Mod/Part/App/GeometryPy.h" 
+      FatherNamespace="Part"
+      Constructor="true">
+    <Documentation>
+      <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+      <UserDocu>Describes an infinite line</UserDocu>
+    </Documentation>
+    <Methode Name="setParameterRange">
+      <Documentation>
+        <UserDocu>Set the parameter range of the underlying line geometry</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Face" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Return the face for the geometry.</UserDocu>
+      </Documentation>
+      <Parameter Name="face" Type="Object"/>
+    </Attribute>
+    <Attribute Name="Position" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Returns the position point of this plane.</UserDocu>
+      </Documentation>
+      <Parameter Name="Position" Type="Object"/>
+    </Attribute>
+    <Attribute Name="Axis" ReadOnly="false">
+      <Documentation>
+        <UserDocu>Returns the axis of this plane.</UserDocu>
+      </Documentation>
+      <Parameter Name="Axis" Type="Object"/>
+    </Attribute>
+  </PythonExport>
+</GenerateModel>

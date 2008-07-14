@@ -556,6 +556,33 @@ PyObject* TopoShapePy::makePipe(PyObject *args)
     return 0;
 }
 
+PyObject* TopoShapePy::makeThickness(PyObject *args)
+{
+    PyObject *obj;
+    double offset, tolerance;
+    if (!PyArg_ParseTuple(args, "O!dd", &(PyList_Type), &obj, &offset, &tolerance))
+        return 0;
+
+    try {
+        TopTools_ListOfShape facesToRemove;
+        Py::List list(obj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                const TopoDS_Shape& shape = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                facesToRemove.Append(shape);
+            }
+        }
+
+        TopoDS_Shape shape = this->getTopoShapePtr()->makeThickSolid(facesToRemove, offset, tolerance);
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 PyObject*  TopoShapePy::reverse(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

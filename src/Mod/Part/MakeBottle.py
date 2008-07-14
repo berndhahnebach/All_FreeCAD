@@ -39,7 +39,24 @@ def makeBottle(myWidth=50, myHeight=70, myThickness=30):
 	myNeckHeight = myHeight / 10
 	myNeck = Part.makeCylinder(neckLocation,neckNormal,myNeckRadius,myNeckHeight)	
 	myBody = myBody.fuse(myNeck)
+
+	faceToRemove = 0
+	zMax = -1.0
+
+	for xp in myBody.Faces:
+		try:
+			surf = xp.Surface
+			if type(surf) == Part.Plane:
+				z = surf.Position.z
+				if z > zMax:
+					zMax = z
+					faceToRemove = i
+		except:
+			continue
 	
+	# This doesn't work for any reason		
+	#myBody = myBody.makeThickness([faceToRemove],-myThickness/50 , 1.e-3)
+
 	return myBody
 
 def makeBoreHole():

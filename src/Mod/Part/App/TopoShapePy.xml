@@ -92,7 +92,14 @@ This is a more detailed check as done in isValid().</UserDocu>
     </Methode>
     <Methode Name="makePipe">
       <Documentation>
-        <UserDocu>Make a pip by sweeping along a wire.</UserDocu>
+        <UserDocu>Make a pipe by sweeping along a wire.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="makeThickness">
+      <Documentation>
+        <UserDocu>A hollowed solid is built from an initial solid and a set of faces on this solid,
+which are to be removed. The remaining faces of the solid become the walls of
+the hollowed solid, their thickness defined at the time of construction.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="reverse">
