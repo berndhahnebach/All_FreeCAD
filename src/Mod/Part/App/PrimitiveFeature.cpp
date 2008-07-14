@@ -30,6 +30,7 @@
 # include <BRepPrimAPI_MakeTorus.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <Precision.hxx>
 #endif
 
 
@@ -67,9 +68,9 @@ App::DocumentObjectExecReturn *Plane::execute(void)
     double L = this->Length.getValue();
     double W = this->Width.getValue();
 
-    if (L < gp::Resolution())
+    if (L < Precision::Confusion())
         return new App::DocumentObjectExecReturn("Length of plane too small");
-    if (W < gp::Resolution())
+    if (W < Precision::Confusion())
       return new App::DocumentObjectExecReturn("Width of plane too small");
 
     gp_Pnt aPlanePnt(0,0,0);

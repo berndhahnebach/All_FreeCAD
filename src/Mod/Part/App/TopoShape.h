@@ -112,6 +112,11 @@ public:
     TopoDS_Shape section(TopoDS_Shape) const;
     //@}
 
+    /** Sweeping */
+    //@{
+    TopoDS_Shape makePrism(const gp_Vec&) const;
+    //@}
+
     /** @name Manipulation*/
     //@{
     TopoDS_Shape transform(const Base::Matrix4D&) const;

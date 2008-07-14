@@ -9,9 +9,10 @@
 # include <TopoDS_Wire.hxx>
 #endif
 
-#include "Mod/Part/App/TopoShape.h"
+#include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of TopoShapeFacePy.xml)
+#include "TopoShape.h"
+#include "TopoShapeSolidPy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeFacePy.cpp"
 
@@ -69,10 +70,27 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-PyObject* TopoShapeFacePy::surface(PyObject *args)
+PyObject* TopoShapeFacePy::extrude(PyObject *args)
 {
-    if (!PyArg_ParseTuple(args, ""))
-        return 0;
+    PyObject *pVec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
+        try {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
+            return new TopoShapeSolidPy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+Py::Object TopoShapeFacePy::getSurface() const
+{
     TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
     switch(adapt.GetType())
@@ -101,8 +119,7 @@ PyObject* TopoShapeFacePy::surface(PyObject *args)
         break;
     }
 
-    PyErr_SetString(PyExc_TypeError, "undefined surface type");
-    return 0;
+    throw Py::TypeError("undefined surface type");
 }
 
 Py::Object TopoShapeFacePy::getWire(void) const

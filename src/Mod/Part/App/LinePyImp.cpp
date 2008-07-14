@@ -29,12 +29,13 @@
 # include <Geom_TrimmedCurve.hxx>
 # include <GC_MakeLine.hxx>
 # include <GC_MakeSegment.hxx>
+# include <Precision.hxx>
 #endif
 
 #include "Mod/Part/App/Geometry.h"
 #include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of LinePy.xml)
+#include "TopoShapeEdgePy.h"
 #include "LinePy.h"
 #include "LinePy.cpp"
 
@@ -149,6 +150,13 @@ PyObject* LinePy::setParameterRange(PyObject *args)
     Py_Return; 
 }
 
+Py::Object LinePy::getEdge(void) const
+{
+    TopoDS_Shape sh = getGeometryPtr()->toShape();
+    TopoShapeEdgePy* edge = new TopoShapeEdgePy(new TopoShape(sh));
+    return Py::Object(edge);
+}
+
 Py::Object LinePy::getStartPoint(void) const
 {
     Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
@@ -187,7 +195,7 @@ void LinePy::setStartPoint(Py::Object arg)
 
     try {
         // Create line out of two points
-        if (p1.Distance(p2) < gp::Resolution()) Standard_Failure::Raise("Both points are equal");
+        if (p1.Distance(p2) < Precision::Confusion()) Standard_Failure::Raise("Both points are equal");
         GC_MakeSegment ms(p1, p2);
         if (!ms.IsDone()) {
             throw Py::Exception(gce_ErrorStatusText(ms.Status()));
@@ -245,7 +253,7 @@ void LinePy::setEndPoint(Py::Object arg)
 
     try {
         // Create line out of two points
-        if (p1.Distance(p2) < gp::Resolution()) Standard_Failure::Raise("Both points are equal");
+        if (p1.Distance(p2) < Precision::Confusion()) Standard_Failure::Raise("Both points are equal");
         GC_MakeSegment ms(p1, p2);
         if (!ms.IsDone()) {
             throw Py::Exception(gce_ErrorStatusText(ms.Status()));

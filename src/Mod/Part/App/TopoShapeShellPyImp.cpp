@@ -1,9 +1,10 @@
 
 #include "PreCompiled.h"
 
-#include "Mod/Part/App/TopoShape.h"
+#include <Base/VectorPy.h>
 
-// inclusion of the generated files (generated out of TopoShapeShellPy.xml)
+#include "TopoShape.h"
+#include "TopoShapeCompSolidPy.h"
 #include "TopoShapeShellPy.h"
 #include "TopoShapeShellPy.cpp"
 
@@ -24,6 +25,25 @@ const char *TopoShapeShellPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject* TopoShapeShellPy::extrude(PyObject *args)
+{
+    PyObject *pVec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
+        try {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
+            return new TopoShapeCompSolidPy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
 }
 
 Py::Object TopoShapeShellPy::getWire(void) const

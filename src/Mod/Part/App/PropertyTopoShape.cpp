@@ -111,7 +111,7 @@ Base::BoundBox3f PropertyPartShape::getBoundingBox() const
 
 void PropertyPartShape::setLocation(const TopLoc_Location& loc)
 {
-    // Note: The internal shapes do not chnage but the internal location only,
+    // Note: The internal shapes do not change but the internal location only,
     // we actually do not need to save the shapes.
     //aboutToSetValue();
     _Shape._Shape.Location(loc);

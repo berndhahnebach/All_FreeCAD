@@ -14,10 +14,16 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
     </Documentation>
-    <Methode Name="curve">
+    <Methode Name="extrude">
+      <Documentation>
+        <UserDocu>Make a face by sweeping along a direction.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Curve" ReadOnly="true">
       <Documentation>
         <UserDocu>Returns the 3D curve of the edge</UserDocu>
       </Documentation>
-    </Methode>
+      <Parameter Name="Curve" Type="Object"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

@@ -33,6 +33,7 @@
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
+# include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <Bnd_Box.hxx>
@@ -72,6 +73,7 @@
 # include <Geom_ToroidalSurface.hxx>
 # include <Standard_Failure.hxx>
 # include <StlAPI_Writer.hxx>
+# include <Standard_Failure.hxx>
 #endif
 
 #include <Base/FileInfo.h>
@@ -568,6 +570,13 @@ TopoDS_Shape TopoShape::section(TopoDS_Shape shape) const
 {
     BRepAlgoAPI_Section mkSection(this->_Shape, shape);
     return mkSection.Shape();
+}
+
+TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const
+{
+    if (this->_Shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+    BRepPrimAPI_MakePrism mkPrism(this->_Shape, vec);
+    return mkPrism.Shape();
 }
 
 TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
