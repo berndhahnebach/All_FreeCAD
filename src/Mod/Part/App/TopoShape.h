@@ -24,7 +24,9 @@
 #ifndef PART_TOPOSHAPE_H
 #define PART_TOPOSHAPE_H
 
+#include <gp_Vec.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <App/ComplexGeoData.h>
 
 namespace Part

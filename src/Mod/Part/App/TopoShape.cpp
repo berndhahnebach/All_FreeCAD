@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <sstream>
 # include <BRep_Builder.hxx>
+# include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <BRepAlgoAPI_Common.hxx>
@@ -76,6 +77,7 @@
 # include <Geom_CartesianPoint.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
+# include <Poly_Triangulation.hxx>
 # include <Standard_Failure.hxx>
 # include <StlAPI_Writer.hxx>
 # include <Standard_Failure.hxx>
