@@ -4,7 +4,7 @@ App=FreeCAD
 Gui=FreeCADGui
 from FreeCAD import Base
 
-def makeBottle(myWidth=50, myHeight=70, myThickness=30):
+def makeBottle(myWidth=50.0, myHeight=70.0, myThickness=30.0):
 	aPnt1=Base.Vector(-myWidth/2.,0,0)
 	aPnt2=Base.Vector(-myWidth/2.,-myThickness/4.,0)
 	aPnt3=Base.Vector(0,-myThickness/2.,0)
@@ -50,12 +50,12 @@ def makeBottle(myWidth=50, myHeight=70, myThickness=30):
 				z = surf.Position.z
 				if z > zMax:
 					zMax = z
-					faceToRemove = i
+					faceToRemove = xp
 		except:
 			continue
 	
 	# This doesn't work for any reason		
-	#myBody = myBody.makeThickness([faceToRemove],-myThickness/50 , 1.e-3)
+	myBody = myBody.makeThickness([faceToRemove],-myThickness/50 , 1.e-3)
 
 	return myBody
 
