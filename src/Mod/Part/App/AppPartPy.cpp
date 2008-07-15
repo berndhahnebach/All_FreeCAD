@@ -356,7 +356,7 @@ static PyObject * makeLine(PyObject *self, PyObject *args)
 
 static PyObject * makeCircle(PyObject *self, PyObject *args)
 {
-    double radius, angle1=0.0, angle2=2.0*F_PI;
+    double radius, angle1=0.0, angle2=2.0*Standard_PI;
     if (!PyArg_ParseTuple(args, "d|dd", &radius, &angle1, &angle2))
         return NULL;
 
@@ -381,7 +381,7 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
 
 static PyObject * makeSphere(PyObject *self, PyObject *args)
 {
-    double radius, angle1=-F_PI/2.0, angle2=F_PI/2.0, angle3=2.0*F_PI;
+    double radius, angle1=-M_PI_2, angle2=M_PI_2, angle3=2.0*Standard_PI;
     if (!PyArg_ParseTuple(args, "d|ddd", &radius, &angle1, &angle2, &angle3))
         return NULL;
 
@@ -398,7 +398,7 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
 
 static PyObject * makeCylinder(PyObject *self, PyObject *args)
 {
-    double radius, height, angle=2.0*F_PI;
+    double radius, height, angle=2.0*Standard_PI;
     PyObject *pPnt, *pDir;
     if (!PyArg_ParseTuple(args, "O!O!dd|d", &(Base::VectorPy::Type), &pPnt,
                                             &(Base::VectorPy::Type), &pDir,
