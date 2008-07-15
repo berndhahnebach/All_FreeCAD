@@ -155,8 +155,8 @@ PyObject* MatrixPy::transform(PyObject * args)
 
 PyObject* MatrixPy::rotateX(PyObject * args)
 {
-    float a;
-    if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C
+    double a;
+    if (!PyArg_ParseTuple(args, "d: angle to rotate (double) needed", &a))     // convert args: Python->C
         return NULL;                                 // NULL triggers exception
 
     PY_TRY {
@@ -169,8 +169,8 @@ PyObject* MatrixPy::rotateX(PyObject * args)
 
 PyObject* MatrixPy::rotateY(PyObject * args)
 {
-    float a;
-    if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C
+    double a;
+    if (!PyArg_ParseTuple(args, "d: angle to rotate (double) needed", &a))     // convert args: Python->C
         return NULL;                                 // NULL triggers exception
 
     PY_TRY {
@@ -183,8 +183,8 @@ PyObject* MatrixPy::rotateY(PyObject * args)
 
 PyObject* MatrixPy::rotateZ(PyObject * args)
 {
-    float a;
-    if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C
+    double a;
+    if (!PyArg_ParseTuple(args, "d: angle to rotate (double) needed", &a))     // convert args: Python->C
         return NULL;                                 // NULL triggers exception
 
     PY_TRY {

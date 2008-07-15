@@ -188,58 +188,52 @@ void Matrix4D::scale (const Vector3d& rclVct)
   (*this) *= clMat;
 }
 
-void Matrix4D::rotX (float fAngle)
+void Matrix4D::rotX (double fAngle)
 {
   Matrix4D clMat;
-  float fsin, fcos;
+  double fsin, fcos;
  
-  fsin = (float)sin (fAngle);
-  fcos = (float)cos (fAngle);
+  fsin = sin (fAngle);
+  fcos = cos (fAngle);
   clMat.dMtrx4D[1][1] =  fcos;  clMat.dMtrx4D[2][2] = fcos;
   clMat.dMtrx4D[1][2] = -fsin;  clMat.dMtrx4D[2][1] = fsin;
   
   (*this) *= clMat;
 }
 
-void Matrix4D::rotY (float fAngle)
+void Matrix4D::rotY (double fAngle)
 {
   Matrix4D clMat;
-  float fsin, fcos;
+  double fsin, fcos;
  
-  fsin = (float)sin (fAngle);
-  fcos = (float)cos (fAngle);
+  fsin = sin (fAngle);
+  fcos = cos (fAngle);
   clMat.dMtrx4D[0][0] =  fcos;  clMat.dMtrx4D[2][2] = fcos;
   clMat.dMtrx4D[2][0] = -fsin;  clMat.dMtrx4D[0][2] = fsin;
   
   (*this) *= clMat;
 }
 
-void Matrix4D::rotZ (float fAngle)
+void Matrix4D::rotZ (double fAngle)
 {
   Matrix4D clMat;
-  float fsin, fcos;
+  double fsin, fcos;
  
-  fsin = (float)sin (fAngle);
-  fcos = (float)cos (fAngle);
+  fsin = sin (fAngle);
+  fcos = cos (fAngle);
   clMat.dMtrx4D[0][0] =  fcos;  clMat.dMtrx4D[1][1] = fcos;
   clMat.dMtrx4D[0][1] = -fsin;  clMat.dMtrx4D[1][0] = fsin;
   
   (*this) *= clMat;
 }
 
-void Matrix4D::rotLine (const Vector3d& rclVct, float fAngle)
-{
-    Vector3f tmp((float)rclVct.x,(float)rclVct.y,(float)rclVct.z);
-    rotLine(tmp,fAngle);
-}
-
-void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
+void Matrix4D::rotLine (const Vector3d& rclVct, double fAngle)
 {
   // **** algorithm was taken from a math book
   Matrix4D  clMA, clMB, clMC, clMRot;
-  Vector3f  clRotAxis(rclVct);
+  Vector3d  clRotAxis(rclVct);
   short iz, is;
-  float fcos, fsin;
+  double fcos, fsin;
 
   // set all entries to "0"
   for (iz = 0; iz < 4; iz++)
@@ -247,14 +241,14 @@ void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
       clMA.dMtrx4D[iz][is] = 0;
       clMB.dMtrx4D[iz][is] = 0;
       clMC.dMtrx4D[iz][is] = 0;
-      }
+    }
 
   // ** normalize the rotation axis
   clRotAxis.Normalize();
   
   // ** set the rotation matrix (formula taken from a math book) */
-  fcos = (float)cos(fAngle);
-  fsin = (float)sin(fAngle);
+  fcos = cos(fAngle);
+  fsin = sin(fAngle);
   
   clMA.dMtrx4D[0][0] = (1-fcos) * clRotAxis.x * clRotAxis.x;
   clMA.dMtrx4D[0][1] = (1-fcos) * clRotAxis.x * clRotAxis.y;
@@ -284,7 +278,13 @@ void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
   (*this) *= clMRot;
 }
 
-void Matrix4D::rotLine   (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle)
+void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
+{
+    Vector3d tmp(rclVct.x,rclVct.y,rclVct.z);
+    rotLine(tmp,fAngle);
+}
+
+void Matrix4D::rotLine(const Vector3d& rclBase, const Vector3d& rclDir, double fAngle)
 {
   Matrix4D  clMT, clMRot, clMInvT, clM;
   Vector3d clBase(rclBase);

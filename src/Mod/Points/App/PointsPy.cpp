@@ -206,8 +206,8 @@ PYFUNCIMP_D(PointsPy,translate)
 
 PYFUNCIMP_D(PointsPy,rotate)
 {
-  float x,y,z;
-  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
+  double x,y,z;
+  if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
     return NULL;                         
 
   PY_TRY {
