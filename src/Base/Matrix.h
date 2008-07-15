@@ -54,7 +54,7 @@ public:
   Matrix4D (const Matrix4D& rclMtrx);
   /// Construction with an Axis
   Matrix4D (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
-  Matrix4D (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
+  Matrix4D (const Vector3d& rclBase, const Vector3d& rclDir, double fAngle);
   /// Destruction
   ~Matrix4D () {};
 
@@ -111,17 +111,17 @@ public:
   void scale        (const Vector3f& rclVct);
   void scale        (const Vector3d& rclVct);
   /// rotate around the X axis for the given value
-  void rotX         (float fAngle);
+  void rotX         (double fAngle);
   /// rotate around the Y axis for the given value
-  void rotY         (float fAngle);
+  void rotY         (double fAngle);
   /// rotate around the Z axis for the given value
-  void rotZ         (float fAngle);
+  void rotZ         (double fAngle);
   /// Rotation around an arbitrary axis passing the origin.
   void rotLine      (const Vector3f& rclVct, float fAngle);
-  void rotLine      (const Vector3d& rclVct, float fAngle);
+  void rotLine      (const Vector3d& rclVct, double fAngle);
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
   void rotLine      (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
-  void rotLine      (const Vector3d& rclBase, const Vector3d& rclDir, float fAngle);
+  void rotLine      (const Vector3d& rclBase, const Vector3d& rclDir, double fAngle);
   /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
   bool toAxisAngle (Vector3f& rclBase, Vector3f& rclDir, float& fAngle, float& fTranslation) const;
   /// transform (move,scale,rotate) around a point

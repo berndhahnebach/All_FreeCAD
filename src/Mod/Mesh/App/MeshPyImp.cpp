@@ -238,8 +238,8 @@ PyObject*  MeshPy::translate(PyObject *args)
 
 PyObject*  MeshPy::rotate(PyObject *args)
 {
-    float x,y,z;
-    if (!PyArg_ParseTuple(args, "fff",&x,&y,&z))
+    double x,y,z;
+    if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
         return NULL;
 
     PY_TRY {
