@@ -224,10 +224,6 @@ public:
    * Determines all border points as indices of the facets in \a raclFacetIndices. The points are unsorted.
    */
   void GetBorderPoints (const std::vector<unsigned long> &raclFacetIndices, std::set<unsigned long> &raclResultPointsIndices) const;
-  /** Tessellates the shape \a aShape and replaces the mesh structure with the created facets. */
-#if 0 // move to a module that uses Part and Mesh
-  bool MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const;
-#endif
   /** Computes the surface of the mesh. */
   float Surface (void) const;
   /** Subsamples the mesh with point distance \a fDist and stores the points in \a rclPoints. */

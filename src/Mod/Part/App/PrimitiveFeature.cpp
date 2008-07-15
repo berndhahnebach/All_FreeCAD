@@ -31,6 +31,7 @@
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Plane.hxx>
 # include <Precision.hxx>
+# include <Standard_Real.hxx>
 #endif
 
 
@@ -143,9 +144,9 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
 {
     // Build a sphere
     BRepPrimAPI_MakeSphere mkSphere(Radius.getValue(), 
-                                    Angle1.getValue()/180.0f*F_PI,
-                                    Angle2.getValue()/180.0f*F_PI,
-                                    Angle3.getValue()/180.0f*F_PI);
+                                    Angle1.getValue()/180.0f*Standard_PI,
+                                    Angle2.getValue()/180.0f*Standard_PI,
+                                    Angle3.getValue()/180.0f*Standard_PI);
     TopoDS_Shape ResultShape = mkSphere.Shape();
     this->Shape.setValue(ResultShape);
 
@@ -179,7 +180,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
     // Build a cylinder
     BRepPrimAPI_MakeCylinder mkCylr(Radius.getValue(), 
                                     Height.getValue(),
-                                    Angle.getValue()/180.0f*F_PI);
+                                    Angle.getValue()/180.0f*Standard_PI);
     TopoDS_Shape ResultShape = mkCylr.Shape();
     this->Shape.setValue(ResultShape);
 
@@ -216,7 +217,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
     BRepPrimAPI_MakeCone mkCone(Radius1.getValue(),
                                 Radius2.getValue(),
                                 Height.getValue(),
-                                Angle.getValue()/180.0f*F_PI);
+                                Angle.getValue()/180.0f*Standard_PI);
     TopoDS_Shape ResultShape = mkCone.Shape();
     this->Shape.setValue(ResultShape);
 
@@ -259,9 +260,9 @@ App::DocumentObjectExecReturn *Torus::execute(void)
     // Build a torus
     BRepPrimAPI_MakeTorus mkTorus(Radius1.getValue(),
                                   Radius2.getValue(),
-                                  Angle1.getValue()/180.0f*F_PI,
-                                  Angle2.getValue()/180.0f*F_PI,
-                                  Angle3.getValue()/180.0f*F_PI);
+                                  Angle1.getValue()/180.0f*Standard_PI,
+                                  Angle2.getValue()/180.0f*Standard_PI,
+                                  Angle3.getValue()/180.0f*Standard_PI);
     TopoDS_Shape ResultShape = mkTorus.Shell();
     this->Shape.setValue(ResultShape);
 

@@ -1154,59 +1154,6 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
     }
 }
 
-#if 0
-bool MeshAlgorithm::MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const
-{
-  Standard_Integer e1,e2,e3,i1,i2,i3;
-  Standard_Boolean b1,b2,b3;
-  std::vector<MeshGeomFacet> vFacets;
-  MeshGeomFacet cSimpleFacet;
-
-  try{
-    BRepMesh_Discret mesh(fAccuracy,aShape,fAngle);
-    //BRepMesh_Discret mesh(fAccuracy,aShape,fAngle);
-    int NbTri = mesh.NbTriangles() ;
-    for ( int nbt = 1, i = 1 ;nbt <= NbTri;nbt++, i += 3 ) {
-      BRepMesh_Triangle tri = mesh.Triangle(nbt);
-      tri.Edges(e1,e2,e3,b1,b2,b3);
-        if (b1) {
-          i1 = mesh.Edge(e1).FirstNode() ;
-          i2 = mesh.Edge(e1).LastNode() ;
-        }
-        else {
-          i1 = mesh.Edge(e1).LastNode() ;
-          i2 = mesh.Edge(e1).FirstNode() ;
-        }
-
-        if (b2) {
-          i3 = mesh.Edge(e2).LastNode();
-        }
-        else {
-          i3 = mesh.Edge(e2).FirstNode() ;
-        }
-        cSimpleFacet._aclPoints[0].x = float(mesh.Pnt( i1 ).X());
-        cSimpleFacet._aclPoints[0].y = float(mesh.Pnt( i1 ).Y());
-        cSimpleFacet._aclPoints[0].z = float(mesh.Pnt( i1 ).Z());
-        cSimpleFacet._aclPoints[1].x = float(mesh.Pnt( i2 ).X());
-        cSimpleFacet._aclPoints[1].y = float(mesh.Pnt( i2 ).Y());
-        cSimpleFacet._aclPoints[1].z = float(mesh.Pnt( i2 ).Z());
-        cSimpleFacet._aclPoints[2].x = float(mesh.Pnt( i3 ).X());
-        cSimpleFacet._aclPoints[2].y = float(mesh.Pnt( i3 ).Y());
-        cSimpleFacet._aclPoints[2].z = float(mesh.Pnt( i3 ).Z());
-
-        vFacets.push_back(cSimpleFacet);
-   }
-
-    _rclMesh.Clear();
-    _rclMesh = vFacets;
-
-  } catch(...){
-      return false;
-  }
-
-  return true;
-}
-#endif
 float MeshAlgorithm::Surface (void) const
 {
   float              fTotal = 0.0f;
