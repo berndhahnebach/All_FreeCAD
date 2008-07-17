@@ -21,8 +21,8 @@ libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $
 libDrawing_la_CPPFLAGS = -DDrawingAppExport=
 
 libDrawing_la_LIBADD   = \
+		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
-		-lboost_regex \
 		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \

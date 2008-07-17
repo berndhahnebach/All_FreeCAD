@@ -51,6 +51,7 @@ libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 if OCC_VERSION6
 libPartGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
 		-lFreeCADBase \

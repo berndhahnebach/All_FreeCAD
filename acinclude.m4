@@ -349,6 +349,63 @@ AC_TRY_LINK([#include <boost/program_options.hpp>],
 	[AC_MSG_RESULT(yes)],
 	[AC_MSG_ERROR(failed)])
 
+
+
+AC_MSG_CHECKING(for boost >= 1.35.0)
+
+cat > boost.cpp << EOF
+#include <boost/version.hpp>
+#include <cstdio>
+#include <cstdlib>
+
+int main(int argc, char **argv)
+{
+  exit(BOOST_VERSION >= 103500);
+}
+EOF
+
+# Depending on boost version decide if boost_system is required
+boost_try="$CXX boost.cpp -o boost"
+AC_TRY_EVAL(boost_try)
+if test x"$ac_status" != x0; then
+   AC_MSG_ERROR([Failed to get version of boost, bye...])
+fi
+
+AS_IF([AM_RUN_LOG([./boost])],
+      [ac_cv_boost_system=no], 
+      [ac_cv_boost_system=yes
+])
+AC_MSG_RESULT($ac_cv_boost_system)
+rm -f boost.cpp boost
+
+BOOST_FILESYSTEM_LIB="-lboost_filesystem"
+BOOST_PROGOPTIONS_LIB="-lboost_program_options"
+BOOST_SIGNALS_LIB="-lboost_signals"
+BOOST_SYSTEM_LIB=""
+BOOST_REGEX_LIB="-lboost_regex"
+if test x"$ac_cv_boost_system" = xyes; then
+    LIBS="-lboost_system"
+    AC_MSG_CHECKING(for boost system library)
+    AC_TRY_LINK([#include <boost/system/error_code.hpp>],
+        [ boost::system::error_code error_code; std::string message(error_code.message()); return 0; ],
+        [BOOST_SYSTEM_LIB="-lboost_system"],
+        [BOOST_SYSTEM_LIB=""])
+    
+    if test "x$BOOST_SYSTEM_LIB" = "x"; then
+        AC_MSG_RESULT(no)
+        AC_MSG_ERROR(Unable to link with the boost::system library)
+    else
+        AC_MSG_RESULT(yes)
+    fi
+fi
+
+AC_SUBST(BOOST_FILESYSTEM_LIB)
+AC_SUBST(BOOST_PROGOPTIONS_LIB)
+AC_SUBST(BOOST_SIGNALS_LIB)
+AC_SUBST(BOOST_SYSTEM_LIB)
+AC_SUBST(BOOST_REGEX_LIB)
+
+
 CPPFLAGS=$fc_boost_ac_save_cppflags
 LDFLAGS=$fc_boost_ac_save_ldflags
 LIBS=$fc_boost_ac_save_libs

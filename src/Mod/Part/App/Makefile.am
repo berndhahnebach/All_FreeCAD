@@ -106,9 +106,9 @@ libPart_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB
 libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
-		-lxerces-c \
-		-lboost_filesystem \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
+		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lTKernel \
@@ -116,6 +116,7 @@ libPart_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
+		-lTKMesh \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKSTL \

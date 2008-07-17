@@ -27,6 +27,7 @@ libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App 
 libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
 libImageGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lcv \

@@ -332,10 +332,9 @@ libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB
 libMesh_la_CPPFLAGS = -DMeshExport= 
 
 libMesh_la_LIBADD   = \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
-		-lboost_filesystem \
-		-lboost_regex \
 		-lFreeCADBase \
 		-lFreeCADApp
 
