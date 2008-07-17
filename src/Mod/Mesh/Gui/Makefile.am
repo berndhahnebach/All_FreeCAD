@@ -50,7 +50,7 @@ libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $
 libMeshGui_la_CPPFLAGS = -DMeshExport= -DMeshGuiExport=
 
 libMeshGui_la_LIBADD   = \
-		-lboost_signals \
+		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \

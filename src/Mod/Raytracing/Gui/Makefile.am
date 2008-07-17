@@ -22,8 +22,9 @@ libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L..
 libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingGuiExport= -DFeatureRayExportPov=
 
 libRaytracingGui_la_LIBADD   = \
-		-lxerces-c \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
+		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \

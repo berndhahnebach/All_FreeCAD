@@ -95,12 +95,11 @@ include_HEADERS=\
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADApp_la_LIBADD   = \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_PROGOPTIONS_LIB@ \
+		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-lFreeCADBase \
 		-l@PYTHON_LIB@ \
-		-lxerces-c \
-		-lboost_filesystem \
-		-lboost_program_options \
-		-lboost_signals
+		-lxerces-c
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src

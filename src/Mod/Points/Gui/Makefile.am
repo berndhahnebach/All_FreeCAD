@@ -26,6 +26,7 @@ libPointsGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App
 libPointsGui_la_CPPFLAGS = -DPointsAppExport= -DPointsGuiExport=
 
 libPointsGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \

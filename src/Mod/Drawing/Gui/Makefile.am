@@ -26,6 +26,7 @@ libDrawingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../Ap
 libDrawingGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DDrawingAppExport= -DDrawingGuiExport=
 
 libDrawingGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \

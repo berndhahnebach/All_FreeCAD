@@ -361,11 +361,10 @@ libFreeCADGui_la_LIBADD   =\
 		Icons/libIcons.la \
 		Language/libLanguage.la \
 		propertyeditor/libpropertyeditor.la \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lQtUiTools \
 		-lxerces-c \
-		-lboost_filesystem \
-		-lboost_signals \
 		-lFreeCADBase \
 		-lFreeCADApp
 

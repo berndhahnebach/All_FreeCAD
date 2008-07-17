@@ -32,9 +32,9 @@ libPoints_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-
 libPoints_la_CPPFLAGS = -DPointsAppExport=
 
 libPoints_la_LIBADD   = \
+		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
-		-lboost_regex \
 		-lFreeCADBase \
 		-lFreeCADApp
 

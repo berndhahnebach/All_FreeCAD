@@ -25,8 +25,9 @@ libRaytracing_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingExport= -DFeatureRay
 
 if OCC_VERSION6
 libRaytracing_la_LIBADD   = \
-		-lxerces-c \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
+		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lTKernel \

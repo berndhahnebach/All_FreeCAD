@@ -205,8 +205,8 @@ nobase_include_HEADERS = \
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 libFreeCADBase_la_LIBADD   = \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
-		-lboost_filesystem \
 		-lxerces-c \
 		-lz
 
