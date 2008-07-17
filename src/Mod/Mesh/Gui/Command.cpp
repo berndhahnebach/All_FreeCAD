@@ -470,7 +470,6 @@ bool CmdMeshImport::isActive(void)
     return false;
 }
 
-
 //--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdMeshExport);
@@ -523,6 +522,61 @@ void CmdMeshExport::activated(int iMsg)
 bool CmdMeshExport::isActive(void)
 {
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshFromGeometry);
+
+CmdMeshFromGeometry::CmdMeshFromGeometry()
+  :Command("Mesh_FromGeometry")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Create mesh from geometry...");
+    sToolTipText  = QT_TR_NOOP("Create mesh from the selected geometry");
+    sWhatsThis    = QT_TR_NOOP("Create mesh from the selected geometry");
+    sStatusTip    = QT_TR_NOOP("Create mesh from the selected geometry");
+    iAccel        = 0;
+}
+
+void CmdMeshFromGeometry::activated(int iMsg)
+{
+    bool ok;
+    double tol = QInputDialog::getDouble(Gui::getMainWindow(), QObject::tr("Meshing Tolerance"),
+        QObject::tr("Enter tolerance for meshing geometry:"), 0.1, 0.01,10.0,2,&ok);
+    if (!ok)
+        return;
+
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    std::vector<App::DocumentObject*> geo = Gui::Selection().getObjectsOfType(App::GeoFeature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = geo.begin(); it != geo.end(); ++it) {
+        if (!(*it)->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
+            // exclude meshes
+            std::map<std::string, App::Property*> Map;
+            (*it)->getPropertyMap(Map);
+            Mesh::MeshObject mesh;
+            for (std::map<std::string, App::Property*>::iterator jt = Map.begin(); jt != Map.end(); ++jt) {
+                if (jt->second->getTypeId().isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
+                    std::vector<Base::Vector3d> aPoints;
+                    std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
+                    static_cast<App::PropertyComplexGeoData*>(jt->second)->getFaces(aPoints, aTopo,(float)tol);
+                    mesh.addFacets(aTopo, aPoints);
+                }
+            }
+
+            // create a mesh feature and assign the mesh
+            Mesh::Feature* mf = static_cast<Mesh::Feature*>(doc->addObject("Mesh::Feature","Mesh"));
+            mf->Mesh.setValue(mesh.getKernel());
+        }
+    }
+}
+
+bool CmdMeshFromGeometry::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc) return false;
+    return getSelection().countObjectsOfType(App::GeoFeature::getClassTypeId()) == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1381,4 +1435,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
   rcCmdMgr.addCommand(new CmdMeshFillInteractiveHole());
   rcCmdMgr.addCommand(new CmdMeshRemoveCompByHand());
+  rcCmdMgr.addCommand(new CmdMeshFromGeometry());
 }

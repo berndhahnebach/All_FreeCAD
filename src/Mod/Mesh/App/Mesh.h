@@ -138,6 +138,8 @@ public:
     void addFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
     void addFacets(const std::vector<MeshCore::MeshFacet> &facets,
                    const std::vector<Base::Vector3f>& points);
+    void addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+                   const std::vector<Base::Vector3d>& points);
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
     void fillupHoles(unsigned long, float, int);

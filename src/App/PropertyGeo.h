@@ -33,6 +33,7 @@
 
 #include "Property.h"
 #include "PropertyLinks.h"
+#include "ComplexGeoData.h"
 
 namespace Base {
 class Writer;
@@ -286,6 +287,9 @@ public:
     ~PropertyComplexGeoData();
 
     virtual Base::BoundBox3f getBoundingBox() const = 0;
+    virtual void getFaces(std::vector<Base::Vector3d> &Points,
+        std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const  = 0;
 };
 
 } // namespace App
