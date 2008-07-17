@@ -52,8 +52,17 @@ public:
     void setValue(TopoDS_Shape);
     /// get the part shape
     TopoDS_Shape getValue(void) const;
-    Base::BoundBox3f getBoundingBox() const;
     void setLocation(const TopLoc_Location&);
+    //@}
+
+    /** @name Getting basic geometric entities */
+    //@{
+    /** Returns the bounding box around the underlying mesh kernel */
+    Base::BoundBox3f getBoundingBox() const;
+    /** Get faces from object with given accuracy */
+    virtual void getFaces(std::vector<Base::Vector3d> &Points,
+        std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const;
     //@}
 
     /** @name Python interface */

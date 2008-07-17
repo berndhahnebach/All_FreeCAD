@@ -145,9 +145,17 @@ public:
      * from outside.
      */
     const MeshObject &getValue(void) const;
+    virtual unsigned int getMemSize (void) const;
+    //@}
+
+    /** @name Getting basic geometric entities */
+    //@{
     /** Returns the bounding box around the underlying mesh kernel */
     Base::BoundBox3f getBoundingBox() const;
-    virtual unsigned int getMemSize (void) const;
+    /** Get faces from object with given accuracy */
+    virtual void getFaces(std::vector<Base::Vector3d> &Points,
+        std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const;
     //@}
 
     /** @name Modify */

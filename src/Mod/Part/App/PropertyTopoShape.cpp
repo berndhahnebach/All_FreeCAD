@@ -109,6 +109,13 @@ Base::BoundBox3f PropertyPartShape::getBoundingBox() const
     return box;
 }
 
+void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
+                                 std::vector<Data::ComplexGeoData::FacetTopo> &aTopo,
+                                 float accuracy, uint16_t flags) const
+{
+    _Shape.getFaces(aPoints, aTopo, accuracy, flags);
+}
+
 void PropertyPartShape::setLocation(const TopLoc_Location& loc)
 {
     // Note: The internal shapes do not change but the internal location only,
