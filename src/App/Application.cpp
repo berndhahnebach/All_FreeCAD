@@ -1384,7 +1384,7 @@ void Application::ParseOptions(int argc, char ** argv)
                 //throw FCException("Comandline break");
                 break;
             default:
-                printf("Invalid Option: %s\n",argv[i]);
+                std::cerr << "Invalid option: " << argv[i] << std::endl;
                 std::cerr << "\nUsage: " << argv[0] << Usage;
                 throw Base::Exception("Comandline error(s)");
             }
