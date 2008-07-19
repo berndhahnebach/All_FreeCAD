@@ -5,7 +5,7 @@
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <Geom_Plane.hxx>
-# include <CylindricalSurface.hxx>
+# include <Geom_CylindricalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
