@@ -32,12 +32,14 @@
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_CylindricalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
 # include <gp_Pln.hxx>
+# include <gp_Cylinder.hxx>
 # include <gp_Sphere.hxx>
 # include <Standard_Real.hxx>
 #endif
@@ -168,6 +170,11 @@ Handle_Geom_Geometry GeomCircle::handle() const
 GeomEllipse::GeomEllipse()
 {
     Handle_Geom_Ellipse e = new Geom_Ellipse(gp_Elips());
+    this->myCurve = e;
+}
+
+GeomEllipse::GeomEllipse(const Handle_Geom_Ellipse& e)
+{
     this->myCurve = e;
 }
 
@@ -330,6 +337,8 @@ Handle_Geom_Geometry GeomBSplineSurface::handle() const
 
 GeomCylinder::GeomCylinder()
 {
+    Handle_Geom_CylindricalSurface s = new Geom_CylindricalSurface(gp_Cylinder());
+    this->mySurface = s;
 }
 
 GeomCylinder::~GeomCylinder()
