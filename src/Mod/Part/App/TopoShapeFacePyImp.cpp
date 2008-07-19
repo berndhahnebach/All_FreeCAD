@@ -5,11 +5,13 @@
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <Geom_Plane.hxx>
+# include <CylindricalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <gp_Pln.hxx>
+# include <gp_Cylinder.hxx>
 # include <gp_Sphere.hxx>
 #endif
 
@@ -21,6 +23,7 @@
 #include "TopoShapeFacePy.cpp"
 
 #include "PlanePy.h"
+#include "CylinderPy.h"
 #include "SpherePy.h"
 
 using namespace Part;
@@ -111,7 +114,13 @@ Py::Object TopoShapeFacePy::getSurface() const
             return Py::Object(new PlanePy(plane));
         }
     case GeomAbs_Cylinder:
-        break;
+        {
+            GeomCylinder* cylinder = new GeomCylinder();
+            Handle_Geom_CylindricalSurface this_surf = Handle_Geom_CylindricalSurface::DownCast
+                (cylinder->handle());
+            this_surf->SetCylinder(adapt.Cylinder());
+            return Py::Object(new CylinderPy(cylinder));
+        }
     case GeomAbs_Cone:
         break;
     case GeomAbs_Sphere:

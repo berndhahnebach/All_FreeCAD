@@ -105,6 +105,7 @@ class GeomEllipse : public GeomCurve
 {
 public:
     GeomEllipse();
+    GeomEllipse(const Handle_Geom_Ellipse&);
     virtual ~GeomEllipse();
 
     Handle_Geom_Geometry handle() const;

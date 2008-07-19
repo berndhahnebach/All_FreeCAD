@@ -50,7 +50,7 @@
 //#include "ParabolaPy.h"
 //#include "BezierSurfacePy.h"
 //#include "BSplineSurfacePy.h"
-//#include "CylinderPy.h"
+#include "CylinderPy.h"
 //#include "OffsetSurfacePy.h"
 #include "PlanePy.h"
 #include "SpherePy.h"
@@ -95,6 +95,7 @@ void AppPartExport initPart()
     AddType(&Part::ArcPy                ::Type,partModule,"Arc");
 
     AddType(&Part::PlanePy              ::Type,partModule,"Plane");
+    AddType(&Part::CylinderPy           ::Type,partModule,"Cylinder");
     AddType(&Part::SpherePy             ::Type,partModule,"Sphere");
 #if 1
     Py::Module mod(partModule);
