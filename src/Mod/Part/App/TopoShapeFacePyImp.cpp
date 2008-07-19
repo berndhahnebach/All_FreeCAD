@@ -5,10 +5,12 @@
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_SphericalSurface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <gp_Pln.hxx>
+# include <gp_Sphere.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -19,6 +21,7 @@
 #include "TopoShapeFacePy.cpp"
 
 #include "PlanePy.h"
+#include "SpherePy.h"
 
 using namespace Part;
 
@@ -112,7 +115,13 @@ Py::Object TopoShapeFacePy::getSurface() const
     case GeomAbs_Cone:
         break;
     case GeomAbs_Sphere:
-        break;
+        {
+            GeomSphere* sphere = new GeomSphere();
+            Handle_Geom_SphericalSurface this_surf = Handle_Geom_SphericalSurface::DownCast
+                (sphere->handle());
+            this_surf->SetSphere(adapt.Sphere());
+            return Py::Object(new SpherePy(sphere));
+        }
     case GeomAbs_Torus:
         break;
     case GeomAbs_BezierSurface:

@@ -23,7 +23,7 @@
       <Documentation>
         <UserDocu>Return the face for the geometry.</UserDocu>
       </Documentation>
-      <Parameter Name="face" Type="Object"/>
+      <Parameter Name="Face" Type="Object"/>
     </Attribute>
     <Attribute Name="Position" ReadOnly="false">
       <Documentation>

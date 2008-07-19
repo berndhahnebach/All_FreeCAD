@@ -9,6 +9,7 @@ BUILT_SOURCES=\
 		GeometryPy.cpp \
 		LinePy.cpp \
 		PlanePy.cpp \
+		SpherePy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
@@ -27,6 +28,7 @@ libPart_la_BUILT=\
 		GeometryPy.h \
 		LinePy.h \
 		PlanePy.h \
+		SpherePy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
@@ -46,6 +48,7 @@ libPart_la_SOURCES=\
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
 		PlanePyImp.cpp \
+		SpherePyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -168,6 +171,7 @@ EXTRA_DIST = \
 		GeometryPy.xml \
 		LinePy.xml \
 		PlanePy.xml \
+		SpherePy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \
