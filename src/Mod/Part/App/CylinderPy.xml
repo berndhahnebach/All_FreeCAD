@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+	<PythonExport 
+		Father="GeometryPy" 
+		Name="CylinderPy" 
+		Twin="GeomCylinder" 
+		TwinPointer="GeomCylinder" 
+		Include="Mod/Part/App/Geometry.h" 
+		Namespace="Part" 
+		FatherInclude="Mod/Part/App/GeometryPy.h" 
+		FatherNamespace="Part"
+		Constructor="true">
+		<Documentation>
+			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+			<UserDocu>Describes a cylinder in 3D space</UserDocu>
+		</Documentation>
+		<Attribute Name="Face" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Return the face for the geometry.</UserDocu>
+			</Documentation>
+			<Parameter Name="Face" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Radius" ReadOnly="false">
+			<Documentation>
+				<UserDocu>The radius of the cylinder.</UserDocu>
+			</Documentation>
+			<Parameter Name="Radius" Type="Float"/>
+		</Attribute>
+		<Attribute Name="Center" ReadOnly="false">
+			<Documentation>
+				<UserDocu>Center of the cylinder.</UserDocu>
+			</Documentation>
+			<Parameter Name="Center" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Axis" ReadOnly="false">
+			<Documentation>
+				<UserDocu>The axis direction of the cylinder</UserDocu>
+			</Documentation>
+			<Parameter Name="Axis" Type="Object"/>
+		</Attribute>
+		<Methode Name="uIso">
+			<Documentation>
+				<UserDocu>Builds the U isoparametric circle of this cylinder</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="vIso">
+			<Documentation>
+				<UserDocu>Builds the V isoparametric circle of this cylinder</UserDocu>
+			</Documentation>
+		</Methode>
+	</PythonExport>
+</GenerateModel>
