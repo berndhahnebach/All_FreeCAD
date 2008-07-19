@@ -23,7 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <gp_Circ.hxx>
 # include <gp_Sphere.hxx>
+# include <Geom_Circle.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Standard_Failure.hxx>
 #endif
