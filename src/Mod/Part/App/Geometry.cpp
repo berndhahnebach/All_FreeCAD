@@ -32,11 +32,13 @@
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_SphericalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
 # include <gp_Pln.hxx>
+# include <gp_Sphere.hxx>
 # include <Standard_Real.hxx>
 #endif
 
@@ -358,6 +360,8 @@ Handle_Geom_Geometry GeomToroid::handle() const
 
 GeomSphere::GeomSphere()
 {
+    Handle_Geom_SphericalSurface s = new Geom_SphericalSurface(gp_Sphere());
+    this->mySurface = s;
 }
 
 GeomSphere::~GeomSphere()
