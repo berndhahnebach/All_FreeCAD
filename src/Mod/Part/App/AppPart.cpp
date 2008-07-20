@@ -56,7 +56,7 @@
 #include "SpherePy.h"
 //#include "SurfaceOfLinearExtrusionPy.h"
 //#include "SurfaceOfRevolutionPy.h"
-//#include "ToroidPy.h"
+#include "ToroidPy.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -97,6 +97,7 @@ void AppPartExport initPart()
     AddType(&Part::PlanePy              ::Type,partModule,"Plane");
     AddType(&Part::CylinderPy           ::Type,partModule,"Cylinder");
     AddType(&Part::SpherePy             ::Type,partModule,"Sphere");
+    AddType(&Part::ToroidPy             ::Type,partModule,"Toroid");
 #if 1
     Py::Module mod(partModule);
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));

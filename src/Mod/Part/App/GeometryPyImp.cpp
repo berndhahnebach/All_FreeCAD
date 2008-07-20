@@ -23,6 +23,8 @@
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeFacePy.h"
 
 using namespace Part;
 
@@ -44,6 +46,23 @@ PyObject *GeometryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // P
 int GeometryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
+}
+
+Py::Object GeometryPy::getShape(void) const
+{
+    TopoDS_Shape sh = getGeometryPtr()->toShape();
+    TopoShapePy* shape = 0;
+    if (sh.ShapeType() == TopAbs_EDGE) {
+        shape = new TopoShapeEdgePy(new TopoShape(sh));
+    }
+    else if (sh.ShapeType() == TopAbs_FACE) {
+        shape = new TopoShapeFacePy(new TopoShape(sh));
+    }
+    else {
+        shape = new TopoShapePy(new TopoShape(sh));
+    }
+
+    return Py::Object(shape);
 }
 
 PyObject* GeometryPy::mirror(PyObject *args)

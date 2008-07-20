@@ -735,6 +735,32 @@
 					RelativePath=".\SpherePyImp.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ToroidPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ToroidPyImp.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Shape"

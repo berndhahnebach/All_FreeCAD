@@ -14,12 +14,6 @@
 			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
 			<UserDocu>Describes a sphere in 3D space</UserDocu>
 		</Documentation>
-		<Attribute Name="Face" ReadOnly="true">
-			<Documentation>
-				<UserDocu>Return the face for the geometry.</UserDocu>
-			</Documentation>
-			<Parameter Name="Face" Type="Object"/>
-		</Attribute>
 		<Attribute Name="Radius" ReadOnly="false">
 			<Documentation>
 				<UserDocu>The radius of the sphere.</UserDocu>

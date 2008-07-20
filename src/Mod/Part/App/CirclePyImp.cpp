@@ -28,7 +28,6 @@
 # include <GC_MakeCircle.hxx>
 #endif
 
-#include "TopoShapeEdgePy.h"
 #include "CirclePy.h"
 #include "CirclePy.cpp"
 #include "ArcPy.h"
@@ -152,13 +151,6 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         "-- Vector, Vector, double\n"
         "-- Vector, Vector, Vector");
     return -1;
-}
-
-Py::Object CirclePy::getEdge(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapeEdgePy* edge = new TopoShapeEdgePy(new TopoShape(sh));
-    return Py::Object(edge);
 }
 
 Py::Float CirclePy::getRadius(void) const

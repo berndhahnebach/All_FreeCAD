@@ -23,69 +23,55 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <Geom_CylindricalSurface.hxx>
-# include <Geom_Circle.hxx>
-# include <Geom_Line.hxx>
-# include <Geom_TrimmedCurve.hxx>
-# include <gp_Circ.hxx>
-# include <gp_Lin.hxx>
+# include <Geom_ToroidalSurface.hxx>
+# include <gp_Torus.hxx>
+# include <Standard_Failure.hxx>
 #endif
 
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
-#include "CirclePy.h"
-#include "EllipsePy.h"
-#include "LinePy.h"
-#include "CylinderPy.h"
-#include "CylinderPy.cpp"
+#include "ToroidPy.h"
+#include "ToroidPy.cpp"
 
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *CylinderPy::representation(void) const
+const char *ToroidPy::representation(void) const
 {
-    return "<GeomCylinder object>";
+    return "<GeomToroid object>";
 }
 
-PyObject *CylinderPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+PyObject *ToroidPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
-    // create a new instance of CylinderPy and the Twin object 
-    return new CylinderPy(new GeomCylinder);
+    // create a new instance of ToroidPy and the Twin object 
+    return new ToroidPy(new GeomToroid);
 }
 
 // constructor method
-int CylinderPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int ToroidPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
     if (PyArg_ParseTuple(args, "")) {
-        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-            (getGeomCylinderPtr()->handle());
-        cyl->SetRadius(1.0);
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        torus->SetMajorRadius(5.0);
+        torus->SetMinorRadius(1.0);
         return 0;
     }
 
     return -1;
 }
 
-PyObject* CylinderPy::uIso(PyObject * args)
+PyObject* ToroidPy::uIso(PyObject * args)
 {
-    double v;
-    if (!PyArg_ParseTuple(args, "d", &v))
+    double u;
+    if (!PyArg_ParseTuple(args, "d", &u))
         return 0;
 
     try {
-        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-            (getGeomCylinderPtr()->handle());
-        Handle_Geom_Curve c = cyl->UIso(v);
-        if (!Handle_Geom_Line::DownCast(c).IsNull()) {
-            GeomLineSegment* line = new GeomLineSegment();
-            Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
-                (line->handle());
-            Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
-                (this_curv->BasisCurve());
-            this_line->SetLin(Handle_Geom_Line::DownCast(c)->Lin());
-            return new LinePy(line);
-        }
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        Handle_Geom_Curve c = torus->UIso(u);
 
         PyErr_SetString(PyExc_NotImplementedError, "this type of conical curve is not implemented");
         return 0;
@@ -97,22 +83,16 @@ PyObject* CylinderPy::uIso(PyObject * args)
     }
 }
 
-PyObject* CylinderPy::vIso(PyObject * args)
+PyObject* ToroidPy::vIso(PyObject * args)
 {
     double v;
     if (!PyArg_ParseTuple(args, "d", &v))
         return 0;
 
     try {
-        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-            (getGeomCylinderPtr()->handle());
-        Handle_Geom_Curve c = cyl->VIso(v);
-        if (!Handle_Geom_Circle::DownCast(c).IsNull()) {
-            return new CirclePy(new GeomCircle(Handle_Geom_Circle::DownCast(c)));
-        }
-        if (!Handle_Geom_Ellipse::DownCast(c).IsNull()) {
-            return new EllipsePy(new GeomEllipse(Handle_Geom_Ellipse::DownCast(c)));
-        }
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        Handle_Geom_Curve c = torus->VIso(v);
 
         PyErr_SetString(PyExc_NotImplementedError, "this type of conical curve is not implemented");
         return 0;
@@ -124,38 +104,62 @@ PyObject* CylinderPy::vIso(PyObject * args)
     }
 }
 
-Py::Float CylinderPy::getRadius(void) const
+Py::Float ToroidPy::getMajorRadius(void) const
 {
-    Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-        (getGeomCylinderPtr()->handle());
-    return Py::Float(cyl->Radius()); 
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    return Py::Float(torus->MajorRadius()); 
 }
 
-void CylinderPy::setRadius(Py::Float arg)
+void ToroidPy::setMajorRadius(Py::Float arg)
 {
-    Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-        (getGeomCylinderPtr()->handle());
-    cyl->SetRadius((double)arg);
+    try {
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        torus->SetMajorRadius((double)arg);
+    }
+    catch (Standard_Failure) {
+        throw Py::Exception("Major radius must be positive and higher than minor radius");
+    }
 }
 
-Py::Object CylinderPy::getCenter(void) const
+Py::Float ToroidPy::getMinorRadius(void) const
 {
-    Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-        (getGeomCylinderPtr()->handle());
-    gp_Pnt loc = cyl->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    return Py::Float(torus->MinorRadius()); 
+}
+
+void ToroidPy::setMinorRadius(Py::Float arg)
+{
+    try {
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        torus->SetMinorRadius((double)arg);
+    }
+    catch (Standard_Failure) {
+        throw Py::Exception("Minor radius must be positive and lower than major radius");
+    }
+}
+
+Py::Object ToroidPy::getCenter(void) const
+{
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    gp_Pnt loc = torus->Location();
+    Base::VectorPy* vec = new Base::VectorPy(
+        Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return Py::Object(vec);
 }
 
-void CylinderPy::setCenter(Py::Object arg)
+void ToroidPy::setCenter(Py::Object arg)
 {
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d loc = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-            (getGeomCylinderPtr()->handle());
-        cyl->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
+        torus->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -164,30 +168,30 @@ void CylinderPy::setCenter(Py::Object arg)
     }
 }
 
-Py::Object CylinderPy::getAxis(void) const
+Py::Object ToroidPy::getAxis(void) const
 {
-    Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-        (getGeomCylinderPtr()->handle());
-    gp_Ax1 axis = cyl->Axis();
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    gp_Ax1 axis = torus->Axis();
     gp_Dir dir = axis.Direction();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return Py::Object(vec);
 }
 
-void CylinderPy::setAxis(Py::Object arg)
+void ToroidPy::setAxis(Py::Object arg)
 {
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
-            (getGeomCylinderPtr()->handle());
+        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+            (getGeomToroidPtr()->handle());
         try {
             gp_Ax1 axis;
-            axis.SetLocation(cyl->Location());
+            axis.SetLocation(torus->Location());
             axis.SetDirection(gp_Dir(val.x, val.y, val.z));
             gp_Dir dir = axis.Direction();
-            cyl->SetAxis(axis);
+            torus->SetAxis(axis);
         }
         catch (Standard_Failure) {
             throw Py::Exception("cannot set axis");
@@ -200,14 +204,26 @@ void CylinderPy::setAxis(Py::Object arg)
     }
 }
 
-PyObject *CylinderPy::getCustomAttributes(const char* /*attr*/) const
+Py::Float ToroidPy::getArea(void) const
+{
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    return Py::Float(torus->Area()); 
+}
+
+Py::Float ToroidPy::getVolume(void) const
+{
+    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
+        (getGeomToroidPtr()->handle());
+    return Py::Float(torus->Volume()); 
+}
+
+PyObject *ToroidPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int CylinderPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
+int ToroidPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
-
-
