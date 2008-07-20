@@ -18,6 +18,12 @@ It describes the common behavior of these objects when:
 - applying geometric transformations to objects, and
 - constructing objects by geometric transformation (including copying).</UserDocu>
     </Documentation>
+    <Attribute Name="Shape" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Return the shape for the geometry.</UserDocu>
+      </Documentation>
+      <Parameter Name="Shape" Type="Object"/>
+    </Attribute>
     <Methode Name="mirror">
       <Documentation>
         <UserDocu>Performs the symmetrical transformation of this geometric object</UserDocu>

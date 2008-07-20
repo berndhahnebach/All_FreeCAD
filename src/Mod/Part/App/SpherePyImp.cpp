@@ -36,7 +36,6 @@
 #include "CirclePy.h"
 #include "SpherePy.h"
 #include "SpherePy.cpp"
-#include "TopoShapeFacePy.h"
 
 using namespace Part;
 
@@ -79,13 +78,6 @@ int SpherePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     }
 
     return -1;
-}
-
-Py::Object SpherePy::getFace(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapeFacePy* face = new TopoShapeFacePy(new TopoShape(sh));
-    return Py::Object(face);
 }
 
 Py::Float SpherePy::getRadius(void) const

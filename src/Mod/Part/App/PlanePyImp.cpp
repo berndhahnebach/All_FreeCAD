@@ -33,7 +33,6 @@
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
-#include "TopoShapeFacePy.h"
 #include "PlanePy.h"
 #include "PlanePy.cpp"
 
@@ -67,13 +66,6 @@ PyObject* PlanePy::setParameterRange(PyObject * /*args*/)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
-}
-
-Py::Object PlanePy::getFace(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapeFacePy* face = new TopoShapeFacePy(new TopoShape(sh));
-    return Py::Object(face);
 }
 
 Py::Object PlanePy::getPosition(void) const

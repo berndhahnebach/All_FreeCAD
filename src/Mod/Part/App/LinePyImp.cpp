@@ -32,10 +32,9 @@
 # include <Precision.hxx>
 #endif
 
-#include "Mod/Part/App/Geometry.h"
 #include <Base/VectorPy.h>
 
-#include "TopoShapeEdgePy.h"
+#include "Geometry.h"
 #include "LinePy.h"
 #include "LinePy.cpp"
 
@@ -148,13 +147,6 @@ PyObject* LinePy::setParameterRange(PyObject *args)
     }
 
     Py_Return; 
-}
-
-Py::Object LinePy::getEdge(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapeEdgePy* edge = new TopoShapeEdgePy(new TopoShape(sh));
-    return Py::Object(edge);
 }
 
 Py::Object LinePy::getStartPoint(void) const

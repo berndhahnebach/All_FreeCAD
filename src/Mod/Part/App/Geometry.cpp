@@ -34,6 +34,7 @@
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
+# include <Geom_ToroidalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gce_ErrorType.hxx>
@@ -41,6 +42,7 @@
 # include <gp_Pln.hxx>
 # include <gp_Cylinder.hxx>
 # include <gp_Sphere.hxx>
+# include <gp_Torus.hxx>
 # include <Standard_Real.hxx>
 #endif
 
@@ -354,6 +356,8 @@ Handle_Geom_Geometry GeomCylinder::handle() const
 
 GeomToroid::GeomToroid()
 {
+    Handle_Geom_ToroidalSurface s = new Geom_ToroidalSurface(gp_Torus());
+    this->mySurface = s;
 }
 
 GeomToroid::~GeomToroid()

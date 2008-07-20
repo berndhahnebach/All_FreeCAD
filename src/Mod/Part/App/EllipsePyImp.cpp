@@ -28,11 +28,9 @@
 # include <GC_MakeEllipse.hxx>
 #endif
 
-#include <Base/Vector3D.h>
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
-#include "TopoShapeEdgePy.h"
 #include "EllipsePy.h"
 #include "EllipsePy.cpp"
 
@@ -119,13 +117,6 @@ int EllipsePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         "-- Vector, double, double\n"
         "-- Vector, Vector, Vector");
     return -1;
-}
-
-Py::Object EllipsePy::getEdge(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapeEdgePy* edge = new TopoShapeEdgePy(new TopoShape(sh));
-    return Py::Object(edge);
 }
 
 Py::Float EllipsePy::getMajorRadius(void) const
