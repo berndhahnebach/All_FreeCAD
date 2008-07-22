@@ -875,6 +875,22 @@ void MeshKernel::RebuildNeighbours (unsigned long index)
             count = 1;
         }
     }
+
+    // we handle only the cases for 1 and 2, for all higher
+    // values we have a non-manifold that is ignorned here
+    if (count == 2) {
+        MeshFacet& rFace0 = this->_aclFacetArray[f0];
+        MeshFacet& rFace1 = this->_aclFacetArray[f1];
+        unsigned short side0 = rFace0.Side(p0,p1);
+        unsigned short side1 = rFace1.Side(p0,p1);
+        rFace0._aulNeighbours[side0] = f1;
+        rFace1._aulNeighbours[side1] = f0;
+    }
+    else if (count == 1) {
+        MeshFacet& rFace = this->_aclFacetArray[f0];
+        unsigned short side = rFace.Side(p0,p1);
+        rFace._aulNeighbours[side] = ULONG_MAX;
+    }
 }
 
 void MeshKernel::RebuildNeighbours (void)
