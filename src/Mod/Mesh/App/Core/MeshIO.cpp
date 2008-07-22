@@ -392,12 +392,12 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
 /** Loads an OBJ file. */
 bool MeshInput::LoadOBJ (std::istream &rstrIn)
 {
-    boost::regex rx_p("^V\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+    boost::regex rx_p("^v\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
                       "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
                       "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
-    boost::regex rx_f("^F\\s+([0-9]+)\\s*/\\s*([0-9]+)"
-                      "\\s+([0-9]+)\\s*/\\s*([0-9]+)"
-                      "\\s+([0-9]+)\\s*/\\s*([0-9]+)\\s*$");
+    boost::regex rx_f("^f\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                      "\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                      "\\s+([0-9]+)/?[0-9]*/?[0-9]*\\s*$");
     boost::cmatch what;
 
     MeshPointArray meshPoints;
@@ -417,7 +417,7 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
 
     while (std::getline(rstrIn, line)) {
         for (std::string::iterator it = line.begin(); it != line.end(); ++it)
-            *it = toupper(*it);
+            *it = tolower(*it);
         if (boost::regex_match(line.c_str(), what, rx_p)) {
             fX = (float)std::atof(what[1].first);
             fY = (float)std::atof(what[4].first);
@@ -426,8 +426,8 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
         }
         else if (boost::regex_match(line.c_str(), what, rx_f)) {
             i1 = std::atoi(what[1].first);
-            i2 = std::atoi(what[3].first);
-            i3 = std::atoi(what[5].first);
+            i2 = std::atoi(what[2].first);
+            i3 = std::atoi(what[3].first);
             meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
         }
     }
@@ -1067,16 +1067,16 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
 
     // vertices
     for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
-        rstrOut << "V " << it->x << " " << it->y << " " << it->z << std::endl;
-        Base::Sequencer().next( true ); // allow to cancel
+        rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
+        Base::Sequencer().next(true); // allow to cancel
     }
 
-    // facet indices
+    // facet indices (no texture and normal indices)
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
-        rstrOut << "F " << it->_aulPoints[0]+1 << "/" << it->_aulPoints[0]+1 << " "
-                        << it->_aulPoints[1]+1 << "/" << it->_aulPoints[1]+1 << " "
-                        << it->_aulPoints[2]+1 << "/" << it->_aulPoints[2]+1 << std::endl;
-        Base::Sequencer().next( true ); // allow to cancel
+        rstrOut << "f " << it->_aulPoints[0]+1 << " "
+                        << it->_aulPoints[1]+1 << " "
+                        << it->_aulPoints[2]+1 << std::endl;
+        Base::Sequencer().next(true); // allow to cancel
     }
 
     return true;
