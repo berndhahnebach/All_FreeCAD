@@ -149,7 +149,7 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   // only one selection node for the mesh
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
   MeshGui::SoFCMeshNode* mesh = new MeshGui::SoFCMeshNode();
-  mesh->setMesh(meshFeature);
+  mesh->setMesh(meshFeature->Mesh.getValuePtr());
   pcHighlight->addChild(mesh);
 
 
@@ -331,7 +331,7 @@ void ViewProviderMeshNode::showOpenEdges(bool show)
 
     const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
     MeshGui::SoFCMeshOpenEdge* mesh = new MeshGui::SoFCMeshOpenEdge();
-    mesh->setMesh(meshFeature);
+    mesh->setMesh(meshFeature->Mesh.getValuePtr());
     pcOpenEdge->addChild(mesh);
     
     // add to the highlight node

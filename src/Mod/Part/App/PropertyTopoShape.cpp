@@ -33,8 +33,6 @@
 # include <BRepTools_ShapeSet.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
-# include <STEPControl_Writer.hxx>
-# include <STEPControl_Reader.hxx>
 # include <TopTools_MapOfShape.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Iterator.hxx>

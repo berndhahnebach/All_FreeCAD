@@ -145,6 +145,7 @@ public:
      * from outside.
      */
     const MeshObject &getValue(void) const;
+    const MeshObject *getValuePtr(void) const;
     virtual unsigned int getMemSize (void) const;
     //@}
 

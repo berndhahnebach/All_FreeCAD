@@ -51,6 +51,7 @@
 # include <BRepBuilderAPI_Transform.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
+# include <Interface_Static.hxx>
 # include <IGESControl_Controller.hxx>
 # include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
@@ -58,6 +59,7 @@
 # include <STEPControl_Reader.hxx>
 # include <TopTools_MapOfShape.hxx>
 # include <TopoDS.hxx>
+# include <TopoDS_Compound.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopExp.hxx>
 # include <TopExp_Explorer.hxx>
@@ -275,99 +277,143 @@ void TopoShape::read(const char *FileName)
     if (!File.isReadable())
         throw Base::Exception("File to load not existing or not readable");
     
-    TopoDS_Shape aShape;
-
     if (File.hasExtension("igs") || File.hasExtension("iges")) {
         // read iges file
-        IGESControl_Reader aReader;
-
-        if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
-            throw Base::Exception("Error in reading IGES");
-  
-        // make brep
-        aReader.TransferRoots();
-        // one shape, who contain's all subshapes
-        aShape = aReader.OneShape();
+        _Shape = importIges(File.filePath().c_str());
     }
     else if (File.hasExtension("stp") || File.hasExtension("step")) {
-        STEPControl_Reader aReader;
-        Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-        if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
-            throw Base::Exception("Error in reading STEP");
-
-        // Root transfers
-        Standard_Integer nbr = aReader.NbRootsForTransfer();
-        //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
-        for (Standard_Integer n = 1; n<= nbr; n++) {
-            printf("STEP: Transfering Root %d\n",n);
-            /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
-            // Collecting resulting entities
-            Standard_Integer nbs = aReader.NbShapes();
-            if (nbs == 0) {
-                aHSequenceOfShape.Nullify();
-                throw Base::Exception("nothing to read");
-            }
-            else {
-                for (Standard_Integer i =1; i<=nbs; i++) {
-                    printf("STEP:   Transfering Shape %d\n",n);
-                    aShape=aReader.Shape(i);
-                    aHSequenceOfShape->Append(aShape);
-                }
-            }
-        }
+        _Shape = importStep(File.filePath().c_str());
     }
     else if (File.hasExtension("brp") || File.hasExtension("brep")) {
         // read brep-file
-        BRep_Builder aBuilder;
-        BRepTools::Read(aShape,(const Standard_CString)File.filePath().c_str(),aBuilder);
+        _Shape = importBrep(File.filePath().c_str());
     }
     else{
         throw Base::Exception("Unknown extension");
     }
-
-    _Shape = aShape; 
 }
 
-bool TopoShape::exportIges(const char *filename) const
+TopoDS_Shape TopoShape::importIges(const char *FileName)
 {
-    // write iges file
-    IGESControl_Controller::Init();
-    IGESControl_Writer aWriter;
-    aWriter.AddShape(this->_Shape);
+    try {
+        // read iges file
+        IGESControl_Reader aReader;
+        if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
+            throw Base::Exception("Error in reading IGES");
 
-    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
-        return false;
-
-    return true;
+        // make brep
+        aReader.ClearShapes();
+        aReader.TransferRoots();
+        // one shape, who contain's all subshapes
+        return aReader.OneShape();
+    }
+    catch (Standard_Failure) {
+        Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+        throw Base::Exception(aFail->GetMessageString());
+    }
 }
 
-bool TopoShape::exportStep(const char *filename) const
+TopoDS_Shape TopoShape::importStep(const char *FileName)
 {
-    // write step file
-    STEPControl_Writer aWriter;
+    try {
+        TopoDS_Shape aResShape;
+        STEPControl_Reader aReader;
 
-    //FIXME: Does not work this way!!!
-    if (aWriter.Transfer(this->_Shape, STEPControl_AsIs))
-        return false;
+        TopoDS_Compound aCompound;
+        BRep_Builder aBuilder;
+        aBuilder.MakeCompound(aCompound);
 
-    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
-        return false;
+        if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
+            throw Base::Exception("Error in reading STEP");
 
-    return true;
+        // Root transfers
+        Standard_Integer nbr = aReader.NbRootsForTransfer();
+        for (Standard_Integer n=1; n <= nbr; n++) {
+            Standard_Boolean ok = aReader.TransferRoot(n);
+            // Collecting resulting entities
+            Standard_Integer nbs = aReader.NbShapes();
+            if (!ok || nbs == 0) {
+                continue; // skip empty root
+            }
+            // For a single entity
+            else if (nbr == 1 && nbs == 1) {
+                aResShape = aReader.Shape(1);
+                break;
+            }
+
+            for (Standard_Integer i=1; i<=nbs; i++) {
+                TopoDS_Shape aShape = aReader.Shape(i);
+                if (!aShape.IsNull())
+                    aBuilder.Add(aCompound, aShape);
+            }
+
+            if (aResShape.IsNull())
+                aResShape = aCompound;
+        }
+
+        return aResShape;
+    }
+    catch (Standard_Failure) {
+        Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+        throw Base::Exception(aFail->GetMessageString());
+    }
 }
 
-bool TopoShape::exportBrep(const char *filename) const
+TopoDS_Shape TopoShape::importBrep(const char *FileName)
+{
+    // read brep-file
+    BRep_Builder aBuilder;
+    TopoDS_Shape aShape;
+    BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder);
+    return aShape;
+}
+
+void TopoShape::exportIges(const char *filename) const
+{
+    try {
+        // write iges file
+        IGESControl_Controller::Init();
+        IGESControl_Writer aWriter;
+        //IGESControl_Writer aWriter(Interface_Static::CVal("write.iges.unit"), 1);
+        aWriter.AddShape(this->_Shape);
+        aWriter.ComputeModel();
+        if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
+            throw Base::Exception("Writing of IGES failed");
+    }
+    catch (Standard_Failure) {
+        Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+        throw Base::Exception(aFail->GetMessageString());
+    }
+}
+
+void TopoShape::exportStep(const char *filename) const
+{
+    try {
+        // write step file
+        STEPControl_Writer aWriter;
+
+        if (aWriter.Transfer(this->_Shape, STEPControl_AsIs) != IFSelect_RetDone)
+            throw Base::Exception("Error in transferring STEP");
+
+        if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
+            throw Base::Exception("Writing of STEP failed");
+    }
+    catch (Standard_Failure) {
+        Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+        throw Base::Exception(aFail->GetMessageString());
+    }
+}
+
+void TopoShape::exportBrep(const char *filename) const
 {
     if (!BRepTools::Write(this->_Shape,(const Standard_CString)filename))
-        return false;
-    return true;
+        throw Base::Exception("Writing of BREP failed");
 }
 
-bool TopoShape::exportStl(const char *filename) const
+void TopoShape::exportStl(const char *filename) const
 {
     StlAPI_Writer writer;
     writer.Write(this->_Shape,(const Standard_CString)filename);
-    return true;
 }
 
 Base::BoundBox3d TopoShape::getBoundBox(void) const

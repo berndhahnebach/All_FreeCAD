@@ -26,7 +26,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
+# include <assert.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -42,8 +42,6 @@ using namespace Base;
 Handled::Handled()
   : _lRefCount(0)
 {
-
-
 }
 
 Handled::~Handled()
@@ -55,8 +53,6 @@ Handled::~Handled()
 
 //**************************************************************************
 // separator for other implemetation aspects
-
-
 
 void  Handled::AttachRef(void* /*pHandle*/)
 {

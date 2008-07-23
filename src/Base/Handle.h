@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef __HANDLE_H__
-#define __HANDLE_H__
+#ifndef BASE_HANDLE_H
+#define BASE_HANDLE_H
 
 // Std. configurations
 
@@ -36,132 +36,129 @@
 namespace Base
 {
 
-/** Handle class
- *  Implementation of the referenc counting pattern
- *  Only able to instatiate with a class inhereting
- *  FCHandled!
+/** Reference class
+ *  Implementation of the reference counting pattern.
+ *  Only able to instantiate with a class inheriting
+ *  Base::Handled.
  */
-template <class HandledType>
+template <class T>
 class Reference
 {
 public:
     //**************************************************************************
-    // construction destruction
+    // construction & destruction
 
-    /** pointer and default constructor
-     *  the good way would be not using pointer
-     *  instead using a overwriten new operator in the
-     *  HandledType class! But is not easy to inforce!
-     */
-    Reference(HandledType* ToHandel=0L)
-            :_pHandels(ToHandel) {
-        if (_pHandels)
-            _pHandels->AttachRef(this);
+    /** Pointer and default constructor */
+    Reference() : _toHandle(0) {
     }
 
-    /// Copy constructor
-    Reference(const Reference<HandledType>& ToHandel)
-            :_pHandels(ToHandel._pHandels) {
-        if (_pHandels)
-            _pHandels->AttachRef(this);
+    Reference(T* p) : _toHandle(p) {
+        if (_toHandle)
+            _toHandle->AttachRef(this);
+    }
+
+    /** Copy constructor */
+    Reference(const Reference<T>& p) : _toHandle(p._toHandle) {
+        if (_toHandle)
+            _toHandle->AttachRef(this);
     }
 
     /** destructor
-     *  Release the referenc count which cause,
-     *  if was the last one, the referenced object to
-     *  destruct!
+     *  Release the reference counter which causes,
+     *  in case of the last one, the referenced object to
+     *  be destructed!
      */
     ~Reference() {
-        if (_pHandels)
-            _pHandels->DetachRef(this);
+        if (_toHandle)
+            _toHandle->DetachRef(this);
     }
 
     //**************************************************************************
     // operator implementation
 
-    // assign operator from a pointer
-    Reference <HandledType>& operator=(HandledType* other) {
+    /** Assign operator from a pointer */
+    Reference <T>& operator=(T* p) {
         // check if we want to reassign the same object
-        if (_pHandels == other)
+        if (_toHandle == p)
             return *this;
-        if (_pHandels)
-            _pHandels->DetachRef(this);
-        _pHandels = other;
-        if (_pHandels)
-            _pHandels->AttachRef(this);
+        if (_toHandle)
+            _toHandle->DetachRef(this);
+        _toHandle = p;
+        if (_toHandle)
+            _toHandle->AttachRef(this);
         return *this;
     }
 
-    // assign operator from a handle
-    Reference <HandledType>& operator=(const Reference<HandledType>& other) {
+    /** Assign operator from a handle */
+    Reference <T>& operator=(const Reference<T>& p) {
         // check if we want to reassign the same object
-        if (_pHandels == other._pHandels)
+        if (_toHandle == p._toHandle)
             return *this;
-        if (_pHandels)
-            _pHandels->DetachRef(this);
-        _pHandels = other._pHandels;
-        if (_pHandels)
-            _pHandels->AttachRef(this);
+        if (_toHandle)
+            _toHandle->DetachRef(this);
+        _toHandle = p._toHandle;
+        if (_toHandle)
+            _toHandle->AttachRef(this);
         return *this;
     }
 
-    /// derefrence operators
-    HandledType& operator*() const {
-        return *_pHandels;
+    /** Dereference operator */
+    T& operator*() const {
+        return *_toHandle;
     }
 
-    /// derefrence operators
-    HandledType* operator->() const {
-        return _pHandels;
+    /** Dereference operator */
+    T* operator->() const {
+        return _toHandle;
     }
 
-    /** lower operator
-     *  needed for sorting in maps and sets
-     */
-    bool operator<(const Reference<HandledType>& other) const {
-        return _pHandels<other._pHandels;
+    operator T*() const {
+        return _toHandle;
     }
 
-    /// equal operator
-    bool operator==(const Reference<HandledType>& other) const {
-        return _pHandels==other._pHandels;
+    /** Lower operator, needed for sorting in maps and sets */
+    bool operator<(const Reference<T>& p) const {
+        return _toHandle < p._toHandle;
+    }
+
+    /** Equal operator */
+    bool operator==(const Reference<T>& p) const {
+        return _toHandle == p._toHandle;
+    }
+
+    bool operator!=(const Reference<T>& p) const {
+        return _toHandle != p._toHandle;
     }
 
 
     //**************************************************************************
     // checking on the state
 
-    /// Test if it handels something
-    bool IsValid(void) const {
-        return _pHandels!=0;
+    /// Test if it handles something
+    bool isValid(void) const {
+        return _toHandle != 0;
     }
 
-    /// Test if it not handels something
-    bool IsNull(void) const {
-        return _pHandels==0;
-    }
-
-    /// Test if this is the last Referenc
-    bool IsLastRef(void) const {
-        if (_pHandels && _pHandels->GetReferenceCount()==1)
-            return true;
-        return false;
+    /// Test if it does not handle anything
+    bool isNull(void) const {
+        return _toHandle == 0;
     }
 
     /// Get number of references on the object, including this one
-    long GetReferenceCount(void) const {
-        if (_pHandels)
-            return _pHandels->GetReferenceCount();
+    long getRefCount(void) const {
+        if (_toHandle)
+            return _toHandle->getRefCount();
         return 0;
     }
 
 private:
-    /// the pointer on the handled object
-    HandledType *_pHandels;
+    T *_toHandle; /** the pointer to the handled object */
 };
 
 
-
+/** Handled class
+ *  Implementation of the reference counting pattern.
+ */
 class BaseExport Handled
 {
 public:
@@ -172,7 +169,7 @@ public:
     void  DetachRef(void* pHandle);
     virtual void  OnLastRef() {}
 
-    long GetReferenceCount(void) const {
+    long getRefCount(void) const {
         return _lRefCount;
     }
     const Handled& operator = (const Handled&);
@@ -183,4 +180,4 @@ private:
 
 } // namespace Base
 
-#endif // __HANDLE_H__
+#endif // BASE_HANDLE_H

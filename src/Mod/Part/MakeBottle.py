@@ -15,9 +15,9 @@ def makeBottle(myWidth=50.0, myHeight=70.0, myThickness=30.0):
 	aSegment1=Part.Line(aPnt1,aPnt2)
 	aSegment2=Part.Line(aPnt4,aPnt5)
 
-	aEdge1=aSegment1.Edge
-	aEdge2=aArcOfCircle.Edge
-	aEdge3=aSegment2.Edge
+	aEdge1=aSegment1.Shape
+	aEdge2=aArcOfCircle.Shape
+	aEdge3=aSegment2.Shape
 	aWire=Part.Wire([aEdge1,aEdge2,aEdge3])
 	
 	aTrsf=Base.Matrix()

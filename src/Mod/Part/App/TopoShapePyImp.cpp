@@ -116,9 +116,12 @@ PyObject*  TopoShapePy::exportIges(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    // write iges file
-    if (!getTopoShapePtr()->exportIges(filename)) {
-        PyErr_SetString(PyExc_Exception,"Writing IGES failed");
+    try {
+        // write iges file
+        getTopoShapePtr()->exportIges(filename);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
         return NULL;
     }
 
@@ -131,9 +134,12 @@ PyObject*  TopoShapePy::exportStep(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    // write step file
-    if (!getTopoShapePtr()->exportStep(filename)) {
-        PyErr_SetString(PyExc_Exception,"Writing STEP failed");
+    try {
+        // write step file
+        getTopoShapePtr()->exportStep(filename);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
         return NULL;
     }
 
@@ -146,9 +152,12 @@ PyObject*  TopoShapePy::exportBrep(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    // write brep file
-    if (!getTopoShapePtr()->exportBrep(filename)) {
-        PyErr_SetString(PyExc_Exception,"Writing BREP failed");
+    try {
+        // write brep file
+        getTopoShapePtr()->exportBrep(filename);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
         return NULL;
     }
 
@@ -161,8 +170,15 @@ PyObject*  TopoShapePy::exportStl(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    // write stl file
-    getTopoShapePtr()->exportStl(filename);
+    try {
+        // write stl file
+        getTopoShapePtr()->exportStl(filename);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
+        return NULL;
+    }
+
     Py_Return;
 }
 

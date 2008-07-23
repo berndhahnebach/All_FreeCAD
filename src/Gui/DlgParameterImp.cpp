@@ -663,7 +663,7 @@ ParameterGroupItem::~ParameterGroupItem()
 {
   // if the group has already been removed from the parameters then clear the observer list
   // as we cannot notify the attached observers here
-  if ( _hcGrp.IsLastRef() )
+  if (_hcGrp.getRefCount() == 1)
     _hcGrp->ClearObserver();
 }
 

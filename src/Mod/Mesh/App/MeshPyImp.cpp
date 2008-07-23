@@ -965,18 +965,19 @@ int MeshPy::setCustomAttributes(const char* attr, PyObject *obj)
 Py::List MeshPy::getPoints(void) const
 {
     Py::List PointList;
-    MeshCore::MeshPointIterator it = Mesh().PointIterator();
     unsigned int Index=0;
-    for (it.Init(); it.More(); it.Next(),Index++)
-        PointList.append(Py::Object(new MeshPointPy(new MeshPoint(it.asVector3d(),getMeshObjectPtr(),Index))));
-
+    MeshObject* mesh = getMeshObjectPtr();
+    for (MeshObject::const_point_iterator it = mesh->points_begin(); it != mesh->points_end(); ++it) {
+        PointList.append(Py::Object(new MeshPointPy(new MeshPoint(*it,getMeshObjectPtr(),Index++))));
+    }
     return PointList;
 }
 
 Py::List MeshPy::getFacets(void) const
 {
     Py::List FacetList;
-    for (MeshObject::FacetIter it = getMeshObjectPtr()->facets_begin(); it != getMeshObjectPtr()->facets_end(); ++it) {
+    MeshObject* mesh = getMeshObjectPtr();
+    for (MeshObject::const_facet_iterator it = mesh->facets_begin(); it != mesh->facets_end(); ++it) {
         FacetList.append(Py::Object(new FacetPy(new Facet(*it))));
     }
     return FacetList;

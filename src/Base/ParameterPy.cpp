@@ -301,10 +301,6 @@ PyObject *ParameterGrpPy::exportTo(PyObject *args)
     Py_Return;
 } 
 
-
-
-
-
 PyObject *ParameterGrpPy::PyGetGrp(PyObject *args)
 {
     char *pstr;
@@ -313,7 +309,7 @@ PyObject *ParameterGrpPy::PyGetGrp(PyObject *args)
     PY_TRY {
         // get the Handle of the wanted group
         Base::Reference<ParameterGrp> handle = _cParamGrp->GetGroup(pstr);
-        if(handle.IsValid()){
+        if(handle.isValid()){
             // crate a python wrapper class
             ParameterGrpPy *pcParamGrp = new ParameterGrpPy(handle);
             // increment the reff count

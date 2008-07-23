@@ -68,7 +68,7 @@ bool Segment::operator == (const Segment& s) const
 
 // ----------------------------------------------------------------------------
 
-Segment::FacetIter::FacetIter(const Segment* segm, std::vector<unsigned long>::const_iterator it)
+Segment::const_facet_iterator::const_facet_iterator(const Segment* segm, std::vector<unsigned long>::const_iterator it)
   : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
 {
     this->_f_it.Set(0);
@@ -76,16 +76,16 @@ Segment::FacetIter::FacetIter(const Segment* segm, std::vector<unsigned long>::c
     this->_facet.Mesh = _segment->_mesh;
 }
 
-Segment::FacetIter::FacetIter(const Segment::FacetIter& fi)
+Segment::const_facet_iterator::const_facet_iterator(const Segment::const_facet_iterator& fi)
   : _segment(fi._segment), _facet(fi._facet), _f_it(fi._f_it), _it(fi._it)
 {
 }
 
-Segment::FacetIter::~FacetIter()
+Segment::const_facet_iterator::~const_facet_iterator()
 {
 }
 
-Segment::FacetIter& Segment::FacetIter::operator=(const Segment::FacetIter& fi)
+Segment::const_facet_iterator& Segment::const_facet_iterator::operator=(const Segment::const_facet_iterator& fi)
 {
     this->_segment = fi._segment;
     this->_facet   = fi._facet;
@@ -94,7 +94,7 @@ Segment::FacetIter& Segment::FacetIter::operator=(const Segment::FacetIter& fi)
     return *this;
 }
 
-void Segment::FacetIter::dereference()
+void Segment::const_facet_iterator::dereference()
 {
     this->_f_it.Set(*_it);
     this->_facet.MeshCore::MeshGeomFacet::operator = (*_f_it);
@@ -106,109 +106,35 @@ void Segment::FacetIter::dereference()
     }
 }
 
-Facet& Segment::FacetIter::operator*()
+const Facet& Segment::const_facet_iterator::operator*() const
 {
-    dereference();
+    const_cast<const_facet_iterator*>(this)->dereference();
     return this->_facet;
 }
 
-Facet* Segment::FacetIter::operator->()
+const Facet* Segment::const_facet_iterator::operator->() const
 {
-    dereference();
+    const_cast<const_facet_iterator*>(this)->dereference();
     return &(this->_facet);
 }
 
-bool Segment::FacetIter::operator==(const Segment::FacetIter& fi) const
+bool Segment::const_facet_iterator::operator==(const Segment::const_facet_iterator& fi) const
 {
     return (this->_segment == fi._segment) && (this->_it == fi._it);
 }
 
-bool Segment::FacetIter::operator!=(const Segment::FacetIter& fi) const 
+bool Segment::const_facet_iterator::operator!=(const Segment::const_facet_iterator& fi) const 
 {
     return !operator==(fi);
 }
 
-Segment::FacetIter& Segment::FacetIter::operator++()
+Segment::const_facet_iterator& Segment::const_facet_iterator::operator++()
 {
     ++(this->_it);
     return *this;
 }
 
-Segment::FacetIter& Segment::FacetIter::operator--()
-{
-    --(this->_it);
-    return *this;
-}
-
-// ----------------------------------------------------------------------------
-
-Segment::ConstFacetIter::ConstFacetIter(const Segment* segm, std::vector<unsigned long>::const_iterator it)
-  : _segment(segm), _f_it(segm->_mesh->getKernel()), _it(it)
-{
-    this->_f_it.Set(0);
-    this->_f_it.Transform(_segment->_mesh->getTransform());
-    this->_facet.Mesh = _segment->_mesh;
-}
-
-Segment::ConstFacetIter::ConstFacetIter(const Segment::ConstFacetIter& fi)
-  : _segment(fi._segment), _facet(fi._facet), _f_it(fi._f_it), _it(fi._it)
-{
-}
-
-Segment::ConstFacetIter::~ConstFacetIter()
-{
-}
-
-Segment::ConstFacetIter& Segment::ConstFacetIter::operator=(const Segment::ConstFacetIter& fi)
-{
-    this->_segment = fi._segment;
-    this->_facet   = fi._facet;
-    this->_f_it    = fi._f_it;
-    this->_it      = fi._it;
-    return *this;
-}
-
-void Segment::ConstFacetIter::dereference()
-{
-    this->_f_it.Set(*_it);
-    this->_facet.MeshCore::MeshGeomFacet::operator = (*_f_it);
-    this->_facet.Index = *_it;
-    const MeshCore::MeshFacet& face = _f_it.GetReference();
-    for (int i=0; i<3;i++) {
-        this->_facet.PIndex[i] = face._aulPoints[i];
-        this->_facet.NIndex[i] = face._aulNeighbours[i];
-    }
-}
-
-const Facet& Segment::ConstFacetIter::operator*() const
-{
-    const_cast<ConstFacetIter*>(this)->dereference();
-    return this->_facet;
-}
-
-const Facet* Segment::ConstFacetIter::operator->() const
-{
-    const_cast<ConstFacetIter*>(this)->dereference();
-    return &(this->_facet);
-}
-
-bool Segment::ConstFacetIter::operator==(const Segment::ConstFacetIter& fi) const
-{
-    return (this->_segment == fi._segment) && (this->_it == fi._it);
-}
-
-bool Segment::ConstFacetIter::operator!=(const Segment::ConstFacetIter& fi) const 
-{
-    return !operator==(fi);
-}
-
-Segment::ConstFacetIter& Segment::ConstFacetIter::operator++()
-{
-    ++(this->_it);
-    return *this;
-}
-
-Segment::ConstFacetIter& Segment::ConstFacetIter::operator--()
+Segment::const_facet_iterator& Segment::const_facet_iterator::operator--()
 {
     --(this->_it);
     return *this;

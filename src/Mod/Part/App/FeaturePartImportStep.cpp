@@ -24,10 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TopTools_HSequenceOfShape.hxx>
-# include <STEPControl_Writer.hxx>
-# include <STEPControl_Reader.hxx>
-# include <TopoDS_Shape.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -54,10 +50,6 @@ short ImportStep::mustExecute() const
 
 App::DocumentObjectExecReturn *ImportStep::execute(void)
 {
-    STEPControl_Reader aReader;
-    TopoDS_Shape aShape;
-
-
     Base::FileInfo fi(FileName.getValue());
     if (!fi.isReadable()) {
         Base::Console().Log("ImportStep::execute() not able to open %s!\n",FileName.getValue());
@@ -69,36 +61,8 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
     Base::SequencerLauncher seq("Load STEP", 1);
     Base::Sequencer().next();
 
-    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-    if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone) {
-        std::string error = "Reading file ";
-        error += FileName.getValue();
-        error +=  " failed";
-        return new App::DocumentObjectExecReturn(error);
-    }
-  
-    // Root transfers
-    Standard_Integer nbr = aReader.NbRootsForTransfer();
-    //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
-    for ( Standard_Integer n = 1; n<= nbr; n++) {
-        printf("STEP: Transfering Root %d\n",n);
-        /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
-        // Collecting resulting entities
-        Standard_Integer nbs = aReader.NbShapes();
-        if (nbs == 0) {
-            aHSequenceOfShape.Nullify();
-            std::string error = std::string("No shapes found in file ") + FileName.getValue();
-            return new App::DocumentObjectExecReturn(error);
-        }
-        else {
-            for (Standard_Integer i =1; i<=nbs; i++) {
-                printf("STEP:   Transfering Shape %d\n",n);
-                aShape=aReader.Shape(i);
-                aHSequenceOfShape->Append(aShape);
-            }
-        }
-    }
-
+    TopoShape aShape;
+    aShape.importStep((const Standard_CString)FileName.getValue());
     this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;

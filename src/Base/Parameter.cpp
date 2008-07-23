@@ -334,7 +334,7 @@ Base::Reference<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
     DOMElement *pcTemp;
 
     // already created?
-    if ( (rParamGrp=_GroupMap[Name]).IsValid() ) {
+    if ((rParamGrp=_GroupMap[Name]).isValid()) {
         // just return the already existing Group handle
         return rParamGrp;
     }
@@ -362,7 +362,7 @@ std::vector<Base::Reference<ParameterGrp> > ParameterGrp::GetGroups(void)
     while (pcTemp) {
         Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
         // already created?
-        if ( ! (rParamGrp=_GroupMap[Name]).IsValid() ) {
+        if (!(rParamGrp=_GroupMap[Name]).isValid()) {
             rParamGrp = Base::Reference<ParameterGrp> (new ParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
             _GroupMap[Name] = rParamGrp;
         }
@@ -854,7 +854,7 @@ void ParameterGrp::Clear(void)
     // checking on references
     std::map <std::string ,Base::Reference<ParameterGrp> >::iterator It1;
     for (It1 = _GroupMap.begin();It1!=_GroupMap.end();It1++)
-        if (!(It1->second.IsLastRef()))
+        if (It1->second.getRefCount() > 1)
             Console().Warning("ParameterGrp::Clear(): Group clear with active references");
     // remove group handles
     _GroupMap.clear();
