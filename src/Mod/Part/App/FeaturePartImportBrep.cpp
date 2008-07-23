@@ -24,10 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <BRep_Builder.hxx>
-# include <BRepTools.hxx>
-# include <IGESControl_Reader.hxx>
-# include <TopoDS_Shape.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -56,9 +52,6 @@ short ImportBrep::mustExecute() const
 
 App::DocumentObjectExecReturn *ImportBrep::execute(void)
 {
-    IGESControl_Reader aReader;
-    TopoDS_Shape aShape;
-
     Base::FileInfo fi(FileName.getValue());
     if (!fi.isReadable()) {
         Base::Console().Log("ImportBrep::execute() not able to open %s!\n",FileName.getValue());
@@ -70,10 +63,8 @@ App::DocumentObjectExecReturn *ImportBrep::execute(void)
     Base::SequencerLauncher seq("Load BREP", 1);
     Base::Sequencer().next();
 
-    BRep_Builder aBuilder;
-
-    // read brep-file
-    BRepTools::Read(aShape,(const Standard_CString)FileName.getValue(),aBuilder);
+    TopoShape aShape;
+    aShape.importBrep((const Standard_CString)FileName.getValue());
     this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;

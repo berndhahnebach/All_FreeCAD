@@ -57,7 +57,7 @@ WindowParameter::~WindowParameter()
 /** Sets the group of the window to \a name */
 bool WindowParameter::setGroupName( const char* name )
 {
-  if ( _handle.IsValid() )
+  if (_handle.isValid())
     return false; // cannot change parameter group
 
   assert(name);

@@ -43,7 +43,7 @@ PrefWidget::PrefWidget()
  */
 PrefWidget::~PrefWidget()
 {
-  if (getWindowParameter().IsValid())
+  if (getWindowParameter().isValid())
     getWindowParameter()->Detach(this);
 }
 
@@ -63,7 +63,7 @@ QByteArray PrefWidget::entryName() const
 void PrefWidget::setParamGrpPath( const QByteArray& path )
 {
 #ifdef FC_DEBUG
-  if (getWindowParameter().IsValid())
+  if (getWindowParameter().isValid())
   {
     if ( paramGrpPath() != path )
       Base::Console().Warning("Widget already attached\n");
@@ -75,7 +75,7 @@ void PrefWidget::setParamGrpPath( const QByteArray& path )
     if ( setGroupName( path ) )
     {
       m_sPrefGrp = path;
-      assert(getWindowParameter().IsValid());
+      assert(getWindowParameter().isValid());
       getWindowParameter()->Attach(this);
     }
   }
@@ -107,7 +107,7 @@ void PrefWidget::OnChange(Base::Subject<const char*> &rCaller, const char * sRea
 void PrefWidget::onSave()
 {
   savePreferences();
-  if ( getWindowParameter().IsValid() )
+  if (getWindowParameter().isValid())
     getWindowParameter()->Notify( entryName() );
 #ifdef FC_DEBUG
   else
@@ -121,7 +121,7 @@ void PrefWidget::onSave()
 void PrefWidget::onRestore()
 {
 #ifdef FC_DEBUG
-  if ( getWindowParameter().IsNull() )
+  if (getWindowParameter().isNull())
     qWarning( "No parameter group specified!" );
 #endif
   restorePreferences();
@@ -140,7 +140,7 @@ PrefSpinBox::~PrefSpinBox()
 
 void PrefSpinBox::restorePreferences()
 {
-  if ( getWindowParameter().IsNull() )
+  if ( getWindowParameter().isNull() )
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -152,7 +152,7 @@ void PrefSpinBox::restorePreferences()
 
 void PrefSpinBox::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -194,7 +194,7 @@ PrefDoubleSpinBox::~PrefDoubleSpinBox()
 
 void PrefDoubleSpinBox::restorePreferences()
 {
-  if ( getWindowParameter().IsNull() )
+  if ( getWindowParameter().isNull() )
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -206,7 +206,7 @@ void PrefDoubleSpinBox::restorePreferences()
 
 void PrefDoubleSpinBox::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -248,7 +248,7 @@ PrefLineEdit::~PrefLineEdit()
 
 void PrefLineEdit::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -261,7 +261,7 @@ void PrefLineEdit::restorePreferences()
 
 void PrefLineEdit::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -303,7 +303,7 @@ PrefFileChooser::~PrefFileChooser()
 
 void PrefFileChooser::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -315,7 +315,7 @@ void PrefFileChooser::restorePreferences()
 
 void PrefFileChooser::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -357,7 +357,7 @@ PrefComboBox::~PrefComboBox()
 
 void PrefComboBox::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -369,7 +369,7 @@ void PrefComboBox::restorePreferences()
 
 void PrefComboBox::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -411,7 +411,7 @@ PrefCheckBox::~PrefCheckBox()
 
 void PrefCheckBox::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -423,7 +423,7 @@ void PrefCheckBox::restorePreferences()
 
 void PrefCheckBox::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -465,7 +465,7 @@ PrefRadioButton::~PrefRadioButton()
 
 void PrefRadioButton::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -477,7 +477,7 @@ void PrefRadioButton::restorePreferences()
 
 void PrefRadioButton::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -519,7 +519,7 @@ PrefSlider::~PrefSlider()
 
 void PrefSlider::restorePreferences()
 {
-  if ( getWindowParameter().IsNull() )
+  if ( getWindowParameter().isNull() )
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -531,7 +531,7 @@ void PrefSlider::restorePreferences()
 
 void PrefSlider::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -573,7 +573,7 @@ PrefColorButton::~PrefColorButton()
 
 void PrefColorButton::restorePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -593,7 +593,7 @@ void PrefColorButton::restorePreferences()
 
 void PrefColorButton::savePreferences()
 {
-  if (getWindowParameter().IsNull())
+  if (getWindowParameter().isNull())
   {
     Console().Warning("Cannot save!\n");
     return;

@@ -318,6 +318,11 @@ const MeshObject& PropertyMeshKernel::getValue(void)const
     return *_meshObject;
 }
 
+const MeshObject* PropertyMeshKernel::getValuePtr(void)const 
+{
+    return (MeshObject*)_meshObject;
+}
+
 Base::BoundBox3f PropertyMeshKernel::getBoundingBox() const
 {
     return _meshObject->getKernel().GetBoundBox();

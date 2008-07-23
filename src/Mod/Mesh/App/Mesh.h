@@ -72,8 +72,8 @@ public:
     /** @name Subelement management */
     //@{
     /** Sub type list
-     *  List of different sub element types
-     *  its NOT a list of the supelments itself
+     *  List of different subelement types
+     *  its NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const;
     /// get the subelement by type and number
@@ -99,14 +99,6 @@ public:
     bool isSolid() const;
     MeshPoint getPoint(unsigned long) const;
     Facet getFacet(unsigned long) const;
-    //@}
-
-    /** @name Iterator */
-    //@{
-    /** Returns an iterator object to go over all facets. */
-    MeshCore::MeshFacetIterator FacetIterator() const;
-    /** Returns an iterator object to go over all points. */
-    MeshCore::MeshPointIterator PointIterator() const;
     //@}
 
     void setKernel(const MeshCore::MeshKernel& m)
@@ -214,82 +206,67 @@ public:
     //@}
 
 public:
-    class MeshExport PointIter
+    class MeshExport const_point_iterator
     {
     public:
-        PointIter(MeshObject*, unsigned long index);
-        PointIter(const PointIter& pi);
-        ~PointIter();
+        const_point_iterator(const MeshObject*, unsigned long index);
+        const_point_iterator(const const_point_iterator& pi);
+        ~const_point_iterator();
 
-        PointIter& operator=(const PointIter& fi);
-        MeshPoint& operator*();
-        MeshPoint* operator->();
-        bool operator==(const PointIter& fi) const;
-        bool operator!=(const PointIter& fi) const;
-        PointIter& operator++();
-        PointIter& operator--();
+        const_point_iterator& operator=(const const_point_iterator& fi);
+        const MeshPoint& operator*();
+        const MeshPoint* operator->();
+        bool operator==(const const_point_iterator& fi) const;
+        bool operator!=(const const_point_iterator& fi) const;
+        const_point_iterator& operator++();
+        const_point_iterator& operator--();
     private:
         void dereference();
-        MeshObject* _mesh;
+        const MeshObject* _mesh;
         MeshPoint _point;
         MeshCore::MeshPointIterator _p_it;
     };
 
-    PointIter points_begin()
-    { return PointIter(this, 0); }
-    PointIter points_end()
-    { return PointIter(this, countPoints()); }
-
-    class MeshExport FacetIter
+    class MeshExport const_facet_iterator
     {
     public:
-        FacetIter(MeshObject*, unsigned long index);
-        FacetIter(const FacetIter& fi);
-        ~FacetIter();
+        const_facet_iterator(const MeshObject*, unsigned long index);
+        const_facet_iterator(const const_facet_iterator& fi);
+        ~const_facet_iterator();
 
-        FacetIter& operator=(const FacetIter& fi);
+        const_facet_iterator& operator=(const const_facet_iterator& fi);
         Facet& operator*();
         Facet* operator->();
-        bool operator==(const FacetIter& fi) const;
-        bool operator!=(const FacetIter& fi) const;
-        FacetIter& operator++();
-        FacetIter& operator--();
+        bool operator==(const const_facet_iterator& fi) const;
+        bool operator!=(const const_facet_iterator& fi) const;
+        const_facet_iterator& operator++();
+        const_facet_iterator& operator--();
     private:
         void dereference();
-        MeshObject* _mesh;
+        const MeshObject* _mesh;
         Facet _facet;
         MeshCore::MeshFacetIterator _f_it;
     };
 
-    FacetIter facets_begin()
-    { return FacetIter(this, 0); }
-    FacetIter facets_end()
-    { return FacetIter(this, countFacets()); }
-#if 0
-    class MeshExport SegmentIter
-    {
-    public:
-        SegmentIter(MeshObject*, unsigned long index);
-        SegmentIter(const SegmentIter& fi);
-        ~SegmentIter();
+    /** @name Iterator */
+    //@{
+    const_point_iterator points_begin() const
+    { return const_point_iterator(this, 0); }
+    const_point_iterator points_end() const
+    { return const_point_iterator(this, countPoints()); }
 
-        SegmentIter& operator=(const SegmentIter& fi);
-        Segment& operator*();
-        Segment* operator->();
-        bool operator==(const SegmentIter& fi) const;
-        bool operator!=(const SegmentIter& fi) const;
-        SegmentIter& operator++();
-        SegmentIter& operator--();
-    private:
-        void dereference();
-        MeshObject* _mesh;
-    };
+    const_facet_iterator facets_begin() const
+    { return const_facet_iterator(this, 0); }
+    const_facet_iterator facets_end() const
+    { return const_facet_iterator(this, countFacets()); }
 
-    SegmentIter segments_begin()
-    { return SegmentIter(this, 0); }
-    SegmentIter segments_end()
-    { return SegmentIter(this, _segments.size()); }
-#endif
+    typedef std::vector<Segment>::const_iterator const_segment_iterator;
+    const_segment_iterator segments_begin() const
+    { return _segments.begin(); }
+    const_segment_iterator segments_end() const
+    { return _segments.end(); }
+    //@}
+
 private:
     Base::Matrix4D _Mtrx;
     MeshCore::MeshKernel _kernel;

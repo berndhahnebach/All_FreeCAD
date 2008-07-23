@@ -60,8 +60,6 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
     Base::SequencerLauncher seq("Load STEP", 1);
     Base::Sequencer().next();
 
-    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
         throw Base::Exception("Cannot open file Step file");
     }
@@ -76,7 +74,6 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
         // Collecting resulting entities
         Standard_Integer nbs = aReader.NbShapes();
         if (nbs == 0) {
-            aHSequenceOfShape.Nullify();
             throw Base::Exception("No shapes found in file ");
         }
         else {
@@ -86,7 +83,6 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
                 Base::Console().Log("STEP:   Transfering Shape %d\n",n);
                 aShape=aReader.Shape(i);
                 //Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
-                aHSequenceOfShape->Append(aShape);
 
                 TopExp_Explorer ex;
 

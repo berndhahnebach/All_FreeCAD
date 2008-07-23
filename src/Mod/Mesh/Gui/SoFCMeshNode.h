@@ -29,78 +29,78 @@
 #include <Inventor/fields/SoMFInt32.h>
 
 namespace Mesh {
-class Feature;
+class MeshObject;
 }
 
 namespace MeshGui {
 
 class MeshGuiExport SoFCMeshNode : public SoShape {
-  typedef SoShape inherited;
+    typedef SoShape inherited;
 
-  SO_NODE_HEADER(SoFCMeshNode);
-    
+    SO_NODE_HEADER(SoFCMeshNode);
+
 public:
-  static void initClass();
-  SoFCMeshNode();
-  void setMesh(const Mesh::Feature* mesh);
+    static void initClass();
+    SoFCMeshNode();
+    void setMesh(const Mesh::MeshObject* mesh);
 
-  virtual void write( SoWriteAction* action );
-  unsigned int MaximumTriangles;
+    virtual void write( SoWriteAction* action );
+    unsigned int MaximumTriangles;
 
 protected:
-  virtual void GLRender(SoGLRenderAction *action);
-  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
-  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
-  virtual void generatePrimitives(SoAction *action);
-  virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
-                                          const SoPrimitiveVertex * v1,
-                                          const SoPrimitiveVertex * v2,
-                                          const SoPrimitiveVertex * v3,
-                                          SoPickedPoint * pp);
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+    virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+    virtual void generatePrimitives(SoAction *action);
+    virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
+                                            const SoPrimitiveVertex * v1,
+                                            const SoPrimitiveVertex * v2,
+                                            const SoPrimitiveVertex * v3,
+                                            SoPickedPoint * pp);
 
-  virtual SbBool readInstance( SoInput* in, unsigned short  flags );
-
-private:
-  // Force using the reference count mechanism.
-  virtual ~SoFCMeshNode() {};
-  virtual void notify(SoNotList * list);
-  // Draw faces
-  void drawFaces(SbBool needNormals) const;
-  void drawPoints(SbBool needNormals) const;
-  unsigned int countTriangles() const;
-  void createRoughModel(bool simplest);
+    virtual SbBool readInstance( SoInput* in, unsigned short  flags );
 
 private:
-  const Mesh::Feature*  _mesh;
-  unsigned int _ctPrimitives;
-  SoMFVec3f point;
-  SoMFInt32 coordIndex;
+    // Force using the reference count mechanism.
+    virtual ~SoFCMeshNode() {};
+    virtual void notify(SoNotList * list);
+    // Draw faces
+    void drawFaces(SbBool needNormals) const;
+    void drawPoints(SbBool needNormals) const;
+    unsigned int countTriangles() const;
+    void createRoughModel(bool simplest);
+
+private:
+    const Mesh::MeshObject*  _mesh;
+    unsigned int _ctPrimitives;
+    SoMFVec3f point;
+    SoMFInt32 coordIndex;
 };
 
 // ------------------------------------------------------------
 
 class MeshGuiExport SoFCMeshOpenEdge : public SoShape {
-  typedef SoShape inherited;
+    typedef SoShape inherited;
 
-  SO_NODE_HEADER(SoFCMeshOpenEdge);
+    SO_NODE_HEADER(SoFCMeshOpenEdge);
     
 public:
-  static void initClass();
-  SoFCMeshOpenEdge();
-  void setMesh(const Mesh::Feature* mesh);
+    static void initClass();
+    SoFCMeshOpenEdge();
+    void setMesh(const Mesh::MeshObject* mesh);
 
 protected:
-  virtual void GLRender(SoGLRenderAction *action);
-  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
-  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
-  virtual void generatePrimitives(SoAction *action);
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+    virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+    virtual void generatePrimitives(SoAction *action);
 private:
-  // Force using the reference count mechanism.
-  virtual ~SoFCMeshOpenEdge() {};
-  void drawLines() const ;
+    // Force using the reference count mechanism.
+    virtual ~SoFCMeshOpenEdge() {};
+    void drawLines() const ;
 
 private:
-  const Mesh::Feature*  _mesh;
+    const Mesh::MeshObject*  _mesh;
 };
 
 } // namespace MeshGui

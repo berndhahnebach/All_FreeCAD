@@ -192,8 +192,6 @@ public:
   /// Access to the element the iterator points to.
   const MeshPoint* operator->(void) const
   { return &Dereference(); }
-  /// Access to the element as double Vector.
-  inline  Base::Vector3d asVector3d(void) const;
   /// Increments the iterator. It points then to the next element if the
   /// end is not reached.
   const MeshPointIterator& operator ++ (void)
@@ -450,15 +448,6 @@ inline const MeshPoint& MeshPointIterator::Dereference (void) const
   if ( _bApply )
     const_cast<MeshPointIterator*>(this)->_clPoint = _clTrf * _clPoint;
   return _clPoint; 
-}
-
-inline  Base::Vector3d MeshPointIterator::asVector3d(void) const
-{ 
-    Base::Vector3d vec((*_clIter).x,(*_clIter).y,(*_clIter).z);
-    if ( _bApply )
-        return _clTrf * vec; 
-    else
-        return vec;
 }
 
 inline bool MeshPointIterator::Set (unsigned long ulIndex)

@@ -24,10 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TopTools_HSequenceOfShape.hxx>
-# include <IGESControl_Writer.hxx>
-# include <IGESControl_Reader.hxx>
-# include <TopoDS_Shape.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -56,9 +52,6 @@ short ImportIges::mustExecute() const
 
 App::DocumentObjectExecReturn *ImportIges::execute(void)
 {
-    IGESControl_Reader aReader;
-    TopoDS_Shape aShape;
-
     Base::FileInfo fi(FileName.getValue());
     if (!fi.isReadable()) {
         Base::Console().Log("ImportIges::execute() not able to open %s!\n",FileName.getValue());
@@ -70,18 +63,8 @@ App::DocumentObjectExecReturn *ImportIges::execute(void)
     Base::SequencerLauncher seq("Load IGES", 1);
     Base::Sequencer().next();
 
-    // read iges-file
-    if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
-        throw Base::Exception("IGES read failed (load file)");
-  
-  // check iges-file (memory)
-  //if (!aReader.Check(Standard_True))
-  //  Base::Console().Warning( "IGES model contains errors! try loading anyway....\n" );
-  
-    // make brep
-    aReader.TransferRoots();
-    // one shape, who contain's all subshapes
-    aShape = aReader.OneShape();
+    TopoShape aShape;
+    aShape.importIges((const Standard_CString)FileName.getValue());
     this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;
