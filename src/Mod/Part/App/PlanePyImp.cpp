@@ -26,13 +26,17 @@
 # include <gp_Ax1.hxx>
 # include <gp_Dir.hxx>
 # include <gp_Pnt.hxx>
+# include <gp_Lin.hxx>
+# include <Geom_Line.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_TrimmedCurve.hxx>
 # include <Standard_Failure.hxx>
 #endif
 
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
+#include "LinePy.h"
 #include "PlanePy.h"
 #include "PlanePy.cpp"
 
@@ -59,13 +63,6 @@ int PlanePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     }
 
     return -1;
-}
-
-
-PyObject* PlanePy::setParameterRange(PyObject * /*args*/)
-{
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
 }
 
 Py::Object PlanePy::getPosition(void) const
@@ -153,6 +150,56 @@ void PlanePy::setAxis(Py::Object arg)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         throw Py::Exception(e->GetMessageString());
+    }
+}
+
+PyObject* PlanePy::uIso(PyObject * args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d", &u))
+        return 0;
+
+    try {
+        Handle_Geom_Plane plane = Handle_Geom_Plane::DownCast
+            (getGeomPlanePtr()->handle());
+        Handle_Geom_Line c = Handle_Geom_Line::DownCast(plane->UIso(u));
+        GeomLineSegment* line = new GeomLineSegment();
+        Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+            (line->handle());
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        this_line->SetLin(c->Lin());
+        return new LinePy(line);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* PlanePy::vIso(PyObject * args)
+{
+    double v;
+    if (!PyArg_ParseTuple(args, "d", &v))
+        return 0;
+
+    try {
+        Handle_Geom_Plane plane = Handle_Geom_Plane::DownCast
+            (getGeomPlanePtr()->handle());
+        Handle_Geom_Line c = Handle_Geom_Line::DownCast(plane->VIso(v));
+        GeomLineSegment* line = new GeomLineSegment();
+        Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+            (line->handle());
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        this_line->SetLin(c->Lin());
+        return new LinePy(line);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
     }
 }
 

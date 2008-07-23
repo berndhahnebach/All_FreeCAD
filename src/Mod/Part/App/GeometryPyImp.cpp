@@ -1,12 +1,16 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepBuilderAPI_MakeEdge.hxx>
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <gp_Ax1.hxx>
 # include <gp_Dir.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Vec.hxx>
 # include <gp_Trsf.hxx>
 # include <Geom_Geometry.hxx>
+# include <Geom_Curve.hxx>
+# include <Geom_Surface.hxx>
 #endif
 
 #include <Base/Matrix.h>
@@ -46,23 +50,6 @@ PyObject *GeometryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // P
 int GeometryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
-}
-
-Py::Object GeometryPy::getShape(void) const
-{
-    TopoDS_Shape sh = getGeometryPtr()->toShape();
-    TopoShapePy* shape = 0;
-    if (sh.ShapeType() == TopAbs_EDGE) {
-        shape = new TopoShapeEdgePy(new TopoShape(sh));
-    }
-    else if (sh.ShapeType() == TopAbs_FACE) {
-        shape = new TopoShapeFacePy(new TopoShape(sh));
-    }
-    else {
-        shape = new TopoShapePy(new TopoShape(sh));
-    }
-
-    return Py::Object(shape);
 }
 
 PyObject* GeometryPy::mirror(PyObject *args)
@@ -146,6 +133,59 @@ PyObject* GeometryPy::translate(PyObject *args)
     gp_Vec trl(vec.x, vec.y, vec.z);
     getGeometryPtr()->handle()->Translate(trl);
     Py_Return;
+}
+
+PyObject* GeometryPy::toShape(PyObject *args)
+{
+    Handle_Geom_Geometry g = getGeometryPtr()->handle();
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(g);
+    Handle_Geom_Surface s = Handle_Geom_Surface::DownCast(g);
+    if (!c.IsNull()) {
+        double u,v;
+        u=c->FirstParameter();
+        v=c->LastParameter();
+        if (!PyArg_ParseTuple(args, "|dd", &u,&v))
+            return 0;
+        BRepBuilderAPI_MakeEdge mkBuilder(c, u, v);
+        TopoDS_Shape sh = mkBuilder.Shape();
+        return new TopoShapeEdgePy(new TopoShape(sh));
+    }
+    if (!s.IsNull()) {
+        double u1,u2,v1,v2;
+        s->Bounds(u1,u2,v1,v2);
+        if (!PyArg_ParseTuple(args, "|dddd", &u1,&u2,&v1,&v2))
+            return 0;
+        BRepBuilderAPI_MakeFace mkBuilder(s, u1, u2, v1, v2);
+        TopoDS_Shape sh = mkBuilder.Shape();
+        return new TopoShapeFacePy(new TopoShape(sh));
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is neither curve nor surface");
+    return 0;
+}
+
+PyObject* GeometryPy::value(PyObject *args)
+{
+    Handle_Geom_Geometry g = getGeometryPtr()->handle();
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(g);
+    Handle_Geom_Surface s = Handle_Geom_Surface::DownCast(g);
+    if (!c.IsNull()) {
+        double u;
+        if (!PyArg_ParseTuple(args, "d", &u))
+            return 0;
+        gp_Pnt p = c->Value(u);
+        return new Base::VectorPy(Base::Vector3d(p.X(),p.Y(),p.Z()));
+    }
+    if (!s.IsNull()) {
+        double u,v;
+        if (!PyArg_ParseTuple(args, "dd", &u,&v))
+            return 0;
+        gp_Pnt p = s->Value(u,v);
+        return new Base::VectorPy(Base::Vector3d(p.X(),p.Y(),p.Z()));
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is neither curve nor surface");
+    return 0;
 }
 
 PyObject *GeometryPy::getCustomAttributes(const char* /*attr*/) const
