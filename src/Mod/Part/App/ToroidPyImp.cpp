@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Geom_Circle.hxx>
 # include <Geom_ToroidalSurface.hxx>
 # include <gp_Torus.hxx>
 # include <Standard_Failure.hxx>
@@ -31,6 +32,7 @@
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
+#include "CirclePy.h"
 #include "ToroidPy.h"
 #include "ToroidPy.cpp"
 
@@ -71,10 +73,8 @@ PyObject* ToroidPy::uIso(PyObject * args)
     try {
         Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
             (getGeomToroidPtr()->handle());
-        Handle_Geom_Curve c = torus->UIso(u);
-
-        PyErr_SetString(PyExc_NotImplementedError, "this type of conical curve is not implemented");
-        return 0;
+        Handle_Geom_Circle c = Handle_Geom_Circle::DownCast(torus->UIso(u));
+        return new CirclePy(new GeomCircle(c));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -92,10 +92,8 @@ PyObject* ToroidPy::vIso(PyObject * args)
     try {
         Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
             (getGeomToroidPtr()->handle());
-        Handle_Geom_Curve c = torus->VIso(v);
-
-        PyErr_SetString(PyExc_NotImplementedError, "this type of conical curve is not implemented");
-        return 0;
+        Handle_Geom_Circle c = Handle_Geom_Circle::DownCast(torus->VIso(v));
+        return new CirclePy(new GeomCircle(c));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

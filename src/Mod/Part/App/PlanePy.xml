@@ -14,11 +14,6 @@
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
       <UserDocu>Describes an infinite line</UserDocu>
     </Documentation>
-    <Methode Name="setParameterRange">
-      <Documentation>
-        <UserDocu>Set the parameter range of the underlying line geometry</UserDocu>
-      </Documentation>
-    </Methode>
     <Attribute Name="Position" ReadOnly="false">
       <Documentation>
         <UserDocu>Returns the position point of this plane.</UserDocu>
@@ -31,5 +26,15 @@
       </Documentation>
       <Parameter Name="Axis" Type="Object"/>
     </Attribute>
+    <Methode Name="uIso">
+      <Documentation>
+        <UserDocu>Builds the U isoparametric line of this plane</UserDocu>
+       </Documentation>
+    </Methode>
+    <Methode Name="vIso">
+      <Documentation>
+        <UserDocu>Builds the V isoparametric line of this plane</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>
