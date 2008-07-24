@@ -1221,20 +1221,24 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea, int le
     _rclMesh.AddFacets(newFacets);
 }
 
-void MeshTopoAlgorithm::RemoveComponents(unsigned long count)
+void MeshTopoAlgorithm::FindComponents(unsigned long count, std::vector<unsigned long>& findIndices)
 {
   std::vector<std::vector<unsigned long> > segments;
   MeshComponents comp(_rclMesh);
   comp.SearchForComponents(MeshComponents::OverEdge,segments);
 
-  std::vector<unsigned long> removeFacets;
-  for ( std::vector<std::vector<unsigned long> >::iterator it = segments.begin(); it != segments.end(); ++it ) {
-    if ( it->size() <= (unsigned long)count )
-      removeFacets.insert( removeFacets.end(), it->begin(), it->end() );
-    }
+  for (std::vector<std::vector<unsigned long> >::iterator it = segments.begin(); it != segments.end(); ++it) {
+    if (it->size() <= (unsigned long)count)
+      findIndices.insert(findIndices.end(), it->begin(), it->end());
+  }
+}
 
-  if ( !removeFacets.empty() )
-    _rclMesh.DeleteFacets( removeFacets );
+void MeshTopoAlgorithm::RemoveComponents(unsigned long count)
+{
+  std::vector<unsigned long> removeFacets;
+  FindComponents(count, removeFacets);
+  if (!removeFacets.empty())
+    _rclMesh.DeleteFacets(removeFacets);
 }
 
 void MeshTopoAlgorithm::HarmonizeNormals (void)

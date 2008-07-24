@@ -102,6 +102,21 @@ Example:
 				<UserDocu>Add a list of facets to the mesh</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="removeFacets">
+			<Documentation>
+				<UserDocu>Remove a list of facet indices from the mesh</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="getSegment">
+			<Documentation>
+				<UserDocu>Get a list of facet indices that describes a segment</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="meshFromSegment">
+			<Documentation>
+				<UserDocu>Create a mesh from segment</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="clear">
 			<Documentation>
 				<UserDocu>Clear the mesh</UserDocu>

@@ -711,6 +711,22 @@ void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMet
     DeleteFacets(raclCutted);
 }
 
+std::vector<unsigned long> MeshKernel::GetFacetPoints(const std::vector<unsigned long>& facets) const
+{
+    std::vector<unsigned long> points;
+    for (std::vector<unsigned long>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
+        unsigned long p0, p1, p2;
+        GetFacetPoints(*it, p0, p1, p2);
+        points.push_back(p0);
+        points.push_back(p1);
+        points.push_back(p2);
+  }
+
+    std::sort(points.begin(), points.end());
+    points.erase(std::unique(points.begin(), points.end()), points.end());
+    return points;
+}
+
 std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIter) const
 {
     unsigned long i, ulPtInd = rclIter.Position();

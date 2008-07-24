@@ -227,7 +227,12 @@ public:
      */
     void FillupHoles(unsigned long length, float fMaxArea, int level);
     /**
-     * Removes topologic indepentent components with maximum \a count facets.
+     * Find topologic independent components with maximum \a count facets
+     * and returns an array of the indices.
+     */
+    void FindComponents(unsigned long count, std::vector<unsigned long>& aInds);
+    /**
+     * Removes topologic independent components with maximum \a count facets.
      */
     void RemoveComponents(unsigned long count);
     /**

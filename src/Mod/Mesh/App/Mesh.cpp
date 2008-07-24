@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <algorithm>
 # include <sstream>
 #endif
 
@@ -33,6 +34,7 @@
 #include <Base/Reader.h>
 #include <Base/PyCXX/Objects.hxx>
 
+#include "Core/Builder.h"
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
 #include "Core/Iterator.h"
@@ -127,13 +129,21 @@ void MeshObject::operator = (const MeshObject& mesh)
         // copy the mesh structure
         setTransform(mesh._Mtrx);
         this->_kernel = mesh._kernel;
-        this->_segments.clear();
+        this->_segments = mesh._segments;
     }
+}
+
+void MeshObject::setKernel(const MeshCore::MeshKernel& m)
+{
+    this->_kernel = m;
+    this->_segments.clear();
 }
 
 void MeshObject::swap(MeshCore::MeshKernel& Kernel)
 {
     this->_kernel.Swap(Kernel);
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -166,6 +176,11 @@ unsigned long MeshObject::countFacets() const
 unsigned long MeshObject::countEdges () const
 {
     return _kernel.CountEdges();
+}
+
+unsigned long MeshObject::countSegments () const
+{
+    return this->_segments.size();
 }
 
 bool MeshObject::isSolid() const
@@ -314,6 +329,82 @@ void MeshObject::addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &f
     _kernel.AddFacets(facet_v, point_v);
 }
 
+void MeshObject::deleteFacets(const std::vector<unsigned long>& removeIndices)
+{
+    _kernel.DeleteFacets(removeIndices);
+    deletedFacets(removeIndices);
+}
+
+void MeshObject::deletePoints(const std::vector<unsigned long>& removeIndices)
+{
+    _kernel.DeletePoints(removeIndices);
+    this->_segments.clear();
+}
+
+void MeshObject::deletedFacets(const std::vector<unsigned long>& remFacets)
+{
+    if (remFacets.empty())
+        return; // nothing has changed
+    if (this->_segments.empty())
+        return; // nothing to do
+    // set an array with the original indices and mark the removed as ULONG_MAX
+    std::vector<unsigned long> f_indices(_kernel.CountFacets()+remFacets.size());
+    for (std::vector<unsigned long>::const_iterator it = remFacets.begin();
+        it != remFacets.end(); ++it) {
+        f_indices[*it] = ULONG_MAX;
+    }
+
+    unsigned long index = 0;
+    for (std::vector<unsigned long>::iterator it = f_indices.begin();
+        it != f_indices.end(); ++it) {
+            if (*it == 0)
+                *it = index++;
+    }
+
+    // the array serves now as LUT to set the new indices in the segments
+    for (std::vector<Segment>::iterator it = this->_segments.begin();
+        it != this->_segments.end(); ++it) {
+            std::vector<unsigned long> segm = it->_indices;
+            for (std::vector<unsigned long>::iterator jt = segm.begin();
+                jt != segm.end(); ++jt) {
+                    *jt = f_indices[*jt];
+            }
+
+            // remove the invalid indices
+            std::sort(segm.begin(), segm.end());
+            std::vector<unsigned long>::iterator ft = std::find_if
+                (segm.begin(), segm.end(), 
+                std::bind2nd(std::equal_to<unsigned long>(), ULONG_MAX));
+            if (ft != segm.end())
+                segm.erase(ft, segm.end());
+            it->_indices = segm;
+    }
+}
+
+void MeshObject::updateMesh(const std::vector<unsigned long>& facets)
+{
+    std::vector<unsigned long> points;
+    points = _kernel.GetFacetPoints(facets);
+
+    MeshCore::MeshAlgorithm alg(_kernel);
+    alg.SetFacetsFlag(facets, MeshCore::MeshFacet::SEGMENT);
+    alg.SetPointsFlag(points, MeshCore::MeshPoint::SEGMENT);
+}
+
+void MeshObject::updateMesh()
+{
+    MeshCore::MeshAlgorithm alg(_kernel);
+    alg.ResetFacetFlag(MeshCore::MeshFacet::SEGMENT);
+    alg.ResetPointFlag(MeshCore::MeshPoint::SEGMENT);
+    for (std::vector<Segment>::iterator it = this->_segments.begin();
+        it != this->_segments.end(); ++it) {
+            std::vector<unsigned long> points;
+            points = _kernel.GetFacetPoints(it->getIndices());
+            alg.SetFacetsFlag(it->getIndices(), MeshCore::MeshFacet::SEGMENT);
+            alg.SetPointsFlag(points, MeshCore::MeshPoint::SEGMENT);
+    }
+}
+
 unsigned long MeshObject::countComponents() const
 {
     std::vector<std::vector<unsigned long> > segments;
@@ -324,9 +415,10 @@ unsigned long MeshObject::countComponents() const
 
 void MeshObject::removeComponents(unsigned long count)
 {
-    MeshCore::MeshTopoAlgorithm(_kernel).RemoveComponents(count);
-    //FIXME: Update the segments
-    this->_segments.clear();
+    std::vector<unsigned long> removeIndices;
+    MeshCore::MeshTopoAlgorithm(_kernel).FindComponents(count, removeIndices);
+    _kernel.DeleteFacets(removeIndices);
+    deletedFacets(removeIndices);
 }
 
 void MeshObject::fillupHoles(unsigned long length, float maxArea, int level)
@@ -474,7 +566,8 @@ void MeshObject::unite(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Union, Epsilon);
     setOp.Do();
-    //FIXME: Update the segments
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -483,7 +576,8 @@ void MeshObject::intersect(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Intersect, Epsilon);
     setOp.Do();
-    //FIXME: Update the segments
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -492,7 +586,8 @@ void MeshObject::subtract(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Difference, Epsilon);
     setOp.Do();
-    //FIXME: Update the segments
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -501,7 +596,8 @@ void MeshObject::inner(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Inner, Epsilon);
     setOp.Do();
-    //FIXME: Update the segments
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -510,7 +606,8 @@ void MeshObject::outer(const MeshObject& mesh)
     MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
                                   MeshCore::SetOperations::Outer, Epsilon);
     setOp.Do();
-    //FIXME: Update the segments
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -524,7 +621,9 @@ void MeshObject::refine()
         if (!cF->IsDeformed())
             topalg.InsertVertexAndSwapEdge(i, cF->GetGravityPoint(), 0.1f);
     }
-    //FIXME: Update the segments
+
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -532,6 +631,10 @@ void MeshObject::optimizeTopology(float fMaxAngle)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
     topalg.OptimizeTopology(fMaxAngle);
+
+    // clear the segments because we don't know how the new
+    // topology looks like
+    this->_segments.clear();
 }
 
 void MeshObject::optimizeEdges()
@@ -565,7 +668,9 @@ void MeshObject::splitEdges()
         Base::Vector3f mid = 0.5f*(cIter->_aclPoints[0]+cIter->_aclPoints[2]);
         topalg.SplitEdge(it->first, it->second, mid);
     }
-    //FIXME: Update the segments
+
+    // clear the segments because we don't know how the new
+    // topology looks like
     this->_segments.clear();
 }
 
@@ -591,12 +696,21 @@ void MeshObject::collapseEdge(unsigned long facet, unsigned long neighbour)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
     topalg.CollapseEdge(facet, neighbour);
+
+    std::vector<unsigned long> remFacets;
+    remFacets.push_back(facet);
+    remFacets.push_back(neighbour);
+    deletedFacets(remFacets);
 }
 
 void MeshObject::collapseFacet(unsigned long facet)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
     topalg.CollapseFacet(facet);
+
+    std::vector<unsigned long> remFacets;
+    remFacets.push_back(facet);
+    deletedFacets(remFacets);
 }
 
 void MeshObject::collapseFacets(const std::vector<unsigned long>& facets)
@@ -605,6 +719,8 @@ void MeshObject::collapseFacets(const std::vector<unsigned long>& facets)
     for (std::vector<unsigned long>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
         alg.CollapseFacet(*it);
     }
+
+    deletedFacets(facets);
 }
 
 void MeshObject::insertVertex(unsigned long facet, const Base::Vector3f& v)
@@ -646,11 +762,15 @@ bool MeshObject::hasNonManifolds() const
 
 void MeshObject::removeNonManifolds()
 {
+    unsigned long count = _kernel.CountFacets();
     MeshCore::MeshEvalTopology cMeshEval(_kernel);
     if (!cMeshEval.Evaluate()) {
         MeshCore::MeshFixTopology cMeshFix(_kernel, cMeshEval.GetIndices());
         cMeshFix.Fixup();
     }
+
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 bool MeshObject::hasSelfIntersections() const
@@ -666,6 +786,8 @@ void MeshObject::removeSelfIntersections()
 
 void MeshObject::validateIndices()
 {
+    unsigned long count = _kernel.CountFacets();
+
     // for invalid neighbour indices we don't need to check first
     // but start directly with the validation
     MeshCore::MeshFixNeighbourhood fix(_kernel);
@@ -688,30 +810,45 @@ void MeshObject::validateIndices()
         MeshCore::MeshFixCorruptedFacets fix(_kernel);
         fix.Fixup();
     }
+
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 void MeshObject::validateDeformations(float fMaxAngle)
 {
+    unsigned long count = _kernel.CountFacets();
     MeshCore::MeshFixDeformedFacets eval(_kernel, fMaxAngle);
     eval.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 void MeshObject::validateDegenerations()
 {
+    unsigned long count = _kernel.CountFacets();
     MeshCore::MeshFixDegeneratedFacets eval(_kernel);
     eval.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 void MeshObject::removeDuplicatedPoints()
 {
+    unsigned long count = _kernel.CountFacets();
     MeshCore::MeshFixDuplicatePoints eval(_kernel);
     eval.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 void MeshObject::removeDuplicatedFacets()
 {
+    unsigned long count = _kernel.CountFacets();
     MeshCore::MeshFixDuplicateFacets eval(_kernel);
     eval.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 MeshObject* MeshObject::createMeshFromList(Py::List& list)
@@ -882,6 +1019,32 @@ void MeshObject::addSegment(const std::vector<unsigned long>& inds)
     }
 
     this->_segments.push_back(Segment(this,inds));
+}
+
+const Segment& MeshObject::getSegment(unsigned long index) const
+{
+    return this->_segments[index];
+}
+
+Segment& MeshObject::getSegment(unsigned long index)
+{
+    return this->_segments[index];
+}
+
+MeshObject* MeshObject::meshFromSegment(const std::vector<unsigned long>& indices) const
+{
+    MeshCore::MeshKernel kernel;
+    MeshCore::MeshBuilder builder(kernel);
+    builder.Initialize(indices.size());
+    MeshCore::MeshFacetIterator f_it(this->_kernel);
+    for (std::vector<unsigned long>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+        f_it.Set(*it);
+        builder.AddFacet(*f_it);
+    }
+
+    builder.Finish();
+
+    return new MeshObject(kernel, _Mtrx);
 }
 
 // ----------------------------------------------------------------------------

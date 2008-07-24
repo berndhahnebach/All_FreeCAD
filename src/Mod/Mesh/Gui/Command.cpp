@@ -667,34 +667,56 @@ bool CmdMeshVertexCurvatureInfo::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
-DEF_STD_CMD_A(CmdMeshPolyPick);
+DEF_STD_CMD_A(CmdMeshPolySegm);
 
-CmdMeshPolyPick::CmdMeshPolyPick()
-  :Command("Mesh_PolyPick")
+CmdMeshPolySegm::CmdMeshPolySegm()
+  :Command("Mesh_PolySegm")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Surface info");
-  sToolTipText  = QT_TR_NOOP("Creates a segment from a picked polygon");
-  sWhatsThis    = QT_TR_NOOP("Creates a segment from a picked polygon");
-  sStatusTip    = QT_TR_NOOP("Creates a segment from a picked polygon");
-  sPixmap       = "PolygonPick";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Make segment");
+    sToolTipText  = QT_TR_NOOP("Creates a mesh segment");
+    sWhatsThis    = QT_TR_NOOP("Creates a mesh segment");
+    sStatusTip    = QT_TR_NOOP("Creates a mesh segment");
+    sPixmap       = "PolygonPick";
 }
 
-void CmdMeshPolyPick::activated(int iMsg)
+void CmdMeshPolySegm::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  if ( fea.size() == 1 )
-  {
-    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
-    pVP->setEdit();
-  }
+    std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it) {
+        if (it == docObj.begin()) {
+            Gui::Document* doc = getActiveGuiDocument();
+            Gui::MDIView* view = doc->getActiveView();
+            if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+                Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+                viewer->setEditing(true);
+                viewer->startPicking(Gui::View3DInventorViewer::Clip);
+                viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::segmMeshCallback);
+            }
+            else {
+                return;
+            }
+        }
+
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
+        pVP->setEdit();
+    }
 }
 
-bool CmdMeshPolyPick::isActive(void)
+bool CmdMeshPolySegm::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    // Check for the selected mesh feature (all Mesh types)
+    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -737,6 +759,59 @@ void CmdMeshPolyCut::activated(int iMsg)
 }
 
 bool CmdMeshPolyCut::isActive(void)
+{
+    // Check for the selected mesh feature (all Mesh types)
+    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdMeshPolySplit);
+
+CmdMeshPolySplit::CmdMeshPolySplit()
+  : Command("Mesh_PolySplit")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Split mesh");
+    sToolTipText  = QT_TR_NOOP("Splits a mesh into two meshes");
+    sWhatsThis    = QT_TR_NOOP("Splits a mesh into two meshes");
+    sStatusTip    = QT_TR_NOOP("Splits a mesh into two meshes");
+}
+
+void CmdMeshPolySplit::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it) {
+        if (it == docObj.begin()) {
+            Gui::Document* doc = getActiveGuiDocument();
+            Gui::MDIView* view = doc->getActiveView();
+            if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+                Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+                viewer->setEditing(true);
+                viewer->startPicking(Gui::View3DInventorViewer::Clip);
+                viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::partMeshCallback);
+            }
+            else {
+                return;
+            }
+        }
+
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
+        pVP->setEdit();
+    }
+}
+
+bool CmdMeshPolySplit::isActive(void)
 {
     // Check for the selected mesh feature (all Mesh types)
     if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
@@ -1416,8 +1491,9 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshDifference());
   rcCmdMgr.addCommand(new CmdMeshIntersection());
   rcCmdMgr.addCommand(new CmdMeshDemolding());
-  rcCmdMgr.addCommand(new CmdMeshPolyPick());
+  rcCmdMgr.addCommand(new CmdMeshPolySegm());
   rcCmdMgr.addCommand(new CmdMeshPolyCut());
+  rcCmdMgr.addCommand(new CmdMeshPolySplit());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());
   rcCmdMgr.addCommand(new CmdMeshTransform());
   rcCmdMgr.addCommand(new CmdMeshEvaluation());

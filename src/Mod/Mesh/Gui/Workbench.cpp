@@ -79,7 +79,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents"
           << "Mesh_RemoveCompByHand" << "Separator" 
           << "Mesh_BuildRegularSolid" << boolean << "Separator" << "Mesh_PolyCut"
-          << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
+          << "Mesh_PolySplit" << "Mesh_PolySegm" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
     return root;
 }
 

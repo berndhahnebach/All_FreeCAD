@@ -67,6 +67,7 @@
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
+#include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/Visitor.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -352,7 +353,7 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
     // When this callback function is invoked we must in either case leave the edit mode
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
     view->setEditing(false);
-    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipMeshCallback);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipMeshCallback,ud);
     n->setHandled();
 
     SbBool clip_inner;
@@ -371,6 +372,118 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
         }
     }
 
+    view->render();
+}
+
+void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * n)
+{
+    // show the wait cursor because this could take quite some time
+    Gui::WaitCursor wc;
+
+    // When this callback function is invoked we must in either case leave the edit mode
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    view->setEditing(false);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), partMeshCallback,ud);
+    n->setHandled();
+
+    SbBool clip_inner;
+    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
+    if (clPoly.size() < 3)
+        return;
+    if (clPoly.front() != clPoly.back())
+        clPoly.push_back(clPoly.front());
+
+    // get the normal of the front clipping plane
+    Base::Vector3f cPoint, cNormal;
+    view->getFrontClippingPlane(cPoint, cNormal);
+    SoCamera* pCam = view->getCamera();  
+    SbViewVolume  vol = pCam->getViewVolume(); 
+
+    // create a tool shape from these points
+    std::vector<MeshCore::MeshGeomFacet> aFaces;
+    if (!ViewProviderMesh::createToolMesh(clPoly, vol, cNormal, aFaces))
+        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
+
+    MeshCore::MeshKernel toolMesh;
+    bool locked = Base::Sequencer().setLocked(true);
+    toolMesh = aFaces;
+    Base::Sequencer().setLocked(locked);
+
+    // Open a transaction object for the undo/redo stuff
+    Gui::Application::Instance->activeDocument()->openCommand("Split");
+
+    try {
+        std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
+        for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+            ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(*it);
+            if (that->m_bEdit) {
+                that->unsetEdit();
+                that->splitMesh(toolMesh, cNormal, clip_inner);
+            }
+        }
+    }
+    catch(...) {
+        // Don't rethrow any exception
+    }
+
+    // Close the transaction
+    Gui::Application::Instance->activeDocument()->commitCommand();
+    view->render();
+}
+
+void ViewProviderMeshFaceSet::segmMeshCallback(void * ud, SoEventCallback * n)
+{
+    // show the wait cursor because this could take quite some time
+    Gui::WaitCursor wc;
+
+    // When this callback function is invoked we must in either case leave the edit mode
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    view->setEditing(false);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), segmMeshCallback,ud);
+    n->setHandled();
+
+    SbBool clip_inner;
+    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
+    if (clPoly.size() < 3)
+        return;
+    if (clPoly.front() != clPoly.back())
+        clPoly.push_back(clPoly.front());
+
+    // get the normal of the front clipping plane
+    Base::Vector3f cPoint, cNormal;
+    view->getFrontClippingPlane(cPoint, cNormal);
+    SoCamera* pCam = view->getCamera();  
+    SbViewVolume  vol = pCam->getViewVolume(); 
+
+    // create a tool shape from these points
+    std::vector<MeshCore::MeshGeomFacet> aFaces;
+    if (!ViewProviderMesh::createToolMesh(clPoly, vol, cNormal, aFaces))
+        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
+
+    MeshCore::MeshKernel toolMesh;
+    bool locked = Base::Sequencer().setLocked(true);
+    toolMesh = aFaces;
+    Base::Sequencer().setLocked(locked);
+
+    // Open a transaction object for the undo/redo stuff
+    Gui::Application::Instance->activeDocument()->openCommand("Segment");
+
+    try {
+        std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
+        for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+            ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(*it);
+            if (that->m_bEdit) {
+                that->unsetEdit();
+                that->segmentMesh(toolMesh, cNormal, clip_inner);
+            }
+        }
+    }
+    catch(...) {
+        // Don't rethrow any exception
+    }
+
+    // Close the transaction
+    Gui::Application::Instance->activeDocument()->commitCommand();
     view->render();
 }
 
@@ -435,6 +548,69 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
         Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
+void ViewProviderMeshFaceSet::splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool clip_inner)
+{
+    // Get the attached mesh property
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+    const MeshCore::MeshKernel& meshPropKernel = meshProp.getValue().getKernel();
+
+    // Get the facet indices inside the tool mesh
+    std::vector<unsigned long> indices;
+    MeshCore::MeshFacetGrid cGrid(meshPropKernel);
+    MeshCore::MeshAlgorithm cAlg(meshPropKernel);
+    cAlg.GetFacetsFromToolMesh(toolMesh, normal, cGrid, indices);
+    if (!clip_inner) {
+        // get the indices that are completely outside
+        std::vector<unsigned long> complete(meshPropKernel.CountFacets());
+        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::sort(indices.begin(), indices.end());
+        std::vector<unsigned long> complementary;
+        std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
+        std::set_difference(complete.begin(), complete.end(), indices.begin(), indices.end(), biit);
+        indices = complementary;
+    }
+
+    // Remove the facets from the mesh and create a new one
+    Mesh::MeshObject* kernel = meshProp.getValue().meshFromSegment(indices);
+    meshProp.deleteFacetIndices(indices);
+    Mesh::Feature* splitMesh = static_cast<Mesh::Feature*>(App::GetApplication().getActiveDocument()
+        ->addObject("Mesh::Feature",pcObject->getNameInDocument()));
+    // Note: deletes also kernel
+    splitMesh->Mesh.setValue(kernel);
+    static_cast<Mesh::Feature*>(pcObject)->purgeTouched();
+
+    // notify the mesh shape node
+    pcFaceSet->touch();
+}
+
+void ViewProviderMeshFaceSet::segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool clip_inner)
+{
+    // Get the attached mesh property
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+    const MeshCore::MeshKernel& meshPropKernel = meshProp.getValue().getKernel();
+
+    // Get the facet indices inside the tool mesh
+    std::vector<unsigned long> indices;
+    MeshCore::MeshFacetGrid cGrid(meshPropKernel);
+    MeshCore::MeshAlgorithm cAlg(meshPropKernel);
+    cAlg.GetFacetsFromToolMesh(toolMesh, normal, cGrid, indices);
+    if (!clip_inner) {
+        // get the indices that are completely outside
+        std::vector<unsigned long> complete(meshPropKernel.CountFacets());
+        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::sort(indices.begin(), indices.end());
+        std::vector<unsigned long> complementary;
+        std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
+        std::set_difference(complete.begin(), complete.end(), indices.begin(), indices.end(), biit);
+        indices = complementary;
+    }
+
+    meshProp.createSegment(indices);
+    static_cast<Mesh::Feature*>(pcObject)->purgeTouched();
+    // notify the mesh shape node
+    pcFaceSet->touch();
+}
+
 void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
 {
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
@@ -451,7 +627,7 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
         if (cl == id) {
             view->setEditing(false);
             view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
-            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback);
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), faceInfoCallback,ud);
         }
     }
     else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -498,7 +674,7 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
         if (cl == id) {
             view->setEditing(false);
             view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
-            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback);
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), fillHoleCallback,ud);
         }
     }
     else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -542,7 +718,7 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
             QAction* id = menu.exec(QCursor::pos());
             if (cl == id) {
                 view->setEditing(false);
-                view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), markPartCallback);
+                view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), markPartCallback,ud);
 
                 std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMeshFaceSet::getClassTypeId());
                 for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {

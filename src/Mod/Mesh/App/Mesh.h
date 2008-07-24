@@ -96,13 +96,13 @@ public:
     unsigned long countPoints() const;
     unsigned long countFacets() const;
     unsigned long countEdges () const;
+    unsigned long countSegments() const;
     bool isSolid() const;
     MeshPoint getPoint(unsigned long) const;
     Facet getFacet(unsigned long) const;
     //@}
 
-    void setKernel(const MeshCore::MeshKernel& m)
-    { _kernel = m; }
+    void setKernel(const MeshCore::MeshKernel& m);
     MeshCore::MeshKernel& getKernel(void)
     { return _kernel; }
     const MeshCore::MeshKernel& getKernel(void) const
@@ -132,6 +132,8 @@ public:
                    const std::vector<Base::Vector3f>& points);
     void addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
                    const std::vector<Base::Vector3d>& points);
+    void deleteFacets(const std::vector<unsigned long>& removeIndices);
+    void deletePoints(const std::vector<unsigned long>& removeIndices);
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
     void fillupHoles(unsigned long, float, int);
@@ -192,6 +194,9 @@ public:
     //@{
     void addSegment(const Segment&);
     void addSegment(const std::vector<unsigned long>&);
+    const Segment& getSegment(unsigned long) const;
+    Segment& getSegment(unsigned long);
+    MeshObject* meshFromSegment(const std::vector<unsigned long>&) const;
     //@}
 
     /** @name Primitives */
@@ -266,6 +271,14 @@ public:
     const_segment_iterator segments_end() const
     { return _segments.end(); }
     //@}
+
+    // friends
+    friend class Segment;
+
+private:
+    void deletedFacets(const std::vector<unsigned long>& remFacets);
+    void updateMesh(const std::vector<unsigned long>&);
+    void updateMesh();
 
 private:
     Base::Matrix4D _Mtrx;

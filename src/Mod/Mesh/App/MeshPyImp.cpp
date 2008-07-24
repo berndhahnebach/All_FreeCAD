@@ -358,6 +358,62 @@ PyObject*  MeshPy::addFacets(PyObject *args)
     return NULL;
 }
 
+PyObject* MeshPy::removeFacets(PyObject *args)
+{
+    PyObject* list;
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &list))
+        return 0;
+
+    std::vector<unsigned long> indices;
+    Py::List ary(list);
+    for (Py::List::iterator it = ary.begin(); it != ary.end(); ++it) {
+        Py::Int f(*it);
+        indices.push_back((long)f);
+    }
+
+    getMeshObjectPtr()->deleteFacets(indices);
+    Py_Return;
+}
+
+PyObject* MeshPy::getSegment(PyObject *args)
+{
+    unsigned long index;
+    if (!PyArg_ParseTuple(args, "k", &index))
+        return 0;
+
+    unsigned long count = getMeshObjectPtr()->countSegments();
+    if (index >= count) {
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return 0;
+    }
+
+    Py::List ary;
+    const std::vector<unsigned long>& segm = getMeshObjectPtr()->getSegment(index).getIndices();
+    for (std::vector<unsigned long>::const_iterator it = segm.begin(); it != segm.end(); ++it) {
+        ary.append(Py::Int((int)*it));
+    }
+
+    return Py::new_reference_to(ary);
+}
+
+PyObject* MeshPy::meshFromSegment(PyObject *args)
+{
+    PyObject* list;
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &list))
+        return 0;
+
+    std::vector<unsigned long> segment;
+    Py::List ary(list);
+    for (Py::List::iterator it = ary.begin(); it != ary.end(); ++it) {
+        Py::Int f(*it);
+        segment.push_back((long)f);
+    }
+
+
+    MeshObject* mesh = getMeshObjectPtr()->meshFromSegment(segment);
+    return new MeshPy(mesh);
+}
+
 PyObject*  MeshPy::clear(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

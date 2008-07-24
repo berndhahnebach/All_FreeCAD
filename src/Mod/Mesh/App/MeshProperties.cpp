@@ -353,14 +353,14 @@ void PropertyMeshKernel::applyTransformation(const Base::Matrix4D& rclTrf)
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
 {
     aboutToSetValue();
-    _meshObject->getKernel().DeletePoints(inds);
+    _meshObject->deletePoints(inds);
     hasSetValue();
 }
 
 void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& inds )
 {
     aboutToSetValue();
-    _meshObject->getKernel().DeleteFacets(inds);
+    _meshObject->deleteFacets(inds);
     hasSetValue();
 }
 
@@ -376,7 +376,14 @@ void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned l
 void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints)
 {
     aboutToSetValue();
-    _meshObject->getKernel().AddFacets(rFaces, rPoints);
+    _meshObject->addFacets(rFaces, rPoints);
+    hasSetValue();
+}
+
+void PropertyMeshKernel::createSegment(const std::vector<unsigned long>& segm)
+{
+    aboutToSetValue();
+    _meshObject->addSegment(segm);
     hasSetValue();
 }
 

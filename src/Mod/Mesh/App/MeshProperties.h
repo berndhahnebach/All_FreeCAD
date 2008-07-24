@@ -167,6 +167,7 @@ public:
     void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );
     void append(const std::vector<MeshCore::MeshFacet>& rFaces,
                 const std::vector<Base::Vector3f>& rPoints);
+    void createSegment(const std::vector<unsigned long>& segm);
     void smooth(int iter, float d_max);
     void clear();
     //@}
