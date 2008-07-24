@@ -39,10 +39,14 @@ public:
     Segment(MeshObject*);
     Segment(MeshObject*, const std::vector<unsigned long>& inds);
     void addIndices(const std::vector<unsigned long>& inds);
+    void removeIndices(const std::vector<unsigned long>& inds);
     const std::vector<unsigned long>& getIndices() const;
 
     const Segment& operator = (const Segment&);
     bool operator == (const Segment&) const;
+
+    // friends
+    friend class MeshObject;
 
 private:
     MeshObject* _mesh;

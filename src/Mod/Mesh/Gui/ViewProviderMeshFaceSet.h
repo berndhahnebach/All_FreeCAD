@@ -39,6 +39,9 @@ namespace Gui {
     class SoFCSelection;
     class AbstractMouseModel;
 }
+namespace MeshCore {
+class MeshKernel;
+}
 namespace MeshGui {
 class SoFCMeshVertex;
 class SoFCMeshFacet;
@@ -94,6 +97,8 @@ protected:
     void showOpenEdges( bool );
     void setOpenEdgeColorFrom(const App::Color& col);
     virtual void cutMesh(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner);
+    void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
 
     SoTransform      * pcComplexData;
     SoFCMeshVertex   * pcVertexNode;
@@ -111,6 +116,8 @@ public:
     static void fillHoleCallback(void * ud, SoEventCallback * n);
     static void markPartCallback(void * ud, SoEventCallback * n);
     static void clipMeshCallback(void * ud, SoEventCallback * n);
+    static void partMeshCallback(void * ud, SoEventCallback * n);
+    static void segmMeshCallback(void * ud, SoEventCallback * n);
 
 private:
     std::vector<unsigned long> _markedFacets;

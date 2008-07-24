@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <algorithm>
 # include <sstream>
 #endif
 
@@ -39,13 +40,31 @@ Segment::Segment(MeshObject* mesh) : _mesh(mesh)
 {
 }
 
-Segment::Segment(MeshObject* mesh, const std::vector<unsigned long>& inds) : _mesh(mesh), _indices(inds)
+Segment::Segment(MeshObject* mesh, const std::vector<unsigned long>& inds)
+  : _mesh(mesh), _indices(inds)
 {
+    _mesh->updateMesh(inds);
 }
 
 void Segment::addIndices(const std::vector<unsigned long>& inds)
 {
     _indices.insert(_indices.end(), inds.begin(), inds.end());
+    std::sort(_indices.begin(), _indices.end());
+    _indices.erase(std::unique(_indices.begin(), _indices.end()), _indices.end());
+    _mesh->updateMesh(inds);
+}
+
+void Segment::removeIndices(const std::vector<unsigned long>& inds)
+{
+    // make difference
+    std::vector<unsigned long> result;
+    std::set<unsigned long> s1(_indices.begin(), _indices.end());
+    std::set<unsigned long> s2(inds.begin(), inds.end());
+    std::set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(),
+        std::back_insert_iterator<std::vector<unsigned long> >(result));
+  
+    _indices = result;
+    _mesh->updateMesh();
 }
 
 const std::vector<unsigned long>& Segment::getIndices() const
@@ -58,6 +77,7 @@ const Segment& Segment::operator = (const Segment& s)
     // Do not copy the MeshObject pointer
     if (this != &s)
         this->_indices = s._indices;
+    _mesh->updateMesh();
     return *this;
 }
 

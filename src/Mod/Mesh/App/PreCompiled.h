@@ -7,10 +7,8 @@
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 #   define    MeshExport __declspec(dllexport)
-#   define AppPartExport __declspec(dllimport)
 #else // for Linux
 #   define    MeshExport
-#   define AppPartExport
 #endif
 
 
