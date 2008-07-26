@@ -31,7 +31,7 @@
 # include <OpenGL/gl.h>
 # else
 # include <GL/gl.h>
-#endif
+# endif
 # include <Inventor/SbBox.h>
 # include <Inventor/SoOutput.h>
 # include <Inventor/SoPrimitiveVertex.h>

@@ -442,6 +442,60 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
     return true;
 }
 
+bool MeshInput::LoadMeshNode (std::istream &rstrIn)
+{
+    boost::regex rx_p("^v\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
+    boost::regex rx_f("^f\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s*$");
+    boost::regex rx_e("\\s*]\\s*");
+    boost::cmatch what;
+
+    MeshPointArray meshPoints;
+    MeshFacetArray meshFacets;
+
+    std::string line;
+    float fX, fY, fZ;
+    unsigned int  i1=1,i2=1,i3=1;
+    MeshGeomFacet clFacet;
+
+    if (!rstrIn || rstrIn.bad() == true)
+        return false;
+
+    std::streambuf* buf = rstrIn.rdbuf();
+    if (!buf)
+        return false;
+
+    while (std::getline(rstrIn, line)) {
+        for (std::string::iterator it = line.begin(); it != line.end(); ++it)
+            *it = tolower(*it);
+        if (boost::regex_match(line.c_str(), what, rx_p)) {
+            fX = (float)std::atof(what[1].first);
+            fY = (float)std::atof(what[4].first);
+            fZ = (float)std::atof(what[7].first);
+            meshPoints.push_back(MeshPoint(Base::Vector3f(fX, fY, fZ)));
+        }
+        else if (boost::regex_match(line.c_str(), what, rx_f)) {
+            i1 = std::atoi(what[1].first);
+            i2 = std::atoi(what[2].first);
+            i3 = std::atoi(what[3].first);
+            meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
+        }
+        else if (boost::regex_match(line.c_str(), what, rx_e)) {
+            break;
+        }
+    }
+
+    this->_rclMesh.Clear(); // remove all data before
+    // Don't use Assign() because Merge() checks which points are really needed.
+    // This method sets already the correct neighbourhood
+    MeshKernel tmp;
+    tmp.Adopt(meshPoints,meshFacets);
+    this->_rclMesh.Merge(tmp);
+
+    return true;
+}
+
 /** Loads an ASCII STL file. */
 bool MeshInput::LoadAsciiSTL (std::istream &rstrIn)
 {
@@ -1078,6 +1132,31 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
                         << it->_aulPoints[2]+1 << std::endl;
         Base::Sequencer().next(true); // allow to cancel
     }
+
+    return true;
+}
+
+bool MeshOutput::SaveMeshNode (std::ostream &rstrOut)
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+
+    if (!rstrOut || rstrOut.bad() == true)
+        return false;
+
+    // vertices
+    rstrOut << "[" << std::endl;
+    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+        rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
+    }
+
+    // facet indices (no texture and normal indices)
+    for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+        rstrOut << "f " << it->_aulPoints[0]+1 << " "
+                        << it->_aulPoints[1]+1 << " "
+                        << it->_aulPoints[2]+1 << std::endl;
+    }
+    rstrOut << "]" << std::endl;
 
     return true;
 }

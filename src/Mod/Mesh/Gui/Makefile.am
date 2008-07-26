@@ -20,6 +20,7 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \
 		SoFCMeshFaceSet.cpp \
+		SoFCMeshObject.cpp \
 		SoFCMeshNode.cpp \
 		SoFCMeshVertex.cpp \
 		ViewProvider.cpp \
@@ -34,6 +35,7 @@ libMeshGui_la_SOURCES=\
 include_HEADERS=\
 		PropertyEditorMesh.h \
 		SoFCMeshFaceSet.h \
+		SoFCMeshObject.h \
 		SoFCMeshNode.h \
 		SoFCMeshVertex.h \
 		ViewProvider.h \

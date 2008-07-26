@@ -421,6 +421,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SoFCMeshObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoFCMeshObject.h"
+				>
+			</File>
+			<File
 				RelativePath="SoFCMeshVertex.cpp"
 				>
 				<FileConfiguration

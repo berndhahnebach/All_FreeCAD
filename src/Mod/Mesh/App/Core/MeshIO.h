@@ -61,6 +61,8 @@ public:
     bool LoadOBJ (std::istream &rstrIn);
     /** Loads the mesh object from an XML file. */
     void LoadXML (Base::XMLReader &reader);
+    /** Loads a node from an OpenInventor file. */
+    bool LoadMeshNode (std::istream &rstrIn);
     /** Loads an OpenInventor file. */
     bool LoadInventor (std::istream &rstrIn);
     /** Loads a Nastran file. */
@@ -92,6 +94,8 @@ public:
     bool SaveOBJ (std::ostream &rstrOut) const;
     /** Saves the mesh object into an XML file. */
     void SaveXML (Base::Writer &writer) const;
+    /** Saves a node to an OpenInventor file. */
+    bool SaveMeshNode (std::ostream &rstrIn);
     /** Writes an OpenInventor file. */
     bool SaveInventor (std::ostream &rstrOut) const;
     /** Writes a VRML file. */

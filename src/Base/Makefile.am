@@ -141,6 +141,7 @@ include_HEADERS=\
 		Exception.h \
 		Factory.h \
 		FileInfo.h \
+		fdstream.hpp \
 		gzstream.h \
 		Handle.h \
 		InputSource.h \

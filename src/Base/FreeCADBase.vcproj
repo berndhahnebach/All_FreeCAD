@@ -659,6 +659,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fdstream.hpp"
+				>
+			</File>
+			<File
 				RelativePath="FileInfo.cpp"
 				>
 				<FileConfiguration

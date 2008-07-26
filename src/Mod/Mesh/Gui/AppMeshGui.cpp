@@ -36,6 +36,7 @@
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
 #include "SoFCMeshNode.h"
+#include "SoFCMeshObject.h"
 #include "SoFCMeshVertex.h"
 #include "SoFCMeshFaceSet.h"
 #include "ViewProvider.h"
@@ -97,36 +98,40 @@ void MeshGuiExport initMeshGui()
     CreateMeshCommands();
     new MeshGui::CleanupHandler;
 
-    MeshGui::SoFCMeshNode                      ::initClass();
-    MeshGui::SoFCMeshOpenEdge                  ::initClass();
-    MeshGui::SoFCMeshVertexElement             ::initClass();
-    MeshGui::SoFCMeshFacetElement              ::initClass();
-    MeshGui::SoSFMeshPointArray                ::initClass();
-    MeshGui::SoFCMeshVertex                    ::initClass();
-    MeshGui::SoFCMeshFacet                     ::initClass();
-    MeshGui::SoSFMeshFacetArray                ::initClass();
-    MeshGui::SoFCMeshFaceSet                   ::initClass();
-    MeshGui::SoFCMeshOpenEdgeSet               ::initClass();
+    MeshGui::SoFCMeshNode                       ::initClass();
+    MeshGui::SoFCMeshOpenEdge                   ::initClass();
+    MeshGui::SoFCMeshVertexElement              ::initClass();
+    MeshGui::SoFCMeshFacetElement               ::initClass();
+    MeshGui::SoFCMeshObjectElement              ::initClass();
+    MeshGui::SoSFMeshPointArray                 ::initClass();
+    MeshGui::SoSFMeshObject                     ::initClass();
+    MeshGui::SoFCMeshVertex                     ::initClass();
+    MeshGui::SoFCMeshObjectNode                 ::initClass();
+    MeshGui::SoFCMeshFacet                      ::initClass();
+    MeshGui::SoSFMeshFacetArray                 ::initClass();
+    MeshGui::SoFCMeshFaceSet                    ::initClass();
+    MeshGui::SoFCMeshOpenEdgeSet                ::initClass();
+    MeshGui::SoFCMeshObjectShape                ::initClass();
 #if 0
-    MeshGui::PropertyEditorMesh                ::init();
+    MeshGui::PropertyEditorMesh                 ::init();
 #endif
-    MeshGui::PropertyMeshKernelItem            ::init();
-    MeshGui::ViewProviderMesh                  ::init();
-    MeshGui::ViewProviderMeshNode              ::init();
-    MeshGui::ViewProviderMeshFaceSet           ::init();
-    MeshGui::ViewProviderExport                ::init();
-    MeshGui::ViewProviderMeshCurvature         ::init();
-    MeshGui::ViewProviderMeshTransform         ::init();
-    MeshGui::ViewProviderMeshTransformDemolding::init();
-    MeshGui::ViewProviderMeshDefects           ::init();
-    MeshGui::ViewProviderMeshOrientation       ::init();
-    MeshGui::ViewProviderMeshNonManifolds      ::init();
-    MeshGui::ViewProviderMeshDuplicatedFaces   ::init();
-    MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
-    MeshGui::ViewProviderMeshDegenerations     ::init();
-    MeshGui::ViewProviderMeshIndices           ::init();
-    MeshGui::ViewProviderMeshSelfIntersections ::init();
-    MeshGui::Workbench                         ::init();
+    MeshGui::PropertyMeshKernelItem             ::init();
+    MeshGui::ViewProviderMesh                   ::init();
+    MeshGui::ViewProviderMeshNode               ::init();
+    MeshGui::ViewProviderMeshFaceSet            ::init();
+    MeshGui::ViewProviderExport                 ::init();
+    MeshGui::ViewProviderMeshCurvature          ::init();
+    MeshGui::ViewProviderMeshTransform          ::init();
+    MeshGui::ViewProviderMeshTransformDemolding ::init();
+    MeshGui::ViewProviderMeshDefects            ::init();
+    MeshGui::ViewProviderMeshOrientation        ::init();
+    MeshGui::ViewProviderMeshNonManifolds       ::init();
+    MeshGui::ViewProviderMeshDuplicatedFaces    ::init();
+    MeshGui::ViewProviderMeshDuplicatedPoints   ::init();
+    MeshGui::ViewProviderMeshDegenerations      ::init();
+    MeshGui::ViewProviderMeshIndices            ::init();
+    MeshGui::ViewProviderMeshSelfIntersections  ::init();
+    MeshGui::Workbench                          ::init();
 
     // add resources and reloads the translators
     loadMeshResource();
