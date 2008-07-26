@@ -27,6 +27,7 @@
 #include <gp_Pnt.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Mod/Mesh/App/MeshAlgos.h>
+#include <Base/BoundBox.h>
 #include <list>
 #include <map>
 

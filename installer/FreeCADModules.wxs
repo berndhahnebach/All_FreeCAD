@@ -30,7 +30,6 @@
             <?include ModPoints.wxi ?>
             <?include ModImage.wxi ?>
             <?include ModRaytracing.wxi ?>
-            <?include ModCam.wxi ?>
             <?include ModTest.wxi ?>
             <?include ModDrawing.wxi ?>
         </DirectoryRef>
