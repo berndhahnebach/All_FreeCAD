@@ -6,6 +6,7 @@ BUILT_SOURCES=\
 		ArcPy.cpp \
 		CirclePy.cpp \
 		EllipsePy.cpp \
+		ParabolaPy.cpp \
 		GeometryPy.cpp \
 		LinePy.cpp \
 		PlanePy.cpp \
@@ -28,6 +29,7 @@ libPart_la_BUILT=\
 		ArcPy.h \
 		CirclePy.h \
 		EllipsePy.h \
+		ParabolaPy.h \
 		GeometryPy.h \
 		LinePy.h \
 		PlanePy.h \
@@ -51,6 +53,7 @@ libPart_la_SOURCES=\
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
 		EllipsePyImp.cpp \
+		ParabolaPyImp.cpp \
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
 		PlanePyImp.cpp \
@@ -177,6 +180,7 @@ EXTRA_DIST = \
 		ArcPy.xml \
 		CirclePy.xml \
 		EllipsePy.xml \
+		ParabolaPy.xml \
 		GeometryPy.xml \
 		LinePy.xml \
 		PlanePy.xml \
