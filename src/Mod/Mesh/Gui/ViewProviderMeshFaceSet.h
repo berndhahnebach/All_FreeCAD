@@ -43,9 +43,8 @@ namespace MeshCore {
 class MeshKernel;
 }
 namespace MeshGui {
-class SoFCMeshVertex;
-class SoFCMeshFacet;
-class SoFCMeshFaceSet;
+class SoFCMeshObjectNode;
+class SoFCMeshObjectShape;
 
 /**
  * The ViewProviderMeshFaceSet class creates a node representing the mesh data structure.
@@ -100,16 +99,15 @@ protected:
     void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
     void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
 
-    SoTransform      * pcComplexData;
-    SoFCMeshVertex   * pcVertexNode;
-    SoFCMeshFacet    * pcFacetNode;
-    SoFCMeshFaceSet  * pcFaceSet;
-    SoDrawStyle      * pcLineStyle;
-    SoDrawStyle      * pcPointStyle;
-    SoSeparator      * pcOpenEdge;
-    SoBaseColor      * pOpenColor;
-    SoShapeHints     * pShapeHints;
-    SoMaterialBinding* pcMatBinding;
+    SoTransform         * pcComplexData;
+    SoFCMeshObjectNode  * pcMeshNode;
+    SoFCMeshObjectShape * pcMeshShape;
+    SoDrawStyle         * pcLineStyle;
+    SoDrawStyle         * pcPointStyle;
+    SoSeparator         * pcOpenEdge;
+    SoBaseColor         * pOpenColor;
+    SoShapeHints        * pShapeHints;
+    SoMaterialBinding   * pcMatBinding;
 
 public:
     static void faceInfoCallback(void * ud, SoEventCallback * n);

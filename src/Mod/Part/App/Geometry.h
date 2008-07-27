@@ -36,6 +36,7 @@
 #include <Handle_Geom_BezierSurface.hxx>
 #include <Handle_Geom_BSplineSurface.hxx>
 #include <Handle_Geom_CylindricalSurface.hxx>
+#include <Handle_Geom_ConicalSurface.hxx>
 #include <Handle_Geom_SphericalSurface.hxx>
 #include <Handle_Geom_ToroidalSurface.hxx>
 #include <Handle_Geom_Plane.hxx>
@@ -220,6 +221,18 @@ public:
 
 private:
     Handle_Geom_CylindricalSurface mySurface;
+};
+
+class GeomCone : public GeomSurface
+{
+public:
+    GeomCone();
+    virtual ~GeomCone();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_ConicalSurface mySurface;
 };
 
 class GeomSphere : public GeomSurface

@@ -86,6 +86,8 @@ TopoDS_Shape PropertyPartShape::getValue(void)const
 Base::BoundBox3f PropertyPartShape::getBoundingBox() const
 {
     Base::BoundBox3f box;
+    if (_Shape._Shape.IsNull())
+        return box;
     try {
         // If the shape is empty an exception may be thrown
         Bnd_Box bounds;

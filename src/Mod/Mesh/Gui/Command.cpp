@@ -314,10 +314,12 @@ void CmdMeshUnion::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "mesh = App.activeDocument().%s.Mesh\n"
-    "mesh.union(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.ActiveDocument.%s.Mesh."
+    "unite(App.ActiveDocument.%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n",
+    name1.c_str(), name2.c_str(),
+    name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();
@@ -353,10 +355,12 @@ void CmdMeshDifference::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "mesh = App.activeDocument().%s.Mesh\n"
-    "mesh.diff(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.ActiveDocument.%s.Mesh."
+    "difference(App.ActiveDocument.%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n",
+    name1.c_str(), name2.c_str(),
+    name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();
@@ -392,10 +396,12 @@ void CmdMeshIntersection::activated(int iMsg)
   openCommand("Mesh Union");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "mesh = App.activeDocument().%s.Mesh\n"
-    "mesh.intersect(App.activeDocument().%s.Mesh)\n"
+    "mesh = App.ActiveDocument.%s.Mesh."
+    "intersect(App.ActiveDocument.%s.Mesh)\n"
     "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n", name1.c_str(), name2.c_str(), name3.c_str(), name3.c_str());
+    "App.activeDocument().%s.Mesh = mesh\n",
+    name1.c_str(), name2.c_str(),
+    name3.c_str(), name3.c_str());
  
   updateActive();
   commitCommand();

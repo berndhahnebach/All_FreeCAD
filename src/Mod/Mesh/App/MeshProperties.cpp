@@ -470,10 +470,10 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
     if (PyObject_TypeCheck(value, &(MeshPy::Type))) {
         MeshPy* mesh = static_cast<MeshPy*>(value);
         // Do not allow to reassign the same instance
-        if (&(*this->_meshObject) != mesh->getMesh()) {
+        if (&(*this->_meshObject) != mesh->getMeshObjectPtr()) {
             // Note: Copy the content, do NOT reference the same mesh object
             aboutToSetValue();
-            *(this->_meshObject) = *(mesh->getMesh());
+            *(this->_meshObject) = *(mesh->getMeshObjectPtr());
             hasSetValue();
         }
     }

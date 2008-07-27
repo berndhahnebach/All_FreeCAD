@@ -110,9 +110,9 @@ void PlanePy::setPosition(Py::Object arg)
 
 Py::Object PlanePy::getAxis(void) const
 {
-    Handle_Geom_Plane this_surf = Handle_Geom_Plane::DownCast
-        (this->getGeomPlanePtr()->handle());
-    gp_Dir dir = this_surf->Axis().Direction();
+    Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
+        (getGeometryPtr()->handle());
+    gp_Dir dir = s->Axis().Direction();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return Py::Object(vec);
@@ -120,19 +120,19 @@ Py::Object PlanePy::getAxis(void) const
 
 void PlanePy::setAxis(Py::Object arg)
 {
-    gp_Dir dir;
+    Standard_Real dir_x, dir_y, dir_z;
     PyObject *p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d v = static_cast<Base::VectorPy*>(p)->value();
-        dir.SetX(v.x);
-        dir.SetY(v.y);
-        dir.SetZ(v.z);
+        dir_x = v.x;
+        dir_y = v.y;
+        dir_z = v.z;
     }
     else if (PyTuple_Check(p)) {
         Py::Tuple tuple(arg);
-        dir.SetX((double)Py::Float(tuple.getItem(0)));
-        dir.SetY((double)Py::Float(tuple.getItem(1)));
-        dir.SetZ((double)Py::Float(tuple.getItem(2)));
+        dir_x = (double)Py::Float(tuple.getItem(0));
+        dir_y = (double)Py::Float(tuple.getItem(1));
+        dir_z = (double)Py::Float(tuple.getItem(2));
     }
     else {
         std::string error = std::string("type must be 'Vector' or tuple, not ");
@@ -141,15 +141,16 @@ void PlanePy::setAxis(Py::Object arg)
     }
 
     try {
-        Handle_Geom_Plane this_surf = Handle_Geom_Plane::DownCast
-            (this->getGeomPlanePtr()->handle());
-        gp_Ax1 ax1 = this_surf->Axis();
-        ax1.SetDirection(dir);
-        this_surf->SetAxis(ax1);
+        Handle_Geom_ElementarySurface this_surf = Handle_Geom_ElementarySurface::DownCast
+            (this->getGeometryPtr()->handle());
+        gp_Ax1 axis;
+        axis.SetLocation(this_surf->Location());
+        axis.SetDirection(gp_Dir(dir_x, dir_y, dir_z));
+        gp_Dir dir = axis.Direction();
+        this_surf->SetAxis(axis);
     }
     catch (Standard_Failure) {
-        Handle_Standard_Failure e = Standard_Failure::Caught();
-        throw Py::Exception(e->GetMessageString());
+        throw Py::Exception("cannot set axis");
     }
 }
 

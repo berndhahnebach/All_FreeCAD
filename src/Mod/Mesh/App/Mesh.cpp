@@ -561,54 +561,49 @@ Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
     return normal;
 }
 
-void MeshObject::unite(const MeshObject& mesh)
+MeshObject* MeshObject::unite(const MeshObject& mesh) const
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+    MeshCore::MeshKernel kernel;
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
                                   MeshCore::SetOperations::Union, Epsilon);
     setOp.Do();
-    // clear the segments because we don't know how the new
-    // topology looks like
-    this->_segments.clear();
+    return new MeshObject(kernel,this->_Mtrx);
 }
 
-void MeshObject::intersect(const MeshObject& mesh)
+MeshObject* MeshObject::intersect(const MeshObject& mesh) const
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+    MeshCore::MeshKernel kernel;
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
                                   MeshCore::SetOperations::Intersect, Epsilon);
     setOp.Do();
-    // clear the segments because we don't know how the new
-    // topology looks like
-    this->_segments.clear();
+    return new MeshObject(kernel,this->_Mtrx);
 }
 
-void MeshObject::subtract(const MeshObject& mesh)
+MeshObject* MeshObject::subtract(const MeshObject& mesh) const
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+    MeshCore::MeshKernel kernel;
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
                                   MeshCore::SetOperations::Difference, Epsilon);
     setOp.Do();
-    // clear the segments because we don't know how the new
-    // topology looks like
-    this->_segments.clear();
+    return new MeshObject(kernel,this->_Mtrx);
 }
 
-void MeshObject::inner(const MeshObject& mesh)
+MeshObject* MeshObject::inner(const MeshObject& mesh) const
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+    MeshCore::MeshKernel kernel;
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
                                   MeshCore::SetOperations::Inner, Epsilon);
     setOp.Do();
-    // clear the segments because we don't know how the new
-    // topology looks like
-    this->_segments.clear();
+    return new MeshObject(kernel,this->_Mtrx);
 }
 
-void MeshObject::outer(const MeshObject& mesh)
+MeshObject* MeshObject::outer(const MeshObject& mesh) const
 {
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, _kernel,
+    MeshCore::MeshKernel kernel;
+    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
                                   MeshCore::SetOperations::Outer, Epsilon);
     setOp.Do();
-    // clear the segments because we don't know how the new
-    // topology looks like
-    this->_segments.clear();
+    return new MeshObject(kernel,this->_Mtrx);
 }
 
 void MeshObject::refine()
