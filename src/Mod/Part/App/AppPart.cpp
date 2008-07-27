@@ -47,7 +47,7 @@
 //#include "BSplineCurvePy.h"
 //#include "HyperbolaPy.h"
 //#include "OffsetCurvePy.h"
-//#include "ParabolaPy.h"
+#include "ParabolaPy.h"
 //#include "BezierSurfacePy.h"
 //#include "BSplineSurfacePy.h"
 #include "ConePy.h"
@@ -94,6 +94,7 @@ void AppPartExport initPart()
     AddType(&Part::LinePy               ::Type,partModule,"Line");
     AddType(&Part::CirclePy             ::Type,partModule,"Circle");
     AddType(&Part::EllipsePy            ::Type,partModule,"Ellipse");
+    AddType(&Part::ParabolaPy           ::Type,partModule,"Parabola");
     AddType(&Part::ArcPy                ::Type,partModule,"Arc");
 
     AddType(&Part::PlanePy              ::Type,partModule,"Plane");

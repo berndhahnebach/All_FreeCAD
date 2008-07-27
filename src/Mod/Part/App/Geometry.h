@@ -131,6 +131,7 @@ class GeomParabola : public GeomCurve
 {
 public:
     GeomParabola();
+    GeomParabola(const Handle_Geom_Parabola&);
     virtual ~GeomParabola();
 
     Handle_Geom_Geometry handle() const;

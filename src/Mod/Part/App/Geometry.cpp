@@ -28,6 +28,7 @@
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
+# include <Geom_Parabola.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Surface.hxx>
@@ -38,6 +39,7 @@
 # include <Geom_ToroidalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
+# include <gp_Parab.hxx>
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
 # include <gp_Pln.hxx>
@@ -210,6 +212,13 @@ Handle_Geom_Geometry GeomHyperbola::handle() const
 
 GeomParabola::GeomParabola()
 {
+    Handle_Geom_Parabola p = new Geom_Parabola(gp_Parab());
+    this->myCurve = p;
+}
+
+GeomParabola::GeomParabola(const Handle_Geom_Parabola& p)
+{
+    this->myCurve = p;
 }
 
 GeomParabola::~GeomParabola()
