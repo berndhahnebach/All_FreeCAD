@@ -135,10 +135,9 @@ void SpherePy::setCenter(Py::Object arg)
 
 Py::Object SpherePy::getAxis(void) const
 {
-    Handle_Geom_SphericalSurface sphere = Handle_Geom_SphericalSurface::DownCast
-        (getGeomSpherePtr()->handle());
-    gp_Ax1 axis = sphere->Axis();
-    gp_Dir dir = axis.Direction();
+    Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
+        (getGeometryPtr()->handle());
+    gp_Dir dir = s->Axis().Direction();
     Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
         (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
     return Py::Object(vec);
@@ -146,25 +145,37 @@ Py::Object SpherePy::getAxis(void) const
 
 void SpherePy::setAxis(Py::Object arg)
 {
-    PyObject* p = arg.ptr();
+    Standard_Real dir_x, dir_y, dir_z;
+    PyObject *p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
-        Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_SphericalSurface sphere = Handle_Geom_SphericalSurface::DownCast(getGeomSpherePtr()->handle());
-        try {
-            gp_Ax1 axis;
-            axis.SetLocation(sphere->Location());
-            axis.SetDirection(gp_Dir(val.x, val.y, val.z));
-            gp_Dir dir = axis.Direction();
-            sphere->SetAxis(axis);
-        }
-        catch (Standard_Failure) {
-            throw Py::Exception("cannot set axis");
-        }
+        Base::Vector3d v = static_cast<Base::VectorPy*>(p)->value();
+        dir_x = v.x;
+        dir_y = v.y;
+        dir_z = v.z;
+    }
+    else if (PyTuple_Check(p)) {
+        Py::Tuple tuple(arg);
+        dir_x = (double)Py::Float(tuple.getItem(0));
+        dir_y = (double)Py::Float(tuple.getItem(1));
+        dir_z = (double)Py::Float(tuple.getItem(2));
     }
     else {
-        std::string error = std::string("type must be 'Vector', not ");
+        std::string error = std::string("type must be 'Vector' or tuple, not ");
         error += p->ob_type->tp_name;
         throw Py::TypeError(error);
+    }
+
+    try {
+        Handle_Geom_ElementarySurface this_surf = Handle_Geom_ElementarySurface::DownCast
+            (this->getGeometryPtr()->handle());
+        gp_Ax1 axis;
+        axis.SetLocation(this_surf->Location());
+        axis.SetDirection(gp_Dir(dir_x, dir_y, dir_z));
+        gp_Dir dir = axis.Direction();
+        this_surf->SetAxis(axis);
+    }
+    catch (Standard_Failure) {
+        throw Py::Exception("cannot set axis");
     }
 }
 

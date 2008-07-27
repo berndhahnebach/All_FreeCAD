@@ -836,3 +836,566 @@ unsigned int SoFCMeshObjectShape::countTriangles(SoAction * action) const
     const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
     return (unsigned int)mesh->countFacets();
 }
+
+// -------------------------------------------------------
+
+SO_NODE_SOURCE(SoFCMeshSegmentShape);
+
+void SoFCMeshSegmentShape::initClass()
+{
+    SO_NODE_INIT_CLASS(SoFCMeshSegmentShape, SoShape, "Shape");
+}
+
+SoFCMeshSegmentShape::SoFCMeshSegmentShape() : MaximumTriangles(100000)
+{
+    SO_NODE_CONSTRUCTOR(SoFCMeshSegmentShape);
+    SO_NODE_ADD_FIELD(index, (0));
+}
+
+/**
+ * Either renders the complete mesh or only a subset of the points.
+ */
+void SoFCMeshSegmentShape::GLRender(SoGLRenderAction *action)
+{
+    if (shouldGLRender(action))
+    {
+        SoState*  state = action->getState();
+
+        SbBool mode = Gui::SoFCInteractiveElement::get(state);
+        const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+        if (!mesh) return;
+
+        Binding mbind = this->findMaterialBinding(state);
+
+        SoMaterialBundle mb(action);
+        //SoTextureCoordinateBundle tb(action, true, false);
+
+        SbBool needNormals = !mb.isColorOnly()/* || tb.isFunction()*/;
+        mb.sendFirst();  // make sure we have the correct material
+    
+        SbBool ccw = TRUE;
+        if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
+            ccw = FALSE;
+
+        if (mode == false || mesh->countFacets() <= this->MaximumTriangles) {
+            if (mbind != OVERALL)
+                drawFaces(mesh, &mb, mbind, needNormals, ccw);
+            else
+                drawFaces(mesh, 0, mbind, needNormals, ccw);
+        }
+        else {
+            drawPoints(mesh, needNormals, ccw);
+        }
+
+        // Disable caching for this node
+        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+    }
+}
+
+/**
+ * Translates current material binding into the internal Binding enum.
+ */
+SoFCMeshSegmentShape::Binding SoFCMeshSegmentShape::findMaterialBinding(SoState * const state) const
+{
+    Binding binding = OVERALL;
+    SoMaterialBindingElement::Binding matbind = SoMaterialBindingElement::get(state);
+
+    switch (matbind) {
+    case SoMaterialBindingElement::OVERALL:
+        binding = OVERALL;
+        break;
+    case SoMaterialBindingElement::PER_VERTEX:
+        binding = PER_VERTEX_INDEXED;
+        break;
+    case SoMaterialBindingElement::PER_VERTEX_INDEXED:
+        binding = PER_VERTEX_INDEXED;
+        break;
+    case SoMaterialBindingElement::PER_PART:
+    case SoMaterialBindingElement::PER_FACE:
+        binding = PER_FACE_INDEXED;
+        break;
+    case SoMaterialBindingElement::PER_PART_INDEXED:
+    case SoMaterialBindingElement::PER_FACE_INDEXED:
+        binding = PER_FACE_INDEXED;
+        break;
+    default:
+        break;
+    }
+    return binding;
+}
+
+/**
+ * Renders the triangles of the complete mesh.
+ * FIXME: Do it the same way as Coin did to have only one implementation which is controled by defines
+ * FIXME: Implement using different values of transparency for each vertex or face
+ */
+void SoFCMeshSegmentShape::drawFaces(const Mesh::MeshObject * mesh, SoMaterialBundle* mb,
+                                    Binding bind, SbBool needNormals, SbBool ccw) const
+{
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+    if (mesh->countSegments() <= this->index.getValue())
+        return;
+    const std::vector<unsigned long> rSegm = mesh->getSegment
+        (this->index.getValue()).getIndices();
+    bool perVertex = (mb && bind == PER_VERTEX_INDEXED);
+    bool perFace = (mb && bind == PER_FACE_INDEXED);
+
+    if (needNormals)
+    {
+        glBegin(GL_TRIANGLES);
+        if (ccw) {
+            // counterclockwise ordering
+            for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it)
+            {
+                const MeshCore::MeshFacet& f = rFacets[*it];
+                const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+                const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+                const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+
+                // Calculate the normal n = (v1-v0)x(v2-v0)
+                float n[3];
+                n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+                n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+                n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+    
+                if(perFace)
+                mb->send(*it, TRUE);
+                glNormal(n);
+                if(perVertex)
+                mb->send(f._aulPoints[0], TRUE);
+                glVertex(v0);
+                if(perVertex)
+                mb->send(f._aulPoints[1], TRUE);
+                glVertex(v1);
+                if(perVertex)
+                mb->send(f._aulPoints[2], TRUE);
+                glVertex(v2);
+            }
+        }
+        else {
+            // clockwise ordering
+            for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it)
+            {
+                const MeshCore::MeshFacet& f = rFacets[*it];
+                const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+                const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+                const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+
+                // Calculate the normal n = -(v1-v0)x(v2-v0)
+                float n[3];
+                n[0] = -((v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y));
+                n[1] = -((v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z));
+                n[2] = -((v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x));
+
+                glNormal(n);
+                glVertex(v0);
+                glVertex(v1);
+                glVertex(v2);
+            }
+        }
+        glEnd();
+    }
+    else {
+        glBegin(GL_TRIANGLES);
+        for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it)
+        {
+            const MeshCore::MeshFacet& f = rFacets[*it];
+            glVertex(rPoints[f._aulPoints[0]]);
+            glVertex(rPoints[f._aulPoints[1]]);
+            glVertex(rPoints[f._aulPoints[2]]);
+        }
+        glEnd();
+    }
+}
+
+/**
+ * Renders the gravity points of a subset of triangles.
+ */
+void SoFCMeshSegmentShape::drawPoints(const Mesh::MeshObject * mesh, SbBool needNormals, SbBool ccw) const
+{
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+    if (mesh->countSegments() <= this->index.getValue())
+        return;
+    const std::vector<unsigned long> rSegm = mesh->getSegment
+        (this->index.getValue()).getIndices();
+    int mod = rSegm.size()/MaximumTriangles+1;
+
+    float size = std::min<float>((float)mod,3.0f);
+    glPointSize(size);
+
+    if (needNormals)
+    {
+        glBegin(GL_POINTS);
+        int ct=0;
+        if (ccw) {
+            for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it, ct++)
+            {
+                if (ct%mod==0) {
+                    const MeshCore::MeshFacet& f = rFacets[*it];
+                    const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+                    const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+                    const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+
+                    // Calculate the normal n = (v1-v0)x(v2-v0)
+                    float n[3];
+                    n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+                    n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+                    n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+
+                    // Calculate the center point p=(v0+v1+v2)/3
+                    float p[3];
+                    p[0] = (v0.x+v1.x+v2.x)/3.0f;
+                    p[1] = (v0.y+v1.y+v2.y)/3.0f;
+                    p[2] = (v0.z+v1.z+v2.z)/3.0f;
+                    glNormal3fv(n);
+                    glVertex3fv(p);
+                }
+            }
+        }
+        else {
+            for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it, ct++)
+            {
+                if (ct%mod==0) {
+                    const MeshCore::MeshFacet& f = rFacets[*it];
+                    const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+                    const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+                    const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+
+                    // Calculate the normal n = -(v1-v0)x(v2-v0)
+                    float n[3];
+                    n[0] = -((v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y));
+                    n[1] = -((v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z));
+                    n[2] = -((v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x));
+      
+                    // Calculate the center point p=(v0+v1+v2)/3
+                    float p[3];
+                    p[0] = (v0.x+v1.x+v2.x)/3.0f;
+                    p[1] = (v0.y+v1.y+v2.y)/3.0f;
+                    p[2] = (v0.z+v1.z+v2.z)/3.0f;
+                    glNormal3fv(n);
+                    glVertex3fv(p);
+                }
+            }
+        }
+        glEnd();
+    }
+    else {
+        glBegin(GL_POINTS);
+        int ct=0;
+        for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it, ct++)
+        {
+            if (ct%mod==0) {
+                const MeshCore::MeshFacet& f = rFacets[*it];
+                const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+                const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+                const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+                // Calculate the center point p=(v0+v1+v2)/3
+                float p[3];
+                p[0] = (v0.x+v1.x+v2.x)/3.0f;
+                p[1] = (v0.y+v1.y+v2.y)/3.0f;
+                p[2] = (v0.z+v1.z+v2.z)/3.0f;
+                glVertex3fv(p);
+            }
+        }
+        glEnd();
+    }
+}
+
+/** Sets the point indices, the geometric points and the normal for each triangle.
+ * If the number of triangles exceeds \a MaximumTriangles then only a triangulation of
+ * a rough model is filled in instead. This is due to performance issues.
+ * \see createTriangleDetail().
+ */
+void SoFCMeshSegmentShape::generatePrimitives(SoAction* action)
+{
+    SoState*  state = action->getState();
+    const Mesh::MeshObject* mesh = SoFCMeshObjectElement::get(state);
+    if (!mesh)
+        return;
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+    if (rPoints.size() < 3)
+        return;
+    if (rFacets.size() < 1)
+        return;
+    if (mesh->countSegments() <= this->index.getValue())
+        return;
+    const std::vector<unsigned long> rSegm = mesh->getSegment
+        (this->index.getValue()).getIndices();
+
+    // get material binding
+    Binding mbind = this->findMaterialBinding(state);
+
+    // Create the information when moving over or picking into the scene
+    SoPrimitiveVertex vertex;
+    SoPointDetail pointDetail;
+    SoFaceDetail faceDetail;
+
+    vertex.setDetail(&pointDetail);
+
+    beginShape(action, TRIANGLES, &faceDetail);
+    try 
+    {
+        for (std::vector<unsigned long>::const_iterator it = rSegm.begin(); it != rSegm.end(); ++it)
+        {
+            const MeshCore::MeshFacet& f = rFacets[*it];
+            const MeshCore::MeshPoint& v0 = rPoints[f._aulPoints[0]];
+            const MeshCore::MeshPoint& v1 = rPoints[f._aulPoints[1]];
+            const MeshCore::MeshPoint& v2 = rPoints[f._aulPoints[2]];
+
+            // Calculate the normal n = (v1-v0)x(v2-v0)
+            SbVec3f n;
+            n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+            n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+            n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+
+            // Set the normal
+            vertex.setNormal(n);
+
+            // Vertex 0
+            if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+                pointDetail.setMaterialIndex(f._aulPoints[0]);
+                vertex.setMaterialIndex(f._aulPoints[0]);
+            }
+            pointDetail.setCoordinateIndex(f._aulPoints[0]);
+            vertex.setPoint(sbvec3f(v0));
+            shapeVertex(&vertex);
+
+            // Vertex 1
+            if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+                pointDetail.setMaterialIndex(f._aulPoints[1]);
+                vertex.setMaterialIndex(f._aulPoints[1]);
+            }
+            pointDetail.setCoordinateIndex(f._aulPoints[1]);
+            vertex.setPoint(sbvec3f(v1));
+            shapeVertex(&vertex);
+
+            // Vertex 2
+            if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+                pointDetail.setMaterialIndex(f._aulPoints[2]);
+                vertex.setMaterialIndex(f._aulPoints[2]);
+            }
+            pointDetail.setCoordinateIndex(f._aulPoints[2]);
+            vertex.setPoint(sbvec3f(v2));
+            shapeVertex(&vertex);
+
+            // Increment for the next face
+            faceDetail.incFaceIndex();
+        }
+    }
+    catch (const Base::MemoryException&) {
+        Base::Console().Log("Not enough memory to generate primitives\n");
+    }
+
+    endShape();
+}
+
+/**
+ * Sets the bounding box of the mesh to \a box and its center to \a center.
+ */
+void SoFCMeshSegmentShape::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
+{
+    box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
+    center.setValue(0.0f,0.0f,0.0f);
+
+    SoState*  state = action->getState();
+    const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+    if (mesh && mesh->countSegments() > this->index.getValue()) {
+        const Mesh::Segment& segm = mesh->getSegment(this->index.getValue());
+        const std::vector<unsigned long>& indices = segm.getIndices();
+        Base::BoundBox3f cBox;
+        if (!indices.empty()) {
+            const MeshCore::MeshPointArray& rPoint = mesh->getKernel().GetPoints();
+            const MeshCore::MeshFacetArray& rFaces = mesh->getKernel().GetFacets();
+
+            for (std::vector<unsigned long>::const_iterator it = indices.begin();
+                it != indices.end(); ++it) {
+                    const MeshCore::MeshFacet& face = rFaces[*it];
+                    cBox &= rPoint[face._aulPoints[0]];
+                    cBox &= rPoint[face._aulPoints[1]];
+                    cBox &= rPoint[face._aulPoints[2]];
+            }
+            
+            box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
+                          SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
+            Base::Vector3f mid = cBox.CalcCenter();
+            center.setValue(mid.x,mid.y,mid.z);
+        }
+    }
+}
+
+/**
+ * Adds the number of the triangles to the \a SoGetPrimitiveCountAction.
+ */
+void SoFCMeshSegmentShape::getPrimitiveCount(SoGetPrimitiveCountAction * action)
+{
+    if (!this->shouldPrimitiveCount(action)) return;
+    SoState*  state = action->getState();
+    const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+    if (mesh && mesh->countSegments() > this->index.getValue()) {
+        const Mesh::Segment& segm = mesh->getSegment(this->index.getValue());
+        action->addNumTriangles(segm.getIndices().size());
+    }
+}
+
+// -------------------------------------------------------
+
+SO_NODE_SOURCE(SoFCMeshObjectBoundary);
+
+void SoFCMeshObjectBoundary::initClass()
+{
+    SO_NODE_INIT_CLASS(SoFCMeshObjectBoundary, SoShape, "Shape");
+}
+
+SoFCMeshObjectBoundary::SoFCMeshObjectBoundary()
+{
+    SO_NODE_CONSTRUCTOR(SoFCMeshObjectBoundary);
+}
+
+/**
+ * Renders the open edges only.
+ */
+void SoFCMeshObjectBoundary::GLRender(SoGLRenderAction *action)
+{
+    if (shouldGLRender(action))
+    {
+        SoState*  state = action->getState();
+        const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+        if (!mesh) return;
+
+        SoMaterialBundle mb(action);
+        SoTextureCoordinateBundle tb(action, TRUE, FALSE);
+        SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+        mb.sendFirst();  // make sure we have the correct material
+
+        drawLines(mesh);
+
+        // Disable caching for this node
+        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+    }
+}
+
+/**
+ * Renders the triangles of the complete mesh.
+ */
+void SoFCMeshObjectBoundary::drawLines(const Mesh::MeshObject * mesh) const
+{
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+
+    // When rendering open edges use the given line width * 3 
+    GLfloat lineWidth;
+    glGetFloatv(GL_LINE_WIDTH, &lineWidth);
+    glLineWidth(3.0f*lineWidth);
+
+    // Use the data structure directly and not through MeshFacetIterator as this
+    // class is quite slowly (at least for rendering)
+    glBegin(GL_LINES);
+    for (MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+        for (int i=0; i<3; i++) {
+            if (it->_aulNeighbours[i] == ULONG_MAX) {
+                glVertex(rPoints[it->_aulPoints[i]]);
+                glVertex(rPoints[it->_aulPoints[(i+1)%3]]);
+            }
+        }
+    }
+
+    glEnd();
+}
+
+void SoFCMeshObjectBoundary::generatePrimitives(SoAction* action)
+{
+    // do not create primitive information as an SoFCMeshObjectShape
+    // should already be used that delivers the information
+    SoState*  state = action->getState();
+    const Mesh::MeshObject* mesh = SoFCMeshObjectElement::get(state);
+    if (!mesh)
+        return;
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+
+    // Create the information when moving over or picking into the scene
+    SoPrimitiveVertex vertex;
+    SoPointDetail pointDetail;
+    SoLineDetail lineDetail;
+
+    vertex.setDetail(&pointDetail);
+
+    beginShape(action, LINES, &lineDetail);
+    for (MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it)
+    {
+        for (int i=0; i<3; i++) {
+            if (it->_aulNeighbours[i] == ULONG_MAX) {
+                const MeshCore::MeshPoint& v0 = rPoints[it->_aulPoints[i]];
+                const MeshCore::MeshPoint& v1 = rPoints[it->_aulPoints[(i+1)%3]];
+
+                // Vertex 0
+                pointDetail.setCoordinateIndex(it->_aulPoints[i]);
+                vertex.setPoint(sbvec3f(v0));
+                shapeVertex(&vertex);
+
+                // Vertex 1
+                pointDetail.setCoordinateIndex(it->_aulPoints[(i+1)%3]);
+                vertex.setPoint(sbvec3f(v1));
+                shapeVertex(&vertex);
+
+                // Increment for the next open edge
+                lineDetail.incLineIndex();
+            }
+        }
+    }
+
+    endShape();
+}
+
+/**
+ * Sets the bounding box of the mesh to \a box and its center to \a center.
+ */
+void SoFCMeshObjectBoundary::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
+{
+    SoState*  state = action->getState();
+    const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+    if (!mesh)
+        return;
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    if (rPoints.size() > 0) {
+        Base::BoundBox3f cBox;
+        for (MeshCore::MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it)
+            cBox &= (*it);
+        box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
+                      SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
+        Base::Vector3f mid = cBox.CalcCenter();
+        center.setValue(mid.x,mid.y,mid.z);
+    }
+    else {
+        box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
+        center.setValue(0.0f,0.0f,0.0f);
+    }
+}
+
+/**
+ * Adds the number of the triangles to the \a SoGetPrimitiveCountAction.
+ */
+void SoFCMeshObjectBoundary::getPrimitiveCount(SoGetPrimitiveCountAction * action)
+{
+    if (!this->shouldPrimitiveCount(action)) return;
+    SoState*  state = action->getState();
+    const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
+    if (!mesh)
+        return;
+    const MeshCore::MeshFacetArray & rFaces = mesh->getKernel().GetFacets();
+
+    // Count number of open edges first
+    int ctEdges=0;
+    for (MeshCore::MeshFacetArray::_TConstIterator jt = rFaces.begin(); jt != rFaces.end(); ++jt) {
+        for (int i=0; i<3; i++) {
+            if (jt->_aulNeighbours[i] == ULONG_MAX) {
+                ctEdges++;
+            }
+        }
+    }
+
+    action->addNumLines(ctEdges);
+}

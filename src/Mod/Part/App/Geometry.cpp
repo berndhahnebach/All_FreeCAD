@@ -33,6 +33,7 @@
 # include <Geom_Surface.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
+# include <Geom_ConicalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
 # include <gp_Circ.hxx>
@@ -41,6 +42,7 @@
 # include <gp_Lin.hxx>
 # include <gp_Pln.hxx>
 # include <gp_Cylinder.hxx>
+# include <gp_Cone.hxx>
 # include <gp_Sphere.hxx>
 # include <gp_Torus.hxx>
 # include <Standard_Real.hxx>
@@ -348,6 +350,23 @@ GeomCylinder::~GeomCylinder()
 }
 
 Handle_Geom_Geometry GeomCylinder::handle() const
+{
+    return mySurface;
+}
+
+// -------------------------------------------------
+
+GeomCone::GeomCone()
+{
+    Handle_Geom_ConicalSurface s = new Geom_ConicalSurface(gp_Cone());
+    this->mySurface = s;
+}
+
+GeomCone::~GeomCone()
+{
+}
+
+Handle_Geom_Geometry GeomCone::handle() const
 {
     return mySurface;
 }

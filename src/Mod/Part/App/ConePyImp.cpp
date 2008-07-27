@@ -23,58 +23,67 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Geom_ConicalSurface.hxx>
 # include <Geom_Circle.hxx>
-# include <Geom_ToroidalSurface.hxx>
-# include <gp_Torus.hxx>
+# include <gp_Circ.hxx>
+# include <gp_Lin.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_TrimmedCurve.hxx>
 # include <Standard_Failure.hxx>
 #endif
 
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
+#include "LinePy.h"
 #include "CirclePy.h"
-#include "ToroidPy.h"
-#include "ToroidPy.cpp"
+#include "ConePy.h"
+#include "ConePy.cpp"
 
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *ToroidPy::representation(void) const
+const char *ConePy::representation(void) const
 {
-    return "<GeomToroid object>";
+    return "<GeomCone object>";
 }
 
-PyObject *ToroidPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+PyObject *ConePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
-    // create a new instance of ToroidPy and the Twin object 
-    return new ToroidPy(new GeomToroid);
+    // create a new instance of ConePy and the Twin object 
+    return new ConePy(new GeomCone);
 }
 
 // constructor method
-int ToroidPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int ConePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
     if (PyArg_ParseTuple(args, "")) {
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        torus->SetMajorRadius(5.0);
-        torus->SetMinorRadius(1.0);
+        Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+            (getGeomConePtr()->handle());
+        s->SetRadius(1.0);
         return 0;
     }
 
     return -1;
 }
 
-PyObject* ToroidPy::uIso(PyObject * args)
+PyObject* ConePy::uIso(PyObject * args)
 {
     double u;
     if (!PyArg_ParseTuple(args, "d", &u))
         return 0;
 
     try {
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        Handle_Geom_Circle c = Handle_Geom_Circle::DownCast(torus->UIso(u));
-        return new CirclePy(new GeomCircle(c));
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeomConePtr()->handle());
+        Handle_Geom_Line c = Handle_Geom_Line::DownCast(cone->UIso(u));
+        GeomLineSegment* line = new GeomLineSegment();
+        Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast
+            (line->handle());
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        this_line->SetLin(c->Lin());
+        return new LinePy(line);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -83,17 +92,17 @@ PyObject* ToroidPy::uIso(PyObject * args)
     }
 }
 
-PyObject* ToroidPy::vIso(PyObject * args)
+PyObject* ConePy::vIso(PyObject * args)
 {
     double v;
     if (!PyArg_ParseTuple(args, "d", &v))
         return 0;
 
     try {
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        Handle_Geom_Circle c = Handle_Geom_Circle::DownCast(torus->VIso(v));
-        return new CirclePy(new GeomCircle(c));
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeomConePtr()->handle());
+        Handle_Geom_Curve c = cone->VIso(v);
+        return new CirclePy(new GeomCircle(Handle_Geom_Circle::DownCast(c)));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -102,62 +111,62 @@ PyObject* ToroidPy::vIso(PyObject * args)
     }
 }
 
-Py::Float ToroidPy::getMajorRadius(void) const
+Py::Object ConePy::getApex(void) const
 {
-    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-        (getGeomToroidPtr()->handle());
-    return Py::Float(torus->MajorRadius()); 
-}
-
-void ToroidPy::setMajorRadius(Py::Float arg)
-{
-    try {
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        torus->SetMajorRadius((double)arg);
-    }
-    catch (Standard_Failure) {
-        throw Py::Exception("Major radius must be positive and higher than minor radius");
-    }
-}
-
-Py::Float ToroidPy::getMinorRadius(void) const
-{
-    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-        (getGeomToroidPtr()->handle());
-    return Py::Float(torus->MinorRadius()); 
-}
-
-void ToroidPy::setMinorRadius(Py::Float arg)
-{
-    try {
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        torus->SetMinorRadius((double)arg);
-    }
-    catch (Standard_Failure) {
-        throw Py::Exception("Minor radius must be positive and lower than major radius");
-    }
-}
-
-Py::Object ToroidPy::getCenter(void) const
-{
-    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-        (getGeomToroidPtr()->handle());
-    gp_Pnt loc = torus->Location();
-    Base::VectorPy* vec = new Base::VectorPy(
-        Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
+    Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+        (getGeomConePtr()->handle());
+    gp_Pnt loc = s->Apex();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
+        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
     return Py::Object(vec);
 }
 
-void ToroidPy::setCenter(Py::Object arg)
+Py::Float ConePy::getRadius(void) const
+{
+    Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+        (getGeomConePtr()->handle());
+    return Py::Float(s->RefRadius()); 
+}
+
+void ConePy::setRadius(Py::Float arg)
+{
+    Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+        (getGeomConePtr()->handle());
+    s->SetRadius((double)arg);
+}
+
+Py::Float ConePy::getSemiAngle(void) const
+{
+    Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+        (getGeomConePtr()->handle());
+    return Py::Float(s->SemiAngle()); 
+}
+
+void ConePy::setSemiAngle(Py::Float arg)
+{
+    Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
+        (getGeomConePtr()->handle());
+    s->SetSemiAngle((double)arg);
+}
+
+Py::Object ConePy::getCenter(void) const
+{
+    Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
+        (getGeomConePtr()->handle());
+    gp_Pnt loc = s->Location();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
+        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
+    return Py::Object(vec);
+}
+
+void ConePy::setCenter(Py::Object arg)
 {
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d loc = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-            (getGeomToroidPtr()->handle());
-        torus->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
+            (getGeomConePtr()->handle());
+        s->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
@@ -166,7 +175,7 @@ void ToroidPy::setCenter(Py::Object arg)
     }
 }
 
-Py::Object ToroidPy::getAxis(void) const
+Py::Object ConePy::getAxis(void) const
 {
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeometryPtr()->handle());
@@ -176,7 +185,7 @@ Py::Object ToroidPy::getAxis(void) const
     return Py::Object(vec);
 }
 
-void ToroidPy::setAxis(Py::Object arg)
+void ConePy::setAxis(Py::Object arg)
 {
     Standard_Real dir_x, dir_y, dir_z;
     PyObject *p = arg.ptr();
@@ -212,26 +221,14 @@ void ToroidPy::setAxis(Py::Object arg)
     }
 }
 
-Py::Float ToroidPy::getArea(void) const
-{
-    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-        (getGeomToroidPtr()->handle());
-    return Py::Float(torus->Area()); 
-}
-
-Py::Float ToroidPy::getVolume(void) const
-{
-    Handle_Geom_ToroidalSurface torus = Handle_Geom_ToroidalSurface::DownCast
-        (getGeomToroidPtr()->handle());
-    return Py::Float(torus->Volume()); 
-}
-
-PyObject *ToroidPy::getCustomAttributes(const char* /*attr*/) const
+PyObject *ConePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int ToroidPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
+int ConePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
+
+

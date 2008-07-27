@@ -24,6 +24,7 @@
 #define MESHGUI_SOFCMESHOBJECT_H
 
 #include <Inventor/fields/SoSField.h>
+#include <Inventor/fields/SoSFUInt32.h>
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoShape.h>
@@ -87,6 +88,26 @@ protected:
     virtual ~SoFCMeshObjectNode();
 };
 
+/**
+ * class SoFCMeshObjectShape
+ * \brief The SoFCMeshObjectShape class is designed to render huge meshes.
+ *
+ * The SoFCMeshObjectShape is an Inventor shape node that is designed to render huge meshes.
+ * If the mesh exceeds a certain number of triangles and the user does some intersections
+ * (e.g. moving, rotating, zooming, spinning, etc.) with the mesh then the GLRender() method
+ * renders only the gravity points of a subset of the triangles.
+ * If there is no user interaction with the mesh then all triangles are rendered.
+ * The limit of maximum allowed triangles can be specified in \a MaximumTriangles, the default
+ * value is set to 100.000.
+ *
+ * The GLRender() method checks the status of the SoFCInteractiveElement to decide to be in
+ * interactive mode or not.
+ * To take advantage of this facility the client programmer must set the status of the
+ * SoFCInteractiveElement to \a true if there is a user interation and set the status to
+ * \a false if not. This can be done e.g. in the actualRedraw() method of the viewer.
+ *
+ * @author Werner Mayer
+ */
 class MeshGuiExport SoFCMeshObjectShape : public SoShape {
     typedef SoShape inherited;
 
@@ -131,6 +152,62 @@ private:
 
 private:
     bool meshChanged;
+};
+
+class MeshGuiExport SoFCMeshSegmentShape : public SoShape {
+    typedef SoShape inherited;
+
+    SO_NODE_HEADER(SoFCMeshSegmentShape);
+
+public:
+    static void initClass();
+    SoFCMeshSegmentShape();
+
+    SoSFUInt32 index;
+    unsigned int MaximumTriangles;
+
+protected:
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+    virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+    virtual void generatePrimitives(SoAction *action);
+
+private:
+    enum Binding {
+        OVERALL = 0,
+        PER_FACE_INDEXED,
+        PER_VERTEX_INDEXED,
+        NONE = OVERALL
+    };
+
+private:
+    // Force using the reference count mechanism.
+    virtual ~SoFCMeshSegmentShape() {};
+    Binding findMaterialBinding(SoState * const state) const;
+    // Draw faces
+    void drawFaces(const Mesh::MeshObject *, SoMaterialBundle* mb, Binding bind, 
+                   SbBool needNormals, SbBool ccw) const;
+    void drawPoints(const Mesh::MeshObject *, SbBool needNormals, SbBool ccw) const;
+};
+
+class MeshGuiExport SoFCMeshObjectBoundary : public SoShape {
+    typedef SoShape inherited;
+
+    SO_NODE_HEADER(SoFCMeshObjectBoundary);
+
+public:
+    static void initClass();
+    SoFCMeshObjectBoundary();
+
+protected:
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+    virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+    virtual void generatePrimitives(SoAction *action);
+private:
+    // Force using the reference count mechanism.
+    virtual ~SoFCMeshObjectBoundary() {};
+    void drawLines(const Mesh::MeshObject *) const ;
 };
 
 } // namespace MeshGui

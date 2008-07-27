@@ -78,6 +78,7 @@
 
 #include "ViewProvider.h"
 #include "ViewProviderMeshFaceSet.h"
+#include "SoFCMeshObject.h"
 
 
 using namespace MeshGui;
@@ -190,19 +191,16 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
     // apply the transformation of the mesh object
     pcHighlight->addChild(pcComplexData);
 
-    pcVertexNode = new SoFCMeshVertex;
-    pcHighlight->addChild(pcVertexNode);
+    pcMeshNode = new SoFCMeshObjectNode;
+    pcHighlight->addChild(pcMeshNode);
 
-    pcFacetNode = new SoFCMeshFacet;
-    pcHighlight->addChild(pcFacetNode);
-
-    pcFaceSet = new SoFCMeshFaceSet;
-    pcHighlight->addChild(pcFaceSet);
+    pcMeshShape = new SoFCMeshObjectShape;
+    pcHighlight->addChild(pcMeshShape);
 
     // read the threshold from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     int size = hGrp->GetInt("RenderTriangleLimit", -1);
-    if (size > 0) pcFaceSet->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+    if (size > 0) pcMeshShape->MaximumTriangles = (unsigned int)(pow(10.0f,size));
 
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
@@ -242,13 +240,9 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
         const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
         this->pcComplexData->setMatrix(convert(mesh->getValue().getTransform()));
-        const MeshCore::MeshPointArray& rPAry = mesh->getValue().getKernel().GetPoints();
-        this->pcVertexNode->point.setValue(rPAry);
-        const MeshCore::MeshFacetArray& rFAry = mesh->getValue().getKernel().GetFacets();
-        this->pcFacetNode->coordIndex.setValue(rFAry);
-
+        this->pcMeshNode->mesh.setValue(mesh->getValuePtr());
         // Needs to update internal bounding box caches
-        pcFaceSet->touch();
+        this->pcMeshShape->touch();
     }
 }
 
@@ -331,14 +325,13 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
         pcOpenEdge = 0;
     }
 
-    if ( show ) {
+    if (show) {
         pcOpenEdge = new SoSeparator();
         pcOpenEdge->addChild(pcLineStyle);
         pcOpenEdge->addChild(pOpenColor);
 
-        pcOpenEdge->addChild(pcVertexNode);
-        pcOpenEdge->addChild(pcFacetNode);
-        pcOpenEdge->addChild(new SoFCMeshOpenEdgeSet);
+        pcOpenEdge->addChild(pcMeshNode);
+        pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
 
         // add to the highlight node
         pcRoot->addChild(pcOpenEdge);
@@ -541,7 +534,7 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
     ((Mesh::Feature*)pcObject)->purgeTouched();
 
     // notify the mesh shape node
-    pcFaceSet->touch();
+    pcMeshShape->touch();
 
     if ( !ok ) // note: the mouse grabbing needs to be released
 //      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
@@ -580,7 +573,7 @@ void ViewProviderMeshFaceSet::splitMesh(const MeshCore::MeshKernel& toolMesh, co
     static_cast<Mesh::Feature*>(pcObject)->purgeTouched();
 
     // notify the mesh shape node
-    pcFaceSet->touch();
+    pcMeshShape->touch();
 }
 
 void ViewProviderMeshFaceSet::segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool clip_inner)
@@ -608,7 +601,7 @@ void ViewProviderMeshFaceSet::segmentMesh(const MeshCore::MeshKernel& toolMesh, 
     meshProp.createSegment(indices);
     static_cast<Mesh::Feature*>(pcObject)->purgeTouched();
     // notify the mesh shape node
-    pcFaceSet->touch();
+    pcMeshShape->touch();
 }
 
 void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
@@ -645,7 +638,7 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
         if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
             return;
         ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
-        const SoDetail* detail = point->getDetail(that->pcFaceSet);
+        const SoDetail* detail = point->getDetail(that->pcMeshShape);
         if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
             // get the boundary to the picked facet
             unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
@@ -692,7 +685,7 @@ void ViewProviderMeshFaceSet::fillHoleCallback(void * ud, SoEventCallback * n)
         if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
             return;
         ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
-        const SoDetail* detail = point->getDetail(that->pcFaceSet);
+        const SoDetail* detail = point->getDetail(that->pcMeshShape);
         if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
             // get the boundary to the picked facet
             unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
@@ -741,7 +734,7 @@ void ViewProviderMeshFaceSet::markPartCallback(void * ud, SoEventCallback * n)
             if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshFaceSet::getClassTypeId()))
                 return;
             ViewProviderMeshFaceSet* that = static_cast<ViewProviderMeshFaceSet*>(vp);
-            const SoDetail* detail = point->getDetail(that->pcFaceSet);
+            const SoDetail* detail = point->getDetail(that->pcMeshShape);
             if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
                 // get the boundary to the picked facet
                 unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
@@ -859,7 +852,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
     Gui::Application::Instance->activeDocument()->commitCommand();
 
     // notify the mesh shape node
-    this->pcFaceSet->touch();
+    this->pcMeshShape->touch();
     //fea->getDocument().update(fea);
 }
 
@@ -914,7 +907,7 @@ void ViewProviderMeshFaceSet::removePart()
         pcShapeMaterial->diffuseColor.setNum(uCtFacets);
         for (unsigned long i=0; i<uCtFacets; i++)
             pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
-        pcFaceSet->touch();
+        this->pcMeshShape->touch();
         _markedFacets.clear();
     }
 }

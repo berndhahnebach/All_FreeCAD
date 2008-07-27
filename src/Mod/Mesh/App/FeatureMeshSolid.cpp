@@ -81,7 +81,7 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue(mesh->getMesh());
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);
@@ -153,7 +153,7 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue(mesh->getMesh() );
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);
@@ -231,7 +231,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue( mesh->getMesh() );
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);
@@ -312,7 +312,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue( mesh->getMesh() );
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);
@@ -384,7 +384,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue( mesh->getMesh() );
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);
@@ -456,7 +456,7 @@ App::DocumentObjectExecReturn *Cube::execute(void)
                 MeshPy* mesh = new MeshPy(new MeshObject);
                 PyObject* args = Py_BuildValue("(O)",result);
                 mesh->addFacets(args);
-                Mesh.setValue( mesh->getMesh() );
+                Mesh.setValue(mesh->getMeshObjectPtr());
                 Py_DECREF(args);
                 Py_DECREF(mesh);
                 Py_DECREF(result);

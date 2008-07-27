@@ -9,6 +9,7 @@ BUILT_SOURCES=\
 		GeometryPy.cpp \
 		LinePy.cpp \
 		PlanePy.cpp \
+		ConePy.cpp \
 		CylinderPy.cpp \
 		SpherePy.cpp \
 		ToroidPy.cpp \
@@ -30,6 +31,7 @@ libPart_la_BUILT=\
 		GeometryPy.h \
 		LinePy.h \
 		PlanePy.h \
+		ConePy.h \
 		CylinderPy.h \
 		SpherePy.h \
 		ToroidPy.h \
@@ -52,6 +54,7 @@ libPart_la_SOURCES=\
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
 		PlanePyImp.cpp \
+		ConePyImp.cpp \
 		CylinderPyImp.cpp \
 		SpherePyImp.cpp \
 		ToroidPyImp.cpp \
@@ -177,6 +180,7 @@ EXTRA_DIST = \
 		GeometryPy.xml \
 		LinePy.xml \
 		PlanePy.xml \
+		ConePy.xml \
 		CylinderPy.xml \
 		SpherePy.xml \
 		ToroidPy.xml \

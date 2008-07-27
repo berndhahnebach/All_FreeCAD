@@ -112,6 +112,8 @@ void MeshGuiExport initMeshGui()
     MeshGui::SoFCMeshFaceSet                    ::initClass();
     MeshGui::SoFCMeshOpenEdgeSet                ::initClass();
     MeshGui::SoFCMeshObjectShape                ::initClass();
+    MeshGui::SoFCMeshSegmentShape               ::initClass();
+    MeshGui::SoFCMeshObjectBoundary             ::initClass();
 #if 0
     MeshGui::PropertyEditorMesh                 ::init();
 #endif

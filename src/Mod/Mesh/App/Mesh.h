@@ -151,11 +151,11 @@ public:
 
     /** @name Boolean operations */
     //@{
-    void unite(const MeshObject&);
-    void intersect(const MeshObject&);
-    void subtract(const MeshObject&);
-    void inner(const MeshObject&);
-    void outer(const MeshObject&);
+    MeshObject* unite(const MeshObject&) const;
+    MeshObject* intersect(const MeshObject&) const;
+    MeshObject* subtract(const MeshObject&) const;
+    MeshObject* inner(const MeshObject&) const;
+    MeshObject* outer(const MeshObject&) const;
     //@}
 
     /** @name Topological operations */

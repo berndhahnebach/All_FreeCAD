@@ -47,27 +47,27 @@ Example:
 				<UserDocu>Move the point along their normals</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="unite">
+		<Methode Name="unite" Const="true">
 			<Documentation>
 				<UserDocu>Union of this and the given mesh object.</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="intersect">
+		<Methode Name="intersect" Const="true">
 			<Documentation>
 				<UserDocu>Intersection of this and the given mesh object.</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="difference">
+		<Methode Name="difference" Const="true">
 			<Documentation>
 				<UserDocu>Difference of this and the given mesh object.</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="inner">
+		<Methode Name="inner" Const="true">
 			<Documentation>
 				<UserDocu>Get the part inside of the intersection</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="outer">
+		<Methode Name="outer" Const="true">
 			<Documentation>
 				<UserDocu>Get the part outside the intersection</UserDocu>
 			</Documentation>
@@ -330,10 +330,6 @@ for p in mesh.Facets:
 			<Parameter Name="CountFacets" Type="Int" />
 		</Attribute>
 		<ClassDeclarations>
-public:
-    MeshObject &amp; Mesh(void){return *getMeshObjectPtr();}
-    MeshObject * getMesh(void){return getMeshObjectPtr();}
-    const MeshObject &amp; Mesh(void) const {return *getMeshObjectPtr();}
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>
