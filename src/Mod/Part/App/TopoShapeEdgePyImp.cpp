@@ -7,10 +7,16 @@
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
+# include <Geom_Hyperbola.hxx>
+# include <Geom_Parabola.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
+# include <Geom_BezierCurve.hxx>
+# include <Geom_BSplineCurve.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
+# include <gp_Hypr.hxx>
+# include <gp_Parab.hxx>
 # include <gp_Lin.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Shape.hxx>
@@ -30,6 +36,10 @@
 #include "LinePy.h"
 #include "CirclePy.h"
 #include "EllipsePy.h"
+#include "HyperbolaPy.h"
+#include "ParabolaPy.h"
+#include "BezierCurvePy.h"
+#include "BSplineCurvePy.h"
 
 using namespace Part;
 
@@ -145,13 +155,31 @@ Py::Object TopoShapeEdgePy::getCurve() const
             return Py::Object(new EllipsePy(elips));
         }
     case GeomAbs_Hyperbola:
-        break;
+        {
+            GeomHyperbola* hyper = new GeomHyperbola();
+            Handle_Geom_Hyperbola this_curv = Handle_Geom_Hyperbola::DownCast
+                (hyper->handle());
+            this_curv->SetHypr(adapt.Hyperbola());
+            return Py::Object(new HyperbolaPy(hyper));
+        }
     case GeomAbs_Parabola:
-        break;
+        {
+            GeomParabola* hyper = new GeomParabola();
+            Handle_Geom_Parabola this_curv = Handle_Geom_Parabola::DownCast
+                (hyper->handle());
+            this_curv->SetParab(adapt.Parabola());
+            return Py::Object(new ParabolaPy(hyper));
+        }
     case GeomAbs_BezierCurve:
-        break;
+        {
+            GeomBezierCurve* curve = new GeomBezierCurve(adapt.Bezier());
+            return Py::Object(new BezierCurvePy(curve));
+        }
     case GeomAbs_BSplineCurve:
-        break;
+        {
+            GeomBSplineCurve* curve = new GeomBSplineCurve(adapt.BSpline());
+            return Py::Object(new BSplineCurvePy(curve));
+        }
     case GeomAbs_OtherCurve:
         break;
     }

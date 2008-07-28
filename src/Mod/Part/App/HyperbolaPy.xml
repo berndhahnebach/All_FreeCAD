@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+	<PythonExport 
+		Father="GeometryPy" 
+		Name="HyperbolaPy" 
+		Twin="GeomHyperbola" 
+		TwinPointer="GeomHyperbola" 
+		Include="Mod/Part/App/Geometry.h" 
+		Namespace="Part" 
+		FatherInclude="Mod/Part/App/GeometryPy.h" 
+		FatherNamespace="Part"
+		Constructor="true">
+		<Documentation>
+			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+			<UserDocu>Describes a hyperbola in 3D space</UserDocu>
+		</Documentation>
+		<Attribute Name="Eccentricity" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Computes the eccentricity of this hyperbola, which is a value greater than 1.
+The eccentricity is:
+e = f / MajorRadius
+where f is the focal distance of this hyperbola.</UserDocu>
+			</Documentation>
+			<Parameter Name="Eccentricity" Type="Float"/>
+		</Attribute>
+		<Attribute Name="Focal" ReadOnly="true">
+			<Documentation>
+				<UserDocu>The focal distance is the distance between
+the center and a focus of the hyperbola</UserDocu>
+			</Documentation>
+			<Parameter Name="Focal" Type="Float"/>
+		</Attribute>
+		<Attribute Name="Focus1" ReadOnly="true">
+			<Documentation>
+				<UserDocu>The first focus is on the positive side of the
+'X Axis' (major axis) of the hyperbola;
+the second focus is on the negative side.</UserDocu>
+			</Documentation>
+			<Parameter Name="Focus1" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Focus2" ReadOnly="true">
+			<Documentation>
+				<UserDocu>The first focus is on the positive side of the
+'X Axis' (major axis) of the hyperbola;
+the second focus is on the negative side.</UserDocu>
+			</Documentation>
+			<Parameter Name="Focus2" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Parameter" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Compute the parameter of this hyperbola
+which is the distance between its focus
+and its directrix. This distance is twice the focal length.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="Parameter" Type="Float"/>
+		</Attribute>
+		<Attribute Name="MajorRadius" ReadOnly="false">
+			<Documentation>
+				<UserDocu>The major radius of the hyperbola.</UserDocu>
+			</Documentation>
+			<Parameter Name="MajorRadius" Type="Float"/>
+		</Attribute>
+		<Attribute Name="MinorRadius" ReadOnly="false">
+			<Documentation>
+				<UserDocu>The minor radius of the hyperbola.</UserDocu>
+			</Documentation>
+			<Parameter Name="MinorRadius" Type="Float"/>
+		</Attribute>
+		<Attribute Name="Location" ReadOnly="false">
+			<Documentation>
+				<UserDocu>Location of the hyperbola</UserDocu>
+			</Documentation>
+			<Parameter Name="Location" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Axis" ReadOnly="false">
+			<Documentation>
+				<UserDocu>The axis direction of the hyperbola</UserDocu>
+			</Documentation>
+			<Parameter Name="Axis" Type="Object"/>
+		</Attribute>
+	</PythonExport>
+</GenerateModel>

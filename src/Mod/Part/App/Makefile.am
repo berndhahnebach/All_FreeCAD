@@ -6,9 +6,12 @@ BUILT_SOURCES=\
 		ArcPy.cpp \
 		CirclePy.cpp \
 		EllipsePy.cpp \
+		HyperbolaPy.cpp \
 		ParabolaPy.cpp \
 		GeometryPy.cpp \
 		LinePy.cpp \
+		BezierCurvePy.cpp \
+		BSplineCurvePy.cpp \
 		PlanePy.cpp \
 		ConePy.cpp \
 		CylinderPy.cpp \
@@ -29,9 +32,12 @@ libPart_la_BUILT=\
 		ArcPy.h \
 		CirclePy.h \
 		EllipsePy.h \
+		HyperbolaPy.h \
 		ParabolaPy.h \
 		GeometryPy.h \
 		LinePy.h \
+		BezierCurvePy.h \
+		BSplineCurvePy.h \
 		PlanePy.h \
 		ConePy.h \
 		CylinderPy.h \
@@ -53,9 +59,12 @@ libPart_la_SOURCES=\
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
 		EllipsePyImp.cpp \
+		HyperbolaPyImp.cpp \
 		ParabolaPyImp.cpp \
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
+		BezierCurvePyImp.cpp \
+		BSplineCurvePyImp.cpp \
 		PlanePyImp.cpp \
 		ConePyImp.cpp \
 		CylinderPyImp.cpp \
@@ -180,9 +189,12 @@ EXTRA_DIST = \
 		ArcPy.xml \
 		CirclePy.xml \
 		EllipsePy.xml \
+		HyperbolaPy.xml \
 		ParabolaPy.xml \
 		GeometryPy.xml \
 		LinePy.xml \
+		BezierCurvePy.xml \
+		BSplineCurvePy.xml \
 		PlanePy.xml \
 		ConePy.xml \
 		CylinderPy.xml \
