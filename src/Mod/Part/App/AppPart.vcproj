@@ -554,6 +554,58 @@
 					>
 				</File>
 				<File
+					RelativePath=".\BezierCurvePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\BezierCurvePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BSplineCurvePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\BSplineCurvePyImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\CirclePy.xml"
 					>
 					<FileConfiguration
@@ -587,7 +639,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -596,7 +648,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -684,6 +736,32 @@
 					>
 				</File>
 				<File
+					RelativePath=".\HyperbolaPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\HyperbolaPyImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\LinePy.xml"
 					>
 					<FileConfiguration
@@ -717,7 +795,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -726,7 +804,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>

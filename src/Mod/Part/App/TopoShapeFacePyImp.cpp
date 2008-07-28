@@ -6,13 +6,17 @@
 # include <BRepAdaptor_Surface.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
+# include <Geom_ConicalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
+# include <Geom_ToroidalSurface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <gp_Pln.hxx>
 # include <gp_Cylinder.hxx>
+# include <gp_Cone.hxx>
 # include <gp_Sphere.hxx>
+# include <gp_Torus.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -24,7 +28,9 @@
 
 #include "PlanePy.h"
 #include "CylinderPy.h"
+#include "ConePy.h"
 #include "SpherePy.h"
+#include "ToroidPy.h"
 
 using namespace Part;
 
@@ -122,7 +128,13 @@ Py::Object TopoShapeFacePy::getSurface() const
             return Py::Object(new CylinderPy(cylinder));
         }
     case GeomAbs_Cone:
-        break;
+        {
+            GeomCone* cone = new GeomCone();
+            Handle_Geom_ConicalSurface this_surf = Handle_Geom_ConicalSurface::DownCast
+                (cone->handle());
+            this_surf->SetCone(adapt.Cone());
+            return Py::Object(new ConePy(cone));
+        }
     case GeomAbs_Sphere:
         {
             GeomSphere* sphere = new GeomSphere();
@@ -132,7 +144,13 @@ Py::Object TopoShapeFacePy::getSurface() const
             return Py::Object(new SpherePy(sphere));
         }
     case GeomAbs_Torus:
-        break;
+        {
+            GeomToroid* toroid = new GeomToroid();
+            Handle_Geom_ToroidalSurface this_surf = Handle_Geom_ToroidalSurface::DownCast
+                (toroid->handle());
+            this_surf->SetTorus(adapt.Torus());
+            return Py::Object(new ToroidPy(toroid));
+        }
     case GeomAbs_BezierSurface:
         break;
     case GeomAbs_BSplineSurface:

@@ -69,6 +69,7 @@ class GeomBezierCurve : public GeomCurve
 {
 public:
     GeomBezierCurve();
+    GeomBezierCurve(const Handle_Geom_BezierCurve&);
     virtual ~GeomBezierCurve();
 
     Handle_Geom_Geometry handle() const;
@@ -81,6 +82,7 @@ class GeomBSplineCurve : public GeomCurve
 {
 public:
     GeomBSplineCurve();
+    GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
 
     Handle_Geom_Geometry handle() const;
@@ -119,6 +121,7 @@ class GeomHyperbola : public GeomCurve
 {
 public:
     GeomHyperbola();
+    GeomHyperbola(const Handle_Geom_Hyperbola&);
     virtual ~GeomHyperbola();
 
     Handle_Geom_Geometry handle() const;

@@ -28,9 +28,11 @@
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
+# include <Geom_Hyperbola.hxx>
 # include <Geom_Parabola.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
+# include <Geom_BezierCurve.hxx>
 # include <Geom_Surface.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
@@ -39,6 +41,7 @@
 # include <Geom_ToroidalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
+# include <gp_Hypr.hxx>
 # include <gp_Parab.hxx>
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
@@ -48,6 +51,7 @@
 # include <gp_Sphere.hxx>
 # include <gp_Torus.hxx>
 # include <Standard_Real.hxx>
+# include <TColgp_Array1OfPnt.hxx>
 #endif
 
 #include "Geometry.h"
@@ -123,6 +127,16 @@ TopoDS_Shape GeomCurve::toShape() const
 
 GeomBezierCurve::GeomBezierCurve()
 {
+    TColgp_Array1OfPnt poles(1,2);
+    poles(1) = gp_Pnt(0.0,0.0,0.0);
+    poles(2) = gp_Pnt(0.0,0.0,1.0);
+    Handle_Geom_BezierCurve b = new Geom_BezierCurve(poles);
+    this->myCurve = b;
+}
+
+GeomBezierCurve::GeomBezierCurve(const Handle_Geom_BezierCurve& b)
+{
+    this->myCurve = b;
 }
 
 GeomBezierCurve::~GeomBezierCurve()
@@ -138,6 +152,11 @@ Handle_Geom_Geometry GeomBezierCurve::handle() const
 
 GeomBSplineCurve::GeomBSplineCurve()
 {
+}
+
+GeomBSplineCurve::GeomBSplineCurve(const Handle_Geom_BSplineCurve& b)
+{
+    this->myCurve = b;
 }
 
 GeomBSplineCurve::~GeomBSplineCurve()
@@ -197,6 +216,13 @@ Handle_Geom_Geometry GeomEllipse::handle() const
 
 GeomHyperbola::GeomHyperbola()
 {
+    Handle_Geom_Hyperbola h = new Geom_Hyperbola(gp_Hypr());
+    this->myCurve = h;
+}
+
+GeomHyperbola::GeomHyperbola(const Handle_Geom_Hyperbola& h)
+{
+    this->myCurve = h;
 }
 
 GeomHyperbola::~GeomHyperbola()
