@@ -348,6 +348,11 @@ GeomBezierSurface::GeomBezierSurface()
 {
 }
 
+GeomBezierSurface::GeomBezierSurface(const Handle_Geom_BezierSurface& b)
+{
+    this->mySurface = b;
+}
+
 GeomBezierSurface::~GeomBezierSurface()
 {
 }
@@ -361,6 +366,11 @@ Handle_Geom_Geometry GeomBezierSurface::handle() const
 
 GeomBSplineSurface::GeomBSplineSurface()
 {
+}
+
+GeomBSplineSurface::GeomBSplineSurface(const Handle_Geom_BSplineSurface& b)
+{
+    this->mySurface = b;
 }
 
 GeomBSplineSurface::~GeomBSplineSurface()

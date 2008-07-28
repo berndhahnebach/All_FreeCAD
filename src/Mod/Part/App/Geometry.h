@@ -195,6 +195,7 @@ class GeomBezierSurface : public GeomSurface
 {
 public:
     GeomBezierSurface();
+    GeomBezierSurface(const Handle_Geom_BezierSurface&);
     virtual ~GeomBezierSurface();
 
     Handle_Geom_Geometry handle() const;
@@ -207,6 +208,7 @@ class GeomBSplineSurface : public GeomSurface
 {
 public:
     GeomBSplineSurface();
+    GeomBSplineSurface(const Handle_Geom_BSplineSurface&);
     virtual ~GeomBSplineSurface();
 
     Handle_Geom_Geometry handle() const;

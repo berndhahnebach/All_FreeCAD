@@ -580,6 +580,32 @@
 					>
 				</File>
 				<File
+					RelativePath=".\BezierSurfacePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\BezierSurfacePyImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\BSplineCurvePy.xml"
 					>
 					<FileConfiguration
@@ -603,6 +629,32 @@
 				</File>
 				<File
 					RelativePath=".\BSplineCurvePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BSplineSurfacePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\BSplineSurfacePyImp.cpp"
 					>
 				</File>
 				<File
@@ -743,7 +795,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
@@ -752,7 +804,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 						/>
 					</FileConfiguration>
