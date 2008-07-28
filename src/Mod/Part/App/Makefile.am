@@ -17,6 +17,8 @@ BUILT_SOURCES=\
 		CylinderPy.cpp \
 		SpherePy.cpp \
 		ToroidPy.cpp \
+		BezierSurfacePy.cpp \
+		BSplineSurfacePy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
@@ -43,6 +45,8 @@ libPart_la_BUILT=\
 		CylinderPy.h \
 		SpherePy.h \
 		ToroidPy.h \
+		BezierSurfacePy.h \
+		BSplineSurfacePy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
@@ -70,6 +74,8 @@ libPart_la_SOURCES=\
 		CylinderPyImp.cpp \
 		SpherePyImp.cpp \
 		ToroidPyImp.cpp \
+		BezierSurfacePyImp.cpp \
+		BSplineSurfacePyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -200,6 +206,8 @@ EXTRA_DIST = \
 		CylinderPy.xml \
 		SpherePy.xml \
 		ToroidPy.xml \
+		BezierSurfacePy.xml \
+		BSplineSurfacePy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \

@@ -4,6 +4,8 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <Geom_BezierSurface.hxx>
+# include <Geom_BSplineSurface.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
 # include <Geom_ConicalSurface.hxx>
@@ -26,6 +28,8 @@
 #include "TopoShapeFacePy.h"
 #include "TopoShapeFacePy.cpp"
 
+#include "BezierSurfacePy.h"
+#include "BSplineSurfacePy.h"
 #include "PlanePy.h"
 #include "CylinderPy.h"
 #include "ConePy.h"
@@ -152,9 +156,15 @@ Py::Object TopoShapeFacePy::getSurface() const
             return Py::Object(new ToroidPy(toroid));
         }
     case GeomAbs_BezierSurface:
-        break;
+        {
+            GeomBezierSurface* surf = new GeomBezierSurface(adapt.Bezier());
+            return Py::Object(new BezierSurfacePy(surf));
+        }
     case GeomAbs_BSplineSurface:
-        break;
+        {
+            GeomBSplineSurface* surf = new GeomBSplineSurface(adapt.BSpline());
+            return Py::Object(new BSplineSurfacePy(surf));
+        }
     case GeomAbs_SurfaceOfRevolution:
         break;
     case GeomAbs_SurfaceOfExtrusion:

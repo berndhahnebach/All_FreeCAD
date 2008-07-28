@@ -48,8 +48,8 @@
 #include "HyperbolaPy.h"
 //#include "OffsetCurvePy.h"
 #include "ParabolaPy.h"
-//#include "BezierSurfacePy.h"
-//#include "BSplineSurfacePy.h"
+#include "BezierSurfacePy.h"
+#include "BSplineSurfacePy.h"
 #include "ConePy.h"
 #include "CylinderPy.h"
 //#include "OffsetSurfacePy.h"
@@ -105,6 +105,8 @@ void AppPartExport initPart()
     AddType(&Part::ConePy               ::Type,partModule,"Cone");
     AddType(&Part::SpherePy             ::Type,partModule,"Sphere");
     AddType(&Part::ToroidPy             ::Type,partModule,"Toroid");
+    AddType(&Part::BezierSurfacePy      ::Type,partModule,"BezierSurface");
+    AddType(&Part::BSplineSurfacePy     ::Type,partModule,"BSplineSurface");
 #if 1
     Py::Module mod(partModule);
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));
