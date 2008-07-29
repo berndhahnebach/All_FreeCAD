@@ -149,6 +149,14 @@ As a result, this shape becomes null.</UserDocu>
         <UserDocu>Tessellate the the shape and return a list of vertices and face indices</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="toNurbs">
+      <Documentation>
+        <UserDocu>Conversion of the complete geometry of a shape into NURBS geometry.
+For example, all curves supporting edges of the basis shape are converted
+into BSpline curves, and all surfaces supporting its faces are converted
+into BSpline surfaces.</UserDocu>
+      </Documentation>
+    </Methode>
 <!--
     <Attribute Name="Location" ReadOnly="false">
       <Documentation>

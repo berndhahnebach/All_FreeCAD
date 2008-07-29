@@ -18,6 +18,11 @@
         <UserDocu>Make a composite solid by sweeping along a direction.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="revolve">
+      <Documentation>
+        <UserDocu>Make a revolved object.</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Wire" ReadOnly="true">
       <Documentation>
         <UserDocu>The Wire of this face</UserDocu>

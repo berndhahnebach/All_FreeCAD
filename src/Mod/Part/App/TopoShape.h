@@ -120,6 +120,7 @@ public:
     /** Sweeping */
     //@{
     TopoDS_Shape makePrism(const gp_Vec&) const;
+    TopoDS_Shape revolve(const gp_Ax1&, double d) const;
     TopoDS_Shape makeThickSolid(const TopTools_ListOfShape& remFace,
         Standard_Real offset, Standard_Real tolerance) const;
     //@}
@@ -127,6 +128,7 @@ public:
     /** @name Manipulation*/
     //@{
     TopoDS_Shape transform(const Base::Matrix4D&) const;
+    TopoDS_Shape toNurbs() const;
     //@}
 
     /** @name Getting basic geometric entities */

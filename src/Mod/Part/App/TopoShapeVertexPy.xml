@@ -19,6 +19,11 @@
 			  <UserDocu>Make an edge by sweeping along a direction.</UserDocu>
 		  </Documentation>
 	  </Methode>
+	  <Methode Name="revolve">
+		  <Documentation>
+			  <UserDocu>Make a revolved object.</UserDocu>
+		  </Documentation>
+	  </Methode>
 	  <Attribute Name="X" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>X component of this Vertex.</UserDocu>

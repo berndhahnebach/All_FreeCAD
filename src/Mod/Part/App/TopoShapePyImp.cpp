@@ -710,6 +710,23 @@ PyObject* TopoShapePy::tessellate(PyObject *args)
     return Py::new_reference_to(tuple);
 }
 
+PyObject* TopoShapePy::toNurbs(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    try {
+        // Convert into nurbs
+        TopoDS_Shape nurbs = this->getTopoShapePtr()->toNurbs();
+        return new TopoShapePy(new TopoShape(nurbs));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 #if 0 // see ComplexGeoDataPy::Matrix which does the same
 Py::Object TopoShapePy::getLocation(void) const
 {

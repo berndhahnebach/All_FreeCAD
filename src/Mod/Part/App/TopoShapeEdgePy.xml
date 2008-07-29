@@ -19,6 +19,11 @@
         <UserDocu>Make a face by sweeping along a direction.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="revolve">
+      <Documentation>
+        <UserDocu>Make a revolved object.</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Curve" ReadOnly="true">
       <Documentation>
         <UserDocu>Returns the 3D curve of the edge</UserDocu>
