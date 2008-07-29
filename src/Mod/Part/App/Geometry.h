@@ -31,6 +31,7 @@
 #include <Handle_Geom_Hyperbola.hxx>
 #include <Handle_Geom_Parabola.hxx>
 #include <Handle_Geom_Line.hxx>
+#include <Handle_Geom_OffsetCurve.hxx>
 #include <Handle_Geom_TrimmedCurve.hxx>
 #include <Handle_Geom_Surface.hxx>
 #include <Handle_Geom_BezierSurface.hxx>
@@ -40,7 +41,12 @@
 #include <Handle_Geom_SphericalSurface.hxx>
 #include <Handle_Geom_ToroidalSurface.hxx>
 #include <Handle_Geom_Plane.hxx>
+#include <Handle_Geom_OffsetSurface.hxx>
+#include <Handle_Geom_SurfaceOfRevolution.hxx>
+#include <Handle_Geom_SurfaceOfLinearExtrusion.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
 
 namespace Part {
 
@@ -168,6 +174,19 @@ private:
     Handle_Geom_TrimmedCurve myCurve;
 };
 
+class GeomOffsetCurve : public GeomCurve
+{
+public:
+    GeomOffsetCurve(const Handle_Geom_Curve&, double, const gp_Dir&);
+    GeomOffsetCurve(const Handle_Geom_OffsetCurve&);
+    virtual ~GeomOffsetCurve();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_OffsetCurve myCurve;
+};
+
 class GeomTrimmedCurve : public GeomCurve
 {
 public:
@@ -275,6 +294,45 @@ public:
 
 private:
     Handle_Geom_Plane mySurface;
+};
+
+class GeomOffsetSurface : public GeomSurface
+{
+public:
+    GeomOffsetSurface(const Handle_Geom_Surface&, double);
+    GeomOffsetSurface(const Handle_Geom_OffsetSurface&);
+    virtual ~GeomOffsetSurface();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_OffsetSurface mySurface;
+};
+
+class GeomSurfaceOfRevolution : public GeomSurface
+{
+public:
+    GeomSurfaceOfRevolution(const Handle_Geom_Curve&, const gp_Ax1&);
+    GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution&);
+    virtual ~GeomSurfaceOfRevolution();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_SurfaceOfRevolution mySurface;
+};
+
+class GeomSurfaceOfExtrusion : public GeomSurface
+{
+public:
+    GeomSurfaceOfExtrusion(const Handle_Geom_Curve&, const gp_Dir&);
+    GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion&);
+    virtual ~GeomSurfaceOfExtrusion();
+
+    Handle_Geom_Geometry handle() const;
+
+private:
+    Handle_Geom_SurfaceOfLinearExtrusion mySurface;
 };
 
 }

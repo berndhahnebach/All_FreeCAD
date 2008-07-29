@@ -41,7 +41,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *ToroidPy::representation(void) const
 {
-    return "<GeomToroid object>";
+    return "<Toroid object>";
 }
 
 PyObject *ToroidPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

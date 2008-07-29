@@ -24,35 +24,40 @@
 #include "PreCompiled.h"
 
 #include "Geometry.h"
-#include "BezierSurfacePy.h"
-#include "BezierSurfacePy.cpp"
+#include "SurfaceOfRevolutionPy.h"
+#include "SurfaceOfRevolutionPy.cpp"
 
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *BezierSurfacePy::representation(void) const
+const char *SurfaceOfRevolutionPy::representation(void) const
 {
-    return "<BezierSurface object>";
+    return "<SurfaceOfRevolution object>";
 }
 
-PyObject *BezierSurfacePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
+PyObject *SurfaceOfRevolutionPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
-    // create a new instance of BezierSurfacePy and the Twin object 
-    return new BezierSurfacePy(new GeomBezierSurface);
+    // create a new instance of SurfaceOfRevolutionPy and the Twin object 
+    //return new SurfaceOfRevolutionPy(new GeomSurfaceOfRevolution);
+    PyErr_SetString(PyExc_NotImplementedError, "not yet implemented");
+    return 0;
 }
 
 // constructor method
-int BezierSurfacePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int SurfaceOfRevolutionPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
 }
 
-PyObject *BezierSurfacePy::getCustomAttributes(const char* /*attr*/) const
+
+PyObject *SurfaceOfRevolutionPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
 
-int BezierSurfacePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
+int SurfaceOfRevolutionPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
+
+

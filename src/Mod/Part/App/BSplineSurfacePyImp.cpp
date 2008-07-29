@@ -32,7 +32,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *BSplineSurfacePy::representation(void) const
 {
-    return "<GeomBSplineSurface object>";
+    return "<BSplineSurface object>";
 }
 
 PyObject *BSplineSurfacePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

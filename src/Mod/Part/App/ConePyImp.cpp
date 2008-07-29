@@ -45,7 +45,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *ConePy::representation(void) const
 {
-    return "<GeomCone object>";
+    return "<Cone object>";
 }
 
 PyObject *ConePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

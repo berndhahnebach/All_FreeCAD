@@ -37,7 +37,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *HyperbolaPy::representation(void) const
 {
-    return "<GeomHyperbola object>";
+    return "<Hyperbola object>";
 }
 
 PyObject *HyperbolaPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

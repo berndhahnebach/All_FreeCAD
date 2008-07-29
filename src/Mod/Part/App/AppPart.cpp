@@ -46,18 +46,18 @@
 #include "BezierCurvePy.h"
 #include "BSplineCurvePy.h"
 #include "HyperbolaPy.h"
-//#include "OffsetCurvePy.h"
+#include "OffsetCurvePy.h"
 #include "ParabolaPy.h"
 #include "BezierSurfacePy.h"
 #include "BSplineSurfacePy.h"
 #include "ConePy.h"
 #include "CylinderPy.h"
-//#include "OffsetSurfacePy.h"
+#include "OffsetSurfacePy.h"
 #include "PlanePy.h"
 //#include "RectangularTrimmedSurfacePy.h"
 #include "SpherePy.h"
-//#include "SurfaceOfLinearExtrusionPy.h"
-//#include "SurfaceOfRevolutionPy.h"
+#include "SurfaceOfExtrusionPy.h"
+#include "SurfaceOfRevolutionPy.h"
 #include "ToroidPy.h"
 
 extern struct PyMethodDef Part_methods[];
@@ -99,6 +99,7 @@ void AppPartExport initPart()
     AddType(&Part::ArcPy                ::Type,partModule,"Arc");
     AddType(&Part::BezierCurvePy        ::Type,partModule,"BezierCurve");
     AddType(&Part::BSplineCurvePy       ::Type,partModule,"BSplineCurve");
+    AddType(&Part::OffsetCurvePy        ::Type,partModule,"OffsetCurve");
 
     AddType(&Part::PlanePy              ::Type,partModule,"Plane");
     AddType(&Part::CylinderPy           ::Type,partModule,"Cylinder");
@@ -107,6 +108,9 @@ void AppPartExport initPart()
     AddType(&Part::ToroidPy             ::Type,partModule,"Toroid");
     AddType(&Part::BezierSurfacePy      ::Type,partModule,"BezierSurface");
     AddType(&Part::BSplineSurfacePy     ::Type,partModule,"BSplineSurface");
+    AddType(&Part::OffsetSurfacePy      ::Type,partModule,"OffsetSurface");
+    AddType(&Part::SurfaceOfExtrusionPy ::Type,partModule,"SurfaceOfExtrusion");
+    AddType(&Part::SurfaceOfRevolutionPy::Type,partModule,"SurfaceOfRevolution");
 #if 1
     Py::Module mod(partModule);
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));

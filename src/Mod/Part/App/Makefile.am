@@ -8,6 +8,7 @@ BUILT_SOURCES=\
 		EllipsePy.cpp \
 		HyperbolaPy.cpp \
 		ParabolaPy.cpp \
+		OffsetCurvePy.cpp \
 		GeometryPy.cpp \
 		LinePy.cpp \
 		BezierCurvePy.cpp \
@@ -19,6 +20,9 @@ BUILT_SOURCES=\
 		ToroidPy.cpp \
 		BezierSurfacePy.cpp \
 		BSplineSurfacePy.cpp \
+		OffsetSurfacePy.cpp \
+		SurfaceOfExtrusionPy.cpp \
+		SurfaceOfRevolutionPy.cpp \
 		PartFeaturePy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
@@ -36,6 +40,7 @@ libPart_la_BUILT=\
 		EllipsePy.h \
 		HyperbolaPy.h \
 		ParabolaPy.h \
+		OffsetCurvePy.h \
 		GeometryPy.h \
 		LinePy.h \
 		BezierCurvePy.h \
@@ -47,6 +52,9 @@ libPart_la_BUILT=\
 		ToroidPy.h \
 		BezierSurfacePy.h \
 		BSplineSurfacePy.h \
+		OffsetSurfacePy.h \
+		SurfaceOfExtrusionPy.h \
+		SurfaceOfRevolutionPy.h \
 		PartFeaturePy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
@@ -65,6 +73,7 @@ libPart_la_SOURCES=\
 		EllipsePyImp.cpp \
 		HyperbolaPyImp.cpp \
 		ParabolaPyImp.cpp \
+		OffsetCurvePyImp.cpp \
 		GeometryPyImp.cpp \
 		LinePyImp.cpp \
 		BezierCurvePyImp.cpp \
@@ -76,6 +85,9 @@ libPart_la_SOURCES=\
 		ToroidPyImp.cpp \
 		BezierSurfacePyImp.cpp \
 		BSplineSurfacePyImp.cpp \
+		OffsetSurfacePyImp.cpp \
+		SurfaceOfExtrusionPyImp.cpp \
+		SurfaceOfRevolutionPyImp.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -197,6 +209,7 @@ EXTRA_DIST = \
 		EllipsePy.xml \
 		HyperbolaPy.xml \
 		ParabolaPy.xml \
+		OffsetCurvePy.xml \
 		GeometryPy.xml \
 		LinePy.xml \
 		BezierCurvePy.xml \
@@ -208,6 +221,9 @@ EXTRA_DIST = \
 		ToroidPy.xml \
 		BezierSurfacePy.xml \
 		BSplineSurfacePy.xml \
+		OffsetSurfacePy.xml \
+		SurfaceOfExtrusionPy.xml \
+		SurfaceOfRevolutionPy.xml \
 		PartFeaturePy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \
