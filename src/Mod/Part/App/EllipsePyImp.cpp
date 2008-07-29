@@ -41,7 +41,7 @@ extern const char* gce_ErrorStatusText(gce_ErrorType et);
 // returns a string which represents the object e.g. when printed in python
 const char *EllipsePy::representation(void) const
 {
-    return "<GeomEllipse object>";
+    return "<Ellipse object>";
 }
 
 PyObject *EllipsePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

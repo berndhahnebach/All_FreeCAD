@@ -45,7 +45,7 @@ extern const char* gce_ErrorStatusText(gce_ErrorType et);
 // returns a string which represents the object e.g. when printed in python
 const char *LinePy::representation(void) const
 {
-    return "<GeomLine object>";
+    return "<Line object>";
 }
 
 PyObject *LinePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

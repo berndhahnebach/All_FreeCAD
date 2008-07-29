@@ -840,6 +840,58 @@
 					>
 				</File>
 				<File
+					RelativePath=".\OffsetCurvePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\OffsetCurvePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\OffsetSurfacePy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\OffsetSurfacePyImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ParabolaPy.xml"
 					>
 					<FileConfiguration
@@ -915,6 +967,58 @@
 				</File>
 				<File
 					RelativePath=".\SpherePyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SurfaceOfExtrusionPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\SurfaceOfExtrusionPyImp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SurfaceOfRevolutionPy.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+							Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\SurfaceOfRevolutionPyImp.cpp"
 					>
 				</File>
 				<File

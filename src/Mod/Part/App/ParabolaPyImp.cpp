@@ -37,7 +37,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *ParabolaPy::representation(void) const
 {
-    return "<GeomParabola object>";
+    return "<Parabola object>";
 }
 
 PyObject *ParabolaPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

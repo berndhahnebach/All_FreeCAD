@@ -30,6 +30,7 @@
 # include <Geom_Ellipse.hxx>
 # include <Geom_Hyperbola.hxx>
 # include <Geom_Parabola.hxx>
+# include <Geom_OffsetCurve.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_BezierCurve.hxx>
@@ -39,6 +40,9 @@
 # include <Geom_ConicalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
+# include <Geom_OffsetSurface.hxx>
+# include <Geom_SurfaceOfRevolution.hxx>
+# include <Geom_SurfaceOfLinearExtrusion.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gp_Hypr.hxx>
@@ -300,6 +304,27 @@ Handle_Geom_Geometry GeomLineSegment::handle() const
 
 // -------------------------------------------------
 
+GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_Curve& c, double offset, const gp_Dir& dir)
+{
+    this->myCurve = new Geom_OffsetCurve(c, offset, dir);
+}
+
+GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_OffsetCurve& c)
+{
+    this->myCurve = c;
+}
+
+GeomOffsetCurve::~GeomOffsetCurve()
+{
+}
+
+Handle_Geom_Geometry GeomOffsetCurve::handle() const
+{
+    return this->myCurve;
+}
+
+// -------------------------------------------------
+
 GeomTrimmedCurve::GeomTrimmedCurve()
 {
 }
@@ -466,3 +491,67 @@ Handle_Geom_Geometry GeomPlane::handle() const
 {
     return mySurface;
 }
+
+// -------------------------------------------------
+
+GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_Surface& s, double offset)
+{
+    this->mySurface = new Geom_OffsetSurface(s, offset);
+}
+
+GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_OffsetSurface& s)
+{
+    this->mySurface = s;
+}
+
+GeomOffsetSurface::~GeomOffsetSurface()
+{
+}
+
+Handle_Geom_Geometry GeomOffsetSurface::handle() const
+{
+    return mySurface;
+}
+
+// -------------------------------------------------
+
+GeomSurfaceOfRevolution::GeomSurfaceOfRevolution(const Handle_Geom_Curve& c, const gp_Ax1& a)
+{
+    this->mySurface = new Geom_SurfaceOfRevolution(c,a);
+}
+
+GeomSurfaceOfRevolution::GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution& s)
+{
+    this->mySurface = s;
+}
+
+GeomSurfaceOfRevolution::~GeomSurfaceOfRevolution()
+{
+}
+
+Handle_Geom_Geometry GeomSurfaceOfRevolution::handle() const
+{
+    return mySurface;
+}
+
+// -------------------------------------------------
+
+GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_Curve& c, const gp_Dir& d)
+{
+    this->mySurface = new Geom_SurfaceOfLinearExtrusion(c,d);
+}
+
+GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion& s)
+{
+    this->mySurface = s;
+}
+
+GeomSurfaceOfExtrusion::~GeomSurfaceOfExtrusion()
+{
+}
+
+Handle_Geom_Geometry GeomSurfaceOfExtrusion::handle() const
+{
+    return mySurface;
+}
+

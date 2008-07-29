@@ -160,6 +160,7 @@
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>

@@ -1,6 +1,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRep_Tool.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
@@ -34,6 +35,9 @@
 #include "CylinderPy.h"
 #include "ConePy.h"
 #include "SpherePy.h"
+#include "OffsetSurfacePy.h"
+#include "SurfaceOfRevolutionPy.h"
+#include "SurfaceOfExtrusionPy.h"
 #include "ToroidPy.h"
 
 using namespace Part;
@@ -166,11 +170,32 @@ Py::Object TopoShapeFacePy::getSurface() const
             return Py::Object(new BSplineSurfacePy(surf));
         }
     case GeomAbs_SurfaceOfRevolution:
-        break;
+        {
+            Handle_Geom_Surface s = BRep_Tool::Surface(f);
+            Handle_Geom_SurfaceOfRevolution rev = Handle_Geom_SurfaceOfRevolution::DownCast(s);
+            if (!rev.IsNull()) {
+                GeomSurfaceOfRevolution* surf = new GeomSurfaceOfRevolution(rev);
+                return Py::Object(new SurfaceOfRevolutionPy(surf));
+            }
+        }
     case GeomAbs_SurfaceOfExtrusion:
-        break;
+        {
+            Handle_Geom_Surface s = BRep_Tool::Surface(f);
+            Handle_Geom_SurfaceOfLinearExtrusion ext = Handle_Geom_SurfaceOfLinearExtrusion::DownCast(s);
+            if (!ext.IsNull()) {
+                GeomSurfaceOfExtrusion* surf = new GeomSurfaceOfExtrusion(ext);
+                return Py::Object(new SurfaceOfExtrusionPy(surf));
+            }
+        }
     case GeomAbs_OffsetSurface:
-        break;
+        {
+            Handle_Geom_Surface s = BRep_Tool::Surface(f);
+            Handle_Geom_OffsetSurface off = Handle_Geom_OffsetSurface::DownCast(s);
+            if (!off.IsNull()) {
+                GeomOffsetSurface* surf = new GeomOffsetSurface(off);
+                return Py::Object(new OffsetSurfacePy(surf));
+            }
+        }
     case GeomAbs_OtherSurface:
         break;
     }

@@ -156,19 +156,19 @@ Py::Object TopoShapeEdgePy::getCurve() const
         }
     case GeomAbs_Hyperbola:
         {
-            GeomHyperbola* hyper = new GeomHyperbola();
+            GeomHyperbola* hypr = new GeomHyperbola();
             Handle_Geom_Hyperbola this_curv = Handle_Geom_Hyperbola::DownCast
-                (hyper->handle());
+                (hypr->handle());
             this_curv->SetHypr(adapt.Hyperbola());
-            return Py::Object(new HyperbolaPy(hyper));
+            return Py::Object(new HyperbolaPy(hypr));
         }
     case GeomAbs_Parabola:
         {
-            GeomParabola* hyper = new GeomParabola();
+            GeomParabola* parab = new GeomParabola();
             Handle_Geom_Parabola this_curv = Handle_Geom_Parabola::DownCast
-                (hyper->handle());
+                (parab->handle());
             this_curv->SetParab(adapt.Parabola());
-            return Py::Object(new ParabolaPy(hyper));
+            return Py::Object(new ParabolaPy(parab));
         }
     case GeomAbs_BezierCurve:
         {

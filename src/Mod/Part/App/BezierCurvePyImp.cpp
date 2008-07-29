@@ -40,7 +40,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *BezierCurvePy::representation(void) const
 {
-    return "<GeomBezierCurve object>";
+    return "<BezierCurve object>";
 }
 
 PyObject *BezierCurvePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

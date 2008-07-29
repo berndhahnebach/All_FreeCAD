@@ -45,7 +45,7 @@ using namespace Part;
 // returns a string which represents the object e.g. when printed in python
 const char *PlanePy::representation(void) const
 {
-    return "<GeomPlane object>";
+    return "<Plane object>";
 }
 
 PyObject *PlanePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
