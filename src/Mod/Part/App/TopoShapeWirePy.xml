@@ -19,5 +19,10 @@
         <UserDocu>Make a shell by sweeping along a direction.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="revolve">
+      <Documentation>
+        <UserDocu>Make a revolved object.</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>

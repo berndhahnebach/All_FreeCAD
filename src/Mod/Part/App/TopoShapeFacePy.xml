@@ -19,6 +19,11 @@
         <UserDocu>Make a solid by sweeping along a direction.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="revolve">
+      <Documentation>
+        <UserDocu>Make a revolved object.</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Surface" ReadOnly="true">
       <Documentation>
         <UserDocu>Returns the geometric surface of the face</UserDocu>

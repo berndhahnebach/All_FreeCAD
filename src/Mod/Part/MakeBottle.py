@@ -94,7 +94,7 @@ def makeBoreHole():
 	Prism.Shape=P
 
 	c=Part.Circle(Base.Vector(0,0,-1),Base.Vector(0,0,1),2.0)
-	w=Part.Wire(c.Edge)
+	w=Part.Wire(c.toShape())
 	f=Part.Face(w)
 	p=f.extrude(Base.Vector(0,0,7))
 	P=P.cut(p)
@@ -106,7 +106,7 @@ def makeBoreHole():
 	Hole1.Shape=P
 
 	c=Part.Circle(Base.Vector(0,-11,2.5),Base.Vector(0,1,0),1.0)
-	w=Part.Wire(c.Edge)
+	w=Part.Wire(c.toShape())
 	f=Part.Face(w)
 	p=f.extrude(Base.Vector(0,22,0))
 	P=P.cut(p)

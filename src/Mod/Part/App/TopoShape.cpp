@@ -33,9 +33,12 @@
 # include <BRepAlgoAPI_Cut.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
+# include <BRepBuilderAPI_NurbsConvert.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakeThickSolid.hxx>
+# include <BRepOffsetAPI_MakePipe.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
+# include <BRepPrimAPI_MakeRevol.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepMesh.hxx>
@@ -634,6 +637,13 @@ TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const
     return mkPrism.Shape();
 }
 
+TopoDS_Shape TopoShape::revolve(const gp_Ax1& axis, double d) const
+{
+    if (this->_Shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+    BRepPrimAPI_MakeRevol mkRevol(this->_Shape, axis,d);
+    return mkRevol.Shape();
+}
+
 TopoDS_Shape TopoShape::makeThickSolid(const TopTools_ListOfShape& remFace,
                                        Standard_Real offset, Standard_Real tolerance) const
 {
@@ -651,6 +661,12 @@ TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
     mov.SetScaleFactor(rclTrf[3][3]);
     BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
     return mkTrf.Shape();
+}
+
+TopoDS_Shape TopoShape::toNurbs() const
+{
+    BRepBuilderAPI_NurbsConvert mkNurbs(this->_Shape);
+    return mkNurbs.Shape();
 }
 
 void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
