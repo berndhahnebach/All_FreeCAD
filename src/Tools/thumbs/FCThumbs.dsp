@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /Yu"stdafx.h" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../" /I "../../3rdParty/CxImage/zlib" /I "../../3rdParty/CxImage" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /D "FCBase" /Yu"stdafx.h" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /D "NDEBUG" /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG" /d "_AFXDLL"
@@ -77,9 +77,10 @@ SOURCE="$(InputPath)"
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /Yu"stdafx.h" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../" /I "../../3rdParty/CxImage/zlib" /I "../../3rdParty/CxImage" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /D "FCBase" /Yu"stdafx.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /D "_DEBUG" /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG" /d "_AFXDLL"
@@ -89,7 +90,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 qt-mt323.lib gdi32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
 # Begin Custom Build - Performing Registration on $(InputPath)
 OutDir=.\Debug
 TargetPath=.\Debug\FCThumbs.dll
@@ -160,6 +161,231 @@ SOURCE=.\StdAfx.h
 # Begin Source File
 
 SOURCE=.\FCThumbs.rgs
+# End Source File
+# End Group
+# Begin Group "zipios"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\backbuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\basicentry.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\basicentry.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\collcoll.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\collcoll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\deflateoutputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\deflateoutputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\dircoll.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\dircoll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\directory.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\directory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fcoll.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fcoll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fcollexceptions.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fcollexceptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fileentry.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\fileentry.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filepath.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filepath.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filterinputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filterinputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filteroutputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\filteroutputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\gzipoutputstream.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\gzipoutputstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\gzipoutputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\gzipoutputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\inflateinputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\inflateinputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\Base\zipios\meta-iostreams.h"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\outputstringstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\simplesmartptr.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\virtualseeker.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipfile.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\ziphead.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\ziphead.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipheadio.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipheadio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipinputstream.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipinputstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipinputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipinputstreambuf.h
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\Base\zipios\zipios-config.h"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipios_common.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipios_defs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipoutputstream.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipoutputstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipoutputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Base\zipios\zipoutputstreambuf.h
 # End Source File
 # End Group
 # End Target
