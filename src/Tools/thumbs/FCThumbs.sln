@@ -1,22 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CxImage", "..\..\3rdParty\CxImage\CxImage\cximage.vcproj", "{02D7821F-046E-4114-8981-2E7B672A578F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758} = {BCD0DF12-7BE3-4F35-AD6D-A43F89781758}
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B} = {8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCThumbs", "FCThumbs.vcproj", "{14DB81D8-75F5-4C83-9476-C4A9218DF8DB}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
 		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758} = {BCD0DF12-7BE3-4F35-AD6D-A43F89781758}
-		{02D7821F-046E-4114-8981-2E7B672A578F} = {02D7821F-046E-4114-8981-2E7B672A578F}
 		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B} = {8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}
+		{02D7821F-046E-4114-8981-2E7B672A578F} = {02D7821F-046E-4114-8981-2E7B672A578F}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "..\..\3rdParty\CxImage\jpeg\Jpeg.vcproj", "{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\3rdParty\CxImage\zlib\zlib.vcproj", "{BCD0DF12-7BE3-4F35-AD6D-A43F89781758}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

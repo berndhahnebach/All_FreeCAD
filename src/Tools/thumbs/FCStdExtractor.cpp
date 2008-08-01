@@ -112,8 +112,8 @@ HBITMAP CExtractImageApp::CreateThumbnail(const SIZE bmSize)
     return hThumb; 
 }
 */
-#include <qimage.h>
-HBITMAP convertToBitmap (const QImage& image)
+//#include <qimage.h>
+/*HBITMAP convertToBitmap (const QImage& image)
 {
     HDC hDC = CreateCompatibleDC(NULL);
 
@@ -151,7 +151,7 @@ HBITMAP convertToBitmap (const QImage& image)
 
     return hBMP;
 }
-
+*/
 // IExtractImage::Extract
 HRESULT CFCStdExtractor::Extract(HBITMAP* phBmpThumbnail)
 {
