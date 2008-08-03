@@ -30,7 +30,7 @@
 #include <Base/Vector3D.h>
 
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
-
+#error
 namespace Mesh
 {
 
