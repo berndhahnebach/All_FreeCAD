@@ -3115,7 +3115,7 @@ static PyObject * useMesh(PyObject *self, PyObject *args)
     PY_TRY
     {
 
-        const MeshObject *aMeshObject = pcObject->getMesh();
+        const MeshObject *aMeshObject = pcObject->getMeshObjectPtr();
         const MeshKernel& m = aMeshObject->getKernel();
         //MeshAlgos::boolean(&_cMesh,&m,&_cMesh,0);
         MeshKernel copy = m;
@@ -3294,7 +3294,7 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
     PY_TRY
     {
 
-        MeshObject *o = pcObject->getMesh();
+        MeshObject *o = pcObject->getMeshObjectPtr();
         MeshKernel &mesh = o->getKernel();
 
         //Base::Vector3f Point[3];
@@ -3641,7 +3641,7 @@ static PyObject * best_fit_complete(PyObject *self, PyObject *args)
         pcObject  = (MeshPy*)pcObj;
         TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Shape wird übergeben
         TopoDS_Shape cad           = pcShape->getTopoShapePtr()->_Shape;  // Input CAD
-        MeshCore::MeshKernel mesh  = pcObject->getMesh()->getKernel();  // Input Mesh
+        MeshCore::MeshKernel mesh  = pcObject->getMeshObjectPtr()->getKernel();  // Input Mesh
 
 //        best_fit befi(&mesh,&cad);
         //befi.Perform();
@@ -3884,7 +3884,7 @@ static PyObject * spring_back(PyObject *self, PyObject *args)
         pcObject  = (MeshPy*)pcObj;
         TopoShapePy *pcShape = static_cast<TopoShapePy*>(pcObj2); //Shape wird übergeben
         TopoDS_Shape cad              = pcShape->getTopoShapePtr()->_Shape;            // Input CAD
-        MeshObject* anObject          = pcObject->getMesh();            // Input Mesh
+        MeshObject* anObject          = pcObject->getMeshObjectPtr();            // Input Mesh
         MeshCore::MeshKernel mesh     = anObject->getKernel();
 
         time_t seconds1, seconds2;
@@ -4043,7 +4043,7 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
 
     TopoDS_Face atopo_surface;
 
-    MeshCore::MeshKernel mesh = pcObject->getMesh()->getKernel();
+    MeshCore::MeshKernel mesh = pcObject->getMeshObjectPtr()->getKernel();
 
     PY_TRY
     {

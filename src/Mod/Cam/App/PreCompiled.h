@@ -59,45 +59,6 @@
     // OpenCascade View
     #include <Mod/Part/App/OpenCascadeAll.h>
 
-//    #include <Poly_Triangulation.hxx>
-//    #include <BRepBndLib.hxx>
-//    #include <gp_Pnt.hxx>
-//    #include <gp_Sphere.hxx>
-//    #include <gp_Trsf.hxx>
-//    #include <TopoDS_Face.hxx>
-//    #include <TopoDS.hxx>
-//    #include <TopExp_Explorer.hxx>
-//    #include <TopLoc_Location.hxx>
-//    #include <BRep_Tool.hxx>
-//    #include <BRepPrimAPI_MakeSphere.hxx>
-//    #include <Geom_SphericalSurface.hxx>
-//    #include <Bnd_Box.hxx>
-//    #include <BRepTools.hxx>
-//    #include <BRepMesh_Discret.hxx>
-//    #include <BRepBuilderAPI_MakeFace.hxx>
-//    #include <BRep_Tool.hxx>
-//    #include <GeomAPI_ProjectPointOnSurf.hxx>
-//    #include <GeomLProp_SLProps.hxx>
-//    #include <TopoDS_Face.hxx>
-//    #include <BRepAdaptor_Surface.hxx>
-//    #include <TopoDS_Iterator.hxx>
-//    #include <TopoDS_Edge.hxx>
-//    #include <BRepAdaptor_Curve.hxx>
-//    #include <GCPnts_UniformDeflection.hxx>
-//    #include <TopExp.hxx>
-//    #include <Poly_PolygonOnTriangulation.hxx>
-//    #include <TColStd_Array1OfInteger.hxx>
-//    #include <Poly_Polygon3D.hxx>
-//#include <TopoDS_Compound.hxx>
-//#include <TopoDS_Builder.hxx>
-//#include <TopoDS_Shape.hxx>
-//#include <Geom_BSplineCurve.hxx>
-//#include <Handle_Geom_BSplineCurve.hxx>
-//#include <TColgp_Array1OfPnt2d.hxx>
-//#include <TColgp_Array1OfPnt2d.hxx>
-//#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-
 #endif //_PreComp_
 
 #endif //__PRECOMPILED__
