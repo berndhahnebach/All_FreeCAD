@@ -221,6 +221,7 @@ def CompileHelp():
 	import fcbt.FileTools
 	CallProcess([Config.get('Tools','hhc'),'doc/tmp/Online_Help_Toc.hhp'],'10)Compile help:',False)
 	fcbt.FileTools.cpfile('doc/tmp/FreeCAD.chm','doc/FreeCAD.chm')
+	fcbt.FileTools.cpfile('doc/tmp/FreeCAD.chm',FileName+'_helpfile.chm')
 
 def BuildInstaller():
 	import fcbt.FileTools
