@@ -80,7 +80,7 @@ public:
   void addViewProvider(ViewProvider*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProvider*);
-  /// Background modes for the makeScreenShot method
+  /// Background modes for the savePicture() method
   enum eBackgroundType { 
     Current     = 0,  /**< Use the current viewer Background */
     Black       = 1,  /**< Black background */
@@ -97,6 +97,7 @@ public:
    */
   void savePicture(const char* filename, int w, int h, int eBackgroundType,
                    const char* comment) const;
+  void savePicture(int w, int h, int eBackgroundType, QImage&) const;
   void saveGraphic(const char* filename, int pagesize, int eBackgroundType) const;
   /// Pick modes for picking points in the scene
   enum ePickMode {

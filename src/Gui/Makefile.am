@@ -237,6 +237,7 @@ libFreeCADGui_la_SOURCES=\
 		Splashscreen.cpp \
 		SplitView3DInventor.cpp \
 		TextEdit.cpp \
+		Thumbnail.cpp \
 		ToolBarManager.cpp \
 		ToolBox.cpp \
 		Tree.cpp \
@@ -318,6 +319,7 @@ include_HEADERS=\
 		Splashscreen.h \
 		SplitView3DInventor.h \
 		TextEdit.h \
+		Thumbnail.h \
 		ToolBarManager.h \
 		ToolBox.h \
 		Tree.h \

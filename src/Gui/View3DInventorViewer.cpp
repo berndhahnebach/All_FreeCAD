@@ -463,6 +463,65 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
   root->unref();
 }
 
+void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage& img) const
+{
+  // if no valid color use the current background
+  bool useBackground = false;
+  SbViewportRegion vp(getViewportRegion());
+  if(w>0 && h>0)
+    vp.setWindowSize( (short)w, (short)h );
+
+  //NOTE: To support pixels per inch we must use SbViewportRegion::setPixelsPerInch( ppi );
+  //The default value is 72.0.
+  //If we need to support grayscale images with must either use SoOffscreenRenderer::LUMINANCE or 
+  //SoOffscreenRenderer::LUMINANCE_TRANSPARENCY. 
+  SoFCOffscreenRenderer renderer(vp);
+  SoCallback* cb = 0;
+
+  // if we use transparency then we must not set a background color
+  switch(eBackgroundType){
+    case Current:
+      useBackground = true;
+      cb = new SoCallback;
+      cb->setCallback(clearBuffer);
+      break;
+    case White:
+      renderer.setBackgroundColor( SbColor(1.0, 1.0, 1.0) );
+      break;
+    case Black:
+      renderer.setBackgroundColor( SbColor(0.0, 0.0, 0.0) );
+      break;
+    case Transparent:
+      renderer.setComponents(SoFCOffscreenRenderer::RGB_TRANSPARENCY );
+      break;
+    default:
+      throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");
+  }
+
+  SoSeparator* root = new SoSeparator;
+  root->ref();
+
+  SoCamera* camera = getCamera();
+  if ( useBackground )
+  {
+    root->addChild(backgroundroot);
+    root->addChild(cb);
+  }
+  root->addChild(getHeadlight());
+  root->addChild(camera);
+  root->addChild(pcViewProviderRoot);
+  if ( useBackground )
+    root->addChild(cb);
+  root->addChild(foregroundroot);
+
+  // render the scene
+  renderer.render( root );
+
+  renderer.writeToImage(img);
+
+  root->unref();
+}
+
 void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
                                        int eBackgroundType) const
 {

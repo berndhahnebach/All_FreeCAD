@@ -119,13 +119,13 @@ public:
 
     /// Observer message from the App doc
     void setModified(bool);
-    bool isModified() const { return _isModified; }
+    bool isModified() const;
 
     /// Geter for the Application
-    Application* getAppWnd() const {return _pcAppWnd;}
+    Application* getAppWnd() const;
 
     /// Gerer for the App Document 
-    App::Document*  getDocument(void) const {return _pcDocument;}
+    App::Document*  getDocument(void) const;
 
     /** @name methods for activation handling */
     //@{
@@ -209,24 +209,8 @@ protected:
     Gui::DocumentPy *_pcDocPy;
 
 private:
+    struct DocumentP* d;
     static int _iDocCount;
-    int        _iWinCount;
-    int        _iDocId;
-    bool _isClosing;
-    bool _isModified;
-    Application*    _pcAppWnd;
-    /// List of all registered views
-    std::list<Gui::BaseView*> _LpcViews;
-    /// List of all registered views
-    std::list<Gui::BaseView*> _LpcPassivViews;
-    /// root of the document in the tree
-    //DocItem *pcTreeItem;
-
-    // the doc/Document
-    App::Document*  _pcDocument;
-
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
-    std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
 
     /** @name attributes for the UNDO REDO facility
      */
