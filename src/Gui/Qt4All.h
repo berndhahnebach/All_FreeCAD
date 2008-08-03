@@ -4,6 +4,7 @@
 // Qt Toolkit
 // QtCore
 #include <qglobal.h>
+#include <QBuffer>
 #include <qeventloop.h>
 #include <qfile.h>
 #include <QMutex>

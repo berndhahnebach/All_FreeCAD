@@ -70,43 +70,6 @@ void SoFCOffscreenRenderer::writeToImage (QImage& img) const
     BitmapFactory().convert(image, img);
 }
 
-SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName& filetypeextension) const
-{
-    Base::FileInfo file(filename.getString());
-    if (isWriteSupported(filetypeextension)) {
-        return writeToFile(filename, filetypeextension);
-    }
-    else if (strcmp(filetypeextension.getString(), "EPS") == 0 ||
-             strcmp(filetypeextension.getString(), "PS") == 0) {
-#ifdef FC_OS_WIN32
-        FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
-#else
-        FILE* fd = fopen(filename.getString(), "w");
-#endif
-        bool ok = writeToPostScript(fd);
-        fclose(fd);
-        return ok;
-    }
-    else if (strcmp(filetypeextension.getString(), "RGB") == 0 ||
-             strcmp(filetypeextension.getString(), "SGI") == 0) {
-#ifdef FC_OS_WIN32
-        FILE* fd = _wfopen(file.toStdWString().c_str(), L"w");
-#else
-        FILE* fd = fopen(filename.getString(), "w");
-#endif
-        bool ok = writeToRGB(fd);
-        fclose(fd);
-        return ok;
-    }
-    else { // try to convert into a QImage and save then
-        QImage img;
-        writeToImage(img);
-        return img.save(QString::fromUtf8(filename.getString()), filetypeextension.getString());
-    }
-
-    return false;
-}
-
 void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* comment) const
 {
     Base::FileInfo file(filename);

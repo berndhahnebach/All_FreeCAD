@@ -71,7 +71,6 @@ public:
    * This does basically the same as writeToFile() unless that all QImage file formats are supported if not
    * directly supported by Coin3D.
    */
-  SbBool writeToImageFile (const SbString &  filename, const SbName &  filetypeextension ) const;
   void writeToImageFile (const char *filename, const char* comment) const;  
   /**
    * This method returns all image file formats supported by Coin3D (see getWriteFiletypeInfo()) with all QImage file formats that are 

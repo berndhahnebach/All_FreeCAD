@@ -5016,6 +5016,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Thumbnail.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Thumbnail.h"
+			>
+		</File>
+		<File
 			RelativePath="WaitCursor.cpp"
 			>
 			<FileConfiguration

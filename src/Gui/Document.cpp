@@ -55,19 +55,47 @@
 #include "Selection.h"
 #include "SoFCSelection.h"
 #include "WaitCursor.h"
+#include "Thumbnail.h"
 
 using namespace Gui;
+
+namespace Gui {
+
+// Pimpl class
+struct DocumentP
+{
+    Thumbnail thumb;
+    int        _iWinCount;
+    int        _iDocId;
+    bool       _isClosing;
+    bool       _isModified;
+    Application*    _pcAppWnd;
+    // the doc/Document
+    App::Document*  _pcDocument;
+    /// List of all registered views
+    std::list<Gui::BaseView*> _LpcViews;
+    /// List of all registered views
+    std::list<Gui::BaseView*> _LpcPassivViews;
+    std::map<App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
+    std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
+};
+
+} // namespace Gui
 
 /* TRANSLATOR Gui::Document */
 
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,Application * app)
-  :_iWinCount(1), _isClosing(false), _isModified(false),
-   _pcAppWnd(app), _pcDocument(pcDocument)
 {
+    d = new DocumentP;
+    d->_iWinCount = 1;
     // new instance
-    _iDocId = (++_iDocCount);
+    d->_iDocId = (++_iDocCount);
+    d->_isClosing = false;
+    d->_isModified = false;
+    d->_pcAppWnd = app;
+    d->_pcDocument = pcDocument;
 
     //pcDocument->m_sig.connect(boost::bind(&Gui::Document::refresh, this, _1));
     //boost::bind(&Gui::Document::slotNewObject, this, _1)
@@ -90,27 +118,28 @@ Document::Document(App::Document* pcDocument,Application * app)
 
     if (App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",false))
-        _pcDocument->setUndoMode(1);
+        d->_pcDocument->setUndoMode(1);
 }
 
 Document::~Document()
 {
     // e.g. if document gets closed from within a Python command
-    _isClosing = true;
+    d->_isClosing = true;
     // Calls Document::detachView()
-    while ( _LpcViews.size() > 0 )
-        delete _LpcViews.front();
+    while (d->_LpcViews.size() > 0)
+        delete d->_LpcViews.front();
 
     std::map<App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
-    for (it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
+    for (it = d->_ViewProviderMap.begin();it != d->_ViewProviderMap.end(); ++it)
         delete it->second;
     std::map<std::string,ViewProvider*>::iterator it2;
-    for (it2 = _ViewProviderMapAnnotation.begin();it2 != _ViewProviderMapAnnotation.end(); ++it2)
+    for (it2 = d->_ViewProviderMapAnnotation.begin();it2 != d->_ViewProviderMapAnnotation.end(); ++it2)
         delete it2->second;
 
     // remove the reference from the object
     _pcDocPy->setInvalid();
     _pcDocPy->DecRef();
+    delete d;
 }
 
 //*****************************************************************************************************
@@ -122,15 +151,15 @@ void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvi
     std::list<Gui::BaseView*>::iterator VIt;
 
     // already in ?
-    std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnnotation.find(name);
-    if (it != _ViewProviderMapAnnotation.end())
+    std::map<std::string,ViewProvider*>::iterator it = d->_ViewProviderMapAnnotation.find(name);
+    if (it != d->_ViewProviderMapAnnotation.end())
         removeAnnotationViewProvider(name);
 
     // add 
-    _ViewProviderMapAnnotation[name] = pcProvider;
+    d->_ViewProviderMapAnnotation[name] = pcProvider;
 
     // cycling to all views of the document
-    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+    for(VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
         View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
         if (pcIvView)
             pcIvView->getViewer()->addViewProvider(pcProvider);
@@ -139,39 +168,39 @@ void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvi
 
 ViewProvider * Document::getAnnotationViewProvider(const char* name) const
 {
-    std::map<std::string,ViewProvider*>::const_iterator it = _ViewProviderMapAnnotation.find(name);
-    return ( (it != _ViewProviderMapAnnotation.end()) ? it->second : 0 );
+    std::map<std::string,ViewProvider*>::const_iterator it = d->_ViewProviderMapAnnotation.find(name);
+    return ( (it != d->_ViewProviderMapAnnotation.end()) ? it->second : 0 );
 }
 
 void Document::removeAnnotationViewProvider(const char* name)
 {
-    std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnnotation.find(name);
+    std::map<std::string,ViewProvider*>::iterator it = d->_ViewProviderMapAnnotation.find(name);
     std::list<Gui::BaseView*>::iterator VIt;
 
     // cycling to all views of the document
-    for (VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+    for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
         View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
         if (pcIvView)
             pcIvView->getViewer()->removeViewProvider(it->second);
     }
 
     delete it->second;
-    _ViewProviderMapAnnotation.erase(it); 
+    d->_ViewProviderMapAnnotation.erase(it); 
 }
 
 
 ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
 {
     std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
-    it = _ViewProviderMap.find( Feat );
-    return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
+    it = d->_ViewProviderMap.find( Feat );
+    return ( (it != d->_ViewProviderMap.end()) ? it->second : 0 );
 }
 
 std::vector<ViewProvider*> Document::getViewProvidersOfType(const Base::Type& typeId) const
 {
     std::vector<ViewProvider*> Objects;
     for (std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it = 
-         _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it ) {
+         d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it ) {
         if (it->second->getTypeId().isDerivedFrom(typeId))
             Objects.push_back(it->second);
     }
@@ -186,15 +215,15 @@ ViewProvider *Document::getViewProviderByName(const char* name) const
     if (pcFeat)
     {
         std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
-        it = _ViewProviderMap.find( pcFeat );
+        it = d->_ViewProviderMap.find( pcFeat );
 
-        if (it != _ViewProviderMap.end())
+        if (it != d->_ViewProviderMap.end())
             return it->second;
     } else {
         // then try annotation name
-        std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnnotation.find( name );
+        std::map<std::string,ViewProvider*>::const_iterator it2 = d->_ViewProviderMapAnnotation.find( name );
 
-        if (it2 != _ViewProviderMapAnnotation.end())
+        if (it2 != d->_ViewProviderMapAnnotation.end())
             return it2->second;
     }
 
@@ -254,7 +283,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     if (pcProvider) {
         // type not derived from ViewProviderDocumentObject!!!
         assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
-        _ViewProviderMap[&Obj] = pcProvider;
+        d->_ViewProviderMap[&Obj] = pcProvider;
 
         try {
             // if succesfully created set the right name and calculate the view
@@ -275,7 +304,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
 #endif
         std::list<Gui::BaseView*>::iterator VIt;
         // cycling to all views of the document
-        for (VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+        for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
             View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
             if(pcIvView)
                 pcIvView->getViewer()->addViewProvider(pcProvider);
@@ -297,7 +326,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
   
     // cycling to all views of the document
     ViewProvider* viewProvider = getViewProvider(&Obj);
-    for (VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++) {
+    for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
         View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
         if (pcIvView && viewProvider)
             pcIvView->getViewer()->removeViewProvider(viewProvider);
@@ -309,7 +338,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
         signalDeletedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
 
         delete viewProvider;
-        _ViewProviderMap.erase(&Obj);
+        d->_ViewProviderMap.erase(&Obj);
     }
 }
 
@@ -354,7 +383,7 @@ void Document::slotActivatedObject(App::DocumentObject& Obj)
 
 void Document::setModified(bool b)
 {
-    _isModified = b;
+    d->_isModified = b;
     
     std::list<MDIView*> mdis = getMDIViews();
     for (std::list<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
@@ -362,13 +391,28 @@ void Document::setModified(bool b)
     }
 }
 
+bool Document::isModified() const
+{
+    return d->_isModified;
+}
+
+Application* Document::getAppWnd() const 
+{
+    return d->_pcAppWnd;
+}
+
+App::Document* Document::getDocument(void) const
+{
+    return d->_pcDocument;
+}
+
 /// Save the document
 bool Document::save(void)
 {
-    if (_pcDocument->isSaved()) {
+    if (d->_pcDocument->isSaved()) {
         Gui::WaitCursor wc;
         Command::doCommand(Command::Doc,"App.getDocument(\"%s\").save()"
-                                       ,_pcDocument->getName());
+                                       ,d->_pcDocument->getName());
         setModified(false);
         return true;
     }
@@ -419,7 +463,7 @@ unsigned int Document::getMemSize (void) const
 
     // size of the view providers in the document
     std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
-    for (it = _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it)
+    for (it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it)
         size += it->second->getMemSize();
     return size;
 }
@@ -430,8 +474,20 @@ unsigned int Document::getMemSize (void) const
 void Document::Save (Base::Writer &writer) const
 {
     // It's only possible to add extra information if force of XML is disabled
-    if (writer.isForceXML() == false)
+    if (writer.isForceXML() == false) {
         writer.addFile("GuiDocument.xml", this);
+
+        std::list<MDIView*> mdi = getMDIViews();
+        for (std::list<MDIView*>::iterator it = mdi.begin(); it != mdi.end(); ++it) {
+            if ((*it)->getTypeId().isDerivedFrom(View3DInventor::getClassTypeId())) {
+                View3DInventorViewer* view = static_cast<View3DInventor*>(*it)->getViewer();
+                d->thumb.setSize(96);
+                d->thumb.setViewer(view);
+                d->thumb.Save(writer);
+                break;
+            }
+        }
+    }
 }
 
 /** 
@@ -489,8 +545,8 @@ void Document::RestoreDocFile(Base::Reader &reader)
         std::string sMsg = "SetCamera ";
         sMsg += ppReturn;
         if (strcmp(ppReturn, "") != 0) { // non-empty attribute
-            if (_pcAppWnd->sendHasMsgToActiveView("SetCamera"))
-                _pcAppWnd->sendMsgToActiveView(sMsg.c_str());
+            if (d->_pcAppWnd->sendHasMsgToActiveView("SetCamera"))
+                d->_pcAppWnd->sendMsgToActiveView(sMsg.c_str());
         }
     }
 
@@ -517,12 +573,12 @@ void Document::SaveDocFile (Base::Writer &writer) const
     // writing the view provider names itself
     writer.incInd(); // indention for 'ViewProviderData Count'
     writer.Stream() << writer.ind() << "<ViewProviderData Count=\"" 
-                    << _ViewProviderMap.size() <<"\">" << std::endl;
+                    << d->_ViewProviderMap.size() <<"\">" << std::endl;
 
     bool xml = writer.isForceXML();
     writer.setForceXML(true);
     writer.incInd(); // indention for 'ViewProvider name'
-    for(it = _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it) {
+    for(it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it) {
         App::DocumentObject* doc = it->first;
         ViewProvider* obj = it->second;
         writer.Stream() << writer.ind() << "<ViewProvider name=\""
@@ -538,9 +594,9 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
     // set camera settings
     QString viewPos="";
-    if (_pcAppWnd->sendHasMsgToActiveView("GetCamera")) {
+    if (d->_pcAppWnd->sendHasMsgToActiveView("GetCamera")) {
         const char* ppReturn=0;
-        _pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
+        d->_pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
   
         // remove the first line because it's a comment like '#Inventor V2.1 ascii'
         QStringList lines = QString(ppReturn).split("\n");
@@ -569,10 +625,10 @@ void Document::createView(const char* sType)
     
         // attach the viewprovider
         std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
-        for (It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+        for (It1=d->_ViewProviderMap.begin();It1!=d->_ViewProviderMap.end();++It1)
             ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
         std::map<std::string,ViewProvider*>::const_iterator It2;
-        for (It2=_ViewProviderMapAnnotation.begin();It2!=_ViewProviderMapAnnotation.end();++It2)
+        for (It2=d->_ViewProviderMapAnnotation.begin();It2!=d->_ViewProviderMapAnnotation.end();++It2)
             ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
 
     } else /* if(strcmp(sType,"View3DOCC") == 0){
@@ -585,8 +641,7 @@ void Document::createView(const char* sType)
 
     const char* name = getDocument()->getName();
 
-    QString aName = QString("%1 : %2[*]").arg(name).arg(_iWinCount++);
-
+    QString aName = QString("%1 : %2[*]").arg(name).arg(d->_iWinCount++);
 
     pcView3D->setWindowTitle(aName);
     pcView3D->setWindowIcon( FCIcon );
@@ -597,35 +652,35 @@ void Document::createView(const char* sType)
 void Document::attachView(Gui::BaseView* pcView, bool bPassiv)
 {
   if(!bPassiv)
-    _LpcViews.push_back(pcView);
+    d->_LpcViews.push_back(pcView);
   else
-    _LpcPassivViews.push_back(pcView);
+    d->_LpcPassivViews.push_back(pcView);
 }
 
 void Document::detachView(Gui::BaseView* pcView, bool bPassiv)
 {
     if (bPassiv) {
-        if (find(_LpcPassivViews.begin(),_LpcPassivViews.end(),pcView)
-            != _LpcPassivViews.end())
-        _LpcPassivViews.remove(pcView);
+        if (find(d->_LpcPassivViews.begin(),d->_LpcPassivViews.end(),pcView)
+            != d->_LpcPassivViews.end())
+        d->_LpcPassivViews.remove(pcView);
     }
     else {
-        if (find(_LpcViews.begin(),_LpcViews.end(),pcView)
-            != _LpcViews.end())
-        _LpcViews.remove(pcView);
+        if (find(d->_LpcViews.begin(),d->_LpcViews.end(),pcView)
+            != d->_LpcViews.end())
+        d->_LpcViews.remove(pcView);
 
         // last view?
-        if (_LpcViews.size() == 0) {
+        if (d->_LpcViews.size() == 0) {
             // decouple a passive view
-            std::list<Gui::BaseView*>::iterator It = _LpcPassivViews.begin();
-            while (It != _LpcPassivViews.end()) {
+            std::list<Gui::BaseView*>::iterator It = d->_LpcPassivViews.begin();
+            while (It != d->_LpcPassivViews.end()) {
                 (*It)->setDocument(0);
-                It = _LpcPassivViews.begin();
+                It = d->_LpcPassivViews.begin();
             }
 
             // is already  closing the document
-            if (_isClosing == false)
-                _pcAppWnd->onLastWindowClosed(this);
+            if (d->_isClosing == false)
+                d->_pcAppWnd->onLastWindowClosed(this);
         }
     }
 }
@@ -638,11 +693,11 @@ void Document::onUpdate(void)
 
     std::list<Gui::BaseView*>::iterator It;
 
-    for(It = _LpcViews.begin();It != _LpcViews.end();It++) {
+    for(It = d->_LpcViews.begin();It != d->_LpcViews.end();It++) {
         (*It)->onUpdate();
     }
 
-    for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++) {
+    for(It = d->_LpcPassivViews.begin();It != d->_LpcPassivViews.end();It++) {
         (*It)->onUpdate();
     }
 }
@@ -655,18 +710,18 @@ void Document::onRelabel(void)
 
     std::list<Gui::BaseView*>::iterator It;
 
-    for (It = _LpcViews.begin();It != _LpcViews.end();It++) {
+    for (It = d->_LpcViews.begin();It != d->_LpcViews.end();It++) {
         (*It)->onRelabel(this);
     }
 
-    for (It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++) {
+    for (It = d->_LpcPassivViews.begin();It != d->_LpcPassivViews.end();It++) {
         (*It)->onRelabel(this);
     }
 }
 
 bool Document::isLastView(void)
 {
-    if (_LpcViews.size() <= 1)
+    if (d->_LpcViews.size() <= 1)
         return true;
     return false;
 }
@@ -715,8 +770,8 @@ void Document::closeEvent ( QCloseEvent * e )
 std::list<MDIView*> Document::getMDIViews() const
 {
     std::list<MDIView*> views;
-    for (std::list<BaseView*>::const_iterator it = _LpcViews.begin();
-         it != _LpcViews.end(); ++it) {
+    for (std::list<BaseView*>::const_iterator it = d->_LpcViews.begin();
+         it != d->_LpcViews.end(); ++it) {
         MDIView* view = dynamic_cast<MDIView*>(*it);
         if (view)
             views.push_back(view);
@@ -731,13 +786,13 @@ bool Document::sendMsgToViews(const char* pMsg)
     std::list<Gui::BaseView*>::iterator It;
     const char** pReturnIgnore=0;
 
-    for (It = _LpcViews.begin();It != _LpcViews.end();It++) {
+    for (It = d->_LpcViews.begin();It != d->_LpcViews.end();It++) {
         if ((*It)->onMsg(pMsg,pReturnIgnore)) {
             return true;
         }
     }
 
-    for (It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++) {
+    for (It = d->_LpcPassivViews.begin();It != d->_LpcPassivViews.end();It++) {
         if ((*It)->onMsg(pMsg,pReturnIgnore)) {
             return true;
         }
