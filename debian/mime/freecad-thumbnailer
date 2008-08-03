@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+import sys, zipfile, md5
+import gnomevfs
+
+#outfile="/home/werner/.thumbnails/normal/"+md5.md5(sys.argv[3]).hexdigest()+".png"
+inpfile = gnomevfs.get_local_path_from_uri(sys.argv[3])
+outfile = sys.argv[4]
+
+try:
+	zfile=zipfile.ZipFile(inpfile)
+	files=zfile.namelist()
+	# check for meta-file if it's really a FreeCAD document
+	if files[0] != "Document.xml":
+		sys.exit(1)
+
+	image="Thumbnail.png"
+	if image in files:
+		image=zfile.read(image)
+		thumb=open(outfile,"wb")
+		thumb.write(image)
+		thumb.close()
+except:
+	sys.exit(1)
+
