@@ -1,4 +1,4 @@
-SUBDIRS=src debian
+SUBDIRS=src
 
 EXTRA_DIST = \
 		FreeCAD.sln \
