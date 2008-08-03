@@ -1,0 +1,2 @@
+application/zip; freecad %s; test=test -n "$DISPLAY" ; nametemplate=%s.FCStd; priority=5
+
