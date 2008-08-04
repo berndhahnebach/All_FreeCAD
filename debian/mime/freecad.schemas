@@ -2,8 +2,8 @@
     <schemalist>
 
         <schema>
-            <key>/schemas/desktop/gnome/thumbnailers/application@zip/enable</key>
-            <applyto>/desktop/gnome/thumbnailers/application@zip/enable</applyto>
+            <key>/schemas/desktop/gnome/thumbnailers/application@x-extension-fcstd/enable</key>
+            <applyto>/desktop/gnome/thumbnailers/application@x-extension-fcstd/enable</applyto>
             <owner>freecad</owner>
             <type>bool</type>
             <default>true</default>
@@ -15,8 +15,8 @@
 
 
         <schema>
-            <key>/schemas/desktop/gnome/thumbnailers/application@zip/command</key>
-            <applyto>/desktop/gnome/thumbnailers/application@zip/command</applyto>
+            <key>/schemas/desktop/gnome/thumbnailers/application@x-extension-fcstd/command</key>
+            <applyto>/desktop/gnome/thumbnailers/application@x-extension-fcstd/command</applyto>
             <owner>freecad</owner>
             <type>string</type>
             <default>/usr/bin/freecad-thumbnailer -s %s %u %o</default>
