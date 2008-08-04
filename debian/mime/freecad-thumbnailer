@@ -14,7 +14,7 @@ try:
 	if files[0] != "Document.xml":
 		sys.exit(1)
 
-	image="Thumbnail.png"
+	image="thumbnails/Thumbnail.png"
 	if image in files:
 		image=zfile.read(image)
 		thumb=open(outfile,"wb")

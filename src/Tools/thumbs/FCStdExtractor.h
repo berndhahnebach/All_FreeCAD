@@ -69,6 +69,7 @@ public:
     return E_NOTIMPL; }
 
 private:
+    bool CheckZip() const;
     SIZE m_bmSize;
     HBITMAP m_hPreview;
     TCHAR m_szFile[1000];
