@@ -95,7 +95,7 @@ HRESULT CFCStdExtractor::Extract(HBITMAP* phBmpThumbnail)
         zipios::ConstEntries files = file.entries();
         // search for a special file name in the project file
         zipios::ConstEntryPointer entry = file.getEntry("Thumbnail.jpg");
-        if (entry->isValid()) {
+        if (entry && entry->isValid()) {
             // ok, we have found the file. Now, read it in byte for byte
             std::istream *str = file.getInputStream(entry);
             std::vector<unsigned char> content;

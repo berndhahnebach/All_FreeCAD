@@ -71,7 +71,7 @@ public:
 private:
     SIZE m_bmSize;
     HBITMAP m_hPreview;
-    TCHAR m_szFile[500];
+    TCHAR m_szFile[1000];
 };
 
 #endif //FC_STD_EXTRACTOR_H
