@@ -1,3 +1,9 @@
+freecad (0.7.1522-1feisty1) feisty; urgency=low
+
+  * Package for Ubuntu 7.04 (Feisty Fawn)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Mon, 04 Aug 2008 20:11:20 +0200
+
 freecad (0.7.1350-1hardy1) hardy; urgency=low
 
   * Package for Ubuntu 8.04 (Hardy Heron)

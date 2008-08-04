@@ -112,12 +112,16 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install debian/freecad.desktop usr/share/applications
+#	dh_install debian/mime/freecad-thumbnailer usr/bin
+#	dh_install debian/mime/freecad.schemas usr/share/gconf/schemas
+#	dh_gconf
 	dh_desktop
 	dh_installmenu
-#	dh_installmime
+#	dh_installmime: debian/mime/freecad.xml -> debian/freecad.sharedmimeinfo
 	dh_pycentral
 #	dh_installinfo
 	dh_installman debian/freecad.1
+#	dh_installman debian/freecad.1 debian/mime/freecad-thumbnailer.1
 	dh_link
 	dh_strip
 	dh_compress
