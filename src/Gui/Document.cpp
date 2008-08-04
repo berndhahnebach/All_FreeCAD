@@ -481,7 +481,8 @@ void Document::Save (Base::Writer &writer) const
         for (std::list<MDIView*>::iterator it = mdi.begin(); it != mdi.end(); ++it) {
             if ((*it)->getTypeId().isDerivedFrom(View3DInventor::getClassTypeId())) {
                 View3DInventorViewer* view = static_cast<View3DInventor*>(*it)->getViewer();
-                d->thumb.setSize(96);
+                d->thumb.setFileName(d->_pcDocument->FileName.getValue());
+                d->thumb.setSize(128);
                 d->thumb.setViewer(view);
                 d->thumb.Save(writer);
                 break;
