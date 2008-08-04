@@ -63,7 +63,7 @@ void Thumbnail::Save (Base::Writer &writer) const
 {
     // It's only possible to add extra information if force of XML is disabled
     if (writer.isForceXML() == false)
-        writer.addFile("Thumbnail.png", this);
+        writer.addFile("thumbnails/Thumbnail.png", this);
 }
 
 void Thumbnail::Restore(Base::XMLReader &reader)

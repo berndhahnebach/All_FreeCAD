@@ -11,7 +11,7 @@
 #include <Base/zipios/zipinputstream.h>
 #include <Base/zipios/zipfile.h>
 #include <CxImage/xmemfile.h>
-#include <CxImage/ximajpg.h>
+#include <CxImage/ximapng.h>
 
 CComModule _Module;
 
@@ -87,14 +87,34 @@ HRESULT CFCStdExtractor::Load(LPCOLESTR wszFile, DWORD dwMode)
     return S_OK;	
 };
 
+bool CFCStdExtractor::CheckZip() const
+{
+    // open file and check magic number (PK\x03\x04)
+    std::ifstream zip(m_szFile, std::ios::in | std::ios::binary);
+    unsigned char pk[4] = {0x50, 0x4b, 0x03, 0x04};
+    for (int i=0; i<4; i++) {
+        unsigned char c;
+        if (!zip.get((char&)c))
+            return false;
+        if (c != pk[i])
+            return false;
+    }
+
+    return true;
+}
+
 // IExtractImage::Extract
 HRESULT CFCStdExtractor::Extract(HBITMAP* phBmpThumbnail)
 {
     try {
+        // first make sure we have a zip file but that might still be invalid
+        if (!CheckZip())
+            return NOERROR;
+
         zipios::ZipFile file(m_szFile);
         zipios::ConstEntries files = file.entries();
         // search for a special file name in the project file
-        zipios::ConstEntryPointer entry = file.getEntry("Thumbnail.jpg");
+        zipios::ConstEntryPointer entry = file.getEntry("thumbnails/Thumbnail.png");
         if (entry && entry->isValid()) {
             // ok, we have found the file. Now, read it in byte for byte
             std::istream *str = file.getInputStream(entry);
@@ -105,11 +125,11 @@ HRESULT CFCStdExtractor::Extract(HBITMAP* phBmpThumbnail)
             }
 
             // pass the memory buffer to CxImage library to create
-            // the bitmap habdle
+            // the bitmap handle
             CxMemFile mem(&(content[0]),content.size());
-            CxImageJPG jpg;
-            jpg.Decode(&mem);
-            m_hPreview = jpg.MakeBitmap();
+            CxImagePNG png;
+            png.Decode(&mem);
+            m_hPreview = png.MakeBitmap();
             *phBmpThumbnail = m_hPreview;
         }
     }
