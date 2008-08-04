@@ -25,6 +25,7 @@
 #define GUI_THUMBNAIL_H
 
 #include <Base/Persistance.h>
+#include <QUrl>
 
 namespace Gui {
 class View3DInventorViewer;
@@ -32,11 +33,12 @@ class View3DInventorViewer;
 class Thumbnail : public Base::Persistance
 {
 public:
-    Thumbnail(int s = 96);
+    Thumbnail(int s = 128);
     ~Thumbnail();
 
     void setViewer(View3DInventorViewer*);
     void setSize(int);
+    void setFileName(const char*);
 
     /** @name I/O of the document */
     //@{
@@ -52,6 +54,7 @@ public:
     //@}
 
 private:
+    QUrl uri;
     View3DInventorViewer* viewer;
     int size;
 };

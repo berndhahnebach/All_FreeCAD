@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <QBuffer>
 # include <QByteArray>
+# include <QDateTime>
 # include <QImage>
 #endif
 
@@ -33,6 +34,7 @@
 #include "View3DInventorViewer.h"
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <App/Application.h>
 
 using namespace Gui;
 
@@ -52,6 +54,11 @@ void Thumbnail::setViewer(View3DInventorViewer* v)
 void Thumbnail::setSize(int s)
 {
     this->size = s;
+}
+
+void Thumbnail::setFileName(const char* fn)
+{
+    this->uri = QUrl::fromLocalFile(QString::fromUtf8(fn));
 }
 
 unsigned int Thumbnail::getMemSize (void) const
@@ -77,6 +84,15 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
         return;
     QImage img;
     this->viewer->savePicture(this->size, this->size, View3DInventorViewer::Black, img);
+
+    // according to specification add some meta-information to the image
+    uint mt = QDateTime::currentDateTime().toTime_t();
+    QString mtime = QString("%1").arg(mt);
+    img.setText("Software", App::Application::Config()["ExeName"].c_str());
+    img.setText("Thumb::Mimetype", "application/x-extension-fcstd");
+    img.setText("Thumb::MTime", mtime);
+    img.setText("Thumb::URI", this->uri.toString());
+
     QByteArray ba;
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
