@@ -1,3 +1,9 @@
+freecad (0.7.1525-1feisty1) feisty; urgency=low
+
+  * Activate MIME support in rules file
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Tue,  5 Aug 2008 21:27:46 +0200
+
 freecad (0.7.1522-1feisty1) feisty; urgency=low
 
   * Package for Ubuntu 7.04 (Feisty Fawn)

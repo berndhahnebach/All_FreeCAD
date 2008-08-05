@@ -17,7 +17,7 @@ XS-Python-Version: current
 Package: freecad
 Architecture: any
 Section: x11
-Depends: ${shlibs:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 XB-Python-Version: ${python:Versions}
 Conflicts: freecad (<= 0.6.472-1)
 Suggests: gnochm | kchmviewer | kchmviewer-nokde | xchm, python-opencv
