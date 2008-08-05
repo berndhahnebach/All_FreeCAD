@@ -1,6 +1,18 @@
 freecad (0.7.1522-1feisty1) feisty; urgency=low
 
   * Package for Ubuntu 7.04 (Feisty Fawn)
+  * Abstract interface for geometric data types
+  * Avoid flickering of cursor when cutting several meshes at once
+  * Update to the latest debian policy version 3.7.3
+  * Several bugs fixed with Python GIL
+  * Providing a dev package for freecad
+  * Make TopoDS_Shape and Geom_Geometry classes accessible from Python
+  * Make Python interface for algorithms on shapes and geometries
+  * Support of mesh segments
+  * Add test/annotation object
+  * Add simple measurement facility
+  * Remove OpenCascade dependency in Mesh module
+  * Thumbnail facility added
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Mon, 04 Aug 2008 20:11:20 +0200
 
