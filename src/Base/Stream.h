@@ -123,7 +123,7 @@ class BaseExport ofstream : public std::ofstream
 {
 public:
     ofstream(const FileInfo& fi, ios_base::openmode mode =
-                                 std::ios::out | std::ios::binary);
+                                 std::ios::out | std::ios::trunc);
     virtual ~ofstream();
 };
 
@@ -137,7 +137,7 @@ class BaseExport ifstream : public std::ifstream
 {
 public:
     ifstream(const FileInfo& fi, ios_base::openmode mode = 
-                                 std::ios::in | std::ios::binary);
+                                 std::ios::in);
     virtual ~ifstream();
 };
 

@@ -71,7 +71,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     std::string line;
     Base::FileInfo fi(FileName);
 
-    Base::ifstream tmp_str(fi);
+    Base::ifstream tmp_str(fi, std::ios::in);
 
     Base::Sequencer().start("Counting lines...", 10);
     Base::Sequencer().next();
@@ -86,7 +86,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     Base::Sequencer().start( "Loading points...", LineCnt );
 
     // again to the beginning
-    Base::ifstream file(fi);
+    Base::ifstream file(fi, std::ios::in);
     LineCnt = 0;
 
     try {

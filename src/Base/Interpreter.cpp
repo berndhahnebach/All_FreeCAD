@@ -210,7 +210,7 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 void InterpreterSingleton::runFile(const char*pxFileName)
 {
     FileInfo fi(pxFileName);
-    Base::ifstream file(fi);
+    Base::ifstream file(fi, std::ios::in);
     if (file) {
         std::stringbuf buf;
         file >> &buf;
