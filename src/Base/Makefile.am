@@ -223,6 +223,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
+		PyCXX/COPYRIGHT \
 		FreeCADBase.vcproj \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \
