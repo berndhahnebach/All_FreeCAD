@@ -1,4 +1,14 @@
-#include "../FCConfig.h"
+/*
+PPEMBED, VERSION 2.0
+AN ENHANCED PYTHON EMBEDDED-CALL INTERFACE
+
+Copyright 1996-2000, by Mark Lutz, and O'Reilly and Associates.
+Permission to use, copy, modify, and distribute this software 
+for any purpose and without fee is hereby granted.  This software
+is provided on an as is basis, without warranties of any kind.
+*/
+
+#include <FCConfig.h>
 #include "PyTools.h"
 
 #include <stdarg.h>
