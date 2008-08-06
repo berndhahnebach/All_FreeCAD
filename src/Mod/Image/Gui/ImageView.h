@@ -4,6 +4,7 @@
  *                                                                         *
  *   Author:    Graeme van der Vlugt                                       *
  *   Copyright: Imetric 3D GmbH                                            *
+ *   Year:      2004                                                       *
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -11,7 +12,6 @@
  *   published by the Free Software Foundation; either version 2 of the    *
  *   License, or (at your option) any later version.                       *
  *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
 
