@@ -3,6 +3,7 @@ SUBDIRS=OCCAdaptMesh Pivy
 EXTRA_DIST = \
 		atlas/cblas.h \
 		atlas/clapack.h \
+		boost/numeric/bindings/LICENSE_1_0.txt \
 		boost/numeric/bindings/amos/amos.h \
 		boost/numeric/bindings/amos/amos.hpp \
 		boost/numeric/bindings/amos/amos_names.h \
@@ -25,6 +26,7 @@ EXTRA_DIST = \
 		boost/numeric/bindings/blas/blas1_overloads.hpp \
 		boost/numeric/bindings/blas/blas2.hpp \
 		boost/numeric/bindings/blas/blas2_overloads.hpp \
+		boost/numeric/bindings/blas/blas3.hpp \
 		boost/numeric/bindings/blas/blas3_overloads.hpp \
 		boost/numeric/bindings/blas/blas_names.h \
 		boost/numeric/bindings/lapack/gees.hpp \
@@ -34,19 +36,26 @@ EXTRA_DIST = \
 		boost/numeric/bindings/lapack/gesv.hpp \
 		boost/numeric/bindings/lapack/gesvd.hpp \
 		boost/numeric/bindings/lapack/hbev.hpp \
+		boost/numeric/bindings/lapack/hbevx.hpp \
 		boost/numeric/bindings/lapack/heev.hpp \
+		boost/numeric/bindings/lapack/heevd.hpp \
+		boost/numeric/bindings/lapack/heevx.hpp \
 		boost/numeric/bindings/lapack/hesv.hpp \
 		boost/numeric/bindings/lapack/hpsv.hpp \
+		boost/numeric/bindings/lapack/hseqr.hpp \
 		boost/numeric/bindings/lapack/ilaenv.hpp \
 		boost/numeric/bindings/lapack/lapack.h \
 		boost/numeric/bindings/lapack/lapack.hpp \
 		boost/numeric/bindings/lapack/lapack_names.h \
+		boost/numeric/bindings/lapack/orgqr.hpp \
 		boost/numeric/bindings/lapack/ormqr.hpp \
 		boost/numeric/bindings/lapack/posv.hpp \
 		boost/numeric/bindings/lapack/ppsv.hpp \
 		boost/numeric/bindings/lapack/spsv.hpp \
 		boost/numeric/bindings/lapack/steqr.hpp \
 		boost/numeric/bindings/lapack/syev.hpp \
+		boost/numeric/bindings/lapack/syevd.hpp \
+		boost/numeric/bindings/lapack/syevx.hpp \
 		boost/numeric/bindings/lapack/sysv.hpp \
 		boost/numeric/bindings/lapack/sytrd.hpp \
 		boost/numeric/bindings/lapack/trevc.hpp \
