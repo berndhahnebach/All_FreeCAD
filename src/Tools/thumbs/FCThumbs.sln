@@ -13,15 +13,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCThumbs", "FCThumbs.vcproj", "{14DB81D8-75F5-4C83-9476-C4A9218DF8DB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{02D7821F-046E-4114-8981-2E7B672A578F} = {02D7821F-046E-4114-8981-2E7B672A578F}
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B} = {8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}
 		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758} = {BCD0DF12-7BE3-4F35-AD6D-A43F89781758}
 	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "..\..\3rdParty\CxImage\jpeg\Jpeg.vcproj", "{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -62,14 +55,6 @@ Global
 		{14DB81D8-75F5-4C83-9476-C4A9218DF8DB}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{14DB81D8-75F5-4C83-9476-C4A9218DF8DB}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{14DB81D8-75F5-4C83-9476-C4A9218DF8DB}.Unicode Release|Win32.Build.0 = Release|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Debug|Win32.Build.0 = Debug|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Release|Win32.ActiveCfg = Release|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Release|Win32.Build.0 = Release|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Unicode Debug|Win32.ActiveCfg = Unicode Debug|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
-		{8B8F1DE6-ADB6-40A2-B9D2-7481BD13583B}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
 		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758}.Debug|Win32.Build.0 = Debug|Win32
 		{BCD0DF12-7BE3-4F35-AD6D-A43F89781758}.Release|Win32.ActiveCfg = Release|Win32
