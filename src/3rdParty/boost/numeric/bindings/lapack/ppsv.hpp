@@ -2,17 +2,15 @@
  * 
  * Copyright (c) Kresimir Fresl Toon Knapen 2003
  *
- * Permission to copy, modify, use and distribute this software 
- * for any non-commercial or commercial purpose is granted provided 
- * that this license appear on all copies of the software source code.
- *
- * Authors assume no responsibility whatsoever for its use and makes 
- * no guarantees about its quality, correctness or reliability.
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE_1_0.txt or copy at
+ * http://www.boost.org/LICENSE_1_0.txt)
  *
  * KF acknowledges the support of the Faculty of Civil Engineering, 
  * University of Zagreb, Croatia.
  *
  */
+/* Modified to include xPPTRI by Kian Ming A. Chai (14 May 2008) */
 
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PPSV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PPSV_HPP
@@ -27,6 +25,7 @@
 #  include <boost/type_traits/is_same.hpp>
 #endif 
 
+#include <cassert>
 
 namespace boost { namespace numeric { namespace bindings { 
 
@@ -265,7 +264,62 @@ namespace boost { namespace numeric { namespace bindings {
       return info; 
     }
 
-    // TO DO: pptri() 
+
+    /*
+    *  pptri() computes the inverse of a real symmetric positive definite
+    *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+    *  computed by pptrf().
+    */
+    
+    namespace detail {
+
+      inline 
+      void pptri (char const uplo, int const n, float* ap, int* info) {
+        LAPACK_SPPTRI (&uplo, &n, ap, info);
+      }
+
+      inline 
+      void pptri (char const uplo, int const n, double* ap, int* info) {
+        LAPACK_DPPTRI (&uplo, &n, ap, info);
+      }
+
+      inline 
+      void pptri (char const uplo, int const n, 
+                  traits::complex_f* ap, int* info) 
+      {
+        LAPACK_CPPTRI (&uplo, &n, traits::complex_ptr (ap), info);
+      }
+
+      inline 
+      void pptri (char const uplo, int const n, 
+                  traits::complex_d* ap, int* info) 
+      {
+        LAPACK_ZPPTRI(&uplo, &n, traits::complex_ptr (ap), info);
+      }
+
+    }
+
+    template <typename SymmMatrA>
+    inline
+    int pptri (SymmMatrA& a) { //ISSUE: More correctly, triangular matrix
+
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+      BOOST_STATIC_ASSERT((boost::is_same<
+        typename traits::matrix_traits<SymmMatrA>::matrix_structure,
+        typename traits::detail::symm_herm_pack_t<
+          typename traits::matrix_traits<SymmMatrA>::value_type
+        >::type
+      >::value));
+#endif
+
+      int const n = traits::matrix_size1 (a);
+      assert (n == traits::matrix_size2 (a));
+      char uplo = traits::matrix_uplo_tag (a);
+      int info; 
+      detail::pptri (uplo, n, traits::matrix_storage (a), &info);
+      return info; 
+    }
+
 
   }
 

@@ -2,12 +2,9 @@
  * 
  * Copyright (c) Toon Knapen & Kresimir Fresl 2003
  *
- * Permission to copy, modify, use and distribute this software 
- * for any non-commercial or commercial purpose is granted provided 
- * that this license appear on all copies of the software source code.
- *
- * Authors assume no responsibility whatsoever for its use and makes 
- * no guarantees about its quality, correctness or reliability.
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE_1_0.txt or copy at
+ * http://www.boost.org/LICENSE_1_0.txt)
  *
  * KF acknowledges the support of the Faculty of Civil Engineering, 
  * University of Zagreb, Croatia.
@@ -160,6 +157,16 @@
 #define LAPACK_CHEEV FORTRAN_ID( cheev )
 #define LAPACK_ZHEEV FORTRAN_ID( zheev )
 
+#define LAPACK_SSYEVD FORTRAN_ID( ssyevd )
+#define LAPACK_DSYEVD FORTRAN_ID( dsyevd )
+#define LAPACK_CHEEVD FORTRAN_ID( cheevd )
+#define LAPACK_ZHEEVD FORTRAN_ID( zheevd )
+
+#define LAPACK_SSYEVX FORTRAN_ID( ssyevx )
+#define LAPACK_DSYEVX FORTRAN_ID( dsyevx )
+#define LAPACK_CHEEVX FORTRAN_ID( cheevx )
+#define LAPACK_ZHEEVX FORTRAN_ID( zheevx )
+
 
 #define LAPACK_STREVC FORTRAN_ID( strevc )
 #define LAPACK_DTREVC FORTRAN_ID( dtrevc )
@@ -173,12 +180,25 @@
 
 
 /********************************************/
+/* eigenproblems for Hessenberg matrices */ 
+
+#define LAPACK_SHSEQR FORTRAN_ID( shseqr )
+#define LAPACK_DHSEQR FORTRAN_ID( dhseqr )
+#define LAPACK_CHSEQR FORTRAN_ID( chseqr )
+#define LAPACK_ZHSEQR FORTRAN_ID( zhseqr )
+
+/********************************************/
 /* eigenproblems for banded matrices */ 
 
 #define LAPACK_SSBEV FORTRAN_ID( ssbev )
 #define LAPACK_DSBEV FORTRAN_ID( dsbev )
 #define LAPACK_CHBEV FORTRAN_ID( chbev )
 #define LAPACK_ZHBEV FORTRAN_ID( zhbev )
+
+#define LAPACK_SSBEVX FORTRAN_ID( ssbevx )
+#define LAPACK_DSBEVX FORTRAN_ID( dsbevx )
+#define LAPACK_CHBEVX FORTRAN_ID( chbevx )
+#define LAPACK_ZHBEVX FORTRAN_ID( zhbevx )
 
 
 /********************************************/
@@ -202,6 +222,11 @@
 #define LAPACK_DORMQR FORTRAN_ID( dormqr )
 #define LAPACK_CUNMQR FORTRAN_ID( cunmqr )
 #define LAPACK_ZUNMQR FORTRAN_ID( zunmqr )
+
+#define LAPACK_SORGQR FORTRAN_ID( sorgqr )
+#define LAPACK_DORGQR FORTRAN_ID( dorgqr )
+#define LAPACK_CUNGQR FORTRAN_ID( cungqr )
+#define LAPACK_ZUNGQR FORTRAN_ID( zungqr )
 
 #define LAPACK_SSYTRD FORTRAN_ID( ssytrd )
 #define LAPACK_DSYTRD FORTRAN_ID( dsytrd )

@@ -2,12 +2,9 @@
  * 
  * Copyright (c) Toon Knapen & Kresimir Fresl 2003
  *
- * Permission to copy, modify, use and distribute this software 
- * for any non-commercial or commercial purpose is granted provided 
- * that this license appear on all copies of the software source code.
- *
- * Authors assume no responsibility whatsoever for its use and makes 
- * no guarantees about its quality, correctness or reliability.
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE_1_0.txt or copy at
+ * http://www.boost.org/LICENSE_1_0.txt)
  *
  * KF acknowledges the support of the Faculty of Civil Engineering, 
  * University of Zagreb, Croatia.
@@ -27,6 +24,8 @@
 #  include <boost/static_assert.hpp>
 #  include <boost/type_traits/is_same.hpp>
 #endif 
+
+#include <cassert>
 
 namespace boost { namespace numeric { namespace bindings { 
 
@@ -418,7 +417,7 @@ namespace boost { namespace numeric { namespace bindings {
               || (jobu == 'O' && traits::leading_dimension (u) >= 1)
               || (jobu == 'A' && traits::leading_dimension (u) >= m)
               || (jobu == 'S' && traits::leading_dimension (u) >= m));
-      assert (n == traits::matrix_size2 (vt)); 
+      assert ((jobvt == 'N' || traits::matrix_size2(vt) == n)) ;
       assert ((jobvt == 'N' && traits::leading_dimension (vt) >= 1)
               || (jobvt == 'O' && traits::leading_dimension (vt) >= 1)
               || (jobvt == 'A' && traits::leading_dimension (vt) >= n)
