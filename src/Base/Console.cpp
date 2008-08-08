@@ -536,8 +536,11 @@ PyObject *ConsoleSingleton::sPySetStatus(PyObject * /*self*/, PyObject *args, Py
 ConsoleObserverFile::ConsoleObserverFile(const char *sFileName)
   :cFileStream(sFileName)
 {
-    if ( !cFileStream.is_open() )
-        printf("Cannot open log file '%s'.\n", sFileName);
+    if (!cFileStream.is_open())
+        Console().Warning("Cannot open log file '%s'.\n", sFileName);
+    // mark the file as a UTF-8 encoded file
+    unsigned char bom[3] = {0xef, 0xbb, 0xbf};
+    cFileStream.write((const char*)bom,3*sizeof(char));
 }
 
 ConsoleObserverFile::~ConsoleObserverFile()
