@@ -48,6 +48,10 @@ namespace Py {
 class List;
 }
 
+namespace MeshCore {
+class AbstractPolygonTriangulator;
+}
+
 namespace Mesh
 {
 /**
@@ -136,7 +140,7 @@ public:
     void deletePoints(const std::vector<unsigned long>& removeIndices);
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
-    void fillupHoles(unsigned long, float, int);
+    void fillupHoles(unsigned long, int, MeshCore::AbstractPolygonTriangulator&);
     void offset(float fSize);
     void offsetSpecial2(float fSize);
     void offsetSpecial(float fSize, float zmax, float zmin);

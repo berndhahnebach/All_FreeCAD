@@ -79,7 +79,6 @@ using MeshCore::MeshPointIterator;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
-using MeshCore::MeshPolygonTriangulation;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
@@ -509,9 +508,9 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
 
   // now create the lids
   std::vector<MeshGeomFacet> aLid;
-  MeshPolygonTriangulation cTria;
-  cTria.SetPolygon( polygon );
-  bool ok = cTria.Compute();
+  MeshCore::EarClippingTriangulator cTria;
+  cTria.SetPolygon(polygon);
+  bool ok = cTria.Triangulate();
   
   std::vector<MeshFacet> faces = cTria.GetFacets();
   for ( std::vector<MeshFacet>::iterator itF = faces.begin(); itF != faces.end(); ++itF )

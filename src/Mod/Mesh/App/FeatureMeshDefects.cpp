@@ -30,6 +30,7 @@
 #include "FeatureMeshDefects.h"
 #include "Core/Degeneration.h"
 #include "Core/TopoAlgorithm.h"
+#include "Core/Triangulation.h"
 
 using namespace Mesh;
 
@@ -300,7 +301,8 @@ App::DocumentObjectExecReturn *FillHoles::execute(void)
         Mesh::PropertyMeshKernel* kernel = static_cast<Mesh::PropertyMeshKernel*>(prop);
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
-        mesh->fillupHoles(FillupHolesOfLength.getValue(), MaxArea.getValue(), 1);
+        MeshCore::ConstraintDelaunayTriangulator cTria(MaxArea.getValue());
+        mesh->fillupHoles(FillupHolesOfLength.getValue(), 1, cTria);
         this->Mesh.setValue(mesh.release());
     }
 

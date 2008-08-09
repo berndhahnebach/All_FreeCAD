@@ -68,6 +68,7 @@
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/Triangulation.h>
 #include <Mod/Mesh/App/Core/Visitor.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -821,7 +822,8 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
         boundary = *it;
         MeshCore::MeshFacetArray faces;
         MeshCore::MeshPointArray points;
-        if (meshAlg.FillupHole(boundary, 0.05f, faces, points, level, &cPt2Fac)) {
+        MeshCore::ConstraintDelaunayTriangulator cTria(0.05f);
+        if (meshAlg.FillupHole(boundary, cTria, faces, points, level, &cPt2Fac)) {
             if (boundary.front() == boundary.back())
                 boundary.pop_back();
             // the triangulation may produce additional points which we must take into account when appending to the mesh
