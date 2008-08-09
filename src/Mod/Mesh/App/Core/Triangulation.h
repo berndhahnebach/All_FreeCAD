@@ -124,6 +124,15 @@ public:
     bool Triangulate();
 };
 
+class MeshExport DelaunayTriangulator : public AbstractPolygonTriangulator
+{
+public:
+    DelaunayTriangulator();
+    ~DelaunayTriangulator();
+
+    bool Triangulate();
+};
+
 class MeshExport ConstraintDelaunayTriangulator : public AbstractPolygonTriangulator
 {
 public:
