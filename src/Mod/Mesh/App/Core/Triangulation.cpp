@@ -45,6 +45,10 @@ AbstractPolygonTriangulator::~AbstractPolygonTriangulator()
 void AbstractPolygonTriangulator::SetPolygon(const std::vector<Base::Vector3f>& raclPoints)
 {
     this->_points = raclPoints;
+    if (this->_points.size() > 0) {
+        if (this->_points.front() == this->_points.back())
+            this->_points.pop_back();
+    }
 }
 
 std::vector<Base::Vector3f> AbstractPolygonTriangulator::GetPolygon() const
@@ -438,6 +442,83 @@ struct Vertex2d_EqualTo  : public std::binary_function<const Base::Vector3f&, co
 }
 }
 
+DelaunayTriangulator::DelaunayTriangulator()
+{
+}
+
+DelaunayTriangulator::~DelaunayTriangulator()
+{
+}
+
+bool DelaunayTriangulator::Triangulate()
+{
+    // before starting the triangulation we must make sure that all polygon 
+    // points are different
+    std::vector<Base::Vector3f> aPoints = _points;
+    // sort the points ascending x,y coordinates
+    std::sort(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_Less());
+    // if there are two adjacent points whose distance is less then an epsilon
+    if (std::adjacent_find(aPoints.begin(), aPoints.end(),
+        Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
+        return false;
+
+    _facets.clear();
+    _triangles.clear();
+
+    triangulateio* in = new triangulateio();
+    memset(in, 0, sizeof(triangulateio));
+    in->pointlist = new double[_points.size() * 2];
+    in->numberofpoints = _points.size();
+
+    // build up point list
+    int i = 0;
+    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+        in->pointlist[i++] = it->x;
+        in->pointlist[i++] = it->y;
+    }
+
+    // set the triangulation parameter
+    // z: start index from 0
+    triangulateio* out = new triangulateio();
+    memset(out, 0, sizeof(triangulateio));
+    triangulate("z", in, out, NULL);
+
+    // get the triangles
+    MeshGeomFacet triangle;
+    MeshFacet facet;
+    bool succeeded = out->numberoftriangles > 0;
+    for (i = 0; i < (out->numberoftriangles * 3); i += 3) {
+        if ((out->trianglelist[i] == out->trianglelist[i+1]) || 
+            (out->trianglelist[i] == out->trianglelist[i+2]) || 
+            (out->trianglelist[i+1] == out->trianglelist[i+2])) {
+            // two same triangle corner points (ignore)
+            continue;
+        }
+
+        for (int j = 0; j < 3; j++) {
+            int index = 2 * out->trianglelist[i+j];
+            triangle._aclPoints[j].x = (float)out->pointlist[index];
+            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
+            facet._aulPoints[j] = out->trianglelist[i+j];
+        }
+
+        _triangles.push_back(triangle);
+        _facets.push_back(facet);
+    }
+
+    // free all memory
+    delete in->pointlist;
+    delete in;
+    delete out->trianglelist;
+    delete out->pointlist;
+    delete out->pointmarkerlist;
+    delete out;
+
+    return succeeded;
+}
+
+// -------------------------------------------------------------
+
 ConstraintDelaunayTriangulator::ConstraintDelaunayTriangulator(float area)
   : fMaxArea(area)
 {
@@ -450,13 +531,14 @@ ConstraintDelaunayTriangulator::~ConstraintDelaunayTriangulator()
 bool ConstraintDelaunayTriangulator::Triangulate()
 {
     _newpoints.clear();
-    // before starting the triangulation we must make sure that all polygon points are different
-    //
+    // before starting the triangulation we must make sure that all polygon 
+    // points are different
     std::vector<Base::Vector3f> aPoints = _points;
     // sort the points ascending x,y coordinates
     std::sort(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_Less());
     // if there are two adjacent points whose distance is less then an epsilon
-    if (std::adjacent_find(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
+    if (std::adjacent_find(aPoints.begin(), aPoints.end(),
+        Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
         return false;
 
     _facets.clear();

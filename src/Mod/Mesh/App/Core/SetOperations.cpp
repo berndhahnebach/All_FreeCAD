@@ -37,10 +37,10 @@
 #include "MeshIO.h"
 #include "Visitor.h"
 #include "Builder.h"
-#include "triangle.h"
 #include "Grid.h"
 #include "Evaluation.h"
 #include "Definitions.h"
+#include "Triangulation.h"
 
 #include <Base/Sequencer.h>
 #include <Base/Builder3D.h>
@@ -307,8 +307,6 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
   std::map<unsigned long, std::list<std::set<MeshPoint>::iterator> >::iterator it1;
   for (it1 = _facet2points[side].begin(); it1 != _facet2points[side].end(); it1++)
   {
-    
-
     std::vector<Vector3f> points;
     std::set<MeshPoint>   pointsSet;
 
@@ -345,39 +343,34 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
     dirX.Normalize();
     Vector3f dirY = dirX % normal;
 
-    triangulateio* in = new triangulateio();
-    memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[points.size() * 2];
-    in->numberofpoints = points.size();
-
     // project points to 2D plane
     i = 0;
     std::vector<Vector3f>::iterator it;
+    std::vector<Vector3f> vertices;
     for (it = points.begin(); it != points.end(); it++)
     {
       Vector3f pv = *it;
       pv.TransformToCoordinateSystem(base, dirX, dirY);
-      in->pointlist[i++] = pv.x;
-      in->pointlist[i++] = pv.y;
+      vertices.push_back(pv);
     }
 
-    triangulateio* out = new triangulateio();
-    memset(out, 0, sizeof(triangulateio));
+    DelaunayTriangulator tria;
+    tria.SetPolygon(vertices);
+    tria.Triangulate();
 
-    triangulate("z", in, out, NULL);
-
-    for (i = 0; i < (out->numberoftriangles * 3); i += 3)
+    std::vector<MeshFacet> facets = tria.GetFacets();
+    for (std::vector<MeshFacet>::iterator it = facets.begin(); it != facets.end(); ++it)
     {
-      if ((out->trianglelist[i] == out->trianglelist[i+1]) ||
-          (out->trianglelist[i] == out->trianglelist[i+2]) ||
-          (out->trianglelist[i+1] == out->trianglelist[i+2]))
+      if ((it->_aulPoints[0] == it->_aulPoints[1]) ||
+          (it->_aulPoints[1] == it->_aulPoints[2]) ||
+          (it->_aulPoints[2] == it->_aulPoints[0]))
       { // two same triangle corner points
         continue;
       }
   
-      MeshGeomFacet facet(points[out->trianglelist[i]],
-                          points[out->trianglelist[i+1]],
-                          points[out->trianglelist[i+2]]);
+      MeshGeomFacet facet(points[it->_aulPoints[0]],
+                          points[it->_aulPoints[1]],
+                          points[it->_aulPoints[2]]);
 
       //if (side == 1)
       // _builder.addSingleTriangle(facet._aclPoints[0], facet._aclPoints[1], facet._aclPoints[2], true, 3, 0, 1, 1);
@@ -443,15 +436,6 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
       _newMeshFacets[side].push_back(facet);
 
     } // for (i = 0; i < (out->numberoftriangles * 3); i += 3)
-
-    // free all memory
-    delete in->pointlist;
-    delete in;
-    delete out->trianglelist;
-    delete out->pointlist;
-    delete out->pointmarkerlist;
-    delete out;
-    
   } // for (it1 = _facet2points[side].begin(); it1 != _facet2points[side].end(); it1++)
 }
 
