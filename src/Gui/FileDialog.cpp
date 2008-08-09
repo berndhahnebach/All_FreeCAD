@@ -201,14 +201,15 @@ void FileOptionsDialog::accept()
 {
     // Fixes a bug of the default implementation when entering an asterik
     QLineEdit* filename = this->findChild<QLineEdit*>();
-    QString filter = filename->text();
-    if (filter.contains('*')) {
-        QFileInfo fi(filter);
+    QString fn = filename->text();
+    if (fn.startsWith('*')) {
+        QFileInfo fi(fn);
         QString ext = fi.suffix();
         ext.prepend("*.");
         QStringList filters = this->filters();
         bool ok=false;
         // Compare the given suffix with the suffixes of all filters
+        QString filter;
         for (QStringList::ConstIterator it = filters.begin(); it != filters.end(); ++it) {
             if ((*it).contains(ext)) {
                 filter = *it;
@@ -232,6 +233,20 @@ void FileOptionsDialog::accept()
 
         return;
     }
+    else if (!fn.isEmpty()) {
+        QFileInfo fi(fn);
+        QString ext = fi.completeSuffix();
+        QRegExp rx("\\(\\*.(\\w+)");
+        QString suf = selectedFilter();
+        if (rx.indexIn(suf) >= 0)
+            suf = rx.cap(1);
+        if (ext.isEmpty())
+            setDefaultSuffix(suf);
+        else if (ext.toLower() != suf.toLower()) {
+            fn = QString("%1.%2").arg(fn).arg(suf);
+            selectFile(fn);
+        }
+    }
 
     QFileDialog::accept();
 }
@@ -243,7 +258,7 @@ void FileOptionsDialog::toggleExtension()
         showExtension(!w->isVisible());
 }
 
-void FileOptionsDialog::setOptionsWidget( FileOptionsDialog::ExtensionPosition pos, QWidget* w, bool show )
+void FileOptionsDialog::setOptionsWidget(FileOptionsDialog::ExtensionPosition pos, QWidget* w, bool show)
 {
     if (pos == ExtensionRight) {
         setExtension(w);

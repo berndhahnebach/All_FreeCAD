@@ -68,9 +68,13 @@ const char *FileInfo::getTempPath(void)
 
     if (tempPath == "") {
 #ifdef FC_OS_WIN32
-        char buf[MAX_PATH + 2];
-        GetTempPath(MAX_PATH + 1,buf);
-        tempPath = buf;
+        wchar_t buf[MAX_PATH + 2];
+        GetTempPathW(MAX_PATH + 1,buf);
+        int neededSize = WideCharToMultiByte(CP_UTF8, 0, buf, -1, 0, 0, 0, 0);
+        char* dest = new char[neededSize];
+        WideCharToMultiByte(CP_UTF8, 0, buf, -1,dest, neededSize, 0, 0);
+        tempPath = dest;
+        delete [] dest;
 #else
         const char* tmp = getenv("TMPDIR");
         tempPath = tmp ? tmp : "/tmp/";

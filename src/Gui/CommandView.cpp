@@ -885,16 +885,17 @@ void StdViewScreenShot::activated(int iMsg)
 
     QStringList filter;
     QString selFilter;
-    for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
+    for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it)
     {
-      filter << QString("%1 %2 (*.%3)").arg((*it).toUpper()).arg(QObject::tr("files")).arg((*it).toLower());
+      filter << QString("%1 %2 (*.%3)").arg((*it).toUpper()).
+          arg(QObject::tr("files")).arg((*it).toLower());
     }
 
     FileOptionsDialog fd(getMainWindow(), 0);
-    fd.setFileMode( QFileDialog::AnyFile );
-    fd.setAcceptMode( QFileDialog::AcceptSave );
-    fd.setWindowTitle( QObject::tr("Save picture") );
-    fd.setFilters( filter );
+    fd.setFileMode(QFileDialog::AnyFile);
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    fd.setWindowTitle(QObject::tr("Save picture"));
+    fd.setFilters(filter);
 
     // create the image options widget
     DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
@@ -902,14 +903,16 @@ void StdViewScreenShot::activated(int iMsg)
     opt->setImageSize((int)sz[0], (int)sz[1]);
 
     fd.setOptionsWidget(FileOptionsDialog::ExtensionRight, opt);
+    fd.setConfirmOverwrite(true);
     opt->onSelectedFilter(fd.selectedFilter());
-    QObject::connect(&fd, SIGNAL(filterSelected(const QString&)), opt, SLOT(onSelectedFilter(const QString&)));
+    QObject::connect(&fd, SIGNAL(filterSelected(const QString&)),
+                     opt, SLOT(onSelectedFilter(const QString&)));
 
-    if ( fd.exec() == QDialog::Accepted )
-    {
+    if (fd.exec() == QDialog::Accepted) {
       selFilter = fd.selectedFilter();
       QString fn = fd.selectedFiles().front();
-      // We must convert '\' path separators to '/' before otherwise Python would interpret them as escape sequences.
+      // We must convert '\' path separators to '/' before otherwise
+      // Python would interpret them as escape sequences.
       fn.replace('\\', '/');
 
       Gui::WaitCursor wc;
@@ -920,7 +923,7 @@ void StdViewScreenShot::activated(int iMsg)
 
       // search for the matching format
       QString format = formats.front(); // take the first as default
-      for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
+      for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it)
       {
         if (selFilter.startsWith((*it).toUpper()))
         {
