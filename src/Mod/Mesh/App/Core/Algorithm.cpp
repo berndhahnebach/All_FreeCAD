@@ -622,8 +622,10 @@ void MeshAlgorithm::SplitBoundaryLoops( const std::vector<unsigned long>& rBound
   }
 }
 
-bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, 
-                               MeshPointArray& rPoints, int level, const MeshRefPointToFacets* pP2FStructure) const
+bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, 
+                               AbstractPolygonTriangulator& cTria, 
+                               MeshFacetArray& rFaces, MeshPointArray& rPoints,
+                               int level, const MeshRefPointToFacets* pP2FStructure) const
 {
     // first and last vertex are identical
     if ( boundary.size() < 4 )
@@ -678,7 +680,6 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float
     // There is no easy way to check whether the boundary is interior (a hole) or a exterior before performing the triangulation.
     // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
     // If the scalar product is positive it was a hole, otherwise not.
-    MeshPolygonTriangulation cTria;
     cTria.SetPolygon(polygon);
 
     // Get the inverse transformation to project back to world coordinates
@@ -703,11 +704,11 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, float
     }
     polyFit.Fit();
 
-    std::vector<Base::Vector3f> newVertices;
-    if ( cTria.ComputeConstrainedDelaunay(fMaxArea, newVertices) ) {
+    if (cTria.Triangulate()) {
+        std::vector<Base::Vector3f> newVertices = cTria.AddedPoints();
         // get te facets and add the additional points to the array
         rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
-        // if we have enough points then we assume that the fitdelivers good results
+        // if we have enough points then we assume that the fit delivers good results
         if (polyFit.CountPoints() >= uMinPts) {
             for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt)
                 pt->z = (float)polyFit.Value(pt->x, pt->y);

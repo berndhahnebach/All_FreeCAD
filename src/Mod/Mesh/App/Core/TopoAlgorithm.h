@@ -38,6 +38,7 @@
 #include <Base/Sequencer.h>
 
 namespace MeshCore {
+class AbstractPolygonTriangulator;
 
 /**
  * The MeshTopoAlgorithm class provides several algorithms to manipulate a mesh.
@@ -208,12 +209,6 @@ public:
      */
     void RemoveCorruptedFacet(unsigned long index);
     /**
-     * Fills up holes with maximum \a length vertices. This method doesn't create
-     * new vertices but just connects vertices of open edges with new facets to
-     * close the holes.
-     */
-    void FillupHoles(unsigned long length);
-    /**
      * Fills up holes with maximum \a length vertices. In contrast to the first
      * algorithm this method uses an algorithm to create a constrained Delaunay
      * triangulation (CDT) where high quality triangles with a maximum area of
@@ -225,7 +220,7 @@ public:
      * If the polynomial fit fails, poosibly due to too less points the average
      * plane is used, instead.
      */
-    void FillupHoles(unsigned long length, float fMaxArea, int level);
+    void FillupHoles(unsigned long length, int level, AbstractPolygonTriangulator&);
     /**
      * Find topologic independent components with maximum \a count facets
      * and returns an array of the indices.

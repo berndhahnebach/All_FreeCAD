@@ -36,6 +36,7 @@
 #include "Core/Iterator.h"
 #include "Core/Elements.h"
 #include "Core/Grid.h"
+#include "Core/Triangulation.h"
 
 using namespace Mesh;
 
@@ -546,7 +547,8 @@ PyObject*  MeshPy::fillupHoles(PyObject *args)
         return NULL;                         
 
     PY_TRY {
-        getMeshObjectPtr()->fillupHoles(len, area, level);
+        MeshCore::ConstraintDelaunayTriangulator cTria(area);
+        getMeshObjectPtr()->fillupHoles(len, level, cTria);
     } PY_CATCH;
 
     Py_Return; 

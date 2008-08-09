@@ -1093,85 +1093,8 @@ void MeshTopoAlgorithm::RemoveCorruptedFacet(unsigned long index)
   }
 }
 
-void MeshTopoAlgorithm::FillupHoles(unsigned long length)
-{
-  // get the mesh boundaries as an array of point indices
-  std::list<std::vector<unsigned long> > aBorders;
-  MeshAlgorithm cAlgo(_rclMesh);
-  cAlgo.GetMeshBorders(aBorders);
-
-  // split boundaries if needed
-  cAlgo.SplitBoundaryLoops(aBorders);
-
-  // get the facets to a point
-  MeshRefPointToFacets cPt2Fac(_rclMesh);
-
-  MeshFacetArray newFacets;
-  for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
-  {
-    // first and last vertex are identical
-    if ( it->size() < 4 )
-      continue; // something strange
-    if ( it->size()-1 <= length )
-    {
-      // Get a facet as reference coordinate system
-      const MeshFacet& rFace = **cPt2Fac[it->front()].begin();
-      MeshGeomFacet rTriangle = _rclMesh.GetFacet(rFace);
-
-      std::vector<Base::Vector3f> polygon;
-      for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
-        polygon.push_back( _rclMesh._aclPointArray[*jt] );
-
-      // There is no easy way to check whether the boundary is a hole or a silhoutte before performing triangulation.
-      // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
-      // If the scalar product is positive it was a hole, otherwise not.
-      MeshPolygonTriangulation cTria;
-      cTria.SetPolygon( polygon );
-      // Get the plane normal as result of the fit. The normal might be flipped so we adjust it to
-      // a reference triangle (which might have quite the same normal)
-      Base::Matrix4D matrix;
-      Base::Vector3f cPlaneNormal = cTria.TransformToFitPlane(matrix);
-      if ( rTriangle.GetNormal() * cPlaneNormal < 0.0f )
-        cPlaneNormal *= -1.0f;
-      if ( cTria.ComputeQuasiDelaunay() )
-      {
-        std::vector<MeshFacet> faces = cTria.GetFacets();
-        for ( std::vector<MeshCore::MeshFacet>::iterator kt = faces.begin(); kt != faces.end(); ++kt )
-        {
-          if (kt == faces.begin())
-          {
-            MeshGeomFacet triangle;
-            triangle._aclPoints[0] = polygon[kt->_aulPoints[0]];
-            triangle._aclPoints[1] = polygon[kt->_aulPoints[1]];
-            triangle._aclPoints[2] = polygon[kt->_aulPoints[2]];
-            // do not use any of these triangles
-            if ( triangle.GetNormal() * cPlaneNormal <= 0.0f )
-              break;
-            // Special case handling for a hole with three edges: the resulting facet might be coincident with the 
-            // reference facet
-            else if (faces.size()==1){
-              MeshFacet first;
-              first._aulPoints[0] = (*it)[kt->_aulPoints[0]];
-              first._aulPoints[1] = (*it)[kt->_aulPoints[1]];
-              first._aulPoints[2] = (*it)[kt->_aulPoints[2]];
-              if ( first.IsEqual(rFace) )
-                break;
-            }
-          }
-
-          kt->_aulPoints[0] = (*it)[kt->_aulPoints[0]];
-          kt->_aulPoints[1] = (*it)[kt->_aulPoints[1]];
-          kt->_aulPoints[2] = (*it)[kt->_aulPoints[2]];
-          newFacets.push_back(*kt);
-        }
-      }
-    }
-  }
-
-  _rclMesh.AddFacets(newFacets);
-}
-
-void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea, int level)
+void MeshTopoAlgorithm::FillupHoles(unsigned long length, int level,
+                                    AbstractPolygonTriangulator& cTria)
 {
     // get the mesh boundaries as an array of point indices
     std::list<std::vector<unsigned long> > aBorders;
@@ -1192,7 +1115,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, float fMaxArea, int le
             continue; // boundary with too many edges
         MeshFacetArray cFacets;
         MeshPointArray cPoints;
-        if (cAlgo.FillupHole(*it, fMaxArea, cFacets, cPoints, level, &cPt2Fac)) {
+        if (cAlgo.FillupHole(*it, cTria, cFacets, cPoints, level, &cPt2Fac)) {
             if (it->front() == it->back())
                 it->pop_back();
             // the triangulation may produce additional points which we must take into account when appending to the mesh

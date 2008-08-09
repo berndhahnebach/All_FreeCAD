@@ -30,6 +30,112 @@
 namespace MeshCore
 {
 
+class MeshExport AbstractPolygonTriangulator
+{
+public:
+    AbstractPolygonTriangulator();
+    virtual ~AbstractPolygonTriangulator();
+
+    /** Sets the polygon to be triangulated. */
+    void SetPolygon(const std::vector<Base::Vector3f>& raclPoints);
+    /** Get the polygon points to be triangulated. The points may be
+     * projected onto its average plane.
+     */
+    std::vector<Base::Vector3f> GetPolygon() const;
+    /** The triangulation algorithm may create new points when
+     * calling Triangulate(). This method returns these added
+     * points.
+     */
+    std::vector<Base::Vector3f> AddedPoints() const;
+    /** If the points of the polygon set by SetPolygon() doesn't lie in a 
+     * plane this method can be used to project the points in a common plane.
+     * This method must be called directly after SetPolygon() and before
+     * Triangulate(). The method returns the normal of the fitted plane and
+     * the inverse transformation matrix.
+     */
+    Base::Vector3f TransformToFitPlane(Base::Matrix4D& rInverse);
+    /** Computes the triangulation of a polygon. The resulting facets can
+     * be accessed by GetTriangles() or GetFacets().
+     */
+    virtual bool Triangulate() = 0;
+    /** Returns the geometric triangles of the polygon. */
+    const std::vector<MeshGeomFacet>& GetTriangles() const { return _triangles;}
+    /** Returns the topologic facets of the polygon. */
+    const std::vector<MeshFacet>& GetFacets() const { return _facets;}
+
+protected:
+    std::vector<Base::Vector3f> _points;
+    std::vector<Base::Vector3f> _newpoints;
+    std::vector<MeshGeomFacet>  _triangles;
+    std::vector<MeshFacet>      _facets;
+};
+
+/**
+ * The EarClippingTriangulator embeds an efficient algorithm to triangulate
+ * polygons taken from http://www.flipcode.com/files/code/triangulate.cpp.
+ */
+class MeshExport EarClippingTriangulator : public AbstractPolygonTriangulator
+{
+public:
+    EarClippingTriangulator();
+    ~EarClippingTriangulator();
+
+    bool Triangulate();
+
+private:
+    /**
+    * Static class to triangulate any contour/polygon (without holes) efficiently.
+    * The original code snippet was submitted to FlipCode.com by John W. Ratcliff 
+    * (jratcliff@verant.com) on July 22, 2000.
+    * The original vector of 2d points is replaced by a vector of 3d points where the
+    * z-ccordinate is ignored. This is because the algorithm is often used for 3d points 
+    * projected to a common plane. The result vector of 2d points is replaced by an 
+    * array of indices to the points of the polygon.
+    */
+    class Triangulate
+    {
+    public:
+        // triangulate a contour/polygon, places results in STL vector
+        // as series of triangles.indicating the points
+        static bool Process(const std::vector<Base::Vector3f> &contour,
+            std::vector<unsigned long> &result);
+
+        // compute area of a contour/polygon
+        static float Area(const std::vector<Base::Vector3f> &contour);
+
+        // decide if point Px/Py is inside triangle defined by
+        // (Ax,Ay) (Bx,By) (Cx,Cy)
+        static bool InsideTriangle(float Ax, float Ay, float Bx, float By,
+            float Cx, float Cy, float Px, float Py);
+
+        static bool _invert;
+    private:
+        static bool Snip(const std::vector<Base::Vector3f> &contour,
+            int u,int v,int w,int n,int *V);
+    };
+};
+
+class MeshExport QuasiDelaunayTriangulator : public EarClippingTriangulator
+{
+public:
+    QuasiDelaunayTriangulator();
+    ~QuasiDelaunayTriangulator();
+
+    bool Triangulate();
+};
+
+class MeshExport ConstraintDelaunayTriangulator : public AbstractPolygonTriangulator
+{
+public:
+    ConstraintDelaunayTriangulator(float area);
+    ~ConstraintDelaunayTriangulator();
+
+    bool Triangulate();
+
+private:
+    float fMaxArea;
+};
+#if 0
 /**
  * The MeshPolygonTriangulation embeds an efficient algorithm to triangulate polygons taken from
  * http://www.flipcode.com/files/code/triangulate.cpp.
@@ -107,7 +213,7 @@ private:
         static bool Snip(const std::vector<Base::Vector3f> &contour,int u,int v,int w,int n,int *V);
     };
 };
-
+#endif
 } // namespace MeshCore
 
 

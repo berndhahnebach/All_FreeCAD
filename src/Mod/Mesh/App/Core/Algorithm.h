@@ -46,6 +46,7 @@ class MeshKernel;
 class MeshFacetGrid;
 class MeshFacetArray;
 class MeshRefPointToFacets;
+class AbstractPolygonTriangulator;
 
 /**
  * The MeshAlgorithm class provides algorithms base on meshes.
@@ -149,7 +150,9 @@ public:
    * @note If the number of geometric points exceeds the number of boundary indices then the triangulation algorithm has 
    * introduced new points which are added to the end of \a rPoints.
    */
-  bool FillupHole(const std::vector<unsigned long>& boundary, float fMaxArea, MeshFacetArray& rFaces, MeshPointArray& rPoints,
+  bool FillupHole(const std::vector<unsigned long>& boundary,
+                  AbstractPolygonTriangulator& cTria,
+                  MeshFacetArray& rFaces, MeshPointArray& rPoints,
                   int level, const MeshRefPointToFacets* pP2FStructure=0) const;
   /** Sets to all facets in \a raulInds the properties in raulProps. 
    * \note Both arrays must have the same size.

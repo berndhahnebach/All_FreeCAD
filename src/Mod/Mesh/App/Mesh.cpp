@@ -421,10 +421,11 @@ void MeshObject::removeComponents(unsigned long count)
     deletedFacets(removeIndices);
 }
 
-void MeshObject::fillupHoles(unsigned long length, float maxArea, int level)
+void MeshObject::fillupHoles(unsigned long length, int level,
+                             MeshCore::AbstractPolygonTriangulator& cTria)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
-    topalg.FillupHoles(length, maxArea, level);
+    topalg.FillupHoles(length, level, cTria);
 }
 
 void MeshObject::offset(float fSize)

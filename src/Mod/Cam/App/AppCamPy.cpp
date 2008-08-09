@@ -3773,12 +3773,12 @@ static PyObject * best_fit_test(PyObject *self, PyObject *args)
         MeshCore::MeshKernel ameshkernel;
         MeshCore::MeshBuilder aBuilder(ameshkernel);
         std::vector<Base::Vector3f> mesh_output;
-        MeshCore::MeshPolygonTriangulation aTriangulator;
-        aTriangulator.SetPolygon(mesh_input);
+        //MeshCore::MeshPolygonTriangulation aTriangulator;
+        //aTriangulator.SetPolygon(mesh_input);
         Base::Matrix4D matrix;
-        Base::Vector3f cPlaneNormal = aTriangulator.TransformToFitPlane(matrix);
+        //Base::Vector3f cPlaneNormal = aTriangulator.TransformToFitPlane(matrix);
         //aTriangulator.ComputeQualityDelaunay(20,mesh_output);
-        std::vector<MeshCore::MeshGeomFacet> geomfacets = aTriangulator.GetTriangles();
+        std::vector<MeshCore::MeshGeomFacet> geomfacets;// = aTriangulator.GetTriangles();
         aBuilder.Initialize(100);
 
 
