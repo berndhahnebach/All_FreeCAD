@@ -39,9 +39,7 @@ using namespace Gui;
 using namespace std;
 
 
-#define MAX_EXT_LEN 255
-
-void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment);
+void writeJPEGComment(const std::string&, QByteArray&);
 
 // ---------------------------------------------------------------
 
@@ -77,21 +75,32 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
         QImage img;
         writeToImage(img);
 
-        const char* format = "JPEG";;
-        if (!img.save(QString::fromUtf8((file.filePath()+"_temp").c_str()), format))
-            throw Base::Exception();
-
         // writing comment in case of jpeg (Qt ignores setText() in case of jpeg)
+        std::string com;
         if (strcmp(comment,"")==0)
-            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), "Screenshot created by FreeCAD");   
+            com = "Screenshot created by FreeCAD";
         else if (strcmp(comment,"$MIBA")==0)
-            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), createMIBA().c_str());   
-        else 
-            writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), comment);
+            com = createMIBA();
+        else
+            com = comment;
 
-        // delete temporary file
-        Base::FileInfo tmp((file.filePath()+"_temp").c_str());
-        tmp.deleteFile();
+        // write into memory
+        QByteArray ba;
+        QBuffer buffer(&ba);
+        buffer.open(QIODevice::WriteOnly);
+        img.save(&buffer, "JPG");
+        writeJPEGComment(com, ba);
+
+        QFile file(QString::fromUtf8(filename));
+        if (file.open(QFile::WriteOnly)) {
+            file.write(ba);
+            file.close();
+        }
+        else {
+            std::stringstream str;
+            str << "Cannot open file '" << filename << "' for writing.";
+            throw Base::Exception(str.str());
+        }
     }
     else {
         // check for all QImage formats
@@ -249,436 +258,87 @@ std::string SoFCOffscreenRenderer::createMIBA() const
     return com.str();
 }
 
-//===========================================================================
-// helper from wrjpgcom.c
-//===========================================================================
-
-/*
- * wrjpgcom.c
- *
- * Copyright (C) 1994, Thomas G. Lane.
- * This file is part of the Independent JPEG Group's software.
- * For conditions of distribution and use, see the accompanying README file.
- *
- * This file contains a very simple stand-alone application that inserts
- * user-supplied text as a COM (comment) marker in a JFIF file.
- * This may be useful as an example of the minimum logic needed to parse
- * JPEG markers.
- */
-
-//#define JPEG_CJPEG_DJPEG	/* to get the command-line config symbols */
-//#include "jinclude.h"		/* get auto-config symbols, <stdio.h> */
-
-#ifndef HAVE_STDLIB_H		/* <stdlib.h> should declare malloc() */
-extern void * malloc ();
-#endif
-#include <ctype.h>		/* to declare isupper(), tolower() */
-#ifdef USE_SETMODE
-#include <fcntl.h>		/* to declare setmode()'s parameter macros */
-/* If you have setmode() but not <io.h>, just delete this line: */
-#include <io.h>			/* to declare setmode() */
-#endif
-
-#ifdef USE_CCOMMAND		/* command-line reader for Macintosh */
-#ifdef __MWERKS__
-#include <SIOUX.h>              /* Metrowerks declares it here */
-#endif
-#ifdef THINK_C
-#include <console.h>		/* Think declares it here */
-#endif
-#endif
-
-#ifdef DONT_USE_B_MODE		/* define mode parameters for fopen() */
-#ifdef FC_OS_WIN32
-#define READ_BINARY	L"r"
-#define WRITE_BINARY	L"w"
-#else
-#define READ_BINARY	"r"
-#define WRITE_BINARY	"w"
-#endif
-#else
-#ifdef FC_OS_WIN32
-#define READ_BINARY	L"rb"
-#define WRITE_BINARY	L"wb"
-#else
-#define READ_BINARY	"rb"
-#define WRITE_BINARY	"wb"
-#endif
-#endif
-
-#ifndef EXIT_FAILURE		/* define exit() codes if not provided */
-#define EXIT_FAILURE  1
-#endif
-#ifndef EXIT_SUCCESS
-#ifdef VMS
-#define EXIT_SUCCESS  1		/* VMS is very nonstandard */
-#else
-#define EXIT_SUCCESS  0
-#endif
-#endif
-
-/* Reduce this value if your malloc() can't allocate blocks up to 64K.
- * On DOS, compiling in large model is usually a better solution.
- */
-
-#ifndef MAX_COM_LENGTH
-#define MAX_COM_LENGTH 65000	/* must be < 65534 in any case */
-#endif
-
-
-/*
- * These macros are used to read the input file and write the output file.
- * To reuse this code in another application, you might need to change these.
- */
-
-static FILE * infile;		/* input JPEG file */
-
-/* Return next input byte, or EOF if no more */
-#define NEXTBYTE()  getc(infile)
-
-static FILE * outfile;		/* output JPEG file */
-
-/* Emit an output byte */
-#define PUTBYTE(x)  putc((x), outfile)
-
-
-/* Error exit handler */
-#define ERREXIT(msg)  (throw Base::Exception(msg))
-
-
-/* Read one byte, testing for EOF */
-static int
-read_1_byte (void)
+void writeJPEGComment(const std::string& comment, QByteArray& ba)
 {
-  int c;
+    const unsigned char M_SOF0  = 0xc0;
+    const unsigned char M_SOF1  = 0xc1;
+    const unsigned char M_SOF2  = 0xc2;
+    const unsigned char M_SOF3  = 0xc3;
+    const unsigned char M_SOF5  = 0xc5;
+    const unsigned char M_SOF6  = 0xc6;
+    const unsigned char M_SOF7  = 0xc7;
+    const unsigned char M_SOF9  = 0xc9;
+    const unsigned char M_SOF10 = 0xcA;
+    const unsigned char M_SOF11 = 0xcb;
+    const unsigned char M_SOF13 = 0xcd;
+    const unsigned char M_SOF14 = 0xce;
+    const unsigned char M_SOF15 = 0xcf;
+    const unsigned char M_SOI   = 0xd8;
+    const unsigned char M_EOI   = 0xd9;
+    const unsigned char M_COM   = 0xfe;
 
-  c = NEXTBYTE();
-  if (c == EOF)
-    ERREXIT("Premature EOF in JPEG file");
-  return c;
-}
+    union Byte {
+        char c; unsigned char u;
+    };
 
-/* Read 2 bytes, convert to unsigned int */
-/* All 2-byte quantities in JPEG markers are MSB first */
-static unsigned int
-read_2_bytes (void)
-{
-  int c1, c2;
-
-  c1 = NEXTBYTE();
-  if (c1 == EOF)
-    ERREXIT("Premature EOF in JPEG file");
-  c2 = NEXTBYTE();
-  if (c2 == EOF)
-    ERREXIT("Premature EOF in JPEG file");
-  return (((unsigned int) c1) << 8) + ((unsigned int) c2);
-}
-
-
-/* Routines to write data to output file */
-
-static void
-write_1_byte (int c)
-{
-  PUTBYTE(c);
-}
-
-static void
-write_2_bytes (unsigned int val)
-{
-  PUTBYTE((val >> 8) & 0xFF);
-  PUTBYTE(val & 0xFF);
-}
-
-static void
-write_marker (int marker)
-{
-  PUTBYTE(0xFF);
-  PUTBYTE(marker);
-}
-
-static void
-copy_rest_of_file (void)
-{
-  int c;
-
-  while ((c = NEXTBYTE()) != EOF)
-    PUTBYTE(c);
-}
-
-
-/*
- * JPEG markers consist of one or more 0xFF bytes, followed by a marker
- * code byte (which is not an FF).  Here are the marker codes of interest
- * in this program.  (See jdmarker.c for a more complete list.)
- */
-
-#define M_SOF0  0xC0		/* Start Of Frame N */
-#define M_SOF1  0xC1		/* N indicates which compression process */
-#define M_SOF2  0xC2		/* Only SOF0 and SOF1 are now in common use */
-#define M_SOF3  0xC3
-#define M_SOF5  0xC5
-#define M_SOF6  0xC6
-#define M_SOF7  0xC7
-#define M_SOF9  0xC9
-#define M_SOF10 0xCA
-#define M_SOF11 0xCB
-#define M_SOF13 0xCD
-#define M_SOF14 0xCE
-#define M_SOF15 0xCF
-#define M_SOI   0xD8		/* Start Of Image (beginning of datastream) */
-#define M_EOI   0xD9		/* End Of Image (end of datastream) */
-#define M_SOS   0xDA		/* Start Of Scan (begins compressed data) */
-#define M_COM   0xFE		/* COMment */
-
-
-/*
- * Find the next JPEG marker and return its marker code.
- * We expect at least one FF byte, possibly more if the compressor used FFs
- * to pad the file.  (Padding FFs will NOT be replicated in the output file.)
- * There could also be non-FF garbage between markers.  The treatment of such
- * garbage is unspecified; we choose to skip over it but emit a warning msg.
- * NB: this routine must not be used after seeing SOS marker, since it will
- * not deal correctly with FF/00 sequences in the compressed image data...
- */
-
-static int
-next_marker (void)
-{
-  int c;
-  int discarded_bytes = 0;
-
-  /* Find 0xFF byte; count and skip any non-FFs. */
-  c = read_1_byte();
-  while (c != 0xFF) {
-    discarded_bytes++;
-    c = read_1_byte();
-  }
-  /* Get marker code byte, swallowing any duplicate FF bytes.  Extra FFs
-   * are legal as pad bytes, so don't count them in discarded_bytes.
-   */
-  do {
-    c = read_1_byte();
-  } while (c == 0xFF);
-
-  if (discarded_bytes != 0) {
-    fprintf(stderr, "Warning: garbage data found in JPEG file\n");
-  }
-
-  return c;
-}
-
-
-/*
- * Read the initial marker, which should be SOI.
- * For a JFIF file, the first two bytes of the file should be literally
- * 0xFF M_SOI.  To be more general, we could use next_marker, but if the
- * input file weren't actually JPEG at all, next_marker might read the whole
- * file and then return a misleading error message...
- */
-
-static int
-first_marker (void)
-{
-  int c1, c2;
-
-  c1 = NEXTBYTE();
-  c2 = NEXTBYTE();
-  if (c1 != 0xFF || c2 != M_SOI)
-    ERREXIT("Not a JPEG file");
-  return c2;
-}
-
-
-/*
- * Most types of marker are followed by a variable-length parameter segment.
- * This routine skips over the parameters for any marker we don't otherwise
- * want to process.
- * Note that we MUST skip the parameter segment explicitly in order not to
- * be fooled by 0xFF bytes that might appear within the parameter segment;
- * such bytes do NOT introduce new markers.
- */
-
-static void
-copy_variable (void)
-/* Copy an unknown or uninteresting variable-length marker */
-{
-  unsigned int length;
-
-  /* Get the marker parameter length count */
-  length = read_2_bytes();
-  write_2_bytes(length);
-  /* Length includes itself, so must be at least 2 */
-  if (length < 2)
-    ERREXIT("Erroneous JPEG marker length");
-  length -= 2;
-  /* Skip over the remaining bytes */
-  while (length > 0) {
-    write_1_byte(read_1_byte());
-    length--;
-  }
-}
-
-static void
-skip_variable (void)
-/* Skip over an unknown or uninteresting variable-length marker */
-{
-  unsigned int length;
-
-  /* Get the marker parameter length count */
-  length = read_2_bytes();
-  /* Length includes itself, so must be at least 2 */
-  if (length < 2)
-    ERREXIT("Erroneous JPEG marker length");
-  length -= 2;
-  /* Skip over the remaining bytes */
-  while (length > 0) {
-    (void) read_1_byte();
-    length--;
-  }
-}
-
-
-/*
- * Parse the marker stream until SOFn or EOI is seen;
- * copy data to output, but discard COM markers unless keep_COM is true.
- */
-
-static int
-scan_JPEG_header (int keep_COM)
-{
-  int marker;
-
-  /* Expect SOI at start of file */
-  if (first_marker() != M_SOI)
-    ERREXIT("Expected SOI marker first");
-  write_marker(M_SOI);
-
-  /* Scan miscellaneous markers until we reach SOFn. */
-  for (;;) {
-    marker = next_marker();
-    switch (marker) {
-    case M_SOF0:		/* Baseline */
-    case M_SOF1:		/* Extended sequential, Huffman */
-    case M_SOF2:		/* Progressive, Huffman */
-    case M_SOF3:		/* Lossless, Huffman */
-    case M_SOF5:		/* Differential sequential, Huffman */
-    case M_SOF6:		/* Differential progressive, Huffman */
-    case M_SOF7:		/* Differential lossless, Huffman */
-    case M_SOF9:		/* Extended sequential, arithmetic */
-    case M_SOF10:		/* Progressive, arithmetic */
-    case M_SOF11:		/* Lossless, arithmetic */
-    case M_SOF13:		/* Differential sequential, arithmetic */
-    case M_SOF14:		/* Differential progressive, arithmetic */
-    case M_SOF15:		/* Differential lossless, arithmetic */
-      return marker;
-
-    case M_SOS:			/* should not see compressed data before SOF */
-      ERREXIT("SOS without prior SOFn");
-      break;
-
-    case M_EOI:			/* in case it's a tables-only JPEG stream */
-      return marker;
-
-    case M_COM:			/* Existing COM: conditionally discard */
-      if (keep_COM) {
-	write_marker(marker);
-	copy_variable();
-      } else {
-	skip_variable();
-      }
-      break;
-
-    default:			/* Anything else just gets copied */
-      write_marker(marker);
-      copy_variable();		/* we assume it has a parameter count... */
-      break;
-    }
-  } /* end loop */
-}
-
-
-#ifdef _MSC_VER
-/* Command line parsing code */
-static const char * progname;	/* program name for error messages */
-
-static int
-keymatch (char * arg, const char * keyword, int minchars)
-/* Case-insensitive matching of (possibly abbreviated) keyword switches. */
-/* keyword is the constant keyword (must be lower case already), */
-/* minchars is length of minimum legal abbreviation. */
-{
-  register int ca, ck;
-  register int nmatched = 0;
-
-  while ((ca = *arg++) != '\0') {
-    if ((ck = *keyword++) == '\0')
-      return 0;			/* arg longer than keyword, no good */
-    if (isupper(ca))		/* force arg to lcase (assume ck is already) */
-      ca = tolower(ca);
-    if (ca != ck)
-      return 0;			/* no good */
-    nmatched++;			/* count matched characters */
-  }
-  /* reached end of argument; fail if it's too short for unique abbrev */
-  if (nmatched < minchars)
-    return 0;
-  return 1;			/* A-OK */
-}
-#endif
-
-void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment)
-{
-    char * comment_arg;
-    unsigned int comment_length;
-    int marker;
-
-    comment_arg = (char *) malloc((size_t) std::strlen(Comment)+2);
-    strcpy(comment_arg, Comment);
-    comment_length = (unsigned int)std::strlen(comment_arg);
-
-
-#ifdef FC_OS_WIN32
-    if ((infile = _wfopen(Base::FileInfo(InFile).toStdWString().c_str(), READ_BINARY)) == NULL) {
-#else
-    if ((infile = fopen(InFile, READ_BINARY)) == NULL) {
-#endif
-        //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn]);
+    if (comment.empty() || ba.length() < 2)
         return;
-    }
 
-#ifdef FC_OS_WIN32
-    if ((outfile = _wfopen(Base::FileInfo(OutFile).toStdWString().c_str(), WRITE_BINARY)) == NULL) {
-#else
-    if ((outfile = fopen(OutFile, WRITE_BINARY)) == NULL) {
-#endif
-        //fprintf(stderr, "%s: can't open %s\n", progname, argv[argn+1]);
-        return;
-    }
-
-    /* Copy JPEG headers until SOFn marker;
-    * we will insert the new comment marker just before SOFn.
-    * This (a) causes the new comment to appear after, rather than before,
-    * existing comments; and (b) ensures that comments come after any JFIF
-    * or JFXX markers, as required by the JFIF specification.
-    */
-    marker = scan_JPEG_header(0);
-    /* Insert the new COM marker, but only if nonempty text has been supplied */
-    if (comment_length > 0) {
-        write_marker(M_COM);
-        write_2_bytes(comment_length + 2);
-        while (comment_length > 0) {
-            write_1_byte(*comment_arg++);
-            comment_length--;
+    // first marker
+    Byte a,b;
+    a.c = ba[0];
+    b.c = ba[1];
+    if (a.u == 0xff && b.u == M_SOI) {
+        int index = 2;
+        int len = ba.length();
+        while (index < len) {
+            // next marker
+            a.c = ba[index++];
+            while (a.u != 0xff && index < len) {
+                a.c = ba[index++];
+            }
+            do {
+                b.c = ba[index++];
+            } while (b.u == 0xff && index < len);
+            switch (b.u) {
+                case M_SOF0:
+                case M_SOF1:
+                case M_SOF2:
+                case M_SOF3:
+                case M_SOF5:
+                case M_SOF6:
+                case M_SOF7:
+                case M_SOF9:
+                case M_SOF10:
+                case M_SOF11:
+                case M_SOF13:
+                case M_SOF14:
+                case M_SOF15:
+                case M_EOI:
+                    {
+                        Byte a, b;
+                        a.u = 0xff;
+                        b.u = M_COM;
+                        index -= 2; // insert comment before marker
+                        ba.insert(index++, a.c);
+                        ba.insert(index++, b.c);
+                        int val = comment.size() + 2;
+                        ba.insert(index++,(val >> 8) & 0xff);
+                        ba.insert(index++,val & 0xff);
+                        ba.insert(index, comment.c_str());
+                        index = len; // finished
+                    }   break;
+                case M_COM:
+                default:
+                    {
+                        Byte a, b;
+                        a.c = ba[index++];
+                        b.c = ba[index++];
+                        int off = ((unsigned int)a.u << 8) + (unsigned int)b.u;
+                        index += off;
+                        index -= 2; // next marker
+                    }   break;
+            }
         }
     }
-    /* Duplicate the remainder of the source file.
-     * Note that any COM markers occuring after SOF will not be touched.
-     */
-    write_marker(marker);
-    copy_rest_of_file();
-
-
-    fclose(infile);
-    fclose(outfile);
 }

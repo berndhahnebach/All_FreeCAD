@@ -179,14 +179,14 @@ private:
 class GuiExport ByteArrayStream : public std::basic_streambuf<char>
 {
 public:
-	ByteArrayStream(QByteArray& buf);
-	~ByteArrayStream();
+    ByteArrayStream(QByteArray& buf);
+    ~ByteArrayStream();
 
 protected:
-	virtual int overflow(int v);
+    virtual int overflow(int v);
 
 private:
-	QByteArray& buffer;
+    QByteArray& buffer;
 };
 
 } // namespace Gui
