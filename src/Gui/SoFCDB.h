@@ -32,8 +32,10 @@ namespace Gui {
 class SoFCDB
 {
 public:
-  static void init();
-  static void finish();
+    static void init();
+    static void finish();
+    /// helper to apply a SoWriteAction to a node and write it to a string
+    static const std::string& writeNodesToString(SoNode * root);
 };
 
 } // namespace Gui

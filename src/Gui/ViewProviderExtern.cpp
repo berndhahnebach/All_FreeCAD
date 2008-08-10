@@ -30,14 +30,11 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include <Base/Console.h>
 #include <Base/Exception.h>
-#include <App/Material.h>
-#include <App/Feature.h>
-#include "Selection.h"
+#include <Base/FileInfo.h>
+#include <Base/Stream.h>
 #include "SoFCSelection.h"
 #include "ViewProviderExtern.h"
-#include "Tree.h"
 
 using std::vector;
 using std::string;
@@ -53,12 +50,10 @@ ViewProviderExtern::ViewProviderExtern()
 
 }
 
-
 ViewProviderExtern::~ViewProviderExtern()
 {
 
 }
-
 
 void ViewProviderExtern::setModeByString(const char* name, const char* ivFragment)
 {
@@ -67,26 +62,47 @@ void ViewProviderExtern::setModeByString(const char* name, const char* ivFragmen
     setModeBySoInput(name,in);
 }
 
-
 void ViewProviderExtern::setModeByFile(const char* name, const char* ivFileName)
 {
     SoInput in;
-    if (in.openFile(ivFileName)) 
-         setModeBySoInput(name,in);
+    Base::ifstream file(ivFileName, std::ios::in | std::ios::binary);
+    if (file){
+        std::streamoff size = 0;
+        std::streambuf* buf = file.rdbuf();
+        if (buf) {
+            std::streamoff curr;
+            curr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+            size = buf->pubseekoff(0, std::ios::end, std::ios::in);
+            buf->pubseekoff(curr, std::ios::beg, std::ios::in);
+        }
+
+        // read in the file
+        std::vector<unsigned char> content;
+        content.reserve(size);
+        unsigned char c;
+        while (file.get((char&)c)) {
+            content.push_back(c);
+        }
+
+        file.close();
+        in.setBuffer(&(content[0]),content.size());
+        setModeBySoInput(name,in);
+    }
 }
 
 void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput)
 {
     SoSeparator * root = SoDB::readAll(&ivFileInput);
     if (root) {
-        std::vector<std::string>::iterator pos = std::find<std::vector<std::string>::iterator,string>(modes.begin(),modes.end(),string(name));
+        std::vector<std::string>::iterator pos = std::find<std::vector<std::string>
+           ::iterator,string>(modes.begin(),modes.end(),string(name));
         if (pos == modes.end()) {
             // new mode
             modes.push_back(name);
             addDisplayMaskMode(root, name);
             setDisplayMaskMode(name);
         }
-        else{ 
+        else {
             // existing mode
             // not implemented yet
             assert(0);
@@ -110,7 +126,7 @@ void ViewProviderExtern::adjustDocumentName(const char* docname)
 
 void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* docname)
 {
-    if (child->getTypeId().isDerivedFrom( SoFCSelection::getClassTypeId())) {
+    if (child->getTypeId().isDerivedFrom(SoFCSelection::getClassTypeId())) {
         static_cast<SoFCSelection*>(child)->documentName = docname;
     }
     else if (child->getTypeId().isDerivedFrom( SoGroup::getClassTypeId())) {

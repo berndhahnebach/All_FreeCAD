@@ -641,7 +641,7 @@ void MainWindow::showMainWindow()
 
 void MainWindow::appendRecentFile(const QString& filename)
 {
-    RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QString("recentFiles"));
+    RecentFilesAction *recent = this->findChild<RecentFilesAction *>(QString("recentFiles"));
     if (recent) {
         recent->appendFile(filename);
     }
