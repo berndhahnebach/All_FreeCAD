@@ -270,7 +270,7 @@ void Application::import(const char* FileName, const char* DocName)
             }
 
             // the original file name is required
-            getMainWindow()->appendRecentFile(File.filePath().c_str());
+            getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
         }
         catch (const Base::PyException& e){
             // Usually thrown if the file is invalid somehow

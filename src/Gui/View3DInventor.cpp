@@ -61,6 +61,7 @@
 #include "View3DInventorExamples.h"
 #include "SoFCSelectionAction.h"
 #include "View3DPy.h"
+#include "SoFCDB.h"
 
 #include <locale>
 
@@ -228,34 +229,6 @@ const char *View3DInventor::getName(void) const
     return "View3DInventor";
 }
 
-// buffer acrobatics for inventor ****************************************************
-static char * buffer;
-static size_t buffer_size = 0;
-static std::string cReturnString;
-
-static void *
-buffer_realloc(void * bufptr, size_t size)
-{
-    buffer = (char *)realloc(bufptr, size);
-    buffer_size = size;
-    return buffer;
-}
-
-const std::string &View3DInventor::writeNodesToString(SoNode * root)
-{
-    SoOutput out;
-    buffer = (char *)malloc(1024);
-    buffer_size = 1024;
-    out.setBuffer(buffer, buffer_size, buffer_realloc);
-
-    SoWriteAction wa(&out);
-    wa.apply(root);
-
-    cReturnString =buffer;
-    free(buffer);
-    return cReturnString;
-}
-
 // **********************************************************************************
 
 bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
@@ -317,7 +290,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     return true;
   }else if(strcmp("GetCamera",pMsg) == 0 ){
     SoCamera * Cam = _viewer->getCamera();
-    *ppReturn = writeNodesToString(Cam).c_str();
+    *ppReturn = SoFCDB::writeNodesToString(Cam).c_str();
     return true;
   }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return setCamera(pMsg+10);

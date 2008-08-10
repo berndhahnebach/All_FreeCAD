@@ -32,6 +32,9 @@
 #include "ViewProviderInventorObject.h"
 #include <App/InventorObject.h>
 #include <Base/FileInfo.h>
+#include <Base/Stream.h>
+#include <sstream>
+#include <strstream>
 
 using namespace Gui;
 
@@ -89,20 +92,22 @@ void ViewProviderInventorObject::updateData(const App::Property* prop)
         // read from buffer
         SoInput in;
         std::string buffer = ivObj->Buffer.getValue();
+        pcBuffer->removeAllChildren();
+        if (buffer.empty()) return;
         in.setBuffer((void *)buffer.c_str(), buffer.size());
         SoSeparator * node = SoDB::readAll(&in);
-        pcBuffer->removeAllChildren();
         if (node) pcBuffer->addChild(node);
     }
     if (prop == &ivObj->FileName) {
         // read also from file
         const char* filename = ivObj->FileName.getValue();
-        Base::FileInfo fi(filename);
+        QFile file(QString::fromUtf8(filename));
         SoInput in;
-        if (fi.isReadable()) {
-            in.openFile(filename);
+        pcFile->removeAllChildren();
+        if (file.open(QFile::ReadOnly)) {
+            QByteArray buffer = file.readAll();
+            in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);
-            pcFile->removeAllChildren();
             if (node) pcFile->addChild(node);
         }
     }

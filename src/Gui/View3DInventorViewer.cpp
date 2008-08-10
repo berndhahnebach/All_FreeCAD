@@ -81,6 +81,9 @@
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 #include <Base/gzstream.h>
+#include <Base/Stream.h>
+#include <Base/FileInfo.h>
+#include <Base/zipios/gzipoutputstream.h>
 
 #include "View3DInventorViewer.h"
 #include "SoFCBackgroundGradient.h"
@@ -92,6 +95,7 @@
 #include "SoFCInteractiveElement.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCDB.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
 #include "Application.h"
@@ -671,75 +675,62 @@ std::vector<int> View3DInventorViewer::tessellate(const std::vector<SbVec2f>& po
     return face_indices;
 }
 
-bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
+bool View3DInventorViewer::dumpToFile(const char* filename, bool binary) const
 {
-  bool ret = false;
-  SoWriteAction wa;
-  SoOutput* out = wa.getOutput();
-  QFile::remove( filename );
-  QFileInfo fi( filename );
+    bool ret = false;
+    SoWriteAction wa;
+    SoOutput* out = wa.getOutput();
+    Base::FileInfo fi(filename);
 
-  // Write VRML V2.0
-  if ( fi.completeSuffix() == "wrl" || fi.completeSuffix() == "vrml" || fi.completeSuffix() == "wrz" ) {
-    // If 'wrz' is set then force compression
-    if ( fi.completeSuffix() == "wrz" )
-      binary = true;
-    
-    SoToVRML2Action tovrml2;
-    tovrml2.apply(pcViewProviderRoot);
-    SoVRMLGroup *vrmlRoot = tovrml2.getVRML2SceneGraph();
-    vrmlRoot->ref();
+    // Write VRML V2.0
+    if (fi.hasExtension("wrl") || fi.hasExtension("vrml") || fi.hasExtension("wrz")) {
+        // If 'wrz' is set then force compression
+        if (fi.hasExtension("wrz"))
+            binary = true;
 
-    if ( out->openFile( filename ) == TRUE )
-    {
-      out->setHeaderString("#VRML V2.0 utf8");
-      wa.apply(vrmlRoot);
-      vrmlRoot->unref(); // release the memory as soon as possible
-      out->closeFile();
+        SoToVRML2Action tovrml2;
+        tovrml2.apply(pcViewProviderRoot);
+        SoVRMLGroup *vrmlRoot = tovrml2.getVRML2SceneGraph();
+        vrmlRoot->ref();
+        std::string buffer = SoFCDB::writeNodesToString(vrmlRoot);
+        vrmlRoot->unref(); // release the memory as soon as possible
 
-      // We want to write compressed VRML but Coin 2.4.3 doesn't do it even though
-      // SoOutput::getAvailableCompressionMethods() delivers a string list that
-      // contains 'GZIP'. setCompression() was called directly after opening the file, 
-      // returned TRUE and no error message appeared but anyway it didn't work.
-      // Strange is that reading GZIPped VRML files works.
-      // So, we do the compression on our own.
-      if ( binary )
-      {
-        std::ifstream file( filename, std::ios::in | std::ios::binary );
-        if (file){
-          unsigned long ulSize = 0; 
-          std::streambuf* buf = file.rdbuf();
-          if ( buf ) {
-            unsigned long ulCurr;
-            ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
-            ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
-            buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
-          }
-
-          // read in the ASCII file and write back as GZIPped stream
-          std::strstreambuf sbuf(ulSize);
-          file >> &sbuf;
-          Base::ogzstream gzip(filename);
-          gzip << &sbuf;
-          gzip.close();
+        if (binary) {
+            // We want to write compressed VRML but Coin 2.4.3 doesn't do it even though
+            // SoOutput::getAvailableCompressionMethods() delivers a string list that
+            // contains 'GZIP'. setCompression() was called directly after opening the file, 
+            // returned TRUE and no error message appeared but anyway it didn't work.
+            // Strange is that reading GZIPped VRML files works.
+            // So, we do the compression on our own.
+            Base::ofstream str(fi, std::ios::out | std::ios::binary);
+            zipios::GZIPOutputStream gzip(str);
+            if (gzip) {
+                gzip << buffer;
+                gzip.close();
+                ret = true;
+            }
         }
-      }
-
-      ret = true;
+        else {
+            Base::ofstream str(fi, std::ios::out);
+            if (str) {
+                str << buffer;
+                str.close();
+                ret = true;
+            }
+        }
     }
-    else
-      vrmlRoot->unref();
-  } else {
-    // Write Inventor
-    if ( out->openFile( filename ) == TRUE )
-    {
-      out->setBinary( binary );
-      wa.apply(pcViewProviderRoot);
-      ret = true;
+    else {
+        // Write Inventor in ASCII
+        std::string buffer = SoFCDB::writeNodesToString(pcViewProviderRoot);
+        Base::ofstream str(Base::FileInfo(filename), std::ios::out);
+        if (str) {
+            str << buffer;
+            str.close();
+            ret = true;
+        }
     }
-  }
 
-  return ret;
+    return ret;
 }
 
 /**
