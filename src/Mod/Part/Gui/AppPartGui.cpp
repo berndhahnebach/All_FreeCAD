@@ -36,6 +36,7 @@
 
 // use a different name to CreateCommand()
 void CreatePartCommands(void);
+void CreateSimplePartCommands(void);
 
 void loadPartResource()
 {
@@ -78,6 +79,7 @@ void AppPartGuiExport initPartGui()
 
     // instanciating the commands
     CreatePartCommands();
+	CreateSimplePartCommands();
 
     // register preferences pages
     new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ("Part design");
