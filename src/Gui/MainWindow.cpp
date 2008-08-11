@@ -53,7 +53,7 @@
 #include "Tree.h"
 #include "PropertyView.h"
 #include "MenuManager.h"
-#include "ToolBox.h"
+//#include "ToolBox.h"
 #include "HelpView.h"
 #include "ReportView.h"
 #include "PythonConsole.h"
@@ -207,10 +207,11 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     // Show all dockable windows over the workbench facility
     //
     // Toolbox
-    ToolBox* toolBox = new ToolBox(this);
+ /*   ToolBox* toolBox = new ToolBox(this);
     toolBox->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Toolbox"));
     pDockMgr->registerDockWindow("Std_ToolBox", toolBox);
     CommandBarManager::getInstance()->setToolBox( toolBox );
+*/
 
     // Help View
     //QString home = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
