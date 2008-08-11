@@ -151,6 +151,7 @@ bool CmdPartBox::isActive(void)
     return false;
 }
 
+
 //===========================================================================
 // Part_Box2
 //===========================================================================
@@ -683,5 +684,7 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartPickCurveNet());
     rcCmdMgr.addCommand(new CmdPartPrimitives());
     rcCmdMgr.addCommand(new CmdShapeInfo());
+
+ 
 } 
 

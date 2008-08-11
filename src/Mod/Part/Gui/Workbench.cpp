@@ -47,11 +47,23 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 {
     Gui::MenuItem* root = StdWorkbench::setupMenuBar();
     Gui::MenuItem* item = root->findItem("&Windows");
+
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand(QT_TR_NOOP("&Part"));
     *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" 
           << "Part_Primitives" << "Separator" << "Part_Boolean" << "Separator" << "Part_ShapeInfo";
+
+    Gui::MenuItem* partSimple = new Gui::MenuItem;
+    root->insertItem(item, partSimple);
+    partSimple->setCommand(QT_TR_NOOP("&Simple"));
+    *partSimple << "Part_Cylinder" << "Separator" ;
+
+    Gui::MenuItem* partPara = new Gui::MenuItem;
+    root->insertItem(item, partPara);
+    partPara->setCommand(QT_TR_NOOP("&Parametric"));
+    *partPara << "Part_Cylinder" << "Separator" ;
+
     return root;
 }
 

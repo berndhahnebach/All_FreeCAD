@@ -3,6 +3,8 @@
         <file>Part_de.qm</file>
     </qresource>
     <qresource>
-        <file>Icons/preferences-part_design.svg</file>
-    </qresource>
+		<file>Icons/preferences-part_design.svg</file>
+		<file>Icons/Part_Cylinder.svg</file>
+		<file>Icons/Part_Box.svg</file>
+	</qresource>
 </RCC>
