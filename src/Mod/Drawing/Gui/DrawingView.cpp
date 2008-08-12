@@ -240,9 +240,9 @@ void DrawingView::load (const QString & file)
 {
     QFileInfo fi(file);
     QString suffix = fi.suffix().toLower();
-    if (suffix == "svg") {
+    if (suffix == QLatin1String("svg")) {
         this->_drawingView->load(file);
-    } else if (suffix == "svgz") {
+    } else if (suffix == QLatin1String("svgz")) {
         QByteArray contents;
         Gui::ByteArrayStream buf(contents);
         Base::igzstream gzip(file.toUtf8());

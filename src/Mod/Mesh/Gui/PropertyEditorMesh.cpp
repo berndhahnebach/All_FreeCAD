@@ -55,7 +55,7 @@ QVariant PropertyMeshKernelItem::value(const App::Property*) const
         ctF += (int)rMesh.CountFacets();
     }
 
-    QString  str = QString("[Points: %1, Edges: %2 Faces: %3]").arg(ctP).arg(ctE).arg(ctF);
+    QString  str = QObject::tr("[Points: %1, Edges: %2 Faces: %3]").arg(ctP).arg(ctE).arg(ctF);
     return QVariant(str);
 }
 

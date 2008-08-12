@@ -82,7 +82,7 @@ void DlgPreferencesImp::setupPages()
         QString fileName = group;
         fileName.replace(" ", "_");
         QString iconName = QString("preferences-%1").arg(fileName.toLower());
-        QPixmap icon = Gui::BitmapFactory().pixmapFromSvg(iconName, QSize(96,96));
+        QPixmap icon = Gui::BitmapFactory().pixmapFromSvg(iconName.toUtf8(), QSize(96,96));
         item->setIcon(icon);
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

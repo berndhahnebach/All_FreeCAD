@@ -27,6 +27,7 @@
 # include "InventorAll.h"
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
+# include <sstream>
 #endif
 
 // FreeCAD Base header
@@ -690,10 +691,11 @@ QPixmap Application::workbenchIcon(const QString& wb) const
     // test if the workbench exists
     if (pcWorkbench) {
         // make a unique icon name
-        QString iconName;
-        iconName.sprintf("%p", static_cast<const void *>(pcWorkbench));
+        std::stringstream str;
+        str << static_cast<const void *>(pcWorkbench) << std::ends;
+        std::string iconName = str.str();
         QPixmap icon;
-        if (BitmapFactory().findPixmapInCache(iconName, icon))
+        if (BitmapFactory().findPixmapInCache(iconName.c_str(), icon))
             return icon;
 
         // get its Icon member if possible
@@ -712,17 +714,17 @@ QPixmap Application::workbenchIcon(const QString& wb) const
             icon.loadFromData(ary, "XPM");
 
             if (icon.isNull()) {
-                // is if a file name...
+                // is it a file name...
                 QString file = QString::fromUtf8(content.c_str());
                 icon.load(file);
                 if (icon.isNull()) {
                     // ... or the name of another icon?
-                    icon = BitmapFactory().pixmap(file);
+                    icon = BitmapFactory().pixmap(file.toUtf8());
                 }
             }
 
             if (!icon.isNull()) {
-                BitmapFactory().addPixmapToCache(iconName, icon);
+                BitmapFactory().addPixmapToCache(iconName.c_str(), icon);
             }
 
             return icon;

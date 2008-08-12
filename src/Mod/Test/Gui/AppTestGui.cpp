@@ -41,7 +41,7 @@ static PyObject* addTest(PyObject *self, PyObject *args)
 
     TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
     if (pstr)
-        dlg->addUnitTest(pstr);
+        dlg->addUnitTest(QString::fromLatin1(pstr));
     dlg->show();
     dlg->raise();
     Py_Return;       
@@ -55,7 +55,7 @@ static PyObject* setTest(PyObject *self, PyObject *args)
 
     TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
     if (pstr)
-        dlg->setUnitTest(pstr);
+        dlg->setUnitTest(QString::fromLatin1(pstr));
     dlg->show();
     dlg->raise();
     Py_Return;       

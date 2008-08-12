@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 
+#include <string>
 #include <Base/Console.h>
 #include <App/Application.h>
 
@@ -39,8 +40,8 @@ namespace Gui {
 class BitmapFactoryInstP
 {
 public:
-    QMap<QString, const char**> xpmMap;
-    QMap<QString, QPixmap> xpmCache;
+    QMap<std::string, const char**> xpmMap;
+    QMap<std::string, QPixmap> xpmCache;
     QStringList paths;
 };
 }
@@ -52,9 +53,9 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
     if (_pcSingleton == NULL)
     {
         _pcSingleton = new BitmapFactoryInst;
-        _pcSingleton->addPath(":/icons/");
-        _pcSingleton->addPath(":/Icons/");
-        _pcSingleton->addPath(App::GetApplication().GetHomePath());
+        _pcSingleton->addPath(QLatin1String(":/icons/"));
+        _pcSingleton->addPath(QLatin1String(":/Icons/"));
+        _pcSingleton->addPath(QString::fromUtf8(App::GetApplication().GetHomePath()));
 
         RegisterIcons();
     }
@@ -90,19 +91,19 @@ void BitmapFactoryInst::removePath(const QString& path)
     if (pos != -1) d->paths.removeAt(pos);
 }
 
-void BitmapFactoryInst::addXPM(const QString& name, const char** pXPM)
+void BitmapFactoryInst::addXPM(const char* name, const char** pXPM)
 {
     d->xpmMap[name] = pXPM;
 }
 
-void BitmapFactoryInst::addPixmapToCache(const QString& name, const QPixmap& icon)
+void BitmapFactoryInst::addPixmapToCache(const char* name, const QPixmap& icon)
 {
     d->xpmCache[name] = icon;
 }
 
-bool BitmapFactoryInst::findPixmapInCache(const QString& name, QPixmap& px) const
+bool BitmapFactoryInst::findPixmapInCache(const char* name, QPixmap& px) const
 {
-    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(name);
+    QMap<std::string, QPixmap>::ConstIterator it = d->xpmCache.find(name);
     if (it != d->xpmCache.end()) {
         px = it.value();
         return true;
@@ -110,22 +111,23 @@ bool BitmapFactoryInst::findPixmapInCache(const QString& name, QPixmap& px) cons
     return false;
 }
 
-QPixmap BitmapFactoryInst::pixmap(const QString& name) const
+QPixmap BitmapFactoryInst::pixmap(const char* name) const
 {
     // as very first test check whether the pixmap is in the cache
-    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(name);
+    QMap<std::string, QPixmap>::ConstIterator it = d->xpmCache.find(name);
     if (it != d->xpmCache.end())
         return it.value();
 
     // now try to find it in the built-in XPM
     QPixmap icon;
-    QMap<QString,const char**>::ConstIterator It = d->xpmMap.find(name);
+    QMap<std::string,const char**>::ConstIterator It = d->xpmMap.find(name);
     if (It != d->xpmMap.end())
         icon = QPixmap(It.value());
 
     // If an absolute path is given
-    if (icon.isNull() && QFile(name).exists())
-        icon.load(name);
+    QString fn = QString::fromUtf8(name);
+    if (icon.isNull() && QFile(fn).exists())
+        icon.load(fn);
 
     // try to find it in the given directories
     if (icon.isNull()) {
@@ -133,7 +135,7 @@ QPixmap BitmapFactoryInst::pixmap(const QString& name) const
         QList<QByteArray> formats = QImageReader::supportedImageFormats();
         for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end() && !found; ++pt) {
             QDir d(*pt);
-            QString fileName = d.path() + QString("/") + name;
+            QString fileName = d.filePath(fn);
             if (QFile(fileName).exists()) {
                 icon.load(fileName);
                 found = true;
@@ -161,28 +163,29 @@ QPixmap BitmapFactoryInst::pixmap(const QString& name) const
         return icon;
     }
 
-    Base::Console().Warning("Can't find Pixmap:%s\n", (const char*)name.toUtf8());
+    Base::Console().Warning("Can't find Pixmap:%s\n", name);
     return QPixmap(px);
 }
 
-QPixmap BitmapFactoryInst::pixmapFromSvg(const QString& name, const QSize& size) const
+QPixmap BitmapFactoryInst::pixmapFromSvg(const char* name, const QSize& size) const
 {
     // If an absolute path is given
     QPixmap icon;
     QString iconPath;
-    if (QFile(name).exists())
-        iconPath = name;
+    QString fn = QString::fromUtf8(name);
+    if (QFile(fn).exists())
+        iconPath = fn;
 
     // try to find it in the given directories
     if (iconPath.isEmpty()) {
         for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end(); ++pt) {
             QDir d(*pt);
-            QString fileName = d.path() + QString("/") + name;
+            QString fileName = d.filePath(fn);
             if (QFile(fileName).exists()) {
                 iconPath = fileName;
                 break;
             } else {
-                fileName += ".svg";
+                fileName += QLatin1String(".svg");
                 if (QFile(fileName).exists()) {
                     iconPath = fileName;
                     break;
@@ -227,11 +230,12 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const QByteArray& contents, const QSize
 QStringList BitmapFactoryInst::pixmapNames() const
 {
     QStringList names;
-    for (QMap<QString,const char**>::ConstIterator It = d->xpmMap.begin(); It != d->xpmMap.end(); ++It)
-        names << It.key();
-    for (QMap<QString, QPixmap>::ConstIterator It = d->xpmCache.begin(); It != d->xpmCache.end(); ++It) {
-        if (!names.contains(It.key()))
-            names << It.key();
+    for (QMap<std::string,const char**>::ConstIterator It = d->xpmMap.begin(); It != d->xpmMap.end(); ++It)
+        names << QString::fromUtf8(It.key().c_str());
+    for (QMap<std::string, QPixmap>::ConstIterator It = d->xpmCache.begin(); It != d->xpmCache.end(); ++It) {
+        QString item = QString::fromUtf8(It.key().c_str());
+        if (!names.contains(item))
+            names << item;
     }
     return names;
 }

@@ -59,17 +59,17 @@ public:
     /// Removes a path from the list of pixmap paths
     void removePath(const QString& path);
     /// Adds a build in XPM pixmap under a given name
-    void addXPM(const QString& name, const char** pXPM);
+    void addXPM(const char* name, const char** pXPM);
     /// Adds a build in XPM pixmap under a given name
-    void addPixmapToCache(const QString& name, const QPixmap& icon);
+    void addPixmapToCache(const char* name, const QPixmap& icon);
     /// Checks whether the pixmap is already registered.
-    bool findPixmapInCache(const QString& name, QPixmap& icon) const;
+    bool findPixmapInCache(const char* name, QPixmap& icon) const;
     /// Retrieves a pixmap by name
-    QPixmap pixmap(const QString& name) const;
+    QPixmap pixmap(const char* name) const;
     /** Retrieves a pixmap by name and size created by an
      * scalable vector graphics (SVG).
      */
-    QPixmap pixmapFromSvg(const QString& name, const QSize& size) const;
+    QPixmap pixmapFromSvg(const char* name, const QSize& size) const;
     /** This method is provided for convenience and does the same
      * as the method above except that it creates the pixmap from
      * a byte array.

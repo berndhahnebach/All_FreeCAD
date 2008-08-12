@@ -382,7 +382,7 @@ void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3
         float fVal1 = 0.0f; float fVal2 = 0.0f; float fVal3 = 0.0f;
 
         bool print=true;
-        QString mode = getActiveDisplayMode().c_str();
+        std::string mode = getActiveDisplayMode();
         if (mode == "Minimum curvature") {
             fVal1 = cVal1.fMinCurvature;
             fVal2 = cVal1.fMinCurvature;
@@ -412,13 +412,15 @@ void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3
             print = false;
         }
 
+        QString info;
         if (print) {
-            mode += QString(": <%1, %2, %3>").arg(fVal1).arg(fVal2).arg(fVal3);
+            info = QString(QLatin1String("%1: <%2, %3, %4>"))
+                .arg(QString::fromLatin1(mode.c_str())).arg(fVal1).arg(fVal2).arg(fVal3);
         }
         else {
-            mode = "No curvature mode set";
+            info = QString::fromLatin1("No curvature mode set");
         }
 
-        Gui::getMainWindow()->setPaneText(1,mode);
+        Gui::getMainWindow()->setPaneText(1,info);
     }
 }
