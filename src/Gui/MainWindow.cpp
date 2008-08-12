@@ -34,7 +34,7 @@
 #include "Action.h"
 #include "Command.h"
 
-#include "CommandBarManager.h"
+#include "ToolBoxManager.h"
 #include "DockWindowManager.h"
 #include "ToolBarManager.h"
 #include "WorkbenchManager.h"
@@ -210,7 +210,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
  /*   ToolBox* toolBox = new ToolBox(this);
     toolBox->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Toolbox"));
     pDockMgr->registerDockWindow("Std_ToolBox", toolBox);
-    CommandBarManager::getInstance()->setToolBox( toolBox );
+    ToolBoxManager::getInstance()->setToolBox( toolBox );
 */
 
     // Help View

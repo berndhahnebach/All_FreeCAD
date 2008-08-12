@@ -46,12 +46,12 @@ MenuItem::~MenuItem()
     clear();
 }
 
-void MenuItem::setCommand(const QString& name)
+void MenuItem::setCommand(const std::string& name)
 {
     _name = name;
 }
 
-QString MenuItem::command() const
+std::string MenuItem::command() const
 {
     return _name;
 }
@@ -61,7 +61,7 @@ bool MenuItem::hasItems() const
     return _items.count() > 0;
 }
 
-MenuItem* MenuItem::findItem(const QString& name)
+MenuItem* MenuItem::findItem(const std::string& name)
 {
     if (_name == name)
     {
@@ -129,7 +129,7 @@ void MenuItem::clear()
     _items.clear();
 }
 
-MenuItem& MenuItem::operator << (const QString& command)
+MenuItem& MenuItem::operator << (const std::string& command)
 {
     MenuItem* item = new MenuItem(this);
     item->setCommand(command);
@@ -185,7 +185,7 @@ void MenuManager::setup(MenuItem* menuItems) const
     for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it)
     {
         // search for the menu action
-        QAction* action = findAction(actions, (*it)->command());
+        QAction* action = findAction(actions, QString::fromAscii((*it)->command().c_str()));
         if (!action) {
             // There must be not more than one separator in the menu bar, so
             // we can safely remove it if available and append it at the end
@@ -194,15 +194,15 @@ void MenuManager::setup(MenuItem* menuItems) const
                 action->setObjectName("Separator");
             } else {
                 // create a new menu
-                QByteArray menuName = (*it)->command().toUtf8();
-                QMenu* menu = menuBar->addMenu(QObject::trUtf8((const char*)menuName));
+                std::string menuName = (*it)->command();
+                QMenu* menu = menuBar->addMenu(QObject::trUtf8(menuName.c_str()));
                 action = menu->menuAction();
-                menu->setObjectName((*it)->command());
-                action->setObjectName((*it)->command());
+                menu->setObjectName(QString::fromAscii((*it)->command().c_str()));
+                action->setObjectName(QString::fromAscii((*it)->command().c_str()));
             }
 
             // set the menu user data
-            action->setData((*it)->command());
+            action->setData(QString::fromAscii((*it)->command().c_str()));
         } else {
             // put the menu at the end
             menuBar->removeAction(action);
@@ -233,7 +233,7 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
     QList<QAction*> actions = menu->actions();
     for (QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the menu item
-        QList<QAction*> used_actions = findActions(actions, (*it)->command());
+        QList<QAction*> used_actions = findActions(actions, QString::fromAscii((*it)->command().c_str()));
         if (used_actions.isEmpty()) {
             if ((*it)->command() == "Separator") {
                 QAction* action = menu->addSeparator();
@@ -245,25 +245,25 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
             else {
                 if ((*it)->hasItems()) {
                     // Creste a submenu
-                    QByteArray menuName = (*it)->command().toUtf8();
-                    QMenu* submenu = menu->addMenu(QObject::trUtf8((const char*)menuName));
+                    std::string menuName = (*it)->command();
+                    QMenu* submenu = menu->addMenu(QObject::trUtf8(menuName.c_str()));
                     QAction* action = submenu->menuAction();
-                    submenu->setObjectName((*it)->command());
-                    action->setObjectName((*it)->command());
+                    submenu->setObjectName(QString::fromAscii((*it)->command().c_str()));
+                    action->setObjectName(QString::fromAscii((*it)->command().c_str()));
                     // set the menu user data
-                    action->setData((*it)->command());
+                    action->setData(QString::fromAscii((*it)->command().c_str()));
                     used_actions.append(action);
                 }
                 else {
                     // A command can have more than one QAction
                     int count = menu->actions().count();
                     // Check if action was added successfully
-                    if (mgr.addTo((const char*)(*it)->command().toAscii(), menu)) {
+                    if (mgr.addTo((*it)->command().c_str(), menu)) {
                         QList<QAction*> acts = menu->actions();
                         for (int i=count; i < acts.count(); i++) {
                             QAction* a = acts[i];
                             // set the menu user data
-                            a->setData((*it)->command());
+                            a->setData(QString::fromAscii((*it)->command().c_str()));
                             used_actions.append(a);
                         }
                     }

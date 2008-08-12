@@ -3805,32 +3805,6 @@
 			Name="Workbench"
 			>
 			<File
-				RelativePath="CommandBarManager.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="CommandBarManager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DockWindowManager.cpp"
 				>
 			</File>
@@ -3934,6 +3908,14 @@
 			</File>
 			<File
 				RelativePath="ToolBarManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ToolBoxManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ToolBoxManager.h"
 				>
 			</File>
 			<File

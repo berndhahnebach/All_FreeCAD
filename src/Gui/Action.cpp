@@ -417,7 +417,7 @@ void WorkbenchGroup::addTo(QWidget *w)
 
 void WorkbenchGroup::refreshWorkbenchList()
 {
-    QString active = WorkbenchManager::instance()->active()->name();
+    QString active = WorkbenchManager::instance()->active()->name().c_str();
     QStringList items = Application::Instance->workbenches();
     
     QList<QAction*> workbenches = _group->actions();

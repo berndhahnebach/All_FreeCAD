@@ -28,6 +28,8 @@
 # include "Qt4All.h"
 #endif
 
+#include <string>
+
 namespace Gui {
 
 class MainWindow;
@@ -39,11 +41,11 @@ public:
     MenuItem(MenuItem*);
     ~MenuItem();
 
-    void setCommand(const QString&);
-    QString command() const;
+    void setCommand(const std::string&);
+    std::string command() const;
 
     bool hasItems() const;
-    MenuItem* findItem(const QString&);
+    MenuItem* findItem(const std::string&);
     MenuItem* copy() const;
     uint count() const;
 
@@ -53,18 +55,18 @@ public:
     void clear();
 
     MenuItem& operator << (MenuItem* item);
-    MenuItem& operator << (const QString& command);
+    MenuItem& operator << (const std::string& command);
     QList<MenuItem*> getItems() const;
 
 private:
-    QString _name;
+    std::string _name;
     QList<MenuItem*> _items;
 };
 
 /**
  * The MenuManager class is responsible for the creation of menus and context menus and appending them
  * to the main window.
- * @see CommandBarManager
+ * @see ToolBoxManager
  * @see ToolBarManager 
  * @author Werner Mayer
  */

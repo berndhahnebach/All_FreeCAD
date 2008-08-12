@@ -37,11 +37,11 @@ public:
     ToolBarItem(ToolBarItem* item);
     ~ToolBarItem();
 
-    void setCommand(const QString&);
-    QString command() const;
+    void setCommand(const std::string&);
+    std::string command() const;
 
     bool hasItems() const;
-    ToolBarItem* findItem(const QString&);
+    ToolBarItem* findItem(const std::string&);
     ToolBarItem* copy() const;
     uint count() const;
 
@@ -51,18 +51,18 @@ public:
     void clear();
 
     ToolBarItem& operator << (ToolBarItem* item);
-    ToolBarItem& operator << (const QString& command);
+    ToolBarItem& operator << (const std::string& command);
     QList<ToolBarItem*> getItems() const;
 
 private:
-    QString _name;
+    std::string _name;
     QList<ToolBarItem*> _items;
 };
 
 /**
  * The ToolBarManager class is responsible for the creation of toolbars and appending them
  * to the main window.
- * @see CommandBarManager
+ * @see ToolBoxManager
  * @see MenuManager 
  * @author Werner Mayer
  */
