@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <sstream>
+#endif
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -29,7 +32,7 @@
 #include "Workbench.h"
 #include "MenuManager.h"
 #include "ToolBarManager.h"
-#include "CommandBarManager.h"
+#include "ToolBoxManager.h"
 #include "DockWindowManager.h"
 #include "MainWindow.h"
 
@@ -56,29 +59,30 @@ WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
 
 WorkbenchManager::~WorkbenchManager()
 {
-    for (QMap<QString, Workbench*>::Iterator it = _workbenches.begin(); it != _workbenches.end(); ++it) {
-        Workbench* wb = it.value();
+    for (std::map<std::string, Workbench*>::iterator it = _workbenches.begin(); it != _workbenches.end(); ++it) {
+        Workbench* wb = it->second;
         delete wb;
     }
 
     MenuManager::destruct();
     ToolBarManager::destruct();
-    //CommandBarManager::destruct();
+    //ToolBoxManager::destruct();
     DockWindowManager::destruct();
 }
 
-Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QString& className )
+Workbench* WorkbenchManager::createWorkbench (const std::string& name, const std::string& className)
 {
     Workbench* wb = getWorkbench(name);
 
     if (!wb) {
         // try to create an instance now
-        wb = (Workbench*) Base::Type::createInstanceByName((const char*)className.toAscii(),false);
+        wb = (Workbench*) Base::Type::createInstanceByName(className.c_str(),false);
         if (wb) {
             if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId())) {
                 delete wb;
-                QString error = QString("'%1' is not a workbench type").arg(className);
-                throw Base::Exception((const char*)error.toAscii());
+                std::stringstream str;
+                str << "'" << className << "' not a workbench type" << std::ends;
+                throw Base::Exception(str.str());
             }
 
             wb->setName( name );
@@ -86,26 +90,26 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
         }
         else
             Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "
-                "Workbench instance with type: %s\n",(const char*)className.toAscii());
+                "Workbench instance with type: %s\n",className.c_str());
     }
 
     return wb;
 }
 
-Workbench* WorkbenchManager::getWorkbench ( const QString& name )
+Workbench* WorkbenchManager::getWorkbench (const std::string& name)
 {
     Workbench* wb=0;
 
-    QMap<QString, Workbench*>::Iterator it = _workbenches.find(name);
+    std::map<std::string, Workbench*>::iterator it = _workbenches.find(name);
     if (it != _workbenches.end()) {
         // returns the already created object
-        wb = it.value();
+        wb = it->second;
     }
 
     return wb;
 }
 
-bool WorkbenchManager::activate( const QString& name, const QString& className )
+bool WorkbenchManager::activate(const std::string& name, const std::string& className)
 {
     Workbench* wb = createWorkbench(name, className);
     if (wb) {
@@ -122,10 +126,10 @@ Workbench* WorkbenchManager::active() const
     return _activeWorkbench;
 }
 
-QStringList WorkbenchManager::workbenches() const
+std::list<std::string> WorkbenchManager::workbenches() const
 {
-    QStringList wb;
-    for (QMap<QString, Workbench*>::ConstIterator it = _workbenches.begin(); it != _workbenches.end(); ++it)
-        wb << it.key();
+    std::list<std::string> wb;
+    for (std::map<std::string, Workbench*>::const_iterator it = _workbenches.begin(); it != _workbenches.end(); ++it)
+        wb.push_back(it->first);
     return wb;
 }

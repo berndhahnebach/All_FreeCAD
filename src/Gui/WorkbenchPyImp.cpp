@@ -52,8 +52,8 @@ const char *WorkbenchPy::representation(void) const
 PyObject*  WorkbenchPy::name(PyObject *args)
 {
     PY_TRY {
-        QString name = getWorkbenchPtr()->name(); 
-        PyObject* pyName = PyString_FromString(name.toAscii());
+        std::string name = getWorkbenchPtr()->name(); 
+        PyObject* pyName = PyString_FromString(name.c_str());
         return pyName;
     }PY_CATCH;
 }
@@ -62,7 +62,7 @@ PyObject*  WorkbenchPy::name(PyObject *args)
 PyObject*  WorkbenchPy::activate(PyObject *args)
 {
     PY_TRY {
-        QString name = getWorkbenchPtr()->name(); 
+        std::string name = getWorkbenchPtr()->name(); 
         WorkbenchManager::instance()->activate( name, getWorkbenchPtr()->getTypeId().getName() );
         Py_Return; 
     }PY_CATCH;

@@ -47,17 +47,17 @@ public:
      * such workbench exists then a workbench of class \a className gets created, if possible.
      * If the workbench cannot be created 0 is returned.
      */
-    Workbench* createWorkbench ( const QString& name, const QString& className );
+    Workbench* createWorkbench ( const std::string& name, const std::string& className );
     /** Returns an instance of the workbench with name \a name. If there is
      * no such workbench 0 is returned. 
      */
-    Workbench* getWorkbench ( const QString& name );
+    Workbench* getWorkbench ( const std::string& name );
     /** Activates the workbench with name \a name. */
-    bool activate( const QString& name, const QString& className );
+    bool activate( const std::string& name, const std::string& className );
     /** Returns the active workbench. */
     Workbench* active() const;
     /** Returns a list of all created workbench objects. */
-    QStringList workbenches() const;
+    std::list<std::string> workbenches() const;
 
 protected:
     WorkbenchManager();
@@ -66,7 +66,7 @@ protected:
 private:
     static WorkbenchManager* _instance;
     Workbench*  _activeWorkbench;
-    QMap<QString, Workbench*> _workbenches;
+    std::map<std::string, Workbench*> _workbenches;
 };
 
 } // namespace Gui

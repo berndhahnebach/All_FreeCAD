@@ -57,7 +57,7 @@ PyObject*  PythonWorkbenchPy::appendMenu(PyObject *args)
             return NULL;                             // NULL triggers exception 
 
         // menu path
-        QStringList path;
+        std::list<std::string> path;
         if (PyList_Check(pPath)) {
             int nDepth = PyList_Size(pPath);
             for (int j=0; j<nDepth;++j) {
@@ -77,7 +77,7 @@ PyObject*  PythonWorkbenchPy::appendMenu(PyObject *args)
         }
 
         // menu items
-        QStringList items;
+        std::list<std::string> items;
         if (PyList_Check(pItems)) {
             int nItems = PyList_Size(pItems);
             for (int i=0; i<nItems;++i) {
@@ -119,12 +119,12 @@ PyObject*  PythonWorkbenchPy::removeMenu(PyObject *args)
 PyObject*  PythonWorkbenchPy::listMenus(PyObject *args)
 {
     PY_TRY {
-        QStringList menus = getPythonWorkbenchPtr()->listMenus();
+        std::list<std::string> menus = getPythonWorkbenchPtr()->listMenus();
 
-        PyObject* pyList = PyList_New(menus.count());
+        PyObject* pyList = PyList_New(menus.size());
         int i=0;
-        for ( QStringList::Iterator it = menus.begin(); it != menus.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString((const char*)(*it).toAscii());
+        for (std::list<std::string>::iterator it = menus.begin(); it != menus.end(); ++it, ++i ) {
+            PyObject* str = PyString_FromString(it->c_str());
             PyList_SetItem(pyList, i, str);
         }
         return pyList; 
@@ -141,7 +141,7 @@ PyObject*  PythonWorkbenchPy::appendContextMenu(PyObject *args)
             return NULL;                             // NULL triggers exception 
 
         // menu path
-        QStringList path;
+        std::list<std::string> path;
         if (PyList_Check(pPath)) {
             int nDepth = PyList_Size(pPath);
             for (int j=0; j<nDepth;++j) {
@@ -161,7 +161,7 @@ PyObject*  PythonWorkbenchPy::appendContextMenu(PyObject *args)
         }
 
         // menu items
-        QStringList items;
+        std::list<std::string> items;
         if (PyList_Check(pItems)) {
             int nItems = PyList_Size(pItems);
             for (int i=0; i<nItems;++i) {
@@ -212,7 +212,7 @@ PyObject*  PythonWorkbenchPy::appendToolbar(PyObject *args)
             return NULL;                             // NULL triggers exception 
         }
 
-        QStringList items;
+        std::list<std::string> items;
         int nSize = PyList_Size(pObject);
         for (int i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(pObject, i);
@@ -245,12 +245,12 @@ PyObject*  PythonWorkbenchPy::removeToolbar(PyObject *args)
 PyObject*  PythonWorkbenchPy::listToolbars(PyObject *args)
 {
     PY_TRY {
-        QStringList bars = getPythonWorkbenchPtr()->listToolbars();
+        std::list<std::string> bars = getPythonWorkbenchPtr()->listToolbars();
 
-        PyObject* pyList = PyList_New(bars.count());
+        PyObject* pyList = PyList_New(bars.size());
         int i=0;
-        for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString((const char*)(*it).toAscii());
+        for (std::list<std::string>::iterator it = bars.begin(); it != bars.end(); ++it, ++i ) {
+            PyObject* str = PyString_FromString(it->c_str());
             PyList_SetItem(pyList, i, str);
         }
         return pyList; 
@@ -270,7 +270,7 @@ PyObject*  PythonWorkbenchPy::appendCommandbar(PyObject *args)
             return NULL;                             // NULL triggers exception 
         }
 
-        QStringList items;
+        std::list<std::string> items;
         int nSize = PyList_Size(pObject);
         for (int i=0; i<nSize;++i) {
             PyObject* item = PyList_GetItem(pObject, i);
@@ -303,12 +303,12 @@ PyObject*  PythonWorkbenchPy::removeCommandbar(PyObject *args)
 PyObject*  PythonWorkbenchPy::listCommandbars(PyObject *args)
 {
     PY_TRY {
-        QStringList bars = getPythonWorkbenchPtr()->listCommandbars();
+        std::list<std::string> bars = getPythonWorkbenchPtr()->listCommandbars();
 
-        PyObject* pyList = PyList_New(bars.count());
+        PyObject* pyList = PyList_New(bars.size());
         int i=0;
-        for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i ) {
-            PyObject* str = PyString_FromString((const char*)(*it).toAscii());
+        for (std::list<std::string>::iterator it = bars.begin(); it != bars.end(); ++it, ++i) {
+            PyObject* str = PyString_FromString(it->c_str());
             PyList_SetItem(pyList, i, str);
         }
         return pyList; 

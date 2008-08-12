@@ -94,7 +94,7 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     on_categoryBox_activated(categoryBox->currentIndex());
     Workbench* w = WorkbenchManager::instance()->active();
     if (w) {
-        QString name = w->name();
+        QString name = w->name().c_str();
         int index = workbenchBox->findData(name);
         workbenchBox->setCurrentIndex(index);
     }

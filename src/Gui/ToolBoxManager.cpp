@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#include "CommandBarManager.h"
+#include "ToolBoxManager.h"
 #include "ToolBarManager.h"
 #include "Application.h"
 #include "Command.h"
@@ -32,35 +32,35 @@
 using namespace Gui;
 using DockWnd::ToolBox;
 
-CommandBarManager* CommandBarManager::_instance=0;
+ToolBoxManager* ToolBoxManager::_instance=0;
 
-CommandBarManager* CommandBarManager::getInstance()
+ToolBoxManager* ToolBoxManager::getInstance()
 {
     if ( !_instance )
-        _instance = new CommandBarManager;
+        _instance = new ToolBoxManager;
     return _instance;
 }
 
-void CommandBarManager::destruct()
+void ToolBoxManager::destruct()
 {
     delete _instance;
     _instance = 0;
 }
 
-CommandBarManager::CommandBarManager() : _toolBox(0L)
+ToolBoxManager::ToolBoxManager() : _toolBox(0L)
 {
 }
 
-CommandBarManager::~CommandBarManager()
+ToolBoxManager::~ToolBoxManager()
 {
 }
 
-void CommandBarManager::setToolBox( DockWnd::ToolBox* tb )
+void ToolBoxManager::setToolBox( DockWnd::ToolBox* tb )
 {
     _toolBox = tb;
 }
 
-void CommandBarManager::setup( ToolBarItem* toolBar ) const
+void ToolBoxManager::setup( ToolBarItem* toolBar ) const
 {
     if ( !toolBar || !_toolBox )
         return; // empty tool bar
@@ -82,9 +82,9 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
         QToolBar* bar = new QToolBar();
         bar->setOrientation(Qt::Vertical);
         bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QByteArray toolbarName = (*item)->command().toUtf8();
-        bar->setObjectName((*item)->command());
-        bar->setWindowTitle(QObject::trUtf8((const char*)toolbarName)); // i18n
+        std::string toolbarName = (*item)->command();
+        bar->setObjectName(QString::fromAscii((*item)->command().c_str()));
+        bar->setWindowTitle(QObject::trUtf8(toolbarName.c_str())); // i18n
         _toolBox->addItem( bar, bar->windowTitle() );
 
         QList<ToolBarItem*> subitems = (*item)->getItems();
@@ -93,7 +93,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
             if ( (*subitem)->command() == "Separator" ) {
                 //bar->addSeparator();
             } else {
-                mgr.addTo( (const char*)((*subitem)->command().toAscii()), bar );
+                mgr.addTo((*subitem)->command().c_str(), bar);
             }
         }
 
@@ -116,7 +116,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     }
 }
 
-void CommandBarManager::retranslate() const
+void ToolBoxManager::retranslate() const
 {
     int ct = _toolBox->count();
     for (int i=0; i<ct; i++) {

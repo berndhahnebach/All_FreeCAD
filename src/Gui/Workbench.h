@@ -28,6 +28,8 @@
 # include "Qt4All.h"
 #endif
 
+#include <list>
+#include <string>
 #include <Base/BaseClass.h>
 
 namespace Base {
@@ -60,11 +62,11 @@ public:
     /**
      * Returns the name of the workbench object.
      */
-    QString name() const;
+    std::string name() const;
     /**
      * Set the name to the workbench object.
      */
-    void setName( const QString& );
+    void setName(const std::string&);
     /**
      * The default implementation returns an instance of @ref WorkbenchPy.
      */
@@ -105,7 +107,7 @@ private:
     void setupCustomShortcuts() const;
 
 private:
-    QString _name;
+    std::string _name;
 };
 
 /**
@@ -197,32 +199,32 @@ public:
     /** @name Manipulation methods */
     //@{
     /// Appends a new menu
-    void appendMenu(const QStringList& menu, const QStringList& items) const;
+    void appendMenu(const std::list<std::string>& menu, const std::list<std::string>& items) const;
     /// Removes a menu
-    void removeMenu(const QString& menu ) const;
+    void removeMenu(const std::string& menu ) const;
     //// Shows a list of all menus
-    QStringList listMenus() const;
+    std::list<std::string> listMenus() const;
 
     /// Appends new context menu items
-    void appendContextMenu(const QStringList& menu, const QStringList& items) const;
+    void appendContextMenu(const std::list<std::string>& menu, const std::list<std::string>& items) const;
     /// Removes a context menu
-    void removeContextMenu(const QString& menu ) const;
+    void removeContextMenu(const std::string& menu ) const;
     void setupContextMenu(const char* recipient,MenuItem*) const;
     void clearContextMenu();
 
     /// Appends a new toolbar
-    void appendToolbar(const QString& bar, const QStringList& items) const;
+    void appendToolbar(const std::string& bar, const std::list<std::string>& items) const;
     /// Removes a toolbar
-    void removeToolbar(const QString& bar) const;
+    void removeToolbar(const std::string& bar) const;
     //// Shows a list of all toolbars
-    QStringList listToolbars() const;
+    std::list<std::string> listToolbars() const;
 
     /// Appends a new command bar
-    void appendCommandbar(const QString& bar, const QStringList& items) const;
+    void appendCommandbar(const std::string& bar, const std::list<std::string>& items) const;
     /// Removes a command bar
-    void removeCommandbar(const QString& bar) const;
+    void removeCommandbar(const std::string& bar) const;
     //// Shows a list of all command bars
-    QStringList listCommandbars() const;
+    std::list<std::string> listCommandbars() const;
     //@}
 
 protected:

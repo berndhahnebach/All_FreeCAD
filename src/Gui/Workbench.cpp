@@ -32,7 +32,7 @@
 #include "Application.h"
 #include "Action.h"
 #include "Command.h"
-#include "CommandBarManager.h"
+#include "ToolBoxManager.h"
 #include "Window.h"
 #include "Selection.h"
 
@@ -197,7 +197,7 @@ using namespace Gui;
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::Workbench, Base::BaseClass)
 
 Workbench::Workbench()
-  : _name(QString::null)
+  : _name("")
 {
 }
 
@@ -205,21 +205,21 @@ Workbench::~Workbench()
 {
 }
 
-QString Workbench::name() const
+std::string Workbench::name() const
 {
     return _name;
 }
 
-void Workbench::setName( const QString& name )
+void Workbench::setName(const std::string& name)
 {
     _name = name;
 }
 
 void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) const
 {
-    QByteArray name = this->name().toAscii();
+    std::string name = this->name();
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
-        ->GetGroup("Workbench")->GetGroup(name.constData())->GetGroup(toolbar);
+        ->GetGroup("Workbench")->GetGroup(name.c_str())->GetGroup(toolbar);
   
     std::vector<Base::Reference<ParameterGrp> > hGrps = hGrp->GetGroups();
     CommandManager& rMgr = Application::Instance->commandManager();
@@ -236,8 +236,7 @@ void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) cons
             if (it2->first == "Separator") {
                 *bar << "Separator";
             } else if (it2->first == "Name") {
-                QString toolbarName = QString::fromUtf8(it2->second.c_str());
-                bar->setCommand(toolbarName);
+                bar->setCommand(it2->second);
             } else {
                 Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
                 if (!pCmd) { // unknown command
@@ -254,8 +253,7 @@ void Workbench::setupCustomToolbars(ToolBarItem* root, const char* toolbar) cons
                 }
 
                 if (pCmd) {
-                    QString cmd = it2->first.c_str(); // command name
-                    *bar << cmd;
+                    *bar << it2->first; // command name
                 }
             }
         }
@@ -305,7 +303,7 @@ bool Workbench::activate()
 
     ToolBarItem* cb = setupCommandBars();
     setupCustomToolbars(cb, "Toolboxbar");
-    //CommandBarManager::getInstance()->setup( cb );
+    //ToolBoxManager::getInstance()->setup( cb );
     delete cb;
 
     DockWindowItems* dw = setupDockWindows();
@@ -324,7 +322,7 @@ bool Workbench::activate()
 void Workbench::retranslate() const
 {
     ToolBarManager::getInstance()->retranslate();
-    //CommandBarManager::getInstance()->retranslate();
+    //ToolBoxManager::getInstance()->retranslate();
     DockWindowManager::instance()->retranslate();
     MenuManager::getInstance()->retranslate();
 }
@@ -683,14 +681,14 @@ void PythonWorkbench::setupContextMenu(const char* recipient, MenuItem* item) co
     }
 }
 
-void PythonWorkbench::appendMenu(const QStringList& menu, const QStringList& items) const
+void PythonWorkbench::appendMenu(const std::list<std::string>& menu, const std::list<std::string>& items) const
 {
     if ( menu.empty() || items.empty() )
         return;
 
-    QStringList::ConstIterator jt=menu.begin();
+    std::list<std::string>::const_iterator jt=menu.begin();
     MenuItem* item = _menuBar->findItem( *jt );
-    if ( !item )
+    if (!item)
     {
         Gui::MenuItem* wnd = _menuBar->findItem( "&Windows" );
         item = new MenuItem;
@@ -710,32 +708,32 @@ void PythonWorkbench::appendMenu(const QStringList& menu, const QStringList& ite
         item = subitem;
     }
 
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    for (std::list<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
         *item << *it;
 }
 
-void PythonWorkbench::removeMenu(const QString& menu) const
+void PythonWorkbench::removeMenu(const std::string& menu) const
 {
-    MenuItem* item = _menuBar->findItem( menu );
+    MenuItem* item = _menuBar->findItem(menu);
     if ( item ) {
-        _menuBar->removeItem( item );
+        _menuBar->removeItem(item);
         delete item;
     }
 }
 
-QStringList PythonWorkbench::listMenus() const
+std::list<std::string> PythonWorkbench::listMenus() const
 {
-    QStringList menus;
+    std::list<std::string> menus;
     QList<MenuItem*> items = _menuBar->getItems();
     for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
-        menus << (*it)->command();
+        menus.push_back((*it)->command());
     return menus;
 }
 
-void PythonWorkbench::appendContextMenu(const QStringList& menu, const QStringList& items) const
+void PythonWorkbench::appendContextMenu(const std::list<std::string>& menu, const std::list<std::string>& items) const
 {
     MenuItem* item = _contextMenu;
-    for (QStringList::ConstIterator jt=menu.begin();jt!=menu.end();++jt) {
+    for (std::list<std::string>::const_iterator jt=menu.begin();jt!=menu.end();++jt) {
         MenuItem* subitem = item->findItem(*jt);
         if (!subitem) {
             subitem = new MenuItem(item);
@@ -744,11 +742,11 @@ void PythonWorkbench::appendContextMenu(const QStringList& menu, const QStringLi
         item = subitem;
     }
 
-    for (QStringList::ConstIterator it = items.begin(); it != items.end(); ++it)
+    for (std::list<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
         *item << *it;
 }
 
-void PythonWorkbench::removeContextMenu(const QString& menu) const
+void PythonWorkbench::removeContextMenu(const std::string& menu) const
 {
     MenuItem* item = _contextMenu->findItem(menu);
     if (item) {
@@ -762,38 +760,38 @@ void PythonWorkbench::clearContextMenu()
     _contextMenu->clear();
 }
 
-void PythonWorkbench::appendToolbar(const QString& bar, const QStringList& items) const
+void PythonWorkbench::appendToolbar(const std::string& bar, const std::list<std::string>& items) const
 {
-    ToolBarItem* item = _toolBar->findItem( bar );
+    ToolBarItem* item = _toolBar->findItem(bar);
     if (!item)
     {
         item = new ToolBarItem(_toolBar);
         item->setCommand(bar);
     }
 
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    for (std::list<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
         *item << *it;
 }
 
-void PythonWorkbench::removeToolbar(const QString& bar) const
+void PythonWorkbench::removeToolbar(const std::string& bar) const
 {
-    ToolBarItem* item = _toolBar->findItem( bar );
+    ToolBarItem* item = _toolBar->findItem(bar);
     if (item) {
-        _toolBar->removeItem( item );
+        _toolBar->removeItem(item);
         delete item;
     }
 }
 
-QStringList PythonWorkbench::listToolbars() const
+std::list<std::string> PythonWorkbench::listToolbars() const
 {
-    QStringList bars;
+    std::list<std::string> bars;
     QList<ToolBarItem*> items = _toolBar->getItems();
-    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
-        bars << (*item)->command();
+    for (QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item)
+        bars.push_back((*item)->command());
     return bars;
 }
 
-void PythonWorkbench::appendCommandbar(const QString& bar, const QStringList& items) const
+void PythonWorkbench::appendCommandbar(const std::string& bar, const std::list<std::string>& items) const
 {
     ToolBarItem* item = _commandBar->findItem( bar );
     if ( !item )
@@ -802,24 +800,24 @@ void PythonWorkbench::appendCommandbar(const QString& bar, const QStringList& it
         item->setCommand(bar);
     }
 
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    for (std::list<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
         *item << *it;
 }
 
-void PythonWorkbench::removeCommandbar(const QString& bar) const
+void PythonWorkbench::removeCommandbar(const std::string& bar) const
 {
-    ToolBarItem* item = _commandBar->findItem( bar );
+    ToolBarItem* item = _commandBar->findItem(bar);
     if ( item ) {
-        _commandBar->removeItem( item );
+        _commandBar->removeItem(item);
         delete item;
     }
 }
 
-QStringList PythonWorkbench::listCommandbars() const
+std::list<std::string> PythonWorkbench::listCommandbars() const
 {
-    QStringList bars;
+    std::list<std::string> bars;
     QList<ToolBarItem*> items = _commandBar->getItems();
-    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
-        bars << (*item)->command();
+    for (QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item)
+        bars.push_back((*item)->command());
     return bars;
 }

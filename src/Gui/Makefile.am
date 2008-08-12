@@ -129,7 +129,6 @@ libFreeCADGui_la_SOURCES=\
 		BitmapFactory.cpp \
 		CallTips.cpp \
 		Command.cpp \
-		CommandBarManager.cpp \
 		CommandDoc.cpp  \
 		CommandFeat.cpp  \
 		CommandStd.cpp  \
@@ -240,6 +239,7 @@ libFreeCADGui_la_SOURCES=\
 		Thumbnail.cpp \
 		ToolBarManager.cpp \
 		ToolBox.cpp \
+		ToolBoxManager.cpp \
 		Tree.cpp \
 		View.cpp \
 		View3DInventor.cpp \
@@ -281,7 +281,6 @@ include_HEADERS=\
 		BitmapFactory.h \
 		CallTips.h \
 		Command.h \
-		CommandBarManager.h \
 		DockWindow.h \
 		DockWindowManager.h \
 		Document.h \
@@ -322,6 +321,7 @@ include_HEADERS=\
 		Thumbnail.h \
 		ToolBarManager.h \
 		ToolBox.h \
+		ToolBoxManager.h \
 		Tree.h \
 		View.h \
 		View3DInventor.h \

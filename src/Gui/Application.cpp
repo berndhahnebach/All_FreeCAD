@@ -49,7 +49,7 @@
 #include "ProgressBar.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-#include "CommandBarManager.h"
+#include "ToolBoxManager.h"
 #include "WaitCursor.h"
 #include "MenuManager.h"
 #include "Window.h"
@@ -576,7 +576,7 @@ bool Application::activateWorkbench(const char* name)
     // method, if available
     PyObject* pcOldWorkbench = 0;
     if (oldWb) {
-        pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, oldWb->name().toAscii());
+        pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, oldWb->name().c_str());
     }
 
     // get the python workbench object from the dictionary
@@ -588,14 +588,14 @@ bool Application::activateWorkbench(const char* name)
         return false;
 
     try {
-        QString type;
+        std::string type;
         Py::Object handler(pcWorkbench);
         if (!handler.hasAttr(std::string("__Workbench__"))) {
             // call its GetClassName method if possible
             Py::Callable method(handler.getAttr(std::string("GetClassName")));
             Py::Tuple args;
             Py::String result(method.apply(args));
-            type = result.as_std_string().c_str();
+            type = result.as_std_string();
             if (type == "Gui::PythonWorkbench") {
                 Workbench* wb = WorkbenchManager::instance()->createWorkbench(name, type);
                 handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
@@ -840,7 +840,7 @@ void Application::setupContextMenu(const char* recipient, MenuItem* items) const
             static_cast<PythonWorkbench*>(actWb)->clearContextMenu();
             Base::PyGILStateLocker lock;
             PyObject* pWorkbench = 0;
-            pWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, actWb->name().toAscii());
+            pWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, actWb->name().c_str());
 
             try {
                 // call its GetClassName method if possible

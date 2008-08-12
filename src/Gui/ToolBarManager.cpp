@@ -46,12 +46,12 @@ ToolBarItem::~ToolBarItem()
     clear();
 }
 
-void ToolBarItem::setCommand(const QString& name)
+void ToolBarItem::setCommand(const std::string& name)
 {
     _name = name;
 }
 
-QString ToolBarItem::command() const
+std::string ToolBarItem::command() const
 {
     return _name;
 }
@@ -61,7 +61,7 @@ bool ToolBarItem::hasItems() const
     return _items.count() > 0;
 }
 
-ToolBarItem* ToolBarItem::findItem(const QString& name)
+ToolBarItem* ToolBarItem::findItem(const std::string& name)
 {
     if ( _name == name ) {
         return this;
@@ -131,7 +131,7 @@ ToolBarItem& ToolBarItem::operator << (ToolBarItem* item)
     return *this;
 }
 
-ToolBarItem& ToolBarItem::operator << (const QString& command)
+ToolBarItem& ToolBarItem::operator << (const std::string& command)
 {
     ToolBarItem* item = new ToolBarItem(this);
     item->setCommand(command);
@@ -182,14 +182,14 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
     QList<QToolBar*> toolbars = toolBars();
     for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the toolbar
-        this->toolbarNames << (*it)->command();
-        QToolBar* toolbar = findToolBar(toolbars, (*it)->command());
-        QByteArray toolbarName = (*it)->command().toUtf8();
-        bool visible = hPref->GetBool(toolbarName.constData(), true);
+        this->toolbarNames << (*it)->command().c_str();
+        QToolBar* toolbar = findToolBar(toolbars, QString::fromAscii((*it)->command().c_str()));
+        std::string toolbarName = (*it)->command();
+        bool visible = hPref->GetBool(toolbarName.c_str(), true);
 
         if (!toolbar) {
-            toolbar = getMainWindow()->addToolBar(QObject::trUtf8((const char*)toolbarName)); // i18n
-            toolbar->setObjectName((*it)->command());
+            toolbar = getMainWindow()->addToolBar(QObject::trUtf8(toolbarName.c_str())); // i18n
+            toolbar->setObjectName(QString::fromAscii((*it)->command().c_str()));
             toolbar->setVisible(visible);
         } else {
             toolbar->setVisible(visible);
@@ -221,18 +221,18 @@ void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
     QList<QAction*> actions = toolbar->actions();
     for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the action item
-        QAction* action = findAction(actions, (*it)->command());
+        QAction* action = findAction(actions, QString::fromAscii((*it)->command().c_str()));
         if (!action) {
             if ((*it)->command() == "Separator") {
                 action = toolbar->addSeparator();
             } else {
                 // Check if action was added successfully
-                if (mgr.addTo((const char*)(*it)->command().toAscii(), toolbar))
+                if (mgr.addTo((*it)->command().c_str(), toolbar))
                     action = toolbar->actions().last();
             }
 
             // set the tool button user data
-            if (action) action->setData((*it)->command());
+            if (action) action->setData(QString::fromAscii((*it)->command().c_str()));
         } else {
             // Note: For toolbars we do not remove and readd the actions
             // because this causes flicker effects. So, it could happen that the order of 

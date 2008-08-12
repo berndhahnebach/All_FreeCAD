@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_COMMANDBARMANAGER_H
-#define GUI_COMMANDBARMANAGER_H
+#ifndef GUI_TOOLBOXMANAGER_H
+#define GUI_TOOLBOXMANAGER_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -37,17 +37,17 @@ namespace DockWnd
 { class ToolBox;}
 
 /**
- * The CommandBarManager class is responsible for the creation of command bars and appending them
+ * The ToolBoxManager class is responsible for the creation of command bars and appending them
  * to the toolbox window.
  * @see ToolBarManager
  * @see MenuManager 
  * @author Werner Mayer
  */
-class GuiExport CommandBarManager
+class GuiExport ToolBoxManager
 {
 public:
     /// The one and only instance.
-    static CommandBarManager* getInstance();
+    static ToolBoxManager* getInstance();
     static void destruct();
     /** Sets up the command bars of a given workbench. */
     void setup(ToolBarItem*) const;
@@ -55,15 +55,15 @@ public:
     void retranslate() const;
 
 protected:
-    CommandBarManager();
-    ~CommandBarManager();
+    ToolBoxManager();
+    ~ToolBoxManager();
 
 private:
     DockWnd::ToolBox* _toolBox;
-    static CommandBarManager* _instance;
+    static ToolBoxManager* _instance;
 };
 
 } // namespace Gui
 
 
-#endif // GUI_COMMANDBARMANAGER_H 
+#endif // GUI_TOOLBOXMANAGER_H 
