@@ -57,13 +57,60 @@ PyObject *CylinderPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // P
 // constructor method
 int CylinderPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    if (PyArg_ParseTuple(args, "")) {
+if (PyArg_ParseTuple(args, "")) {
         Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
             (getGeomCylinderPtr()->handle());
         cyl->SetRadius(1.0);
         return 0;
     }
+    //PyErr_Clear();
+    //if (PyArg_ParseTuple(args, "O!dd|i", &(Part::CirclePy::Type), &o, &u1, &u2, &sense)) {
+    //    try {
+    //        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast
+    //            (static_cast<CirclePy*>(o)->getGeomCirclePtr()->handle());
+    //        GC_MakeArcOfCircle arc(circle->Circ(), u1, u2, sense);
+    //        if (!arc.IsDone()) {
+    //            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+    //            return -1;
+    //        }
 
+    //        getGeomTrimmedCurvePtr()->setHandle(arc.Value());
+    //        return 0;
+    //    }
+    //    catch (Standard_Failure) {
+    //        Handle_Standard_Failure e = Standard_Failure::Caught();
+    //        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+    //        return -1;
+    //    }
+    //    catch (...) {
+    //        PyErr_SetString(PyExc_Exception, "creation of arc failed");
+    //        return -1;
+    //    }
+    //}
+
+    PyErr_Clear();
+    PyObject *pV1, *pV2;
+    double diameter;
+    if (PyArg_ParseTuple(args, "dO!O!", &diameter,
+                                         &(Base::VectorPy::Type), &pV1,
+                                         &(Base::VectorPy::Type), &pV2)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+ 
+ /*       GC_MakeArcOfCircle arc(gp_Pnt(v1.x,v1.y,v1.z),
+                               gp_Pnt(v2.x,v2.y,v2.z),
+                               gp_Pnt(v3.x,v3.y,v3.z));
+        if (!arc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
+            return -1;
+        }
+
+        getGeomTrimmedCurvePtr()->setHandle(arc.Value());*/
+        return 0;
+    }
+
+    // All checks failed
+    PyErr_SetString(PyExc_TypeError, "Cylinder constructor expects a radus position and direction");
     return -1;
 }
 
