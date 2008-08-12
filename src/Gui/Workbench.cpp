@@ -305,7 +305,7 @@ bool Workbench::activate()
 
     ToolBarItem* cb = setupCommandBars();
     setupCustomToolbars(cb, "Toolboxbar");
-    CommandBarManager::getInstance()->setup( cb );
+    //CommandBarManager::getInstance()->setup( cb );
     delete cb;
 
     DockWindowItems* dw = setupDockWindows();
@@ -324,7 +324,7 @@ bool Workbench::activate()
 void Workbench::retranslate() const
 {
     ToolBarManager::getInstance()->retranslate();
-    CommandBarManager::getInstance()->retranslate();
+    //CommandBarManager::getInstance()->retranslate();
     DockWindowManager::instance()->retranslate();
     MenuManager::getInstance()->retranslate();
 }

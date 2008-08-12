@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>PartGui::DlgPartCylinder</class>
  <widget class="QDialog" name="PartGui::DlgPartCylinder" >
   <property name="geometry" >
@@ -13,28 +16,22 @@
    <string>Box definition</string>
   </property>
   <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="GroupBox5" >
      <property name="title" >
       <string>Position:</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>6</number>
+      <property name="margin" >
+       <number>11</number>
       </property>
-      <property name="topMargin" >
-       <number>6</number>
-      </property>
-      <property name="rightMargin" >
-       <number>6</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>6</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
+      <property name="spacing" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
@@ -84,6 +81,12 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
      <item>
       <widget class="QLabel" name="TextLabel1_2" >
        <property name="text" >
@@ -102,6 +105,12 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
      <item>
       <widget class="QLabel" name="TextLabel1_3" >
        <property name="text" >
@@ -147,20 +156,11 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
      <property name="spacing" >
       <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
      </property>
      <item>
       <spacer>

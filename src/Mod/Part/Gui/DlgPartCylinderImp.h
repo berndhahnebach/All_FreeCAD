@@ -32,7 +32,7 @@ class DlgPartCylinderImp : public QDialog, public Ui_DlgPartCylinder
     Q_OBJECT
 
 public:
-  DlgPartCylinderImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    DlgPartCylinderImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgPartCylinderImp();
 
 public Q_SLOTS:

@@ -61,46 +61,42 @@ DEF_STD_CMD_A(CmdPartCylinder);
 CmdPartCylinder::CmdPartCylinder()
   :Command("Part_Cylinder")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Create Cylinder...");
-  sToolTipText  = QT_TR_NOOP("Create a Cylinder");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Cylinder";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create Cylinder...");
+    sToolTipText  = QT_TR_NOOP("Create a Cylinder");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Cylinder";
+    iAccel        = 0;
 }
-
 
 void CmdPartCylinder::activated(int iMsg)
 {
-  PartGui::DlgPartCylinderImp cDlg(Gui::getMainWindow());
-  if ( cDlg.exec()== QDialog::Accepted )
-  {
-    openCommand("Part Cylinder Create");
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
+    PartGui::DlgPartCylinderImp cDlg(Gui::getMainWindow());
+    if (cDlg.exec()== QDialog::Accepted)
+    {
+        openCommand("Create Part Cylinder");
+        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Cylinder\",\"PartCylinder\")");
  /*   doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
     doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
     doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
     doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
     doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
     doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());*/
-    commitCommand();
+        commitCommand();
   
-    updateActive();
-  }
+        updateActive();
+    }
 }
 
 bool CmdPartCylinder::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if( getActiveGuiDocument() )
+        return true;
+    else
+        return false;
 }
-
-
-
 
 void CreateSimplePartCommands(void)
 {

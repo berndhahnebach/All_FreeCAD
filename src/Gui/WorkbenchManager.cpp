@@ -63,7 +63,7 @@ WorkbenchManager::~WorkbenchManager()
 
     MenuManager::destruct();
     ToolBarManager::destruct();
-    CommandBarManager::destruct();
+    //CommandBarManager::destruct();
     DockWindowManager::destruct();
 }
 
