@@ -39,7 +39,7 @@ using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgPreferencesImp */
 
-QList<QPair<QString, QStringList> > DlgPreferencesImp::_pages;
+std::list<std::pair<std::string, std::list<std::string> > > DlgPreferencesImp::_pages;
 
 /**
  *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
@@ -71,11 +71,11 @@ void DlgPreferencesImp::setupPages()
 {
     // make sure that pages are ready to create
     GetWidgetFactorySupplier();
-    for (QList<QPair<QString, QStringList> >::iterator it = _pages.begin(); it != _pages.end(); ++it) {
+    for (std::list<TGroupPages>::iterator it = _pages.begin(); it != _pages.end(); ++it) {
         QTabWidget* tabWidget = new QTabWidget;
         this->tabWidgetStack->addWidget(tabWidget);
         
-        QByteArray group = it->first.toAscii();
+        QByteArray group = it->first.c_str();
         QListWidgetItem *item = new QListWidgetItem(listBox);
         item->setData(Qt::UserRole, QVariant(group));
         item->setText(QObject::tr(group.constData()));
@@ -86,14 +86,14 @@ void DlgPreferencesImp::setupPages()
         item->setIcon(icon);
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        for (QStringList::Iterator jt = it->second.begin(); jt != it->second.end(); ++jt) {
-            PreferencePage* page = WidgetFactory().createPreferencePage((*jt).toAscii().constData());
+        for (std::list<std::string>::iterator jt = it->second.begin(); jt != it->second.end(); ++jt) {
+            PreferencePage* page = WidgetFactory().createPreferencePage(jt->c_str());
             if (page) {
                 tabWidget->addTab(page, page->windowTitle());
                 page->loadSettings();
             }
             else {
-                Base::Console().Warning("%s is not a preference page\n", (*jt).toAscii().constData());
+                Base::Console().Warning("%s is not a preference page\n", jt->c_str());
             }
         }
     }
@@ -116,18 +116,18 @@ void DlgPreferencesImp::changeGroup(QListWidgetItem *current, QListWidgetItem *p
  * @see WidgetFactory
  * @see PrefPageProducer
  */
-void DlgPreferencesImp::addPage(const QString& className, const QString& group)
+void DlgPreferencesImp::addPage(const std::string& className, const std::string& group)
 {
-    for (QList<QPair<QString, QStringList> >::iterator it = _pages.begin(); it != _pages.end(); ++it) {
+    for (std::list<TGroupPages>::iterator it = _pages.begin(); it != _pages.end(); ++it) {
         if (it->first == group) {
             it->second.push_back(className);
             return;
         }
     }
 
-    QStringList pages;
-    pages << className;
-    _pages.push_back(qMakePair(group, pages));
+    std::list<std::string> pages;
+    pages.push_back(className);
+    _pages.push_back(std::make_pair(group, pages));
 }
 
 /**

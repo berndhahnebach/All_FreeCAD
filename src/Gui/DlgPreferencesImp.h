@@ -110,7 +110,7 @@ class GuiExport DlgPreferencesImp : public QDialog,public Ui_DlgPreferences
     Q_OBJECT
 
 public:
-    static void addPage( const QString& className, const QString& group );
+    static void addPage(const std::string& className, const std::string& group);
 
     DlgPreferencesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgPreferencesImp();
@@ -132,7 +132,8 @@ private:
     //@}
 
 private:
-    static QList<QPair<QString, QStringList> > _pages; /**< Name of all registered preference pages */
+    typedef std::pair<std::string, std::list<std::string> > TGroupPages;
+    static std::list<TGroupPages> _pages; /**< Name of all registered preference pages */
     bool invalidParameter;
 };
 

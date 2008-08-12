@@ -5,12 +5,14 @@ lib_LTLIBRARIES=libPartGui.la PartGui.la
 BUILT_SOURCES=\
 		ui_DlgBooleanOperation.h \
 		ui_DlgPartBox.h \
+		ui_DlgPartCylinder.h \
 		ui_DlgPartImportIges.h \
 		ui_DlgPartImportStep.h \
 		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgPartBoxImp.cpp \
+		moc_DlgPartCylinderImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStepImp.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
@@ -18,10 +20,13 @@ BUILT_SOURCES=\
 
 libPartGui_la_SOURCES=\
 		Command.cpp \
+		CommandSimple.cpp \
 		DlgBooleanOperation.cpp \
 		DlgBooleanOperation.h \
 		DlgPartBoxImp.cpp \
 		DlgPartBoxImp.h \
+		DlgPartCylinderImp.cpp \
+		DlgPartCylinderImp.h \
 		DlgPartImportIgesImp.cpp \
 		DlgPartImportIgesImp.h \
 		DlgPartImportStepImp.cpp \
@@ -142,11 +147,15 @@ libdir = $(prefix)/Mod/Part
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		Icons/Part_Box.svg \
+		Icons/Part_Cylinder.svg \
+		Icons/Part_Extrude.svg \
 		Icons/PartFeature.xpm \
 		Icons/PartFeatureImport.xpm \
 		Icons/preferences-part_design.svg \
 		DlgBooleanOperation.ui \
 		DlgPartBox.ui \
+		DlgPartCylinder.ui \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \
 		DlgPrimitives.ui \
