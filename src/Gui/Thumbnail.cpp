@@ -83,7 +83,7 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
     if (!this->viewer)
         return;
     QImage img;
-    this->viewer->savePicture(this->size, this->size, View3DInventorViewer::Black, img);
+    this->viewer->savePicture(this->size, this->size, View3DInventorViewer::White, img);
 
     // according to specification add some meta-information to the image
     uint mt = QDateTime::currentDateTime().toTime_t();
