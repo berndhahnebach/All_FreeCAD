@@ -177,7 +177,8 @@ PYFUNCIMP_D(UnitTestPy,insertError)
   if (!PyArg_ParseTuple(args, "ss", &failure,&details))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
   PY_TRY {
-    UnitTestDialog::instance()->insertError(failure,details);
+      UnitTestDialog::instance()->insertError(QString::fromLatin1(failure),
+                                              QString::fromLatin1(details));
     Py_Return;
   }PY_CATCH;
 }
@@ -188,7 +189,7 @@ PYFUNCIMP_D(UnitTestPy,setUnitTest)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
   PY_TRY {
-    UnitTestDialog::instance()->setUnitTest(pstr);
+    UnitTestDialog::instance()->setUnitTest(QString::fromLatin1(pstr));
     Py_Return;
   }PY_CATCH;
 }
@@ -208,7 +209,7 @@ PYFUNCIMP_D(UnitTestPy,setStatusText)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
   PY_TRY {
-    UnitTestDialog::instance()->setStatusText(pstr);
+    UnitTestDialog::instance()->setStatusText(QString::fromLatin1(pstr));
     Py_Return;
   }PY_CATCH;
 }
@@ -222,7 +223,7 @@ PYFUNCIMP_D(UnitTestPy,setProgressFraction)
 
   PY_TRY {
     if (pColor)
-      UnitTestDialog::instance()->setProgressFraction(fraction,pColor);
+        UnitTestDialog::instance()->setProgressFraction(fraction,QString::fromLatin1(pColor));
     else
       UnitTestDialog::instance()->setProgressFraction(fraction);
     Py_Return;

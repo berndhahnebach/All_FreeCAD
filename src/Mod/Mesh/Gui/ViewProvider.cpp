@@ -619,7 +619,9 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 #endif
 
     if ( !ok ) // note: the mouse grabbing needs to be released
-      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+      QMessageBox::warning(Viewer.getWidget(),QObject::tr("Invalid polygon"),
+        QObject::tr("The picked polygon seems to have self-overlappings.\n\n"
+                    "This could lead to strange rersults."));
   }
 
   return false;

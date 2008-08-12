@@ -26,6 +26,9 @@
 
 #include <FCConfig.h>
 
+// Make sure to explicitly use the correct conversion
+#define QT_NO_CAST_FROM_ASCII
+
 // Importing of App classes
 #ifdef FC_OS_WIN32
 # define PointsAppExport __declspec(dllimport)

@@ -645,7 +645,7 @@ void ViewProviderMeshFaceSet::faceInfoCallback(void * ud, SoEventCallback * n)
             unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
             that->faceInfo(uFacet);
             Gui::Flag* flag = new Gui::Flag;
-            flag->setText(QString("Index: %1").arg(uFacet));
+            flag->setText(QObject::tr("Index: %1").arg(uFacet));
             flag->setOrigin(point->getPoint());
             view->addFlag(flag, Gui::FlagLayout::TopRight);
         }

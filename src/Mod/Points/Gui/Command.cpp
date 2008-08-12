@@ -68,7 +68,8 @@ CmdPointsImport::CmdPointsImport()
 
 void CmdPointsImport::activated(int iMsg)
 {
-  QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString::null, QString(), "Ascii Points (*.asc);;All Files (*.*)");
+  QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
+      QString::null, QString(), QObject::tr("Ascii Points (*.asc);;All Files (*.*)"));
   if ( fn.isEmpty() )
     return;
 
@@ -110,7 +111,8 @@ CmdPointsExport::CmdPointsExport()
 
 void CmdPointsExport::activated(int iMsg)
 {
-  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString::null, QString(), "Ascii Points (*.asc);;All Files (*.*)");
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
+      QString::null, QString(), QObject::tr("Ascii Points (*.asc);;All Files (*.*)"));
   if ( fn.isEmpty() )
     return;
 

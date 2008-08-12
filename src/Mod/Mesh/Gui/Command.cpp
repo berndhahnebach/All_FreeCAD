@@ -433,17 +433,18 @@ void CmdMeshImport::activated(int iMsg)
 {
   // use current path as default
   QStringList filter;
-  filter << "All Mesh Files (*.stl *.ast *.bms *.obj)";
-  filter << "Binary STL (*.stl)";
-  filter << "ASCII STL (*.ast)";
-  filter << "Binary Mesh (*.bms)";
-  filter << "Alias Mesh (*.obj)";
-  filter << "Inventor V2.1 ascii (*.iv)";
+  filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+  filter << QObject::tr("Binary STL (*.stl)");
+  filter << QObject::tr("ASCII STL (*.ast)");
+  filter << QObject::tr("Binary Mesh (*.bms)");
+  filter << QObject::tr("Alias Mesh (*.obj)");
+  filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
   //filter << "Nastran (*.nas *.bdf)";
-  filter << "All Files (*.*)";
+  filter << QObject::tr("All Files (*.*)");
 
   // Allow multi selection
-  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(), QObject::tr("Import mesh"), QString(), filter.join(";;"));
+  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
+      QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
   for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it )
   {
     QFileInfo fi;
@@ -505,17 +506,27 @@ void CmdMeshExport::activated(int iMsg)
   App::DocumentObject* docObj = docObjs.front();
 
   QString dir = QString::fromUtf8(docObj->Label.getValue());
-  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Alias Mesh (*.obj);;"
-                   "Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;"
-                   "Nastran (*.nas *.bdf);;Python module def (*.py);;All Files (*.*)";
+  QStringList filter;
+  filter << QObject::tr("Binary STL (*.stl)");
+  filter << QObject::tr("ASCII STL (*.stl)");
+  filter << QObject::tr("ASCII STL (*.ast)");
+  filter << QObject::tr("Binary Mesh (*.bms)");
+  filter << QObject::tr("Alias Mesh (*.obj)");
+  filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+  filter << QObject::tr("VRML V2.0 (*.wrl *.vrml)");
+  filter << QObject::tr("Compressed VRML 2.0 (*.wrz)");
+  filter << QObject::tr("Nastran (*.nas *.bdf)");
+  filter << QObject::tr("Python module def (*.py)");
+  filter << QObject::tr("All Files (*.*)");
 
   QString format;
-  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export mesh"), dir, filter, &format);
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
+      QObject::tr("Export mesh"), dir, filter.join(QLatin1String(";;")), &format);
   if (!fn.isEmpty())
   {
     QFileInfo fi(fn);
-    if (format == QString("ASCII STL (*.stl)"))
-        format = "ast";
+    if (format == QObject::tr("ASCII STL (*.stl)"))
+        format = QString::fromAscii(("ast"));
     else
         format = fi.suffix();
     openCommand("Export Mesh");
@@ -1039,11 +1050,12 @@ void CmdMeshEvaluateSolid::activated(int iMsg)
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     Mesh::Feature* mesh = (Mesh::Feature*)(*it);
-    QString msg = QString("The mesh '%1' is ").arg(mesh->getNameInDocument());
+    QString msg = QObject::tr("The mesh '%1' is ")
+        .arg(QString::fromAscii(mesh->getNameInDocument()));
     if ( mesh->Mesh.getValue().getKernel().HasOpenEdges() )
-      msg += "not a solid.";
+      msg += QObject::tr("not a solid.");
     else
-      msg += "a solid.";
+      msg += QObject::tr("a solid.");
     QMessageBox::information(Gui::getMainWindow(), QObject::tr("Solid Mesh"), msg);
   }
 }
@@ -1315,8 +1327,9 @@ void CmdMeshBoundingBox::activated(int iMsg)
     Base::Console().Message("Boundings: Min=<%f,%f,%f>, Max=<%f,%f,%f>\n",
                             box.MinX,box.MinY,box.MinZ,box.MaxX,box.MaxY,box.MaxZ);
 
-    QString bound = QString("Min=<%1,%2,%3>\n\nMax=<%4,%5,%6>").arg(box.MinX).arg(box.MinY).arg(box.MinZ)
-                                                               .arg(box.MaxX).arg(box.MaxY).arg(box.MaxZ);
+    QString bound = QObject::tr("Min=<%1,%2,%3>\n\nMax=<%4,%5,%6>")
+        .arg(box.MinX).arg(box.MinY).arg(box.MinZ)
+        .arg(box.MaxX).arg(box.MaxY).arg(box.MaxZ);
     QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), bound);
     break;
   }
