@@ -81,7 +81,7 @@ UnitTestDialog::UnitTestDialog(QWidget* parent, Qt::WFlags f)
     this->setupUi(this);
     // As it doesn't seem to be able to change the "Highlight" color for the active colorgroup
     // we force e.g. the "Motif" style only for the progressbar to change the color to green or red.
-    this->progressBar->setStyle(QStyleFactory::create("Motif"));
+    this->progressBar->setStyle(QStyleFactory::create(QString::fromAscii("Motif")));
     setProgressColor(QColor(40,210,43)); // a darker green
 
     // red items
@@ -169,7 +169,7 @@ void UnitTestDialog::on_startButton_clicked()
  */
 void UnitTestDialog::showErrorDialog(const char* title, const char* message)
 {
-    QMessageBox::critical(this, title, message);
+    QMessageBox::critical(this, QString::fromLatin1(title), QString::fromLatin1(message));
 }
 
 /**
@@ -188,10 +188,10 @@ void UnitTestDialog::reset()
 {
     this->progressBar->reset();
     this->treeViewFailure->clear();
-    this->textLabelRunCt->setText ("<font color=\"#0000ff\">0</font>");
-    this->textLabelFailCt->setText("<font color=\"#0000ff\">0</font>");
-    this->textLabelErrCt->setText ("<font color=\"#0000ff\">0</font>");
-    this->textLabelRemCt->setText ("<font color=\"#0000ff\">0</font>");
+    this->textLabelRunCt->setText (QString::fromLatin1("<font color=\"#0000ff\">0</font>"));
+    this->textLabelFailCt->setText(QString::fromLatin1("<font color=\"#0000ff\">0</font>"));
+    this->textLabelErrCt->setText (QString::fromLatin1("<font color=\"#0000ff\">0</font>"));
+    this->textLabelRemCt->setText (QString::fromLatin1("<font color=\"#0000ff\">0</font>"));
 }
 
 /**
@@ -249,7 +249,7 @@ void UnitTestDialog::setProgressFraction( float fraction, const QString& color )
         this->progressBar->setRange(0, 100);
     }
     else {
-        if (color == "red") {
+        if (color == QLatin1String("red")) {
             setProgressColor(Qt::red);
         }
 
@@ -282,7 +282,7 @@ void UnitTestDialog::insertError( const QString& failure, const QString& details
  */
 void UnitTestDialog::setRunCount(int ct)
 {
-    this->textLabelRunCt->setText(QString("<font color=\"#0000ff\">%1</font>").arg(ct));
+    this->textLabelRunCt->setText(QString::fromLatin1("<font color=\"#0000ff\">%1</font>").arg(ct));
 }
 
 /**
@@ -290,7 +290,7 @@ void UnitTestDialog::setRunCount(int ct)
  */
 void UnitTestDialog::setFailCount(int ct)
 {
-    this->textLabelFailCt->setText(QString("<font color=\"#0000ff\">%1</font>").arg(ct));
+    this->textLabelFailCt->setText(QString::fromLatin1("<font color=\"#0000ff\">%1</font>").arg(ct));
 }
 
 /**
@@ -298,7 +298,7 @@ void UnitTestDialog::setFailCount(int ct)
  */
 void UnitTestDialog::setErrorCount(int ct)
 {
-    this->textLabelErrCt->setText(QString("<font color=\"#0000ff\">%1</font>").arg(ct));
+    this->textLabelErrCt->setText(QString::fromLatin1("<font color=\"#0000ff\">%1</font>").arg(ct));
 }
 
 /**
@@ -306,7 +306,7 @@ void UnitTestDialog::setErrorCount(int ct)
  */
 void UnitTestDialog::setRemainCount(int ct)
 {
-    this->textLabelRemCt->setText(QString("<font color=\"#0000ff\">%1</font>").arg(ct));
+    this->textLabelRemCt->setText(QString::fromLatin1("<font color=\"#0000ff\">%1</font>").arg(ct));
 }
 
 #include "moc_UnitTestImp.cpp"
