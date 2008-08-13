@@ -74,7 +74,8 @@ void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
         std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
         for (std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt) {
             if (_meshFeature != *jt)
-                items.push_back(qMakePair(QString((*jt)->Label.getValue()), QString((*jt)->getNameInDocument())));
+                items.push_back(qMakePair(QString::fromUtf8((*jt)->Label.getValue()),
+                                          QString::fromAscii((*jt)->getNameInDocument())));
         }
 
         meshNameButton->clear();
@@ -173,7 +174,7 @@ void DlgEvaluateMeshImp::setMesh(Mesh::Feature* m)
     on_refreshButton_clicked();
 
     int ct = meshNameButton->count();
-    QString objName = _meshFeature->getNameInDocument();
+    QString objName = QString::fromAscii(_meshFeature->getNameInDocument());
     for (int i=1; i<ct; i++) {
         if (meshNameButton->itemData(i).toString() == objName) {
             meshNameButton->setCurrentIndex(i);
@@ -222,7 +223,7 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
     _meshFeature = 0;
     std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
-        if ( item == (*it)->getNameInDocument() ) {
+        if (item == QLatin1String((*it)->getNameInDocument())) {
             _meshFeature = (Mesh::Feature*)(*it);
             break;
         }
@@ -231,7 +232,7 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
     if (i== 0) {
         cleanInformation();
     }
-    else if ( !_meshFeature ) {
+    else if (!_meshFeature) {
         on_refreshButton_clicked();
     }
     else {
@@ -244,9 +245,9 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
         analyzeSelfIntersectionButton->setEnabled(true);
 
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
-        textLabel4->setText(QString("%1").arg(rMesh.CountFacets()));
-        textLabel5->setText(QString("%1").arg(rMesh.CountEdges()));
-        textLabel6->setText(QString("%1").arg(rMesh.CountPoints()));
+        textLabel4->setText(QString::fromAscii("%1").arg(rMesh.CountFacets()));
+        textLabel5->setText(QString::fromAscii("%1").arg(rMesh.CountEdges()));
+        textLabel6->setText(QString::fromAscii("%1").arg(rMesh.CountPoints()));
     }
 }
 
@@ -297,7 +298,8 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
     if (_pDoc) {
         std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
         for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
-            items.push_back(qMakePair(QString((*it)->Label.getValue()), QString((*it)->getNameInDocument())));
+            items.push_back(qMakePair(QString::fromUtf8((*it)->Label.getValue()),
+                                      QString::fromAscii((*it)->getNameInDocument())));
         }
     }
 
@@ -363,7 +365,7 @@ void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Orientation"), e.what());
+            QMessageBox::warning(this, tr("Orientation"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();
@@ -428,7 +430,7 @@ void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
                     , docName, objName);
         } 
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Non-manifolds"), e.what());
+            QMessageBox::warning(this, tr("Non-manifolds"), QString::fromLatin1(e.what()));
         }
         catch (...) {
             QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
@@ -520,7 +522,7 @@ void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Indices"), e.what());
+            QMessageBox::warning(this, tr("Indices"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();
@@ -586,7 +588,7 @@ void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Degenerations"), e.what());
+            QMessageBox::warning(this, tr("Degenerations"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();
@@ -653,7 +655,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Duplicated faces"), e.what());
+            QMessageBox::warning(this, tr("Duplicated faces"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();
@@ -718,7 +720,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Duplicated points"), e.what());
+            QMessageBox::warning(this, tr("Duplicated points"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();
@@ -783,7 +785,7 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
-            QMessageBox::warning(this, tr("Self-intersections"), e.what());
+            QMessageBox::warning(this, tr("Self-intersections"), QString::fromLatin1(e.what()));
         }
 
         doc->commitCommand();

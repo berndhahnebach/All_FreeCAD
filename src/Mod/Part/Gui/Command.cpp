@@ -64,14 +64,14 @@ DEF_STD_CMD(CmdPartPickCurveNet);
 CmdPartPickCurveNet::CmdPartPickCurveNet()
   :Command("Part_PickCurveNet")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Pick curve network");
-  sToolTipText  = QT_TR_NOOP("Pick a curve network");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Test1";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Pick curve network");
+    sToolTipText  = QT_TR_NOOP("Pick a curve network");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Test1";
+    iAccel        = 0;
 }
 
 void CmdPartPickCurveNet::activated(int iMsg)
@@ -87,21 +87,21 @@ DEF_STD_CMD(CmdPartNewDoc);
 CmdPartNewDoc::CmdPartNewDoc()
   :Command("Part_NewDoc")
 {
-  sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "New document";
-  sToolTipText  = "Create a empty part document";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "New";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = "Part";
+    sMenuText     = "New document";
+    sToolTipText  = "Create a empty part document";
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "New";
+    iAccel        = 0;
 }
 
 void CmdPartNewDoc::activated(int iMsg)
 {
-  doCommand(Doc,"d = App.New()");
+    doCommand(Doc,"d = App.New()");
 
-  updateActive();
+    updateActive();
 }
 
 
@@ -113,42 +113,41 @@ DEF_STD_CMD_A(CmdPartBox);
 CmdPartBox::CmdPartBox()
   :Command("Part_Box")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Create box...");
-  sToolTipText  = QT_TR_NOOP("Create a Box feature");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create box...");
+    sToolTipText  = QT_TR_NOOP("Create a Box feature");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartBox::activated(int iMsg)
 {
-  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
-  if ( cDlg.exec()== QDialog::Accepted )
-  {
-    openCommand("Part Box Create");
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-    doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
-    doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
-    doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
-    doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
-    doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
-    doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
-    commitCommand();
-  
-    updateActive();
-  }
+    PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
+    if (cDlg.exec()== QDialog::Accepted) {
+        openCommand("Part Box Create");
+        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
+        doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
+        doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
+        doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
+        doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
+        doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
+        doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
+        commitCommand();
+
+        updateActive();
+    }
 }
 
 bool CmdPartBox::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 
@@ -160,40 +159,40 @@ DEF_STD_CMD_A(CmdPartBox2);
 CmdPartBox2::CmdPartBox2()
   :Command("Part_Box2")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Box fix 1");
-  sToolTipText  = QT_TR_NOOP("Create a Box feature without dialog");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Box fix 1");
+    sToolTipText  = QT_TR_NOOP("Create a Box feature without dialog");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartBox2::activated(int iMsg)
 {
-  openCommand("PartBox Create");
+    openCommand("PartBox Create");
 
-  doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-  doCommand(Doc,"f.x = 0.0");
-  doCommand(Doc,"f.y = 0.0");
-  doCommand(Doc,"f.z = 0.0");
-  doCommand(Doc,"f.l = 100.0");
-  doCommand(Doc,"f.w = 100.0");
-  doCommand(Doc,"f.h = 100.0");
+    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
+    doCommand(Doc,"f.x = 0.0");
+    doCommand(Doc,"f.y = 0.0");
+    doCommand(Doc,"f.z = 0.0");
+    doCommand(Doc,"f.l = 100.0");
+    doCommand(Doc,"f.w = 100.0");
+    doCommand(Doc,"f.h = 100.0");
 
-  updateActive();
+    updateActive();
 
-  commitCommand();
+    commitCommand();
 }
 
 bool CmdPartBox2::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 //===========================================================================
@@ -204,40 +203,40 @@ DEF_STD_CMD_A(CmdPartBox3);
 CmdPartBox3::CmdPartBox3()
   :Command("Part_Box3")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Box fix 2");
-  sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Box fix 2");
+    sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartBox3::activated(int iMsg)
 {
-  openCommand("PartBox Create");
+    openCommand("PartBox Create");
 
-  doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-  doCommand(Doc,"f.x = 50.0");
-  doCommand(Doc,"f.y = 50.0");
-  doCommand(Doc,"f.z = 50.0");
-  doCommand(Doc,"f.l = 100.0");
-  doCommand(Doc,"f.w = 100.0");
-  doCommand(Doc,"f.h = 100.0");
- 
-  updateActive();
+    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
+    doCommand(Doc,"f.x = 50.0");
+    doCommand(Doc,"f.y = 50.0");
+    doCommand(Doc,"f.z = 50.0");
+    doCommand(Doc,"f.l = 100.0");
+    doCommand(Doc,"f.w = 100.0");
+    doCommand(Doc,"f.h = 100.0");
 
-  commitCommand();
+    updateActive();
+
+    commitCommand();
 }
 
 bool CmdPartBox3::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 //===========================================================================
@@ -248,43 +247,43 @@ DEF_STD_CMD_A(CmdPartCut);
 CmdPartCut::CmdPartCut()
   :Command("Part_Cut")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText		  = QT_TR_NOOP("Cut");
-  sToolTipText  = QT_TR_NOOP("Create a Cut feature");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText		  = QT_TR_NOOP("Cut");
+    sToolTipText  = QT_TR_NOOP("Create a Cut feature");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartCut::activated(int iMsg)
 {
-  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-  if(n != 2)
-  {
-    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
-    return;
-  }
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two shapes please."));
+        return;
+    }
 
-  string FeatName = getUniqueObjectName("Cut");
+    string FeatName = getUniqueObjectName("Cut");
 
-  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-  openCommand("Part Cut");
-  doCommand(Doc,"App.activeDocument().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
-  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
-  updateActive();
-  commitCommand();
+    openCommand("Part Cut");
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    updateActive();
+    commitCommand();
 }
 
 bool CmdPartCut::isActive(void)
 {
-  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================
@@ -295,42 +294,42 @@ DEF_STD_CMD_A(CmdPartCommon);
 CmdPartCommon::CmdPartCommon()
   :Command("Part_Common")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Intersection");
-  sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Intersection");
+    sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 void CmdPartCommon::activated(int iMsg)
 {
-  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-  if(n != 2)
-  {
-    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
-    return;
-  }
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two shapes please."));
+        return;
+    }
 
-  string FeatName = getUniqueObjectName("Common");
+    string FeatName = getUniqueObjectName("Common");
 
-  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-  openCommand("Common");
-  doCommand(Doc,"App.activeDocument().addObject(\"Part::Common\",\"%s\")",FeatName.c_str());
-  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
-  updateActive();
-  commitCommand();
+    openCommand("Common");
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::Common\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    updateActive();
+    commitCommand();
 }
 
 bool CmdPartCommon::isActive(void)
 {
-  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================
@@ -341,43 +340,43 @@ DEF_STD_CMD_A(CmdPartFuse);
 CmdPartFuse::CmdPartFuse()
   :Command("Part_Fuse")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Union");
-  sToolTipText  = QT_TR_NOOP("Make union of two shapes");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Union");
+    sToolTipText  = QT_TR_NOOP("Make union of two shapes");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartFuse::activated(int iMsg)
 {
-  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-  if(n != 2)
-  {
-    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
-    return;
-  }
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two shapes please."));
+        return;
+    }
 
-  string FeatName = getUniqueObjectName("Fusion");
+    string FeatName = getUniqueObjectName("Fusion");
 
-  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-  openCommand("Fusion");
-  doCommand(Doc,"App.activeDocument().addObject(\"Part::Fuse\",\"%s\")",FeatName.c_str());
-  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
-  updateActive();
-  commitCommand();
+    openCommand("Fusion");
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::Fuse\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    updateActive();
+    commitCommand();
 }
 
 bool CmdPartFuse::isActive(void)
 {
-  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================
@@ -388,43 +387,43 @@ DEF_STD_CMD_A(CmdPartSection);
 CmdPartSection::CmdPartSection()
   :Command("Part_Section")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Section");
-  sToolTipText  = QT_TR_NOOP("Make section of two shapes");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Section");
+    sToolTipText  = QT_TR_NOOP("Make section of two shapes");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartSection::activated(int iMsg)
 {
-  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-  if(n != 2)
-  {
-    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
-    return;
-  }
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two shapes please."));
+        return;
+    }
 
-  string FeatName = getUniqueObjectName("Section");
+    string FeatName = getUniqueObjectName("Section");
 
-  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-  openCommand("Section");
-  doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());
-  doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-  doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-  doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
-  updateActive();
-  commitCommand();
+    openCommand("Section");
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    updateActive();
+    commitCommand();
 }
 
 bool CmdPartSection::isActive(void)
 {
-  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================
@@ -435,38 +434,43 @@ DEF_STD_CMD_A(CmdPartImport);
 CmdPartImport::CmdPartImport()
   :Command("Part_Import")
 {
-  sAppModule    = "Part";
-  sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Import CAD...");
-  sToolTipText  = QT_TR_NOOP("Imports a CAD file");
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Part_Box";
-  iAccel        = 0;
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Import CAD...");
+    sToolTipText  = QT_TR_NOOP("Imports a CAD file");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
 }
 
 
 void CmdPartImport::activated(int iMsg)
 {
-  QString filter = "STEP (*.stp *.step);;IGES (*.igs *.iges);;BREP (*.brp *.brep *.BREP);;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( Gui::getMainWindow(), QString(), QString(), filter );
-  if (! fn.isEmpty() )
-  {
-    App::Document* pDoc = getDocument();
-    if ( !pDoc ) return; // no document
-    openCommand("Part Import Create");
-    doCommand(Doc, "import Part");
-    doCommand(Doc, "Part.insert(\"%s\",\"%s\")", (const char*)fn.toAscii(), pDoc->getName());
-    commitCommand();
-  }
+    QStringList filter;
+    filter << QObject::tr("All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)");
+    filter << QObject::tr("STEP (*.stp *.step)");
+    filter << QObject::tr("IGES (*.igs *.iges)");
+    filter << QObject::tr("BREP (*.brp *.brep)");
+    filter << QObject::tr("All Files (*.*)");
+
+    QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString(), QString(), filter.join(QLatin1String(";;")));
+    if (!fn.isEmpty()) {
+        App::Document* pDoc = getDocument();
+        if (!pDoc) return; // no document
+        openCommand("Part Import Create");
+        doCommand(Doc, "import Part");
+        doCommand(Doc, "Part.insert(\"%s\",\"%s\")", (const char*)fn.toAscii(), pDoc->getName());
+        commitCommand();
+    }
 }
 
 bool CmdPartImport::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 //===========================================================================
@@ -477,37 +481,42 @@ DEF_STD_CMD_A(CmdPartImportCurveNet);
 CmdPartImportCurveNet::CmdPartImportCurveNet()
   :Command("Part_ImportCurveNet")
 {
-  sAppModule  = "Part";
-  sGroup      = QT_TR_NOOP("Part");
-  sMenuText   = QT_TR_NOOP("Import curve network...");
-  sToolTipText= QT_TR_NOOP("Import a curve network");
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
-  sPixmap     = "Part_Box";
-  iAccel      = 0;
+    sAppModule  = "Part";
+    sGroup      = QT_TR_NOOP("Part");
+    sMenuText   = QT_TR_NOOP("Import curve network...");
+    sToolTipText= QT_TR_NOOP("Import a curve network");
+    sWhatsThis  = sToolTipText;
+    sStatusTip  = sToolTipText;
+    sPixmap     = "Part_Box";
+    iAccel      = 0;
 }
 
 void CmdPartImportCurveNet::activated(int iMsg)
 {
-  QString filter = "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( Gui::getMainWindow(), QString(), QString(), filter );
-  if (! fn.isEmpty() )
-  {
-    QFileInfo fi; fi.setFile(fn);
-    openCommand("Part Import Curve Net");
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::CurveNet\",\"%s\")", (const char*)fi.baseName().toAscii());
-    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
-    commitCommand();
-    updateActive();
-  }
+    QStringList filter;
+    filter << QObject::tr("All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)");
+    filter << QObject::tr("STEP (*.stp *.step)");
+    filter << QObject::tr("IGES (*.igs *.iges)");
+    filter << QObject::tr("BREP (*.brp *.brep)");
+    filter << QObject::tr("All Files (*.*)");
+
+    QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString(), QString(), filter.join(QLatin1String(";;")));
+    if (!fn.isEmpty()) {
+        QFileInfo fi; fi.setFile(fn);
+        openCommand("Part Import Curve Net");
+        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::CurveNet\",\"%s\")", (const char*)fi.baseName().toAscii());
+        doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toAscii());
+        commitCommand();
+        updateActive();
+    }
 }
 
 bool CmdPartImportCurveNet::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 //===========================================================================
@@ -684,7 +693,5 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartPickCurveNet());
     rcCmdMgr.addCommand(new CmdPartPrimitives());
     rcCmdMgr.addCommand(new CmdShapeInfo());
-
- 
 } 
 

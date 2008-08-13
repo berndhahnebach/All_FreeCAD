@@ -58,10 +58,10 @@ void DlgBooleanOperation::findShapes()
         (Part::Feature::getClassTypeId());
     int index = 1;
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it, ++index) {
-        firstShape->addItem((*it)->Label.getValue());
-        firstShape->setItemData(index, (*it)->getNameInDocument());
-        secondShape->addItem((*it)->Label.getValue());
-        secondShape->setItemData(index, (*it)->getNameInDocument());
+        firstShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
+        firstShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+        secondShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
+        secondShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
     }
 }
 

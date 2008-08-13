@@ -38,7 +38,7 @@ public:
     DockWindowItems();
     ~DockWindowItems();
 
-    void addDockWidget(const QString& name, Qt::DockWidgetArea pos);
+    void addDockWidget(const char* name, Qt::DockWidgetArea pos);
     const QList<DockWindowItem>& dockWidgets() const;
 
 private:
@@ -58,14 +58,14 @@ public:
     static DockWindowManager* instance();
     static void destruct();
 
-    bool registerDockWindow(const QString& name, QWidget* widget);
+    bool registerDockWindow(const char* name, QWidget* widget);
     void setup(DockWindowItems*);
 
-    QDockWidget* addDockWindow(const QString& name, QWidget* widget,  
+    QDockWidget* addDockWindow(const char* name, QWidget* widget,  
                  Qt::DockWidgetArea pos = Qt::AllDockWidgetAreas);
-    QWidget* removeDockWindow(const QString& name);
+    QWidget* removeDockWindow(const char* name);
     void removeDockWindow(QWidget* dock);
-    QWidget* getDockWindow(const QString& name) const;
+    QWidget* getDockWindow(const char* name) const;
     QList<QWidget*> getDockWindows() const;
 
     void saveState();
