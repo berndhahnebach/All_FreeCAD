@@ -52,6 +52,7 @@
 
 #include "Tree.h"
 #include "PropertyView.h"
+#include "SelectionView.h"
 #include "MenuManager.h"
 //#include "ToolBox.h"
 #include "HelpView.h"
@@ -229,6 +230,12 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pcPropView->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Property view"));
     pcPropView->setMinimumWidth(210);
     pDockMgr->registerDockWindow("Std_PropertyView", pcPropView);
+
+    // Selection view
+    SelectionView* pcSelectionView = new SelectionView(0, this);
+    pcSelectionView->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Selection view"));
+    pcSelectionView->setMinimumWidth(210);
+    pDockMgr->registerDockWindow("Std_SelectionView", pcSelectionView);
 
     // Report view
     Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
