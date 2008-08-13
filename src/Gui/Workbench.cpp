@@ -506,6 +506,7 @@ DockWindowItems* StdWorkbench::setupDockWindows() const
     //root->addDockWidget("Std_HelpView", Qt::RightDockWidgetArea);
     root->addDockWidget("Std_TreeView", Qt::LeftDockWidgetArea);
     root->addDockWidget("Std_PropertyView", Qt::LeftDockWidgetArea);
+    root->addDockWidget("Std_SelectionView", Qt::LeftDockWidgetArea);
     root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea);
     //root->addDockWidget("Std_PythonView", Qt::BottomDockWidgetArea);
     return root;
