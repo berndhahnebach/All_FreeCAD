@@ -60,7 +60,7 @@ DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
     fileChooser->setFileName(this->macroPath);
 
     // Fill the List box
-    QStringList labels; labels << "Macros";
+    QStringList labels; labels << tr("Macros");
     macroListBox->setHeaderLabels(labels);
     macroListBox->header()->hide();
     fillUpList();
@@ -80,7 +80,7 @@ DlgMacroExecuteImp::~DlgMacroExecuteImp()
 void DlgMacroExecuteImp::fillUpList(void)
 {
     // lists all files in macro path
-    QDir dir(this->macroPath, "*.FCMacro");
+    QDir dir(this->macroPath, QLatin1String("*.FCMacro"));
   
     // fill up with the directory
     macroListBox->clear();
@@ -142,7 +142,7 @@ void DlgMacroExecuteImp::on_editButton_clicked()
     if (!item) return;
 
     QDir dir(this->macroPath);
-    QString file = QString("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
+    QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
 
     Application::Instance->open(file.toUtf8());
     close();
@@ -152,21 +152,22 @@ void DlgMacroExecuteImp::on_editButton_clicked()
 void DlgMacroExecuteImp::on_createButton_clicked()
 {
     // query file name
-    QString fn = QInputDialog::getText(this, tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
-                                       QString::null, 0);
-    if ( !fn.isEmpty() )
+    QString fn = QInputDialog::getText(this, tr("Macro file"), tr("Enter a file name, please:"),
+        QLineEdit::Normal, QString::null, 0);
+    if (!fn.isEmpty())
     {
-        if ( !fn.endsWith(".FCMacro") )
-            fn += ".FCMacro";
+        if (!fn.endsWith(QLatin1String(".FCMacro")))
+            fn += QLatin1String(".FCMacro");
         QDir dir(this->macroPath);
         QFileInfo fi( dir, fn );
         if ( fi.exists() && fi.isFile() )
         {
-            QMessageBox::warning( this, tr("Existing file"), tr("'%1'.\nThis file already exists.").arg( fi.fileName() ) );
+            QMessageBox::warning( this, tr("Existing file"),
+                tr("'%1'.\nThis file already exists.").arg(fi.fileName()));
         }
         else
         {
-            QString file = QString("%1/%2").arg(dir.absolutePath()).arg( fn );
+            QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg( fn );
             PythonView* edit = new PythonView(getMainWindow());
             edit->open(file);
             edit->setWindowTitle( fn );

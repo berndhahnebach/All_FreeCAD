@@ -56,48 +56,62 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent )
     QColor col;
     col = Qt::black; 
     unsigned long lText = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Text"), lText));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Text")), lText));
     col = Qt::cyan; 
     unsigned long lBookmarks = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Bookmark"), lBookmarks));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Bookmark")), lBookmarks));
     col = Qt::red; 
     unsigned long lBreakpnts = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Breakpoint"), lBreakpnts));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Breakpoint")), lBreakpnts));
     col = Qt::blue; 
     unsigned long lKeywords = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Keyword"), lKeywords));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Keyword")), lKeywords));
     col.setRgb(0, 170, 0); 
     unsigned long lComments = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Comment"), lComments));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Comment")), lComments));
     col.setRgb(160, 160, 164); 
     unsigned long lBlockCom = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Block comment"), lBlockCom));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Block comment")), lBlockCom));
     col = Qt::blue; 
     unsigned long lNumbers = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Number"), lNumbers));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Number")), lNumbers));
     col = Qt::red; 
     unsigned long lStrings = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("String"), lStrings));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("String")), lStrings));
     col = Qt::red; 
     unsigned long lCharacter = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Character"), lCharacter));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Character")), lCharacter));
     col.setRgb(255, 170, 0); 
     unsigned long lClass = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Class name"), lClass));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Class name")), lClass));
     col.setRgb(255, 170, 0); 
     unsigned long lDefine = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Define name"), lDefine));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Define name")), lDefine));
     col.setRgb(160, 160, 164); 
     unsigned long lOperat = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Operator"), lOperat));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Operator")), lOperat));
     col.setRgb(170, 170, 127); 
     unsigned long lPyOutput = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Python output"), lPyOutput));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Python output")), lPyOutput));
     col = Qt::red; 
     unsigned long lPyError = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-    d->colormap.push_back(QPair<QString, unsigned long>(QT_TR_NOOP("Python error"), lPyError));
+    d->colormap.push_back(QPair<QString, unsigned long>
+        (QString::fromAscii(QT_TR_NOOP("Python error")), lPyError));
 
-    QStringList labels; labels << "Items";
+    QStringList labels; labels << tr("Items");
     this->displayItems->setHeaderLabels(labels);
     this->displayItems->header()->hide();
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it) {
@@ -165,7 +179,7 @@ void DlgSettingsEditorImp::loadSettings()
     radioTabs->onRestore();
     radioSpaces->onRestore();
 
-    textEdit1->setPlainText(
+    textEdit1->setPlainText(QString::fromAscii(
         "# Short Python sample\n"
         "import sys\n"
         "def foo(begin, end):\n"
@@ -175,7 +189,7 @@ void DlgSettingsEditorImp::loadSettings()
         "		i=i+1\n"
         "		print \"Text\"\n"
         "\n"
-        "foo(0, 20))\n");
+        "foo(0, 20))\n"));
 
     // Restores the color map
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
@@ -200,7 +214,7 @@ void DlgSettingsEditorImp::loadSettings()
     QFontDatabase fdb;
     QStringList familyNames = fdb.families( QFontDatabase::Any );
     fontFamily->addItems(familyNames);
-    int index = familyNames.indexOf(hGrp->GetASCII("Font", "Courier").c_str());
+    int index = familyNames.indexOf(QString::fromAscii(hGrp->GetASCII("Font", "Courier").c_str()));
     if (index < 0) index = 0;
     fontFamily->setCurrentIndex(index);
     on_fontFamily_activated();

@@ -72,7 +72,7 @@ OnlineDocumentation::OnlineDocumentation()
     if (zip.isValid()) {
         zipios::ConstEntries entries = zip.entries();
         for (zipios::ConstEntries::iterator it = entries.begin(); it != entries.end(); ++it) {
-            this->files.push_back((*it)->getFileName().c_str());
+            this->files.push_back(QString::fromAscii((*it)->getFileName().c_str()));
         }
     }
 }
@@ -87,16 +87,16 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
     fn = filename.mid(1);
     QByteArray res;
 
-    if (fn == "favicon.ico") {
+    if (fn == QLatin1String("favicon.ico")) {
         // Return an resource icon in ico format
         res.reserve(navicon_data_len);
         for (int i=0; i<(int)navicon_data_len;i++) {
             res[i] = navicon_data[i];
         }
     }
-    else if (filename == "/") {
+    else if (filename == QLatin1String("/")) {
         // load the startpage
-        QString header = QString(
+        QString header = QString::fromAscii(
             "<!doctype html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
             "<link rel=\"shortcut icon\" href=\"favicon.ico\" type=\"image/x-icon\">"
             "<html><head><title>Python: Index of Modules</title>"
@@ -119,15 +119,15 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
         int ct=0;
         for (QStringList::ConstIterator it = this->files.begin(); it != this->files.end(); ++it) {
             QString file = *it;
-            if (file.endsWith(".html")) {
+            if (file.endsWith(QLatin1String(".html"))) {
                 file.chop(5);
                 if ((++ct)%15 == 0)
-                    header += "</td><td width=\"25%\" valign=top>";
-                header += QString("<a href=\"%1.html\">%2</a><br>").arg(file).arg(file);
+                    header += QString::fromAscii("</td><td width=\"25%\" valign=top>");
+                header += QString::fromAscii("<a href=\"%1.html\">%2</a><br>").arg(file).arg(file);
             }
         }
 
-        header += QString(
+        header += QString::fromAscii(
         "</td></tr></table></td></tr></table> <p>"
         //"<p align=right>"
         //"<font color=\"#909090\" face=\"helvetica, arial\"><strong>"
@@ -150,8 +150,8 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
     }
     else {
         // load the error page
-        QHttpResponseHeader header(404, "File not found");
-        header.setContentType("text/html\r\n"
+        QHttpResponseHeader header(404, QString::fromAscii("File not found"));
+        header.setContentType(QString::fromAscii("text/html\r\n"
             "\r\n"
             "<html><head><title>Error</title></head>"
             "<body bgcolor=\"#f0f0f8\">"
@@ -167,7 +167,7 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
             "</strong></p>"
             "</div></body>"
             "</html>"
-            "\r\n");
+            "\r\n"));
         res.append(header.toString());
     }
 
@@ -188,14 +188,14 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
     fn = filename.mid(1);
     QByteArray res;
 
-    if (fn == "favicon.ico") {
+    if (fn == QLatin1String("favicon.ico")) {
         // Return an resource icon in ico format
         res.reserve(navicon_data_len);
         for (int i=0; i<(int)navicon_data_len;i++) {
             res[i] = navicon_data[i];
         }
     }
-    else if (filename == "/") {
+    else if (filename == QLatin1String("/")) {
         // get the global interpreter lock otherwise the app may crash with the error
         // 'PyThreadState_Get: no current thread' (see pystate.c)
         Base::PyGILStateLocker lock;
@@ -302,8 +302,8 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
 QByteArray PythonOnlineHelp::fileNotFound() const
 {
     QByteArray res;
-    QHttpResponseHeader header(404, "File not found");
-    header.setContentType("text/html\r\n"
+    QHttpResponseHeader header(404, QString::fromAscii("File not found"));
+    header.setContentType(QString::fromAscii("text/html\r\n"
         "\r\n"
         "<html><head><title>Error</title></head>"
         "<body bgcolor=\"#f0f0f8\">"
@@ -319,7 +319,7 @@ QByteArray PythonOnlineHelp::fileNotFound() const
         "</strong></p>"
         "</div></body>"
         "</html>"
-        "\r\n");
+        "\r\n"));
     res.append(header.toString());
     return res;
 }
@@ -364,7 +364,7 @@ void HttpServer::readClient()
     // corresponding HTML document from the ZIP file.
     QTcpSocket* socket = (QTcpSocket*)sender();
     if (socket->canReadLine()) {
-        QString request = socket->readLine();
+        QString request = QString::fromAscii(socket->readLine());
         QHttpRequestHeader header(request);
         if (header.method() == QLatin1String("GET")) {
             socket->write(help.loadResource(header.path()));

@@ -72,10 +72,10 @@ void MacroManager::open(MacroType eType,const char *sName)
 
     // Convert from Utf-8
     this->macroName = QString::fromUtf8(sName);
-    if (!this->macroName.endsWith(".FCMacro"))
-        this->macroName += ".FCMacro";
+    if (!this->macroName.endsWith(QLatin1String(".FCMacro")))
+        this->macroName += QLatin1String(".FCMacro");
 
-    this->macroInProgress = "";
+    this->macroInProgress.clear();
     this->openMacro = true;
 
     Base::Console().Log("CmdM: Open macro: %s\n", sName);
@@ -88,37 +88,38 @@ void MacroManager::commit(void)
     {
         // sort import lines and avoid duplicates
         QTextStream str(&file);
-        QStringList lines = this->macroInProgress.split('\n');
-        QStringList import; import << "import FreeCAD\n";
+        QStringList lines = this->macroInProgress.split(QLatin1Char('\n'));
+        QStringList import; import << QString::fromAscii("import FreeCAD\n");
         QStringList body;
 
         QStringList::Iterator it;
         for ( it = lines.begin(); it != lines.end(); ++it )
         {
-            if ( (*it).startsWith("import ") || (*it).startsWith("#import ") )
+            if ((*it).startsWith(QLatin1String("import ")) ||
+                (*it).startsWith(QLatin1String("#import ")))
             {
-                if (import.indexOf( *it + '\n' ) == -1)
-                    import.push_back( *it + '\n' );
+                if (import.indexOf(*it + QLatin1Char('\n')) == -1)
+                    import.push_back(*it + QLatin1Char('\n'));
             }
             else
             {
-                body.push_back( *it + '\n' );
+                body.push_back(*it + QLatin1Char('\n'));
             }
         }
 
-        QString header = "# Macro Begin: ";
+        QString header = QString::fromAscii("# Macro Begin: ");
         header += this->macroName;
-        header += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+        header += QString::fromAscii(" +++++++++++++++++++++++++++++++++++++++++++++++++\n");
 
-        QString footer = "# Macro End: ";
+        QString footer = QString::fromAscii("# Macro End: ");
         footer += this->macroName;
-        footer += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+        footer += QString::fromAscii(" +++++++++++++++++++++++++++++++++++++++++++++++++\n");
 
         // write the data to the text file
         str << header;
         for ( it = import.begin(); it != import.end(); ++it )
             str << (*it);
-        str << '\n';
+        str << QLatin1Char('\n');
         for ( it = body.begin(); it != body.end(); ++it )
             str << (*it);
         str << footer;
@@ -126,8 +127,8 @@ void MacroManager::commit(void)
 
     Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)this->macroName.toUtf8());
 
-    this->macroInProgress = "";
-    this->macroName = "";
+    this->macroInProgress.clear();
+    this->macroName.clear();
     this->openMacro = false;
 }
 
@@ -135,8 +136,8 @@ void MacroManager::cancel(void)
 {
     Base::Console().Log("CmdM: Cancel macro: %s\n",(const char*)this->macroName.toUtf8());
 
-    this->macroInProgress = "";
-    this->macroName = "";
+    this->macroInProgress.clear();
+    this->macroName.clear();
     this->openMacro = false;
 }
 
@@ -147,13 +148,13 @@ void MacroManager::addLine(LineType Type, const char* sLine)
         if(Type == Gui)
         {
             if (this->recordGui && this->guiAsComment)
-                this->macroInProgress += "#";
+                this->macroInProgress += QLatin1Char('#');
             else if (!this->recordGui)
                 return; // ignore Gui commands
         }
 
-        this->macroInProgress += sLine;
-        this->macroInProgress += "\n";
+        this->macroInProgress += QString::fromAscii(sLine);
+        this->macroInProgress += QLatin1Char('\n');
     }
 
     if (this->scriptToPyConsole) {
@@ -170,9 +171,9 @@ void MacroManager::setModule(const char* sModule)
 {
     if (this->openMacro && sModule && *sModule != '\0')
     {
-        this->macroInProgress += "import ";
-        this->macroInProgress += sModule;
-        this->macroInProgress += "\n";
+        this->macroInProgress += QString::fromAscii("import ");
+        this->macroInProgress += QString::fromAscii(sModule);
+        this->macroInProgress += QLatin1Char('\n');
     }
 }
 
