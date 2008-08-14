@@ -214,7 +214,8 @@ void WidgetFactorySupplier::destruct()
 
 // ----------------------------------------------------
 
-PrefPageUiProducer::PrefPageUiProducer (const char* filename, const char* group) : fn(filename)
+PrefPageUiProducer::PrefPageUiProducer (const char* filename, const char* group)
+  : fn(QString::fromUtf8(filename))
 {
     WidgetFactoryInst::instance().AddProducer(filename, this);
     Gui::Dialog::DlgPreferencesImp::addPage(filename, group);
@@ -249,7 +250,7 @@ ContainerDialog::ContainerDialog( QWidget* templChild )
     MyDialogLayout = new QGridLayout(this);
 
     buttonOk = new QPushButton(this);
-    buttonOk->setObjectName("buttonOK");
+    buttonOk->setObjectName(QLatin1String("buttonOK"));
     buttonOk->setText( tr( "&OK" ) );
     buttonOk->setAutoDefault( TRUE );
     buttonOk->setDefault( TRUE );
@@ -259,7 +260,7 @@ ContainerDialog::ContainerDialog( QWidget* templChild )
     MyDialogLayout->addItem( spacer, 1, 1 );
 
     buttonCancel = new QPushButton(this);
-    buttonCancel->setObjectName("buttonCancel");
+    buttonCancel->setObjectName(QLatin1String("buttonCancel"));
     buttonCancel->setText( tr( "&Cancel" ) );
     buttonCancel->setAutoDefault( TRUE );
 
@@ -377,21 +378,21 @@ void PyResource::load( const char* name )
     // checks whether it's a relative path
     if (fi.isRelative()) {
         QString cwd = QDir::currentPath ();
-        QString home= QDir(App::GetApplication().GetHomePath()).path();
+        QString home= QDir(QString::fromUtf8(App::GetApplication().GetHomePath())).path();
 
         // search in cwd and home path for the file
         //
         // file does not reside in cwd, check home path now
         if (!fi.exists()) {
             if (cwd == home) {
-                QString what = QString("Cannot find file %1").arg(fi.absoluteFilePath());
+                QString what = QObject::tr("Cannot find file %1").arg(fi.absoluteFilePath());
                 throw Base::Exception(what.toUtf8().constData());
             }
             else {
                 fi.setFile( QDir(home), fn );
 
                 if (!fi.exists()) {
-                    QString what = QString("Cannot find file %1 neither in %2 nor in %3")
+                    QString what = QObject::tr("Cannot find file %1 neither in %2 nor in %3")
                         .arg(fn).arg(cwd).arg(home);
                     throw Base::Exception(what.toUtf8().constData());
                 }
@@ -403,7 +404,7 @@ void PyResource::load( const char* name )
     }
     else {
         if (!fi.exists()) {
-            QString what = QString("Cannot find file %1").arg(fn);
+            QString what = QObject::tr("Cannot find file %1").arg(fn);
             throw Base::Exception(what.toUtf8().constData());
         }
     }
@@ -443,12 +444,12 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
     QList<QWidget*> list = myDlg->findChildren<QWidget*>();
     QList<QWidget*>::const_iterator it = list.begin();
     QObject *obj;
-    QString sigStr = QString("2%1").arg(signal);
+    QString sigStr = QString::fromAscii("2%1").arg(QString::fromAscii(signal));
 
     while ( it != list.end() ) {
         obj = *it;
         ++it;
-        if (obj->objectName() == sender) {
+        if (obj->objectName() == QLatin1String(sender)) {
             objS = obj;
             break;
         }
@@ -547,7 +548,7 @@ PyObject *PyResource::value(PyObject *args)
         while ( it != list.end() ) {
             obj = *it;
             ++it;
-            if (obj->objectName() == psName) {
+            if (obj->objectName() == QLatin1String(psName)) {
                 fnd = true;
                 v = obj->property(psProperty);
                 break;
@@ -611,7 +612,7 @@ PyObject *PyResource::setValue(PyObject *args)
 
     QVariant v;
     if (PyString_Check(psValue)) {
-        v = QString(PyString_AsString(psValue));
+        v = QString::fromAscii(PyString_AsString(psValue));
     }
     else if (PyInt_Check(psValue)) {
         int val = PyInt_AsLong(psValue);
@@ -633,7 +634,7 @@ PyObject *PyResource::setValue(PyObject *args)
                 continue;
 
             char* pItem = PyString_AsString(item);
-            str.append(pItem);
+            str.append(QString::fromAscii(pItem));
         }
 
         v = str;
@@ -652,7 +653,7 @@ PyObject *PyResource::setValue(PyObject *args)
         while ( it != list.end() ) {
             obj = *it;
             ++it;
-            if (obj->objectName() == psName) {
+            if (obj->objectName() == QLatin1String(psName)) {
                 fnd = true;
                 obj->setProperty(psProperty, v);
                 break;

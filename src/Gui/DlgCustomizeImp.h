@@ -50,16 +50,16 @@ class DlgCustomizeImp : public QDialog
     Q_OBJECT
 
 public:
-    DlgCustomizeImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    DlgCustomizeImp(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgCustomizeImp();
 
-    static void addPage( const QString& className );
-    void addPage ( QWidget* w );
+    static void addPage(const char* className);
+    void addPage (QWidget* w);
 
 Q_SIGNALS:
-    void addMacroAction( const QByteArray& );
-    void removeMacroAction( const QByteArray& );
-    void modifyMacroAction( const QByteArray& );
+    void addMacroAction(const QByteArray&);
+    void removeMacroAction(const QByteArray&);
+    void modifyMacroAction(const QByteArray&);
 
 private:
     /** @name for internal use only */
@@ -69,7 +69,7 @@ private:
     QTabWidget* tabWidget; /**< tab wigdets containing all pages */ 
     QGridLayout* customLayout; /**< layout */
     QHBoxLayout* layout; /** horizontal layout */
-    static QStringList _pages; /**< Name of all registered preference pages */
+    static QList<QByteArray> _pages; /**< Name of all registered preference pages */
     //@}
 };
 

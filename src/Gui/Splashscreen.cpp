@@ -47,19 +47,19 @@ public:
     // allow to customize text position and color
     const std::map<std::string,std::string>& cfg = App::GetApplication().Config();
     std::map<std::string,std::string>::const_iterator al = cfg.find("SplashAlignment");
-    if ( al != cfg.end() ) {
-      QString alt = al->second.c_str();
+    if (al != cfg.end()) {
+        QString alt = QString::fromAscii(al->second.c_str());
       int align=0;
-      if ( alt.startsWith("VCenter") )
+      if ( alt.startsWith(QLatin1String("VCenter")) )
         align = Qt::AlignVCenter;
-      else if ( alt.startsWith("Top") )
+      else if ( alt.startsWith(QLatin1String("Top")) )
         align = Qt::AlignTop;
       else
         align = Qt::AlignBottom;
 
-      if ( alt.endsWith("HCenter") )
+      if ( alt.endsWith(QLatin1String("HCenter")) )
         align += Qt::AlignHCenter;
-      else if ( alt.endsWith("Right") )
+      else if ( alt.endsWith(QLatin1String("Right")) )
         align += Qt::AlignRight;
       else
         align += Qt::AlignLeft;
@@ -70,7 +70,7 @@ public:
     // choose text color
     std::map<std::string,std::string>::const_iterator tc = cfg.find("SplashTextColor");
     if ( tc != cfg.end() ) {
-      QColor col; col.setNamedColor(tc->second.c_str());
+      QColor col; col.setNamedColor(QString::fromAscii(tc->second.c_str()));
       if ( col.isValid() )
         textColor = col;
     }
@@ -95,22 +95,22 @@ public:
   }
   void Log (const char * s)
   {
-    QString msg(s);
+    QString msg(QString::fromUtf8(s));
     QRegExp rx;
     // ignore 'Init:' and 'Mod:' prefixes
-    rx.setPattern("^\\s*(Init:|Mod:)\\s*");
+    rx.setPattern(QLatin1String("^\\s*(Init:|Mod:)\\s*"));
     int pos = rx.indexIn(msg);
     if ( pos != -1 ) {
       msg = msg.mid(rx.matchedLength());
     } else {
       // ignore activation of commands
-      rx.setPattern("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*");
+      rx.setPattern(QLatin1String("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*"));
       pos = rx.indexIn(msg);
       if ( pos == 0 )
         return;
     }
 
-    splash->showMessage( msg.replace(QString("\n"), QString()), alignment, textColor );
+    splash->showMessage(msg.replace(QLatin1String("\n"), QString()), alignment, textColor);
     QMutex mutex;
     mutex.lock();
     QWaitCondition().wait(&mutex, 50);
@@ -167,7 +167,8 @@ AboutDialog::AboutDialog( QWidget* parent )
   ui.setupUi(this);
   // Example of how Qt's resource framework can be used
   //ui.labelSplashPicture->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/SplashScreen.xpm")));
-  ui.labelSplashPicture->setPixmap(Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()));
+  ui.labelSplashPicture->setPixmap(Gui::BitmapFactory().pixmap
+      (App::Application::Config()["SplashPicture"].c_str()));
   setupLabels();
 }
 
@@ -181,41 +182,41 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::setupLabels()
 {
-  QString exeName = App::Application::Config()["ExeName"].c_str();
-  QString banner  = App::Application::Config()["ConsoleBanner"].c_str();
-  banner = banner.left( banner.indexOf('\n') );
-  QString major  = App::Application::Config()["BuildVersionMajor"].c_str();
-  QString minor  = App::Application::Config()["BuildVersionMinor"].c_str();
-  QString build  = App::Application::Config()["BuildRevision"].c_str();
-  QString disda  = App::Application::Config()["BuildRevisionDate"].c_str();
-  QString mturl  = App::Application::Config()["MaintainerUrl"].c_str();
+    QString exeName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
+    QString banner  = QString::fromAscii(App::Application::Config()["ConsoleBanner"].c_str());
+    banner = banner.left( banner.indexOf(QLatin1Char('\n')) );
+    QString major  = QString::fromAscii(App::Application::Config()["BuildVersionMajor"].c_str());
+    QString minor  = QString::fromAscii(App::Application::Config()["BuildVersionMinor"].c_str());
+    QString build  = QString::fromAscii(App::Application::Config()["BuildRevision"].c_str());
+    QString disda  = QString::fromAscii(App::Application::Config()["BuildRevisionDate"].c_str());
+    QString mturl  = QString::fromAscii(App::Application::Config()["MaintainerUrl"].c_str());
 
-  QString author = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-                           "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-                           "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-                           "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-                           "<span style=\" font-size:8pt; font-weight:600; text-decoration: underline; color:#0000ff;\">"
-                           "%1 %2</span></p></body></html>").arg(exeName).arg(banner);
-  QString version = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-                            "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-                            "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-                            "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-                            "<span style=\" font-size:8pt; font-weight:600;\">%1.%2</span></p></body></html>").arg(major).arg(minor);
-  QString revision = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-                             "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-                             "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-                             "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-                             "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(build);
-  QString date = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-                         "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-                         "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-                         "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-                         "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(disda);
-  ui.labelAuthor->setText(author);
-  ui.labelAuthor->setUrl(mturl);
-  ui.labelBuildVersion->setText(version);
-  ui.labelBuildRevision->setText(revision);
-  ui.labelBuildDate->setText(date);
+    QString author = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
+        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
+        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
+        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+        "<span style=\" font-size:8pt; font-weight:600; text-decoration: underline; color:#0000ff;\">"
+        "%1 %2</span></p></body></html>").arg(exeName).arg(banner);
+    QString version = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
+        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
+        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
+        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+        "<span style=\" font-size:8pt; font-weight:600;\">%1.%2</span></p></body></html>").arg(major).arg(minor);
+    QString revision = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
+        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
+        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
+        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+        "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(build);
+    QString date = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
+        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
+        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
+        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+        "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(disda);
+    ui.labelAuthor->setText(author);
+    ui.labelAuthor->setUrl(mturl);
+    ui.labelBuildVersion->setText(version);
+    ui.labelBuildRevision->setText(revision);
+    ui.labelBuildDate->setText(date);
 }
 
 #include "moc_Splashscreen.cpp"

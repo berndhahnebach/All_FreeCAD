@@ -27,6 +27,8 @@
 
 #include <FCConfig.h>
 
+#undef QT_NO_CAST_FROM_ASCII
+
 // Importing of App classes
 #ifdef FC_OS_WIN32
 # define MeshExport       __declspec(dllimport)

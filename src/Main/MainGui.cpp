@@ -104,15 +104,19 @@ int main( int argc, char ** argv )
     } catch(const Base::Exception& e) {
         // Popup an own dialog box instead of that one of Windows
         QApplication app(argc,argv);
-        QString appName = App::Application::Config()["ExeName"].c_str();
+        QString appName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
         QString msg;
         msg = QObject::tr("While initializing %1 the  following exception occurred: '%2'\n\n"
                           "Python is searching for its files in the following directories:\n%3\n\n"
-                          "Python version information:\n%4\n").arg(appName).arg(e.what()).arg(Py_GetPath()).arg(Py_GetVersion());
+                          "Python version information:\n%4\n")
+                          .arg(appName).arg(QString::fromUtf8(e.what()))
+                          .arg(QString::fromUtf8(Py_GetPath())).arg(QString::fromAscii(Py_GetVersion()));
         const char* pythonhome = getenv("PYTHONHOME");
         if (pythonhome) {
-            msg += QObject::tr("\nThe environment variable PYTHONHOME is set to '%1'.").arg(pythonhome);
-            msg += QObject::tr("\nSetting this environment variable might cause Python to fail. Please contact your administrator to unset it on your system.\n\n");
+            msg += QObject::tr("\nThe environment variable PYTHONHOME is set to '%1'.")
+                .arg(QString::fromUtf8(pythonhome));
+            msg += QObject::tr("\nSetting this environment variable might cause Python to fail. "
+                "Please contact your administrator to unset it on your system.\n\n");
         } else {
             msg += QObject::tr("\nPlease contact the application's support team for more information.\n\n");
         }
@@ -122,7 +126,7 @@ int main( int argc, char ** argv )
     } catch(...) {
         // Popup an own dialog box instead of that one of Windows
         QApplication app(argc,argv);
-        QString appName = App::Application::Config()["ExeName"].c_str();
+        QString appName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
         QString msg = QObject::tr("Unknown runtime error occurred while initializing %1.\n\n"
                                   "Please contact the application's support team for more information.\n\n").arg(appName);
         QMessageBox::critical(0, QObject::tr("Initialization of %1 failed").arg(appName), msg);

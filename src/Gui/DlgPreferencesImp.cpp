@@ -175,7 +175,7 @@ void DlgPreferencesImp::on_buttonApply_clicked()
                 } catch (const Base::Exception& e) {
                     listBox->setCurrentRow(i);
                     tabWidget->setCurrentIndex(j);
-                    QMessageBox::warning(this, tr("Wrong parameter"), e.what());
+                    QMessageBox::warning(this, tr("Wrong parameter"), QString::fromAscii(e.what()));
                     throw;
                 }
             }

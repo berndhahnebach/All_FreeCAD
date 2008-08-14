@@ -209,17 +209,17 @@ Action * StdCmdFreezeViews::createAction(void)
   // add the action items
   saveView = pcAction->addAction(QObject::tr("Save views..."));
   pcAction->addAction(QObject::tr("Load views..."));
-  pcAction->addAction("")->setSeparator(true);
+  pcAction->addAction(QString::fromAscii(""))->setSeparator(true);
   freezeView = pcAction->addAction(QObject::tr("Freeze view"));
   freezeView->setShortcut(iAccel);
   clearView = pcAction->addAction(QObject::tr("Clear views"));
-  separator = pcAction->addAction("");
+  separator = pcAction->addAction(QString::fromAscii(""));
   separator->setSeparator(true);
   offset = pcAction->actions().count();
 
   // allow up to 50 views
   for (int i=0; i<maxViews; i++)
-    pcAction->addAction("")->setVisible(false);
+      pcAction->addAction(QString::fromAscii(""))->setVisible(false);
 
   return pcAction;
 }
@@ -244,7 +244,7 @@ void StdCmdFreezeViews::activated(int iMsg)
         savedViews++;
         QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index+1);
         (*it)->setText(viewnr);
-        (*it)->setToolTip(ppReturn);
+        (*it)->setToolTip(QString::fromAscii(ppReturn));
         (*it)->setVisible(true);
         if ( index < 9 ) {
           int accel = Qt::CTRL+Qt::Key_1;
@@ -262,7 +262,7 @@ void StdCmdFreezeViews::activated(int iMsg)
     // Activate a view
     QList<QAction*> acts = pcAction->actions();
     QString data = acts[iMsg]->toolTip();
-    QString send = QString("SetCamera %1").arg(data);
+    QString send = QString::fromAscii("SetCamera %1").arg(data);
     getGuiApplication()->sendMsgToActiveView(send.toAscii());
   }
 }
@@ -290,12 +290,12 @@ void StdCmdFreezeViews::onSaveViews()
             QString data = (*it)->toolTip();
 
             // remove the first line because it's a comment like '#Inventor V2.1 ascii'
-            QString viewPos="";
+            QString viewPos;
             if ( !data.isEmpty() ) {
-                QStringList lines = data.split("\n");
+                QStringList lines = data.split(QString::fromAscii("\n"));
                 if ( lines.size() > 1 ) {
                     lines.pop_front();
-                    viewPos = lines.join(" ");
+                    viewPos = lines.join(QString::fromAscii(" "));
                 }
             }
 
@@ -346,24 +346,24 @@ void StdCmdFreezeViews::onRestoreViews()
 
     // get the root element
     QDomElement root = xmlDocument.documentElement();
-    if (root.tagName() != "FrozenViews") {
+    if (root.tagName() != QLatin1String("FrozenViews")) {
         std::cerr << "Unexpected XML structure" << std::endl;
         return;
     }
 
     bool ok;
-    int scheme = root.attribute("SchemaVersion").toInt(&ok);
+    int scheme = root.attribute(QString::fromAscii("SchemaVersion")).toInt(&ok);
     if (!ok) return;
     // SchemeVersion "1"
     if (scheme == 1) {
         // read the views, ignore the attribute 'Count'
-        QDomElement child = root.firstChildElement("Views");
-        QDomElement views = child.firstChildElement("Camera");
+        QDomElement child = root.firstChildElement(QString::fromAscii("Views"));
+        QDomElement views = child.firstChildElement(QString::fromAscii("Camera"));
         QStringList cameras;
         while (!views.isNull()) {
-            QString setting = views.attribute("settings");
+            QString setting = views.attribute(QString::fromAscii("settings"));
             cameras << setting;
-            views = views.nextSiblingElement("Camera");
+            views = views.nextSiblingElement(QString::fromAscii("Camera"));
         }
 
         // use this rather than the attribute 'Count' because it could be
@@ -887,7 +887,7 @@ void StdViewScreenShot::activated(int iMsg)
     QString selFilter;
     for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it)
     {
-      filter << QString("%1 %2 (*.%3)").arg((*it).toUpper()).
+        filter << QString::fromAscii("%1 %2 (*.%3)").arg((*it).toUpper()).
           arg(QObject::tr("files")).arg((*it).toLower());
     }
 
@@ -913,7 +913,7 @@ void StdViewScreenShot::activated(int iMsg)
       QString fn = fd.selectedFiles().front();
       // We must convert '\' path separators to '/' before otherwise
       // Python would interpret them as escape sequences.
-      fn.replace('\\', '/');
+      fn.replace(QLatin1Char('\\'), QLatin1Char('/'));
 
       Gui::WaitCursor wc;
 

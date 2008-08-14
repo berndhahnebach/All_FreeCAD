@@ -111,9 +111,9 @@ void TreeWidget::onCreateGroup()
     if (this->contextItem->type() == DocumentType) {
         DocumentItem* docitem = static_cast<DocumentItem*>(this->contextItem);
         App::Document* doc = docitem->document()->getDocument();
-        QString cmd = QString("App.getDocument(\"%1\").addObject"
+        QString cmd = QString::fromAscii("App.getDocument(\"%1\").addObject"
                               "(\"App::DocumentObjectGroup\",\"%2\")")
-                             .arg(doc->getName()).arg(name);
+                              .arg(QString::fromAscii(doc->getName())).arg(name);
         Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
         gui->openCommand("Create group");
         Gui::Application::Instance->runPythonCode(cmd.toUtf8());
@@ -124,10 +124,10 @@ void TreeWidget::onCreateGroup()
             (this->contextItem);
         App::DocumentObject* obj = objitem->object()->getObject();
         App::Document& doc = obj->getDocument();
-        QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\")"
+        QString cmd = QString::fromAscii("App.getDocument(\"%1\").getObject(\"%2\")"
                               ".newObject(\"App::DocumentObjectGroup\",\"%3\")")
-                              .arg(doc.getName())
-                              .arg(obj->getNameInDocument())
+                              .arg(QString::fromAscii(doc.getName()))
+                              .arg(QString::fromAscii(obj->getNameInDocument()))
                               .arg(name);
         Gui::Document* gui = Gui::Application::Instance->getDocument(&doc);
         gui->openCommand("Create group");
@@ -281,20 +281,20 @@ void TreeWidget::dropEvent(QDropEvent *event)
                 ::getGroupOfObject(obj);
             if (par) {
                 // allow an object to be in one group only
-                QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
+                QString cmd = QString::fromAscii("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
                                       "App.getDocument(\"%1\").getObject(\"%3\"))")
-                                      .arg(doc->getName())
-                                      .arg(par->getNameInDocument())
-                                      .arg(obj->getNameInDocument());
+                                      .arg(QString::fromAscii(doc->getName()))
+                                      .arg(QString::fromAscii(par->getNameInDocument()))
+                                      .arg(QString::fromAscii(obj->getNameInDocument()));
                 Gui::Application::Instance->runPythonCode(cmd.toUtf8());
             }
 
             // build Python command for execution
-            QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").addObject("
+            QString cmd = QString::fromAscii("App.getDocument(\"%1\").getObject(\"%2\").addObject("
                                   "App.getDocument(\"%1\").getObject(\"%3\"))")
-                                  .arg(doc->getName())
-                                  .arg(grp->getNameInDocument())
-                                  .arg(obj->getNameInDocument());
+                                  .arg(QString::fromAscii(doc->getName()))
+                                  .arg(QString::fromAscii(grp->getNameInDocument()))
+                                  .arg(QString::fromAscii(obj->getNameInDocument()));
             Gui::Application::Instance->runPythonCode(cmd.toUtf8());
         }
         gui->commitCommand();
@@ -312,11 +312,11 @@ void TreeWidget::dropEvent(QDropEvent *event)
             App::DocumentObjectGroup* grp = App::DocumentObjectGroup
                 ::getGroupOfObject(obj);
             if (grp) {
-                QString cmd = QString("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
+                QString cmd = QString::fromAscii("App.getDocument(\"%1\").getObject(\"%2\").removeObject("
                                       "App.getDocument(\"%1\").getObject(\"%3\"))")
-                                      .arg(doc->getName())
-                                      .arg(grp->getNameInDocument())
-                                      .arg(obj->getNameInDocument());
+                                      .arg(QString::fromAscii(doc->getName()))
+                                      .arg(QString::fromAscii(grp->getNameInDocument()))
+                                      .arg(QString::fromAscii(obj->getNameInDocument()));
                 Gui::Application::Instance->runPythonCode(cmd.toUtf8());
             }
         }
@@ -403,7 +403,7 @@ void TreeDockWidget::slotNewDocument(Gui::Document& Doc)
     DocumentItem* item = new DocumentItem(&Doc, this->rootItem);
     this->treeWidget->expandItem(item);
     item->setIcon(0, *documentPixmap);
-    item->setText(0, QString(Doc.getDocument()->Label.getValue()));
+    item->setText(0, QString::fromUtf8(Doc.getDocument()->Label.getValue()));
     DocumentMap[ &Doc ] = item;
 }
 
@@ -858,7 +858,7 @@ void DocumentObjectItem::displayStatusInfo()
 {
     App::DocumentObject* Obj = viewObject->getObject();
 
-    QString info = Obj->getStatusString();
+    QString info = QString::fromAscii(Obj->getStatusString());
     if ( Obj->mustExecute() == 1 )
         info += QString::fromAscii(" (but must be executed)");
     getMainWindow()->statusBar()->showMessage( info );

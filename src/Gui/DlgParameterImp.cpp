@@ -70,10 +70,10 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
     const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
     for( std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
     {
-        SetNameComboBox->addItem(It->first.c_str());
+        SetNameComboBox->addItem(QString::fromAscii(It->first.c_str()));
     }
 
-    QString cStr("User parameter");
+    QString cStr = tr("User parameter");
     SetNameComboBox->setCurrentIndex( SetNameComboBox->findText(cStr) );
     onParameterSetChange(cStr);
 
@@ -318,7 +318,8 @@ void ParameterGroup::onCreateSubgroup()
 
 void ParameterGroup::onExportToFile()
 {
-    QString file = FileDialog::getSaveFileName( this, tr("Export parameter to file"), QString::null, "XML (*.FCParam)");
+    QString file = FileDialog::getSaveFileName( this, tr("Export parameter to file"),
+        QString::null, tr("XML (*.FCParam)"));
     if ( !file.isEmpty() )
     {
         QTreeWidgetItem* item = currentItem();
@@ -333,7 +334,8 @@ void ParameterGroup::onExportToFile()
 
 void ParameterGroup::onImportFromFile()
 {
-    QString file = FileDialog::getOpenFileName( this, tr("Import parameter from file"), QString::null, "XML (*.FCParam)");
+    QString file = FileDialog::getOpenFileName( this, tr("Import parameter from file"),
+        QString::null, tr("XML (*.FCParam)"));
     if ( !file.isEmpty() )
     {
         QFileInfo fi(file);
@@ -500,7 +502,7 @@ void ParameterValue::onCreateTextItem()
 
     std::vector<std::pair<std::string,std::string> > smap = _hcGrp->GetASCIIMap();
     for (std::vector<std::pair<std::string,std::string> >::iterator it = smap.begin(); it != smap.end(); ++it) {
-        if (name == it->first.c_str())
+        if (name == QLatin1String(it->first.c_str()))
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -529,7 +531,7 @@ void ParameterValue::onCreateIntItem()
 
     std::vector<std::pair<std::string,long> > lmap = _hcGrp->GetIntMap();
     for (std::vector<std::pair<std::string,long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
-        if (name == it->first.c_str())
+        if (name == QLatin1String(it->first.c_str()))
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -559,7 +561,7 @@ void ParameterValue::onCreateUIntItem()
 
     std::vector<std::pair<std::string,unsigned long> > lmap = _hcGrp->GetUnsignedMap();
     for (std::vector<std::pair<std::string,unsigned long> >::iterator it = lmap.begin(); it != lmap.end(); ++it) {
-        if (name == it->first.c_str())
+        if (name == QLatin1String(it->first.c_str()))
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -595,7 +597,7 @@ void ParameterValue::onCreateFloatItem()
 
     std::vector<std::pair<std::string,double> > fmap = _hcGrp->GetFloatMap();
     for (std::vector<std::pair<std::string,double> >::iterator it = fmap.begin(); it != fmap.end(); ++it) {
-        if (name == it->first.c_str())
+        if (name == QLatin1String(it->first.c_str()))
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -624,7 +626,7 @@ void ParameterValue::onCreateBoolItem()
 
     std::vector<std::pair<std::string,bool> > bmap = _hcGrp->GetBoolMap();
     for (std::vector<std::pair<std::string,bool> >::iterator it = bmap.begin(); it != bmap.end(); ++it) {
-        if (name == it->first.c_str())
+        if (name == QLatin1String(it->first.c_str()))
         {
             QMessageBox::critical( this, tr("Existing item"),
                 tr("The item '%1' already exists.").arg( name ) );
@@ -632,7 +634,8 @@ void ParameterValue::onCreateBoolItem()
         }
     }
 
-    QStringList list; list << "true" << "false";
+    QStringList list; list << QString::fromAscii("true")
+                           << QString::fromAscii("false");
     QString val = QInputDialog::getItem (this, QObject::tr("New boolean item"), QObject::tr("Choose an item:"),
                                          list, 0, false, &ok);
     if ( ok )
@@ -672,7 +675,7 @@ void ParameterGroupItem::fillUp(void)
     // filing up groups
     std::vector<Base::Reference<ParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
 
-    setText(0,_hcGrp->GetGroupName());
+    setText(0,QString::fromUtf8(_hcGrp->GetGroupName()));
     for(std::vector<Base::Reference<ParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
         (void)new ParameterGroupItem(this,*It);
 }
@@ -765,7 +768,7 @@ ParameterText::ParameterText ( QTreeWidget * parent, QString label, const char* 
 {
     setIcon(0,BitmapFactory().pixmap("Param_Text") );
     setText(0, label);
-    setText(1, "Text");
+    setText(1, QString::fromAscii("Text"));
     setText(2, QString::fromUtf8(value));
 }
 
@@ -809,8 +812,8 @@ ParameterInt::ParameterInt ( QTreeWidget * parent, QString label, long value, co
 {
     setIcon(0,BitmapFactory().pixmap("Param_Int") );
     setText(0, label);
-    setText(1, "Integer");
-    setText(2, QString("%1").arg(value));
+    setText(1, QString::fromAscii("Integer"));
+    setText(2, QString::fromAscii("%1").arg(value));
 }
 
 ParameterInt::~ParameterInt()
@@ -824,7 +827,7 @@ void ParameterInt::changeValue()
                                        text(2).toInt(), -2147483647, 2147483647, 1, &ok);
     if ( ok )
     {
-        setText(2, QString("%1").arg(num));
+        setText(2, QString::fromAscii("%1").arg(num));
         _hcGrp->SetInt(text(0).toAscii(), (long)num);
     }
 }
@@ -853,8 +856,8 @@ ParameterUInt::ParameterUInt ( QTreeWidget * parent, QString label, unsigned lon
 {
     setIcon(0,BitmapFactory().pixmap("Param_UInt") );
     setText(0, label);
-    setText(1, "Unsigned");
-    setText(2, QString("%1").arg(value));
+    setText(1, QString::fromAscii("Unsigned"));
+    setText(2, QString::fromAscii("%1").arg(value));
 }
 
 ParameterUInt::~ParameterUInt()
@@ -876,7 +879,7 @@ void ParameterUInt::changeValue()
 
         if ( ok )
         {
-            setText(2, QString("%1").arg(num));
+            setText(2, QString::fromAscii("%1").arg(num));
             _hcGrp->SetUnsigned(text(0).toAscii(), (unsigned long)num);
         }
     }
@@ -906,8 +909,8 @@ ParameterFloat::ParameterFloat ( QTreeWidget * parent, QString label, double val
 {
     setIcon(0,BitmapFactory().pixmap("Param_Float") );
     setText(0, label);
-    setText(1, "Float");
-    setText(2, QString("%1").arg(value));
+    setText(1, QString::fromAscii("Float"));
+    setText(2, QString::fromAscii("%1").arg(value));
 }
 
 ParameterFloat::~ParameterFloat()
@@ -921,7 +924,7 @@ void ParameterFloat::changeValue()
                                          text(2).toDouble(), -2147483647, 2147483647, 12, &ok);
     if ( ok )
     {
-        setText(2, QString("%1").arg(num));
+        setText(2, QString::fromAscii("%1").arg(num));
         _hcGrp->SetFloat(text(0).toAscii(), num);
     }
 }
@@ -950,8 +953,8 @@ ParameterBool::ParameterBool ( QTreeWidget * parent, QString label, bool value, 
 {
     setIcon(0,BitmapFactory().pixmap("Param_Bool") );
     setText(0, label);
-    setText(1, "Boolean");
-    setText(2, (value ? "true" : "false"));
+    setText(1, QString::fromAscii("Boolean"));
+    setText(2, QString::fromAscii((value ? "true" : "false")));
 }
 
 ParameterBool::~ParameterBool()
@@ -961,7 +964,8 @@ ParameterBool::~ParameterBool()
 void ParameterBool::changeValue()
 {
     bool ok;
-    QStringList list; list << "true" << "false";
+    QStringList list; list << QString::fromAscii("true") 
+                           << QString::fromAscii("false");
     int pos = (text(2) == list[0] ? 0 : 1);
 
     QString txt = QInputDialog::getItem (treeWidget(), QObject::tr("Change value"), QObject::tr("Choose an item:"),
@@ -987,7 +991,7 @@ void ParameterBool::replace( const QString& oldName, const QString& newName )
 
 void ParameterBool::appendToGroup()
 {
-    bool val = (text(2) == "true" ? true : false);
+    bool val = (text(2) == QLatin1String("true") ? true : false);
     _hcGrp->SetBool(text(0).toAscii(), val);
 }
 

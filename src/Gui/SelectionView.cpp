@@ -101,7 +101,7 @@ void SelectionView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
            temp += Reason.pSubName;
         }
 
-        new QListWidgetItem(temp.c_str(), selectionView);
+        new QListWidgetItem(QString::fromAscii(temp.c_str()), selectionView);
     }
 
     if (Reason.Type == SelectionChanges::ClrSelection ) 

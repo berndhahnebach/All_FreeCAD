@@ -240,15 +240,15 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     if ( !d->proxy.isEmpty() )
     {
         QStringList env = wget->environment();
-        env << QString("http_proxy=%1").arg(d->proxy);
-        env << QString("ftp_proxy=%1").arg(d->proxy);
+        env << QString::fromAscii("http_proxy=%1").arg(d->proxy);
+        env << QString::fromAscii("ftp_proxy=%1").arg(d->proxy);
         wget->setEnvironment(env);
     }
     else
     {
         QStringList env = wget->environment();
-        env.removeAll(QString("http_proxy=%1").arg(d->proxy));
-        env.removeAll(QString("ftp_proxy=%1").arg(d->proxy));
+        env.removeAll(QString::fromAscii("http_proxy=%1").arg(d->proxy));
+        env.removeAll(QString::fromAscii("ftp_proxy=%1").arg(d->proxy));
         wget->setEnvironment(env);
     }
 
@@ -277,43 +277,43 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     {
         if ( !d->user.isEmpty() )
         {
-            wgetArguments << QString("--proxy-user=%1").arg( d->user );
+            wgetArguments << QString::fromAscii("--proxy-user=%1").arg( d->user );
             if ( !d->passwd.isEmpty() )
             {
-                wgetArguments << QString("--proxy-passwd=%1").arg( d->passwd );
+                wgetArguments << QString::fromAscii("--proxy-passwd=%1").arg( d->passwd );
             }
         }
     }
 
     // output file
     if ( !d->outputFile.isEmpty() )
-        wgetArguments << QString("--output-document=%1").arg( d->outputFile );
+        wgetArguments << QString::fromAscii("--output-document=%1").arg( d->outputFile );
     // timestamping enabled -> update newer files only
     if ( d->timeStamp )
-        wgetArguments << "-N";
+        wgetArguments << QString::fromAscii("-N");
     // get all needed image files
     if ( d->img )
-        wgetArguments << "-p";
+        wgetArguments << QString::fromAscii("-p");
     // follow relative links only
     if ( d->folRel )
-        wgetArguments<< "-L";
+        wgetArguments<< QString::fromAscii("-L");
     if ( d->recurse )
     {
-        wgetArguments << "-r";
-        wgetArguments << QString("--level=%1").arg( d->level );
+        wgetArguments << QString::fromAscii("-r");
+        wgetArguments << QString::fromAscii("--level=%1").arg( d->level );
     }
 
     if ( d->nop )
-        wgetArguments << "-np";
+        wgetArguments << QString::fromAscii("-np");
 
     // convert absolute links in to relative
     if ( d->convert )
-        wgetArguments << "-k";
+        wgetArguments << QString::fromAscii("-k");
     // number of tries
-    wgetArguments << QString("--tries=%1").arg( d->tries );
+    wgetArguments << QString::fromAscii("--tries=%1").arg( d->tries );
     // use HTML file extension
     if ( d->html )
-        wgetArguments << "-E";
+        wgetArguments << QString::fromAscii("-E");
 
     // start URL
     wgetArguments << startUrl;
@@ -329,7 +329,7 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     wget->start("wget", wgetArguments);
     QDir::setCurrent( cwd );
 #else
-    wget->start("wget", wgetArguments);
+    wget->start(QString::fromAscii("wget"), wgetArguments);
 #endif
 
     return wget->state() == QProcess::Running;
@@ -371,7 +371,7 @@ void NetworkRetriever::wgetFinished(int exitCode, QProcess::ExitStatus status)
 bool NetworkRetriever::testWget()
 {
     QProcess proc;
-    proc.start("wget");
+    proc.start(QString::fromAscii("wget"));
     bool ok = proc.state() == QProcess::Running;
     proc.kill();
     proc.waitForFinished();
@@ -416,7 +416,7 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
 {
     Action *pcAction;
 
-    QString exe = App::Application::Config()["ExeName"].c_str();
+    QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
     pcAction = new Action(this,getMainWindow());
     pcAction->setText      ( tr(sMenuText) );
     pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
@@ -432,7 +432,7 @@ void StdCmdDownloadOnlineHelp::languageChange()
 {
     if ( _pcAction )
     {
-        QString exe = App::Application::Config()["ExeName"].c_str();
+        QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
         _pcAction->setText      ( tr(sMenuText) );
         _pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
         _pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
@@ -470,17 +470,17 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
                 }
             }
 
-            wget->setProxy( prx.c_str(), username, password );
+            wget->setProxy(QString::fromAscii(prx.c_str()), username, password );
         }
 
         int loop=3;
         bool canStart = false;
 
         // set output directory
-        QString path = App::GetApplication().GetHomePath();
-        path += "/doc/";
+        QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
+        path += QString::fromAscii("/doc/");
         ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-        path = QString(hURLGrp->GetASCII( "DownloadLocation", path.toAscii() ).c_str());
+        path = QString::fromUtf8(hURLGrp->GetASCII( "DownloadLocation", path.toAscii() ).c_str());
 
         while ( loop > 0 )
         {
@@ -533,7 +533,7 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
 
         if ( canStart )
         {
-            bool ok = wget->startDownload( url.c_str() );
+            bool ok = wget->startDownload(QString::fromAscii(url.c_str()));
             if ( ok == false )
                 Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
             else if ( wget->isDownloading() && _pcAction )

@@ -130,12 +130,13 @@ PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObjec
 
 PyObject* Application::sNewDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-    char *pstr = 0;
-    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C
+    char *docName = 0;
+    char *usrName = 0;
+    if (!PyArg_ParseTuple(args, "|ss", &docName, &usrName))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
-        return GetApplication().newDocument(pstr)->getPyObject();
+        return GetApplication().newDocument(docName, usrName)->getPyObject();
     }PY_CATCH;
 }
 

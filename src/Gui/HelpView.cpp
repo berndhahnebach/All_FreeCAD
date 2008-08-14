@@ -101,7 +101,7 @@ QString TextBrowser::findUrl(const QUrl &name) const
   if (fi.isAbsolute())
     return fileName;
 
-  QString slash("/");
+  QString slash(QLatin1String("/"));
   QStringList spaths = searchPaths();
   for (QStringList::ConstIterator it = spaths.begin(); it != spaths.end(); ++it) {
     QString path = *it;
@@ -128,7 +128,8 @@ QString TextBrowser::findUrl(const QUrl &name) const
 QVariant TextBrowser::loadResource ( int type, const QUrl& url )
 {
   QString name = url.toString();
-  if (url.scheme() == "http" || d->source.scheme() == "http") {
+  if (url.scheme() == QLatin1String("http") ||
+      d->source.scheme() == QLatin1String("http")) {
     return loadHttpResource(type, url);
   } else { // file scheme
     return loadFileResource(type, url);
@@ -145,27 +146,27 @@ void TextBrowser::setSource (const QUrl& url)
   if (!relativeUrl)
     d->source = url; // last set absolute url
   QString name = url.toString();
-  if (url.scheme() == "http") {
+  if (url.scheme() == QLatin1String("http")) {
     // start the download but do not call setSource() of the base
     // class because we must wait until the data are available.
     // The slot done() is invoked automatically then. 
     d->http->setHost(url.host());
     d->http->get(url.path(), 0);
-  } else if (d->source.scheme() == "http") {
+  } else if (d->source.scheme() == QLatin1String("http")) {
     // relative hyperlink in previously downloaded a HTML page 
     d->source = d->source.resolved(url);
     d->http->get(url.path(), 0);
   } else {
     QUrl resolved = url;
 #if defined (Q_OS_WIN)
-    if (url.scheme() == "file" && !url.isRelative()) {
+    if (url.scheme() == QLatin1String("file") && !url.isRelative()) {
       QString auth = url.authority();
       QString path = url.path();
       //If we click on a hyperlink with a reference to an absolute file name
       //then we get a string that cannot be used to open the file. So we try 
       //to reproduce the original url.
       if (!auth.isEmpty() && !path.isEmpty()) {
-        QString fileName = auth + ':' + path;
+        QString fileName = auth + QLatin1Char(':') + path;
         resolved = QUrl::fromLocalFile(fileName);
       }
     }
@@ -190,7 +191,7 @@ QVariant TextBrowser::loadFileResource(int type, const QUrl& name)
     data = file.readAll();
     file.close();
   } else if (type == QTextDocument::HtmlResource) {
-    data = QString(
+      data = QString::fromAscii(
       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
       "<html>"
       "<head>"
@@ -288,7 +289,7 @@ QVariant TextBrowser::loadHttpResource(int type, const QUrl& name)
     return d->http->readAll();
   } else {
     if (type == QTextDocument::HtmlResource) {
-      data = QString(
+        data = QString::fromAscii(
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
         "<html>"
         "<head>"
@@ -440,8 +441,8 @@ void TextBrowser::contextMenuEvent ( QContextMenuEvent * e )
 void TextBrowser::dropEvent(QDropEvent  * e)
 {
   const QMimeData* mimeData = e->mimeData();
-  if ( mimeData->hasFormat("text/x-action-items") ) {
-    QByteArray itemData = mimeData->data("text/x-action-items");
+  if ( mimeData->hasFormat(QLatin1String("text/x-action-items")) ) {
+    QByteArray itemData = mimeData->data(QLatin1String("text/x-action-items"));
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
     int ctActions; dataStream >> ctActions;
@@ -456,7 +457,7 @@ void TextBrowser::dropEvent(QDropEvent  * e)
       QString info = pCmd->getAction()->whatsThis();
       if ( !info.isEmpty() ) {
         // cannot show help to this command
-        info = QString(
+        info = QString::fromAscii(
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
         "<html>"
         "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
@@ -464,7 +465,7 @@ void TextBrowser::dropEvent(QDropEvent  * e)
         "</body>"
         "</html>" ).arg( info );
       } else {
-        info = QString(
+        info = QString::fromAscii(
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
         "<html>"
         "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
@@ -496,7 +497,7 @@ void TextBrowser::dropEvent(QDropEvent  * e)
 void TextBrowser::dragEnterEvent  (QDragEnterEvent * e)
 {
   const QMimeData* mimeData = e->mimeData();
-  if ( mimeData->hasFormat("text/x-action-items") )
+  if ( mimeData->hasFormat(QLatin1String("text/x-action-items")) )
     e->accept();
   else if (mimeData->hasUrls())
     e->accept();
@@ -507,7 +508,7 @@ void TextBrowser::dragEnterEvent  (QDragEnterEvent * e)
 void TextBrowser::dragMoveEvent( QDragMoveEvent *e )
 {
   const QMimeData* mimeData = e->mimeData();
-  if ( mimeData->hasFormat("text/x-action-items") )
+  if ( mimeData->hasFormat(QLatin1String("text/x-action-items")) )
     e->accept();
   else if (mimeData->hasUrls())
     e->accept();
@@ -637,8 +638,9 @@ void HelpView::openHelpFile()
  */
 void HelpView::startExternalBrowser( const QString& url )
 {
-  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-  QString browser = hGrp->GetASCII( "ExternalBrowser", "" ).c_str();
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+      ("User parameter:BaseApp/Preferences/OnlineHelp");
+  QString browser = QString::fromUtf8(hGrp->GetASCII( "ExternalBrowser", "" ).c_str());
 
   if (browser.isEmpty())
   {

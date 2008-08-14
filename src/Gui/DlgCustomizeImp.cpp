@@ -29,7 +29,7 @@
 
 using namespace Gui::Dialog;
 
-QStringList DlgCustomizeImp::_pages;
+QList<QByteArray> DlgCustomizeImp::_pages;
 
 /* TRANSLATOR Gui::Dialog::DlgCustomizeImp */
 
@@ -40,7 +40,7 @@ QStringList DlgCustomizeImp::_pages;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
+DlgCustomizeImp::DlgCustomizeImp(QWidget* parent, Qt::WFlags fl)
   : QDialog( parent, fl )
 {
     setModal(false);
@@ -74,22 +74,22 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
 
     // make sure that pages are ready to create
     GetWidgetFactorySupplier();
-    for ( QStringList::Iterator it = _pages.begin(); it!=_pages.end(); ++it )
+    for (QList<QByteArray>::Iterator it = _pages.begin(); it!=_pages.end(); ++it)
     {
-        addPage( WidgetFactory().createWidget( (*it).toAscii() ) );
+        addPage(WidgetFactory().createWidget((*it).constData()));
     }
 
-    customLayout->addWidget( tabWidget, 0, 0 );
+    customLayout->addWidget(tabWidget, 0, 0);
 
 
     // tab order
-    setTabOrder( tabWidget, buttonClose );
-    setTabOrder( buttonClose, buttonHelp );
+    setTabOrder(tabWidget, buttonClose);
+    setTabOrder(buttonClose, buttonHelp);
 
     // connections
     //
-    connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
-    connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( close() ) );
+    connect(buttonHelp,  SIGNAL (clicked()), getMainWindow(), SLOT (whatsThis()));
+    connect(buttonClose, SIGNAL (clicked()), this, SLOT (close()));
 }
 
 /**
@@ -106,15 +106,15 @@ DlgCustomizeImp::~DlgCustomizeImp()
  * @see WidgetFactory
  * @see CustomPageProducer
  */
-void DlgCustomizeImp::addPage( const QString& className )
+void DlgCustomizeImp::addPage(const char* className)
 {
-    _pages.push_back( className );
+    _pages.push_back(className);
 }
 
 /** Inserts a new tab page with its caption */
-void DlgCustomizeImp::addPage ( QWidget* w )
+void DlgCustomizeImp::addPage (QWidget* w)
 {
-    tabWidget->addTab( w, w->windowTitle() );
+    tabWidget->addTab(w, w->windowTitle());
 }
 
 #include "moc_DlgCustomizeImp.cpp"
