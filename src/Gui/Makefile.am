@@ -43,6 +43,7 @@ BUILT_SOURCES=\
 		moc_PythonEditor.cpp \
 		moc_PythonView.cpp \
 		moc_ReportView.cpp \
+		moc_SelectionView.cpp \
 		moc_SpinBox.cpp \
 		moc_Splashscreen.cpp \
 		moc_TextEdit.cpp \
@@ -219,6 +220,7 @@ libFreeCADGui_la_SOURCES=\
 		ReportView.cpp \
 		resource.cpp \
 		Selection.cpp \
+		SelectionView.cpp \
 		SoFCBackgroundGradient.cpp \
 		SoFCBoundingBox.cpp \
 		SoFCColorBar.cpp \
@@ -303,6 +305,7 @@ include_HEADERS=\
 		PythonView.h \
 		ReportView.h \
 		Selection.h \
+		SelectionView.h \
 		SoFCBackgroundGradient.h \
 		SoFCBoundingBox.h \
 		SoFCColorBar.h \

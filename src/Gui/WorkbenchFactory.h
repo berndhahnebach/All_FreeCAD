@@ -24,11 +24,9 @@
 #ifndef GUI_WORKBENCHFACTORY_H
 #define GUI_WORKBENCHFACTORY_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <Base/Factory.h>
+#include <string>
+#include <list>
 
 namespace Gui {
 class Workbench;
@@ -53,7 +51,7 @@ public:
    */
   Workbench* createWorkbench ( const char* sName ) const;
   /** Returns a list of all registered workbench classes. */
-  QStringList workbenches() const;
+  std::list<std::string> workbenches() const;
 
 private:
   static WorkbenchFactoryInst* _pcSingleton;

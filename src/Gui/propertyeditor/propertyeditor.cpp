@@ -220,7 +220,7 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
         // to the number of properties with same name and id
         if ( it->second.size() == ct ) {
             App::Property* prop = (it->second)[0];
-            QString editor = prop->getEditorName();
+            QString editor = QString::fromAscii(prop->getEditorName());
             if ( !editor.isEmpty() ) {
                 Base::BaseClass* item = 0;
                 try {
@@ -235,7 +235,7 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
                     PropertyItem* child = (PropertyItem*)item;
                     child->setParent(rootItem);
                     rootItem->appendChild(child);
-                    child->setPropertyName(prop->getName());
+                    child->setPropertyName(QString::fromAscii(prop->getName()));
                     child->setProperty(it->second);
                 }
             }

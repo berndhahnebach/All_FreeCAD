@@ -429,8 +429,8 @@ bool Document::saveAs(void)
     QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), 
                  QDir::currentPath(), QObject::tr("FreeCAD document (*.FCStd)")).toLower();
     if (!fn.isEmpty()) {
-        if (!fn.endsWith(".fcstd"))
-            fn += ".fcstd";
+        if (!fn.endsWith(QLatin1String(".fcstd")))
+            fn += QLatin1String(".fcstd");
 
         QFileInfo fi;
         fi.setFile(fn);
@@ -594,16 +594,16 @@ void Document::SaveDocFile (Base::Writer &writer) const
     writer.decInd();  // indention for 'ViewProviderData Count'
 
     // set camera settings
-    QString viewPos="";
+    QString viewPos;
     if (d->_pcAppWnd->sendHasMsgToActiveView("GetCamera")) {
         const char* ppReturn=0;
         d->_pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
   
         // remove the first line because it's a comment like '#Inventor V2.1 ascii'
-        QStringList lines = QString(ppReturn).split("\n");
+        QStringList lines = QString(QString::fromAscii(ppReturn)).split(QLatin1String("\n"));
         if (lines.size() > 1) {
             lines.pop_front();
-            viewPos = lines.join(" ");
+            viewPos = lines.join(QLatin1String(" "));
         }
     }
 
@@ -640,12 +640,13 @@ void Document::createView(const char* sType)
         return;
     }
 
-    const char* name = getDocument()->getName();
+    const char* name = getDocument()->Label.getValue();
 
-    QString aName = QString("%1 : %2[*]").arg(name).arg(d->_iWinCount++);
+    QString aName = QString::fromAscii("%1 : %2[*]")
+        .arg(QString::fromUtf8(name)).arg(d->_iWinCount++);
 
     pcView3D->setWindowTitle(aName);
-    pcView3D->setWindowIcon( FCIcon );
+    pcView3D->setWindowIcon(FCIcon);
     pcView3D->resize( 400, 300 );
     getMainWindow()->addWindow(pcView3D);
 }

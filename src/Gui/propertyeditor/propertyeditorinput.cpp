@@ -199,7 +199,7 @@ QVariant PropertyFloatItem::toString(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
     double value = ((App::PropertyFloat*)prop)->getValue();
-    QString data = QString("%1").arg(value,0,'f',2);
+    QString data = QString::fromAscii("%1").arg(value,0,'f',2);
     return QVariant(data);
 }
 
@@ -236,9 +236,9 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     sb->setValue(data.toDouble());
     const std::vector<App::Property*>& prop = getProperty();
     if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
-        sb->setSuffix(" °");
+        sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
-        sb->setSuffix(" mm");
+        sb->setSuffix(QLatin1String(" mm"));
 }
 
 QVariant PropertyFloatItem::editorData(QWidget *editor) const
@@ -260,7 +260,7 @@ QVariant PropertyFloatConstraintItem::toString(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
     double value = ((App::PropertyFloat*)prop)->getValue();
-    QString data = QString("%1").arg(value,0,'f',2);
+    QString data = QString::fromAscii("%1").arg(value,0,'f',2);
     return QVariant(data);
 }
 

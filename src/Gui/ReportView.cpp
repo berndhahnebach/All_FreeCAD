@@ -43,7 +43,7 @@ using namespace Gui::DockWnd;
 ReportView::ReportView( QWidget* parent )
   : QWidget(parent)
 {
-    setObjectName( "ReportOutput" );
+    setObjectName(QLatin1String("ReportOutput"));
 
     resize( 529, 162 );
     QGridLayout* tabLayout = new QGridLayout( this );
@@ -256,7 +256,7 @@ ReportOutput::~ReportOutput()
 void ReportOutput::restoreFont()
 {
     QFont _font(  font() );
-    _font.setFamily( "Courier" );
+    _font.setFamily(QLatin1String("Courier"));
 #ifdef FC_OS_LINUX
     _font.setPointSize( 12 );
 #else
@@ -348,7 +348,7 @@ void ReportOutput::onSaveAs()
     if (!fn.isEmpty()) {
         QFileInfo fi(fn);
         if (fi.completeSuffix().isEmpty())
-            fn += ".log";
+            fn += QLatin1String(".log");
         QFile f(fn);
         if (f.open(QIODevice::WriteOnly)) {
             QTextStream t (&f);

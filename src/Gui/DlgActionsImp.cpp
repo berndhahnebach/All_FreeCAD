@@ -54,10 +54,10 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent )
     std::string cMacroPath = App::GetApplication().
         GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().GetHomePath());
 
-    QDir d(cMacroPath.c_str(),"*.FCMacro");
+    QDir d(QString::fromUtf8(cMacroPath.c_str()), QLatin1String("*.FCMacro"));
     actionMacros->insertItems(0, d.entryList());
 
-    QStringList labels; labels << "Icons" << "Macros";
+    QStringList labels; labels << tr("Icons") << tr("Macros");
     actionListWidget->setHeaderLabels(labels);
     actionListWidget->header()->hide();
     showActions();
@@ -197,7 +197,7 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated(QTreeWidgetItem *ite
         {
             QPixmap p = Gui::BitmapFactory().pixmap(pScript->getPixmap());
             pixmapLabel->setPixmap(p);
-            m_sPixmap = name;
+            m_sPixmap = QString::fromUtf8(name); // can also be a path
         }
     }
 }
@@ -420,12 +420,12 @@ QString DlgCustomActionsImp::newActionName()
     do
     {
         bUsed = false;
-        sName = QString("Std_Macro_%1").arg( id++ );
+        sName = QString::fromAscii("Std_Macro_%1").arg( id++ );
 
         std::vector<Command*>::iterator it;
         for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
         {
-            if ( sName == (*it)->getName() )
+            if (sName == QLatin1String((*it)->getName()))
             {
                 bUsed = true;
                 break;

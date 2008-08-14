@@ -274,7 +274,8 @@ void Workbench::setupCustomShortcuts() const
             Command* cmd = cCmdMgr.getCommandByName(it->first.c_str());
             if (cmd && cmd->getAction())
             {
-                QString str = it->second.c_str();
+                // may be UTF-8 encoded
+                QString str = QString::fromUtf8(it->second.c_str());
                 QKeySequence shortcut = str;
                 cmd->getAction()->setShortcut(shortcut);
             }

@@ -160,7 +160,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         return tips;
 
     try {
-        QStringList items = context.split('.');
+        QStringList items = context.split(QLatin1Char('.'));
         Py::Module module("__main__");
         Py::Dict dict = module.getDict();
         QString modname = items.front();
@@ -264,7 +264,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
             Py::Object attr = obj.getAttr(attrname.as_string());
 
             CallTip tip;
-            QString str = attrname.as_string().c_str();
+            QString str = QString::fromAscii(attrname.as_string().c_str());
             tip.name = str;
 
             if (attr.isCallable()) {
@@ -284,12 +284,12 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                 tip.type = CallTip::Member;
             }
 
-            if (str == "__doc__" && attr.isString()) {
+            if (str == QLatin1String("__doc__") && attr.isString()) {
                 Py::Object help = attr;
                 if (help.isString()) {
                     Py::String doc(help);
-                    QString longdoc = doc.as_string().c_str();
-                    int pos = longdoc.indexOf(QChar('\n'));
+                    QString longdoc = QString::fromUtf8(doc.as_string().c_str());
+                    int pos = longdoc.indexOf(QLatin1Char('\n'));
                     pos = qMin(pos, 70);
                     if (pos < 0) 
                         pos = qMin(longdoc.length(), 70);
@@ -300,8 +300,8 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                 Py::Object help = attr.getAttr("__doc__");
                 if (help.isString()) {
                     Py::String doc(help);
-                    QString longdoc = doc.as_string().c_str();
-                    int pos = longdoc.indexOf(QChar('\n'));
+                    QString longdoc = QString::fromUtf8(doc.as_string().c_str());
+                    int pos = longdoc.indexOf(QLatin1Char('\n'));
                     pos = qMin(pos, 70);
                     if (pos < 0) 
                         pos = qMin(longdoc.length(), 70);
@@ -328,12 +328,12 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
 
     for (std::map<std::string,App::Property*>::const_iterator It=Map.begin();It!=Map.end();++It) {
         CallTip tip;
-        QString str = It->first.c_str();
+        QString str = QString::fromAscii(It->first.c_str());
         tip.name = str;
         tip.type = CallTip::Property;
-        QString longdoc = container->getPropertyDocumentation(It->second);
+        QString longdoc = QString::fromUtf8(container->getPropertyDocumentation(It->second));
         if (!longdoc.isEmpty()) {
-            int pos = longdoc.indexOf(QChar('\n'));
+            int pos = longdoc.indexOf(QLatin1Char('\n'));
             pos = qMin(pos, 70);
             if (pos < 0) 
                 pos = qMin(longdoc.length(), 70);

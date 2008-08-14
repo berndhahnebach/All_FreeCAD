@@ -51,10 +51,11 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
     this->setupUi(this);
 
     // get the macro home path
-    this->macroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+    this->macroPath = QString::fromUtf8(getWindowParameter()->GetASCII("MacroPath",
+        App::GetApplication().GetHomePath()).c_str());
     // check on PATHSEP at the end
-    if (this->macroPath.at(this->macroPath.length()-1) != PATHSEP)
-        this->macroPath += PATHSEP;
+    if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
+        this->macroPath += QLatin1Char(PATHSEP);
 
     // get a pointer to the macro manager
     this->macroManager = Application::Instance->macroManager();
@@ -85,7 +86,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
 
     // search in the macro path first for an already existing macro
     QString fn = this->macroPath + lineEditPath->text();
-    if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
+    if (!fn.endsWith(QLatin1String(".FCMacro")) ) fn += QLatin1String(".FCMacro");
     QFileInfo fi(fn);
     if ( fi.isFile() && fi.exists() )
     {

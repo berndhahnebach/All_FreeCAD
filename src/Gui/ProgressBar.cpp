@@ -162,7 +162,7 @@ void Sequencer::showRemainingTime()
             QTime time( 0,0, 0);
             time = time.addSecs( rest/1000 );
             QString remain = ProgressBar::tr("Remaining: %1").arg( time.toString() );
-            QString status = QString("%1\t[%2]").arg(txt).arg(remain);
+            QString status = QString::fromAscii("%1\t[%2]").arg(txt).arg(remain);
             getMainWindow()->statusBar()->showMessage(status);
         }
     }
@@ -178,8 +178,8 @@ void Sequencer::resetData()
     delete d->waitCursor;
     d->waitCursor = 0;
     d->bar->leaveControlEvents();
-    getMainWindow()->setPaneText(1, "");
-    getMainWindow()->statusBar()->showMessage("");
+    getMainWindow()->setPaneText(1, QLatin1String(""));
+    getMainWindow()->statusBar()->showMessage(QLatin1String(""));
 
     SequencerBase::resetData();
 }
@@ -192,10 +192,10 @@ void Sequencer::abort()
     throw exc;
 }
 
-void Sequencer::setText ( const char* pszTxt )
+void Sequencer::setText (const char* pszTxt)
 {
     // print message to the statusbar
-    d->text = pszTxt ? pszTxt : "";
+    d->text = pszTxt ? QString::fromUtf8(pszTxt) : QLatin1String("");
     getMainWindow()->statusBar()->showMessage(d->text);
 }
 

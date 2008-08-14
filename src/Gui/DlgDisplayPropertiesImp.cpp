@@ -243,12 +243,12 @@ void DlgDisplayPropertiesImp::setDisplayModes(const std::vector<Gui::ViewProvide
             const std::vector<std::string>& value = display->getEnumVector();
             if (it == views.begin()) {
                 for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt)
-                    commonModes << jt->c_str();
+                    commonModes << QLatin1String(jt->c_str());
             }
             else {
                 for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt) {
-                    if (commonModes.contains(jt->c_str()))
-                        modes << jt->c_str();
+                    if (commonModes.contains(QLatin1String(jt->c_str())))
+                        modes << QLatin1String(jt->c_str());
                 }
 
                 commonModes = modes;
@@ -266,7 +266,7 @@ void DlgDisplayPropertiesImp::setDisplayModes(const std::vector<Gui::ViewProvide
         App::Property* prop = (*it)->getPropertyByName("DisplayMode");
         if (prop && prop->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
             App::PropertyEnumeration* display = static_cast<App::PropertyEnumeration*>(prop);
-            QString activeMode = display->getValueAsString();
+            QString activeMode = QString::fromAscii(display->getValueAsString());
             int index = changeMode->findText(activeMode);
             if (index != -1) {
                 changeMode->setCurrentIndex(index);
@@ -293,33 +293,33 @@ void DlgDisplayPropertiesImp::setMaterial(const std::vector<Gui::ViewProvider*>&
 
 void DlgDisplayPropertiesImp::fillupMaterials()
 {
-    Materials["Brass"]         = App::Material::BRASS;
-    Materials["Bronze"]        = App::Material::BRONZE;
-    Materials["Copper"]        = App::Material::COPPER;
-    Materials["Gold"]          = App::Material::GOLD;
-    Materials["Pewter"]        = App::Material::PEWTER;
-    Materials["Plaster"]       = App::Material::PLASTER;
-    Materials["Plastic"]       = App::Material::PLASTIC;
-    Materials["Silver"]        = App::Material::SILVER;
-    Materials["Steel"]         = App::Material::STEEL;
-    Materials["Stone"]         = App::Material::STONE;
-    Materials["Shiny plastic"] = App::Material::SHINY_PLASTIC;
-    Materials["Satin"]         = App::Material::SATIN;
-    Materials["Metalized"]     = App::Material::METALIZED;
-    Materials["Neon GNC"]      = App::Material::NEON_GNC;
-    Materials["Chrome"]        = App::Material::CHROME;
-    Materials["Aluminium"]     = App::Material::ALUMINIUM;
-    Materials["Obsidian"]      = App::Material::OBSIDIAN;
-    Materials["Neon PHC"]      = App::Material::NEON_PHC;
-    Materials["Jade"]          = App::Material::JADE;
-    Materials["Ruby"]          = App::Material::RUBY;
-    Materials["Emerald"]       = App::Material::EMERALD;
+    Materials[QLatin1String("Brass")]         = App::Material::BRASS;
+    Materials[QLatin1String("Bronze")]        = App::Material::BRONZE;
+    Materials[QLatin1String("Copper")]        = App::Material::COPPER;
+    Materials[QLatin1String("Gold")]          = App::Material::GOLD;
+    Materials[QLatin1String("Pewter")]        = App::Material::PEWTER;
+    Materials[QLatin1String("Plaster")]       = App::Material::PLASTER;
+    Materials[QLatin1String("Plastic")]       = App::Material::PLASTIC;
+    Materials[QLatin1String("Silver")]        = App::Material::SILVER;
+    Materials[QLatin1String("Steel")]         = App::Material::STEEL;
+    Materials[QLatin1String("Stone")]         = App::Material::STONE;
+    Materials[QLatin1String("Shiny plastic")] = App::Material::SHINY_PLASTIC;
+    Materials[QLatin1String("Satin")]         = App::Material::SATIN;
+    Materials[QLatin1String("Metalized")]     = App::Material::METALIZED;
+    Materials[QLatin1String("Neon GNC")]      = App::Material::NEON_GNC;
+    Materials[QLatin1String("Chrome")]        = App::Material::CHROME;
+    Materials[QLatin1String("Aluminium")]     = App::Material::ALUMINIUM;
+    Materials[QLatin1String("Obsidian")]      = App::Material::OBSIDIAN;
+    Materials[QLatin1String("Neon PHC")]      = App::Material::NEON_PHC;
+    Materials[QLatin1String("Jade")]          = App::Material::JADE;
+    Materials[QLatin1String("Ruby")]          = App::Material::RUBY;
+    Materials[QLatin1String("Emerald")]       = App::Material::EMERALD;
 
     QStringList material = Materials.keys();
     material.sort();
-    changeMaterial->addItem("Default");
+    changeMaterial->addItem(QLatin1String("Default"));
     changeMaterial->addItems(material);
-    Materials["Default"]       = App::Material::DEFAULT;
+    Materials[QLatin1String("Default")]       = App::Material::DEFAULT;
 }
 
 void DlgDisplayPropertiesImp::setShapeColor(const std::vector<Gui::ViewProvider*>& views)

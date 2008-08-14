@@ -66,8 +66,8 @@ QWidget* PropertyBoolItem::createEditor(QWidget* parent, const QObject* receiver
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);
-    cb->addItem("false");
-    cb->addItem("true");
+    cb->addItem(QLatin1String("false"));
+    cb->addItem(QLatin1String("true"));
     QObject::connect(cb, SIGNAL(activated(int)), receiver, method);
     return cb;
 }
@@ -133,12 +133,12 @@ void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) cons
             const std::vector<std::string>& value = prop->getEnumVector();
             if (it == items.begin()) {
                 for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt)
-                    commonModes << jt->c_str();
+                    commonModes << QLatin1String(jt->c_str());
             }
             else {
                 for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt) {
-                    if (commonModes.contains(jt->c_str()))
-                        modes << jt->c_str();
+                    if (commonModes.contains(QLatin1String(jt->c_str())))
+                        modes << QLatin1String(jt->c_str());
                 }
 
                 commonModes = modes;
@@ -186,7 +186,7 @@ QVariant PropertyStringListItem::value(const App::Property* prop) const
     QStringList list;
     const std::vector<std::string>& value = ((App::PropertyStringList*)prop)->getValues();
     for ( std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt ) {
-        list << QString(jt->c_str());
+        list << QString::fromAscii(jt->c_str());
     }
 
     return QVariant(list);

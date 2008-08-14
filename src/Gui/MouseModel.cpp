@@ -320,9 +320,9 @@ PolyPickerMouseModel::~PolyPickerMouseModel()
 int PolyPickerMouseModel::popupMenu()
 {
     QMenu menu;
-    QAction* fi = menu.addAction("Finish");
-    menu.addAction("Clear");
-    QAction* ca = menu.addAction("Cancel");
+    QAction* fi = menu.addAction(QObject::tr("Finish"));
+    menu.addAction(QObject::tr("Clear"));
+    QAction* ca = menu.addAction(QObject::tr("Cancel"));
     if (getPolygon().size() < 3)
         fi->setEnabled(false);
     QAction* id = menu.exec(QCursor::pos());
@@ -442,9 +442,9 @@ PolyClipMouseModel::~PolyClipMouseModel()
 int PolyClipMouseModel::popupMenu()
 {
     QMenu menu;
-    QAction* ci = menu.addAction("Inner");
-    QAction* co = menu.addAction("Outer");
-    QAction* ca = menu.addAction("Cancel");
+    QAction* ci = menu.addAction(QObject::tr("Inner"));
+    QAction* co = menu.addAction(QObject::tr("Outer"));
+    QAction* ca = menu.addAction(QObject::tr("Cancel"));
     if (getPolygon().size() < 3) {
         ci->setEnabled(false);
         co->setEnabled(false);

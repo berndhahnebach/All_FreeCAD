@@ -87,11 +87,11 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
 
     // according to specification add some meta-information to the image
     uint mt = QDateTime::currentDateTime().toTime_t();
-    QString mtime = QString("%1").arg(mt);
-    img.setText("Software", App::Application::Config()["ExeName"].c_str());
-    img.setText("Thumb::Mimetype", "application/x-extension-fcstd");
-    img.setText("Thumb::MTime", mtime);
-    img.setText("Thumb::URI", this->uri.toString());
+    QString mtime = QString::fromAscii("%1").arg(mt);
+    img.setText(QLatin1String("Software"), QString::fromUtf8(App::Application::Config()["ExeName"].c_str()));
+    img.setText(QLatin1String("Thumb::Mimetype"), QLatin1String("application/x-extension-fcstd"));
+    img.setText(QLatin1String("Thumb::MTime"), mtime);
+    img.setText(QLatin1String("Thumb::URI"), this->uri.toString());
 
     QByteArray ba;
     QBuffer buffer(&ba);

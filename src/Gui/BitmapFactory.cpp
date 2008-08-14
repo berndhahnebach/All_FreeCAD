@@ -142,7 +142,8 @@ QPixmap BitmapFactoryInst::pixmap(const char* name) const
                 break;
             } else {
                 for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
-                    QString path = fileName + "." + QString((*fm).toLower().constData());
+                    QString path = QString::fromAscii("%1.%2").arg(fileName).
+                        arg(QString::fromAscii((*fm).toLower().constData()));
                     if (QFile(path).exists()) {
                         icon.load(path);
                         found = true;
