@@ -141,7 +141,7 @@ QVariant PropertyItem::editorData(QWidget * /*editor*/) const
 QString PropertyItem::propertyName() const
 {
     if (propName.isEmpty())
-        return QString("<empty>");
+        return QLatin1String("<empty>");
     return propName;
 }
 
@@ -150,7 +150,7 @@ void PropertyItem::setPropertyName(const QString& name)
     QString display;
     for (int i=0; i<name.length(); i++) {
         if (name[i].isUpper() && !display.isEmpty()) {
-            display += " ";
+            display += QLatin1String(" ");
         }
         display += name[i];
     }

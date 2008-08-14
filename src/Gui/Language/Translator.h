@@ -28,7 +28,13 @@
 # include <Gui/Qt4All.h>
 #endif
 
+#include <string>
+#include <map>
+#include <list>
+
 namespace Gui {
+
+typedef std::list<std::string> TStringList;
 
 /**
  * The Translator class uses Qt's QTranslator objects to change the language of the application
@@ -52,13 +58,13 @@ public:
     //@}
 
     /** Activates the specified language \a lang if available. */
-    void activateLanguage (const QString& lang);
+    void activateLanguage (const char* lang);
     /* Reloads the translators */
     void refresh();
     /** Returns the currently installed language. If no language is installed an empty string is returned. */
-    QString activeLanguage() const;
+    std::string activeLanguage() const;
     /** Returns a list of supported languages. */
-    QStringList supportedLanguages() const;
+    TStringList supportedLanguages() const;
 
 private:
     Translator();
@@ -66,9 +72,9 @@ private:
     void removeTranslators();
 
     static Translator* _pcSingleton;
-    QString activatedLanguage; /**< Active language */
-    QMap<QString, QString> mapLanguageTopLevelDomain;
-    QList<QTranslator*> translators; /**< A list of all created translators */
+    std::string activatedLanguage; /**< Active language */
+    std::map<std::string, std::string> mapLanguageTopLevelDomain;
+    std::list<QTranslator*> translators; /**< A list of all created translators */
 };
 
 } // namespace Gui

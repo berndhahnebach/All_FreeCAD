@@ -93,7 +93,7 @@ DlgGeneralImp::~DlgGeneralImp()
  */
 void DlgGeneralImp::setRecentFileSize()
 {
-    RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QString("recentFiles"));
+    RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QLatin1String("recentFiles"));
     if (recent) {
         ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
         recent->resizeList(hGrp->GetInt("RecentFiles", 4));
@@ -131,7 +131,7 @@ void DlgGeneralImp::loadSettings()
     std::string start = App::Application::Config()["StartWorkbench"];
     start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
                                   GetASCII("AutoloadModule", start.c_str());
-    QString startWbName = start.c_str();
+    QString startWbName = QLatin1String(start.c_str());
     AutoloadModuleCombo->setCurrentIndex(AutoloadModuleCombo->findData(startWbName));
 
     AutoloadTabCombo->onRestore();
@@ -156,9 +156,9 @@ void DlgGeneralImp::loadSettings()
     QByteArray language = hGrp->GetASCII("Language", "English").c_str();
     Languages->addItem(Gui::Translator::tr("English"), QByteArray("English"));
     int index = 1;
-    QStringList list = Translator::instance()->supportedLanguages();
-    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it, index++) {
-        QByteArray lang = it->toAscii();
+    TStringList list = Translator::instance()->supportedLanguages();
+    for (TStringList::iterator it = list.begin(); it != list.end(); ++it, index++) {
+        QByteArray lang = it->c_str();
         Languages->addItem(Gui::Translator::tr(lang.constData()), lang);
         if (language == lang)
             Languages->setCurrentIndex(index);

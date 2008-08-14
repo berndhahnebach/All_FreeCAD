@@ -88,13 +88,13 @@ void DlgTipOfTheDayImp::on_buttonNextTip_clicked()
 void DlgTipOfTheDayImp::reload()
 {
     // set the host and start the download
-    _http->setHost("juergen-riegel.net");
-    _http->get("/FreeCAD/Docu/index.php?title=Tip_of_the_day", 0);
+    _http->setHost(QLatin1String("juergen-riegel.net"));
+    _http->get(QLatin1String("/FreeCAD/Docu/index.php?title=Tip_of_the_day"), 0);
 
     _iCurrentTip = 0;
-    _lTips << QString("If you want to learn more about FreeCAD you must go to "
-                      "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
-                      "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
+    _lTips << tr("If you want to learn more about FreeCAD you must go to "
+                 "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
+                 "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
 }
 
 void DlgTipOfTheDayImp::onResponseHeaderReceived(const QHttpResponseHeader & responseHeader)
@@ -112,12 +112,12 @@ void DlgTipOfTheDayImp::onDone(bool err)
         return;
 
     // get the page and search for the tips section
-    QString text = _http->readAll();
-    QRegExp rx("<div class=\"editsection\".+<div class=\"printfooter\">");
+    QString text = QString::fromAscii(_http->readAll());
+    QRegExp rx(QLatin1String("<div class=\"editsection\".+<div class=\"printfooter\">"));
     if (rx.indexIn(text) > -1) {
         // the text of interest
         text = rx.cap();
-        rx.setPattern("<div class=\"editsection\".+</h3>");
+        rx.setPattern(QLatin1String("<div class=\"editsection\".+</h3>"));
         rx.setMinimal(true);
         _lTips += text.split(rx, QString::SkipEmptyParts);
     }

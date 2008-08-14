@@ -121,16 +121,17 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
             writeToImage(img);
             // set keywords for PNG format
             if (file.hasExtension("PNG")) {
-                img.setText("Title", filename);
-                img.setText("Author", "FreeCAD (http://free-cad.sourceforge.net)");
+                img.setText(QLatin1String("Title"), QString::fromUtf8(filename));
+                img.setText(QLatin1String("Author"), QLatin1String("FreeCAD (http://free-cad.sourceforge.net)"));
                 if (strcmp(comment,"")==0)
-                    img.setText("Description", "Screenshot created by FreeCAD");   
+                    img.setText(QLatin1String("Description"), QLatin1String("Screenshot created by FreeCAD"));
                 else if (strcmp(comment,"$MIBA")==0)
-                    img.setText("Description", createMIBA().c_str());   
+                    img.setText(QLatin1String("Description"), QLatin1String(createMIBA().c_str()));
                 else 
-                    img.setText("Description", comment);
-                img.setText("Creation Time", QDateTime::currentDateTime().toString());
-                img.setText("Software", App::Application::Config()["ExeName"].c_str());
+                    img.setText(QLatin1String("Description"), QString::fromUtf8(comment));
+                img.setText(QLatin1String("Creation Time"), QDateTime::currentDateTime().toString());
+                img.setText(QLatin1String("Software"), 
+                    QString::fromUtf8(App::Application::Config()["ExeName"].c_str()));
             }
 
             QFile f(QString::fromUtf8(filename));
@@ -206,7 +207,7 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
         getWriteFiletypeInfo(i, extlist, fullname, description);
 
         for (int j=0; j < extlist.getLength(); j++) {
-            QString ext = (const char*) extlist[j];
+            QString ext = QLatin1String((const char*) extlist[j]);
             if (formats.indexOf(ext.toUpper()) == -1)
                 formats << ext.toUpper();
         }
@@ -216,15 +217,15 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
     QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
     for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
         // not supported? then append
-        if (isWriteSupported( (*it).data() ) == false && formats.indexOf(*it) == -1)
-            formats << *it;
+        if (!isWriteSupported((*it).data()) && formats.indexOf(QLatin1String(*it)) == -1)
+            formats << QLatin1String(*it);
     }
 
     // now add PostScript and SGI RGB
-    if (formats.indexOf("EPS") == -1)
-        formats << "EPS";
-    else if (formats.indexOf("SGI") == -1)
-        formats << "SGI";
+    if (formats.indexOf(QLatin1String("EPS")) == -1)
+        formats << QLatin1String("EPS");
+    else if (formats.indexOf(QLatin1String("SGI")) == -1)
+        formats << QLatin1String("SGI");
 
     formats.sort();
 

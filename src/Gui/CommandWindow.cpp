@@ -417,7 +417,7 @@ Action * StdCmdWindowsMenu::createAction(void)
     window->setWhatsThis(QObject::tr(sWhatsThis));
   }
 
-  QAction* sep = pcAction->addAction("");
+  QAction* sep = pcAction->addAction(QLatin1String(""));
   sep->setSeparator(true);
 
   return pcAction;

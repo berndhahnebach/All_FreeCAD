@@ -83,10 +83,10 @@ void StdCmdWorkbench::activated(int iMsg)
     QList<QAction*> items = ((WorkbenchGroup*)_pcAction)->actions();
     doCommand(Gui, "Gui.activateWorkbench(\"%s\")", (const char*)items[iMsg]->objectName().toAscii());
   } catch(const Base::PyException& e) {
-    QString msg(e.what());
+    QString msg(QLatin1String(e.what()));
     // ignore '<type 'exceptions.*Error'>' prefixes
     QRegExp rx;
-    rx.setPattern("^\\s*<type 'exceptions.\\w*'>:\\s*");
+    rx.setPattern(QLatin1String("^\\s*<type 'exceptions.\\w*'>:\\s*"));
     int pos = rx.indexIn(msg);
     if ( pos != -1 )
       msg = msg.mid(rx.matchedLength());
@@ -154,7 +154,7 @@ void StdCmdRecentFiles::activated(int iMsg)
 Action * StdCmdRecentFiles::createAction(void)
 {
   RecentFilesAction* pcAction = new RecentFilesAction(this, getMainWindow());
-  pcAction->setObjectName(QString("recentFiles"));
+  pcAction->setObjectName(QLatin1String("recentFiles"));
   pcAction->setDropDownMenu(true);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -185,7 +185,7 @@ Action * StdCmdAbout::createAction(void)
 {
   Action *pcAction;
 
-  QString exe = App::Application::Config()["ExeName"].c_str();
+  QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
   pcAction = new Action(this,getMainWindow());
   pcAction->setText( QObject::tr(sMenuText).arg(exe) );
   pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
@@ -216,7 +216,7 @@ void StdCmdAbout::languageChange()
 {
   if ( _pcAction )
   {
-    QString exe = App::Application::Config()["ExeName"].c_str();
+      QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
     _pcAction->setText( QObject::tr(sMenuText).arg(exe) );
     _pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
     _pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
@@ -536,7 +536,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
 {
     std::string url = App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm";
 #if QT_VERSION >= 0x040200
-    bool ok = QDesktopServices::openUrl(QString(url.c_str()));
+    bool ok = QDesktopServices::openUrl(QString::fromUtf8(url.c_str()));
 #elif defined(Q_WS_WIN)
     std::wstring wstr = Base::FileInfo(url).toStdWString();
     bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
@@ -546,7 +546,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
 #endif
     if (!ok) {
         QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("Cannot open file %1").arg(url.c_str()));
+            QObject::tr("Cannot open file %1").arg(QString::fromUtf8(url.c_str())));
     }
 }
 
@@ -571,7 +571,7 @@ void StdCmdOnlineHelpPython::activated(int iMsg)
 {
     std::string url = App::Application::Config()["AppHomePath"]+ "doc/Python25.chm";
 #if QT_VERSION >= 0x040200
-    bool ok = QDesktopServices::openUrl(QString(url.c_str()));
+    bool ok = QDesktopServices::openUrl(QString::fromUtf8(url.c_str()));
 #elif defined(Q_WS_WIN)
     std::wstring wstr = Base::FileInfo(url).toStdWString();
     bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
@@ -581,7 +581,7 @@ void StdCmdOnlineHelpPython::activated(int iMsg)
 #endif
     if (!ok) {
         QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("Cannot open file %1").arg(url.c_str()));
+            QObject::tr("Cannot open file %1").arg(QString::fromUtf8(url.c_str())));
     }
 }
 

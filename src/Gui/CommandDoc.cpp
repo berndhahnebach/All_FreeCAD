@@ -71,24 +71,24 @@ void StdCmdOpen::activated(int iMsg)
     const char* supported = QT_TR_NOOP("Supported formats");
     const char* allFiles = QT_TR_NOOP("All files (*.*)");
     formatList = QObject::tr(supported);
-    formatList += " (";
+    formatList += QLatin1String(" (");
 
     std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
     std::map<std::string,std::string>::const_iterator It;
     for(It=EndingMap.begin();It != EndingMap.end();It++)
     {
-        formatList += " *.";
-        formatList += It->first.c_str();
+        formatList += QLatin1String(" *.");
+        formatList += QLatin1String(It->first.c_str());
     }
 
-    formatList += ");;";
+    formatList += QLatin1String(");;");
 
     std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
     std::vector<std::string>::const_iterator Jt;
     for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
     {
-        formatList += (*Jt).c_str();
-        formatList += ";;";
+        formatList += QLatin1String((*Jt).c_str());
+        formatList += QLatin1String(";;");
     }
     formatList += QObject::tr(allFiles);
 
@@ -124,24 +124,24 @@ void StdCmdImport::activated(int iMsg)
     const char* supported = QT_TR_NOOP("Supported formats");
     const char* allFiles = QT_TR_NOOP("All files (*.*)");
     formatList = QObject::tr(supported);
-    formatList += " (";
+    formatList += QLatin1String(" (");
 
     std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
     std::map<std::string,std::string>::const_iterator It;
     for(It=EndingMap.begin();It != EndingMap.end();It++)
     {
-        formatList += " *.";
-        formatList += It->first.c_str();
+        formatList += QLatin1String(" *.");
+        formatList += QLatin1String(It->first.c_str());
     }
 
-    formatList += ");;";
+    formatList += QLatin1String(");;");
 
     std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
     std::vector<std::string>::const_iterator Jt;
     for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
     {
-        formatList += (*Jt).c_str();
-        formatList += ";;";
+        formatList += QLatin1String((*Jt).c_str());
+        formatList += QLatin1String(";;");
     }
     formatList += QObject::tr(allFiles);
 
@@ -304,7 +304,7 @@ void StdCmdPrint::activated(int iMsg)
 {
   if ( getMainWindow()->activeWindow() )
   {
-    getMainWindow()->statusBar()->showMessage("Printing...");
+      getMainWindow()->statusBar()->showMessage(QObject::tr("Printing..."));
     getMainWindow()->activeWindow()->print();
   }
 }
@@ -333,7 +333,7 @@ void StdCmdPrintPdf::activated(int iMsg)
 {
   if ( getMainWindow()->activeWindow() )
   {
-    getMainWindow()->statusBar()->showMessage("Exporting PDF...");
+    getMainWindow()->statusBar()->showMessage(QLatin1String("Exporting PDF..."));
     getMainWindow()->activeWindow()->printPdf();
   }
 }

@@ -261,7 +261,7 @@ void Command::invoke (int i)
     catch (Base::Exception &e) {
         e.ReportException();
         // Pop-up a dialog for FreeCAD-specific exceptions
-        QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Exception"), e.what());
+        QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Exception"), QLatin1String(e.what()));
     }
     catch (std::exception &e) {
         std::string str;
@@ -487,7 +487,7 @@ void MacroCommand::activated(int iMsg)
                              ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
                                      App::GetApplication().GetHomePath());
 
-    QDir d( cMacroPath.c_str() );
+    QDir d(QString::fromUtf8(cMacroPath.c_str()));
     QFileInfo fi(d, QString::fromUtf8(sScriptName));
     Application::Instance->macroManager()->run(MacroManager::File, fi.filePath().toUtf8());
     // after macro run recalculate the document
@@ -714,17 +714,17 @@ Action * PythonCommand::createAction(void)
 
     pcAction = new Action(this,getMainWindow());
 //  pcAction->setText(sName);
-    pcAction->setText(getResource("MenuText"));
-    pcAction->setToolTip(getResource("ToolTip"));
-    pcAction->setStatusTip(getResource("StatusTip"));
-    pcAction->setWhatsThis(getResource("WhatsThis"));
+    pcAction->setText(QString::fromUtf8(getResource("MenuText")));
+    pcAction->setToolTip(QString::fromUtf8(getResource("ToolTip")));
+    pcAction->setStatusTip(QString::fromUtf8(getResource("StatusTip")));
+    pcAction->setWhatsThis(QString::fromUtf8(getResource("WhatsThis")));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
 
     if ( pcAction->statusTip().isEmpty() )
-        pcAction->setStatusTip(getResource("ToolTip"));
+        pcAction->setStatusTip(QString::fromUtf8(getResource("ToolTip")));
     if ( pcAction->whatsThis().isEmpty() )
-        pcAction->setWhatsThis(getResource("ToolTip"));
+        pcAction->setWhatsThis(QString::fromUtf8(getResource("ToolTip")));
 
     return pcAction;
 }

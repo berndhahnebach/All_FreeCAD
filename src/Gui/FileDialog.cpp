@@ -47,13 +47,13 @@ QString FileDialog::getSaveFileName (QWidget * parent, const QString & caption, 
         QFileInfo fi(dir);
         if (fi.isRelative()) {
             dirName = getWorkingDirectory();
-            dirName += "/";
+            dirName += QLatin1String("/");
             dirName += fi.fileName();
         }
     
         // get the suffix for the filter
         QRegExp rx;
-        rx.setPattern("\\s(\\(\\*\\.\\w{1,})\\W");
+        rx.setPattern(QLatin1String("\\s(\\(\\*\\.\\w{1,})\\W"));
         int index = rx.indexIn(filter);
         if (index != -1) {
             // get the suffix with the leading dot
@@ -202,10 +202,10 @@ void FileOptionsDialog::accept()
     // Fixes a bug of the default implementation when entering an asterik
     QLineEdit* filename = this->findChild<QLineEdit*>();
     QString fn = filename->text();
-    if (fn.startsWith('*')) {
+    if (fn.startsWith(QLatin1String("*"))) {
         QFileInfo fi(fn);
         QString ext = fi.suffix();
-        ext.prepend("*.");
+        ext.prepend(QLatin1String("*."));
         QStringList filters = this->filters();
         bool ok=false;
         // Compare the given suffix with the suffixes of all filters
@@ -236,14 +236,14 @@ void FileOptionsDialog::accept()
     else if (!fn.isEmpty()) {
         QFileInfo fi(fn);
         QString ext = fi.completeSuffix();
-        QRegExp rx("\\(\\*.(\\w+)");
+        QRegExp rx(QLatin1String("\\(\\*.(\\w+)"));
         QString suf = selectedFilter();
         if (rx.indexIn(suf) >= 0)
             suf = rx.cap(1);
         if (ext.isEmpty())
             setDefaultSuffix(suf);
         else if (ext.toLower() != suf.toLower()) {
-            fn = QString("%1.%2").arg(fn).arg(suf);
+            fn = QString::fromAscii("%1.%2").arg(fn).arg(suf);
             selectFile(fn);
         }
     }
@@ -326,8 +326,8 @@ FileChooser::FileChooser ( QWidget * parent )
     connect(lineEdit, SIGNAL(textChanged(const QString &)),
             this, SIGNAL(fileNameChanged(const QString &)));
 
-    button = new QPushButton("...", this);
-    button->setFixedWidth(2*button->fontMetrics().width( " ... " ));
+    button = new QPushButton(QLatin1String("..."), this);
+    button->setFixedWidth(2*button->fontMetrics().width(QLatin1String(" ... ")));
     layout->addWidget(button);
 
     connect( button, SIGNAL(clicked()), this, SLOT(chooseFile()));
@@ -427,8 +427,8 @@ void FileChooser::setFilter ( const QString& filter )
 void FileChooser::setButtonText( const QString& txt )
 {
     button->setText( txt );
-    int w1 = 2*button->fontMetrics().width( txt );
-    int w2 = 2*button->fontMetrics().width( " ... " );
+    int w1 = 2*button->fontMetrics().width(txt);
+    int w2 = 2*button->fontMetrics().width(QLatin1String(" ... "));
     button->setFixedWidth( (w1 > w2 ? w1 : w2) );
 }
 

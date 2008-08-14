@@ -55,14 +55,15 @@ WindowParameter::~WindowParameter()
 }
 
 /** Sets the group of the window to \a name */
-bool WindowParameter::setGroupName( const char* name )
+bool WindowParameter::setGroupName(const char* name)
 {
   if (_handle.isValid())
     return false; // cannot change parameter group
 
   assert(name);
-  QString prefGroup = name;
-  if ( prefGroup.startsWith("User parameter:") || prefGroup.startsWith("System parameter:") )
+  std::string prefGroup = name;
+  if (prefGroup.compare(0,15,"User parameter:") == 0 ||
+      prefGroup.compare(0,17,"System parameter:") == 0)
     _handle = App::GetApplication().GetParameterGroupByPath( name );
   else
     _handle = getDefaultParameter()->GetGroup( name );

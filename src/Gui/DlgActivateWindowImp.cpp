@@ -46,7 +46,7 @@ DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, Qt::WFlags fl )
     // create widgets
     setupUi(this);
     QTreeWidgetItem* active=0;
-    QStringList labels; labels << "Windows";
+    QStringList labels; labels << tr("Windows");
     treeWidget->setHeaderLabels(labels);
     treeWidget->header()->hide();
 

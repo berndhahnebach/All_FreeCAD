@@ -60,7 +60,8 @@ QVariant PropertyColorItem::toString(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
 
     App::Color value = ((App::PropertyColor*)prop)->getValue();
-    QString color = QString("[%1, %2, %3]").arg((int)(255.0f*value.r)).arg((int)(255.0f*value.g)).arg((int)(255.0f*value.b));
+    QString color = QString::fromAscii("[%1, %2, %3]")
+        .arg((int)(255.0f*value.r)).arg((int)(255.0f*value.g)).arg((int)(255.0f*value.b));
     return QVariant(color);
 }
 

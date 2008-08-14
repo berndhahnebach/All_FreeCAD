@@ -182,7 +182,7 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
     QList<QToolBar*> toolbars = toolBars();
     for (QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
         // search for the toolbar
-        this->toolbarNames << (*it)->command().c_str();
+        this->toolbarNames << QString::fromUtf8((*it)->command().c_str());
         QToolBar* toolbar = findToolBar(toolbars, QString::fromAscii((*it)->command().c_str()));
         std::string toolbarName = (*it)->command();
         bool visible = hPref->GetBool(toolbarName.c_str(), true);

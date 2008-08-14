@@ -56,9 +56,13 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups;
+    groups << QLatin1String("File") << QLatin1String("Edit")
+           << QLatin1String("View") << QLatin1String("Standard-View")
+           << QLatin1String("Tools") << QLatin1String("Window")
+           << QLatin1String("Help") << QLatin1String("Macros");
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
-        QString group = it->second->getGroupName();
+        QString group = QLatin1String(it->second->getGroupName());
         if (!groups.contains(group))
             groups << group;
     }
@@ -84,17 +88,17 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     }
 
     QStringList labels; 
-    labels << "Icon" << "Command";
+    labels << tr("Icon") << tr("Command");
     commandTreeWidget->setHeaderLabels(labels);
     commandTreeWidget->header()->hide();
-    labels.clear(); labels << "Command";
+    labels.clear(); labels << tr("Command");
     toolbarTreeWidget->setHeaderLabels(labels);
     toolbarTreeWidget->header()->hide();
 
     on_categoryBox_activated(categoryBox->currentIndex());
     Workbench* w = WorkbenchManager::instance()->active();
     if (w) {
-        QString name = w->name().c_str();
+        QString name = QString::fromAscii(w->name().c_str());
         int index = workbenchBox->findData(name);
         workbenchBox->setCurrentIndex(index);
     }
@@ -185,7 +189,7 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
             } else {
                 Command* pCmd = rMgr.getCommandByName(it2->first.c_str());
                 if (pCmd) {
-                    QString cmd = it2->first.c_str(); // command name
+                    // command name
                     QTreeWidgetItem* item = new QTreeWidgetItem(toplevel);
                     item->setText(0, QObject::trUtf8(pCmd->getMenuText()));
                     item->setData(0, Qt::UserRole, QByteArray(it2->first.c_str()));
@@ -208,7 +212,7 @@ void DlgCustomToolbars::exportCustomToolbars(const QByteArray& workbench)
     CommandManager& rMgr = Application::Instance->commandManager();
     for (int i=0; i<toolbarTreeWidget->topLevelItemCount(); i++) {
         QTreeWidgetItem* toplevel = toolbarTreeWidget->topLevelItem(i);
-        QString groupName = QString("Custom_%1").arg(i+1);
+        QString groupName = QString::fromAscii("Custom_%1").arg(i+1);
         QByteArray toolbarName = toplevel->text(0).toUtf8();
         ParameterGrp::handle hToolGrp = hGrp->GetGroup(groupName.toAscii());
         hToolGrp->SetASCII("Name", toolbarName.constData());
@@ -352,7 +356,7 @@ void DlgCustomToolbars::on_moveActionDownButton_clicked()
 void DlgCustomToolbars::on_newButton_clicked()
 {
     bool ok;
-    QString text = QString("Custom%1").arg(toolbarTreeWidget->topLevelItemCount()+1);
+    QString text = QString::fromAscii("Custom%1").arg(toolbarTreeWidget->topLevelItemCount()+1);
     text = QInputDialog::getText(this, tr("New toolbar"), tr("Toolbar name:"), QLineEdit::Normal, text, &ok);
     if (ok) {
         // Check for duplicated name
@@ -425,14 +429,14 @@ void DlgCustomToolbars::onAddMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);
 
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, pCmd->getMenuText());
-        item->setToolTip(1, pCmd->getToolTipText());
+        item->setText(1, QString::fromUtf8(pCmd->getMenuText()));
+        item->setToolTip(1, QString::fromUtf8(pCmd->getToolTipText()));
         item->setData(1, Qt::UserRole, macro);
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
@@ -445,7 +449,7 @@ void DlgCustomToolbars::onRemoveMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         for (int i=0; i<commandTreeWidget->topLevelItemCount(); i++) {
             QTreeWidgetItem* item = commandTreeWidget->topLevelItem(i);
@@ -463,7 +467,7 @@ void DlgCustomToolbars::onModifyMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);

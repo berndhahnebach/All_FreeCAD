@@ -240,7 +240,8 @@ bool PythonView::canClose(void)
  */
 bool PythonView::saveAs(void)
 {
-    QString fn = FileDialog::getSaveFileName(this, QObject::tr("Save Macro"), QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)" );
+    QString fn = FileDialog::getSaveFileName(this, QObject::tr("Save Macro"),
+        QString::null, tr("FreeCAD macro (*.FCMacro);;Python (*.py)"));
     if (fn.isEmpty())
         return false;
     setCurrentFileName(fn);
@@ -259,7 +260,7 @@ bool PythonView::open(const QString& fileName)
         return false;
 
     d->lock = true;
-    d->textEdit->setPlainText(file.readAll());
+    d->textEdit->setPlainText(QString::fromUtf8(file.readAll()));
     d->lock = false;
     d->undos.clear();
     d->redos.clear();
@@ -374,7 +375,7 @@ void PythonView::setCurrentFileName(const QString &fileName)
     if (fileName.isEmpty())
         shownName = tr("untitled[*]");
     else
-        shownName = QString("%1[*]").arg(fileName);
+        shownName = QString::fromAscii("%1[*]").arg(fileName);
     shownName += tr(" - Python Editor");
     setWindowTitle(shownName);
     setWindowModified(false);
@@ -460,7 +461,7 @@ void PythonView::focusInEvent (QFocusEvent * e)
 LineMarker::LineMarker(QWidget* parent)
     : QWidget(parent)
 {
-    setFixedWidth( fontMetrics().width( QString("0000") ) );
+    setFixedWidth(fontMetrics().width(QLatin1String("0000")));
 }
 
 LineMarker::~LineMarker()

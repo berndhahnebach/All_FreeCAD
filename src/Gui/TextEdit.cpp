@@ -90,7 +90,7 @@ void TextEdit::complete()
     if (wordPrefix.isEmpty())
         return;
     
-    QStringList list = toPlainText().split(QRegExp("\\W+"));
+    QStringList list = toPlainText().split(QRegExp(QLatin1String("\\W+")));
     QMap<QString, QString> map;
     QStringList::Iterator it = list.begin();
     while (it != list.end()) {

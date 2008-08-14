@@ -50,7 +50,7 @@ Action::Action ( Command* pcCmd,QObject * parent )
   : QObject(parent), _action(0), _pcCmd(pcCmd)
 {
   _action = new QAction( this );
-  _action->setObjectName(_pcCmd->getName());
+  _action->setObjectName(QString::fromAscii(_pcCmd->getName()));
   connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
@@ -73,7 +73,7 @@ void Action::addTo(QWidget *w)
 void Action::onActivated () 
 {
   if ( StdCmdDescription::inDescriptionMode () )
-    StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
+      StdCmdDescription::setSource(QString::fromUtf8(_pcCmd->getHelpUrl()));
   else
     _pcCmd->invoke(0);
 }
@@ -263,7 +263,7 @@ void ActionGroup::setCheckedAction(int i)
 void ActionGroup::onActivated (QAction* a) 
 {
   if ( StdCmdDescription::inDescriptionMode () )
-    StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
+      StdCmdDescription::setSource(QString::fromUtf8(_pcCmd->getHelpUrl()));
   else
     _pcCmd->invoke(a->data().toInt());
 }
@@ -380,7 +380,7 @@ WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
   : ActionGroup( pcCmd, parent )
 {
     for (int i=0; i<50; i++) {
-        QAction* action = _group->addAction("");
+        QAction* action = _group->addAction(QLatin1String(""));
         action->setVisible(false);
         action->setCheckable(true);
         action->setData(QVariant(i)); // set the index
@@ -417,7 +417,7 @@ void WorkbenchGroup::addTo(QWidget *w)
 
 void WorkbenchGroup::refreshWorkbenchList()
 {
-    QString active = WorkbenchManager::instance()->active()->name().c_str();
+    QString active = QString::fromAscii(WorkbenchManager::instance()->active()->name().c_str());
     QStringList items = Application::Instance->workbenches();
     
     QList<QAction*> workbenches = _group->actions();
@@ -470,14 +470,15 @@ void WorkbenchGroup::slotAddWorkbench(const char* name)
     QList<QAction*> workbenches = _group->actions();
     for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
         if (!(*it)->isVisible()) {
-            QPixmap px = Application::Instance->workbenchIcon(name);
-            QString text = Application::Instance->workbenchMenuText(name);
-            QString tip = Application::Instance->workbenchToolTip(name);
+            QString wb = QString::fromAscii(name);
+            QPixmap px = Application::Instance->workbenchIcon(wb);
+            QString text = Application::Instance->workbenchMenuText(wb);
+            QString tip = Application::Instance->workbenchToolTip(wb);
             (*it)->setIcon(px);
-            (*it)->setObjectName(name);
+            (*it)->setObjectName(wb);
             (*it)->setText(text);
             (*it)->setToolTip(tip);
-            (*it)->setStatusTip(tr("Select the '%1' workbench").arg(name));
+            (*it)->setStatusTip(tr("Select the '%1' workbench").arg(wb));
             (*it)->setVisible(true); // do this at last
             break;
         }
@@ -486,7 +487,7 @@ void WorkbenchGroup::slotAddWorkbench(const char* name)
 
 void WorkbenchGroup::slotRemoveWorkbench(const char* name)
 {
-    QString workbench = name;
+    QString workbench = QString::fromAscii(name);
     QList<QAction*> workbenches = _group->actions();
     for (QList<QAction*>::Iterator it = workbenches.begin(); it != workbenches.end(); ++it) {
         if ((*it)->objectName() == workbench) {
@@ -537,7 +538,7 @@ void RecentFilesAction::setFiles( const QStringList& files )
     int numRecentFiles = std::min<int>(recentFiles.count(), files.count());
     for ( int index = 0; index < numRecentFiles; index++ ) {
         QFileInfo fi(files[index]);
-        recentFiles[index]->setText(QString("&%1 %2").arg(index+1).arg(fi.fileName()));
+        recentFiles[index]->setText(QString::fromAscii("&%1 %2").arg(index+1).arg(fi.fileName()));
         recentFiles[index]->setStatusTip(tr("Open file %1").arg(files[index]));
         recentFiles[index]->setToolTip(files[index]); // set the full name that we need later for saving
         recentFiles[index]->setData(QVariant(index));
@@ -592,7 +593,7 @@ void RecentFilesAction::resizeList(int size)
     int diff = this->visibleItems - this->maximumItems;
     // create new items if needed
     for (int i=0; i<diff; i++)
-        _group->addAction("")->setVisible(false);
+        _group->addAction(QLatin1String(""))->setVisible(false);
     setFiles(files());
 }
 
@@ -609,7 +610,7 @@ void RecentFilesAction::restore()
 
     int count = std::max<int>(this->maximumItems, this->visibleItems);
     for (int i=0; i<count; i++)
-        _group->addAction("")->setVisible(false);
+        _group->addAction(QLatin1String(""))->setVisible(false);
     std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
     QStringList files;
     for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
@@ -629,7 +630,7 @@ void RecentFilesAction::save()
     // count all set items
     QList<QAction*> recentFiles = _group->actions();
     for ( int index = 0; index < recentFiles.count(); index++ ) {
-        QString key = QString("MRU%1").arg(index);
+        QString key = QString::fromAscii("MRU%1").arg(index);
         QString value = recentFiles[index]->toolTip();
         if (value.isEmpty())
             break;

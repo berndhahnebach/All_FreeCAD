@@ -68,7 +68,7 @@ void CommandIconView::startDrag ( Qt::DropActions supportedActions )
     }
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("text/x-action-items", itemData);
+    mimeData->setData(QString::fromAscii("text/x-action-items"), itemData);
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
@@ -353,10 +353,10 @@ void ColorButton::onChooseColor()
 
 // ------------------------------------------------------------------------------
 
-UrlLabel::UrlLabel ( QWidget * parent, Qt::WFlags f )
-  : QLabel("TextLabel", parent, f)
+UrlLabel::UrlLabel(QWidget * parent, Qt::WFlags f)
+  : QLabel(parent, f)
 {
-    _url = "http://localhost";
+    _url = QString::fromAscii("http://localhost");
     setToolTip(this->_url);
 }
 
@@ -374,7 +374,7 @@ void UrlLabel::leaveEvent ( QEvent * )
     setCursor(Qt::ArrowCursor);
 }
 
-void UrlLabel::mouseReleaseEvent ( QMouseEvent * )
+void UrlLabel::mouseReleaseEvent (QMouseEvent *)
 {
     // The webbrowser Python module allows to start the system browser in an OS-independent way
     Base::PyGILStateLocker lock;

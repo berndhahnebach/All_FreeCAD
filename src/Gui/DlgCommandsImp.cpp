@@ -58,9 +58,13 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups;
+    groups << QLatin1String("File") << QLatin1String("Edit")
+           << QLatin1String("View") << QLatin1String("Standard-View")
+           << QLatin1String("Tools") << QLatin1String("Window")
+           << QLatin1String("Help") << QLatin1String("Macros");
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
-        QString group = it->second->getGroupName();
+        QString group = QLatin1String(it->second->getGroupName());
         if (!groups.contains(group))
             groups << group;
     }
@@ -74,7 +78,7 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
     }
 
     labels.clear();
-    labels << "Icon" << "Command";
+    labels << tr("Icon") << tr("Command");
     commandTreeWidget->setHeaderLabels(labels);
     commandTreeWidget->header()->hide();
 
@@ -130,7 +134,7 @@ void DlgCustomCommandsImp::onAddMacroAction(const QByteArray& macro)
 
     QVariant data = item->data(0, Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);
@@ -154,7 +158,7 @@ void DlgCustomCommandsImp::onRemoveMacroAction(const QByteArray& macro)
 
     QVariant data = item->data(0, Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         for (int i=0; i<commandTreeWidget->topLevelItemCount(); i++) {
             QTreeWidgetItem* item = commandTreeWidget->topLevelItem(i);
@@ -176,7 +180,7 @@ void DlgCustomCommandsImp::onModifyMacroAction(const QByteArray& macro)
 
     QVariant data = item->data(0, Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);

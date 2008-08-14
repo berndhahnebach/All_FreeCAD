@@ -366,7 +366,7 @@ void HttpServer::readClient()
     if (socket->canReadLine()) {
         QString request = socket->readLine();
         QHttpRequestHeader header(request);
-        if (header.method() == "GET") {
+        if (header.method() == QLatin1String("GET")) {
             socket->write(help.loadResource(header.path()));
             socket->close();
             if (socket->state() == QTcpSocket::UnconnectedState) {

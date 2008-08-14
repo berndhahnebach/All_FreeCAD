@@ -53,9 +53,13 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
     // do a special sort before adding to the tree view
-    QStringList groups; groups << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+    QStringList groups;
+    groups << QLatin1String("File") << QLatin1String("Edit")
+           << QLatin1String("View") << QLatin1String("Standard-View")
+           << QLatin1String("Tools") << QLatin1String("Window")
+           << QLatin1String("Help") << QLatin1String("Macros");
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
-        QString group = it->second->getGroupName();
+        QString group = QLatin1String(it->second->getGroupName());
         if (!groups.contains(group))
             groups << group;
     }
@@ -67,7 +71,7 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
     }
 
     QStringList labels; 
-    labels << "Icon" << "Command";
+    labels << tr("Icon") << tr("Command");
     commandTreeWidget->setHeaderLabels(labels);
     commandTreeWidget->header()->hide();
     assignedTreeWidget->setHeaderLabels(labels);
@@ -246,7 +250,7 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged(const QString& sc)
         for (std::vector<Command*>::iterator it = cmds.begin(); it != cmds.end(); ++it) {
             if ((*it)->getAction() && (*it)->getAction()->shortcut() == ks) {
                 ++countAmbiguous;
-                ambiguousCommand = (*it)->getName(); // store the last one
+                ambiguousCommand = QString::fromAscii((*it)->getName()); // store the last one
                 ambiguousMenu = QObject::trUtf8((*it)->getMenuText());
         
                 QTreeWidgetItem* item = new QTreeWidgetItem(assignedTreeWidget);
@@ -268,7 +272,7 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged(const QString& sc)
                                  tr("The shortcut '%1' is defined more than once. This could result into unexpected behaviour.").arg(sc) );
             editShortcut->setFocus();
             buttonAssign->setEnabled(false);
-        } else if (countAmbiguous == 1 && ambiguousCommand != name) {
+        } else if (countAmbiguous == 1 && ambiguousCommand != QLatin1String(name)) {
             QMessageBox::warning(this, tr("Already defined shortcut"),
                                  tr("The shortcut '%1' is already assigned to '%2'.\n\nPlease define another shortcut.").arg(sc).arg(ambiguousMenu) );
             editShortcut->setFocus();
@@ -287,14 +291,14 @@ void DlgCustomKeyboardImp::onAddMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);
 
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, pCmd->getMenuText());
-        item->setToolTip(1, pCmd->getToolTipText());
+        item->setText(1, QString::fromUtf8(pCmd->getMenuText()));
+        item->setToolTip(1, QString::fromUtf8(pCmd->getToolTipText()));
         item->setData(1, Qt::UserRole, macro);
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
@@ -307,7 +311,7 @@ void DlgCustomKeyboardImp::onRemoveMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         for (int i=0; i<commandTreeWidget->topLevelItemCount(); i++) {
             QTreeWidgetItem* item = commandTreeWidget->topLevelItem(i);
@@ -325,7 +329,7 @@ void DlgCustomKeyboardImp::onModifyMacroAction(const QByteArray& macro)
 {
     QVariant data = categoryBox->itemData(categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == "Macros")
+    if (group == QLatin1String("Macros"))
     {
         CommandManager & cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);

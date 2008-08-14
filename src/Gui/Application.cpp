@@ -199,7 +199,7 @@ void Application::open(const char* FileName)
     WaitCursor wc;
     Base::FileInfo File(FileName);
     string te = File.extension();
-    const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+    const char* Mod = App::GetApplication().hasOpenType(te.c_str());
 
     if (Mod != 0) {
         // issue module loading
@@ -231,7 +231,7 @@ void Application::open(const char* FileName)
     else {
         wc.restoreCursor();
         QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
-            QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+            QObject::tr("Cannot open unknown file type: %1").arg(QLatin1String(te.c_str())));
         wc.setWaitCursor();
         return;
     }
@@ -281,7 +281,7 @@ void Application::import(const char* FileName, const char* DocName)
     else {
         wc.restoreCursor();
         QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
-            QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+            QObject::tr("Cannot open unknown file type: %1").arg(QLatin1String(te.c_str())));
         wc.setWaitCursor();
     }
 }
@@ -613,7 +613,7 @@ bool Application::activateWorkbench(const char* name)
             ok = true; // already active
         // now try to create and activate the matching workbench object
         else if (WorkbenchManager::instance()->activate(name, type)) {
-            getMainWindow()->activateWorkbench(QString(name));
+            getMainWindow()->activateWorkbench(QString::fromAscii(name));
             this->signalActivateWorkbench(name);
             ok = true;
         }
@@ -661,10 +661,10 @@ bool Application::activateWorkbench(const char* name)
         e.clear();
         if (o.isString()) {
             Py::String s(o);
-            QString msg = s.as_std_string().c_str();
+            QString msg = QString::fromAscii(s.as_std_string().c_str());
             QRegExp rx;
             // ignore '<type 'exceptions.ImportError'>' prefixes
-            rx.setPattern("^\\s*<type 'exceptions.ImportError'>:\\s*");
+            rx.setPattern(QLatin1String("^\\s*<type 'exceptions.ImportError'>:\\s*"));
             int pos = rx.indexIn(msg);
             while ( pos != -1 ) {
                 msg = msg.mid(rx.matchedLength());
@@ -793,16 +793,16 @@ QStringList Application::workbenches(void) const
     const char* start = (st != config.end() ? st->second.c_str() : "<none>");
     QStringList hidden, extra;
     if (ht != config.end()) { 
-        QString items = ht->second.c_str();
-        hidden = items.split(';', QString::SkipEmptyParts);
+        QString items = QString::fromAscii(ht->second.c_str());
+        hidden = items.split(QLatin1Char(';'), QString::SkipEmptyParts);
         if (hidden.isEmpty())
-            hidden.push_back("");
+            hidden.push_back(QLatin1String(""));
     }
     if (et != config.end()) { 
-        QString items = et->second.c_str();
-        extra = items.split(';', QString::SkipEmptyParts);
+        QString items = QString::fromAscii(et->second.c_str());
+        extra = items.split(QLatin1Char(';'), QString::SkipEmptyParts);
         if (extra.isEmpty())
-            extra.push_back("");
+            extra.push_back(QLatin1String(""));
     }
 
     PyObject *key, *value;
@@ -815,18 +815,18 @@ QStringList Application::workbenches(void) const
         // add only allowed workbenches
         bool ok = true;
         if (!extra.isEmpty()&&ok) {
-          ok = (extra.indexOf(wbName) != -1);
+            ok = (extra.indexOf(QString::fromAscii(wbName)) != -1);
         }
         if (!hidden.isEmpty()&&ok) {
-            ok = (hidden.indexOf(wbName) == -1);
+            ok = (hidden.indexOf(QString::fromAscii(wbName)) == -1);
         }
     
         // okay the item is visible
         if (ok)
-            wb.push_back( wbName );
+            wb.push_back(QString::fromAscii(wbName));
         // also allow start workbench in case it is hidden
         else if (strcmp(wbName, start) == 0)
-            wb.push_back(wbName);
+            wb.push_back(QString::fromAscii(wbName));
     }
 
     return wb;
@@ -1079,7 +1079,7 @@ void Application::runApplication(void)
     // if the auto workbench is not visible then force to use the default workbech
     // and replace the wrong entry in the parameters
     QStringList wb = app.workbenches();
-    if (!wb.contains(start.c_str())) {
+    if (!wb.contains(QString::fromAscii(start.c_str()))) {
         start = App::Application::Config()["StartWorkbench"];
         App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
                               SetASCII("AutoloadModule", start.c_str());

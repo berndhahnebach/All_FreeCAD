@@ -191,7 +191,7 @@ void MenuManager::setup(MenuItem* menuItems) const
             // we can safely remove it if available and append it at the end
             if ((*it)->command() == "Separator") {
                 action = menuBar->addSeparator();
-                action->setObjectName("Separator");
+                action->setObjectName(QLatin1String("Separator"));
             } else {
                 // create a new menu
                 std::string menuName = (*it)->command();
@@ -237,9 +237,9 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
         if (used_actions.isEmpty()) {
             if ((*it)->command() == "Separator") {
                 QAction* action = menu->addSeparator();
-                action->setObjectName("Separator");
+                action->setObjectName(QLatin1String("Separator"));
                 // set the menu user data
-                action->setData("Separator");
+                action->setData(QLatin1String("Separator"));
                 used_actions.append(action);
             }
             else {
@@ -347,7 +347,7 @@ QList<QAction*> MenuManager::findActions(const QList<QAction*>& acts, const QStr
             used.append(*it);
             first_match = true;
             // get only one separator per request
-            if (item == "Separator")
+            if (item == QLatin1String("Separator"))
                 break;
         }
         else if (first_match)

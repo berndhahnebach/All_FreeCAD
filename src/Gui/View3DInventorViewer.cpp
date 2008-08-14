@@ -351,7 +351,7 @@ View3DInventorViewer::~View3DInventorViewer()
 
   // Note: When closing the application the main window doesn't exists any more.
   if (getMainWindow()) 
-    getMainWindow()->setPaneText(2, "");
+    getMainWindow()->setPaneText(2, QLatin1String(""));
 
   Gui::Selection().Detach(this);
 }
@@ -795,12 +795,13 @@ void View3DInventorViewer::actualRedraw(void)
     try {
         // Render normal scenegraph.
         inherited::actualRedraw();
-    } catch ( const Base::MemoryException& e ) {
+    } catch (const Base::MemoryException&) {
         // FIXME: If this exception appears then the background and camera position get broken somehow. (Werner 2006-02-01) 
         for ( std::set<ViewProvider*>::iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); ++it )
             (*it)->hide();
         inherited::actualRedraw();
-        QMessageBox::warning(getParentWidget(), e.what(), QObject::tr("Not enough memory available to display the data."));
+        QMessageBox::warning(getParentWidget(), QObject::tr("Out of memory"),
+            QObject::tr("Not enough memory available to display the data."));
     }
 
     // Render overlay front scenegraph.
@@ -869,33 +870,33 @@ void View3DInventorViewer::printDimension()
   
         if (nExp >= 6) {
             fFac = 1.0e+6f;
-            unit = "km";
+            unit = QLatin1String("km");
         }
         else if (nExp >= 3) {
             fFac = 1.0e+3f;
-            unit = "m";
+            unit = QLatin1String("m");
         }
         else if ((nExp >= 0) && (fLog > 0.0f)) {
             fFac = 1.0e+0f;
-            unit = "mm";
+            unit = QLatin1String("mm");
         }
         else if (nExp >= -3) {
             fFac = 1.0e-3f;
-            unit = "um";
+            unit = QLatin1String("um");
         }
         else {
             fFac = 1.0e-6f;
-            unit = "nm";
+            unit = QLatin1String("nm");
         }
 
-        QString dim = QString("%1 x %2 %3")
+        QString dim = QString::fromAscii("%1 x %2 %3")
                              .arg(fWidth / fFac,0,'f',2)
                              .arg(fHeight / fFac,0,'f',2)
                              .arg(unit);
         getMainWindow()->setPaneText(2, dim);
     }
     else
-        getMainWindow()->setPaneText(2, "");
+        getMainWindow()->setPaneText(2, QLatin1String(""));
 }
 
 /*!

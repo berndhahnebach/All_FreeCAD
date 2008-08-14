@@ -186,11 +186,12 @@ PYFUNCIMP_S(Application,sOpen)
             }
         }
 
-        if (ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz") {
+        if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
+            ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
             if (!Application::Instance->activeDocument())
                 App::GetApplication().newDocument();
             //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-            QString cmd = QString(
+            QString cmd = QString::fromLatin1(
                 "App.ActiveDocument.addObject(\"App::InventorObject\",\"%1\")."
                 "FileName=\"%2\"\n"
                 "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
@@ -198,7 +199,8 @@ PYFUNCIMP_S(Application,sOpen)
                 .arg(fi.baseName()).arg(fi.absoluteFilePath());
             Base::Interpreter().runString(cmd.toUtf8());
         }
-        else if (ext == "py" || ext == "fcmacro" || ext == "fcscript") {
+        else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
+            ext == QLatin1String("fcscript")) {
             PythonView* edit = new PythonView(getMainWindow());
             edit->open(fileName);
             edit->resize( 400, 300 );
@@ -221,9 +223,10 @@ PYFUNCIMP_S(Application,sInsert)
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.completeSuffix().toLower();
-        if (ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz") {
+        if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
+            ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
             //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-            QString cmd = QString(
+            QString cmd = QString::fromLatin1(
                 "App.ActiveDocument.addObject(\"App::InventorObject\",\"%1\")."
                 "FileName=\"%2\"\n"
                 "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
@@ -231,7 +234,8 @@ PYFUNCIMP_S(Application,sInsert)
                 .arg(fi.baseName()).arg(fi.absoluteFilePath());
             Base::Interpreter().runString(cmd.toUtf8());
         }
-        else if (ext == "py" || ext == "fcmacro" || ext == "fcscript") {
+        else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
+            ext == QLatin1String("fcscript")) {
             PythonView* edit = new PythonView(getMainWindow());
             edit->open(fileName);
             edit->resize( 400, 300 );

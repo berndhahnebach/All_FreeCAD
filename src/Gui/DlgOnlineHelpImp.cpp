@@ -57,8 +57,8 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
   if ( lineEditDownload->fileName().isEmpty() )
   {
     // set output directory
-    QString path = App::GetApplication().GetHomePath();
-    path += "/doc/";
+    QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
+    path += QLatin1String("/doc/");
     QDir dir(path);
     lineEditDownload->setFileName( dir.absolutePath() );
   }
@@ -80,22 +80,22 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
 QString DlgOnlineHelpImp::getStartpage()
 {
   ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-  QString home = QString(hURLGrp->GetASCII( "Startpage", "" ).c_str());
+  QString home = QString::fromUtf8(hURLGrp->GetASCII( "Startpage", "" ).c_str());
 
   // help start in in config?
   if ( home.isEmpty() && App::Application::Config()["HelpStart"] != "")
   {
-    home = App::GetApplication().GetHomePath();
-    home +=   App::Application::Config()["HelpStart"].c_str();
+    home = QString::fromUtf8(App::GetApplication().GetHomePath());
+    home += QString::fromUtf8(App::Application::Config()["HelpStart"].c_str());
   }
 
   if ( home.isEmpty() )
   {
-    QString hm = App::GetApplication().GetHomePath();
-    hm += "/doc/free-cad.sourceforge.net/wiki";
+      QString hm = QString::fromUtf8(App::GetApplication().GetHomePath());
+    hm += QLatin1String("/doc/free-cad.sourceforge.net/wiki");
     QDir d(hm);
     home = d.path();
-    home += "/index.php.html";
+    home += QLatin1String("/index.php.html");
   }
 
   return home;

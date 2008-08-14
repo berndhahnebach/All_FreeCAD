@@ -27,6 +27,7 @@
 
 #include "PrefWidgets.h"
 #include "FileDialog.h"
+#include <cstring>
 
 using Base::Console;
 using namespace Gui;
@@ -96,8 +97,8 @@ QByteArray PrefWidget::paramGrpPath() const
  */
 void PrefWidget::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
-  if ( QString(sReason) == QString(m_sPrefName) )
-    restorePreferences();
+    if (std::strcmp(sReason,m_sPrefName) == 0)
+        restorePreferences();
 }
 
 /**

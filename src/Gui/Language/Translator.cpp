@@ -126,30 +126,31 @@ Translator::~Translator()
     removeTranslators();
 }
 
-QStringList Translator::supportedLanguages() const
+TStringList Translator::supportedLanguages() const
 {
     // List all .qm files
-    QStringList languages;
-    QDir dir(":/translations");
-    for (QMap<QString,QString>::ConstIterator it = mapLanguageTopLevelDomain.begin(); it != mapLanguageTopLevelDomain.end(); ++it) {
-        QString filter = QString("*_%1.qm").arg(it.value());
+    TStringList languages;
+    QDir dir(QLatin1String(":/translations"));
+    for (std::map<std::string,std::string>::const_iterator it = mapLanguageTopLevelDomain.begin();
+        it != mapLanguageTopLevelDomain.end(); ++it) {
+        QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(it->second.c_str()));
         QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
         if (!fileNames.isEmpty())
-            languages << it.key();
+            languages.push_back(it->first);
     }
 
     return languages;
 }
 
-void Translator::activateLanguage (const QString& lang)
+void Translator::activateLanguage (const char* lang)
 {
     removeTranslators(); // remove the currently installed translators
     this->activatedLanguage = lang;
-    QStringList languages = supportedLanguages();
-    if (languages.contains(lang)) {
-        QMap<QString, QString>::Iterator tld = mapLanguageTopLevelDomain.find(lang);
-        QString filter = QString("*_%1.qm").arg(tld.value());
-        QDir dir(":/translations");
+    TStringList languages = supportedLanguages();
+    if (std::find(languages.begin(), languages.end(), lang) != languages.end()) {
+        std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(lang);
+        QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(tld->second.c_str()));
+        QDir dir(QLatin1String(":/translations"));
         QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
         for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
             QTranslator* translator = new QTranslator;
@@ -165,7 +166,7 @@ void Translator::activateLanguage (const QString& lang)
     }
 }
 
-QString Translator::activeLanguage() const
+std::string Translator::activeLanguage() const
 {
     return this->activatedLanguage;
 }
@@ -177,15 +178,16 @@ QString Translator::activeLanguage() const
  */
 void Translator::refresh()
 {
-    QMap<QString, QString>::Iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
+    std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
     if (tld == mapLanguageTopLevelDomain.end())
         return; // no language activated
-    QString filter = QString("*_%1.qm").arg(tld.value());
-    QDir dir(QString(":/translations"));
+    QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(tld->second.c_str()));
+    QDir dir(QLatin1String(":/translations"));
     QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
         bool ok=false;
-        for (QList<QTranslator*>::ConstIterator tt = translators.begin(); tt != translators.end(); ++tt) {
+        for (std::list<QTranslator*>::const_iterator tt = translators.begin();
+            tt != translators.end(); ++tt) {
             if ((*tt)->objectName() == *it) {
                 ok = true; // this file is already installed
                 break;
@@ -212,8 +214,8 @@ void Translator::refresh()
  */
 void Translator::removeTranslators()
 {
-    for (QList<QTranslator*>::Iterator it = translators.begin(); it != translators.end(); ++it) {
-        qApp->removeTranslator( *it );
+    for (std::list<QTranslator*>::iterator it = translators.begin(); it != translators.end(); ++it) {
+        qApp->removeTranslator(*it);
         delete *it;
     }
 
