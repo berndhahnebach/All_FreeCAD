@@ -62,6 +62,8 @@ public:
     const std::vector<MeshGeomFacet>& GetTriangles() const { return _triangles;}
     /** Returns the topologic facets of the polygon. */
     const std::vector<MeshFacet>& GetFacets() const { return _facets;}
+    /** Returns the length of the polygon */
+    float GetLength() const;
 
 protected:
     std::vector<Base::Vector3f> _points;

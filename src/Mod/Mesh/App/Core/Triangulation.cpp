@@ -56,6 +56,20 @@ std::vector<Base::Vector3f> AbstractPolygonTriangulator::GetPolygon() const
     return _points;
 }
 
+float AbstractPolygonTriangulator::GetLength() const
+{
+    float len = 0.0f;
+    if (_points.size() > 2) {
+        for (std::vector<Base::Vector3f>::const_iterator it = _points.begin(); it != _points.end();++it) {
+            std::vector<Base::Vector3f>::const_iterator jt = it + 1;
+            if (jt == _points.end()) jt = _points.begin();
+            len += Base::Distance(*it, *jt);
+        }
+    }
+
+    return len;
+}
+
 std::vector<Base::Vector3f> AbstractPolygonTriangulator::AddedPoints() const
 {
     return _newpoints;
@@ -571,7 +585,15 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     triangulateio* out = new triangulateio();
     memset(out, 0, sizeof(triangulateio));
     char szBuf[51];
-    snprintf(szBuf, 50, "pYzqa%.6f", this->fMaxArea);
+    float maxArea = this->fMaxArea;
+    if (maxArea < 0.0f) {
+        // determine automatically an approximate value
+        // depedning on the length of the edges
+        maxArea = GetLength() / ((float)_points.size());
+        maxArea = (maxArea * maxArea)/2.0f;
+    }
+
+    snprintf(szBuf, 50, "pYzqa%.6f", maxArea);
     triangulate(szBuf, in, out, NULL);
 
     // get all added points by the algorithm
