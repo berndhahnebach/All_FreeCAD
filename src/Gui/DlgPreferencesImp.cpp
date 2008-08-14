@@ -22,8 +22,13 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <cstring>
+# include <algorithm>
+#endif
 
 #include <Base/Exception.h>
+#include <Base/Console.h> 
 
 #include "DlgPreferencesImp.h"
 #include "PropertyPage.h"
@@ -31,15 +36,12 @@
 #include "BitmapFactory.h"
 #include "MainWindow.h"
 
-#ifdef FC_DEBUG
-# include <Base/Console.h> 
-#endif
 
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgPreferencesImp */
 
-std::list<std::pair<std::string, std::list<std::string> > > DlgPreferencesImp::_pages;
+std::list<DlgPreferencesImp::TGroupPages> DlgPreferencesImp::_pages;
 
 /**
  *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
@@ -79,10 +81,13 @@ void DlgPreferencesImp::setupPages()
         QListWidgetItem *item = new QListWidgetItem(listBox);
         item->setData(Qt::UserRole, QVariant(group));
         item->setText(QObject::tr(group.constData()));
-        QString fileName = group;
-        fileName.replace(" ", "_");
-        QString iconName = QString("preferences-%1").arg(fileName.toLower());
-        QPixmap icon = Gui::BitmapFactory().pixmapFromSvg(iconName.toUtf8(), QSize(96,96));
+        std::string fileName = it->first;
+        for (std::string::iterator ch = fileName.begin(); ch != fileName.end(); ++ch) {
+            if (*ch == ' ') *ch = '_';
+            else *ch = tolower(*ch);
+        }
+        fileName = std::string("preferences-") + fileName;
+        QPixmap icon = Gui::BitmapFactory().pixmapFromSvg(fileName.c_str(), QSize(96,96));
         item->setIcon(icon);
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
