@@ -45,6 +45,7 @@
 
 #include "../App/PartFeature.h"
 #include "DlgPartCylinderImp.h"
+#include "DlgPrimitives.h"
 
 
 using Gui::FileDialog;
@@ -76,14 +77,17 @@ void CmdPartCylinder::activated(int iMsg)
     PartGui::DlgPartCylinderImp cDlg(Gui::getMainWindow());
     if (cDlg.exec()== QDialog::Accepted)
     {
+        this->
         openCommand("Create Part Cylinder");
-        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Cylinder\",\"PartCylinder\")");
- /*   doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
-    doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
-    doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
-    doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
-    doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
-    doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());*/
+        doCommand(Doc,"import Base,Part");
+        doCommand(Doc,"g = Part.Cylinder()");
+        doCommand(Doc,"g.Center = Base.Vector(%f,%f,%f)",cDlg.XPos->text().toFloat(),
+                                                         cDlg.YPos->text().toFloat(),
+                                                         cDlg.ZPos->text().toFloat());
+        doCommand(Doc,"g.Radius = %f",cDlg.Radius->text().toFloat());
+        doCommand(Doc,"g.Axis = Base.Vector(0,0,1)");      
+        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Feature\",\"Cylinder\")");
+        doCommand(Doc,"f.Shape = Part.Shape([g])");
         commitCommand();
   
         updateActive();
@@ -98,11 +102,48 @@ bool CmdPartCylinder::isActive(void)
         return false;
 }
 
+
+//===========================================================================
+// Part_Primitives
+//===========================================================================
+DEF_STD_CMD_A(CmdPartPrimitives);
+
+CmdPartPrimitives::CmdPartPrimitives()
+  :Command("Part_Primitives")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create primitives...");
+    sToolTipText  = QT_TR_NOOP("Creation of geometric primitives");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    //sPixmap       = "Part_Box";
+    iAccel        = 0;
+}
+
+void CmdPartPrimitives::activated(int iMsg)
+{
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new PartGui::DlgPrimitives(Gui::getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+bool CmdPartPrimitives::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 void CreateSimplePartCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdPartCylinder());
+    rcCmdMgr.addCommand(new CmdPartPrimitives());
 
 } 
+
 

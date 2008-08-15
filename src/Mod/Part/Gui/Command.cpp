@@ -548,37 +548,6 @@ bool CmdPartBoolean::isActive(void)
     return hasActiveDocument();
 }
 
-//===========================================================================
-// Part_Primitives
-//===========================================================================
-DEF_STD_CMD_A(CmdPartPrimitives);
-
-CmdPartPrimitives::CmdPartPrimitives()
-  :Command("Part_Primitives")
-{
-    sAppModule    = "Part";
-    sGroup        = QT_TR_NOOP("Part");
-    sMenuText     = QT_TR_NOOP("Create primitives...");
-    sToolTipText  = QT_TR_NOOP("Creation of geometric primitives");
-    sWhatsThis    = sToolTipText;
-    sStatusTip    = sToolTipText;
-    //sPixmap       = "Part_Box";
-    iAccel        = 0;
-}
-
-void CmdPartPrimitives::activated(int iMsg)
-{
-    static QPointer<QDialog> dlg = 0;
-    if (!dlg)
-        dlg = new PartGui::DlgPrimitives(Gui::getMainWindow());
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    dlg->show();
-}
-
-bool CmdPartPrimitives::isActive(void)
-{
-    return hasActiveDocument();
-}
 
 //--------------------------------------------------------------------------------------
 
@@ -691,7 +660,6 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartImport());
     rcCmdMgr.addCommand(new CmdPartImportCurveNet());
     rcCmdMgr.addCommand(new CmdPartPickCurveNet());
-    rcCmdMgr.addCommand(new CmdPartPrimitives());
     rcCmdMgr.addCommand(new CmdShapeInfo());
 } 
 
