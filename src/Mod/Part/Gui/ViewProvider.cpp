@@ -29,6 +29,14 @@
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepTools.hxx>
+# include <BRepAdaptor_Curve.hxx>
+# include <BRepAdaptor_Surface.hxx>
+# include <GeomAbs_CurveType.hxx>
+# include <GeomAbs_SurfaceType.hxx>
+# include <Geom_BezierCurve.hxx>
+# include <Geom_BSplineCurve.hxx>
+# include <Geom_BezierSurface.hxx>
+# include <Geom_BSplineSurface.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <gp_Trsf.hxx>
@@ -37,6 +45,7 @@
 # include <TColgp_Array1OfPnt.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
+# include <TopoDS_Wire.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Shape.hxx>
 # include <TopExp_Explorer.hxx>
@@ -72,6 +81,7 @@
 
 
 #include "ViewProvider.h"
+#include "SoFCShapeObject.h"
 
 #include <Mod/Part/App/PartFeature.h>
 
@@ -103,6 +113,7 @@ ViewProviderPart::ViewProviderPart()
     LineWidth.setConstraints(&floatRange);
     PointSize.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
+    ADD_PROPERTY(ControlPoints,(false));
 
     EdgeRoot = new SoSeparator();
     EdgeRoot->ref();
@@ -184,6 +195,9 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
         pcPointMaterial->shininess.setValue(Mat.shininess);
         pcPointMaterial->transparency.setValue(Mat.transparency);
+    }
+    else if (prop == &ControlPoints) {
+        showControlPoints(ControlPoints.getValue());
     }
     else {
         ViewProviderGeometryObject::onChanged(prop);
@@ -703,4 +717,182 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
             (*vertexnormals)[i].normalize();
         }
     }
+}
+
+void ViewProviderPart::showControlPoints(bool show)
+{
+    // ask for the property we are interested in
+    App::DocumentObject* obj = this->pcObject;
+    App::Property* prop = obj->getPropertyByName("Shape");
+    if (prop && prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        TopoDS_Shape shape = static_cast<Part::PropertyPartShape*>(prop)->getValue();
+        switch (shape.ShapeType())
+        {
+        case TopAbs_EDGE:
+            {
+                TopoDS_Edge edge = TopoDS::Edge(shape);
+                showControlPointsOfEdge(edge);
+            }   break;
+        case TopAbs_WIRE:
+            {
+                TopoDS_Wire wire = TopoDS::Wire(shape);
+                showControlPointsOfWire(wire);
+            }   break;
+        case TopAbs_FACE:
+            {
+                TopoDS_Face face = TopoDS::Face(shape);
+                showControlPointsOfFace(face);
+            }   break;
+        default:
+            break;
+        }
+    }
+}
+
+void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
+{
+    std::list<gp_Pnt> poles, knots; 
+    gp_Pnt start, end;
+    BRepAdaptor_Curve curve(edge);
+    switch (curve.GetType())
+    {
+    case GeomAbs_BezierCurve:
+        {
+            Handle(Geom_BezierCurve) hBezier = curve.Bezier();
+            for (Standard_Integer i = 1; i <= hBezier->NbPoles(); i++)
+                poles.push_back(hBezier->Pole(i));
+            start = hBezier->StartPoint();
+            end   = hBezier->EndPoint();
+        }   break;
+    case GeomAbs_BSplineCurve:
+        {
+            Handle(Geom_BSplineCurve) hBSpline = curve.BSpline();
+            for (Standard_Integer i = 1; i <= hBSpline->NbPoles(); i++)
+                poles.push_back(hBSpline->Pole(i));
+            start = hBSpline->StartPoint();
+            end   = hBSpline->EndPoint();
+            for (Standard_Integer i = hBSpline->FirstUKnotIndex()+1; i <= hBSpline->LastUKnotIndex()-1; i++)
+                knots.push_back(hBSpline->Value(hBSpline->Knot(i)));
+        }   break;
+    default:
+        break;
+    }
+}
+
+void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
+{
+    TopoDS_Iterator it;
+    for (it.Initialize(wire); it.More(); it.Next()) {
+        if (it.Value().ShapeType() == TopAbs_EDGE) {
+            TopoDS_Edge edge = TopoDS::Edge(it.Value());
+            BRepAdaptor_Curve curve(edge);
+
+            std::list<gp_Pnt> poles, knots; 
+            gp_Pnt start, end;
+            switch (curve.GetType())
+            {
+            case GeomAbs_BezierCurve:
+                {
+                    Handle(Geom_BezierCurve) hBezier = curve.Bezier();
+                    for (Standard_Integer i = 1; i <= hBezier->NbPoles(); i++)
+                        poles.push_back(hBezier->Pole(i));
+                    start = hBezier->StartPoint();
+                    end   = hBezier->EndPoint();
+                }   break;
+            case GeomAbs_BSplineCurve:
+                {
+                    Handle(Geom_BSplineCurve) hBSpline = curve.BSpline();
+                    for (Standard_Integer i = 1; i <= hBSpline->NbPoles(); i++)
+                        poles.push_back(hBSpline->Pole(i));
+                    start = hBSpline->StartPoint();
+                    end   = hBSpline->EndPoint();
+                    for (Standard_Integer i = hBSpline->FirstUKnotIndex()+1; i <= hBSpline->LastUKnotIndex()-1; i++)
+                        knots.push_back(hBSpline->Value(hBSpline->Knot(i)));
+                }   break;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
+{
+    std::list<gp_Pnt> knots;
+    std::vector<std::vector<gp_Pnt> > poles;
+    Standard_Integer nCtU=0, nCtV=0;
+    Standard_Integer nKnU=0, nKnV=0;
+    BRepAdaptor_Surface surface(face); 
+
+    BRepAdaptor_Surface clSurface(face); 
+    switch (clSurface.GetType())
+    {
+    case GeomAbs_BezierSurface:
+        {
+            Handle(Geom_BezierSurface) hBezier = surface.Bezier();
+            nCtU = hBezier->NbUPoles();
+            nCtV = hBezier->NbVPoles();
+            poles.resize(nCtU);
+            for (Standard_Integer u = 1; u <= nCtU; u++) {
+                poles[u-1].resize(nCtV);
+                for (Standard_Integer v = 1; v <= nCtV; v++)
+                    poles[u-1][v-1] = hBezier->Pole(u, v);
+            }
+        }   break;
+    case GeomAbs_BSplineSurface:
+        {
+            Handle(Geom_BSplineSurface) hBSpline = surface.BSpline();
+            nCtU = hBSpline->NbUPoles();
+            nCtV = hBSpline->NbVPoles();
+            poles.resize(nCtU);
+            for (Standard_Integer u = 1; u <= nCtU; u++) {
+                poles[u-1].resize(nCtV);
+                for (Standard_Integer v = 1; v <= nCtV; v++)
+                    poles[u-1][v-1] = hBSpline->Pole(u, v);
+            }
+
+            nKnU = hBSpline->NbUKnots();
+            nKnV = hBSpline->NbVKnots();
+            for (Standard_Integer u = 1; u <= hBSpline->NbUKnots(); u++) {
+                for (Standard_Integer v = 1; v <= hBSpline->NbVKnots(); v++)
+                    knots.push_back(hBSpline->Value(hBSpline->UKnot(u), hBSpline->VKnot(v)));
+            }
+        }   break;
+    default:
+        break;
+    }
+
+    if (poles.empty())
+        return; // nothing to do
+
+    SoCoordinate3 * coords = new SoCoordinate3;
+    coords->point.setNum(nCtU * nCtV + knots.size());
+
+    int index=0;
+    coords->point.startEditing();
+    for (std::vector<std::vector<gp_Pnt> >::iterator u = poles.begin(); u != poles.end(); ++u) {
+        for (std::vector<gp_Pnt>::iterator v = u->begin(); v != u->end(); ++v) {
+            coords->point.set1Value(index++, (float)v->X(), (float)v->Y(), (float)v->Z());
+        }
+    }
+    for (std::list<gp_Pnt>::iterator k = knots.begin(); k != knots.end(); ++k) {
+        coords->point.set1Value(index++, (float)k->X(), (float)k->Y(), (float)k->Z());
+    }
+    coords->point.finishEditing();
+
+
+    SoFCControlPoints* control = new SoFCControlPoints();
+    control->numPolesU = nCtU;
+    control->numPolesV = nCtV;
+
+    if (knots.size() > 0) {
+        control->numKnotsU = nKnU;
+        control->numKnotsV = nKnV;
+    }
+
+    SoSeparator* nodes = new SoSeparator();
+    nodes->addChild(coords);
+    nodes->addChild(control);
+
+    pcRoot->addChild(nodes);
 }

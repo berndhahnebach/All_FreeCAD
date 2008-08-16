@@ -21,6 +21,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/WidgetFactory.h>
 
+#include "SoFCShapeObject.h"
 #include "ViewProvider.h"
 #include "ViewProviderBox.h"
 #include "ViewProviderCurveNet.h"
@@ -70,6 +71,7 @@ void AppPartGuiExport initPartGui()
     (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Part module... done\n");
 
+    PartGui::SoFCControlPoints   ::initClass();
     PartGui::ViewProviderPart    ::init();
     PartGui::ViewProviderBox     ::init();
     PartGui::ViewProviderImport  ::init();
