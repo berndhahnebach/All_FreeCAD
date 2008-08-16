@@ -37,6 +37,7 @@ libPartGui_la_SOURCES=\
 		DlgSettings3DViewPartImp.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		SoFCShapeObject.cpp \
 		ViewProvider.cpp \
 		ViewProviderBox.cpp \
 		ViewProviderCurveNet.cpp \
@@ -44,6 +45,7 @@ libPartGui_la_SOURCES=\
 		Workbench.cpp
 
 include_HEADERS=\
+		SoFCShapeObject.h \
 		ViewProvider.h \
 		ViewProviderBox.h \
 		ViewProviderCurveNet.h \

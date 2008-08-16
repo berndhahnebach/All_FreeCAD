@@ -29,6 +29,8 @@
 #include <map>
 
 class TopoDS_Shape;
+class TopoDS_Edge;
+class TopoDS_Wire;
 class TopoDS_Face;
 class SoSeparator;
 class SoVertexShape;
@@ -56,6 +58,7 @@ public:
     App::PropertyColor PointColor;
     App::PropertyMaterial LineMaterial;
     App::PropertyMaterial PointMaterial;
+    App::PropertyBool ControlPoints;
 
 
     virtual void attach(App::DocumentObject *);
@@ -79,6 +82,10 @@ protected:
 
     void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
          int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
+    void showControlPoints(bool);
+    void showControlPointsOfEdge(const TopoDS_Edge&);
+    void showControlPointsOfWire(const TopoDS_Wire&);
+    void showControlPointsOfFace(const TopoDS_Face&);
 
     // nodes for the data representation
     SoSeparator *EdgeRoot;

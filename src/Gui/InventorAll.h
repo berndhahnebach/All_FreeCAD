@@ -62,6 +62,7 @@
 #include <Inventor/details/SoPointDetail.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/draggers/SoTrackballDragger.h>
+#include <Inventor/elements/SoCoordinateElement.h>
 #include <Inventor/elements/SoGLCacheContextElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
 #include <Inventor/errors/SoDebugError.h> 
