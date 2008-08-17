@@ -427,9 +427,10 @@ bool Document::saveAs(void)
     getMainWindow()->statusBar()->showMessage(QObject::tr("Save document under new filename..."));
 
     QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), 
-                 QDir::currentPath(), QObject::tr("FreeCAD document (*.FCStd)")).toLower();
+                 QDir::currentPath(), QObject::tr("FreeCAD document (*.FCStd)"));
     if (!fn.isEmpty()) {
-        if (!fn.endsWith(QLatin1String(".fcstd")))
+        QString file = fn.toLower();
+        if (!file.endsWith(QLatin1String(".fcstd")))
             fn += QLatin1String(".fcstd");
 
         QFileInfo fi;
