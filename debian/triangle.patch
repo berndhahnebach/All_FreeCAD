@@ -1,0 +1,42 @@
+Index: src/Mod/Mesh/App/Core/Triangulation.cpp
+===================================================================
+--- src/Mod/Mesh/App/Core/Triangulation.cpp	(Revision 1556)
++++ src/Mod/Mesh/App/Core/Triangulation.cpp	(Arbeitskopie)
+@@ -27,10 +27,11 @@
+ 
+ #include "Triangulation.h"
+ #include "Approximation.h"
+-#include "MeshKernel.h"
+-#include "triangle.h"
++#include "MeshKernel.h"
++extern "C" {
++#include <triangle.h>
++}
+ 
+-
+ using namespace MeshCore;
+ 
+ 
+Index: src/Mod/Mesh/App/Makefile.am
+===================================================================
+--- src/Mod/Mesh/App/Makefile.am	(Revision 1556)
++++ src/Mod/Mesh/App/Makefile.am	(Arbeitskopie)
+@@ -43,8 +43,6 @@
+ 		Core/Projection.h \
+ 		Core/SetOperations.cpp \
+ 		Core/SetOperations.h \
+-		Core/triangle.cpp \
+-		Core/triangle.h \
+ 		Core/tritritest.h \
+ 		Core/Triangulation.cpp \
+ 		Core/Triangulation.h \
+@@ -336,7 +334,8 @@
+ 		-lxerces-c \
+ 		-l@PYTHON_LIB@ \
+ 		-lFreeCADBase \
+-		-lFreeCADApp
++		-lFreeCADApp \
++		-ltriangle
+ 
+ #--------------------------------------------------------------------------------------
+ # Loader of libMesh
