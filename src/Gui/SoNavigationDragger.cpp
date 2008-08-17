@@ -115,20 +115,20 @@ RotTransDragger::RotTransDragger()
    // establishing their callbacks.
 
    // Create the translator dragger.    
-   SoDragger *tDragger = SO_GET_ANY_PART(this, "translator", 
-                         SoTranslate1Dragger);
+   //SoDragger *tDragger = SO_GET_ANY_PART(this, "translator", 
+   //                      SoTranslate1Dragger);
 
    // Create the XRotator dragger.    
-   SoDragger *XDragger = SO_GET_ANY_PART(this, "XRotator", 
-                         SoRotateCylindricalDragger);
+   //SoDragger *XDragger = SO_GET_ANY_PART(this, "XRotator", 
+   //                      SoRotateCylindricalDragger);
 
    // Create the YRotator dragger.    
-   SoDragger *YDragger = SO_GET_ANY_PART(this, "YRotator", 
-                         SoRotateCylindricalDragger);
+   //SoDragger *YDragger = SO_GET_ANY_PART(this, "YRotator", 
+   //                      SoRotateCylindricalDragger);
 
    // Create the ZRotator dragger.    
-   SoDragger *ZDragger = SO_GET_ANY_PART(this, "ZRotator", 
-                         SoRotateCylindricalDragger);
+   //SoDragger *ZDragger = SO_GET_ANY_PART(this, "ZRotator", 
+   //                      SoRotateCylindricalDragger);
 
    // Set rotations in "XRotatorRot" and "ZRotatorRot" parts.
    // These parts will orient the draggers from their default 

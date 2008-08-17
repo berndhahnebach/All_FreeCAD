@@ -678,8 +678,6 @@ std::vector<int> View3DInventorViewer::tessellate(const std::vector<SbVec2f>& po
 bool View3DInventorViewer::dumpToFile(const char* filename, bool binary) const
 {
     bool ret = false;
-    SoWriteAction wa;
-    SoOutput* out = wa.getOutput();
     Base::FileInfo fi(filename);
 
     // Write VRML V2.0

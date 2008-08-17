@@ -90,7 +90,7 @@ std::vector<const char*> MeshObject::getElementTypes(void) const
 
 Data::Segment* MeshObject::getSubElement(const char* Type, unsigned long n) const
 {
-    unsigned long i = 1;
+    //unsigned long i = 1;
 
     if (strcmp(Type,"Segment") == 0) {
         // not implemented

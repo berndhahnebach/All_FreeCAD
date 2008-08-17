@@ -24,6 +24,9 @@
 #ifndef GUI_SOFCDB_H
 #define GUI_SOFCDB_H
 
+#include <string>
+
+class SoNode;
 namespace Gui {
 /**
  * The FreeCAD database class to initialioze all onw Inventor nodes.

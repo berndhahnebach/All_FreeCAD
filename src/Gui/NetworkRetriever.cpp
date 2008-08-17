@@ -326,7 +326,7 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
         QDir::setCurrent(d->dir);
     }
 
-    wget->start("wget", wgetArguments);
+    wget->start(QString::fromAscii("wget"), wgetArguments);
     QDir::setCurrent( cwd );
 #else
     wget->start(QString::fromAscii("wget"), wgetArguments);
