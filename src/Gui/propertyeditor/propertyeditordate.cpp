@@ -23,7 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <q3datetimeedit.h>
 #endif
 
 #include "propertyeditordate.h"

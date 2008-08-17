@@ -20,6 +20,10 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#ifndef SONAVIGATIONDRAGGER_H
+#define SONAVIGATIONDRAGGER_H
+
 //  Geometry resources and part names for this dragger:
 
 //  Resource Names:                     Part Names:
@@ -115,4 +119,7 @@ class RotTransDragger : public SoDragger
 
    // Destructor.
    ~RotTransDragger();
-};  
+};
+
+#endif //SONAVIGATIONDRAGGER_H
+
