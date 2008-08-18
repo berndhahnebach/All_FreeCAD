@@ -94,13 +94,13 @@ public:
     /** @name Input/Output */
     //@{
     void read(const char *FileName);
-    TopoDS_Shape importIges(const char *FileName);
-    TopoDS_Shape importStep(const char *FileName);
-    TopoDS_Shape importBrep(const char *FileName);
+    void importIges(const char *FileName);
+    void importStep(const char *FileName);
+    void importBrep(const char *FileName);
     void exportIges(const char *FileName) const;
     void exportStep(const char *FileName) const;
     void exportBrep(const char *FileName) const;
-    void exportStl(const char *FileName) const;
+    void exportStl (const char *FileName) const;
     //@}
 
     /** @name Query*/
