@@ -282,21 +282,21 @@ void TopoShape::read(const char *FileName)
     
     if (File.hasExtension("igs") || File.hasExtension("iges")) {
         // read iges file
-        _Shape = importIges(File.filePath().c_str());
+        importIges(File.filePath().c_str());
     }
     else if (File.hasExtension("stp") || File.hasExtension("step")) {
-        _Shape = importStep(File.filePath().c_str());
+        importStep(File.filePath().c_str());
     }
     else if (File.hasExtension("brp") || File.hasExtension("brep")) {
         // read brep-file
-        _Shape = importBrep(File.filePath().c_str());
+        importBrep(File.filePath().c_str());
     }
     else{
         throw Base::Exception("Unknown extension");
     }
 }
 
-TopoDS_Shape TopoShape::importIges(const char *FileName)
+void TopoShape::importIges(const char *FileName)
 {
     try {
         // read iges file
@@ -308,7 +308,7 @@ TopoDS_Shape TopoShape::importIges(const char *FileName)
         aReader.ClearShapes();
         aReader.TransferRoots();
         // one shape, who contain's all subshapes
-        return aReader.OneShape();
+        this->_Shape = aReader.OneShape();
     }
     catch (Standard_Failure) {
         Handle(Standard_Failure) aFail = Standard_Failure::Caught();
@@ -316,7 +316,7 @@ TopoDS_Shape TopoShape::importIges(const char *FileName)
     }
 }
 
-TopoDS_Shape TopoShape::importStep(const char *FileName)
+void TopoShape::importStep(const char *FileName)
 {
     try {
         TopoDS_Shape aResShape;
@@ -354,7 +354,7 @@ TopoDS_Shape TopoShape::importStep(const char *FileName)
                 aResShape = aCompound;
         }
 
-        return aResShape;
+        this->_Shape = aResShape;
     }
     catch (Standard_Failure) {
         Handle(Standard_Failure) aFail = Standard_Failure::Caught();
@@ -362,13 +362,13 @@ TopoDS_Shape TopoShape::importStep(const char *FileName)
     }
 }
 
-TopoDS_Shape TopoShape::importBrep(const char *FileName)
+void TopoShape::importBrep(const char *FileName)
 {
     // read brep-file
     BRep_Builder aBuilder;
     TopoDS_Shape aShape;
     BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder);
-    return aShape;
+    this->_Shape = aShape;
 }
 
 void TopoShape::exportIges(const char *filename) const
