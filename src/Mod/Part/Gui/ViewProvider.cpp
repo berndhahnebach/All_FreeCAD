@@ -96,7 +96,7 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 
 App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
 
-ViewProviderPart::ViewProviderPart()
+ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
 {
     App::Material mat;
     mat.ambientColor.set(0.2f,0.2f,0.2f);
@@ -358,6 +358,12 @@ void ViewProviderPart::updateData(const App::Property* prop)
             computeEdges   (EdgeRoot,cShape);
             computeVertices(VertexRoot,cShape);
             BRepTools::Clean(cShape); // remove triangulation
+
+            // update control points if there
+            if (pcControlPoints) {
+                pcControlPoints->removeAllChildren();
+                showControlPoints(this->ControlPoints.getValue());
+            }
         }
         catch (...){
             Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
@@ -721,6 +727,18 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
 
 void ViewProviderPart::showControlPoints(bool show)
 {
+    if (!pcControlPoints && show) {
+        pcControlPoints = new SoSwitch();
+        pcRoot->addChild(pcControlPoints);
+    }
+
+    if (pcControlPoints) {
+        pcControlPoints->whichChild = (show ? SO_SWITCH_ALL : SO_SWITCH_NONE);
+    }
+
+    if (!show || !pcControlPoints || pcControlPoints->getNumChildren() > 0)
+        return;
+
     // ask for the property we are interested in
     App::DocumentObject* obj = this->pcObject;
     App::Property* prop = obj->getPropertyByName("Shape");
@@ -885,14 +903,14 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
     control->numPolesU = nCtU;
     control->numPolesV = nCtV;
 
-    if (knots.size() > 0) {
-        control->numKnotsU = nKnU;
-        control->numKnotsV = nKnV;
-    }
+    //if (knots.size() > 0) {
+    //    control->numKnotsU = nKnU;
+    //    control->numKnotsV = nKnV;
+    //}
 
     SoSeparator* nodes = new SoSeparator();
     nodes->addChild(coords);
     nodes->addChild(control);
 
-    pcRoot->addChild(nodes);
+    pcControlPoints->addChild(nodes);
 }

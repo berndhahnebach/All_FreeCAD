@@ -95,6 +95,7 @@ protected:
     SoMaterial  *pcPointMaterial;
     SoDrawStyle *pcLineStyle;
     SoDrawStyle *pcPointStyle;
+    SoSwitch    *pcControlPoints;
 
 private:
     // settings stuff
