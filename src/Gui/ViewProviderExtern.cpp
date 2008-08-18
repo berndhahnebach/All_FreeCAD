@@ -36,6 +36,9 @@
 #include "SoFCSelection.h"
 #include "ViewProviderExtern.h"
 
+#include <cstring>
+#include <algorithm>
+
 using std::vector;
 using std::string;
 
