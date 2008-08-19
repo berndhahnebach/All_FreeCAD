@@ -33,6 +33,7 @@ class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Face;
 class SoSeparator;
+class SoSwitch;
 class SoVertexShape;
 class SoPickedPoint;
 class SoEventCallback;

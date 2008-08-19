@@ -56,6 +56,7 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
         _pcSingleton->addPath(QLatin1String(":/icons/"));
         _pcSingleton->addPath(QLatin1String(":/Icons/"));
         _pcSingleton->addPath(QString::fromUtf8(App::GetApplication().GetHomePath()));
+        _pcSingleton->addPath(QString::fromUtf8(App::GetApplication().Config()["UserAppData"].c_str()));
 
         RegisterIcons();
     }

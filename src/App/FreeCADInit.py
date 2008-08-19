@@ -57,6 +57,11 @@ def InitApplications():
 	ModDirs = dircache.listdir(ModDir)
 	AddPath = App.ConfigGet("AdditionalModulePaths").split(";")
 	for i in AddPath: ModDirs.append(i)
+	# Search for additional modules in the home directecory
+	HomeMod = App.ConfigGet("UserAppData")+"Mod"
+	if (os.path.exists(HomeMod)):
+		HomeMods = dircache.listdir(HomeMod)
+		for i in HomeMods: ModDirs.append(os.path.join(HomeMod,i))
 	#AddModPaths = App.ParamGet("System parameter:AdditionalModulePaths")
 	#Err( AddModPaths)
 	# add also this path so that all modules search for libraries
