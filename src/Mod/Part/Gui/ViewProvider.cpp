@@ -65,6 +65,7 @@
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoPointSet.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoSwitch.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
