@@ -76,10 +76,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib JtTk40.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib JtTk40.lib FreeCADBase.lib FreeCADApp.lib Mesh.lib"
 				OutputFile="../../../../Mod/JtReader/JtReader.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../../../Mod/JtReader/JtReader.pdb"
 				ImportLibrary="../../../../obj/Mod/JtReader/ReleaseApp/JtReader.lib"
@@ -176,10 +177,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib JtTk40.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib JtTk40.lib FreeCADBaseD.lib FreeCADAppD.lib Mesh_d.lib"
 				OutputFile="../../../../Mod/JtReader/JtReader_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\..\lib"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../../Mod/JtReader/JtReader_d.pdb"
