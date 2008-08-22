@@ -1,0 +1,77 @@
+SUBDIRS=Resources
+
+if OCC_LIBRARY_FILES
+
+lib_LTLIBRARIES=libReverseEngineeringGui.la ReverseEngineeringGui.la
+
+BUILT_SOURCES=\
+		moc_ReverseEngineeringView.cpp
+
+libReverseEngineeringGui_la_SOURCES=\
+		AppReverseEngineeringGuiPy.cpp \
+		Command.cpp \
+		ReverseEngineeringView.cpp \
+		ReverseEngineeringView.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
+		Workbench.cpp \
+		Workbench.h
+
+# the library search path.
+libReverseEngineeringGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libReverseEngineeringGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DReverseEngineeringAppExport= -DReverseEngineeringGuiExport=
+
+libReverseEngineeringGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
+		-lFreeCADBase \
+		-lFreeCADApp \
+		-lFreeCADGui \
+		-lReverseEngineering
+
+#--------------------------------------------------------------------------------------
+# Loader of libReverseEngineeringGui
+
+ReverseEngineeringGui_la_SOURCES=\
+		AppReverseEngineeringGui.cpp
+
+# the library search path.
+ReverseEngineeringGui_la_LDFLAGS = $(libReverseEngineeringGui_la_LDFLAGS) -module -avoid-version
+ReverseEngineeringGui_la_CPPFLAGS = $(libReverseEngineeringGui_la_CPPFLAGS)
+
+ReverseEngineeringGui_la_LIBADD   = \
+		$(libReverseEngineeringGui_la_LIBADD) \
+		Resources/libResources.la \
+		-lReverseEngineeringGui
+
+#--------------------------------------------------------------------------------------
+
+# rule for Qt MetaObject Compiler:
+moc_%.cpp: %.h
+	$(QT_MOC) $< -o $(@F)
+
+# rule for Qt MetaObject Compiler:
+%.moc: %.h
+	$(QT_MOC) $< -o $(@F)
+
+# rules for Qt User Interface Compiler:
+ui_%.h: %.ui
+	$(QT_UIC) $< -o $(@F)
+
+# rules for Qt Resource Compiler:
+qrc_%.cpp: %.qrc
+	$(QT_RCC) -name $(*F) $< -o $(@F)
+
+# set the include path found by configure
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+
+endif
+
+libdir = $(prefix)/Mod/ReverseEngineering
+
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		AppReverseEngineeringGui.vcproj 
+
