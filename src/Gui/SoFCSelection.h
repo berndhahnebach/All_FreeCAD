@@ -110,6 +110,8 @@ private:
   bool bShift;
   bool bCtrl;
 
+    SbBool		isHighlighted(SoAction *action);
+    SbBool		preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
 };
 
 
