@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource> 
+        <file>icons/actions/Axel_constraint.svg</file>
+        <file>translations/Assembly_de.qm</file>
+    </qresource>
+</RCC> 
