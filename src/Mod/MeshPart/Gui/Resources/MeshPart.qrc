@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource> 
+        <file>icons/actions/MeshFace.svg</file>
+        <file>translations/MeshPart_de.qm</file>
+    </qresource>
+</RCC> 
