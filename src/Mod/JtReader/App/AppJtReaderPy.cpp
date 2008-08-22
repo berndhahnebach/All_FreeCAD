@@ -80,7 +80,7 @@ static PyObject * read(PyObject *self, PyObject *args)
     clearData();
     (*apcKernel) = facets;  
 
-    return new Mesh::MeshPy(apcKernel.release());
+    return new Mesh::MeshPy(new Mesh::MeshObject(*(apcKernel.release())));
 
   } PY_CATCH;
 
