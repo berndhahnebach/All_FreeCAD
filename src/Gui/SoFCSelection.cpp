@@ -102,6 +102,13 @@ SoFCSelection::SoFCSelection()
 */
 SoFCSelection::~SoFCSelection()
 {
+    // If we're being deleted and we're the current highlight,
+    // NULL out that variable
+    if (currenthighlight != NULL &&
+	(!currenthighlight->getTail()->isOfType(SoFCSelection::getClassTypeId()))) {
+	currenthighlight->unref();
+	currenthighlight = NULL;
+    }
   //delete THIS;
 }
 
@@ -206,6 +213,7 @@ void SoFCSelection::doAction(SoAction *action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
+#if 0
     static char buf[513];
     HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
     const SoEvent * event = action->getEvent();
@@ -379,12 +387,70 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
     }
 
     inherited::handleEvent(action);
+#else
+    // If we don't need to pick for locate highlighting,
+    // then just behave as separator and return.
+    // NOTE: we still have to pick for ON even though we don't have
+    // to re-render, because the app needs to be notified as the mouse
+    // goes over locate highlight nodes.
+    if ( highlightMode.getValue() == OFF ) {
+	SoSeparator::handleEvent( action );
+	return;
+    }
+
+    // get event from the action
+    const SoEvent *event = action->getEvent();
+
+    //
+    // If this is a mouseMotion event, then check for locate highlighting
+    //
+    if (event->isOfType(SoLocation2Event::getClassTypeId())) {
+
+	// check to see if the mouse is over our geometry...
+	SbBool underTheMouse = FALSE;
+	const SoPickedPoint *pp = action->getPickedPoint();
+	SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
+	if (pPath && pPath->containsPath(action->getCurPath())) {
+	    // Make sure I'm the lowest LocHL in the pick path!
+	    underTheMouse = TRUE;
+	    for (int i = 0; i < pPath->getLength(); i++) {
+		SoNode *node = pPath->getNodeFromTail(i);
+		if (node->isOfType(SoFCSelection::getClassTypeId())) {
+		    if (node != this)
+			underTheMouse = FALSE;
+		    break; // found the lowest LocHL - look no further
+		}
+	    }
+	}
+
+	// Am I currently highlighted?
+	if (isHighlighted(action)) {
+	    if ( ! underTheMouse)
+		// re-draw the object with it's normal color
+		redrawHighlighted(action, FALSE);
+	    else
+		action->setHandled();
+	}
+	// Else I am not currently highlighted
+	else {
+	    // If under the mouse, then highlight!
+	    if (underTheMouse)
+		// draw this object highlighted
+		redrawHighlighted(action, TRUE);
+	}
+    }
+
+    // Let the base class traverse the children.
+    if ( action->getGrabber() != this )
+	SoSeparator::handleEvent(action);
+#endif
 }
 
 // doc from parent
 void
 SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 {
+#if 0
   // check if preselection is active
   HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
   bool preselected = highlighted && mymode == AUTO;
@@ -395,12 +461,29 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
   }
   inherited::GLRenderBelowPath(action);
   state->pop();
+#else
+    // Set up state for locate highlighting (if necessary)
+    GLint oldDepthFunc;
+    SbBool drawHighlighted = preRender(action, oldDepthFunc);
+
+    // now invoke the parent method
+    SoSeparator::GLRenderBelowPath(action);
+
+    // Restore old depth buffer model if needed
+    if (drawHighlighted || highlighted)
+	glDepthFunc((GLenum)oldDepthFunc);
+
+    // Clean up state if needed
+    if (drawHighlighted)
+	action->getState()->pop();
+#endif
 }
 
 // doc from parent
 void
 SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
+#if 0
   // check if preselection is active
   HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
   bool preselected = highlighted && mymode == AUTO;
@@ -411,15 +494,168 @@ SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
   }
   inherited::GLRenderInPath(action);
   state->pop();
+#else
+    // Set up state for locate highlighting (if necessary)
+    GLint oldDepthFunc;
+    SbBool drawHighlighted = preRender(action, oldDepthFunc);
+
+    // now invoke the parent method
+    SoSeparator::GLRenderInPath(action);
+
+    // Restore old depth buffer model if needed
+    if (drawHighlighted || highlighted)
+	glDepthFunc((GLenum)oldDepthFunc);
+
+    // Clean up state if needed
+    if (drawHighlighted)
+	action->getState()->pop();
+#endif
+}
+#include <Inventor/elements/SoCacheElement.h>
+#include <Inventor/elements/SoLazyElement.h>
+#include <Inventor/elements/SoOverrideElement.h>
+#include <Inventor/elements/SoWindowElement.h>
+
+SbBool
+SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
+//
+////////////////////////////////////////////////////////////////////////
+{
+    // If not performing locate highlighting, just return.
+    if (highlightMode.getValue() == OFF)
+	return FALSE;
+
+    SoState *state = action->getState();
+
+    // ??? prevent caching at this level - for some reason the
+    // ??? SoWindowElement::copyMatchInfo() method get called, which should
+    // ??? never be called. We are not caching this node correctly yet....
+    SoCacheElement::invalidate(state);
+
+    SbBool drawHighlighted = (highlightMode.getValue() == ON || isHighlighted(action));
+
+    if (drawHighlighted) {
+
+	// prevent diffuse & emissive color from leaking out...
+	state->push();
+
+	SbColor col = colorHighlight.getValue();
+
+	// Emissive Color
+	SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+	SoLazyElement::setEmissive(state, &col);
+
+	// Diffuse Color
+	if (style.getValue() == EMISSIVE_DIFFUSE) {
+	    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+	    SoLazyElement::setDiffuse(state, this, 1, &col, &colorpacker);
+	}
+    }
+
+    // Draw on top of other things at same z-buffer depth if:
+    // [a] we're highlighted
+    // [b] this is the highlighting pass. This occurs when changing from
+    //     non-hilit to lit OR VICE VERSA.
+    // Otherwise, leave it alone...
+    if (drawHighlighted || highlighted) {
+	glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunc);
+	if (oldDepthFunc != GL_LEQUAL)
+	    glDepthFunc(GL_LEQUAL);
+    }
+
+    return drawHighlighted;
 }
 
 /*!
   Empty method in Coin. Can be used by subclasses to be told
   when status change.
 */
+#include "MainWindow.h"
+#include "View3DInventor.h"
+#include "View3DInventorViewer.h"
 void
-SoFCSelection::redrawHighlighted(SoAction * /* act */, SbBool /* flag */)
+SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 {
+    // If we are about to highlight, and there is something else highlighted,
+    // that something else needs to unhighlight.
+    if (doHighlight && currenthighlight != NULL &&
+        !(*((SoFullPath *)action->getCurPath()) == *currenthighlight)) {
+
+	SoNode *tail = currenthighlight->getTail();
+	if (tail->isOfType( SoFCSelection::getClassTypeId()))
+	    ((SoFCSelection *)tail)->redrawHighlighted(action, FALSE);
+	else {
+	    // Just get rid of the path. It's no longer valid for redraw.
+	    currenthighlight->unref();
+	    currenthighlight = NULL;
+	}
+    }
+
+    SoPath *pathToRender;
+    // save the path to ourself for later de-highlight
+    if (doHighlight) {
+
+	if (currenthighlight != NULL)
+	    currenthighlight->unref();
+	currenthighlight = (SoFullPath *) action->getCurPath()->copy();
+	currenthighlight->ref();
+
+	// We will be rendering this new path to highlight it
+	pathToRender = currenthighlight;
+	pathToRender->ref();
+    }
+    // delete our path if we are no longer highlighted
+    else {
+
+	// We will be rendering this old path to unhighlight it
+	pathToRender = currenthighlight;
+	pathToRender->ref();
+
+	currenthighlight->unref();
+	currenthighlight = NULL;
+    }
+
+    // If highlighting is forced on for this node, we don't need this special render.
+    if (highlightMode.getValue() != AUTO) {
+	pathToRender->unref();
+	return;
+    }
+
+    SoState *state = action->getState();
+
+    void* window;
+    void* context;
+    void *display;
+    SoGLRenderAction *glAction;
+    SoWindowElement::get(state, window, context, display, glAction);
+
+    // If we don't have a current window, then simply return...
+    //if (window == 0 || context == NULL || display == NULL || glAction == NULL)
+	//return;
+
+    glAction = static_cast<View3DInventor*>(getMainWindow()->activeWindow())
+        ->getViewer()->getGLRenderAction();
+
+#ifndef WIN32  // FIXME !!!!
+    // set the current window
+    glXMakeCurrent(display, window, context);
+#endif
+    // render into the front buffer (save the current buffering type)
+    GLint whichBuffer;
+    glGetIntegerv(GL_DRAW_BUFFER, &whichBuffer);
+    if (whichBuffer != GL_FRONT)
+	glDrawBuffer(GL_FRONT);
+
+    highlighted = TRUE;
+    glAction->apply(pathToRender);
+    highlighted = FALSE;
+
+    // restore the buffering type
+    if (whichBuffer != GL_FRONT)
+	glDrawBuffer((GLenum)whichBuffer);
+    glFlush();
+
+    pathToRender->unref();
 }
 
 SbBool 
@@ -456,6 +692,7 @@ SoFCSelection::setOverride(SoGLRenderAction * action)
 void
 SoFCSelection::turnoffcurrent(SoAction * action)
 {
+#if 0
   if (SoFCSelection::currenthighlight &&
       SoFCSelection::currenthighlight->getLength()) {
     SoNode * tail = SoFCSelection::currenthighlight->getTail();
@@ -469,6 +706,35 @@ SoFCSelection::turnoffcurrent(SoAction * action)
     SoFCSelection::currenthighlight->unref();
     SoFCSelection::currenthighlight = NULL;
   }
+#endif
+      if (currenthighlight == NULL)
+	return;
+
+    SoNode *tail = currenthighlight->getTail();
+    if (tail->isOfType(SoFCSelection::getClassTypeId())) {
+
+	// don't redraw if we already are in the middle of rendering
+	// (processing events during render abort might cause this)
+	SoState *state = action->getState();
+	if (state && state->getDepth() == 1)
+	    ((SoFCSelection *)tail)->redrawHighlighted(action, FALSE);
+    }
+    else {
+	// Just get rid of the path. It's no longer valid for redraw.
+	currenthighlight->unref();
+	currenthighlight = NULL;
+    }
+
+}
+SbBool
+SoFCSelection::isHighlighted(SoAction *action)
+//
+////////////////////////////////////////////////////////////////////////
+{
+    SoFullPath *actionPath = (SoFullPath *) action->getCurPath();
+    return (currenthighlight != NULL &&
+	    currenthighlight->getTail() == actionPath->getTail() && // nested SoHL!
+	    *currenthighlight == *actionPath);
 }
 
 //#undef THIS
