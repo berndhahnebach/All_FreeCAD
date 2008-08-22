@@ -8,7 +8,7 @@
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
 #*                                                                         *
-#*   This file is part of the FreeCAD CAx development system.              *
+#*   This file is Sketcher of the FreeCAD CAx development system.              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -18,7 +18,7 @@
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
 #*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+#*   MERCHANTABILITY or FITNESS FOR A SketcherICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
@@ -32,16 +32,39 @@
 
 
 class SketcherWorkbench ( Workbench ):
-	"Part workbench object"
-	def Start(self):
-		Log ('   Set up part toolbar...\n')
+	"Sketcher workbench object"
+	Icon = """
+			/* XPM */
+			static const char *Sketcher_Box[]={
+			"16 16 3 1",
+			". c None",
+			"# c #000000",
+			"a c #c6c642",
+			"................",
+			".......#######..",
+			"......#aaaaa##..",
+			".....#aaaaa###..",
+			"....#aaaaa##a#..",
+			"...#aaaaa##aa#..",
+			"..#aaaaa##aaa#..",
+			".########aaaa#..",
+			".#aaaaa#aaaaa#..",
+			".#aaaaa#aaaa##..",
+			".#aaaaa#aaa##...",
+			".#aaaaa#aa##....",
+			".#aaaaa#a##... .",
+			".#aaaaa###......",
+			".########.......",
+			"................"};
+			"""
+	MenuText = "Sketcher"
+	ToolTip = "Sketcher workbench"
 
-		Log ('   Set up part commandbar...\n')
+	def Initialize(self):
+		# load the module
+		import SketcherGui
+		import Sketcher
+	def GetClassName(self):
+		return "SketcherGui::Workbench"
 
-		Log ('   Set up part menues...\n')
-
-	def Stop(self):
-		Log ('   Stoping part workbench...\n')
-
-
-Gui.addWorkbench("Sketcher",SketcherWorkbench())
+Gui.addWorkbench(SketcherWorkbench())

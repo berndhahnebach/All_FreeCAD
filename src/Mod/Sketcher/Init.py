@@ -1,10 +1,10 @@
-# FreeCAD init script of the sketcher module  
+# FreeCAD init script of the Sketcher module  
 # (c) 2001 Juergen Riegel
 
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
 #*                                                                         *
-#*   This file is part of the FreeCAD CAx development system.              *
+#*   This file is Sketcher of the FreeCAD CAx development system.              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -14,7 +14,7 @@
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
 #*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+#*   MERCHANTABILITY or FITNESS FOR A SketcherICULAR PURPOSE.  See the         *
 #*   GNU Lesser General Public License for more details.                   *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
@@ -25,13 +25,23 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
+
+class SketcherDocument:
+	"Sketcher document"
+	def Info(self):
+		return "Sketcher document"
+		
+            
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Sketcher")
 
 # Set the needed information
-#ParGrp.SetString("HelpIndex",        "Part/Help/index.html")
-#ParGrp.SetString("DocTemplateName",  "Part")
-#ParGrp.SetString("DocTemplateScript","TemplPart.py")
-ParGrp.SetString("WorkBenchName",    "Sketcher")
-ParGrp.SetString("WorkBenchModule",  "Sketcher.py")
+ParGrp.SetString("HelpIndex",        "Sketcher/Help/index.html")
+ParGrp.SetString("DocTemplateName",  "Sketcher")
+ParGrp.SetString("DocTemplateScript","TemplSketcher.py")
+ParGrp.SetString("WorkBenchName",    "Sketcher Design")
+ParGrp.SetString("WorkBenchModule",  "SketcherWorkbench.py")
+
+
+#FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","Sketcher")
 
