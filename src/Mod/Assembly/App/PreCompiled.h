@@ -242,6 +242,10 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
 
+// --- ODE ----------
+#include <ode/ode.h>
+
+
 #endif
 #endif // _PreComp_
 
