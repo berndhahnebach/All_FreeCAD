@@ -4,7 +4,7 @@
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
 #*                                                                         *
-#*   This file is Sketcher of the FreeCAD CAx development system.              *
+#*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -14,7 +14,7 @@
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
 #*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
-#*   MERCHANTABILITY or FITNESS FOR A SketcherICULAR PURPOSE.  See the         *
+#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Lesser General Public License for more details.                   *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *

@@ -8,7 +8,7 @@
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
 #*                                                                         *
-#*   This file is Complete of the FreeCAD CAx development system.              *
+#*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -18,7 +18,7 @@
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
 #*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A CompleteICULAR PURPOSE.  See the         *
+#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
