@@ -38,12 +38,12 @@ PyDoc_STRVAR(module_ReverseEngineering_doc,
 
 /* Python entry */
 extern "C" {
-void AppReverseEngineeringExport initReverseEngineering()
+void ReenExport initReverseEngineering()
 {
     // load dependend module
     try {
         Base::Interpreter().loadModule("Part");
-        //Base::Interpreter().loadModule("Mesh");
+        Base::Interpreter().loadModule("Mesh");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
@@ -51,13 +51,6 @@ void AppReverseEngineeringExport initReverseEngineering()
     }
     Py_InitModule3("ReverseEngineering", ReverseEngineering_methods, module_ReverseEngineering_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading ReverseEngineering module... done\n");
-
-
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
- 
-    //ReverseEngineering::FeatureViewPart        ::init();
 }
 
 } // extern "C"

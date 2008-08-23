@@ -48,7 +48,7 @@ extern struct PyMethodDef ReverseEngineeringGui_Import_methods[];
 
 /* Python entry */
 extern "C" {
-void ReverseEngineeringGuiExport initReverseEngineeringGui()
+void ReenGuiExport initReverseEngineeringGui()
 {
     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");

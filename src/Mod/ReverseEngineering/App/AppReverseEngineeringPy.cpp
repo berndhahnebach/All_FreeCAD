@@ -23,87 +23,61 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Face.hxx>
-# include <Geom_Plane.hxx>
-# include <Handle_Geom_Plane.hxx>
+# include <TColgp_Array1OfPnt.hxx>
+# include <Handle_Geom_BSplineSurface.hxx>
 #endif
 
-#include <stdio.h>
-
-# if defined (_POSIX_C_SOURCE)
-#   undef  _POSIX_C_SOURCE
-# endif // (re-)defined in pyconfig.h
 #include <Python.h>
-
-#include <Base/Console.h>
 #include <Base/PyObjectBase.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
-#include <App/Application.h>
-#include <App/Document.h>
+#include <Base/Console.h>
+#include <Base/PyCXX/Objects.hxx>
 
-// Things from the part module
-#include <Mod/Part/App/TopoShape.h>
-#include <Mod/Part/App/TopoShapePy.h>
+#include <Mod/Part/App/BSplineSurfacePy.h>
 
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+#include "ApproxSurface.h"
 
-using Base::Console;
-using namespace Part;
-using namespace std;
+using namespace Reen;
 
 
 /* module functions */
-static PyObject * open(PyObject *self, PyObject *args)
+static PyObject * approxSurface(PyObject *self, PyObject *args)
 {
-    const char* Name;
-    if (!PyArg_ParseTuple(args, "s",&Name))
+    PyObject *o;
+    int degreeU=3,degreeV=3;
+    int pointsU=6,pointsV=6;
+    if (!PyArg_ParseTuple(args, "O|iiii",&o,&degreeU,&degreeV,&pointsU,&pointsV))
         return NULL;
 
     PY_TRY {
+        Py::List l(o);
+        TColgp_Array1OfPnt clPoints(0, l.size()-1);
+
+        int index=0;
+        for (Py::List::iterator it = l.begin(); it != l.end(); ++it) {
+            Py::Tuple t(*it);
+            clPoints(index++) = gp_Pnt(
+                (double)Py::Float(t.getItem(0)),
+                (double)Py::Float(t.getItem(1)),
+                (double)Py::Float(t.getItem(2)));
+        }
+
+        Reen::CBSplineParameterCorrection pc(degreeU,degreeV,pointsU,pointsV);
+        Handle_Geom_BSplineSurface hSurf;
+
+        //pc.EnableSmoothing(true, 0.1f, 0.5f, 0.2f, 0.3f);
+        pc.EnableSmoothing(true, 0.1f, 1.0f, 0.0f, 0.0f);
+        hSurf = pc.CreateSurface(clPoints, 5, true, 1.0);
+        if (!hSurf.IsNull()) {
+            return new Part::BSplineSurfacePy(new Part::GeomBSplineSurface(hSurf));
+        }
+
+        PyErr_SetString(PyExc_Exception, "Computation of B-Spline surface failed");
+        return 0;
     } PY_CATCH;
-
-    Py_Return;
-}
-
-/* module functions */
-static PyObject * insert(PyObject *self, PyObject *args)
-{
-    const char* Name;
-    const char* DocName;
-    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
-        return NULL;
-
-    PY_TRY {
-    } PY_CATCH;
-
-    Py_Return;
-}
-
-/* module functions */
-static PyObject * read(PyObject *self, PyObject *args)
-{
-    const char* Name;
-    if (!PyArg_ParseTuple(args, "s",&Name))
-        return NULL;
-    PY_TRY {
-    } PY_CATCH;
-  
-    Py_Return;
 }
 
 /* registration table  */
 struct PyMethodDef ReverseEngineering_methods[] = {
-    {"open"   , open,    1},
-    {"insert" , insert,  1},
-    {"read"   , read,  1},
+    {"approxSurface"   , approxSurface,  1},
     {NULL, NULL}        /* end of table marker */
 };

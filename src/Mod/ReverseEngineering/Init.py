@@ -25,12 +25,6 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
-
-class ReverseEngineeringDocument:
-	"ReverseEngineering document"
-	def Info(self):
-		return "ReverseEngineering document"
-		
             
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("ReverseEngineering")
@@ -41,7 +35,3 @@ ParGrp.SetString("DocTemplateName",  "ReverseEngineering")
 ParGrp.SetString("DocTemplateScript","TemplReverseEngineering.py")
 ParGrp.SetString("WorkBenchName",    "ReverseEngineering Design")
 ParGrp.SetString("WorkBenchModule",  "ReverseEngineeringWorkbench.py")
-
-
-#FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","ReverseEngineering")
-
