@@ -28,11 +28,15 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define ReverseEngineeringAppExport __declspec(dllimport)
-# define ReverseEngineeringGuiExport __declspec(dllexport)
+# define ReenExport    __declspec(dllimport)
+# define ReenGuiExport __declspec(dllexport)
+# define AppPartExport __declspec(dllimport)
+# define MeshExport    __declspec(dllimport)
 #else // for Linux
-# define ReverseEngineeringAppExport
-# define ReverseEngineeringGuiExport
+# define ReenExport
+# define ReenGuiExport
+# define AppPartExport
+# define MeshExport
 #endif
 
 

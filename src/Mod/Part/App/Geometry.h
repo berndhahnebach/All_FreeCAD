@@ -50,7 +50,7 @@
 
 namespace Part {
 
-class Geometry
+class PartExport Geometry
 {
 public:
     virtual ~Geometry();
@@ -62,7 +62,7 @@ protected:
     Geometry();
 };
 
-class GeomCurve : public Geometry
+class PartExport GeomCurve : public Geometry
 {
 public:
     GeomCurve();
@@ -71,7 +71,7 @@ public:
     TopoDS_Shape toShape() const;
 };
 
-class GeomBezierCurve : public GeomCurve
+class PartExport GeomBezierCurve : public GeomCurve
 {
 public:
     GeomBezierCurve();
@@ -84,7 +84,7 @@ private:
     Handle_Geom_BezierCurve myCurve;
 };
 
-class GeomBSplineCurve : public GeomCurve
+class PartExport GeomBSplineCurve : public GeomCurve
 {
 public:
     GeomBSplineCurve();
@@ -97,7 +97,7 @@ private:
     Handle_Geom_BSplineCurve myCurve;
 };
 
-class GeomCircle : public GeomCurve
+class PartExport GeomCircle : public GeomCurve
 {
 public:
     GeomCircle();
@@ -110,7 +110,7 @@ private:
     Handle_Geom_Circle myCurve;
 };
 
-class GeomEllipse : public GeomCurve
+class PartExport GeomEllipse : public GeomCurve
 {
 public:
     GeomEllipse();
@@ -123,7 +123,7 @@ private:
     Handle_Geom_Ellipse myCurve;
 };
 
-class GeomHyperbola : public GeomCurve
+class PartExport GeomHyperbola : public GeomCurve
 {
 public:
     GeomHyperbola();
@@ -136,7 +136,7 @@ private:
     Handle_Geom_Hyperbola myCurve;
 };
 
-class GeomParabola : public GeomCurve
+class PartExport GeomParabola : public GeomCurve
 {
 public:
     GeomParabola();
@@ -149,7 +149,7 @@ private:
     Handle_Geom_Parabola myCurve;
 };
 
-class GeomLine : public GeomCurve
+class PartExport GeomLine : public GeomCurve
 {
 public:
     GeomLine();
@@ -162,7 +162,7 @@ private:
     Handle_Geom_Line myCurve;
 };
 
-class GeomLineSegment : public GeomCurve
+class PartExport GeomLineSegment : public GeomCurve
 {
 public:
     GeomLineSegment();
@@ -174,7 +174,7 @@ private:
     Handle_Geom_TrimmedCurve myCurve;
 };
 
-class GeomOffsetCurve : public GeomCurve
+class PartExport GeomOffsetCurve : public GeomCurve
 {
 public:
     GeomOffsetCurve(const Handle_Geom_Curve&, double, const gp_Dir&);
@@ -187,7 +187,7 @@ private:
     Handle_Geom_OffsetCurve myCurve;
 };
 
-class GeomTrimmedCurve : public GeomCurve
+class PartExport GeomTrimmedCurve : public GeomCurve
 {
 public:
     GeomTrimmedCurve();
@@ -201,7 +201,7 @@ private:
     Handle_Geom_TrimmedCurve myCurve;
 };
 
-class GeomSurface : public Geometry
+class PartExport GeomSurface : public Geometry
 {
 public:
     GeomSurface();
@@ -210,7 +210,7 @@ public:
     TopoDS_Shape toShape() const;
 };
 
-class GeomBezierSurface : public GeomSurface
+class PartExport GeomBezierSurface : public GeomSurface
 {
 public:
     GeomBezierSurface();
@@ -223,7 +223,7 @@ private:
     Handle_Geom_BezierSurface mySurface;
 };
 
-class GeomBSplineSurface : public GeomSurface
+class PartExport GeomBSplineSurface : public GeomSurface
 {
 public:
     GeomBSplineSurface();
@@ -236,7 +236,7 @@ private:
     Handle_Geom_BSplineSurface mySurface;
 };
 
-class GeomCylinder : public GeomSurface
+class PartExport GeomCylinder : public GeomSurface
 {
 public:
     GeomCylinder();
@@ -248,7 +248,7 @@ private:
     Handle_Geom_CylindricalSurface mySurface;
 };
 
-class GeomCone : public GeomSurface
+class PartExport GeomCone : public GeomSurface
 {
 public:
     GeomCone();
@@ -260,7 +260,7 @@ private:
     Handle_Geom_ConicalSurface mySurface;
 };
 
-class GeomSphere : public GeomSurface
+class PartExport GeomSphere : public GeomSurface
 {
 public:
     GeomSphere();
@@ -272,7 +272,7 @@ private:
     Handle_Geom_SphericalSurface mySurface;
 };
 
-class GeomToroid : public GeomSurface
+class PartExport GeomToroid : public GeomSurface
 {
 public:
     GeomToroid();
@@ -284,7 +284,7 @@ private:
     Handle_Geom_ToroidalSurface mySurface;
 };
 
-class GeomPlane : public GeomSurface
+class PartExport GeomPlane : public GeomSurface
 {
 public:
     GeomPlane();

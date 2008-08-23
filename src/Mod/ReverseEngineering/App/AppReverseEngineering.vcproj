@@ -253,6 +253,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ApproxSurface.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ApproxSurface.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

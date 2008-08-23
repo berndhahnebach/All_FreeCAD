@@ -46,8 +46,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("ReverseEngineering"));
-    *part << "ReverseEngineering_ConstraintAxle";
+    part->setCommand(QT_TR_NOOP("Reverse Engineering"));
+    *part << "Reen_ApproxSurface";
      return root;
 }
 
