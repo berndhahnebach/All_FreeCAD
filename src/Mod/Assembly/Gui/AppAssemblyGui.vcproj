@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib coin2d.lib QtCored4.lib QtSvgd4.lib QtGuid4.lib QtNetworkd4.lib QtOpenGLd4.lib Qt3Supportd4.lib opengl32.lib glu32.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib coin2d.lib QtCored4.lib QtSvgd4.lib QtGuid4.lib QtNetworkd4.lib QtOpenGLd4.lib Qt3Supportd4.lib opengl32.lib glu32.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib ode_doubled.lib"
 				OutputFile="../../../../Mod/Assembly/AssemblyGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib coin2.lib QtCore4.lib QtGui4.lib QtNetwork4.lib QtOpenGL4.lib QtSvg4.lib Qt3Support4.lib opengl32.lib glu32.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib coin2.lib QtCore4.lib QtGui4.lib QtNetwork4.lib QtOpenGL4.lib QtSvg4.lib Qt3Support4.lib opengl32.lib glu32.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib TKOffset.lib ode_double.lib"
 				OutputFile="../../../../Mod/Assembly/AssemblyGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

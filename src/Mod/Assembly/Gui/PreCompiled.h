@@ -55,6 +55,8 @@
 #include <queue>
 #include <bitset>
 
+#include <ode/ode.h>
+
 #ifdef FC_OS_WIN32
 # include <windows.h>
 #endif
