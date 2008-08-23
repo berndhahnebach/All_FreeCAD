@@ -638,7 +638,7 @@ SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 
 #ifndef WIN32  // FIXME !!!!
     // set the current window
-    glXMakeCurrent(display, window, context);
+    //glXMakeCurrent(display, window, context);
 #endif
     // render into the front buffer (save the current buffering type)
     GLint whichBuffer;

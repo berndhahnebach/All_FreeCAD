@@ -23,6 +23,11 @@
 #ifndef COIN_SoFCSelection_H
 #define COIN_SoFCSelection_H
 
+# ifdef FC_OS_MACOSX
+# include <OpenGL/gl.h>
+# else
+# include <GL/gl.h>
+# endif
 
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoSeparator.h>
