@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2008 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef IMAGE_WORKBENCH_H
-#define IMAGE_WORKBENCH_H
+#ifndef COMPLETEGUI_WORKBENCH_H
+#define COMPLETEGUI_WORKBENCH_H
 
 #include <Gui/Workbench.h>
 
@@ -47,4 +47,4 @@ protected:
 } // namespace CompleteGui
 
 
-#endif // IMAGE_WORKBENCH_H 
+#endif // COMPLETE_WORKBENCH_H 
