@@ -292,6 +292,10 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\App_TEMPLATE_Py.cpp"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

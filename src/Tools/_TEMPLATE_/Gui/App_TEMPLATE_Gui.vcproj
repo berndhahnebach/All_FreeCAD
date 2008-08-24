@@ -298,6 +298,32 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\Resources\_TEMPLATE_.qrc"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="App_TEMPLATE_Gui.cpp"
 			>
 			<FileConfiguration
@@ -318,6 +344,10 @@
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\App_TEMPLATE_GuiPy.cpp"
+			>
 		</File>
 		<File
 			RelativePath="Command.cpp"

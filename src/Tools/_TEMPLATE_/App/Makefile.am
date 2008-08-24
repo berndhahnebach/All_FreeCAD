@@ -2,6 +2,7 @@
 lib_LTLIBRARIES=lib_TEMPLATE_.la _TEMPLATE_.la
 
 lib_TEMPLATE__la_SOURCES=\
+		App_TEMPLATE_Py.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 

@@ -30,24 +30,23 @@
 
 
 /* registration table  */
-static struct PyMethodDef _TEMPLATE__methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
+extern struct PyMethodDef _TEMPLATE__methods[];
+
+PyDoc_STRVAR(module__TEMPLATE__doc,
+"This module is the _TEMPLATE_ module.");
 
 
 /* Python entry */
 extern "C" {
 void _TEMPLATE_AppExport init_TEMPLATE_() {
 
-  // ADD YOUR CODE HERE
-  //
-  //
+    // ADD YOUR CODE HERE
+    //
+    //
+    (void) Py_InitModule3("_TEMPLATE_", _TEMPLATE__methods, module__TEMPLATE__doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading _TEMPLATE_ module... done\n");
 
-  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
-  Base::Console().Log("Loading _TEMPLATE_ module... done\n");
-
-  return;
+    return;
 }
-
 
 } // extern "C"
