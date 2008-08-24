@@ -42,23 +42,23 @@ DEF_STD_CMD(Cmd_TEMPLATE_Test);
 Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
   :Command("_TEMPLATE__Test")
 {
-  sAppModule    = "_TEMPLATE_";
-  sGroup        = QT_TR_NOOP("_TEMPLATE_");
-  sMenuText     = QT_TR_NOOP("Hello");
-  sToolTipText  = QT_TR_NOOP("_TEMPLATE_ Test function");
-  sWhatsThis    = QT_TR_NOOP("_TEMPLATE_ Test function");
-  sStatusTip    = QT_TR_NOOP("_TEMPLATE_ Test function");
-  sPixmap       = "Test1";
-  iAccel        = Qt::CTRL+Qt::Key_H;
+    sAppModule    = "_TEMPLATE_";
+    sGroup        = QT_TR_NOOP("_TEMPLATE_");
+    sMenuText     = QT_TR_NOOP("Hello");
+    sToolTipText  = QT_TR_NOOP("_TEMPLATE_ Test function");
+    sWhatsThis    = QT_TR_NOOP("_TEMPLATE_ Test function");
+    sStatusTip    = QT_TR_NOOP("_TEMPLATE_ Test function");
+    sPixmap       = "Test1";
+    iAccel        = Qt::CTRL+Qt::Key_H;
 }
 
 void Cmd_TEMPLATE_Test::activated(int iMsg)
 {
-  Base::Console().Message("Hello, World!\n");
+    Base::Console().Message("Hello, World!\n");
 }
 
 void Create_TEMPLATE_Commands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-  rcCmdMgr.addCommand(new Cmd_TEMPLATE_Test());
+    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+    rcCmdMgr.addCommand(new Cmd_TEMPLATE_Test());
 }

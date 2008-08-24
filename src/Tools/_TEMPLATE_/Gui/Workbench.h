@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -33,13 +33,13 @@ class Workbench : public Gui::StdWorkbench
     TYPESYSTEM_HEADER();
 
 public:
-  Workbench();
-  virtual ~Workbench();
+    Workbench();
+    virtual ~Workbench();
 
 protected:
-  Gui::MenuItem* setupMenuBar() const;
-  Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
+    Gui::MenuItem* setupMenuBar() const;
+    Gui::ToolBarItem* setupToolBars() const;
+    Gui::ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace _TEMPLATE_Gui

@@ -2,6 +2,7 @@
 lib_LTLIBRARIES=lib_TEMPLATE_Gui.la _TEMPLATE_Gui.la
 
 lib_TEMPLATE_Gui_la_SOURCES=\
+		App_TEMPLATE_GuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \

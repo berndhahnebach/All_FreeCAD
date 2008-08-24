@@ -22,52 +22,14 @@
 
 
 #include "PreCompiled.h"
-
 #ifndef _PreComp_
 #endif
 
-#include "Workbench.h"
-#include <Gui/MenuManager.h>
-#include <Gui/ToolBarManager.h>
 
-using namespace _TEMPLATE_Gui;
+#include <Base/Console.h>
+#include <Base/Exception.h>
 
-TYPESYSTEM_SOURCE(_TEMPLATE_Gui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{
-}
-
-Workbench::~Workbench()
-{
-}
-
-Gui::MenuItem* Workbench::setupMenuBar() const
-{
-    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-    Gui::MenuItem* item = root->findItem( "&Windows" );
-    Gui::MenuItem* test = new Gui::MenuItem;
-    root->insertItem( item, test );
-    test->setCommand("_TEMPLATE_");
-    *test << "_TEMPLATE__Test";
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
-    test->setCommand( "_TEMPLATE_ Tools" );
-    *test << "_TEMPLATE__Test"; 
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
-    test->setCommand( "_TEMPLATE_ Tools" );
-    *test << "_TEMPLATE__Test"; 
-    return root;
-}
-
+/* registration table  */
+struct PyMethodDef _TEMPLATE_Gui_methods[] = {
+    {NULL, NULL}                   /* end of table marker */
+};

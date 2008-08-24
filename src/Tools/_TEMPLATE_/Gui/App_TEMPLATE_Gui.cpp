@@ -36,32 +36,33 @@ void Create_TEMPLATE_Commands(void);
 
 
 /* registration table  */
-static struct PyMethodDef _TEMPLATE_Gui_methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
+extern struct PyMethodDef _TEMPLATE_Gui_methods[];
+
+PyDoc_STRVAR(module__TEMPLATE_Gui_doc,
+"This module is the _TEMPLATE_Gui module.");
 
 
 /* Python entry */
 extern "C" {
-void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
-  if ( !Gui::Application::Instance )
-  {
-    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+void _TEMPLATE_GuiExport init_TEMPLATE_Gui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
+
+    // instanciating the commands
+    Create_TEMPLATE_Commands();
+    _TEMPLATE_Gui::Workbench::init();
+
+    // ADD YOUR CODE HERE
+    //
+    //
+
+    (void) Py_InitModule3("_TEMPLATE_Gui", _TEMPLATE_Gui_methods, module__TEMPLATE_Gui_doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of _TEMPLATE_ module... done\n");
+
     return;
-  }
-
-  // instanciating the commands
-  Create_TEMPLATE_Commands();
-  _TEMPLATE_Gui::Workbench::init();
-
-  // ADD YOUR CODE HERE
-  //
-  //
-
-  (void) Py_InitModule("_TEMPLATE_Gui", _TEMPLATE_Gui_methods);   /* mod name, table ptr */
-  Base::Console().Log("Loading GUI of _TEMPLATE_ module... done\n");
-
-  return;
 }
 
 } // extern "C"
