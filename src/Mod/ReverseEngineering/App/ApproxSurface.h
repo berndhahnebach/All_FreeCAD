@@ -38,26 +38,26 @@
 
 namespace Reen {
 
-class ReenExport CSplineBasisfunction
+class ReenExport SplineBasisfunction
 {
 public:
   /**
    * Konstruktor
    * @param Länge des Knotenvektors
    */
-  CSplineBasisfunction(int iSize);
+  SplineBasisfunction(int iSize);
 
   /**
    * Konstruktor
    * @param Knotenvektor
    */
-  CSplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrder=1);
+  SplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrder=1);
 
   /**
    * Konstruktor
    * @param Knotenvektor der Form (Wert,Vielfachheit)
    */
-  CSplineBasisfunction(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
+  SplineBasisfunction(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
 
   /**
    * Berechnet den Funktionswert Nik(t) an der Stelle fParam
@@ -105,7 +105,7 @@ protected: //Member
 
 };
 
-class ReenExport CBSplineBasis : public CSplineBasisfunction
+class ReenExport BSplineBasis : public SplineBasisfunction
 {
 public:
 
@@ -113,19 +113,19 @@ public:
    * Konstruktor
    * @param Länge des Knotenvektors
    */
-  CBSplineBasis(int iSize);
+  BSplineBasis(int iSize);
 
   /**
    * Konstruktor
    * @param Knotenvektor
    */
-  CBSplineBasis(TColStd_Array1OfReal& vKnots, int iOrder=1);
+  BSplineBasis(TColStd_Array1OfReal& vKnots, int iOrder=1);
 
   /**
    * Konstruktor
    * @param Knotenvektor der Form (Wert,Vielfachheit)
    */
-  CBSplineBasis(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
+  BSplineBasis(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
 
   /**
    * Bestimmt den Knotenindex zum Parameterwert (aus: Piegl/Tiller 96 The NURBS-Book)
@@ -177,7 +177,7 @@ public:
   /**
    * Destruktor
    */
-  virtual~ CBSplineBasis();
+  virtual~ BSplineBasis();
 
 protected:
 
@@ -199,18 +199,18 @@ protected:
   int CalcSize(int r, int s);
 };
 
-class ReenExport CParameterCorrection
+class ReenExport ParameterCorrection
 {
 
 public:
   // Konstruktor
-  CParameterCorrection(
+  ParameterCorrection(
                 unsigned short usUOrder=4,               //Ordnung in u-Richtung (Ordnung=Grad+1)
                 unsigned short usVOrder=4,               //Ordnung in v-Richtung
                 unsigned short usUCtrlpoints=6,          //Anz. der Kontrollpunkte in u-Richtung
                 unsigned short usVCtrlpoints=6);         //Anz. der Kontrollpunkte in v-Richtung
 
-  virtual ~CParameterCorrection()
+  virtual ~ParameterCorrection()
   {
     delete _pvcPoints;
     delete _pvcUVParam;
@@ -311,18 +311,18 @@ protected:
  * können.
  */
 
-class ReenExport CBSplineParameterCorrection : public CParameterCorrection
+class ReenExport BSplineParameterCorrection : public ParameterCorrection
 {
 
 public:
   // Konstruktor
-  CBSplineParameterCorrection(
+  BSplineParameterCorrection(
                 unsigned short usUOrder=4,               //Ordnung in u-Richtung (Ordnung=Grad+1)
                 unsigned short usVOrder=4,               //Ordnung in v-Richtung
                 unsigned short usUCtrlpoints=6,          //Anz. der Kontrollpunkte in u-Richtung
                 unsigned short usVCtrlpoints=6);         //Anz. der Kontrollpunkte in v-Richtung
 
-  virtual ~CBSplineParameterCorrection(){};
+  virtual ~BSplineParameterCorrection(){};
 
 protected:
   /**
@@ -422,20 +422,9 @@ protected:
    */
   virtual void CalcThirdSmoothMatrix();
 
-public:
-  /**
-   * Schreibt Matrix zur Weiterverarbeitung in Maple in eine Datei
-   */
-  virtual void WriteMatrix(const math_Matrix& rclMat, char* pFile) const;
-
-  /**
-   * Schreibt Vektor zur Weiterverarbeitung in Maple in eine Datei
-   */
-  virtual void WriteVector(const math_Vector& rclVec, char* pFile) const;
-
 protected:
-  CBSplineBasis           _clUSpline;        //! B-Spline-Basisfunktion in u-Richtung
-  CBSplineBasis           _clVSpline;        //! B-Spline-Basisfunktion in v-Richtung
+  BSplineBasis           _clUSpline;        //! B-Spline-Basisfunktion in u-Richtung
+  BSplineBasis           _clVSpline;        //! B-Spline-Basisfunktion in v-Richtung
   math_Matrix             _clSmoothMatrix;   //! Matrix der Glättungsfunktionale
   math_Matrix             _clFirstMatrix;    //! Matrix der 1. Glättungsfunktionale
   math_Matrix             _clSecondMatrix;   //! Matrix der 2. Glättungsfunktionale

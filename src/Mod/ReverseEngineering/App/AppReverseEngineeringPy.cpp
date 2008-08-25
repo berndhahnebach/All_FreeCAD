@@ -61,7 +61,7 @@ static PyObject * approxSurface(PyObject *self, PyObject *args)
                 (double)Py::Float(t.getItem(2)));
         }
 
-        Reen::CBSplineParameterCorrection pc(degreeU,degreeV,pointsU,pointsV);
+        Reen::BSplineParameterCorrection pc(degreeU,degreeV,pointsU,pointsV);
         Handle_Geom_BSplineSurface hSurf;
 
         //pc.EnableSmoothing(true, 0.1f, 0.5f, 0.2f, 0.3f);

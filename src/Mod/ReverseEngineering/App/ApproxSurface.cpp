@@ -34,16 +34,14 @@
 
 using namespace Reen;
 
-// CSplineBasisfunction
+// SplineBasisfunction
 
-/*$$$*/
-CSplineBasisfunction::CSplineBasisfunction(int iSize)
+SplineBasisfunction::SplineBasisfunction(int iSize)
 : _vKnotVector(0,iSize-1)
 {
 }
 
-/*$$$*/
-CSplineBasisfunction::CSplineBasisfunction
+SplineBasisfunction::SplineBasisfunction
                         (TColStd_Array1OfReal& vKnots, 
                          TColStd_Array1OfInteger& vMults, 
                          int iSize,
@@ -73,16 +71,14 @@ CSplineBasisfunction::CSplineBasisfunction
   _iOrder = iOrder;
 }
 
-/*$$$*/
-CSplineBasisfunction::CSplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrder)
+SplineBasisfunction::SplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrder)
 : _vKnotVector(0,vKnots.Length()-1)
 {
   _vKnotVector = vKnots;
   _iOrder = iOrder;
 }
 
-/*$$$*/
-void CSplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, int iOrder)
+void SplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, int iOrder)
 {
   if (_vKnotVector.Length() != vKnots.Length())
         Standard_RangeError::Raise("BSplineBasis");
@@ -91,8 +87,7 @@ void CSplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, int iOrder)
   _iOrder = iOrder;
 }
 
-/*$$$*/
-void CSplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, 
+void SplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, 
                               int iOrder)
 {
   int sum = 0;
@@ -117,34 +112,29 @@ void CSplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, TColStd_Array1
   _iOrder = iOrder;
 }
 
-////////////////////////////////////////// CBSplineBasis
+////////////////////////////////////////// BSplineBasis
 
-/*$$$*/
-CBSplineBasis::CBSplineBasis(int iSize)
-: CSplineBasisfunction(iSize)
+BSplineBasis::BSplineBasis(int iSize)
+: SplineBasisfunction(iSize)
 {
 }
 
-/*$$$*/
-CBSplineBasis::CBSplineBasis(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, 
+BSplineBasis::BSplineBasis(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, 
                              int iOrder)
-: CSplineBasisfunction(vKnots, vMults, iSize, iOrder)
+: SplineBasisfunction(vKnots, vMults, iSize, iOrder)
 {
 }
 
-/*$$$*/
-CBSplineBasis::CBSplineBasis(TColStd_Array1OfReal& vKnots, int iOrder)
-: CSplineBasisfunction(vKnots, iOrder)
+BSplineBasis::BSplineBasis(TColStd_Array1OfReal& vKnots, int iOrder)
+: SplineBasisfunction(vKnots, iOrder)
 {
 }
 
-/*$$$*/
-CBSplineBasis::~CBSplineBasis()
+BSplineBasis::~BSplineBasis()
 {
 }
 
-/*$$$*/
-int CBSplineBasis::FindSpan(double fParam)
+int BSplineBasis::FindSpan(double fParam)
 {
   int n = _vKnotVector.Length()-_iOrder-1;
   if (fParam == _vKnotVector(n+1))
@@ -166,8 +156,7 @@ int CBSplineBasis::FindSpan(double fParam)
   return mid;
 }
 
-/*$$$*/
-void CBSplineBasis::AllBasisFunctions(double fParam, TColStd_Array1OfReal& vFuncVals)
+void BSplineBasis::AllBasisFunctions(double fParam, TColStd_Array1OfReal& vFuncVals)
 {
   if (vFuncVals.Length() != _iOrder)
     Standard_RangeError::Raise("BSplineBasis");
@@ -194,8 +183,7 @@ void CBSplineBasis::AllBasisFunctions(double fParam, TColStd_Array1OfReal& vFunc
   }
 }
 
-/*$$$*/
-double CBSplineBasis::BasisFunction(int iIndex, double fParam)
+double BSplineBasis::BasisFunction(int iIndex, double fParam)
 {
   int m = _vKnotVector.Length()-1;
   int p = _iOrder-1;
@@ -250,8 +238,7 @@ double CBSplineBasis::BasisFunction(int iIndex, double fParam)
   return N(0);
 }
 
-/*$$$*/
-void CBSplineBasis::DerivativesOfBasisFunction(int iIndex, int iMaxDer, double fParam,
+void BSplineBasis::DerivativesOfBasisFunction(int iIndex, int iMaxDer, double fParam,
                                                TColStd_Array1OfReal& Derivat)
 {
   int iMax = iMaxDer;
@@ -355,8 +342,7 @@ void CBSplineBasis::DerivativesOfBasisFunction(int iIndex, int iMaxDer, double f
   return;
 }
 
-/*$$$*/
-double CBSplineBasis::DerivativeOfBasisFunction(int iIndex, int iMaxDer, double fParam)
+double BSplineBasis::DerivativeOfBasisFunction(int iIndex, int iMaxDer, double fParam)
 {
   int iMax = iMaxDer;
 
@@ -451,8 +437,7 @@ double CBSplineBasis::DerivativeOfBasisFunction(int iIndex, int iMaxDer, double 
   return ND(0); //iMax-te Ableitung
 }
 
-/*$$$*/
-double CBSplineBasis::GetIntegralOfProductOfBSplines(int iIdx1, int iIdx2, int iOrd1, int iOrd2)
+double BSplineBasis::GetIntegralOfProductOfBSplines(int iIdx1, int iIdx2, int iOrd1, int iOrd2)
 {
   int iDegree = _iOrder -1;
   int iMax = CalcSize(iOrd1, iOrd2);
@@ -487,8 +472,7 @@ double CBSplineBasis::GetIntegralOfProductOfBSplines(int iIdx1, int iIdx2, int i
   return dIntegral;
 }
 
-/*$$$*/
-void CBSplineBasis::GenerateRootsAndWeights(TColStd_Array1OfReal& vRoots, TColStd_Array1OfReal& vWeights)
+void BSplineBasis::GenerateRootsAndWeights(TColStd_Array1OfReal& vRoots, TColStd_Array1OfReal& vWeights)
 {
   int iSize = vRoots.Length();
 
@@ -559,8 +543,7 @@ void CBSplineBasis::GenerateRootsAndWeights(TColStd_Array1OfReal& vRoots, TColSt
   }
 }
 
-/*$$$*/
-void CBSplineBasis::FindIntegrationArea(int iIdx1, int iIdx2, int& iBegin, int& iEnd)
+void BSplineBasis::FindIntegrationArea(int iIdx1, int iIdx2, int& iBegin, int& iEnd)
 {
   // nach Index ordnen
   if (iIdx2 < iIdx1)
@@ -576,8 +559,7 @@ void CBSplineBasis::FindIntegrationArea(int iIdx1, int iIdx2, int& iBegin, int& 
     iEnd -= 1;
 }
 
-/*$$$*/
-int CBSplineBasis::CalcSize(int r, int s)
+int BSplineBasis::CalcSize(int r, int s)
 {
   int iMaxDegree = 2*(_iOrder-1)-r-s;
 
@@ -597,10 +579,9 @@ int CBSplineBasis::CalcSize(int r, int s)
     return 11;
 }
 
-/////////////////// CParameterCorrection
+/////////////////// ParameterCorrection
 
-/*$$$*/
-CParameterCorrection::CParameterCorrection(unsigned short usUOrder, unsigned short usVOrder, 
+ParameterCorrection::ParameterCorrection(unsigned short usUOrder, unsigned short usVOrder, 
                              unsigned short usUCtrlpoints, unsigned short usVCtrlpoints)
     : _usUOrder(usUOrder),
       _usVOrder(usVOrder),
@@ -617,8 +598,7 @@ CParameterCorrection::CParameterCorrection(unsigned short usUOrder, unsigned sho
   _fSmoothInfluence = 0.0f;
 }
 
-/*$$$*/
-void CParameterCorrection::CalcEigenvectors()
+void ParameterCorrection::CalcEigenvectors()
 {
     MeshCore::PlaneFit planeFit;
     //for (it = aclPoints.begin(); it!=aclPoints.end(); ++it)
@@ -635,61 +615,9 @@ void CParameterCorrection::CalcEigenvectors()
     _clU = planeFit.GetDirU();
     _clV = planeFit.GetDirV();
     _clW = planeFit.GetNormal();
-#if 0
-  double sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
-  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
-
-  for (int i=_pvcPoints->Lower(); i<=_pvcPoints->Upper(); i++)
-  {
-    sxx += (*_pvcPoints)(i).X() * (*_pvcPoints)(i).X(); sxy += (*_pvcPoints)(i).X() * (*_pvcPoints)(i).Y();
-    sxz += (*_pvcPoints)(i).X() * (*_pvcPoints)(i).Z(); syy += (*_pvcPoints)(i).Y() * (*_pvcPoints)(i).Y();
-    syz += (*_pvcPoints)(i).Y() * (*_pvcPoints)(i).Z(); szz += (*_pvcPoints)(i).Z() * (*_pvcPoints)(i).Z();
-    mx += (*_pvcPoints)(i).X(); my += (*_pvcPoints)(i).Y(); mz += (*_pvcPoints)(i).Z();
-  }
-
-  sxx = sxx - mx*mx/((MgcReal)_pvcPoints->Length());
-  sxy = sxy - mx*my/((MgcReal)_pvcPoints->Length());
-  sxz = sxz - mx*mz/((MgcReal)_pvcPoints->Length());
-  syy = syy - my*my/((MgcReal)_pvcPoints->Length());
-  syz = syz - my*mz/((MgcReal)_pvcPoints->Length());
-  szz = szz - mz*mz/((MgcReal)_pvcPoints->Length());
-
-  // Kovarianzmatrix
-  MgcMatrix3 clMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-
-  MgcReal* pEigenval = new MgcReal[3]; MgcVector3* pEigenvec = new MgcVector3[3];
-  clMat.EigenSolveSymmetric(pEigenval, pEigenvec);
-
-  if (pEigenval[0]>pEigenval[1])
-  {
-    MgcReal tmp = pEigenval[1];
-    pEigenval[1]=pEigenval[0];
-    pEigenval[0]=tmp;
-    MgcVector3 tmpV = pEigenvec[1];
-    pEigenvec[1]=pEigenvec[0];
-    pEigenvec[0]=tmpV;
-  }
-  if (pEigenval[0]>pEigenval[2])
-  {
-    MgcReal tmp = pEigenval[2];
-    pEigenval[2]=pEigenval[0];
-    pEigenval[0]=tmp;
-    MgcVector3 tmpV = pEigenvec[2];
-    pEigenvec[2]=pEigenvec[0];
-    pEigenvec[0]=tmpV;
-  }
-  //Eigenvektoren in Base::Vector3f konvertieren
-  _clW = Base::Vector3f(pEigenvec[0].x, pEigenvec[0].y, pEigenvec[0].z);
-  _clU = Base::Vector3f(pEigenvec[1].x, pEigenvec[1].y, pEigenvec[1].z);
-  _clV = Base::Vector3f(pEigenvec[2].x, pEigenvec[2].y, pEigenvec[2].z);
-
-  delete [] pEigenval; delete [] pEigenvec;
-  pEigenval = NULL; pEigenvec = NULL;
-#endif
 }
 
-/*$$$*/
-bool CParameterCorrection::DoInitialParameterCorrection(float fSizeFactor)
+bool ParameterCorrection::DoInitialParameterCorrection(float fSizeFactor)
 {
   // falls Richtungen nicht vorgegeben, selber berechnen
   if (_bGetUVDir == false)
@@ -710,10 +638,8 @@ bool CParameterCorrection::DoInitialParameterCorrection(float fSizeFactor)
   return true;
 }
 
-/*$$$*/
-bool CParameterCorrection::GetUVParameters(float fSizeFactor)
+bool ParameterCorrection::GetUVParameters(float fSizeFactor)
 {
-#if 1
   // Eigenvektoren als neue Basis
   Base::Vector3f e[3];
   e[0] = _clU;
@@ -778,13 +704,11 @@ bool CParameterCorrection::GetUVParameters(float fSizeFactor)
       (*_pvcUVParam)(ii) = gp_Pnt2d((It2->fY-ty)/fDeltaY, (It2->fX-tx)/fDeltaX);
       ii++;
     }
-#endif
 
   return true;
 }
 
-/*$$$*/
-void CParameterCorrection::SetUVW(const Base::Vector3f& clU, const Base::Vector3f& clV, const Base::Vector3f& clW, bool bUseDir)
+void ParameterCorrection::SetUVW(const Base::Vector3f& clU, const Base::Vector3f& clV, const Base::Vector3f& clW, bool bUseDir)
 {
   _clU = clU;
   _clV = clV;
@@ -792,16 +716,14 @@ void CParameterCorrection::SetUVW(const Base::Vector3f& clU, const Base::Vector3
   _bGetUVDir = bUseDir;
 }
 
-/*$$$*/
-void CParameterCorrection::GetUVW(Base::Vector3f& clU, Base::Vector3f& clV, Base::Vector3f& clW) const
+void ParameterCorrection::GetUVW(Base::Vector3f& clU, Base::Vector3f& clV, Base::Vector3f& clW) const
 {
   clU = _clU;
   clV = _clV;
   clW = _clW;
 }
 
-/*$$$*/
-Base::Vector3f CParameterCorrection::GetGravityPoint() const
+Base::Vector3f ParameterCorrection::GetGravityPoint() const
 {
   unsigned long ulSize = _pvcPoints->Length();
   float x=0.0f, y=0.0f, z=0.0f;
@@ -815,8 +737,7 @@ Base::Vector3f CParameterCorrection::GetGravityPoint() const
   return Base::Vector3f(float(x/ulSize), float(y/ulSize), float(z/ulSize));
 }
 
-/*$$$*/
-Handle(Geom_BSplineSurface) CParameterCorrection::CreateSurface(const TColgp_Array1OfPnt& points, 
+Handle(Geom_BSplineSurface) ParameterCorrection::CreateSurface(const TColgp_Array1OfPnt& points, 
                                                                 unsigned short usIter,
                                                                 bool  bParaCor,
                                                                 float fSizeFactor)
@@ -850,19 +771,18 @@ Handle(Geom_BSplineSurface) CParameterCorrection::CreateSurface(const TColgp_Arr
                        _usVOrder-1);
 }
 
-/*$$$*/
-void CParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl)
+void ParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl)
 {
   _bSmoothing = bSmooth;
   _fSmoothInfluence = fSmoothInfl;
 }
 
-/////////////////// CBSplineParameterCorrection
+/////////////////// BSplineParameterCorrection
 
 
-CBSplineParameterCorrection::CBSplineParameterCorrection(unsigned short usUOrder, unsigned short usVOrder, 
+BSplineParameterCorrection::BSplineParameterCorrection(unsigned short usUOrder, unsigned short usVOrder, 
                              unsigned short usUCtrlpoints, unsigned short usVCtrlpoints)
-    : CParameterCorrection
+    : ParameterCorrection
         (usUOrder, usVOrder, usUCtrlpoints, usVCtrlpoints),
       _clUSpline(usUCtrlpoints+usUOrder),
       _clVSpline(usVCtrlpoints+usVOrder),
@@ -882,8 +802,7 @@ CBSplineParameterCorrection::CBSplineParameterCorrection(unsigned short usUOrder
   Init();
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::Init()
+void BSplineParameterCorrection::Init()
 {
   // Initialisierungen
   _pvcUVParam       = NULL;
@@ -918,23 +837,9 @@ void CBSplineParameterCorrection::Init()
   // Setzen der B-Spline-Basisfunktionen
   _clUSpline.SetKnots(_vUKnots, _vUMults, _usUOrder);
   _clVSpline.SetKnots(_vVKnots, _vVMults, _usVOrder);
-#ifdef _DEBUG
-  // Ausgabe
-  for (int i=0;i<=usUMax;i++)
-  {
-    printf("(%.3f, %d), ", _vUKnots(i),_vUMults(i));
-  }
-  printf("\n\n");
-  for (int i=0;i<=usVMax;i++)
-  {
-    printf("(%.3f, %d), ", _vVKnots(i),_vVMults(i));
-  }
-  printf("\n");
-#endif
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::SetUKnots(const std::vector<float>& afKnots)
+void BSplineParameterCorrection::SetUKnots(const std::vector<float>& afKnots)
 {
   if (afKnots.size() != (unsigned long)(_usUCtrlpoints+_usUOrder))
     return;
@@ -951,18 +856,9 @@ void CBSplineParameterCorrection::SetUKnots(const std::vector<float>& afKnots)
 
   // Setzen der B-Spline-Basisfunktionen
   _clUSpline.SetKnots(_vUKnots, _vUMults, _usUOrder);
-#ifdef _DEBUG
-  // Ausgabe
-  for (int i=0;i<=usUMax;i++)
-  {
-    printf("(%.3f, %d), ", _vUKnots(i),_vUMults(i));
-  }
-  printf("\n");
-#endif
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::SetVKnots(const std::vector<float>& afKnots)
+void BSplineParameterCorrection::SetVKnots(const std::vector<float>& afKnots)
 {
   if (afKnots.size() != (unsigned long)(_usVCtrlpoints+_usVOrder))
     return;
@@ -979,18 +875,9 @@ void CBSplineParameterCorrection::SetVKnots(const std::vector<float>& afKnots)
 
   // Setzen der B-Spline-Basisfunktionen
   _clVSpline.SetKnots(_vVKnots, _vVMults, _usVOrder);
-#ifdef _DEBUG
-  // Ausgabe
-  for (int i=0;i<=usVMax;i++)
-  {
-    printf("(%.3f, %d), ", _vVKnots(i),_vVMults(i));
-  }
-  printf("\n");
-#endif
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
+void BSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
 {
   int i=0;
   float fMaxDiff=0.0f, fMaxScalar=1.0f;
@@ -1072,8 +959,7 @@ void CBSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
   Base::Sequencer().stop();
 }
 
-/*$$$*/
-bool CBSplineParameterCorrection::SolveWithoutSmoothing()
+bool BSplineParameterCorrection::SolveWithoutSmoothing()
 {
   unsigned long ulSize = _pvcPoints->Length();
   math_Matrix M  (0, ulSize-1, 0,_usUCtrlpoints*_usVCtrlpoints-1);
@@ -1132,8 +1018,7 @@ bool CBSplineParameterCorrection::SolveWithoutSmoothing()
   return true;
 }
 
-/*$$$*/
-bool CBSplineParameterCorrection::SolveWithSmoothing(float fWeight)
+bool BSplineParameterCorrection::SolveWithSmoothing(float fWeight)
 {
   unsigned long ulSize = _pvcPoints->Length();
   unsigned long ulDim  = _usUCtrlpoints*_usVCtrlpoints;
@@ -1217,8 +1102,7 @@ bool CBSplineParameterCorrection::SolveWithSmoothing(float fWeight)
   return true;
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::CalcSmoothingTerms(bool bRecalc, float fFirst, float fSecond, float fThird)
+void BSplineParameterCorrection::CalcSmoothingTerms(bool bRecalc, float fFirst, float fSecond, float fThird)
 {
   if (bRecalc)
   {
@@ -1234,8 +1118,7 @@ void CBSplineParameterCorrection::CalcSmoothingTerms(bool bRecalc, float fFirst,
                     fThird  * _clThirdMatrix  ;
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::CalcFirstSmoothMatrix()
+void BSplineParameterCorrection::CalcFirstSmoothMatrix()
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1261,8 +1144,7 @@ void CBSplineParameterCorrection::CalcFirstSmoothMatrix()
   }
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::CalcSecondSmoothMatrix()
+void BSplineParameterCorrection::CalcSecondSmoothMatrix()
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1290,8 +1172,7 @@ void CBSplineParameterCorrection::CalcSecondSmoothMatrix()
   }
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::CalcThirdSmoothMatrix()
+void BSplineParameterCorrection::CalcThirdSmoothMatrix()
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1329,104 +1210,48 @@ void CBSplineParameterCorrection::CalcThirdSmoothMatrix()
   }
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl)
+void BSplineParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl)
 {
-  EnableSmoothing(bSmooth, fSmoothInfl, 1.0f, 0.0f, 0.0f);
+    EnableSmoothing(bSmooth, fSmoothInfl, 1.0f, 0.0f, 0.0f);
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl, 
-                                                  float fFirst, float fSec, float fThird)
+void BSplineParameterCorrection::EnableSmoothing(bool bSmooth, float fSmoothInfl, 
+                                                 float fFirst, float fSec, float fThird)
 {
-  if (_bSmoothing && bSmooth)
-    CalcSmoothingTerms(false, fFirst, fSec, fThird);
-  else if (bSmooth)
-    CalcSmoothingTerms(true, fFirst, fSec, fThird);
+    if (_bSmoothing && bSmooth)
+        CalcSmoothingTerms(false, fFirst, fSec, fThird);
+    else if (bSmooth)
+        CalcSmoothingTerms(true, fFirst, fSec, fThird);
 
-  CParameterCorrection::EnableSmoothing(bSmooth, fSmoothInfl);
+    ParameterCorrection::EnableSmoothing(bSmooth, fSmoothInfl);
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::WriteMatrix(const math_Matrix& clMat,char* pFile) const
+const math_Matrix& BSplineParameterCorrection::GetFirstSmoothMatrix() const
 {
-  FILE *file;
- 
-  file = fopen (pFile,"w"); 
-
-  fprintf(file, "M:=array(1..%d, 1..%d,[",clMat.RowNumber(),clMat.ColNumber());
-
-  for (int i=0; i<clMat.RowNumber()-1; i++)
-  {
-    fprintf(file, "[");
-    for (int j=0; j<clMat.ColNumber()-1; j++)
-    {
-      fprintf (file, "%f,", clMat(i,j));
-    }
-    fprintf(file,"%f],\n",clMat(i,clMat.ColNumber()-1));
-  }
-  fprintf(file, "[");
-
-  for (int j=0; j<clMat.ColNumber()-1; j++)
-  {
-    fprintf(file, "%f,",clMat(clMat.RowNumber()-1,j));
-  }
-
-  fprintf(file,"%f]]);",clMat(clMat.RowNumber()-1,clMat.ColNumber()-1));
-  
-  fclose (file);
+    return _clFirstMatrix;
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::WriteVector(const math_Vector& clVec, char* pFile) const
+const math_Matrix& BSplineParameterCorrection::GetSecondSmoothMatrix() const
 {
-  FILE *file;
- 
-  file = fopen (pFile,"w"); 
-
-  fprintf(file, "b:=array(1..%d, 1..1,[",clVec.Length());
-
-  for (int i=0; i<clVec.Length()-1; i++)
-  {
-    fprintf(file, "[%f],\n", clVec(i));
-  }
-  fprintf(file,"[%f]]);",clVec(clVec.Length()-1));
-  
-  fclose (file);
+    return _clSecondMatrix;
 }
 
-/*$$$*/
-const math_Matrix& CBSplineParameterCorrection::GetFirstSmoothMatrix() const
+const math_Matrix& BSplineParameterCorrection::GetThirdSmoothMatrix() const
 {
-  return _clFirstMatrix;
+    return _clThirdMatrix;
 }
 
-/*$$$*/
-const math_Matrix& CBSplineParameterCorrection::GetSecondSmoothMatrix() const
+void BSplineParameterCorrection::SetFirstSmoothMatrix(const math_Matrix& rclMat)
 {
-  return _clSecondMatrix;
+    _clFirstMatrix = rclMat;
 }
 
-/*$$$*/
-const math_Matrix& CBSplineParameterCorrection::GetThirdSmoothMatrix() const
+void BSplineParameterCorrection::SetSecondSmoothMatrix(const math_Matrix& rclMat)
 {
-  return _clThirdMatrix;
+    _clSecondMatrix = rclMat;
 }
 
-/*$$$*/
-void CBSplineParameterCorrection::SetFirstSmoothMatrix(const math_Matrix& rclMat)
+void BSplineParameterCorrection::SetThirdSmoothMatrix(const math_Matrix& rclMat)
 {
-  _clFirstMatrix = rclMat;
-}
-
-/*$$$*/
-void CBSplineParameterCorrection::SetSecondSmoothMatrix(const math_Matrix& rclMat)
-{
-  _clSecondMatrix = rclMat;
-}
-
-/*$$$*/
-void CBSplineParameterCorrection::SetThirdSmoothMatrix(const math_Matrix& rclMat)
-{
-  _clThirdMatrix = rclMat;
+    _clThirdMatrix = rclMat;
 }
