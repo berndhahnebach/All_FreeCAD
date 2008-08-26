@@ -674,10 +674,12 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
     }
 
     // remove the last added point if it is duplicated
-    if (boundary.front() == boundary.back())
+    if (boundary.front() == boundary.back()) {
+        polygon.pop_back();
         rPoints.pop_back();
+    }
 
-    // There is no easy way to check whether the boundary is interior (a hole) or a exterior before performing the triangulation.
+    // There is no easy way to check whether the boundary is interior (a hole) or exterior before performing the triangulation.
     // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
     // If the scalar product is positive it was a hole, otherwise not.
     cTria.SetPolygon(polygon);
@@ -685,12 +687,8 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
     // Get the inverse transformation to project back to world coordinates
     Base::Matrix4D inverse;
     cTria.TransformToFitPlane(inverse);
-    // For a good approximation we should have enough points, i.e. for 9 parameters
-    // for the fit function we should have at least 50 points.
-    unsigned int uMinPts = 50;
-    // do a polynomial fit on the projected points
-    PolynomialFit polyFit;
-    polyFit.AddPoints(cTria.GetPolygon());
+
+    std::vector<Base::Vector3f> surf_pts = cTria.GetPolygon();
     if (pP2FStructure && level > 0) {
         std::set<unsigned long> index = pP2FStructure->NeighbourPoints(boundary, level);
         Base::Vector3f bs((float)inverse[0][3], (float)inverse[1][3], (float)inverse[2][3]);
@@ -699,20 +697,17 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
         for (std::set<unsigned long>::iterator it = index.begin(); it != index.end(); ++it) {
             Base::Vector3f pt(_rclMesh._aclPointArray[*it]);
             pt.TransformToCoordinateSystem(bs, ex, ey);
-            polyFit.AddPoint(pt);
+            surf_pts.push_back(pt);
         }
     }
-    polyFit.Fit();
 
     if (cTria.Triangulate()) {
-        std::vector<Base::Vector3f> newVertices = cTria.AddedPoints();
-        // get te facets and add the additional points to the array
+        // get the facets and add the additional points to the array
         rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
-        // if we have enough points then we assume that the fit delivers good results
-        if (polyFit.CountPoints() >= uMinPts) {
-            for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt)
-                pt->z = (float)polyFit.Value(pt->x, pt->y);
-        }
+        // if we have enough points then we fit a surface through the points and project
+        // the added points onto this surface
+        cTria.ProjectOntoSurface(surf_pts);
+        std::vector<Base::Vector3f> newVertices = cTria.AddedPoints();
         for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt) {
             rPoints.push_back(inverse * (*pt));
         }

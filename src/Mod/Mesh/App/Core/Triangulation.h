@@ -45,6 +45,8 @@ public:
     /** The triangulation algorithm may create new points when
      * calling Triangulate(). This method returns these added
      * points.
+     * @note: Make sure to have called ProjectOntoSurface() before using
+     * this method if you want the surface points the new points are lying on.
      */
     std::vector<Base::Vector3f> AddedPoints() const;
     /** If the points of the polygon set by SetPolygon() doesn't lie in a 
@@ -58,6 +60,10 @@ public:
      * be accessed by GetTriangles() or GetFacets().
      */
     virtual bool Triangulate() = 0;
+    /** If points were added then we get the 3D points by projecting the added
+     * 2D points onto a surface which fits into the given points.
+     */
+    virtual void ProjectOntoSurface(const std::vector<Base::Vector3f>&);
     /** Returns the geometric triangles of the polygon. */
     const std::vector<MeshGeomFacet>& GetTriangles() const { return _triangles;}
     /** Returns the topologic facets of the polygon. */
@@ -133,6 +139,16 @@ public:
     ~DelaunayTriangulator();
 
     bool Triangulate();
+};
+
+class MeshExport FlatTriangulator : public AbstractPolygonTriangulator
+{
+public:
+    FlatTriangulator();
+    ~FlatTriangulator();
+
+    bool Triangulate();
+    void ProjectOntoSurface(const std::vector<Base::Vector3f>&);
 };
 
 class MeshExport ConstraintDelaunayTriangulator : public AbstractPolygonTriangulator

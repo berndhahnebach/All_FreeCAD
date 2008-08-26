@@ -100,6 +100,22 @@ Base::Vector3f AbstractPolygonTriangulator::TransformToFitPlane(Base::Matrix4D& 
     return ez;
 }
 
+void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vector3f>& points)
+{
+    // For a good approximation we should have enough points, i.e. for 9 parameters
+    // for the fit function we should have at least 50 points.
+    unsigned int uMinPts = 50;
+
+    PolynomialFit polyFit;
+    polyFit.AddPoints(points);
+    polyFit.Fit();
+
+    if (polyFit.CountPoints() >= uMinPts) {
+        for (std::vector<Base::Vector3f>::iterator pt = _newpoints.begin(); pt != _newpoints.end(); ++pt)
+            pt->z = (float)polyFit.Value(pt->x, pt->y);
+    }
+}
+
 // -------------------------------------------------------------
 
 EarClippingTriangulator::EarClippingTriangulator()
@@ -529,6 +545,110 @@ bool DelaunayTriangulator::Triangulate()
     delete out;
 
     return succeeded;
+}
+
+// -------------------------------------------------------------
+
+FlatTriangulator::FlatTriangulator()
+{
+}
+
+FlatTriangulator::~FlatTriangulator()
+{
+}
+
+bool FlatTriangulator::Triangulate()
+{
+    _newpoints.clear();
+    // before starting the triangulation we must make sure that all polygon 
+    // points are different
+    std::vector<Base::Vector3f> aPoints = _points;
+    // sort the points ascending x,y coordinates
+    std::sort(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_Less());
+    // if there are two adjacent points whose distance is less then an epsilon
+    if (std::adjacent_find(aPoints.begin(), aPoints.end(),
+        Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
+        return false;
+
+    _facets.clear();
+    _triangles.clear();
+
+    triangulateio* in = new triangulateio();
+    memset(in, 0, sizeof(triangulateio));
+    in->pointlist = new double[_points.size() * 2];
+    in->numberofpoints = _points.size();
+    in->segmentlist = new int[_points.size() * 2];
+    in->numberofsegments = _points.size();
+
+    // build up point list
+    int i = 0, j = 0, k = 0;
+    int mod = _points.size();
+    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+        in->pointlist[i++] = it->x;
+        in->pointlist[i++] = it->y;
+        in->segmentlist[j++] = k;
+        in->segmentlist[j++] = (k+1)%mod;
+        k++;
+    }
+
+    // set the triangulation parameter
+    // p: define a polygon to triangulate
+    // Y: do not insert new points to the boundary
+    // z: start index from 0
+    // q: create quality triangles
+    // a: max. area of triangles
+    triangulateio* out = new triangulateio();
+    memset(out, 0, sizeof(triangulateio));
+
+    triangulate("pYz", in, out, NULL);
+
+    // get all added points by the algorithm
+    for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+        float x = (float)out->pointlist[index++];
+        float y = (float)out->pointlist[index++];
+        float z = 0.0f; // get the point on the plane
+        Base::Vector3f vertex(x, y, z);
+        _newpoints.push_back(vertex);
+    }
+
+    // get the triangles
+    MeshGeomFacet triangle;
+    MeshFacet facet;
+    bool succeeded = out->numberoftriangles > 0;
+    for (i = 0; i < (out->numberoftriangles * 3); i += 3) {
+        if ((out->trianglelist[i] == out->trianglelist[i+1]) || 
+            (out->trianglelist[i] == out->trianglelist[i+2]) || 
+            (out->trianglelist[i+1] == out->trianglelist[i+2])) {
+            // two same triangle corner points
+            succeeded = false;
+            break;
+        }
+
+        for (int j = 0; j < 3; j++) {
+            int index = 2 * out->trianglelist[i+j];
+            triangle._aclPoints[j].x = (float)out->pointlist[index];
+            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
+            facet._aulPoints[j] = out->trianglelist[i+j];
+        }
+
+        _triangles.push_back(triangle);
+        _facets.push_back(facet);
+    }
+
+    // free all memory
+    delete in->pointlist;
+    delete in->segmentlist;
+    delete in;
+    delete out->trianglelist;
+    delete out->pointlist;
+    delete out->pointmarkerlist;
+    delete out;
+
+    return succeeded;
+}
+
+void FlatTriangulator::ProjectOntoSurface(const std::vector<Base::Vector3f>&)
+{
 }
 
 // -------------------------------------------------------------
