@@ -25,13 +25,14 @@
 #define MESHGUI_DLG_EVALUATE_MESH_IMP_H
 
 #include <map>
+#include <QPointer>
 
 #include <App/Application.h>
 #include <App/Document.h>
 #include "ui_DlgEvaluateMesh.h"
 
 namespace Gui {
-class View3DInventorViewer;
+class View3DInventor;
 }
 namespace Mesh {
   class Feature;
@@ -121,7 +122,7 @@ private:
     Connection connectDocumentDeletedObject;
     std::map<std::string, ViewProviderMeshDefects*> _vp;
     Mesh::Feature* _meshFeature;
-    Gui::View3DInventorViewer* _viewer;
+    QPointer<Gui::View3DInventor> _view;
     App::Document* _pDoc;
 };
 
