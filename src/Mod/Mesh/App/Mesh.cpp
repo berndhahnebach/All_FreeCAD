@@ -246,6 +246,7 @@ void MeshObject::load(const char* file)
     aReader.LoadAny(file);
     this->_segments.clear();
 
+#ifndef FC_DEBUG
     try {
         MeshCore::MeshEvalNeighbourhood nb(_kernel);
         if (!nb.Evaluate()) {
@@ -263,13 +264,15 @@ void MeshObject::load(const char* file)
         // ignore memory exceptions and continue
         Base::Console().Log("Check for defects in mesh data structure failed\n");
     }
+#endif
 }
 
 void MeshObject::load(std::istream& in)
 {
     _kernel.Read(in);
     this->_segments.clear();
-#if 0
+
+#ifndef FC_DEBUG
     try {
         MeshCore::MeshEvalNeighbourhood nb(_kernel);
         if (!nb.Evaluate()) {

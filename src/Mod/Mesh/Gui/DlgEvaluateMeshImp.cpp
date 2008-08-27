@@ -101,7 +101,7 @@ void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
     
         this->connectDocumentDeletedObject.disconnect();
         this->_pDoc = 0;
-        this->_viewer = 0;
+        this->_view = 0;
         on_refreshButton_clicked();
     }
 }
@@ -114,7 +114,7 @@ void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
  *  TRUE to construct a modal dialog.
  */
 DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
-  : QDialog( parent, fl ), _meshFeature(0), _viewer(0), _pDoc(0)
+  : QDialog( parent, fl ), _meshFeature(0), _view(0), _pDoc(0)
 {
     this->setupUi(this);
     line->setFrameShape(QFrame::HLine);
@@ -135,7 +135,7 @@ DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
     line_8->setFrameShadow(QFrame::Sunken);
 
     Gui::Document* pGui = Gui::Application::Instance->activeDocument();
-    _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
+    _view = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView());
     _pDoc = pGui->getDocument();
 
     connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
@@ -155,7 +155,8 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
 {
     // no need to delete child widgets, Qt does it all for us
     for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
-        _viewer->removeViewProvider( it->second );
+        if (_view)
+            _view->getViewer()->removeViewProvider(it->second);
         delete it->second;
     }
 
@@ -184,36 +185,39 @@ void DlgEvaluateMeshImp::setMesh(Mesh::Feature* m)
     }
 }
 
-void DlgEvaluateMeshImp::addViewProvider( const char* name )
+void DlgEvaluateMeshImp::addViewProvider(const char* name)
 {
-    removeViewProvider( name );
+    removeViewProvider(name);
 
-    ViewProviderMeshDefects* vp = (ViewProviderMeshDefects*)Base::Type::createInstanceByName( name );
-    assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
-    vp->attach( _meshFeature );
-    _viewer->addViewProvider( vp );
-    vp->showDefects();
-    _vp[name] = vp;
+    if (_view) {
+        ViewProviderMeshDefects* vp = static_cast<ViewProviderMeshDefects*>(Base::Type::createInstanceByName(name));
+        assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
+        vp->attach(_meshFeature);
+        _view->getViewer()->addViewProvider( vp );
+        vp->showDefects();
+        _vp[name] = vp;
+    }
 }
 
-void DlgEvaluateMeshImp::removeViewProvider( const char* name )
+void DlgEvaluateMeshImp::removeViewProvider(const char* name)
 {
     std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find( name );
     if (it != _vp.end()) {
-        _viewer->removeViewProvider( it->second );
+        if (_view)
+            _view->getViewer()->removeViewProvider( it->second );
         delete it->second;
         _vp.erase(it);
     }
 }
+
 void DlgEvaluateMeshImp::removeViewProviders()
 {
-    if (_viewer) {
-        for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
-            _viewer->removeViewProvider( it->second );
-            delete it->second;
-        }
-        _vp.clear();
+    for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
+        if (_view)
+            _view->getViewer()->removeViewProvider( it->second );
+        delete it->second;
     }
+    _vp.clear();
 }
 
 void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
@@ -291,7 +295,7 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
             (&MeshGui::DlgEvaluateMeshImp::slotDeletedObject, this, _1));
         removeViewProviders();
         Gui::Document* pGui = Gui::Application::Instance->activeDocument();
-        _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
+        _view = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView());
     }
 
     QList<QPair<QString, QString> > items;
