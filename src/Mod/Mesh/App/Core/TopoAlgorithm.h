@@ -222,6 +222,12 @@ public:
      */
     void FillupHoles(unsigned long length, int level, AbstractPolygonTriangulator&);
     /**
+     * This is an overloaded method provided for convenience. It takes as first argument
+     * the boundaries which must be filled up.
+     */
+    void FillupHoles(const std::list<std::vector<unsigned long> >& aBorders,
+        int level, AbstractPolygonTriangulator&);
+    /**
      * Find topologic independent components with maximum \a count facets
      * and returns an array of the indices.
      */
