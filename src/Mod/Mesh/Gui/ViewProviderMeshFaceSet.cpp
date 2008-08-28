@@ -31,6 +31,7 @@
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
+# include <Inventor/nodes/SoPolygonOffset.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoTransform.h>
@@ -92,7 +93,7 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderGeometryObjec
 
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
 {
-    ADD_PROPERTY(LineWidth,(2.0f));
+    ADD_PROPERTY(LineWidth,(1.0f));
     LineWidth.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
     PointSize.setConstraints(&floatRange);
@@ -229,8 +230,15 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
     addDisplayMaskMode(pcWireRoot, "Wireframe");
 
     // faces+wires
+    // Avoid any Z-buffer artefacts, so that the lines always
+    // appear on top of the faces
+    SoPolygonOffset* offset = new SoPolygonOffset();
+    offset->styles = SoPolygonOffset::LINES;
+    offset->factor = -2.0f;
+    offset->units = 1.0f;
     SoGroup* pcFlatWireRoot = new SoGroup();
     pcFlatWireRoot->addChild(pcFlatRoot);
+    pcFlatWireRoot->addChild(offset);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 }
@@ -835,7 +843,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
                     boundary.push_back(numberOfOldPoints++);
                     newPoints.push_back(*pt);
                  }
-             }
+            }
             for (MeshCore::MeshFacetArray::_TIterator kt = faces.begin(); kt != faces.end(); ++kt ) {
                 kt->_aulPoints[0] = boundary[kt->_aulPoints[0]];
                 kt->_aulPoints[1] = boundary[kt->_aulPoints[1]];

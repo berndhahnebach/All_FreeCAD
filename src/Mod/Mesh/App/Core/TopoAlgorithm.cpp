@@ -1144,6 +1144,49 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, int level,
     _rclMesh.AddFacets(newFacets);
 }
 
+void MeshTopoAlgorithm::FillupHoles(const std::list<std::vector<unsigned long> >& aBorders,
+                                    int level, AbstractPolygonTriangulator& cTria)
+{
+    // get the facets to a point
+    MeshRefPointToFacets cPt2Fac(_rclMesh);
+    MeshAlgorithm cAlgo(_rclMesh);
+
+    MeshFacetArray newFacets;
+    MeshPointArray newPoints;
+    unsigned long numberOfOldPoints = _rclMesh._aclPointArray.size();
+    for (std::list<std::vector<unsigned long> >::const_iterator it = aBorders.begin(); it != aBorders.end(); ++it) {
+        MeshFacetArray cFacets;
+        MeshPointArray cPoints;
+        std::vector<unsigned long> bound = *it;
+        if (cAlgo.FillupHole(bound, cTria, cFacets, cPoints, level, &cPt2Fac)) {
+            if (bound.front() == bound.back())
+                bound.pop_back();
+            // the triangulation may produce additional points which we must take into account when appending to the mesh
+            unsigned long countBoundaryPoints = bound.size();
+            unsigned long countDifference = cPoints.size() - countBoundaryPoints;
+            if (countDifference > 0) {
+                MeshPointArray::_TIterator pt = cPoints.begin() + countBoundaryPoints;
+                for (unsigned long i=0; i<countDifference; i++, pt++) {
+                    bound.push_back(numberOfOldPoints++);
+                    newPoints.push_back(*pt);
+                }
+            }
+            for (MeshFacetArray::_TIterator kt = cFacets.begin(); kt != cFacets.end(); ++kt ) {
+                kt->_aulPoints[0] = bound[kt->_aulPoints[0]];
+                kt->_aulPoints[1] = bound[kt->_aulPoints[1]];
+                kt->_aulPoints[2] = bound[kt->_aulPoints[2]];
+                newFacets.push_back(*kt);
+            }
+        }
+    }
+
+    // insert new points and faces into the mesh structure
+    _rclMesh._aclPointArray.insert(_rclMesh._aclPointArray.end(), newPoints.begin(), newPoints.end());
+    for (MeshPointArray::_TIterator it = newPoints.begin(); it != newPoints.end(); ++it)
+        _rclMesh._clBoundBox &= *it;
+    _rclMesh.AddFacets(newFacets);
+}
+
 void MeshTopoAlgorithm::FindComponents(unsigned long count, std::vector<unsigned long>& findIndices)
 {
   std::vector<std::vector<unsigned long> > segments;

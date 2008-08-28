@@ -42,12 +42,11 @@
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/bundles/SoTextureCoordinateBundle.h>
+# include <Inventor/elements/SoCoordinateElement.h>
 # include <Inventor/elements/SoGLCacheContextElement.h>
 # include <Inventor/errors/SoReadError.h>
 # include <Inventor/misc/SoState.h>
 #endif
-
-# include <Inventor/elements/SoCoordinateElement.h>
 
 #include "SoFCShapeObject.h"
 
