@@ -29,6 +29,7 @@
 
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/DocumentObserver.h>
 #include "ui_DlgEvaluateMesh.h"
 
 namespace Gui {
@@ -61,7 +62,7 @@ public Q_SLOTS:
 /**
  * \author Werner Mayer
  */
-class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh
+class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh, public App::DocumentObserver
 { 
     Q_OBJECT
 
@@ -71,10 +72,17 @@ public:
 
     void setMesh( Mesh::Feature* );
 
-    /// Checks if the given object is about to be removed
+private:
+    /** Checks if a new document was created */
+    void slotCreatedDocument(App::Document& Doc);
+    /** Checks if the given document is about to be closed */
     void slotDeletedDocument(App::Document& Doc);
-    /// Checks if the given document is about to be closed
+    /** Checks if a new object was added. */
+    void slotCreatedObject(App::DocumentObject& Obj);
+    /** Checks if the given object is about to be removed. */
     void slotDeletedObject(App::DocumentObject& Obj);
+    /** The property of an observed object has changed */
+    void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop);
 
 protected Q_SLOTS:
     void on_checkOrientationButton_clicked();
@@ -112,18 +120,17 @@ protected Q_SLOTS:
     void on_meshNameButton_activated(int);
 
 protected:
+    void refreshList();
+    void showInformation();
     void cleanInformation();
     void addViewProvider( const char* vp );
     void removeViewProvider( const char* vp );
     void removeViewProviders();
 
 private:
-    Connection connectApplicationDeletedDocument;
-    Connection connectDocumentDeletedObject;
     std::map<std::string, ViewProviderMeshDefects*> _vp;
     Mesh::Feature* _meshFeature;
     QPointer<Gui::View3DInventor> _view;
-    App::Document* _pDoc;
 };
 
 /**
