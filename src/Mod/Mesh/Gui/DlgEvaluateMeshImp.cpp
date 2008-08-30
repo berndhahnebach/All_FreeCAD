@@ -106,7 +106,7 @@ void DlgEvaluateMeshImp::slotChangedObject(App::DocumentObject& Obj, App::Proper
     else if (Obj.getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
         // if the label has changed update the entry in the list
         if (Prop.getTypeId() == App::PropertyString::getClassTypeId() &&
-            QString::compare(QLatin1String(Prop.getName()), QLatin1String("Label")) == 0) {
+            strcmp(Prop.getName(), "Label") == 0) {
                 QString label = QString::fromUtf8(Obj.Label.getValue());
                 QString name = QString::fromAscii(Obj.getNameInDocument());
                 int index = meshNameButton->findData(name);
