@@ -604,6 +604,10 @@ src/Mod/Drawing/App/Makefile
 src/Mod/Drawing/Gui/Makefile
 src/Mod/Drawing/Gui/Resources/Makefile
 src/Mod/Drawing/Templates/Makefile
+src/Mod/ReverseEngineering/Makefile
+src/Mod/ReverseEngineering/App/Makefile
+src/Mod/ReverseEngineering/Gui/Makefile
+src/Mod/ReverseEngineering/Gui/Resources/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
 src/Mod/TemplatePyMod/Makefile

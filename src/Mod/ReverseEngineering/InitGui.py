@@ -57,8 +57,8 @@ class ReverseEngineeringWorkbench ( Workbench ):
 			".########.......",
 			"................"};
 			"""
-	MenuText = "ReverseEngineering"
-	ToolTip = "ReverseEngineering workbench"
+	MenuText = "Reverse Engineering"
+	ToolTip = "Reverse Engineering workbench"
 
 	def Initialize(self):
 		# load the module
