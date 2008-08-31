@@ -59,6 +59,8 @@ public:
    */
   SplineBasisfunction(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
 
+  virtual ~SplineBasisfunction();
+
   /**
    * Berechnet den Funktionswert Nik(t) an der Stelle fParam
    * (aus: Piegl/Tiller 96 The NURBS-Book)
@@ -285,10 +287,10 @@ protected:
   bool                    _bGetUVDir;        //! Stellt fest, ob u/v-Richtung vorgegeben wird
   bool                    _bSmoothing;       //! Gl‰ttung verwenden
   float                   _fSmoothInfluence; //! Einfluﬂ der Gl‰ttung
-  unsigned short                 _usUCtrlpoints;    //! Anzahl der Kontrollpunkte in u-Richtung
-  unsigned short                 _usVCtrlpoints;    //! Anzahl der Kontrollpunkte in v-Richtung
   unsigned short                 _usUOrder;         //! Ordnung in u-Richtung
   unsigned short                 _usVOrder;         //! Ordnung in v-Richtung
+  unsigned short                 _usUCtrlpoints;    //! Anzahl der Kontrollpunkte in u-Richtung
+  unsigned short                 _usVCtrlpoints;    //! Anzahl der Kontrollpunkte in v-Richtung
   Base::Vector3f               _clU;              //! u-Richtung
   Base::Vector3f               _clV;              //! v-Richtung
   Base::Vector3f               _clW;              //! w-Richtung (senkrecht zu u-und w-Richtung)
@@ -296,8 +298,8 @@ protected:
   TColgp_Array1OfPnt2d*   _pvcUVParam;       //! Parameterwerte zu den Punkten aus der Liste
   TColgp_Array2OfPnt      _vCtrlPntsOfSurf;  //! Array von Kontrollpunkten
   TColStd_Array1OfReal    _vUKnots;          //! Knotenvektor der B-Spline-Fl‰che in u-Richtung
-  TColStd_Array1OfInteger _vUMults;          //! Vielfachheit der Knoten im Knotenvektor
   TColStd_Array1OfReal    _vVKnots;          //! Knotenvektor der B-Spline-Fl‰che in v-Richtung
+  TColStd_Array1OfInteger _vUMults;          //! Vielfachheit der Knoten im Knotenvektor
   TColStd_Array1OfInteger _vVMults;          //! Vielfachheit der Knoten im Knotenvektor
 };
 

@@ -78,6 +78,10 @@ SplineBasisfunction::SplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrde
   _iOrder = iOrder;
 }
 
+SplineBasisfunction::~SplineBasisfunction()
+{
+}
+
 void SplineBasisfunction::SetKnots(TColStd_Array1OfReal& vKnots, int iOrder)
 {
   if (_vKnotVector.Length() != vKnots.Length())
@@ -439,7 +443,6 @@ double BSplineBasis::DerivativeOfBasisFunction(int iIndex, int iMaxDer, double f
 
 double BSplineBasis::GetIntegralOfProductOfBSplines(int iIdx1, int iIdx2, int iOrd1, int iOrd2)
 {
-  int iDegree = _iOrder -1;
   int iMax = CalcSize(iOrd1, iOrd2);
   double dIntegral=0.0f;
   double fMin, fMax;

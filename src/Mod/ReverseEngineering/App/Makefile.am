@@ -4,12 +4,16 @@ lib_LTLIBRARIES=libReverseEngineering.la ReverseEngineering.la
 
 libReverseEngineering_la_SOURCES=\
                 AppReverseEngineeringPy.cpp \
+		ApproxSurface.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 
+include_HEADERS=\
+		ApproxSurface.h
+
 # the library search path.
-libReverseEngineering_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libReverseEngineering_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libReverseEngineering_la_CPPFLAGS = -DReverseEngineeringAppExport=
 
 libReverseEngineering_la_LIBADD   = \
@@ -19,6 +23,7 @@ libReverseEngineering_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lPart \
+		-lMesh \
 		-lTKernel \
 		-lTKG2d \
 		-lTKG3d \
