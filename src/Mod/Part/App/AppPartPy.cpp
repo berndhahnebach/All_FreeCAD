@@ -29,6 +29,7 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepBuilderAPI_MakeWire.hxx>
+# include <BRepBuilderAPI_MakePolygon.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
@@ -71,6 +72,7 @@
 #include "TopoShape.h"
 #include "TopoShapePy.h"
 #include "TopoShapeEdgePy.h"
+#include "TopoShapeWirePy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeCompoundPy.h"
 #include "TopoShapeSolidPy.h"
@@ -354,6 +356,36 @@ static PyObject * makeLine(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makePolygon(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+        BRepBuilderAPI_MakePolygon mkPoly;
+        try {
+            Py::List list(pcObj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Base::VectorPy::Type))) {
+                    Base::Vector3d v = static_cast<Base::VectorPy*>((*it).ptr())->value();
+                    mkPoly.Add(gp_Pnt(v.x,v.y,v.z));
+                }
+            }
+            
+            if (!mkPoly.IsDone())
+                Standard_Failure::Raise("Cannot create polygon because less than two vetices are given");
+
+            return new TopoShapeWirePy(new TopoShape(mkPoly.Wire()));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    } PY_CATCH;
+}
+
 static PyObject * makeCircle(PyObject *self, PyObject *args)
 {
     double radius, angle1=0.0, angle2=2.0*Standard_PI;
@@ -439,6 +471,8 @@ struct PyMethodDef Part_methods[] = {
      "makeBox(x,y,z,l,w,h) -- Make a box located in (x,y,z) with the dimensions (l,w,h)"},
     {"makeLine"   ,makeLine  ,METH_VARARGS,
      "makeLine((x1,y1,z1),(x2,y2,z2)) -- Make a line of two points"},
+    {"makePolygon"   ,makePolygon  ,METH_VARARGS,
+     "makePolygon(list) -- Make a polygon of a list of points"},
     {"makeCircle" ,makeCircle,METH_VARARGS,
      "makeCircle(radius,[angle1,angle2]) -- Make a circle with a given radius\n"
      "By default angle1=0 and angle2=2*PI"},
