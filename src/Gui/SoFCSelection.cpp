@@ -46,6 +46,7 @@
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
 
+#define NO_FRONTBUFFER
 
 using namespace Gui;
 
@@ -213,7 +214,7 @@ void SoFCSelection::doAction(SoAction *action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
-#if 0
+#ifdef NO_FRONTBUFFER
     static char buf[513];
     HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
     const SoEvent * event = action->getEvent();
@@ -450,7 +451,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
 void
 SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 {
-#if 0
+#ifdef NO_FRONTBUFFER
   // check if preselection is active
   HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
   bool preselected = highlighted && mymode == AUTO;
@@ -483,7 +484,7 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 void
 SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
-#if 0
+#ifdef NO_FRONTBUFFER
   // check if preselection is active
   HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
   bool preselected = highlighted && mymode == AUTO;
@@ -576,6 +577,8 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
 void
 SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 {
+#ifdef NO_FRONTBUFFER
+#else
     // If we are about to highlight, and there is something else highlighted,
     // that something else needs to unhighlight.
     if (doHighlight && currenthighlight != NULL &&
@@ -656,6 +659,7 @@ SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
     glFlush();
 
     pathToRender->unref();
+#endif
 }
 
 SbBool 
@@ -692,7 +696,7 @@ SoFCSelection::setOverride(SoGLRenderAction * action)
 void
 SoFCSelection::turnoffcurrent(SoAction * action)
 {
-#if 0
+#ifdef NO_FRONTBUFFER
   if (SoFCSelection::currenthighlight &&
       SoFCSelection::currenthighlight->getLength()) {
     SoNode * tail = SoFCSelection::currenthighlight->getTail();
@@ -706,7 +710,7 @@ SoFCSelection::turnoffcurrent(SoAction * action)
     SoFCSelection::currenthighlight->unref();
     SoFCSelection::currenthighlight = NULL;
   }
-#endif
+#else
       if (currenthighlight == NULL)
 	return;
 
@@ -724,8 +728,9 @@ SoFCSelection::turnoffcurrent(SoAction * action)
 	currenthighlight->unref();
 	currenthighlight = NULL;
     }
-
+#endif
 }
+
 SbBool
 SoFCSelection::isHighlighted(SoAction *action)
 //
@@ -733,8 +738,8 @@ SoFCSelection::isHighlighted(SoAction *action)
 {
     SoFullPath *actionPath = (SoFullPath *) action->getCurPath();
     return (currenthighlight != NULL &&
-	    currenthighlight->getTail() == actionPath->getTail() && // nested SoHL!
-	    *currenthighlight == *actionPath);
+        currenthighlight->getTail() == actionPath->getTail() && // nested SoHL!
+        *currenthighlight == *actionPath);
 }
 
 //#undef THIS
