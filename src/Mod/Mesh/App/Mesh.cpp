@@ -734,7 +734,7 @@ void MeshObject::snapVertex(unsigned long facet, const Base::Vector3f& v)
     topalg.SnapVertex(facet, v);
 }
 
-unsigned long MeshObject::countNonUnifomOrientedFacets() const
+unsigned long MeshObject::countNonUniformOrientedFacets() const
 {
     MeshCore::MeshEvalOrientation cMeshEval(_kernel);
     std::vector<unsigned long> inds = cMeshEval.GetIndices();
@@ -774,7 +774,7 @@ void MeshObject::removeNonManifolds()
 
 bool MeshObject::hasSelfIntersections() const
 {
-    MeshCore::MeshEvalTopology cMeshEval(_kernel);
+    MeshCore::MeshEvalSelfIntersection cMeshEval(_kernel);
     return !cMeshEval.Evaluate();
 }
 
