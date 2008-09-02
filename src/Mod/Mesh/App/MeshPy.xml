@@ -152,12 +152,12 @@ Example:
 				<UserDocu>Flip the mesh normals</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="hasNonUnifomOrientedFacets" Const="true">
+		<Methode Name="hasNonUniformOrientedFacets" Const="true">
 			<Documentation>
 				<UserDocu>Check if the mesh has facets with inconsistent orientation</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="countNonUnifomOrientedFacets" Const="true">
+		<Methode Name="countNonUniformOrientedFacets" Const="true">
 			<Documentation>
 				<UserDocu>Get the number of wrong oriented facets</UserDocu>
 			</Documentation>

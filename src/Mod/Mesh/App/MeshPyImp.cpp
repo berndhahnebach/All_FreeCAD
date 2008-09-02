@@ -486,19 +486,19 @@ PyObject*  MeshPy::flipNormals(PyObject *args)
     Py_Return; 
 }
 
-PyObject*  MeshPy::hasNonUnifomOrientedFacets(PyObject *args)
+PyObject*  MeshPy::hasNonUniformOrientedFacets(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
-    bool ok = getMeshObjectPtr()->countNonUnifomOrientedFacets() > 0;
+    bool ok = getMeshObjectPtr()->countNonUniformOrientedFacets() > 0;
     return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 
-PyObject*  MeshPy::countNonUnifomOrientedFacets(PyObject *args)
+PyObject*  MeshPy::countNonUniformOrientedFacets(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
-    unsigned long count = getMeshObjectPtr()->countNonUnifomOrientedFacets();
+    unsigned long count = getMeshObjectPtr()->countNonUniformOrientedFacets();
     return Py_BuildValue("k", count); 
 }
 

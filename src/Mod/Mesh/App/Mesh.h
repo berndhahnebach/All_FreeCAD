@@ -180,7 +180,7 @@ public:
 
     /** @name Mesh validation */
     //@{
-    unsigned long countNonUnifomOrientedFacets() const;
+    unsigned long countNonUniformOrientedFacets() const;
     void flipNormals();
     void harmonizeNormals();
     void validateIndices();
