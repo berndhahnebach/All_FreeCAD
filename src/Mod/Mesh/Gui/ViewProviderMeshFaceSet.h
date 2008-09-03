@@ -88,6 +88,9 @@ public:
     void unmarkParts();
     void removePart();
     unsigned long countMarkedFacets() const;
+    void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
+        Gui::View3DInventorViewer &Viewer, SbBool inner,
+        std::vector<unsigned long>& indices) const;
     //@}
 
 protected:
