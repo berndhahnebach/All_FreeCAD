@@ -501,23 +501,25 @@ private:
 };
 }
 
-void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner)
+void ViewProviderMeshFaceSet::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
+                                                   Gui::View3DInventorViewer &Viewer,
+                                                   SbBool inner, 
+                                                   std::vector<unsigned long>& indices) const
 {
     // get the normal of the front clipping plane
     Base::Vector3f cPoint, cNormal;
     Viewer.getFrontClippingPlane(cPoint, cNormal);
     SoCamera* pCam = Viewer.getCamera();  
-    SbViewVolume  vol = pCam->getViewVolume (); 
+    SbViewVolume  vol = pCam->getViewVolume(); 
 
     // create a tool shape from these points
     std::vector<MeshCore::MeshGeomFacet> aFaces;
-    bool ok = ViewProviderMesh::createToolMesh( picked, vol, cNormal, aFaces );
+    bool ok = ViewProviderMesh::createToolMesh(picked, vol, cNormal, aFaces);
 
     // Get the attached mesh property
-    Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
 
     // Get the facet indices inside the tool mesh
-    std::vector<unsigned long> indices;
     MeshCore::MeshKernel cToolMesh;
     bool locked = Base::Sequencer().setLocked(true);
     cToolMesh = aFaces;
@@ -536,6 +538,20 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
         indices = complementary;
     }
 
+    if (!ok) // note: the mouse grabbing needs to be released
+        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
+}
+
+void ViewProviderMeshFaceSet::cutMesh(const std::vector<SbVec2f>& picked, 
+                                      Gui::View3DInventorViewer &Viewer, SbBool inner)
+{
+    // Get the facet indices inside the tool mesh
+    std::vector<unsigned long> indices;
+    getFacetsFromPolygon(picked, Viewer, inner, indices);
+
+    // Get the attached mesh property
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+
     //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
     Gui::Application::Instance->activeDocument()->openCommand("Cut");
     meshProp.deleteFacetIndices( indices );
@@ -544,10 +560,6 @@ void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::
 
     // notify the mesh shape node
     pcMeshShape->touch();
-
-    if ( !ok ) // note: the mouse grabbing needs to be released
-//      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
-        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
 void ViewProviderMeshFaceSet::splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool clip_inner)
