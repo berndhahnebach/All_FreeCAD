@@ -288,6 +288,10 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath="..\InitGui.py"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

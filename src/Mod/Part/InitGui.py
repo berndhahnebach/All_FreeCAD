@@ -57,8 +57,8 @@ class PartWorkbench ( Workbench ):
 			".########.......",
 			"................"};
 			"""
-	MenuText = "Part design"
-	ToolTip = "Part design workbench"
+	MenuText = "Part"
+	ToolTip = "Part workbench"
 
 	def Initialize(self):
 		# load the module

@@ -39,12 +39,21 @@ public:
   Workbench();
   virtual ~Workbench();
 
+    /** Defines the standard context menu. */
+  virtual void setupContextMenu(const char* recipient,Gui::MenuItem*) const;
+
 protected:
-  Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
-};
+    /** Defines the standard menus. */
+	virtual Gui::MenuItem* setupMenuBar() const;
+    /** Defines the standard toolbars. */
+    virtual Gui::ToolBarItem* setupToolBars() const;
+    /** Defines the standard command bars. */
+    virtual Gui::ToolBarItem* setupCommandBars() const;
+    /** Returns a DockWindowItems structure of dock windows this workbench. */
+    //virtual Gui::DockWindowItems* setupDockWindows() const;
 
-} // namespace CompleteGui
 
+}; // namespace CompleteGui
 
+}
 #endif // COMPLETE_WORKBENCH_H 
