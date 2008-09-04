@@ -56,6 +56,8 @@ public:
      * the inverse transformation matrix.
      */
     Base::Vector3f TransformToFitPlane(Base::Matrix4D& rInverse);
+    Base::Matrix4D GetTransformToFitPlane() const;
+    std::vector<Base::Vector3f> ProjectToFitPlane();
     /** Computes the triangulation of a polygon. The resulting facets can
      * be accessed by GetTriangles() or GetFacets().
      */
@@ -72,6 +74,7 @@ public:
     float GetLength() const;
 
 protected:
+    Base::Matrix4D              _inverse;
     std::vector<Base::Vector3f> _points;
     std::vector<Base::Vector3f> _newpoints;
     std::vector<MeshGeomFacet>  _triangles;
