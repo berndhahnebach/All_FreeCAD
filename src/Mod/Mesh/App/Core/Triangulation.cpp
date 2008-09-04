@@ -100,6 +100,41 @@ Base::Vector3f AbstractPolygonTriangulator::TransformToFitPlane(Base::Matrix4D& 
     return ez;
 }
 
+Base::Matrix4D AbstractPolygonTriangulator::GetTransformToFitPlane() const
+{
+    PlaneFit planeFit;
+    for (std::vector<Base::Vector3f>::const_iterator it = _points.begin(); it!=_points.end(); ++it)
+        planeFit.AddPoint(*it);
+
+    planeFit.Fit();
+
+    Base::Vector3f bs = planeFit.GetBase();
+    Base::Vector3f ex = planeFit.GetDirU();
+    Base::Vector3f ey = planeFit.GetDirV();
+    Base::Vector3f ez = planeFit.GetNormal();
+
+    // build the matrix for the inverse transformation
+    Base::Matrix4D rInverse;
+    rInverse.unity();
+    rInverse[0][0] = ex.x; rInverse[0][1] = ey.x; rInverse[0][2] = ez.x; rInverse[0][3] = bs.x;
+    rInverse[1][0] = ex.y; rInverse[1][1] = ey.y; rInverse[1][2] = ez.y; rInverse[1][3] = bs.y;
+    rInverse[2][0] = ex.z; rInverse[2][1] = ey.z; rInverse[2][2] = ez.z; rInverse[2][3] = bs.z;
+
+    return rInverse;
+}
+
+std::vector<Base::Vector3f> AbstractPolygonTriangulator::ProjectToFitPlane()
+{
+    std::vector<Base::Vector3f> proj = _points;
+    _inverse = GetTransformToFitPlane();
+    Base::Vector3f bs((float)_inverse[0][3], (float)_inverse[1][3], (float)_inverse[2][3]);
+    Base::Vector3f ex((float)_inverse[0][0], (float)_inverse[1][0], (float)_inverse[2][0]);
+    Base::Vector3f ey((float)_inverse[0][1], (float)_inverse[1][1], (float)_inverse[2][1]);
+    for (std::vector<Base::Vector3f>::iterator jt = proj.begin(); jt!=proj.end(); ++jt)
+        jt->TransformToCoordinateSystem(bs, ex, ey);
+    return proj;
+}
+
 void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vector3f>& points)
 {
     // For a good approximation we should have enough points, i.e. for 9 parameters
