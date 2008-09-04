@@ -76,7 +76,7 @@ public:
 protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
-    void loadParameter();
+    bool loadParameter();
     Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
