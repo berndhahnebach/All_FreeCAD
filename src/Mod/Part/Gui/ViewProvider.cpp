@@ -320,20 +320,37 @@ TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
     return TopoDS_Shape();
 }
 
-void ViewProviderPart::loadParameter()
+bool ViewProviderPart::loadParameter()
 {
+    bool changed = false;
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Mod/Part");
-    this->meshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-    this->noPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-    this->qualityNormals     = hGrp->GetBool("QualityNormals",false);
+    float deviation = hGrp->GetFloat("MeshDeviation",0.2);
+    bool novertexnormals = hGrp->GetBool("NoPerVertexNormals",false);
+    bool qualitynormals = hGrp->GetBool("QualityNormals",false);
+
+    if (this->meshDeviation != deviation) {
+        this->meshDeviation = deviation;
+        changed = true;
+    }
+    if (this->noPerVertexNormals != novertexnormals) {
+        this->noPerVertexNormals = novertexnormals;
+        changed = true;
+    }
+    if (this->qualityNormals != qualitynormals) {
+        this->qualityNormals = qualitynormals;
+        changed = true;
+    }
+
+    return changed;
 }
 
 void ViewProviderPart::reload()
 {
-    loadParameter();
-    App::Property* shape     = pcObject->getPropertyByName("Shape");
-    if (shape) update(shape);
+    if (loadParameter()) {
+        App::Property* shape     = pcObject->getPropertyByName("Shape");
+        if (shape) update(shape);
+    }
 }
 
 void ViewProviderPart::updateData(const App::Property* prop)
