@@ -147,7 +147,7 @@ public:
     virtual ~InventorBuilder();
     void close();
 
-    /** @name point set handling */
+    /** @name Point set handling */
     //@{
     /// starts a point set
     void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
@@ -163,7 +163,7 @@ public:
     void addSinglePoint(const Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
     //@}
 
-    /** @name line/direction handling */
+    /** @name Line/Direction handling */
     //@{
     /// add a line defined by 2 Vector3D
     void addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2,
@@ -176,7 +176,7 @@ public:
                     float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
     //@}
 
-    /** @name triangle handling */
+    /** @name Triangle handling */
     //@{
     /// add a (filled) triangle defined by 3 vectors
     void addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled = true, short lineSize=2,
@@ -185,7 +185,14 @@ public:
                         short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
     //@}
 
-    /** @name box handling */
+    /** @name Surface handling */
+    //@{
+    void addNurbsSurface(const std::vector<Base::Vector3f>& controlPoints,
+        int numUControlPoints, int numVControlPoints,
+        const std::vector<float>& uKnots, const std::vector<float>& vKnots);
+    //@}
+
+    /** @name Bounding Box handling */
     //@{
     void addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth=2, 
                         float color_r=1.0,float color_g=1.0,float color_b=1.0);
@@ -198,7 +205,7 @@ public:
     void addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle);
     //@}
 
-    /** @name text handling */
+    /** @name Text handling */
     //@{
     /// add a text
     void addText(float pos_x, float pos_y , float pos_z,const char * text,
