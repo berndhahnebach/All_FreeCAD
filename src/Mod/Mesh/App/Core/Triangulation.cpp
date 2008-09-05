@@ -72,32 +72,12 @@ float AbstractPolygonTriangulator::GetLength() const
 
 std::vector<Base::Vector3f> AbstractPolygonTriangulator::AddedPoints() const
 {
-    return _newpoints;
-}
-
-Base::Vector3f AbstractPolygonTriangulator::TransformToFitPlane(Base::Matrix4D& rInverse)
-{
-    PlaneFit planeFit;
-    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it!=_points.end(); ++it)
-        planeFit.AddPoint(*it);
-
-    planeFit.Fit();
-
-    Base::Vector3f bs = planeFit.GetBase();
-    Base::Vector3f ex = planeFit.GetDirU();
-    Base::Vector3f ey = planeFit.GetDirV();
-    Base::Vector3f ez = planeFit.GetNormal();
-
-    for (std::vector<Base::Vector3f>::iterator jt = _points.begin(); jt!=_points.end(); ++jt)
-        jt->TransformToCoordinateSystem(bs, ex, ey);
-
-    // build the matrix for the inverse transformation
-    rInverse.unity();
-    rInverse[0][0] = ex.x; rInverse[0][1] = ey.x; rInverse[0][2] = ez.x; rInverse[0][3] = bs.x;
-    rInverse[1][0] = ex.y; rInverse[1][1] = ey.y; rInverse[1][2] = ez.y; rInverse[1][3] = bs.y;
-    rInverse[2][0] = ex.z; rInverse[2][1] = ey.z; rInverse[2][2] = ez.z; rInverse[2][3] = bs.z;
-
-    return ez;
+    // Apply the inverse transformation to project back to world coordinates
+    std::vector<Base::Vector3f> added;
+    added.reserve(_newpoints.size());
+    for (std::vector<Base::Vector3f>::const_iterator pt = _newpoints.begin(); pt != _newpoints.end(); ++pt)
+        added.push_back(_inverse * *pt);
+    return added;
 }
 
 Base::Matrix4D AbstractPolygonTriangulator::GetTransformToFitPlane() const
@@ -142,7 +122,16 @@ void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vec
     unsigned int uMinPts = 50;
 
     PolynomialFit polyFit;
-    polyFit.AddPoints(points);
+    Base::Vector3f bs((float)_inverse[0][3], (float)_inverse[1][3], (float)_inverse[2][3]);
+    Base::Vector3f ex((float)_inverse[0][0], (float)_inverse[1][0], (float)_inverse[2][0]);
+    Base::Vector3f ey((float)_inverse[0][1], (float)_inverse[1][1], (float)_inverse[2][1]);
+
+    for (std::vector<Base::Vector3f>::const_iterator it = points.begin(); it != points.end(); ++it) {
+        Base::Vector3f pt = *it;
+        pt.TransformToCoordinateSystem(bs, ex, ey);
+        polyFit.AddPoint(pt);
+    }
+
     polyFit.Fit();
 
     if (polyFit.CountPoints() >= uMinPts) {
@@ -166,12 +155,8 @@ bool EarClippingTriangulator::Triangulate()
   _facets.clear();
   _triangles.clear();
 
-  std::vector<Base::Vector3f> pts;
+  std::vector<Base::Vector3f> pts = ProjectToFitPlane();
   std::vector<unsigned long> result;
-  for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); ++it)
-  {
-    pts.push_back(*it);
-  }
 
   //  Invoke the triangulator to triangulate this polygon.
   Triangulate::Process(pts,result);
@@ -597,12 +582,13 @@ bool FlatTriangulator::Triangulate()
     _newpoints.clear();
     // before starting the triangulation we must make sure that all polygon 
     // points are different
-    std::vector<Base::Vector3f> aPoints = _points;
+    std::vector<Base::Vector3f> aPoints = ProjectToFitPlane();
+    std::vector<Base::Vector3f> tmp = aPoints;
     // sort the points ascending x,y coordinates
-    std::sort(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_Less());
+    std::sort(tmp.begin(), tmp.end(), Triangulation::Vertex2d_Less());
     // if there are two adjacent points whose distance is less then an epsilon
-    if (std::adjacent_find(aPoints.begin(), aPoints.end(),
-        Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
+    if (std::adjacent_find(tmp.begin(), tmp.end(),
+        Triangulation::Vertex2d_EqualTo()) < tmp.end() )
         return false;
 
     _facets.clear();
@@ -610,15 +596,15 @@ bool FlatTriangulator::Triangulate()
 
     triangulateio* in = new triangulateio();
     memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[_points.size() * 2];
-    in->numberofpoints = _points.size();
-    in->segmentlist = new int[_points.size() * 2];
-    in->numberofsegments = _points.size();
+    in->pointlist = new double[aPoints.size() * 2];
+    in->numberofpoints = aPoints.size();
+    in->segmentlist = new int[aPoints.size() * 2];
+    in->numberofsegments = aPoints.size();
 
     // build up point list
     int i = 0, j = 0, k = 0;
-    int mod = _points.size();
-    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+    int mod = aPoints.size();
+    for (std::vector<Base::Vector3f>::iterator it = aPoints.begin(); it != aPoints.end(); it++) {
         in->pointlist[i++] = it->x;
         in->pointlist[i++] = it->y;
         in->segmentlist[j++] = k;
@@ -638,7 +624,7 @@ bool FlatTriangulator::Triangulate()
     triangulate("pYz", in, out, NULL);
 
     // get all added points by the algorithm
-    for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+    for (int index = 2 * aPoints.size(); index < (out->numberofpoints * 2); ) {
         float x = (float)out->pointlist[index++];
         float y = (float)out->pointlist[index++];
         float z = 0.0f; // get the point on the plane
@@ -702,12 +688,13 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     _newpoints.clear();
     // before starting the triangulation we must make sure that all polygon 
     // points are different
-    std::vector<Base::Vector3f> aPoints = _points;
+    std::vector<Base::Vector3f> aPoints = ProjectToFitPlane();
+    std::vector<Base::Vector3f> tmp = aPoints;
     // sort the points ascending x,y coordinates
-    std::sort(aPoints.begin(), aPoints.end(), Triangulation::Vertex2d_Less());
+    std::sort(tmp.begin(), tmp.end(), Triangulation::Vertex2d_Less());
     // if there are two adjacent points whose distance is less then an epsilon
-    if (std::adjacent_find(aPoints.begin(), aPoints.end(),
-        Triangulation::Vertex2d_EqualTo()) < aPoints.end() )
+    if (std::adjacent_find(tmp.begin(), tmp.end(),
+        Triangulation::Vertex2d_EqualTo()) < tmp.end() )
         return false;
 
     _facets.clear();
@@ -715,15 +702,15 @@ bool ConstraintDelaunayTriangulator::Triangulate()
 
     triangulateio* in = new triangulateio();
     memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[_points.size() * 2];
-    in->numberofpoints = _points.size();
-    in->segmentlist = new int[_points.size() * 2];
-    in->numberofsegments = _points.size();
+    in->pointlist = new double[aPoints.size() * 2];
+    in->numberofpoints = aPoints.size();
+    in->segmentlist = new int[aPoints.size() * 2];
+    in->numberofsegments = aPoints.size();
 
     // build up point list
     int i = 0, j = 0, k = 0;
-    int mod = _points.size();
-    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
+    int mod = aPoints.size();
+    for (std::vector<Base::Vector3f>::iterator it = aPoints.begin(); it != aPoints.end(); it++) {
         in->pointlist[i++] = it->x;
         in->pointlist[i++] = it->y;
         in->segmentlist[j++] = k;
@@ -744,7 +731,7 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     if (maxArea < 0.0f) {
         // determine automatically an approximate value
         // depedning on the length of the edges
-        maxArea = GetLength() / ((float)_points.size());
+        maxArea = GetLength() / ((float)aPoints.size());
         maxArea = (maxArea * maxArea)/2.0f;
     }
 
@@ -752,7 +739,7 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     triangulate(szBuf, in, out, NULL);
 
     // get all added points by the algorithm
-    for (int index = 2 * _points.size(); index < (out->numberofpoints * 2); ) {
+    for (int index = 2 * aPoints.size(); index < (out->numberofpoints * 2); ) {
         float x = (float)out->pointlist[index++];
         float y = (float)out->pointlist[index++];
         float z = 0.0f; // get the point on the plane
