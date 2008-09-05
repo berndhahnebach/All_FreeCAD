@@ -593,15 +593,15 @@ void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, c
                                      float length, float width, bool filled, short lineSize, 
                                      float color_r,float color_g,float color_b)
 {
-  Vector3f pt0 = base;
-  Vector3f pt1 = base + length * eX;
-  Vector3f pt2 = base + length * eX + width * eY;
-  Vector3f pt3 = base + width * eY;
-  std::string fs = "";
-  if (filled)
-  {
-    fs = "    FaceSet { } ";
-  }
+    Vector3f pt0 = base;
+    Vector3f pt1 = base + length * eX;
+    Vector3f pt2 = base + length * eX + width * eY;
+    Vector3f pt3 = base + width * eY;
+    std::string fs = "";
+    if (filled)
+    {
+        fs = "    FaceSet { } ";
+    }
 
     result << "  Separator { " << std::endl
            << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
@@ -617,6 +617,61 @@ void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, c
            << "    IndexedLineSet { coordIndex[ 0, 1, 2, 3, 0, -1 ] } " << std::endl
            << fs << std::endl
            << "  } " << std::endl;
+}
+
+/**
+ * The number of control points must be numUControlPoints * numVControlPoints.
+ * The order in u or v direction of the NURBS surface is implicitly given by
+ * number of elements in uKnots - numUControlPoints or
+ * number of elements in vKnots - numVControlPoints.
+ */
+void InventorBuilder::addNurbsSurface(const std::vector<Base::Vector3f>& controlPoints,
+                                      int numUControlPoints, int numVControlPoints,
+                                      const std::vector<float>& uKnots,
+                                      const std::vector<float>& vKnots)
+{
+    result << "  Separator { " << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ ";
+    for (std::vector<Base::Vector3f>::const_iterator it = 
+        controlPoints.begin(); it != controlPoints.end(); ++it) {
+        if (it != controlPoints.begin())
+            result << "," << std::endl << "          ";
+        result << it->x << " " << it->y << " " << it->z;
+    }
+
+    result << " ]" << std::endl
+           << "    }" << std::endl;
+    result << "    NurbsSurface { " << std::endl
+           << "      numUControlPoints " << numUControlPoints << std::endl
+           << "      numVControlPoints " << numVControlPoints << std::endl
+           << "      uKnotVector [ ";
+    int index = 0;
+    for (std::vector<float>::const_iterator it = uKnots.begin(); it != uKnots.end(); ++it) {
+        result << *it;
+        index++;
+        if ((it+1) < uKnots.end()) {
+            if (index % 4 == 0)
+                result << "," << std::endl << "          ";
+            else
+                result << ", ";
+        }
+    }
+    result << " ]" << std::endl
+           << "      vKnotVector [ ";
+    for (std::vector<float>::const_iterator it = vKnots.begin(); it != vKnots.end(); ++it) {
+        result << *it;
+        index++;
+        if ((it+1) < vKnots.end()) {
+            if (index % 4 == 0)
+                result << "," << std::endl << "          ";
+            else
+                result << ", ";
+        }
+    }
+    result << " ]" << std::endl
+           << "    }" << std::endl
+           << "  }" << std::endl;
 }
 
 void InventorBuilder::addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth,

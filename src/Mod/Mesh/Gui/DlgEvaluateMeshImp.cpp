@@ -331,14 +331,17 @@ void DlgEvaluateMeshImp::on_refreshButton_clicked()
 {
     // Connect to application and active document
     Gui::Document* gui = Gui::Application::Instance->activeDocument();
-    App::Document* doc = gui->getDocument();
+    if (gui) {
+        App::Document* doc = gui->getDocument();
 
-    // switch to the active document
-    if (doc && doc != this->getDocument()) {
-        attachDocument(doc);
-        removeViewProviders();
-        _view = dynamic_cast<Gui::View3DInventor*>(gui->getActiveView());
+        // switch to the active document
+        if (doc && doc != this->getDocument()) {
+            attachDocument(doc);
+            removeViewProviders();
+            _view = dynamic_cast<Gui::View3DInventor*>(gui->getActiveView());
+        }
     }
+
     refreshList();
 }
 
