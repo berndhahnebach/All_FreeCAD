@@ -49,13 +49,6 @@ public:
      * this method if you want the surface points the new points are lying on.
      */
     std::vector<Base::Vector3f> AddedPoints() const;
-    /** If the points of the polygon set by SetPolygon() doesn't lie in a 
-     * plane this method can be used to project the points in a common plane.
-     * This method must be called directly after SetPolygon() and before
-     * Triangulate(). The method returns the normal of the fitted plane and
-     * the inverse transformation matrix.
-     */
-    Base::Vector3f TransformToFitPlane(Base::Matrix4D& rInverse);
     /** Computes the best-fit plane and returns a transformation matrix
      * built out of the axes of the plane.
      */

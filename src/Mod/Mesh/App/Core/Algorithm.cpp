@@ -684,19 +684,11 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
     // If the scalar product is positive it was a hole, otherwise not.
     cTria.SetPolygon(polygon);
 
-    // Get the inverse transformation to project back to world coordinates
-    Base::Matrix4D inverse;
-    cTria.TransformToFitPlane(inverse);
-
     std::vector<Base::Vector3f> surf_pts = cTria.GetPolygon();
     if (pP2FStructure && level > 0) {
         std::set<unsigned long> index = pP2FStructure->NeighbourPoints(boundary, level);
-        Base::Vector3f bs((float)inverse[0][3], (float)inverse[1][3], (float)inverse[2][3]);
-        Base::Vector3f ex((float)inverse[0][0], (float)inverse[1][0], (float)inverse[2][0]);
-        Base::Vector3f ey((float)inverse[0][1], (float)inverse[1][1], (float)inverse[2][1]);
         for (std::set<unsigned long>::iterator it = index.begin(); it != index.end(); ++it) {
             Base::Vector3f pt(_rclMesh._aclPointArray[*it]);
-            pt.TransformToCoordinateSystem(bs, ex, ey);
             surf_pts.push_back(pt);
         }
     }
@@ -709,7 +701,7 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
         cTria.ProjectOntoSurface(surf_pts);
         std::vector<Base::Vector3f> newVertices = cTria.AddedPoints();
         for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt) {
-            rPoints.push_back(inverse * (*pt));
+            rPoints.push_back((*pt));
         }
 
         // Unfortunately, the CDT algorithm does not care about the orientation of the polygon so we cannot rely on the normal
