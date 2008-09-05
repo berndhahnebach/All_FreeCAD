@@ -15,7 +15,7 @@ libReverseEngineeringGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libReverseEngineeringGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libReverseEngineeringGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui  -L../../../Mod/Mesh/App -L../App -L$(OCC_LIB) $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libReverseEngineeringGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DReverseEngineeringAppExport= -DReverseEngineeringGuiExport=
 
 libReverseEngineeringGui_la_LIBADD   = \
@@ -25,6 +25,7 @@ libReverseEngineeringGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lMesh \
 		-lReverseEngineering
 
 #--------------------------------------------------------------------------------------
