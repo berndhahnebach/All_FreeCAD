@@ -1,4 +1,4 @@
-SUBDIRS=OCCAdaptMesh Pivy
+SUBDIRS=Pivy
 
 EXTRA_DIST = \
 		atlas/cblas.h \

@@ -78,11 +78,16 @@ int BoundBoxPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear(); // set by PyArg_ParseTuple()
     if (PyArg_ParseTuple(args,"O!O!",&PyTuple_Type, &object1,
                                      &PyTuple_Type, &object2)) {
-        Vector3d v1 = getVectorFromTuple<double>(object1);
-        Vector3d v2 = getVectorFromTuple<double>(object2);
-        ptr->Add(v1);
-        ptr->Add(v2);
-        return 0;
+        try {
+            Vector3d v1 = getVectorFromTuple<double>(object1);
+            Vector3d v2 = getVectorFromTuple<double>(object2);
+            ptr->Add(v1);
+            ptr->Add(v2);
+            return 0;
+        }
+        catch (const Py::Exception&) {
+            return -1;
+        }
     }
     PyErr_Clear(); // set by PyArg_ParseTuple()
     if (PyArg_ParseTuple(args,"O!O!",&(Base::VectorPy::Type), &object1,
