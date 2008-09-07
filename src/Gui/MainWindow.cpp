@@ -936,6 +936,15 @@ void MainWindow::customEvent( QEvent* e )
     }
 }
 
+bool MainWindow::event(QEvent *e)
+{
+    if (e->type() == QEvent::WhatsThisClicked) {
+        QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
+        Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
+    }
+    return QMainWindow::event(e);
+}
+
 // ----------------------------------------------------------
 
 StatusBarObserver::StatusBarObserver()

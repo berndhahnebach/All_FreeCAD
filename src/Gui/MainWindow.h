@@ -178,6 +178,7 @@ protected:
     void hideEvent  (QHideEvent  * e);
     void timerEvent (QTimerEvent *  ){ timeEvent();}
     void customEvent(QEvent      * e);
+    bool event      (QEvent      * e);
     /**
      * Try to interpret dropped elements.
      */
