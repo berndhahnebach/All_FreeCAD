@@ -92,6 +92,7 @@ struct MainWindowP
     QSignalMapper* windowMapper;
     QSplashScreen* splashscreen;
     StatusBarObserver* status;
+    bool whatsthis;
 };
 
 class MDITabbar : public QTabBar
@@ -144,6 +145,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     d = new MainWindowP;
     d->splashscreen = 0;
     d->activeView = 0;
+    d->whatsthis = false;
 
     // global access 
     instance = this;
@@ -327,6 +329,31 @@ void MainWindow::whatsThis()
     QWhatsThis::enterWhatsThisMode();
 }
 
+bool MainWindow::event(QEvent *e)
+{
+    if (e->type() == QEvent::EnterWhatsThisMode) {
+        // Unfortunately, for top-level widgets such as menus or dialogs we
+        // don't be notified when the user clicks the link in the hypertext of
+        // the what's this text. Thus, we have to install the main window to
+        // observe what happens in eventFilter().
+        if (!d->whatsthis) {
+            d-> whatsthis = true;
+            qApp->installEventFilter(this);
+        }
+    }
+    if (e->type() == QEvent::LeaveWhatsThisMode) {
+        // Here we can't do anything because this event is sent
+        // before the WhatThisClicked event is sent. Thus, we handle
+        // this in eventFilter().
+    }
+
+    if (e->type() == QEvent::WhatsThisClicked) {
+        QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
+        Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
+    }
+    return QMainWindow::event(e);
+}
+
 bool MainWindow::eventFilter(QObject* o, QEvent* e)
 {
     if (o != this) {
@@ -339,6 +366,16 @@ bool MainWindow::eventFilter(QObject* o, QEvent* e)
                 Qt::WindowStates newstate = view->windowState();
                 if (oldstate != newstate)
                     windowStateChanged(view);
+            }
+        }
+        if (o->inherits("QMenu") && e->type() == QEvent::WhatsThisClicked) {
+            QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
+            Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
+        }
+        if (o->inherits("QWhatsThat") && e->type() == QEvent::Hide) {
+            if (d->whatsthis) {
+                d->whatsthis = false;
+                qApp->removeEventFilter(this);
             }
         }
     }
@@ -934,15 +971,6 @@ void MainWindow::customEvent( QEvent* e )
             d->actionTimer->start(5000);
         }
     }
-}
-
-bool MainWindow::event(QEvent *e)
-{
-    if (e->type() == QEvent::WhatsThisClicked) {
-        QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-        Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
-    }
-    return QMainWindow::event(e);
 }
 
 // ----------------------------------------------------------
