@@ -37,9 +37,10 @@
 #include <iostream>
 #include <bitset>
 
-#include<typeinfo>
+#include <typeinfo>
 #include "Exception.h"
 #include "PyCXX/Objects.hxx"
+#include "Vector3D.h"
 
 
 
@@ -102,6 +103,16 @@ inline void Assert(int expr, char *msg)         // C++ assert
       fprintf(stderr, "%s\n", msg);
       exit(-1);
     };
+}
+
+template <typename T>
+inline Vector3<T> getVectorFromTuple(PyObject* o)
+{
+    Py::Tuple tuple(o);
+    T x = (T)Py::Float(tuple.getItem(0));
+    T y = (T)Py::Float(tuple.getItem(1));
+    T z = (T)Py::Float(tuple.getItem(2));
+    return Vector3<T>(x,y,z);
 }
 
 }

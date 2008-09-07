@@ -123,12 +123,24 @@ PyObject* GeometryPy::scale(PyObject *args)
 {
     PyObject* o;
     double scale;
-    if (!PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type),&o, &scale))
-        return 0;
-    Base::Vector3d vec = static_cast<Base::VectorPy*>(o)->value();
-    gp_Pnt pnt(vec.x, vec.y, vec.z);
-    getGeometryPtr()->handle()->Scale(pnt, scale);
-    Py_Return;
+    Base::Vector3d vec;
+    if (PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type),&o, &scale)) {
+        vec = static_cast<Base::VectorPy*>(o)->value();
+        gp_Pnt pnt(vec.x, vec.y, vec.z);
+        getGeometryPtr()->handle()->Scale(pnt, scale);
+        Py_Return;
+    }
+    
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!d", &PyTuple_Type,&o, &scale)) {
+        vec = Base::getVectorFromTuple<double>(o);
+        gp_Pnt pnt(vec.x, vec.y, vec.z);
+        getGeometryPtr()->handle()->Scale(pnt, scale);
+        Py_Return;
+    }
+
+    PyErr_SetString(PyExc_Exception, "either vector or tuple and float expected");
+    return 0;
 }
 
 PyObject* GeometryPy::transform(PyObject *args)
@@ -150,12 +162,24 @@ PyObject* GeometryPy::transform(PyObject *args)
 PyObject* GeometryPy::translate(PyObject *args)
 {
     PyObject* o;
-    if (!PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type),&o))
-        return 0;
-    Base::Vector3d vec = static_cast<Base::VectorPy*>(o)->value();
-    gp_Vec trl(vec.x, vec.y, vec.z);
-    getGeometryPtr()->handle()->Translate(trl);
-    Py_Return;
+    Base::Vector3d vec;
+    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type),&o)) {
+        vec = static_cast<Base::VectorPy*>(o)->value();
+        gp_Vec trl(vec.x, vec.y, vec.z);
+        getGeometryPtr()->handle()->Translate(trl);
+        Py_Return;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &PyTuple_Type,&o)) {
+        vec = Base::getVectorFromTuple<double>(o);
+        gp_Vec trl(vec.x, vec.y, vec.z);
+        getGeometryPtr()->handle()->Translate(trl);
+        Py_Return;
+    }
+
+    PyErr_SetString(PyExc_Exception, "either vector or tuple expected");
+    return 0;
 }
 
 PyObject* GeometryPy::toShape(PyObject *args)

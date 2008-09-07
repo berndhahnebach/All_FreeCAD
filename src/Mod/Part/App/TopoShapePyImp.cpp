@@ -436,23 +436,25 @@ PyObject*  TopoShapePy::translate(PyObject *args)
 {
     PyObject *obj;
     if (!PyArg_ParseTuple(args, "O", &obj))
-        return NULL;
+        return 0;
 
-    try {
-        Py::Tuple p(obj);
-        // Convert into OCC representation
-        gp_Vec vec = gp_Vec((double)Py::Float(p[0]),
-                            (double)Py::Float(p[1]),
-                            (double)Py::Float(p[2]));
-        gp_Trsf mov;
-        mov.SetTranslation(vec);
-        TopLoc_Location loc(mov);
-        getTopoShapePtr()->_Shape.Move(loc);
-        Py_Return;
+    Base::Vector3d vec;
+    if (PyObject_TypeCheck(obj, &(Base::VectorPy::Type))) {
+        vec = static_cast<Base::VectorPy*>(obj)->value();
     }
-    catch (const Py::Exception&) {
-        return NULL;
+    else if (PyObject_TypeCheck(obj, &PyTuple_Type)) {
+        vec = Base::getVectorFromTuple<double>(obj);
     }
+    else {
+        PyErr_SetString(PyExc_TypeError, "either vector or tuple expected");
+        return 0;
+    }
+
+    gp_Trsf mov;
+    mov.SetTranslation(gp_Vec(vec.x,vec.y,vec.z));
+    TopLoc_Location loc(mov);
+    getTopoShapePtr()->_Shape.Move(loc);
+    Py_Return;
 }
 
 PyObject*  TopoShapePy::rotate(PyObject *args)

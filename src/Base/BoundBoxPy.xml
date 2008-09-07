@@ -16,12 +16,15 @@
       <DeveloperDocu>This is the BoundBox export class</DeveloperDocu>
       <UserDocu>Bound box class
 A bounding box is an orthographic cube which is a way to describe outer boundaries.
-You get a bounding box from a lot of 3D types. It is often used to check 
-if a 3D entity lies in the range of another object. Checking for
-boundig interference first can save a lot of computing time!
+You get a bounding box from a lot of 3D types. It is often used to check if a 3D
+entity lies in the range of another object. Checking for boundig interference first
+can save a lot of computing time!
 
 Constructor:
-App.BoundBox(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
+App.BoundBox([Xmin,Ymin,Zmin,Xmax,Ymax,Zmax])
+App.BoundBox(Tuple, Tuple)
+App.BoundBox(Vector, Vector)
+App.BoundBox(BoundBox)
 	  </UserDocu>
     </Documentation>
     <Methode Name="add">
@@ -134,10 +137,5 @@ Check if the plane specified by Base and Normal intersects (cuts) the BoundBox</
 		  </Documentation>
 		  <Parameter Name="DiagonalLength" Type="Float" />
 	  </Attribute>
-	  <ClassDeclarations>
-public:
-   BoundBox3d &amp; BoundBox(void){return *getBoundBoxPtr();}
-   const BoundBox3d &amp; BoundBox(void) const {return *getBoundBoxPtr();}
-	  </ClassDeclarations>
   </PythonExport>
 </GenerateModel>

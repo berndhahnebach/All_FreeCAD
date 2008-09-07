@@ -306,54 +306,74 @@ static PyObject * makeLine(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "OO", &obj1, &obj2))
         return NULL;
 
-    try {
-        Py::Tuple p1(obj1), p2(obj2);
-        // Convert into OCC representation
-        gp_Pnt pnt1 = gp_Pnt((double)Py::Float(p1[0]),
-                             (double)Py::Float(p1[1]),
-                             (double)Py::Float(p1[2]));
-        gp_Pnt pnt2 = gp_Pnt((double)Py::Float(p2[0]),
-                             (double)Py::Float(p2[1]),
-                             (double)Py::Float(p2[2]));
-        // Create directly the underlying line geometry
-        BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
-
-        const char *error=0;
-        switch ( makeEdge.Error() )
-        {
-        case BRepBuilderAPI_EdgeDone:
-            break; // ok
-        case BRepBuilderAPI_PointProjectionFailed:
-            error = "Point projection failed";
-            break;
-        case BRepBuilderAPI_ParameterOutOfRange:
-            error = "Parameter out of range";
-            break;
-        case BRepBuilderAPI_DifferentPointsOnClosedCurve:
-            error = "Different points on closed curve";
-            break;
-        case BRepBuilderAPI_PointWithInfiniteParameter:
-            error = "Point with infinite parameter";
-            break;
-        case BRepBuilderAPI_DifferentsPointAndParameter:
-            error = "Different point and parameter";
-            break;
-        case BRepBuilderAPI_LineThroughIdenticPoints:
-            error = "Line through identic points";
-            break;
+    Base::Vector3d pnt1, pnt2;
+    if (PyObject_TypeCheck(obj1, &(Base::VectorPy::Type))) {
+        pnt1 = static_cast<Base::VectorPy*>(obj1)->value();
+    }
+    else if (PyObject_TypeCheck(obj1, &PyTuple_Type)) {
+        try {
+            pnt1 = Base::getVectorFromTuple<double>(obj1);
         }
-        // Error 
-        if (error) {
-            PyErr_SetString(PyExc_RuntimeError, error);
+        catch (const Py::Exception&) {
             return NULL;
         }
-
-        TopoDS_Edge edge = makeEdge.Edge();
-        return new TopoShapeEdgePy(new TopoShape(edge)); 
     }
-    catch (const Py::Exception&) {
+    else {
+        PyErr_SetString(PyExc_TypeError, "first argument must either be vector or tuple");
+        return 0;
+    }
+    if (PyObject_TypeCheck(obj2, &(Base::VectorPy::Type))) {
+        pnt2 = static_cast<Base::VectorPy*>(obj2)->value();
+    }
+    else if (PyObject_TypeCheck(obj2, &PyTuple_Type)) {
+        try {
+            pnt2 = Base::getVectorFromTuple<double>(obj2);
+        }
+        catch (const Py::Exception&) {
+            return NULL;
+        }
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "second argument must either be vector or tuple");
+        return 0;
+    }
+
+    // Create directly the underlying line geometry
+    BRepBuilderAPI_MakeEdge makeEdge(gp_Pnt(pnt1.x, pnt1.y, pnt1.z),
+                                     gp_Pnt(pnt2.x, pnt2.y, pnt2.z));
+
+    const char *error=0;
+    switch (makeEdge.Error())
+    {
+    case BRepBuilderAPI_EdgeDone:
+        break; // ok
+    case BRepBuilderAPI_PointProjectionFailed:
+        error = "Point projection failed";
+        break;
+    case BRepBuilderAPI_ParameterOutOfRange:
+        error = "Parameter out of range";
+        break;
+    case BRepBuilderAPI_DifferentPointsOnClosedCurve:
+        error = "Different points on closed curve";
+        break;
+    case BRepBuilderAPI_PointWithInfiniteParameter:
+        error = "Point with infinite parameter";
+        break;
+    case BRepBuilderAPI_DifferentsPointAndParameter:
+        error = "Different point and parameter";
+        break;
+    case BRepBuilderAPI_LineThroughIdenticPoints:
+        error = "Line through identic points";
+        break;
+    }
+    // Error 
+    if (error) {
+        PyErr_SetString(PyExc_RuntimeError, error);
         return NULL;
     }
+
+    TopoDS_Edge edge = makeEdge.Edge();
+    return new TopoShapeEdgePy(new TopoShape(edge)); 
 }
 
 static PyObject * makePolygon(PyObject *self, PyObject *args)
@@ -370,6 +390,15 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
                 if (PyObject_TypeCheck((*it).ptr(), &(Base::VectorPy::Type))) {
                     Base::Vector3d v = static_cast<Base::VectorPy*>((*it).ptr())->value();
                     mkPoly.Add(gp_Pnt(v.x,v.y,v.z));
+                }
+                else if (PyObject_TypeCheck((*it).ptr(), &PyTuple_Type)) {
+                    try {
+                        Base::Vector3d v = Base::getVectorFromTuple<double>((*it).ptr());
+                        mkPoly.Add(gp_Pnt(v.x,v.y,v.z));
+                    }
+                    catch (const Py::Exception&) {
+                        return 0;
+                    }
                 }
             }
             

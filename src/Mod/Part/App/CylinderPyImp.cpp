@@ -204,6 +204,12 @@ void CylinderPy::setCenter(Py::Object arg)
             (getGeomCylinderPtr()->handle());
         cyl->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
+    else if (PyObject_TypeCheck(p, &PyTuple_Type)) {
+        Base::Vector3d loc = Base::getVectorFromTuple<double>(p);
+        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
+            (getGeomCylinderPtr()->handle());
+        cyl->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+    }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;

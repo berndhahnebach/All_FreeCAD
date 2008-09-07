@@ -23,46 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qimage.h>
 #endif
 
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
-#include <App/Application.h>
-#include <Gui/MainWindow.h>
-#include <Gui/BitmapFactory.h>
-
-
-
-/* module functions */
-static PyObject * 
-open(PyObject *self, PyObject *args) 
-{
-    const char* Name;
-    if (! PyArg_ParseTuple(args, "s",&Name))
-        return NULL; 
-    
-    PY_TRY {
-     } PY_CATCH;
-
-	Py_Return; 
-}
-
-
-/* module functions */
-static PyObject *
-insert(PyObject *self, PyObject *args)
-{
-  // not supported to insert an image (by dropping on an image view)
-  // hence do nothing
-  Py_Return;
-}
-
 /* registration table  */
 struct PyMethodDef ReverseEngineeringGui_Import_methods[] = {
-    {"open"       ,open ,       1},				/* method name, C func ptr, always-tuple */
-    {"insert"     ,insert,      1},
     {NULL, NULL}                   /* end of table marker */
 };

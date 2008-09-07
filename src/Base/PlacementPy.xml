@@ -37,7 +37,7 @@ Move the Placement along the vector
       <Documentation>
         <UserDocu>Orientation of the placement expresst as rotation</UserDocu>
       </Documentation>
-      <Parameter Name="Rotation" Type="List" />
+      <Parameter Name="Rotation" Type="Tuple" />
     </Attribute>
     <ClassDeclarations>public:
     PlacementPy(const Placement &amp; p, PyTypeObject *T = &amp;Type)

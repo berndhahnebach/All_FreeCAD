@@ -89,7 +89,14 @@ PyObject* MatrixPy::move(PyObject * args)
         vec.y = y;
         vec.z = z;
     }
-    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", 
+        &PyTuple_Type, &pcVecObj)) {
+        vec = getVectorFromTuple<double>(pcVecObj);
+        // clears the error from the first PyArg_ParseTuple()6
+        PyErr_Clear();
+    }
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", 
+        &(Base::VectorPy::Type), &pcVecObj)) {
         Base::VectorPy  *pcObject = static_cast<Base::VectorPy*>(pcVecObj);
         Base::Vector3d* val = pcObject->getVectorPtr();
         vec.Set(val->x,val->y,val->z);
@@ -117,6 +124,12 @@ PyObject* MatrixPy::scale(PyObject * args)
         vec.x = x;
         vec.y = y;
         vec.z = z;
+    }
+    else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", 
+        &PyTuple_Type, &pcVecObj)) {
+        vec = getVectorFromTuple<double>(pcVecObj);
+        // clears the error from the first PyArg_ParseTuple()6
+        PyErr_Clear();
     }
     else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(Base::VectorPy::Type), &pcVecObj)) {
         // convert args: Python->C
