@@ -71,7 +71,8 @@ StdCmdWorkbench::StdCmdWorkbench()
   sGroup        = QT_TR_NOOP("View");
   sMenuText     = QT_TR_NOOP("Workbench");
   sToolTipText  = QT_TR_NOOP("Switch between workbenches");
-  sWhatsThis    = QT_TR_NOOP("Switch between workbenches <a href=\"#Workbenches\">More...</a>");
+  sWhatsThis    = QT_TR_NOOP("Switch between workbenches"
+      "<br><a href=\"#Workbenches\">More...</a>");
   sStatusTip    = QT_TR_NOOP("Switch between workbenches");
   sPixmap       = "FCIcon";
   iAccel        = 0;
