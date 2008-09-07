@@ -49,21 +49,34 @@ int RotationPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
-
-PyObject* RotationPy::invert(PyObject * /*args*/)
+PyObject* RotationPy::invert(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    this->getRotationPtr()->invert();
+    Py_Return;
 }
 
-Py::List RotationPy::getQ(void) const
+Py::Tuple RotationPy::getQ(void) const
 {
-    return Py::List();
+    double q0, q1, q2, q3;
+    this->getRotationPtr()->getValue(q0,q1,q2,q3);
+
+    Py::Tuple tuple(4);
+    tuple.setItem(0, Py::Float(q0));
+    tuple.setItem(1, Py::Float(q1));
+    tuple.setItem(2, Py::Float(q2));
+    tuple.setItem(3, Py::Float(q3));
+    return tuple;
 }
 
-void RotationPy::setQ(Py::List /*arg*/)
+void RotationPy::setQ(Py::Tuple arg)
 {
-
+    double q0 = (double)Py::Float(arg.getItem(0));
+    double q1 = (double)Py::Float(arg.getItem(1));
+    double q2 = (double)Py::Float(arg.getItem(2));
+    double q3 = (double)Py::Float(arg.getItem(3));
+    this->getRotationPtr()->setValue(q0,q1,q2,q3);
 }
 
 PyObject *RotationPy::getCustomAttributes(const char* /*attr*/) const

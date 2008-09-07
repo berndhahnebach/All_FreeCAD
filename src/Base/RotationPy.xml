@@ -28,7 +28,7 @@
       <Documentation>
         <UserDocu>The rotation elements (as quaternion)</UserDocu>
       </Documentation>
-      <Parameter Name="Q" Type="List" />
+      <Parameter Name="Q" Type="Tuple" />
     </Attribute>
     <ClassDeclarations>
       public:

@@ -187,6 +187,15 @@ void EllipsePy::setCenter(Py::Object arg)
         Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
         ellipse->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
+    else if (PyTuple_Check(p)) {
+        Py::Tuple tuple(arg);
+        gp_Pnt loc;
+        loc.SetX((double)Py::Float(tuple.getItem(0)));
+        loc.SetY((double)Py::Float(tuple.getItem(1)));
+        loc.SetZ((double)Py::Float(tuple.getItem(2)));
+        Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
+        ellipse->SetLocation(loc);
+    }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;
@@ -206,24 +215,29 @@ Py::Object EllipsePy::getAxis(void) const
 void EllipsePy::setAxis(Py::Object arg)
 {
     PyObject* p = arg.ptr();
+    Base::Vector3d val;
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
-        Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
-        try {
-            gp_Ax1 axis;
-            axis.SetLocation(ellipse->Location());
-            axis.SetDirection(gp_Dir(val.x, val.y, val.z));
-            gp_Dir dir = axis.Direction();
-            ellipse->SetAxis(axis);
-        }
-        catch (Standard_Failure) {
-            throw Py::Exception("cannot set axis");
-        }
+        val = static_cast<Base::VectorPy*>(p)->value();
+    }
+    else if (PyTuple_Check(p)) {
+        val = Base::getVectorFromTuple<double>(p);
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;
         throw Py::TypeError(error);
+    }
+
+    Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
+    try {
+        gp_Ax1 axis;
+        axis.SetLocation(ellipse->Location());
+        axis.SetDirection(gp_Dir(val.x, val.y, val.z));
+        gp_Dir dir = axis.Direction();
+        ellipse->SetAxis(axis);
+    }
+    catch (Standard_Failure) {
+        throw Py::Exception("cannot set axis");
     }
 }
 

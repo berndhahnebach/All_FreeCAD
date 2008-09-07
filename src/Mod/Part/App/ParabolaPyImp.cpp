@@ -112,6 +112,16 @@ void ParabolaPy::setLocation(Py::Object arg)
             (getGeometryPtr()->handle());
         c->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
+    else if (PyTuple_Check(p)) {
+        Py::Tuple tuple(arg);
+        gp_Pnt loc;
+        loc.SetX((double)Py::Float(tuple.getItem(0)));
+        loc.SetY((double)Py::Float(tuple.getItem(1)));
+        loc.SetZ((double)Py::Float(tuple.getItem(2)));
+        Handle_Geom_Parabola c = Handle_Geom_Parabola::DownCast
+            (getGeometryPtr()->handle());
+        c->SetLocation(loc);
+    }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;

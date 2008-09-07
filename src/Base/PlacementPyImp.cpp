@@ -113,15 +113,15 @@ void PlacementPy::setBase(Py::Object arg)
     }
 }
 
-Py::List PlacementPy::getRotation(void) const
+Py::Tuple PlacementPy::getRotation(void) const
 {
-    Py::List rot;
+    Py::Tuple rot(4);
     for (int i=0; i<4; i++)
-        rot.append(Py::Float(getPlacementPtr()->_q[i]));
+        rot[i]=Py::Float(getPlacementPtr()->_q[i]);
     return rot;
 }
 
-void PlacementPy::setRotation(Py::List arg)
+void PlacementPy::setRotation(Py::Tuple arg)
 {
     for (int i=0; i<4; i++)
         getPlacementPtr()->_q[i] = (double)Py::Float(arg[i]);

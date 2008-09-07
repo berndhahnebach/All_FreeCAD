@@ -168,6 +168,12 @@ void ConePy::setCenter(Py::Object arg)
             (getGeomConePtr()->handle());
         s->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
+    else if (PyObject_TypeCheck(p, &PyTuple_Type)) {
+        Base::Vector3d loc = Base::getVectorFromTuple<double>(p);
+        Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
+            (getGeomConePtr()->handle());
+        s->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+    }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;

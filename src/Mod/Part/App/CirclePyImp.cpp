@@ -181,6 +181,11 @@ void  CirclePy::setCenter(Py::Object arg)
         Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
         circle->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
     }
+    else if (PyObject_TypeCheck(p, &PyTuple_Type)) {
+        Base::Vector3d loc = Base::getVectorFromTuple<double>(p);
+        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+        circle->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+    }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;
@@ -200,24 +205,29 @@ Py::Object CirclePy::getAxis(void) const
 void  CirclePy::setAxis(Py::Object arg)
 {
     PyObject* p = arg.ptr();
+    Base::Vector3d val;
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
-        Base::Vector3d val = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-        try {
-            gp_Ax1 axis;
-            axis.SetLocation(circle->Location());
-            axis.SetDirection(gp_Dir(val.x, val.y, val.z));
-            gp_Dir dir = axis.Direction();
-            circle->SetAxis(axis);
-        }
-        catch (Standard_Failure) {
-            throw Py::Exception("cannot set axis");
-        }
+        val = static_cast<Base::VectorPy*>(p)->value();
+    }
+    else if (PyTuple_Check(p)) {
+        val = Base::getVectorFromTuple<double>(p);
     }
     else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;
         throw Py::TypeError(error);
+    }
+
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
+    try {
+        gp_Ax1 axis;
+        axis.SetLocation(circle->Location());
+        axis.SetDirection(gp_Dir(val.x, val.y, val.z));
+        gp_Dir dir = axis.Direction();
+        circle->SetAxis(axis);
+    }
+    catch (Standard_Failure) {
+        throw Py::Exception("cannot set axis");
     }
 }
 
