@@ -6,7 +6,7 @@ dnl **************************************************************************
 dnl release version number info
 m4_define([FREECAD_MAJOR], [0])
 m4_define([FREECAD_MINOR], [7])
-m4_define([FREECAD_MICRO], [1516])
+m4_define([FREECAD_MICRO], [1600])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
 AM_INIT_AUTOMAKE([tar-ustar foreign])
@@ -574,7 +574,6 @@ CXXFLAGS="$CXXFLAGS -Wno-deprecated -frtti"
 AC_CONFIG_FILES([Makefile 
 src/Makefile 
 src/3rdParty/Makefile 
-src/3rdParty/OCCAdaptMesh/Makefile 
 src/3rdParty/Pivy/Makefile 
 src/Base/Makefile 
 src/App/Makefile 
