@@ -536,20 +536,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
 
 void StdCmdOnlineHelp::activated(int iMsg)
 {
-    std::string url = App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm";
-#if QT_VERSION >= 0x040200
-    bool ok = QDesktopServices::openUrl(QString::fromUtf8(url.c_str()));
-#elif defined(Q_WS_WIN)
-    std::wstring wstr = Base::FileInfo(url).toStdWString();
-    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
-                                                   NULL, SW_SHOWNORMAL)) > 32);
-#else
-
-#endif
-    if (!ok) {
-        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("Cannot open file %1").arg(QString::fromUtf8(url.c_str())));
-    }
+    Gui::getMainWindow()->showDocumentation();
 }
 
 //===========================================================================
