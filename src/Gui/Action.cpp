@@ -72,9 +72,6 @@ void Action::addTo(QWidget *w)
  */
 void Action::onActivated () 
 {
-  if ( StdCmdDescription::inDescriptionMode () )
-      StdCmdDescription::setSource(QString::fromUtf8(_pcCmd->getHelpUrl()));
-  else
     _pcCmd->invoke(0);
 }
 
@@ -262,9 +259,6 @@ void ActionGroup::setCheckedAction(int i)
  */
 void ActionGroup::onActivated (QAction* a) 
 {
-  if ( StdCmdDescription::inDescriptionMode () )
-      StdCmdDescription::setSource(QString::fromUtf8(_pcCmd->getHelpUrl()));
-  else
     _pcCmd->invoke(a->data().toInt());
 }
 

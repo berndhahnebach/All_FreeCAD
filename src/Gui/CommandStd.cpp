@@ -531,6 +531,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sWhatsThis    = QT_TR_NOOP("Help");
     sStatusTip    = QT_TR_NOOP("Help");
     sPixmap       = "help";
+    iAccel        = Qt::Key_F1;
 }
 
 void StdCmdOnlineHelp::activated(int iMsg)
@@ -682,7 +683,7 @@ void CreateStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdPythonWebsite());
     //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
     rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
-    rcCmdMgr.addCommand(new StdCmdDescription());
+    //rcCmdMgr.addCommand(new StdCmdDescription());
 }
 
 } // namespace Gui
