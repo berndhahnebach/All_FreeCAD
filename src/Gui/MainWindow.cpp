@@ -30,6 +30,7 @@
 
 #include "MainWindow.h"
 #include "Application.h"
+#include "Assistant.h"
 
 #include "Action.h"
 #include "Command.h"
@@ -93,6 +94,7 @@ struct MainWindowP
     QSplashScreen* splashscreen;
     StatusBarObserver* status;
     bool whatsthis;
+    Assistant* assistant;
 };
 
 class MDITabbar : public QTabBar
@@ -146,6 +148,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     d->splashscreen = 0;
     d->activeView = 0;
     d->whatsthis = false;
+    d->assistant = new Assistant();
 
     // global access 
     instance = this;
@@ -333,9 +336,9 @@ bool MainWindow::event(QEvent *e)
 {
     if (e->type() == QEvent::EnterWhatsThisMode) {
         // Unfortunately, for top-level widgets such as menus or dialogs we
-        // don't be notified when the user clicks the link in the hypertext of
+        // won't be notified when the user clicks the link in the hypertext of
         // the what's this text. Thus, we have to install the main window to
-        // observe what happens in eventFilter().
+        // the application to observe what happens in eventFilter().
         if (!d->whatsthis) {
             d-> whatsthis = true;
             qApp->installEventFilter(this);
@@ -349,7 +352,7 @@ bool MainWindow::event(QEvent *e)
 
     if (e->type() == QEvent::WhatsThisClicked) {
         QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-        Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
+        d->assistant->showDocumentation(wt->href());
     }
     return QMainWindow::event(e);
 }
@@ -368,9 +371,12 @@ bool MainWindow::eventFilter(QObject* o, QEvent* e)
                     windowStateChanged(view);
             }
         }
-        if (o->inherits("QMenu") && e->type() == QEvent::WhatsThisClicked) {
-            QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-            Base::Console().Message("Open link %s\n", (const char*)wt->href().toUtf8());
+        if (e->type() == QEvent::WhatsThisClicked) {
+            // if the widget is a top-level window
+            if (o->isWidgetType() && qobject_cast<QWidget*>(o)->isWindow()) {
+                QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
+                d->assistant->showDocumentation(wt->href());
+            }
         }
         if (o->inherits("QWhatsThat") && e->type() == QEvent::Hide) {
             if (d->whatsthis) {
@@ -656,6 +662,8 @@ void MainWindow::closeEvent ( QCloseEvent * e )
     if (e->isAccepted()) {
         d->activityTimer->stop();
         saveWindowSettings();
+        delete d->assistant;
+        d->assistant = 0;
         QMainWindow::closeEvent( e );
     }
 }

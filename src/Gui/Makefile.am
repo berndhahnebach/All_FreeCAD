@@ -127,6 +127,8 @@ libFreeCADGui_la_SOURCES=\
 		Action.cpp \
 		Application.cpp \
 		ApplicationPy.cpp \
+		Assistant.cpp \
+		Assistant.h \
 		BitmapFactory.cpp \
 		CallTips.cpp \
 		Command.cpp \

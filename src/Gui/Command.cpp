@@ -289,11 +289,6 @@ void Command::testActive(void)
         return;
     }
 
-    if ( StdCmdDescription::inDescriptionMode () ) {
-        _pcAction->setEnabled( true );
-        return;
-    }
-
     bool bActive = isActive();
     _pcAction->setEnabled ( bActive );
 }

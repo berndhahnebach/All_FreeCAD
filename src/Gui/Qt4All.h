@@ -30,6 +30,7 @@
 #include <QBuffer>
 #include <qeventloop.h>
 #include <qfile.h>
+#include <QLibraryInfo>
 #include <QMutex>
 #include <qnamespace.h>
 #include <QPointer>
