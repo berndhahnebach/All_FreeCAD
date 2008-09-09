@@ -51,12 +51,12 @@ Assistant::~Assistant()
 
 void Assistant::showDocumentation(const QString &page)
 {
-    Base::Console().Message("Open page %s\n", (const char*)page.toUtf8());
-    return;
+    //Base::Console().Message("Open page %s\n", (const char*)page.toUtf8());
+    //return;
     if (!startAssistant())
         return;
     QTextStream str(proc);
-    str << QLatin1String("SetSource qthelp://com.trolltech.examples.simpletextviewer/doc/")
+    str << QLatin1String("SetSource qthelp://com.freecad/doc/")
         << page << QLatin1Char('\0') << endl;
 }
 
@@ -67,6 +67,7 @@ bool Assistant::startAssistant()
 
     if (proc->state() != QProcess::Running) {
         QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
+        //QString app = QLatin1String("C:/Temp/qt/");
 #if !defined(Q_OS_MAC)
         app += QLatin1String("assistant");
 #else
@@ -74,18 +75,19 @@ bool Assistant::startAssistant()
 #endif
 
         QStringList args;
-        //args << QLatin1String("-collectionFile")
-        //     << QLibraryInfo::location(QLibraryInfo::ExamplesPath)
-        //        + QLatin1String("/help/simpletextviewer/documentation/simpletextviewer.qhc")
-        //     << QLatin1String("-enableRemoteControl");
+        args << QLatin1String("-collectionFile")
+             << QLatin1String("freecad.qhc")
+             << QLatin1String("-enableRemoteControl");
+#if 0
         args.append(QLatin1String("-server"));
         args.append(QLatin1String("-profile"));
         args.append(QLatin1String("test.adp"));
+#endif
 
         proc->start(app, args);
 
         if (!proc->waitForStarted()) {
-            QMessageBox::critical(0, QObject::tr("Simple Text Viewer"),
+            QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
             QObject::tr("Unable to launch Qt Assistant (%1)").arg(app));
             return false;
         }
