@@ -249,7 +249,7 @@ CmdPartCut::CmdPartCut()
 {
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
-    sMenuText		  = QT_TR_NOOP("Cut");
+    sMenuText     = QT_TR_NOOP("Cut");
     sToolTipText  = QT_TR_NOOP("Create a Cut feature");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
@@ -267,9 +267,9 @@ void CmdPartCut::activated(int iMsg)
         return;
     }
 
-    string FeatName = getUniqueObjectName("Cut");
+    std::string FeatName = getUniqueObjectName("Cut");
 
-    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Part Cut");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
@@ -313,9 +313,9 @@ void CmdPartCommon::activated(int iMsg)
         return;
     }
 
-    string FeatName = getUniqueObjectName("Common");
+    std::string FeatName = getUniqueObjectName("Common");
 
-    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Common");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Common\",\"%s\")",FeatName.c_str());
@@ -360,9 +360,9 @@ void CmdPartFuse::activated(int iMsg)
         return;
     }
 
-    string FeatName = getUniqueObjectName("Fusion");
+    std::string FeatName = getUniqueObjectName("Fusion");
 
-    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Fusion");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Fuse\",\"%s\")",FeatName.c_str());
@@ -407,9 +407,9 @@ void CmdPartSection::activated(int iMsg)
         return;
     }
 
-    string FeatName = getUniqueObjectName("Section");
+    std::string FeatName = getUniqueObjectName("Section");
 
-    vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Section");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());

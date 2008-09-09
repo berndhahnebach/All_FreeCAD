@@ -77,7 +77,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_NurbsConvert.hxx>
 #include <BRepMesh.hxx>
-#include <BRepMesh_Discret.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepMesh_Triangle.hxx>
