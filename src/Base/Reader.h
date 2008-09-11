@@ -34,7 +34,9 @@
 #include "FileInfo.h"
 #include "Writer.h"
 
-class zipios::ZipInputStream;
+namespace zipios {
+class ZipInputStream;
+}
 
 XERCES_CPP_NAMESPACE_BEGIN
     class DefaultHandler;
