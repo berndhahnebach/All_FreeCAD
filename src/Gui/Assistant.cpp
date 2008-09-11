@@ -33,6 +33,7 @@
 
 #include "Assistant.h"
 #include <Base/Console.h>
+#include <App/Application.h>
 
 using namespace Gui;
 
@@ -74,9 +75,13 @@ bool Assistant::startAssistant()
         app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");
 #endif
 
+        // get the name of the executable and the doc path
+        QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+        QString doc = QString::fromUtf8(App::Application::Config()["DocPath"].c_str());
+
         QStringList args;
         args << QLatin1String("-collectionFile")
-             << QLatin1String("freecad.qhc")
+             << QString(QLatin1String("%1%2.qhc")).arg(doc).arg(exe.toLower())
              << QLatin1String("-enableRemoteControl");
 #if 0
         args.append(QLatin1String("-server"));
