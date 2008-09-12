@@ -510,7 +510,7 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
   std::vector<MeshGeomFacet> aLid;
   MeshCore::EarClippingTriangulator cTria;
   cTria.SetPolygon(polygon);
-  bool ok = cTria.Triangulate();
+  bool ok = cTria.TriangulatePolygon();
   
   std::vector<MeshFacet> faces = cTria.GetFacets();
   for ( std::vector<MeshFacet>::iterator itF = faces.begin(); itF != faces.end(); ++itF )

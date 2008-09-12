@@ -356,7 +356,7 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 
     DelaunayTriangulator tria;
     tria.SetPolygon(vertices);
-    tria.Triangulate();
+    tria.TriangulatePolygon();
 
     std::vector<MeshFacet> facets = tria.GetFacets();
     for (std::vector<MeshFacet>::iterator it = facets.begin(); it != facets.end(); ++it)

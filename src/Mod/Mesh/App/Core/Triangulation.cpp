@@ -140,6 +140,23 @@ void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vec
     }
 }
 
+bool AbstractPolygonTriangulator::TriangulatePolygon()
+{
+    bool ok = Triangulate();
+    if (ok) Done();
+    return ok;
+}
+
+std::vector<unsigned long> AbstractPolygonTriangulator::GetInfo() const
+{
+    return _info;
+}
+
+void AbstractPolygonTriangulator::Done()
+{
+    _info.push_back(_points.size());
+}
+
 // -------------------------------------------------------------
 
 EarClippingTriangulator::EarClippingTriangulator()
