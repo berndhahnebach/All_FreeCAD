@@ -693,7 +693,7 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
         }
     }
 
-    if (cTria.Triangulate()) {
+    if (cTria.TriangulatePolygon()) {
         // get the facets and add the additional points to the array
         rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
         // if we have enough points then we fit a surface through the points and project

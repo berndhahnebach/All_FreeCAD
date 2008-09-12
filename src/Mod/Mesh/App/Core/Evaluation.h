@@ -247,7 +247,20 @@ public:
   /// collect all intersection lines
   void GetIntersections(std::vector<std::pair<Base::Vector3f, Base::Vector3f> >&) const;
   /// collect the index of all facets with self intersections
-  void GetIntersections(std::vector<unsigned long >& ) const;
+  void GetIntersections(std::vector<std::pair<unsigned long, unsigned long> >&) const;
+};
+
+/**
+ * The MeshFixSelfIntersection class tries to fix self-intersections.
+ * @see MeshEvalSingleFacet
+ */
+class MeshExport MeshFixSelfIntersection : public MeshValidation
+{
+public:
+  MeshFixSelfIntersection (MeshKernel &rclB)
+    : MeshValidation(rclB) {}
+  virtual ~MeshFixSelfIntersection () {}
+  bool Fixup();
 };
 
 // ----------------------------------------------------

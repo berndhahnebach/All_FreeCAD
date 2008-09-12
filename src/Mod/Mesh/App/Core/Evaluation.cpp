@@ -367,7 +367,19 @@ unsigned long MeshEvalTopology::CountManifolds() const
 
 bool MeshFixTopology::Fixup ()
 {
-    return false;
+    std::vector<unsigned long> indices;
+    MeshEvalTopology eval(_rclMesh);
+    if (!eval.Evaluate()) {
+        eval.GetFacetManifolds(indices);
+
+        // remove duplicates
+        std::sort(indices.begin(), indices.end());
+        indices.erase(std::unique(indices.begin(), indices.end()), indices.end());
+
+        _rclMesh.DeleteFacets(indices);
+    }
+
+    return true;
 }
 
 // ---------------------------------------------------------
@@ -597,7 +609,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
     }
 }
 
-void MeshEvalSelfIntersection::GetIntersections(std::vector<unsigned long >& intersection) const
+void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<unsigned long, unsigned long> >& intersection) const
 {
     // Contains bounding boxes for every facet 
     std::vector<Base::BoundBox3f> boxes;
@@ -659,12 +671,34 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<unsigned long >& int
                     facet2 = *cMFI;
                     int ret = facet1.IntersectWithFacet(facet2, pt1, pt2);
                     if (ret == 2) {
-                        intersection.push_back(*it);
+                        intersection.push_back(std::make_pair
+                            <unsigned long, unsigned long>(*it,*jt));
                     }
                 }
             }
         }
     }
+}
+
+bool MeshFixSelfIntersection::Fixup()
+{
+    std::vector<std::pair<unsigned long, unsigned long> > intersection;
+    MeshEvalSelfIntersection(_rclMesh).GetIntersections(intersection);
+
+    std::vector<unsigned long> indices;
+    for (std::vector<std::pair<unsigned long, unsigned long> >::iterator
+        it = intersection.begin(); it != intersection.end(); ++it) {
+        indices.push_back(it->first);
+        indices.push_back(it->second);
+    }
+
+    // remove duplicates
+    std::sort(indices.begin(), indices.end());
+    indices.erase(std::unique(indices.begin(), indices.end()), indices.end());
+
+    _rclMesh.DeleteFacets(indices);
+
+    return true;
 }
 
 // ----------------------------------------------------------------

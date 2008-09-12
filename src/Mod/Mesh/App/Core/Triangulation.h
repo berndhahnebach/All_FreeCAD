@@ -60,7 +60,7 @@ public:
     /** Computes the triangulation of a polygon. The resulting facets can
      * be accessed by GetTriangles() or GetFacets().
      */
-    virtual bool Triangulate() = 0;
+    bool TriangulatePolygon();
     /** If points were added then we get the 3D points by projecting the added
      * 2D points onto a surface which fits into the given points.
      */
@@ -71,6 +71,18 @@ public:
     const std::vector<MeshFacet>& GetFacets() const { return _facets;}
     /** Returns the length of the polygon */
     float GetLength() const;
+    /** Get information about the pol<gons that were processed.
+     * It returns an array of the number of edges for each closed
+     * polygon.
+     */
+    std::vector<unsigned long> GetInfo() const;
+
+protected:
+    /** Computes the triangulation of a polygon. The resulting facets can
+     * be accessed by GetTriangles() or GetFacets().
+     */
+    virtual bool Triangulate() = 0;
+    void Done();
 
 protected:
     Base::Matrix4D              _inverse;
@@ -78,6 +90,7 @@ protected:
     std::vector<Base::Vector3f> _newpoints;
     std::vector<MeshGeomFacet>  _triangles;
     std::vector<MeshFacet>      _facets;
+    std::vector<unsigned long>  _info;
 };
 
 /**
@@ -90,6 +103,7 @@ public:
     EarClippingTriangulator();
     ~EarClippingTriangulator();
 
+protected:
     bool Triangulate();
 
 private:
@@ -131,6 +145,7 @@ public:
     QuasiDelaunayTriangulator();
     ~QuasiDelaunayTriangulator();
 
+protected:
     bool Triangulate();
 };
 
@@ -140,6 +155,7 @@ public:
     DelaunayTriangulator();
     ~DelaunayTriangulator();
 
+protected:
     bool Triangulate();
 };
 
@@ -149,8 +165,10 @@ public:
     FlatTriangulator();
     ~FlatTriangulator();
 
-    bool Triangulate();
     void ProjectOntoSurface(const std::vector<Base::Vector3f>&);
+
+protected:
+    bool Triangulate();
 };
 
 class MeshExport ConstraintDelaunayTriangulator : public AbstractPolygonTriangulator
@@ -159,6 +177,7 @@ public:
     ConstraintDelaunayTriangulator(float area);
     ~ConstraintDelaunayTriangulator();
 
+protected:
     bool Triangulate();
 
 private:

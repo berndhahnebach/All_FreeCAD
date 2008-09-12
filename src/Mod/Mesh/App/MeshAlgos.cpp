@@ -113,7 +113,7 @@ void MeshAlgos::offsetSpecial2(MeshCore::MeshKernel* Mesh, float fSize)
 
     // search for intersected facets
     MeshCore::MeshEvalSelfIntersection eval(*Mesh);
-    std::vector<unsigned long > faces;
+    std::vector<std::pair<unsigned long, unsigned long> > faces;
     eval.GetIntersections(faces);
 
 

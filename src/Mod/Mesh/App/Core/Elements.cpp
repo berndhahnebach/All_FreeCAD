@@ -390,7 +390,21 @@ void MeshGeomFacet::Enlarge (float fDist)
 
 bool MeshGeomFacet::IsDegenerated() const
 {
-  return (Area() < FLOAT_EPS);
+    //FIXME: Can we make this test faster? (wmayer)
+    for (int i=0; i<3; i++ ) {
+        if (_aclPoints[i] == _aclPoints[(i+1)%3])
+            return true;
+        Base::Vector3f p3p1 = _aclPoints[(i+2)%3] - _aclPoints[i];
+        Base::Vector3f p2p1 = _aclPoints[(i+1)%3] - _aclPoints[i];
+        float t = (p3p1 * p2p1) / (p2p1 * p2p1);
+        if (t > 0.0f && t < 1.0f) {
+            Base::Vector3f p = _aclPoints[i] + t * p2p1;
+            if (p == _aclPoints[(i+2)%3])
+                return true;
+        }
+    }
+
+    return false;
 }
 
 bool MeshGeomFacet::IsDeformed() const

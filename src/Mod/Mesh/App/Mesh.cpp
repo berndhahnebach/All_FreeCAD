@@ -492,7 +492,7 @@ void MeshObject::offsetSpecial2(float fSize)
 
     // search for intersected facets
     MeshCore::MeshEvalSelfIntersection eval(_kernel);
-    std::vector<unsigned long > faces;
+    std::vector<std::pair<unsigned long, unsigned long> > faces;
     eval.GetIntersections(faces);
     builder.saveToLog();
 }
@@ -780,7 +780,11 @@ bool MeshObject::hasSelfIntersections() const
 
 void MeshObject::removeSelfIntersections()
 {
-    throw Base::Exception("Not yet implemented");
+    unsigned long count = _kernel.CountFacets();
+    MeshCore::MeshFixSelfIntersection cMeshFix(_kernel);
+    cMeshFix.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
 }
 
 void MeshObject::validateIndices()
