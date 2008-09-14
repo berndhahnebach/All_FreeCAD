@@ -390,20 +390,31 @@ void MeshGeomFacet::Enlarge (float fDist)
 
 bool MeshGeomFacet::IsDegenerated() const
 {
-    //FIXME: Can we make this test faster? (wmayer)
-    for (int i=0; i<3; i++ ) {
-        if (_aclPoints[i] == _aclPoints[(i+1)%3])
-            return true;
-        Base::Vector3f p3p1 = _aclPoints[(i+2)%3] - _aclPoints[i];
-        Base::Vector3f p2p1 = _aclPoints[(i+1)%3] - _aclPoints[i];
-        float t = (p3p1 * p2p1) / (p2p1 * p2p1);
-        if (t > 0.0f && t < 1.0f) {
-            Base::Vector3f p = _aclPoints[i] + t * p2p1;
-            if (p == _aclPoints[(i+2)%3])
-                return true;
-        }
-    }
-
+    // The triangle has the points A,B,C where we can define the vector u and v
+    // u = b-a and v = c-a. Then we define the line g: r = a+t*u and the plane
+    // E: (x-c)*u=0. The intersection point of g and E is S.
+    // The vector to S can be computed with a+(uv)/(uu)*u. The difference of 
+    // C and S then is v-(u*v)/(u*u)*u. The square distance leads to the formula
+    // (v-(u*v)/(u*u)*u)^2 < eps which means that C and S is considered equal if
+    // the square distance is less than an epsilon and thus the triangle is de-
+    // generated.
+    // After a few calculation step we get the formula:
+    // (u*u)*(v*v)-(u*v)*(u*v) < eps*(u*u)
+    // So, if we do the same except that we define a line h which goes through
+    // A and C and a plane going through B we get a similar formula:
+    // (u*u)*(v*v)-(u*v)*(u*v) < eps*(v*v).
+    // As end formula we can write then:
+    // (u*u)*(v*v)-(u*v)*(u*v) < max(eps*(u*u),eps*(v*v)).
+    //
+    // BTW (u*u)*(v*v)-(u*v)*(u*v) is the same as (uxv)*(uxv).
+    Base::Vector3f u = _aclPoints[1] - _aclPoints[0];
+    Base::Vector3f v = _aclPoints[2] - _aclPoints[0];
+    float eps = MeshDefinitions::_fMinPointDistanceP2;
+    float uu = u*u; if (uu < eps) return true;
+    float vv = v*v; if (vv < eps) return true;
+    float uv = u*v;
+    if (uu*vv-uv*uv < eps*std::max<float>(uu,vv))
+        return true;
     return false;
 }
 
