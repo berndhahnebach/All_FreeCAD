@@ -26,6 +26,7 @@
 #include "ViewProviderBox.h"
 #include "ViewProviderCurveNet.h"
 #include "ViewProviderImport.h"
+#include "ViewProviderExtrusion.h"
 #include "DlgSettings3DViewPartImp.h"
 #include "Workbench.h"
 
@@ -71,17 +72,18 @@ void AppPartGuiExport initPartGui()
     (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Part module... done\n");
 
-    PartGui::SoFCControlPoints   ::initClass();
-    PartGui::ViewProviderPart    ::init();
-    PartGui::ViewProviderBox     ::init();
-    PartGui::ViewProviderImport  ::init();
-    PartGui::ViewProviderCurveNet::init();
+    PartGui::SoFCControlPoints          ::initClass();
+    PartGui::ViewProviderPart           ::init();
+    PartGui::ViewProviderBox            ::init();
+    PartGui::ViewProviderImport         ::init();
+    PartGui::ViewProviderCurveNet       ::init();
+    PartGui::ViewProviderExtrusion      ::init();
 
-    PartGui::Workbench           ::init();
+    PartGui::Workbench                  ::init();
 
     // instanciating the commands
     CreatePartCommands();
-	CreateSimplePartCommands();
+    CreateSimplePartCommands();
 
     // register preferences pages
     new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ("Part design");
