@@ -42,6 +42,7 @@ libPartGui_la_SOURCES=\
 		ViewProviderBox.cpp \
 		ViewProviderCurveNet.cpp \
 		ViewProviderImport.cpp \
+		ViewProviderExtrusion.cpp \
 		Workbench.cpp
 
 include_HEADERS=\
@@ -50,6 +51,7 @@ include_HEADERS=\
 		ViewProviderBox.h \
 		ViewProviderCurveNet.h \
 		ViewProviderImport.h \
+		ViewProviderExtrusion.h \
 		Workbench.h
 
 # the library search path.

@@ -29,6 +29,7 @@
 #include "FeaturePartCurveNet.h"
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
+#include "FeatureExtrusion.h"
 #include "PrimitiveFeature.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
@@ -129,6 +130,7 @@ void AppPartExport initPart()
     Part::Cut                 ::init();
     Part::Fuse                ::init();
     Part::Section             ::init();
+    Part::Extrusion           ::init();
     Part::ImportStep          ::init();
     Part::ImportIges          ::init();
     Part::ImportBrep          ::init();

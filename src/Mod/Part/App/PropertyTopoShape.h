@@ -52,6 +52,7 @@ public:
     void setValue(TopoDS_Shape);
     /// get the part shape
     TopoDS_Shape getValue(void) const;
+    const TopoShape& getShape() const;
     void setLocation(const TopLoc_Location&);
     //@}
 

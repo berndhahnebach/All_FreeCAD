@@ -83,6 +83,11 @@ TopoDS_Shape PropertyPartShape::getValue(void)const
     return _Shape._Shape;
 }
 
+const TopoShape& PropertyPartShape::getShape() const
+{
+    return this->_Shape;
+}
+
 Base::BoundBox3f PropertyPartShape::getBoundingBox() const
 {
     Base::BoundBox3f box;
