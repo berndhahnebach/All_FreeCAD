@@ -707,6 +707,15 @@ PyObject*  TopoShapePy::isValid(PyObject *args)
     }
 }
 
+PyObject* TopoShapePy::hashCode(PyObject *args)
+{
+    int upper = IntegerLast();
+    if (!PyArg_ParseTuple(args, "|i",&upper))
+        return 0;
+    int hc = getTopoShapePtr()->_Shape.HashCode(upper);
+    return Py_BuildValue("i", hc);
+}
+
 PyObject* TopoShapePy::tessellate(PyObject *args)
 {
     float tolerance;
