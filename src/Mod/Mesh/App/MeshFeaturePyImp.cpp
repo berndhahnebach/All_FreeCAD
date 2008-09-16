@@ -143,6 +143,20 @@ PyObject*  MeshFeaturePy::fixSelfIntersections(PyObject *args)
     Py_Return;
 }
 
+PyObject*  MeshFeaturePy::removeFoldsOnSurface(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    try {
+        getFeaturePtr()->Mesh.removeFoldsOnSurface();
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+    Py_Return;
+}
+
 PyObject *MeshFeaturePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

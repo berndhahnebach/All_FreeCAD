@@ -182,6 +182,7 @@ public:
     void removeDuplicatedFacets();
     void removeNonManifolds();
     void removeSelfIntersections();
+    void removeFoldsOnSurface();
     //@}
 
     /** @name Python interface */

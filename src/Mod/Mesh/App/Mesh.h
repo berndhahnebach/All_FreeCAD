@@ -192,6 +192,7 @@ public:
     void removeNonManifolds();
     bool hasSelfIntersections() const;
     void removeSelfIntersections();
+    void removeFoldsOnSurface();
     //@}
 
     /** @name Mesh segments */

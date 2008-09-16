@@ -787,6 +787,15 @@ void MeshObject::removeSelfIntersections()
         this->_segments.clear();
 }
 
+void MeshObject::removeFoldsOnSurface()
+{
+    unsigned long count = _kernel.CountFacets();
+    MeshCore::MeshFixFoldsOnSurface cMeshFix(_kernel);
+    cMeshFix.Fixup();
+    if (_kernel.CountFacets() < count)
+        this->_segments.clear();
+}
+
 void MeshObject::validateIndices()
 {
     unsigned long count = _kernel.CountFacets();

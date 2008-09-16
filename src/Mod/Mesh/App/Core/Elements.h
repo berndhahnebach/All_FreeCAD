@@ -312,16 +312,16 @@ public:
    */
   inline float DistancePlaneToPoint (const Base::Vector3f &rclPoint) const;
   /**
-   * Calculates the projecttion of a point onto the plane defined by the triangle.
+   * Calculates the projection of a point onto the plane defined by the triangle.
    */
   void ProjectPointToPlane (Base::Vector3f &rclPoint) const;
   /**
-   * Calculates the projecttion of a facet onto the plane defined by the triangle.
+   * Calculates the projection of a facet onto the plane defined by the triangle.
    */
   void ProjectFacetToPlane (MeshGeomFacet &rclFacet) const;
   /**
    * Checks whether the triangle is degenerated. A triangle is degenerated if its area
-   * is less than epsilon (~0.0001).
+   * is less than an epsilon.
    */
   bool IsDegenerated() const;
   /**

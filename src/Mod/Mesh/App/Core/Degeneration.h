@@ -303,6 +303,28 @@ private:
   float fMaxAngle;
 };
 
+class MeshExport MeshEvalFoldsOnSurface : public MeshEvaluation
+{
+public:
+    MeshEvalFoldsOnSurface (const MeshKernel &rclM) : MeshEvaluation( rclM ) { }
+    ~MeshEvalFoldsOnSurface() {}
+
+    bool Evaluate();
+    std::vector<unsigned long> GetIndices() const;
+
+private:
+    std::vector<unsigned long> indices;
+};
+
+class MeshExport MeshFixFoldsOnSurface : public MeshValidation
+{
+public:
+    MeshFixFoldsOnSurface (MeshKernel &rclM) : MeshValidation( rclM ) { }
+    ~MeshFixFoldsOnSurface() {}
+
+    bool Fixup();
+};
+
 /**
  * The MeshEvalRangeFacet class checks whether a facet points to neighbour
  * facets that are out of range. All errors detected by this class would also

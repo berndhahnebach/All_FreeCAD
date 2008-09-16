@@ -458,6 +458,13 @@ void PropertyMeshKernel::removeSelfIntersections()
     hasSetValue();
 }
 
+void PropertyMeshKernel::removeFoldsOnSurface()
+{
+    aboutToSetValue();
+    _meshObject->removeFoldsOnSurface();
+    hasSetValue();
+}
+
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
     MeshPy* mesh = new MeshPy(&*_meshObject);

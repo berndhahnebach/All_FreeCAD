@@ -630,6 +630,70 @@ bool MeshFixDeformedFacets::Fixup()
 
 // ----------------------------------------------------------------------
 
+bool MeshEvalFoldsOnSurface::Evaluate()
+{
+    this->indices.clear();
+    MeshRefPointToFacets  clPt2Facets(_rclMesh);
+    const MeshPointArray& rPntAry = _rclMesh.GetPoints();
+
+    MeshGeomFacet rTriangle;
+    Base::Vector3f tmp;
+    unsigned long ctPoints = _rclMesh.CountPoints();
+    for (unsigned long index=0; index < ctPoints; index++) {
+        std::vector<unsigned long> point;
+        point.push_back(index);
+
+        // get the local neighbourhood of the point
+        std::set<unsigned long> nb = clPt2Facets.NeighbourPoints(point,1);
+        std::set<MeshFacetArray::_TConstIterator> faces = clPt2Facets[index];
+
+        for (std::set<unsigned long>::iterator pt = nb.begin(); pt != nb.end(); ++pt) {
+            const MeshPoint& mp = rPntAry[*pt];
+            for (std::set<MeshFacetArray::_TConstIterator>::iterator
+                ft = faces.begin(); ft != faces.end(); ++ft) {
+                    // the point must not be part of the facet we test
+                    if ((*ft)->_aulPoints[0] == *pt)
+                        continue;
+                    if ((*ft)->_aulPoints[1] == *pt)
+                        continue;
+                    if ((*ft)->_aulPoints[2] == *pt)
+                        continue;
+                    // is the point projectable onto the facet?
+                    rTriangle = _rclMesh.GetFacet(**ft);
+                    if (rTriangle.IntersectWithLine(mp,rTriangle.GetNormal(),tmp)) {
+                        this->indices.push_back(*pt);
+                        break;
+                    }
+            }
+        }
+    }
+
+    // remove duplicates
+    std::sort(this->indices.begin(), this->indices.end());
+    this->indices.erase(std::unique(this->indices.begin(),
+                        this->indices.end()), this->indices.end());
+
+    return this->indices.empty();
+}
+
+std::vector<unsigned long> MeshEvalFoldsOnSurface::GetIndices() const
+{
+    return this->indices;
+}
+
+bool MeshFixFoldsOnSurface::Fixup()
+{
+    MeshEvalFoldsOnSurface eval(_rclMesh);
+    if (!eval.Evaluate()) {
+        std::vector<unsigned long> inds = eval.GetIndices();
+        _rclMesh.DeletePoints(inds);
+    }
+
+    return true;
+}
+
+// ----------------------------------------------------------------------
+
 bool MeshEvalRangeFacet::Evaluate()
 {
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
