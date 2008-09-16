@@ -474,6 +474,20 @@ PyObject*  MeshPy::fixSelfIntersections(PyObject *args)
     Py_Return;
 }
 
+PyObject*  MeshPy::removeFoldsOnSurface(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    try {
+        getMeshObjectPtr()->removeFoldsOnSurface();
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+    Py_Return;
+}
+
 PyObject*  MeshPy::flipNormals(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

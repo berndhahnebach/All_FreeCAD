@@ -147,6 +147,11 @@ Example:
 				<UserDocu>Repair self-intersections</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="removeFoldsOnSurface">
+			<Documentation>
+				<UserDocu>Remove folds on surfaces</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="flipNormals">
 			<Documentation>
 				<UserDocu>Flip the mesh normals</UserDocu>
