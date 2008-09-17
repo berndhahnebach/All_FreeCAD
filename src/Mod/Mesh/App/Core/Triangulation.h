@@ -76,6 +76,7 @@ public:
      * polygon.
      */
     std::vector<unsigned long> GetInfo() const;
+    void Discard();
 
 protected:
     /** Computes the triangulation of a polygon. The resulting facets can
@@ -85,6 +86,7 @@ protected:
     void Done();
 
 protected:
+    bool                        _discard;
     Base::Matrix4D              _inverse;
     std::vector<Base::Vector3f> _points;
     std::vector<Base::Vector3f> _newpoints;
