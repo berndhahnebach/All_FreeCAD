@@ -719,6 +719,7 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
             if ( first.IsEqual(rFace) ) {
                 rFaces.clear();
                 rPoints.clear();
+                cTria.Discard();
                 return false;
             }
         }
@@ -743,6 +744,7 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
                 rFace._aulPoints[0], rFace._aulPoints[1], rFace._aulPoints[2]);
             rFaces.clear();
             rPoints.clear();
+            cTria.Discard();
             return false;
         }
 
@@ -763,6 +765,7 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
         if (ref_dist * tri_dist > 0.0f) {
             rFaces.clear();
             rPoints.clear();
+            cTria.Discard();
             return false;
         }
 

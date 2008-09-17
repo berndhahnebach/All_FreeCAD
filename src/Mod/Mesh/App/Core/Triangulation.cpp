@@ -36,6 +36,7 @@ using namespace MeshCore;
 
 AbstractPolygonTriangulator::AbstractPolygonTriangulator()
 {
+    _discard = false;
 }
 
 AbstractPolygonTriangulator::~AbstractPolygonTriangulator()
@@ -152,9 +153,18 @@ std::vector<unsigned long> AbstractPolygonTriangulator::GetInfo() const
     return _info;
 }
 
+void AbstractPolygonTriangulator::Discard()
+{
+    if (!_discard) {
+        _discard = true;
+        _info.pop_back();
+    }
+}
+
 void AbstractPolygonTriangulator::Done()
 {
     _info.push_back(_points.size());
+    _discard = false;
 }
 
 // -------------------------------------------------------------
