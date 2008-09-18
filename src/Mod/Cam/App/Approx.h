@@ -69,7 +69,7 @@ protected:
     void ParameterInnerPoints();
     void ErrorApprox();
     void ApproxMain();
-    void Reparam();
+    double Reparam();
     void eFair2(ublas::compressed_matrix<double> &E_Matrix);
     void ComputeError(int &h, double eps_1, double eps_2, double &max_error,
                       double &av, double &c2, std::vector <double> &err_w);

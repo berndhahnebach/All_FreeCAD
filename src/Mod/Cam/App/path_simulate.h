@@ -153,11 +153,17 @@ public:
 	
     
     bool MakeSinglePathNew(bool outputstyle, double length, bool part, bool curveType);
+
 	/** @brief Main function of the output-generation for the simulation using the standard-strategy*/
     bool MakePathSimulate();
+
 	/** @brief Main function of the output-generation for the simulation using the feature-based-strategy
 	    @param flatAreas index-vector specifying the flat areas */
     bool MakePathSimulate_Feat(std::vector<float> &flatAreas);
+
+	/** @brief Main function of the output-generation for the simulation using the spiral-based-strategy
+	    @param flatAreas index-vector specifying the flat areas */
+    bool MakePathSimulate_Spiral(std::vector<float> &flatAreas);
 
 	/** @brief Computes and write output of the actual tool-path for the simulation-process
 	    @param anOutputFile output-file

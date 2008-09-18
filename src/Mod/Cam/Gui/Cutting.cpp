@@ -477,6 +477,10 @@ void Cutting::on_GenSimOut_clicked()
         if (m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas()))
             adaptdynainput->setEnabled(true);
         break;
+     case 3:
+        if (m_PathSimulate->MakePathSimulate_Spiral(m_CuttingAlgo->getFlatAreas()))
+            adaptdynainput->setEnabled(true);
+    break;
     }
 
 }
@@ -518,6 +522,7 @@ const CuttingToolsSettings& Cutting::getSettings()
     m_Settings.x_offset_robot = xoffset_box->value();
     m_Settings.y_offset_robot = yoffset_box->value();
     m_Settings.clockwise = clockwise_checkbox->isChecked();
+    m_Settings.error_tolerance = error_tolerance->value();
 
     return m_Settings;
 }
@@ -644,7 +649,7 @@ best_fit_mesh2_button->setEnabled(true);
 
 		std::vector<double> CtrlPnts, U_knot, V_knot;
 		int degU,degV;	
-		m_App = new Approximate(m_Mesh,CtrlPnts,U_knot,V_knot,degU,degV,1000);
+		m_App = new Approximate(m_Mesh,CtrlPnts,U_knot,V_knot,degU,degV,m_Settings.error_tolerance);
 
         //m_Approx = new UniGridApprox(m_Mesh, 1);
         //m_Approx->Perform(0.1);
@@ -714,8 +719,8 @@ void Cutting::DisplayCAMOutput()
 
     Part::Feature* part1 = static_cast<Part::Feature*>(obj);
     Part::Feature* part2 = static_cast<Part::Feature*>(obj1);
-    part1->Shape.setValue(aCompound1);
-    part2->Shape.setValue(aCompound2);
+	part1->Shape.setValue(aCompound1);
+	part2->Shape.setValue(aCompound2);
 
 
 

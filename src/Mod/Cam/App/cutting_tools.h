@@ -70,6 +70,9 @@ struct CuttingToolsSettings
     float y_offset_robot;
     /**This represents the X-Offset value for the robot output*/
     float x_offset_robot;
+    /**This represents the error of the approximated NURB surface*/ 
+    float error_tolerance;
+    
     /**This value is necessary to tell some special functions if we move zig/zag or clockwise/counterclockwise
     without changing direction after each step*/
     bool clockwise;

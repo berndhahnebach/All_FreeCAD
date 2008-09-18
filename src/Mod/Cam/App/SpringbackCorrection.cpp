@@ -543,6 +543,7 @@ bool SpringbackCorrection::CalcCurv()
      return true;
 }
 
+
 bool SpringbackCorrection::Init()
 {
 	m_EdgeStruct.clear();
@@ -609,7 +610,7 @@ bool SpringbackCorrection::Init()
             aFace = TopoDS::Face(aListIterator.Value());
             tempEdgeStruct.aFace.push_back(aFace);
             TransferFaceTriangulationtoFreeCAD(aFace, FaceMesh);
-            curvature = MeshCurvature(FaceMesh);
+            curvature = MeshCurvature(aFace, FaceMesh);
 
             if (aFace.Orientation() == TopAbs_REVERSED)
             {
@@ -1963,97 +1964,208 @@ bool SpringbackCorrection::GetCurvature(TopoDS_Face aFace)
 
 // 1. Computes the curvature of the mesh at the verticies
 // 2. Stores the minimum curvatures along the neighbours for all verticies in a vector
-std::vector<double> SpringbackCorrection::MeshCurvature(const MeshCore::MeshKernel& mesh)
+std::vector<double> SpringbackCorrection::MeshCurvature(const TopoDS_Face& aFace, const MeshCore::MeshKernel& mesh)
 {
-    // get all points
-    std::vector<double> curv(2);
-    //MeshCore::MeshKernel& rMesh = mesh;
-    std::vector< Wm4::Vector3<float> > aPnts;
-    std::vector<Base::Vector3f> aPnts_tmp;
-    MeshCore::MeshPointIterator cPIt( mesh );
-    for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+
+	TopLoc_Location aLocation;
+    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
+	const TColgp_Array1OfPnt2d& aUVNodes = aTr->UVNodes();
+	int n = aUVNodes.Length();
+	BRepAdaptor_Surface aSurface(aFace);
+    
+    gp_Pnt2d par;
+    gp_Pnt P;
+    gp_Vec D1U, D1V, D2U, D2V, D2UV, nor, xvv, xuv, xuu;
+	double tmp_d;
+	double H,K;   // Gaußsche- und mittlere Krümmung
+
+	std::vector<double> aMaxCurve, aMinCurve;
+	std::vector<double> curv(2);
+    
+	for (int i=0; i<n; ++i)
     {
-        Wm4::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
-        Base::Vector3f cP_tmp( cPIt->x, cPIt->y, cPIt->z );
-        aPnts.push_back( cP );
-        aPnts_tmp.push_back(cP_tmp);
-    }
+        par = aUVNodes.Value(i+1);
+		aSurface.D2(par.X(),par.Y(),P,D1U,D1V,D2U,D2V,D2UV);
 
-    // get all point connections
-    std::vector<int> anIdx;
-    const std::vector<MeshCore::MeshFacet>& MeshFacetArray = mesh.GetFacets();
-    for ( std::vector<MeshCore::MeshFacet>::const_iterator jt = MeshFacetArray.begin(); jt != MeshFacetArray.end(); ++jt )
-    {
-        for (int i=0; i<3; i++)
-        {
-            anIdx.push_back( (int)jt->_aulPoints[i] );
-        }
-    }
+		//berechne Hilfsnormale
+		nor = D1U;
+		nor.Cross(D1V);
+		nor.Normalize();
 
-    // compute vertex based curvatures
-    Wm4::MeshCurvature<float> meshCurv(mesh.CountPoints(), &(aPnts[0]), mesh.CountFacets(), &(anIdx[0]));
+		xvv = D2V;
+		xuv = D2UV;
+		xuu = D2U;
 
-    // get curvature information now
-    const Wm4::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
-    const Wm4::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
-    const float* aMaxCurv = meshCurv.GetMaxCurvatures();
-    const float* aMinCurv = meshCurv.GetMinCurvatures();
+		xvv.Multiply(D1U*D1U);
+		xuv.Multiply(2*(D1U*D1V));
+		xuu.Multiply(D1V*D1V);
 
-    double maxCurv = 0.0;
-    double avgCurv = 0.0;
-    double tmp1 =  1e+10;
-    double tmp2 = -1e+10;
+		H = ((xvv - xuv + xuu)*nor);
+		H /= 2*((D1U*D1U)*(D1V*D1V) - (D1U*D1V)*(D1U*D1V));
+		K = ((nor*D2U)*(nor*D2V) - (nor*D2UV)*(nor*D2UV))/((D1U*D1U)*(D1V*D1V) - (D1U*D1V)*(D1U*D1V));
 
-    double mean_curvMax = 0.0, mean_curvMin = 0.0;
+
+		aMaxCurve.push_back(-(H - sqrt(H*H - K)));
+		aMinCurve.push_back(-(H + sqrt(H*H - K)));
+
+	}
+		
+		
+		
+	double maxCurv = 0.0;
+	double avgCurv = 0.0;
+	double tmp1 =  1e+10;
+	double tmp2 = -1e+10;
+
+	double mean_curvMax = 0.0, mean_curvMin = 0.0;
     int c1 = 0, c2 = 0;
 
-    m_CurvPos.clear();
-    m_CurvNeg.clear();
-    m_CurvMax.clear();
-    m_CurvPos.resize(mesh.CountPoints());
-    m_CurvNeg.resize(mesh.CountPoints());
-    m_CurvMax.resize(mesh.CountPoints());
+	m_CurvPos.clear();
+	m_CurvNeg.clear();
+	m_CurvMax.clear();
+	m_CurvPos.resize(mesh.CountPoints());
+	m_CurvNeg.resize(mesh.CountPoints());
+	m_CurvMax.resize(mesh.CountPoints());
 
-    for ( unsigned long i=0; i<mesh.CountPoints(); i++ )
-    {
+	for ( unsigned long i=0; i<n; i++ )
+	{
+		if (aMaxCurve[i] > 0) m_CurvPos[i] = 1 / aMaxCurve[i];
+		else                  m_CurvPos[i] = 1e+10;
 
-        if (aMaxCurv[i] > 0) m_CurvPos[i] = 1 / aMaxCurv[i];
-        else                 m_CurvPos[i] = 1e+10;
+		if (aMinCurve[i] < 0) m_CurvNeg[i] = 1 / aMinCurve[i];
+		else                  m_CurvNeg[i] = -1e+10;
 
-        if (aMinCurv[i] < 0) m_CurvNeg[i] = 1 / aMinCurv[i];
-        else                 m_CurvNeg[i] = -1e+10;
+		if (m_CurvPos[i] < tmp1)
+			tmp1 = m_CurvPos[i];
 
-        if (m_CurvPos[i] < tmp1)
-            tmp1 = m_CurvPos[i];
+		if (m_CurvNeg[i] > tmp2)
+			tmp2 = m_CurvNeg[i];
 
-        if (m_CurvNeg[i] > tmp2)
-            tmp2 = m_CurvNeg[i];
+		if (aMaxCurve[i] > 0)
+		{
+			++c1;
+			mean_curvMax += 1/aMaxCurve[i];
+		}
 
-        if (aMaxCurv[i] > 0)
-        {
-            ++c1;
-            mean_curvMax += 1/aMaxCurv[i];
-        }
+		if (aMinCurve[i] < 0)
+		{
+			++c2;
+			mean_curvMin += 1/aMinCurve[i];
+		}
+	}
 
-        if (aMinCurv[i] < 0)
-        {
-            ++c2;
-            mean_curvMin += 1/aMinCurv[i];
-        }
-    }
+	if (c1==0)
+		mean_curvMax = 1e+3;
+	else
+		mean_curvMax /= mesh.CountPoints();
 
-    if (c1==0)
-        mean_curvMax = 1e+3;
-    else
-        mean_curvMax /= mesh.CountPoints();
+	if (c2==0)
+		mean_curvMin = -1e+3;
+	else
+		mean_curvMin /= mesh.CountPoints();
 
-    if (c2==0)
-        mean_curvMin = -1e+3;
-    else
-        mean_curvMin /= mesh.CountPoints();
+	curv[0] = tmp1;
+	curv[1] = tmp2;
+	
 
-    curv[0] = tmp1;
-    curv[1] = tmp2;
+	
+	
+	//Krümmung auf Netzbasis
+	
+	for(int i=0; i<n; ++i)
+	{
+
+		// get all points
+	    
+		//MeshCore::MeshKernel& rMesh = mesh;
+		std::vector< Wm4::Vector3<float> > aPnts;
+		std::vector<Base::Vector3f> aPnts_tmp;
+		MeshCore::MeshPointIterator cPIt( mesh );
+		for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+		{
+			Wm4::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
+			Base::Vector3f cP_tmp( cPIt->x, cPIt->y, cPIt->z );
+			aPnts.push_back( cP );
+			aPnts_tmp.push_back(cP_tmp);
+		}
+
+		// get all point connections
+		std::vector<int> anIdx;
+		const std::vector<MeshCore::MeshFacet>& MeshFacetArray = mesh.GetFacets();
+		for ( std::vector<MeshCore::MeshFacet>::const_iterator jt = MeshFacetArray.begin(); jt != MeshFacetArray.end(); ++jt )
+		{
+			for (int i=0; i<3; i++)
+			{
+				anIdx.push_back( (int)jt->_aulPoints[i] );
+			}
+		}
+
+		// compute vertex based curvatures
+		Wm4::MeshCurvature<float> meshCurv(mesh.CountPoints(), &(aPnts[0]), mesh.CountFacets(), &(anIdx[0]));
+
+		// get curvature information now
+		const Wm4::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+		const Wm4::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+		const float* aMaxCurv = meshCurv.GetMaxCurvatures();
+		const float* aMinCurv = meshCurv.GetMinCurvatures();
+
+		double maxCurv = 0.0;
+		double avgCurv = 0.0;
+		double tmp1 =  1e+10;
+		double tmp2 = -1e+10;
+
+		double mean_curvMax = 0.0, mean_curvMin = 0.0;
+		int c1 = 0, c2 = 0;
+
+		m_CurvPos.clear();
+		m_CurvNeg.clear();
+		m_CurvMax.clear();
+		m_CurvPos.resize(mesh.CountPoints());
+		m_CurvNeg.resize(mesh.CountPoints());
+		m_CurvMax.resize(mesh.CountPoints());
+
+		for ( unsigned long i=0; i<mesh.CountPoints(); i++ )
+		{
+
+			if (aMaxCurv[i] > 0) m_CurvPos[i] = 1 / aMaxCurv[i];
+			else                 m_CurvPos[i] = 1e+10;
+
+			if (aMinCurv[i] < 0) m_CurvNeg[i] = 1 / aMinCurv[i];
+			else                 m_CurvNeg[i] = -1e+10;
+
+			if (m_CurvPos[i] < tmp1)
+				tmp1 = m_CurvPos[i];
+
+			if (m_CurvNeg[i] > tmp2)
+				tmp2 = m_CurvNeg[i];
+
+			if (aMaxCurv[i] > 0)
+			{
+				++c1;
+				mean_curvMax += 1/aMaxCurv[i];
+			}
+
+			if (aMinCurv[i] < 0)
+			{
+				++c2;
+				mean_curvMin += 1/aMinCurv[i];
+			}
+		}
+
+		if (c1==0)
+			mean_curvMax = 1e+3;
+		else
+			mean_curvMax /= mesh.CountPoints();
+
+		if (c2==0)
+			mean_curvMin = -1e+3;
+		else
+			mean_curvMin /= mesh.CountPoints();
+
+		curv[0] = tmp1;
+		curv[1] = tmp2;
+	}
+	
 
     return curv;
 }
