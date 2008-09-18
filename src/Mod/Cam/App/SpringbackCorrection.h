@@ -166,7 +166,7 @@ public:
 
 	/** @brief Computes mesh-based curvature-values at each mesh-point
 	    @param mesh input-mesh*/
-    std::vector<double> MeshCurvature(const MeshCore::MeshKernel& mesh);
+    std::vector<double> MeshCurvature(const TopoDS_Face& aFace, const MeshCore::MeshKernel& mesh);
 
 	/** @brief computes maximum and minimum curvature-values of the specified input-face aFace
 	    @param aFace input-face */

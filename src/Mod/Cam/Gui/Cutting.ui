@@ -683,7 +683,7 @@ p, li { white-space: pre-wrap; }
      <x>10</x>
      <y>200</y>
      <width>255</width>
-     <height>334</height>
+     <height>360</height>
     </rect>
    </property>
    <property name="title" >
@@ -700,61 +700,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text" >
      <string>Smallest CAD radius</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="cad_radius_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>25</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="value" >
-     <double>10.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="master_radius_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>51</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum" >
-     <double>99.989999999999995</double>
-    </property>
-    <property name="value" >
-     <double>10.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2" >
-    <property name="geometry" >
-     <rect>
-      <x>90</x>
-      <y>77</y>
-      <width>155</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Slave-Radius</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="slave_radius_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>77</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="value" >
-     <double>10.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_3" >
@@ -783,19 +728,6 @@ p, li { white-space: pre-wrap; }
      <double>1.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="correction_factor_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>129</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="value" >
-     <double>0.700000000000000</double>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4" >
     <property name="geometry" >
      <rect>
@@ -820,41 +752,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text" >
      <string>Limit Angle</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="limit_angle_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>155</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="value" >
-     <double>60.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>181</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="prefix" >
-     <string/>
-    </property>
-    <property name="suffix" >
-     <string/>
-    </property>
-    <property name="singleStep" >
-     <double>0.500000000000000</double>
-    </property>
-    <property name="value" >
-     <double>1.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_9" >
@@ -886,33 +783,43 @@ p, li { white-space: pre-wrap; }
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="max_vel" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>207</y>
-      <width>73</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum" >
-     <double>10000.000000000000000</double>
-    </property>
-    <property name="value" >
-     <double>600.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label" >
+   <widget class="QLabel" name="label_12" >
     <property name="geometry" >
      <rect>
       <x>90</x>
-      <y>51</y>
+      <y>233</y>
       <width>155</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text" >
-     <string>Master-Radius</string>
+     <string>Max-Acceleration</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>260</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Spring Pretension</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="errtol" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>287</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Error-Tolerance</string>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="max_acc" >
@@ -937,30 +844,171 @@ p, li { white-space: pre-wrap; }
      <double>20000.000000000000000</double>
     </property>
    </widget>
-   <widget class="QLabel" name="label_12" >
+   <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>181</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="prefix" >
+     <string/>
+    </property>
+    <property name="suffix" >
+     <string/>
+    </property>
+    <property name="singleStep" >
+     <double>0.500000000000000</double>
+    </property>
+    <property name="value" >
+     <double>1.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="max_vel" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>207</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum" >
+     <double>10000.000000000000000</double>
+    </property>
+    <property name="value" >
+     <double>600.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="correction_factor_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>129</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>0.700000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="limit_angle_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>155</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>60.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="slave_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>77</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="master_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>51</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum" >
+     <double>99.989999999999995</double>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="cad_radius_box" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>25</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label" >
     <property name="geometry" >
      <rect>
       <x>90</x>
-      <y>233</y>
+      <y>51</y>
       <width>155</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text" >
-     <string>Max-Acceleration</string>
+     <string>Master-Radius</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>77</y>
+      <width>155</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Slave-Radius</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="clockwise_checkbox" >
     <property name="geometry" >
      <rect>
       <x>11</x>
-      <y>291</y>
+      <y>340</y>
       <width>168</width>
       <height>19</height>
      </rect>
     </property>
     <property name="text" >
      <string>Clockwise Movement</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="error_tolerance" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>287</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="decimals" >
+     <number>1</number>
+    </property>
+    <property name="maximum" >
+     <double>10.000000000000000</double>
+    </property>
+    <property name="singleStep" >
+     <double>0.100000000000000</double>
+    </property>
+    <property name="value" >
+     <double>0.500000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="spring_pretension" >
@@ -973,16 +1021,16 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="decimals" >
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="maximum" >
      <double>10.000000000000000</double>
     </property>
     <property name="singleStep" >
-     <double>1.000000000000000</double>
+     <double>0.100000000000000</double>
     </property>
     <property name="value" >
-     <double>0.000000000000000</double>
+     <double>1.000000000000000</double>
     </property>
    </widget>
   </widget>

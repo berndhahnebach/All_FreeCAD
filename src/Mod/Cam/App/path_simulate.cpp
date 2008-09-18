@@ -810,7 +810,7 @@ bool path_simulate::CheckConnect(bool tool)
     }
 
     if (m_StartPnts1[0].Z() - m_StartPnts1[1].Z() >= 0.0) return true;
-    else                                                 return false;
+    else                                                   return false;
 
 FEAT:
     if (!tool)
@@ -1392,7 +1392,8 @@ bool path_simulate::ConnectPaths_Feat(bool tool,
         }
     }
 
-    if (rob)   goto robo;
+    if (rob) goto robo;
+	if(ConnPnts[0].Distance(ConnPnts[1]) < 0.01) return true;  // keine Zustellung bei spiralbahnen !!!
 
     for (int i=0; i<ind; ++i)
     {
@@ -1687,7 +1688,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
     std::vector<std::vector<double> > CriticalBounds = CompBounds(tool);
 
 	double cur = 0.1;
-	m_amax = 2000;
+	//m_amax = 2000;
    
     GeomAdaptor_Curve curve;
 
@@ -1700,7 +1701,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
     // lade aktuelle kurve
     if (!tool)  curve.Load(*m_it1);
-    else       curve.Load(*m_it2);
+    else        curve.Load(*m_it2);
 
     double fParam = curve.FirstParameter(),
                     lParam = curve.LastParameter();
@@ -1898,9 +1899,44 @@ bool path_simulate::Correction(bool b)
 {
     int N;
     gp_Vec vec;
+	gp_Pnt pnt;
     Base::Vector3d tmp;
     std::vector<Base::Vector3d> tmp2;
-    vec.SetCoord(-m_Sum[0],-m_Sum[1],-m_Sum[2]);
+
+	if(b==false)
+	{
+		pnt.SetCoord((*m_it1)->StartPoint().X(),
+		  		     (*m_it1)->StartPoint().Y(),
+				     (*m_it1)->StartPoint().Z());
+	
+		if(pnt.Distance((*m_it1)->EndPoint()) > 0.01)  // 
+		{
+			vec.SetCoord(m_Sum[0],m_Sum[1],m_Sum[2]);
+			vec.SetCoord((*m_it1)->EndPoint().X() - (*m_it1)->StartPoint().X() - vec.X(),
+						 (*m_it1)->EndPoint().Y() - (*m_it1)->StartPoint().Y() - vec.Y(),
+						 (*m_it1)->EndPoint().Z() - (*m_it1)->StartPoint().Z() - vec.Z());
+		}
+		else
+			vec.SetCoord(-m_Sum[0],-m_Sum[1],-m_Sum[2]);
+	}
+	else
+	{
+		pnt.SetCoord((*m_it2)->StartPoint().X(),
+		  		     (*m_it2)->StartPoint().Y(),
+				     (*m_it2)->StartPoint().Z());
+	
+		if(pnt.Distance((*m_it2)->EndPoint()) > 0.01)  // 
+		{
+			vec.SetCoord(m_Sum[0],m_Sum[1],m_Sum[2]);
+			vec.SetCoord((*m_it2)->EndPoint().X() - (*m_it2)->StartPoint().X() - vec.X(),
+						 (*m_it2)->EndPoint().Y() - (*m_it2)->StartPoint().Y() - vec.Y(),
+						 (*m_it2)->EndPoint().Z() - (*m_it2)->StartPoint().Z() - vec.Z());
+		}
+		else
+			vec.SetCoord(-m_Sum[0],-m_Sum[1],-m_Sum[2]);
+	}
+
+
 
     ParameterCalculation(vec.Magnitude());
 
@@ -2737,7 +2773,224 @@ bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas)
             if (*it_1 != (*curves_1).end()-1)
             {
 
-                // berechne output für die aktuelle bahn für das mastertools
+                // berechne output für die aktuelle bahn des mastertools
+                CompPath(tool);
+                WriteOutputSingle(anOutputFile[tool],c[tool],0,tool,beam);
+                UpdateParam();
+
+                (*it_1)++;  // gehe zur nächsten kurve
+                ConnectPaths_Feat(tool, 0, 1);
+
+                if (*it_1 == (*curves_1).end()-1 && *it_2 == (*curves_2).end()-1)
+                {
+                    WriteOutputSingle(anOutputFile[tool],c[tool],0, tool,beam);
+                    UpdateParam();
+                    CompPath(tool);
+                    WriteOutputSingle(anOutputFile[tool],c[tool],0, tool,beam);
+                    break;
+                }
+
+                (**it_1)->D0((**it_1)->FirstParameter(),pnt0);
+
+                // Abbruchkriterium:
+                // erreicht der MASTER den nächsten ebenen Bereich, muss auf den SLAVE gewartet werden
+                if ((pnt0.Z() > (flatAreas[i+1] + rad[tool] - 0.1)) &&
+                        (pnt0.Z() < (flatAreas[i+1] + rad[tool] + 0.1)))
+                {
+
+                    run = Detect_FeatCurve(tool);  // bestimmt die nächste SLAVE-Kurve
+
+                    // fahre alle kurven bis zur nächste SLAVE-Kurve ab
+                    for (int i=0; i<run; ++i)
+                    {
+                        WriteOutputSingle(anOutputFile[tool],c[tool],0, tool,beam);
+                        UpdateParam();
+                        CompPath(tool);
+                        WriteOutputSingle(anOutputFile[tool],c[tool],0, tool,beam);
+                        UpdateParam();
+
+                        (*it_1)++;
+                        ConnectPaths_Feat(tool, 0, 1);  // Output wird hier nicht gleich ausgeschrieben,
+                        // da die Synchronisierung mit dem Slave noch fehlt
+                    }
+
+                    break;
+                }
+            }
+            else
+            {
+                if (*it_2 == (*curves_2).end()-1)
+                {
+                    CompPath(tool);
+                    WriteOutputSingle(anOutputFile[tool],c[tool],0, tool,beam);
+                    break;
+                }
+                else break;
+            }
+
+            WriteOutputSingle(anOutputFile[tool],c[tool],0,tool,beam);
+            UpdateParam();
+        }
+
+        T = m_T;
+        T_ges = T-t0;
+        m_t0 = t0;
+
+        CompPath(!tool);
+
+        t_ges = m_T - m_t0;
+        int n = (int) ceil(T_ges/t_ges);
+
+        for (int j=0; j<n; ++j)
+        {
+            WriteOutputSingle(anOutputFile[!tool],c[!tool],0, !tool,beam);
+
+            if (!tool)
+            {
+                //  Output_time aktualisieren
+                for (unsigned int i=0; i<m_Output_time2.size(); ++i)
+                {
+                    m_Output_time2[i] += t_ges;
+                }
+            }
+            else
+            {
+                //  Output_time aktualisieren
+                for (unsigned int i=0; i<m_Output_time.size(); ++i)
+                {
+                    m_Output_time[i] += t_ges;
+                }
+            }
+        }
+
+        if (m_it1 == m_BSplineTop.end()-1 && m_it2 == m_BSplineBottom.end()-1)
+            break;
+
+        if (!tool)
+        {
+            m_Output_time2.clear();
+            m_Output2.clear();
+        }
+        else
+        {
+            m_Output_time.clear();
+            m_Output.clear();
+        }
+
+        m_T = m_t0 + n*t_ges;
+        m_t0 = m_T;
+        m_v1 = m_vmax;
+        m_a1 = m_amax;
+        m_c1[0] = m_a1/2;
+        m_c1[1] = PI*m_a1/m_v1;
+
+        (*it_2)++;
+
+        ConnectPaths_Feat(!tool, 0, 0);
+        TimeCorrection();
+        WriteOutputDouble(anOutputFile[0],anOutputFile[1],c[0],c[1],0,beam);
+
+        UpdateParam();
+        ++i;
+    }
+
+    anOutputFile[0] << "*END" << endl;
+    anOutputFile[0].close();
+    anOutputFile[1] << "*END" << endl;
+    anOutputFile[1].close();
+    WriteTimes();
+
+    return true;
+}
+
+bool path_simulate::MakePathSimulate_Spiral(std::vector<float> &flatAreas)
+{
+    m_Feat = true;
+    bool   tool;
+    int    c[2];
+    int run;
+    double eps=0.2,t0,T,T_ges,t_ges;
+    double rad[2];
+    gp_Pnt pnt0, pnt1;
+
+    std::vector<Handle_Geom_BSplineCurve>::iterator *it_1,*it_2;
+    std::vector<Handle_Geom_BSplineCurve> *curves_1, *curves_2;
+
+    ofstream anOutputFile[2];
+
+    anOutputFile[0].open("output_master.k");
+    anOutputFile[0].precision(7);
+
+    if (m_single == false)
+    {
+        anOutputFile[1].open("output_slave.k");
+        anOutputFile[1].precision(7);
+    }
+
+    m_it1 = m_BSplineTop.begin();
+    m_it2 = m_BSplineBottom.begin();
+
+    rad[0] =  m_set.master_radius;
+    rad[1] = - m_set.slave_radius - m_set.sheet_thickness;
+
+    c[0] = 1;    // Start Index der Master Kurven
+    c[1] = 2001; // Start Index der Slave  Kurven
+
+    int i = 0;
+
+    while (m_it1 != m_BSplineTop.end() && m_it2 != m_BSplineBottom.end())
+    {
+
+        tool = StartingTool();  // bestimmt welches tool warten muss ...
+
+        // tool == true  : Roboter = Slave  & NC = Master
+        // tool == fasle : Roboter = Master & NC = Slave
+
+        // setze neue Startparameter (in unserem Fall immer 0)
+        m_StartParam[0] = ((*m_it1)->FirstParameter());
+        if (m_single == false) m_StartParam[1] = ((*m_it2)->FirstParameter());
+
+        // die erste Zustellung vor dem Kontakt mit dem Blech wird hier seperat gehandelt
+        if (i==0)
+        {
+
+            /**************************************** ZUSTELLUNG 1 **********************************************/
+            ConnectPaths_xy(0);
+            WriteOutputDouble(anOutputFile[0],anOutputFile[1],c[0],c[1],0,beam);
+            UpdateParam();
+
+
+            /**************************************** ZUSTELLUNG 2 **********************************************/
+            ConnectPaths_z(0);
+            WriteOutputDouble(anOutputFile[0],anOutputFile[1],c[0],c[1],0,beam);
+            UpdateParam();
+            /****************************************/
+        }
+
+        if (!tool)
+        {
+            it_1 = &m_it1;
+            it_2 = &m_it2;
+            curves_1 = &m_BSplineTop;
+            curves_2 = &m_BSplineBottom;
+        }
+        else
+        {
+            it_1 = &m_it2;
+            it_2 = &m_it1;
+            curves_1 = &m_BSplineBottom;
+            curves_2 = &m_BSplineTop;
+        }
+
+        t0 = m_t0;  // speicherung der startzeit (wird später benötigt)
+
+        while (true)
+        {
+
+            if (*it_1 != (*curves_1).end()-1)
+            {
+
+                // berechne output für die aktuelle bahn des mastertools
                 CompPath(tool);
                 WriteOutputSingle(anOutputFile[tool],c[tool],0,tool,beam);
                 UpdateParam();
@@ -3590,9 +3843,9 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
         ind = 3;
     }
 
-    if (beamfl) pid = ind+2;
-    else    pid = ind;
-
+    if (beamfl && tool) pid = ind+1;    // pid: 2 - Master
+    else                pid = ind;      //      3 - Slave
+                                        //      4 - Plate (x-,y-movement) 
 
     n = Out_val.size();
 
@@ -3603,8 +3856,17 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
     {
         anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
         anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-        anOutputFile << pid << ",1,0," << c <<  ",1.000000, ," << Out_time[n-1] << ","  << Out_time[0] << std::endl;
-        anOutputFile << "*DEFINE_CURVE" << std::endl << c << std::endl;
+        anOutputFile << ind << ",1,0," << c <<  ",1.000000, ," << Out_time[n-1] << ","  << Out_time[0] << std::endl;
+        
+
+		if (beamfl && tool)
+        {
+            anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+			anOutputFile << pid << ",1,0," << c <<  ",1.000000, ," << Out_time[n-1] << ","  << Out_time[0] << std::endl;
+        }
+		
+		anOutputFile << "*DEFINE_CURVE" << std::endl << c << std::endl;
 
         for (int i=0; i<n; ++i)
         {
@@ -3621,8 +3883,17 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
 
         anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
         anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-        anOutputFile << pid << ",2,0," << c+1 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
-        anOutputFile << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
+        anOutputFile << ind << ",2,0," << c+1 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
+        
+
+		if (beamfl && tool)
+        {
+            anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+			anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+			anOutputFile << pid << ",2,0," << c+1 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
+        }
+		
+		anOutputFile << "*DEFINE_CURVE" << std::endl << c+1 << std::endl;
 
         for (int i=0; i<n; ++i)
         {
@@ -3637,16 +3908,18 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
         if (!tool) m_PathTimes_Master.push_back(times);
         else      m_PathTimes_Slave.push_back(times);
 
-        anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
-        anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
-        anOutputFile << ind << ",3,0," << c+2 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
-
-        if (beamfl)
+        if (beamfl && tool)
         {
-            anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
             anOutputFile << "$#     pid       dof       vad      lcid        sf       vid     death     birth" << std::endl;
             anOutputFile << pid << ",3,0," << c+2 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
         }
+		else
+		{
+			anOutputFile << "*BOUNDARY_PRESCRIBED_MOTION_RIGID" << std::endl;
+			anOutputFile << "$#     ind       dof       vad      lcid        sf       vid     death     birth" << std::endl;
+			anOutputFile << ind << ",3,0," << c+2 <<  ",1.000000, ," << Out_time[n-1] << "," << Out_time[0] << std::endl;
+		}
 
         anOutputFile << "*DEFINE_CURVE" << std::endl << c+2 <<  std::endl;
 
@@ -3662,7 +3935,7 @@ bool path_simulate::WriteOutputSingle(ofstream &anOutputFile, int &c, bool brob,
         times.second = (float) Out_time[n-1];
 
         if (!tool) m_PathTimes_Master.push_back(times);
-        else      m_PathTimes_Slave.push_back(times);
+        else       m_PathTimes_Slave.push_back(times);
 
         c = c+3;
     }
