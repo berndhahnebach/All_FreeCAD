@@ -3,7 +3,7 @@
 Return value are list of vectors, 3 vectors define a facet.
 
 Copyright (c) Berthold Grupp          2005
-License: LGPL                                                                  *
+License: LGPL
 
 Sample code for creating a mesh:
 	facets = Cube(3.0, 4.0, 5.0)
