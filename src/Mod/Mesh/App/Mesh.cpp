@@ -32,6 +32,7 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Interpreter.h>
 #include <Base/PyCXX/Objects.hxx>
 
 #include "Core/Builder.h"
@@ -891,6 +892,7 @@ MeshObject* MeshObject::createSphere(float radius, int sampling)
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Sphere"));
@@ -911,6 +913,7 @@ MeshObject* MeshObject::createEllipsoid(float radius1, float radius2, int sampli
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Ellipsoid"));
@@ -932,6 +935,7 @@ MeshObject* MeshObject::createCylinder(float radius, float length, int closed, f
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cylinder"));
@@ -955,6 +959,7 @@ MeshObject* MeshObject::createCone(float radius1, float radius2, float len, int 
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cone"));
@@ -979,6 +984,7 @@ MeshObject* MeshObject::createTorus(float radius1, float radius2, int sampling)
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Toroid"));
@@ -1000,6 +1006,7 @@ MeshObject* MeshObject::createCube(float length, float width, float height)
 {
     // load the 'BuildRegularGeoms' module
     try {
+        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cube"));
