@@ -31,6 +31,7 @@
 #endif
 
 #include <App/PropertyStandard.h>
+#include <Gui/Application.h>
 
 #include "propertyeditorlist.h"
 
@@ -57,8 +58,14 @@ void PropertyBoolItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyBool::getClassTypeId()));
-        
-        ((App::PropertyBool*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = %1").arg(val ? QLatin1String("True") : QLatin1String("False"));
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyBool*>(*it)->setValue(val);
+        }
     }
 }
 
@@ -104,12 +111,19 @@ QVariant PropertyEnumItem::value(const App::Property* prop) const
 void PropertyEnumItem::setValue(const QVariant& value)
 {
     QStringList items = value.toStringList();
-    if ( !items.isEmpty() ) {
+    if (!items.isEmpty()) {
         QString value = items.front();
         const std::vector<App::Property*>& items = getProperty();
         for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
             assert((*it)->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()));
-            ((App::PropertyEnumeration*)*it)->setValue((const char*)value.toUtf8());
+            QString cmd = pythonIdentifier(*it);
+            if (!cmd.isEmpty()) {
+                cmd += QString::fromAscii(" = \"%1\"").arg(value);
+                Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+            }
+            else {
+                static_cast<App::PropertyEnumeration*>(*it)->setValue((const char*)value.toUtf8());
+            }
         }
     }
 }

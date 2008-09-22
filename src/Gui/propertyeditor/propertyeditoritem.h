@@ -78,6 +78,7 @@ protected:
     virtual QVariant toString(const App::Property*) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
+    QString pythonIdentifier(const App::Property*) const;
 
 private:
     QString propName;
