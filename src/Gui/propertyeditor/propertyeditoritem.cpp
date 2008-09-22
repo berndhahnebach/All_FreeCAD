@@ -30,6 +30,12 @@
 #endif
 
 #include "propertyeditoritem.h"
+#include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <Gui/ViewProviderDocumentObject.h>
 
 using namespace Gui::PropertyEditor;
 
@@ -122,6 +128,36 @@ QVariant PropertyItem::value(const App::Property* /*prop*/) const
 
 void PropertyItem::setValue(const QVariant& /*value*/)
 {
+}
+
+QString PropertyItem::pythonIdentifier(const App::Property* prop) const
+{
+    App::PropertyContainer* parent = prop->getContainer();
+    if (parent->getTypeId() == App::Document::getClassTypeId()) {
+        App::Document* doc = static_cast<App::Document*>(parent);
+        QString docName = QString::fromAscii(App::GetApplication().getDocumentName(doc));
+        QString propName = QString::fromAscii(parent->getName(prop));
+        return QString::fromAscii("FreeCAD.getDocument(\"%1\").%2").arg(docName).arg(propName);
+    }
+    if (parent->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId())) {
+        App::DocumentObject* obj = static_cast<App::DocumentObject*>(parent);
+        App::Document* doc = &(obj->getDocument());
+        QString docName = QString::fromAscii(App::GetApplication().getDocumentName(doc));
+        QString objName = QString::fromAscii(obj->getNameInDocument());
+        QString propName = QString::fromAscii(parent->getName(prop));
+        return QString::fromAscii("FreeCAD.getDocument(\"%1\").getObject(\"%2\").%3")
+            .arg(docName).arg(objName).arg(propName);
+    }
+    if (parent->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
+        App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(parent)->getObject();
+        App::Document* doc = &(obj->getDocument());
+        QString docName = QString::fromAscii(App::GetApplication().getDocumentName(doc));
+        QString objName = QString::fromAscii(obj->getNameInDocument());
+        QString propName = QString::fromAscii(parent->getName(prop));
+        return QString::fromAscii("FreeCADGui.getDocument(\"%1\").getObject(\"%2\").%3")
+            .arg(docName).arg(objName).arg(propName);
+    }
+    return QString();
 }
 
 QWidget* PropertyItem::createEditor(QWidget* /*parent*/, const QObject* /*receiver*/, const char* /*method*/) const

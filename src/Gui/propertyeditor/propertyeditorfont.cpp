@@ -30,6 +30,7 @@
 #endif
 
 #include <App/PropertyStandard.h>
+#include <Gui/Application.h>
 
 #include "propertyeditorfont.h"
 #include "Widgets.h"
@@ -83,7 +84,14 @@ void PropertyColorItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
-        ((App::PropertyColor*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = (%1,%2,%3)").arg(val.r,0,'f',2).arg(val.g,0,'f',2).arg(val.b,0,'f',2);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyColor*>(*it)->setValue(val);
+        }
     }
 }
 

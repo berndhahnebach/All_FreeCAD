@@ -32,6 +32,7 @@
 #endif
 
 #include <App/PropertyStandard.h>
+#include <Gui/Application.h>
 
 #include "propertyeditorinput.h"
 #include "../SpinBox.h"
@@ -59,7 +60,14 @@ void PropertyStringItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
-        ((App::PropertyString*)*it)->setValue(val.toUtf8());
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = \"%1\"").arg(val);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyString*>(*it)->setValue(val.toUtf8());
+        }
     }
 }
 
@@ -105,7 +113,14 @@ void PropertyIntegerItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
-        ((App::PropertyInteger*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = %1").arg(val);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyInteger*>(*it)->setValue(val);
+        }
     }
 }
 
@@ -152,7 +167,14 @@ void PropertyIntegerConstraintItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
-        ((App::PropertyIntegerConstraint*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = %1").arg(val);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyIntegerConstraint*>(*it)->setValue(val);
+        }
     }
 }
 
@@ -217,7 +239,14 @@ void PropertyFloatItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
-        ((App::PropertyFloat*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = %1").arg(val,0,'f',2);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyFloat*>(*it)->setValue(val);
+        }
     }
 }
 
@@ -278,7 +307,14 @@ void PropertyFloatConstraintItem::setValue(const QVariant& value)
     const std::vector<App::Property*>& items = getProperty();
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
-        ((App::PropertyFloatConstraint*)*it)->setValue(val);
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = %1").arg(val,0,'f',2);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyFloatConstraint*>(*it)->setValue(val);
+        }
     }
 }
 
