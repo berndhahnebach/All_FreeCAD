@@ -52,68 +52,6 @@ protected:
     PropertyColorItem();
 };
 
-
-
-
-#if 0
-/**
- * Change a font property.
- * \author Werner Mayer
- */
-class GuiExport FontEditorItem: public EditableItem
-{
-  TYPESYSTEM_HEADER();
-
-  Q_OBJECT 
-
-public:
-  FontEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
-
-protected Q_SLOTS:
-  void onChangeFont();
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( int column );
-  virtual void setDefaultEditorValue( QWidget* editor );
-  virtual QVariant currentEditorValue( QWidget* editor ) const;
-  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
-  virtual void convertToProperty(const QVariant&);
-
-private:
-  FontEditorItem();
-};
-
-/**
- * Change a color property.
- * \author Werner Mayer
- */
-class GuiExport ColorEditorItem: public EditableItem
-{
-  TYPESYSTEM_HEADER();
-
-  Q_OBJECT 
-
-public:
-  ColorEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( int column );
-  virtual void setDefaultEditorValue( QWidget* editor );
-  virtual QVariant currentEditorValue( QWidget* editor ) const;
-  /** Paints the current color with a frame outside. */
-  void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
-  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
-  virtual void convertToProperty(const QVariant&);
-
-private:
-  ColorEditorItem();
-
-private:
-  QColor _color;
-};
-#endif
 } //namespace PropertyEditor
 } //namespace Gui
 

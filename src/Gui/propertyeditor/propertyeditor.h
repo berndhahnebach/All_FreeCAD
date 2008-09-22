@@ -84,65 +84,6 @@ private:
     PropertyItem *rootItem;
 };
 
-
-
-
-
-
-
-
-
-
-
-#if 0
-/** Implementation of a property editor similar to this one of Qt designer.
- *
- * EditableListView contains all EditableItem objects with an editor inside.
- * The implementation is based on the sources of book "Practical Qt" in chapter 3.
- *
- * \author Werner Mayer
- */
-class EditableListView :public Q3ListView
-{
-    Q_OBJECT
-public:
-  /** Constructs a list view. */
-  EditableListView( QWidget* parent=0);
-  /** Sets \a item to be open if \a open is true and \a item is expandable, 
-   * and to be closed if \a open is false. Deletes the current editor and 
-   * repaints accordingly.
-   */
-  void setOpen ( Q3ListViewItem * item, bool open );
-  /** Stops the editor of the current active item. If no editor is open nothing
-   * happens.
-   */
-  void stopEdit();
-  /** Builds up the list view with the properties. */
-  void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
-  /** Sets the list view to be sorted by column in ascending order if ascending is TRUE or descending 
-   * order if it is FALSE. It stops also the current editor.
-   */
-  void setSorting ( int column, bool ascending = TRUE );
-
-protected Q_SLOTS:
-  /** This slot is connected with the clicked signal and calls itemChanged(). */
-  void mouseClick(Q3ListViewItem * item );
-  /** Deletes the editor of the last selected item and creates a new one
-   * for the curreent item \a item.
-   */
-  void itemChanged(Q3ListViewItem * item );
-  /** Updates the current editable item. */
-  void updateItem();
-
-protected:
-  void resizeEvent( QResizeEvent* e );
-//void drawContentsOffset ( QPainter * p, int ox, int oy, int cx, int cy, int cw, int ch );
-
-private:
-  EditableItem* _editingItem;
-};
-#endif
-
 } //namespace PropertyEditor
 } //namespace Gui
 
