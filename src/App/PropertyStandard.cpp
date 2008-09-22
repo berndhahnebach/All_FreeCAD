@@ -1343,7 +1343,7 @@ void PropertyColor::setPyObject(PyObject *value)
             throw Base::Exception("Type in tuple must be float");
     }
     else if (PyLong_Check(value)) {
-        cCol.setPackedValue(PyLong_AsLong(value));
+        cCol.setPackedValue(PyLong_AsUnsignedLong(value));
     }
     else {
         std::string error = std::string("type must be int or tuple of float, not ");
