@@ -55,6 +55,18 @@ protected:
 };
 
 /**
+ * Dummy property to separate groups of properties.
+ * \author Werner Mayer
+ */
+class GuiExport PropertySeparatorItem : public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    bool isSeparator() const { return true; }
+    QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+};
+
+/**
  * Change a number.
  * \author Werner Mayer
  */

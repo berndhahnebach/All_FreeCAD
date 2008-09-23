@@ -139,27 +139,22 @@ void PropertyVectorItem::setValue(const QVariant& value)
     //}
 }
 
-QWidget* PropertyVectorItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+QWidget* PropertyVectorItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
 {
-    //QComboBox *cb = new QComboBox(parent);
-    //cb->setFrame(false);
-    //cb->addItem(QLatin1String("false"));
-    //cb->addItem(QLatin1String("true"));
-    //QObject::connect(cb, SIGNAL(activated(int)), receiver, method);
-    //return cb;
-    return 0;
+    QLabel* label = new QLabel(parent);
+    label->setIndent(2);
+    label->setBackgroundRole(QPalette::Base);
+    return label;
 }
 
 void PropertyVectorItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
-    //QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    //cb->setCurrentIndex(cb->findText(data.toString()));
+    QLabel* label = qobject_cast<QLabel*>(editor);
+    label->setText(/*toString()*/QString::fromAscii("[x,y,z]"));
 }
 
 QVariant PropertyVectorItem::editorData(QWidget *editor) const
 {
-    //QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    //return QVariant(cb->currentText());
     return QVariant();
 }
 
