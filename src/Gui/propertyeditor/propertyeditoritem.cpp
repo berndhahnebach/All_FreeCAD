@@ -283,6 +283,44 @@ PropertyItemDelegate::~PropertyItemDelegate()
 {
 }
 
+void PropertyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &index) const
+{
+    QStyleOptionViewItem option = opt;
+
+    PropertyItem *property = static_cast<PropertyItem*>(index.internalPointer());
+
+    if (property && property->isSeparator()) {
+        option.palette.setColor(QPalette::Text, option.palette.color(QPalette::BrightText));
+        option.font.setBold(true);
+        option.state &= ~QStyle::State_Selected;
+    }
+
+    if (index.column() == 1) {
+        option.state &= ~QStyle::State_Selected;
+    }
+
+    option.state &= ~QStyle::State_HasFocus;
+
+    if (property && property->isSeparator()) {
+        QBrush bg = option.palette.dark();
+        painter->fillRect(option.rect, bg);
+    }
+
+    QPen savedPen = painter->pen();
+
+    QItemDelegate::paint(painter, option, index);
+
+    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &option));
+    painter->setPen(QPen(color));
+    if (index.column() == 1 || !(property && property->isSeparator())) {
+        int right = (option.direction == Qt::LeftToRight) ? option.rect.right() : option.rect.left();
+        painter->drawLine(right, option.rect.y(), right, option.rect.bottom());
+    }
+    painter->drawLine(option.rect.x(), option.rect.bottom(),
+            option.rect.right(), option.rect.bottom());
+    painter->setPen(savedPen);
+}
+
 QWidget * PropertyItemDelegate::createEditor (QWidget * parent, const QStyleOptionViewItem & /*option*/, 
                                               const QModelIndex & index ) const
 {

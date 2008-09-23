@@ -51,6 +51,7 @@ public:
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
+    virtual bool isSeparator() const { return false; }
 
     void setParent(PropertyItem* parent);
     PropertyItem *parent() const;
@@ -107,6 +108,7 @@ public:
     PropertyItemDelegate(QObject* parent);
     ~PropertyItemDelegate();
 
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &index) const;
     virtual QWidget * createEditor (QWidget *, const QStyleOptionViewItem&, const QModelIndex&) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index ) const;

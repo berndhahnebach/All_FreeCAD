@@ -93,6 +93,15 @@ QVariant PropertyStringItem::editorData(QWidget *editor) const
 
 // --------------------------------------------------------------------
 
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertySeparatorItem, Gui::PropertyEditor::PropertyItem);
+
+QWidget* PropertySeparatorItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    return 0;
+}
+
+// --------------------------------------------------------------------
+
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyIntegerItem, Gui::PropertyEditor::PropertyItem);
 
 PropertyIntegerItem::PropertyIntegerItem()

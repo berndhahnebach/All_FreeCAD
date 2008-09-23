@@ -24,14 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <q3header.h>
 # include <qpainter.h>
 # include <qstyle.h>
-//Added by qt3to4:
-#include <QResizeEvent>
+# include <QResizeEvent>
 #endif
 
 #include "propertyeditor.h"
+#include "propertyeditorinput.h"
 
 using namespace Gui::PropertyEditor;
 
@@ -72,6 +71,13 @@ void PropertyEditor::currentChanged ( const QModelIndex & current, const QModelI
 void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = viewOptions();
+    PropertyItem *property = static_cast<PropertyItem*>(index.internalPointer());
+    if (property && property->isSeparator()) {
+        painter->fillRect(rect, opt.palette.dark());
+    } else if (selectionModel()->isSelected(index)) {
+        painter->fillRect(rect, opt.palette.brush(QPalette::Highlight));
+    }
+
     if (model()->hasChildren(index)) {
         opt.state |= QStyle::State_Children;
 
@@ -82,6 +88,12 @@ void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QM
             opt.state |= QStyle::State_Open;
         style()->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, this);
     }
+
+    QPen savedPen = painter->pen();
+    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
+    painter->setPen(QPen(color));
+    painter->drawLine(rect.x(), rect.bottom(), rect.right(), rect.bottom());
+    painter->setPen(savedPen);
 }
 
 void PropertyEditor::buildUp(const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct)
@@ -214,6 +226,13 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
 {
     // fill up the listview with the properties
     rootItem->reset();
+
+    // set dummy group item
+    PropertyItem* group = static_cast<PropertyItem*>(PropertySeparatorItem::create());
+    group->setParent(rootItem);
+    rootItem->appendChild(group);
+    group->setPropertyName(QString::fromAscii("Group"));
+
     std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator it;
     for ( it = props.begin(); it != props.end(); ++it ) {
         // the property must be part of each selected object, i.e. the number of selected objects is equal 
