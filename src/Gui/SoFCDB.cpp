@@ -76,33 +76,12 @@ void Gui::SoFCDB::init()
     PropertyFloatItem               ::init();
     PropertyFloatConstraintItem     ::init();
     PropertyBoolItem                ::init();
+    PropertyVectorItem              ::init();
     PropertyEnumItem                ::init();
     PropertyStringListItem          ::init();
     PropertyColorItem               ::init();
     PropertyFileItem                ::init();
     PropertyPathItem                ::init();
-
-#if 0
-    // deprecated ...
-    EditableItem                    ::init();
-    TimeEditorItem                  ::init();
-    DateEditorItem                  ::init();
-    DateTimeEditorItem              ::init();
-    FileEditorItem                  ::init();
-    PixmapEditorItem                ::init();
-    ChildrenEditorItem              ::init();
-    FontEditorItem                  ::init();
-    ColorEditorItem                 ::init();
-    TextEditorItem                  ::init();
-    IntEditorItem                   ::init();
-    IntConstraintEditorItem         ::init();
-    FloatEditorItem                 ::init();
-    FloatConstraintEditorItem       ::init();
-    BoolEditorItem                  ::init();
-    ListEditorItem                  ::init();
-    ComboEditorItem                 ::init();
-    CursorEditorItem                ::init();
-#endif
 }
 
 void Gui::SoFCDB::finish()

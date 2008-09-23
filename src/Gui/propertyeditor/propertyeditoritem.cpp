@@ -106,9 +106,9 @@ bool PropertyItem::isReadOnly() const
     return readonly;
 }
 
-QVariant PropertyItem::toolTip(const App::Property* /*prop*/) const
+QVariant PropertyItem::toolTip(const App::Property* prop) const
 {
-    return QVariant();
+    return QVariant(QString::fromUtf8(prop->getDocumentation()));
 }
 
 QVariant PropertyItem::decoration(const App::Property* /*prop*/) const
@@ -196,17 +196,22 @@ void PropertyItem::setPropertyName(const QString& name)
 
 QVariant PropertyItem::data(int column, int role) const
 {
-    // no properties set
-    if (propertyItems.empty())
-        return QVariant();
-    
     // property name
     if (column == 0) {
         if (role == Qt::DisplayRole)
             return propertyName();
+        // no properties set
+        if (propertyItems.empty())
+            return QVariant();
+        else if (role == Qt::ToolTipRole)
+            return toolTip(propertyItems[0]);
         else
             return QVariant();
-    } else {
+    }
+    else {
+        // no properties set
+        if (propertyItems.empty())
+            return QVariant();
         if (role == Qt::EditRole)
             return value(propertyItems[0]);
         else if (role == Qt::DecorationRole)

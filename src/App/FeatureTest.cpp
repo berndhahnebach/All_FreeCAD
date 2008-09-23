@@ -78,18 +78,19 @@ FeatureTest::FeatureTest()
   
   // properties for recompute testing
   static const char* group = "Feature Test";
-  ADD_PROPERTY_TYPE(Source1       ,(0),group,Prop_None,"Source for testing Links");
-  ADD_PROPERTY_TYPE(Source2       ,(0),group,Prop_None,"Source for testing Links");
-  ADD_PROPERTY_TYPE(SourceN       ,(0),group,Prop_None,"Source for testing Links");
-  ADD_PROPERTY_TYPE(ExecResult    ,("empty"),group,Prop_None,"Result of the Feature execusion");
-  ADD_PROPERTY_TYPE(ExceptionType ,(0),group,Prop_None,"The Type of exception the Excution mthode throws");
+  ADD_PROPERTY_TYPE(Source1       ,(0),group,Prop_None,"Source for testing links");
+  ADD_PROPERTY_TYPE(Source2       ,(0),group,Prop_None,"Source for testing links");
+  ADD_PROPERTY_TYPE(SourceN       ,(0),group,Prop_None,"Source for testing links");
+  ADD_PROPERTY_TYPE(ExecResult    ,("empty"),group,Prop_None,"Result of the execution");
+  ADD_PROPERTY_TYPE(ExceptionType ,(0),group,Prop_None,"The type of exception the execution method throws");
   ADD_PROPERTY_TYPE(ExecCount     ,(0),group,Prop_None,"Number of executions");
   
   // properties with types
-  ADD_PROPERTY_TYPE(TypeHidden  ,(4711),group,Prop_Hidden,"An example property which has the Type 'Hidden'"  );
-  ADD_PROPERTY_TYPE(TypeReadOnly,(4711),group,Prop_ReadOnly ,"An example property which has the Type 'ReadOnly'"  );
-  ADD_PROPERTY_TYPE(TypeOutput  ,(4711),group,Prop_Output ,"An example property which has the Type 'Output'"  );
-  ADD_PROPERTY_TYPE(TypeAll     ,(4711),group,(App::PropertyType) (Prop_Output|Prop_ReadOnly |Prop_Hidden ),"An example property which has the Type 'Output', 'ReadOnly' and 'Hidden'");
+  ADD_PROPERTY_TYPE(TypeHidden  ,(4711),group,Prop_Hidden,"An example property which has the type 'Hidden'"  );
+  ADD_PROPERTY_TYPE(TypeReadOnly,(4711),group,Prop_ReadOnly ,"An example property which has the type 'ReadOnly'"  );
+  ADD_PROPERTY_TYPE(TypeOutput  ,(4711),group,Prop_Output ,"An example property which has the type 'Output'"  );
+  ADD_PROPERTY_TYPE(TypeAll     ,(4711),group,(App::PropertyType) (Prop_Output|Prop_ReadOnly |Prop_Hidden ),
+      "An example property which has the types 'Output', 'ReadOnly' and 'Hidden'");
  
 }
 
@@ -120,7 +121,6 @@ FeatureTestException::FeatureTestException()
   ADD_PROPERTY(ExceptionType,(Base::Exception::getClassTypeId().getKey())  );
 }
 
-
 DocumentObjectExecReturn *FeatureTestException::execute(void)
 {
   //ExceptionType;
@@ -129,6 +129,3 @@ DocumentObjectExecReturn *FeatureTestException::execute(void)
 
   return 0;
 }
-
-
-

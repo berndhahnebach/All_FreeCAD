@@ -51,6 +51,32 @@ protected:
 };
 
 /**
+ * Edit properties of vector type. 
+ * \author Werner Mayer
+ */
+class PropertyFloatItem;
+class GuiExport PropertyVectorItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyVectorItem();
+
+private:
+    PropertyFloatItem* m_x;
+    PropertyFloatItem* m_y;
+    PropertyFloatItem* m_z;
+};
+
+/**
  * Edit properties of enum type. 
  * \author Werner Mayer
  */
