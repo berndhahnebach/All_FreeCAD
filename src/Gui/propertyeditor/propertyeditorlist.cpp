@@ -31,9 +31,11 @@
 #endif
 
 #include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
 #include <Gui/Application.h>
 
 #include "propertyeditorlist.h"
+#include "propertyeditorinput.h"
 
 using namespace Gui::PropertyEditor;
 
@@ -89,6 +91,76 @@ QVariant PropertyBoolItem::editorData(QWidget *editor) const
 {
     QComboBox *cb = qobject_cast<QComboBox*>(editor);
     return QVariant(cb->currentText());
+}
+
+// ---------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyVectorItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyVectorItem::PropertyVectorItem()
+{
+    m_x = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_x->setParent(this);
+    m_x->setPropertyName(QLatin1String("x"));
+    this->appendChild(m_x);
+    m_y = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_y->setParent(this);
+    m_y->setPropertyName(QLatin1String("y"));
+    this->appendChild(m_y);
+    m_z = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_z->setParent(this);
+    m_z->setPropertyName(QLatin1String("z"));
+    this->appendChild(m_z);
+}
+
+QVariant PropertyVectorItem::value(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
+    
+    //bool value = ((App::PropertyVector*)prop)->getValue();
+    //return QVariant(value);
+    return QVariant();
+}
+
+void PropertyVectorItem::setValue(const QVariant& value)
+{
+    //bool val = value.toBool();
+    //const std::vector<App::Property*>& items = getProperty();
+    //for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+    //    assert((*it)->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
+    //    QString cmd = pythonIdentifier(*it);
+    //    if (!cmd.isEmpty()) {
+    //        cmd += QString::fromAscii(" = %1").arg(val ? QLatin1String("True") : QLatin1String("False"));
+    //        Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+    //    }
+    //    else {
+    //        static_cast<App::PropertyBool*>(*it)->setValue(val);
+    //    }
+    //}
+}
+
+QWidget* PropertyVectorItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    //QComboBox *cb = new QComboBox(parent);
+    //cb->setFrame(false);
+    //cb->addItem(QLatin1String("false"));
+    //cb->addItem(QLatin1String("true"));
+    //QObject::connect(cb, SIGNAL(activated(int)), receiver, method);
+    //return cb;
+    return 0;
+}
+
+void PropertyVectorItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    //QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    //cb->setCurrentIndex(cb->findText(data.toString()));
+}
+
+QVariant PropertyVectorItem::editorData(QWidget *editor) const
+{
+    //QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    //return QVariant(cb->currentText());
+    return QVariant();
 }
 
 // ---------------------------------------------------------------

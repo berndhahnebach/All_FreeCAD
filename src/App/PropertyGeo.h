@@ -74,6 +74,9 @@ public:
     /** This method returns a string representation of the property
      */
     const Base::Vector3f &getValue(void) const;
+    const char* getEditorName(void) const {
+        return "Gui::PropertyEditor::PropertyVectorItem";
+    }
 
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);

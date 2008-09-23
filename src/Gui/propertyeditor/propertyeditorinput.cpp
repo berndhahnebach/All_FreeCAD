@@ -268,7 +268,9 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     sb->setRange((double)INT_MIN, (double)INT_MAX);
     sb->setValue(data.toDouble());
     const std::vector<App::Property*>& prop = getProperty();
-    if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
+    if (prop.empty())
+        return;
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
         sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
         sb->setSuffix(QLatin1String(" mm"));
