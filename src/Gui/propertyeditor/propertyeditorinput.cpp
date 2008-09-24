@@ -24,7 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <math.h>
+# include <cmath>
+# include <climits>
 # include <qlineedit.h>
 # include <qvalidator.h>
 # include <qinputdialog.h>
@@ -354,8 +355,8 @@ void PropertyFloatConstraintItem::setEditorData(QWidget *editor, const QVariant&
         sb->setSingleStep(c->StepSize);
     }
     else {
-        sb->setMinimum(DBL_MIN);
-        sb->setMaximum(DBL_MAX);
+        sb->setMinimum((double)INT_MIN);
+        sb->setMaximum((double)INT_MAX);
         sb->setSingleStep(0.1);
     }
     sb->setValue(prop->getValue());
