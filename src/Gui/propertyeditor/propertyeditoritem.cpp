@@ -227,8 +227,12 @@ QVariant PropertyItem::data(int column, int role) const
 
 bool PropertyItem::setData (const QVariant& value)
 {
-    if (propertyItems.empty())
-        return false;
+    if (propertyItems.empty()) {
+        PropertyItem* parent = this->parent();
+        if (!parent || !parent->parent())
+            return false;
+        return parent->setData(value);
+    }
     setValue(value);
     return true;
 }

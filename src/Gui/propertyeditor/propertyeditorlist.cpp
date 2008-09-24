@@ -113,49 +113,73 @@ PropertyVectorItem::PropertyVectorItem()
     this->appendChild(m_z);
 }
 
+QVariant PropertyVectorItem::toString(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
+
+    const Base::Vector3f& value = static_cast<const App::PropertyVector*>(prop)->getValue();
+    QString data = QString::fromAscii("[%1, %2, %3]")
+        .arg(value.x,0,'f',2)
+        .arg(value.y,0,'f',2)
+        .arg(value.z,0,'f',2);
+    return QVariant(data);
+}
+
 QVariant PropertyVectorItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
-    
-    //bool value = ((App::PropertyVector*)prop)->getValue();
-    //return QVariant(value);
-    return QVariant();
+
+    const Base::Vector3f& value = static_cast<const App::PropertyVector*>(prop)->getValue();
+    QVariant v;
+    v.setValue<Base::Vector3f>(value);
+    return v;
 }
 
 void PropertyVectorItem::setValue(const QVariant& value)
 {
-    //bool val = value.toBool();
-    //const std::vector<App::Property*>& items = getProperty();
-    //for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-    //    assert((*it)->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
-    //    QString cmd = pythonIdentifier(*it);
-    //    if (!cmd.isEmpty()) {
-    //        cmd += QString::fromAscii(" = %1").arg(val ? QLatin1String("True") : QLatin1String("False"));
-    //        Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-    //    }
-    //    else {
-    //        static_cast<App::PropertyBool*>(*it)->setValue(val);
-    //    }
-    //}
+    if (!value.canConvert<Base::Vector3f>())
+        return;
+    const Base::Vector3f& val = value.value<Base::Vector3f>();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
+        QString cmd = pythonIdentifier(*it);
+        if (!cmd.isEmpty()) {
+            cmd += QString::fromAscii(" = (%1, %2, %3)")
+                .arg(val.x,0,'f',2)
+                .arg(val.y,0,'f',2)
+                .arg(val.z,0,'f',2);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
+        else {
+            static_cast<App::PropertyVector*>(*it)->setValue(val);
+        }
+    }
 }
 
 QWidget* PropertyVectorItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
 {
-    QLabel* label = new QLabel(parent);
-    label->setIndent(2);
-    label->setBackgroundRole(QPalette::Base);
-    return label;
+    QLineEdit *le = new QLineEdit(parent);
+    le->setFrame(false);
+    le->setReadOnly(true);
+    return le;
 }
 
 void PropertyVectorItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
-    QLabel* label = qobject_cast<QLabel*>(editor);
-    label->setText(/*toString()*/QString::fromAscii("[x,y,z]"));
+    QLineEdit* le = qobject_cast<QLineEdit*>(editor);
+    const Base::Vector3f& value = data.value<Base::Vector3f>();
+    QString text = QString::fromAscii("[%1, %2, %3]")
+        .arg(value.x,0,'f',2)
+        .arg(value.y,0,'f',2)
+        .arg(value.z,0,'f',2);
+    le->setText(text);
 }
 
 QVariant PropertyVectorItem::editorData(QWidget *editor) const
 {
-    return QVariant();
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    return QVariant(le->text());
 }
 
 // ---------------------------------------------------------------
