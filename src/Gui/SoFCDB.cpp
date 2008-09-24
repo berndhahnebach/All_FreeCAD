@@ -83,6 +83,8 @@ void Gui::SoFCDB::init()
     PropertyColorItem               ::init();
     PropertyFileItem                ::init();
     PropertyPathItem                ::init();
+
+    qRegisterMetaType<Base::Vector3f>("Base::Vector3f");
 }
 
 void Gui::SoFCDB::finish()

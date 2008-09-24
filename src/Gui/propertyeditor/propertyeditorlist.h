@@ -25,7 +25,9 @@
 #define PROPERTYEDITORLIST_H
 
 #include "propertyeditoritem.h"
+#include <Base/Vector3D.h>
 
+Q_DECLARE_METATYPE(Base::Vector3f)
 
 namespace Gui {
 namespace PropertyEditor {
@@ -64,6 +66,7 @@ class GuiExport PropertyVectorItem: public PropertyItem
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
+    virtual QVariant toString(const App::Property*) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
