@@ -36,16 +36,18 @@
 namespace Gui {
 namespace PropertyEditor {
 
-class GuiExport PropertyItem : public Base::BaseClass
+class GuiExport PropertyItem : virtual public QObject, public Base::BaseClass
 {
+    Q_OBJECT
+
     TYPESYSTEM_HEADER();
 
 public:
     ~PropertyItem();
 
     /** Sets the current property objects. */
-    void setProperty( const std::vector<App::Property*>& );
-    const std::vector<App::Property*>& getProperty() const;
+    void setPropertyData( const std::vector<App::Property*>& );
+    const std::vector<App::Property*>& getPropertyData() const;
 
     /** Creates the appropriate editor for this item and sets the editor to the value of overrideValue(). */
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
@@ -65,6 +67,7 @@ public:
     int columnCount() const;
     QString propertyName() const;
     void setPropertyName(const QString&);
+    void setPropertyValue(const QString&);
     QVariant data(int column, int role) const;
     bool setData (const QVariant& value);
     Qt::ItemFlags flags(int column) const;

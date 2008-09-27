@@ -2,7 +2,8 @@ noinst_LTLIBRARIES=libpropertyeditor.la
 
 BUILT_SOURCES=\
 		moc_propertyeditor.cpp \
-		moc_propertyeditoritem.cpp 
+		moc_propertyeditoritem.cpp \
+		moc_propertyeditorlist.cpp 
 
 libpropertyeditor_la_SOURCES=\
 		propertyeditor.cpp \

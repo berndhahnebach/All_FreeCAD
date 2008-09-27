@@ -417,9 +417,9 @@ PROPERTY_SOURCE(Mesh::Cube, Mesh::Feature)
 
 Cube::Cube(void)
 {
-    ADD_PROPERTY(Length  ,(10.0));
-    ADD_PROPERTY(Width  ,(10.0));
-    ADD_PROPERTY(Height  ,(10.0));
+    ADD_PROPERTY_TYPE(Length,(10.0f),"Cube",App::Prop_None,"The length of the cube");
+    ADD_PROPERTY_TYPE(Width ,(10.0f),"Cube",App::Prop_None,"The width of the cube");
+    ADD_PROPERTY_TYPE(Height,(10.0f),"Cube",App::Prop_None,"The height of the cube");
     Length.setConstraints(&floatRange);
     Width.setConstraints(&floatRange);
     Height.setConstraints(&floatRange);

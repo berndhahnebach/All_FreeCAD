@@ -30,7 +30,6 @@
 #endif
 
 #include <App/PropertyStandard.h>
-#include <Gui/Application.h>
 
 #include "propertyeditorfont.h"
 #include "Widgets.h"
@@ -76,23 +75,18 @@ QVariant PropertyColorItem::value(const App::Property* prop) const
 
 void PropertyColorItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert<QColor>())
+        return;
     QColor col = value.value<QColor>();
     App::Color val;
     val.r = (float)col.red()/255.0f;
     val.g = (float)col.green()/255.0f;
     val.b = (float)col.blue()/255.0f;
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = (%1,%2,%3)").arg(val.r,0,'f',2).arg(val.g,0,'f',2).arg(val.b,0,'f',2);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyColor*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("(%1,%2,%3)")
+                    .arg(val.r,0,'f',2)
+                    .arg(val.g,0,'f',2)
+                    .arg(val.b,0,'f',2);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyColorItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const

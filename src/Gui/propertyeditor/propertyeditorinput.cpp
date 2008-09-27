@@ -33,10 +33,9 @@
 #endif
 
 #include <App/PropertyStandard.h>
-#include <Gui/Application.h>
+#include <Gui/SpinBox.h>
 
 #include "propertyeditorinput.h"
-#include "../SpinBox.h"
 
 using namespace Gui::PropertyEditor;
 
@@ -57,19 +56,11 @@ QVariant PropertyStringItem::value(const App::Property* prop) const
 
 void PropertyStringItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::String))
+        return;
     QString val = value.toString();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = \"%1\"").arg(val);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyString*>(*it)->setValue(val.toUtf8());
-        }
-    }
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyStringItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -119,19 +110,11 @@ QVariant PropertyIntegerItem::value(const App::Property* prop) const
 
 void PropertyIntegerItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::Int))
+        return;
     int val = value.toInt();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = %1").arg(val);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyInteger*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("%1").arg(val);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyIntegerItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -173,19 +156,11 @@ QVariant PropertyIntegerConstraintItem::value(const App::Property* prop) const
 
 void PropertyIntegerConstraintItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::Int))
+        return;
     int val = value.toInt();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = %1").arg(val);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyIntegerConstraint*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("%1").arg(val);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -198,7 +173,7 @@ QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent, const QObj
 
 void PropertyIntegerConstraintItem::setEditorData(QWidget *editor, const QVariant& /*data*/) const
 {
-    const std::vector<App::Property*>& items = getProperty();
+    const std::vector<App::Property*>& items = getPropertyData();
     App::PropertyIntegerConstraint* prop = (App::PropertyIntegerConstraint*)items[0];
 
     const App::PropertyIntegerConstraint::Constraints* c = 
@@ -236,6 +211,10 @@ QVariant PropertyFloatItem::toString(const App::Property* prop) const
 
     double value = ((App::PropertyFloat*)prop)->getValue();
     QString data = QString::fromAscii("%1").arg(value,0,'f',2);
+    if (prop->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
+        data += QString::fromUtf8(" \xc2\xb0");
+    else if (prop->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
+        data += QLatin1String(" mm");
     return QVariant(data);
 }
 
@@ -243,25 +222,17 @@ QVariant PropertyFloatItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
-    double value = ((App::PropertyFloat*)prop)->getValue();
+    double value = static_cast<const App::PropertyFloat*>(prop)->getValue();
     return QVariant(value);
 }
 
 void PropertyFloatItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::Double))
+        return;
     double val = value.toDouble();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = %1").arg(val,0,'f',2);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyFloat*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("%1").arg(val,0,'f',2);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyFloatItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -277,7 +248,7 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
     sb->setRange((double)INT_MIN, (double)INT_MAX);
     sb->setValue(data.toDouble());
-    const std::vector<App::Property*>& prop = getProperty();
+    const std::vector<App::Property*>& prop = getPropertyData();
     if (prop.empty())
         return;
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
@@ -319,19 +290,11 @@ QVariant PropertyFloatConstraintItem::value(const App::Property* prop) const
 
 void PropertyFloatConstraintItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::Double))
+        return;
     double val = value.toDouble();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = %1").arg(val,0,'f',2);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyFloatConstraint*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("%1").arg(val,0,'f',2);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -344,7 +307,7 @@ QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent, const QObjec
 
 void PropertyFloatConstraintItem::setEditorData(QWidget *editor, const QVariant& /*data*/) const
 {
-    const std::vector<App::Property*>& items = getProperty();
+    const std::vector<App::Property*>& items = getPropertyData();
     App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)items[0];
 
     const App::PropertyFloatConstraint::Constraints* c = ((App::PropertyFloatConstraint*)prop)->getConstraints();
