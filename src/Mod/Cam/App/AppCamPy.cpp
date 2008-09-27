@@ -47,9 +47,9 @@
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/Builder.h>
+#include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/MeshPy.h>
 #include <Mod/Mesh/App/Mesh.h>
-#include <Mod/Mesh/App/MeshAlgos.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
 #include <Mod/Mesh/App/Core/Triangulation.h>
@@ -97,6 +97,7 @@
 using namespace Part;
 using namespace Mesh;
 using namespace std;
+using MeshCore::MeshKernel;
 
 
 /* module functions */

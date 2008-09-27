@@ -32,7 +32,6 @@ This is the place where all the prototypes are declared and the members are defi
 #include <Handle_Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <Handle_TColgp_HArray1OfPnt.hxx>
-#include <Mod/Mesh/App/MeshAlgos.h>
 #include <Base/BoundBox.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 

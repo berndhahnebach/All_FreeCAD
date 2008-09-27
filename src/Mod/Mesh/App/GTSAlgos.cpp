@@ -31,7 +31,6 @@
 
 #include "GTSAlgos.h"
 #include "Mesh.h"
-#include "MeshCurvature.h"
 
 #include "Core/MeshIO.h"
 #include "Core/MeshKernel.h"

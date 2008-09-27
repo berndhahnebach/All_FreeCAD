@@ -252,7 +252,6 @@ libMesh_la_SOURCES=\
 		WildMagic4/Wm4Vector4.h \
 		WildMagic4/Wm4Vector4.inl \
 		AppMeshPy.cpp \
-		CurveProjector.cpp \
 		Doxygen.cpp \
 		Facet.cpp \
 		FacetPyImp.cpp \
@@ -267,10 +266,6 @@ libMesh_la_SOURCES=\
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransformDemolding.cpp \
 		Mesh.cpp \
-		MeshAlgos.cpp \
-		MeshAlgos.h \
-		MeshCurvature.cpp \
-		MeshCurvature.h \
 		MeshFeature.cpp \
 		MeshFeaturePyImp.cpp \
 		MeshPointPyImp.cpp \
@@ -286,7 +281,6 @@ nodist_include_HEADERS=\
 		$(libMesh_la_BUILT)
 
 include_HEADERS=\
-		CurveProjector.h \
 		Facet.h \
 		FeatureMeshCurvature.h \
 		FeatureMeshExport.h \
