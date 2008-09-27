@@ -38,7 +38,6 @@
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/MeshPy.h>
 #include <Mod/Mesh/App/Mesh.h>
-#include <Mod/Mesh/App/MeshAlgos.h>
 
 /******STRUCTS******/
 //This structure will be used internally in this routine without any affects of outside variable

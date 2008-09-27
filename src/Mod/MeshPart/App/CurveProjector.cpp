@@ -30,20 +30,18 @@
 
 
 #include "MeshAlgos.h"
-#include "Mesh.h"
-#include "MeshCurvature.h"
 #include "CurveProjector.h"
 
-#include "Core/MeshIO.h"
-#include "Core/MeshKernel.h"
-#include "Core/Iterator.h"
-#include "Core/Algorithm.h"
+#include <Mod/Mesh/App/Core/MeshIO.h>
+#include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
+#include <Mod/Mesh/App/Core/Algorithm.h>
+#include <Mod/Mesh/App/Mesh.h>
 
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 
-#if FC_USE_OCC
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <Geom_Curve.hxx>
@@ -51,7 +49,7 @@
 #include <BRep_Tool.hxx>
 #include <GeomAPI_IntCS.hxx>
 
-using namespace Mesh;
+using namespace MeshPart;
 using namespace MeshCore;
 
 
@@ -672,5 +670,3 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
 
 }
-
-#endif

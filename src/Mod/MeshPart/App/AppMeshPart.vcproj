@@ -253,6 +253,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CurveProjector.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\CurveProjector.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshAlgos.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MeshAlgos.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration

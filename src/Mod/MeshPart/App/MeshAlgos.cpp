@@ -30,22 +30,21 @@
 
 
 #include "MeshAlgos.h"
-#include "Mesh.h"
-#include "MeshCurvature.h"
 
-#include "Core/MeshIO.h"
-#include "Core/MeshKernel.h"
-#include "Core/Iterator.h"
-#include "Core/Algorithm.h"
-#include "Core/TopoAlgorithm.h"
-#include "Core/Evaluation.h"
+#include <Mod/Mesh/App/Mesh.h>
+#include <Mod/Mesh/App/Core/MeshIO.h>
+#include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
+#include <Mod/Mesh/App/Core/Algorithm.h>
+#include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Console.h>
 #include <Base/Builder3D.h>
 
-using namespace Mesh;
+using namespace MeshPart;
 using namespace MeshCore;
 
 
@@ -406,8 +405,6 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* 
 
 #endif
 
-#if FC_USE_OCC
-
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
@@ -584,5 +581,3 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
   ResultMesh.AddFacets(cVAry);
 
 }
-
-#endif

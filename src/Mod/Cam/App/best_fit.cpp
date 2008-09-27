@@ -37,7 +37,6 @@
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Builder.h>
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
-#include <Mod/Mesh/App/MeshAlgos.h>
 
 #include <Base/Builder3D.h>
 

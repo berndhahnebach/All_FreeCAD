@@ -38,7 +38,6 @@
 #include "Core/MeshIO.h"
 #include "MeshPy.h"
 #include "Mesh.h"
-#include "MeshAlgos.h"
 #include "FeatureMeshImport.h"
 
 using namespace Mesh;
@@ -294,68 +293,11 @@ createBox(PyObject *self, PyObject *args)
     } PY_CATCH;
 }
 
-static PyObject *                        
-loftOnCurve(PyObject *self, PyObject *args)
-{
-/*
-  Part::TopoShapePy   *pcObject;
-  PyObject *pcTopoObj,*pcListObj;
-  float x=0,y=0,z=1,size = 0.1;
-
-  if (!PyArg_ParseTuple(args, "O!O(fff)f", &(Part::TopoShapePy::Type), &pcTopoObj,&pcListObj,&x,&y,&z,&size))     // convert args: Python->C 
-//  if (!PyArg_ParseTuple(args, "O!O!", &(App::TopoShapePy::Type), &pcTopoObj,&PyList_Type,&pcListObj,x,y,z,size))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  pcObject = (Part::TopoShapePy*)pcTopoObj;
-  MeshKernel *M = new MeshKernel();
-
-  std::vector<Vector3D> poly;
-
-  if (!PyList_Check(pcListObj))
-    Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
-  
-  int nSize = PyList_Size(pcListObj);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pcListObj, i);
-    if (!PyTuple_Check(item))
-      Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
-    int nTSize = PyTuple_Size(item);
-    if(nTSize != 2 && nTSize != 3)
-      Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
-
-    Vector3D vec(0,0,0);
-
-    for(int l = 0; l < nTSize;l++)
-    {
-      PyObject* item2 = PyTuple_GetItem(item, l);
-      if (!PyFloat_Check(item2))
-        Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
-      vec[l] = PyFloat_AS_DOUBLE(item2);
-    }
-    poly.push_back(vec);
-  }
-    
-  PY_TRY {
-    TopoDS_Shape aShape = pcObject->getShape();
-    // use the MeshAlgos 
-    MeshAlgos::LoftOnCurve(*M,aShape,poly,Vector3D(x,y,z),size);
-
-  } PY_CATCH;
-
-  return new MeshPy(M);
-*/
-    Py_Return;
-}
-
 PyDoc_STRVAR(open_doc,
 "open(string) -- Create a new document and a Mesh::Import feature to load the file into the document.");
 
 PyDoc_STRVAR(inst_doc,
 "insert(string|mesh,[string]) -- Load or insert a mesh into the given or active document.");
-
-PyDoc_STRVAR(loft_doc,
-"Loft on curve.");
 
 /* List of functions defined in the module */
 
@@ -371,6 +313,5 @@ struct PyMethodDef Mesh_Import_methods[] = {
     {"createCylinder",createCylinder, Py_NEWARGS,   "Create a tessellated cylinder"},
     {"createCone",createCone, Py_NEWARGS,   "Create a tessellated cone"},
     {"createTorus",createTorus, Py_NEWARGS,   "Create a tessellated torus"},
-    {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };
