@@ -56,12 +56,12 @@ void PropertyItem::reset()
     childItems.clear();
 }
 
-void PropertyItem::setProperty( const std::vector<App::Property*>& items)
+void PropertyItem::setPropertyData( const std::vector<App::Property*>& items)
 {
     propertyItems = items;
 }
 
-const std::vector<App::Property*>& PropertyItem::getProperty() const
+const std::vector<App::Property*>& PropertyItem::getPropertyData() const
 {
     return propertyItems;
 }
@@ -183,6 +183,7 @@ QString PropertyItem::propertyName() const
 
 void PropertyItem::setPropertyName(const QString& name)
 {
+    setObjectName(name);
     QString display;
     for (int i=0; i<name.length(); i++) {
         if (name[i].isUpper() && !display.isEmpty()) {
@@ -192,6 +193,16 @@ void PropertyItem::setPropertyName(const QString& name)
     }
 
     propName = display;
+}
+
+void PropertyItem::setPropertyValue(const QString& value)
+{
+    for (std::vector<App::Property*>::const_iterator it = propertyItems.begin();
+        it != propertyItems.end(); ++it) {
+        QString cmd = pythonIdentifier(*it);
+        cmd += QString::fromAscii(" = %1").arg(value);
+        Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+    }
 }
 
 QVariant PropertyItem::data(int column, int role) const
@@ -210,8 +221,17 @@ QVariant PropertyItem::data(int column, int role) const
     }
     else {
         // no properties set
-        if (propertyItems.empty())
-            return QVariant();
+        if (propertyItems.empty()) {
+            PropertyItem* parent = this->parent();
+            if (!parent || !parent->parent())
+                return QVariant();
+            if (role == Qt::EditRole)
+                return parent->property(qPrintable(objectName()));
+            else if (role == Qt::DisplayRole)
+                return parent->property(qPrintable(objectName()));
+            else
+                return QVariant();
+        }
         if (role == Qt::EditRole)
             return value(propertyItems[0]);
         else if (role == Qt::DecorationRole)
@@ -231,7 +251,8 @@ bool PropertyItem::setData (const QVariant& value)
         PropertyItem* parent = this->parent();
         if (!parent || !parent->parent())
             return false;
-        return parent->setData(value);
+        parent->setProperty(qPrintable(objectName()),value);
+        return true;
     }
     setValue(value);
     return true;

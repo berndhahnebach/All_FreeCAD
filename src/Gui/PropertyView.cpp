@@ -146,8 +146,26 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
             }
         }
 
-        propertyEditorView->buildUp(propViewMap, array.size());
-        propertyEditorData->buildUp(propDataMap, array.size());
+        // the property must be part of each selected object, i.e. the number
+        // of selected objects is equal to the number of properties with same
+        // name and id
+        std::map<std::pair<std::string, int>, std::vector<App::Property*> >
+            ::const_iterator it;
+        std::map<std::string, std::vector<App::Property*> > dataProps;
+        for (it = propDataMap.begin(); it != propDataMap.end(); ++it) {
+            if (it->second.size() == array.size()) {
+                dataProps[it->first.first] = it->second;
+            }
+        }
+        propertyEditorData->buildUp(dataProps);
+
+        std::map<std::string, std::vector<App::Property*> > viewProps;
+        for (it = propViewMap.begin(); it != propViewMap.end(); ++it) {
+            if (it->second.size() == array.size()) {
+                viewProps[it->first.first] = it->second;
+            }
+        }
+        propertyEditorView->buildUp(viewProps);
     }
 }
 

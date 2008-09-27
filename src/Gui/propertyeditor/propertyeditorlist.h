@@ -59,11 +59,22 @@ protected:
 class PropertyFloatItem;
 class GuiExport PropertyVectorItem: public PropertyItem
 {
+    Q_OBJECT
+    Q_PROPERTY(float x READ x WRITE setX DESIGNABLE true USER true)
+    Q_PROPERTY(float y READ y WRITE setY DESIGNABLE true USER true)
+    Q_PROPERTY(float z READ z WRITE setZ DESIGNABLE true USER true)
     TYPESYSTEM_HEADER();
 
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
+
+    float x() const;
+    void setX(float x);
+    float y() const;
+    void setY(float y);
+    float z() const;
+    void setZ(float z);
 
 protected:
     virtual QVariant toString(const App::Property*) const;
@@ -107,10 +118,12 @@ class GuiExport PropertyStringListItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
-    virtual QWidget* createEditor(QWidget* parent, QObject* receiver, const char* method) const;
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
 
 protected:
+    QVariant toString(const App::Property* prop) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 

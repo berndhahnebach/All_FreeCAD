@@ -56,19 +56,12 @@ QVariant PropertyBoolItem::value(const App::Property* prop) const
 
 void PropertyBoolItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::Bool))
+        return;
     bool val = value.toBool();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyBool::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = %1").arg(val ? QLatin1String("True") : QLatin1String("False"));
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyBool*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii(" = %1")
+                    .arg(val ? QLatin1String("True") : QLatin1String("False"));
+    setPropertyValue(data);
 }
 
 QWidget* PropertyBoolItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
@@ -130,9 +123,7 @@ QVariant PropertyVectorItem::value(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
 
     const Base::Vector3f& value = static_cast<const App::PropertyVector*>(prop)->getValue();
-    QVariant v;
-    v.setValue<Base::Vector3f>(value);
-    return v;
+    return QVariant::fromValue<Base::Vector3f>(value);
 }
 
 void PropertyVectorItem::setValue(const QVariant& value)
@@ -140,21 +131,11 @@ void PropertyVectorItem::setValue(const QVariant& value)
     if (!value.canConvert<Base::Vector3f>())
         return;
     const Base::Vector3f& val = value.value<Base::Vector3f>();
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
-        QString cmd = pythonIdentifier(*it);
-        if (!cmd.isEmpty()) {
-            cmd += QString::fromAscii(" = (%1, %2, %3)")
-                .arg(val.x,0,'f',2)
-                .arg(val.y,0,'f',2)
-                .arg(val.z,0,'f',2);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-        }
-        else {
-            static_cast<App::PropertyVector*>(*it)->setValue(val);
-        }
-    }
+    QString data = QString::fromAscii("(%1, %2, %3)")
+                    .arg(val.x,0,'f',2)
+                    .arg(val.y,0,'f',2)
+                    .arg(val.z,0,'f',2);
+    setPropertyValue(data);
 }
 
 QWidget* PropertyVectorItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
@@ -182,6 +163,36 @@ QVariant PropertyVectorItem::editorData(QWidget *editor) const
     return QVariant(le->text());
 }
 
+float PropertyVectorItem::x() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3f>().x;
+}
+
+void PropertyVectorItem::setX(float x)
+{
+    setValue(QVariant::fromValue(Base::Vector3f(x, y(), z())));
+}
+
+float PropertyVectorItem::y() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3f>().y;
+}
+
+void PropertyVectorItem::setY(float y)
+{
+    setValue(QVariant::fromValue(Base::Vector3f(x(), y, z())));
+}
+
+float PropertyVectorItem::z() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3f>().z;
+}
+
+void PropertyVectorItem::setZ(float z)
+{
+    setValue(QVariant::fromValue(Base::Vector3f(x(), y(), z)));
+}
+
 // ---------------------------------------------------------------
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyEnumItem, Gui::PropertyEditor::PropertyItem);
@@ -201,21 +212,13 @@ QVariant PropertyEnumItem::value(const App::Property* prop) const
 
 void PropertyEnumItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::StringList))
+        return;
     QStringList items = value.toStringList();
     if (!items.isEmpty()) {
-        QString value = items.front();
-        const std::vector<App::Property*>& items = getProperty();
-        for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-            assert((*it)->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()));
-            QString cmd = pythonIdentifier(*it);
-            if (!cmd.isEmpty()) {
-                cmd += QString::fromAscii(" = \"%1\"").arg(value);
-                Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
-            }
-            else {
-                static_cast<App::PropertyEnumeration*>(*it)->setValue((const char*)value.toUtf8());
-            }
-        }
+        QString val = items.front();
+        QString data = QString::fromAscii("\"%1\"").arg(val);
+        setPropertyValue(data);
     }
 }
 
@@ -229,7 +232,7 @@ QWidget* PropertyEnumItem::createEditor(QWidget* parent, const QObject* receiver
 
 void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
-    const std::vector<App::Property*>& items = getProperty();
+    const std::vector<App::Property*>& items = getPropertyData();
 
     QStringList commonModes, modes;
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
@@ -271,7 +274,7 @@ PropertyStringListItem::PropertyStringListItem()
 {
 }
 
-QWidget* PropertyStringListItem::createEditor(QWidget* parent, QObject* /*receiver*/, const char* /*method*/) const
+QWidget* PropertyStringListItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);
@@ -281,7 +284,33 @@ QWidget* PropertyStringListItem::createEditor(QWidget* parent, QObject* /*receiv
 void PropertyStringListItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    cb->setEditable(true);
     cb->insertItems(0, data.toStringList());
+    cb->setCurrentIndex(0);
+}
+
+QVariant PropertyStringListItem::editorData(QWidget *editor) const
+{
+    QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    QStringList list;
+    for (int i=0; i<cb->count(); i++)
+        list << cb->itemText(i);
+    return QVariant(list);
+}
+
+QVariant PropertyStringListItem::toString(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()));
+
+    QStringList list;
+    const std::vector<std::string>& value = ((App::PropertyStringList*)prop)->getValues();
+    for ( std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt ) {
+        list << QString::fromAscii(jt->c_str());
+    }
+
+    QString text = QString::fromAscii("[%1]").arg(list.join(QLatin1String(",")));
+
+    return QVariant(text);
 }
 
 QVariant PropertyStringListItem::value(const App::Property* prop) const
@@ -299,14 +328,15 @@ QVariant PropertyStringListItem::value(const App::Property* prop) const
 
 void PropertyStringListItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::StringList))
+        return;
     QStringList values = value.toStringList();
-    std::vector<std::string> list;
+    QString data = QString::fromAscii("[");
     for (QStringList::Iterator it = values.begin(); it != values.end(); ++it) {
-        list.push_back((const char*)(*it).toAscii());
+        data += QString::fromAscii("\"%1\",").arg(*it);
     }
-    const std::vector<App::Property*>& items = getProperty();
-    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        assert((*it)->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()));
-        ((App::PropertyStringList*)*it)->setValues(list);
-    }
+    data += QString::fromAscii("]");
+    setPropertyValue(data);
 }
+
+#include "moc_propertyeditorlist.cpp"

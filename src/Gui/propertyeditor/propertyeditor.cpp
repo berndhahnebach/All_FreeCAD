@@ -96,9 +96,9 @@ void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QM
     painter->setPen(savedPen);
 }
 
-void PropertyEditor::buildUp(const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct)
+void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
 {
-    propertyModel->buildUp(props, ct);
+    propertyModel->buildUp(props);
 }
 
 // --------------------------------------------------------------------
@@ -222,28 +222,41 @@ bool PropertyModel::setHeaderData (int, Qt::Orientation, const QVariant &, int)
     return false;
 }
 
-void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, size_t ct )
+void PropertyModel::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
 {
     // fill up the listview with the properties
     rootItem->reset();
 
-    // set dummy group item
-    PropertyItem* group = static_cast<PropertyItem*>(PropertySeparatorItem::create());
-    group->setParent(rootItem);
-    rootItem->appendChild(group);
-    group->setPropertyName(QString::fromAscii("Group"));
+    // sort the properties into their groups
+    std::map<std::string, std::vector<std::vector<App::Property*> > > propGroup;
+    std::map<std::string, std::vector<App::Property*> >
+        ::const_iterator jt;
+    for (jt = props.begin(); jt != props.end(); ++jt) {
+        App::Property* prop = jt->second.front();
+        const char* group = prop->getGroup();
+        std::string grp = group ? group : "Base";
+        propGroup[grp].push_back(jt->second);
+    }
 
-    std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator it;
-    for ( it = props.begin(); it != props.end(); ++it ) {
-        // the property must be part of each selected object, i.e. the number of selected objects is equal 
-        // to the number of properties with same name and id
-        if ( it->second.size() == ct ) {
-            App::Property* prop = (it->second)[0];
+    std::map<std::string, std::vector<std::vector<App::Property*> > >
+        ::const_iterator kt;
+    for (kt = propGroup.begin(); kt != propGroup.end(); ++kt) {
+        // set group item
+        PropertyItem* group = static_cast<PropertyItem*>(PropertySeparatorItem::create());
+        group->setParent(rootItem);
+        rootItem->appendChild(group);
+        group->setPropertyName(QString::fromAscii(kt->first.c_str()));
+
+        // setup the items for the properties
+        std::vector<std::vector<App::Property*> >::const_iterator it;
+        for (it = kt->second.begin(); it != kt->second.end(); ++it) {
+            App::Property* prop = it->front();
             QString editor = QString::fromAscii(prop->getEditorName());
-            if ( !editor.isEmpty() ) {
+            if (!editor.isEmpty()) {
                 Base::BaseClass* item = 0;
                 try {
-                    item = (Base::BaseClass*)Base::Type::createInstanceByName( prop->getEditorName(),true);
+                    item = static_cast<Base::BaseClass*>(Base::Type::
+                        createInstanceByName(prop->getEditorName(),true));
                 } catch (...) {
                 }
                 if (!item) {
@@ -255,7 +268,7 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
                     child->setParent(rootItem);
                     rootItem->appendChild(child);
                     child->setPropertyName(QString::fromAscii(prop->getName()));
-                    child->setProperty(it->second);
+                    child->setPropertyData(*it);
                 }
             }
         }
