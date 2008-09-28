@@ -21,10 +21,37 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+#ifndef PROPERTYEDITORLIST_H
+#define PROPERTYEDITORLIST_H
 
-#include "propertyeditordate.h"
+namespace Gui {
+namespace PropertyEditor {
 
-using namespace Gui::PropertyEditor;
+class PropertyItem;
+class PropertyModel : public QAbstractItemModel
+{
+public:
+    PropertyModel(QObject* parent);
+    virtual ~PropertyModel();
+
+    QModelIndex buddy (const QModelIndex & index) const;
+    int columnCount (const QModelIndex & parent = QModelIndex()) const;
+    QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
+    bool setData (const QModelIndex & idx, const QVariant & value, int role);
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QModelIndex index (int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    QModelIndex parent (const QModelIndex & index) const;
+    int rowCount (const QModelIndex & parent = QModelIndex()) const;
+    QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    bool setHeaderData (int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole);
+    void buildUp(const std::map<std::string, std::vector<App::Property*> >& props);
+
+private:
+    PropertyItem *rootItem;
+};
+
+} //namespace PropertyEditor
+} //namespace Gui
+
+
+#endif //PROPERTYEDITORLIST_H

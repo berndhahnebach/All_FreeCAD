@@ -21,38 +21,48 @@
  ***************************************************************************/
 
 
-#ifndef PROPERTYEDITORFONT_H
-#define PROPERTYEDITORFONT_H
+#ifndef PROPERTYEDITOR_H
+#define PROPERTYEDITOR_H
 
-#include "propertyeditoritem.h"
+#include <map>
+#include <string>
+#include <vector>
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#include "PropertyItem.h"
+
+namespace App {
+class Property;
+}
 
 namespace Gui {
 namespace PropertyEditor {
 
-/**
- * Change a color property.
- * \author Werner Mayer
- */
-class GuiExport PropertyColorItem: public PropertyItem
+class PropertyModel;
+class PropertyEditor : public QTreeView
 {
-    TYPESYSTEM_HEADER();
+    Q_OBJECT
 
-    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
-    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
-    virtual QVariant editorData(QWidget *editor) const;
+public:
+    PropertyEditor(QWidget *parent = 0);
+    ~PropertyEditor();
 
-protected:
-    virtual QVariant decoration(const App::Property*) const;
-    virtual QVariant toString(const App::Property*) const;
-    virtual QVariant value(const App::Property*) const;
-    virtual void setValue(const QVariant&);
+    /** Builds up the list view with the properties. */
+    void buildUp(const std::map<std::string, std::vector<App::Property*> >& props);
 
 protected:
-    PropertyColorItem();
+    virtual void currentChanged (const QModelIndex & current, const QModelIndex & previous);
+    virtual void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
+    virtual QStyleOptionViewItem viewOptions() const;
+
+private:
+    PropertyModel* propertyModel;
 };
 
 } //namespace PropertyEditor
 } //namespace Gui
 
-#endif
+#endif // PROPERTYEDITOR_H

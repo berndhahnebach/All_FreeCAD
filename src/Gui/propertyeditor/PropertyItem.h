@@ -1,0 +1,380 @@
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifndef PROPERTYEDITORITEM_H
+#define PROPERTYEDITORITEM_H
+
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
+
+#include <vector>
+
+#include <Base/Type.h>
+#include <Base/Vector3D.h>
+#include <App/PropertyStandard.h>
+
+Q_DECLARE_METATYPE(Base::Vector3f)
+
+namespace Gui {
+namespace PropertyEditor {
+
+class GuiExport PropertyItem : virtual public QObject, public Base::BaseClass
+{
+    Q_OBJECT
+
+    TYPESYSTEM_HEADER();
+
+public:
+    ~PropertyItem();
+
+    /** Sets the current property objects. */
+    void setPropertyData( const std::vector<App::Property*>& );
+    const std::vector<App::Property*>& getPropertyData() const;
+
+    /** Creates the appropriate editor for this item and sets the editor to the value of overrideValue(). */
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+    virtual bool isSeparator() const { return false; }
+
+    void setParent(PropertyItem* parent);
+    PropertyItem *parent() const;
+    void appendChild(PropertyItem *child);
+
+    void setReadOnly(bool);
+    bool isReadOnly() const;
+
+    PropertyItem *child(int row);
+    int childCount() const;
+    int columnCount() const;
+    QString propertyName() const;
+    void setPropertyName(const QString&);
+    void setPropertyValue(const QString&);
+    QVariant data(int column, int role) const;
+    bool setData (const QVariant& value);
+    Qt::ItemFlags flags(int column) const;
+    int row() const;
+    void reset();
+
+protected:
+    PropertyItem();
+
+    virtual QVariant decoration(const App::Property*) const;
+    virtual QVariant toolTip(const App::Property*) const;
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+    QString pythonIdentifier(const App::Property*) const;
+
+private:
+    QString propName;
+    QVariant propData;
+    std::vector<App::Property*> propertyItems;
+    PropertyItem *parentItem;
+    QList<PropertyItem*> childItems;
+    bool readonly;
+};
+
+/**
+ * Change a string property.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyStringItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyStringItem();
+};
+
+/**
+ * Dummy property to separate groups of properties.
+ * \author Werner Mayer
+ */
+class GuiExport PropertySeparatorItem : public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    bool isSeparator() const { return true; }
+    QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+};
+
+/**
+ * Change a number.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyIntegerItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyIntegerItem();
+};
+
+/**
+ * Change a number with constraints.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyIntegerConstraintItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyIntegerConstraintItem();
+};
+
+/**
+ * Change a floating point number.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFloatItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyFloatItem();
+};
+
+/**
+ * Change a floating point number with constraints.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFloatConstraintItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyFloatConstraintItem();
+};
+
+/**
+ * Edit properties of boolean type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyBoolItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyBoolItem();
+};
+
+/**
+ * Edit properties of vector type. 
+ * \author Werner Mayer
+ */
+class PropertyFloatItem;
+class GuiExport PropertyVectorItem: public PropertyItem
+{
+    Q_OBJECT
+    Q_PROPERTY(float x READ x WRITE setX DESIGNABLE true USER true)
+    Q_PROPERTY(float y READ y WRITE setY DESIGNABLE true USER true)
+    Q_PROPERTY(float z READ z WRITE setZ DESIGNABLE true USER true)
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+    float x() const;
+    void setX(float x);
+    float y() const;
+    void setY(float y);
+    float z() const;
+    void setZ(float z);
+
+protected:
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyVectorItem();
+
+private:
+    PropertyFloatItem* m_x;
+    PropertyFloatItem* m_y;
+    PropertyFloatItem* m_z;
+};
+
+/**
+ * Edit properties of enum type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyEnumItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyEnumItem();
+};
+
+/**
+ * Edit properties of enum type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyStringListItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    QVariant toString(const App::Property* prop) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyStringListItem();
+};
+
+/**
+ * Change a color property.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyColorItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant decoration(const App::Property*) const;
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyColorItem();
+};
+
+/**
+ * Change a file.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFileItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyFileItem();
+    virtual QVariant toolTip(const App::Property*) const;
+};
+
+/**
+ * Change a path.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyPathItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyPathItem();
+};
+
+class PropertyItemEditorFactory : public QItemEditorFactory
+{
+public:
+    PropertyItemEditorFactory();
+    virtual ~PropertyItemEditorFactory();
+
+    virtual QWidget * createEditor ( QVariant::Type type, QWidget * parent ) const;
+    virtual QByteArray valuePropertyName ( QVariant::Type type ) const;
+};
+
+} // namespace PropertyEditor
+} // namespace Gui
+
+#endif // PROPERTYEDITORITEM_H

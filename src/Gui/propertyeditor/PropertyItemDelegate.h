@@ -21,16 +21,34 @@
  ***************************************************************************/
 
 
-#ifndef PROPERTYEDITORDATE_H
-#define PROPERTYEDITORDATE_H
+#ifndef PROPERTYEDITORINPUT_H
+#define PROPERTYEDITORINPUT_H
 
-#include "propertyeditoritem.h"
-
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
 
 namespace Gui {
 namespace PropertyEditor {
-} //namespace PropertyEditor
-} //namespace Gui
+
+class PropertyItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+public:
+    PropertyItemDelegate(QObject* parent);
+    ~PropertyItemDelegate();
+
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &index) const;
+    virtual QWidget * createEditor (QWidget *, const QStyleOptionViewItem&, const QModelIndex&) const;
+    virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    virtual void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index ) const;
+
+public Q_SLOTS:
+    void valueChanged();
+};
+
+} // namespace PropertyEditor
+} // namespace Gui
 
 #endif
-
