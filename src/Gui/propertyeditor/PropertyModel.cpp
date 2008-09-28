@@ -24,84 +24,16 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpainter.h>
-# include <qstyle.h>
-# include <QResizeEvent>
 #endif
 
-#include "propertyeditor.h"
-#include "propertyeditorinput.h"
+#include <App/PropertyStandard.h>
+#include <Gui/Application.h>
+
+#include "PropertyModel.h"
+#include "PropertyItem.h"
 
 using namespace Gui::PropertyEditor;
 
-PropertyEditor::PropertyEditor(QWidget *parent)
-    : QTreeView(parent)
-{
-    propertyModel = new PropertyModel(this);
-    setModel(propertyModel);
-
-    PropertyItemDelegate* delegate = new PropertyItemDelegate(this);
-    delegate->setItemEditorFactory(new PropertyItemEditorFactory);
-    setItemDelegate(delegate);
-
-    setAlternatingRowColors(true);
-    setRootIsDecorated(true);
-}
-
-PropertyEditor::~PropertyEditor()
-{
-}
-
-QStyleOptionViewItem PropertyEditor::viewOptions() const
-{
-    QStyleOptionViewItem option = QTreeView::viewOptions();
-    option.showDecorationSelected = true;
-    return option;
-}
-
-void PropertyEditor::currentChanged ( const QModelIndex & current, const QModelIndex & previous )
-{
-    QTreeView::currentChanged(current, previous);
-    if (previous.isValid())
-        closePersistentEditor(model()->buddy(previous));
-    if (current.isValid())
-        openPersistentEditor(model()->buddy(current));
-}
-
-void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
-{
-    QStyleOptionViewItem opt = viewOptions();
-    PropertyItem *property = static_cast<PropertyItem*>(index.internalPointer());
-    if (property && property->isSeparator()) {
-        painter->fillRect(rect, opt.palette.dark());
-    } else if (selectionModel()->isSelected(index)) {
-        painter->fillRect(rect, opt.palette.brush(QPalette::Highlight));
-    }
-
-    if (model()->hasChildren(index)) {
-        opt.state |= QStyle::State_Children;
-
-        QRect primitive(rect.left(), rect.top(), indentation(), rect.height());
-        opt.rect = primitive;
-
-        if (isExpanded(index))
-            opt.state |= QStyle::State_Open;
-        style()->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, this);
-    }
-
-    QPen savedPen = painter->pen();
-    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
-    painter->setPen(QPen(color));
-    painter->drawLine(rect.x(), rect.bottom(), rect.right(), rect.bottom());
-    painter->setPen(savedPen);
-}
-
-void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
-{
-    propertyModel->buildUp(props);
-}
-
-// --------------------------------------------------------------------
 
 PropertyModel::PropertyModel(QObject* parent)
     : QAbstractItemModel(parent)
@@ -276,5 +208,3 @@ void PropertyModel::buildUp(const std::map<std::string, std::vector<App::Propert
 
     reset();
 }
-
-#include "moc_propertyeditor.cpp"

@@ -38,12 +38,7 @@
 #include "SoFCInteractiveElement.h"
 #include "SoFCVectorizeSVGAction.h"
 
-#include "propertyeditor/propertyeditordate.h"
-#include "propertyeditor/propertyeditorfile.h"
-#include "propertyeditor/propertyeditorfont.h"
-#include "propertyeditor/propertyeditorinput.h"
-#include "propertyeditor/propertyeditoritem.h"
-#include "propertyeditor/propertyeditorlist.h"
+#include "propertyeditor/PropertyItem.h"
 
 using namespace Gui;
 using namespace Gui::PropertyEditor;
