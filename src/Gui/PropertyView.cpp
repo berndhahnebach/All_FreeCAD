@@ -38,7 +38,7 @@
 #include "BitmapFactory.h"
 #include "ViewProvider.h"
 
-#include "propertyeditor/PropertyItemEditor.h"
+#include "propertyeditor/PropertyEditor.h"
 
 using namespace std;
 using namespace Gui;
