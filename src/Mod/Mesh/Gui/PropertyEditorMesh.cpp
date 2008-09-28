@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlineedit.h>
 #endif
 
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -38,6 +37,24 @@ TYPESYSTEM_SOURCE(MeshGui::PropertyMeshKernelItem, Gui::PropertyEditor::Property
 
 PropertyMeshKernelItem::PropertyMeshKernelItem()
 {
+    m_p = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>
+        (Gui::PropertyEditor::PropertyIntegerItem::create());
+    m_p->setParent(this);
+    m_p->setPropertyName(QLatin1String("Points"));
+    m_p->setReadOnly(true);
+    this->appendChild(m_p);
+    m_e = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>
+        (Gui::PropertyEditor::PropertyIntegerItem::create());
+    m_e->setParent(this);
+    m_e->setPropertyName(QLatin1String("Edges"));
+    m_e->setReadOnly(true);
+    this->appendChild(m_e);
+    m_f = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>
+        (Gui::PropertyEditor::PropertyIntegerItem::create());
+    m_f->setParent(this);
+    m_f->setPropertyName(QLatin1String("Faces"));
+    m_f->setReadOnly(true);
+    this->appendChild(m_f);
 }
 
 QVariant PropertyMeshKernelItem::value(const App::Property*) const
@@ -82,78 +99,43 @@ QVariant PropertyMeshKernelItem::editorData(QWidget *editor) const
     return QVariant();
 }
 
-
-
-#if 0
-TYPESYSTEM_SOURCE(MeshGui::PropertyEditorMesh, Gui::PropertyEditor::EditableItem);
-
-PropertyEditorMesh::PropertyEditorMesh()
+int PropertyMeshKernelItem::countPoints() const
 {
-  setReadOnly(true);
-  setExpandable( true );
-  setOpen(true);
-  Gui::PropertyEditor::IntEditorItem* item=0;
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
-  item->setReadOnly(true);
-  insertItem(item);
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
-  item->setReadOnly(true);
-  insertItem(item);
+    int ctP = 0;
+    std::vector<App::Property*> props = getPropertyData();
+    for ( std::vector<App::Property*>::const_iterator pt = props.begin(); pt != props.end(); ++pt ) {
+        Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
+        const MeshKernel& rMesh = pPropMesh->getValue().getKernel();
+        ctP += (int)rMesh.CountPoints();
+    }
+
+    return ctP;
 }
 
-QWidget* PropertyEditorMesh::createEditor( int column, QWidget* parent )
+int PropertyMeshKernelItem::countEdges() const
 {
-  if ( column == 0 )
-    return 0;
+    int ctE = 0;
+    std::vector<App::Property*> props = getPropertyData();
+    for ( std::vector<App::Property*>::const_iterator pt = props.begin(); pt != props.end(); ++pt ) {
+        Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
+        const MeshKernel& rMesh = pPropMesh->getValue().getKernel();
+        ctE += (int)rMesh.CountEdges();
+    }
 
-  QLineEdit* editor = new QLineEdit( parent, "TextEditorItem::edit" );
-  editor->setText( overrideValue().toString() );
-  editor->setFocus();
-  connect(editor, SIGNAL( textChanged(const QString&) ), this, SLOT( onValueChanged() ) );
-  return editor;
+    return ctE;
 }
 
-void PropertyEditorMesh::stopEdit( int column )
+int PropertyMeshKernelItem::countFaces() const
 {
-  setText( column, overrideValue().toString() );
+    int ctF = 0;
+    std::vector<App::Property*> props = getPropertyData();
+    for ( std::vector<App::Property*>::const_iterator pt = props.begin(); pt != props.end(); ++pt ) {
+        Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
+        const MeshKernel& rMesh = pPropMesh->getValue().getKernel();
+        ctF += (int)rMesh.CountFacets();
+    }
+
+    return ctF;
 }
 
-void PropertyEditorMesh::setDefaultEditorValue( QWidget* editor )
-{
-  QLineEdit* edit = dynamic_cast<QLineEdit*>(editor);
-  edit->setText( value().toString() );
-}
-
-QVariant PropertyEditorMesh::convertFromProperty(const std::vector<App::Property*>& prop)
-{
-  int ctPts = 0;
-  int ctFts = 0;
-
-  for ( std::vector<App::Property*>::const_iterator pt = prop.begin(); pt != prop.end(); ++pt )
-  {
-    Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
-    const MeshKernel& rMesh = pPropMesh->getValue();
-    ctPts += (int)rMesh.CountPoints();
-    ctFts += (int)rMesh.CountFacets();
-  }
-
-  QString  str = QString("[Points: %1, Faces: %2]").arg(ctPts).arg(ctFts);
-  QVariant value( str );
-  setText( 1, value.toString() );
-
-  // set children
-  Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
-  QVariant pts(ctPts);
-  item->setText( 1, pts.toString() );
-  item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
-  QVariant fts(ctFts);
-  item->setText( 1, fts.toString() );
-  return value;
-}
-
-void PropertyEditorMesh::convertToProperty(const QVariant&)
-{
-}
-
-// --------------------------------------------------------------------
-#endif
+#include "moc_PropertyEditorMesh.cpp"

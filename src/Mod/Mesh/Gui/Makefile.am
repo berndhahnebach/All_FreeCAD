@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		ui_DlgRegularSolid.h \
 		moc_DlgEvaluateMeshImp.cpp \
 		moc_DlgRegularSolidImp.cpp \
+		moc_PropertyEditorMesh.cpp \
 		qrc_Mesh.cpp 
 
 libMeshGui_la_SOURCES=\
