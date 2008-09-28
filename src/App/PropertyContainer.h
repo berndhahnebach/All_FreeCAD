@@ -129,6 +129,18 @@ public:
   /// get the Group of a named Property
   const char* getPropertyDocumentation(const char *name) const
   {return getPropertyData().getDocumentation(this,name);}
+  /// check if the property is read-only
+  bool isReadOnly(const Property* prop) const
+  {return (getPropertyData().getType(this,prop) & Prop_ReadOnly) == Prop_ReadOnly;}
+  /// check if the nameed property is read-only
+  bool isReadOnly(const char *name) const
+  {return (getPropertyData().getType(this,name) & Prop_ReadOnly) == Prop_ReadOnly;}
+  /// check if the property is hidden
+  bool isHidden(const Property* prop) const
+  {return (getPropertyData().getType(this,prop) & Prop_Hidden) == Prop_Hidden;}
+  /// check if the named property is hidden
+  bool isHidden(const char *name) const
+  {return (getPropertyData().getType(this,name) & Prop_Hidden) == Prop_Hidden;}
 
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void);

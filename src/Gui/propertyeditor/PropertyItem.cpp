@@ -66,9 +66,17 @@ void PropertyItem::reset()
     childItems.clear();
 }
 
-void PropertyItem::setPropertyData( const std::vector<App::Property*>& items)
+void PropertyItem::setPropertyData(const std::vector<App::Property*>& items)
 {
     propertyItems = items;
+    bool ro = true;
+    for (std::vector<App::Property*>::const_iterator it = items.begin();
+        it != items.end(); ++it) {
+        App::PropertyContainer* parent = (*it)->getContainer();
+        if (parent)
+            ro &= parent->isReadOnly(*it);
+    }
+    this->setReadOnly(ro);
 }
 
 const std::vector<App::Property*>& PropertyItem::getPropertyData() const
@@ -209,9 +217,11 @@ void PropertyItem::setPropertyValue(const QString& value)
 {
     for (std::vector<App::Property*>::const_iterator it = propertyItems.begin();
         it != propertyItems.end(); ++it) {
-        QString cmd = pythonIdentifier(*it);
-        cmd += QString::fromAscii(" = %1").arg(value);
-        Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        App::PropertyContainer* parent = (*it)->getContainer();
+        if (parent && !parent->isReadOnly(*it)) {
+            QString cmd = QString::fromAscii("%1 = %2").arg(pythonIdentifier(*it)).arg(value);
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+        }
     }
 }
 
@@ -599,8 +609,7 @@ void PropertyBoolItem::setValue(const QVariant& value)
     if (!value.canConvert(QVariant::Bool))
         return;
     bool val = value.toBool();
-    QString data = QString::fromAscii(" = %1")
-                    .arg(val ? QLatin1String("True") : QLatin1String("False"));
+    QString data = (val ? QLatin1String("True") : QLatin1String("False"));
     setPropertyValue(data);
 }
 

@@ -97,7 +97,10 @@ QWidget * PropertyItemDelegate::createEditor (QWidget * parent, const QStyleOpti
     PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
     if (!childItem)
         return 0;
-    return childItem->createEditor(parent, this, SLOT(valueChanged()));
+    QWidget* editor = childItem->createEditor(parent, this, SLOT(valueChanged()));
+    if (editor && childItem->isReadOnly())
+        editor->setDisabled(true);
+    return editor;
 }
 
 void PropertyItemDelegate::valueChanged()
