@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef PROPERTYEDITORLIST_H
-#define PROPERTYEDITORLIST_H
+#ifndef PROPERTYMODEL_H
+#define PROPERTYMODEL_H
 
 namespace Gui {
 namespace PropertyEditor {
@@ -54,4 +54,4 @@ private:
 } //namespace Gui
 
 
-#endif //PROPERTYEDITORLIST_H
+#endif //PROPERTYMODEL_H

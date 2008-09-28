@@ -29,7 +29,7 @@
 # include <QResizeEvent>
 #endif
 
-#include "PropertyItemEditor.h"
+#include "PropertyEditor.h"
 #include "PropertyItemDelegate.h"
 #include "PropertyModel.h"
 
@@ -102,4 +102,4 @@ void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Proper
     propertyModel->buildUp(props);
 }
 
-#include "moc_PropertyItemEditor.cpp"
+#include "moc_PropertyEditor.cpp"

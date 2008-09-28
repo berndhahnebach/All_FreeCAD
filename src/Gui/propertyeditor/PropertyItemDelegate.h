@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef PROPERTYEDITORINPUT_H
-#define PROPERTYEDITORINPUT_H
+#ifndef PROPERTYITEMDELEGATE_H
+#define PROPERTYITEMDELEGATE_H
 
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>
@@ -51,4 +51,4 @@ public Q_SLOTS:
 } // namespace PropertyEditor
 } // namespace Gui
 
-#endif
+#endif // PROPERTYITEMDELEGATE_H
