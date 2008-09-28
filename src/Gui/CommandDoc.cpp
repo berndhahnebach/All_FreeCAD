@@ -113,7 +113,7 @@ StdCmdImport::StdCmdImport()
     sToolTipText  = QT_TR_NOOP("Import a file in the active document");
     sWhatsThis    = QT_TR_NOOP("Import a file in the active document");
     sStatusTip    = QT_TR_NOOP("Import a file in the active document");
-    sPixmap       = "Open";
+    //sPixmap       = "Open";
     iAccel        = Qt::CTRL+Qt::Key_I;
 }
 
@@ -156,6 +156,34 @@ bool StdCmdImport::isActive(void)
   return ( getActiveGuiDocument() ? true : false );
 }
 
+
+//===========================================================================
+// Std_Export
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdExport);
+
+StdCmdExport::StdCmdExport()
+  : Command("Std_Export")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Export...");
+    sToolTipText  = QT_TR_NOOP("Export an object in the active document");
+    sWhatsThis    = QT_TR_NOOP("Export an object in the active document");
+    sStatusTip    = QT_TR_NOOP("Export an object in the active document");
+    //sPixmap       = "Open";
+    iAccel        = Qt::CTRL+Qt::Key_E;
+}
+
+void StdCmdExport::activated(int iMsg)
+{
+}
+
+bool StdCmdExport::isActive(void)
+{
+    return (getActiveGuiDocument() ? true : false);
+}
 
 //===========================================================================
 // Std_New
@@ -656,6 +684,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdNew());
     rcCmdMgr.addCommand(new StdCmdOpen());
     rcCmdMgr.addCommand(new StdCmdImport());
+    rcCmdMgr.addCommand(new StdCmdExport());
 
     rcCmdMgr.addCommand(new StdCmdSave());
     rcCmdMgr.addCommand(new StdCmdSaveAs());

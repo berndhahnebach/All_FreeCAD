@@ -31,13 +31,21 @@ namespace MeshGui {
  * Display data of a mesh kernel.
  * \author Werner Mayer
  */
-class MeshGuiExport PropertyMeshKernelItem: public Gui::PropertyEditor::PropertyItem
+class MeshGuiExport PropertyMeshKernelItem : public Gui::PropertyEditor::PropertyItem
 {
+    Q_OBJECT
+    Q_PROPERTY(int Points READ countPoints)
+    Q_PROPERTY(int Edges READ countEdges)
+    Q_PROPERTY(int Faces READ countFaces)
     TYPESYSTEM_HEADER();
 
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
+
+    int countPoints() const;
+    int countEdges() const;
+    int countFaces() const;
 
 protected:
     virtual QVariant toolTip(const App::Property*) const;
@@ -46,30 +54,13 @@ protected:
 
 protected:
     PropertyMeshKernelItem();
-};
-
-
-
-#if 0
-/**
- * Change a text property.
- * \author Werner Mayer
- */
-class MeshGuiExport PropertyEditorMesh : public Gui::PropertyEditor::EditableItem
-{
-  TYPESYSTEM_HEADER();
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( int column );
-  virtual void setDefaultEditorValue( QWidget* editor );
-  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
-  virtual void convertToProperty(const QVariant&);
 
 private:
-  PropertyEditorMesh();
+    Gui::PropertyEditor::PropertyIntegerItem* m_p;
+    Gui::PropertyEditor::PropertyIntegerItem* m_e;
+    Gui::PropertyEditor::PropertyIntegerItem* m_f;
 };
-#endif
+
 } // namespace MeshGui
 
 

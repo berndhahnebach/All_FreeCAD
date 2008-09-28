@@ -22,8 +22,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <gts.h>
-# include <stdio.h>
+# include <cstdio>
 #endif
 
 #include <Base/Console.h>
@@ -79,12 +78,10 @@ static PyObject * open(PyObject *self, PyObject *args)
         pcDoc->recompute();
     } PY_CATCH;
 
-    Py_Return;    
+    Py_Return;
 }
 
-
-/* module functions */
-static PyObject * insert(PyObject *self, PyObject *args)
+static PyObject * importer(PyObject *self, PyObject *args)
 {
     const char* Name;
     const char* DocName=0;
@@ -128,6 +125,20 @@ static PyObject * insert(PyObject *self, PyObject *args)
 
     Py_Return;
 }
+
+static PyObject * exporter(PyObject *self, PyObject *args)
+{
+    PyObject* object;
+    const char* name;
+    if (!PyArg_ParseTuple(args, "Os",&object,&name))
+        return NULL;
+
+    PY_TRY {
+    } PY_CATCH;
+
+    Py_Return;
+}
+
 /*
 static PyObject * 
 show(PyObject *self, PyObject *args)
@@ -299,11 +310,15 @@ PyDoc_STRVAR(open_doc,
 PyDoc_STRVAR(inst_doc,
 "insert(string|mesh,[string]) -- Load or insert a mesh into the given or active document.");
 
+PyDoc_STRVAR(export_doc,
+"export(object,string) -- Export an object into a file given by its name.");
+
 /* List of functions defined in the module */
 
 struct PyMethodDef Mesh_Import_methods[] = { 
     {"open"       ,open ,       METH_VARARGS, open_doc},
-    {"insert"     ,insert,      METH_VARARGS, inst_doc},
+    {"insert"     ,importer,    METH_VARARGS, inst_doc},
+    {"export"     ,exporter,    METH_VARARGS, export_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a mesh from a file and returns a Mesh object."},
  //   {"show"       ,show,        Py_NEWARGS,   "Put a mesh object in the active document or creates one if needed"},
     {"createBox"  ,createBox,   Py_NEWARGS,   "Create a solid mesh box"},
