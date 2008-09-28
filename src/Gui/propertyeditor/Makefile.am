@@ -1,30 +1,24 @@
 noinst_LTLIBRARIES=libpropertyeditor.la
 
 BUILT_SOURCES=\
-		moc_propertyeditor.cpp \
-		moc_propertyeditoritem.cpp \
-		moc_propertyeditorlist.cpp 
+		moc_PropertyEditor.cpp \
+		moc_PropertyItem.cpp \
+		moc_PropertyItemDelegate.cpp
 
 libpropertyeditor_la_SOURCES=\
-		propertyeditor.cpp \
-		propertyeditoritem.cpp \
-		propertyeditordate.cpp \
-		propertyeditorfile.cpp \
-		propertyeditorfont.cpp \
-		propertyeditorinput.cpp \
-		propertyeditorlist.cpp
+		PropertyEditor.cpp \
+		PropertyItem.cpp \
+		PropertyItemDelegate.cpp \
+		PropertyModel.cpp
 
 
 includedir = @includedir@/Gui/propertyeditor
 
 include_HEADERS=\
-		propertyeditor.h \
-		propertyeditoritem.h \
-		propertyeditordate.h \
-		propertyeditorfile.h \
-		propertyeditorfont.h \
-		propertyeditorinput.h \
-		propertyeditorlist.h
+		PropertyEditor.h \
+		PropertyItem.h \
+		PropertyItemDelegate.h \
+		PropertyModel.h
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
