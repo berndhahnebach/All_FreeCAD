@@ -136,6 +136,7 @@ public:
                    const std::vector<Base::Vector3f>& points);
     void addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
                    const std::vector<Base::Vector3d>& points);
+    void setFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
     void deleteFacets(const std::vector<unsigned long>& removeIndices);
     void deletePoints(const std::vector<unsigned long>& removeIndices);
     unsigned long countComponents() const;
