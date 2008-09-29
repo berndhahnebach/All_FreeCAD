@@ -30,7 +30,7 @@
 #include <Base/FileInfo.h>
 #include <App/Application.h>
 #include <App/Document.h>
-#include <App/Feature.h>
+#include <App/DocumentObjectPy.h>
 #include <App/Property.h>
 
 #include "Core/MeshKernel.h"
@@ -129,12 +129,49 @@ static PyObject * importer(PyObject *self, PyObject *args)
 static PyObject * exporter(PyObject *self, PyObject *args)
 {
     PyObject* object;
-    const char* name;
-    if (!PyArg_ParseTuple(args, "Os",&object,&name))
+    const char* filename;
+    if (!PyArg_ParseTuple(args, "Os",&object,&filename))
         return NULL;
 
+    float fTolerance = 0.1f;
+    std::vector<MeshCore::MeshGeomFacet> faces;
+
     PY_TRY {
+        Py::List list(object);
+        Base::Type meshId = Base::Type::fromName("Mesh::Feature");
+        Base::Type partId = Base::Type::fromName("Part::Feature");
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            PyObject* item = (*it).ptr();
+            if (PyObject_TypeCheck(item, &(App::DocumentObjectPy::Type))) {
+                App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
+                if (obj->getTypeId().isDerivedFrom(meshId)) {
+                    const MeshObject& mesh = static_cast<Mesh::Feature*>(obj)->Mesh.getValue();
+                    MeshObject::const_facet_iterator end = mesh.facets_end();
+                    for (MeshObject::const_facet_iterator jt = mesh.facets_begin(); jt != end; ++jt) {
+                        faces.push_back(*jt);
+                    }
+                }
+                else if (obj->getTypeId().isDerivedFrom(partId)) {
+                    App::Property* shape = obj->getPropertyByName("Shape");
+                    Base::Reference<MeshObject> mesh(new MeshObject());
+                    if (shape && shape->getTypeId().isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
+                        std::vector<Base::Vector3d> aPoints;
+                        std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
+                        static_cast<App::PropertyComplexGeoData*>(shape)->getFaces(aPoints, aTopo,fTolerance);
+                        mesh->addFacets(aTopo, aPoints);
+                        MeshObject::const_facet_iterator end = mesh->facets_end();
+                        for (MeshObject::const_facet_iterator jt = mesh->facets_begin(); jt != end; ++jt) {
+                            faces.push_back(*jt);
+                        }
+                    }
+                }
+            }
+        }
     } PY_CATCH;
+
+    MeshObject mesh;
+    mesh.setFacets(faces);
+    mesh.save(filename);
 
     Py_Return;
 }
