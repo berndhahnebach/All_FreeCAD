@@ -317,7 +317,8 @@ class PythonSyntaxHighlighterP
 public:
   PythonSyntaxHighlighterP()
   {
-    keywords << QLatin1String("and") << QLatin1String("assert")
+    keywords << QLatin1String("and") << QLatin1String("as")
+             << QLatin1String("assert")
              << QLatin1String("break") << QLatin1String("class")
              << QLatin1String("continue") << QLatin1String("def")
              << QLatin1String("del") << QLatin1String("elif")
