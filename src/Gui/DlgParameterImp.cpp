@@ -76,6 +76,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
     QString cStr = tr("User parameter");
     SetNameComboBox->setCurrentIndex( SetNameComboBox->findText(cStr) );
     onParameterSetChange(cStr);
+    SetNameComboBox->hide();
 
     connect( SetNameComboBox, SIGNAL( activated( const QString& ) ), 
              this, SLOT( onParameterSetChange( const QString& ) ) );
@@ -106,6 +107,40 @@ void DlgParameterImp::changeEvent(QEvent *e)
         paramValue->headerItem()->setText( 2, tr( "Value" ) );
     } else {
         QDialog::changeEvent(e);
+    }
+}
+
+void DlgParameterImp::on_closeButton_clicked()
+{
+    close();
+}
+
+void DlgParameterImp::accept()
+{
+    close();
+}
+
+void DlgParameterImp::reject()
+{
+    close();
+}
+
+void DlgParameterImp::closeEvent(QCloseEvent* )
+{
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+    hGrp = hGrp->GetGroup("ParameterEditor");
+    QTreeWidgetItem* current = paramGroup->currentItem();
+    if (current) {
+        QStringList paths;
+        paths << current->text(0);
+        QTreeWidgetItem* parent = current->parent();
+        while (parent) {
+            paths.push_front(parent->text(0));
+            parent = parent->parent();
+        }
+
+        QString path = paths.join(QLatin1String("."));
+        hGrp->SetASCII("LastParameterGroup", (const char*)path.toUtf8());
     }
 }
 
@@ -171,6 +206,39 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
         paramGroup->expandItem(item);
         item->setIcon(0, QApplication::style()->standardPixmap(QStyle::SP_ComputerIcon));
     }
+
+    // get the path of the last selected group in the editor
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+    hGrp = hGrp->GetGroup("ParameterEditor");
+    QString path = QString::fromUtf8(hGrp->GetASCII("LastParameterGroup").c_str());
+    QStringList paths = path.split(QLatin1String("."), QString::SkipEmptyParts);
+    if (paths.empty())
+        return;
+    QTreeWidgetItem* parent = 0;
+    for (int index=0; index < paramGroup->topLevelItemCount(); index++) {
+        QTreeWidgetItem* child = paramGroup->topLevelItem(index);
+        if (child->text(0) == paths.front()) {
+            paths.pop_front();
+            parent = child;
+        }
+    }
+
+    while (parent && !paths.empty()) {
+        paramGroup->setItemExpanded(parent, true);
+        QTreeWidgetItem* item = parent;
+        parent = 0;
+        for (int index=0; index < item->childCount(); index++) {
+            QTreeWidgetItem* child = item->child(index);
+            if (child->text(0) == paths.front()) {
+                paths.pop_front();
+                parent = child;
+                break;
+            }
+        }
+    }
+
+    if (parent)
+        paramGroup->setCurrentItem(parent);
 }
 
 void DlgParameterImp::on_buttonSaveToDisk_clicked()

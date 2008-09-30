@@ -69,7 +69,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonOk" >
+      <widget class="QPushButton" name="closeButton" >
        <property name="text" >
         <string>&amp;Close</string>
        </property>
@@ -101,22 +101,5 @@
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonOk</sender>
-   <signal>clicked()</signal>
-   <receiver>Gui::Dialog::DlgParameter</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
