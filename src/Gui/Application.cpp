@@ -199,7 +199,7 @@ void Application::open(const char* FileName)
     WaitCursor wc;
     Base::FileInfo File(FileName);
     string te = File.extension();
-    const char* Mod = App::GetApplication().hasOpenType(te.c_str());
+    const char* Mod = App::GetApplication().getImportType(te.c_str());
 
     if (Mod != 0) {
         // issue module loading
@@ -230,19 +230,19 @@ void Application::open(const char* FileName)
     }
     else {
         wc.restoreCursor();
-        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
-            QObject::tr("Cannot open unknown file type: %1").arg(QLatin1String(te.c_str())));
+        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown filetype"),
+            QObject::tr("Cannot open unknown filetype: %1").arg(QLatin1String(te.c_str())));
         wc.setWaitCursor();
         return;
     }
 }
 
-void Application::import(const char* FileName, const char* DocName)
+void Application::importFrom(const char* FileName, const char* DocName)
 {
     WaitCursor wc;
     Base::FileInfo File(FileName);
     std::string te = File.extension();
-    const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+    const char* Mod = App::GetApplication().getImportType( te.c_str() );
 
     if (Mod != 0) {
         // issue module loading
@@ -280,8 +280,53 @@ void Application::import(const char* FileName, const char* DocName)
     }
     else {
         wc.restoreCursor();
-        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"),
-            QObject::tr("Cannot open unknown file type: %1").arg(QLatin1String(te.c_str())));
+        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown filetype"),
+            QObject::tr("Cannot open unknown filetype: %1").arg(QLatin1String(te.c_str())));
+        wc.setWaitCursor();
+    }
+}
+
+void Application::exportTo(const char* FileName, const char* DocName)
+{
+    WaitCursor wc;
+    Base::FileInfo File(FileName);
+    std::string te = File.extension();
+    const char* Mod = App::GetApplication().getExportType(te.c_str());
+
+    if (Mod != 0) {
+        try {
+            std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
+                (App::DocumentObject::getClassTypeId(),DocName);
+            if (sel.empty()) {
+                App::Document* doc = App::GetApplication().getDocument(DocName);
+                sel = doc->getObjectsOfType(App::DocumentObject::getClassTypeId());
+            }
+
+            std::stringstream str;
+            str << "__objs__=[]" << std::endl;
+            for (std::vector<App::DocumentObject*>::iterator it = sel.begin(); it != sel.end(); ++it) {
+                str << "__objs__.append(FreeCAD.getDocument(\"" << DocName << "\").getObject(\""
+                    << (*it)->getNameInDocument() << "\"))" << std::endl;
+            }
+
+            str << "import " << Mod << std::endl;
+            str << Mod << ".export(__objs__,\"" << File.filePath() << "\")" << std::endl;
+            str << "del __objs__" << std::endl;
+
+            std::string code = str.str();
+            // the original file name is required
+            if (runPythonCode(code.c_str(), false))
+                getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
+        }
+        catch (const Base::PyException& e){
+            // Usually thrown if the file is invalid somehow
+            e.ReportException();
+        }
+    }
+    else {
+        wc.restoreCursor();
+        QMessageBox::warning(getMainWindow(), QObject::tr("Unknown filetype"),
+            QObject::tr("Cannot save to unknown filetype: %1").arg(QLatin1String(te.c_str())));
         wc.setWaitCursor();
     }
 }

@@ -68,6 +68,7 @@
 #include <Base/VectorPy.h>
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/DocumentObjectPy.h>
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
@@ -184,6 +185,38 @@ static PyObject * insert(PyObject *self, PyObject *args)
             Py_Error(PyExc_Exception,"unknown file ending");
         }
     } PY_CATCH;
+
+    Py_Return;
+}
+
+/* module functions */
+static PyObject * exporter(PyObject *self, PyObject *args)
+{
+    PyObject* object;
+    const char* filename;
+    if (!PyArg_ParseTuple(args, "Os",&object,&filename))
+        return NULL;
+
+    BRep_Builder builder;
+    TopoDS_Compound comp;
+    builder.MakeCompound(comp);
+
+    PY_TRY {
+        Py::List list(object);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            PyObject* item = (*it).ptr();
+            if (PyObject_TypeCheck(item, &(App::DocumentObjectPy::Type))) {
+                App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
+                if (obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+                    Part::Feature* part = static_cast<Part::Feature*>(obj);
+                    builder.Add(comp, part->Shape.getValue());
+                }
+            }
+        }
+    } PY_CATCH;
+
+    TopoShape shape(comp);
+    shape.write(filename);
 
     Py_Return;
 }
@@ -487,6 +520,8 @@ struct PyMethodDef Part_methods[] = {
      "open(string) -- Create a new document and load the file into the document."},
     {"insert"     ,insert    ,METH_VARARGS,
      "insert(string,string) -- Insert the file into the given document."},
+    {"export"     ,exporter  ,METH_VARARGS,
+     "export(list,string) -- Export a list of objects into a single file."},
     {"read"       ,read      ,METH_VARARGS,
      "read(string) -- Load the file and return the shape."},
     {"show"       ,show      ,METH_VARARGS,

@@ -486,13 +486,13 @@ Base::Reference<ParameterGrp>  Application::GetParameterGroupByPath(const char* 
     return It->second->GetGroup(cName.c_str());
 }
 
-void Application::addOpenType(const char* Type, const char* ModuleName)
+void Application::addImportType(const char* Type, const char* ModuleName)
 {
-    OpenTypeItem item;
+    FileTypeItem item;
     item.filter = Type;
     item.module = ModuleName;
 
-    // Extract each file type from 'Type' literal
+    // Extract each filetype from 'Type' literal
     std::string::size_type pos = item.filter.find("*.");
     while ( pos != std::string::npos ) {
         std::string::size_type next = item.filter.find_first_of(" )", pos+1);
@@ -508,16 +508,16 @@ void Application::addOpenType(const char* Type, const char* ModuleName)
         AppName += item.filter.substr(7);
         item.filter = AppName;
         // put to the front of the array
-        _mEndings.insert(_mEndings.begin(),item);
+        _mImportTypes.insert(_mImportTypes.begin(),item);
     }
     else {
-        _mEndings.push_back(item);
+        _mImportTypes.push_back(item);
     }
 }
 
-const char* Application::hasOpenType(const char* Type) const
+const char* Application::getImportType(const char* Type) const
 {
-    for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it ) {
+    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
         const std::vector<std::string>& types = it->types;
         for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
 #ifdef __GNUC__
@@ -532,16 +532,11 @@ const char* Application::hasOpenType(const char* Type) const
     return 0;
 }
 
-void Application::rmvOpenType(const char* /*Type*/)
-{
-//  _mEndings.erase(Type);
-}
-
-std::map<std::string,std::string> Application::getOpenType(void) const
+std::map<std::string,std::string> Application::getImportTypes(void) const
 {
     std::map<std::string,std::string> endings;
 
-    for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it ) {
+    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
         const std::vector<std::string>& types = it->types;
         for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
             endings[*jt] = it->module;;
@@ -551,10 +546,80 @@ std::map<std::string,std::string> Application::getOpenType(void) const
     return endings;
 }
 
-std::vector<std::string> Application::getOpenFilter(void) const
+std::vector<std::string> Application::getImportFilters(void) const
 {
     std::vector<std::string> filter;
-    for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it ) {
+    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
+        filter.push_back(it->filter);
+    }
+
+    return filter;
+}
+
+void Application::addExportType(const char* Type, const char* ModuleName)
+{
+    FileTypeItem item;
+    item.filter = Type;
+    item.module = ModuleName;
+
+    // Extract each filetype from 'Type' literal
+    std::string::size_type pos = item.filter.find("*.");
+    while ( pos != std::string::npos ) {
+        std::string::size_type next = item.filter.find_first_of(" )", pos+1);
+        std::string::size_type len = next-pos-2;
+        std::string type = item.filter.substr(pos+2,len);
+        item.types.push_back(type);
+        pos = item.filter.find("*.", next);
+    }
+
+    // Due to branding stuff replace FreeCAD through the application name
+    if ( strncmp(Type, "FreeCAD", 7) == 0 ) {
+        std::string AppName = Config()["ExeName"];
+        AppName += item.filter.substr(7);
+        item.filter = AppName;
+        // put to the front of the array
+        _mExportTypes.insert(_mExportTypes.begin(),item);
+    }
+    else {
+        _mExportTypes.push_back(item);
+    }
+}
+
+const char* Application::getExportType(const char* Type) const
+{
+    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
+        const std::vector<std::string>& types = it->types;
+        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
+#ifdef __GNUC__
+            if ( strcasecmp(Type,jt->c_str()) == 0 )
+#else
+            if ( _stricmp(Type,jt->c_str()) == 0 )
+#endif
+                return it->module.c_str();
+        }
+    }
+
+    return 0;
+}
+
+std::map<std::string,std::string> Application::getExportTypes(void) const
+{
+    std::map<std::string,std::string> endings;
+
+    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
+        const std::vector<std::string>& types = it->types;
+        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
+            endings[*jt] = it->module;;
+        }
+    }
+
+    return endings;
+}
+
+std::vector<std::string> Application::getExportFilters(void) const
+{
+    std::vector<std::string> filter;
+    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
         filter.push_back(it->filter);
     }
 
@@ -861,7 +926,7 @@ void Application::processCmdLineFiles(void)
 {
     Base::Console().Log("Init: Processing command line files\n");
 
-    std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
+    std::map<std::string,std::string> EndingMap = App::GetApplication().getImportTypes();
 
     // cycling through all the open files
     unsigned short count = 0;

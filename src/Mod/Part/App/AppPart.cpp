@@ -15,6 +15,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 
 #include "TopoShape.h"
 #include "FeaturePartBox.h"
@@ -60,20 +61,12 @@
 #include "SurfaceOfExtrusionPy.h"
 #include "SurfaceOfRevolutionPy.h"
 #include "ToroidPy.h"
+#include "PartFeaturePy.h"
 
 extern struct PyMethodDef Part_methods[];
 
 PyDoc_STRVAR(module_part_doc,
 "This is a module working with shapes.");
-
-inline void AddType(PyTypeObject* Type,PyObject* Module, const char * Name){
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
-    if(PyType_Ready(Type) < 0) return;
-    union PyType_Object pyPartType = {Type};
-    PyModule_AddObject(Module, Name, pyPartType.o);
-}
 
 extern "C" {
 void AppPartExport initPart()
@@ -82,36 +75,38 @@ void AppPartExport initPart()
     Base::Console().Log("Loading Part module... done\n");
 
     // Add Types to module
-    AddType(&Part::TopoShapePy          ::Type,partModule,"Shape");
-    AddType(&Part::TopoShapeVertexPy    ::Type,partModule,"Vertex");
-    AddType(&Part::TopoShapeWirePy      ::Type,partModule,"Wire");
-    AddType(&Part::TopoShapeEdgePy      ::Type,partModule,"Edge");
-    AddType(&Part::TopoShapeSolidPy     ::Type,partModule,"Solid");
-    AddType(&Part::TopoShapeFacePy      ::Type,partModule,"Face");
-    AddType(&Part::TopoShapeCompoundPy  ::Type,partModule,"Compound");
-    AddType(&Part::TopoShapeCompSolidPy ::Type,partModule,"CompSolid");
-    AddType(&Part::TopoShapeShellPy     ::Type,partModule,"Shell");
+    Base::Interpreter().addType(&Part::TopoShapePy          ::Type,partModule,"Shape");
+    Base::Interpreter().addType(&Part::TopoShapeVertexPy    ::Type,partModule,"Vertex");
+    Base::Interpreter().addType(&Part::TopoShapeWirePy      ::Type,partModule,"Wire");
+    Base::Interpreter().addType(&Part::TopoShapeEdgePy      ::Type,partModule,"Edge");
+    Base::Interpreter().addType(&Part::TopoShapeSolidPy     ::Type,partModule,"Solid");
+    Base::Interpreter().addType(&Part::TopoShapeFacePy      ::Type,partModule,"Face");
+    Base::Interpreter().addType(&Part::TopoShapeCompoundPy  ::Type,partModule,"Compound");
+    Base::Interpreter().addType(&Part::TopoShapeCompSolidPy ::Type,partModule,"CompSolid");
+    Base::Interpreter().addType(&Part::TopoShapeShellPy     ::Type,partModule,"Shell");
 
-    AddType(&Part::LinePy               ::Type,partModule,"Line");
-    AddType(&Part::CirclePy             ::Type,partModule,"Circle");
-    AddType(&Part::EllipsePy            ::Type,partModule,"Ellipse");
-    AddType(&Part::HyperbolaPy          ::Type,partModule,"Hyperbola");
-    AddType(&Part::ParabolaPy           ::Type,partModule,"Parabola");
-    AddType(&Part::ArcPy                ::Type,partModule,"Arc");
-    AddType(&Part::BezierCurvePy        ::Type,partModule,"BezierCurve");
-    AddType(&Part::BSplineCurvePy       ::Type,partModule,"BSplineCurve");
-    AddType(&Part::OffsetCurvePy        ::Type,partModule,"OffsetCurve");
+    Base::Interpreter().addType(&Part::LinePy               ::Type,partModule,"Line");
+    Base::Interpreter().addType(&Part::CirclePy             ::Type,partModule,"Circle");
+    Base::Interpreter().addType(&Part::EllipsePy            ::Type,partModule,"Ellipse");
+    Base::Interpreter().addType(&Part::HyperbolaPy          ::Type,partModule,"Hyperbola");
+    Base::Interpreter().addType(&Part::ParabolaPy           ::Type,partModule,"Parabola");
+    Base::Interpreter().addType(&Part::ArcPy                ::Type,partModule,"Arc");
+    Base::Interpreter().addType(&Part::BezierCurvePy        ::Type,partModule,"BezierCurve");
+    Base::Interpreter().addType(&Part::BSplineCurvePy       ::Type,partModule,"BSplineCurve");
+    Base::Interpreter().addType(&Part::OffsetCurvePy        ::Type,partModule,"OffsetCurve");
 
-    AddType(&Part::PlanePy              ::Type,partModule,"Plane");
-    AddType(&Part::CylinderPy           ::Type,partModule,"Cylinder");
-    AddType(&Part::ConePy               ::Type,partModule,"Cone");
-    AddType(&Part::SpherePy             ::Type,partModule,"Sphere");
-    AddType(&Part::ToroidPy             ::Type,partModule,"Toroid");
-    AddType(&Part::BezierSurfacePy      ::Type,partModule,"BezierSurface");
-    AddType(&Part::BSplineSurfacePy     ::Type,partModule,"BSplineSurface");
-    AddType(&Part::OffsetSurfacePy      ::Type,partModule,"OffsetSurface");
-    AddType(&Part::SurfaceOfExtrusionPy ::Type,partModule,"SurfaceOfExtrusion");
-    AddType(&Part::SurfaceOfRevolutionPy::Type,partModule,"SurfaceOfRevolution");
+    Base::Interpreter().addType(&Part::PlanePy              ::Type,partModule,"Plane");
+    Base::Interpreter().addType(&Part::CylinderPy           ::Type,partModule,"Cylinder");
+    Base::Interpreter().addType(&Part::ConePy               ::Type,partModule,"Cone");
+    Base::Interpreter().addType(&Part::SpherePy             ::Type,partModule,"Sphere");
+    Base::Interpreter().addType(&Part::ToroidPy             ::Type,partModule,"Toroid");
+    Base::Interpreter().addType(&Part::BezierSurfacePy      ::Type,partModule,"BezierSurface");
+    Base::Interpreter().addType(&Part::BSplineSurfacePy     ::Type,partModule,"BSplineSurface");
+    Base::Interpreter().addType(&Part::OffsetSurfacePy      ::Type,partModule,"OffsetSurface");
+    Base::Interpreter().addType(&Part::SurfaceOfExtrusionPy ::Type,partModule,"SurfaceOfExtrusion");
+    Base::Interpreter().addType(&Part::SurfaceOfRevolutionPy::Type,partModule,"SurfaceOfRevolution");
+
+    Base::Interpreter().addType(&Part::PartFeaturePy        ::Type,partModule,"Feature");
 #if 1
     Py::Module mod(partModule);
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));

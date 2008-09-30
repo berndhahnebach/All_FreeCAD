@@ -65,12 +65,18 @@ PyMethodDef Application::Methods[] = {
      "ConfigSet(string, string) -- Set the given key to the given value."},
     {"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1,
      "Dump the configuration to the output."},
-    {"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1,
-     "Register file extension"},
-    {"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1,
-     "Unregister file extension"},
-    {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1,
-     "Not yet implemented"},
+    {"addImportType",  (PyCFunction) Application::sAddImportType,  1,
+     "Register filetype for import"},
+    {"getImportType",  (PyCFunction) Application::sGetImportType,  1,
+     "Get the name of the module that can import the filetype"},
+    {"EndingAdd",      (PyCFunction) Application::sAddImportType  ,1, // deprecated
+     "deprecated -- use addImportType"},
+    {"EndingGet",      (PyCFunction) Application::sGetImportType  ,1, // deprecated
+     "deprecated -- use getImportType"},
+    {"addExportType",  (PyCFunction) Application::sAddExportType  ,1,
+     "Register filetype for export"},
+    {"getExportType",  (PyCFunction) Application::sGetExportType  ,1,
+     "Get the name of the module that can export the filetype"},
 
     {"open",   (PyCFunction) Application::sOpenDocument,   1,
      "See openDocument(string)"},
@@ -328,31 +334,19 @@ PyObject* Application::sGetVersion(PyObject * /*self*/, PyObject *args,PyObject 
 }
 
 
-PyObject* Application::sEndingAdd(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+PyObject* Application::sAddImportType(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *psKey,*psMod;
 
     if (!PyArg_ParseTuple(args, "ss", &psKey,&psMod))
         return NULL;
 
-    GetApplication().addOpenType(psKey,psMod);
+    GetApplication().addImportType(psKey,psMod);
 
     Py_Return;
 }
 
-PyObject* Application::sEndingDelete(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
-{
-    char*       psKey;
-
-    if (!PyArg_ParseTuple(args, "s", &psKey) )
-        return NULL;
-
-    GetApplication().rmvOpenType(psKey);
-
-    Py_Return;
-}
-
-PyObject* Application::sEndingGet(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+PyObject* Application::sGetImportType(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char*       psKey=0;
 
@@ -360,10 +354,38 @@ PyObject* Application::sEndingGet(PyObject * /*self*/, PyObject *args,PyObject *
         return NULL;                             // NULL triggers exception
 
     if (psKey) {
-        return Py_BuildValue("s",GetApplication().hasOpenType(psKey));
+        return Py_BuildValue("s",GetApplication().getImportType(psKey));
     }
     else {
-        return Interpreter().CreateFrom(GetApplication().getOpenType());
+        return Interpreter().CreateFrom(GetApplication().getImportTypes());
+    }
+
+}
+
+PyObject* Application::sAddExportType(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    char *psKey,*psMod;
+
+    if (!PyArg_ParseTuple(args, "ss", &psKey,&psMod))
+        return NULL;
+
+    GetApplication().addExportType(psKey,psMod);
+
+    Py_Return;
+}
+
+PyObject* Application::sGetExportType(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    char*       psKey=0;
+
+    if (!PyArg_ParseTuple(args, "|s", &psKey))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    if (psKey) {
+        return Py_BuildValue("s",GetApplication().getExportType(psKey));
+    }
+    else {
+        return Interpreter().CreateFrom(GetApplication().getExportTypes());
     }
 
 }

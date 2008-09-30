@@ -156,7 +156,7 @@ public:
 
     /** @name methods for the open handler 
      *  With this facility a Application module can register 
-     *  a ending (file type) which he can handle to open. 
+     *  a ending (filetype) which he can handle to open. 
      *  The ending and the module name are stored and if the file
      *  type is opened the module get loaded and need to register a
      *  OpenHandler class in the OpenHandlerFactorySingleton. 
@@ -166,15 +166,22 @@ public:
      *  @see OpenHandlerFactorySingleton
      */
     //@{
-    /// register a ending and a module name
-    void addOpenType(const char* Type, const char* ModuleName);
+    /// register a filetype and a module name
+    void addImportType(const char* Type, const char* ModuleName);
     /// checks if a type is already registered and returns the module name on success or NULL at fail
-    const char* hasOpenType(const char* Type) const;
-    /// returns a map of all registered open types
-    std::map<std::string,std::string> getOpenType(void) const;
-    std::vector<std::string> getOpenFilter(void) const;
-    /// removes a open handler type
-    void rmvOpenType(const char* Type);
+    const char* getImportType(const char* Type) const;
+    /// returns a map of all registered filetypes
+    std::map<std::string,std::string> getImportTypes(void) const;
+    std::vector<std::string> getImportFilters(void) const;
+    //@}
+    //@{
+    /// register a filetype and a module name
+    void addExportType(const char* Type, const char* ModuleName);
+    /// checks if a type is already registered and returns the module name on success or 0 otherwise
+    const char* getExportType(const char* Type) const;
+    /// returns a map of all registered filetypes
+    std::map<std::string,std::string> getExportTypes(void) const;
+    std::vector<std::string> getExportFilters(void) const;
     //@}
 
     /** @name Init, Destruct an Access methods */
@@ -236,9 +243,10 @@ private:
     PYFUNCDEF_S(sTemplateAdd);
     PYFUNCDEF_S(sTemplateDelete);
     PYFUNCDEF_S(sTemplateGet);
-    PYFUNCDEF_S(sEndingAdd);
-    PYFUNCDEF_S(sEndingDelete);
-    PYFUNCDEF_S(sEndingGet);
+    PYFUNCDEF_S(sAddImportType);
+    PYFUNCDEF_S(sGetImportType);
+    PYFUNCDEF_S(sAddExportType);
+    PYFUNCDEF_S(sGetExportType);
 
     PYFUNCDEF_S(sOpenDocument);
     PYFUNCDEF_S(sSaveDocument);
@@ -281,14 +289,15 @@ private:
     static char ** _argv;
     //@}
 
-    struct OpenTypeItem {
+    struct FileTypeItem {
         std::string filter;
         std::string module;
         std::vector<std::string> types;
     };
 
     /// open ending information
-    std::vector<OpenTypeItem> _mEndings;
+    std::vector<FileTypeItem> _mImportTypes;
+    std::vector<FileTypeItem> _mExportTypes;
     std::map<std::string,Document*> DocMap;
     std::map<std::string,ParameterManager *> mpcPramManager;
     std::map<std::string,std::string> &_mConfig;
