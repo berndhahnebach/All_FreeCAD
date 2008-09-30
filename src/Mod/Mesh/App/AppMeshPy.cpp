@@ -348,7 +348,7 @@ PyDoc_STRVAR(inst_doc,
 "insert(string|mesh,[string]) -- Load or insert a mesh into the given or active document.");
 
 PyDoc_STRVAR(export_doc,
-"export(object,string) -- Export an object into a file given by its name.");
+"export(list,string) -- Export a list of objects into a single file.");
 
 /* List of functions defined in the module */
 

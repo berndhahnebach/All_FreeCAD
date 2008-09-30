@@ -380,11 +380,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* file = new MenuItem( menuBar );
     file->setCommand(QT_TR_NOOP("&File"));
     *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs"
-          << "Separator" << "Std_Import"
-#ifdef FC_DEBUG
-          << "Std_Export"
-#endif
-          << "Std_ProjectInfo" 
+          << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
           << "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 

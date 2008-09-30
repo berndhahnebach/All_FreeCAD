@@ -94,6 +94,7 @@ public:
     /** @name Input/Output */
     //@{
     void read(const char *FileName);
+    void write(const char *FileName) const;
     void importIges(const char *FileName);
     void importStep(const char *FileName);
     void importBrep(const char *FileName);

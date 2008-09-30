@@ -57,7 +57,7 @@ open(PyObject *self, PyObject *args)
             view->resize( 400, 300 );
             Gui::getMainWindow()->addWindow(view);
         } else {
-            PyErr_SetString(PyExc_Exception, "unknown file type");
+            PyErr_SetString(PyExc_Exception, "unknown filetype");
             return NULL;
         }
     } PY_CATCH;

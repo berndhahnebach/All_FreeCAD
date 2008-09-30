@@ -371,6 +371,30 @@ void TopoShape::importBrep(const char *FileName)
     this->_Shape = aShape;
 }
 
+void TopoShape::write(const char *FileName) const
+{
+    Base::FileInfo File(FileName);
+    
+    if (File.hasExtension("igs") || File.hasExtension("iges")) {
+        // write iges file
+        exportIges(File.filePath().c_str());
+    }
+    else if (File.hasExtension("stp") || File.hasExtension("step")) {
+        exportStep(File.filePath().c_str());
+    }
+    else if (File.hasExtension("brp") || File.hasExtension("brep")) {
+        // read brep-file
+        exportBrep(File.filePath().c_str());
+    }
+    else if (File.hasExtension("stl")) {
+        // read brep-file
+        exportStl(File.filePath().c_str());
+    }
+    else{
+        throw Base::Exception("Unknown extension");
+    }
+}
+
 void TopoShape::exportIges(const char *filename) const
 {
     try {

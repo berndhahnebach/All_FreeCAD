@@ -549,11 +549,11 @@ void View3DInventor::dropEvent (QDropEvent * e)
                     if (info.isSymLink())
                         info.setFile(info.readLink());
                     // First check the complete extension
-                    if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()))
-                        Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                    if (App::GetApplication().getImportType(info.completeSuffix().toAscii()))
+                        Application::Instance->importFrom(info.absoluteFilePath().toUtf8(), pDoc->getName());
                     // Don't get the complete extension
-                    else if (App::GetApplication().hasOpenType( info.suffix().toAscii()))
-                        Application::Instance->import(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                    else if (App::GetApplication().getImportType( info.suffix().toAscii()))
+                        Application::Instance->importFrom(info.absoluteFilePath().toUtf8(), pDoc->getName());
                 }
             }
         }

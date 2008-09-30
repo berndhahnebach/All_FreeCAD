@@ -64,7 +64,9 @@ public:
     /// open a file
     void open(const char* FileName);
     /// import a file into the document DocName
-    void import(const char* FileName, const char* DocName);
+    void importFrom(const char* FileName, const char* DocName);
+    /// Export objects from the document DocName to a single file
+    void exportTo(const char* FileName, const char* DocName);
     //@}
 
 

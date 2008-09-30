@@ -898,8 +898,8 @@ void MainWindow::dropEvent (QDropEvent* e)
             if (info.exists() && info.isFile()) {
                 if (info.isSymLink())
                     info.setFile(info.readLink());
-                if (App::GetApplication().hasOpenType(info.completeSuffix().toAscii()) ||
-                    App::GetApplication().hasOpenType(info.suffix().toAscii())) {
+                if (App::GetApplication().getImportType(info.completeSuffix().toAscii()) ||
+                    App::GetApplication().getImportType(info.suffix().toAscii())) {
                     // ok, we support files with this extension
                     files << info.absoluteFilePath();
                     // we load non-project files, i.e. we must create a new document
@@ -911,7 +911,7 @@ void MainWindow::dropEvent (QDropEvent* e)
 
         const char *docName = pDoc ? pDoc->getName() : "";
         for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) {
-            Application::Instance->import(it->toUtf8(), docName);
+            Application::Instance->importFrom(it->toUtf8(), docName);
         }
     }
     else {

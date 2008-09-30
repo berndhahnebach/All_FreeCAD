@@ -31,13 +31,11 @@
 ParGrp = FreeCAD.ParamGet("System parameter:Modules").GetGroup("Mesh")
 
 # Append the open handler
-FreeCAD.EndingAdd("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
+FreeCAD.addImportType("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
+FreeCAD.addExportType("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
 
 
 # Set the needed information
 ParGrp.SetString("HelpIndex",        "Mesh/Help/index.html")
 ParGrp.SetString("WorkBenchName",    "Mesh Design")
 ParGrp.SetString("WorkBenchModule",  "MeshWorkbench.py")
-
-
-
