@@ -47,15 +47,20 @@ public:
     DlgParameterImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgParameterImp();
 
+    void accept();
+    void reject();
+
 public Q_SLOTS:
     void onParameterSetChange(const QString& rcString);
     void on_buttonSaveToDisk_clicked();
 
 protected Q_SLOTS:
     void onGroupSelected(QTreeWidgetItem *);
+    void on_closeButton_clicked();
 
 protected:
     void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent*);
 
 protected:
     QTreeWidget* paramGroup;
