@@ -247,6 +247,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FeatureFillet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeatureFillet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FeaturePartBoolean.cpp"
 				>
 			</File>

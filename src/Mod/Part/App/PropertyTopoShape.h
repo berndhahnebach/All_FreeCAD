@@ -89,6 +89,59 @@ private:
     TopoShape _Shape;
 };
 
+/** A property class to store hash codes and two radii for the fillet algorithm.
+ * @author Werner Mayer
+ */
+struct AppPartExport FilletElement {
+    int hashval;
+    double radius1, radius2;
+};
+
+class AppPartExport PropertyFilletContour : public App::PropertyLists
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyFilletContour();
+    ~PropertyFilletContour();
+
+    virtual void setSize(int newSize) {
+        _lValueList.resize(newSize);
+    }
+    virtual int getSize(void) const {
+        return _lValueList.size();
+    }
+
+    /** Sets the property
+     */
+    void setValue(int id, double r1, double r2);
+
+    void setValues (const std::vector<FilletElement>& values);
+
+    const std::vector<FilletElement> &getValues(void) const {
+        return _lValueList;
+    }
+
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+    virtual void SaveDocFile (Base::Writer &writer) const;
+    virtual void RestoreDocFile(Base::Reader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const {
+        return _lValueList.size() * sizeof(FilletElement);
+    }
+
+private:
+    std::vector<FilletElement> _lValueList;
+};
+
 } //namespace Part
 
 
