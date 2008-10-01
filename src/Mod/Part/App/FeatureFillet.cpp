@@ -26,6 +26,7 @@
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>
+# include <TopoDS_Edge.hxx>
 #endif
 
 
