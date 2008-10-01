@@ -47,6 +47,7 @@
 #include "DlgPartBoxImp.h"
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
+#include "DlgExtrusion.h"
 #include "DlgPrimitives.h"
 #include "ViewProvider.h"
 
@@ -548,6 +549,33 @@ bool CmdPartBoolean::isActive(void)
     return hasActiveDocument();
 }
 
+//===========================================================================
+// Part_Extrude
+//===========================================================================
+DEF_STD_CMD_A(CmdPartExtrude);
+
+CmdPartExtrude::CmdPartExtrude()
+  :Command("Part_Extrude")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Extrude...");
+    sToolTipText  = QT_TR_NOOP("Extrude a selected sketch");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartExtrude::activated(int iMsg)
+{
+    PartGui::DlgExtrusion dlg(Gui::getMainWindow());
+    dlg.exec();
+}
+
+bool CmdPartExtrude::isActive(void)
+{
+    return hasActiveDocument();
+}
 
 //--------------------------------------------------------------------------------------
 
@@ -649,6 +677,7 @@ void CreatePartCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdPartBoolean());
+    rcCmdMgr.addCommand(new CmdPartExtrude());
     rcCmdMgr.addCommand(new CmdPartCommon());
     rcCmdMgr.addCommand(new CmdPartCut());
     rcCmdMgr.addCommand(new CmdPartFuse());
