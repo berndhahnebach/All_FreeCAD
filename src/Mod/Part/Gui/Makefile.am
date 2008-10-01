@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libPartGui.la PartGui.la
 BUILT_SOURCES=\
 		ui_DlgBooleanOperation.h \
 		ui_DlgExtrusion.h \
+		ui_DlgFilletEdges.h \
 		ui_DlgPartBox.h \
 		ui_DlgPartCylinder.h \
 		ui_DlgPartImportIges.h \
@@ -13,6 +14,7 @@ BUILT_SOURCES=\
 		ui_DlgSettings3DViewPart.h \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgExtrusion.cpp \
+		moc_DlgFilletEdges.cpp \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartCylinderImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
@@ -27,6 +29,8 @@ libPartGui_la_SOURCES=\
 		DlgBooleanOperation.h \
 		DlgExtrusion.cpp \
 		DlgExtrusion.h \
+		DlgFilletEdges.cpp \
+		DlgFilletEdges.h \
 		DlgPartBoxImp.cpp \
 		DlgPartBoxImp.h \
 		DlgPartCylinderImp.cpp \
@@ -163,6 +167,7 @@ EXTRA_DIST = \
 		Icons/preferences-part_design.svg \
 		DlgBooleanOperation.ui \
 		DlgExtrusion.ui \
+		DlgFilletEdges.ui \
 		DlgPartBox.ui \
 		DlgPartCylinder.ui \
 		DlgPartImportIges.ui \

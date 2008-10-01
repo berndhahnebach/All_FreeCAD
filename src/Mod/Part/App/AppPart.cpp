@@ -31,6 +31,7 @@
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
 #include "FeatureExtrusion.h"
+#include "FeatureFillet.h"
 #include "PrimitiveFeature.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
@@ -112,31 +113,33 @@ void AppPartExport initPart()
     mod.setAttr(std::string("circle"),mod.getAttr("Circle"));
 #endif
 
-    Part::TopoShape           ::init();
-    Part::PropertyPartShape   ::init();
+    Part::TopoShape             ::init();
+    Part::PropertyPartShape     ::init();
+    Part::PropertyFilletContour ::init();
 #if 1
-    Part::PropertyCircle      ::init();
+    Part::PropertyCircle        ::init();
 #endif
 
-    Part::Feature             ::init();
-    Part::Box                 ::init();
-    Part::Boolean             ::init();
-    Part::Common              ::init();
-    Part::Cut                 ::init();
-    Part::Fuse                ::init();
-    Part::Section             ::init();
-    Part::Extrusion           ::init();
-    Part::ImportStep          ::init();
-    Part::ImportIges          ::init();
-    Part::ImportBrep          ::init();
-    Part::CurveNet            ::init();
-    Part::Polygon             ::init();
-    Part::Circle              ::init();
-    Part::Plane               ::init();
-    Part::Sphere              ::init();
-    Part::Cylinder            ::init();
-    Part::Cone                ::init();
-    Part::Torus               ::init();
+    Part::Feature               ::init();
+    Part::Box                   ::init();
+    Part::Boolean               ::init();
+    Part::Common                ::init();
+    Part::Cut                   ::init();
+    Part::Fuse                  ::init();
+    Part::Section               ::init();
+    Part::Extrusion             ::init();
+    Part::Fillet                ::init();
+    Part::ImportStep            ::init();
+    Part::ImportIges            ::init();
+    Part::ImportBrep            ::init();
+    Part::CurveNet              ::init();
+    Part::Polygon               ::init();
+    Part::Circle                ::init();
+    Part::Plane                 ::init();
+    Part::Sphere                ::init();
+    Part::Cylinder              ::init();
+    Part::Cone                  ::init();
+    Part::Torus                 ::init();
 }
 
 } // extern "C"
