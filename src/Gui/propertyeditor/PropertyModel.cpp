@@ -38,7 +38,7 @@ using namespace Gui::PropertyEditor;
 PropertyModel::PropertyModel(QObject* parent)
     : QAbstractItemModel(parent)
 {
-    rootItem = (PropertyItem*)PropertyItem::create();
+    rootItem = static_cast<PropertyItem*>(PropertyItem::create());
 }
 
 PropertyModel::~PropertyModel()

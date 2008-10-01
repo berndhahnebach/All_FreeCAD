@@ -82,7 +82,7 @@ protected:
 
     virtual QVariant decoration(const App::Property*) const;
     virtual QVariant toolTip(const App::Property*) const;
-    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
     QString pythonIdentifier(const App::Property*) const;
@@ -181,7 +181,7 @@ class GuiExport PropertyFloatItem: public PropertyItem
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
-    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
@@ -202,7 +202,7 @@ class GuiExport PropertyFloatConstraintItem: public PropertyItem
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
-    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
@@ -238,24 +238,24 @@ class PropertyFloatItem;
 class GuiExport PropertyVectorItem: public PropertyItem
 {
     Q_OBJECT
-    Q_PROPERTY(float x READ x WRITE setX DESIGNABLE true USER true)
-    Q_PROPERTY(float y READ y WRITE setY DESIGNABLE true USER true)
-    Q_PROPERTY(float z READ z WRITE setZ DESIGNABLE true USER true)
+    Q_PROPERTY(double x READ x WRITE setX DESIGNABLE true USER true)
+    Q_PROPERTY(double y READ y WRITE setY DESIGNABLE true USER true)
+    Q_PROPERTY(double z READ z WRITE setZ DESIGNABLE true USER true)
     TYPESYSTEM_HEADER();
 
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
-    float x() const;
-    void setX(float x);
-    float y() const;
-    void setY(float y);
-    float z() const;
-    void setZ(float z);
+    double x() const;
+    void setX(double x);
+    double y() const;
+    void setY(double y);
+    double z() const;
+    void setZ(double z);
 
 protected:
-    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
@@ -301,7 +301,7 @@ class GuiExport PropertyStringListItem: public PropertyItem
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
-    QVariant toString(const App::Property* prop) const;
+    QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
@@ -323,7 +323,7 @@ class GuiExport PropertyColorItem: public PropertyItem
 
 protected:
     virtual QVariant decoration(const App::Property*) const;
-    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 

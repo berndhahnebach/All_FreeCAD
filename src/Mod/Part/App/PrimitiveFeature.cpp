@@ -52,8 +52,8 @@ PROPERTY_SOURCE(Part::Plane, Part::Feature)
 
 Plane::Plane()
 {
-    ADD_PROPERTY(Length,(100.0));
-    ADD_PROPERTY(Width,(100.0));
+    ADD_PROPERTY_TYPE(Length,(100.0f),"Plane",App::Prop_None,"The length of the plane");
+    ADD_PROPERTY_TYPE(Width ,(100.0f),"Plane",App::Prop_None,"The width of the plane");
 }
 
 short Plane::mustExecute() const
@@ -117,13 +117,13 @@ PROPERTY_SOURCE(Part::Sphere, Part::Feature)
 
 Sphere::Sphere(void)
 {
-    ADD_PROPERTY(Radius  ,(5.0));
+    ADD_PROPERTY_TYPE(Radius,(5.0),"Sphere",App::Prop_None,"The radius of the sphere");
     Radius.setConstraints(&floatRange);
-    ADD_PROPERTY(Angle1  ,(-90.0f));
+    ADD_PROPERTY_TYPE(Angle1,(-90.0f),"Sphere",App::Prop_None,"The angle of the sphere");
     Angle1.setConstraints(&angleRangeV);
-    ADD_PROPERTY(Angle2  ,(90.0f));
+    ADD_PROPERTY_TYPE(Angle2,(90.0f),"Sphere",App::Prop_None,"The angle of the sphere");
     Angle2.setConstraints(&angleRangeV);
-    ADD_PROPERTY(Angle3  ,(360.0f));
+    ADD_PROPERTY_TYPE(Angle3,(360.0f),"Sphere",App::Prop_None,"The angle of the sphere");
     Angle3.setConstraints(&angleRangeU);
 }
 
@@ -158,9 +158,9 @@ PROPERTY_SOURCE(Part::Cylinder, Part::Feature)
 
 Cylinder::Cylinder(void)
 {
-    ADD_PROPERTY(Radius  ,(2.0));
-    ADD_PROPERTY(Height  ,(10.0));
-    ADD_PROPERTY(Angle   ,(360.0f));
+    ADD_PROPERTY_TYPE(Radius,(2.0),"Cylinder",App::Prop_None,"The radius of the cylinder");
+    ADD_PROPERTY_TYPE(Height,(10.0f),"Cylinder",App::Prop_None,"The height of the cylinder");
+    ADD_PROPERTY_TYPE(Angle,(360.0f),"Cylinder",App::Prop_None,"The angle of the cylinder");
     Angle.setConstraints(&angleRangeU);
 }
 
@@ -191,10 +191,10 @@ PROPERTY_SOURCE(Part::Cone, Part::Feature)
 
 Cone::Cone(void)
 {
-    ADD_PROPERTY(Radius1  ,(2.0));
-    ADD_PROPERTY(Radius2  ,(4.0));
-    ADD_PROPERTY(Height  ,(10.0));
-    ADD_PROPERTY(Angle   ,(360.0f));
+    ADD_PROPERTY_TYPE(Radius1,(2.0),"Cone",App::Prop_None,"The radius of the cone");
+    ADD_PROPERTY_TYPE(Radius2,(4.0),"Cone",App::Prop_None,"The radius of the cone");
+    ADD_PROPERTY_TYPE(Height,(10.0),"Cone",App::Prop_None,"The height of the cone");
+    ADD_PROPERTY_TYPE(Angle,(360.0),"Cone",App::Prop_None,"The angle of the cone");
     Angle.setConstraints(&angleRangeU);
 }
 
@@ -228,15 +228,15 @@ PROPERTY_SOURCE(Part::Torus, Part::Feature)
 
 Torus::Torus(void)
 {
-    ADD_PROPERTY(Radius1  ,(10.0));
+    ADD_PROPERTY_TYPE(Radius1,(10.0),"Torus",App::Prop_None,"The radius of the torus");
     Radius1.setConstraints(&floatRange);
-    ADD_PROPERTY(Radius2  ,(2.0));
+    ADD_PROPERTY_TYPE(Radius2,(2.0),"Torus",App::Prop_None,"The radius of the torus");
     Radius2.setConstraints(&floatRange);
-    ADD_PROPERTY(Angle1  ,(-180.0f));
+    ADD_PROPERTY_TYPE(Angle1,(-180.0),"Torus",App::Prop_None,"The angle of the torus");
     Angle1.setConstraints(&torusRangeV);
-    ADD_PROPERTY(Angle2  ,(180.0f));
+    ADD_PROPERTY_TYPE(Angle2,(180.0),"Torus",App::Prop_None,"The angle of the torus");
     Angle2.setConstraints(&torusRangeV);
-    ADD_PROPERTY(Angle3  ,(360.0f));
+    ADD_PROPERTY_TYPE(Angle3,(360.0),"Torus",App::Prop_None,"The angle of the torus");
     Angle3.setConstraints(&angleRangeU);
 }
 
