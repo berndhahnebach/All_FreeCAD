@@ -134,9 +134,9 @@ QVariant PropertyItem::decoration(const App::Property* /*prop*/) const
     return QVariant();
 }
 
-QVariant PropertyItem::toString(const App::Property* prop) const
+QVariant PropertyItem::toString(const QVariant& prop) const
 {
-    return value(prop);
+    return prop;
 }
 
 QVariant PropertyItem::value(const App::Property* /*prop*/) const
@@ -247,8 +247,11 @@ QVariant PropertyItem::data(int column, int role) const
                 return QVariant();
             if (role == Qt::EditRole)
                 return parent->property(qPrintable(objectName()));
-            else if (role == Qt::DisplayRole)
-                return parent->property(qPrintable(objectName()));
+            else if (role == Qt::DisplayRole) {
+                QVariant val = parent->property(qPrintable(objectName()));
+                return toString(val);
+
+            }
             else
                 return QVariant();
         }
@@ -257,7 +260,7 @@ QVariant PropertyItem::data(int column, int role) const
         else if (role == Qt::DecorationRole)
             return decoration(propertyItems[0]);
         else if (role == Qt::DisplayRole)
-            return toString(propertyItems[0]);
+            return toString(value(propertyItems[0]));
         else if (role == Qt::ToolTipRole)
             return toolTip(propertyItems[0]);
         else
@@ -274,8 +277,10 @@ bool PropertyItem::setData (const QVariant& value)
         parent->setProperty(qPrintable(objectName()),value);
         return true;
     }
-    setValue(value);
-    return true;
+    else {
+        setValue(value);
+        return true;
+    }
 }
 
 Qt::ItemFlags PropertyItem::flags(int column) const
@@ -307,7 +312,7 @@ QVariant PropertyStringItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
 
-    std::string value = ((App::PropertyString*)prop)->getValue();
+    std::string value = static_cast<const App::PropertyString*>(prop)->getValue();
     return QVariant(QString::fromUtf8(value.c_str()));
 }
 
@@ -361,7 +366,7 @@ QVariant PropertyIntegerItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
 
-    int value = (int)((App::PropertyInteger*)prop)->getValue();
+    int value = (int)static_cast<const App::PropertyInteger*>(prop)->getValue();
     return QVariant(value);
 }
 
@@ -407,7 +412,7 @@ QVariant PropertyIntegerConstraintItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
 
-    int value = (int)((App::PropertyIntegerConstraint*)prop)->getValue();
+    int value = (int)static_cast<const App::PropertyIntegerConstraint*>(prop)->getValue();
     return QVariant(value);
 }
 
@@ -462,16 +467,18 @@ PropertyFloatItem::PropertyFloatItem()
 {
 }
 
-QVariant PropertyFloatItem::toString(const App::Property* prop) const
+QVariant PropertyFloatItem::toString(const QVariant& prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
-
-    double value = ((App::PropertyFloat*)prop)->getValue();
+    double value = prop.toDouble();
     QString data = QString::fromAscii("%1").arg(value,0,'f',2);
-    if (prop->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
-        data += QString::fromUtf8(" \xc2\xb0");
-    else if (prop->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
-        data += QLatin1String(" mm");
+    const std::vector<App::Property*>& props = getPropertyData();
+    if (!props.empty()) {
+        if (props.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
+            data += QString::fromUtf8(" \xc2\xb0");
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
+            data += QLatin1String(" mm");
+    }
+
     return QVariant(data);
 }
 
@@ -528,11 +535,9 @@ PropertyFloatConstraintItem::PropertyFloatConstraintItem()
 {
 }
 
-QVariant PropertyFloatConstraintItem::toString(const App::Property* prop) const
+QVariant PropertyFloatConstraintItem::toString(const QVariant& prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
-
-    double value = ((App::PropertyFloat*)prop)->getValue();
+    double value = prop.toDouble();
     QString data = QString::fromAscii("%1").arg(value,0,'f',2);
     return QVariant(data);
 }
@@ -655,11 +660,9 @@ PropertyVectorItem::PropertyVectorItem()
     this->appendChild(m_z);
 }
 
-QVariant PropertyVectorItem::toString(const App::Property* prop) const
+QVariant PropertyVectorItem::toString(const QVariant& prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyVector::getClassTypeId()));
-
-    const Base::Vector3f& value = static_cast<const App::PropertyVector*>(prop)->getValue();
+    const Base::Vector3f& value = prop.value<Base::Vector3f>();
     QString data = QString::fromAscii("[%1, %2, %3]")
         .arg(value.x,0,'f',2)
         .arg(value.y,0,'f',2)
@@ -712,32 +715,32 @@ QVariant PropertyVectorItem::editorData(QWidget *editor) const
     return QVariant(le->text());
 }
 
-float PropertyVectorItem::x() const
+double PropertyVectorItem::x() const
 {
     return data(1,Qt::EditRole).value<Base::Vector3f>().x;
 }
 
-void PropertyVectorItem::setX(float x)
+void PropertyVectorItem::setX(double x)
 {
     setValue(QVariant::fromValue(Base::Vector3f(x, y(), z())));
 }
 
-float PropertyVectorItem::y() const
+double PropertyVectorItem::y() const
 {
     return data(1,Qt::EditRole).value<Base::Vector3f>().y;
 }
 
-void PropertyVectorItem::setY(float y)
+void PropertyVectorItem::setY(double y)
 {
     setValue(QVariant::fromValue(Base::Vector3f(x(), y, z())));
 }
 
-float PropertyVectorItem::z() const
+double PropertyVectorItem::z() const
 {
     return data(1,Qt::EditRole).value<Base::Vector3f>().z;
 }
 
-void PropertyVectorItem::setZ(float z)
+void PropertyVectorItem::setZ(double z)
 {
     setValue(QVariant::fromValue(Base::Vector3f(x(), y(), z)));
 }
@@ -847,16 +850,9 @@ QVariant PropertyStringListItem::editorData(QWidget *editor) const
     return QVariant(list);
 }
 
-QVariant PropertyStringListItem::toString(const App::Property* prop) const
+QVariant PropertyStringListItem::toString(const QVariant& prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()));
-
-    QStringList list;
-    const std::vector<std::string>& value = ((App::PropertyStringList*)prop)->getValues();
-    for ( std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt ) {
-        list << QString::fromAscii(jt->c_str());
-    }
-
+    QStringList list = prop.toStringList();
     QString text = QString::fromAscii("[%1]").arg(list.join(QLatin1String(",")));
 
     return QVariant(text);
@@ -908,13 +904,11 @@ QVariant PropertyColorItem::decoration(const App::Property* prop) const
     return QVariant(p);
 }
 
-QVariant PropertyColorItem::toString(const App::Property* prop) const
+QVariant PropertyColorItem::toString(const QVariant& prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
-
-    App::Color value = ((App::PropertyColor*)prop)->getValue();
+    QColor value = prop.value<QColor>();
     QString color = QString::fromAscii("[%1, %2, %3]")
-        .arg((int)(255.0f*value.r)).arg((int)(255.0f*value.g)).arg((int)(255.0f*value.b));
+        .arg(value.red()).arg(value.green()).arg(value.blue());
     return QVariant(color);
 }
 
