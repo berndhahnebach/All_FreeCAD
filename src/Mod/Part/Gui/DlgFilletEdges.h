@@ -40,7 +40,9 @@ protected:
     void findShapes();
 
 private Q_SLOTS:
-    void on_comboBox_activated(int);
+    void on_shapeObject_activated(int);
+    void on_filletType_activated(int);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem * item, int column);
 
 private:
     Ui::DlgFilletEdges ui;

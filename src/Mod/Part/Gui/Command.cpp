@@ -48,6 +48,7 @@
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
 #include "DlgExtrusion.h"
+#include "DlgFilletEdges.h"
 #include "DlgPrimitives.h"
 #include "ViewProvider.h"
 
@@ -577,6 +578,34 @@ bool CmdPartExtrude::isActive(void)
     return hasActiveDocument();
 }
 
+//===========================================================================
+// Part_FilletEdges
+//===========================================================================
+DEF_STD_CMD_A(CmdPartFilletEdges);
+
+CmdPartFilletEdges::CmdPartFilletEdges()
+  :Command("Part_FilletEdges")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Fillet...");
+    sToolTipText  = QT_TR_NOOP("Fillet the selected edges of a shape");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartFilletEdges::activated(int iMsg)
+{
+    PartGui::DlgFilletEdges dlg(Gui::getMainWindow());
+    dlg.exec();
+}
+
+bool CmdPartFilletEdges::isActive(void)
+{
+    return hasActiveDocument();
+}
+
 //--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdShapeInfo);
@@ -678,6 +707,7 @@ void CreatePartCommands(void)
 
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
+    rcCmdMgr.addCommand(new CmdPartFilletEdges());
     rcCmdMgr.addCommand(new CmdPartCommon());
     rcCmdMgr.addCommand(new CmdPartCut());
     rcCmdMgr.addCommand(new CmdPartFuse());

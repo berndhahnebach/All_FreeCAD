@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>424</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,31 +22,77 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="1" >
-    <widget class="QComboBox" name="comboBox" >
-     <item>
-      <property name="text" >
-       <string>Constant Radius</string>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Fillet Parameter</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Variable Radius</string>
+      <property name="spacing" >
+       <number>6</number>
       </property>
-     </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QTreeWidget" name="treeWidget" />
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="filletType" >
+        <item>
+         <property name="text" >
+          <string>Constant Radius</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Variable Radius</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Fillet type:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="0" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Fillet type:</string>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Shape</string>
      </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Selected shape:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="shapeObject" >
+        <item>
+         <property name="text" >
+          <string>No selection</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QTreeWidget" name="treeWidget" />
-   </item>
-   <item row="2" column="0" colspan="2" >
+   <item row="2" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
