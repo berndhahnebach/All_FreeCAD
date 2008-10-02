@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #include <Gui/Qt4All.h>
+#include <QStandardItemModel>
 
 #include "DlgFilletEdges.h"
 #include "../App/PartFeature.h"
@@ -34,6 +35,46 @@
 
 using namespace PartGui;
 
+RadiusDelegate::RadiusDelegate(QObject *parent) : QItemDelegate(parent)
+{
+}
+
+QWidget *RadiusDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index) const
+{
+    if (index.column() < 1)
+        return 0; // first column is not editable
+    QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+    editor->setMinimum(0.0);
+    editor->setMaximum(100.0);
+
+    return editor;
+}
+
+void RadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    double value = index.model()->data(index, Qt::EditRole).toDouble();
+
+    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+    spinBox->setValue(value);
+}
+
+void RadiusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+    spinBox->interpretText();
+    //double value = spinBox->value();
+    QString value = spinBox->text();
+
+    model->setData(index, value, Qt::EditRole);
+}
+
+void RadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+{
+    editor->setGeometry(option.rect);
+}
+
+// --------------------------------------------------------------
+
 DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {
@@ -41,14 +82,19 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
     ui.okButton->setDisabled(true);
     findShapes();
 
-    QStringList labels;
-    labels << tr("Edges to fillet") << tr("Radius") << tr("End radius");
-    ui.treeWidget->setHeaderLabels(labels);
-    ui.treeWidget->headerItem()->setTextAlignment(0, Qt::AlignLeft);
-    ui.treeWidget->headerItem()->setTextAlignment(1, Qt::AlignLeft);
-    ui.treeWidget->headerItem()->setTextAlignment(2, Qt::AlignLeft);
-    ui.treeWidget->hideColumn(2);
-    ui.treeWidget->setRootIsDecorated(false);
+    QStandardItemModel* model = new QStandardItemModel(this);
+    model->insertColumns(0,3);
+    model->setHeaderData(0, Qt::Horizontal, tr("Edges to fillet"), Qt::DisplayRole);
+    model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
+    model->setHeaderData(2, Qt::Horizontal, tr("End radius"), Qt::DisplayRole);
+    ui.treeView->setRootIsDecorated(false);
+    ui.treeView->setItemDelegate(new RadiusDelegate(this));
+    ui.treeView->setModel(model);
+    QHeaderView* header = ui.treeView->header();
+    header->setResizeMode(0, QHeaderView::Stretch);
+    header->setDefaultAlignment(Qt::AlignLeft);
+    header->setMovable(false);
+    on_filletType_activated(0);
 }
 
 /*  
@@ -104,7 +150,8 @@ void DlgFilletEdges::accept()
 
 void DlgFilletEdges::on_shapeObject_activated(int index)
 {
-    ui.treeWidget->clear();
+    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui.treeView->model());
+    model->removeRows(0, model->rowCount());
     ui.okButton->setEnabled(index > 0);
 
     QByteArray name = ui.shapeObject->itemData(index).toByteArray();
@@ -117,45 +164,46 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         // build up map edge->face
         TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
         TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
+
+        // populate the model
+        model->insertRows(0, edge2Face.Extent());
         for (int i=1; i<= edge2Face.Extent(); ++i) {
-            QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
-            item->setCheckState(0, Qt::Unchecked);
-            item->setText(0, tr("Edge<XX>"));
-            //item->setFlags(item->flags() | Qt::ItemIsEditable);
-            QDoubleSpinBox* r1 = new QDoubleSpinBox(ui.treeWidget);
-            r1->setAutoFillBackground(true);
-            ui.treeWidget->setItemWidget(item, 1, r1);
-            QDoubleSpinBox* r2 = new QDoubleSpinBox(ui.treeWidget);
-            r2->setAutoFillBackground(true);
-            ui.treeWidget->setItemWidget(item, 2, r2);
-            //QCheckBox* box = new QCheckBox(ui.treeWidget);
-            //box->setText(tr("Edge<XX>"));
-            //ui.treeWidget->setItemWidget(item, 0, box);
+            int index = i-1;
+            model->setData(model->index(index, 0), QVariant(tr("Edge <XXX>")));
+            model->setData(model->index(index, 1), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
+            model->setData(model->index(index, 2), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
+            //QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+            //item->setCheckState(0, Qt::Unchecked);
+            //item->setText(0, tr("Edge<XX>"));
+            ////item->setFlags(item->flags() | Qt::ItemIsEditable);
+            //QDoubleSpinBox* r1 = new QDoubleSpinBox(ui.treeWidget);
+            //r1->setAutoFillBackground(true);
+            //ui.treeWidget->setItemWidget(item, 1, r1);
+            //QDoubleSpinBox* r2 = new QDoubleSpinBox(ui.treeWidget);
+            //r2->setAutoFillBackground(true);
+            //ui.treeWidget->setItemWidget(item, 2, r2);
+            ////QCheckBox* box = new QCheckBox(ui.treeWidget);
+            ////box->setText(tr("Edge<XX>"));
+            ////ui.treeWidget->setItemWidget(item, 0, box);
         }
     }
 }
 
 void DlgFilletEdges::on_filletType_activated(int index)
 {
+    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui.treeView->model());
     if (index == 0) {
-        ui.treeWidget->headerItem()->setText(1, tr("Radius"));
-        ui.treeWidget->hideColumn(2);
+        model->setHeaderData(1, Qt::Horizontal, tr("Radius"), Qt::DisplayRole);
+        ui.treeView->hideColumn(2);
     }
     else {
-        ui.treeWidget->headerItem()->setText(1, tr("Start radius"));
-        ui.treeWidget->showColumn(2);
+        model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
+        ui.treeView->showColumn(2);
     }
 
-    ui.treeWidget->resizeColumnToContents(0);
-    ui.treeWidget->resizeColumnToContents(1);
-    ui.treeWidget->resizeColumnToContents(2);
-}
-
-void DlgFilletEdges::on_treeWidget_itemDoubleClicked(QTreeWidgetItem * item, int column)
-{
-    if (column < 1)
-        return;
-    ui.treeWidget->editItem(item,column);
+    ui.treeView->resizeColumnToContents(0);
+    ui.treeView->resizeColumnToContents(1);
+    ui.treeView->resizeColumnToContents(2);
 }
 
 #include "moc_DlgFilletEdges.cpp"

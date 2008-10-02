@@ -27,6 +27,24 @@
 
 namespace PartGui {
 
+class RadiusDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+public:
+    RadiusDelegate(QObject *parent = 0);
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+                      const QModelIndex &index) const;
+
+    void updateEditorGeometry(QWidget *editor, 
+        const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
 class DlgFilletEdges : public QDialog
 {
     Q_OBJECT
@@ -42,7 +60,6 @@ protected:
 private Q_SLOTS:
     void on_shapeObject_activated(int);
     void on_filletType_activated(int);
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem * item, int column);
 
 private:
     Ui::DlgFilletEdges ui;
