@@ -839,14 +839,7 @@ void MainWindow::startSplasher(void)
             GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
         // first search for an external imahe file
         if (hGrp->GetBool("ShowSplasher", true)) {
-            QPixmap splash_image;
-            QDir dir(QString::fromUtf8(App::Application::Config()["UserAppData"].c_str()));
-            QFileInfo fi(dir.filePath(QString::fromAscii("pixmaps/splash_image.png")));
-            if (fi.isFile() && fi.exists())
-                splash_image.load(fi.filePath(), "PNG");
-            if (splash_image.isNull())
-                splash_image = Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str());
-            d->splashscreen = new SplashScreen(splash_image);
+            d->splashscreen = new SplashScreen(this->splashImage());
             d->splashscreen->show();
         }
         else
@@ -861,6 +854,18 @@ void MainWindow::stopSplasher(void)
         delete d->splashscreen;
         d->splashscreen = 0;
     }
+}
+
+QPixmap MainWindow::splashImage() const
+{
+    QPixmap splash_image;
+    QDir dir(QString::fromUtf8(App::Application::Config()["UserAppData"].c_str()));
+    QFileInfo fi(dir.filePath(QString::fromAscii("pixmaps/splash_image.png")));
+    if (fi.isFile() && fi.exists())
+        splash_image.load(fi.filePath(), "PNG");
+    if (splash_image.isNull())
+        splash_image = Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str());
+    return splash_image;
 }
 
 void MainWindow::showTipOfTheDay( bool force )

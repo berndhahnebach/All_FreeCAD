@@ -26,7 +26,7 @@
 #include "Splashscreen.h"
 #include <Base/Console.h>
 #include <App/Application.h>
-#include <Gui/BitmapFactory.h>
+#include <Gui/MainWindow.h>
 
 
 using namespace Gui;
@@ -39,87 +39,88 @@ namespace Gui {
 class SplashObserver : public Base::ConsoleObserver
 {
 public:
-  SplashObserver(QSplashScreen* splasher=0, const char* name=0)
-    : splash(splasher), alignment(Qt::AlignBottom|Qt::AlignLeft), textColor(Qt::black)
-  {
-    Base::Console().AttachObserver(this);
+    SplashObserver(QSplashScreen* splasher=0, const char* name=0)
+      : splash(splasher), alignment(Qt::AlignBottom|Qt::AlignLeft), textColor(Qt::black)
+    {
+        Base::Console().AttachObserver(this);
 
-    // allow to customize text position and color
-    const std::map<std::string,std::string>& cfg = App::GetApplication().Config();
-    std::map<std::string,std::string>::const_iterator al = cfg.find("SplashAlignment");
-    if (al != cfg.end()) {
-        QString alt = QString::fromAscii(al->second.c_str());
-      int align=0;
-      if ( alt.startsWith(QLatin1String("VCenter")) )
-        align = Qt::AlignVCenter;
-      else if ( alt.startsWith(QLatin1String("Top")) )
-        align = Qt::AlignTop;
-      else
-        align = Qt::AlignBottom;
+        // allow to customize text position and color
+        const std::map<std::string,std::string>& cfg = App::GetApplication().Config();
+        std::map<std::string,std::string>::const_iterator al = cfg.find("SplashAlignment");
+        if (al != cfg.end()) {
+            QString alt = QString::fromAscii(al->second.c_str());
+            int align=0;
+            if (alt.startsWith(QLatin1String("VCenter")))
+                align = Qt::AlignVCenter;
+            else if (alt.startsWith(QLatin1String("Top")))
+                align = Qt::AlignTop;
+            else
+                align = Qt::AlignBottom;
 
-      if ( alt.endsWith(QLatin1String("HCenter")) )
-        align += Qt::AlignHCenter;
-      else if ( alt.endsWith(QLatin1String("Right")) )
-        align += Qt::AlignRight;
-      else
-        align += Qt::AlignLeft;
+            if (alt.endsWith(QLatin1String("HCenter")))
+                align += Qt::AlignHCenter;
+            else if (alt.endsWith(QLatin1String("Right")))
+                align += Qt::AlignRight;
+            else
+                align += Qt::AlignLeft;
 
-      alignment = align;
+            alignment = align;
+        }
+
+        // choose text color
+        std::map<std::string,std::string>::const_iterator tc = cfg.find("SplashTextColor");
+        if (tc != cfg.end()) {
+            QColor col; col.setNamedColor(QString::fromAscii(tc->second.c_str()));
+            if (col.isValid())
+                textColor = col;
+        }
     }
 
-    // choose text color
-    std::map<std::string,std::string>::const_iterator tc = cfg.find("SplashTextColor");
-    if ( tc != cfg.end() ) {
-      QColor col; col.setNamedColor(QString::fromAscii(tc->second.c_str()));
-      if ( col.isValid() )
-        textColor = col;
-    }
-  }
-
-  virtual ~SplashObserver()
-  {
-    Base::Console().DetachObserver(this);
-  }
-
-  void Warning(const char * s)
-  {
-    Log(s);
-  }
-  void Message(const char * s)
-  {
-    Log(s);
-  }
-  void Error  (const char * s)
-  {
-    Log(s);
-  }
-  void Log (const char * s)
-  {
-    QString msg(QString::fromUtf8(s));
-    QRegExp rx;
-    // ignore 'Init:' and 'Mod:' prefixes
-    rx.setPattern(QLatin1String("^\\s*(Init:|Mod:)\\s*"));
-    int pos = rx.indexIn(msg);
-    if ( pos != -1 ) {
-      msg = msg.mid(rx.matchedLength());
-    } else {
-      // ignore activation of commands
-      rx.setPattern(QLatin1String("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*"));
-      pos = rx.indexIn(msg);
-      if ( pos == 0 )
-        return;
+    virtual ~SplashObserver()
+    {
+        Base::Console().DetachObserver(this);
     }
 
-    splash->showMessage(msg.replace(QLatin1String("\n"), QString()), alignment, textColor);
-    QMutex mutex;
-    mutex.lock();
-    QWaitCondition().wait(&mutex, 50);
-  }
+    void Warning(const char * s)
+    {
+        Log(s);
+    }
+    void Message(const char * s)
+    {
+        Log(s);
+    }
+    void Error  (const char * s)
+    {
+        Log(s);
+    }
+    void Log (const char * s)
+    {
+        QString msg(QString::fromUtf8(s));
+        QRegExp rx;
+        // ignore 'Init:' and 'Mod:' prefixes
+        rx.setPattern(QLatin1String("^\\s*(Init:|Mod:)\\s*"));
+        int pos = rx.indexIn(msg);
+        if (pos != -1) {
+            msg = msg.mid(rx.matchedLength());
+        }
+        else {
+            // ignore activation of commands
+            rx.setPattern(QLatin1String("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*"));
+            pos = rx.indexIn(msg);
+            if (pos == 0)
+                return;
+        }
+
+        splash->showMessage(msg.replace(QLatin1String("\n"), QString()), alignment, textColor);
+        QMutex mutex;
+        mutex.lock();
+        QWaitCondition().wait(&mutex, 50);
+    }
 
 private:
-  QSplashScreen* splash;
-  int alignment;
-  QColor textColor;
+    QSplashScreen* splash;
+    int alignment;
+    QColor textColor;
 };
 } // namespace Gui
 
@@ -129,16 +130,16 @@ private:
  * Constructs a splash screen that will display the pixmap.
  */
 SplashScreen::SplashScreen(  const QPixmap & pixmap , Qt::WFlags f )
-    : QSplashScreen( pixmap, f)
+    : QSplashScreen(pixmap, f)
 {
-  // write the messages to splasher
-  messages = new SplashObserver(this);
+    // write the messages to splasher
+    messages = new SplashObserver(this);
 }
 
 /** Destruction. */
 SplashScreen::~SplashScreen()
 {
-  delete messages;
+    delete messages;
 }
 
 /** 
@@ -147,7 +148,7 @@ SplashScreen::~SplashScreen()
  */
 void SplashScreen::drawContents ( QPainter * painter )
 {
-  QSplashScreen::drawContents(painter);
+    QSplashScreen::drawContents(painter);
 }
 
 // ------------------------------------------------------------------------------
@@ -163,13 +164,10 @@ void SplashScreen::drawContents ( QPainter * painter )
 AboutDialog::AboutDialog( QWidget* parent )
   : QDialog(parent, Qt::FramelessWindowHint)
 {
-  setModal(true);
-  ui.setupUi(this);
-  // Example of how Qt's resource framework can be used
-  //ui.labelSplashPicture->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/SplashScreen.xpm")));
-  ui.labelSplashPicture->setPixmap(Gui::BitmapFactory().pixmap
-      (App::Application::Config()["SplashPicture"].c_str()));
-  setupLabels();
+    setModal(true);
+    ui.setupUi(this);
+    ui.labelSplashPicture->setPixmap(getMainWindow()->splashImage());
+    setupLabels();
 }
 
 /**
