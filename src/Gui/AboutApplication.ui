@@ -44,7 +44,10 @@
       <string/>
      </property>
      <property name="pixmap" >
-      <pixmap resource="Icons/resource.qrc" >:/new/prefix1/SplashScreen.xpm</pixmap>
+      <pixmap/>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

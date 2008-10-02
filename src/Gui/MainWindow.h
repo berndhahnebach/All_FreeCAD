@@ -115,6 +115,8 @@ public:
     void startSplasher(void);
     /** Stops the splasher after startup. */
     void stopSplasher(void);
+    /* The image of the splash screen of the application. */
+    QPixmap splashImage() const;
     /** Shows the Tip-of-the-day dialog after startup. */
     void showTipOfTheDay(bool force=false);
     /** Shows the online documentation. */
