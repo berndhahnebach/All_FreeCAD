@@ -40,6 +40,15 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
     ui.setupUi(this);
     ui.okButton->setDisabled(true);
     findShapes();
+
+    QStringList labels;
+    labels << tr("Edges to fillet") << tr("Radius") << tr("End radius");
+    ui.treeWidget->setHeaderLabels(labels);
+    ui.treeWidget->headerItem()->setTextAlignment(0, Qt::AlignLeft);
+    ui.treeWidget->headerItem()->setTextAlignment(1, Qt::AlignLeft);
+    ui.treeWidget->headerItem()->setTextAlignment(2, Qt::AlignLeft);
+    ui.treeWidget->hideColumn(2);
+    ui.treeWidget->setRootIsDecorated(false);
 }
 
 /*  
@@ -52,7 +61,6 @@ DlgFilletEdges::~DlgFilletEdges()
 
 void DlgFilletEdges::findShapes()
 {
-#if 0
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     if (!activeDoc) return;
 
@@ -60,10 +68,9 @@ void DlgFilletEdges::findShapes()
         (Part::Feature::getClassTypeId());
     int index = 1;
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it, ++index) {
-        ui.comboBox->addItem(QString::fromUtf8((*it)->Label.getValue()));
-        ui.comboBox->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+        ui.shapeObject->addItem(QString::fromUtf8((*it)->Label.getValue()));
+        ui.shapeObject->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
     }
-#endif
 }
 
 void DlgFilletEdges::accept()
@@ -95,9 +102,60 @@ void DlgFilletEdges::accept()
     QDialog::accept();
 }
 
-void DlgFilletEdges::on_comboBox_activated(int index)
+void DlgFilletEdges::on_shapeObject_activated(int index)
 {
+    ui.treeWidget->clear();
     ui.okButton->setEnabled(index > 0);
+
+    QByteArray name = ui.shapeObject->itemData(index).toByteArray();
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc)
+        return;
+    App::DocumentObject* part = doc->getObject((const char*)name);
+    if (part && part->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+        TopoDS_Shape myShape = static_cast<Part::Feature*>(part)->Shape.getValue();
+        // build up map edge->face
+        TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
+        TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
+        for (int i=1; i<= edge2Face.Extent(); ++i) {
+            QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+            item->setCheckState(0, Qt::Unchecked);
+            item->setText(0, tr("Edge<XX>"));
+            //item->setFlags(item->flags() | Qt::ItemIsEditable);
+            QDoubleSpinBox* r1 = new QDoubleSpinBox(ui.treeWidget);
+            r1->setAutoFillBackground(true);
+            ui.treeWidget->setItemWidget(item, 1, r1);
+            QDoubleSpinBox* r2 = new QDoubleSpinBox(ui.treeWidget);
+            r2->setAutoFillBackground(true);
+            ui.treeWidget->setItemWidget(item, 2, r2);
+            //QCheckBox* box = new QCheckBox(ui.treeWidget);
+            //box->setText(tr("Edge<XX>"));
+            //ui.treeWidget->setItemWidget(item, 0, box);
+        }
+    }
+}
+
+void DlgFilletEdges::on_filletType_activated(int index)
+{
+    if (index == 0) {
+        ui.treeWidget->headerItem()->setText(1, tr("Radius"));
+        ui.treeWidget->hideColumn(2);
+    }
+    else {
+        ui.treeWidget->headerItem()->setText(1, tr("Start radius"));
+        ui.treeWidget->showColumn(2);
+    }
+
+    ui.treeWidget->resizeColumnToContents(0);
+    ui.treeWidget->resizeColumnToContents(1);
+    ui.treeWidget->resizeColumnToContents(2);
+}
+
+void DlgFilletEdges::on_treeWidget_itemDoubleClicked(QTreeWidgetItem * item, int column)
+{
+    if (column < 1)
+        return;
+    ui.treeWidget->editItem(item,column);
 }
 
 #include "moc_DlgFilletEdges.cpp"
