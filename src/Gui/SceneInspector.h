@@ -20,72 +20,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PARTGUI_DLGFILLETEDGES_H
-#define PARTGUI_DLGFILLETEDGES_H
+#ifndef GUI_SCENEINSPECTOR_H
+#define GUI_SCENEINSPECTOR_H
 
-#include "ui_DlgFilletEdges.h"
 #include <QStandardItemModel>
+#include "ui_SceneInspector.h"
 
-namespace PartGui {
+class SoNode;
 
-class FilletRadiusDelegate : public QItemDelegate
+namespace Gui {
+namespace Dialog {
+
+class SceneModel : public QStandardItemModel
 {
-    Q_OBJECT
-
 public:
-    FilletRadiusDelegate(QObject *parent = 0);
+    SceneModel(QObject* parent);
+    virtual ~SceneModel();
 
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const;
-
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-    void setModelData(QWidget *editor, QAbstractItemModel *model,
-                      const QModelIndex &index) const;
-
-    void updateEditorGeometry(QWidget *editor, 
-        const QStyleOptionViewItem &option, const QModelIndex &index) const;
-};
-
-class FilletRadiusModel : public QStandardItemModel
-{
-    Q_OBJECT
-
-public:
-    FilletRadiusModel(QObject * parent = 0) : QStandardItemModel(parent)
-    {
-    }
-
-    Qt::ItemFlags flags (const QModelIndex & index) const
-    {
-        Qt::ItemFlags fl = QStandardItemModel::flags(index);
-        if (index.column() == 0)
-            fl = fl | Qt::ItemIsUserCheckable;
-        return fl;
-    }
-};
-
-class DlgFilletEdges : public QDialog
-{
-    Q_OBJECT
-
-public:
-    DlgFilletEdges(QWidget* parent = 0, Qt::WFlags fl = 0);
-    ~DlgFilletEdges();
-    void accept();
-
-protected:
-    void findShapes();
-
-private Q_SLOTS:
-    void on_shapeObject_activated(int);
-    void on_filletType_activated(int);
-    void on_filletStartRadius_valueChanged(double);
-    void on_filletEndRadius_valueChanged(double);
+    int columnCount (const QModelIndex & parent = QModelIndex()) const;
+    QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    bool setHeaderData (int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole);
+    void setNode(SoNode* node);
+    Qt::ItemFlags flags (const QModelIndex & index) const;
 
 private:
-    Ui::DlgFilletEdges ui;
+    void setNode(QModelIndex, SoNode*);
 };
 
-} // namespace PartGui
+class DlgInspector : public QDialog
+{
+public:
+    DlgInspector(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~DlgInspector();
 
-#endif // PARTGUI_DLGFILLETEDGES_H
+    void setNode(SoNode* node);
+
+private:
+    Ui::SceneInspector ui;
+};
+
+} // namespace Dialog
+} // namespace Gui
+
+#endif // GUI_SCENEINSPECTOR_H

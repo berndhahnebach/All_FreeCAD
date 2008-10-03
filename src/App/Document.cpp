@@ -927,12 +927,11 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
     else {
         returnCode->Which = Feat;
         _RecomputeLog.push_back(returnCode);
+        Base::Console().Error("%s\n",returnCode->Why.c_str());
         Feat->setError();
     }
     return false;
 }
-
-
 
 void Document::recomputeFeature(AbstractFeature* Feat)
 {

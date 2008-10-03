@@ -40,7 +40,7 @@
       <item row="1" column="0" >
        <widget class="QStackedWidget" name="widgetStack2" >
         <property name="currentIndex" >
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page" >
          <layout class="QGridLayout" >
@@ -878,14 +878,24 @@
   <tabstop>boxHeight</tabstop>
   <tabstop>cylinderRadius</tabstop>
   <tabstop>cylinderHeight</tabstop>
+  <tabstop>cylinderAngle</tabstop>
   <tabstop>coneRadius1</tabstop>
   <tabstop>coneRadius2</tabstop>
   <tabstop>coneHeight</tabstop>
+  <tabstop>coneAngle</tabstop>
   <tabstop>sphereRadius</tabstop>
+  <tabstop>sphereAngle3</tabstop>
+  <tabstop>sphereAngle1</tabstop>
+  <tabstop>sphereAngle2</tabstop>
   <tabstop>ellipsoidRadius1</tabstop>
   <tabstop>ellipsoidRadius2</tabstop>
   <tabstop>torusRadius1</tabstop>
   <tabstop>torusRadius2</tabstop>
+  <tabstop>torusAngle3</tabstop>
+  <tabstop>torusAngle1</tabstop>
+  <tabstop>torusAngle2</tabstop>
+  <tabstop>planeLength</tabstop>
+  <tabstop>planeWidth</tabstop>
   <tabstop>createSolidButton</tabstop>
   <tabstop>buttonClose</tabstop>
  </tabstops>
