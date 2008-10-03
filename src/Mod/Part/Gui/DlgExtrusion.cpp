@@ -79,7 +79,8 @@ void DlgExtrusion::accept()
     QString code = QString::fromAscii(
         "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
         "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
-        "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n")
+        "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n"
+        "FreeCADGui.ActiveDocument.%3.Visibility = False\n")
         .arg(type).arg(name).arg(shape)
         .arg(ui.dirX->value()*len)
         .arg(ui.dirY->value()*len)

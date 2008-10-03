@@ -48,6 +48,7 @@
 # include <TopoDS_Wire.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Shape.hxx>
+# include <TopoDS_Iterator.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopExp.hxx>
 # include <Poly_PolygonOnTriangulation.hxx>

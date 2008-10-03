@@ -22,8 +22,15 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <TopoDS_Edge.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TopExp.hxx>
+# include <TopTools_ListOfShape.hxx>
+# include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#endif
+
 #include <Gui/Qt4All.h>
-#include <QStandardItemModel>
 
 #include "DlgFilletEdges.h"
 #include "../App/PartFeature.h"
@@ -35,22 +42,24 @@
 
 using namespace PartGui;
 
-RadiusDelegate::RadiusDelegate(QObject *parent) : QItemDelegate(parent)
+FilletRadiusDelegate::FilletRadiusDelegate(QObject *parent) : QItemDelegate(parent)
 {
 }
 
-QWidget *RadiusDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index) const
+QWidget *FilletRadiusDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index) const
 {
     if (index.column() < 1)
-        return 0; // first column is not editable
+        return 0;
+
     QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
     editor->setMinimum(0.0);
     editor->setMaximum(100.0);
+    editor->setSingleStep(0.1);
 
     return editor;
 }
 
-void RadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void FilletRadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     double value = index.model()->data(index, Qt::EditRole).toDouble();
 
@@ -58,17 +67,17 @@ void RadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &index) co
     spinBox->setValue(value);
 }
 
-void RadiusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void FilletRadiusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
     spinBox->interpretText();
     //double value = spinBox->value();
-    QString value = spinBox->text();
+    QString value = QString::fromAscii("%1").arg(spinBox->value(),0,'f',2);
 
     model->setData(index, value, Qt::EditRole);
 }
 
-void RadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+void FilletRadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
     editor->setGeometry(option.rect);
 }
@@ -82,14 +91,16 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
     ui.okButton->setDisabled(true);
     findShapes();
 
-    QStandardItemModel* model = new QStandardItemModel(this);
+    // set tree view with three columns
+    QStandardItemModel* model = new FilletRadiusModel(this);
     model->insertColumns(0,3);
     model->setHeaderData(0, Qt::Horizontal, tr("Edges to fillet"), Qt::DisplayRole);
     model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
     model->setHeaderData(2, Qt::Horizontal, tr("End radius"), Qt::DisplayRole);
     ui.treeView->setRootIsDecorated(false);
-    ui.treeView->setItemDelegate(new RadiusDelegate(this));
+    ui.treeView->setItemDelegate(new FilletRadiusDelegate(this));
     ui.treeView->setModel(model);
+
     QHeaderView* header = ui.treeView->header();
     header->setResizeMode(0, QHeaderView::Stretch);
     header->setDefaultAlignment(Qt::AlignLeft);
@@ -119,40 +130,10 @@ void DlgFilletEdges::findShapes()
     }
 }
 
-void DlgFilletEdges::accept()
-{
-#if 0
-    App::Document* activeDoc = App::GetApplication().getActiveDocument();
-
-    QString shape, type, name;
-    int index = ui.comboBox->currentIndex();
-    shape = ui.comboBox->itemData(index).toString();
-    type = QString::fromAscii("Part::Extrusion");
-    name = QString::fromAscii(activeDoc->getUniqueObjectName("Extrude").c_str());
-    double len = ui.dirLen->value();
-
-    activeDoc->openTransaction("Extrude");
-    QString code = QString::fromAscii(
-        "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
-        "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
-        "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n")
-        .arg(type).arg(name).arg(shape)
-        .arg(ui.dirX->value()*len)
-        .arg(ui.dirY->value()*len)
-        .arg(ui.dirZ->value()*len);
-    Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
-    activeDoc->commitTransaction();
-    activeDoc->recompute();
-#endif
-    
-    QDialog::accept();
-}
-
 void DlgFilletEdges::on_shapeObject_activated(int index)
 {
     QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui.treeView->model());
     model->removeRows(0, model->rowCount());
-    ui.okButton->setEnabled(index > 0);
 
     QByteArray name = ui.shapeObject->itemData(index).toByteArray();
     App::Document* doc = App::GetApplication().getActiveDocument();
@@ -166,27 +147,31 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
 
         // populate the model
-        model->insertRows(0, edge2Face.Extent());
+        int count = 0;
         for (int i=1; i<= edge2Face.Extent(); ++i) {
             int index = i-1;
-            model->setData(model->index(index, 0), QVariant(tr("Edge <XXX>")));
-            model->setData(model->index(index, 1), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
-            model->setData(model->index(index, 2), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
-            //QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
-            //item->setCheckState(0, Qt::Unchecked);
-            //item->setText(0, tr("Edge<XX>"));
-            ////item->setFlags(item->flags() | Qt::ItemIsEditable);
-            //QDoubleSpinBox* r1 = new QDoubleSpinBox(ui.treeWidget);
-            //r1->setAutoFillBackground(true);
-            //ui.treeWidget->setItemWidget(item, 1, r1);
-            //QDoubleSpinBox* r2 = new QDoubleSpinBox(ui.treeWidget);
-            //r2->setAutoFillBackground(true);
-            //ui.treeWidget->setItemWidget(item, 2, r2);
-            ////QCheckBox* box = new QCheckBox(ui.treeWidget);
-            ////box->setText(tr("Edge<XX>"));
-            ////ui.treeWidget->setItemWidget(item, 0, box);
+            // set the hash value as user data to use it in accept()
+            TopoDS_Shape edge = edge2Face.FindKey(i);
+            if (edge2Face.FindFromIndex(i).Extent() == 2)
+                count++;
+        }
+        model->insertRows(0, count);
+        int index = 0;
+        for (int i=1; i<= edge2Face.Extent(); ++i, ++index) {
+            // set the hash value as user data to use it in accept()
+            TopoDS_Shape edge = edge2Face.FindKey(i);
+            if (edge2Face.FindFromIndex(i).Extent() == 2) {
+                int id = edge.HashCode(IntegerLast());
+                model->setData(model->index(index, 0), QVariant(tr("Edge <%1>").arg(id)));
+                model->setData(model->index(index, 0), QVariant(id), Qt::UserRole);
+                model->setData(model->index(index, 0), Qt::Checked, Qt::CheckStateRole);
+                model->setData(model->index(index, 1), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
+                model->setData(model->index(index, 2), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
+            }
         }
     }
+
+    ui.okButton->setEnabled(model->rowCount() > 0);
 }
 
 void DlgFilletEdges::on_filletType_activated(int index)
@@ -204,6 +189,63 @@ void DlgFilletEdges::on_filletType_activated(int index)
     ui.treeView->resizeColumnToContents(0);
     ui.treeView->resizeColumnToContents(1);
     ui.treeView->resizeColumnToContents(2);
+}
+
+void DlgFilletEdges::accept()
+{
+    App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    QAbstractItemModel* model = ui.treeView->model();
+    bool end_radius = !ui.treeView->isColumnHidden(2);
+    bool todo = false;
+
+    QString shape, type, name;
+    int index = ui.shapeObject->currentIndex();
+    shape = ui.shapeObject->itemData(index).toString();
+    type = QString::fromAscii("Part::Fillet");
+    name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
+
+    activeDoc->openTransaction("Extrude");
+    QString code = QString::fromAscii(
+        "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
+        "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
+        "__fillets__ = []\n")
+        .arg(type).arg(name).arg(shape);
+    for (int i=0; i<model->rowCount(); ++i) {
+        QVariant value = model->index(i,0).data(Qt::CheckStateRole);
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+
+        // is item checked
+        if (checkState & Qt::Checked) {
+            // the hash code of the edge
+            int id = model->index(i,0).data(Qt::UserRole).toInt();
+            double r1 = model->index(i,1).data().toDouble();
+            double r2 = r1;
+            if (end_radius)
+                r2 = model->index(i,2).data().toDouble();
+            code += QString::fromAscii(
+                "__fillets__.append((%1,%2,%3))\n")
+                .arg(id).arg(r1,0,'f',2).arg(r2,0,'f',2);
+            todo = true;
+        }
+    }
+
+    if (!todo) {
+        QMessageBox::warning(this, tr("No edge selected"),
+            tr("No edge entity is checked to fillet.\n"
+               "Please check one or more edge entities first."));
+        return;
+    }
+
+    code += QString::fromAscii(
+        "FreeCAD.ActiveDocument.%1.Contour = __fillets__\n"
+        "del __fillets__\n"
+        "FreeCADGui.ActiveDocument.%2.Visibility = False\n")
+        .arg(name).arg(shape);
+    Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+    activeDoc->commitTransaction();
+    activeDoc->recompute();
+
+    QDialog::accept();
 }
 
 #include "moc_DlgFilletEdges.cpp"

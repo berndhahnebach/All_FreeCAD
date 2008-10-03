@@ -67,4 +67,4 @@ class PartDesignWorkbench ( Workbench ):
 	def GetClassName(self):
 		return "PartDesignGui::Workbench"
 
-Gui.addWorkbench(PartDesignWorkbench())
+#Gui.addWorkbench(PartDesignWorkbench())

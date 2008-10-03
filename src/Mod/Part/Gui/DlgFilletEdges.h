@@ -24,15 +24,16 @@
 #define PARTGUI_DLGFILLETEDGES_H
 
 #include "ui_DlgFilletEdges.h"
+#include <QStandardItemModel>
 
 namespace PartGui {
 
-class RadiusDelegate : public QItemDelegate
+class FilletRadiusDelegate : public QItemDelegate
 {
     Q_OBJECT
 
 public:
-    RadiusDelegate(QObject *parent = 0);
+    FilletRadiusDelegate(QObject *parent = 0);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const;
@@ -43,6 +44,24 @@ public:
 
     void updateEditorGeometry(QWidget *editor, 
         const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
+class FilletRadiusModel : public QStandardItemModel
+{
+    Q_OBJECT
+
+public:
+    FilletRadiusModel(QObject * parent = 0) : QStandardItemModel(parent)
+    {
+    }
+
+    Qt::ItemFlags flags (const QModelIndex & index) const
+    {
+        Qt::ItemFlags fl = QStandardItemModel::flags(index);
+        if (index.column() == 0)
+            fl = fl | Qt::ItemIsUserCheckable;
+        return fl;
+    }
 };
 
 class DlgFilletEdges : public QDialog

@@ -67,4 +67,4 @@ class MeshPartWorkbench ( Workbench ):
 	def GetClassName(self):
 		return "MeshPartGui::Workbench"
 
-Gui.addWorkbench(MeshPartWorkbench())
+#Gui.addWorkbench(MeshPartWorkbench())

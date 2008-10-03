@@ -26,6 +26,7 @@
 
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Standard_Boolean.hxx>
+#include <TopoDS_Shape.hxx>
 #include <map>
 
 class TopoDS_Shape;
