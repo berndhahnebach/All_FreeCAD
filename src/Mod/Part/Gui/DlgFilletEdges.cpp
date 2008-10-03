@@ -180,15 +180,47 @@ void DlgFilletEdges::on_filletType_activated(int index)
     if (index == 0) {
         model->setHeaderData(1, Qt::Horizontal, tr("Radius"), Qt::DisplayRole);
         ui.treeView->hideColumn(2);
+        ui.filletEndRadius->hide();
     }
     else {
         model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
         ui.treeView->showColumn(2);
+        ui.filletEndRadius->show();
     }
 
     ui.treeView->resizeColumnToContents(0);
     ui.treeView->resizeColumnToContents(1);
     ui.treeView->resizeColumnToContents(2);
+}
+
+void DlgFilletEdges::on_filletStartRadius_valueChanged(double radius)
+{
+    QAbstractItemModel* model = ui.treeView->model();
+    QString text = QString::fromAscii("%1").arg(radius,0,'f',2);
+    for (int i=0; i<model->rowCount(); ++i) {
+        QVariant value = model->index(i,0).data(Qt::CheckStateRole);
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+
+        // is item checked
+        if (checkState & Qt::Checked) {
+            model->setData(model->index(i, 1), QVariant(text));
+        }
+    }
+}
+
+void DlgFilletEdges::on_filletEndRadius_valueChanged(double radius)
+{
+    QAbstractItemModel* model = ui.treeView->model();
+    QString text = QString::fromAscii("%1").arg(radius,0,'f',2);
+    for (int i=0; i<model->rowCount(); ++i) {
+        QVariant value = model->index(i,0).data(Qt::CheckStateRole);
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+
+        // is item checked
+        if (checkState & Qt::Checked) {
+            model->setData(model->index(i, 2), QVariant(text));
+        }
+    }
 }
 
 void DlgFilletEdges::accept()

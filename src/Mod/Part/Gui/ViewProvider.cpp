@@ -391,11 +391,6 @@ void ViewProviderPart::updateData(const App::Property* prop)
     }
 }
 
-
-#define MAX2(X, Y)	(  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
-#define MAX3(X, Y, Z)	( MAX2 ( MAX2(X,Y) , Z) )
-
-
 Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
 {
     TopExp_Explorer ex;

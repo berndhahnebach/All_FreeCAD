@@ -80,6 +80,7 @@ BUILT_SOURCES=\
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
+		ui_SceneInspector.h \
 		DocumentPy.cpp \
 		PythonWorkbenchPy.cpp \
 		WorkbenchPy.cpp \
@@ -114,7 +115,8 @@ libFreeCADGui_la_UI=\
 		DlgSettingsColorGradient.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
-		DlgTreeWidget.ui
+		DlgTreeWidget.ui \
+		SceneInspector.ui
 
 libFreeCADGui_la_BUILT=\
 		DocumentPy.h \
@@ -221,6 +223,8 @@ libFreeCADGui_la_SOURCES=\
 		PythonWorkbenchPyImp.cpp \
 		ReportView.cpp \
 		resource.cpp \
+		SceneInspector.cpp \
+		SceneInspector.h \
 		Selection.cpp \
 		SelectionView.cpp \
 		SoFCBackgroundGradient.cpp \

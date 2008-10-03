@@ -427,7 +427,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     tool->setCommand(QT_TR_NOOP("&Tools"));
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
           << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
-          << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
+          << "Separator" << "Std_ViewScreenShot" << "Std_SceneInspector" << "Separator"
+          << "Std_DlgCustomize";
 
     // Windows
     MenuItem* wnd = new MenuItem( menuBar );

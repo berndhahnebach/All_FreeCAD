@@ -9,20 +9,119 @@
     <x>0</x>
     <y>0</y>
     <width>296</width>
-    <height>209</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Box definition</string>
+   <string>Cylinder definition</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="TextLabel1_2" >
+       <property name="text" >
+        <string>Radius:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="Radius" >
+       <property name="text" >
+        <string>10</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Height:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="Height" >
+       <property name="text" >
+        <string>100</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="TextLabel1_3" >
+       <property name="text" >
+        <string>Direction:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox" >
+       <item>
+        <property name="text" >
+         <string>Z</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Y</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>X</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>-Z</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>-Y</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>-X</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" >
     <widget class="QGroupBox" name="GroupBox5" >
      <property name="title" >
       <string>Position:</string>
@@ -79,82 +178,7 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="TextLabel1_2" >
-       <property name="text" >
-        <string>Radius:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="Radius" >
-       <property name="text" >
-        <string>100</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="TextLabel1_3" >
-       <property name="text" >
-        <string>Direction:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox" >
-       <item>
-        <property name="text" >
-         <string>Z</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Y</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>X</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>-Z</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>-Y</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>-X</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
+   <item row="4" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>11</number>
@@ -202,6 +226,8 @@
   <tabstop>XPos</tabstop>
   <tabstop>YPos</tabstop>
   <tabstop>ZPos</tabstop>
+  <tabstop>Radius</tabstop>
+  <tabstop>comboBox</tabstop>
   <tabstop>OKButton</tabstop>
   <tabstop>CancelButton</tabstop>
  </tabstops>

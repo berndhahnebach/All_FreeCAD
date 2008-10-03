@@ -45,6 +45,7 @@
 #include "View3DInventorViewer.h"
 #include "WaitCursor.h"
 #include "ViewProviderMeasureDistance.h"
+#include "SceneInspector.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -1418,6 +1419,34 @@ bool StdCmdMeasureDistance::isActive(void)
     return false;
 }
 
+//===========================================================================
+// Std_SceneInspector
+//===========================================================================
+
+DEF_3DV_CMD(StdCmdSceneInspector);
+
+StdCmdSceneInspector::StdCmdSceneInspector()
+  : Command("Std_SceneInspector")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("Scene inspector...");
+    sToolTipText  = QT_TR_NOOP("Scene inspector");
+    sWhatsThis    = QT_TR_NOOP("Scene inspector");
+    sStatusTip    = QT_TR_NOOP("Scene inspector");
+}
+
+void StdCmdSceneInspector::activated(int iMsg)
+{
+    View3DInventor* child = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (child) {
+        View3DInventorViewer* viewer = child->getViewer();
+        Gui::Dialog::DlgInspector dlg(getMainWindow());
+        dlg.setNode(viewer->getSceneGraph());
+        dlg.exec();
+    }
+}
+
 
 //===========================================================================
 // Instanciation
@@ -1428,46 +1457,47 @@ namespace Gui {
 
 void CreateViewStdCommands(void)
 {
-  CommandManager &rcCmdMgr = Application::Instance->commandManager();
+    CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
-  // views
-  rcCmdMgr.addCommand(new StdCmdViewBottom());
-  rcCmdMgr.addCommand(new StdCmdViewFront());
-  rcCmdMgr.addCommand(new StdCmdViewLeft());
-  rcCmdMgr.addCommand(new StdCmdViewRear());
-  rcCmdMgr.addCommand(new StdCmdViewRight());
-  rcCmdMgr.addCommand(new StdCmdViewTop());
-  rcCmdMgr.addCommand(new StdCmdViewAxo());
-  rcCmdMgr.addCommand(new StdCmdViewFitAll());
-  rcCmdMgr.addCommand(new StdCmdViewFitSelection());
+    // views
+    rcCmdMgr.addCommand(new StdCmdViewBottom());
+    rcCmdMgr.addCommand(new StdCmdViewFront());
+    rcCmdMgr.addCommand(new StdCmdViewLeft());
+    rcCmdMgr.addCommand(new StdCmdViewRear());
+    rcCmdMgr.addCommand(new StdCmdViewRight());
+    rcCmdMgr.addCommand(new StdCmdViewTop());
+    rcCmdMgr.addCommand(new StdCmdViewAxo());
+    rcCmdMgr.addCommand(new StdCmdViewFitAll());
+    rcCmdMgr.addCommand(new StdCmdViewFitSelection());
 
-  rcCmdMgr.addCommand(new StdCmdViewExample1());
-  rcCmdMgr.addCommand(new StdCmdViewExample2());
-  rcCmdMgr.addCommand(new StdCmdViewExample3());
+    rcCmdMgr.addCommand(new StdCmdViewExample1());
+    rcCmdMgr.addCommand(new StdCmdViewExample2());
+    rcCmdMgr.addCommand(new StdCmdViewExample3());
 
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoQuadBuff());
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoRedGreen());
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedColumns());
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedRows());
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
+    rcCmdMgr.addCommand(new StdCmdViewIvStereoQuadBuff());
+    rcCmdMgr.addCommand(new StdCmdViewIvStereoRedGreen());
+    rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedColumns());
+    rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedRows());
+    rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
 
-  rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());
+    rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());
 
-  rcCmdMgr.addCommand(new StdCmdViewCreate());
-  rcCmdMgr.addCommand(new StdViewScreenShot());
+    rcCmdMgr.addCommand(new StdCmdViewCreate());
+    rcCmdMgr.addCommand(new StdViewScreenShot());
 
-  rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
-  rcCmdMgr.addCommand(new StdCmdSetMaterial());
-  rcCmdMgr.addCommand(new StdCmdToggleVisibility());
-  rcCmdMgr.addCommand(new StdOrthographicCamera());
-  rcCmdMgr.addCommand(new StdPerspectiveCamera());
-  rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
-  rcCmdMgr.addCommand(new StdCmdFreezeViews());
-  rcCmdMgr.addCommand(new StdViewZoomIn());
-  rcCmdMgr.addCommand(new StdViewZoomOut());
-  rcCmdMgr.addCommand(new StdViewBoxZoom());
-  rcCmdMgr.addCommand(new StdCmdTreeSelection());
-  rcCmdMgr.addCommand(new StdCmdMeasureDistance());
+    rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
+    rcCmdMgr.addCommand(new StdCmdSetMaterial());
+    rcCmdMgr.addCommand(new StdCmdToggleVisibility());
+    rcCmdMgr.addCommand(new StdOrthographicCamera());
+    rcCmdMgr.addCommand(new StdPerspectiveCamera());
+    rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
+    rcCmdMgr.addCommand(new StdCmdFreezeViews());
+    rcCmdMgr.addCommand(new StdViewZoomIn());
+    rcCmdMgr.addCommand(new StdViewZoomOut());
+    rcCmdMgr.addCommand(new StdViewBoxZoom());
+    rcCmdMgr.addCommand(new StdCmdTreeSelection());
+    rcCmdMgr.addCommand(new StdCmdMeasureDistance());
+    rcCmdMgr.addCommand(new StdCmdSceneInspector());
 }
 
 } // namespace Gui
