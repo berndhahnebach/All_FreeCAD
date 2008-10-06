@@ -48,6 +48,7 @@
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <TopoDS_Compound.hxx>
+# include <TopExp_Explorer.hxx>
 # include <TColgp_HArray2OfPnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array1OfInteger.hxx>
@@ -514,6 +515,124 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
     }
 }
 
+namespace Part {
+struct HashEdge {
+    int v1, v2;
+    TopoDS_Edge edge;
+};
+
+static std::list<TopoDS_Edge> sort_Edges(const std::vector<TopoDS_Edge>& edges)
+{
+    std::list<HashEdge>  hash_edge;
+    TopExp_Explorer xp;
+    for (std::vector<TopoDS_Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+        HashEdge he;
+        xp.Init(*it,TopAbs_VERTEX);
+        he.v1 = xp.Current().HashCode(IntegerLast());
+        xp.Next();
+        he.v2 = xp.Current().HashCode(IntegerLast());
+        he.edge = *it;
+        hash_edge.push_back(he);
+    }
+
+    if (hash_edge.empty())
+        return std::list<TopoDS_Edge>();
+
+    std::list<TopoDS_Edge> sorted;
+    int first, last;
+    first = hash_edge.front().v1;
+    last  = hash_edge.front().v2;
+
+    sorted.push_back(hash_edge.front().edge);
+    hash_edge.erase(hash_edge.begin());
+
+    while (!hash_edge.empty()) {
+        // search for adjacent edge
+        std::list<HashEdge>::iterator pEI;
+        for (pEI = hash_edge.begin(); pEI != hash_edge.end(); ++pEI) {
+            if (pEI->v1 == last) {
+                last = pEI->v2;
+                sorted.push_back(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v2 == first) {
+                first = pEI->v1;
+                sorted.push_front(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v2 == last) {
+                last = pEI->v1;
+                sorted.push_back(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v1 == first) {
+                first = pEI->v2;
+                sorted.push_front(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+        }
+
+        if ((pEI == hash_edge.end()) || (last == first)) {
+            // no adjacent edge found or polyline is closed
+            return sorted;
+            /*
+            rclBorders.push_back(std::vector<TopoDS_Edge>(sorted.begin(), sorted.end()));
+            sorted.clear();
+
+            if (!hash_edge.empty()) {
+                // new wire
+                first = hash_edge.front()->v1;
+                last  = hash_edge.front()->v2;
+                sorted.push_back(hash_edge.front().edge);
+                hash_edge.erase(hash_edge.begin());
+            }*/
+        }
+    }
+
+    return sorted;
+}
+}
+
+static PyObject * sortEdges(PyObject *self, PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj)) {
+        PyErr_SetString(PyExc_Exception, "list of edges expected");
+        return 0;
+    }
+
+    Py::List list(obj);
+    std::vector<TopoDS_Edge> edges;
+    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+        PyObject* item = (*it).ptr();
+        if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
+            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+            if (sh.ShapeType() == TopAbs_EDGE)
+                edges.push_back(TopoDS::Edge(sh));
+            else {
+                PyErr_SetString(PyExc_TypeError, "shape is not an edge");
+                return 0;
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "item is not a shape");
+            return 0;
+        }
+    }
+
+    std::list<TopoDS_Edge> sorted = sort_Edges(edges);
+    Py::List sorted_list;
+    for (std::list<TopoDS_Edge>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+        sorted_list.append(Py::Object(new TopoShapeEdgePy(new TopoShape(*it)),true));
+    }
+
+    return Py::new_reference_to(sorted_list);
+}
+
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"open"       ,open      ,METH_VARARGS,
@@ -546,5 +665,8 @@ struct PyMethodDef Part_methods[] = {
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
      "By default angle=2*PI"},
+    {"__sortEdges__" ,sortEdges,METH_VARARGS,
+     "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"
+     "two adjacent edges share a common vertex"},
     {NULL, NULL}        /* end of table marker */
 };
