@@ -42,7 +42,9 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepMesh.hxx>
+# if OCC_HEX_VERSION < 0x060300
 # include <BRepMesh_Discret.hxx>
+#endif
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRepMesh_Triangle.hxx>
 # include <BRepMesh_Edge.hxx>
@@ -697,6 +699,8 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                          std::vector<FacetTopo> &aTopo,
                          float accuracy, uint16_t flags) const
 {
+    //TODO: Port to OCC 6.3.0
+#if OCC_HEX_VERSION < 0x060300
     Standard_Integer e1,e2,e3,n1,n2,n3;
     Standard_Boolean b1,b2,b3;
 
@@ -739,4 +743,5 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
         }
     } catch(...) {
     }
+#endif
 }
