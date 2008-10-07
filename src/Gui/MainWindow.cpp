@@ -332,26 +332,29 @@ void MainWindow::whatsThis()
     QWhatsThis::enterWhatsThisMode();
 }
 
-void MainWindow::showDocumentation()
+void MainWindow::showDocumentation(const char* Article)
 {
-#if QT_VERSION < 0x040400
-    std::string url = App::Application::Config()["AppHomePath"]+ "doc/FreeCAD.chm";
-#if QT_VERSION >= 0x040200
-    bool ok = QDesktopServices::openUrl(QString::fromUtf8(url.c_str()));
-#elif defined(Q_WS_WIN)
-    std::wstring wstr = Base::FileInfo(url).toStdWString();
-    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, NULL, wstr.c_str(), NULL,
-                                                   NULL, SW_SHOWNORMAL)) > 32);
-#else
+#ifdef FC_OS_WIN32
+	std::wstring wstr = L"mk:@MSITStore:" ;
+    wstr += Base::FileInfo(App::Application::Config()["AppHomePath"] + "doc/FreeCAD.chm").toStdWString();
+	if(Article){
+		wstr += L"::/index.php@title="; 
+		std::string s = Article;
+		std::wstring ws( s.begin(), s.end() );
+		wstr += ws;
+	}
 
-#endif
-    if (!ok) {
-        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("Cannot open file %1").arg(QString::fromUtf8(url.c_str())));
-    }
+    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, L"open", L"hh.exe",wstr.c_str(), NULL, SW_SHOWNORMAL)) > 32);
+
 #else
     // Use Qt Assistant...
+	bool ok = false;
 #endif
+   if (!ok) {
+        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
+            QObject::tr("Cannot open help file"));
+   }
+
 }
 
 bool MainWindow::event(QEvent *e)
