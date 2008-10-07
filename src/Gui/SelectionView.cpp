@@ -96,17 +96,35 @@ void SelectionView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         temp = Reason.pDocName;
         temp += ".";
         temp += Reason.pObjectName;
-        if(Reason.pSubName){
+        if(Reason.pSubName[0] != 0 ){
            temp += ".";
            temp += Reason.pSubName;
         }
 
         new QListWidgetItem(QString::fromAscii(temp.c_str()), selectionView);
-    }
+    }else
 
     if (Reason.Type == SelectionChanges::ClrSelection ) 
     {
         // remove all items
+        selectionView->clear();
+
+    }else
+    if (Reason.Type == SelectionChanges::RmvSelection ) 
+    {
+        // build name
+        temp = Reason.pDocName;
+        temp += ".";
+        temp += Reason.pObjectName;
+        if(Reason.pSubName[0] != 0){ 
+           temp += ".";
+           temp += Reason.pSubName;
+        }
+
+        // remove all items
+        QList<QListWidgetItem *> l = selectionView->findItems(QLatin1String(temp.c_str()),Qt::MatchExactly);
+        if(l.size() == 1)
+            delete l[0];
 
     }
     //if (Reason.Type == SelectionChanges::AddSelection ||
