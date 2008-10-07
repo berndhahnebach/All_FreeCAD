@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,22 +19,15 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2008                                                  
 -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADModules">
-        <DirectoryRef Id="ModDir">
-            <?include ModMesh.wxi ?>
-            <?include ModPart.wxi ?>
-            <?include ModPoints.wxi ?>
-            <?include ModImage.wxi ?>
-            <?include ModRaytracing.wxi ?>
-            <?include ModTest.wxi ?>
-            <?include ModCam.wxi ?>
-            <?include ModComplete.wxi ?>
-            <?include ModMeshPart.wxi ?>
-            <?include ModPartDesign.wxi ?>
-            <?include ModDrawing.wxi ?>
-        </DirectoryRef>
-    </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModComplete" Name="Complete" FileSource="..\Mod\Complete">
+        <Component Id="CompModComplete" Guid="4f306f50-94a2-11dd-ad8b-0800200c9a66">
+            <File Id="CompleteInitPy" Name="Init.py" DiskId="1" />
+            <File Id="CompleteInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Completepyd" Name="Complete.pyd" DiskId="1" />
+            <File Id="CompleteGuipyd" Name="CompleteGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>

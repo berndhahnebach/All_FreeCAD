@@ -113,6 +113,9 @@
             <ComponentRef Id="CompModPart" />
             <ComponentRef Id="CompModMesh" />
             <ComponentRef Id="CompModPoints" />
+            <ComponentRef Id="CompModComplete" />
+            <ComponentRef Id="CompModMeshPart" />
+            <ComponentRef Id="CompModPartDesign" />
             <ComponentRef Id="CompModTest" />
             <ComponentRef Id="CompModCam" />
 	        <ComponentRef Id="CompModDrawingTemplates" />
