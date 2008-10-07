@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,22 +19,15 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2005                                                  
 -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADModules">
-        <DirectoryRef Id="ModDir">
-            <?include ModMesh.wxi ?>
-            <?include ModPart.wxi ?>
-            <?include ModPoints.wxi ?>
-            <?include ModImage.wxi ?>
-            <?include ModRaytracing.wxi ?>
-            <?include ModTest.wxi ?>
-            <?include ModCam.wxi ?>
-            <?include ModComplete.wxi ?>
-            <?include ModMeshPart.wxi ?>
-            <?include ModPartDesign.wxi ?>
-            <?include ModDrawing.wxi ?>
-        </DirectoryRef>
-    </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModMeshPart" Name="MeshPart" FileSource="..\Mod\MeshPart">
+        <Component Id="CompModMeshPart" Guid="6c6fbdc0-94a5-11dd-ad8b-0800200c9a66">
+            <File Id="MeshPartInitPy" Name="Init.py" DiskId="1" />
+            <File Id="MeshPartInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="MeshPartpyd" Name="MeshPart.pyd" DiskId="1" />
+            <File Id="MeshPartGuipyd" Name="MeshPartGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>
