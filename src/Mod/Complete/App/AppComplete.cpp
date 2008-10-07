@@ -46,13 +46,13 @@ void AppCompleteExport initComplete()
         Base::Interpreter().loadModule("Mesh");
         Base::Interpreter().loadModule("Points");
         Base::Interpreter().loadModule("MeshPart");
-        Base::Interpreter().loadModule("Assembly");
+        //Base::Interpreter().loadModule("Assembly");
         Base::Interpreter().loadModule("Drawing");
         Base::Interpreter().loadModule("Raytracing");
-        Base::Interpreter().loadModule("Sketcher");
+        //Base::Interpreter().loadModule("Sketcher");
         Base::Interpreter().loadModule("PartDesign");
         Base::Interpreter().loadModule("Image");
-        Base::Interpreter().loadModule("Cam");
+        //Base::Interpreter().loadModule("Cam");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
@@ -60,13 +60,6 @@ void AppCompleteExport initComplete()
     }
     Py_InitModule3("Complete", Complete_methods, module_Complete_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Complete module... done\n");
-
-
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
- 
-    //Complete::FeatureViewPart        ::init();
 }
 
 } // extern "C"

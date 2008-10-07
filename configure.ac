@@ -607,6 +607,10 @@ src/Mod/ReverseEngineering/Makefile
 src/Mod/ReverseEngineering/App/Makefile
 src/Mod/ReverseEngineering/Gui/Makefile
 src/Mod/ReverseEngineering/Gui/Resources/Makefile
+src/Mod/Complete/Makefile
+src/Mod/Complete/App/Makefile
+src/Mod/Complete/Gui/Makefile
+src/Mod/Complete/Gui/Resources/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
 src/Mod/TemplatePyMod/Makefile

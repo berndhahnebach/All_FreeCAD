@@ -62,13 +62,13 @@ void CompleteGuiExport initCompleteGui()
         Base::Interpreter().loadModule("MeshGui");
         Base::Interpreter().loadModule("PointsGui");
         Base::Interpreter().loadModule("MeshPartGui");
-        Base::Interpreter().loadModule("AssemblyGui");
+        //Base::Interpreter().loadModule("AssemblyGui");
         Base::Interpreter().loadModule("DrawingGui");
         Base::Interpreter().loadModule("RaytracingGui");
-        Base::Interpreter().loadModule("SketcherGui");
+        //Base::Interpreter().loadModule("SketcherGui");
         Base::Interpreter().loadModule("PartDesignGui");
         Base::Interpreter().loadModule("ImageGui");
-        Base::Interpreter().loadModule("CamGui");
+        //Base::Interpreter().loadModule("CamGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

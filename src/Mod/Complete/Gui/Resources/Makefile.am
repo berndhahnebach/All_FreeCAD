@@ -1,29 +1,15 @@
 noinst_LTLIBRARIES=libResources.la
 
 BUILT_SOURCES=\
-		qrc_Drawing.cpp 
+		qrc_Complete.cpp 
 
 nodist_libResources_la_SOURCES=\
-		qrc_Drawing.cpp 
+		qrc_Complete.cpp 
 
 EXTRA_DIST = \
-		icons/actions/document-new.png \
-		icons/actions/document-new.svg \
-		icons/actions/drawing-landscape-A0.svg \
-		icons/actions/drawing-landscape-A1.svg \
-		icons/actions/drawing-landscape-A2.svg \
-		icons/actions/drawing-landscape.svg \
-		icons/actions/drawing-view.svg \
-		icons/actions/drawing-landscape-A3.svg \
-		icons/actions/drawing-landscape-A4.svg \
-		icons/actions/drawing-landscape-new.svg \
-		icons/actions/drawing-portrait-A4.svg \
-		icons/Page.svg \
-		icons/Pages.svg \
-		icons/View.svg \
-		translations/Drawing_de.qm \
-		translations/Drawing_de.ts \
-		Drawing.qrc \
+		translations/Complete_de.qm \
+		translations/Complete_de.ts \
+		Complete.qrc \
 		UpdateResources.bat
 
 
