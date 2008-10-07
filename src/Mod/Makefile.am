@@ -1,4 +1,4 @@
-SUBDIRS=Part Mesh Points Raytracing Image Drawing ReverseEngineering Test TemplatePyMod
+SUBDIRS=Part Mesh Points Raytracing Image Drawing ReverseEngineering Complete Test TemplatePyMod
 
 
 EXTRA_DIST = \

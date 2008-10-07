@@ -1,17 +1,10 @@
 SUBDIRS=Resources
 
-if OCC_LIBRARY_FILES
-
 lib_LTLIBRARIES=libCompleteGui.la CompleteGui.la
-
-BUILT_SOURCES=\
-		moc_CompleteView.cpp
 
 libCompleteGui_la_SOURCES=\
 		AppCompleteGuiPy.cpp \
 		Command.cpp \
-		CompleteView.cpp \
-		CompleteView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \
@@ -19,7 +12,7 @@ libCompleteGui_la_SOURCES=\
 
 # the library search path.
 libCompleteGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libCompleteGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DCompleteAppExport= -DCompleteGuiExport=
+libCompleteGui_la_CPPFLAGS = -DCompleteAppExport= -DCompleteGuiExport=
 
 libCompleteGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
@@ -65,8 +58,6 @@ qrc_%.cpp: %.qrc
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
-
-endif
 
 libdir = $(prefix)/Mod/Complete
 
