@@ -50,7 +50,7 @@
 #include <QWaitCondition>
 // QtGui
 #include <QAbstractItemModel>
-#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QAbstractTextDocumentLayout>
 #include <qaction.h>
 #include <QActionGroup>
