@@ -94,6 +94,7 @@ struct MainWindowP
     QSplashScreen* splashscreen;
     StatusBarObserver* status;
     bool whatsthis;
+    QString whatstext;
     Assistant* assistant;
 };
 
@@ -364,6 +365,7 @@ bool MainWindow::event(QEvent *e)
         // won't be notified when the user clicks the link in the hypertext of
         // the what's this text. Thus, we have to install the main window to
         // the application to observe what happens in eventFilter().
+        d->whatstext.clear();
         if (!d->whatsthis) {
             d-> whatsthis = true;
             qApp->installEventFilter(this);
@@ -377,7 +379,9 @@ bool MainWindow::event(QEvent *e)
 
     if (e->type() == QEvent::WhatsThisClicked) {
         QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-        d->assistant->showDocumentation(wt->href());
+        // use assistant class later on
+        //d->assistant->showDocumentation(wt->href());
+        showDocumentation((const char*)wt->href().toUtf8());
     }
     return QMainWindow::event(e);
 }
@@ -396,16 +400,64 @@ bool MainWindow::eventFilter(QObject* o, QEvent* e)
                     windowStateChanged(view);
             }
         }
+
+        // We don't want to show the bubble help for the what's this text but want to
+        // start the help viewer with the according key word.
+        // Thus, we have to observe WhatThis events if called for a widget, use its text and
+        // must avoid to make the bubble widget visible.
+        if (e->type() == QEvent::WhatsThis) {
+            if (!o->isWidgetType())
+                return false;
+            // clicked on a widget in what's this mode
+            QWidget * w = static_cast<QWidget *>(o);
+            d->whatstext = w->whatsThis();
+        }
         if (e->type() == QEvent::WhatsThisClicked) {
             // if the widget is a top-level window
             if (o->isWidgetType() && qobject_cast<QWidget*>(o)->isWindow()) {
-                QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-                d->assistant->showDocumentation(wt->href());
+                // re-direct to the widget
+                QApplication::sendEvent(this, e);
             }
         }
+        // special treatment for menus because they directly call QWhatsThis::showText()
+        // whereby we must be informed for which action the help should be shown
+        if (o->inherits("QMenu") && QWhatsThis::inWhatsThisMode()) {
+            bool whatthis = false;
+            if (e->type() == QEvent::KeyPress) {
+                QKeyEvent* ke = static_cast<QKeyEvent*>(e);
+                if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_F1)
+                    whatthis = true;
+            }
+            else if (e->type() == QEvent::MouseButtonRelease)
+                whatthis = true;
+            else if (e->type() == QEvent::EnterWhatsThisMode)
+                whatthis = true;
+            if (whatthis) {
+                QAction* cur = static_cast<QMenu*>(o)->activeAction();
+                if (cur) {
+                    // get the help text for later usage
+                    QString s = cur->whatsThis();
+                    if (s.isEmpty())
+                        s = static_cast<QMenu*>(o)->whatsThis();
+                    d->whatstext = s;
+                }
+            }
+        }
+        if (o->inherits("QWhatsThat") && e->type() == QEvent::Show) {
+            // the bubble help should become visible which we avoid by marking the widget
+            // that it is out of range. Instead of, we show the help viewer
+            if (!d->whatstext.isEmpty()) {
+                QWhatsThisClickedEvent e(d->whatstext);
+                QApplication::sendEvent(this, &e);
+            }
+            static_cast<QWidget *>(o)->setAttribute(Qt::WA_OutsideWSRange);
+            return true;
+        }
         if (o->inherits("QWhatsThat") && e->type() == QEvent::Hide) {
+            // leave what's this mode
             if (d->whatsthis) {
                 d->whatsthis = false;
+                d->whatstext.clear();
                 qApp->removeEventFilter(this);
             }
         }
