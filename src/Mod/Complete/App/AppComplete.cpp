@@ -45,12 +45,12 @@ void AppCompleteExport initComplete()
         Base::Interpreter().loadModule("Part");
         Base::Interpreter().loadModule("Mesh");
         Base::Interpreter().loadModule("Points");
-        Base::Interpreter().loadModule("MeshPart");
+        //Base::Interpreter().loadModule("MeshPart");
         //Base::Interpreter().loadModule("Assembly");
         Base::Interpreter().loadModule("Drawing");
         Base::Interpreter().loadModule("Raytracing");
         //Base::Interpreter().loadModule("Sketcher");
-        Base::Interpreter().loadModule("PartDesign");
+        //Base::Interpreter().loadModule("PartDesign");
         Base::Interpreter().loadModule("Image");
         //Base::Interpreter().loadModule("Cam");
     }
