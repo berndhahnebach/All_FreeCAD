@@ -61,12 +61,12 @@ void CompleteGuiExport initCompleteGui()
         Base::Interpreter().loadModule("PartGui");
         Base::Interpreter().loadModule("MeshGui");
         Base::Interpreter().loadModule("PointsGui");
-        Base::Interpreter().loadModule("MeshPartGui");
+        //Base::Interpreter().loadModule("MeshPartGui");
         //Base::Interpreter().loadModule("AssemblyGui");
         Base::Interpreter().loadModule("DrawingGui");
         Base::Interpreter().loadModule("RaytracingGui");
         //Base::Interpreter().loadModule("SketcherGui");
-        Base::Interpreter().loadModule("PartDesignGui");
+        //Base::Interpreter().loadModule("PartDesignGui");
         Base::Interpreter().loadModule("ImageGui");
         //Base::Interpreter().loadModule("CamGui");
     }
