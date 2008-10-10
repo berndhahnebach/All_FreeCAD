@@ -32,7 +32,7 @@ Example:
 				<UserDocu>Read in a mesh object from file.</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="write">
+		<Methode Name="write" Const="true">
 			<Documentation>
 				<UserDocu>Write the mesh object into file.</UserDocu>
 			</Documentation>

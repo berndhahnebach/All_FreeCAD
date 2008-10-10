@@ -177,7 +177,7 @@ StdCmdAbout::StdCmdAbout()
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&About %1");
   sToolTipText  = QT_TR_NOOP("About %1");
-  sWhatsThis    = QT_TR_NOOP("About %1");
+  sWhatsThis    = "About_FreeCAD";
   sStatusTip    = QT_TR_NOOP("About %1");
   sPixmap       = App::Application::Config()["AppIcon"].c_str();
 }
