@@ -161,7 +161,10 @@ copyResource(PyObject *self, PyObject *args)
     resName += PATHSEP;
     resName += FileName;
 
-    Base::Console().Log("Using fileName = %s\nRaytracer scene file not generated, because function is not implemented yet.\nYou can copy the standard scene file FreeCAD.pov to your raytracing directory to render the scene.\n",resName.c_str());
+    Base::Console().Warning("Using fileName = %s\nRaytracer scene file not generated "
+                            "because function is not implemented yet.\nYou can copy "
+                            "the standard scene file FreeCAD.pov to your raytracing "
+                            "directory to render the scene.\n",resName.c_str());
 
     // This command should create the povray scene file, but does currently do nothing.
 
