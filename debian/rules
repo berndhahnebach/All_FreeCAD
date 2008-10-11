@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-MODULES = Part Mesh Points Raytracing Image Drawing ReverseEngineering Test
+MODULES = Part Mesh Points Raytracing Image Drawing ReverseEngineering Complete
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -74,11 +74,8 @@ install: build
 
 # Add here commands to install the package into debian/tmp/freecad.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/freecad
-	
-# Remove testing modules we don't want to have in the deb
-	rm -rf debian/tmp/freecad/usr/lib/freecad/Mod/_TEMPLATE_
-	rm -rf debian/tmp/freecad/usr/lib/freecad/Mod/TemplatePyMod
 
+# install the core system
 	dh_install -pfreecad debian/tmp/freecad/usr/share/* usr/share/
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/share usr/lib/freecad
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/bin usr/lib/freecad
@@ -90,8 +87,11 @@ install: build
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/$(MODULE)*.so usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.so.* usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/*.py usr/lib/freecad/Mod/$(MODULE);)
+
 # special treating of Test module
-	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
+	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
+	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/*.py usr/lib/freecad/Mod/Test
+	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
 
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/include/* usr/include
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/lib/lib*.la usr/lib/freecad/lib
