@@ -71,8 +71,7 @@ StdCmdWorkbench::StdCmdWorkbench()
   sGroup        = QT_TR_NOOP("View");
   sMenuText     = QT_TR_NOOP("Workbench");
   sToolTipText  = QT_TR_NOOP("Switch between workbenches");
-  sWhatsThis    = QT_TR_NOOP("Switch between workbenches"
-      "<br><a href=\"#Workbenches\">More...</a>");
+  sWhatsThis    = "Std_Workbench";
   sStatusTip    = QT_TR_NOOP("Switch between workbenches");
   sPixmap       = "FCIcon";
   iAccel        = 0;
@@ -133,7 +132,7 @@ StdCmdRecentFiles::StdCmdRecentFiles()
     sGroup        = QT_TR_NOOP("File");
     sMenuText     = QT_TR_NOOP("Recent files");
     sToolTipText  = QT_TR_NOOP("Recent file list");
-    sWhatsThis    = QT_TR_NOOP("Recent file list");
+    sWhatsThis    = "Std_RecentFiles";
     sStatusTip    = QT_TR_NOOP("Recent file list");
     iAccel        = 0;
 }
@@ -177,7 +176,7 @@ StdCmdAbout::StdCmdAbout()
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&About %1");
   sToolTipText  = QT_TR_NOOP("About %1");
-  sWhatsThis    = "About_FreeCAD";
+  sWhatsThis    = "Std_About";
   sStatusTip    = QT_TR_NOOP("About %1");
   sPixmap       = App::Application::Config()["AppIcon"].c_str();
 }
@@ -236,7 +235,7 @@ StdCmdAboutQt::StdCmdAboutQt()
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("About &Qt");
   sToolTipText  = QT_TR_NOOP("About Qt");
-  sWhatsThis    = QT_TR_NOOP("About Qt");
+  sWhatsThis    = "Std_AboutQt";
   sStatusTip    = QT_TR_NOOP("About Qt");
 }
 
@@ -256,8 +255,7 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&Tip of the day...");
   sToolTipText  = QT_TR_NOOP("Tip of the day");
-  sWhatsThis    = QT_TR_NOOP("<p>Opens a dialog that shows a list of useful tips.</p>"
-    "See <a href=\"index.php@TipOfTheDay.html\"><b>Tip of the day</b></a> for more details.");
+  sWhatsThis    = "Std_TipOfTheDay";
   sStatusTip    = QT_TR_NOOP("Tip of the day");
 }
 
@@ -278,7 +276,7 @@ StdCmdWhatsThis::StdCmdWhatsThis()
   sMenuText     = QT_TR_NOOP("&What's This?");
   sToolTipText  = QT_TR_NOOP("What's This");
   //	sWhatsThis		= sToolTipText;
-  sWhatsThis    = "";
+  sWhatsThis    = "Std_WhatsThis";
   sStatusTip    = QT_TR_NOOP("What's This");
   iAccel        = Qt::SHIFT+Qt::Key_F1;
   sPixmap       = "WhatsThis";
@@ -300,7 +298,7 @@ StdCmdDlgParameter::StdCmdDlgParameter()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("E&dit parameters ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the parameters");
-  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
+  sWhatsThis    = "Std_DlgParameter";
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
   //sPixmap     = "settings";
   iAccel        = 0;
@@ -323,7 +321,7 @@ StdCmdDlgPreferences::StdCmdDlgPreferences()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("&Preferences ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the preferences");
-  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
+  sWhatsThis    = "Std_DlgPreferences";
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
   //sPixmap     = "settings";
   iAccel        = 0;
@@ -346,7 +344,7 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("&Macro recording ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to record a macro");
-  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to record a macro");
+  sWhatsThis    = "Std_DlgMacroRecord";
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to record a macro");
   sPixmap       = "macro-record";
   iAccel        = 0;
@@ -374,7 +372,7 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("E&xecute macro ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
-  sWhatsThis    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
+  sWhatsThis    = "Std_DlgMacroExecute";
   sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
   sPixmap       = "macro-execute";
   iAccel        = 0;
@@ -402,7 +400,7 @@ StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("Execute &editor");
   sToolTipText  = QT_TR_NOOP("Execute the macro/script in the editor");
-  sWhatsThis    = QT_TR_NOOP("Execute the macro/script in the editor");
+  sWhatsThis    = "Std_DlgMacroExecuteDirect";
   sStatusTip    = QT_TR_NOOP("Execute the macro/script in the editor");
   sPixmap       = "macro-execute";
   iAccel        = 0;
@@ -429,7 +427,7 @@ StdCmdMacroStop::StdCmdMacroStop()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("S&top macro recording");
   sToolTipText  = QT_TR_NOOP("Stop the a running macro recording sassion");
-  sWhatsThis    = QT_TR_NOOP("Stop the a running macro recording sassion");
+  sWhatsThis    = "Std_DlgMacroStop";
   sStatusTip    = QT_TR_NOOP("Stop the a running macro recording sassion");
   sPixmap       = "macro-stop";
   iAccel        = 0;
@@ -456,7 +454,7 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
     sGroup        = QT_TR_NOOP("Tools");
     sMenuText     = QT_TR_NOOP("Cu&stomize...");
     sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
-    sWhatsThis    = QT_TR_NOOP("Customize toolbars and commandbars");
+    sWhatsThis    = "Std_DlgCustomize";
     sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
     //sPixmap     = "customize";
     iAccel        = 0;
@@ -482,7 +480,7 @@ StdCmdCommandLine::StdCmdCommandLine()
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("Start command &line...");
   sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
-  sWhatsThis    = QT_TR_NOOP("Opens the command line in the console");
+  sWhatsThis    = "Std_CommandLine";
   sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
   sPixmap       = "utilities-terminal";
   iAccel        = 0;
@@ -528,7 +526,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sGroup        = QT_TR_NOOP("Help");
     sMenuText     = QT_TR_NOOP("Help");
     sToolTipText  = QT_TR_NOOP("Show help to the application");
-    sWhatsThis    = QT_TR_NOOP("Help");
+    sWhatsThis    = "Std_OnlineHelp";
     sStatusTip    = QT_TR_NOOP("Help");
     sPixmap       = "help";
     iAccel        = Qt::Key_F1;
@@ -551,7 +549,7 @@ StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
     sGroup        = QT_TR_NOOP("Help");
     sMenuText     = QT_TR_NOOP("Python Manuals");
     sToolTipText  = QT_TR_NOOP("Show the Python documentation");
-    sWhatsThis    = QT_TR_NOOP("Show the Python documentation");
+    sWhatsThis    = "Std_OnlineHelpPython";
     sStatusTip    = QT_TR_NOOP("Show the Python documentation");
     sPixmap       = "python";
 }
@@ -586,7 +584,7 @@ StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
     sGroup        = QT_TR_NOOP("Help");
     sMenuText     = QT_TR_NOOP("Help Website");
     sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
-    sWhatsThis    = QT_TR_NOOP("Help Website");
+    sWhatsThis    = "Std_OnlineHelpWebsite";
     sStatusTip    = QT_TR_NOOP("Help Website");
     sPixmap       = "help";
 }
@@ -610,7 +608,7 @@ StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
     sGroup        = QT_TR_NOOP("Help");
     sMenuText     = QT_TR_NOOP("FreeCAD Website");
     sToolTipText  = QT_TR_NOOP("The FreeCAD website");
-    sWhatsThis    = QT_TR_NOOP("FreeCAD Website");
+    sWhatsThis    = "Std_FreeCADWebsite";
     sStatusTip    = QT_TR_NOOP("FreeCAD Website");
     sPixmap       = "help";
 }
@@ -632,7 +630,7 @@ StdCmdPythonWebsite::StdCmdPythonWebsite()
     sGroup        = QT_TR_NOOP("Help");
     sMenuText     = QT_TR_NOOP("Python Website");
     sToolTipText  = QT_TR_NOOP("The official Python website");
-    sWhatsThis    = QT_TR_NOOP("Python Website");
+    sWhatsThis    = "Std_PythonWebsite";
     sStatusTip    = QT_TR_NOOP("Python Website");
     sPixmap       = "python";
 }

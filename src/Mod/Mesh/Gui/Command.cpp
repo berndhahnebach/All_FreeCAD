@@ -76,7 +76,7 @@ CmdMeshTransform::CmdMeshTransform()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Transform mesh");
   sToolTipText  = QT_TR_NOOP("Rotate or move a mesh");
-  sWhatsThis    = QT_TR_NOOP("Rotate or move a mesh");
+  sWhatsThis    = "Mesh_Transform";
   sStatusTip    = QT_TR_NOOP("Rotate or move a mesh");
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
@@ -116,7 +116,7 @@ CmdMeshDemolding::CmdMeshDemolding()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Interactive demolding direction");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_Demolding";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
@@ -156,7 +156,7 @@ CmdMeshExMakeMesh::CmdMeshExMakeMesh()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make a Box");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_ExMakeMesh";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
@@ -208,7 +208,7 @@ CmdMeshExMakeTool::CmdMeshExMakeTool()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make a Tool");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_ExMakeTool";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool2";
   iAccel        = 0;
@@ -258,7 +258,7 @@ CmdMeshExMakeUnion::CmdMeshExMakeUnion()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make Union");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_ExMakeUnion";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool3";
   iAccel        = 0;
@@ -300,7 +300,7 @@ CmdMeshUnion::CmdMeshUnion()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Union");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_Union";
   sStatusTip    = sMenuText;
   iAccel        = 0;
 }
@@ -341,7 +341,7 @@ CmdMeshDifference::CmdMeshDifference()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Difference");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_Difference";
   sStatusTip    = sMenuText;
   iAccel        = 0;
 }
@@ -382,7 +382,7 @@ CmdMeshIntersection::CmdMeshIntersection()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Intersection");
   sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
+  sWhatsThis    = "Mesh_Intersection";
   sStatusTip    = sMenuText;
   iAccel        = 0;
 }
@@ -423,7 +423,7 @@ CmdMeshImport::CmdMeshImport()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Import mesh...");
   sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
-  sWhatsThis    = QT_TR_NOOP("Imports a mesh from file");
+  sWhatsThis    = "Mesh_Import";
   sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
   sPixmap       = "import_mesh";
   iAccel        = 0;
@@ -491,7 +491,7 @@ CmdMeshExport::CmdMeshExport()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Export mesh...");
   sToolTipText  = QT_TR_NOOP("Exports a mesh to file");
-  sWhatsThis    = QT_TR_NOOP("Exports a mesh to file");
+  sWhatsThis    = "Mesh_Export";
   sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
   sPixmap       = "export_mesh";
   iAccel        = 0;
@@ -555,7 +555,7 @@ CmdMeshFromGeometry::CmdMeshFromGeometry()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Create mesh from geometry...");
     sToolTipText  = QT_TR_NOOP("Create mesh from the selected geometry");
-    sWhatsThis    = QT_TR_NOOP("Create mesh from the selected geometry");
+    sWhatsThis    = "Mesh_FromGeometry";
     sStatusTip    = QT_TR_NOOP("Create mesh from the selected geometry");
     iAccel        = 0;
 }
@@ -610,7 +610,7 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Curvature plot");
   sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
-  sWhatsThis    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+  sWhatsThis    = "Mesh_VertexCurvature";
   sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
   sPixmap       = "curv_info";
 }
@@ -654,7 +654,7 @@ CmdMeshVertexCurvatureInfo::CmdMeshVertexCurvatureInfo()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Curvature info");
     sToolTipText  = QT_TR_NOOP("Information about curvature");
-    sWhatsThis    = QT_TR_NOOP("Information about curvature");
+    sWhatsThis    = "Mesh_CurvatureInfo";
     sStatusTip    = QT_TR_NOOP("Information about curvature");
 }
 
@@ -696,7 +696,7 @@ CmdMeshPolySegm::CmdMeshPolySegm()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Make segment");
     sToolTipText  = QT_TR_NOOP("Creates a mesh segment");
-    sWhatsThis    = QT_TR_NOOP("Creates a mesh segment");
+    sWhatsThis    = "Mesh_PolySegm";
     sStatusTip    = QT_TR_NOOP("Creates a mesh segment");
     sPixmap       = "PolygonPick";
 }
@@ -750,7 +750,7 @@ CmdMeshPolyCut::CmdMeshPolyCut()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Cut mesh");
     sToolTipText  = QT_TR_NOOP("Cuts a mesh with a picked polygon");
-    sWhatsThis    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+    sWhatsThis    = "Mesh_PolyCut";
     sStatusTip    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
     sPixmap       = "mesh_cut";
 }
@@ -804,7 +804,7 @@ CmdMeshPolySplit::CmdMeshPolySplit()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Split mesh");
     sToolTipText  = QT_TR_NOOP("Splits a mesh into two meshes");
-    sWhatsThis    = QT_TR_NOOP("Splits a mesh into two meshes");
+    sWhatsThis    = "Mesh_PolySplit";
     sStatusTip    = QT_TR_NOOP("Splits a mesh into two meshes");
 }
 
@@ -857,7 +857,7 @@ CmdMeshToolMesh::CmdMeshToolMesh()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Segment by tool mesh");
   sToolTipText  = QT_TR_NOOP("Creates a segment from a given tool mesh");
-  sWhatsThis    = QT_TR_NOOP("Creates a segment from a given tool mesh");
+  sWhatsThis    = "Mesh_ToolMesh";
   sStatusTip    = QT_TR_NOOP("Creates a segment from a given tool mesh");
   sPixmap       = "Std_Tool4";
 }
@@ -912,7 +912,7 @@ CmdMeshEvaluation::CmdMeshEvaluation()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Evaluate mesh...");
   sToolTipText  = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
-  sWhatsThis    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+  sWhatsThis    = "Mesh_Evaluation";
   sStatusTip    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
 }
 
@@ -954,7 +954,7 @@ CmdMeshEvaluateFacet::CmdMeshEvaluateFacet()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Face info");
     sToolTipText  = QT_TR_NOOP("Information about face");
-    sWhatsThis    = QT_TR_NOOP("Information about face");
+    sWhatsThis    = "Mesh_EvaluateFacet";
     sStatusTip    = QT_TR_NOOP("Information about face");
     sPixmap       = "mesh_pipette";
 }
@@ -997,7 +997,7 @@ CmdMeshRemoveCompByHand::CmdMeshRemoveCompByHand()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Remove components by hand...");
     sToolTipText  = QT_TR_NOOP("Mark a component to remove it from the mesh");
-    sWhatsThis    = QT_TR_NOOP("Mark a component to remove it from the mesh");
+    sWhatsThis    = "Mesh_RemoveCompByHand";
     sStatusTip    = QT_TR_NOOP("Mark a component to remove it from the mesh");
 }
 
@@ -1039,7 +1039,7 @@ CmdMeshEvaluateSolid::CmdMeshEvaluateSolid()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Check solid mesh");
   sToolTipText  = QT_TR_NOOP("Checks whether the mesh is a solid");
-  sWhatsThis    = QT_TR_NOOP("Checks whether the mesh is a solid");
+  sWhatsThis    = "Mesh_EvaluateSolid";
   sStatusTip    = QT_TR_NOOP("Checks whether the mesh is a solid");
 //  sPixmap       = "curv_info";
 }
@@ -1077,7 +1077,7 @@ CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Harmoinze normals");
   sToolTipText  = QT_TR_NOOP("Hormonizes the normals of the mesh");
-  sWhatsThis    = QT_TR_NOOP("Hormonizes the normals of the mesh");
+  sWhatsThis    = "Mesh_HarmonizeNormals";
   sStatusTip    = QT_TR_NOOP("Hormonizes the normals of the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1116,7 +1116,7 @@ CmdMeshFlipNormals::CmdMeshFlipNormals()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Flip normals");
   sToolTipText  = QT_TR_NOOP("Flips the normals of the mesh");
-  sWhatsThis    = QT_TR_NOOP("Flips the normals of the mesh");
+  sWhatsThis    = "Mesh_FlipNormals";
   sStatusTip    = QT_TR_NOOP("Flips the normals of the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1155,7 +1155,7 @@ CmdMeshFixDegenerations::CmdMeshFixDegenerations()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Remove degenerated faces");
   sToolTipText  = QT_TR_NOOP("Remove degenerated faces from the mesh");
-  sWhatsThis    = QT_TR_NOOP("Remove degenerated faces from the mesh");
+  sWhatsThis    = "Mesh_FixDegenerations";
   sStatusTip    = QT_TR_NOOP("Remove degenerated faces from the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1194,7 +1194,7 @@ CmdMeshFixDuplicateFaces::CmdMeshFixDuplicateFaces()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Remove duplicated faces");
   sToolTipText  = QT_TR_NOOP("Remove duplicated faces from the mesh");
-  sWhatsThis    = QT_TR_NOOP("Remove duplicated faces from the mesh");
+  sWhatsThis    = "Mesh_FixDuplicateFaces";
   sStatusTip    = QT_TR_NOOP("Remove duplicated faces from the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1233,7 +1233,7 @@ CmdMeshFixDuplicatePoints::CmdMeshFixDuplicatePoints()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Remove duplicated points");
   sToolTipText  = QT_TR_NOOP("Remove duplicated points from the mesh");
-  sWhatsThis    = QT_TR_NOOP("Remove duplicated points from the mesh");
+  sWhatsThis    = "Mesh_FixDuplicatePoints";
   sStatusTip    = QT_TR_NOOP("Remove duplicated points from the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1272,7 +1272,7 @@ CmdMeshFixIndices::CmdMeshFixIndices()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Fix indices");
   sToolTipText  = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
-  sWhatsThis    = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
+  sWhatsThis    = "Mesh_FixIndices";
   sStatusTip    = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
 //  sPixmap       = "curv_info";
 }
@@ -1311,7 +1311,7 @@ CmdMeshBoundingBox::CmdMeshBoundingBox()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Boundings info...");
   sToolTipText  = QT_TR_NOOP("Shows the boundings of the selected mesh");
-  sWhatsThis    = QT_TR_NOOP("Shows the boundings of the selected mesh");
+  sWhatsThis    = "Mesh_BoundingBox";
   sStatusTip    = QT_TR_NOOP("Shows the boundings of the selected mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1352,7 +1352,7 @@ CmdMeshBuildRegularSolid::CmdMeshBuildRegularSolid()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Regular solid...");
   sToolTipText  = QT_TR_NOOP("Builds a regular solid");
-  sWhatsThis    = QT_TR_NOOP("Builds a regular solid");
+  sWhatsThis    = "Mesh_BuildRegularSolid";
   sStatusTip    = QT_TR_NOOP("Builds a regular solid");
   sPixmap       = "solid_mesh";
 }
@@ -1379,7 +1379,7 @@ CmdMeshFillupHoles::CmdMeshFillupHoles()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Fill holes...");
   sToolTipText  = QT_TR_NOOP("Fill holes of the mesh");
-  sWhatsThis    = QT_TR_NOOP("Fill holes of the mesh");
+  sWhatsThis    = "Mesh_FillupHoles";
   sStatusTip    = QT_TR_NOOP("Fill holes of the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1423,7 +1423,7 @@ CmdMeshRemoveComponents::CmdMeshRemoveComponents()
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Remove components...");
   sToolTipText  = QT_TR_NOOP("Remove topologic independant components from the mesh");
-  sWhatsThis    = QT_TR_NOOP("Remove topologic independant components from the mesh");
+  sWhatsThis    = "Mesh_RemoveComponents";
   sStatusTip    = QT_TR_NOOP("Remove topologic independant components from the mesh");
 //  sPixmap       = "curv_info";
 }
@@ -1467,7 +1467,7 @@ CmdMeshFillInteractiveHole::CmdMeshFillInteractiveHole()
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Close hole");
     sToolTipText  = QT_TR_NOOP("Close holes interactively");
-    sWhatsThis    = QT_TR_NOOP("Close holes interactively");
+    sWhatsThis    = "Mesh_FillInteractiveHole";
     sStatusTip    = QT_TR_NOOP("Close holes interactively");
     sPixmap       = "mesh_boundary";
 }

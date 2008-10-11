@@ -59,7 +59,7 @@ StdCmdOpen::StdCmdOpen()
     sGroup        = QT_TR_NOOP("File");
     sMenuText     = QT_TR_NOOP("&Open...");
     sToolTipText  = QT_TR_NOOP("Open a document or import files");
-    sWhatsThis    = QT_TR_NOOP("Open a document or import files");
+    sWhatsThis    = "Std_Open";
     sStatusTip    = QT_TR_NOOP("Open a document or import files");
     sPixmap       = "Open";
     iAccel        = Qt::CTRL+Qt::Key_O;
@@ -111,7 +111,7 @@ StdCmdImport::StdCmdImport()
     sGroup        = QT_TR_NOOP("File");
     sMenuText     = QT_TR_NOOP("&Import...");
     sToolTipText  = QT_TR_NOOP("Import a file in the active document");
-    sWhatsThis    = QT_TR_NOOP("Import a file in the active document");
+    sWhatsThis    = "Std_Import";
     sStatusTip    = QT_TR_NOOP("Import a file in the active document");
     //sPixmap       = "Open";
     iAccel        = Qt::CTRL+Qt::Key_I;
@@ -173,7 +173,7 @@ StdCmdExport::StdCmdExport()
     sGroup        = QT_TR_NOOP("File");
     sMenuText     = QT_TR_NOOP("&Export...");
     sToolTipText  = QT_TR_NOOP("Export an object in the active document");
-    sWhatsThis    = QT_TR_NOOP("Export an object in the active document");
+    sWhatsThis    = "Std_Export";
     sStatusTip    = QT_TR_NOOP("Export an object in the active document");
     //sPixmap       = "Open";
     iAccel        = Qt::CTRL+Qt::Key_E;
@@ -229,7 +229,7 @@ StdCmdNew::StdCmdNew()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&New");
   sToolTipText  = QT_TR_NOOP("Create a new empty Document");
-  sWhatsThis    = QT_TR_NOOP("Create a new empty Document");
+  sWhatsThis    = "Std_New";
   sStatusTip    = QT_TR_NOOP("Create a new empty Document");
   sPixmap       = "New";
   iAccel        = Qt::CTRL+Qt::Key_N;
@@ -251,7 +251,7 @@ StdCmdSave::StdCmdSave()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Save");
   sToolTipText  = QT_TR_NOOP("Save the active document");
-  sWhatsThis    = QT_TR_NOOP("Save the active document");
+  sWhatsThis    = "Std_Save";
   sStatusTip    = QT_TR_NOOP("Save the active document");
   sPixmap       = "Save";
   iAccel        = Qt::CTRL+Qt::Key_S;
@@ -289,7 +289,7 @@ StdCmdSaveAs::StdCmdSaveAs()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("Save &As...");
   sToolTipText  = QT_TR_NOOP("Save the active document under a new file name");
-  sWhatsThis    = QT_TR_NOOP("Save the active document under a new file name");
+  sWhatsThis    = "Std_SaveAs";
   sStatusTip    = QT_TR_NOOP("Save the active document under a new file name");
   iAccel        = 0;
 }
@@ -328,7 +328,7 @@ StdCmdProjectInfo::StdCmdProjectInfo()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("Project i&nformation...");
   sToolTipText  = QT_TR_NOOP("Show details of the currently active project");
-  sWhatsThis    = QT_TR_NOOP("Show details of the currently active project");
+  sWhatsThis    = "Std_ProjectInfo";
   sStatusTip    = QT_TR_NOOP("Show details of the currently active project");
 }
 
@@ -354,7 +354,7 @@ StdCmdPrint::StdCmdPrint()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Print...");
   sToolTipText  = QT_TR_NOOP("Print the document");
-  sWhatsThis    = QT_TR_NOOP("Print the document");
+  sWhatsThis    = "Std_Print";
   sStatusTip    = QT_TR_NOOP("Print the document");
   sPixmap       = "Print";
   iAccel        = Qt::CTRL+Qt::Key_P;;
@@ -385,7 +385,7 @@ StdCmdPrintPdf::StdCmdPrintPdf()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Export PDF...");
   sToolTipText  = QT_TR_NOOP("Export the document as PDF");
-  sWhatsThis    = QT_TR_NOOP("Export the document as PDF");
+  sWhatsThis    = "Std_PrintPdf";
   sStatusTip    = QT_TR_NOOP("Export the document as PDF");
 }
 
@@ -415,7 +415,7 @@ StdCmdQuit::StdCmdQuit()
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("E&xit");
   sToolTipText  = QT_TR_NOOP("Quits the application");
-  sWhatsThis    = QT_TR_NOOP("Quits the application");
+  sWhatsThis    = "Std_Quit";
   sStatusTip    = QT_TR_NOOP("Quits the application");
   iAccel        = Qt::ALT+Qt::Key_F4;
 }
@@ -439,7 +439,7 @@ StdCmdUndo::StdCmdUndo()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Undo");
   sToolTipText  = QT_TR_NOOP("Undo exactly one action");
-  sWhatsThis    = QT_TR_NOOP("Undo exactly one action");
+  sWhatsThis    = "Std_Undo";
   sStatusTip    = QT_TR_NOOP("Undo exactly one action");
   sPixmap       = "Undo";
   iAccel        = Qt::CTRL+Qt::Key_Z;
@@ -484,7 +484,7 @@ StdCmdRedo::StdCmdRedo()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Redo");
   sToolTipText  = QT_TR_NOOP("Redoes a previously undone action");
-  sWhatsThis    = QT_TR_NOOP("Redoes a previously undone action");
+  sWhatsThis    = "Std_Redo";
   sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
   sPixmap       = "Redo";
   iAccel        = Qt::CTRL+Qt::Key_Y;
@@ -528,7 +528,7 @@ StdCmdCut::StdCmdCut()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Cut");
   sToolTipText  = QT_TR_NOOP("Cut out");
-  sWhatsThis    = QT_TR_NOOP("Cut out");
+  sWhatsThis    = "Std_Cut";
   sStatusTip    = QT_TR_NOOP("Cut out");
   sPixmap       = "Cut";
   iAccel        = Qt::CTRL+Qt::Key_X;
@@ -555,7 +555,7 @@ StdCmdCopy::StdCmdCopy()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("C&opy");
   sToolTipText  = QT_TR_NOOP("Copy operation");
-  sWhatsThis    = QT_TR_NOOP("Copy operation");
+  sWhatsThis    = "Std_Copy";
   sStatusTip    = QT_TR_NOOP("Copy operation");
   sPixmap       = "Copy";
   iAccel        = Qt::CTRL+Qt::Key_C;
@@ -582,7 +582,7 @@ StdCmdPaste::StdCmdPaste()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Paste");
   sToolTipText  = QT_TR_NOOP("Paste operation");
-  sWhatsThis    = QT_TR_NOOP("Paste operation");
+  sWhatsThis    = "Std_Paste";
   sStatusTip    = QT_TR_NOOP("Paste operation");
   sPixmap       = "Paste";
   iAccel        = Qt::CTRL+Qt::Key_V;
@@ -610,7 +610,7 @@ StdCmdSelectAll::StdCmdSelectAll()
     sGroup        = QT_TR_NOOP("Edit");
     sMenuText     = QT_TR_NOOP("Select &All");
     sToolTipText  = QT_TR_NOOP("Select all");
-    sWhatsThis    = QT_TR_NOOP("Select all");
+    sWhatsThis    = "Std_SelectAll";
     sStatusTip    = QT_TR_NOOP("Select all");
     iAccel        = Qt::CTRL+Qt::Key_A;
 }
@@ -642,7 +642,7 @@ StdCmdDelete::StdCmdDelete()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Delete");
   sToolTipText  = QT_TR_NOOP("Deletes the selected objects");
-  sWhatsThis    = QT_TR_NOOP("Deletes the selected objects");
+  sWhatsThis    = "Std_Delete";
   sStatusTip    = QT_TR_NOOP("Deletes the selected objects");
 //  sPixmap       = "Paste";
   iAccel        = Qt::Key_Delete;
@@ -685,7 +685,7 @@ StdCmdRefresh::StdCmdRefresh()
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Refresh");
   sToolTipText  = QT_TR_NOOP("Recomputes the current active document");
-  sWhatsThis    = QT_TR_NOOP("Recomputes the current active document");
+  sWhatsThis    = "Std_Refresh";
   sStatusTip    = QT_TR_NOOP("Recomputes the current active document");
   sPixmap       = "reload";
   iAccel        = Qt::Key_F5;

@@ -119,7 +119,7 @@ CmdPartBox::CmdPartBox()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Create box...");
     sToolTipText  = QT_TR_NOOP("Create a Box feature");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Box";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -165,7 +165,7 @@ CmdPartBox2::CmdPartBox2()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Box fix 1");
     sToolTipText  = QT_TR_NOOP("Create a Box feature without dialog");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Box2";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -209,7 +209,7 @@ CmdPartBox3::CmdPartBox3()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Box fix 2");
     sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Box3";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -253,7 +253,7 @@ CmdPartPrimitives::CmdPartPrimitives()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Create primitives...");
     sToolTipText  = QT_TR_NOOP("Creation of parametrized geometric primitives");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Primitives";
     sStatusTip    = sToolTipText;
     //sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -285,7 +285,7 @@ CmdPartCut::CmdPartCut()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Cut");
     sToolTipText  = QT_TR_NOOP("Create a Cut feature");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Cut";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -332,7 +332,7 @@ CmdPartCommon::CmdPartCommon()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Intersection");
     sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Common";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -378,7 +378,7 @@ CmdPartFuse::CmdPartFuse()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Union");
     sToolTipText  = QT_TR_NOOP("Make union of two shapes");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Fuse";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -425,7 +425,7 @@ CmdPartSection::CmdPartSection()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Section");
     sToolTipText  = QT_TR_NOOP("Make section of two shapes");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Section";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -472,7 +472,7 @@ CmdPartImport::CmdPartImport()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Import CAD...");
     sToolTipText  = QT_TR_NOOP("Imports a CAD file");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Import";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
     iAccel        = 0;
@@ -519,7 +519,7 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
     sGroup      = QT_TR_NOOP("Part");
     sMenuText   = QT_TR_NOOP("Import curve network...");
     sToolTipText= QT_TR_NOOP("Import a curve network");
-    sWhatsThis  = sToolTipText;
+    sWhatsThis  = "Part_ImportCurveNet";
     sStatusTip  = sToolTipText;
     sPixmap     = "Part_Box";
     iAccel      = 0;
@@ -565,7 +565,7 @@ CmdPartBoolean::CmdPartBoolean()
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Boolean...");
     sToolTipText  = QT_TR_NOOP("Run a boolean operation with two shapes selected");
-    sWhatsThis    = sToolTipText;
+    sWhatsThis    = "Part_Boolean";
     sStatusTip    = sToolTipText;
     //sPixmap       = "Part_Box";
     iAccel        = 0;
