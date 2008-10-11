@@ -75,7 +75,7 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
     else if (strcmp(recipient,"Tree") == 0)
     {
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-            *item << "Std_SetMaterial" << "Std_ToggleVisibility" 
+            *item << "Std_SetAppearance" << "Std_ToggleVisibility" 
                   << "Std_RandomColor" << "Separator" << "Std_Delete";
     }
 }
@@ -125,7 +125,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
-          << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
+          << "Std_SetApperance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
           << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
           << "Std_ViewStatusBar" << "Std_UserInterface";
@@ -144,6 +144,39 @@ Gui::MenuItem* Workbench::setupMenuBar() const
          << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
          << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
 
+	// Mesh ****************************************************************************************************
+	Gui::MenuItem* mesh = new Gui::MenuItem( menuBar );
+ 
+	// submenu analyze
+    Gui::MenuItem* analyze = new Gui::MenuItem();
+    analyze->setCommand(QT_TR_NOOP("Analyze"));
+    *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Mesh_CurvatureInfo" << "Separator" 
+             << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+
+    // submenu boolean
+    Gui::MenuItem* boolean = new Gui::MenuItem();
+    boolean->setCommand(QT_TR_NOOP("Boolean"));
+    *boolean << "Mesh_Union" << "Mesh_Intersection" << "Mesh_Difference";
+
+    mesh->setCommand(QT_TR_NOOP("&Meshes"));
+    *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_FromGeometry" << "Separator"
+          << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
+          << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents"
+          << "Mesh_RemoveCompByHand" << "Separator" 
+          << "Mesh_BuildRegularSolid" << boolean << "Separator" << "Mesh_PolyCut"
+          << "Mesh_PolySplit" << "Mesh_PolySegm" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
+
+	// Part ****************************************************************************************************
+
+    Gui::MenuItem* part = new Gui::MenuItem(menuBar);
+
+	part->setCommand(QT_TR_NOOP("&Part"));
+    *part << "Part_Import" << "Separator" << "Part_Cylinder"  << "Part_Box" << "Part_Box2" << "Part_Box3" 
+          << "Part_Primitives" << "Separator" << "Part_Boolean" << "Part_Extrude"
+          << "Part_FilletEdges" << "Separator" << "Part_ShapeInfo";
+
+ 
+	// xxx ****************************************************************************************************
     // Separator
     Gui::MenuItem* sep = new Gui::MenuItem( menuBar );
     sep->setCommand( "Separator" );
@@ -157,7 +190,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     help->setCommand(QT_TR_NOOP("&Help"));
     *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp"
           << helpWebsites  << "Std_TipOfTheDay"<< "Separator" << "Std_About"
-          << "Std_AboutQt" << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
+          << "Std_AboutQt" << "Separator" << "Std_WhatsThis" ;//<< "Std_DescriptionMode";
 
     return menuBar;
 }
