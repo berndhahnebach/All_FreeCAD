@@ -173,34 +173,34 @@ DEF_STD_CMD_ACL(StdCmdAbout)
 StdCmdAbout::StdCmdAbout()
   :Command("Std_About")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("&About %1");
-  sToolTipText  = QT_TR_NOOP("About %1");
-  sWhatsThis    = "Std_About";
-  sStatusTip    = QT_TR_NOOP("About %1");
-  sPixmap       = App::Application::Config()["AppIcon"].c_str();
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("&About %1");
+    sToolTipText  = QT_TR_NOOP("About %1");
+    sWhatsThis    = "Std_About";
+    sStatusTip    = QT_TR_NOOP("About %1");
+    sPixmap       = App::Application::Config()["AppIcon"].c_str();
 }
 
 Action * StdCmdAbout::createAction(void)
 {
-  Action *pcAction;
+    Action *pcAction;
 
-  QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
-  pcAction = new Action(this,getMainWindow());
-  pcAction->setText( QObject::tr(sMenuText).arg(exe) );
-  pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
-  pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
-  pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
-  if(sPixmap)
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
+    QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    pcAction = new Action(this,getMainWindow());
+    pcAction->setText(QObject::tr(sMenuText).arg(exe));
+    pcAction->setToolTip(QObject::tr(sToolTipText).arg(exe));
+    pcAction->setStatusTip(QObject::tr(sStatusTip).arg(exe));
+    pcAction->setWhatsThis(QLatin1String(sWhatsThis));
+    if(sPixmap)
+        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setShortcut(iAccel);
 
-  return pcAction;
+    return pcAction;
 }
 
 bool StdCmdAbout::isActive()
 {
-  return true;
+    return true;
 }
 
 /**
@@ -208,20 +208,19 @@ bool StdCmdAbout::isActive()
  */
 void StdCmdAbout::activated(int iMsg)
 {
-  Gui::Dialog::AboutDialog dlg( getMainWindow() );
-  dlg.exec();
+    Gui::Dialog::AboutDialog dlg( getMainWindow() );
+    dlg.exec();
 }
 
 void StdCmdAbout::languageChange()
 {
-  if ( _pcAction )
-  {
-      QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
-    _pcAction->setText( QObject::tr(sMenuText).arg(exe) );
-    _pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
-    _pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
-    _pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
-  }
+    if (_pcAction) {
+        QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+        _pcAction->setText(QObject::tr(sMenuText).arg(exe));
+        _pcAction->setToolTip(QObject::tr(sToolTipText).arg(exe));
+        _pcAction->setStatusTip(QObject::tr(sStatusTip).arg(exe));
+        _pcAction->setWhatsThis(QLatin1String(sWhatsThis));
+    }
 }
 
 //===========================================================================

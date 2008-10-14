@@ -1,3 +1,36 @@
+freecad (0.7.1658-1feisty1) feisty; urgency=low
+
+  * New release for Ubuntu 7.04 (Feisty Fawn)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 12 Oct 2008 20:30:14 +0200
+
+freecad (0.7.1658-1intrepid1) intrepid; urgency=low
+
+  * New release for Ubuntu 8.10 (Intrepid Ibex)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 12 Oct 2008 16:20:54 +0200
+
+freecad (0.7.1658-1hardy1) hardy; urgency=low
+
+  * New release for Ubuntu 8.04 (Hardy Heron)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 11 Oct 2008 18:45:20 +0200
+
+freecad (0.7.1658-1gutsy1) gutsy; urgency=low
+
+  * New release for Ubuntu 7.10 (Gutsy Gibbon)
+  * Fix many license issues
+  * Define QT_NO_CAST_FROM_ASCII to avoid problems with UTF-8 encoded strings
+  * Support additional module paths in home directory
+  * Re-implement the "What's this" facility to start the help window with context-sensitive help
+  * Create Python commands from the user input in the property editor
+  * Support of groups in property editor
+  * Implement general export framework
+  * Implement graphical user-interface for creation of fillets and extrusions
+  * Add scene inspector for analyzing the OpenInventor scene graph  
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 11 Oct 2008 15:56:27 +0200
+
 freecad (0.7.1525-1feisty1) feisty; urgency=low
 
   * Activate MIME support in rules file
