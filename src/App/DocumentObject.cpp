@@ -74,7 +74,7 @@ short DocumentObject::mustExecute(void) const
 const char* DocumentObject::getStatusString(void) const
 {
     if (isError()) {
-        const char* text = getDocument().getErrorDescription(this);
+        const char* text = getDocument()->getErrorDescription(this);
         return text ? text : "Error";
     }
     else if (isTouched())
@@ -105,9 +105,9 @@ void DocumentObject::onLoseLinkToObject(DocumentObject*)
 
 }
 
-App::Document &DocumentObject::getDocument(void) const
+App::Document *DocumentObject::getDocument(void) const
 {
-    return *_pDoc;
+    return _pDoc;
 }
 
 void DocumentObject::setDocument(App::Document* doc)

@@ -188,9 +188,9 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
 
 void DlgEvaluateMeshImp::setMesh(Mesh::Feature* m)
 {
-    App::Document& doc = m->getDocument();
-    if (&doc != getDocument())
-        attachDocument(&doc);
+    App::Document* doc = m->getDocument();
+    if (doc != getDocument())
+        attachDocument(doc);
   
     refreshList();
 
@@ -389,7 +389,7 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
 void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Harmonize normals");
@@ -454,7 +454,7 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
 void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Remove non-manifolds");
@@ -546,7 +546,7 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
 void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Fix indices");
@@ -612,7 +612,7 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
 void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Remove degenerated faces");
@@ -679,7 +679,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
 void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Remove duplicated faces");
@@ -744,7 +744,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
 void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Remove duplicated points");
@@ -809,7 +809,7 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
 void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
 {
     if (_meshFeature) {
-        const char* docName = App::GetApplication().getDocumentName(&_meshFeature->getDocument());
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Fix self-intersections");

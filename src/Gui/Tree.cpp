@@ -123,13 +123,13 @@ void TreeWidget::onCreateGroup()
         DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
             (this->contextItem);
         App::DocumentObject* obj = objitem->object()->getObject();
-        App::Document& doc = obj->getDocument();
+        App::Document* doc = obj->getDocument();
         QString cmd = QString::fromAscii("App.getDocument(\"%1\").getObject(\"%2\")"
                               ".newObject(\"App::DocumentObjectGroup\",\"%3\")")
-                              .arg(QString::fromAscii(doc.getName()))
+                              .arg(QString::fromAscii(doc->getName()))
                               .arg(QString::fromAscii(obj->getNameInDocument()))
                               .arg(name);
-        Gui::Document* gui = Gui::Application::Instance->getDocument(&doc);
+        Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
         gui->openCommand("Create group");
         Gui::Application::Instance->runPythonCode(cmd.toUtf8());
         gui->commitCommand();
@@ -168,8 +168,8 @@ QMimeData * TreeWidget::mimeData (const QList<QTreeWidgetItem *> items) const
             return 0;
         App::DocumentObject* obj = static_cast<DocumentObjectItem *>(*it)->object()->getObject();
         if (!doc)
-            doc = &obj->getDocument();
-        else if (doc != &obj->getDocument())
+            doc = obj->getDocument();
+        else if (doc != obj->getDocument())
             return 0;
     }
     return QTreeWidget::mimeData(items);
@@ -197,7 +197,7 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
             }
             App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)->
                 object()->getObject();
-            if (doc != &obj->getDocument()) {
+            if (doc != obj->getDocument()) {
                 event->ignore();
                 return;
             }
@@ -209,7 +209,7 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
         if (!grp->getTypeId().isDerivedFrom(App::DocumentObjectGroup::
             getClassTypeId()))
             event->ignore();
-        App::Document* doc = &grp->getDocument();
+        App::Document* doc = grp->getDocument();
         QList<QModelIndex> idxs = selectedIndexes();
         for (QList<QModelIndex>::Iterator it = idxs.begin(); it != idxs.end(); ++it) {
             QTreeWidgetItem* item = itemFromIndex(*it);
@@ -219,7 +219,7 @@ void TreeWidget::dragMoveEvent(QDragMoveEvent *event)
             }
             App::DocumentObject* obj = static_cast<DocumentObjectItem*>(item)->
                 object()->getObject();
-            if (doc != &obj->getDocument()) {
+            if (doc != obj->getDocument()) {
                 event->ignore();
                 return;
             }
@@ -270,7 +270,7 @@ void TreeWidget::dropEvent(QDropEvent *event)
             return; // no group object
 
         // Open command
-        App::Document* doc = &grp->getDocument();
+        App::Document* doc = grp->getDocument();
         Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
         gui->openCommand("Move object");
         for (QList<QTreeWidgetItem*>::Iterator it = items.begin(); it != items.end(); ++it) {

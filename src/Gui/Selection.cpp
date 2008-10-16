@@ -374,16 +374,16 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
 void SelectionSingleton::slotDeletedObject(App::DocumentObject& Obj)
 {
     // remove also from the selection, if selected
-    Selection().rmvSelection( Obj.getDocument().getName(), Obj.getNameInDocument() );
+    Selection().rmvSelection( Obj.getDocument()->getName(), Obj.getNameInDocument() );
 }
 
 void SelectionSingleton::slotRenamedObject(App::DocumentObject& Obj)
 {
     // compare internals with the document and change them if needed
-    App::Document& pDoc = Obj.getDocument();
+    App::Document* pDoc = Obj.getDocument();
     for (std::list<_SelObj>::iterator it = _SelList.begin(); it != _SelList.end(); ++it) {
-        if (it->pDoc == &pDoc) {
-            it->DocName = pDoc.getName();
+        if (it->pDoc == pDoc) {
+            it->DocName = pDoc->getName();
         }
     }
 }
@@ -477,7 +477,7 @@ PyObject *SelectionSingleton::sAddSelection(PyObject * /*self*/, PyObject *args,
         return NULL;
     }
 
-    Selection().addSelection(docObj->getDocument().getName(), docObj->getNameInDocument());
+    Selection().addSelection(docObj->getDocument()->getName(), docObj->getNameInDocument());
 
     Py_Return;
 }
@@ -495,7 +495,7 @@ PyObject *SelectionSingleton::sRemoveSelection(PyObject * /*self*/, PyObject *ar
         return NULL;
     }
 
-    Selection().rmvSelection(docObj->getDocument().getName(), docObj->getNameInDocument());
+    Selection().rmvSelection(docObj->getDocument()->getName(), docObj->getNameInDocument());
 
     Py_Return;
 }

@@ -135,7 +135,7 @@ void ViewProviderDocumentObjectGroup::getViewProviders(std::vector<ViewProviderD
 {
     App::DocumentObject* doc = getObject();
     if (doc->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
-        Gui::Document* gd = Application::Instance->getDocument(&doc->getDocument());
+        Gui::Document* gd = Application::Instance->getDocument(doc->getDocument());
         App::DocumentObjectGroup* grp = (App::DocumentObjectGroup*)doc;
         std::vector<App::DocumentObject*> obj = grp->getObjects();
         for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {

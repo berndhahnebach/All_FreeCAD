@@ -997,7 +997,6 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
 void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 {
-
     ObjectMap[pObjectName] = pcObject;
     ObjectArray.push_back(pcObject);
     // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
@@ -1012,8 +1011,6 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 
     // send the signal
     signalNewObject(*pcObject);
-
-
 }
 
 /// Remove an object out of the document
@@ -1031,38 +1028,7 @@ void Document::remObject(const char* sName)
     signalDeletedObject(*(pos->second));
 
     // Before deleting we must nullify all dependant objects
-    for ( std::map<std::string,DocumentObject*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it ) {
-        std::map<std::string,App::Property*> Map;
-        it->second->getPropertyMap(Map);
-        // search for all properties that could have a link to the object
-        for ( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt ) {
-            if ( pt->second->getTypeId().isDerivedFrom(PropertyLink::getClassTypeId()) ) {
-                PropertyLink* link = (PropertyLink*)pt->second;
-                if (link->getValue() == pos->second)
-                    link->setValue(0);
-                else if (link->getContainer() == pos->second)
-                    link->setValue(0);
-            }
-            else if ( pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId()) ) {
-                PropertyLinkList* link = (PropertyLinkList*)pt->second;
-                if (link->getContainer() == pos->second) {
-                    link->setValues(std::vector<DocumentObject*>());
-                }
-                else {
-                    // copy the list (not the objects)
-                    std::vector<DocumentObject*> linked = link->getValues();
-                    for (std::vector<DocumentObject*>::iterator fIt = linked.begin(); fIt != linked.end(); ++fIt) {
-                        if ((*fIt) == pos->second) {
-                            // reassign the the list without the object to be deleted
-                            linked.erase(fIt);
-                            link->setValues(linked);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    breakDependency(pos->second, true);
 
     // Transaction stuff
     if (this->activTransaction)
@@ -1106,31 +1072,141 @@ void Document::_remObject(DocumentObject* pcObject)
     // Undo stuff
     if (activUndoTransaction)
         activUndoTransaction->addObjectNew(pcObject);
-    else{
-        // shut never happen
-        assert(0);
-        // if not saved in undo -> delete
-        delete pcObject;
-    }
 
     // remove from map
     ObjectMap.erase(pos);
     //// set name cache false
     //pcObject->pcNameInDocument = 0;
 
-    for ( std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it ) {
-        if ( *it == pcObject ) {
+    for (std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it) {
+        if (*it == pcObject) {
             ObjectArray.erase(it);
             break;
         }
     }
-
 }
 
+void Document::breakDependency(DocumentObject* pcObject, bool clear)
+{
+    // Nullify all dependant objects
+    for (std::map<std::string,DocumentObject*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+        std::map<std::string,App::Property*> Map;
+        it->second->getPropertyMap(Map);
+        // search for all properties that could have a link to the object
+        for (std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt) {
+            if (pt->second->getTypeId().isDerivedFrom(PropertyLink::getClassTypeId())) {
+                PropertyLink* link = static_cast<PropertyLink*>(pt->second);
+                if (link->getValue() == pcObject)
+                    link->setValue(0);
+                else if (link->getContainer() == pcObject && clear)
+                    link->setValue(0);
+            }
+            else if (pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId())) {
+                PropertyLinkList* link = static_cast<PropertyLinkList*>(pt->second);
+                if (link->getContainer() == pcObject && clear) {
+                    link->setValues(std::vector<DocumentObject*>());
+                }
+                else {
+                    // copy the list (not the objects)
+                    std::vector<DocumentObject*> linked = link->getValues();
+                    for (std::vector<DocumentObject*>::iterator fIt = linked.begin(); fIt != linked.end(); ++fIt) {
+                        if ((*fIt) == pcObject) {
+                            // reassign the the list without the object to be deleted
+                            linked.erase(fIt);
+                            link->setValues(linked);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
+{
+    if (!obj) return 0;
+    DocumentObject* copy = addObject(obj->getTypeId().getName(),obj->getNameInDocument());
+    if (!copy) return 0;
+
+    std::map<std::string,App::Property*> props;
+    copy->getPropertyMap(props);
+    for (std::map<std::string,App::Property*>::iterator it = props.begin(); it != props.end(); ++it) {
+        App::Property* prop = obj->getPropertyByName(it->first.c_str());
+        if (prop && prop->getTypeId() == it->second->getTypeId()) {
+            if (prop->getTypeId() == PropertyLink::getClassTypeId()) {
+                DocumentObject* link = static_cast<PropertyLink*>(prop)->getValue();
+                if (recursive) {
+                    DocumentObject* link_copy = copyObject(link, recursive);
+                    static_cast<PropertyLink*>(it->second)->setValue(link_copy);
+                }
+            }
+            else if (prop->getTypeId() == PropertyLinkList::getClassTypeId()) {
+                std::vector<DocumentObject*> links = static_cast<PropertyLinkList*>(prop)->getValues();
+                if (recursive) {
+                    std::vector<DocumentObject*> links_copy;
+                    for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt)
+                        links_copy.push_back(copyObject(*jt, recursive));
+                    static_cast<PropertyLinkList*>(it->second)->setValues(links_copy);
+                }
+            }
+            else {
+                Property* data = prop->Copy();
+                if (data) {
+                    it->second->Paste(*data);
+                    delete data;
+                }
+            }
+        }
+    }
+
+    return copy;
+}
+
+DocumentObject* Document::moveObject(DocumentObject* obj, bool recursive)
+{
+    Document* that = obj->getDocument();
+    if (that == this)
+        return 0; // nothing todo
+
+    // all object of the oter document that refer to this object must be nullified
+    that->breakDependency(obj, false);
+    std::string objname = getUniqueObjectName(obj->getNameInDocument());
+    that->_remObject(obj);
+    this->_addObject(obj, objname.c_str());
+    obj->setDocument(this);
+
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    for (std::map<std::string,App::Property*>::iterator it = props.begin(); it != props.end(); ++it) {
+        if (it->second->getTypeId() == PropertyLink::getClassTypeId()) {
+            DocumentObject* link = static_cast<PropertyLink*>(it->second)->getValue();
+            if (recursive) {
+                moveObject(link, recursive);
+                static_cast<PropertyLink*>(it->second)->setValue(link);
+            }
+            else {
+                static_cast<PropertyLink*>(it->second)->setValue(0);
+            }
+        }
+        else if (it->second->getTypeId() == PropertyLinkList::getClassTypeId()) {
+            std::vector<DocumentObject*> links = static_cast<PropertyLinkList*>(it->second)->getValues();
+            if (recursive) {
+                for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt)
+                    moveObject(*jt, recursive);
+                static_cast<PropertyLinkList*>(it->second)->setValues(links);
+            }
+            else {
+                static_cast<PropertyLinkList*>(it->second)->setValues(std::vector<DocumentObject*>());
+            }
+        }
+    }
+
+    return obj;
+}
 
 DocumentObject *Document::getActiveObject(void) const
 {
-
     return pActiveObject;
 }
 
@@ -1206,17 +1282,17 @@ std::string Document::getUniqueObjectName(const char *Name) const
 std::vector<DocumentObject*> Document::getObjects() const
 {
     std::vector<DocumentObject*> Objects;
-    for ( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )
-        Objects.push_back( it->second );
+    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
+        Objects.push_back(it->second);
     return Objects;
 }
 
 std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId) const
 {
     std::vector<DocumentObject*> Objects;
-    for ( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it ) {
-        if ( it->second->getTypeId().isDerivedFrom( typeId ) )
-            Objects.push_back( it->second );
+    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(typeId))
+            Objects.push_back(it->second);
     }
     return Objects;
 }
@@ -1224,15 +1300,13 @@ std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId
 int Document::countObjectsOfType(const Base::Type& typeId) const
 {
     int ct=0;
-    for ( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it ) {
-        if ( it->second->getTypeId().isDerivedFrom( typeId ) )
+    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(typeId))
             ct++;
     }
 
     return ct;
 }
-
-
 
 PyObject * Document::getPyObject(void)
 {

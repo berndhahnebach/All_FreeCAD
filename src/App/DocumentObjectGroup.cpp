@@ -46,7 +46,7 @@ DocumentObjectGroup::~DocumentObjectGroup()
 
 DocumentObject* DocumentObjectGroup::addObject(const char* sType, const char* pObjectName)
 {
-    DocumentObject* obj = getDocument().addObject(sType, pObjectName);
+    DocumentObject* obj = getDocument()->addObject(sType, pObjectName);
     if (obj) addObject(obj);
     return obj;
 }
@@ -91,12 +91,12 @@ void DocumentObjectGroup::removeObjectFromDocument(DocumentObject* obj)
         }
     }
 
-    this->getDocument().remObject(obj->getNameInDocument());
+    this->getDocument()->remObject(obj->getNameInDocument());
 }
 
 DocumentObject *DocumentObjectGroup::getObject(const char *Name) const
 {
-    DocumentObject* obj = getDocument().getObject(Name);
+    DocumentObject* obj = getDocument()->getObject(Name);
     if (obj && hasObject(obj))
         return obj;
     return 0;
@@ -159,8 +159,8 @@ int DocumentObjectGroup::countObjectsOfType(const Base::Type& typeId) const
 
 DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
 {
-    const Document& doc = obj->getDocument();
-    std::vector<DocumentObject*> grps = doc.getObjectsOfType(DocumentObjectGroup::getClassTypeId());
+    const Document* doc = obj->getDocument();
+    std::vector<DocumentObject*> grps = doc->getObjectsOfType(DocumentObjectGroup::getClassTypeId());
     for (std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it) {
         DocumentObjectGroup* grp = (DocumentObjectGroup*)(*it);
         if (grp->hasObject(obj))

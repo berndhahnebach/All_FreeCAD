@@ -129,7 +129,7 @@ void PropertyLink::Restore(Base::XMLReader &reader)
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
     if (name != ""){
-        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
         assert(pcObject);
         setValue(pcObject);
     }
@@ -249,7 +249,7 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
         std::string name = reader.getAttribute("value");
 
         // Property not in an object!
-        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
         assert(pcObject);
         values[i] = pcObject;
     }

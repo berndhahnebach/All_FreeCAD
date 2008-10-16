@@ -149,6 +149,19 @@ public:
     DocumentObject *addObject(const char* sType, const char* pObjectName=0);
     /// Remove a feature out of the document
     void remObject(const char* sName);
+    /** Copy an object from another document to this document
+     * If \a recursive is true then all objects this object depends on
+     * are copied as well. By default \a recursive is false.
+     * Returns the copy of the object or 0 if the creation failed.
+     */
+    DocumentObject* copyObject(DocumentObject* obj, bool recursive=false);
+    /** Move an object from another document to this document
+     * If \a recursive is true then all objects this object depends on
+     * are moved as well. By default \a recursive is false.
+     * Returns the moved object itself or 0 if the object is already part of this
+     * document..
+     */
+    DocumentObject* moveObject(DocumentObject* obj, bool recursive=false);
     /// Returns the active Object of this document
     DocumentObject *getActiveObject(void) const;
     /// Returns a Object of this document
@@ -248,6 +261,7 @@ protected:
 
     void _remObject(DocumentObject* pcObject);
     void _addObject(DocumentObject* pcObject, const char* pObjectName);
+    void breakDependency(DocumentObject* pcObject, bool clear);
 
     void onChanged(const Property* prop);
     /// callback from the Document objects bevor property will be changed
