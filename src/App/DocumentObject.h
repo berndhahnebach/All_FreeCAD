@@ -84,7 +84,7 @@ public:
     /// returns the name which is set in the document for this object (not the Name propertie!)
     const char *getNameInDocument(void) const;
     /// gets the document in which this Object is handled
-    App::Document &getDocument(void) const;
+    App::Document *getDocument(void) const;
 
     /** Set the property touched -> changed, cause recomputation in Update()
      */

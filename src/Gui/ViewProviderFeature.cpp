@@ -95,7 +95,7 @@ void ViewProviderFeature::attach(App::DocumentObject *pcObj)
 {
   ViewProviderDocumentObject::attach(pcObj);
   pcHighlight->objectName = pcObj->getNameInDocument();
-  pcHighlight->documentName = pcObj->getDocument().getName();
+  pcHighlight->documentName = pcObj->getDocument()->getName();
   pcHighlight->subElementName = "Main";
 }
 

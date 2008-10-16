@@ -78,7 +78,7 @@ Py::Object DocumentObjectPy::getViewObject(void) const
         Py::Module module(PyImport_ImportModule("FreeCADGui"));
         Py::Callable method(module.getAttr("getDocument"));
         Py::Tuple arg(1);
-        arg.setItem(0, Py::String(getDocumentObjectPtr()->getDocument().getName()));
+        arg.setItem(0, Py::String(getDocumentObjectPtr()->getDocument()->getName()));
         Py::Object doc = method.apply(arg);
         method = doc.getAttr("getObject");
         arg.setItem(0, Py::String(getDocumentObjectPtr()->getNameInDocument()));

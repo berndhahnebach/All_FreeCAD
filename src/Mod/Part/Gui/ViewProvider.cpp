@@ -490,7 +490,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
         SbString name("Edge");
         name += SbString(i);
         h->objectName = pcObject->getNameInDocument();
-        h->documentName = pcObject->getDocument().getName();
+        h->documentName = pcObject->getDocument()->getName();
         h->subElementName = name;
 
         SoLineSet * lineset = new SoLineSet;
@@ -532,7 +532,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
     SbString name("Point");
     name += SbString(i);
     h->objectName = pcObject->getNameInDocument();
-    h->documentName = pcObject->getDocument().getName();
+    h->documentName = pcObject->getDocument()->getName();
     h->subElementName = name;
 
     SoPointSet * pointset = new SoPointSet;
@@ -606,7 +606,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         SbString name("Face");
         name += SbString(i);
         h->objectName = pcObject->getNameInDocument();
-        h->documentName = pcObject->getDocument().getName();
+        h->documentName = pcObject->getDocument()->getName();
         h->subElementName = name;
 
         SoIndexedFaceSet * faceset = new SoIndexedFaceSet;

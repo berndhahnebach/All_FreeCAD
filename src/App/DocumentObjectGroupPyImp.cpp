@@ -65,7 +65,7 @@ PyObject*  DocumentObjectGroupPy::addObject(PyObject *args)
         PyErr_SetString(PyExc_Exception, "Cannot add an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
+    if (docObj->getDocumentObjectPtr()->getDocument() != getDocumentObjectGroupPtr()->getDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot add an object from another document to this group");
         return NULL;
     }
@@ -96,7 +96,7 @@ PyObject*  DocumentObjectGroupPy::removeObject(PyObject *args)
         PyErr_SetString(PyExc_Exception, "Cannot remove an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
+    if (docObj->getDocumentObjectPtr()->getDocument() != getDocumentObjectGroupPtr()->getDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot remove an object from another document from this group");
         return NULL;
     }
@@ -139,7 +139,7 @@ PyObject*  DocumentObjectGroupPy::hasObject(PyObject *args)
         PyErr_SetString(PyExc_Exception, "Cannot check an invalid object");
         return NULL;
     }
-    if ((&docObj->getDocumentObjectPtr()->getDocument()) != (&getDocumentObjectGroupPtr()->getDocument())) {
+    if (docObj->getDocumentObjectPtr()->getDocument() != getDocumentObjectGroupPtr()->getDocument()) {
         PyErr_SetString(PyExc_Exception, "Cannot check an object from another document with this group");
         return NULL;
     }

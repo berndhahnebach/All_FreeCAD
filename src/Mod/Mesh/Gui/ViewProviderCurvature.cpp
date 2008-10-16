@@ -182,8 +182,8 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
             pcColorMat->transparency.setNum((int)kernel.countPoints());
 
             // get the view provider of the associated mesh feature
-            App::Document& rDoc = pcObject->getDocument();
-            Gui::Document* pDoc = Gui::Application::Instance->getDocument(&rDoc);
+            App::Document* rDoc = pcObject->getDocument();
+            Gui::Document* pDoc = Gui::Application::Instance->getDocument(rDoc);
             Gui::ViewProviderGeometryObject* view = static_cast<Gui::ViewProviderGeometryObject*>(pDoc->getViewProvider(object));
             this->pcLinkRoot->addChild(view->getHighlightNode());
         }

@@ -48,6 +48,16 @@
         <UserDocu>Remove an object from the document</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="copyObject">
+      <Documentation>
+        <UserDocu>Copy an object from another document to this document</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="moveObject">
+      <Documentation>
+        <UserDocu>Move an object from another document to this document</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="undo">
       <Documentation>
         <UserDocu>Undo one transaction</UserDocu>

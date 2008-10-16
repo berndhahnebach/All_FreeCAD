@@ -159,7 +159,7 @@ QString PropertyItem::pythonIdentifier(const App::Property* prop) const
     }
     if (parent->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId())) {
         App::DocumentObject* obj = static_cast<App::DocumentObject*>(parent);
-        App::Document* doc = &(obj->getDocument());
+        App::Document* doc = obj->getDocument();
         QString docName = QString::fromAscii(App::GetApplication().getDocumentName(doc));
         QString objName = QString::fromAscii(obj->getNameInDocument());
         QString propName = QString::fromAscii(parent->getName(prop));
@@ -168,7 +168,7 @@ QString PropertyItem::pythonIdentifier(const App::Property* prop) const
     }
     if (parent->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
         App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(parent)->getObject();
-        App::Document* doc = &(obj->getDocument());
+        App::Document* doc = obj->getDocument();
         QString docName = QString::fromAscii(App::GetApplication().getDocumentName(doc));
         QString objName = QString::fromAscii(obj->getNameInDocument());
         QString propName = QString::fromAscii(parent->getName(prop));
