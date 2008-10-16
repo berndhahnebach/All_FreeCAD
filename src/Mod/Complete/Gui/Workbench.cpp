@@ -150,33 +150,76 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 	// submenu analyze
     Gui::MenuItem* analyze = new Gui::MenuItem();
     analyze->setCommand(QT_TR_NOOP("Analyze"));
-    *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Mesh_CurvatureInfo" << "Separator" 
-             << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+    *analyze << "Mesh_Evaluation" 
+             << "Mesh_EvaluateFacet" 
+             << "Mesh_CurvatureInfo" 
+             << "Separator" 
+             << "Mesh_EvaluateSolid" 
+             << "Mesh_BoundingBox";
 
     // submenu boolean
     Gui::MenuItem* boolean = new Gui::MenuItem();
     boolean->setCommand(QT_TR_NOOP("Boolean"));
-    *boolean << "Mesh_Union" << "Mesh_Intersection" << "Mesh_Difference";
+    *boolean << "Mesh_Union" 
+             << "Mesh_Intersection" 
+             << "Mesh_Difference";
 
     mesh->setCommand(QT_TR_NOOP("&Meshes"));
-    *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_FromGeometry" << "Separator"
-          << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
-          << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents"
-          << "Mesh_RemoveCompByHand" << "Separator" 
-          << "Mesh_BuildRegularSolid" << boolean << "Separator" << "Mesh_PolyCut"
-          << "Mesh_PolySplit" << "Mesh_PolySegm" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
+    *mesh << "Mesh_Import" 
+          << "Mesh_Export" 
+          << "Mesh_FromGeometry" 
+          << "Separator"
+          << analyze 
+          << "Mesh_HarmonizeNormals" 
+          << "Mesh_FlipNormals" 
+          << "Separator" 
+          << "Mesh_FillupHoles" 
+          << "Mesh_FillInteractiveHole" 
+          << "Mesh_RemoveComponents"
+          << "Mesh_RemoveCompByHand" 
+          << "Separator" 
+          << "Mesh_BuildRegularSolid" 
+          << boolean << "Separator" 
+          << "Mesh_PolyCut"
+          << "Mesh_PolySplit" 
+          << "Mesh_PolySegm" 
+          << "Mesh_ToolMesh" 
+          << "Mesh_VertexCurvature";
 
 	// Part ****************************************************************************************************
 
     Gui::MenuItem* part = new Gui::MenuItem(menuBar);
 
 	part->setCommand(QT_TR_NOOP("&Part"));
-    *part << "Part_Import" << "Separator" << "Part_Cylinder"  << "Part_Box" << "Part_Box2" << "Part_Box3" 
-          << "Part_Primitives" << "Separator" << "Part_Boolean" << "Part_Extrude"
-          << "Part_FilletEdges" << "Separator" << "Part_ShapeInfo";
+    *part << "Part_Import" 
+          << "Separator" 
+          << "Part_Cylinder"  
+          << "Part_Box" 
+          << "Part_Box2" 
+          << "Part_Box3" 
+          << "Part_Primitives" 
+          << "Separator" 
+          << "Part_Boolean" 
+          << "Part_Extrude"
+          << "Part_FilletEdges" 
+          << "Separator" 
+          << "Part_ShapeInfo";
+
+	// Drawing ****************************************************************************************************
+
+    Gui::MenuItem* drawing = new Gui::MenuItem(menuBar);
+
+	drawing->setCommand(QT_TR_NOOP("&Drawing"));
+    *drawing << "Drawing_Open" 
+             << "Separator" 
+             << "Drawing_NewA3Landscape"  
+             << "Drawing_NewView" ;
 
  
 	// xxx ****************************************************************************************************
+
+    
+    // help ****************************************************************************************************
     // Separator
     Gui::MenuItem* sep = new Gui::MenuItem( menuBar );
     sep->setCommand( "Separator" );
@@ -184,13 +227,24 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // Help
     Gui::MenuItem* helpWebsites = new Gui::MenuItem;
     helpWebsites->setCommand(QT_TR_NOOP("&Online-help"));
-    *helpWebsites << "Std_OnlineHelpWebsite" << "Std_FreeCADWebsite" << "Std_PythonWebsite";
-    
+    *helpWebsites << "Std_OnlineHelpWebsite" 
+                  << "Std_FreeCADWebsite" 
+                  << "Std_PythonWebsite";
+
     Gui::MenuItem* help = new Gui::MenuItem( menuBar );
     help->setCommand(QT_TR_NOOP("&Help"));
-    *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp"
-          << helpWebsites  << "Std_TipOfTheDay"<< "Separator" << "Std_About"
-          << "Std_AboutQt" << "Separator" << "Std_WhatsThis" ;//<< "Std_DescriptionMode";
+    *help << "Std_OnlineHelp" 
+          << "Std_OnlineHelpPython" 
+          << "Std_PythonHelp"
+          << helpWebsites  
+          << "Std_TipOfTheDay"
+          << "Separator" 
+          << "Test_Test" 
+          << "Separator" 
+          << "Std_About"
+          << "Std_AboutQt" 
+          << "Separator" 
+          << "Std_WhatsThis" ;
 
     return menuBar;
 }

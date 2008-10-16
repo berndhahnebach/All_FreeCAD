@@ -69,6 +69,7 @@ void CompleteGuiExport initCompleteGui()
         //Base::Interpreter().loadModule("PartDesignGui");
         Base::Interpreter().loadModule("ImageGui");
         //Base::Interpreter().loadModule("CamGui");
+        Base::Interpreter().loadModule("TestGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

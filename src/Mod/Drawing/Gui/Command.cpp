@@ -32,7 +32,7 @@ CmdDrawingOpen::CmdDrawingOpen()
     sGroup          = QT_TR_NOOP("Drawing");
     sMenuText       = QT_TR_NOOP("Open SVG...");
     sToolTipText    = QT_TR_NOOP("Open a scalable vector graphic");
-    sWhatsThis      = sToolTipText;
+    sWhatsThis      = "Drawing_Open";
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/document-new";
 }
@@ -60,7 +60,7 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
     sGroup          = QT_TR_NOOP("Drawing");
     sMenuText       = QT_TR_NOOP("Insert new A3 landscape drawing");
     sToolTipText    = QT_TR_NOOP("Insert new A3 landscape drawing");
-    sWhatsThis      = sToolTipText;
+    sWhatsThis      = "Drawing_NewA3Landscape";
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/drawing-landscape-A3";
 }
@@ -97,7 +97,7 @@ CmdDrawingNewView::CmdDrawingNewView()
     sGroup          = QT_TR_NOOP("Drawing");
     sMenuText       = QT_TR_NOOP("Insert a new View in the active drawing");
     sToolTipText    = QT_TR_NOOP("Insert a new View in the active drawing");
-    sWhatsThis      = sToolTipText;
+    sWhatsThis      = "Drawing_NewView";
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/drawing-view";
 }
