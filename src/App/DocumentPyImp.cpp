@@ -54,8 +54,10 @@ const char *DocumentPy::representation(void) const
     return buf.c_str();
 }
 
-PyObject*  DocumentPy::save(PyObject * /*args*/)
+PyObject*  DocumentPy::save(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     if (!getDocumentPtr()->save()) {
         PyErr_Format(PyExc_ValueError, "Object attribute 'FileName' is not set");
         return NULL;
@@ -71,8 +73,10 @@ PyObject*  DocumentPy::save(PyObject * /*args*/)
     Py_Return;
 }
 
-PyObject*  DocumentPy::restore(PyObject * /*args*/)
+PyObject*  DocumentPy::restore(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     const char* filename = getDocumentPtr()->FileName.getValue();
     if (!filename || *filename == '\0') {
         PyErr_Format(PyExc_ValueError, "Object attribute 'FileName' is not set");
@@ -174,40 +178,52 @@ PyObject*  DocumentPy::openTransaction(PyObject *args)
     Py_Return; 
 }
 
-PyObject*  DocumentPy::abortTransaction(PyObject * /*args*/)
+PyObject*  DocumentPy::abortTransaction(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     getDocumentPtr()->abortTransaction();
     Py_Return;
 }
 
-PyObject*  DocumentPy::commitTransaction(PyObject * /*args*/)
+PyObject*  DocumentPy::commitTransaction(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     getDocumentPtr()->commitTransaction();
     Py_Return;
 }
 
-PyObject*  DocumentPy::undo(PyObject * /*args*/)
+PyObject*  DocumentPy::undo(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     if (getDocumentPtr()->getAvailableUndos())
         getDocumentPtr()->undo();
     Py_Return;
 }
 
-PyObject*  DocumentPy::redo(PyObject * /*args*/)
+PyObject*  DocumentPy::redo(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     if (getDocumentPtr()->getAvailableRedos())
         getDocumentPtr()->redo();
     Py_Return;
 }
 
-PyObject*  DocumentPy::clearUndos(PyObject * /*args*/)
+PyObject*  DocumentPy::clearUndos(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     getDocumentPtr()->clearUndos();
     Py_Return;
 }
 
-PyObject*  DocumentPy::recompute(PyObject * /*args*/)
+PyObject*  DocumentPy::recompute(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     getDocumentPtr()->recompute();
     Py_Return;
 }

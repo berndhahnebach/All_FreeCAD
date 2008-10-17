@@ -831,7 +831,7 @@ void Document::recompute()
 #endif
         bool NeedUpdate = false;
 
-        // ask the object if it shut be recomputed
+        // ask the object if it should be recomputed
         if (Cur->mustExecute() == 1)
             NeedUpdate = true;
         else if (Cur->mustExecute() == -1)
@@ -1160,6 +1160,8 @@ DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
         }
     }
 
+     // unmark to be not re-computed later
+    copy->purgeTouched();
     return copy;
 }
 

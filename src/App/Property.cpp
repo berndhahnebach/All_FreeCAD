@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
+#	include <cassert>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -39,14 +39,14 @@ using namespace App;
 // Property
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(App::Property , Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(App::Property , Base::Persistance);
 
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
 Property::Property()
-:father(0)
+  :father(0)
 {
 
 }
@@ -58,82 +58,81 @@ Property::~Property()
 
 const char* Property::getName(void) const
 {
-  return father->getName(this);
+    return father->getName(this);
 }
 
 short Property::getType(void) const
 {
-  return father->getPropertyType(this);
+    return father->getPropertyType(this);
 }
 
 const char* Property::getGroup(void) const
 {
-  return father->getPropertyGroup(this);
+    return father->getPropertyGroup(this);
 }
 
 const char* Property::getDocumentation(void) const
 {
-  return father->getPropertyDocumentation(this);
+    return father->getPropertyDocumentation(this);
 }
-
 
 void Property::setContainer(PropertyContainer *Father)
 {
-  father = Father;
+    father = Father;
 }
 
 void Property::touch()
 {
-  if(father)
-    father->onChanged(this);
-  StatusBits.set(0);
+    if (father)
+        father->onChanged(this);
+    StatusBits.set(0);
 }
 
 void Property::hasSetValue(void)
 {
-  if(father)
-    father->onChanged(this);
-  StatusBits.set(0);
+    if (father)
+        father->onChanged(this);
+    StatusBits.set(0);
 }
 
 void Property::aboutToSetValue(void)
 {
-  if(father)
-    father->onBevorChange(this);
+    if (father)
+        father->onBevorChange(this);
 }
 
 Property *Property::Copy(void) const 
 {
-  // have to be reimplemented by a subclass!
-  assert(0);
-  return 0;
+    // have to be reimplemented by a subclass!
+    assert(0);
+    return 0;
 }
 
 void Property::Paste(const Property& /*from*/)
 {
-  // have to be reimplemented by a subclass!
-  assert(0);
+    // have to be reimplemented by a subclass!
+    assert(0);
 }
 
 std::string Property::encodeAttribute(const std::string& str) const
 {
-  std::string tmp;
-  for ( std::string::const_iterator it = str.begin(); it != str.end(); ++it ) {
-    if ( *it == '<' )
-      tmp += "&lt;";
-    else if ( *it == '"' )
-      tmp += "&quot;";
-    else if ( *it == '&' )
-      tmp += "&amp;";
-    else if ( *it == '>' )
-      tmp += "&gt";
-    else if ( *it == '\n')
-      tmp += " ";
-    else
-      tmp += *it;
-  }
+    std::string tmp;
+    for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+        if (*it == '<')
+            tmp += "&lt;";
+        else if (*it == '"')
+            tmp += "&quot;";
+        else if (*it == '&')
+            tmp += "&amp;";
+        else if (*it == '>')
+            tmp += "&gt";
+        else if (*it == '\n')
+            tmp += " ";
+        else
+            tmp += *it;
+    }
 
-  return tmp;
+    return tmp;
 }
 
 //**************************************************************************

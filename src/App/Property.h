@@ -21,131 +21,113 @@
  ***************************************************************************/
 
 
-#ifndef __PROPERTY_H__
-#define __PROPERTY_H__
+#ifndef APP_PROPERTY_H
+#define APP_PROPERTY_H
 
 // Std. configurations
-
-//#include "PyExport.h"
 
 #include <Base/Persistance.h>
 #include <string>
 #include <bitset>
 
 
-
-#ifdef _MSC_VER
-# pragma warning( disable : 4251 )
-#endif
-
 namespace App
 {
 
 class PropertyContainer;
 
-/** Base class of all Properties
- *  This is the father of all properties. Properties are
- *  are object which are used in the document tree to parametrize 
- *  e.g. features and ist grafical output. They also used to 
- *  gain acces from the scripting facility.
- *  /par
- *  This abstract base class defines all methods shared by all
- *  possible properties. Its also possible to define user properties
- *  and use them in the frame work....
+/** Base class of all properties
+ * This is the father of all properties. Properties are objects which are used
+ * in the document tree to parametrize e.g. features and their graphical output.
+ * They are also used to gain access from the scripting facility.
+ * /par
+ * This abstract base class defines all methods shared by all
+ * possible properties. It is also possible to define user properties
+ * and use them in the framework...
  */
-class AppExport Property: public Base::Persistance
+class AppExport Property : public Base::Persistance
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
+    Property();
+    virtual ~Property();
 
-       
-  Property();
-  virtual ~Property();
+    /** This method is used to get the size of objects
+     * It is not meant to have the exact size, it is more or less an estimation
+     * which runs fast! Is it two byte or a GB?
+     * This method is defined in Base::Persistance
+     * @see Base::Persistance
+     */
+    virtual unsigned int getMemSize (void) const {
+        // you have to implement this method in all property classes!
+        return Base::Persistance::getMemSize() + sizeof(father) + sizeof(StatusBits);
+    }
 
-  /** This method is used to get the size of objects
-    * Its not ment to have the exact size, is more or less an estimation which run fast!
-    * Is it two byte or an GB?
-    * This method is defined in Base::Persistance
-    * @see Base::Persistance
-    */
-  virtual unsigned int getMemSize (void) const{
-    // you have to implement this method in all Property classes!
-      return Base::Persistance::getMemSize() + sizeof(father) + sizeof(StatusBits);
-  } 
+    /// get the name of this property in the belonging container
+    const char* getName(void) const;
 
-  /// get the name of this property in the belonging Container
-  const char* getName(void) const;
+    /// Get the class name of the associated property editor item
+    virtual const char* getEditorName(void) const { return ""; }
 
-  /// Get the class name of the associated property editor item
-  virtual const char* getEditorName(void) const { return ""; }
+    /// Get the type of the property in the container
+    short getType(void) const; 
 
-  /// Get the type of the porperty in the container
-  short getType(void) const; 
+    /// Get the group of this property
+    const char* getGroup(void) const;
 
-  /// Get the group of this Property
-  const char* getGroup(void) const;
+    /// Get the documentation of this property
+    const char* getDocumentation(void) const;
 
-  /// Get the Documentation of this Property
-  const char* getDocumentation(void) const;
-  
+    /// Is called by the framework to set the father (container)
+    void setContainer(PropertyContainer *Father);
 
-  /// is called by the framework to set the Father (Container)
-  void setContainer(PropertyContainer *Father);
+    /// Get a pointer to the PropertyContainer derived class the property belongs to
+    PropertyContainer *getContainer(void) const {return father;}
+    /// Set the property touched
+    void touch();
+    /// Test if this property is touched 
+    bool isTouched(void) const {return StatusBits.test(0);}
+    /// Reset this property touched 
+    void purgeTouched(void){StatusBits.reset(0);}
 
-  /// get a pointer to the PropertyContainer derived class the property belonging to
-  PropertyContainer *getContainer(void) const {return father;}
-  /// set the property touched
-  void touch();
-  /// test if this feature is touched 
-  bool isTouched(void) const {return StatusBits.test(0);}
-  /// reset this feature touched 
-  void purgeTouched(void){StatusBits.reset(0);}
-
-  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
-  virtual Property *Copy(void) const;
-  /// paste the value from the property (mainly for Undo/Redo and transactions)
-  virtual void Paste(const Property &from);
-  /// Encodes an attribute upon saving.
-  std::string encodeAttribute(const std::string&) const;
+    /// Returns a new copy of the property (mainly for Undo/Redo and transactions)
+    virtual Property *Copy(void) const = 0;
+    /// Paste the value from the property (mainly for Undo/Redo and transactions)
+    virtual void Paste(const Property &from) = 0;
+    /// Encodes an attribute upon saving.
+    std::string encodeAttribute(const std::string&) const;
 
 
-  friend class PropertyContainer;
+    friend class PropertyContainer;
 
-  std::bitset<32> StatusBits;
+    std::bitset<32> StatusBits;
+
 protected:
-  /// is called by all setValue() methods after the value was changed
-  void hasSetValue(void);
-  /// is called by all setValue() methods befor the value is changed
-  void aboutToSetValue(void);
+    /// Gets called by all setValue() methods after the value has changed
+    void hasSetValue(void);
+    /// Gets called by all setValue() methods before the value has changed
+    void aboutToSetValue(void);
 
 private:
-
-  PropertyContainer *father;
+    PropertyContainer *father;
 };
 
 
-/** Base class of all Properties
- *  This is the father of all properties. Properties are
- *  are object which are used in the document tree to parametrize 
- *  e.g. features and ist grafical output. They also used to 
- *  gain acces from the scripting facility.
- *  /par
- *  This abstract base class defines all methods shared by all
- *  possible properties. Its also possible to define user properties
- *  and use them in the frame work....
+/** Base class of all property lists.
+ * The PropertyLists class is the base class for properties which can contain
+ * multiple values, not only a single value. 
+ * All property types which may contain more than one value inherits this class.
  */
-class AppExport PropertyLists: public Property
+class AppExport PropertyLists : public Property
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-
-  virtual void setSize(int newSize)=0;   
-  virtual int getSize(void) const =0;   
-
+    virtual void setSize(int newSize)=0;   
+    virtual int getSize(void) const =0;   
 };
 
 } // namespace App
 
-#endif // __PROPERTIES_H__
+#endif // APP_PROPERTY_H

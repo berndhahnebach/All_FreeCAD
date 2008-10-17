@@ -18,6 +18,11 @@
 				<UserDocu>Mark the object as changed (touched)</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="purgeTouched">
+			<Documentation>
+				<UserDocu>Mark the object as unchanged</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Name" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Return the internal name of this object</UserDocu>
