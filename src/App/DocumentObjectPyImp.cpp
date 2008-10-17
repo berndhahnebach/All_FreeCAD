@@ -47,9 +47,19 @@ Py::String DocumentObjectPy::getName(void) const
     return Py::String(std::string(internal));
 }
 
-PyObject*  DocumentObjectPy::touch(PyObject * /*args*/)
+PyObject*  DocumentObjectPy::touch(PyObject * args)
 {
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
     getDocumentObjectPtr()->touch();
+    Py_Return;
+}
+
+PyObject*  DocumentObjectPy::purgeTouched(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
+    getDocumentObjectPtr()->purgeTouched();
     Py_Return;
 }
 

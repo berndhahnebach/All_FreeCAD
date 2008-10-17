@@ -111,7 +111,7 @@ void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
     }
   }
 
-  // now the type shut be in the type map
+  // now the type should be in the type map
   Type t = fromName(TypeName);
   if(t == badType())
     return 0;

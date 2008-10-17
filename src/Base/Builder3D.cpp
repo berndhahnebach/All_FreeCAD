@@ -309,7 +309,7 @@ void Builder3D::saveToLog(void)
 }
 
 /**
- * Save the resulting inventor 3D representation to a file. Ending shut be *.iv.
+ * Save the resulting inventor 3D representation to a file. Ending should be *.iv.
  * That eneables you to show the result in a Inventor Viewer or in FreeCAD by:
  * /code
  * Gui.document().addAnnotation("Debug","MyFile.iv")
