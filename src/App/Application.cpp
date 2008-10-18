@@ -57,7 +57,7 @@
 #include <Base/FileInfo.h>
 #include <Base/Type.h>
 #include <Base/BaseClass.h>
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <Base/Reader.h>
 #include <Base/MatrixPy.h>
 #include <Base/VectorPy.h>
@@ -755,7 +755,7 @@ void Application::initTypes(void)
     Base::Type                      ::init();
     Base::BaseClass                 ::init();
     Base::Exception                 ::init();
-    Base::Persistance               ::init();
+    Base::Persistence               ::init();
 
     // Complex data classes
     Data::ComplexGeoData            ::init();

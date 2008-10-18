@@ -24,7 +24,7 @@
 #ifndef __Transaction_H__
 #define __Transaction_H__
 
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 
 namespace App
 {
@@ -38,7 +38,7 @@ class AbstractFeature;
 
 /** Represents an entry for an object in a Transaction
  */
-class AppExport TransactionObject: public Base::Persistance
+class AppExport TransactionObject: public Base::Persistence
 {
   TYPESYSTEM_HEADER();
 
@@ -55,6 +55,7 @@ public:
 
   void setProperty(const Property* pcProp);
   
+  virtual unsigned int getMemSize (void) const;
   virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.
   virtual void Restore(Base::XMLReader &reader);
@@ -69,7 +70,7 @@ protected:
 
 /** Represents a atomic transaction of the document
  */
-class AppExport Transaction: public Base::Persistance
+class AppExport Transaction : public Base::Persistence
 {
   TYPESYSTEM_HEADER();
 
@@ -88,6 +89,7 @@ public:
   std::string Name; 
 
 
+  virtual unsigned int getMemSize (void) const;
   virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.
   virtual void Restore(Base::XMLReader &reader);

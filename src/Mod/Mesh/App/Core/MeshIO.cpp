@@ -33,7 +33,6 @@
 #include <Base/Exception.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
-#include <Base/Persistance.h>
 #include <Base/FileInfo.h>
 #include <Base/gzstream.h>
 #include <Base/Sequencer.h>

@@ -115,10 +115,10 @@ void DocumentObject::setDocument(App::Document* doc)
     _pDoc=doc;
 }
 
-void DocumentObject::onBevorChange(const Property* prop)
+void DocumentObject::onBeforeChange(const Property* prop)
 {
     if(_pDoc)
-        _pDoc->onBevorChangeProperty(this,prop);
+        _pDoc->onBeforeChangeProperty(this,prop);
 }
 
 /// get called by the container when a Property was changed

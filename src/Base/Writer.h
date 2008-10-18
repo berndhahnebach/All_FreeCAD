@@ -41,13 +41,13 @@
 namespace Base
 {
 
-class Persistance;
+class Persistence;
 
 
 /** The Writer class 
  * This is a important helper class for the store and retrivel system
  * of objects in FreeCAD. 
- * \see App::Persistance
+ * \see Base::Persistence
  * \author Juergen Riegel
  */
 class BaseExport Writer
@@ -71,7 +71,7 @@ public:
   /** @name additional file writing */
   //@{
   /// add a write request of a Persitant object
-  std::string addFile(const char* Name, const Base::Persistance *Object);
+  std::string addFile(const char* Name, const Base::Persistence *Object);
   /// process the requested file writes
   virtual void writeFiles(void)=0;
   /// get all registered file names
@@ -94,7 +94,7 @@ protected:
   std::string getUniqueFileName(const char *Name);
   struct FileEntry {
     std::string FileName;
-    const Base::Persistance *Object;
+    const Base::Persistence *Object;
   };
   std::vector<FileEntry> FileList;
   std::vector<std::string> FileNames;
@@ -109,7 +109,7 @@ protected:
 /** The ZipWriter class 
  * This is a important helper class implementation for the store and retrivel system
  * of objects in FreeCAD. 
- * \see App::Persistance
+ * \see Base::Persistence
  * \author Juergen Riegel
  */
 class BaseExport ZipWriter: public Writer
@@ -138,7 +138,7 @@ private:
 /** The StringWriter class 
  * This is an important helper class implementation for the store and retrieval system
  * of objects in FreeCAD. 
- * \see App::Persistance
+ * \see Base::Persistence
  * \author Juergen Riegel
  */
 class BaseExport StringWriter: public Writer
