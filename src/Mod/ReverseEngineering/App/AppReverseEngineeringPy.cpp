@@ -43,9 +43,9 @@ using namespace Reen;
 static PyObject * approxSurface(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    int degreeU=3,degreeV=3;
+    int orderU=4,orderV=4;
     int pointsU=6,pointsV=6;
-    if (!PyArg_ParseTuple(args, "O|iiii",&o,&degreeU,&degreeV,&pointsU,&pointsV))
+    if (!PyArg_ParseTuple(args, "O|iiii",&o,&orderU,&orderV,&pointsU,&pointsV))
         return NULL;
 
     PY_TRY {
@@ -61,7 +61,7 @@ static PyObject * approxSurface(PyObject *self, PyObject *args)
                 (double)Py::Float(t.getItem(2)));
         }
 
-        Reen::BSplineParameterCorrection pc(degreeU,degreeV,pointsU,pointsV);
+        Reen::BSplineParameterCorrection pc(orderU,orderV,pointsU,pointsV);
         Handle_Geom_BSplineSurface hSurf;
 
         //pc.EnableSmoothing(true, 0.1f, 0.5f, 0.2f, 0.3f);
