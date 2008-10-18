@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="PersistancePy" 
+      Father="PersistencePy" 
       Name="ComplexGeoDataPy" 
       Twin="ComplexGeoData" 
       Include="App/ComplexGeoData.h" 
   	  TwinPointer="ComplexGeoData" 
       Namespace="Data" 
-      FatherInclude="Base/PersistancePy.h" 
+      FatherInclude="Base/PersistencePy.h" 
       FatherNamespace="Base"
 	  Reference="true">
     <Documentation>

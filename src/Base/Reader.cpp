@@ -34,7 +34,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Reader.h"
 #include "Exception.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "gzstream.h"
 #include "InputSource.h"
 #include "Console.h"
@@ -286,7 +286,7 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
     }
 }
 
-const char *Base::XMLReader::addFile(const char* Name, Base::Persistance *Object)
+const char *Base::XMLReader::addFile(const char* Name, Base::Persistence *Object)
 {
     FileEntry temp;
     temp.FileName = Name;
@@ -303,7 +303,7 @@ const std::vector<std::string>& Base::XMLReader::getFilenames() const
     return FileNames;
 }
 
-bool Base::XMLReader::isRegistered(Base::Persistance *Object) const
+bool Base::XMLReader::isRegistered(Base::Persistence *Object) const
 {
     if (Object) {
         for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it) {

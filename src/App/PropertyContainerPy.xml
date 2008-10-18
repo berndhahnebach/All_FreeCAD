@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-    Father="PersistancePy" 
+    Father="PersistencePy" 
     Name="PropertyContainerPy" 
     TwinPointer="PropertyContainer" 
     Twin="PropertyContainer" 
     Include="App/PropertyContainer.h" 
     Namespace="App" 
-    FatherInclude="Base/PersistancePy.h" 
+    FatherInclude="Base/PersistencePy.h" 
     FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-      <UserDocu>This is a persistance class</UserDocu>
+      <UserDocu>This is a Persistence class</UserDocu>
     </Documentation>
 	  <Methode Name="getPropertyByName">
 		  <Documentation>

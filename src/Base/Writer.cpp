@@ -28,7 +28,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Writer.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "Exception.h"
 
 #include <algorithm>
@@ -77,7 +77,7 @@ bool Writer::isForceXML(void)
 
 
 
-std::string Writer::addFile(const char* Name,const Base::Persistance *Object)
+std::string Writer::addFile(const char* Name,const Base::Persistence *Object)
 {
   // always check isForceXML() before requesting a file!
   assert(isForceXML()==false);

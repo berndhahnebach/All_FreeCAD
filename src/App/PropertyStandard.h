@@ -128,7 +128,7 @@ protected:
  * In DEBUG the bounderies get checked, otherwise the caller of setValue()
  * has the responsebility to check the correctnes.
  * This mean if you set by setValue(const char*) with an not included value
- * and not using isPartOf()bevor,
+ * and not using isPartOf() before,
  * in DEBUG you get an assert() in release its set to 0.
  */
 class AppExport PropertyEnumeration: public PropertyInteger

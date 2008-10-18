@@ -477,15 +477,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Persistance.cpp"
+				RelativePath=".\Persistence.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Persistance.h"
+				RelativePath=".\Persistence.h"
 				>
 			</File>
 			<File
-				RelativePath=".\PersistancePy.xml"
+				RelativePath=".\PersistencePy.xml"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -507,7 +507,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\PersistancePyImp.cpp"
+				RelativePath=".\PersistencePyImp.cpp"
 				>
 			</File>
 			<File

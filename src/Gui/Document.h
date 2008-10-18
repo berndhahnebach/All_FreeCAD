@@ -35,7 +35,7 @@
 #include <string>
 
 #include <Base/PyExport.h>
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <App/Document.h>
 
 class SoSelection;
@@ -67,7 +67,7 @@ class DocumentPy;
  *  @see MDIView
  *  @author Jürgen Riegel
  */
-class GuiExport Document : public Base::Persistance
+class GuiExport Document : public Base::Persistence
 {
 public:
     Document(App::Document* pcDocument, Application * app);

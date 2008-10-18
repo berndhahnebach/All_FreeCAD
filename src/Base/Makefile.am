@@ -5,7 +5,7 @@ BUILT_SOURCES=\
 		BaseClassPy.cpp \
 		BoundBoxPy.cpp \
 		MatrixPy.cpp \
-		PersistancePy.cpp \
+		PersistencePy.cpp \
 		PlacementPy.cpp \
 		RotationPy.cpp \
 		VectorPy.cpp
@@ -15,7 +15,7 @@ libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
 		BoundBoxPy.h \
 		MatrixPy.h \
-		PersistancePy.h \
+		PersistencePy.h \
 		PlacementPy.h \
 		RotationPy.h \
 		VectorPy.h
@@ -101,8 +101,8 @@ libFreeCADBase_la_SOURCES=\
 		MemDebug.h \
 		Parameter.cpp \
 		ParameterPy.cpp \
-		Persistance.cpp \
-		PersistancePyImp.cpp \
+		Persistence.cpp \
+		PersistencePyImp.cpp \
 		Placement.cpp \
 		PlacementPyImp.cpp \
 		PreCompiled.cpp \
@@ -149,7 +149,7 @@ include_HEADERS=\
 		Matrix.h \
 		Observer.h \
 		Parameter.h \
-		Persistance.h \
+		Persistence.h \
 		Placement.h \
 		PyExport.h \
 		PyObjectBase.h \
@@ -228,7 +228,7 @@ EXTRA_DIST = \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \
 		MatrixPy.xml \
-		PersistancePy.xml \
+		PersistencePy.xml \
 		PlacementPy.xml \
 		RotationPy.xml \
 		VectorPy.xml

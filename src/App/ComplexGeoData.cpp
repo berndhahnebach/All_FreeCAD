@@ -34,7 +34,7 @@ using namespace Data;
 TYPESYSTEM_SOURCE_ABSTRACT(Data::Segment , Base::BaseClass);
 
 
-TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(Data::ComplexGeoData , Base::Persistence);
 
 
 ComplexGeoData::ComplexGeoData(void)

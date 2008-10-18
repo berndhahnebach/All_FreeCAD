@@ -25,7 +25,7 @@
 #define _AppComplexGeoData_h_
 
 #include <Base/Placement.h>
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <Base/Handle.h>
 #include <Base/Matrix.h>
 #include <Base/BoundBox.h>
@@ -50,7 +50,7 @@ public:
 
 /** ComplexGeoData Object
  */
-class AppExport ComplexGeoData: public Base::Persistance, public Base::Handled
+class AppExport ComplexGeoData: public Base::Persistence, public Base::Handled
 {
     TYPESYSTEM_HEADER();
  

@@ -351,7 +351,7 @@ void Document::onChanged(const Property* prop)
         App::GetApplication().signalRelabelDocument(*this);
 }
 
-void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
+void Document::onBeforeChangeProperty(const DocumentObject *Who, const Property *What)
 {
     if (activUndoTransaction && !bRollback)
         activUndoTransaction->addObjectChange(Who,What);

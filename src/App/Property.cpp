@@ -39,7 +39,7 @@ using namespace App;
 // Property
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE_ABSTRACT(App::Property , Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(App::Property , Base::Persistence);
 
 //**************************************************************************
 // Construction/Destruction
@@ -98,7 +98,7 @@ void Property::hasSetValue(void)
 void Property::aboutToSetValue(void)
 {
     if (father)
-        father->onBevorChange(this);
+        father->onBeforeChange(this);
 }
 
 Property *Property::Copy(void) const 

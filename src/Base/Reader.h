@@ -108,7 +108,7 @@ void PropertyContainer::Restore(Base::Reader &reader)
     reader.readEndElement("Properties");
 }
  *  \endcode
- * \see App::Persistance
+ * \see Base::Persistence
  * \author Juergen Riegel
  */
 class BaseExport XMLReader : public XERCES_CPP_NAMESPACE_QUALIFIER DefaultHandler
@@ -150,12 +150,12 @@ public:
     /** @name additional file reading */
     //@{
     /// add a read request of a persistent object
-    const char *addFile(const char* Name, Base::Persistance *Object);
+    const char *addFile(const char* Name, Base::Persistence *Object);
     /// process the requested file writes
     void readFiles(zipios::ZipInputStream &zipstream) const;
     /// get all registered file names
     const std::vector<std::string>& getFilenames() const;
-    bool isRegistered(Base::Persistance *Object) const;
+    bool isRegistered(Base::Persistence *Object) const;
     //@}
 
 private:
@@ -204,7 +204,7 @@ private:
 
     struct FileEntry {
         std::string FileName;
-        Base::Persistance *Object;
+        Base::Persistence *Object;
     };
     std::vector<FileEntry> FileList;
     std::vector<std::string> FileNames;

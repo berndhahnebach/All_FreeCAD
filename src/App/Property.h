@@ -26,7 +26,7 @@
 
 // Std. configurations
 
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <string>
 #include <bitset>
 
@@ -45,7 +45,7 @@ class PropertyContainer;
  * possible properties. It is also possible to define user properties
  * and use them in the framework...
  */
-class AppExport Property : public Base::Persistance
+class AppExport Property : public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 
@@ -55,13 +55,13 @@ public:
 
     /** This method is used to get the size of objects
      * It is not meant to have the exact size, it is more or less an estimation
-     * which runs fast! Is it two byte or a GB?
-     * This method is defined in Base::Persistance
-     * @see Base::Persistance
+     * which runs fast! Is it two bytes or a GB?
+     * This method is defined in Base::Persistence
+     * @see Base::Persistence
      */
     virtual unsigned int getMemSize (void) const {
         // you have to implement this method in all property classes!
-        return Base::Persistance::getMemSize() + sizeof(father) + sizeof(StatusBits);
+        return Base::Persistence::getMemSize() + sizeof(father) + sizeof(StatusBits);
     }
 
     /// get the name of this property in the belonging container

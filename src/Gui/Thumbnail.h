@@ -24,13 +24,13 @@
 #ifndef GUI_THUMBNAIL_H
 #define GUI_THUMBNAIL_H
 
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <QUrl>
 
 namespace Gui {
 class View3DInventorViewer;
 
-class Thumbnail : public Base::Persistance
+class Thumbnail : public Base::Persistence
 {
 public:
     Thumbnail(int s = 128);

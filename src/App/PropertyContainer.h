@@ -25,7 +25,7 @@
 #define __PropteryContainer_H__
 
 #include <map>
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 
 namespace Base {
 class Writer;
@@ -80,7 +80,7 @@ struct AppExport PropertyData
 
 /** Base class of all classes with propteries
  */
-class AppExport PropertyContainer: public Base::Persistance
+class AppExport PropertyContainer: public Base::Persistence
 {
 
   TYPESYSTEM_HEADER();
@@ -155,8 +155,8 @@ public:
 protected: 
   /// get called by the container when a Proptery was changed
   virtual void onChanged(const Property* /*prop*/){};
-  /// get called befor the value is changed
-  virtual void onBevorChange(const Property* /*prop*/){};
+  /// get called before the value is changed
+  virtual void onBeforeChange(const Property* /*prop*/){};
 
   //void hasChanged(Propterty* prop);
   static const  PropertyData * getPropertyDataPtr(void); 

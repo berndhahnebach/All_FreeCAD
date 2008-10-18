@@ -40,7 +40,7 @@ using Base::XMLReader;
 using namespace App;
 using namespace std;
 
-TYPESYSTEM_SOURCE(App::Transaction, Base::Persistance);
+TYPESYSTEM_SOURCE(App::Transaction, Base::Persistence);
 
 //**************************************************************************
 // Construction/Destruction
@@ -64,6 +64,11 @@ Transaction::~Transaction()
     std::map<const DocumentObject*,TransactionObject*>::iterator It;
     for( It= _Objects.begin();It!=_Objects.end();++It)
         delete It->second;
+}
+
+unsigned int Transaction::getMemSize (void) const
+{
+    return 0;
 }
 
 void Transaction::Save (Writer &/*writer*/) const
@@ -170,7 +175,7 @@ void Transaction::addObjectChange(const DocumentObject *Obj,const Property *Prop
 // TransactionObject
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
+TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistence);
 
 //**************************************************************************
 // Construction/Destruction
@@ -230,6 +235,11 @@ void TransactionObject::setProperty(const Property* pcProp)
 
   if(pos == _PropChangeMap.end())
     _PropChangeMap[pcProp] = pcProp->Copy();
+}
+
+unsigned int TransactionObject::getMemSize (void) const
+{
+    return 0;
 }
 
 void TransactionObject::Save (Writer &/*writer*/) const

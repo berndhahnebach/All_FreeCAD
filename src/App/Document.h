@@ -28,7 +28,7 @@
 #include <Base/PyExport.h>
 #include <Base/PyCXX/Objects.hxx>
 #include <Base/Observer.h>
-#include <Base/Persistance.h>
+#include <Base/Persistence.h>
 #include <Base/Type.h>
 
 #include "PropertyContainer.h"
@@ -264,8 +264,8 @@ protected:
     void breakDependency(DocumentObject* pcObject, bool clear);
 
     void onChanged(const Property* prop);
-    /// callback from the Document objects bevor property will be changed
-    void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+    /// callback from the Document objects before property will be changed
+    void onBeforeChangeProperty(const DocumentObject *Who, const Property *What);
     /// callback from the Document objects after property was changed
     void onChangedProperty(const DocumentObject *Who, const Property *What);
     /// helper which Recompute only this feature
