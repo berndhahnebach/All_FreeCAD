@@ -261,6 +261,8 @@ protected:
 
     void _remObject(DocumentObject* pcObject);
     void _addObject(DocumentObject* pcObject, const char* pObjectName);
+    DocumentObject* _copyObject(DocumentObject* obj, std::map<DocumentObject*, 
+        DocumentObject*>&, bool recursive=false);
     void breakDependency(DocumentObject* pcObject, bool clear);
 
     void onChanged(const Property* prop);

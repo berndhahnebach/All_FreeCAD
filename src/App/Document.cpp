@@ -1123,11 +1123,14 @@ void Document::breakDependency(DocumentObject* pcObject, bool clear)
     }
 }
 
-DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
+DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObject*, 
+                                      DocumentObject*>& copy_map, bool recursive)
 {
     if (!obj) return 0;
     DocumentObject* copy = addObject(obj->getTypeId().getName(),obj->getNameInDocument());
     if (!copy) return 0;
+
+    copy_map[obj] = copy;
 
     std::map<std::string,App::Property*> props;
     copy->getPropertyMap(props);
@@ -1136,18 +1139,44 @@ DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
         if (prop && prop->getTypeId() == it->second->getTypeId()) {
             if (prop->getTypeId() == PropertyLink::getClassTypeId()) {
                 DocumentObject* link = static_cast<PropertyLink*>(prop)->getValue();
-                if (recursive) {
-                    DocumentObject* link_copy = copyObject(link, recursive);
+                std::map<DocumentObject*, DocumentObject*>::iterator pt = copy_map.find(link);
+                if (pt != copy_map.end()) {
+                    // the object has already been copied
+                    static_cast<PropertyLink*>(it->second)->setValue(pt->second);
+                }
+                else if (recursive) {
+                    DocumentObject* link_copy = _copyObject(link, copy_map, recursive);
+                    copy_map[link] = link_copy;
                     static_cast<PropertyLink*>(it->second)->setValue(link_copy);
+                }
+                else if (link->getDocument() == this) {
+                    static_cast<PropertyLink*>(it->second)->setValue(link);
                 }
             }
             else if (prop->getTypeId() == PropertyLinkList::getClassTypeId()) {
                 std::vector<DocumentObject*> links = static_cast<PropertyLinkList*>(prop)->getValues();
                 if (recursive) {
                     std::vector<DocumentObject*> links_copy;
-                    for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt)
-                        links_copy.push_back(copyObject(*jt, recursive));
+                    for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt) {
+                        std::map<DocumentObject*, DocumentObject*>::iterator pt = copy_map.find(*jt);
+                        if (pt != copy_map.end()) {
+                            // the object has already been copied
+                            links_copy.push_back(pt->second);
+                        }
+                        else {
+                            links_copy.push_back(_copyObject(*jt, copy_map, recursive));
+                            copy_map[*jt] = links_copy.back();
+                        }
+                    }
                     static_cast<PropertyLinkList*>(it->second)->setValues(links_copy);
+                }
+                else {
+                    std::vector<DocumentObject*> links_ref;
+                    for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt) {
+                        if ((*jt)->getDocument() == this)
+                            links_ref.push_back(*jt);
+                    }
+                    static_cast<PropertyLinkList*>(it->second)->setValues(links_ref);
                 }
             }
             else {
@@ -1165,13 +1194,20 @@ DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
     return copy;
 }
 
+DocumentObject* Document::copyObject(DocumentObject* obj, bool recursive)
+{
+    std::map<DocumentObject*, DocumentObject*> copy_map;
+    DocumentObject* copy = _copyObject(obj, copy_map, recursive);
+    return copy;
+}
+
 DocumentObject* Document::moveObject(DocumentObject* obj, bool recursive)
 {
     Document* that = obj->getDocument();
     if (that == this)
         return 0; // nothing todo
 
-    // all object of the oter document that refer to this object must be nullified
+    // all object of the other document that refer to this object must be nullified
     that->breakDependency(obj, false);
     std::string objname = getUniqueObjectName(obj->getNameInDocument());
     that->_remObject(obj);
