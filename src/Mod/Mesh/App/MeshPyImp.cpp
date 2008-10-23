@@ -136,6 +136,51 @@ PyObject*  MeshPy::offsetSpecial(PyObject *args)
     Py_Return; 
 }
 
+PyObject*  MeshPy::crossSections(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &obj))
+        return 0;
+
+    Py::List list(obj);
+    union PyType_Object pyType = {&(Base::VectorPy::Type)};
+    Py::Type vType(pyType.o);
+
+    std::vector<MeshObject::Plane> csPlanes;
+    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+        Py::Tuple pair(*it);
+        Py::Object p1 = pair.getItem(0);
+        Py::Object p2 = pair.getItem(1);
+        if (p1.isType(vType) && p2.isType(vType)) {
+            MeshObject::Plane plane;
+            Base::Vector3d b = static_cast<Base::VectorPy*>(p1.ptr())->value();
+            Base::Vector3d n = static_cast<Base::VectorPy*>(p2.ptr())->value();
+            plane.first.Set((float)b.x,(float)b.y,(float)b.z);
+            plane.second.Set((float)n.x,(float)n.y,(float)n.z);
+            csPlanes.push_back(plane);
+        }
+    }
+
+    std::vector<MeshObject::Polylines> sections;
+    getMeshObjectPtr()->crossSections(csPlanes, sections);
+
+    // convert to Python objects
+    Py::List crossSections;
+    for (std::vector<MeshObject::Polylines>::iterator it = sections.begin(); it != sections.end(); ++it) {
+        Py::List section;
+        for (MeshObject::Polylines::const_iterator jt = it->begin(); jt != it->end(); ++jt) {
+            Py::List polyline;
+            for (std::vector<Base::Vector3f>::const_iterator kt = jt->begin(); kt != jt->end(); ++kt) {
+                polyline.append(Py::Object(new Base::VectorPy(*kt)));
+            }
+            section.append(polyline);
+        }
+        crossSections.append(section);
+    }
+
+    return Py::new_reference_to(crossSections);
+}
+
 PyObject*  MeshPy::unite(PyObject *args)
 {
     MeshPy   *pcObject;

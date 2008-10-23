@@ -47,6 +47,11 @@ Example:
 				<UserDocu>Move the point along their normals</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="crossSections" Const="true">
+			<Documentation>
+				<UserDocu>Get cross-sections of the mesh through several planes</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="unite" Const="true">
 			<Documentation>
 				<UserDocu>Union of this and the given mesh object.</UserDocu>
