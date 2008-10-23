@@ -110,6 +110,11 @@
             <ComponentRef Id="PyQtQwt5" />
             <ComponentRef Id="PivyGui" />
             <ComponentRef Id="PivyTop" />
+            <ComponentRef Id="ImageForm" />
+            <ComponentRef Id="accessible" />
+            <ComponentRef Id="codecs" />
+            <ComponentRef Id="iconengines" />
+            <ComponentRef Id="sqldrivers" />
             <ComponentRef Id="CompModPart" />
             <ComponentRef Id="CompModMesh" />
             <ComponentRef Id="CompModPoints" />

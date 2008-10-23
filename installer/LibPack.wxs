@@ -101,6 +101,39 @@
 				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
 				<File Id="LibPack88" Name="zlib1.dll"   />
 			</Component>
+			<Directory Id="ImageFormDir" Name="ImageForm" FileSource="../bin/imageformats" >
+				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66">
+					<File Id="ImageForm1" Name="qgif4.dll"   />
+					<File Id="ImageForm2" Name="qjpeg4.dll"   />
+					<File Id="ImageForm3" Name="qmng4.dll"   />
+					<File Id="ImageForm4" Name="qsvg4.dll"   />
+					<File Id="ImageForm5" Name="qtiff4.dll"   />
+				</Component>			
+			</Directory>
+			<Directory Id="accessibleDir" Name="accessible" FileSource="../bin/accessible" >
+				<Component Id="accessible"  Guid="f5800b90-a109-11dd-ad8b-0800200c9a66">
+					<File Id="accessible1" Name="qtaccessiblecompatwidgets4.dll"   />
+					<File Id="accessible2" Name="qtaccessiblewidgets4.dll"   />
+				</Component>			
+			</Directory>
+			<Directory Id="codecsDir" Name="codecs" FileSource="../bin/codecs" >
+				<Component Id="codecs"  Guid="641d0030-a10a-11dd-ad8b-0800200c9a66">
+					<File Id="codecs1" Name="qcncodecs4.dll"   />
+					<File Id="codecs2" Name="qjpcodecs4.dll"   />
+					<File Id="codecs3" Name="qkrcodecs4.dll"   />
+					<File Id="codecs4" Name="qtwcodecs4.dll"   />
+				</Component>			
+			</Directory>
+			<Directory Id="iconenginesDir" Name="iconengines" FileSource="../bin/iconengines" >
+				<Component Id="iconengines"  Guid="c65a8970-a10a-11dd-ad8b-0800200c9a66">
+					<File Id="iconengines1" Name="qsvg4.dll"   />
+				</Component>			
+			</Directory>
+			<Directory Id="sqldriversDir" Name="sqldrivers" FileSource="../bin/sqldrivers" >
+				<Component Id="sqldrivers"  Guid="16bcd850-a10b-11dd-ad8b-0800200c9a66">
+					<File Id="sqldrivers1" Name="qsqlite4.dll"   />
+				</Component>			
+			</Directory>
 			<Directory Id="PivyDir" Name="pivy" FileSource="../bin/pivy" >
 				<Component Id="PivyTop"  Guid="b18123c0-3fb0-4cc0-85e8-f71038172b34">
 					<File Id="Pivy1" Name="__init__.py"   />
