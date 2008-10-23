@@ -325,6 +325,28 @@ public:
     bool Fixup();
 };
 
+class MeshExport MeshEvalFoldsOnBoundary : public MeshEvaluation
+{
+public:
+    MeshEvalFoldsOnBoundary (const MeshKernel &rclM) : MeshEvaluation( rclM ) { }
+    ~MeshEvalFoldsOnBoundary() {}
+
+    bool Evaluate();
+    std::vector<unsigned long> GetIndices() const;
+
+private:
+    std::vector<unsigned long> indices;
+};
+
+class MeshExport MeshFixFoldsOnBoundary : public MeshValidation
+{
+public:
+    MeshFixFoldsOnBoundary (MeshKernel &rclM) : MeshValidation( rclM ) { }
+    ~MeshFixFoldsOnBoundary() {}
+
+    bool Fixup();
+};
+
 /**
  * The MeshEvalRangeFacet class checks whether a facet points to neighbour
  * facets that are out of range. All errors detected by this class would also

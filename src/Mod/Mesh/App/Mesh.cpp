@@ -796,8 +796,8 @@ void MeshObject::removeSelfIntersections()
 void MeshObject::removeFoldsOnSurface()
 {
     unsigned long count = _kernel.CountFacets();
-    MeshCore::MeshFixFoldsOnSurface cMeshFix(_kernel);
-    cMeshFix.Fixup();
+    MeshCore::MeshFixFoldsOnSurface(_kernel).Fixup();
+    MeshCore::MeshFixFoldsOnBoundary(_kernel).Fixup();
     if (_kernel.CountFacets() < count)
         this->_segments.clear();
 }
@@ -896,8 +896,8 @@ MeshObject* MeshObject::createMeshFromList(Py::List& list)
 MeshObject* MeshObject::createSphere(float radius, int sampling)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Sphere"));
@@ -917,8 +917,8 @@ MeshObject* MeshObject::createSphere(float radius, int sampling)
 MeshObject* MeshObject::createEllipsoid(float radius1, float radius2, int sampling)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Ellipsoid"));
@@ -939,8 +939,8 @@ MeshObject* MeshObject::createEllipsoid(float radius1, float radius2, int sampli
 MeshObject* MeshObject::createCylinder(float radius, float length, int closed, float edgelen, int sampling)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cylinder"));
@@ -963,8 +963,8 @@ MeshObject* MeshObject::createCylinder(float radius, float length, int closed, f
 MeshObject* MeshObject::createCone(float radius1, float radius2, float len, int closed, float edgelen, int sampling)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cone"));
@@ -988,8 +988,8 @@ MeshObject* MeshObject::createCone(float radius1, float radius2, float len, int 
 MeshObject* MeshObject::createTorus(float radius1, float radius2, int sampling)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Toroid"));
@@ -1010,8 +1010,8 @@ MeshObject* MeshObject::createTorus(float radius1, float radius2, int sampling)
 MeshObject* MeshObject::createCube(float length, float width, float height)
 {
     // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
     try {
-        Base::PyGILStateLocker lock;
         Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cube"));

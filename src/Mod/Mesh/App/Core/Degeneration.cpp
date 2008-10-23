@@ -694,6 +694,47 @@ bool MeshFixFoldsOnSurface::Fixup()
 
 // ----------------------------------------------------------------------
 
+bool MeshEvalFoldsOnBoundary::Evaluate()
+{
+    // remove all boundary facets with two open edges and where
+    // the angle to the neighbour is more that 30 degree
+    this->indices.clear();
+    const MeshFacetArray& rFacAry = _rclMesh.GetFacets();
+    for (MeshFacetArray::_TConstIterator it = rFacAry.begin(); it != rFacAry.end(); ++it) {
+        if (it->CountOpenEdges() == 2) {
+            for (int i=0; i<3; i++) {
+                if (it->_aulNeighbours[i] != ULONG_MAX) {
+                    MeshGeomFacet f1 = _rclMesh.GetFacet(*it);
+                    MeshGeomFacet f2 = _rclMesh.GetFacet(it->_aulNeighbours[i]);
+                    float angle = f1.GetNormal().GetAngle(f2.GetNormal());
+                    if (angle >= 0.52f) // ~ 30 degree
+                        indices.push_back(it-rFacAry.begin());
+                }
+            }
+        }
+    }
+
+    return this->indices.empty();
+}
+
+std::vector<unsigned long> MeshEvalFoldsOnBoundary::GetIndices() const
+{
+    return this->indices;
+}
+
+bool MeshFixFoldsOnBoundary::Fixup()
+{
+    MeshEvalFoldsOnBoundary eval(_rclMesh);
+    if (!eval.Evaluate()) {
+        std::vector<unsigned long> inds = eval.GetIndices();
+        _rclMesh.DeleteFacets(inds);
+    }
+
+    return true;
+}
+
+// ----------------------------------------------------------------------
+
 bool MeshEvalRangeFacet::Evaluate()
 {
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
