@@ -870,6 +870,8 @@ StdViewScreenShot::StdViewScreenShot()
   sWhatsThis  = "Std_ViewScreenShot";
   sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
   iAccel      = 0;
+  sPixmap     = "Std_ViewScreenShot";
+
 }
 
 void StdViewScreenShot::activated(int iMsg)

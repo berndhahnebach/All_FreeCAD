@@ -19,5 +19,6 @@
         <file>ClassBrowser/type_class.png</file>
         <file>ClassBrowser/type_enum.png</file>
         <file>ClassBrowser/type_module.png</file>
+        <file>Std_ViewScreenShot.svg</file>
     </qresource>
 </RCC>
