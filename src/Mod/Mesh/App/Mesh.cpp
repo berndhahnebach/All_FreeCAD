@@ -38,6 +38,7 @@
 #include "Core/Builder.h"
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
+#include "Core/Grid.h"
 #include "Core/Iterator.h"
 #include "Core/Info.h"
 #include "Core/TopoAlgorithm.h"
@@ -569,6 +570,18 @@ Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
     normal.z -= _Mtrx[2][3];
     normal.Normalize();
     return normal;
+}
+
+void MeshObject::crossSections(const std::vector<MeshObject::Plane>& planes, std::vector<MeshObject::Polylines> &sections,
+                               float fMinEps, bool bConnectPolygons) const
+{
+    MeshCore::MeshFacetGrid grid(_kernel);
+    MeshCore::MeshAlgorithm algo(_kernel);
+    for (std::vector<MeshObject::Plane>::const_iterator it = planes.begin(); it != planes.end(); ++it) {
+        MeshObject::Polylines polylines;
+        algo.CutWithPlane(it->first, it->second, grid, polylines, fMinEps, bConnectPolygons);
+        sections.push_back(polylines);
+    }
 }
 
 MeshObject* MeshObject::unite(const MeshObject& mesh) const

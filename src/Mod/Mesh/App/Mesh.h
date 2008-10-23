@@ -65,6 +65,10 @@ class MeshExport MeshObject : public Data::ComplexGeoData
     TYPESYSTEM_HEADER();
 
 public:
+    // typedef needed for cross-section
+    typedef std::pair<Base::Vector3f, Base::Vector3f> Plane;
+    typedef std::list<std::vector<Base::Vector3f> > Polylines;
+
     MeshObject();
     explicit MeshObject(const MeshCore::MeshKernel& Kernel);
     explicit MeshObject(const MeshCore::MeshKernel& Kernel, const Base::Matrix4D &Mtrx);
@@ -152,6 +156,8 @@ public:
     void setPoint(unsigned long, const Base::Vector3d& v);
     void smooth(int iterations, float d_max);
     Base::Vector3d getPointNormal(unsigned long) const;
+    void crossSections(const std::vector<Plane>&, std::vector<Polylines> &sections,
+                       float fMinEps = 1.0e-2f, bool bConnectPolygons = false) const;
     //@}
 
     /** @name Boolean operations */
