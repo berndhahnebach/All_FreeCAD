@@ -33,6 +33,7 @@ EXTRA_DIST = \
 		macro-stop.svg \
 		preferences-display.svg \
 		preferences-general.svg \
+		Std_ViewScreenShot.svg \
 		utilities-terminal.svg \
 		resource.qrc
 
