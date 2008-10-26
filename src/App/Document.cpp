@@ -79,6 +79,8 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 #include <Base/Stream.h>
+#include <Base/FileInfo.h>
+#include <Base/Uuid.h>
 
 #include <Base/zipios/zipios-config.h>
 #include <Base/zipios/zipfile.h>
@@ -459,8 +461,16 @@ Document::Document(void)
     ADD_PROPERTY_TYPE(LastModifiedDate,("Unknown"),0,Prop_ReadOnly,"Date of last modification");
     ADD_PROPERTY_TYPE(Company,(""),0,Prop_None,"Additional tag to save the the name of the company");
     ADD_PROPERTY_TYPE(Comment,(""),0,Prop_None,"Additional tag to save a comment");
-    ADD_PROPERTY_TYPE(Id,(""),0,Prop_None,"UUID of the document");
-    ADD_PROPERTY_TYPE(TransientDir,(""),0,Prop_Transient,"Transinet directory, where the files live while the document is open");
+	// create the uuid for the document
+	Base::Uuid id;
+    ADD_PROPERTY_TYPE(Id,(id.UuidStr),0,Prop_None,"UUID of the document");
+
+	// create transient directory
+	Base::FileInfo TransDir(Base::FileInfo::getTempPath() + id.UuidStr);
+	if(!TransDir.exists())
+		TransDir.createDirectory();
+    ADD_PROPERTY_TYPE(TransientDir,(TransDir.filePath().c_str()),0,Prop_Transient,"Transinet directory, where the files live while the document is open");
+
 }
 
 Document::~Document()
@@ -490,6 +500,10 @@ Document::~Document()
     Base::PyObjectBase* doc = (Base::PyObjectBase*)DocumentPythonObject.ptr();
     // Call before decrementing the reference counter, otherwise a heap error can occur
     doc->setInvalid();
+
+	// remove Transient directory
+	Base::FileInfo TransDir(TransientDir.getValue());
+	TransDir.deleteDirectoryRecursiv();
 }
 
 
@@ -561,6 +575,11 @@ void Document::Restore(Base::XMLReader &reader)
     std::string FilePath = FileName.getValue();
     std::string DocLabel = Label.getValue();
 
+	// remove previous Transient directory
+	Base::FileInfo TransDir(TransientDir.getValue());
+	TransDir.deleteDirectoryRecursiv();
+
+
     // read the Document Properties
     PropertyContainer::Restore(reader);
 
@@ -568,6 +587,13 @@ void Document::Restore(Base::XMLReader &reader)
     // value could be invalid.
     FileName.setValue(FilePath.c_str());
     Label.setValue(DocLabel.c_str());
+
+	// create new transient directory
+	Base::FileInfo TransDirNew(Base::FileInfo::getTempPath() + Id.getValue());
+	if(!TransDirNew.exists())
+		TransDirNew.createDirectory();
+	TransientDir.setValue(TransDirNew.filePath());
+
 
     // SchemeVersion "2"
     if ( scheme == 2 ) {

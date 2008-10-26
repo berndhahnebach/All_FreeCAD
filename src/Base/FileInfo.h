@@ -114,7 +114,7 @@ public:
     /// get a unique File Name in the temp path
     static std::string getTempFileName(void);
     /// get the path to the dir which is designeded to temp files
-    static const char *getTempPath(void);
+	static const std::string &getTempPath(void);
 	//@}
 
 protected:
