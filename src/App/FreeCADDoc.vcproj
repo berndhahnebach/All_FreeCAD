@@ -307,6 +307,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PropertyFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyFile.h"
+				>
+			</File>
+			<File
 				RelativePath="PropertyGeo.cpp"
 				>
 				<FileConfiguration
@@ -446,6 +454,14 @@
 			</File>
 			<File
 				RelativePath="DocumentObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DocumentObjectFileIncluded.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DocumentObjectFileIncluded.h"
 				>
 			</File>
 			<File

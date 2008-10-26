@@ -73,9 +73,11 @@
 #include "Property.h"
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
+#include "PropertyFile.h"
 #include "PropertyLinks.h"
 #include "Document.h"
 #include "DocumentObjectGroup.h"
+#include "DocumentObjectFileIncluded.h"
 #include "InventorObject.h"
 #include "Annotation.h"
 #include "MeasureDistance.h"
@@ -790,8 +792,9 @@ void Application::initTypes(void)
     App ::PropertyColor             ::init();
     App ::PropertyColorList         ::init();
     App ::PropertyMaterial          ::init();
-    App::PropertyPath               ::init();
+    App ::PropertyPath              ::init();
     App ::PropertyFile              ::init();
+    App ::PropertyFileIncluded      ::init();
     // Document classes
     App ::DocumentObject            ::init();
     App ::AbstractFeature           ::init();
@@ -801,6 +804,7 @@ void Application::initTypes(void)
     App ::FeaturePython             ::init();
     App ::Document                  ::init();
     App ::DocumentObjectGroup       ::init();
+    App ::DocumentObjectFileIncluded::init();
     App ::InventorObject            ::init();
     App ::Annotation                ::init();
     App ::MeasureDistance           ::init();
