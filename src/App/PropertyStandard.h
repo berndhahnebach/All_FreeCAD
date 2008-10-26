@@ -748,18 +748,6 @@ private:
     Material _cMat;
 };
 
-/** File properties
- */
-class AppExport PropertyFile : public PropertyString
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    PropertyFile(void);
-    virtual ~PropertyFile();
-    
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileItem"; }
-};
 
 
 } // namespace App

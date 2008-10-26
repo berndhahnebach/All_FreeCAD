@@ -1,0 +1,94 @@
+/***************************************************************************
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifndef APP_PROPERTFILE_H
+#define APP_PROPERTFILE_H
+
+// Std. configurations
+
+
+#include <string>
+#include <list>
+#include <vector>
+#include <boost/filesystem/path.hpp>
+
+#include "PropertyStandard.h"
+
+
+namespace Base {
+class Writer;
+}
+
+
+namespace App
+{
+
+/** File properties
+ */
+class AppExport PropertyFile : public PropertyString
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyFile(void);
+    virtual ~PropertyFile();
+    
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileItem"; }
+};
+
+/** File include properties
+ */
+class AppExport PropertyFileIncluded : public Property
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyFileIncluded(void);
+    virtual ~PropertyFileIncluded();
+
+    void setValue(const char* sString);
+    void setValue(const std::string &sString);
+    const char* getValue(void) const;
+
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyStringItem"; }
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+    
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+	virtual void SaveDocFile (Base::Writer &writer) const;
+    virtual void RestoreDocFile(Base::Reader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+protected:
+	std::string _cValue;
+
+};
+
+
+} // namespace App
+
+#endif // APP_PROPERTYSTANDARD_H

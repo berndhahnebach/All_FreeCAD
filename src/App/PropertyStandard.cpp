@@ -1661,18 +1661,3 @@ void PropertyMaterial::Paste(const Property &from)
 }
 
 
-//**************************************************************************
-// PropertyFile
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TYPESYSTEM_SOURCE(App::PropertyFile , App::PropertyString);
-
-PropertyFile::PropertyFile()
-{
-
-}
-
-PropertyFile::~PropertyFile()
-{
-
-}
