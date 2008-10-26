@@ -125,13 +125,17 @@ void PropertyContainer::Save (Writer &writer) const
   std::map<std::string,Property*>::iterator it;
   for(it = Map.begin(); it != Map.end(); ++it)
   {
-    writer.incInd(); // indention for 'Property name'
-    writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" << endl;;    
-    writer.incInd(); // indention for the actual property
-    it->second->Save(writer);
-    writer.decInd(); // indention for the actual property
-    writer.Stream() << writer.ind() << "</Property>" << endl;    
-    writer.decInd(); // indention for 'Property name'
+	// Dont write Transient properties 
+    if(! (it->second->StatusBits.test(Prop_Transient)) )
+	{
+	   writer.incInd(); // indention for 'Property name'
+	   writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" << endl;;    
+	   writer.incInd(); // indention for the actual property
+	   it->second->Save(writer);
+	   writer.decInd(); // indention for the actual property
+	   writer.Stream() << writer.ind() << "</Property>" << endl;    
+	   writer.decInd(); // indention for 'Property name'
+	}
   }
   writer.Stream() << writer.ind() << "</Properties>" << endl;
   writer.decInd(); // indention for 'Properties Count'

@@ -88,6 +88,7 @@ public:
   App::PropertyInteger   TypeReadOnly;
   App::PropertyInteger   TypeOutput;
   App::PropertyInteger   TypeAll;
+  App::PropertyInteger   TypeTransient;
   
   /** @name methods overide Feature */
   //@{

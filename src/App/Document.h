@@ -95,6 +95,9 @@ public:
     PropertyString LastModifiedDate;
     PropertyString Company;
     PropertyString Comment;
+    PropertyString Id;
+    PropertyString TransientDir;
+
 
     /** @name Signals of the document */
     //@{
