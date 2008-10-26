@@ -27,6 +27,7 @@
 #define BASE_FILEINFO_H
 
 #include <string>
+#include <vector>
 
 
 namespace Base
@@ -34,6 +35,7 @@ namespace Base
 
 /** File name unification
   * This class handles everything related to file names
+  * the file names are generaly UTF8 on all platforms
   */
 class BaseExport FileInfo
 {
@@ -45,8 +47,10 @@ public:
     void setFile(const char* name);
     /// set a new file name
     void setFile(const std::string &name){setFile(name.c_str());}
-    /// Does the file exist?
-    bool exists () const;
+
+
+ 	/** @name extraction of information */
+	//@{
     /// Returns the file name, including the path (which may be absolute or relative).
     std::string filePath () const;
     /// Returns the dir path name (which may be absolute or relative).
@@ -71,26 +75,47 @@ public:
     std::string extension (bool complete = false) const;
     /// checks for a special extension, NOT case sensetive
     bool hasExtension (const char* Ext) const;
+	//@}
 
+	/** @name methods to test the status of the file or dir */
+	//@{
+    /// Does the file exist?
+    bool exists () const;
     /// checks if the file exist and is readable
     bool isReadable () const;
     /// checks if the file exist and is writable
     bool isWritable () const;
+	/// checks if its a file (not a Direrctory)
     bool isFile () const;
+	/// checks if its a directory (not a file)
     bool isDir () const;
+	/// the size of the file 
     unsigned int size () const;
+	//@}
 
-    /**
-     * Creates a directory. Returns TRUE if successful; otherwise returns FALSE.
-     */
-    bool createDirectory( const char* ) const;
+	/** @name Directory management*/
+	//@{
+    /// Creates a directory. Returns TRUE if successful; otherwise returns FALSE.
+    bool createDirectory( void ) const;
+	/// get a List of the directory content
+	std::vector<Base::FileInfo> getDirectoryContent(void) const;
+    /// delete a empty directory 
+    bool deleteDirectory(void) const;
+    /// delete a directory and all its content
+    bool deleteDirectoryRecursiv(void) const;
+	//@}
 
-    /// get the path to the dir which is designeded to temp files
-    static const char *getTempPath(void);
+	/// delete the file
+    bool deleteFile(void) const;
+
+
+	/** @name Tools */
+	//@{
     /// get a unique File Name in the temp path
     static std::string getTempFileName(void);
-    /// delete the file
-    bool deleteFile(void);
+    /// get the path to the dir which is designeded to temp files
+    static const char *getTempPath(void);
+	//@}
 
 protected:
     std::string FileName;

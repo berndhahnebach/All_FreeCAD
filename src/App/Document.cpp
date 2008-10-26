@@ -459,6 +459,8 @@ Document::Document(void)
     ADD_PROPERTY_TYPE(LastModifiedDate,("Unknown"),0,Prop_ReadOnly,"Date of last modification");
     ADD_PROPERTY_TYPE(Company,(""),0,Prop_None,"Additional tag to save the the name of the company");
     ADD_PROPERTY_TYPE(Comment,(""),0,Prop_None,"Additional tag to save a comment");
+    ADD_PROPERTY_TYPE(Id,(""),0,Prop_None,"UUID of the document");
+    ADD_PROPERTY_TYPE(TransientDir,(""),0,Prop_Transient,"Transinet directory, where the files live while the document is open");
 }
 
 Document::~Document()

@@ -44,6 +44,7 @@
 #include <windows.h>
 #include <crtdbg.h>
 #include <shellapi.h>
+#include <Rpc.h>
 #endif
 
 // STL 

@@ -44,6 +44,7 @@
 
 
 #include "FileInfo.h"
+#include "Exception.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -151,6 +152,16 @@ std::string FileInfo::fileNamePure () const
 }
 
 #ifdef FC_OS_WIN32
+std::string ConvertFromWideString(const std::wstring& string)
+{
+    int neededSize = WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, 0, 0,0,0);
+    char * CharString = new char[neededSize];
+    WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, CharString, neededSize,0,0);
+    std::string String((char*)CharString);
+    delete [] CharString;
+    CharString = NULL;
+    return String;
+}
 std::wstring ConvertToWideString(const std::string& string)
 {
     int neededSize = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, 0, 0);
@@ -256,21 +267,25 @@ bool FileInfo::isDir () const
         // if we can chdir then it must be a directory, otherwise we assume it
         // is a file (which doesn't need to be true for any cases)
 #if defined (_MSC_VER)
-        wchar_t cwd[MAX_PATH+1];
-        std::wstring wstr = toStdWString();
-        if (_wgetcwd(cwd,MAX_PATH+1) != 0 && _wchdir(wstr.c_str()) == 0) {
-            _wchdir(cwd);
-            return true;
-        }
+        
+		std::wstring wstr = toStdWString();
+		struct _stat st;
+
+		if (_wstat(wstr.c_str(), &st) != 0)
+			return false;
+		
+		return ((st.st_mode & _S_IFDIR) != 0);
+
 #elif defined (__GNUC__)
-        char cwd[PATH_MAX+1];
-        if (getcwd(cwd,PATH_MAX+1) != 0 && chdir(FileName.c_str()) == 0) {
-            chdir(cwd);
-            return true;
-        }
+ 		struct stat st;
+		if (stat(FileName.c_str(), &st) != 0)
+		{
+			return false;
+		}
+		return S_ISDIR(st.st_mode);
 #endif
         return false;
-    }
+    } else return false;
 
     // TODO: Check for valid path name
     return true;
@@ -283,7 +298,7 @@ unsigned int FileInfo::size () const
     return 0;
 }
 
-bool FileInfo::deleteFile(void)
+bool FileInfo::deleteFile(void) const
 {
 #if defined (_MSC_VER)
     std::wstring wstr = toStdWString();
@@ -295,15 +310,85 @@ bool FileInfo::deleteFile(void)
 #endif
 }
 
-bool FileInfo::createDirectory(const char* directory) const
+bool FileInfo::createDirectory(void /*const char* directory*/) const
 {
 #if defined (_MSC_VER)
-    FileInfo fi(directory);
-    std::wstring wstr = fi.toStdWString();
+    std::wstring wstr = toStdWString();
     return _wmkdir(wstr.c_str()) == 0;
 #elif defined (__GNUC__)
-    return mkdir(directory, 0777) == 0;
+    return mkdir(FileName.c_str(), 0777) == 0;
 #else
 #   error "FileInfo::createDirectory() not implemented for this platform!"
 #endif
+}
+
+bool FileInfo::deleteDirectory(void) const
+{
+	if (isDir() == false ) return false;
+#if defined (_MSC_VER)
+    std::wstring wstr = toStdWString();
+    return _wrmdir(wstr.c_str()) == 0;
+#elif defined (__GNUC__)
+    return rmdir(FileName.c_str()) == 0;
+#else
+#   error "FileInfo::createDirectory() not implemented for this platform!"
+#endif
+}
+
+bool FileInfo::deleteDirectoryRecursiv(void) const
+{
+	if (isDir() == false ) return false;
+	std::vector<Base::FileInfo> List = getDirectoryContent();
+
+	if (List.size()==0)
+		return deleteDirectory();
+
+	for (std::vector<Base::FileInfo>::iterator It = List.begin();It!=List.end();++It){
+		if(It->isDir())
+			It->deleteDirectoryRecursiv();
+		else if(It->isFile())
+			It->deleteFile();
+		else
+			Base::Exception("FileInfo::deleteDirectoryRecursiv(): Unknown object Type in directory!");
+	}
+	return deleteDirectory();
+}
+
+std::vector<Base::FileInfo> FileInfo::getDirectoryContent(void) const
+{
+	std::vector<Base::FileInfo> List;
+#ifdef _MSC_VER
+    struct _wfinddata_t dentry;
+    long hFile;
+
+    // Find first directory entry
+	std::wstring wstr = toStdWString();
+	wstr += L"/*";
+
+    if ((hFile = _wfindfirst( wstr.c_str(), &dentry)) == -1L)
+		return List;
+
+	while (_wfindnext(hFile, &dentry) == 0)
+		if( wcscmp(dentry.name,L"..")!=0)
+			List.push_back(FileInfo(FileName + "/" +ConvertFromWideString(std::wstring(dentry.name))));
+	
+	_findclose(hFile);
+
+#elif defined (__GNUC__)
+	DIR* dp(0);
+	struct dirent* dentry(0);
+	if ((dp = opendir(path.c_str())) == NULL)
+	{
+		return List;
+	}
+
+	while ((dentry = readdir(dp)) != NULL)
+	{
+		List.push_back(FileInfo(dentry->d_name));
+	}
+	closedir(dp);
+#else
+#   error "FileInfo::getDirectoryContent() not implemented for this platform!"
+#endif
+	return List;
 }

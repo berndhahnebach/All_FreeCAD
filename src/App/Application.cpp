@@ -64,6 +64,7 @@
 #include <Base/BoundBoxPy.h>
 #include <Base/PlacementPy.h>
 #include <Base/RotationPy.h>
+#include <Base/Uuid.h>
 
 #include "Feature.h"
 #include "GeoFeature.h"
@@ -236,6 +237,16 @@ Document* Application::newDocument(const char * Name, const char * UserName)
     DocMap[name] = newDoc.release(); // now owned by the Application
     _pActiveDoc = DocMap[name];
 
+	// create the uuid for the document
+	Base::Uuid id;
+	_pActiveDoc->Id.setValue(id.UuidStr);
+
+	// create transient directory
+	Base::FileInfo TransDir(_mConfig["UserAppData"]+ id.UuidStr);
+	if(!TransDir.exists())
+		TransDir.createDirectory();
+	_pActiveDoc->TransientDir.setValue(TransDir.filePath());
+
     // connect the signals to the application for the new document
     _pActiveDoc->signalNewObject.connect(boost::bind(&App::Application::slotNewObject, this, _1));
     _pActiveDoc->signalDeletedObject.connect(boost::bind(&App::Application::slotDeletedObject, this, _1));
@@ -261,6 +272,8 @@ bool Application::closeDocument(const char* name)
     if (pos == DocMap.end()) // no such document
         return false;
 
+	Base::FileInfo TransDir(pos->second->TransientDir.getValue());
+
     // Trigger observers before removing the document from the internal map.
     // Some observers might rely on that this document is still there.
     signalDeleteDocument(*pos->second);
@@ -270,6 +283,8 @@ bool Application::closeDocument(const char* name)
         setActiveDocument((Document*)0);
     auto_ptr<Document> delDoc (pos->second);
     DocMap.erase( pos );
+
+	TransDir.deleteDirectoryRecursiv();
 
     return true;
 }
@@ -1572,7 +1587,7 @@ void Application::ExtractUserPath()
             appData += mConfig["ExeVendor"];
             fi.setFile(appData.c_str());
             if (!fi.exists()) {
-                if (!fi.createDirectory(appData.c_str())) {
+                if (!fi.createDirectory()) {
                     std::string error = "Cannot create directory ";
                     error += appData;
                     // Want more details on console
@@ -1586,7 +1601,7 @@ void Application::ExtractUserPath()
         appData += mConfig["ExeName"];
         fi.setFile(appData.c_str());
         if (!fi.exists()) {
-            if (!fi.createDirectory(appData.c_str())) {
+            if (!fi.createDirectory()) {
                 std::string error = "Cannot create directory ";
                 error += appData;
                 // Want more details on console

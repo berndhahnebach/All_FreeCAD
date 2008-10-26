@@ -42,8 +42,9 @@ enum AppExport PropertyType
 {
   Prop_None     = 0,
   Prop_ReadOnly = 1,
-  Prop_Output   = 2,
-  Prop_Hidden   = 4
+  Prop_Transient= 2,
+  Prop_Hidden   = 4,
+  Prop_Output   = 8
 };
 
 struct AppExport PropertyData
