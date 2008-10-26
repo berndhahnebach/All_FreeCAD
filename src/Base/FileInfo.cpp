@@ -63,7 +63,7 @@ FileInfo::FileInfo (const std::string &_FileName)
     setFile(_FileName.c_str());
 }
 
-const char *FileInfo::getTempPath(void)
+const std::string &FileInfo::getTempPath(void)
 {
     static std::string tempPath;
 
@@ -82,7 +82,7 @@ const char *FileInfo::getTempPath(void)
 #endif
     }
 
-    return tempPath.c_str();
+    return tempPath;
 }
 
 std::string FileInfo::getTempFileName(void)
@@ -92,7 +92,7 @@ std::string FileInfo::getTempFileName(void)
 #ifdef FC_OS_WIN32
     char buf[MAX_PATH + 2];
     // this already creates the file
-    GetTempFileName(getTempPath(),"FCTempFile",0,buf);
+    GetTempFileName(getTempPath().c_str(),"FCTempFile",0,buf);
     return std::string(buf);
 #else
     char buf[PATH_MAX+1];
