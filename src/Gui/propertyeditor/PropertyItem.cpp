@@ -39,6 +39,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/PropertyGeo.h>
+#include <App/PropertyFile.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProviderDocumentObject.h>
