@@ -49,6 +49,7 @@ private:
 /**
  * @author Werner Mayer
  */
+class SoFCVectorizeSVGActionP;
 class GuiExport SoFCVectorizeSVGAction : public SoVectorizeAction {
     typedef SoReplacedElement inherited;
 
@@ -69,6 +70,10 @@ protected:
     virtual void printBackground(void) const;
     virtual void printItem(const SoVectorizeItem * item) const;
     virtual void printViewport(void) const;
+
+private:
+    SoFCVectorizeSVGActionP* p;
+    friend class SoFCVectorizeSVGActionP;
 };
 
 } // namespace Gui

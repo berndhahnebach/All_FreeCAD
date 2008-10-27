@@ -140,7 +140,7 @@ using namespace @self.export.Namespace@;
 PyTypeObject @self.export.Name@::Type = {
     PyObject_HEAD_INIT(&PyType_Type)
     0,                                                /*ob_size*/
-    "@self.export.Twin@",                             /*tp_name*/
+    "@self.export.Namespace@.@self.export.Twin@",     /*tp_name*/
     sizeof(@self.export.Name@),                       /*tp_basicsize*/
     0,                                                /*tp_itemsize*/
     /* methods */
