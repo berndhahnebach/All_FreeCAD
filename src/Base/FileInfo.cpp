@@ -338,10 +338,6 @@ bool FileInfo::deleteDirectory(void) const
 
 bool FileInfo::deleteDirectoryRecursive(void) const
 {
-#if defined (__GNUC__)
-    //FIXME: current impl. contains an endless loop somewhere
-    return false; 
-#endif
     if (isDir() == false ) return false;
     std::vector<Base::FileInfo> List = getDirectoryContent();
 
@@ -386,7 +382,9 @@ std::vector<Base::FileInfo> FileInfo::getDirectoryContent(void) const
 
     while ((dentry = readdir(dp)) != NULL)
     {
-        List.push_back(FileInfo(dentry->d_name));
+        std::string dir = dentry->d_name;
+        if (dir != "." && dir != "..")
+            List.push_back(FileInfo(dir));
     }
     closedir(dp);
 #else
