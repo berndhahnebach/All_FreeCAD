@@ -23,6 +23,11 @@
 
 #include "PreCompiled.h"
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
+#include <Base/VectorPy.h>
+
 #include "Mod/Part/App/TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapeSolidPy.xml)
@@ -46,6 +51,21 @@ const char *TopoShapeSolidPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+Py::Object TopoShapeSolidPy::getCenterOfMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
+    gp_Pnt c = props.CentreOfMass();
+    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+}
+
+Py::Object TopoShapeSolidPy::getMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
 }
 
 PyObject *TopoShapeSolidPy::getCustomAttributes(const char* /*attr*/) const
