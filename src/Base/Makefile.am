@@ -124,6 +124,7 @@ libFreeCADBase_la_SOURCES=\
 		TimeInfo.cpp \
 		Type.cpp \
 		Tools2D.cpp \
+		Uuid.cpp \
 		VectorPyImp.cpp \
 		Vector3D.cpp \
 		Writer.cpp \
@@ -161,6 +162,7 @@ include_HEADERS=\
 		TimeInfo.h \
 		Type.h \
 		Tools2D.h \
+		Uuid.h \
 		Vector3D.h \
 		ViewProj.h \
 		Writer.h \

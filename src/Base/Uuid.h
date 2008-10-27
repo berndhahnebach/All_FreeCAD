@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2008                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -44,12 +44,12 @@ public:
     virtual ~Uuid();
 
     /// Uuid
-	std::string UuidStr;
+    std::string UuidStr;
 
-	static std::string CreateUuid(void);
- };
+    static std::string CreateUuid(void);
+};
 
 } //namespace Base
 
-#endif // BASE_FILETEMPLATE_H
+#endif // BASE_UUID_H
 

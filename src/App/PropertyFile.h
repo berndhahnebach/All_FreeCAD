@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2008                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -77,18 +77,17 @@ public:
     virtual void Save (Base::Writer &writer) const;
     virtual void Restore(Base::XMLReader &reader);
 
-	virtual void SaveDocFile (Base::Writer &writer) const;
+    virtual void SaveDocFile (Base::Writer &writer) const;
     virtual void RestoreDocFile(Base::Reader &reader);
 
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
 protected:
-	std::string _cValue;
-
+    std::string _cValue;
 };
 
 
 } // namespace App
 
-#endif // APP_PROPERTYSTANDARD_H
+#endif // APP_PROPERTFILE_H

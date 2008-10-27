@@ -117,28 +117,29 @@ PropertyData PropertyContainer::propertyData;
 
 void PropertyContainer::Save (Writer &writer) const 
 {
-  std::map<std::string,Property*> Map;
-  getPropertyMap(Map);
+    std::map<std::string,Property*> Map;
+    getPropertyMap(Map);
 
-  writer.incInd(); // indention for 'Properties Count'
-  writer.Stream() << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
-  std::map<std::string,Property*>::iterator it;
-  for(it = Map.begin(); it != Map.end(); ++it)
-  {
-	// Dont write Transient properties 
-    if(! (it->second->StatusBits.test(Prop_Transient)) )
-	{
-	   writer.incInd(); // indention for 'Property name'
-	   writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" << endl;;    
-	   writer.incInd(); // indention for the actual property
-	   it->second->Save(writer);
-	   writer.decInd(); // indention for the actual property
-	   writer.Stream() << writer.ind() << "</Property>" << endl;    
-	   writer.decInd(); // indention for 'Property name'
-	}
-  }
-  writer.Stream() << writer.ind() << "</Properties>" << endl;
-  writer.decInd(); // indention for 'Properties Count'
+    writer.incInd(); // indention for 'Properties Count'
+    writer.Stream() << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
+    std::map<std::string,Property*>::iterator it;
+    for (it = Map.begin(); it != Map.end(); ++it)
+    {
+        // Don't write transient properties 
+        if (!(it->second->StatusBits.test(Prop_Transient)))
+        {
+            writer.incInd(); // indention for 'Property name'
+            writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
+                            << it->second->getTypeId().getName() << "\">" << endl;;
+            writer.incInd(); // indention for the actual property
+            it->second->Save(writer);
+            writer.decInd(); // indention for the actual property
+            writer.Stream() << writer.ind() << "</Property>" << endl;    
+            writer.decInd(); // indention for 'Property name'
+        }
+    }
+    writer.Stream() << writer.ind() << "</Properties>" << endl;
+    writer.decInd(); // indention for 'Properties Count'
 }
 
 void PropertyContainer::Restore(Base::XMLReader &reader)

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2008                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -118,7 +118,7 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
         string = PyString_AsString(value);
     }
     else if (PyFile_Check(value)) {
-		PyObject* FileName = PyFile_Name(value);
+        PyObject* FileName = PyFile_Name(value);
         string = PyString_AsString(FileName);
     }
     else {
@@ -133,7 +133,7 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
 
 void PropertyFileIncluded::Save (Writer &writer) const
 {
-	std::string val = encodeAttribute(_cValue);
+    std::string val = encodeAttribute(_cValue);
     writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
 }
 
