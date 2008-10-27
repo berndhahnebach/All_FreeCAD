@@ -33,6 +33,7 @@
 # include <climits>
 # include <cstring>
 # if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+# include <dirent.h>
 # include <unistd.h>
 # include <sys/stat.h>
 # elif defined (FC_OS_WIN32)
@@ -96,7 +97,7 @@ std::string FileInfo::getTempFileName(void)
     return std::string(buf);
 #else
     char buf[PATH_MAX+1];
-    std::strncpy(buf, getTempPath(), PATH_MAX);
+    std::strncpy(buf, getTempPath().c_str(), PATH_MAX);
     buf[PATH_MAX] = 0; // null termination needed
     std::strcat(buf, "/fileXXXXXX");
     /*int id =*/ mkstemp(buf);
@@ -337,6 +338,10 @@ bool FileInfo::deleteDirectory(void) const
 
 bool FileInfo::deleteDirectoryRecursive(void) const
 {
+#if defined (__GNUC__)
+    //FIXME: current impl. contains an endless loop somewhere
+    return false; 
+#endif
     if (isDir() == false ) return false;
     std::vector<Base::FileInfo> List = getDirectoryContent();
 
@@ -374,7 +379,7 @@ std::vector<Base::FileInfo> FileInfo::getDirectoryContent(void) const
 #elif defined (__GNUC__)
     DIR* dp(0);
     struct dirent* dentry(0);
-    if ((dp = opendir(path.c_str())) == NULL)
+    if ((dp = opendir(FileName.c_str())) == NULL)
     {
         return List;
     }

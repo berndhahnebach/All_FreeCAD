@@ -1511,7 +1511,7 @@ void Application::ExtractUserPath()
         appData += mConfig["ExeVendor"];
         fi.setFile(appData.c_str());
         if (!fi.exists()) {
-            if (!fi.createDirectory(appData.c_str())) {
+            if (!fi.createDirectory()) {
                 std::string error = "Cannot create directory ";
                 error += appData;
                 // Want more details on console
@@ -1525,7 +1525,7 @@ void Application::ExtractUserPath()
     appData += mConfig["ExeName"];
     fi.setFile(appData.c_str());
     if (!fi.exists()) {
-        if (!fi.createDirectory(appData.c_str())) {
+        if (!fi.createDirectory()) {
             std::string error = "Cannot create directory ";
             error += appData;
             // Want more details on console
