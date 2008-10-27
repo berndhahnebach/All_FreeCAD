@@ -36,5 +36,20 @@
       </Documentation>
       <Parameter Name="Wire" Type="Object"/>
     </Attribute>
+    <Attribute Name="CenterOfMass" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Returns the center of mass of the current system.
+If the gravitational field is uniform, it is the center of gravity.
+The coordinates returned for the center of mass are expressed in the
+absolute Cartesian coordinate system.</UserDocu>
+      </Documentation>
+      <Parameter Name="CenterOfMass" Type="Object"/>
+    </Attribute>
+    <Attribute Name="Mass" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Returns the mass of the current system.</UserDocu>
+      </Documentation>
+      <Parameter Name="Mass" Type="Object"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

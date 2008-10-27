@@ -46,6 +46,9 @@
 # include <Standard_Failure.hxx>
 #endif
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include <Base/VectorPy.h>
 
 #include "TopoShape.h"
@@ -229,6 +232,21 @@ Py::Object TopoShapeEdgePy::getCurve() const
     }
 
     throw Py::TypeError("undefined curve type");
+}
+
+Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
+    gp_Pnt c = props.CentreOfMass();
+    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+}
+
+Py::Object TopoShapeEdgePy::getMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
 }
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const

@@ -44,6 +44,9 @@
 # include <gp_Torus.hxx>
 #endif
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include <Base/VectorPy.h>
 
 #include "TopoShape.h"
@@ -259,6 +262,21 @@ Py::Object TopoShapeFacePy::getWire(void) const
         throw "Internal error, TopoDS_Shape is not a face!";
 
     return Py::Object();
+}
+
+Py::Object TopoShapeFacePy::getCenterOfMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::SurfaceProperties(getTopoShapePtr()->_Shape, props);
+    gp_Pnt c = props.CentreOfMass();
+    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+}
+
+Py::Object TopoShapeFacePy::getMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::SurfaceProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
 }
 
 PyObject *TopoShapeFacePy::getCustomAttributes(const char* attr) const

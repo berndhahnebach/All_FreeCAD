@@ -29,6 +29,9 @@
 # include <gp_Ax1.hxx>
 #endif
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include <Base/VectorPy.h>
 
 #include "TopoShape.h"
@@ -165,6 +168,21 @@ PyObject* TopoShapeWirePy::revolve(PyObject *args)
     }
 
     return 0;
+}
+
+Py::Object TopoShapeWirePy::getCenterOfMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
+    gp_Pnt c = props.CentreOfMass();
+    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+}
+
+Py::Object TopoShapeWirePy::getMass(void) const
+{
+    GProp_GProps props;
+    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
 }
 
 PyObject *TopoShapeWirePy::getCustomAttributes(const char* /*attr*/) const
