@@ -69,7 +69,7 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
               << "Separator" << "Std_ViewDockUndockFullscreen";
 
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-            *item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_TreeSelection" 
+            *item << "Separator" << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_TreeSelection" 
                   << "Std_RandomColor" << "Separator" << "Std_Delete";
     }
     else if (strcmp(recipient,"Tree") == 0)
@@ -125,7 +125,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
-          << "Std_SetApperance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
+          << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
           //<< "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
           << "Std_ViewStatusBar" << "Std_UserInterface";

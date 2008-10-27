@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2008                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -29,6 +29,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Uuid.h"
 #include "Exception.h"
+#include "PyCXX/Objects.hxx"
+#include "Interpreter.h"
 
 
 using namespace Base;
@@ -43,7 +45,7 @@ using namespace Base;
  */
 Uuid::Uuid()
 {
-	UuidStr = CreateUuid();
+    UuidStr = CreateUuid();
 }
 
 /**
@@ -54,8 +56,6 @@ Uuid::~Uuid()
 {
 }
 
-
-
 //**************************************************************************
 //**************************************************************************
 // Get the UUID
@@ -63,26 +63,37 @@ Uuid::~Uuid()
 
 std::string Uuid::CreateUuid(void)
 {
-
 #ifdef FC_OS_WIN32
- RPC_STATUS rstat;
-  UUID uuid;
-  unsigned char *uuidStr;
- 
-  rstat = UuidCreate(&uuid);
-  if (rstat != RPC_S_OK) throw Base::Exception("Cannot convert a unique Windows UUID to a string");
+    RPC_STATUS rstat;
+    UUID uuid;
+    unsigned char *uuidStr;
 
-  rstat = UuidToString(&uuid, &uuidStr);
-  if (rstat != RPC_S_OK) throw Base::Exception("Cannot convert a unique Windows UUID to a string");
+    rstat = UuidCreate(&uuid);
+    if (rstat != RPC_S_OK) throw Base::Exception("Cannot convert a unique Windows UUID to a string");
 
-  std::string Uuid((char *)uuidStr);
+    rstat = UuidToString(&uuid, &uuidStr);
+    if (rstat != RPC_S_OK) throw Base::Exception("Cannot convert a unique Windows UUID to a string");
 
-  /* convert it from rcp memory to our own */
-  //container = nssUTF8_Duplicate(uuidStr, NULL);
-  RpcStringFree(&uuidStr);
+    std::string Uuid((char *)uuidStr);
 
+    /* convert it from rcp memory to our own */
+    //container = nssUTF8_Duplicate(uuidStr, NULL);
+    RpcStringFree(&uuidStr);
 #else
-#	error "No UUID implementation for Unix"
+    // use Python's implemententation
+    std::string Uuid;
+    PyGILStateLocker lock;
+    try {
+        Py::Module module(PyImport_ImportModule("uuid"));
+        Py::Callable method(module.getAttr("uuid4"));
+        Py::Tuple arg;
+        Py::Object guid = method.apply(arg);
+        Uuid = guid.as_string();
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+        throw Base::Exception("Creation of UUID failed");
+    }
 #endif 
-	return Uuid;
+    return Uuid;
 }

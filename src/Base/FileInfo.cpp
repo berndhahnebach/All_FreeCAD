@@ -310,7 +310,7 @@ bool FileInfo::deleteFile(void) const
 #endif
 }
 
-bool FileInfo::createDirectory(void /*const char* directory*/) const
+bool FileInfo::createDirectory(void) const
 {
 #if defined (_MSC_VER)
     std::wstring wstr = toStdWString();
@@ -324,7 +324,7 @@ bool FileInfo::createDirectory(void /*const char* directory*/) const
 
 bool FileInfo::deleteDirectory(void) const
 {
-	if (isDir() == false ) return false;
+    if (isDir() == false ) return false;
 #if defined (_MSC_VER)
     std::wstring wstr = toStdWString();
     return _wrmdir(wstr.c_str()) == 0;
@@ -335,60 +335,57 @@ bool FileInfo::deleteDirectory(void) const
 #endif
 }
 
-bool FileInfo::deleteDirectoryRecursiv(void) const
+bool FileInfo::deleteDirectoryRecursive(void) const
 {
-	if (isDir() == false ) return false;
-	std::vector<Base::FileInfo> List = getDirectoryContent();
+    if (isDir() == false ) return false;
+    std::vector<Base::FileInfo> List = getDirectoryContent();
 
-	if (List.size()==0)
-		return deleteDirectory();
-
-	for (std::vector<Base::FileInfo>::iterator It = List.begin();It!=List.end();++It){
-		if(It->isDir())
-			It->deleteDirectoryRecursiv();
-		else if(It->isFile())
-			It->deleteFile();
-		else
-			Base::Exception("FileInfo::deleteDirectoryRecursiv(): Unknown object Type in directory!");
-	}
-	return deleteDirectory();
+    for (std::vector<Base::FileInfo>::iterator It = List.begin();It!=List.end();++It) {
+        if (It->isDir())
+            It->deleteDirectoryRecursive();
+        else if(It->isFile())
+            It->deleteFile();
+        else
+            Base::Exception("FileInfo::deleteDirectoryRecursive(): Unknown object Type in directory!");
+    }
+    return deleteDirectory();
 }
 
 std::vector<Base::FileInfo> FileInfo::getDirectoryContent(void) const
 {
-	std::vector<Base::FileInfo> List;
+    std::vector<Base::FileInfo> List;
 #ifdef _MSC_VER
     struct _wfinddata_t dentry;
     long hFile;
 
     // Find first directory entry
-	std::wstring wstr = toStdWString();
-	wstr += L"/*";
+    std::wstring wstr = toStdWString();
+    wstr += L"/*";
 
     if ((hFile = _wfindfirst( wstr.c_str(), &dentry)) == -1L)
-		return List;
+        return List;
 
-	while (_wfindnext(hFile, &dentry) == 0)
-		if( wcscmp(dentry.name,L"..")!=0)
-			List.push_back(FileInfo(FileName + "/" +ConvertFromWideString(std::wstring(dentry.name))));
-	
-	_findclose(hFile);
+    while (_wfindnext(hFile, &dentry) == 0)
+        if (wcscmp(dentry.name,L"..") != 0)
+            List.push_back(FileInfo(FileName + "/" +ConvertFromWideString(std::wstring(dentry.name))));
+
+    _findclose(hFile);
 
 #elif defined (__GNUC__)
-	DIR* dp(0);
-	struct dirent* dentry(0);
-	if ((dp = opendir(path.c_str())) == NULL)
-	{
-		return List;
-	}
+    DIR* dp(0);
+    struct dirent* dentry(0);
+    if ((dp = opendir(path.c_str())) == NULL)
+    {
+        return List;
+    }
 
-	while ((dentry = readdir(dp)) != NULL)
-	{
-		List.push_back(FileInfo(dentry->d_name));
-	}
-	closedir(dp);
+    while ((dentry = readdir(dp)) != NULL)
+    {
+        List.push_back(FileInfo(dentry->d_name));
+    }
+    closedir(dp);
 #else
 #   error "FileInfo::getDirectoryContent() not implemented for this platform!"
 #endif
-	return List;
+    return List;
 }

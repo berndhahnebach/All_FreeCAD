@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2008                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef APP_DOCUMENTOBJECTFileIncluded_H
-#define APP_DOCUMENTOBJECTFileIncluded_H
+#ifndef APP_DOCUMENTOBJECTFILEINCLUDED_H
+#define APP_DOCUMENTOBJECTFILEINCLUDED_H
 
 #include "DocumentObject.h"
 #include "PropertyFile.h"
@@ -55,4 +55,4 @@ public:
 } //namespace App
 
 
-#endif // APP_DOCUMENTOBJECTFileIncluded_H
+#endif // APP_DOCUMENTOBJECTFILEINCLUDED_H

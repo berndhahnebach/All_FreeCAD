@@ -31,6 +31,7 @@ libFreeCADApp_la_SOURCES=\
 		ComplexGeoDataPyImp.cpp \
 		Document.cpp \
 		DocumentObject.cpp \
+		DocumentObjectFileIncluded.cpp \
 		DocumentObjectGroup.cpp \
 		DocumentObjectGroupPyImp.cpp \
 		DocumentObjectPyImp.cpp \
@@ -51,6 +52,7 @@ libFreeCADApp_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Property.cpp \
+		PropertyFile.cpp \
 		PropertyGeo.cpp \
 		PropertyContainer.cpp \
 		PropertyContainerPyImp.cpp \
@@ -69,6 +71,7 @@ include_HEADERS=\
 		ComplexGeoData.h \
 		Document.h \
 		DocumentObject.h \
+		DocumentObjectFileIncluded.h \
 		DocumentObjectGroup.h \
 		DocumentObserver.h \
 		Feature.h \
@@ -81,6 +84,7 @@ include_HEADERS=\
 		MeasureDistance.h \
 		Placement.h \
 		Property.h \
+		PropertyFile.h \
 		PropertyGeo.h \
 		PropertyContainer.h \
 		PropertyLinks.h \

@@ -461,16 +461,16 @@ Document::Document(void)
     ADD_PROPERTY_TYPE(LastModifiedDate,("Unknown"),0,Prop_ReadOnly,"Date of last modification");
     ADD_PROPERTY_TYPE(Company,(""),0,Prop_None,"Additional tag to save the the name of the company");
     ADD_PROPERTY_TYPE(Comment,(""),0,Prop_None,"Additional tag to save a comment");
-	// create the uuid for the document
-	Base::Uuid id;
+    // create the uuid for the document
+    Base::Uuid id;
     ADD_PROPERTY_TYPE(Id,(id.UuidStr),0,Prop_None,"UUID of the document");
 
-	// create transient directory
-	Base::FileInfo TransDir(Base::FileInfo::getTempPath() + id.UuidStr);
-	if(!TransDir.exists())
-		TransDir.createDirectory();
-    ADD_PROPERTY_TYPE(TransientDir,(TransDir.filePath().c_str()),0,Prop_Transient,"Transinet directory, where the files live while the document is open");
-
+    // create transient directory
+    Base::FileInfo TransDir(Base::FileInfo::getTempPath() + id.UuidStr);
+    if (!TransDir.exists())
+        TransDir.createDirectory();
+    ADD_PROPERTY_TYPE(TransientDir,(TransDir.filePath().c_str()),0,Prop_Transient,
+        "Transient directory, where the files live while the document is open");
 }
 
 Document::~Document()
@@ -501,14 +501,10 @@ Document::~Document()
     // Call before decrementing the reference counter, otherwise a heap error can occur
     doc->setInvalid();
 
-	// remove Transient directory
-	Base::FileInfo TransDir(TransientDir.getValue());
-	TransDir.deleteDirectoryRecursiv();
+    // remove Transient directory
+    Base::FileInfo TransDir(TransientDir.getValue());
+    TransDir.deleteDirectoryRecursive();
 }
-
-
-
-
 
 //--------------------------------------------------------------------------
 // Exported functions
@@ -556,7 +552,6 @@ void Document::Save (Writer &writer) const
     writer.Stream() << writer.ind() << "</ObjectData>" << endl;
     writer.decInd();  // indention for 'Objects count'
     writer.Stream() << "</Document>" << endl;
-
 }
 
 void Document::Restore(Base::XMLReader &reader)
@@ -575,9 +570,9 @@ void Document::Restore(Base::XMLReader &reader)
     std::string FilePath = FileName.getValue();
     std::string DocLabel = Label.getValue();
 
-	// remove previous Transient directory
-	Base::FileInfo TransDir(TransientDir.getValue());
-	TransDir.deleteDirectoryRecursiv();
+    // remove previous Transient directory
+    Base::FileInfo TransDir(TransientDir.getValue());
+    TransDir.deleteDirectoryRecursive();
 
 
     // read the Document Properties
@@ -588,11 +583,11 @@ void Document::Restore(Base::XMLReader &reader)
     FileName.setValue(FilePath.c_str());
     Label.setValue(DocLabel.c_str());
 
-	// create new transient directory
-	Base::FileInfo TransDirNew(Base::FileInfo::getTempPath() + Id.getValue());
-	if(!TransDirNew.exists())
-		TransDirNew.createDirectory();
-	TransientDir.setValue(TransDirNew.filePath());
+    // create new transient directory
+    Base::FileInfo TransDirNew(Base::FileInfo::getTempPath() + Id.getValue());
+    if(!TransDirNew.exists())
+        TransDirNew.createDirectory();
+    TransientDir.setValue(TransDirNew.filePath());
 
 
     // SchemeVersion "2"
