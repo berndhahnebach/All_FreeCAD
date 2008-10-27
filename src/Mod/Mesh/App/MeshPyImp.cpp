@@ -159,6 +159,21 @@ PyObject*  MeshPy::crossSections(PyObject *args)
             plane.second.Set((float)n.x,(float)n.y,(float)n.z);
             csPlanes.push_back(plane);
         }
+        else if (p1.isTuple() && p2.isTuple()) {
+            Py::Tuple b(p1);
+            Py::Tuple n(p2);
+            float bx = (float)Py::Float(b.getItem(0));
+            float by = (float)Py::Float(b.getItem(1));
+            float bz = (float)Py::Float(b.getItem(2));
+            float nx = (float)Py::Float(n.getItem(0));
+            float ny = (float)Py::Float(n.getItem(1));
+            float nz = (float)Py::Float(n.getItem(2));
+
+            MeshObject::Plane plane;
+            plane.first .Set(bx,by,bz);
+            plane.second.Set(nx,ny,nz);
+            csPlanes.push_back(plane);
+        }
     }
 
     std::vector<MeshObject::Polylines> sections;

@@ -95,6 +95,7 @@
 #include "SoFCInteractiveElement.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCVectorizeSVGAction.h"
 #include "SoFCDB.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
@@ -529,10 +530,20 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
 void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
                                        int eBackgroundType) const
 {
+    SoVectorizeAction* ps=0;
+    Base::FileInfo fi(filename);
+    if (fi.hasExtension("ps") || fi.hasExtension("eps")) {
+        ps = new SoVectorizePSAction();
+        //ps.setGouraudThreshold(0.0f);
+    }
+    else if (fi.hasExtension("svg")) {
+        ps = new SoFCVectorizeSVGAction();
+    }
+    else
+        throw Base::Exception("Not supported vector graphic");
+
     SbViewportRegion vp(getViewportRegion());
-    SoVectorizePSAction ps;
-    //ps.setGouraudThreshold(0.0f);
-    SoVectorOutput * out = ps.getOutput();
+    SoVectorOutput * out = ps->getOutput();
     if (!out->openFile(filename)) {
         throw Base::FileException("View3DInventorViewer::saveGraphic(): "
                                   "Cannot open file", filename);
@@ -540,13 +551,13 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
 
     switch(eBackgroundType){
         case Current:
-            ps.setBackgroundColor(true, this->getBackgroundColor());
+            ps->setBackgroundColor(true, this->getBackgroundColor());
             break;
         case White:
-            ps.setBackgroundColor(true, SbColor(1.0, 1.0, 1.0));
+            ps->setBackgroundColor(true, SbColor(1.0, 1.0, 1.0));
             break;
         case Black:
-            ps.setBackgroundColor(true, SbColor(0.0, 0.0, 0.0));
+            ps->setBackgroundColor(true, SbColor(0.0, 0.0, 0.0));
             break;
         case Transparent:
             break; // not supported
@@ -560,41 +571,42 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
     float vpratio = ((float)vpsize[0]) / ((float)vpsize[1]); 
 
     if (vpratio > 1.0f) {
-      ps.setOrientation(SoVectorizeAction::LANDSCAPE);
+      ps->setOrientation(SoVectorizeAction::LANDSCAPE);
       vpratio = 1.0f / vpratio;
     }
     else {
-      ps.setOrientation(SoVectorizeAction::PORTRAIT);
+      ps->setOrientation(SoVectorizeAction::PORTRAIT);
     }
 
-    ps.beginStandardPage(SoVectorizeAction::PageSize(pagesize), border);
+    ps->beginStandardPage(SoVectorizeAction::PageSize(pagesize), border);
 
     // try to fill as much "paper" as possible
-    SbVec2f size = ps.getPageSize();
+    SbVec2f size = ps->getPageSize();
 
     float pageratio = size[0] / size[1];
     float xsize, ysize;
 
     if (pageratio < vpratio) {
-      xsize = size[0];
-      ysize = xsize / vpratio;
+        xsize = size[0];
+        ysize = xsize / vpratio;
     }
     else {
-      ysize = size[1];
-      xsize = ysize * vpratio;
+        ysize = size[1];
+        xsize = ysize * vpratio;
     }
 
     float offx = border + (size[0]-xsize) * 0.5f;
     float offy = border + (size[1]-ysize) * 0.5f;
 
-    ps.beginViewport(SbVec2f(offx, offy), SbVec2f(xsize, ysize));
-    ps.calibrate(this->getViewportRegion());
+    ps->beginViewport(SbVec2f(offx, offy), SbVec2f(xsize, ysize));
+    ps->calibrate(this->getViewportRegion());
     
-    ps.apply(this->getSceneManager()->getSceneGraph());
+    ps->apply(this->getSceneManager()->getSceneGraph());
 
-    ps.endViewport();    
-    ps.endPage();
+    ps->endViewport();    
+    ps->endPage();
     out->closeFile();
+    delete ps;
 }
 
 void View3DInventorViewer::startPicking(View3DInventorViewer::ePickMode mode)

@@ -22,11 +22,103 @@
 
 
 #include "PreCompiled.h"
+#include <Inventor/SbBasic.h>
+#include <Inventor/SbBSPTree.h>
 
 #include <Base/FileInfo.h>
 #include "SoFCVectorizeSVGAction.h"
 
 using namespace Gui;
+
+class SoVectorizeItem {
+public:
+    SoVectorizeItem() {
+        this->type = UNDEFINED;
+        this->depth = 0.0f;
+    }
+    // quick and easy type system
+    enum Type {
+        UNDEFINED,
+        LINE,
+        TRIANGLE,
+        TEXT,
+        POINT,
+        IMAGE
+    };
+    int type;
+    float depth; // for depth sorting
+};
+
+class SoVectorizePoint : public SoVectorizeItem {
+public:
+    SoVectorizePoint(void) {
+        this->type = POINT;
+        this->size = 1.0f;
+    }
+    int vidx;       // index to BSPtree coordinate
+    float size;     // Coin size (pixels)
+    uint32_t col;
+};
+
+class SoVectorizeTriangle : public SoVectorizeItem {
+public:
+    SoVectorizeTriangle(void) {
+        this->type = TRIANGLE;
+    }
+    int vidx[3];      // indices to BSPtree coordinates
+    uint32_t col[3];
+};
+
+class SoVectorizeLine : public SoVectorizeItem {
+public:
+    SoVectorizeLine(void) {
+        this->type = LINE;
+        this->pattern = 0xffff;
+        this->width = 1.0f;
+    }
+    int vidx[2];       // indices to BSPtree coordinates
+    uint32_t col[2];
+    uint16_t pattern;  // Coin line pattern
+    float width;       // Coin line width (pixels)
+};
+
+class SoVectorizeText : public SoVectorizeItem {
+public:
+    SoVectorizeText(void) {
+        this->type = TEXT;
+    }
+
+    enum Justification {
+        LEFT,
+        RIGHT,
+        CENTER
+    };
+
+    SbName fontname;
+    float fontsize;    // size in normalized coordinates
+    SbString string;
+    SbVec2f pos;       // pos in normalized coordinates
+    uint32_t col;
+    Justification justification;
+};
+
+class SoVectorizeImage : public SoVectorizeItem {
+public:
+    SoVectorizeImage(void) {
+        this->type = IMAGE;
+    }
+
+    SbVec2f pos;        // pos in normalized coordinates
+    SbVec2f size;       // size in normalized coordinates
+
+    struct Image {
+        const unsigned char * data;
+        SbVec2s size;
+        int nc;
+    } image;
+};
+
+// ----------------------------------------------------------------
 
 SoSVGVectorOutput::SoSVGVectorOutput()
 {
@@ -60,6 +152,126 @@ std::fstream& SoSVGVectorOutput::getFileStream()
     return this->file;
 }
 
+// ----------------------------------------------------------------
+
+namespace Gui {
+class SoFCVectorizeSVGActionP
+{
+public:
+    SoFCVectorizeSVGActionP(SoFCVectorizeSVGAction * p) {
+        this->publ = p;
+    }
+
+    void printCircle(const SbVec3f & v, const SbColor & c, const float radius) const;
+    void printSquare(const SbVec3f & v, const SbColor & c, const float size) const;
+    void printTriangle(const SbVec3f * v, const SbColor * c) const;
+    void printTriangle(const SoVectorizeTriangle * item) const;
+    void printLine(const SoVectorizeLine * item) const;
+    void printPoint(const SoVectorizePoint * item) const;
+    void printText(const SoVectorizeText * item) const;
+    void printImage(const SoVectorizeImage * item) const;
+
+private:
+    SoFCVectorizeSVGAction * publ;
+};
+}
+
+void SoFCVectorizeSVGActionP::printText(const SoVectorizeText * item) const
+{
+    SbVec2f mul = publ->getRotatedViewportSize();
+    SbVec2f add = publ->getRotatedViewportStartpos();
+    float posx = item->pos[0]*mul[0]+add[0];
+    float posy = item->pos[1]*mul[1]+add[1];
+
+    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    str << "<text x=\"" << posx << "\" y=\"" << posy << "\" "
+           "font-size=\"" << item->fontsize * mul[1] << "px\">" 
+        << item->string.getString() << "</text>" << std::endl;
+}
+
+void SoFCVectorizeSVGActionP::printTriangle(const SoVectorizeTriangle * item) const
+{
+    SbVec2f mul = publ->getRotatedViewportSize();
+    SbVec2f add = publ->getRotatedViewportStartpos();
+
+    const SbBSPTree & bsp = publ->getBSPTree();
+
+    SbVec3f v[3];
+    SbColor c[3];
+    float t[3];
+
+    for (int i = 0; i < 3; i++) {
+        v[i] = bsp.getPoint(item->vidx[i]);
+        v[i][0] = (v[i][0] * mul[0]) + add[0];
+        v[i][1] = ((1.0f-v[i][1]) * mul[1]) + add[1];
+        c[i].setPackedValue(item->col[i], t[i]);
+    }
+    this->printTriangle((SbVec3f*)v, (SbColor*)c);
+}
+
+void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
+{
+    if (v[0] == v[1] || v[1] == v[2] || v[0] == v[2]) return;
+    uint32_t cc = c->getPackedValue();
+
+    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    str << "<path d=\"M "
+        << v[2][0] << "," << v[2][1] << " L "
+        << v[1][0] << "," << v[1][1] << " "
+        << v[0][0] << "," << v[0][1] << " z\"" << std::endl
+        << "    style=\"fill:#"
+        << std::hex << (cc >> 8)
+        << "; stroke:#"
+        << std::hex << (cc >> 8)
+        << ";" << std::endl
+        << "    stroke-width:1.0;" << std::endl
+        << "    stroke-linecap:round;stroke-linejoin:round\"/>" << std::endl;
+}
+
+void SoFCVectorizeSVGActionP::printCircle(const SbVec3f & v, const SbColor & c, const float radius) const
+{
+}
+
+void SoFCVectorizeSVGActionP::printSquare(const SbVec3f & v, const SbColor & c, const float size) const
+{
+}
+
+void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
+{
+    SbVec2f mul = publ->getRotatedViewportSize();
+    SbVec2f add = publ->getRotatedViewportStartpos();
+
+    const SbBSPTree & bsp = publ->getBSPTree();
+
+    SbVec3f v[2];
+    SbColor c[2];
+    float t[2];
+
+    for (int i = 0; i < 2; i++) {
+        v[i] = bsp.getPoint(item->vidx[i]);
+        v[i][0] = (v[i][0] * mul[0]) + add[0];
+        v[i][1] = ((1.0f-v[i][1]) * mul[1]) + add[1];
+        c[i].setPackedValue(item->col[i], t[i]);
+    }
+    uint32_t cc = c->getPackedValue();
+
+    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    str << "<line "
+        << "x1=\"" << v[0][0] << "\" y1=\"" << v[0][1] << "\" "
+        << "x2=\"" << v[1][0] << "\" y2=\"" << v[1][1] << "\" "
+        << "stroke=\"#"
+        << std::hex << (cc >> 8)
+        << "\" stroke-width=\"1px\" />\n";
+}
+
+void SoFCVectorizeSVGActionP::printPoint(const SoVectorizePoint * item) const
+{
+}
+
+void SoFCVectorizeSVGActionP::printImage(const SoVectorizeImage * item) const
+{
+}
+
 // -------------------------------------------------------
 
 SO_ACTION_SOURCE(SoFCVectorizeSVGAction);
@@ -73,10 +285,12 @@ SoFCVectorizeSVGAction::SoFCVectorizeSVGAction()
 {
     SO_ACTION_CONSTRUCTOR(SoFCVectorizeSVGAction);
     this->setOutput(new SoSVGVectorOutput);
+    this->p = new SoFCVectorizeSVGActionP(this);
 }
 
 SoFCVectorizeSVGAction::~SoFCVectorizeSVGAction()
 {
+    delete this->p;
 }
 
 SoSVGVectorOutput *
@@ -96,22 +310,81 @@ void SoFCVectorizeSVGAction::printHeader(void) const
     std::ostream& str = this->getSVGOutput()->getFileStream();
     str << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << std::endl;
     str << "<!-- Created with FreeCAD (http://free-cad.sourceforge.net) -->" << std::endl;
+    str << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << std::endl;
+    str << "     xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:ev=\"http://www.w3.org/2001/xml-events\"" << std::endl;
+    str << "     version=\"1.1\" baseProfile=\"full\"" << std::endl;
+
+    SbVec2f size = getPageSize();
+    if (this->getOrientation() == LANDSCAPE)
+        SbSwap<float>(size[0], size[1]);
+    str << "     width=\"" << size[0] << "\" height=\"" << size[1] << "\">" << std::endl;
+    str << "<g>" << std::endl;
 }
 
 void SoFCVectorizeSVGAction::printFooter(void) const
 {
-}
-
-void SoFCVectorizeSVGAction::printBackground(void) const
-{
-}
-
-void SoFCVectorizeSVGAction::printItem(const SoVectorizeItem * item) const
-{
-    SoVectorizeAction::printItem(item);
+    std::ostream& str = this->getSVGOutput()->getFileStream();
+    str << "</g>" << std::endl;
+    str << "</svg>";
 }
 
 void SoFCVectorizeSVGAction::printViewport(void) const
 {
 }
 
+void SoFCVectorizeSVGAction::printBackground(void) const
+{
+    SbVec2f mul = getRotatedViewportSize();
+    SbVec2f add = getRotatedViewportStartpos();
+
+    float x[2],y[2];
+    x[0] = add[0];
+    x[1] = mul[0] - add[0];
+    y[0] = add[1];
+    y[1] = mul[1] - add[1];
+
+    SbColor bg;
+    (void)this->getBackgroundColor(bg);
+    uint32_t cc = bg.getPackedValue();
+
+    std::ostream& str = this->getSVGOutput()->getFileStream();
+    str << "</g>" << std::endl;
+    str << "<path" << std::endl;
+    str << "   d=\"M "
+        << x[0] << "," << y[0] << " L "
+        << x[1] << "," << y[0] << " L "
+        << x[1] << "," << y[1] << " L "
+        << x[0] << "," << y[1] << " L "
+        << x[0] << "," << y[0] << " z \"" << std::endl;
+    str << "   style=\"fill:#"
+        << std::hex << (cc >> 8)
+        << ";fill-opacity:1;fill-rule:evenodd;stroke:none;"
+           "stroke-width:1px;stroke-linecap:butt;stroke-linejoin:"
+           "miter;stroke-opacity:1\" />\n";
+    str << "<g>" << std::endl;
+}
+
+void SoFCVectorizeSVGAction::printItem(const SoVectorizeItem * item) const
+{
+    std::ostream& str = this->getSVGOutput()->getFileStream();
+    switch (item->type) {
+    case SoVectorizeItem::TRIANGLE:
+        this->p->printTriangle(static_cast<const SoVectorizeTriangle*>(item));
+        break;
+    case SoVectorizeItem::LINE:
+        this->p->printLine(static_cast<const SoVectorizeLine*>(item));
+        break;
+    case SoVectorizeItem::POINT:
+        this->p->printPoint(static_cast<const SoVectorizePoint*>(item));
+        break;
+    case SoVectorizeItem::TEXT:
+        this->p->printText(static_cast<const SoVectorizeText*>(item));
+        break;
+    case SoVectorizeItem::IMAGE:
+        this->p->printImage(static_cast<const SoVectorizeImage*>(item));
+        break;
+    default:
+        assert(0 && "unsupported item");
+        break;
+    }
+}
