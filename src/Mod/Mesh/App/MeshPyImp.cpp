@@ -139,7 +139,9 @@ PyObject*  MeshPy::offsetSpecial(PyObject *args)
 PyObject*  MeshPy::crossSections(PyObject *args)
 {
     PyObject *obj;
-    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &obj))
+    PyObject *poly=0;
+    float min_eps = 1.0e-2f;
+    if (!PyArg_ParseTuple(args, "O!|fO!", &PyList_Type, &obj, &min_eps, &PyBool_Type, &poly))
         return 0;
 
     Py::List list(obj);
@@ -177,7 +179,7 @@ PyObject*  MeshPy::crossSections(PyObject *args)
     }
 
     std::vector<MeshObject::Polylines> sections;
-    getMeshObjectPtr()->crossSections(csPlanes, sections);
+    getMeshObjectPtr()->crossSections(csPlanes, sections, min_eps, (poly == Py_True));
 
     // convert to Python objects
     Py::List crossSections;

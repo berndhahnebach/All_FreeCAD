@@ -208,7 +208,14 @@ void SoFCVectorizeSVGActionP::printTriangle(const SoVectorizeTriangle * item) co
     }
     this->printTriangle((SbVec3f*)v, (SbColor*)c);
 }
-
+/* TODO: Support gradients, e.g.
+  <defs>
+    <linearGradient id="verlauf" x1="0%" y1="100%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="black" stop-opacity="100%" />
+      <stop offset="100%" stop-color="white" stop-opacity="50%" />
+    </linearGradient>
+  </defs>
+*/
 void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
 {
     if (v[0] == v[1] || v[1] == v[2] || v[0] == v[2]) return;
