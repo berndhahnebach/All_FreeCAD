@@ -123,6 +123,38 @@ std::vector<std::string> ViewProviderDocumentObjectGroup::getDisplayModes(void) 
     return std::vector<std::string>();
 }
 
+void ViewProviderDocumentObjectGroup::hide(void)
+{
+    App::DocumentObject * group = getObject();
+    if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+        const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
+            (group)->Group.getValues();
+        Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
+        for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
+            ViewProvider* view = doc->getViewProvider(*it);
+            if (view) view->hide();
+        }
+    }
+
+    ViewProviderDocumentObject::hide();
+}
+
+void ViewProviderDocumentObjectGroup::show(void)
+{
+    App::DocumentObject * group = getObject();
+    if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+        const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
+            (group)->Group.getValues();
+        Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
+        for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
+            ViewProvider* view = doc->getViewProvider(*it);
+            if (view) view->show();
+        }
+    }
+
+    ViewProviderDocumentObject::show();
+}
+
 bool ViewProviderDocumentObjectGroup::isShow(void) const
 {
     return Visibility.getValue();

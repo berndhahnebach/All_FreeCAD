@@ -48,6 +48,8 @@ public:
     QIcon getIcon(void) const;
     /// returns a list of all possible modes
     std::vector<std::string> getDisplayModes(void) const;
+    void hide(void);
+    void show(void);
     bool isShow(void) const;
 
 protected:
