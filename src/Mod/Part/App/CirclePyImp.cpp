@@ -67,12 +67,13 @@ PyObject *CirclePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Pyt
 }
 
 // constructor method
-int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int CirclePy::PyInit(PyObject* args, PyObject* kwds)
 {
+    // circle and distance for offset
     PyObject *pCirc;
-    PyObject *pV1, *pV2, *pV3;
     double dist;
-    if (PyArg_ParseTuple(args, "O!d", &(CirclePy::Type), &pCirc, &dist)) {
+    static char* keywords_cd[] = {"Circle","Distance",NULL};
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!d", keywords_cd, &(CirclePy::Type), &pCirc, &dist)) {
         CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
         Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast
             (pcCircle->getGeomCirclePtr()->handle());
@@ -87,8 +88,12 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    // center, normal and radius
+    PyObject *pV1, *pV2, *pV3;
+    static char* keywords_cnr[] = {"Center","Normal","Radius",NULL};
     PyErr_Clear();
-    if (PyArg_ParseTuple(args, "O!O!d", &(Base::VectorPy::Type), &pV1,
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!d", keywords_cnr,
+                                        &(Base::VectorPy::Type), &pV1,
                                         &(Base::VectorPy::Type), &pV2,
                                         &dist)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
@@ -106,8 +111,9 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    static char* keywords_c[] = {"Circle",NULL};
     PyErr_Clear();
-    if (PyArg_ParseTuple(args, "O!", &(CirclePy::Type), &pCirc)) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!", keywords_c, &(CirclePy::Type), &pCirc)) {
         CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
         Handle_Geom_Circle circ1 = Handle_Geom_Circle::DownCast
             (pcCircle->getGeomCirclePtr()->handle());
@@ -117,8 +123,10 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    static char* keywords_ppp[] = {"Point1","Point2","Point3",NULL};
     PyErr_Clear();
-    if (PyArg_ParseTuple(args, "O!O!O!", &(Base::VectorPy::Type), &pV1,
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!O!", keywords_ppp,
+                                         &(Base::VectorPy::Type), &pV1,
                                          &(Base::VectorPy::Type), &pV2,
                                          &(Base::VectorPy::Type), &pV3)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
@@ -137,6 +145,7 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    // default circle
     PyErr_Clear();
     if (PyArg_ParseTuple(args, "")) {
         Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
@@ -147,9 +156,9 @@ int CirclePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_SetString(PyExc_TypeError, "Circle constructor accepts:\n"
         "-- empty parameter list\n"
         "-- Circle\n"
-        "-- Circle, double\n"
-        "-- Vector, Vector, double\n"
-        "-- Vector, Vector, Vector");
+        "-- Circle, Distance\n"
+        "-- Center, Normal, Radius\n"
+        "-- Point1, Point2, Point3");
     return -1;
 }
 
