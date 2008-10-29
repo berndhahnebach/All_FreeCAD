@@ -1040,7 +1040,14 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     switch (button) {
     case SoMouseButtonEvent::BUTTON1:
       this->button1down = press;
-      if (press && (this->currentmode == View3DInventorViewer::SEEK_WAIT_MODE)) {
+      if (!press && ev->wasAltDown()) {
+        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+        this->panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+        if (!seekToPoint(pos))
+          panToCenter(panningplane, posn);
+        processed = TRUE;
+      }
+      else if (press && (this->currentmode == View3DInventorViewer::SEEK_WAIT_MODE)) {
         newmode = View3DInventorViewer::SEEK_MODE;
         this->seekToPoint(pos); // implicitly calls interactiveCountInc()
         processed = TRUE;
@@ -1068,6 +1075,21 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
         }
       } break;
     case SoMouseButtonEvent::BUTTON3:
+      if (press) {
+        this->CenterTime = ev->getTime();
+        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+        this->panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+      }
+      else {
+        SbTime tmp = (ev->getTime() - this->CenterTime);
+        float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+        // is it just a middle click?
+        if (tmp.getValue() < dci) {
+          if (!seekToPoint(pos))
+            panToCenter(panningplane, posn);
+          processed = TRUE;
+        }
+      }
       this->button3down = press;
       break;
     case SoMouseButtonEvent::BUTTON4:
@@ -1292,7 +1314,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           //interactiveCountInc();
           clearLog();
 
-          getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
+          this->setComponentCursor(SoQtCursor::getRotateCursor());
+          //getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
           processed = true;
         }
       }
@@ -1312,11 +1335,13 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           if (tmp.getValue() < dci/*0.300*/)
           {
             ZoomMode = true;
-            getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
+            this->setComponentCursor(SoQtCursor::getZoomCursor());
+            //getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
           }else{
        
             ZoomMode = false;
-            getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
+            this->setComponentCursor(SoQtCursor::getPanCursor());
+            //getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
 
             SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
             panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
@@ -1367,7 +1392,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
           // save the current cursor before overriding
           _oldCursor = getWidget()->cursor();
-          getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
+          this->setComponentCursor(SoQtCursor::getPanCursor());
+          //getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
         //}
       }else{
           SbTime tmp = (ev->getTime() - CenterTime);
