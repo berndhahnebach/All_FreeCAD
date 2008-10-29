@@ -216,6 +216,65 @@ void SoFCVectorizeSVGActionP::printTriangle(const SoVectorizeTriangle * item) co
     </linearGradient>
   </defs>
 */
+/* Example: color per vertex
+#Inventor V2.1 ascii
+Separator {
+
+  Coordinate3 {
+    point [ 0.000000  0.000000  0.000000,
+        100.000000  50.000000  0.000000,
+        0.000000  100.000000  0.000000 ]
+
+  }
+  Material {
+    diffuseColor [ 1 1 0, 0 0 1, 1 0 0 ]
+  }
+  
+  MaterialBinding {
+    value PER_VERTEX
+  }
+  IndexedFaceSet {
+    coordIndex [ 0, 1, 2, -1 ]
+  }
+}
+
+<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient id="red" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="35" y2="80">
+			<stop offset="0" stop-color="rgb(255,0,0)" stop-opacity="1"/>
+			<stop offset="1" stop-color="rgb(255,0,0)" stop-opacity="0"/>
+		</linearGradient>
+		<linearGradient id="blue" gradientUnits="userSpaceOnUse" x1="100" y1="50" x2="0" y2="50">
+			<stop offset="0" stop-color="rgb(0,0,255)" stop-opacity="1"/>
+			<stop offset="1" stop-color="rgb(0,0,255)" stop-opacity="0"/>
+		</linearGradient>
+		<linearGradient id="yellow" gradientUnits="userSpaceOnUse" x1="0" y1="100" x2="40" y2="20">
+			<stop offset="0" stop-color="rgb(255,255,0)" stop-opacity="1"/>
+			<stop offset="1" stop-color="rgb(255,255,0)" stop-opacity="0"/>
+		</linearGradient>
+		<path id="triangle1" d="M0 0 L100 50 L0 100 z"/>
+<filter id="colorAdd">
+	<feComposite in="SourceGraphic" in2="BackgroundImage" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="Matrix1">
+	<feColorMatrix type="matrix" values="
+	1 0 0 0 0
+	0 1 0 0 0
+	0 0 1 0 0
+	1 1 1 1 0
+	0 0 0 0 1
+	"/>
+</filter>
+</defs>
+<g filter="url(#Matrix1)">
+	<use xlink:href="#triangle1" fill="url(#blue)"/>
+	<use xlink:href="#triangle1" fill="url(#yellow)" filter="url(#colorAdd)"/>
+	<use xlink:href="#triangle1" fill="url(#red)" filter="url(#colorAdd)"/>
+</g>
+</svg>
+*/
 void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
 {
     if (v[0] == v[1] || v[1] == v[2] || v[0] == v[2]) return;
@@ -227,9 +286,9 @@ void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c
         << v[1][0] << "," << v[1][1] << " "
         << v[0][0] << "," << v[0][1] << " z\"" << std::endl
         << "    style=\"fill:#"
-        << std::hex << (cc >> 8)
+        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
         << "; stroke:#"
-        << std::hex << (cc >> 8)
+        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
         << ";" << std::endl
         << "    stroke-width:1.0;" << std::endl
         << "    stroke-linecap:round;stroke-linejoin:round\"/>" << std::endl;
@@ -237,10 +296,12 @@ void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c
 
 void SoFCVectorizeSVGActionP::printCircle(const SbVec3f & v, const SbColor & c, const float radius) const
 {
+    // todo
 }
 
 void SoFCVectorizeSVGActionP::printSquare(const SbVec3f & v, const SbColor & c, const float size) const
 {
+    // todo
 }
 
 void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
@@ -267,16 +328,18 @@ void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
         << "x1=\"" << v[0][0] << "\" y1=\"" << v[0][1] << "\" "
         << "x2=\"" << v[1][0] << "\" y2=\"" << v[1][1] << "\" "
         << "stroke=\"#"
-        << std::hex << (cc >> 8)
+        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
         << "\" stroke-width=\"1px\" />\n";
 }
 
 void SoFCVectorizeSVGActionP::printPoint(const SoVectorizePoint * item) const
 {
+    // todo
 }
 
 void SoFCVectorizeSVGActionP::printImage(const SoVectorizeImage * item) const
 {
+    // todo
 }
 
 // -------------------------------------------------------
@@ -364,7 +427,7 @@ void SoFCVectorizeSVGAction::printBackground(void) const
         << x[0] << "," << y[1] << " L "
         << x[0] << "," << y[0] << " z \"" << std::endl;
     str << "   style=\"fill:#"
-        << std::hex << (cc >> 8)
+        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
         << ";fill-opacity:1;fill-rule:evenodd;stroke:none;"
            "stroke-width:1px;stroke-linecap:butt;stroke-linejoin:"
            "miter;stroke-opacity:1\" />\n";
