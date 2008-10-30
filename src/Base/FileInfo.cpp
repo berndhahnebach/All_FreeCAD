@@ -384,7 +384,7 @@ std::vector<Base::FileInfo> FileInfo::getDirectoryContent(void) const
     {
         std::string dir = dentry->d_name;
         if (dir != "." && dir != "..")
-            List.push_back(FileInfo(dir));
+            List.push_back(FileInfo(FileName + "/" + dir));
     }
     closedir(dp);
 #else
