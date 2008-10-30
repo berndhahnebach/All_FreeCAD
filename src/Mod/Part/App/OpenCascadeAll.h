@@ -172,8 +172,11 @@
 #include <GC_MakeArcOfCircle.hxx>
 #include <GC_MakeArcOfEllipse.hxx>
 #include <GC_MakeCircle.hxx>
+#include <GC_MakeConicalSurface.hxx>
+#include <GC_MakeCylindricalSurface.hxx>
 #include <GC_MakeEllipse.hxx>
 #include <GC_MakeLine.hxx>
+#include <GC_MakePlane.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 

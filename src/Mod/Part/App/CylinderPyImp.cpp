@@ -27,6 +27,7 @@
 # include <Geom_Circle.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
+# include <GC_MakeCylindricalSurface.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Lin.hxx>
 #endif
@@ -42,6 +43,8 @@
 
 using namespace Part;
 
+extern const char* gce_ErrorStatusText(gce_ErrorType et);
+
 // returns a string which represents the object e.g. when printed in python
 const char *CylinderPy::representation(void) const
 {
@@ -55,62 +58,99 @@ PyObject *CylinderPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // P
 }
 
 // constructor method
-int CylinderPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int CylinderPy::PyInit(PyObject* args, PyObject* kwds)
 {
-if (PyArg_ParseTuple(args, "")) {
+    // cylinder and distance for offset
+    PyObject *pCyl;
+    double dist;
+    static char* keywords_cd[] = {"Cylinder","Distance",NULL};
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!d", keywords_cd, &(CylinderPy::Type), &pCyl, &dist)) {
+        CylinderPy* pcCylinder = static_cast<CylinderPy*>(pCyl);
+        Handle_Geom_CylindricalSurface cylinder = Handle_Geom_CylindricalSurface::DownCast
+            (pcCylinder->getGeomCylinderPtr()->handle());
+        GC_MakeCylindricalSurface mc(cylinder->Cylinder(), dist);
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
+            (getGeomCylinderPtr()->handle());
+        cyl->SetCylinder(mc.Value()->Cylinder());
+        return 0;
+    }
+
+    static char* keywords_c[] = {"Cylinder",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!", keywords_c, &(CylinderPy::Type), &pCyl)) {
+        CylinderPy* pcCylinder = static_cast<CylinderPy*>(pCyl);
+        Handle_Geom_CylindricalSurface cyl1 = Handle_Geom_CylindricalSurface::DownCast
+            (pcCylinder->getGeomCylinderPtr()->handle());
+        Handle_Geom_CylindricalSurface cyl2 = Handle_Geom_CylindricalSurface::DownCast
+            (this->getGeomCylinderPtr()->handle());
+        cyl2->SetCylinder(cyl1->Cylinder());
+        return 0;
+    }
+
+    PyObject *pV1, *pV2, *pV3;
+    static char* keywords_ppp[] = {"Point1","Point2","Point3",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!O!", keywords_ppp,
+                                         &(Base::VectorPy::Type), &pV1,
+                                         &(Base::VectorPy::Type), &pV2,
+                                         &(Base::VectorPy::Type), &pV3)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
+        GC_MakeCylindricalSurface mc(gp_Pnt(v1.x,v1.y,v1.z),
+                                     gp_Pnt(v2.x,v2.y,v2.z),
+                                     gp_Pnt(v3.x,v3.y,v3.z));
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
+            (getGeomCylinderPtr()->handle());
+        cyl->SetCylinder(mc.Value()->Cylinder());
+        return 0;
+    }
+
+    static char* keywords_cc[] = {"Circle",NULL};
+    PyErr_Clear();
+    PyObject *pCirc;
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!", keywords_cc, &(CirclePy::Type), &pCirc)) {
+        CirclePy* pcCircle = static_cast<CirclePy*>(pCirc);
+        Handle_Geom_Circle circ = Handle_Geom_Circle::DownCast
+            (pcCircle->getGeomCirclePtr()->handle());
+        GC_MakeCylindricalSurface mc(circ->Circ());
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
+            (getGeomCylinderPtr()->handle());
+        cyl->SetCylinder(mc.Value()->Cylinder());
+        return 0;
+    }
+
+    static char* keywords_n[] = {NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "", keywords_n)) {
         Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
             (getGeomCylinderPtr()->handle());
         cyl->SetRadius(1.0);
         return 0;
     }
-    //PyErr_Clear();
-    //if (PyArg_ParseTuple(args, "O!dd|i", &(Part::CirclePy::Type), &o, &u1, &u2, &sense)) {
-    //    try {
-    //        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast
-    //            (static_cast<CirclePy*>(o)->getGeomCirclePtr()->handle());
-    //        GC_MakeArcOfCircle arc(circle->Circ(), u1, u2, sense);
-    //        if (!arc.IsDone()) {
-    //            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
-    //            return -1;
-    //        }
-
-    //        getGeomTrimmedCurvePtr()->setHandle(arc.Value());
-    //        return 0;
-    //    }
-    //    catch (Standard_Failure) {
-    //        Handle_Standard_Failure e = Standard_Failure::Caught();
-    //        PyErr_SetString(PyExc_Exception, e->GetMessageString());
-    //        return -1;
-    //    }
-    //    catch (...) {
-    //        PyErr_SetString(PyExc_Exception, "creation of arc failed");
-    //        return -1;
-    //    }
-    //}
-
-    PyErr_Clear();
-    PyObject *pV1, *pV2;
-    double diameter;
-    if (PyArg_ParseTuple(args, "dO!O!", &diameter,
-                                         &(Base::VectorPy::Type), &pV1,
-                                         &(Base::VectorPy::Type), &pV2)) {
-        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
-        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
- 
- /*       GC_MakeArcOfCircle arc(gp_Pnt(v1.x,v1.y,v1.z),
-                               gp_Pnt(v2.x,v2.y,v2.z),
-                               gp_Pnt(v3.x,v3.y,v3.z));
-        if (!arc.IsDone()) {
-            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(arc.Status()));
-            return -1;
-        }
-
-        getGeomTrimmedCurvePtr()->setHandle(arc.Value());*/
-        return 0;
-    }
 
     // All checks failed
-    PyErr_SetString(PyExc_TypeError, "Cylinder constructor expects a radus position and direction");
+    PyErr_SetString(PyExc_TypeError, "Cylinder constructor accepts:\n"
+        "-- empty parameter list\n"
+        "-- Cylinder\n"
+        "-- Cylinder, Distance\n"
+        "-- Point1, Point2, Point3\n"
+        "-- Circle");
     return -1;
 }
 
