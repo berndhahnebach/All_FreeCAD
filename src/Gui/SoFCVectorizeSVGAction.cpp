@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <iomanip>
+# include <ios>
+#endif
 #include <Inventor/SbBasic.h>
 #include <Inventor/SbBSPTree.h>
 
@@ -436,7 +440,6 @@ void SoFCVectorizeSVGAction::printBackground(void) const
 
 void SoFCVectorizeSVGAction::printItem(const SoVectorizeItem * item) const
 {
-    std::ostream& str = this->getSVGOutput()->getFileStream();
     switch (item->type) {
     case SoVectorizeItem::TRIANGLE:
         this->p->printTriangle(static_cast<const SoVectorizeTriangle*>(item));
