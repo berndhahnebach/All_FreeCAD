@@ -29,6 +29,7 @@
 # include <Geom_TrimmedCurve.hxx>
 # include <GC_MakeCylindricalSurface.hxx>
 # include <gp_Circ.hxx>
+# include <gp_Cylinder.hxx>
 # include <gp_Lin.hxx>
 #endif
 
