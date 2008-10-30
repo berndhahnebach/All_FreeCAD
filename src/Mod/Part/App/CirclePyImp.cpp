@@ -146,8 +146,9 @@ int CirclePy::PyInit(PyObject* args, PyObject* kwds)
     }
 
     // default circle
+    static char* keywords_n[] = {NULL};
     PyErr_Clear();
-    if (PyArg_ParseTuple(args, "")) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "", keywords_n)) {
         Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
         circle->SetRadius(1.0);
         return 0;
