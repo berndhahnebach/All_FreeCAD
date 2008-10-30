@@ -118,13 +118,15 @@ void CallTipsList::validateCursor()
     int currentPos = cursor.position();
     if (currentPos < this->cursorPos) {
         hide();
-    } else {
+    }
+    else {
         cursor.setPosition(this->cursorPos);
         cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
         QString word = cursor.selectedText();
         if (currentPos > this->cursorPos+word.length()) {
             hide();
-        } else if (!word.isEmpty()){
+        }
+        else if (!word.isEmpty()){
             // If the word is empty we should not allow to do a search,
             // otherwise we may select the next item which is not okay in this
             // context. This might happen if e.g. Shift is pressed.
@@ -248,7 +250,8 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
 
         // These are the attributes from the type object
         extractTipsFromObject(obj, list, tips);
-    } catch (Py::Exception& e) {
+    }
+    catch (Py::Exception& e) {
         // Just clear the Python exception
         e.clear();
     }
@@ -293,10 +296,11 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                     pos = qMin(pos, 70);
                     if (pos < 0) 
                         pos = qMin(longdoc.length(), 70);
-                    tip.description = longdoc;
+                    tip.description = stripWhiteSpace(longdoc);
                     tip.parameter = longdoc.left(pos);
                 }
-            } else if (attr.hasAttr("__doc__")) {
+            }
+            else if (attr.hasAttr("__doc__")) {
                 Py::Object help = attr.getAttr("__doc__");
                 if (help.isString()) {
                     Py::String doc(help);
@@ -305,13 +309,14 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                     pos = qMin(pos, 70);
                     if (pos < 0) 
                         pos = qMin(longdoc.length(), 70);
-                    tip.description = longdoc;
+                    tip.description = stripWhiteSpace(longdoc);
                     tip.parameter = longdoc.left(pos);
                 }
             }
             tips[str] = tip;
         }
-    } catch (Py::Exception& e) {
+    }
+    catch (Py::Exception& e) {
         // Just clear the Python exception
         e.clear();
     }
@@ -337,7 +342,7 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
             pos = qMin(pos, 70);
             if (pos < 0) 
                 pos = qMin(longdoc.length(), 70);
-            tip.description = longdoc;
+            tip.description = stripWhiteSpace(longdoc);
             tip.parameter = longdoc.left(pos);
         }
         tips[str] = tip;
@@ -440,7 +445,8 @@ void CallTipsList::showTips(const QString& line)
         if (h < boxH)
             w += textEdit->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
         setGeometry(posX,posY-h, w, h);
-    } else {
+    }
+    else {
         h = qMin(qMin(h,textEdit->viewport()->height()-fontMetrics().height()-posY), 250);
         if (h < boxH)
             w += textEdit->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
@@ -481,34 +487,42 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
     if (isVisible() && watched == textEdit->viewport()) {
         if (event->type() == QEvent::MouseButtonPress)
             hide();
-    } else if (isVisible() && watched == textEdit) {
+    }
+    else if (isVisible() && watched == textEdit) {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent* ke = (QKeyEvent*)event;
             if (ke->key() == Qt::Key_Up || ke->key() == Qt::Key_Down) {
                 keyPressEvent(ke);
                 return true;
-            } else if (ke->key() == Qt::Key_PageUp || ke->key() == Qt::Key_PageDown) {
+            }
+            else if (ke->key() == Qt::Key_PageUp || ke->key() == Qt::Key_PageDown) {
                 keyPressEvent(ke);
                 return true;
-            } else if (ke->key() == Qt::Key_Escape) {
+            }
+            else if (ke->key() == Qt::Key_Escape) {
                 hide();
                 return true;
-            } else if (this->hideKeys.indexOf(ke->key()) > -1) {
+            }
+            else if (this->hideKeys.indexOf(ke->key()) > -1) {
                 itemActivated(currentItem());
                 return false;
-            } else if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Tab) {
+            }
+            else if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Tab) {
                 itemActivated(currentItem());
                 return true;
-            } else if (this->compKeys.indexOf(ke->key()) > -1) {
+            }
+            else if (this->compKeys.indexOf(ke->key()) > -1) {
                 itemActivated(currentItem());
                 return false;
-            } else if (ke->key() == Qt::Key_Shift || ke->key() == Qt::Key_Control || 
+            }
+            else if (ke->key() == Qt::Key_Shift || ke->key() == Qt::Key_Control || 
                        ke->key() == Qt::Key_Meta || ke->key() == Qt::Key_Alt || 
                        ke->key() == Qt::Key_AltGr) {
                 // filter these meta keys to avoid to call keyboardSearch()
                 return true;
             }
-        } else if (event->type() == QEvent::KeyRelease) {
+        }
+        else if (event->type() == QEvent::KeyRelease) {
             QKeyEvent* ke = (QKeyEvent*)event;
             if (ke->key() == Qt::Key_Up || ke->key() == Qt::Key_Down ||
                 ke->key() == Qt::Key_PageUp || ke->key() == Qt::Key_PageDown) {
@@ -524,7 +538,8 @@ bool CallTipsList::eventFilter(QObject * watched, QEvent * event)
                 }
                 return true;
             }
-        } else if (event->type() == QEvent::FocusOut) {
+        }
+        else if (event->type() == QEvent::FocusOut) {
             if (!hasFocus())
                 hide();
         }
@@ -559,6 +574,42 @@ void CallTipsList::callTipItemActivated(QListWidgetItem *item)
     QPoint p(posX, posY);
     p = textEdit->mapToGlobal(p);
     QToolTip::showText(p, item->data(Qt::UserRole).toString());
+}
+
+QString CallTipsList::stripWhiteSpace(const QString& str) const
+{
+    QString stripped = str;
+    QStringList lines = str.split(QLatin1String("\n"));
+    int minspace=INT_MAX;
+    int line=0;
+    for (QStringList::iterator it = lines.begin(); it != lines.end(); ++it, ++line) {
+        if (it->count() > 0 && line > 0) {
+            int space = 0;
+            for (int i=0; i<it->count(); i++) {
+                if ((*it)[i] == QLatin1Char('\t'))
+                    space++;
+                else
+                    break;
+            }
+
+            if (it->count() > space)
+                minspace = std::min<int>(minspace, space);
+        }
+    }
+
+    // remove all leading tabs from each line
+    if (minspace > 0 && minspace < INT_MAX) {
+        int line=0;
+        for (QStringList::iterator it = lines.begin(); it != lines.end(); ++it, ++line) {
+            if (it->count() > 0 && line > 0) {
+                *it = it->mid(minspace);
+            }
+        }
+
+        stripped = lines.join(QLatin1String("\n"));
+    }
+
+    return stripped;
 }
 
 #include "moc_CallTips.cpp" 

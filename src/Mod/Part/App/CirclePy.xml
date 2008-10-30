@@ -26,7 +26,7 @@ Part.Circle(Circle, Distance)
 Part.Circle(Center,Normal,Radius)
     Creates a circle defined by center, normal direction and radius
 
-Part.Circle(Point1,Point2,Point2)
+Part.Circle(Point1,Point2,Point3)
     Creates a circle defined by three non-linear points
    </UserDocu>
     </Documentation>
