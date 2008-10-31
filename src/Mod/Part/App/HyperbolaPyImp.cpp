@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Geom_Hyperbola.hxx>
+# include <GC_MakeHyperbola.hxx>
+# include <gp_Hypr.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -33,6 +35,8 @@
 #include "HyperbolaPy.cpp"
 
 using namespace Part;
+
+extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
 const char *HyperbolaPy::representation(void) const
@@ -47,16 +51,77 @@ PyObject *HyperbolaPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // 
 }
 
 // constructor method
-int HyperbolaPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int HyperbolaPy::PyInit(PyObject* args, PyObject* kwds)
 {
-    if (PyArg_ParseTuple(args, "")) {
-        Handle_Geom_Hyperbola c = Handle_Geom_Hyperbola::DownCast
-            (getGeometryPtr()->handle());
-        c->SetMajorRadius(1.0);
-        c->SetMinorRadius(1.0);
+    char* keywords_n[] = {NULL};
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "", keywords_n)) {
+        Handle_Geom_Hyperbola hypr = Handle_Geom_Hyperbola::DownCast(getGeometryPtr()->handle());
+        hypr->SetMajorRadius(2.0);
+        hypr->SetMinorRadius(1.0);
         return 0;
     }
 
+    char* keywords_e[] = {"Hyperbola",NULL};
+    PyErr_Clear();
+    PyObject *pHypr;
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!",keywords_e, &(HyperbolaPy::Type), &pHypr)) {
+        HyperbolaPy* pH = static_cast<HyperbolaPy*>(pHypr);
+        Handle_Geom_Hyperbola Hypr1 = Handle_Geom_Hyperbola::DownCast
+            (pH->getGeometryPtr()->handle());
+        Handle_Geom_Hyperbola Hypr2 = Handle_Geom_Hyperbola::DownCast
+            (this->getGeometryPtr()->handle());
+        Hypr2->SetHypr(Hypr1->Hypr());
+        return 0;
+    }
+
+    char* keywords_ssc[] = {"S1","S2","Center",NULL};
+    PyErr_Clear();
+    PyObject *pV1, *pV2, *pV3;
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!O!", keywords_ssc,
+                                         &(Base::VectorPy::Type), &pV1,
+                                         &(Base::VectorPy::Type), &pV2,
+                                         &(Base::VectorPy::Type), &pV3)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
+        GC_MakeHyperbola mh(gp_Pnt(v1.x,v1.y,v1.z),
+                            gp_Pnt(v2.x,v2.y,v2.z),
+                            gp_Pnt(v3.x,v3.y,v3.z));
+        if (!mh.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mh.Status()));
+            return -1;
+        }
+
+        Handle_Geom_Hyperbola hyperb = Handle_Geom_Hyperbola::DownCast(getGeometryPtr()->handle());
+        hyperb->SetHypr(mh.Value()->Hypr());
+        return 0;
+    }
+
+    char* keywords_cmm[] = {"Center","MajorRadius","MinorRadius",NULL};
+    PyErr_Clear();
+    PyObject *pV;
+    double major, minor;
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!dd", keywords_cmm,
+                                        &(Base::VectorPy::Type), &pV,
+                                        &major, &minor)) {
+        Base::Vector3d c = static_cast<Base::VectorPy*>(pV)->value();
+        GC_MakeHyperbola mh(gp_Ax2(gp_Pnt(c.x,c.y,c.z), gp_Dir(0.0,0.0,1.0)),
+                          major, minor);
+        if (!mh.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mh.Status()));
+            return -1;
+        }
+
+        Handle_Geom_Hyperbola hyperb = Handle_Geom_Hyperbola::DownCast(getGeometryPtr()->handle());
+        hyperb->SetHypr(mh.Value()->Hypr());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Hyperbola constructor accepts:\n"
+        "-- empty parameter list\n"
+        "-- Hyperbola\n"
+        "-- Point, double, double\n"
+        "-- Point, Point, Point");
     return -1;
 }
 
