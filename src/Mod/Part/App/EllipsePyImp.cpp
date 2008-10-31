@@ -51,18 +51,20 @@ PyObject *EllipsePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Py
 }
 
 // constructor method
-int EllipsePy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int EllipsePy::PyInit(PyObject* args, PyObject* kwds)
 {
-    if (PyArg_ParseTuple(args, "")) {
+    char* keywords_n[] = {NULL};
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "", keywords_n)) {
         Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
         ellipse->SetMajorRadius(2.0);
         ellipse->SetMinorRadius(1.0);
         return 0;
     }
 
+    char* keywords_e[] = {"Ellipse",NULL};
     PyErr_Clear();
     PyObject *pElips;
-    if (PyArg_ParseTuple(args, "O!", &(EllipsePy::Type), &pElips)) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!",keywords_e, &(EllipsePy::Type), &pElips)) {
         EllipsePy* pEllipse = static_cast<EllipsePy*>(pElips);
         Handle_Geom_Ellipse Elips1 = Handle_Geom_Ellipse::DownCast
             (pEllipse->getGeomEllipsePtr()->handle());
@@ -72,9 +74,11 @@ int EllipsePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    char* keywords_ssc[] = {"S1","S2","Center",NULL};
     PyErr_Clear();
     PyObject *pV1, *pV2, *pV3;
-    if (PyArg_ParseTuple(args, "O!O!O!", &(Base::VectorPy::Type), &pV1,
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!O!", keywords_ssc,
+                                         &(Base::VectorPy::Type), &pV1,
                                          &(Base::VectorPy::Type), &pV2,
                                          &(Base::VectorPy::Type), &pV3)) {
         Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
@@ -93,11 +97,13 @@ int EllipsePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    char* keywords_cmm[] = {"Center","MajorRadius","MinorRadius",NULL};
     PyErr_Clear();
     PyObject *pV;
     double major, minor;
-    if (PyArg_ParseTuple(args, "O!dd", &(Base::VectorPy::Type), &pV,
-                                       &major, &minor)) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!dd", keywords_cmm,
+                                        &(Base::VectorPy::Type), &pV,
+                                        &major, &minor)) {
         Base::Vector3d c = static_cast<Base::VectorPy*>(pV)->value();
         GC_MakeEllipse me(gp_Ax2(gp_Pnt(c.x,c.y,c.z), gp_Dir(0.0,0.0,1.0)),
                           major, minor);
@@ -114,8 +120,8 @@ int EllipsePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_SetString(PyExc_TypeError, "Ellipse constructor accepts:\n"
         "-- empty parameter list\n"
         "-- Ellipse\n"
-        "-- Vector, double, double\n"
-        "-- Vector, Vector, Vector");
+        "-- Point, double, double\n"
+        "-- Point, Point, Point");
     return -1;
 }
 
