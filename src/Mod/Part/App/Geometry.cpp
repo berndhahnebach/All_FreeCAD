@@ -503,6 +503,10 @@ Handle_Geom_Geometry GeomPlane::handle() const
 
 // -------------------------------------------------
 
+GeomOffsetSurface::GeomOffsetSurface()
+{
+}
+
 GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_Surface& s, double offset)
 {
     this->mySurface = new Geom_OffsetSurface(s, offset);
@@ -515,6 +519,11 @@ GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_OffsetSurface& s)
 
 GeomOffsetSurface::~GeomOffsetSurface()
 {
+}
+
+void GeomOffsetSurface::setHandle(const Handle_Geom_OffsetSurface& s)
+{
+    mySurface = s;
 }
 
 Handle_Geom_Geometry GeomOffsetSurface::handle() const
