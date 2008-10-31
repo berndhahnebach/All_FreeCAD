@@ -175,6 +175,7 @@
 #include <GC_MakeConicalSurface.hxx>
 #include <GC_MakeCylindricalSurface.hxx>
 #include <GC_MakeEllipse.hxx>
+#include <GC_MakeHyperbola.hxx>
 #include <GC_MakeLine.hxx>
 #include <GC_MakePlane.hxx>
 #include <GC_MakeSegment.hxx>
