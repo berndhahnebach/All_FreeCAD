@@ -25,7 +25,9 @@
 #ifndef _PreComp_
 # include <Geom_ConicalSurface.hxx>
 # include <Geom_Circle.hxx>
+# include <GC_MakeConicalSurface.hxx>
 # include <gp_Circ.hxx>
+# include <gp_Cone.hxx>
 # include <gp_Lin.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
@@ -42,6 +44,8 @@
 
 using namespace Part;
 
+extern const char* gce_ErrorStatusText(gce_ErrorType et);
+
 // returns a string which represents the object e.g. when printed in python
 const char *ConePy::representation(void) const
 {
@@ -55,15 +59,113 @@ PyObject *ConePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Pytho
 }
 
 // constructor method
-int ConePy::PyInit(PyObject* args, PyObject* /*kwd*/)
+int ConePy::PyInit(PyObject* args, PyObject* kwds)
 {
-    if (PyArg_ParseTuple(args, "")) {
+    char* keywords_n[] = {NULL};
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "", keywords_n)) {
         Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
-            (getGeomConePtr()->handle());
+            (getGeometryPtr()->handle());
         s->SetRadius(1.0);
         return 0;
     }
 
+    PyObject *pV1, *pV2;
+    float radius1, radius2;
+    static char* keywords_pprr[] = {"Point1","Point2","Radius1","Radius2",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!dd", keywords_pprr,
+                                        &(Base::VectorPy::Type), &pV1,
+                                        &(Base::VectorPy::Type), &pV2,
+                                        &radius1, &radius2)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        GC_MakeConicalSurface mc(gp_Pnt(v1.x,v1.y,v1.z),
+                                 gp_Pnt(v2.x,v2.y,v2.z),
+                                 radius1, radius2);
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeometryPtr()->handle());
+        cone->SetCone(mc.Value()->Cone());
+        return 0;
+    }
+
+    PyObject *pV3, *pV4;
+    static char* keywords_pppp[] = {"Point1","Point2","Point3","Point4",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!O!O!", keywords_pppp,
+                                        &(Base::VectorPy::Type), &pV1,
+                                        &(Base::VectorPy::Type), &pV2,
+                                        &(Base::VectorPy::Type), &pV3,
+                                        &(Base::VectorPy::Type), &pV4)) {
+        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pV1)->value();
+        Base::Vector3d v2 = static_cast<Base::VectorPy*>(pV2)->value();
+        Base::Vector3d v3 = static_cast<Base::VectorPy*>(pV3)->value();
+        Base::Vector3d v4 = static_cast<Base::VectorPy*>(pV4)->value();
+        GC_MakeConicalSurface mc(gp_Pnt(v1.x,v1.y,v1.z),
+                                 gp_Pnt(v2.x,v2.y,v2.z),
+                                 gp_Pnt(v3.x,v3.y,v3.z),
+                                 gp_Pnt(v4.x,v4.y,v4.z));
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeometryPtr()->handle());
+        cone->SetCone(mc.Value()->Cone());
+        return 0;
+    }
+
+    PyObject *pCone;
+    double dist;
+    static char* keywords_cd[] = {"Cone","Distance",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!d", keywords_cd,
+                                        &(ConePy::Type), &pCone, &dist)) {
+        ConePy* pcCone = static_cast<ConePy*>(pCone);
+        Handle_Geom_ConicalSurface pcone = Handle_Geom_ConicalSurface::DownCast
+            (pcCone->getGeometryPtr()->handle());
+        GC_MakeConicalSurface mc(pcone->Cone(), dist);
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeometryPtr()->handle());
+        cone->SetCone(mc.Value()->Cone());
+        return 0;
+    }
+
+    static char* keywords_c[] = {"Cone",NULL};
+    PyErr_Clear();
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!d", keywords_c,
+                                        &(ConePy::Type), &pCone)) {
+        ConePy* pcCone = static_cast<ConePy*>(pCone);
+        Handle_Geom_ConicalSurface pcone = Handle_Geom_ConicalSurface::DownCast
+            (pcCone->getGeometryPtr()->handle());
+        GC_MakeConicalSurface mc(pcone->Cone());
+        if (!mc.IsDone()) {
+            PyErr_SetString(PyExc_Exception, gce_ErrorStatusText(mc.Status()));
+            return -1;
+        }
+
+        Handle_Geom_ConicalSurface cone = Handle_Geom_ConicalSurface::DownCast
+            (getGeometryPtr()->handle());
+        cone->SetCone(mc.Value()->Cone());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Cone constructor accepts:\n"
+        "-- empty parameter list\n"
+        "-- Cone\n"
+        "-- Cone, Distance\n"
+        "-- Point1, Point2, Radius1, Radius2\n"
+        "-- Point1, Point2, Point3, Point4");
     return -1;
 }
 
