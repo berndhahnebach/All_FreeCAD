@@ -125,7 +125,7 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_SetString(PyExc_TypeError, "Line constructor accepts:\n"
         "-- empty parameter list\n"
         "-- Line\n"
-        "-- Vector, Vector");
+        "-- Point, Point");
     return -1;
 }
 

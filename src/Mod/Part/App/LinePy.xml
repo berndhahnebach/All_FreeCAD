@@ -12,7 +12,16 @@
       Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
-      <UserDocu>Describes an infinite line</UserDocu>
+      <UserDocu>Describes an infinite line
+To create a line there are several ways:
+Part.Line()
+    Creates a default line
+
+Part.Line(Line)
+    Creates a copy og the given line
+
+Part.Line(Point1,Point2)
+    Creates a line that goes through two given points</UserDocu>
     </Documentation>
     <Methode Name="setParameterRange">
       <Documentation>
