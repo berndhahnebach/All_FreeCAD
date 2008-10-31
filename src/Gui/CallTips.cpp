@@ -600,13 +600,17 @@ QString CallTipsList::stripWhiteSpace(const QString& str) const
     // remove all leading tabs from each line
     if (minspace > 0 && minspace < INT_MAX) {
         int line=0;
+        QStringList strippedlines;
         for (QStringList::iterator it = lines.begin(); it != lines.end(); ++it, ++line) {
-            if (it->count() > 0 && line > 0) {
-                *it = it->mid(minspace);
+            if (line == 0 && !it->isEmpty()) {
+                strippedlines << *it;
+            }
+            else if (it->count() > 0 && line > 0) {
+                strippedlines << it->mid(minspace);
             }
         }
 
-        stripped = lines.join(QLatin1String("\n"));
+        stripped = strippedlines.join(QLatin1String("\n"));
     }
 
     return stripped;

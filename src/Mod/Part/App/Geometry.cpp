@@ -304,6 +304,10 @@ Handle_Geom_Geometry GeomLineSegment::handle() const
 
 // -------------------------------------------------
 
+GeomOffsetCurve::GeomOffsetCurve()
+{
+}
+
 GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_Curve& c, double offset, const gp_Dir& dir)
 {
     this->myCurve = new Geom_OffsetCurve(c, offset, dir);
@@ -316,6 +320,11 @@ GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_OffsetCurve& c)
 
 GeomOffsetCurve::~GeomOffsetCurve()
 {
+}
+
+void GeomOffsetCurve::setHandle(const Handle_Geom_OffsetCurve& c)
+{
+    this->myCurve = c;
 }
 
 Handle_Geom_Geometry GeomOffsetCurve::handle() const
