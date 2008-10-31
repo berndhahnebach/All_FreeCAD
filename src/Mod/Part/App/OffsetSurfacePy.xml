@@ -14,5 +14,31 @@
 			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
 			<UserDocu></UserDocu>
 		</Documentation>
+		<Methode Name="uIso">
+			<Documentation>
+				<UserDocu>Builds the U isoparametric line of this surface</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="vIso">
+			<Documentation>
+				<UserDocu>Builds the V isoparametric line of this surface</UserDocu>
+			</Documentation>
+		</Methode>
+		<Attribute Name="OffsetValue">
+			<Documentation>
+				<UserDocu>
+					Sets or gets the offset value to offset the underlying surface.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="OffsetValue" Type="Float"/>
+		</Attribute>
+		<Attribute Name="BasisSurface">
+			<Documentation>
+				<UserDocu>
+					Sets or gets the basic surface.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="BasisSurface" Type="Object"/>
+		</Attribute>
 	</PythonExport>
 </GenerateModel>

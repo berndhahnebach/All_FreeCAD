@@ -301,10 +301,12 @@ private:
 class GeomOffsetSurface : public GeomSurface
 {
 public:
+    GeomOffsetSurface();
     GeomOffsetSurface(const Handle_Geom_Surface&, double);
     GeomOffsetSurface(const Handle_Geom_OffsetSurface&);
     virtual ~GeomOffsetSurface();
 
+    void setHandle(const Handle_Geom_OffsetSurface& s);
     Handle_Geom_Geometry handle() const;
 
 private:
