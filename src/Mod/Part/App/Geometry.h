@@ -177,10 +177,12 @@ private:
 class PartExport GeomOffsetCurve : public GeomCurve
 {
 public:
+    GeomOffsetCurve();
     GeomOffsetCurve(const Handle_Geom_Curve&, double, const gp_Dir&);
     GeomOffsetCurve(const Handle_Geom_OffsetCurve&);
     virtual ~GeomOffsetCurve();
 
+    void setHandle(const Handle_Geom_OffsetCurve& c);
     Handle_Geom_Geometry handle() const;
 
 private:
