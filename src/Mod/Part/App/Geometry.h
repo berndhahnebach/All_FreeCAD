@@ -316,10 +316,12 @@ private:
 class GeomSurfaceOfRevolution : public GeomSurface
 {
 public:
+    GeomSurfaceOfRevolution();
     GeomSurfaceOfRevolution(const Handle_Geom_Curve&, const gp_Ax1&);
     GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution&);
     virtual ~GeomSurfaceOfRevolution();
 
+    void setHandle(const Handle_Geom_SurfaceOfRevolution& c);
     Handle_Geom_Geometry handle() const;
 
 private:
@@ -329,10 +331,12 @@ private:
 class GeomSurfaceOfExtrusion : public GeomSurface
 {
 public:
+    GeomSurfaceOfExtrusion();
     GeomSurfaceOfExtrusion(const Handle_Geom_Curve&, const gp_Dir&);
     GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion&);
     virtual ~GeomSurfaceOfExtrusion();
 
+    void setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c);
     Handle_Geom_Geometry handle() const;
 
 private:

@@ -12,7 +12,31 @@
 		Constructor="true">
 		<Documentation>
 			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
-			<UserDocu></UserDocu>
+			<UserDocu>Describes a surface of revolution</UserDocu>
 		</Documentation>
+		<Attribute Name="Location">
+			<Documentation>
+				<UserDocu>
+					Sets or gets the location of revolution.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="Location" Type="Object"/>
+		</Attribute>
+		<Attribute Name="Direction">
+			<Documentation>
+				<UserDocu>
+					Sets or gets the direction of revolution.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="Direction" Type="Object"/>
+		</Attribute>
+		<Attribute Name="BasisCurve">
+			<Documentation>
+				<UserDocu>
+					Sets or gets the basic curve.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="BasisCurve" Type="Object"/>
+		</Attribute>
 	</PythonExport>
 </GenerateModel>
