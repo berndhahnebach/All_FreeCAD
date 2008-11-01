@@ -27,6 +27,8 @@
 #include "SurfaceOfExtrusionPy.h"
 #include "SurfaceOfExtrusionPy.cpp"
 
+#include <Base/VectorPy.h>
+
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
@@ -38,17 +40,98 @@ const char *SurfaceOfExtrusionPy::representation(void) const
 PyObject *SurfaceOfExtrusionPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
     // create a new instance of SurfaceOfExtrusionPy and the Twin object 
-    //return new SurfaceOfExtrusionPy(new GeomSurfaceOfExtrusion);
-    PyErr_SetString(PyExc_NotImplementedError, "not yet implemented");
-    return 0;
+    return new SurfaceOfExtrusionPy(new GeomSurfaceOfExtrusion);
 }
 
 // constructor method
-int SurfaceOfExtrusionPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int SurfaceOfExtrusionPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    return 0;
+    PyObject* pGeom;
+    PyObject* pDir;
+    if (!PyArg_ParseTuple(args, "O!O!", 
+                            &(GeometryPy::Type), &pGeom, 
+                            &(Base::VectorPy::Type),&pDir))
+        return -1;
+
+    GeometryPy* pcGeo = static_cast<GeometryPy*>(pGeom);
+    Handle_Geom_Curve curve = Handle_Geom_Curve::DownCast
+        (pcGeo->getGeometryPtr()->handle());
+    if (curve.IsNull()) {
+        PyErr_SetString(PyExc_TypeError, "geometry is not a curve");
+        return -1;
+    }
+
+    try {
+        Base::Vector3d dir = static_cast<Base::VectorPy*>(pDir)->value();
+        Handle_Geom_SurfaceOfLinearExtrusion curve2 = new Geom_SurfaceOfLinearExtrusion(curve,
+            gp_Dir(dir.x,dir.y,dir.z));
+        getGeomSurfaceOfExtrusionPtr()->setHandle(curve2);
+        return 0;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return -1;
+    }
 }
 
+Py::Object SurfaceOfExtrusionPy::getDirection(void) const
+{
+    Handle_Geom_SurfaceOfLinearExtrusion curve = Handle_Geom_SurfaceOfLinearExtrusion::DownCast
+        (getGeometryPtr()->handle());
+    const gp_Dir& dir = curve->Direction();
+    return Py::Object(new Base::VectorPy(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+}
+
+void  SurfaceOfExtrusionPy::setDirection(Py::Object arg)
+{
+    PyObject* p = arg.ptr();
+    if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
+        Base::Vector3d dir = static_cast<Base::VectorPy*>(p)->value();
+        Handle_Geom_SurfaceOfLinearExtrusion curve = Handle_Geom_SurfaceOfLinearExtrusion::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetDirection(gp_Dir(dir.x,dir.y,dir.z));
+    }
+    else if (PyObject_TypeCheck(p, &PyTuple_Type)) {
+        Base::Vector3d dir = Base::getVectorFromTuple<double>(p);
+        Handle_Geom_SurfaceOfLinearExtrusion curve = Handle_Geom_SurfaceOfLinearExtrusion::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetDirection(gp_Dir(dir.x,dir.y,dir.z));
+    }
+    else {
+        std::string error = std::string("type must be 'Vector', not ");
+        error += p->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+}
+
+Py::Object SurfaceOfExtrusionPy::getBasisCurve(void) const
+{
+    throw Py::Exception(PyExc_NotImplementedError, "Not yet implemented");
+}
+
+void  SurfaceOfExtrusionPy::setBasisCurve(Py::Object arg)
+{
+    PyObject* p = arg.ptr();
+    if (PyObject_TypeCheck(p, &(GeometryPy::Type))) {
+        GeometryPy* pcGeo = static_cast<GeometryPy*>(p);
+        Handle_Geom_Curve curve = Handle_Geom_Curve::DownCast
+            (pcGeo->getGeometryPtr()->handle());
+        if (curve.IsNull()) {
+            throw Py::TypeError("geometry is not a curve");
+        }
+
+        try {
+            Handle_Geom_SurfaceOfLinearExtrusion curve2 = Handle_Geom_SurfaceOfLinearExtrusion::DownCast
+                (getGeometryPtr()->handle());
+            curve2->SetBasisCurve(curve);
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            throw Py::Exception(e->GetMessageString());
+        }
+    }
+}
 
 PyObject *SurfaceOfExtrusionPy::getCustomAttributes(const char* /*attr*/) const
 {
@@ -59,5 +142,3 @@ int SurfaceOfExtrusionPy::setCustomAttributes(const char* /*attr*/, PyObject* /*
 {
     return 0; 
 }
-
-

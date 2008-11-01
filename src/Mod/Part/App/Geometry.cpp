@@ -533,6 +533,10 @@ Handle_Geom_Geometry GeomOffsetSurface::handle() const
 
 // -------------------------------------------------
 
+GeomSurfaceOfRevolution::GeomSurfaceOfRevolution()
+{
+}
+
 GeomSurfaceOfRevolution::GeomSurfaceOfRevolution(const Handle_Geom_Curve& c, const gp_Ax1& a)
 {
     this->mySurface = new Geom_SurfaceOfRevolution(c,a);
@@ -547,12 +551,21 @@ GeomSurfaceOfRevolution::~GeomSurfaceOfRevolution()
 {
 }
 
+void GeomSurfaceOfRevolution::setHandle(const Handle_Geom_SurfaceOfRevolution& c)
+{
+    mySurface = c;
+}
+
 Handle_Geom_Geometry GeomSurfaceOfRevolution::handle() const
 {
     return mySurface;
 }
 
 // -------------------------------------------------
+
+GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion()
+{
+}
 
 GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_Curve& c, const gp_Dir& d)
 {
@@ -566,6 +579,11 @@ GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinear
 
 GeomSurfaceOfExtrusion::~GeomSurfaceOfExtrusion()
 {
+}
+
+void GeomSurfaceOfExtrusion::setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c)
+{
+    mySurface = c;
 }
 
 Handle_Geom_Geometry GeomSurfaceOfExtrusion::handle() const
