@@ -54,6 +54,38 @@
 
 using namespace Base;
 
+
+//**********************************************************************************
+// helper
+
+#ifdef FC_OS_WIN32
+std::string ConvertFromWideString(const std::wstring& string)
+{
+    int neededSize = WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, 0, 0,0,0);
+    char * CharString = new char[neededSize];
+    WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, CharString, neededSize,0,0);
+    std::string String((char*)CharString);
+    delete [] CharString;
+    CharString = NULL;
+    return String;
+}
+std::wstring ConvertToWideString(const std::string& string)
+{
+    int neededSize = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, 0, 0);
+    wchar_t* wideCharString = new wchar_t[neededSize];
+    MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, wideCharString, neededSize);
+    std::wstring wideString(wideCharString);
+    delete [] wideCharString;
+    wideCharString = NULL;
+    return wideString;
+}
+#endif
+
+
+//**********************************************************************************
+// FileInfo
+
+
 FileInfo::FileInfo (const char* _FileName)
 {
     setFile(_FileName);
@@ -86,20 +118,50 @@ const std::string &FileInfo::getTempPath(void)
     return tempPath;
 }
 
-std::string FileInfo::getTempFileName(void)
+std::string FileInfo::getTempFileName(const char* FileName, const char* Path)
 {
     //FIXME: To avoid race conditons we should rather return a file pointer
     //than a file name.
 #ifdef FC_OS_WIN32
-    char buf[MAX_PATH + 2];
+    wchar_t buf[MAX_PATH + 2];
+
+	// Path where the file is located
+	std::wstring path; 
+	if(Path)
+		path = ConvertToWideString(std::string(Path));
+	else
+		path = ConvertToWideString(getTempPath());
+
+	// File name in the path 
+	std::wstring file; 
+	if(FileName)
+		file = ConvertToWideString(std::string(FileName));
+	else
+		file = L"FCTempFile";
+
+
     // this already creates the file
-    GetTempFileName(getTempPath().c_str(),"FCTempFile",0,buf);
-    return std::string(buf);
+    GetTempFileNameW(path.c_str(),file.c_str(),0,buf);
+
+	return std::string(ConvertFromWideString(std::wstring(buf)));
 #else
     char buf[PATH_MAX+1];
-    std::strncpy(buf, getTempPath().c_str(), PATH_MAX);
+
+	// Path where the file is located
+	if(Path)
+		std::strncpy(buf, Path, PATH_MAX);
+	else 
+		std::strncpy(buf, getTempPath().c_str(), PATH_MAX);
+
     buf[PATH_MAX] = 0; // null termination needed
-    std::strcat(buf, "/fileXXXXXX");
+
+
+	// File name in the path 
+	if(FileName)
+		std::strcat(buf, std::string("/")+FileName+"XXXXXX");
+	else 
+	    std::strcat(buf, "/fileXXXXXX");
+
     /*int id =*/ mkstemp(buf);
     //FILE* file = fdopen(id, "w");
     return std::string(buf);
@@ -151,29 +213,6 @@ std::string FileInfo::fileNamePure () const
     else 
         return temp;
 }
-
-#ifdef FC_OS_WIN32
-std::string ConvertFromWideString(const std::wstring& string)
-{
-    int neededSize = WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, 0, 0,0,0);
-    char * CharString = new char[neededSize];
-    WideCharToMultiByte(CP_UTF8, 0, string.c_str(), -1, CharString, neededSize,0,0);
-    std::string String((char*)CharString);
-    delete [] CharString;
-    CharString = NULL;
-    return String;
-}
-std::wstring ConvertToWideString(const std::string& string)
-{
-    int neededSize = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, 0, 0);
-    wchar_t* wideCharString = new wchar_t[neededSize];
-    MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, wideCharString, neededSize);
-    std::wstring wideString(wideCharString);
-    delete [] wideCharString;
-    wideCharString = NULL;
-    return wideString;
-}
-#endif
 
 std::wstring FileInfo::toStdWString() const
 {
@@ -308,6 +347,19 @@ bool FileInfo::deleteFile(void) const
     return (::remove(FileName.c_str())==0);
 #else
 #   error "FileInfo::deleteFile() not implemented for this platform!"
+#endif
+}
+bool FileInfo::renameFile(const char* NewName) const
+{
+#if defined (_MSC_VER)
+    std::wstring oldname = toStdWString();
+	std::wstring newname = ConvertToWideString(NewName);
+    return ::_wrename(oldname.c_str(),newname.c_str()) == 0;
+#elif defined (__GNUC__)
+#   error "FileInfo::renameFile() not implemented for this platform!"
+    return (::remove(FileName.c_str())==0);
+#else
+#   error "FileInfo::renameFile() not implemented for this platform!"
 #endif
 }
 

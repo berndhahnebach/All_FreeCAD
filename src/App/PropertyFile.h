@@ -66,8 +66,7 @@ public:
     PropertyFileIncluded(void);
     virtual ~PropertyFileIncluded();
 
-    void setValue(const char* sString);
-    void setValue(const std::string &sString);
+    void setValue(const char* sFile, const char* sName=0);
     const char* getValue(void) const;
 
     virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyStringItem"; }

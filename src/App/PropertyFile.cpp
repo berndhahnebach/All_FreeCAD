@@ -35,29 +35,11 @@
 #include <Base/PyObjectBase.h>
 
 #include "PropertyFile.h"
+#include "PropertyContainer.h"
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
 using namespace Base;
 using namespace std;
-
-
-
-
-//**************************************************************************
-// PropertyFile
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TYPESYSTEM_SOURCE(App::PropertyFile , App::PropertyString);
-
-PropertyFile::PropertyFile()
-{
-
-}
-
-PropertyFile::~PropertyFile()
-{
-
-}
 
 
 
@@ -78,21 +60,21 @@ PropertyFileIncluded::~PropertyFileIncluded()
 }
 
 
-void PropertyFileIncluded::setValue(const char* sString)
+void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 {
-   if (sString) {
-        aboutToSetValue();
-        _cValue = sString;
+   if (sFile) {
+	    aboutToSetValue(); // undo redo by move the file away with temp name
+
+		Base::FileInfo file(sFile);
+		Base::FileInfo value(_cValue);
+
+		std::string path = file.dirPath();
+		
+        _cValue = sFile;
         hasSetValue();
     }
 }
 
-void PropertyFileIncluded::setValue(const std::string &sString)
-{
-    aboutToSetValue();
-    _cValue = sString;
-    hasSetValue();
-}
 
 const char* PropertyFileIncluded::getValue(void) const
 {
@@ -121,6 +103,49 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
         PyObject* FileName = PyFile_Name(value);
         string = PyString_AsString(FileName);
     }
+    else if (PyTuple_Check(value)) {
+		if(PyTuple_Size(value) != 2)
+			throw Py::TypeError("Tuple need size of (filePath,newFileName)"); 
+		PyObject* file = PyTuple_GetItem(value,0);
+		PyObject* name = PyTuple_GetItem(value,1);
+
+		// decoding file
+		std::string fileStr;
+		if (PyUnicode_Check(file)) {
+			PyObject* unicode = PyUnicode_AsUTF8String(file);
+			fileStr = PyString_AsString(unicode);
+			Py_DECREF(unicode);
+		}
+		else if (PyString_Check(file)) {
+			fileStr = PyString_AsString(file);
+		}
+		else if (PyFile_Check(file)) {
+			PyObject* FileName = PyFile_Name(file);
+			fileStr = PyString_AsString(FileName);
+		} else {
+			std::string error = std::string("first in tuple must be a file or string");
+			error += value->ob_type->tp_name;
+			throw Py::TypeError(error);
+		}
+
+		// decoding name
+		std::string nameStr;
+		if (PyString_Check(name)) {
+			nameStr = PyString_AsString(name);
+		}
+		else if (PyFile_Check(name)) {
+			PyObject* FileName = PyFile_Name(name);
+			nameStr = PyString_AsString(FileName);
+		} else {
+			std::string error = std::string("second in tuple must be a string");
+			error += value->ob_type->tp_name;
+			throw Py::TypeError(error);
+		}
+
+		setValue(fileStr.c_str(),nameStr.c_str());
+		return;
+	
+	}
     else {
         std::string error = std::string("type must be str or file");
         error += value->ob_type->tp_name;
@@ -128,7 +153,7 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
     }
 
     // assign the string
-    setValue(string);
+    setValue(string.c_str());
 }
 
 void PropertyFileIncluded::Save (Writer &writer) const
@@ -180,3 +205,21 @@ void PropertyFileIncluded::Paste(const Property &from)
     _cValue = dynamic_cast<const PropertyFileIncluded&>(from)._cValue;
     hasSetValue();
 }
+
+
+//**************************************************************************
+// PropertyFile
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyFile , App::PropertyString);
+
+PropertyFile::PropertyFile()
+{
+
+}
+
+PropertyFile::~PropertyFile()
+{
+
+}
+

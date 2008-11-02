@@ -116,6 +116,9 @@ int main( int argc, char ** argv )
     // Destruction phase ===========================================================
     Console().Log("FreeCAD terminating...\n");
 
+	// close open documents
+	App::GetApplication().closeAllDocuments();
+
     // cleans up
     Application::destruct();
 
