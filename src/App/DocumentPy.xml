@@ -90,12 +90,17 @@ Return a list of objects that match the specified type and name.
 Both parameters are optional.</UserDocu>
 		</Documentation>
 	</Methode>
-	<Methode Name="supportedTypes">
-		<Documentation>
-			<UserDocu>A list of supported types of objects</UserDocu>
-		</Documentation>
-	</Methode>
-	<Attribute Name="DependencyGraph" ReadOnly="true">
+	  <Methode Name="supportedTypes">
+		  <Documentation>
+			  <UserDocu>A list of supported types of objects</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="getTempFileName">
+		  <Documentation>
+			  <UserDocu>returns a file name with path in the temp directory of the document.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Attribute Name="DependencyGraph" ReadOnly="true">
 		<Documentation>
 			<UserDocu>The dependency graph as GraphViz text</UserDocu>
 		</Documentation>

@@ -276,6 +276,12 @@ bool Application::closeDocument(const char* name)
 
     return true;
 }
+void Application::closeAllDocuments(void)
+{
+	map<string,Document*>::iterator pos;
+	while( (pos = DocMap.begin()) != DocMap.end())
+		closeDocument(pos->first.c_str());
+}
 
 App::Document* Application::getDocument(const char *Name) const
 {

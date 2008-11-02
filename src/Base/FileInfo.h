@@ -109,11 +109,14 @@ public:
     /// delete the file
     bool deleteFile(void) const;
 
+    /// rename the file
+    bool renameFile(const char* NewName) const;
+
 
     /** @name Tools */
     //@{
-    /// get a unique File Name in the temp path
-    static std::string getTempFileName(void);
+	/// get a unique File Name in the given or (if 0) int the temp path
+    static std::string getTempFileName(const char* FileName=0, const char* path=0);
     /// get the path to the dir which is designed to temp files
     static const std::string &getTempPath(void);
     //@}
