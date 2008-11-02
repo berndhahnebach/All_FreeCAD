@@ -110,7 +110,10 @@ public:
     bool deleteFile(void) const;
 
     /// rename the file
-    bool renameFile(const char* NewName) const;
+    bool renameFile(const char* NewName);
+
+    /// rename the file
+    bool copyTo(const char* NewName) const;
 
 
     /** @name Tools */

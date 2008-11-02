@@ -349,19 +349,40 @@ bool FileInfo::deleteFile(void) const
 #   error "FileInfo::deleteFile() not implemented for this platform!"
 #endif
 }
-bool FileInfo::renameFile(const char* NewName) const
+bool FileInfo::renameFile(const char* NewName)
 {
+	bool res;
 #if defined (_MSC_VER)
     std::wstring oldname = toStdWString();
 	std::wstring newname = ConvertToWideString(NewName);
-    return ::_wrename(oldname.c_str(),newname.c_str()) == 0;
+    res = ::_wrename(oldname.c_str(),newname.c_str()) == 0;
 #elif defined (__GNUC__)
 #   error "FileInfo::renameFile() not implemented for this platform!"
-    return (::remove(FileName.c_str())==0);
+    res =  (::remove(FileName.c_str())==0);
 #else
 #   error "FileInfo::renameFile() not implemented for this platform!"
 #endif
+	setFile(NewName);
+
+	return res;
 }
+
+ bool FileInfo::copyTo(const char* NewName) const
+ {
+	bool res;
+#if defined (_MSC_VER)
+    std::wstring oldname = toStdWString();
+	std::wstring newname = ConvertToWideString(NewName);
+    return CopyFileW(oldname.c_str(),newname.c_str(),true) == 0;
+#elif defined (__GNUC__)
+#   error "FileInfo::copyTo() not implemented for this platform!"
+    return  (::CopyFile(FileName.c_str(),NewName.c_str())==0);
+#else
+#   error "FileInfo::copyTo() not implemented for this platform!"
+#endif
+
+}
+
 
 bool FileInfo::createDirectory(void) const
 {

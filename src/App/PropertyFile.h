@@ -82,6 +82,9 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
+	// get the transient path if the property is in a DocumentObject
+	std::string getDocTransientPath(void);
+
 protected:
     std::string _cValue;
 };

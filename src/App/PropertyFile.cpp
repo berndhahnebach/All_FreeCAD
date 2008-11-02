@@ -35,7 +35,9 @@
 #include <Base/PyObjectBase.h>
 
 #include "PropertyFile.h"
+#include "Document.h"
 #include "PropertyContainer.h"
+#include "DocumentObject.h"
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
 using namespace Base;
@@ -59,18 +61,44 @@ PropertyFileIncluded::~PropertyFileIncluded()
 
 }
 
+std::string PropertyFileIncluded::getDocTransientPath(void)
+{
+	PropertyContainer *co = getContainer();
+	if(co->isDerivedFrom(DocumentObject::getClassTypeId()))
+		return dynamic_cast<DocumentObject*>(co)->getDocument()->TransientDir.getValue();
+
+	return std::string();
+}
 
 void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 {
    if (sFile) {
+		if(_cValue == sFile)
+			throw Base::Exception("Not possible to set the same file!");
+
 	    aboutToSetValue(); // undo redo by move the file away with temp name
 
-		Base::FileInfo file(sFile);
+		// remove old file (if not moved by undo)
 		Base::FileInfo value(_cValue);
+		if(value.exists())
+			value.deleteFile();
 
+		Base::FileInfo file(sFile);
+		std::string pathTrans = getDocTransientPath();
 		std::string path = file.dirPath();
-		
-        _cValue = sFile;
+		std::string pathAct = value.dirPath();
+	
+		if(sName)
+			_cValue = path + "/" + sName;
+		else 
+			if(value.fileName() == "")
+				_cValue = path + "/" + file.fileName();
+
+		if(path == pathTrans)
+			file.renameFile(_cValue.c_str());
+		else
+			file.copyTo(_cValue.c_str());
+
         hasSetValue();
     }
 }
