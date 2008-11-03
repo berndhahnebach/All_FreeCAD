@@ -26,9 +26,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <assert.h>
-# include <stdio.h>
-# include <stdlib.h>
+# include <cassert>
+# include <cstdio>
+# include <cstdlib>
 # include <fstream>
 # include <climits>
 # include <cstring>
@@ -46,9 +46,10 @@
 
 #include "FileInfo.h"
 #include "Exception.h"
+#include "Stream.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
+#include <cstdio>
 
 #define new DEBUG_CLIENTBLOCK
 
@@ -157,12 +158,15 @@ std::string FileInfo::getTempFileName(const char* FileName, const char* Path)
     buf[PATH_MAX] = 0; // null termination needed
 
     // File name in the path 
-    if (FileName)
-        std::strcat(buf, std::string("/")+FileName+"XXXXXX");
+    if (FileName) {
+        std::strcat(buf, "/");
+        std::strcat(buf, FileName);
+        std::strcat(buf, "XXXXXX");
+    }
     else
         std::strcat(buf, "/fileXXXXXX");
 
-    /*int id =*/ mkstemp(buf);
+    /*int id =*/ (void) mkstemp(buf);
     //FILE* file = fdopen(id, "w");
     return std::string(buf);
 #endif
@@ -348,6 +352,7 @@ bool FileInfo::deleteFile(void) const
 #   error "FileInfo::deleteFile() not implemented for this platform!"
 #endif
 }
+
 bool FileInfo::renameFile(const char* NewName)
 {
     bool res;
@@ -356,8 +361,7 @@ bool FileInfo::renameFile(const char* NewName)
     std::wstring newname = ConvertToWideString(NewName);
     res = ::_wrename(oldname.c_str(),newname.c_str()) == 0;
 #elif defined (__GNUC__)
-#   error "FileInfo::renameFile() not implemented for this platform!"
-    res =  (::remove(FileName.c_str())==0);
+    res = ::rename(FileName.c_str(),NewName) == 0;
 #else
 #   error "FileInfo::renameFile() not implemented for this platform!"
 #endif
@@ -373,8 +377,12 @@ bool FileInfo::copyTo(const char* NewName) const
     std::wstring newname = ConvertToWideString(NewName);
     return CopyFileW(oldname.c_str(),newname.c_str(),true) == 0;
 #elif defined (__GNUC__)
-#   error "FileInfo::copyTo() not implemented for this platform!"
-    return  (::CopyFile(FileName.c_str(),NewName.c_str())==0);
+    FileInfo fi1(FileName);
+    FileInfo fi2(NewName);
+    Base::ifstream file(fi1, std::ios::in | std::ios::binary);
+    Base::ofstream copy(fi2, std::ios::out | std::ios::binary);
+    file >> copy.rdbuf();
+    return file.is_open() && copy.is_open();
 #else
 #   error "FileInfo::copyTo() not implemented for this platform!"
 #endif
