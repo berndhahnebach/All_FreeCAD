@@ -276,16 +276,17 @@ bool Application::closeDocument(const char* name)
 
     return true;
 }
+
 void Application::closeAllDocuments(void)
 {
-	map<string,Document*>::iterator pos;
-	while( (pos = DocMap.begin()) != DocMap.end())
-		closeDocument(pos->first.c_str());
+    std::map<std::string,Document*>::iterator pos;
+    while((pos = DocMap.begin()) != DocMap.end())
+        closeDocument(pos->first.c_str());
 }
 
 App::Document* Application::getDocument(const char *Name) const
 {
-    map<string,Document*>::const_iterator pos;
+    std::map<std::string,Document*>::const_iterator pos;
 
     pos = DocMap.find(Name);
 
@@ -297,7 +298,7 @@ App::Document* Application::getDocument(const char *Name) const
 
 const char * Application::getDocumentName(const App::Document* doc) const
 {
-    for ( map<string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+    for (std::map<std::string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it)
         if (it->second == doc)
             return it->first.c_str();
 
@@ -307,8 +308,8 @@ const char * Application::getDocumentName(const App::Document* doc) const
 std::vector<App::Document*> Application::getDocuments() const
 {
     std::vector<App::Document*> docs;
-    for ( map<string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
-        docs.push_back( it->second );
+    for (std::map<std::string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it)
+        docs.push_back(it->second);
     return docs;
 }
 

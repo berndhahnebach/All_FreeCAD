@@ -28,11 +28,11 @@
 #endif
 
 #ifdef FC_LINUX
-#	include <unistd.h>
+# include <unistd.h>
 #endif
 
 #if HAVE_CONFIG_H
-#	include <config.h>
+# include <config.h>
 #endif // HAVE_CONFIG_H
 
 #include <stdio.h>
@@ -116,8 +116,8 @@ int main( int argc, char ** argv )
     // Destruction phase ===========================================================
     Console().Log("FreeCAD terminating...\n");
 
-	// close open documents
-	App::GetApplication().closeAllDocuments();
+    // close open documents
+    App::GetApplication().closeAllDocuments();
 
     // cleans up
     Application::destruct();
