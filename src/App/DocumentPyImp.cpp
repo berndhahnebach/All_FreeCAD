@@ -40,38 +40,6 @@
 using namespace App;
 
 
-
-PyObject* DocumentPy::getTempFileName(PyObject *args)
-{
-   PyObject *value;
-   if (!PyArg_ParseTuple(args, "O",&value))
-       return NULL;    // NULL triggers exception
-
-   std::string string;
-   if (PyUnicode_Check(value)) {
-       PyObject* unicode = PyUnicode_AsUTF8String(value);
-       string = PyString_AsString(unicode);
-       Py_DECREF(unicode);
-   }
-   else if (PyString_Check(value)) {
-       string = PyString_AsString(value);
-   }
-   else {
-       std::string error = std::string("type must be a string!");
-       error += value->ob_type->tp_name;
-       throw Py::TypeError(error);
-   }
-
-   // search for a temp file name in the document transient directory 
-   Base::FileInfo fileName(Base::FileInfo::getTempFileName(string.c_str(),getDocumentPtr()->TransientDir.getValue()));
-   // delete the created file, we need only the name...
-   fileName.deleteFile();
-
-   PyObject *p = PyUnicode_DecodeUTF8(fileName.filePath().c_str(),fileName.filePath().size(),0);
-   if (!p) throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
-   return p;
-}
-
 // returns a string which represent the object e.g. when printed in python
 const char *DocumentPy::representation(void) const
 {
@@ -405,6 +373,38 @@ Py::String  DocumentPy::getDependencyGraph(void) const
 Py::String DocumentPy::getName(void) const
 {
     return Py::String(getDocumentPtr()->getName());
+}
+
+PyObject* DocumentPy::getTempFileName(PyObject *args)
+{
+    PyObject *value;
+    if (!PyArg_ParseTuple(args, "O",&value))
+        return NULL;    // NULL triggers exception
+
+    std::string string;
+    if (PyUnicode_Check(value)) {
+        PyObject* unicode = PyUnicode_AsUTF8String(value);
+        string = PyString_AsString(unicode);
+        Py_DECREF(unicode);
+    }
+    else if (PyString_Check(value)) {
+        string = PyString_AsString(value);
+    }
+    else {
+        std::string error = std::string("type must be a string!");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+
+    // search for a temp file name in the document transient directory 
+    Base::FileInfo fileName(Base::FileInfo::getTempFileName
+        (string.c_str(),getDocumentPtr()->TransientDir.getValue()));
+    // delete the created file, we need only the name...
+    fileName.deleteFile();
+
+    PyObject *p = PyUnicode_DecodeUTF8(fileName.filePath().c_str(),fileName.filePath().size(),0);
+    if (!p) throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+    return p;
 }
 
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const

@@ -97,7 +97,7 @@ Both parameters are optional.</UserDocu>
 	  </Methode>
 	  <Methode Name="getTempFileName">
 		  <Documentation>
-			  <UserDocu>returns a file name with path in the temp directory of the document.</UserDocu>
+			  <UserDocu>Returns a file name with path in the temp directory of the document.</UserDocu>
 		  </Documentation>
 	  </Methode>
 	  <Attribute Name="DependencyGraph" ReadOnly="true">

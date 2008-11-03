@@ -94,34 +94,34 @@ int TopoShapePy::PyInit(PyObject* args, PyObject*)
     if (!PyArg_ParseTuple(args, "|O!", &(PyList_Type), &pcObj))
         return -1;
 
-	if(pcObj)
-	{
-		TopoShape shape;
-		try {
-			Py::List list(pcObj);
-			bool first = true;
-			for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-				if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
-					TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
-						getGeometryPtr()->toShape();
-					if (first) {
-						first = false;
-						shape._Shape = sh;
-					}
-					else {
-						shape._Shape = shape.fuse(sh);
-					}
-				}
-			}
-		}
-		catch (Standard_Failure) {
-			Handle_Standard_Failure e = Standard_Failure::Caught();
-			PyErr_SetString(PyExc_Exception, e->GetMessageString());
-			return -1;
-		}
+    if (pcObj) {
+        TopoShape shape;
+        try {
+            Py::List list(pcObj);
+            bool first = true;
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
+                    TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
+                        getGeometryPtr()->toShape();
+                    if (first) {
+                        first = false;
+                        shape._Shape = sh;
+                    }
+                    else {
+                        shape._Shape = shape.fuse(sh);
+                    }
+                }
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
+        }
 
-		getTopoShapePtr()->_Shape = shape._Shape;
-	}
+        getTopoShapePtr()->_Shape = shape._Shape;
+    }
+
     return 0;
 }
 

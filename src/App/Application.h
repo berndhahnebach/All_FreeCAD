@@ -91,8 +91,8 @@ public:
     /// Set the active document
     void setActiveDocument(App::Document* pDoc);
     void setActiveDocument(const char *Name);
-	/// close all documents (without saving)
-	void closeAllDocuments(void);
+    /// close all documents (without saving)
+    void closeAllDocuments(void);
     //@}
 
     /** @name Signals of the Application */
