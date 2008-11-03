@@ -69,6 +69,7 @@ std::string ConvertFromWideString(const std::wstring& string)
     CharString = NULL;
     return String;
 }
+
 std::wstring ConvertToWideString(const std::string& string)
 {
     int neededSize = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), -1, 0, 0);
@@ -125,42 +126,41 @@ std::string FileInfo::getTempFileName(const char* FileName, const char* Path)
 #ifdef FC_OS_WIN32
     wchar_t buf[MAX_PATH + 2];
 
-	// Path where the file is located
-	std::wstring path; 
-	if(Path)
-		path = ConvertToWideString(std::string(Path));
-	else
-		path = ConvertToWideString(getTempPath());
+    // Path where the file is located
+    std::wstring path; 
+    if (Path)
+        path = ConvertToWideString(std::string(Path));
+    else
+        path = ConvertToWideString(getTempPath());
 
-	// File name in the path 
-	std::wstring file; 
-	if(FileName)
-		file = ConvertToWideString(std::string(FileName));
-	else
-		file = L"FCTempFile";
+    // File name in the path 
+    std::wstring file; 
+    if (FileName)
+        file = ConvertToWideString(std::string(FileName));
+    else
+        file = L"FCTempFile";
 
 
     // this already creates the file
     GetTempFileNameW(path.c_str(),file.c_str(),0,buf);
 
-	return std::string(ConvertFromWideString(std::wstring(buf)));
+    return std::string(ConvertFromWideString(std::wstring(buf)));
 #else
     char buf[PATH_MAX+1];
 
-	// Path where the file is located
-	if(Path)
-		std::strncpy(buf, Path, PATH_MAX);
-	else 
-		std::strncpy(buf, getTempPath().c_str(), PATH_MAX);
+    // Path where the file is located
+    if (Path)
+        std::strncpy(buf, Path, PATH_MAX);
+    else
+        std::strncpy(buf, getTempPath().c_str(), PATH_MAX);
 
     buf[PATH_MAX] = 0; // null termination needed
 
-
-	// File name in the path 
-	if(FileName)
-		std::strcat(buf, std::string("/")+FileName+"XXXXXX");
-	else 
-	    std::strcat(buf, "/fileXXXXXX");
+    // File name in the path 
+    if (FileName)
+        std::strcat(buf, std::string("/")+FileName+"XXXXXX");
+    else
+        std::strcat(buf, "/fileXXXXXX");
 
     /*int id =*/ mkstemp(buf);
     //FILE* file = fdopen(id, "w");
@@ -307,25 +307,24 @@ bool FileInfo::isDir () const
         // if we can chdir then it must be a directory, otherwise we assume it
         // is a file (which doesn't need to be true for any cases)
 #if defined (_MSC_VER)
-        
-		std::wstring wstr = toStdWString();
-		struct _stat st;
+        std::wstring wstr = toStdWString();
+        struct _stat st;
 
-		if (_wstat(wstr.c_str(), &st) != 0)
-			return false;
-		
-		return ((st.st_mode & _S_IFDIR) != 0);
+        if (_wstat(wstr.c_str(), &st) != 0)
+            return false;
+        return ((st.st_mode & _S_IFDIR) != 0);
 
 #elif defined (__GNUC__)
- 		struct stat st;
-		if (stat(FileName.c_str(), &st) != 0)
-		{
-			return false;
-		}
-		return S_ISDIR(st.st_mode);
+        struct stat st;
+        if (stat(FileName.c_str(), &st) != 0) {
+            return false;
+        }
+        return S_ISDIR(st.st_mode);
 #endif
         return false;
-    } else return false;
+    }
+    else
+        return false;
 
     // TODO: Check for valid path name
     return true;
@@ -351,10 +350,10 @@ bool FileInfo::deleteFile(void) const
 }
 bool FileInfo::renameFile(const char* NewName)
 {
-	bool res;
+    bool res;
 #if defined (_MSC_VER)
     std::wstring oldname = toStdWString();
-	std::wstring newname = ConvertToWideString(NewName);
+    std::wstring newname = ConvertToWideString(NewName);
     res = ::_wrename(oldname.c_str(),newname.c_str()) == 0;
 #elif defined (__GNUC__)
 #   error "FileInfo::renameFile() not implemented for this platform!"
@@ -362,17 +361,16 @@ bool FileInfo::renameFile(const char* NewName)
 #else
 #   error "FileInfo::renameFile() not implemented for this platform!"
 #endif
-	setFile(NewName);
+    setFile(NewName);
 
-	return res;
+    return res;
 }
 
- bool FileInfo::copyTo(const char* NewName) const
- {
-	bool res;
+bool FileInfo::copyTo(const char* NewName) const
+{
 #if defined (_MSC_VER)
     std::wstring oldname = toStdWString();
-	std::wstring newname = ConvertToWideString(NewName);
+    std::wstring newname = ConvertToWideString(NewName);
     return CopyFileW(oldname.c_str(),newname.c_str(),true) == 0;
 #elif defined (__GNUC__)
 #   error "FileInfo::copyTo() not implemented for this platform!"
@@ -380,9 +378,7 @@ bool FileInfo::renameFile(const char* NewName)
 #else
 #   error "FileInfo::copyTo() not implemented for this platform!"
 #endif
-
 }
-
 
 bool FileInfo::createDirectory(void) const
 {
