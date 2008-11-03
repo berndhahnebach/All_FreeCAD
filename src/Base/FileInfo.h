@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2005                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2005                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -44,9 +44,9 @@ public:
     /// Constrction
     FileInfo (const char* _FileName="");
     FileInfo (const std::string &_FileName);
-    /// set a new file name
+    /// Set a new file name
     void setFile(const char* name);
-    /// set a new file name
+    /// Set a new file name
     void setFile(const std::string &name){setFile(name.c_str());}
 
 
@@ -63,8 +63,10 @@ public:
     /// Convert the path name into a UCS-2 encoded wide string format.
     std::wstring toStdWString() const;
     /** Returns the file's extension name.
-     * If complete is TRUE (the default), extension() returns the string of all characters in the file name after (but not including) the first '.' character.
-     * If complete is FALSE, extension() returns the string of all characters in the file name after (but not including) the last '.' character.
+     * If complete is TRUE (the default), extension() returns the string of all
+     * characters in the file name after (but not including) the first '.' character.
+     * If complete is FALSE, extension() returns the string of all characters in
+     * the file name after (but not including) the last '.' character.
      * Example:
      *@code
      *  FileInfo fi( "/tmp/archive.tar.gz" );
@@ -74,7 +76,7 @@ public:
      *@endcode
      */
     std::string extension (bool complete = false) const;
-    /// checks for a special extension, NOT case sensetive
+    /// Checks for a special extension, NOT case sensetive
     bool hasExtension (const char* Ext) const;
     //@}
 
@@ -82,15 +84,15 @@ public:
     //@{
     /// Does the file exist?
     bool exists () const;
-    /// checks if the file exist and is readable
+    /// Checks if the file exist and is readable
     bool isReadable () const;
-    /// checks if the file exist and is writable
+    /// Checks if the file exist and is writable
     bool isWritable () const;
-    /// checks if it is a file (not a direrctory)
+    /// Checks if it is a file (not a direrctory)
     bool isFile () const;
-    /// checks if it is a directory (not a file)
+    /// Checks if it is a directory (not a file)
     bool isDir () const;
-    /// the size of the file 
+    /// The size of the file 
     unsigned int size () const;
     //@}
 
@@ -98,29 +100,26 @@ public:
     //@{
     /// Creates a directory. Returns TRUE if successful; otherwise returns FALSE.
     bool createDirectory( void ) const;
-    /// get a list of the directory content
+    /// Get a list of the directory content
     std::vector<Base::FileInfo> getDirectoryContent(void) const;
-    /// delete an empty directory 
+    /// Delete an empty directory 
     bool deleteDirectory(void) const;
-    /// delete a directory and all its content
+    /// Delete a directory and all its content
     bool deleteDirectoryRecursive(void) const;
     //@}
 
-    /// delete the file
+    /// Delete the file
     bool deleteFile(void) const;
-
-    /// rename the file
+    /// Rename the file
     bool renameFile(const char* NewName);
-
-    /// rename the file
+    /// Rename the file
     bool copyTo(const char* NewName) const;
-
 
     /** @name Tools */
     //@{
-	/// get a unique File Name in the given or (if 0) int the temp path
+    /// Get a unique File Name in the given or (if 0) in the temp path
     static std::string getTempFileName(const char* FileName=0, const char* path=0);
-    /// get the path to the dir which is designed to temp files
+    /// Get the path to the dir which is considered to temp files
     static const std::string &getTempPath(void);
     //@}
 
