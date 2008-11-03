@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Geom_SurfaceOfLinearExtrusion.hxx>
+#endif
 
 #include "Geometry.h"
 #include "SurfaceOfExtrusionPy.h"
