@@ -22,6 +22,14 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Geom_BSplineCurve.hxx>
+# include <gp_Pnt.hxx>
+# include <TColStd_Array1OfReal.hxx>
+# include <TColgp_Array1OfPnt.hxx>
+#endif
+
+#include <Base/VectorPy.h>
 
 #include "Geometry.h"
 #include "BSplineCurvePy.h"
@@ -47,29 +55,63 @@ int BSplineCurvePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
-
-PyObject* BSplineCurvePy::increaseDegree(PyObject * /*args*/)
+PyObject* BSplineCurvePy::increaseDegree(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int degree;
+    if (!PyArg_ParseTuple(args, "i", &degree))
+        return 0;
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    curve->IncreaseDegree(degree);
+    Py_Return;
 }
 
-PyObject* BSplineCurvePy::increaseMultiplicity(PyObject * /*args*/)
+PyObject* BSplineCurvePy::increaseMultiplicity(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int mult=-1;
+    int start, end;
+    if (!PyArg_ParseTuple(args, "ii|i", &start, &end, &mult))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    if (mult == -1) {
+        mult = end;
+        curve->IncreaseMultiplicity(start, mult);
+    }
+    else {
+        curve->IncreaseMultiplicity(start, end, mult);
+    }
+
+    Py_Return;
 }
 
-PyObject* BSplineCurvePy::incrementMultiplicity(PyObject * /*args*/)
+PyObject* BSplineCurvePy::incrementMultiplicity(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int start, end, mult;
+    if (!PyArg_ParseTuple(args, "iii", &start, &end, &mult))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    curve->IncrementMultiplicity(start, end, mult);
+
+    Py_Return;
 }
 
-PyObject* BSplineCurvePy::insertKnot(PyObject * /*args*/)
+PyObject* BSplineCurvePy::insertKnot(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double U, tol = 0.0;
+    int M=1;
+    PyObject* add = Py_True;
+    if (!PyArg_ParseTuple(args, "d|idO!", &U, &M, &tol, PyBool_Type, &add))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    curve->InsertKnot(U,M,tol, (add==Py_True));
+
+    Py_Return;
 }
 
 PyObject* BSplineCurvePy::insertKnots(PyObject * /*args*/)
@@ -78,153 +120,434 @@ PyObject* BSplineCurvePy::insertKnots(PyObject * /*args*/)
     return 0;
 }
 
-PyObject* BSplineCurvePy::removeKnot(PyObject * /*args*/)
+PyObject* BSplineCurvePy::removeKnot(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double tol;
+    int Index,M;
+    if (!PyArg_ParseTuple(args, "iid", &Index, &M, &tol))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    curve->RemoveKnot(Index,M,tol);
+
+    Py_Return;
 }
 
-PyObject* BSplineCurvePy::segment(PyObject * /*args*/)
+PyObject* BSplineCurvePy::segment(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double u1,u2;
+    if (!PyArg_ParseTuple(args, "dd", &u1,&u2))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->Segment(u1,u2);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setKnot(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setKnot(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int Index, M=-1;
+    double K;
+    int mult=-1;
+    if (!PyArg_ParseTuple(args, "id|i", &Index, &K, &M))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    if (M == -1) {
+        curve->SetKnot(Index, K);
+    }
+    else {
+        curve->SetKnot(Index, K, M);
+    }
+
+    Py_Return;
 }
 
-PyObject* BSplineCurvePy::getKnot(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getKnot(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int Index;
+    if (!PyArg_ParseTuple(args, "i", &Index))
+        return 0;
+
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    double M = curve->Knot(Index);
+
+    return Py_BuildValue("d",M);
 }
 
-PyObject* BSplineCurvePy::setKnots(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setKnots(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    PyObject* obj;
+    if (!PyArg_ParseTuple(args, "O!", PyList_Type, &obj))
+        return 0;
+    try {
+        Py::List list(obj);
+        TColStd_Array1OfReal k(1,list.size());
+        int index=1;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Float val(*it);
+            k(index++) = (double)val;
+        }
+
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetKnots(k);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getKnots(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getKnots(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        TColStd_Array1OfReal w(1,curve->NbKnots());
+        curve->Knots(w);
+        Py::List knots;
+        for (Standard_Integer i=w.Lower(); i<=w.Upper(); i++) {
+            knots.append(Py::Float(w(i)));
+        }
+        return Py::new_reference_to(knots);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setPole(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setPole(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    double weight=-1.0;
+    PyObject* p;
+    if (!PyArg_ParseTuple(args, "iO!|d", &index, &(Base::VectorPy::Type), &p, &weight))
+        return 0;
+    Base::Vector3d vec = static_cast<Base::VectorPy*>(p)->value();
+    gp_Pnt pnt(vec.x, vec.y, vec.z);
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        if (weight < 0.0)
+            curve->SetPole(index,pnt);
+        else
+            curve->SetPole(index,pnt,weight);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getPole(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getPole(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        gp_Pnt pnt = curve->Pole(index);
+        Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
+            pnt.X(), pnt.Y(), pnt.Z()));
+        return vec;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getPoles(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getPoles(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        TColgp_Array1OfPnt p(1,curve->NbPoles());
+        curve->Poles(p);
+        Py::List poles;
+        for (Standard_Integer i=p.Lower(); i<=p.Upper(); i++) {
+            gp_Pnt pnt = p(i);
+            Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
+                pnt.X(), pnt.Y(), pnt.Z()));
+            poles.append(Py::Object(vec));
+        }
+        return Py::new_reference_to(poles);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setWeight(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setWeight(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    double weight;
+    if (!PyArg_ParseTuple(args, "id", &index,&weight))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetWeight(index,weight);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getWeight(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getWeight(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        double weight = curve->Weight(index);
+        return Py_BuildValue("d", weight);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getWeights(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getWeights(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        TColStd_Array1OfReal w(1,curve->NbPoles());
+        curve->Weights(w);
+        Py::List weights;
+        for (Standard_Integer i=w.Lower(); i<=w.Upper(); i++) {
+            weights.append(Py::Float(w(i)));
+        }
+        return Py::new_reference_to(weights);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getResolution(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getResolution(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double tol;
+    if (!PyArg_ParseTuple(args, "d", &tol))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        double utol;
+        curve->Resolution(tol,utol);
+        return Py_BuildValue("d",utol);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::movePoint(PyObject * /*args*/)
+PyObject* BSplineCurvePy::movePoint(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double U;
+    int index1, index2;
+    PyObject* pnt;
+    if (!PyArg_ParseTuple(args, "dO!ii", &U, &(Base::VectorPy::Type),&pnt, &index1, &index2))
+        return 0;
+    try {
+        Base::Vector3d p = static_cast<Base::VectorPy*>(pnt)->value();
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        int first, last;
+        curve->MovePoint(U, gp_Pnt(p.x,p.y,p.z), index1, index2, first, last);
+        return Py_BuildValue("(ii)",first, last);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setNotPeriodic(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setNotPeriodic(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetNotPeriodic();
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setPeriodic(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setPeriodic(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetPeriodic();
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::setOrigin(PyObject * /*args*/)
+PyObject* BSplineCurvePy::setOrigin(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->SetOrigin(index);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getMultiplicity(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getMultiplicity(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    int index;
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        int mult = curve->Multiplicity(index);
+        return Py_BuildValue("i", mult);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
-PyObject* BSplineCurvePy::getMultiplicities(PyObject * /*args*/)
+PyObject* BSplineCurvePy::getMultiplicities(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        TColStd_Array1OfInteger m(1,curve->NbKnots());
+        curve->Multiplicities(m);
+        Py::List mults;
+        for (Standard_Integer i=m.Lower(); i<=m.Upper(); i++) {
+            mults.append(Py::Int(m(i)));
+        }
+        return Py::new_reference_to(mults);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
 Py::Int BSplineCurvePy::getDegree(void) const
 {
-    return Py::Int();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->Degree()); 
 }
 
 Py::Int BSplineCurvePy::getMaxDegree(void) const
 {
-    return Py::Int();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->MaxDegree()); 
 }
 
 Py::Int BSplineCurvePy::getNbPoles(void) const
 {
-    return Py::Int();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->NbPoles()); 
 }
 
 Py::Object BSplineCurvePy::getStartPoint(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineCurve c = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    gp_Pnt pnt = c->StartPoint();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
+        pnt.X(), pnt.Y(), pnt.Z()));
+    return Py::Object(vec);
 }
 
 Py::Object BSplineCurvePy::getEndPoint(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineCurve c = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    gp_Pnt pnt = c->EndPoint();
+    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
+        pnt.X(), pnt.Y(), pnt.Z()));
+    return Py::Object(vec);
 }
 
 Py::Object BSplineCurvePy::getFirstUKnotIndex(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->FirstUKnotIndex()); 
 }
 
 Py::Object BSplineCurvePy::getLastUKnotIndex(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->LastUKnotIndex()); 
 }
 
 Py::List BSplineCurvePy::getKnotSequence(void) const
@@ -241,5 +564,3 @@ int BSplineCurvePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
-
-
