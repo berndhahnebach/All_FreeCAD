@@ -34,6 +34,9 @@
 # include <Geom_TrimmedCurve.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_BezierCurve.hxx>
+# include <Geom_BezierSurface.hxx>
+# include <Geom_BSplineCurve.hxx>
+# include <Geom_BSplineSurface.hxx>
 # include <Geom_Surface.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
@@ -56,6 +59,9 @@
 # include <gp_Torus.hxx>
 # include <Standard_Real.hxx>
 # include <TColgp_Array1OfPnt.hxx>
+# include <TColgp_Array2OfPnt.hxx>
+# include <TColStd_Array1OfReal.hxx>
+# include <TColStd_Array1OfInteger.hxx>
 #endif
 
 #include "Geometry.h"
@@ -156,6 +162,19 @@ Handle_Geom_Geometry GeomBezierCurve::handle() const
 
 GeomBSplineCurve::GeomBSplineCurve()
 {
+    TColgp_Array1OfPnt poles(1,2);
+    poles(1) = gp_Pnt(0.0,0.0,0.0);
+    poles(2) = gp_Pnt(1.0,0.0,0.0);
+
+    TColStd_Array1OfReal knots(1,2);
+    knots(1) = 0.0;
+    knots(2) = 1.0;
+
+    TColStd_Array1OfInteger mults(1,2);
+    mults(1) = 2;
+    mults(2) = 2;
+
+    this->myCurve = new Geom_BSplineCurve(poles, knots, mults, 1);
 }
 
 GeomBSplineCurve::GeomBSplineCurve(const Handle_Geom_BSplineCurve& b)
@@ -380,6 +399,12 @@ TopoDS_Shape GeomSurface::toShape() const
 
 GeomBezierSurface::GeomBezierSurface()
 {
+    TColgp_Array2OfPnt poles(1,2,1,2);
+    poles(1,1) = gp_Pnt(0.0,0.0,0.0);
+    poles(2,1) = gp_Pnt(1.0,0.0,0.0);
+    poles(1,2) = gp_Pnt(0.0,1.0,0.0);
+    poles(2,2) = gp_Pnt(1.0,1.0,0.0);
+    this->mySurface = new Geom_BezierSurface(poles);
 }
 
 GeomBezierSurface::GeomBezierSurface(const Handle_Geom_BezierSurface& b)
@@ -400,6 +425,21 @@ Handle_Geom_Geometry GeomBezierSurface::handle() const
 
 GeomBSplineSurface::GeomBSplineSurface()
 {
+    TColgp_Array2OfPnt poles(1,2,1,2);
+    poles(1,1) = gp_Pnt(0.0,0.0,0.0);
+    poles(2,1) = gp_Pnt(1.0,0.0,0.0);
+    poles(1,2) = gp_Pnt(0.0,1.0,0.0);
+    poles(2,2) = gp_Pnt(1.0,1.0,0.0);
+
+    TColStd_Array1OfReal knots(1,2);
+    knots(1) = 0.0;
+    knots(2) = 1.0;
+
+    TColStd_Array1OfInteger mults(1,2);
+    mults(1) = 2;
+    mults(2) = 2;
+
+    this->mySurface = new Geom_BSplineSurface(poles, knots, knots, mults, mults, 1, 1);
 }
 
 GeomBSplineSurface::GeomBSplineSurface(const Handle_Geom_BSplineSurface& b)

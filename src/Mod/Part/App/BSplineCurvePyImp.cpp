@@ -27,6 +27,7 @@
 # include <gp_Pnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColgp_Array1OfPnt.hxx>
+# include <TColStd_Array1OfInteger.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -53,6 +54,57 @@ PyObject *BSplineCurvePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  
 int BSplineCurvePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
     return 0;
+}
+
+PyObject* BSplineCurvePy::isRational(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsRational();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineCurvePy::isPeriodic(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineCurvePy::isClosed(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsClosed();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
 }
 
 PyObject* BSplineCurvePy::increaseDegree(PyObject * args)
@@ -514,6 +566,13 @@ Py::Int BSplineCurvePy::getNbPoles(void) const
     Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
         (getGeometryPtr()->handle());
     return Py::Int(curve->NbPoles()); 
+}
+
+Py::Int BSplineCurvePy::getNbKnots(void) const
+{
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(curve->NbKnots()); 
 }
 
 Py::Object BSplineCurvePy::getStartPoint(void) const
