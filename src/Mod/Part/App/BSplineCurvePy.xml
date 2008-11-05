@@ -34,6 +34,14 @@ B-Spline curve curve. This value is 25.</UserDocu>
 			</Documentation>
 			<Parameter Name="NbPoles" Type="Int"/>
 		</Attribute>
+		<Attribute Name="NbKnots" ReadOnly="true">
+			<Documentation>
+				<UserDocu>
+					Returns the number of knots of this B-Spline curve.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="NbPoles" Type="Int"/>
+		</Attribute>
 		<Attribute Name="StartPoint" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Returns the start point of this B-Spline curve.</UserDocu>
@@ -64,14 +72,36 @@ of this B-Spline curve.</UserDocu>
 		</Attribute>
 		<Attribute Name="KnotSequence" ReadOnly="true">
 			<Documentation>
-				<UserDocu>Returns the knots sequence of this BSpline curve.</UserDocu>
+				<UserDocu>Returns the knots sequence of this B-Spline curve.</UserDocu>
 			</Documentation>
 			<Parameter Name="KnotSequence" Type="List"/>
 		</Attribute>
+		<Methode Name="isRational">
+			<Documentation>
+				<UserDocu>
+					Returns true if this B-Spline curve is rational.
+					A B-Spline curve is rational if, at the time of construction,
+					the weight table has been initialized.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isPeriodic">
+			<Documentation>
+				<UserDocu>Returns false.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isClosed">
+			<Documentation>
+				<UserDocu>
+					Returns true if the distance between the start point and end point of
+					this B-Spline curve is less than or equal to gp::Resolution().
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="increaseDegree">
 			<Documentation>
 				<UserDocu>increase(Int=Degree)
-Increases the degree of this BSpline curve to Degree.
+Increases the degree of this B-Spline curve to Degree.
 As a result, the poles, weights and multiplicities tables
 are modified; the knots table is not changed. Nothing is
 done if Degree is less than or equal to the current degree.</UserDocu>
@@ -168,8 +198,8 @@ ensures that:
 		</Methode>
 		<Methode Name="movePoint">
 			<Documentation>
-				<UserDocu>Moves the point of parameter U of this BSpline curve to P.
-Index1 and Index2 are the indexes in the table of poles of this BSpline curve
+				<UserDocu>Moves the point of parameter U of this B-Spline curve to P.
+Index1 and Index2 are the indexes in the table of poles of this B-Spline curve
 of the first and last poles designated to be moved.
 FirstModifiedPole and LastModifiedPole are the indexes of the first and last
 poles which are effectively modified.</UserDocu>
@@ -177,19 +207,19 @@ poles which are effectively modified.</UserDocu>
 		</Methode>
 		<Methode Name="setNotPeriodic">
 			<Documentation>
-				<UserDocu>Changes this BSpline curve into a non-periodic curve.
+				<UserDocu>Changes this B-Spline curve into a non-periodic curve.
 If this curve is already non-periodic, it is not modified.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="setPeriodic">
 			<Documentation>
-				<UserDocu>Changes this BSpline curve into a periodic curve.</UserDocu>
+				<UserDocu>Changes this B-Spline curve into a periodic curve.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="setOrigin">
 			<Documentation>
 				<UserDocu>Assigns the knot of index Index in the knots table
-as the origin of this periodic BSpline curve. As a consequence,
+as the origin of this periodic B-Spline curve. As a consequence,
 the knots and poles tables are modified.</UserDocu>
 			</Documentation>
 		</Methode>
@@ -201,7 +231,9 @@ from the knots table of this B-Spline curve.</UserDocu>
 		</Methode>
 		<Methode Name="getMultiplicities">
 			<Documentation>
-				<UserDocu>Returns the multiplicities table M of the knots of this BSpline curve.</UserDocu>
+				<UserDocu>
+					Returns the multiplicities table M of the knots of this B-Spline curve.
+				</UserDocu>
 			</Documentation>
 		</Methode>
 	</PythonExport>

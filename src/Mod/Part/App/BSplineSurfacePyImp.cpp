@@ -47,6 +47,189 @@ int BSplineSurfacePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject* BSplineSurfacePy::increaseDegree(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::increaseMultiplicity(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::incrementMultiplicity(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::insertKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::insertKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::removeKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::segment(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setPole(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getPole(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getPoles(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setWeight(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getWeight(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getWeights(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getResolution(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::movePoint(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setNotPeriodic(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setPeriodic(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setOrigin(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getMultiplicity(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getMultiplicities(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+Py::Int BSplineSurfacePy::getDegree(void) const
+{
+    return Py::Int();
+}
+
+Py::Int BSplineSurfacePy::getMaxDegree(void) const
+{
+    return Py::Int();
+}
+
+Py::Int BSplineSurfacePy::getNbPoles(void) const
+{
+    return Py::Int();
+}
+
+Py::Object BSplineSurfacePy::getStartPoint(void) const
+{
+    return Py::Object();
+}
+
+Py::Object BSplineSurfacePy::getEndPoint(void) const
+{
+    return Py::Object();
+}
+
+Py::Object BSplineSurfacePy::getFirstUKnotIndex(void) const
+{
+    return Py::Object();
+}
+
+Py::Object BSplineSurfacePy::getLastUKnotIndex(void) const
+{
+    return Py::Object();
+}
+
+Py::List BSplineSurfacePy::getKnotSequence(void) const
+{
+    return Py::List();
+}
 
 PyObject *BSplineSurfacePy::getCustomAttributes(const char* /*attr*/) const
 {

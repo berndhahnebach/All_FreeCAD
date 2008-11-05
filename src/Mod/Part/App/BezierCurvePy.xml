@@ -12,7 +12,11 @@
 		Constructor="true">
 		<Documentation>
 			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
-			<UserDocu>Describes a Bezier curve in 3D space</UserDocu>
+			<UserDocu>
+				Describes a rational or non-rational Bezier curve:
+				-- a non-rational Bezier curve is defined by a table of poles (also called control points)
+				-- a rational Bezier curve is defined by a table of poles with varying weights
+			</UserDocu>
 		</Documentation>
 		<Attribute Name="Degree" ReadOnly="true">
 			<Documentation>
@@ -47,6 +51,23 @@ Bezier curve curve. This value is 25.</UserDocu>
 			</Documentation>
 			<Parameter Name="EndPoint" Type="Object"/>
 		</Attribute>
+		<Methode Name="isRational">
+			<Documentation>
+				<UserDocu>Returns false if the weights of all the poles of this Bezier curve are equal.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isPeriodic">
+			<Documentation>
+				<UserDocu>Returns false.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isClosed">
+			<Documentation>
+				<UserDocu>Returns true if the distance between the start point and end point of
+					this Bezier curve is less than or equal to gp::Resolution().
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="increase">
 			<Documentation>
 				<UserDocu>increase(Int=Degree)

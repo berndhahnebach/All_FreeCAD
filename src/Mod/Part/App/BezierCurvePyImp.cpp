@@ -55,6 +55,57 @@ int BezierCurvePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject* BezierCurvePy::isRational(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BezierCurve curve = Handle_Geom_BezierCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsRational();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BezierCurvePy::isPeriodic(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BezierCurve curve = Handle_Geom_BezierCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BezierCurvePy::isClosed(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+    Handle_Geom_BezierCurve curve = Handle_Geom_BezierCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = curve->IsClosed();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
 PyObject* BezierCurvePy::increase(PyObject * args)
 {
     int degree;
