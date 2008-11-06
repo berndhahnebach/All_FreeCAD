@@ -240,7 +240,7 @@ PyObject* BSplineCurvePy::getKnot(PyObject * args)
 PyObject* BSplineCurvePy::setKnots(PyObject * args)
 {
     PyObject* obj;
-    if (!PyArg_ParseTuple(args, "O!", PyList_Type, &obj))
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &obj))
         return 0;
     try {
         Py::List list(obj);

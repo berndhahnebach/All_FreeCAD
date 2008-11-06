@@ -29,10 +29,53 @@
 #endif
 
 #include "PyObjectBase.h"
+#include "VectorPy.h"
 #include "Console.h"
 
 using namespace Base;
 
+int Py::Point::Point_TypeCheck(PyObject * obj)
+{
+    return PyObject_TypeCheck(obj, &(Base::VectorPy::Type));
+}
+
+Py::Point::Point (const Base::Vector3d& v)
+{
+    set(new Base::VectorPy(v), true);
+    validate();
+}
+
+Py::Point::Point (const Base::Vector3f& v)
+{
+    set(new Base::VectorPy(v), true);
+    validate();
+}
+
+Py::Point& Py::Point::operator= (PyObject* rhsp)
+{
+    if(ptr() == rhsp) return *this;
+    set (rhsp, false);
+    return *this;
+}
+
+Py::Point& Py::Point::operator= (const Base::Vector3d& v)
+{
+    set (new Base::VectorPy(v), true);
+    return *this;
+}
+
+Py::Point& Py::Point::operator= (const Base::Vector3f& v)
+{
+    set (new Base::VectorPy(v), true);
+    return *this;
+}
+
+Base::Vector3d Py::Point::toPoint() const
+{
+    return static_cast<Base::VectorPy*>(ptr())->value();
+}
+
+// -------------------------------------------------------
 
 // Constructor
 PyObjectBase::PyObjectBase(void* p,PyTypeObject *T)
