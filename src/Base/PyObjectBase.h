@@ -116,6 +116,46 @@ inline Vector3<T> getVectorFromTuple(PyObject* o)
 }
 
 }
+
+namespace Py {
+
+class BaseExport Point : public Object
+{
+public:
+    explicit Point (PyObject *pyob, bool owned): Object(pyob, owned) {
+        validate();
+    }
+
+    Point (const Point& ob): Object(*ob) {
+        validate();
+    }
+
+    explicit Point (const Base::Vector3d&);
+    explicit Point (const Base::Vector3f&);
+
+    Point(const Object& other): Object(other.ptr()) {
+        validate();
+    }
+    virtual bool accepts (PyObject *pyob) const {
+        return pyob && Point_TypeCheck (pyob);
+    }
+    Point& operator= (const Object& rhs)
+    {
+        return (*this = *rhs);
+    }
+
+    Point& operator= (PyObject* rhsp);
+    Point& operator= (const Base::Vector3d&);
+    Point& operator= (const Base::Vector3f&);
+
+    Base::Vector3d toPoint() const;
+
+private:
+    static int Point_TypeCheck(PyObject *);
+};
+
+}
+
 /*------------------------------
  * Python defines
 ------------------------------*/

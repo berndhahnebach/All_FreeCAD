@@ -95,12 +95,14 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 
