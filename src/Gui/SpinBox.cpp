@@ -124,102 +124,102 @@ public:
 
 } // namespace Gui
 
-UIntSpinBox::UIntSpinBox ( QWidget* parent )
+UIntSpinBox::UIntSpinBox (QWidget* parent)
   : QSpinBox (parent)
 {
     d = new UIntSpinBoxPrivate;
-    updateValidator();
-    connect(this, SIGNAL(valueChanged(int)), this, SLOT(valueChange(int)));
+    d->mValidator =  new UnsignedValidator(this->minimum(), this->maximum(), this);
+    connect(this, SIGNAL(valueChanged(int)),
+            this, SLOT(valueChange(int)));
     setRange(0, 99);
     setValue(0);
+    updateValidator();
 }
 
 UIntSpinBox::~UIntSpinBox()
 {
+    delete d->mValidator;
     delete d; d = 0;
 }
 
-void UIntSpinBox::setRange( uint minVal, uint maxVal )
+void UIntSpinBox::setRange(uint minVal, uint maxVal)
 {
     int iminVal = d->mapToInt(minVal);
     int imaxVal = d->mapToInt(maxVal);
-    QSpinBox::setRange( iminVal, imaxVal );
+    QSpinBox::setRange(iminVal, imaxVal);
     updateValidator();
 }
 
-QValidator::State UIntSpinBox::validate ( QString & input, int & pos ) const
+QValidator::State UIntSpinBox::validate (QString & input, int & pos) const
 {
     return d->mValidator->validate(input, pos);
 }
 
 uint UIntSpinBox::value() const
 {
-    return d->mapToUInt( QSpinBox::value() );
+    return d->mapToUInt(QSpinBox::value());
 }
 
-void UIntSpinBox::setValue( uint value )
+void UIntSpinBox::setValue(uint value)
 {
-    QSpinBox::setValue( d->mapToInt( value ) );
+    QSpinBox::setValue(d->mapToInt(value));
 }
 
-void UIntSpinBox::valueChange( int value )
+void UIntSpinBox::valueChange(int value)
 {
-    valueChanged( d->mapToUInt(value) );
+    valueChanged(d->mapToUInt(value));
 }
 
 uint UIntSpinBox::minimum() const
 {
-    return d->mapToUInt( QSpinBox::minimum() );
+    return d->mapToUInt(QSpinBox::minimum());
 }
 
-void UIntSpinBox::setMinimum( uint minVal )
+void UIntSpinBox::setMinimum(uint minVal)
 {
     uint maxVal = maximum();
-    if ( maxVal < minVal )
+    if (maxVal < minVal)
         maxVal = minVal;
-    setRange( minVal, maxVal );
+    setRange(minVal, maxVal);
 }
 
 uint UIntSpinBox::maximum() const
 {
-    return d->mapToUInt( QSpinBox::maximum() );
+    return d->mapToUInt(QSpinBox::maximum());
 }
 
-void UIntSpinBox::setMaximum( uint maxVal )
+void UIntSpinBox::setMaximum(uint maxVal)
 {
     uint minVal = minimum();
-    if ( minVal > maxVal )
+    if (minVal > maxVal)
         minVal = maxVal;
-    setRange( minVal, maxVal );
+    setRange(minVal, maxVal);
 }
 
-QString UIntSpinBox::textFromValue ( int v ) const
+QString UIntSpinBox::textFromValue (int v) const
 {
-    uint val = d->mapToUInt( v );
+    uint val = d->mapToUInt(v);
     QString s;
     s.setNum(val);
     return s;
 }
 
-int UIntSpinBox::valueFromText ( const QString & text ) const
+int UIntSpinBox::valueFromText (const QString & text) const
 {
     bool ok;
     QString s = text;
-    uint newVal = s.toUInt( &ok );
-    if ( !ok && !( prefix().isEmpty() && suffix().isEmpty() ) ) {
+    uint newVal = s.toUInt(&ok);
+    if (!ok && !(prefix().isEmpty() && suffix().isEmpty())) {
         s = cleanText();
-        newVal = s.toUInt( &ok );
+        newVal = s.toUInt(&ok);
     }
 
-    return d->mapToInt( newVal );
+    return d->mapToInt(newVal);
 }
 
 void UIntSpinBox::updateValidator() 
 {
-    if ( !d->mValidator ) 
-        d->mValidator =  new UnsignedValidator( this->minimum(), this->maximum(), this );
-    else
-        d->mValidator->setRange( this->minimum(), this->maximum() );
+    d->mValidator->setRange(this->minimum(), this->maximum());
 }
 
 #include "moc_SpinBox.cpp"
