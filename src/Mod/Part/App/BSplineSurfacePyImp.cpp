@@ -22,8 +22,17 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Geom_BSplineCurve.hxx>
+# include <Geom_BSplineSurface.hxx>
+# include <Handle_Geom_BSplineCurve.hxx>
+# include <TColStd_Array2OfReal.hxx>
+# include <TColgp_Array1OfPnt.hxx>
+# include <TColgp_Array2OfPnt.hxx>
+#endif
 
 #include "Geometry.h"
+#include "BSplineCurvePy.h"
 #include "BSplineSurfacePy.h"
 #include "BSplineSurfacePy.cpp"
 
@@ -47,37 +56,192 @@ int BSplineSurfacePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject* BSplineSurfacePy::bounds(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Py::Tuple bound(4);
+    Standard_Real u1,u2,v1,v2;
+    surf->Bounds(u1,u2,v1,v2);
+    bound.setItem(0,Py::Float(u1));
+    bound.setItem(1,Py::Float(u2));
+    bound.setItem(2,Py::Float(v1));
+    bound.setItem(3,Py::Float(v2));
+    return Py::new_reference_to(bound);
+}
+
+PyObject* BSplineSurfacePy::isURational(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsURational();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineSurfacePy::isVRational(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsVRational();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineSurfacePy::isUPeriodic(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsUPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineSurfacePy::isVPeriodic(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsVPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineSurfacePy::isUClosed(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsUClosed();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineSurfacePy::isVClosed(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsVPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
 PyObject* BSplineSurfacePy::increaseDegree(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::increaseMultiplicity(PyObject *args)
+PyObject* BSplineSurfacePy::increaseUMultiplicity(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::incrementMultiplicity(PyObject *args)
+PyObject* BSplineSurfacePy::increaseVMultiplicity(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::insertKnot(PyObject *args)
+PyObject* BSplineSurfacePy::incrementUMultiplicity(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::insertKnots(PyObject *args)
+PyObject* BSplineSurfacePy::incrementVMultiplicity(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::removeKnot(PyObject *args)
+PyObject* BSplineSurfacePy::insertUKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::insertUKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::insertVKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::insertVKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::removeUKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::removeVKnot(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -89,31 +253,67 @@ PyObject* BSplineSurfacePy::segment(PyObject *args)
     return 0;
 }
 
-PyObject* BSplineSurfacePy::setKnot(PyObject *args)
+PyObject* BSplineSurfacePy::setUKnot(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::getKnot(PyObject *args)
+PyObject* BSplineSurfacePy::setVKnot(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::setKnots(PyObject *args)
+PyObject* BSplineSurfacePy::getUKnot(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::getKnots(PyObject *args)
+PyObject* BSplineSurfacePy::getVKnot(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setUKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setVKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getUKnots(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getVKnots(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
 PyObject* BSplineSurfacePy::setPole(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setPoleCol(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setPoleRow(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -132,6 +332,18 @@ PyObject* BSplineSurfacePy::getPoles(PyObject *args)
 }
 
 PyObject* BSplineSurfacePy::setWeight(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setWeightCol(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::setWeightRow(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -161,72 +373,204 @@ PyObject* BSplineSurfacePy::movePoint(PyObject *args)
     return 0;
 }
 
-PyObject* BSplineSurfacePy::setNotPeriodic(PyObject *args)
+PyObject* BSplineSurfacePy::setUNotPeriodic(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::setPeriodic(PyObject *args)
+PyObject* BSplineSurfacePy::setVNotPeriodic(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::setOrigin(PyObject *args)
+PyObject* BSplineSurfacePy::setUPeriodic(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::getMultiplicity(PyObject *args)
+PyObject* BSplineSurfacePy::setVPeriodic(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-PyObject* BSplineSurfacePy::getMultiplicities(PyObject *args)
+PyObject* BSplineSurfacePy::setUOrigin(PyObject *args)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
 
-Py::Int BSplineSurfacePy::getDegree(void) const
+PyObject* BSplineSurfacePy::setVOrigin(PyObject *args)
 {
-    return Py::Int();
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getUMultiplicity(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getVMultiplicity(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getUMultiplicities(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::getVMultiplicities(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* BSplineSurfacePy::exchangeUV(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    surf->ExchangeUV();
+    Py_Return;
+}
+
+PyObject* BSplineSurfacePy::uIso(PyObject * args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d", &u))
+        return 0;
+
+    try {
+        Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+            (getGeometryPtr()->handle());
+        Handle_Geom_Curve c = surf->UIso(u);
+        return new BSplineCurvePy(new GeomBSplineCurve(Handle_Geom_BSplineCurve::DownCast(c)));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* BSplineSurfacePy::vIso(PyObject * args)
+{
+    double v;
+    if (!PyArg_ParseTuple(args, "d", &v))
+        return 0;
+
+    try {
+        Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+            (getGeometryPtr()->handle());
+        Handle_Geom_Curve c = surf->VIso(v);
+        return new BSplineCurvePy(new GeomBSplineCurve(Handle_Geom_BSplineCurve::DownCast(c)));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+Py::Int BSplineSurfacePy::getUDegree(void) const
+{
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int deg = surf->UDegree();
+    return Py::Int(deg);
+}
+
+Py::Int BSplineSurfacePy::getVDegree(void) const
+{
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int deg = surf->VDegree();
+    return Py::Int(deg);
 }
 
 Py::Int BSplineSurfacePy::getMaxDegree(void) const
 {
-    return Py::Int();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(surf->MaxDegree()); 
 }
 
-Py::Int BSplineSurfacePy::getNbPoles(void) const
+Py::Int BSplineSurfacePy::getNbUPoles(void) const
 {
-    return Py::Int();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(surf->NbUPoles()); 
 }
 
-Py::Object BSplineSurfacePy::getStartPoint(void) const
+Py::Int BSplineSurfacePy::getNbVPoles(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(surf->NbVPoles()); 
 }
 
-Py::Object BSplineSurfacePy::getEndPoint(void) const
+Py::Int BSplineSurfacePy::getNbUKnots(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(surf->NbUKnots()); 
+}
+
+Py::Int BSplineSurfacePy::getNbVKnots(void) const
+{
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    return Py::Int(surf->NbVKnots()); 
 }
 
 Py::Object BSplineSurfacePy::getFirstUKnotIndex(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int index = surf->FirstUKnotIndex();
+    return Py::Int(index);
 }
 
 Py::Object BSplineSurfacePy::getLastUKnotIndex(void) const
 {
-    return Py::Object();
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int index = surf->LastUKnotIndex();
+    return Py::Int(index);
 }
 
-Py::List BSplineSurfacePy::getKnotSequence(void) const
+Py::Object BSplineSurfacePy::getFirstVKnotIndex(void) const
+{
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int index = surf->FirstVKnotIndex();
+    return Py::Int(index);
+}
+
+Py::Object BSplineSurfacePy::getLastVKnotIndex(void) const
+{
+    Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+        (getGeometryPtr()->handle());
+    int index = surf->LastVKnotIndex();
+    return Py::Int(index);
+}
+
+Py::List BSplineSurfacePy::getUKnotSequence(void) const
+{
+    return Py::List();
+}
+
+Py::List BSplineSurfacePy::getVKnotSequence(void) const
 {
     return Py::List();
 }
@@ -240,5 +584,3 @@ int BSplineSurfacePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*
 {
     return 0; 
 }
-
-
