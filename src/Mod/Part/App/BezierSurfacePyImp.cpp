@@ -689,7 +689,7 @@ PyObject* BezierSurfacePy::getResolution(PyObject *args)
             (getGeometryPtr()->handle());
         double utol, vtol;
         surf->Resolution(tol,utol,vtol);
-        return Py_BuildValue("(d)",utol,vtol);
+        return Py_BuildValue("(dd)",utol,vtol);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -703,10 +703,18 @@ PyObject* BezierSurfacePy::exchangeUV(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))
         return 0;
 
-    Handle_Geom_BezierSurface surf = Handle_Geom_BezierSurface::DownCast
-        (getGeometryPtr()->handle());
-    surf->ExchangeUV();
-    Py_Return;
+    try {
+        Handle_Geom_BezierSurface surf = Handle_Geom_BezierSurface::DownCast
+            (getGeometryPtr()->handle());
+        //FIXME: Crashes
+        surf->ExchangeUV();
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
 PyObject* BezierSurfacePy::uIso(PyObject * args)
