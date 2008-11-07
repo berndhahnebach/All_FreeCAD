@@ -144,9 +144,16 @@ PyObject* BSplineCurvePy::incrementMultiplicity(PyObject * args)
     if (!PyArg_ParseTuple(args, "iii", &start, &end, &mult))
         return 0;
 
-    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
-        (getGeometryPtr()->handle());
-    curve->IncrementMultiplicity(start, end, mult);
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->IncrementMultiplicity(start, end, mult);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 
     Py_Return;
 }
@@ -156,20 +163,62 @@ PyObject* BSplineCurvePy::insertKnot(PyObject * args)
     double U, tol = 0.0;
     int M=1;
     PyObject* add = Py_True;
-    if (!PyArg_ParseTuple(args, "d|idO!", &U, &M, &tol, PyBool_Type, &add))
+    if (!PyArg_ParseTuple(args, "d|idO!", &U, &M, &tol, &PyBool_Type, &add))
         return 0;
 
-    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
-        (getGeometryPtr()->handle());
-    curve->InsertKnot(U,M,tol, (add==Py_True));
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->InsertKnot(U,M,tol,(add==Py_True));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 
     Py_Return;
 }
 
-PyObject* BSplineCurvePy::insertKnots(PyObject * /*args*/)
+PyObject* BSplineCurvePy::insertKnots(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double tol = 0.0;
+    PyObject* add = Py_True;
+    PyObject* obj1;
+    PyObject* obj2;
+    if (!PyArg_ParseTuple(args, "O!O!|dO!", &PyList_Type, &obj1,
+                                            &PyList_Type, &obj2,
+                                            &tol, &PyBool_Type, &add))
+        return 0;
+
+    try {
+        Py::List knots(obj1);
+        TColStd_Array1OfReal k(1,knots.size());
+        int index=1;
+        for (Py::List::iterator it = knots.begin(); it != knots.end(); ++it) {
+            Py::Float val(*it);
+            k(index++) = (double)val;
+        }
+        Py::List mults(obj2);
+        TColStd_Array1OfInteger m(1,mults.size());
+        index=1;
+        for (Py::List::iterator it = mults.begin(); it != mults.end(); ++it) {
+            Py::Int val(*it);
+            m(index++) = (int)val;
+        }
+
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        curve->InsertKnots(k,m,tol,(add==Py_True));
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    Py_Return;
 }
 
 PyObject* BSplineCurvePy::removeKnot(PyObject * args)
@@ -179,11 +228,24 @@ PyObject* BSplineCurvePy::removeKnot(PyObject * args)
     if (!PyArg_ParseTuple(args, "iid", &Index, &M, &tol))
         return 0;
 
-    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
-        (getGeometryPtr()->handle());
-    curve->RemoveKnot(Index,M,tol);
-
-    Py_Return;
+    try {
+        Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+            (getGeometryPtr()->handle());
+        Standard_Boolean ok = curve->RemoveKnot(Index,M,tol);
+        if (ok) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+        else {
+            Py_INCREF(Py_False);
+            return Py_False;
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
 PyObject* BSplineCurvePy::segment(PyObject * args)
@@ -611,7 +673,18 @@ Py::Object BSplineCurvePy::getLastUKnotIndex(void) const
 
 Py::List BSplineCurvePy::getKnotSequence(void) const
 {
-    return Py::List();
+    Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Integer m = 0;
+    for (int i=1; i<= curve->NbKnots(); i++)
+        m += curve->Multiplicity(i);
+    TColStd_Array1OfReal k(1,m);
+    curve->KnotSequence(k);
+    Py::List list;
+    for (Standard_Integer i=k.Lower(); i<=k.Upper(); i++) {
+        list.append(Py::Float(k(i)));
+    }
+    return list;
 }
 
 PyObject *BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const

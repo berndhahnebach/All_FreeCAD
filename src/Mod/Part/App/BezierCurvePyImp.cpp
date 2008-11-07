@@ -328,15 +328,15 @@ PyObject* BezierCurvePy::getWeights(PyObject * args)
 
 PyObject* BezierCurvePy::getResolution(PyObject* args)
 {
-    double utol;
-    if (!PyArg_ParseTuple(args, "d", &utol))
+    double tol;
+    if (!PyArg_ParseTuple(args, "d", &tol))
         return 0;
     try {
         Handle_Geom_BezierCurve curve = Handle_Geom_BezierCurve::DownCast
             (getGeometryPtr()->handle());
-        double tol;
-        curve->Resolution(utol,tol);
-        return Py_BuildValue("d",tol);
+        double utol;
+        curve->Resolution(tol,utol);
+        return Py_BuildValue("d",utol);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

@@ -87,7 +87,7 @@ of this B-Spline curve.</UserDocu>
 		</Methode>
 		<Methode Name="isPeriodic">
 			<Documentation>
-				<UserDocu>Returns false.</UserDocu>
+				<UserDocu>Returns true if this BSpline curve is periodic.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="isClosed">
@@ -128,8 +128,22 @@ done if Degree is less than or equal to the current degree.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="removeKnot">
-			<Documentation>Reduces the multiplicity of the knot of index Index to M.
-If M is equal to 0, the knot is removed.</Documentation>
+			<Documentation>
+				<UserDocu>
+					Reduces the multiplicity of the knot of index Index to M.
+					If M is equal to 0, the knot is removed.
+					With a modification of this type, the array of poles is also modified.
+					Two different algorithms are systematically used to compute the new
+					poles of the curve. If, for each pole, the distance between the pole
+					calculated using the first algorithm and the same pole calculated using
+					the second algorithm, is less than Tolerance, this ensures that the curve
+					is not modified by more than Tolerance. Under these conditions, true is
+					returned; otherwise, false is returned.
+
+					A low tolerance is used to prevent modification of the curve.
+					A high tolerance is used to 'smooth' the curve.
+				</UserDocu>
+			</Documentation>
 		</Methode>
 		<Methode Name="segment">
 			<Documentation>
