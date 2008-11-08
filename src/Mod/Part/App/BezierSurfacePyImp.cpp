@@ -26,6 +26,7 @@
 # include <Geom_BezierCurve.hxx>
 # include <Geom_BezierSurface.hxx>
 # include <Handle_Geom_BezierCurve.hxx>
+# include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array2OfReal.hxx>
 # include <TColgp_Array1OfPnt.hxx>
 # include <TColgp_Array2OfPnt.hxx>

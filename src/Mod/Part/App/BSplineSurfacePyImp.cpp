@@ -26,7 +26,9 @@
 # include <Geom_BSplineCurve.hxx>
 # include <Geom_BSplineSurface.hxx>
 # include <Handle_Geom_BSplineCurve.hxx>
+# include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array2OfReal.hxx>
+# include <TColStd_Array1OfInteger.hxx>
 # include <TColgp_Array1OfPnt.hxx>
 # include <TColgp_Array2OfPnt.hxx>
 #endif
