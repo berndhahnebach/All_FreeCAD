@@ -186,6 +186,6 @@ void MacroManager::run(MacroType eType,const char *sName)
     }
     catch (const Base::Exception& e)
     {
-        qWarning(e.what());
+        qWarning("%s",e.what());
     }
 }

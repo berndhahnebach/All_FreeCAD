@@ -944,7 +944,7 @@ bool MeshOutput::SaveAny(const char* FileName) const
     // ask for write permission
     Base::FileInfo fi(FileName);
     Base::FileInfo di(fi.dirPath().c_str());
-    if (fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false)
+    if ((fi.exists() && !fi.isWritable()) || !di.exists() || !di.isWritable())
         throw Base::FileException("No write permission for file",FileName);
 
     Base::ofstream str(fi, std::ios::out | std::ios::binary);
