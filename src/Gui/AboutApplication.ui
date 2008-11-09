@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Gui::Dialog::AboutApplication</class>
  <widget class="QDialog" name="Gui::Dialog::AboutApplication" >
   <property name="geometry" >
@@ -240,14 +237,11 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Gui::UrlLabel</class>
    <extends>QLabel</extends>
    <header>Gui/Widgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <resources>
