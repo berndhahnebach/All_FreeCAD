@@ -479,7 +479,6 @@ PyObject* BSplineSurfacePy::setUKnot(PyObject *args)
 {
     int Index, M=-1;
     double K;
-    int mult=-1;
     if (!PyArg_ParseTuple(args, "id|i", &Index, &K, &M))
         return 0;
 
@@ -499,7 +498,6 @@ PyObject* BSplineSurfacePy::setVKnot(PyObject *args)
 {
     int Index, M=-1;
     double K;
-    int mult=-1;
     if (!PyArg_ParseTuple(args, "id|i", &Index, &K, &M))
         return 0;
 

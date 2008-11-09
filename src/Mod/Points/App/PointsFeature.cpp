@@ -112,7 +112,7 @@ App::DocumentObjectExecReturn *Export::execute(void)
   // ask for write permission
   Base::FileInfo fi(FileName.getValue());
   Base::FileInfo di(fi.dirPath().c_str());
-  if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
+  if ((fi.exists() && !fi.isWritable()) || !di.exists() || !di.isWritable())
   {
       return new App::DocumentObjectExecReturn("No write permission for file");
   }

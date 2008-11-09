@@ -149,7 +149,6 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         // populate the model
         int count = 0;
         for (int i=1; i<= edge2Face.Extent(); ++i) {
-            int index = i-1;
             // set the hash value as user data to use it in accept()
             TopoDS_Shape edge = edge2Face.FindKey(i);
             if (edge2Face.FindFromIndex(i).Extent() == 2)
