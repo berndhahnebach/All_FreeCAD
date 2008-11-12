@@ -101,8 +101,6 @@ void PropertyPointKernel::Save (Base::Writer &writer) const
 
 void PropertyPointKernel::Restore(Base::XMLReader &reader)
 {
-    
-
     reader.readElement("Points");
     std::string file (reader.getAttribute("file") );
 
@@ -114,7 +112,7 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
     {
         std::string Matrix (reader.getAttribute("mtrx") );
         Base::Matrix4D mtrx;
-        mtrx.read(Matrix);
+        mtrx.fromString(Matrix);
 
         aboutToSetValue();
         _cPoints.setTransform(mtrx);

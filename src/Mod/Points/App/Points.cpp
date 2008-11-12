@@ -89,7 +89,7 @@ void PointKernel::Save (Base::Writer &writer) const
     if (!writer.isForceXML()) {
         writer.Stream() << writer.ind()
             << "<Points file=\"" << writer.addFile(writer.Name.c_str(), this) << "\" " 
-            << "mtrx=\"" << _Mtrx.write() << "\"/>" << std::endl;
+            << "mtrx=\"" << _Mtrx.toString() << "\"/>" << std::endl;
     }
 }
 
@@ -117,7 +117,7 @@ void PointKernel::Restore(Base::XMLReader &reader)
     if(reader.DocumentSchema > 3)
     {
         std::string Matrix (reader.getAttribute("mtrx") );
-        _Mtrx.read(Matrix);
+        _Mtrx.fromString(Matrix);
     }
 
 }

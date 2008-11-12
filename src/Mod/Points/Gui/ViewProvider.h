@@ -46,6 +46,7 @@ namespace Gui {
 namespace Points {
   class PropertyGreyValueList;
   class PropertyNormalList;
+  class PointKernel;
   class Feature;
 }
 
