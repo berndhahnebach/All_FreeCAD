@@ -5,7 +5,7 @@ Packaged-Date: 2006-09-26_16:55:15+02:00
 Original-Source-Location: http://sourceforge.net/projects/free-cad
 
 Files: *
-Copyright: 2001-2008 JÃ¼rgen Riegel <juergen.riegel@web.de>, 
+Copyright: 2001-2008 Jürgen Riegel <juergen.riegel@web.de>, 
  Werner Mayer <wmayer@users.sourceforge.net>
 License: LGPL-2+
  This package is free software; you can redistribute it and/or
@@ -151,7 +151,7 @@ License: other
  is provided on an as is basis, without warranties of any kind.
 
 Files: src/Base/zipios/*
-Copyright: 2000 Thomas SÃ¸ndergaard
+Copyright: 2000 Thomas Søndergaard
 License: LGPL-2+
 
 Files: src/Base/zipios/directory.*
@@ -186,7 +186,7 @@ Copyright: 2007 Joachim Zettler <Joachim.Zettler@gmx.de>,
  Human Rezai <human@mytum.de>, 
  Mohamad Najib Muhammad Noor <najib_bean@yahoo.co.uk>,
  Stephane Routelous <stephane.routelous@exotk.org>,
- JÃ¼rgen Riegel <juergen.riegel@web.de>
+ Jürgen Riegel <juergen.riegel@web.de>
 License: LGPL-2+
 
 Files: src/Base/BoundBox.h, src/Base/Swap.*, src/Base/Vector3D.*, 
