@@ -36,7 +36,7 @@ using namespace Base;
 
 Matrix4D::Matrix4D (void)
 {
-  unity();
+  setToUnity();
 }
 
 Matrix4D::Matrix4D (float a11, float a12, float a13, float a14, 
@@ -69,11 +69,11 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
 
 Matrix4D::Matrix4D (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle)
 {
-  unity();
+  setToUnity();
   this->rotLine(rclBase,rclDir,fAngle);
 }
 
-void Matrix4D::unity (void)
+void Matrix4D::setToUnity (void)
 {
   dMtrx4D[0][0] = 1.0; dMtrx4D[0][1] = 0.0; dMtrx4D[0][2] = 0.0; dMtrx4D[0][3] = 0.0;
   dMtrx4D[1][0] = 0.0; dMtrx4D[1][1] = 1.0; dMtrx4D[1][2] = 0.0; dMtrx4D[1][3] = 0.0;
@@ -646,3 +646,31 @@ void Matrix4D::transpose (void)
   memcpy(dMtrx4D, dNew, sizeof(dMtrx4D));
 }
 
+
+
+// write the 12 double of the matrix in a stream
+std::string Matrix4D::write (void) const
+{
+  std::stringstream str;
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+      str << dMtrx4D[i][j] << " ";
+  }
+    
+  return str.str();
+}
+        
+// read the 12 double of the matrix from a stream
+void Matrix4D::read (std::string &str)
+{
+  std::stringstream input;
+  input.str(str);
+
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+      input >> dMtrx4D[i][j] ;
+  }
+    
+}

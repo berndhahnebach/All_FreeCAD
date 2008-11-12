@@ -152,7 +152,7 @@ public:
     /** @name Getting basic geometric entities */
     //@{
     /** Returns the bounding box around the underlying mesh kernel */
-    Base::BoundBox3f getBoundingBox() const;
+    Base::BoundBox3d getBoundingBox() const;
     /** Get faces from object with given accuracy */
     virtual void getFaces(std::vector<Base::Vector3d> &Points,
         std::vector<Data::ComplexGeoData::FacetTopo> &Topo,

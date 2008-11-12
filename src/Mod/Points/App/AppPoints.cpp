@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 
 #include "Points.h"
+#include "Properties.h"
 #include "PropertyPointKernel.h"
 #include "FeaturePointsImportAscii.h"
 

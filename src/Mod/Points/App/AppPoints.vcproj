@@ -529,6 +529,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Properties.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Properties.h"
+			>
+		</File>
+		<File
 			RelativePath=".\PropertyPointKernel.cpp"
 			>
 		</File>

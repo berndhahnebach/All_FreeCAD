@@ -158,6 +158,8 @@ public:
     bool isRegistered(Base::Persistence *Object) const;
     //@}
 
+    /// Schema Version of the document
+    int DocumentSchema;
 private:
     /// read the next element
     bool read(void);

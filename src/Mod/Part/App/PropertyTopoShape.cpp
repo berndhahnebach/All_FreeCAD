@@ -88,9 +88,9 @@ const TopoShape& PropertyPartShape::getShape() const
     return this->_Shape;
 }
 
-Base::BoundBox3f PropertyPartShape::getBoundingBox() const
+Base::BoundBox3d PropertyPartShape::getBoundingBox() const
 {
-    Base::BoundBox3f box;
+    Base::BoundBox3d box;
     if (_Shape._Shape.IsNull())
         return box;
     try {
@@ -101,12 +101,12 @@ Base::BoundBox3f PropertyPartShape::getBoundingBox() const
         Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
         bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
 
-        box.MinX = (float)xMin;
-        box.MaxX = (float)xMax;
-        box.MinY = (float)yMin;
-        box.MaxY = (float)yMax;
-        box.MinZ = (float)zMin;
-        box.MaxZ = (float)zMax;
+        box.MinX = xMin;
+        box.MaxX = xMax;
+        box.MinY = yMin;
+        box.MaxY = yMax;
+        box.MinZ = zMin;
+        box.MaxZ = zMax;
     }
     catch (Standard_Failure) {
     }

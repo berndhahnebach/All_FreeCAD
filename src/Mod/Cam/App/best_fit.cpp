@@ -190,7 +190,7 @@ bool best_fit::Perform()
     ShapeFit_Coarse();
 
 	
-    M.unity();
+    M.setToUnity();
     M[0][3] = m_cad2orig.X();
     M[1][3] = m_cad2orig.Y();
     M[2][3] = m_cad2orig.Z();
@@ -212,7 +212,7 @@ bool best_fit::Perform()
     cout << "laufzeit: " << seconds2-seconds1 << " sec" << endl;
 
     Base::Matrix4D T;
-    T.unity();
+    T.setToUnity();
     T[0][3] = -m_cad2orig.X();
     T[1][3] = -m_cad2orig.Y();
     T[2][3] = -m_cad2orig.Z();
@@ -307,7 +307,7 @@ bool best_fit::Coarse_correction()
 
     MeshCore::MeshKernel MeshCopy = m_MeshWork;
 
-    T.unity();
+    T.setToUnity();
 
     //error = CompError_GetPnts(m_pnts, m_normals)[0];  // startfehler    int n=360/rstep_corr;
     error = ANN();
@@ -736,7 +736,7 @@ bool best_fit::Comp_Weights()
 
 bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
 {
-    M.unity();
+    M.setToUnity();
     degree = 2*PI*degree/360;  // trafo bogenmaß
 
     switch (axis)
@@ -768,7 +768,7 @@ bool best_fit::RotMat(Base::Matrix4D &M, double degree, int axis)
 
 bool best_fit::TransMat(Base::Matrix4D &M, double trans, int axis)
 {
-    M.unity();
+    M.setToUnity();
 
     switch (axis)
     {

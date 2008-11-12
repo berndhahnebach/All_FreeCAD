@@ -97,7 +97,7 @@ public:
   /** @name Manipulation */
   //@{
   /// Makes unity matrix
-  void unity        (void);
+  void setToUnity        (void);
   /// moves the coordinatesystem for the x,y,z value
   void move         (float x, float y, float z)
   { move(Vector3f(x,y,z)); }
@@ -133,6 +133,10 @@ public:
   //@}
 
   void Print        (void) const;
+  /// write the 12 double of the matrix in a stream
+  std::string write (void)const;
+  /// read the 12 double of the matrix from a stream
+  void read (std::string &str);
   
 private:
   double  dMtrx4D[4][4];

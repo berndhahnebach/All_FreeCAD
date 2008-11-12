@@ -89,7 +89,7 @@ public:
 
 protected:
     void onChanged(const App::Property* prop);
-    void createPoints(const std::vector<Base::Vector3f>& pnts);
+    void createPoints(const Points::PointKernel& pnts);
     void setVertexColorMode(App::PropertyColorList*);
     void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
     void setVertexNormalMode(Points::PropertyNormalList*);
