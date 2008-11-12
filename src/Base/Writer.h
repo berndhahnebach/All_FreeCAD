@@ -90,7 +90,7 @@ public:
 
   virtual std::ostream &Stream(void)=0;
 
-  /// name for underlaing file saves
+  /// name for underlying file saves
   std::string Name;
 
 protected:

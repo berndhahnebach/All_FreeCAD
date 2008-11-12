@@ -10,6 +10,7 @@ libPoints_la_SOURCES=\
 		PointsFeature.cpp \
 		PointsFeaturePy.cpp \
 		PointsGrid.cpp \
+		Properties.cpp \
 		PropertyPointKernel.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
@@ -24,6 +25,7 @@ include_HEADERS=\
 		PointsFeature.h \
 		PointsFeaturePy.h \
 		PointsGrid.h \
+		Properties.h \
 		PropertyPointKernel.h
 
 
