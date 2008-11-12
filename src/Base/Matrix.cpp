@@ -23,10 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <stdio.h>
-# include <math.h>
 # include <memory>
 # include <cstring>
+# include <sstream>
 #endif
 
 
@@ -649,7 +648,7 @@ void Matrix4D::transpose (void)
 
 
 // write the 12 double of the matrix in a stream
-std::string Matrix4D::write (void) const
+std::string Matrix4D::toString(void) const
 {
   std::stringstream str;
   for (int i = 0; i < 4; i++)
@@ -660,9 +659,9 @@ std::string Matrix4D::write (void) const
     
   return str.str();
 }
-        
+
 // read the 12 double of the matrix from a stream
-void Matrix4D::read (std::string &str)
+void Matrix4D::fromString(const std::string &str)
 {
   std::stringstream input;
   input.str(str);
@@ -670,7 +669,6 @@ void Matrix4D::read (std::string &str)
   for (int i = 0; i < 4; i++)
   {
     for (int j = 0; j < 4; j++)
-      input >> dMtrx4D[i][j] ;
-  }
-    
+      input >> dMtrx4D[i][j];
+  }    
 }

@@ -24,9 +24,10 @@
 #ifndef BASE_MATRIX_H
 #define BASE_MATRIX_H
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <string>
 
 #include "Vector3D.h"
 #include <float.h>
@@ -133,10 +134,10 @@ public:
   //@}
 
   void Print        (void) const;
-  /// write the 12 double of the matrix in a stream
-  std::string write (void)const;
-  /// read the 12 double of the matrix from a stream
-  void read (std::string &str);
+  /// write the 16 double of the matrix into a string
+  std::string toString(void) const;
+  /// read the 16 double of the matrix from a string
+  void fromString (const std::string &str);
   
 private:
   double  dMtrx4D[4][4];
