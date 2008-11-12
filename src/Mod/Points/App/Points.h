@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef POINTS_POINTPROPERTIES_H
-#define POINTS_POINTPROPERTIES_H
+#ifndef POINTS_POINT_H
+#define POINTS_POINT_H
 
 #include <vector>
 
@@ -37,129 +37,114 @@
 namespace Points
 {
 
-typedef std::vector<Base::Vector3f> PointKernel;
 
-/** Greyvalue property.
+/** Point kernel
  */
-class PointsAppExport PropertyGreyValue : public App::PropertyFloat
+class PointsAppExport PointKernel : public Data::ComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
 public:
-    PropertyGreyValue(void)
+    PointKernel(void)
     {
     }
-    virtual ~PropertyGreyValue()
+    PointKernel(unsigned long size)
     {
+        resize(size);
     }
-};
-
-/**
- * Own class to distinguish from real float list
- */
-class PointsAppExport PropertyGreyValueList : public App::PropertyFloatList
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    PropertyGreyValueList()
-    {
-    }
-    virtual ~PropertyGreyValueList()
+    virtual ~PointKernel()
     {
     }
 
-    /** @name Modify */
+    void operator = (const PointKernel&);
+
+    /** @name Subelement management */
     //@{
-    void removeIndices( const std::vector<unsigned long>& );
-    //@}
-};
-
-/**
- * Own class to distinguish from real vector list
- */
-class PointsAppExport PropertyNormalList : public App::PropertyVectorList
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    PropertyNormalList()
-    {
-    }
-    virtual ~PropertyNormalList()
-    {
-    }
-
-    /** @name Modify */
-    //@{
-    void transform(const Base::Matrix4D &rclMat);
-    void removeIndices( const std::vector<unsigned long>& );
-    //@}
-};
-
-/** Curvature information. */
-struct PointsAppExport CurvatureInfo
-{
-    float fMaxCurvature, fMinCurvature;
-    Base::Vector3f cMaxCurvDir, cMinCurvDir;
-};
-
-/** The Curvature property class.
- */
-class PointsAppExport PropertyCurvatureList: public App::PropertyLists
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    enum { 
-        MeanCurvature  = 0,  /**< Mean curvature */
-        GaussCurvature = 1,  /**< Gaussian curvature */
-        MaxCurvature   = 2,  /**< Maximum curvature */ 
-        MinCurvature   = 3,  /**< Minimum curvature */
-        AbsCurvature   = 4   /**< Absolute curvature */
-    };
-
-public:
-    PropertyCurvatureList();
-    ~PropertyCurvatureList();
-
-    void setSize(int newSize){_lValueList.resize(newSize);}   
-    int getSize(void) const {return _lValueList.size();}   
-    void setValue(const CurvatureInfo&);
-    void setValues(const std::vector<CurvatureInfo>&);
-    std::vector<float> getCurvature( int tMode) const;
-
-    /// index operator
-    const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
-    void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
-    const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
-
-    /** @name Save/restore */
-    //@{
-    void Save (Base::Writer &writer) const;
-    void Restore(Base::XMLReader &reader);
-
-    void SaveDocFile (Base::Writer &writer) const;
-    void RestoreDocFile(Base::Reader &reader);
+    /** Sub type list
+     *  List of different subelement types
+     *  its NOT a list of the subelements itself
+     */
+    virtual std::vector<const char*> getElementTypes(void) const;
+    /// get the subelement by type and number
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
 
-    /** @name Undo/Redo */
+
+    inline void setTransform(const Base::Matrix4D& rclTrf){_Mtrx = rclTrf;}
+    inline Base::Matrix4D getTransform(void) const{return _Mtrx;}
+
+ 
+
+    virtual Base::BoundBox3d getBoundBox(void)const;
+
+    /** @name I/O */
     //@{
-    /// returns a new copy of the property (mainly for Undo/Redo and transactions)
-    App::Property *Copy(void) const;
-    /// paste the value from the property (mainly for Undo/Redo and transactions)
-    void Paste(const App::Property &from);
+    // Implemented from Persistence
     unsigned int getMemSize (void) const;
-    //@}
-
-    /** @name Modify */
-    //@{
-    void transform(const Base::Matrix4D &rclMat);
-    void removeIndices( const std::vector<unsigned long>& );
+    void Save (Base::Writer &writer) const;
+    void SaveDocFile (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+    void RestoreDocFile(Base::Reader &reader);
+    void save(const char* file) const;
+    void save(std::ostream&) const;
+    void load(const char* file);
+    void load(std::istream&);
     //@}
 
 private:
-    std::vector<CurvatureInfo> _lValueList;
+    Base::Matrix4D _Mtrx;
+    std::vector<Base::Vector3f> _Points;
+
+public:
+    /// number of points stored 
+    std::vector<Base::Vector3f>::size_type size(void) const {return this->_Points.size();}
+    void resize(unsigned int n){_Points.resize(n);}
+
+    void clear(void){_Points.clear();}
+
+    /// get the points
+    inline const Base::Vector3d getPoint(const int idx) const {
+        return transformToOutside(_Points[idx]);
+    }
+    /// set the points
+    inline void setPoint(const int idx,const Base::Vector3d& point) {
+        _Points[idx] = transformToInside(point);
+    }
+    /// insert the points
+    inline void push_back(const Base::Vector3d& point) {
+        _Points.push_back(transformToInside(point));
+    }
+
+    class PointsAppExport const_point_iterator
+    {
+    public:
+        const_point_iterator(const PointKernel*, std::vector<Base::Vector3f>::const_iterator index);
+        const_point_iterator(const const_point_iterator& pi);
+        ~const_point_iterator();
+
+        const_point_iterator& operator=(const const_point_iterator& fi);
+        const Base::Vector3d& operator*();
+        const Base::Vector3d* operator->();
+        bool operator==(const const_point_iterator& fi) const;
+        bool operator!=(const const_point_iterator& fi) const;
+        const_point_iterator& operator++();
+        const_point_iterator& operator--();
+    private:
+        void dereference();
+        const PointKernel* _kernel;
+        Base::Vector3d _point;
+        std::vector<Base::Vector3f>::const_iterator _p_it;
+    };
+    /** @name Iterator */
+    //@{
+    const_point_iterator begin() const
+    { return const_point_iterator(this, _Points.begin()); }
+    const_point_iterator end() const
+    { return const_point_iterator(this, _Points.end()); }
+    //@}
+
+    typedef const_point_iterator const_iterator;
+
 };
 
 } // namespace Points

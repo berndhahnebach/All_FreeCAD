@@ -90,6 +90,9 @@ public:
 
   virtual std::ostream &Stream(void)=0;
 
+  /// name for underlaing file saves
+  std::string Name;
+
 protected:
   std::string getUniqueFileName(const char *Name);
   struct FileEntry {

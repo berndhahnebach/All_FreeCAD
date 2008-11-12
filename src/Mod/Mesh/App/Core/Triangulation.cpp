@@ -96,7 +96,7 @@ Base::Matrix4D AbstractPolygonTriangulator::GetTransformToFitPlane() const
 
     // build the matrix for the inverse transformation
     Base::Matrix4D rInverse;
-    rInverse.unity();
+    rInverse.setToUnity();
     rInverse[0][0] = ex.x; rInverse[0][1] = ey.x; rInverse[0][2] = ez.x; rInverse[0][3] = bs.x;
     rInverse[1][0] = ex.y; rInverse[1][1] = ey.y; rInverse[1][2] = ez.y; rInverse[1][3] = bs.y;
     rInverse[2][0] = ex.z; rInverse[2][1] = ey.z; rInverse[2][2] = ez.z; rInverse[2][3] = bs.z;

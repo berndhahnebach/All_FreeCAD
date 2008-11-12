@@ -172,7 +172,7 @@ void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
 void ViewProviderGeometryObject::updateData(const App::Property* prop)
 {
     if (prop->isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
-        Base::BoundBox3f box = static_cast<const App::PropertyComplexGeoData*>(prop)->getBoundingBox();
+        Base::BoundBox3d box = static_cast<const App::PropertyComplexGeoData*>(prop)->getBoundingBox();
         pcBoundingBox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
         pcBoundingBox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
     }

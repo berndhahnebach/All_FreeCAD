@@ -61,9 +61,9 @@ const PointKernel& PropertyPointKernel::getValue(void) const
     return _cPoints;
 }
 
-Base::BoundBox3f PropertyPointKernel::getBoundingBox() const
+Base::BoundBox3d PropertyPointKernel::getBoundingBox() const
 {
-    Base::BoundBox3f box;
+    Base::BoundBox3d box;
     for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it)
         box.Add(*it);
     return box;
@@ -96,13 +96,13 @@ void PropertyPointKernel::setPyObject(PyObject *value)
 
 void PropertyPointKernel::Save (Base::Writer &writer) const
 {
-    if (!writer.isForceXML()) {
-        writer.Stream() << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
-    }
+    _cPoints.Save(writer);
 }
 
 void PropertyPointKernel::Restore(Base::XMLReader &reader)
 {
+    
+
     reader.readElement("Points");
     std::string file (reader.getAttribute("file") );
 
@@ -110,30 +110,23 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
-}
+    if(reader.DocumentSchema > 3)
+    {
+        std::string Matrix (reader.getAttribute("mtrx") );
+        Base::Matrix4D mtrx;
+        mtrx.read(Matrix);
 
-void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
-{
-    Base::OutputStream str(writer.Stream());
-    uint32_t uCt = (uint32_t)_cPoints.size();
-    str << uCt;
-    for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it) {
-        str << it->x << it->y << it->z;
+        aboutToSetValue();
+        _cPoints.setTransform(mtrx);
+        hasSetValue();
     }
 }
 
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
-    Base::InputStream str(reader);
-    uint32_t uCt = 0;
-    str >> uCt;
-    PointKernel kernel(uCt);
-    for (unsigned long i=0; i < uCt; i++) {
-        float x, y, z;
-        str >> x >> y >> z;
-        kernel[i].Set(x,y,z);
-    }
-    setValue(kernel);
+    aboutToSetValue();
+    _cPoints.RestoreDocFile(reader);
+    hasSetValue();
 }
 
 App::Property *PropertyPointKernel::Copy(void) const 
@@ -156,37 +149,34 @@ unsigned int PropertyPointKernel::getMemSize (void) const
     return sizeof(Base::Vector3f) * this->_cPoints.size();
 }
 
-void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
-{
-    // We need a sorted array
-    std::vector<unsigned long> uSortedInds = uIndices;
-    std::sort(uSortedInds.begin(), uSortedInds.end());
-
-    assert( uSortedInds.size() <= _cPoints.size() );
-    if ( uSortedInds.size() > _cPoints.size() )
-        return;
-
-    std::vector<Base::Vector3f> remainValue;
-    remainValue.reserve(_cPoints.size() - uSortedInds.size());
-
-    std::vector<unsigned long>::iterator pos = uSortedInds.begin();
-    for ( std::vector<Base::Vector3f>::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it ) {
-        unsigned long index = it - _cPoints.begin();
-        if (pos == uSortedInds.end())
-            remainValue.push_back( *it );
-        else if (index != *pos)
-            remainValue.push_back( *it );
-        else 
-        pos++;
-    }
-
-    setValue(remainValue);
-}
+//void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
+//{
+//    // We need a sorted array
+//    std::vector<unsigned long> uSortedInds = uIndices;
+//    std::sort(uSortedInds.begin(), uSortedInds.end());
+//
+//    assert( uSortedInds.size() <= _cPoints.size() );
+//    if ( uSortedInds.size() > _cPoints.size() )
+//        return;
+//
+//    std::vector<Base::Vector3f> remainValue;
+//    remainValue.reserve(_cPoints.size() - uSortedInds.size());
+//
+//    std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+//    for ( std::vector<Base::Vector3f>::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it ) {
+//        unsigned long index = it - _cPoints.begin();
+//        if (pos == uSortedInds.end())
+//            remainValue.push_back( *it );
+//        else if (index != *pos)
+//            remainValue.push_back( *it );
+//        else 
+//        pos++;
+//    }
+//
+//    setValue(remainValue);
+//}
 
 void PropertyPointKernel::transform(const Base::Matrix4D &rclMat)
 {
-    aboutToSetValue();
-    for (std::vector<Base::Vector3f>::iterator it = _cPoints.begin(); it != _cPoints.end(); ++it)
-        *it = rclMat * (*it);
-    hasSetValue();
+    _cPoints.setTransform(rclMat);
 }

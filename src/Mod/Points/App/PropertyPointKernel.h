@@ -50,7 +50,7 @@ public:
     /** @name Getting basic geometric entities */
     //@{
     /** Returns the bounding box around the underlying mesh kernel */
-    Base::BoundBox3f getBoundingBox() const;
+    Base::BoundBox3d getBoundingBox() const;
     /** Get faces from object with given accuracy */
     virtual void getFaces(std::vector<Base::Vector3d> &Points,
         std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
@@ -76,14 +76,12 @@ public:
     //@{
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
-
-    void SaveDocFile (Base::Writer &writer) const;
     void RestoreDocFile(Base::Reader &reader);
     //@}
 
     /** @name Modify */
     //@{
-    void removeIndices( const std::vector<unsigned long>& );
+    //void removeIndices( const std::vector<unsigned long>& );
     void transform(const Base::Matrix4D &rclMat);
     //@}
 

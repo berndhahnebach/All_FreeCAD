@@ -141,6 +141,9 @@ public:
 
     static DocumentObjectExecReturn *StdReturn;
 
+    virtual void Save (Base::Writer &writer) const;
+
+
 protected:
 
     /** status bits of the document object

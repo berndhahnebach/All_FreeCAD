@@ -155,7 +155,7 @@ PyObject* MatrixPy::unity(PyObject * args)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
       return NULL;                             // NULL triggers exception
     PY_TRY {
-        getMatrixPtr()->unity();
+        getMatrixPtr()->setToUnity();
     }
     PY_CATCH;
 

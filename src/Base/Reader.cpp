@@ -58,7 +58,8 @@ using namespace std;
 //  Base::XMLReader: Constructors and Destructor
 // ---------------------------------------------------------------------------
 
-Base::XMLReader::XMLReader(const char* FileName, std::istream& str) : _File(FileName) 
+Base::XMLReader::XMLReader(const char* FileName, std::istream& str) 
+  : _File(FileName), DocumentSchema(0)
 {
 #ifdef _MSC_VER
     str.imbue(std::locale::empty());

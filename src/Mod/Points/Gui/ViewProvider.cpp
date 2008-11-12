@@ -52,6 +52,7 @@
 #include <Mod/Points/App/PointsFeature.h>
 
 #include "ViewProvider.h"
+#include "../App/Properties.h"
 
 
 using namespace PointsGui;
@@ -102,7 +103,7 @@ void ViewProviderPoints::onChanged(const App::Property* prop)
     }
 }
 
-void ViewProviderPoints::createPoints(const std::vector<Base::Vector3f>& cPts)
+void ViewProviderPoints::createPoints(const Points::PointKernel& cPts)
 {
     // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
     pcPointsCoord->enableNotify(false);
@@ -111,8 +112,8 @@ void ViewProviderPoints::createPoints(const std::vector<Base::Vector3f>& cPts)
 
     // get all points
     int idx=0;
-    for (PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++) {
-        pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
+    for (Points::PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++) {
+        pcPointsCoord->point.set1Value(idx, (float)it->x, (float)it->y, (float)it->z);
     }
 
     pcPoints->numPoints = cPts.size();
@@ -414,7 +415,7 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
 
     // search for all points inside/outside the polygon
     Points::PointKernel newKernel;
-    for ( std::vector<Base::Vector3f>::const_iterator jt = points.begin(); jt != points.end(); ++jt ) {
+    for ( Points::PointKernel::const_iterator jt = points.begin(); jt != points.end(); ++jt ) {
         SbVec3f pt(jt->x,jt->y,jt->z);
 
         // project from 3d to 2d

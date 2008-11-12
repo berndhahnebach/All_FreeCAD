@@ -518,7 +518,7 @@ void Document::Save (Writer &writer) const
     << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
     << "-->" << endl;
 
-    writer.Stream() << "<Document SchemaVersion=\"3\">" << endl;
+    writer.Stream() << "<Document SchemaVersion=\"4\">" << endl;
 
     PropertyContainer::Save(writer);
 
@@ -559,6 +559,7 @@ void Document::Restore(Base::XMLReader &reader)
     int i,Cnt;
     reader.readElement("Document");
     long scheme = reader.getAttributeAsInteger("SchemaVersion");
+    reader.DocumentSchema = scheme;
 
     // When this document was created the FileName and Label properties
     // were set to the absolute path or file name, respectively. To save
@@ -623,8 +624,8 @@ void Document::Restore(Base::XMLReader &reader)
             reader.readEndElement("Feature");
         }
         reader.readEndElement("FeatureData");
-    } // SchemeVersion "3"
-    else if ( scheme == 3 ) {
+    } // SchemeVersion "3" or higher
+    else if ( scheme >= 3 ) {
         // read the feature types
         reader.readElement("Objects");
         Cnt = reader.getAttributeAsInteger("Count");

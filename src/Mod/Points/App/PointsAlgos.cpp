@@ -66,7 +66,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     //boost::regex rx("^\\s*(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s*$");
     boost::cmatch what;
 
-    float x,y,z;
+    double x,y,z;
     int LineCnt=0;
     std::string line;
     Base::FileInfo fi(FileName);
@@ -93,11 +93,11 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
         // read file
         while (std::getline(file, line)) {
             if (boost::regex_match(line.c_str(), what, rx)) {
-                x = (float)std::atof(what[1].first);
-                y = (float)std::atof(what[4].first);
-                z = (float)std::atof(what[7].first);
+                x = std::atof(what[1].first);
+                y = std::atof(what[4].first);
+                z = std::atof(what[7].first);
 
-                points[LineCnt] = Base::Vector3f(x,y,z);
+                points.setPoint(LineCnt,Base::Vector3d(x,y,z));
                 Base::Sequencer().next();
                 LineCnt++;
             }
@@ -111,8 +111,8 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     // now remove the last points from the kernel
     // Note: first we allocate memory corresponding to the number of lines (points and comments)
     //       and read in the file twice. But then the size of the kernel is too high
-    if (LineCnt < (int)points.size())
-        points.erase(points.begin() + LineCnt, points.end());
+    //if (LineCnt < (int)points.size())
+    //    points.Points.erase(points.begin() + LineCnt, points.Points.end());
 
     Base::Sequencer().stop();
 }

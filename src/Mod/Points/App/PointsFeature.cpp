@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 #endif
+#include <vector>
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -66,19 +67,6 @@ void Feature::Restore(Base::XMLReader &reader)
   // class. To keep old project files working we must do a special check for this case.
   GeoFeature::Restore(reader);
 
-  if ( !reader.isRegistered(&Points) )
-  {
-    // The PointKernelProperty is not registered yet, so we can make sure that an element "Point" after "Properties"
-    // inside the XML file is available.
-    reader.readElement("Points");
-    std::string file (reader.getAttribute("file") );
-    if (file == "")
-    {
-    }else{
-      // initate a file read
-      reader.addFile(file.c_str(),this);
-    }
-  }
 }
 
 void Feature::RestoreDocFile(Base::Reader &reader)

@@ -61,7 +61,7 @@ void PropertyNormalList::transform(const Base::Matrix4D &mat)
 
     // Set up the rotation matrix: zero the translations and make the scale factors = 1
     Base::Matrix4D rot;
-    rot.unity();
+    rot.setToUnity();
     for (unsigned short i = 0; i < 3; i++) {
         for (unsigned short j = 0; j < 3; j++) {
             rot[i][j] = mat[i][j] / s[i];
@@ -169,7 +169,7 @@ void PropertyCurvatureList::transform(const Base::Matrix4D &mat)
     
     // Set up the rotation matrix: zero the translations and make the scale factors = 1
     Base::Matrix4D rot;
-    rot.unity();
+    rot.setToUnity();
     for (unsigned short i = 0; i < 3; i++) {
         for (unsigned short j = 0; j < 3; j++) {
             rot[i][j] = mat[i][j] / s[i];
@@ -323,9 +323,9 @@ const MeshObject* PropertyMeshKernel::getValuePtr(void)const
     return (MeshObject*)_meshObject;
 }
 
-Base::BoundBox3f PropertyMeshKernel::getBoundingBox() const
+Base::BoundBox3d PropertyMeshKernel::getBoundingBox() const
 {
-    return _meshObject->getKernel().GetBoundBox();
+    return _meshObject->getBoundBox();
 }
 
 void PropertyMeshKernel::getFaces(std::vector<Base::Vector3d> &aPoints,

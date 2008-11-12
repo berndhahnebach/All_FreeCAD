@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/Writer.h>
+
 #include "Document.h"
 #include "DocumentObject.h"
 #include "DocumentObjectPy.h"
@@ -146,6 +148,13 @@ void DocumentObject::touch(void)
     //touchTime.setToActual();
     StatusBits.set(0);
 }
+
+void DocumentObject::Save (Base::Writer &writer) const
+{
+    writer.Name = this->getNameInDocument();
+    App::PropertyContainer::Save(writer);
+}
+
 /*
 void DocumentObject::TouchView(void)
 {

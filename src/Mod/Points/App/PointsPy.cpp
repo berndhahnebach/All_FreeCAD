@@ -238,12 +238,12 @@ PYFUNCIMP_D(PointsPy,scale)
 
 PYFUNCIMP_D(PointsPy,addPoint)
 {
-  float x,y,z;
-  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
+  double x,y,z;
+  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
-    _cPoints.push_back(Base::Vector3f(x,y,z));
+    _cPoints.push_back(Base::Vector3d(x,y,z));
   } PY_CATCH;
 
   Py_Return;
