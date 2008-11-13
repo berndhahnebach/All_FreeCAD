@@ -99,7 +99,8 @@ void PointKernel::SaveDocFile (Base::Writer &writer) const
     Base::OutputStream str(writer.Stream());
     uint32_t uCt = (uint32_t)size();
     str << uCt;
-    for (PointKernel::const_iterator it = begin(); it != end(); ++it) {
+    // store the data without transforming it and save as float, not double
+    for (std::vector<Base::Vector3f>::const_iterator it = _Points.begin(); it != _Points.end(); ++it) {
         str << it->x << it->y << it->z;
     }
 }
@@ -115,24 +116,22 @@ void PointKernel::Restore(Base::XMLReader &reader)
         // initate a file read
         reader.addFile(file.c_str(),this);
     }
-    if(reader.DocumentSchema > 3)
-    {
+    if (reader.DocumentSchema > 3) {
         std::string Matrix (reader.getAttribute("mtrx") );
         _Mtrx.fromString(Matrix);
     }
-
 }
 
 void PointKernel::RestoreDocFile(Base::Reader &reader)
 {
-   Base::InputStream str(reader);
+    Base::InputStream str(reader);
     uint32_t uCt = 0;
     str >> uCt;
-    resize(uCt);
+    _Points.resize(uCt);
     for (unsigned long i=0; i < uCt; i++) {
         float x, y, z;
         str >> x >> y >> z;
-        setPoint(i,Base::Vector3d(x,y,z));
+        _Points[i].Set(x,y,z);
     }
 }
 
@@ -155,7 +154,8 @@ void PointKernel::save(std::ostream& out) const
 
 // ----------------------------------------------------------------------------
 
-PointKernel::const_point_iterator::const_point_iterator(const PointKernel* kernel, std::vector<Base::Vector3f>::const_iterator index)
+PointKernel::const_point_iterator::const_point_iterator
+(const PointKernel* kernel, std::vector<Base::Vector3f>::const_iterator index)
   : _kernel(kernel), _p_it(index)
 {
     if(_p_it != kernel->_Points.end())
@@ -165,7 +165,8 @@ PointKernel::const_point_iterator::const_point_iterator(const PointKernel* kerne
     }
 }
 
-PointKernel::const_point_iterator::const_point_iterator(const PointKernel::const_point_iterator& fi)
+PointKernel::const_point_iterator::const_point_iterator
+(const PointKernel::const_point_iterator& fi)
   : _kernel(fi._kernel), _point(fi._point), _p_it(fi._p_it)
 {
 }
@@ -174,7 +175,8 @@ PointKernel::const_point_iterator::~const_point_iterator()
 {
 }
 
-PointKernel::const_point_iterator& PointKernel::const_point_iterator::operator=(const PointKernel::const_point_iterator& pi)
+PointKernel::const_point_iterator& 
+PointKernel::const_point_iterator::operator=(const PointKernel::const_point_iterator& pi)
 {
     this->_kernel  = pi._kernel;
     this->_point = pi._point;
@@ -205,19 +207,71 @@ bool PointKernel::const_point_iterator::operator==(const PointKernel::const_poin
     return (this->_kernel == pi._kernel) && (this->_p_it == pi._p_it);
 }
 
-bool PointKernel::const_point_iterator::operator!=(const PointKernel::const_point_iterator& pi) const 
+bool PointKernel::const_point_iterator::operator!=(const PointKernel::const_point_iterator& pi) const
 {
     return !operator==(pi);
 }
 
-PointKernel::const_point_iterator& PointKernel::const_point_iterator::operator++()
+PointKernel::const_point_iterator&
+PointKernel::const_point_iterator::operator++()
 {
     ++(this->_p_it);
     return *this;
 }
 
-PointKernel::const_point_iterator& PointKernel::const_point_iterator::operator--()
+PointKernel::const_point_iterator
+PointKernel::const_point_iterator::operator++(int)
+{
+    PointKernel::const_point_iterator tmp = *this;
+    ++(this->_p_it);
+    return tmp;
+}
+
+PointKernel::const_point_iterator&
+PointKernel::const_point_iterator::operator--()
 {
     --(this->_p_it);
     return *this;
+}
+
+PointKernel::const_point_iterator
+PointKernel::const_point_iterator::operator--(int)
+{
+    PointKernel::const_point_iterator tmp = *this;
+    --(this->_p_it);
+    return tmp;
+}
+
+PointKernel::const_point_iterator
+PointKernel::const_point_iterator::operator+ (difference_type off) const
+{
+    PointKernel::const_point_iterator tmp = *this;
+    return (tmp+=off);
+}
+
+PointKernel::const_point_iterator
+PointKernel::const_point_iterator::operator- (difference_type off) const
+{
+    PointKernel::const_point_iterator tmp = *this;
+    return (tmp-=off);
+}
+
+PointKernel::const_point_iterator&
+PointKernel::const_point_iterator::operator+=(PointKernel::difference_type off)
+{
+    (this->_p_it) += off;
+    return *this;
+}
+
+PointKernel::const_point_iterator&
+PointKernel::const_point_iterator::operator-=(PointKernel::difference_type off)
+{
+    (this->_p_it) -= off;
+    return *this;
+}
+
+PointKernel::difference_type
+PointKernel::const_point_iterator::operator- (const PointKernel::const_point_iterator& right) const
+{
+    return this->_p_it - right._p_it;
 }

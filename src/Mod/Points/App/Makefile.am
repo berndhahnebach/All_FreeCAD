@@ -1,14 +1,19 @@
 
 lib_LTLIBRARIES=libPoints.la Points.la
 
+BUILT_SOURCES=\
+		PointsPy.cpp
+
+libPoints_la_BUILT=\
+		PointsPy.h \
+
 libPoints_la_SOURCES=\
 		AppPointsPy.cpp \
 		FeaturePointsImportAscii.cpp \
 		Points.cpp \
-		PointsPy.cpp \
+		PointsPyImp.cpp \
 		PointsAlgos.cpp \
 		PointsFeature.cpp \
-		PointsFeaturePy.cpp \
 		PointsGrid.cpp \
 		Properties.cpp \
 		PropertyPointKernel.cpp \
@@ -20,10 +25,8 @@ includedir = @includedir@/Mod/Points/App
 include_HEADERS=\
 		FeaturePointsImportAscii.h \
 		Points.h \
-		PointsPy.h \
 		PointsAlgos.h \
 		PointsFeature.h \
-		PointsFeaturePy.h \
 		PointsGrid.h \
 		Properties.h \
 		PropertyPointKernel.h
@@ -64,4 +67,5 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 libdir = $(prefix)/Mod/Points
 
 EXTRA_DIST = \
+		PointsPy.xml \
 		AppPoints.vcproj
