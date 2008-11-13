@@ -423,32 +423,6 @@
 			>
 		</File>
 		<File
-			RelativePath="PointsFeaturePy.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PointsFeaturePy.h"
-			>
-		</File>
-		<File
 			RelativePath="PointsGrid.cpp"
 			>
 			<FileConfiguration
@@ -475,29 +449,29 @@
 			>
 		</File>
 		<File
-			RelativePath="PointsPy.cpp"
+			RelativePath=".\PointsPy.xml"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
+					Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="PointsPy.h"
+			RelativePath=".\PointsPyImp.cpp"
 			>
 		</File>
 		<File

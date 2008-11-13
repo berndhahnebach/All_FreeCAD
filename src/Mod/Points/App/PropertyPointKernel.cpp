@@ -78,14 +78,16 @@ void PropertyPointKernel::getFaces(std::vector<Base::Vector3d> &Points,
 
 PyObject *PropertyPointKernel::getPyObject(void)
 {
-    return new PointsPy(_cPoints);
+    PointsPy* points = new PointsPy(&(this->_cPoints));
+    points->setConst(); // set immutable
+    return points;
 }
 
 void PropertyPointKernel::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(PointsPy::Type))) {
         PointsPy  *pcObject = (PointsPy*)value;
-        setValue( pcObject->getPoints());
+        setValue( *(pcObject->getPointKernelPtr()));
     }
     else {
         std::string error = std::string("type must be 'Points', not ");

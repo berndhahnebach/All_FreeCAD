@@ -34,6 +34,7 @@
 #include <Base/Writer.h>
 
 #include "Points.h"
+#include "PointsAlgos.h"
 #include "PointsPy.h"
 
 using namespace Points;
@@ -139,6 +140,11 @@ void PointKernel::save(const char* file) const
 {
     //MeshCore::MeshOutput aWriter(_kernel);
     //aWriter.SaveAny(file);
+}
+
+void PointKernel::load(const char* file) 
+{
+    PointsAlgos::Load(*this,file);
 }
 
 void PointKernel::save(std::ostream& out) const

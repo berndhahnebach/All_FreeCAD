@@ -67,9 +67,11 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addObject("Points::ImportAscii", file.fileNamePure().c_str());
-      pcFeature->FileName.setValue( Name );
-      pcDoc->recompute();
+      Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
+      Points::PointKernel pkTemp;
+      pkTemp.load(Name);
+      pcFeature->Points.setValue( pkTemp );
+
     }
     else
     {
@@ -107,9 +109,10 @@ insert(PyObject *self, PyObject *args)
         return NULL;
       }
 
-      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addObject("Points::ImportAscii", file.fileNamePure().c_str());
-      pcFeature->FileName.setValue( Name );
-      pcDoc->recompute();
+      Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
+      Points::PointKernel pkTemp;
+      pkTemp.load(Name);
+      pcFeature->Points.setValue( pkTemp );
     }
     else
     {
@@ -120,23 +123,12 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
-static PyObject *                        
-create(PyObject *self, PyObject *args)
-{
-  if (! PyArg_ParseTuple(args, "") )			 
-    return NULL;                         
 
-  PY_TRY {
-    // load the mesh and create a mesh python object with it
-    return new PointsPy();    
-  } PY_CATCH;
-}
 
 // registration table  
 struct PyMethodDef Points_Import_methods[] = {
     {"open",  open,   1},				/* method name, C func ptr, always-tuple */
     {"insert",insert, 1},
-    {"create",create, 1},
 
     {NULL, NULL}                /* end of table marker */
 };
