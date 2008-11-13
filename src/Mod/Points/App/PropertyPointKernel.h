@@ -76,12 +76,13 @@ public:
     //@{
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
+    void SaveDocFile (Base::Writer &writer) const;
     void RestoreDocFile(Base::Reader &reader);
     //@}
 
     /** @name Modify */
     //@{
-    //void removeIndices( const std::vector<unsigned long>& );
+    void removeIndices( const std::vector<unsigned long>& );
     void transform(const Base::Matrix4D &rclMat);
     //@}
 

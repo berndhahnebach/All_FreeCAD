@@ -66,7 +66,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     //boost::regex rx("^\\s*(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s+(-?[0-9]*)\\.([0-9]+)\\s*$");
     boost::cmatch what;
 
-    double x,y,z;
+    Base::Vector3d pt;
     int LineCnt=0;
     std::string line;
     Base::FileInfo fi(FileName);
@@ -93,11 +93,11 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
         // read file
         while (std::getline(file, line)) {
             if (boost::regex_match(line.c_str(), what, rx)) {
-                x = std::atof(what[1].first);
-                y = std::atof(what[4].first);
-                z = std::atof(what[7].first);
+                pt.x = std::atof(what[1].first);
+                pt.y = std::atof(what[4].first);
+                pt.z = std::atof(what[7].first);
 
-                points.setPoint(LineCnt,Base::Vector3d(x,y,z));
+                points.setPoint(LineCnt,pt);
                 Base::Sequencer().next();
                 LineCnt++;
             }

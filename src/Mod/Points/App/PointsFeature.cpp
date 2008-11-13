@@ -47,8 +47,8 @@ PROPERTY_SOURCE(Points::Feature, App::GeoFeature)
 
 Feature::Feature() 
 {
-  ADD_PROPERTY(Points, (PointKernel()));
-  ADD_PROPERTY(Placement, (Base::Placement()));
+    ADD_PROPERTY(Points, (PointKernel()));
+    ADD_PROPERTY(Placement, (Base::Placement()));
 }
 
 Feature::~Feature()
@@ -62,25 +62,22 @@ App::DocumentObjectExecReturn *Feature::execute(void)
 
 void Feature::Restore(Base::XMLReader &reader)
 {
-  // Note: In a previous version we have saved the points directly from this feature class instead of using an appropriate property
-  // class. To keep old project files working we must do a special check for this case.
-  GeoFeature::Restore(reader);
-
+    GeoFeature::Restore(reader);
 }
 
 void Feature::RestoreDocFile(Base::Reader &reader)
 {
-  // This gets only invoked if a points file has been added from Restore()
-  Points.RestoreDocFile(reader);
+    // This gets only invoked if a points file has been added from Restore()
+    Points.RestoreDocFile(reader);
 }
 
 //PyObject *Feature::getPyObject(void)
 //{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PointsFeaturePy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
+//    if(PythonObject.is(Py::_None())){
+//        // ref counter is set to 1
+//        PythonObject.set(new PointsFeaturePy(this),true);
+//    }
+//    return Py::new_reference_to(PythonObject); 
 //}
 
 // ------------------------------------------------------------------
@@ -89,9 +86,9 @@ PROPERTY_SOURCE(Points::Export, Points::Feature)
 
 Export::Export(void)
 {
-  ADD_PROPERTY(Sources ,(0));
-  ADD_PROPERTY(FileName,(""));
-  ADD_PROPERTY(Format  ,(""));
+    ADD_PROPERTY(Sources ,(0));
+    ADD_PROPERTY(FileName,(""));
+    ADD_PROPERTY(Format  ,(""));
 }
 
 App::DocumentObjectExecReturn *Export::execute(void)

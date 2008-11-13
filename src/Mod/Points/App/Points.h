@@ -69,11 +69,8 @@ public:
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
 
-
     inline void setTransform(const Base::Matrix4D& rclTrf){_Mtrx = rclTrf;}
     inline Base::Matrix4D getTransform(void) const{return _Mtrx;}
-
- 
 
     virtual Base::BoundBox3d getBoundBox(void)const;
 
@@ -96,9 +93,16 @@ private:
     std::vector<Base::Vector3f> _Points;
 
 public:
+    typedef std::vector<Base::Vector3f>::difference_type difference_type;
+    typedef std::vector<Base::Vector3f>::size_type size_type;
+
     /// number of points stored 
-    std::vector<Base::Vector3f>::size_type size(void) const {return this->_Points.size();}
+    size_type size(void) const {return this->_Points.size();}
     void resize(unsigned int n){_Points.resize(n);}
+    void reserve(unsigned int n){_Points.reserve(n);}
+    inline void erase(unsigned long first, unsigned long last) {
+        _Points.erase(_Points.begin()+first,_Points.begin()+last);
+    }
 
     void clear(void){_Points.clear();}
 
@@ -130,10 +134,14 @@ public:
         bool operator==(const const_point_iterator& fi) const;
         bool operator!=(const const_point_iterator& fi) const;
         const_point_iterator& operator++();
-        const_point_iterator& operator+();
+        const_point_iterator  operator++(int);
         const_point_iterator& operator--();
-        const_point_iterator& operator-();
-        friend PointKernel;
+        const_point_iterator  operator--(int);
+        const_point_iterator  operator+ (difference_type off) const;
+        const_point_iterator  operator- (difference_type off) const;
+        const_point_iterator& operator+=(difference_type off);
+        const_point_iterator& operator-=(difference_type off);
+        difference_type operator- (const const_point_iterator& right) const;
     private:
         void dereference();
         const PointKernel* _kernel;
@@ -147,13 +155,8 @@ public:
     const_point_iterator end() const
     { return const_point_iterator(this, _Points.end()); }
     //@}
-    inline void erase(unsigned long first, unsigned long last)
-    {
-        _Points.erase(_Points.begin()+first,_Points.begin()+last);
-    }
 
     typedef const_point_iterator const_iterator;
-
 };
 
 } // namespace Points

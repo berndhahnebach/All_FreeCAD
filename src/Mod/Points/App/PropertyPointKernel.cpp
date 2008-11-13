@@ -122,6 +122,11 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
     }
 }
 
+void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
+{
+    // does nothing
+}
+
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
     aboutToSetValue();
@@ -149,32 +154,33 @@ unsigned int PropertyPointKernel::getMemSize (void) const
     return sizeof(Base::Vector3f) * this->_cPoints.size();
 }
 
-//void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
-//{
-//    // We need a sorted array
-//    std::vector<unsigned long> uSortedInds = uIndices;
-//    std::sort(uSortedInds.begin(), uSortedInds.end());
-//
-//    assert( uSortedInds.size() <= _cPoints.size() );
-//    if ( uSortedInds.size() > _cPoints.size() )
-//        return;
-//
-//    std::vector<Base::Vector3f> remainValue;
-//    remainValue.reserve(_cPoints.size() - uSortedInds.size());
-//
-//    std::vector<unsigned long>::iterator pos = uSortedInds.begin();
-//    for ( std::vector<Base::Vector3f>::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it ) {
-//        unsigned long index = it - _cPoints.begin();
-//        if (pos == uSortedInds.end())
-//            remainValue.push_back( *it );
-//        else if (index != *pos)
-//            remainValue.push_back( *it );
-//        else 
-//        pos++;
-//    }
-//
-//    setValue(remainValue);
-//}
+void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
+{
+    // We need a sorted array
+    std::vector<unsigned long> uSortedInds = uIndices;
+    std::sort(uSortedInds.begin(), uSortedInds.end());
+
+    assert( uSortedInds.size() <= _cPoints.size() );
+    if ( uSortedInds.size() > _cPoints.size() )
+        return;
+
+    PointKernel kernel;
+    kernel.setTransform(_cPoints.getTransform());
+    kernel.reserve(_cPoints.size() - uSortedInds.size());
+
+    std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+    unsigned long index = 0;
+    for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it, ++index) {
+        if (pos == uSortedInds.end())
+            kernel.push_back( *it );
+        else if (index != *pos)
+            kernel.push_back( *it );
+        else 
+            pos++;
+    }
+
+    setValue(kernel);
+}
 
 void PropertyPointKernel::transform(const Base::Matrix4D &rclMat)
 {
