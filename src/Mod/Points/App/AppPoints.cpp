@@ -27,8 +27,10 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 
 #include "Points.h"
+#include "PointsPy.h"
 #include "Properties.h"
 #include "PropertyPointKernel.h"
 #include "FeaturePointsImportAscii.h"
@@ -44,8 +46,11 @@ extern struct PyMethodDef Points_Import_methods[];
 extern "C" {
 void PointsAppExport initPoints()
 {
-    (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
+    PyObject* pointsModule =  Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading Points module... done\n");
+
+    // add python types
+    Base::Interpreter().addType(&Points::PointsPy  ::Type,pointsModule,"Points");
 
     // add properties
     Points::PropertyGreyValue     ::init();

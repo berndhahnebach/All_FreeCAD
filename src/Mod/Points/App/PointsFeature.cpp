@@ -35,7 +35,6 @@
 
 
 #include "PointsFeature.h"
-#include "PointsFeaturePy.h"
 
 using namespace Points;
 
@@ -75,14 +74,14 @@ void Feature::RestoreDocFile(Base::Reader &reader)
   Points.RestoreDocFile(reader);
 }
 
-PyObject *Feature::getPyObject(void)
-{
- if(PythonObject.is(Py::_None())){
-    // ref counter is set to 1
-    PythonObject.set(new PointsFeaturePy(this),true);
-  }
-  return Py::new_reference_to(PythonObject); 
-}
+//PyObject *Feature::getPyObject(void)
+//{
+// if(PythonObject.is(Py::_None())){
+//    // ref counter is set to 1
+//    PythonObject.set(new PointsFeaturePy(this),true);
+//  }
+//  return Py::new_reference_to(PythonObject); 
+//}
 
 // ------------------------------------------------------------------
 

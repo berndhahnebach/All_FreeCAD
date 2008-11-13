@@ -102,6 +102,8 @@ public:
 
     void clear(void){_Points.clear();}
 
+
+
     /// get the points
     inline const Base::Vector3d getPoint(const int idx) const {
         return transformToOutside(_Points[idx]);
@@ -128,7 +130,10 @@ public:
         bool operator==(const const_point_iterator& fi) const;
         bool operator!=(const const_point_iterator& fi) const;
         const_point_iterator& operator++();
+        const_point_iterator& operator+();
         const_point_iterator& operator--();
+        const_point_iterator& operator-();
+        friend PointKernel;
     private:
         void dereference();
         const PointKernel* _kernel;
@@ -142,6 +147,10 @@ public:
     const_point_iterator end() const
     { return const_point_iterator(this, _Points.end()); }
     //@}
+    inline void erase(unsigned long first, unsigned long last)
+    {
+        _Points.erase(_Points.begin()+first,_Points.begin()+last);
+    }
 
     typedef const_point_iterator const_iterator;
 

@@ -111,8 +111,8 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     // now remove the last points from the kernel
     // Note: first we allocate memory corresponding to the number of lines (points and comments)
     //       and read in the file twice. But then the size of the kernel is too high
-    //if (LineCnt < (int)points.size())
-    //    points.Points.erase(points.begin() + LineCnt, points.Points.end());
+    if (LineCnt < (int)points.size())
+        points.erase(LineCnt, points.size());
 
     Base::Sequencer().stop();
 }

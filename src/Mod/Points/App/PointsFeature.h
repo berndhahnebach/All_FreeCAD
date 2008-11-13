@@ -71,7 +71,7 @@ public:
         return "PointsGui::ViewProviderPoints";
     }
     // handling the PointsPy object
-    virtual PyObject* getPyObject(void);
+    //virtual PyObject* getPyObject(void);
     //@}
 
 public:
