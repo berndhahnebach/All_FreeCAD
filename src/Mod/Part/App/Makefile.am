@@ -194,6 +194,8 @@ Part_la_LIBADD   = \
 		$(libPart_la_LIBADD) \
 		-lPart
 
+Part_la_DEPENDENCIES = libPart.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

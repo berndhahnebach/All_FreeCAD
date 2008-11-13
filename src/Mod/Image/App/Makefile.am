@@ -40,6 +40,8 @@ Image_la_LIBADD   = \
 		$(libImage_la_LIBADD) \
 		-lImage
 
+Image_la_DEPENDENCIES = libImage.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

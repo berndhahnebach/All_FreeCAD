@@ -54,6 +54,8 @@ Points_la_LIBADD   = \
 		$(libPoints_la_LIBADD) \
 		-lPoints
 
+Points_la_DEPENDENCIES = libPoints.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

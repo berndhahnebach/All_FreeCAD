@@ -38,6 +38,8 @@ CompleteGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lCompleteGui
 
+CompleteGui_la_DEPENDENCIES = libCompleteGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

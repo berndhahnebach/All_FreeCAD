@@ -71,6 +71,8 @@ Raytracing_la_LIBADD   = \
 		$(libRaytracing_la_LIBADD) \
 		-lRaytracing
 
+Raytracing_la_DEPENDENCIES = libRaytracing.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

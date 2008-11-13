@@ -31,6 +31,8 @@ _TEMPLATE__la_LIBADD   = \
 		$(lib_TEMPLATE__la_LIBADD) \
 		-l_TEMPLATE_
 
+_TEMPLATE__la_DEPENDENCIES = lib_TEMPLATE_.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
