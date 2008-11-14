@@ -1,3 +1,25 @@
+/***************************************************************************
+ *   Copyright (c) 2008 Juergen Riegel <juergen.riegel@web.de>             *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include "PreCompiled.h"
 
@@ -76,64 +98,38 @@ PyObject* PointsPy::write(PyObject * args)
 
 PyObject* PointsPy::addPoints(PyObject * args)
 {
-    PyObject *list;
-    double v[3];
-    if (PyArg_ParseTuple(args, "O!", &PyList_Type, &list)) {
-        int k = 0;
-        for (int i = 0; i < PyList_Size(list); i++) {
-            PyObject *vec = PyList_GetItem(list, i);            
-            if (PyList_Check(vec)) {
-                if (PyList_Size(vec) == 3) {
-                    for (int j = 0; j < 3; j++) {
-                        PyObject *val = PyList_GetItem(vec, j);
-                        if (PyFloat_Check(val)) {
-                            double f = PyFloat_AsDouble(val);
-                            v[j] = f;
-                        }
-                        else {
-                            Py_Error(PyExc_Exception, "vector needs 3 double values");
-                            return NULL; // not a double
-                        }
-                    }
-                    getPointKernelPtr()->push_back(Base::Vector3d(v[0],v[1],v[2]));
-                }
-                else {
-                    Py_Error(PyExc_Exception, "vector needs 3 double values");
-                    return NULL; // vector needs 3 doubles
-                }
-            }else if (PyObject_TypeCheck(vec, &(Base::VectorPy::Type))) {
-                getPointKernelPtr()->push_back(*(static_cast<Base::VectorPy*>(vec)->getVectorPtr()));
-            }else {
-                Py_Error(PyExc_Exception, "inner list should be 3 doubles as list");
-                return NULL; // not a vector
-            }
-        
-         }
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &obj))
+        return 0;
 
-        Py_Return;
+    Py::List list(obj);
+    union PyType_Object pyType = {&(Base::VectorPy::Type)};
+    Py::Type vType(pyType.o);
+
+    try {
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if ((*it).isType(vType)) {
+                Py::Point p(*it);
+                getPointKernelPtr()->push_back(p.toPoint());
+            }
+            else {
+                Base::Vector3d pnt;
+                Py::Tuple tuple(*it);
+                pnt.x = (double)Py::Float(tuple[0]);
+                pnt.x = (double)Py::Float(tuple[1]);
+                pnt.z = (double)Py::Float(tuple[2]);
+                getPointKernelPtr()->push_back(pnt);
+            }
+        }
+    }
+    catch (const Py::Exception&) {
+        PyErr_SetString(PyExc_Exception, "either expect\n"
+            "-- [Vector,...] \n"
+            "-- [(x,y,z),...]");
+        return 0;
     }
 
-    //PyErr_Clear();
-    //if (PyArg_ParseTuple(args, "O!", &PyTuple_Type, &list)) {
-    //    Py::Tuple tuple(list);
-    //    Py::List list_v(tuple.getItem(0));
-    //    union PyType_Object pyVertType = {&(Base::VectorPy::Type)};
-    //    Py::Type vType(pyVertType.o);
-    //    for (Py::List::iterator it = list_v.begin(); it != list_v.end(); ++it) {
-    //        if ((*it).isType(vType)) {
-    //            Base::Vector3d v = static_cast<Base::VectorPy*>((*it).ptr())->value();
-    //            getPointKernelPtr()->addPoint(v);
-
-    //        }
-    //    }
-
-    //    Py_Return;
-    //}
-
-    PyErr_SetString(PyExc_Exception, "either expect\n"
-        "-- [Vector,...] \n"
-        "-- [[x,y,z],...]");
-    return NULL;
+    Py_Return;
 }
 
 Py::Int PointsPy::getCountPoints(void) const
