@@ -123,12 +123,33 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+static PyObject * 
+show(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PointsPy::Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
+    PY_TRY {
+        App::Document *pcDoc = App::GetApplication().getActiveDocument(); 	 
+        if (!pcDoc)
+            pcDoc = App::GetApplication().newDocument();
+        PointsPy* pPoints = static_cast<PointsPy*>(pcObj);
+        Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", "Points");
+        // copy the data
+        //TopoShape* shape = new MeshObject(*pShape->getTopoShapeObjectPtr());
+        pcFeature->Points.setValue(*(pPoints->getPointKernelPtr()));
+        //pcDoc->recompute();
+    } PY_CATCH;
+
+    Py_Return;
+}
 
 // registration table  
 struct PyMethodDef Points_Import_methods[] = {
     {"open",  open,   1},				/* method name, C func ptr, always-tuple */
     {"insert",insert, 1},
+    {"show",show, 1},
 
     {NULL, NULL}                /* end of table marker */
 };
