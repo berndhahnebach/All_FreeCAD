@@ -5,7 +5,7 @@ BUILT_SOURCES=\
 		PointsPy.cpp
 
 libPoints_la_BUILT=\
-		PointsPy.h \
+		PointsPy.h
 
 libPoints_la_SOURCES=\
 		AppPointsPy.cpp \
@@ -20,7 +20,8 @@ libPoints_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h
 
-includedir = @includedir@/Mod/Points/App
+nodist_include_HEADERS=\
+		$(libPoints_la_BUILT)
 
 include_HEADERS=\
 		FeaturePointsImportAscii.h \
@@ -31,13 +32,16 @@ include_HEADERS=\
 		Properties.h \
 		PropertyPointKernel.h
 
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
+
 
 # the library search path.
 libPoints_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPoints_la_CPPFLAGS = -DPointsAppExport=
 
 libPoints_la_LIBADD   = \
-		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
+		@BOOST_REGEX_LIB@ @BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
@@ -64,7 +68,10 @@ Points_la_DEPENDENCIES = libPoints.la
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 
+includedir = @includedir@/Mod/Points/App
 libdir = $(prefix)/Mod/Points
+
+CLEANFILES = $(BUILT_SOURCES) $(libPoints_la_BUILT)
 
 EXTRA_DIST = \
 		PointsPy.xml \
