@@ -140,7 +140,6 @@ Py::Int PointsPy::getCountPoints(void) const
 Py::List PointsPy::getPoints(void) const
 {
     Py::List PointList;
-    unsigned int Index=0;
     PointKernel* points = getPointKernelPtr();
     for (PointKernel::const_point_iterator it = points->begin(); it != points->end(); ++it) {
         PointList.append(Py::Object(new Base::VectorPy(*it)));

@@ -346,6 +346,8 @@ Mesh_la_LIBADD   = \
 		$(libMesh_la_LIBADD) \
 		-lMesh
 
+Mesh_la_DEPENDENCIES = libMesh.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
