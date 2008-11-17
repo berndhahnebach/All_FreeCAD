@@ -37,6 +37,8 @@ _TEMPLATE_Gui_la_LIBADD   = \
 		$(lib_TEMPLATE_Gui_la_LIBADD) \
 		-l_TEMPLATE_Gui
 
+_TEMPLATE_Gui_la_DEPENDENCIES = lib_TEMPLATE_Gui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

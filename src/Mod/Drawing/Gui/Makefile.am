@@ -49,6 +49,8 @@ DrawingGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lDrawingGui
 
+DrawingGui_la_DEPENDENCIES = libDrawingGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

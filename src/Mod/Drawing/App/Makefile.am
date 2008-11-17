@@ -60,6 +60,8 @@ Drawing_la_LIBADD   = \
 		$(libDrawing_la_LIBADD) \
 		-lDrawing
 
+Drawing_la_DEPENDENCIES = libDrawing.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

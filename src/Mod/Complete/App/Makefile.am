@@ -31,6 +31,8 @@ Complete_la_LIBADD   = \
 		$(libComplete_la_LIBADD) \
 		-lComplete
 
+Complete_la_DEPENDENCIES = libComplete.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

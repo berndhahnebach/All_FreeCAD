@@ -43,6 +43,8 @@ ReverseEngineeringGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lReverseEngineeringGui
 
+ReverseEngineeringGui_la_DEPENDENCIES = libReverseEngineeringGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

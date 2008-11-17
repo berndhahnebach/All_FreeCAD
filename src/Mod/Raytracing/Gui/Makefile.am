@@ -53,6 +53,8 @@ RaytracingGui_la_LIBADD   = \
 		$(libRaytracingGui_la_LIBADD) \
 		-lRaytracingGui
 
+RaytracingGui_la_DEPENDENCIES = libRaytracingGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
