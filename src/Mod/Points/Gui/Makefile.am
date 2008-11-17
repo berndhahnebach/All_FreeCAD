@@ -48,6 +48,8 @@ PointsGui_la_LIBADD   = \
 		$(libPointsGui_la_LIBADD) \
 		-lPointsGui
 
+PointsGui_la_DEPENDENCIES = libPointsGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

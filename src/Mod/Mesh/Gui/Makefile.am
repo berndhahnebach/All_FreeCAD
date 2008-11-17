@@ -74,6 +74,8 @@ MeshGui_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lMeshGui
 
+MeshGui_la_DEPENDENCIES = libMeshGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

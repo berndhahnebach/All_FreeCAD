@@ -39,6 +39,8 @@ QtUnitGui_la_LIBADD   = \
 		$(libQtUnitGui_la_LIBADD) \
 		-lQtUnitGui
 
+QtUnitGui_la_DEPENDENCIES = libQtUnitGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

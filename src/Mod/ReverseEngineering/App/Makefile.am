@@ -57,6 +57,8 @@ ReverseEngineering_la_LIBADD   = \
 		$(libReverseEngineering_la_LIBADD) \
 		-lReverseEngineering
 
+ReverseEngineering_la_DEPENDENCIES = libReverseEngineering.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

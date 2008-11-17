@@ -52,6 +52,8 @@ ImageGui_la_LIBADD   = \
 		$(libImageGui_la_LIBADD) \
 		-lImageGui
 
+ImageGui_la_DEPENDENCIES = libImageGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

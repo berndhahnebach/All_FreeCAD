@@ -130,6 +130,8 @@ PartGui_la_LIBADD   = \
 		$(libPartGui_la_LIBADD) \
 		-lPartGui
 
+PartGui_la_DEPENDENCIES = libPartGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
