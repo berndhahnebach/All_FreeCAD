@@ -26,8 +26,9 @@
 #include "Base/BoundBox.h"
 
 // inclusion of the generated files (generated out of BoundBoxPy.xml)
-#include "BoundBoxPy.h"
 #include "VectorPy.h"
+#include "GeometryPy.h"
+#include "BoundBoxPy.h"
 #include "BoundBoxPy.cpp"
 
 using namespace Base;

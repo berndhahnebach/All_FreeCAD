@@ -33,6 +33,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "BezierCurvePy.h"
@@ -207,8 +208,8 @@ PyObject* BezierSurfacePy::insertPoleColAfter(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 
@@ -248,8 +249,8 @@ PyObject* BezierSurfacePy::insertPoleRowAfter(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 
@@ -289,8 +290,8 @@ PyObject* BezierSurfacePy::insertPoleColBefore(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 
@@ -330,8 +331,8 @@ PyObject* BezierSurfacePy::insertPoleRowBefore(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 
@@ -449,8 +450,8 @@ PyObject* BezierSurfacePy::setPoleCol(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 
@@ -490,8 +491,8 @@ PyObject* BezierSurfacePy::setPoleRow(PyObject *args)
         TColgp_Array1OfPnt poles(1, list.size());
         int index=1;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::Point p(*it);
-            Base::Vector3d v = p.toPoint();
+            Py::Vector p(*it);
+            Base::Vector3d v = p.toVector();
             poles(index++) = gp_Pnt(v.x,v.y,v.z);
         }
 

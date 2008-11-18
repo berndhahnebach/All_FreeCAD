@@ -36,6 +36,7 @@
 # include <Standard_Failure.hxx>
 #endif
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/Matrix.h>
 #include <Base/MatrixPy.h>
 #include <Base/Vector3D.h>

@@ -4,6 +4,7 @@ lib_LTLIBRARIES=libFreeCADBase.la
 BUILT_SOURCES=\
 		BaseClassPy.cpp \
 		BoundBoxPy.cpp \
+		GeometryPyCXX.cpp \
 		MatrixPy.cpp \
 		PersistencePy.cpp \
 		PlacementPy.cpp \
@@ -14,6 +15,7 @@ BUILT_SOURCES=\
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
 		BoundBoxPy.h \
+		GeometryPyCXX.h \
 		MatrixPy.h \
 		PersistencePy.h \
 		PlacementPy.h \

@@ -34,6 +34,7 @@
 # include <Standard_Failure.hxx>
 #endif
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"

@@ -30,6 +30,7 @@
 #include "SurfaceOfRevolutionPy.h"
 #include "SurfaceOfRevolutionPy.cpp"
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 using namespace Part;

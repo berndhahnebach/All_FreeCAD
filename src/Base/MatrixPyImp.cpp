@@ -26,9 +26,10 @@
 #include "Base/Matrix.h"
 
 // inclusion of the generated files (generated out of MatrixPy.xml)
+#include "VectorPy.h"
+#include "GeometryPy.h"
 #include "MatrixPy.h"
 #include "MatrixPy.cpp"
-#include "VectorPy.h"
 
 using namespace Base;
 

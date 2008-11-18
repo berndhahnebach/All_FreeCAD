@@ -255,6 +255,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GeometryPyCXX.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GeometryPyCXX.h"
+				>
+			</File>
+			<File
 				RelativePath="Matrix.cpp"
 				>
 				<FileConfiguration

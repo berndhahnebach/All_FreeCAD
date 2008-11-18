@@ -33,6 +33,7 @@
 # include <gp_Lin.hxx>
 #endif
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"
