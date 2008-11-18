@@ -30,6 +30,7 @@
 #include "SurfaceOfExtrusionPy.h"
 #include "SurfaceOfExtrusionPy.cpp"
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 using namespace Part;

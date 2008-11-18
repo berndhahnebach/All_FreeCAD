@@ -32,6 +32,7 @@
 #include "CirclePy.cpp"
 #include "ArcPy.h"
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 using namespace Part;

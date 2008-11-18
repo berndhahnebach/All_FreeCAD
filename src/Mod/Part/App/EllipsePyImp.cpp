@@ -28,6 +28,7 @@
 # include <GC_MakeEllipse.hxx>
 #endif
 
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 
 #include "Geometry.h"

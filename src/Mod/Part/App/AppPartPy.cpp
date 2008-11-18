@@ -66,6 +66,7 @@
 #include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
 #include <App/Application.h>
 #include <App/Document.h>

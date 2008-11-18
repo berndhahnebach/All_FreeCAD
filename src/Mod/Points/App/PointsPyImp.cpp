@@ -25,6 +25,7 @@
 
 #include "Mod/Points/App/Points.h"
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 // inclusion of the generated files (generated out of PointsPy.xml)
 #include "PointsPy.h"
@@ -109,8 +110,8 @@ PyObject* PointsPy::addPoints(PyObject * args)
     try {
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if ((*it).isType(vType)) {
-                Py::Point p(*it);
-                getPointKernelPtr()->push_back(p.toPoint());
+                Py::Vector p(*it);
+                getPointKernelPtr()->push_back(p.toVector());
             }
             else {
                 Base::Vector3d pnt;
