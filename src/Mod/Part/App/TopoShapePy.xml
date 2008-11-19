@@ -39,6 +39,11 @@
         <UserDocu>Export the content of this shape to an STL mesh file.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="extrude">
+      <Documentation>
+        <UserDocu>Make a prism by sweeping along a direction.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="check">
       <Documentation>
         <UserDocu>Checks the shape and report errors in the shape structure.
