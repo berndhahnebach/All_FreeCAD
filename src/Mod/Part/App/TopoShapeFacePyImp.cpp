@@ -34,6 +34,7 @@
 # include <Geom_ConicalSurface.hxx>
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
+# include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
@@ -115,7 +116,49 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
 
-    PyErr_SetString(PyExc_Exception, "wire expected");
+    PyErr_Clear();
+    PyObject *surf, *bound=0;
+    if (PyArg_ParseTuple(args, "O!|O!", &(GeometryPy::Type), &surf, &(PyList_Type), &bound)) {
+        try {
+            Handle_Geom_Surface S = Handle_Geom_Surface::DownCast
+                (static_cast<GeometryPy*>(surf)->getGeometryPtr()->handle());
+            if (S.IsNull()) {
+                PyErr_SetString(PyExc_TypeError, "geometry is not a valid surface");
+                return -1;
+            }
+
+            BRepBuilderAPI_MakeFace mkFace(S);
+            if (bound) {
+                Py::List list(bound);
+                for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                    PyObject* item = (*it).ptr();
+                    if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
+                        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                        if (sh.ShapeType() == TopAbs_WIRE)
+                            mkFace.Add(TopoDS::Wire(sh));
+                        else {
+                            PyErr_SetString(PyExc_TypeError, "shape is not a wire");
+                            return -1;
+                        }
+                    }
+                    else {
+                        PyErr_SetString(PyExc_TypeError, "item is not a shape");
+                        return -1;
+                    }
+                }
+            }
+
+            getTopoShapePtr()->_Shape = mkFace.Face();
+            return 0;
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
+        }
+    }
+
+    PyErr_SetString(PyExc_Exception, "wire or list of wires expected");
     return -1;
 }
 
