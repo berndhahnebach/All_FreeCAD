@@ -27,7 +27,7 @@
 
 // inclusion of the generated files (generated out of BoundBoxPy.xml)
 #include "VectorPy.h"
-#include "GeometryPy.h"
+#include "GeometryPyCXX.h"
 #include "BoundBoxPy.h"
 #include "BoundBoxPy.cpp"
 
