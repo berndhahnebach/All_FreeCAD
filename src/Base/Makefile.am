@@ -4,7 +4,6 @@ lib_LTLIBRARIES=libFreeCADBase.la
 BUILT_SOURCES=\
 		BaseClassPy.cpp \
 		BoundBoxPy.cpp \
-		GeometryPyCXX.cpp \
 		MatrixPy.cpp \
 		PersistencePy.cpp \
 		PlacementPy.cpp \
@@ -15,7 +14,6 @@ BUILT_SOURCES=\
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
 		BoundBoxPy.h \
-		GeometryPyCXX.h \
 		MatrixPy.h \
 		PersistencePy.h \
 		PlacementPy.h \
@@ -93,6 +91,7 @@ libFreeCADBase_la_SOURCES=\
 		FileInfo.cpp \
 		FileTemplate.cpp \
 		FileTemplate.h \
+		GeometryPyCXX.cpp \
 		gzstream.cpp \
 		Handle.cpp \
 		InputSource.cpp \
@@ -145,6 +144,7 @@ include_HEADERS=\
 		Factory.h \
 		FileInfo.h \
 		fdstream.hpp \
+		GeometryPyCXX.h \
 		gzstream.h \
 		Handle.h \
 		InputSource.h \
