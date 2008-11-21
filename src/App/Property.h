@@ -103,11 +103,17 @@ public:
 
     std::bitset<32> StatusBits;
 
+
 protected:
     /// Gets called by all setValue() methods after the value has changed
     void hasSetValue(void);
     /// Gets called by all setValue() methods before the value has changed
     void aboutToSetValue(void);
+
+private:
+    // forbidden
+    Property(const Property&);
+    Property& operator = (const Property&);
 
 private:
     PropertyContainer *father;

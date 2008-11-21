@@ -163,6 +163,11 @@ protected:
   static const  PropertyData * getPropertyDataPtr(void); 
   virtual const PropertyData& getPropertyData(void) const; 
 
+private:
+  // forbidden
+  PropertyContainer(const PropertyContainer&);
+  PropertyContainer& operator = (const PropertyContainer&);
+
  private: 
   static PropertyData propertyData; 
 
