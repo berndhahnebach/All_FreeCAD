@@ -39,6 +39,7 @@
 #define __CXX_INDIRECT_PYTHON_INTERFACE__HXX__
 
 #include "CXX/WrapPython.h"
+#include "CXX/Config.hxx"
 
 namespace Py
 {
@@ -90,7 +91,7 @@ PyObject * _Exc_UnicodeError();
 //
 //    Wrap Object variables as function calls
 //
-BaseExport PyObject * _None();
+PYCXX_EXPORT PyObject * _None();
 
 PyObject * _False();
 PyObject * _True();
@@ -189,8 +190,8 @@ int &_Py_VerboseFlag();
 int &_Py_UnicodeFlag();
 #endif
 
-void BaseExport _XINCREF( PyObject *op );
-void BaseExport _XDECREF( PyObject *op );
+void PYCXX_EXPORT _XINCREF( PyObject *op );
+void PYCXX_EXPORT _XDECREF( PyObject *op );
 
 char *__Py_PackageContext();
 };

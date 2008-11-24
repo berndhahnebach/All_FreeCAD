@@ -131,6 +131,16 @@ typedef int Py_ssize_t;
   #endif
 #endif
 
-#endif //  __PyCXX_config_hh__
+// export macro
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4251 )
+#  ifdef PYCXX_DLL
+#    define PYCXX_EXPORT  __declspec(dllexport)
+#  else
+#    define PYCXX_EXPORT  __declspec(dllimport)
+#  endif
+#else
+#    define PYCXX_EXPORT
+#endif
 
-#include <FCConfig.h>
+#endif //  __PyCXX_config_hh__

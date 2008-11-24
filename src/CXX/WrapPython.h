@@ -45,6 +45,5 @@
 
 // pull in python definitions
 #include <Python.h>
-#include <FCConfig.h>
 
 #endif

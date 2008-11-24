@@ -139,7 +139,7 @@ namespace Py
     // which you can use in accepts when writing a wrapper class.
     // See Demo/range.h and Demo/range.cxx for an example.
 
-    class BaseExport Object
+    class PYCXX_EXPORT Object
     {
     private:
         // the pointer to the Python object
@@ -462,7 +462,7 @@ namespace Py
 #endif
 
     // Class Type
-    class BaseExport Type: public Object
+    class PYCXX_EXPORT Type: public Object
     {
     public:
         explicit Type (PyObject* pyob, bool owned = false): Object(pyob, owned)
@@ -508,7 +508,7 @@ namespace Py
 
     // ===============================================
     // class boolean
-    class BaseExport Boolean: public Object
+    class PYCXX_EXPORT Boolean: public Object
     {
     public:
         // Constructor
@@ -570,7 +570,7 @@ namespace Py
 
     // ===============================================
     // class Int
-    class BaseExport Int: public Object
+    class PYCXX_EXPORT Int: public Object
     {
     public:
         // Constructor
@@ -683,7 +683,7 @@ namespace Py
 
     // ===============================================
     // class Long
-    class BaseExport Long: public Object
+    class PYCXX_EXPORT Long: public Object
     {
     public:
         // Constructor
@@ -778,7 +778,7 @@ namespace Py
 #ifdef HAVE_LONG_LONG
     // ===============================================
     // class LongLong
-    class BaseExport LongLong: public Object
+    class PYCXX_EXPORT LongLong: public Object
     {
     public:
         // Constructor
@@ -907,7 +907,7 @@ namespace Py
     // ===============================================
     // class Float
     //
-    class BaseExport Float: public Object
+    class PYCXX_EXPORT Float: public Object
     {
     public:
         // Constructor
@@ -984,7 +984,7 @@ namespace Py
 
     // ===============================================
     // class Complex
-    class BaseExport Complex: public Object
+    class PYCXX_EXPORT Complex: public Object
     {
     public:
         // Constructor
@@ -1705,19 +1705,19 @@ namespace Py
     template <TEMPLATE_TYPENAME T> bool operator>=(const EXPLICIT_TYPENAME SeqBase<T>::const_iterator& left, const EXPLICIT_TYPENAME SeqBase<T>::const_iterator& right); 
 
 
-    BaseExport extern bool operator==(const Sequence::iterator& left, const Sequence::iterator& right);
-    BaseExport extern bool operator!=(const Sequence::iterator& left, const Sequence::iterator& right);
-    BaseExport extern bool operator< (const Sequence::iterator& left, const Sequence::iterator& right);
-    BaseExport extern bool operator> (const Sequence::iterator& left, const Sequence::iterator& right);
-    BaseExport extern bool operator<=(const Sequence::iterator& left, const Sequence::iterator& right);
-    BaseExport extern bool operator>=(const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator==(const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator!=(const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator< (const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator> (const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator<=(const Sequence::iterator& left, const Sequence::iterator& right);
+    PYCXX_EXPORT extern bool operator>=(const Sequence::iterator& left, const Sequence::iterator& right);
 
-    BaseExport extern bool operator==(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-    BaseExport extern bool operator!=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-    BaseExport extern bool operator< (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-    BaseExport extern bool operator> (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-    BaseExport extern bool operator<=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-    BaseExport extern bool operator>=(const Sequence::const_iterator& left, const Sequence::const_iterator& right); 
+    PYCXX_EXPORT extern bool operator==(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+    PYCXX_EXPORT extern bool operator!=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+    PYCXX_EXPORT extern bool operator< (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+    PYCXX_EXPORT extern bool operator> (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+    PYCXX_EXPORT extern bool operator<=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+    PYCXX_EXPORT extern bool operator>=(const Sequence::const_iterator& left, const Sequence::const_iterator& right); 
 
     // ==================================================
     // class Char
@@ -1727,7 +1727,7 @@ namespace Py
     typedef std::basic_string<Py_UNICODE> unicodestring;
     extern Py_UNICODE unicode_null_string[1];
 
-    class BaseExport Char: public Object
+    class PYCXX_EXPORT Char: public Object
     {
     public:
         explicit Char (PyObject *pyob, bool owned = false): Object(pyob, owned)
@@ -1810,7 +1810,7 @@ namespace Py
         }
     };
 
-    class BaseExport String: public SeqBase<Char>
+    class PYCXX_EXPORT String: public SeqBase<Char>
     {
     public:
         virtual size_type capacity() const
@@ -1976,7 +1976,7 @@ namespace Py
 
     // ==================================================
     // class Tuple
-    class BaseExport Tuple: public Sequence
+    class PYCXX_EXPORT Tuple: public Sequence
     {
     public:
         virtual void setItem (sequence_index_type offset, const Object&ob)
@@ -2057,7 +2057,7 @@ namespace Py
     // ==================================================
     // class List
 
-    class BaseExport List: public Sequence
+    class PYCXX_EXPORT List: public Sequence
     {
     public:
         // Constructor
@@ -2722,15 +2722,15 @@ namespace Py
     template <TEMPLATE_TYPENAME T> bool operator==(const EXPLICIT_TYPENAME MapBase<T>::const_iterator& left, const EXPLICIT_TYPENAME MapBase<T>::const_iterator& right);
     template <TEMPLATE_TYPENAME T> bool operator!=(const EXPLICIT_TYPENAME MapBase<T>::const_iterator& left, const EXPLICIT_TYPENAME MapBase<T>::const_iterator& right);
 
-    BaseExport extern bool operator==(const Mapping::iterator& left, const Mapping::iterator& right);
-    BaseExport extern bool operator!=(const Mapping::iterator& left, const Mapping::iterator& right);
-    BaseExport extern bool operator==(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
-    BaseExport extern bool operator!=(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
+    PYCXX_EXPORT extern bool operator==(const Mapping::iterator& left, const Mapping::iterator& right);
+    PYCXX_EXPORT extern bool operator!=(const Mapping::iterator& left, const Mapping::iterator& right);
+    PYCXX_EXPORT extern bool operator==(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
+    PYCXX_EXPORT extern bool operator!=(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
 
 
     // ==================================================
     // class Dict
-    class BaseExport Dict: public Mapping
+    class PYCXX_EXPORT Dict: public Mapping
     {
     public:
         // Constructor
