@@ -109,9 +109,9 @@ Py::Int MeshPointPy::getIndex(void) const
     return Py::Int((long) getMeshPointPtr()->Index);
 }
 
-Py::Bool MeshPointPy::getBound(void) const
+Py::Boolean MeshPointPy::getBound(void) const
 {
-    return Py::Bool(getMeshPointPtr()->Index != UINT_MAX);
+    return Py::Boolean(getMeshPointPtr()->Index != UINT_MAX);
 }
 
 Py::Object MeshPointPy::getNormal(void) const

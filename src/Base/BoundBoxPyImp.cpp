@@ -145,7 +145,7 @@ PyObject*  BoundBoxPy::isIntersection(PyObject *args)
 {
     double x,y,z;
     PyObject *object,*object2;
-    Py::Bool retVal;
+    Py::Boolean retVal;
     if (PyArg_ParseTuple(args, "ddd", &x,&y,&z)) {
         retVal = getBoundBoxPtr()->IsInBox(Vector3d(x,y,z));
     }
@@ -242,7 +242,7 @@ PyObject*  BoundBoxPy::move(PyObject *args)
 PyObject*  BoundBoxPy::isCutPlane(PyObject *args)
 {
     PyObject *object,*object2;
-    Py::Bool retVal;
+    Py::Boolean retVal;
 
     if (PyArg_ParseTuple(args,"O!O!:Need base and normal vector of a plane",
         &(Base::VectorPy::Type), &object,&(Base::VectorPy::Type), &object2))

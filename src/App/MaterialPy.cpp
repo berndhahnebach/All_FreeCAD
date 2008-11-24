@@ -30,7 +30,7 @@
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 
 #include "Material.h"
 #include "MaterialPy.h"

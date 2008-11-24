@@ -25,12 +25,12 @@
 #ifndef _PreComp_
 #endif
 
+#include <CXX/Objects.hxx>
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Stream.h>
-#include <Base/PyCXX/Objects.hxx>
 
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"

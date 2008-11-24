@@ -26,7 +26,7 @@
 #ifndef _PreComp_
 #endif
 
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 #include <Base/Interpreter.h>
 #include <Base/PyObjectBase.h>
 #include <App/Property.h>

@@ -28,9 +28,9 @@
 #endif
 
 #include <Python.h>
+#include <CXX/Objects.hxx>
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
-#include <Base/PyCXX/Objects.hxx>
 
 #include <Mod/Part/App/BSplineSurfacePy.h>
 

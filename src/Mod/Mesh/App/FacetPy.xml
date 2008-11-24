@@ -48,7 +48,7 @@ Get a list of intersection points with another triangle.
 		  <Documentation>
 			  <UserDocu>Bound state of the facet</UserDocu>
 		  </Documentation>
-		  <Parameter Name="Bound" Type="Bool"/>
+		  <Parameter Name="Bound" Type="Boolean"/>
 	  </Attribute>
 	  <Attribute Name="Normal" ReadOnly="true">
 		  <Documentation>

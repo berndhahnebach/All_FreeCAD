@@ -51,7 +51,7 @@ have self intersections!
 		  <Documentation>
 			  <UserDocu>Bound state of the point</UserDocu>
 		  </Documentation>
-		  <Parameter Name="Bound" Type="Bool"/>
+		  <Parameter Name="Bound" Type="Boolean"/>
 	  </Attribute>
 	  <Attribute Name="Normal" ReadOnly="true">
 		  <Documentation>

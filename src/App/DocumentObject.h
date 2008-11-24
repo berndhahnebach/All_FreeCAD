@@ -30,7 +30,7 @@
 #include <App/PropertyStandard.h>
 
 #include <Base/TimeInfo.h>
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 
 #include <bitset>
 

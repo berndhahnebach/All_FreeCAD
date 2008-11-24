@@ -39,7 +39,7 @@
 
 #include <typeinfo>
 #include "Exception.h"
-#include "PyCXX/Objects.hxx"
+#include <CXX/Objects.hxx>
 
 
 

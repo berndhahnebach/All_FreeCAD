@@ -129,7 +129,7 @@ public:
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 
 #define new DEBUG_CLIENTBLOCK
 

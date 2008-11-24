@@ -24,8 +24,8 @@
 #include "PreCompiled.h"
 
 #include <strstream>
+#include <CXX/Objects.hxx>
 #include <Base/zipios/zipfile.h>
-#include <Base/PyCXX/Objects.hxx>
 #include <Base/Interpreter.h>
 #include <App/Application.h>
 
