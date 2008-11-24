@@ -71,15 +71,17 @@ libFreeCADBase_la_SOURCES=\
 		zipios/zipoutputstreambuf.h \
 		zipios/zipoutputstream.cpp \
 		zipios/zipoutputstream.h \
-		PyCXX/Config.hxx \
-		PyCXX/cxxextensions.c \
-		PyCXX/cxx_extensions.cxx \
-		PyCXX/cxxsupport.cxx \
-		PyCXX/Exception.hxx \
-		PyCXX/Extensions.hxx \
-		PyCXX/IndirectPythonInterface.cxx \
-		PyCXX/IndirectPythonInterface.hxx \
-		PyCXX/Objects.hxx \
+		../CXX/Config.hxx \
+		../CXX/cxxextensions.c \
+		../CXX/cxx_extensions.cxx \
+		../CXX/cxxsupport.cxx \
+		../CXX/Exception.hxx \
+		../CXX/Extensions.hxx \
+		../CXX/IndirectPythonInterface.cxx \
+		../CXX/IndirectPythonInterface.hxx \
+		../CXX/Objects.hxx \
+		../CXX/Version.hxx \
+		../CXX/WrapPython.h \
 		BaseClass.cpp \
 		BaseClassPyImp.cpp \
 		BoundBoxPyImp.cpp \
@@ -200,11 +202,13 @@ nobase_include_HEADERS = \
 		zipios/zipios_defs.h \
 		zipios/zipoutputstreambuf.h \
 		zipios/zipoutputstream.h \
-		PyCXX/Config.hxx \
-		PyCXX/Exception.hxx \
-		PyCXX/Extensions.hxx \
-		PyCXX/IndirectPythonInterface.hxx \
-		PyCXX/Objects.hxx
+		../CXX/Config.hxx \
+		../CXX/Exception.hxx \
+		../CXX/Extensions.hxx \
+		../CXX/IndirectPythonInterface.hxx \
+		../CXX/Objects.hxx \
+		../CXX/Version.hxx \
+		../CXX/WrapPython.h
 
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
@@ -216,7 +220,7 @@ libFreeCADBase_la_LIBADD   = \
 		-lz
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCBase
@@ -227,7 +231,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
-		PyCXX/COPYRIGHT \
+		../CXX/COPYRIGHT \
 		FreeCADBase.vcproj \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \

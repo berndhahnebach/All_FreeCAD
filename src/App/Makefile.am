@@ -108,7 +108,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lxerces-c
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCApp
