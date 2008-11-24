@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #   (c) Juergen Riegel (juergen.riegel@web.de) 2007 LGPL   
 
 # Open and edit only in UTF-8 !!!!!!
