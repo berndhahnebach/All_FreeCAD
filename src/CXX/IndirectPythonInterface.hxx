@@ -90,7 +90,7 @@ PyObject * _Exc_UnicodeError();
 //
 //    Wrap Object variables as function calls
 //
-PyObject * _None();
+BaseExport PyObject * _None();
 
 PyObject * _False();
 PyObject * _True();
@@ -189,8 +189,8 @@ int &_Py_VerboseFlag();
 int &_Py_UnicodeFlag();
 #endif
 
-void _XINCREF( PyObject *op );
-void _XDECREF( PyObject *op );
+void BaseExport _XINCREF( PyObject *op );
+void BaseExport _XDECREF( PyObject *op );
 
 char *__Py_PackageContext();
 };

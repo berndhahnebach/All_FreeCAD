@@ -41,7 +41,7 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 
 using namespace Gui;
 

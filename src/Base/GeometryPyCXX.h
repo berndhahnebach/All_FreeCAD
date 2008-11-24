@@ -24,7 +24,7 @@
 #ifndef PY_GEOMETRYPY_H
 #define PY_GEOMETRYPY_H
 
-#include "PyCXX/Objects.hxx"
+#include <CXX/Objects.hxx>
 #include "Vector3D.h"
 
 namespace Base {

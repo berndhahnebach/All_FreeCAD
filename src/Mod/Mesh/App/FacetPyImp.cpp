@@ -86,9 +86,9 @@ Py::Int FacetPy::getIndex(void) const
     return Py::Int((long) getFacetPtr()->Index);
 }
 
-Py::Bool FacetPy::getBound(void) const
+Py::Boolean FacetPy::getBound(void) const
 {
-    return Py::Bool(getFacetPtr()->Index != UINT_MAX);
+    return Py::Boolean(getFacetPtr()->Index != UINT_MAX);
 }
 
 Py::Object FacetPy::getNormal(void) const

@@ -447,7 +447,7 @@ Document::Document(void)
     // So, we must increment only if the interpreter gets a reference.
     // Remark: We force the document Python object to own the DocumentPy instance, thus we don't
     // have to care about ref counting any more.
-    DocumentPythonObject.set(new DocumentPy(this), true);
+    DocumentPythonObject = Py::Object(new DocumentPy(this), true);
 
 #ifdef FC_LOGUPDATECHAIN
     Console().Log("+App::Document: %p\n",this);

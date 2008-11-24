@@ -27,13 +27,13 @@
 # include <sstream>
 #endif
 
+#include <CXX/Objects.hxx>
 #include <Base/Builder3D.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Interpreter.h>
-#include <Base/PyCXX/Objects.hxx>
 
 #include "Core/Builder.h"
 #include "Core/MeshKernel.h"

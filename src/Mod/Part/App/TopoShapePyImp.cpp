@@ -42,7 +42,6 @@
 #endif
 
 
-#include <Base/PyCXX/Objects.hxx>
 #include <Base/GeometryPyCXX.h>
 #include <Base/Matrix.h>
 #include <Base/Rotation.h>

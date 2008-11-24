@@ -53,7 +53,7 @@ namespace Py
 
     class Object;
 
-    class Exception
+    class BaseExport Exception
     {
     public:
         Exception( ExtensionExceptionType &exception, const std::string& reason );
@@ -83,28 +83,28 @@ namespace Py
     
     
     // Abstract
-    class StandardError: public Exception
+    class BaseExport StandardError: public Exception
     {
     protected: 
         explicit StandardError()
         {}
     };
     
-    class LookupError: public StandardError
+    class BaseExport LookupError: public StandardError
     {
     protected: 
         explicit LookupError()
         {}
     };
     
-    class ArithmeticError: public StandardError
+    class BaseExport ArithmeticError: public StandardError
     {
     protected: 
         explicit ArithmeticError()
         {}
     };
     
-    class EnvironmentError: public StandardError
+    class BaseExport EnvironmentError: public StandardError
     {
     protected: 
         explicit EnvironmentError()
@@ -113,7 +113,7 @@ namespace Py
     
     // Concrete
     
-    class TypeError: public StandardError
+    class BaseExport TypeError: public StandardError
     {
     public:
         TypeError (const std::string& reason)
@@ -123,7 +123,7 @@ namespace Py
         }
     };
     
-    class IndexError: public LookupError
+    class BaseExport IndexError: public LookupError
     {
     public:
         IndexError (const std::string& reason)
@@ -133,7 +133,7 @@ namespace Py
         }
     };
     
-    class AttributeError: public StandardError
+    class BaseExport AttributeError: public StandardError
     {
     public:
         AttributeError (const std::string& reason)
@@ -143,7 +143,7 @@ namespace Py
         }        
     };
     
-    class NameError: public StandardError
+    class BaseExport NameError: public StandardError
     {
     public:
         NameError (const std::string& reason)
@@ -153,7 +153,7 @@ namespace Py
         }
     };
     
-    class RuntimeError: public StandardError
+    class BaseExport RuntimeError: public StandardError
     {
     public:
         RuntimeError (const std::string& reason)
@@ -163,7 +163,7 @@ namespace Py
         }
     };
     
-    class SystemError: public StandardError
+    class BaseExport SystemError: public StandardError
     {
     public:
         SystemError (const std::string& reason)
@@ -173,7 +173,7 @@ namespace Py
         }
     };
     
-    class KeyError: public LookupError
+    class BaseExport KeyError: public LookupError
     {
     public:
         KeyError (const std::string& reason)
@@ -184,7 +184,7 @@ namespace Py
     };
     
     
-    class ValueError: public StandardError
+    class BaseExport ValueError: public StandardError
     {
     public:
         ValueError (const std::string& reason)
@@ -194,7 +194,7 @@ namespace Py
         }
     };
     
-    class OverflowError: public ArithmeticError
+    class BaseExport OverflowError: public ArithmeticError
     {
     public:
         OverflowError (const std::string& reason)
@@ -204,7 +204,7 @@ namespace Py
         }        
     };
     
-    class ZeroDivisionError: public ArithmeticError
+    class BaseExport ZeroDivisionError: public ArithmeticError
     {
     public:
         ZeroDivisionError (const std::string& reason)
@@ -214,7 +214,7 @@ namespace Py
         }
     };
     
-    class FloatingPointError: public ArithmeticError
+    class BaseExport FloatingPointError: public ArithmeticError
     {
     public:
         FloatingPointError (const std::string& reason)
@@ -224,7 +224,7 @@ namespace Py
         }
     };
     
-    class MemoryError: public StandardError
+    class BaseExport MemoryError: public StandardError
     {
     public:
         MemoryError (const std::string& reason)
@@ -234,7 +234,7 @@ namespace Py
         }    
     };
     
-    class SystemExit: public StandardError
+    class BaseExport SystemExit: public StandardError
     {
     public:
         SystemExit (const std::string& reason)

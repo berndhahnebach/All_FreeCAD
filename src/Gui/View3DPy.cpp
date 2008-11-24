@@ -37,14 +37,13 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
-#include <Base/PyCXX/Objects.hxx>
 #include <Base/VectorPy.h>
 #include "Application.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
 
-#include <Base/PyCXX/Objects.hxx>
+#include <CXX/Objects.hxx>
 
 using Base::Console;
 using Base::streq;
@@ -613,8 +612,8 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
         //example without the 'const' keyword is used.
         //Or we can also write Py::Int x(tuple[0]);
         const Py::Tuple tuple(object);
-        Py::Int x = tuple[0];
-        Py::Int y = tuple[1];
+        Py::Int x(tuple[0]);
+        Py::Int y(tuple[1]);
 
         // As this method could be called during a SoHandleEventAction scene
         // graph traversal we must not use a second SoHandleEventAction as
@@ -1312,8 +1311,8 @@ wrap_SoQtViewer_seekToPoint(PyObject *proxy, PyObject *args)
             viewer->pubSeekToPoint(hitpoint);
         }
         else {
-            Py::Int x = tuple[0];
-            Py::Int y = tuple[1];
+            Py::Int x(tuple[0]);
+            Py::Int y(tuple[1]);
             
             SbVec2s hitpoint ((long)x,(long)y);
             viewer->pubSeekToPoint(hitpoint);

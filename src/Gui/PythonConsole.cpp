@@ -36,7 +36,7 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
-#include <Base/PyCXX/Exception.hxx>
+#include <CXX/Exception.hxx>
 
 using namespace Gui;
 

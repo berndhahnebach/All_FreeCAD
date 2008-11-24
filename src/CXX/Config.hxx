@@ -132,3 +132,5 @@ typedef int Py_ssize_t;
 #endif
 
 #endif //  __PyCXX_config_hh__
+
+#include <FCConfig.h>

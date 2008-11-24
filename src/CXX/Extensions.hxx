@@ -163,7 +163,7 @@ namespace Py
     class ExtensionModuleBase;
     
     // Make an Exception Type for use in raising custom exceptions
-    class ExtensionExceptionType : public Object
+    class BaseExport ExtensionExceptionType : public Object
     {
     public:
         ExtensionExceptionType();
@@ -175,7 +175,7 @@ namespace Py
     };
 
     
-    class MethodTable 
+    class BaseExport MethodTable 
     {
     public:
         MethodTable();
@@ -254,7 +254,7 @@ namespace Py
         method_keyword_function_t ext_keyword_function;    
     };
     
-    class ExtensionModuleBase
+    class BaseExport ExtensionModuleBase
     {
     public:
         ExtensionModuleBase( const char *name );
@@ -287,9 +287,9 @@ namespace Py
         
     };
     
-    extern "C" PyObject *method_keyword_call_handler( PyObject *_self_and_name_tuple, PyObject *_args, PyObject *_keywords );
-    extern "C" PyObject *method_varargs_call_handler( PyObject *_self_and_name_tuple, PyObject *_args );
-    extern "C" void do_not_dealloc( void * );
+    extern "C" BaseExport PyObject *method_keyword_call_handler( PyObject *_self_and_name_tuple, PyObject *_args, PyObject *_keywords );
+    extern "C" BaseExport PyObject *method_varargs_call_handler( PyObject *_self_and_name_tuple, PyObject *_args );
+    extern "C" BaseExport void do_not_dealloc( void * );
     
     
     template<TEMPLATE_TYPENAME T>
@@ -431,7 +431,7 @@ namespace Py
     };
     
     
-    class PythonType
+    class BaseExport PythonType
     {
     public:
         // if you define one sequence method you must define 
@@ -511,7 +511,7 @@ namespace Py
     // This special deallocator does a delete on the pointer.
     
     
-    class PythonExtensionBase : public PyObject
+    class BaseExport PythonExtensionBase : public PyObject
     {
     public:
         PythonExtensionBase();

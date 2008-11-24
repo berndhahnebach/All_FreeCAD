@@ -25,8 +25,8 @@
 
 
 
+#include <CXX/Objects.hxx>
 #include <Base/PyExport.h>
-#include <Base/PyCXX/Objects.hxx>
 #include <Base/Observer.h>
 #include <Base/Persistence.h>
 #include <Base/Type.h>

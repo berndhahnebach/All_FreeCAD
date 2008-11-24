@@ -1642,15 +1642,11 @@
 				Name="PyCXX"
 				>
 				<File
-					RelativePath=".\PyCXX\Config.hxx"
+					RelativePath="..\CXX\Config.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\cxx_extensions.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\PyCXX\cxxextensions.c"
+					RelativePath="..\CXX\cxx_extensions.cxx"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1670,27 +1666,87 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\PyCXX\cxxsupport.cxx"
+					RelativePath="..\CXX\cxxextensions.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\CXX\cxxsupport.cxx"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\CXX\Exception.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\Exception.hxx"
+					RelativePath="..\CXX\Extensions.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\Extensions.hxx"
+					RelativePath="..\CXX\IndirectPythonInterface.cxx"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\CXX\IndirectPythonInterface.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\IndirectPythonInterface.cxx"
+					RelativePath="..\CXX\Objects.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\IndirectPythonInterface.hxx"
+					RelativePath="..\CXX\Version.hxx"
 					>
 				</File>
 				<File
-					RelativePath=".\PyCXX\Objects.hxx"
+					RelativePath="..\CXX\WrapPython.h"
 					>
 				</File>
 			</Filter>
