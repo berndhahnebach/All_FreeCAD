@@ -53,7 +53,7 @@ namespace Py
 
     class Object;
 
-    class BaseExport Exception
+    class PYCXX_EXPORT Exception
     {
     public:
         Exception( ExtensionExceptionType &exception, const std::string& reason );
@@ -83,28 +83,28 @@ namespace Py
     
     
     // Abstract
-    class BaseExport StandardError: public Exception
+    class PYCXX_EXPORT StandardError: public Exception
     {
     protected: 
         explicit StandardError()
         {}
     };
     
-    class BaseExport LookupError: public StandardError
+    class PYCXX_EXPORT LookupError: public StandardError
     {
     protected: 
         explicit LookupError()
         {}
     };
     
-    class BaseExport ArithmeticError: public StandardError
+    class PYCXX_EXPORT ArithmeticError: public StandardError
     {
     protected: 
         explicit ArithmeticError()
         {}
     };
     
-    class BaseExport EnvironmentError: public StandardError
+    class PYCXX_EXPORT EnvironmentError: public StandardError
     {
     protected: 
         explicit EnvironmentError()
@@ -113,7 +113,7 @@ namespace Py
     
     // Concrete
     
-    class BaseExport TypeError: public StandardError
+    class PYCXX_EXPORT TypeError: public StandardError
     {
     public:
         TypeError (const std::string& reason)
@@ -123,7 +123,7 @@ namespace Py
         }
     };
     
-    class BaseExport IndexError: public LookupError
+    class PYCXX_EXPORT IndexError: public LookupError
     {
     public:
         IndexError (const std::string& reason)
@@ -133,7 +133,7 @@ namespace Py
         }
     };
     
-    class BaseExport AttributeError: public StandardError
+    class PYCXX_EXPORT AttributeError: public StandardError
     {
     public:
         AttributeError (const std::string& reason)
@@ -143,7 +143,7 @@ namespace Py
         }        
     };
     
-    class BaseExport NameError: public StandardError
+    class PYCXX_EXPORT NameError: public StandardError
     {
     public:
         NameError (const std::string& reason)
@@ -153,7 +153,7 @@ namespace Py
         }
     };
     
-    class BaseExport RuntimeError: public StandardError
+    class PYCXX_EXPORT RuntimeError: public StandardError
     {
     public:
         RuntimeError (const std::string& reason)
@@ -163,7 +163,7 @@ namespace Py
         }
     };
     
-    class BaseExport SystemError: public StandardError
+    class PYCXX_EXPORT SystemError: public StandardError
     {
     public:
         SystemError (const std::string& reason)
@@ -173,7 +173,7 @@ namespace Py
         }
     };
     
-    class BaseExport KeyError: public LookupError
+    class PYCXX_EXPORT KeyError: public LookupError
     {
     public:
         KeyError (const std::string& reason)
@@ -184,7 +184,7 @@ namespace Py
     };
     
     
-    class BaseExport ValueError: public StandardError
+    class PYCXX_EXPORT ValueError: public StandardError
     {
     public:
         ValueError (const std::string& reason)
@@ -194,7 +194,7 @@ namespace Py
         }
     };
     
-    class BaseExport OverflowError: public ArithmeticError
+    class PYCXX_EXPORT OverflowError: public ArithmeticError
     {
     public:
         OverflowError (const std::string& reason)
@@ -204,7 +204,7 @@ namespace Py
         }        
     };
     
-    class BaseExport ZeroDivisionError: public ArithmeticError
+    class PYCXX_EXPORT ZeroDivisionError: public ArithmeticError
     {
     public:
         ZeroDivisionError (const std::string& reason)
@@ -214,7 +214,7 @@ namespace Py
         }
     };
     
-    class BaseExport FloatingPointError: public ArithmeticError
+    class PYCXX_EXPORT FloatingPointError: public ArithmeticError
     {
     public:
         FloatingPointError (const std::string& reason)
@@ -224,7 +224,7 @@ namespace Py
         }
     };
     
-    class BaseExport MemoryError: public StandardError
+    class PYCXX_EXPORT MemoryError: public StandardError
     {
     public:
         MemoryError (const std::string& reason)
@@ -234,7 +234,7 @@ namespace Py
         }    
     };
     
-    class BaseExport SystemExit: public StandardError
+    class PYCXX_EXPORT SystemExit: public StandardError
     {
     public:
         SystemExit (const std::string& reason)
