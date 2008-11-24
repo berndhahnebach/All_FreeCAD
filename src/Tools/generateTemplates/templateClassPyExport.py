@@ -1,4 +1,4 @@
-﻿#! python
+#! python
 # -*- coding: utf-8 -*-
 # (c) 2006 Juergen Riegel 
 
