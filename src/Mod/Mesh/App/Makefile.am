@@ -351,7 +351,7 @@ Mesh_la_DEPENDENCIES = libMesh.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src/3rdParty $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
 
 endif
 
