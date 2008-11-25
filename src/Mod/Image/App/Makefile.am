@@ -45,7 +45,7 @@ Image_la_DEPENDENCIES = libImage.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I/usr/include/opencv -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I/usr/include/opencv
 
 libdir = $(prefix)/Mod/Image
 
