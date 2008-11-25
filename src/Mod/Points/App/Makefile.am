@@ -66,7 +66,7 @@ Points_la_DEPENDENCIES = libPoints.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 includedir = @includedir@/Mod/Points/App
 libdir = $(prefix)/Mod/Points
