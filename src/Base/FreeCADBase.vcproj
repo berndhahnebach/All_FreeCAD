@@ -595,6 +595,14 @@
 			Name="Tools"
 			>
 			<File
+				RelativePath=".\Base64.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Base64.h"
+				>
+			</File>
+			<File
 				RelativePath="Builder3D.cpp"
 				>
 				<FileConfiguration

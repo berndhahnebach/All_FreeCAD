@@ -30,6 +30,7 @@
 #include "Writer.h"
 #include "Persistence.h"
 #include "Exception.h"
+#include "Base64.h"
 
 #include <algorithm>
 #include <locale>
@@ -55,13 +56,35 @@ Writer::~Writer()
 {
 }
 
-void Writer::insertAsciiFile(const char* /*FileName*/)
+void Writer::insertAsciiFile(const char* FileName)
 {
-
+	std::ifstream from(FileName);
+	if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
+	
+	Stream() << "<![CDATA[" << endl;
+	char ch;
+	while (from.get(ch)) Stream().put(ch);
+	Stream() << endl << "]]>" << endl;
 }
 
-void Writer::insertBinFile(const char* /*FileName*/)
+void Writer::insertBinFile(const char* FileName)
 {
+	std::ifstream from(FileName);
+	if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
+	
+	Stream() << "<![CDATA[" << endl;
+
+	unsigned char buf[60];
+	std::string encoded;
+	unsigned int i;
+
+	while (from){
+		for(i=0 ; i<60 && from;i++)
+			buf[i] = from.get();
+		Stream() << Base::base64_encode(buf,i) << endl;
+	}
+
+	Stream() << "]]>" << endl;
 
 }
 

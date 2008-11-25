@@ -101,6 +101,11 @@ public:
     InputStream& operator >> (float& f);
     InputStream& operator >> (double& d);
 
+	operator bool() const
+	{	// test if _Ipfx succeeded
+			return !_in.eof();
+	}
+
 private:
     InputStream (const InputStream&);
     void operator = (const InputStream&);
