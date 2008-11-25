@@ -186,31 +186,60 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
 
 void PropertyFileIncluded::Save (Writer &writer) const
 {
-    std::string val = encodeAttribute(_cValue);
-    writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
+    if (writer.isForceXML()) {
+        writer.Stream() << writer.ind() << "<FileIncluded file=\"\">" << endl;
+	
+		// write the file in the XML stream
+		writer.insertBinFile(_cValue.c_str());
+
+        writer.Stream() << writer.ind() <<"</FileIncluded>" << endl ;
+    }
+    else {
+		// instead initiate a extra file 
+		Base::FileInfo file(_cValue.c_str());
+        writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
+        writer.addFile(file.fileName().c_str(), this) << "\"/>" << std::endl;
+    }
+
 }
 
 void PropertyFileIncluded::Restore(Base::XMLReader &reader)
 {
-    // read my Element
-    reader.readElement("String");
-    // get the value of my Attribute
-    setValue(reader.getAttribute("value"));
+    reader.readElement("FileIncluded");
+    string file (reader.getAttribute("file") );
+
+    if (!file.empty()) {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyFileIncluded::SaveDocFile (Base::Writer &writer) const
 {
-    //Base::OutputStream str(writer.Stream());
-    //uint32_t uCt = (uint32_t)getSize();
-    //str << uCt;
-    //for (std::vector<float>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
-    //    str << *it;
-    //}
+    Base::OutputStream to(writer.Stream());
+	std::ifstream from(_cValue.c_str());
+	
+	if (!from) throw Base::Exception("PropertyFileIncluded::SaveDocFile() File in document transient dir deleted");
+	
+	char ch;
+	while (from.get(ch)) to << (ch);
+
 }
 
 void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
 {
-    //Base::InputStream str(reader);
+    Base::InputStream from(reader);
+
+	std::ofstream to(_cValue.c_str());
+	if (!to) throw Base::Exception("PropertyFileIncluded::RestoreDocFile() File in document transient dir deleted");
+
+	int8_t ch;
+	while(from){
+		from >> ch;
+		to.put(char(ch));
+	}
+
+
     //uint32_t uCt=0;
     //str >> uCt;
     //std::vector<float> values(uCt);

@@ -41,6 +41,8 @@ const char *PersistencePy::representation(void) const
 Py::String PersistencePy::getContent(void) const
 {
     Base::StringWriter writer;
+	// force all objects to write pure XML without files
+	writer.setForceXML(true);
     getPersistencePtr()->Save(writer);
 
     return  Py::String (writer.getString());
