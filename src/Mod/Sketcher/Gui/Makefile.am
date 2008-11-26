@@ -18,7 +18,8 @@ libSketcherGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libSketcherGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DSketcherAppExport= -DSketcherGuiExport=
 
 libSketcherGui_la_LIBADD   = \
@@ -64,7 +65,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 endif
 

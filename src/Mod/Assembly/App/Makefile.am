@@ -55,7 +55,7 @@ Assembly_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 endif
 
