@@ -30,7 +30,7 @@ moc_%.cpp: %.h
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS)
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS) $(all_includes)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui
