@@ -82,6 +82,7 @@ libFreeCADBase_la_SOURCES=\
 		../CXX/Objects.hxx \
 		../CXX/Version.hxx \
 		../CXX/WrapPython.h \
+		Base64.cpp \
 		BaseClass.cpp \
 		BaseClassPyImp.cpp \
 		BoundBoxPyImp.cpp \
@@ -138,6 +139,7 @@ nodist_include_HEADERS=\
 		$(libFreeCADBase_la_BUILT)
 
 include_HEADERS=\
+		Base64.h \
 		BaseClass.h \
 		BoundBox.h \
 		Builder3D.h \
