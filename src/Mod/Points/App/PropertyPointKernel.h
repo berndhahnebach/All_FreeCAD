@@ -87,7 +87,7 @@ public:
     //@}
 
 private:
-    PointKernel _cPoints;
+    Base::Reference<PointKernel> _cPoints;
 };
 
 } // namespace Points

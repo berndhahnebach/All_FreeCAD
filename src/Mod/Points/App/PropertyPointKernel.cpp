@@ -41,6 +41,7 @@ using namespace Points;
 TYPESYSTEM_SOURCE(Points::PropertyPointKernel , App::PropertyComplexGeoData);
 
 PropertyPointKernel::PropertyPointKernel()
+    : _cPoints(new PointKernel())
 {
 
 }
@@ -52,19 +53,19 @@ PropertyPointKernel::~PropertyPointKernel()
 void PropertyPointKernel::setValue(const PointKernel& m)
 {
     aboutToSetValue();
-    _cPoints = m;
+    *_cPoints = m;
     hasSetValue();
 }
 
 const PointKernel& PropertyPointKernel::getValue(void) const 
 {
-    return _cPoints;
+    return *_cPoints;
 }
 
 Base::BoundBox3d PropertyPointKernel::getBoundingBox() const
 {
     Base::BoundBox3d box;
-    for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it)
+    for (PointKernel::const_iterator it = _cPoints->begin(); it != _cPoints->end(); ++it)
         box.Add(*it);
     return box;
 }
@@ -78,7 +79,7 @@ void PropertyPointKernel::getFaces(std::vector<Base::Vector3d> &Points,
 
 PyObject *PropertyPointKernel::getPyObject(void)
 {
-    PointsPy* points = new PointsPy(&(this->_cPoints));
+    PointsPy* points = new PointsPy(&*_cPoints);
     points->setConst(); // set immutable
     return points;
 }
@@ -98,7 +99,7 @@ void PropertyPointKernel::setPyObject(PyObject *value)
 
 void PropertyPointKernel::Save (Base::Writer &writer) const
 {
-    _cPoints.Save(writer);
+    _cPoints->Save(writer);
 }
 
 void PropertyPointKernel::Restore(Base::XMLReader &reader)
@@ -117,7 +118,7 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
         mtrx.fromString(Matrix);
 
         aboutToSetValue();
-        _cPoints.setTransform(mtrx);
+        _cPoints->setTransform(mtrx);
         hasSetValue();
     }
 }
@@ -130,7 +131,7 @@ void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 {
     aboutToSetValue();
-    _cPoints.RestoreDocFile(reader);
+    _cPoints->RestoreDocFile(reader);
     hasSetValue();
 }
 
@@ -151,7 +152,7 @@ void PropertyPointKernel::Paste(const App::Property &from)
 
 unsigned int PropertyPointKernel::getMemSize (void) const
 {
-    return sizeof(Base::Vector3f) * this->_cPoints.size();
+    return sizeof(Base::Vector3f) * this->_cPoints->size();
 }
 
 void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndices )
@@ -160,17 +161,17 @@ void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndi
     std::vector<unsigned long> uSortedInds = uIndices;
     std::sort(uSortedInds.begin(), uSortedInds.end());
 
-    assert( uSortedInds.size() <= _cPoints.size() );
-    if ( uSortedInds.size() > _cPoints.size() )
+    assert( uSortedInds.size() <= _cPoints->size() );
+    if ( uSortedInds.size() > _cPoints->size() )
         return;
 
     PointKernel kernel;
-    kernel.setTransform(_cPoints.getTransform());
-    kernel.reserve(_cPoints.size() - uSortedInds.size());
+    kernel.setTransform(_cPoints->getTransform());
+    kernel.reserve(_cPoints->size() - uSortedInds.size());
 
     std::vector<unsigned long>::iterator pos = uSortedInds.begin();
     unsigned long index = 0;
-    for (PointKernel::const_iterator it = _cPoints.begin(); it != _cPoints.end(); ++it, ++index) {
+    for (PointKernel::const_iterator it = _cPoints->begin(); it != _cPoints->end(); ++it, ++index) {
         if (pos == uSortedInds.end())
             kernel.push_back( *it );
         else if (index != *pos)
@@ -184,5 +185,5 @@ void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndi
 
 void PropertyPointKernel::transform(const Base::Matrix4D &rclMat)
 {
-    _cPoints.setTransform(rclMat);
+    _cPoints->setTransform(rclMat);
 }
