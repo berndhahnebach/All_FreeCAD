@@ -44,26 +44,23 @@ class Property;
 //class RayFeature: public Part::PartFeature
 class RayFeature: public App::AbstractFeature
 {
+    PROPERTY_HEADER(Raytracing::RayFeature);
 public:
 	/// Constructor
 	RayFeature(void);
 
 
 
-	/** @name methods used for recalculation (update) */
-	//@{
-	/** Validate
-	 *  We compute the object and topologically name it.
-	 *  If during the execution we found something wrong,
-	 *  we return the number of the failure. For example:
-	 *  1 - an attribute hasn't been found,
-	 *  2 - algorithm failed
-	 *  0 - no mistakes were found.
-	 */
-	virtual Standard_Integer Execute(void)=0;
-
-	//@}
-
+   /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const { 
+        return "RaytracingGui::ViewProviderRayFeature"; 
+    }
+  //@}
 
 };
 

@@ -30,8 +30,10 @@
 
 #include "RayFeature.h"
 
+
 using namespace Raytracing;
 
+PROPERTY_SOURCE(Raytracing::RayFeature, App::AbstractFeature)
 
 //===========================================================================
 // Feature
@@ -42,6 +44,16 @@ RayFeature::RayFeature(void)
 
 }
 	
+
+App::DocumentObjectExecReturn *RayFeature::execute(void)
+{
+	return StdReturn;
+}
+
+short RayFeature::mustExecute() const
+{
+	return 0;
+}
 
 
 
