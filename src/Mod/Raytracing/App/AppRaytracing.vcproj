@@ -370,6 +370,14 @@
 			RelativePath="RayFeature.h"
 			>
 		</File>
+		<File
+			RelativePath=".\RayProject.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\RayProject.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
