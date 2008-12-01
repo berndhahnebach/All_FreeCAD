@@ -38,7 +38,7 @@
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-
+#include <App/DocumentObjectPy.h>
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
 #include <CXX/Objects.hxx>
@@ -96,6 +96,8 @@ PyMethodDef Application::Methods[] = {
    "Open a macro, Inventor or VRML file"},
   {"insert",                  (PyCFunction) Application::sInsert,           1,
    "Open a macro, Inventor or VRML file"},
+  {"export",                  (PyCFunction) Application::sExport,           1,
+   "save scene to Inventor or VRML file"},
   {"activeDocument",          (PyCFunction) Application::sActiveDocument,   1,
    "activeDocument() -> object or None\n\n"
    "Return the active document or None if no one exists"},
@@ -240,6 +242,45 @@ PYFUNCIMP_S(Application,sInsert)
             edit->open(fileName);
             edit->resize( 400, 300 );
             getMainWindow()->addWindow( edit );
+        }
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+PYFUNCIMP_S(Application,sExport)
+{
+    PyObject* object;
+    const char* filename;
+    if (!PyArg_ParseTuple(args, "Os",&object,&filename))
+        return NULL;
+
+    PY_TRY {
+        App::Document* doc = 0;
+        Py::List list(object);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            PyObject* item = (*it).ptr();
+            if (PyObject_TypeCheck(item, &(App::DocumentObjectPy::Type))) {
+                App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
+                doc = obj->getDocument();
+                break;
+            }
+        }
+
+        // get the view that belongs to the found document
+        if (doc) {
+            Gui::Document* gui = Instance->getDocument(doc);
+            QString fileName = QString::fromUtf8(filename);
+            QFileInfo fi;
+            fi.setFile(fileName);
+            QString ext = fi.completeSuffix().toLower();
+            if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
+                ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
+                QString cmd = QString::fromLatin1(
+                    "Gui.getDocument(\"%1\").ActiveView.dump(\"%2\")"
+                    ).arg(QLatin1String(doc->getName())).arg(fi.absoluteFilePath());
+                Base::Interpreter().runString(cmd.toUtf8());
+            }
         }
     } PY_CATCH;
 

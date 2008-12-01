@@ -145,6 +145,11 @@ public:
      * Note: The resulting vector does not depend on the current vector.
      */
     Vector3 & ProjToLine (const Vector3 &rclPoint, const Vector3 &rclLine);
+    /**
+     * Get the perpendicular of this point to the line defined by rclBase and rclDir.
+     * Note: Do not mix up this method with ProjToLine.
+     */
+    Vector3 Perpendicular(const Vector3 &rclBase, const Vector3 &rclDir) const;
     /** Computes the distance to the given plane. Depending on the side this point is located
      * the distance can also be negative. The distance is positive if the point is at the same
      * side the plane normal points to, negative otherwise.

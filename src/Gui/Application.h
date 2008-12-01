@@ -200,6 +200,7 @@ public:
 
     PYFUNCDEF_S(sOpen);                     // open Python scripts
     PYFUNCDEF_S(sInsert);                   // open Python scripts
+    PYFUNCDEF_S(sExport);
 
     PYFUNCDEF_S(sActiveDocument);
     PYFUNCDEF_S(sGetDocument);
