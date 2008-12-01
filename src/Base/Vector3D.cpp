@@ -208,6 +208,13 @@ Vector3<_Precision>& Vector3<_Precision>::ProjToLine (const Vector3<_Precision> 
 }
 
 template <class _Precision>
+Vector3<_Precision> Vector3<_Precision>::Perpendicular(const Vector3<_Precision> &rclBase, const Vector3<_Precision> &rclDir) const
+{
+    _Precision t = ((*this - rclBase) * rclDir) / (rclDir * rclDir);
+    return rclBase + t * rclDir;
+}
+
+template <class _Precision>
 _Precision Vector3<_Precision>::Sqr (void) const
 {
   return (_Precision) ((x * x) + (y * y) + (z * z));

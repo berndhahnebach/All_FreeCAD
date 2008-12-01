@@ -169,9 +169,11 @@ InitApplications()
 Gui.activateWorkbench("NoneWorkbench")
 
 # Register .py, .FCScript and .FCMacro
-FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")
-FreeCAD.EndingAdd("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
-FreeCAD.EndingAdd("Python (*.py *.FCMacro *.FCScript)","FreeCADGui")
+FreeCAD.addImportType("Inventor V2.1 (*.iv)","FreeCADGui")
+FreeCAD.addImportType("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
+FreeCAD.addImportType("Python (*.py *.FCMacro *.FCScript)","FreeCADGui")
+FreeCAD.addExportType("Inventor V2.1 (*.iv)","FreeCADGui")
+FreeCAD.addExportType("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
 
 del(InitApplications)
 del(NoneWorkbench)

@@ -209,7 +209,9 @@ void StdCmdExport::activated(int iMsg)
 
     QString fileName = FileDialog::getSaveFileName(getMainWindow(),
         QObject::tr("Export file"), QString(), formatList);
-    getGuiApplication()->exportTo(fileName.toUtf8(),getActiveGuiDocument()->getDocument()->getName());
+    if (!fileName.isEmpty())
+        getGuiApplication()->exportTo(fileName.toUtf8(),getActiveGuiDocument()
+        ->getDocument()->getName());
 }
 
 bool StdCmdExport::isActive(void)
