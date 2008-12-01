@@ -200,7 +200,7 @@ bool MeshFixDuplicatePoints::Fixup()
             std::vector<VertexIterator>::iterator first = next;
             unsigned long first_index = *first - rPoints.begin();
             next++;
-            while (pred(*first, *next)) {
+            while (next < vertices.end() && pred(*first, *next)) {
                 unsigned long next_index = *next - rPoints.begin();
                 mapPointIndex[next_index] = first_index;
                 pointIndices.push_back(next_index);

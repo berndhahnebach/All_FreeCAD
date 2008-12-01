@@ -959,15 +959,15 @@ void Application::processCmdLineFiles(void)
         Base::Console().Log("Init:     Processing file: %s\n",File.filePath().c_str());
         try {
 
-            if (Ext == "FCStd" || Ext == "std") {
+            if (File.hasExtension("fcstd") || File.hasExtension("std")) {
                 // try to open
                 Application::_pcSingleton->openDocument(File.filePath().c_str());
             }
-            else if (Ext == "FCscript") {
+            else if (File.hasExtension("fcscript")) {
                 Base::Interpreter().runFile(File.filePath().c_str());
             }
-            else if (Ext == "py") {
-                Base::Interpreter().loadModule(File.filePath().c_str());
+            else if (File.hasExtension("py")) {
+                Base::Interpreter().loadModule(File.fileNamePure().c_str());
             }
             else if (EndingMap.find(Ext) != EndingMap.end()) {
                 Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
