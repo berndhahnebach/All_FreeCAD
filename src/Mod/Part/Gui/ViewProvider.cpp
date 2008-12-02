@@ -97,6 +97,7 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 // Construction/Destruction
 
 App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
+const char* ViewProviderPart::LightingEnums[]= {"One side","Two side",NULL};
 
 ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
 {
@@ -116,6 +117,8 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     PointSize.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
     ADD_PROPERTY(ControlPoints,(false));
+    ADD_PROPERTY(Lighting,(1));
+    Lighting.setEnums(LightingEnums);
 
     EdgeRoot = new SoSeparator();
     EdgeRoot->ref();
@@ -141,6 +144,11 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     pcPointStyle->style = SoDrawStyle::POINTS;
     pcPointStyle->pointSize = PointSize.getValue();
 
+    pShapeHints = new SoShapeHints;
+    pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    pShapeHints->ref();
+    Lighting.touch();
+
     sPixmap = "PartFeature";
     loadParameter();
 }
@@ -154,6 +162,7 @@ ViewProviderPart::~ViewProviderPart()
     pcPointMaterial->unref();
     pcLineStyle->unref();
     pcPointStyle->unref();
+    pShapeHints->unref();
 }
 
 void ViewProviderPart::onChanged(const App::Property* prop)
@@ -201,6 +210,12 @@ void ViewProviderPart::onChanged(const App::Property* prop)
     else if (prop == &ControlPoints) {
         showControlPoints(ControlPoints.getValue());
     }
+    else if (prop == &Lighting) {
+        if (Lighting.getValue() == 0)
+            pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
+        else
+            pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+    }
     else {
         ViewProviderGeometryObject::onChanged(prop);
     }
@@ -217,18 +232,17 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     SoGroup* pcPointsRoot = new SoGroup();
 
     // enable two-side rendering
-    SoShapeHints * flathints = new SoShapeHints;
-    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+    pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
 
     // normal viewing with edges and points
-    pcNormalRoot->addChild(flathints);
+    pcNormalRoot->addChild(pShapeHints);
     pcNormalRoot->addChild(FaceRoot);
     pcNormalRoot->addChild(EdgeRoot);
     //  pcNormalRoot->addChild(VertexRoot);
 
     // just faces with no edges or points
-    pcFlatRoot->addChild(flathints);
+    pcFlatRoot->addChild(pShapeHints);
     pcFlatRoot->addChild(FaceRoot);
 
     // only edges

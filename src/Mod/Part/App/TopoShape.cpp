@@ -442,6 +442,8 @@ void TopoShape::exportBrep(const char *filename) const
 void TopoShape::exportStl(const char *filename) const
 {
     StlAPI_Writer writer;
+    //writer.RelativeMode() = false;
+    //writer.SetDeflection(0.1);
     writer.Write(this->_Shape,(const Standard_CString)filename);
 }
 
@@ -695,10 +697,216 @@ TopoDS_Shape TopoShape::toNurbs() const
     return mkNurbs.Shape();
 }
 
+namespace Part {
+struct Vertex
+{
+    Standard_Real x,y,z;
+    Standard_Integer i;
+
+    Vertex(Standard_Real X, Standard_Real Y, Standard_Real Z)
+        : x(X),y(Y),z(Z)
+    {
+    }
+    Vertex(const gp_Pnt& p)
+        : x(p.X()),y(p.Y()),z(p.Z())
+    {
+    }
+
+    gp_Pnt toPoint() const
+    { return gp_Pnt(x,y,z); }
+
+    bool operator < (const Vertex &rclPt) const
+    {
+        if (fabs ( this->x - rclPt.x) >= MESH_MIN_PT_DIST)
+            return this->x < rclPt.x;
+        if (fabs ( this->y - rclPt.y) >= MESH_MIN_PT_DIST)
+            return this->y < rclPt.y;
+        if (fabs ( this->z - rclPt.z) >= MESH_MIN_PT_DIST)
+            return this->z < rclPt.z;
+        return false; // points are considered to be equal
+    }
+
+private:
+    // use the same value as used inside the Mesh module
+    static const double MESH_MIN_PT_DIST;
+};
+}
+
+//const double Vertex::MESH_MIN_PT_DIST = 1.0e-6;
+const double Vertex::MESH_MIN_PT_DIST = gp::Resolution();
+
+#include <StlTransfer.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlMesh_MeshExplorer.hxx>
+
 void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                          std::vector<FacetTopo> &aTopo,
                          float accuracy, uint16_t flags) const
 {
+#if 1
+    std::set<Vertex> vertices;
+    Standard_Real x1, y1, z1;
+    Standard_Real x2, y2, z2;
+    Standard_Real x3, y3, z3;
+
+    Handle_StlMesh_Mesh aMesh = new StlMesh_Mesh();
+    StlTransfer::BuildIncrementalMesh(this->_Shape, accuracy, aMesh);
+    StlMesh_MeshExplorer xp(aMesh);
+    for (Standard_Integer nbd=1;nbd<=aMesh->NbDomains();nbd++) {
+        for (xp.InitTriangle (nbd); xp.MoreTriangle (); xp.NextTriangle ()) {
+            xp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
+            Data::ComplexGeoData::FacetTopo face;
+            std::set<Vertex>::iterator it;
+
+            // 1st vertex
+            Vertex v1(x1,y1,z1);
+            it = vertices.find(v1);
+            if (it == vertices.end()) {
+                v1.i = vertices.size();
+                face.I1 = v1.i;
+                vertices.insert(v1);
+            }
+            else {
+                face.I1 = it->i;
+            }
+
+            // 2nd vertex
+            Vertex v2(x2,y2,z2);
+            it = vertices.find(v2);
+            if (it == vertices.end()) {
+                v2.i = vertices.size();
+                face.I2 = v2.i;
+                vertices.insert(v2);
+            }
+            else {
+                face.I2 = it->i;
+            }
+
+            // 3rd vertex
+            Vertex v3(x3,y3,z3);
+            it = vertices.find(v3);
+            if (it == vertices.end()) {
+                v3.i = vertices.size();
+                face.I3 = v3.i;
+                vertices.insert(v3);
+            }
+            else {
+                face.I3 = it->i;
+            }
+
+            aTopo.push_back(face);
+        }
+    }
+
+    std::vector<gp_Pnt> points;
+    points.resize(vertices.size());
+    for (std::set<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it)
+        points[it->i] = it->toPoint();
+    for (std::vector<gp_Pnt>::iterator it = points.begin(); it != points.end(); ++it)
+        aPoints.push_back(Base::Vector3d(it->X(),it->Y(),it->Z()));
+#endif
+#if 0
+    BRepMesh::Mesh (this->_Shape, accuracy);
+    std::set<Vertex> vertices;
+    for (TopExp_Explorer xp(this->_Shape,TopAbs_FACE); xp.More(); xp.Next()) {
+        TopoDS_Face face = TopoDS::Face(xp.Current());
+        TopAbs_Orientation orient = face.Orientation();
+        // change orientation of the triangles
+        Standard_Boolean reversed = false;
+        if (orient != TopAbs_FORWARD) {
+            reversed = true;
+        }
+        TopLoc_Location aLoc;
+        Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(face, aLoc);
+        if (aPoly.IsNull()) continue;
+
+        // getting the transformation of the shape/face
+        gp_Trsf myTransf;
+        Standard_Boolean identity = true;
+        if(!aLoc.IsIdentity())  {
+            identity = false;
+            myTransf = aLoc.Transformation();
+        }
+
+        // cycling through the poly mesh
+        const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+        for (Standard_Integer i=1;i<=Nodes.Length();i++) {
+            Standard_Real X1, Y1, Z1;
+            gp_Pnt p = Nodes.Value(i);
+            p.Transform(myTransf);
+            p.Coord (X1, Y1, Z1);
+        }
+
+        const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
+        try {
+            for (Standard_Integer i=1;i<=Triangles.Length();i++) {
+                Standard_Integer V1, V2, V3;
+                Poly_Triangle triangle = Triangles.Value(i);
+                triangle.Get(V1, V2, V3);
+                if (reversed)
+                    std::swap(V1,V2);
+                gp_Pnt P1, P2, P3;
+                Data::ComplexGeoData::FacetTopo face;
+                std::set<Vertex>::iterator it;
+
+                // 1st vertex
+                P1 = Nodes(V1);
+                P1.Transform(myTransf);
+                Vertex v1(P1);
+                it = vertices.find(v1);
+                if (it == vertices.end()) {
+                    v1.i = vertices.size();
+                    face.I1 = v1.i;
+                    vertices.insert(v1);
+                }
+                else {
+                    face.I1 = it->i;
+                }
+
+                // 2nd vertex
+                P2 = Nodes(V2);
+                P2.Transform(myTransf);
+                Vertex v2(P2);
+                it = vertices.find(v2);
+                if (it == vertices.end()) {
+                    v2.i = vertices.size();
+                    face.I2 = v2.i;
+                    vertices.insert(v2);
+                }
+                else {
+                    face.I2 = it->i;
+                }
+                
+                // 3rd vertex
+                P3 = Nodes(V3);
+                P3.Transform(myTransf);
+                Vertex v3(P3);
+                it = vertices.find(v3);
+                if (it == vertices.end()) {
+                    v3.i = vertices.size();
+                    face.I3 = v3.i;
+                    vertices.insert(v3);
+                }
+                else {
+                    face.I3 = it->i;
+                }
+
+                aTopo.push_back(face);
+            }
+        }
+        catch(Standard_Failure) {
+        }
+    }
+
+    std::map<Standard_Integer,gp_Pnt> points;
+    for (std::set<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it)
+        points[it->i] = it->toPoint();
+    for (std::map<Standard_Integer,gp_Pnt>::iterator it = points.begin(); it != points.end(); ++it)
+        aPoints.push_back(Base::Vector3d(it->second.X(),it->second.Y(),it->second.Z()));
+#endif
+
+
+#if 0
     //TODO: Port to OCC 6.3.0
 #if OCC_HEX_VERSION < 0x060300
     Standard_Integer e1,e2,e3,n1,n2,n3;
@@ -743,5 +951,6 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
         }
     } catch(...) {
     }
+#endif
 #endif
 }
