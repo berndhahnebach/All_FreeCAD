@@ -191,6 +191,16 @@ bool MeshObject::isSolid() const
     return cMeshEval.Evaluate();
 }
 
+double MeshObject::getSurface() const
+{
+    return _kernel.GetSurface();
+}
+
+double MeshObject::getVolume() const
+{
+    return _kernel.GetVolume();
+}
+
 MeshPoint MeshObject::getPoint(unsigned long index) const
 {
     Base::Vector3f vertf = _kernel.GetPoint(index);

@@ -230,5 +230,23 @@ into BSpline surfaces.</UserDocu>
       </Documentation>
       <Parameter Name="Compounds" Type="List"/>
     </Attribute>
+    <Attribute Name="Length" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Total length of the edges of the shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Length" Type="Float"/>
+    </Attribute>
+    <Attribute Name="Area" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Total area of the faces of the shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Area" Type="Float"/>
+    </Attribute>
+    <Attribute Name="Volume" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Total volume of the solids of the shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Volume" Type="Float"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

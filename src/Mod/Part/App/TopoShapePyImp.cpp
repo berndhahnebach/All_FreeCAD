@@ -41,6 +41,9 @@
 # include <Precision.hxx>
 #endif
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 
 #include <Base/GeometryPyCXX.h>
 #include <Base/Matrix.h>
@@ -1035,6 +1038,27 @@ Py::List TopoShapePy::getCompounds(void) const
     }
 
     return ret;
+}
+
+Py::Float TopoShapePy::getLength(void) const
+{
+    GProp_GProps props;
+    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
+}
+
+Py::Float TopoShapePy::getArea(void) const
+{
+    GProp_GProps props;
+    BRepGProp::SurfaceProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
+}
+
+Py::Float TopoShapePy::getVolume(void) const
+{
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
+    return Py::Float(props.Mass());
 }
 
 PyObject *TopoShapePy::getCustomAttributes(const char* attr) const

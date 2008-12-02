@@ -108,6 +108,8 @@ public:
     bool isSolid() const;
     MeshPoint getPoint(unsigned long) const;
     Facet getFacet(unsigned long) const;
+    double getSurface() const;
+    double getVolume() const;
     //@}
 
     void setKernel(const MeshCore::MeshKernel& m);

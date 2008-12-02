@@ -339,6 +339,18 @@ for p in mesh.Facets:
 			</Documentation>
 			<Parameter Name="CountFacets" Type="Int" />
 		</Attribute>
+		<Attribute Name="Area" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Return the area of the mesh object.</UserDocu>
+			</Documentation>
+			<Parameter Name="Area" Type="Float" />
+		</Attribute>
+		<Attribute Name="Volume" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Return the volume of the mesh object.</UserDocu>
+			</Documentation>
+			<Parameter Name="Volume" Type="Float" />
+		</Attribute>
 		<ClassDeclarations>
 		</ClassDeclarations>
 	</PythonExport>
