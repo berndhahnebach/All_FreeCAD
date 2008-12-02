@@ -91,6 +91,8 @@
 # include <Standard_Failure.hxx>
 #endif
 # include <BRepMesh.hxx>
+# include <BRepBuilderAPI_Sewing.hxx>
+# include <ShapeFix_Shape.hxx>
 
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
@@ -695,6 +697,18 @@ TopoDS_Shape TopoShape::toNurbs() const
 {
     BRepBuilderAPI_NurbsConvert mkNurbs(this->_Shape);
     return mkNurbs.Shape();
+}
+
+void TopoShape::sewShape()
+{
+    ShapeFix_Shape fixer(this->_Shape);
+    fixer.Perform();
+
+    BRepBuilderAPI_Sewing sew;
+    sew.Add(fixer.Shape());
+    sew.Perform();
+
+    this->_Shape = sew.SewedShape();
 }
 
 namespace Part {
