@@ -439,6 +439,22 @@ PyObject*  TopoShapePy::cut(PyObject *args)
     }
 }
 
+PyObject*  TopoShapePy::sewShape(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    try {
+        getTopoShapePtr()->sewShape();
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 PyObject*  TopoShapePy::transform(PyObject *args)
 {
     PyObject *obj;

@@ -70,6 +70,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Difference of this and a given topo shape.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="sewShape">
+      <Documentation>
+        <UserDocu>Sew the shape if there is a gap.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="transform">
       <Documentation>
         <UserDocu>Apply the transformation to a copy of the shape.</UserDocu>
