@@ -178,13 +178,6 @@ Py::Object TopoShapeWirePy::getCenterOfMass(void) const
     return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
 }
 
-Py::Object TopoShapeWirePy::getMass(void) const
-{
-    GProp_GProps props;
-    BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
-    return Py::Float(props.Mass());
-}
-
 PyObject *TopoShapeWirePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

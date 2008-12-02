@@ -315,13 +315,6 @@ Py::Object TopoShapeFacePy::getCenterOfMass(void) const
     return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
 }
 
-Py::Object TopoShapeFacePy::getMass(void) const
-{
-    GProp_GProps props;
-    BRepGProp::SurfaceProperties(getTopoShapePtr()->_Shape, props);
-    return Py::Float(props.Mass());
-}
-
 PyObject *TopoShapeFacePy::getCustomAttributes(const char* attr) const
 {
     return 0;
