@@ -39,11 +39,5 @@ absolute Cartesian coordinate system.</UserDocu>
       </Documentation>
       <Parameter Name="CenterOfMass" Type="Object"/>
     </Attribute>
-    <Attribute Name="Mass" ReadOnly="true">
-      <Documentation>
-        <UserDocu>Returns the mass of the current system.</UserDocu>
-      </Documentation>
-      <Parameter Name="Mass" Type="Object"/>
-    </Attribute>
   </PythonExport>
 </GenerateModel>

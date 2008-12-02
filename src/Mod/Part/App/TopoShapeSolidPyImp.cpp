@@ -61,13 +61,6 @@ Py::Object TopoShapeSolidPy::getCenterOfMass(void) const
     return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
 }
 
-Py::Object TopoShapeSolidPy::getMass(void) const
-{
-    GProp_GProps props;
-    BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
-    return Py::Float(props.Mass());
-}
-
 PyObject *TopoShapeSolidPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
