@@ -581,7 +581,7 @@ void CmdMeshFromGeometry::activated(int iMsg)
                     std::vector<Base::Vector3d> aPoints;
                     std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
                     static_cast<App::PropertyComplexGeoData*>(jt->second)->getFaces(aPoints, aTopo,(float)tol);
-                    mesh.addFacets(aTopo, aPoints);
+                    mesh.setFacets(aTopo, aPoints);
                 }
             }
 

@@ -349,6 +349,29 @@ void MeshObject::setFacets(const std::vector<MeshCore::MeshGeomFacet>& facets)
     _kernel = facets;
 }
 
+void MeshObject::setFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+                           const std::vector<Base::Vector3d>& points)
+{
+    MeshCore::MeshFacetArray facet_v;
+    facet_v.reserve(facets.size());
+    for (std::vector<Data::ComplexGeoData::FacetTopo>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
+        MeshCore::MeshFacet f;
+        f._aulPoints[0] = it->I1;
+        f._aulPoints[1] = it->I2;
+        f._aulPoints[2] = it->I3;
+        facet_v.push_back(f);
+    }
+
+    MeshCore::MeshPointArray point_v;
+    point_v.reserve(points.size());
+    for (std::vector<Base::Vector3d>::const_iterator it = points.begin(); it != points.end(); ++it) {
+        Base::Vector3f p((float)it->x,(float)it->y,(float)it->z);
+        point_v.push_back(p);
+    }
+
+    _kernel.Adopt(point_v, facet_v, true);
+}
+
 void MeshObject::deleteFacets(const std::vector<unsigned long>& removeIndices)
 {
     _kernel.DeleteFacets(removeIndices);

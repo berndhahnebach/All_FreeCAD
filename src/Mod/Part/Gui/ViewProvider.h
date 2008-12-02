@@ -61,6 +61,7 @@ public:
     App::PropertyMaterial LineMaterial;
     App::PropertyMaterial PointMaterial;
     App::PropertyBool ControlPoints;
+    App::PropertyEnumeration Lighting;
 
 
     virtual void attach(App::DocumentObject *);
@@ -90,14 +91,15 @@ protected:
     void showControlPointsOfFace(const TopoDS_Face&);
 
     // nodes for the data representation
-    SoSeparator *EdgeRoot;
-    SoSeparator *FaceRoot;
-    SoSeparator *VertexRoot;
-    SoMaterial  *pcLineMaterial;
-    SoMaterial  *pcPointMaterial;
-    SoDrawStyle *pcLineStyle;
-    SoDrawStyle *pcPointStyle;
-    SoSwitch    *pcControlPoints;
+    SoSeparator  *EdgeRoot;
+    SoSeparator  *FaceRoot;
+    SoSeparator  *VertexRoot;
+    SoMaterial   *pcLineMaterial;
+    SoMaterial   *pcPointMaterial;
+    SoDrawStyle  *pcLineStyle;
+    SoDrawStyle  *pcPointStyle;
+    SoSwitch     *pcControlPoints;
+    SoShapeHints *pShapeHints;
 
 private:
     // settings stuff
@@ -105,6 +107,7 @@ private:
     bool noPerVertexNormals;
     bool qualityNormals;
     static App::PropertyFloatConstraint::Constraints floatRange;
+    static const char* LightingEnums[];
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 
