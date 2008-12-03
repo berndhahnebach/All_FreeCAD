@@ -808,7 +808,11 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                 face.I3 = it->i;
             }
 
-            aTopo.push_back(face);
+            // make sure that we don't insert invalid facets
+            if (face.I1 != face.I2 &&
+                face.I2 != face.I3 &&
+                face.I3 != face.I1)
+                aTopo.push_back(face);
         }
     }
 
@@ -905,7 +909,11 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                     face.I3 = it->i;
                 }
 
-                aTopo.push_back(face);
+                // make sure that we don't insert invalid facets
+                if (face.I1 != face.I2 &&
+                    face.I2 != face.I3 &&
+                    face.I3 != face.I1)
+                    aTopo.push_back(face);
             }
         }
         catch(Standard_Failure) {
