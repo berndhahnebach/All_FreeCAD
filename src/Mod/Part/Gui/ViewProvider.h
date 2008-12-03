@@ -37,6 +37,7 @@ class SoSeparator;
 class SoSwitch;
 class SoVertexShape;
 class SoPickedPoint;
+class SoShapeHints;
 class SoEventCallback;
 class SbVec3f;
 
