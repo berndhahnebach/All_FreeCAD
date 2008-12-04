@@ -44,7 +44,6 @@
 using Base::Sequencer;
 using namespace Gui;
 
-//#define TANGO_ICONS
 
 //===========================================================================
 // Std_Open
@@ -61,10 +60,10 @@ StdCmdOpen::StdCmdOpen()
     sToolTipText  = QT_TR_NOOP("Open a document or import files");
     sWhatsThis    = "Std_Open";
     sStatusTip    = QT_TR_NOOP("Open a document or import files");
-#ifndef TANGO_ICONS
-    sPixmap       = "Open";
-#else
+#if QT_VERSION >= 0x040200
     sPixmap       = "document-open";
+#else
+    sPixmap       = "Open";
 #endif
     iAccel        = Qt::CTRL+Qt::Key_O;
 }
@@ -237,10 +236,10 @@ StdCmdNew::StdCmdNew()
   sToolTipText  = QT_TR_NOOP("Create a new empty Document");
   sWhatsThis    = "Std_New";
   sStatusTip    = QT_TR_NOOP("Create a new empty Document");
-#ifndef TANGO_ICONS
-  sPixmap       = "New";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "document-new";
+#else
+  sPixmap       = "New";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_N;
 }
@@ -263,10 +262,10 @@ StdCmdSave::StdCmdSave()
   sToolTipText  = QT_TR_NOOP("Save the active document");
   sWhatsThis    = "Std_Save";
   sStatusTip    = QT_TR_NOOP("Save the active document");
-#ifndef TANGO_ICONS
-  sPixmap       = "Save";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "document-save";
+#else
+  sPixmap       = "Save";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_S;
 }
@@ -305,7 +304,7 @@ StdCmdSaveAs::StdCmdSaveAs()
   sToolTipText  = QT_TR_NOOP("Save the active document under a new file name");
   sWhatsThis    = "Std_SaveAs";
   sStatusTip    = QT_TR_NOOP("Save the active document under a new file name");
-#ifdef TANGO_ICONS
+#if QT_VERSION >= 0x040200
   sPixmap       = "document-save-as";
 #endif
   iAccel        = 0;
@@ -347,7 +346,7 @@ StdCmdProjectInfo::StdCmdProjectInfo()
   sToolTipText  = QT_TR_NOOP("Show details of the currently active project");
   sWhatsThis    = "Std_ProjectInfo";
   sStatusTip    = QT_TR_NOOP("Show details of the currently active project");
-#ifdef TANGO_ICONS
+#if QT_VERSION >= 0x040200
   sPixmap       = "document-properties";
 #endif
 }
@@ -376,10 +375,10 @@ StdCmdPrint::StdCmdPrint()
   sToolTipText  = QT_TR_NOOP("Print the document");
   sWhatsThis    = "Std_Print";
   sStatusTip    = QT_TR_NOOP("Print the document");
-#ifndef TANGO_ICONS
-  sPixmap       = "Print";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "document-print";
+#else
+  sPixmap       = "Print";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_P;;
 }
@@ -441,7 +440,7 @@ StdCmdQuit::StdCmdQuit()
   sToolTipText  = QT_TR_NOOP("Quits the application");
   sWhatsThis    = "Std_Quit";
   sStatusTip    = QT_TR_NOOP("Quits the application");
-#ifdef TANGO_ICONS
+#if QT_VERSION >= 0x040200
   sPixmap       = "system-log-out";
 #endif
   iAccel        = Qt::ALT+Qt::Key_F4;
@@ -468,10 +467,10 @@ StdCmdUndo::StdCmdUndo()
   sToolTipText  = QT_TR_NOOP("Undo exactly one action");
   sWhatsThis    = "Std_Undo";
   sStatusTip    = QT_TR_NOOP("Undo exactly one action");
-#ifndef TANGO_ICONS
-  sPixmap       = "Undo";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-undo";
+#else
+  sPixmap       = "Undo";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_Z;
 }
@@ -517,10 +516,10 @@ StdCmdRedo::StdCmdRedo()
   sToolTipText  = QT_TR_NOOP("Redoes a previously undone action");
   sWhatsThis    = "Std_Redo";
   sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
-#ifndef TANGO_ICONS
-  sPixmap       = "Redo";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-redo";
+#else
+  sPixmap       = "Redo";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_Y;
 }
@@ -565,10 +564,10 @@ StdCmdCut::StdCmdCut()
   sToolTipText  = QT_TR_NOOP("Cut out");
   sWhatsThis    = "Std_Cut";
   sStatusTip    = QT_TR_NOOP("Cut out");
-#ifndef TANGO_ICONS
-  sPixmap       = "Cut";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-cut";
+#else
+  sPixmap       = "Cut";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_X;
 }
@@ -596,10 +595,10 @@ StdCmdCopy::StdCmdCopy()
   sToolTipText  = QT_TR_NOOP("Copy operation");
   sWhatsThis    = "Std_Copy";
   sStatusTip    = QT_TR_NOOP("Copy operation");
-#ifndef TANGO_ICONS
-  sPixmap       = "Copy";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-copy";
+#else
+  sPixmap       = "Copy";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_C;
 }
@@ -627,10 +626,10 @@ StdCmdPaste::StdCmdPaste()
   sToolTipText  = QT_TR_NOOP("Paste operation");
   sWhatsThis    = "Std_Paste";
   sStatusTip    = QT_TR_NOOP("Paste operation");
-#ifndef TANGO_ICONS
-  sPixmap       = "Paste";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-paste";
+#else
+  sPixmap       = "Paste";
 #endif
   iAccel        = Qt::CTRL+Qt::Key_V;
 }
@@ -659,7 +658,7 @@ StdCmdSelectAll::StdCmdSelectAll()
     sToolTipText  = QT_TR_NOOP("Select all");
     sWhatsThis    = "Std_SelectAll";
     sStatusTip    = QT_TR_NOOP("Select all");
-#ifdef TANGO_ICONS
+#if QT_VERSION >= 0x040200
     sPixmap       = "edit-select-all";
 #endif
     iAccel        = Qt::CTRL+Qt::Key_A;
@@ -694,7 +693,7 @@ StdCmdDelete::StdCmdDelete()
   sToolTipText  = QT_TR_NOOP("Deletes the selected objects");
   sWhatsThis    = "Std_Delete";
   sStatusTip    = QT_TR_NOOP("Deletes the selected objects");
-#ifdef TANGO_ICONS
+#if QT_VERSION >= 0x040200
   sPixmap       = "edit-delete";
 #endif
   iAccel        = Qt::Key_Delete;
@@ -739,10 +738,10 @@ StdCmdRefresh::StdCmdRefresh()
   sToolTipText  = QT_TR_NOOP("Recomputes the current active document");
   sWhatsThis    = "Std_Refresh";
   sStatusTip    = QT_TR_NOOP("Recomputes the current active document");
-#ifndef TANGO_ICONS
-  sPixmap       = "reload";
-#else
+#if QT_VERSION >= 0x040200
   sPixmap       = "view-refresh";
+#else
+  sPixmap       = "reload";
 #endif
   iAccel        = Qt::Key_F5;
 }
