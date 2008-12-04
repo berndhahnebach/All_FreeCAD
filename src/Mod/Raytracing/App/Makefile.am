@@ -12,7 +12,9 @@ libRaytracing_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		RayFeature.cpp \
-		RayFeature.h
+		RayFeature.h \
+		RayProject.cpp \
+		RayProject.h
 
 
 FreeCADpov.h: FreeCADpov
