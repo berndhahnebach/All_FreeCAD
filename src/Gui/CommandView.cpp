@@ -62,8 +62,6 @@
 using namespace Gui;
 using Gui::Dialog::DlgSettingsImageImp;
 
-void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment);
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 DEF_STD_CMD_AC(StdOrthographicCamera);
@@ -807,6 +805,7 @@ Action * StdViewDockUndockFullscreen::createAction(void)
   fullscr->setWhatsThis(QObject::tr(sWhatsThis));
   fullscr->setShortcut(Qt::Key_F11);
   fullscr->setCheckable(true);
+  fullscr->setIcon(Gui::BitmapFactory().pixmap("view-fullscreen"));
 
   return pcAction;
 }
@@ -864,14 +863,13 @@ DEF_STD_CMD_A(StdViewScreenShot);
 StdViewScreenShot::StdViewScreenShot()
   : Command("Std_ViewScreenShot")
 {
-  sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Save picture...");
-  sToolTipText= QT_TR_NOOP("Creates a screenshot of the active view");
-  sWhatsThis  = "Std_ViewScreenShot";
-  sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
-  iAccel      = 0;
-  sPixmap     = "Std_ViewScreenShot";
-
+    sGroup      = QT_TR_NOOP("Standard-View");
+    sMenuText   = QT_TR_NOOP("Save picture...");
+    sToolTipText= QT_TR_NOOP("Creates a screenshot of the active view");
+    sWhatsThis  = "Std_ViewScreenShot";
+    sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
+    iAccel      = 0;
+    sPixmap     = "camera-photo";
 }
 
 void StdViewScreenShot::activated(int iMsg)
@@ -976,13 +974,13 @@ DEF_STD_CMD_A(StdCmdViewCreate);
 StdCmdViewCreate::StdCmdViewCreate()
   : Command("Std_ViewCreate")
 {
-  sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Create new view");
-  sToolTipText= QT_TR_NOOP("Creates a new  view window for the active document");
-  sWhatsThis  = "Std_ViewCreate";
-  sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");
-  sPixmap     = "view_fitall";
-  iAccel      = 0;
+    sGroup      = QT_TR_NOOP("Standard-View");
+    sMenuText   = QT_TR_NOOP("Create new view");
+    sToolTipText= QT_TR_NOOP("Creates a new  view window for the active document");
+    sWhatsThis  = "Std_ViewCreate";
+    sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");
+    sPixmap     = "window-new";
+    iAccel      = 0;
 }
 
 void StdCmdViewCreate::activated(int iMsg)
