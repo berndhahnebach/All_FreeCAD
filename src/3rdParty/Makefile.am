@@ -1,8 +1,6 @@
 SUBDIRS=Pivy
 
 EXTRA_DIST = \
-		atlas/cblas.h \
-		atlas/clapack.h \
 		boost/numeric/bindings/LICENSE_1_0.txt \
 		boost/numeric/bindings/amos/amos.h \
 		boost/numeric/bindings/amos/amos.hpp \
