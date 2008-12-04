@@ -42,9 +42,6 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepMesh.hxx>
-# if OCC_HEX_VERSION < 0x060300
-# include <BRepMesh_Discret.hxx>
-#endif
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRepMesh_Triangle.hxx>
 # include <BRepMesh_Edge.hxx>
@@ -925,54 +922,5 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
         points[it->i] = it->toPoint();
     for (std::map<Standard_Integer,gp_Pnt>::iterator it = points.begin(); it != points.end(); ++it)
         aPoints.push_back(Base::Vector3d(it->second.X(),it->second.Y(),it->second.Z()));
-#endif
-
-
-#if 0
-    //TODO: Port to OCC 6.3.0
-#if OCC_HEX_VERSION < 0x060300
-    Standard_Integer e1,e2,e3,n1,n2,n3;
-    Standard_Boolean b1,b2,b3;
-
-    try {
-        BRepMesh_Discret mesh(accuracy,this->_Shape);
-
-        int nbVer = mesh.NbVertices();
-        aPoints.reserve(nbVer);
-        for (int nbt = 1; nbt <= nbVer; nbt++) {
-            gp_Pnt pnt = mesh.Pnt(nbt);
-            aPoints.push_back(Base::Vector3d(pnt.X(),pnt.Y(),pnt.Z()));
-        }
-
-        int nbTri = mesh.NbTriangles();
-        aTopo.reserve(nbTri);
-        for (int nbt = 1, i = 1 ;nbt <= nbTri;nbt++, i += 3) {
-            BRepMesh_Triangle tri = mesh.Triangle(nbt);
-            tri.Edges(e1,e2,e3,b1,b2,b3);
-            if (b1) {
-                n1 = mesh.Edge(e1).FirstNode() ;
-                n2 = mesh.Edge(e1).LastNode() ;
-            }
-            else {
-                n1 = mesh.Edge(e1).LastNode() ;
-                n2 = mesh.Edge(e1).FirstNode() ;
-            }
-
-            if (b2) {
-                n3 = mesh.Edge(e2).LastNode();
-            }
-            else {
-                n3 = mesh.Edge(e2).FirstNode() ;
-            }
-
-            Data::ComplexGeoData::FacetTopo face;
-            face.I1 = n1-1;
-            face.I2 = n2-1;
-            face.I3 = n3-1;
-            aTopo.push_back(face);
-        }
-    } catch(...) {
-    }
-#endif
 #endif
 }

@@ -79,7 +79,6 @@
 
 // OpenCascade View
 #include <BRepMesh.hxx>
-#include <BRepMesh_Discret.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
