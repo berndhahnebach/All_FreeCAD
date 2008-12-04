@@ -423,6 +423,21 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
 
         PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),object.ptr());
         Instance->signalAddWorkbench(item.c_str());
+
+        // make sure to create the internal __Workbench__ object for pure Python workbenches
+        // so that we are able to define and modify workbenches at runtime
+        if (!object.hasAttr(std::string("__Workbench__"))) {
+            // call its GetClassName method if possible
+            Py::Callable method(object.getAttr(std::string("GetClassName")));
+            Py::Tuple args;
+            Py::String result(method.apply(args));
+            std::string type;
+            type = result.as_std_string();
+            if (type == "Gui::PythonWorkbench") {
+                Workbench* wb = WorkbenchManager::instance()->createWorkbench(name, type);
+                object.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
+            }
+        }
     }
     catch (const Py::Exception&) {
         return NULL;

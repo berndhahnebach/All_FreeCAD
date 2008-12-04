@@ -380,14 +380,14 @@ void PropertyData::getPropertyList(const PropertyContainer *container,std::vecto
 
 
 
-/** \defgroup The property framework
+/** \defgroup PropFrame Property framework
 \section Introduction
-The property framework introduce the ability to acces attributs (member variables) of a class by name without
-knowing the type of class. Its like the reflection mechanism of Jave or C#.
+The property framework introduces the ability to access attributes (member variables) of a class by name without
+knowing the class type. It's like the reflection mechanism of Java or C#.
 This ability is introduced by the App::PropertyContainer class and can be used by all derived classes.
 
-This makes it possible in the first place to make a automatic mapping to python (e.g. in App::FeaturePy) and 
-bstract editing Properties in Gui::PropertyEditor.
+This makes it possible in the first place to make an automatic mapping to python (e.g. in App::FeaturePy) and 
+abstract editing properties in Gui::PropertyEditor.
 
 \section Examples
 
