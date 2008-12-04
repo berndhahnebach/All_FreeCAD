@@ -20,5 +20,26 @@
         <file>ClassBrowser/type_enum.png</file>
         <file>ClassBrowser/type_module.png</file>
         <file>Std_ViewScreenShot.svg</file>
+        <file>document-new.svg</file>
+        <file>document-open.svg</file>
+        <file>document-save.svg</file>
+        <file>document-save-as.svg</file>
+        <file>document-print.svg</file>
+        <file>document-properties.svg</file>
+        <file>system-log-out.svg</file>
+		<file>edit-copy.svg</file>
+        <file>edit-cut.svg</file>
+        <file>edit-delete.svg</file>
+        <file>edit-paste.svg</file>
+        <file>edit-select-all.svg</file>
+        <file>edit-redo.svg</file>
+        <file>edit-undo.svg</file>
+        <file>preferences-system.svg</file>
+        <file>window-new.svg</file>
+        <file>camera-photo.svg</file>
+        <file>applications-accessories.svg</file>
+        <file>accessories-text-editor.svg</file>
+        <file>view-refresh.svg</file>
+        <file>view-fullscreen.svg</file>
     </qresource>
 </RCC>

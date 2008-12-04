@@ -55,8 +55,6 @@ using Base::Sequencer;
 using namespace Gui;
 
 
-
-
 //===========================================================================
 // Std_Workbench
 //===========================================================================
@@ -317,19 +315,19 @@ DEF_STD_CMD(StdCmdDlgPreferences);
 StdCmdDlgPreferences::StdCmdDlgPreferences()
   :Command("Std_DlgPreferences")
 {
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("&Preferences ...");
-  sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the preferences");
-  sWhatsThis    = "Std_DlgPreferences";
-  sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
-  //sPixmap     = "settings";
-  iAccel        = 0;
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("&Preferences ...");
+    sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the preferences");
+    sWhatsThis    = "Std_DlgPreferences";
+    sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
+    sPixmap     = "preferences-system";
+    iAccel        = 0;
 }
 
 void StdCmdDlgPreferences::activated(int iMsg)
 {
-  Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow());
-  cDlg.exec();
+    Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow());
+    cDlg.exec();
 }
 
 //===========================================================================
@@ -369,11 +367,11 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   :Command("Std_DlgMacroExecute")
 {
   sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("E&xecute macro ...");
-  sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
+  sMenuText     = QT_TR_NOOP("Macros ...");
+  sToolTipText  = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
   sWhatsThis    = "Std_DlgMacroExecute";
-  sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
-  sPixmap       = "macro-execute";
+  sStatusTip    = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
+  sPixmap       = "accessories-text-editor";
   iAccel        = 0;
 }
 
@@ -455,7 +453,7 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
     sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
     sWhatsThis    = "Std_DlgCustomize";
     sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
-    //sPixmap     = "customize";
+    sPixmap       = "applications-accessories";
     iAccel        = 0;
 }
 

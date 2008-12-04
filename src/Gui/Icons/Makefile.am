@@ -35,6 +35,27 @@ EXTRA_DIST = \
 		preferences-general.svg \
 		Std_ViewScreenShot.svg \
 		utilities-terminal.svg \
+        document-new.svg \
+        document-open.svg \
+        document-save.svg \
+        document-save-as.svg \
+        document-print.svg \
+        document-properties.svg \
+        system-log-out.svg \
+		edit-copy.svg \
+        edit-cut.svg \
+        edit-delete.svg \
+        edit-paste.svg \
+        edit-select-all.svg \
+        edit-redo.svg \
+        edit-undo.svg \
+        preferences-system.svg \
+        window-new.svg \
+        camera-photo.svg \
+        applications-accessories.svg \
+        accessories-text-editor.svg \
+        view-refresh.svg \
+        view-fullscreen.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm
