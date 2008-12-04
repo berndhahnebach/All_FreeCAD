@@ -89,7 +89,6 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepTools.hxx>
-#include <BRepMesh_Discret.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>

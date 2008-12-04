@@ -385,7 +385,6 @@ void ViewProviderPart::updateData(const App::Property* prop)
         try {
             // creating the mesh on the data structure
             BRepMesh::Mesh(cShape,this->meshDeviation);
-            //BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
             //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
             computeFaces   (FaceRoot,cShape);
             computeEdges   (EdgeRoot,cShape);
@@ -563,7 +562,6 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
     FaceRoot->addChild(pcShapeMaterial);
 
 //  BRepMesh::Mesh(myShape,1.0);
-//  BRepMesh_Discret MESH(1.0,myShape,20.0);
     BRepMesh_IncrementalMesh MESH(myShape,this->meshDeviation);
 
     int i = 1;
