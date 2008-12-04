@@ -65,19 +65,17 @@ using namespace Gui::DockWnd;
  * and vice versa. For more details refer to your Qt documentation.
  *
  * \section Drawbacks
- * Since QAction inherits QObject and emits the \a activated() signal or \a toggled() signal for toggle actions it is very convenient to connect
+ * Since QAction inherits QObject and emits the \a triggered() signal or \a toggled() signal for toggle actions it is very convenient to connect
  * these signals e.g. with slots of your MainWindow class. But this means that for every action an appropriate slot of MainWindow is necessary
  * and leads to an inflated MainWindow class. Furthermore, it's simply impossible to provide plugins that may also need special slots -- without
  * changing the MainWindow class.
  *
  * \section wayout Way out
- * To solve these problems we have introduced the command framework to decouple QAction and MainWindow. The base class of the framework is
- * \a CommandBase that represents the link between Qt's QAction world and the FreeCAD's command  world. CommandBase holds a pointer to
- * QAction -- and to save memory -- that gets created (@ref CommandBase::createAction()) not before it is added (@ref Command::addTo())
- * to a menu or toolbar.
+ * To solve these problems we have introduced the command framework to decouple QAction and MainWindow. The base classes of the framework are
+ * \a Gui::CommandBase and \a Gui::Action that represent the link between Qt's QAction world and the FreeCAD's command  world. 
  *
- * \a Action that inherits \a QAction holds a pointer to \a Command that it is created by and has also a slot connected to its activated() and toggled() signals.
- * So, whenever an action is invoked, then \a Command::activated() gets called, too.
+ * The Action class holds a pointer to QAction and CommandBase and acts as a mediator and -- to save memory -- that gets created 
+ * (@ref CommandBase::createAction()) not before it is added (@ref Command::addTo()) to a menu or toolbar.
  *
  * Now, the implementation of the slots of MainWindow can be done in the method \a activated() of subclasses of Command instead.
  *
@@ -107,17 +105,10 @@ using namespace Gui::DockWnd;
  *   }
  * };
  * \endcode
- * An instance of \a OpenCommand must be created and added to the \ref CommandManager to make the class known to FreeCAD. To see how menus and toolbars can be built
- * go to the @ref workbench.
- * \subsection commandtype Command types
- * FreeCAD distinguishes between three kind of commands:
- * \li Normal (non-toggle) commands represented by \a Command
- * \li Toggle commands represented by \a ToggleCommand and
- * \li Groups of commands represented by \a CommandGroup
+ * An instance of \a OpenCommand must be created and added to the \ref CommandManager to make the class known to FreeCAD.
+ * To see how menus and toolbars can be built go to the @ref workbench.
  *
- * For convenience several predefined macros are provided in \file Command.h.
- *
- * @see Gui::Command, Gui::ToggleCommand, Gui::CommandGroup, Gui::CommandManager
+ * @see Gui::Command, Gui::CommandManager
  */
 
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat,

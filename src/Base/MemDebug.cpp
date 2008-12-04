@@ -24,13 +24,13 @@
 
 /** \defgroup MemDebug Memory debugging
  * \section Overview
- * In C++ applications are a lot ways to handle memory allocation and deallocation.
+ * In C++ applications there are a lot of ways to handle memory allocation and deallocation.
  * As many ways to do it wrong or simply forget to free memory. One way to overcome
- * this problem is e.g. handle classes (like OpenCasCade) or us a lot factories.
- * But all of them has drawbacks or performance penalties. One goog way to get memory
- * problems hunted down is the MSCRT Heap debugging facility. This set of function
+ * this problem is e.g. usage of handle classes (like OpenCASCADE it does) or use a lot of factories.
+ * But all of them has drawbacks or performance penalties. One good way to get memory
+ * problems hunted down is the MSCRT Heap debugging facility. This set of functions
  * opens the possibility to track and locate all kind of memory problems, e.g.
- * Memory leaks.
+ * memory leaks.
  *
  * \section Implementation
  * The FreeCAD memory debugging is located in the Base::MemDebug class.

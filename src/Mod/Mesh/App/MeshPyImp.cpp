@@ -47,19 +47,32 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
     if (!PyArg_ParseTuple(args, "|O", &pcObj))     // convert args: Python->C 
         return -1;                             // NULL triggers exception
 
-    // if no mesh is given
-    if (!pcObj) return 0;
-    if (PyObject_TypeCheck(pcObj, &(MeshPy::Type))) {
-        getMeshObjectPtr()->operator = (*static_cast<MeshPy*>(pcObj)->getMeshObjectPtr());
+    try {
+        // if no mesh is given
+        if (!pcObj) return 0;
+        if (PyObject_TypeCheck(pcObj, &(MeshPy::Type))) {
+            getMeshObjectPtr()->operator = (*static_cast<MeshPy*>(pcObj)->getMeshObjectPtr());
+        }
+        else if (PyList_Check(pcObj)) {
+            addFacets(args);
+        }
+        else if (PyTuple_Check(pcObj)) {
+            addFacets(args);
+        }
+        else if (PyString_Check(pcObj)) {
+            getMeshObjectPtr()->load(PyString_AsString(pcObj));
+        }
     }
-    else if (PyList_Check(pcObj)) {
-        addFacets(args);
+    catch (const Base::Exception &e) {
+        PyErr_SetString(PyExc_Exception,e.what());
+        return -1;
     }
-    else if (PyTuple_Check(pcObj)) {
-        addFacets(args);
+    catch (const std::exception &e) {
+        PyErr_SetString(PyExc_Exception,e.what());
+        return -1;
     }
-    else if (PyString_Check(pcObj)) {
-        getMeshObjectPtr()->load(PyString_AsString(pcObj));
+    catch (const Py::Exception&) {
+        return -1;
     }
 
     return 0;

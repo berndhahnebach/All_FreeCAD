@@ -46,7 +46,7 @@ using namespace Gui;
 /** \defgroup workbench Workbench Framework
  *
  * FreeCAD provides the possibility to have one or more workbenches for a module. A workbench changes the appearance of the main window
- * in that way that it defines toolbars, command bars, menus or the context menu (later on dockable windows, ...) that are shown to the user.
+ * in that way that it defines toolbars, items in the toolbox, menus or the context menu and dockable windows that are shown to the user.
  *
  * The idea behind this concept is that the user should see only the functions that are required for the task that he is doing at this
  * moment and not to show dozens of unneeded functions which the user never uses.
@@ -55,10 +55,13 @@ using namespace Gui;
  * Here follows a short description of how an own workbench can be added to a module.
  *
  * \subsection newClass Inherit either from Workbench or StdWorkbench
- * First you have to subclass either Workbench or StdWorkbench and reimplement the methods setupMenuBar(), setupToolBars() and setupCommandBars().
+ * First you have to subclass either Workbench or StdWorkbench and reimplement the methods setupMenuBar(), setupToolBars(), setupCommandBars()
+ * and setupDockWindows().
+ *
  * The difference between both classes is that these methods of Workbench are pure virtual while StdWorkbench defines already the standard menus and
  * toolbars, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
- * If your class derives from Workbench then you have to define your menus, toolbars and command bars from scratch while deriving from StdWorkbench
+ *
+ * If your class derives from Workbench then you have to define your menus, toolbars and toolbox items from scratch while deriving from StdWorkbench
  * you have the possibility to add your preferred functions or even remove some unneeded functions.
  * \code
  *
@@ -137,7 +140,7 @@ using namespace Gui;
  *   }
  * \endcode
  *
- * Toolbars can be cutomized the same way unless that you shouldn't create subitems (there are no subtoolbars).
+ * Toolbars can be customized the same way unless that you shouldn't create subitems (there are no subtoolbars).
  *
  * \subsection regWorkbench Register your workbench
  * Once you have implemented your workbench class you have to register it to make it known to the FreeCAD core system. You must make sure that the step
@@ -173,24 +176,23 @@ using namespace Gui;
  * At startup FreeCAD scans all module directories and invokes InitGui.py. So an item for a workbench gets created. If the user
  * clicks on such an item the matching module gets loaded, the C++ workbench gets registered and activated.
  *
- * The user is able to modify a workbench (Edit|Customize). E.g. he can add new toolbars or command bars and add his preferred
+ * The user is able to modify a workbench (Edit|Customize). E.g. he can add new toolbars or items for the toolbox and add his preferred
  * functions to them. But he has only full control over "his" toolbars, the default workbench items cannot be modified or even removed.
  *
- * At the moment only toolbars, command bars and menus are handled by a workbench. In later versions it is also planned to make dock windows
- * and showing special widgets workbench-dependent.
- *
  * FreeCAD provides also the possibility to define pure Python workbenches. Such workbenches are temporarily only and are lost after exiting
- * the FreeCAD session. But if you want to keep your Pyhton workbench you can write a macro and attach it with a user defined button or just
+ * the FreeCAD session. But if you want to keep your Python workbench you can write a macro and attach it with a user defined button or just
  * perform the macro during the next FreeCAD session.
  * Here follows a short example of how to create and embed a workbench in Python
  * \code
- * w=FreeCADGui.CreateWorkbench("My workbench")               # creates a standard workbench (the same as StdWorkbench in C++)
+ * w=Workbench()                                              # creates a standard workbench (the same as StdWorkbench in C++)
+ * w.MenuText = "My Workbench"                                # the text that will appear in the combo box
  * dir(w)                                                     # lists all available function of the object
+ * FreeCADGui.addWorkbench(w)                                 # Creates an item for our workbenmch now
+ *                                                            # Note: We must first add the workbench to run some initialization code
+ *                                                            # Then we are ready to customize the workbench
  * list = ["Std_Test1", "Std_Test2", "Std_Test3"]             # creates a list of new functions
- * w.AppendMenu("Test functions", list)                       # creates a new menu with these functions
- * w.AppendToolbar("Test", list)                              # ... and also a new toolbar
- * FreeCADGui.addWorkbench("My workbench", 0)                 # Creates an item for our workbenmch now, the second argument can be 0 as we don't
- *                                                            # need our own workbench handler.
+ * w.appendMenu("Test functions", list)                       # creates a new menu with these functions
+ * w.appendToolbar("Test", list)                              # ... and also a new toolbar
  * \endcode
  */
 
