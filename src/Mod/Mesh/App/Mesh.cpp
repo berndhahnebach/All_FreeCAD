@@ -619,47 +619,67 @@ void MeshObject::crossSections(const std::vector<MeshObject::Plane>& planes, std
 
 MeshObject* MeshObject::unite(const MeshObject& mesh) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
+    MeshCore::MeshKernel result;
+    MeshCore::MeshKernel kernel1(this->_kernel);
+    kernel1.Transform(this->_Mtrx);
+    MeshCore::MeshKernel kernel2(mesh._kernel);
+    kernel2.Transform(mesh._Mtrx);
+    MeshCore::SetOperations setOp(kernel1, kernel2, result,
                                   MeshCore::SetOperations::Union, Epsilon);
     setOp.Do();
-    return new MeshObject(kernel,this->_Mtrx);
+    return new MeshObject(result);
 }
 
 MeshObject* MeshObject::intersect(const MeshObject& mesh) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
+    MeshCore::MeshKernel result;
+    MeshCore::MeshKernel kernel1(this->_kernel);
+    kernel1.Transform(this->_Mtrx);
+    MeshCore::MeshKernel kernel2(mesh._kernel);
+    kernel2.Transform(mesh._Mtrx);
+    MeshCore::SetOperations setOp(kernel1, kernel2, result,
                                   MeshCore::SetOperations::Intersect, Epsilon);
     setOp.Do();
-    return new MeshObject(kernel,this->_Mtrx);
+    return new MeshObject(result);
 }
 
 MeshObject* MeshObject::subtract(const MeshObject& mesh) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
+    MeshCore::MeshKernel result;
+    MeshCore::MeshKernel kernel1(this->_kernel);
+    kernel1.Transform(this->_Mtrx);
+    MeshCore::MeshKernel kernel2(mesh._kernel);
+    kernel2.Transform(mesh._Mtrx);
+    MeshCore::SetOperations setOp(kernel1, kernel2, result,
                                   MeshCore::SetOperations::Difference, Epsilon);
     setOp.Do();
-    return new MeshObject(kernel,this->_Mtrx);
+    return new MeshObject(result);
 }
 
 MeshObject* MeshObject::inner(const MeshObject& mesh) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
+    MeshCore::MeshKernel result;
+    MeshCore::MeshKernel kernel1(this->_kernel);
+    kernel1.Transform(this->_Mtrx);
+    MeshCore::MeshKernel kernel2(mesh._kernel);
+    kernel2.Transform(mesh._Mtrx);
+    MeshCore::SetOperations setOp(kernel1, kernel2, result,
                                   MeshCore::SetOperations::Inner, Epsilon);
     setOp.Do();
-    return new MeshObject(kernel,this->_Mtrx);
+    return new MeshObject(result);
 }
 
 MeshObject* MeshObject::outer(const MeshObject& mesh) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::SetOperations setOp(_kernel, mesh._kernel, kernel,
+    MeshCore::MeshKernel result;
+    MeshCore::MeshKernel kernel1(this->_kernel);
+    kernel1.Transform(this->_Mtrx);
+    MeshCore::MeshKernel kernel2(mesh._kernel);
+    kernel2.Transform(mesh._Mtrx);
+    MeshCore::SetOperations setOp(kernel1, kernel2, result,
                                   MeshCore::SetOperations::Outer, Epsilon);
     setOp.Do();
-    return new MeshObject(kernel,this->_Mtrx);
+    return new MeshObject(result);
 }
 
 void MeshObject::refine()

@@ -117,7 +117,7 @@ PyObject* PointsPy::addPoints(PyObject * args)
                 Base::Vector3d pnt;
                 Py::Tuple tuple(*it);
                 pnt.x = (double)Py::Float(tuple[0]);
-                pnt.x = (double)Py::Float(tuple[1]);
+                pnt.y = (double)Py::Float(tuple[1]);
                 pnt.z = (double)Py::Float(tuple[2]);
                 getPointKernelPtr()->push_back(pnt);
             }
