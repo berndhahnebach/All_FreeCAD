@@ -26,6 +26,7 @@
 #include <Base/VectorPy.h>
 #include <Base/Handle.h>
 #include <Base/Builder3D.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Mesh.h"
 #include "MeshPy.h"
@@ -54,10 +55,12 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
             getMeshObjectPtr()->operator = (*static_cast<MeshPy*>(pcObj)->getMeshObjectPtr());
         }
         else if (PyList_Check(pcObj)) {
-            addFacets(args);
+            if(!addFacets(args))
+                return -1;
         }
         else if (PyTuple_Check(pcObj)) {
-            addFacets(args);
+            if (!addFacets(args))
+                return -1;
         }
         else if (PyString_Check(pcObj)) {
             getMeshObjectPtr()->load(PyString_AsString(pcObj));
@@ -362,40 +365,40 @@ PyObject*  MeshPy::addFacets(PyObject *args)
 {
     PyObject *list;
     if (PyArg_ParseTuple(args, "O!", &PyList_Type, &list)) {
+        Py::List list_f(list);
+        union PyType_Object pyVType = {&(Base::VectorPy::Type)};
+        Py::Type vVType(pyVType.o);
+
+        union PyType_Object pyFType = {&(Mesh::FacetPy::Type)};
+        Py::Type vFType(pyFType.o);
+
         std::vector<MeshCore::MeshGeomFacet> facets;
         MeshCore::MeshGeomFacet facet;
-        int k = 0;
-        for (int i = 0; i < PyList_Size(list); i++) {
-            PyObject *vec = PyList_GetItem(list, i);
-            if (PyList_Check(vec)) {
-                if (PyList_Size(vec) == 3) {
-                    for (int j = 0; j < 3; j++) {
-                        PyObject *val = PyList_GetItem(vec, j);
-                        if (PyFloat_Check(val)) {
-                            float f = (float)PyFloat_AsDouble(val);
-                            facet._aclPoints[k][j] = f;
-                        }
-                        else {
-                            Py_Error(PyExc_Exception, "vector needs 3 double values");
-                            return NULL; // not a double
-                        }
-                    }
-                }
-                else {
-                    Py_Error(PyExc_Exception, "vector needs 3 double values");
-                    return NULL; // vector needs 3 doubles
-                }
+        for (Py::List::iterator it = list_f.begin(); it != list_f.end(); ++it) {
+            if ((*it).isType(vFType)) {
+                Mesh::FacetPy* face = static_cast<Mesh::FacetPy*>((*it).ptr());
+                facets.push_back(*face->getFacetPtr());
             }
             else {
-                Py_Error(PyExc_Exception, "inner list should be 3 doubles as list");
-                return NULL; // not a vector
-            }
-        
-            k++;
-            if (k == 3) {
-                k = 0;
-                facet.CalcNormal();
-                facets.push_back(facet);
+                Py::Tuple tuple(*it);
+                if (tuple.size() == 3) {
+                    for (int i=0; i<3; i++) {
+                        Base::Vector3d p = Py::Vector(tuple[i]).toVector();
+                        facet._aclPoints[i].Set((float)p.x,(float)p.y,(float)p.z);
+                    }
+                    facet.CalcNormal();
+                    facets.push_back(facet);
+                }
+                else {
+                    int index=0;
+                    for (int i=0; i<3; i++) {
+                        facet._aclPoints[i].x = (float)(double)Py::Float(tuple[index++]);
+                        facet._aclPoints[i].y = (float)(double)Py::Float(tuple[index++]);
+                        facet._aclPoints[i].z = (float)(double)Py::Float(tuple[index++]);
+                    }
+                    facet.CalcNormal();
+                    facets.push_back(facet);
+                }
             }
         }
 
