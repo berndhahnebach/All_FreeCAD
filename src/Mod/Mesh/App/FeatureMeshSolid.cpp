@@ -31,7 +31,7 @@
 #include <App/Document.h>
 
 #include "FeatureMeshSolid.h"
-#include "MeshPy.h"
+#include "Mesh.h"
 
 
 namespace Mesh {
@@ -61,51 +61,14 @@ short Sphere::mustExecute() const
 
 App::DocumentObjectExecReturn *Sphere::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Sphere' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Sphere");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(fi)",Radius.getValue(),Sampling.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Sphere'");
-        }
+    std::auto_ptr<MeshObject> mesh(MeshObject::createSphere(Radius.getValue(),Sampling.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create sphere", this);
     }
-
-    return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -133,51 +96,14 @@ short Ellipsoid::mustExecute() const
 
 App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Ellipsoid' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Ellipsoid");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Ellipsoid'");
-        }
+    std::auto_ptr<MeshObject> mesh(MeshObject::createEllipsoid(Radius1.getValue(),Radius2.getValue(),Sampling.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create ellipsoid", this);
     }
-
-    return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -210,52 +136,15 @@ short Cylinder::mustExecute() const
 
 App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Cylinder' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Cylinder");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(ffifi)",Radius.getValue(),Length.getValue(),
-            Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cylinder'");
-        }
+    std::auto_ptr<MeshObject> mesh(MeshObject::createCylinder(Radius.getValue(),Length.getValue(),
+                                   Closed.getValue(),EdgeLength.getValue(),Sampling.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create cylinder", this);
     }
-
-    return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -291,52 +180,15 @@ short Cone::mustExecute() const
 
 App::DocumentObjectExecReturn *Cone::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Cone' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Cone");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(fffifi)",Radius1.getValue(),Radius2.getValue(),Length.getValue(),
-            Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cone'");
-        }
+    std::auto_ptr<MeshObject> mesh(MeshObject::createCone(Radius1.getValue(),Radius2.getValue(),Length.getValue(),
+                                   Closed.getValue(),EdgeLength.getValue(),Sampling.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create cone", this);
     }
-
-    return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -364,51 +216,14 @@ short Torus::mustExecute() const
 
 App::DocumentObjectExecReturn *Torus::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Torus' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Toroid");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Toroid'");
-        }
+    std::auto_ptr<MeshObject> mesh(MeshObject::createTorus(Radius1.getValue(),Radius2.getValue(),Sampling.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create torus", this);
     }
-
-    return App::DocumentObject::StdReturn;
 }
 
 // -------------------------------------------------------------
@@ -436,49 +251,12 @@ short Cube::mustExecute() const
 
 App::DocumentObjectExecReturn *Cube::execute(void)
 {
-    // load the 'BuildRegularGeoms' module
-    Base::PyGILStateLocker lock;
-    PyObject* module = PyImport_ImportModule("BuildRegularGeoms");
-    if (module) {
-        // get the methods dictionary and search for the 'Cube' method
-        PyObject* dict = PyModule_GetDict(module);
-        PyObject* func = PyDict_GetItemString(dict, "Cube");
-        // Create the mesh
-        if (func) {
-            PyObject* args = Py_BuildValue("(fff)",Length.getValue(),Width.getValue(),Height.getValue());
-            PyObject* result = PyEval_CallObject(func,args);
-            // decrement the args and module reference
-            Py_DECREF(args);
-            Py_DECREF(module);
-
-            // We know it's a list of facets
-            if (result) {
-                MeshPy* mesh = new MeshPy(new MeshObject);
-                PyObject* args = Py_BuildValue("(O)",result);
-                mesh->addFacets(args);
-                Mesh.setValue(mesh->getMeshObjectPtr());
-                Py_DECREF(args);
-                Py_DECREF(mesh);
-                Py_DECREF(result);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cube'");
-        }
-    } 
-  
-    // Check for internal Python errors
-    if (PyErr_Occurred()) {
-        Base::Exception e; // do not use PyException since this clears the error indicator
-        PyObject *errobj, *errdata, *errtraceback;
-        PyErr_Fetch(&errobj, &errdata, &errtraceback);
-        if (PyString_Check(errdata))
-            e.setMessage( PyString_AsString( errdata ) );
-        PyErr_Restore(errobj, errdata, errtraceback);
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-        throw e;
+    std::auto_ptr<MeshObject> mesh(MeshObject::createCube(Length.getValue(),Width.getValue(),Height.getValue()));
+    if (mesh.get()) {
+        Mesh.setValue(mesh->getKernel());
+        return App::DocumentObject::StdReturn;
     }
-
-    return App::DocumentObject::StdReturn;
+    else {
+        return new App::DocumentObjectExecReturn("Cannot create cube", this);
+    }
 }

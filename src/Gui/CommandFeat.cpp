@@ -45,20 +45,22 @@ DEF_STD_CMD(StdCmdFeatRecompute);
 StdCmdFeatRecompute::StdCmdFeatRecompute()
   :Command("Std_Recompute")
 {
-  // seting the
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("&Recompute");
-  sToolTipText  = QT_TR_NOOP("Recompute feature or document");
-  sWhatsThis    = QT_TR_NOOP("Recompute feature or document");
-  sStatusTip    = QT_TR_NOOP("Recompute feature or document");
-  sPixmap       = "Open";
-  iAccel        = Qt::CTRL+Qt::Key_R;
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Recompute");
+    sToolTipText  = QT_TR_NOOP("Recompute feature or document");
+    sWhatsThis    = QT_TR_NOOP("Recompute feature or document");
+    sStatusTip    = QT_TR_NOOP("Recompute feature or document");
+#if QT_VERSION >= 0x040200
+    sPixmap       = "view-refresh";
+#else
+    sPixmap       = "reload";
+#endif
+    iAccel        = Qt::CTRL+Qt::Key_R;
 }
 
 void StdCmdFeatRecompute::activated(int iMsg)
 {
-  // fill the list of registered endings
-
 }
 
 //===========================================================================
@@ -101,7 +103,7 @@ void StdCmdRandomColor::activated(int iMsg)
 
 bool StdCmdRandomColor::isActive(void)
 {
-  return ( Gui::Selection().size() != 0 );
+    return (Gui::Selection().size() != 0);
 }
 
 
@@ -109,12 +111,10 @@ namespace Gui {
 
 void CreateFeatCommands(void)
 {
-  CommandManager &rcCmdMgr = Application::Instance->commandManager();
+    CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
-  rcCmdMgr.addCommand(new StdCmdFeatRecompute());
-  rcCmdMgr.addCommand(new StdCmdRandomColor());
-
-
+    rcCmdMgr.addCommand(new StdCmdFeatRecompute());
+    rcCmdMgr.addCommand(new StdCmdRandomColor());
 }
 
 } // namespace Gui
