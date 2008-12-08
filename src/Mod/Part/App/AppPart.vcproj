@@ -477,6 +477,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Part2DObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Part2DObject.h"
+				>
+			</File>
+			<File
 				RelativePath="PartFeature.cpp"
 				>
 				<FileConfiguration
@@ -514,6 +522,10 @@
 		<Filter
 			Name="PythonObjects"
 			>
+			<File
+				RelativePath=".\Part2DObject.xml"
+				>
+			</File>
 			<File
 				RelativePath=".\PartFeaturePy.xml"
 				>
