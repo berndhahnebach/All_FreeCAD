@@ -821,21 +821,21 @@ bool MeshGeomFacet::IsPointOf (const Base::Vector3f &P) const
     Base::Vector3f v = this->_aclPoints[2] - this->_aclPoints[0];
     Base::Vector3f w = P - this->_aclPoints[0];
 
-    float uu = u * u;
-    float uv = u * v;
-    float vv = v * v;
-    float wu = w * u;
-    float wv = w * v;
-    float det = float(fabs((uu * vv) - (uv * uv)));
+    double uu = u * u;
+    double uv = u * v;
+    double vv = v * v;
+    double wu = w * u;
+    double wv = w * v;
+    double det = fabs((uu * vv) - (uv * uv));
 
     // Note: Due to roundoff errros it can happen that we get very small
     // negative values for s or t. This e.g. can happen if the point lies
     // at the border of the facet. And as det could also become very small
-    // we need an adaptive tolerance. 
-    const float eps=std::min<float>(1.0e-6f, det*det);
+    // we need an adaptive tolerance.
+    const double eps=std::min<double>(1.0e-6, det*det);
 
-    float s  = (vv * wu) - (uv * wv);
-    float t  = (uu * wv) - (uv * wu);
+    double s  = (vv * wu) - (uv * wv);
+    double t  = (uu * wv) - (uv * wu);
 
     // is the point inside the triangle?
     if ((s >= -eps) && (t >= -eps) && ((s + t) <= det+eps)) {

@@ -373,35 +373,51 @@ void DlgCustomActionsImp::on_buttonRemoveAction_clicked()
     }
 }
 
+namespace Gui { namespace Dialog {
+class IconDialog : public QDialog
+{
+public:
+    IconDialog(Ui_DlgChooseIcon* ui, QWidget* parent) : QDialog(parent), _ui(ui) {
+    }
+    ~IconDialog() {
+    }
+    void resizeEvent(QResizeEvent*) {
+        _ui->listWidget->setFlow(QListView::LeftToRight);
+    }
+private:
+    Ui_DlgChooseIcon *_ui;
+};
+}
+}
+
 void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
 {
     // create a dialog showing all pixmaps
     Gui::Dialog::Ui_DlgChooseIcon ui;
-    QDialog dlg(this);
+    Gui::Dialog::IconDialog dlg(&ui, this);
     dlg.setModal(true);
     ui.setupUi(&dlg);
+    ui.listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     // signals and slots connections
-    connect( ui.listWidget, SIGNAL( itemClicked ( QListWidgetItem * ) ), &dlg, SLOT( accept() ) );
+    connect(ui.listWidget, SIGNAL(itemClicked (QListWidgetItem *)),
+            &dlg, SLOT(accept()));
 
     QListWidgetItem* item;
     QStringList names = BitmapFactory().pixmapNames();
-    for ( QStringList::Iterator it = names.begin(); it != names.end(); ++it )
-    {
-        item = new QListWidgetItem( ui.listWidget );
+    for (QStringList::Iterator it = names.begin(); it != names.end(); ++it) {
+        item = new QListWidgetItem(ui.listWidget);
         item->setIcon(BitmapFactory().pixmap((*it).toAscii()));
         item->setText(*it);
+        item->setToolTip(*it);
     }
 
     dlg.exec();
 
     pixmapLabel->clear();
     m_sPixmap = QString::null;
-    if ( dlg.result() == QDialog::Accepted )
-    {
+    if (dlg.result() == QDialog::Accepted) {
         QListWidgetItem* item = ui.listWidget->currentItem();
-
-        if ( item )
-        {
+        if (item) {
             m_sPixmap = item->text();
             pixmapLabel->setPixmap(item->icon().pixmap(QSize(32,32)));
         }
