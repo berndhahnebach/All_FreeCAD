@@ -51,11 +51,7 @@ StdCmdFeatRecompute::StdCmdFeatRecompute()
     sToolTipText  = QT_TR_NOOP("Recompute feature or document");
     sWhatsThis    = QT_TR_NOOP("Recompute feature or document");
     sStatusTip    = QT_TR_NOOP("Recompute feature or document");
-#if QT_VERSION >= 0x040200
     sPixmap       = "view-refresh";
-#else
-    sPixmap       = "reload";
-#endif
     iAccel        = Qt::CTRL+Qt::Key_R;
 }
 

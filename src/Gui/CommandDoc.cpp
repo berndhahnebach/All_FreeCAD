@@ -60,11 +60,7 @@ StdCmdOpen::StdCmdOpen()
     sToolTipText  = QT_TR_NOOP("Open a document or import files");
     sWhatsThis    = "Std_Open";
     sStatusTip    = QT_TR_NOOP("Open a document or import files");
-#if QT_VERSION >= 0x040200
     sPixmap       = "document-open";
-#else
-    sPixmap       = "Open";
-#endif
     iAccel        = Qt::CTRL+Qt::Key_O;
 }
 
@@ -236,11 +232,7 @@ StdCmdNew::StdCmdNew()
   sToolTipText  = QT_TR_NOOP("Create a new empty Document");
   sWhatsThis    = "Std_New";
   sStatusTip    = QT_TR_NOOP("Create a new empty Document");
-#if QT_VERSION >= 0x040200
   sPixmap       = "document-new";
-#else
-  sPixmap       = "New";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_N;
 }
 
@@ -262,11 +254,7 @@ StdCmdSave::StdCmdSave()
   sToolTipText  = QT_TR_NOOP("Save the active document");
   sWhatsThis    = "Std_Save";
   sStatusTip    = QT_TR_NOOP("Save the active document");
-#if QT_VERSION >= 0x040200
   sPixmap       = "document-save";
-#else
-  sPixmap       = "Save";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_S;
 }
 
@@ -375,11 +363,7 @@ StdCmdPrint::StdCmdPrint()
   sToolTipText  = QT_TR_NOOP("Print the document");
   sWhatsThis    = "Std_Print";
   sStatusTip    = QT_TR_NOOP("Print the document");
-#if QT_VERSION >= 0x040200
   sPixmap       = "document-print";
-#else
-  sPixmap       = "Print";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_P;;
 }
 
@@ -467,11 +451,7 @@ StdCmdUndo::StdCmdUndo()
   sToolTipText  = QT_TR_NOOP("Undo exactly one action");
   sWhatsThis    = "Std_Undo";
   sStatusTip    = QT_TR_NOOP("Undo exactly one action");
-#if QT_VERSION >= 0x040200
   sPixmap       = "edit-undo";
-#else
-  sPixmap       = "Undo";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_Z;
 }
 
@@ -516,11 +496,7 @@ StdCmdRedo::StdCmdRedo()
   sToolTipText  = QT_TR_NOOP("Redoes a previously undone action");
   sWhatsThis    = "Std_Redo";
   sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
-#if QT_VERSION >= 0x040200
   sPixmap       = "edit-redo";
-#else
-  sPixmap       = "Redo";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_Y;
 }
 
@@ -564,11 +540,7 @@ StdCmdCut::StdCmdCut()
   sToolTipText  = QT_TR_NOOP("Cut out");
   sWhatsThis    = "Std_Cut";
   sStatusTip    = QT_TR_NOOP("Cut out");
-#if QT_VERSION >= 0x040200
   sPixmap       = "edit-cut";
-#else
-  sPixmap       = "Cut";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_X;
 }
 
@@ -595,11 +567,7 @@ StdCmdCopy::StdCmdCopy()
   sToolTipText  = QT_TR_NOOP("Copy operation");
   sWhatsThis    = "Std_Copy";
   sStatusTip    = QT_TR_NOOP("Copy operation");
-#if QT_VERSION >= 0x040200
   sPixmap       = "edit-copy";
-#else
-  sPixmap       = "Copy";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_C;
 }
 
@@ -626,11 +594,7 @@ StdCmdPaste::StdCmdPaste()
   sToolTipText  = QT_TR_NOOP("Paste operation");
   sWhatsThis    = "Std_Paste";
   sStatusTip    = QT_TR_NOOP("Paste operation");
-#if QT_VERSION >= 0x040200
   sPixmap       = "edit-paste";
-#else
-  sPixmap       = "Paste";
-#endif
   iAccel        = Qt::CTRL+Qt::Key_V;
 }
 
@@ -738,11 +702,7 @@ StdCmdRefresh::StdCmdRefresh()
   sToolTipText  = QT_TR_NOOP("Recomputes the current active document");
   sWhatsThis    = "Std_Refresh";
   sStatusTip    = QT_TR_NOOP("Recomputes the current active document");
-#if QT_VERSION >= 0x040200
   sPixmap       = "view-refresh";
-#else
-  sPixmap       = "reload";
-#endif
   iAccel        = Qt::Key_F5;
 }
 

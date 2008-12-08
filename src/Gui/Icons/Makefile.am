@@ -26,7 +26,6 @@ EXTRA_DIST = \
 		Feature.xpm \
 		SplashScreen.xpm \
 		images.cpp \
-		Icons.h \
 		ParamDlgImgs.h \
 		macro-execute.svg \
 		macro-record.svg \
