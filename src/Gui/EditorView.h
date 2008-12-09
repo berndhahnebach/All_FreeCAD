@@ -62,7 +62,7 @@ class GuiExport EditorView : public MDIView, public WindowParameter
     Q_OBJECT
 
 public:
-    EditorView(QWidget* parent);
+    EditorView(QTextEdit* editor, QWidget* parent);
     ~EditorView();
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);

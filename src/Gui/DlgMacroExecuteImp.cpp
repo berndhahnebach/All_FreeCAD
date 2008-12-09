@@ -29,11 +29,13 @@
 
 #include "DlgMacroExecuteImp.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "MainWindow.h"
 #include "FileDialog.h"
 #include "Macro.h"
 #include "Document.h"
 #include "EditorView.h"
+#include "PythonEditor.h"
 
 #include <App/Application.h>
 #include <App/Document.h>
@@ -168,7 +170,9 @@ void DlgMacroExecuteImp::on_createButton_clicked()
         else
         {
             QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg( fn );
-            EditorView* edit = new EditorView(getMainWindow());
+            PythonEditor* editor = new PythonEditor();
+            editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+            EditorView* edit = new EditorView(editor, getMainWindow());
             edit->open(file);
             edit->setWindowTitle( fn );
             edit->resize( 400, 300 );

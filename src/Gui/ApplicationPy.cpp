@@ -35,6 +35,7 @@
 #include "Document.h"
 #include "MainWindow.h"
 #include "EditorView.h"
+#include "PythonEditor.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
@@ -202,10 +203,12 @@ PYFUNCIMP_S(Application,sOpen)
             Base::Interpreter().runString(cmd.toUtf8());
         }
         else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
-            ext == QLatin1String("fcscript")) {
-            EditorView* edit = new EditorView(getMainWindow());
+                 ext == QLatin1String("fcscript")) {
+            PythonEditor* editor = new PythonEditor();
+            editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+            EditorView* edit = new EditorView(editor, getMainWindow());
             edit->open(fileName);
-            edit->resize( 400, 300 );
+            edit->resize(400, 300);
             getMainWindow()->addWindow( edit );
         }
     } PY_CATCH;
@@ -237,10 +240,12 @@ PYFUNCIMP_S(Application,sInsert)
             Base::Interpreter().runString(cmd.toUtf8());
         }
         else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
-            ext == QLatin1String("fcscript")) {
-            EditorView* edit = new EditorView(getMainWindow());
+                 ext == QLatin1String("fcscript")) {
+            PythonEditor* editor = new PythonEditor();
+            editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+            EditorView* edit = new EditorView(editor, getMainWindow());
             edit->open(fileName);
-            edit->resize( 400, 300 );
+            edit->resize(400, 300);
             getMainWindow()->addWindow( edit );
         }
     } PY_CATCH;
