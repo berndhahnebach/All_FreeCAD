@@ -24,9 +24,7 @@
 #include "PreCompiled.h"
 
 #include "EditorView.h"
-#include "PythonEditor.h"
 #include "Application.h"
-#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "Macro.h"
 
@@ -53,15 +51,16 @@ public:
  *  Constructs a EditorView which is a child of 'parent', with the
  *  name 'name'.
  */
-EditorView::EditorView(QWidget* parent)
+EditorView::EditorView(QTextEdit* editor, QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Editor" )
 {
     d = new EditorViewP;
     d->lock = false;
 
     // create the editor first
-    d->textEdit = new PythonEditor();
+    d->textEdit = editor;
     d->textEdit->setLineWrapMode(QTextEdit::NoWrap);
+    d->textEdit->setParent(this);
     d->lineMarker = new LineMarker();
     d->lineMarker->setTextEdit(d->textEdit);
 
@@ -78,7 +77,7 @@ EditorView::EditorView(QWidget* parent)
     setCurrentFileName(QString());
     d->textEdit->setFocus();
 
-    setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+    setWindowIcon(d->textEdit->windowIcon());
 
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     hPrefGrp->Attach( this );
@@ -376,7 +375,7 @@ void EditorView::setCurrentFileName(const QString &fileName)
         shownName = tr("untitled[*]");
     else
         shownName = QString::fromAscii("%1[*]").arg(fileName);
-    shownName += tr(" - Python Editor");
+    shownName += tr(" - Editor");
     setWindowTitle(shownName);
     setWindowModified(false);
 }

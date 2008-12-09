@@ -561,7 +561,7 @@ void Application::tryClose(QCloseEvent * e)
 #endif
 
             It->second->canClose(e);
-            if (! e->isAccepted())
+            if (!e->isAccepted())
                 return;
         }
     }

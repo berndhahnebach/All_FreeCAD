@@ -736,7 +736,6 @@ bool Document::isLastView(void)
 void Document::canClose (QCloseEvent * e)
 {
     if (isModified()) {
-#ifndef FC_DEBUG
         switch(QMessageBox::question(getActiveView(),
             QObject::tr("Unsaved document"),
             QObject::tr("Save document before close?"),
@@ -757,9 +756,6 @@ void Document::canClose (QCloseEvent * e)
             e->ignore();   // -> abort
             break;
         }
-#else
-        e->accept();
-#endif
     }
     else
         e->accept();
