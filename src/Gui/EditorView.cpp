@@ -504,4 +504,4 @@ void LineMarker::paintEvent( QPaintEvent* )
     }
 }
 
-#include "moc_PythonView.cpp"
+#include "moc_EditorView.cpp"
