@@ -41,7 +41,7 @@ BUILT_SOURCES=\
 		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
-		moc_PythonView.cpp \
+		moc_EditorView.cpp \
 		moc_ReportView.cpp \
 		moc_SelectionView.cpp \
 		moc_SpinBox.cpp \
@@ -219,7 +219,7 @@ libFreeCADGui_la_SOURCES=\
 		PythonConsolePy.cpp \
 		PythonConsolePy.h \
 		PythonEditor.cpp \
-		PythonView.cpp \
+		EditorView.cpp \
 		PythonWorkbenchPyImp.cpp \
 		ReportView.cpp \
 		resource.cpp \
@@ -308,7 +308,7 @@ include_HEADERS=\
 		PropertyView.h \
 		PythonConsole.h \
 		PythonEditor.h \
-		PythonView.h \
+		EditorView.h \
 		ReportView.h \
 		Selection.h \
 		SelectionView.h \

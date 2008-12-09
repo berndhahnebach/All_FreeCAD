@@ -33,7 +33,7 @@
 #include "FileDialog.h"
 #include "Macro.h"
 #include "Document.h"
-#include "PythonView.h"
+#include "EditorView.h"
 
 #include <App/Application.h>
 #include <App/Document.h>
@@ -168,7 +168,7 @@ void DlgMacroExecuteImp::on_createButton_clicked()
         else
         {
             QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg( fn );
-            PythonView* edit = new PythonView(getMainWindow());
+            EditorView* edit = new EditorView(getMainWindow());
             edit->open(file);
             edit->setWindowTitle( fn );
             edit->resize( 400, 300 );
