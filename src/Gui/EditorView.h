@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_PYTHONVIEW_H
-#define GUI_PYTHONVIEW_H
+#ifndef GUI_EDITORVIEW_H
+#define GUI_EDITORVIEW_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -53,21 +53,21 @@ private:
 
 /**
  * A special view class which sends the messages from the application to
- * the Python editor and embeds the editor in a window.
- * \author Werner Mayer
+ * the editor and embeds it in a window.
+ * @author Werner Mayer
  */
-class PythonViewP;
-class GuiExport PythonView : public MDIView, public WindowParameter
+class EditorViewP;
+class GuiExport EditorView : public MDIView, public WindowParameter
 {
     Q_OBJECT
 
 public:
-    PythonView(QWidget* parent);
-    ~PythonView();
+    EditorView(QWidget* parent);
+    ~EditorView();
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
-    const char *getName(void) const {return "PythonView";}
+    const char *getName(void) const {return "EditorView";}
     void onUpdate(void){};
 
     bool onMsg(const char* pMsg,const char** ppReturn);
@@ -107,9 +107,9 @@ private:
     bool saveFile();
 
 private:
-    PythonViewP* d;
+    EditorViewP* d;
 };
 
 } // namespace Gui
 
-#endif // GUI_PYTHONVIEW_H
+#endif // GUI_EDITORVIEW_H

@@ -34,7 +34,7 @@
 #include "Command.h"
 #include "Document.h"
 #include "MainWindow.h"
-#include "PythonView.h"
+#include "EditorView.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
@@ -180,8 +180,8 @@ PYFUNCIMP_S(Application,sOpen)
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.completeSuffix().toLower();
-        QList<PythonView*> views = getMainWindow()->findChildren<PythonView*>();
-        for (QList<PythonView*>::Iterator it = views.begin(); it != views.end(); ++it) {
+        QList<EditorView*> views = getMainWindow()->findChildren<EditorView*>();
+        for (QList<EditorView*>::Iterator it = views.begin(); it != views.end(); ++it) {
             if ((*it)->fileName() == fileName) {
                 (*it)->setFocus();
                 Py_Return;
@@ -203,7 +203,7 @@ PYFUNCIMP_S(Application,sOpen)
         }
         else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
             ext == QLatin1String("fcscript")) {
-            PythonView* edit = new PythonView(getMainWindow());
+            EditorView* edit = new EditorView(getMainWindow());
             edit->open(fileName);
             edit->resize( 400, 300 );
             getMainWindow()->addWindow( edit );
@@ -238,7 +238,7 @@ PYFUNCIMP_S(Application,sInsert)
         }
         else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
             ext == QLatin1String("fcscript")) {
-            PythonView* edit = new PythonView(getMainWindow());
+            EditorView* edit = new EditorView(getMainWindow());
             edit->open(fileName);
             edit->resize( 400, 300 );
             getMainWindow()->addWindow( edit );

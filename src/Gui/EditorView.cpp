@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#include "PythonView.h"
+#include "EditorView.h"
 #include "PythonEditor.h"
 #include "Application.h"
 #include "BitmapFactory.h"
@@ -34,7 +34,7 @@
 
 using namespace Gui;
 namespace Gui {
-class PythonViewP {
+class EditorViewP {
 public:
     LineMarker* lineMarker;
     QTextEdit* textEdit;
@@ -47,27 +47,27 @@ public:
 };
 }
 
-/* TRANSLATOR Gui::PythonView */
+/* TRANSLATOR Gui::EditorView */
 
 /**
- *  Constructs a PythonView which is a child of 'parent', with the
+ *  Constructs a EditorView which is a child of 'parent', with the
  *  name 'name'.
  */
-PythonView::PythonView(QWidget* parent)
+EditorView::EditorView(QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Editor" )
 {
-    d = new PythonViewP;
+    d = new EditorViewP;
     d->lock = false;
 
     // create the editor first
     d->textEdit = new PythonEditor();
-    d->textEdit->setLineWrapMode( QTextEdit::NoWrap );
+    d->textEdit->setLineWrapMode(QTextEdit::NoWrap);
     d->lineMarker = new LineMarker();
     d->lineMarker->setTextEdit(d->textEdit);
 
     // Create the layout containing the workspace and a tab bar
     QFrame* hbox = new QFrame(this);
-    hbox->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+    hbox->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     QHBoxLayout* layout = new QHBoxLayout();
     layout->setMargin(1);
     layout->addWidget(d->lineMarker);
@@ -78,7 +78,7 @@ PythonView::PythonView(QWidget* parent)
     setCurrentFileName(QString());
     d->textEdit->setFocus();
 
-    setWindowIcon( Gui::BitmapFactory().pixmap("python_small") );
+    setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
 
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     hPrefGrp->Attach( this );
@@ -98,7 +98,7 @@ PythonView::PythonView(QWidget* parent)
 }
 
 /** Destroys the object and frees any allocated resources */
-PythonView::~PythonView()
+EditorView::~EditorView()
 {
     d->activityTimer->stop();
     delete d->activityTimer;
@@ -106,7 +106,7 @@ PythonView::~PythonView()
     getWindowParameter()->Detach( this );
 }
 
-void PythonView::OnChange( Base::Subject<const char*> &rCaller,const char* rcReason )
+void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
 {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     if (strcmp(rcReason, "EnableLineNumber") == 0) {
@@ -118,13 +118,13 @@ void PythonView::OnChange( Base::Subject<const char*> &rCaller,const char* rcRea
     }
 }
 
-void PythonView::checkTimestamp()
+void EditorView::checkTimestamp()
 {
     QFileInfo fi(d->fileName);
     uint timeStamp =  fi.lastModified().toTime_t();
-    if ( timeStamp != d->timeStamp ) {
+    if (timeStamp != d->timeStamp) {
         switch( QMessageBox::question( this, tr("Modified file"), 
-                tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg( d->fileName ),
+                tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg(d->fileName),
                 QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) )
         {
             case QMessageBox::Yes:
@@ -144,7 +144,7 @@ void PythonView::checkTimestamp()
 /**
  * Runs the action specified by \a pMsg.
  */
-bool PythonView::onMsg(const char* pMsg,const char** ppReturn)
+bool EditorView::onMsg(const char* pMsg,const char** ppReturn)
 {
     if (strcmp(pMsg,"Save")==0){
         saveFile();
@@ -182,7 +182,7 @@ bool PythonView::onMsg(const char* pMsg,const char** ppReturn)
  * Checks if the action \a pMsg is available. This is for enabling/disabling
  * the corresponding buttons or menu items for this action.
  */
-bool PythonView::onHasMsg(const char* pMsg) const
+bool EditorView::onHasMsg(const char* pMsg) const
 {
     if (strcmp(pMsg,"Run")==0)  return true;
     if (strcmp(pMsg,"SaveAs")==0)  return true;
@@ -214,7 +214,7 @@ bool PythonView::onHasMsg(const char* pMsg) const
 }
 
 /** Checking on close state. */
-bool PythonView::canClose(void)
+bool EditorView::canClose(void)
 {
     if ( !d->textEdit->document()->isModified() )
         return true;
@@ -238,7 +238,7 @@ bool PythonView::canClose(void)
 /**
  * Saves the content of the editor to a file specified by the appearing file dialog.
  */
-bool PythonView::saveAs(void)
+bool EditorView::saveAs(void)
 {
     QString fn = FileDialog::getSaveFileName(this, QObject::tr("Save Macro"),
         QString::null, tr("FreeCAD macro (*.FCMacro);;Python (*.py)"));
@@ -251,7 +251,7 @@ bool PythonView::saveAs(void)
 /**
  * Opens the file \a fileName.
  */
-bool PythonView::open(const QString& fileName)
+bool EditorView::open(const QString& fileName)
 {
     if (!QFile::exists(fileName))
         return false;
@@ -278,7 +278,7 @@ bool PythonView::open(const QString& fileName)
 /**
  * Runs the opened script in the macro manager.
  */
-void PythonView::run(void)
+void EditorView::run(void)
 {
     Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.toUtf8());
 }
@@ -287,7 +287,7 @@ void PythonView::run(void)
  * Copies the selected text to the clipboard and deletes it from the text edit.
  * If there is no selected text nothing happens.
  */
-void PythonView::cut(void)
+void EditorView::cut(void)
 {
     d->textEdit->cut();
 }
@@ -295,7 +295,7 @@ void PythonView::cut(void)
 /**
  * Copies any selected text to the clipboard.
  */
-void PythonView::copy(void)
+void EditorView::copy(void)
 {
     d->textEdit->copy();
 }
@@ -304,7 +304,7 @@ void PythonView::copy(void)
  * Pastes the text from the clipboard into the text edit at the current cursor position. 
  * If there is no text in the clipboard nothing happens.
  */
-void PythonView::paste(void)
+void EditorView::paste(void)
 {
     d->textEdit->paste();
 }
@@ -313,7 +313,7 @@ void PythonView::paste(void)
  * Undoes the last operation.
  * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
  */
-void PythonView::undo(void)
+void EditorView::undo(void)
 {
     d->lock = true;
     if (!d->undos.isEmpty()) {
@@ -328,7 +328,7 @@ void PythonView::undo(void)
  * Redoes the last operation.
  * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
  */
-void PythonView::redo(void)
+void EditorView::redo(void)
 {
     d->lock = true;
     if (!d->redos.isEmpty()) {
@@ -342,7 +342,7 @@ void PythonView::redo(void)
 /**
  * Shows the printer dialog.
  */
-void PythonView::print()
+void EditorView::print()
 {
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);
@@ -355,7 +355,7 @@ void PythonView::print()
 /**
  * Prints the document into a Pdf file.
  */
-void PythonView::printPdf()
+void EditorView::printPdf()
 {
     QString filename = QFileDialog::getSaveFileName(this, tr("Export PDF"), QString(), tr("PDF file (*.pdf)"));
     if (!filename.isEmpty()) {
@@ -366,7 +366,7 @@ void PythonView::printPdf()
     }
 }
 
-void PythonView::setCurrentFileName(const QString &fileName)
+void EditorView::setCurrentFileName(const QString &fileName)
 {
     d->fileName = fileName;
     d->textEdit->document()->setModified(false);
@@ -381,7 +381,7 @@ void PythonView::setCurrentFileName(const QString &fileName)
     setWindowModified(false);
 }
 
-QString PythonView::fileName() const
+QString EditorView::fileName() const
 {
     return d->fileName;
 }
@@ -389,7 +389,7 @@ QString PythonView::fileName() const
 /**
  * Saves the contents to a file.
  */
-bool PythonView::saveFile()
+bool EditorView::saveFile()
 {
     if (d->fileName.isEmpty())
         return saveAs();
@@ -408,19 +408,19 @@ bool PythonView::saveFile()
     return true;
 }
 
-void PythonView::undoAvailable(bool undo)
+void EditorView::undoAvailable(bool undo)
 {
     if (!undo)
         d->undos.clear();
 }
 
-void PythonView::redoAvailable(bool redo)
+void EditorView::redoAvailable(bool redo)
 {
     if (!redo)
         d->redos.clear();
 }
 
-void PythonView::contentsChange(int position, int charsRemoved, int charsAdded)
+void EditorView::contentsChange(int position, int charsRemoved, int charsAdded)
 {
     if (d->lock)
         return;
@@ -438,7 +438,7 @@ void PythonView::contentsChange(int position, int charsRemoved, int charsAdded)
 /**
  * Get the undo history.
  */
-QStringList PythonView::undoActions() const
+QStringList EditorView::undoActions() const
 {
     return d->undos;
 }
@@ -446,12 +446,12 @@ QStringList PythonView::undoActions() const
 /**
  * Get the redo history.
  */
-QStringList PythonView::redoActions() const
+QStringList EditorView::redoActions() const
 {
     return d->redos;;
 }
 
-void PythonView::focusInEvent (QFocusEvent * e)
+void EditorView::focusInEvent (QFocusEvent * e)
 {
     d->textEdit->setFocus();
 }

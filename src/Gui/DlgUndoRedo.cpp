@@ -27,7 +27,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "Document.h"
-#include "PythonView.h"
+#include "EditorView.h"
 
 using namespace Gui::Dialog;
 
@@ -67,7 +67,7 @@ void UndoDialog::onFetchInfo()
     }
     else
     {
-        PythonView* view = qobject_cast<PythonView*>(getMainWindow()->activeWindow());
+        EditorView* view = qobject_cast<EditorView*>(getMainWindow()->activeWindow());
         if (view) {
             QStringList vecUndos = view->undoActions();
             for (QStringList::Iterator i=vecUndos.begin(); i!=vecUndos.end(); i++)
@@ -124,7 +124,7 @@ void RedoDialog::onFetchInfo()
     }
     else
     {
-        PythonView* view = qobject_cast<PythonView*>(getMainWindow()->activeWindow());
+        EditorView* view = qobject_cast<EditorView*>(getMainWindow()->activeWindow());
         if (view) {
             QStringList vecRedos = view->redoActions();
             for (QStringList::Iterator i=vecRedos.begin(); i!=vecRedos.end(); i++)
