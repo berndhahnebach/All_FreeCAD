@@ -801,11 +801,16 @@ int MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet,
     // Note: The algorithm delivers sometimes false-positives, i.e. it claims
     // that the two triangles intersect but they don't. It seems that this bad
     // behaviour occurs if the triangles are nearly co-planar
+    float mult = (float)fabs(this->GetNormal() * rclFacet.GetNormal());
     if (rclPt0 == rclPt1) {
+        if (mult < 0.995) // not co-planar, thus no test needed
+            return 1;
         if (this->IsPointOf(rclPt0) && rclFacet.IsPointOf(rclPt0))
             return 1;
     }
     else {
+        if (mult < 0.995) // not co-planar, thus no test needed
+            return 2;
         if (this->IsPointOf(rclPt0) && rclFacet.IsPointOf(rclPt0) &&
             this->IsPointOf(rclPt1) && rclFacet.IsPointOf(rclPt1))
             return 2;
@@ -817,9 +822,14 @@ int MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet,
 
 bool MeshGeomFacet::IsPointOf (const Base::Vector3f &P) const
 {
-    Base::Vector3f u = this->_aclPoints[1] - this->_aclPoints[0];
-    Base::Vector3f v = this->_aclPoints[2] - this->_aclPoints[0];
-    Base::Vector3f w = P - this->_aclPoints[0];
+    Base::Vector3d p1(this->_aclPoints[0].x,this->_aclPoints[0].y,this->_aclPoints[0].z);
+    Base::Vector3d p2(this->_aclPoints[1].x,this->_aclPoints[1].y,this->_aclPoints[1].z);
+    Base::Vector3d p3(this->_aclPoints[2].x,this->_aclPoints[2].y,this->_aclPoints[2].z);
+    Base::Vector3d p4(P.x,P.y,P.z);
+
+    Base::Vector3d u = p2 - p1;
+    Base::Vector3d v = p3 - p1;
+    Base::Vector3d w = p4 - p1;
 
     double uu = u * u;
     double uv = u * v;
