@@ -731,39 +731,32 @@ bool Document::isLastView(void)
 
 /** 
  *  This method checks if the document can be closed. It checks on
- *  the save state of the document and is able to abort the closeing.
+ *  the save state of the document and is able to abort the closing.
  */
-void Document::canClose (QCloseEvent * e)
+bool Document::canClose ()
 {
-    if (isModified()) {
-        switch(QMessageBox::question(getActiveView(),
-            QObject::tr("Unsaved document"),
-            QObject::tr("Save document before close?"),
-            QMessageBox::Yes|QMessageBox::Default,
-            QMessageBox::No,
-            QMessageBox::Cancel|QMessageBox::Escape))
-        {
-        case QMessageBox::Yes: // "Yes" was pressed
-            if (save())
-                e->accept(); // -> can be closed. document was saved
-            else
-                e->ignore(); // -> abort, because saving of document was aborted
-                break;
-        case QMessageBox::No: // "No" was pressed
-            e->accept();   // -> can be closed without saving
-            break;
-        case QMessageBox::Cancel: // "Cancel" was pressed
-            e->ignore();   // -> abort
-            break;
-        }
+    if (!isModified())
+        return true;
+    bool ok = true;
+    switch(QMessageBox::question(getActiveView(),
+        QObject::tr("Unsaved document"),
+        QObject::tr("Save document before close?"),
+        QMessageBox::Yes | QMessageBox::Default,
+        QMessageBox::No,
+        QMessageBox::Cancel | QMessageBox::Escape))
+    {
+    case QMessageBox::Yes:
+        ok = save();
+        break;
+    case QMessageBox::No:
+        ok = true;
+        break;
+    case QMessageBox::Cancel:
+        ok = false;
+        break;
     }
-    else
-        e->accept();
-}
 
-void Document::closeEvent ( QCloseEvent * e )
-{
-    canClose(e);
+    return ok;
 }
 
 std::list<MDIView*> Document::getMDIViews() const

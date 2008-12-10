@@ -555,24 +555,16 @@ void Application::tryClose(QCloseEvent * e)
     else {
         // ask all documents if closable
         for (std::map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++) {
-#ifndef FC_DEBUG
             MDIView* active = It->second->getActiveView();
-            active->setFocus(); // raises the view to front
-#endif
-
-            It->second->canClose(e);
+            e->setAccepted(active->canClose());
             if (!e->isAccepted())
                 return;
         }
     }
 
     // ask all passive views if closable
-    for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++) {
-        if ((*It2)->canClose())
-            e->accept();
-        else 
-            e->ignore();
-
+    for (std::list<Gui::BaseView*>::iterator It = d->_LpcViews.begin();It!=d->_LpcViews.end();It++) {
+        e->setAccepted((*It)->canClose());
         if (!e->isAccepted())
             return;
     }

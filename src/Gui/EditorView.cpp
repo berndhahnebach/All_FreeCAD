@@ -60,7 +60,6 @@ EditorView::EditorView(QTextEdit* editor, QWidget* parent)
     // create the editor first
     d->textEdit = editor;
     d->textEdit->setLineWrapMode(QTextEdit::NoWrap);
-    d->textEdit->setParent(this);
     d->lineMarker = new LineMarker();
     d->lineMarker->setTextEdit(d->textEdit);
 
@@ -71,6 +70,7 @@ EditorView::EditorView(QTextEdit* editor, QWidget* parent)
     layout->setMargin(1);
     layout->addWidget(d->lineMarker);
     layout->addWidget(d->textEdit);
+    d->textEdit->setParent(hbox);
     hbox->setLayout(layout);
     setCentralWidget(hbox);
 
@@ -217,6 +217,7 @@ bool EditorView::canClose(void)
 {
     if ( !d->textEdit->document()->isModified() )
         return true;
+    this->setFocus(); // raises the view to front
     switch( QMessageBox::question(this, tr("Unsaved document"), 
                                     tr("The document has been modified.\n"
                                        "Do you want to save your changes?"),
@@ -470,13 +471,13 @@ LineMarker::~LineMarker()
 void LineMarker::setTextEdit(QTextEdit *edit)
 {
     this->edit = edit;
-    connect( edit->document()->documentLayout(), SIGNAL( update(const QRectF &) ),
-	     this, SLOT( update() ) );
-    connect( edit->verticalScrollBar(), SIGNAL(valueChanged(int) ),
-	     this, SLOT( update() ) );
+    connect(edit->document()->documentLayout(), SIGNAL(update(const QRectF &)),
+            this, SLOT(update()));
+    connect(edit->verticalScrollBar(), SIGNAL(valueChanged(int)),
+            this, SLOT(update()));
 }
 
-void LineMarker::paintEvent( QPaintEvent* )
+void LineMarker::paintEvent(QPaintEvent*)
 {
     QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
     int contentsY = edit->verticalScrollBar()->value();
@@ -487,8 +488,8 @@ void LineMarker::paintEvent( QPaintEvent* )
 
     QPainter p(this);
 
-    for ( QTextBlock block = edit->document()->begin();
-	  block.isValid(); block = block.next(), ++lineCount ) {
+    for (QTextBlock block = edit->document()->begin();
+        block.isValid(); block = block.next(), ++lineCount) {
 
         const QRectF boundingRect = layout->blockBoundingRect( block );
 

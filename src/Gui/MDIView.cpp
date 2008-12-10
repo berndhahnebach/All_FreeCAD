@@ -109,28 +109,33 @@ bool MDIView::onHasMsg(const char* pMsg) const
     return false;
 }
 
+bool MDIView::canClose(void)
+{
+    if (!bIsPassive && getGuiDocument() && getGuiDocument()->isLastView()) {
+        this->setFocus(); // raises the view to front
+        return (getGuiDocument()->canClose());
+    }
+
+    return true;
+}
+
 void MDIView::closeEvent(QCloseEvent *e)
 {
-    if (bIsPassive){
-        if (canClose()){
-            e->accept();
-            // avoid flickering
-            getMainWindow()->removeWindow(this);
-            QMainWindow::closeEvent(e);
+    if (canClose()) {
+        e->accept();
+        if (!bIsPassive) {
+            // must be detached so that the last view can get asked
+            Document* doc = this->getGuiDocument();
+            if (doc && !doc->isLastView())
+                doc->detachView(this);
         }
+
+        // avoid flickering
+        getMainWindow()->removeWindow(this);
+        QMainWindow::closeEvent(e);
     }
-    else{
-        if (getGuiDocument()->isLastView()) {
-            getGuiDocument()->canClose(e);
-            if (e->isAccepted()) {
-                // avoid flickering
-                getMainWindow()->removeWindow(this);
-                QMainWindow::closeEvent(e);
-            }
-        }
-        else
-            e->accept();
-    }
+    else
+        e->ignore();
 }
 
 void MDIView::windowStateChanged( MDIView* )

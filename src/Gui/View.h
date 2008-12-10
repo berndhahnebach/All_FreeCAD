@@ -24,11 +24,6 @@
 #ifndef __FCVIEW_H__
 #define __FCVIEW_H__
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include <vector>
 #include <Base/BaseClass.h>
 
@@ -36,10 +31,6 @@ namespace App
 {
 class Document;
 }
-
-class QSplitter;
-class QWidget;
-class QPrinter;
 
 namespace Gui 
 {
@@ -63,13 +54,13 @@ class GuiExport BaseView : public Base::BaseClass
 
 public:
   /** View constructor
-   * Attach the view to the given document. If the document is NULL
+   * Attach the view to the given document. If the document is 0
    * the view will attach to the active document. Be aware! there isn't
    * always an active document!
    */
-  BaseView( Gui::Document* pcDocument=0l);
+  BaseView(Gui::Document* pcDocument=0);
   /** View destructor
-   * Detach the view from the document, if Atached!
+   * Detach the view from the document, if attached!
    */
   virtual ~BaseView();
 
@@ -77,9 +68,9 @@ public:
   /** @name methods used by the Application and the GuiDocument 
    */
   //@{
-  /// sets the view to an oter document (called by Application)
+  /// sets the view to another document (called by Application)
   void setDocument(Gui::Document* pcDocument);
-  /// is send from the document in order to close the document
+  /// is sent from the document in order to close the document
   void onClose(void);
   //@}
 

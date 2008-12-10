@@ -23,20 +23,9 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qregexp.h>
-//Added by qt3to4:
-#include <QEvent>
-#include <QCloseEvent>
-#endif
-
-
 #include "View.h"
-#include "Command.h"
 #include "Document.h"
 #include "Application.h"
-#include "MainWindow.h"
 
 using namespace Gui;
 

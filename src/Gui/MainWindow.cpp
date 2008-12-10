@@ -738,10 +738,15 @@ void MainWindow::closeEvent ( QCloseEvent * e )
     Application::Instance->tryClose(e);
     if (e->isAccepted()) {
         // Send close event to all non-modal dialogs
-        closeAllWindows();
         QList<QDialog*> dialogs = this->findChildren<QDialog*>();
         for (QList<QDialog*>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
             (*it)->close();
+        QList<MDIView*> mdis = this->findChildren<MDIView*>();
+        // Force to close any MDI child view
+        for (QList<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
+            (*it)->hide();
+            (*it)->deleteLater();
+        }
         d->activityTimer->stop();
         saveWindowSettings();
         delete d->assistant;
