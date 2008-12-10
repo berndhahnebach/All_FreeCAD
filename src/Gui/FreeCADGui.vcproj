@@ -4519,6 +4519,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SyntaxHighlighter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SyntaxHighlighter.h"
+				>
+			</File>
+			<File
 				RelativePath="TextEdit.cpp"
 				>
 				<FileConfiguration

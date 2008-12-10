@@ -243,6 +243,7 @@ libFreeCADGui_la_SOURCES=\
 		SpinBox.cpp \
 		Splashscreen.cpp \
 		SplitView3DInventor.cpp \
+		SyntaxHighlighter.cpp \
 		TextEdit.cpp \
 		Thumbnail.cpp \
 		ToolBarManager.cpp \
@@ -326,6 +327,7 @@ include_HEADERS=\
 		SpinBox.h \
 		Splashscreen.h \
 		SplitView3DInventor.h \
+		SyntaxHighlighter.h \
 		TextEdit.h \
 		Thumbnail.h \
 		ToolBarManager.h \

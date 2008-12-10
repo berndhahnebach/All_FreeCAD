@@ -27,6 +27,7 @@
 #endif
 
 #include "TextEdit.h"
+#include "SyntaxHighlighter.h"
 
 using namespace Gui;
 
@@ -163,6 +164,208 @@ void TextEdit::createListBox()
     viewport()->installEventFilter(listBox);
     listBox->setSelectionMode( QAbstractItemView::SingleSelection );
     listBox->hide();
+}
+
+// ------------------------------------------------------------------------------
+
+namespace Gui {
+struct TextEditorP
+{
+    QMap<QString, QColor> colormap; // Color map
+    TextEditorP()
+    {
+        colormap[QLatin1String("Text")] = Qt::black;
+        colormap[QLatin1String("Bookmark")] = Qt::cyan;
+        colormap[QLatin1String("Breakpoint")] = Qt::red;
+        colormap[QLatin1String("Keyword")] = Qt::blue;
+        colormap[QLatin1String("Comment")] = QColor(0, 170, 0);
+        colormap[QLatin1String("Block comment")] = QColor(160, 160, 164);
+        colormap[QLatin1String("Number")] = Qt::blue;
+        colormap[QLatin1String("String")] = Qt::red;
+        colormap[QLatin1String("Character")] = Qt::red;
+        colormap[QLatin1String("Class name")] = QColor(255, 170, 0);
+        colormap[QLatin1String("Define name")] = QColor(255, 170, 0);
+        colormap[QLatin1String("Operator")] = QColor(160, 160, 164);
+        colormap[QLatin1String("Python output")] = QColor(170, 170, 127);
+        colormap[QLatin1String("Python error")] = Qt::red;
+        colormap[QLatin1String("Line")] = QColor(224,224,224);
+    }
+};
+} // namespace Gui
+
+/**
+ *  Constructs a TextEditor which is a child of 'parent' and does the
+ *  syntax highlighting for the Python language. 
+ */
+TextEditor::TextEditor(QWidget* parent)
+  : TextEdit(parent), WindowParameter("Editor"), highlighter(0)
+{
+    d = new TextEditorP();
+
+#ifdef FC_OS_LINUX
+    QFont serifFont(QLatin1String("Courier"), 15, QFont::Normal );
+#else
+    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal );
+#endif
+    setFont(serifFont);
+
+    ParameterGrp::handle hPrefGrp = getWindowParameter();
+    // set default to 4 characters
+    hPrefGrp->SetInt( "TabSize", 4 );
+    hPrefGrp->Attach( this );
+
+    // set colors and font
+    hPrefGrp->NotifyAll();
+    connect(this, SIGNAL(cursorPositionChanged()), 
+            this, SLOT(onCursorPositionChanged()));
+}
+
+/** Destroys the object and frees any allocated resources */
+TextEditor::~TextEditor()
+{
+    getWindowParameter()->Detach(this);
+    delete d;
+}
+
+void TextEditor::keyPressEvent (QKeyEvent * e)
+{
+    if ( e->key() == Qt::Key_Tab ) {
+        ParameterGrp::handle hPrefGrp = getWindowParameter();
+        int indent = hPrefGrp->GetInt( "IndentSize", 4 );
+        bool space = hPrefGrp->GetBool( "Spaces", false );
+        QString ch = space ? QString(indent, QLatin1Char(' '))
+                           : QString::fromAscii("\t");
+
+        QTextCursor cursor = textCursor();
+        if (!cursor.hasSelection()) {
+            // insert a single tab or several spaces
+            cursor.beginEditBlock();
+            cursor.insertText(ch);
+            cursor.endEditBlock();
+        } else {
+            // for each selected block insert a tab or spaces
+            int selStart = cursor.selectionStart();
+            int selEnd = cursor.selectionEnd();
+            QTextBlock block;
+            cursor.beginEditBlock();
+            for (block = document()->begin(); block.isValid(); block = block.next()) {
+                int pos = block.position();
+                int off = block.length()-1;
+                // at least one char of the block is part of the selection
+                if ( pos >= selStart || pos+off >= selStart) {
+                    if ( pos+1 > selEnd )
+                        break; // end of selection reached
+                    cursor.setPosition(block.position());
+                    cursor.insertText(ch);
+                        selEnd += ch.length();
+                }
+            }
+
+            cursor.endEditBlock();
+        }
+
+        return;
+    } else if (e->key() == Qt::Key_Backtab) {
+        QTextCursor cursor = textCursor();
+        if (!cursor.hasSelection())
+            return; // Shift+Tab should not do anything
+        // If some text is selected we remove a leading tab or
+        // spaces from each selected block
+        ParameterGrp::handle hPrefGrp = getWindowParameter();
+        int indent = hPrefGrp->GetInt( "IndentSize", 4 );
+
+        int selStart = cursor.selectionStart();
+        int selEnd = cursor.selectionEnd();
+        QTextBlock block;
+        cursor.beginEditBlock();
+        for (block = document()->begin(); block.isValid(); block = block.next()) {
+            int pos = block.position();
+            int off = block.length()-1;
+            // at least one char of the block is part of the selection
+            if ( pos >= selStart || pos+off >= selStart) {
+                if ( pos+1 > selEnd )
+                    break; // end of selection reached
+                // if possible remove one tab or several spaces
+                QString text = block.text();
+                if (text.startsWith(QLatin1String("\t"))) {
+                    cursor.setPosition(block.position());
+                    cursor.deleteChar();
+                    selEnd--;
+                } else {
+                    cursor.setPosition(block.position());
+                    for (int i=0; i<indent; i++) {
+                        if (!text.startsWith(QLatin1String(" ")))
+                            break;
+                        text = text.mid(1);
+                        cursor.deleteChar();
+                        selEnd--;
+                    }
+                }
+            }
+        }
+
+        cursor.endEditBlock();
+        return;
+    }
+
+    TextEdit::keyPressEvent( e );
+}
+
+/** Sets the font, font size and tab size of the editor. */  
+void TextEditor::OnChange(Base::Subject<const char*> &rCaller,const char* sReason)
+{
+    ParameterGrp::handle hPrefGrp = getWindowParameter();
+    if (strcmp(sReason, "FontSize") == 0 || strcmp(sReason, "Font") == 0) {
+#ifdef FC_OS_LINUX
+        int fontSize = hPrefGrp->GetInt("FontSize", 15);
+#else
+        int fontSize = hPrefGrp->GetInt("FontSize", 10);
+#endif
+        QString fontFamily = QString::fromAscii(hPrefGrp->GetASCII( "Font", "Courier" ).c_str());
+        
+        QFont font(fontFamily, fontSize);
+        setFont(font);
+    } else {
+        QMap<QString, QColor>::ConstIterator it = d->colormap.find(QString::fromAscii(sReason));
+        if (it != d->colormap.end()) {
+            QColor color = it.value();
+            unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
+            col = hPrefGrp->GetUnsigned( sReason, col);
+            color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+            if (this->highlighter)
+                this->highlighter->setColor(QLatin1String(sReason), color);
+        }
+    }
+
+    if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0) {
+        int tabWidth = hPrefGrp->GetInt("TabSize", 4);
+        QFontMetrics metric(font());
+        int fontSize = metric.width(QLatin1String("0"));
+        setTabStopWidth(tabWidth * fontSize);
+    }
+}
+
+void TextEditor::onCursorPositionChanged()
+{
+    const QColor& color = d->colormap[QLatin1String("Line")];
+    if ( color.isValid() )
+        viewport()->update();
+}
+
+void TextEditor::paintEvent (QPaintEvent * e)
+{
+    const QColor& color = d->colormap[QLatin1String("Line")];
+    if ( color.isValid() )
+    {
+        QPainter painter( viewport() );
+        QRect r = cursorRect();
+        r.setX( 0 );
+        r.setWidth( viewport()->width() );
+        painter.fillRect( r, QBrush( color ) );
+        painter.end();
+    }
+
+    TextEdit::paintEvent( e );
 }
 
 // ------------------------------------------------------------------------------
