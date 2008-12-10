@@ -37,18 +37,26 @@ class TextEditor;
 class GuiExport SyntaxHighlighter : public QSyntaxHighlighter
 {
 public:
-    SyntaxHighlighter(TextEditor* );
+    SyntaxHighlighter(QTextEdit* );
     virtual ~SyntaxHighlighter();
 
     int maximumUserState() const;
-
-    virtual QStringList keywords() const = 0;
 
     void setColor(const QString& type, const QColor& col);
     QColor color(const QString& type);
 
 protected:
     virtual void colorChanged(const QString& type, const QColor& col);
+
+protected:
+    enum TColor
+    {
+        Text = 0, Comment = 1, BlockComment = 2, Number = 3, String = 4, Keyword = 5,
+        Classname = 6, Defname = 7, Operator = 8, Output = 9, Error = 10
+    };
+
+    QColor colorByType(TColor type);
+
 
 private:
     SyntaxHighlighterP* d;

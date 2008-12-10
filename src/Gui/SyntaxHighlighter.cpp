@@ -42,7 +42,6 @@ public:
         cError.setRgb(255, 0, 0);
     }
 
-    QString blockComment;
     QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber,
     cOperator, cKeyword, cClassName, cDefineName, cOutput, cError;
 };
@@ -51,11 +50,12 @@ public:
 /**
  * Constructs a syntax highlighter.
  */
-SyntaxHighlighter::SyntaxHighlighter(TextEditor* edit)
+SyntaxHighlighter::SyntaxHighlighter(QTextEdit* edit)
     : QSyntaxHighlighter(edit)
 {
     d = new SyntaxHighlighterP;
-    edit->highlighter = this;
+    TextEditor* editor = qobject_cast<TextEditor*>(edit);
+    if (editor) editor->highlighter = this;
 }
 
 /** Destroys this object. */
@@ -124,6 +124,34 @@ QColor SyntaxHighlighter::color(const QString& type)
     else if (type == QLatin1String("Python output"))
         return d->cOutput;
     else if (type == QLatin1String("Python error"))
+        return d->cError;
+    else
+        return QColor(); // not found
+}
+
+QColor SyntaxHighlighter::colorByType(SyntaxHighlighter::TColor type)
+{
+    if (type == SyntaxHighlighter::Text)
+        return d->cNormalText;
+    else if (type == SyntaxHighlighter::Comment)
+        return d->cComment;
+    else if (type == SyntaxHighlighter::BlockComment)
+        return d->cBlockcomment;
+    else if (type == SyntaxHighlighter::Number)
+        return d->cNumber;
+    else if (type == SyntaxHighlighter::String)
+        return d->cLiteral;
+    else if (type == SyntaxHighlighter::Keyword)
+        return d->cKeyword;
+    else if (type == SyntaxHighlighter::Classname)
+        return d->cClassName;
+    else if (type == SyntaxHighlighter::Defname)
+        return d->cDefineName;
+    else if (type == SyntaxHighlighter::Operator)
+        return d->cOperator;
+    else if (type == SyntaxHighlighter::Output)
+        return d->cOutput;
+    else if (type == SyntaxHighlighter::Error)
         return d->cError;
     else
         return QColor(); // not found
