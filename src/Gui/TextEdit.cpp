@@ -224,6 +224,7 @@ TextEditor::TextEditor(QWidget* parent)
 TextEditor::~TextEditor()
 {
     getWindowParameter()->Detach(this);
+    delete highlighter;
     delete d;
 }
 

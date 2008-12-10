@@ -30,6 +30,7 @@
 
 #include "Window.h"
 #include "TextEdit.h"
+#include "SyntaxHighlighter.h"
 
 namespace Gui {
 
@@ -40,64 +41,49 @@ class PythonSyntaxHighlighterP;
  * Python text editor with syntax highlighting..
  * \author Werner Mayer
  */
-class GuiExport PythonEditor : public TextEdit, public WindowParameter
+class GuiExport PythonEditor : public TextEditor
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PythonEditor(QWidget *parent = 0);
-  ~PythonEditor();
-
-  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
+    PythonEditor(QWidget *parent = 0);
+    ~PythonEditor();
 
 public Q_SLOTS:
-  /** Inserts a '#' at the beginning of each selected line or the current line if 
-   * nothing is selected
-   */
-  void onComment();
-  /**
-   * Removes the leading '#' from each selected line or the current line if
-   * nothing is selected. In case a line hasn't a leading '#' then
-   * this line is skipped.
-   */
-  void onUncomment();
-
-private Q_SLOTS:
-    void onCursorPositionChanged();
+    /** Inserts a '#' at the beginning of each selected line or the current line if 
+     * nothing is selected
+     */
+    void onComment();
+    /**
+     * Removes the leading '#' from each selected line or the current line if
+     * nothing is selected. In case a line hasn't a leading '#' then
+     * this line is skipped.
+     */
+    void onUncomment();
 
 protected:
-  void keyPressEvent ( QKeyEvent * e );
-  /** Pops up the context menu with some extensions */
-  void contextMenuEvent ( QContextMenuEvent* e );
-  /** Draw a beam in the line where the cursor is. */
-  void paintEvent ( QPaintEvent * e );
+    /** Pops up the context menu with some extensions */
+    void contextMenuEvent ( QContextMenuEvent* e );
 
 private:
-  PythonSyntaxHighlighter* pythonSyntax;
-  struct PythonEditorP* d;
+    //PythonSyntaxHighlighter* pythonSyntax;
+    struct PythonEditorP* d;
 };
 
 /**
  * Syntax highlighter for Python.
  * \author Werner Mayer
  */
-class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
+class GuiExport PythonSyntaxHighlighter : public SyntaxHighlighter
 {
 public:
-  PythonSyntaxHighlighter(QTextEdit* );
-  virtual ~PythonSyntaxHighlighter();
+    PythonSyntaxHighlighter(QTextEdit* );
+    virtual ~PythonSyntaxHighlighter();
 
-  void highlightBlock ( const QString & text );
-  int maximumUserState() const;
-  
-  void setColor( const QString& type, const QColor& col );
-  QColor color( const QString& type );
-
-protected:
-  virtual void colorChanged( const QString& type, const QColor& col );
+    void highlightBlock (const QString & text);
 
 private:
-  PythonSyntaxHighlighterP* d;
+    PythonSyntaxHighlighterP* d;
 };
 
 } // namespace Gui
