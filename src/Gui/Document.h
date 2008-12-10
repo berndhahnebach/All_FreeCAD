@@ -198,8 +198,7 @@ public:
     //@}
 
     /// handels the application close event
-    void closeEvent ( QCloseEvent * e );
-    void canClose(QCloseEvent * e );
+    bool canClose();
     bool isLastView(void);
 
     virtual PyObject *getPyObject(void);

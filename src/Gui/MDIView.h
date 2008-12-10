@@ -34,16 +34,17 @@ namespace Gui
 {
 class Document;
 
-/** Base class of all windows belonging to a document
- *  there are two ways of belonging to a document. The 
- *  first way is to a fixed one. The second way is to allways
- *  belong to the Active document. that means switching every time
- *  the active document is changing. It also means that the view 
- *  belongs sometimes to no document at all!
- *  @see TreeView
- *  @see Gui::Document
- *  @see Application
- *  @author Jürgen Riegel, Werner Mayer
+/** Base class of all windows belonging to a document.
+ * There are two ways of belonging to a document:
+ * \li belong to a fix document
+ * \li always belong to the active document
+ * The latter means whenever the active document is changing the view belongs to
+ * this document. It also means that the view belongs sometimes to no document at
+ * all.
+ * @see TreeView
+ * @see Gui::Document
+ * @see Application
+ * @author Jürgen Riegel, Werner Mayer
  */
 class GuiExport MDIView : public QMainWindow, public BaseView
 {
@@ -54,13 +55,13 @@ class GuiExport MDIView : public QMainWindow, public BaseView
 
 public:
     /** View constructor
-     * Atach the view to the given document. If the document is NULL
-     * the view will attach to the active document. Be aware! there isn't
-     * allways a active document!
+     * Attach the view to the given document. If the document is zero
+     * the view will attach to the active document. Be aware, there isn't
+     * always an active document.
      */
     MDIView(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0);
     /** View destructor
-     * Detach the view from the document, if Atached!
+     * Detach the view from the document, if attached.
      */
     ~MDIView();
 
@@ -70,12 +71,12 @@ public:
     virtual void onRelabel(Gui::Document *pDoc);
     virtual void viewAll();
 
-    /// Mesage handler
+    /// Message handler
     virtual bool onMsg(const char* pMsg,const char** ppReturn);
-    /// Mesage handler test
+    /// Message handler test
     virtual bool onHasMsg(const char* pMsg) const;
-    /// overvrit when checking on close state
-    virtual bool canClose(void){return true;}
+    /// overwrite when checking on close state
+    virtual bool canClose(void);
     /// print function of the view
     virtual void print();
     virtual void printPdf();
