@@ -75,6 +75,32 @@ private:
     CompletionList *listBox;
 };
 
+class SyntaxHighlighter;
+class GuiExport TextEditor : public TextEdit, public WindowParameter
+{
+    Q_OBJECT
+
+public:
+    TextEditor(QWidget *parent = 0);
+    ~TextEditor();
+
+    void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
+
+private Q_SLOTS:
+    void onCursorPositionChanged();
+
+protected:
+    void keyPressEvent (QKeyEvent * e);
+    /** Draw a beam in the line where the cursor is. */
+    void paintEvent (QPaintEvent * e);
+
+private:
+    SyntaxHighlighter* highlighter;
+    struct TextEditorP* d;
+
+    friend class SyntaxHighlighter;
+};
+
 /**
  * The CompletionList class provides a list box that pops up in a text edit if the user has pressed
  * an accelerator to complete the current word he is typing in.
