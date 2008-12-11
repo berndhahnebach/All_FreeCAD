@@ -206,13 +206,13 @@ public:
 
   void setMouseModel(int i){_iMouseModel = i;}
 
+  void openPopupMenu(const SbVec2s& position);
+  void setPopupMenuEnabled(const SbBool on);
+  SbBool isPopupMenuEnabled(void) const;
+
 protected:
   unsigned long             currMod;
   std::stack<unsigned long> ModStack;
-
-  virtual void openPopupMenu(const SbVec2s& position);
-  void setPopupMenuEnabled(const SbBool on);
-  SbBool isPopupMenuEnabled(void) const;
 
   std::set<ViewProvider*> _ViewProviderSet;
 
