@@ -9,9 +9,12 @@ BUILT_SOURCES=\
 		qrc_Raytracing.cpp 
 
 libRaytracingGui_la_SOURCES=\
+		AppRaytracingGuiPy.cpp \
 		Command.cpp \
 		DlgSettingsRayImp.cpp \
 		DlgSettingsRayImp.h \
+		PovrayHighlighter.cpp \
+		PovrayHighlighter.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \

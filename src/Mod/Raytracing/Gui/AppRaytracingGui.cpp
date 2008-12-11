@@ -22,8 +22,6 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
@@ -31,10 +29,12 @@
 #include <Gui/WidgetFactory.h>
 #include <Gui/Language/Translator.h>
 
-
 #include "DlgSettingsRayImp.h"
 #include "Workbench.h"
 #include "qrc_Raytracing.cpp"
+
+
+using namespace RaytracingGui;
 
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
@@ -46,13 +46,8 @@ void loadRaytracingResource()
     Gui::Translator::instance()->refresh();
 }
 
-using namespace RaytracingGui;
+extern struct PyMethodDef RaytracingGui_methods[];
 
-
-/* registration table  */
-static struct PyMethodDef RaytracingGui_methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
 
 extern "C" {
 void AppRaytracingGuiExport initRaytracingGui()
