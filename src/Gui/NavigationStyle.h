@@ -45,6 +45,26 @@ public:
 
 protected:
     SbVec2f lastmouseposition;
+    SbPlane panningplane;
+    SbBool ctrldown, shiftdown;
+    SbBool button1down, button3down;
+    SbBool editing, allowSpining;;
+    SbTime CenterTime;
+
+    enum ViewerMode {
+        IDLE,
+        INTERACT,
+        ZOOMING,
+        PANNING,
+        DRAGGING,
+        SPINNING,
+        SEEK_WAIT_MODE,
+        SEEK_MODE,
+        SELECTION
+    };
+
+    ViewerMode currentmode;
+    void setMode(const ViewerMode mode);
 };
 
 class GuiExport ExaminerStyle : public AbstractStyle
@@ -54,6 +74,19 @@ public:
     ~ExaminerStyle();
 
     SbBool processSoEvent(const SoEvent * const ev, View3DInventorViewer*);
+};
+
+class GuiExport CADStyle : public AbstractStyle
+{
+public:
+    CADStyle();
+    ~CADStyle();
+
+    SbBool processSoEvent(const SoEvent * const ev, View3DInventorViewer*);
+    bool _bRejectSelection;
+    bool _bSpining;
+    SbTime MoveTime;
+    QCursor _oldCursor;
 };
 
 } // namespace Gui
