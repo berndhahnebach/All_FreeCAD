@@ -59,7 +59,7 @@ open(PyObject *self, PyObject *args)
             }
         }
 
-        if (ext == QLatin1String("pov")) {
+        if (ext == QLatin1String("pov") || ext == QLatin1String("inc")) {
             Gui::TextEditor* editor = new Gui::TextEditor();
             (void)new PovrayHighlighter(editor);
             Gui::EditorView* edit = new Gui::EditorView(editor, Gui::getMainWindow());

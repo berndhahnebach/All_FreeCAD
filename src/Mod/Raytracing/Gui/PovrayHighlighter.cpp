@@ -36,7 +36,19 @@ class PovrayHighlighterP
 public:
     PovrayHighlighterP()
     {
-        keywords << QLatin1String("include");
+        keywords << QLatin1String("include") << QLatin1String("if")
+                 << QLatin1String("ifdef") << QLatin1String("ifndef")
+                 << QLatin1String("switch") << QLatin1String("while")
+                 << QLatin1String("macro") << QLatin1String("else")
+                 << QLatin1String("end") << QLatin1String("declare")
+                 << QLatin1String("local") << QLatin1String("undef")
+                 << QLatin1String("fopen") << QLatin1String("fclose")
+                 << QLatin1String("read") << QLatin1String("write")
+                 << QLatin1String("default") << QLatin1String("version")
+                 << QLatin1String("debug") << QLatin1String("case")
+                 << QLatin1String("range") << QLatin1String("break")
+                 << QLatin1String("error") << QLatin1String("warning");
+;
     }
 
     QStringList keywords;

@@ -69,4 +69,4 @@ class RaytracingWorkbench ( Workbench ):
 
 Gui.addWorkbench(RaytracingWorkbench())
 
-FreeCAD.addImportType("Povray format (*.pov)","RaytracingGui")
+FreeCAD.addImportType("Povray format (*.pov *.inc)","RaytracingGui")
