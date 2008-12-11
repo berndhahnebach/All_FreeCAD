@@ -29,7 +29,7 @@
 
 #include <Base/Console.h>
 #include "PovTools.h"
-// automatecly generated.....
+// automatically generated.....
 #include "FreeCADpov.h"
 
 #include <Mod/Part/App/TopoShape.h>
