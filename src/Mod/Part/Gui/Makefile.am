@@ -51,6 +51,7 @@ libPartGui_la_SOURCES=\
 		ViewProviderCurveNet.cpp \
 		ViewProviderImport.cpp \
 		ViewProviderExtrusion.cpp \
+		ViewProviderPart2DObject.cpp \
 		Workbench.cpp
 
 include_HEADERS=\

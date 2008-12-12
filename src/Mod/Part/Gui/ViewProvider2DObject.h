@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,39 +21,58 @@
  ***************************************************************************/
 
 
+#ifndef __ViewProvider2DObject_H__
+#define __ViewProvider2DObject_H__
 
-#ifndef __Part2DObject_H__
-#define __Part2DObject_H__
+#include "ViewProvider.h"
 
-#include <App/PropertyStandard.h>
 
-#include "PartFeature.h"
+class TopoDS_Shape;
+class TopoDS_Face;
+class SoSeparator;
+class SbVec3f;
+class SoTransform;
 
-namespace Part
+namespace Gui {
+  class View3DInventorViewer;
+  class SoFCSelection;
+}
+
+namespace PartGui {
+
+
+class AppPartGuiExport ViewProvider2DObject:public ViewProviderPart
 {
-
-
-class Part2DObject :public Part::Feature
-{
-    PROPERTY_HEADER(Part::Part2DObject);
+  PROPERTY_HEADER(PartGui::ViewProviderBox);
 
 public:
-    Part2DObject();
+  /// constructor
+  ViewProvider2DObject();
+  /// destructor
+  virtual ~ViewProvider2DObject();
 
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "PartGui::ViewProvider2DObject";
-    }
-    //@}
+  App::PropertyBool ShowGrid;
 
+  virtual void attach(App::DocumentObject *);
+  virtual void updateData(const App::Property*);
+
+
+  virtual void setEdit(void);
+  virtual void unsetEdit(void);
+
+  /// creats the grid
+  SoSeparator* createGrid(float size=0.0, int density=0); 
+
+
+protected:
+  /// get called by the container whenever a property has been changed
+  virtual void onChanged(const App::Property* prop);
+
+  SoSeparator  *GridRoot;
 };
 
-} //namespace Part
+} // namespace PartGui
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // __ViewProvider2DObject_H__
+

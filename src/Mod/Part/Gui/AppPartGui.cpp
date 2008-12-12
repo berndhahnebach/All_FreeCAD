@@ -27,6 +27,8 @@
 #include "ViewProviderCurveNet.h"
 #include "ViewProviderImport.h"
 #include "ViewProviderExtrusion.h"
+#include "ViewProvider2DObject.h"
+
 #include "DlgSettings3DViewPartImp.h"
 #include "Workbench.h"
 
@@ -78,6 +80,7 @@ void AppPartGuiExport initPartGui()
     PartGui::ViewProviderImport         ::init();
     PartGui::ViewProviderCurveNet       ::init();
     PartGui::ViewProviderExtrusion      ::init();
+    PartGui::ViewProvider2DObject       ::init();
 
     PartGui::Workbench                  ::init();
 
