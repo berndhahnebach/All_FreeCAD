@@ -33,6 +33,7 @@
 #include "FeatureExtrusion.h"
 #include "FeatureFillet.h"
 #include "PrimitiveFeature.h"
+#include "Part2DObject.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeFacePy.h"
@@ -140,6 +141,7 @@ void AppPartExport initPart()
     Part::Cylinder              ::init();
     Part::Cone                  ::init();
     Part::Torus                 ::init();
+    Part::Part2DObject          ::init();
 }
 
 } // extern "C"
