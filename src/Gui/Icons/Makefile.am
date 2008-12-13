@@ -55,6 +55,12 @@ EXTRA_DIST = \
         accessories-text-editor.svg \
         view-refresh.svg \
         view-fullscreen.svg \
+        view-bottom.svg \
+        view-front.svg \
+        view-left.svg \
+        view-rear.svg \
+        view-right.svg \
+        view-top.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm

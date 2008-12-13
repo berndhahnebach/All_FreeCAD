@@ -14,6 +14,13 @@ void RegisterIcons()
     rclBmpFactory.addXPM("edit-paste", edit_paste);
 
     rclBmpFactory.addXPM("view-refresh", view_refresh);
+
+    rclBmpFactory.addXPM("view-rear", view_rear);
+    rclBmpFactory.addXPM("view-bottom", view_bottom);
+    rclBmpFactory.addXPM("view-front", view_front);
+    rclBmpFactory.addXPM("view-left", view_left);
+    rclBmpFactory.addXPM("view-right", view_right);
+    rclBmpFactory.addXPM("view-top", view_top);
 #endif
     rclBmpFactory.addXPM("Feature", (const char**)Feature_xpm);
     rclBmpFactory.addXPM("Document", (const char**)Document_xpm);
@@ -56,20 +63,14 @@ void RegisterIcons()
     rclBmpFactory.addXPM("TileVertical", TileVertical);
     rclBmpFactory.addXPM("TopLevel", TopLevel);
     rclBmpFactory.addXPM("view_axo", view_axo);
-    rclBmpFactory.addXPM("view_back", view_back);
-    rclBmpFactory.addXPM("view_bottom", view_bottom);
     rclBmpFactory.addXPM("view_comp_off", view_comp_off);
     rclBmpFactory.addXPM("view_comp_on", view_comp_on);
     rclBmpFactory.addXPM("view_fitall", view_fitall);
     rclBmpFactory.addXPM("view_fitarea", view_fitarea);
-    rclBmpFactory.addXPM("view_front", view_front);
     rclBmpFactory.addXPM("view_glpan", view_glpan);
-    rclBmpFactory.addXPM("view_left", view_left);
     rclBmpFactory.addXPM("view_pan", view_pan);
     rclBmpFactory.addXPM("view_reset", view_reset);
-    rclBmpFactory.addXPM("view_right", view_right);
     rclBmpFactory.addXPM("view_rotate", view_rotate);
-    rclBmpFactory.addXPM("view_top", view_top);
     rclBmpFactory.addXPM("view_zoom", view_zoom);
     rclBmpFactory.addXPM("WhatsThis", WhatsThis);
     rclBmpFactory.addXPM("back_pixmap", back_pixmap);
