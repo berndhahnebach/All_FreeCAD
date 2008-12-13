@@ -106,6 +106,7 @@ libPart_la_SOURCES=\
 		ImportStep.cpp \
 		PartFeature.cpp \
 		PartFeaturePyImp.cpp \
+		Part2DObject.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
@@ -142,6 +143,7 @@ include_HEADERS=\
 		Geometry.h \
 		ImportStep.h \
 		PartFeature.h \
+		Part2DObject.h \
 		PrimitiveFeature.h \
 		PropertyTopoShape.h \
 		TopoShape.h

@@ -428,7 +428,7 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
 
         PyDict_SetItemString(Instance->_pcWorkbenchDictionary,item.c_str(),object.ptr());
         Instance->signalAddWorkbench(item.c_str());
-
+#if 0 // does not work with Draft module
         // make sure to create the internal __Workbench__ object for pure Python workbenches
         // so that we are able to define and modify workbenches at runtime
         if (!object.hasAttr(std::string("__Workbench__"))) {
@@ -443,6 +443,7 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
                 object.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
             }
         }
+#endif
     }
     catch (const Py::Exception&) {
         return NULL;
