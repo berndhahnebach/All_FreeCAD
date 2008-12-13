@@ -41,5 +41,11 @@
         <file>accessories-text-editor.svg</file>
         <file>view-refresh.svg</file>
         <file>view-fullscreen.svg</file>
+        <file>view-bottom.svg</file>
+        <file>view-front.svg</file>
+        <file>view-left.svg</file>
+        <file>view-rear.svg</file>
+        <file>view-right.svg</file>
+        <file>view-top.svg</file>
     </qresource>
 </RCC>

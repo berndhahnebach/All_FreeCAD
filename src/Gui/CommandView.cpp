@@ -566,7 +566,7 @@ StdCmdViewBottom::StdCmdViewBottom()
   sToolTipText  = QT_TR_NOOP("Set to bottom view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to bottom view");
-  sPixmap       = "view_bottom";
+  sPixmap       = "view-bottom";
   iAccel        = Qt::Key_5;
 }
 
@@ -588,7 +588,7 @@ StdCmdViewFront::StdCmdViewFront()
   sToolTipText  = QT_TR_NOOP("Set to front view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to front view");
-  sPixmap       = "view_front";
+  sPixmap       = "view-front";
   iAccel        = Qt::Key_1;
 }
 
@@ -610,7 +610,7 @@ StdCmdViewLeft::StdCmdViewLeft()
   sToolTipText  = QT_TR_NOOP("Set to left view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to left view");
-  sPixmap       = "view_left";
+  sPixmap       = "view-left";
   iAccel        = Qt::Key_6;
 }
 
@@ -632,7 +632,7 @@ StdCmdViewRear::StdCmdViewRear()
   sToolTipText  = QT_TR_NOOP("Set to rear view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to rear view");
-  sPixmap       = "view_back";
+  sPixmap       = "view-rear";
   iAccel        = Qt::Key_4;
 }
 
@@ -654,7 +654,7 @@ StdCmdViewRight::StdCmdViewRight()
   sToolTipText  = QT_TR_NOOP("Set to right view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to right view");
-  sPixmap       = "view_right";
+  sPixmap       = "view-right";
   iAccel        = Qt::Key_3;
 }
 
@@ -676,7 +676,7 @@ StdCmdViewTop::StdCmdViewTop()
   sToolTipText  = QT_TR_NOOP("Set to top view");
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to top view");
-  sPixmap       = "view_top";
+  sPixmap       = "view-top";
   iAccel        = Qt::Key_2;
 }
 
