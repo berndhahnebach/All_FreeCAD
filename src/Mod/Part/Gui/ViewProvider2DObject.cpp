@@ -24,6 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoVertexProperty.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
