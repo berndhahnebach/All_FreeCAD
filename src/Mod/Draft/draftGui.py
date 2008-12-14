@@ -62,6 +62,10 @@ class toolBar:
 #---------------------------------------------------------------------------
 
 			def setupUi(self, draftToolbar):
+				params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+				paramcolor = params.GetUnsigned("color")>>8
+				paramlinewidth = params.GetInt("linewidth")
+
 				icondir = self.findicons()
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
@@ -171,7 +175,7 @@ class toolBar:
 				self.colorButton = QtGui.QPushButton(draftToolbar)
 				self.colorButton.setGeometry(QtCore.QRect(790,2,30,22))
 				self.colorButton.setObjectName("colorButton")
-				self.color = QtGui.QColor(0,0,0)
+				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
@@ -179,7 +183,7 @@ class toolBar:
 				self.widthButton = QtGui.QSpinBox(draftToolbar)
 				self.widthButton.setGeometry(QtCore.QRect(830,2,50,22))
 				self.widthButton.setObjectName("widthButton")
-				self.widthButton.setValue(2)
+				self.widthButton.setValue(paramlinewidth)
 
 				self.isCopy = QtGui.QCheckBox(draftToolbar)
 				self.isCopy.setGeometry(QtCore.QRect(600,6,91,18))
@@ -219,6 +223,7 @@ class toolBar:
 
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
+				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
 
 				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
 
@@ -353,8 +358,12 @@ class toolBar:
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
 				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
-					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetBool("color",self.color.rgb())
+					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",self.color.rgb()<<8)
 
+			def setwidth(self,val):
+				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
+					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("linewidth",int(val))
+					
 			def checkx(self):
 				if self.yValue.isEnabled():
 					self.yValue.setFocus()
