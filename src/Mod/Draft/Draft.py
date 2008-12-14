@@ -22,7 +22,7 @@
 __title__="FreeCAD Draft Workbench"
 __author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum"
 __url__ = "http://yorik.orgfree.com"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 '''
 General description:
@@ -110,7 +110,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 			for i in ob.Shape.Vertexes:
 				snapArray.append([i.Point,0,i.Point])
 			for j in ob.Shape.Edges:
-				if (isinstance (j.Curve,Part.Line)):
+				if (isinstance (j.Curve,Part.Line)):					
 					p1 = j.Vertexes[0].Point
 					p2 = j.Vertexes[1].Point
 					halfedge = fcvec.scale(fcvec.sub(p2,p1),.5)
@@ -128,12 +128,14 @@ def snapPoint (target,point,cursor,ctrl=False):
 								pc = (last.x-p1.x)/(p2.x-p1.x)
 								constrainpoint = (FreeCAD.Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
 								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
-				if (len(snapStack) == 2):
-					last = snapStack[0]
-					if (last.Type == "Part::Feature"):
-						for k in last.Shape.Edges:
-							pt = findIntersection(j,k)
-							if pt: snapArray.append([pt,3,pt])
+					if (len(snapStack) == 2):
+						last = snapStack[1]
+						if (last.Type == "Part::Feature"):
+							for k in last.Shape.Edges:
+								pt = findIntersection(j,k)
+								if pt:
+									for p in pt:
+										snapArray.append([p,3,p])
 
 				elif isinstance (j.Curve,Part.Circle):
 					rad = j.Curve.Radius
@@ -180,26 +182,69 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 	if infinite2 is True, edge2 will be considered infinite
 	algorithm from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
 	'''
-	# currently doesn't work for curved edges!
-	if (isinstance(edge1.Curve,Part.Circle)) or (isinstance(edge2.Curve,Part.Circle)):
+	for i in snapStack:
+		print i.Label
+	print edge1.Curve
+	print edge2.Curve
+	if (isinstance(edge1.Curve,Part.Line)) and (isinstance(edge2.Curve,Part.Line)):
+		# two lines
+		print "debug: 2 lines"
+		p1 = edge1.Vertexes[0].Point
+		p2 = edge1.Vertexes[1].Point
+		p3 = edge2.Vertexes[0].Point
+		p4 = edge2.Vertexes[1].Point
+		numa = (p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x)
+		numb = (p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x)
+		denom = (p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y)
+		if (denom == 0): return None
+		ua = numa/denom
+		ub = numb/denom
+		if not infinite1:
+			if (ua > 1) or (ua < 0): return None
+		if not infinite2:
+			if (ub > 1) or (ub < 0): return None
+		x = p1.x + ua*(p2.x-p1.x)
+		y = p1.y + ua*(p2.y-p1.y)
+		return [FreeCAD.Vector(x,y,p1.z)]
+
+	elif (isinstance(edge1.Curve,Part.Circle)) and (isinstance(edge2.Curve,Part.Circle)):
+		# two curves
+		print "debug: two curves"
 		return None
-	p1 = edge1.Vertexes[0].Point
-	p2 = edge1.Vertexes[1].Point
-	p3 = edge2.Vertexes[0].Point
-	p4 = edge2.Vertexes[1].Point
-	numa = (p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x)
-	numb = (p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x)
-	denom = (p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y)
-	if (denom == 0): return None
-	ua = numa/denom
-	ub = numb/denom
-	if not infinite1:
-		if (ua > 1) or (ua < 0): return None
-	if not infinite2:
-		if (ub > 1) or (ub < 0): return None
-	x = p1.x + ua*(p2.x-p1.x)
-	y = p1.y + ua*(p2.y-p1.y)
-	return FreeCAD.Vector(x,y,p1.z)
+
+	else:
+		# one curve and one line
+		print "debug: 1 line & 1 curve"
+		if (isinstance(edge1.Curve,Part.Circle)):
+			c = edge1.Curve.Center
+			r = edge1.Curve.Radius
+			p1 = edge2.Vertexes[0].Point
+			p2 = edge2.Vertexes[1].Point
+			
+		else:
+			c = edge2.Curve.Center
+			r = edge2.Curve.Radius
+			p1 = edge1.Vertexes[0].Point
+			p2 = edge1.Vertexes[1].Point
+		intpnts = []
+		num = (c.x-p1.x)*(p2.x-p1.x)+(c.y-p1.y)*(p2.y-p1.y)
+		denom = (p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y)
+		if denom == 0: return
+		u = num / denom
+		xp = p1.x + u*(p2.x-p1.x)
+		yp = p1.y + u*(p2.y-p1.y)
+		a = (p2.x - p1.x)**2 + (p2.y - p1.y)**2
+		b = 2*((p2.x-p1.x)*(p1.x-c.x) + (p2.y-p1.y)*(p1.y-c.y))
+		c = c.x**2+c.y**2+p1.x**2+p1.y**2-2*(c.x*p1.x+c.y*p1.y)-r**2
+		q = b**2 - 4*a*c
+		if q == 0:
+			intpnts.append(FreeCAD.Vector(xp,yp,p1.z))
+		elif q:
+			u1 = (-b+math.sqrt(abs(q)))/(2*a)
+			u2 = (-b-math.sqrt(abs(q)))/(2*a)
+			intpnts.append(FreeCAD.Vector((p1.x + u1*(p2.x-p1.x)),(p1.y + u1*(p2.y-p1.y)),p1.z))
+			intpnts.append(FreeCAD.Vector((p1.x + u2*(p2.x-p1.x)), (p1.y + u2*(p2.y-p1.y)),p1.z))
+		return intpnts
 
 def findClosest(basepoint,pointslist):
 	"in a list of 3d points, finds the closest point to the base point"
@@ -243,7 +288,7 @@ def formatObject(target,origin=None):
 	this function applies to the given object the current properties 
 	set on the toolbar (line color and line width), or of another object if given
 	'''
-	obrep = FreeCADGui.ActiveDocument.getObject(target.Name)
+	obrep = target.ViewObject
 	ui= FreeCADGui.activeWorkbench().draftToolBar.ui
 	r = float(ui.color.red()/255.0)
 	g = float(ui.color.green()/255.0)
@@ -327,13 +372,19 @@ def complexity(obj):
 			return 3 # contains closed circles
 		return 2 # contains arcs
 	return 1 # then, this is a line!
-		
+
+def getUiColor():
+	snapcolor = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("snapcolor")
+	r = ((snapcolor>>24)&0xFF)/255
+	g = ((snapcolor>>16)&0xFF)/255
+	b = ((snapcolor>>8)&0xFF)/255
+	return (r,g,b)
+
 class snapTracker:
 	"a class to create a snap marker symbol, used by the functions that support snapping"
 	def __init__(self):
-		snapcolor = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("snapcolor")
 		color = coin.SoBaseColor()
-		color.rgb = (0,0,0)
+		color.rgb = getUiColor()
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -363,11 +414,11 @@ class lineTracker:
 		self.coords.point.setValues(0,2,[[0,0,0],[1,0,0]])
 		node = coin.SoSeparator()
 		if dotted:
-			print "dotted line"
 			drawstyle = coin.SoDrawStyle()
 			drawstyle.style = coin.SoDrawStyle.LINES
 			drawstyle.lineWeight = 3
 			drawstyle.linePattern = 0xaa
+			drawstyle.linePatternScaleFactor = 10
 			node.addChild(drawstyle)
 		node.addChild(color)
 		node.addChild(self.coords)
@@ -2145,7 +2196,11 @@ class trimex:
 			snappoint = []
 			for e in snapped.Shape.Edges:
 				pt = findIntersection(ray,e,True,True)
-				if pt: snappoint.append(pt)
+				if pt:
+					if (len(pt) > 1):
+						snappoint.append(pt[findClosest(point,pt)])
+					else:
+						snappoint.append(pt[0])
 			if snappoint:
 				point = snappoint[findClosest(point,snappoint)]
 				
