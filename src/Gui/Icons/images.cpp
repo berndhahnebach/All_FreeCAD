@@ -1560,10 +1560,8 @@ static const char *view_axometric[]={
 "....................",
 "...................."};
 
-#endif
-
 /* XPM */
-static const char *help[]={
+static const char *help_browser[]={
 "22 22 229 2",
 "Qt c None",
 "#j c #000000",
@@ -1816,6 +1814,8 @@ static const char *help[]={
 "QtQtQtQtQtbBbCbDbEbFbGbHbI.#QtQtQtQtQtQtQtQt",
 "QtQtQtQtQtQt#j#jQtQtQtQtQtQtQtQtQtQtQtQtQtQt",
 "QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt"};
+
+#endif
 
 /* XPM */
 static const char *helpopen[]={

@@ -12,6 +12,7 @@ void RegisterIcons()
     rclBmpFactory.addXPM("edit-cut", edit_cut);
     rclBmpFactory.addXPM("edit-copy", edit_copy);
     rclBmpFactory.addXPM("edit-paste", edit_paste);
+    rclBmpFactory.addXPM("help-browser", help_browser);
 
     rclBmpFactory.addXPM("view-refresh", view_refresh);
 
@@ -76,7 +77,6 @@ void RegisterIcons()
     rclBmpFactory.addXPM("back_pixmap", back_pixmap);
     rclBmpFactory.addXPM("forward_pixmap", forward_pixmap);
     rclBmpFactory.addXPM("home_pixmap", home_pixmap);
-    rclBmpFactory.addXPM("help", help);
     rclBmpFactory.addXPM("helpopen", helpopen);
     rclBmpFactory.addXPM("colors", colors);
     rclBmpFactory.addXPM("python_small", python_small);
