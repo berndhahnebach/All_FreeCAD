@@ -84,4 +84,5 @@ EXTRA_DIST = \
 		Image.qrc \
 		Image_de.qm \
 		Image_de.ts \
+		image-import.svg \
 		XpmImages.h

@@ -15,6 +15,7 @@ void RegisterIcons()
 
     rclBmpFactory.addXPM("view-refresh", view_refresh);
 
+    rclBmpFactory.addXPM("view-axometric", view_axometric);
     rclBmpFactory.addXPM("view-rear", view_rear);
     rclBmpFactory.addXPM("view-bottom", view_bottom);
     rclBmpFactory.addXPM("view-front", view_front);
@@ -63,7 +64,6 @@ void RegisterIcons()
     rclBmpFactory.addXPM("TileHorizontal", TileHorizontal);
     rclBmpFactory.addXPM("TileVertical", TileVertical);
     rclBmpFactory.addXPM("TopLevel", TopLevel);
-    rclBmpFactory.addXPM("view_axo", view_axo);
     rclBmpFactory.addXPM("view_comp_off", view_comp_off);
     rclBmpFactory.addXPM("view_comp_on", view_comp_on);
     rclBmpFactory.addXPM("view_fitarea", view_fitarea);

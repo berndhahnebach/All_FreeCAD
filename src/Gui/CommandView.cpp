@@ -698,7 +698,7 @@ StdCmdViewAxo::StdCmdViewAxo()
   sToolTipText= QT_TR_NOOP("Set to axometric view");
   sWhatsThis  = "Std_ViewXX";
   sStatusTip  = QT_TR_NOOP("Set to axometric view");
-  sPixmap     = "view_axo";
+  sPixmap     = "view-axometric";
   iAccel      = Qt::Key_0;
 }
 

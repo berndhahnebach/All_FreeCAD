@@ -47,7 +47,7 @@ CmdImageOpen::CmdImageOpen()
     sToolTipText    = QT_TR_NOOP("Image open image view function");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Open";
+    sPixmap         = "image-import";
     iAccel          = Qt::CTRL+Qt::Key_O;
 }
 
@@ -80,7 +80,7 @@ CmdImageCapturerTest::CmdImageCapturerTest()
     sToolTipText    = QT_TR_NOOP("test camara capturing");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Open";
+    sPixmap         = "camera-photo";
     iAccel          = 0;
 }
 
