@@ -55,6 +55,7 @@ EXTRA_DIST = \
 		accessories-text-editor.svg \
 		view-refresh.svg \
 		view-fullscreen.svg \
+		view-axometric.svg \
 		view-bottom.svg \
 		view-front.svg \
 		view-left.svg \

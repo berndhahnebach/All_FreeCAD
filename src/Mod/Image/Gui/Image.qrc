@@ -2,4 +2,7 @@
     <qresource prefix="/translations" >
         <file>Image_de.qm</file>
     </qresource>
+    <qresource prefix="/icons" >
+        <file>image-import.svg</file>
+    </qresource>
 </RCC>
