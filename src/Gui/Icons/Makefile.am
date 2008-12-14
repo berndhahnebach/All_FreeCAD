@@ -34,33 +34,38 @@ EXTRA_DIST = \
 		preferences-general.svg \
 		Std_ViewScreenShot.svg \
 		utilities-terminal.svg \
-        document-new.svg \
-        document-open.svg \
-        document-save.svg \
-        document-save-as.svg \
-        document-print.svg \
-        document-properties.svg \
-        system-log-out.svg \
+		document-new.svg \
+		document-open.svg \
+		document-save.svg \
+		document-save-as.svg \
+		document-print.svg \
+		document-properties.svg \
+		system-log-out.svg \
 		edit-copy.svg \
-        edit-cut.svg \
-        edit-delete.svg \
-        edit-paste.svg \
-        edit-select-all.svg \
-        edit-redo.svg \
-        edit-undo.svg \
-        preferences-system.svg \
-        window-new.svg \
-        camera-photo.svg \
-        applications-accessories.svg \
-        accessories-text-editor.svg \
-        view-refresh.svg \
-        view-fullscreen.svg \
-        view-bottom.svg \
-        view-front.svg \
-        view-left.svg \
-        view-rear.svg \
-        view-right.svg \
-        view-top.svg \
+		edit-cut.svg \
+		edit-delete.svg \
+		edit-paste.svg \
+		edit-select-all.svg \
+		edit-redo.svg \
+		edit-undo.svg \
+		preferences-system.svg \
+		window-new.svg \
+		camera-photo.svg \
+		applications-accessories.svg \
+		accessories-text-editor.svg \
+		view-refresh.svg \
+		view-fullscreen.svg \
+		view-bottom.svg \
+		view-front.svg \
+		view-left.svg \
+		view-rear.svg \
+		view-right.svg \
+		view-top.svg \
+		view-zoom-all.svg \
+		view-zoom-border.svg \
+		view-zoom-fit.svg \
+		view-zoom-in.svg \
+		view-zoom-out.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm
