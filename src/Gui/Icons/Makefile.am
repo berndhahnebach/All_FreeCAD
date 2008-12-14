@@ -53,6 +53,7 @@ EXTRA_DIST = \
 		camera-photo.svg \
 		applications-accessories.svg \
 		accessories-text-editor.svg \
+		help-browser.svg \
 		view-refresh.svg \
 		view-fullscreen.svg \
 		view-axometric.svg \

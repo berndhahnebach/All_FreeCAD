@@ -525,7 +525,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sToolTipText  = QT_TR_NOOP("Show help to the application");
     sWhatsThis    = "Std_OnlineHelp";
     sStatusTip    = QT_TR_NOOP("Help");
-    sPixmap       = "help";
+    sPixmap       = "help-browser";
     iAccel        = Qt::Key_F1;
 }
 
@@ -583,7 +583,6 @@ StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
     sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
     sWhatsThis    = "Std_OnlineHelpWebsite";
     sStatusTip    = QT_TR_NOOP("Help Website");
-    sPixmap       = "help";
 }
 
 void StdCmdOnlineHelpWebsite::activated(int iMsg)
@@ -607,7 +606,6 @@ StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
     sToolTipText  = QT_TR_NOOP("The FreeCAD website");
     sWhatsThis    = "Std_FreeCADWebsite";
     sStatusTip    = QT_TR_NOOP("FreeCAD Website");
-    sPixmap       = "help";
 }
 
 void StdCmdFreeCADWebsite::activated(int iMsg)
