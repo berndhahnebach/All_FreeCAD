@@ -720,7 +720,7 @@ StdCmdViewFitAll::StdCmdViewFitAll()
   sToolTipText  = QT_TR_NOOP("Fits the whole content on the screen");
   sWhatsThis    = "Std_ViewFitAll";
   sStatusTip    = QT_TR_NOOP("Fits the whole content on the screen");
-  sPixmap       = "view_fitall";
+  sPixmap       = "view-zoom-all";
   iAccel        = 0;
 }
 
@@ -744,18 +744,21 @@ DEF_STD_CMD_A(StdCmdViewFitSelection);
 StdCmdViewFitSelection::StdCmdViewFitSelection()
   : Command("Std_ViewFitSelection")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Fit selection");
-  sToolTipText  = QT_TR_NOOP("Fits the selected content on the screen");
-  sWhatsThis    = "Std_ViewFitSelection";
-  sStatusTip    = QT_TR_NOOP("Fits the selected content on the screen");
-  iAccel        = 0;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Fit selection");
+    sToolTipText  = QT_TR_NOOP("Fits the selected content on the screen");
+    sWhatsThis    = "Std_ViewFitSelection";
+    sStatusTip    = QT_TR_NOOP("Fits the selected content on the screen");
+#if QT_VERSION >= 0x040200
+    sPixmap       = "view-zoom-fit";
+#endif
+    iAccel        = 0;
 }
 
 void StdCmdViewFitSelection::activated(int iMsg)
 {
-  //doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
-   doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewSelection\")");
+    //doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewSelection\")");
 }
 
 bool StdCmdViewFitSelection::isActive(void)
@@ -1273,6 +1276,9 @@ StdViewZoomIn::StdViewZoomIn()
     sToolTipText  = QT_TR_NOOP("Zoom In");
     sWhatsThis    = "Std_ViewZoom";
     sStatusTip    = QT_TR_NOOP("Zoom In");
+#if QT_VERSION >= 0x040200
+    sPixmap       = "view-zoom-in";
+#endif
     iAccel        = Qt::Key_Plus;
 }
 
@@ -1309,6 +1315,9 @@ StdViewZoomOut::StdViewZoomOut()
     sToolTipText  = QT_TR_NOOP("Zoom Out");
     sWhatsThis    = "Std_ViewZoom";
     sStatusTip    = QT_TR_NOOP("Zoom Out");
+#if QT_VERSION >= 0x040200
+    sPixmap       = "view-zoom-out";
+#endif
     iAccel        = Qt::Key_Minus;
 }
 
@@ -1344,6 +1353,9 @@ StdViewBoxZoom::StdViewBoxZoom()
     sToolTipText  = QT_TR_NOOP("Box zoom");
     sWhatsThis    = "Std_ViewBoxZoom";
     sStatusTip    = QT_TR_NOOP("Box zoom");
+#if QT_VERSION >= 0x040200
+    sPixmap       = "view-zoom-border";
+#endif
     iAccel        = Qt::CTRL+Qt::Key_B;
 }
 

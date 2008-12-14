@@ -21,6 +21,7 @@ void RegisterIcons()
     rclBmpFactory.addXPM("view-left", view_left);
     rclBmpFactory.addXPM("view-right", view_right);
     rclBmpFactory.addXPM("view-top", view_top);
+    rclBmpFactory.addXPM("view-zoom-all", view_zoom_all);
 #endif
     rclBmpFactory.addXPM("Feature", (const char**)Feature_xpm);
     rclBmpFactory.addXPM("Document", (const char**)Document_xpm);
@@ -65,7 +66,6 @@ void RegisterIcons()
     rclBmpFactory.addXPM("view_axo", view_axo);
     rclBmpFactory.addXPM("view_comp_off", view_comp_off);
     rclBmpFactory.addXPM("view_comp_on", view_comp_on);
-    rclBmpFactory.addXPM("view_fitall", view_fitall);
     rclBmpFactory.addXPM("view_fitarea", view_fitarea);
     rclBmpFactory.addXPM("view_glpan", view_glpan);
     rclBmpFactory.addXPM("view_pan", view_pan);

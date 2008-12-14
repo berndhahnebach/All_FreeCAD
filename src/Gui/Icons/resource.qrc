@@ -27,7 +27,7 @@
         <file>document-print.svg</file>
         <file>document-properties.svg</file>
         <file>system-log-out.svg</file>
-		<file>edit-copy.svg</file>
+        <file>edit-copy.svg</file>
         <file>edit-cut.svg</file>
         <file>edit-delete.svg</file>
         <file>edit-paste.svg</file>
@@ -47,5 +47,10 @@
         <file>view-rear.svg</file>
         <file>view-right.svg</file>
         <file>view-top.svg</file>
+        <file>view-zoom-all.svg</file>
+        <file>view-zoom-border.svg</file>
+        <file>view-zoom-fit.svg</file>
+        <file>view-zoom-in.svg</file>
+        <file>view-zoom-out.svg</file>
     </qresource>
 </RCC>
