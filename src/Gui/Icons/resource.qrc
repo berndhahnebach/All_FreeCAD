@@ -54,5 +54,6 @@
         <file>view-zoom-fit.svg</file>
         <file>view-zoom-in.svg</file>
         <file>view-zoom-out.svg</file>
+		<file>view-zoom-selection.svg</file>
     </qresource>
 </RCC>

@@ -68,6 +68,7 @@ EXTRA_DIST = \
 		view-zoom-fit.svg \
 		view-zoom-in.svg \
 		view-zoom-out.svg \
+		view-zoom-selection.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm
