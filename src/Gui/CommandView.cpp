@@ -750,7 +750,7 @@ StdCmdViewFitSelection::StdCmdViewFitSelection()
     sWhatsThis    = "Std_ViewFitSelection";
     sStatusTip    = QT_TR_NOOP("Fits the selected content on the screen");
 #if QT_VERSION >= 0x040200
-    sPixmap       = "view-zoom-fit";
+    sPixmap       = "view-zoom-selection";
 #endif
     iAccel        = 0;
 }
