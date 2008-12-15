@@ -1147,10 +1147,13 @@ void Application::ParseOptions(int ac, char ** av)
     // Declare a group of options that will be
     // allowed both on command line and in
     // config file
+    std::string descr("write a log file to:\n");
+    descr += mConfig["UserAppData"];
+    descr += "FreeCAD.log";
     boost::program_options::options_description config("Configuration");
     config.add_options()
     //("write-log,l", value<string>(), "write a log file")
-    ("write-log,l", "write a log file")
+    ("write-log,l", descr.c_str())
     ("run-test,t",   value<int>()   ,"test level")
     ("module-path,M", value< vector<string> >()->composing(),"additional module paths")
     ("python-path,P", value< vector<string> >()->composing(),"additional python paths")
@@ -1219,7 +1222,7 @@ void Application::ParseOptions(int ac, char ** av)
 
     if (vm.count("help")) {
         cout << "FreeCAD" << endl<<endl;
-        cout << "For detaild descripton see http://free-cad.sf.net" << endl<<endl;
+        cout << "For detailed descripton see http://free-cad.sf.net" << endl<<endl;
         cout << "Usage:" << endl << "FreeCAD [options] File1 File2 ....." << endl;
         cout << visible << "\n";
         exit( 0);
@@ -1246,7 +1249,8 @@ void Application::ParseOptions(int ac, char ** av)
     }
 
     if (vm.count("version")) {
-        cout << "FreeCAD\n";
+        std::cout << mConfig["ExeName"] << " " << mConfig["ExeVersion"]
+                  << " Revision: " << mConfig["BuildRevision"] << std::endl;
         exit( 0);
     }
 
