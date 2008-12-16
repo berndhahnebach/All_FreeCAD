@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libRaytracing.la Raytracing.la
 
@@ -26,7 +25,6 @@ libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App -L/us
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRaytracing_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingExport= -DFeatureRayExportPov=
 
-if OCC_VERSION6
 libRaytracing_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
@@ -43,22 +41,6 @@ libRaytracing_la_LIBADD   = \
 		-lTKGeomBase \
 		-lTKMesh \
 		-lPart
-else
-libRaytracing_la_LIBADD   = \
-		-lxerces-c \
-		-l@PYTHON_LIB@ \
-		-lFreeCADBase \
-		-lFreeCADApp \
-		-lTKernel \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKMath \
-		-lTKBool \
-		-lTKBRep \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lPart
-endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libRaytracing
@@ -81,7 +63,6 @@ Raytracing_la_DEPENDENCIES = libRaytracing.la
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-endif
 
 libdir = $(prefix)/Mod/Raytracing
 

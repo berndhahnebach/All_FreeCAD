@@ -1,4 +1,3 @@
-if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMesh.la Mesh.la
 
@@ -353,7 +352,6 @@ Mesh_la_DEPENDENCIES = libMesh.la
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
 
-endif
 
 includedir = @includedir@/Mod/Mesh/App
 libdir = $(prefix)/Mod/Mesh

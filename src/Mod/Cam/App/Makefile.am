@@ -1,5 +1,3 @@
-if OCC_LIBRARY_FILES
-if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libCam.la Cam.la
 
@@ -91,8 +89,6 @@ Cam_la_LIBADD   = \
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) \
 		  -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/Include
 
-endif
-endif
 
 libdir = $(prefix)/Mod/Cam
 

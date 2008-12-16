@@ -1,9 +1,8 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libReverseEngineering.la ReverseEngineering.la
 
 libReverseEngineering_la_SOURCES=\
-                AppReverseEngineeringPy.cpp \
+		AppReverseEngineeringPy.cpp \
 		ApproxSurface.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
@@ -64,7 +63,6 @@ ReverseEngineering_la_DEPENDENCIES = libReverseEngineering.la
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
-endif
 
 libdir = $(prefix)/Mod/ReverseEngineering
 

@@ -1,7 +1,5 @@
 SUBDIRS=Resources
 
-if OCC_LIBRARY_FILES
-
 lib_LTLIBRARIES=libAssemblyGui.la AssemblyGui.la
 
 BUILT_SOURCES=\
@@ -66,7 +64,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes)
 
-endif
 
 libdir = $(prefix)/Mod/Assembly
 
