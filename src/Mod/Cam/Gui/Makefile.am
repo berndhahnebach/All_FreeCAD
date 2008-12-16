@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libCamGui.la CamGui.la
 
@@ -63,7 +62,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) -I$(OCC_INC) $(all_includes)
 
-endif
 
 libdir = $(prefix)/Mod/Cam
 

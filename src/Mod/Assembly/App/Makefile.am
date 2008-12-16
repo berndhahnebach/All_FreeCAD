@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libAssembly.la Assembly.la
 
@@ -57,7 +56,6 @@ Assembly_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
-endif
 
 libdir = $(prefix)/Mod/Assembly
 

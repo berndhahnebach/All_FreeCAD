@@ -1,7 +1,5 @@
 SUBDIRS=Resources
 
-if OCC_LIBRARY_FILES
-
 lib_LTLIBRARIES=libReverseEngineeringGui.la ReverseEngineeringGui.la
 
 BUILT_SOURCES=
@@ -67,7 +65,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(QT_CXXFLAGS) $(all_includes)
 
-endif
 
 libdir = $(prefix)/Mod/ReverseEngineering
 

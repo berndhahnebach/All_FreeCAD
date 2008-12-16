@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libJtReader.la JtReader.la
 
@@ -18,19 +17,11 @@ FreeCADpov.h: FreeCADpov
 libJtReader_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libJtReader_la_CPPFLAGS = -DAppPartExport= -DAppJtReaderExport= -DFeatureRayExportPov=
 
-if OCC_VERSION6
 libJtReader_la_LIBADD   = \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp 
-else
-libJtReader_la_LIBADD   = \
-		-lxerces-c \
-		-l@PYTHON_LIB@ \
-		-lFreeCADBase \
-		-lFreeCADApp 
-endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libJtReader
@@ -51,7 +42,6 @@ JtReader_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-endif
 
 libdir = $(prefix)/Mod/JtReader
 

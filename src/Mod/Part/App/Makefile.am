@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libPart.la Part.la
 
@@ -203,7 +202,6 @@ Part_la_DEPENDENCIES = libPart.la
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-endif
 
 includedir = @includedir@/Mod/Part/App
 libdir = $(prefix)/Mod/Part

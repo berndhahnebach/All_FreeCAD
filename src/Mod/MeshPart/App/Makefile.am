@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshPart.la MeshPart.la
 
@@ -57,7 +56,6 @@ MeshPart_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-endif
 
 libdir = $(prefix)/Mod/MeshPart
 

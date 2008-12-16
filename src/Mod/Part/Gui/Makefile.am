@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libPartGui.la PartGui.la
 
@@ -70,7 +69,6 @@ libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $
 		-L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
-if OCC_VERSION6
 libPartGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-lxerces-c \
@@ -95,30 +93,6 @@ libPartGui_la_LIBADD   = \
 		-lTKPrim \
 		-lTKMesh \
 		-lPart 
-else
-libPartGui_la_LIBADD   = \
-		-lxerces-c \
-		-l@PYTHON_LIB@ \
-		-lFreeCADBase \
-		-lFreeCADApp \
-		-lFreeCADGui \
-		-lTKernel \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKMath \
-		-lTKSTEP \
-		-lTKIGES \
-		-lTKShHealing \
-		-lTKXSBase \
-		-lTKBool \
-		-lTKBO \
-		-lTKBRep \
-		-lTKTopAlgo \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKPrim \
-		-lPart 
-endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libPartGui
@@ -157,7 +131,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
-endif
 
 includedir = @includedir@/Mod/Part/Gui
 libdir = $(prefix)/Mod/Part

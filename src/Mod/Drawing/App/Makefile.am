@@ -1,9 +1,8 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libDrawing.la Drawing.la
 
 libDrawing_la_SOURCES=\
-                AppDrawingPy.cpp \
+		AppDrawingPy.cpp \
 		FeaturePage.cpp \
 		FeaturePage.h \
 		FeatureView.cpp \
@@ -67,7 +66,6 @@ Drawing_la_DEPENDENCIES = libDrawing.la
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-endif
 
 libdir = $(prefix)/Mod/Drawing
 

@@ -1,4 +1,3 @@
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libOCCAdaptMesh.la
 
@@ -121,7 +120,6 @@ INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/src/TriangleAdapt \
 		-I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/Include
 
-endif
 
 CLEANFILES = $(libOCCAdaptMesh_la_BUILT)
 

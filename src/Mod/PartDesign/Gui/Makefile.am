@@ -1,6 +1,5 @@
 SUBDIRS=Resources
 
-if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libPartDesignGui.la PartDesignGui.la
 
@@ -66,7 +65,6 @@ qrc_%.cpp: %.qrc
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
-endif
 
 libdir = $(prefix)/Mod/PartDesign
 
