@@ -1,0 +1,57 @@
+Index: src/Mod/Mesh/App/Core/Triangulation.cpp
+===================================================================
+--- src/Mod/Mesh/App/Core/Triangulation.cpp	(Revision 1792)
++++ src/Mod/Mesh/App/Core/Triangulation.cpp	(Arbeitskopie)
+@@ -28,7 +28,9 @@
+ #include "Triangulation.h"
+ #include "Approximation.h"
+ #include "MeshKernel.h"
+-#include "triangle.h"
++extern "C" {
++#include <triangle.h>
++}
+ 
+ 
+ using namespace MeshCore;
+Index: src/Mod/Mesh/App/Makefile.am
+===================================================================
+--- src/Mod/Mesh/App/Makefile.am	(Revision 1792)
++++ src/Mod/Mesh/App/Makefile.am	(Arbeitskopie)
+@@ -42,8 +42,6 @@
+ 		Core/Projection.h \
+ 		Core/SetOperations.cpp \
+ 		Core/SetOperations.h \
+-		Core/triangle.cpp \
+-		Core/triangle.h \
+ 		Core/tritritest.h \
+ 		Core/Triangulation.cpp \
+ 		Core/Triangulation.h \
+@@ -328,6 +326,7 @@
+ 		@BOOST_FILESYSTEM_LIB@ @BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
+ 		-lxerces-c \
+ 		-l@PYTHON_LIB@ \
++		-ltriangle \
+ 		-lFreeCADBase \
+ 		-lFreeCADApp
+ 
+Index: src/3rdParty/Makefile.am
+===================================================================
+--- src/3rdParty/Makefile.am	(Revision 1792)
++++ src/3rdParty/Makefile.am	(Arbeitskopie)
+@@ -1,4 +1,3 @@
+-SUBDIRS=Pivy
+ 
+ EXTRA_DIST = \
+ 		boost/numeric/bindings/LICENSE_1_0.txt \
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 1792)
++++ configure.ac	(Arbeitskopie)
+@@ -574,7 +574,6 @@
+ AC_CONFIG_FILES([Makefile 
+ src/Makefile 
+ src/3rdParty/Makefile 
+-src/3rdParty/Pivy/Makefile 
+ src/Base/Makefile 
+ src/App/Makefile 
+ src/Gui/Makefile 
