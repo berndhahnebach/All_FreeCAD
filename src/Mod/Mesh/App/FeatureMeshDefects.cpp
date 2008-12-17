@@ -83,7 +83,7 @@ App::DocumentObjectExecReturn *HarmonizeNormals::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->harmonizeNormals();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -110,7 +110,7 @@ App::DocumentObjectExecReturn *FlipNormals::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->flipNormals();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -137,7 +137,7 @@ App::DocumentObjectExecReturn *FixNonManifolds::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->removeNonManifolds();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -164,7 +164,7 @@ App::DocumentObjectExecReturn *FixDuplicatedFaces::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->removeDuplicatedFacets();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -191,7 +191,7 @@ App::DocumentObjectExecReturn *FixDuplicatedPoints::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->removeDuplicatedPoints();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -218,7 +218,7 @@ App::DocumentObjectExecReturn *FixDegenerations::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->validateDegenerations();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -246,7 +246,7 @@ App::DocumentObjectExecReturn *FixDeformations::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->validateDeformations(MaxAngle.getValue());
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -273,7 +273,7 @@ App::DocumentObjectExecReturn *FixIndices::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->validateIndices();
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -303,7 +303,7 @@ App::DocumentObjectExecReturn *FillHoles::execute(void)
         *mesh = kernel->getValue();
         MeshCore::ConstraintDelaunayTriangulator cTria(MaxArea.getValue());
         mesh->fillupHoles(FillupHolesOfLength.getValue(), 1, cTria);
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;
@@ -331,7 +331,7 @@ App::DocumentObjectExecReturn *RemoveComponents::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         mesh->removeComponents(RemoveCompOfSize.getValue());
-        this->Mesh.setValue(mesh.release());
+        this->Mesh.setValuePtr(mesh.release());
     }
 
     return App::DocumentObject::StdReturn;

@@ -76,7 +76,7 @@ App::DocumentObjectExecReturn *SetOperations::execute(void)
         const MeshObject& meshKernel1 = mesh1->Mesh.getValue();
         const MeshObject& meshKernel2 = mesh2->Mesh.getValue();
 
-        MeshObject *pcKernel = new MeshObject(); // Result Meshkernel
+        std::auto_ptr<MeshObject> pcKernel(new MeshObject()); // Result Meshkernel
 
         MeshCore::SetOperations::OperationType type;
         string ot(OperationType.getValue());
@@ -97,7 +97,7 @@ App::DocumentObjectExecReturn *SetOperations::execute(void)
         MeshCore::SetOperations setOp(meshKernel1.getKernel(), meshKernel2.getKernel(), 
             pcKernel->getKernel(), type, 1.0e-5f);
         setOp.Do();
-        Mesh.setValue(pcKernel);
+        Mesh.setValuePtr(pcKernel.release());
     }
     else { 
         // Error mesh property
