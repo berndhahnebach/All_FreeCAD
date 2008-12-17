@@ -112,6 +112,11 @@ Example:
 				<UserDocu>Remove a list of facet indices from the mesh</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="addMesh">
+			<Documentation>
+				<UserDocu>Combine this mesh with another mesh.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="getSegment">
 			<Documentation>
 				<UserDocu>Get a list of facet indices that describes a segment</UserDocu>

@@ -419,65 +419,48 @@ DEF_STD_CMD_A(CmdMeshImport);
 CmdMeshImport::CmdMeshImport()
   :Command("Mesh_Import")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Import mesh...");
-  sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
-  sWhatsThis    = "Mesh_Import";
-  sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
-  sPixmap       = "import_mesh";
-  iAccel        = 0;
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Import mesh...");
+    sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
+    sWhatsThis    = "Mesh_Import";
+    sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
+    sPixmap       = "import_mesh";
+    iAccel        = 0;
 }
 
 void CmdMeshImport::activated(int iMsg)
 {
-  // use current path as default
-  QStringList filter;
-  filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
-  filter << QObject::tr("Binary STL (*.stl)");
-  filter << QObject::tr("ASCII STL (*.ast)");
-  filter << QObject::tr("Binary Mesh (*.bms)");
-  filter << QObject::tr("Alias Mesh (*.obj)");
-  filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
-  //filter << "Nastran (*.nas *.bdf)";
-  filter << QObject::tr("All Files (*.*)");
+    // use current path as default
+    QStringList filter;
+    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+    filter << QObject::tr("Binary STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.ast)");
+    filter << QObject::tr("Binary Mesh (*.bms)");
+    filter << QObject::tr("Alias Mesh (*.obj)");
+    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    //filter << "Nastran (*.nas *.bdf)";
+    filter << QObject::tr("All Files (*.*)");
 
-  // Allow multi selection
-  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
-      QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
-  for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it )
-  {
-    QFileInfo fi;
-    fi.setFile(*it);
+    // Allow multi selection
+    QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
+        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+    for (QStringList::Iterator it = fn.begin(); it != fn.end(); ++it) {
+        QFileInfo fi;
+        fi.setFile(*it);
 
-    openCommand("Import Mesh");
-#if 1 // feature based
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Import\",\"%s\")"
-                 ,(const char*)fi.baseName().toAscii());
-    doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toUtf8());
-    doCommand(Doc,"f.Label = \"%s\"",(const char*)fi.baseName().toUtf8());
-#elif 0 // data based
-    doCommand(Doc,"import Mesh");
-    doCommand(Doc,"__mesh__ = Mesh.mesh()");
-    doCommand(Doc,"__mesh__.read(\"%s\")", (const char*)(*it).toUtf8());
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Feature\",\"%s\").Mesh=__mesh__", 
-             (const char*)fi.baseName().toAscii());
-    doCommand(Doc,"del __mesh__");
-#else // data based once changed to ref handling
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Feature\",\"%s\").Mesh.read(\"%s\")", 
-             (const char*)fi.baseName().toAscii(), (const char*)(*it).toUtf8());
-#endif
-    commitCommand();
-    updateActive();
-  }
+        openCommand("Import Mesh");
+        doCommand(Doc,"import Mesh");
+        doCommand(Doc,"Mesh.insert(\"%s\")",
+                 (const char*)(*it).toUtf8());
+        commitCommand();
+        updateActive();
+    }
 }
 
 bool CmdMeshImport::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    return (getActiveGuiDocument() ? true : false);
 }
 
 //--------------------------------------------------------------------------------------
@@ -487,61 +470,59 @@ DEF_STD_CMD_A(CmdMeshExport);
 CmdMeshExport::CmdMeshExport()
   :Command("Mesh_Export")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Export mesh...");
-  sToolTipText  = QT_TR_NOOP("Exports a mesh to file");
-  sWhatsThis    = "Mesh_Export";
-  sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
-  sPixmap       = "export_mesh";
-  iAccel        = 0;
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Export mesh...");
+    sToolTipText  = QT_TR_NOOP("Exports a mesh to file");
+    sWhatsThis    = "Mesh_Export";
+    sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
+    sPixmap       = "export_mesh";
+    iAccel        = 0;
 }
 
 void CmdMeshExport::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> docObjs = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  if ( docObjs.size() != 1 )
-    return;
+    std::vector<App::DocumentObject*> docObjs = Gui::Selection().getObjectsOfType
+        (Mesh::Feature::getClassTypeId());
+    if (docObjs.size() != 1)
+        return;
 
-  App::DocumentObject* docObj = docObjs.front();
+    App::DocumentObject* docObj = docObjs.front();
 
-  QString dir = QString::fromUtf8(docObj->Label.getValue());
-  QStringList filter;
-  filter << QObject::tr("Binary STL (*.stl)");
-  filter << QObject::tr("ASCII STL (*.stl)");
-  filter << QObject::tr("ASCII STL (*.ast)");
-  filter << QObject::tr("Binary Mesh (*.bms)");
-  filter << QObject::tr("Alias Mesh (*.obj)");
-  filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
-  filter << QObject::tr("VRML V2.0 (*.wrl *.vrml)");
-  filter << QObject::tr("Compressed VRML 2.0 (*.wrz)");
-  filter << QObject::tr("Nastran (*.nas *.bdf)");
-  filter << QObject::tr("Python module def (*.py)");
-  filter << QObject::tr("All Files (*.*)");
+    QString dir = QString::fromUtf8(docObj->Label.getValue());
+    QStringList filter;
+    filter << QObject::tr("Binary STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.ast)");
+    filter << QObject::tr("Binary Mesh (*.bms)");
+    filter << QObject::tr("Alias Mesh (*.obj)");
+    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    filter << QObject::tr("VRML V2.0 (*.wrl *.vrml)");
+    filter << QObject::tr("Compressed VRML 2.0 (*.wrz)");
+    filter << QObject::tr("Nastran (*.nas *.bdf)");
+    filter << QObject::tr("Python module def (*.py)");
+    filter << QObject::tr("All Files (*.*)");
 
-  QString format;
-  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
-      QObject::tr("Export mesh"), dir, filter.join(QLatin1String(";;")), &format);
-  if (!fn.isEmpty())
-  {
-    QFileInfo fi(fn);
-    if (format == QObject::tr("ASCII STL (*.stl)"))
-        format = QString::fromAscii(("ast"));
-    else
-        format = fi.suffix();
-    openCommand("Export Mesh");
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Mesh::Export\",\"%s\")", (const char*)fi.baseName().toAscii());
-    doCommand(Doc,"f.FileName = \"%s\"",(const char*)fn.toUtf8());
-    doCommand(Doc,"f.Format = \"%s\"",(const char*)format.toAscii());
-    doCommand(Doc,"f.Source = App.activeDocument().%s",docObj->getNameInDocument());
-    commitCommand();
-    updateActive();
-  }
+    QString format;
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
+        QObject::tr("Export mesh"), dir, filter.join(QLatin1String(";;")), &format);
+    if (!fn.isEmpty()) {
+        QFileInfo fi(fn);
+        if (format == QObject::tr("ASCII STL (*.stl)"))
+            format = QString::fromAscii(("ast"));
+        else
+            format = fi.suffix();
+        openCommand("Export Mesh");
+        doCommand(Doc,"FreeCAD.ActiveDocument.getObject(\"%s\").Mesh.write(\"%s\")",
+                 (const char*)fi.baseName().toAscii(),
+                 (const char*)fn.toUtf8());
+        commitCommand();
+    }
 }
 
 bool CmdMeshExport::isActive(void)
 {
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 //--------------------------------------------------------------------------------------

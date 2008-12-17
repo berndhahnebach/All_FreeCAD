@@ -459,6 +459,19 @@ PyObject* MeshPy::removeFacets(PyObject *args)
     Py_Return;
 }
 
+PyObject*  MeshPy::addMesh(PyObject *args)
+{
+    PyObject* mesh;
+    if (!PyArg_ParseTuple(args, "O!",&(MeshPy::Type), &mesh))
+        return NULL;
+
+    PY_TRY {
+        getMeshObjectPtr()->addMesh(*static_cast<MeshPy*>(mesh)->getMeshObjectPtr());
+    } PY_CATCH;
+
+    Py_Return;
+}
+
 PyObject* MeshPy::getSegment(PyObject *args)
 {
     unsigned long index;

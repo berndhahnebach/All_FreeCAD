@@ -293,16 +293,20 @@ PropertyMeshKernel::~PropertyMeshKernel()
 {
 }
 
-void PropertyMeshKernel::setValue(MeshObject* mesh)
+void PropertyMeshKernel::setValuePtr(MeshObject* mesh)
 {
-    // Note: As we reference internal pointers of the underlying MeshKernel
-    // e.g. in the SoFCMeshVertex node or SoFCMeshVertexElement instance for 
-    // display purposes we must guarantee not to replace this kernel but just
-    // assign the point and facet data to it.
+    // use the tmp. object to guarantee that the referenced mesh is not destroyed
+    // before calling hasSetValue()
+    Base::Reference<MeshObject> tmp(_meshObject);
     aboutToSetValue();
-    mesh->AttachRef(0);
-    (*_meshObject) = (*mesh);
-    mesh->DetachRef(0);
+    _meshObject = mesh;
+    hasSetValue();
+}
+
+void PropertyMeshKernel::setValue(const MeshObject& mesh)
+{
+    aboutToSetValue();
+    *_meshObject = mesh;
     hasSetValue();
 }
 
@@ -479,16 +483,14 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
         // Do not allow to reassign the same instance
         if (&(*this->_meshObject) != mesh->getMeshObjectPtr()) {
             // Note: Copy the content, do NOT reference the same mesh object
-            aboutToSetValue();
-            *(this->_meshObject) = *(mesh->getMeshObjectPtr());
-            hasSetValue();
+            setValue(*(mesh->getMeshObjectPtr()));
         }
     }
     else if (PyList_Check(value)) {
         // new instance of MeshObject
         Py::List triangles(value);
         MeshObject* mesh = MeshObject::createMeshFromList(triangles);
-        setValue(mesh);
+        setValuePtr(mesh);
     }
     else {
         std::string error = std::string("type must be 'Mesh', not ");

@@ -55,7 +55,7 @@ App::DocumentObjectExecReturn *Import::execute(void)
 {
     std::auto_ptr<MeshObject> apcKernel(new MeshObject());
     apcKernel->load(FileName.getValue());
-    Mesh.setValue(apcKernel.release());
+    Mesh.setValuePtr(apcKernel.release());
 
     return App::DocumentObject::StdReturn;
 }

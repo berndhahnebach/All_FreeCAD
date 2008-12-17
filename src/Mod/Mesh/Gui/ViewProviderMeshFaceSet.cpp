@@ -590,7 +590,7 @@ void ViewProviderMeshFaceSet::splitMesh(const MeshCore::MeshKernel& toolMesh, co
     Mesh::Feature* splitMesh = static_cast<Mesh::Feature*>(App::GetApplication().getActiveDocument()
         ->addObject("Mesh::Feature",pcObject->getNameInDocument()));
     // Note: deletes also kernel
-    splitMesh->Mesh.setValue(kernel);
+    splitMesh->Mesh.setValuePtr(kernel);
     static_cast<Mesh::Feature*>(pcObject)->purgeTouched();
 
     // notify the mesh shape node

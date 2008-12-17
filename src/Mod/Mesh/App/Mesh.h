@@ -145,6 +145,18 @@ public:
     void setFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
     void setFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
                    const std::vector<Base::Vector3d>& points);
+    /**
+     * Combines two independant mesh objects.
+     * @note The mesh object we want to add must not overlap or intersect with
+     * this mesh object.
+     */
+    void addMesh(const MeshObject&);
+    /**
+     * Combines two independant mesh objects.
+     * @note The mesh object we want to add must not overlap or intersect with
+     * this mesh object.
+     */
+    void addMesh(const MeshCore::MeshKernel&);
     void deleteFacets(const std::vector<unsigned long>& removeIndices);
     void deletePoints(const std::vector<unsigned long>& removeIndices);
     unsigned long countComponents() const;

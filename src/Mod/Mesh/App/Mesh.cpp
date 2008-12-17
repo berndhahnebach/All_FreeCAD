@@ -372,6 +372,16 @@ void MeshObject::setFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &f
     _kernel.Adopt(point_v, facet_v, true);
 }
 
+void MeshObject::addMesh(const MeshObject& mesh)
+{
+    _kernel.Merge(mesh._kernel);
+}
+
+void MeshObject::addMesh(const MeshCore::MeshKernel& kernel)
+{
+    _kernel.Merge(kernel);
+}
+
 void MeshObject::deleteFacets(const std::vector<unsigned long>& removeIndices)
 {
     _kernel.DeleteFacets(removeIndices);

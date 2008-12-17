@@ -135,11 +135,18 @@ public:
 
     /** @name Getter/setter */
     //@{
-    /** This method references the passed mesh object. It does NOT create a copy.
-     * The currently referenced mesh object gets detached and possibly deleted but
-     * saved before if a transaction is open at this time.
+    /** This method references the passed mesh object and takes possession of it,
+     * it does NOT create a copy.
+     * The currently referenced mesh object gets de-referenced and possibly deleted
+     * if its reference counter becomes zero.
+     * However, the mesh gets saved before if a transaction is open at this time.
+     * @note Make sure not to reference the internal mesh pointer pf this class in
+     * client code. This could lead to crashes if not handled properly.
      */
-    void setValue(MeshObject* m);
+    void setValuePtr(MeshObject* m);
+    /** This method sets the mesh by copying the data. */
+    void setValue(const MeshObject& m);
+    /** This method sets the mesh by copying the data. */
     void setValue(const MeshCore::MeshKernel& m);
     /** Returns a the attached mesh object by reference. It cannot be modified 
      * from outside.

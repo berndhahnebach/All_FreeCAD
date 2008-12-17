@@ -153,7 +153,7 @@ App::DocumentObjectExecReturn *SegmentByMesh::execute(void)
 
     std::auto_ptr<MeshObject> pcKernel(new MeshObject);
     pcKernel->addFacets(aFaces);
-    Mesh.setValue(pcKernel.release());
+    Mesh.setValuePtr(pcKernel.release());
 
     return App::DocumentObject::StdReturn;
 }
