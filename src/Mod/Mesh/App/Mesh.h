@@ -96,6 +96,7 @@ public:
      * Swaps the content of \a Kernel and the internal mesh kernel.
      */
     void swap(MeshCore::MeshKernel& Kernel);
+    void swap(MeshObject& mesh);
 
     /** @name Querying */
     //@{
