@@ -29,6 +29,9 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 
+#include "RayFeature.h"
+#include "RayProject.h"
+
 extern struct PyMethodDef Raytracing_methods[];
 
 
@@ -44,8 +47,13 @@ void AppRaytracingExport initRaytracing()
         return;
     }
 
+	Raytracing::RayFeature       ::init();
+	Raytracing::RayProject       ::init();
+
+
     (void) Py_InitModule("Raytracing", Raytracing_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading Raytracing module... done\n");
+
 }
 
 } // extern "C" {

@@ -74,8 +74,8 @@ ViewProvider2DObject::~ViewProvider2DObject()
 
 SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
   double dx = 10;                       // carpet size
-  double dz = 10;
-  double dy = 0.02;                     // carpet-grid separation
+  double dy = 10;
+  double dz = 0.02;                     // carpet-grid separation
   int gridsize = 50;                    // grid size
 
   SoSeparator *parent = GridRoot;
@@ -115,16 +115,16 @@ SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
   int i;
   for (i=1; i<gridsize; i++) {
     float h=-0.5*dx + float(i) / gridsize * dx;
-    vts->vertex.set1Value(vi++, h, -dy, -0.5*dz);
-    vts->vertex.set1Value(vi++, h, -dy,  0.5*dz);
+    vts->vertex.set1Value(vi++, h, -0.5*dy, dz);
+    vts->vertex.set1Value(vi++, h,  0.5*dy, dz);
     grid->numVertices.set1Value(l++, 2);
   }
 
   // horizontal lines
   for (i=1; i<gridsize; i++) {
-    float v=-0.5*dz + float(i) / gridsize * dz;
-    vts->vertex.set1Value(vi++, -0.5*dx, -dy, v );
-    vts->vertex.set1Value(vi++,  0.5*dx, -dy, v );
+    float v=-0.5*dy + float(i) / gridsize * dy;
+    vts->vertex.set1Value(vi++, -0.5*dx, v, dz );
+    vts->vertex.set1Value(vi++,  0.5*dx, v, dz );
     grid->numVertices.set1Value(l++, 2);
   }
   parent->addChild(vts);

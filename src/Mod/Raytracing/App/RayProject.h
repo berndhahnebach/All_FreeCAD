@@ -23,8 +23,8 @@
  
 
 
-#ifndef _RayFeature_h_
-#define _RayFeature_h_
+#ifndef _RayProject_h_
+#define _RayProject_h_
 
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
@@ -59,7 +59,7 @@ public:
     short mustExecute() const;
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const { 
-        return "RaytracingGui::ViewProviderRayFeature"; 
+        return "RaytracingGui::ViewProviderRayProject"; 
     }
   //@}
 

@@ -5,9 +5,9 @@
     Name="Part2DObjectPy" 
     Twin="Part2DObject" 
     TwinPointer="Part2DObject" 
-    Include="Mod/Part/App/PartFeature.h" 
+    Include="Mod/Part/App/Part2DObject.h" 
     Namespace="Part" 
-    FatherInclude="App/PartFeaturePy.h" 
+    FatherInclude="Mod/Part/App/PartFeaturePy.h" 
     FatherNamespace="Part">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />

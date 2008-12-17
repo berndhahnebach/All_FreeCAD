@@ -41,7 +41,8 @@ PROPERTY_SOURCE(Raytracing::RayFeature, App::AbstractFeature)
 
 RayFeature::RayFeature(void)
 {
-
+	ADD_PROPERTY(ShapeFile,(""));
+	ADD_PROPERTY(Source,(0));
 }
 	
 
