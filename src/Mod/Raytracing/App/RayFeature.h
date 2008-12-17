@@ -30,6 +30,8 @@
 //#include <Base/PyExport.h>
 
 #include <App/Feature.h>
+#include <App/PropertyLinks.h>
+#include <App/PropertyFile.h>
 
 class PyObjectBase;
 class FeaturePy;
@@ -49,6 +51,9 @@ public:
 	/// Constructor
 	RayFeature(void);
 
+	/// Property for the result file
+	App::PropertyFileIncluded ShapeFile;
+	App::PropertyLink         Source;
 
 
    /** @name methods overide Feature */
