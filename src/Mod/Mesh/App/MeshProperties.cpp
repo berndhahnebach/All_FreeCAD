@@ -317,6 +317,20 @@ void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& mesh)
     hasSetValue();
 }
 
+void PropertyMeshKernel::swapMesh(MeshObject& mesh)
+{
+    aboutToSetValue();
+    _meshObject->swap(mesh);
+    hasSetValue();
+}
+
+void PropertyMeshKernel::swapMesh(MeshCore::MeshKernel& mesh)
+{
+    aboutToSetValue();
+    _meshObject->swap(mesh);
+    hasSetValue();
+}
+
 const MeshObject& PropertyMeshKernel::getValue(void)const 
 {
     return *_meshObject;

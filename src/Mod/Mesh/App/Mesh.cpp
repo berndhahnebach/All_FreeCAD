@@ -149,6 +149,15 @@ void MeshObject::swap(MeshCore::MeshKernel& Kernel)
     this->_segments.clear();
 }
 
+void MeshObject::swap(MeshObject& mesh)
+{
+    this->_kernel.Swap(mesh._kernel);
+    this->_segments.swap(mesh._segments);
+    Base::Matrix4D tmp=this->_Mtrx;
+    this->_Mtrx = mesh._Mtrx;
+    mesh._Mtrx = tmp;
+}
+
 std::string MeshObject::representation() const
 {
     std::stringstream str;

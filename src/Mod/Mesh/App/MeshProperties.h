@@ -148,6 +148,10 @@ public:
     void setValue(const MeshObject& m);
     /** This method sets the mesh by copying the data. */
     void setValue(const MeshCore::MeshKernel& m);
+    /** Swaps the mesh data structure. */
+    void swapMesh(MeshObject&);
+    /** Swaps the mesh data structure. */
+    void swapMesh(MeshCore::MeshKernel&);
     /** Returns a the attached mesh object by reference. It cannot be modified 
      * from outside.
      */
