@@ -53,7 +53,12 @@ public:
     /// get the part shape
     TopoDS_Shape getValue(void) const;
     const TopoShape& getShape() const;
-    void setLocation(const TopLoc_Location&);
+    //@}
+
+    /** @name Placement control */
+    //@{
+    void setTransform(const Base::Matrix4D& rclTrf);
+    Base::Matrix4D getTransform(void) const;
     //@}
 
     /** @name Getting basic geometric entities */

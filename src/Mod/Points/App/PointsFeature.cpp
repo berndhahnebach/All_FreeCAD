@@ -142,7 +142,7 @@ App::DocumentObjectExecReturn *Transform::execute(void)
 {
   Feature *pcPoints  = dynamic_cast<Feature*>(Source.getValue());
   Points.setValue(pcPoints->Points.getValue());
-  Points.transform( Trnsfrm.getValue() );
+  Points.setTransform(Trnsfrm.getValue());
 
   const Base::Matrix4D& cMat = Trnsfrm.getValue();
   Base::Console().Message("Transform [[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f]]\n",

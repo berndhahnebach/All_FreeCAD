@@ -172,7 +172,6 @@ public:
 
     /** @name Modify */
     //@{
-    void applyTransformation( const Base::Matrix4D& rclTrf );
     void deletePointIndices ( const std::vector<unsigned long>& );
     void deleteFacetIndices ( const std::vector<unsigned long>& );
     void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );
@@ -181,6 +180,12 @@ public:
     void createSegment(const std::vector<unsigned long>& segm);
     void smooth(int iter, float d_max);
     void clear();
+    //@}
+
+    /** @name Placement control */
+    //@{
+    void setTransform(const Base::Matrix4D& rclTrf);
+    Base::Matrix4D getTransform(void) const;
     //@}
 
     /** @name Mesh validation */

@@ -289,10 +289,41 @@ public:
     PropertyComplexGeoData();
     ~PropertyComplexGeoData();
 
+    /** @name Placement control */
+    //@{
+    /** Applies an additional transformation to the current transformation. */
+    void applyTransform(const Base::Matrix4D& rclTrf);
+    /** Applies an additional translation to the current transformation. */
+    void applyTranslation(const Base::Vector3d&);
+    /** Applies an additional rotation to the current transformation. */
+    void applyRotation(const Base::Rotation&);
+    /** Override the current transformation with a placement
+     * using the setTransform() method.
+     */
+    void setPlacement(const Base::Placement& rclPlacement);
+    /** Return the current transformation as placement using 
+     * getTransform().
+     */
+    Base::Placement getPlacement() const;
+    /** Override the current transformation with the new one. 
+     * This method has to be handled by the child classes.
+     * the actual placement and matrix is not part of this class.
+     */
+    virtual void setTransform(const Base::Matrix4D& rclTrf)=0;
+    /** Return the current matrix
+     * This method has to be handled by the child classes.
+     * the actual placement and matrix is not part of this class.
+     */
+    virtual Base::Matrix4D getTransform(void) const = 0;
+    //@}
+
+    /** @name Getting basic geometric entities */
+    //@{
     virtual Base::BoundBox3d getBoundingBox() const = 0;
     virtual void getFaces(std::vector<Base::Vector3d> &Points,
         std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
         float Accuracy, uint16_t flags=0) const  = 0;
+    //@}
 };
 
 } // namespace App
