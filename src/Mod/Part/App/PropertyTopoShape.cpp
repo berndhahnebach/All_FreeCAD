@@ -121,13 +121,18 @@ void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
     _Shape.getFaces(aPoints, aTopo, accuracy, flags);
 }
 
-void PropertyPartShape::setLocation(const TopLoc_Location& loc)
+void PropertyPartShape::setTransform(const Base::Matrix4D& rclTrf)
 {
     // Note: The internal shapes do not change but the internal location only,
     // we actually do not need to save the shapes.
     //aboutToSetValue();
-    _Shape._Shape.Location(loc);
+    _Shape.setTransform(rclTrf);
     //hasSetValue();
+}
+
+Base::Matrix4D PropertyPartShape::getTransform(void) const
+{
+    return _Shape.getTransform();
 }
 
 PyObject *PropertyPartShape::getPyObject(void)

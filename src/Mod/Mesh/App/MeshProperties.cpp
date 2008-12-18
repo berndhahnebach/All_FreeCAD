@@ -361,11 +361,18 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
     return size;
 }
 
-void PropertyMeshKernel::applyTransformation(const Base::Matrix4D& rclTrf)
+void PropertyMeshKernel::setTransform(const Base::Matrix4D& rclTrf)
 {
-    aboutToSetValue();
-    _meshObject->applyTransform(rclTrf);
-    hasSetValue();
+    // Note: The internal mesh does not change but the internal transformation only,
+    // thus, we actually do not need to save the mesh.
+    //aboutToSetValue();
+    _meshObject->setTransform(rclTrf);
+    //hasSetValue();
+}
+
+Base::Matrix4D PropertyMeshKernel::getTransform(void) const
+{
+    return _meshObject->getTransform();
 }
 
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )

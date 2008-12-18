@@ -1156,7 +1156,7 @@ PYFUNCIMP_D(View3DPy,getSceneGraph)
     try {
         SoNode* scene = _pcView->getViewer()->getSceneGraph();
         PyObject* proxy = 0;
-        proxy = Base::Interpreter().createSWIGPointerObj("SoSeparator *", (void*)scene, 1);
+        proxy = Base::Interpreter().createSWIGPointerObj("SoSelection *", (void*)scene, 1);
         scene->ref();
         return proxy;
     }
