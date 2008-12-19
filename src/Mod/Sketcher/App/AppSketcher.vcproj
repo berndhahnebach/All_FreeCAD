@@ -225,6 +225,14 @@
 		<Filter
 			Name="Features"
 			>
+			<File
+				RelativePath=".\SketchObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SketchObject.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="SketchFlat"

@@ -33,7 +33,7 @@ namespace Part
 {
 
 
-class Part2DObject :public Part::Feature
+class AppPartExport Part2DObject :public Part::Feature
 {
     PROPERTY_HEADER(Part::Part2DObject);
 

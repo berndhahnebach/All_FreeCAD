@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
  
+#include "SketchObject.h"
 
 extern struct PyMethodDef Sketcher_methods[];
 
@@ -57,7 +58,7 @@ void AppSketcherExport initSketcher()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    //Sketcher::FeatureViewPart        ::init();
+    Sketcher::SketchObject        ::init();
 }
 
 } // extern "C"

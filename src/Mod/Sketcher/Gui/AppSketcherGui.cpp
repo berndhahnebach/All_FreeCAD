@@ -30,6 +30,8 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
+#include "ViewProviderSketch.h"
+
 //#include "resources/qrc_Sketcher.cpp"
 
 // use a different name to CreateCommand()
@@ -61,6 +63,9 @@ void SketcherGuiExport initSketcherGui()
     // instanciating the commands
     CreateSketcherCommands();
     SketcherGui::Workbench::init();
+
+	// init objects
+	SketcherGui::ViewProviderSketch::init();
 
      // add resources and reloads the translators
     loadSketcherResource();
