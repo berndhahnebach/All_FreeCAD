@@ -365,9 +365,9 @@ void PropertyMeshKernel::setTransform(const Base::Matrix4D& rclTrf)
 {
     // Note: The internal mesh does not change but the internal transformation only,
     // thus, we actually do not need to save the mesh.
-    //aboutToSetValue();
+    aboutToSetValue();
     _meshObject->setTransform(rclTrf);
-    //hasSetValue();
+    hasSetValue();
 }
 
 Base::Matrix4D PropertyMeshKernel::getTransform(void) const
