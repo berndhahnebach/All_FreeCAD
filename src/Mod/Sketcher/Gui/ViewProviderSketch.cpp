@@ -21,58 +21,94 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProvider2DObject_H__
-#define __ViewProvider2DObject_H__
+#include "PreCompiled.h"
 
-#include "ViewProvider.h"
+#ifndef _PreComp_
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoVertexProperty.h>
+#endif
+
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include <Base/Parameter.h>
+
+#include "ViewProviderSketch.h"
 
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
+//#include "Tree.h"
 
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
+
+
+using namespace SketcherGui;
+using namespace std;
+
+
+//**************************************************************************
+// Construction/Destruction
+
+PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProviderPart)
+
+       
+ViewProviderSketch::ViewProviderSketch()
+{
+ /*   ADD_PROPERTY(ShowGrid,(true));
+
+
+    GridRoot = new SoSeparator();
+    GridRoot->ref();
+
+    pcRoot->addChild(GridRoot);*/
+ 
+    sPixmap = "PartFeatureImport";
 }
 
-namespace PartGui {
-
-
-	class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
+ViewProviderSketch::~ViewProviderSketch()
 {
-  PROPERTY_HEADER(PartGui::ViewProvider2DObject);
-
-public:
-  /// constructor
-  ViewProvider2DObject();
-  /// destructor
-  virtual ~ViewProvider2DObject();
-
-  App::PropertyBool ShowGrid;
-
-  virtual void attach(App::DocumentObject *);
-  virtual void updateData(const App::Property*);
+  //GridRoot->unref();
+}
 
 
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
 
-  /// creats the grid
-  SoSeparator* createGrid(float size=0.0, int density=0); 
+// **********************************************************************************
 
 
-protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
+void ViewProviderSketch::updateData(const App::Property* prop)
+{
+    ViewProviderPart::updateData(prop);
 
-  SoSeparator  *GridRoot;
-};
+ 
+}
 
-} // namespace PartGui
+void ViewProviderSketch::onChanged(const App::Property* prop)
+{
+    // call father
+    ViewProviderPart::onChanged(prop);
+
+ /*   if (prop == &ShowGrid) {
+        if(ShowGrid.getValue())
+            createGrid();
+        else
+            GridRoot->removeAllChildren();
+    }*/
+}
+
+void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
+{
+    ViewProviderPart::attach(pcFeat);
+
+    createGrid();
 
 
-#endif // __ViewProvider2DObject_H__
+}
+
+void ViewProviderSketch::setEdit(void)
+{
+
+}
+
+void ViewProviderSketch::unsetEdit(void)
+{
+
+}
 

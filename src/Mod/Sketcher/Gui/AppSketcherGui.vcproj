@@ -360,6 +360,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\ViewProviderSketch.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ViewProviderSketch.h"
+			>
+		</File>
+		<File
 			RelativePath="Workbench.cpp"
 			>
 			<FileConfiguration

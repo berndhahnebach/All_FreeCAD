@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,59 +20,40 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
 
-#ifndef __ViewProvider2DObject_H__
-#define __ViewProvider2DObject_H__
-
-#include "ViewProvider.h"
 
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
+#include "SketchObject.h"
 
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
+
+using namespace Sketcher;
+
+
+PROPERTY_SOURCE(Sketcher::SketchObject, Part::Part2DObject)
+
+
+SketchObject::SketchObject()
+{
 }
 
-namespace PartGui {
-
-
-	class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
+short SketchObject::mustExecute() const
 {
-  PROPERTY_HEADER(PartGui::ViewProvider2DObject);
+    //if (x.isTouched() ||
+    //    y.isTouched() ||
+    //    z.isTouched() ||
+    //    l.isTouched() ||
+    //    h.isTouched() ||
+    //    w.isTouched() )
+    //    return 1;
+    return 0;
+}
 
-public:
-  /// constructor
-  ViewProvider2DObject();
-  /// destructor
-  virtual ~ViewProvider2DObject();
+App::DocumentObjectExecReturn *SketchObject::execute(void)
+{
 
-  App::PropertyBool ShowGrid;
-
-  virtual void attach(App::DocumentObject *);
-  virtual void updateData(const App::Property*);
-
-
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
-  /// creats the grid
-  SoSeparator* createGrid(float size=0.0, int density=0); 
-
-
-protected:
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
-
-  SoSeparator  *GridRoot;
-};
-
-} // namespace PartGui
-
-
-#endif // __ViewProvider2DObject_H__
-
+    return App::DocumentObject::StdReturn;
+}

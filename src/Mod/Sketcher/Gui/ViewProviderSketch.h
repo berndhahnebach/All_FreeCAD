@@ -21,10 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProvider2DObject_H__
-#define __ViewProvider2DObject_H__
+#ifndef __ViewProviderSketcher_H__
+#define __ViewProviderSketcher_H__
 
-#include "ViewProvider.h"
+#include <Mod/Part/Gui/ViewProvider2DObject.h>
 
 
 class TopoDS_Shape;
@@ -38,20 +38,20 @@ namespace Gui {
   class SoFCSelection;
 }
 
-namespace PartGui {
+namespace SketcherGui {
 
 
-	class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
+class SketcherGuiExport ViewProviderSketch:public PartGui::ViewProvider2DObject
 {
-  PROPERTY_HEADER(PartGui::ViewProvider2DObject);
+  PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
 public:
   /// constructor
-  ViewProvider2DObject();
+  ViewProviderSketch();
   /// destructor
-  virtual ~ViewProvider2DObject();
+  virtual ~ViewProviderSketch();
 
-  App::PropertyBool ShowGrid;
+  //App::PropertyBool ShowGrid;
 
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);
@@ -61,18 +61,17 @@ public:
   virtual void unsetEdit(void);
 
   /// creats the grid
-  SoSeparator* createGrid(float size=0.0, int density=0); 
+  //SoSeparator* createGrid(float size=0.0, int density=0); 
 
 
 protected:
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 
-  SoSeparator  *GridRoot;
 };
 
 } // namespace PartGui
 
 
-#endif // __ViewProvider2DObject_H__
+#endif // __ViewProviderSketcher_H__
 
