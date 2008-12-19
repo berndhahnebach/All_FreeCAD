@@ -22,6 +22,10 @@
 // worse quality than the rest of the program.
 // Jonathan Westhues, May 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 static DoublePoint PtBuf[MAX_PWLS_IN_SKETCH];

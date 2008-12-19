@@ -22,6 +22,10 @@
 // and keyboard.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif 
+
 #include "sketchflat.h"
 
 // The mapping from the curve's coordinate system to our own coordinate

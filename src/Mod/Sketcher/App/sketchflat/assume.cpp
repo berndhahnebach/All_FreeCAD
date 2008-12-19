@@ -23,6 +23,11 @@
 //
 // Jonathan Westhues, June 2007
 //-----------------------------------------------------------------------------
+
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 // The Jacobian for our entire system. This is never actually solved--not

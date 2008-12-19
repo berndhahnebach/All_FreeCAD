@@ -23,6 +23,10 @@
 // all to zero.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 static void ModifyConstraintToReflectSketch(SketchConstraint *c);

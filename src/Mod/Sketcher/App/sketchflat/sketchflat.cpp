@@ -21,6 +21,10 @@
 // interface.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 char CurrentFileName[MAX_PATH];
@@ -28,28 +32,28 @@ char CurrentFileName[MAX_PATH];
 
 static void UpdateMainWindowTitle(void)
 {
-    char str[MAX_STRING];
-    sprintf(str, "SketchFlat - %s",
-        CurrentFileName[0] == '\0' ? "(not yet saved)" : CurrentFileName);
+    //char str[MAX_STRING];
+    //sprintf(str, "SketchFlat - %s",
+    //    CurrentFileName[0] == '\0' ? "(not yet saved)" : CurrentFileName);
 
-    uiSetMainWindowTitle(str);
+    //uiSetMainWindowTitle(str);
 }
 
 void Init(char *cmdLine)
 {
-    NewEmptyProgram();
+    //NewEmptyProgram();
 
-    if(strlen(cmdLine) > 0) {
-        // Make the provided filename absolute, to avoid mystery problems
-        // if e.g. the file dialog boxes later change our current directory.
-        GetFullPathName(cmdLine,
-                            sizeof(CurrentFileName), CurrentFileName, NULL);
-        if(!LoadFromFile(CurrentFileName)) {
-            uiError("Couldn't open '%s'", CurrentFileName);
-        }
-    }
+    //if(strlen(cmdLine) > 0) {
+    //    // Make the provided filename absolute, to avoid mystery problems
+    //    // if e.g. the file dialog boxes later change our current directory.
+    //    GetFullPathName(cmdLine,
+    //                        sizeof(CurrentFileName), CurrentFileName, NULL);
+    //    if(!LoadFromFile(CurrentFileName)) {
+    //        uiError("Couldn't open '%s'", CurrentFileName);
+    //    }
+    //}
 
-    UpdateMainWindowTitle();
+    //UpdateMainWindowTitle();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +63,7 @@ void Init(char *cmdLine)
 //-----------------------------------------------------------------------------
 static BOOL SaveProgram(BOOL saveAs)
 {
-    if(saveAs || CurrentFileName[0] == '\0') {
+ /*   if(saveAs || CurrentFileName[0] == '\0') {
         if(!uiGetSaveFile(CurrentFileName, "skf", SKF_PATTERN)) {
             return FALSE;
         }
@@ -71,7 +75,8 @@ static BOOL SaveProgram(BOOL saveAs)
     } else {
         uiError("Couldn't write to file '%s'", CurrentFileName);
         return FALSE;
-    }
+    }*/
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -81,69 +86,70 @@ static BOOL SaveProgram(BOOL saveAs)
 //-----------------------------------------------------------------------------
 static BOOL CheckSaveUserCancels(void)
 {
-    if(!ProgramChangedSinceSave) {
-        // no problem
-        return FALSE;
-    }
+    //if(!ProgramChangedSinceSave) {
+    //    // no problem
+    //    return FALSE;
+    //}
 
-    switch(uiSaveFileYesNoCancel()) {
-        case IDYES:
-            if(SaveProgram(FALSE))
-                return FALSE;
-            else
-                return TRUE;
+    //switch(uiSaveFileYesNoCancel()) {
+    //    case IDYES:
+    //        if(SaveProgram(FALSE))
+    //            return FALSE;
+    //        else
+    //            return TRUE;
 
-        case IDNO:
-            return FALSE;
+    //    case IDNO:
+    //        return FALSE;
 
-        case IDCANCEL:
-            return TRUE;
+    //    case IDCANCEL:
+    //        return TRUE;
 
-        default:
-            oops();
-    }
+    //    default:
+    //        oops();
+    //}
+	return false;
 }
 
 void MenuFile(int id)
 {
-    switch(id) {
-        case MNU_NEW:
-            if(CheckSaveUserCancels()) break;
-            CurrentFileName[0] = '\0';
-            NewEmptyProgram();
-            ProgramChangedSinceSave = FALSE;
-            UpdateMainWindowTitle();
-            break;
+    //switch(id) {
+    //    case MNU_NEW:
+    //        if(CheckSaveUserCancels()) break;
+    //        CurrentFileName[0] = '\0';
+    //        NewEmptyProgram();
+    //        ProgramChangedSinceSave = FALSE;
+    //        UpdateMainWindowTitle();
+    //        break;
 
-        case MNU_OPEN:
-            if(CheckSaveUserCancels()) break;
+    //    case MNU_OPEN:
+    //        if(CheckSaveUserCancels()) break;
 
-            if(uiGetOpenFile(CurrentFileName, "skf", SKF_PATTERN)) {
-                if(!LoadFromFile(CurrentFileName)) {
-                    uiError("Couldn't open '%s'", CurrentFileName);
-                    NewEmptyProgram();
-                }
-            }
-            ProgramChangedSinceSave = FALSE;
-            UpdateMainWindowTitle();
-            break;
+    //        if(uiGetOpenFile(CurrentFileName, "skf", SKF_PATTERN)) {
+    //            if(!LoadFromFile(CurrentFileName)) {
+    //                uiError("Couldn't open '%s'", CurrentFileName);
+    //                NewEmptyProgram();
+    //            }
+    //        }
+    //        ProgramChangedSinceSave = FALSE;
+    //        UpdateMainWindowTitle();
+    //        break;
 
-        case MNU_SAVE:
-            SaveProgram(FALSE);
-            UpdateMainWindowTitle();
-            break;
+    //    case MNU_SAVE:
+    //        SaveProgram(FALSE);
+    //        UpdateMainWindowTitle();
+    //        break;
 
-        case MNU_SAVE_AS:
-            SaveProgram(TRUE);
-            UpdateMainWindowTitle();
-            break;
+    //    case MNU_SAVE_AS:
+    //        SaveProgram(TRUE);
+    //        UpdateMainWindowTitle();
+    //        break;
 
-        case MNU_EXIT:
-            if(CheckSaveUserCancels()) break;
+    //    case MNU_EXIT:
+    //        if(CheckSaveUserCancels()) break;
 
-            Exit();
-            break;
-    }
+    //        Exit();
+    //        break;
+    //}
 }
 
 void MenuManual(int id)
@@ -152,7 +158,7 @@ void MenuManual(int id)
 
 void MenuAbout(int id)
 {   
-    MessageBox(NULL,
+ /*   MessageBox(NULL,
 "SketchFlat is a two-dimensional technical drawing program. It is "
 "designed primarily to generate CAM output data, for manufacturing on "
 "a laser cutter, waterjet machine, vinyl cutter, 3-axis mill, or other "
@@ -175,5 +181,5 @@ void MenuAbout(int id)
 "\r\n\r\n"
 "You should have received a copy of the GNU General Public License "
 "along with SketchFlat.  If not, see <http://www.gnu.org/licenses/>.",
-        "About SketchFlat", MB_OK | MB_ICONINFORMATION);
+        "About SketchFlat", MB_OK | MB_ICONINFORMATION);*/
 }

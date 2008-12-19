@@ -23,6 +23,10 @@
 // for the Jacobian.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 #define MAX_EXPRS_ALLOCATED (1024*10)

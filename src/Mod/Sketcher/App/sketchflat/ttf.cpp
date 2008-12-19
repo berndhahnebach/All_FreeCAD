@@ -23,6 +23,12 @@
 // added to the sketch.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
+#undef Handle
+
 #include "sketchflat.h"
 
 // Definitions for the TrueType fonts that we store in memory.

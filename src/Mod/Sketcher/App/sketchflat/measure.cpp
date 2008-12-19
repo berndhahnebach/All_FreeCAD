@@ -25,6 +25,10 @@
 //
 // Jonathan Westhues, May 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 static void DescribeConstraint(char *desc, SketchConstraint *c)
