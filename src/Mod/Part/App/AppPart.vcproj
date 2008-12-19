@@ -523,13 +523,14 @@
 			Name="PythonObjects"
 			>
 			<File
-				RelativePath=".\Part2DObject.xml"
+				RelativePath=".\Part2DObjectPy.xml"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Build Part2DObjectPy from Model"
 						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
@@ -539,6 +540,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Build Part2DObjectPy from Model"
 						CommandLine="python ../../../Tools/generate.py &quot;$(InputDir)$(InputName).xml&quot;"
 						Outputs="$(InputDir)$(InputName).cpp;$(InputDir)$(InputName).h"
 					/>
