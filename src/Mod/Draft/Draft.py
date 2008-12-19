@@ -22,7 +22,7 @@
 __title__="FreeCAD Draft Workbench"
 __author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum"
 __url__ = "http://yorik.orgfree.com"
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 '''
 General description:
@@ -30,27 +30,40 @@ General description:
 	The Draft module is a FreeCAD module for drawing/editing 2D entities.
 	The aim is to give FreeCAD basic 2D-CAD capabilities (similar
 	to Autocad and other similar software). This modules is made to be run
-	inside FreeCAD and needs the PyQt4 and pivy modules availible to python.
+	inside FreeCAD and needs the PyQt4 and pivy modules available.
 	A complete development plan of this module can be found at
 	http://yorik.orgfree.com/scripts/FreeCAD-Draft.html
 	and a user manual is at
 	http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Draft_Module
 
-Contents:
+How it works / how to extend:
 
-	- General functions: snap, constraint, format
+	This module is written entirely in python. If you know a bit of python
+	language, you are welcome to modify this module or to help us to improve it.
+	Suggestions are also welcome on the FreeCAD discussion forum.
+
+	If you want to have a look at the code, here is a general explanation. The
+	Draft module is divided in two files: Draft.py (this one) and draftGui.py.
+	The Draft.py file is doing all the actual cad operation, while in draftGui.py
+	you have the ui part, ie. the draft command bar. Both files are loaded at
+	module init by InitGui.py, which is called directly by FreeCAD. In Draft.py, you have:
+	- General functions, like snap, constraint, format, that are shared by all the tools
 	- Trackers, for drawing temporary stuff: snaps, lines, arcs or ghosts
-	- Geometry Constructors: line, circle, rectangle, text
-	- Geometry Modifiers: move, rotate, offset, upgrade, downgrade, trimex
-	- FreeCAD Commands
+	- Tools that construct geometry: line, circle, rectangle, text
+	- Tools that modify geometry: move, rotate, offset, upgrade, downgrade, trimex
+	- The tools are then mapped to FreeCAD commands
+	The tools all have an Activated() function, which is called by FreeCAD when the
+	corresponding FreeCAD command is invoked. Most tools then create the trackers they
+	will need during operation, then place a callback mechanism, which will detect
+	user input and do the necessary cad operations. They also send commands to the
+	command bar, which will display the appropriate controls. While the scene event
+	callback watches mouse events, the keyboard is being watched by the command bar.
+
 
 Todo:
 
 	- upgrade offset, dxf export and trimex to wires containing arcs
-	- fix offset of rectangles
 	- support unicode in texts
-	- heavy bugs fix
-	- dimension tool
 '''
 
 # import FreeCAD modules
@@ -81,7 +94,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 	    - Nodes and midpoints of lines/polylines
 	    - Centers and quadrant points of circles
 	    - Endpoints of arcs
-	    - Intersection of line/polylines segments
+	    - Intersection between line, polylines segments, arcs and circles
 	    - When constrained (SHIFT pressed), Intersections between
 	      constraining axis and lines/polylines
 	'''
@@ -373,18 +386,42 @@ def complexity(obj):
 		return 2 # contains arcs
 	return 1 # then, this is a line!
 
-def getUiColor():
-	snapcolor = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("snapcolor")
-	r = ((snapcolor>>24)&0xFF)/255
-	g = ((snapcolor>>16)&0xFF)/255
-	b = ((snapcolor>>8)&0xFF)/255
-	return (r,g,b)
+def getUiColor(type):
+	"gets color from the preferences or toolbar"
+	if type == "snap":
+		snapcolor = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("snapcolor")
+		r = ((snapcolor>>24)&0xFF)/255
+		g = ((snapcolor>>16)&0xFF)/255
+		b = ((snapcolor>>8)&0xFF)/255
+		return (r,g,b)
+	elif type == "ui":
+		ui= FreeCADGui.activeWorkbench().draftToolBar.ui
+		r = float(ui.color.red()/255.0)
+		g = float(ui.color.green()/255.0)
+		b = float(ui.color.blue()/255.0)
+		return (r,g,b)
 
+def selectObject(arg):
+	"this is a scene even handler, to be called from the tools when they need to select an object"
+	if (arg["Type"] == "SoKeyboardEvent"):
+		if (arg["Key"] == "ESCAPE"):
+			    FreeCADGui.activeWorkbench().activeDraftCommand.finish()
+	if (arg["Type"] == "SoMouseButtonEvent"):
+		if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+			selection = FreeCADGui.Selection.getSelection()
+			cursor = arg["Position"]
+			snapped = FreeCADGui.ActiveDocument.ActiveView.getObjectInfo((cursor[0],cursor[1]))
+			if snapped:
+				snapped = FreeCAD.ActiveDocument.getObject(snapped['Object'])
+				FreeCADGui.Selection.addSelection(snapped)
+				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()	
+
+				
 class snapTracker:
 	"a class to create a snap marker symbol, used by the functions that support snapping"
 	def __init__(self):
 		color = coin.SoBaseColor()
-		color.rgb = getUiColor()
+		color.rgb = getUiColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -407,7 +444,7 @@ class lineTracker:
 	"a class to create a tracking line used by the functions that need it"
 	def __init__(self,dotted=False):
 		color = coin.SoBaseColor()
-		color.rgb = (0,0,0)
+		color.rgb = getUiColor("ui")
 		line = coin.SoLineSet()
 		line.numVertices.setValue(2)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -448,7 +485,7 @@ class rectangleTracker:
 	"a class to create a tracking line used by the functions that need it"
 	def __init__(self):
 		color = coin.SoBaseColor()
-		color.rgb = (0,0,0)
+		color.rgb = getUiColor("ui")
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -487,7 +524,7 @@ class arcTracker:
 	"a class to create a tracking arc/circle, used by the functions that need it"
 	def __init__(self):
 		color = coin.SoBaseColor()
-		color.rgb = (0,0,0)
+		color.rgb = getUiColor("ui")
 		self.coords = coin.SoCoordinate4()
 		trackpts = [[1,0,0,1],[0.707107,0.707107,0,0.707107],[0,1,0,1],
 			[-0.707107,0.707107,0,0.707107],[-1,0,0,1],[-0.707107,-0.707107,0,0.707107],
@@ -880,13 +917,26 @@ class rectangle:
 		"creates the final object in the current doc"
 		ve = []
 		edges = []
-		for i in range(4):
-			n = self.rect.coords.point.getValues()[i]
-			ve.append(FreeCAD.Vector(n[0],n[1],n[2]))
-		edges.append(Part.Line(ve[0],ve[1]).toShape())
-		edges.append(Part.Line(ve[1],ve[2]).toShape())
-		edges.append(Part.Line(ve[2],ve[3]).toShape())
-		edges.append(Part.Line(ve[3],ve[0]).toShape())
+
+		z = self.node[0].z
+		if self.node[0].x < self.node[1].x:
+			minx = self.node[0].x
+			maxx = self.node[1].x
+		else:
+			minx = self.node[1].x
+			maxx = self.node[0].x
+		if self.node[0].y < self.node[1].y:
+			miny = self.node[0].y
+			maxy = self.node[1].y
+		else:
+			miny = self.node[1].y
+			maxy = self.node[0].y
+
+		edges.append(Part.Line(FreeCAD.Vector(minx,maxy,z),FreeCAD.Vector(maxx,maxy,z)).toShape())
+		edges.append(Part.Line(FreeCAD.Vector(maxx,maxy,z),FreeCAD.Vector(maxx,miny,z)).toShape())
+		edges.append(Part.Line(FreeCAD.Vector(maxx,miny,z),FreeCAD.Vector(minx,miny,z)).toShape())
+		edges.append(Part.Line(FreeCAD.Vector(minx,miny,z),FreeCAD.Vector(minx,maxy,z)).toShape())
+			
 		shape=Part.Wire(edges)
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("Part::Feature",self.featureName)
@@ -1276,39 +1326,52 @@ class move:
 	'''
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.sourceCmd = self
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui.cmdlabel.setText("Move")
+			self.featureName = "Move"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.constraintrack = None
+				FreeCAD.Console.PrintMessage("Select an object to move\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
+		self.doc = FreeCAD.ActiveDocument 
 		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel)>0):
-				self.view = FreeCADGui.ActiveDocument.ActiveView
-				self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui		
-				self.constrain = None
-				self.pos = []
-				self.ui.pointUi()
-				self.ui.cmdlabel.setText("Move")
-				FreeCADGui.activeWorkbench().activeDraftCommand = self
-				self.ui.sourceCmd = self
-				self.featureName = "Move"
-				self.ui.xValue.setFocus()
-				self.ui.xValue.selectAll()
-				self.node = []
-				self.snap = snapTracker()
-				self.linetrack = lineTracker()
-				self.constraintrack = lineTracker(dotted=True)
-				self.ghost = ghostTracker(self.sel)
-				self.call = self.view.addEventCallback("SoEvent",self.action)
-				FreeCAD.Console.PrintMessage("Pick start point:\n")
+		self.constrain = None
+		self.pos = []
+		self.ui.pointUi()
+		self.ui.xValue.setFocus()
+		self.ui.xValue.selectAll()
+		self.node = []
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		self.ghost = ghostTracker(self.sel)
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick start point:\n")
 
 	def finish(self,closed=False):
 		self.node=[]
+		FreeCAD.Console.PrintMessage("")
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
 		self.ui.sourceCmd=None
+		FreeCADGui.activeWorkbench().activeDraftCommand = None
 		del self.ghost
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def move(self,delta,copy=False):
 		"moving the real shapes"
@@ -1331,6 +1394,7 @@ class move:
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
 			ctrlPoint = FreeCAD.Vector(point.x,point.y,point.z)
+			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
 			else:
@@ -1354,6 +1418,7 @@ class move:
 				self.pos = arg["Position"]
 				point = self.view.getPoint(self.pos[0],self.pos[1])
 				point = snapPoint(self,point,self.pos,arg["CtrlDown"])
+				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 				if (arg["ShiftDown"]): 
 					point = constrainPoint(self,point)
 				else:
@@ -1440,34 +1505,51 @@ class rotate:
 	-press ALT to create a copy
 	'''
 
-	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel)>0):
-				self.view = FreeCADGui.ActiveDocument.ActiveView
-				self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-				self.step = 0
-				self.featureName = "Rotate"
-				FreeCADGui.activeWorkbench().activeDraftCommand = self
-				self.center = None
-				self.node = []
-				self.constrain = None
-				self.ui.arcUi()
-				self.ui.cmdlabel.setText("Rotate")
-				self.ui.sourceCmd = self
-				self.snap = snapTracker()
-				self.linetrack = lineTracker()
-				self.constraintrack = lineTracker(dotted=True)
-				self.arctrack = arcTracker()
-				self.ghost = ghostTracker(self.sel)
-				self.call = self.view.addEventCallback("SoEvent",self.action)
-				FreeCAD.Console.PrintMessage("Pick rotation center:\n")
 
+	def Activated(self):
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.sourceCmd = self
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui.cmdlabel.setText("Rotate")
+			self.featureName = "Rotate"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.arctrack = None
+				self.constraintrack = None
+				FreeCAD.Console.PrintMessage("Select an object to rotate\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
+		self.doc = FreeCAD.ActiveDocument 
+		self.sel = FreeCADGui.Selection.getSelection()
+		self.step = 0
+		self.constrain = None
+		self.pos = []
+		self.node = []
+		self.center = None
+		self.ui.arcUi()
+		self.ui.cmdlabel.setText("Rotate")
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		self.arctrack = arcTracker()
+		self.ghost = ghostTracker(self.sel)
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
+				
 	def finish(self,closed=False):
 		"finishes the arc"
 		self.ui.offUi()
 		self.view.removeEventCallback("SoEvent",self.call)
+		FreeCAD.Console.PrintMessage("")
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
@@ -1666,46 +1748,73 @@ class offset:
 	-press ALT to create a copy
 	'''
 
-	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel) == 1):
-				self.view = FreeCADGui.ActiveDocument.ActiveView
-				self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-				self.sel = self.sel[0]
-				self.constrain = None
-				self.constrainSeg = None
-				self.pos = []
-				self.ui.radiusUi()
-				self.ui.isCopy.show()
-				self.ui.labelRadius.setText("Distance")
-				self.ui.cmdlabel.setText("Offset")
-				FreeCADGui.activeWorkbench().activeDraftCommand = self
-				self.ui.sourceCmd = self
-				self.featureName = "Offset"
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
-				self.node = []
-				self.snap = snapTracker()
-				self.linetrack = lineTracker()
-				if (len(self.sel.Shape.Edges) > 1):
-					self.ghost = ghostTracker(self.sel,"single")
-					self.type="line"
-				else:
-					if isinstance(self.sel.Shape.Edges[0].Curve,Part.Line):
-						self.ghost = ghostTracker(self.sel,"single")
-						self.type="line"
-					else:
-						self.ghost = arcTracker()
-						self.setuparc()
-						self.type="arc"
-				self.call = self.view.addEventCallback("SoEvent",self.action)
-				FreeCAD.Console.PrintMessage("Pick distance:\n")
-				if (complexity(self.sel) == 8) or (complexity(self.sel) == 6):
-					FreeCAD.Console.PrintMessage("Sorry, straight+curve wires are not supported at the moment...")
-					self.finish()
 
+
+
+				
+
+				
+
+
+
+	def Activated(self):
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.sourceCmd = self
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui.cmdlabel.setText("Offset")
+			self.featureName = "Offset"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.arctrack = None
+				self.constraintrack = None
+				FreeCAD.Console.PrintMessage("Select an object to offset\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			elif len(FreeCADGui.Selection.getSelection()) > 1:
+				FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
+			else:
+				self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
+		self.doc = FreeCAD.ActiveDocument 
+		self.sel = FreeCADGui.Selection.getSelection()[0]
+		self.step = 0
+		self.constrain = None
+		self.constrainSeg = None
+		self.pos = []
+		self.node = []
+		self.ui.radiusUi()
+		self.ui.isCopy.show()
+		self.ui.labelRadius.setText("Distance")
+		self.ui.cmdlabel.setText("Offset")
+		self.ui.radiusValue.setFocus()
+		self.ui.radiusValue.selectAll()
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+
+		if (len(self.sel.Shape.Edges) > 1):
+			self.ghost = ghostTracker(self.sel,"single")
+			self.type="line"
+		else:
+			if isinstance(self.sel.Shape.Edges[0].Curve,Part.Line):
+				self.ghost = ghostTracker(self.sel,"single")
+				self.type="line"
+			else:
+				self.ghost = arcTracker()
+				self.setuparc()
+				self.type="arc"
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		if (complexity(self.sel) == 8) or (complexity(self.sel) == 6):
+			FreeCAD.Console.PrintWarning("Sorry, straight+curve wires are not supported at the moment...")
+			self.finish()
+					
 	def finish(self,closed=False):
 		self.node=[]
 		self.view.removeEventCallback("SoEvent",self.call)
@@ -1980,53 +2089,67 @@ class upgrade:
 	- otherwise join all edges into a wire (closed if applicable)
 	'''
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.doc = FreeCAD.ActiveDocument
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.cmdlabel.setText("Upgrade")			
+			self.featureName = "Upgrade"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
+		
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = FreeCADGui.Selection.getSelection()
-		self.featureName = "Upgrade"
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel) > 0):
-				edges = []
-				wires = []
-				faces = []
-				# determining which level we will have
-				for ob in self.sel:
-					for f in ob.Shape.Faces:
-						faces.append(f)
-					for w in ob.Shape.Wires:
-						if w.isClosed():
-							wires.append(w)
-					lastob = ob
-				# applying transformation
-				self.doc.openTransaction("Upgrade")
-				if (len(faces) > 0):
-					u = faces.pop(0)
-					for f in faces:
-						u = u.fuse(f)
-						u = concatenate(u)
-
-					newob = self.doc.addObject("Part::Feature","Union")
-					newob.Shape = u
-					formatObject(newob,lastob)
-				elif (len(wires) > 0):
-					for w in wires:
-						f = Part.Face(w)
-						faces.append(f)
-					for f in faces:
-						newob = self.doc.addObject("Part::Feature","Face")
-						newob.Shape = f
-						formatObject(newob,lastob)
-				else:
-					for ob in self.sel:
-						for e in ob.Shape.Edges:
-							edges.append(e)
-					w = Part.Wire(edges)
-					newob = self.doc.addObject("Part::Feature","Wire")
-					newob.Shape = w
-					formatObject(newob,lastob)
-				for ob in self.sel:
-					self.doc.removeObject(ob.Name)
-				self.doc.commitTransaction()
-				select(newob)
+		edges = []
+		wires = []
+		faces = []
+		# determining which level we will have
+		for ob in self.sel:
+			for f in ob.Shape.Faces:
+				faces.append(f)
+			for w in ob.Shape.Wires:
+				if w.isClosed():
+					wires.append(w)
+			lastob = ob
+		# applying transformation
+		self.doc.openTransaction("Upgrade")
+		if (len(faces) > 0):
+			u = faces.pop(0)
+			for f in faces:
+				u = u.fuse(f)
+				u = concatenate(u)
+			newob = self.doc.addObject("Part::Feature","Union")
+			newob.Shape = u
+			formatObject(newob,lastob)
+		elif (len(wires) > 0):
+			for w in wires:
+				f = Part.Face(w)
+				faces.append(f)
+			for f in faces:
+				newob = self.doc.addObject("Part::Feature","Face")
+				newob.Shape = f
+				formatObject(newob,lastob)
+		else:
+			for ob in self.sel:
+				for e in ob.Shape.Edges:
+					edges.append(e)
+			w = Part.Wire(edges)
+			newob = self.doc.addObject("Part::Feature","Wire")
+			newob.Shape = w
+			formatObject(newob,lastob)
+		for ob in self.sel:
+			self.doc.removeObject(ob.Name)
+			self.doc.commitTransaction()
+			select(newob)
+			self.ui.offUi()
+			FreeCADGui.activeWorkbench().activeDraftCommand = None
+				
 	def GetResources(self):
 		return {'Pixmap'  : 'Mod/Draft/icons/upgrade.png',
 			'MenuText': 'Upgrade',
@@ -2040,46 +2163,61 @@ class downgrade:
 	- otherwise wires are exploded into single edges
 	'''
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.doc = FreeCAD.ActiveDocument
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.cmdlabel.setText("Downgrade")		
+			self.featureName = "Downgrade"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
+
+
+	def proceed(self):
 		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel) > 0):
-				self.featureName = "Upgrade"
-				edges = []
-				faces = []
-				for ob in self.sel:
-					for f in ob.Shape.Faces:
-						faces.append(f)
-				for ob in self.sel:
-					for e in ob.Shape.Edges:
-						edges.append(e)
-				# applying transformation
-				self.doc.openTransaction("Downgrade")
-				if (len(faces) > 1):
-					u = faces.pop(0)
-					for f in faces:
-						u = u.cut(f)
-						for ob in self.sel:
-							newob = self.doc.addObject("Part::Feature","Subtraction")
-							newob.Shape = u
-							formatObject(newob,ob)
-							self.doc.removeObject(ob.Name)
-				elif (len(faces) > 0):
-					w=faces[0].Wires[0]
-					for ob in self.sel:
-						newob = self.doc.addObject("Part::Feature","Wire")
-						newob.Shape = w
-						formatObject(newob,ob)
-						self.doc.removeObject(ob.Name)
-				else:
-					for ob in self.sel:
-						for e in edges:
-							newob = self.doc.addObject("Part::Feature","Edge")
-							newob.Shape = e
-							formatObject(newob,ob)
-						self.doc.removeObject(ob.Name)
-				self.doc.commitTransaction()
-				select(newob)
+		edges = []
+		faces = []
+		for ob in self.sel:
+			for f in ob.Shape.Faces:
+				faces.append(f)
+		for ob in self.sel:
+			for e in ob.Shape.Edges:
+				edges.append(e)
+		# applying transformation
+		self.doc.openTransaction("Downgrade")
+		if (len(faces) > 1):
+			u = faces.pop(0)
+			for f in faces:
+				u = u.cut(f)
+			for ob in self.sel:
+				newob = self.doc.addObject("Part::Feature","Subtraction")
+				newob.Shape = u
+				formatObject(newob,ob)
+				self.doc.removeObject(ob.Name)
+		elif (len(faces) > 0):
+			w=faces[0].Wires[0]
+			for ob in self.sel:
+				newob = self.doc.addObject("Part::Feature","Wire")
+				newob.Shape = w
+				formatObject(newob,ob)
+				self.doc.removeObject(ob.Name)
+		else:
+			for ob in self.sel:
+				for e in edges:
+					newob = self.doc.addObject("Part::Feature","Edge")
+					newob.Shape = e
+					formatObject(newob,ob)
+				self.doc.removeObject(ob.Name)
+		self.doc.commitTransaction()
+		select(newob)
+		self.ui.offUi()
+		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		
 	def GetResources(self):
 		return {'Pixmap'  : 'Mod/Draft/icons/downgrade.png',
 			'MenuText': 'Downgrade',
@@ -2091,37 +2229,48 @@ class trimex:
 	"this tool trims or extends lines, polylines and arcs. SHIFT constrains to the last point."
 
 	def Activated(self):
+		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.sourceCmd = self
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.ui.cmdlabel.setText("Trimex")
+			self.featureName = "Trimex"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.constraintrack = None
+				FreeCAD.Console.PrintMessage("Select an object to trim/extend\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.doc = FreeCAD.ActiveDocument
-		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel) == 1):
-				self.sel=self.sel[0]
-				self.view = FreeCADGui.ActiveDocument.ActiveView
-				self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-				self.ui.radiusUi()
-				self.ui.labelRadius.setText("Distance")
-				self.ui.cmdlabel.setText("Trimex")
-				FreeCADGui.activeWorkbench().activeDraftCommand = self
-				self.ui.sourceCmd = self
-				self.featureName = "Trimex"
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
-				self.node = []
-				self.snap = snapTracker()
-				self.linetrack = lineTracker()
-				self.ghost = ghostTracker(self.sel,"single")
-				self.sel.ViewObject.Visibility = False
-				self.ghost.on()
-				self.activePoint = 0
-				self.nodes = []
-				for v in self.sel.Shape.Vertexes:
-					self.nodes.append(v.Point)
-				self.call = self.view.addEventCallback("SoEvent",self.action)
-				FreeCAD.Console.PrintMessage("Pick distance:\n")
-				print complexity(self.sel)
-				if (complexity(self.sel) != 1) and (complexity(self.sel) != 4):
-					FreeCAD.Console.PrintMessage("Closed wires and wires containing arcs are not supported at the moment:\n")
-					self.finish()
+		self.sel = FreeCADGui.Selection.getSelection()[0]
+		self.ui.radiusUi()
+		self.ui.labelRadius.setText("Distance")
+		FreeCADGui.activeWorkbench().activeDraftCommand = self
+		self.ui.radiusValue.setFocus()
+		self.ui.radiusValue.selectAll()
+		self.node = []
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.ghost = ghostTracker(self.sel,"single")
+		self.sel.ViewObject.Visibility = False
+		self.ghost.on()
+		self.activePoint = 0
+		self.nodes = []
+		for v in self.sel.Shape.Vertexes:
+			self.nodes.append(v.Point)
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		if (complexity(self.sel) != 1) and (complexity(self.sel) != 4):
+			FreeCAD.Console.PrintMessage("Closed wires and wires containing arcs are not supported at the moment:\n")
+			self.finish()
 				
 	def action(self,arg):
 		"scene event handler"
