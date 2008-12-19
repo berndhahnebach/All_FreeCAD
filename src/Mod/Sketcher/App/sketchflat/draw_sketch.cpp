@@ -20,6 +20,10 @@
 // Drawing stuff specific to the sketch (vs. derive) mode of display.
 // Jonathan Westhues, May 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 #define OPERATION_NONE                  0

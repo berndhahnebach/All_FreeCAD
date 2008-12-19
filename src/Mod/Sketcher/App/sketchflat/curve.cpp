@@ -21,6 +21,10 @@
 // already have constant numerical coefficients.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 #define CHORD_TOLERANCE_IN_PIXELS 0.25
@@ -368,10 +372,10 @@ static BOOL ImportFromFile(hEntity he, hLayer hl, char *file)
     int SKpwls0 = SK->pwls;
 
     // Guess the file type from the extension.
-    if(stricmp(ext, ".plt")==0 || stricmp(ext, "hpgl")==0) {
+    if(_stricmp(ext, ".plt")==0 || _stricmp(ext, "hpgl")==0) {
         ImportFromHpgl(he, hl, file, TRUE);
         ImportFromHpgl(he, hl, file, FALSE);
-    } else if(stricmp(ext, ".dxf")==0) {
+    } else if(_stricmp(ext, ".dxf")==0) {
         ImportFromDxf(he, hl, file, TRUE);
         ImportFromDxf(he, hl, file, FALSE);
     }

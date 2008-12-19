@@ -21,6 +21,10 @@
 //
 // Jonathan Westhues, June 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 // Return codes for the export functions.

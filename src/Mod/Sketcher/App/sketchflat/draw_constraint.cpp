@@ -22,6 +22,10 @@
 // draw those, and where we manipulate those graphical representations.
 // Jonathan Westhues, April 2007
 //-----------------------------------------------------------------------------
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
 #include "sketchflat.h"
 
 static double NormTheta(double theta)
