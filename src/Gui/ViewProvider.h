@@ -104,8 +104,8 @@ public:
     /// returns a list of all possible display modes
     virtual std::vector<std::string> getDisplayModes(void) const=0;
     /// is called when the view provider should be edited, returns false if no edit possible.
-    virtual bool edit(void){return false;}
-    virtual void setEdit(void){};
+    //virtual bool edit(void){return false;}
+    virtual bool setEdit(int ModNum = 0){return false;};
     virtual void unsetEdit(void){};
     virtual const char* getEditModeName(void){return 0;}
 

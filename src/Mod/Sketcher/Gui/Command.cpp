@@ -33,10 +33,10 @@
 
 using namespace std;
 
-DEF_STD_CMD(CmdSketcherConstraintAxle);
+DEF_STD_CMD_A(CmdSketcherNewSketch);
 
-CmdSketcherConstraintAxle::CmdSketcherConstraintAxle()
-	:Command("Sketcher_ConstraintAxle")
+CmdSketcherNewSketch::CmdSketcherNewSketch()
+	:Command("Sketcher_NewSketch")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -44,22 +44,30 @@ CmdSketcherConstraintAxle::CmdSketcherConstraintAxle()
     sToolTipText    = QT_TR_NOOP("Set an axle constraint between two objects");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "actions/document-new";
+    sPixmap         = "Sketcher_NewSketch";
 }
 
 
-void CmdSketcherConstraintAxle::activated(int iMsg)
+void CmdSketcherNewSketch::activated(int iMsg)
 {
-    // load the file with the module
-    //Command::doCommand(Command::Gui, "import Sketcher, SketcherGui");
+    openCommand("Sketcher Create a new Sketch");
+    doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    commitCommand();
       
 }
 
+bool CmdSketcherNewSketch::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
 
 
 void CreateSketcherCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-    rcCmdMgr.addCommand(new CmdSketcherConstraintAxle());
+    rcCmdMgr.addCommand(new CmdSketcherNewSketch());
  }

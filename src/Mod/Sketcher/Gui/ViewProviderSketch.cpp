@@ -100,11 +100,11 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
     createGrid();
 
 
-}
+} 
 
-void ViewProviderSketch::setEdit(void)
+bool ViewProviderSketch::setEdit(int ModNum)
 {
-
+	return true;
 }
 
 void ViewProviderSketch::unsetEdit(void)

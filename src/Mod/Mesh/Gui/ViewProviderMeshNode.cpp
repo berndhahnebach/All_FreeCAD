@@ -256,10 +256,11 @@ std::vector<std::string> ViewProviderMeshNode::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderMeshNode::setEdit(void)
+bool ViewProviderMeshNode::setEdit(int ModNum)
 {
-  if ( m_bEdit ) return;
+  if ( m_bEdit ) return true;
   m_bEdit = true;
+  return true;
 }
 
 void ViewProviderMeshNode::unsetEdit(void)

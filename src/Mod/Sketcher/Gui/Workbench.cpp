@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher"));
-    *part << "Sketcher_ConstraintAxle";
+    *part << "Sketcher_NewSketch";
      return root;
 }
 

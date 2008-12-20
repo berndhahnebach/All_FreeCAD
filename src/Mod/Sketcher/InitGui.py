@@ -67,4 +67,4 @@ class SketcherWorkbench ( Workbench ):
 	def GetClassName(self):
 		return "SketcherGui::Workbench"
 
-#Gui.addWorkbench(SketcherWorkbench())
+Gui.addWorkbench(SketcherWorkbench())
