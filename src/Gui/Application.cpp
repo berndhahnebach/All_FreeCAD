@@ -693,28 +693,24 @@ bool Application::activateWorkbench(const char* name)
         if (newWb)
             newWb->activated();
     }
-    catch (Py::Exception& e) {
-        Py::Object o = Py::type(e);
-        e.clear();
-        if (o.isString()) {
-            Py::String s(o);
-            QString msg = QString::fromAscii(s.as_std_string().c_str());
-            QRegExp rx;
-            // ignore '<type 'exceptions.ImportError'>' prefixes
-            rx.setPattern(QLatin1String("^\\s*<type 'exceptions.ImportError'>:\\s*"));
-            int pos = rx.indexIn(msg);
-            while ( pos != -1 ) {
-                msg = msg.mid(rx.matchedLength());
-                pos = rx.indexIn(msg);
-            }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        QString msg = QString::fromAscii(e.what());
+        QRegExp rx;
+        // ignore '<type 'exceptions.ImportError'>' prefixes
+        rx.setPattern(QLatin1String("^\\s*<type 'exceptions.ImportError'>:\\s*"));
+        int pos = rx.indexIn(msg);
+        while ( pos != -1 ) {
+            msg = msg.mid(rx.matchedLength());
+            pos = rx.indexIn(msg);
+        }
 
-            Base::Console().Error("%s\n", (const char*)msg.toAscii());
-            if (!d->_bStartingUp) {
-                wc.restoreCursor();
-                QMessageBox::critical(getMainWindow(), QObject::tr("Workbench failure"), 
-                    QObject::tr("%1").arg(msg));
-                wc.setWaitCursor();
-            }
+        Base::Console().Error("%s\n", (const char*)msg.toAscii());
+        if (!d->_bStartingUp) {
+            wc.restoreCursor();
+            QMessageBox::critical(getMainWindow(), QObject::tr("Workbench failure"), 
+                QObject::tr("%1").arg(msg));
+            wc.setWaitCursor();
         }
     }
 

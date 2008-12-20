@@ -379,22 +379,38 @@ PyObject*  MeshPy::addFacets(PyObject *args)
                 Mesh::FacetPy* face = static_cast<Mesh::FacetPy*>((*it).ptr());
                 facets.push_back(*face->getFacetPtr());
             }
-            else {
-                Py::Tuple tuple(*it);
-                if (tuple.size() == 3) {
-                    for (int i=0; i<3; i++) {
-                        Base::Vector3d p = Py::Vector(tuple[i]).toVector();
-                        facet._aclPoints[i].Set((float)p.x,(float)p.y,(float)p.z);
+            else if ((*it).isSequence()) {
+                Py::Sequence seq(*it);
+                if (seq.size() == 3) {
+                    if (PyFloat_Check(seq[0].ptr())) {
+                        // always three triple build a triangle
+                        facet._aclPoints[0] = Base::getVectorFromTuple<float>((*it).ptr());
+                        ++it;
+                        facet._aclPoints[1] = Base::getVectorFromTuple<float>((*it).ptr());
+                        ++it;
+                        facet._aclPoints[2] = Base::getVectorFromTuple<float>((*it).ptr());
                     }
+                    else {
+                        for (int i=0; i<3; i++) {
+                            if (PyObject_TypeCheck(seq[i].ptr(), &(Base::VectorPy::Type))) {
+                                Base::Vector3d p = Py::Vector(seq[i]).toVector();
+                                facet._aclPoints[i].Set((float)p.x,(float)p.y,(float)p.z);
+                            }
+                            else if (seq[i].isSequence()){
+                                facet._aclPoints[i] = Base::getVectorFromTuple<float>(seq[i].ptr());
+                            }
+                        }
+                    }
+
                     facet.CalcNormal();
                     facets.push_back(facet);
                 }
                 else {
                     int index=0;
                     for (int i=0; i<3; i++) {
-                        facet._aclPoints[i].x = (float)(double)Py::Float(tuple[index++]);
-                        facet._aclPoints[i].y = (float)(double)Py::Float(tuple[index++]);
-                        facet._aclPoints[i].z = (float)(double)Py::Float(tuple[index++]);
+                        facet._aclPoints[i].x = (float)(double)Py::Float(seq[index++]);
+                        facet._aclPoints[i].y = (float)(double)Py::Float(seq[index++]);
+                        facet._aclPoints[i].z = (float)(double)Py::Float(seq[index++]);
                     }
                     facet.CalcNormal();
                     facets.push_back(facet);
