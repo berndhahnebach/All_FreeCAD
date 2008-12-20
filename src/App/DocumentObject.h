@@ -159,7 +159,7 @@ protected:
     
     /// get called befor the value is changed
     virtual void onBeforeChange(const Property* prop);
-    /// get called by the container when a Proptery was changed
+    /// get called by the container when a property was changed
     virtual void onChanged(const Property* prop);
 
      /// python object of this class and all descendend

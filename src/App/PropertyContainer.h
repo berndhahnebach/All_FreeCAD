@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PropteryContainer_H__
-#define __PropteryContainer_H__
+#ifndef APP_PROPERTYCONTAINER_H
+#define APP_PROPERTYCONTAINER_H
 
 #include <map>
 #include <Base/Persistence.h>
@@ -154,7 +154,7 @@ public:
 
 
 protected: 
-  /// get called by the container when a Proptery was changed
+  /// get called by the container when a property has changed
   virtual void onChanged(const Property* /*prop*/){};
   /// get called before the value is changed
   virtual void onBeforeChange(const Property* /*prop*/){};
@@ -222,4 +222,4 @@ void _class_::init(void){\
 
 } // namespace App
 
-#endif // __PropteryContainer_H__
+#endif // APP_PROPERTYCONTAINER_H

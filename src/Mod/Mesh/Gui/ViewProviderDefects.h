@@ -53,7 +53,7 @@ public:
   virtual void showDefects() = 0;
 
 protected:
-  /// get called by the container whenever a proptery has been changed
+  /// get called by the container whenever a property has been changed
   void onChanged(const App::Property* prop);
 
   SoCoordinate3 * pcCoords;
