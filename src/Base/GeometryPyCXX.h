@@ -31,7 +31,7 @@ namespace Base {
 template <typename T>
 inline Vector3<T> getVectorFromTuple(PyObject* o)
 {
-    Py::Tuple tuple(o);
+    Py::Sequence tuple(o);
     T x = (T)Py::Float(tuple.getItem(0));
     T y = (T)Py::Float(tuple.getItem(1));
     T z = (T)Py::Float(tuple.getItem(2));

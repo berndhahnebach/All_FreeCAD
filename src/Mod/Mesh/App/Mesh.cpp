@@ -1142,16 +1142,15 @@ Segment& MeshObject::getSegment(unsigned long index)
 
 MeshObject* MeshObject::meshFromSegment(const std::vector<unsigned long>& indices) const
 {
-    MeshCore::MeshKernel kernel;
-    MeshCore::MeshBuilder builder(kernel);
-    builder.Initialize(indices.size());
-    MeshCore::MeshFacetIterator f_it(this->_kernel);
+    MeshCore::MeshFacetArray facets;
+    const MeshCore::MeshPointArray& kernel_p = _kernel.GetPoints();
+    const MeshCore::MeshFacetArray& kernel_f = _kernel.GetFacets();
     for (std::vector<unsigned long>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
-        f_it.Set(*it);
-        builder.AddFacet(*f_it);
+        facets.push_back(kernel_f[*it]);
     }
 
-    builder.Finish();
+    MeshCore::MeshKernel kernel;
+    kernel.Merge(kernel_p, facets);
 
     return new MeshObject(kernel, _Mtrx);
 }
