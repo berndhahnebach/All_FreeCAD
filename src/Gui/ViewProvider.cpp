@@ -81,6 +81,23 @@ ViewProvider::~ViewProvider()
         pcAnnotation->unref();
 }
 
+bool ViewProvider::setEdit(int ModNum)
+{
+    //Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+    //viewer->addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
+	return true;
+};
+void ViewProvider::unsetEdit(void)
+{
+    //viewer->removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
+
+};
+
+void ViewProvider::EventCallback(void * ud, SoEventCallback * n)
+{
+
+}
+
 SoSeparator* ViewProvider::getAnnotation(void)
 {
     if (!pcAnnotation) {

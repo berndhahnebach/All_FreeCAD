@@ -100,6 +100,7 @@
 #include "MainWindow.h"
 #include "MenuManager.h"
 #include "Application.h"
+#include "Document.h"
 #include "MouseModel.h"
 
 #include "ViewProvider.h"
@@ -205,11 +206,30 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
   
   _ViewProviderSet.erase(pcProvider);
 }
+bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
+{
+	if(_ViewProviderSet.find(p) == _ViewProviderSet.end())
+		return false;
+	inEdit = p;
+	addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,p);
+	p->setEdit(ModNum);
+	return true;
+}
+  /// reset from edit mode
+void View3DInventorViewer::resetEdit(void)
+{
+	if(inEdit){
+		inEdit->unsetEdit();
+		removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,inEdit);
+		inEdit = 0;
+	}
+
+}
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
   : inherited (parent, name, embed, type, build),
     MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),
-    _iMouseModel(1), editing(FALSE), redirected(FALSE)
+    _iMouseModel(1), editing(FALSE), redirected(FALSE),inEdit(0)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
@@ -1001,6 +1021,11 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     const SoKeyboardEvent * const event = (const SoKeyboardEvent *) ev;
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
     switch (event->getKey()) {
+    case SoKeyboardEvent::ESCAPE:
+      if(inEdit)
+		  Gui::Application::Instance->activeDocument()->resetEdit();
+      processed = true;
+      break;
     case SoKeyboardEvent::LEFT_CONTROL:
     case SoKeyboardEvent::RIGHT_CONTROL:
       this->ctrldown = press;
@@ -1247,6 +1272,11 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
   if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
     SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
     switch (ke->getKey()) {
+    case SoKeyboardEvent::ESCAPE:
+      if(inEdit)
+		  Gui::Application::Instance->activeDocument()->resetEdit();
+      processed = true;
+      break;
     case SoKeyboardEvent::LEFT_ALT:
     case SoKeyboardEvent::RIGHT_ALT:
     case SoKeyboardEvent::LEFT_CONTROL:

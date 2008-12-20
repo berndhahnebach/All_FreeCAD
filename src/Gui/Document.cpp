@@ -151,8 +151,9 @@ Document::~Document()
 bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
 {
     if (d->_pcInEdit)
-        d->_pcInEdit->unsetEdit();
-    if (p->setEdit(ModNum))
+        resetEdit();
+	View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(getActiveView());
+    if (pcIvView->getViewer()->setEdit(p,ModNum))
         d->_pcInEdit = p;
     else
         return false;
@@ -161,8 +162,13 @@ bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
 
 void Document::resetEdit(void)
 {
+	std::list<Gui::BaseView*>::iterator VIt;
     if (d->_pcInEdit){
-        d->_pcInEdit->unsetEdit();
+        for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
+            View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+            if(pcIvView)
+                pcIvView->getViewer()->resetEdit();
+        }
         d->_pcInEdit = 0;
     }
 }

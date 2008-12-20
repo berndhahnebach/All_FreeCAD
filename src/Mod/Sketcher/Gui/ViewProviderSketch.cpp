@@ -32,6 +32,8 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Parameter.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
 
 #include "ViewProviderSketch.h"
 
@@ -47,7 +49,7 @@ using namespace std;
 //**************************************************************************
 // Construction/Destruction
 
-PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProviderPart)
+PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
        
 ViewProviderSketch::ViewProviderSketch()
@@ -60,7 +62,7 @@ ViewProviderSketch::ViewProviderSketch()
 
     pcRoot->addChild(GridRoot);*/
  
-    sPixmap = "PartFeatureImport";
+    sPixmap = "Sketcher_NewSketch";
 }
 
 ViewProviderSketch::~ViewProviderSketch()
@@ -72,6 +74,11 @@ ViewProviderSketch::~ViewProviderSketch()
 
 // **********************************************************************************
 
+bool ViewProviderSketch::DoubleClicked(void)
+{
+	Gui::Application::Instance->activeDocument()->setEdit((ViewProvider*)this);
+	return true;
+}
 
 void ViewProviderSketch::updateData(const App::Property* prop)
 {

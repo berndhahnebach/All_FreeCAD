@@ -68,6 +68,10 @@
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>
 #endif
+// all of inventor
+#ifndef __InventorAll__
+# include <Gui/InventorAll.h>
+#endif 
 
 #include <xercesc/util/XercesDefs.hpp>
 

@@ -80,6 +80,11 @@ public:
   void addViewProvider(ViewProvider*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProvider*);
+  /// set the ViewProvider in special edit mode
+  bool setEdit(Gui::ViewProvider* p, int ModNum=0);
+  /// reset from edit mode
+  void resetEdit(void);
+
   /// Background modes for the savePicture() method
   enum eBackgroundType { 
     Current     = 0,  /**< Use the current viewer Background */
@@ -215,6 +220,7 @@ protected:
   std::stack<unsigned long> ModStack;
 
   std::set<ViewProvider*> _ViewProviderSet;
+  ViewProvider* inEdit;
 
   virtual void actualRedraw(void);
   virtual void setSeekMode(SbBool enable);
