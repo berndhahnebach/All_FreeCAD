@@ -60,8 +60,9 @@ public:
   virtual bool setEdit(int ModNum);
   virtual void unsetEdit(void);
 
-  /// creats the grid
-  //SoSeparator* createGrid(float size=0.0, int density=0); 
+	/// Is called by the tree if the user double click on the object
+	virtual bool DoubleClicked(void);
+
 
 
 protected:

@@ -31,6 +31,9 @@
 #ifndef __Qt4All__
 # include "Qt4All.h"
 #endif
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif 
 
 class SoNode;
 class SoPath;
@@ -79,7 +82,15 @@ public:
     virtual SoSeparator* getBackRoot(void) const {return 0;}
     virtual void select(SoPath*) {}
     virtual void deselect(SoPath*) {}
+    /** @name Methods used by the Tree
+     */
+    //@{
     virtual QIcon getIcon(void) const;
+
+	/// Is called by the tree if the user double click on the object
+	virtual bool DoubleClicked(void){return false;}
+
+    //@}
 
     /** update the content of the ViewProvider
      * this method have to implement the recalcualtion
@@ -105,8 +116,8 @@ public:
     virtual std::vector<std::string> getDisplayModes(void) const=0;
     /// is called when the view provider should be edited, returns false if no edit possible.
     //virtual bool edit(void){return false;}
-    virtual bool setEdit(int ModNum = 0){return false;};
-    virtual void unsetEdit(void){};
+    virtual bool setEdit(int ModNum = 0);
+    virtual void unsetEdit(void);
     virtual const char* getEditModeName(void){return 0;}
 
     virtual void hide(void);
@@ -126,6 +137,10 @@ public:
     virtual void setTransformation(const SbMatrix &rcMatrix);
     SbMatrix convert(const Base::Matrix4D &rcMatrix) const;
     //@}
+
+public:
+	// this methode is called by the viewer when the ViewProvider is in edit
+    static void EventCallback(void * ud, SoEventCallback * n);
 
 protected:
     /** @name Display mask modes

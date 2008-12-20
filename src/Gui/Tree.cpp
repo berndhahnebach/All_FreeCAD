@@ -154,7 +154,7 @@ void TreeWidget::mouseDoubleClickEvent ( QMouseEvent * event )
         QTreeWidget::mouseDoubleClickEvent(event);
     }
     else if (Item->type() == TreeWidget::ObjectType) {
-        if (!(static_cast<DocumentObjectItem*>(Item)->object())->setEdit())
+        if (!(static_cast<DocumentObjectItem*>(Item)->object())->DoubleClicked())
             QTreeWidget::mouseDoubleClickEvent(event);
     }
 }
