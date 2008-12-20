@@ -127,16 +127,12 @@ public:
     /// Gerer for the App Document 
     App::Document*  getDocument(void) const;
 
-    /** @name methods for activation handling */
-    //@{
-    /// Geter for the Active View
-    Gui::MDIView* getActiveView(void) const;
-    //@}
-
-
+ 
 
     /** @name methods for View handling */
     //@{
+    /// Geter for the Active View
+    Gui::MDIView* getActiveView(void) const;
     /// Creat a new View
     void createView(const char* sType); 
     /** send Messages to the active view 
@@ -177,6 +173,10 @@ public:
     void setPos(const char* name, const Base::Matrix4D& rclMtrx);
     std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     ViewProvider *getViewProviderByName(const char* name) const;
+	/// set the ViewProvider in special edit mode
+	bool setEdit(Gui::ViewProvider* p, int ModNum=0);
+	/// reset from edit mode
+	void resetEdit(void);
     //@}
 
     /** @name methods for the UNDO REDO handling */

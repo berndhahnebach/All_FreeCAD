@@ -66,7 +66,7 @@ public:
   // Draws the picked polygon
   bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
   /// Sets the edit mnode
-  void setEdit(void);
+  bool setEdit(int ModNum=0);
   /// Unsets the edit mode
   void unsetEdit(void);
   /// Returns the edit mode

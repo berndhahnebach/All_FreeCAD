@@ -69,6 +69,7 @@ struct DocumentP
     int        _iDocId;
     bool       _isClosing;
     bool       _isModified;
+	ViewProvider*   _pcInEdit;
     Application*    _pcAppWnd;
     // the doc/Document
     App::Document*  _pcDocument;
@@ -96,6 +97,7 @@ Document::Document(App::Document* pcDocument,Application * app)
     d->_isModified = false;
     d->_pcAppWnd = app;
     d->_pcDocument = pcDocument;
+	d->_pcInEdit = 0;
 
     //pcDocument->m_sig.connect(boost::bind(&Gui::Document::refresh, this, _1));
     //boost::bind(&Gui::Document::slotNewObject, this, _1)
@@ -145,6 +147,25 @@ Document::~Document()
 //*****************************************************************************************************
 // 3D viewer handling
 //*****************************************************************************************************
+
+bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
+{
+	if(d->_pcInEdit)
+		d->_pcInEdit->unsetEdit();
+	if(p->setEdit(ModNum))
+		d->_pcInEdit = p;
+	else
+		return false;
+	return true;
+}
+
+void Document::resetEdit(void)
+{
+	if(d->_pcInEdit){
+		d->_pcInEdit->unsetEdit();
+		d->_pcInEdit = 0;
+	}
+}
 
 void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {

@@ -2,7 +2,12 @@
 lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
 libSketcher_la_SOURCES=\
-                AppSketcherPy.cpp \
+        AppSketcherPy.cpp \
+		SketchObject.cpp \
+		SketchObject.h \
+		SketchObjectPy.cpp \
+		SketchObjectPy.h \
+		SketchObjectPyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
