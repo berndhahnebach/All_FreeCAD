@@ -59,9 +59,8 @@ class Application;
 class DocumentPy;
 
 /** The Gui Document
- *  This is the document on GUI level. Its main responsibility is 
- *  keeping track off open windows for a document, handling the OCC
- *  interactiv context and warning on unsaved closes.
+ *  This is the document on GUI level. Its main responsibility is keeping
+ *  track off open windows for a document and warning on unsaved closes.
  *  All handled views on the document must inherit from MDIView
  *  @see App::Document 
  *  @see MDIView
@@ -121,22 +120,19 @@ public:
     void setModified(bool);
     bool isModified() const;
 
-    /// Geter for the Application
+    /// Getter for the Application
     Application* getAppWnd() const;
-
-    /// Gerer for the App Document 
+    /// Getter for the App Document 
     App::Document*  getDocument(void) const;
-
- 
 
     /** @name methods for View handling */
     //@{
-    /// Geter for the Active View
+    /// Getter for the active view
     Gui::MDIView* getActiveView(void) const;
-    /// Creat a new View
+    /// Creat a new view
     void createView(const char* sType); 
-    /** send Messages to the active view 
-     * send a specific massage to the active view and is able to recive a
+    /** send messages to the active view 
+     * Send a specific massage to the active view and is able to recive a
      * return massage
      */
     /// send Messages to all views
@@ -155,7 +151,7 @@ public:
 
     /** @name View provider handling  */
     //@{
-    /// Get the view provider for that Feature
+    /// Get the view provider for that object
     ViewProvider* getViewProvider(App::DocumentObject *) const;
     /// set an annotation view provider
     void setAnnotationViewProvider(const char* name, ViewProvider *pcProvider);
@@ -173,10 +169,10 @@ public:
     void setPos(const char* name, const Base::Matrix4D& rclMtrx);
     std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     ViewProvider *getViewProviderByName(const char* name) const;
-	/// set the ViewProvider in special edit mode
-	bool setEdit(Gui::ViewProvider* p, int ModNum=0);
-	/// reset from edit mode
-	void resetEdit(void);
+    /// set the ViewProvider in special edit mode
+    bool setEdit(Gui::ViewProvider* p, int ModNum=0);
+    /// reset from edit mode
+    void resetEdit(void);
     //@}
 
     /** @name methods for the UNDO REDO handling */

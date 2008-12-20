@@ -127,7 +127,7 @@ public:
   static bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& );
 
 protected:
-  /// get called by the container whenever a proptery has been changed
+  /// get called by the container whenever a property has been changed
   void onChanged(const App::Property* prop);
   /// helper method to build up the FaceSet
   void createMesh( const MeshCore::MeshKernel& pcMesh );

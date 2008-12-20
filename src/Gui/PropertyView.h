@@ -22,8 +22,8 @@
 
 
 
-#ifndef GUI_DOCKWND_PROPTERYVIEW_H
-#define GUI_DOCKWND_PROPTERYVIEW_H
+#ifndef GUI_DOCKWND_PROPERTYVIEW_H
+#define GUI_DOCKWND_PROPERTYVIEW_H
 
 
 #ifndef __Qt4All__
@@ -99,4 +99,4 @@ private:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif // GUI_DOCKWND_PROPTERYVIEW_H
+#endif // GUI_DOCKWND_PROPERTYVIEW_H
