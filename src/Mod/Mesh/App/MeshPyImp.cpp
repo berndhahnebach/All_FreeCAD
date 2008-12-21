@@ -1162,7 +1162,7 @@ Py::List MeshPy::getPoints(void) const
     unsigned int Index=0;
     MeshObject* mesh = getMeshObjectPtr();
     for (MeshObject::const_point_iterator it = mesh->points_begin(); it != mesh->points_end(); ++it) {
-        PointList.append(Py::Object(new MeshPointPy(new MeshPoint(*it,getMeshObjectPtr(),Index++))));
+        PointList.append(Py::Object(new MeshPointPy(new MeshPoint(*it,getMeshObjectPtr(),Index++)), true));
     }
     return PointList;
 }
@@ -1172,7 +1172,7 @@ Py::List MeshPy::getFacets(void) const
     Py::List FacetList;
     MeshObject* mesh = getMeshObjectPtr();
     for (MeshObject::const_facet_iterator it = mesh->facets_begin(); it != mesh->facets_end(); ++it) {
-        FacetList.append(Py::Object(new FacetPy(new Facet(*it))));
+        FacetList.append(Py::Object(new FacetPy(new Facet(*it)), true));
     }
     return FacetList;
 }
