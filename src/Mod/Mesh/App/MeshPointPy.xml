@@ -9,6 +9,7 @@
       FatherInclude="Base/PyObjectBase.h" 
       Namespace="Mesh" 
       Constructor="true"
+      Delete="true"
       FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
