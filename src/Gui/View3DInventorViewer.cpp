@@ -211,7 +211,7 @@ bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
 	if(_ViewProviderSet.find(p) == _ViewProviderSet.end())
 		return false;
 	inEdit = p;
-	addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,p);
+	addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
 	p->setEdit(ModNum);
 	return true;
 }
@@ -220,7 +220,7 @@ void View3DInventorViewer::resetEdit(void)
 {
 	if(inEdit){
 		inEdit->unsetEdit();
-		removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,inEdit);
+		removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
 		inEdit = 0;
 	}
 

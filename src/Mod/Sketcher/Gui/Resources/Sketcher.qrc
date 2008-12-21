@@ -2,5 +2,11 @@
     <qresource>
 		<file>translations/Sketcher_de.qm</file>
 		<file>icons/Sketcher_NewSketch.svg</file>
+		<file>icons/Sketcher_CreateArc.png</file>
+		<file>icons/Sketcher_CreateCircle.png</file>
+		<file>icons/Sketcher_CreateLine.png</file>
+		<file>icons/Sketcher_CreatePolyline.png</file>
+		<file>icons/Sketcher_CreateRectangle.png</file>
+		<file>icons/Sketcher_CreateText.png</file>
 	</qresource>
 </RCC> 

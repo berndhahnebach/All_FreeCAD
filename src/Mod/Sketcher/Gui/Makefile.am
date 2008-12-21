@@ -12,6 +12,8 @@ libSketcherGui_la_SOURCES=\
 		SketcherView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		ViewProviderSketch.cpp \
+		ViewProviderSketch.h \
 		Workbench.cpp \
 		Workbench.h
 

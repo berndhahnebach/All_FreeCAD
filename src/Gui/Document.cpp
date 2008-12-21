@@ -155,6 +155,9 @@ bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
 	View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(getActiveView());
     if (pcIvView->getViewer()->setEdit(p,ModNum))
         d->_pcInEdit = p;
+		if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
+			signalInEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
+
     else
         return false;
     return true;
@@ -169,10 +172,17 @@ void Document::resetEdit(void)
             if(pcIvView)
                 pcIvView->getViewer()->resetEdit();
         }
+
+		if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
+			signalResetEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
         d->_pcInEdit = 0;
     }
 }
 
+ViewProvider *Document::getInEdit(void)
+{
+	return d->_pcInEdit;
+}
 void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {
     std::list<Gui::BaseView*>::iterator VIt;

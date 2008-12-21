@@ -104,6 +104,8 @@ protected:
     void slotChangeObject(Gui::ViewProviderDocumentObject&);
     void slotRenameObject(Gui::ViewProviderDocumentObject&);
     void slotActiveObject(Gui::ViewProviderDocumentObject&);
+    void slotInEdit      (Gui::ViewProviderDocumentObject&);
+    void slotResetEdit   (Gui::ViewProviderDocumentObject&);
 
 private:
     Gui::Document* pDocument;

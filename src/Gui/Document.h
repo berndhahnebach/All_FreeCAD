@@ -97,6 +97,10 @@ public:
     boost::signal<void (Gui::ViewProviderDocumentObject&)> signalRenamedObject;
     /// signal on activated Object
     boost::signal<void (Gui::ViewProviderDocumentObject&)> signalActivatedObject;
+    /// signal on goes in edti mode
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalInEdit;
+   /// signal on leave edit mode
+    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalResetEdit;
     //@}
 
     /** @name I/O of the document */
@@ -173,6 +177,8 @@ public:
     bool setEdit(Gui::ViewProvider* p, int ModNum=0);
     /// reset from edit mode
     void resetEdit(void);
+	/// get the in edit ViewProvider or NULL
+	ViewProvider *getInEdit(void);
     //@}
 
     /** @name methods for the UNDO REDO handling */
