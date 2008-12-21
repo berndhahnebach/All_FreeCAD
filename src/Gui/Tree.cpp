@@ -550,12 +550,30 @@ DocumentItem::DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent)
     doc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
     doc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
     doc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
+    doc->signalInEdit.connect(boost::bind(&DocumentItem::slotInEdit, this, _1));
+    doc->signalResetEdit.connect(boost::bind(&DocumentItem::slotResetEdit, this, _1));
 
     setFlags(Qt::ItemIsEnabled/*|Qt::ItemIsEditable*/);
 }
 
 DocumentItem::~DocumentItem()
 {
+}
+
+void DocumentItem::slotInEdit(Gui::ViewProviderDocumentObject& v)
+{
+	std::string name (v.getObject()->getNameInDocument());
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    if (it != ObjectMap.end()) 
+			it->second->setBackgroundColor(0,Qt::yellow);
+}
+
+void DocumentItem::slotResetEdit(Gui::ViewProviderDocumentObject& v)
+{
+	std::string name (v.getObject()->getNameInDocument());
+    std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
+    if (it != ObjectMap.end()) 
+			it->second->setBackgroundColor(0,Qt::white);
 }
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)

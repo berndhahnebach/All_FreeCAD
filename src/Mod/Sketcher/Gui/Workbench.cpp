@@ -45,9 +45,19 @@ Workbench::~Workbench()
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher"));
     *part << "Sketcher_NewSketch";
+
+    part = new Gui::ToolBarItem(root);
+    part->setCommand(QT_TR_NOOP("Sketcher geoms"));
+    *part << "Sketcher_CreateArc"
+		  << "Sketcher_CreateCircle"
+		  << "Sketcher_CreateLine"
+		  << "Sketcher_CreatePolyline"
+		  << "Sketcher_CreateRectangle"
+		  << "Sketcher_CreateText";
      return root;
 }
 

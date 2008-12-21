@@ -73,6 +73,22 @@ ViewProviderSketch::~ViewProviderSketch()
 
 
 // **********************************************************************************
+bool ViewProviderSketch::MouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm)
+{
+	return true;
+}
+
+bool ViewProviderSketch::KeyPresst(int key)
+{
+	return true;
+}
+
+
+bool ViewProviderSketch::MouseButtonPresst(int Button, bool Presst, const Base::Vector3f &pos, const Base::Vector3f &norm)
+{
+	return true;
+}
+
 
 bool ViewProviderSketch::DoubleClicked(void)
 {

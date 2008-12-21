@@ -52,6 +52,7 @@ namespace App {
 }
 
 #include <App/PropertyContainer.h>
+#include <Base/Vector3D.h>
 
 namespace Gui {
 
@@ -115,15 +116,34 @@ public:
     /// returns a list of all possible display modes
     virtual std::vector<std::string> getDisplayModes(void) const=0;
     /// is called when the view provider should be edited, returns false if no edit possible.
-    //virtual bool edit(void){return false;}
-    virtual bool setEdit(int ModNum = 0);
-    virtual void unsetEdit(void);
-    virtual const char* getEditModeName(void){return 0;}
-
-    virtual void hide(void);
+     virtual void hide(void);
     virtual void show(void);
     virtual bool isShow(void) const;
     //@}
+
+	
+   /** @name Edit Methodes
+     * if the Viewprovider goes in edit mode
+	 * you can handle most of the events in the 
+	 * viwer by you self
+     */
+    //@{
+	//virtual bool edit(void){return false;}
+	/// is called by the document when the Provider goes in edit mode
+    virtual bool setEdit(int ModNum = 0);
+	/// is called when you loose the edit mode
+    virtual void unsetEdit(void);
+	/// is called when the Provider is in edit and the mouse is moved
+	virtual bool MouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm){return false;}
+	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
+	virtual bool KeyPresst(int key){return false;}
+	/// is called when the Provider is in edit and the mouse is klicked 
+	virtual bool MouseButtonPresst(int Button, bool Presst, const Base::Vector3f &pos, const Base::Vector3f &norm){return false;}
+	
+
+    //virtual const char* getEditModeName(void){return 0;}
+
+
 
     /** @name direct handling methods
      *  This group of methods is to direct influence the 
@@ -140,7 +160,7 @@ public:
 
 public:
 	// this methode is called by the viewer when the ViewProvider is in edit
-    static void EventCallback(void * ud, SoEventCallback * n);
+    static void EventCallback(void * ud, SoEventCallback * node);
 
 protected:
     /** @name Display mask modes
