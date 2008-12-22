@@ -97,7 +97,7 @@ using Base::Writer;
 using namespace App;
 using namespace std;
 using namespace boost;
-using namespace zipios ;
+using namespace zipios;
 
 
 #ifdef MemDebugOn
@@ -105,8 +105,35 @@ using namespace zipios ;
 #endif
 
 
-using namespace zipios ;
+namespace App {
 
+// Pimpl class
+struct DocumentP
+{
+    // Array to preserve the creation order of created objects
+    std::vector<DocumentObject*> objectArray;
+    std::map<std::string,DocumentObject*> objectMap;
+    DocumentObject* activeObject;
+    Transaction *activeUndoTransaction;
+    Transaction *activeTransaction;
+    int iTransactionMode;
+    int iTransactionCount;
+    std::map<int,Transaction*> mTransactions;
+    bool rollback;
+    int iUndoMode;
+
+    DocumentP() {
+        activeObject = 0;
+        activeUndoTransaction = 0;
+        activeTransaction = 0;
+        iTransactionMode = 0;
+        iTransactionCount = 0;
+        rollback = false;
+        iUndoMode = 0;
+    }
+};
+
+} // namespace App
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
@@ -138,7 +165,7 @@ void Document::writeDependencyGraphViz(std::ostream &out)
     out << "\tordering=out;" << endl;
     out << "\tnode [shape = box];" << endl;
 
-    for (std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It) {
+    for (std::map<std::string,DocumentObject*>::const_iterator It = d->objectMap.begin(); It != d->objectMap.end();++It) {
         out << "\t" << It->first << ";" <<endl;
         std::vector<DocumentObject*> OutList = It->second->getOutList();
         for (std::vector<DocumentObject*>::const_iterator It2=OutList.begin();It2!=OutList.end();++It2)
@@ -157,7 +184,6 @@ void Document::writeDependencyGraphViz(std::ostream &out)
     */
     out << "}" << endl;
 }
-
 
 //bool _has_cycle_dfs(const DependencyList & g, vertex_t u, default_color_type * color)
 //{
@@ -184,54 +210,51 @@ bool Document::checkOnCycle(void)
     return false;
 }
 
-
 bool Document::undo(void)
 {
-    if (_iUndoMode) {
-        if (activUndoTransaction)
+    if (d->iUndoMode) {
+        if (d->activeUndoTransaction)
             commitTransaction();
         else
             assert(mUndoTransactions.size()!=0);
 
         // redo
-        activUndoTransaction = new Transaction();
-        activUndoTransaction->Name = mUndoTransactions.back()->Name;
+        d->activeUndoTransaction = new Transaction();
+        d->activeUndoTransaction->Name = mUndoTransactions.back()->Name;
 
         // applying the undo
         mUndoTransactions.back()->apply(*this/*,DocChange*/);
 
         // save the redo
-        mRedoTransactions.push_back(activUndoTransaction);
-        activUndoTransaction = 0;
+        mRedoTransactions.push_back(d->activeUndoTransaction);
+        d->activeUndoTransaction = 0;
 
         delete mUndoTransactions.back();
         mUndoTransactions.pop_back();
-
-     }
+    }
 
     return false;
 }
 
 bool Document::redo(void)
 {
-    if (_iUndoMode) {
-        if (activUndoTransaction)
+    if (d->iUndoMode) {
+        if (d->activeUndoTransaction)
             commitTransaction();
 
         assert(mRedoTransactions.size()!=0);
 
         // undo
-        activUndoTransaction = new Transaction();
-        activUndoTransaction->Name = mRedoTransactions.back()->Name;
+        d->activeUndoTransaction = new Transaction();
+        d->activeUndoTransaction->Name = mRedoTransactions.back()->Name;
 
         // do the redo
         mRedoTransactions.back()->apply(*this/*,DocChange*/);
-        mUndoTransactions.push_back(activUndoTransaction);
-        activUndoTransaction = 0;
+        mUndoTransactions.push_back(d->activeUndoTransaction);
+        d->activeUndoTransaction = 0;
 
         delete mRedoTransactions.back();
         mRedoTransactions.pop_back();
-
     }
 
     return false;
@@ -240,12 +263,13 @@ bool Document::redo(void)
 std::vector<std::string> Document::getAvailableUndoNames() const
 {
     std::vector<std::string> vList;
-    if (activUndoTransaction)
-        vList.push_back(this->activUndoTransaction->Name);
+    if (d->activeUndoTransaction)
+        vList.push_back(d->activeUndoTransaction->Name);
     for (std::list<Transaction*>::const_reverse_iterator It=mUndoTransactions.rbegin();It!=mUndoTransactions.rend();++It)
         vList.push_back((**It).Name);
     return vList;
 }
+
 std::vector<std::string> Document::getAvailableRedoNames() const
 {
     std::vector<std::string> vList;
@@ -254,19 +278,17 @@ std::vector<std::string> Document::getAvailableRedoNames() const
     return vList;
 }
 
-
 void Document::openTransaction(const char* name)
 {
-    if (_iUndoMode) {
-        if (activUndoTransaction)
+    if (d->iUndoMode) {
+        if (d->activeUndoTransaction)
             commitTransaction();
         _clearRedos();
 
-        activUndoTransaction = new Transaction();
+        d->activeUndoTransaction = new Transaction();
         if (name)
-            activUndoTransaction->Name = name;
+            d->activeUndoTransaction->Name = name;
     }
-
 }
 
 void Document::_clearRedos()
@@ -279,32 +301,29 @@ void Document::_clearRedos()
 
 void Document::commitTransaction()
 {
-    if (activUndoTransaction) {
-        mUndoTransactions.push_back(activUndoTransaction);
-        activUndoTransaction = 0;
+    if (d->activeUndoTransaction) {
+        mUndoTransactions.push_back(d->activeUndoTransaction);
+        d->activeUndoTransaction = 0;
     }
-
 }
 
 void Document::abortTransaction()
 {
-    if (activUndoTransaction) {
-        bRollback = true;
+    if (d->activeUndoTransaction) {
+        d->rollback = true;
         // applieing the so far made changes
-        activUndoTransaction->apply(*this);
-        bRollback = false;
+        d->activeUndoTransaction->apply(*this);
+        d->rollback = false;
 
         // destroy the undo
-        delete activUndoTransaction;
-        activUndoTransaction = 0;
+        delete d->activeUndoTransaction;
+        d->activeUndoTransaction = 0;
     }
-
 }
-
 
 void Document::clearUndos()
 {
-    if (activUndoTransaction)
+    if (d->activeUndoTransaction)
         commitTransaction();
 
     while (!mUndoTransactions.empty()) {
@@ -317,7 +336,7 @@ void Document::clearUndos()
 
 int Document::getAvailableUndos() const
 {
-    if (activUndoTransaction)
+    if (d->activeUndoTransaction)
         return mUndoTransactions.size() + 1;
     else
         return mUndoTransactions.size();
@@ -330,15 +349,15 @@ int Document::getAvailableRedos() const
 
 void Document::setUndoMode(int iMode)
 {
-    if (_iUndoMode && !iMode)
+    if (d->iUndoMode && !iMode)
         clearUndos();
 
-    _iUndoMode = iMode;
+    d->iUndoMode = iMode;
 }
 
 int Document::getUndoMode(void) const
 {
-    return _iUndoMode;
+    return d->iUndoMode;
 }
 
 unsigned int Document::getUndoMemSize (void) const
@@ -355,14 +374,14 @@ void Document::onChanged(const Property* prop)
 
 void Document::onBeforeChangeProperty(const DocumentObject *Who, const Property *What)
 {
-    if (activUndoTransaction && !bRollback)
-        activUndoTransaction->addObjectChange(Who,What);
+    if (d->activeUndoTransaction && !d->rollback)
+        d->activeUndoTransaction->addObjectChange(Who,What);
 }
 
 void Document::onChangedProperty(const DocumentObject *Who, const Property *What)
 {
-    if (this->activTransaction && !bRollback)
-        this->activTransaction->addObjectChange(Who,What);
+    if (d->activeTransaction && !d->rollback)
+        d->activeTransaction->addObjectChange(Who,What);
     signalChangedObject(const_cast<DocumentObject&>(*Who), const_cast<Property&>(*What));
 }
 
@@ -374,10 +393,8 @@ void Document::setTransactionMode(int iMode)
       if(activTransaction && iMode == 0)
         endTransaction();
       */
-    _iTransactionMode = iMode;
-
+    d->iTransactionMode = iMode;
 }
-
 
 #if 0
 /// starts a new transaction
@@ -389,7 +406,7 @@ int  Document::beginTransaction(void)
     iTransactionCount++;
 
     activTransaction = new Transaction(iTransactionCount);
-    mTransactions[iTransactionCount] = activTransaction;
+    d->mTransactions[iTransactionCount] = activTransaction;
 
     return iTransactionCount;
 }
@@ -415,31 +432,19 @@ const Transaction *Document::getTransaction(int pos) const
     if (pos == -1)
         return activTransaction;
     else {
-        std::map<int,Transaction*>::const_iterator Pos( mTransactions.find(pos));
-        if (Pos != mTransactions.end())
+        std::map<int,Transaction*>::const_iterator Pos(d->mTransactions.find(pos));
+        if (Pos != d->mTransactions.end())
             return Pos->second;
         else
             return 0;
     }
 }
-
-
 #endif
-
-
-
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-    : _iTransactionMode(0),
-    iTransactionCount(0),
-    activTransaction(0),
-    bRollback(false),
-    _iUndoMode(0),
-    activUndoTransaction(0),
-    pActiveObject(0)
 {
     // Remark: In a constructor we should never increment a Python object as we cannot be sure
     // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
@@ -448,6 +453,7 @@ Document::Document(void)
     // Remark: We force the document Python object to own the DocumentPy instance, thus we don't
     // have to care about ref counting any more.
     DocumentPythonObject = Py::Object(new DocumentPy(this), true);
+    d = new DocumentP;
 
 #ifdef FC_LOGUPDATECHAIN
     Console().Log("+App::Document: %p\n",this);
@@ -487,8 +493,8 @@ Document::~Document()
     Console().Log("-Delete Features of %s \n",getName());
 #endif
 
-    ObjectArray.clear();
-    for (it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+    d->objectArray.clear();
+    for (it = d->objectMap.begin(); it != d->objectMap.end(); ++it) {
         delete(it->second);
     }
 
@@ -504,12 +510,12 @@ Document::~Document()
     // remove Transient directory
     Base::FileInfo TransDir(TransientDir.getValue());
     TransDir.deleteDirectoryRecursive();
+    delete d;
 }
 
 //--------------------------------------------------------------------------
 // Exported functions
 //--------------------------------------------------------------------------
-
 
 void Document::Save (Writer &writer) const
 {
@@ -524,11 +530,11 @@ void Document::Save (Writer &writer) const
 
     // writing the features types
     writer.incInd(); // indention for 'Objects count'
-    writer.Stream() << writer.ind() << "<Objects Count=\"" << ObjectArray.size() <<"\">" << endl;
+    writer.Stream() << writer.ind() << "<Objects Count=\"" << d->objectArray.size() <<"\">" << endl;
 
     writer.incInd(); // indention for 'Object type'
     std::vector<DocumentObject*>::const_iterator it;
-    for (it = ObjectArray.begin(); it != ObjectArray.end(); ++it) {
+    for (it = d->objectArray.begin(); it != d->objectArray.end(); ++it) {
         writer.Stream() << writer.ind() << "<Object "
         << "type=\"" << (*it)->getTypeId().getName() << "\" "
         << "name=\"" << (*it)->getNameInDocument()       << "\" "
@@ -539,10 +545,10 @@ void Document::Save (Writer &writer) const
     writer.Stream() << writer.ind() << "</Objects>" << endl;
 
     // writing the features itself
-    writer.Stream() << writer.ind() << "<ObjectData Count=\"" << ObjectArray.size() <<"\">" << endl;
+    writer.Stream() << writer.ind() << "<ObjectData Count=\"" << d->objectArray.size() <<"\">" << endl;
 
     writer.incInd(); // indention for 'Object name'
-    for (it = ObjectArray.begin(); it != ObjectArray.end(); ++it) {
+    for (it = d->objectArray.begin(); it != d->objectArray.end(); ++it) {
         writer.Stream() << writer.ind() << "<Object name=\"" << (*it)->getNameInDocument() << "\">" << endl;
         (*it)->Save(writer);
         writer.Stream() << writer.ind() << "</Object>" << endl;
@@ -668,7 +674,7 @@ unsigned int Document::getMemSize (void) const
 
     // size of the DocObjects in the document
     std::vector<DocumentObject*>::const_iterator it;
-    for (it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
+    for (it = d->objectArray.begin(); it != d->objectArray.end(); ++it)
         size += (*it)->getMemSize();
 
     // size of the document properties...
@@ -678,7 +684,6 @@ unsigned int Document::getMemSize (void) const
     size += getUndoMemSize();
 
     return size;
-
 }
 
 // Save the document under the name its been opened
@@ -716,15 +721,15 @@ bool Document::save (void)
 void Document::restore (void)
 {
     // clean up if the document is not empty
-    // !TODO mind exeptions wile restoring!
+    // !TODO mind exeptions while restoring!
     clearUndos();
-    for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
+    for (std::vector<DocumentObject*>::iterator obj = d->objectArray.begin(); obj != d->objectArray.end(); ++obj) {
         signalDeletedObject(*(*obj));
         delete *obj;
     }
-    ObjectArray.clear();
-    ObjectMap.clear();
-    pActiveObject = 0;
+    d->objectArray.clear();
+    d->objectMap.clear();
+    d->activeObject = 0;
 
     Base::FileInfo fi(FileName.getValue());
     Base::ifstream file(fi, std::ios::in | std::ios::binary);
@@ -755,7 +760,7 @@ void Document::restore (void)
     reader.readFiles(zipstream);
     
     // reset all touched
-    for (std::map<std::string,DocumentObject*>::iterator It= ObjectMap.begin();It!=ObjectMap.end();++It)
+    for (std::map<std::string,DocumentObject*>::iterator It= d->objectMap.begin();It!=d->objectMap.end();++It)
         It->second->purgeTouched();
 
     GetApplication().signalRestoreDocument(*this);
@@ -785,15 +790,16 @@ const char* Document::getName() const
     return GetApplication().getDocumentName(this);
 }
 
-/// Remove all modifications. After this call The document becomesagain Valid.
+/// Remove all modifications. After this call The document becomes valid again.
 void Document::purgeTouched()
 {
-    for (std::vector<DocumentObject*>::iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    for (std::vector<DocumentObject*>::iterator It = d->objectArray.begin();It != d->objectArray.end();++It)
         (*It)->purgeTouched();
 }
+
 bool Document::isTouched() const
 {
-    for (std::vector<DocumentObject*>::const_iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    for (std::vector<DocumentObject*>::const_iterator It = d->objectArray.begin();It != d->objectArray.end();++It)
         if ((*It)->isTouched())
             return true;
     return false;
@@ -803,14 +809,12 @@ vector<DocumentObject*> Document::getTouched(void) const
 {
     vector<DocumentObject*> result;
 
-    for (std::vector<DocumentObject*>::const_iterator It = ObjectArray.begin();It != ObjectArray.end();++It)
+    for (std::vector<DocumentObject*>::const_iterator It = d->objectArray.begin();It != d->objectArray.end();++It)
         if ((*It)->isTouched())
             result.push_back(*It);
 
     return result;
 }
-
-
 
 void Document::recompute()
 {
@@ -823,11 +827,11 @@ void Document::recompute()
     std::map<DocumentObject*,Vertex> VertexObjectList;
 
     // Filling up the adjacency List
-    for (std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It)
+    for (std::map<std::string,DocumentObject*>::const_iterator It = d->objectMap.begin(); It != d->objectMap.end();++It)
         // add the object as Vertex and remember the index
         VertexObjectList[It->second] = add_vertex(DepList);
     // add the edges
-    for (std::map<std::string,DocumentObject*>::const_iterator It = ObjectMap.begin(); It != ObjectMap.end();++It) {
+    for (std::map<std::string,DocumentObject*>::const_iterator It = d->objectMap.begin(); It != d->objectMap.end();++It) {
         std::vector<DocumentObject*> OutList = It->second->getOutList();
         for (std::vector<DocumentObject*>::const_iterator It2=OutList.begin();It2!=OutList.end();++It2)
             if (*It2)
@@ -887,7 +891,6 @@ void Document::recompute()
     // reset all touched
     for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
         It1->first->purgeTouched();
-
 }
 
 const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
@@ -984,11 +987,11 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     pcObject->setDocument(this);
 
     // Transaction stuff
-    if (activTransaction)
-        activTransaction->addObjectNew(pcObject);
+    if (d->activeTransaction)
+        d->activeTransaction->addObjectNew(pcObject);
     // Undo stuff
-    if (activUndoTransaction)
-        activUndoTransaction->addObjectDel(pcObject);
+    if (d->activeUndoTransaction)
+        d->activeUndoTransaction->addObjectDel(pcObject);
 
     // get Unique name
     if (pObjectName)
@@ -997,14 +1000,14 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
         ObjectName = getUniqueObjectName(sType);
 
 
-    pActiveObject = pcObject;
+    d->activeObject = pcObject;
 
     // insert in the name map
-    ObjectMap[ObjectName] = pcObject;
+    d->objectMap[ObjectName] = pcObject;
     // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
-    pcObject->pcNameInDocument = &(ObjectMap.find(ObjectName)->first);
+    pcObject->pcNameInDocument = &(d->objectMap.find(ObjectName)->first);
     // insert in the vector
-    ObjectArray.push_back(pcObject);
+    d->objectArray.push_back(pcObject);
     // insert in the adjacence list and referenc through the ConectionMap
     //_DepConMap[pcObject] = add_vertex(_DepList);
 
@@ -1021,17 +1024,17 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
 void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 {
-    ObjectMap[pObjectName] = pcObject;
-    ObjectArray.push_back(pcObject);
+    d->objectMap[pObjectName] = pcObject;
+    d->objectArray.push_back(pcObject);
     // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
-    pcObject->pcNameInDocument = &(ObjectMap.find(pObjectName)->first);
+    pcObject->pcNameInDocument = &(d->objectMap.find(pObjectName)->first);
 
     // Transaction stuff
-    if (activTransaction)
-        activTransaction->addObjectNew(pcObject);
+    if (d->activeTransaction)
+        d->activeTransaction->addObjectNew(pcObject);
     // Undo stuff
-    if (activUndoTransaction)
-        activUndoTransaction->addObjectDel(pcObject);
+    if (d->activeUndoTransaction)
+        d->activeUndoTransaction->addObjectDel(pcObject);
 
     // send the signal
     signalNewObject(*pcObject);
@@ -1040,14 +1043,14 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 /// Remove an object out of the document
 void Document::remObject(const char* sName)
 {
-    std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(sName);
+    std::map<std::string,DocumentObject*>::iterator pos = d->objectMap.find(sName);
 
     // name not found?
-    if (pos == ObjectMap.end())
+    if (pos == d->objectMap.end())
         return;
 
-    if (pActiveObject == pos->second)
-        pActiveObject = 0;
+    if (d->activeObject == pos->second)
+        d->activeObject = 0;
 
     signalDeletedObject(*(pos->second));
 
@@ -1055,13 +1058,13 @@ void Document::remObject(const char* sName)
     breakDependency(pos->second, true);
 
     // Transaction stuff
-    if (this->activTransaction)
-        this->activTransaction->addObjectDel(pos->second);
+    if (d->activeTransaction)
+        d->activeTransaction->addObjectDel(pos->second);
 
     // Undo stuff
-    if (activUndoTransaction) {
+    if (d->activeUndoTransaction) {
         // in this case transaction delete or save the object
-        activUndoTransaction->addObjectNew(pos->second);
+        d->activeUndoTransaction->addObjectNew(pos->second);
         // set name cache false
         //pos->second->pcNameInDocument = 0;
     }
@@ -1070,41 +1073,41 @@ void Document::remObject(const char* sName)
         delete pos->second;
 
 
-    for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
-        if ( *obj == pos->second ) {
-            ObjectArray.erase(obj);
+    for (std::vector<DocumentObject*>::iterator obj = d->objectArray.begin(); obj != d->objectArray.end(); ++obj) {
+        if (*obj == pos->second) {
+            d->objectArray.erase(obj);
             break;
         }
     }
     // remove from adjancy list
     //remove_vertex(_DepConMap[pos->second],_DepList);
     //_DepConMap.erase(pos->second);
-    ObjectMap.erase(pos);
+    d->objectMap.erase(pos);
 }
 
 /// Remove an object out of the document (internal)
 void Document::_remObject(DocumentObject* pcObject)
 {
-    std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(pcObject->getNameInDocument());
+    std::map<std::string,DocumentObject*>::iterator pos = d->objectMap.find(pcObject->getNameInDocument());
 
     signalDeletedObject(*pcObject);
 
     // Transaction stuff
-    if (this->activTransaction)
-        this->activTransaction->addObjectDel(pcObject);
+    if (d->activeTransaction)
+        d->activeTransaction->addObjectDel(pcObject);
 
     // Undo stuff
-    if (activUndoTransaction)
-        activUndoTransaction->addObjectNew(pcObject);
+    if (d->activeUndoTransaction)
+        d->activeUndoTransaction->addObjectNew(pcObject);
 
     // remove from map
-    ObjectMap.erase(pos);
+    d->objectMap.erase(pos);
     //// set name cache false
     //pcObject->pcNameInDocument = 0;
 
-    for (std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it) {
+    for (std::vector<DocumentObject*>::iterator it = d->objectArray.begin(); it != d->objectArray.end(); ++it) {
         if (*it == pcObject) {
-            ObjectArray.erase(it);
+            d->objectArray.erase(it);
             break;
         }
     }
@@ -1113,7 +1116,7 @@ void Document::_remObject(DocumentObject* pcObject)
 void Document::breakDependency(DocumentObject* pcObject, bool clear)
 {
     // Nullify all dependant objects
-    for (std::map<std::string,DocumentObject*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+    for (std::map<std::string,DocumentObject*>::iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it) {
         std::map<std::string,App::Property*> Map;
         it->second->getPropertyMap(Map);
         // search for all properties that could have a link to the object
@@ -1269,16 +1272,16 @@ DocumentObject* Document::moveObject(DocumentObject* obj, bool recursive)
 
 DocumentObject *Document::getActiveObject(void) const
 {
-    return pActiveObject;
+    return d->activeObject;
 }
 
 DocumentObject *Document::getObject(const char *Name) const
 {
     std::map<std::string,DocumentObject*>::const_iterator pos;
 
-    pos = ObjectMap.find(Name);
+    pos = d->objectMap.find(Name);
 
-    if (pos != ObjectMap.end())
+    if (pos != d->objectMap.end())
         return pos->second;
     else
         return 0;
@@ -1288,7 +1291,7 @@ const char *Document::getObjectName(DocumentObject *pFeat) const
 {
     std::map<std::string,DocumentObject*>::const_iterator pos;
 
-    for (pos = ObjectMap.begin();pos != ObjectMap.end();++pos)
+    for (pos = d->objectMap.begin();pos != d->objectMap.end();++pos)
         if (pos->second == pFeat)
             return pos->first.c_str();
 
@@ -1314,16 +1317,16 @@ std::string Document::getUniqueObjectName(const char *Name) const
 
     // name in use?
     std::map<std::string,DocumentObject*>::const_iterator pos;
-    pos = ObjectMap.find(CleanName);
+    pos = d->objectMap.find(CleanName);
 
-    if (pos == ObjectMap.end()) {
+    if (pos == d->objectMap.end()) {
         // if not, name is OK
         return CleanName;
     }
     else {
         // find highest suffix
         int nSuff = 0;
-        for (pos = ObjectMap.begin();pos != ObjectMap.end();++pos) {
+        for (pos = d->objectMap.begin();pos != d->objectMap.end();++pos) {
             const std::string &ObjName = pos->first;
             if (ObjName.substr(0, CleanName.length()) == CleanName) { // same prefix
                 std::string clSuffix(ObjName.substr(CleanName.length()));
@@ -1344,7 +1347,7 @@ std::string Document::getUniqueObjectName(const char *Name) const
 std::vector<DocumentObject*> Document::getObjects() const
 {
     std::vector<DocumentObject*> Objects;
-    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
+    for (std::map<std::string,DocumentObject*>::const_iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it)
         Objects.push_back(it->second);
     return Objects;
 }
@@ -1352,7 +1355,7 @@ std::vector<DocumentObject*> Document::getObjects() const
 std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId) const
 {
     std::vector<DocumentObject*> Objects;
-    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+    for (std::map<std::string,DocumentObject*>::const_iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it) {
         if (it->second->getTypeId().isDerivedFrom(typeId))
             Objects.push_back(it->second);
     }
@@ -1362,7 +1365,7 @@ std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId
 int Document::countObjectsOfType(const Base::Type& typeId) const
 {
     int ct=0;
-    for (std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
+    for (std::map<std::string,DocumentObject*>::const_iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it) {
         if (it->second->getTypeId().isDerivedFrom(typeId))
             ct++;
     }

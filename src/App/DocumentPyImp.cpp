@@ -306,12 +306,12 @@ void  DocumentPy::setActiveObject(Py::Object /*arg*/)
 
 Py::List DocumentPy::getObjects(void) const 
 {
-    std::map<std::string,DocumentObject*> features = getDocumentPtr()->ObjectMap;
+    std::vector<DocumentObject*> objs = getDocumentPtr()->getObjects();
     Py::List res;
 
-    for (std::map<std::string,DocumentObject*>::const_iterator It = features.begin();It != features.end();++It)
+    for (std::vector<DocumentObject*>::const_iterator It = objs.begin();It != objs.end();++It)
         //Note: Here we must force the Py::Object to own this Python object as getPyObject() increments the counter
-        res.append(Py::Object(It->second->getPyObject(), true));
+        res.append(Py::Object((*It)->getPyObject(), true));
 
     return res;
 }
