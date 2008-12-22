@@ -53,6 +53,7 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
        
 ViewProviderSketch::ViewProviderSketch()
+:Mode(0),EditRoot(0)
 {
  /*   ADD_PROPERTY(ShowGrid,(true));
 
@@ -73,6 +74,14 @@ ViewProviderSketch::~ViewProviderSketch()
 
 
 // **********************************************************************************
+
+void ViewProviderSketch::setSketchMode(int mode)
+{
+	Mode = mode;
+}
+
+
+
 bool ViewProviderSketch::mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm)
 {
 	return true;
@@ -127,11 +136,65 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+	if(!EditRoot){
+		EditRoot = new SoSeparator;
+		pcRoot->addChild(EditRoot);
+	}
+
+	// stuff for the points
+    SoMaterial * mat = new SoMaterial;
+    mat->diffuseColor.set1Value(0,0, 0, 0);
+    mat->diffuseColor.set1Value(1,1, 0, 0);
+	EditRoot->addChild(mat);
+	SoMaterialBinding *MtlBind = new SoMaterialBinding;
+	MtlBind->value = SoMaterialBinding::PER_VERTEX;
+	EditRoot->addChild(MtlBind);
+	SoCoordinate3* coordinate3 = new SoCoordinate3;
+
+	coordinate3->point.set1Value(0,SbVec3f(10,10,0.01));
+	coordinate3->point.set1Value(1,SbVec3f(0,0,0.01));
+
+	EditRoot->addChild(coordinate3);
+
+	SoDrawStyle *DrawStyle = new SoDrawStyle;
+	DrawStyle->pointSize = 8;
+	EditRoot->addChild( DrawStyle );
+	EditRoot->addChild( new SoPointSet );
+
+	// stuff for the lines
+    mat = new SoMaterial;
+    mat->diffuseColor.set1Value(0,0, 0, 0);
+    mat->diffuseColor.set1Value(1,1, 0, 0);
+	EditRoot->addChild(mat);
+	MtlBind = new SoMaterialBinding;
+	MtlBind->value = SoMaterialBinding::PER_PART;
+	EditRoot->addChild(MtlBind);
+	coordinate3 = new SoCoordinate3;
+
+	coordinate3->point.set1Value(0,SbVec3f(10,0,0.01));
+	coordinate3->point.set1Value(1,SbVec3f(0,10,0.01));
+	coordinate3->point.set1Value(2,SbVec3f(10,5,0.01));
+	coordinate3->point.set1Value(3,SbVec3f(0,15,0.01));
+
+	EditRoot->addChild(coordinate3);
+
+	DrawStyle = new SoDrawStyle;
+	DrawStyle->pointSize = 8;
+	EditRoot->addChild( DrawStyle );
+
+	SoLineSet* lineSet = new SoLineSet;
+    lineSet->numVertices.set1Value(0,2);
+    lineSet->numVertices.set1Value(1,2);
+
+	EditRoot->addChild( lineSet );
+
+
 	return true;
 }
 
 void ViewProviderSketch::unsetEdit(void)
 {
+	EditRoot->removeAllChildren();
 
 }
 
