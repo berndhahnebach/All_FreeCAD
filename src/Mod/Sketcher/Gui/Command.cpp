@@ -34,6 +34,7 @@
 #include "ViewProviderSketch.h"
 
 using namespace std;
+using namespace SketcherGui;
 
 /* Sketch commands =======================================================*/
 DEF_STD_CMD_A(CmdSketcherNewSketch);
@@ -94,10 +95,10 @@ void CmdSketcherCreateArc::activated(int iMsg)
 
 bool CmdSketcherCreateArc::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		return true;
 	return false;
 }
 
@@ -127,10 +128,10 @@ void CmdSketcherCreateCircle::activated(int iMsg)
 
 bool CmdSketcherCreateCircle::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		return true;
 	return false;
 }
 
@@ -152,9 +153,10 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
 
 void CmdSketcherCreateLine::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    //commitCommand();
+	Gui::Document *doc = getActiveGuiDocument();
+	if(doc)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateLine);
       
 }
 
@@ -193,10 +195,10 @@ void CmdSketcherCreatePolyline::activated(int iMsg)
 
 bool CmdSketcherCreatePolyline::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		return true;
 	return false;
 }
 
@@ -226,10 +228,10 @@ void CmdSketcherCreateRectangle::activated(int iMsg)
 
 bool CmdSketcherCreateRectangle::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		return true;
 	return false;
 }
 
@@ -259,10 +261,10 @@ void CmdSketcherCreateText::activated(int iMsg)
 
 bool CmdSketcherCreateText::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		return true;
 	return false;
 }
 

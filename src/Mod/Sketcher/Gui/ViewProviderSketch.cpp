@@ -53,8 +53,14 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
        
 ViewProviderSketch::ViewProviderSketch()
-:Mode(0),EditRoot(0)
+:Mode(STATUS_NONE),EditRoot(0)
 {
+	PointsMaterials = 0;
+	LinesMaterials = 0;
+	PointsCoordinate = 0;
+	LinesCoordinate = 0;
+	LineSet = 0;
+
  /*   ADD_PROPERTY(ShowGrid,(true));
 
 
@@ -142,19 +148,19 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	}
 
 	// stuff for the points
-    SoMaterial * mat = new SoMaterial;
-    mat->diffuseColor.set1Value(0,0, 0, 0);
-    mat->diffuseColor.set1Value(1,1, 0, 0);
-	EditRoot->addChild(mat);
+    SoMaterial * PointsMaterials = new SoMaterial;
+    PointsMaterials->diffuseColor.set1Value(0,0, 0, 0);
+    PointsMaterials->diffuseColor.set1Value(1,1, 0, 0);
+	EditRoot->addChild(PointsMaterials);
+
 	SoMaterialBinding *MtlBind = new SoMaterialBinding;
 	MtlBind->value = SoMaterialBinding::PER_VERTEX;
 	EditRoot->addChild(MtlBind);
-	SoCoordinate3* coordinate3 = new SoCoordinate3;
 
-	coordinate3->point.set1Value(0,SbVec3f(10,10,0.01));
-	coordinate3->point.set1Value(1,SbVec3f(0,0,0.01));
-
-	EditRoot->addChild(coordinate3);
+	SoCoordinate3* PointsCoordinate = new SoCoordinate3;
+	PointsCoordinate->point.set1Value(0,SbVec3f(10,10,0.01));
+	PointsCoordinate->point.set1Value(1,SbVec3f(0,0,0.01));
+	EditRoot->addChild(PointsCoordinate);
 
 	SoDrawStyle *DrawStyle = new SoDrawStyle;
 	DrawStyle->pointSize = 8;
@@ -162,31 +168,31 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild( new SoPointSet );
 
 	// stuff for the lines
-    mat = new SoMaterial;
-    mat->diffuseColor.set1Value(0,0, 0, 0);
-    mat->diffuseColor.set1Value(1,1, 0, 0);
-	EditRoot->addChild(mat);
+    LinesMaterials = new SoMaterial;
+    LinesMaterials->diffuseColor.set1Value(0,0, 0, 0);
+    LinesMaterials->diffuseColor.set1Value(1,1, 0, 0);
+	EditRoot->addChild(LinesMaterials);
+
 	MtlBind = new SoMaterialBinding;
 	MtlBind->value = SoMaterialBinding::PER_PART;
 	EditRoot->addChild(MtlBind);
-	coordinate3 = new SoCoordinate3;
 
-	coordinate3->point.set1Value(0,SbVec3f(10,0,0.01));
-	coordinate3->point.set1Value(1,SbVec3f(0,10,0.01));
-	coordinate3->point.set1Value(2,SbVec3f(10,5,0.01));
-	coordinate3->point.set1Value(3,SbVec3f(0,15,0.01));
-
-	EditRoot->addChild(coordinate3);
+	LinesCoordinate = new SoCoordinate3;
+	LinesCoordinate->point.set1Value(0,SbVec3f(10,0,0.01));
+	LinesCoordinate->point.set1Value(1,SbVec3f(0,10,0.01));
+	LinesCoordinate->point.set1Value(2,SbVec3f(10,5,0.01));
+	LinesCoordinate->point.set1Value(3,SbVec3f(0,15,0.01));
+	EditRoot->addChild(LinesCoordinate);
 
 	DrawStyle = new SoDrawStyle;
 	DrawStyle->pointSize = 8;
 	EditRoot->addChild( DrawStyle );
 
-	SoLineSet* lineSet = new SoLineSet;
-    lineSet->numVertices.set1Value(0,2);
-    lineSet->numVertices.set1Value(1,2);
+	LineSet = new SoLineSet;
+    LineSet->numVertices.set1Value(0,2);
+    LineSet->numVertices.set1Value(1,2);
 
-	EditRoot->addChild( lineSet );
+	EditRoot->addChild( LineSet );
 
 
 	return true;
@@ -195,6 +201,10 @@ bool ViewProviderSketch::setEdit(int ModNum)
 void ViewProviderSketch::unsetEdit(void)
 {
 	EditRoot->removeAllChildren();
-
+	PointsMaterials = 0;
+	LinesMaterials = 0;
+	PointsCoordinate = 0;
+	LinesCoordinate = 0;
+	LineSet = 0;
 }
 

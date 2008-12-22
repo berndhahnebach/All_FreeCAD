@@ -46,19 +46,19 @@ class SketcherGuiExport ViewProviderSketch:public PartGui::ViewProvider2DObject
   PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
 public:
-  /// constructor
-  ViewProviderSketch();
-  /// destructor
-  virtual ~ViewProviderSketch();
+	/// constructor
+	ViewProviderSketch();
+	/// destructor
+	virtual ~ViewProviderSketch();
 
-  //App::PropertyBool ShowGrid;
+	//App::PropertyBool ShowGrid;
 
-  virtual void attach(App::DocumentObject *);
-  virtual void updateData(const App::Property*);
+	virtual void attach(App::DocumentObject *);
+	virtual void updateData(const App::Property*);
 
 
-  virtual bool setEdit(int ModNum);
-  virtual void unsetEdit(void);
+	virtual bool setEdit(int ModNum);
+	virtual void unsetEdit(void);
 
 	/// Is called by the tree if the user double click on the object
 	virtual bool doubleClicked(void);
@@ -70,6 +70,16 @@ public:
 	/// is called when the Provider is in edit and the mouse is clicked 
 	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm);
 
+	/// mode table
+	enum {
+		STATUS_NONE,
+		STATUS_SKETCH_CreateArc,
+		STATUS_SKETCH_CreateCircle,
+		STATUS_SKETCH_CreateLine,
+		STATUS_SKETCH_CreatePolyline,
+		STATUS_SKETCH_CreateRectangle,
+		STATUS_SKETCH_CreateText
+	};
 	/// is called by GuiCommands to set the drawing mode
 	void setSketchMode(int mode);
 
@@ -79,7 +89,12 @@ protected:
 
   int Mode;
 
-   SoSeparator  *EditRoot;
+  SoMaterial * PointsMaterials;
+  SoMaterial * LinesMaterials;
+  SoCoordinate3 *PointsCoordinate;
+  SoCoordinate3 *LinesCoordinate;
+  SoLineSet* LineSet;
+  SoSeparator  *EditRoot;
 };
 
 } // namespace PartGui
