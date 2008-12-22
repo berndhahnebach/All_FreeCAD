@@ -206,24 +206,25 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
   
   _ViewProviderSet.erase(pcProvider);
 }
+
 bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
 {
-	if(_ViewProviderSet.find(p) == _ViewProviderSet.end())
-		return false;
-	inEdit = p;
-	addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
-	p->setEdit(ModNum);
-	return true;
+    if (_ViewProviderSet.find(p) == _ViewProviderSet.end())
+        return false;
+    this->inEdit = p;
+    addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
+    p->setEdit(ModNum);
+    return true;
 }
-  /// reset from edit mode
+
+/// reset from edit mode
 void View3DInventorViewer::resetEdit(void)
 {
-	if(inEdit){
-		inEdit->unsetEdit();
-		removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
-		inEdit = 0;
-	}
-
+    if (inEdit){
+        this->inEdit->unsetEdit();
+        removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
+        this->inEdit = 0;
+    }
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
@@ -1022,8 +1023,8 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
     switch (event->getKey()) {
     case SoKeyboardEvent::ESCAPE:
-      if(inEdit)
-		  Gui::Application::Instance->activeDocument()->resetEdit();
+      if (inEdit)
+         Gui::Application::Instance->activeDocument()->resetEdit();
       processed = true;
       break;
     case SoKeyboardEvent::LEFT_CONTROL:
@@ -1273,8 +1274,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
     switch (ke->getKey()) {
     case SoKeyboardEvent::ESCAPE:
-      if(inEdit)
-		  Gui::Application::Instance->activeDocument()->resetEdit();
+      if (inEdit)
+        Gui::Application::Instance->activeDocument()->resetEdit();
       processed = true;
       break;
     case SoKeyboardEvent::LEFT_ALT:

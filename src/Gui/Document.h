@@ -177,8 +177,8 @@ public:
     bool setEdit(Gui::ViewProvider* p, int ModNum=0);
     /// reset from edit mode
     void resetEdit(void);
-	/// get the in edit ViewProvider or NULL
-	ViewProvider *getInEdit(void);
+    /// get the in edit ViewProvider or NULL
+    ViewProvider *getInEdit(void) const;
     //@}
 
     /** @name methods for the UNDO REDO handling */

@@ -86,79 +86,80 @@ bool ViewProvider::setEdit(int ModNum)
 {
     //Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
     //viewer->addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
-	return true;
-};
+    return true;
+}
+
 void ViewProvider::unsetEdit(void)
 {
     //viewer->removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
-
-};
+}
 
 void ViewProvider::EventCallback(void * ud, SoEventCallback * node)
 {
-  SbVec3f point, norm;
-  const SoEvent * ev = node->getEvent();
-  Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(node->getUserData());
-  ViewProvider *Provider = view->getInEdit();
-  assert(Provider);
+    SbVec3f point, norm;
+    const SoEvent * ev = node->getEvent();
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(node->getUserData());
+    ViewProvider *Provider = view->getInEdit();
+    assert(Provider);
 
-  // Calculate the line of the mouse posiontion in 3D:
-  const SbViewportRegion &vp = view->getViewportRegion();
-  const SbViewVolume vol = view->getCamera()->getViewVolume();
-  const SbVec2s& sz = vp.getWindowSize(); 
-  SbVec3f ptNear, ptFar;
-  short w,h; sz.getValue(w,h);
+    // Calculate the line of the mouse posiontion in 3D:
+    const SbViewportRegion &vp = view->getViewportRegion();
+    const SbViewVolume vol = view->getCamera()->getViewVolume();
+    const SbVec2s& sz = vp.getWindowSize(); 
+    SbVec3f ptNear, ptFar;
+    short w,h; sz.getValue(w,h);
 
-  float fRatio = vp.getViewportAspectRatio();
-  SbVec2f pos = ev->getNormalizedPosition(vp);
-  float pX,pY; pos.getValue(pX,pY);
+    float fRatio = vp.getViewportAspectRatio();
+    SbVec2f pos = ev->getNormalizedPosition(vp);
+    float pX,pY; pos.getValue(pX,pY);
 
-  SbVec2f org = vp.getViewportOrigin();
-  float Ox, Oy; org.getValue( Ox, Oy );
+    SbVec2f org = vp.getViewportOrigin();
+    float Ox, Oy; org.getValue(Ox, Oy);
 
-  SbVec2f siz = vp.getViewportSize();
-  float dX, dY; siz.getValue( dX, dY );
+    SbVec2f siz = vp.getViewportSize();
+    float dX, dY; siz.getValue(dX, dY);
 
-  // now calculate the real points respecting aspect ratio information
-  //
-  if (fRatio > 1.0f) {
-      pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
-      pos.setValue(pX,pY);
-  }
-  else if (fRatio < 1.0f) {
-      pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
-      pos.setValue(pX,pY);
-  }
+    // now calculate the real points respecting aspect ratio information
+    //
+    if (fRatio > 1.0f) {
+        pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
+        pos.setValue(pX,pY);
+    }
+    else if (fRatio < 1.0f) {
+        pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
+        pos.setValue(pX,pY);
+    }
 
-  vol.projectPointToLine( pos, ptNear, ptFar );
-  Base::Vector3f pNear(ptNear[0],ptNear[1],ptNear[2]),pFar(ptFar[0],ptFar[1],ptFar[2]);
+    vol.projectPointToLine( pos, ptNear, ptFar );
+    Base::Vector3f pNear(ptNear[0],ptNear[1],ptNear[2]),pFar(ptFar[0],ptFar[1],ptFar[2]);
 
-  // Keybooard events
-  if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+    // Keyboard events
+    if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+        SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
 
-	// call the virtual methode
-    if(Provider->KeyPresst (ke->getKey()))
-		node->setHandled();;
+        // call the virtual methode
+        if (Provider->keyPressed (ke->getKey()))
+            node->setHandled();
 
-  // switching the mouse buttons
-  } else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+        // switching the mouse buttons
+    }
+    else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
 
-    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
-    const int button = event->getButton();
-    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+        const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+        const int button = event->getButton();
+        const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
-	// call the virtual methode
-	if(Provider->MouseButtonPresst(button,press,pNear,pFar))
-		node->setHandled();
+        // call the virtual methode
+        if (Provider->mouseButtonPressed(button,press,pNear,pFar))
+            node->setHandled();
 
-   // Mouse Movement handling
-  } else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-	    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
-	if(Provider->MouseMove(pNear,pFar))
-		node->setHandled();
-    
-  }
+        // Mouse Movement handling
+    }
+    else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+        const SoLocation2Event * const event = (const SoLocation2Event *) ev;
+        if (Provider->mouseMove(pNear,pFar))
+            node->setHandled();
+    }
 }
 
 SoSeparator* ViewProvider::getAnnotation(void)

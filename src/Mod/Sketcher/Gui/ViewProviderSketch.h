@@ -61,14 +61,14 @@ public:
   virtual void unsetEdit(void);
 
 	/// Is called by the tree if the user double click on the object
-	virtual bool DoubleClicked(void);
+	virtual bool doubleClicked(void);
 
 	/// is called when the Provider is in edit and the mouse is moved
-	virtual bool MouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm);
+	virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm);
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
-	virtual bool KeyPresst(int key);
-	/// is called when the Provider is in edit and the mouse is klicked 
-	virtual bool MouseButtonPresst(int Button, bool Presst, const Base::Vector3f &pos, const Base::Vector3f &norm);
+	virtual bool keyPressed(int key);
+	/// is called when the Provider is in edit and the mouse is clicked 
+	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm);
 
 
 protected:
