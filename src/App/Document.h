@@ -20,10 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Document_h__
-#define __Document_h__
-
-
+#ifndef APP_DOCUMENT_H
+#define APP_DOCUMENT_H
 
 #include <CXX/Objects.hxx>
 #include <Base/PyExport.h>
@@ -33,8 +31,6 @@
 
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
-//#include "Transaction.h"
-
 
 #include <map>
 #include <vector>
@@ -44,46 +40,30 @@
 #include <boost/graph/adjacency_list.hpp>
 
 
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
-#	pragma warning( disable : 4290 )  // not implemented throw specification
-#	pragma warning( disable : 4275 )
-#endif
-
 namespace Base {
-  class Writer;
+    class Writer;
 }
-
-//class FCLabel;
-namespace App
-{
-  class DocumentObject;
-  class DocumentObjectExecReturn;
-  class Document;
-  class AbstractFeature;
-  class DocumentPy; // the python document class
-  class Application;
-  class Transaction;
-}
-
-
 
 namespace App
 {
+    class DocumentObject;
+    class DocumentObjectExecReturn;
+    class Document;
+    class AbstractFeature;
+    class DocumentPy; // the python document class
+    class Application;
+    class Transaction;
+}
 
-
-//
-
+namespace App
+{
 
 /// The document class
-class AppExport Document :public App::PropertyContainer//, public Base::Subject<const DocChanges&>
+class AppExport Document :public App::PropertyContainer
 {
     PROPERTY_HEADER(App::Document);
 
 public:
-
     /// holds the long name of the document (utf-8 coded)
     PropertyString Label;
     /// full qualified (with path) file name (utf-8 coded)
@@ -97,7 +77,6 @@ public:
     PropertyString Comment;
     PropertyString Id;
     PropertyString TransientDir;
-
 
     /** @name Signals of the document */
     //@{
@@ -145,7 +124,6 @@ public:
     /// returns the complet document mermory consumption, including all managed DocObjects and Undo Redo.
     unsigned int getMemSize (void) const;
 
-
     /** @name Object handling  */
     //@{
     /// Add a feature of sType with sName (ASCII) to this document and set it active. Unicode names are set through the Label propery
@@ -178,7 +156,6 @@ public:
     std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
     int countObjectsOfType(const Base::Type& typeId) const;
     //@}
-
 
     /** @name methods for modification and state handling
      */
@@ -245,10 +222,7 @@ public:
 
     virtual PyObject *getPyObject(void);
 
-
-    friend class DocumentPy;
     friend class Application;
-    friend class AbstractFeature;
     /// because of transaction handling
     friend class DocumentObject;
     friend class Transaction;
@@ -258,7 +232,6 @@ public:
     virtual ~Document();
 
 protected:
-
     /// Construction
     Document(void);
 
@@ -275,35 +248,22 @@ protected:
     void onChangedProperty(const DocumentObject *Who, const Property *What);
     /// helper which Recompute only this feature
     bool _recomputeFeature(DocumentObject* Feat);
-
-    // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    int _iTransactionMode;
-    int iTransactionCount;
-    std::map<int,Transaction*> mTransactions;
-    Transaction *activTransaction;
-    bool bRollback;
-
-    int _iUndoMode;
-    std::list<Transaction*> mUndoTransactions;
-    std::list<Transaction*> mRedoTransactions;
-    Transaction *activUndoTransaction;
     void _clearRedos();
 
 
-    DocumentObject* pActiveObject;
-    std::map<std::string,DocumentObject*> ObjectMap;
-    // Array to preserve the creation order of created objects
-    std::vector<DocumentObject*> ObjectArray;
-
+private:
+    // # Data Member of the document +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    std::list<Transaction*> mUndoTransactions;
+    std::list<Transaction*> mRedoTransactions;
     // recompute log
     std::vector<App::DocumentObjectExecReturn*> _RecomputeLog;
 
     // pointer to the python class
     Py::Object DocumentPythonObject;
+    struct DocumentP* d;
 };
 
 
 } //namespace App
 
-#endif // __Document_h__
+#endif // APP_DOCUMENT_H
