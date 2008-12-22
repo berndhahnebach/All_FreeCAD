@@ -152,12 +152,12 @@ bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
 {
     if (d->_pcInEdit)
         resetEdit();
-	View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(getActiveView());
-    if (pcIvView->getViewer()->setEdit(p,ModNum))
+    View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(getActiveView());
+    if (pcIvView && pcIvView->getViewer()->setEdit(p,ModNum)) {
         d->_pcInEdit = p;
-		if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
-			signalInEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
-
+        if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
+            signalInEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
+    }
     else
         return false;
     return true;
@@ -165,23 +165,23 @@ bool Document::setEdit(Gui::ViewProvider* p, int ModNum)
 
 void Document::resetEdit(void)
 {
-	std::list<Gui::BaseView*>::iterator VIt;
+    std::list<Gui::BaseView*>::iterator VIt;
     if (d->_pcInEdit){
         for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
             View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-            if(pcIvView)
+            if (pcIvView)
                 pcIvView->getViewer()->resetEdit();
         }
 
-		if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
-			signalResetEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
+        if (d->_pcInEdit->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) 
+            signalResetEdit(*(static_cast<ViewProviderDocumentObject*>(d->_pcInEdit)));
         d->_pcInEdit = 0;
     }
 }
 
-ViewProvider *Document::getInEdit(void)
+ViewProvider *Document::getInEdit(void) const
 {
-	return d->_pcInEdit;
+    return d->_pcInEdit;
 }
 void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {

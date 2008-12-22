@@ -73,24 +73,24 @@ ViewProviderSketch::~ViewProviderSketch()
 
 
 // **********************************************************************************
-bool ViewProviderSketch::MouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm)
+bool ViewProviderSketch::mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm)
 {
 	return true;
 }
 
-bool ViewProviderSketch::KeyPresst(int key)
-{
-	return true;
-}
-
-
-bool ViewProviderSketch::MouseButtonPresst(int Button, bool Presst, const Base::Vector3f &pos, const Base::Vector3f &norm)
+bool ViewProviderSketch::keyPressed(int key)
 {
 	return true;
 }
 
 
-bool ViewProviderSketch::DoubleClicked(void)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm)
+{
+	return true;
+}
+
+
+bool ViewProviderSketch::doubleClicked(void)
 {
 	Gui::Application::Instance->activeDocument()->setEdit((ViewProvider*)this);
 	return true;

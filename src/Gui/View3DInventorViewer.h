@@ -84,7 +84,7 @@ public:
   bool setEdit(Gui::ViewProvider* p, int ModNum=0);
   /// reset from edit mode
   void resetEdit(void);
-  Gui::ViewProvider *getInEdit(void){return inEdit;}
+  Gui::ViewProvider *getInEdit(void) const {return inEdit;}
 
   /// Background modes for the savePicture() method
   enum eBackgroundType { 

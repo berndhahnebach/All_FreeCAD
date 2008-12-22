@@ -154,7 +154,7 @@ void TreeWidget::mouseDoubleClickEvent ( QMouseEvent * event )
         QTreeWidget::mouseDoubleClickEvent(event);
     }
     else if (Item->type() == TreeWidget::ObjectType) {
-        if (!(static_cast<DocumentObjectItem*>(Item)->object())->DoubleClicked())
+        if (!(static_cast<DocumentObjectItem*>(Item)->object())->doubleClicked())
             QTreeWidget::mouseDoubleClickEvent(event);
     }
 }
@@ -562,18 +562,18 @@ DocumentItem::~DocumentItem()
 
 void DocumentItem::slotInEdit(Gui::ViewProviderDocumentObject& v)
 {
-	std::string name (v.getObject()->getNameInDocument());
+    std::string name (v.getObject()->getNameInDocument());
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
     if (it != ObjectMap.end()) 
-			it->second->setBackgroundColor(0,Qt::yellow);
+        it->second->setBackgroundColor(0,Qt::yellow);
 }
 
 void DocumentItem::slotResetEdit(Gui::ViewProviderDocumentObject& v)
 {
-	std::string name (v.getObject()->getNameInDocument());
+    std::string name (v.getObject()->getNameInDocument());
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
     if (it != ObjectMap.end()) 
-			it->second->setBackgroundColor(0,Qt::white);
+        it->second->setBackgroundColor(0,Qt::white);
 }
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)

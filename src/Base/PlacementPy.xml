@@ -35,7 +35,7 @@ Move the Placement along the vector
     </Attribute>
     <Attribute Name="Rotation" ReadOnly="false">
       <Documentation>
-        <UserDocu>Orientation of the placement expresst as rotation</UserDocu>
+        <UserDocu>Orientation of the placement expressed as rotation</UserDocu>
       </Documentation>
       <Parameter Name="Rotation" Type="Tuple" />
     </Attribute>
