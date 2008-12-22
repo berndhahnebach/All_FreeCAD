@@ -282,7 +282,7 @@ Py::Object DocumentPy::getActiveObject(void) const
 {
     DocumentObject *pcFtr = getDocumentPtr()->getActiveObject();
     if(pcFtr)
-        return Py::Object(pcFtr->getPyObject());
+        return Py::Object(pcFtr->getPyObject(), true);
     return Py::None();
 }
 
