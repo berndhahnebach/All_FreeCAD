@@ -85,9 +85,10 @@ CmdSketcherCreateArc::CmdSketcherCreateArc()
 
 void CmdSketcherCreateArc::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    //commitCommand();
+	Gui::Document *doc = getActiveGuiDocument();
+	if(doc)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(1);
       
 }
 

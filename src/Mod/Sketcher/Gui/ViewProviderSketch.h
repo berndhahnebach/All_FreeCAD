@@ -70,11 +70,16 @@ public:
 	/// is called when the Provider is in edit and the mouse is clicked 
 	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm);
 
+	/// is called by GuiCommands to set the drawing mode
+	void setSketchMode(int mode);
 
 protected:
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 
+  int Mode;
+
+   SoSeparator  *EditRoot;
 };
 
 } // namespace PartGui
