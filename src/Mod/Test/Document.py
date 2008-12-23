@@ -39,6 +39,24 @@ class DocumentBasicCases(unittest.TestCase):
     #If we remove the whole method no error appears.
     self.failUnless(FreeCAD.getDocument("CreateTest")!= None,"Creating Document failed")
 
+  def testAddition(self):
+    # Cannot write a real test case for that but when debugging the
+    # C-code there shouldn't be a memory leak (see rev. 1814)
+    self.Doc.openTransaction("Add")
+    L1 = self.Doc.addObject("App::FeatureTest","Label")
+    self.Doc.commitTransaction()
+    self.Doc.undo()
+
+  def testRemoval(self):
+    # Cannot write a real test case for that but when debugging the
+    # C-code there shouldn't be a memory leak (see rev. 1814)
+    self.Doc.openTransaction("Add")
+    L1 = self.Doc.addObject("App::FeatureTest","Label")
+    self.Doc.commitTransaction()
+    self.Doc.openTransaction("Rem")
+    L1 = self.Doc.removeObject("Label")
+    self.Doc.commitTransaction()
+
   def testObjects(self):
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     #call members to check for errors in ref counting

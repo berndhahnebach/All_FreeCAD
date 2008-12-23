@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <assert.h>
+# include <cassert>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -40,18 +40,18 @@ using Base::XMLReader;
 using namespace App;
 using namespace std;
 
-TYPESYSTEM_SOURCE(App::Transaction, Base::Persistence);
+TYPESYSTEM_SOURCE(App::Transaction, Base::Persistence)
 
 //**************************************************************************
 // Construction/Destruction
 
 Transaction::Transaction()
-:iPos(0)
+  : iPos(0)
 {
 }
 
 Transaction::Transaction(int pos)
-:iPos(pos)
+  : iPos(pos)
 {
 }
 
@@ -62,8 +62,24 @@ Transaction::Transaction(int pos)
 Transaction::~Transaction()
 {
     std::map<const DocumentObject*,TransactionObject*>::iterator It;
-    for( It= _Objects.begin();It!=_Objects.end();++It)
+    for (It= _Objects.begin();It!=_Objects.end();++It) {
+        if (It->second->status == TransactionObject::New) {
+            // If an object has been removed from the document the transaction
+            // status is 'New'. The 'pcNameInDocument' member serves as criterion
+            // to check whether the object is part of the document or not.
+            // Note, it's possible that the transaction status is 'New' while the
+            // object is (again) part of the document. This usually happens when
+            // a previous removal is undone.
+            // Thus, if the object has been removed, i.e. the status is 'New' and
+            // is still not part of the document the object must be destroyed not
+            // to cause a memory leak. This usually is the case when the removal
+            // of an object is not undone or when an addition is undone.
+            if (!It->first->pcNameInDocument) {
+                delete It->first;
+            }
+        }
         delete It->second;
+    }
 }
 
 unsigned int Transaction::getMemSize (void) const
@@ -74,12 +90,12 @@ unsigned int Transaction::getMemSize (void) const
 void Transaction::Save (Writer &/*writer*/) const
 {
     assert(0);
-} 
+}
 
 void Transaction::Restore(XMLReader &/*reader*/)
 {
     assert(0);
-} 
+}
 
 int Transaction::getPos(void) const
 {
@@ -93,54 +109,55 @@ int Transaction::getPos(void) const
 
 void Transaction::apply(Document &Doc/*, DocChanges &ChangeList*/)
 {
-  std::map<const DocumentObject*,TransactionObject*>::iterator It;
-  //for( It= _Objects.begin();It!=_Objects.end();++It)
-  //    It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
-  for( It= _Objects.begin();It!=_Objects.end();++It)
-      It->second->applyDel(Doc,const_cast<DocumentObject*>(It->first));
-  for( It= _Objects.begin();It!=_Objects.end();++It)
-      It->second->applyNew(Doc,const_cast<DocumentObject*>(It->first));
-  for( It= _Objects.begin();It!=_Objects.end();++It)
-      It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first));
+    std::map<const DocumentObject*,TransactionObject*>::iterator It;
+    //for (It= _Objects.begin();It!=_Objects.end();++It)
+    //    It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
+    for (It= _Objects.begin();It!=_Objects.end();++It)
+        It->second->applyDel(Doc,const_cast<DocumentObject*>(It->first));
+    for (It= _Objects.begin();It!=_Objects.end();++It)
+        It->second->applyNew(Doc,const_cast<DocumentObject*>(It->first));
+    for (It= _Objects.begin();It!=_Objects.end();++It)
+        It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first));
 }
 
 void Transaction::addObjectNew(DocumentObject *Obj)
 {
-  map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+    std::map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
 
-  if(pos != _Objects.end()){
-      if(pos->second->status == TransactionObject::Del){
+    if (pos != _Objects.end()) {
+        if (pos->second->status == TransactionObject::Del) {
             delete pos->second;
             delete pos->first;
             _Objects.erase(pos);
-
- 
-      }else{
-        pos->second->status = TransactionObject::New;
-        pos->second->_NameInDocument = Obj->getNameInDocument();
+        }
+        else {
+            pos->second->status = TransactionObject::New;
+            pos->second->_NameInDocument = Obj->getNameInDocument();
+            Obj->pcNameInDocument = 0;
+        }
+    }
+    else {
+        TransactionObject *To = new TransactionObject(Obj,Obj->getNameInDocument());
+        _Objects[Obj] = To;
+        // set name cache false
         Obj->pcNameInDocument = 0;
-      }
-  }else{
-    TransactionObject *To = new TransactionObject(Obj,Obj->getNameInDocument());
-    _Objects[Obj] = To;
-    // set name cache false
-    Obj->pcNameInDocument = 0;
-    To->status = TransactionObject::New;
-  }
+        To->status = TransactionObject::New;
+    }
 }
 
 void Transaction::addObjectDel(const DocumentObject *Obj)
 {
-
-    map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+    std::map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
 
     // is it created in this transaction ?
-    if(pos != _Objects.end() && pos->second->status == TransactionObject::New){
+    if (pos != _Objects.end() && pos->second->status == TransactionObject::New) {
         // remove completely from transaction
         delete pos->second;
         _Objects.erase(pos);
-    }else if (pos != _Objects.end() && pos->second->status == TransactionObject::Chn)
+    }
+    else if (pos != _Objects.end() && pos->second->status == TransactionObject::Chn) {
         pos->second->status = TransactionObject::Del;
+    }
     else {
         TransactionObject *To = new TransactionObject(Obj);
         _Objects[Obj] = To;
@@ -150,24 +167,20 @@ void Transaction::addObjectDel(const DocumentObject *Obj)
 
 void Transaction::addObjectChange(const DocumentObject *Obj,const Property *Prop)
 {
-  map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
-  TransactionObject *To;
+    std::map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+    TransactionObject *To;
 
-  if(pos != _Objects.end())
-    To = pos->second;
-  else
-  {
-    To = new TransactionObject(Obj);
-    _Objects[Obj] = To;
-    To->status = TransactionObject::Chn;
-  }
+    if (pos != _Objects.end()) {
+        To = pos->second;
+    }
+    else {
+        To = new TransactionObject(Obj);
+        _Objects[Obj] = To;
+        To->status = TransactionObject::Chn;
+    }
 
-  To->setProperty(Prop);
-
+    To->setProperty(Prop);
 }
-
-
-
 
 
 //**************************************************************************
@@ -185,10 +198,10 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistence);
  * A more elaborate description of the constructor.
  */
 TransactionObject::TransactionObject(const DocumentObject * /*pcObj*/,const char *NameInDocument)
-:status(New)
+  : status(New)
 {
-  if(NameInDocument)
-    _NameInDocument=NameInDocument;
+    if (NameInDocument)
+        _NameInDocument=NameInDocument;
 }
 
 /**
@@ -197,44 +210,41 @@ TransactionObject::TransactionObject(const DocumentObject * /*pcObj*/,const char
  */
 TransactionObject::~TransactionObject()
 {
-  std::map<const Property*,Property*>::const_iterator It;
-  for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
-    delete It->second;
-
+    std::map<const Property*,Property*>::const_iterator It;
+    for (It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
+        delete It->second;
 }
 
 void TransactionObject::applyDel(Document &Doc, DocumentObject *pcObj)
 {
-  if(status == Del){
-    // simply filling in the saved object
-    Doc._remObject(pcObj);
-  }
+    if (status == Del) {
+        // simply filling in the saved object
+        Doc._remObject(pcObj);
+    }
 }
 
 void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
 {
-  if(status == New){
-    Doc._addObject(pcObj,_NameInDocument.c_str());
-  }
-
+    if (status == New) {
+        Doc._addObject(pcObj,_NameInDocument.c_str());
+    }
 }
 
 void TransactionObject::applyChn(Document & /*Doc*/, DocumentObject * /*pcObj*/)
 {
-  if(status == New || status == Chn){
-    // apply changes if any
-    std::map<const Property*,Property*>::const_iterator It;
-    for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
-      const_cast<Property*>(It->first)->Paste(*(It->second));
-  }
+    if (status == New || status == Chn) {
+        // apply changes if any
+        std::map<const Property*,Property*>::const_iterator It;
+        for (It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
+            const_cast<Property*>(It->first)->Paste(*(It->second));
+    }
 }
 
 void TransactionObject::setProperty(const Property* pcProp)
 {
-  map<const Property*,Property*>::iterator pos = _PropChangeMap.find(pcProp);
-
-  if(pos == _PropChangeMap.end())
-    _PropChangeMap[pcProp] = pcProp->Copy();
+    std::map<const Property*,Property*>::iterator pos = _PropChangeMap.find(pcProp);
+    if (pos == _PropChangeMap.end())
+        _PropChangeMap[pcProp] = pcProp->Copy();
 }
 
 unsigned int TransactionObject::getMemSize (void) const
@@ -245,20 +255,9 @@ unsigned int TransactionObject::getMemSize (void) const
 void TransactionObject::Save (Writer &/*writer*/) const
 {
     assert(0);
-} 
+}
 
 void TransactionObject::Restore(XMLReader &/*reader*/)
 {
     assert(0);
-} 
-
-
-//**************************************************************************
-// separator for other implemetation aspects
-
-
-
-
-
-
-
+}

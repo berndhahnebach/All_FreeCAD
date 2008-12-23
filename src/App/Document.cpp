@@ -326,10 +326,20 @@ void Document::clearUndos()
     if (d->activeUndoTransaction)
         commitTransaction();
 
+    // When cleaning up the undo stack we must delete the transactions from front
+    // to back because a document object can appear in several transactions but
+    // once removed from the document the object can never ever appear in any later
+    // transaction. Since the document object may be also deleted when the transaction
+    // is deleted we must make sure not access an object once it's destroyed. Thus, we
+    // go from front to back and not the other way round.
     while (!mUndoTransactions.empty()) {
-        delete mUndoTransactions.back();
-        mUndoTransactions.pop_back();
+        delete mUndoTransactions.front();
+        mUndoTransactions.pop_front();
     }
+    //while (!mUndoTransactions.empty()) {
+    //    delete mUndoTransactions.back();
+    //    mUndoTransactions.pop_back();
+    //}
 
     _clearRedos();
 }

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Transaction_H__
-#define __Transaction_H__
+#ifndef APP_TRANSACTION_H
+#define APP_TRANSACTION_H
 
 #include <Base/Persistence.h>
 
@@ -40,78 +40,75 @@ class AbstractFeature;
  */
 class AppExport TransactionObject: public Base::Persistence
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  /// Construction
-  TransactionObject(const DocumentObject *pcObj,const char *NameInDocument=0);
-  /// Destruction
-  virtual ~TransactionObject();
+    /// Construction
+    TransactionObject(const DocumentObject *pcObj,const char *NameInDocument=0);
+    /// Destruction
+    virtual ~TransactionObject();
 
-  void applyNew(Document &Doc, DocumentObject *pcObj);
-  void applyDel(Document &Doc, DocumentObject *pcObj);
-  void applyChn(Document &Doc, DocumentObject *pcObj);
+    void applyNew(Document &Doc, DocumentObject *pcObj);
+    void applyDel(Document &Doc, DocumentObject *pcObj);
+    void applyChn(Document &Doc, DocumentObject *pcObj);
 
+    void setProperty(const Property* pcProp);
 
-  void setProperty(const Property* pcProp);
-  
-  virtual unsigned int getMemSize (void) const;
-  virtual void Save (Base::Writer &writer) const;
-  /// This method is used to restore properties from an XML document.
-  virtual void Restore(Base::XMLReader &reader);
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Base::Writer &writer) const;
+    /// This method is used to restore properties from an XML document.
+    virtual void Restore(Base::XMLReader &reader);
 
-  friend class Transaction;
+    friend class Transaction;
 
 protected:
-  enum Status {New,Del,Chn} status;
-  std::map<const Property*,Property*> _PropChangeMap;
-  std::string _NameInDocument;
+    enum Status {New,Del,Chn} status;
+    std::map<const Property*,Property*> _PropChangeMap;
+    std::string _NameInDocument;
 };
 
 /** Represents a atomic transaction of the document
  */
 class AppExport Transaction : public Base::Persistence
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  /// Construction
-  Transaction();
-  /// Construction
-  Transaction(int pos);
-  /// Destruction
-  virtual ~Transaction();
+    /// Construction
+    Transaction();
+    /// Construction
+    Transaction(int pos);
+    /// Destruction
+    virtual ~Transaction();
 
-  /// apply the content to the document
-  void apply(Document &Doc);
+    /// apply the content to the document
+    void apply(Document &Doc);
 
-  // the utf-8 name of the transaction
-  std::string Name; 
+    // the utf-8 name of the transaction
+    std::string Name; 
 
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Base::Writer &writer) const;
+    /// This method is used to restore properties from an XML document.
+    virtual void Restore(Base::XMLReader &reader);
 
-  virtual unsigned int getMemSize (void) const;
-  virtual void Save (Base::Writer &writer) const;
-  /// This method is used to restore properties from an XML document.
-  virtual void Restore(Base::XMLReader &reader);
+    /// get the position in the transaction history
+    int getPos(void) const;
 
-  /// get the position in the transaction history
-  int getPos(void) const;
-
-
-  friend class Document;
+    friend class Document;
 
 protected:
-  void addObjectNew(DocumentObject *Obj);
-  void addObjectDel(const DocumentObject *Obj);
-  void addObjectChange(const DocumentObject *Obj,const Property *Prop);
-private:
-  int iPos;
-  std::map<const DocumentObject*,TransactionObject*> _Objects;
+    void addObjectNew(DocumentObject *Obj);
+    void addObjectDel(const DocumentObject *Obj);
+    void addObjectChange(const DocumentObject *Obj,const Property *Prop);
 
+private:
+    int iPos;
+    std::map<const DocumentObject*,TransactionObject*> _Objects;
 };
 
 
 } //namespace App
 
-#endif // __Transaction_H__
+#endif // APP_TRANSACTION_H
 
