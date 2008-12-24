@@ -1308,6 +1308,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
   }
 
   static bool MoveMode=false;
+  static bool MoveModeMoved=false;
   static bool ZoomMode=false;
   static bool RotMode =false;
   static bool dCliBut3=false;
@@ -1417,6 +1418,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       {
           CenterTime = ev->getTime();
           MoveMode = true;
+		  MoveModeMoved=false;
           _bSpining = false;
           dCliBut3 = false;
           SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
@@ -1430,7 +1432,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           SbTime tmp = (ev->getTime() - CenterTime);
           float dci = (float)QApplication::doubleClickInterval()/1000.0f;
           // is it just a middle click?
-          if (tmp.getValue() < dci/*0.300*/){
+          if (tmp.getValue() < dci/*0.300*/ && !MoveModeMoved){
 
               if(!seekToPoint(pos))
                 panToCenter(panningplane, posn);
@@ -1476,6 +1478,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       processed = true;
     }else if(MoveMode) {
       pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
+	  MoveModeMoved=true;
       processed = true;
 
     }else if(_bSpining) {
