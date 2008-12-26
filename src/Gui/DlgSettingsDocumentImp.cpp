@@ -35,7 +35,7 @@ using namespace Gui::Dialog;
 DlgSettingsDocumentImp::DlgSettingsDocumentImp( QWidget* parent )
     : PreferencePage( parent )
 {
-  this->setupUi(this);
+    this->setupUi(this);
 }
 
 /** 
@@ -43,30 +43,32 @@ DlgSettingsDocumentImp::DlgSettingsDocumentImp( QWidget* parent )
  */
 DlgSettingsDocumentImp::~DlgSettingsDocumentImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 
 void DlgSettingsDocumentImp::saveSettings()
 {
-  prefCheckNewDoc->onSave();
-  SpinBoxCompression->onSave();
+    prefCheckNewDoc->onSave();
+    prefCompression->onSave();
 
-  prefCheckBox2->onSave();
-  prefSpinBox2->onSave();
-  prefCheckBox2_2->onSave();
-  prefCheckBox2_2_2->onSave();
+    prefUndoRedo->onSave();
+    prefUndoRedoSize->onSave();
+    prefSaveTransaction->onSave();
+    prefDiscardTransaction->onSave();
+    prefSaveThumbnail->onSave();
 }
 
 void DlgSettingsDocumentImp::loadSettings()
 {
-  prefCheckNewDoc->onRestore();
-  SpinBoxCompression->onRestore();
+    prefCheckNewDoc->onRestore();
+    prefCompression->onRestore();
 
-  prefCheckBox2->onRestore();
-  prefSpinBox2->onRestore();
-  prefCheckBox2_2->onRestore();
-  prefCheckBox2_2_2->onRestore();
+    prefUndoRedo->onRestore();
+    prefUndoRedoSize->onRestore();
+    prefSaveTransaction->onRestore();
+    prefDiscardTransaction->onRestore();
+    prefSaveThumbnail->onRestore();
 }
 
 /**
@@ -74,11 +76,12 @@ void DlgSettingsDocumentImp::loadSettings()
  */
 void DlgSettingsDocumentImp::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi(this);
-  } else {
-    QWidget::changeEvent(e);
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
 }
 
 #include "moc_DlgSettingsDocumentImp.cpp"

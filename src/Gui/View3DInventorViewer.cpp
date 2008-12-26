@@ -228,9 +228,9 @@ void View3DInventorViewer::resetEdit(void)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  : inherited (parent, name, embed, type, build),
+  : inherited (parent, name, embed, type, build), inEdit(0),
     MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),
-    _iMouseModel(1), editing(FALSE), redirected(FALSE),inEdit(0)
+    _iMouseModel(1), editing(FALSE), redirected(FALSE)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
@@ -478,15 +478,18 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
   root->addChild(foregroundroot);
 
   // render the scene
-  renderer.render( root );
-
-  // set matrix for miba
-  renderer._Matrix = camera->getViewVolume().getMatrix();
-
-  //bool ok = renderer.writeToImageFile( filename, filetypeextension );
-  renderer.writeToImageFile(filename, comment);
-
-  root->unref();
+  SbBool ok = renderer.render(root);
+  if (ok) {
+    // set matrix for miba
+    renderer._Matrix = camera->getViewVolume().getMatrix();
+    //bool ok = renderer.writeToImageFile(filename, filetypeextension);
+    renderer.writeToImageFile(filename, comment);
+    root->unref();
+  }
+  else {
+    root->unref();
+    throw Base::Exception("Offscreen rendering failed");
+  }
 }
 
 void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage& img) const
@@ -541,11 +544,15 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
   root->addChild(foregroundroot);
 
   // render the scene
-  renderer.render( root );
-
-  renderer.writeToImage(img);
-
-  root->unref();
+  SbBool ok = renderer.render(root);
+  if (ok) {
+    renderer.writeToImage(img);
+    root->unref();
+  }
+  else {
+    root->unref();
+    throw Base::Exception("Offscreen rendering failed");
+  }
 }
 
 void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,

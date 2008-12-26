@@ -947,15 +947,15 @@ void StdViewScreenShot::activated(int iMsg)
       }
 
       QString comment = opt->comment();
-      if ( !comment.isEmpty())
-      {
+      if (!comment.isEmpty()) {
         // Replace newline escape sequence trough '\\n' string to build one big string, otherwise Python would interpret it as an invalid command. 
         // Python does the decoding for us.
         QStringList lines = comment.split(QLatin1String("\n"), QString::KeepEmptyParts );
         comment = lines.join(QLatin1String("\\n"));
         doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
             fn.toUtf8().constData(),w,h,background,comment.toUtf8().constData());
-      }else{
+      }
+      else {
         doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s')",
             fn.toUtf8().constData(),w,h,background);
       }
