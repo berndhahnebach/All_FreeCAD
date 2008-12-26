@@ -88,7 +88,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // File
     Gui::MenuItem* file = new Gui::MenuItem( menuBar );
     file->setCommand(QT_TR_NOOP("&File"));
-    *file << "Std_New" << "Std_Open" << "Std_Import" << "Std_Save" << "Std_SaveAs"  << "Std_ProjectInfo" 
+    *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs"
+          << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
           //<< "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
@@ -136,13 +137,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
           << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
           << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
-
-    // Windows
-    Gui::MenuItem* wnd = new Gui::MenuItem( menuBar );
-    wnd->setCommand(QT_TR_NOOP("&Windows"));
-    *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
-         << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
-         << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
 
 	// Mesh ****************************************************************************************************
 	Gui::MenuItem* mesh = new Gui::MenuItem( menuBar );
@@ -218,6 +212,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
  
 	// xxx ****************************************************************************************************
 
+
+    // Windows
+    Gui::MenuItem* wnd = new Gui::MenuItem( menuBar );
+    wnd->setCommand(QT_TR_NOOP("&Windows"));
+    *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
+         << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
+         << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
     
     // help ****************************************************************************************************
     // Separator
