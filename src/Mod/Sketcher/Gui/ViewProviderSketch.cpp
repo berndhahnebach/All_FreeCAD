@@ -35,6 +35,8 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 
+#include <Mod/Sketcher/App/SketchFlatInterface.h>
+
 #include "ViewProviderSketch.h"
 
 
@@ -101,7 +103,27 @@ bool ViewProviderSketch::keyPressed(int key)
 
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm)
 {
-	return true;
+	// Left Mouse button ****************************************************
+	if(Button == 1){
+		if(pressed){
+			// Do things depending on the mode of the user interaktion
+			switch(Mode){
+				case STATUS_NONE:
+				case STATUS_SKETCH_CreateArc:
+				case STATUS_SKETCH_CreateCircle:
+				case STATUS_SKETCH_CreatePolyline:
+				case STATUS_SKETCH_CreateRectangle:
+				case STATUS_SKETCH_CreateText:
+					return true;
+				case STATUS_SKETCH_CreateLine:
+					return true;
+					
+			}
+		}
+
+
+	}
+	return false;
 }
 
 
@@ -149,8 +171,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 	// stuff for the points
     SoMaterial * PointsMaterials = new SoMaterial;
-    PointsMaterials->diffuseColor.set1Value(0,0, 0, 0);
-    PointsMaterials->diffuseColor.set1Value(1,1, 0, 0);
+    //PointsMaterials->diffuseColor.set1Value(0,0, 0, 0);
+    //PointsMaterials->diffuseColor.set1Value(1,1, 0, 0);
 	EditRoot->addChild(PointsMaterials);
 
 	SoMaterialBinding *MtlBind = new SoMaterialBinding;
@@ -158,8 +180,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(MtlBind);
 
 	SoCoordinate3* PointsCoordinate = new SoCoordinate3;
-	PointsCoordinate->point.set1Value(0,SbVec3f(10,10,0.01));
-	PointsCoordinate->point.set1Value(1,SbVec3f(0,0,0.01));
+	//PointsCoordinate->point.set1Value(0,SbVec3f(10,10,0.01));
+	//PointsCoordinate->point.set1Value(1,SbVec3f(0,0,0.01));
 	EditRoot->addChild(PointsCoordinate);
 
 	SoDrawStyle *DrawStyle = new SoDrawStyle;
@@ -169,8 +191,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 	// stuff for the lines
     LinesMaterials = new SoMaterial;
-    LinesMaterials->diffuseColor.set1Value(0,0, 0, 0);
-    LinesMaterials->diffuseColor.set1Value(1,1, 0, 0);
+    //LinesMaterials->diffuseColor.set1Value(0,0, 0, 0);
+    //LinesMaterials->diffuseColor.set1Value(1,1, 0, 0);
 	EditRoot->addChild(LinesMaterials);
 
 	MtlBind = new SoMaterialBinding;
@@ -178,10 +200,10 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(MtlBind);
 
 	LinesCoordinate = new SoCoordinate3;
-	LinesCoordinate->point.set1Value(0,SbVec3f(10,0,0.01));
-	LinesCoordinate->point.set1Value(1,SbVec3f(0,10,0.01));
-	LinesCoordinate->point.set1Value(2,SbVec3f(10,5,0.01));
-	LinesCoordinate->point.set1Value(3,SbVec3f(0,15,0.01));
+	//LinesCoordinate->point.set1Value(0,SbVec3f(10,0,0.01));
+	//LinesCoordinate->point.set1Value(1,SbVec3f(0,10,0.01));
+	//LinesCoordinate->point.set1Value(2,SbVec3f(10,5,0.01));
+	//LinesCoordinate->point.set1Value(3,SbVec3f(0,15,0.01));
 	EditRoot->addChild(LinesCoordinate);
 
 	DrawStyle = new SoDrawStyle;

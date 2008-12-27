@@ -89,7 +89,7 @@ void CmdSketcherCreateArc::activated(int iMsg)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(1);
+			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateArc);
       
 }
 
@@ -156,7 +156,8 @@ void CmdSketcherCreateLine::activated(int iMsg)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateLine);
+			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
+			    ->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateLine);
       
 }
 
@@ -165,6 +166,8 @@ bool CmdSketcherCreateLine::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
 			return true;
 	return false;
 }

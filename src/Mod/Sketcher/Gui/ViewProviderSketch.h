@@ -27,6 +27,7 @@
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 
 
+
 class TopoDS_Shape;
 class TopoDS_Face;
 class SoSeparator;
@@ -82,6 +83,8 @@ public:
 	};
 	/// is called by GuiCommands to set the drawing mode
 	void setSketchMode(int mode);
+	/// get the sketch mode
+	int getSketchMode(void){return Mode;}
 
 protected:
   /// get called by the container whenever a property has been changed
