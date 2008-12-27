@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) Jürgen Riegel	        <FreeCAD@juergen-riegel.net    *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,59 +21,33 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef SKETCHER_SKETCHFLATINTERFACE_H
+#define SKETCHER_SKETCHFLATINTERFACE_H
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define AppSketcherExport __declspec(dllimport)
-# define AppPartExport     __declspec(dllimport)
-# define AppPartGuiExport  __declspec(dllimport)
-# define SketcherGuiExport __declspec(dllexport)
-#else // for Linux
-# define AppSketcherExport 
-# define PartAppExport     
-# define AppPartGuiExport     
-# define SketcherGuiExport 
-#endif
+// Std. configurations
 
 
-// Python
-#include <Python.h>
-
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
-
-// STL
-#include <vector>
-#include <map>
 #include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
 
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+namespace Sketcher
+{
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-// all of inventor
-#ifndef __InventorAll__
-# include <Gui/InventorAll.h>
-#endif 
+/** Interface to the sketch flat constraint solver.
+ */
+class AppSketcherExport SketchFlatInterface
+{
+public:
+    /// Construction
+    SketchFlatInterface();
+    /// Destruction
+    virtual ~SketchFlatInterface();
 
-#include <xercesc/util/XercesDefs.hpp>
+    int testMe(int a,const char *s);
 
+ };
 
-#endif // __PRECOMPILED_GUI__
+} //namespace Base
+
+#endif // SKETCHER_SKETCHFLATINTERFACE_H
+

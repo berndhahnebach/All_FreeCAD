@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) Jürgen Riegel	        <FreeCAD@juergen-riegel.net    *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,59 +21,50 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#include "PreCompiled.h"
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define AppSketcherExport __declspec(dllimport)
-# define AppPartExport     __declspec(dllimport)
-# define AppPartGuiExport  __declspec(dllimport)
-# define SketcherGuiExport __declspec(dllexport)
-#else // for Linux
-# define AppSketcherExport 
-# define PartAppExport     
-# define AppPartGuiExport     
-# define SketcherGuiExport 
+#ifndef _PreComp_
 #endif
 
-
-// Python
-#include <Python.h>
-
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
-
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
-
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "SketchFlatInterface.h"
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-// all of inventor
-#ifndef __InventorAll__
-# include <Gui/InventorAll.h>
-#endif 
-
-#include <xercesc/util/XercesDefs.hpp>
+using namespace Sketcher;
 
 
-#endif // __PRECOMPILED_GUI__
+//**************************************************************************
+// Construction/Destruction
+
+/**
+ * A constructor.
+ * A more elaborate description of the constructor.
+ */
+SketchFlatInterface::SketchFlatInterface()
+{
+}
+
+/**
+ * A destructor.
+ * A more elaborate description of the destructor.
+ */
+SketchFlatInterface::~SketchFlatInterface()
+{
+}
+
+
+//**************************************************************************
+// separator for other implemetation aspects
+
+/**
+ */
+int SketchFlatInterface::testMe(int /*a*/,const char* /*s*/)
+{
+    return 0;
+}
+
+
+//**************************************************************************
+
+
+
