@@ -45,8 +45,8 @@
 
 // standard
 #include <iostream>
-#include <assert.h>
-#include <math.h>
+#include <cassert>
+#include <cmath>
 
 // STL
 #include <vector>
@@ -63,12 +63,14 @@
 # include <windows.h>
 #endif
 
+// OCC
+#include <TopoDS_Shape.hxx>
 
 // Qt Toolkit
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>
 #endif
-// all of inventor
+// all of Inventor
 #ifndef __InventorAll__
 # include <Gui/InventorAll.h>
 #endif 
