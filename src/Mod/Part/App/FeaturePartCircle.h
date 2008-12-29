@@ -25,7 +25,7 @@
 #define PART_FEATUREPARTCIRCLE_H
 
 #include <App/PropertyStandard.h>
-#include "PartFeature.h"
+#include "PrimitiveFeature.h"
 
 #if 1
 #include <App/PropertyGeo.h>
@@ -74,7 +74,7 @@ private:
     Geom_Circle _circle;
 };
 #endif 
-class Circle : public Part::Feature
+class Circle : public Part::Primitive
 {
     PROPERTY_HEADER(Part::Circle);
 

@@ -52,9 +52,6 @@ public:
     Feature(void);
     virtual ~Feature();
 
-    // Note: Location and Axis is different to Placement
-    App::PropertyVector Location;
-    App::PropertyVector Axis;
     PropertyPartShape Shape;
 
     /** @name methods override feature */

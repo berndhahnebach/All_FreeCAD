@@ -72,9 +72,9 @@ void DlgPrimitives::accept()
             name = QString::fromAscii(doc->getUniqueObjectName("Box").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Box\",\"%1\")\n"
-                "App.ActiveDocument.%1.l=%2\n"
-                "App.ActiveDocument.%1.w=%3\n"
-                "App.ActiveDocument.%1.h=%4\n")
+                "App.ActiveDocument.%1.Length=%2\n"
+                "App.ActiveDocument.%1.Width=%3\n"
+                "App.ActiveDocument.%1.Height=%4\n")
                 .arg(name).arg(boxLength->value(),0,'f',2)
                 .arg(boxWidth->value(),0,'f',2)
                 .arg(boxHeight->value(),0,'f',2);

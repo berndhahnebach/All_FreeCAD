@@ -122,6 +122,7 @@ void AppPartExport initPart()
 #endif
 
     Part::Feature               ::init();
+    Part::Primitive             ::init();
     Part::Box                   ::init();
     Part::Boolean               ::init();
     Part::Common                ::init();

@@ -432,7 +432,7 @@ bool Application::sendHasMsgToActiveView(const char* pMsg)
     return pView ? pView->onHasMsg(pMsg) : false;
 }
 
-/// Geter for the Active View
+/// Getter for the active view
 Gui::Document* Application::activeDocument(void) const
 {
     return d->_pcActiveDocument;

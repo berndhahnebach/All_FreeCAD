@@ -50,8 +50,6 @@ PROPERTY_SOURCE(Part::Feature, App::GeoFeature)
 
 Feature::Feature(void) 
 {
-    ADD_PROPERTY(Location,(Base::Vector3f()));
-    ADD_PROPERTY(Axis,(Base::Vector3f(0.0f,0.0f,1.0f)));
     ADD_PROPERTY(Shape, (TopoDS_Shape()));
 }
 
@@ -61,9 +59,6 @@ Feature::~Feature()
 
 short Feature::mustExecute(void) const
 {
-    if (Location.isTouched() ||
-        Axis.isTouched())
-        return 1;
     return 0;
 }
 

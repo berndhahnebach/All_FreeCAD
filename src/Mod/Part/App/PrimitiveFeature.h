@@ -30,7 +30,27 @@
 namespace Part
 {
 
-class Plane : public Part::Feature
+class Primitive : public Part::Feature
+{
+    PROPERTY_HEADER(Part::Primitive);
+
+public:
+    Primitive();
+    virtual ~Primitive();
+
+    // Note: Location and Axis is different to Placement
+    App::PropertyVector Location;
+    App::PropertyVector Axis;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void) = 0;
+    short mustExecute() const;
+    //@}
+};
+
+class Plane : public Primitive
 {
     PROPERTY_HEADER(Part::Plane);
 
@@ -40,15 +60,15 @@ public:
     App::PropertyDistance Length;
     App::PropertyDistance Width;
 
-    /** @name methods overide Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
 };
 
-class Sphere : public Part::Feature
+class Sphere : public Primitive
 {
     PROPERTY_HEADER(Part::Sphere);
 
@@ -60,15 +80,15 @@ public:
     App::PropertyFloatConstraint Angle2;
     App::PropertyFloatConstraint Angle3;
 
-    /** @name methods override Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
 };
 
-class Cylinder : public Part::Feature
+class Cylinder : public Primitive
 {
     PROPERTY_HEADER(Part::Cylinder);
 
@@ -79,15 +99,15 @@ public:
     App::PropertyDistance Height;
     App::PropertyFloatConstraint Angle;
 
-    /** @name methods override Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
 };
 
-class Cone : public Part::Feature
+class Cone : public Primitive
 {
     PROPERTY_HEADER(Part::Cone);
 
@@ -99,15 +119,15 @@ public:
     App::PropertyDistance Height;
     App::PropertyFloatConstraint Angle;
 
-    /** @name methods override Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
 };
 
-class Torus : public Part::Feature
+class Torus : public Primitive
 {
     PROPERTY_HEADER(Part::Torus);
 
@@ -120,9 +140,9 @@ public:
     App::PropertyFloatConstraint Angle2;
     App::PropertyFloatConstraint Angle3;
 
-    /** @name methods override Feature */
+    /** @name methods override feature */
     //@{
-    /// recalculate the Feature
+    /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}

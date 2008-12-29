@@ -20,10 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DLGPARTCylinderIMP_H
-#define DLGPARTCylinderIMP_H
+#ifndef PARTGUI_DLGPARTCYLINDERIMP_H
+#define PARTGUI_DLGPARTCYLINDERIMP_H
 
 #include "ui_DlgPartCylinder.h"
+#include <Base/Vector3D.h>
 
 namespace PartGui {
 
@@ -35,11 +36,12 @@ public:
     DlgPartCylinderImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgPartCylinderImp();
 
-public Q_SLOTS:
-    void OnApply();
+    Base::Vector3f getDirection() const;
 
+private Q_SLOTS:
+    void on_direction_activated(int index);
 };
 
 } // namespace PartGui
 
-#endif // DLGPARTCylinder_H
+#endif // PARTGUI_DLGPARTCYLINDERIMP_H
