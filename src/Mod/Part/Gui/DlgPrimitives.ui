@@ -40,7 +40,7 @@
       <item row="1" column="0" >
        <widget class="QStackedWidget" name="widgetStack2" >
         <property name="currentIndex" >
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page" >
          <layout class="QGridLayout" >
@@ -280,6 +280,9 @@
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="cylinderRadius" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>2</double>
               </property>
@@ -287,6 +290,9 @@
             </item>
             <item row="1" column="1" >
              <widget class="QDoubleSpinBox" name="cylinderHeight" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>10</double>
               </property>
@@ -381,6 +387,9 @@
             </item>
             <item rowspan="2" row="1" column="1" >
              <widget class="QDoubleSpinBox" name="coneRadius2" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>4</double>
               </property>
@@ -388,6 +397,9 @@
             </item>
             <item row="3" column="1" >
              <widget class="QDoubleSpinBox" name="coneHeight" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>10</double>
               </property>
@@ -395,6 +407,9 @@
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="coneRadius1" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>2</double>
               </property>
@@ -545,6 +560,9 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="sphereRadius" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>5</double>
               </property>
@@ -588,6 +606,9 @@
             </property>
             <item row="1" column="1" >
              <widget class="QDoubleSpinBox" name="ellipsoidRadius2" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>4</double>
               </property>
@@ -602,6 +623,9 @@
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="ellipsoidRadius1" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>2</double>
               </property>
@@ -752,6 +776,9 @@
             </item>
             <item row="1" column="1" >
              <widget class="QDoubleSpinBox" name="torusRadius2" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>2</double>
               </property>
@@ -759,6 +786,9 @@
             </item>
             <item row="0" column="1" >
              <widget class="QDoubleSpinBox" name="torusRadius1" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
               <property name="value" >
                <double>10</double>
               </property>

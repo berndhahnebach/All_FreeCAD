@@ -58,12 +58,12 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* partSimple = new Gui::MenuItem;
     root->insertItem(item, partSimple);
     partSimple->setCommand(QT_TR_NOOP("&Simple"));
-    *partSimple << "Part_Cylinder" << "Separator" ;
+    *partSimple << "Part_SimpleCylinder";
 
     Gui::MenuItem* partPara = new Gui::MenuItem;
     root->insertItem(item, partPara);
     partPara->setCommand(QT_TR_NOOP("&Parametric"));
-    *partPara << "Part_Cylinder" << "Separator" ;
+    *partPara << "Part_Cylinder";
 
     return root;
 }

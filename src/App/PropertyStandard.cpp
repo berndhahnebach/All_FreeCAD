@@ -154,7 +154,7 @@ PropertyPath::~PropertyPath()
 
 
 //**************************************************************************
-// Seter getter for the property
+// Setter/getter for the property
 
 void PropertyPath::setValue(const boost::filesystem::path &Path)
 {
@@ -1163,7 +1163,7 @@ PropertyBool::~PropertyBool()
 }
 
 //**************************************************************************
-// Seter getter for the property
+// Setter/getter for the property
 
 void PropertyBool::setValue(bool lValue)
 {

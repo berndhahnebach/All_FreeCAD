@@ -27,20 +27,19 @@
 
 #include <App/PropertyStandard.h>
 
-#include "PartFeature.h"
+#include "PrimitiveFeature.h"
 
 namespace Part
 {
 
-
-class Box :public Part::Feature
+class Box :public Part::Primitive
 {
     PROPERTY_HEADER(Part::Box);
 
 public:
     Box();
 
-    App::PropertyDistance x,y,z,l,h,w;
+    App::PropertyDistance Length,Height,Width;
 
 
     /** @name methods overide Feature */

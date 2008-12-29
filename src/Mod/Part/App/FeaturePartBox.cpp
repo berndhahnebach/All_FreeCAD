@@ -35,39 +35,30 @@
 using namespace Part;
 
 
-PROPERTY_SOURCE(Part::Box, Part::Feature)
+PROPERTY_SOURCE(Part::Box, Part::Primitive)
 
 
 Box::Box()
 {
-    ADD_PROPERTY(x,(0.0));
-    ADD_PROPERTY(y,(0.0));
-    ADD_PROPERTY(z,(0.0));
-    ADD_PROPERTY(l,(100.0));
-    ADD_PROPERTY(h,(100.0));
-    ADD_PROPERTY(w,(100.0));
+    ADD_PROPERTY(Length,(100.0));
+    ADD_PROPERTY(Height,(100.0));
+    ADD_PROPERTY(Width,(100.0));
 }
 
 short Box::mustExecute() const
 {
-    if (x.isTouched() ||
-        y.isTouched() ||
-        z.isTouched() ||
-        l.isTouched() ||
-        h.isTouched() ||
-        w.isTouched() )
+    if (Length.isTouched() ||
+        Height.isTouched() ||
+        Width.isTouched() )
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Box::execute(void)
 {
-    double X = x.getValue();
-    double Y = y.getValue();
-    double Z = z.getValue();
-    double L = l.getValue();
-    double H = h.getValue();
-    double W = w.getValue();
+    double L = Length.getValue();
+    double H = Height.getValue();
+    double W = Width.getValue();
 
     if (L < Precision::Confusion())
         return new App::DocumentObjectExecReturn("Length of L too small");
@@ -76,12 +67,24 @@ App::DocumentObjectExecReturn *Box::execute(void)
         return new App::DocumentObjectExecReturn("Height of H too small");
 
     if (W < Precision::Confusion())
-      return new App::DocumentObjectExecReturn("Width of W too small");
+        return new App::DocumentObjectExecReturn("Width of W too small");
 
-    // Build a box using the dimension and position attributes
-    BRepPrimAPI_MakeBox mkBox( gp_Pnt( X, Y, Z ), L, H, W );
-    TopoDS_Shape ResultShape = mkBox.Shape();
-    this->Shape.setValue(ResultShape);
+    try {
+        // Build a box using the dimension and position attributes
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeBox mkBox(gp_Ax2(pnt,dir), L, H, W);
+        TopoDS_Shape ResultShape = mkBox.Shape();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 
     return App::DocumentObject::StdReturn;
 }

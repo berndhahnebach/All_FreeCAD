@@ -19,7 +19,8 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qdir.h>
@@ -44,16 +45,12 @@
 #include <TopoDS_Shape.hxx>
 
 #include "../App/PartFeature.h"
-#include "DlgPartBoxImp.h"
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
 #include "DlgExtrusion.h"
 #include "DlgFilletEdges.h"
 #include "DlgPrimitives.h"
 #include "ViewProvider.h"
-
-
-using Gui::FileDialog;
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -92,7 +89,7 @@ CmdPartNewDoc::CmdPartNewDoc()
     sAppModule    = "Part";
     sGroup        = "Part";
     sMenuText     = "New document";
-    sToolTipText  = "Create a empty part document";
+    sToolTipText  = "Create an empty part document";
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "New";
@@ -102,56 +99,8 @@ CmdPartNewDoc::CmdPartNewDoc()
 void CmdPartNewDoc::activated(int iMsg)
 {
     doCommand(Doc,"d = App.New()");
-
     updateActive();
 }
-
-
-//===========================================================================
-// Part_Box
-//===========================================================================
-DEF_STD_CMD_A(CmdPartBox);
-
-CmdPartBox::CmdPartBox()
-  :Command("Part_Box")
-{
-    sAppModule    = "Part";
-    sGroup        = QT_TR_NOOP("Part");
-    sMenuText     = QT_TR_NOOP("Create box...");
-    sToolTipText  = QT_TR_NOOP("Create a Box feature");
-    sWhatsThis    = "Part_Box";
-    sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
-    iAccel        = 0;
-}
-
-
-void CmdPartBox::activated(int iMsg)
-{
-    PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
-    if (cDlg.exec()== QDialog::Accepted) {
-        openCommand("Part Box Create");
-        doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-        doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
-        doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
-        doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
-        doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
-        doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
-        doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
-        commitCommand();
-
-        updateActive();
-    }
-}
-
-bool CmdPartBox::isActive(void)
-{
-    if (getActiveGuiDocument())
-        return true;
-    else
-        return false;
-}
-
 
 //===========================================================================
 // Part_Box2
@@ -174,19 +123,16 @@ CmdPartBox2::CmdPartBox2()
 
 void CmdPartBox2::activated(int iMsg)
 {
-    openCommand("PartBox Create");
-
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-    doCommand(Doc,"f.x = 0.0");
-    doCommand(Doc,"f.y = 0.0");
-    doCommand(Doc,"f.z = 0.0");
-    doCommand(Doc,"f.l = 100.0");
-    doCommand(Doc,"f.w = 100.0");
-    doCommand(Doc,"f.h = 100.0");
-
-    updateActive();
-
+    openCommand("Part Box Create");
+    doCommand(Doc,"import Base,Part");
+    doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
+    doCommand(Doc,"__fb__.Location = Base.Vector(0.0,0.0,0.0)");
+    doCommand(Doc,"__fb__.Length = 100.0");
+    doCommand(Doc,"__fb__.Width = 100.0");
+    doCommand(Doc,"__fb__.Height = 100.0");
+    doCommand(Doc,"del __fb__");
     commitCommand();
+    updateActive();
 }
 
 bool CmdPartBox2::isActive(void)
@@ -215,22 +161,18 @@ CmdPartBox3::CmdPartBox3()
     iAccel        = 0;
 }
 
-
 void CmdPartBox3::activated(int iMsg)
 {
-    openCommand("PartBox Create");
-
-    doCommand(Doc,"f = App.activeDocument().addObject(\"Part::Box\",\"PartBox\")");
-    doCommand(Doc,"f.x = 50.0");
-    doCommand(Doc,"f.y = 50.0");
-    doCommand(Doc,"f.z = 50.0");
-    doCommand(Doc,"f.l = 100.0");
-    doCommand(Doc,"f.w = 100.0");
-    doCommand(Doc,"f.h = 100.0");
-
-    updateActive();
-
+    openCommand("Part Box Create");
+    doCommand(Doc,"import Base,Part");
+    doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
+    doCommand(Doc,"__fb__.Location = Base.Vector(50.0,50.0,50.0)");
+    doCommand(Doc,"__fb__.Length = 100.0");
+    doCommand(Doc,"__fb__.Width = 100.0");
+    doCommand(Doc,"__fb__.Height = 100.0");
+    doCommand(Doc,"del __fb__");
     commitCommand();
+    updateActive();
 }
 
 bool CmdPartBox3::isActive(void)
@@ -744,7 +686,6 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartCut());
     rcCmdMgr.addCommand(new CmdPartFuse());
     rcCmdMgr.addCommand(new CmdPartSection());
-    rcCmdMgr.addCommand(new CmdPartBox());
     rcCmdMgr.addCommand(new CmdPartBox2());
     rcCmdMgr.addCommand(new CmdPartBox3());
     rcCmdMgr.addCommand(new CmdPartPrimitives());

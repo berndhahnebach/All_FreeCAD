@@ -81,6 +81,7 @@ BUILT_SOURCES=\
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
 		ui_SceneInspector.h \
+		ui_InputVector.h \
 		DocumentPy.cpp \
 		PythonWorkbenchPy.cpp \
 		WorkbenchPy.cpp \
@@ -116,7 +117,8 @@ libFreeCADGui_la_UI=\
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
 		DlgTreeWidget.ui \
-		SceneInspector.ui
+		SceneInspector.ui \
+		InputVector.ui
 
 libFreeCADGui_la_BUILT=\
 		DocumentPy.h \

@@ -252,60 +252,12 @@
 			Name="SimpleOperations"
 			>
 			<File
+				RelativePath=".\CommandParametric.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CommandSimple.cpp"
 				>
-			</File>
-			<File
-				RelativePath=".\DlgPartCylinder.ui"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)ui_$(InputName).h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)ui_$(InputName).h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgPartCylinderImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DlgPartCylinderImp.h"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -639,6 +591,58 @@
 			</File>
 			<File
 				RelativePath="DlgPartBoxImp.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DlgPartCylinder.ui"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)ui_$(InputName).h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)ui_$(InputName).h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DlgPartCylinderImp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgPartCylinderImp.h"
 				>
 				<FileConfiguration
 					Name="Release|Win32"

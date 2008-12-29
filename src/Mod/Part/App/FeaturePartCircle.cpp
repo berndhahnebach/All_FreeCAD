@@ -33,7 +33,7 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::Circle, Part::Feature)
+PROPERTY_SOURCE(Part::Circle, Part::Primitive)
 
 
 Circle::Circle()

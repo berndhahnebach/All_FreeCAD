@@ -22,39 +22,26 @@
 
 
 #include "PreCompiled.h"
+
 #ifndef _PreComp_
 # include <QDir>
 # include <QFileInfo>
 # include <QLineEdit>
-# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
-#include <Base/Exception.h>
-#include <App/Document.h>
 #include <Gui/Application.h>
-#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
-#include <Gui/Document.h>
-#include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
-#include <Gui/Selection.h>
-#include <Gui/View3DInventor.h>
-#include <Gui/View3DInventorViewer.h>
-
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
-
-#include "../App/PartFeature.h"
 #include "DlgPartCylinderImp.h"
-
+#include "DlgPartBoxImp.h"
 
 //===========================================================================
-// Part_SimpleCylinder
+// Part_Cylinder
 //===========================================================================
-DEF_STD_CMD_A(CmdPartSimpleCylinder);
+DEF_STD_CMD_A(CmdPartCylinder);
 
-CmdPartSimpleCylinder::CmdPartSimpleCylinder()
-  :Command("Part_SimpleCylinder")
+CmdPartCylinder::CmdPartCylinder()
+  : Command("Part_Cylinder")
 {
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
@@ -66,30 +53,75 @@ CmdPartSimpleCylinder::CmdPartSimpleCylinder()
     iAccel        = 0;
 }
 
-void CmdPartSimpleCylinder::activated(int iMsg)
+void CmdPartCylinder::activated(int iMsg)
 {
     PartGui::DlgPartCylinderImp dlg(Gui::getMainWindow());
     if (dlg.exec()== QDialog::Accepted) {
         Base::Vector3f dir = dlg.getDirection();
         openCommand("Create Part Cylinder");
         doCommand(Doc,"import Base,Part");
-        doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Feature\",\"Cylinder\")"
-                      ".Shape=Part.makeCylinder("
-                      "Base.Vector(%f,%f,%f),"
-                      "Base.Vector(%f,%f,%f),"
-                      "%f,%f)"
-                     ,dlg.xPos->value()
-                     ,dlg.yPos->value()
-                     ,dlg.zPos->value()
-                     ,dir.x,dir.y,dir.z
-                     ,dlg.radius->value()
-                     ,dlg.length->value());
+        doCommand(Doc,"__cf__ = App.ActiveDocument.addObject(\"Part::Cylinder\",\"Cylinder\")");
+        doCommand(Doc,"__cf__.Location = Base.Vector(%f,%f,%f)",
+                        dlg.xPos->value(),
+                        dlg.yPos->value(),
+                        dlg.zPos->value());
+        doCommand(Doc,"__cf__.Axis = Base.Vector(%f,%f,%f)",
+                        dir.x, dir.y, dir.z);
+        doCommand(Doc,"__cf__.Radius = %f", dlg.radius->value());
+        doCommand(Doc,"__cf__.Height = %f", dlg.length->value());
+        doCommand(Doc,"del __cf__");
         commitCommand();
         updateActive();
     }
 }
 
-bool CmdPartSimpleCylinder::isActive(void)
+bool CmdPartCylinder::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
+
+//===========================================================================
+// Part_Box
+//===========================================================================
+DEF_STD_CMD_A(CmdPartBox);
+
+CmdPartBox::CmdPartBox()
+  :Command("Part_Box")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create box...");
+    sToolTipText  = QT_TR_NOOP("Create a Box feature");
+    sWhatsThis    = "Part_Box";
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Box";
+    iAccel        = 0;
+}
+
+void CmdPartBox::activated(int iMsg)
+{
+    PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
+    if (cDlg.exec()== QDialog::Accepted) {
+        openCommand("Part Box Create");
+        doCommand(Doc,"import Base,Part");
+        doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
+        doCommand(Doc,"__fb__.Location = Base.Vector(%f,%f,%f)",
+                                 cDlg.XLineEdit->text().toFloat(),
+                                 cDlg.YLineEdit->text().toFloat(),
+                                 cDlg.ZLineEdit->text().toFloat());
+        doCommand(Doc,"__fb__.Length = %f",cDlg.ULineEdit->text().toFloat());
+        doCommand(Doc,"__fb__.Width = %f",cDlg.VLineEdit->text().toFloat());
+        doCommand(Doc,"__fb__.Height = %f",cDlg.WLineEdit->text().toFloat());
+        doCommand(Doc,"del __fb__");
+        commitCommand();
+        updateActive();
+    }
+}
+
+bool CmdPartBox::isActive(void)
 {
     if (getActiveGuiDocument())
         return true;
@@ -100,8 +132,9 @@ bool CmdPartSimpleCylinder::isActive(void)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void CreateSimplePartCommands(void)
+void CreateParamPartCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-    rcCmdMgr.addCommand(new CmdPartSimpleCylinder());
-} 
+    rcCmdMgr.addCommand(new CmdPartCylinder());
+    rcCmdMgr.addCommand(new CmdPartBox());
+}

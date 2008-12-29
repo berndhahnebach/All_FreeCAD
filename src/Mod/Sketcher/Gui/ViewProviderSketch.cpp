@@ -129,7 +129,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 
 bool ViewProviderSketch::doubleClicked(void)
 {
-	Gui::Application::Instance->activeDocument()->setEdit((ViewProvider*)this);
+	Gui::Application::Instance->activeDocument()->setEdit(this);
 	return true;
 }
 

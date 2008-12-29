@@ -39,16 +39,37 @@
 
 
 namespace Part {
-  const App::PropertyFloatConstraint::Constraints floatRange = {0.0f,1000.0f,0.1f};
-  const App::PropertyFloatConstraint::Constraints angleRangeU = {0.0f,360.0f,1.0f};
-  const App::PropertyFloatConstraint::Constraints angleRangeV = {-90.0f,90.0f,1.0f};
-  const App::PropertyFloatConstraint::Constraints torusRangeV = {-180.0f,180.0f,1.0f};
+    const App::PropertyFloatConstraint::Constraints floatRange = {0.0f,1000.0f,0.1f};
+    const App::PropertyFloatConstraint::Constraints angleRangeU = {0.0f,360.0f,1.0f};
+    const App::PropertyFloatConstraint::Constraints angleRangeV = {-90.0f,90.0f,1.0f};
+    const App::PropertyFloatConstraint::Constraints torusRangeV = {-180.0f,180.0f,1.0f};
 }
 
 using namespace Part;
 
 
-PROPERTY_SOURCE(Part::Plane, Part::Feature)
+PROPERTY_SOURCE_ABSTRACT(Part::Primitive, Part::Feature)
+
+
+Primitive::Primitive(void) 
+{
+    ADD_PROPERTY(Location,(Base::Vector3f(0.0f,0.0f,0.0f)));
+    ADD_PROPERTY(Axis,(Base::Vector3f(0.0f,0.0f,1.0f)));
+}
+
+Primitive::~Primitive()
+{
+}
+
+short Primitive::mustExecute(void) const
+{
+    if (Location.isTouched() ||
+        Axis.isTouched())
+        return 1;
+    return 0;
+}
+
+PROPERTY_SOURCE(Part::Plane, Part::Primitive)
 
 Plane::Plane()
 {
@@ -61,7 +82,7 @@ short Plane::mustExecute() const
     if (Length.isTouched() ||
         Width.isTouched() )
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Plane::execute(void)
@@ -74,9 +95,13 @@ App::DocumentObjectExecReturn *Plane::execute(void)
     if (W < Precision::Confusion())
       return new App::DocumentObjectExecReturn("Width of plane too small");
 
-    gp_Pnt aPlanePnt(0,0,0);
-    gp_Dir aPlaneDir(0,0,1);
-    Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+    gp_Pnt pnt(Location.getValue().x,
+               Location.getValue().y,
+               Location.getValue().z);
+    gp_Dir dir(Axis.getValue().x,
+               Axis.getValue().y,
+               Axis.getValue().z);
+    Handle_Geom_Plane aPlane = new Geom_Plane(pnt, dir);
     BRepBuilderAPI_MakeFace mkFace(aPlane, 0.0, L, 0.0, W);
 
     const char *error=0;
@@ -113,7 +138,7 @@ App::DocumentObjectExecReturn *Plane::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-PROPERTY_SOURCE(Part::Sphere, Part::Feature)
+PROPERTY_SOURCE(Part::Sphere, Part::Primitive)
 
 Sphere::Sphere(void)
 {
@@ -137,24 +162,37 @@ short Sphere::mustExecute() const
         return 1;
     if (Angle3.isTouched())
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Sphere::execute(void)
 {
     // Build a sphere
-    BRepPrimAPI_MakeSphere mkSphere(Radius.getValue(), 
-                                    Angle1.getValue()/180.0f*Standard_PI,
-                                    Angle2.getValue()/180.0f*Standard_PI,
-                                    Angle3.getValue()/180.0f*Standard_PI);
-    TopoDS_Shape ResultShape = mkSphere.Shape();
-    this->Shape.setValue(ResultShape);
+    try {
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(pnt,dir),
+                                        Radius.getValue(), 
+                                        Angle1.getValue()/180.0f*Standard_PI,
+                                        Angle2.getValue()/180.0f*Standard_PI,
+                                        Angle3.getValue()/180.0f*Standard_PI);
+        TopoDS_Shape ResultShape = mkSphere.Shape();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 
     return App::DocumentObject::StdReturn;
 }
 
 
-PROPERTY_SOURCE(Part::Cylinder, Part::Feature)
+PROPERTY_SOURCE(Part::Cylinder, Part::Primitive)
 
 Cylinder::Cylinder(void)
 {
@@ -166,28 +204,45 @@ Cylinder::Cylinder(void)
 
 short Cylinder::mustExecute() const
 {
+    if (Location.isTouched())
+        return 1;
+    if (Axis.isTouched())
+        return 1;
     if (Radius.isTouched())
         return 1;
     if (Height.isTouched())
         return 1;
     if (Angle.isTouched())
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
     // Build a cylinder
-    BRepPrimAPI_MakeCylinder mkCylr(Radius.getValue(), 
-                                    Height.getValue(),
-                                    Angle.getValue()/180.0f*Standard_PI);
-    TopoDS_Shape ResultShape = mkCylr.Shape();
-    this->Shape.setValue(ResultShape);
+    try {
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeCylinder mkCylr(gp_Ax2(pnt,dir),
+                                        Radius.getValue(),
+                                        Height.getValue(),
+                                        Angle.getValue()/180.0f*Standard_PI);
+        TopoDS_Shape ResultShape = mkCylr.Shape();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 
     return App::DocumentObject::StdReturn;
 }
 
-PROPERTY_SOURCE(Part::Cone, Part::Feature)
+PROPERTY_SOURCE(Part::Cone, Part::Primitive)
 
 Cone::Cone(void)
 {
@@ -200,6 +255,10 @@ Cone::Cone(void)
 
 short Cone::mustExecute() const
 {
+    if (Location.isTouched())
+        return 1;
+    if (Axis.isTouched())
+        return 1;
     if (Radius1.isTouched())
         return 1;
     if (Radius2.isTouched())
@@ -208,23 +267,36 @@ short Cone::mustExecute() const
         return 1;
     if (Angle.isTouched())
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Cone::execute(void)
 {
-    // Build a cone
-    BRepPrimAPI_MakeCone mkCone(Radius1.getValue(),
-                                Radius2.getValue(),
-                                Height.getValue(),
-                                Angle.getValue()/180.0f*Standard_PI);
-    TopoDS_Shape ResultShape = mkCone.Shape();
-    this->Shape.setValue(ResultShape);
+    try {
+        // Build a cone
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeCone mkCone(gp_Ax2(pnt,dir),
+                                    Radius1.getValue(),
+                                    Radius2.getValue(),
+                                    Height.getValue(),
+                                    Angle.getValue()/180.0f*Standard_PI);
+        TopoDS_Shape ResultShape = mkCone.Shape();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 
     return App::DocumentObject::StdReturn;
 }
 
-PROPERTY_SOURCE(Part::Torus, Part::Feature)
+PROPERTY_SOURCE(Part::Torus, Part::Primitive)
 
 Torus::Torus(void)
 {
@@ -252,19 +324,32 @@ short Torus::mustExecute() const
         return 1;
     if (Angle3.isTouched())
         return 1;
-    return 0;
+    return Primitive::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Torus::execute(void)
 {
-    // Build a torus
-    BRepPrimAPI_MakeTorus mkTorus(Radius1.getValue(),
-                                  Radius2.getValue(),
-                                  Angle1.getValue()/180.0f*Standard_PI,
-                                  Angle2.getValue()/180.0f*Standard_PI,
-                                  Angle3.getValue()/180.0f*Standard_PI);
-    TopoDS_Shape ResultShape = mkTorus.Shell();
-    this->Shape.setValue(ResultShape);
+    try {
+        // Build a torus
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(pnt,dir),
+                                      Radius1.getValue(),
+                                      Radius2.getValue(),
+                                      Angle1.getValue()/180.0f*Standard_PI,
+                                      Angle2.getValue()/180.0f*Standard_PI,
+                                      Angle3.getValue()/180.0f*Standard_PI);
+        TopoDS_Shape ResultShape = mkTorus.Shell();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 
     return App::DocumentObject::StdReturn;
 }

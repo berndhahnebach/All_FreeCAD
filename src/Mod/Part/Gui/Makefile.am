@@ -24,6 +24,7 @@ BUILT_SOURCES=\
 libPartGui_la_SOURCES=\
 		Command.cpp \
 		CommandSimple.cpp \
+		CommandParametric.cpp \
 		DlgBooleanOperation.cpp \
 		DlgBooleanOperation.h \
 		DlgExtrusion.cpp \
