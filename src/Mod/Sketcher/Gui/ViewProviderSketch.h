@@ -26,7 +26,7 @@
 
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 
-
+ 
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -69,7 +69,7 @@ public:
 	virtual bool doubleClicked(void);
 
 	/// is called when the Provider is in edit and the mouse is moved
-	virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm);
+	virtual bool mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar);
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
 	virtual bool keyPressed(int key);
 	/// is called when the Provider is in edit and the mouse is clicked 
@@ -93,6 +93,7 @@ public:
 
 	// normalized form
 	bool mouseButtonPressed(int Button, bool pressed, double x, double y);
+	bool mouseMove(double x, double y);
 
 protected:
   /// get called by the container whenever a property has been changed

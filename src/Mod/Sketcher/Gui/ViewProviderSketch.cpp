@@ -91,9 +91,22 @@ void ViewProviderSketch::setSketchMode(int mode)
 
 
 
-bool ViewProviderSketch::mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm)
+bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar)
 {
-	return true;
+	double x=0.0,y=0.0;
+	// Plane form
+	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
+	// line 
+	Base::Vector3f r2 = pNear - pFar;
+	Base::Vector3d R1(pNear .x,pNear .y,pNear .z),RA(r2.x,r2.y,r2.z);
+	// intersection point on plane
+	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
+
+	// distance to x Axle of the sketch
+	//x = S.DistanceToLine(R0,RX);
+	//y = S.DistanceToLine(R0,RY);
+
+	return mouseMove(S.x,S.y);
 }
 
 bool ViewProviderSketch::keyPressed(int key)
@@ -114,10 +127,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
 
 	// distance to x Axle of the sketch
-	x = S.DistanceToLine(R0,RX);
-	y = S.DistanceToLine(R0,RY);
+	//x = S.DistanceToLine(R0,RX);
+	//y = S.DistanceToLine(R0,RY);
 
-	return mouseButtonPressed(Button,pressed,x,y);
+	return mouseButtonPressed(Button,pressed,S.x,S.y);
 }
 
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, double y)
@@ -137,7 +150,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, 
 					return true;
 				case STATUS_SKETCH_CreateLine:
 					Entity = SketchFlat->AddLine(x,y);
-					
+					Mode = STATUS_SKETCH_DoLine;
+					return true;
+				case STATUS_SKETCH_DoLine:
+					Mode = STATUS_NONE;
 					return true;
 					
 			}
@@ -145,6 +161,27 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, 
 
 
 	}
+	return false;
+}
+
+bool ViewProviderSketch::mouseMove( double x, double y)
+{
+	switch(Mode){
+		case STATUS_NONE:
+			return false;
+		case STATUS_SKETCH_CreateArc:
+		case STATUS_SKETCH_CreateCircle:
+		case STATUS_SKETCH_CreatePolyline:
+		case STATUS_SKETCH_CreateRectangle:
+		case STATUS_SKETCH_CreateText:
+		case STATUS_SKETCH_CreateLine:
+			return true;
+		case STATUS_SKETCH_DoLine:
+			
+			return true;
+			
+	}
+
 	return false;
 }
 
