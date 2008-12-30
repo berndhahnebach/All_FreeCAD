@@ -28,10 +28,11 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "SketchFlatInterface.h"
-
+#include "SketchFlat/sketchflat.h"
 
 using namespace Sketcher;
 
+bool SketchFlatInterface::bAlive = false;
 
 //**************************************************************************
 // Construction/Destruction
@@ -42,6 +43,10 @@ using namespace Sketcher;
  */
 SketchFlatInterface::SketchFlatInterface()
 {
+	// The SketchFlat solver is not build ot have 2 instances!
+	assert(!bAlive);
+	bAlive=true;
+
 }
 
 /**
@@ -50,6 +55,7 @@ SketchFlatInterface::SketchFlatInterface()
  */
 SketchFlatInterface::~SketchFlatInterface()
 {
+	bAlive=false;
 }
 
 
@@ -58,9 +64,12 @@ SketchFlatInterface::~SketchFlatInterface()
 
 /**
  */
-int SketchFlatInterface::testMe(int /*a*/,const char* /*s*/)
+unsigned int SketchFlatInterface::AddLine(double x, double y)
 {
-    return 0;
+	hEntity he;
+	he = SketchAddEntity(ENTITY_LINE_SEGMENT);
+	ForcePoint(POINT_FOR_ENTITY(he, 0), x, y);
+    return he;
 }
 
 
