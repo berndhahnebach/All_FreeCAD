@@ -21,14 +21,14 @@
 
 __title__="FreeCAD DXF importer"
 __author__ = "Yorik van Havre"
-__url__ = "http://yorik.orgfree.com"
+__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 '''
 This script uses a DXF-parsing module created by Kitsu and Migius for Blender
 DF object types read by this script + implementation in FreeCAD:
 line: read and converted to FreeCAD Line
-polyline: read and converted to FreeCAD Wire w/ arcs straigthened
-lwpolyline: read and converted to FreeCAD Wire w/ arcs straigthened
+polyline: read and converted to FreeCAD Wire
+lwpolyline: read and converted to FreeCAD Wire
 text: read and converted to FreeCAD Annotation
 mtext: read and converted to FreeCAD Annotation
 circle: read and converted to FreeCAD Circle
@@ -49,9 +49,10 @@ try: import FreeCADGui
 except ValueError: gui = False
 else: gui = True
 
-pythonopen = open
+pythonopen = open # to distinguish python built-in open function from the one declared here
 
-def decodeName(name): # decodes encoded strings
+def decodeName(name):
+	"decodes encoded strings"
 	try:
 		decodedName = (name.decode("utf8"))
 	except UnicodeDecodeError:
@@ -62,7 +63,8 @@ def decodeName(name): # decodes encoded strings
 			decodedName = name
 	return decodedName
 
-def locateLayer(wantedLayer,doc,layers): # returns layer group and creates it if needed
+def locateLayer(wantedLayer,doc,layers):
+	"returns layer group and creates it if needed"
 	wantedLayerName = decodeName(wantedLayer)
 	for l in layers:
 		if wantedLayerName==l.Label:
@@ -72,8 +74,20 @@ def locateLayer(wantedLayer,doc,layers): # returns layer group and creates it if
 	layers.append(newLayer)
 	return newLayer
 
+def calcBulge(v1,bulge,v2):
+	'''
+	calculates intermediary vertex for curved segments.
+	algorithm from http://www.afralisp.net/lisp/Bulges1.htm
+	'''
+	chord = fcvec.new(v1,v2)
+	sagitta = (bulge * chord.Length)/2
+	startpoint = fcvec.add(v1,fcvec.scale(chord,0.5))
+	perp = fcvec.crossproduct(chord)
+	endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
+	return fcvec.add(startpoint,endpoint)
+
 class fcformat:
-	"an object containing everything related to color/lineweight formatting"
+	"this contains everything related to color/lineweight formatting"
 	def __init__(self,drawing):
 		self.dxf = drawing
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
@@ -106,7 +120,8 @@ class fcformat:
 				cv = FreeCAD.Vector(r1,g1,b1)
 			value = cv.x*.3 + cv.y*.59 + cv.z*.11
 			if value < 128: self.brightbg = False
-			else: self.brightbg = True
+			else:
+				self.brightbg = True
 	
 		if gui:
 			ui = FreeCADGui.activeWorkbench().draftToolBar.ui
@@ -140,6 +155,8 @@ class fcformat:
 				else:
 					c = s[2].split(",")
 					color = [float(c[0])/255,float(c[1])/255,float(c[2])/255]
+					if (color == [0.0,0.0,0.0]) and (not self.brightbg):
+						color = [1.0,1.0,1.0]
 				if s[2] == "(Object)": width = "object"
 				else: width = float(s[10])*10
 				table[index]=[color,width]
@@ -213,28 +230,36 @@ def processdxf(doc,filename):
 	for polyline in polylines:
 		lay=locateLayer(polyline.layer,doc,layers)
 		if (len(polyline.points) > 1):
+			if len(polyline.points) == 2: print "debug: 2-point polyline!"
 			newob = doc.addObject("Part::Feature","Polyline")
 			lay.addObject(newob)
-			p1 = polyline.points.pop(0)
-			points=[FreeCAD.Vector(p1[0],p1[1],p1[2])]
-			for p in polyline.points:
-				v=FreeCAD.Vector(p[0],p[1],p[2])
-				if not fcvec.equals(v,points[-1]): 
-					points.append(v)
-			if (len(points)>1):
-				sh = Part.Line(points[0],points[1]).toShape()
-				for i in range(1,len(points)-1):
-					newseg = Part.Line(points[i],points[i+1])
-					sh = sh.fuse(newseg.toShape())
-				if (polyline.closed):
-					if not fcvec.equals(points[-1],points[0]):
-						newseg = Part.Line(points[-1],points[0])
-					e = sh.Edges
-					e.append(newseg.toShape())
-					sh = Part.Wire(e)
-				newob.Shape = sh
-				if gui: fmt.formatObject(newob,polyline)
+			edges = []
+			for p in range(len(polyline.points)-1):
+				p1 = polyline.points[p]
+				p2 = polyline.points[p+1]
+				v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
+				v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+				if not fcvec.equals(v1,v2):
+					if polyline.points[p].bulge:
+						cv = calcBulge(v1,polyline.points[p].bulge,v2)
+						edges.append(Part.Arc(v1,cv,v2).toShape())
+					else:
+						edges.append(Part.Line(v1,v2).toShape())
 
+			if polyline.closed:
+				p1 = polyline.points[len(polyline.points)-1]
+				p2 = polyline.points[0]
+				v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
+				v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+				if not fcvec.equals(v1,v2):
+					edges.append(Part.Line(v1,v2).toShape())
+
+			sh = Part.Wire(edges)
+			newob.Shape = sh
+			if gui:
+				fmt.formatObject(newob,polyline)
+
+				
 #    drawing arcs
 
 	arcs = drawing.entities.get_type("arc")
@@ -255,7 +280,7 @@ def processdxf(doc,filename):
 			v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-(math.pi*2-firstangle))/2))
 		curve = Part.Arc(v1,v2,v3)
 		newob.Shape = curve.toShape()
-		if gui: fmt.formatObject (newOb,arc)
+		if gui: fmt.formatObject (newob,arc)
 
 #    drawing circles
 
