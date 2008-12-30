@@ -27,7 +27,7 @@ Report to Draft.py for info
 '''
 
 from PyQt4 import QtCore,QtGui
-import FreeCAD, os
+import FreeCAD, FreeCADGui, os
 
 #---------------------------------------------------------------------------
 # Customized widgets
@@ -119,7 +119,8 @@ class toolBar:
 
 				self.lockButton = QtGui.QPushButton(draftToolbar)
 				self.lockButton.setGeometry(QtCore.QRect(500,3,20,20))
-				self.lockButton.setIcon(QtGui.QIcon(icondir + "close.png"))
+				self.lockButton.setIcon(QtGui.QIcon(icondir + "lock.svg"))
+				self.lockButton.setIconSize(QtCore.QSize(16, 16))
 				self.lockButton.setObjectName("lockButton")
 				self.lockButton.setCheckable(True)
 				self.lockButton.setChecked(True)
@@ -133,19 +134,22 @@ class toolBar:
 
 				self.undoButton = QtGui.QPushButton(draftToolbar)
 				self.undoButton.setGeometry(QtCore.QRect(610,3,60,20))
-				self.undoButton.setIcon(QtGui.QIcon(icondir + "undo.png"))
+				self.undoButton.setIcon(QtGui.QIcon(icondir + "rotate.svg"))
+				self.undoButton.setIconSize(QtCore.QSize(16, 16))
 				self.undoButton.setObjectName("undoButton")
 				self.undoButton.hide()
 
 				self.finishButton = QtGui.QPushButton(draftToolbar)
-				self.finishButton.setGeometry(QtCore.QRect(670,3,80,20))
-				self.finishButton.setIcon(QtGui.QIcon(icondir + "finish.png"))
+				self.finishButton.setGeometry(QtCore.QRect(673,3,80,20))
+				self.finishButton.setIcon(QtGui.QIcon(icondir + "finish.svg"))
+				self.finishButton.setIconSize(QtCore.QSize(16, 16))
 				self.finishButton.setObjectName("finishButton")
 				self.finishButton.hide()
 
 				self.closeButton = QtGui.QPushButton(draftToolbar)
-				self.closeButton.setGeometry(QtCore.QRect(750,3,60,20))
-				self.closeButton.setIcon(QtGui.QIcon(icondir + "close.png"))
+				self.closeButton.setGeometry(QtCore.QRect(756,3,60,20))
+				self.closeButton.setIcon(QtGui.QIcon(icondir + "lock.svg"))
+				self.closeButton.setIconSize(QtCore.QSize(16, 16))
 				self.closeButton.setObjectName("closeButton")
 				self.closeButton.hide()
 
@@ -173,7 +177,7 @@ class toolBar:
 				self.textValue.hide()
 				
 				self.colorButton = QtGui.QPushButton(draftToolbar)
-				self.colorButton.setGeometry(QtCore.QRect(790,2,30,22))
+				self.colorButton.setGeometry(QtCore.QRect(792,2,22,22))
 				self.colorButton.setObjectName("colorButton")
 				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
@@ -181,7 +185,7 @@ class toolBar:
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
 
 				self.widthButton = QtGui.QSpinBox(draftToolbar)
-				self.widthButton.setGeometry(QtCore.QRect(830,2,50,22))
+				self.widthButton.setGeometry(QtCore.QRect(817,2,50,22))
 				self.widthButton.setObjectName("widthButton")
 				self.widthButton.setValue(paramlinewidth)
 
@@ -190,6 +194,12 @@ class toolBar:
 				self.isCopy.setChecked(False)
 				self.isCopy.setObjectName("isCopy")
 				self.isCopy.hide()
+
+				self.applyButton = QtGui.QPushButton(draftToolbar)
+				self.applyButton.setGeometry(QtCore.QRect(870,2,22,22))
+				self.applyButton.setIcon(QtGui.QIcon(icondir + "apply.svg"))
+				self.applyButton.setIconSize(QtCore.QSize(16, 16))
+				self.applyButton.setObjectName("applyButton")
 
 				self.sourceCmd=None
 
@@ -224,6 +234,7 @@ class toolBar:
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
+				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 
 				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
 
@@ -252,6 +263,7 @@ class toolBar:
 				self.isCopy.setToolTip(QtGui.QApplication.translate("draftToolbar", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
 				self.colorButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
+				self.applyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -336,8 +348,9 @@ class toolBar:
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
 				w=self.draftToolbar.geometry().width()
-				self.widthButton.setGeometry(QtCore.QRect(w-100,2,50,22))
-				self.colorButton.setGeometry(QtCore.QRect(w-140,2,30,22))
+				self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
+				self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
+				self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
 
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
@@ -359,10 +372,27 @@ class toolBar:
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
 				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
 					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",self.color.rgb()<<8)
-
+				r = float(self.color.red()/255.0)
+				g = float(self.color.green()/255.0)
+				b = float(self.color.blue()/255.0)
+				col = (r,g,b,0.0)
+				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineColor = col
+					
 			def setwidth(self,val):
 				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
 					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("linewidth",int(val))
+				lw = float(val)
+				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineWidth = lw
+
+			def apply(self):
+				r = float(self.color.red()/255.0)
+				g = float(self.color.green()/255.0)
+				b = float(self.color.blue()/255.0)
+				lw = float(self.widthButton.value())
+				col = (r,g,b,0.0)
+				for i in FreeCADGui.Selection.getSelection():
+					i.ViewObject.LineColor = col
+					i.ViewObject.LineWidth = lw	
 					
 			def checkx(self):
 				if self.yValue.isEnabled():
