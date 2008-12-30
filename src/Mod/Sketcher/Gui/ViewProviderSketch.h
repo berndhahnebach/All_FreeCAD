@@ -39,6 +39,10 @@ namespace Gui {
   class SoFCSelection;
 }
 
+namespace Sketcher {
+	class SketchFlatInterface;
+}
+
 namespace SketcherGui {
 
 
@@ -69,7 +73,7 @@ public:
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
 	virtual bool keyPressed(int key);
 	/// is called when the Provider is in edit and the mouse is clicked 
-	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm);
+	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar);
 
 	/// mode table
 	enum {
@@ -79,19 +83,27 @@ public:
 		STATUS_SKETCH_CreateLine,
 		STATUS_SKETCH_CreatePolyline,
 		STATUS_SKETCH_CreateRectangle,
-		STATUS_SKETCH_CreateText
+		STATUS_SKETCH_CreateText,
+		STATUS_SKETCH_DoLine
 	};
 	/// is called by GuiCommands to set the drawing mode
 	void setSketchMode(int mode);
 	/// get the sketch mode
 	int getSketchMode(void){return Mode;}
 
+	// normalized form
+	bool mouseButtonPressed(int Button, bool pressed, double x, double y);
+
 protected:
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 
+  // modes while sketching
   int Mode;
+  // pointer to the Solver
+  Sketcher::SketchFlatInterface *SketchFlat;
 
+  // nodes for the visuals 
   SoMaterial * PointsMaterials;
   SoMaterial * LinesMaterials;
   SoCoordinate3 *PointsCoordinate;

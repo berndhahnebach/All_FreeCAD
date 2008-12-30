@@ -43,7 +43,10 @@ public:
     /// Destruction
     virtual ~SketchFlatInterface();
 
-    int testMe(int a,const char *s);
+    unsigned int AddLine(double x, double y);
+
+private:
+	static bool bAlive;
 
  };
 

@@ -45,6 +45,7 @@
 
 
 using namespace SketcherGui;
+using namespace Sketcher;
 using namespace std;
 
 
@@ -101,8 +102,27 @@ bool ViewProviderSketch::keyPressed(int key)
 }
 
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar)
 {
+	double x=0.0,y=0.0;
+	// Plane form
+	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
+	// line 
+	Base::Vector3f r2 = pNear - pFar;
+	Base::Vector3d R1(pNear .x,pNear .y,pNear .z),RA(r2.x,r2.y,r2.z);
+	// intersection point on plane
+	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
+
+	// distance to x Axle of the sketch
+	x = S.DistanceToLine(R0,RX);
+	y = S.DistanceToLine(R0,RY);
+
+	return mouseButtonPressed(Button,pressed,x,y);
+}
+
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, double y)
+{
+	unsigned int Entity;
 	// Left Mouse button ****************************************************
 	if(Button == 1){
 		if(pressed){
@@ -116,6 +136,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 				case STATUS_SKETCH_CreateText:
 					return true;
 				case STATUS_SKETCH_CreateLine:
+					Entity = SketchFlat->AddLine(x,y);
+					
 					return true;
 					
 			}
@@ -164,6 +186,7 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+	SketchFlat = new SketchFlatInterface();
 	if(!EditRoot){
 		EditRoot = new SoSeparator;
 		pcRoot->addChild(EditRoot);
@@ -222,6 +245,10 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 void ViewProviderSketch::unsetEdit(void)
 {
+	// close the solver
+	delete(SketchFlat);
+
+	// empty the nodes
 	EditRoot->removeAllChildren();
 	PointsMaterials = 0;
 	LinesMaterials = 0;
