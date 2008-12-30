@@ -88,6 +88,27 @@ public:
     //@}
 };
 
+class Ellipsoid : public Primitive
+{
+    PROPERTY_HEADER(Part::Ellipsoid);
+
+public:
+    Ellipsoid();
+
+    App::PropertyFloatConstraint Radius1;
+    App::PropertyFloatConstraint Radius2;
+    App::PropertyFloatConstraint Angle1;
+    App::PropertyFloatConstraint Angle2;
+    App::PropertyFloatConstraint Angle3;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
+};
+
 class Cylinder : public Primitive
 {
     PROPERTY_HEADER(Part::Cylinder);

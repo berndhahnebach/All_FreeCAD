@@ -20,10 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DLGPARTBOXIMP_H
-#define DLGPARTBOXIMP_H
+#ifndef PARTGUI_DLGPARTBOXIMP_H
+#define PARTGUI_DLGPARTBOXIMP_H
 
 #include "ui_DlgPartBox.h"
+#include <Base/Vector3D.h>
 
 namespace PartGui {
 
@@ -32,14 +33,15 @@ class DlgPartBoxImp : public QDialog, public Ui_DlgPartBox
     Q_OBJECT
 
 public:
-  DlgPartBoxImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    DlgPartBoxImp(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPartBoxImp();
 
-public Q_SLOTS:
-    void OnApply();
+    Base::Vector3f getDirection() const;
 
+private Q_SLOTS:
+    void on_direction_activated(int index);
 };
 
 } // namespace PartGui
 
-#endif // DLGPARTBOX_H
+#endif // PARTGUI_DLGPARTBOXIMP_H

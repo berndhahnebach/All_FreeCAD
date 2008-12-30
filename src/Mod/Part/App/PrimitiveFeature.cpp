@@ -28,6 +28,8 @@
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRepPrimAPI_MakeTorus.hxx>
+# include <BRepBuilderAPI_GTransform.hxx>
+# include <gp_GTrsf.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Plane.hxx>
 # include <Precision.hxx>
@@ -49,7 +51,6 @@ using namespace Part;
 
 
 PROPERTY_SOURCE_ABSTRACT(Part::Primitive, Part::Feature)
-
 
 Primitive::Primitive(void) 
 {
@@ -191,6 +192,66 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
+PROPERTY_SOURCE(Part::Ellipsoid, Part::Primitive)
+
+Ellipsoid::Ellipsoid(void)
+{
+    ADD_PROPERTY_TYPE(Radius1,(2.0),"Ellipsoid",App::Prop_None,"The radius of the ellipsoid");
+    Radius1.setConstraints(&floatRange);
+    ADD_PROPERTY_TYPE(Radius2,(4.0),"Ellipsoid",App::Prop_None,"The radius of the ellipsoid");
+    Radius2.setConstraints(&floatRange);
+    ADD_PROPERTY_TYPE(Angle1,(-90.0f),"Ellipsoid",App::Prop_None,"The angle of the ellipsoid");
+    Angle1.setConstraints(&angleRangeV);
+    ADD_PROPERTY_TYPE(Angle2,(90.0f),"Ellipsoid",App::Prop_None,"The angle of the ellipsoid");
+    Angle2.setConstraints(&angleRangeV);
+    ADD_PROPERTY_TYPE(Angle3,(360.0f),"Ellipsoid",App::Prop_None,"The angle of the ellipsoid");
+    Angle3.setConstraints(&angleRangeU);
+}
+
+short Ellipsoid::mustExecute() const
+{
+    if (Radius1.isTouched())
+        return 1;
+    if (Radius2.isTouched())
+        return 1;
+    if (Angle1.isTouched())
+        return 1;
+    if (Angle2.isTouched())
+        return 1;
+    if (Angle3.isTouched())
+        return 1;
+    return Primitive::mustExecute();
+}
+
+App::DocumentObjectExecReturn *Ellipsoid::execute(void)
+{
+    // Build a sphere
+    try {
+        gp_Pnt pnt(Location.getValue().x,
+                   Location.getValue().y,
+                   Location.getValue().z);
+        gp_Dir dir(Axis.getValue().x,
+                   Axis.getValue().y,
+                   Axis.getValue().z);
+        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(pnt,dir),
+                                        Radius2.getValue(), 
+                                        Angle1.getValue()/180.0f*Standard_PI,
+                                        Angle2.getValue()/180.0f*Standard_PI,
+                                        Angle3.getValue()/180.0f*Standard_PI);
+        Standard_Real scale = Radius1.getValue()/Radius2.getValue();
+        gp_GTrsf mat;
+        mat.SetValue(1,1,scale);
+        BRepBuilderAPI_GTransform mkTrsf(mkSphere.Shape(), mat);
+        TopoDS_Shape ResultShape = mkTrsf.Shape();
+        this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
+
+    return App::DocumentObject::StdReturn;
+}
 
 PROPERTY_SOURCE(Part::Cylinder, Part::Primitive)
 
@@ -353,4 +414,3 @@ App::DocumentObjectExecReturn *Torus::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
-

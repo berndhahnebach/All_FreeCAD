@@ -57,9 +57,9 @@
 
 #include <stdio.h>
 
-# if defined (_POSIX_C_SOURCE)
+#if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
-# endif // (re-)defined in pyconfig.h
+#endif // (re-)defined in pyconfig.h
 #include <Python.h>
 
 #include <Base/Console.h>
@@ -293,8 +293,10 @@ makeCompound(PyObject *self, PyObject *args)
 static PyObject * makePlane(PyObject *self, PyObject *args)
 {
     double length, width;
-
-    if (!PyArg_ParseTuple(args, "dd", &length, &width))
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "dd|O!O!", &length, &width,
+                                           &(Base::VectorPy::Type), &pPnt,
+                                           &(Base::VectorPy::Type), &pDir))
         return NULL;
 
     if (length < Precision::Confusion()) {
@@ -306,31 +308,165 @@ static PyObject * makePlane(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    PY_TRY {
-        gp_Pnt aPlanePnt(0,0,0);
-        gp_Dir aPlaneDir(0,0,1);
-        Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        Handle_Geom_Plane aPlane = new Geom_Plane(p, d);
         BRepBuilderAPI_MakeFace Face(aPlane, 0.0, length, 0.0, width);
         return new TopoShapeFacePy(new TopoShape((Face.Face()))); 
-    } PY_CATCH;
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of plane failed");
+        return NULL;
+    }
 }
 
-static PyObject * createBox(PyObject *self, PyObject *args)
+static PyObject * makeBox(PyObject *self, PyObject *args)
 {
-    double X, Y, Z , L, H, W ;
+    double length, width, height;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "ddd|O!O!", &length, &width, &height,
+                                            &(Base::VectorPy::Type), &pPnt,
+                                            &(Base::VectorPy::Type), &pDir))
+        return NULL;
 
-    //const char* Name;
-    if (! PyArg_ParseTuple(args, "dddddd", &X, &Y, &Z , &L, &H, &W ))
-        return NULL;                         
+    if (length < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "length of box too small");
+        return NULL;
+    }
+    if (width < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "width of box too small");
+        return NULL;
+    }
+    if (height < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "height of box too small");
+        return NULL;
+    }
 
     try {
-        // Build a box using the dimension and position attributes
-        BRepPrimAPI_MakeBox mkBox(gp_Pnt( X, Y, Z ), L, H, W);
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeBox mkBox(gp_Ax2(p,d), length, width, height);
         TopoDS_Shape ResultShape = mkBox.Shape();
         return new TopoShapeSolidPy(new TopoShape(ResultShape)); 
     }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of box failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeCircle(PyObject *self, PyObject *args)
+{
+    double radius, angle1=0.0, angle2=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "d|O!O!dd", &radius,
+                                            &(Base::VectorPy::Type), &pPnt,
+                                            &(Base::VectorPy::Type), &pDir,
+                                            &angle1, &angle2))
+        return NULL;
+
+    try {
+        gp_Pnt loc(0,0,0);
+        gp_Dir dir(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            loc.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            dir.SetCoord(vec.x, vec.y, vec.z);
+        }
+        gp_Ax1 axis(loc, dir);
+        gp_Circ circle;
+        circle.SetAxis(axis);
+        circle.SetRadius(radius);
+
+        Handle_Geom_Circle hCircle = new Geom_Circle (circle);
+        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1, angle2);
+        TopoDS_Edge edge = aMakeEdge.Edge();
+        return new TopoShapeEdgePy(new TopoShape(edge)); 
+    }
     catch (Standard_Failure) {
-        PyErr_SetString(PyExc_StandardError, "cannot create flat box");
+        PyErr_SetString(PyExc_Exception, "creation of circle failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeSphere(PyObject *self, PyObject *args)
+{
+    double radius, angle1=-M_PI_2, angle2=M_PI_2, angle3=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "d|O!O!ddd", &radius,
+                                             &(Base::VectorPy::Type), &pPnt,
+                                             &(Base::VectorPy::Type), &pDir,
+                                             &angle1, &angle2, &angle3))
+        return NULL;
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(p,d), radius, angle1, angle2, angle3);
+        TopoDS_Shape shape = mkSphere.Shape();
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of sphere failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeCylinder(PyObject *self, PyObject *args)
+{
+    double radius, height, angle=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "dd|O!O!d", &radius, &height,
+                                            &(Base::VectorPy::Type), &pPnt,
+                                            &(Base::VectorPy::Type), &pDir,
+                                            &angle))
+        return NULL;
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle);
+        TopoDS_Shape shape = mkCyl.Shape();
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of cylinder failed");
         return NULL;
     }
 }
@@ -436,7 +572,7 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
                     }
                 }
             }
-            
+
             if (!mkPoly.IsDone())
                 Standard_Failure::Raise("Cannot create polygon because less than two vetices are given");
 
@@ -448,72 +584,6 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
             return 0;
         }
     } PY_CATCH;
-}
-
-static PyObject * makeCircle(PyObject *self, PyObject *args)
-{
-    double radius, angle1=0.0, angle2=2.0*Standard_PI;
-    if (!PyArg_ParseTuple(args, "d|dd", &radius, &angle1, &angle2))
-        return NULL;
-
-    try {
-        gp_Pnt loc = gp_Pnt(0,0,0);
-        gp_Dir dir = gp_Dir(0,0,1);
-        gp_Ax1 axis(loc, dir);
-        gp_Circ circle;
-        circle.SetAxis(axis);
-        circle.SetRadius(radius);
-
-        Handle_Geom_Circle hCircle = new Geom_Circle (circle);
-        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1, angle2);
-        TopoDS_Edge edge = aMakeEdge.Edge();
-        return new TopoShapeEdgePy(new TopoShape(edge)); 
-    }
-    catch (Standard_Failure) {
-        PyErr_SetString(PyExc_Exception, "creation of circle failed");
-        return NULL;
-    }
-}
-
-static PyObject * makeSphere(PyObject *self, PyObject *args)
-{
-    double radius, angle1=-M_PI_2, angle2=M_PI_2, angle3=2.0*Standard_PI;
-    if (!PyArg_ParseTuple(args, "d|ddd", &radius, &angle1, &angle2, &angle3))
-        return NULL;
-
-    try {
-        BRepPrimAPI_MakeSphere mkSphere(radius, angle1, angle2, angle3);
-        TopoDS_Shape shape = mkSphere.Shape();
-        return new TopoShapeSolidPy(new TopoShape(shape));
-    }
-    catch (Standard_DomainError) {
-        PyErr_SetString(PyExc_Exception, "creation of sphere failed");
-        return NULL;
-    }
-}
-
-static PyObject * makeCylinder(PyObject *self, PyObject *args)
-{
-    double radius, height, angle=2.0*Standard_PI;
-    PyObject *pPnt, *pDir;
-    if (!PyArg_ParseTuple(args, "O!O!dd|d", &(Base::VectorPy::Type), &pPnt,
-                                            &(Base::VectorPy::Type), &pDir,
-                                            &radius, &height, &angle))
-        return NULL;
-
-    try {
-        Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
-        Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
-        gp_Pnt p(pnt.x, pnt.y, pnt.z);
-        gp_Dir d(vec.x, vec.y, vec.z);
-        BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle);
-        TopoDS_Shape shape = mkCyl.Shape();
-        return new TopoShapeSolidPy(new TopoShape(shape));
-    }
-    catch (Standard_DomainError) {
-        PyErr_SetString(PyExc_Exception, "creation of cylinder failed");
-        return NULL;
-    }
 }
 
 namespace Part {
@@ -650,8 +720,7 @@ struct PyMethodDef Part_methods[] = {
      "makeCompound(list) -- Create a compound out of a list of geometries."},
     {"makePlane"  ,makePlane ,METH_VARARGS,
      "makePlane(lenght,width) -- Make a plane"},
-    {"createBox"  ,createBox ,METH_VARARGS}, // obsolete
-    {"makeBox"    ,createBox ,METH_VARARGS,
+    {"makeBox"    ,makeBox ,METH_VARARGS,
      "makeBox(x,y,z,l,w,h) -- Make a box located in (x,y,z) with the dimensions (l,w,h)"},
     {"makeLine"   ,makeLine  ,METH_VARARGS,
      "makeLine((x1,y1,z1),(x2,y2,z2)) -- Make a line of two points"},
