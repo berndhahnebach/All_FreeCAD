@@ -135,6 +135,7 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBuilderAPI.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -224,6 +225,7 @@
 #include <gp_Cylinder.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Elips.hxx>
+#include <gp_GTrsf.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Lin.hxx>

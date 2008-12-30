@@ -40,9 +40,9 @@ PROPERTY_SOURCE(Part::Box, Part::Primitive)
 
 Box::Box()
 {
-    ADD_PROPERTY(Length,(100.0));
-    ADD_PROPERTY(Height,(100.0));
-    ADD_PROPERTY(Width,(100.0));
+    ADD_PROPERTY_TYPE(Length,(100.0f),"Box",App::Prop_None,"The length of the box");
+    ADD_PROPERTY_TYPE(Width ,(100.0f),"Box",App::Prop_None,"The width of the box");
+    ADD_PROPERTY_TYPE(Height,(100.0f),"Box",App::Prop_None,"The height of the box");
 }
 
 short Box::mustExecute() const
@@ -57,17 +57,17 @@ short Box::mustExecute() const
 App::DocumentObjectExecReturn *Box::execute(void)
 {
     double L = Length.getValue();
-    double H = Height.getValue();
     double W = Width.getValue();
+    double H = Height.getValue();
 
     if (L < Precision::Confusion())
-        return new App::DocumentObjectExecReturn("Length of L too small");
-
-    if (H < Precision::Confusion())
-        return new App::DocumentObjectExecReturn("Height of H too small");
+        return new App::DocumentObjectExecReturn("Length of box too small");
 
     if (W < Precision::Confusion())
-        return new App::DocumentObjectExecReturn("Width of W too small");
+        return new App::DocumentObjectExecReturn("Width of box too small");
+
+    if (H < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Height of box too small");
 
     try {
         // Build a box using the dimension and position attributes
@@ -77,7 +77,7 @@ App::DocumentObjectExecReturn *Box::execute(void)
         gp_Dir dir(Axis.getValue().x,
                    Axis.getValue().y,
                    Axis.getValue().z);
-        BRepPrimAPI_MakeBox mkBox(gp_Ax2(pnt,dir), L, H, W);
+        BRepPrimAPI_MakeBox mkBox(gp_Ax2(pnt,dir), L, W, H);
         TopoDS_Shape ResultShape = mkBox.Shape();
         this->Shape.setValue(ResultShape);
     }

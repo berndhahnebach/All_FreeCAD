@@ -74,16 +74,15 @@ void CmdPartSimpleCylinder::activated(int iMsg)
         openCommand("Create Part Cylinder");
         doCommand(Doc,"import Base,Part");
         doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Feature\",\"Cylinder\")"
-                      ".Shape=Part.makeCylinder("
+                      ".Shape=Part.makeCylinder(%f,%f,"
                       "Base.Vector(%f,%f,%f),"
-                      "Base.Vector(%f,%f,%f),"
-                      "%f,%f)"
+                      "Base.Vector(%f,%f,%f))"
+                     ,dlg.radius->value()
+                     ,dlg.length->value()
                      ,dlg.xPos->value()
                      ,dlg.yPos->value()
                      ,dlg.zPos->value()
-                     ,dir.x,dir.y,dir.z
-                     ,dlg.radius->value()
-                     ,dlg.length->value());
+                     ,dir.x,dir.y,dir.z);
         commitCommand();
         updateActive();
     }

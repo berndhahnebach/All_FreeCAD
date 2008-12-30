@@ -103,18 +103,21 @@ CmdPartBox::CmdPartBox()
 
 void CmdPartBox::activated(int iMsg)
 {
-    PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
-    if (cDlg.exec()== QDialog::Accepted) {
+    PartGui::DlgPartBoxImp dlg(Gui::getMainWindow());
+    if (dlg.exec()== QDialog::Accepted) {
+        Base::Vector3f dir = dlg.getDirection();
         openCommand("Part Box Create");
         doCommand(Doc,"import Base,Part");
         doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
         doCommand(Doc,"__fb__.Location = Base.Vector(%f,%f,%f)",
-                                 cDlg.XLineEdit->text().toFloat(),
-                                 cDlg.YLineEdit->text().toFloat(),
-                                 cDlg.ZLineEdit->text().toFloat());
-        doCommand(Doc,"__fb__.Length = %f",cDlg.ULineEdit->text().toFloat());
-        doCommand(Doc,"__fb__.Width = %f",cDlg.VLineEdit->text().toFloat());
-        doCommand(Doc,"__fb__.Height = %f",cDlg.WLineEdit->text().toFloat());
+                                 dlg.xPos->value(),
+                                 dlg.yPos->value(),
+                                 dlg.zPos->value());
+        doCommand(Doc,"__fb__.Axis = Base.Vector(%f,%f,%f)",
+                        dir.x, dir.y, dir.z);
+        doCommand(Doc,"__fb__.Length = %f",dlg.uLength->value());
+        doCommand(Doc,"__fb__.Width = %f" ,dlg.vLength->value());
+        doCommand(Doc,"__fb__.Height = %f",dlg.wLength->value());
         doCommand(Doc,"del __fb__");
         commitCommand();
         updateActive();
