@@ -23,12 +23,12 @@
 #ifndef PARTGUI_DLGPRIMITIVES_H
 #define PARTGUI_DLGPRIMITIVES_H
 
-#include <QDialog>
+#include <Gui/InputVector.h>
+#include "ui_DlgPrimitives.h"
 
 namespace PartGui {
 
-class Ui_DlgPrimitives;
-class DlgPrimitives : public QDialog
+class DlgPrimitives : public Gui::LocationDialogComp<Ui_DlgPrimitives>
 {
     Q_OBJECT
 
@@ -36,9 +36,6 @@ public:
     DlgPrimitives(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPrimitives();
     void accept();
-
-private:
-    Ui_DlgPrimitives* ui;
 };
 
 } // namespace PartGui

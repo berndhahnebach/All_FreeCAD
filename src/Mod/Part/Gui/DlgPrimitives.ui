@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>265</width>
-    <height>287</height>
+    <width>466</width>
+    <height>312</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -38,849 +38,126 @@
        <number>6</number>
       </property>
       <item row="1" column="0" >
-       <widget class="QStackedWidget" name="widgetStack2" >
-        <property name="currentIndex" >
-         <number>0</number>
+       <widget class="QGroupBox" name="groupBox" >
+        <property name="title" >
+         <string>Position</string>
         </property>
-        <widget class="QWidget" name="page" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="planeLength" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="minimum" >
-               <double>0</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel3_2" >
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>9</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="1" column="0" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0" >
+          <layout class="QGridLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item row="2" column="1" >
+            <widget class="QDoubleSpinBox" name="zPos" >
+             <property name="maximum" >
+              <double>2.14748e+09</double>
+             </property>
+             <property name="minimum" >
+              <double>-2.14748e+09</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="TextLabel3" >
+             <property name="text" >
+              <string>Z:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" >
+            <widget class="QLabel" name="TextLabel1" >
+             <property name="text" >
+              <string>X:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="TextLabel1_3" >
+             <property name="text" >
+              <string>Direction:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QDoubleSpinBox" name="xPos" >
+             <property name="maximum" >
+              <double>2.14748e+09</double>
+             </property>
+             <property name="minimum" >
+              <double>-2.14748e+09</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="TextLabel2" >
+             <property name="text" >
+              <string>Y:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QComboBox" name="direction" >
+             <property name="currentIndex" >
+              <number>2</number>
+             </property>
+             <item>
               <property name="text" >
-               <string>Width:</string>
+               <string>X</string>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel2_2" >
+             </item>
+             <item>
               <property name="text" >
-               <string>Length:</string>
+               <string>Y</string>
               </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="planeWidth" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage1" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>51</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="2" column="0" >
-             <widget class="QLabel" name="textLabel4" >
+             </item>
+             <item>
               <property name="text" >
-               <string>Height:</string>
+               <string>Z</string>
               </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="boxHeight" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="boxLength" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="minimum" >
-               <double>0</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel2" >
+             </item>
+             <item>
               <property name="text" >
-               <string>Length:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="boxWidth" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel3" >
-              <property name="text" >
-               <string>Width:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage2" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="2" column="0" >
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label" >
-              <property name="text" >
-               <string>Angle:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="cylinderAngle" >
-              <property name="maximum" >
-               <double>360</double>
-              </property>
-              <property name="value" >
-               <double>360</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line_2" >
-            <property name="frameShape" >
-             <enum>QFrame::HLine</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>31</width>
-              <height>81</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel5" >
-              <property name="text" >
-               <string>Radius:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="cylinderRadius" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>2</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="cylinderHeight" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel6" >
-              <property name="text" >
-               <string>Height:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage3" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="2" column="0" >
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_4" >
-              <property name="text" >
-               <string>Angle:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="coneAngle" >
-              <property name="maximum" >
-               <double>360</double>
-              </property>
-              <property name="value" >
-               <double>360</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line_3" >
-            <property name="frameShape" >
-             <enum>QFrame::HLine</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>31</width>
-              <height>91</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item rowspan="2" row="2" column="0" >
-             <widget class="QLabel" name="textLabel11" >
-              <property name="text" >
-               <string>Height:</string>
-              </property>
-             </widget>
-            </item>
-            <item rowspan="2" row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="coneRadius2" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>4</double>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1" >
-             <widget class="QDoubleSpinBox" name="coneHeight" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="coneRadius1" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>2</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel9" >
-              <property name="text" >
-               <string>Radius 1:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel10" >
-              <property name="text" >
-               <string>Radius 2:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage4" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="0" >
-           <widget class="Line" name="line" >
-            <property name="frameShape" >
-             <enum>QFrame::HLine</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="label_3" >
-              <property name="text" >
-               <string>U parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" >
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Preferred</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>81</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="sphereAngle1" >
-              <property name="maximum" >
-               <double>90</double>
-              </property>
-              <property name="minimum" >
-               <double>-90</double>
-              </property>
-              <property name="value" >
-               <double>-90</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="label_2" >
-              <property name="text" >
-               <string>V parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="sphereAngle2" >
-              <property name="maximum" >
-               <double>90</double>
-              </property>
-              <property name="minimum" >
-               <double>-90</double>
-              </property>
-              <property name="value" >
-               <double>90</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="sphereAngle3" >
-              <property name="maximum" >
-               <double>360</double>
-              </property>
-              <property name="value" >
-               <double>360</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>21</width>
-              <height>151</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="textLabel14" >
-              <property name="text" >
-               <string>Radius:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="sphereRadius" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>5</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage5" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line_5" >
-            <property name="frameShape" >
-             <enum>QFrame::HLine</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="ellipsoidRadius2" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>4</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="ellipsoidRadius1" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>2</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel21" >
-              <property name="text" >
-               <string>Radius 1:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel22" >
-              <property name="text" >
-               <string>Radius 2:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="label23" >
-              <property name="text" >
-               <string>U parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" >
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Preferred</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>81</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="ellipsoidAngle1" >
-              <property name="maximum" >
-               <double>90</double>
-              </property>
-              <property name="minimum" >
-               <double>-90</double>
-              </property>
-              <property name="value" >
-               <double>-90</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="label24" >
-              <property name="text" >
-               <string>V parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="ellipsoidAngle2" >
-              <property name="maximum" >
-               <double>90</double>
-              </property>
-              <property name="minimum" >
-               <double>-90</double>
-              </property>
-              <property name="value" >
-               <double>90</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="ellipsoidAngle3" >
-              <property name="maximum" >
-               <double>360</double>
-              </property>
-              <property name="value" >
-               <double>360</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="WStackPage6" >
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="0" >
-           <widget class="Line" name="line_4" >
-            <property name="frameShape" >
-             <enum>QFrame::HLine</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="label_5" >
-              <property name="text" >
-               <string>U parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" >
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Preferred</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>81</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="torusAngle1" >
-              <property name="maximum" >
-               <double>180</double>
-              </property>
-              <property name="minimum" >
-               <double>-180</double>
-              </property>
-              <property name="value" >
-               <double>-180</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="label_6" >
-              <property name="text" >
-               <string>V parametric:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="torusAngle2" >
-              <property name="maximum" >
-               <double>180</double>
-              </property>
-              <property name="minimum" >
-               <double>-180</double>
-              </property>
-              <property name="value" >
-               <double>180</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="torusAngle3" >
-              <property name="maximum" >
-               <double>360</double>
-              </property>
-              <property name="value" >
-               <double>360</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>91</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <layout class="QGridLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="textLabel20" >
-              <property name="text" >
-               <string>Radius 2:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="textLabel19" >
-              <property name="text" >
-               <string>Radius 1:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="torusRadius2" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>2</double>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="torusRadius1" >
-              <property name="maximum" >
-               <double>1000</double>
-              </property>
-              <property name="value" >
-               <double>10</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
+               <string>User defined...</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QDoubleSpinBox" name="yPos" >
+             <property name="maximum" >
+              <double>2.14748e+09</double>
+             </property>
+             <property name="minimum" >
+              <double>-2.14748e+09</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
       <item row="0" column="0" >
@@ -920,6 +197,880 @@
           <string>Torus</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>221</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QGroupBox" name="groupBox_2" >
+        <property name="title" >
+         <string>Parameter</string>
+        </property>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>9</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="0" column="0" >
+          <widget class="QStackedWidget" name="widgetStack2" >
+           <property name="currentIndex" >
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="page" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="planeLength" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>0</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel3_2" >
+                 <property name="text" >
+                  <string>Width:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel2_2" >
+                 <property name="text" >
+                  <string>Length:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="planeWidth" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage1" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="1" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>51</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="2" column="0" >
+                <widget class="QLabel" name="textLabel4" >
+                 <property name="text" >
+                  <string>Height:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QDoubleSpinBox" name="boxHeight" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="boxLength" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>0</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel2" >
+                 <property name="text" >
+                  <string>Length:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="boxWidth" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel3" >
+                 <property name="text" >
+                  <string>Width:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage2" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="2" column="0" >
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label" >
+                 <property name="text" >
+                  <string>Angle:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="cylinderAngle" >
+                 <property name="maximum" >
+                  <double>360</double>
+                 </property>
+                 <property name="value" >
+                  <double>360</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0" >
+              <widget class="Line" name="line_2" >
+               <property name="frameShape" >
+                <enum>QFrame::HLine</enum>
+               </property>
+               <property name="frameShadow" >
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>31</width>
+                 <height>81</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel5" >
+                 <property name="text" >
+                  <string>Radius:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="cylinderRadius" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>2</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="cylinderHeight" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel6" >
+                 <property name="text" >
+                  <string>Height:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage3" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="2" column="0" >
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_4" >
+                 <property name="text" >
+                  <string>Angle:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="coneAngle" >
+                 <property name="maximum" >
+                  <double>360</double>
+                 </property>
+                 <property name="value" >
+                  <double>360</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0" >
+              <widget class="Line" name="line_3" >
+               <property name="frameShape" >
+                <enum>QFrame::HLine</enum>
+               </property>
+               <property name="frameShadow" >
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>31</width>
+                 <height>91</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item rowspan="2" row="2" column="0" >
+                <widget class="QLabel" name="textLabel11" >
+                 <property name="text" >
+                  <string>Height:</string>
+                 </property>
+                </widget>
+               </item>
+               <item rowspan="2" row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="coneRadius2" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>4</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1" >
+                <widget class="QDoubleSpinBox" name="coneHeight" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="coneRadius1" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>2</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel9" >
+                 <property name="text" >
+                  <string>Radius 1:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel10" >
+                 <property name="text" >
+                  <string>Radius 2:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage4" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="1" column="0" >
+              <widget class="Line" name="line" >
+               <property name="frameShape" >
+                <enum>QFrame::HLine</enum>
+               </property>
+               <property name="frameShadow" >
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="label_3" >
+                 <property name="text" >
+                  <string>U parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" >
+                <spacer>
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType" >
+                  <enum>QSizePolicy::Preferred</enum>
+                 </property>
+                 <property name="sizeHint" >
+                  <size>
+                   <width>81</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="sphereAngle1" >
+                 <property name="maximum" >
+                  <double>90</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-90</double>
+                 </property>
+                 <property name="value" >
+                  <double>-90</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="label_2" >
+                 <property name="text" >
+                  <string>V parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QDoubleSpinBox" name="sphereAngle2" >
+                 <property name="maximum" >
+                  <double>90</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-90</double>
+                 </property>
+                 <property name="value" >
+                  <double>90</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="sphereAngle3" >
+                 <property name="maximum" >
+                  <double>360</double>
+                 </property>
+                 <property name="value" >
+                  <double>360</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="3" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>21</width>
+                 <height>151</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="textLabel14" >
+                 <property name="text" >
+                  <string>Radius:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="sphereRadius" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>5</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage5" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="3" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0" >
+              <widget class="Line" name="line_5" >
+               <property name="frameShape" >
+                <enum>QFrame::HLine</enum>
+               </property>
+               <property name="frameShadow" >
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="ellipsoidRadius2" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>4</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="ellipsoidRadius1" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>2</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel21" >
+                 <property name="text" >
+                  <string>Radius 1:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel22" >
+                 <property name="text" >
+                  <string>Radius 2:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="2" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="label23" >
+                 <property name="text" >
+                  <string>U parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" >
+                <spacer>
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType" >
+                  <enum>QSizePolicy::Preferred</enum>
+                 </property>
+                 <property name="sizeHint" >
+                  <size>
+                   <width>81</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="ellipsoidAngle1" >
+                 <property name="maximum" >
+                  <double>90</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-90</double>
+                 </property>
+                 <property name="value" >
+                  <double>-90</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="label24" >
+                 <property name="text" >
+                  <string>V parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QDoubleSpinBox" name="ellipsoidAngle2" >
+                 <property name="maximum" >
+                  <double>90</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-90</double>
+                 </property>
+                 <property name="value" >
+                  <double>90</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="ellipsoidAngle3" >
+                 <property name="maximum" >
+                  <double>360</double>
+                 </property>
+                 <property name="value" >
+                  <double>360</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="WStackPage6" >
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item row="1" column="0" >
+              <widget class="Line" name="line_4" >
+               <property name="frameShape" >
+                <enum>QFrame::HLine</enum>
+               </property>
+               <property name="frameShadow" >
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="label_5" >
+                 <property name="text" >
+                  <string>U parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" >
+                <spacer>
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType" >
+                  <enum>QSizePolicy::Preferred</enum>
+                 </property>
+                 <property name="sizeHint" >
+                  <size>
+                   <width>81</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="torusAngle1" >
+                 <property name="maximum" >
+                  <double>180</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-180</double>
+                 </property>
+                 <property name="value" >
+                  <double>-180</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="label_6" >
+                 <property name="text" >
+                  <string>V parametric:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QDoubleSpinBox" name="torusAngle2" >
+                 <property name="maximum" >
+                  <double>180</double>
+                 </property>
+                 <property name="minimum" >
+                  <double>-180</double>
+                 </property>
+                 <property name="value" >
+                  <double>180</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="torusAngle3" >
+                 <property name="maximum" >
+                  <double>360</double>
+                 </property>
+                 <property name="value" >
+                  <double>360</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="3" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>91</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" >
+              <layout class="QGridLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="textLabel20" >
+                 <property name="text" >
+                  <string>Radius 2:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" >
+                <widget class="QLabel" name="textLabel19" >
+                 <property name="text" >
+                  <string>Radius 1:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QDoubleSpinBox" name="torusRadius2" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>2</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QDoubleSpinBox" name="torusRadius1" >
+                 <property name="maximum" >
+                  <double>1000</double>
+                 </property>
+                 <property name="value" >
+                  <double>10</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -986,6 +1137,10 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>comboBox1</tabstop>
+  <tabstop>xPos</tabstop>
+  <tabstop>yPos</tabstop>
+  <tabstop>zPos</tabstop>
+  <tabstop>direction</tabstop>
   <tabstop>planeLength</tabstop>
   <tabstop>planeWidth</tabstop>
   <tabstop>boxLength</tabstop>
@@ -1009,9 +1164,9 @@
   <tabstop>ellipsoidAngle2</tabstop>
   <tabstop>torusRadius1</tabstop>
   <tabstop>torusRadius2</tabstop>
-  <tabstop>torusAngle3</tabstop>
   <tabstop>torusAngle1</tabstop>
   <tabstop>torusAngle2</tabstop>
+  <tabstop>torusAngle3</tabstop>
   <tabstop>createSolidButton</tabstop>
   <tabstop>buttonClose</tabstop>
  </tabstops>
