@@ -18,6 +18,7 @@ BUILT_SOURCES=\
 		moc_DlgPartCylinderImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStepImp.cpp \
+		moc_DlgPrimitives.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
 		qrc_Part.cpp 
 

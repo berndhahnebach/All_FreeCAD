@@ -24,22 +24,17 @@
 #define PARTGUI_DLGPARTCYLINDERIMP_H
 
 #include "ui_DlgPartCylinder.h"
-#include <Base/Vector3D.h>
+#include <Gui/InputVector.h>
 
 namespace PartGui {
 
-class DlgPartCylinderImp : public QDialog, public Ui_DlgPartCylinder
+class DlgPartCylinderImp : public Gui::LocationInterface<Ui_DlgPartCylinder>
 {
     Q_OBJECT
 
 public:
     DlgPartCylinderImp(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPartCylinderImp();
-
-    Base::Vector3f getDirection() const;
-
-private Q_SLOTS:
-    void on_direction_activated(int index);
 };
 
 } // namespace PartGui

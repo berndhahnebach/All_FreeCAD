@@ -24,13 +24,14 @@
 #define PARTGUI_DLGPRIMITIVES_H
 
 #include <QDialog>
-#include <Base/Vector3D.h>
 
 namespace PartGui {
 
 class Ui_DlgPrimitives;
 class DlgPrimitives : public QDialog
 {
+    Q_OBJECT
+
 public:
     DlgPrimitives(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPrimitives();
