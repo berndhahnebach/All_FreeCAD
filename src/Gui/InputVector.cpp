@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2008 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,55 +21,45 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#include "PreCompiled.h"
+#include <Gui/Qt4All.h>
 
-#include "../../../FCConfig.h"
+#include "InputVector.h"
+#include "ui_InputVector.h"
 
-// Exporting of App classes
-#ifdef FC_OS_WIN32
-# define PointsAppExport __declspec(dllexport)
-# define PointsExport __declspec(dllexport)
-#else // for Linux
-# define PointsAppExport
-# define PointsExport 
-#endif
+using namespace Gui;
 
-#ifdef _PreComp_
+LocationDialog::LocationDialog(QWidget* parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
+{
+}
 
-// here get the warnings of too long specifiers disabled (needed for VC6)
-#ifdef _MSC_VER
-# pragma warning( disable : 4251 )
-# pragma warning( disable : 4503 )
-# pragma warning( disable : 4275 )
-# pragma warning( disable : 4786 )  // specifier longer then 255 chars
-#endif
+LocationDialog::~LocationDialog()
+{
+}
 
-// standard
-#include <stdio.h>
-#include <assert.h>
+Base::Vector3f LocationDialog::getUserDirection(bool* ok) const
+{
+    Gui::Dialog::Ui_InputVector iv;
+    QDialog dlg(const_cast<LocationDialog*>(this));
+    iv.setupUi(&dlg);
+    Base::Vector3f dir;
+    if (dlg.exec()) {
+        dir.x = (float)iv.vectorX->value();
+        dir.y = (float)iv.vectorY->value();
+        dir.z = (float)iv.vectorZ->value();
+        if (ok) *ok = true;
+    }
+    else {
+        if (ok) *ok = false;
+    }
 
-// STL
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <list>
-#include <map>
-#include <queue>
-#include <set>
-#include <sstream>
-#include <stack>
-#include <string>
-#include <vector>
-#include <bitset>
-#include <float.h>
-#include <math.h>
-#include <stdlib.h>
+    return dir;
+}
 
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
+void LocationDialog::on_direction_activated(int index)
+{
+    directionActivated(index);
+}
 
-#endif //_PreComp_
-
-#endif
-
+#include "moc_InputVector.cpp"

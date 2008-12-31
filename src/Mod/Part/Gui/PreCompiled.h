@@ -36,11 +36,11 @@
 #endif
 
 #ifdef _PreComp_
-/// here get the warnings of to long specifieres disabled (needed for VC6)
+// here get the warnings of too long specifiers disabled (needed for VC6)
 #ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+# pragma warning( disable : 4251 )
+# pragma warning( disable : 4503 )
+# pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
 
@@ -49,7 +49,8 @@
 // standard
 #include <iostream>
 //#include <stdio.h>
-#include <assert.h>
+#include <cassert>
+#include <cfloat>
 //#include <io.h>
 //#include <fcntl.h>
 //#include <ctype.h>
@@ -68,7 +69,7 @@
 #include <Python.h>
 
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# include <windows.h>
 #endif
 
 // Xerces
@@ -77,7 +78,6 @@
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 
-// OpenCascade View
 #include <BRepMesh.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -116,8 +116,6 @@
 #include <GCPnts_UniformDeflection.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-
-
 // Qt Toolkit
 #ifndef __Qt4All__
 # include <Gui/Qt4All.h>
@@ -127,9 +125,6 @@
 #ifndef __InventorAll__
 # include <Gui/InventorAll.h>
 #endif
-
-#include <float.h>
-
 
 #endif
 #endif 

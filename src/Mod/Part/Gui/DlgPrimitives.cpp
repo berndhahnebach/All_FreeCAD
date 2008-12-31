@@ -170,3 +170,5 @@ void DlgPrimitives::accept()
             .arg(ui->comboBox1->currentText()), QString::fromLatin1(e.what()));
     }
 }
+
+#include "moc_DlgPrimitives.cpp"

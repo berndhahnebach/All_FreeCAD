@@ -24,22 +24,17 @@
 #define PARTGUI_DLGPARTBOXIMP_H
 
 #include "ui_DlgPartBox.h"
-#include <Base/Vector3D.h>
+#include <Gui/InputVector.h>
 
 namespace PartGui {
 
-class DlgPartBoxImp : public QDialog, public Ui_DlgPartBox
-{ 
+class DlgPartBoxImp : public Gui::LocationInterface<Ui_DlgPartBox>
+{
     Q_OBJECT
 
 public:
     DlgPartBoxImp(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPartBoxImp();
-
-    Base::Vector3f getDirection() const;
-
-private Q_SLOTS:
-    void on_direction_activated(int index);
 };
 
 } // namespace PartGui

@@ -32,6 +32,7 @@ BUILT_SOURCES=\
 		moc_FileDialog.cpp \
 		moc_Flag.cpp \
 		moc_HelpView.cpp \
+		moc_InputVector.cpp \
 		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
 		moc_OnlineDocumentation.cpp \
@@ -202,6 +203,8 @@ libFreeCADGui_la_SOURCES=\
 		GuiConsole.cpp \
 		GuiConsole.h \
 		HelpView.cpp \
+		InputVector.cpp \
+		InputVector.h \
 		Macro.cpp \
 		MainWindow.cpp \
 		MDIView.cpp \

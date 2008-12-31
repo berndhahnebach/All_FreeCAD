@@ -25,7 +25,7 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-#include "../../../FCConfig.h"
+#include <FCConfig.h>
 
 
 // Exporting of App classes
@@ -48,7 +48,7 @@
 
 #ifdef _PreComp_
 
-    /// here get the warnings of to long specifieres disabled (needed for VC6)
+    // here get the warnings of too long specifiers disabled (needed for VC6)
     #ifdef _MSC_VER
         # pragma warning( disable : 4251 )
         # pragma warning( disable : 4275 )
