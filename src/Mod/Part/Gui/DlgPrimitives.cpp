@@ -32,16 +32,13 @@
 #include <Gui/Command.h>
 
 #include "DlgPrimitives.h"
-#include "ui_DlgPrimitives.h"
 
 using namespace PartGui;
 
 DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
-  : QDialog( parent, fl )
+  : Gui::LocationDialogComp<Ui_DlgPrimitives>(parent, fl)
 {
-    ui = new Ui_DlgPrimitives();
-    ui->setupUi(this);
-    Gui::Command::doCommand(Gui::Command::Doc, "import Part,PartGui");
+    Gui::Command::doCommand(Gui::Command::Doc, "import Base,Part,PartGui");
 }
 
 /*  
@@ -50,7 +47,6 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
 DlgPrimitives::~DlgPrimitives()
 {
     // no need to delete child widgets, Qt does it all for us
-    delete ui;
 }
 
 void DlgPrimitives::accept()
@@ -60,71 +56,113 @@ void DlgPrimitives::accept()
         App::Document* doc = App::GetApplication().getActiveDocument();
         if (!doc) {
             QMessageBox::warning(this, tr("Create %1")
-                .arg(ui->comboBox1->currentText()), tr("No active document"));
+                .arg(ui.comboBox1->currentText()), tr("No active document"));
             return;
         }
-        if (ui->comboBox1->currentIndex() == 0) {         // plane
+        Base::Vector3f dir = ui.getDirection();
+        if (ui.comboBox1->currentIndex() == 0) {         // plane
             name = QString::fromAscii(doc->getUniqueObjectName("Plane").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Plane\",\"%1\")\n"
                 "App.ActiveDocument.%1.Length=%2\n"
-                "App.ActiveDocument.%1.Width=%3\n")
-                .arg(name).arg(ui->planeLength->value(),0,'f',2)
-                .arg(ui->planeWidth->value(),0,'f',2);
+                "App.ActiveDocument.%1.Width=%3\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%4,%5,%6)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%7,%8,%9)\n")
+                .arg(name)
+                .arg(ui.planeLength->value(),0,'f',2)
+                .arg(ui.planeWidth->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 1) {         // box
+        else if (ui.comboBox1->currentIndex() == 1) {         // box
             name = QString::fromAscii(doc->getUniqueObjectName("Box").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Box\",\"%1\")\n"
                 "App.ActiveDocument.%1.Length=%2\n"
                 "App.ActiveDocument.%1.Width=%3\n"
-                "App.ActiveDocument.%1.Height=%4\n")
+                "App.ActiveDocument.%1.Height=%4\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%5,%6,%7)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%8,%9,%10)\n")
                 .arg(name)
-                .arg(ui->boxLength->value(),0,'f',2)
-                .arg(ui->boxWidth->value(),0,'f',2)
-                .arg(ui->boxHeight->value(),0,'f',2);
+                .arg(ui.boxLength->value(),0,'f',2)
+                .arg(ui.boxWidth->value(),0,'f',2)
+                .arg(ui.boxHeight->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 2) {  // cylinder
+        else if (ui.comboBox1->currentIndex() == 2) {  // cylinder
             name = QString::fromAscii(doc->getUniqueObjectName("Cylinder").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Cylinder\",\"%1\")\n"
                 "App.ActiveDocument.%1.Radius=%2\n"
                 "App.ActiveDocument.%1.Height=%3\n"
-                "App.ActiveDocument.%1.Angle=%4\n")
+                "App.ActiveDocument.%1.Angle=%4\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%5,%6,%7)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%8,%9,%10)\n")
                 .arg(name)
-                .arg(ui->cylinderRadius->value(),0,'f',2)
-                .arg(ui->cylinderHeight->value(),0,'f',2)
-                .arg(ui->cylinderAngle->value(),0,'f',2);
+                .arg(ui.cylinderRadius->value(),0,'f',2)
+                .arg(ui.cylinderHeight->value(),0,'f',2)
+                .arg(ui.cylinderAngle->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 3) {  // cone
+        else if (ui.comboBox1->currentIndex() == 3) {  // cone
             name = QString::fromAscii(doc->getUniqueObjectName("Cone").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Cone\",\"%1\")\n"
                 "App.ActiveDocument.%1.Radius1=%2\n"
                 "App.ActiveDocument.%1.Radius2=%3\n"
                 "App.ActiveDocument.%1.Height=%4\n"
-                "App.ActiveDocument.%1.Angle=%5\n")
+                "App.ActiveDocument.%1.Angle=%5\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%6,%7,%8)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%9,%10,%11)\n")
                 .arg(name)
-                .arg(ui->coneRadius1->value(),0,'f',2)
-                .arg(ui->coneRadius2->value(),0,'f',2)
-                .arg(ui->coneHeight->value(),0,'f',2)
-                .arg(ui->coneAngle->value(),0,'f',2);
+                .arg(ui.coneRadius1->value(),0,'f',2)
+                .arg(ui.coneRadius2->value(),0,'f',2)
+                .arg(ui.coneHeight->value(),0,'f',2)
+                .arg(ui.coneAngle->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 4) {  // sphere
+        else if (ui.comboBox1->currentIndex() == 4) {  // sphere
             name = QString::fromAscii(doc->getUniqueObjectName("Sphere").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Sphere\",\"%1\")\n"
                 "App.ActiveDocument.%1.Radius=%2\n"
                 "App.ActiveDocument.%1.Angle1=%3\n"
                 "App.ActiveDocument.%1.Angle2=%4\n"
-                "App.ActiveDocument.%1.Angle3=%5\n")
+                "App.ActiveDocument.%1.Angle3=%5\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%6,%7,%8)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%9,%10,%11)\n")
                 .arg(name)
-                .arg(ui->sphereRadius->value(),0,'f',2)
-                .arg(ui->sphereAngle1->value(),0,'f',2)
-                .arg(ui->sphereAngle2->value(),0,'f',2)
-                .arg(ui->sphereAngle3->value(),0,'f',2);
+                .arg(ui.sphereRadius->value(),0,'f',2)
+                .arg(ui.sphereAngle1->value(),0,'f',2)
+                .arg(ui.sphereAngle2->value(),0,'f',2)
+                .arg(ui.sphereAngle3->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 5) {  // ellipsoid
+        else if (ui.comboBox1->currentIndex() == 5) {  // ellipsoid
             name = QString::fromAscii(doc->getUniqueObjectName("Ellipsoid").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Ellipsoid\",\"%1\")\n"
@@ -132,15 +170,23 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Radius2=%3\n"
                 "App.ActiveDocument.%1.Angle1=%4\n"
                 "App.ActiveDocument.%1.Angle2=%5\n"
-                "App.ActiveDocument.%1.Angle3=%6\n")
+                "App.ActiveDocument.%1.Angle3=%6\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%7,%8,%9)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%10,%11,%12)\n")
                 .arg(name)
-                .arg(ui->ellipsoidRadius1->value(),0,'f',2)
-                .arg(ui->ellipsoidRadius2->value(),0,'f',2)
-                .arg(ui->ellipsoidAngle1->value(),0,'f',2)
-                .arg(ui->ellipsoidAngle2->value(),0,'f',2)
-                .arg(ui->ellipsoidAngle3->value(),0,'f',2);
+                .arg(ui.ellipsoidRadius1->value(),0,'f',2)
+                .arg(ui.ellipsoidRadius2->value(),0,'f',2)
+                .arg(ui.ellipsoidAngle1->value(),0,'f',2)
+                .arg(ui.ellipsoidAngle2->value(),0,'f',2)
+                .arg(ui.ellipsoidAngle3->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
-        else if (ui->comboBox1->currentIndex() == 6) {  // torus
+        else if (ui.comboBox1->currentIndex() == 6) {  // torus
             name = QString::fromAscii(doc->getUniqueObjectName("Torus").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Torus\",\"%1\")\n"
@@ -148,17 +194,25 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Radius2=%3\n"
                 "App.ActiveDocument.%1.Angle1=%4\n"
                 "App.ActiveDocument.%1.Angle2=%5\n"
-                "App.ActiveDocument.%1.Angle3=%6\n")
+                "App.ActiveDocument.%1.Angle3=%6\n"
+                "App.ActiveDocument.%1.Location=Base.Vector(%7,%8,%9)\n"
+                "App.ActiveDocument.%1.Axis=Base.Vector(%10,%11,%12)\n")
                 .arg(name)
-                .arg(ui->torusRadius1->value(),0,'f',2)
-                .arg(ui->torusRadius2->value(),0,'f',2)
-                .arg(ui->torusAngle1->value(),0,'f',2)
-                .arg(ui->torusAngle2->value(),0,'f',2)
-                .arg(ui->torusAngle3->value(),0,'f',2);
+                .arg(ui.torusRadius1->value(),0,'f',2)
+                .arg(ui.torusRadius2->value(),0,'f',2)
+                .arg(ui.torusAngle1->value(),0,'f',2)
+                .arg(ui.torusAngle2->value(),0,'f',2)
+                .arg(ui.torusAngle3->value(),0,'f',2)
+                .arg(ui.xPos->value(),0,'f',2)
+                .arg(ui.yPos->value(),0,'f',2)
+                .arg(ui.zPos->value(),0,'f',2)
+                .arg(dir.x,0,'f',2)
+                .arg(dir.y,0,'f',2)
+                .arg(dir.z,0,'f',2);
         }
 
         // Execute the Python block
-        QString prim = tr("Create %1").arg(ui->comboBox1->currentText());
+        QString prim = tr("Create %1").arg(ui.comboBox1->currentText());
         Gui::Application::Instance->activeDocument()->openCommand(prim.toUtf8());
         Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
         Gui::Application::Instance->activeDocument()->commitCommand();
@@ -167,7 +221,7 @@ void DlgPrimitives::accept()
     }
     catch (const Base::PyException& e) {
         QMessageBox::warning(this, tr("Create %1")
-            .arg(ui->comboBox1->currentText()), QString::fromLatin1(e.what()));
+            .arg(ui.comboBox1->currentText()), QString::fromLatin1(e.what()));
     }
 }
 
