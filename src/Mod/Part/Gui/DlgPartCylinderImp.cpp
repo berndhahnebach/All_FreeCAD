@@ -37,7 +37,7 @@ using namespace PartGui;
  *  TRUE to construct a modal dialog.
  */
 DlgPartCylinderImp::DlgPartCylinderImp(QWidget* parent, Qt::WFlags fl)
-  : LocationInterface(parent, fl)
+  : Gui::LocationInterface<Ui_DlgPartCylinder>(parent, fl)
 {
 }
 
