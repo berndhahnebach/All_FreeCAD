@@ -233,14 +233,26 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
         gp_Dir dir(Axis.getValue().x,
                    Axis.getValue().y,
                    Axis.getValue().z);
-        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(pnt,dir),
+        gp_Ax2 ax2(pnt,dir);
+        BRepPrimAPI_MakeSphere mkSphere(ax2,
                                         Radius2.getValue(), 
                                         Angle1.getValue()/180.0f*Standard_PI,
                                         Angle2.getValue()/180.0f*Standard_PI,
                                         Angle3.getValue()/180.0f*Standard_PI);
         Standard_Real scale = Radius1.getValue()/Radius2.getValue();
+        gp_Dir xDir = ax2.XDirection();
+        gp_Dir yDir = ax2.YDirection();
         gp_GTrsf mat;
-        mat.SetValue(1,1,scale);
+        mat.SetValue(1,1,xDir.X());
+        mat.SetValue(2,1,xDir.Y());
+        mat.SetValue(3,1,xDir.Z());
+        mat.SetValue(1,2,yDir.X());
+        mat.SetValue(2,2,yDir.Y());
+        mat.SetValue(3,2,yDir.Z());
+        mat.SetValue(1,3,dir.X()*scale);
+        mat.SetValue(2,3,dir.Y()*scale);
+        mat.SetValue(3,3,dir.Z()*scale);
+        //mat.SetValue(1,1,scale);
         BRepBuilderAPI_GTransform mkTrsf(mkSphere.Shape(), mat);
         TopoDS_Shape ResultShape = mkTrsf.Shape();
         this->Shape.setValue(ResultShape);
