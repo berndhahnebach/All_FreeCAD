@@ -1,5 +1,5 @@
-#SUBDIRS=Part Mesh Points Raytracing Image Drawing Complete Test TemplatePyMod
-SUBDIRS=Points Image Complete Test TemplatePyMod
+#SUBDIRS=Part Mesh Points Raytracing Image Drawing Complete Draft Test TemplatePyMod
+SUBDIRS=Points Image Complete Draft Test TemplatePyMod
 
 if GTS_LIBRARY_FILES
 SUBDIRS += Mesh
