@@ -18,7 +18,23 @@ nobase_data_DATA = \
 		draftlibs/dxfReader.py \
 		draftlibs/fcvec.py \
 		draftlibs/sdxf.py \
-		draftlibs/__init__.py
+		draftlibs/__init__.py \
+		icons/apply.svg \
+		icons/arc.svg \
+		icons/circle.svg \
+		icons/downgrade.svg \
+		icons/finish.svg \
+		icons/line.svg \
+		icons/lock.svg \
+		icons/move.svg \
+		icons/offset.svg \
+		icons/polyline.svg \
+		icons/preferences-Draft.svg \
+		icons/rectangle.svg \
+		icons/rotate.svg \
+		icons/text.svg \
+		icons/trimex.svg \
+		icons/upgrade.svg
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA)
