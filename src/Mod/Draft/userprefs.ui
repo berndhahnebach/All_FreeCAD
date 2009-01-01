@@ -223,6 +223,12 @@ If color mapping is choosed, you must choose a color mapping file containing a t
           <property name="text" >
            <string>Import layout objects</string>
           </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>dxflayout</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>Mod/Draft</cstring>
+          </property>
          </widget>
         </item>
        </layout>
