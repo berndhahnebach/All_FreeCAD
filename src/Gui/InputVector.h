@@ -79,9 +79,9 @@ public:
 
     Base::Vector3f getPosition() const
     {
-        return Base::Vector3f((float)xPos->value(),
-                              (float)yPos->value(),
-                              (float)zPos->value());
+        return Base::Vector3f((float)this->xPos->value(),
+                              (float)this->yPos->value(),
+                              (float)this->zPos->value());
     }
 
     Base::Vector3f getDirection() const
@@ -160,9 +160,9 @@ public:
 
     Base::Vector3f getPosition() const
     {
-        return Base::Vector3f((float)xPos->value(),
-                              (float)yPos->value(),
-                              (float)zPos->value());
+        return Base::Vector3f((float)this->xPos->value(),
+                              (float)this->yPos->value(),
+                              (float)this->zPos->value());
     }
 
     Base::Vector3f getDirection() const

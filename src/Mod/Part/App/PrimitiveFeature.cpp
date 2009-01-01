@@ -252,7 +252,6 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
         mat.SetValue(1,3,dir.X()*scale);
         mat.SetValue(2,3,dir.Y()*scale);
         mat.SetValue(3,3,dir.Z()*scale);
-        //mat.SetValue(1,1,scale);
         BRepBuilderAPI_GTransform mkTrsf(mkSphere.Shape(), mat);
         TopoDS_Shape ResultShape = mkTrsf.Shape();
         this->Shape.setValue(ResultShape);
