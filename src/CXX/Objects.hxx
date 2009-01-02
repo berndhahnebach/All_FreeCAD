@@ -1400,7 +1400,7 @@ namespace Py
             return seqref<T>(*this, 0);
         }
 
-        const T back () const
+        const T back() const
         {
             return getItem(size()-1);
         }
@@ -1413,14 +1413,14 @@ namespace Py
         void verify_length(size_type required_size) const
         {
             if (size() != required_size)
-            throw IndexError ("Unexpected SeqBase<T> length.");
+                throw IndexError ("Unexpected SeqBase<T> length.");
         }
 
         void verify_length(size_type min_size, size_type max_size) const
         {
             size_type n = size();
             if (n < min_size || n > max_size)
-            throw IndexError ("Unexpected SeqBase<T> length.");
+                throw IndexError ("Unexpected SeqBase<T> length.");
         }
 
         class iterator
@@ -1810,6 +1810,281 @@ namespace Py
         }
     };
 
+#ifdef PYCXX_PYTHON_2TO3
+    // String and Bytes compatible with Python3 version in 6.0.0 PyCXX
+    class Bytes;
+
+    class PYCXX_EXPORT String: public SeqBase<Char>
+    {
+    public:
+        virtual size_type capacity() const
+        {
+            return max_size();
+        }
+
+        explicit String( PyObject *pyob, bool owned = false)
+        : SeqBase<Char>( pyob, owned )
+        {
+            validate();
+        }
+
+        String( const Object& ob): SeqBase<Char>(ob)
+        {
+            validate();
+        }
+
+        String()
+            : SeqBase<Char>( PyString_FromStringAndSize( "", 0 ), true )
+        {
+            validate();
+        }
+
+        String( const std::string& v )
+            : SeqBase<Char>( PyString_FromStringAndSize( const_cast<char*>(v.data()),
+                static_cast<int>( v.length() ) ), true )
+        {
+            validate();
+        }
+
+        String( const char *s, const char *encoding, const char *error="strict" )
+            : SeqBase<Char>( PyUnicode_Decode( s, strlen( s ), encoding, error ), true )
+        {
+            validate();
+        }
+
+        String( const char *s, int len, const char *encoding, const char *error="strict" )
+            : SeqBase<Char>( PyUnicode_Decode( s, len, encoding, error ), true )
+        {
+            validate();
+        }
+
+        String( const std::string &s, const char *encoding, const char *error="strict" )
+            : SeqBase<Char>( PyUnicode_Decode( s.c_str(), s.length(), encoding, error ), true )
+        {
+            validate();
+        }
+
+        String( const std::string& v, std::string::size_type vsize )
+            : SeqBase<Char>(PyString_FromStringAndSize( const_cast<char*>(v.data()),
+                    static_cast<int>( vsize ) ), true)
+        {
+            validate();
+        }
+
+        String( const char *v, int vsize )
+            : SeqBase<Char>(PyString_FromStringAndSize( const_cast<char*>(v), vsize ), true )
+        {
+            validate();
+        }
+
+        String( const char* v )
+            : SeqBase<Char>( PyString_FromString( v ), true )
+        {
+            validate();
+        }
+
+        // Assignment acquires new ownership of pointer
+        String& operator= ( const Object& rhs )
+        {
+            return *this = *rhs;
+        }
+
+        String& operator= (PyObject* rhsp)
+        {
+            if( ptr() == rhsp )
+                return *this;
+            set (rhsp);
+            return *this;
+        }
+        // Membership
+        virtual bool accepts (PyObject *pyob) const
+        {
+            return pyob && (Py::_String_Check(pyob) || Py::_Unicode_Check(pyob));
+        }
+
+        // Assignment from C string
+        String& operator= (const std::string& v)
+        {
+            set( PyString_FromStringAndSize( const_cast<char*>( v.data() ),
+                    static_cast<int>( v.length() ) ), true );
+            return *this;
+        }
+        String& operator= (const unicodestring& v)
+        {
+            set( PyUnicode_FromUnicode( const_cast<Py_UNICODE*>( v.data() ),
+                    static_cast<int>( v.length() ) ), true );
+            return *this;
+        }
+
+
+        // Encode
+        Bytes encode( const char *encoding, const char *error="strict" ) const;
+
+        // Queries
+        virtual size_type size () const
+        {
+            if( isUnicode() )
+            {
+                return static_cast<size_type>( PyUnicode_GET_SIZE (ptr()) );
+            }
+            else
+            {
+                return static_cast<size_type>( PyString_Size (ptr()) );
+            }
+        }
+
+        operator std::string () const
+        {
+            return as_std_string( "utf-8" );
+        }
+
+        std::string as_std_string( const char *encoding, const char *error="strict" ) const;
+
+        unicodestring as_unicodestring() const
+        {
+            if( isUnicode() )
+            {
+                return unicodestring( PyUnicode_AS_UNICODE( ptr() ),
+                    static_cast<size_type>( PyUnicode_GET_SIZE( ptr() ) ) );
+            }
+            else
+            {
+                throw TypeError("can only return unicodestring from Unicode object");
+            }
+        }
+    };
+    class PYCXX_EXPORT Bytes: public SeqBase<Char>
+    {
+    public:
+        virtual size_type capacity() const
+        {
+            return max_size();
+        }
+
+        explicit Bytes (PyObject *pyob, bool owned = false): SeqBase<Char>(pyob, owned)
+        {
+            validate();
+        }
+
+        Bytes (const Object& ob): SeqBase<Char>(ob)
+        {
+            validate();
+        }
+
+        Bytes()
+        : SeqBase<Char>( PyString_FromStringAndSize( "", 0 ), true )
+        {
+            validate();
+        }
+
+        Bytes( const std::string& v )
+        : SeqBase<Char>( PyString_FromStringAndSize( const_cast<char*>(v.data()), static_cast<int>( v.length() ) ), true )
+        {
+            validate();
+        }
+
+        Bytes( const std::string& v, std::string::size_type vsize )
+        : SeqBase<Char>(PyString_FromStringAndSize( const_cast<char*>(v.data()), static_cast<int>( vsize ) ), true)
+        {
+            validate();
+        }
+
+        Bytes( const char *v, int vsize )
+        : SeqBase<Char>(PyString_FromStringAndSize( const_cast<char*>(v), vsize ), true )
+        {
+            validate();
+        }
+
+        Bytes( const char *v )
+        : SeqBase<Char>( PyString_FromString( v ), true )
+        {
+            validate();
+        }
+
+        // Assignment acquires new ownership of pointer
+        Bytes &operator= ( const Object& rhs )
+        {
+            return *this = *rhs;
+        }
+
+        Bytes &operator= (PyObject *rhsp)
+        {
+            if( ptr() == rhsp )
+                return *this;
+            set (rhsp);
+            return *this;
+        }
+        // Membership
+        virtual bool accepts( PyObject *pyob ) const
+        {
+            return pyob && (Py::_String_Check( pyob ) || Py::_Unicode_Check( pyob ));
+        }
+
+        // Assignment from C string
+        Bytes &operator= (const std::string& v)
+        {
+            set( PyString_FromStringAndSize( const_cast<char*>( v.data() ),
+                    static_cast<int>( v.length() ) ), true );
+            return *this;
+        }
+        Bytes &operator= (const unicodestring& v)
+        {
+            set( PyUnicode_FromUnicode( const_cast<Py_UNICODE*>( v.data() ),
+                    static_cast<int>( v.length() ) ), true );
+            return *this;
+        }
+
+        String decode( const char *encoding, const char *error="strict" )
+        {
+            return Object( PyString_AsDecodedObject( ptr(), encoding, error ) );
+        }
+
+        // Queries
+        virtual size_type size () const
+        {
+            if( isUnicode() )
+            {
+                return static_cast<size_type>( PyUnicode_GET_SIZE (ptr()) );
+            }
+            else
+            {
+                return static_cast<size_type>( PyString_Size (ptr()) );
+            }
+        }
+
+        operator std::string () const
+        {
+            return as_std_string();
+        }
+
+        std::string as_std_string() const
+        {
+            if( isUnicode() )
+            {
+                throw TypeError("cannot return std::string from Unicode object");
+            }
+            else
+            {
+                return std::string( PyString_AsString( ptr() ), static_cast<size_type>( PyString_Size( ptr() ) ) );
+            }
+        }
+
+        unicodestring as_unicodestring() const
+        {
+            if( isUnicode() )
+            {
+                return unicodestring( PyUnicode_AS_UNICODE( ptr() ),
+                    static_cast<size_type>( PyUnicode_GET_SIZE( ptr() ) ) );
+            }
+            else
+            {
+                throw TypeError("can only return unicodestring from Unicode object");
+            }
+        }
+    };
+
+#else
+    // original PyCXX 5.4.x version of String
     class PYCXX_EXPORT String: public SeqBase<Char>
     {
     public:
@@ -1913,16 +2188,16 @@ namespace Py
 
 
         // Encode
-        String encode( const char *encoding, const char *error="strict" )
+        String encode( const char *encoding, const char *error="strict" ) const
         {
             if( isUnicode() )
-        {
+            {
                 return String( PyUnicode_AsEncodedString( ptr(), encoding, error ) );
-        }
+            }
             else
-        {
+            {
                 return String( PyString_AsEncodedObject( ptr(), encoding, error ) );
-        }
+            }
         }
 
         String decode( const char *encoding, const char *error="strict" )
@@ -1951,28 +2226,31 @@ namespace Py
         std::string as_std_string() const
         {
             if( isUnicode() )
-        {
+            {
                 throw TypeError("cannot return std::string from Unicode object");
-        }
+            }
             else
-        {
+            {
                 return std::string( PyString_AsString( ptr() ), static_cast<size_type>( PyString_Size( ptr() ) ) );
+            }
         }
-        }
+
+        std::string as_std_string( const char *encoding, const char *error="strict" ) const;
 
         unicodestring as_unicodestring() const
         {
             if( isUnicode() )
-        {
+            {
                 return unicodestring( PyUnicode_AS_UNICODE( ptr() ),
                     static_cast<size_type>( PyUnicode_GET_SIZE( ptr() ) ) );
-        }
+            }
             else
-        {
+            {
                 throw TypeError("can only return unicodestring from Unicode object");
-        }
+            }
         }
     };
+#endif
 
     // ==================================================
     // class Tuple
@@ -2636,7 +2914,7 @@ namespace Py
             int             pos;    // index into the keys
 
         private:
-            const_iterator( MapBase<T>* m, List k, int p )
+            const_iterator( const MapBase<T>* m, List k, int p )
             : map( m )
             , keys( k )
             , pos( p )
@@ -2768,7 +3046,7 @@ namespace Py
         }
     };
 
-    class Callable: public Object
+    class PYCXX_EXPORT Callable: public Object
     {
     public:
         // Constructor
@@ -2821,7 +3099,7 @@ namespace Py
         }
     };
 
-    class Module: public Object
+    class PYCXX_EXPORT Module: public Object
     {
     public:
         explicit Module (PyObject* pyob, bool owned = false): Object (pyob, owned)
