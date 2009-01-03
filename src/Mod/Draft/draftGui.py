@@ -62,9 +62,9 @@ class toolBar:
 #---------------------------------------------------------------------------
 
 			def setupUi(self, draftToolbar):
-				params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-				paramcolor = params.GetUnsigned("color")>>8
-				paramlinewidth = params.GetInt("linewidth")
+				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+				paramcolor = self.params.GetUnsigned("color")>>8
+				paramlinewidth = self.params.GetInt("linewidth")
 
 				icondir = self.findicons()
 				draftToolbar.setObjectName("draftToolbar")
@@ -357,21 +357,23 @@ class toolBar:
 
 
 #---------------------------------------------------------------------------
-# Check functions
+# Processing functions
 #---------------------------------------------------------------------------
 
 			def findicons(self):
+				"checks if Draft is installed system-wide or user-wide"
 				path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/icons/"
 				path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/icons/"
 				if os.path.exists(path1): return path1
 				else: return path2
 					
 			def getcol(self):
+				"opens a color picker dialog"
 				self.color=QtGui.QColorDialog.getColor()
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
-				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
-					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",self.color.rgb()<<8)
+				if self.params.GetBool("saveonexit"):
+					self.params.SetUnsigned("color",self.color.rgb()<<8)
 				r = float(self.color.red()/255.0)
 				g = float(self.color.green()/255.0)
 				b = float(self.color.blue()/255.0)
@@ -379,8 +381,8 @@ class toolBar:
 				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineColor = col
 					
 			def setwidth(self,val):
-				if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("saveonexit"):
-					FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("linewidth",int(val))
+				if self.params.GetBool("saveonexit"):
+					self.params.SetInt("linewidth",int(val))
 				lw = float(val)
 				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineWidth = lw
 
@@ -447,6 +449,10 @@ class toolBar:
 				self.sourceCmd.undolast()
 
 			def checkSpecialChars(self,txt):
+				'''
+				checks for special characters in the entered coords that mut be
+				treated as shortcuts
+				'''
 				if txt.endsWith(" "):
 					self.isRelative.setChecked(not self.isRelative.isChecked())
 					for i in [self.xValue,self.yValue,self.zValue]:
@@ -455,11 +461,42 @@ class toolBar:
 					if self.finishButton.isVisible(): self.finish()
 				if txt.endsWith("c"):
 					if self.closeButton.isVisible(): self.closeLine()
-					elif self.isCopy.isVisible(): self.isCopy.setChecked(not self.isCopy.isChecked())
+					elif self.isCopy.isVisible():
+						self.isCopy.setChecked(not self.isCopy.isChecked())
 
 			def sendText(self):
+				"this function sends the entered text to the active draft command"
 				self.sourceCmd.text=str(self.textValue.text())
 				self.sourceCmd.createObject()
+
+			def displayPoint(self, point, last=None):
+				"this function displays the passed coords in the x, y, and z widgets"
+				dp = point
+				if self.isRelative.isChecked() and (last != None):
+					dp = FreeCAD.Vector(point.x-last.x, point.y-last.y, point.z-last.z)
+				self.xValue.setText("%.2f" % dp.x)
+				self.yValue.setText("%.2f" % dp.y)
+				if self.zValue.isEnabled(): self.zValue.setText("%.2f" % dp.z)
+				if self.xValue.isEnabled():
+					self.xValue.setFocus()
+					self.xValue.selectAll()
+				else:
+					self.yValue.setFocus()
+					self.yValue.selectAll()
+
+			def getDefaultColor(self,type):
+				"gets color from the preferences or toolbar"
+				if type == "snap":
+					color = self.params.GetUnsigned("snapcolor")
+					r = ((color>>24)&0xFF)/255
+					g = ((color>>16)&0xFF)/255
+					b = ((color>>8)&0xFF)/255
+				elif type == "ui":
+					r = float(self.color.red()/255.0)
+					g = float(self.color.green()/255.0)
+					b = float(self.color.blue()/255.0)
+				else: print "error: couldn't get a color for ",type," type."
+				return (r,g,b)
 
 #---------------------------------------------------------------------------
 # Initialization

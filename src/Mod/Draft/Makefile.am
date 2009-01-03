@@ -17,7 +17,7 @@ nobase_data_DATA = \
 		draftlibs/dxfLibrary.py \
 		draftlibs/dxfReader.py \
 		draftlibs/fcvec.py \
-		draftlibs/sdxf.py \
+		draftlibs/fcgeo.py \
 		draftlibs/__init__.py \
 		icons/apply.svg \
 		icons/arc.svg \

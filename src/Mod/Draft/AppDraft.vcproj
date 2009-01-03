@@ -463,7 +463,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\draftlibs\sdxf.py"
+					RelativePath=".\draftlibs\fcgeo.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"

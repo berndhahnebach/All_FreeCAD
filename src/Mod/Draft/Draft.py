@@ -22,7 +22,7 @@
 __title__="FreeCAD Draft Workbench"
 __author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum"
 __url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 '''
 General description:
@@ -60,20 +60,26 @@ How it works / how to extend:
 	callback watches mouse events, the keyboard is being watched by the command bar.
 
 
-Todo:
+Todo list:
 
-	- upgrade offset, dxf export and trimex to wires containing arcs
-	- support unicode in texts
+	- upgrade trimex to wires containing arcs
+	- support unicode and SoText3 in texts
+	- SVG export
+	- OCA import/export
+	- dimensions
 '''
 
 # import FreeCAD modules
 import FreeCAD, FreeCADGui, Part, math, sys
-sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # hack for linux
+sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base
 from pivy import coin
 from draftlibs import fcvec
+from draftlibs import fcgeo
 
-snapStack=[] #storing two last snapped objects, so we can check for intersection
+# Constants
+
+snapStack = [] #storing two last snapped objects, so we can check for intersection
 
 #---------------------------------------------------------------------------
 # General common functions used by the constructors
@@ -125,10 +131,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 				snapArray.append([i.Point,0,i.Point])
 			for j in ob.Shape.Edges:
 				if (isinstance (j.Curve,Part.Line)):					
-					p1 = j.Vertexes[0].Point
-					p2 = j.Vertexes[1].Point
-					halfedge = fcvec.scale(fcvec.sub(p2,p1),.5)
-					midpoint = fcvec.add(p1,halfedge)
+					midpoint = fcgeo.findMidpoint(j)
 					snapArray.append([midpoint,1,midpoint])
 					if (len(target.node) > 0):
 						last = target.node[len(target.node)-1]
@@ -146,7 +149,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 						last = snapStack[1]
 						if (last.Type == "Part::Feature"):
 							for k in last.Shape.Edges:
-								pt = findIntersection(j,k)
+								pt = fcgeo.findIntersection(j,k)
 								if pt:
 									for p in pt:
 										snapArray.append([p,3,p])
@@ -188,114 +191,6 @@ def snapPoint (target,point,cursor,ctrl=False):
 			target.snap.switch.whichChild = 0
 			target.snap.isSnapping = True
 		return newpoint[2]
-
-def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
-	'''
-	finds intersection point between 2 edges, if any. Currently only works in 2D
-	if infinite1 is True, edge1 will be considered infinite
-	if infinite2 is True, edge2 will be considered infinite
-	algorithm from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-	'''
-	if (isinstance(edge1.Curve,Part.Line)) and (isinstance(edge2.Curve,Part.Line)):
-		# two lines
-		print "debug: 2 lines"
-		p1 = edge1.Vertexes[0].Point
-		p2 = edge1.Vertexes[1].Point
-		p3 = edge2.Vertexes[0].Point
-		p4 = edge2.Vertexes[1].Point
-		numa = (p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x)
-		numb = (p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x)
-		denom = (p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y)
-		if (denom == 0): return None
-		ua = numa/denom
-		ub = numb/denom
-		if not infinite1:
-			if (ua > 1) or (ua < 0): return None
-		if not infinite2:
-			if (ub > 1) or (ub < 0): return None
-		x = p1.x + ua*(p2.x-p1.x)
-		y = p1.y + ua*(p2.y-p1.y)
-		return [FreeCAD.Vector(x,y,p1.z)]
-
-	elif (isinstance(edge1.Curve,Part.Circle)) and (isinstance(edge2.Curve,Part.Circle)):
-		# two curves
-		print "debug: 2 curves"
-		c1 = edge1.Curve.Center
-		c2 = edge2.Curve.Center
-		r1 = edge1.Curve.Radius
-		r2 = edge2.Curve.Radius
-		d = fcvec.new(c1,c2)
-		dist = d.Length
-		if (dist < (r1+r2)):
-			print "no intersection"
-			return None # no intersection
-		elif (d == 0):
-			print "circles are equals"
-			return None # circles are equals
-		elif (d < abs(r1-r2)):
-			print "one circle inside the other"
-			return None # one circle is inside the other
-		elif (dist == (r1+r2)):
-			print "one int point"
-			return [fcvec.scale(fcvec.normalized(d),r1)]
-		else:
-			print "2 int points"
-			a = ((r1*r1)-(r2*r2)+(dist*dist))/(2.0*dist)
-			p2 = FreeCAD.Vector(c1.x+(d.x*a/dist),c1.y+(d.y*a/dist),c1.z)
-			h = math.sqrt((r1*r1)-(a*a))
-			rx = -d.y*(h/dist)
-			ry = d.x*(h/dist)
-			intpnts = []
-			intpnts.append(FreeCAD.Vector(p2.x+rx,p2.y+ry,c1.z))
-			intpnts.append(FreeCAD.Vector(p2.x-rx,p2.y-ry,c1.z))
-			return intpnts
-			       
-			  
-
-	else:
-		# one curve and one line
-		print "debug: 1 line & 1 curve"
-		if (isinstance(edge1.Curve,Part.Circle)):
-			c = edge1.Curve.Center
-			r = edge1.Curve.Radius
-			p1 = edge2.Vertexes[0].Point
-			p2 = edge2.Vertexes[1].Point
-			
-		else:
-			c = edge2.Curve.Center
-			r = edge2.Curve.Radius
-			p1 = edge1.Vertexes[0].Point
-			p2 = edge1.Vertexes[1].Point
-		intpnts = []
-		num = (c.x-p1.x)*(p2.x-p1.x)+(c.y-p1.y)*(p2.y-p1.y)
-		denom = (p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y)
-		if denom == 0: return
-		u = num / denom
-		xp = p1.x + u*(p2.x-p1.x)
-		yp = p1.y + u*(p2.y-p1.y)
-		a = (p2.x - p1.x)**2 + (p2.y - p1.y)**2
-		b = 2*((p2.x-p1.x)*(p1.x-c.x) + (p2.y-p1.y)*(p1.y-c.y))
-		c = c.x**2+c.y**2+p1.x**2+p1.y**2-2*(c.x*p1.x+c.y*p1.y)-r**2
-		q = b**2 - 4*a*c
-		if q == 0:
-			intpnts.append(FreeCAD.Vector(xp,yp,p1.z))
-		elif q:
-			u1 = (-b+math.sqrt(abs(q)))/(2*a)
-			u2 = (-b-math.sqrt(abs(q)))/(2*a)
-			intpnts.append(FreeCAD.Vector((p1.x + u1*(p2.x-p1.x)),(p1.y + u1*(p2.y-p1.y)),p1.z))
-			intpnts.append(FreeCAD.Vector((p1.x + u2*(p2.x-p1.x)), (p1.y + u2*(p2.y-p1.y)),p1.z))
-		return intpnts
-
-def findClosest(basepoint,pointslist):
-	"in a list of 3d points, finds the closest point to the base point"
-	if not pointslist: return None
-	smallest = 100000
-	for n in range(len(pointslist)):
-		new = fcvec.new(basepoint,pointslist[n]).Length
-		if new < smallest:
-			smallest = new
-			npoint = n
-	return npoint
 
 def constrainPoint (target,point):
 	'''
@@ -348,137 +243,17 @@ def formatObject(target,origin=None):
 			obrep.LineColor = matchrep.LineColor
 			obrep.ShapeColor = matchrep.ShapeColor
 
-def displayPoint(point, last=None):
-	"this sends the current point info to the Toolbar"
-	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-	dPoint = point
-	if ui.isRelative.isChecked():
-		if last != None: dPoint = fcvec.sub(point,last)
-	ui.xValue.setText("%.2f" % dPoint.x)
-	ui.yValue.setText("%.2f" % dPoint.y)
-	if ui.zValue.isEnabled(): ui.zValue.setText("%.2f" % dPoint.z)
-	if ui.xValue.isEnabled():
-		ui.xValue.setFocus()
-		ui.xValue.selectAll()
-	else:
-		ui.yValue.setFocus()
-		ui.yValue.selectAll()
-
 def select(object):
-	"deselects everything and selects the passed object"
+	"deselects everything and selects only the passed object"
 	FreeCADGui.Selection.clearSelection()
 	FreeCADGui.Selection.addSelection(object)
-
-def concatenate(shape):
-	"turns several faces into one"
-	edges = getBoundary(shape)
-	edges = sortEdges(edges) 
-	try:
-		wire=Part.Wire(edges)
-		face=Part.Face(wire)
-	except:
-		print "draft: Couldn't join faces into one"
-		return(shape)
-	else:
-		if not wire.isClosed():	return(wire)
-		else: return(face)
-
-def getBoundary(shape):
-	# make a lookup-table where we get the number of occurrences
-	# to each edge in the fused face
-	lut={}
-	for f in shape.Faces:
-		for e in f.Edges:
-			hc= e.hashCode()
-			if lut.has_key(hc): lut[hc]=lut[hc]+1
-			else: lut[hc]=1
-	# filter out the edges shared by more than one sub-face
-	bound=[]
-	for e in shape.Edges:
-		if lut[e.hashCode()] == 1: bound.append(e)
-	return bound
-
-def sortEdges(edgeslist):
-	"this function sorts edges so they are all in following order and in the right direction"
-	if (len(edgeslist) < 2): return edgeslist
-	edgeslist = Part.__sortEdges__(edgeslist)
-	edges = []
-	for e in range(len(edgeslist)-1):
-		edge = edgeslist[e]
-		last = edge.Vertexes[-1].Point
-		if (fcvec.equals(last,edgeslist[e+1].Vertexes[0].Point)) or (fcvec.equals(last,edgeslist[e+1].Vertexes[-1].Point)):
-			edges.append(edge)
-		else:
-			if (isinstance(edge.Curve,Part.Line)):
-				edges.append(Part.Line(last,edge.Vertexes[0].Point).toShape())
-			else:				
-				edges.append(Part.Arc(last,calcMidPoint(edge),edge.Vertexes[0].Point).toShape())
-	edge = edgeslist[-1]
-	first = edge.Vertexes[0].Point
-	if (fcvec.equals(first,edgeslist[-2].Vertexes[-1].Point)):
-		edges.append(edge)
-	else:
-		if (isinstance(edge.Curve,Part.Line)):
-			edges.append(Part.Line(edge.Vertexes[-1].Point,first).toShape())
-		else:
-			edges.append(Part.Arc(edge.Vertexes[-1].Point,calcMidPoint(edge),first).toShape())
-	return edges
-
-def calcMidPoint(edge):
-	"calculates the midpoint of an an arc segment"
-	if not isinstance(edge.Curve,Part.Circle): return None
-	first = edge.Vertexes[0].Point
-	last = edge.Vertexes[-1].Point
-	center = edge.Curve.Center
-	radius = edge.Curve.Radius
-	chord = fcvec.new(first,last)
-	perp = fcvec.crossproduct(chord)
-	ray = fcvec.new(center,first)
-	rest = fcvec.project(ray,perp)
-	sagitta = radius - rest.Length
-	startpoint = fcvec.add(first,fcvec.scale(chord,0.5))
-	endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
-	return fcvec.add(startpoint,endpoint)
-
-def complexity(obj):
-	"tests given object for shape complexity"
-	shape = obj.Shape
-	if shape.Faces:
-		for e in shape.Edges:
-			if (isinstance(e.Curve,Part.Circle)): return 8 # faces & closed wires w/ arcs
-		return 7 # contains faces and closed wires
-	if shape.Wires:
-		for e in shape.Edges:
-			if (isinstance(e.Curve,Part.Circle)): return 6 # contains wires w/ arcs
-		for w in shape.Wires:
-			if w.isClosed(): return 5 # contains closed wires
-		return 4 # open wire with no arcs
-	if (isinstance(shape.Edges[0].Curve,Part.Circle)):
-		if len(shape.Vertexes) == 1:
-			return 3 # contains closed circles
-		return 2 # contains arcs
-	return 1 # then, this is a line!
-
-def getUiColor(type):
-	"gets color from the preferences or toolbar"
-	if type == "snap":
-		snapcolor = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("snapcolor")
-		r = ((snapcolor>>24)&0xFF)/255
-		g = ((snapcolor>>16)&0xFF)/255
-		b = ((snapcolor>>8)&0xFF)/255
-		return (r,g,b)
-	elif type == "ui":
-		ui= FreeCADGui.activeWorkbench().draftToolBar.ui
-		r = float(ui.color.red()/255.0)
-		g = float(ui.color.green()/255.0)
-		b = float(ui.color.blue()/255.0)
-		return (r,g,b)
 
 def selectObject(arg):
 	"this is a scene even handler, to be called from the tools when they need to select an object"
 	if (arg["Type"] == "SoKeyboardEvent"):
 		if (arg["Key"] == "ESCAPE"):
 			    FreeCADGui.activeWorkbench().activeDraftCommand.finish()
+			    #TODO : this part raises a coin3D warning about scene traversal, to be fixed.
 	if (arg["Type"] == "SoMouseButtonEvent"):
 		if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 			selection = FreeCADGui.Selection.getSelection()
@@ -493,8 +268,9 @@ def selectObject(arg):
 class snapTracker:
 	"a class to create a snap marker symbol, used by the functions that support snapping"
 	def __init__(self):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		color = coin.SoBaseColor()
-		color.rgb = getUiColor("snap")
+		color.rgb = self.ui.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -516,8 +292,9 @@ class snapTracker:
 class lineTracker:
 	"a class to create a tracking line used by the functions that need it"
 	def __init__(self,dotted=False):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		color = coin.SoBaseColor()
-		color.rgb = getUiColor("ui")
+		color.rgb = self.ui.getDefaultColor("ui")
 		line = coin.SoLineSet()
 		line.numVertices.setValue(2)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -557,8 +334,9 @@ class lineTracker:
 class rectangleTracker:
 	"a class to create a tracking line used by the functions that need it"
 	def __init__(self):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		color = coin.SoBaseColor()
-		color.rgb = getUiColor("ui")
+		color.rgb = self.ui.getDefaultColor("ui")
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -596,8 +374,9 @@ class rectangleTracker:
 class arcTracker:
 	"a class to create a tracking arc/circle, used by the functions that need it"
 	def __init__(self):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		color = coin.SoBaseColor()
-		color.rgb = getUiColor("ui")
+		color.rgb = self.ui.getDefaultColor("ui")
 		self.coords = coin.SoCoordinate4()
 		trackpts = [[1,0,0,1],[0.707107,0.707107,0,0.707107],[0,1,0,1],
 			[-0.707107,0.707107,0,0.707107],[-1,0,0,1],[-0.707107,-0.707107,0,0.707107],
@@ -834,8 +613,8 @@ class line:
 				self.constraintrack.p2(ctrlPoint)
 				self.constraintrack.on()
 			else: self.constraintrack.off()
-			if (len(self.node)>0): displayPoint(point, self.node[-1])
-			else: displayPoint(point)
+			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
+			else: self.ui.displayPoint(point)
 
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -1035,8 +814,8 @@ class rectangle:
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			if (len(self.node)>0): displayPoint(point, self.node[-1])
-			else: displayPoint(point)
+			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
+			else: self.ui.displayPoint(point)
 			self.rect.update(point)
 
 		elif (arg["Type"] == "SoMouseButtonEvent"):
@@ -1140,7 +919,7 @@ class arc:
 				self.constrain = None
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 			if (self.step == 0):
-				displayPoint(point)
+				self.ui.displayPoint(point)
 			elif (self.step == 1):
 				rad = fcvec.dist(point,self.center)
 				self.ui.radiusValue.setText("%.2f" % rad)
@@ -1346,7 +1125,7 @@ class annotation:
 			FreeCAD.Console.PrintMessage("Pick location point:\n")
 
 	def finish(self,closed=False):
-		"terminates the operation and closes the poly if asked"
+		"terminates the operation"
 		self.node=[]
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
@@ -1372,7 +1151,7 @@ class annotation:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			displayPoint(point)
+			self.ui.displayPoint(point)
 
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -1501,8 +1280,8 @@ class move:
 				last = self.node[len(self.node)-1]
 				delta = fcvec.sub(point,last)
 				self.ghost.trans.translation.setValue([delta.x,delta.y,delta.z])
-				displayPoint(point, self.node[-1])
-			else: displayPoint(point)
+				self.ui.displayPoint(point, self.node[-1])
+			else: self.ui.displayPoint(point)
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -1692,7 +1471,7 @@ class rotate:
 			else:
 				self.constrain = None
 			if (self.step == 0):
-				displayPoint(point)
+				self.ui.displayPoint(point)
 			elif (self.step == 1):
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0): angle = math.asin((point.y-self.center.y)/currentrad)
@@ -1887,14 +1666,14 @@ class offset:
 
 		self.faces = False
 		self.edges = []
-		c = complexity(self.sel)	
+		c = fcgeo.complexity(self.sel)	
 		if (c >= 7): 
-			self.edges = getBoundary(self.sel.Shape)
+			self.edges = fcgeo.getBoundary(self.sel.Shape)
 			self.faces = True
-			self.edges = sortEdges(self.edges)
+			self.edges = fcgeo.sortEdges(self.edges)
 		elif (c >=4): 
 			self.edges = self.sel.Shape.Wires[0].Edges
-			self.edges = sortEdges(self.edges)
+			self.edges = fcgeo.sortEdges(self.edges)
 		else: self.edges = self.sel.Shape.Edges	
 		self.ghost = []
 		for e in self.edges:
@@ -1923,12 +1702,12 @@ class offset:
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 			self.node = [point]
 			if (arg["ShiftDown"]) and self.constrainSeg:
-				dist = self.findDistance(point, self.constrainSeg[1])
+				dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
 				self.constraintrack.p1(self.edges[self.constrainSeg[1]].Vertexes[0].Point)
 				self.constraintrack.p2(fcvec.add(point,dist[0]))
 				self.constraintrack.on()
 			else:
-				dist = self.findDistance(point)
+				dist = fcgeo.findPerpendicular(point,self.edges)
 				self.constraintrack.off()
 			if dist:
 				self.constrainSeg = dist
@@ -1961,9 +1740,9 @@ class offset:
 				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 				self.node = [point]
 				if (arg["ShiftDown"]) and self.constrainSeg:
-					dist = self.findDistance(point, self.constrainSeg[1])
+					dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
 				else:
-					dist = self.findDistance(point)
+					dist = fcgeo.findPerpendicular(point,self.edges)
 				if dist:
 					newedges = self.redraw(dist,True)
 					targetOb.Shape = Part.Wire(newedges)
@@ -1971,170 +1750,89 @@ class offset:
 				self.finish()
 
 
-	def findDistance(self,point,currentSeg=None):
-		"finds the shortest distance between mouse cursor and selected object"
-		if (currentSeg == None):
-			valid = None
-			for edge in self.edges:
-				if (isinstance (edge.Curve,Part.Line)):
-					ve1 = edge.Vertexes[0].Point
-					ve2 = edge.Vertexes[1].Point
-					segment = fcvec.new(ve1,ve2)
-					perp = fcvec.crossproduct(segment)
-					chord = fcvec.new(point,ve1)
-					dist = fcvec.project(chord,perp)
-					newpoint = fcvec.add(point,dist)
-					if (dist.Length != 0):
-						s1 = fcvec.new(ve1,newpoint)
-						s2 = fcvec.new(ve2,newpoint)
-						if (s1.Length <= segment.Length) and (s2.Length <= segment.Length):
-							if not valid:
-								valid = [dist,self.edges.index(edge)]
-							else:
-								if (dist.Length < valid[0].Length):
-									valid = [dist,self.edges.index(edge)]
-				elif (isinstance (edge.Curve,Part.Circle)):
-					ve1 = edge.Vertexes[0].Point
-					if (len(edge.Vertexes) > 1): ve2 = edge.Vertexes[-1].Point
-					else: ve2 = None
-					center=edge.Curve.Center
-					segment = fcvec.new(point,center)
-					ratio=(segment.Length-edge.Curve.Radius)/segment.Length
-					dist = fcvec.scale(segment,ratio)
-					newpoint = fcvec.add(point,dist)
-					if (dist.Length != 0):
-						if ve2:
-							ang1=fcvec.angle(fcvec.new(center,ve1))
-							ang2=fcvec.angle(fcvec.new(center,ve2))
-							angpt=fcvec.angle(fcvec.new(center,newpoint))
-							if (((angpt <= ang2) and (angpt >= ang1)) or ((angpt <= ang1) and (angpt >= ang2))):
-								if not valid:
-									valid = [dist,self.edges.index(edge)]
-								else:
-									if (dist.Length < valid[0].Length):
-										valid = [dist,self.edges.index(edge)]
-						else:
-							if not valid:
-								valid = [dist,self.edges.index(edge)]
-							else:
-								if (dist.Length < valid[0].Length):
-									valid = [dist,self.edges.index(edge)]
-			return valid
-		else:
-			if (isinstance (self.edges[currentSeg].Curve,Part.Line)):
-				ve1 = self.edges[currentSeg].Vertexes[0].Point
-				ve2 = self.edges[currentSeg].Vertexes[1].Point
-				segment = fcvec.new(ve1,ve2)
-				perp = fcvec.crossproduct(segment)
-				chord = fcvec.new(point,ve1)
-				dist = fcvec.project(chord,perp)
-				if (dist != 0): return [dist,currentSeg]
-				else: return None
-			elif (isinstance (self.edges[currentSeg].Curve,Part.Circle)):
-				center=self.edges[currentSeg].Curve.Center
-				segment = fcvec.new(point,center)
-				ratio=(segment.Length-self.edges[currentSeg].Curve.Radius)/segment.Length
-				dist = fcvec.scale(segment,ratio)
-				if (dist != 0): return [dist,currentSeg]
-				else: return None
 
 
 	def redraw(self,dist,real=False):
-		"offsets the ghost to the given distance"
+		"offsets the ghost to the given distance. if real=True, the shape itself will be redrawn too"
 		closed = Part.Wire(self.edges).isClosed()
-		baseOffset = fcvec.neg(dist[0])
+		offsetVec = fcvec.neg(dist[0])
 		if real: newedges=[]
-		if (isinstance(self.edges[dist[1]].Curve,Part.Line)):
-			baseSeg = fcvec.new(self.edges[dist[1]].Vertexes[0].Point,self.edges[dist[1]].Vertexes[-1].Point)
+
+		#finding the base vector, which is the segment at base of the offset vector
+		base = self.edges[dist[1]]
+		if (isinstance(base.Curve,Part.Line)):
+			baseVec = fcgeo.vec(base)
 		else:
-			baseSeg = fcvec.crossproduct(baseOffset)
-			if fcvec.new(self.edges[dist[1]].Curve.Center,self.node[0]).Length > self.edges[dist[1]].Curve.Radius:
-				baseSeg = fcvec.neg(baseSeg)
+			baseVec = fcvec.crossproduct(offsetVec)
+			if fcvec.new(base.Curve.Center,self.node[0]).Length > base.Curve.Radius:
+				baseVec = fcvec.neg(baseVec)
+
+		# offsetting the first vertex
+		edge = self.edges[0]
+		if closed and (len(self.edges)>1): prev = self.edges[-1]
+		else: prev = None
+		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
+		else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
+		angle = fcvec.angle(baseVec,perp)
+		offset1 = fcvec.rotate(offsetVec,angle)
+		offedge1 = fcgeo.offset(edge,offset1)
+		if prev:
+			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
+			else: perp = fcvec.crossproduct(fcvec.new(prev.Vertexes[0].Point,prev.Curve.Center))
+			angle = fcvec.angle(baseVec,perp)
+			offset2 = fcvec.rotate(offsetVec,angle)
+			offedge2 = fcgeo.offset(prev,offset2)
+			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
+			first = inter[fcgeo.findClosest(edge.Vertexes[0].Point,inter)]
+		else: first = fcvec.add(edge.Vertexes[0].Point,offset1)
+					
+		# iterating throught edges, offsetting the last vertex
 		for i in range(len(self.edges)):
 			edge = self.edges[i]
-			currentSeg = fcvec.new(edge.Vertexes[0].Point,edge.Vertexes[-1].Point)
-			if (i < len(self.edges)-1):
-				nextSeg = fcvec.new(self.edges[i+1].Vertexes[0].Point,self.edges[i+1].Vertexes[-1].Point)
+			if (i < len(self.edges)-1): next = self.edges[i+1]
 			else:
-				if closed: nextSeg = fcvec.new(self.edges[0].Vertexes[0].Point,self.edges[0].Vertexes[-1].Point)
-				else: nextSeg = None
-			if (i > 0): prevSeg = fcvec.new(self.edges[i-1].Vertexes[0].Point,self.edges[i-1].Vertexes[-1].Point)
-			else: 
-				if closed: prevSeg = fcvec.new(self.edges[-1].Vertexes[0].Point,self.edges[-1].Vertexes[-1].Point)
-				else: prevSeg = None
-
+				if closed and (len(self.edges)>1): next = self.edges[0]
+				else: next = None
+			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
+			else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
+			angle = fcvec.angle(baseVec,perp)
+			offset1 = fcvec.rotate(offsetVec,angle)
+			offedge1 = fcgeo.offset(edge,offset1)
+			if next:
+				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
+				else: perp = fcvec.crossproduct(fcvec.new(next.Vertexes[0].Point,next.Curve.Center))
+				angle = fcvec.angle(baseVec,perp)
+				offset2 = fcvec.rotate(offsetVec,angle)
+				offedge2 = fcgeo.offset(next,offset2)
+				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
+				last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
+			else: last = fcvec.add(edge.Vertexes[-1].Point,offset1)
+			
 			if isinstance(edge.Curve,Part.Line):
-				currentAngle = fcvec.angle(baseSeg,currentSeg)
-				currentOffset = fcvec.rotate(baseOffset,currentAngle)
-				if prevSeg:
-					angle = abs(fcvec.angle(prevSeg,currentSeg))
-					if ((currentSeg.x * prevSeg.y - currentSeg.y * prevSeg.x) < 0): angle = -angle
-					delta = (currentOffset.Length/math.cos(angle/2))/currentOffset.Length
-					vertOffset = fcvec.rotate(currentOffset,angle/2)
-					v1 = fcvec.add(edge.Vertexes[0].Point,fcvec.scale(vertOffset,delta))
-				else:
-					v1 = fcvec.add(edge.Vertexes[0].Point,currentOffset)
-				self.ghost[i].coords.point.set1Value(0,v1.x,v1.y,v1.z)
-				if nextSeg:
-					angle = abs(fcvec.angle(currentSeg,nextSeg))
-					if ((currentSeg.x * nextSeg.y - currentSeg.y * nextSeg.x) < 0): angle = -angle
-					delta = (currentOffset.Length/math.cos(angle/2))/currentOffset.Length
-					vertOffset = fcvec.rotate(currentOffset,angle/2)
-					v2 = fcvec.add(edge.Vertexes[-1].Point,fcvec.scale(vertOffset,delta))
-				else:
-					v2 = fcvec.add(edge.Vertexes[-1].Point,currentOffset)
-				self.ghost[i].coords.point.set1Value(1,v2.x,v2.y,v2.z)
-				if real: newedges.append(Part.Line(v1,v2).toShape())
+				self.ghost[i].coords.point.set1Value(0,first.x,first.y,first.z)
+				self.ghost[i].coords.point.set1Value(1,last.x,last.y,last.z)
+				if real: newedges.append(Part.Line(first,last).toShape())
 			else:
 				center = edge.Curve.Center
-				if (len(edge.Vertexes) > 1):
-					ve1 = edge.Vertexes[0].Point
-					ve2 = edge.Vertexes[-1].Point
-					ve3 = calcMidPoint(edge)
-					currentAngle = fcvec.angle(baseSeg,fcvec.new(ve1,ve2))
-					currentOffset = fcvec.rotate(baseOffset,currentAngle)
-					rad = fcvec.add(fcvec.new(center,ve3),currentOffset).Length
-
-					if prevSeg:
-						if isinstance(self.edges[i-1].Curve,Part.Line):
-							startPoint = self.edges[i-1].Vertexes[0].Point
-							prevAngle = fcvec.angle(baseSeg,prevSeg)
-							prevOffset = fcvec.rotate(baseOffset,currentAngle)
-							ray = fcvec.new(ve1,center)
-							extensionVec = fcvec.project(fcvec.neg(ray),prevSeg)
-							offsetVec = fcvec.project(ray,prevOffset)
-							ratio = 1-offsetVec.Length/fcvec.add(offsetVec,prevOffset).Length
-							extensionVec = fcvec.scale(extensionVec,ratio)
-							ve1 = fcvec.add(fcvec.add(ve1,extensionVec),prevOffset)
-
-					ang1 = -fcvec.angle(fcvec.new(center,ve1))
-
-					if nextSeg: pass
-
-					ang2 = -fcvec.angle(fcvec.new(center,ve2))
-
+				rad = offedge1.Curve.Radius
+				if len(edge.Vertexes) > 1:
+					chord = fcvec.new(first,last)
+					perp = fcvec.crossproduct(chord)
+					scaledperp = fcvec.scale(fcvec.normalized(perp),rad)
+					midpoint = fcvec.add(center,scaledperp)
+					ang1=fcvec.angle(fcvec.new(center,first))
+					ang2=fcvec.angle(fcvec.new(center,last))
 					if ang1 > ang2: ang1,ang2 = ang2,ang1
-					self.ghost[i].update(ang2-ang1)
-					self.ghost[i].trans.rotation.setValue(coin.SbVec3f(0,0,1),ang1)
-
-					
-				else: rad = fcvec.new(center,self.node[0]).Length
+					self.ghost[i].update(ang1-ang2)
+					self.ghost[i].trans.rotation.setValue(coin.SbVec3f(0,0,1),-ang1)
 				self.ghost[i].trans.translation.setValue([center.x,center.y,center.z])
 				self.ghost[i].trans.scaleFactor.setValue([rad,rad,rad])
-
 				if real: 
 					if (len(edge.Vertexes) > 1):
-						scale = rad/edge.Curve.Radius
-						v1 = fcvec.scale(fcvec.new(center,ve1),scale)
-						v2 = fcvec.scale(fcvec.new(center,ve2),scale)
-						v3 = fcvec.scale(fcvec.new(center,ve3),scale)
-						p1 = fcvec.add(center,v1)
-						p2 = fcvec.add(center,v2)
-						p3 = fcvec.add(center,v3)
-						newedges.append(Part.Arc(p1,p3,p2).toShape())
+						newedges.append(Part.Arc(first,midpoint,last).toShape())
 					else:
 						newedges.append(Part.Circle(center,FreeCAD.Vector(0,0,1),rad).toShape())
-
+			first = last
 		if real: return newedges
 				
 	def numericRadius(self,scale):
@@ -2150,17 +1848,8 @@ class offset:
 			newedges = self.redraw([scaledOffset,self.constrainSeg[1]],True)
 			targetOb.Shape = Part.Wire(newedges)
 			self.doc.commitTransaction()
-			self.finish()
-
-
-
-
-
-
-
-
+		self.finish()
 			
-
 
 class upgrade:
 	'''
@@ -2211,7 +1900,7 @@ class upgrade:
 			u = faces.pop(0)
 			for f in faces:
 				u = u.fuse(f)
-				u = concatenate(u)
+				u = fcgeo.concatenate(u)
 			newob = self.doc.addObject("Part::Feature","Union")
 			newob.Shape = u
 			formatObject(newob,lastob)
@@ -2362,7 +2051,7 @@ class trimex:
 			self.nodes.append(v.Point)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
-		if (complexity(self.sel) != 1) and (complexity(self.sel) != 4):
+		if (fcgeo.complexity(self.sel) != 1) and (fcgeo.complexity(self.sel) != 4):
 			FreeCAD.Console.PrintMessage("Closed wires and wires containing arcs are not supported at the moment:\n")
 			self.finish()
 				
@@ -2399,7 +2088,7 @@ class trimex:
 			self.ghost.coords.point.set1Value(i,self.nodes[i].x,self.nodes[i].y,self.nodes[i].z)
 			
 		if shift: npoint = self.activePoint
-		else: npoint = findClosest(point,self.nodes)
+		else: npoint = fcgeo.findClosest(point,self.nodes)
 
 		if npoint == 0:
 			if alt:
@@ -2443,14 +2132,14 @@ class trimex:
 			ray = Part.Line(starter,self.nodes[npoint]).toShape()
 			snappoint = []
 			for e in snapped.Shape.Edges:
-				pt = findIntersection(ray,e,True,True)
+				pt = fcgeo.findIntersection(ray,e,True,True)
 				if pt:
 					if (len(pt) > 1):
-						snappoint.append(pt[findClosest(point,pt)])
+						snappoint.append(pt[fcgeo.findClosest(point,pt)])
 					else:
 						snappoint.append(pt[0])
 			if snappoint:
-				point = snappoint[findClosest(point,snappoint)]
+				point = snappoint[fcgeo.findClosest(point,snappoint)]
 				
 		perp = fcvec.crossproduct(seg)
 		chord = fcvec.new(point,self.nodes[npoint])
