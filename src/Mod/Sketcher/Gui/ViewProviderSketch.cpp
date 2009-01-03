@@ -90,34 +90,15 @@ void ViewProviderSketch::setSketchMode(int mode)
 }
 
 
-
-bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar)
-{
-	double x=0.0,y=0.0;
-	// Plane form
-	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
-	// line 
-	Base::Vector3f r2 = pNear - pFar;
-	Base::Vector3d R1(pNear .x,pNear .y,pNear .z),RA(r2.x,r2.y,r2.z);
-	// intersection point on plane
-	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
-
-	// distance to x Axle of the sketch
-	//x = S.DistanceToLine(R0,RX);
-	//y = S.DistanceToLine(R0,RY);
-
-	return mouseMove(S.x,S.y);
-}
-
 bool ViewProviderSketch::keyPressed(int key)
 {
 	return true;
 }
 
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar)
+
+void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar)
 {
-	double x=0.0,y=0.0;
 	// Plane form
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
 	// line 
@@ -127,14 +108,17 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
 
 	// distance to x Axle of the sketch
-	//x = S.DistanceToLine(R0,RX);
-	//y = S.DistanceToLine(R0,RY);
+	S.TransformToCoordinateSystem(R0,RX,RY);
 
-	return mouseButtonPressed(Button,pressed,S.x,S.y);
+	u = S.x;
+	v = S.y;
 }
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, double y)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar)
 {
+	double x,y;
+	CoordsOnSketchPlane(x,y,pNear,pFar);
+
 	unsigned int Entity;
 	// Left Mouse button ****************************************************
 	if(Button == 1){
@@ -164,8 +148,11 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, double x, 
 	return false;
 }
 
-bool ViewProviderSketch::mouseMove( double x, double y)
+bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar)
 {
+	double x,y;
+	CoordsOnSketchPlane(x,y,pNear,pFar);
+
 	switch(Mode){
 		case STATUS_NONE:
 			return false;

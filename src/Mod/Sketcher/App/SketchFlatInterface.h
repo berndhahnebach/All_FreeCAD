@@ -29,6 +29,10 @@
 
 #include <string>
 
+#include <Base/Vector3D.h>
+
+
+
 namespace Sketcher
 {
 
@@ -44,6 +48,12 @@ public:
     virtual ~SketchFlatInterface();
 
     unsigned int AddLine(double x, double y);
+
+
+	void SetUpRendering(void);
+	int NbrOfPoints(void);
+	void GetCurvePoints(std::vector<Base::Vector3d> &coords,int curve);
+
 
 private:
 	static bool bAlive;
