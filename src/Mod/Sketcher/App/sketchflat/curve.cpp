@@ -33,7 +33,7 @@ static DoublePoint TransX, TransY, TransOffset;
 
 static DoublePoint ImportMin, ImportMax;
 
-static void CurveEval(SketchCurve *c, double t, double *xp, double *yp);
+void CurveEval(SketchCurve *c, double t, double *xp, double *yp);
 
 static void AddPwl(hEntity id, hLayer layer, BOOL construction,
                                 double x0, double y0, double x1, double y1);
@@ -412,7 +412,7 @@ static BOOL ImportFromFile(hEntity he, hLayer hl, char *file)
     return TRUE;
 }
 
-static void GenerateCurvesFromEntity(SketchEntity *e)
+void GenerateCurvesFromEntity(SketchEntity *e)
 {
     SketchCurve c;
     hPoint pt0, pt1;
@@ -562,7 +562,7 @@ static void GenerateCurvesFromEntity(SketchEntity *e)
             break;
     }
 }
-static void GenerateCurves(void)
+void GenerateCurves(void)
 {
     SK->curves = 0;
 
@@ -572,7 +572,7 @@ static void GenerateCurves(void)
     }
 }
 
-static void CurveEval(SketchCurve *c, double t, double *xp, double *yp)
+void CurveEval(SketchCurve *c, double t, double *xp, double *yp)
 {
     double x, y;
 

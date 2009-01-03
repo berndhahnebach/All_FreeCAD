@@ -75,6 +75,10 @@ public:
 	/// is called when the Provider is in edit and the mouse is clicked 
 	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar);
 
+	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
+	void CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar);
+
+
 	/// mode table
 	enum {
 		STATUS_NONE,
@@ -90,10 +94,6 @@ public:
 	void setSketchMode(int mode);
 	/// get the sketch mode
 	int getSketchMode(void){return Mode;}
-
-	// normalized form
-	bool mouseButtonPressed(int Button, bool pressed, double x, double y);
-	bool mouseMove(double x, double y);
 
 protected:
   /// get called by the container whenever a property has been changed
