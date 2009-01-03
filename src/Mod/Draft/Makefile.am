@@ -29,7 +29,7 @@ nobase_data_DATA = \
 		icons/move.svg \
 		icons/offset.svg \
 		icons/polyline.svg \
-		icons/preferences-Draft.svg \
+		icons/preferences-draft.svg \
 		icons/rectangle.svg \
 		icons/rotate.svg \
 		icons/text.svg \
