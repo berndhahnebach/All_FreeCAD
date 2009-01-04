@@ -37,5 +37,6 @@ nobase_data_DATA = \
 		icons/upgrade.svg
 
 EXTRA_DIST = \
-		$(data_DATA) $(nobase_data_DATA)
+		$(data_DATA) $(nobase_data_DATA) \
+		AppDraft.vcproj
 
