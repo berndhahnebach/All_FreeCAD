@@ -47,13 +47,19 @@ public:
     /// Destruction
     virtual ~SketchFlatInterface();
 
-    unsigned int AddLine(double x, double y);
+    unsigned int addLine(double x, double y);
 
 
-	void SetUpRendering(void);
-	int NbrOfPoints(void);
-	void GetCurvePoints(std::vector<Base::Vector3d> &coords,int curve);
+	void setUpRendering(void);
+	int nbrOfCurves(void);
+	int nbrOfPoints(void);
+	void getPoint(int Nbr,double &x,double &y);
+	int nbrOfLines(void);
+	void getLine(int Nbr,double &x0, double &y0, double &dx, double &dy);
+	void getCurvePoints(std::vector<Base::Vector3d> &coords,int curve);
+	void forcePoint(int point, double x, double y);
 
+	void solve(void);
 
 private:
 	static bool bAlive;
