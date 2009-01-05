@@ -88,6 +88,10 @@ void ViewProviderSketch::setSketchMode(int mode)
 	Mode = mode;
 }
 
+bool ViewProviderSketch::setConstrainOnSelected(int Constrain)
+{
+	return false;
+}
 
 bool ViewProviderSketch::keyPressed(int key)
 {
