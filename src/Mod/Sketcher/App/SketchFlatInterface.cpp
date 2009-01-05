@@ -69,19 +69,19 @@ SketchFlatInterface::~SketchFlatInterface()
 
 /**
  */
-unsigned int SketchFlatInterface::AddLine(double x, double y)
+unsigned int SketchFlatInterface::addLine(double x, double y)
 {
 	hEntity he;
 	he = SketchAddEntity(ENTITY_LINE_SEGMENT);
 	ForcePoint(POINT_FOR_ENTITY(he, 0), x, y);
-    return he;
+    return POINT_FOR_ENTITY(he, 1);
 }
 
 
 //**************************************************************************
 // render helper
 
-void SketchFlatInterface::SetUpRendering(void)
+void SketchFlatInterface::setUpRendering(void)
 {
     SK->pwls = 0;
 
@@ -98,12 +98,12 @@ void SketchFlatInterface::SetUpRendering(void)
     }*/
 }
 
-int SketchFlatInterface::NbrOfPoints(void)
+int SketchFlatInterface::nbrOfCurves(void)
 {
 	return SK->curves;
 }
 
-void GetDescrete(std::vector<Base::Vector3d> &coords,int curve)
+void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int curve)
 {
 	SketchCurve *c = &(SK->curve[curve]);
 	double chordTol = 0.1;
@@ -135,17 +135,15 @@ void GetDescrete(std::vector<Base::Vector3d> &coords,int curve)
         CurveEval(c, from, &xi, &yi);
         CurveEval(c, tryTo, &xf, &yf);
         CurveEval(c, (from + tryTo)/2, &xm, &ym);
-/*
-        dbp("from (%.3f, %.3f) at %.3f to (%.3f, %.3f) at %.3f",
-            xi, yi, from,
-            xf, yf, tryTo); */
 
         xml = (xi + xf)/2;
         yml = (yi + yf)/2;
 
         if(Distance(xm, ym, xml, yml) < chordTol) {
             // Looks good
-            //AddPwl(c->id, c->layer, c->construction, xi, yi, xf, yf);
+			coords.push_back(Base::Vector3d(xi,yi,0));
+            coords.push_back(Base::Vector3d(xf,yf,0));
+
             from = tryTo;
             tryTo = finalTo;
             pts++;
@@ -166,13 +164,43 @@ void GetDescrete(std::vector<Base::Vector3d> &coords,int curve)
             double dt = 1.0/steps;
             for(t = dt; t < 1 + dt; t += dt) {
                 CurveEval(c, t, &xf, &yf);
-                //AddPwl(c->id, c->layer, c->construction, xi, yi, xf, yf);
+				coords.push_back(Base::Vector3d(xi,yi,0));
+                coords.push_back(Base::Vector3d(xf,yf,0));
                 xi = xf;
                 yi = yf;
             }
             break;
         }
     }
+}
+int SketchFlatInterface::nbrOfPoints(void)
+{
+	return SK->points;
+}
+
+void SketchFlatInterface::getPoint(int Nbr,double &x,double &y)
+{
+    EvalPoint(SK->point[Nbr], &x, &y);
+}
+
+int SketchFlatInterface::nbrOfLines(void)
+{
+	return SK->lines;
+}
+void SketchFlatInterface::getLine(int Nbr,double &x0, double &y0, double &dx, double &dy)
+{
+	LineToParametric(SK->line[Nbr], &x0, &y0, &dx, &dy);
+}
+
+
+void SketchFlatInterface::forcePoint(int point, double x, double y)
+{
+	ForcePoint(point, x, y);
+}
+
+void SketchFlatInterface::solve(void)
+{
+	Solve();
 }
 
 

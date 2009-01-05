@@ -75,7 +75,7 @@ ViewProvider2DObject::~ViewProvider2DObject()
 SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
   double dx = 10;                       // carpet size
   double dy = 10;
-  double dz = 0.02;                     // carpet-grid separation
+  double dz = 0.0;                     // carpet-grid separation
   int gridsize = 50;                    // grid size
 
   SoSeparator *parent = GridRoot;
@@ -159,7 +159,8 @@ void ViewProvider2DObject::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderPart::attach(pcFeat);
 
-    createGrid();
+    if(ShowGrid.getValue())
+        createGrid();
 
 
 }

@@ -56,28 +56,26 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
        
 ViewProviderSketch::ViewProviderSketch()
-:Mode(STATUS_NONE),EditRoot(0)
+:Mode(STATUS_NONE),EditRoot(0),DraggPoint(-1)
 {
 	PointsMaterials = 0;
 	LinesMaterials = 0;
+	CurvesMaterials = 0;
 	PointsCoordinate = 0;
 	LinesCoordinate = 0;
+	CurvesCoordinate = 0;
 	LineSet = 0;
+	CurveSet = 0;
 
  /*   ADD_PROPERTY(ShowGrid,(true));
-
-
-    GridRoot = new SoSeparator();
-    GridRoot->ref();
-
-    pcRoot->addChild(GridRoot);*/
+*/
  
     sPixmap = "Sketcher_NewSketch";
 }
 
 ViewProviderSketch::~ViewProviderSketch()
 {
-  //GridRoot->unref();
+
 }
 
 
@@ -86,6 +84,7 @@ ViewProviderSketch::~ViewProviderSketch()
 
 void ViewProviderSketch::setSketchMode(int mode)
 {
+	ShowGrid.setValue(false);
 	Mode = mode;
 }
 
@@ -119,7 +118,6 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 	double x,y;
 	CoordsOnSketchPlane(x,y,pNear,pFar);
 
-	unsigned int Entity;
 	// Left Mouse button ****************************************************
 	if(Button == 1){
 		if(pressed){
@@ -133,10 +131,15 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 				case STATUS_SKETCH_CreateText:
 					return true;
 				case STATUS_SKETCH_CreateLine:
-					Entity = SketchFlat->AddLine(x,y);
+					DraggPoint = SketchFlat->addLine(x,y);
+					SketchFlat->forcePoint(DraggPoint,x,y);
 					Mode = STATUS_SKETCH_DoLine;
+					draw();
 					return true;
 				case STATUS_SKETCH_DoLine:
+					SketchFlat->forcePoint(DraggPoint,x,y);
+					SketchFlat->solve();
+					draw();
 					Mode = STATUS_NONE;
 					return true;
 					
@@ -164,7 +167,9 @@ bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vect
 		case STATUS_SKETCH_CreateLine:
 			return true;
 		case STATUS_SKETCH_DoLine:
-			
+			SketchFlat->forcePoint(DraggPoint,x,y);
+			SketchFlat->solve();
+			draw();
 			return true;
 			
 	}
@@ -179,6 +184,47 @@ bool ViewProviderSketch::doubleClicked(void)
 	return true;
 }
 
+void ViewProviderSketch::draw(void)
+{
+	std::vector<Base::Vector3d> coords;
+	double x,y;
+	double x0, y0, dx, dy;
+
+	// sketchflat generate curves out of enteties:
+	SketchFlat->setUpRendering();
+
+	// go throug the curves and collect the points
+	int Nbr = SketchFlat->nbrOfCurves();
+	int i=0;
+	for( i=0 ; i<Nbr;++i){
+		SketchFlat->getCurvePoints(coords,i);
+	}
+
+	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
+		LinesMaterials->diffuseColor.set1Value(i,0.7f, 0.7f, 0.7f);
+		SketchFlat->getLine(i, x0, y0, dx, dy);
+		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*5,y0-dy*5,0.0f));
+		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*5,y0+dy*5,0.0f));
+		LineSet->numVertices.set1Value(i,2);
+	}
+
+	// set up the Curves
+	i=0;
+	for(std::vector<Base::Vector3d>::const_iterator it=coords.begin();it!=coords.end();++it,i++){
+		CurvesMaterials->diffuseColor.set1Value(i,0, 0, 0);
+		CurvesCoordinate->point.set1Value(i*2  ,SbVec3f(it->x,it->y,0.0f));
+		++it;
+		CurvesCoordinate->point.set1Value(i*2+1,SbVec3f(it->x,it->y,0.0f));
+		CurveSet->numVertices.set1Value(i,2);
+	}
+
+	// set up the points
+	for(i=0 ; i<SketchFlat->nbrOfPoints();++i){
+		PointsMaterials->diffuseColor.set1Value(i,0, 0, 0);
+		SketchFlat->getPoint(i,x,y);
+		PointsCoordinate->point.set1Value(i  ,SbVec3f(x,y,0.0f));
+	}
+}
 void ViewProviderSketch::updateData(const App::Property* prop)
 {
     ViewProviderPart::updateData(prop);
@@ -203,7 +249,6 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderPart::attach(pcFeat);
 
-    createGrid();
 
 
 } 
@@ -216,19 +261,15 @@ bool ViewProviderSketch::setEdit(int ModNum)
 		pcRoot->addChild(EditRoot);
 	}
 
-	// stuff for the points
-    SoMaterial * PointsMaterials = new SoMaterial;
-    //PointsMaterials->diffuseColor.set1Value(0,0, 0, 0);
-    //PointsMaterials->diffuseColor.set1Value(1,1, 0, 0);
+	// stuff for the points ++++++++++++++++++++++++++++++++++++++
+    PointsMaterials = new SoMaterial;
 	EditRoot->addChild(PointsMaterials);
 
 	SoMaterialBinding *MtlBind = new SoMaterialBinding;
 	MtlBind->value = SoMaterialBinding::PER_VERTEX;
 	EditRoot->addChild(MtlBind);
 
-	SoCoordinate3* PointsCoordinate = new SoCoordinate3;
-	//PointsCoordinate->point.set1Value(0,SbVec3f(10,10,0.01));
-	//PointsCoordinate->point.set1Value(1,SbVec3f(0,0,0.01));
+	PointsCoordinate = new SoCoordinate3;
 	EditRoot->addChild(PointsCoordinate);
 
 	SoDrawStyle *DrawStyle = new SoDrawStyle;
@@ -236,10 +277,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild( DrawStyle );
 	EditRoot->addChild( new SoPointSet );
 
-	// stuff for the lines
+	// stuff for the lines +++++++++++++++++++++++++++++++++++++++
     LinesMaterials = new SoMaterial;
-    //LinesMaterials->diffuseColor.set1Value(0,0, 0, 0);
-    //LinesMaterials->diffuseColor.set1Value(1,1, 0, 0);
 	EditRoot->addChild(LinesMaterials);
 
 	MtlBind = new SoMaterialBinding;
@@ -247,22 +286,37 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(MtlBind);
 
 	LinesCoordinate = new SoCoordinate3;
-	//LinesCoordinate->point.set1Value(0,SbVec3f(10,0,0.01));
-	//LinesCoordinate->point.set1Value(1,SbVec3f(0,10,0.01));
-	//LinesCoordinate->point.set1Value(2,SbVec3f(10,5,0.01));
-	//LinesCoordinate->point.set1Value(3,SbVec3f(0,15,0.01));
 	EditRoot->addChild(LinesCoordinate);
 
 	DrawStyle = new SoDrawStyle;
-	DrawStyle->pointSize = 8;
+	DrawStyle->lineWidth = 2;
+	DrawStyle->linePattern = 0x0fff;
 	EditRoot->addChild( DrawStyle );
 
 	LineSet = new SoLineSet;
-    LineSet->numVertices.set1Value(0,2);
-    LineSet->numVertices.set1Value(1,2);
 
 	EditRoot->addChild( LineSet );
 
+	// stuff for the Curves +++++++++++++++++++++++++++++++++++++++
+    CurvesMaterials = new SoMaterial;
+	EditRoot->addChild(CurvesMaterials);
+
+	MtlBind = new SoMaterialBinding;
+	MtlBind->value = SoMaterialBinding::PER_PART;
+	EditRoot->addChild(MtlBind);
+
+	CurvesCoordinate = new SoCoordinate3;
+	EditRoot->addChild(CurvesCoordinate);
+
+	DrawStyle = new SoDrawStyle;
+	DrawStyle->lineWidth = 2;
+	EditRoot->addChild( DrawStyle );
+
+	CurveSet = new SoLineSet;
+
+	EditRoot->addChild( CurveSet );
+
+	draw();
 
 	return true;
 }
@@ -276,8 +330,11 @@ void ViewProviderSketch::unsetEdit(void)
 	EditRoot->removeAllChildren();
 	PointsMaterials = 0;
 	LinesMaterials = 0;
+	CurvesMaterials = 0;
 	PointsCoordinate = 0;
 	LinesCoordinate = 0;
+	CurvesCoordinate = 0;
 	LineSet = 0;
+	CurveSet = 0;
 }
 
