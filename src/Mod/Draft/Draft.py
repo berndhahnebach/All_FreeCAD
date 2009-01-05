@@ -105,6 +105,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 	    - When constrained (SHIFT pressed), Intersections between
 	      constraining axis and lines/polylines
 	'''
+	
 	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
 	if (snapped == None):
 		target.snap.switch.whichChild = -1
@@ -174,6 +175,8 @@ def snapPoint (target,point,cursor,ctrl=False):
 		shortest = 1000000000000000000
 		newpoint = point
 		for i in snapArray:
+			if i[0] == None:
+				FreeCAD.Console.PrintMessage("snapPoint: debug 'i[0]' is 'None'\n")
 			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
 			if sqdist < shortest:
 				shortest = sqdist
@@ -252,8 +255,8 @@ def selectObject(arg):
 	"this is a scene even handler, to be called from the tools when they need to select an object"
 	if (arg["Type"] == "SoKeyboardEvent"):
 		if (arg["Key"] == "ESCAPE"):
-			    FreeCADGui.activeWorkbench().activeDraftCommand.finish()
-			    #TODO : this part raises a coin3D warning about scene traversal, to be fixed.
+			FreeCADGui.activeWorkbench().activeDraftCommand.finish()
+			#TODO : this part raises a coin3D warning about scene traversal, to be fixed.
 	if (arg["Type"] == "SoMouseButtonEvent"):
 		if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 			selection = FreeCADGui.Selection.getSelection()
@@ -573,8 +576,6 @@ class line:
 					e.append(newseg)
 					newshape=Part.Wire(e)
 					self.obj.Shape = newshape
-		else:
-			if len(self.node) == 1: self.doc.undo()
 		self.node=[]
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()

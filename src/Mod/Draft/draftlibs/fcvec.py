@@ -1,7 +1,5 @@
 
 #***************************************************************************
-#*   FreeCAD Vector Library                                               *
-#*   Author: Yorik van Havre - http://yorik.orgfree.com                    *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -26,7 +24,7 @@
 import math,FreeCAD
 
 def tup(first):
-	"returns a tuple (x,y,z) withthe vector coords"
+	"returns a tuple (x,y,z) with the vector coords"
 	if isinstance(first,FreeCAD.Vector):
 		return (first.x,first.y,first.z)
 
@@ -113,3 +111,33 @@ def rotate(first,angle):
 	"rotate(Vector,Float): rotates the first Vector around the origin Z axis, at the given angle."
 	if isinstance(first,FreeCAD.Vector):
 		return FreeCAD.Vector(math.cos(angle)*first.x-math.sin(angle)*first.y,math.sin(angle)*first.x+math.cos(angle)*first.y,first.z)
+
+def intersect(p1,p2,p3,p4,infinite1=True,infinite2=True):
+	'''
+	intersect(Vector,Vector,Vector,Vector,[infinite1],[infinite2])
+	finds the intersection point between 2 lines (p1,p2) and (p3,p4)
+	if infinite1 is True, edge1 will be considered infinite
+	if infinite2 is True, edge2 will be considered infinite
+	'''
+
+	if isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector) and isinstance(p3, FreeCAD.Vector) and isinstance(p4, FreeCAD.Vector):
+		numa = (p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)
+		numb = (p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)
+		denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y)
+		if (denom == 0):
+			return None
+
+		ua = numa / denom
+		ub = numb / denom
+		if not infinite1:
+			if (ua > 1) or (ua < 0):
+				return None
+		if not infinite2:
+			if (ub > 1) or (ub < 0):
+				return None
+		x = p1.x + ua * (p2.x - p1.x)
+		y = p1.y + ua * (p2.y - p1.y)
+		return FreeCAD.Vector(x,y,p1.z)
+	else:
+		return None
+
