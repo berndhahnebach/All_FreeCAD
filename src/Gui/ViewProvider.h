@@ -155,8 +155,8 @@ public:
     //@}
 
 public:
-    // this methode is called by the viewer when the ViewProvider is in edit
-    static void EventCallback(void * ud, SoEventCallback * node);
+    // this method is called by the viewer when the ViewProvider is in edit
+    static void eventCallback(void * ud, SoEventCallback * node);
 
 protected:
     /** @name Display mask modes
