@@ -50,7 +50,11 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 		p2 = edge1.Vertexes[1].Point
 		p3 = edge2.Vertexes[0].Point
 		p4 = edge2.Vertexes[1].Point
-		return [fcvec.intersect(p1,p2,p3,p4)]
+		int = fcvec.intersect(p1,p2,p3,p4)
+		if int:
+			return [int]
+		else:
+			return None
 
 	elif (isinstance(edge1.Curve,Part.Circle)) and (isinstance(edge2.Curve,Part.Circle)):
 		# two curves
@@ -85,15 +89,15 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 			intpnts.append(FreeCAD.Vector(p2.x-rx,p2.y-ry,c1.z))
 			return intpnts
 			       
-	else:
+	elif ((isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Circle))
+	or (isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Line))):
 		# one curve and one line
 		print "debug: 1 line & 1 curve"
 		if (isinstance(edge1.Curve,Part.Circle)):
 			c = edge1.Curve.Center
 			r = edge1.Curve.Radius
 			p1 = edge2.Vertexes[0].Point
-			p2 = edge2.Vertexes[1].Point
-			
+			p2 = edge2.Vertexes[1].Point	
 		else:
 			c = edge2.Curve.Center
 			r = edge2.Curve.Radius
@@ -102,7 +106,8 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 		intpnts = []
 		num = (c.x-p1.x)*(p2.x-p1.x)+(c.y-p1.y)*(p2.y-p1.y)
 		denom = (p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y)
-		if denom == 0: return
+		if denom == 0:
+			return
 		u = num / denom
 		xp = p1.x + u*(p2.x-p1.x)
 		yp = p1.y + u*(p2.y-p1.y)
@@ -352,82 +357,91 @@ def findDistance(point,edge,strict=False):
 			else: return None
 		else: return dist
 
-def angleBisection(edge1,edge2):
+def angleBisection(edge1, edge2):
 	'''
 	angleBisection(edge,edge)
 	Returns a Part.Line that bisects the angle between the two given edges. Also called bisector.
 	If the 2 lines are parallel a thrid parallel line in the middle will be returned.
 	The two lines are always considered to be infinite.
 	'''
-	p1 = edge1.Vertexes[0].Point
-	p2 = edge1.Vertexes[-1].Point
-	p3 = edge2.Vertexes[0].Point
-	p4 = edge2.Vertexes[-1].Point
-	int = fcvec.intersect(p1, p2, p3, p4, True, True)
-	if int == None:
-		# Parallel lines - Return a third parallel line that is exactly in the middle.
 
-		# Calculate median point.
-		diff = fcvec.sub(p3, p1)	# vector between origin points
-		origin = fcvec.add(p1, fcvec.scale(diff, 0.5))
-		
+	if isinstance(edge1, Part.Line) and isinstance(edge2, Part.Line):
+		p1 = edge1.Vertexes[0].Point
+		p2 = edge1.Vertexes[-1].Point
+		p3 = edge2.Vertexes[0].Point
+		p4 = edge2.Vertexes[-1].Point
+		int = fcvec.intersect(p1, p2, p3, p4, True, True)
+		if int == None:
+			# Parallel lines - Return a third parallel line that is exactly in the middle.
+
+			# Calculate median point.
+			diff = fcvec.sub(p3, p1)	# vector between origin points
+			origin = fcvec.add(p1, fcvec.scale(diff, 0.5))
+			
+			# Copy direction vector from first line (and normalize it).
+			dir = fcvec.normalized(fcvec.sub(p2, p1))
+			return Part.Line(origin,fcvec.add(origin+dir))
+
+		# Calculate the bisector angle.
+		line1Dir = fcvec.sub(p2, p1)
+		angleDiff = fcvec.angle(line1Dir, fcvec.sub(p4, p3))
+		ang = angleDiff * 0.5
+		FreeCAD.Console.PrintMessage("diff:"+str(angleDiff*180/math.pi)+"\n") #debug
+
+		# Use intersection point as origin for the bisector.
+		origin = int
 		# Copy direction vector from first line (and normalize it).
-		dir = fcvec.normalized(fcvec.sub(p2, p1))
-		return Part.Line(origin,fcvec.add(origin+dir))
-
-	# Calculate the bisector angle.
-	line1Dir = fcvec.sub(p2, p1)
-	angleDiff = fcvec.angle(line1Dir, fcvec.sub(p4, p3))
-	ang = angleDiff * 0.5
-	FreeCAD.Console.PrintMessage("diff:"+str(angleDiff*180/math.pi)+"\n") #debug
-
-	# Use intersection point as origin for the bisector.
-	origin = int
-	# Copy direction vector from first line (and normalize it).
-	dir = fcvec.normalized(line1Dir)
-	dir = fcvec.rotate(dir, ang)
-	return Part.Line(origin,fcvec.add(origin,dir))
+		dir = fcvec.normalized(line1Dir)
+		dir = fcvec.rotate(dir, ang)
+		return Part.Line(origin,fcvec.add(origin,dir))
+	else:
+		return None
 		
 def circleFrom3Points (p1, p2, p3):
 	'''
 	Calculate a circle defined by 3 points on its circumference. There is exactly
 	one solution. A Part.Circle is returned.
 	'''
-	mat =	[[p1.x, p1.y, 1],
-		 [p2.x, p2.y, 1],
-		 [p3.x, p3.y, 1]]
-	m11 = determinant(mat, 3)
+	if isinstance(p1,FreeCAD.Vector) and isinstance(p2,FreeCAD.Vector) and isinstance(p3,FreeCAD.Vector):
+		mat =	[[p1.x, p1.y, 1],
+			 [p2.x, p2.y, 1],
+			 [p3.x, p3.y, 1]]
+		m11 = determinant(mat, 3)
 
-	if m11 == 0:
-		# The points are not on a circle (more likely on a line)
-		return None
+		if m11 == 0:
+			# The points are not on a circle (more likely on a line)
+			return None
 
-	# Store re-used values.
-	p1x_p1y = p1.x**2 + p1.y**2
-	p2x_p2y = p2.x**2 + p2.y**2
-	p3x_p3y = p3.x**2 + p3.y**2
+		# Store re-used values.
+		p1x_p1y = p1.x**2 + p1.y**2
+		p2x_p2y = p2.x**2 + p2.y**2
+		p3x_p3y = p3.x**2 + p3.y**2
 
-	mat =	[[p1x_p1y, p1.y, 1],
-		 [p2x_p2y, p2.y, 1],
-		 [p3x_p3y, p3.y, 1]]
-	m12 = determinant(mat, 3)
+		mat =	[[p1x_p1y, p1.y, 1],
+			 [p2x_p2y, p2.y, 1],
+			 [p3x_p3y, p3.y, 1]]
+		m12 = determinant(mat, 3)
 
-	mat =	[[p1x_p1y, p1.x, 1],
-		 [p2x_p2y, p2.x, 1],
-		 [p3x_p3y, p3.x, 1]]
-	m13 = determinant(mat, 3)
+		mat =	[[p1x_p1y, p1.x, 1],
+			 [p2x_p2y, p2.x, 1],
+			 [p3x_p3y, p3.x, 1]]
+		m13 = determinant(mat, 3)
 
-	mat =	[[p1x_p1y, p1.x, p1.y],
-		 [p2x_p2y, p2.x, p2.y],
-		 [p3x_p3y, p3.x, p3.y]]
-	m14 = determinant(mat, 3)
+		mat =	[[p1x_p1y, p1.x, p1.y],
+			 [p2x_p2y, p2.x, p2.y],
+			 [p3x_p3y, p3.x, p3.y]]
+		m14 = determinant(mat, 3)
 
-	center = FreeCAD.Vector(0.5 * m12 / m11, -0.5 * m13 / m11, p1.z)
+		center = FreeCAD.Vector(0.5 * m12 / m11, -0.5 * m13 / m11, p1.z)
 	
-	rad = math.sqrt(center.x**2 + center.y**2 + m14 / m11)
-	#FreeCAD.Console.PrintMessage("rad=" +str(r) +"\n")
+		rad = math.sqrt(center.x**2 + center.y**2 + m14 / m11)
+		# FreeCAD.Console.PrintMessage("rad=" +str(r) +"\n")
 
-	return Part.Circle(center,norm,rad)
+		return Part.Circle(center,norm,rad)
+	else:
+		print "debug: circleFrom3Points bad parameters!\n"
+		# FreeCAD.Console.PrintMessage("debug: circleFrom3Points bad parameters!\n")
+		return None
 
 def circleFrom2LinesRadius (edge1, edge2, radius):
 	'''
@@ -477,7 +491,7 @@ def circleFrom2LinesRadius (edge1, edge2, radius):
 def circleFrom3LineTangents (edge1, edge2, edge3):
 	'''
 	circleFrom3LineTangents(edge,edge,edge)
-        Calculate a Part.Circle from 3 line tangents.
+	Calculate a Part.Circle from 3 line tangents.
 	Calculates all possible locations of a circle defined by 3 line tangents.
 	If multiple locations are possible (max. 4) they are all returned.
 	'''
@@ -548,12 +562,15 @@ def linearFromPoints (p1, p2):
 	b ... Offset (point where the line intersects the y axis)
 	dx/dy ... Delta x and y. Using both as a vector results in a non-offset direction vector.
 	'''
-	line = {}
-	line['dx'] = (p2.x - p1.x)
-	line['dy'] = (p2.y - p1.y)
-	line['slope'] = line['dy'] / line['dx']
-	line['offset'] = p1.y - slope * p1.x
-	return line
+	if isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
+		line = {}
+		line['dx'] = (p2.x - p1.x)
+		line['dy'] = (p2.y - p1.y)
+		line['slope'] = line['dy'] / line['dx']
+		line['offset'] = p1.y - slope * p1.x
+		return line
+	else:
+		return None
 
 def circleNeededParameters (parameters):
 	'''
