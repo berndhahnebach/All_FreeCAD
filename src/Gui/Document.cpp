@@ -183,6 +183,7 @@ ViewProvider *Document::getInEdit(void) const
 {
     return d->_pcInEdit;
 }
+
 void Document::setAnnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {
     std::list<Gui::BaseView*>::iterator VIt;
@@ -365,8 +366,11 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
     ViewProvider* viewProvider = getViewProvider(&Obj);
     for (VIt = d->_LpcViews.begin();VIt != d->_LpcViews.end();VIt++) {
         View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-        if (pcIvView && viewProvider)
+        if (pcIvView && viewProvider) {
+            if (d->_pcInEdit == viewProvider)
+                resetEdit();
             pcIvView->getViewer()->removeViewProvider(viewProvider);
+        }
     }
 
     if (viewProvider && viewProvider->getTypeId().isDerivedFrom(

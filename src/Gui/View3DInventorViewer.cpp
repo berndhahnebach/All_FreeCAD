@@ -197,6 +197,9 @@ void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 
 void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 {
+  if (this->inEdit == pcProvider)
+      resetEdit();
+
   SoSeparator* root = pcProvider->getRoot();
   if ( root ) pcViewProviderRoot->removeChild( root );
   SoSeparator* fore = pcProvider->getFrontRoot();
@@ -211,8 +214,10 @@ bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
 {
     if (_ViewProviderSet.find(p) == _ViewProviderSet.end())
         return false;
+    if (this->inEdit)
+        return false; // only one view provider is editable at a time
     this->inEdit = p;
-    addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
+    addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
     p->setEdit(ModNum);
     return true;
 }
@@ -220,9 +225,9 @@ bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
 /// reset from edit mode
 void View3DInventorViewer::resetEdit(void)
 {
-    if (inEdit){
+    if (this->inEdit){
         this->inEdit->unsetEdit();
-        removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback,this);
+        removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
         this->inEdit = 0;
     }
 }
@@ -1030,8 +1035,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
     switch (event->getKey()) {
     case SoKeyboardEvent::ESCAPE:
-      if (inEdit)
-         Gui::Application::Instance->activeDocument()->resetEdit();
+      SoQtRenderArea::processSoEvent(ev);
       processed = true;
       break;
     case SoKeyboardEvent::LEFT_CONTROL:
@@ -1047,6 +1051,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       this->saveHomePosition();
       break;
     case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
+      SoQtRenderArea::processSoEvent(ev);
       processed = TRUE;
       break;
     case SoKeyboardEvent::S:
@@ -1056,7 +1061,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     case SoKeyboardEvent::RIGHT_ARROW:
     case SoKeyboardEvent::DOWN_ARROW:
       if (!isViewing())
-        setViewing( true );
+        setViewing(true);
       break;
     default:
       break;
@@ -1281,8 +1286,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
     switch (ke->getKey()) {
     case SoKeyboardEvent::ESCAPE:
-      if (inEdit)
-        Gui::Application::Instance->activeDocument()->resetEdit();
+      SoQtRenderArea::processSoEvent(ev);
       processed = true;
       break;
     case SoKeyboardEvent::LEFT_ALT:
@@ -1297,6 +1301,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       processed = true;
       break;
     case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
+      SoQtRenderArea::processSoEvent(ev);
       processed = true;
       break;
     case SoKeyboardEvent::S:
@@ -1307,7 +1312,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
     case SoKeyboardEvent::RIGHT_ARROW:
     case SoKeyboardEvent::DOWN_ARROW:
       if (!isViewing())
-        setViewing( true );
+        setViewing(true);
       break;
     default:
       break;

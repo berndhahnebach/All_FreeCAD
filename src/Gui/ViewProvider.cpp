@@ -36,6 +36,8 @@
 #include <App/PropertyGeo.h>
 
 #include "ViewProvider.h"
+#include "Application.h"
+#include "Document.h"
 #include "ViewProviderPy.h"
 #include "BitmapFactory.h"
 #include "View3DInventor.h"
@@ -84,25 +86,22 @@ ViewProvider::~ViewProvider()
 
 bool ViewProvider::setEdit(int ModNum)
 {
-    //Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
-    //viewer->addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
     return true;
 }
 
 void ViewProvider::unsetEdit(void)
 {
-    //viewer->removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::EventCallback, this);
 }
 
-void ViewProvider::EventCallback(void * ud, SoEventCallback * node)
+void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
 {
     SbVec3f point, norm;
     const SoEvent * ev = node->getEvent();
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(node->getUserData());
-    ViewProvider *Provider = view->getInEdit();
+    ViewProvider *Provider = reinterpret_cast<ViewProvider*>(ud);
     assert(Provider);
 
-    // Calculate the line of the mouse posiontion in 3D:
+    // Calculate the line of the mouse position in 3D:
     const SbViewportRegion &vp = view->getViewportRegion();
     const SbViewVolume vol = view->getCamera()->getViewVolume();
     const SbVec2s& sz = vp.getWindowSize(); 
@@ -136,10 +135,16 @@ void ViewProvider::EventCallback(void * ud, SoEventCallback * node)
     // Keyboard events
     if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
         SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-
-        // call the virtual methode
-        if (Provider->keyPressed (ke->getKey()))
-            node->setHandled();
+        switch (ke->getKey()) {
+        case SoKeyboardEvent::ESCAPE:
+            Gui::Application::Instance->activeDocument()->resetEdit();
+            break;
+        default:
+            // call the virtual method
+            if (Provider->keyPressed (ke->getKey()))
+                node->setHandled();
+            break;
+        }
 
         // switching the mouse buttons
     }
@@ -149,7 +154,7 @@ void ViewProvider::EventCallback(void * ud, SoEventCallback * node)
         const int button = event->getButton();
         const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
-        // call the virtual methode
+        // call the virtual method
         if (Provider->mouseButtonPressed(button,press,pNear,pFar))
             node->setHandled();
 

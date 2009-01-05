@@ -114,9 +114,9 @@ public:
     void runFile(const char*pxFileName);
     /// Run a statement with arguments on the python interpreter
     void runStringArg(const char * psCom,...);
-    /// runs a python object methode with no return value and no arguments
+    /// runs a python object method with no return value and no arguments
     void runMethodVoid(PyObject *pobject, const char *method);
-    /// runs a python object methode which returns a arbetrary object
+    /// runs a python object method which returns a arbitrary object
     PyObject* runMethodObject(PyObject *pobject, const char *method);
     /// runs a python methode with arbitrary params
     void runMethod(PyObject *pobject, const char *method,
