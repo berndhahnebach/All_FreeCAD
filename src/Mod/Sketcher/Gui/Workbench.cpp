@@ -48,16 +48,24 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher"));
-    *part << "Sketcher_NewSketch";
+    *part << "Sketcher_NewSketch"<< "Sketcher_LeavSketch";
 
     part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher geoms"));
-    *part << "Sketcher_CreateArc"
+    *part << "Sketcher_CreatePoint" 
+		  << "Sketcher_CreateArc"
 		  << "Sketcher_CreateCircle"
 		  << "Sketcher_CreateLine"
 		  << "Sketcher_CreatePolyline"
 		  << "Sketcher_CreateRectangle"
-		  << "Sketcher_CreateText";
+		  << "Sketcher_CreateText"
+		  << "Sketcher_CreateDraftLine";
+
+    part = new Gui::ToolBarItem(root);
+    part->setCommand(QT_TR_NOOP("Sketcher constrains"));
+    *part << "Sketcher_ConstrainLock"
+		  << "Sketcher_ConstrainVertical"
+		  << "Sketcher_ConstrainHorizontal";
      return root;
 }
 

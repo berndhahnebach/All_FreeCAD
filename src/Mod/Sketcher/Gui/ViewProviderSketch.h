@@ -80,6 +80,14 @@ public:
 	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
 	void CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar);
 
+	/// set constrain table
+	enum {
+		CONSTRAIN_LOCK,
+		CONSTRAIN_HORIZONTAL,
+		CONSTRAIN_VERTICAL
+	};
+	/// is called by the GuiCommands to set the constraints on the selected items:
+	bool setConstrainOnSelected(int Constrain);
 
 	/// mode table
 	enum {
