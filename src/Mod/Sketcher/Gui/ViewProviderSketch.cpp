@@ -84,7 +84,7 @@ ViewProviderSketch::~ViewProviderSketch()
 
 void ViewProviderSketch::setSketchMode(int mode)
 {
-	ShowGrid.setValue(false);
+	//ShowGrid.setValue(false);
 	Mode = mode;
 }
 
@@ -205,7 +205,7 @@ void ViewProviderSketch::draw(void)
 	}
 
 	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
-		LinesMaterials->diffuseColor.set1Value(i,0.7f, 0.7f, 0.7f);
+		LinesMaterials->diffuseColor.set1Value(i,0.7f, 1.0f, 0.7f);
 		SketchFlat->getLine(i, x0, y0, dx, dy);
 		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*5,y0-dy*5,0.0f));
 		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*5,y0+dy*5,0.0f));
@@ -239,7 +239,7 @@ void ViewProviderSketch::updateData(const App::Property* prop)
 void ViewProviderSketch::onChanged(const App::Property* prop)
 {
     // call father
-    ViewProviderPart::onChanged(prop);
+    PartGui::ViewProvider2DObject::onChanged(prop);
 
  /*   if (prop == &ShowGrid) {
         if(ShowGrid.getValue())
@@ -293,7 +293,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(LinesCoordinate);
 
 	DrawStyle = new SoDrawStyle;
-	DrawStyle->lineWidth = 2;
+	DrawStyle->lineWidth = 3;
 	DrawStyle->linePattern = 0x0fff;
 	EditRoot->addChild( DrawStyle );
 
@@ -313,13 +313,14 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(CurvesCoordinate);
 
 	DrawStyle = new SoDrawStyle;
-	DrawStyle->lineWidth = 2;
+	DrawStyle->lineWidth = 3;
 	EditRoot->addChild( DrawStyle );
 
 	CurveSet = new SoLineSet;
 
 	EditRoot->addChild( CurveSet );
 
+	ShowGrid.setValue(true);
 	draw();
 
 	return true;
@@ -327,6 +328,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 void ViewProviderSketch::unsetEdit(void)
 {
+	ShowGrid.setValue(false);
 	// close the solver
 	delete(SketchFlat);
 
