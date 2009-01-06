@@ -28,7 +28,6 @@
 #include "Triangulation.h"
 #include "Approximation.h"
 #include "MeshKernel.h"
-#include "triangle.h"
 
 #include <Mod/Mesh/App/WildMagic4/Wm4Delaunay2.h>
 
@@ -532,7 +531,6 @@ bool DelaunayTriangulator::Triangulate()
     _facets.clear();
     _triangles.clear();
 
-#if 1
     std::vector<Wm4::Vector2d> akVertex;
     akVertex.reserve(_points.size());
     for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
@@ -573,59 +571,6 @@ bool DelaunayTriangulator::Triangulate()
     }
 
     return succeeded;
-#else
-
-    triangulateio* in = new triangulateio();
-    memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[_points.size() * 2];
-    in->numberofpoints = _points.size();
-
-    // build up point list
-    int i = 0;
-    for (std::vector<Base::Vector3f>::iterator it = _points.begin(); it != _points.end(); it++) {
-        in->pointlist[i++] = it->x;
-        in->pointlist[i++] = it->y;
-    }
-
-    // set the triangulation parameter
-    // z: start index from 0
-    triangulateio* out = new triangulateio();
-    memset(out, 0, sizeof(triangulateio));
-    triangulate("z", in, out, NULL);
-
-    // get the triangles
-    MeshGeomFacet triangle;
-    MeshFacet facet;
-    bool succeeded = out->numberoftriangles > 0;
-    for (i = 0; i < (out->numberoftriangles * 3); i += 3) {
-        if ((out->trianglelist[i] == out->trianglelist[i+1]) || 
-            (out->trianglelist[i] == out->trianglelist[i+2]) || 
-            (out->trianglelist[i+1] == out->trianglelist[i+2])) {
-            // two same triangle corner points (ignore)
-            continue;
-        }
-
-        for (int j = 0; j < 3; j++) {
-            int index = 2 * out->trianglelist[i+j];
-            triangle._aclPoints[j].x = (float)out->pointlist[index];
-            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
-            facet._aulPoints[j] = out->trianglelist[i+j];
-        }
-
-        _triangles.push_back(triangle);
-        _facets.push_back(facet);
-    }
-
-    // free all memory
-    delete in->pointlist;
-    delete in;
-    delete out->trianglelist;
-    delete out->pointlist;
-    delete out->pointmarkerlist;
-    delete out;
-
-    return succeeded;
-#endif
 }
 
 // -------------------------------------------------------------
@@ -655,76 +600,12 @@ bool FlatTriangulator::Triangulate()
     _facets.clear();
     _triangles.clear();
 
-    triangulateio* in = new triangulateio();
-    memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[aPoints.size() * 2];
-    in->numberofpoints = aPoints.size();
-    in->segmentlist = new int[aPoints.size() * 2];
-    in->numberofsegments = aPoints.size();
-
-    // build up point list
-    int i = 0, j = 0, k = 0;
-    int mod = aPoints.size();
-    for (std::vector<Base::Vector3f>::iterator it = aPoints.begin(); it != aPoints.end(); it++) {
-        in->pointlist[i++] = it->x;
-        in->pointlist[i++] = it->y;
-        in->segmentlist[j++] = k;
-        in->segmentlist[j++] = (k+1)%mod;
-        k++;
-    }
-
-    // set the triangulation parameter
-    // p: define a polygon to triangulate
-    // Y: do not insert new points to the boundary
-    // z: start index from 0
-    // q: create quality triangles
-    // a: max. area of triangles
-    triangulateio* out = new triangulateio();
-    memset(out, 0, sizeof(triangulateio));
-
-    triangulate("pYz", in, out, NULL);
-
-    // get all added points by the algorithm
-    for (int index = 2 * aPoints.size(); index < (out->numberofpoints * 2); ) {
-        float x = (float)out->pointlist[index++];
-        float y = (float)out->pointlist[index++];
-        float z = 0.0f; // get the point on the plane
-        Base::Vector3f vertex(x, y, z);
-        _newpoints.push_back(vertex);
-    }
-
-    // get the triangles
-    MeshGeomFacet triangle;
-    MeshFacet facet;
-    bool succeeded = out->numberoftriangles > 0;
-    for (i = 0; i < (out->numberoftriangles * 3); i += 3) {
-        if ((out->trianglelist[i] == out->trianglelist[i+1]) || 
-            (out->trianglelist[i] == out->trianglelist[i+2]) || 
-            (out->trianglelist[i+1] == out->trianglelist[i+2])) {
-            // two same triangle corner points
-            succeeded = false;
-            break;
-        }
-
-        for (int j = 0; j < 3; j++) {
-            int index = 2 * out->trianglelist[i+j];
-            triangle._aclPoints[j].x = (float)out->pointlist[index];
-            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
-            facet._aulPoints[j] = out->trianglelist[i+j];
-        }
-
-        _triangles.push_back(triangle);
-        _facets.push_back(facet);
-    }
-
-    // free all memory
-    delete in->pointlist;
-    delete in->segmentlist;
-    delete in;
-    delete out->trianglelist;
-    delete out->pointlist;
-    delete out->pointmarkerlist;
-    delete out;
+    // Todo: Implement algorithm for constraint delaunay triangulation
+    QuasiDelaunayTriangulator tria;
+    tria.SetPolygon(this->GetPolygon());
+    bool succeeded = tria.TriangulatePolygon();
+    this->_facets = tria.GetFacets();
+    this->_triangles = tria.GetTriangles();
 
     return succeeded;
 }
@@ -761,86 +642,12 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     _facets.clear();
     _triangles.clear();
 
-    triangulateio* in = new triangulateio();
-    memset(in, 0, sizeof(triangulateio));
-    in->pointlist = new double[aPoints.size() * 2];
-    in->numberofpoints = aPoints.size();
-    in->segmentlist = new int[aPoints.size() * 2];
-    in->numberofsegments = aPoints.size();
-
-    // build up point list
-    int i = 0, j = 0, k = 0;
-    int mod = aPoints.size();
-    for (std::vector<Base::Vector3f>::iterator it = aPoints.begin(); it != aPoints.end(); it++) {
-        in->pointlist[i++] = it->x;
-        in->pointlist[i++] = it->y;
-        in->segmentlist[j++] = k;
-        in->segmentlist[j++] = (k+1)%mod;
-        k++;
-    }
-
-    // set the triangulation parameter
-    // p: define a polygon to triangulate
-    // Y: do not insert new points to the boundary
-    // z: start index from 0
-    // q: create quality triangles
-    // a: max. area of triangles
-    triangulateio* out = new triangulateio();
-    memset(out, 0, sizeof(triangulateio));
-    char szBuf[51];
-    float maxArea = this->fMaxArea;
-    if (maxArea < 0.0f) {
-        // determine automatically an approximate value
-        // depedning on the length of the edges
-        maxArea = GetLength() / ((float)aPoints.size());
-        maxArea = (maxArea * maxArea)/2.0f;
-    }
-
-    //triangulate("pYz", in, out, NULL);
-    snprintf(szBuf, 50, "pYzqa%.6f", maxArea);
-    triangulate(szBuf, in, out, NULL);
-
-    // get all added points by the algorithm
-    for (int index = 2 * aPoints.size(); index < (out->numberofpoints * 2); ) {
-        float x = (float)out->pointlist[index++];
-        float y = (float)out->pointlist[index++];
-        float z = 0.0f; // get the point on the plane
-        Base::Vector3f vertex(x, y, z);
-        _newpoints.push_back(vertex);
-    }
-
-    // get the triangles
-    MeshGeomFacet triangle;
-    MeshFacet facet;
-    bool succeeded = out->numberoftriangles > 0;
-    for (i = 0; i < (out->numberoftriangles * 3); i += 3) {
-        if ((out->trianglelist[i] == out->trianglelist[i+1]) || 
-            (out->trianglelist[i] == out->trianglelist[i+2]) || 
-            (out->trianglelist[i+1] == out->trianglelist[i+2])) {
-            // two same triangle corner points
-            succeeded = false;
-            break;
-        }
-
-        for (int j = 0; j < 3; j++) {
-            int index = 2 * out->trianglelist[i+j];
-            triangle._aclPoints[j].x = (float)out->pointlist[index];
-            triangle._aclPoints[j].y = (float)out->pointlist[index+1];
-            facet._aulPoints[j] = out->trianglelist[i+j];
-        }
-
-        _triangles.push_back(triangle);
-        _facets.push_back(facet);
-    }
-
-    // free all memory
-    delete in->pointlist;
-    delete in->segmentlist;
-    delete in;
-    delete out->trianglelist;
-    delete out->pointlist;
-    delete out->pointmarkerlist;
-    delete out;
+    // Todo: Implement algorithm for constraint delaunay triangulation
+    QuasiDelaunayTriangulator tria;
+    tria.SetPolygon(this->GetPolygon());
+    bool succeeded = tria.TriangulatePolygon();
+    this->_facets = tria.GetFacets();
+    this->_triangles = tria.GetTriangles();
 
     return succeeded;
 }
