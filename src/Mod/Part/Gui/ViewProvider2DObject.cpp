@@ -105,7 +105,13 @@ SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
 
   mycolor->rgb.setValue(0.7f, 0.7f ,0.7f);
   parent->addChild(mycolor);
-        SoLineSet *grid = new SoLineSet;
+
+  SoDrawStyle* DrawStyle = new SoDrawStyle;
+  DrawStyle->lineWidth = 1;
+  DrawStyle->linePattern = 0x0f0f;
+  parent->addChild( DrawStyle );
+
+  SoLineSet *grid = new SoLineSet;
   vts = new SoVertexProperty;
   grid->vertexProperty = vts;
 
