@@ -76,13 +76,11 @@ public:
     /** @name Polygon picking */
     //@{
     /// Sets the edit mnode
-    void setEdit(void);
+    bool setEdit(int ModNum=0);
     /// Unsets the edit mode
     void unsetEdit(void);
     /// Returns the edit mode
     const char* getEditModeName(void);
-    void faceInfo(unsigned long facet);
-    void fillHole(unsigned long facet);
     void markPart(unsigned long facet);
     bool isMarked(unsigned long facet) const;
     void unmarkParts();
@@ -99,8 +97,10 @@ protected:
     void showOpenEdges( bool );
     void setOpenEdgeColorFrom(const App::Color& col);
     virtual void cutMesh(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner);
-    void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
-    void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    virtual void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    virtual void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    virtual void faceInfo(unsigned long facet);
+    virtual void fillHole(unsigned long facet);
 
     SoTransform         * pcComplexData;
     SoFCMeshObjectNode  * pcMeshNode;

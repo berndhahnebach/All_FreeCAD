@@ -310,10 +310,11 @@ std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
     return StrList;
 }
 
-void ViewProviderMeshFaceSet::setEdit(void)
+bool ViewProviderMeshFaceSet::setEdit(int ModNum)
 {
-    if ( m_bEdit ) return;
+    if (m_bEdit) return true;
     m_bEdit = true;
+    return true;
 }
 
 void ViewProviderMeshFaceSet::unsetEdit(void)
@@ -842,7 +843,7 @@ void ViewProviderMeshFaceSet::fillHole(unsigned long uFacet)
         boundary = *it;
         MeshCore::MeshFacetArray faces;
         MeshCore::MeshPointArray points;
-        MeshCore::ConstraintDelaunayTriangulator cTria(0.05f);
+        MeshCore::QuasiDelaunayTriangulator cTria/*(0.05f)*/;
         if (meshAlg.FillupHole(boundary, cTria, faces, points, level, &cPt2Fac)) {
             if (boundary.front() == boundary.back())
                 boundary.pop_back();
