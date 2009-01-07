@@ -183,6 +183,11 @@ void SketchFlatInterface::getPoint(int Nbr,double &x,double &y)
     EvalPoint(SK->point[Nbr], &x, &y);
 }
 
+int SketchFlatInterface::getPoint(int Nbr)
+{
+    return SK->point[Nbr];
+}
+
 int SketchFlatInterface::nbrOfLines(void)
 {
 	return SK->lines;

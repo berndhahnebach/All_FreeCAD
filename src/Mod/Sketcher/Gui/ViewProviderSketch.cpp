@@ -139,7 +139,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 			switch(Mode){
 				case STATUS_NONE:
                     if(PreselectPoint >=0){
-                        DraggPoint = PreselectPoint;
+                        DraggPoint = SketchFlat->getPoint(PreselectPoint);
+						Base::Console().Log("start dragging, point:%d\n",DraggPoint);
 					    SketchFlat->forcePoint(DraggPoint,x,y);
 					    Mode = STATUS_SKETCH_DraggPoint;
                         return true;
@@ -162,6 +163,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 					SketchFlat->forcePoint(DraggPoint,x,y);
 					SketchFlat->solve();
 					draw();
+					Base::Console().Log("Finish line, point:%d\n",DraggPoint);
                     DraggPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
