@@ -126,7 +126,7 @@ void DocumentObject::onBeforeChange(const Property* prop)
 /// get called by the container when a Property was changed
 void DocumentObject::onChanged(const Property* prop)
 {
-    if(_pDoc)
+    if (_pDoc)
         _pDoc->onChangedProperty(this,prop);
     if (prop->getType() & Prop_Output)
         return;

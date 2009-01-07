@@ -68,8 +68,8 @@ public:
   //@{
   Rotation & operator*=(const Rotation & q);
   Rotation operator *(const Rotation & q);
-  bool operator==(const Rotation & q);
-  bool operator!=(const Rotation & q);
+  bool operator==(const Rotation & q) const;
+  bool operator!=(const Rotation & q) const;
 
   void multVec(const Vector3d & src, Vector3d & dst) const;
   void scaleAngle(const double scaleFactor);

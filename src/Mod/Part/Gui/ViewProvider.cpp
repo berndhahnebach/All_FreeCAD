@@ -421,7 +421,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
         const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
 
         // getting the transformation of the shape/face
-        gp_Trsf myTransf;
+        //gp_Trsf myTransf;
         Standard_Boolean identity = true;
         TopLoc_Location aLoc;
 
@@ -432,10 +432,10 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
         Standard_Integer nbNodesInFace;
 
         // triangulation succeeded?
-        if( !aPoly.IsNull() ) {
-            if(!aLoc.IsIdentity())  {
-                identity = false;
-                myTransf = aLoc.Transformation();
+        if (!aPoly.IsNull()) {
+            if (!aLoc.IsIdentity())  {
+                //identity = false;
+                //myTransf = aLoc.Transformation();
             }
             // take the edge's triangulation
             //
@@ -448,7 +448,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
             gp_Pnt V;
             for (Standard_Integer i=0;i < nbNodesInFace;i++) {
                 V = Nodes(i+1);
-                V.Transform(myTransf);
+                //V.Transform(myTransf);
                 vertices[i].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
             }
         }
@@ -462,8 +462,8 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
             // take the face's triangulation instead
             Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
             if (!aLoc.IsIdentity())  {
-                identity = false;
-                myTransf = aLoc.Transformation();
+                //identity = false;
+                //myTransf = aLoc.Transformation();
             }
 
             //if (aPolyTria.IsNull()) // actually this shouldn't happen at all
@@ -487,7 +487,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
             // go through the index array
             for (Standard_Integer i=indices.Lower();i <= indices.Upper();i++) {
                 V = Nodes(indices(i));
-                V.Transform(myTransf);
+                //V.Transform(myTransf);
                 vertices[pos++].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
             }
         }
@@ -650,11 +650,11 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     if (aPoly.IsNull()) return;
 
     // getting the transformation of the shape/face
-    gp_Trsf myTransf;
+    //gp_Trsf myTransf;
     Standard_Boolean identity = true;
-    if(!aLoc.IsIdentity())  {
-        identity = false;
-        myTransf = aLoc.Transformation();
+    if (!aLoc.IsIdentity())  {
+        //identity = false;
+        //myTransf = aLoc.Transformation();
     }
 
     Standard_Integer i;
@@ -692,10 +692,10 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
         gp_Pnt V3 = Nodes(N3);
 
         // transform the vertices to the place of the face
-        if(!identity) {
-            V1.Transform(myTransf);
-            V2.Transform(myTransf);
-            V3.Transform(myTransf);
+        if (!identity) {
+            //V1.Transform(myTransf);
+            //V2.Transform(myTransf);
+            //V3.Transform(myTransf);
         }
 
         if (!this->noPerVertexNormals) {

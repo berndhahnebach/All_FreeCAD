@@ -279,7 +279,7 @@ Rotation Rotation::operator*(const Rotation & q)
   return quat;
 }
 
-bool Rotation::operator==(const Rotation & q)
+bool Rotation::operator==(const Rotation & q) const
 {
   bool equal = true;
   for (int i=0; i<4;i++)
@@ -287,7 +287,7 @@ bool Rotation::operator==(const Rotation & q)
   return equal;
 }
 
-bool Rotation::operator!=(const Rotation & q)
+bool Rotation::operator!=(const Rotation & q) const
 {
   return !(*this == q);
 }

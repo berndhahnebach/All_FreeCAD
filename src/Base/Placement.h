@@ -47,9 +47,11 @@ public:
     Base::Matrix4D toMatrix(void) const;
     void fromMatrix(const Base::Matrix4D& m);
 
+    bool operator == (const Placement&) const;
+    bool operator != (const Placement&) const;
+
     Vector3<double> _pos;
     Base::Rotation  _rot;
-    //double _q[4];
 };
 
 } // namespace Base

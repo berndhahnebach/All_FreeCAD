@@ -182,15 +182,3 @@ void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndi
 
     setValue(kernel);
 }
-
-void PropertyPointKernel::setTransform(const Base::Matrix4D& rclTrf)
-{
-    //aboutToSetValue();
-    _cPoints->setTransform(rclTrf);
-    //hasSetValue();
-}
-
-Base::Matrix4D PropertyPointKernel::getTransform(void) const
-{
-    return _cPoints->getTransform();
-}

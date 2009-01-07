@@ -182,12 +182,6 @@ public:
     void clear();
     //@}
 
-    /** @name Placement control */
-    //@{
-    void setTransform(const Base::Matrix4D& rclTrf);
-    Base::Matrix4D getTransform(void) const;
-    //@}
-
     /** @name Mesh validation */
     //@{
     void harmonizeNormals();

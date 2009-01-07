@@ -102,7 +102,6 @@ protected:
     virtual void faceInfo(unsigned long facet);
     virtual void fillHole(unsigned long facet);
 
-    SoTransform         * pcComplexData;
     SoFCMeshObjectNode  * pcMeshNode;
     SoFCMeshObjectShape * pcMeshShape;
     SoDrawStyle         * pcLineStyle;

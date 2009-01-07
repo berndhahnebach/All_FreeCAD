@@ -76,6 +76,24 @@ PyObject *Feature::getPyObject(void)
     return Py::new_reference_to(PythonObject); 
 }
 
+void Feature::onChanged(const App::Property* prop)
+{
+    // if the placement has changed apply the change to the point data as well
+    if (prop == &this->Placement) {
+        TopoShape& shape = const_cast<TopoShape&>(this->Shape.getShape());
+        shape.setTransform(this->Placement.getValue().toMatrix());
+    }
+    // if the point data has changed check and adjust the transformation as well
+    else if (prop == &this->Shape) {
+        Base::Placement p;
+        p.fromMatrix(this->Shape.getShape().getTransform());
+        if (p != this->Placement.getValue())
+            this->Placement.setValue(p);
+    }
+    
+    GeoFeature::onChanged(prop);
+}
+
 TopLoc_Location Feature::getLocation() const
 {
     Base::Placement pl = this->Placement.getValue();

@@ -55,3 +55,13 @@ void Placement::fromMatrix(const Base::Matrix4D& matrix)
     this->_pos.y = matrix[1][3];
     this->_pos.z = matrix[2][3];
 }
+
+bool Placement::operator == (const Placement& that) const
+{
+    return (this->_pos == that._pos) && (this->_rot == that._rot);
+}
+
+bool Placement::operator != (const Placement& that) const
+{
+    return !(*this == that);
+}

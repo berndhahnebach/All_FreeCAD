@@ -148,45 +148,35 @@ DEF_STD_CMD_A(CmdPointsTransform);
 CmdPointsTransform::CmdPointsTransform()
   :Command("Points_Transform")
 {
-  sAppModule    = "Points";
-  sGroup        = QT_TR_NOOP("Points");
-  sMenuText     = QT_TR_NOOP("Transform Points");
-  sToolTipText  = QT_TR_NOOP("Test to transform a point cloud");
-  sWhatsThis    = QT_TR_NOOP("Test to transform a point cloud");
-  sStatusTip    = QT_TR_NOOP("Test to transform a point cloud");
-  sPixmap       = "Test1";
+    sAppModule    = "Points";
+    sGroup        = QT_TR_NOOP("Points");
+    sMenuText     = QT_TR_NOOP("Transform Points");
+    sToolTipText  = QT_TR_NOOP("Test to transform a point cloud");
+    sWhatsThis    = QT_TR_NOOP("Test to transform a point cloud");
+    sStatusTip    = QT_TR_NOOP("Test to transform a point cloud");
+    sPixmap       = "Test1";
 }
 
 void CmdPointsTransform::activated(int iMsg)
 {
-  // This is a test command to transform a point cloud directly written in C++ (not Python)
-  Base::Matrix4D trans( Base::Vector3f(0.0f, 0.0f, 0.0f), Base::Vector3f(0.0f, 0.0f, 1.0f), 1.570796f  );
+    // This is a test command to transform a point cloud directly written in C++ (not Python)
+    Base::Placement trans;
+    trans._rot = Base::Rotation(Base::Vector3d(0.0, 0.0, 1.0), 1.570796);
+    App::Document* pDoc = App::GetApplication().getActiveDocument();
 
-  App::Document* pDoc = App::GetApplication().getActiveDocument();
-  Gui::Document* pGui = Gui::Application::Instance->activeDocument();
-
-  std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
-  {
-    if ( (*it)->getTypeId().isDerivedFrom(Points::Transform::getClassTypeId()) )
-    {
-      Points::Transform* f = (Points::Transform*)(*it);
-      f->Trnsfrm.setValue( trans*f->Trnsfrm.getValue() );
-      pDoc->recompute();
+    openCommand("Transform points");
+    std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it) {
+        Base::Placement p = static_cast<Points::Feature*>(*it)->Placement.getValue();
+        p._rot *= Base::Rotation(Base::Vector3d(0.0, 0.0, 1.0), 1.570796);
+        static_cast<Points::Feature*>(*it)->Placement.setValue(p);
     }
-    else
-    {
-      Points::Transform* f = (Points::Transform*)pDoc->addObject(Points::Transform::getClassTypeId().getName(),"Transform");
-      pGui->setHide( (*it)->getNameInDocument() );
-      f->Source.setValue(*it);
-      pDoc->recompute();
-    }
-  }
+    commitCommand();
 }
 
 bool CmdPointsTransform::isActive(void)
 {
-  return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdPointsPolyCut);
