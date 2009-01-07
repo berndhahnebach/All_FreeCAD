@@ -190,7 +190,7 @@ else: draftpath =  path2
 Gui.addWorkbench(DraftWorkbench)
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
-App.addExportType("Autodesk DXF (*.dxf)","exportDXF")
+App.addExportType("Autodesk DXF (*.dxf)","importDXF")
 Gui.addPreferencePage(draftpath+"userprefs.ui","Draft")
 Gui.addIconPath(draftpath+"icons")
 

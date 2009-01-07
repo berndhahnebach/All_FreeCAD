@@ -171,8 +171,8 @@ def getBoundary(shape):
 
 def sortEdges(edgeslist):
 	"this function sorts edges so they are all in following order and in the right direction"
-	if (len(edgeslist) < 2): return edgeslist
 	edgeslist = Part.__sortEdges__(edgeslist)
+	if (len(edgeslist) < 2): return edgeslist
 	edges = []
 	for e in range(len(edgeslist)-1):
 		edge = edgeslist[e]
