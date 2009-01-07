@@ -1,7 +1,7 @@
 
 #include "PreCompiled.h"
 
-#include "Mod/Part/App/PartFeature.h"
+#include "Mod/Part/App/Part2DObject.h"
 
 // inclusion of the generated files (generated out of Part2DObjectPy.xml)
 #include "Part2DObjectPy.h"

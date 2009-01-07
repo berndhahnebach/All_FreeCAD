@@ -178,10 +178,10 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
     }
     else if (prop->isDerivedFrom(App::PropertyPlacement::getClassTypeId())) {
         Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
-        float q0 = (float)p._q[0];
-        float q1 = (float)p._q[1];
-        float q2 = (float)p._q[2];
-        float q3 = (float)p._q[3];
+        float q0 = (float)p._rot.getValue()[0];
+        float q1 = (float)p._rot.getValue()[1];
+        float q2 = (float)p._rot.getValue()[2];
+        float q3 = (float)p._rot.getValue()[3];
         float px = (float)p._pos.x;
         float py = (float)p._pos.y;
         float pz = (float)p._pos.z;

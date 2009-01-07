@@ -79,7 +79,7 @@ PyObject *Feature::getPyObject(void)
 TopLoc_Location Feature::getLocation() const
 {
     Base::Placement pl = this->Placement.getValue();
-    Base::Rotation rot(pl._q);
+    Base::Rotation rot(pl._rot);
     Base::Vector3d axis;
     double angle;
     rot.getValue(axis, angle);

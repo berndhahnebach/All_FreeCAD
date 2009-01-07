@@ -25,6 +25,7 @@
 #define BASE_PLACEMENT_H
 
 #include "Vector3D.h"
+#include "Rotation.h"
 #include "Matrix.h"
 
 
@@ -47,7 +48,8 @@ public:
     void fromMatrix(const Base::Matrix4D& m);
 
     Vector3<double> _pos;
-    double _q[4];
+    Base::Rotation  _rot;
+    //double _q[4];
 };
 
 } // namespace Base
