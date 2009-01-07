@@ -111,8 +111,8 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
     int pts = 0;
     int iters = 0;
 
-    double from = 0;
-    double finalTo = 1;
+    double from = 0.02;
+    double finalTo = 0.98;
 
     double tryTo = finalTo;
 

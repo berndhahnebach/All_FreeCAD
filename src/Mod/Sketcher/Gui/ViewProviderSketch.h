@@ -69,17 +69,18 @@ public:
 	virtual bool doubleClicked(void);
 
 	/// is called when the Provider is in edit and the mouse is moved
-	virtual bool mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar);
+	virtual bool mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point);
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
 	virtual bool keyPressed(int key);
 	/// is called when the Provider is in edit and the mouse is clicked 
-	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar);
+	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point);
 	/// draw the sketch in the inventor nodes
 	void draw(void);
 
 	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
 	void CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar);
-
+    /// helper to detect preselection
+    bool HandlePreselection(SoPickedPoint* Point);
 	/// set constrain table
 	enum {
 		CONSTRAIN_LOCK,
@@ -98,6 +99,7 @@ public:
 		STATUS_SKETCH_CreatePolyline,
 		STATUS_SKETCH_CreateRectangle,
 		STATUS_SKETCH_CreateText,
+		STATUS_SKETCH_DraggPoint,
 		STATUS_SKETCH_DoLine
 	};
 	/// is called by GuiCommands to set the drawing mode
@@ -115,6 +117,9 @@ protected:
   int Mode;
   // dragged point
   int DraggPoint;
+
+  int PreselectCurve;
+  int PreselectPoint;
   // pointer to the Solver
   Sketcher::SketchFlatInterface *SketchFlat;
 
@@ -127,6 +132,7 @@ protected:
   SoCoordinate3 *LinesCoordinate;
   SoLineSet* CurveSet;
   SoLineSet* LineSet;
+  SoPointSet* PointSet;
   SoSeparator  *EditRoot;
 };
 
