@@ -40,7 +40,7 @@ const char *PlacementPy::representation(void) const
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
     str << "Placement ((";
-    str << ptr->_q[0] << ","<< ptr->_q[1] << "," << ptr->_q[2] << "," << ptr->_q[3];
+    str << ptr->_rot.getValue()[0] << ","<< ptr->_rot.getValue()[1] << "," << ptr->_rot.getValue()[2] << "," << ptr->_rot.getValue()[3];
     str << "),(";
     str << ptr->_pos.x << ","<< ptr->_pos.y << "," << ptr->_pos.z;
     str << "))";
@@ -75,10 +75,7 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
         Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
         getPlacementPtr()->_pos = plm->_pos;
-        getPlacementPtr()->_q[0] = plm->_q[0];
-        getPlacementPtr()->_q[1] = plm->_q[1];
-        getPlacementPtr()->_q[2] = plm->_q[2];
-        getPlacementPtr()->_q[3] = plm->_q[3];
+        getPlacementPtr()->_rot = plm->_rot;
         return 0;
     }
 
@@ -117,14 +114,17 @@ Py::Tuple PlacementPy::getRotation(void) const
 {
     Py::Tuple rot(4);
     for (int i=0; i<4; i++)
-        rot[i]=Py::Float(getPlacementPtr()->_q[i]);
+        rot[i]=Py::Float(getPlacementPtr()->_rot.getValue()[i]);
     return rot;
 }
 
 void PlacementPy::setRotation(Py::Tuple arg)
 {
-    for (int i=0; i<4; i++)
-        getPlacementPtr()->_q[i] = (double)Py::Float(arg[i]);
+    getPlacementPtr()->_rot.setValue((double)Py::Float(arg[0]),
+                                     (double)Py::Float(arg[1]),
+                                     (double)Py::Float(arg[2]),
+                                     (double)Py::Float(arg[3])
+                                     );
 }
 
 PyObject *PlacementPy::getCustomAttributes(const char* /*attr*/) const

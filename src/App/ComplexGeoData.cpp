@@ -89,7 +89,7 @@ Base::Placement ComplexGeoData::getPlacement() const
     Base::Placement trf;
     Base::Matrix4D mat = getTransform();
     Base::Rotation rot(mat);
-    rot.getValue(trf._q[0],trf._q[1],trf._q[2],trf._q[3]);
+    trf._rot = rot;
     trf._pos.x = mat[0][3];
     trf._pos.y = mat[1][3];
     trf._pos.z = mat[2][3];

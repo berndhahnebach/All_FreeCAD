@@ -496,13 +496,8 @@ void PropertyPlacement::setPyObject(PyObject *value)
         Base::MatrixPy  *pcObject = (Base::MatrixPy*)value;
         Base::Matrix4D mat = pcObject->value();
         Base::Rotation rot(mat);
-        double q0,q1,q2,q3;
-        rot.getValue(q0, q1, q2, q3);
         aboutToSetValue();
-        _cPos._q[0] = q0;
-        _cPos._q[1] = q1;
-        _cPos._q[2] = q2;
-        _cPos._q[3] = q3;
+        _cPos._rot = rot;
         _cPos._pos.x = mat[0][3];
         _cPos._pos.y = mat[1][3];
         _cPos._pos.z = mat[2][3];
@@ -514,7 +509,7 @@ void PropertyPlacement::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyPlacement";
     writer.Stream() << " Px=\"" <<  _cPos._pos.x << "\" Py=\"" <<  _cPos._pos.y << "\" Pz=\"" <<  _cPos._pos.z << "\"";
-    writer.Stream() << " Q0=\"" <<  _cPos._q[0] << "\" Q1=\"" <<  _cPos._q[1] << "\" Q2=\"" <<  _cPos._q[2] << "\" Q3=\"" <<  _cPos._q[3] << "\"";
+    writer.Stream() << " Q0=\"" <<  _cPos._rot.getValue()[0] << "\" Q1=\"" <<  _cPos._rot.getValue()[1] << "\" Q2=\"" <<  _cPos._rot.getValue()[2] << "\" Q3=\"" <<  _cPos._rot.getValue()[3] << "\"";
     writer.Stream() <<"/>" << endl;
 }
 
@@ -528,10 +523,10 @@ void PropertyPlacement::Restore(Base::XMLReader &reader)
     _cPos._pos.y = reader.getAttributeAsFloat("Py");
     _cPos._pos.z = reader.getAttributeAsFloat("Pz");
 
-    _cPos._q[0] = reader.getAttributeAsFloat("Q0");
-    _cPos._q[1] = reader.getAttributeAsFloat("Q1");
-    _cPos._q[2] = reader.getAttributeAsFloat("Q2");
-    _cPos._q[3] = reader.getAttributeAsFloat("Q3");
+    _cPos._rot.setValue(reader.getAttributeAsFloat("Q0"),
+                        reader.getAttributeAsFloat("Q1"),
+                        reader.getAttributeAsFloat("Q2"),
+                        reader.getAttributeAsFloat("Q3"));
     hasSetValue();
 }
 
@@ -641,7 +636,7 @@ Base::Placement PropertyComplexGeoData::getPlacement() const
     Base::Placement trf;
     Base::Matrix4D mat = getTransform();
     Base::Rotation rot(mat);
-    rot.getValue(trf._q[0],trf._q[1],trf._q[2],trf._q[3]);
+    trf._rot = rot;
     trf._pos.x = mat[0][3];
     trf._pos.y = mat[1][3];
     trf._pos.z = mat[2][3];

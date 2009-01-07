@@ -108,7 +108,7 @@ PyObject* GeometryPy::rotate(PyObject *args)
         return 0;
 
     Base::Placement* plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
-    Base::Rotation rot(plm->_q[0],plm->_q[1],plm->_q[2],plm->_q[3]);
+    Base::Rotation rot(plm->_rot);
     Base::Vector3d pnt, dir;
     double angle;
 
