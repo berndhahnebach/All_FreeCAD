@@ -305,16 +305,6 @@ public:
      * getTransform().
      */
     Base::Placement getPlacement() const;
-    /** Override the current transformation with the new one. 
-     * This method has to be handled by the child classes.
-     * the actual placement and matrix is not part of this class.
-     */
-    virtual void setTransform(const Base::Matrix4D& rclTrf)=0;
-    /** Return the current matrix
-     * This method has to be handled by the child classes.
-     * the actual placement and matrix is not part of this class.
-     */
-    virtual Base::Matrix4D getTransform(void) const = 0;
     //@}
 
     /** @name Getting basic geometric entities */

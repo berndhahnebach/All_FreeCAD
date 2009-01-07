@@ -72,6 +72,8 @@ public:
     }
     // handling the PointsPy object
     //virtual PyObject* getPyObject(void);
+protected:
+    void onChanged(const App::Property* prop);
     //@}
 
 public:
@@ -94,25 +96,6 @@ public:
     App::PropertyString Format;
 
     /** @name methods override Feature */
-    //@{
-    /// recalculate the Feature
-    virtual App::DocumentObjectExecReturn *execute(void);
-    //@}
-};
-
-class PointsAppExport Transform : public Feature
-{
-    PROPERTY_HEADER(Points::Transform);
-
-public:
-    /// Constructor
-    Transform(void);
-    virtual ~Transform(void);
-
-    App::PropertyLink Source;
-    App::PropertyMatrix Trnsfrm;
-
-    /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
     virtual App::DocumentObjectExecReturn *execute(void);

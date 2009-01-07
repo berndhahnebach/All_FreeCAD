@@ -69,6 +69,9 @@ public:
     virtual PyObject* getPyObject(void);
 
 protected:
+    void onChanged(const App::Property* prop);
+
+protected:
     TopLoc_Location getLocation() const;
 };
 

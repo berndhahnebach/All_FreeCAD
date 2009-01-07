@@ -71,6 +71,24 @@ void Feature::RestoreDocFile(Base::Reader &reader)
     Points.RestoreDocFile(reader);
 }
 
+void Feature::onChanged(const App::Property* prop)
+{
+    // if the placement has changed apply the change to the point data as well
+    if (prop == &this->Placement) {
+        PointKernel& pts = const_cast<PointKernel&>(this->Points.getValue());
+        pts.setTransform(this->Placement.getValue().toMatrix());
+    }
+    // if the point data has changed check and adjust the transformation as well
+    else if (prop == &this->Points) {
+        Base::Placement p;
+        p.fromMatrix(this->Points.getValue().getTransform());
+        if (p != this->Placement.getValue())
+            this->Placement.setValue(p);
+    }
+    
+    GeoFeature::onChanged(prop);
+}
+
 //PyObject *Feature::getPyObject(void)
 //{
 //    if(PythonObject.is(Py::_None())){
@@ -120,34 +138,6 @@ App::DocumentObjectExecReturn *Export::execute(void)
   {
       return new App::DocumentObjectExecReturn("File format not supported");
   }
-
-  return App::DocumentObject::StdReturn;
-}
-
-// ------------------------------------------------------------------
-
-PROPERTY_SOURCE(Points::Transform, Points::Feature)
-
-Transform::Transform()
-{
-  ADD_PROPERTY(Source, (0));
-  ADD_PROPERTY(Trnsfrm, (Base::Matrix4D()));
-}
-
-Transform::~Transform()
-{
-}
-
-App::DocumentObjectExecReturn *Transform::execute(void)
-{
-  Feature *pcPoints  = dynamic_cast<Feature*>(Source.getValue());
-  Points.setValue(pcPoints->Points.getValue());
-  Points.setTransform(Trnsfrm.getValue());
-
-  const Base::Matrix4D& cMat = Trnsfrm.getValue();
-  Base::Console().Message("Transform [[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f]]\n",
-                          cMat[0][0],cMat[0][1],cMat[0][2],cMat[0][3],cMat[1][0],cMat[1][1],cMat[1][2],cMat[1][3],
-                          cMat[2][0],cMat[2][1],cMat[2][2],cMat[2][3],cMat[3][0],cMat[3][1],cMat[3][2],cMat[3][3]);
 
   return App::DocumentObject::StdReturn;
 }

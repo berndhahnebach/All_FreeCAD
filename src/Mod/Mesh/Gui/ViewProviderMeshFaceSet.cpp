@@ -134,9 +134,6 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(fals
         color.setPackedValue((uint32_t)setting);
         ShapeColor.setValue(color);
     }
-
-    pcComplexData = new SoTransform();
-    pcComplexData->ref();
 }
 
 ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
@@ -146,7 +143,6 @@ ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
     pcPointStyle->unref();
     pShapeHints->unref();
     pcMatBinding->unref();
-    pcComplexData->unref();
 }
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
@@ -189,9 +185,6 @@ void ViewProviderMeshFaceSet::setOpenEdgeColorFrom( const App::Color& c )
 void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderGeometryObject::attach(pcFeat);
-
-    // apply the transformation of the mesh object
-    pcHighlight->addChild(pcComplexData);
 
     pcMeshNode = new SoFCMeshObjectNode;
     pcHighlight->addChild(pcMeshNode);
@@ -248,7 +241,6 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
         const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
-        this->pcComplexData->setMatrix(convert(mesh->getValue().getTransform()));
         this->pcMeshNode->mesh.setValue(mesh->getValuePtr());
         // Needs to update internal bounding box caches
         this->pcMeshShape->touch();

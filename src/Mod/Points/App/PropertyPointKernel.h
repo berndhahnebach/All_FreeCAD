@@ -47,12 +47,6 @@ public:
     const PointKernel &getValue(void) const;
     //@}
 
-    /** @name Placement control */
-    //@{
-    void setTransform(const Base::Matrix4D& rclTrf);
-    Base::Matrix4D getTransform(void) const;
-    //@}
-
     /** @name Getting basic geometric entities */
     //@{
     /** Returns the bounding box around the underlying mesh kernel */
