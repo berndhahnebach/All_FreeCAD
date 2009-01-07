@@ -54,6 +54,7 @@ public:
 	int nbrOfCurves(void);
 	int nbrOfPoints(void);
 	void getPoint(int Nbr,double &x,double &y);
+	int getPoint(int Nbr);
 	int nbrOfLines(void);
 	void getLine(int Nbr,double &x0, double &y0, double &dx, double &dy);
 	void getCurvePoints(std::vector<Base::Vector3d> &coords,int curve);
