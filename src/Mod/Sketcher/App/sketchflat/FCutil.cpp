@@ -119,27 +119,27 @@ void Exit(void)
 //-----------------------------------------------------------------------------
 void dbp(char *str, ...)
 {
-    //va_list f;
-    //char buf[1024*40];
-    //sprintf(buf,"%5u:  ", GetTickCount() % 100000);
+    va_list f;
+    char buf[1024*40];
+    sprintf(buf,"%5u:  ", GetTickCount() % 100000);
 
-    //va_start(f, str);
-    //_vsnprintf(buf+7, sizeof(buf)-100, str, f);
-    //OutputDebugString(buf);
-    //OutputDebugString("\n");
+    va_start(f, str);
+    _vsnprintf(buf+7, sizeof(buf)-100, str, f);
+    OutputDebugString(buf);
+    OutputDebugString("\n");
 }
 void dbp2(char *str, ...)
 {
-    //return;
+    return;
 
-    //va_list f;
-    //char buf[1024*40];
-    //sprintf(buf,"%5u:  ", GetTickCount() % 100000);
+    va_list f;
+    char buf[1024*40];
+    sprintf(buf,"%5u:  ", GetTickCount() % 100000);
 
-    //va_start(f, str);
-    //_vsnprintf(buf+7, sizeof(buf)-100, str, f);
-    //OutputDebugString(buf);
-    //OutputDebugString("\n");
+    va_start(f, str);
+    _vsnprintf(buf+7, sizeof(buf)-100, str, f);
+    OutputDebugString(buf);
+    OutputDebugString("\n");
 }
 
 //-----------------------------------------------------------------------------

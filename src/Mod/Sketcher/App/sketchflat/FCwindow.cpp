@@ -33,6 +33,8 @@
 #define CREATE_COLOR_TABLES
 #include "sketchflat.h"
 
+#include <Base/Console.h>
+
 void uiEnableMenuById(int id, BOOL enabled);
 
 extern HINSTANCE   Instance;
@@ -556,6 +558,7 @@ void uiSetMeasurementAreaText(char *str)
 //-----------------------------------------------------------------------------
 void uiSetConsistencyStatusText(char *str, int bk)
 {
+    Base::Console().Log("Status: %s \n",str);
     //ConsistencyStatusColor = bk;
     //SendMessage(ConsistencyStatus, WM_SETTEXT, 0, (LPARAM)str);
 }

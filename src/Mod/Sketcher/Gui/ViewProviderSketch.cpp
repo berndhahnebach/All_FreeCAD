@@ -32,6 +32,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Parameter.h>
+#include <Base/Console.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 
@@ -48,6 +49,11 @@ using namespace SketcherGui;
 using namespace Sketcher;
 using namespace std;
 
+const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
+const float fPointColor[] =     {0.9f,0.9f,0.9f}; 
+const float fPreselectColor[] = {0.8f,0.0f,0.0f}; 
+const float fSelectColor[] =    {1.0f,0.0f,0.0f}; 
+const float fDatumLineColor[] = {0.0f,0.8f,0.0f}; 
 
 //**************************************************************************
 // Construction/Destruction
@@ -66,6 +72,10 @@ ViewProviderSketch::ViewProviderSketch()
 	CurvesCoordinate = 0;
 	LineSet = 0;
 	CurveSet = 0;
+    PointSet = 0;
+
+    PreselectCurve = -1;
+    PreselectPoint = -1;
 
  /*   ADD_PROPERTY(ShowGrid,(true));
 */
@@ -117,7 +127,7 @@ void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Ve
 	v = S.y;
 }
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point)
 {
 	double x,y;
 	CoordsOnSketchPlane(x,y,pNear,pFar);
@@ -128,6 +138,14 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 			// Do things depending on the mode of the user interaktion
 			switch(Mode){
 				case STATUS_NONE:
+                    if(PreselectPoint >=0){
+                        DraggPoint = PreselectPoint;
+					    SketchFlat->forcePoint(DraggPoint,x,y);
+					    Mode = STATUS_SKETCH_DraggPoint;
+                        return true;
+                    }else
+                        return false;
+
 				case STATUS_SKETCH_CreateArc:
 				case STATUS_SKETCH_CreateCircle:
 				case STATUS_SKETCH_CreatePolyline:
@@ -144,21 +162,40 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 					SketchFlat->forcePoint(DraggPoint,x,y);
 					SketchFlat->solve();
 					draw();
+                    DraggPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
+                default:
+                    return false;
 					
 			}
-		}
+        }else{
+			// Do things depending on the mode of the user interaktion
+			switch(Mode){
+				case STATUS_SKETCH_DraggPoint:
+					SketchFlat->forcePoint(DraggPoint,x,y);
+					SketchFlat->solve();
+					draw();
+                    DraggPoint = -1;
+					Mode = STATUS_NONE;
+					return true;
+                default:
+                    return false;
+            }
+
+        }
 
 
 	}
 	return false;
 }
 
-bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar)
+bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point)
 {
 	double x,y;
 	CoordsOnSketchPlane(x,y,pNear,pFar);
+
+    HandlePreselection(Point);
 
 	switch(Mode){
 		case STATUS_NONE:
@@ -171,6 +208,7 @@ bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vect
 		case STATUS_SKETCH_CreateLine:
 			return true;
 		case STATUS_SKETCH_DoLine:
+		case STATUS_SKETCH_DraggPoint:
 			SketchFlat->forcePoint(DraggPoint,x,y);
 			SketchFlat->solve();
 			draw();
@@ -181,6 +219,64 @@ bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vect
 	return false;
 }
 
+bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
+{
+    if(Point){
+        //Base::Console().Log("Point pick\n");
+        const SoDetail* detail = Point->getDetail(PointSet);
+        if ( detail && detail->getTypeId() == SoPointDetail::getClassTypeId() ) {
+            // get the index
+            unsigned long idx = ((SoPointDetail*)detail)->getCoordinateIndex();
+            if(PreselectPoint != idx){
+                PointsMaterials->diffuseColor.set1Value(idx,fPreselectColor);
+                if(PreselectPoint >= 0)
+                    PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
+                PreselectPoint = idx;
+                if(PreselectCurve >= 0)
+                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+                PreselectCurve = -1;
+            }
+            //Base::Console().Log("Point pick%d\n",idx);
+            return true;
+        }else {
+            // details from the Curves
+            const SoDetail* detail = Point->getDetail(CurveSet);
+            if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
+                // get the index
+                unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
+                if(PreselectCurve != idx){
+                    CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
+                    if(PreselectCurve >= 0)
+                        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+                    PreselectCurve = idx;
+                    if(PreselectPoint >= 0)
+                        PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
+                    PreselectPoint = -1;
+                }
+                
+                //Base::Console().Log("Curve pick%d\n",idx);
+                return true;
+            }else {
+                // details from the Datum lines
+                const SoDetail* detail = Point->getDetail(LineSet);
+                if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
+                    // get the index
+                    unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
+                    Base::Console().Log("Datum pick%d\n",idx);
+                    return true;
+                }
+            }
+        }
+    }
+    if(PreselectCurve >= 0)
+       CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+    PreselectCurve = -1;
+    if(PreselectPoint >= 0)
+       PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
+    PreselectPoint = -1;
+
+    return false;
+}
 
 bool ViewProviderSketch::doubleClicked(void)
 {
@@ -205,7 +301,7 @@ void ViewProviderSketch::draw(void)
 	}
 
 	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
-		LinesMaterials->diffuseColor.set1Value(i,0.7f, 1.0f, 0.7f);
+		LinesMaterials->diffuseColor.set1Value(i,fDatumLineColor);
 		SketchFlat->getLine(i, x0, y0, dx, dy);
 		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*5,y0-dy*5,0.0f));
 		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*5,y0+dy*5,0.0f));
@@ -214,8 +310,11 @@ void ViewProviderSketch::draw(void)
 
 	// set up the Curves
 	i=0;
+    CurvesMaterials->diffuseColor.setNum(Nbr);
+    CurvesCoordinate->point.setNum(Nbr*2);
+    CurveSet->numVertices.setNum(Nbr);
 	for(std::vector<Base::Vector3d>::const_iterator it=coords.begin();it!=coords.end();++it,i++){
-		CurvesMaterials->diffuseColor.set1Value(i,0, 0, 0);
+		CurvesMaterials->diffuseColor.set1Value(i,fCurveColor);
 		CurvesCoordinate->point.set1Value(i*2  ,SbVec3f(it->x,it->y,0.0f));
 		++it;
 		CurvesCoordinate->point.set1Value(i*2+1,SbVec3f(it->x,it->y,0.0f));
@@ -224,7 +323,7 @@ void ViewProviderSketch::draw(void)
 
 	// set up the points
 	for(i=0 ; i<SketchFlat->nbrOfPoints();++i){
-		PointsMaterials->diffuseColor.set1Value(i,0, 0, 0);
+		PointsMaterials->diffuseColor.set1Value(i,fPointColor);
 		SketchFlat->getPoint(i,x,y);
 		PointsCoordinate->point.set1Value(i  ,SbVec3f(x,y,0.0f));
 	}
@@ -277,9 +376,10 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	EditRoot->addChild(PointsCoordinate);
 
 	SoDrawStyle *DrawStyle = new SoDrawStyle;
-	DrawStyle->pointSize = 8;
+	DrawStyle->pointSize = 6;
 	EditRoot->addChild( DrawStyle );
-	EditRoot->addChild( new SoPointSet );
+    PointSet = new SoPointSet;
+	EditRoot->addChild( PointSet );
 
 	// stuff for the lines +++++++++++++++++++++++++++++++++++++++
     LinesMaterials = new SoMaterial;
@@ -342,5 +442,10 @@ void ViewProviderSketch::unsetEdit(void)
 	CurvesCoordinate = 0;
 	LineSet = 0;
 	CurveSet = 0;
+    PointSet = 0;
+
+    PreselectCurve = -1;
+    PreselectPoint = -1;
+
 }
 

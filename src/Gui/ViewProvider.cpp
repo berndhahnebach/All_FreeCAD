@@ -129,7 +129,10 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
         pos.setValue(pX,pY);
     }
 
+    // get the line in 3D
     vol.projectPointToLine( pos, ptNear, ptFar );
+    // for convinients make a pick ray action to get the (pontetialy) picked enteti in the provider
+    SoPickedPoint* Point = Provider->getPointOnRay(ptNear,ptFar-ptNear,*view);
     Base::Vector3f pNear(ptNear[0],ptNear[1],ptNear[2]),pFar(ptFar[0],ptFar[1],ptFar[2]);
 
     // Keyboard events
@@ -155,16 +158,20 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
         const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
         // call the virtual method
-        if (Provider->mouseButtonPressed(button,press,pNear,pFar))
+        if (Provider->mouseButtonPressed(button,press,pNear,pFar,Point))
             node->setHandled();
 
         // Mouse Movement handling
     }
     else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
         const SoLocation2Event * const event = (const SoLocation2Event *) ev;
-        if (Provider->mouseMove(pNear,pFar))
+        if (Provider->mouseMove(pNear,pFar,Point))
             node->setHandled();
     }
+
+    // clean up
+    if(Point)
+        delete Point;
 }
 
 SoSeparator* ViewProvider::getAnnotation(void)
@@ -288,4 +295,23 @@ PyObject* ViewProvider::getPyObject()
         pyViewObject = new ViewProviderPy(this);
     pyViewObject->IncRef();
     return pyViewObject;
+}
+
+SoPickedPoint* ViewProvider::getPointOnRay(const SbVec3f& pos,const SbVec3f& dir, const View3DInventorViewer& viewer) const
+{
+    //SoSeparator* root = new SoSeparator;
+    //root->ref();
+    //root->addChild(viewer.getHeadlight());
+    //root->addChild(viewer.getCamera());
+    ////root->addChild(this->pcHighlight);
+
+    SoRayPickAction rp(viewer.getViewportRegion());
+    rp.setRay(pos,dir);
+    rp.apply(pcRoot);
+    //root->unref();
+
+    // returns a copy of the point
+    SoPickedPoint* pick = rp.getPickedPoint();
+    //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+    return (pick ? new SoPickedPoint(*pick) : 0);
 }
