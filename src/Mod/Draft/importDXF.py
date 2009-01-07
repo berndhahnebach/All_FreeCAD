@@ -19,31 +19,24 @@
 #*                                                                         *
 #***************************************************************************
 
-__title__="FreeCAD DXF importer"
+__title__="FreeCAD DXF importer/exporter"
 __author__ = "Yorik van Havre"
 __url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 '''
-This script uses a DXF-parsing module created by Kitsu and Migius for Blender
-DF object types read by this script + implementation in FreeCAD:
-line: read and converted to FreeCAD Line
-polyline: read and converted to FreeCAD Wire
-lwpolyline: read and converted to FreeCAD Wire
-text: read and converted to FreeCAD Annotation
-mtext: read and converted to FreeCAD Annotation
-circle: read and converted to FreeCAD Circle
-arc: read and converted to FreeCAD Circle
-layer: read and layers containing objects are conveted to FreeCAD Group
-block_record: read but no implementation in FreeCAD
-block: read but no implementation in FreeCAD
-insert: read but no implementation in FreeCAD
-ellipse: read but no implementation in FreeCAD
-3dface: read but not implemented yet
+This script uses a DXF-parsing library created by Stani, Kitsu and Migius for Blender
+
+imports:
+line, polylines, lwpolylines, arcs, circles, texts, mtexts, layers (as groups), colors
+
+exports:
+lines, polylines, lwpolylines, circles, arcs, texts, colors,layers (from groups)
 '''
 
-import FreeCAD, os, Part, math, re
+import FreeCAD, os, Part, math, re, string
+from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
-from draftlibs import fcvec, dxfColorMap
+from PyQt4 import QtGui
 
 try: import FreeCADGui
 except ValueError: gui = False
@@ -85,6 +78,30 @@ def calcBulge(v1,bulge,v2):
 	perp = fcvec.crossproduct(chord)
 	endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
 	return fcvec.add(startpoint,endpoint)
+
+def getGroup(ob,exportList):
+	"checks if the object is part of a group"
+	for i in exportList:
+		if (i.Type == "App::DocumentObjectGroup"):
+			for j in i.Group:
+				if (j == ob):
+					return i.Label
+	return "0"
+
+def getACI(ob,text=False):
+	"gets the ACI color closest to the objects color"
+	if not gui: return 0
+	else:
+		if text:
+			col=ob.ViewObject.TextColor
+		else:
+			col=ob.ViewObject.LineColor
+		aci=[0,442]
+		for i in range (255,-1,-1):
+			ref=dxfColorMap.color_map[i]
+			dist=((ref[0]-col[0])**2 + (ref[1]-col[1])**2 + (ref[2]-col[2])**2)
+			if (dist <= aci[1]): aci=[i,dist]
+		return aci[0]
 
 class fcformat:
 	"this contains everything related to color/lineweight formatting"
@@ -142,49 +159,70 @@ class fcformat:
 			self.table = self.buildTable(parammappingfile)
 		
 	def buildTable(self,tablefile):
+		"builds a table for converting colors into linewidths"
 		try: f = pythonopen(tablefile)
 		except ValueError:
 			print "error: ",tablefile, " not found"
 			return None
 		table = {}
-		for l in f:
-			s = l.split("\t")
-			if "Color_" in s[0]:
-				index = int(s[0].split("_")[1])
-				if s[1] == "(Object)": color = "object"
-				else:
-					c = s[2].split(",")
-					color = [float(c[0])/255,float(c[1])/255,float(c[2])/255]
-					if (color == [0.0,0.0,0.0]) and (not self.brightbg):
-						color = [1.0,1.0,1.0]
-				if s[2] == "(Object)": width = "object"
-				else: width = float(s[10])*10
+		header = len(f.readline().split("\t"))
+		if header == 15:
+			for l in f:
+				s = l.split("\t")
+				if "Color_" in s[0]:
+					index = int(s[0].split("_")[1])
+					if s[1] == "(Object)": color = "object"
+					else:
+						c = s[2].split(",")
+						color = [float(c[0])/255,float(c[1])/255,float(c[2])/255]
+						if (color == [0.0,0.0,0.0]) and (not self.brightbg):
+							color = [1.0,1.0,1.0]
+					if s[2] == "(Object)": width = "object"
+					else: width = float(s[10])*10
+					table[index]=[color,width]
+		elif header == 3:
+			for l in f:
+				s = l.split("\t")
+				index = int(s[0])
+				c = string.replace(s[1],'"','')
+				c = c.split(",")
+				color = [float(c[0])/255,float(c[1])/255,float(c[2])/255]
+				width = float(s[2])
 				table[index]=[color,width]
+			for i in range(256):
+				if not i in table.keys():
+					table[i]=["object","object"]
+		else:
+			print "error building mapping table: file format not recognized"
+			table = None
+		print table
 		return table
 		
 	def formatObject(self,obj,dxfobj):
+		"applies color and linetype to objects"
 		if self.paramstyle == 1:
 			obj.ViewObject.LineColor = self.col
 			obj.ViewObject.LineWidth = self.lw
 		elif self.paramstyle == 2:
-			if dxfobj.color_index == 256: cm = self.getLayerColor(dxfobj)
+			if dxfobj.color_index == 256: cm = self.getGroupColor(dxfobj)
 			elif (dxfobj.color_index == 7) and self.brightbg: cm = [0.0,0.0,0.0]
 			else: cm = dxfColorMap.color_map[dxfobj.color_index]
 			obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
 			obj.ViewObject.LineWidth = self.lw
 		elif self.paramstyle == 3:
 			if dxfobj.color_index == 256:
-				cm = self.table[self.getLayerColor(dxfobj,index=True)][0]
-				wm = self.table[self.getLayerColor(dxfobj,index=True)][1]
+				cm = self.table[self.getGroupColor(dxfobj,index=True)][0]
+				wm = self.table[self.getGroupColor(dxfobj,index=True)][1]
 			else:
 				cm = self.table[dxfobj.color_index][0]
 				wm = self.table[dxfobj.color_index][1]
-			if cm == "object": cm = self.getLayerColor(dxfobj)
+			if cm == "object": cm = self.getGroupColor(dxfobj)
 			else: obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
 			if wm == "object": wm = self.lw
 			else: obj.ViewObject.LineWidth = wm
 
-	def getLayerColor(self,dxfobj,index=False):
+	def getGroupColor(self,dxfobj,index=False):
+		"get color of bylayer stuff"
 		name = dxfobj.layer
 		for table in self.dxf.tables.get_type("table"):
 			if table.name == "layer":
@@ -196,17 +234,18 @@ class fcformat:
 							else: return dxfColorMap.color_map[l.color]
 
 def processdxf(doc,filename):
+	"this does the translation of the dxf contents into FreeCAD Part objects"
 
 	global drawing # for debugging - so drawing is still accessible to python after the script
 	drawing = readDXF(filename)
 	print "dxf: parsing file ",filename
 	layers=[]
 
-#    getting config parameters
+	# getting config parameters
 
 	fmt = fcformat(drawing)
 
-#    drawing lines
+	# drawing lines
 
 	lines = drawing.entities.get_type("line")
 	if (len(lines) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(lines))+" lines...\n")
@@ -222,7 +261,7 @@ def processdxf(doc,filename):
 				newob.Shape = newseg.toShape()
 				if gui: fmt.formatObject(newob,line)
 						
-#    drawing polylines - at the moment arc segments get straightened...
+	# drawing polylines - at the moment arc segments get straightened...
 
 	polylines = drawing.entities.get_type("lwpolyline")
 	polylines.extend(drawing.entities.get_type("polyline"))
@@ -260,7 +299,7 @@ def processdxf(doc,filename):
 				fmt.formatObject(newob,polyline)
 
 				
-#    drawing arcs
+	# drawing arcs
 
 	arcs = drawing.entities.get_type("arc")
 	if (len(arcs) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(arcs))+" arcs...\n")
@@ -282,7 +321,7 @@ def processdxf(doc,filename):
 		newob.Shape = curve.toShape()
 		if gui: fmt.formatObject (newob,arc)
 
-#    drawing circles
+	# drawing circles
 
 	circles = drawing.entities.get_type("circle")
 	if (len(circles) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" circles...\n")
@@ -297,7 +336,7 @@ def processdxf(doc,filename):
 		newob.Shape = curve.toShape()
 		if gui: fmt.formatObject (newob,circle)
 
-#    drawing texts
+	# drawing texts
 
 	if fmt.paramtext:
 		texts = drawing.entities.get_type("mtext")
@@ -329,13 +368,15 @@ def processdxf(doc,filename):
 	del fmt
 	print "dxf: successfully finished DXF import."
 
-def open(filename): # called when freecad opens a file
+def open(filename):
+	"called when freecad opens a file"
 	docname = os.path.splitext(os.path.basename(filename))[0]
 	doc = FreeCAD.newDocument(docname)
 	doc.Label = decodeName(docname)
 	processdxf(doc,filename)
 
-def insert(filename,docname): # called when freecad imports a file
+def insert(filename,docname):
+	"called when freecad imports a file"
 	groupname = os.path.splitext(os.path.basename(filename))[0]
 	doc=FreeCAD.getDocument(docname)
 	importgroup = doc.addObject("App::DocumentObjectGroup",groupname)
@@ -343,3 +384,84 @@ def insert(filename,docname): # called when freecad imports a file
 	processdxf(doc,filename)
 	for l in layers:
 		importgroup.addObject(l)
+
+def export(exportList,filename):
+	"called when freecad exports a file"
+	dxf = dxfLibrary.Drawing()
+	for i in exportList:
+		if isinstance(i,Part.Feature):			
+			for wire in i.Shape.Wires:
+
+				# polylines
+				
+				points = []
+				bulges = []
+				flag= int(wire.isClosed())
+				org_point = [0.0,0.0,0.0]
+				edges = fcgeo.sortEdges(wire.Edges)
+				for edge in edges:
+					v1 = edge.Vertexes[0].Point
+					if (isinstance(edge.Curve,Part.Circle)):
+						v2 = edge.Vertexes[-1].Point
+						c = edge.Curve.Center
+						angle = abs(fcvec.angle(fcvec.new(c,v1),fcvec.new(c,v2)))
+						if (fcvec.angle(fcvec.new(c,v2)) < fcvec.angle(fcvec.new(c,v1))):
+							angle = -angle
+						bul = math.tan(angle/4)
+					else:
+						bul = 0.0
+					points.append((v1.x,v1.y,v1.z,None,None,bul))
+				if not wire.isClosed():
+					points.append(fcvec.tup(edges[-1].Vertexes[-1].Point))
+						
+				dxf.append(dxfLibrary.PolyLine(points, org_point, flag, color=getACI(i), layer=getGroup(i,exportList)))
+										
+			if (len(i.Shape.Wires) == 0) and (len(i.Shape.Edges) == 1):
+				edge = i.Shape.Edges[0]
+				if (len(i.Shape.Vertexes) == 2) and (isinstance (edge.Curve,Part.Line)):
+
+					# lines
+					
+					ve1=edge.Vertexes[0].Point
+					ve2=edge.Vertexes[1].Point
+					dxf.append(dxfLibrary.Line([fcvec.tup(ve1),fcvec.tup(ve2)], color=getACI(i), layer=getGroup(i,exportList)))
+				elif (len(i.Shape.Vertexes) == 1):
+
+					# circles
+					
+					center = fcvec.tup(edge.Curve.Center)
+					radius = i.Shape.Edges[0].Curve.Radius
+					dxf.append(dxfLibrary.Circle(center, radius, color=getACI(i), layer=getGroup(i,exportList)))
+
+				elif (len(i.Shape.Vertexes) == 3) or (isinstance (edge.Curve,Part.Circle)):
+
+					# arcs
+					
+					ce = i.Shape.Edges[0].Curve.Center
+					radius = i.Shape.Edges[0].Curve.Radius
+					ve1 = edge.Vertexes[0].Point
+					ve2 = edge.Vertexes[-1].Point
+					ang1=-math.degrees(fcvec.angle(fcvec.new(ce,ve1)))
+					ang2=-math.degrees(fcvec.angle(fcvec.new(ce,ve2)))
+					dxf.append(dxfLibrary.Arc(fcvec.tup(ce), radius, ang1, ang2, color=getACI(i), layer=getGroup(i,exportList)))
+
+		elif (i.Type == "App::Annotation"):
+
+			# texts
+
+			# temporary - as dxfLibrary doesn't support mtexts well, we use several single-line texts
+			# well, anyway, at the moment, Draft only writes single-line texts, so...
+			for text in i.LabelText:
+				point = fcvec.tup(FreeCAD.Vector(i.Position.x,i.Position.y-i.LabelText.index(text),i.Position.z))
+				if gui: height = float(i.ViewObject.FontSize)/100
+				else: height = 1
+				dxf.append(dxfLibrary.Text(text,point,height=height, color=getACI(i,text=True), layer=getGroup(i,exportList)))
+					
+	dxf.saveas(filename)
+	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
+
+
+
+
+
+
