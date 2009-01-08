@@ -361,6 +361,16 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
     return size;
 }
 
+void PropertyMeshKernel::transform(const Base::Matrix4D &rclMat)
+{
+    aboutToSetValue();
+    MeshCore::MeshKernel kernel;
+    _meshObject->swap(kernel);
+    kernel.Transform(rclMat);
+    _meshObject->swap(kernel);
+    hasSetValue();
+}
+
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
 {
     aboutToSetValue();

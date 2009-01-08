@@ -132,11 +132,14 @@ public:
     /// is called when you loose the edit mode
     virtual void unsetEdit(void);
     /// is called when the provider is in edit and the mouse is moved
-    virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm, SoPickedPoint* Point){return false;}
+    virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm, SoPickedPoint* Point)
+    { return false; }
     /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.
     virtual bool keyPressed(int key){return false;}
     /// is called when the Provider is in edit and the mouse is clicked 
-    virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos, const Base::Vector3f &norm, SoPickedPoint* Point){return false;}
+    virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos,
+                                    const Base::Vector3f &norm, SoPickedPoint* Point)
+    { return false; }
 
     //virtual const char* getEditModeName(void){return 0;}
 
@@ -175,8 +178,10 @@ protected:
     std::vector<std::string> getDisplayMaskModes() const;
     void setDefaultMode(int);
     //@}
-    /// helper methode to get picked enteties while editing
+    /// Helper method to get picked entities while editing
     SoPickedPoint* getPointOnRay(const SbVec3f& pos,const SbVec3f& dir, const View3DInventorViewer& viewer) const;
+
+protected:
     /// The root Separator of the ViewProvider
     SoSeparator *pcRoot;
     /// this is transformation for the provider

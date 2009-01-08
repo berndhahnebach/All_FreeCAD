@@ -49,90 +49,13 @@ PROPERTY_SOURCE(Gui::ViewProviderFeature, Gui::ViewProviderDocumentObject)
 
 ViewProviderFeature::ViewProviderFeature()
 {
-  // Create the selection node
-  pcHighlight = new SoFCSelection();
-  pcHighlight->ref();
-
-  float transparency;
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("View");
-
-  // switch off preselection
-  bool disablePre = hGrp->GetBool("DisablePreselection", false);
-  bool disableSel = hGrp->GetBool("DisableSelection", false);
-  if (disablePre) {
-    pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
-  } else {
-    // Search for a user defined value with the current color as default
-    SbColor highlightColor = pcHighlight->colorHighlight.getValue();
-    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-    int a = (highlight)&0xff;
-    highlight = hGrp->GetUnsigned("HighlightColor", highlight);
-    highlight += a;
-    highlightColor.setPackedValue((uint32_t)highlight, transparency);
-    pcHighlight->colorHighlight.setValue(highlightColor);
-  }
-  if (disableSel) {
-    pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
-    pcHighlight->style = Gui::SoFCSelection::BOX;
-  } else {
-    // Do the same with the selection color
-    SbColor selectionColor = pcHighlight->colorSelection.getValue();
-    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-    int a = (selection)&0xff;
-    selection = hGrp->GetUnsigned("SelectionColor", selection);
-    selection += a;
-    selectionColor.setPackedValue((uint32_t)selection, transparency);
-    pcHighlight->colorSelection.setValue(selectionColor);
-  }
 }
 
 ViewProviderFeature::~ViewProviderFeature()
 {
-  pcHighlight->unref();
 }
 
 void ViewProviderFeature::attach(App::DocumentObject *pcObj)
 {
-  ViewProviderDocumentObject::attach(pcObj);
-  pcHighlight->objectName = pcObj->getNameInDocument();
-  pcHighlight->documentName = pcObj->getDocument()->getName();
-  pcHighlight->subElementName = "Main";
+    ViewProviderDocumentObject::attach(pcObj);
 }
-
-SoPickedPointList ViewProviderFeature::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const
-{
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-  root->addChild(viewer.getHeadlight());
-  root->addChild(viewer.getCamera());
-  root->addChild(this->pcHighlight);
-
-  SoRayPickAction rp(viewer.getViewportRegion());
-  rp.setPickAll(pickAll);
-  rp.setPoint(pos);
-  rp.apply(root);
-  root->unref();
-
-  // returns a copy of the list
-  return rp.getPickedPointList();
-}
-
-SoPickedPoint* ViewProviderFeature::getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const
-{
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-  root->addChild(viewer.getHeadlight());
-  root->addChild(viewer.getCamera());
-  root->addChild(this->pcHighlight);
-
-  SoRayPickAction rp(viewer.getViewportRegion());
-  rp.setPoint(pos);
-  rp.apply(root);
-  root->unref();
-
-  // returns a copy of the point
-  SoPickedPoint* pick = rp.getPickedPoint();
-  //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
-  return (pick ? new SoPickedPoint(*pick) : 0);
-}
-

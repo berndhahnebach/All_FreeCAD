@@ -54,7 +54,7 @@ using namespace Gui;
 PROPERTY_SOURCE(Gui::ViewProviderGeometryObject, Gui::ViewProviderDocumentObject)
 
 const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
-      
+
 ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
 {
     ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
