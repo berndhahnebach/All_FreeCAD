@@ -92,7 +92,7 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 			_cValue = path + "/" + sName;
 		else 
 			if(value.fileName() == "")
-				_cValue = path + "/" + file.fileName();
+				_cValue = pathTrans + "/" + file.fileName();
 
 		if(path == pathTrans)
 			file.renameFile(_cValue.c_str());

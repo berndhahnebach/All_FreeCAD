@@ -63,6 +63,19 @@ SketchFlatInterface::~SketchFlatInterface()
 	bAlive=false;
 }
 
+//**************************************************************************
+// import export
+
+bool SketchFlatInterface::save(const char* FileName)
+{
+    return SaveToFile(const_cast<char*>(FileName));
+}
+
+bool SketchFlatInterface::load(const char* FileName)
+{
+    return LoadFromFile(const_cast<char*>(FileName));
+}
+
 
 //**************************************************************************
 // Methodes to add stuff

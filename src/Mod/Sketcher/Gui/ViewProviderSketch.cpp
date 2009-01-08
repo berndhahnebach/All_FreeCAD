@@ -37,6 +37,7 @@
 #include <Gui/Document.h>
 
 #include <Mod/Sketcher/App/SketchFlatInterface.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 
 #include "ViewProviderSketch.h"
 
@@ -360,7 +361,24 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+    // interface to the solver
 	SketchFlat = new SketchFlatInterface();
+
+    // insert the SketchFlat file
+    SketchFlat->load(getSketchObject()->SketchFlatFile.getValue());
+
+    createEditInventorNodes();
+
+	ShowGrid.setValue(true);
+
+    SketchFlat->solve();
+	draw();
+
+	return true;
+}
+
+void ViewProviderSketch::createEditInventorNodes(void)
+{
 	if(!EditRoot){
 		EditRoot = new SoSeparator;
 		pcRoot->addChild(EditRoot);
@@ -422,15 +440,23 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 	EditRoot->addChild( CurveSet );
 
-	ShowGrid.setValue(true);
-	draw();
-
-	return true;
 }
 
 void ViewProviderSketch::unsetEdit(void)
 {
 	ShowGrid.setValue(false);
+
+    // save the result of editing
+    Base::FileInfo OldName;
+    if(std::string(getSketchObject()->SketchFlatFile.getValue()) == "")
+        OldName = "Sketch.skf";
+    else
+        OldName = getSketchObject()->SketchFlatFile.getValue();
+
+    Base::FileInfo file = Base::FileInfo::getTempFileName(OldName.fileName().c_str());
+    SketchFlat->save(file.filePath().c_str());
+    getSketchObject()->SketchFlatFile.setValue(file.filePath().c_str());
+
 	// close the solver
 	delete(SketchFlat);
 
@@ -451,3 +477,7 @@ void ViewProviderSketch::unsetEdit(void)
 
 }
 
+Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)
+{
+    return dynamic_cast<Sketcher::SketchObject*>(pcObject);
+}

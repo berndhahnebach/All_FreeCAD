@@ -47,14 +47,7 @@
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
 
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <GeomAPI_PointsToBSplineSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+#include "SketchObject.h"
 
 using Base::Console;
 using namespace Part;
@@ -70,6 +63,32 @@ static PyObject * open(PyObject *self, PyObject *args)
 
     PY_TRY {
     } PY_CATCH;
+        //Base::Console().Log("Open in Part with %s",Name);
+        Base::FileInfo file(Name);
+
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
+
+        if (file.hasExtension("skf")) {
+            // create new document and add Import feature
+            App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+
+            Sketcher::SketchObject *pcFeature = (Sketcher::SketchObject *)pcDoc->addObject("Sketcher::SketchObject",file.fileNamePure().c_str());
+            pcFeature->SketchFlatFile.setValue(Name);
+
+            pcDoc->recompute();
+        }
+        //else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+        //    // create new document and add Import feature
+        //    App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+        //    Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
+        //    pcFeature->FileName.setValue(Name);
+        //    pcDoc->recompute();
+        //}
+         else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
 
     Py_Return;
 }
@@ -83,27 +102,50 @@ static PyObject * insert(PyObject *self, PyObject *args)
         return NULL;
 
     PY_TRY {
+        //Base::Console().Log("Insert in Part with %s",Name);
+        Base::FileInfo file(Name);
+
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
+        App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+        if (!pcDoc) {
+            PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
+            return NULL;
+        }
+
+         if (file.hasExtension("skf")) {
+
+            Sketcher::SketchObject *pcFeature = (Sketcher::SketchObject *)pcDoc->addObject("Sketcher::SketchObject",file.fileNamePure().c_str());
+            pcFeature->SketchFlatFile.setValue(Name);
+
+            pcDoc->recompute();
+        }
+        else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
+
     } PY_CATCH;
 
     Py_Return;
 }
 
 /* module functions */
-static PyObject * read(PyObject *self, PyObject *args)
-{
-    const char* Name;
-    if (!PyArg_ParseTuple(args, "s",&Name))
-        return NULL;
-    PY_TRY {
-    } PY_CATCH;
-  
-    Py_Return;
-}
+//static PyObject * read(PyObject *self, PyObject *args)
+//{
+//    const char* Name;
+//    if (!PyArg_ParseTuple(args, "s",&Name))
+//        return NULL;
+//    PY_TRY {
+//    } PY_CATCH;
+//  
+//    Py_Return;
+//}
 
 /* registration table  */
 struct PyMethodDef Sketcher_methods[] = {
     {"open"   , open,    1},
     {"insert" , insert,  1},
-    {"read"   , read,  1},
+//    {"read"   , read,  1},
     {NULL, NULL}        /* end of table marker */
 };
