@@ -79,7 +79,6 @@ void PointKernel::operator = (const PointKernel& Kernel)
     }
 }
 
-
 unsigned int PointKernel::getMemSize (void) const
 {
     return _Points.size() * sizeof(Base::Vector3f);
@@ -150,7 +149,6 @@ void PointKernel::save(std::ostream& out) const
 {
     //kernel.Write(out);
 }
-
 
 // ----------------------------------------------------------------------------
 

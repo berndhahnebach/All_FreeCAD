@@ -28,6 +28,7 @@
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <BRepBndLib.hxx>
+# include <BRepBuilderAPI_GTransform.hxx>
 # include <Bnd_Box.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
@@ -38,6 +39,8 @@
 # include <TopoDS_Iterator.hxx>
 # include <TopExp.hxx>
 # include <Standard_Failure.hxx>
+# include <gp_GTrsf.hxx>
+# include <gp_Trsf.hxx>
 #endif
 
 
@@ -119,6 +122,19 @@ void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                                  float accuracy, uint16_t flags) const
 {
     _Shape.getFaces(aPoints, aTopo, accuracy, flags);
+}
+
+void PropertyPartShape::transform(const Base::Matrix4D &rclTrf)
+{
+    gp_Trsf mat;
+    mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+                  0.00001,0.00001);
+    mat.SetScaleFactor(rclTrf[3][3]);
+    // geometric transformation
+    BRepBuilderAPI_GTransform mkTrsf(this->_Shape._Shape, gp_GTrsf(mat));
+    setValue(mkTrsf.Shape());
 }
 
 PyObject *PropertyPartShape::getPyObject(void)

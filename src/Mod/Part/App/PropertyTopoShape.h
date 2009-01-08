@@ -55,6 +55,12 @@ public:
     const TopoShape& getShape() const;
     //@}
 
+    /** @name Modification */
+    //@{
+    /// Transform the real shape data
+    void transform(const Base::Matrix4D &rclMat);
+    //@}
+
     /** @name Getting basic geometric entities */
     //@{
     /** Returns the bounding box around the underlying mesh kernel */

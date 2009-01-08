@@ -71,6 +71,10 @@ public:
 
     inline void setTransform(const Base::Matrix4D& rclTrf){_Mtrx = rclTrf;}
     inline Base::Matrix4D getTransform(void) const{return _Mtrx;}
+    std::vector<Base::Vector3f>& getBasicPoints()
+    { return this->_Points; }
+    const std::vector<Base::Vector3f>& getBasicPoints() const
+    { return this->_Points; }
 
     virtual Base::BoundBox3d getBoundBox(void)const;
 
@@ -105,7 +109,6 @@ public:
     }
 
     void clear(void){_Points.clear();}
-
 
 
     /// get the points
@@ -148,6 +151,9 @@ public:
         Base::Vector3d _point;
         std::vector<Base::Vector3f>::const_iterator _p_it;
     };
+
+    typedef const_point_iterator const_iterator;
+
     /** @name Iterator */
     //@{
     const_point_iterator begin() const
@@ -155,8 +161,6 @@ public:
     const_point_iterator end() const
     { return const_point_iterator(this, _Points.end()); }
     //@}
-
-    typedef const_point_iterator const_iterator;
 };
 
 } // namespace Points

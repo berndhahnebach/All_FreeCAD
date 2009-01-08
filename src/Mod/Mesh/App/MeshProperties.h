@@ -170,8 +170,10 @@ public:
         float Accuracy, uint16_t flags=0) const;
     //@}
 
-    /** @name Modify */
+    /** @name Modification */
     //@{
+    /// Transform the real mesh data
+    void transform(const Base::Matrix4D &rclMat);
     void deletePointIndices ( const std::vector<unsigned long>& );
     void deleteFacetIndices ( const std::vector<unsigned long>& );
     void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );

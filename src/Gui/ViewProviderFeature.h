@@ -37,36 +37,19 @@ class View3DInventorViewer;
 
 class GuiExport ViewProviderFeature:public ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(Gui::ViewProviderFeature);
+    PROPERTY_HEADER(Gui::ViewProviderFeature);
 
 public:
-  /// constructor.
-  ViewProviderFeature();
+    /// constructor.
+    ViewProviderFeature();
 
-  /// destructor.
-  virtual ~ViewProviderFeature();
+    /// destructor.
+    virtual ~ViewProviderFeature();
 
-  /**
-   * Attaches the document object to this view provider.
-   */
-  virtual void attach(App::DocumentObject *pcObj);
-  SoFCSelection* getHighlightNode() const { return pcHighlight; }
-
-  /**
-   * Returns a list of picked points from the geometry under \a pcHighlight.
-   * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
-   * all intersection points will be picked. 
-   */
-  SoPickedPointList getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll=false) const;
-  /**
-   * This method is provided for convenience and does basically the same as getPickedPoints() unless that only the closest
-   * point to the camera will be picked.
-   * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
-   */
-  SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
-
-protected:
-  SoFCSelection* pcHighlight;
+    /**
+     * Attaches the document object to this view provider.
+     */
+    virtual void attach(App::DocumentObject *pcObj);
 };
 
 } // namespace Gui

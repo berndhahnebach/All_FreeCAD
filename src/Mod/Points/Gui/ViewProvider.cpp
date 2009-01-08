@@ -112,8 +112,9 @@ void ViewProviderPoints::createPoints(const Points::PointKernel& cPts)
 
     // get all points
     int idx=0;
-    for (Points::PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++) {
-        pcPointsCoord->point.set1Value(idx, (float)it->x, (float)it->y, (float)it->z);
+    const std::vector<Base::Vector3f>& kernel = cPts.getBasicPoints();
+    for (std::vector<Base::Vector3f>::const_iterator it = kernel.begin(); it != kernel.end(); ++it, idx++) {
+        pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
     }
 
     pcPoints->numPoints = cPts.size();

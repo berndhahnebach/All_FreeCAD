@@ -170,7 +170,7 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
     }
 
     // clean up
-    if(Point)
+    if (Point)
         delete Point;
 }
 
@@ -299,16 +299,9 @@ PyObject* ViewProvider::getPyObject()
 
 SoPickedPoint* ViewProvider::getPointOnRay(const SbVec3f& pos,const SbVec3f& dir, const View3DInventorViewer& viewer) const
 {
-    //SoSeparator* root = new SoSeparator;
-    //root->ref();
-    //root->addChild(viewer.getHeadlight());
-    //root->addChild(viewer.getCamera());
-    ////root->addChild(this->pcHighlight);
-
     SoRayPickAction rp(viewer.getViewportRegion());
     rp.setRay(pos,dir);
     rp.apply(pcRoot);
-    //root->unref();
 
     // returns a copy of the point
     SoPickedPoint* pick = rp.getPickedPoint();

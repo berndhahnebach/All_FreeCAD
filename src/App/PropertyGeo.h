@@ -289,22 +289,10 @@ public:
     PropertyComplexGeoData();
     ~PropertyComplexGeoData();
 
-    /** @name Placement control */
+    /** @name Modification */
     //@{
-    /** Applies an additional transformation to the current transformation. */
-    void applyTransform(const Base::Matrix4D& rclTrf);
-    /** Applies an additional translation to the current transformation. */
-    void applyTranslation(const Base::Vector3d&);
-    /** Applies an additional rotation to the current transformation. */
-    void applyRotation(const Base::Rotation&);
-    /** Override the current transformation with a placement
-     * using the setTransform() method.
-     */
-    void setPlacement(const Base::Placement& rclPlacement);
-    /** Return the current transformation as placement using 
-     * getTransform().
-     */
-    Base::Placement getPlacement() const;
+    /// Applies a transformation on the real geometric data type
+    virtual void transform(const Base::Matrix4D &rclMat) = 0;
     //@}
 
     /** @name Getting basic geometric entities */

@@ -22,8 +22,8 @@
 
 
 
-#ifndef Points_FEATURE_H
-#define Points_FEATURE_H
+#ifndef POINTS_FEATURE_H
+#define POINTS_FEATURE_H
 
 #include <App/GeoFeature.h>
 #include <App/PropertyLinks.h>

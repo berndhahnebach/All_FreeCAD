@@ -33,6 +33,7 @@
 # include <BRepAlgoAPI_Cut.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
+# include <BRepBuilderAPI_GTransform.hxx>
 # include <BRepBuilderAPI_NurbsConvert.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakeThickSolid.hxx>
@@ -86,6 +87,7 @@
 # include <Standard_Failure.hxx>
 # include <StlAPI_Writer.hxx>
 # include <Standard_Failure.hxx>
+# include <gp_GTrsf.hxx>
 #endif
 # include <BRepMesh.hxx>
 # include <BRepBuilderAPI_Sewing.hxx>
@@ -680,13 +682,14 @@ TopoDS_Shape TopoShape::makeThickSolid(const TopTools_ListOfShape& remFace,
 
 TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
 {
-    gp_Trsf mov;
-    mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+    gp_Trsf mat;
+    mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
                   rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
                   rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
                   0.00001,0.00001);
-    mov.SetScaleFactor(rclTrf[3][3]);
-    BRepBuilderAPI_Transform mkTrf(this->_Shape, mov);
+    mat.SetScaleFactor(rclTrf[3][3]);
+    // geometric transformation
+    BRepBuilderAPI_GTransform mkTrf(this->_Shape, gp_GTrsf(mat));
     return mkTrf.Shape();
 }
 
