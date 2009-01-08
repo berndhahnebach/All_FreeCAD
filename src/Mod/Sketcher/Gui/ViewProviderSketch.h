@@ -41,6 +41,7 @@ namespace Gui {
 
 namespace Sketcher {
 	class SketchFlatInterface;
+	class SketchObject;
 }
 
 namespace SketcherGui {
@@ -107,11 +108,17 @@ public:
 	/// get the sketch mode
 	int getSketchMode(void){return Mode;}
 
+
+    Sketcher::SketchObject* getSketchObject(void);
+
 protected:
 
 
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
+
+  // helper
+  void createEditInventorNodes(void);
 
   // modes while sketching
   int Mode;

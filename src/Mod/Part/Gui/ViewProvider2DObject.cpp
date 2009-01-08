@@ -52,8 +52,8 @@ PROPERTY_SOURCE(PartGui::ViewProvider2DObject, PartGui::ViewProviderPart)
        
 ViewProvider2DObject::ViewProvider2DObject()
 {
-    ADD_PROPERTY(ShowGrid,(true));
-
+    ADD_PROPERTY_TYPE(ShowGrid,(true),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
+    ADD_PROPERTY_TYPE(GridSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Gap size of the grid");
 
     GridRoot = new SoSeparator();
     GridRoot->ref();
@@ -73,10 +73,10 @@ ViewProvider2DObject::~ViewProvider2DObject()
 // **********************************************************************************
 
 SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
-  double dx = 10;                       // carpet size
-  double dy = 10;
+  double dx = 10 * GridSize.getValue();                       // carpet size
+  double dy = 10 * GridSize.getValue();
   double dz = 0.0;                     // carpet-grid separation
-  int gridsize = 50;                    // grid size
+  int gridsize = 20;                    // grid size
 
   SoSeparator *parent = GridRoot;
   GridRoot->removeAllChildren();
@@ -158,6 +158,12 @@ void ViewProvider2DObject::onChanged(const App::Property* prop)
             createGrid();
         else
             GridRoot->removeAllChildren();
+    }
+    if (prop == &GridSize) {
+        if(ShowGrid.getValue()){
+            GridRoot->removeAllChildren();
+            createGrid();
+        }
     }
 }
 

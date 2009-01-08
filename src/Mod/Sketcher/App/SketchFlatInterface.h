@@ -47,6 +47,9 @@ public:
     /// Destruction
     virtual ~SketchFlatInterface();
 
+    bool save(const char* FileName);
+    bool load(const char* FileName);
+
     unsigned int addLine(double x, double y);
 
 

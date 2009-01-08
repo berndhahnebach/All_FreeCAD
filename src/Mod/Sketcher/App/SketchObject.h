@@ -26,6 +26,7 @@
 #define __SketchObject_H__
 
 #include <App/PropertyStandard.h>
+#include <App/PropertyFile.h>
 
 #include <Mod/Part/App/Part2DObject.h>
 
@@ -40,6 +41,9 @@ class SketchObject :public Part::Part2DObject
 public:
     SketchObject();
 
+    /// Property
+    App::PropertyFileIncluded SketchFlatFile;
+
     /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
@@ -50,6 +54,10 @@ public:
         return "SketcherGui::ViewProviderSketch";
     }
     //@}
+
+    bool save(const char* FileName);
+    bool load(const char* FileName);
+
 
 };
 

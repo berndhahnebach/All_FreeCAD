@@ -28,6 +28,7 @@
 
 
 #include "SketchObject.h"
+#include "SketchFlatInterface.h"
 
 
 using namespace Sketcher;
@@ -38,22 +39,22 @@ PROPERTY_SOURCE(Sketcher::SketchObject, Part::Part2DObject)
 
 SketchObject::SketchObject()
 {
+    ADD_PROPERTY_TYPE(SketchFlatFile,(0),"",(App::PropertyType)(App::Prop_None),"SketchFlat file (*.skf) which defines this sketch");
 }
 
 short SketchObject::mustExecute() const
 {
-    //if (x.isTouched() ||
-    //    y.isTouched() ||
-    //    z.isTouched() ||
-    //    l.isTouched() ||
-    //    h.isTouched() ||
-    //    w.isTouched() )
-    //    return 1;
+    if ( SketchFlatFile.isTouched() )
+        return 1;
     return 0;
 }
 
+
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
+    //SketchFlatInterface temp;
+    //temp.load(SketchFlatFile.getValue());
+
 
     return App::DocumentObject::StdReturn;
 }

@@ -69,7 +69,7 @@ public:
     void setValue(const char* sFile, const char* sName=0);
     const char* getValue(void) const;
 
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyStringItem"; }
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileIncludedItem"; }
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
     

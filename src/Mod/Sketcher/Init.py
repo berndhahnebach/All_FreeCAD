@@ -43,5 +43,5 @@ ParGrp.SetString("WorkBenchName",    "Sketcher Design")
 ParGrp.SetString("WorkBenchModule",  "SketcherWorkbench.py")
 
 
-#FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","Sketcher")
+FreeCAD.EndingAdd("SketchFlat files (*.skf)","Sketcher")
 

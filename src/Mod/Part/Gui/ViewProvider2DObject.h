@@ -51,7 +51,9 @@ public:
   /// destructor
   virtual ~ViewProvider2DObject();
 
+  /// Property to switch the grid on and off
   App::PropertyBool ShowGrid;
+  App::PropertyDistance GridSize;
 
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);

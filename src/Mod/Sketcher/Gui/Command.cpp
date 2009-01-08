@@ -86,10 +86,8 @@ CmdSketcherLeavSketch::CmdSketcherLeavSketch()
 
 void CmdSketcherLeavSketch::activated(int iMsg)
 {
- /*   openCommand("Sketcher Create a new Sketch");
-    doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    commitCommand();*/
-      
+   	Gui::Document *doc = getActiveGuiDocument();
+    doc->resetEdit();      
 }
 
 bool CmdSketcherLeavSketch::isActive(void)
