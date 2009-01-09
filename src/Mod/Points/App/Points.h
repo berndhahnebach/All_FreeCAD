@@ -25,6 +25,7 @@
 #define POINTS_POINT_H
 
 #include <vector>
+#include <iterator>
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
@@ -127,9 +128,16 @@ public:
     class PointsAppExport const_point_iterator
     {
     public:
+        typedef std::vector<Base::Vector3f>::const_iterator iter_type;
+        typedef iter_type::difference_type difference_type;
+        typedef iter_type::iterator_category iterator_category;
+        typedef const Base::Vector3d* pointer;
+        typedef const Base::Vector3d& reference;
+        typedef Base::Vector3d value_type;
+
         const_point_iterator(const PointKernel*, std::vector<Base::Vector3f>::const_iterator index);
         const_point_iterator(const const_point_iterator& pi);
-        ~const_point_iterator();
+        //~const_point_iterator();
 
         const_point_iterator& operator=(const const_point_iterator& fi);
         const Base::Vector3d& operator*();
@@ -153,6 +161,7 @@ public:
     };
 
     typedef const_point_iterator const_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     /** @name Iterator */
     //@{
@@ -160,6 +169,10 @@ public:
     { return const_point_iterator(this, _Points.begin()); }
     const_point_iterator end() const
     { return const_point_iterator(this, _Points.end()); }
+    const_reverse_iterator rbegin() const
+    { return const_reverse_iterator(end()); }
+    const_reverse_iterator rend() const
+    { return const_reverse_iterator(begin()); }
     //@}
 };
 
