@@ -446,19 +446,32 @@ void ViewProviderSketch::unsetEdit(void)
 {
 	ShowGrid.setValue(false);
 
-    // save the result of editing
-    Base::FileInfo OldName;
-    if(std::string(getSketchObject()->SketchFlatFile.getValue()) == "")
-        OldName = "Sketch.skf";
-    else
-        OldName = getSketchObject()->SketchFlatFile.getValue();
+    std::string file;
 
-    Base::FileInfo file = Base::FileInfo::getTempFileName(OldName.fileName().c_str());
-    SketchFlat->save(file.filePath().c_str());
-    getSketchObject()->SketchFlatFile.setValue(file.filePath().c_str());
+    // save the result of editing
+    if(std::string(getSketchObject()->SketchFlatFile.getValue())==""){
+        // make a meaningfull name
+        Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath() + "/" + getSketchObject()->getNameInDocument() + ".skf");
+        if(temp.exists())
+            // save under save name
+            file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()->SketchFlatFile.getDocTransientPath().c_str());
+        else
+            file = temp.filePath();
+    }else{
+        // save under old name
+        file = getSketchObject()->SketchFlatFile.getExchangeTempFile();
+    }
+
+    // save the sketch and set the property
+    SketchFlat->save(file.c_str());
+    getSketchObject()->SketchFlatFile.setValue(file.c_str());
 
 	// close the solver
 	delete(SketchFlat);
+
+    // recompute the part
+    getSketchObject()->getDocument()->recompute();
+
 
 	// empty the nodes
 	EditRoot->removeAllChildren();

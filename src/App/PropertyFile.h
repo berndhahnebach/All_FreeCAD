@@ -44,7 +44,8 @@ namespace App
 {
 
 /** File properties
- */
+  * This property holds a file name
+  */
 class AppExport PropertyFile : public PropertyString
 {
     TYPESYSTEM_HEADER();
@@ -57,6 +58,18 @@ public:
 };
 
 /** File include properties
+  * This property save not only the file name like PropertyFile
+  * it also includes the file itself into the document. The file
+  * get not loaded in memory, it get copied from the Document Archiv
+  * into the document transient directory. There it is accessebly for
+  * the Algorithems. You get the transient path throug getDocTransientPath()
+  * Its allowed to read the file. Its not allowed to write the file
+  * directly in the transient path! That would undermine the Undo/Redo
+  * Framework. Its only allowed to use setValue() to change the file.
+  * If you give a file name outsiden the transient dir to setValue() it
+  * will copy the file. If you give a file name in the transient path it
+  * will just rename and use the same file. You can use getExchangeTempFile() to 
+  * get a file name in the transient dir to write a new file version.
  */
 class AppExport PropertyFileIncluded : public Property
 {
@@ -83,7 +96,14 @@ public:
     virtual void Paste(const Property &from);
 
 	// get the transient path if the property is in a DocumentObject
-	std::string getDocTransientPath(void);
+	std::string getDocTransientPath(void) const;
+
+    /** get a temp file name in the transient path of the document.
+      * Using this file for new Version of the file and set 
+      * this file with setValue() is the fastest way to change
+      * the File.
+      */
+    std::string getExchangeTempFile(void) const;
 
 protected:
     std::string _cValue;

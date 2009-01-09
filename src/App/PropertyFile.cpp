@@ -61,7 +61,7 @@ PropertyFileIncluded::~PropertyFileIncluded()
 
 }
 
-std::string PropertyFileIncluded::getDocTransientPath(void)
+std::string PropertyFileIncluded::getDocTransientPath(void) const
 {
 	PropertyContainer *co = getContainer();
 	if(co->isDerivedFrom(DocumentObject::getClassTypeId()))
@@ -69,6 +69,13 @@ std::string PropertyFileIncluded::getDocTransientPath(void)
 
 	return std::string();
 }
+
+std::string PropertyFileIncluded::getExchangeTempFile(void) const
+{
+    return Base::FileInfo::getTempFileName(Base::FileInfo(getValue()).fileName().c_str(), getDocTransientPath().c_str());
+    //return std::string();
+}
+
 
 void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 {
@@ -211,6 +218,8 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
     if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
+        // is in the document transient path
+        _cValue = getDocTransientPath() + "/" + file;
     }
 }
 
@@ -231,22 +240,15 @@ void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
     Base::InputStream from(reader);
 
 	std::ofstream to(_cValue.c_str());
-	if (!to) throw Base::Exception("PropertyFileIncluded::RestoreDocFile() File in document transient dir deleted");
+	if (!to) 
+        throw Base::Exception("PropertyFileIncluded::RestoreDocFile() File in document transient dir deleted");
 
+    // copy plain data
 	int8_t ch;
 	while(from){
 		from >> ch;
 		to.put(char(ch));
 	}
-
-
-    //uint32_t uCt=0;
-    //str >> uCt;
-    //std::vector<float> values(uCt);
-    //for (std::vector<float>::iterator it = values.begin(); it != values.end(); ++it) {
-    //    str >> *it;
-    //}
-    //setValues(values);
 }
 
 Property *PropertyFileIncluded::Copy(void) const
