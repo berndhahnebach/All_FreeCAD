@@ -38,7 +38,6 @@ Placement::Placement()
 
 Base::Matrix4D Placement::toMatrix(void) const
 {
-    //Base::Rotation rot((float)this->_q[0],(float)this->_q[1],(float)this->_q[2],(float)this->_q[3]);
     Base::Matrix4D matrix;
     _rot.getValue(matrix);
     matrix[0][3] = this->_pos.x;
@@ -49,8 +48,7 @@ Base::Matrix4D Placement::toMatrix(void) const
 
 void Placement::fromMatrix(const Base::Matrix4D& matrix)
 {
-    Base::Rotation rot(matrix);
-    _rot = rot;
+    _rot.setValue(matrix);
     this->_pos.x = matrix[0][3];
     this->_pos.y = matrix[1][3];
     this->_pos.z = matrix[2][3];

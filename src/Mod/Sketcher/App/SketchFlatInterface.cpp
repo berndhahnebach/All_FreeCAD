@@ -68,12 +68,12 @@ SketchFlatInterface::~SketchFlatInterface()
 
 bool SketchFlatInterface::save(const char* FileName)
 {
-    return SaveToFile(const_cast<char*>(FileName));
+    return (SaveToFile(const_cast<char*>(FileName))?true:false);
 }
 
 bool SketchFlatInterface::load(const char* FileName)
 {
-    return LoadFromFile(const_cast<char*>(FileName));
+    return (LoadFromFile(const_cast<char*>(FileName))?true:false);
 }
 
 

@@ -169,9 +169,9 @@ PointKernel::const_point_iterator::const_point_iterator
 {
 }
 
-PointKernel::const_point_iterator::~const_point_iterator()
-{
-}
+//PointKernel::const_point_iterator::~const_point_iterator()
+//{
+//}
 
 PointKernel::const_point_iterator& 
 PointKernel::const_point_iterator::operator=(const PointKernel::const_point_iterator& pi)

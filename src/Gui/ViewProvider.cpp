@@ -131,7 +131,7 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
 
     // get the line in 3D
     vol.projectPointToLine( pos, ptNear, ptFar );
-    // for convinients make a pick ray action to get the (pontetialy) picked enteti in the provider
+    // for convenience make a pick ray action to get the (potentially) picked entity in the provider
     SoPickedPoint* Point = Provider->getPointOnRay(ptNear,ptFar-ptNear,*view);
     Base::Vector3f pNear(ptNear[0],ptNear[1],ptNear[2]),pFar(ptFar[0],ptFar[1],ptFar[2]);
 
