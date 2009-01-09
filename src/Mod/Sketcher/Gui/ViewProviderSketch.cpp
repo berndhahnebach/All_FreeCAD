@@ -292,17 +292,27 @@ void ViewProviderSketch::draw(void)
 	std::vector<Base::Vector3d> coords;
 	double x,y;
 	double x0, y0, dx, dy;
-
+    int i=0,l=0,r=0;
 	// sketchflat generate curves out of enteties:
 	SketchFlat->setUpRendering();
 
 	// go throug the curves and collect the points
 	int Nbr = SketchFlat->nbrOfCurves();
-	int i=0;
 	for( i=0 ; i<Nbr;++i){
 		SketchFlat->getCurvePoints(coords,i);
+        std::vector<Base::Vector3d>::const_iterator it=coords.begin();
+	    while(it!=coords.end()){
+		    CurvesCoordinate->point.set1Value(r,SbVec3f(it->x,it->y,0.0f));
+		    ++it;r++;
+		    CurvesCoordinate->point.set1Value(r,SbVec3f(it->x,it->y,0.0f));
+            ++it;r++;
+	    }
+		CurveSet->numVertices.set1Value(i,coords.size());
+		CurvesMaterials->diffuseColor.set1Value(i,fCurveColor);
+        coords.clear();
 	}
 
+    // set up datum lines
 	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
 		LinesMaterials->diffuseColor.set1Value(i,fDatumLineColor);
 		SketchFlat->getLine(i, x0, y0, dx, dy);
@@ -311,18 +321,6 @@ void ViewProviderSketch::draw(void)
 		LineSet->numVertices.set1Value(i,2);
 	}
 
-	// set up the Curves
-	i=0;
-    CurvesMaterials->diffuseColor.setNum(Nbr);
-    CurvesCoordinate->point.setNum(Nbr*2);
-    CurveSet->numVertices.setNum(Nbr);
-	for(std::vector<Base::Vector3d>::const_iterator it=coords.begin();it!=coords.end();++it,i++){
-		CurvesMaterials->diffuseColor.set1Value(i,fCurveColor);
-		CurvesCoordinate->point.set1Value(i*2  ,SbVec3f(it->x,it->y,0.0f));
-		++it;
-		CurvesCoordinate->point.set1Value(i*2+1,SbVec3f(it->x,it->y,0.0f));
-		CurveSet->numVertices.set1Value(i,2);
-	}
 
 	// set up the points
 	for(i=0 ; i<SketchFlat->nbrOfPoints();++i){
