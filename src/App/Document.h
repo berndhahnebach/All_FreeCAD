@@ -169,7 +169,7 @@ public:
     /// Recompute all touched features
     void recompute();
     /// Recompute only one feature
-    void recomputeFeature(AbstractFeature* Feat);
+    void recomputeFeature(DocumentObject* Feat);
     /// get the error log from the recompute run
     const std::vector<App::DocumentObjectExecReturn*> &getRecomputeLog(void)const{return _RecomputeLog;}
     /// get the text of the error of a spezified object

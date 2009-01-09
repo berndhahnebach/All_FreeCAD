@@ -970,7 +970,7 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
     return false;
 }
 
-void Document::recomputeFeature(AbstractFeature* Feat)
+void Document::recomputeFeature(DocumentObject* Feat)
 {
      // delete recompute log
     for( std::vector<App::DocumentObjectExecReturn*>::iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
