@@ -182,6 +182,43 @@ private:
   QString _url;
 };
 
+// ----------------------------------------------------------------------
+
+/**
+ * The LabelButton class provides a label with a button on the right side.
+ * @author Werner Mayer
+ */
+class GuiExport LabelButton : public QWidget
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QVariant value  READ value  WRITE setValue)
+
+public:
+    LabelButton (QWidget * parent = 0);
+    virtual ~LabelButton();
+
+    QVariant value() const;
+    void setValue(const QVariant&);
+
+    QLabel *getLabel() const;
+    QPushButton *getButton() const;
+
+protected:
+    virtual void showValue(const QVariant&) = 0;
+
+protected Q_SLOTS:
+    virtual void browse() = 0;
+
+Q_SIGNALS:
+    void valueChanged(const QVariant &);
+
+private:
+    QLabel *label;
+    QPushButton *button;
+    QVariant _val;
+};
+
 } // namespace Gui
 
 #endif // GUI_WIDGETS_H

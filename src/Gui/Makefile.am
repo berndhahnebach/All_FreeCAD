@@ -83,6 +83,7 @@ BUILT_SOURCES=\
 		ui_DlgTreeWidget.h \
 		ui_SceneInspector.h \
 		ui_InputVector.h \
+		ui_Placement.h \
 		DocumentPy.cpp \
 		PythonWorkbenchPy.cpp \
 		WorkbenchPy.cpp \
@@ -119,7 +120,8 @@ libFreeCADGui_la_UI=\
 		DlgToolbars.ui \
 		DlgTreeWidget.ui \
 		SceneInspector.ui \
-		InputVector.ui
+		InputVector.ui \
+		Placement.ui
 
 libFreeCADGui_la_BUILT=\
 		DocumentPy.h \
@@ -205,6 +207,8 @@ libFreeCADGui_la_SOURCES=\
 		HelpView.cpp \
 		InputVector.cpp \
 		InputVector.h \
+		Placement.cpp \
+		Placement.h \
 		Macro.cpp \
 		MainWindow.cpp \
 		MDIView.cpp \

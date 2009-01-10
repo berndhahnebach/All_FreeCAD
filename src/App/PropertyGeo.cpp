@@ -36,6 +36,7 @@
 #include <Base/Rotation.h>
 #include <Base/VectorPy.h>
 #include <Base/MatrixPy.h>
+#include <Base/PlacementPy.h>
 
 #include "Placement.h"
 
@@ -495,13 +496,17 @@ void PropertyPlacement::setPyObject(PyObject *value)
     if (PyObject_TypeCheck(value, &(Base::MatrixPy::Type))) {
         Base::MatrixPy  *pcObject = (Base::MatrixPy*)value;
         Base::Matrix4D mat = pcObject->value();
-        Base::Rotation rot(mat);
-        aboutToSetValue();
-        _cPos._rot = rot;
-        _cPos._pos.x = mat[0][3];
-        _cPos._pos.y = mat[1][3];
-        _cPos._pos.z = mat[2][3];
-        hasSetValue();
+        Base::Placement p;
+        p.fromMatrix(mat);
+        setValue(p);
+    }
+    else if (PyObject_TypeCheck(value, &(Base::PlacementPy::Type))) {
+        setValue(*static_cast<Base::PlacementPy*>(value)->getPlacementPtr());
+    }
+    else {
+        std::string error = std::string("type must be 'Matrix' or 'Placement', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
     }
 }
 

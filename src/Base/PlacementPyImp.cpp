@@ -79,6 +79,17 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    PyErr_Clear();
+    PyObject* d;
+    double angle;
+    if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
+                                        &(Base::VectorPy::Type), &o)) {
+        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
+        getPlacementPtr()->_pos = static_cast<Base::VectorPy*>(o)->value();
+        getPlacementPtr()->_rot = rot;
+        return 0;
+    }
+
     PyErr_SetString(PyExc_Exception, "empty parameter list, matrix or placement expected");
     return -1;
 }

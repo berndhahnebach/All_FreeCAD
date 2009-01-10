@@ -47,6 +47,7 @@ private Q_SLOTS:
     void on_direction_activated(int);
 
 public:
+    virtual Base::Vector3f getDirection() const = 0;
     Base::Vector3f getUserDirection(bool* ok=0) const;
 
 private:
@@ -142,20 +143,16 @@ template <class Ui>
 class LocationInterfaceComp : public Ui
 {
 public:
-    LocationInterfaceComp()
+    LocationInterfaceComp(QDialog *dlg)
     {
-    }
-    ~LocationInterfaceComp()
-    {
-    }
-
-    void setupUi(QDialog *dlg)
-    {
-        Ui::setupUi(dlg);
+        this->setupUi(dlg);
         // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
         this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
         this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
         this->direction->setItemData(2, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,0,1)));
+    }
+    ~LocationInterfaceComp()
+    {
     }
 
     Base::Vector3f getPosition() const
@@ -224,9 +221,8 @@ class LocationDialogComp : public LocationDialog
 {
 public:
     LocationDialogComp(QWidget* parent = 0, Qt::WFlags fl = 0)
-      : LocationDialog(parent, fl)
+      : LocationDialog(parent, fl), ui(this)
     {
-        ui.setupUi(this);
     }
     virtual ~LocationDialogComp()
     {

@@ -45,6 +45,7 @@
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/Widgets.h>
 #include <Gui/FileDialog.h>
+#include <Gui/Placement.h>
 
 #include "PropertyItem.h"
 
@@ -744,6 +745,145 @@ double PropertyVectorItem::z() const
 void PropertyVectorItem::setZ(double z)
 {
     setValue(QVariant::fromValue(Base::Vector3f(x(), y(), z)));
+}
+
+// --------------------------------------------------------------------
+
+namespace Gui { namespace PropertyEditor {
+class PlacementEditor : public Gui::LabelButton
+{
+public:
+    PlacementEditor(QWidget * parent = 0) : LabelButton(parent)
+    {
+    }
+    ~PlacementEditor()
+    {
+    }
+protected:
+    void browse()
+    {
+        Gui::Dialog::Placement dlg(this);
+        dlg.setPlacement(value().value<Base::Placement>());
+        if (dlg.exec()) {
+            QVariant data = QVariant::fromValue<Base::Placement>
+                (dlg.getPlacement());
+            setValue(data);
+        }
+    }
+    void showValue(const QVariant& d)
+    {
+        const Base::Placement& p = d.value<Base::Placement>();
+        double angle;
+        Base::Vector3d dir, pos;
+        p._rot.getValue(dir, angle);
+        pos = p._pos;
+        QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
+                        .arg(dir.x,0,'f',2)
+                        .arg(dir.y,0,'f',2)
+                        .arg(dir.z,0,'f',2)
+                        .arg(angle,0,'f',2)
+                        .arg(pos.x,0,'f',2)
+                        .arg(pos.y,0,'f',2)
+                        .arg(pos.z,0,'f',2);
+        getLabel()->setText(data);
+    }
+};
+}
+}
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPlacementItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyPlacementItem::PropertyPlacementItem()
+{
+}
+
+QVariant PropertyPlacementItem::value(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyPlacement::getClassTypeId()));
+
+    const Base::Placement& value = static_cast<const App::PropertyPlacement*>(prop)->getValue();
+    return QVariant::fromValue<Base::Placement>(value);
+}
+
+QVariant PropertyPlacementItem::toolTip(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyPlacement::getClassTypeId()));
+
+    const Base::Placement& p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
+    double angle;
+    Base::Vector3d dir, pos;
+    p._rot.getValue(dir, angle);
+    pos = p._pos;
+    QString data = QString::fromAscii("Axis: (%1,%2,%3)\n"
+                                      "Angle: %4\n"
+                                      "Move: (%5,%6,%7)")
+                    .arg(dir.x,0,'f',2)
+                    .arg(dir.y,0,'f',2)
+                    .arg(dir.z,0,'f',2)
+                    .arg(angle,0,'f',2)
+                    .arg(pos.x,0,'f',2)
+                    .arg(pos.y,0,'f',2)
+                    .arg(pos.z,0,'f',2);
+    return QVariant(data);
+}
+
+QVariant PropertyPlacementItem::toString(const QVariant& prop) const
+{
+    const Base::Placement& p = prop.value<Base::Placement>();
+    double angle;
+    Base::Vector3d dir, pos;
+    p._rot.getValue(dir, angle);
+    pos = p._pos;
+    QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
+                    .arg(dir.x,0,'f',2)
+                    .arg(dir.y,0,'f',2)
+                    .arg(dir.z,0,'f',2)
+                    .arg(angle,0,'f',2)
+                    .arg(pos.x,0,'f',2)
+                    .arg(pos.y,0,'f',2)
+                    .arg(pos.z,0,'f',2);
+    return QVariant(data);
+}
+
+void PropertyPlacementItem::setValue(const QVariant& value)
+{
+    if (!value.canConvert<Base::Placement>())
+        return;
+    const Base::Placement& val = value.value<Base::Placement>();
+    double angle;
+    Base::Vector3d dir, pos;
+    val._rot.getValue(dir, angle);
+    pos = val._pos;
+    QString data = QString::fromAscii("App.Base.Placement("
+                                      "App.Vector(%1,%2,%3),%4,"
+                                      "App.Vector(%5,%6,%7))")
+                    .arg(dir.x,0,'f',2)
+                    .arg(dir.y,0,'f',2)
+                    .arg(dir.z,0,'f',2)
+                    .arg(angle,0,'f',2)
+                    .arg(pos.x,0,'f',2)
+                    .arg(pos.y,0,'f',2)
+                    .arg(pos.z,0,'f',2);
+    setPropertyValue(data);
+}
+
+QWidget* PropertyPlacementItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    PlacementEditor *pe = new PlacementEditor(parent);
+    QObject::connect(pe, SIGNAL(valueChanged(const QVariant &)), receiver, method);
+    return pe;
+}
+
+void PropertyPlacementItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    PlacementEditor *pe = qobject_cast<PlacementEditor*>(editor);
+    pe->setValue(data);
+}
+
+QVariant PropertyPlacementItem::editorData(QWidget *editor) const
+{
+    PlacementEditor *pe = qobject_cast<PlacementEditor*>(editor);
+    return pe->value();
 }
 
 // ---------------------------------------------------------------

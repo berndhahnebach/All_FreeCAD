@@ -405,4 +405,55 @@ void UrlLabel::setUrl(const QString& u)
     setToolTip(this->_url);
 }
 
+// --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::LabelButton */
+
+/**
+ * Constructs a file chooser called \a name with the parent \a parent.
+ */
+LabelButton::LabelButton (QWidget * parent)
+  : QWidget(parent)
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(1);
+
+    label = new QLabel(this);
+    label->setAutoFillBackground(true);
+    layout->addWidget(label);
+
+    button = new QPushButton(QLatin1String("..."), this);
+    button->setFixedWidth(button->fontMetrics().width(QLatin1String(" ... ")));
+    layout->addWidget(button);
+
+    connect(button, SIGNAL(clicked()), this, SLOT(browse()));
+}
+
+LabelButton::~LabelButton()
+{
+}
+
+QLabel *LabelButton::getLabel() const
+{
+    return label;
+}
+
+QPushButton *LabelButton::getButton() const
+{
+    return button;
+}
+
+QVariant LabelButton::value() const
+{
+    return _val;
+}
+
+void LabelButton::setValue(const QVariant& val)
+{
+    _val = val;
+    showValue(_val);
+    valueChanged(_val);
+}
+
 #include "moc_Widgets.cpp"
