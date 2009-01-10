@@ -32,9 +32,11 @@
 
 #include <Base/Type.h>
 #include <Base/Vector3D.h>
+#include <Base/Placement.h>
 #include <App/PropertyStandard.h>
 
 Q_DECLARE_METATYPE(Base::Vector3f)
+Q_DECLARE_METATYPE(Base::Placement)
 
 namespace Gui {
 namespace PropertyEditor {
@@ -266,6 +268,28 @@ private:
     PropertyFloatItem* m_x;
     PropertyFloatItem* m_y;
     PropertyFloatItem* m_z;
+};
+
+/**
+ * Edit properties of placement type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyPlacementItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant toolTip(const App::Property*) const;
+    virtual QVariant toString(const QVariant&) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyPlacementItem();
 };
 
 /**

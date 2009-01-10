@@ -58,15 +58,15 @@ public:
 };
 
 /** File include properties
-  * This property save not only the file name like PropertyFile
+  * This property doesn't only save the file name like PropertyFile
   * it also includes the file itself into the document. The file
-  * get not loaded in memory, it get copied from the Document Archiv
-  * into the document transient directory. There it is accessebly for
-  * the Algorithems. You get the transient path throug getDocTransientPath()
-  * Its allowed to read the file. Its not allowed to write the file
+  * doesn't get loaded into memory, it gets copied from the document
+  * archive into the document transient directory. There it is accessible for
+  * the algorithms. You get the transient path through getDocTransientPath()
+  * It's allowed to read the file, it's not allowed to write the file
   * directly in the transient path! That would undermine the Undo/Redo
-  * Framework. Its only allowed to use setValue() to change the file.
-  * If you give a file name outsiden the transient dir to setValue() it
+  * framework. It's only allowed to use setValue() to change the file.
+  * If you give a file name outside the transient dir to setValue() it
   * will copy the file. If you give a file name in the transient path it
   * will just rename and use the same file. You can use getExchangeTempFile() to 
   * get a file name in the transient dir to write a new file version.

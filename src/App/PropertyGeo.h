@@ -232,6 +232,9 @@ public:
     /** This method returns a string representation of the property
      */
     const Base::Placement &getValue(void) const;
+    const char* getEditorName(void) const {
+        return "Gui::PropertyEditor::PropertyPlacementItem";
+    }
 
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
