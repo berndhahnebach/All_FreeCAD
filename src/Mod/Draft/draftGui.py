@@ -466,7 +466,7 @@ class toolBar:
 
 			def sendText(self):
 				"this function sends the entered text to the active draft command"
-				self.sourceCmd.text=str(self.textValue.text())
+				self.sourceCmd.text=unicode(self.textValue.text())
 				self.sourceCmd.createObject()
 
 			def displayPoint(self, point, last=None):
