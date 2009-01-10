@@ -489,36 +489,212 @@ DEF_STD_CMD_A(StdCmdToggleVisibility);
 StdCmdToggleVisibility::StdCmdToggleVisibility()
   : Command("Std_ToggleVisibility")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Toggle visibility");
-  sToolTipText  = QT_TR_NOOP("Toggles visibility");
-  sWhatsThis    = "Std_ToggleVisibility";
-  sStatusTip    = QT_TR_NOOP("Toggles visibility");
-  sPixmap       = "Std_Tool1";
-  iAccel        = Qt::Key_Space;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Toggle visibility");
+    sToolTipText  = QT_TR_NOOP("Toggles visibility");
+    sStatusTip    = QT_TR_NOOP("Toggles visibility");
+    sWhatsThis    = "Std_ToggleVisibility";
+    iAccel        = Qt::Key_Space;
 }
 
 void StdCmdToggleVisibility::activated(int iMsg)
 {
-  // go through all documents
-  const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-  for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
-  {
-    Document *pcDoc = Application::Instance->getDocument(*it);
-    const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
-    for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
-    {
-      if ( pcDoc && pcDoc->isShow((*ft)->getNameInDocument()) )
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False", (*it)->getName(), (*ft)->getNameInDocument());
-      else
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True", (*it)->getName(), (*ft)->getNameInDocument());
+    // go through all documents
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        Document *pcDoc = Application::Instance->getDocument(*it);
+        const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
+            (App::DocumentObject::getClassTypeId(), (*it)->getName());
+        for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+            if (pcDoc && pcDoc->isShow((*ft)->getNameInDocument()))
+                doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False"
+                             , (*it)->getName(), (*ft)->getNameInDocument());
+            else
+                doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True"
+                             , (*it)->getName(), (*ft)->getNameInDocument());
+        }
     }
-  }
 }
 
 bool StdCmdToggleVisibility::isActive(void)
 {
-  return ( Gui::Selection().size() != 0 );
+    return (Gui::Selection().size() != 0);
+}
+
+//===========================================================================
+// Std_ShowSelection
+//===========================================================================
+DEF_STD_CMD_A(StdCmdShowSelection);
+
+StdCmdShowSelection::StdCmdShowSelection()
+  : Command("Std_ShowSelection")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Show selection");
+    sToolTipText  = QT_TR_NOOP("Show all selected objects");
+    sStatusTip    = QT_TR_NOOP("Show all selected objects");
+    sWhatsThis    = "Std_ShowSelection";
+}
+
+void StdCmdShowSelection::activated(int iMsg)
+{
+    // go through all documents
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        Document *pcDoc = Application::Instance->getDocument(*it);
+        const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
+            (App::DocumentObject::getClassTypeId(), (*it)->getName());
+        for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+            doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True"
+                         , (*it)->getName(), (*ft)->getNameInDocument());
+        }
+    }
+}
+
+bool StdCmdShowSelection::isActive(void)
+{
+    return (Gui::Selection().size() != 0);
+}
+
+//===========================================================================
+// Std_HideSelection
+//===========================================================================
+DEF_STD_CMD_A(StdCmdHideSelection);
+
+StdCmdHideSelection::StdCmdHideSelection()
+  : Command("Std_HideSelection")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Hide selection");
+    sToolTipText  = QT_TR_NOOP("Hide all selected objects");
+    sStatusTip    = QT_TR_NOOP("Hide all selected objects");
+    sWhatsThis    = "Std_HideSelection";
+}
+
+void StdCmdHideSelection::activated(int iMsg)
+{
+    // go through all documents
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        Document *pcDoc = Application::Instance->getDocument(*it);
+        const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
+            (App::DocumentObject::getClassTypeId(), (*it)->getName());
+        for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+            doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False"
+                         , (*it)->getName(), (*ft)->getNameInDocument());
+        }
+    }
+}
+
+bool StdCmdHideSelection::isActive(void)
+{
+    return (Gui::Selection().size() != 0);
+}
+
+//===========================================================================
+// Std_ToggleObjects
+//===========================================================================
+DEF_STD_CMD_A(StdCmdToggleObjects);
+
+StdCmdToggleObjects::StdCmdToggleObjects()
+  : Command("Std_ToggleObjects")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Toggle all objects");
+    sToolTipText  = QT_TR_NOOP("Toggles visibility of all objects in the active document");
+    sStatusTip    = QT_TR_NOOP("Toggles visibility of all objects in the active document");
+    sWhatsThis    = "Std_ToggleObjects";
+}
+
+void StdCmdToggleObjects::activated(int iMsg)
+{
+    // go through active document
+    Gui::Document* doc = Application::Instance->activeDocument();
+    App::Document* app = doc->getDocument();
+    const std::vector<App::DocumentObject*> obj = app->getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+
+    for (std::vector<App::DocumentObject*>::const_iterator it=obj.begin();it!=obj.end();++it) {
+        if (doc && doc->isShow((*it)->getNameInDocument()))
+            doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False"
+                         , app->getName(), (*it)->getNameInDocument());
+        else
+            doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True"
+                         , app->getName(), (*it)->getNameInDocument());
+    }
+}
+
+bool StdCmdToggleObjects::isActive(void)
+{
+    return App::GetApplication().getActiveDocument();
+}
+
+//===========================================================================
+// Std_ShowObjects
+//===========================================================================
+DEF_STD_CMD_A(StdCmdShowObjects);
+
+StdCmdShowObjects::StdCmdShowObjects()
+  : Command("Std_ShowObjects")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Show all objects");
+    sToolTipText  = QT_TR_NOOP("Show all objects in the document");
+    sStatusTip    = QT_TR_NOOP("Show all objects in the document");
+    sWhatsThis    = "Std_ShowObjects";
+}
+
+void StdCmdShowObjects::activated(int iMsg)
+{
+    // go through active document
+    Gui::Document* doc = Application::Instance->activeDocument();
+    App::Document* app = doc->getDocument();
+    const std::vector<App::DocumentObject*> obj = app->getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+
+    for (std::vector<App::DocumentObject*>::const_iterator it=obj.begin();it!=obj.end();++it) {
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True"
+                     , app->getName(), (*it)->getNameInDocument());
+    }
+}
+
+bool StdCmdShowObjects::isActive(void)
+{
+    return App::GetApplication().getActiveDocument();
+}
+
+//===========================================================================
+// Std_HideObjects
+//===========================================================================
+DEF_STD_CMD_A(StdCmdHideObjects);
+
+StdCmdHideObjects::StdCmdHideObjects()
+  : Command("Std_HideObjects")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Hide all objects");
+    sToolTipText  = QT_TR_NOOP("Hide all objects in the document");
+    sStatusTip    = QT_TR_NOOP("Hide all objects in the document");
+    sWhatsThis    = "Std_HideObjects";
+}
+
+void StdCmdHideObjects::activated(int iMsg)
+{
+    // go through active document
+    Gui::Document* doc = Application::Instance->activeDocument();
+    App::Document* app = doc->getDocument();
+    const std::vector<App::DocumentObject*> obj = app->getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+
+    for (std::vector<App::DocumentObject*>::const_iterator it=obj.begin();it!=obj.end();++it) {
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False"
+                     , app->getName(), (*it)->getNameInDocument());
+    }
+}
+
+bool StdCmdHideObjects::isActive(void)
+{
+    return App::GetApplication().getActiveDocument();
 }
 
 //===========================================================================
@@ -1500,6 +1676,11 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
     rcCmdMgr.addCommand(new StdCmdSetAppearance());
     rcCmdMgr.addCommand(new StdCmdToggleVisibility());
+    rcCmdMgr.addCommand(new StdCmdShowSelection());
+    rcCmdMgr.addCommand(new StdCmdHideSelection());
+    rcCmdMgr.addCommand(new StdCmdToggleObjects());
+    rcCmdMgr.addCommand(new StdCmdShowObjects());
+    rcCmdMgr.addCommand(new StdCmdHideObjects());
     rcCmdMgr.addCommand(new StdOrthographicCamera());
     rcCmdMgr.addCommand(new StdPerspectiveCamera());
     rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
