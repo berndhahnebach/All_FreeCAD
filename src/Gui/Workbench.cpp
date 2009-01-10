@@ -413,13 +413,19 @@ MenuItem* StdWorkbench::setupMenuBar() const
     zoom->setCommand(QT_TR_NOOP("&Zoom"));
     *zoom << "Std_ViewZoomIn" << "Std_ViewZoomOut" << "Separator" << "Std_ViewBoxZoom";
 
+    // Visibility
+    MenuItem* visu = new MenuItem;
+    visu->setCommand(QT_TR_NOOP("Visibility"));
+    *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
+          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects";
+
     // View
     MenuItem* view = new MenuItem( menuBar );
     view->setCommand(QT_TR_NOOP("&View"));
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
-          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
-          << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
+          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator" << visu
+          << "Std_ToggleVisibility" << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
           << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
           << "Std_ViewStatusBar" << "Std_UserInterface";
