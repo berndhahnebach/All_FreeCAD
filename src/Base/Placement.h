@@ -41,11 +41,14 @@ class BaseExport Placement
 public:
     /// default constructor
     Placement(void);
+    Placement(const Placement&);
     /// Destruction
     ~Placement () {};
 
     Base::Matrix4D toMatrix(void) const;
     void fromMatrix(const Base::Matrix4D& m);
+    void invert();
+    Placement inverse() const;
 
     bool operator == (const Placement&) const;
     bool operator != (const Placement&) const;

@@ -276,20 +276,31 @@ private:
  */
 class GuiExport PropertyPlacementItem: public PropertyItem
 {
+    Q_OBJECT
+    Q_PROPERTY(QString Axis READ getAxis)
+    Q_PROPERTY(QString Angle READ getAngle)
+    Q_PROPERTY(QString Position READ getPosition)
     TYPESYSTEM_HEADER();
 
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
+    QString getAxis() const;
+    QString getAngle() const;
+    QString getPosition() const;
+
 protected:
+    PropertyPlacementItem();
     virtual QVariant toolTip(const App::Property*) const;
     virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
-protected:
-    PropertyPlacementItem();
+private:
+    PropertyStringItem* m_d;
+    PropertyStringItem* m_a;
+    PropertyStringItem* m_p;
 };
 
 /**

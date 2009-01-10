@@ -34,53 +34,53 @@ class Matrix4D;
 class BaseExport Rotation
 {
 public:
-  /** Construction. */
-  //@{
-  Rotation();
-  Rotation(const Vector3d& axis, const double fAngle);
-  Rotation(const Matrix4D& matrix);
-  Rotation(const double q[4]);
-  Rotation(const double q0, const double q1, const double q2, const double q3);
-  Rotation(const Vector3d& rotateFrom, const Vector3d& rotateTo);
-  Rotation(const Rotation& rot);
-  //@}
+    /** Construction. */
+    //@{
+    Rotation();
+    Rotation(const Vector3d& axis, const double fAngle);
+    Rotation(const Matrix4D& matrix);
+    Rotation(const double q[4]);
+    Rotation(const double q0, const double q1, const double q2, const double q3);
+    Rotation(const Vector3d& rotateFrom, const Vector3d& rotateTo);
+    Rotation(const Rotation& rot);
+    //@}
 
-  /** Methods to get or set rotations. */
-  //@{
-  const double * getValue(void) const;
-  void getValue(double & q0, double & q1, double & q2, double & q3) const;
-  void setValue(const double q0, const double q1, const double q2, const double q3);
-  void getValue(Vector3d & axis, double & rfAngle) const;
-  void getValue(Matrix4D & matrix) const;
-  void setValue(const double q[4]);
-  void setValue(const Matrix4D& matrix);
-  void setValue(const Vector3d & axis, const double fAngle);
-  void setValue(const Vector3d & rotateFrom, const Vector3d & rotateTo);
-  //@}
+    /** Methods to get or set rotations. */
+    //@{
+    const double * getValue(void) const;
+    void getValue(double & q0, double & q1, double & q2, double & q3) const;
+    void setValue(const double q0, const double q1, const double q2, const double q3);
+    void getValue(Vector3d & axis, double & rfAngle) const;
+    void getValue(Matrix4D & matrix) const;
+    void setValue(const double q[4]);
+    void setValue(const Matrix4D& matrix);
+    void setValue(const Vector3d & axis, const double fAngle);
+    void setValue(const Vector3d & rotateFrom, const Vector3d & rotateTo);
+    //@}
 
-  /** Invert rotations. */
-  //@{
-  Rotation & invert(void);
-  Rotation inverse(void) const;
-  //@}
+    /** Invert rotations. */
+    //@{
+    Rotation & invert(void);
+    Rotation inverse(void) const;
+    //@}
 
-  /** Operators. */
-  //@{
-  Rotation & operator*=(const Rotation & q);
-  Rotation operator *(const Rotation & q);
-  bool operator==(const Rotation & q) const;
-  bool operator!=(const Rotation & q) const;
+    /** Operators. */
+    //@{
+    Rotation & operator*=(const Rotation & q);
+    Rotation operator *(const Rotation & q);
+    bool operator==(const Rotation & q) const;
+    bool operator!=(const Rotation & q) const;
 
-  void multVec(const Vector3d & src, Vector3d & dst) const;
-  void scaleAngle(const double scaleFactor);
-  //@}
+    void multVec(const Vector3d & src, Vector3d & dst) const;
+    void scaleAngle(const double scaleFactor);
+    //@}
 
-  static Rotation slerp(const Rotation & rot0, const Rotation & rot1, double t);
-  static Rotation identity(void);
+    static Rotation slerp(const Rotation & rot0, const Rotation & rot1, double t);
+    static Rotation identity(void);
 
 private:
-  void normalize();
-  double quat[4];
+    void normalize();
+    double quat[4];
 };
 
 }

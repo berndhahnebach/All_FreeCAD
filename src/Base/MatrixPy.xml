@@ -57,6 +57,22 @@
         <UserDocu>rotateZ(float) - rotate around Z</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="multiply">
+      <Documentation>
+        <UserDocu>
+          multiply(Matrix|Vector)
+          Multiply a matrix or vector with this matrix
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="invert">
+      <Documentation>
+        <UserDocu>
+          inverse()
+          Compute the inverse matrix, if possible
+        </UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="A11" ReadOnly="false">
       <Documentation>
         <UserDocu>The matrix elements</UserDocu>

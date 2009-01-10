@@ -49,7 +49,7 @@ Py::Object ComplexGeoDataPy::getBoundBox(void) const
 Py::Object ComplexGeoDataPy::getPlacement(void) const
 {
     Base::Placement trf = getComplexGeoDataPtr()->getPlacement();
-    return Py::Object(new Base::PlacementPy(trf));
+    return Py::Object(new Base::PlacementPy(new Base::Placement(trf)));
 }
 
 void  ComplexGeoDataPy::setPlacement(Py::Object arg)

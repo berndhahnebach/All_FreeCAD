@@ -103,6 +103,22 @@ PyObject* PlacementPy::move(PyObject * args)
     Py_Return;
 }
 
+PyObject* PlacementPy::toMatrix(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    Base::Matrix4D mat = getPlacementPtr()->toMatrix();
+    return new MatrixPy(new Matrix4D(mat));
+}
+
+PyObject* PlacementPy::inverse(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    Base::Placement p = getPlacementPtr()->inverse();
+    return new PlacementPy(new Placement(p));
+}
+
 Py::Object PlacementPy::getBase(void) const
 {
     return Py::Object(new VectorPy(getPlacementPtr()->_pos));
