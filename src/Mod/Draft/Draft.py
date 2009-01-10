@@ -61,7 +61,6 @@ How it works / how to extend:
 
 
 Todo list:
-	- support unicode and SoText3 in texts
 	- SVG export
 	- OCA import/export
 	- dimensions
@@ -1143,7 +1142,7 @@ class annotation:
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("App::Annotation",self.featureName)
 		self.doc.commitTransaction()
-		self.obj.LabelText=self.text
+		self.obj.LabelText=self.text.encode('latin1')
 		self.obj.Position=self.node[0]
 		formatObject(self.obj)
 		select(self.obj)
