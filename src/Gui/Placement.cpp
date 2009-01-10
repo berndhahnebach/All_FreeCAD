@@ -33,6 +33,7 @@ Placement::Placement(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {
     ui = new Ui_PlacementComp(this);
+    ui->angle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
 }
 
 Placement::~Placement()

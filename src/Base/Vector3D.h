@@ -73,6 +73,8 @@ public:
     //@{
     /// Returns a reference to a coordinate. \a usIndex must be in the range [0,2]
     _Precision & operator [] (unsigned short usIndex);
+    /// Returns a const reference to a coordinate. \a usIndex must be in the range [0,2]
+    const _Precision & operator [] (unsigned short usIndex) const;
     /// Vector addition
     Vector3 operator +  (const Vector3<_Precision>& rcVct) const;
     Vector3 operator &  (const Vector3<_Precision>& rcVct) const;

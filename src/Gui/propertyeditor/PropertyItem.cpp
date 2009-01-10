@@ -795,6 +795,67 @@ TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPlacementItem, Gui::PropertyEdito
 
 PropertyPlacementItem::PropertyPlacementItem()
 {
+    m_d = static_cast<PropertyStringItem*>(PropertyStringItem::create());
+    m_d->setParent(this);
+    m_d->setPropertyName(QLatin1String("Axis"));
+    m_d->setReadOnly(true);
+    this->appendChild(m_d);
+    m_a = static_cast<PropertyStringItem*>(PropertyStringItem::create());
+    m_a->setParent(this);
+    m_a->setPropertyName(QLatin1String("Angle"));
+    m_a->setReadOnly(true);
+    this->appendChild(m_a);
+    m_p = static_cast<PropertyStringItem*>(PropertyStringItem::create());
+    m_p->setParent(this);
+    m_p->setPropertyName(QLatin1String("Position"));
+    m_p->setReadOnly(true);
+    this->appendChild(m_p);
+}
+
+QString PropertyPlacementItem::getAxis() const
+{
+    QVariant value = data(1, Qt::EditRole);
+    if (!value.canConvert<Base::Placement>())
+        return QString();
+    const Base::Placement& val = value.value<Base::Placement>();
+    double angle;
+    Base::Vector3d dir;
+    val._rot.getValue(dir, angle);
+
+    QString text = QString::fromAscii("[%1, %2, %3]")
+        .arg(dir.x,0,'f',2)
+        .arg(dir.y,0,'f',2)
+        .arg(dir.z,0,'f',2);
+    return text;
+}
+
+QString PropertyPlacementItem::getAngle() const
+{
+    QVariant value = data(1, Qt::EditRole);
+    if (!value.canConvert<Base::Placement>())
+        return QString();
+    const Base::Placement& val = value.value<Base::Placement>();
+    double angle;
+    Base::Vector3d dir;
+    val._rot.getValue(dir, angle);
+    angle = angle*180.0/D_PI;
+
+    QString text = QString::fromUtf8("%1 \xc2\xb0").arg(angle,0,'f',2);
+    return text;
+}
+
+QString PropertyPlacementItem::getPosition() const
+{
+    QVariant value = data(1, Qt::EditRole);
+    if (!value.canConvert<Base::Placement>())
+        return QString();
+    const Base::Placement& val = value.value<Base::Placement>();
+
+    QString text = QString::fromAscii("[%1, %2, %3]")
+        .arg(val._pos.x,0,'f',2)
+        .arg(val._pos.y,0,'f',2)
+        .arg(val._pos.z,0,'f',2);
+    return text;
 }
 
 QVariant PropertyPlacementItem::value(const App::Property* prop) const
@@ -857,13 +918,13 @@ void PropertyPlacementItem::setValue(const QVariant& value)
     QString data = QString::fromAscii("App.Base.Placement("
                                       "App.Vector(%1,%2,%3),%4,"
                                       "App.Vector(%5,%6,%7))")
-                    .arg(dir.x,0,'f',2)
-                    .arg(dir.y,0,'f',2)
-                    .arg(dir.z,0,'f',2)
-                    .arg(angle,0,'f',2)
-                    .arg(pos.x,0,'f',2)
-                    .arg(pos.y,0,'f',2)
-                    .arg(pos.z,0,'f',2);
+                    .arg(dir.x,0,'g',6)
+                    .arg(dir.y,0,'g',6)
+                    .arg(dir.z,0,'g',6)
+                    .arg(angle,0,'g',6)
+                    .arg(pos.x,0,'g',6)
+                    .arg(pos.y,0,'g',6)
+                    .arg(pos.z,0,'g',6);
     setPropertyValue(data);
 }
 

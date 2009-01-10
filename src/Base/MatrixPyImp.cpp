@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 
+#include <climits>
 #include "Base/Matrix.h"
 
 // inclusion of the generated files (generated out of MatrixPy.xml)
@@ -64,19 +65,29 @@ int MatrixPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double a31=0.0, a32=0.0, a33=1.0, a34=0.0;
     double a41=0.0, a42=0.0, a43=0.0, a44=1.0;
 
-    if (!PyArg_ParseTuple(args, "|dddddddddddddddd",
+    if (PyArg_ParseTuple(args, "|dddddddddddddddd",
                           &a11,&a12,&a13,&a14,
                           &a21,&a22,&a23,&a24,
                           &a31,&a32,&a33,&a34,
-                          &a41,&a42,&a43,&a44))
-        return -1;
+                          &a41,&a42,&a43,&a44)) {
+        MatrixPy::PointerType ptr = reinterpret_cast<MatrixPy::PointerType>(_pcTwinPointer);
+        (*ptr) = Matrix4D(a11,a12,a13,a14,
+                          a21,a22,a23,a24,
+                          a31,a32,a33,a34,
+                          a41,a42,a43,a44);
+        return 0;
+    }
 
-    MatrixPy::PointerType ptr = reinterpret_cast<MatrixPy::PointerType>(_pcTwinPointer);
-    (*ptr) = Matrix4D(a11,a12,a13,a14,
-                      a21,a22,a23,a24,
-                      a31,a32,a33,a34,
-                      a41,a42,a43,a44);
-    return 0;
+    PyErr_Clear();
+    PyObject *o;
+    if (PyArg_ParseTuple(args, "O!", &(Base::MatrixPy::Type), &o)) {
+        MatrixPy::PointerType ptr = reinterpret_cast<MatrixPy::PointerType>(_pcTwinPointer);
+        (*ptr) = static_cast<MatrixPy*>(o)->value();
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "matrix or up to 16 floats expected");
+    return -1;
 }
 
 PyObject* MatrixPy::move(PyObject * args)
@@ -225,6 +236,42 @@ PyObject* MatrixPy::rotateZ(PyObject * args)
 
     PY_TRY {
         getMatrixPtr()->rotZ(a);
+    }
+    PY_CATCH;
+
+    Py_Return;
+}
+
+PyObject* MatrixPy::multiply(PyObject * args)
+{
+    PyObject* o;
+    if (PyArg_ParseTuple(args, "O!", &(MatrixPy::Type), &o)) {
+        Matrix4D mat = (*getMatrixPtr()) * static_cast<Base::MatrixPy*>(o)->value();
+        return new MatrixPy(new Matrix4D(mat));
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &o)) {
+        Vector3d vec = (*getMatrixPtr()) * static_cast<Base::VectorPy*>(o)->value();
+        return new VectorPy(new Vector3d(vec));
+    }
+
+    PyErr_SetString(PyExc_Exception, "either vector or matrix expected");
+    return 0;
+}
+
+PyObject* MatrixPy::invert(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    PY_TRY {
+        if (getMatrixPtr()->determinant() > DBL_EPSILON)
+            getMatrixPtr()->inverse();
+        else {
+            PyErr_SetString(PyExc_Exception, "Cannot invert singular matrix");
+            return 0;
+        }
     }
     PY_CATCH;
 

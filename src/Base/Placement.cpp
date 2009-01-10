@@ -33,7 +33,13 @@ using namespace Base;
 
 Placement::Placement()
 {
-    
+
+}
+
+Placement::Placement(const Placement& that)
+{
+    this->_pos = that._pos;
+    this->_rot = that._rot;
 }
 
 Base::Matrix4D Placement::toMatrix(void) const
@@ -52,6 +58,20 @@ void Placement::fromMatrix(const Base::Matrix4D& matrix)
     this->_pos.x = matrix[0][3];
     this->_pos.y = matrix[1][3];
     this->_pos.z = matrix[2][3];
+}
+
+void Placement::invert()
+{
+    this->_rot = this->_rot.inverse();
+    this->_rot.multVec(this->_pos, this->_pos);
+    this->_pos = -this->_pos;
+}
+
+Placement Placement::inverse() const
+{
+    Placement p(*this);
+    p.invert();
+    return p;
 }
 
 bool Placement::operator == (const Placement& that) const
