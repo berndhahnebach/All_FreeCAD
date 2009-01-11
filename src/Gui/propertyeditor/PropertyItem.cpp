@@ -937,13 +937,13 @@ QWidget* PropertyPlacementItem::createEditor(QWidget* parent, const QObject* rec
 
 void PropertyPlacementItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
-    PlacementEditor *pe = qobject_cast<PlacementEditor*>(editor);
+    Gui::LabelButton *pe = qobject_cast<Gui::LabelButton*>(editor);
     pe->setValue(data);
 }
 
 QVariant PropertyPlacementItem::editorData(QWidget *editor) const
 {
-    PlacementEditor *pe = qobject_cast<PlacementEditor*>(editor);
+    Gui::LabelButton *pe = qobject_cast<Gui::LabelButton*>(editor);
     return pe->value();
 }
 
